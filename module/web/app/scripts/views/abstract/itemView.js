@@ -1,4 +1,5 @@
 define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
+    'use strict';
 
     // A view that is meant for temporary displaying
     // All events must be unbound in onDestroy

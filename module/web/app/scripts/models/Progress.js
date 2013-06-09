@@ -1,4 +1,5 @@
 define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backbone, _, Api) {
+    'use strict';
 
     return Backbone.Model.extend({
 

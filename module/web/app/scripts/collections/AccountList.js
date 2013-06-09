@@ -1,4 +1,5 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'models/Account'], function($, Backbone, _, App, Account) {
+    'use strict';
 
     return Backbone.Collection.extend({
 

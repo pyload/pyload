@@ -1,4 +1,5 @@
 define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
+    'use strict';
 
     // Renders input elements
     return Backbone.View.extend({
@@ -29,7 +30,7 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
 //                this.$el.data('title', "TODO: title");
                 this.$el.popover({
                     placement: 'right',
-                    trigger: 'hover',
+                    trigger: 'hover'
 //                    delay: { show: 500, hide: 100 }
                 });
             }

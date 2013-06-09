@@ -1,6 +1,7 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abstract/itemView',
     'hbs!tpl/header/progress', 'helpers/pluginIcon'],
     function($, Backbone, _, App, Api, ItemView, template, pluginIcon) {
+        'use strict';
 
         // Renders single file item
         return ItemView.extend({

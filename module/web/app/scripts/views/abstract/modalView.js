@@ -1,4 +1,5 @@
 define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone, _) {
+    'use strict';
 
     return Backbone.View.extend({
 
@@ -41,7 +42,7 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
                 this.$el.css({opacity: 0, scale: 0.7});
 
                 var self = this;
-                $("body").append(this.el);
+                $('body').append(this.el);
                 this.dialog = this.$el.omniWindow({
                     overlay: {
                         selector: '#modal-overlay',

@@ -1,6 +1,7 @@
 define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'hbs!tpl/dialogs/addPluginConfig',
     'helpers/pluginIcon', 'select2'],
     function($, _, App, modalView, template, pluginIcon) {
+        'use strict';
         return modalView.extend({
 
             events: {

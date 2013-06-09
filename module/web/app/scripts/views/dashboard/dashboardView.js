@@ -1,6 +1,7 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
     './packageView', './fileView', 'hbs!tpl/dashboard/layout', 'select2'],
-    function($, Backbone, _, App, TreeCollection, packageView, fileView, template) {
+    function($, Backbone, _, App, TreeCollection, PackageView, FileView, template) {
+        'use strict';
         // Renders whole dashboard
         return Backbone.Marionette.ItemView.extend({
 
@@ -58,7 +59,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                     });
                 }});
 
-                this.$('.input').select2({tags: ["a", "b", "sdf"]});
+                this.$('.input').select2({tags: ['a', 'b', 'sdf']});
             },
 
             update: function() {
@@ -87,12 +88,12 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
             // TODO sorting ?!
             // Append a package to the list, index, animate it
             appendPackage: function(pack, i, animation) {
-                var el = new packageView({model: pack}).render().el;
+                var el = new PackageView({model: pack}).render().el;
                 $(this.ui.packages).appendWithAnimation(el, animation);
             },
 
             appendFile: function(file, i, animation) {
-                var el = new fileView({model: file}).render().el;
+                var el = new FileView({model: file}).render().el;
                 $(this.ui.files).appendWithAnimation(el, animation);
             },
 

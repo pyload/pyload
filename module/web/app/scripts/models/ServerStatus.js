@@ -1,5 +1,6 @@
 define(['jquery', 'backbone', 'underscore'],
     function($, Backbone, _) {
+        'use strict';
 
         return Backbone.Model.extend({
 
@@ -20,7 +21,7 @@ define(['jquery', 'backbone', 'underscore'],
 
             },
 
-            fetch: function() {
+            fetch: function(options) {
                 options || (options = {});
                 options.url = 'api/getServerStatus';
 

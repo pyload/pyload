@@ -1,17 +1,18 @@
 // Define the module.
 define(
 	[
-		"require", "underscore"
+		'require', 'underscore'
 	],
 	function( require, _ ){
+        'use strict';
 
 
 		// Define the states of loading for a given set of modules
 		// within a require() statement.
 		var states = {
-			unloaded: "UNLOADED",
-			loading: "LOADING",
-			loaded: "LOADED"
+			unloaded: 'UNLOADED',
+			loading: 'LOADING',
+			loaded: 'LOADED'
 		};
 
 
@@ -86,7 +87,7 @@ define(
             if (!_.has(instances, dependencies))
                 instances[dependencies] = lazyRequire.once();
 
-            return instances[dependencies](dependencies, loadCallback)
+            return instances[dependencies](dependencies, loadCallback);
         };
 
 

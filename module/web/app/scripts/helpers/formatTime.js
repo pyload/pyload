@@ -1,12 +1,12 @@
 // Format bytes in human readable format
-define('helpers/formatTime', ['handlebars', 'utils/remaining'], function(Handlebars, Remaining) {
-
+define('helpers/formatTime', ['handlebars', 'vendor/remaining'], function(Handlebars, Remaining) {
+    'use strict';
 
     function formatTime(seconds, options) {
         if (seconds === Infinity)
             return '∞';
         else if (!seconds || seconds <= 0)
-            return "-";
+            return '-';
 
         // TODO: digital or written string
         return Remaining.getStringDigital(seconds, window.dates);

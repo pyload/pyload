@@ -36,9 +36,9 @@ require.config({
     hbs: {
         disableI18n: true,
         helperPathCallback:       // Callback to determine the path to look for helpers
-              function (name) {
-                  // Some helpers are accumulated into one file
-                  if (name.indexOf('file') === 0)
+            function(name) {
+                // Some helpers are accumulated into one file
+                if (name.indexOf('file') === 0)
                     name = 'fileHelper';
 
                 return 'helpers/' + name;

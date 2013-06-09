@@ -3,7 +3,6 @@
     "browser": true,
     "esnext": true,
     "bitwise": true,
-    "camelcase": true,
     "curly": true,
     "eqeqeq": true,
     "immed": true,
@@ -14,8 +13,17 @@
     "quotmark": "single",
     "regexp": true,
     "undef": true,
-    "unused": true,
     "strict": true,
     "trailing": true,
-    "smarttabs": true
+    "smarttabs": true,
+    "unused": false,
+    "camelcase": false,
+    "-W030": false,
+    "-W015": false,
+    "-W116": false,
+    "predef": [
+        "require",
+        "define",
+        "alert"
+    ]
 }

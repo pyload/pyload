@@ -1,5 +1,6 @@
 define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashboard/package'],
     function($, App, itemView, _, template) {
+        'use strict';
 
         // Renders a single package item
         return itemView.extend({

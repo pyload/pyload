@@ -1,6 +1,7 @@
 define(['jquery', 'underscore', 'backbone', 'app', '../abstract/itemView', '../input/inputLoader',
     'hbs!tpl/settings/config', 'hbs!tpl/settings/configItem'],
     function($, _, Backbone, App, itemView, load_input, template, templateItem) {
+        'use strict';
 
         // Renders settings over view page
         return itemView.extend({
@@ -28,7 +29,7 @@ define(['jquery', 'underscore', 'backbone', 'app', '../abstract/itemView', '../i
 
                     // initialize the popover
                     this.$('.page-header a').popover({
-                        placement: 'left',
+                        placement: 'left'
 //                        trigger: 'hover'
                     });
 
@@ -37,8 +38,8 @@ define(['jquery', 'underscore', 'backbone', 'app', '../abstract/itemView', '../i
                     _.each(this.model.get('items'), function(item) {
                         var json = item.toJSON();
                         var el = $('<div>').html(self.templateItem(json));
-                        var inputView = load_input(item.get('input'));
-                        var input = new inputView(json).render();
+                        var InputView = load_input(item.get('input'));
+                        var input = new InputView(json).render();
                         item.set('inputView', input);
 
                         self.listenTo(input, 'change', _.bind(self.render, self));
@@ -66,7 +67,7 @@ define(['jquery', 'underscore', 'backbone', 'app', '../abstract/itemView', '../i
                 return this;
             },
 
-            onDestroy: function(){
+            onDestroy: function() {
                 // TODO: correct cleanup after building up so many views and models
             },
 
@@ -74,7 +75,7 @@ define(['jquery', 'underscore', 'backbone', 'app', '../abstract/itemView', '../i
                 e.stopPropagation();
                 // TODO: success / failure popups
                 var self = this;
-                this.model.save({success: function(){
+                this.model.save({success: function() {
                     self.render();
                     App.settingsView.refresh();
                 }});

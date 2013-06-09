@@ -1,4 +1,5 @@
 define(['jquery', 'backbone', 'underscore', './inputView'], function($, Backbone, _, inputView) {
+    'use strict';
 
     return inputView.extend({
 

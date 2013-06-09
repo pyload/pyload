@@ -1,5 +1,6 @@
 define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'hbs!tpl/dialogs/addAccount', 'helpers/pluginIcon', 'select2'],
     function($, _, App, modalView, template, pluginIcon) {
+        'use strict';
         return modalView.extend({
 
             events: {
@@ -47,7 +48,7 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'hbs!tpl/dial
             },
 
             format: function(data) {
-                return '<img class="logo-select" src="' +  pluginIcon(data) + '"> ' + data;
+                return '<img class="logo-select" src="' + pluginIcon(data) + '"> ' + data;
             },
 
             add: function(e) {

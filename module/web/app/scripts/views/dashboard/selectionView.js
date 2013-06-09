@@ -96,7 +96,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/dashboard/select'],
             },
 
             pause: function() {
-                alert("Not implemented yet");
+                alert('Not implemented yet');
                 this.deselect();
             },
 

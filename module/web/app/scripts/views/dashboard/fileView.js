@@ -1,5 +1,6 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abstract/itemView', 'helpers/formatTime', 'hbs!tpl/dashboard/file'],
     function($, Backbone, _, App, Api, ItemView, formatTime, template) {
+        'use strict';
 
         // Renders single file item
         return ItemView.extend({
@@ -91,7 +92,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
                     bar.html('&nbsp;&nbsp;' + formatTime(this.model.get('eta')));
                 } else if (this.model.get('download').status === Api.DownloadStatus.Waiting) {
                     this.$('.second').html(
-                        "<i class='icon-time'></i>&nbsp;" + formatTime(this.model.get('eta')));
+                        '<i class="icon-time"></i>&nbsp;' + formatTime(this.model.get('eta')));
 
                 } else // Every else state can be renderred normally
                     this.render();

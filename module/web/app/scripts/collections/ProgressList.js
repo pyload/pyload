@@ -1,4 +1,5 @@
 define(['jquery', 'backbone', 'underscore', 'models/Progress'], function($, Backbone, _, Progress) {
+    'use strict';
 
     return Backbone.Collection.extend({
 

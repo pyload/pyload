@@ -1,5 +1,6 @@
 define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'hbs!tpl/dialogs/linkgrabber'],
     function($, _, App, modalView, template) {
+        'use strict';
         // Modal dialog for package adding - triggers package:added when package was added
         return modalView.extend({
 
@@ -16,7 +17,7 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'hbs!tpl/dial
             },
 
             addOnEnter: function(e) {
-                if (e.keyCode != 13) return;
+                if (e.keyCode !== 13) return;
                 this.addPackage(e);
             },
 
@@ -26,7 +27,7 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'hbs!tpl/dial
                     {
                         name: $('#inputPackageName').val(),
                         // TODO: better parsing / tokenization
-                        links: $('#inputLinks').val().split("\n")
+                        links: $('#inputLinks').val().split('\n')
                     },
                     {
                         success: function() {

@@ -47,11 +47,11 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
 
             refresh: function() {
                 var self = this;
-                $.ajax(App.apiRequest("getCoreConfig", null, {success: function(data) {
+                $.ajax(App.apiRequest('getCoreConfig', null, {success: function(data) {
                     self.coreConfig = data;
                     self.renderMenu();
                 }}));
-                $.ajax(App.apiRequest("getPluginConfig", null, {success: function(data) {
+                $.ajax(App.apiRequest('getPluginConfig', null, {success: function(data) {
                     self.pluginConfig = data;
                     self.renderMenu();
                 }}));
@@ -82,7 +82,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
                 }));
 
                 // mark the selected element
-                this.$('li[data-name="' + this.selected + '"]').addClass("active");
+                this.$('li[data-name="' + this.selected + '"]').addClass('active');
             },
 
             openConfig: function(name) {
@@ -151,11 +151,11 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
 
                 var el = $(e.target).closest('li');
 
-                this.selected = el.data("name");
+                this.selected = el.data('name');
                 this.openConfig(this.selected);
 
-                this.ui.menu.find("li.active").removeClass("active");
-                el.addClass("active");
+                this.ui.menu.find('li.active').removeClass('active');
+                el.addClass('active');
                 e.preventDefault();
             },
 
@@ -172,9 +172,9 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
             deleteConfig: function(e) {
                 e.stopPropagation();
                 var el = $(e.target).parent().parent();
-                var name = el.data("name");
+                var name = el.data('name');
                 var self = this;
-                $.ajax(App.apiRequest("deleteConfig", {plugin: name}, { success: function() {
+                $.ajax(App.apiRequest('deleteConfig', {plugin: name}, { success: function() {
                     self.refresh();
                 }}));
 

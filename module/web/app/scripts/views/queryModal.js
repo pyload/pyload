@@ -1,5 +1,6 @@
 define(['jquery', 'underscore', 'app', 'views/abstract/modalView', './input/inputLoader', 'text!tpl/default/queryDialog.html'],
     function($, _, App, modalView, load_input, template) {
+        'use strict';
         return modalView.extend({
 
             // TODO: submit on enter reloads the page sometimes
@@ -38,8 +39,8 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', './input/inpu
             onRender: function() {
                 // instantiate the input
                 var input = this.model.get('input');
-                var inputView = load_input(input);
-                this.input = new inputView(input);
+                var InputView = load_input(input);
+                this.input = new InputView(input);
                 // only renders after wards
                 this.$('#inputField').append(this.input.render().el);
             },

@@ -7,17 +7,17 @@ define('helpers/fileHelper', ['handlebars', 'utils/apitypes', 'helpers/formatTim
             if (file.finished)
                 return 'finished';
             else if (file.failed)
-                return "failed";
+                return 'failed';
             else if (file.offline)
-                return "offline";
+                return 'offline';
             else if (file.online)
-                return "online";
+                return 'online';
             else if (file.waiting)
-                return "waiting";
+                return 'waiting';
             else if (file.downloading)
-                return "downloading";
+                return 'downloading';
 
-            return "";
+            return '';
         }
 
         // TODO
@@ -31,17 +31,17 @@ define('helpers/fileHelper', ['handlebars', 'utils/apitypes', 'helpers/formatTim
             var msg = file.download.statusmsg;
 
             if (file.failed) {
-                s = "<i class='icon-remove'></i>&nbsp;";
+                s = '<i class="icon-remove"></i>&nbsp;';
                 if (file.download.error)
                     s += file.download.error;
                 else s += msg;
             } else if (file.finished)
-                s = "<i class='icon-ok'></i>&nbsp;" + msg;
+                s = '<i class="icon-ok"></i>&nbsp;' + msg;
             else if (file.downloading)
-                s = "<div class='progress'><div class='bar' style='width: " + file.progress + "%'>&nbsp;&nbsp;" +
-                    formatTime(file.eta) + "</div></div>";
+                s = '<div class="progress"><div class="bar" style="width: ' + file.progress + '%">&nbsp;&nbsp;' +
+                    formatTime(file.eta) + '</div></div>';
             else if (file.waiting)
-                s = "<i class='icon-time'></i>&nbsp;" + formatTime(file.eta);
+                s = '<i class="icon-time"></i>&nbsp;' + formatTime(file.eta);
             else
                 s = msg;
 

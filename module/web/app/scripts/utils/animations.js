@@ -1,4 +1,5 @@
 define(['jquery', 'underscore', 'transit'], function(jQuery, _) {
+    'use strict';
 
     // Adds an element and computes its height, which is saved as data attribute
     // Important function to have slide animations

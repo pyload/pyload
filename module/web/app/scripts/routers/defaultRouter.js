@@ -1,8 +1,9 @@
-define(['jquery','backbone','views/headerView'], function($, Backbone, HeaderView){
+define(['jquery', 'backbone', 'views/headerView'], function($, Backbone, HeaderView) {
+    'use strict';
 
     var Router = Backbone.Router.extend({
 
-        initialize: function(){
+        initialize: function() {
             Backbone.history.start();
         },
 
@@ -14,7 +15,7 @@ define(['jquery','backbone','views/headerView'], function($, Backbone, HeaderVie
 
         },
 
-        'home': function(){
+        'home': function() {
             // Instantiating mainView and anotherView instances
             var headerView = new HeaderView();
 

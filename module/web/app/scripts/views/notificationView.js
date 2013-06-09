@@ -63,9 +63,9 @@ define(['jquery', 'backbone', 'underscore', 'app', 'collections/InteractionList'
             openQuery: function() {
                 var self = this;
 
-                _.requireOnce(['views/queryModal'], function(modalView) {
+                _.requireOnce(['views/queryModal'], function(ModalView) {
                     if (self.modal === null) {
-                        self.modal = new modalView();
+                        self.modal = new ModalView();
                         self.modal.parent = self;
                     }
 

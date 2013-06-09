@@ -1,7 +1,7 @@
 define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'collections/ProgressList',
     'views/progressView', 'views/notificationView', 'helpers/formatSize', 'hbs!tpl/header/layout',
     'hbs!tpl/header/status', 'hbs!tpl/header/progressbar' , 'flot'],
-    function($, _, Backbone, App, ServerStatus, ProgressList, ProgressView, notificationView, formatSize,
+    function($, _, Backbone, App, ServerStatus, ProgressList, ProgressView, NotificationView, formatSize,
              template, templateStatus, templateHeader) {
         'use strict';
         // Renders the header with all information
@@ -41,7 +41,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
 
             initialize: function() {
                 var self = this;
-                this.notificationView = new notificationView();
+                this.notificationView = new NotificationView();
 
                 this.status = new ServerStatus();
                 this.listenTo(this.status, 'change', this.update);
@@ -60,7 +60,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 ws.onmessage = _.bind(this.onData, this);
                 ws.onerror = function(error) {
                     console.log(error);
-                    alert("WebSocket error" + error);
+                    alert('WebSocket error' + error);
                 };
 
                 this.ws = ws;
@@ -79,16 +79,16 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                     series: {
                         lines: { show: true, lineWidth: 2 },
                         shadowSize: 0,
-                        color: "#fee247"
+                        color: '#fee247'
                     },
                     xaxis: { ticks: [] },
                     yaxis: { ticks: [], min: 1, autoscaleMargin: 0.1, tickFormatter: function(data) {
                         return formatSize(data * 1024);
-                    }, position: "right" },
+                    }, position: 'right' },
                     grid: {
                         show: true,
 //            borderColor: "#757575",
-                        borderColor: "white",
+                        borderColor: 'white',
                         borderWidth: 1,
                         labelMargin: 0,
                         axisMargin: 0,
@@ -152,9 +152,9 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
 
             open_grabber: function() {
                 var self = this;
-                _.requireOnce(['views/linkGrabberModal'], function(modalView) {
+                _.requireOnce(['views/linkGrabberModal'], function(ModalView) {
                     if (self.grabber === null)
-                        self.grabber = new modalView();
+                        self.grabber = new ModalView();
 
                     self.grabber.show();
                 });
@@ -164,7 +164,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 var data = JSON.parse(evt.data);
                 if (data === null) return;
 
-                if (data['@class'] === "ServerStatus") {
+                if (data['@class'] === 'ServerStatus') {
                     // TODO: load interaction when none available
                     this.status.set(data);
 
@@ -210,7 +210,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                         if (file) {
                             file.set({
                                 progress: prog.getPercent(),
-                                eta: prog.get('eta'),
+                                eta: prog.get('eta')
                             }, {silent: true});
 
                             file.trigger('change:progress');

@@ -1,11 +1,12 @@
-define(['jquery','backbone', 'underscore'], function($, Backbone, _){
+define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
+    'use strict';
 
     return Backbone.Router.extend({
 
-        initialize: function(){
-            _.bindAll(this, "changePage");
+        initialize: function() {
+            _.bindAll(this, 'changePage');
 
-            this.$el = $("#content");
+            this.$el = $('#content');
 
             // Tells Backbone to start watching for hashchange events
             Backbone.history.start();
@@ -20,27 +21,27 @@ define(['jquery','backbone', 'underscore'], function($, Backbone, _){
 
         },
 
-        'home': function(){
+        'home': function() {
 
             var self = this;
 
-            $("#p1").fastClick(function(){
-                self.changePage($("<div class='page' style='background-color: #9acd32;'><h1>Page 1</h1><br>some content<br>sdfdsf<br>sdffg<h3>oiuzz</h3></div>"));
+            $('#p1').fastClick(function() {
+                self.changePage($('<div class=\'page\' style=\'background-color: #9acd32;\'><h1>Page 1</h1><br>some content<br>sdfdsf<br>sdffg<h3>oiuzz</h3></div>'));
             });
 
-            $("#p2").bind("click", function(){
-                self.changePage($("<div class='page' style='background-color: blue;'><h1>Page 2</h1><br>some content<br>sdfdsf<br><h2>sdfsdf</h2>sdffg</div>"));
+            $('#p2').bind('click', function() {
+                self.changePage($('<div class=\'page\' style=\'background-color: blue;\'><h1>Page 2</h1><br>some content<br>sdfdsf<br><h2>sdfsdf</h2>sdffg</div>'));
             });
 
         },
 
-        changePage: function(content){
+        changePage: function(content) {
 
-            var oldpage = this.$el.find(".page");
-            content.css({x: "100%"});
+            var oldpage = this.$el.find('.page');
+            content.css({x: '100%'});
             this.$el.append(content);
-            content.transition({x:0}, function(){
-                window.setTimeout(function(){
+            content.transition({x: 0}, function() {
+                window.setTimeout(function() {
                     oldpage.remove();
                 }, 400);
             });

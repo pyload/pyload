@@ -50,10 +50,10 @@ define([
     App.apiRequest = function(method, data, options) {
         options || (options = {});
         options.url = App.apiUrl('api/' + method);
-        options.dataType = "json";
+        options.dataType = 'json';
 
         if (data) {
-            options.type = "POST";
+            options.type = 'POST';
             options.data = {};
             // Convert arguments to json
             _.keys(data).map(function(key) {

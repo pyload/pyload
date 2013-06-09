@@ -1,4 +1,5 @@
 define(['jquery', 'backbone', 'underscore', 'models/File'], function($, Backbone, _, File) {
+    'use strict';
 
     return Backbone.Collection.extend({
 

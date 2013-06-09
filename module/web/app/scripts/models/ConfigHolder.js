@@ -1,12 +1,13 @@
 define(['jquery', 'backbone', 'underscore', 'app', './ConfigItem'],
     function($, Backbone, _, App, ConfigItem) {
+        'use strict';
 
         return Backbone.Model.extend({
 
             defaults: {
-                name: "",
-                label: "",
-                description: "",
+                name: '',
+                label: '',
+                description: '',
                 long_description: null,
                 // simple list but no collection
                 items: null,

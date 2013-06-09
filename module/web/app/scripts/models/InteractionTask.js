@@ -1,5 +1,6 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
     function($, Backbone, _, App, Api) {
+        'use strict';
 
         return Backbone.Model.extend({
 
@@ -10,11 +11,11 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
                 type: null,
                 input: null,
                 default_value: null,
-                title: "",
-                description: "",
-                plugin: "",
+                title: '',
+                description: '',
+                plugin: '',
                 // additional attributes
-                result: ""
+                result: ''
             },
 
             // Model Constructor

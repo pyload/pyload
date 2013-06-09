@@ -1,4 +1,5 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($, Backbone, _, App, Api) {
+    'use strict';
 
     var Finished = [Api.DownloadStatus.Finished, Api.DownloadStatus.Skipped];
     var Failed = [Api.DownloadStatus.Failed, Api.DownloadStatus.Aborted, Api.DownloadStatus.TempOffline, Api.DownloadStatus.Offline];
@@ -46,7 +47,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($
             options = App.apiRequest(
                 'deleteFiles/[' + this.get('fid') + ']',
                 null, options);
-            options.method = "post";
+            options.method = 'post';
 
             return Backbone.Model.prototype.destroy.call(this, options);
         },

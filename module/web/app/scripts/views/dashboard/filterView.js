@@ -1,4 +1,5 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Package', 'hbs!tpl/dashboard/actionbar'],
+    /*jslint -W040: false*/
     function($, Backbone, _, App, Api, Package, template) {
         'use strict';
 

@@ -1,5 +1,6 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'collections/FileList', 'require'],
     function($, Backbone, _, App, FileList, require) {
+        'use strict';
 
         return Backbone.Model.extend({
 
@@ -8,12 +9,12 @@ define(['jquery', 'backbone', 'underscore', 'app', 'collections/FileList', 'requ
             defaults: {
                 pid: -1,
                 name: null,
-                folder: "",
+                folder: '',
                 root: -1,
                 owner: -1,
-                site: "",
-                comment: "",
-                password: "",
+                site: '',
+                comment: '',
+                password: '',
                 added: -1,
                 tags: null,
                 status: -1,

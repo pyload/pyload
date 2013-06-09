@@ -1,12 +1,13 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
     function($, Backbone, _, App, Api) {
+        'use strict';
 
         return Backbone.Model.extend({
 
             defaults: {
-                name: "",
-                label: "",
-                description: "",
+                name: '',
+                label: '',
+                description: '',
                 input: null,
                 default_value: null,
                 value: null,

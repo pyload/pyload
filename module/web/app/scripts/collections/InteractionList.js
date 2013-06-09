@@ -1,5 +1,6 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'models/InteractionTask'],
     function($, Backbone, _, App, InteractionTask) {
+        'use strict';
 
         return Backbone.Collection.extend({
 
