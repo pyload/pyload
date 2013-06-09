@@ -7,8 +7,8 @@ import requests
 
 import json
 
-from module.remote.apitypes import Forbidden
-from module.remote.JSONClient import JSONClient
+from pyload.remote.apitypes import Forbidden
+from pyload.remote.JSONClient import JSONClient
 
 
 class TestJSONBackend:

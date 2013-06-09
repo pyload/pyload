@@ -8,8 +8,8 @@ from logging import log, DEBUG
 from helper.Stubs import Core
 from helper.PluginTester import PluginTester
 
-from module.plugins.Base import Fail
-from module.utils import accumulate, to_int
+from pyload.plugins.Base import Fail
+from pyload.utils import accumulate, to_int
 
 class CrypterPluginTester(PluginTester):
     @nottest

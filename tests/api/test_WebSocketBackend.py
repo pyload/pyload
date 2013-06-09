@@ -2,8 +2,8 @@
 
 from nose.tools import raises
 
-from module.remote.apitypes import Forbidden
-from module.remote.WSClient import WSClient
+from pyload.remote.apitypes import Forbidden
+from pyload.remote.WSClient import WSClient
 
 class TestWebSocketBackend:
 

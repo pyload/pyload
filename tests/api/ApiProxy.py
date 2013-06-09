@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from module.remote.apitypes_debug import classes, methods
+from pyload.remote.apitypes_debug import classes, methods
 
 class ApiProxy:
     """ Proxy that does type checking on the api """
@@ -62,7 +62,7 @@ class ApiProxy:
 
 if __name__ == "__main__":
 
-    from module.remote.JSONClient import JSONClient
+    from pyload.remote.JSONClient import JSONClient
 
     api = ApiProxy(JSONClient(), "User", "test")
     api.getServerVersion()

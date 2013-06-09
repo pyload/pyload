@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.remote.JSONClient import JSONClient
-from module.remote.WSClient import WSClient
+from pyload.remote.JSONClient import JSONClient
+from pyload.remote.WSClient import WSClient
 
 from ApiProxy import ApiProxy
 

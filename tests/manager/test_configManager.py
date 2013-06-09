@@ -7,10 +7,10 @@ from nose.tools import raises
 
 from tests.helper.Stubs import Core
 
-from module.Api import InvalidConfigSection
-from module.database import DatabaseBackend
-from module.config.ConfigParser import ConfigParser
-from module.config.ConfigManager import ConfigManager
+from pyload.Api import InvalidConfigSection
+from pyload.database import DatabaseBackend
+from pyload.config.ConfigParser import ConfigParser
+from pyload.config.ConfigManager import ConfigManager
 
 adminUser = None
 normalUser = 1

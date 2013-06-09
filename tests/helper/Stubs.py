@@ -6,19 +6,19 @@ from time import strftime
 from traceback import format_exc
 from collections import defaultdict
 
-sys.path.append(abspath(join(dirname(__file__), "..", "..", "module", "lib")))
+sys.path.append(abspath(join(dirname(__file__), "..", "..", "pyload", "lib")))
 sys.path.append(abspath(join(dirname(__file__), "..", "..")))
 
 import __builtin__
 
-from module.Api import Role
-from module.datatypes.User import User
-from module.datatypes.PyPackage import PyPackage
-from module.threads.BaseThread import BaseThread
-from module.config.ConfigParser import ConfigParser
-from module.network.RequestFactory import RequestFactory
-from module.PluginManager import PluginManager
-from module.utils.JsEngine import JsEngine
+from pyload.Api import Role
+from pyload.datatypes.User import User
+from pyload.datatypes.PyPackage import PyPackage
+from pyload.threads.BaseThread import BaseThread
+from pyload.config.ConfigParser import ConfigParser
+from pyload.network.RequestFactory import RequestFactory
+from pyload.PluginManager import PluginManager
+from pyload.utils.JsEngine import JsEngine
 
 from logging import log, DEBUG, INFO, WARN, ERROR
 

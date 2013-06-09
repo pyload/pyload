@@ -6,7 +6,7 @@ PYTHON=python
 which python2 > /dev/null && PYTHON=python2
 
 touch pyload.out
-$PYTHON pyLoadCore.py -d --configdir=tests/config > pyload.out 2> pyload.err &
+$PYTHON pyload.py -d --configdir=tests/config > pyload.out 2> pyload.err &
 
 for i in {1..30}; do
     grep 8001 pyload.out > /dev/null && echo "pyLoad started" && break

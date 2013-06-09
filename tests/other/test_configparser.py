@@ -4,7 +4,7 @@ from nose.tools import raises
 
 from tests.helper.Stubs import Core
 
-from module.config.ConfigParser import ConfigParser
+from pyload.config.ConfigParser import ConfigParser
 
 class TestConfigParser():
 

@@ -15,8 +15,8 @@ from json import loads
 
 from Stubs import Thread, Core, noop
 
-from module.network.RequestFactory import getRequest, getURL
-from module.plugins.Hoster import Hoster, Abort, Fail
+from pyload.network.RequestFactory import getRequest, getURL
+from pyload.plugins.Hoster import Hoster, Abort, Fail
 
 def _wait(self):
     """ waits the time previously set """

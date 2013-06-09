@@ -32,7 +32,6 @@ PROJECT_DIR = path(__file__).dirname()
 sys.path.append(PROJECT_DIR)
 
 options = environment.options
-path('pyload').mkdir()
 
 extradeps = []
 if sys.version_info <= (2, 5):
@@ -68,7 +67,7 @@ setup(
     #setup_requires=["setuptools_hg"],
     test_suite='nose.collector',
     tests_require=['nose', 'websocket-client >= 0.8.0', 'requests >= 1.2.2'],
-   scripts=['pyload.py', 'pyload-cli.py'],
+    scripts=['pyload.py', 'pyload-cli.py'],
     # entry_points={
     #     'console_scripts': [
     #         'pyload = pyload:main',
@@ -109,11 +108,12 @@ options(
 xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad",
          "--package-version=%s" % options.version, "--msgid-bugs-address='bugs@pyload.org'"]
 
+
 @task
 @needs('cog')
 def html():
     """Build html documentation"""
-    module = path("docs") / "module"
+    module = path("docs") / "pyload"
     module.rmtree()
     call_task('paver.doctools.html')
 
@@ -131,7 +131,7 @@ def sdist():
 def apitypes(options):
     """ Generate data types stubs """
 
-    outdir = PROJECT_DIR / "module" / "remote"
+    outdir = PROJECT_DIR / "pyload" / "remote"
 
     if (outdir / "gen-py").exists():
         (outdir / "gen-py").rmtree()
@@ -147,10 +147,10 @@ def apitypes(options):
     (outdir / "gen-py").move(outdir / "thriftgen")
 
     #create light ttypes
-    from module.remote.create_apitypes import main
+    from pyload.remote.create_apitypes import main
 
     main()
-    from module.remote.create_jstypes import main
+    from pyload.remote.create_jstypes import main
 
     main()
 
@@ -162,13 +162,15 @@ def webapp():
     # npm install
     # bower install
 
+
 @task
 def generate_locale():
     """ Generates localisation files """
+    # TODO restructure, many references are outdated
 
     EXCLUDE = ["BeautifulSoup.py", "module/gui", "module/cli", "web/locale", "web/ajax", "web/cnl", "web/pyload",
                "setup.py"]
-    makepot("core", path("module"), EXCLUDE, "./pyLoadCore.py\n")
+    makepot("core", path("pyload"), EXCLUDE, "./pyLoadCore.py\n")
 
     makepot("cli", path("module") / "cli", [], includes="./pyLoadCli.py\n")
     makepot("setup", "", [], includes="./module/setup.py\n")
@@ -227,14 +229,6 @@ def clean_env():
     env = path(options.virtualenv.dir)
     if env.exists():
         env.rmtree()
-
-
-@task
-@needs('generate_setup', 'get_source', 'virtualenv')
-def env_install():
-    """Install pyLoad into the virtualenv"""
-    venv = options.virtualenv
-    call([path(venv.dir) / "bin" / "easy_install", "."])
 
 
 @task

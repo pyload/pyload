@@ -3,8 +3,8 @@
 from tests.helper.Stubs import Core
 from tests.helper.BenchmarkTest import BenchmarkTest
 
-from module.Api import DownloadState, PackageInfo, FileInfo
-from module.database import DatabaseBackend
+from pyload.Api import DownloadState, PackageInfo, FileInfo
+from pyload.database import DatabaseBackend
 
 # disable asyncronous queries
 DatabaseBackend.async = DatabaseBackend.queue

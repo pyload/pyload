@@ -4,8 +4,8 @@ from unittest import TestCase
 
 from tests.helper.Stubs import Core
 
-from module.Api import InputType, Interaction
-from module.interaction.InteractionManager import InteractionManager
+from pyload.Api import InputType, Interaction
+from pyload.interaction.InteractionManager import InteractionManager
 
 
 class TestInteractionManager(TestCase):

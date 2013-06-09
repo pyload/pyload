@@ -5,12 +5,12 @@ from random import choice
 from tests.helper.Stubs import Core
 from tests.helper.BenchmarkTest import BenchmarkTest
 
-from module.database import DatabaseBackend
+from pyload.database import DatabaseBackend
 # disable asyncronous queries
 DatabaseBackend.async = DatabaseBackend.queue
 
-from module.Api import DownloadState
-from module.FileManager import FileManager
+from pyload.Api import DownloadState
+from pyload.FileManager import FileManager
 
 
 class TestFileManager(BenchmarkTest):
