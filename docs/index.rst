@@ -37,7 +37,7 @@ Contents
 
    module_overview.rst
 
-.. currentmodule:: module
+.. currentmodule:: pyload
 
 .. rubric:: Footnotes
 

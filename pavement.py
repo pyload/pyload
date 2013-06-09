@@ -26,9 +26,7 @@ path.fnmatch = new_fnmatch
 
 import sys
 import re
-from urllib import urlretrieve
 from subprocess import call, Popen
-from zipfile import ZipFile
 
 PROJECT_DIR = path(__file__).dirname()
 sys.path.append(PROJECT_DIR)
@@ -59,7 +57,7 @@ setup(
     include_package_data=True,
     exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
-    install_requires=['pycurl', 'jinja2 >= 2.6', 'Beaker >= 1.6'] + extradeps,
+    install_requires=['pycurl', 'Beaker >= 1.6'] + extradeps,
     extras_require={
         'SSL': ["pyOpenSSL"],
         'DLC': ['pycrypto'],
@@ -70,12 +68,12 @@ setup(
     #setup_requires=["setuptools_hg"],
     test_suite='nose.collector',
     tests_require=['nose', 'websocket-client >= 0.8.0', 'requests >= 1.2.2'],
-#    scripts=['pyload', 'pyload-cli'],
-    entry_points={
-        'console_scripts': [
-            'pyload = pyload:main',
-            'pyload-cli = pyload_cli:main' #TODO fix
-        ]},
+   scripts=['pyload.py', 'pyload-cli.py'],
+    # entry_points={
+    #     'console_scripts': [
+    #         'pyload = pyload:main',
+    #         'pyload-cli = pyload_cli:main' #TODO fix
+    #     ]},
     zip_safe=False,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -94,11 +92,6 @@ options(
         builddir="_build",
         sourcedir=""
     ),
-    get_source=Bunch(
-        src="https://bitbucket.org/spoob/pyload/get/tip.zip",
-        rev=None,
-        clean=False
-    ),
     apitypes=Bunch(
         path="thrift",
     ),
@@ -116,7 +109,6 @@ options(
 xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad",
          "--package-version=%s" % options.version, "--msgid-bugs-address='bugs@pyload.org'"]
 
-
 @task
 @needs('cog')
 def html():
@@ -127,50 +119,7 @@ def html():
 
 
 @task
-@cmdopts([
-    ('src=', 's', 'Url to source'),
-    ('rev=', 'r', "HG revision"),
-    ("clean", 'c', 'Delete old source folder')
-])
-def get_source(options):
-    """ Downloads pyload source from bitbucket tip or given rev"""
-    if options.rev: options.url = "https://bitbucket.org/spoob/pyload/get/%s.zip" % options.rev
-
-    pyload = path("pyload")
-
-    if len(pyload.listdir()) and not options.clean:
-        return
-    elif pyload.exists():
-        pyload.rmtree()
-
-    urlretrieve(options.src, "pyload_src.zip")
-    zip = ZipFile("pyload_src.zip")
-    zip.extractall()
-    path("pyload_src.zip").remove()
-
-    folder = [x for x in path(".").dirs() if x.name.startswith("spoob-pyload-")][0]
-    folder.move(pyload)
-
-    change_mode(pyload, 0644)
-    change_mode(pyload, 0755, folder=True)
-
-    for file in pyload.files():
-        if file.name.endswith(".py"):
-            file.chmod(0755)
-
-    (pyload / ".hgtags").remove()
-    (pyload / ".hgignore").remove()
-    #(pyload / "docs").rmtree()
-
-    f = open(pyload / "__init__.py", "wb")
-    f.close()
-
-    #options.setup.packages = find_packages()
-    #options.setup.package_data = find_package_data()
-
-
-@task
-@needs('clean', 'generate_setup', 'get_source', 'setuptools.command.sdist')
+@needs('clean', 'generate_setup', 'webapp', 'setuptools.command.sdist')
 def sdist():
     """ Build source code package with distutils """
 

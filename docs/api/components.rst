@@ -9,12 +9,12 @@ of the available components listed by topic can be found below.
 .. autosummary::
     :toctree: module
 
-    module.api.CoreApi.CoreApi
-    module.api.ConfigApi.ConfigApi
-    module.api.DownloadPreparingApi.DownloadPreparingApi
-    module.api.DownloadApi.DownloadApi
-    module.api.FileApi.FileApi
-    module.api.CollectorApi.CollectorApi
-    module.api.AccountApi.AccountApi
-    module.api.UserInteractionApi.UserInteractionApi
-    module.api.AddonApi.AddonApi
+    pyload.api.CoreApi.CoreApi
+    pyload.api.ConfigApi.ConfigApi
+    pyload.api.DownloadPreparingApi.DownloadPreparingApi
+    pyload.api.DownloadApi.DownloadApi
+    pyload.api.FileApi.FileApi
+    pyload.api.CollectorApi.CollectorApi
+    pyload.api.AccountApi.AccountApi
+    pyload.api.UserInteractionApi.UserInteractionApi
+    pyload.api.AddonApi.AddonApi

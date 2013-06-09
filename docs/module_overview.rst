@@ -5,19 +5,19 @@ Module Overview
 A little selection of most important modules in pyLoad.
 
 .. autosummary::
-   :toctree: module
+   :toctree: pyload
 
-   module.Api.Api
-   module.plugins.Base.Base
-   module.plugins.Hoster.Hoster
-   module.plugins.internal.SimpleHoster.SimpleHoster
-   module.plugins.Crypter.Crypter
-   module.plugins.internal.SimpleCrypter.SimpleCrypter
-   module.plugins.Addon.Addon
-   module.plugins.Account.Account
-   module.plugins.MultiHoster.MultiHoster
-   module.AddonManager.AddonManager
-   module.interaction.EventManager.EventManager
-   module.interaction.InteractionManager.InteractionManager
-   module.interaction.InteractionTask.InteractionTask
-   module.remote.ttypes
+   pyload.Api.Api
+   pyload.plugins.Base.Base
+   pyload.plugins.Hoster.Hoster
+   pyload.plugins.internal.SimpleHoster.SimpleHoster
+   pyload.plugins.Crypter.Crypter
+   pyload.plugins.internal.SimpleCrypter.SimpleCrypter
+   pyload.plugins.Addon.Addon
+   pyload.plugins.Account.Account
+   pyload.plugins.MultiHoster.MultiHoster
+   pyload.AddonManager.AddonManager
+   pyload.interaction.EventManager.EventManager
+   pyload.interaction.InteractionManager.InteractionManager
+   pyload.interaction.InteractionTask.InteractionTask
+   pyload.remote.ttypes

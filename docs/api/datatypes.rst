@@ -4,12 +4,12 @@
 Datatype Definition
 *******************
 
-Below you find a copy of :file:`module/remote/thriftbackend/pyload.thrift`, which is used to generate the data structs
+Below you find a copy of :file:`pyload/remote/thriftbackend/pyload.thrift`, which is used to generate the data structs
 for various languages. It is also a good overview of avaible methods and return data.
 
 .. code-block:: c
 
-     .. [[[cog cog.out(open('module/remote/pyload.thrift', 'rb').read()) ]]]
+     .. [[[cog cog.out(open('pyload/remote/pyload.thrift', 'rb').read()) ]]]
      namespace java org.pyload.thrift
 
      typedef i32 FileID

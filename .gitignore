@@ -47,14 +47,15 @@ Downloads/*
 container/*
 Logs/*
 docs/module/
+docs/pyload/
 docs/_build
-module/plugins/container/DLC_*.py
+pyload/plugins/container/DLC_*.py
 failed_links.txt
 links.txt
 ssl.crt
 ssl.key
 cert.pem
-module/web/pyload.db
+pyload/web/pyload.db
 *.prefs
 *.po
 *.orig
