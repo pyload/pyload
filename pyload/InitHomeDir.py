@@ -36,7 +36,6 @@ if 'pyload' in sys.modules:
     if abs_pyload != rel_pyload:
         sys.modules['pyload'].__path__.insert(0, abs_pyload)
 
-
 sys.path.append(join(pypath, "pyload", "lib"))
 
 homedir = ""

@@ -19,10 +19,9 @@
 #   @version: v0.5.0
 ###############################################################################
 
-CURRENT_VERSION = '0.4.9.9-dev'
+from pyload import __version__ as CURRENT_VERSION
 
 import __builtin__
-
 
 from getopt import getopt, GetoptError
 import logging
@@ -42,6 +41,7 @@ import subprocess
 subprocess.__doc__ = None # the module with the largest doc we are using
 
 import InitHomeDir
+
 from AccountManager import AccountManager
 from config.ConfigParser import ConfigParser
 from config.ConfigManager import ConfigManager
@@ -645,7 +645,7 @@ def deamon():
     pyload_core = Core()
     pyload_core.start()
 
-
+# And so it begins...
 def main():
     #change name to 'pyLoadCore'
     #from module.lib.rename_process import renameProcess
@@ -662,6 +662,6 @@ def main():
             pyload_core.removeLogger()
             _exit(1)
 
-# And so it begins...
+
 if __name__ == "__main__":
-    main()
+    print "This file can not be started directly."
