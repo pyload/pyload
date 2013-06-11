@@ -35,3 +35,11 @@
     font-weight: normal;
     font-style: normal;
 }
+
+@font-face {
+  font-family: 'Abel';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Abel'), local('Abel-Regular'), url(../fonts/Abel-Regular.woff) format('woff');
+  src: url(../fonts/Abel-Regular.ttf) format('truetype');
+}

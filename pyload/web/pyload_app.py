@@ -17,26 +17,13 @@
     @author: RaNaN
 """
 import time
-from os.path import join, exists
+from os.path import join
 
 from bottle import route, static_file, response, redirect
 
-from webinterface import PROJECT_DIR, SETUP, DEVELOP
+from webinterface import PROJECT_DIR, SETUP, APP_PATH, UNAVAILALBE
 
 from utils import login_required
-
-##########
-# Helper
-##########
-
-app_path = "app"
-UNAVAILALBE = False
-
-# webUI build is available
-if exists(join(PROJECT_DIR, "dist", "index.html")) and not DEVELOP:
-    app_path = "dist"
-elif not exists(join(PROJECT_DIR, "app", "components")) or not exists(join(PROJECT_DIR, ".tmp")):
-    UNAVAILALBE = True
 
 
 @route('/icons/<path:path>')
@@ -70,9 +57,9 @@ def server_static(path):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 7))
     response.headers['Cache-control'] = "public"
-    resp = static_file(path, root=join(PROJECT_DIR, app_path))
+    resp = static_file(path, root=join(PROJECT_DIR, APP_PATH))
     # Also serve from .tmp folder in dev mode
-    if resp.status_code == 404 and app_path == "app":
+    if resp.status_code == 404 and APP_PATH == "app":
         return static_file(path, root=join(PROJECT_DIR, '.tmp'))
 
     return resp

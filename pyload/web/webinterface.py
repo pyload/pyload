@@ -1,25 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
+###############################################################################
+#   Copyright(c) 2008-2013 pyLoad Team
+#   http://www.pyload.org
+#
+#   This file is part of pyLoad.
+#   pyLoad is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN
+###############################################################################
 
 import sys
 
-from os.path import join, abspath, dirname
+from os.path import join, abspath, dirname, exists
 
 PROJECT_DIR = abspath(dirname(__file__))
 PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
@@ -45,18 +44,25 @@ else:
     config = ServerThread.core.config
 
 from pyload.utils.JsEngine import JsEngine
-
 JS = JsEngine()
 
 TEMPLATE = config.get('webinterface', 'template')
 DL_ROOT = config.get('general', 'download_folder')
 PREFIX = config.get('webinterface', 'prefix')
-DEVELOP = config.get('webinterface', 'develop')
 
 if PREFIX:
     PREFIX = PREFIX.rstrip("/")
     if PREFIX and not PREFIX.startswith("/"):
         PREFIX = "/" + PREFIX
+
+APP_PATH = "dist"
+UNAVAILALBE = False
+
+# webUI build is available
+if exists(join(PROJECT_DIR, "app", "components")) and exists(join(PROJECT_DIR, ".tmp")) and config.get('webinterface', 'develop'):
+    APP_PATH = "app"
+elif not exists(join(PROJECT_DIR, "dist", "index.html")):
+    UNAVAILALBE = True
 
 DEBUG = config.get("general", "debug_mode") or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)

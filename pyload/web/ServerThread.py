@@ -11,6 +11,7 @@ core = None
 setup = None
 log = logging.getLogger("log")
 
+
 class WebServer(threading.Thread):
     def __init__(self, pycore=None, pysetup=None):
         global core, setup
@@ -40,12 +41,18 @@ class WebServer(threading.Thread):
     def run(self):
         self.running = True
         import webinterface
+
         global webinterface
 
         if self.https:
             if not exists(self.cert) or not exists(self.key):
                 log.warning(_("SSL certificates not found."))
                 self.https = False
+
+        if webinterface.UNAVAILALBE:
+            log.warning(_("WebUI built is not available"))
+        elif webinterface.APP_PATH == "app":
+            log.info(_("Running webUI in development mode"))
 
         prefer = None
 
@@ -128,9 +135,9 @@ class WebServer(threading.Thread):
         else: # server is just a string
             name = server
 
-        log.info(_("Starting %(name)s webserver: %(host)s:%(port)d") % {"name": name, "host": self.host, "port": self.port})
+        log.info(
+            _("Starting %(name)s webserver: %(host)s:%(port)d") % {"name": name, "host": self.host, "port": self.port})
         webinterface.run_server(host=self.host, port=self.port, server=server)
-
 
 
     # check if an error was raised for n seconds
