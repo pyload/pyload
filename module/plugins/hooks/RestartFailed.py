@@ -4,7 +4,7 @@ from module.plugins.Hook import Hook
 
 class RestartFailed(Hook):
     __name__ = "RestartFailed"
-    __version__ = "1.51"
+    __version__ = "1.52"
     __description__ = "restartedFailed Packages after defined time"
     __config__ = [("activated", "bool", "Activated" , "False"),
                   ("interval", "int", "Interval in Minutes", "15") ]
@@ -21,11 +21,11 @@ class RestartFailed(Hook):
         self.info["running"] = True
         self.logInfo("loaded")
         self.interval = self.getConfig("interval") * 60
-        self.logDebug("interval is set to %s", self.interval)
+        self.logDebug("interval is set to %s" % self.interval)
 
     def periodical(self):
         self.logDebug("periodical called")
         if self.getConfig("interval") * 60 != self.interval:
             self.interval = self.getConfig("interval") * 60
-            self.logDebug("interval is set to %s", self.interval)
+            self.logDebug("interval is set to %s" % self.interval)
         self.core.api.restartFailed()
