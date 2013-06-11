@@ -76,9 +76,6 @@ class YoutubeCom(Hoster):
     def process(self, pyfile):
         html = self.load(pyfile.url, decode=True)
 
-        if '<h1 id="unavailable-message" class="message">' in html:
-            self.offline()
-
         if "We have been receiving a large volume of requests from your network." in html:
             self.tempOffline()
 
@@ -95,13 +92,16 @@ class YoutubeCom(Hoster):
         if not desired_fmt:
             desired_fmt = quality.get(self.getConfig("quality"), 18)
 
-        #parse available streams
-        streams = re.search(r'"url_encoded_fmt_stream_map": "(.*?)",', html).group(1)
-        streams = [x.split('\u0026') for x in streams.split(',')]
-        streams = [dict((y.split('=',1)) for y in x) for x in streams]
-        streams = [(int(x['itag']), "%s&signature=%s" % (unquote(x['url']), x['sig'])) for x in streams]
-        #self.logDebug("Found links: %s" % streams)
-        self.logDebug("AVAILABLE STREAMS: %s" % [x[0] for x in streams])
+        try:
+            #parse available streams
+            streams = re.search(r'"url_encoded_fmt_stream_map": "(.*?)",', html).group(1)
+            streams = [x.split('\u0026') for x in streams.split(',')]
+            streams = [dict((y.split('=',1)) for y in x) for x in streams]
+            streams = [(int(x['itag']), "%s&signature=%s" % (unquote(x['url']), x['sig'])) for x in streams]
+            #self.logDebug("Found links: %s" % streams)
+            self.logDebug("AVAILABLE STREAMS: %s" % [x[0] for x in streams])
+        except AttributeError:
+            self.offline()
 
         #build dictionary of supported itags (3D/2D)
         allowed = lambda x: self.getConfig(self.formats[x][0])
