@@ -30,14 +30,15 @@ from module.plugins.Hook import Hook
 
 class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __description__ = """send captchas to 9kw.eu"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", True),
                   ("https", "bool", "Enable HTTPS", "False"),
-                  ("confirm", "bool", "Confirm Captcha", "False"),
-                  ("captchaperhour", "int", "Captcha per hour", "9999"),
-                  ("prio", "int", "Prio (1-10)", "0"),
+                  ("confirm", "bool", "Confirm Captcha (Cost +6)", "False"),
+                  ("captchaperhour", "int", "Captcha per hour (max. 9999)", "9999"),
+                  ("prio", "int", "Prio 1-10 (Cost +1-10)", "0"),
+                  ("timeout", "int", "Timeout (max. 300)", "220"),                  
                   ("passkey", "password", "API key", ""),]
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
@@ -76,7 +77,7 @@ class Captcha9kw(Hook):
                           "prio": self.getConfig("prio"),
                           "confirm": self.getConfig("confirm"),
                           "captchaperhour": self.getConfig("captchaperhour"),
-                          "maxtimeout": "220",
+                          "maxtimeout": self.timeout,
                           "pyload": "1", 
                           "source": "pyload", 
                           "base64": "1", 
@@ -87,13 +88,13 @@ class Captcha9kw(Hook):
         if response.isdigit():
             self.logInfo(_("NewCaptchaID from upload: %s : %s" % (response,task.captchaFile)))
 
-            for i in range(1, 220, 1): 
+            for i in range(1, 100, 1): 
                 response2 = getURL(self.API_URL, get = { "apikey": self.getConfig("passkey"), "id": response,"pyload": "1","source": "pyload", "action": "usercaptchacorrectdata" })
 
                 if(response2 != ""):
                     break;
 
-                time.sleep(1)
+                time.sleep(3)
 
             result = response2
             task.data["ticket"] = response
@@ -115,7 +116,7 @@ class Captcha9kw(Hook):
 
         if self.getCredits() > 0:
             task.handler.append(self)
-            task.setWaiting(220)
+            task.setWaiting(self.timeout)
             start_new_thread(self.processCaptcha, (task,))
 
         else:
