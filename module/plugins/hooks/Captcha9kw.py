@@ -77,7 +77,7 @@ class Captcha9kw(Hook):
                           "prio": self.getConfig("prio"),
                           "confirm": self.getConfig("confirm"),
                           "captchaperhour": self.getConfig("captchaperhour"),
-                          "maxtimeout": self.timeout,
+                          "maxtimeout": self.getConfig("timeout"),
                           "pyload": "1", 
                           "source": "pyload", 
                           "base64": "1", 
@@ -116,7 +116,7 @@ class Captcha9kw(Hook):
 
         if self.getCredits() > 0:
             task.handler.append(self)
-            task.setWaiting(self.timeout)
+            task.setWaiting(self.getConfig("timeout"))
             start_new_thread(self.processCaptcha, (task,))
 
         else:
