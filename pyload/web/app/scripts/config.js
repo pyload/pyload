@@ -17,8 +17,7 @@ require.config({
         underscore: '../components/underscore/underscore',
         backbone: '../components/backbone/backbone',
         marionette: '../components/backbone.marionette/lib/backbone.marionette',
-//        handlebars: '../components/handlebars.js/dist/handlebars',
-        handlebars: 'vendor/Handlebars-1.0rc1',
+        handlebars: '../components/handlebars.js/dist/handlebars',
         jed: '../components/jed/jed',
 
         // TODO: Two hbs dependencies could be replaced
@@ -26,7 +25,7 @@ require.config({
         json2: '../components/require-handlebars-plugin/hbs/json2',
 
         // Plugins
-        text: '../components/requirejs-text/text',
+//        text: '../components/requirejs-text/text',
         hbs: '../components/require-handlebars-plugin/hbs',
 
         // Shortcut
@@ -58,9 +57,9 @@ require.config({
         },
 
         marionette: ['backbone'],
-//        handlebars: {
-//            exports: 'Handlebars'
-//        },
+        handlebars: {
+            exports: 'Handlebars'
+        },
 
         flot: ['jquery'],
         transit: ['jquery'],

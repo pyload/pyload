@@ -1,10 +1,10 @@
-<%= if selected %>
+{{#if selected }}
     <i class="icon-check select"></i>
-    <% else %>
+    {{ else }}
     <i class="icon-check-empty select"></i>
-    <%/if%>
+    {{/if}}
     <span class="package-name">
-    <% name %>
+    {{ name }}
     </span>
 
     <div class="package-frame">
@@ -16,11 +16,11 @@
             <i class="icon-plus-sign btn-move" data-toggle="tooltip" title="Move files here"></i>
             <i class="icon-pause" data-toggle="tooltip" title="Pause Package"></i>
             <i class="icon-refresh" data-toggle="tooltip" title="Restart Package"></i>
-            <%= if shared %>
+            {{#if shared }}
             <i class="icon-eye-open" data-toggle="tooltip" title="Package is public"></i>
-            <% else %>
+            {{ else }}
             <i class="icon-eye-close" data-toggle="tooltip" title="Package is private"></i>
-            <%/if%>
+            {{/if}}
             <i class="icon-chevron-down" data-toggle="dropdown">
             </i>
             <ul class="dropdown-menu" role="menu">
@@ -40,11 +40,11 @@
         </div>
         <div class="progress">
             <span style="position: absolute; left: 5px">
-                <% stats.linksdone %> / <% stats.linkstotal %>
+                {{ stats.linksdone }} / {{ stats.linkstotal }}
             </span>
-            <div class="bar bar-info" style="width: <% percent %>%"></div>
+            <div class="bar bar-info" style="width: {{ percent }}%"></div>
             <span style="position: absolute; right: 5px">
-                    <% formatSize stats.sizedone %> / <% formatSize stats.sizetotal %>
+                    {{ formatSize stats.sizedone }} / {{ formatSize stats.sizetotal }}
             </span>
         </div>
     </div>

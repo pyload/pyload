@@ -107,6 +107,11 @@ a:hover {
   }
 }
 
+// Fixes cursor on hover, which was changes in recent font-awesome
+[class^="icon-"]:before, [class*=" icon-"]:before {
+    cursor: inherit;
+}
+
 .icon-8x {
   font-size: 8em;
 }

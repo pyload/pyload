@@ -8,7 +8,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'utils/initHB',
+    'handlebars',
     'utils/animations',
     'utils/lazyRequire',
     'utils/dialogs',

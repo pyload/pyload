@@ -1,4 +1,3 @@
-// Generated on 2013-06-06 using generator-webapp 0.2.2
 'use strict';
 var LIVERELOAD_PORT = 35729;
 var lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT});
@@ -57,9 +56,9 @@ module.exports = function(grunt) {
                 options: {
                     middleware: function(connect) {
                         return [
+                            lrSnippet,
                             mountFolder(connect, '.tmp'),
-                            mountFolder(connect, yeomanConfig.app),
-                            lrSnippet
+                            mountFolder(connect, yeomanConfig.app)
                         ];
                     }
                 }
@@ -384,7 +383,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('server', function(target) {
         if (target === 'dist') {
-            return grunt.task.run(['build', 'open', 'connect:dist:keepalive']);
+            return grunt.task.run(['build', 'connect:dist:keepalive']);
         }
 
         grunt.task.run([

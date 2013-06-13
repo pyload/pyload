@@ -17,7 +17,7 @@
         "jed": "~0.5.4",
         "select2": "~3.4.0",
         "bootstrap": "~2.3.2",
-        "font-awesome": "~3.1.1"
+        "font-awesome": "~3.2.0"
     },
     "devDependencies": {}
 }
