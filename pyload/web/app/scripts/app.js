@@ -78,7 +78,6 @@ define([
     };
 
     App.openWebSocket = function(path) {
-        // TODO
         return new WebSocket(window.wsAddress.replace('%s', window.hostAddress) + path);
     };
 
