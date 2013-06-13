@@ -84,11 +84,11 @@ module.exports = function(grunt) {
                 }
             }
         },
-//        open: { // Opens the webbrowser
-//            server: {
-//                path: 'http://localhost:<%= connect.options.port %>'
-//            }
-//        },
+        open: { // Opens the webbrowser
+            server: {
+                path: 'http://localhost:<%= connect.options.port %>'
+            }
+        },
         clean: {
             dist: {
                 files: [
@@ -162,6 +162,7 @@ module.exports = function(grunt) {
                     wrap: true,
 
                     // Delete already included files from dist
+                    // TODO: Fpr multiple mdulules it would delete to much files
                     done: function(done, output) {
                         var root = path.join(path.resolve('.'), yeomanConfig.app);
                         var parse = require('rjs-build-analysis').parse(output);
@@ -218,7 +219,7 @@ module.exports = function(grunt) {
             options: {
                 dirs: ['<%= yeoman.dist %>']
             },
-            html: ['<%= yeoman.dist %>/**/*.html'],
+            html: ['<%= yeoman.dist %>/*.html'],
             css: ['<%= yeoman.dist %>/styles/**/*.css']
         },
         imagemin: {
@@ -245,32 +246,6 @@ module.exports = function(grunt) {
                 ]
             }
         },
-        cssmin: {
-            options: {
-                banner: yeomanConfig.banner
-            },
-            dist: {
-                expand: true,
-                cwd: '<%= yeoman.app %>/styles',
-                src: ['**/*.css', '!*.min.css'],
-                dest: '<%= yeoman.dist %>/styles',
-                ext: '.css'
-            }
-        },
-        uglify: { // JS min
-            options: {
-                mangle: true,
-                report: 'min',
-                preserveComments: false,
-                banner: yeomanConfig.banner
-            },
-            dist: {
-                expand: true,
-                cwd: '<%= yeoman.dist %>/scripts',
-                dest: '<%= yeoman.dist %>/scripts',
-                src: ['**/*.js']
-            }
-        },
         htmlmin: {
             dist: {
                 options: {
@@ -294,6 +269,32 @@ module.exports = function(grunt) {
                 ]
             }
         },
+        cssmin: {
+            options: {
+                banner: yeomanConfig.banner
+            },
+            dist: {
+                expand: true,
+                cwd: '<%= yeoman.dist %>',
+                src: ['**/*.css', '!*.min.css'],
+                dest: '<%= yeoman.dist %>',
+                ext: '.css'
+            }
+        },
+        uglify: { // JS min
+            options: {
+                mangle: true,
+                report: 'min',
+                preserveComments: false,
+                banner: yeomanConfig.banner
+            },
+            dist: {
+                expand: true,
+                cwd: '<%= yeoman.dist %>',
+                dest: '<%= yeoman.dist %>',
+                src: ['**/*.js', '!*.min.js']
+            }
+        },
         // Put files not handled in other tasks here
         copy: {
             //  Copy files from third party libraries
@@ -314,7 +315,7 @@ module.exports = function(grunt) {
                         cwd: '<% yeoman.app %>',
                         dest: '.tmp/vendor',
                         src: [
-                            '**/select2/select2.{js,png,css}',
+                            '**/select2/select2.{png,css}',
                             '**/select2/select2-spinner.gif',
                             '**/select2/select2x2.png'
                         ]
@@ -334,6 +335,7 @@ module.exports = function(grunt) {
                             'images/{,*/}*.{webp,gif}',
                             'templates/**/*.html',
                             'scripts/**/*.js',
+                            'styles/**/*.css',
                             'fonts/*'
                         ]
                     },
@@ -366,18 +368,16 @@ module.exports = function(grunt) {
         concurrent: {
             server: [
                 'copy:libs',
-                'less:dist'
+                'less'
             ],
             test: [
                 'less'
             ],
             dist: [
-                'less',
                 'imagemin',
                 'svgmin',
-                'htmlmin'
-//                'cssmin',
-//                'uglify'
+                'htmlmin',
+                'cssmin'
             ]
         }
     });
@@ -391,7 +391,6 @@ module.exports = function(grunt) {
             'clean:server',
             'concurrent:server',
             'connect:livereload',
-            'open',
             'watch'
         ]);
     });
@@ -405,14 +404,13 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-        'copy:libs',
         'useminPrepare',
-        'concurrent:dist',
-        'requirejs',
-        'cssmin',
+        'less',
+        'copy', // Copy .tmp, components, app to dist
+        'requirejs', // build the main script and remove included scripts
         'concat',
-        'uglify',
-        'copy:dist',
+        'concurrent:dist',  // Run minimisation
+        'uglify', // minify js
         'rev',
         'usemin'
     ]);
