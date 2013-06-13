@@ -17,7 +17,7 @@ class XHamsterCom(Hoster):
     __name__ = "XHamsterCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?xhamster\.com/movies/.+"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __config__ = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
     __description__ = """XHamster.com Video Download Hoster"""
 
@@ -31,7 +31,7 @@ class XHamsterCom(Hoster):
             self.offline()
 
         if self.getConfig("type"):
-            self.desired_fmt = self.getConf("type")    
+            self.desired_fmt = self.getConfig("type")    
            
         self.pyfile.name = self.get_file_name() + self.desired_fmt
         self.download(self.get_file_url())
