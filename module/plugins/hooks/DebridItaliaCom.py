@@ -20,7 +20,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 class DebridItaliaCom(MultiHoster):
     __name__ = "DebridItaliaCom"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __type__ = "hook"
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
@@ -38,4 +38,5 @@ class DebridItaliaCom(MultiHoster):
                 "bitshare.com", "share-links.biz", "putlocker.com", "uploaded.to",
                 "speedload.org", "rapidgator.net", "likeupload.net", "cyberlocker.ch",
                 "depositfiles.com", "extabit.com", "filefactory.com", "sharefiles.co",
-                "ryushare.com", "tusfiles.net", "nowvideo.co", "cloudzer.net", "letitbit.net"]
+                "ryushare.com", "tusfiles.net", "nowvideo.co", "cloudzer.net", "letitbit.net",
+                "easybytez.com"]
