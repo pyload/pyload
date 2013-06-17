@@ -29,7 +29,7 @@ class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\w+)"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg", "chrox", "stickell")
 
@@ -39,7 +39,7 @@ class RapidgatorNet(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<title>File not found</title>'
 
     JSVARS_PATTERN = r"\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*'?(.*?)'?;"
-    DOWNLOAD_LINK_PATTERN = r"return '(http[^']+)';\s*}\s*}\s*}\);"
+    DOWNLOAD_LINK_PATTERN = r"return '(http[^']+)';\s*}\s*}\s*}?\);"
     RECAPTCHA_KEY_PATTERN = r'"http://api.recaptcha.net/challenge?k=(.*?)"'
     ADSCAPTCHA_SRC_PATTERN = r'(http://api.adscaptcha.com/Get.aspx[^"\']*)'
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
