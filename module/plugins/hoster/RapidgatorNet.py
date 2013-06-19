@@ -18,18 +18,18 @@
 
 import re
 from pycurl import HTTPHEADER
-from random import random
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia, AdsCaptcha
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
 
+
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\w+)"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg", "chrox", "stickell")
 
@@ -39,32 +39,32 @@ class RapidgatorNet(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<title>File not found</title>'
 
     JSVARS_PATTERN = r"\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*'?(.*?)'?;"
-    DOWNLOAD_LINK_PATTERN = r"return '(http[^']+)';\s*}\s*}\s*}\);"
+    DOWNLOAD_LINK_PATTERN = r"return '(http[^']+)';\s*}\s*}\s*}?\);"
     RECAPTCHA_KEY_PATTERN = r'"http://api.recaptcha.net/challenge?k=(.*?)"'
     ADSCAPTCHA_SRC_PATTERN = r'(http://api.adscaptcha.com/Get.aspx[^"\']*)'
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
-    
+
     def setup(self):
         self.resumeDownload = False
         self.multiDL = False
         self.sid = None
         self.chunkLimit = 1
         self.req.setOption("timeout", 120)
-        
+
     def process(self, pyfile):
-        if self.account:            
-            self.sid = self.account.getAccountData(self.user).get('SID', None) 
-        
+        if self.account:
+            self.sid = self.account.getAccountData(self.user).get('SID', None)
+
         if self.sid:
             self.handlePremium()
         else:
-            self.handleFree()            
+            self.handleFree()
 
     def getAPIResponse(self, cmd):
         try:
             json = self.load('%s/%s' % (self.API_URL, cmd),
-                             get = {'sid': self.sid,
-                                    'url': self.pyfile.url}, decode = True)
+                             get={'sid': self.sid,
+                                  'url': self.pyfile.url}, decode=True)
             self.logDebug('API:%s' % cmd, json, "SID: %s" % self.sid)
             json = json_loads(json)
             status = json['response_status']
@@ -94,11 +94,11 @@ class RapidgatorNet(SimpleHoster):
         self.download(url)
 
     def handleFree(self):
-        self.html = self.load(self.pyfile.url, decode = True)
+        self.html = self.load(self.pyfile.url, decode=True)
         self.getFileInfo()
-    
+
         if "You can download files up to 500 MB in free mode" in self.html \
-        or "This file can be downloaded by premium only" in self.html:
+            or "This file can be downloaded by premium only" in self.html:
             self.fail("Premium account needed for download")
 
         self.checkWait()
@@ -109,13 +109,15 @@ class RapidgatorNet(SimpleHoster):
         self.req.http.lastURL = self.pyfile.url
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 
-        url = "http://rapidgator.net%s?fid=%s" % (jsvars.get('startTimerUrl', '/download/AjaxStartTimer'), jsvars["fid"])
+        url = "http://rapidgator.net%s?fid=%s" % (
+            jsvars.get('startTimerUrl', '/download/AjaxStartTimer'), jsvars["fid"])
         jsvars.update(self.getJsonResponse(url))
 
         self.setWait(int(jsvars.get('secs', 30)) + 1, False)
         self.wait()
 
-        url = "http://rapidgator.net%s?sid=%s" % (jsvars.get('getDownloadUrl', '/download/AjaxGetDownload'), jsvars["sid"])
+        url = "http://rapidgator.net%s?sid=%s" % (
+            jsvars.get('getDownloadUrl', '/download/AjaxGetDownload'), jsvars["sid"])
         jsvars.update(self.getJsonResponse(url))
 
         self.req.http.lastURL = self.pyfile.url
@@ -167,7 +169,8 @@ class RapidgatorNet(SimpleHoster):
         self.download(download_url)
 
     def checkWait(self):
-        found = re.search(r"(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)", self.html)
+        found = re.search(r"(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)",
+                          self.html)
         if found:
             wait_time = int(found.group(1)) * {"hour": 60, "min": 1}[found.group(2)]
         else:
@@ -180,13 +183,14 @@ class RapidgatorNet(SimpleHoster):
         self.logDebug("Waiting %d minutes" % wait_time)
         self.setWait(wait_time * 60, True)
         self.wait()
-        self.retry(max_tries = 24)
+        self.retry(max_tries=24)
 
     def getJsonResponse(self, url):
-        response = self.load(url, decode = True)
+        response = self.load(url, decode=True)
         if not response.startswith('{'):
             self.retry()
         self.logDebug(url, response)
         return json_loads(response)
+
 
 getInfo = create_getInfo(RapidgatorNet)

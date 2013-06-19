@@ -34,7 +34,7 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:[^/]*?)youtube\.com/watch.*?[?&]v=.*"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
         ("fmt", "int", "FMT/ITAG Number (5-102, 0 for auto)", 0),
         (".mp4", "bool", "Allow .mp4", True),
@@ -76,7 +76,7 @@ class YoutubeCom(Hoster):
     def process(self, pyfile):
         html = self.load(pyfile.url, decode=True)
 
-        if '<h1 id="unavailable-message" class="message">' in html:
+        if re.search(r'<div id="player-unavailable" class="\s*player-width player-height\s*">', html):
             self.offline()
 
         if "We have been receiving a large volume of requests from your network." in html:
