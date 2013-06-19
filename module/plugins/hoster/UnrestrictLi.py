@@ -35,7 +35,7 @@ def secondsToMidnight():
 
 class UnrestrictLi(Hoster):
     __name__ = "UnrestrictLi"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "hoster"
     __pattern__ = r"https?://.*(unrestrict|unr)\.li"
     __description__ = """Unrestrict.li hoster plugin"""
@@ -65,7 +65,9 @@ class UnrestrictLi(Hoster):
             elif "You have reached your daily limit for this host" in page:
                 self.logInfo("Reached daily limit for this host. Waiting until 00:10 GMT+2")
                 self.retry(5, secondsToMidnight(), "Daily limit for this host reached")
-            new_url = json_loads(page).keys()[0]
+            page = json_loads(page)
+            new_url = page.keys()[0]
+            self.api_data = page[new_url]
 
         self.logDebug("New URL: " + new_url)
 
