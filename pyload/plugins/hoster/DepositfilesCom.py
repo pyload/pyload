@@ -105,7 +105,7 @@ class DepositfilesCom(SimpleHoster):
         elif 'onClick="show_gold_offer' in self.html:
             self.account.relogin(self.user)
             self.retry()
-        link = unquote(re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
+        link = unquote(re.search('<div id="download_url">\s*<a href="(http://.+?\.dfiles.eu/.+?)"', self.html).group(1))        
         self.multiDL = True
         self.download(link, disposition = True)
 
