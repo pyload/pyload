@@ -30,7 +30,7 @@ class FilerNet(SimpleHoster):
     __name__ = "FilerNet"
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?filer\.net/get/(\w+)"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Filer.net Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -38,10 +38,17 @@ class FilerNet(SimpleHoster):
     FILE_INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>\w+)</small></h1>'
     FILE_OFFLINE_PATTERN = r'Nicht gefunden'
     RECAPTCHA_KEY = '6LcFctISAAAAAAgaeHgyqhNecGJJRnxV1m_vAz3V'
+    DIRECT_LINK_PATTERN = r'href="([^"]+)">Get download</a>'
 
     def process(self, pyfile):
+        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
+            self.handlePremium()
+        else:
+            self.handleFree()
+
+    def handleFree(self):
         self.req.setOption("timeout", 120)
-        self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+        self.html = self.load(self.pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
 
         # Wait between downloads
         m = re.search(r'musst du <span id="time">(\d+)</span> Sekunden warten', self.html)
@@ -50,12 +57,7 @@ class FilerNet(SimpleHoster):
             self.retry(3, waittime, 'Wait between free downloads')
 
         self.getFileInfo()
-        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
-            self.handlePremium()
-        else:
-            self.handleFree()
 
-    def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
 
         inputs = self.parseHtmlForm(input_names='token')[1]
@@ -98,6 +100,20 @@ class FilerNet(SimpleHoster):
             self.fail("No Download url retrieved/all captcha attempts failed")
 
         self.download(downloadURL, disposition=True)
+
+    def handlePremium(self):
+        header = self.load(self.pyfile.url, just_header=True)
+        if 'location' in header:  # Direct Download ON
+            dl = self.pyfile.url
+        else:  # Direct Download OFF
+            html = self.load(self.pyfile.url)
+            m = re.search(self.DIRECT_LINK_PATTERN, html)
+            if not m:
+                self.parseError("Unable to detect direct link, try to enable 'Direct download' in your user settings")
+            dl = 'http://filer.net' + m.group(1)
+
+        self.logDebug('Direct link: ' + dl)
+        self.download(dl, disposition=True)
 
 
 getInfo = create_getInfo(FilerNet)
