@@ -11,15 +11,15 @@ class WrongPassword(Exception):
     pass
 
 class AbtractExtractor:
-    @staticmethod
-    def checkDeps():
+    @classmethod
+    def checkDeps(cls):
         """ Check if system statisfy dependencies
         :return: boolean
         """
         return True
 
-    @staticmethod
-    def getTargets(files_ids):
+    @classmethod
+    def getTargets(cls, files_ids):
         """ Filter suited targets from list of filename id tuple list
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list

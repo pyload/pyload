@@ -80,7 +80,7 @@ class ExtractArchive(Hook):
         self.passwords = []
         names = []
 
-        for p in ("UnRar", "UnZip"):
+        for p in ("UnRar", "UnZip", "SevenZipUnRar"):
             try:
                 module = self.core.pluginManager.loadModule("internal", p)
                 klass = getattr(module, p)
