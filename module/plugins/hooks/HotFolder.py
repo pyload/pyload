@@ -30,7 +30,7 @@ from module.plugins.Hook import Hook
 
 class HotFolder(Hook):
     __name__ = "HotFolder"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """observe folder and file for changes and add container and links"""
     __config__ = [ ("activated", "bool", "Activated" , "False"),
                    ("folder", "str", "Folder to observe", "container"),
@@ -46,7 +46,7 @@ class HotFolder(Hook):
         
     def periodical(self):
         
-        if not exists(join(self.getConfig("folder"), "finished")):
+        if self.getConfig("keep") and not exists(join(self.getConfig("folder"), "finished")):
             makedirs(join(self.getConfig("folder"), "finished"))
           
         if self.getConfig("watch_file"):
