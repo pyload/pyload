@@ -35,7 +35,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -245,6 +245,7 @@ class XFileSharingPro(SimpleHoster):
                     else:
                         self.parseError("Form not found")
 
+            inputs['jdownloader_f']='1';
             self.logDebug(self.HOSTER_NAME, inputs)
 
             if 'op' in inputs and inputs['op'] in ('download2', 'download3'):
@@ -277,6 +278,7 @@ class XFileSharingPro(SimpleHoster):
                     if 'method_free' in inputs: del inputs['method_free']
                 else:
                     inputs['method_free'] = "Free Download"
+                    inputs['method_free_r_j'] = "Free Download"
                     if 'method_premium' in inputs: del inputs['method_premium']
 
                 self.html = self.load(self.pyfile.url, post = inputs, ref = True)
