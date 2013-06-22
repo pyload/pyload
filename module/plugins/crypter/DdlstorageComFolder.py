@@ -1,32 +1,30 @@
 # -*- coding: utf-8 -*-
 
-import re
-from module.plugins.Crypter import Crypter
-from module.plugins.hoster.MediafireCom import checkHTMLHeader
-from module.common.json_layer import json_loads
+############################################################################
+# This program is free software: you can redistribute it and/or modify     #
+# it under the terms of the GNU Affero General Public License as           #
+# published by the Free Software Foundation, either version 3 of the       #
+# License, or (at your option) any later version.                          #
+#                                                                          #
+# This program is distributed in the hope that it will be useful,          #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
+# GNU Affero General Public License for more details.                      #
+#                                                                          #
+# You should have received a copy of the GNU Affero General Public License #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
+############################################################################
 
-class DdlstorageComFolder(Crypter):
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
+
+
+class DdlstorageComFolder(SimpleCrypter):
     __name__ = "DdlstorageComFolder"
     __type__ = "crypter"
     __pattern__ = r"http://(?:\w*\.)*?ddlstorage.com/folder/\w{10}"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """DDLStorage.com Folder Plugin"""
-    __author_name__ = ("godofdream")
-    __author_mail__ = ("soilfiction@gmail.com")
+    __author_name__ = ("godofdream", "stickell")
+    __author_mail__ = ("soilfiction@gmail.com", "l.stickell@yahoo.it")
 
-    FILE_URL_PATTERN = '<a style="text-decoration:none;" href="http://www.ddlstorage.com/(.*)">'
-
-    def decrypt(self, pyfile):
-        new_links = []
-        # load and parse html            
-        html = self.load(pyfile.url)
-        found = re.findall(self.FILE_URL_PATTERN, html)
-        self.logDebug(found)
-        for link in found:
-            # file page
-            new_links.append("http://www.ddlstorage.com/%s" % link)
-    
-        if new_links:
-            self.core.files.addLinks(new_links, self.pyfile.package().id)
-        else:
-            self.fail('Could not extract any links')
+    LINK_PATTERN = '<a class="sub_title" style="text-decoration:none;" href="(http://www.ddlstorage.com/.*)">'
