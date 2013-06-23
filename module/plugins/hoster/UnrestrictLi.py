@@ -35,7 +35,7 @@ def secondsToMidnight():
 
 class UnrestrictLi(Hoster):
     __name__ = "UnrestrictLi"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __type__ = "hoster"
     __pattern__ = r"https?://.*(unrestrict|unr)\.li"
     __description__ = """Unrestrict.li hoster plugin"""
@@ -56,7 +56,8 @@ class UnrestrictLi(Hoster):
             new_url = pyfile.url
         else:
             for i in xrange(5):
-                page = self.req.load('https://unrestrict.li/unrestrict.php', post={'link': pyfile.url, 'domain': 'long'})
+                page = self.req.load('https://unrestrict.li/unrestrict.php',
+                                     post={'link': pyfile.url, 'domain': 'long'})
                 self.logDebug("JSON data: " + page)
                 if page != '':
                     break
@@ -72,3 +73,7 @@ class UnrestrictLi(Hoster):
         self.logDebug("New URL: " + new_url)
 
         self.download(new_url, disposition=True)
+
+        if self.getConfig("history"):
+            self.load("https://unrestrict.li/history/&delete=all")
+            self.logInfo("Download history deleted")
