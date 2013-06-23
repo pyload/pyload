@@ -24,9 +24,9 @@ from module.network.RequestFactory import getURL
 class IfolderRu(SimpleHoster):
     __name__ = "IfolderRu"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:[^.]*\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*"
+    __pattern__ = r"http://(?:[^.]*\.)?(?:ifolder\.ru|metalarea\.org|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*"
     __version__ = "0.37"
-    __description__ = """rusfolder.com / ifolder.ru"""
+    __description__ = """metalarea.org / rusfolder.com / ifolder.ru"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
