@@ -1,4 +1,3 @@
-
 Description
 ===========
 
@@ -32,7 +31,6 @@ Required
 --------
 
 - pycurl a.k.a python-curl
-- jinja2
 - beaker
 - simplejson (for python 2.5)
 
