@@ -8,7 +8,7 @@ class StreamcloudEu(XFileSharingPro):
     __name__ = "StreamcloudEu"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?streamcloud\.eu/\S+"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Streamcloud.eu hoster plugin"""
     __author_name__ = ("seoester")
     __author_mail__ = ("seoester@googlemail.com")
