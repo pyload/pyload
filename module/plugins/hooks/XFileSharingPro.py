@@ -38,7 +38,7 @@ class XFileSharingPro(Hook):
             "banicrazy.info", "flowhot.info", "upbrasil.info", "shareyourfilez.biz", "bzlink.us", "cloudcache.cc", "fileserver.cc"
             "farshare.to", "filemaze.ws", "filehost.ws", "filestock.ru", "moidisk.ru", "4up.im", "100shared.com",
             #WRONG FILE NAME:
-            "sendmyway.com", "upchi.co.il", "180upload.com",
+            "sendmyway.com", "upchi.co.il",
             #NOT WORKING:
             "amonshare.com", "imageporter.com", "file4safe.com",
             #DOWN OR BROKEN:
