@@ -16,41 +16,25 @@
     @author: halfman
 """
 
+# Test links (random.bin):
+# http://www.load.to/dNsmgXRk4/random.bin
+# http://www.load.to/edbNTxcUb/random100.bin
+
 import re
-from module.plugins.Hoster import Hoster
-from module.network.RequestFactory import getURL
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
-def getInfo(urls):
-    result = []
 
-    for url in urls:
-
-        html = getURL(url, decode=True)
-        if re.search(LoadTo.FILE_OFFLINE_PATTERN, html):
-            # File offline
-            result.append((url, 0, 1, url))
-        else:
-            # Get file info
-            name = re.search(LoadTo.FILE_NAME_PATTERN, html)
-            size = re.search(LoadTo.SIZE_PATTERN, html)
-            if name is not None and size is not None:
-                name = name.group(1)
-                size = size.group(1)
-                result.append((name, size, 2, url))
-    yield result
-
-class LoadTo(Hoster):
+class LoadTo(SimpleHoster):
     __name__ = "LoadTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(www.*?\.)?load\.to/.{7,10}?/.*" 
-    __version__ = "0.11"
-    __description__ = """load.to"""
-    __author_name__ = ("halfman")
-    __author_mail__ = ("Pulpan3@gmail.com")
+    __pattern__ = r"http://(?:www\.)?load\.to/\w+"
+    __version__ = "0.12"
+    __description__ = """Load.to hoster plugin"""
+    __author_name__ = ("halfman", "stickell")
+    __author_mail__ = ("Pulpan3@gmail.com", "l.stickell@yahoo.it")
 
-    FILE_NAME_PATTERN = r'<div class="toolarge"><h1>(.+?)</h1></div>'
+    FILE_INFO_PATTERN = r'<a [^>]+>(?P<N>.+)</a></h3>\s*Size: (?P<S>\d+) Bytes'
     URL_PATTERN = r'<form method="post" action="(.+?)"'
-    SIZE_PATTERN = r'<div class="download_table_right">(\d+) Bytes</div>'
     FILE_OFFLINE_PATTERN = r'Can\'t find file. Please check URL.<br />'
     WAIT_PATTERN = r'type="submit" value="Download \((\d+)\)"'
 
@@ -61,23 +45,17 @@ class LoadTo(Hoster):
 
         self.html = self.load(pyfile.url, decode=True)
 
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html):
-            self.offline()
-        
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if found is None:
-            self.fail("Parse error (NAME)")
-        pyfile.name = found.group(1)
-
         found = re.search(self.URL_PATTERN, self.html)
-        if found is None:
-            self.fail("Parse error (URL)")
+        if not found:
+            self.parseError('URL')
         download_url = found.group(1)
-        
+
         timmy = re.search(self.WAIT_PATTERN, self.html)
         if timmy:
             self.setWait(timmy.group(1))
             self.wait()
 
-        self.req.setOption("timeout", 120)
-        self.download(download_url)
+        self.download(download_url, disposition=True)
+
+
+getInfo = create_getInfo(LoadTo)
