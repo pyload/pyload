@@ -32,6 +32,7 @@ except:
 DB = None
 DB_VERSION = 6
 
+
 def set_DB(db):
     global DB
     DB = db
@@ -132,6 +133,7 @@ class DatabaseBackend(Thread):
         self.setDaemon(True)
         self.core = core
         self.manager = None # set later
+        self.error = None
         self.running = Event()
 
         self.jobs = Queue()
@@ -183,6 +185,8 @@ class DatabaseBackend(Thread):
     def run(self):
         try:
             self.init()
+        except Exception, e:
+            self.error = e
         finally:
             self.running.set()
 
@@ -422,9 +426,12 @@ class DatabaseBackend(Thread):
         self.jobs.put(job)
 
     def queue(self, f, *args, **kwargs):
+        # Raise previous error of initialization
+        if self.error: raise self.error
         args = (self, ) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
+
         # only wait when db is running
         if self.running.isSet(): job.wait()
         return job.result
@@ -442,6 +449,7 @@ class DatabaseBackend(Thread):
             if hasattr(sub, attr):
                 return getattr(sub, attr)
         raise AttributeError(attr)
+
 
 if __name__ == "__main__":
     db = DatabaseBackend()

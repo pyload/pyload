@@ -10,15 +10,15 @@ import json
 from pyload.remote.apitypes import Forbidden
 from pyload.remote.JSONClient import JSONClient
 
+from tests.helper.config import credentials, webAddress
 
 class TestJSONBackend:
-    login = ("User", "pwhere")
 
     def setUp(self):
-        self.client = JSONClient()
+        self.client = JSONClient(webAddress)
 
     def test_login(self):
-        self.client.login(*self.login)
+        self.client.login(*credentials)
         self.client.getServerVersion()
         self.client.logout()
 
@@ -26,10 +26,9 @@ class TestJSONBackend:
         ret = self.client.login("WrongUser", "wrongpw")
         assert ret is False
 
-
     def test_httpauth(self):
         # cheap http auth
-        ret = requests.get(self.client.URL + "/getServerVersion", auth=HTTPBasicAuth(*self.login))
+        ret = requests.get(webAddress + "/getServerVersion", auth=HTTPBasicAuth(*credentials))
         assert_equal(ret.status_code, 200)
         assert ret.text
 
@@ -37,8 +36,8 @@ class TestJSONBackend:
         payload = {'section': 'webinterface', 'option': 'port'}
         headers = {'content-type': 'application/json'}
 
-        ret = requests.get(self.client.URL + "/getConfigValue", headers=headers,
-                           auth=HTTPBasicAuth(*self.login), data=json.dumps(payload))
+        ret = requests.get(webAddress + "/getConfigValue", headers=headers,
+                           auth=HTTPBasicAuth(*credentials), data=json.dumps(payload))
 
         assert_equal(ret.status_code, 200)
         assert ret.text
@@ -49,5 +48,5 @@ class TestJSONBackend:
 
     @raises(AttributeError)
     def test_unknown_method(self):
-        self.client.login(*self.login)
+        self.client.login(*credentials)
         self.client.sdfdsg()

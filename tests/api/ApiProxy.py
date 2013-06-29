@@ -3,10 +3,12 @@
 
 from pyload.remote.apitypes_debug import classes, methods
 
+from tests.helper.config import credentials
+
 class ApiProxy:
     """ Proxy that does type checking on the api """
 
-    def __init__(self, api, user="User", pw="test"):
+    def __init__(self, api, user=credentials[0], pw=credentials[1]):
         self.api = api
         self.user = user
         self.pw = pw

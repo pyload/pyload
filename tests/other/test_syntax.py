@@ -14,7 +14,7 @@ class TestSyntax(TestCase):
     pass
 
 
-for path, dirs, files in walk(join(PATH, "module")):
+for path, dirs, files in walk(join(PATH, "pyload")):
 
     for f in files:
         if not f.endswith(".py") or f.startswith("__"): continue
@@ -26,7 +26,6 @@ for path, dirs, files in walk(join(PATH, "module")):
 
         # to much sideeffect when importing
         if "web" in packages or "lib" in packages: continue
-        if "ThriftTest" in packages: continue
 
         # currying
         def meta(imp, sig):
@@ -38,6 +37,4 @@ for path, dirs, files in walk(join(PATH, "module")):
 
         # generate test methods
         sig = "test_%s_%s" % (packages[-2], packages[-1])
-
-
         setattr(TestSyntax, sig, meta(imp, sig))

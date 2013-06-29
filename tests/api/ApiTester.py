@@ -3,6 +3,8 @@
 from pyload.remote.JSONClient import JSONClient
 from pyload.remote.WSClient import WSClient
 
+from tests.helper.config import webAddress, wsAddress
+
 from ApiProxy import ApiProxy
 
 class ApiTester:
@@ -29,7 +31,7 @@ class ApiTester:
         self.api = api
 
     def enableJSON(self):
-        self.api = ApiProxy(JSONClient())
+        self.api = ApiProxy(JSONClient(webAddress))
 
     def enableWS(self):
-        self.api = ApiProxy(WSClient())
+        self.api = ApiProxy(WSClient(wsAddress))

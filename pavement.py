@@ -153,8 +153,10 @@ def generate_locale():
 
 @task
 def tests():
-    """ Run nosetests """
+    """ Run complete test suite """
+    call(["tests/run_pyload.sh"])
     call(["tests/nosetests.sh"])
+    call(["tests/quit_pyload.sh"])
 
 
 @task

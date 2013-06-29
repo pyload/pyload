@@ -3,7 +3,7 @@ version: 2
 [remote]
 nolocalauth = False
 activated = True
-port = 7227
+port = 7558
 listenaddr = 127.0.0.1
 
 [log]
@@ -44,7 +44,7 @@ prefix =
 server = builtin
 host = 127.0.0.1
 https = False
-port = 8001
+port = 8921
 
 [proxy]
 username = 

@@ -15,7 +15,7 @@ class WSClient:
         self.ws =  None
 
     def connect(self):
-        self.ws = create_connection(self.URL)
+        self.ws = create_connection(self.url)
 
     def close(self):
         self.ws.close()
