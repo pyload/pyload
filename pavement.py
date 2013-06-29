@@ -18,6 +18,7 @@ def new_fnmatch(self, pattern):
 
 path.fnmatch = new_fnmatch
 
+import os
 import sys
 import re
 from subprocess import call, Popen
@@ -95,9 +96,11 @@ def apitypes(options):
 @task
 def webapp():
     """ Builds the pyload web app. Nodejs and npm must be installed """
-    # TODO
-    # npm install
-    # bower install
+
+    os.chdir(PROJECT_DIR / "pyload" / "web")
+    call(["npm", "install"])
+    call(["bower", "install"])
+    call(["grunt"])
 
 
 @task
