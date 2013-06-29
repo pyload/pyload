@@ -98,9 +98,17 @@ def webapp():
     """ Builds the pyload web app. Nodejs and npm must be installed """
 
     os.chdir(PROJECT_DIR / "pyload" / "web")
-    call(["npm", "install"])
-    call(["bower", "install"])
-    call(["grunt"])
+
+    # Preserve exit codes
+    ret = call(["npm", "install", "--no-color"])
+    if ret:
+        exit(ret)
+    ret = call(["bower", "install", "--no-color"])
+    if ret:
+        exit(ret)
+    ret = call(["grunt", "--no-color"])
+    if ret:
+        exit(ret)
 
 
 @task
