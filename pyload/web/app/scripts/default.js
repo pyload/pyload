@@ -1,4 +1,4 @@
-define('default', ['backbone', 'jquery', 'app', 'router', 'models/userSession'],
+define('default', ['backbone', 'jquery', 'app', 'router', 'models/UserSession'],
     function(Backbone, $, App, Router, UserSession) {
         'use strict';
 
