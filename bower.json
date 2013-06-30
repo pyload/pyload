@@ -1,0 +1,12 @@
+{
+  "name": "pyload-common",
+  "version": "0.1.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "bootstrap": "~2.3.2"
+  }
+}
