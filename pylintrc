@@ -20,7 +20,6 @@ disable=C,I,R,W0102,W0106,W0142,W0312,W0403,W0611,W0613,W0614,W0702,W0703
 # (visual studio) and html. You can also give a reporter class, eg
 # mypackage.mymodule.MyReporterClass.
 output-format=parseable
-reports=no
 
 include-ids=yes
 
