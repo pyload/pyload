@@ -1,6 +1,4 @@
-pyLoad
-======
-[![Build Status](http://nightly.pyload.org/buildStatus/icon?job=Nightly)](http://nightly.pyload.org/job/Nightly/)
+# pyLoad [![Build Status](http://nightly.pyload.org/buildStatus/icon?job=Nightly)](http://nightly.pyload.org/job/Nightly/)
 
 pyLoad is a free and open source personal cloud storage as well as download manager
 for all kind of operating systems and devices, designed to be extremely lightweight and
