@@ -1,0 +1,94 @@
+/*
+   Definitions
+*/
+
+/*
+  Bootstrap size: Phones to tablets, min value when scrollbar appears
+*/
+@min-width: 767px;
+
+/*
+  Threshold for slightly larger screen
+*/
+@large-screen: 1150px;
+
+@header-height: 75px;
+@actionbar-height: 40px;
+@footer-height: 100px;
+
+@light: #ffffff;
+@dark: #333333;
+
+@grey: #757575;
+@greyLight: #E5E5E5;
+@greyLighter: #F5F5F5;
+@greyDark: #444444;
+@greyDarker: #111113;
+
+@yellow: #ffd856;
+@yellowLighter: lighten(spin(@yellow, 10), 20%);
+@yellowLightest: lighten(spin(@yellow, 15), 30%);
+@yellowDark: darken(@yellow, 10%);
+
+@blue: #3571a2;
+@blueLight: lighten(spin(@blue, 5), 10%);
+@blueLighter: lighten(spin(@blue, 10), 20%);
+@blueLightest: lighten(spin(@blue, 20), 40%);
+@blueDark: darken(spin(@blue, -5), 10%);
+@blueDarker: darken(spin(@blue, -10), 20%);
+
+@green: #468847;
+@greenLight: lighten(spin(@green, 5), 10%);
+@greenDark: darken(spin(@green, -5), 10%);
+
+@red: #b94a48;
+@redLight: lighten(spin(@red, 5), 10%);
+@redDark: darken(spin(@red, -5), 10%);
+
+@emph: #FF7637;
+
+
+/*
+  Mixins
+*/
+
+.gradient(@origin: left, @start: #ffffff, @stop: #000000) {
+  background-color: @start;
+  background-image: -webkit-linear-gradient(@origin, @start, @stop);
+  background-image: -moz-linear-gradient(@origin, @start, @stop);
+  background-image: -o-linear-gradient(@origin, @start, @stop);
+  background-image: -ms-linear-gradient(@origin, @start, @stop);
+  background-image: linear-gradient(@origin, @start, @stop);
+}
+
+.transition(@prop: all, @time: 0.25s, @ease: linear) {
+  -webkit-transition: @prop @time @ease;
+  -moz-transition: @prop @time @ease;
+  -o-transition: @prop @time @ease;
+  -ms-transition: @prop @time @ease;
+  transition: @prop @time @ease;
+}
+
+.stripes(@color, @color2: rgba(255, 255, 255, 0.15)) {
+  background-color: @color;
+  background-image: -webkit-linear-gradient(45deg, @color2  25%, transparent 25%, transparent 50%, @color2 50%, @color2 75%, transparent 75%, transparent);
+  background-image: -moz-linear-gradient(45deg, @color2 25%, transparent 25%, transparent 50%, @color2 50%, @color2 75%, transparent 75%, transparent);
+  background-image: -o-linear-gradient(45deg, @color2 25%, transparent 25%, transparent 50%, @color2 50%, @color2 75%, transparent 75%, transparent);
+  background-image: linear-gradient(45deg, @color2 25%, transparent 25%, transparent 50%, @color2 50%, @color2 75%, transparent 75%, transparent);
+  -webkit-background-size: 40px 40px;
+  -moz-background-size: 40px 40px;
+  -o-background-size: 40px 40px;
+  background-size: 40px 40px;
+}
+.stripes-animated {
+  -webkit-animation: progress-bar-stripes 2s linear infinite;
+  -moz-animation: progress-bar-stripes 2s linear infinite;
+  -ms-animation: progress-bar-stripes 2s linear infinite;
+  -o-animation: progress-bar-stripes 2s linear infinite;
+  animation: progress-bar-stripes 2s linear infinite;
+}
+
+
+.default-shadow {
+  box-shadow: 0 0 5px @dark;
+}

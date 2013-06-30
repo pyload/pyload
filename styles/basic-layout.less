@@ -1,0 +1,111 @@
+﻿@import "common";
+
+/*
+    Header
+*/
+
+.navbar-inner {
+  width: 100%;
+  height: @header-height;
+}
+
+header:before {
+  position: absolute;
+  content: ' ';
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: transparent;
+  z-index: -1;
+  .default-shadow;
+}
+
+header a.title {
+  color: white;
+  font-family: SansationRegular, sans-serif;
+  font-size: @header-height / 1.5;
+  line-height: @header-height / 1.5;
+}
+
+.brand {
+  max-height: @header-height / 2;
+  padding-right: @header-height !important;
+}
+
+header .logo {
+  float: left;
+  margin-top: -4px;
+  margin-right: 10px;
+  width: 85px;
+  height: 87px;
+  background: url("../../img/default/logo.png") no-repeat;
+  background-size: 85px 87px;
+}
+
+#content-container {
+  padding-top: 50px;
+}
+
+/*
+    Footer
+*/
+footer { // Same gradient as navbar
+  .gradient(top, #222222, #111111);
+  color: @grey;
+  min-height: @footer-height; //  margin-top: -@footer-height;
+  position: relative;
+  width: 100%;
+  line-height: 16px;
+  z-index: 10;
+}
+
+footer:before {
+  position: absolute;
+  content: ' ';
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: transparent;
+  box-shadow: 0 0 5px black;
+  z-index: -1;
+}
+
+footer hr {
+  margin: 4px 0;
+  border-top-color: @greyDarker;
+  border-bottom-color: @greyDark;
+}
+
+footer .span2 {
+  font-size: 12px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+// This is the copyright span
+footer .offset1 {
+  padding-top: 6px;
+  padding-bottom: 0;
+}
+
+footer .copyright {
+  background: url(../../img/default/logo_grey.png) no-repeat;
+  background-size: 60px 60px;
+  background-position: 8px center;
+  height: 60px;
+  padding-left: 60px;
+  padding-top: 24px;
+  text-align: center;
+}
+
+footer h2 {
+  color: @light;
+  font-family: SansationLight, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 16px;
+  margin: 0;
+}
+
