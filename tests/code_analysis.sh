@@ -14,4 +14,4 @@ pep8 pyload > pep8.txt
 
 
 echo "Running pylint"
-pylint --reports=no pyload > pylint.txt || return 0
+pylint --reports=no pyload > pylint.txt || exit 0
