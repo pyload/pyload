@@ -1,5 +1,6 @@
-Description
-===========
+pyLoad
+======
+[![Build Status](http://nightly.pyload.org/buildStatus/icon?job=Nightly)](http://nightly.pyload.org/job/Nightly/)
 
 pyLoad is a free and open source personal cloud storage as well as download manager
 for all kind of operating systems and devices, designed to be extremely lightweight and
@@ -20,15 +21,14 @@ or help us out, visit https://github.com/pyload/pyload
 Documentation about extending pyLoad can be found at http://docs.pyload.org or join us at #pyload on irc.freenode.net
 
 Dependencies
-============
+------------
 
 You need at least python 2.5 to run pyLoad and all of these required libaries.
 They should be automatically installed when using pip install.
 The prebuilt pyload packages also install these dependencies or have them included, so manual install
 is only needed when installing pyLoad from source.
 
-Required
---------
+### Required
 
 - pycurl a.k.a python-curl
 - beaker
@@ -36,8 +36,7 @@ Required
 
 Some plugins require additional packages, only install these when needed.
 
-Optional
---------
+### Optional
 
 - pycrypto: RSDF/CCF/DLC support
 - tesseract, python-pil a.k.a python-imaging: Automatic captcha recognition for a small amount of plugins
@@ -47,22 +46,22 @@ Optional
 - pyOpenSSL: For SSL connection
 
 First start
-===========
+-----------
 
 Note: If you installed pyload via package-manager `python pyLoadCore.py` is probably equivalent to `pyLoadCore`
 
 Run::
 
-    python pyLoadCore.py
+    python pyload.py
 
 and follow the instructions of the setup assistent.
 
 For a list of options use::
 
-    python pyLoadCore.py -h
+    python pyload.py -h
 
 Configuration
-=============
+-------------
 
 After finishing the setup assistent pyLoad is ready to use and more configuration can be done via webinterface.
 Additionally you could simply edit the config files located in your pyLoad home dir (defaults to: ~/.pyload)
@@ -71,21 +70,20 @@ the options take a look at http://pyload.org/configuration.
 
 To restart the configure assistent run::
 
-    python pyLoadCore.py -s
+    python pyload.py -s
 
-Adding downloads
-----------------
+### Adding downloads
 
 To start the CLI and connect to a local server, run::
 
-    python pyLoadCli.py -l
+    python pyload-cli.py -l
 
 for more options refer to::
 
-    python pyLoadCli.py -h
+    python pyload-cli.py -h
 
 The webinterface can be accessed when pointing your webbrowser to the ip and configured port, defaults to http://localhost:8000
 
 Notes
-=====
+-----
 For more information, see http://pyload.org/
