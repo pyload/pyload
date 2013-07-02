@@ -4,44 +4,36 @@ import sys
 
 #from module import InitHomeDir
 
-#very ugly prints, but at least it works with python 3
-
 def main():
     print("#####   System Information   #####\n")
-    print("Platform:", sys.platform)
-    print("Operating System:", os.name)
-    print("Python:", sys.version.replace("\n", "")+ "\n")
+    print("Platform: " + sys.platform)
+    print("Operating System: " + os.name)
+    print("Python: " + sys.version.replace("\n", "")+ "\n")
 
     try:
         import pycurl
-        print("pycurl:", pycurl.version)
+        print("pycurl: " + pycurl.version)
     except:
-        print("pycurl:", "missing")
+        print("pycurl: missing")
 
     try:
         import Crypto
-        print("py-crypto:", Crypto.__version__)
+        print("py-crypto: " + Crypto.__version__)
     except:
-        print("py-crypto:", "missing")
+        print("py-crypto: missing")
 
 
     try:
         import OpenSSL
-        print("OpenSSL:", OpenSSL.version.__version__)
+        print("OpenSSL: " + OpenSSL.version.__version__)
     except:
-        print("OpenSSL:", "missing")
+        print("OpenSSL: missing")
 
     try:
         import Image
-        print("image libary:", Image.VERSION)
+        print("image library: " + Image.VERSION)
     except:
-        print("image libary:", "missing")
-
-    try:
-        import PyQt4.QtCore
-        print("pyqt:", PyQt4.QtCore.PYQT_VERSION_STR)
-    except:
-        print("pyqt:", "missing")
+        print("image library: missing")
 
     print("\n\n#####   System Status   #####")
     print("\n##  pyLoadCore  ##")
@@ -53,7 +45,7 @@ def main():
         core_err.append("Your python version is too new, Please use Python 2.6/2.7")
 
     if sys.version_info < (2, 5):
-        core_err.append("Your python version is to old, Please use at least Python 2.5")
+        core_err.append("Your python version is too old, Please use at least Python 2.5")
 
     try:
         import pycurl
@@ -75,7 +67,7 @@ def main():
     try:
         p = subprocess.call(["tesseract"], stdout=pipe, stderr=pipe)
     except:
-        core_err.append("Please install tesseract to use Hoster, which use captchas.")
+        core_info.append("Install tesseract to try automatic captcha resolution.")
 
     try:
         import OpenSSL
@@ -116,7 +108,7 @@ def main():
         print("\nPossible improvements for web interface:\n")
         for line in web_info:
             print(line)
-        
+
 
 if __name__ == "__main__":
     main()
