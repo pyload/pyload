@@ -28,7 +28,7 @@ class EasybytezCom(XFileSharingPro):
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
-    FILE_INFO_PATTERN = r'<h2>Download File (?P<N>.+)</h2>\s*<font [^>]+>You have requested <font color="red">[^<]+</font> \((?P<S>.+)\)</font>'
+    FILE_INFO_PATTERN = r'<span class="name">(?P<N>.+)</span><br>\s*<span class="size">(?P<S>[^<]+)</span>'
     FILE_OFFLINE_PATTERN = r'<h1>File not available</h1>'
 
     DIRECT_LINK_PATTERN = r'(http://(\w+\.(easyload|easybytez|zingload)\.(com|to)|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/[^"<]+)'
