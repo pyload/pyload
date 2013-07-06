@@ -2,7 +2,7 @@
   "name": "pyload-common",
   "version": "0.1.0",
   "ignore": [
-    "**/.*",
+    ".gitignore",
     "node_modules",
     "components"
   ],
