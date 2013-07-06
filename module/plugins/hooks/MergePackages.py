@@ -23,41 +23,46 @@ from re import sub
 
 class MergePackages(Hook):
     __name__ = "MergePackages"
-    __version__ = "0.02"
-    __description__ = "Merge new added package with existing one if has same name"
+    __version__ = "0.03"
+    __description__ = "Merges added package with an existing one if same name"
     __config__ = [
         ("activated", "bool", "Activated", "False"),
-        ("exactmatch", "bool", "Exact match", "False"),
-        ("samefolder", "bool", "Ignore name if same saving folder", "False"),
-        ("samelist", "bool", "Only merge if same list destination too", "True")
+        ("exactmatch", "bool", "Exact match", "False")
+        #("samefolder", "bool", "Ignore name if same saving folder", "False")
+        #("samelist", "bool", "Merge if same list destination too", "True")
     ]
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
 
+    event_map = {"linksAdded": "linksAdded"}
+
     def linksAdded(self, links, pid):
-        # self.logDebug("self.linksAdded")
         pypack = self.api.getPackageInfo(pid)
         queue = self.api.getQueue()
-        collector = self.getCollector()
-        exactmatch = self.getConf("exactmatch")
-        samefolder = self.getConf("samefolder")
-        samelist = self.getConf("samelist")
-        packname = pypack.name if not exactmatch else sub('[^A-Za-z0-9]+', '', pypack.name).lower()
-        packfolder = pypack.folder
+        collector = self.api.getCollector()
+        exactmatch = self.getConfig("exactmatch")
+        samesamefolder = False
+        samelist = False
+        #samefolder = self.getConfig("samefolder")
+        #samelist = self.getConfig("samelist")
+        pname = pypack.name if not exactmatch else sub('[^A-Za-z0-9]+', '', pypack.name).lower()
+        self.logDebug(pname)
+        #packfolder = pypack.folder
+        #self.logDebug(packfolder)
         if samelist:
             lists = [queue] if pypack.queue else [collector]
         else:
             lists = [queue, collector]
-        for list in lists:
-            for p in list:
-                pname = p.name if not exactmatch else sub('[^A-Za-z0-9]+', '', p.name).lower()
-                if pname == packname or p.folder == packfolder if samefolder else False:
-                    msg = "Merging %s links into %s package founded in %s list"
-                    self.logInfo(msg % (pypack.name, p.name, "queue" if p.queue else "collector"))
-                    self.api.addFiles(p.id, links)
-                    links = None
-                    return
+        for l in lists:
+            for listpack in l:
+                lpname = listpack.name if not exactmatch else sub('[^A-Za-z0-9]+', '', listpack.name).lower()
+                if lpname == pname or (listpack.folder == packfolder if samefolder else False):
+                    msg = "merging %s links into %s package"
+                    #msg = "merging %s links into %s package found in %s list"
+                    self.logInfo(msg % (pypack.name, listpack.name))
+                    #self.logInfo(msg % (pypack.name, listpack.name, "queue" if listpack.queue else "collector"))
+                    self.api.addFiles(listpack.id, links)
+                    del links[:]
 
     def setup(self):
         self.api = self.core.api
-
