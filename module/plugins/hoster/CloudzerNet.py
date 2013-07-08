@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.common.json_layer import json_loads
 from module.plugins.ReCaptcha import ReCaptcha
 from module.network.RequestFactory import getURL
+from module.utils import parseFileSize
 
 
 def getInfo(urls):
@@ -12,7 +13,13 @@ def getInfo(urls):
         if 'Location: http://cloudzer.net/404' in header:
             file_info = (url, 0, 1, url)
         else:
-            file_info = parseFileInfo(CloudzerNet, url, getURL(url, decode=True))
+            if url.endswith('/'):
+                api_data = getURL(url + 'status')
+            else:
+                api_data = getURL(url + '/status')
+            name, size = api_data.splitlines()
+            size = parseFileSize(size)
+            file_info = (name, size, 2, url)
         yield file_info
 
 
@@ -20,10 +27,10 @@ class CloudzerNet(SimpleHoster):
     __name__ = "CloudzerNet"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(cloudzer\.net/file/|clz\.to/(file/)?)(?P<ID>\w+).*"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """Cloudzer.net hoster plugin"""
-    __author_name__ = ("gs", "z00nx")
-    __author_mail__ = ("I-_-I-_-I@web.de", "z00nx0@gmail.com")
+    __author_name__ = ("gs", "z00nx", "stickell")
+    __author_mail__ = ("I-_-I-_-I@web.de", "z00nx0@gmail.com", "l.stickell@yahoo.it")
 
     FILE_SIZE_PATTERN = '<span class="size">(?P<S>[^<]+)</span>'
     WAIT_PATTERN = '<meta name="wait" content="(\d+)">'
