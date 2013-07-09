@@ -112,6 +112,11 @@ a:hover {
   font-size: 8em;
 }
 
+// Fixes cursor on hover, which was changes in recent font-awesome
+[class^="icon-"]:before, [class*=" icon-"]:before {
+    cursor: inherit;
+}
+
 // Will not work well in buttons/navs, would require more rules
 .iconf-larger {
   vertical-align: -10%;
