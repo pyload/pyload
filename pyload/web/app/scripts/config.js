@@ -13,7 +13,7 @@ require.config({
         cookie: '../components/jquery.cookie/jquery.cookie',
         omniwindow: 'vendor/jquery.omniwindow',
         select2: '../components/select2/select2',
-        bootstrap: 'vendor/bootstrap-2.3.2',
+        bootstrap: '../components/bootstrap-assets/js/bootstrap',
         underscore: '../components/underscore/underscore',
         backbone: '../components/backbone/backbone',
         marionette: '../components/backbone.marionette/lib/backbone.marionette',

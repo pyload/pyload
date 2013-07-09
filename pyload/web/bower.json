@@ -2,6 +2,7 @@
     "name": "pyload",
     "version": "0.1.0",
     "dependencies": {
+        "pyload-common": "https://github.com/pyload/pyload-common.git",
         "requirejs": "~2.1.6",
         "requirejs-text": "*",
         "require-handlebars-plugin": "*",
@@ -15,9 +16,7 @@
         "backbone.marionette": "~1.0.3",
         "handlebars.js": "1.0.0-rc.3",
         "jed": "~0.5.4",
-        "select2": "~3.4.0",
-        "bootstrap": "~2.3.2",
-        "font-awesome": "~3.2.0"
+        "select2": "~3.4.0"
     },
     "devDependencies": {}
 }

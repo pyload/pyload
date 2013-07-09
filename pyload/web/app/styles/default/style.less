@@ -1,10 +1,8 @@
-﻿@import "default/base";
-
+﻿@import "common";
 
 /*
     Header
 */
-
 header { //  background-color: @greyDark;
   .gradient(to bottom, #222222, #111111);
   height: @header-height;
@@ -16,10 +14,27 @@ header { //  background-color: @greyDark;
   color: #ffffff;
 
   a {
-      color: #ffffff;
+    color: #ffffff;
   }
   .container-fluid, .row-fluid {
     height: @header-height;
+  }
+
+  span.title {
+    color: white;
+    float: left;
+    font-family: SansationRegular, sans-serif;
+    font-size: 40px;
+    line-height: @header-height;
+    cursor: default;
+  }
+
+  .logo {
+    margin-right: 10px;
+    margin-top: 10px;
+    width: 105px;
+    height: 107px;
+    background-size: auto;
   }
 
 }
@@ -30,36 +45,6 @@ header { //  background-color: @greyDark;
 .centered {
   height: @header-inner-height;
   margin: 8px 0;
-}
-
-header:before {
-  position: absolute;
-  content: ' ';
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-color: transparent;
-  z-index: -1;
-  .default-shadow;
-}
-
-header span.title {
-  color: white;
-  float: left;
-  font-family: SansationRegular, sans-serif;
-  font-size: 40px;
-  line-height: @header-height;
-  cursor: default;
-}
-
-header .logo {
-  float: left;
-  margin-right: 10px;
-  margin-top: 10px;
-  width: 105px;
-  height: 107px;
-  background: url("../../images/default/logo.png") no-repeat;
 }
 
 .header-block {
@@ -301,66 +286,13 @@ header .logo {
   -webkit-border-radius: 15px;
 }
 
-
 /*
     Footer
 */
-footer { // Same gradient as navbar
-  .gradient(top, #222222, #111111);
-  color: @grey;
-  min-height: @footer-height;
-  margin-top: -@footer-height;
-  position: relative;
-  width: 100%;
-  line-height: 16px;
-  z-index: 10;
-}
-
-footer:before {
-  position: absolute;
-  content: ' ';
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-color: transparent;
-  box-shadow: 0 0 5px black;
-  z-index: -1;
-}
-
-footer hr {
-  margin: 4px 0;
-  border-top-color: @greyDarker;
-  border-bottom-color: @greyDark;
-}
-
-footer .span2 {
-  font-size: 12px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-}
-
-// This is the copyright span
-footer .offset1 {
-  padding-top: 8px;
-  padding-bottom: 0;
-}
-
 footer .copyright {
-  background: url(../../images/default/logo_grey.png) no-repeat;
   background-size: 40px 40px;
   background-position: 12px center;
   height: 40px;
   padding-left: 40px;
   padding-top: 10px;
-  text-align: center;
-}
-
-footer h2 {
-  color: @light;
-  font-family: SansationLight, sans-serif;
-  font-size: 16px;
-  font-weight: normal;
-  line-height: 16px;
-  margin: 0;
 }

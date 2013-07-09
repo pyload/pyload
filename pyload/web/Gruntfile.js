@@ -40,7 +40,7 @@ module.exports = function(grunt) {
                 },
                 files: [
                     '<%= yeoman.app %>/**/*.html',
-                    '{.tmp,<%= yeoman.app %>}/styles/**/*.css',
+                    '{<%= yeoman.app %>}/styles/**/*.css',
                     '{.tmp,<%= yeoman.app %>}/scripts/**/*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
@@ -124,7 +124,8 @@ module.exports = function(grunt) {
         },
         less: {
             options: {
-                paths: [yeomanConfig.app + '/components', yeomanConfig.app + '/styles', yeomanConfig.app + '/styles/default']
+                paths: [yeomanConfig.app + '/components', yeomanConfig.app + '/components/pyload-common/styles',
+                    yeomanConfig.app + '/styles/default']
                 //dumpLineNumbers: true
             },
             dist: {
@@ -133,7 +134,7 @@ module.exports = function(grunt) {
                         expand: true, // Enable dynamic expansion.
                         cwd: '<%= yeoman.app %>/styles/', // Src matches are relative to this path.
                         src: ['**/main.less'], // Actual pattern(s) to match.
-                        dest: '.tmp/styles/', // Destination path prefix.
+                        dest: '.tmp/styles', // Destination path prefix.
                         ext: '.css' // Dest filepaths will have this extension.
                     }
                 ]
@@ -161,7 +162,7 @@ module.exports = function(grunt) {
                     wrap: true,
 
                     // Delete already included files from dist
-                    // TODO: Fpr multiple mdulules it would delete to much files
+                    // TODO: For multiple modules it would delete to much files
                     done: function(done, output) {
                         var root = path.join(path.resolve('.'), yeomanConfig.app);
                         var parse = require('rjs-build-analysis').parse(output);
@@ -297,12 +298,12 @@ module.exports = function(grunt) {
         // Put files not handled in other tasks here
         copy: {
             //  Copy files from third party libraries
-            libs: {
+            stageComponents: {
                 files: [
                     {
                         expand: true,
                         flatten: true,
-                        cwd: '<% yeoman.app %>',
+                        cwd: '<%= yeoman.app %>',
                         dest: '.tmp/fonts',
                         src: [
                             '**/font-awesome/font/*'
@@ -311,12 +312,22 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         flatten: true,
-                        cwd: '<% yeoman.app %>',
+                        cwd: '<%= yeoman.app %>',
                         dest: '.tmp/vendor',
                         src: [
                             '**/select2/select2.{png,css}',
                             '**/select2/select2-spinner.gif',
                             '**/select2/select2x2.png'
+                        ]
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>/components/pyload-common',
+                        dest: '.tmp',
+                        src: [
+                            'favicon.ico',
+                            'images/*',
+                            'fonts/*'
                         ]
                     }
                 ]
@@ -337,15 +348,6 @@ module.exports = function(grunt) {
                             'styles/**/*.css',
                             'fonts/*'
                         ]
-                    },
-                    {
-                        expand: true,
-                        cwd: '.tmp/',
-                        dest: '<%= yeoman.dist %>/',
-                        src: [
-                            'fonts/*',
-                            '**/*.{css,gif,png,js,html}'
-                        ]
                     }
                 ]
             },
@@ -355,10 +357,11 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         cwd: '.tmp/',
-                        dest: '<%= yeoman.dist %>/',
+                        dest: '<%= yeoman.dist %>',
                         src: [
                             'fonts/*',
-                            '**/*.{css,gif,png,js,html}'
+                            'images/*',
+                            '**/*.{css,gif,png,js,html,ico}'
                         ]
                     }
                 ]
@@ -366,7 +369,7 @@ module.exports = function(grunt) {
         },
         concurrent: {
             server: [
-                'copy:libs',
+                'copy:stageComponents',
                 'less'
             ],
             test: [
