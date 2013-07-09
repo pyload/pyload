@@ -71,6 +71,11 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($
 
         },
 
+        setDownloadStatus: function(status) {
+            if (this.isDownload())
+                this.get('download').status = status;
+        },
+
         isDownload: function() {
             return this.has('download');
         },

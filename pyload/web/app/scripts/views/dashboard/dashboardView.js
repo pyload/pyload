@@ -65,7 +65,6 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
             update: function() {
                 console.log('Update package list');
 
-                // TODO: Both null
                 var packs = this.tree.get('packages');
                 this.files = this.tree.get('files');
 
@@ -156,8 +155,13 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
 
             // Refresh the file if it is currently shown
             fileUpdated: function(data) {
-                // this works with ids and object
-                var file = this.files.get(data);
+                var fid;
+                if (_.isObject(data))
+                    fid = data.fid;
+                else
+                    fid = data;
+                // this works with ids and object TODO: not anymore
+                var file = this.files.get(fid);
                 if (file)
                     if (_.isObject(data)) // update directly
                         file.set(data);

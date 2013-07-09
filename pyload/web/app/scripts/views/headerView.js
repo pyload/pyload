@@ -212,6 +212,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                                 progress: prog.getPercent(),
                                 eta: prog.get('eta')
                             }, {silent: true});
+                            file.setDownloadStatus(prog.get('download').status);
 
                             file.trigger('change:progress');
                         }

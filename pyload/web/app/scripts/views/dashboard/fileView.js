@@ -78,6 +78,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
             },
 
             progress_changed: function() {
+                // TODO: progress for non download statuses
                 if (!this.model.isDownload())
                     return;
 
@@ -94,7 +95,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
                     this.$('.second').html(
                         '<i class="icon-time"></i>&nbsp;' + formatTime(this.model.get('eta')));
 
-                } else // Every else state can be renderred normally
+                } else // Every else state can be rendered normally
                     this.render();
 
             }
