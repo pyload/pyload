@@ -105,7 +105,7 @@ module.exports = function(grunt) {
         },
         jshint: {
             options: {
-                jshintrc: '.jshintrc'
+                jshintrc: '<%= yeoman.app %>/components/pyload-common/.jshintrc'
             },
             all: [
                 'Gruntfile.js',

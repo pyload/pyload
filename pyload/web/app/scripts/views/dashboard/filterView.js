@@ -17,6 +17,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Pac
         return Backbone.Marionette.ItemView.extend({
 
             events: {
+                'click .li-check': 'toggle_selection',
                 'click .filter-type': 'filter_type',
                 'click .filter-state': 'switch_filter',
                 'submit .form-search': 'search'
@@ -24,7 +25,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Pac
 
             ui: {
                 'search': '.search-query',
-                'stateMenu': '.dropdown-toggle .state'
+                'stateMenu': '.dropdown-toggle .state',
+                'select': '.btn-check'
             },
 
             template: template,
@@ -123,6 +125,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Pac
                     return file.isFailed();
 
                 return true;
+            },
+
+            toggle_selection: function() {
+                App.vent.trigger('selection:toggle');
             },
 
             filter_type: function(e) {

@@ -1,6 +1,7 @@
 define([
     'app',
     'backbone',
+    'underscore',
 
     // Views
     'views/headerView',
@@ -12,7 +13,7 @@ define([
     'views/settings/settingsView',
     'views/accounts/accountListView'
 ], function(
-    App, Backbone, HeaderView, NotificationView, DashboardView, SelectionView, FilterView, LoginView, SettingsView, AccountListView) {
+    App, Backbone, _, HeaderView, NotificationView, DashboardView, SelectionView, FilterView, LoginView, SettingsView, AccountListView) {
     'use strict';
     // TODO some views does not need to be loaded instantly
 
@@ -30,8 +31,12 @@ define([
             this.header();
 
             App.actionbar.show(new FilterView());
-            // TODO: not completly visible after reattaching
-            App.selection.attachView(new SelectionView());
+
+            // TODO: not completely visible after reattaching
+            // now visible every time
+            if (_.isUndefined(App.selection.currentView) || _.isNull(App.selection.currentView))
+                App.selection.attachView(new SelectionView());
+
             App.content.show(new DashboardView());
         },
 

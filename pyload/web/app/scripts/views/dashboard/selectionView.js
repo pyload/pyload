@@ -28,9 +28,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/dashboard/select'],
                 App.vent.on('dashboard:filtered', render);
                 App.vent.on('package:selection', render);
                 App.vent.on('file:selection', render);
+                App.vent.on('selection:toggle', _.bind(this.select_toggle, this));
 
-                this.actionBar = $('.actionbar .btn-check');
-                this.actionBar.parent().click(_.bind(this.select_toggle, this));
 
                 // API events, maybe better to rely on internal ones?
                 App.vent.on('package:deleted', render);
@@ -71,11 +70,11 @@ define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/dashboard/select'],
 
                 // TODO: accessing ui directly, should be events
                 if (files > 0) {
-                    this.actionBar.addClass('icon-check').removeClass('icon-check-empty');
+                    App.actionbar.currentView.ui.select.addClass('icon-check').removeClass('icon-check-empty');
                     App.dashboard.ui.packages.addClass('ui-files-selected');
                 }
                 else {
-                    this.actionBar.addClass('icon-check-empty').removeClass('icon-check');
+                    App.actionbar.currentView.ui.select.addClass('icon-check-empty').removeClass('icon-check');
                     App.dashboard.ui.packages.removeClass('ui-files-selected');
                 }
 
