@@ -1,26 +1,26 @@
- {{#if single }}
-    {{ name }} ({{ statusmsg }})
-    {{ else }}
+{{#if single }}
+    {{ truncate name 32}} ({{ statusmsg }})
+{{ else }}
     {{#if downloads }}
-    {{ downloads }} downloads running {{#if speed }}({{ formatSize speed }}/s){{/if}}
+        {{ downloads }} downloads running {{#if speed }}({{ formatSize speed }}/s){{/if}}
     {{ else }}
-    No running tasks
+        No running tasks
     {{/if}}
-    {{/if}}
-    <i class="icon-list pull-right"></i>
-    <!-- TODO active animation -->
-    <div class="progress" id="globalprogress">
-        {{#if single }}
-        <div class="bar" style="width: {{ percent }}%">
-            {{ else }}
-            <div class="bar {{#if downloads }}running{{/if}}">
-                {{/if}}
-            </div>
-        </div>
-        <div class="sub">
-            {{#if linksqueue }}
-            {{ linksqueue }} downloads left ({{ formatSize sizequeue }})
+{{/if}}
+<i class="icon-list pull-right"></i>
+<!-- TODO active animation -->
+<div class="progress" id="globalprogress">
+    {{#if single }}
+    <div class="bar" style="width: {{ percent }}%">
+        {{ else }}
+        <div class="bar {{#if downloads }}running{{/if}}">
             {{/if}}
+        </div>
+    </div>
+    <div class="sub">
+        {{#if linksqueue }}
+        {{ linksqueue }} downloads left ({{ formatSize sizequeue }})
+        {{/if}}
     <span class="pull-right">
         {{ formatTime etaqueue }}
     </span>

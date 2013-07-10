@@ -165,7 +165,6 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 if (data === null) return;
 
                 if (data['@class'] === 'ServerStatus') {
-                    // TODO: load interaction when none available
                     this.status.set(data);
 
                     // There tasks at the server, but not in queue: so fetch them
@@ -213,7 +212,6 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                                 eta: prog.get('eta')
                             }, {silent: true});
                             file.setDownloadStatus(prog.get('download').status);
-
                             file.trigger('change:progress');
                         }
                     }

@@ -1,4 +1,4 @@
-include README.md LICENSE.md CLA pavement.py setup.py paver-minilib.zip
+include README.md LICENSE.md CLA pyload.py pyload-cli.py pavement.py setup.*
 
 recursive-include pyload *.py
 recursive-include pyload/plugins *_2*.pyc
@@ -14,7 +14,7 @@ prune pyload/web/app/components
 
 recursive-include docs Makefile *.py *.conf *.rst *.svg *.png
 
-recursive-include tests *.py *.txt *.sh
+recursive-include tests *.py *.txt *.sh *.org
 
 recursive-include locale *.pot *.mo
 

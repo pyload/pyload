@@ -1,50 +1,20 @@
 # -*- coding: utf-8 -*-                                                                                                                                
 
 # Valid files, with md5 hash
-# Please only use files around 5-15 MB and with explicit permission for redistribution
+[files]
 
-http://download.pyload.org/random.bin
-random.bin d76505d0869f9f928a17d42d66326307
-Mořská želva ( Зелёная черепаха .&+ 綠蠵龜 _@- Đồi mồi dứa ).tar 932212256dc0b0a1e71c0944eef633a4
-Mořská_želva_(_Зелёная_черепаха_.&+_綠蠵龜__@-_Đồi_mồi_dứa_).tar 932212256dc0b0a1e71c0944eef633a4
+random (机会,ឱកស,ランダム,隨機,лчаный,cơhội,შანსი,కంħن↓∂ƒ_স€קสม®¢äöář_æžĐşiồй_ныứ&+).bin 5dde9e312311d964572f5a33a0992a2c
+random100.bin f346c3ea47d8bfce3a12033129dec8ff
 
-# Hoster links, append ||offline or ||fail to mark your expectation
+[online]
 
-http://netload.in/datei9XirAJZs79/random.bin.htm
-http://rapidshare.com/files/445996776/random.bin
-http://hotfile.com/dl/101569859/2e01f04/random.bin.html
-http://www.megaupload.com/?d=1JZLOP3B
-http://www.shragle.com/files/f899389b/random.bin
-http://www10.zippyshare.com/v/76557688/file.html
-http://yourfiles.to/?d=312EC6E911
-http://depositfiles.com/files/k8la98953
-http://uploading.com/files/3896f5a1/random.bin/
+http://download.pyload.org/random%20(%e6%9c%ba%e4%bc%9a%2c%e1%9e%b1%e1%9e%80%e1%9e%9f%2c%e3%83%a9%e3%83%b3%e3%83%80%e3%83%a0%2c%e9%9a%a8%e6%a9%9f%2c%d0%bb%d1%87%d0%b0%d0%bd%d1%8b%d0%b9%2cc%c6%a1h%e1%bb%99i%2c%e1%83%a8%e1%83%90%e1%83%9c%e1%83%a1%e1%83%98%2c%e0%b0%95%e0%b0%82%c4%a7%d9%86%e2%86%93%e2%88%82%c6%92_%e0%a6%b8%e2%82%ac%d7%a7%e0%b8%aa%e0%b8%a1%c2%ae%c2%a2%c3%a4%c3%b6%c3%a1%c5%99_%c3%a6%c5%be%c4%90%c5%9fi%e1%bb%93%d0%b9_%d0%bd%d1%8b%e1%bb%a9%26%2b).bin
 
+http://www.putlocker.com/file/06DB5A3B9CBAD597
+http://www59.zippyshare.com/v/56973477/file.html
+http://www.share-online.biz/dl/IAOREQPMWG
+http://hbcyum.1fichier.com/
+http://bitshare.com/?f=5a1m0nia
+http://uploaded.net/file/n4fhw1ol
 
-http://ul.to/file/o41isx||offline
-http://www.4shared.com/file/-O5CBhQV/random.html||offline
-http://www.4shared.com/file/-O5CBhQV/random.html||offline
-http://www.fileserve.com/file/MxjZXjX||offline
-http://www.share-online.biz/download.php?id=PTCOX1GL6XAH||offline
-http://dl.free.fr/d4aL5dyXY||offline
-http://files.mail.ru/32EW66||offline
-http://www.shragle.com/files/f899389b/random.bin||offline
-
-
-# Hoster links with fancy unicode filenames:
-http://vs3iaw.1fichier.com/fr/
-http://www.4shared.com/file/rQltf2Fr/Mosk_elva___Зелная_черепаха___.html
-http://bezvadata.cz/stahnout/99273_morska-zelva-.-d-i-m-i-d-a-.tar
-http://www.crocko.com/A524453DA89841B4BFC4FB9125D6F186/
-http://czshare.com/2483034/zelva
-http://www.easybytez.com/etvhltkg0d05
-http://www.filejungle.com/f/qX5fxT/
-http://fp.io/43798f2b/
-http://www.filesonic.com/file/yU2cU6s
-http://www.fshare.vn/file/A7H8LSTP7Z/
-http://ifile.it/muwgivz
-http://letitbit.net/download/67793.60a7d3745791db7271a6e6c92cfe/Mořská_želva_(_Зелёная_черепаха_.___綠蠵龜___-_Đồi_mồi_dứa_).tar.html
-http://www.mediafire.com/file/n09th58z1x5r585
-http://www.quickshare.cz/stahnout-soubor/676150:morska-zelva----_-oi-moi-dua-tar_6MB
-http://www.uloz.to/12553820/morska-zelva-oi-moi-dua-tar
-http://www.wupload.com/file/2642593407/
+[offline]
