@@ -1,14 +1,13 @@
-define(['jquery', 'underscore', 'app', 'views/abstract/modalView', './input/inputLoader', 'text!tpl/default/queryDialog.html'],
+define(['jquery', 'underscore', 'app', 'views/abstract/modalView', './input/inputLoader', 'hbs!tpl/dialogs/interactionTask'],
     function($, _, App, modalView, load_input, template) {
         'use strict';
         return modalView.extend({
 
-            // TODO: submit on enter reloads the page sometimes
             events: {
                 'click .btn-success': 'submit',
                 'submit form': 'submit'
             },
-            template: _.compile(template),
+            template: template,
 
             // the notificationView
             parent: null,
@@ -56,6 +55,7 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', './input/inpu
                 }});
 
                 this.input.clear();
+                return false;
             },
 
             onShow: function() {

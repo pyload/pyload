@@ -100,7 +100,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/dashboard/select'],
             },
 
             trash: function() {
-                _.confirm('default/confirmDialog.html', function() {
+                _.confirm('dialogs/confirmDelete', function() {
 
                     var pids = [];
                     // TODO: delete many at once

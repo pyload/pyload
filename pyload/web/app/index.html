@@ -19,6 +19,15 @@
     <!-- endbuild -->
 
     <script type="text/javascript">
+
+        // Use value set by templateEngine or default val
+        function configValue(string, defaultValue) {
+            if (string.indexOf('{{') > -1)
+                return defaultValue;
+
+            return string;
+        }
+
         window.dates = {
             weeks: ['week', 'weeks'],
             days: ['day', 'days'],
@@ -27,13 +36,11 @@
             seconds: ['second', 'seconds']
         }; // TODO carefully when translating
 
-        // TODO: use configured values
         window.hostProtocol = window.location.protocol +  '//';
         window.hostAddress = window.location.hostname;
-        window.hostPort = '8001';
-        window.pathPrefix = "/";
-
-        window.wsAddress = "ws://%s:7227"; // TODO
+        window.hostPort = configValue('{{web}}', '8001');
+        window.pathPrefix = '/';
+        window.wsAddress = configValue('{{ws}}', 'ws://%s:7227');
 
         require(['config'], function(Config) {
             require(['default'], function(App) {

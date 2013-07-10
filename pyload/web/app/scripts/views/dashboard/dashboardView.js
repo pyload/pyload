@@ -5,9 +5,6 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
         // Renders whole dashboard
         return Backbone.Marionette.ItemView.extend({
 
-            // TODO:  refactor
-            active: $('.breadcrumb .active'),
-
             template: template,
 
             events: {
@@ -106,7 +103,6 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
 
                 pack.fetch({silent: true, success: function() {
                     console.log('Package ' + pack.get('pid') + ' loaded');
-                    self.active.text(pack.get('name'));
                     self.contentReady(pack.get('files'));
                 }, failure: function() {
                     self.failure();

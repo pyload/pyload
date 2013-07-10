@@ -1,4 +1,4 @@
-include README.md LICENSE.md CLA pyload.py pyload-cli.py pavement.py setup.*
+include *.py *.md setup.* CLA MANIFEST.in
 
 recursive-include pyload *.py
 recursive-include pyload/plugins *_2*.pyc

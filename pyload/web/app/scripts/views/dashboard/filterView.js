@@ -26,7 +26,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Pac
             ui: {
                 'search': '.search-query',
                 'stateMenu': '.dropdown-toggle .state',
-                'select': '.btn-check'
+                'select': '.btn-check',
+                'name': '.breadcrumb .active'
             },
 
             template: template,
@@ -36,11 +37,12 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Pac
                 this.state = Api.DownloadState.All;
 
                 // Apply the filter before the content is shown
-                App.vent.on('dashboard:contentReady', _.bind(this.apply_filter, this));
+                this.listenTo(App.vent, 'dashboard:contentReady', this.apply_filter);
+                this.listenTo(App.vent, 'dashboard:updated', this.updateName);
             },
 
             onRender: function() {
-                                // use our modified method
+                // use our modified method
                 $.fn.typeahead.Constructor.prototype.show = show;
                 this.ui.search.typeahead({
                     minLength: 2,
@@ -125,6 +127,11 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Pac
                     return file.isFailed();
 
                 return true;
+            },
+
+            updateName: function() {
+                // TODO
+//                this.ui.name.text(App.dashboard.package.get('name'));
             },
 
             toggle_selection: function() {

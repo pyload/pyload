@@ -19,9 +19,9 @@
 import time
 from os.path import join
 
-from bottle import route, static_file, response, redirect
+from bottle import route, static_file, response, redirect, template
 
-from webinterface import PROJECT_DIR, SETUP, APP_PATH, UNAVAILALBE
+from webinterface import PYLOAD, PROJECT_DIR, SETUP, APP_PATH, UNAVAILALBE
 
 from utils import login_required
 
@@ -31,6 +31,7 @@ def serve_icon(path):
     # TODO
     return redirect('/images/icon.png')
     # return static_file(path, root=join("tmp", "icons"))
+
 
 @route("/download/:fid")
 @login_required('Download')
@@ -48,8 +49,11 @@ def index():
         # TODO show different page
         pass
 
-    # TODO: render it as simple template with configuration
-    return server_static('index.html')
+    f = server_static('index.html')
+    content = f.body.read()
+    f.body = template(content, ws=PYLOAD.getWSAddress(), web=PYLOAD.getConfigValue('webinterface', 'port'))
+
+    return f
 
 # Very last route that is registered, could match all uris
 @route('/<path:path>')

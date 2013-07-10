@@ -25,11 +25,10 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
                     this.onHideDestroy = true;
                 }
                 else
-                    require(['text!tpl/default/modal.html'], function(template) {
+                    require(['hbs!tpl/dialogs/modal'], function(template) {
                         self.template = template;
                     });
             }
-
         },
 
         // TODO: whole modal stuff is not very elegant

@@ -1,9 +1,9 @@
 define(['jquery', 'backbone', 'underscore', 'app', 'collections/InteractionList', 'hbs!tpl/notification'],
-    function($, Backbone, _, App, InteractionList, queryModal, template) {
+    function($, Backbone, _, App, InteractionList, template) {
         'use strict';
 
         // Renders context actions for selection packages and files
-        return Backbone.View.extend({
+        return Backbone.Marionette.ItemView.extend({
 
             // Only view for this area so it's hardcoded
             el: '#notification-area',
@@ -23,8 +23,6 @@ define(['jquery', 'backbone', 'underscore', 'app', 'collections/InteractionList'
             initialize: function() {
                 this.tasks = new InteractionList();
 
-                this.$el.calculateHeight().height(0);
-
                 App.vent.on('interaction:added', _.bind(this.onAdd, this));
                 App.vent.on('interaction:deleted', _.bind(this.onDelete, this));
 
@@ -40,6 +38,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'collections/InteractionList'
 
             onDelete: function(task) {
                 this.tasks.remove(task);
+            },
+
+            onRender: function() {
+                this.$el.calculateHeight().height(0);
             },
 
             render: function() {
