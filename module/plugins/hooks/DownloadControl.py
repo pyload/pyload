@@ -73,7 +73,7 @@ class DownloadControl(Hook):
         self.syncSetting()
         chunks = self.getChunks(pyfile.pluginname, premium, hosters)
         self.config['download']['chunks'] = self.info['last'] = chunks
-        mag = 'download file using %s chunks'
+        msg = 'download file using %s chunks'
         self.logInfo(msg % chunks)
 
     def unload(self):
