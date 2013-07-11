@@ -23,7 +23,7 @@ from re import sub
 
 class MergePackages(Hook):
     __name__ = 'MergePackages'
-    __version__ = '0.06'
+    __version__ = '0.07'
     __description__ = 'Merges added package to an existing one with same name'
     __config__ = [
         ('activated', 'bool', 'Activated', 'False'),
@@ -41,8 +41,8 @@ class MergePackages(Hook):
         self.logDebug('starting pre-merge duplicate links check')
         pypack = self.api.getPackageData(pid)
         for url in links:
-            for pyfile in pypack.links:
-                if url == pyfile.url:
+            for link in pypack.links:
+                if url == link.url:
                     links.remove(url)
                     break
 
@@ -62,15 +62,15 @@ class MergePackages(Hook):
         else:
             lists = [collector, queue]
         for list in lists:
-            for listpypack in list:
-                lpname = listpypack.name if exactmatch else sub('[^A-Za-z0-9]+', '', listpypack.name).lower()
+            for lpypack in list:
+                lpname = lpypack.name if exactmatch else sub('[^A-Za-z0-9]+', '', lpypack.name).lower()
                 if lpname == pname:
                     msg = 'merging "%s" package to "%s" package found on "%s" list'
-                    self.logInfo(msg % (pypack.name, listpypack.name, 'queue' if listpypack.dest else 'collector'))
+                    self.logInfo(msg % (pypack.name, lpypack.name, 'queue' if lpypack.dest else 'collector'))
                     if doublecheck:
-                        self.doubleCheck(links, listpypack.pid)      
+                        self.doubleCheck(links, lpypack.pid)      
                     self.removeEvent('linksAdded', self.mergePackages)
-                    self.api.addFiles(listpypack.pid, links)
+                    self.api.addFiles(lpypack.pid, links)
                     self.addEvent('linksAdded', self.mergePackages)
                     del links[:]
                     self.logDebug('merge complete')
@@ -79,14 +79,15 @@ class MergePackages(Hook):
     ## event managing ##
     def addEvent(self, event, func):
         """Adds an event listener for event name"""
-        if event in self.manager.events:
-            if func in self.manager.events[event]:
+        if event in self.m.events:
+            if func in self.m.events[event]:
                 self.logDebug("Function already registered %s" % func)
             else:
-                self.manager.events[event].append(func)
+                self.m.events[event].append(func)
         else:
-            self.manager.events[event] = [func]
+            self.m.events[event] = [func]
 
     def setup(self):
         self.api = self.core.api
-        self.removeEvent = self.manager.removeEvent
+        self.m = self.manager
+        self.removeEvent = self.m.removeEvent
