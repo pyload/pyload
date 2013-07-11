@@ -77,7 +77,7 @@ define(['jquery', 'underscore', 'backbone', 'app', '../abstract/itemView', '../i
                 var self = this;
                 this.model.save({success: function() {
                     self.render();
-                    App.settingsView.refresh();
+                    App.vent.trigger('config:change');
                 }});
 
             },

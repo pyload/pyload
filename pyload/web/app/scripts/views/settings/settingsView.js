@@ -11,7 +11,6 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
 
             events: {
                 'click .settings-menu li > a': 'change_section',
-                'click .btn-add': 'choosePlugin', // TODO not in scope
                 'click .icon-remove': 'deleteConfig'
             },
 
@@ -41,6 +40,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
 
                 });
                 this.listenTo(App.vent, 'config:open', this.openConfig);
+                this.listenTo(App.vent, 'config:change', this.refresh);
 
                 this.refresh();
             },
@@ -75,7 +75,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
                         addons.push(item);
                 });
 
-                this.ui.menu.html(this.templateMenu({
+                this.$(this.ui.menu).html(this.templateMenu({
                     core: this.coreConfig,
                     plugin: plugins,
                     addon: addons
@@ -177,7 +177,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
                 $.ajax(App.apiRequest('deleteConfig', {plugin: name}, { success: function() {
                     self.refresh();
                 }}));
-
+                return false;
             }
 
         });
