@@ -3,7 +3,10 @@
 # Valid files, with md5 hash
 [files]
 
+# Two variants of filename with special chars
+räándöóm.bin 5dde9e312311d964572f5a33a0992a2c
 random (机会,ឱកស,ランダム,隨機,лчаный,cơhội,შანსი,కంħن↓∂ƒ_স€קสม®¢äöář_æžĐşiồй_ныứ&+).bin 5dde9e312311d964572f5a33a0992a2c
+
 random100.bin f346c3ea47d8bfce3a12033129dec8ff
 
 [online]

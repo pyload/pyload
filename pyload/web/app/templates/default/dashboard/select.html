@@ -1,8 +1,8 @@
 <i class="icon-check" data-toggle="tooltip" title="Deselect"></i>&nbsp;
-{{#if packs }}{{ packs }} package(s){{/if }}
-{{#if files }}
-{{#if packs }}, {{/if }}
-{{ files }} file(s)
+{{#if packs }}{{ ngettext "1 package" "%d packages" packs }}{{/if}}
+{{#if files}}
+{{#if packs}}, {{/if}}
+{{ ngettext "1 file" "%d files" files }}
 {{/if }}
 selected
 &nbsp;|&nbsp;

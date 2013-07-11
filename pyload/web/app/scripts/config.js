@@ -36,6 +36,9 @@ require.config({
         disableI18n: true,
         helperPathCallback:       // Callback to determine the path to look for helpers
             function(name) {
+                if (name === '_' || name === 'ngettext')
+                    name = 'gettext';
+
                 // Some helpers are accumulated into one file
                 if (name.indexOf('file') === 0)
                     name = 'fileHelper';
