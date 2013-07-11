@@ -1,6 +1,6 @@
   # -*- coding: utf-8 -*-
 
-"""
+'''
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 3 of the License,
@@ -15,54 +15,78 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
     @author: Walter Purcaro
-"""
+'''
 
 from module.plugins.Hook import Hook
 from re import sub
 
 
 class MergePackages(Hook):
-    __name__ = "MergePackages"
-    __version__ = "0.03"
-    __description__ = "Merges added package with an existing one if same name"
+    __name__ = 'MergePackages'
+    __version__ = '0.05'
+    __description__ = 'Merges added package to an existing one with same name'
     __config__ = [
-        ("activated", "bool", "Activated", "False"),
-        ("exactmatch", "bool", "Exact match", "False")
-        #("samefolder", "bool", "Ignore name if same saving folder", "False")
-        #("samelist", "bool", "Merge if same list destination too", "True")
+        ('activated', 'bool', 'Activated', 'False'),
+        ('exactmatch', 'bool', 'Exact match', 'False'),
+        ('listorder', 'Queue;Collector', 'List to check first', 'Queue'),
+        ('samelist', 'bool', 'Don\'t merge package if destination list is different', 'True'),
+        ('doublecheck', 'bool', 'Don\'t merge link if already exists', 'True')
     ]
-    __author_name__ = ("Walter Purcaro")
-    __author_mail__ = ("vuolter@gmail.com")
+    __author_name__ = ('Walter Purcaro')
+    __author_mail__ = ('vuolter@gmail.com')
 
-    event_map = {"linksAdded": "linksAdded"}
+    event_map = {'linksAdded': 'linksAdded'}
+
+    def doubleCheck(self, links, pid):
+        self.logDebug('starting pre-merge duplicate links check')
+        pypack = self.api.getPackageData(pid)
+        for url in links:
+            for pyfile in pypack.links:
+                if url == pyfile.url:
+                    links.remove(url)
+                    break
 
     def linksAdded(self, links, pid):
+        exactmatch = self.getConfig('exactmatch')
+        listorder = self.getConfig('listorder')
+        samelist = self.getConfig('samelist')
+        doublecheck = self.getConfig('doublecheck')
         pypack = self.api.getPackageInfo(pid)
         queue = self.api.getQueue()
         collector = self.api.getCollector()
-        exactmatch = self.getConfig("exactmatch")
-        samesamefolder = False
-        samelist = False
-        #samefolder = self.getConfig("samefolder")
-        #samelist = self.getConfig("samelist")
-        pname = pypack.name if not exactmatch else sub('[^A-Za-z0-9]+', '', pypack.name).lower()
-        self.logDebug(pname)
-        #packfolder = pypack.folder
-        #self.logDebug(packfolder)
+        pname = pypack.name if exactmatch else sub('[^A-Za-z0-9]+', '', pypack.name).lower()
         if samelist:
-            lists = [queue] if pypack.queue else [collector]
-        else:
+            lists = [queue] if pypack.dest else [collector]
+        elif listorder == 'Queue':
             lists = [queue, collector]
-        for l in lists:
-            for listpack in l:
-                lpname = listpack.name if not exactmatch else sub('[^A-Za-z0-9]+', '', listpack.name).lower()
-                if lpname == pname or (listpack.folder == packfolder if samefolder else False):
-                    msg = "merging %s links into %s package"
-                    #msg = "merging %s links into %s package found in %s list"
-                    self.logInfo(msg % (pypack.name, listpack.name))
-                    #self.logInfo(msg % (pypack.name, listpack.name, "queue" if listpack.queue else "collector"))
-                    self.api.addFiles(listpack.id, links)
+        else:
+            lists = [collector, queue]
+        for list in lists:
+            for listpypack in list:
+                lpname = listpypack.name if exactmatch else sub('[^A-Za-z0-9]+', '', listpypack.name).lower()
+                if lpname == pname:
+                    msg = 'merging "%s" package to "%s" package found on "%s" list'
+                    self.logInfo(msg % (pypack.name, listpypack.name, 'queue' if listpypack.dest else 'collector'))
+                    if doublecheck:
+                        self.doubleCheck(links, listpypack.pid)      
+                    self.removeEvent('linksAdded', self.linksAdded)
+                    self.api.addFiles(listpypack.pid, links)
+                    self.addEvent('linksAdded', self.linksAdded)
                     del links[:]
+                    self.logDebug('merge complete')
+                    return
+
+    ## event managing ##
+    def addEvent(self, event, func):
+        """Adds an event listener for event name"""
+        if event in self.manager.events:
+            if func in self.manager.events[event]:
+                self.logDebug("Function already registered %s" % func)
+            else:
+                self.manager.events[event].append(func)
+        else:
+            self.manager.events[event] = [func]
 
     def setup(self):
         self.api = self.core.api
+        self.removeEvent = self.manager.removeEvent
