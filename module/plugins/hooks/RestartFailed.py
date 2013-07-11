@@ -1,6 +1,6 @@
   # -*- coding: utf-8 -*-
 
-"""
+'''
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 3 of the License,
@@ -15,59 +15,64 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
     @author: Walter Purcaro
-"""
+'''
 
 from module.plugins.Hook import Hook
 
 
 class RestartFailed(Hook):
-    __name__ = "RestartFailed"
-    __version__ = "2.00"
-    __description__ = "Automatically restart failed download"
+    __name__ = 'RestartFailed'
+    __version__ = '2.01'
+    __description__ = 'Automatically restart failed download'
     __config__ = [
-        ("activated", "bool", "Activated", "False"),
-        ("rsMode", "all;only premium", "Restart when download fails", "all"),
-        ("fWaitime", "int", "Free: Retry wait time (min)", "5"),
-        ("fTries", "int", "Free: Number of maximum retries", "3"),
-        ("pWaitime", "int", "Premium: Retry wait time (min)", "5"),
-        ("pTries", "int", "Premium: Number of maximum retries", "3"),
-        ("rsFirstly", "bool", "Restart immediately firstly", "True"),
-        ("rsLastly", "once only; repeat; repeat all; no", "Restart after 24 hours lastly", "once only")
+        ('activated', 'bool', 'Activated', 'False'),
+        ('rsMode', 'premium + free;only premium', 'Working mode', 'premium + free'),
+        ('pWaitime', 'int', 'Premium: retry wait time (min)', '5'),
+        ('pTries', 'int', 'Premium: number of maximum retries', '3'),
+        ('fWaitime', 'int', 'Free: retry wait time (min)', '30'),
+        ('fTries', 'int', 'Free: number of maximum retries', '4'),
+        ('rsFirst', 'bool', 'Restart immediately firstly', 'True'),
+        ('rsLast', 'once only;repeat;repeat + retry;no', 'Restart after 24 hours lastly', 'once only')
     ]
-    __author_name__ = ("Walter Purcaro")
-    __author_mail__ = ("vuolter@gmail.com")
+    __author_name__ = ('Walter Purcaro')
+    __author_mail__ = ('vuolter@gmail.com')
 
-    def downloadFailed(self, pyfile):
-        # self.logDebug("self.downloadFailed")
-        firstly = self.getConf("rsFirstly")
-        lastly = self.getConf("rsLastly")
-        mode = self.getConf("rsMode")
+    event_map = {'downloadFailed': 'restartFailed'}
+
+    def restartFailed(self, pyfile):
+        rsfirst = self.getConfig('rsFirst')
+        rslast = self.getConfig('rsLast')
+        mode = self.getConfig('rsMode')
         error = pyfile.error
         premium = pyfile.plugin.premium
         if not premium:
-            if mode == "only premium":
+            if mode == 'only premium':
                 return
-            tries = self.getConf("fTries")
-            waitime = self.getConf("fWaitime")
+            tries = self.getConfig('fTries')
+            waitime = self.getConfig('fWaitime')
         else:
-            tries = self.getConf("pTries")
-            waitime = self.getConf("pWaitime")
+            tries = self.getConfig('pTries')
+            waitime = self.getConfig('pWaitime')
+        self.logDebug('premium: %s , error: %s , tries: %s , waitime: %s min' % (premium, error, tries, waitime))
+        msgtime = '%s each time' % waitime
         waitime *= 60
-        pyfile.error = None
-        if error == "Restart failed" or "Retry failed":
-            if lastly == "no" or ("once only" and error == "Restart failed"):
+        if error == 'Restart failed' or error == 'Retry failed':
+            if rslast == 'no' or (rslast == 'once only' and error == 'Restart failed'):
                 return
-            elif "repeat all":
-                msg = "Restart aborted"
+            elif rslast == 'repeat + retry':
+                reason = 'Restart aborted'
             else:
-                msg = "Restart failed"
+                reason = 'Restart failed'
             tries = 1
             waitime = 86400  #: 24 hours
-        elif not "Immediately retry failed" and firstly:
+            msgtime = '24 hours'
+        elif error != 'Immediately retry failed' and rsfirst:
             tries = 1
             waitime = 1
-            msg = "Immediately retry failed"
+            reason = 'Immediately retry failed'
+            msgtime = 'one second'
         else:
-            msg = "Restart failed" if lastly == "no" else "Retry failed"
-        self.logInfo("Restart %s, retrying %s times, waiting %s minutes each time" % (pyload.name, str(tries), str(waitime)))
-        pyfile.plugin.retry(tries, waitime, msg)
+            reason = 'Restart failed' if rslast == 'no' else 'Retry failed'
+        msglog = 'Restart %s , retry %s times, waiting %s'
+        self.logInfo(msglog % (pyfile.name, tries, msgtime))
+        pyfile.plugin.retry(tries, waitime, reason)
