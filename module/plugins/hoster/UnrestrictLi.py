@@ -35,7 +35,7 @@ def secondsToMidnight():
 
 class UnrestrictLi(Hoster):
     __name__ = "UnrestrictLi"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __type__ = "hoster"
     __pattern__ = r"https?://.*(unrestrict|unr)\.li"
     __description__ = """Unrestrict.li hoster plugin"""
@@ -43,7 +43,7 @@ class UnrestrictLi(Hoster):
     __author_mail__ = ("l.stickell@yahoo.it")
 
     def init(self):
-        self.chunkLimit = -1
+        self.chunkLimit = 16
         self.resumeDownload = True
 
     def process(self, pyfile):
