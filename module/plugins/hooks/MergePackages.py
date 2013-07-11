@@ -23,19 +23,19 @@ from re import sub
 
 class MergePackages(Hook):
     __name__ = 'MergePackages'
-    __version__ = '0.05'
+    __version__ = '0.06'
     __description__ = 'Merges added package to an existing one with same name'
     __config__ = [
         ('activated', 'bool', 'Activated', 'False'),
         ('exactmatch', 'bool', 'Exact match', 'False'),
-        ('listorder', 'Queue;Collector', 'List to check first', 'Queue'),
+        ('listorder', 'queue;collector', 'List to check first', 'queue'),
         ('samelist', 'bool', 'Don\'t merge package if destination list is different', 'True'),
         ('doublecheck', 'bool', 'Don\'t merge link if already exists', 'True')
     ]
     __author_name__ = ('Walter Purcaro')
     __author_mail__ = ('vuolter@gmail.com')
 
-    event_map = {'linksAdded': 'linksAdded'}
+    event_map = {'linksAdded': 'mergePackages'}
 
     def doubleCheck(self, links, pid):
         self.logDebug('starting pre-merge duplicate links check')
@@ -46,7 +46,7 @@ class MergePackages(Hook):
                     links.remove(url)
                     break
 
-    def linksAdded(self, links, pid):
+    def mergePackages(self, links, pid):
         exactmatch = self.getConfig('exactmatch')
         listorder = self.getConfig('listorder')
         samelist = self.getConfig('samelist')
@@ -57,7 +57,7 @@ class MergePackages(Hook):
         pname = pypack.name if exactmatch else sub('[^A-Za-z0-9]+', '', pypack.name).lower()
         if samelist:
             lists = [queue] if pypack.dest else [collector]
-        elif listorder == 'Queue':
+        elif listorder == 'queue':
             lists = [queue, collector]
         else:
             lists = [collector, queue]
@@ -69,9 +69,9 @@ class MergePackages(Hook):
                     self.logInfo(msg % (pypack.name, listpypack.name, 'queue' if listpypack.dest else 'collector'))
                     if doublecheck:
                         self.doubleCheck(links, listpypack.pid)      
-                    self.removeEvent('linksAdded', self.linksAdded)
+                    self.removeEvent('linksAdded', self.mergePackages)
                     self.api.addFiles(listpypack.pid, links)
-                    self.addEvent('linksAdded', self.linksAdded)
+                    self.addEvent('linksAdded', self.mergePackages)
                     del links[:]
                     self.logDebug('merge complete')
                     return
