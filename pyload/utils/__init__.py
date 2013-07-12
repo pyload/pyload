@@ -19,24 +19,19 @@ json_loads = json.loads
 json_dumps = json.dumps
 
 def decode(string):
-    """ decode string with utf if possible """
-    try:
-        if type(string) == str:
-            return string.decode("utf8", "replace")
-        else:
-            return string
-    except:
+    """ decode string to unicode with utf8 """
+    if type(string) == str:
+        return string.decode("utf8", "replace")
+    else:
         return string
 
 def encode(string):
-    """ decode string to utf if possible """
-    try:
-        if type(string) == unicode:
-            return string.encode("utf8", "replace")
-        else:
-            return string
-    except:
+    """ decode string to utf8 """
+    if type(string) == unicode:
+        return string.encode("utf8", "replace")
+    else:
         return string
+
 
 def remove_chars(string, repl):
     """ removes all chars in repl from string"""

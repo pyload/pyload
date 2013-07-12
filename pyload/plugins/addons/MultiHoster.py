@@ -26,7 +26,7 @@ class MultiHoster(Addon):
 
     def addHoster(self, account):
 
-        self.logInfo(_("Added MultiHoster %s") % account.__name__)
+        self.logInfo(_("Activated MultiHoster %s") % account.__name__)
 
         pluginMap = {}
         for name in self.core.pluginManager.getPlugins("hoster").keys():
@@ -62,12 +62,13 @@ class MultiHoster(Addon):
         # recreate plugin tuple for new regexp
         hoster = self.core.pluginManager.getPlugins("hoster")
         p = hoster[account.__name__]
-        new = PluginTuple(p.version, re.compile(regexp), p.deps, p.user, p.path)
+        new = PluginTuple(p.version, re.compile(regexp), p.deps, p.category, p.user, p.path)
         hoster[account.__name__] = new
 
 
     @AddEventListener("account:deleted")
     def refreshAccounts(self, plugin=None, user=None):
+        self.logDebug("Re-checking accounts")
 
         self.plugins = {}
         for name, account in self.core.accountManager.iterAccounts():

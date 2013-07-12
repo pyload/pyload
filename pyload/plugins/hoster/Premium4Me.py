@@ -5,9 +5,8 @@ from urllib import quote
 from os.path import exists
 from os import remove
 
-from module.plugins.Hoster import Hoster
-from module.utils import fs_encode
-
+from pyload.plugins.Hoster import Hoster
+from pyload.utils.fs import fs_encode
 
 class Premium4Me(Hoster):
     __name__ = "Premium4Me"
