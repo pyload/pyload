@@ -57,7 +57,7 @@ class ExtractArchive(Addon):
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = "Extract different kind of archives"
     __config__ = [("activated", "bool", "Activated", True),
         ("fullpath", "bool", "Extract full path", True),
@@ -152,7 +152,7 @@ class ExtractArchive(Addon):
                 out = save_join(dl, p.folder, self.getConfig("destination"), "")
                 #relative to package folder if destination is relative, otherwise absolute path overwrites them
 
-                if self.getConf("subfolder"):
+                if self.getConfig("subfolder"):
                     out = join(out, fs_encode(p.folder))
 
                 if not exists(out):

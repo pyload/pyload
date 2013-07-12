@@ -11,11 +11,11 @@ from module.utils import fs_encode
 
 class Premium4Me(Hoster):
     __name__ = "Premium4Me"
-    __version__ = "0.05"
+    __version__ = "0.07"
     __type__ = "hoster"
 
-    __pattern__ = r"http://premium4.me/.*"
-    __description__ = """premium4.me hoster plugin"""
+    __pattern__ = r"http://premium.to/.*"
+    __description__ = """Premium.to hoster plugin"""
     __author_name__ = ("RaNaN", "zoidberg", "stickell")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
@@ -25,10 +25,10 @@ class Premium4Me(Hoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.logError(_("Please enter your premium4.me account or deactivate this plugin"))
-            self.fail("No premium4.me account provided")
+            self.logError(_("Please enter your premium.to account or deactivate this plugin"))
+            self.fail("No premium.to account provided")
 
-        self.logDebug("premium4.me: Old URL: %s" % pyfile.url)
+        self.logDebug("premium.to: Old URL: %s" % pyfile.url)
 
         tra = self.getTraffic()
 
@@ -36,13 +36,13 @@ class Premium4Me(Hoster):
         self.req.setOption("timeout", 120)
 
         self.download(
-            "http://premium4.me/api/getfile.php?authcode=%s&link=%s" % (self.account.authcode, quote(pyfile.url, "")),
+            "http://premium.to/api/getfile.php?authcode=%s&link=%s" % (self.account.authcode, quote(pyfile.url, "")),
             disposition=True)
 
         check = self.checkDownload({"nopremium": "No premium account available"})
 
         if check == "nopremium":
-            self.retry(3, 60, 'No premium account available')
+            self.retry(60, 300, 'No premium account available')
 
         err = ''
         if self.req.http.code == '420':
@@ -64,7 +64,7 @@ class Premium4Me(Hoster):
 
     def getTraffic(self):
         try:
-            traffic = int(self.load("http://premium4.me/api/traffic.php?authcode=%s" % self.account.authcode))
+            traffic = int(self.load("http://premium.to/api/traffic.php?authcode=%s" % self.account.authcode))
         except:
             traffic = 0
         return traffic       

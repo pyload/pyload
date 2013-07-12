@@ -16,6 +16,9 @@
     @author: zoidberg
 """
 
+# Test link (random.bin):
+# http://uploadhero.co/dl/wQBRAVSM
+
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 

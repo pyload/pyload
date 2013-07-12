@@ -15,16 +15,22 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
 
-class DdlstorageComFolder(SimpleCrypter):
-    __name__ = "DdlstorageComFolder"
-    __type__ = "crypter"
-    __pattern__ = r"http://(?:\w*\.)*?ddlstorage.com/folder/\w{10}"
-    __version__ = "0.02"
-    __description__ = """DDLStorage.com Folder Plugin"""
-    __author_name__ = ("godofdream", "stickell")
-    __author_mail__ = ("soilfiction@gmail.com", "l.stickell@yahoo.it")
+class HundredEightyUploadCom(XFileSharingPro):
+    __name__ = "HundredEightyUploadCom"
+    __type__ = "hoster"
+    __pattern__ = r"http://(?:\w*\.)?180upload\.com/(\w+).*"
+    __version__ = "0.01"
+    __description__ = """180upload.com hoster plugin"""
+    __author_name__ = ("stickell")
+    __author_mail__ = ("l.stickell@yahoo.it")
 
-    LINK_PATTERN = '<a class="sub_title" style="text-decoration:none;" href="(http://www.ddlstorage.com/.*)">'
+    FILE_NAME_PATTERN = r'Filename:</b></td><td nowrap>(?P<N>.+)</td></tr>-->'
+    FILE_SIZE_PATTERN = r'Size:</b></td><td>(?P<S>[\d.]+) (?P<U>[A-Z]+)\s*<small>'
+
+    HOSTER_NAME = "180upload.com"
+
+
+getInfo = create_getInfo(HundredEightyUploadCom)

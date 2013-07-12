@@ -46,9 +46,9 @@ class CaptchaTraderException(Exception):
 
 class CaptchaTrader(Addon):
     __name__ = "CaptchaTrader"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __description__ = """send captchas to captchatrader.com"""
-    __config__ = [("activated", "bool", "Activated", True),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Password", ""),]

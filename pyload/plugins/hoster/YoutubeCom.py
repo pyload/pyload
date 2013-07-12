@@ -34,7 +34,7 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:[^/]*?)youtube\.com/watch.*?[?&]v=.*"
-    __version__ = "0.32"
+    __version__ = "0.34"
     __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
         ("fmt", "int", "FMT/ITAG Number (5-102, 0 for auto)", 0),
         (".mp4", "bool", "Allow .mp4", True),
@@ -76,24 +76,24 @@ class YoutubeCom(Hoster):
     def process(self, pyfile):
         html = self.load(pyfile.url, decode=True)
 
-        if '<h1 id="unavailable-message" class="message">' in html:
+        if re.search(r'<div id="player-unavailable" class="\s*player-width player-height\s*">', html):
             self.offline()
 
         if "We have been receiving a large volume of requests from your network." in html:
             self.tempOffline()
 
         #get config
-        use3d = self.getConf("3d")
+        use3d = self.getConfig("3d")
         if use3d:
             quality = {"sd":82,"hd":84,"fullhd":85,"240p":83,"360p":82,"480p":82,"720p":84,"1080p":85,"3072p":85}
         else:
             quality = {"sd":18,"hd":22,"fullhd":37,"240p":5,"360p":18,"480p":35,"720p":22,"1080p":37,"3072p":38}
-        desired_fmt = self.getConf("fmt")
+        desired_fmt = self.getConfig("fmt")
         if desired_fmt and desired_fmt not in self.formats:
             self.logWarning("FMT %d unknown - using default." % desired_fmt)
             desired_fmt = 0
         if not desired_fmt:
-            desired_fmt = quality.get(self.getConf("quality"), 18)
+            desired_fmt = quality.get(self.getConfig("quality"), 18)
 
         #parse available streams
         streams = re.search(r'"url_encoded_fmt_stream_map": "(.*?)",', html).group(1)

@@ -18,13 +18,14 @@
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
-class DdlstorageComFolder(SimpleCrypter):
-    __name__ = "DdlstorageComFolder"
+class BitshareComFolder(SimpleCrypter):
+    __name__ = "BitshareComFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:\w*\.)*?ddlstorage.com/folder/\w{10}"
-    __version__ = "0.02"
-    __description__ = """DDLStorage.com Folder Plugin"""
-    __author_name__ = ("godofdream", "stickell")
-    __author_mail__ = ("soilfiction@gmail.com", "l.stickell@yahoo.it")
+    __pattern__ = r"http://(?:www\.)?bitshare\.com/\?d=\w+"
+    __version__ = "0.01"
+    __description__ = """Bitshare.com Folder Plugin"""
+    __author_name__ = ("stickell")
+    __author_mail__ = ("l.stickell@yahoo.it")
 
-    LINK_PATTERN = '<a class="sub_title" style="text-decoration:none;" href="(http://www.ddlstorage.com/.*)">'
+    LINK_PATTERN = r'<a href="(http://bitshare.com/files/.+)">.+</a></td>'
+    TITLE_PATTERN = r'View public folder "(?P<title>.+)"</h1>'

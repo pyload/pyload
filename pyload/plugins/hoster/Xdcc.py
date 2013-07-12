@@ -32,7 +32,7 @@ from module.plugins.Hoster import Hoster
 
 class Xdcc(Hoster):
     __name__ = "Xdcc"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __pattern__ = r'xdcc://.*?(/#?.*?)?/.*?/#?\d+/?' # xdcc://irc.Abjects.net/#channel/[XDCC]|Shit/#0004/
     __type__ = "hoster"
     __config__ = [
@@ -91,9 +91,9 @@ class Xdcc(Hoster):
         chan   = m.group(2)
         bot    = m.group(3)
         pack   = m.group(4)
-        nick   = self.getConf('nick')
-        ident  = self.getConf('ident')
-        real   = self.getConf('realname')
+        nick   = self.getConfig('nick')
+        ident  = self.getConfig('ident')
+        real   = self.getConfig('realname')
         
         temp = server.split(':')
         ln = len(temp)
