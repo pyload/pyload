@@ -20,7 +20,9 @@ path.fnmatch = new_fnmatch
 
 import os
 import sys
-import re
+import shutil
+from glob import glob
+from tempfile import mkdtemp
 from subprocess import call, Popen
 
 PROJECT_DIR = path(__file__).dirname()
@@ -48,7 +50,7 @@ options(
 )
 
 # xgettext args
-xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad",
+xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyload",
          "--package-version=%s" % __version__, "--msgid-bugs-address='bugs@pyload.org'"]
 
 
@@ -116,39 +118,44 @@ def generate_locale():
     """ Generates localisation files """
     # TODO restructure, many references are outdated
 
-    EXCLUDE = ["BeautifulSoup.py", "module/gui", "module/cli", "web/locale", "web/ajax", "web/cnl", "web/pyload",
-               "setup.py"]
-    makepot("core", path("pyload"), EXCLUDE, "./pyLoadCore.py\n")
+    EXCLUDE = ["pyload/lib", "pyload/cli", "pyload/setup", "pyload/plugins", "Setup.py"]
 
-    makepot("cli", path("module") / "cli", [], includes="./pyLoadCli.py\n")
-    makepot("setup", "", [], includes="./module/setup.py\n")
+    makepot("core", path("pyload"), EXCLUDE)
+    makepot("plugins", path("pyload") / "plugins")
+    makepot("setup", "", [], includes="./pyload/Setup.py\n")
+    makepot("cli", path("pyload") / "cli", [])
 
-    EXCLUDE = ["ServerThread.py", "web/media/default"]
-
-    # strings from js files
-    strings = set()
-
-    for fi in path("module/web").walkfiles():
-        if not fi.name.endswith(".js") and not fi.endswith(".coffee"): continue
-        with open(fi, "rb") as c:
-            content = c.read()
-
-            strings.update(re.findall(r"_\s*\(\s*\"([^\"]+)", content))
-            strings.update(re.findall(r"_\s*\(\s*\'([^\']+)", content))
-
-    trans = path("module") / "web" / "translations.js"
-
-    with open(trans, "wb") as js:
-        for s in strings:
-            js.write('_("%s")\n' % s)
-
-    makepot("web", path("module/web"), EXCLUDE, "./%s\n" % trans.relpath(), [".py", ".html"], ["--language=Python"])
-
-    trans.remove()
+    # TODO: web ui
 
     path("includes.txt").remove()
 
     print "Locale generated"
+
+@task
+@cmdopts([
+    ('key=', 'k', 'api key')
+])
+def upload_locale(options):
+    """ Uploads the locale files to translation server """
+    tmp = path(mkdtemp())
+    print tmp
+
+    shutil.copy('locale/crowdin.yaml', tmp)
+    os.mkdir(tmp / 'pyLoad')
+    for f in glob('locale/*.pot'):
+        if os.path.isfile(f):
+            shutil.copy(f, tmp / 'pyLoad')
+
+    config = tmp / 'crowdin.yaml'
+    content = open(config, 'rb').read()
+    content = content.format(key=options.key, tmp=tmp)
+    f = open(config, 'wb')
+    f.write(content)
+    f.close()
+
+    call(['crowdin-cli', '-c', config, 'upload', 'source'])
+
+    shutil.rmtree(tmp)
 
 
 @task
