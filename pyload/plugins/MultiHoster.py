@@ -22,7 +22,7 @@ class MultiHoster(Account):
     """
 
     #: List of hoster names that will be replaced so pyLoad will recognize them: (orig_name, pyload_name)
-    replacements = [("freakshare.net", "freakshare.com")]
+    replacements = [("freakshare.net", "freakshare.com"), ("uploaded.net", "uploaded.to")]
 
     #: Load new hoster list every x seconds
     hoster_timeout = 300

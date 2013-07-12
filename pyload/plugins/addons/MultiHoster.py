@@ -57,7 +57,12 @@ class MultiHoster(Addon):
         account.logDebug("New Hosters: %s" % ", ".join(sorted(new_supported)))
 
         # create new regexp
-        regexp = r".*(%s).*" % "|".join([klass.__pattern__] + [x.replace(".", "\\.") for x in new_supported])
+        patterns = [x.replace(".", "\\.") for x in new_supported]
+
+        if klass.__pattern__:
+            patterns.append(klass.__pattern__)
+
+        regexp = r".*(%s).*" % "|".join(patterns)
 
         # recreate plugin tuple for new regexp
         hoster = self.core.pluginManager.getPlugins("hoster")
