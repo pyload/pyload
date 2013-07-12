@@ -3,6 +3,7 @@
 from threading import Lock
 from traceback import print_exc
 
+
 class EventManager:
     """
     Handles all event-related tasks, also stores an event queue for clients, so they can retrieve them later.
@@ -29,19 +30,11 @@ class EventManager:
         self.core = core
         self.log = core.log
 
-        # uuid : list of events
-        self.clients = {}
         self.events = {"event": []}
 
         self.lock = Lock()
 
-    def getEvents(self, uuid):
-        """ Get accumulated events for uuid since last call, this also registers a new client """
-        if uuid not in self.clients:
-            self.clients[uuid] = Client()
-        return self.clients[uuid].get()
-
-    def addEvent(self, event, func):
+    def listenTo(self, event, func):
         """Adds an event listener for event name"""
         if event in self.events:
             if func in self.events[event]:
@@ -69,7 +62,7 @@ class EventManager:
                 f(event, *args)
             except Exception, e:
                 self.log.warning("Error calling event handler %s: %s, %s, %s"
-                % ("event", f, args, str(e)))
+                                 % ("event", f, args, str(e)))
                 if self.core.debug:
                     print_exc()
 
@@ -79,6 +72,6 @@ class EventManager:
                     f(*args)
                 except Exception, e:
                     self.log.warning("Error calling event handler %s: %s, %s, %s"
-                    % (event, f, args, str(e)))
+                                     % (event, f, args, str(e)))
                     if self.core.debug:
                         print_exc()

@@ -45,7 +45,7 @@ class AddonManager:
         self.createIndex()
 
         # manage addons on config change
-        self.addEvent("config:changed", self.manageAddons)
+        self.listenTo("config:changed", self.manageAddon)
 
     @lock
     def callInHooks(self, event, eventName, *args):
@@ -61,23 +61,6 @@ class AddonManager:
         except Exception, e:
             addon.logError(_("Error when executing %s" % f), e)
             self.core.print_exc()
-
-    def addRPC(self, plugin, func, doc):
-        doc = doc.strip() if doc else ""
-
-        if plugin in self.methods:
-            self.methods[plugin][func] = doc
-        else:
-            self.methods[plugin] = {func: doc}
-
-    def callRPC(self, plugin, func, args):
-        if not args: args = []
-        else:
-            args = literal_eval(args)
-
-        plugin = self.plugins[plugin]
-        f = getattr(plugin, func)
-        return f(*args)
 
     @lock
     def createIndex(self):
@@ -106,7 +89,6 @@ class AddonManager:
                 else:
                     deactive.append(pluginname)
 
-
             except:
                 self.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
                 self.core.print_exc()
@@ -114,7 +96,7 @@ class AddonManager:
         self.log.info(_("Activated addons: %s") % ", ".join(sorted(active)))
         self.log.info(_("Deactivate addons: %s") % ", ".join(sorted(deactive)))
 
-    def manageAddons(self, plugin, name, value):
+    def manageAddon(self, plugin, name, value):
         # TODO: user
 
         # check if section was a plugin
@@ -193,12 +175,6 @@ class AddonManager:
     def packageFinished(self, package):
         self.callInHooks("packageFinished", "package:finished", package)
 
-    def beforeReconnecting(self, ip):
-        self.callInHooks("beforeReconnecting", "reconnecting:before", ip)
-
-    def afterReconnecting(self, ip):
-        self.callInHooks("afterReconnecting", "reconnecting:after", ip)
-
     @lock
     def startThread(self, function, *args, **kwargs):
         AddonThread(self.core.threadManager, function, args, kwargs)
@@ -236,12 +212,12 @@ class AddonManager:
         for name, plugin in self.plugins.iteritems():
             if name in self.events:
                 for func, event in self.events[name]:
-                    self.addEvent(event, getattr(plugin, func))
+                    self.listenTo(event, getattr(plugin, func))
                 # clean up
                 del self.events[name]
 
-    def addEvent(self, *args):
-        self.core.eventManager.addEvent(*args)
+    def listenTo(self, *args):
+        self.core.eventManager.listenTo(*args)
 
     def dispatchEvent(self, *args):
         self.core.eventManager.dispatchEvent(*args)

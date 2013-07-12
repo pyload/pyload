@@ -4,14 +4,15 @@
 import re
 from types import MethodType
 
-from module.plugins.MultiHoster import MultiHoster as MultiHosterAccount, normalize
-from module.plugins.Addon import Addon, AddEventListener
-from module.plugins.PluginManager import PluginTuple
+from pyload.plugins.MultiHoster import MultiHoster as MultiHosterAccount, normalize
+from pyload.plugins.Addon import Addon, AddEventListener
+from pyload.PluginManager import PluginTuple
+
 
 class MultiHoster(Addon):
     __version__ = "0.1"
     __internal__ = True
-    __description__ = "Gives ability to use MultiHoster services. You need to add your account first."
+    __description__ = "Gives ability to use MultiHoster services."
     __config__ = []
     __author_mail__ = ("pyLoad Team",)
     __author_mail__ = ("support@pyload.org",)
@@ -25,7 +26,7 @@ class MultiHoster(Addon):
 
     def addHoster(self, account):
 
-        self.logDebug("New MultiHoster %s" % account.__name__)
+        self.logInfo(_("Added MultiHoster %s") % account.__name__)
 
         pluginMap = {}
         for name in self.core.pluginManager.getPlugins("hoster").keys():
@@ -65,12 +66,10 @@ class MultiHoster(Addon):
         hoster[account.__name__] = new
 
 
-
     @AddEventListener("account:deleted")
     def refreshAccounts(self, plugin=None, user=None):
 
         self.plugins = {}
-
         for name, account in self.core.accountManager.iterAccounts():
             if isinstance(account, MultiHosterAccount) and account.isUsable():
                 self.addHoster(account)
@@ -93,7 +92,6 @@ class MultiHoster(Addon):
 
         pm = self.core.pluginManager
         pm.getPlugin = MethodType(getPlugin, pm, object)
-
 
     def deactivate(self):
         #restore state

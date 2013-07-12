@@ -194,15 +194,13 @@ class PluginManager:
         if folder == "addons" and "config" not in attrs and not attrs.get("internal", False):
             attrs["config"] = (["activated", "bool", "Activated", False],)
 
-        if "config" in attrs and attrs["config"]:
+        if "config" in attrs and attrs["config"] is not None:
             config = attrs["config"]
             desc = attrs.get("description", "")
             long_desc = attrs.get("long_description", "")
 
-            if type(config[0]) == tuple:
-                config = [list(x) for x in config]
-            else:
-                config = [list(config)]
+            # Convert tuples to list
+            config = [list(x) for x in config]
 
             if folder == "addons" and not attrs.get("internal", False):
                 for item in config:

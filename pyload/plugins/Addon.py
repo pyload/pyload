@@ -40,19 +40,6 @@ def AddEventListener(event):
             return f
     return _klass
 
-class ConfigHandler(object):
-    """ Register method as config handler.
-
-    Your method signature has to be:
-        def foo(value=None):
-
-    value will be passed to use your method to set the config.
-    When value is None your method needs to return an interaction task for configuration.
-    """
-
-    def __new__(cls, f, *args, **kwargs):
-        addonManager.addConfigHandler(class_name(f.__module__), f.func_name)
-        return f
 
 def AddonHandler(desc, media=None):
     """ Register Handler for files, packages, or arbitrary callable methods.
@@ -90,10 +77,6 @@ class Addon(Base):
     #: automatically register event listeners for functions, attribute will be deleted don't use it yourself
     event_map = None
 
-    # Alternative to event_map
-    #: List of events the plugin can handle, name the functions exactly like eventname.
-    event_list = None  # dont make duplicate entries in event_map
-
     #: periodic call interval in seconds
     interval = 60
 
@@ -114,22 +97,15 @@ class Addon(Base):
             for event, funcs in self.event_map.iteritems():
                 if type(funcs) in (list, tuple):
                     for f in funcs:
-                        self.evm.addEvent(event, getattr(self,f))
+                        self.evm.listenTo(event, getattr(self,f))
                 else:
-                    self.evm.addEvent(event, getattr(self,funcs))
+                    self.evm.listenTo(event, getattr(self,funcs))
 
             #delete for various reasons
             self.event_map = None
 
-        if self.event_list:
-            for f in self.event_list:
-                self.evm.addEvent(f, getattr(self,f))
-
-            self.event_list = None
-
         self.initPeriodical()
         self.init()
-        self.setup()
 
     def initPeriodical(self):
         if self.interval >=1:
@@ -156,10 +132,6 @@ class Addon(Base):
         return self.core.pluginManager.getCategory(self.__name__)
 
     def init(self):
-        pass
-
-    def setup(self):
-        """ more init stuff if needed """
         pass
 
     def activate(self):
@@ -196,10 +168,4 @@ class Addon(Base):
         pass
 
     def packageFinished(self, pypack):
-        pass
-
-    def beforeReconnecting(self, ip):
-        pass
-    
-    def afterReconnecting(self, ip):
         pass

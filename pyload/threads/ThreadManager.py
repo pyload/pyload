@@ -202,7 +202,7 @@ class ThreadManager:
 
         ip = self.getIP()
 
-        self.core.addonManager.beforeReconnecting(ip)
+        self.core.evm.dispatchEvent("reconnect:before", ip)
 
         self.log.debug("Old IP: %s" % ip)
 
@@ -219,7 +219,7 @@ class ThreadManager:
         reconn.wait()
         sleep(1)
         ip = self.getIP()
-        self.core.addonManager.afterReconnecting(ip)
+        self.core.evm.dispatchEvent("reconnect:after", ip)
 
         self.log.info(_("Reconnected, new IP: %s") % ip)
 
