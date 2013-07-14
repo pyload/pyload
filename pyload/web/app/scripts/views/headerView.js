@@ -209,7 +209,8 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                         if (file) {
                             file.set({
                                 progress: prog.getPercent(),
-                                eta: prog.get('eta')
+                                eta: prog.get('eta'),
+                                size: prog.get('total')
                             }, {silent: true});
                             file.setDownloadStatus(prog.get('download').status);
                             file.trigger('change:progress');
