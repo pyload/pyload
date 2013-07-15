@@ -23,7 +23,7 @@ from time import time
 
 class UploadedTo(Account):
     __name__ = "UploadedTo"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __type__ = "account"
     __description__ = """ul.net account plugin"""
     __author_name__ = ("mkaay")
@@ -37,7 +37,7 @@ class UploadedTo(Account):
         premium = '<a href="register"><em>Premium</em>' in html or '<em>Premium</em></th>' in html
 
         if premium:
-            raw_traffic = re.search(r'<th colspan="2"><b class="cB">([^<]+)', html).group(1)
+            raw_traffic = re.search(r'<th colspan="2"><b class="cB">([^<]+)', html).group(1).replace('.', '')
             raw_valid = re.search(r"<td>Duration:</td>\s*<th>([^<]+)", html, re.MULTILINE).group(1).strip()
 
             traffic = int(self.parseTraffic(raw_traffic))
