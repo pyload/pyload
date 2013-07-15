@@ -30,7 +30,7 @@ from module.plugins.Hook import Hook
 
 class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __description__ = """send captchas to 9kw.eu"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", True),
@@ -86,7 +86,7 @@ class Captcha9kw(Hook):
                           "action": "usercaptchaupload" })
 
         if response.isdigit():
-            self.logInfo(_("NewCaptchaID from upload: %s : %s" % (response,task.captchaFile)))
+            self.logInfo(_("NewCaptchaID from upload: %s : %s") % (response,task.captchaFile))
 
             for i in range(1, 100, 1): 
                 response2 = getURL(self.API_URL, get = { "apikey": self.getConfig("passkey"), "id": response,"pyload": "1","source": "pyload", "action": "usercaptchacorrectdata" })
