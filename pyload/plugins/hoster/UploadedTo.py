@@ -11,7 +11,12 @@ from module.utils import html_unescape, parseFileSize, chunks
 
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
+<<<<<<< HEAD:pyload/plugins/hoster/UploadedTo.py
 from module.plugins.ReCaptcha import ReCaptcha
+=======
+from module.plugins.Plugin import chunks
+from module.plugins.internal.CaptchaService import ReCaptcha
+>>>>>>> dd30ed8... Using CaptchaService to make them works on 0.5:module/plugins/hoster/UploadedTo.py
 
 key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
 

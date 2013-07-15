@@ -17,7 +17,7 @@
 import re
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 from module.common.json_layer import json_loads
 from module.utils import parseFileSize
 from module.plugins.Plugin import chunks

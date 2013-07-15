@@ -22,8 +22,7 @@ from urllib import unquote
 from urlparse import urlparse
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
-from module.plugins.ReCaptcha import ReCaptcha
-from module.plugins.internal.CaptchaService import SolveMedia
+from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
 from module.utils import html_unescape
 
 class XFileSharingPro(SimpleHoster):

@@ -23,7 +23,7 @@ import pycurl
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class FilerNet(SimpleHoster):

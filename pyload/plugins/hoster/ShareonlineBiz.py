@@ -10,7 +10,7 @@ from time import time, sleep
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
-from module.plugins.ReCaptcha import ReCaptcha as _ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha as _ReCaptcha
     
 def getInfo(urls):
     api_url_base = "http://api.share-online.biz/linkcheck.php"

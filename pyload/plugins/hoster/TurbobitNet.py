@@ -28,7 +28,7 @@ import time
 
 from module.network.RequestFactory import getURL
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 from pycurl import HTTPHEADER
 

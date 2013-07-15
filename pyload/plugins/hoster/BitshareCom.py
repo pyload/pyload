@@ -5,7 +5,7 @@ import re
 from pycurl import FOLLOWLOCATION
 
 from module.plugins.Hoster import Hoster
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 from module.network.RequestFactory import getRequest
 
 

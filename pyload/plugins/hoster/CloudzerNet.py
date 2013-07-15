@@ -2,7 +2,7 @@
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.common.json_layer import json_loads
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 from module.network.RequestFactory import getURL
 from module.utils import parseFileSize
 
