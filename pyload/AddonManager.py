@@ -94,7 +94,7 @@ class AddonManager:
                 self.core.print_exc()
 
         self.log.info(_("Activated addons: %s") % ", ".join(sorted(active)))
-        self.log.info(_("Deactivate addons: %s") % ", ".join(sorted(deactive)))
+        self.log.info(_("Deactivated addons: %s") % ", ".join(sorted(deactive)))
 
     def manageAddon(self, plugin, name, value):
         # TODO: user
