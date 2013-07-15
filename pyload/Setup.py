@@ -303,7 +303,7 @@ class Setup():
                     print ""
                     username = self.ask(_("Username"), "")
                     if username:
-                        db.removeUser(username)
+                        db.removeUserByName(username)
                         noaction = False
                 elif action == "4":
                     db.syncSave()

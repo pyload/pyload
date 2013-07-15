@@ -19,17 +19,18 @@ from hashlib import sha1
 from string import letters, digits
 from random import choice
 
-alphnum = letters+digits
+alphnum = letters + digits
 
 from pyload.Api import UserData
 
 from DatabaseBackend import DatabaseMethods, queue, async
 
+
 def random_salt():
-    return "".join(choice(alphnum) for x in range(0,5))
+    return "".join(choice(alphnum) for x in range(0, 5))
+
 
 class UserMethods(DatabaseMethods):
-
     @queue
     def addUser(self, user, password):
         salt = random_salt()
@@ -116,10 +117,13 @@ class UserMethods(DatabaseMethods):
         self.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
 
     # TODO update methods
-
     @async
-    def removeUser(self, uid=None):
-        # deletes user and all associated accounts
-        self.c.execute('DELETE FROM users WHERE user=?', (uid, ))
+    def removeUserByName(self, name):
+        self.c.execute("SELECT uid from users WHERE name=?", (name,))
+        uid = self.c.fetchone()
+        if uid:
+            # deletes user and all associated accounts
+            self.c.execute('DELETE FROM users WHERE user=?', (uid[0], ))
+
 
 UserMethods.register()
