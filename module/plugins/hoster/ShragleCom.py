@@ -6,7 +6,7 @@ from pycurl import FOLLOWLOCATION
 
 from module.plugins.Hoster import Hoster
 from module.plugins.internal.SimpleHoster import parseHtmlForm
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 from module.network.RequestFactory import getURL
 
 API_KEY = "078e5ca290d728fd874121030efb4a0d"

@@ -5,7 +5,7 @@ import re
 from urllib import unquote
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.network.RequestFactory import getURL
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"

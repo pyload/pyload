@@ -4,7 +4,7 @@ import re
 from module.lib.bottle import json_loads
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class LuckyShareNet(SimpleHoster):

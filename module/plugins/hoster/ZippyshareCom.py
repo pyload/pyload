@@ -3,7 +3,7 @@
 
 import re, subprocess, tempfile, os
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 from module.common.json_layer import json_loads
 
 class ZippyshareCom(SimpleHoster):

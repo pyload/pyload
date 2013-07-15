@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 import re
 
 class CrockoCom(SimpleHoster):

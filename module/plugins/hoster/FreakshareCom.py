@@ -3,7 +3,7 @@
 
 import re
 from module.plugins.Hoster import Hoster
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 class FreakshareCom(Hoster):
     __name__ = "FreakshareCom"

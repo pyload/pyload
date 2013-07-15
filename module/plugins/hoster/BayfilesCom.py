@@ -18,7 +18,6 @@
 
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.ReCaptcha import ReCaptcha
 from module.common.json_layer import json_loads
 from time import time
 
