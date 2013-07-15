@@ -10,7 +10,8 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
             events: {
                 'click .icon-list': 'toggle_taskList',
                 'click .popover .close': 'toggle_taskList',
-                'click .btn-grabber': 'open_grabber'
+                'click .btn-grabber': 'open_grabber',
+                'click .logo': 'gotoDashboard'
             },
 
             ui: {
@@ -64,6 +65,10 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 };
 
                 this.ws = ws;
+            },
+
+            gotoDashboard: function() {
+                App.navigate('');
             },
 
             initGraph: function() {

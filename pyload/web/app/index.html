@@ -38,6 +38,7 @@
         window.hostProtocol = window.location.protocol +  '//';
         window.hostAddress = window.location.hostname;
         window.hostPort = configValue('{{web}}', '8001');
+        // TODO
         window.pathPrefix = '/';
         window.wsAddress = configValue('{{ws}}', 'ws://%s:7227');
 
