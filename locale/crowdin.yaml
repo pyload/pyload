@@ -1,7 +1,7 @@
 project_identifier: pyload
 preserve_hierarchy: true
-api_key: e28e6dd4f1a7ace092bdd1faea87f3b8
-base_path: /tmp/tmp_F2Fqx
+api_key: {key}
+base_path: {tmp}
  
 files:
   -
