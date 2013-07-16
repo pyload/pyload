@@ -1,9 +1,9 @@
 project_identifier: pyload
 preserve_hierarchy: true
-api_key: {key}
-base_path: {tmp}
+api_key: e28e6dd4f1a7ace092bdd1faea87f3b8
+base_path: /tmp/tmp_F2Fqx
  
 files:
   -
     source: 'pyLoad/*.pot'
-    translation: 'pyLoad/%two_letters_code%/LC_MESSAGES/%original_file_name%'
+    translation: 'pyLoad/%two_letters_code%/LC_MESSAGES/%file_name%.po'

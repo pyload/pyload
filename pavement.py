@@ -157,6 +157,35 @@ def upload_locale(options):
 
     shutil.rmtree(tmp)
 
+@task
+@cmdopts([
+    ('key=', 'k', 'api key')
+])
+def download_translations(options):
+    """ Downloads the translated files from translation server """
+    tmp = path(mkdtemp())
+    print tmp
+
+    shutil.copy('locale/crowdin.yaml', tmp)
+    os.mkdir(tmp / 'pyLoad')
+    for f in glob('locale/*.pot'):
+        if os.path.isfile(f):
+            shutil.copy(f, tmp / 'pyLoad')
+
+    config = tmp / 'crowdin.yaml'
+    content = open(config, 'rb').read()
+    content = content.format(key=options.key, tmp=tmp)
+    f = open(config, 'wb')
+    f.write(content)
+    f.close()
+
+    call(['crowdin-cli', '-c', config, 'download'])
+
+    shutil.rmtree('locale')
+    shutil.copytree(tmp + '/pyLoad', 'locale')
+    shutil.copy(tmp + '/crowdin.yaml', 'locale')
+
+    shutil.rmtree(tmp)
 
 @task
 def tests():
