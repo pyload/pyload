@@ -25,7 +25,7 @@ from module.utils import html_unescape
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __pattern__ = None
     __type__ = "crypter"
     __description__ = """Base crypter plugin"""
@@ -39,6 +39,15 @@ class SimpleCrypter(Crypter):
 
     TITLE_PATTERN: (optional) the group defined by 'title' should be the title
     example: <title>Files of: (?P<title>[^<]+) folder</title>
+
+    If the links are disposed on multiple pages you need to define a pattern:
+
+    PAGES_PATTERN: the group defined by 'pages' must be the total number of pages
+
+    and a function:
+
+    loadPage(self, page_n):
+    must return the html of the page number 'page_n'
     """
 
     def decrypt(self, pyfile):
@@ -46,11 +55,15 @@ class SimpleCrypter(Crypter):
 
         package_name, folder_name = self.getPackageNameAndFolder()
 
-        package_links = re.findall(self.LINK_PATTERN, self.html)
-        self.logDebug('Package has %d links' % len(package_links))
+        self.package_links = re.findall(self.LINK_PATTERN, self.html)
 
-        if package_links:
-            self.packages = [(package_name, package_links, folder_name)]
+        if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
+            self.handleMultiPages()
+
+        self.logDebug('Package has %d links' % len(self.package_links))
+
+        if self.package_links:
+            self.packages = [(package_name, self.package_links, folder_name)]
         else:
             self.fail('Could not extract any links')
 
@@ -66,3 +79,14 @@ class SimpleCrypter(Crypter):
         folder = self.pyfile.package().folder
         self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
         return name, folder
+
+    def handleMultiPages(self):
+        pages = re.search(self.PAGES_PATTERN, self.html)
+        if pages:
+            pages = int(pages.group('pages'))
+        else:
+            pages = 1
+
+        for p in range(2, pages + 1):
+            self.html = self.loadPage(p)
+            self.package_links += re.findall(self.LINK_PATTERN, self.html)
