@@ -26,7 +26,7 @@ class MultiHoster(Addon):
 
     def addHoster(self, account):
 
-        self.logInfo(_("Activated MultiHoster %s") % account.__name__)
+        self.logInfo(_("Activated %s") % account.__name__)
 
         pluginMap = {}
         for name in self.core.pluginManager.getPlugins("hoster").keys():
