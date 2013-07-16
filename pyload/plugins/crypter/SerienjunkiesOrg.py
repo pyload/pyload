@@ -3,8 +3,10 @@
 import re
 from time import sleep
 import random
+
+from bs3 import BeautifulSoup
+
 from module.plugins.Crypter import Crypter
-from module.lib.BeautifulSoup import BeautifulSoup
 from module.unescape import unescape
 
 class SerienjunkiesOrg(Crypter):
