@@ -56,7 +56,6 @@ ssl.crt
 ssl.key
 cert.pem
 *.prefs
-*.po
 *.orig
 *.rej
 dist/*

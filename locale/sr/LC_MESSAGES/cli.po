@@ -1,0 +1,291 @@
+msgid ""
+msgstr "Project-Id-Version: pyload\n"
+"Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
+"POT-Creation-Date: 2013-07-17 15:39+0200\n"
+"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"Last-Translator: pyloadTeam <team@pyload.org>\n"
+"Language-Team: Serbian (Cyrillic)\n"
+"Language: sr_SP\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2;\n"
+"X-Generator: crowdin.net\n"
+
+#: pyload/cli/AddPackage.py:48
+msgid "Add Package:"
+msgstr "Додај пакет:"
+
+#: pyload/cli/AddPackage.py:53
+msgid "Enter a name for the new package"
+msgstr "Унети име за нов пакет"
+
+#: pyload/cli/AddPackage.py:57
+#, python-format
+msgid "Package: %s"
+msgstr "Пакет: %s"
+
+#: pyload/cli/AddPackage.py:58
+msgid "Parse the links you want to add."
+msgstr "Прилепите везу коју желите да додате."
+
+#: pyload/cli/AddPackage.py:59
+#, python-format
+msgid "Type %s when done."
+msgstr "Унети %s када је готово."
+
+#: pyload/cli/AddPackage.py:60
+msgid "Links added: "
+msgstr "додате везе:"
+
+#: pyload/cli/AddPackage.py:64 pyload/cli/ManageFiles.py:149
+msgid " back to main menu"
+msgstr "назад на главни мени"
+
+#: pyload/cli/ManageFiles.py:97
+msgid "Manage Packages:"
+msgstr "Уреди пакете:"
+
+#: pyload/cli/ManageFiles.py:99
+msgid "Manage Links:"
+msgstr "Уреди везе:"
+
+#: pyload/cli/ManageFiles.py:104
+msgid "What do you want to move?"
+msgstr "Шта да се премести?"
+
+#: pyload/cli/ManageFiles.py:106
+msgid "What do you want to delete?"
+msgstr "Шта да се обрише?"
+
+#: pyload/cli/ManageFiles.py:108
+msgid "What do you want to restart?"
+msgstr "Шта да се рестартује?"
+
+#: pyload/cli/ManageFiles.py:113
+msgid "Choose what you want to do, or enter package number."
+msgstr ""
+
+#: pyload/cli/ManageFiles.py:115
+msgid "delete"
+msgstr "обриши"
+
+#: pyload/cli/ManageFiles.py:115
+msgid "move"
+msgstr "премести"
+
+#: pyload/cli/ManageFiles.py:115
+msgid "restart"
+msgstr "рестартуј"
+
+#: pyload/cli/ManageFiles.py:148
+msgid " - previous"
+msgstr "- назад"
+
+#: pyload/cli/ManageFiles.py:148
+msgid " - next"
+msgstr "- даље"
+
+#: pyload/cli/Cli.py:75 pyload/cli/Cli.py:133
+msgid " Command Line Interface"
+msgstr "Интерфејс командне линије"
+
+#: pyload/cli/Cli.py:165
+#, python-format
+msgid "%s Downloads:"
+msgstr "%s преузимања:"
+
+#: pyload/cli/Cli.py:177
+msgid " Speed: "
+msgstr "Брзина:"
+
+#: pyload/cli/Cli.py:177
+msgid " Size: "
+msgstr "Величина:"
+
+#: pyload/cli/Cli.py:178
+msgid " Finished in: "
+msgstr "Завршено:"
+
+#: pyload/cli/Cli.py:179
+msgid " ID: "
+msgstr "ИД:"
+
+#: pyload/cli/Cli.py:184
+msgid "waiting: "
+msgstr "чекање:"
+
+#: pyload/cli/Cli.py:191 pyload/cli/Cli.py:193
+msgid "Status:"
+msgstr ""
+
+#: pyload/cli/Cli.py:191
+msgid "paused"
+msgstr ""
+
+#: pyload/cli/Cli.py:193
+msgid "running"
+msgstr ""
+
+#: pyload/cli/Cli.py:196
+msgid "total Speed"
+msgstr ""
+
+#: pyload/cli/Cli.py:196
+msgid "Files in queue"
+msgstr ""
+
+#: pyload/cli/Cli.py:197
+msgid "Total"
+msgstr ""
+
+#: pyload/cli/Cli.py:203
+msgid "Menu:"
+msgstr "Мени:"
+
+#: pyload/cli/Cli.py:205
+msgid " Add Links"
+msgstr "Додај везе"
+
+#: pyload/cli/Cli.py:206
+msgid " Manage Queue"
+msgstr "Уреди редослед"
+
+#: pyload/cli/Cli.py:207
+msgid " Manage Collector"
+msgstr "Уреди колекционар"
+
+#: pyload/cli/Cli.py:208
+msgid " (Un)Pause Server"
+msgstr "Паузирај/настави сервер"
+
+#: pyload/cli/Cli.py:209
+msgid " Kill Server"
+msgstr "Убиј сервер"
+
+#: pyload/cli/Cli.py:210
+msgid " Quit"
+msgstr "Излаз"
+
+#: pyload/cli/Cli.py:289 pyload/cli/Cli.py:296
+msgid "Please use this syntax: add <Package name> <link> <link2> ..."
+msgstr "Употребите ову синтаксу: add <Package name> <link> <link2> ..."
+
+#: pyload/cli/Cli.py:315
+#, python-format
+msgid "Checking %d links:"
+msgstr "Провера %d веза:"
+
+#: pyload/cli/Cli.py:324
+msgid "File does not exists."
+msgstr "Датотека не постоји."
+
+#: pyload/cli/Cli.py:385
+msgid "pyLoad was terminated"
+msgstr "pyLoad је завршен"
+
+#: pyload/cli/Cli.py:443
+msgid "Prints server status"
+msgstr "Штампај статус сервера"
+
+#: pyload/cli/Cli.py:444
+msgid "Prints downloads in queue"
+msgstr "Штампај преузимања у редоследу"
+
+#: pyload/cli/Cli.py:445
+msgid "Prints downloads in collector"
+msgstr "Штампај преузимања у колекционару"
+
+#: pyload/cli/Cli.py:446
+msgid "Adds package to queue"
+msgstr "Додај пакет у редослед"
+
+#: pyload/cli/Cli.py:447
+msgid "Adds package to collector"
+msgstr "Додај пакет у колекционар"
+
+#: pyload/cli/Cli.py:448
+msgid "Delete Files from Queue/Collector"
+msgstr "Бриши датотеке из редоследа/колекционара"
+
+#: pyload/cli/Cli.py:449
+msgid "Delete Packages from Queue/Collector"
+msgstr "Бриши пакете из редоследа/колекционара"
+
+#: pyload/cli/Cli.py:450
+msgid "Move Packages from Queue to Collector or vice versa"
+msgstr "Преемсти пакете из редоследа у колекционару и супротно"
+
+#: pyload/cli/Cli.py:451
+msgid "Restart files"
+msgstr "Рестартуј датотеке"
+
+#: pyload/cli/Cli.py:452
+msgid "Restart packages"
+msgstr "Рестартуј пакете"
+
+#: pyload/cli/Cli.py:453
+msgid "Check online status, works with local container"
+msgstr "Провера статуса на вези, ради са локални контејнерима"
+
+#: pyload/cli/Cli.py:454
+msgid "Checks online status of a container file"
+msgstr "провера статуса на вези контејнетра"
+
+#: pyload/cli/Cli.py:455
+msgid "Pause the server"
+msgstr "Паузирај сервер"
+
+#: pyload/cli/Cli.py:456
+msgid "continue downloads"
+msgstr "настави преузимања"
+
+#: pyload/cli/Cli.py:457
+msgid "Toggle pause/unpause"
+msgstr "Пребаци Пауза/настави"
+
+#: pyload/cli/Cli.py:458
+msgid "kill server"
+msgstr "убиј сервер"
+
+#: pyload/cli/Cli.py:460
+msgid "List of commands:"
+msgstr "списак комамде:"
+
+#: pyload/cli/Cli.py:473
+msgid "Couldn't write user config file"
+msgstr "не могу да пишем у датотеку подешавања"
+
+#: pyload/cli/Cli.py:548 pyload/cli/Cli.py:580
+msgid "You need py-openssl to connect to this pyLoad core."
+msgstr "Треба Вам py-openssl да би се пријавили на pyLoad језгро."
+
+#: pyload/cli/Cli.py:555
+msgid "Address: "
+msgstr "Адреса:"
+
+#: pyload/cli/Cli.py:556
+msgid "Port: "
+msgstr "Порт:"
+
+#: pyload/cli/Cli.py:557
+msgid "Username: "
+msgstr "Корисник:"
+
+#: pyload/cli/Cli.py:561
+msgid "Password: "
+msgstr "Лозинка:"
+
+#: pyload/cli/Cli.py:566 pyload/cli/Cli.py:575
+msgid "Login data is wrong."
+msgstr "Пријава није добра."
+
+#: pyload/cli/Cli.py:568 pyload/cli/Cli.py:577
+#, python-format
+msgid "Could not establish connection to %(addr)s:%(port)s."
+msgstr "Не могу да успоставим везу на %(addr)s:%(port)s."
+
+#: pyload/cli/Cli.py:582
+msgid "Interactive mode ignored since you passed some commands."
+msgstr "Интерактивно мод је игнорисан пошто сте дали неке команде."
+
