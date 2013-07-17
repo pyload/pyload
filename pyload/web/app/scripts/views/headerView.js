@@ -1,8 +1,8 @@
 define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'collections/ProgressList',
     'views/progressView', 'views/notificationView', 'helpers/formatSize', 'hbs!tpl/header/layout',
-    'hbs!tpl/header/status', 'hbs!tpl/header/progressbar' , 'flot'],
-    function($, _, Backbone, App, ServerStatus, ProgressList, ProgressView, NotificationView, formatSize,
-             template, templateStatus, templateHeader) {
+    'hbs!tpl/header/status', 'hbs!tpl/header/progressbar', 'hbs!tpl/header/progressSup', 'hbs!tpl/header/progressSub' , 'flot'],
+    function(
+        $, _, Backbone, App, ServerStatus, ProgressList, ProgressView, NotificationView, formatSize, template, templateStatus, templateProgress, templateSup, templateSub) {
         'use strict';
         // Renders the header with all information
         return Backbone.Marionette.ItemView.extend({
@@ -19,10 +19,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 speedgraph: '#speedgraph'
             },
 
-            // todo: maybe combine these
             template: template,
-            templateStatus: templateStatus,
-            templateHeader: templateHeader,
 
             // view
             grabber: null,
@@ -39,6 +36,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
 
             // save if last progress was empty
             wasEmpty: false,
+            lastStatus: null,
 
             initialize: function() {
                 var self = this;
@@ -118,13 +116,13 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                     return speed[1];
                 })[1] * 1024;
                 this.$('.status-block').html(
-                    this.templateStatus(status)
+                    templateStatus(status)
                 );
 
                 var data = {tasks: 0, downloads: 0, speed: 0, single: false};
                 this.progressList.each(function(progress) {
                     if (progress.isDownload()) {
-                        data.downloads += 1;
+                        data.downloads++;
                         data.speed += progress.get('download').speed;
                     } else
                         data.tasks++;
@@ -139,15 +137,24 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                     data.name = progress.get('name');
                     data.statusmsg = progress.get('statusmsg');
                 }
-                // TODO: better progressbar rendering
 
                 data.etaqueue = status.eta;
                 data.linksqueue = status.linksqueue;
                 data.sizequeue = status.sizequeue;
 
-                this.$('#progress-info').html(
-                    this.templateHeader(data)
-                );
+                // Render progressbar only when needed
+                if (!_.isEqual([data.tasks, data.downloads], this.lastStatus)) {
+                    console.log('render bar');
+                    this.lastStatus = [data.tasks, data.downloads];
+                    this.$('#progress-info').html(templateProgress(data));
+                } else {
+                    this.$('#progress-info .bar').width(data.percent + '%');
+                }
+
+                // render upper and lower part
+                this.$('.sup').html(templateSup(data));
+                this.$('.sub').html(templateSub(data));
+
                 return this;
             },
 

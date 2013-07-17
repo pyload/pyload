@@ -1,4 +1,5 @@
-﻿@import "common";
+﻿@import "bootstrap/less/mixins";
+@import "common";
 
 /*
     Header
@@ -135,6 +136,7 @@ header { //  background-color: @greyDark;
       margin-bottom: 0;
 
       .bar {
+        .transition-duration(2s);
         .gradient(bottom, @blue, @blueLight);
       }
     }
@@ -153,6 +155,7 @@ header { //  background-color: @greyDark;
     color: @dark;
     background-image: none;
     background-color: @yellow;
+    .transition-duration(2s);
 
     &.running {
       width: 100%;

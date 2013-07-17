@@ -8,6 +8,7 @@ input_dict = {
     "bool": InputType.Bool,
     "time": InputType.Time,
     "file": InputType.File,
+    "list": InputType.List,
     "folder": InputType.Folder
 }
 

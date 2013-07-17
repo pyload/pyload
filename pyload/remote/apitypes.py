@@ -57,7 +57,8 @@ class InputType:
 	Select = 10
 	Multiple = 11
 	List = 12
-	Table = 13
+	PluginList = 13
+	Table = 14
 
 class Interaction:
 	All = 0

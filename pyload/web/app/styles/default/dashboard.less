@@ -1,4 +1,5 @@
-﻿@import "common";
+﻿@import "bootstrap/less/mixins";
+@import "common";
 
 /*
     Dashboard
@@ -44,10 +45,8 @@
   margin: 8px 0;
   position: relative;
   overflow: hidden;
+  .hyphens;
 
-  -webkit-hyphens: auto;
-  -moz-hyphens: auto;
-  hyphens: auto;
 
   i {
     cursor: pointer;
@@ -274,6 +273,7 @@
   .bar {
     text-align: left;
     .gradient(top, @yellow, @yellowDark);
+    .transition-duration(2s);
     color: @dark;
   }
 

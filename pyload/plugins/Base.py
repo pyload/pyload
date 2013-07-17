@@ -95,12 +95,11 @@ class Base(object):
         if user:
             #: :class:`Api`, user api when user is set
             self.api = self.core.api.withUserContext(user)
-            if self.api:
-                #: :class:`User`, user related to this plugin
-                self.user = self.api.user
-            else:
-                self.api = self.core.api
-                self.user = None
+            if not self.api:
+                raise Exception("Plugin running with invalid user")
+
+            #: :class:`User`, user related to this plugin
+            self.user = self.api.user
         else:
             self.api = self.core.api
             self.user = None
@@ -110,7 +109,7 @@ class Base(object):
 
     def __getitem__(self, item):
         """ Retrieves meta data attribute """
-        return getattr(Base, "__%s__" % item)
+        return getattr(self, "__%s__" % item)
 
     def logInfo(self, *args, **kwargs):
         """ Print args to log at specific level

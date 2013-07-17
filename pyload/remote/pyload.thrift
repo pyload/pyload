@@ -83,6 +83,7 @@ enum InputType {
   Select,  // select from list
   Multiple,  // multiple choice from list of elements
   List, // arbitary list of elements
+  PluginList, // a list plugins from pyload
   Table  // table like data structure
 }
 // more can be implemented by need
