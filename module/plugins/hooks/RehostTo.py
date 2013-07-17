@@ -5,7 +5,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 class RehostTo(MultiHoster):
     __name__ = "RehostTo"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __type__ = "hook"
 
     __config__ = [("activated", "bool", "Activated", "False"),
@@ -31,7 +31,7 @@ class RehostTo(MultiHoster):
         user = self.account.selectAccount()[0]
 
         if not user:
-            self.log.error("Rehost.to: "+ _("Please add your rehost.to account first and restart pyLoad"))
+            self.logError("Rehost.to: "+ _("Please add your rehost.to account first and restart pyLoad"))
             return
 
         data = self.account.getAccountInfo(user)

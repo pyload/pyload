@@ -22,7 +22,7 @@ from time import time
 
 class MultiHome(Hook):
     __name__ = "MultiHome"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = """ip address changer"""
     __config__ = [ ("activated", "bool", "Activated" , "False"),
                    ("interfaces", "str", "Interfaces" , "None") ]
@@ -54,7 +54,7 @@ class MultiHome(Hook):
             if iface:
                 iface.useFor(pluginName, account)
                 requestFactory.iface = lambda: iface.adress
-                self.log.debug("Multihome: using address: "+iface.adress)
+                self.logDebug("Multihome: using address: "+iface.adress)
             return oldGetRequest(pluginName, account)
         requestFactory.getRequest = getRequest
     

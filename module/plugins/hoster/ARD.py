@@ -39,7 +39,7 @@ class RTMP:
 
 class ARD(Hoster):
     __name__ = "ARD Mediathek"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __pattern__ = r"http://www\.ardmediathek\.de/.*"
     __config__ = []
 
@@ -73,7 +73,7 @@ class ARD(Hoster):
 
                         chown(location, uid, gid)
                     except Exception, e:
-                        self.log.warning(_("Setting User and Group failed: %s") % str(e))
+                        self.logWarning(_("Setting User and Group failed: %s") % str(e))
 
             output_file = save_join(location, save_path(pyfile.name)) + os.path.splitext(playpath)[1]
 
