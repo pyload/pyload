@@ -107,9 +107,9 @@ class Addon(Base):
         self.initPeriodical()
         self.init()
 
-    def initPeriodical(self):
+    def initPeriodical(self, begin_interval=interval):
         if self.interval >=1:
-            self.cb = self.core.scheduler.addJob(0, self._periodical, threaded=False)
+            self.cb = self.core.scheduler.addJob(begin_interval, self._periodical, threaded=False)
 
     def _periodical(self):
         try:
