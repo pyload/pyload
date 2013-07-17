@@ -26,7 +26,7 @@ class UploadheroCom(SimpleHoster):
     __name__ = "UploadheroCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploadhero\.com?/dl/\w+"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = """UploadHero.com plugin"""
     __author_name__ = ("mcmyst", "zoidberg")
     __author_mail__ = ("mcmyst@hotmail.fr", "zoidberg@mujmail.cz")
@@ -67,10 +67,10 @@ class UploadheroCom(SimpleHoster):
         self.download(download_url)
     
     def handlePremium(self):
-        self.log.debug("%s: Use Premium Account" % self.__name__)
+        self.logDebug("%s: Use Premium Account" % self.__name__)
         self.html = self.load(self.pyfile.url)
         link = re.search(self.DOWNLOAD_URL_PATTERN, self.html).group(1)
-        self.log.debug("Downloading link : '%s'" % link)
+        self.logDebug("Downloading link : '%s'" % link)
         self.download(link) 
              
     def checkErrors(self):

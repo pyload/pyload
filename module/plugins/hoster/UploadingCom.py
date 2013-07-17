@@ -26,7 +26,7 @@ class UploadingCom(SimpleHoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __description__ = """Uploading.Com File Download Hoster"""
     __author_name__ = ("jeix", "mkaay", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
@@ -80,7 +80,7 @@ class UploadingCom(SimpleHoster):
         response = json_loads(self.load(ajax_url, post = {'action': 'second_page', 'code': self.file_info['ID']}))        
         if 'answer' in response and 'wait_time' in response['answer']:
             wait_time = int(response['answer']['wait_time'])
-            self.log.info("%s: Waiting %d seconds." % (self.__name__, wait_time))
+            self.logInfo("%s: Waiting %d seconds." % (self.__name__, wait_time))
             self.setWait(wait_time)
             self.wait()
         else:

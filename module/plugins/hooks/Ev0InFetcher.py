@@ -22,7 +22,7 @@ from module.plugins.Hook import Hook
 
 class Ev0InFetcher(Hook):
     __name__ = "Ev0InFetcher"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __description__ = """checks rss feeds for ev0.in"""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("interval", "int", "Check interval in minutes", "10"),
@@ -73,15 +73,15 @@ class Ev0InFetcher(Hook):
                 if show.lower() in normalizefiletitle(item['title']) and lastfound < int(mktime(item.date_parsed)):
                     links = self.filterLinks(item['description'].split("<br />"))
                     packagename = item['title'].encode("utf-8")
-                    self.core.log.info("Ev0InFetcher: new episode '%s' (matched '%s')" % (packagename, show))
+                    self.logInfo("Ev0InFetcher: new episode '%s' (matched '%s')" % (packagename, show))
                     self.core.api.addPackage(packagename, links, 1 if self.getConfig("queue") else 0)
                     self.setStorage("show_%s_lastfound" % show, int(mktime(item.date_parsed)))
                     found = True
         if not found:
-            #self.core.log.debug("Ev0InFetcher: no new episodes found")
+            #self.logDebug("Ev0InFetcher: no new episodes found")
             pass
 
         for show, lastfound in self.getStorage().iteritems():
             if int(lastfound) > 0 and int(lastfound) + (3600*24*30) < int(time()):
                 self.delStorage("show_%s_lastfound" % show)
-                self.core.log.debug("Ev0InFetcher: cleaned '%s' record" % show)
+                self.logDebug("Ev0InFetcher: cleaned '%s' record" % show)

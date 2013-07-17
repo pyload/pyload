@@ -9,7 +9,7 @@ class FileApeCom(Hoster):
     __name__ = "FileApeCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?fileape\.com/(index\.php\?act=download\&id=|dl/)\w+"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = """FileApe Download Hoster"""
     __author_name__ = ("espes")
 
@@ -58,5 +58,5 @@ class FileApeCom(Hoster):
         
         check = self.checkDownload({"exp": "Download ticket expired"})
         if check == "exp":
-            self.log.info("Ticket expired, retrying...")
+            self.logInfo("Ticket expired, retrying...")
             self.retry()
