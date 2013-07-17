@@ -90,7 +90,7 @@ class Setup():
         print _("in case you don't want to change it or you are unsure what to choose, just hit enter.")
         print _(
             "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore.")
-        print _("If you have any problems with this assistent hit STRG-C,")
+        print _("If you have any problems with this assistent hit CTRL+C,")
         print _("to abort and don't let him start with pyLoadCore automatically anymore.")
         print ""
         print _("When you are ready for system check, hit enter.")
@@ -210,7 +210,7 @@ class Setup():
         langs = self.config.getMetaData("general", "language")
         self.config["general"]["language"] = self.ask(_("Language"), "en", langs.type.split(";"))
 
-        self.config["general"]["download_folder"] = self.ask(_("Downloadfolder"), "Downloads")
+        self.config["general"]["download_folder"] = self.ask(_("Download folder"), "Downloads")
         self.config["download"]["max_downloads"] = self.ask(_("Max parallel downloads"), "3")
         #print _("You should disable checksum proofing, if you have low hardware requirements.")
         #self.config["general"]["checksum"] = self.ask(_("Proof checksum?"), "y", bool=True)
@@ -320,7 +320,7 @@ class Setup():
             translation.install(True)
 
         print _("Setting new configpath, current configuration will not be transferred!")
-        path = self.ask(_("Configpath"), abspath(""))
+        path = self.ask(_("Config path"), abspath(""))
         try:
             path = join(pypath, path)
             if not exists(path):
@@ -328,7 +328,7 @@ class Setup():
             f = open(join(pypath, "pyload", "config", "configdir"), "wb")
             f.write(path)
             f.close()
-            print _("Configpath changed, setup will now close, please restart to go on.")
+            print _("Config path changed, setup will now close, please restart to go on.")
             print _("Press Enter to exit.")
             raw_input()
             exit()
