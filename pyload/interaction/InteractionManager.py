@@ -71,21 +71,21 @@ class InteractionManager:
         :param plugin: plugin name
         :return: :class:`InteractionTask`
         """
-        task = InteractionTask(self.ids, IA.Notification, Input(InputType.Text, content), "", title, desc, plugin,
+        task = InteractionTask(self.ids, IA.Notification, Input(InputType.Text, None, content), title, desc, plugin,
                                owner=owner)
         self.ids += 1
         self.queueTask(task)
         return task
 
     @lock
-    def createQueryTask(self, input, desc, default="", plugin="", owner=None):
+    def createQueryTask(self, input, desc, plugin="", owner=None):
         # input type was given, create a input widget
         if type(input) == int:
             input = Input(input)
         if not isinstance(input, Input):
             raise TypeError("'Input' class expected not '%s'" % type(input))
 
-        task = InteractionTask(self.ids, IA.Query, input, default, _("Query"), desc, plugin, owner=owner)
+        task = InteractionTask(self.ids, IA.Query, input, _("Query"), desc, plugin, owner=owner)
         self.ids += 1
         self.queueTask(task)
         return task
@@ -104,11 +104,11 @@ class InteractionManager:
         elif type == 'positional':
             type = InputType.Click
 
-        input = Input(type, [standard_b64encode(img), format, filename])
+        input = Input(type, data=[standard_b64encode(img), format, filename])
 
         #todo: title desc plugin
         task = InteractionTask(self.ids, IA.Captcha, input,
-                               None, _("Captcha request"), _("Please solve the captcha."), plugin, owner=owner)
+                            _("Captcha request"), _("Please solve the captcha."), plugin, owner=owner)
 
         self.ids += 1
         self.queueTask(task)

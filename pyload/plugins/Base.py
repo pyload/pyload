@@ -50,12 +50,12 @@ class Base(object):
     #: When True this addon can be enabled by every user
     __user_context__ = False
     #: Config definition: list of  (name, type, label, default_value) or
-    #: (name, type, label, short_description, default_value)
-    __config__ = list()
+    #: (name, label, desc, Input(...))
+    __config__ = tuple()
     #: Short description, one liner
-    __label__ = ""
+    __description__ = ""
     #: More detailed text
-    __description__ = """"""
+    __explanation__ = """"""
     #: List of needed modules
     __dependencies__ = tuple()
     #: Used to assign a category for addon plugins
@@ -66,6 +66,8 @@ class Base(object):
     __icon__ = ""
     #: Alternative, link to png icon
     __icon_url__ = ""
+    #: Domain name of the service
+    __domain__ = ""
     #: Url with general information/support/discussion
     __url__ = ""
     #: Url to term of content, user is accepting these when using the plugin
@@ -105,6 +107,10 @@ class Base(object):
 
         #: last interaction task
         self.task = None
+
+    def __getitem__(self, item):
+        """ Retrieves meta data attribute """
+        return getattr(Base, "__%s__" % item)
 
     def logInfo(self, *args, **kwargs):
         """ Print args to log at specific level

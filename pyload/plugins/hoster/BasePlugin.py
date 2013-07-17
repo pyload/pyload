@@ -13,7 +13,7 @@ class BasePlugin(Hoster):
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
     __version__ = "0.17"
-    __description__ = """Base Plugin when any other didnt fit"""
+    __description__ = """Base Plugin when any other didn't match"""
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
@@ -31,7 +31,7 @@ class BasePlugin(Hoster):
 
         #TODO: remove debug
         if pyfile.url.lower().startswith("debug"):
-            self.decryptCaptcha("http://download.pyload.org/pie.png", imgtype="png")
+            self.decryptCaptcha("http://forum.pyload.org/lib/tpl/pyload/images/pyload-logo-edited3.5-new-font-small.png", imgtype="png")
             self.download("http://download.pyload.org/random100.bin")
             return
 #

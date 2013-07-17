@@ -8,16 +8,16 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
 
         input: null,
         value: null,
-        default_value: null,
         description: null,
+        default_value: null,
 
         // enables tooltips
         tooltip: true,
 
         initialize: function(options) {
             this.input = options.input;
+            this.default_value = this.input.default_value;
             this.value = options.value;
-            this.default_value = options.default_value;
             this.description = options.description;
         },
 

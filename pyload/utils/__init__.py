@@ -42,13 +42,13 @@ def remove_chars(string, repl):
 
 
 def get_console_encoding(enc):
-    if os.name == "nt": 
+    if os.name == "nt":
         if enc == "cp65001": # aka UTF-8
             print "WARNING: Windows codepage 65001 is not supported."
             enc = "cp850"
     else:
         enc = "utf8"
-    
+
     return enc
 
 def compare_time(start, end):
@@ -199,32 +199,16 @@ def accumulate(it, inv_map=None):
 def to_string(value):
     return str(value) if not isinstance(value, basestring) else value
 
+def to_bool(value):
+    if not isinstance(value, basestring): return value
+    return True if value.lower() in ("1", "true", "on", "an", "yes") else False
+
 def to_int(string, default=0):
     """ return int from string or default """
     try:
         return int(string)
     except ValueError:
         return default
-
-def from_string(value, typ=None):
-    """ cast value to given type, unicode for strings """
-
-    # value is no string
-    if not isinstance(value, basestring):
-        return value
-
-    value = decode(value)
-
-    if typ == "int":
-        return int(value)
-    elif typ == "bool":
-        return True if value.lower() in ("1", "true", "on", "an", "yes") else False
-    elif typ == "time":
-        if not value: value = "0:00"
-        if not ":" in value: value += ":00"
-        return value
-    else:
-        return value
 
 def get_index(l, value):
     """ .index method that also works on tuple and python 2.5 """

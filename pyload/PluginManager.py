@@ -22,6 +22,7 @@ from os import listdir, makedirs
 from os.path import isfile, join, exists, abspath, basename
 from sys import version_info
 from time import time
+from collections import defaultdict
 
 from pyload.lib.SafeEval import const_eval as literal_eval
 from pyload.plugins.Base import Base
@@ -34,9 +35,19 @@ from new_collections import namedtuple
 IGNORE = (
     "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('addons', 'UnRar'),
     'EasyShareCom', 'FlyshareCz'
-    )
+)
 
 PluginTuple = namedtuple("PluginTuple", "version re deps category user path")
+
+class BaseAttributes(defaultdict):
+    """ Dictionary that loads defaults values from Base object """
+    def __missing__(self, key):
+        attr = "__%s__" % key
+        if not hasattr(Base, attr):
+            return defaultdict.__missing__(self, key)
+
+        return getattr(Base, attr)
+
 
 class PluginManager:
     ROOT = "pyload.plugins."
@@ -45,7 +56,7 @@ class PluginManager:
 
     BUILTIN = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s?(True|False|None|[0-9x.]+)', re.I)
     SINGLE = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(?:r|u|_)?((?:(?<!")"(?!")|\'|\().*(?:(?<!")"(?!")|\'|\)))',
-        re.I)
+                        re.I)
     # note the nongreedy character: that means we can not embed list and dicts
     MULTI = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*((?:\{|\[|"{3}).*?(?:"""|\}|\]))', re.DOTALL | re.M | re.I)
 
@@ -102,7 +113,7 @@ class PluginManager:
 
         for f in listdir(pfolder):
             if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith(
-                "_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
+                    "_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
                 if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):
                     continue
                 elif f.endswith("_26.pyc") and version_info[0:2] != (2, 6):
@@ -130,7 +141,7 @@ class PluginManager:
         content = data.read()
         data.close()
 
-        attrs = {}
+        attrs = BaseAttributes()
         for m in self.BUILTIN.findall(content) + self.SINGLE.findall(content) + self.MULTI.findall(content):
             #replace gettext function and eval result
             try:
@@ -179,10 +190,11 @@ class PluginManager:
             except:
                 self.logDebug(folder, name, "Invalid regexp pattern '%s'" % attrs["pattern"])
                 plugin_re = self.NO_MATCH
-        else: plugin_re = self.NO_MATCH
+        else:
+            plugin_re = self.NO_MATCH
 
-        deps = attrs.get("dependencies", None)
-        category = attrs.get("category", None) if folder == "addons" else None
+        deps = attrs["dependencies"]
+        category = attrs["category"] if folder == "addons" else ""
 
         # create plugin tuple
         plugin = PluginTuple(version, plugin_re, deps, category, bool(home), filename)
@@ -191,29 +203,29 @@ class PluginManager:
         if folder == "internal":
             return plugin
 
-        if folder == "addons" and "config" not in attrs and not attrs.get("internal", False):
+        if folder == "addons" and "config" not in attrs and not attrs["internal"]:
             attrs["config"] = (["activated", "bool", "Activated", False],)
 
         if "config" in attrs and attrs["config"] is not None:
             config = attrs["config"]
-            desc = attrs.get("description", "")
-            long_desc = attrs.get("long_description", "")
+            desc = attrs["description"]
+            expl = attrs["explanation"]
 
             # Convert tuples to list
             config = [list(x) for x in config]
 
-            if folder == "addons" and not attrs.get("internal", False):
+            if folder == "addons" and not attrs["internal"]:
                 for item in config:
                     if item[0] == "activated": break
                 else: # activated flag missing
                     config.insert(0, ("activated", "bool", "Activated", False))
 
             # Everything that is no addon and user_context=True, is added to dict
-            if folder != "addons" or attrs.get("user_context", False):
+            if folder != "addons" or attrs["user_context"]:
                 self.user_context[name] = True
 
             try:
-                self.core.config.addConfigSection(name, name, desc, long_desc, config)
+                self.core.config.addConfigSection(name, name, desc, expl, config)
             except:
                 self.logDebug(folder, name, "Invalid config  %s" % config)
 
@@ -312,8 +324,10 @@ class PluginManager:
     def find_module(self, fullname, path=None):
         #redirecting imports if necesarry
         if fullname.startswith(self.ROOT) or fullname.startswith(self.LOCALROOT): #separate pyload plugins
-            if fullname.startswith(self.LOCALROOT): user = 1
-            else: user = 0 #used as bool and int
+            if fullname.startswith(self.LOCALROOT):
+                user = 1
+            else:
+                user = 0 #used as bool and int
 
             split = fullname.split(".")
             if len(split) != 4 - user: return
@@ -347,13 +361,13 @@ class PluginManager:
                 self.log.debug("Old import reference detected, use %s" % name)
                 replace = False
 
-
             if replace:
                 if self.ROOT in name:
                     newname = name.replace(self.ROOT, self.LOCALROOT)
                 else:
                     newname = name.replace(self.LOCALROOT, self.ROOT)
-            else: newname = name
+            else:
+                newname = name
 
             base, plugin = newname.rsplit(".", 1)
 

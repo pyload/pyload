@@ -77,6 +77,7 @@ enum InputType {
   Folder,
   Textbox,
   Password,
+  Time,
   Bool,   // confirm like, yes or no dialog
   Click,  // for positional captchas
   Select,  // select from list
@@ -113,7 +114,8 @@ enum Role {
 
 struct Input {
     1: InputType type,
-    2: optional JSONString data,
+    2: optional JSONString default_value,
+    3: optional JSONString data,
 }
 
 struct DownloadProgress {
@@ -215,10 +217,9 @@ struct InteractionTask {
   1: InteractionID iid,
   2: Interaction type,
   3: Input input,
-  4: optional JSONString default_value,
-  5: string title,
-  6: string description,
-  7: PluginName plugin,
+  4: string title,
+  5: string description,
+  6: PluginName plugin,
 }
 
 struct AddonService {
@@ -239,15 +240,14 @@ struct ConfigItem {
   2: string label,
   3: string description,
   4: Input input,
-  5: JSONString default_value,
-  6: JSONString value,
+  5: JSONString value,
 }
 
 struct ConfigHolder {
   1: string name, // for plugin this is the PluginName
   2: string label,
   3: string description,
-  4: string long_description,
+  4: string explanation,
   5: list<ConfigItem> items,
   6: optional list<AddonInfo> info,
 }

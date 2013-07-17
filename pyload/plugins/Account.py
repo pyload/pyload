@@ -4,7 +4,7 @@ from time import time
 from traceback import print_exc
 from threading import RLock
 
-from pyload.utils import compare_time, format_size, parseFileSize, lock, from_string
+from pyload.utils import compare_time, format_size, parseFileSize, lock, to_bool
 from pyload.Api import AccountInfo
 from pyload.network.CookieJar import CookieJar
 
@@ -50,7 +50,7 @@ class Account(Base):
         Base.__init__(self, manager.core)
 
         if "activated" in options:
-            self.activated = from_string(options["activated"], "bool")
+            self.activated = to_bool(options["activated"])
         else:
             self.activated = Account.activated
 
@@ -141,7 +141,7 @@ class Account(Base):
         self.valid = True #set valid, so the login will be retried
 
         if "activated" in options:
-            self.activated = from_string(options["avtivated"], "bool")
+            self.activated = True if options["activated"] == "True" else False
 
         if password:
             self.password = password

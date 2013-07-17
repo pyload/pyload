@@ -51,12 +51,13 @@ class InputType:
 	Folder = 4
 	Textbox = 5
 	Password = 6
-	Bool = 7
-	Click = 8
-	Select = 9
-	Multiple = 10
-	List = 11
-	Table = 12
+	Time = 7
+	Bool = 8
+	Click = 9
+	Select = 10
+	Multiple = 11
+	List = 12
+	Table = 13
 
 class Interaction:
 	All = 0
@@ -127,13 +128,13 @@ class AddonService(BaseObject):
 		self.media = media
 
 class ConfigHolder(BaseObject):
-	__slots__ = ['name', 'label', 'description', 'long_description', 'items', 'info']
+	__slots__ = ['name', 'label', 'description', 'explanation', 'items', 'info']
 
-	def __init__(self, name=None, label=None, description=None, long_description=None, items=None, info=None):
+	def __init__(self, name=None, label=None, description=None, explanation=None, items=None, info=None):
 		self.name = name
 		self.label = label
 		self.description = description
-		self.long_description = long_description
+		self.explanation = explanation
 		self.items = items
 		self.info = info
 
@@ -149,14 +150,13 @@ class ConfigInfo(BaseObject):
 		self.activated = activated
 
 class ConfigItem(BaseObject):
-	__slots__ = ['name', 'label', 'description', 'input', 'default_value', 'value']
+	__slots__ = ['name', 'label', 'description', 'input', 'value']
 
-	def __init__(self, name=None, label=None, description=None, input=None, default_value=None, value=None):
+	def __init__(self, name=None, label=None, description=None, input=None, value=None):
 		self.name = name
 		self.label = label
 		self.description = description
 		self.input = input
-		self.default_value = default_value
 		self.value = value
 
 class DownloadInfo(BaseObject):
@@ -211,20 +211,20 @@ class Forbidden(ExceptionObject):
 	pass
 
 class Input(BaseObject):
-	__slots__ = ['type', 'data']
+	__slots__ = ['type', 'default_value', 'data']
 
-	def __init__(self, type=None, data=None):
+	def __init__(self, type=None, default_value=None, data=None):
 		self.type = type
+		self.default_value = default_value
 		self.data = data
 
 class InteractionTask(BaseObject):
-	__slots__ = ['iid', 'type', 'input', 'default_value', 'title', 'description', 'plugin']
+	__slots__ = ['iid', 'type', 'input', 'title', 'description', 'plugin']
 
-	def __init__(self, iid=None, type=None, input=None, default_value=None, title=None, description=None, plugin=None):
+	def __init__(self, iid=None, type=None, input=None, title=None, description=None, plugin=None):
 		self.iid = iid
 		self.type = type
 		self.input = input
-		self.default_value = default_value
 		self.title = title
 		self.description = description
 		self.plugin = plugin

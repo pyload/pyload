@@ -4,10 +4,11 @@
 from new_collections import OrderedDict
 
 from pyload.Api import InvalidConfigSection
-from pyload.utils import from_string, json
+from pyload.utils import json
 
 from ConfigParser import ConfigParser
 
+from convert import to_input, from_string
 
 def convertKeyError(func):
     """ converts KeyError into InvalidConfigSection """
@@ -64,7 +65,7 @@ class ConfigManager(ConfigParser):
             except KeyError:
                 pass # Returns default value later
 
-        return self.config[section].config[option].default
+        return self.config[section].config[option].input.default_value
 
     def loadValues(self, user, section):
         if (user, section) not in self.values:
@@ -86,7 +87,7 @@ class ConfigManager(ConfigParser):
             changed = self.parser.set(section, option, value, sync)
         else:
             data = self.config[section].config[option]
-            value = from_string(value, data.type)
+            value = from_string(value, data.input.type)
             old_value = self.get(section, option)
 
             # Values will always be saved to db, sync is ignored

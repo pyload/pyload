@@ -39,7 +39,7 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', './input/inpu
                 // instantiate the input
                 var input = this.model.get('input');
                 var InputView = load_input(input);
-                this.input = new InputView(input);
+                this.input = new InputView({input: input});
                 // only renders after wards
                 this.$('#inputField').append(this.input.render().el);
             },

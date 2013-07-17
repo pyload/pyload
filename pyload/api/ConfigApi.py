@@ -8,9 +8,9 @@ from ApiComponent import ApiComponent
 
 # helper function to create a ConfigHolder
 def toConfigHolder(section, config, values):
-    holder = ConfigHolder(section, config.name, config.description, config.long_desc)
-    holder.items = [ConfigItem(option, x.name, x.description, x.type, to_string(x.default),
-                               to_string(values.get(option, x.default))) for option, x in
+    holder = ConfigHolder(section, config.label, config.description, config.explanation)
+    holder.items = [ConfigItem(option, x.label, x.description, x.input,
+                               to_string(values.get(option, x.input.default_value))) for option, x in
                     config.config.iteritems()]
     return holder
 
@@ -56,7 +56,7 @@ class ConfigApi(ApiComponent):
 
         :rtype: list of PluginInfo
         """
-        return [ConfigInfo(section, config.name, config.description, False, False)
+        return [ConfigInfo(section, config.label, config.description, False, False)
                 for section, config, values in self.core.config.iterCoreSections()]
 
     @RequirePerm(Permission.Plugins)
@@ -74,11 +74,12 @@ class ConfigApi(ApiComponent):
             # skip unmodified and inactive addons
             if not values and name not in active: continue
 
-            item = ConfigInfo(name, config.name, config.description,
+            item = ConfigInfo(name, config.label, config.description,
                               self.core.pluginManager.getCategory(name),
                               self.core.pluginManager.isUserPlugin(name),
+                              # TODO: won't work probably
                               values.get("activated", None if "activated" not in config.config else config.config[
-                                  "activated"].default))
+                                  "activated"].input.default_value))
             data.append(item)
 
         return data
@@ -90,7 +91,7 @@ class ConfigApi(ApiComponent):
         :rtype: list of PluginInfo
         """
         # TODO: filter user_context / addons when not allowed
-        plugins = [ConfigInfo(name, config.name, config.description,
+        plugins = [ConfigInfo(name, config.label, config.description,
                               self.core.pluginManager.getCategory(name),
                               self.core.pluginManager.isUserPlugin(name))
                    for name, config, values in self.core.config.iterSections(self.primaryUID)]

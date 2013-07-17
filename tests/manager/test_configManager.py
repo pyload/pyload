@@ -5,15 +5,16 @@ from collections import defaultdict
 
 from nose.tools import raises
 
-from tests.helper.Stubs import Core
+from tests.helper.Stubs import Core, adminUser, normalUser
 
 from pyload.Api import InvalidConfigSection
 from pyload.database import DatabaseBackend
 from pyload.config.ConfigParser import ConfigParser
 from pyload.config.ConfigManager import ConfigManager
+from pyload.utils import primary_uid
 
-adminUser = None
-normalUser = 1
+adminUser = primary_uid(adminUser)
+normalUser = primary_uid(normalUser)
 
 class TestConfigManager(TestCase):
 
@@ -36,7 +37,7 @@ class TestConfigManager(TestCase):
 
     def addConfig(self):
         self.config.addConfigSection("plugin", "Name", "desc", "something",
-            [("value", "str", "label", "desc", "default")])
+            [("value", "str", "label", "default")])
 
     def test_db(self):
 
@@ -115,7 +116,7 @@ class TestConfigManager(TestCase):
 
     def test_get_section(self):
         self.addConfig()
-        assert self.config.getSection("plugin")[0].name == "Name"
+        self.assertEqual(self.config.getSection("plugin")[0].label, "Name")
 
     # TODO: more save tests are needed
     def test_saveValues(self):

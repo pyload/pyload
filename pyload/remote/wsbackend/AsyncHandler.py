@@ -43,7 +43,7 @@ class AsyncHandler(AbstractHandler):
     PATH = "/async"
     COMMAND = "start"
 
-    PROGRESS_INTERVAL = 2
+    PROGRESS_INTERVAL = 1.5
     EVENT_PATTERN = re.compile(r"^(package|file|interaction)", re.I)
     INTERACTION = Interaction.All
 

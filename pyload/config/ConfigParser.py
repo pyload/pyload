@@ -6,14 +6,16 @@ from os.path import exists
 from gettext import gettext
 from new_collections import namedtuple, OrderedDict
 
-from pyload.utils import from_string
+
+from pyload.Api import Input, InputType
 from pyload.utils.fs import chmod
 
 from default import make_config
+from convert import to_input, from_string
 
 CONF_VERSION = 2
-SectionTuple = namedtuple("SectionTuple", "name description long_desc config")
-ConfigData = namedtuple("ConfigData", "name type description default")
+SectionTuple = namedtuple("SectionTuple", "label description explanation config")
+ConfigData = namedtuple("ConfigData", "label description input")
 
 class ConfigParser:
     """
@@ -41,31 +43,21 @@ class ConfigParser:
 
     def checkVersion(self):
         """Determines if config needs to be deleted"""
-        e = None
-        # workaround conflict, with GUI (which also accesses the config) so try read in 3 times
-        for i in range(0, 3):
-            try:
-                if exists(self.CONFIG):
-                    f = open(self.CONFIG, "rb")
-                    v = f.readline()
-                    f.close()
-                    v = v[v.find(":") + 1:].strip()
+        if exists(self.CONFIG):
+            f = open(self.CONFIG, "rb")
+            v = f.readline()
+            f.close()
+            v = v[v.find(":") + 1:].strip()
 
-                    if not v or int(v) < CONF_VERSION:
-                        f = open(self.CONFIG, "wb")
-                        f.write("version: " + str(CONF_VERSION))
-                        f.close()
-                        print "Old version of %s deleted" % self.CONFIG
-                else:
-                    f = open(self.CONFIG, "wb")
-                    f.write("version:" + str(CONF_VERSION))
-                    f.close()
-
-            except Exception, ex:
-                e = ex
-                sleep(0.3)
-        if e: raise e
-
+            if not v or int(v) < CONF_VERSION:
+                f = open(self.CONFIG, "wb")
+                f.write("version: " + str(CONF_VERSION))
+                f.close()
+                print "Old version of %s deleted" % self.CONFIG
+        else:
+            f = open(self.CONFIG, "wb")
+            f.write("version:" + str(CONF_VERSION))
+            f.close()
 
     def parseValues(self, filename):
         """read config values from file"""
@@ -139,13 +131,13 @@ class ConfigParser:
         try:
             return self.values[section][option]
         except KeyError:
-            return self.config[section].config[option].default
+            return self.config[section].config[option].input.default_value
 
     def set(self, section, option, value, sync=True):
         """set value"""
 
         data = self.config[section].config[option]
-        value = from_string(value, data.type)
+        value = from_string(value, data.input.type)
         old_value = self.get(section, option)
 
         # only save when different values
@@ -172,22 +164,34 @@ class ConfigParser:
         """ Retrieves single config as tuple (section, values) """
         return self.config[section], self.values[section] if section in self.values else {}
 
-    def addConfigSection(self, section, name, desc, long_desc, config):
+    def addConfigSection(self, section, label, desc, expl, config):
         """Adds a section to the config. `config` is a list of config tuples as used in plugin api defined as:
         The order of the config elements is preserved with OrderedDict
         """
         d = OrderedDict()
 
         for entry in config:
-            if len(entry) == 5:
-                conf_name, type, conf_desc, conf_verbose, default = entry
-            else: # config options without description
-                conf_name, type, conf_desc, default = entry
-                conf_verbose = ""
+            if len(entry) != 4:
+                raise ValueError("Config entry must be of length 4")
 
-            d[conf_name] = ConfigData(gettext(conf_desc), type, gettext(conf_verbose), from_string(default, type))
+            # Values can have different roles depending on the two config formats
+            conf_name, type_label, label_desc, default_input = entry
 
-        data = SectionTuple(gettext(name), gettext(desc), gettext(long_desc), d)
+            # name, label, desc, input
+            if isinstance(default_input, Input):
+                input = default_input
+                conf_label = type_label
+                conf_desc = label_desc
+            # name, type, label, default
+            else:
+                input = Input(to_input(type_label))
+                input.default_value = from_string(default_input, input.type)
+                conf_label = label_desc
+                conf_desc = ""
+
+            d[conf_name] = ConfigData(gettext(conf_label), gettext(conf_desc), input)
+
+        data = SectionTuple(gettext(label), gettext(desc), gettext(expl), d)
         self.config[section] = data
 
 class Section:
