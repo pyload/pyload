@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyload 0.4.9.9-dev\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-07-15 23:06+0200\n"
+"POT-Creation-Date: 2013-07-17 15:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,13 +17,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pyload/plugins/Base.py:324
+#: pyload/plugins/Base.py:329
 msgid ""
 "Pil and tesseract not installed and no Client connected for captcha "
 "decrypting"
 msgstr ""
 
-#: pyload/plugins/Base.py:328
+#: pyload/plugins/Base.py:333
 msgid "No captcha result obtained in appropriate time."
 msgstr ""
 
@@ -213,7 +213,7 @@ msgstr ""
 msgid "Activate direct Download in your Bitshare Account"
 msgstr ""
 
-#: pyload/plugins/crypter/SerienjunkiesOrg.py:126
+#: pyload/plugins/crypter/SerienjunkiesOrg.py:128
 msgid "Downloadlimit reached"
 msgstr ""
 
@@ -424,7 +424,7 @@ msgstr ""
 
 #: pyload/plugins/addons/MultiHoster.py:29
 #, python-format
-msgid "Activated MultiHoster %s"
+msgid "Activated %s"
 msgstr ""
 
 #: pyload/plugins/addons/MultiHoster.py:47

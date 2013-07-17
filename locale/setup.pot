@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyload 0.4.9.9-dev\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-07-12 20:56+0200\n"
+"POT-Creation-Date: 2013-07-17 15:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,7 +59,7 @@ msgid ""
 msgstr ""
 
 #: pyload/Setup.py:93
-msgid "If you have any problems with this assistent hit STRG-C,"
+msgid "If you have any problems with this assistent hit CTRL+C,"
 msgstr ""
 
 #: pyload/Setup.py:94
@@ -210,7 +210,7 @@ msgid "Language"
 msgstr ""
 
 #: pyload/Setup.py:213
-msgid "Downloadfolder"
+msgid "Download folder"
 msgstr ""
 
 #: pyload/Setup.py:214
@@ -335,11 +335,11 @@ msgid "Setting new configpath, current configuration will not be transferred!"
 msgstr ""
 
 #: pyload/Setup.py:323
-msgid "Configpath"
+msgid "Config path"
 msgstr ""
 
 #: pyload/Setup.py:331
-msgid "Configpath changed, setup will now close, please restart to go on."
+msgid "Config path changed, setup will now close, please restart to go on."
 msgstr ""
 
 #: pyload/Setup.py:332

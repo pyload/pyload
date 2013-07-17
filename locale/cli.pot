@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyload 0.4.9.9-dev\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-07-15 23:06+0200\n"
+"POT-Creation-Date: 2013-07-17 15:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -261,8 +261,8 @@ msgstr ""
 msgid "Couldn't write user config file"
 msgstr ""
 
-#: pyload/cli/Cli.py:548
-msgid "You need py-openssl to connect to this pyLoad Core."
+#: pyload/cli/Cli.py:548 pyload/cli/Cli.py:580
+msgid "You need py-openssl to connect to this pyLoad core."
 msgstr ""
 
 #: pyload/cli/Cli.py:555
@@ -288,10 +288,6 @@ msgstr ""
 #: pyload/cli/Cli.py:568 pyload/cli/Cli.py:577
 #, python-format
 msgid "Could not establish connection to %(addr)s:%(port)s."
-msgstr ""
-
-#: pyload/cli/Cli.py:580
-msgid "You need py-openssl to connect to this pyLoad core."
 msgstr ""
 
 #: pyload/cli/Cli.py:582

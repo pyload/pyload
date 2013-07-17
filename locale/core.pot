@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyload 0.4.9.9-dev\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-07-15 23:06+0200\n"
+"POT-Creation-Date: 2013-07-17 15:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,44 +99,13 @@ msgstr ""
 msgid "Activated"
 msgstr ""
 
-#: pyload/config/default.py:16 pyload/config/default.py:17
-#: pyload/config/default.py:18 pyload/config/default.py:23
-#: pyload/config/default.py:24 pyload/config/default.py:25
-#: pyload/config/default.py:26 pyload/config/default.py:27
-#: pyload/config/default.py:32 pyload/config/default.py:33
-#: pyload/config/default.py:34 pyload/config/default.py:35
-#: pyload/config/default.py:36 pyload/config/default.py:37
-#: pyload/config/default.py:38 pyload/config/default.py:39
-#: pyload/config/default.py:44 pyload/config/default.py:45
-#: pyload/config/default.py:46 pyload/config/default.py:47
-#: pyload/config/default.py:48 pyload/config/default.py:49
-#: pyload/config/default.py:50 pyload/config/default.py:55
-#: pyload/config/default.py:56 pyload/config/default.py:57
-#: pyload/config/default.py:62 pyload/config/default.py:63
-#: pyload/config/default.py:64 pyload/config/default.py:65
-#: pyload/config/default.py:66 pyload/config/default.py:67
-#: pyload/config/default.py:68 pyload/config/default.py:69
-#: pyload/config/default.py:70 pyload/config/default.py:75
-#: pyload/config/default.py:76 pyload/config/default.py:77
-#: pyload/config/default.py:78 pyload/config/default.py:79
-#: pyload/config/default.py:80 pyload/config/default.py:85
-#: pyload/config/default.py:86 pyload/config/default.py:87
-#: pyload/config/default.py:88 pyload/config/default.py:93
-#: pyload/config/default.py:94 pyload/config/default.py:95
-#: pyload/config/default.py:96 pyload/config/default.py:97
-#: pyload/config/default.py:98 pyload/config/default.py:99
-#: pyload/config/default.py:100 pyload/config/default.py:105
-#: pyload/config/default.py:106
-msgid "Tooltip"
-msgstr ""
-
 #: pyload/config/default.py:17 pyload/config/default.py:69
 #: pyload/config/default.py:80
 msgid "Port"
 msgstr ""
 
-#: pyload/config/default.py:18
-msgid "Adress"
+#: pyload/config/default.py:18 pyload/config/default.py:77
+msgid "Address"
 msgstr ""
 
 #: pyload/config/default.py:21
@@ -281,10 +250,6 @@ msgstr ""
 
 #: pyload/config/default.py:76
 msgid "Use Proxy"
-msgstr ""
-
-#: pyload/config/default.py:77
-msgid "Address"
 msgstr ""
 
 #: pyload/config/default.py:78
@@ -660,7 +625,7 @@ msgstr ""
 msgid "An Error occurred"
 msgstr ""
 
-#: pyload/PluginManager.py:304
+#: pyload/PluginManager.py:316
 #, python-format
 msgid "Error importing %(name)s: %(msg)s"
 msgstr ""
