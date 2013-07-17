@@ -48,12 +48,15 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'hbs!tpl/dial
             },
 
             format: function(data) {
-                var s = '<div class="plugin-select" style="background-image: url(' + pluginIcon(data.name) +')">' + data.label;
+                var s = '<div class="plugin-select" style="background-image: url(' + pluginIcon(data.name) + ')">' + data.label;
                 s += '<br><span>' + data.description + '<span></div>';
                 return s;
             },
 
             formatSelection: function(data) {
+                if (!data || _.isEmpty(data))
+                    return '';
+
                 return '<img class="logo-select" src="' + pluginIcon(data.name) + '"> ' + data.label;
             },
 
