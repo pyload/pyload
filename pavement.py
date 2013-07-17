@@ -135,10 +135,9 @@ def generate_locale():
 @cmdopts([
     ('key=', 'k', 'api key')
 ])
-def upload_locale(options):
+def upload_translations(options):
     """ Uploads the locale files to translation server """
     tmp = path(mkdtemp())
-    print tmp
 
     shutil.copy('locale/crowdin.yaml', tmp)
     os.mkdir(tmp / 'pyLoad')
@@ -157,6 +156,8 @@ def upload_locale(options):
 
     shutil.rmtree(tmp)
 
+    print "Translations uploaded"
+
 @task
 @cmdopts([
     ('key=', 'k', 'api key')
@@ -164,7 +165,6 @@ def upload_locale(options):
 def download_translations(options):
     """ Downloads the translated files from translation server """
     tmp = path(mkdtemp())
-    print tmp
 
     shutil.copy('locale/crowdin.yaml', tmp)
     os.mkdir(tmp / 'pyLoad')
@@ -181,27 +181,29 @@ def download_translations(options):
 
     call(['crowdin-cli', '-c', config, 'download'])
 
-    shutil.rmtree('locale')
-    shutil.copytree(tmp + '/pyLoad', 'locale')
-    shutil.copy(tmp + '/crowdin.yaml', 'locale')
+    for language in (tmp / 'pyLoad').listdir():
+        if not language.isdir():
+            continue
+
+        target = path('locale') / language.basename()
+        print "Copy language %s" % target
+        if target.exists():
+            shutil.rmtree(target)
+
+        shutil.copytree(language, target)
 
     shutil.rmtree(tmp)
 
 @task
 def compile_translations():
     """ Compile PO files to MO """
-    os.chdir('locale')
-    
-    languages = list()
-    for item in os.listdir('.'):
-        if os.path.isdir(item):
-            languages.append(item)
-    
-    for lang in languages:
-        for file in ('cli', 'core', 'plugins', 'setup'):
-            path = lang + '/LC_MESSAGES/' + file
-            call(['msgfmt', '-o', path + '.mo', path + '.po'])
-            os.remove(path + '.po')
+    for language in path('locale').listdir():
+        if not language.isdir():
+            continue
+
+        for f in glob(language / 'LC_MESSAGES' / '*.po'):
+            print "Compiling %s" % f
+            call(['msgfmt', '-o', f.replace('.po', '.mo'), f])
 
 @task
 def tests():
