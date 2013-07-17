@@ -58,7 +58,7 @@ class ExtractArchive(Hook):
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = "Extract different kind of archives"
     __config__ = [("activated", "bool", "Activated", True),
         ("fullpath", "bool", "Extract full path", True),
@@ -310,4 +310,4 @@ class ExtractArchive(Hook):
                     gid = getgrnam(self.config["permission"]["group"])[2]
                     chown(f, uid, gid)
             except Exception, e:
-                self.log.warning(_("Setting User and Group failed"), e)
+                self.logWarning(_("Setting User and Group failed"), e)

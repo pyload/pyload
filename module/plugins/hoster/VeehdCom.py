@@ -11,13 +11,13 @@ class VeehdCom(Hoster):
         ('filename_spaces', 'bool', "Allow spaces in filename", 'False'),
         ('replacement_char', 'str', "Filename replacement character", '_'),
     ]
-    __version__ = '0.21'
+    __version__ = '0.22'
     __description__ = """Veehd.com Download Hoster"""
     __author_name__ = ('cat')
     __author_mail__ = ('cat@pyload')
     
     def _debug(self, msg):
-        self.log.debug('[%s] %s' % (self.__name__, msg))
+        self.logDebug('[%s] %s' % (self.__name__, msg))
     
     def setup(self):
         self.html = None

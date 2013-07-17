@@ -12,7 +12,7 @@ from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.49"
+    __version__ = "0.50"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -40,7 +40,7 @@ class RealdebridCom(Hoster):
             self.logError(_("Please enter your Real-debrid account or deactivate this plugin"))
             self.fail("No Real-debrid account provided")
 
-        self.log.debug("Real-Debrid: Old URL: %s" % pyfile.url)
+        self.logDebug("Real-Debrid: Old URL: %s" % pyfile.url)
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         else:
@@ -71,7 +71,7 @@ class RealdebridCom(Hoster):
         else:
             new_url = new_url.replace("https://", "http://")
 
-        self.log.debug("Real-Debrid: New URL: %s" % new_url)
+        self.logDebug("Real-Debrid: New URL: %s" % new_url)
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown") or pyfile.name.endswith('..'):
             #only use when name wasnt already set

@@ -47,7 +47,7 @@ class WuploadCom(Hoster):
     __name__ = "WuploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?wupload\..*?/file/(([a-z][0-9]+/)?[0-9]+)(/.*)?"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __description__ = """Wupload com"""
     __author_name__ = ("jeix", "paulking")
     __author_mail__ = ("jeix@hasnomail.de", "")
@@ -113,7 +113,7 @@ class WuploadCom(Hoster):
     def getDomain(self):
         result = json_loads(
             self.load(self.API_ADDRESS + "/utility?method=getWuploadDomainForCurrentIp&format=json", decode=True))
-        self.log.debug("%s: response to get domain %s" % (self.__name__, result))
+        self.logDebug("%s: response to get domain %s" % (self.__name__, result))
         return result["FSApi_Utility"]["getWuploadDomainForCurrentIp"]["response"]
 
     def downloadPremium(self):

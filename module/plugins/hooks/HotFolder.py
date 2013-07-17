@@ -30,7 +30,7 @@ from module.plugins.Hook import Hook
 
 class HotFolder(Hook):
     __name__ = "HotFolder"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = """observe folder and file for changes and add container and links"""
     __config__ = [ ("activated", "bool", "Activated" , "False"),
                    ("folder", "str", "Folder to observe", "container"),
@@ -79,7 +79,7 @@ class HotFolder(Hook):
             newpath = join(self.getConfig("folder"), "finished", f if self.getConfig("keep") else "tmp_"+f)
             move(path, newpath)
             
-            self.log.info(_("Added %s from HotFolder") % f)
+            self.logInfo(_("Added %s from HotFolder") % f)
             self.core.api.addPackage(f, [newpath], 1)
             
         

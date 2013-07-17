@@ -88,7 +88,7 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"https?://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
-    __version__ = "0.70"
+    __version__ = "0.71"
     __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com", "l.stickell@yahoo.it")
@@ -154,10 +154,10 @@ class UploadedTo(Hoster):
 
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
-        self.log.debug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name": self.__name__,
+        self.logDebug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name": self.__name__,
                                                                             "left": info["trafficleft"] / 1024 / 1024})
         if int(self.data[1]) / 1024 > info["trafficleft"]:
-            self.log.info(_("%s: Not enough traffic left" % self.__name__))
+            self.logInfo(_("%s: Not enough traffic left" % self.__name__))
             self.account.empty(self.user)
             self.resetAccount()
             self.fail(_("Traffic exceeded"))

@@ -11,7 +11,7 @@ class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(depositfiles\.com|dfiles\.eu)(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
@@ -35,7 +35,7 @@ class DepositfilesCom(SimpleHoster):
         if re.search(self.FILE_OFFLINE_PATTERN, self.html): self.offline()
 
         if re.search(r'File is checked, please try again in a minute.', self.html) is not None:
-            self.log.info("DepositFiles.com: The file is being checked. Waiting 1 minute.")
+            self.logInfo("DepositFiles.com: The file is being checked. Waiting 1 minute.")
             self.setWait(61)
             self.wait()
             self.retry()
@@ -43,7 +43,7 @@ class DepositfilesCom(SimpleHoster):
         wait = re.search(r'html_download_api-limit_interval\">(\d+)</span>', self.html)
         if wait:
             wait_time = int(wait.group(1))
-            self.log.info( "%s: Traffic used up. Waiting %d seconds." % (self.__name__, wait_time) )
+            self.logInfo( "%s: Traffic used up. Waiting %d seconds." % (self.__name__, wait_time) )
             self.setWait(wait_time)
             self.wantReconnect = True
             self.wait()
@@ -52,7 +52,7 @@ class DepositfilesCom(SimpleHoster):
         wait = re.search(r'>Try in (\d+) minutes or use GOLD account', self.html)
         if wait:
             wait_time = int(wait.group(1))
-            self.log.info( "%s: All free slots occupied. Waiting %d minutes." % (self.__name__, wait_time) )
+            self.logInfo( "%s: All free slots occupied. Waiting %d minutes." % (self.__name__, wait_time) )
             self.setWait(wait_time * 60, False)
 
         wait = re.search(r'Please wait (\d+) sec', self.html)

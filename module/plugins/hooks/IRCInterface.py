@@ -36,7 +36,7 @@ from pycurl import FORM_FILE
 
 class IRCInterface(Thread, Hook):
     __name__ = "IRCInterface"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = """connect to irc and let owner perform different tasks"""
     __config__ = [("activated", "bool", "Activated", "False"),
         ("host", "str", "IRC-Server Address", "Enter your server here!"),
@@ -105,8 +105,8 @@ class IRCInterface(Thread, Hook):
         for t in self.getConfig("owner").split():
             if t.strip().startswith("#"):
                 self.sock.send("JOIN %s\r\n" % t.strip())
-        self.log.info("pyLoad IRC: Connected to %s!" % host)
-        self.log.info("pyLoad IRC: Switching to listening mode!")
+        self.logInfo("pyLoad IRC: Connected to %s!" % host)
+        self.logInfo("pyLoad IRC: Switching to listening mode!")
         try:        
             self.main_loop()
             
@@ -167,15 +167,15 @@ class IRCInterface(Thread, Hook):
             
         # HANDLE CTCP ANTI FLOOD/BOT PROTECTION
         if msg["text"] == "\x01VERSION\x01":
-            self.log.debug("Sending CTCP VERSION.")
+            self.logDebug("Sending CTCP VERSION.")
             self.sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
             return
         elif msg["text"] == "\x01TIME\x01":
-            self.log.debug("Sending CTCP TIME.")
+            self.logDebug("Sending CTCP TIME.")
             self.sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
             return
         elif msg["text"] == "\x01LAG\x01":
-            self.log.debug("Received CTCP LAG.") # don't know how to answer
+            self.logDebug("Received CTCP LAG.") # don't know how to answer
             return
          
         trigger = "pass"
@@ -195,7 +195,7 @@ class IRCInterface(Thread, Hook):
             for line in res:
                 self.response(line, msg["origin"])
         except Exception, e:
-            self.log.error("pyLoad IRC: "+ repr(e))
+            self.logError("pyLoad IRC: "+ repr(e))
         
         
     def response(self, msg, origin=""):

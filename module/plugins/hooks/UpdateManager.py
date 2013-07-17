@@ -29,7 +29,7 @@ from module.plugins.Hook import threaded, Expose, Hook
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.13"
+    __version__ = "0.15"
     __description__ = """checks for updates"""
     __config__ = [("activated", "bool", "Activated", "True"),
         ("interval", "int", "Check interval in minutes", "480"),
@@ -70,12 +70,12 @@ class UpdateManager(Hook):
 
         if self.updated and not self.reloaded:
             self.info["plugins"] = True
-            self.log.info(_("*** Plugins have been updated, please restart pyLoad ***"))
+            self.logInfo(_("*** Plugins have been updated, please restart pyLoad ***"))
         elif self.updated and self.reloaded:
-            self.log.info(_("Plugins updated and reloaded"))
+            self.logInfo(_("Plugins updated and reloaded"))
             self.updated = False
         elif self.version == "None":
-            self.log.info(_("No plugin updates available"))
+            self.logInfo(_("No plugin updates available"))
 
     @Expose
     def recheckForUpdates(self):
@@ -92,16 +92,16 @@ class UpdateManager(Hook):
 
                 # Still no updates, plugins will be checked
                 if self.version == "None":
-                    self.log.info(_("No Updates for pyLoad"))
+                    self.logInfo(_("No Updates for pyLoad"))
                     return version_check[1:]
 
 
             self.info["pyload"] = True
-            self.log.info(_("***  New pyLoad Version %s available  ***") % self.version)
-            self.log.info(_("***  Get it here: http://pyload.org/download  ***"))
+            self.logInfo(_("***  New pyLoad Version %s available  ***") % self.version)
+            self.logInfo(_("***  Get it here: http://pyload.org/download  ***"))
 
         except:
-            self.log.warning(_("Not able to connect server for updates"))
+            self.logWarning(_("Not able to connect server for updates"))
 
         return None # Nothing will be done
 
@@ -145,7 +145,7 @@ class UpdateManager(Hook):
             if name in IGNORE or (type, name) in IGNORE:
                 continue
 
-            self.log.info(_("New version of %(type)s|%(name)s : %(version).2f") % {
+            self.logInfo(_("New version of %(type)s|%(name)s : %(version).2f") % {
                 "type": type,
                 "name": name,
                 "version": float(version)
