@@ -15,7 +15,7 @@ def make_config(config):
                             [
                                 ("activated", "bool", _("Activated"), True),
                                 ("port", "int", _("Port"), 7227),
-                                ("listenaddr", "ip", _("Adress"), "0.0.0.0"),
+                                ("listenaddr", "ip", _("Address"), "0.0.0.0"),
                             ])
 
     config.addConfigSection("log", _("Log"), _("Description"), _("Long description"),
