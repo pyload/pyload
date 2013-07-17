@@ -188,6 +188,22 @@ def download_translations(options):
     shutil.rmtree(tmp)
 
 @task
+def compile_translations():
+    """ Compile PO files to MO """
+    os.chdir('locale')
+    
+    languages = list()
+    for item in os.listdir('.'):
+        if os.path.isdir(item):
+            languages.append(item)
+    
+    for lang in languages:
+        for file in ('cli', 'core', 'plugins', 'setup'):
+            path = lang + '/LC_MESSAGES/' + file
+            call(['msgfmt', '-o', path + '.mo', path + '.po'])
+            os.remove(path + '.po')
+
+@task
 def tests():
     """ Run complete test suite """
     call(["tests/run_pyload.sh"])
