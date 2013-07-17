@@ -545,7 +545,7 @@ def main():
         except WrongLogin:
             pass
         except NoSSL:
-            print _("You need py-openssl to connect to this pyLoad Core.")
+            print _("You need py-openssl to connect to this pyLoad core.")
             exit()
         except NoConnection:
             config["addr"] = False
