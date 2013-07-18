@@ -31,17 +31,22 @@ class DepositfilesCom(Account):
     
     def loadAccountInfo(self, user, req):
 
-        src = req.load("http://depositfiles.com/de/gold/")
-        validuntil = re.search("noch den Gold-Zugriff: <b>(.*?)</b></div>", src).group(1)
+        src = req.load("http://dfiles.eu/en/gold/")
+        validuntil = re.search("You have Gold access until: <b>(.*?)</b></div>", src).group(1)
 
         validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
 
-        tmp = {"validuntil":validuntil, "trafficleft":-1}
+        tmp = {"validuntil": validuntil, "trafficleft": -1}
         return tmp
     
     def login(self, user, data, req):
 
-        req.load("http://depositfiles.com/de/gold/payment.php")
-        src = req.load("http://depositfiles.com/de/login.php", get={"return": "/de/gold/payment.php"}, post={"login": user, "password": data["password"]})
-        if r'<div class="error_message">Sie haben eine falsche Benutzername-Passwort-Kombination verwendet.</div>' in src:
+        req.load("http://dfiles.eu/en")
+        version = req.load("http://dfiles.eu/en/api/get_downloader_version.php")
+        agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; ru; rv:1.8.1.20) DepositFiles/FileManager %s' % version
+
+        req.putHeader('User-Agent', agent)
+
+        src = req.load("http://dfiles.eu/en/login.php", post={"login": user, "password": data["password"]})
+        if "Current password is invalid" in src:
             self.wrongPassword()
