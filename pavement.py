@@ -271,7 +271,7 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
 
     f.close()
 
-    call(["xgettext", "--files-from=includes.txt", "--default-domain=%s" % domain] + xargs + xxargs)
+    call(["xgettext", "-L", "Python", "--add-comments=L10N", "--files-from=includes.txt", "--default-domain=%s" % domain] + xargs + xxargs)
 
     # replace charset und move file
     with open("%s.po" % domain, "rb") as f:
