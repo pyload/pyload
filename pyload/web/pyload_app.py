@@ -49,11 +49,14 @@ def index():
         # TODO show different page
         pass
 
-    f = server_static('index.html')
-    content = f.body.read()
-    f.body = template(content, ws=PYLOAD.getWSAddress(), web=PYLOAD.getConfigValue('webinterface', 'port'))
+    resp = server_static('index.html')
 
-    return f
+    # Render variables into the html page
+    if resp.status_code == 200:
+        content = resp.body.read()
+        resp.body = template(content, ws=PYLOAD.getWSAddress(), web=PYLOAD.getConfigValue('webinterface', 'port'))
+
+    return resp
 
 # Very last route that is registered, could match all uris
 @route('/<path:path>')
