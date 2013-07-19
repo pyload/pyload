@@ -70,7 +70,7 @@ class Account(Base):
         self.lock = RLock()
         self.timestamp = 0
         self.login_ts = 0 # timestamp for login
-        self.cj = CookieJar(self.__name__)
+        self.cj = CookieJar()
         self.password = password
         self.error = None
 
@@ -158,7 +158,7 @@ class Account(Base):
             return self.options != before
 
     def getAccountRequest(self):
-        return self.core.requestFactory.getRequest(self.__name__, self.cj)
+        return self.core.requestFactory.getRequest(self.cj)
 
     def getDownloadSettings(self):
         """ Can be overwritten to change download settings. Default is no chunkLimit, max dl limit, resumeDownload

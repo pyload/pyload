@@ -6,7 +6,7 @@ from logging import getLogger
 from HTTPRequest import HTTPRequest
 from HTTPDownload import HTTPDownload
 
-
+# @ Deprecated
 class Browser(object):
     __slots__ = ("log", "options", "bucket", "cj", "_size", "http", "dl")
 

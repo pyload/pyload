@@ -52,7 +52,7 @@ class BaseAttributes(defaultdict):
 class PluginManager:
     ROOT = "pyload.plugins."
     LOCALROOT = "localplugins."
-    TYPES = ("crypter", "hoster", "accounts", "addons", "internal")
+    TYPES = ("crypter", "hoster", "accounts", "addons", "network", "internal")
 
     BUILTIN = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s?(True|False|None|[0-9x.]+)', re.I)
     SINGLE = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(?:r|u|_)?((?:(?<!")"(?!")|\'|\().*(?:(?<!")"(?!")|\'|\)))',

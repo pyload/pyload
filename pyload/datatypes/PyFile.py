@@ -202,8 +202,10 @@ class PyFile(object):
             sleep(0.1)
 
         self.abort = False
-        if self.plugin and self.plugin.req:
-            self.plugin.req.abortDownloads()
+        if self.plugin:
+            self.plugin.req.abort()
+            if self.plugin.dl:
+                self.plugin.dl.abort()
 
         self.release()
 
@@ -224,7 +226,7 @@ class PyFile(object):
     def getSpeed(self):
         """ calculates speed """
         try:
-            return self.plugin.req.speed
+            return self.plugin.dl.speed
         except:
             return 0
 
@@ -241,22 +243,22 @@ class PyFile(object):
     def getBytesArrived(self):
         """ gets bytes arrived """
         try:
-            return self.plugin.req.arrived
+            return self.plugin.dl.arrived
         except:
             return 0
 
     def getBytesLeft(self):
         """ gets bytes left """
         try:
-            return self.plugin.req.size - self.plugin.req.arrived
+            return self.plugin.dl.size - self.plugin.dl.arrived
         except:
             return 0
 
     def getSize(self):
         """ get size of download """
         try:
-            if self.plugin.req.size:
-                return self.plugin.req.size
+            if self.plugin.dl.size:
+                return self.plugin.dl.size
             else:
                 return self.size
         except:

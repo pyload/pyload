@@ -102,7 +102,7 @@ class Crypter(Base):
 
     def __init__(self, core, package=None, password=None):
         Base.__init__(self, core)
-        self.req = core.requestFactory.getRequest(self.__name__)
+        self.req = core.requestFactory.getRequest()
 
         # Package the plugin was initialized for, don't use this, its not guaranteed to be set
         self.package = package

@@ -25,24 +25,35 @@ if os.name != "nt":
     from pwd import getpwnam
     from grp import getgrnam
 
-from Base import Base, Fail, Retry
 from pyload.utils import chunks as _chunks
-from pyload.utils.fs import save_join, save_filename, fs_encode, fs_decode,\
+from pyload.utils.fs import save_join, save_filename, fs_encode, fs_decode, \
     remove, makedirs, chmod, stat, exists, join
+
+from Base import Base, Fail, Retry
+from network.DefaultRequest import DefaultRequest, DefaultDownload
 
 # Import for Hoster Plugins
 chunks = _chunks
 
+
 class Reconnect(Exception):
     """ raised when reconnected """
 
+
 class SkipDownload(Exception):
     """ raised when download should be skipped """
+
 
 class Hoster(Base):
     """
     Base plugin for hoster plugin. Overwrite getInfo for online status retrieval, process for downloading.
     """
+
+    #: Class used to make requests with `self.load`
+    REQUEST_CLASS = DefaultRequest
+
+    #: Class used to make download
+    DOWNLOAD_CLASS = DefaultDownload
 
     @staticmethod
     def getInfo(urls):
@@ -87,7 +98,10 @@ class Hoster(Base):
             self.chunkLimit, self.limitDL, self.resumeDownload = self.account.getDownloadSettings()
             self.premium = self.account.isPremium()
         else:
-            self.req = self.core.requestFactory.getRequest(self.__name__)
+            self.req = self.core.requestFactory.getRequest(klass=self.REQUEST_CLASS)
+
+        #: Will hold the download class
+        self.dl = None
 
         #: associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
@@ -150,7 +164,7 @@ class Hoster(Base):
             # will force a re-login or reload of account info if necessary
             self.account.getAccountInfo()
         else:
-            self.req.clearCookies()
+            self.req.reset()
 
         self.setup()
 
@@ -242,11 +256,6 @@ class Hoster(Base):
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
         """Downloads the content at url to download folder
 
-        :param url:
-        :param get:
-        :param post:
-        :param ref:
-        :param cookies:
         :param disposition: if True and server provides content-disposition header\
         the filename will be changed if needed
         :return: The location where the file was saved
@@ -280,12 +289,15 @@ class Hoster(Base):
 
         self.core.addonManager.dispatchEvent("download:start", self.pyfile, url, filename)
 
+        # Create the class used for downloading
+        self.dl = self.core.requestFactory.getDownloadRequest(self.req, self.DOWNLOAD_CLASS)
         try:
-            newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
-                                            chunks=self.getChunkCount(), resume=self.resumeDownload,
-                                            disposition=disposition)
+            # TODO: hardcoded arguments
+            newname = self.dl.download(url, filename, get=get, post=post, referer=ref, chunks=self.getChunkCount(),
+                                       resume=self.resumeDownload, disposition=disposition)
         finally:
-            self.pyfile.size = self.req.size
+            self.dl.close()
+            self.pyfile.size = self.dl.size
 
         if disposition and newname and newname != name: #triple check, just to be sure
             self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
@@ -325,8 +337,10 @@ class Hoster(Base):
         size = stat(lastDownload)
         size = size.st_size
 
-        if api_size and api_size <= size: return None
-        elif size > max_size and not read_size: return None
+        if api_size and api_size <= size:
+            return None
+        elif size > max_size and not read_size:
+            return None
         self.log.debug("Download Check triggered")
         f = open(lastDownload, "rb")
         content = f.read(read_size if read_size else -1)
@@ -369,7 +383,7 @@ class Hoster(Base):
                 if pyfile.status in (0, 12): #finished or downloading
                     raise SkipDownload(pyfile.pluginname)
                 elif pyfile.status in (
-                5, 7) and starting: #a download is waiting/starting and was apparently started before
+                    5, 7) and starting: #a download is waiting/starting and was apparently started before
                     raise SkipDownload(pyfile.pluginname)
 
         download_folder = self.config['general']['download_folder']
@@ -394,6 +408,8 @@ class Hoster(Base):
         if hasattr(self, "req"):
             self.req.close()
             del self.req
+        if hasattr(self, "dl"):
+            del self.dl
         if hasattr(self, "thread"):
             del self.thread
         if hasattr(self, "html"):

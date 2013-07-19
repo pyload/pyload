@@ -17,44 +17,20 @@
     @author: mkaay, RaNaN
 """
 
-from threading import Lock
-
-from Browser import Browser
 from Bucket import Bucket
-from HTTPRequest import HTTPRequest
 from CookieJar import CookieJar
+
+from pyload.plugins.network.DefaultRequest import DefaultRequest, DefaultDownload
 
 class RequestFactory():
     def __init__(self, core):
-        self.lock = Lock()
         self.core = core
         self.bucket = Bucket()
         self.updateBucket()
 
-    @property
-    def iface(self):
-        return self.core.config["download"]["interface"]
-
-    def getRequest(self, pluginName, cj=None):
-        # TODO: mostly obsolete, browser could be removed completely
-        req = Browser(self.bucket, self.getOptions())
-
-        if cj:
-            req.setCookieJar(cj)
-        else:
-            req.setCookieJar(CookieJar(pluginName))
-
-        return req
-
-    def getHTTPRequest(self, **kwargs):
-        """ returns a http request, don't forget to close it ! """
-        options = self.getOptions()
-        options.update(kwargs) # submit kwargs as additional options
-        return HTTPRequest(CookieJar(None), options)
-
     def getURL(self, *args, **kwargs):
         """ see HTTPRequest for argument list """
-        h = HTTPRequest(None, self.getOptions())
+        h = DefaultRequest(self.getConfig())
         try:
             rep = h.load(*args, **kwargs)
         finally:
@@ -62,9 +38,25 @@ class RequestFactory():
 
         return rep
 
-    def openCookieJar(self, pluginname):
-        """Create new CookieJar"""
-        return CookieJar(pluginname)
+        ########## old api methods above
+
+    def getRequest(self, context=None, klass=DefaultRequest):
+        """ Creates a request with new or given context """
+        # also accepts cookiejars, not so nice, since it depends on implementation
+        if isinstance(context, CookieJar):
+            return klass(self.getConfig(), context)
+        elif context:
+            return klass(*context)
+        else:
+            return klass(self.getConfig())
+
+    def getDownloadRequest(self, request=None, klass=DefaultDownload):
+        """ Instantiates a instance for downloading """
+        # TODO: load with plugin manager
+        return klass(self.bucket, request)
+
+    def getInterface(self):
+        return self.core.config["download"]["interface"]
 
     def getProxies(self):
         """ returns a proxy list for the request classes """
@@ -73,8 +65,10 @@ class RequestFactory():
         else:
             type = "http"
             setting = self.core.config["proxy"]["type"].lower()
-            if setting == "socks4": type = "socks4"
-            elif setting == "socks5": type = "socks5"
+            if setting == "socks4":
+                type = "socks4"
+            elif setting == "socks5":
+                type = "socks5"
 
             username = None
             if self.core.config["proxy"]["username"] and self.core.config["proxy"]["username"].lower() != "none":
@@ -90,11 +84,11 @@ class RequestFactory():
                 "port": self.core.config["proxy"]["port"],
                 "username": username,
                 "password": pw,
-                }
+            }
 
-    def getOptions(self):
+    def getConfig(self):
         """returns options needed for pycurl"""
-        return {"interface": self.iface,
+        return {"interface": self.getInterface(),
                 "proxies": self.getProxies(),
                 "ipv6": self.core.config["download"]["ipv6"]}
 
@@ -111,4 +105,4 @@ def getURL(*args, **kwargs):
 
 
 def getRequest(*args, **kwargs):
-    return pyreq.getHTTPRequest()
+    return pyreq.getRequest(*args, **kwargs)
