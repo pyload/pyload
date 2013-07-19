@@ -8,6 +8,22 @@ or
 
 http://crowdin.net/project/pyload
 
+## Add a tip for translators
+If you want to explain a translatable string to make the translation process easier you can do that using comment block starting with `L10N:`. For example:
+
+```python
+# L10N: Here the tip for translators
+# Thanks
+print _("A translatable string")
+```
+
+Translators will see:
+
+```
+L10N: Here the tip for translators
+Thanks
+```
+
 ## Updating templates
 
 To update POT files run:
