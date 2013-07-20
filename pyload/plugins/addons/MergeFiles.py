@@ -30,7 +30,7 @@ BUFFER_SIZE = 4096
 
 class MergeFiles(Addon):
     __name__ = "MergeFiles"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = "Merges parts splitted with hjsplit"
     __config__ = [
         ("activated" , "bool" , "Activated"  , "False"),
@@ -60,11 +60,11 @@ class MergeFiles(Addon):
             download_folder = save_join(download_folder, pack.folder)
 
         for name, file_list in files.iteritems():
-            self.core.log.info("Starting merging of %s" % name)
+            self.logInfo("Starting merging of %s" % name)
             final_file = open(join(download_folder, fs_encode(name)), "wb")
 
             for splitted_file in file_list:
-                self.core.log.debug("Merging part %s" % splitted_file)
+                self.logDebug("Merging part %s" % splitted_file)
                 pyfile = self.core.files.getFile(fid_dict[splitted_file])
                 pyfile.setStatus("processing")
                 try:
@@ -80,7 +80,7 @@ class MergeFiles(Addon):
                         else:
                             break
                     s_file.close()
-                    self.core.log.debug("Finished merging part %s" % splitted_file)
+                    self.logDebug("Finished merging part %s" % splitted_file)
                 except Exception, e:
                     print traceback.print_exc()
                 finally:
@@ -89,6 +89,6 @@ class MergeFiles(Addon):
                     pyfile.release()
                     
             final_file.close()
-            self.core.log.info("Finished merging of %s" % name)
+            self.logInfo("Finished merging of %s" % name)
                 
 

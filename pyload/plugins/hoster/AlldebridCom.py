@@ -10,7 +10,7 @@ from module.utils import parseFileSize
 
 class AlldebridCom(Hoster):
     __name__ = "AlldebridCom"
-    __version__ = "0.31"
+    __version__ = "0.33"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*alldebrid\..*"
@@ -34,10 +34,10 @@ class AlldebridCom(Hoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.logError("Please enter your AllDebrid account or deactivate this plugin")
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "AllDebrid")
             self.fail("No AllDebrid account provided")
 
-        self.log.debug("AllDebrid: Old URL: %s" % pyfile.url)
+        self.logDebug("AllDebrid: Old URL: %s" % pyfile.url)
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         else:

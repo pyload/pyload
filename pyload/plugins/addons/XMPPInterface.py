@@ -28,7 +28,7 @@ from module.plugins.addons.IRCInterface import IRCInterface
 
 class XMPPInterface(IRCInterface, JabberClient):
     __name__ = "XMPPInterface"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = """connect to jabber and let owner perform different tasks"""
     __config__ = [("activated", "bool", "Activated", "False"),
             ("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),
@@ -97,22 +97,22 @@ class XMPPInterface(IRCInterface, JabberClient):
         try:
             self.loop()
         except Exception, ex:
-            self.core.log.error("pyLoad XMPP: %s" % str(ex))
+            self.logError("pyLoad XMPP: %s" % str(ex))
 
     def stream_state_changed(self, state, arg):
         """This one is called when the state of stream connecting the component
         to a server changes. This will usually be used to let the user
         know what is going on."""
-        self.log.debug("pyLoad XMPP: *** State changed: %s %r ***" % (state, arg))
+        self.logDebug("pyLoad XMPP: *** State changed: %s %r ***" % (state, arg))
 
     def disconnected(self):
-        self.log.debug("pyLoad XMPP: Client was disconnected")
+        self.logDebug("pyLoad XMPP: Client was disconnected")
 
     def stream_closed(self, stream):
-        self.log.debug("pyLoad XMPP: Stream was closed | %s" % stream)
+        self.logDebug("pyLoad XMPP: Stream was closed | %s" % stream)
 
     def stream_error(self, err):
-        self.log.debug("pyLoad XMPP: Stream Error: %s" % err)
+        self.logDebug("pyLoad XMPP: Stream Error: %s" % err)
 
     def get_message_handlers(self):
         """Return list of (message_type, message_handler) tuples.
@@ -147,8 +147,8 @@ class XMPPInterface(IRCInterface, JabberClient):
         subject = stanza.get_subject()
         body = stanza.get_body()
         t = stanza.get_type()
-        self.log.debug(u'pyLoad XMPP: Message from %s received.' % (unicode(stanza.get_from(), )))
-        self.log.debug(u'pyLoad XMPP: Body: %s Subject: %s Type: %s' % (body, subject, t))
+        self.logDebug(u'pyLoad XMPP: Message from %s received.' % (unicode(stanza.get_from(), )))
+        self.logDebug(u'pyLoad XMPP: Body: %s Subject: %s Type: %s' % (body, subject, t))
 
         if t == "headline":
             # 'headline' messages should never be replied to
@@ -192,7 +192,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
                     messages.append(m)
             except Exception, e:
-                self.log.error("pyLoad XMPP: " + repr(e))
+                self.logError("pyLoad XMPP: " + repr(e))
 
             return messages
 
@@ -205,7 +205,7 @@ class XMPPInterface(IRCInterface, JabberClient):
     def announce(self, message):
         """ send message to all owners"""
         for user in self.getConfig("owners").split(";"):
-            self.log.debug("pyLoad XMPP: Send message to %s" % user)
+            self.logDebug("pyLoad XMPP: Send message to %s" % user)
 
             to_jid = JID(user)
 

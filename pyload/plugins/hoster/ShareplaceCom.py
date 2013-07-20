@@ -9,7 +9,7 @@ class ShareplaceCom(Hoster):
     __name__ = "ShareplaceCom"
     __type__ = "hoster"
     __pattern__ = r"(http://)?(www\.)?shareplace\.(com|org)/\?[a-zA-Z0-9]+"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __description__ = """Shareplace.com Download Hoster"""
     __author_name__ = ("ACCakut, based on YourfilesTo by jeix and skydancer")
     __author_mail__ = ("none")
@@ -31,7 +31,7 @@ class ShareplaceCom(Hoster):
         
         wait_time = self.get_waiting_time()
         self.setWait(wait_time)
-        self.log.debug("%s: Waiting %d seconds." % (self.__name__,wait_time))
+        self.logDebug("%s: Waiting %d seconds." % (self.__name__,wait_time))
         self.wait()
 
     def get_waiting_time(self):

@@ -10,7 +10,7 @@ from pyload.utils.fs import fs_encode
 
 class Premium4Me(Hoster):
     __name__ = "Premium4Me"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __type__ = "hoster"
 
     __pattern__ = r"http://premium.to/.*"
@@ -24,7 +24,7 @@ class Premium4Me(Hoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.logError(_("Please enter your premium.to account or deactivate this plugin"))
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "premium.to")
             self.fail("No premium.to account provided")
 
         self.logDebug("premium.to: Old URL: %s" % pyfile.url)

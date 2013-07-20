@@ -32,7 +32,7 @@ from module.plugins.Hoster import Hoster
 
 class Xdcc(Hoster):
     __name__ = "Xdcc"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __pattern__ = r'xdcc://.*?(/#?.*?)?/.*?/#?\d+/?' # xdcc://irc.Abjects.net/#channel/[XDCC]|Shit/#0004/
     __type__ = "hoster"
     __config__ = [
@@ -59,7 +59,7 @@ class Xdcc(Hoster):
         for i in range(0,3):
             try:
                 nmn = self.doDownload(pyfile.url)
-                self.log.debug("%s: Download of %s finished." % (self.__name__, nmn))
+                self.logDebug("%s: Download of %s finished." % (self.__name__, nmn))
                 return
             except socket.error, e:
                 if hasattr(e, "errno"):
@@ -68,7 +68,7 @@ class Xdcc(Hoster):
                     errno = e.args[0]
                     
                 if errno in (10054,):
-                    self.log.debug("XDCC: Server blocked our ip, retry in 5 min")
+                    self.logDebug("XDCC: Server blocked our ip, retry in 5 min")
                     self.setWait(300)
                     self.wait()
                     continue                    
@@ -176,10 +176,10 @@ class Xdcc(Hoster):
 
                 if nick == msg["target"][0:len(nick)] and "PRIVMSG" == msg["action"]:
                     if msg["text"] == "\x01VERSION\x01":
-                        self.log.debug("XDCC: Sending CTCP VERSION.")
+                        self.logDebug("XDCC: Sending CTCP VERSION.")
                         sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
                     elif msg["text"] == "\x01TIME\x01":
-                        self.log.debug("Sending CTCP TIME.")
+                        self.logDebug("Sending CTCP TIME.")
                         sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
                     elif msg["text"] == "\x01LAG\x01":
                         pass # don't know how to answer
@@ -212,12 +212,12 @@ class Xdcc(Hoster):
             
         self.pyfile.name = packname
         filename = save_join(location, packname)
-        self.log.info("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
+        self.logInfo("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
 
         self.pyfile.setStatus("downloading")
         newname = self.req.download(ip, port, filename, sock, self.pyfile.setProgress)
         if newname and newname != filename:
-            self.log.info("%(name)s saved as %(newname)s" % {"name": self.pyfile.name, "newname": newname})
+            self.logInfo("%(name)s saved as %(newname)s" % {"name": self.pyfile.name, "newname": newname})
             filename = newname
         
         # kill IRC socket

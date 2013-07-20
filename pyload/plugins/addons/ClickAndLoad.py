@@ -25,7 +25,7 @@ from module.plugins.Addon import Addon
 
 class ClickAndLoad(Addon):
     __name__ = "ClickAndLoad"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""
     __config__ = [("activated", "bool", "Activated", "True"),
                   ("extern", "bool", "Allow external link adding", "False")]
@@ -43,7 +43,7 @@ class ClickAndLoad(Addon):
 
                 thread.start_new_thread(proxy, (self, ip, self.port, 9666))
             except:
-                self.log.error("ClickAndLoad port already in use.")
+                self.logError("ClickAndLoad port already in use.")
 
 
 def proxy(self, *settings):
@@ -71,7 +71,7 @@ def server(self, *settings):
             errno = e.args[0]
 
         if errno == 98:
-            self.core.log.warning(_("Click'N'Load: Port 9666 already in use"))
+            self.logWarning(_("Click'N'Load: Port 9666 already in use"))
             return
         thread.start_new_thread(server, (self,) + settings)
     except:

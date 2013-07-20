@@ -6,7 +6,7 @@ from module.network.HTTPRequest import BadHeader
 
 class ReloadCc(Hoster):
     __name__ = "ReloadCc"
-    __version__ = "0.4"
+    __version__ = "0.5"
     __type__ = "hoster"
     __description__ = """Reload.Cc hoster plugin"""
 
@@ -19,7 +19,7 @@ class ReloadCc(Hoster):
     def process(self, pyfile):
         # Check account
         if not self.account or not self.account.canUse():
-            self.logError("Please enter a valid reload.cc account or deactivate this plugin")
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "reload.cc")
             self.fail("No valid reload.cc account provided")
 
         # In some cases hostsers do not supply us with a filename at download, so we are going to set a fall back filename (e.g. for freakshare or xfileshare)

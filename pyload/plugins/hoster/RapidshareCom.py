@@ -50,7 +50,7 @@ class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
     __pattern__ = r"https?://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
-    __version__ = "1.38"
+    __version__ = "1.39"
     __description__ = """Rapidshare.com Download Hoster"""
     __config__ = [("server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None")]
     __author_name__ = ("spoob", "RaNaN", "mkaay")
@@ -93,7 +93,7 @@ class RapidshareCom(Hoster):
                 self.handleFree()
 
         elif self.api_data["status"] == "2":
-            self.log.info(_("Rapidshare: Traffic Share (direct download)"))
+            self.logInfo(_("Rapidshare: Traffic Share (direct download)"))
             self.pyfile.name = self.get_file_name()
 
             self.download(self.pyfile.url, get={"directstart":1})
@@ -113,24 +113,24 @@ class RapidshareCom(Hoster):
         #tmp = "#!download|%(server)s|%(id)s|%(name)s|%(size)s"
         download = "http://%(host)s/cgi-bin/rsapi.cgi?sub=download&editparentlocation=0&bin=1&fileid=%(id)s&filename=%(name)s&dlauth=%(auth)s" % self.dl_dict
 
-        self.log.debug("RS API Request: %s" % download)
+        self.logDebug("RS API Request: %s" % download)
         self.download(download, ref=False)
 
         check = self.checkDownload({"ip" : "You need RapidPro to download more files from your IP address",
                                     "auth" : "Download auth invalid"})
         if check == "ip":
             self.setWait(60)
-            self.log.info(_("Already downloading from this ip address, waiting 60 seconds"))
+            self.logInfo(_("Already downloading from this ip address, waiting 60 seconds"))
             self.wait()
             self.handleFree()
         elif check == "auth":
-            self.log.info(_("Invalid Auth Code, download will be restarted"))
+            self.logInfo(_("Invalid Auth Code, download will be restarted"))
             self.offset += 5
             self.handleFree()
 
     def handlePremium(self):
-        info = self.account.getAccountInfo(True)
-        self.log.debug("%s: Use Premium Account" % self.__name__)
+        info = self.account.getAccountInfo(self.user, True)
+        self.logDebug("%s: Use Premium Account" % self.__name__)
         url = self.api_data["mirror"]
         self.download(url, get={"directstart":1})
 
@@ -144,7 +144,7 @@ class RapidshareCom(Hoster):
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_file = {"sub": "checkfiles", "incmd5": "1", "files": self.id, "filenames": self.name}
         src = self.load(api_url_base, cookies=False, get=api_param_file).strip()
-        self.log.debug("RS INFO API: %s" % src)
+        self.logDebug("RS INFO API: %s" % src)
         if src.startswith("ERROR"):
             return
         fields = src.split(",")
@@ -178,19 +178,19 @@ class RapidshareCom(Hoster):
 
         prepare = "https://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=download&fileid=%(id)s&filename=%(name)s&try=1&cbf=RSAPIDispatcher&cbid=1" % {"name": name, "id" : id}
 
-        self.log.debug("RS API Request: %s" % prepare)
+        self.logDebug("RS API Request: %s" % prepare)
         result = self.load(prepare, ref=False)
-        self.log.debug("RS API Result: %s" % result)
+        self.logDebug("RS API Result: %s" % result)
 
         between_wait = re.search("You need to wait (\d+) seconds", result)
 
         if "You need RapidPro to download more files from your IP address" in result:
             self.setWait(60)
-            self.log.info(_("Already downloading from this ip address, waiting 60 seconds"))
+            self.logInfo(_("Already downloading from this ip address, waiting 60 seconds"))
             self.wait()
         elif "Too many users downloading from this server right now" in result or "All free download slots are full" in result:
             self.setWait(120)
-            self.log.info(_("RapidShareCom: No free slots"))
+            self.logInfo(_("RapidShareCom: No free slots"))
             self.wait()
         elif "This file is too big to download it for free" in result:
             self.fail(_("You need a premium account for this file"))

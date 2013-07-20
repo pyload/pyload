@@ -15,21 +15,33 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
+import re
+
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
-class EasybytezComFolder(SimpleCrypter):
-    __name__ = "EasybytezComFolder"
+class FreakhareComFolder(SimpleCrypter):
+    __name__ = "FreakhareComFolder"
     __type__ = "crypter"
-    __pattern__ = r"https?://(www\.)?easybytez\.com/users/\w+/\w+"
-    __version__ = "0.02"
-    __description__ = """Easybytez Crypter Plugin"""
+    __pattern__ = r"http://(?:www\.)?freakshare\.com/folder/.+"
+    __version__ = "0.01"
+    __description__ = """Freakhare.com Folder Plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
-    LINK_PATTERN = r'<div class="link"><a href="(http://www\.easybytez\.com/\w+)" target="_blank">.+</a></div>'
-    TITLE_PATTERN = r'<Title>Files of (?P<title>.+) folder</Title>'
-    PAGES_PATTERN = r"<a href='[^']+'>(?P<pages>\d+)</a><a href='[^']+'>Next &#187;</a><br><small>\(\d+ total\)</small></div>"
+    LINK_PATTERN = r'<a href="(http://freakshare.com/files/[^"]+)" target="_blank">'
+    TITLE_PATTERN = r'Folder:</b> (?P<title>.+)'
+    PAGES_PATTERN = r'Pages: +(?P<pages>\d+)'
 
     def loadPage(self, page_n):
-        return self.load(self.pyfile.url, get={'page': page_n}, decode=True)
+        if not hasattr(self, 'f_id') and not hasattr(self, 'f_md5'):
+            m = re.search(r'http://freakshare.com/\?x=folder&f_id=(\d+)&f_md5=(\w+)', self.html)
+            if m:
+                self.f_id = m.group(1)
+                self.f_md5 = m.group(2)
+        return self.load('http://freakshare.com/', get={'x': 'folder',
+                                                        'f_id': self.f_id,
+                                                        'f_md5': self.f_md5,
+                                                        'entrys': '20',
+                                                        'page': page_n - 1,
+                                                        'order': ''}, decode=True)

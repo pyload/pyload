@@ -23,7 +23,7 @@ from module.common.json_layer import json_loads
 
 class MultiDebridCom(Hoster):
     __name__ = "MultiDebridCom"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "hoster"
     __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/"
     __description__ = """Multi-debrid.com hoster plugin"""
@@ -36,7 +36,7 @@ class MultiDebridCom(Hoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.logError("Please enter your Multi-debrid.com account or deactivate this plugin")
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "Multi-debrid.com")
             self.fail("No Multi-debrid.com account provided")
 
         self.logDebug("Original URL: %s" % pyfile.url)

@@ -9,7 +9,7 @@ class YourfilesTo(Hoster):
     __name__ = "YourfilesTo"
     __type__ = "hoster"
     __pattern__ = r"(http://)?(www\.)?yourfiles\.(to|biz)/\?d=[a-zA-Z0-9]+"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __description__ = """Youfiles.to Download Hoster"""
     __author_name__ = ("jeix", "skydancer")
     __author_mail__ = ("jeix@hasnomail.de", "skydancer@hasnomail.de")
@@ -31,7 +31,7 @@ class YourfilesTo(Hoster):
         
         wait_time = self.get_waiting_time()
         self.setWait(wait_time)
-        self.log.debug("%s: Waiting %d seconds." % (self.__name__,wait_time))
+        self.logDebug("%s: Waiting %d seconds." % (self.__name__,wait_time))
         self.wait()
 
     def get_waiting_time(self):

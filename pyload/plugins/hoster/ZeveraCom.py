@@ -8,7 +8,7 @@ from time import sleep
 
 class ZeveraCom(Hoster):
     __name__ = "ZeveraCom"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __type__ = "hoster"
     __pattern__ = r"http://zevera.com/.*"
     __description__ = """zevera.com hoster plugin"""
@@ -21,7 +21,7 @@ class ZeveraCom(Hoster):
     
     def process(self, pyfile):
         if not self.account:
-            self.logError(_("Please enter your zevera.com account or deactivate this plugin"))
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "zevera.com")
             self.fail("No zevera.com account provided")
 
         self.logDebug("zevera.com: Old URL: %s" % pyfile.url)

@@ -3,7 +3,7 @@ from pyload.utils import json_loads
 
 class PremiumizeMe(Hoster):
     __name__ = "PremiumizeMe"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __type__ = "hoster"        
     __description__ = """Premiumize.Me hoster plugin"""
         
@@ -16,7 +16,7 @@ class PremiumizeMe(Hoster):
     def process(self, pyfile):
         # Check account
         if not self.account or not self.account.isUsable():
-            self.logError(_("Please enter a valid premiumize.me account or deactivate this plugin"))
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "premiumize.me")
             self.fail("No valid premiumize.me account provided")
         
         # In some cases hostsers do not supply us with a filename at download, so we are going to set a fall back filename (e.g. for freakshare or xfileshare)

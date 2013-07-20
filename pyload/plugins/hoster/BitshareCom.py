@@ -2,58 +2,24 @@
 from __future__ import with_statement
 
 import re
-from pycurl import FOLLOWLOCATION
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
-from module.network.RequestFactory import getRequest
 
 
-def getInfo(urls):
-    result = []
-    
-    for url in urls:
-        
-        # Get file info html
-        req = getRequest()
-        req.cj.setCookie(BitshareCom.HOSTER_DOMAIN, "language_selection", "EN")
-        html = req.load(url)
-        req.close()
-        
-        # Check online        
-        if re.search(BitshareCom.FILE_OFFLINE_PATTERN, html):
-            result.append((url, 0, 1, url))
-            continue
-
-        # Name
-        name1 = re.search(BitshareCom.__pattern__, url).group('name')
-        m = re.search(BitshareCom.FILE_INFO_PATTERN, html)
-        name2 = m.group('name')
-        name = max(name1, name2)
-        
-        # Size
-        value = float(m.group('size'))
-        units = m.group('units')
-        pow = {'KB' : 1, 'MB' : 2, 'GB' : 3}[units] 
-        size = int(value*1024**pow)
-    
-        # Return info
-        result.append((name, size, 2, url))
-        
-    yield result
-
-class BitshareCom(Hoster):
+class BitshareCom(SimpleHoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __description__ = """Bitshare.Com File Download Hoster"""
     __author_name__ = ("paulking", "fragonib")
     __author_mail__ = (None, "fragonib[AT]yahoo[DOT]es")
     
     HOSTER_DOMAIN = "bitshare.com"
     FILE_OFFLINE_PATTERN = r'''(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'''
-    FILE_INFO_PATTERN = r'<h1>(Downloading|Streaming)\s(?P<name>.+?)\s-\s(?P<size>[\d.]+)\s(?P<units>..)yte</h1>'
+    FILE_NAME_PATTERN = r'Download:</td>\s*<td><input type="text" value="http://bitshare\.com/files/\w+/(?P<N>[^"]+)\.html"'
+    FILE_SIZE_PATTERN = r'- (?P<S>[\d.]+) (?P<U>\w+)</h1>'
     FILE_AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
     CAPTCHA_KEY_PATTERN = r"http://api\.recaptcha\.net/challenge\?k=(.*?) "
     TRAFFIC_USED_UP = r"Your Traffic is used up for today. Upgrade to premium to continue!"
@@ -177,3 +143,5 @@ class BitshareCom(Hoster):
             self.retry()
         self.logDebug("Wrong captcha")
         self.invalidCaptcha()
+
+getInfo = create_getInfo(BitshareCom)

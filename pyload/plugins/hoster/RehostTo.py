@@ -6,7 +6,7 @@ from module.plugins.Hoster import Hoster
 
 class RehostTo(Hoster):
     __name__ = "RehostTo"
-    __version__ = "0.11"
+    __version__ = "0.13"
     __type__ = "hoster"
     __pattern__ = r"https?://.*rehost.to\..*"
     __description__ = """rehost.com hoster plugin"""
@@ -22,13 +22,13 @@ class RehostTo(Hoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.log.error(_("Please enter your rehost.to account or deactivate this plugin"))
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "rehost.to")
             self.fail("No rehost.to account provided")
 
         data = self.account.getAccountInfo(self.user)
         long_ses = data["long_ses"]
 
-        self.log.debug("Rehost.to: Old URL: %s" % pyfile.url)
+        self.logDebug("Rehost.to: Old URL: %s" % pyfile.url)
         new_url = "http://rehost.to/process_download.php?user=cookie&pass=%s&dl=%s" % (long_ses, quote(pyfile.url, ""))
 
         #raise timeout to 2min
