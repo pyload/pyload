@@ -16,7 +16,8 @@ from json import loads
 from Stubs import Thread, Core, noop
 
 from pyload.network.RequestFactory import getRequest, getURL
-from pyload.plugins.Hoster import Hoster, Abort, Fail
+from pyload.plugins.Base import Abort, Fail
+from pyload.plugins.Hoster import Hoster
 
 def _wait(self):
     """ waits the time previously set """
@@ -105,8 +106,6 @@ def respond(ticket, value):
         log(DEBUG, str(e))
     finally:
         f.close()
-
-
 
 def invalidCaptcha(self):
     log(DEBUG, "Captcha invalid")

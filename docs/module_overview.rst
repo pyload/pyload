@@ -20,4 +20,4 @@ A little selection of most important modules in pyLoad.
    pyload.interaction.EventManager.EventManager
    pyload.interaction.InteractionManager.InteractionManager
    pyload.interaction.InteractionTask.InteractionTask
-   pyload.remote.ttypes
+   pyload.remote.apitypes
