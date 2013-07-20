@@ -3,6 +3,7 @@
 from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 
+
 class SimplydebridCOM(MultiHoster):
     __name__ = "SimplydebridCOM"
     __version__ = "0.01"
@@ -16,4 +17,4 @@ class SimplydebridCOM(MultiHoster):
 
     def getHoster(self):
         page = getURL("http://simply-debrid.com/api.php?list=1")
-        return [x.strip() for x in page.rstrip(';').replace("\"","").split(";")]
+        return [x.strip() for x in page.rstrip(';').replace("\"", "").split(";")]

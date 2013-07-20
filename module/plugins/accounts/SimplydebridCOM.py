@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+from time import mktime, strptime
+
 from module.plugins.Account import Account
 
-import re
-from time import mktime, strptime
 
 class SimplydebridCOM(Account):
     __name__ = "SimplydebridCOM"
@@ -14,20 +14,17 @@ class SimplydebridCOM(Account):
 
     def loadAccountInfo(self, user, req):
         get_data = {'login': 2, 'u': self.loginname, 'p': self.password}
-        response = req.load("http://simply-debrid.com/api.php, get=get_data, decode=True)
+        response = req.load("http://simply-debrid.com/api.php", get=get_data, decode=True)
         data = [x.strip() for x in response.split(";")]
         if str(data[0]) != "1":
             return {"premium": False}
         else:
-            return {
-                "trafficleft": -1,
-                "validuntil": mktime(strptime(str(data[2]),"%d/%m/%Y"))
-            }
+            return {"trafficleft": -1, "validuntil": mktime(strptime(str(data[2]), "%d/%m/%Y"))}
 
     def login(self, user, data, req):
         self.loginname = user
         self.password = data["password"]
         get_data = {'login': 1, 'u': self.loginname, 'p': self.password}
-        response = req.load("http://simply-debrid.com/api.php, get=get_data, decode=True)
+        response = req.load("http://simply-debrid.com/api.php", get=get_data, decode=True)
         if response != "02: loggin success":
             self.wrongPassword()

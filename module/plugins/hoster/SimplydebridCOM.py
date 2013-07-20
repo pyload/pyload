@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from module.plugins.Hoster import Hoster
-from module.utils import html_unescape
 from urllib import quote, unquote
-from time import sleep
 import re
+
+from module.plugins.Hoster import Hoster
+
 
 class SimplydebridCOM(Hoster):
     __name__ = "SimplydebridCOM"
@@ -34,7 +34,7 @@ class SimplydebridCOM(Hoster):
 
         if not re.match(self.__pattern__, new_url):
             page = self.load('http://simply-debrid.com/api.php', get={'dl': new_url}) #+'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
-            if('tiger Link' in page or 'Invalid Link' in page or ('API' in page and 'ERROR' in page)):
+            if 'tiger Link' in page or 'Invalid Link' in page or ('API' in page and 'ERROR' in page):
                 self.fail('Unable to unrestrict link')
             new_url = page
 
