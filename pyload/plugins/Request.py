@@ -38,6 +38,11 @@ class Request(object):
 
         # TODO: content encoding? Could be handled globally
 
+    @property
+    def http(self):
+        print "Deprecated usage of req.http, just use req instead"
+        return self
+
     def initContext(self):
         """ Should be used to initialize everything from given context and options """
         pass

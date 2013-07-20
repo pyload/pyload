@@ -1,6 +1,6 @@
-define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
+define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'collections/FileList',
     './packageView', './fileView', 'hbs!tpl/dashboard/layout', 'select2'],
-    function($, Backbone, _, App, TreeCollection, PackageView, FileView, template) {
+    function($, Backbone, _, App, TreeCollection, FileList, PackageView, FileView, template) {
         'use strict';
         // Renders whole dashboard
         return Backbone.Marionette.ItemView.extend({
@@ -159,10 +159,14 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection',
                 // this works with ids and object TODO: not anymore
                 var file = this.files.get(fid);
                 if (file)
-                    if (_.isObject(data)) // update directly
+                    if (_.isObject(data)) { // update directly
                         file.set(data);
-                    else // fetch from server
-                        file.fetch();
+                        App.vent.trigger('dashboard:updated');
+                    } else { // fetch from server
+                        file.fetch({success: function() {
+                            App.vent.trigger('dashboard:updated');
+                        }});
+                    }
             }
         });
     });

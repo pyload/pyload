@@ -38,6 +38,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Pac
 
                 // Apply the filter before the content is shown
                 this.listenTo(App.vent, 'dashboard:contentReady', this.apply_filter);
+                this.listenTo(App.vent, 'dashboard:updated', this.apply_filter);
                 this.listenTo(App.vent, 'dashboard:updated', this.updateName);
             },
 
