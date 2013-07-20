@@ -24,24 +24,22 @@ class SimplydebridCOM(Hoster):
         if not self.account:
             self.logError(_("Please enter your simply-debrid.com account or deactivate this plugin"))
             self.fail("No simply-debrid.com account provided")
-        
-        self.logDebug("simply-debrid.com: Old URL: %s" % pyfile.url)
-        
+
+        self.logDebug("Old URL: %s" % pyfile.url)
+
         #fix the links for simply-debrid.com!
         new_url = pyfile.url
         new_url = new_url.replace("clz.to", "cloudzer.net/file")
         new_url = new_url.replace("http://share-online", "http://www.share-online")
-        
-        if re.match(self.__pattern__, new_url):
-            new_url = new_url
-        else:
-            page = self.req.load('http://simply-debrid.com/api.php?dl='+new_url)#+'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
+
+        if not re.match(self.__pattern__, new_url):
+            page = self.load('http://simply-debrid.com/api.php', get={'dl': new_url}) #+'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
             if('tiger Link' in page or 'Invalid Link' in page or ('API' in page and 'ERROR' in page)):
                 self.fail('Unable to unrestrict link')
             new_url = page
-        
+
         self.setWait(5)
         self.wait()
         self.logDebug("Unrestricted URL: " + new_url)
-        
+
         self.download(new_url, disposition=True)
