@@ -50,7 +50,8 @@ options(
 )
 
 # xgettext args
-xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyload",
+xargs = ["--language=Python", "--add-comments=L10N",
+         "--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyload",
          "--package-version=%s" % __version__, "--msgid-bugs-address='bugs@pyload.org'"]
 
 
@@ -271,7 +272,7 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
 
     f.close()
 
-    call(["xgettext", "-L", "Python", "--add-comments=L10N", "--files-from=includes.txt", "--default-domain=%s" % domain] + xargs + xxargs)
+    call(["xgettext", "--files-from=includes.txt", "--default-domain=%s" % domain] + xargs + xxargs)
 
     # replace charset und move file
     with open("%s.po" % domain, "rb") as f:
