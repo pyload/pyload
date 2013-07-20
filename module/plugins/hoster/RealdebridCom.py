@@ -12,7 +12,7 @@ from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -37,7 +37,7 @@ class RealdebridCom(Hoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.logError(_("Please enter your Real-debrid account or deactivate this plugin"))
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "Real-debrid")
             self.fail("No Real-debrid account provided")
 
         self.logDebug("Real-Debrid: Old URL: %s" % pyfile.url)

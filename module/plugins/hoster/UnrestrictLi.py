@@ -35,7 +35,7 @@ def secondsToMidnight():
 
 class UnrestrictLi(Hoster):
     __name__ = "UnrestrictLi"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __type__ = "hoster"
     __pattern__ = r"https?://.*(unrestrict|unr)\.li"
     __description__ = """Unrestrict.li hoster plugin"""
@@ -48,7 +48,7 @@ class UnrestrictLi(Hoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.logError("Please enter your Unrestrict.li account or deactivate this plugin")
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "Unrestrict.li")
             self.fail("No Unrestrict.li account provided")
 
         self.logDebug("Old URL: %s" % pyfile.url)

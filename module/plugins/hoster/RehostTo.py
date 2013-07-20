@@ -6,7 +6,7 @@ from module.plugins.Hoster import Hoster
 
 class RehostTo(Hoster):
     __name__ = "RehostTo"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __type__ = "hoster"
     __pattern__ = r"https?://.*rehost.to\..*"
     __description__ = """rehost.com hoster plugin"""
@@ -22,7 +22,7 @@ class RehostTo(Hoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.logError(_("Please enter your rehost.to account or deactivate this plugin"))
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "rehost.to")
             self.fail("No rehost.to account provided")
 
         data = self.account.getAccountInfo(self.user)
