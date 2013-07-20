@@ -7,8 +7,8 @@ import re
 from module.plugins.Hoster import Hoster
 
 
-class SimplydebridCOM(Hoster):
-    __name__ = "SimplydebridCOM"
+class SimplydebridCom(Hoster):
+    __name__ = "SimplydebridCom"
     __version__ = "0.1"
     __type__ = "hoster"
     __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd.php/*"

@@ -4,8 +4,8 @@ from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 
 
-class SimplydebridCOM(MultiHoster):
-    __name__ = "SimplydebridCOM"
+class SimplydebridCom(MultiHoster):
+    __name__ = "SimplydebridCom"
     __version__ = "0.01"
     __type__ = "hook"
     __config__ = [("activated", "bool", "Activated", "False"),

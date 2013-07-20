@@ -4,8 +4,8 @@ from time import mktime, strptime
 from module.plugins.Account import Account
 
 
-class SimplydebridCOM(Account):
-    __name__ = "SimplydebridCOM"
+class SimplydebridCom(Account):
+    __name__ = "SimplydebridCom"
     __version__ = "0.1"
     __type__ = "account"
     __description__ = """Simply-Debrid.com account plugin"""
