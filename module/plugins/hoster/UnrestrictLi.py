@@ -35,7 +35,7 @@ def secondsToMidnight():
 
 class UnrestrictLi(Hoster):
     __name__ = "UnrestrictLi"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __type__ = "hoster"
     __pattern__ = r"https?://.*(unrestrict|unr)\.li"
     __description__ = """Unrestrict.li hoster plugin"""
@@ -61,7 +61,9 @@ class UnrestrictLi(Hoster):
                 self.logDebug("JSON data: " + page)
                 if page != '':
                     break
-            if "You are not allowed to download from this host" in page:
+            if "File offline" in page:
+                self.offline()
+            elif "You are not allowed to download from this host" in page:
                 self.fail("You are not allowed to download from this host")
             elif "You have reached your daily limit for this host" in page:
                 self.logInfo("Reached daily limit for this host. Waiting until 00:10 GMT+2")
