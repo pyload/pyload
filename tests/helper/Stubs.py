@@ -27,7 +27,9 @@ from logging import log, DEBUG, INFO, WARN, ERROR
 def noop(*args, **kwargs):
     pass
 
+
 ConfigParser.save = noop
+
 
 class LogStub:
     def debug(self, *args):
@@ -72,7 +74,7 @@ class Core:
         self.accountManager = AccountManager()
         self.addonManager = AddonManager()
         self.eventManager = self.evm = NoopClass()
-        self.interActionManager = self.im = NoopClass()
+        self.interactionManager = self.im = NoopClass()
         self.js = JsEngine()
         self.cache = {}
         self.packageCache = {}
@@ -87,7 +89,7 @@ class Core:
     def path(self, path):
         return path
 
-    def updateLink(self, *args):
+    def updateFile(self, *args):
         pass
 
     def updatePackage(self, *args):
@@ -96,8 +98,8 @@ class Core:
     def processingIds(self, *args):
         return []
 
-    def getPackage(self, id):
-        return PyPackage(self, 0, "tmp", "tmp", "", "", 0, 0)
+    def getPackage(self, *args):
+        return PyPackage(self, 0, "tmp", "tmp", -1, 0, "", "", "", 0, "", 0, 0, 0)
 
     def print_exc(self):
         log(ERROR, format_exc())
@@ -131,6 +133,7 @@ class Thread(BaseThread):
             dump = BaseThread.writeDebugReport(self, self.plugin.__name__, plugin=self.plugin)
 
         return dump
+
 
 __builtin__._ = lambda x: x
 __builtin__.pypath = abspath(join(dirname(__file__), "..", ".."))
