@@ -2,6 +2,7 @@
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
+
 class DepositfilesComFolder(SimpleCrypter):
     __name__ = "DepositfilesComFolder"
     __type__ = "crypter"

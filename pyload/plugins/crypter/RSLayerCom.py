@@ -7,6 +7,7 @@ from module.plugins.Crypter import Crypter
 from module.lib.BeautifulSoup import BeautifulSoup
 from module.unescape import unescape
 
+
 class RSLayerCom(Crypter):
     __name__ = "RSLayerCom"
     __type__ = "container"

@@ -9,6 +9,7 @@ from BeautifulSoup import BeautifulSoup
 from module.plugins.Crypter import Crypter
 from module.unescape import unescape
 
+
 class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
     __type__ = "container"
@@ -18,10 +19,12 @@ class SerienjunkiesOrg(Crypter):
         ("changeNameSJ", "Packagename;Show;Season;Format;Episode", "Take SJ.org name", "Show"),
         ("changeNameDJ", "Packagename;Show;Format;Episode", "Take DJ.org name", "Show"),
         ("randomPreferred", "bool", "Randomize Preferred-List", False),
-        ("hosterListMode", "OnlyOne;OnlyPreferred(One);OnlyPreferred(All);All", "Use for hosters (if supported)", "All"),
-        ("hosterList", "str", "Preferred Hoster list (comma separated)", "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
+        (
+        "hosterListMode", "OnlyOne;OnlyPreferred(One);OnlyPreferred(All);All", "Use for hosters (if supported)", "All"),
+        ("hosterList", "str", "Preferred Hoster list (comma separated)",
+         "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
         ("ignoreList", "str", "Ignored Hoster list (comma separated)", "MegauploadCom")
-        ]
+    ]
     __description__ = """serienjunkies.org Container Plugin"""
     __author_name__ = ("mkaay", "godofdream")
     __author_mail__ = ("mkaay@mkaay.de", "soilfiction@gmail.com")
@@ -46,7 +49,7 @@ class SerienjunkiesOrg(Crypter):
         if self.getConfig("changeNameSJ") == "Show":
             found = unescape(soup.find("h2").find("a").string.split(' &#8211;')[0])
             if found:
-                 packageName = found
+                packageName = found
 
         nav = soup.find("div", attrs={"id": "scb"})
 
@@ -60,7 +63,7 @@ class SerienjunkiesOrg(Crypter):
             self.packages.append((packageName, package_links, packageName))
         else:
             self.core.files.addLinks(package_links, self.pyfile.package().id)
-            
+
 
     def handleSeason(self, url):
         src = self.getSJSrc(url)
@@ -93,15 +96,16 @@ class SerienjunkiesOrg(Crypter):
             elif re.search("<strong>Download:", str(p)):
                 parts = str(p).split("<br />")
                 if re.search("<strong>", parts[0]):
-                    ename = re.search('<strong>(.*?)</strong>',parts[0]).group(1).strip().decode("utf-8").replace("&#8211;", "-")
+                    ename = re.search('<strong>(.*?)</strong>', parts[0]).group(1).strip().decode("utf-8").replace(
+                        "&#8211;", "-")
                     groups[gid]["ep"][ename] = {}
                     parts.remove(parts[0])
                     for part in parts:
-                        hostername = re.search(" \| ([-a-zA-Z0-9]+\.\w+)",part)
+                        hostername = re.search(" \| ([-a-zA-Z0-9]+\.\w+)", part)
                         if hostername:
                             hostername = hostername.group(1)
                             groups[gid]["ep"][ename][hostername] = []
-                            links = re.findall('href="(.*?)"',part)
+                            links = re.findall('href="(.*?)"', part)
                             for link in links:
                                 groups[gid]["ep"][ename][hostername].append(link + "#hasName")
 
@@ -124,7 +128,7 @@ class SerienjunkiesOrg(Crypter):
     def handleEpisode(self, url):
         src = self.getSJSrc(url)
         if not src.find(
-            "Du hast das Download-Limit &uuml;berschritten! Bitte versuche es sp&auml;ter nocheinmal.") == -1:
+                "Du hast das Download-Limit &uuml;berschritten! Bitte versuche es sp&auml;ter nocheinmal.") == -1:
             self.fail(_("Downloadlimit reached"))
         else:
             soup = BeautifulSoup(src)
@@ -158,7 +162,8 @@ class SerienjunkiesOrg(Crypter):
             for link in rawLinks:
                 frameUrl = link["action"].replace("/go-", "/frame/go-")
                 links.append(self.handleFrame(frameUrl))
-            if re.search("#hasName", url) or ((self.getConfig("changeNameSJ") == "Packagename") and (self.getConfig("changeNameDJ") == "Packagename")):
+            if re.search("#hasName", url) or ((self.getConfig("changeNameSJ") == "Packagename") and
+                                              (self.getConfig("changeNameDJ") == "Packagename")):
                 self.core.files.addLinks(links, self.pyfile.package().id)
             else:
                 if h1.text[2] == "_":
@@ -166,7 +171,6 @@ class SerienjunkiesOrg(Crypter):
                 else:
                     eName = h1.text
                 self.packages.append((eName, links, eName))
-                
 
     def handleOldStyleLink(self, url):
         sj = self.req.load(str(url))
@@ -179,7 +183,7 @@ class SerienjunkiesOrg(Crypter):
         sinp = form.find(attrs={"name": "s"})
 
         self.req.load(str(url), post={'s': sinp["value"], 'c': result, 'dl.start': "Download"}, cookies=False,
-            just_header=True)
+                      just_header=True)
         decrypted = self.req.lastEffectiveURL
         if decrypted == str(url):
             self.retry()
@@ -222,15 +226,16 @@ class SerienjunkiesOrg(Crypter):
             elif re.search("<strong>Download:", str(p)):
                 parts = str(p).split("<br />")
                 if re.search("<strong>", parts[0]):
-                    ename = re.search('<strong>(.*?)</strong>',parts[0]).group(1).strip().decode("utf-8").replace("&#8211;", "-")
+                    ename = re.search('<strong>(.*?)</strong>', parts[0]).group(1).strip().decode("utf-8").replace(
+                        "&#8211;", "-")
                     groups[gid]["ep"][ename] = {}
                     parts.remove(parts[0])
                     for part in parts:
-                        hostername = re.search(" \| ([-a-zA-Z0-9]+\.\w+)",part)
+                        hostername = re.search(" \| ([-a-zA-Z0-9]+\.\w+)", part)
                         if hostername:
                             hostername = hostername.group(1)
                             groups[gid]["ep"][ename][hostername] = []
-                            links = re.findall('href="(.*?)"',part)
+                            links = re.findall('href="(.*?)"', part)
                             for link in links:
                                 groups[gid]["ep"][ename][hostername].append(link + "#hasName")
 
@@ -249,12 +254,6 @@ class SerienjunkiesOrg(Crypter):
             self.core.files.addLinks(links, self.pyfile.package().id)
         elif (self.getConfig("changeNameDJ") == "Show") or not re.search("#hasName", url):
             self.packages.append((seasonName, links, seasonName))
-
-
-
-
-
-            
 
     def handleCategoryDJ(self, url):
         package_links = []
@@ -291,33 +290,35 @@ class SerienjunkiesOrg(Crypter):
 
     #selects the preferred hoster, after that selects any hoster (ignoring the one to ignore)
     def getpreferred(self, hosterlist):
-        
+
         result = []
-        preferredList = self.getConfig("hosterList").strip().lower().replace('|',',').replace('.','').replace(';',',').split(',')
-        if (self.getConfig("randomPreferred") == True) and (self.getConfig("hosterListMode") in ["OnlyOne","OnlyPreferred(One)"]) :
+        preferredList = self.getConfig("hosterList").strip().lower().replace(
+            '|', ',').replace('.', '').replace(';', ',').split( ',')
+        if (self.getConfig("randomPreferred") == True) and (
+                self.getConfig("hosterListMode") in ["OnlyOne", "OnlyPreferred(One)"]):
             random.shuffle(preferredList)
-        # we don't want hosters be read two times
+            # we don't want hosters be read two times
         hosterlist2 = hosterlist.copy()
-        
+
         for preferred in preferredList:
             for Hoster in hosterlist:
-                if preferred == Hoster.lower().replace('.',''):
+                if preferred == Hoster.lower().replace('.', ''):
                     for Part in hosterlist[Hoster]:
                         self.logDebug("selected " + Part)
                         result.append(str(Part))
-                        del(hosterlist2[Hoster])
-                    if (self.getConfig("hosterListMode") in ["OnlyOne","OnlyPreferred(One)"]):
+                        del (hosterlist2[Hoster])
+                    if self.getConfig("hosterListMode") in ["OnlyOne", "OnlyPreferred(One)"]:
                         return result
-                    
-        
-        ignorelist = self.getConfig("ignoreList").strip().lower().replace('|',',').replace('.','').replace(';',',').split(',')
-        if self.getConfig('hosterListMode') in ["OnlyOne","All"]:
+
+        ignorelist = self.getConfig("ignoreList").strip().lower().replace(
+            '|', ',').replace('.', '').replace(';', ',').split( ',')
+        if self.getConfig('hosterListMode') in ["OnlyOne", "All"]:
             for Hoster in hosterlist2:
-                if Hoster.strip().lower().replace('.','') not in ignorelist:
+                if Hoster.strip().lower().replace('.', '') not in ignorelist:
                     for Part in hosterlist2[Hoster]:
                         self.logDebug("selected2 " + Part)
                         result.append(str(Part))
-                        
+
                     if self.getConfig('hosterListMode') == "OnlyOne":
                         return result
         return result

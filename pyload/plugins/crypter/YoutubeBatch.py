@@ -8,6 +8,7 @@ from module.plugins.Crypter import Crypter
 
 API_KEY = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
 
+
 class YoutubeBatch(Crypter):
     __name__ = "YoutubeBatch"
     __type__ = "container"
@@ -18,7 +19,8 @@ class YoutubeBatch(Crypter):
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "zoidberg@mujmail.cz", "roland@enkore.de")
 
     def get_videos(self, playlist_id, token=None):
-        url = "https://www.googleapis.com/youtube/v3/playlistItems?playlistId=%s&part=snippet&key=%s&maxResults=50" % (playlist_id, API_KEY)
+        url = "https://www.googleapis.com/youtube/v3/playlistItems?playlistId=%s&part=snippet&key=%s&maxResults=50" % (
+            playlist_id, API_KEY)
         if token:
             url += "&pageToken=" + token
 

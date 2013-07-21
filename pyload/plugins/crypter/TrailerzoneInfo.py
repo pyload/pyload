@@ -3,6 +3,7 @@
 import re
 from module.plugins.Crypter import Crypter
 
+
 class TrailerzoneInfo(Crypter):
     __name__ = "TrailerzoneInfo"
     __type__ = "crypter"
@@ -24,22 +25,22 @@ class TrailerzoneInfo(Crypter):
             self.handleGo(url)
 
     def handleProtect(self, url):
-        self.handleGo("http://trailerzone.info/go.html#:::" + url.split("#:::",1)[1])
+        self.handleGo("http://trailerzone.info/go.html#:::" + url.split("#:::", 1)[1])
 
     def handleGo(self, url):
-        
+
         src = self.req.load(str(url))
         pattern = re.compile(self.JS_KEY_PATTERN, re.DOTALL)
         found = re.search(pattern, src)
-        
+
         # Get package info 
-        package_links = []  
+        package_links = []
         try:
-            result = self.js.eval(found.group(1) + " decodeLink('" + url.split("#:::",1)[1] + "');")
+            result = self.js.eval(found.group(1) + " decodeLink('" + url.split("#:::", 1)[1] + "');")
             result = str(result)
             self.logDebug("RESULT: %s" % result)
             package_links.append(result)
             self.core.files.addLinks(package_links, self.pyfile.package().id)
         except Exception, e:
-            self.logDebug(e)                                       
+            self.logDebug(e)
             self.fail('Could not extract any links by javascript')

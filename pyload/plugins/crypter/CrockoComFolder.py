@@ -2,6 +2,7 @@
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
+
 class CrockoComFolder(SimpleCrypter):
     __name__ = "CrockoComFolder"
     __type__ = "crypter"

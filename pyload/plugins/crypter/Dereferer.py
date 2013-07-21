@@ -20,6 +20,7 @@ import urllib
 
 from module.plugins.Crypter import Crypter
 
+
 class Dereferer(Crypter):
     __name__ = "Dereferer"
     __type__ = "crypter"
@@ -31,4 +32,4 @@ class Dereferer(Crypter):
 
     def decrypt(self, pyfile):
         link = re.match(self.__pattern__, self.pyfile.url).group('url')
-        self.core.files.addLinks([ urllib.unquote(link).rstrip('+') ], self.pyfile.package().id)
+        self.core.files.addLinks([urllib.unquote(link).rstrip('+')], self.pyfile.package().id)

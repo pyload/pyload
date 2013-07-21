@@ -4,6 +4,7 @@ import re
 from module.plugins.Crypter import Crypter
 from module.network.HTTPRequest import BadHeader
 
+
 class EmbeduploadCom(Crypter):
     __name__ = "EmbeduploadCom"
     __type__ = "crypter"
@@ -11,7 +12,7 @@ class EmbeduploadCom(Crypter):
     __version__ = "0.02"
     __description__ = """EmbedUpload.com crypter"""
     __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "embedupload"),
-        ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
+                  ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
@@ -19,9 +20,9 @@ class EmbeduploadCom(Crypter):
 
     def decrypt(self, pyfile):
         self.html = self.load(self.pyfile.url, decode=True)
-        tmp_links = [] 
+        tmp_links = []
         new_links = []
-               
+
         found = re.findall(self.LINK_PATTERN, self.html)
         if found:
             prefered_set = set(self.getConfig("preferedHoster").split('|'))
@@ -33,22 +34,20 @@ class EmbeduploadCom(Crypter):
             if not new_links:
                 ignored_set = set(self.getConfig("ignoredHoster").split('|'))
                 ignored_set = map(lambda s: s.lower().split('.')[0], ignored_set)
-                print "IG", ignored_set 
-                tmp_links.extend([x[1] for x in found if x[0] not in ignored_set])                
+                print "IG", ignored_set
+                tmp_links.extend([x[1] for x in found if x[0] not in ignored_set])
                 self.getLocation(tmp_links, new_links)
 
         if new_links:
             self.core.files.addLinks(new_links, self.pyfile.package().id)
         else:
             self.fail('Could not extract any links')
-            
+
     def getLocation(self, tmp_links, new_links):
         for link in tmp_links:
             try:
-                header = self.load(link, just_header = True)
-                if "location" in header: 
+                header = self.load(link, just_header=True)
+                if "location" in header:
                     new_links.append(header['location'])
             except BadHeader:
                 pass
-            
-        

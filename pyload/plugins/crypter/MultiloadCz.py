@@ -3,6 +3,7 @@
 import re
 from module.plugins.Crypter import Crypter
 
+
 class MultiloadCz(Crypter):
     __name__ = "MultiloadCz"
     __type__ = "crypter"
@@ -10,7 +11,7 @@ class MultiloadCz(Crypter):
     __version__ = "0.4"
     __description__ = """multiload.cz"""
     __config__ = [("usedHoster", "str", "Prefered hoster list (bar-separated) ", ""),
-        ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
+                  ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 

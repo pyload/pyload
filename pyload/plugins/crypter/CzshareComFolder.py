@@ -3,6 +3,7 @@
 import re
 from module.plugins.Crypter import Crypter
 
+
 class CzshareComFolder(Crypter):
     __name__ = "CzshareComFolder"
     __type__ = "crypter"

@@ -19,6 +19,7 @@
 import re
 from module.plugins.Crypter import Crypter
 
+
 class LinkdecrypterCom(Crypter):
     __name__ = "LinkdecrypterCom"
     __type__ = "crypter"
@@ -44,14 +45,16 @@ class LinkdecrypterCom(Crypter):
 
     def decryptAPI(self):
 
-        get_dict = { "t": "link", "url": self.pyfile.url, "lcache": "1" }
-        self.html = self.load('http://linkdecrypter.com/api', get = get_dict)
-        if self.html.startswith('http://'): return self.html.splitlines()
+        get_dict = {"t": "link", "url": self.pyfile.url, "lcache": "1"}
+        self.html = self.load('http://linkdecrypter.com/api', get=get_dict)
+        if self.html.startswith('http://'):
+            return self.html.splitlines()
 
         if self.html == 'INTERRUPTION(PASSWORD)':
             for get_dict['pass'] in self.passwords:
-                self.html = self.load('http://linkdecrypter.com/api', get= get_dict)
-                if self.html.startswith('http://'): return self.html.splitlines()
+                self.html = self.load('http://linkdecrypter.com/api', get=get_dict)
+                if self.html.startswith('http://'):
+                    return self.html.splitlines()
 
         self.logError('API', self.html)
         if self.html == 'INTERRUPTION(PASSWORD)':
@@ -63,12 +66,13 @@ class LinkdecrypterCom(Crypter):
 
         retries = 5
 
-        post_dict = { "link_cache": "on", "pro_links": self.pyfile.url, "modo_links": "text" }
+        post_dict = {"link_cache": "on", "pro_links": self.pyfile.url, "modo_links": "text"}
         self.html = self.load('http://linkdecrypter.com/', post=post_dict, cookies=True, decode=True)
 
         while self.passwords or retries:
             found = re.search(self.TEXTAREA_PATTERN, self.html, flags=re.DOTALL)
-            if found: return [ x for x in found.group(1).splitlines() if '[LINK-ERROR]' not in x ]
+            if found:
+                return [x for x in found.group(1).splitlines() if '[LINK-ERROR]' not in x]
 
             found = re.search(self.CAPTCHA_PATTERN, self.html)
             if found:
@@ -79,10 +83,10 @@ class LinkdecrypterCom(Crypter):
                 msg = found.group(1) if found else ""
                 self.logInfo("Captcha protected link", result_type, msg)
 
-                captcha = self.decryptCaptcha(captcha_url, result_type = result_type)
+                captcha = self.decryptCaptcha(captcha_url, result_type=result_type)
                 if result_type == "positional":
                     captcha = "%d|%d" % captcha
-                self.html = self.load('http://linkdecrypter.com/', post={ "captcha": captcha }, decode=True)
+                self.html = self.load('http://linkdecrypter.com/', post={"captcha": captcha}, decode=True)
                 retries -= 1
 
             elif self.PASSWORD_PATTERN in self.html:

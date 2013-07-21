@@ -2,6 +2,7 @@
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
+
 class FshareVnFolder(SimpleCrypter):
     __name__ = "FshareVnFolder"
     __type__ = "crypter"

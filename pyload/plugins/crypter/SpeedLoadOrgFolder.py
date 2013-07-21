@@ -17,6 +17,7 @@
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
+
 class SpeedLoadOrgFolder(SimpleCrypter):
     __name__ = "SpeedLoadOrgFolder"
     __type__ = "crypter"
