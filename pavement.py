@@ -59,6 +59,9 @@ module_replace = [
 ('from module.plugins.Hoster import Hoster', 'from pyload.plugins.Hoster import Hoster'),
 ('from module.common.json_layer import json_loads', 'from pyload.utils import json_loads'),
 ('from module.utils import parseFileSize', 'from pyload.utils import parseFileSize'),
+('from module.utils import save_join, fs_encode', 'from pyload.utils.fs import save_join, fs_encode'),
+('from module.utils import save_join', 'from pyload.utils.fs import save_join'),
+('from module.utils import fs_encode', 'from pyload.utils.fs import fs_encode'),
 ('from module.', 'from pyload.')  # This should be always the last one
 ]
 
