@@ -5,6 +5,7 @@ import re
 
 from module.plugins.Crypter import Crypter
 
+
 class StealthTo(Crypter):
     __name__ = "StealthTo"
     __type__ = "container"
@@ -29,17 +30,20 @@ class StealthTo(Crypter):
         self.html = self.req.load(url, cookies=True)
         temp_links = []
         ids = []
-        ats = [] # authenticity_token
+        ats = []  # authenticity_token
         inputs = re.findall(r"(<(input|form)[^>]+)", self.html)
         for input in inputs:
-            if re.search(r"name=\"authenticity_token\"",input[0]):
+            if re.search(r"name=\"authenticity_token\"", input[0]):
                 ats.append(re.search(r"value=\"([^\"]+)", input[0]).group(1))
-            if re.search(r"name=\"id\"",input[0]):
+            if re.search(r"name=\"id\"", input[0]):
                 ids.append(re.search(r"value=\"([^\"]+)", input[0]).group(1))
-                
+
         for i in range(0, len(ids)):
-            self.req.load(url + "/web", post={"authenticity_token": ats[i], "id": str(ids[i]), "link": ("download_" + str(ids[i]))}, cookies=True)
-            new_html = self.req.load(url + "/web", post={"authenticity_token": ats[i], "id": str(ids[i]), "link": "1"}, cookies=True)
+            self.req.load(url + "/web",
+                          post={"authenticity_token": ats[i], "id": str(ids[i]), "link": ("download_" + str(ids[i]))},
+                          cookies=True)
+            new_html = self.req.load(url + "/web", post={"authenticity_token": ats[i], "id": str(ids[i]), "link": "1"},
+                                     cookies=True)
             temp_links.append(re.search(r"iframe src=\"(.*)\" frameborder", new_html).group(1))
 
         self.links = temp_links

@@ -5,6 +5,7 @@ import urllib
 
 from module.plugins.Crypter import Crypter
 
+
 class DontKnowMe(Crypter):
     __name__ = "DontKnowMe"
     __type__ = "crypter"
@@ -18,4 +19,4 @@ class DontKnowMe(Crypter):
 
     def decrypt(self, pyfile):
         link = re.findall(self.LINK_PATTERN, self.pyfile.url)[0]
-        self.core.files.addLinks([ urllib.unquote(link) ], self.pyfile.package().id)
+        self.core.files.addLinks([urllib.unquote(link)], self.pyfile.package().id)

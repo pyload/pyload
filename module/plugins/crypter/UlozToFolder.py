@@ -3,6 +3,7 @@
 import re
 from module.plugins.Crypter import Crypter
 
+
 class UlozToFolder(Crypter):
     __name__ = "UlozToFolder"
     __type__ = "crypter"
@@ -20,10 +21,11 @@ class UlozToFolder(Crypter):
         html = self.load(self.pyfile.url)
 
         new_links = []
-        for i in range(1,100):
+        for i in range(1, 100):
             self.logInfo("Fetching links from page %i" % i)
             found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
-            if found is None: self.fail("Parse error (FOLDER)")
+            if found is None:
+                self.fail("Parse error (FOLDER)")
 
             new_links.extend(re.findall(self.LINK_PATTERN, found.group(1)))
             found = re.search(self.NEXT_PAGE_PATTERN, html)
@@ -35,6 +37,6 @@ class UlozToFolder(Crypter):
             self.logInfo("Limit of 99 pages reached, aborting")
 
         if new_links:
-            self.core.files.addLinks(map(lambda s:"http://ulozto.net/%s" % s, new_links), self.pyfile.package().id)
+            self.core.files.addLinks(map(lambda s: "http://ulozto.net/%s" % s, new_links), self.pyfile.package().id)
         else:
             self.fail('Could not extract any links')

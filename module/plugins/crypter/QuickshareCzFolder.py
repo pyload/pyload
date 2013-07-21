@@ -3,6 +3,7 @@
 import re
 from module.plugins.Crypter import Crypter
 
+
 class QuickshareCzFolder(Crypter):
     __name__ = "QuickshareCzFolder"
     __type__ = "crypter"
@@ -12,16 +13,16 @@ class QuickshareCzFolder(Crypter):
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    
     FOLDER_PATTERN = r'<textarea[^>]*>(.*?)</textarea>'
     LINK_PATTERN = r'(http://www.quickshare.cz/\S+)'
 
     def decrypt(self, pyfile):
         html = self.load(self.pyfile.url)
 
-        new_links = []      
+        new_links = []
         found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
-        if found is None: self.fail("Parse error (FOLDER)")
+        if found is None:
+            self.fail("Parse error (FOLDER)")
         new_links.extend(re.findall(self.LINK_PATTERN, found.group(1)))
 
         if new_links:

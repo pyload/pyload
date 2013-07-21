@@ -4,6 +4,7 @@ import re
 from module.lib.BeautifulSoup import BeautifulSoup
 from module.plugins.Crypter import Crypter
 
+
 class DuckCryptInfo(Crypter):
     __name__ = "DuckCryptInfo"
     __type__ = "container"
@@ -14,7 +15,7 @@ class DuckCryptInfo(Crypter):
     __author_mail__ = ("soilfiction@gmail.com")
 
     TIMER_PATTERN = r'<span id="timer">(.*)</span>'
-    
+
     def decrypt(self, pyfile):
         url = pyfile.url
         # seems we don't need to wait
@@ -31,10 +32,9 @@ class DuckCryptInfo(Crypter):
         else:
             self.handleFolder(found)
 
-        
-		
+
     def handleFolder(self, found):
-        src = self.load("http://duckcrypt.info/ajax/auth.php?hash="  + str(found.group(2)))
+        src = self.load("http://duckcrypt.info/ajax/auth.php?hash=" + str(found.group(2)))
         found = re.search(self.__pattern__, src)
         self.logDebug("Redirectet to " + str(found.group(0)))
         src = self.load(str(found.group(0)))
@@ -55,4 +55,3 @@ class DuckCryptInfo(Crypter):
             self.logDebug('no links found - (Plugin out of date?)')
         else:
             self.core.files.addLinks([link], self.pyfile.package().id)
-        

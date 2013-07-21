@@ -20,6 +20,8 @@ import re
 import random
 from module.plugins.Crypter import Crypter
 from module.common.json_layer import json_loads
+
+
 class C1neonCom(Crypter):
     __name__ = "C1neonCom"
     __type__ = "container"
@@ -31,9 +33,10 @@ class C1neonCom(Crypter):
         ("useStreams", "bool", "Use Streams too", False),
         ("hosterListMode", "all;onlypreferred", "Use for hosters (if supported)", "all"),
         ("randomPreferred", "bool", "Randomize Preferred-List", False),
-        ("hosterList", "str", "Preferred Hoster list (comma separated, no ending)", "2shared,Bayfiles,Netload,Rapidshare,Share-online"),
+        ("hosterList", "str", "Preferred Hoster list (comma separated, no ending)",
+         "2shared,Bayfiles,Netload,Rapidshare,Share-online"),
         ("ignoreList", "str", "Ignored Hoster list (comma separated, no ending)", "Megaupload")
-        ]
+    ]
     __description__ = """C1neon.Com Container Plugin"""
     __author_name__ = ("godofdream")
     __author_mail__ = ("soilfiction@gmail.com")
@@ -41,13 +44,13 @@ class C1neonCom(Crypter):
     VALUES_PATTERN = r"var subcats = (.*?)(;</script>|;var)"
     SHOW_PATTERN = r"title='(.*?)'"
     SERIE_PATTERN = r"<title>.*Serie.*</title>"
-    
+
     def decrypt(self, pyfile):
         src = self.req.load(str(pyfile.url))
 
         pattern = re.compile(self.VALUES_PATTERN, re.DOTALL)
         data = json_loads(re.search(pattern, src).group(1))
-        
+
         # Get package info 
         links = []
         Showname = re.search(self.SHOW_PATTERN, src)
@@ -55,7 +58,7 @@ class C1neonCom(Crypter):
             Showname = Showname.group(1).decode("utf-8")
         else:
             Showname = self.pyfile.package().name
-            
+
         if re.search(self.SERIE_PATTERN, src):
             for Season in data:
                 self.logDebug("Season " + Season)
@@ -63,21 +66,22 @@ class C1neonCom(Crypter):
                     self.logDebug("Episode " + Episode)
                     links.extend(self.getpreferred(data[Season][Episode]))
                     if self.getConfig("changeNameS") == "Episode":
-                        self.packages.append((data[Season][Episode]['info']['name'].split("»")[0], links, data[Season][Episode]['info']['name'].split("»")[0]))
+                        self.packages.append((data[Season][Episode]['info']['name'].split("»")[0], links,
+                                              data[Season][Episode]['info']['name'].split("»")[0]))
                         links = []
-                    
-                if self.getConfig("changeNameS") == "Season":  
+
+                if self.getConfig("changeNameS") == "Season":
                     self.packages.append((Showname + " Season " + Season, links, Showname + " Season " + Season))
                     links = []
 
             if self.getConfig("changeNameS") == "Show":
-                if  links == []:
+                if links == []:
                     self.fail('Could not extract any links (Out of Date?)')
                 else:
                     self.packages.append((Showname, links, Showname))
-        
+
             elif self.getConfig("changeNameS") == "Packagename":
-                if  links == []:
+                if links == []:
                     self.fail('Could not extract any links (Out of Date?)')
                 else:
                     self.core.files.addLinks(links, self.pyfile.package().id)
@@ -85,13 +89,13 @@ class C1neonCom(Crypter):
             for Movie in data:
                 links.extend(self.getpreferred(data[Movie]))
                 if self.getConfig("changeName") == "Movie":
-                    if  links == []:
+                    if links == []:
                         self.fail('Could not extract any links (Out of Date?)')
                     else:
                         self.packages.append((Showname, links, Showname))
-            
+
                 elif self.getConfig("changeName") == "Packagename":
-                    if  links == []:
+                    if links == []:
                         self.fail('Could not extract any links (Out of Date?)')
                     else:
                         self.core.files.addLinks(links, self.pyfile.package().id)
@@ -106,28 +110,27 @@ class C1neonCom(Crypter):
             hosterlist.update(hosterslist['d'])
         if self.getConfig("useStreams") and 's' in hosterslist:
             hosterlist.update(hosterslist['s'])
-        
+
         result = []
-        preferredList = self.getConfig("hosterList").strip().lower().replace('|',',').replace('.','').replace(';',',').split(',')
+        preferredList = self.getConfig("hosterList").strip().lower().replace(
+            '|',',').replace('.', '').replace(';', ',').split(',')
         if self.getConfig("randomPreferred") == True:
             random.shuffle(preferredList)
         for preferred in preferredList:
             for Hoster in hosterlist:
-                if preferred == Hoster.split('<')[0].strip().lower().replace('.',''):
+                if preferred == Hoster.split('<')[0].strip().lower().replace('.', ''):
                     for Part in hosterlist[Hoster]:
                         self.logDebug("selected " + Part[3])
                         result.append(str(Part[3]))
                     return result
 
-        ignorelist = self.getConfig("ignoreList").strip().lower().replace('|',',').replace('.','').replace(';',',').split(',')
+        ignorelist = self.getConfig("ignoreList").strip().lower().replace(
+            '|', ',').replace('.', '').replace(';', ',').split( ',')
         if self.getConfig('hosterListMode') == "all":
             for Hoster in hosterlist:
-                if Hoster.split('<')[0].strip().lower().replace('.','') not in ignorelist:
+                if Hoster.split('<')[0].strip().lower().replace('.', '') not in ignorelist:
                     for Part in hosterlist[Hoster]:
                         self.logDebug("selected " + Part[3])
                         result.append(str(Part[3]))
                     return result
         return result
-        
-        
-      

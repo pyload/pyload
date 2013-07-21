@@ -4,6 +4,7 @@ import re
 
 from module.plugins.Crypter import Crypter
 
+
 class FileserveComFolder(Crypter):
     __name__ = "FileserveComFolder"
     __type__ = "crypter"
@@ -27,6 +28,6 @@ class FileserveComFolder(Crypter):
         new_links.extend(re.findall(self.LINK_PATTERN, folder.group(1)))
 
         if new_links:
-            self.core.files.addLinks(map(lambda s:"http://fileserve.com%s" % s, new_links), self.pyfile.package().id)
+            self.core.files.addLinks(map(lambda s: "http://fileserve.com%s" % s, new_links), self.pyfile.package().id)
         else:
             self.fail('Could not extract any links')
