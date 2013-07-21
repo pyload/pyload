@@ -19,7 +19,7 @@ class MegaNz(Hoster):
     __name__ = "MegaNz"
     __type__ = "hoster"
     __pattern__ = r"https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = """mega.co.nz hoster plugin"""
     __author_name__ = ("RaNaN", )
     __author_mail__ = ("ranan@pyload.org", )
@@ -67,7 +67,7 @@ class MegaNz(Hoster):
         ctr = Counter.new(128, initial_value=long(n.encode("hex"),16) << 64)
         cipher = AES.new(self.getCipherKey(key), AES.MODE_CTR, counter=ctr)
 
-        self.pyfile.setStatus("decrypting")
+        self.pyfile.setCustomStatus("decrypting")
         f = open(self.lastDownload, "rb")
         df = open(self.lastDownload.rsplit(self.FILE_SUFFIX)[0], "wb")
 
