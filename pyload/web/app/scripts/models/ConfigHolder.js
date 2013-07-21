@@ -8,7 +8,7 @@ define(['jquery', 'backbone', 'underscore', 'app', './ConfigItem'],
                 name: '',
                 label: '',
                 description: '',
-                long_description: null,
+                explanation: null,
                 // simple list but no collection
                 items: null,
                 info: null
@@ -52,7 +52,7 @@ define(['jquery', 'backbone', 'underscore', 'app', './ConfigItem'],
             },
 
             isLoaded: function() {
-                return this.has('items') || this.has('long_description');
+                return this.has('items') || this.has('explanation');
             },
 
             // check if any of the items has changes

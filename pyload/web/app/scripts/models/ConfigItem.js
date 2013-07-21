@@ -9,7 +9,6 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
                 label: '',
                 description: '',
                 input: null,
-                default_value: null,
                 value: null,
                 // additional attributes
                 inputView: null
