@@ -31,6 +31,15 @@ class SimplydebridCom(Hoster):
         new_url = pyfile.url
         new_url = new_url.replace("clz.to", "cloudzer.net/file")
         new_url = new_url.replace("http://share-online", "http://www.share-online")
+        new_url = new_url.replace("ul.to", "uploaded.net/file")
+        new_url = new_url.replace("uploaded.com", "uploaded.net")
+        new_url = new_url.replace("filerio.com", "filerio.in")
+        new_url = new_url.replace("lumfile.com", "lumfile.se")
+        if('fileparadox' in new_url):
+            new_url = new_url.replace("http://", "https://")
+        
+        if re.match(self.__pattern__, new_url):
+            new_url = new_url
 
         if not re.match(self.__pattern__, new_url):
             page = self.load('http://simply-debrid.com/api.php', get={'dl': new_url}) #+'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
