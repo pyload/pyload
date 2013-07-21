@@ -54,6 +54,14 @@ xargs = ["--language=Python", "--add-comments=L10N",
          "--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyload",
          "--package-version=%s" % __version__, "--msgid-bugs-address='bugs@pyload.org'"]
 
+# Modules replace rules
+module_replace = [
+('from module.plugins.Hoster import Hoster', 'from pyload.plugins.Hoster import Hoster'),
+('from module.common.json_layer import json_loads', 'from pyload.utils import json_loads'),
+('from module.utils import parseFileSize', 'from pyload.utils import parseFileSize'),
+('from module.', 'from pyload.')  # This should be always the last one
+]
+
 
 @task
 @needs('cog')
@@ -241,6 +249,22 @@ def clean():
     """Cleans build directories"""
     path("build").rmtree()
     path("dist").rmtree()
+
+
+@task
+def replace_module_imports():
+    """Replace imports from stable syntax to master"""
+    for root, dirnames, filenames in os.walk('pyload/plugins'):
+        for filename in fnmatch.filter(filenames, '*.py'):
+            path = os.path.join(root, filename)
+            f = open(path, 'r')
+            content = f.read()
+            f.close()
+            for rule in module_replace:
+                content = content.replace(rule[0], rule[1])
+            f = open(path, 'w')
+            f.write(content)
+            f.close()
 
 
 #helper functions
