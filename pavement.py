@@ -57,6 +57,7 @@ xargs = ["--language=Python", "--add-comments=L10N",
 # Modules replace rules
 module_replace = [
 ('from module.plugins.Hoster import Hoster', 'from pyload.plugins.Hoster import Hoster'),
+('from module.plugins.Hook import Hook', 'from pyload.plugins.Addon import Addon'),
 ('from module.common.json_layer import json_loads', 'from pyload.utils import json_loads'),
 ('from module.utils import parseFileSize', 'from pyload.utils import parseFileSize'),
 ('from module.utils import save_join, fs_encode', 'from pyload.utils.fs import save_join, fs_encode'),
@@ -265,6 +266,8 @@ def replace_module_imports():
             f.close()
             for rule in module_replace:
                 content = content.replace(rule[0], rule[1])
+            if '/addons/' in path:
+                content = content.replace('(Hook):', '(Addon):')
             f = open(path, 'w')
             f.write(content)
             f.close()
