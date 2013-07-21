@@ -20,9 +20,23 @@ define('helpers/fileHelper', ['handlebars', 'utils/apitypes', 'helpers/formatTim
             return '';
         }
 
-        // TODO
         function fileIcon(media, options) {
-            return 'icon-music';
+            switch (media) {
+                case Api.MediaType.Audio:
+                    return 'icon-music';
+                case Api.MediaType.Image:
+                    return 'icon-picture';
+                case Api.MediaType.Video:
+                    return 'icon-film';
+                case Api.MediaType.Document:
+                    return 'icon-file-text';
+                case Api.MediaType.Archive:
+                    return 'icon-archive';
+                case Api.MediaType.Executable:
+                    return 'icon-cog';
+                default:
+                    return 'icon-file-alt';
+            }
         }
 
         // TODO rest of the states

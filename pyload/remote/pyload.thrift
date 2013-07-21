@@ -50,6 +50,7 @@ enum MediaType {
   Video = 8,
   Document = 16,
   Archive = 32,
+  Executable = 64
 }
 
 enum FileStatus {

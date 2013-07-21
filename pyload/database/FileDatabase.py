@@ -19,12 +19,12 @@ from new_collections import OrderedDict
 
 from pyload.Api import DownloadInfo, FileInfo, PackageInfo, PackageStats, DownloadState as DS, state_string
 from pyload.database import DatabaseMethods, queue, async, inner
+from pyload.utils.filetypes import guess_type
 
 zero_stats = PackageStats(0, 0, 0, 0)
 
 
 class FileMethods(DatabaseMethods):
-
     @queue
     def filecount(self):
         """returns number of files, currently only used for debugging"""
@@ -309,13 +309,19 @@ class FileMethods(DatabaseMethods):
     @async
     def updateLinkInfo(self, data):
         """ data is list of tuples (name, size, status,[ hash,] url)"""
+
+        # inserts media type as n-1th arguments
+        data = [t[:-1] + (guess_type(t[0]),) + t[-1] for t in data]
+
         # status in (NA, Offline, Online, Queued, TempOffline)
         if data and len(data[0]) == 4:
-            self.c.executemany('UPDATE files SET name=?, size=?, dlstatus=? WHERE url=? AND dlstatus IN (0,1,2,3,11)',
-                               data)
+            self.c.executemany(
+                'UPDATE files SET name=?, size=?, dlstatus=?, media=? WHERE url=? AND dlstatus IN (0,1,2,3,11)',
+                data)
         else:
             self.c.executemany(
-                'UPDATE files SET name=?, size=?, dlstatus=?, hash=? WHERE url=? AND dlstatus IN (0,1,2,3,11)', data)
+                'UPDATE files SET name=?, size=?, dlstatus=?, hash=?, media=? WHERE url=? AND dlstatus IN (0,1,2,3,11)',
+                data)
 
     @async
     def updateFile(self, f):
