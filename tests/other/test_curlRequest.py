@@ -3,8 +3,12 @@
 from tests.helper.Stubs import Core
 from pyload.plugins.network.CurlRequest import CurlRequest
 
+from unittest import TestCase
 
-class TestCurlRequest:
+
+class TestCurlRequest(TestCase):
+    # This page provides a test which prints all set cookies
+    cookieURL = "http://forum.pyload.org"
 
     def setUp(self):
         self.req = CurlRequest({})
@@ -16,13 +20,20 @@ class TestCurlRequest:
         self.req.load("http://pyload.org")
 
     def test_cookies(self):
-
-        self.req.load("http://pyload.org", cookies=False)
+        self.req.load(self.cookieURL, cookies=False)
         assert len(self.req.cj.values()) == 0
 
-        self.req.load("http://pyload.org")
+        self.req.load(self.cookieURL)
         assert len(self.req.cj.values()) > 0
 
-    def test_auth(self):
+        for c in self.req.load(self.cookieURL + "/cookies.php").splitlines():
+            k, v = c.strip().split(":")
+            self.assertIn(k, self.req.cj)
+            self.assertEqual(v, self.req.cj[k].value)
 
+        cookies = self.req.load(self.cookieURL + "/cookies.php", cookies=False)
+        self.assertEqual(cookies, "")
+
+
+    def test_auth(self):
         pass
