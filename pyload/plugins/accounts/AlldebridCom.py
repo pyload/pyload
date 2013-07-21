@@ -1,4 +1,3 @@
-
 import xml.dom.minidom as dom
 from BeautifulSoup import BeautifulSoup
 from time import time
@@ -51,7 +50,5 @@ class AlldebridCom(MultiHoster):
             self.wrongPassword()
 
     def loadHosterList(self, req):
-        https = "https" if self.getConfig("https") else "http"
-        page = req.load(https + "://www.alldebrid.com/api.php?action=get_host").replace("\"","").strip()
-
+        page = req.load("http://www.alldebrid.com/api.php?action=get_host").replace("\"","").strip()
         return [x.strip() for x in page.split(",") if x.strip()]

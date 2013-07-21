@@ -3,9 +3,8 @@
 import re
 from urllib import unquote
 from random import randrange
-from module.plugins.Hoster import Hoster
-from module.common.json_layer import json_loads
-from module.utils import parseFileSize
+from pyload.plugins.Hoster import Hoster
+from pyload.utils import parseFileSize, json_loads
 
 
 class AlldebridCom(Hoster):
