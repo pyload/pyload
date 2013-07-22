@@ -17,6 +17,9 @@ class TestRequestFactory:
         new_req = self.req.getRequest(req.getContext())
         assert new_req.getContext() == req.getContext()
 
+        cj = CurlRequest.CONTEXT_CLASS()
+        assert self.req.getRequest(cj).context is cj
+
     def test_get_request_class(self):
 
         self.req.getRequest(None, CurlRequest)
@@ -26,5 +29,10 @@ class TestRequestFactory:
         dl.close()
 
         # with given request
-        dl = self.req.getDownloadRequest(self.req.getRequest())
+        req = self.req.getRequest()
+        dl = self.req.getDownloadRequest(req)
+
+        assert req.context is dl.context
+        assert req.options is dl.options
+
         dl.close()

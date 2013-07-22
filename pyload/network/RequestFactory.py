@@ -1,28 +1,26 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay, RaNaN
-"""
+###############################################################################
+#   Copyright(c) 2008-2013 pyLoad Team
+#   http://www.pyload.org
+#
+#   This file is part of pyLoad.
+#   pyLoad is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN
+###############################################################################
 
 from Bucket import Bucket
-from CookieJar import CookieJar
 
 from pyload.plugins.network.DefaultRequest import DefaultRequest, DefaultDownload
 
-class RequestFactory():
+
+class RequestFactory:
     def __init__(self, core):
         self.core = core
         self.bucket = Bucket()
@@ -42,8 +40,8 @@ class RequestFactory():
 
     def getRequest(self, context=None, klass=DefaultRequest):
         """ Creates a request with new or given context """
-        # also accepts cookiejars, not so nice, since it depends on implementation
-        if isinstance(context, CookieJar):
+        # also accepts the context class directly
+        if isinstance(context, klass.CONTEXT_CLASS):
             return klass(self.getConfig(), context)
         elif context:
             return klass(*context)

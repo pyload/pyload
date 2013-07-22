@@ -64,6 +64,11 @@ class CurlRequest(Request):
 
     # TODO: addAuth, addHeader
 
+    @property
+    def http(self):
+        print "Deprecated usage of req.http, just use req instead"
+        return self
+
     def initContext(self):
         self.initHandle()
 
