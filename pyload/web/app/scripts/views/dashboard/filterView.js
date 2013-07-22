@@ -148,7 +148,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Pac
 
             filter_type: function(e) {
                 var el = $(e.target);
-                var type = parseInt(el.data('type'));
+                var type = parseInt(el.data('type'), 10);
 
                 // Bit is already set, so type is not visible, will become visible now
                 if (type & this.types) {
