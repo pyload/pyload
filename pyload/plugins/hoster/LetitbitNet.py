@@ -55,23 +55,21 @@ class LetitbitNet(SimpleHoster):
 
         self.html = self.load(self.DOMAIN + action, post=inputs, cookies=True)
 
-        """
-        action, inputs = self.parseHtmlForm('id="d3_form"')
-        if not action: self.parseError("page 2 / d3_form")
-        #self.logDebug(action, inputs)
-
-        self.html = self.load(action, post = inputs, cookies = True)
-
-        try:
-            ajax_check_url, captcha_url = re.search(self.CHECK_URL_PATTERN, self.html).groups()
-            found = re.search(self.SECONDS_PATTERN, self.html)
-            seconds = int(found.group(1)) if found else 60
-            self.setWait(seconds+1)
-            self.wait()
-        except Exception, e:
-            self.logError(e)
-            self.parseError("page 3 / js")
-        """
+        # action, inputs = self.parseHtmlForm('id="d3_form"')
+        # if not action: self.parseError("page 2 / d3_form")
+        # #self.logDebug(action, inputs)
+        #
+        # self.html = self.load(action, post = inputs, cookies = True)
+        #
+        # try:
+        #     ajax_check_url, captcha_url = re.search(self.CHECK_URL_PATTERN, self.html).groups()
+        #     found = re.search(self.SECONDS_PATTERN, self.html)
+        #     seconds = int(found.group(1)) if found else 60
+        #     self.setWait(seconds+1)
+        #     self.wait()
+        # except Exception, e:
+        #     self.logError(e)
+        #     self.parseError("page 3 / js")
 
         found = re.search(self.SECONDS_PATTERN, self.html)
         seconds = int(found.group(1)) if found else 60
@@ -89,7 +87,8 @@ class LetitbitNet(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
         challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
-        post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response, "recaptcha_control_field": recaptcha_control_field}
+        post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response,
+                     "recaptcha_control_field": recaptcha_control_field}
         self.logDebug("Post data to send", post_data)
         response = self.load('%s/ajax/check_recaptcha.php' % self.DOMAIN, post=post_data, cookies=True)
         self.logDebug(response)
@@ -121,5 +120,6 @@ class LetitbitNet(SimpleHoster):
                 self.logError(e)
         else:
             self.fail("Download did not finish correctly")
+
 
 getInfo = create_getInfo(LetitbitNet)

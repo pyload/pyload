@@ -19,9 +19,11 @@
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
+
 def convertDecimalPrefix(m):
     # decimal prefixes used in filesize and traffic
-    return ("%%.%df" % {'k':3,'M':6,'G':9}[m.group(2)] % float(m.group(1))).replace('.','')
+    return ("%%.%df" % {'k': 3, 'M': 6, 'G': 9}[m.group(2)] % float(m.group(1))).replace('.', '')
+
 
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
@@ -44,20 +46,20 @@ class UlozTo(SimpleHoster):
     PREMIUM_URL_PATTERN = r'<div class="downloadForm"><form action="([^"]+)"'
 
     def setup(self):
-        self.multiDL = self.premium 
+        self.multiDL = self.premium
         self.resumeDownload = True
 
     def process(self, pyfile):
         pyfile.url = re.sub(r"(?<=http://)([^/]+)", "www.ulozto.net", pyfile.url)
-        self.html = self.load(pyfile.url, decode = True, cookies = True)
+        self.html = self.load(pyfile.url, decode=True, cookies=True)
 
         passwords = self.getPassword().splitlines()
         while self.PASSWD_PATTERN in self.html:
             if passwords:
                 password = passwords.pop(0)
                 self.logInfo("Password protected link, trying " + password)
-                self.html = self.load(pyfile.url, get = {"do": "passwordProtectedForm-submit"},
-                    post={"password": password, "password_send": 'Send'}, cookies=True)
+                self.html = self.load(pyfile.url, get={"do": "passwordProtectedForm-submit"},
+                                      post={"password": password, "password_send": 'Send'}, cookies=True)
             else:
                 self.fail("No or incorrect password")
 
@@ -70,47 +72,45 @@ class UlozTo(SimpleHoster):
             self.handlePremium()
         else:
             self.handleFree()
-            
+
         self.doCheckDownload()
 
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="frm-downloadDialog-freeDownloadForm"')
         if not action or not inputs:
-            self.parseError("free download form") 
-        
+            self.parseError("free download form")
+
         # get and decrypt captcha
         captcha_id_field = captcha_text_field = None
-        
-        for key in inputs.keys():            
+
+        for key in inputs.keys():
             found = re.match("captcha.*(id|text|value)", key)
             if found:
                 if found.group(1) == "id":
                     captcha_id_field = key
                 else:
                     captcha_text_field = key
-                
-        if not captcha_id_field or not captcha_text_field:
-            self.parseError("CAPTCHA form changed")    
-        
-        """
-        captcha_id = self.getStorage("captcha_id")
-        captcha_text = self.getStorage("captcha_text")
 
-        if not captcha_id or not captcha_text:
-        """
+        if not captcha_id_field or not captcha_text_field:
+            self.parseError("CAPTCHA form changed")
+
+        # captcha_id = self.getStorage("captcha_id")
+        # captcha_text = self.getStorage("captcha_text")
+        #
+        # if not captcha_id or not captcha_text:
+
         captcha_id = inputs[captcha_id_field]
         captcha_text = self.decryptCaptcha("http://img.uloz.to/captcha/%s.png" % captcha_id)
 
         self.logDebug(' CAPTCHA ID:' + captcha_id + ' CAPTCHA TEXT:' + captcha_text)
-        
-        """
-        self.setStorage("captcha_id", captcha_id)
-        self.setStorage("captcha_text", captcha_text)
-        """
+
+        # self.setStorage("captcha_id", captcha_id)
+        # self.setStorage("captcha_text", captcha_text)
+
         self.multiDL = True
 
         inputs.update({captcha_id_field: captcha_id, captcha_text_field: captcha_text})
-        
+
         self.download("http://www.ulozto.net" + action, post=inputs, cookies=True, disposition=True)
 
     def handlePremium(self):
@@ -121,7 +121,8 @@ class UlozTo(SimpleHoster):
     def findDownloadURL(self, premium=False):
         msg = "%s link" % ("Premium" if premium else "Free")
         found = re.search(self.PREMIUM_URL_PATTERN if premium else self.FREE_URL_PATTERN, self.html)
-        if not found: self.parseError(msg)
+        if not found:
+            self.parseError(msg)
         parsed_url = "http://www.ulozto.net" + found.group(1)
         self.logDebug("%s: %s" % (msg, parsed_url))
         return parsed_url
@@ -131,7 +132,7 @@ class UlozTo(SimpleHoster):
             "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
             "offline": re.compile(self.FILE_OFFLINE_PATTERN),
             "passwd": self.PASSWD_PATTERN,
-            "server_error": 'src="http://img.ulozto.cz/error403/vykricnik.jpg"', #paralell dl, server overload etc.
+            "server_error": 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  # paralell dl, server overload etc.
             "not_found": "<title>Ulož.to</title>"
         })
 
@@ -152,5 +153,6 @@ class UlozTo(SimpleHoster):
             self.retry()
         elif check == "not_found":
             self.fail("Server error - file not downloadable")
+
 
 getInfo = create_getInfo(UlozTo)

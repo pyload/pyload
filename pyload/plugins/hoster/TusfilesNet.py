@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
+
 class TusfilesNet(XFileSharingPro):
     __name__ = "TusfilesNet"
     __type__ = "hoster"
@@ -14,5 +15,6 @@ class TusfilesNet(XFileSharingPro):
     FILE_OFFLINE_PATTERN = r'The file you were looking for could not be found'
 
     HOSTER_NAME = "tusfiles.net"
+
 
 getInfo = create_getInfo(TusfilesNet)

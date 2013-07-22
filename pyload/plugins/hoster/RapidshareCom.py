@@ -14,6 +14,7 @@ import re
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 
+
 def getInfo(urls):
     ids = ""
     names = ""
@@ -23,26 +24,29 @@ def getInfo(urls):
     for url in urls:
         r = p.search(url)
         if r.group("name"):
-            ids+= ","+r.group("id")
-            names+= ","+r.group("name")
+            ids += "," + r.group("id")
+            names += "," + r.group("name")
         elif r.group("name_new"):
-            ids+= ","+r.group("id_new")
-            names+= ","+r.group("name_new")
-    
+            ids += "," + r.group("id_new")
+            names += "," + r.group("name_new")
+
     url = "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=checkfiles&files=%s&filenames=%s" % (ids[1:], names[1:])
-    
+
     api = getURL(url)
     result = []
     i = 0
     for res in api.split():
         tmp = res.split(",")
-        if tmp[4] in ("0", "4", "5"): status = 1
-        elif tmp[4] == "1": status = 2
-        else: status = 3
-        
-        result.append( (tmp[1], tmp[2], status, urls[i]) )
+        if tmp[4] in ("0", "4", "5"):
+            status = 1
+        elif tmp[4] == "1":
+            status = 2
+        else:
+            status = 3
+
+        result.append((tmp[1], tmp[2], status, urls[i]))
         i += 1
-        
+
     yield result
 
 
@@ -52,7 +56,9 @@ class RapidshareCom(Hoster):
     __pattern__ = r"https?://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
     __version__ = "1.39"
     __description__ = """Rapidshare.com Download Hoster"""
-    __config__ = [("server", "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera", "Preferred Server", "None")]
+    __config__ = [["server",
+                   "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera",
+                   "Preferred Server", "None"]]
     __author_name__ = ("spoob", "RaNaN", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "mkaay@mkaay.de")
 
@@ -65,14 +71,14 @@ class RapidshareCom(Hoster):
 
         self.id = None
         self.name = None
-          
-        self.chunkLimit = -1 if self.premium else 1            
+
+        self.chunkLimit = -1 if self.premium else 1
         self.multiDL = self.resumeDownload = self.premium
 
     def process(self, pyfile):
-        self.url = self.pyfile.url        
+        self.url = self.pyfile.url
         self.prepare()
-         
+
     def prepare(self):
         m = re.search(self.__pattern__, self.url)
 
@@ -96,9 +102,9 @@ class RapidshareCom(Hoster):
             self.logInfo(_("Rapidshare: Traffic Share (direct download)"))
             self.pyfile.name = self.get_file_name()
 
-            self.download(self.pyfile.url, get={"directstart":1})
-        
-        elif self.api_data["status"] in ("0","4","5"):
+            self.download(self.pyfile.url, get={"directstart": 1})
+
+        elif self.api_data["status"] in ("0", "4", "5"):
             self.offline()
         elif self.api_data["status"] == "3":
             self.tempOffline()
@@ -116,8 +122,8 @@ class RapidshareCom(Hoster):
         self.logDebug("RS API Request: %s" % download)
         self.download(download, ref=False)
 
-        check = self.checkDownload({"ip" : "You need RapidPro to download more files from your IP address",
-                                    "auth" : "Download auth invalid"})
+        check = self.checkDownload({"ip": "You need RapidPro to download more files from your IP address",
+                                    "auth": "Download auth invalid"})
         if check == "ip":
             self.setWait(60)
             self.logInfo(_("Already downloading from this ip address, waiting 60 seconds"))
@@ -132,8 +138,7 @@ class RapidshareCom(Hoster):
         info = self.account.getAccountInfo(self.user, True)
         self.logDebug("%s: Use Premium Account" % self.__name__)
         url = self.api_data["mirror"]
-        self.download(url, get={"directstart":1})
-
+        self.download(url, get={"directstart": 1})
 
     def download_api_data(self, force=False):
         """
@@ -148,16 +153,17 @@ class RapidshareCom(Hoster):
         if src.startswith("ERROR"):
             return
         fields = src.split(",")
-        """
-        status codes:
-            0=File not found
-            1=File OK (Anonymous downloading)
-            3=Server down
-            4=File marked as illegal
-            5=Anonymous file locked, because it has more than 10 downloads already
-            50+n=File OK (TrafficShare direct download type "n" without any logging.)
-            100+n=File OK (TrafficShare direct download type "n" with logging. Read our privacy policy to see what is logged.)
-        """
+
+        # status codes:
+        #   0=File not found
+        #   1=File OK (Anonymous downloading)
+        #   3=Server down
+        #   4=File marked as illegal
+        #   5=Anonymous file locked, because it has more than 10 downloads already
+        #   50+n=File OK (TrafficShare direct download type "n" without any logging.)
+        #   100+n=File OK (TrafficShare direct download type "n" with logging.
+        #                  Read our privacy policy to see what is logged.)
+
         self.api_data = {"fileid": fields[0], "filename": fields[1], "size": int(fields[2]), "serverid": fields[3],
                          "status": fields[4], "shorthost": fields[5], "checksum": fields[6].strip().lower()}
 
@@ -166,7 +172,8 @@ class RapidshareCom(Hoster):
         elif int(self.api_data["status"]) > 50:
             self.api_data["status"] = str(int(self.api_data["status"]) - 50)
 
-        self.api_data["mirror"] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
+        self.api_data["mirror"] = \
+            "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
 
     def freeWait(self):
         """downloads html with the important information
@@ -176,7 +183,8 @@ class RapidshareCom(Hoster):
         id = self.id
         name = self.name
 
-        prepare = "https://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=download&fileid=%(id)s&filename=%(name)s&try=1&cbf=RSAPIDispatcher&cbid=1" % {"name": name, "id" : id}
+        prepare = "https://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=download&fileid=%(id)s&filename=%(name)s&try=1&cbf=RSAPIDispatcher&cbid=1" % {
+            "name": name, "id": id}
 
         self.logDebug("RS API Request: %s" % prepare)
         result = self.load(prepare, ref=False)
@@ -188,7 +196,8 @@ class RapidshareCom(Hoster):
             self.setWait(60)
             self.logInfo(_("Already downloading from this ip address, waiting 60 seconds"))
             self.wait()
-        elif "Too many users downloading from this server right now" in result or "All free download slots are full" in result:
+        elif "Too many users downloading from this server right now" in result or \
+                "All free download slots are full" in result:
             self.setWait(120)
             self.logInfo(_("RapidShareCom: No free slots"))
             self.wait()
@@ -207,17 +216,15 @@ class RapidshareCom(Hoster):
             data = info.split(",")
 
             dl_dict = {"id": id,
-                        "name": name,
-                        "host": data[0],
-                        "auth": data[1],
-                        "server": self.api_data["serverid"],
-                        "size": self.api_data["size"]
-            }
-            self.setWait(int(data[2])+2+self.offset)
+                       "name": name,
+                       "host": data[0],
+                       "auth": data[1],
+                       "server": self.api_data["serverid"],
+                       "size": self.api_data["size"]}
+            self.setWait(int(data[2]) + 2 + self.offset)
             self.wait()
 
             return dl_dict
-
 
     def get_file_name(self):
         if self.api_data["filename"]:

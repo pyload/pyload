@@ -1,10 +1,10 @@
-
 import re
 from xml.etree.ElementTree import fromstring
 
 from module.plugins.Hoster import Hoster
 
 XML_API = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?id=%i"
+
 
 class ZDF(Hoster):
     # Based on zdfm by Roland Beermann
@@ -23,7 +23,7 @@ class ZDF(Hoster):
 
     @staticmethod
     def video_valid(video):
-        return (video.findtext("url").startswith("http") and video.findtext("url").endswith(".mp4"))
+        return video.findtext("url").startswith("http") and video.findtext("url").endswith(".mp4")
 
     @staticmethod
     def get_id(url):
@@ -40,7 +40,8 @@ class ZDF(Hoster):
         title = video.findtext("information/title")
 
         pyfile.name = title
-        
-        target_url = sorted((v for v in video.iter("formitaet") if self.video_valid(v)), key=self.video_key)[-1].findtext("url")
+
+        target_url = sorted((v for v in video.iter("formitaet") if self.video_valid(v)),
+                            key=self.video_key)[-1].findtext("url")
 
         self.download(target_url)

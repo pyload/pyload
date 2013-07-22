@@ -33,7 +33,7 @@ class FastshareCz(SimpleHoster):
 
     FILE_INFO_PATTERN = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*(?:Velikost|Size)\s*: (?P<S>[^,]+),'
     FILE_OFFLINE_PATTERN = ur'<td align=center>Tento soubor byl smazán'
-    FILE_URL_REPLACEMENTS = [('#.*','')]
+    FILE_URL_REPLACEMENTS = [('#.*', '')]
 
     FREE_URL_PATTERN = ur'<form method=post action=(/free/.*?)><b>Stáhnout FREE.*?<img src="([^"]*)">'
     PREMIUM_URL_PATTERN = r'(http://data\d+\.fastshare\.cz/download\.php\?id=\d+\&[^\s\"\'<>]+)'
@@ -45,7 +45,7 @@ class FastshareCz(SimpleHoster):
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
         else:
-            self.html = self.load(pyfile.url, decode = not self.SH_BROKEN_ENCODING, cookies = self.SH_COOKIES)
+            self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
             self.getFileInfo()
             self.handleFree()
 
@@ -56,14 +56,16 @@ class FastshareCz(SimpleHoster):
             self.retry(120, "No free slots")
 
         found = re.search(self.FREE_URL_PATTERN, self.html)
-        if not found: self.parseError("Free URL")
+        if not found:
+            self.parseError("Free URL")
         action, captcha_src = found.groups()
         captcha = self.decryptCaptcha("http://www.fastshare.cz/" + captcha_src)
-        self.download("http://www.fastshare.cz/" + action, post = {"code": captcha, "submit": u"stáhnout"})
+        self.download("http://www.fastshare.cz/" + action, post={"code": captcha, "submit": u"stáhnout"})
 
         check = self.checkDownload({
-            "paralell_dl": "<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"
-            })
+            "paralell_dl":
+            "<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"
+        })
         self.logDebug(self.req.lastEffectiveURL, self.req.lastURL, self.req.code)
 
         if check == "paralell_dl":
@@ -83,7 +85,8 @@ class FastshareCz(SimpleHoster):
                 self.resetAccount()
 
             found = re.search(self.PREMIUM_URL_PATTERN, self.html)
-            if not found: self.parseError("Premium URL")
+            if not found:
+                self.parseError("Premium URL")
             url = found.group(1)
 
         self.logDebug("PREMIUM URL: %s" % url)
@@ -92,5 +95,6 @@ class FastshareCz(SimpleHoster):
         check = self.checkDownload({"credit": re.compile(self.NOT_ENOUGH_CREDIC_PATTERN)})
         if check == "credit":
             self.resetAccount()
+
 
 getInfo = create_getInfo(FastshareCz)

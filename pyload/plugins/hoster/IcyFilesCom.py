@@ -20,6 +20,7 @@ import re
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 
+
 def getInfo(urls):
     result = []
     for url in urls:
@@ -36,8 +37,8 @@ def getInfo(urls):
                 size = (int(size.group(1)) * 1000000)
                 result.append((name, size, 2, url))
     yield result
-        
-        
+
+
 class IcyFilesCom(Hoster):
     __name__ = "IcyFilesCom"
     __type__ = "hoster"
@@ -54,32 +55,31 @@ class IcyFilesCom(Hoster):
     WAIT_PATTERN = r'<div class="counter">(\d+)</div>'
     TOOMUCH_PATTERN = r'Sorry dude, you have downloaded too much\. Please wait (\d+) seconds'
 
-
     def setup(self):
         self.multiDL = False
-        
+
     def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
         # check if offline
         if re.search(self.FILE_OFFLINE_PATTERN, self.html):
             self.offline()
-        # All Downloadtickets in use
+            # All Downloadtickets in use
         timmy = re.search(self.WAIT_LONGER_PATTERN, self.html)
         if timmy:
             self.logDebug("waitforfreeslot")
             self.waitForFreeSlot()
-        # Wait the waittime
+            # Wait the waittime
         timmy = re.search(self.WAIT_PATTERN, self.html)
         if timmy:
             self.logDebug("waiting", timmy.group(1))
             self.setWait(int(timmy.group(1)) + 2, False)
-            self.wait() 
+            self.wait()
         # Downloaded to much
         timmy = re.search(self.TOOMUCH_PATTERN, self.html)
         if timmy:
             self.logDebug("too much", timmy.group(1))
             self.setWait(int(timmy.group(1)), True)
-            self.wait() 
+            self.wait()
         # Find Name
         found = re.search(self.FILE_NAME_PATTERN, self.html)
         if found is None:
@@ -98,7 +98,7 @@ class IcyFilesCom(Hoster):
             "skippedcountdown": re.compile(r"^Dont skip the countdown$"),
             "waitforfreeslots": re.compile(self.WAIT_LONGER_PATTERN),
             "downloadedtoomuch": re.compile(self.TOOMUCH_PATTERN)
-            })
+        })
         if check == "skippedcountdown":
             self.fail("Countdown error")
         elif check == "notfound":

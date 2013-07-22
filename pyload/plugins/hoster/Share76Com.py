@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
+
 class Share76Com(XFileSharingPro):
     __name__ = "Share76Com"
     __type__ = "hoster"
@@ -15,5 +16,6 @@ class Share76Com(XFileSharingPro):
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
         self.chunkLimit = 1
+
 
 getInfo = create_getInfo(Share76Com)

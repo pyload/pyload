@@ -1,15 +1,17 @@
 from pyload.plugins.Hoster import Hoster
 from pyload.utils import json_loads
 
+
 class PremiumizeMe(Hoster):
     __name__ = "PremiumizeMe"
     __version__ = "0.12"
-    __type__ = "hoster"        
+    __type__ = "hoster"
     __description__ = """Premiumize.Me hoster plugin"""
-        
-    # Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady create the regex patterns for us using getHosters in our PremiumizeMe hook.
+
+    # Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
+    # create the regex patterns for us using getHosters in our PremiumizeMe hook.
     __pattern__ = None
-    
+
     __author_name__ = ("Florian Franzen")
     __author_mail__ = ("FlorianFranzen@gmail.com")
 
@@ -18,20 +20,22 @@ class PremiumizeMe(Hoster):
         if not self.account or not self.account.isUsable():
             self.logError(_("Please enter your %s account or deactivate this plugin") % "premiumize.me")
             self.fail("No valid premiumize.me account provided")
-        
-        # In some cases hostsers do not supply us with a filename at download, so we are going to set a fall back filename (e.g. for freakshare or xfileshare)
-        self.pyfile.name = self.pyfile.name.split('/').pop() # Remove everthing before last slash
-        
+
+        # In some cases hostsers do not supply us with a filename at download, so we
+        # are going to set a fall back filename (e.g. for freakshare or xfileshare)
+        self.pyfile.name = self.pyfile.name.split('/').pop()  # Remove everthing before last slash
+
         # Correction for automatic assigned filename: Removing html at end if needed
         suffix_to_remove = ["html", "htm", "php", "php3", "asp", "shtm", "shtml", "cfml", "cfm"]
         temp = self.pyfile.name.split('.')
         if temp.pop() in suffix_to_remove:
             self.pyfile.name = ".".join(temp)
 
-
         # Get rewritten link using the premiumize.me api v1 (see https://secure.premiumize.me/?show=api)
-        answer = self.load("https://api.premiumize.me/pm-api/v1.php?method=directdownloadlink&params[login]=%s&params[pass]=%s&params[link]=%s" % (self.account.loginname, self.account.password, self.pyfile.url))
-        data = json_loads(answer)                
+        answer = self.load(
+            "https://api.premiumize.me/pm-api/v1.php?method=directdownloadlink&params[login]=%s&params[pass]=%s&params[link]=%s" % (
+            self.account.loginname, self.account.password, self.pyfile.url))
+        data = json_loads(answer)
 
         # Check status and decide what to do
         status = data['status']
@@ -39,7 +43,7 @@ class PremiumizeMe(Hoster):
             self.download(data['result']['location'], disposition=True)
         elif status == 400:
             self.fail("Invalid link")
-        elif status == 404: 
+        elif status == 404:
             self.offline()
         elif status >= 500:
             self.tempOffline()

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
+
 class SpeedLoadOrg(XFileSharingPro):
     __name__ = "SpeedLoadOrg"
     __type__ = "hoster"
@@ -16,6 +17,7 @@ class SpeedLoadOrg(XFileSharingPro):
     HOSTER_NAME = "speedload.org"
 
     def handlePremium(self):
-        self.download(self.pyfile.url, post = self.getPostParameters())
+        self.download(self.pyfile.url, post=self.getPostParameters())
+
 
 getInfo = create_getInfo(SpeedLoadOrg)

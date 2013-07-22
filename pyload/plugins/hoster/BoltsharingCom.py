@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
+
 class BoltsharingCom(XFileSharingPro):
     __name__ = "BoltsharingCom"
     __type__ = "hoster"
@@ -11,5 +12,6 @@ class BoltsharingCom(XFileSharingPro):
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     HOSTER_NAME = "boltsharing.com"
+
 
 getInfo = create_getInfo(BoltsharingCom)

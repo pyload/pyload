@@ -4,6 +4,7 @@
 from urllib import quote, unquote
 from module.plugins.Hoster import Hoster
 
+
 class RehostTo(Hoster):
     __name__ = "RehostTo"
     __version__ = "0.13"

@@ -1,8 +1,9 @@
-from module.plugins.Hoster    import Hoster
+from module.plugins.Hoster import Hoster
 
 from module.common.json_layer import json_loads
 
 from module.network.HTTPRequest import BadHeader
+
 
 class ReloadCc(Hoster):
     __name__ = "ReloadCc"
@@ -10,7 +11,8 @@ class ReloadCc(Hoster):
     __type__ = "hoster"
     __description__ = """Reload.Cc hoster plugin"""
 
-    # Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady create the regex patterns for us using getHosters in our ReloadCc hook.
+    # Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
+    # create the regex patterns for us using getHosters in our ReloadCc hook.
     __pattern__ = None
 
     __author_name__ = ("Reload Team")
@@ -22,8 +24,9 @@ class ReloadCc(Hoster):
             self.logError(_("Please enter your %s account or deactivate this plugin") % "reload.cc")
             self.fail("No valid reload.cc account provided")
 
-        # In some cases hostsers do not supply us with a filename at download, so we are going to set a fall back filename (e.g. for freakshare or xfileshare)
-        self.pyfile.name = self.pyfile.name.split('/').pop() # Remove everthing before last slash
+        # In some cases hostsers do not supply us with a filename at download, so we
+        # are going to set a fall back filename (e.g. for freakshare or xfileshare)
+        self.pyfile.name = self.pyfile.name.split('/').pop()  # Remove everthing before last slash
 
         # Correction for automatic assigned filename: Removing html at end if needed
         suffix_to_remove = ["html", "htm", "php", "php3", "asp", "shtm", "shtml", "cfml", "cfm"]
@@ -62,11 +65,15 @@ class ReloadCc(Hoster):
                 # Wait for 6 hours and retry up to 4 times => one day
                 self.retry(max_retries=4, wait_time=(3600 * 6), reason="Limited hoster traffic limit exceeded")
             elif e.code == 429:
-                self.retry(max_retries=5, wait_time=120, reason="Too many concurrent connections") # Too many connections, wait 2 minutes and try again
+                # Too many connections, wait 2 minutes and try again
+                self.retry(max_retries=5, wait_time=120, reason="Too many concurrent connections")
             elif e.code == 503:
-                self.retry(wait_time=600, reason="Reload.cc is currently in maintenance mode! Please check again later.") # Retry in 10 minutes
+                # Retry in 10 minutes
+                self.retry(wait_time=600,
+                           reason="Reload.cc is currently in maintenance mode! Please check again later.")
             else:
-                self.fail("Internal error within Reload.cc. Please contact the Reload.cc support for further information.")
+                self.fail(
+                    "Internal error within Reload.cc. Please contact the Reload.cc support for further information.")
             return
 
         data = json_loads(answer)
@@ -95,9 +102,12 @@ class ReloadCc(Hoster):
                 elif e.code == 417:
                     self.fail("Password required for file access")
                 elif e.code == 429:
-                    self.retry(max_retries=5, wait_time=120, reason="Too many concurrent connections") # Too many connections, wait 2 minutes and try again
+                    # Too many connections, wait 2 minutes and try again
+                    self.retry(max_retries=5, wait_time=120, reason="Too many concurrent connections")
                 else:
-                    self.fail("Internal error within Reload.cc. Please contact the Reload.cc support for further information.")
+                    self.fail(
+                        "Internal error within Reload.cc. Please contact the Reload.cc support for further information."
+                    )
                 return
         else:
             self.fail("Internal error within Reload.cc. Please contact the Reload.cc support for further information.")

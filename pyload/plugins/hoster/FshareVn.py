@@ -1,24 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
-from module.network.RequestFactory import getURL
 import re
 from time import strptime, mktime, gmtime
 
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.network.RequestFactory import getURL
+
+
 def getInfo(urls):
     for url in urls:
-        html = getURL('http://www.fshare.vn/check_link.php', post = {
-            "action" : "check_link",
-            "arrlinks" : url
-            }, decode = True)
+        html = getURL('http://www.fshare.vn/check_link.php', post={
+            "action": "check_link",
+            "arrlinks": url
+        }, decode=True)
 
         file_info = parseFileInfo(FshareVn, url, html)
 
         yield file_info
 
+
 def doubleDecode(m):
     return m.group(1).decode('raw_unicode_escape')
+
 
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
@@ -37,10 +41,10 @@ class FshareVn(SimpleHoster):
     WAIT_PATTERN = ur'Lượt tải xuống kế tiếp là:\s*(.*?)\s*<'
 
     def process(self, pyfile):
-        self.html = self.load('http://www.fshare.vn/check_link.php', post = {
+        self.html = self.load('http://www.fshare.vn/check_link.php', post={
             "action": "check_link",
             "arrlinks": pyfile.url
-            }, decode = True)
+        }, decode=True)
         self.getFileInfo()
 
         if self.premium:
@@ -50,14 +54,15 @@ class FshareVn(SimpleHoster):
         self.checkDownloadedFile()
 
     def handleFree(self):
-        self.html = self.load(self.pyfile.url, decode = True)
+        self.html = self.load(self.pyfile.url, decode=True)
 
         self.checkErrors()
 
         action, inputs = self.parseHtmlForm('frm_download')
         self.url = self.pyfile.url + action
 
-        if not inputs: self.parseError('FORM')
+        if not inputs:
+            self.parseError('FORM')
         elif 'link_file_pwd_dl' in inputs:
             for password in self.getPassword().splitlines():
                 self.logInfo('Password protected link, trying "%s"' % password)
@@ -76,7 +81,8 @@ class FshareVn(SimpleHoster):
         self.setWait(int(found.group(1)) if found else 30)
 
         found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
-        if not found: self.parseError('FREE DL URL')
+        if not found:
+            self.parseError('FREE DL URL')
         self.url = found.group(1)
         self.logDebug("FREE DL URL: %s" % self.url)
 
@@ -104,8 +110,8 @@ class FshareVn(SimpleHoster):
     def checkDownloadedFile(self):
         # check download
         check = self.checkDownload({
-            "not_found": ("<head><title>404 Not Found</title></head>")
-            })
+            "not_found": "<head><title>404 Not Found</title></head>"
+        })
 
         if check == "not_found":
             self.fail("File not found on server")

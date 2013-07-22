@@ -1,4 +1,3 @@
-
 import subprocess
 import re
 import os.path
@@ -9,6 +8,7 @@ from module.plugins.Hoster import Hoster
 
 # Requires rtmpdump
 # by Roland Beermann
+
 
 class RTMP:
     # TODO: Port to some RTMP-library like rtmpy or similar
@@ -37,6 +37,7 @@ class RTMP:
 
         return subprocess.check_call(args)
 
+
 class ARD(Hoster):
     __name__ = "ARD Mediathek"
     __version__ = "0.11"
@@ -46,8 +47,10 @@ class ARD(Hoster):
     def process(self, pyfile):
         site = self.load(pyfile.url)
 
-        avail_videos = re.findall(r"""mediaCollection.addMediaStream\(0, ([0-9]*), "([^\"]*)", "([^\"]*)", "[^\"]*"\);""", site)
-        avail_videos.sort(key=lambda videodesc: int(videodesc[0]), reverse=True) # The higher the number, the better the quality
+        avail_videos = re.findall(
+            r'mediaCollection.addMediaStream\(0, ([0-9]*), "([^\"]*)", "([^\"]*)", "[^\"]*"\);', site)
+        avail_videos.sort(key=lambda videodesc: int(videodesc[0]),
+                          reverse=True)  # The higher the number, the better the quality
 
         quality, url, playpath = avail_videos[0]
 

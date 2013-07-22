@@ -15,6 +15,7 @@ from module.plugins.Hoster import Hoster
 #def getInfo(urls):
 #    pass
 
+
 class MegaNz(Hoster):
     __name__ = "MegaNz"
     __type__ = "hoster"
@@ -64,7 +65,7 @@ class MegaNz(Hoster):
         n = key[16:24]
 
         # convert counter to long and shift bytes
-        ctr = Counter.new(128, initial_value=long(n.encode("hex"),16) << 64)
+        ctr = Counter.new(128, initial_value=long(n.encode("hex"), 16) << 64)
         cipher = AES.new(self.getCipherKey(key), AES.MODE_CTR, counter=ctr)
 
         self.pyfile.setStatus("decrypting")
@@ -73,10 +74,11 @@ class MegaNz(Hoster):
 
         # TODO: calculate CBC-MAC for checksum
 
-        size = 2 ** 15 # buffer size, 32k
+        size = 2 ** 15  # buffer size, 32k
         while True:
             buf = f.read(size)
-            if not buf: break
+            if not buf:
+                break
 
             df.write(cipher.decrypt(buf))
 

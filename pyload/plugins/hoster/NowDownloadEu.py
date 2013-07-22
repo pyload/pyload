@@ -17,9 +17,9 @@
 """
 
 import re
-from random import random
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.utils import fixup
+
 
 class NowDownloadEu(SimpleHoster):
     __name__ = "NowDownloadEu"
@@ -46,21 +46,25 @@ class NowDownloadEu(SimpleHoster):
     def handleFree(self):
         tokenlink = re.search(self.FILE_TOKEN_PATTERN, self.html)
         continuelink = re.search(self.FILE_CONTINUE_PATTERN, self.html)
-        if (not tokenlink) or (not continuelink): self.fail('Plugin out of Date')
+        if (not tokenlink) or (not continuelink):
+            self.fail('Plugin out of Date')
 
         wait = 60
         found = re.search(self.FILE_WAIT_PATTERN, self.html)
-        if found: wait = int(found.group(1))
+        if found:
+            wait = int(found.group(1))
 
         self.html = self.load("http://www.nowdownload.eu" + str(tokenlink.group(1)))
         self.setWait(wait)
-        self.wait() 
+        self.wait()
 
         self.html = self.load("http://www.nowdownload.eu" + str(continuelink.group(1)))
 
         url = re.search(self.FILE_DOWNLOAD_LINK, self.html)
-        if not url: self.fail('Download Link not Found (Plugin out of Date?)')
+        if not url:
+            self.fail('Download Link not Found (Plugin out of Date?)')
         self.logDebug('Download link: ' + str(url.group(1)))
-        self.download(str(url.group(1)))        
+        self.download(str(url.group(1)))
+
 
 getInfo = create_getInfo(NowDownloadEu)

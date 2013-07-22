@@ -19,6 +19,7 @@
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
+
 class HellspyCz(SimpleHoster):
     __name__ = "HellspyCz"
     __type__ = "hoster"
@@ -32,7 +33,7 @@ class HellspyCz(SimpleHoster):
     FILE_NAME_PATTERN = r'<h1 title="(?P<N>.*?)"'
     FILE_OFFLINE_PATTERN = r'<h2>(404 - Page|File) not found</h2>'
     FILE_URL_REPLACEMENTS = [(__pattern__, r"http://www.hellspy.com\1")]
-    
+
     CREDIT_LEFT_PATTERN = r'<strong>Credits: </strong>\s*(\d+)'
     DOWNLOAD_AGAIN_PATTERN = r'<a id="button-download-start"[^>]*title="You can download the file without deducting your credit.">'
     DOWNLOAD_URL_PATTERN = r"launchFullDownload\('([^']+)'"
@@ -44,14 +45,14 @@ class HellspyCz(SimpleHoster):
     def handleFree(self):
         self.fail("Only premium users can download from HellSpy.cz")
 
-    def handlePremium(self):        
+    def handlePremium(self):
         # set PHPSESSID cookie
         cj = self.account.getAccountCookies(self.user)
         cj.setCookie(".hellspy.com", "PHPSESSID", self.account.phpsessid)
         self.logDebug("PHPSESSID: " + cj.getCookie("PHPSESSID"))
 
         info = self.account.getAccountInfo(self.user, True)
-        self.logInfo("User %s has %i credits left" % (self.user, info["trafficleft"]/1024))
+        self.logInfo("User %s has %i credits left" % (self.user, info["trafficleft"] / 1024))
 
         if self.pyfile.size / 1024 > info["trafficleft"]:
             self.logWarning("Not enough credit left to download file")
@@ -59,12 +60,14 @@ class HellspyCz(SimpleHoster):
         # get premium download URL and download
         self.html = self.load(self.pyfile.url + "?download=1")
         found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
-        if not found: self.parseError("Download URL")
+        if not found:
+            self.parseError("Download URL")
         url = found.group(1)
         self.logDebug("Download URL: " + url)
         self.download(url)
 
         info = self.account.getAccountInfo(self.user, True)
-        self.logInfo("User %s has %i credits left" % (self.user, info["trafficleft"]/1024))
-        
+        self.logInfo("User %s has %i credits left" % (self.user, info["trafficleft"] / 1024))
+
+
 getInfo = create_getInfo(HellspyCz)

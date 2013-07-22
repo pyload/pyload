@@ -20,6 +20,7 @@ import re
 from time import time
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
+
 class MegasharesCom(SimpleHoster):
     __name__ = "MegasharesCom"
     __type__ = "hoster"
@@ -43,16 +44,16 @@ class MegasharesCom(SimpleHoster):
     def setup(self):
         self.resumeDownload = True
         self.multiDL = True if self.premium else False
-       
+
     def handlePremium(self):
         self.handleDownload(True)
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
-        
+
         if self.NO_SLOTS_PATTERN in self.html:
-            self.retry(wait_time = 300)
-        
+            self.retry(wait_time=300)
+
         self.getFileInfo()
         #if self.pyfile.size > 576716800: self.fail("This file is too large for free download")
 
@@ -65,12 +66,13 @@ class MegasharesCom(SimpleHoster):
             for i in range(5):
                 random_num = re.search(self.REACTIVATE_NUM_PATTERN, self.html).group(1)
 
-                verifyinput = self.decryptCaptcha("http://megashares.com/index.php?secgfx=gfx&random_num=%s" % random_num)
+                verifyinput = self.decryptCaptcha(
+                    "http://megashares.com/index.php?secgfx=gfx&random_num=%s" % random_num)
                 self.logInfo("Reactivating passport %s: %s %s" % (passport_num, random_num, verifyinput))
 
                 url = "http://d01.megashares.com%s&rs=check_passport_renewal" % request_uri + \
-                    "&rsargs[]=%s&rsargs[]=%s&rsargs[]=%s" % (verifyinput, random_num, passport_num) + \
-                    "&rsargs[]=replace_sec_pprenewal&rsrnd=%s" % str(int(time()*1000))
+                      "&rsargs[]=%s&rsargs[]=%s&rsargs[]=%s" % (verifyinput, random_num, passport_num) + \
+                      "&rsargs[]=replace_sec_pprenewal&rsrnd=%s" % str(int(time() * 1000))
                 self.logDebug(url)
                 response = self.load(url)
 
@@ -79,30 +81,34 @@ class MegasharesCom(SimpleHoster):
                     self.retry(0)
                 else:
                     self.invalidCaptcha()
-            else: self.fail("Failed to reactivate passport")
+            else:
+                self.fail("Failed to reactivate passport")
 
         # Check traffic left on passport
         found = re.search(self.PASSPORT_LEFT_PATTERN, self.html)
-        if not found: self.fail('Passport not found')
+        if not found:
+            self.fail('Passport not found')
         self.logInfo("Download passport: %s" % found.group(1))
         data_left = float(found.group(2)) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[found.group(3)]
         self.logInfo("Data left: %s %s (%d MB needed)" % (found.group(2), found.group(3), self.pyfile.size / 1048576))
-        
+
         if not data_left:
             found = re.search(self.PASSPORT_RENEW_PATTERN, self.html)
             renew = (found.group(1) + 60 * (found.group(2) + 60 * found.group(3))) if found else 600
             self.retry(renew, 15, "Unable to get passport")
-            
+
         self.handleDownload(False)
-    
-    def handleDownload(self, premium = False): 
+
+    def handleDownload(self, premium=False):
         # Find download link;
         found = re.search(self.DOWNLOAD_URL_PATTERN % (1 if premium else 2), self.html)
         msg = '%s download URL' % ('Premium' if premium else 'Free')
-        if not found: self.parseError(msg)
-        
+        if not found:
+            self.parseError(msg)
+
         download_url = found.group(1)
         self.logDebug("%s: %s" % (msg, download_url))
         self.download(download_url)
+
 
 getInfo = create_getInfo(MegasharesCom)

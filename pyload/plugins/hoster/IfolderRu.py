@@ -17,9 +17,8 @@
 """
 
 import re
-from urllib import quote
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.network.RequestFactory import getURL
+
 
 class IfolderRu(SimpleHoster):
     __name__ = "IfolderRu"
@@ -34,7 +33,7 @@ class IfolderRu(SimpleHoster):
     FILE_NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
     FILE_SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[^<]+)</b><(?:/div|br)>'
     FILE_OFFLINE_PATTERN = ur'<p>Файл номер <b>[^<]*</b> (не найден|удален) !!!</p>'
-    
+
     SESSION_ID_PATTERN = r'<a href=(http://ints.(?:rusfolder.com|ifolder.ru)/ints/sponsor/\?bi=\d*&session=([^&]+)&u=[^>]+)>'
     INTS_SESSION_PATTERN = r'\(\'ints_session\'\);\s*if\(tag\)\{tag.value = "([^"]+)";\}'
     HIDDEN_INPUT_PATTERN = r"var v = .*?name='([^']+)' value='1'"
@@ -52,7 +51,7 @@ class IfolderRu(SimpleHoster):
 
         url = re.search('<a href="(http://ints\..*?=)"', self.html).group(1)
         self.html = self.load(url, cookies=True, decode=True)
-        
+
         url, session_id = re.search(self.SESSION_ID_PATTERN, self.html).groups()
         self.html = self.load(url, cookies=True, decode=True)
 
@@ -68,23 +67,22 @@ class IfolderRu(SimpleHoster):
             action, inputs = self.parseHtmlForm('ID="Form1"')
             inputs['ints_session'] = re.search(self.INTS_SESSION_PATTERN, self.html).group(1)
             inputs[re.search(self.HIDDEN_INPUT_PATTERN, self.html).group(1)] = '1'
-            inputs['confirmed_number'] = self.decryptCaptcha(captcha_url, cookies = True)
+            inputs['confirmed_number'] = self.decryptCaptcha(captcha_url, cookies=True)
             inputs['action'] = '1'
             self.logDebug(inputs)
 
-            self.html = self.load(url, decode = True, cookies = True, post = inputs)
+            self.html = self.load(url, decode=True, cookies=True, post=inputs)
             if self.WRONG_CAPTCHA_PATTERN in self.html:
                 self.invalidCaptcha()
             else:
-                break;
+                break
         else:
             self.fail("Invalid captcha")
-
-        #self.html = self.load("http://rusfolder.com/%s?ints_code=%s" % (file_id, session_id), decode=True, cookies = True)
 
         download_url = re.search(self.DOWNLOAD_LINK_PATTERN, self.html).group(1)
         self.correctCaptcha()
         self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
+
 
 getInfo = create_getInfo(IfolderRu)

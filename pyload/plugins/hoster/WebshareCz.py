@@ -18,7 +18,7 @@
 
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.network.HTTPRequest import BadHeader
+
 
 class WebshareCz(SimpleHoster):
     __name__ = "WebshareCz"
@@ -31,18 +31,19 @@ class WebshareCz(SimpleHoster):
     FILE_NAME_PATTERN = r'<h3>Stahujete soubor: </h3>\s*<div class="textbox">(?P<N>[^<]+)</div>'
     FILE_SIZE_PATTERN = r'<h3>Velikost souboru je: </h3>\s*<div class="textbox">(?P<S>[^<]+)</div>'
     FILE_OFFLINE_PATTERN = r'<h3>Soubor ".*?" nebyl nalezen.</h3>'
-    
+
     DOWNLOAD_LINK_PATTERN = r'id="download_link" href="(?P<url>.*?)"'
-    
+
     def setup(self):
         self.multiDL = True
 
     def handleFree(self):
         url_a = re.search(r"(var l.*)", self.html).group(1)
-        url_b = re.search(r"(var keyStr.*)", self.html).group(1)        
+        url_b = re.search(r"(var keyStr.*)", self.html).group(1)
         url = self.js.eval("%s\n%s\ndec(l)" % (url_a, url_b))
-        
+
         self.logDebug('Download link: ' + url)
-        self.download(url)        
+        self.download(url)
+
 
 getInfo = create_getInfo(WebshareCz)

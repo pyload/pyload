@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 import re
+
+from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
 
 class RyushareCom(XFileSharingPro):
@@ -27,10 +28,10 @@ class RyushareCom(XFileSharingPro):
     def getDownloadLink(self):
         self.html = self.load(self.pyfile.url)
         action, inputs = self.parseHtmlForm(input_names={"op": re.compile("^download")})
-        if inputs.has_key('method_premium'):
+        if 'method_premium' in inputs:
             del inputs['method_premium']
 
-        self.html = self.load(self.pyfile.url, post = inputs)
+        self.html = self.load(self.pyfile.url, post=inputs)
         action, inputs = self.parseHtmlForm('F1')
 
         for i in xrange(10):
@@ -45,11 +46,12 @@ class RyushareCom(XFileSharingPro):
                 self.setWait(waittime)
             self.wait()
 
-            self.html = self.load(self.pyfile.url, post = inputs)
+            self.html = self.load(self.pyfile.url, post=inputs)
             if 'Click here to download' in self.html:
                 m = re.search(self.DIRECT_LINK_PATTERN, self.html)
                 return m.group(1)
 
         self.parseError('No direct link within 10 retries')
+
 
 getInfo = create_getInfo(RyushareCom)

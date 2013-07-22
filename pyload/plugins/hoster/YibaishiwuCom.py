@@ -20,6 +20,7 @@ import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.common.json_layer import json_loads
 
+
 class YibaishiwuCom(SimpleHoster):
     __name__ = "YibaishiwuCom"
     __type__ = "hoster"
@@ -31,24 +32,27 @@ class YibaishiwuCom(SimpleHoster):
     FILE_NAME_PATTERN = r"file_name: '(?P<N>[^']+)'"
     FILE_SIZE_PATTERN = r"file_size: '(?P<S>[^']+)'"
     FILE_OFFLINE_PATTERN = ur'<h3><i style="color:red;">哎呀！提取码不存在！不妨搜搜看吧！</i></h3>'
-    
-    AJAX_URL_PATTERN = r'(/\?ct=(pickcode|download)[^"\']+)'    
-              
+
+    AJAX_URL_PATTERN = r'(/\?ct=(pickcode|download)[^"\']+)'
+
     def handleFree(self):
         found = re.search(self.AJAX_URL_PATTERN, self.html)
-        if not found: self.parseError("AJAX URL")
+        if not found:
+            self.parseError("AJAX URL")
         url = found.group(1)
         self.logDebug(('FREEUSER' if found.group(2) == 'download' else 'GUEST') + ' URL', url)
-        
-        response = json_loads(self.load("http://115.com" + url, decode = False))
-        for mirror in (response['urls'] if 'urls' in response else response['data'] if 'data' in response else []): 
+
+        response = json_loads(self.load("http://115.com" + url, decode=False))
+        for mirror in (response['urls'] if 'urls' in response else response['data'] if 'data' in response else []):
             try:
-                url = mirror['url'].replace('\\','')
+                url = mirror['url'].replace('\\', '')
                 self.logDebug("Trying URL: " + url)
                 self.download(url)
                 break
             except:
                 continue
-        else: self.fail('No working link found')
+        else:
+            self.fail('No working link found')
+
 
 getInfo = create_getInfo(YibaishiwuCom)

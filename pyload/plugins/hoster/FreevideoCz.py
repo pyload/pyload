@@ -20,6 +20,7 @@ import re
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 
+
 def getInfo(urls):
     result = []
 
@@ -32,6 +33,7 @@ def getInfo(urls):
         else:
             result.append((url, 0, 2, url))
     yield result
+
 
 class FreevideoCz(Hoster):
     __name__ = "FreevideoCz"

@@ -18,8 +18,7 @@
 
 import re
 from module.plugins.internal.DeadHoster import DeadHoster as EasybytezCom, create_getInfo
-#from module.plugins.internal.SimpleHoster import create_getInfo
-#from module.plugins.hoster.EasybytezCom import EasybytezCom
+
 
 class TurbouploadCom(EasybytezCom):
     __name__ = "TurbouploadCom"
@@ -29,17 +28,19 @@ class TurbouploadCom(EasybytezCom):
     __description__ = """turboupload.com"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
-    
+
     # shares code with EasybytezCom
-    
+
     DIRECT_LINK_PATTERN = r'<a href="(http://turboupload.com/files/[^"]+)">\1</a>'
 
     def handleFree(self):
-        self.html = self.load(self.pyfile.url, post = self.getPostParameters(), ref = True, cookies = True)
+        self.html = self.load(self.pyfile.url, post=self.getPostParameters(), ref=True, cookies=True)
         found = re.search(self.DIRECT_LINK_PATTERN, self.html)
-        if not found: self.parseError('Download Link')
+        if not found:
+            self.parseError('Download Link')
         url = found.group(1)
         self.logDebug('URL: ' + url)
         self.download(url)
+
 
 getInfo = create_getInfo(TurbouploadCom)

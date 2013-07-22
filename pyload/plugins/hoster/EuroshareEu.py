@@ -19,6 +19,7 @@
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
+
 class EuroshareEu(SimpleHoster):
     __name__ = "EuroshareEu"
     __type__ = "hoster"
@@ -48,8 +49,7 @@ class EuroshareEu(SimpleHoster):
         self.download(self.pyfile.url.rstrip('/') + "/download/")
 
         check = self.checkDownload({"login": re.compile(self.ERR_NOT_LOGGED_IN_PATTERN),
-                                    "json": re.compile(r'\{"status":"error".*?"message":"(.*?)"')
-                                   })
+                                    "json": re.compile(r'\{"status":"error".*?"message":"(.*?)"')})
         if check == "login" or (check == "json" and self.lastCheck.group(1) == "Access token expired"):
             self.account.relogin(self.user)
             self.retry(reason="Access token expired")
@@ -70,5 +70,6 @@ class EuroshareEu(SimpleHoster):
         check = self.checkDownload({"multi_dl": re.compile(self.ERR_PARDL_PATTERN)})
         if check == "multi_dl":
             self.longWait(300, 12)
+
 
 getInfo = create_getInfo(EuroshareEu)
