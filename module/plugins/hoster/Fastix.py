@@ -8,6 +8,7 @@ from module.common.json_layer import json_loads
 from module.utils import parseFileSize
 
 
+
 class Fastix(Hoster):
     __name__ = "Fastix"
     __version__ = "0.02"
@@ -41,9 +42,8 @@ class Fastix(Hoster):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         else:
-            in_file = open("fastix_api.txt","r")
-            api_key = in_file.read()
-            in_file.close()
+            api_key = self.account.getAccountData(self.user)
+            api_key = api_key["api"]
             url = "http://fastix.ru/api_v2/?apikey=%s&sub=getdirectlink&link=%s" % (api_key,pyfile.url)
             page = self.load(url)
             data = json_loads(page)

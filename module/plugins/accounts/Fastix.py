@@ -28,9 +28,6 @@ class Fastix(Account):
         api = json_loads(page)
         api = api['apikey']
         data["api"] = api
-        out_file = open("fastix_api.txt","w")
-        out_file.write(api)
-        out_file.close()
         if "error_code" in page:
             self.wrongPassword()
             
