@@ -144,7 +144,6 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
 
                 // Render progressbar only when needed
                 if (!_.isEqual([data.tasks, data.downloads], this.lastStatus)) {
-                    console.log('render bar');
                     this.lastStatus = [data.tasks, data.downloads];
                     this.$('#progress-info').html(templateProgress(data));
                 } else {

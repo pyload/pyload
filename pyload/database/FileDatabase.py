@@ -426,7 +426,7 @@ class FileMethods(DatabaseMethods):
         return [r[0] for r in self.c]
 
     @queue
-    def restartFailed(self, owner):
+    def restartFailed(self, owner=None):
         # status=queued, where status in failed, aborted, temp offline
         self.c.execute("UPDATE files SET dlstatus=3, error='' WHERE dlstatus IN (7, 11, 12)")
 

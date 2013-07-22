@@ -31,7 +31,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Pac
             },
 
             template: template,
+            // Visible dl state
             state: null,
+            // bit mask of filtered, thus not visible media types
+            types: 0,
 
             initialize: function() {
                 this.state = Api.DownloadState.All;
@@ -120,6 +123,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Pac
             // determine if a file should be visible
             // TODO: non download files
             is_visible: function(file) {
+                // bit is set -> not visible
+                if (file.get('media') & this.types)
+                    return false;
+
                 if (this.state === Api.DownloadState.Finished)
                     return file.isFinished();
                 else if (this.state === Api.DownloadState.Unfinished)
@@ -140,7 +147,20 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Pac
             },
 
             filter_type: function(e) {
+                var el = $(e.target);
+                var type = parseInt(el.data('type'));
 
+                // Bit is already set, so type is not visible, will become visible now
+                if (type & this.types) {
+                    el.find('i').removeClass('icon-remove').addClass('icon-ok');
+                } else { // type will be hidden
+                    el.find('i').removeClass('icon-ok').addClass('icon-remove');
+                }
+
+                this.types ^= type;
+
+                this.apply_filter();
+                return false;
             }
 
         });
