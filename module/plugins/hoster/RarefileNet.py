@@ -27,8 +27,9 @@ class RarefileNet(XFileSharingPro):
         captcha_div = re.search(r'<b>Enter code.*?<div.*?>(.*?)</div>', self.html, re.S).group(1)
         self.logDebug(captcha_div)
         numerals = re.findall('<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
-        inputs['code'] = "".join([a[1] for a in sorted(numerals, key = lambda num: int(num[0]))])
+        inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
         self.logDebug("CAPTCHA", inputs['code'], numerals)
         return 3
+
 
 getInfo = create_getInfo(RarefileNet)

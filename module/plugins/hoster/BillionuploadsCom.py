@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
+
 class BillionuploadsCom(XFileSharingPro):
     __name__ = "BillionuploadsCom"
     __type__ = "hoster"
@@ -13,5 +14,6 @@ class BillionuploadsCom(XFileSharingPro):
     FILE_NAME_PATTERN = r'<b>Filename:</b>(?P<N>.*?)<br>'
     FILE_SIZE_PATTERN = r'<b>Size:</b>(?P<S>.*?)<br>'
     HOSTER_NAME = "billionuploads.com"
+
 
 getInfo = create_getInfo(BillionuploadsCom)

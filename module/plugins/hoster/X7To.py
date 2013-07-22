@@ -3,7 +3,6 @@ import re
 
 from module.plugins.Hoster import Hoster
 
-from module.network.RequestFactory import getURL
 
 def getInfo(urls):
     yield [(url, 0, 1, url) for url in urls]
@@ -17,8 +16,8 @@ class X7To(Hoster):
     __description__ = """X7.To File Download Hoster"""
     __author_name__ = ("ernieb")
     __author_mail__ = ("ernieb")
-    
-    FILE_INFO_PATTERN=r'<meta name="description" content="Download: (.*?) \(([0-9,.]+) (KB|MB|GB)\)'
+
+    FILE_INFO_PATTERN = r'<meta name="description" content="Download: (.*?) \(([0-9,.]+) (KB|MB|GB)\)'
 
     def init(self):
         if self.premium:
@@ -64,7 +63,7 @@ class X7To(Hoster):
         # deal with errors
         if "limit-dl" in self.html:
             self.logDebug("Limit reached ... waiting")
-            self.setWait(900,True)
+            self.setWait(900, True)
             self.wait()
             self.retry()
 

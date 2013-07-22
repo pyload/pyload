@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
+
 class CyberlockerCh(XFileSharingPro):
     __name__ = "CyberlockerCh"
     __type__ = "hoster"
@@ -11,5 +12,6 @@ class CyberlockerCh(XFileSharingPro):
     __author_mail__ = ("l.stickell@yahoo.it")
 
     HOSTER_NAME = "cyberlocker.ch"
+
 
 getInfo = create_getInfo(CyberlockerCh)

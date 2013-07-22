@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 import re
+
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+
 
 class TwoSharedCom(SimpleHoster):
     __name__ = "TwoSharedCom"
@@ -17,17 +19,18 @@ class TwoSharedCom(SimpleHoster):
     FILE_SIZE_PATTERN = r'<span class="dtitle">File size:</span>\s*(?P<S>[0-9,.]+) (?P<U>[kKMG])i?B'
     FILE_OFFLINE_PATTERN = r'The file link that you requested is not valid\.|This file was deleted\.'
     DOWNLOAD_URL_PATTERN = r"window.location ='([^']+)';"
-    
+
     def setup(self):
         self.resumeDownload = self.multiDL = True
 
-    def handleFree(self):               
+    def handleFree(self):
         found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
-        if not found: self.parseError('Download link')
+        if not found:
+            self.parseError('Download link')
         link = found.group(1)
         self.logDebug("Download URL %s" % link)
-        
+
         self.download(link)
 
+
 getInfo = create_getInfo(TwoSharedCom)
-            

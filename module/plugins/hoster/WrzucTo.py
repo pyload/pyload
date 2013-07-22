@@ -17,8 +17,10 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from pycurl import HTTPHEADER
+
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+
 
 class WrzucTo(SimpleHoster):
     __name__ = "WrzucTo"
@@ -29,30 +31,32 @@ class WrzucTo(SimpleHoster):
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    SH_COOKIES = [("http://www.wrzuc.to", "language", "en")]   
+    SH_COOKIES = [("http://www.wrzuc.to", "language", "en")]
     FILE_SIZE_PATTERN = r'class="info">\s*<tr>\s*<td>(?P<S>.*?)</td>'
     FILE_NAME_PATTERN = r'id="file_info">\s*<strong>(?P<N>.*?)</strong>'
-    
+
     def setup(self):
-        self.multiDL = True 
-    
+        self.multiDL = True
+
     def handleFree(self):
         data = dict(re.findall(r'(md5|file): "(.*?)"', self.html))
-        if len(data) != 2: self.parseError('File ID')
-        
+        if len(data) != 2:
+            self.parseError('File ID')
+
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = self.pyfile.url
-        self.load("http://www.wrzuc.to/ajax/server/prepair", post = {"md5": data['md5']})
-        
-        self.req.http.lastURL = self.pyfile.url
-        self.html = self.load("http://www.wrzuc.to/ajax/server/download_link", post = {"file": data['file']})
-        
-        data.update(re.findall(r'"(download_link|server_id)":"(.*?)"', self.html))
-        if len(data) != 4: self.parseError('Download URL')
-        
-        download_url = "http://%s.wrzuc.to/pobierz/%s" % (data['server_id'], data['download_link'])       
-        self.logDebug("Download URL: %s" % download_url)        
-        self.download(download_url)
-        
-getInfo = create_getInfo(WrzucTo)
+        self.load("http://www.wrzuc.to/ajax/server/prepair", post={"md5": data['md5']})
 
+        self.req.http.lastURL = self.pyfile.url
+        self.html = self.load("http://www.wrzuc.to/ajax/server/download_link", post={"file": data['file']})
+
+        data.update(re.findall(r'"(download_link|server_id)":"(.*?)"', self.html))
+        if len(data) != 4:
+            self.parseError('Download URL')
+
+        download_url = "http://%s.wrzuc.to/pobierz/%s" % (data['server_id'], data['download_link'])
+        self.logDebug("Download URL: %s" % download_url)
+        self.download(download_url)
+
+
+getInfo = create_getInfo(WrzucTo)

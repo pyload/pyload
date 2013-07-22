@@ -35,4 +35,5 @@ class CatShareNet(SimpleHoster):
             self.invalidCaptcha()
             self.retry()
 
+
 getInfo = create_getInfo(CatShareNet)

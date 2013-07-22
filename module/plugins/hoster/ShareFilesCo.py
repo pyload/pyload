@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 import re
+
+from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+
 
 class ShareFilesCo(XFileSharingPro):
     __name__ = "ShareFilesCo"
@@ -17,8 +19,10 @@ class ShareFilesCo(XFileSharingPro):
         link = link.strip()
         if link.startswith('http://adf.ly'):
             link = re.sub('http://adf.ly/\d+/', '', link)
-        if self.captcha: self.correctCaptcha()
+        if self.captcha:
+            self.correctCaptcha()
         self.logDebug('DIRECT LINK: %s' % link)
         self.download(link)
+
 
 getInfo = create_getInfo(ShareFilesCo)

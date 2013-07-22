@@ -22,6 +22,7 @@ from pycurl import HTTPHEADER
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 from module.common.json_layer import json_loads
 
+
 class UploadingCom(SimpleHoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
@@ -30,29 +31,29 @@ class UploadingCom(SimpleHoster):
     __description__ = """Uploading.Com File Download Hoster"""
     __author_name__ = ("jeix", "mkaay", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
-    
+
     FILE_NAME_PATTERN = r'<title>Download (?P<N>.*?) for free on uploading.com</title>'
     FILE_SIZE_PATTERN = r'<span>File size: (?P<S>.*?)</span>'
     FILE_OFFLINE_PATTERN = r'<h2.*?>The requested file is not found</h2>'
-        
+
     def process(self, pyfile):
         # set lang to english
         self.req.cj.setCookie("uploading.com", "lang", "1")
         self.req.cj.setCookie("uploading.com", "language", "1")
         self.req.cj.setCookie("uploading.com", "setlang", "en")
         self.req.cj.setCookie("uploading.com", "_lang", "en")
-        
+
         if not "/get/" in self.pyfile.url:
             self.pyfile.url = self.pyfile.url.replace("/files", "/files/get")
-        
-        self.html = self.load(pyfile.url, decode = True)
+
+        self.html = self.load(pyfile.url, decode=True)
         self.file_info = self.getFileInfo()
-        
+
         if self.premium:
             self.handlePremium()
         else:
-            self.handleFree()                   
-    
+            self.handleFree()
+
     def handlePremium(self):
         postData = {'action': 'get_link',
                     'code': self.file_info['ID'],
@@ -63,21 +64,21 @@ class UploadingCom(SimpleHoster):
         if url:
             url = url.group(1).replace("\\/", "/")
             self.download(url)
-        
+
         raise Exception("Plugin defect.")
-    
+
     def handleFree(self):
         found = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
         if found:
             self.pyfile.error = found.group(1)
             self.logWarning(self.pyfile.error)
-            self.retry(max_tries=6, wait_time = 21600 if found.group(2) else 900, reason = self.pyfile.error)  
-        
+            self.retry(max_tries=6, wait_time=21600 if found.group(2) else 900, reason=self.pyfile.error)
+
         ajax_url = "http://uploading.com/files/get/?ajax"
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = self.pyfile.url
-        
-        response = json_loads(self.load(ajax_url, post = {'action': 'second_page', 'code': self.file_info['ID']}))        
+
+        response = json_loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.file_info['ID']}))
         if 'answer' in response and 'wait_time' in response['answer']:
             wait_time = int(response['answer']['wait_time'])
             self.logInfo("%s: Waiting %d seconds." % (self.__name__, wait_time))
@@ -85,26 +86,28 @@ class UploadingCom(SimpleHoster):
             self.wait()
         else:
             self.pluginParseError("AJAX/WAIT")
-        
-        response = json_loads(self.load(ajax_url, post = {'action': 'get_link', 'code': self.file_info['ID'], 'pass': 'false'}))
+
+        response = json_loads(
+            self.load(ajax_url, post={'action': 'get_link', 'code': self.file_info['ID'], 'pass': 'false'}))
         if 'answer' in response and 'link' in response['answer']:
             url = response['answer']['link']
         else:
             self.pluginParseError("AJAX/URL")
-            
+
         self.html = self.load(url)
         found = re.search(r'<form id="file_form" action="(.*?)"', self.html)
         if found:
             url = found.group(1)
         else:
             self.pluginParseError("URL")
-        
+
         self.download(url)
-        
-        check = self.checkDownload({"html" : re.compile("\A<!DOCTYPE html PUBLIC")})
+
+        check = self.checkDownload({"html": re.compile("\A<!DOCTYPE html PUBLIC")})
         if check == "html":
             self.logWarning("Redirected to a HTML page, wait 10 minutes and retry")
             self.setWait(600, True)
             self.wait()
-        
+
+
 getInfo = create_getInfo(UploadingCom)

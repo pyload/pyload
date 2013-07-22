@@ -15,4 +15,5 @@ class SecureUploadEu(XFileSharingPro):
     FILE_INFO_PATTERN = '<h3>Downloading (?P<N>[^<]+) \((?P<S>[^<]+)\)</h3>'
     FILE_OFFLINE_PATTERN = 'The file was removed|File Not Found'
 
+
 getInfo = create_getInfo(SecureUploadEu)

@@ -1,8 +1,8 @@
-
 import re
 import urllib
 
 from module.plugins.Hoster import Hoster
+
 
 class XVideosCom(Hoster):
     __name__ = "XVideos.com"
@@ -12,7 +12,7 @@ class XVideosCom(Hoster):
 
     def process(self, pyfile):
         site = self.load(pyfile.url)
-        pyfile.name = "%s (%s).flv" %(
+        pyfile.name = "%s (%s).flv" % (
             re.search(r"<h2>([^<]+)<span", site).group(1),
             re.search(self.__pattern__, pyfile.url).group(1),
         )

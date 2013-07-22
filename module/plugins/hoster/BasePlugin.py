@@ -8,11 +8,12 @@ from module.network.HTTPRequest import BadHeader
 from module.plugins.Hoster import Hoster
 from module.utils import html_unescape, remove_chars
 
+
 class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __description__ = """Base Plugin when any other didnt fit"""
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
@@ -29,17 +30,17 @@ class BasePlugin(Hoster):
             self.multiDL = False
             return
 
-#        self.__name__ = "NetloadIn"
-#        pyfile.name = "test"
-#        self.html = self.load("http://localhost:9000/short")
-#        self.download("http://localhost:9000/short")
-#        self.api = self.load("http://localhost:9000/short")
-#        self.decryptCaptcha("http://localhost:9000/captcha")
-#
-#        if pyfile.url == "79":
-#            self.core.api.addPackage("test", [str(i) for i in range(80)], 1)
-#
-#        return
+        # self.__name__ = "NetloadIn"
+        # pyfile.name = "test"
+        # self.html = self.load("http://localhost:9000/short")
+        # self.download("http://localhost:9000/short")
+        # self.api = self.load("http://localhost:9000/short")
+        # self.decryptCaptcha("http://localhost:9000/captcha")
+        #
+        # if pyfile.url == "79":
+        #     self.core.api.addPackage("test", [str(i) for i in range(80)], 1)
+        #
+        # return
         if pyfile.url.startswith("http"):
 
             try:
@@ -49,7 +50,7 @@ class BasePlugin(Hoster):
                     self.logDebug("Auth required")
 
                     account = self.core.accountManager.getAccountPlugin('Http')
-                    servers = [ x['login'] for x in account.getAllAccounts() ]
+                    servers = [x['login'] for x in account.getAllAccounts()]
                     server = urlparse(pyfile.url).netloc
 
                     if server in servers:
@@ -70,15 +71,14 @@ class BasePlugin(Hoster):
         else:
             self.fail("No Plugin matched and not a downloadable url.")
 
-
     def downloadFile(self, pyfile):
         url = pyfile.url
 
         for i in range(5):
-            header = self.load(url, just_header = True)
+            header = self.load(url, just_header=True)
 
             # self.load does not raise a BadHeader on 404 responses, do it here
-            if header.has_key('code') and header['code'] == 404:
+            if 'code' in header and header['code'] == 404:
                 raise BadHeader(404)
 
             if 'location' in header:
@@ -95,11 +95,13 @@ class BasePlugin(Hoster):
             if m:
                 disp = m.groupdict()
                 self.logDebug(disp)
-                if not disp['enc']: disp['enc'] = 'utf-8'
+                if not disp['enc']:
+                    disp['enc'] = 'utf-8'
                 name = remove_chars(disp['name'], "\"';").strip()
                 name = unicode(unquote(name), disp['enc'])
 
-        if not name: name = url
+        if not name:
+            name = url
         pyfile.name = name
         self.logDebug("Filename: %s" % pyfile.name)
         self.download(url, disposition=True)

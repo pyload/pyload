@@ -19,6 +19,7 @@
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
+
 class SendspaceCom(SimpleHoster):
     __name__ = "SendspaceCom"
     __type__ = "hoster"
@@ -33,35 +34,37 @@ class SendspaceCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<div class="msg error" style="cursor: default">Sorry, the file you requested is not available.</div>'
     CAPTCHA_PATTERN = r'<td><img src="(/captchas/captcha.php?captcha=([^"]+))"></td>'
     USER_CAPTCHA_PATTERN = r'<td><img src="/captchas/captcha.php?user=([^"]+))"></td>'
-        
+
     def handleFree(self):
         params = {}
         for i in range(3):
             found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
             if found:
-                if params.has_key('captcha_hash'): self.correctCaptcha()
+                if 'captcha_hash' in params:
+                    self.correctCaptcha()
                 download_url = found.group(1)
                 break
 
             found = re.search(self.CAPTCHA_PATTERN, self.html)
             if found:
-                if params.has_key('captcha_hash'): self.invalidCaptcha()
+                if 'captcha_hash' in params:
+                    self.invalidCaptcha()
                 captcha_url1 = "http://www.sendspace.com/" + found.group(1)
                 found = re.search(self.USER_CAPTCHA_PATTERN, self.html)
                 captcha_url2 = "http://www.sendspace.com/" + found.group(1)
-                params = {'captcha_hash' : found.group(2),
+                params = {'captcha_hash': found.group(2),
                           'captcha_submit': 'Verify',
-                          'captcha_answer': self.decryptCaptcha(captcha_url1) + " " + self.decryptCaptcha(captcha_url2)
-                         }
+                          'captcha_answer': self.decryptCaptcha(captcha_url1) + " " + self.decryptCaptcha(captcha_url2)}
             else:
                 params = {'download': "Regular Download"}
 
             self.logDebug(params)
-            self.html = self.load(self.pyfile.url, post = params)
+            self.html = self.load(self.pyfile.url, post=params)
         else:
             self.fail("Download link not found")
 
         self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
+
 
 create_getInfo(SendspaceCom)

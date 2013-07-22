@@ -15,4 +15,5 @@ class SendmywayCom(XFileSharingPro):
     FILE_SIZE_PATTERN = r'<small>\((?P<S>\d+) bytes\)</small>'
     HOSTER_NAME = "sendmyway.com"
 
+
 getInfo = create_getInfo(SendmywayCom)

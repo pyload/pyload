@@ -17,7 +17,6 @@
 """
 
 import re
-from math import ceil
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
@@ -39,18 +38,21 @@ class HellshareCz(SimpleHoster):
         self.chunkLimit = 1
 
     def process(self, pyfile):
-        if not self.account: self.fail("User not logged in")
+        if not self.account:
+            self.fail("User not logged in")
         pyfile.url = re.search(self.__pattern__, pyfile.url).group(1)
-        self.html = self.load(pyfile.url, decode = True)
+        self.html = self.load(pyfile.url, decode=True)
         self.getFileInfo()
         if not self.checkTrafficLeft():
             self.fail("Not enough traffic left for user %s." % self.user)
 
         found = re.search(self.SHOW_WINDOW_PATTERN, self.html)
-        if not found: self.parseError('SHOW WINDOW')
+        if not found:
+            self.parseError('SHOW WINDOW')
         self.url = "http://www.hellshare.com" + found.group(1)
         self.logDebug("DOWNLOAD URL: " + self.url)
 
         self.download(self.url)
+
 
 getInfo = create_getInfo(HellshareCz)

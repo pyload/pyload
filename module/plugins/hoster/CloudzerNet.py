@@ -52,7 +52,8 @@ class CloudzerNet(SimpleHoster):
         recaptcha = ReCaptcha(self)
         challenge, response = recaptcha.challenge(self.CAPTCHA_KEY)
         post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response}
-        response = json_loads(self.load('http://cloudzer.net/io/ticket/captcha/%s' % self.file_info['ID'], post=post_data, cookies=True))
+        response = json_loads(self.load('http://cloudzer.net/io/ticket/captcha/%s' % self.file_info['ID'],
+                                        post=post_data, cookies=True))
         self.logDebug("Captcha check response", response)
         self.logDebug("First check")
 

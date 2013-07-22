@@ -6,6 +6,7 @@ from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
 
+
 def getInfo(urls):
     result = []
     for chunk in chunks(urls, 10):
@@ -23,10 +24,10 @@ def getInfo(urls):
                 except:
                     pass
 
-
         # status 1=OFFLINE, 2=OK, 3=UNKNOWN
         # result.append((#name,#size,#status,#url))
         yield result
+
 
 class FilesMailRu(Hoster):
     __name__ = "FilesMailRu"
@@ -37,7 +38,6 @@ class FilesMailRu(Hoster):
     __author_name__ = ("oZiRiz")
     __author_mail__ = ("ich@oziriz.de")
 
-    
     def setup(self):
         if not self.account:
             self.multiDL = False
@@ -46,17 +46,17 @@ class FilesMailRu(Hoster):
     def process(self, pyfile):
         self.html = self.load(pyfile.url)
         self.url_pattern = '<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
-        
+
         #marks the file as "offline" when the pattern was found on the html-page'''
         if r'<div class="errorMessage mb10">' in self.html:
             self.offline()
-        
+
         elif r'Page cannot be displayed' in self.html:
             self.offline()
-        
+
         #the filename that will be showed in the list (e.g. test.part1.rar)'''
         pyfile.name = self.getFileName()
-        
+
         #prepare and download'''
         if not self.account:
             self.prepare()
@@ -67,25 +67,25 @@ class FilesMailRu(Hoster):
             self.myPostProcess()
 
     def prepare(self):
-        '''You have to wait some seconds. Otherwise you will get a 40Byte HTML Page instead of the file you expected'''
+        """You have to wait some seconds. Otherwise you will get a 40Byte HTML Page instead of the file you expected"""
         self.setWait(10)
         self.wait()
         return True
-        
+
     def getFileUrl(self):
-        '''gives you the URL to the file. Extracted from the Files.mail.ru HTML-page stored in self.html'''
-        file_url = re.search(self.url_pattern, self.html).group(0).split('<a href="')[1].split('" onclick="return Act')[0]
+        """gives you the URL to the file. Extracted from the Files.mail.ru HTML-page stored in self.html"""
+        file_url = re.search(self.url_pattern, self.html).group(0).split('<a href="')[1].split('" onclick="return Act')[
+            0]
         return file_url
 
-
     def getFileName(self):
-        '''gives you the Name for each file. Also extracted from the HTML-Page'''
+        """gives you the Name for each file. Also extracted from the HTML-Page"""
         file_name = re.search(self.url_pattern, self.html).group(0).split(', event)">')[1].split('</a>')[0]
         return file_name
-        
+
     def myPostProcess(self):
-        # searches the file for HTMl-Code. Sometimes the Redirect 
-        # doesn't work (maybe a curl Problem) and you get only a small 
+        # searches the file for HTMl-Code. Sometimes the Redirect
+        # doesn't work (maybe a curl Problem) and you get only a small
         # HTML file and the Download is marked as "finished"
         # then the download will be restarted. It's only bad for these
         # who want download a HTML-File (it's one in a million ;-) )
@@ -96,5 +96,7 @@ class FilesMailRu(Hoster):
         # (Loading 100MB in to ram is not an option)
         check = self.checkDownload({"html": "<meta name="}, read_size=50000)
         if check == "html":
-            self.logInfo(_("There was HTML Code in the Downloaded File(%s)...redirect error? The Download will be restarted." % self.pyfile.name))
+            self.logInfo(_(
+                "There was HTML Code in the Downloaded File (%s)...redirect error? The Download will be restarted." %
+                self.pyfile.name))
             self.retry()

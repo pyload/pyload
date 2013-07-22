@@ -17,7 +17,6 @@ class MegacrypterCom(MegaNz):
     API_URL = "http://megacrypter.com/api"
     FILE_SUFFIX = ".crypted"
 
-   
     def callApi(self, **kwargs):
         """ Dispatch a call to the api, see megacrypter.com/api_doc """
         self.logDebug("JSON request: " + json.dumps(kwargs))
@@ -25,26 +24,19 @@ class MegacrypterCom(MegaNz):
         self.logDebug("API Response: " + resp)
         return json.loads(resp)
 
-   
     def process(self, pyfile):
-
-        key = None
-
         # match is guaranteed because plugin was chosen to handle url
         node = re.search(self.__pattern__, pyfile.url).group(1)
 
-
         # get Mega.co.nz link info
         info = self.callApi(link=node, m="info")
-        
+
         # get crypted file URL
         dl = self.callApi(link=node, m="dl")
-
 
         # TODO: map error codes, implement password protection
         # if info["pass"] == true:
         #    crypted_file_key, md5_file_key = info["key"].split("#")
-
 
         key = self.b64_decode(info["key"])
 
@@ -55,5 +47,3 @@ class MegacrypterCom(MegaNz):
 
         # Everything is finished and final name can be set
         pyfile.name = info["name"]
-
-

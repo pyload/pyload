@@ -52,7 +52,8 @@ def getAPIData(urls):
 
 
 def parseFileInfo(self, url='', html=''):
-    if not html and hasattr(self, "html"): html = self.html
+    if not html and hasattr(self, "html"):
+        html = self.html
     name, size, status, found, fileid = url, 0, 3, None, None
 
     if re.search(self.FILE_OFFLINE_PATTERN, html):
@@ -91,7 +92,8 @@ class UploadedTo(Hoster):
     __version__ = "0.71"
     __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
-    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "netpok@gmail.com", "l.stickell@yahoo.it")
+    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz",
+                       "netpok@gmail.com", "l.stickell@yahoo.it")
 
     FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
     FILE_OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
@@ -151,11 +153,10 @@ class UploadedTo(Hoster):
         else:
             self.handleFree()
 
-
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
         self.logDebug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name": self.__name__,
-                                                                            "left": info["trafficleft"] / 1024 / 1024})
+                                                                           "left": info["trafficleft"] / 1024 / 1024})
         if int(self.data[1]) / 1024 > info["trafficleft"]:
             self.logInfo(_("%s: Not enough traffic left" % self.__name__))
             self.account.empty(self.user)

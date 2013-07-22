@@ -4,6 +4,7 @@
 import re
 from module.plugins.Hoster import Hoster
 
+
 class YoupornCom(Hoster):
     __name__ = "YoupornCom"
     __type__ = "hoster"
@@ -15,19 +16,19 @@ class YoupornCom(Hoster):
 
     def setup(self):
         self.html = None
-        
+
     def process(self, pyfile):
         self.pyfile = pyfile
-        
+
         if not self.file_exists():
             self.offline()
-            
+
         self.pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
     def download_html(self):
         url = self.pyfile.url
-        self.html = self.load(url, post={"user_choice":"Enter"}, cookies=False)
+        self.html = self.load(url, post={"user_choice": "Enter"}, cookies=False)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -43,7 +44,7 @@ class YoupornCom(Hoster):
             self.download_html()
 
         file_name_pattern = r"<title>(.*) - Free Porn Videos - YouPorn</title>"
-        return re.search(file_name_pattern, self.html).group(1).replace("&amp;", "&").replace("/","") + '.flv'
+        return re.search(file_name_pattern, self.html).group(1).replace("&amp;", "&").replace("/", "") + '.flv'
 
     def file_exists(self):
         """ returns True or False

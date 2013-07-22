@@ -19,6 +19,7 @@
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
+
 class BezvadataCz(SimpleHoster):
     __name__ = "BezvadataCz"
     __type__ = "hoster"
@@ -38,7 +39,8 @@ class BezvadataCz(SimpleHoster):
     def handleFree(self):
         #download button
         found = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
-        if not found: self.parseError("page1 URL")
+        if not found:
+            self.parseError("page1 URL")
         url = "http://bezvadata.cz%s" % found.group(1)
 
         #captcha form
@@ -46,10 +48,12 @@ class BezvadataCz(SimpleHoster):
         self.checkErrors()
         for i in range(5):
             action, inputs = self.parseHtmlForm('frm-stahnoutFreeForm')
-            if not inputs: self.parseError("FreeForm")
+            if not inputs:
+                self.parseError("FreeForm")
 
             found = re.search(r'<img src="data:image/png;base64,(.*?)"', self.html)
-            if not found: self.parseError("captcha img")
+            if not found:
+                self.parseError("captcha img")
 
             #captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
             self.load, proper_load = self.loadcaptcha, self.load
@@ -70,7 +74,8 @@ class BezvadataCz(SimpleHoster):
         self.html = self.load("http://bezvadata.cz%s" % action, post=inputs)
         self.checkErrors()
         found = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
-        if not found: self.parseError("page2 URL")
+        if not found:
+            self.parseError("page2 URL")
         url = "http://bezvadata.cz%s" % found.group(1)
         self.logDebug("DL URL %s" % url)
 
@@ -84,11 +89,12 @@ class BezvadataCz(SimpleHoster):
 
     def checkErrors(self):
         if 'images/button-download-disable.png' in self.html:
-            self.longWait(300, 24) #parallel dl limit
+            self.longWait(300, 24)  # parallel dl limit
         elif '<div class="infobox' in self.html:
             self.tempOffline()
 
     def loadcaptcha(self, data, *args, **kwargs):
         return data.decode("base64")
+
 
 getInfo = create_getInfo(BezvadataCz)

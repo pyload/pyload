@@ -6,9 +6,10 @@ from time import time
 from urllib import quote, unquote
 from random import randrange
 
-from module.utils import parseFileSize, remove_chars
+from module.utils import parseFileSize
 from module.common.json_layer import json_loads
 from module.plugins.Hoster import Hoster
+
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
@@ -25,15 +26,14 @@ class RealdebridCom(Hoster):
             name = unquote(url.rsplit("/", 1)[1])
         except IndexError:
             name = "Unknown_Filename..."
-        if not name or name.endswith(".."): #incomplete filename, append random stuff
-            name += "%s.tmp" % randrange(100,999)
+        if not name or name.endswith(".."):  # incomplete filename, append random stuff
+            name += "%s.tmp" % randrange(100, 999)
         return name
 
     def init(self):
         self.tries = 0
         self.chunkLimit = 3
         self.resumeDownload = True
-
 
     def process(self, pyfile):
         if not self.account:
@@ -45,10 +45,13 @@ class RealdebridCom(Hoster):
             new_url = pyfile.url
         else:
             password = self.getPassword().splitlines()
-            if not password: password = ""
-            else: password = password[0]
+            if not password:
+                password = ""
+            else:
+                password = password[0]
 
-            url = "http://real-debrid.com/ajax/unrestrict.php?lang=en&link=%s&password=%s&time=%s" % (quote(pyfile.url, ""), password, int(time()*1000))
+            url = "http://real-debrid.com/ajax/unrestrict.php?lang=en&link=%s&password=%s&time=%s" % (
+                quote(pyfile.url, ""), password, int(time() * 1000))
             page = self.load(url)
             data = json_loads(page)
 
@@ -80,9 +83,8 @@ class RealdebridCom(Hoster):
         self.download(new_url, disposition=True)
 
         check = self.checkDownload(
-                {"error": "<title>An error occured while processing your request</title>"})
+            {"error": "<title>An error occured while processing your request</title>"})
 
         if check == "error":
             #usual this download can safely be retried
             self.retry(reason="An error occured while generating link.", wait_time=60)
-

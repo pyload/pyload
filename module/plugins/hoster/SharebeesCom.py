@@ -16,4 +16,5 @@ class SharebeesCom(XFileSharingPro):
     FORM_PATTERN = 'F1'
     HOSTER_NAME = "sharebees.com"
 
+
 getInfo = create_getInfo(SharebeesCom)

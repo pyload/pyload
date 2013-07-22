@@ -19,6 +19,7 @@
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
 
+
 class UloziskoSk(SimpleHoster):
     __name__ = "UloziskoSk"
     __type__ = "hoster"
@@ -38,7 +39,7 @@ class UloziskoSk(SimpleHoster):
     def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
         self.getFileInfo()
-        
+
         found = re.search(self.IMG_PATTERN, self.html)
         if found:
             url = "http://ulozisko.sk" + found.group(1)
@@ -48,17 +49,20 @@ class UloziskoSk(SimpleHoster):
 
     def handleFree(self):
         found = re.search(self.URL_PATTERN, self.html)
-        if found is None: raise PluginParseError('URL')
+        if found is None:
+            raise PluginParseError('URL')
         parsed_url = 'http://www.ulozisko.sk' + found.group(1)
 
         found = re.search(self.ID_PATTERN, self.html)
-        if found is None: raise PluginParseError('ID')
+        if found is None:
+            raise PluginParseError('ID')
         id = found.group(1)
 
         self.logDebug('URL:' + parsed_url + ' ID:' + id)
 
         found = re.search(self.CAPTCHA_PATTERN, self.html)
-        if found is None: raise PluginParseError('CAPTCHA')
+        if found is None:
+            raise PluginParseError('CAPTCHA')
         captcha_url = 'http://www.ulozisko.sk' + found.group(1)
 
         captcha = self.decryptCaptcha(captcha_url, cookies=True)
@@ -71,5 +75,6 @@ class UloziskoSk(SimpleHoster):
             "name": self.pyfile.name,
             "but": "++++STIAHNI+S%DABOR++++"
         })
+
 
 getInfo = create_getInfo(UloziskoSk)

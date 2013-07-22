@@ -8,25 +8,28 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
 
+
 def getInfo(urls):
     api_url_base = "http://api.hotfile.com/"
-    
+
     for chunk in chunks(urls, 90):
-        api_param_file = {"action":"checklinks","links": ",".join(chunk),"fields":"id,status,name,size"} #api only supports old style links
+        api_param_file = {"action": "checklinks", "links": ",".join(chunk),
+                          "fields": "id,status,name,size"}  #api only supports old style links
         src = getURL(api_url_base, post=api_param_file, decode=True)
         result = []
         for i, res in enumerate(src.split("\n")):
             if not res:
                 continue
             fields = res.split(",")
-            
+
             if fields[1] in ("1", "2"):
                 status = 2
             else:
                 status = 1
-                
+
             result.append((fields[2], int(fields[3]), status, chunk[i]))
         yield result
+
 
 class HotfileCom(Hoster):
     __name__ = "HotfileCom"
@@ -34,8 +37,8 @@ class HotfileCom(Hoster):
     __pattern__ = r"https?://(www.)?hotfile\.com/dl/\d+/[0-9a-zA-Z]+/"
     __version__ = "0.36"
     __description__ = """Hotfile.com Download Hoster"""
-    __author_name__ = ("sitacuisses","spoob","mkaay","JoKoT3")
-    __author_mail__ = ("sitacuisses@yhoo.de","spoob@pyload.org","mkaay@mkaay.de","jokot3@gmail.com")
+    __author_name__ = ("sitacuisses", "spoob", "mkaay", "JoKoT3")
+    __author_mail__ = ("sitacuisses@yhoo.de", "spoob@pyload.org", "mkaay@mkaay.de", "jokot3@gmail.com")
 
     FILE_OFFLINE_PATTERN = r'File is removed'
 
@@ -44,7 +47,7 @@ class HotfileCom(Hoster):
         self.wantReconnect = False
         self.htmlwithlink = None
         self.url = None
-        
+
         if self.premium:
             self.multiDL = True
             self.resumeDownload = True
@@ -52,7 +55,7 @@ class HotfileCom(Hoster):
         else:
             self.multiDL = False
             self.chunkLimit = 1
-    
+
     def apiCall(self, method, post, login=False):
         if not self.account and login:
             return
@@ -60,21 +63,21 @@ class HotfileCom(Hoster):
             return self.account.apiCall(method, post, self.user)
         post.update({"action": method})
         return self.load("http://api.hotfile.com/", post=post, decode=True)
-        
+
     def process(self, pyfile):
         self.wantReconnect = False
-        
-        args = {"links":self.pyfile.url, "fields":"id,status,name,size,sha1"}
+
+        args = {"links": self.pyfile.url, "fields": "id,status,name,size,sha1"}
         resp = self.apiCall("checklinks", args)
         self.api_data = {}
         for k, v in zip(args["fields"].split(","), resp.strip().split(",")):
             self.api_data[k] = v
-        
+
         if self.api_data["status"] == "0":
             self.offline()
 
         pyfile.name = self.api_data["name"]
-        
+
         if not self.premium:
             self.downloadHTML()
 
@@ -83,19 +86,19 @@ class HotfileCom(Hoster):
 
             self.setWait(self.getWaitTime())
             self.wait()
-            
+
             self.freeDownload()
         else:
-            dl = self.account.apiCall("getdirectdownloadlink", {"link":self.pyfile.url}, self.user)
+            dl = self.account.apiCall("getdirectdownloadlink", {"link": self.pyfile.url}, self.user)
             #dl = unquote(dl).strip()  <- Made problems
             dl = dl.strip()
             self.download(dl)
 
     def downloadHTML(self):
-        self.html[0] = self.load(self.pyfile.url, get={"lang":"en"})
+        self.html[0] = self.load(self.pyfile.url, get={"lang": "en"})
 
     def freeDownload(self):
-        
+
         form_content = re.search(r"<form style=.*(\n<.*>\s*)*?[\n\t]?<tr>", self.html[0])
         if form_content is None:
             print self.html[0]
@@ -103,34 +106,34 @@ class HotfileCom(Hoster):
 
         form_content = form_content.group(0)
         form_posts = dict(re.findall(r"<input\stype=hidden\sname=(\S*)\svalue=(\S*)>", form_content))
-        
+
         self.html[1] = self.load(self.pyfile.url, post=form_posts)
 
         challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=([0-9A-Za-z]+)", self.html[1])
-        
+
         if challenge:
             re_captcha = ReCaptcha(self)
             challenge, result = re_captcha.challenge(challenge.group(1))
-            
-            url = re.search(r'<form action="(/dl/[^"]+)', self.html[1] )
-                        
-            self.html[1] = self.load("http://hotfile.com"+url.group(1), post={"action": "checkcaptcha",
-                                             "recaptcha_challenge_field" : challenge,
-                                             "recaptcha_response_field": result})
-            
+
+            url = re.search(r'<form action="(/dl/[^"]+)', self.html[1])
+
+            self.html[1] = self.load("http://hotfile.com" + url.group(1), post={"action": "checkcaptcha",
+                                                                                "recaptcha_challenge_field": challenge,
+                                                                                "recaptcha_response_field": result})
+
             if "Wrong Code. Please try again." in self.html[1]:
                 self.freeDownload()
                 return
-        
+
         file_url = re.search(r'a href="(http://hotfile\.com/get/\S*)"', self.html[1]).group(1)
         self.download(file_url)
-          
+
     def getWaitTime(self):
         free_limit_pattern = re.compile(r"timerend=d\.getTime\(\)\+(\d+);")
         matches = free_limit_pattern.findall(self.html[0])
         if matches:
-            wait_time = (sum([int(match) for match in matches])/1000) or 60
-            if wait_time > 300: 
+            wait_time = (sum([int(match) for match in matches]) / 1000) or 60
+            if wait_time > 300:
                 self.wantReconnect = True
             return wait_time + 1
         else:

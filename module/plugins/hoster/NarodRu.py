@@ -20,6 +20,7 @@ import re
 from random import random
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
+
 class NarodRu(SimpleHoster):
     __name__ = "NarodRu"
     __type__ = "hoster"
@@ -31,10 +32,11 @@ class NarodRu(SimpleHoster):
     FILE_NAME_PATTERN = r'<dt class="name">(?:<[^<]*>)*(?P<N>[^<]+)</dt>'
     FILE_SIZE_PATTERN = r'<dd class="size">(?P<S>\d[^<]*)</dd>'
     FILE_OFFLINE_PATTERN = r'<title>404</title>|Файл удален с сервиса|Закончился срок хранения файла\.'
-       
+
     FILE_SIZE_REPLACEMENTS = [(u'КБ', 'KB'), (u'МБ', 'MB'), (u'ГБ', 'GB')]
-    FILE_URL_REPLACEMENTS = [("narod.yandex.ru/", "narod.ru/"), (r"/start/[0-9]+\.\w+-narod\.yandex\.ru/([0-9]{6,15})/\w+/(\w+)", r"/disk/\1/\2")]
-    
+    FILE_URL_REPLACEMENTS = [("narod.yandex.ru/", "narod.ru/"),
+                             (r"/start/[0-9]+\.\w+-narod\.yandex\.ru/([0-9]{6,15})/\w+/(\w+)", r"/disk/\1/\2")]
+
     CAPTCHA_PATTERN = r'<number url="(.*?)">(\w+)</number>'
     DOWNLOAD_LINK_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'
 
@@ -42,12 +44,13 @@ class NarodRu(SimpleHoster):
         for i in range(5):
             self.html = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random() * 777))
             found = re.search(self.CAPTCHA_PATTERN, self.html)
-            if not found: self.parseError('Captcha')
+            if not found:
+                self.parseError('Captcha')
             post_data = {"action": "sendcapcha"}
             captcha_url, post_data['key'] = found.groups()
             post_data['rep'] = self.decryptCaptcha(captcha_url)
-            
-            self.html = self.load(self.pyfile.url, post = post_data, decode = True)
+
+            self.html = self.load(self.pyfile.url, post=post_data, decode=True)
             found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
             if found:
                 url = 'http://narod.ru' + found.group(1)
@@ -59,8 +62,9 @@ class NarodRu(SimpleHoster):
                 self.parseError('Download link')
         else:
             self.fail("No valid captcha code entered")
-                       
+
         self.logDebug('Download link: ' + url)
-        self.download(url)        
+        self.download(url)
+
 
 getInfo = create_getInfo(NarodRu)

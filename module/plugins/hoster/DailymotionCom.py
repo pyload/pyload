@@ -5,6 +5,7 @@ import re
 from urllib import unquote
 from module.plugins.Hoster import Hoster
 
+
 class DailymotionCom(Hoster):
     __name__ = 'DailymotionCom'
     __type__ = 'hoster'
@@ -22,12 +23,13 @@ class DailymotionCom(Hoster):
                         r'<span class="title foreground" title="(.*?)">',
                         r'"(?:vs_videotitle|videoTitle|dm_title|ss_mediaTitle)": "(.*?)"'):
             filename = re.search(pattern, html)
-            if filename is not None: break
+            if filename is not None:
+                break
         else:
             self.fail("Unable to find file name")
 
-        pyfile.name = filename.group(1)+'.mp4'
-        self.logDebug('Filename='+pyfile.name)
+        pyfile.name = filename.group(1) + '.mp4'
+        self.logDebug('Filename=' + pyfile.name)
         allLinksInfo = re.search(r'"sequence":"(.*?)"', html)
         self.logDebug(allLinksInfo.groups())
         allLinksInfo = unquote(allLinksInfo.group(1))
@@ -44,4 +46,4 @@ class DailymotionCom(Hoster):
     def getQuality(self, quality, data):
         link = re.search('"' + quality + '":"(http:[^<>"\']+)"', data)
         if link is not None:
-            return link.group(1).replace('\\','')
+            return link.group(1).replace('\\', '')

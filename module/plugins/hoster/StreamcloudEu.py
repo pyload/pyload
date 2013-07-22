@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
-from module.network.HTTPRequest import HTTPRequest
 from time import sleep
 import re
+
+from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.network.HTTPRequest import HTTPRequest
+
 
 class StreamcloudEu(XFileSharingPro):
     __name__ = "StreamcloudEu"
@@ -31,7 +33,7 @@ class StreamcloudEu(XFileSharingPro):
             httpRequest = HTTPRequest(options=self.req.options)
             httpRequest.cj = self.req.cj
             sleep(10)
-            self.html = httpRequest.load(self.pyfile.url, post = data, referer=False, cookies=True, decode = True)
+            self.html = httpRequest.load(self.pyfile.url, post=data, referer=False, cookies=True, decode=True)
             self.header = httpRequest.header
 
             found = re.search("Location\s*:\s*(.*)", self.header, re.I)
@@ -52,9 +54,10 @@ class StreamcloudEu(XFileSharingPro):
 
     def getPostParameters(self):
         for i in range(3):
-            if not self.errmsg: self.checkErrors()
+            if not self.errmsg:
+                self.checkErrors()
 
-            if hasattr(self,"FORM_PATTERN"):
+            if hasattr(self, "FORM_PATTERN"):
                 action, inputs = self.parseHtmlForm(self.FORM_PATTERN)
             else:
                 action, inputs = self.parseHtmlForm(input_names={"op": re.compile("^download")})
@@ -86,7 +89,8 @@ class StreamcloudEu(XFileSharingPro):
 
                     self.captcha = self.handleCaptcha(inputs)
 
-                    if wait_time: self.wait()
+                    if wait_time:
+                        self.wait()
 
                 self.errmsg = None
                 self.logDebug("getPostParameters {0}".format(i))
@@ -97,15 +101,18 @@ class StreamcloudEu(XFileSharingPro):
 
                 if self.premium:
                     inputs['method_premium'] = "Premium Download"
-                    if 'method_free' in inputs: del inputs['method_free']
+                    if 'method_free' in inputs:
+                        del inputs['method_free']
                 else:
                     inputs['method_free'] = "Free Download"
-                    if 'method_premium' in inputs: del inputs['method_premium']
+                    if 'method_premium' in inputs:
+                        del inputs['method_premium']
 
-                self.html = self.load(self.pyfile.url, post = inputs, ref = False)
+                self.html = self.load(self.pyfile.url, post=inputs, ref=False)
                 self.errmsg = None
 
-        else: self.parseError('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
+        else:
+            self.parseError('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
 
 
 getInfo = create_getInfo(StreamcloudEu)
