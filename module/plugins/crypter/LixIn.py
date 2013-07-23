@@ -46,7 +46,6 @@ class LixIn(Crypter):
                                           post={"capt": captcharesult, "submit": "submit", "tiny": id})
             else:
                 self.logDebug("no captcha/captcha solved")
-                break
         else:
             self.html = self.req.load(url, decode=True, post={"submit": "submit", "tiny": id})
 
