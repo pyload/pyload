@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+import xml.dom.minidom as dom
 
 from module.plugins.MultiHoster import MultiHoster
-import xml.dom.minidom as dom
+
 
 class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
@@ -20,13 +19,13 @@ class RealdebridCom(MultiHoster):
 
         return account_info
 
-    def login(self, req):
-        page = req.load("https://real-debrid.com/ajax/login.php?user=%s&pass=%s" % (self.loginname, self.password))
-        #page = req.load("https://real-debrid.com/login.html", post={"user": user, "pass": data["password"]}, cookies=True)
+    def login(self, user, data, req):
+        page = req.load("https://real-debrid.com/ajax/login.php", get={"user": user, "pass": data["password"]})
+        # page = req.load("https://real-debrid.com/login.html",
+        #                 post={"user": user, "pass": data["password"]}, cookies=True)
 
         if "Your login informations are incorrect" in page:
             self.wrongPassword()
-
 
     def loadHosterList(self, req):
         https = "https" if self.getConfig("https") else "http"

@@ -20,7 +20,7 @@
 import re
 from time import mktime, strptime
 from module.plugins.Account import Account
-from module.utils import parseFileSize
+
 
 class FilebeerInfo(Account):
     __name__ = "FilebeerInfo"
@@ -29,29 +29,29 @@ class FilebeerInfo(Account):
     __description__ = """filebeer.info account plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
-    
+
     VALID_UNTIL_PATTERN = r'Reverts To Free Account:\s</td>\s*<td>\s*(.*?)\s*</td>'
-    
+
     def loadAccountInfo(self, user, req):
-        html = req.load("http://filebeer.info/upgrade.php", decode = True)        
+        html = req.load("http://filebeer.info/upgrade.php", decode=True)
         premium = not 'Free User </td>' in html
-                
+
         validuntil = None
         if premium:
             try:
-                validuntil = mktime(strptime(re.search(self.VALID_UNTIL_PATTERN, html).group(1), "%d/%m/%Y %H:%M:%S")) 
+                validuntil = mktime(strptime(re.search(self.VALID_UNTIL_PATTERN, html).group(1), "%d/%m/%Y %H:%M:%S"))
             except Exception, e:
                 self.logError("Unable to parse account info", e)
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
-    
+
     def login(self, user, data, req):
-        html = req.load('http://filebeer.info/login.php', post = {
+        html = req.load('http://filebeer.info/login.php', post={
             "submit": 'Login',
             "loginPassword": data['password'],
             "loginUsername": user,
             "submitme": '1'
-            }, decode = True)
-            
+        }, decode=True)
+
         if "<ul class='pageErrors'>" in html or ">Your username and password are invalid<" in html:
             self.wrongPassword()

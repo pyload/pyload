@@ -19,6 +19,7 @@
 
 from module.plugins.Account import Account
 
+
 class ShareonlineBiz(Account):
     __name__ = "ShareonlineBiz"
     __version__ = "0.24"
@@ -29,7 +30,7 @@ class ShareonlineBiz(Account):
 
     def getUserAPI(self, user, req):
         return req.load("http://api.share-online.biz/account.php",
-            {"username": user, "password": self.accounts[user]["password"], "act": "userDetails"})
+                        {"username": user, "password": self.accounts[user]["password"], "act": "userDetails"})
 
     def loadAccountInfo(self, user, req):
         src = self.getUserAPI(user, req)

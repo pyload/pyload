@@ -17,10 +17,11 @@
     @author: zoidberg
 """
 
+from time import time
+
 from module.plugins.Account import Account
 from module.common.json_layer import json_loads
-import re
-from time import time, mktime, strptime
+
 
 class BayfilesCom(Account):
     __name__ = "BayfilesCom"
@@ -33,14 +34,13 @@ class BayfilesCom(Account):
     def loadAccountInfo(self, user, req):
         for i in range(2):
             response = json_loads(req.load("http://api.bayfiles.com/v1/account/info"))
-            self.logDebug(response)            
-            if not response["error"]: 
+            self.logDebug(response)
+            if not response["error"]:
                 break
             self.logWarning(response["error"])
             self.relogin()
-        
-        return {"premium": bool(response['premium']), \
-                "trafficleft": -1, \
+
+        return {"premium": bool(response['premium']), "trafficleft": -1,
                 "validuntil": response['expires'] if response['expires'] >= int(time()) else -1}
 
     def login(self, user, data, req):

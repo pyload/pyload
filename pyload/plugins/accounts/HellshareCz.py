@@ -17,9 +17,11 @@
     @author: zoidberg
 """
 
-from module.plugins.Account import Account
 import re
 import time
+
+from module.plugins.Account import Account
+
 
 class HellshareCz(Account):
     __name__ = "HellshareCz"
@@ -49,7 +51,7 @@ class HellshareCz(Account):
                     vt = [int(x) for x in credit.split('.')[:2]]
                     lt = time.localtime()
                     year = lt.tm_year + int(vt[1] < lt.tm_mon or (vt[1] == lt.tm_mon and vt[0] < lt.tm_mday))
-                    validuntil = time.mktime(time.strptime("%s%d 23:59:59" % (credit,year), "%d.%m.%Y %H:%M:%S")) 
+                    validuntil = time.mktime(time.strptime("%s%d 23:59:59" % (credit, year), "%d.%m.%Y %H:%M:%S"))
                     trafficleft = -1
                 else:
                     #Traffic-based account
@@ -77,11 +79,11 @@ class HellshareCz(Account):
             return
 
         html = req.load('http://www.hellshare.com/login?do=loginForm-submit', post={
-                "login": "Log in",
-                "password": data["password"],
-                "username": user,
-                "perm_login": "on"
-                })
+            "login": "Log in",
+            "password": data["password"],
+            "username": user,
+            "perm_login": "on"
+        })
 
         if "<p>You input a wrong user name or wrong password</p>" in html:
             self.wrongPassword()

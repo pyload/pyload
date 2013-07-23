@@ -17,11 +17,13 @@
     @author: zoidberg
 """
 
+import re
+from time import mktime, strptime
+
 from module.plugins.Account import Account
 from module.plugins.internal.SimpleHoster import parseHtmlForm
-import re
 from module.utils import parseFileSize
-from time import mktime, strptime
+
 
 class EasybytezCom(Account):
     __name__ = "EasybytezCom"
@@ -30,16 +32,16 @@ class EasybytezCom(Account):
     __description__ = """EasyBytez.com account plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
-    
+
     VALID_UNTIL_PATTERN = r'<TR><TD>Premium account expire:</TD><TD><b>([^<]+)</b>'
     TRAFFIC_LEFT_PATTERN = r'<TR><TD>Traffic available today:</TD><TD><b>(?P<S>[^<]+)</b>'
 
-    def loadAccountInfo(self, user, req):      
-        html = req.load("http://www.easybytez.com/?op=my_account", decode = True)
-        
+    def loadAccountInfo(self, user, req):
+        html = req.load("http://www.easybytez.com/?op=my_account", decode=True)
+
         validuntil = trafficleft = None
         premium = False
-        
+
         found = re.search(self.VALID_UNTIL_PATTERN, html)
         if found:
             premium = True
@@ -56,18 +58,18 @@ class EasybytezCom(Account):
                 if "Unlimited" in trafficleft:
                     premium = True
                 else:
-                    trafficleft = parseFileSize(trafficleft) / 1024                           
-        
-        return ({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
-    
+                    trafficleft = parseFileSize(trafficleft) / 1024
+
+        return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
+
     def login(self, user, data, req):
-        html = req.load('http://www.easybytez.com/login.html', decode = True)
+        html = req.load('http://www.easybytez.com/login.html', decode=True)
         action, inputs = parseHtmlForm('name="FL"', html)
         inputs.update({"login": user,
                        "password": data['password'],
                        "redirect": "http://www.easybytez.com/"})
-        
-        html = req.load(action, post = inputs, decode = True)
-        
-        if 'Incorrect Login or Password' in html or '>Error<' in html:          
+
+        html = req.load(action, post=inputs, decode=True)
+
+        if 'Incorrect Login or Password' in html or '>Error<' in html:
             self.wrongPassword()

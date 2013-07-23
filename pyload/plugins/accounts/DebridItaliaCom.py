@@ -16,7 +16,6 @@
 ############################################################################
 
 import re
-import _strptime
 import time
 
 from module.plugins.Account import Account

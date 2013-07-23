@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from module.plugins.internal.XFSPAccount import XFSPAccount
 
+
 class Share76Com(XFSPAccount):
     __name__ = "Share76Com"
     __version__ = "0.02"

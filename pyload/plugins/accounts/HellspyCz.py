@@ -17,9 +17,10 @@
     @author: zoidberg
 """
 
-from module.plugins.Account import Account
 import re
-import string
+
+from module.plugins.Account import Account
+
 
 class HellspyCz(Account):
     __name__ = "HellspyCz"
@@ -48,20 +49,22 @@ class HellspyCz(Account):
 
         return {"validuntil": -1, "trafficleft": credits}
 
-    def login(self, user, data,req):
-        header = req.load('http://www.hellspy.com/', just_header = True)
-        self.phpsessid = re.search(r'PHPSESSID=(\w+)', header).group(1)       
+    def login(self, user, data, req):
+        header = req.load('http://www.hellspy.com/', just_header=True)
+        self.phpsessid = re.search(r'PHPSESSID=(\w+)', header).group(1)
         self.logDebug("PHPSESSID:" + self.phpsessid)
-        
+
         html = req.load("http://www.hellspy.com/--%s-" % self.phpsessid)
 
-        html = req.load("http://www.hell-share.com/user/login/?do=apiLoginForm-submit&api_hash=hellspy_iq&user_hash=%s" % self.phpsessid, post={
+        html = req.load(
+            "http://www.hell-share.com/user/login/?do=apiLoginForm-submit&api_hash=hellspy_iq&user_hash=%s" % self.phpsessid,
+            post={
                 "login": "1",
                 "password": data["password"],
                 "username": user,
-                "redir_url":	'http://www.hellspy.com/?do=loginBox-login',
+                "redir_url": 'http://www.hellspy.com/?do=loginBox-login',
                 "permanent_login": "1"
-                })
+            })
 
         cj = self.getAccountCookies(user)
         cj.setCookie(".hellspy.com", "PHPSESSID", self.phpsessid)

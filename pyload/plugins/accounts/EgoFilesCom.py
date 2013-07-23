@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
 import re
 import time
+
+from module.plugins.Account import Account
 from module.utils import parseFileSize
+
 
 class EgoFilesCom(Account):
     __name__ = "EgoFilesCom"

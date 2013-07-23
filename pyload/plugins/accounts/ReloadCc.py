@@ -1,8 +1,9 @@
-from module.plugins.Account   import Account
+from module.plugins.Account import Account
 
 from module.common.json_layer import json_loads
 
 from module.network.HTTPRequest import BadHeader
+
 
 class ReloadCc(Account):
     __name__ = "ReloadCc"
@@ -36,7 +37,6 @@ class ReloadCc(Account):
         # Check if user and password are valid
         if status['status'] != "ok":
             self.wrongPassword()
-
 
     def getAccountStatus(self, user, req):
         # Use reload.cc API v1 to retrieve account info and return the parsed json answer

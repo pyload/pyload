@@ -1,4 +1,3 @@
-
 from pyload.plugins.MultiHoster import MultiHoster
 
 class Premium4Me(MultiHoster):
@@ -18,8 +17,9 @@ class Premium4Me(MultiHoster):
         return account_info
 
     def login(self, user, data, req):
-        self.authcode = req.load("http://premium.to/api/getauthcode.php?username=%s&password=%s" % (user, data["password"])).strip()
-        
+        self.authcode = req.load("http://premium.to/api/getauthcode.php?username=%s&password=%s" % (
+                                 user, data["password"])).strip()
+
         if "wrong username" in self.authcode:
             self.wrongPassword()
 

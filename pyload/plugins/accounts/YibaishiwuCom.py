@@ -17,8 +17,10 @@
     @author: zoidberg
 """
 
-from module.plugins.Account import Account
 import re
+
+from module.plugins.Account import Account
+
 
 class YibaishiwuCom(Account):
     __name__ = "YibaishiwuCom"
@@ -32,20 +34,20 @@ class YibaishiwuCom(Account):
 
     def loadAccountInfo(self, user, req):
         #self.relogin(user)
-        html = req.load("http://115.com/", decode = True)
-        
+        html = req.load("http://115.com/", decode=True)
+
         found = re.search(self.ACCOUNT_INFO_PATTERN, html, re.S)
         premium = True if (found and 'is_vip: 1' in found.group(1)) else False
         validuntil = trafficleft = (-1 if found else 0)
         return dict({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
 
     def login(self, user, data, req):
-        html = req.load('http://passport.115.com/?ac=login', post = {
+        html = req.load('http://passport.115.com/?ac=login', post={
             "back": "http://www.115.com/",
             "goto": "http://115.com/",
             "login[account]": user,
             "login[passwd]": data['password']
-            }, decode = True)
+        }, decode=True)
 
         if not 'var USER_PERMISSION = {' in html:
             self.wrongPassword()

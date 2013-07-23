@@ -2,6 +2,7 @@
 from module.plugins.internal.XFSPAccount import XFSPAccount
 from module.plugins.internal.SimpleHoster import parseHtmlForm
 
+
 class CyberlockerCh(XFSPAccount):
     __name__ = "CyberlockerCh"
     __version__ = "0.01"
@@ -13,7 +14,7 @@ class CyberlockerCh(XFSPAccount):
     MAIN_PAGE = "http://cyberlocker.ch/"
 
     def login(self, user, data, req):
-        html = req.load(self.MAIN_PAGE + 'login.html', decode = True)
+        html = req.load(self.MAIN_PAGE + 'login.html', decode=True)
 
         action, inputs = parseHtmlForm('name="FL"', html)
         if not inputs:
@@ -25,7 +26,7 @@ class CyberlockerCh(XFSPAccount):
 
         # Without this a 403 Forbidden is returned
         req.http.lastURL = self.MAIN_PAGE + 'login.html'
-        html = req.load(self.MAIN_PAGE, post = inputs, decode = True)
+        html = req.load(self.MAIN_PAGE, post=inputs, decode=True)
 
         if 'Incorrect Login or Password' in html or '>Error<' in html:
             self.wrongPassword()
