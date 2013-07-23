@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from module.common.json_layer import json
+from module.common.json_layer import json_loads, json_dumps
 from module.plugins.hoster.MegaNz import MegaNz
 
 
@@ -9,7 +9,7 @@ class MegacrypterCom(MegaNz):
     __name__ = "MegacrypterCom"
     __type__ = "hoster"
     __pattern__ = r"(https?://[a-z0-9]{0,10}\.?megacrypter\.com/[a-zA-Z0-9!_\-]+)"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """megacrypter plugin, based and inherits from RaNaN's MegaNz plugin"""
     __author_name__ = ("GonzaloSR", )
     __author_mail__ = ("gonzalo@gonzalosr.com", )
@@ -19,10 +19,10 @@ class MegacrypterCom(MegaNz):
 
     def callApi(self, **kwargs):
         """ Dispatch a call to the api, see megacrypter.com/api_doc """
-        self.logDebug("JSON request: " + json.dumps(kwargs))
-        resp = self.load(self.API_URL, post=json.dumps(kwargs))
+        self.logDebug("JSON request: " + json_dumps(kwargs))
+        resp = self.load(self.API_URL, post=json_dumps(kwargs))
         self.logDebug("API Response: " + resp)
-        return json.loads(resp)
+        return json_loads(resp)
 
     def process(self, pyfile):
         # match is guaranteed because plugin was chosen to handle url
