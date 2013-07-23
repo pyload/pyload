@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from module.plugins.internal.XFSPAccount import XFSPAccount
 
+
 class SpeedLoadOrg(XFSPAccount):
     __name__ = "SpeedLoadOrg"
     __version__ = "0.01"

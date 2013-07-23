@@ -17,9 +17,11 @@
     @author: zoidberg
 """
 
-from module.plugins.Account import Account
 import re
 from time import mktime, strptime
+
+from module.plugins.Account import Account
+
 
 class FilefactoryCom(Account):
     __name__ = "FilefactoryCom"
@@ -28,27 +30,27 @@ class FilefactoryCom(Account):
     __description__ = """filefactory.com account plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
-    
+
     ACCOUNT_INFO_PATTERN = r'<time datetime="([\d-]+)">'
 
-    def loadAccountInfo(self, user, req):      
+    def loadAccountInfo(self, user, req):
         html = req.load("http://www.filefactory.com/member/")
-            
+
         found = re.search(self.ACCOUNT_INFO_PATTERN, html)
         if found:
             premium = True
-            validuntil = mktime(strptime(found.group(1),"%Y-%m-%d"))
+            validuntil = mktime(strptime(found.group(1), "%Y-%m-%d"))
         else:
             premium = False
-            validuntil = -1   
+            validuntil = -1
 
         return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
 
     def login(self, user, data, req):
         html = req.load("http://www.filefactory.com/member/login.php", post={
-            "email": user, 
+            "email": user,
             "password": data["password"],
             "redirect": "/"})
-            
+
         if '/member/login.php?err=1' in req.http.header:
             self.wrongPassword()

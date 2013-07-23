@@ -18,8 +18,7 @@
 """
 
 from module.plugins.Account import Account
-import re
-from time import time
+
 
 class FilesMailRu(Account):
     __name__ = "FilesMailRu"
@@ -31,11 +30,13 @@ class FilesMailRu(Account):
 
     def loadAccountInfo(self, user, req):
         return {"validuntil": None, "trafficleft": None}
-    
-    def login(self, user, data,req):
+
+    def login(self, user, data, req):
         user, domain = user.split("@")
 
-        page = req.load("http://swa.mail.ru/cgi-bin/auth", None, { "Domain" : domain, "Login": user, "Password" : data['password'], "Page" : "http://files.mail.ru/"}, cookies=True)
+        page = req.load("http://swa.mail.ru/cgi-bin/auth", None,
+                        {"Domain": domain, "Login": user, "Password": data['password'],
+                         "Page": "http://files.mail.ru/"}, cookies=True)
 
-        if "Неверное имя пользователя или пароль" in page: # @TODO seems not to work
+        if "Неверное имя пользователя или пароль" in page:  # @TODO seems not to work
             self.wrongPassword()

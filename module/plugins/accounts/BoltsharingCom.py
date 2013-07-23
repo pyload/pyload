@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from module.plugins.internal.XFSPAccount import XFSPAccount
 
+
 class BoltsharingCom(XFSPAccount):
     __name__ = "BoltsharingCom"
     __version__ = "0.01"

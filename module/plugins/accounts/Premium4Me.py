@@ -1,5 +1,6 @@
 from module.plugins.Account import Account
 
+
 class Premium4Me(Account):
     __name__ = "Premium4Me"
     __version__ = "0.03"
@@ -17,7 +18,8 @@ class Premium4Me(Account):
         return account_info
 
     def login(self, user, data, req):
-        self.authcode = req.load("http://premium.to/api/getauthcode.php?username=%s&password=%s" % (user, data["password"])).strip()
-        
+        self.authcode = req.load("http://premium.to/api/getauthcode.php?username=%s&password=%s" % (
+                                 user, data["password"])).strip()
+
         if "wrong username" in self.authcode:
             self.wrongPassword()

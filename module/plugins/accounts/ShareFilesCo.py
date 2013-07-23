@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from module.plugins.internal.XFSPAccount import XFSPAccount
 
+
 class ShareFilesCo(XFSPAccount):
     __name__ = "ShareFilesCo"
     __version__ = "0.01"

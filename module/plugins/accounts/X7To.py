@@ -22,6 +22,7 @@ from time import strptime, mktime
 
 from module.plugins.Account import Account
 
+
 class X7To(Account):
     __name__ = "X7To"
     __version__ = "0.1"
@@ -45,7 +46,8 @@ class X7To(Account):
             else:
                 valid = 0
 
-        trafficleft = re.search(r'<em style="white-space:nowrap">([\d]*[,]?[\d]?[\d]?) (KB|MB|GB)</em>', page, re.IGNORECASE)
+        trafficleft = re.search(r'<em style="white-space:nowrap">([\d]*[,]?[\d]?[\d]?) (KB|MB|GB)</em>',
+                                page, re.IGNORECASE)
         if trafficleft:
             units = float(trafficleft.group(1).replace(",", "."))
             pow = {'KB': 0, 'MB': 1, 'GB': 2}[trafficleft.group(2)]
@@ -55,12 +57,11 @@ class X7To(Account):
 
         return {"trafficleft": trafficleft, "validuntil": valid}
 
-
     def login(self, user, data, req):
         #req.cj.setCookie("share.cx", "lang", "english")
         page = req.load("http://x7.to/lang/en", None, {})
         page = req.load("http://x7.to/james/login", None,
-                {"redirect": "http://www.x7.to/", "id": user, "pw": data['password'], "submit": "submit"})
+                        {"redirect": "http://www.x7.to/", "id": user, "pw": data['password'], "submit": "submit"})
 
         if "Username and password are not matching." in page:
             self.wrongPassword()

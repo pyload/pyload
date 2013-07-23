@@ -9,9 +9,7 @@ class RehostTo(Account):
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
-
     def loadAccountInfo(self, user, req):
-
         data = self.getAccountData(user)
         page = req.load("http://rehost.to/api.php?cmd=login&user=%s&pass=%s" % (user, data["password"]))
         data = [x.split("=") for x in page.split(",")]
@@ -33,5 +31,3 @@ class RehostTo(Account):
 
         if "Login failed." in page:
             self.wrongPassword()
-
-

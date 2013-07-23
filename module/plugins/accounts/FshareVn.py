@@ -17,10 +17,12 @@
     @author: zoidberg
 """
 
-from module.plugins.Account import Account
 from time import mktime, strptime
 from pycurl import REFERER
 import re
+
+from module.plugins.Account import Account
+
 
 class FshareVn(Account):
     __name__ = "FshareVn"
@@ -35,13 +37,14 @@ class FshareVn(Account):
     DIRECT_DOWNLOAD_PATTERN = ur'<input type="checkbox"\s*([^=>]*)[^>]*/>Kích hoạt download trực tiếp</dt>'
 
     def loadAccountInfo(self, user, req):
-        html = req.load("http://www.fshare.vn/account_info.php", decode = True)
+        html = req.load("http://www.fshare.vn/account_info.php", decode=True)
         found = re.search(self.VALID_UNTIL_PATTERN, html)
         if found:
             premium = True
             validuntil = mktime(strptime(found.group(1), '%I:%M:%S %p %d-%m-%Y'))
             found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-            trafficleft = float(found.group(1)) * 1024 ** {'k': 0, 'K': 0, 'M': 1, 'G': 2}[found.group(2)] if found else 0
+            trafficleft = float(found.group(1)) * 1024 ** {
+                'k': 0, 'K': 0, 'M': 1, 'G': 2}[found.group(2)] if found else 0
         else:
             premium = False
             validuntil = None
@@ -52,11 +55,11 @@ class FshareVn(Account):
     def login(self, user, data, req):
         req.http.c.setopt(REFERER, "https://www.fshare.vn/login.php")
 
-        html = req.load('https://www.fshare.vn/login.php', post = {
-            "login_password" : data['password'],
-            "login_useremail" :	user,
-            "url_refe" : "https://www.fshare.vn/login.php"
-            }, referer = True, decode = True)
+        html = req.load('https://www.fshare.vn/login.php', post={
+            "login_password": data['password'],
+            "login_useremail": user,
+            "url_refe": "https://www.fshare.vn/login.php"
+        }, referer=True, decode=True)
 
         if not '<img alt="VIP"' in html:
             self.wrongPassword()

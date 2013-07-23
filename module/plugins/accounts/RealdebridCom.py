@@ -1,5 +1,7 @@
-from module.plugins.Account import Account
 import xml.dom.minidom as dom
+
+from module.plugins.Account import Account
+
 
 class RealdebridCom(Account):
     __name__ = "RealdebridCom"
@@ -18,8 +20,9 @@ class RealdebridCom(Account):
         return account_info
 
     def login(self, user, data, req):
-        page = req.load("https://real-debrid.com/ajax/login.php", get = {"user": user, "pass": data["password"]})
-        #page = req.load("https://real-debrid.com/login.html", post={"user": user, "pass": data["password"]}, cookies=True)
+        page = req.load("https://real-debrid.com/ajax/login.php", get={"user": user, "pass": data["password"]})
+        # page = req.load("https://real-debrid.com/login.html",
+        #                 post={"user": user, "pass": data["password"]}, cookies=True)
 
         if "Your login informations are incorrect" in page:
             self.wrongPassword()

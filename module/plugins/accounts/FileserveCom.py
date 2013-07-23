@@ -22,6 +22,7 @@ from time import mktime, strptime
 from module.plugins.Account import Account
 from module.common.json_layer import json_loads
 
+
 class FileserveCom(Account):
     __name__ = "FileserveCom"
     __version__ = "0.2"
@@ -42,7 +43,6 @@ class FileserveCom(Account):
             return {"trafficleft": res["traffic"], "validuntil": validuntil}
         else:
             return {"premium": False, "trafficleft": None, "validuntil": None}
-
 
     def login(self, user, data, req):
         page = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data["password"],

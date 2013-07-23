@@ -22,6 +22,7 @@ from types import MethodType
 from module.plugins.Account import Account
 from module.common.json_layer import json_loads
 
+
 class WuploadCom(Account):
     __name__ = "WuploadCom"
     __version__ = "0.1"
