@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
 import re
+
+from module.plugins.internal.MultiHoster import MultiHoster
+
 
 class EasybytezCom(MultiHoster):
     __name__ = "EasybytezCom"
@@ -18,14 +19,16 @@ class EasybytezCom(MultiHoster):
     def getHoster(self):
         self.account = self.core.accountManager.getAccountPlugin(self.__name__)
         user = self.account.selectAccount()[0]
-        
+
         try:
             req = self.account.getAccountRequest(user)
             page = req.load("http://www.easybytez.com")
-        
+
             found = re.search(r'</textarea>\s*Supported sites:(.*)', page)
             return found.group(1).split(',')
         except Exception, e:
             self.logDebug(e)
             self.logWarning("Unable to load supported hoster list, using last known")
-            return ['bitshare.com', 'crocko.com', 'ddlstorage.com', 'depositfiles.com', 'extabit.com', 'hotfile.com', 'mediafire.com', 'netload.in', 'rapidgator.net', 'rapidshare.com', 'uploading.com', 'uload.to', 'uploaded.to']
+            return ['bitshare.com', 'crocko.com', 'ddlstorage.com', 'depositfiles.com', 'extabit.com', 'hotfile.com',
+                    'mediafire.com', 'netload.in', 'rapidgator.net', 'rapidshare.com', 'uploading.com', 'uload.to',
+                    'uploaded.to']

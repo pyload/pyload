@@ -16,20 +16,16 @@
     @author: mkaay, RaNaN
 """
 
-try:
-    from json import loads
-except ImportError:
-    from simplejson import loads
-
 from thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 
+from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL, getRequest
 from module.network.HTTPRequest import BadHeader
-
 from module.plugins.Addon import Addon
 
 PYLOAD_KEY = "9f65e7f381c3af2b076ea680ae96b0b7"
+
 
 class CaptchaTraderException(Exception):
     def __init__(self, err):
@@ -44,14 +40,15 @@ class CaptchaTraderException(Exception):
     def __repr__(self):
         return "<CaptchaTraderException %s>" % self.err
 
+
 class CaptchaTrader(Addon):
     __name__ = "CaptchaTrader"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __description__ = """send captchas to captchatrader.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
-                  ("passkey", "password", "Password", ""),]
+                  ("passkey", "password", "Password", ""), ]
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
@@ -64,8 +61,8 @@ class CaptchaTrader(Addon):
 
     def getCredits(self):
         json = getURL(CaptchaTrader.GETCREDITS_URL % {"user": self.getConfig("username"),
-                                                           "password": self.getConfig("passkey")})
-        response = loads(json)
+                                                      "password": self.getConfig("passkey")})
+        response = json_loads(json)
         if response[0] < 0:
             raise CaptchaTraderException(response[1])
         else:
@@ -88,31 +85,31 @@ class CaptchaTrader(Addon):
 
         try:
             json = req.load(CaptchaTrader.SUBMIT_URL, post={"api_key": PYLOAD_KEY,
-                                                           "username": self.getConfig("username"),
-                                                           "password": self.getConfig("passkey"),
-                                                           "value": (FORM_FILE, captcha),
-                                                           "type": captchaType}, multipart=True)
+                                                            "username": self.getConfig("username"),
+                                                            "password": self.getConfig("passkey"),
+                                                            "value": (FORM_FILE, captcha),
+                                                            "type": captchaType}, multipart=True)
         finally:
             req.close()
 
-        response = loads(json)
+        response = json_loads(json)
         if response[0] < 0:
             raise CaptchaTraderException(response[1])
 
         ticket = response[0]
         result = response[1]
-        self.logDebug("result %s : %s" % (ticket,result))
+        self.logDebug("result %s : %s" % (ticket, result))
 
         return ticket, result
 
     def respond(self, ticket, success):
         try:
             json = getURL(CaptchaTrader.RESPOND_URL, post={"is_correct": 1 if success else 0,
-                                                            "username": self.getConfig("username"),
-                                                            "password": self.getConfig("passkey"),
-                                                            "ticket": ticket})
+                                                           "username": self.getConfig("username"),
+                                                           "password": self.getConfig("passkey"),
+                                                           "ticket": ticket})
 
-            response = loads(json)
+            response = json_loads(json)
             if response[0] < 0:
                 raise CaptchaTraderException(response[1])
 

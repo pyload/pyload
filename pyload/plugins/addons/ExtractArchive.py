@@ -52,6 +52,7 @@ from module.utils.fs import save_join, fs_encode, exists, remove, chmod, makedir
 from module.plugins.Addon import Addon, threaded, Expose
 from module.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
 
+
 class ExtractArchive(Addon):
     """
     Provides: unrarFinished (folder, filename)
@@ -60,15 +61,15 @@ class ExtractArchive(Addon):
     __version__ = "0.14"
     __description__ = "Extract different kind of archives"
     __config__ = [("activated", "bool", "Activated", True),
-        ("fullpath", "bool", "Extract full path", True),
-        ("overwrite", "bool", "Overwrite files", True),
-        ("passwordfile", "file", "password file", "unrar_passwords.txt"),
-        ("deletearchive", "bool", "Delete archives when done", False),
-        ("subfolder", "bool", "Create subfolder for each package", False),
-        ("destination", "folder", "Extract files to", ""),
-        ("recursive", "bool", "Extract archives in archvies", True),
-        ("queue", "bool", "Wait for all downloads to be finished", True),
-        ("renice", "int", "CPU Priority", 0), ]
+                  ("fullpath", "bool", "Extract full path", True),
+                  ("overwrite", "bool", "Overwrite files", True),
+                  ("passwordfile", "file", "password file", "unrar_passwords.txt"),
+                  ("deletearchive", "bool", "Delete archives when done", False),
+                  ("subfolder", "bool", "Create subfolder for each package", False),
+                  ("destination", "folder", "Extract files to", ""),
+                  ("recursive", "bool", "Extract archives in archvies", True),
+                  ("queue", "bool", "Wait for all downloads to be finished", True),
+                  ("renice", "int", "CPU Priority", 0)]
     __author_name__ = ("pyload Team")
     __author_mail__ = ("admin<at>pyload.org")
 
@@ -120,13 +121,11 @@ class ExtractArchive(Addon):
         else:
             self.manager.startThread(self.extract, [pypack.id])
 
-
     @threaded
     def allDownloadsProcessed(self, thread):
         local = copy(self.queue)
         del self.queue[:]
         self.extract(local, thread)
-
 
     def extract(self, ids, thread=None):
         # reload from txt file
@@ -141,7 +140,8 @@ class ExtractArchive(Addon):
         for pid in ids:
             p = self.core.files.getPackage(pid)
             self.logInfo(_("Check package %s") % p.name)
-            if not p: continue
+            if not p:
+                continue
 
             # determine output folder
             out = save_join(dl, p.folder, "")
@@ -174,10 +174,10 @@ class ExtractArchive(Addon):
                         if target in extracted:
                             self.logDebug(basename(target), "skipped")
                             continue
-                        extracted.append(target) #prevent extracting same file twice
+                        extracted.append(target)  # prevent extracting same file twice
 
                         klass = plugin(self, target, out, self.getConfig("fullpath"), self.getConfig("overwrite"),
-                            self.getConfig("renice"))
+                                       self.getConfig("renice"))
                         klass.init()
 
                         self.logInfo(basename(target), _("Extract to %s") % out)
@@ -190,18 +190,20 @@ class ExtractArchive(Addon):
                                 self.logDebug("new file %s does not exists" % file)
                                 continue
                             if self.getConfig("recursive") and isfile(file):
-                                new_files_ids.append((file, fid)) #append as new target
+                                new_files_ids.append((file, fid))  # append as new target
 
-                files_ids = new_files_ids # also check extracted files
+                files_ids = new_files_ids  # also check extracted files
 
-            if not matched: self.logInfo(_("No files found to extract"))
+            if not matched:
+                self.logInfo(_("No files found to extract"))
 
     def startExtracting(self, plugin, fid, passwords, thread):
         pyfile = self.core.files.getFile(fid)
-        if not pyfile: return []
+        if not pyfile:
+            return []
 
         pyfile.setCustomStatus(_("extracting"))
-        thread.addActive(pyfile) #keep this file until everything is done
+        thread.addActive(pyfile)  # keep this file until everything is done
 
         try:
             progress = lambda x: pyfile.setProgress(x)
@@ -217,7 +219,8 @@ class ExtractArchive(Addon):
                 pwlist = copy(self.getPasswords())
                 #remove already supplied pws from list (only local)
                 for pw in passwords:
-                    if pw in pwlist: pwlist.remove(pw)
+                    if pw in pwlist:
+                        pwlist.remove(pw)
 
                 for pw in passwords + pwlist:
                     try:
@@ -241,14 +244,15 @@ class ExtractArchive(Addon):
                 files = plugin.getDeleteFiles()
                 self.logInfo(_("Deleting %s files") % len(files))
                 for f in files:
-                    if exists(f): remove(f)
-                    else: self.logDebug("%s does not exists" % f)
+                    if exists(f):
+                        remove(f)
+                    else:
+                        self.logDebug("%s does not exists" % f)
 
             self.logInfo(basename(plugin.file), _("Extracting finished"))
             self.manager.dispatchEvent("unrarFinished", plugin.out, plugin.file)
 
             return plugin.getExtractedFiles()
-
 
         except ArchiveError, e:
             self.logError(basename(plugin.file), _("Archive Error"), str(e))
@@ -266,7 +270,6 @@ class ExtractArchive(Addon):
         """ List of saved passwords """
         return self.passwords
 
-
     def reloadPasswords(self):
         pwfile = self.getConfig("passwordfile")
         if not exists(pwfile):
@@ -280,13 +283,13 @@ class ExtractArchive(Addon):
 
         self.passwords = passwords
 
-
     @Expose
     def addPassword(self, pw):
         """  Adds a password to saved list"""
         pwfile = self.getConfig("passwordfile")
 
-        if pw in self.passwords: self.passwords.remove(pw)
+        if pw in self.passwords:
+            self.passwords.remove(pw)
         self.passwords.insert(0, pw)
 
         f = open(pwfile, "wb")
@@ -296,7 +299,8 @@ class ExtractArchive(Addon):
 
     def setPermissions(self, files):
         for f in files:
-            if not exists(f): continue
+            if not exists(f):
+                continue
             try:
                 if self.core.config["permission"]["change_file"]:
                     if isfile(f):

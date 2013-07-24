@@ -23,6 +23,7 @@ import thread
 
 from module.plugins.Addon import Addon
 
+
 class ClickAndLoad(Addon):
     __name__ = "ClickAndLoad"
     __version__ = "0.21"

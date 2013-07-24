@@ -5,6 +5,7 @@
 from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 
+
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __version__ = "0.13"
@@ -23,6 +24,6 @@ class AlldebridCom(MultiHoster):
 
     def getHoster(self):
         https = "https" if self.getConfig("https") else "http"
-        page = getURL(https + "://www.alldebrid.com/api.php?action=get_host").replace("\"","").strip()
-        
+        page = getURL(https + "://www.alldebrid.com/api.php?action=get_host").replace("\"", "").strip()
+
         return [x.strip() for x in page.split(",") if x.strip()]

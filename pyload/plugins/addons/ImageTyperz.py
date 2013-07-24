@@ -16,16 +16,14 @@
     @author: mkaay, RaNaN, zoidberg
 """
 from __future__ import with_statement
-
 from thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
-
-from module.network.RequestFactory import getURL, getRequest
-from module.network.HTTPRequest import BadHeader
-
-from module.plugins.Hook import Hook
 import re
 from base64 import b64encode
+
+from module.network.RequestFactory import getURL, getRequest
+from module.plugins.Hook import Hook
+
 
 class ImageTyperzException(Exception):
     def __init__(self, err):
@@ -39,6 +37,7 @@ class ImageTyperzException(Exception):
 
     def __repr__(self):
         return "<ImageTyperzException %s>" % self.err
+
 
 class ImageTyperz(Hook):
     __name__ = "ImageTyperz"
@@ -59,28 +58,25 @@ class ImageTyperz(Hook):
         self.info = {}
 
     def getCredits(self):
-        response = getURL(self.GETCREDITS_URL,
-                      post = {"action": "REQUESTBALANCE",
-                              "username": self.getConfig("username"),
-                              "password": self.getConfig("passkey")}
-                      )
-                                                                         
+        response = getURL(self.GETCREDITS_URL, post={"action": "REQUESTBALANCE", "username": self.getConfig("username"),
+                                                     "password": self.getConfig("passkey")})
+
         if response.startswith('ERROR'):
             raise ImageTyperzException(response)
-            
+
         try:
             balance = float(response)
         except:
             raise ImageTyperzException("invalid response")
-            
+
         self.logInfo("Account balance: $%s left" % response)
-        return balance 
+        return balance
 
     def submit(self, captcha, captchaType="file", match=None):
         req = getRequest()
         #raise timeout threshold
         req.c.setopt(LOW_SPEED_TIME, 80)
-        
+
         try:
             #workaround multipart-post bug in HTTPRequest.py 
             if re.match("^[A-Za-z0-9]*$", self.getConfig("passkey")):
@@ -91,13 +87,11 @@ class ImageTyperz(Hook):
                 with open(captcha, 'rb') as f:
                     data = f.read()
                 data = b64encode(data)
-                
-            response = req.load(self.SUBMIT_URL,
-                                post={ "action": "UPLOADCAPTCHA",
-                                       "username": self.getConfig("username"),
-                                       "password": self.getConfig("passkey"),
-                                       "file": data},
-                                multipart = multipart)
+
+            response = req.load(self.SUBMIT_URL, post={"action": "UPLOADCAPTCHA",
+                                                       "username": self.getConfig("username"),
+                                                       "password": self.getConfig("passkey"), "file": data},
+                                                       multipart=multipart)
         finally:
             req.close()
 
@@ -108,14 +102,14 @@ class ImageTyperz(Hook):
             if len(data) == 2:
                 ticket, result = data
             else:
-                raise ImageTyperzException("Unknown response %s" % response)      
-        
+                raise ImageTyperzException("Unknown response %s" % response)
+
         return ticket, result
 
     def newCaptchaTask(self, task):
         if "service" in task.data:
             return False
-        
+
         if not task.isTextual():
             return False
 
@@ -136,17 +130,14 @@ class ImageTyperz(Hook):
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            response = getURL(self.RESPOND_URL,
-                              post={"action": "SETBADIMAGE",
-                                    "username": self.getConfig("username"),
-                                    "password": self.getConfig("passkey"),
-                                    "imageid": task.data["ticket"]}
-                              )
-            
+            response = getURL(self.RESPOND_URL, post={"action": "SETBADIMAGE", "username": self.getConfig("username"),
+                                                      "password": self.getConfig("passkey"),
+                                                      "imageid": task.data["ticket"]})
+
             if response == "SUCCESS":
                 self.logInfo("Bad captcha solution received, requested refund")
             else:
-                self.logError("Bad captcha solution received, refund request failed", response) 
+                self.logError("Bad captcha solution received, refund request failed", response)
 
     def processCaptcha(self, task):
         c = task.captchaFile

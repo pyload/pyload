@@ -3,6 +3,7 @@
 from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 
+
 class ZeveraCom(MultiHoster):
     __name__ = "ZeveraCom"
     __version__ = "0.02"
@@ -15,5 +16,5 @@ class ZeveraCom(MultiHoster):
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     def getHoster(self):
-        page = getURL("http://www.zevera.com/jDownloader.ashx?cmd=gethosters")        
-        return [x.strip() for x in page.replace("\"", "").split(",")]                           
+        page = getURL("http://www.zevera.com/jDownloader.ashx?cmd=gethosters")
+        return [x.strip() for x in page.replace("\"", "").split(",")]

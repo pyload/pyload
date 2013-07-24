@@ -26,18 +26,19 @@ from pyxmpp.interfaces import *
 
 from module.plugins.addons.IRCInterface import IRCInterface
 
+
 class XMPPInterface(IRCInterface, JabberClient):
     __name__ = "XMPPInterface"
     __version__ = "0.11"
     __description__ = """connect to jabber and let owner perform different tasks"""
     __config__ = [("activated", "bool", "Activated", "False"),
-            ("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),
-            ("pw", "str", "Password", ""),
-            ("tls", "bool", "Use TLS", False),
-            ("owners", "str", "List of JIDs accepting commands from", "me@icq-gateway.org;some@msn-gateway.org"),
-            ("info_file", "bool", "Inform about every file finished", "False"),
-            ("info_pack", "bool", "Inform about every package finished", "True"),
-            ("captcha", "bool", "Send captcha requests", "True")]
+                  ("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),
+                  ("pw", "str", "Password", ""),
+                  ("tls", "bool", "Use TLS", False),
+                  ("owners", "str", "List of JIDs accepting commands from", "me@icq-gateway.org;some@msn-gateway.org"),
+                  ("info_file", "bool", "Inform about every file finished", "False"),
+                  ("info_pack", "bool", "Inform about every package finished", "True"),
+                  ("captcha", "bool", "Send captcha requests", "True")]
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
@@ -69,7 +70,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         self.interface_providers = [
             VersionHandler(self),
             self,
-            ]
+        ]
 
     def coreReady(self):
         self.new_package = {}
@@ -120,8 +121,8 @@ class XMPPInterface(IRCInterface, JabberClient):
         The handlers returned will be called when matching message is received
         in a client session."""
         return [
-                ("normal", self.message),
-                ]
+            ("normal", self.message),
+        ]
 
     def presence_control(self, stanza):
         from_jid = unicode(stanza.get_from_jid())
@@ -249,8 +250,8 @@ class VersionHandler(object):
         """Return list of tuples (element_name, namespace, handler) describing
         handlers of <iq type='get'/> stanzas"""
         return [
-                ("query", "jabber:iq:version", self.get_version),
-                                                                ]
+            ("query", "jabber:iq:version", self.get_version),
+        ]
 
     def get_iq_set_handlers(self):
         """Return empty list, as this class provides no <iq type='set'/> stanza handler."""

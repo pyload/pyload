@@ -19,7 +19,6 @@
 
 import os
 import re
-import sys
 import traceback
 
 from os.path import join
@@ -28,13 +27,12 @@ from module.plugins.Addon import Addon
 
 BUFFER_SIZE = 4096
 
+
 class MergeFiles(Addon):
     __name__ = "MergeFiles"
     __version__ = "0.11"
     __description__ = "Merges parts splitted with hjsplit"
-    __config__ = [
-        ("activated" , "bool" , "Activated"  , "False"),
-        ]
+    __config__ = [("activated", "bool", "Activated", "False")]
     __threaded__ = ["packageFinished"]
     __author_name__ = ("and9000")
     __author_mail__ = ("me@has-no-mail.com")
@@ -42,7 +40,7 @@ class MergeFiles(Addon):
     def setup(self):
         # nothing to do
         pass
-        
+
     def packageFinished(self, pack):
         files = {}
         fid_dict = {}
@@ -53,9 +51,9 @@ class MergeFiles(Addon):
                 files[data["name"][:-4]].append(data["name"])
                 files[data["name"][:-4]].sort()
                 fid_dict[data["name"]] = fid
-                
+
         download_folder = self.core.config['general']['download_folder']
-                
+
         if self.core.config['general']['folder_per_package']:
             download_folder = save_join(download_folder, pack.folder)
 
@@ -76,7 +74,7 @@ class MergeFiles(Addon):
                         if f_buffer:
                             final_file.write(f_buffer)
                             size_written += BUFFER_SIZE
-                            pyfile.setProgress((size_written*100)/s_file_size)
+                            pyfile.setProgress((size_written * 100) / s_file_size)
                         else:
                             break
                     s_file.close()
@@ -87,8 +85,6 @@ class MergeFiles(Addon):
                     pyfile.setProgress(100)
                     pyfile.setStatus("finished")
                     pyfile.release()
-                    
+
             final_file.close()
             self.logInfo("Finished merging of %s" % name)
-                
-
