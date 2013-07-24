@@ -21,7 +21,7 @@ define('default', ['backbone', 'jquery', 'app', 'router', 'models/UserSession'],
         };
 
         $(function() {
-            App.session = new UserSession();
+            App.user = new UserSession();
             App.router = new Router();
             App.start();
         });

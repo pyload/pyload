@@ -49,7 +49,7 @@ def convert_obj(dct):
     return dct
 
 def dumps(*args, **kwargs):
-    if 'compact' in kwargs:
+    if 'compact' in kwargs and kwargs['compact']:
         kwargs['cls'] = BaseEncoderCompact
         del kwargs['compact']
     else:

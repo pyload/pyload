@@ -7,6 +7,10 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
         // Renders the header with all information
         return Backbone.Marionette.ItemView.extend({
 
+            modelEvents: {
+                'change': 'render'
+            },
+
             events: {
                 'click .icon-list': 'toggle_taskList',
                 'click .popover .close': 'toggle_taskList',
@@ -41,6 +45,8 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
             initialize: function() {
                 var self = this;
                 this.notificationView = new NotificationView();
+
+                this.model = App.user;
 
                 this.status = new ServerStatus();
                 this.listenTo(this.status, 'change', this.update);

@@ -17,20 +17,34 @@ define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/login'],
             login: function(e) {
                 e.stopPropagation();
 
+                var self = this;
                 var options = App.apiRequest('login', null, {
                     data: this.ui.form.serialize(),
-                    type : 'post',
+                    type: 'post',
                     success: function(data) {
-                        // TODO: go to last page, better error
-                        if (data)
+                        console.log('User logged in', data);
+                        // TODO: go to last page
+                        if (data) {
+                            App.user.set(data);
+                            App.user.save();
                             App.navigate('');
-                        else
-                            alert('Wrong login');
+                        }
+                        else {
+                            self.wrongLogin();
+                        }
+                    },
+                    error: function() {
+                        self.wrongLogin();
                     }
                 });
 
                 $.ajax(options);
                 return false;
+            },
+
+            // TODO: improve
+            wrongLogin: function() {
+                alert('Wrong login');
             }
 
         });

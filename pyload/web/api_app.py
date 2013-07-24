@@ -8,11 +8,12 @@ from traceback import format_exc, print_exc
 from bottle import route, request, response, HTTPError, parse_auth
 
 from utils import set_session, get_user_api
-from webinterface import PYLOAD
+from webinterface import PYLOAD, session
 
 from pyload.Api import ExceptionObject
-from pyload.remote.json_converter import loads, dumps
+from pyload.remote.json_converter import loads, dumps, BaseEncoder
 from pyload.utils import remove_chars
+
 
 def add_header(r):
     r.headers.replace("Content-type", "application/json")
@@ -95,10 +96,13 @@ def login():
     # get the session id by dirty way, documentations seems wrong
     try:
         sid = s._headers["cookie_out"].split("=")[1].split(";")[0]
-        return dumps(sid)
+    # reuse old session id
     except:
-        print "Could not get session"
-        return dumps(True)
+        sid = request.get_header(session.options['key'])
+
+    result = BaseEncoder().default(user)
+    result["session"] = sid
+    return dumps(result)
 
 
 @route("/api/logout")

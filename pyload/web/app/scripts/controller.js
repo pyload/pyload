@@ -1,6 +1,7 @@
 define([
     'app',
     'backbone',
+    'jquery',
     'underscore',
 
     // Views
@@ -13,7 +14,7 @@ define([
     'views/settings/settingsView',
     'views/accounts/accountListView'
 ], function(
-    App, Backbone, _, HeaderView, NotificationView, DashboardView, SelectionView, FilterView, LoginView, SettingsView, AccountListView) {
+    App, Backbone, $, _, HeaderView, NotificationView, DashboardView, SelectionView, FilterView, LoginView, SettingsView, AccountListView) {
     'use strict';
     // TODO some views does not need to be loaded instantly
 
@@ -45,7 +46,13 @@ define([
         },
 
         logout: function() {
-            alert('Not implemented');
+            $.ajax(App.apiRequest('logout', null, {
+                    success: function() {
+                        App.user.destroy();
+                        App.navigate('login');
+                    }
+                }
+            ));
         },
 
         settings: function() {
