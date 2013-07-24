@@ -7,7 +7,6 @@ from shutil import move
 from sys import exc_clear, exc_info
 from logging import log, DEBUG
 from time import sleep, time
-from random import randint
 from glob import glob
 
 from pycurl import LOW_SPEED_TIME, FORM_FILE
@@ -15,7 +14,7 @@ from json import loads
 
 from Stubs import Thread, Core, noop
 
-from pyload.network.RequestFactory import getRequest, getURL
+from pyload.network.RequestFactory import getRequest
 from pyload.plugins.Base import Abort, Fail
 from pyload.plugins.Hoster import Hoster
 
@@ -50,74 +49,44 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, i
     temp_file.write(img)
     temp_file.close()
 
-    Ocr = self.core.pluginManager.loadClass("captcha", self.__name__)
+    log(DEBUG, "Using ct for captcha")
+    # put username and passkey into two lines in ct.conf
+    conf = join(expanduser("~"), "ct.conf")
+    if not exists(conf): raise Exception("CaptchaService config %s not found." % conf)
+    f = open(conf, "rb")
+    req = getRequest()
 
-    if Ocr:
-        log(DEBUG, "Using tesseract for captcha")
-        sleep(randint(3000, 5000) / 1000.0)
-        if self.pyfile.abort: raise Abort
+    #raise timeout threshold
+    req.c.setopt(LOW_SPEED_TIME, 300)
 
-        ocr = Ocr()
-        result = ocr.get_captcha(temp_file.name)
-    else:
-        log(DEBUG, "Using ct for captcha")
-        # put username and passkey into two lines in ct.conf
-        conf = join(expanduser("~"), "ct.conf")
-        if not exists(conf): raise Exception("CaptchaTrader config %s not found." % conf)
-        f = open(conf, "rb")
-        req = getRequest()
+    try:
+        json = req.load("http://captchatrader.com/api/submit",
+            post={"api_key": "9f65e7f381c3af2b076ea680ae96b0b7",
+                  "username": f.readline().strip(),
+                  "password": f.readline().strip(),
+                  "value": (FORM_FILE, temp_file.name),
+                  "type": "file"}, multipart=True)
+    finally:
+        f.close()
+        req.close()
 
-        #raise timeout threshold
-        req.c.setopt(LOW_SPEED_TIME, 80)
+    response = loads(json)
+    log(DEBUG, str(response))
+    result = response[1]
 
-        try:
-            json = req.load("http://captchatrader.com/api/submit",
-                post={"api_key": "9f65e7f381c3af2b076ea680ae96b0b7",
-                      "username": f.readline().strip(),
-                      "password": f.readline().strip(),
-                      "value": (FORM_FILE, temp_file.name),
-                      "type": "file"}, multipart=True)
-        finally:
-            f.close()
-            req.close()
-
-        response = loads(json)
-        log(DEBUG, str(response))
-        result = response[1]
-
-        self.cTask = response[0]
+    self.cTask = response[0]
 
     return result
 
 Hoster.decryptCaptcha = decryptCaptcha
 
-
-def respond(ticket, value):
-    conf = join(expanduser("~"), "ct.conf")
-    f = open(conf, "rb")
-    try:
-        getURL("http://captchatrader.com/api/respond",
-            post={"is_correct": value,
-                  "username": f.readline().strip(),
-                  "password": f.readline().strip(),
-                  "ticket": ticket})
-    except Exception, e :
-        print "CT Exception:", e
-        log(DEBUG, str(e))
-    finally:
-        f.close()
-
 def invalidCaptcha(self):
     log(DEBUG, "Captcha invalid")
-    if self.cTask:
-        respond(self.cTask, 0)
 
 Hoster.invalidCaptcha = invalidCaptcha
 
 def correctCaptcha(self):
     log(DEBUG, "Captcha correct")
-    if self.cTask:
-        respond(self.cTask, 1)
 
 Hoster.correctCaptcha = correctCaptcha
 

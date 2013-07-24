@@ -102,8 +102,6 @@ for f in sections["files"]:
 
 del sections["files"]
 
-print HosterPluginTester.files
-
 urls = []
 status = {}
 
