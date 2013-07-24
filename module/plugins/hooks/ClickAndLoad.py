@@ -23,6 +23,7 @@ import thread
 
 from module.plugins.Hook import Hook
 
+
 class ClickAndLoad(Hook):
     __name__ = "ClickAndLoad"
     __version__ = "0.21"

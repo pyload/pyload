@@ -1,6 +1,6 @@
-  # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
-'''
+"""
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 3 of the License,
@@ -15,7 +15,7 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
     @author: Walter Purcaro
-'''
+"""
 
 from module.database import style
 from module.plugins.Hook import Hook
@@ -70,7 +70,7 @@ class DeleteFinished(Hook):
 
     ## event managing ##
     def addEvent(self, event, func):
-        '''Adds an event listener for event name'''
+        """Adds an event listener for event name"""
         if event in self.m.events:
             if func in self.m.events[event]:
                 self.logDebug('Function already registered %s' % func)

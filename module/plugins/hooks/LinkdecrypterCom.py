@@ -22,11 +22,12 @@ from module.plugins.Hook import Hook
 from module.network.RequestFactory import getURL
 from module.utils import remove_chars
 
+
 class LinkdecrypterCom(Hook):
     __name__ = "LinkdecrypterCom"
     __version__ = "0.18"
     __description__ = """linkdecrypter.com - regexp loader"""
-    __config__ = [ ("activated", "bool", "Activated" , "False") ]
+    __config__ = [("activated", "bool", "Activated", "False")]
     __author_name__ = ("zoidberg")
 
     def coreReady(self):
@@ -36,8 +37,8 @@ class LinkdecrypterCom(Hook):
             self.logError(_("Crypter list not found"))
             return
 
-        builtin = [ name.lower() for name in self.core.pluginManager.crypterPlugins.keys() ]
-        builtin.extend([ "downloadserienjunkiesorg" ])
+        builtin = [name.lower() for name in self.core.pluginManager.crypterPlugins.keys()]
+        builtin.extend(["downloadserienjunkiesorg"])
 
         crypter_pattern = re.compile("(\w[\w.-]+)")
         online = []
@@ -49,11 +50,11 @@ class LinkdecrypterCom(Hook):
         if not online:
             self.logError(_("Crypter list is empty"))
             return
-             
+
         regexp = r"https?://([^.]+\.)*?(%s)/.*" % "|".join(online)
 
         dict = self.core.pluginManager.crypterPlugins[self.__name__]
         dict["pattern"] = regexp
         dict["re"] = re.compile(regexp)
-        
+
         self.logDebug("REGEXP: " + regexp)

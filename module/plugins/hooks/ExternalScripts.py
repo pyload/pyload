@@ -25,6 +25,7 @@ from os.path import join, exists, basename
 from module.plugins.Hook import Hook
 from module.utils import save_join
 
+
 class ExternalScripts(Hook):
     __name__ = "ExternalScripts"
     __version__ = "0.22"
@@ -43,7 +44,6 @@ class ExternalScripts(Hook):
                    'all_dls_finished', 'all_dls_processed']
 
         for folder in folders:
-
             self.scripts[folder] = []
 
             self.initPluginType(folder, join(pypath, 'scripts', folder))
@@ -53,12 +53,11 @@ class ExternalScripts(Hook):
             if names:
                 self.logInfo((_("Installed scripts for %s: ") % script_type ) + ", ".join([basename(x) for x in names]))
 
-
     def initPluginType(self, folder, path):
         if not exists(path):
             try:
                 makedirs(path)
-            except :
+            except:
                 self.logDebug("Script folder %s not created" % folder)
                 return
 
@@ -66,7 +65,7 @@ class ExternalScripts(Hook):
             if f.startswith("#") or f.startswith(".") or f.startswith("_") or f.endswith("~") or f.endswith(".swp"):
                 continue
 
-            if not access(join(path,f), X_OK):
+            if not access(join(path, f), X_OK):
                 self.logWarning(_("Script not executable:") + " %s/%s" % (folder, f))
 
             self.scripts[folder].append(join(path, f))
@@ -77,7 +76,7 @@ class ExternalScripts(Hook):
             #output goes to pyload
             subprocess.Popen(cmd, bufsize=-1)
         except Exception, e:
-            self.logError(_("Error in %(script)s: %(error)s") % { "script" :basename(script), "error": str(e)})
+            self.logError(_("Error in %(script)s: %(error)s") % {"script": basename(script), "error": str(e)})
 
     def downloadPreparing(self, pyfile):
         for script in self.scripts['download_preparing']:
@@ -86,9 +85,8 @@ class ExternalScripts(Hook):
     def downloadFinished(self, pyfile):
         for script in self.scripts['download_finished']:
             self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.name,
-                            save_join(self.core.config['general']['download_folder'], pyfile.package().folder, pyfile.name),
-                            pyfile.id)
-
+                            save_join(self.core.config['general']['download_folder'],
+                                      pyfile.package().folder, pyfile.name), pyfile.id)
 
     def packageFinished(self, pypack):
         for script in self.scripts['package_finished']:
@@ -116,4 +114,3 @@ class ExternalScripts(Hook):
     def allDownloadsProcessed(self):
         for script in self.scripts["all_dls_processed"]:
             self.callScript(script)
-

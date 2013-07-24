@@ -1,4 +1,4 @@
-  # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """
     This program is free software; you can redistribute it and/or modify
@@ -17,9 +17,10 @@
     @author: Walter Purcaro
 """
 
-from module.plugins.Hook import Hook
 from os.path import basename
 from re import search
+
+from module.plugins.Hook import Hook
 
 
 class SkipRev(Hook):

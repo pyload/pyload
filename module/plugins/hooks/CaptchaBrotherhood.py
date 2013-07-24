@@ -26,8 +26,8 @@ from time import sleep
 import Image
 
 from module.network.RequestFactory import getURL, getRequest
-from module.network.HTTPRequest import BadHeader
 from module.plugins.Hook import Hook
+
 
 class CaptchaBrotherhoodException(Exception):
     def __init__(self, err):
@@ -42,6 +42,7 @@ class CaptchaBrotherhoodException(Exception):
     def __repr__(self):
         return "<CaptchaBrotherhoodException %s>" % self.err
 
+
 class CaptchaBrotherhood(Hook):
     __name__ = "CaptchaBrotherhood"
     __version__ = "0.04"
@@ -49,10 +50,10 @@ class CaptchaBrotherhood(Hook):
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
-                  ("passkey", "password", "Password", ""),]
+                  ("passkey", "password", "Password", "")]
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
-    
+
     API_URL = "http://www.captchabrotherhood.com/"
 
     def setup(self):
@@ -60,8 +61,7 @@ class CaptchaBrotherhood(Hook):
 
     def getCredits(self):
         response = getURL(self.API_URL + "askCredits.aspx",
-                          get = {"username": self.getConfig("username"),
-                                 "password": self.getConfig("passkey")})
+                          get={"username": self.getConfig("username"), "password": self.getConfig("passkey")})
         if not response.startswith("OK"):
             raise CaptchaBrotherhoodException(response)
         else:
@@ -70,14 +70,14 @@ class CaptchaBrotherhood(Hook):
             self.info["credits"] = credits
             return credits
 
-    def submit(self, captcha, captchaType="file", match=None):               
+    def submit(self, captcha, captchaType="file", match=None):
         try:
             img = Image.open(captcha)
             output = StringIO.StringIO()
             self.logDebug("CAPTCHA IMAGE", img, img.format, img.mode)
             if img.format in ("GIF", "JPEG"):
                 img.save(output, img.format)
-            else:    
+            else:
                 if img.mode != "RGB":
                     img = img.convert("RGB")
                 img.save(output, "JPEG")
@@ -85,57 +85,55 @@ class CaptchaBrotherhood(Hook):
             output.close()
         except Exception, e:
             raise CaptchaBrotherhoodException("Reading or converting captcha image failed: %s" % e)
-        
+
         req = getRequest()
 
-        url = "%ssendNewCaptcha.aspx?%s" % (self.API_URL, 
-                   urlencode({"username": self.getConfig("username"),
-                              "password": self.getConfig("passkey"),
-                              "captchaSource": "pyLoad",
-                              "timeout": "80"})
-                   )
+        url = "%ssendNewCaptcha.aspx?%s" % (self.API_URL,
+                                            urlencode({"username": self.getConfig("username"),
+                                                       "password": self.getConfig("passkey"),
+                                                       "captchaSource": "pyLoad",
+                                                       "timeout": "80"}))
 
         req.c.setopt(pycurl.URL, url)
         req.c.setopt(pycurl.POST, 1)
         req.c.setopt(pycurl.POSTFIELDS, data)
-        req.c.setopt(pycurl.HTTPHEADER, [ "Content-Type: text/html" ])        
+        req.c.setopt(pycurl.HTTPHEADER, ["Content-Type: text/html"])
 
         try:
             req.c.perform()
             response = req.getResponse()
         except Exception, e:
             raise CaptchaBrotherhoodException("Submit captcha image failed")
-            
+
         req.close()
 
         if not response.startswith("OK"):
             raise CaptchaBrotherhoodException(response[1])
-       
+
         ticket = response[3:]
-        
+
         for i in range(15):
             sleep(5)
             response = self.get_api("askCaptchaResult", ticket)
             if response.startswith("OK-answered"):
-                return ticket, response[12:] 
+                return ticket, response[12:]
 
         raise CaptchaBrotherhoodException("No solution received in time")
 
     def get_api(self, api, ticket):
-        response = getURL("%s%s.aspx" % (self.API_URL, api), 
+        response = getURL("%s%s.aspx" % (self.API_URL, api),
                           get={"username": self.getConfig("username"),
                                "password": self.getConfig("passkey"),
-                               "captchaID": ticket}
-                          )
+                               "captchaID": ticket})
         if not response.startswith("OK"):
             raise CaptchaBrotherhoodException("Unknown response: %s" % response)
-        
+
         return response
 
     def newCaptchaTask(self, task):
         if "service" in task.data:
             return False
-            
+
         if not task.isTextual():
             return False
 

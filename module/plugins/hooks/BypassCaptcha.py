@@ -26,6 +26,7 @@ from module.plugins.Hook import Hook
 
 PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"
 
+
 class BypassCaptchaException(Exception):
     def __init__(self, err):
         self.err = err
@@ -38,6 +39,7 @@ class BypassCaptchaException(Exception):
 
     def __repr__(self):
         return "<BypassCaptchaException %s>" % self.err
+
 
 class BypassCaptcha(Hook):
     __name__ = "BypassCaptcha"
@@ -57,13 +59,10 @@ class BypassCaptcha(Hook):
         self.info = {}
 
     def getCredits(self):
-        response = getURL(self.GETCREDITS_URL,
-                      post = {"key": self.getConfig("passkey")}
-                      )
-                                                                         
-        data = dict([x.split(' ',1) for x in response.splitlines()])
+        response = getURL(self.GETCREDITS_URL, post={"key": self.getConfig("passkey")})
+
+        data = dict([x.split(' ', 1) for x in response.splitlines()])
         return int(data['Left'])
-        
 
     def submit(self, captcha, captchaType="file", match=None):
         req = getRequest()
@@ -72,39 +71,36 @@ class BypassCaptcha(Hook):
         req.c.setopt(LOW_SPEED_TIME, 80)
 
         try:
-            response = req.load(self.SUBMIT_URL, 
-                            post={"vendor_key": PYLOAD_KEY,
-                                  "key": self.getConfig("passkey"),
-                                  "gen_task_id": "1",
-                                  "file": (FORM_FILE, captcha)},
-                            multipart=True)
+            response = req.load(self.SUBMIT_URL,
+                                post={"vendor_key": PYLOAD_KEY,
+                                      "key": self.getConfig("passkey"),
+                                      "gen_task_id": "1",
+                                      "file": (FORM_FILE, captcha)},
+                                multipart=True)
         finally:
             req.close()
 
-        data = dict([x.split(' ',1) for x in response.splitlines()])
+        data = dict([x.split(' ', 1) for x in response.splitlines()])
         if not data or "Value" not in data:
             raise BypassCaptchaException(response)
-            
+
         result = data['Value']
         ticket = data['TaskId']
-        self.logDebug("result %s : %s" % (ticket,result))
+        self.logDebug("result %s : %s" % (ticket, result))
 
         return ticket, result
 
     def respond(self, ticket, success):
         try:
-            response = getURL(self.RESPOND_URL, 
-                              post={"task_id": ticket,
-                                    "key": self.getConfig("passkey"),
-                                    "cv": 1 if success else 0}
-                              )
+            response = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig("passkey"),
+                                                      "cv": 1 if success else 0})
         except BadHeader, e:
             self.logError("Could not send response.", str(e))
 
     def newCaptchaTask(self, task):
         if "service" in task.data:
             return False
-        
+
         if not task.isTextual():
             return False
 

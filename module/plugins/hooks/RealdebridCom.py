@@ -3,6 +3,7 @@
 from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 
+
 class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
     __version__ = "0.43"
@@ -20,6 +21,6 @@ class RealdebridCom(MultiHoster):
 
     def getHoster(self):
         https = "https" if self.getConfig("https") else "http"
-        page = getURL(https + "://real-debrid.com/api/hosters.php").replace("\"","").strip()
+        page = getURL(https + "://real-debrid.com/api/hosters.php").replace("\"", "").strip()
 
         return [x.strip() for x in page.split(",") if x.strip()]
