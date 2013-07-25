@@ -11,7 +11,7 @@ class SecuredIn(Crypter):
     __name__ = "SecuredIn"
     __type__ = "container"
     __pattern__ = r"http://[\w\.]*?secured\.in/download-[\d]+-[\w]{8}\.html"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """secured.in Container Plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
@@ -31,7 +31,7 @@ class SecuredIn(Crypter):
         src = self.req.load(url, cookies=True)
         soup = BeautifulSoup(src)
         img = soup.find("img", attrs={"id": "captcha_img"})
-        for i in range(3):
+        for _ in range(3):
             form = soup.find("form", attrs={"id": "frm_captcha"})
             captchaHash = form.find("input", attrs={"id": "captcha_hash"})["value"]
             captchaUrl = "http://secured.in/%s" % img["src"]
@@ -41,8 +41,8 @@ class SecuredIn(Crypter):
             soup = BeautifulSoup(src)
             img = soup.find("img", attrs={"id": "captcha_img"})
             if not img:
-                files = soup.findAll("tr", attrs={"id": re.compile("file-\d+")})
-                dlIDPattern = re.compile("accessDownload\(\d, \d+, '(.*?)', \d\)")
+                files = soup.findAll("tr", attrs={"id": re.compile(r"file-\d+")})
+                dlIDPattern = re.compile(r"accessDownload\(\d, \d+, '(.*?)', \d\)")
                 cypher = self.Cypher()
                 for cfile in files:
                     m = dlIDPattern.search(cfile["onclick"])
@@ -396,13 +396,13 @@ class SecuredIn(Crypter):
             self.pqmyzkid = self.thdlpsmy
             self.pldmjnde = self.plkodnyq
 
-            yaqpolft = [0 for i in range(len(kaiumylq))]
+            yaqpolft = [0] * len(kaiumylq)
 
             yaqwsedr = 0
             btzqwsay = 0
             while yaqwsedr < len(kaiumylq):
                 wlqoakmy = 0
-                for lopiuztr in range(0, 4):
+                for _ in range(0, 4):
                     wlqoakmy = wlqoakmy << 8 | ord(kaiumylq[yaqwsedr % len(kaiumylq)])
                     yaqwsedr += 1
                 yaqpolft[btzqwsay] = wlqoakmy

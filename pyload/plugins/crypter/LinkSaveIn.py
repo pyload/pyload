@@ -48,7 +48,7 @@ class LinkSaveIn(Crypter):
         if not self.isOnline():
             self.offline()
 
-        # Check for protection    
+        # Check for protection
         if self.isPasswordProtected():
             self.unlockPasswordProtection()
             self.handleErrors()
