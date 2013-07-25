@@ -66,6 +66,7 @@ module_replace = [
 ('from module.utils import save_join, fs_encode', 'from pyload.utils.fs import save_join, fs_encode'),
 ('from module.utils import save_join', 'from pyload.utils.fs import save_join'),
 ('from module.utils import fs_encode', 'from pyload.utils.fs import fs_encode'),
+('from module.unescape import unescape', 'from pyload.utils import html_unescape as unescape'),
 ('from module.', 'from pyload.')  # This should be always the last one
 ]
 
