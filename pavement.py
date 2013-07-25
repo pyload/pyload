@@ -57,6 +57,7 @@ xargs = ["--language=Python", "--add-comments=L10N",
 # Modules replace rules
 module_replace = [
 ('from module.plugins.Hoster import Hoster', 'from pyload.plugins.Hoster import Hoster'),
+('from module.plugins.Hook import threaded, Expose, Hook', 'from pyload.plugins.Addon import threaded, Expose, Addon'),
 ('from module.plugins.Hook import Hook', 'from pyload.plugins.Addon import Addon'),
 ('from module.common.json_layer import json_loads, json_dumps', 'from pyload.utils import json_loads, json_dumps'),
 ('from module.common.json_layer import json_loads', 'from pyload.utils import json_loads'),
