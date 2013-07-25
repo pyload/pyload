@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: RaNaN
     @interface-version: 0.2
 """
@@ -212,7 +212,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
 class VersionHandler(object):
     """Provides handler for a version query.
-    
+
     This class will answer version query and announce 'jabber:iq:version' namespace
     in the client's disco#info results."""
 

@@ -12,7 +12,7 @@ class ShareLinksBiz(Crypter):
     __name__ = "ShareLinksBiz"
     __type__ = "crypter"
     __pattern__ = r"(?P<base>http://[\w\.]*?(share-links|s2l)\.biz)/(?P<id>_?[0-9a-z]+)(/.*)?"
-    __version__ = "1.12"
+    __version__ = "1.13"
     __description__ = """Share-Links.biz Crypter"""
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
@@ -36,7 +36,7 @@ class ShareLinksBiz(Crypter):
         # Unblock server (load all images)
         self.unblockServer()
 
-        # Check for protection    
+        # Check for protection
         if self.isPasswordProtected():
             self.unlockPasswordProtection()
             self.handleErrors()
@@ -53,7 +53,7 @@ class ShareLinksBiz(Crypter):
         package_links.extend(self.handleCNL2())
         package_links = set(package_links)
 
-        # Get package info 
+        # Get package info
         package_name, package_folder = self.getPackageInfo()
 
         # Pack
@@ -86,7 +86,7 @@ class ShareLinksBiz(Crypter):
         return False
 
     def unblockServer(self):
-        imgs = re.findall("(/template/images/.*?\.gif)", self.html)
+        imgs = re.findall(r"(/template/images/.*?\.gif)", self.html)
         for img in imgs:
             self.load(self.baseUrl + img)
 
@@ -121,12 +121,12 @@ class ShareLinksBiz(Crypter):
         self.html = self.load(url, decode=True)
 
     def _getCaptchaMap(self):
-        map = {}
+        mapp = {}
         for m in re.finditer(r'<area shape="rect" coords="(.*?)" href="(.*?)"', self.html):
             rect = eval('(' + m.group(1) + ')')
             href = m.group(2)
-            map[rect] = href
-        return map
+            mapp[rect] = href
+        return mapp
 
     def _resolveCoords(self, coords, captchaMap):
         x, y = coords
@@ -168,21 +168,21 @@ class ShareLinksBiz(Crypter):
             folder = self.package.folder
             self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
 
-        # Return package info 
+        # Return package info
         return name, folder
 
     def handleWebLinks(self):
         package_links = []
         self.logDebug("Handling Web links")
 
-        #@TODO: Gather paginated web links  
+        #@TODO: Gather paginated web links
         pattern = r"javascript:_get\('(.*?)', \d+, ''\)"
         ids = re.findall(pattern, self.html)
         self.logDebug("Decrypting %d Web links" % len(ids))
-        for i, id in enumerate(ids):
+        for i, ID in enumerate(ids):
             try:
-                self.logDebug("Decrypting Web link %d, [%s]" % (i + 1, id))
-                dwLink = self.baseUrl + "/get/lnk/" + id
+                self.logDebug("Decrypting Web link %d, [%s]" % (i + 1, ID))
+                dwLink = self.baseUrl + "/get/lnk/" + ID
                 response = self.load(dwLink)
                 code = re.search(r'frm/(\d+)', response).group(1)
                 fwLink = self.baseUrl + "/get/frm/" + code
@@ -195,7 +195,7 @@ class ShareLinksBiz(Crypter):
                 self.logDebug("JsEngine returns value [%s] for redirection link" % dlLink)
                 package_links.append(dlLink)
             except Exception, detail:
-                self.logDebug("Error decrypting Web link [%s], %s" % (id, detail))
+                self.logDebug("Error decrypting Web link [%s], %s" % (ID, detail))
         return package_links
 
     def handleContainers(self):

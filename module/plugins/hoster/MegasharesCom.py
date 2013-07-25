@@ -25,16 +25,16 @@ class MegasharesCom(SimpleHoster):
     __name__ = "MegasharesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w+\.)?megashares.com/.*"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __description__ = """megashares.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     FILE_NAME_PATTERN = '<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'
     FILE_SIZE_PATTERN = '<strong><span class="black">Filesize:</span></strong> (?P<S>[0-9.]+) (?P<U>[kKMG])i?B<br />'
-    DOWNLOAD_URL_PATTERN = '<div id="show_download_button_%d"[^>]*>\s*<a href="([^"]+)">'
-    PASSPORT_LEFT_PATTERN = 'Your Download Passport is: <[^>]*>(\w+).*\s*You have\s*<[^>]*>\s*([0-9.]+) ([kKMG]i?B)'
-    PASSPORT_RENEW_PATTERN = 'Your download passport will renew in\s*<strong>(\d+)</strong>:<strong>(\d+)</strong>:<strong>(\d+)</strong>'
+    DOWNLOAD_URL_PATTERN = r'<div id="show_download_button_%d"[^>]*>\s*<a href="([^"]+)">'
+    PASSPORT_LEFT_PATTERN = r'Your Download Passport is: <[^>]*>(\w+).*\s*You have\s*<[^>]*>\s*([0-9.]+) ([kKMG]i?B)'
+    PASSPORT_RENEW_PATTERN = r'Your download passport will renew in\s*<strong>(\d+)</strong>:<strong>(\d+)</strong>:<strong>(\d+)</strong>'
     REACTIVATE_NUM_PATTERN = r'<input[^>]*id="random_num" value="(\d+)" />'
     REACTIVATE_PASSPORT_PATTERN = r'<input[^>]*id="passport_num" value="(\w+)" />'
     REQUEST_URI_PATTERN = r'var request_uri = "([^"]+)";'
@@ -63,7 +63,7 @@ class MegasharesCom(SimpleHoster):
             passport_num = found.group(1)
             request_uri = re.search(self.REQUEST_URI_PATTERN, self.html).group(1)
 
-            for i in range(5):
+            for _ in range(5):
                 random_num = re.search(self.REACTIVATE_NUM_PATTERN, self.html).group(1)
 
                 verifyinput = self.decryptCaptcha(

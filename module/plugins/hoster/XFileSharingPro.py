@@ -112,7 +112,7 @@ class XFileSharingPro(SimpleHoster):
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
         location = None
-        found = re.search("Location\s*:\s*(.*)", self.header, re.I)
+        found = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
         if found and re.match(self.DIRECT_LINK_PATTERN, found.group(1)):
             location = found.group(1).strip()
 
@@ -133,7 +133,7 @@ class XFileSharingPro(SimpleHoster):
             self.header = self.req.http.header
             self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
-            found = re.search("Location\s*:\s*(.*)", self.header, re.I)
+            found = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
             if found:
                 break
 
@@ -208,7 +208,7 @@ class XFileSharingPro(SimpleHoster):
 
             if 'wait' in self.errmsg:
                 wait_time = sum([int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in
-                                 re.findall('(\d+)\s*(hour|minute|second)?', self.errmsg)])
+                                 re.findall(r'(\d+)\s*(hour|minute|second)?', self.errmsg)])
                 self.setWait(wait_time, True)
                 self.wait()
             elif 'captcha' in self.errmsg:
@@ -234,7 +234,7 @@ class XFileSharingPro(SimpleHoster):
         return self.errmsg
 
     def getPostParameters(self):
-        for i in range(3):
+        for _ in range(3):
             if not self.errmsg:
                 self.checkErrors()
 
@@ -313,7 +313,7 @@ class XFileSharingPro(SimpleHoster):
                 if found:
                     captcha_div = found.group(1)
                     self.logDebug(captcha_div)
-                    numerals = re.findall('<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
+                    numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
                     inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
                     self.logDebug("CAPTCHA", inputs['code'], numerals)
                     return 3

@@ -12,13 +12,13 @@ class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
     __type__ = "container"
     __pattern__ = r"http://.*?(serienjunkies.org|dokujunkies.org)/.*?"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __config__ = [
         ("changeNameSJ", "Packagename;Show;Season;Format;Episode", "Take SJ.org name", "Show"),
         ("changeNameDJ", "Packagename;Show;Format;Episode", "Take DJ.org name", "Show"),
         ("randomPreferred", "bool", "Randomize Preferred-List", False),
-        (
-        "hosterListMode", "OnlyOne;OnlyPreferred(One);OnlyPreferred(All);All", "Use for hosters (if supported)", "All"),
+        ("hosterListMode", "OnlyOne;OnlyPreferred(One);OnlyPreferred(All);All",
+         "Use for hosters (if supported)", "All"),
         ("hosterList", "str", "Preferred Hoster list (comma separated)",
          "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
         ("ignoreList", "str", "Ignored Hoster list (comma separated)", "MegauploadCom")
@@ -26,7 +26,6 @@ class SerienjunkiesOrg(Crypter):
     __description__ = """serienjunkies.org Container Plugin"""
     __author_name__ = ("mkaay", "godofdream")
     __author_mail__ = ("mkaay@mkaay.de", "soilfiction@gmail.com")
-
 
     def setup(self):
         self.multiDL = False
@@ -61,7 +60,6 @@ class SerienjunkiesOrg(Crypter):
             self.packages.append((packageName, package_links, packageName))
         else:
             self.core.files.addLinks(package_links, self.pyfile.package().id)
-
 
     def handleSeason(self, url):
         src = self.getSJSrc(url)
@@ -99,7 +97,7 @@ class SerienjunkiesOrg(Crypter):
                     groups[gid]["ep"][ename] = {}
                     parts.remove(parts[0])
                     for part in parts:
-                        hostername = re.search(" \| ([-a-zA-Z0-9]+\.\w+)", part)
+                        hostername = re.search(r" \| ([-a-zA-Z0-9]+\.\w+)", part)
                         if hostername:
                             hostername = hostername.group(1)
                             groups[gid]["ep"][ename][hostername] = []
@@ -229,7 +227,7 @@ class SerienjunkiesOrg(Crypter):
                     groups[gid]["ep"][ename] = {}
                     parts.remove(parts[0])
                     for part in parts:
-                        hostername = re.search(" \| ([-a-zA-Z0-9]+\.\w+)", part)
+                        hostername = re.search(r" \| ([-a-zA-Z0-9]+\.\w+)", part)
                         if hostername:
                             hostername = hostername.group(1)
                             groups[gid]["ep"][ename][hostername] = []
@@ -268,7 +266,7 @@ class SerienjunkiesOrg(Crypter):
         episodePattern = re.compile("^http://download.serienjunkies.org/f-.*?.html(#hasName)?$")
         oldStyleLink = re.compile("^http://serienjunkies.org/safe/(.*)$")
         categoryPatternDJ = re.compile("^http://dokujunkies.org/.*?(.*)$")
-        showPatternDJ = re.compile("^http://dokujunkies.org/.*?/(.*)\.html(#hasName)?$")
+        showPatternDJ = re.compile(r"^http://dokujunkies.org/.*?/(.*)\.html(#hasName)?$")
         framePattern = re.compile("^http://download.(serienjunkies.org|dokujunkies.org)/frame/go-.*?/$")
         url = pyfile.url
         if framePattern.match(url):
@@ -291,8 +289,8 @@ class SerienjunkiesOrg(Crypter):
 
         result = []
         preferredList = self.getConfig("hosterList").strip().lower().replace(
-            '|', ',').replace('.', '').replace(';', ',').split( ',')
-        if (self.getConfig("randomPreferred") == True) and (
+            '|', ',').replace('.', '').replace(';', ',').split(',')
+        if (self.getConfig("randomPreferred") is True) and (
                 self.getConfig("hosterListMode") in ["OnlyOne", "OnlyPreferred(One)"]):
             random.shuffle(preferredList)
             # we don't want hosters be read two times
@@ -309,7 +307,7 @@ class SerienjunkiesOrg(Crypter):
                         return result
 
         ignorelist = self.getConfig("ignoreList").strip().lower().replace(
-            '|', ',').replace('.', '').replace(';', ',').split( ',')
+            '|', ',').replace('.', '').replace(';', ',').split(',')
         if self.getConfig('hosterListMode') in ["OnlyOne", "All"]:
             for Hoster in hosterlist2:
                 if Hoster.strip().lower().replace('.', '') not in ignorelist:
