@@ -9,7 +9,7 @@ from base64 import standard_b64decode
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
 
-from module.common.json_layer import json
+from module.common.json_layer import json_loads, json_dumps
 from module.plugins.Hoster import Hoster
 
 #def getInfo(urls):
@@ -20,7 +20,7 @@ class MegaNz(Hoster):
     __name__ = "MegaNz"
     __type__ = "hoster"
     __pattern__ = r"https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = """mega.co.nz hoster plugin"""
     __author_name__ = ("RaNaN", )
     __author_mail__ = ("ranan@pyload.org", )
@@ -43,9 +43,9 @@ class MegaNz(Hoster):
         # generate a session id, no idea where to obtain elsewhere
         uid = random.randint(10 << 9, 10 ** 10)
 
-        resp = self.load(self.API_URL % uid, post=json.dumps([kwargs]))
+        resp = self.load(self.API_URL % uid, post=json_dumps([kwargs]))
         self.logDebug("Api Response: " + resp)
-        return json.loads(resp)
+        return json_loads(resp)
 
     def decryptAttr(self, data, key):
 
@@ -56,7 +56,7 @@ class MegaNz(Hoster):
             self.fail(_("Decryption failed"))
 
         # Data is padded, 0-bytes must be stripped
-        return json.loads(attr.replace("MEGA", "").rstrip("\0").strip())
+        return json_loads(attr.replace("MEGA", "").rstrip("\0").strip())
 
     def decryptFile(self, key):
         """  Decrypts the file at lastDownload` """
