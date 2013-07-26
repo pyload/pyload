@@ -69,6 +69,7 @@ module_replace = [
 ('from module.utils import fs_encode', 'from pyload.utils.fs import fs_encode'),
 ('from module.unescape import unescape', 'from pyload.utils import html_unescape as unescape'),
 ('from module.lib.BeautifulSoup import BeautifulSoup', 'from BeautifulSoup import BeautifulSoup'),
+('from module.lib import feedparser', 'import feedparser'),
 ('from module.', 'from pyload.')  # This should be always the last one
 ]
 
