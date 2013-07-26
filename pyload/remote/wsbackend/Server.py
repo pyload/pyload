@@ -490,6 +490,9 @@ class WebSocketRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         # handling (self.path, self.command, self.requestline, etc. See also
         # how _StandaloneRequest's members are implemented using these
         # attributes).
+
+        ### Modified
+        # Most True values converted into False
         if not CGIHTTPServer.CGIHTTPRequestHandler.parse_request(self):
             return False
 
@@ -507,7 +510,7 @@ class WebSocketRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         if resource is None:
             self._logger.info('Invalid URI: %r', self.path)
             self._logger.info('Fallback to CGIHTTPRequestHandler')
-            return True
+            return False
         server_options = self.server.websocket_server_options
         if host is not None:
             validation_host = server_options.validation_host
@@ -516,7 +519,7 @@ class WebSocketRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
                                   host,
                                   validation_host)
                 self._logger.info('Fallback to CGIHTTPRequestHandler')
-                return True
+                return False
         if port is not None:
             validation_port = server_options.validation_port
             if validation_port is not None and port != validation_port:
@@ -524,7 +527,7 @@ class WebSocketRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
                                   port,
                                   validation_port)
                 self._logger.info('Fallback to CGIHTTPRequestHandler')
-                return True
+                return False
         self.path = resource
 
         request = _StandaloneRequest(self, self._options.use_tls)
@@ -536,7 +539,7 @@ class WebSocketRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
                 self._logger.info('No handler for resource: %r',
                                   self.path)
                 self._logger.info('Fallback to CGIHTTPRequestHandler')
-                return True
+                return False
         except dispatch.DispatchException, e:
             self._logger.info('%s', e)
             self.send_error(e.status)
