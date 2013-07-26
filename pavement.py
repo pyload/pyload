@@ -63,10 +63,12 @@ module_replace = [
 ('from module.common.json_layer import json_loads', 'from pyload.utils import json_loads'),
 ('from module.common.json_layer import json_dumps', 'from pyload.utils import json_dumps'),
 ('from module.utils import parseFileSize', 'from pyload.utils import parseFileSize'),
+('from module.utils import save_join, save_path', 'from pyload.utils.fs import save_join, save_filename as save_path'),
 ('from module.utils import save_join, fs_encode', 'from pyload.utils.fs import save_join, fs_encode'),
 ('from module.utils import save_join', 'from pyload.utils.fs import save_join'),
 ('from module.utils import fs_encode', 'from pyload.utils.fs import fs_encode'),
 ('from module.unescape import unescape', 'from pyload.utils import html_unescape as unescape'),
+('from module.lib.BeautifulSoup import BeautifulSoup', 'from BeautifulSoup import BeautifulSoup'),
 ('from module.', 'from pyload.')  # This should be always the last one
 ]
 
