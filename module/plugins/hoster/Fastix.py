@@ -29,16 +29,14 @@ class Fastix(Hoster):
         return name
 
     def init(self):
-        self.tries = 0
         self.chunkLimit = 3
         self.resumeDownload = True
 
     def process(self, pyfile):
         if not self.account:
-            self.logError("Please enter your Fastix account or deactivate this plugin")
             self.fail("No Fastix account provided")
 
-        self.log.debug("Fastix: Old URL: %s" % pyfile.url)
+        self.logDebug("Old URL: %s" % pyfile.url)
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         else:
@@ -53,7 +51,7 @@ class Fastix(Hoster):
             else:
                 new_url = data["downloadlink"]
 
-        self.logDebug("Fastix: New URL: %s" % new_url)
+        self.logDebug("New URL: %s" % new_url)
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
             #only use when name wasnt already set
