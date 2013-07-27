@@ -275,6 +275,8 @@ def replace_module_imports():
                 content = content.replace(rule[0], rule[1])
             if '/addons/' in path:
                 content = content.replace('(Hook):', '(Addon):')
+            elif '/accounts/' in path:
+                content = content.replace('self.accounts[user]["password"]', 'self.password')
             f = open(path, 'w')
             f.write(content)
             f.close()
