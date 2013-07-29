@@ -15,11 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
-from module.plugins.Account import Account
-from module.common.json_layer import json_loads
+from pyload.plugins.MultiHoster import MultiHoster
+from pyload.utils import json_loads
 
 
-class UnrestrictLi(Account):
+class UnrestrictLi(MultiHoster):
     __name__ = "UnrestrictLi"
     __version__ = "0.02"
     __type__ = "account"
@@ -52,3 +52,11 @@ class UnrestrictLi(Account):
 
         if 'sign_out' not in self.html:
             self.wrongPassword()
+
+    def loadHosterList(self, req):
+        json_data = req.load('http://unrestrict.li/api/jdownloader/hosts.php?format=json')
+        json_data = json_loads(json_data)
+
+        host_list = [element['host'] for element in json_data['result']]
+
+        return host_list

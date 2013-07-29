@@ -18,8 +18,8 @@
 import re
 from datetime import datetime, timedelta
 
-from module.plugins.Hoster import Hoster
-from module.common.json_layer import json_loads
+from pyload.plugins.Hoster import Hoster
+from pyload.utils import json_loads
 
 
 def secondsToMidnight():
