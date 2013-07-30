@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from module.plugins.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 
 
 class ZeveraCom(Hoster):

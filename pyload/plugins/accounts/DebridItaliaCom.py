@@ -18,10 +18,10 @@
 import re
 import time
 
-from module.plugins.Account import Account
+from pyload.plugins.MultiHoster import MultiHoster
 
 
-class DebridItaliaCom(Account):
+class DebridItaliaCom(MultiHoster):
     __name__ = "DebridItaliaCom"
     __version__ = "0.1"
     __type__ = "account"
@@ -47,3 +47,12 @@ class DebridItaliaCom(Account):
                              get={"u": user, "p": data["password"]})
         if 'NO' in self.html:
             self.wrongPassword()
+
+    def loadHosterList(self, req):
+        return ["netload.in", "hotfile.com", "rapidshare.com", "multiupload.com",
+                "uploading.com", "megashares.com", "crocko.com", "filepost.com",
+                "bitshare.com", "share-links.biz", "putlocker.com", "uploaded.to",
+                "speedload.org", "rapidgator.net", "likeupload.net", "cyberlocker.ch",
+                "depositfiles.com", "extabit.com", "filefactory.com", "sharefiles.co",
+                "ryushare.com", "tusfiles.net", "nowvideo.co", "cloudzer.net", "letitbit.net",
+                "easybytez.com", "uptobox.com", "ddlstorage.com"]

@@ -17,8 +17,8 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
-from module.common.json_layer import json_loads
+from pyload.plugins.Hoster import Hoster
+from pyload.utils import json_loads
 
 
 class MultiDebridCom(Hoster):

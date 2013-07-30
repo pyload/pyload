@@ -1,6 +1,6 @@
 import xml.dom.minidom as dom
 
-from module.plugins.MultiHoster import MultiHoster
+from pyload.plugins.MultiHoster import MultiHoster
 
 
 class RealdebridCom(MultiHoster):
@@ -28,7 +28,5 @@ class RealdebridCom(MultiHoster):
             self.wrongPassword()
 
     def loadHosterList(self, req):
-        https = "https" if self.getConfig("https") else "http"
-        page = req.load(https + "://real-debrid.com/api/hosters.php").replace("\"","").strip()
-
+        page = req.load("http://real-debrid.com/api/hosters.php").replace("\"", "").strip()
         return[x.strip() for x in page.split(",") if x.strip()]

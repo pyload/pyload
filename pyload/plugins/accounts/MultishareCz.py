@@ -17,14 +17,14 @@
     @author: zoidberg
 """
 
-from module.plugins.Account import Account
+from pyload.plugins.MultiHoster import MultiHoster
 #from time import mktime, strptime
 #from pycurl import REFERER
 import re
-from module.utils import parseFileSize
+from pyload.utils import parseFileSize
 
 
-class MultishareCz(Account):
+class MultishareCz(MultiHoster):
     __name__ = "MultishareCz"
     __version__ = "0.02"
     __type__ = "account"
@@ -34,6 +34,7 @@ class MultishareCz(Account):
 
     TRAFFIC_LEFT_PATTERN = r'<span class="profil-zvyrazneni">Kredit:</span>\s*<strong>(?P<S>[0-9,]+)&nbsp;(?P<U>\w+)</strong>'
     ACCOUNT_INFO_PATTERN = r'<input type="hidden" id="(u_ID|u_hash)" name="[^"]*" value="([^"]+)">'
+    HOSTER_PATTERN = r'<img class="logo-shareserveru"[^>]*?alt="([^"]+)"></td>\s*<td class="stav">[^>]*?alt="OK"'
 
     def loadAccountInfo(self, user, req):
         #self.relogin(user)
@@ -57,3 +58,7 @@ class MultishareCz(Account):
 
         if '<div class="akce-chyba akce">' in html:
             self.wrongPassword()
+
+    def loadHosterList(self, req):
+        page = req.load("http://www.multishare.cz/monitoring/")
+        return re.findall(self.HOSTER_PATTERN, page)

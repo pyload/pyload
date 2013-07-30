@@ -18,7 +18,7 @@
 
 import re
 from random import random
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MultishareCz(SimpleHoster):

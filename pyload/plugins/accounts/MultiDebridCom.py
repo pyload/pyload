@@ -17,11 +17,11 @@
 
 from time import time
 
-from module.plugins.Account import Account
-from module.common.json_layer import json_loads
+from pyload.plugins.MultiHoster import MultiHoster
+from pyload.utils import json_loads
 
 
-class MultiDebridCom(Account):
+class MultiDebridCom(MultiHoster):
     __name__ = "MultiDebridCom"
     __version__ = "0.01"
     __type__ = "account"
@@ -45,3 +45,10 @@ class MultiDebridCom(Account):
         if self.json_data['status'] != 'ok':
             self.logError('Invalid login. The password to use is the API-Password you find in your "My Account" page')
             self.wrongPassword()
+
+    def loadHosterList(self, req):
+        json_data = req.load('http://multi-debrid.com/api.php?hosts', decode=True)
+        self.logDebug('JSON data: ' + json_data)
+        json_data = json_loads(json_data)
+
+        return json_data['hosts']

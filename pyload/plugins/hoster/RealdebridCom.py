@@ -6,9 +6,9 @@ from time import time
 from urllib import quote, unquote
 from random import randrange
 
-from module.utils import parseFileSize
-from module.common.json_layer import json_loads
-from module.plugins.Hoster import Hoster
+from pyload.utils import parseFileSize
+from pyload.utils import json_loads
+from pyload.plugins.Hoster import Hoster
 
 
 class RealdebridCom(Hoster):

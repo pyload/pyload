@@ -40,7 +40,6 @@ class PremiumizeMe(MultiHoster):
             user, self.accounts[user]['password']))
         return json_loads(answer)
 
-
     def loadHosterList(self, req):
         # Get supported hosters list from premiumize.me using the
         # json API v1 (see https://secure.premiumize.me/?show=api)
