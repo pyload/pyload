@@ -164,7 +164,7 @@ class CurlChunk(CurlRequest):
     def getHandle(self):
         """ returns a Curl handle ready to use for perform/multiperform """
 
-        self.setRequestContext(self.p.url, self.p.get, self.p.post, self.p.referer, self.cj)
+        self.setRequestContext(self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cookies)
         self.c.setopt(pycurl.WRITEFUNCTION, self.writeBody)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 

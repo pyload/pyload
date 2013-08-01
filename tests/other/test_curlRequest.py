@@ -21,15 +21,18 @@ class TestCurlRequest(TestCase):
 
     def test_cookies(self):
         self.req.load(self.cookieURL, cookies=False)
-        assert len(self.req.cj.values()) == 0
+        assert len(self.req.cj) == 0
 
         self.req.load(self.cookieURL)
-        assert len(self.req.cj.values()) > 0
+        assert len(self.req.cj) > 1
 
-        for c in self.req.load(self.cookieURL + "/cookies.php").splitlines():
-            k, v = c.strip().split(":")
+        cookies = dict([c.strip().split(":") for c in self.req.load(self.cookieURL + "/cookies.php").splitlines()])
+        for k, v in cookies.iteritems():
             self.assertIn(k, self.req.cj)
             self.assertEqual(v, self.req.cj[k].value)
+
+        for c in self.req.cj:
+            self.assertIn(c, cookies)
 
         cookies = self.req.load(self.cookieURL + "/cookies.php", cookies=False)
         self.assertEqual(cookies, "")

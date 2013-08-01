@@ -177,7 +177,8 @@ class CurlRequest(Request):
             self.c.setopt(pycurl.REFERER, "")
 
         if cookies:
-            self.c.setopt(pycurl.COOKIELIST, self.cj.output())
+            for c in self.cj.output().splitlines():
+                self.c.setopt(pycurl.COOKIELIST, c)
         else:
             # Magic string that erases all cookies
             self.c.setopt(pycurl.COOKIELIST, "ALL")

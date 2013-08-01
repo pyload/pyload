@@ -24,6 +24,7 @@ from shutil import move
 import pycurl
 
 from pyload.plugins.Base import Abort
+from pyload.network.CookieJar import CookieJar
 from pyload.utils.fs import save_join, fs_encode
 
 from ..Download import Download
@@ -37,6 +38,8 @@ class CurlDownload(Download):
 
     # def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
     #              options={}, disposition=False):
+
+    CONTEXT_CLASS = CookieJar
 
     def __init__(self, *args, **kwargs):
         Download.__init__(self, *args, **kwargs)
@@ -108,7 +111,7 @@ class CurlDownload(Download):
         except IOError:
             self.info = ChunkInfo(self.path)
 
-    def download(self, uri, path, get={}, post={}, referer=True, disposition=False, chunks=1, resume=False):
+    def download(self, uri, path, get={}, post={}, referer=True, disposition=False, chunks=1, resume=False, cookies=True):
         """ returns new filename or None """
         self.url = uri
         self.path = path
@@ -116,6 +119,7 @@ class CurlDownload(Download):
         self.get = get
         self.post = post
         self.referer = referer
+        self.cookies = cookies
 
         self.checkResume()
         chunks = max(1, chunks)
@@ -317,7 +321,5 @@ class CurlDownload(Download):
         if hasattr(self, "m"):
             self.m.close()
             del self.m
-        if hasattr(self, "cj"):
-            del self.cj
         if hasattr(self, "info"):
             del self.info

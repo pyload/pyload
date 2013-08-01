@@ -294,7 +294,7 @@ class Hoster(Base):
         try:
             # TODO: hardcoded arguments
             newname = self.dl.download(url, filename, get=get, post=post, referer=ref, chunks=self.getChunkCount(),
-                                       resume=self.resumeDownload, disposition=disposition)
+                                       resume=self.resumeDownload, cookies=cookies, disposition=disposition)
         finally:
             self.dl.close()
             self.pyfile.size = self.dl.size
