@@ -26,7 +26,7 @@ from module.plugins.Hook import Hook
 
 class ClickAndLoad(Hook):
     __name__ = "ClickAndLoad"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""
     __config__ = [("activated", "bool", "Activated", "True"),
                   ("extern", "bool", "Allow external link adding", "False")]
@@ -34,8 +34,8 @@ class ClickAndLoad(Hook):
     __author_mail__ = ("RaNaN@pyload.de", "mkaay@mkaay.de")
 
     def coreReady(self):
-        self.port = int(self.core.config['webinterface']['port'])
-        if self.core.config['webinterface']['activated']:
+        self.port = int(self.config['webinterface']['port'])
+        if self.config['webinterface']['activated']:
             try:
                 if self.getConfig("extern"):
                     ip = "0.0.0.0"
