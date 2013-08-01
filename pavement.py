@@ -73,6 +73,7 @@ module_replace = [
 ('self.account.getAccountInfo(self.user, ', 'self.account.getAccountInfo('),
 ('self.account.getAccountInfo(self.user)', 'self.account.getAccountInfo()'),
 ('self.account.accounts[self.user]["password"]', 'self.account.password'),
+("self.account.accounts[self.user]['password']", 'self.account.password'),
 ('from module.', 'from pyload.')  # This should be always the last one
 ]
 
@@ -280,6 +281,7 @@ def replace_module_imports():
                 content = content.replace('(Hook):', '(Addon):')
             elif '/accounts/' in path:
                 content = content.replace('self.accounts[user]["password"]', 'self.password')
+                content = content.replace("self.accounts[user]['password']", 'self.password')
             f = open(path, 'w')
             f.write(content)
             f.close()
