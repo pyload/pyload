@@ -78,7 +78,7 @@ class Addon(Base):
     event_map = None
 
     #: periodic call interval in seconds
-    interval = 60
+    interval = 30
 
     def __init__(self, core, manager, user=None):
         Base.__init__(self, core, user)
@@ -104,12 +104,21 @@ class Addon(Base):
             #delete for various reasons
             self.event_map = None
 
-        self.initPeriodical()
+        #self.initPeriodical()
         self.init()
 
-    def initPeriodical(self):
-        if self.interval >=1:
-            self.cb = self.core.scheduler.addJob(0, self._periodical, threaded=False)
+    def stopPeriodical(self):
+        if not self.cb:
+            return
+        r = self.core.scheduler.removeJob(self.cb)
+        self.cb = None
+        return r #: return True if successfully removed else False
+
+    def initPeriodical(self, wait=0):
+        if self.interval > 0:
+            self.cb = self.core.scheduler.addJob(wait, self._periodical, threaded=False)
+        else:
+            self.stopPeriodical()
 
     def _periodical(self):
         try:
@@ -119,7 +128,8 @@ class Addon(Base):
             if self.core.debug:
                 print_exc()
 
-        self.cb = self.core.scheduler.addJob(self.interval, self._periodical, threaded=False)
+        if self.cb:
+            self.cb = self.core.scheduler.addJob(self.interval, self._periodical, threaded=False)
 
     def __repr__(self):
         return "<Addon %s>" % self.__name__

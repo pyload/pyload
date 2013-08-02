@@ -140,7 +140,8 @@ class AddonManager:
         self.log.debug("Plugin deactivated: %s" % plugin)
 
         #remove periodic call
-        self.log.debug("Removed callback %s" % self.core.scheduler.removeJob(addon.cb))
+        if addon.cb:
+            self.log.debug("Removed callback %s" % self.core.scheduler.removeJob(addon.cb))
         del self.plugins[addon.__name__]
 
         #remove event listener
