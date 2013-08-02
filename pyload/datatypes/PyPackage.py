@@ -67,8 +67,8 @@ class PyPackage:
         )
 
     def getChildren(self):
-        """get information about contained links"""
-        return self.m.getPackageData(self.pid)["links"]
+        """get fids of container files"""
+        return self.m.getPackageInfo(self.pid).fids
 
     def getPath(self, name=""):
         self.timestamp = time()

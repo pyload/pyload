@@ -203,7 +203,10 @@ class PyFile(object):
         while self.id in self.m.core.threadManager.processingIds():
             self.abort = True
             if self.plugin and self.plugin.req:
-                self.plugin.req.abortDownloads()
+                self.plugin.req.abort()
+                if self.plugin.dl:
+                    self.plugin.dl.abort()
+
             sleep(0.1)
 
         self.abort = False
