@@ -13,7 +13,7 @@ class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __description__ = """Base Plugin when any other didn't fit"""
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
@@ -82,7 +82,13 @@ class BasePlugin(Hoster):
 
             if 'location' in header:
                 self.logDebug("Location: " + header['location'])
-                url = unquote(header['location'])
+                base = search(r'https?://[^/]+', url).group(0)
+                if header['location'].startswith("http"):
+                    url = unquote(header['location'])
+                elif header['location'].startswith("/"):
+                    url = base + unquote(header['location'])
+                else:
+                    url = '%s/%s' % (base, unquote(header['location']))
             else:
                 break
 
