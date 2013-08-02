@@ -27,7 +27,7 @@ class ExtabitCom(SimpleHoster):
     __name__ = "ExtabitCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w+\.)*extabit\.com/(file|go|fid)/(?P<ID>\w+)"
-    __version__ = "0.3"
+    __version__ = "0.4"
     __description__ = """Extabit.com"""
     __author_name__ = ("zoidberg")
 
@@ -36,7 +36,7 @@ class ExtabitCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<h1>File not found</h1>'
     TEMP_OFFLINE_PATTERN = r">(File is temporary unavailable|No download mirror)<"
 
-    DOWNLOAD_LINK_PATTERN = r'"(http://guest\d+\.extabit\.com/[a-z0-9]+/.*?)"'
+    DOWNLOAD_LINK_PATTERN = r'[\'"](http://guest\d+\.extabit\.com/[a-z0-9]+/.*?)[\'"]'
 
     def handleFree(self):
         if r">Only premium users can download this file" in self.html:
@@ -73,7 +73,8 @@ class ExtabitCom(SimpleHoster):
         else:
             self.parseError('Captcha')
 
-        if not "href" in response: self.parseError('JSON')
+        if not "href" in response:
+            self.parseError('JSON')
 
         self.html = self.load("http://extabit.com/file/%s%s" % (fileID, response['href']))
         m = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
