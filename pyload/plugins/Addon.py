@@ -78,7 +78,7 @@ class Addon(Base):
     event_map = None
 
     #: periodic call interval in seconds
-    interval = 30
+    interval = 60
 
     def __init__(self, core, manager, user=None):
         Base.__init__(self, core, user)
