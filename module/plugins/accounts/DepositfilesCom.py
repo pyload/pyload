@@ -25,20 +25,19 @@ from module.plugins.Account import Account
 
 class DepositfilesCom(Account):
     __name__ = "DepositfilesCom"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "account"
     __description__ = """depositfiles.com account plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __author_name__ = ("mkaay", "stickell")
+    __author_mail__ = ("mkaay@mkaay.de", "l.stickell@yahoo.it")
 
     def loadAccountInfo(self, user, req):
         src = req.load("http://depositfiles.com/de/gold/")
-        validuntil = re.search("noch den Gold-Zugriff: <b>(.*?)</b></div>", src).group(1)
+        validuntil = re.search(r"Sie haben Gold Zugang bis: <b>(.*?)</b></div>", src).group(1)
 
         validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
 
-        tmp = {"validuntil": validuntil, "trafficleft": -1}
-        return tmp
+        return {"validuntil": validuntil, "trafficleft": -1}
 
     def login(self, user, data, req):
         req.load("http://depositfiles.com/de/gold/payment.php")
