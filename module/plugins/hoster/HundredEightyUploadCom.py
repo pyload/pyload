@@ -15,6 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
+# Test links (random.bin):
+# http://180upload.com/js9qdm6kjnrs
+
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
 
