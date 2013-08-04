@@ -6,6 +6,7 @@ from traceback import print_exc
 
 from BaseThread import BaseThread
 
+
 class AddonThread(BaseThread):
     """thread for addons"""
 

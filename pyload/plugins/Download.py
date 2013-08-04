@@ -2,6 +2,7 @@
 
 from Request import Request
 
+
 class Download(Request):
     """ Abstract class for download request """
 

@@ -66,6 +66,7 @@ def threaded(f):
         addonManager.startThread(f, *args, **kwargs)
     return run
 
+
 class Addon(Base):
     """
     Base class for addon plugins. Use @threaded decorator for all longer running tasks.

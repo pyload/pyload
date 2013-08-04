@@ -22,6 +22,7 @@ from pyload.Api import InteractionTask as BaseInteractionTask
 from pyload.Api import Interaction, InputType, Input
 
 #noinspection PyUnresolvedReferences
+
 class InteractionTask(BaseInteractionTask):
     """
     General Interaction Task extends ITask defined by api with additional fields and methods.

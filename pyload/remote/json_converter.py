@@ -15,6 +15,7 @@ from apitypes import ExceptionObject
 separators = (',', ':')
 
 # json encoder that accepts api objects
+
 class BaseEncoder(json.JSONEncoder):
 
     def default(self, o):
@@ -27,6 +28,7 @@ class BaseEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, o)
 
 # more compact representation, only clients with information of the classes can handle it
+
 class BaseEncoderCompact(json.JSONEncoder):
 
     def default(self, o):

@@ -1754,7 +1754,6 @@ class MultiDict(DictMixin):
     getlist = getall
 
 
-
 class FormsDict(MultiDict):
     ''' This :class:`MultiDict` subclass is used to store request form data.
         Additionally to the normal dict-like item access methods (which return
@@ -2706,7 +2705,6 @@ def run(app=None, server='wsgiref', host='127.0.0.1', port=8080,
             print_exc()
         time.sleep(interval)
         sys.exit(3)
-
 
 
 class FileCheckerThread(threading.Thread):

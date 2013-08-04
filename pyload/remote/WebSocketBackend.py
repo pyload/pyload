@@ -27,6 +27,7 @@ def get_class_logger(o=None):
 # Monkey patch for our logger
 util.get_class_logger = get_class_logger
 
+
 class WebSocketBackend(BackendBase):
     def setup(self, host, port):
 

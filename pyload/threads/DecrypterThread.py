@@ -10,6 +10,7 @@ from pyload.plugins.Crypter import Package
 
 from BaseThread import BaseThread
 
+
 class DecrypterThread(BaseThread):
     """thread for decrypting"""
 

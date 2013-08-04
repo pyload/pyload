@@ -15,6 +15,7 @@ class WrongPassword(Exception):
     pass
 
 #noinspection PyUnresolvedReferences
+
 class Account(Base):
     """
     Base class for every account plugin.

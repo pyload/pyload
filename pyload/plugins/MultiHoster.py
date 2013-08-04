@@ -12,6 +12,7 @@ def normalize(domain):
     return remove_chars(domain.strip().lower(), "-.")
 
 #noinspection PyUnresolvedReferences
+
 class MultiHoster(Account):
     """
     Base class for MultiHoster services.

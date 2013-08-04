@@ -35,6 +35,7 @@ from DecrypterThread import DecrypterThread
 from DownloadThread import DownloadThread
 from InfoThread import InfoThread
 
+
 class ThreadManager:
     """manages the download threads, assign jobs, reconnect etc"""
 

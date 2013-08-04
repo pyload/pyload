@@ -30,6 +30,7 @@ from pyload.network.HTTPRequest import BadHeader
 
 from BaseThread import BaseThread
 
+
 class DownloadThread(BaseThread):
     """thread for downloading files from 'real' hoster plugins"""
 

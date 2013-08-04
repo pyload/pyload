@@ -3,6 +3,7 @@
 
 from pyload.database import DatabaseMethods, queue, async
 
+
 class ConfigMethods(DatabaseMethods):
 
     @async

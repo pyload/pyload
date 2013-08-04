@@ -39,6 +39,7 @@ IGNORE = (
 
 PluginTuple = namedtuple("PluginTuple", "version re deps category user path")
 
+
 class BaseAttributes(defaultdict):
     """ Dictionary that loads defaults values from Base object """
     def __missing__(self, key):

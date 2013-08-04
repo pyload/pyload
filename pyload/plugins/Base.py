@@ -29,14 +29,18 @@ from pyload.utils.fs import exists, makedirs, join, remove
 #       get rid of catpcha & container plugins ?! (move to crypter & internals)
 #       adapt old plugins as needed
 
+
 class Fail(Exception):
     """ raised when failed """
+
 
 class Retry(Exception):
     """ raised when start again from beginning """
 
+
 class Abort(Exception):
     """ raised when aborted """
+
 
 class Base(object):
     """

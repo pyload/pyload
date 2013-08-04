@@ -26,6 +26,7 @@ from pyload.threads.AddonThread import AddonThread
 from pyload.PluginManager import literal_eval
 from utils import lock, to_string
 
+
 class AddonManager:
     """ Manages addons, loading, unloading.  """
 
