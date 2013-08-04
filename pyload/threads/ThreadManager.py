@@ -43,6 +43,7 @@ class ThreadManager:
     def __init__(self, core):
         """Constructor"""
         self.core = core
+        self.config = core.config
         self.log = core.log
 
         self.threads = []  # thread list
@@ -70,7 +71,7 @@ class ThreadManager:
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
-        for i in range(self.core.config.get("download", "max_downloads")):
+        for i in range(self.config.get("download", "max_downloads")):
             self.createThread()
 
 
@@ -184,7 +185,7 @@ class ThreadManager:
     def tryReconnect(self):
         """checks if reconnect needed"""
 
-        if not (self.core.config["reconnect"]["activated"] and self.core.api.isTimeReconnect()):
+        if not (self.config["reconnect"]["activated"] and self.core.api.isTimeReconnect()):
             return False
 
         active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.threads if x.active]
@@ -192,11 +193,11 @@ class ThreadManager:
         if not (0 < active.count(True) == len(active)):
             return False
 
-        if not exists(self.core.config['reconnect']['method']):
-            if exists(join(pypath, self.core.config['reconnect']['method'])):
-                self.core.config['reconnect']['method'] = join(pypath, self.core.config['reconnect']['method'])
+        if not exists(self.config['reconnect']['method']):
+            if exists(join(pypath, self.config['reconnect']['method'])):
+                self.config['reconnect']['method'] = join(pypath, self.config['reconnect']['method'])
             else:
-                self.core.config["reconnect"]["activated"] = False
+                self.config["reconnect"]["activated"] = False
                 self.log.warning(_("Reconnect script not found!"))
                 return
 
@@ -215,10 +216,10 @@ class ThreadManager:
         self.log.debug("Old IP: %s" % ip)
 
         try:
-            reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
+            reconn = Popen(self.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
         except:
             self.log.warning(_("Failed executing reconnect script!"))
-            self.core.config["reconnect"]["activated"] = False
+            self.config["reconnect"]["activated"] = False
             self.reconnecting.clear()
             if self.core.debug:
                 print_exc()
@@ -254,9 +255,9 @@ class ThreadManager:
     def checkThreadCount(self):
         """checks if there is a need for increasing or reducing thread count"""
 
-        if len(self.threads) == self.core.config.get("download", "max_downloads"):
+        if len(self.threads) == self.config.get("download", "max_downloads"):
             return True
-        elif len(self.threads) < self.core.config.get("download", "max_downloads"):
+        elif len(self.threads) < self.config.get("download", "max_downloads"):
             self.createThread()
         else:
             free = [x for x in self.threads if not x.active]
@@ -303,8 +304,8 @@ class ThreadManager:
                 job.release()
                 return
 
-            spaceLeft = free_space(self.core.config["general"]["download_folder"]) / 1024 / 1024
-            if spaceLeft < self.core.config["general"]["min_free_space"]:
+            spaceLeft = free_space(self.config["general"]["download_folder"]) / 1024 / 1024
+            if spaceLeft < self.config["general"]["min_free_space"]:
                 self.log.warning(_("Not enough space left on device"))
                 self.pause = True
 

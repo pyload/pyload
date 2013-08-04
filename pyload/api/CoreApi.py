@@ -19,7 +19,7 @@ class CoreApi(ApiComponent):
     def getWSAddress(self):
         """Gets and address for the websocket based on configuration"""
         # TODO SSL (wss)
-        return "ws://%%s:%d" % self.core.config['remote']['port']
+        return "ws://%%s:%d" % self.config['remote']['port']
 
     @RequirePerm(Permission.All)
     def getServerStatus(self):
@@ -36,7 +36,7 @@ class CoreApi(ApiComponent):
                                     self.isInteractionWaiting(Interaction.All),
                                     not self.core.threadManager.pause and self.isTimeDownload(),
                                     self.core.threadManager.pause,
-                                    self.core.config['reconnect']['activated'] and self.isTimeReconnect())
+                                    self.config['reconnect']['activated'] and self.isTimeReconnect())
 
 
         for pyfile in self.core.threadManager.getActiveDownloads(self.primaryUID):
@@ -73,12 +73,12 @@ class CoreApi(ApiComponent):
 
         :return: new reconnect state
         """
-        self.core.config["reconnect"]["activated"] ^= True
-        return self.core.config["reconnect"]["activated"]
+        self.config["reconnect"]["activated"] ^= True
+        return self.config["reconnect"]["activated"]
 
     def freeSpace(self):
         """Available free space at download directory in bytes"""
-        return free_space(self.core.config["general"]["download_folder"])
+        return free_space(self.config["general"]["download_folder"])
 
 
     def quit(self):
@@ -95,7 +95,7 @@ class CoreApi(ApiComponent):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = join(self.core.config['log']['log_folder'], 'log.txt')
+        filename = join(self.config['log']['log_folder'], 'log.txt')
         try:
             fh = open(filename, "r")
             lines = fh.readlines()
@@ -112,8 +112,8 @@ class CoreApi(ApiComponent):
 
         :return: bool
         """
-        start = self.core.config['downloadTime']['start'].split(":")
-        end = self.core.config['downloadTime']['end'].split(":")
+        start = self.config['downloadTime']['start'].split(":")
+        end = self.config['downloadTime']['end'].split(":")
         return compare_time(start, end)
 
     @RequirePerm(Permission.All)
@@ -122,9 +122,9 @@ class CoreApi(ApiComponent):
 
         :return: bool
         """
-        start = self.core.config['reconnect']['startTime'].split(":")
-        end = self.core.config['reconnect']['endTime'].split(":")
-        return compare_time(start, end) and self.core.config["reconnect"]["activated"]
+        start = self.config['reconnect']['startTime'].split(":")
+        end = self.config['reconnect']['endTime'].split(":")
+        return compare_time(start, end) and self.config["reconnect"]["activated"]
 
 
 if Api.extend(CoreApi):

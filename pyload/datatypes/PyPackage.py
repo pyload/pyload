@@ -102,7 +102,7 @@ class RootPackage(PyPackage):
         PyPackage.__init__(self, m, -1, "root", "", owner, -2, "", "", "", 0, [], PackageStatus.Ok, False, 0)
 
     def getPath(self, name=""):
-        return join(self.m.core.config["general"]["download_folder"], name)
+        return join(self.m.config["general"]["download_folder"], name)
 
     # no database operations
     def sync(self):

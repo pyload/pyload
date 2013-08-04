@@ -19,7 +19,7 @@ class BaseThread(Thread):
         self.setDaemon(True)
         self.m = manager #thread manager
         self.core = manager.core
-        self.log = manager.core.log
+        self.log = manager.log
 
         #: Owner of the thread, every type should set it
         self.owner = None
@@ -130,7 +130,7 @@ class BaseThread(Thread):
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
         dump += "\n\nCONFIG: \n\n"
-        dump += pformat(self.m.core.config.values) + "\n"
+        dump += pformat(self.m.config.values) + "\n"
 
         return dump
 

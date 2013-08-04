@@ -16,6 +16,7 @@ class ApiComponent(Iface):
         assert isinstance(core, Core)
         assert issubclass(ApiComponent, Iface)
         self.core = core
+        self.config = core.config
         assert isinstance(user, User)
         self.user = user
         self.primaryUID = 0
