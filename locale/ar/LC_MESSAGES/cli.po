@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 11:44-0400\n"
+"PO-Revision-Date: 2013-08-02 10:02-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -93,7 +93,7 @@ msgstr " واجهة سطر الأوامر"
 #: pyload/cli/Cli.py:165
 #, python-format
 msgid "%s Downloads:"
-msgstr "%s التحميلات:"
+msgstr "%s التنزيلات:"
 
 #: pyload/cli/Cli.py:177
 msgid " Speed: "
@@ -202,7 +202,7 @@ msgstr "اضافة حزمة الى قائمة الانتظار"
 
 #: pyload/cli/Cli.py:447
 msgid "Adds package to collector"
-msgstr "ويضيف حزمة إلى جامع الروابط"
+msgstr "اضافة حزمة إلى جامع الروابط"
 
 #: pyload/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"

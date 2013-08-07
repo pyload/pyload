@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-08-02 10:02-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -15,22 +15,22 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/AddonManager.py:62
 #, python-format
 msgid "Error when executing %s"
-msgstr ""
+msgstr "Hiba futtatás közben %s"
 
 #: pyload/AddonManager.py:93
 #, python-format
 msgid "Failed activating %(name)s"
-msgstr ""
+msgstr "Sikertelen aktiválás: %(name)s"
 
 #: pyload/AddonManager.py:96
 #, python-format
 msgid "Activated addons: %s"
-msgstr ""
+msgstr "Aktivált bővítmény: %s"
 
 #: pyload/AddonManager.py:97
 #, python-format
 msgid "Deactivated addons: %s"
-msgstr ""
+msgstr "Bővítmény deaktiválása: %s"
 
 #: pyload/AddonManager.py:153
 msgid "Activating Plugins..."
@@ -38,7 +38,7 @@ msgstr "Bővítmények aktiválása..."
 
 #: pyload/AddonManager.py:162
 msgid "Deactivating Plugins..."
-msgstr ""
+msgstr "Bővítmények deaktiválása..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -46,28 +46,28 @@ msgstr "SSL tanúsítvány nem található."
 
 #: pyload/web/ServerThread.py:53
 msgid "WebUI built is not available"
-msgstr ""
+msgstr "Beépített WebUI nem áll rendelkezésre"
 
 #: pyload/web/ServerThread.py:55
 msgid "Running webUI in development mode"
-msgstr ""
+msgstr "A webUI fejlesztői módban való futtatása"
 
 #: pyload/web/ServerThread.py:73
 msgid "Failed starting webserver: "
-msgstr ""
+msgstr "A web szervert nem sikerült elindítani: "
 
 #: pyload/web/ServerThread.py:107
 msgid "Failed importing webserver: "
-msgstr ""
+msgstr "A web szervert nem sikerült betölteni: "
 
 #: pyload/web/ServerThread.py:125
 msgid "This server offers no SSL, please consider using threaded instead"
-msgstr ""
+msgstr "Ez a szerver nem támogatja az SSL-t, kérlek használj helyette másikat"
 
 #: pyload/web/ServerThread.py:139
 #, python-format
 msgid "Starting %(name)s webserver: %(host)s:%(port)d"
-msgstr ""
+msgstr "%(name)s web szerver indítása: %(host)s:%(port)d"
 
 #: pyload/config/default.py:14
 msgid "Remote"
@@ -113,7 +113,7 @@ msgstr "Méret (kb)"
 
 #: pyload/config/default.py:24
 msgid "Folder"
-msgstr "Mappa"
+msgstr "mappa"
 
 #: pyload/config/default.py:25
 msgid "File Log"
@@ -137,11 +137,11 @@ msgstr "Csoport név"
 
 #: pyload/config/default.py:33
 msgid "Change Group and User of Downloads"
-msgstr ""
+msgstr "Letöltések csoportjának és felhasználójának váltása"
 
 #: pyload/config/default.py:34
 msgid "Change file mode of downloads"
-msgstr ""
+msgstr "Letöltések fájl jogosultságának váltása"
 
 #: pyload/config/default.py:35 pyload/config/default.py:75
 msgid "Username"
@@ -149,19 +149,19 @@ msgstr "Felhasználónév"
 
 #: pyload/config/default.py:36
 msgid "Filemode for Downloads"
-msgstr ""
+msgstr "Fájl jogosultságok"
 
 #: pyload/config/default.py:37
 msgid "Change group of running process"
-msgstr ""
+msgstr "Futó folyamat csoportjának váltása"
 
 #: pyload/config/default.py:38
 msgid "Folder Permission mode"
-msgstr ""
+msgstr "Könyvtár jogosultságok"
 
 #: pyload/config/default.py:39
 msgid "Change user of running process"
-msgstr ""
+msgstr "Futó folyamat felhasználójának váltása"
 
 #: pyload/config/default.py:42
 msgid "General"
@@ -189,7 +189,7 @@ msgstr "Hibakereső mód"
 
 #: pyload/config/default.py:49
 msgid "Min Free Space (MB)"
-msgstr ""
+msgstr "Min. szabad hely (MB)"
 
 #: pyload/config/default.py:50
 msgid "CPU Priority"
@@ -197,7 +197,7 @@ msgstr "CPU prioritás"
 
 #: pyload/config/default.py:53
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #: pyload/config/default.py:55
 msgid "SSL Certificate"
@@ -217,7 +217,7 @@ msgstr "Sablon"
 
 #: pyload/config/default.py:64
 msgid "Path Prefix"
-msgstr ""
+msgstr "Elérési út előtag"
 
 #: pyload/config/default.py:65
 msgid "Server"
@@ -225,11 +225,11 @@ msgstr "Szerver"
 
 #: pyload/config/default.py:66
 msgid "Favor specific server"
-msgstr ""
+msgstr "Előnyben részesített szerver"
 
 #: pyload/config/default.py:67
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #: pyload/config/default.py:68
 msgid "Use HTTPS"
@@ -241,7 +241,7 @@ msgstr "Fejlesztő mód"
 
 #: pyload/config/default.py:73
 msgid "Proxy"
-msgstr ""
+msgstr "Proxy"
 
 #: pyload/config/default.py:76
 msgid "Use Proxy"
@@ -285,55 +285,55 @@ msgstr "Max. egyidejű letöltés"
 
 #: pyload/config/default.py:94
 msgid "Limit Download Speed"
-msgstr ""
+msgstr "Letöltési sebesség korlátozása"
 
 #: pyload/config/default.py:95
 msgid "Download interface to bind (ip or Name)"
-msgstr ""
+msgstr "A letöltő interfész itt figyel (ip vagy név)"
 
 #: pyload/config/default.py:96
 msgid "Skip already existing files"
-msgstr ""
+msgstr "Létező fájlok kihagyása"
 
 #: pyload/config/default.py:97
 msgid "Max Download Speed in kb/s"
-msgstr ""
+msgstr "Max. letöltési sebesség (kb/s)"
 
 #: pyload/config/default.py:98
 msgid "Allow IPv6"
-msgstr ""
+msgstr "IPv6 engedélyezése"
 
 #: pyload/config/default.py:99
 msgid "Max connections for one download"
-msgstr ""
+msgstr "Max. kapcsolatok száma egy letöltéshez"
 
 #: pyload/config/default.py:100
 msgid "Restart failed downloads on startup"
-msgstr ""
+msgstr "Sikertelen letöltések újraindítása indulásnál"
 
 #: pyload/config/default.py:103
 msgid "Download Time"
-msgstr ""
+msgstr "Letöltési idő"
 
 #: pyload/network/HTTPDownload.py:249
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
-msgstr ""
+msgstr "Darabokban letöltés sikertelen, visszatérés egyszeri kapcsolatra | %s"
 
 #: pyload/api/DownloadApi.py:44
 #, python-format
 msgid "Added package %(name)s as folder %(folder)s"
-msgstr ""
+msgstr "A(z) %(name)s csomag %(folder)s könyvtárként hozzáadva"
 
 #: pyload/api/DownloadApi.py:95
 #, python-format
 msgid "Added %d links to package"
-msgstr ""
+msgstr "%d link a csomaghoz adva"
 
 #: pyload/AccountManager.py:69
 #, python-format
 msgid "Unknown account plugin %s"
-msgstr ""
+msgstr "Ismeretlen hozzáférés bővítmény %s"
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
@@ -341,38 +341,38 @@ msgstr "Lekérdezés"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Captcha request"
-msgstr ""
+msgstr "Captcha kérés"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Please solve the captcha."
-msgstr ""
+msgstr "Old meg a captcha-t"
 
 #: pyload/remote/RemoteManager.py:35
 #, python-format
 msgid "Remote backend error: %s"
-msgstr ""
+msgstr "Távoli hiba: %s"
 
 #: pyload/remote/RemoteManager.py:80
 #, python-format
 msgid "Starting %(name)s: %(addr)s:%(port)s"
-msgstr ""
+msgstr "Indítás: %(name)s: %(addr)s:%(port)s"
 
 #: pyload/remote/RemoteManager.py:82
 #, python-format
 msgid "Failed loading backend %(name)s | %(error)s"
-msgstr ""
+msgstr "Backend betöltése sikertelen: %(name)s | %(error)s"
 
 #: pyload/FileManager.py:53
 msgid "none"
-msgstr ""
+msgstr "semmi"
 
 #: pyload/FileManager.py:53
 msgid "offline"
-msgstr ""
+msgstr "offline"
 
 #: pyload/FileManager.py:53
 msgid "online"
-msgstr ""
+msgstr "online"
 
 #: pyload/FileManager.py:53
 msgid "queued"
@@ -438,11 +438,11 @@ msgstr "Kész csomag: %s"
 #: pyload/Api.py:152
 #, python-format
 msgid "User '%s' tries to log in"
-msgstr ""
+msgstr "'%s' felhasználó próbál bejelentkezni"
 
 #: pyload/Core.py:195
 msgid "Received Quit signal"
-msgstr ""
+msgstr "Leállítási jel érkezett"
 
 #: pyload/Core.py:323
 #, python-format
@@ -466,7 +466,7 @@ msgstr "Indítás"
 #: pyload/Core.py:359
 #, python-format
 msgid "Using home directory: %s"
-msgstr ""
+msgstr "Főkönyvtár használata: %s"
 
 #: pyload/Core.py:373
 msgid "All links removed"
@@ -475,7 +475,7 @@ msgstr "Minden link törölve"
 #: pyload/Core.py:403
 #, python-format
 msgid "Download time: %s"
-msgstr ""
+msgstr "Letöltési idő: %s"
 
 #: pyload/Core.py:418
 #, python-format
@@ -488,7 +488,7 @@ msgstr "Hozzáférések aktiválása..."
 
 #: pyload/Core.py:443
 msgid "Restarting failed downloads..."
-msgstr ""
+msgstr "Sikertelen letöltések újraindítása..."
 
 #: pyload/Core.py:451
 msgid "pyLoad is up and running"
@@ -516,95 +516,95 @@ msgstr "pyLoad kilőve konzolról"
 
 #: pyload/database/DatabaseBackend.py:167
 msgid "Database was deleted due to incompatible version."
-msgstr ""
+msgstr "Nem kompatibilis verzió miatt az adatbázis törölve."
 
 #: pyload/threads/DecrypterThread.py:50
 msgid "Decrypting failed"
-msgstr ""
+msgstr "Sikertelen dekódolás"
 
 #: pyload/threads/DecrypterThread.py:73
 #, python-format
 msgid "Decrypted %(count)d links into package %(name)s"
-msgstr ""
+msgstr "%(count)d link dekódolása a(z) %(name)s csomagba"
 
 #: pyload/threads/DecrypterThread.py:80
 msgid "No links decrypted"
-msgstr ""
+msgstr "Nincs dekódolt link"
 
 #: pyload/threads/InfoThread.py:147
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
-msgstr ""
+msgstr "%(name)s információinak lekérése sikertelen | %(err)s"
 
 #: pyload/threads/ThreadManager.py:155
 #, python-format
 msgid "Reconnect Failed: %s"
-msgstr ""
+msgstr "Újracsatlakozás sikertelen: %s"
 
 #: pyload/threads/ThreadManager.py:192
 msgid "Reconnect script not found!"
-msgstr ""
+msgstr "Újracsatlakozó script nem található!"
 
 #: pyload/threads/ThreadManager.py:198
 msgid "Starting reconnect"
-msgstr ""
+msgstr "Újracsatlakozás indítása"
 
 #: pyload/threads/ThreadManager.py:212
 msgid "Failed executing reconnect script!"
-msgstr ""
+msgstr "Az újracsatlakozó scriptet nem sikerült futtatni!"
 
 #: pyload/threads/ThreadManager.py:224
 #, python-format
 msgid "Reconnected, new IP: %s"
-msgstr ""
+msgstr "Újracsatlakozva, új IP: %s"
 
 #: pyload/threads/ThreadManager.py:298
 msgid "Not enough space left on device"
-msgstr ""
+msgstr "Nincs elég hely az eszközön"
 
 #: pyload/threads/DownloadThread.py:64
 #, python-format
 msgid "Download starts: %s"
-msgstr ""
+msgstr "Letöltés elindítva: %s"
 
 #: pyload/threads/DownloadThread.py:70
 #, python-format
 msgid "Download finished: %s"
-msgstr ""
+msgstr "Letöltés befejezve: %s"
 
 #: pyload/threads/DownloadThread.py:75
 #, python-format
 msgid "Plugin %s is missing a function."
-msgstr ""
+msgstr "A %s bővítményből hiányzik egy funkció."
 
 #: pyload/threads/DownloadThread.py:83 pyload/threads/DownloadThread.py:147
 #, python-format
 msgid "Download aborted: %s"
-msgstr ""
+msgstr "Letöltés megszakítva: %s"
 
 #: pyload/threads/DownloadThread.py:103
 #, python-format
 msgid "Download restarted: %(name)s | %(msg)s"
-msgstr ""
+msgstr "Letöltés újraindítva: %(name)s | %(msg)s"
 
 #: pyload/threads/DownloadThread.py:113
 #, python-format
 msgid "Download is offline: %s"
-msgstr ""
+msgstr "A letöltés offline: %s"
 
 #: pyload/threads/DownloadThread.py:116 pyload/threads/DownloadThread.py:187
 #, python-format
 msgid "Download is temporary offline: %s"
-msgstr ""
+msgstr "A letöltés átmenetileg offline: %s"
 
 #: pyload/threads/DownloadThread.py:119 pyload/threads/DownloadThread.py:192
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
-msgstr ""
+msgstr "A letöltés sikertelen: %(name)s | %(msg)s"
 
 #: pyload/threads/DownloadThread.py:136
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
-msgstr ""
+msgstr "Nem sikerült csatlakozni a címhez, újrapróbálás 1 perc múlva."
 
 #: pyload/threads/DownloadThread.py:171
 #, python-format
@@ -613,18 +613,18 @@ msgstr "Letöltés átugorva: %(name)s - %(plugin)s"
 
 #: pyload/threads/DownloadThread.py:188
 msgid "Internal Server Error"
-msgstr ""
+msgstr "Internal Server Error"
 
 #: pyload/threads/AddonThread.py:55
 msgid "An Error occurred"
-msgstr ""
+msgstr "Hiba történt."
 
 #: pyload/PluginManager.py:316
 #, python-format
 msgid "Error importing %(name)s: %(msg)s"
-msgstr ""
+msgstr "Hiba a(z) %(name)s betöltése közben: %(msg)s"
 
 #: pyload/utils/JsEngine.py:188
 msgid "No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino"
-msgstr ""
+msgstr "Nem észlelhető js motor, kérlek telepítsd valamelyiket: Spidermonkey, ossp-js, pyv8, nodejs, rhino"
 

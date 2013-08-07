@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-08-07 09:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -113,7 +113,7 @@ msgstr " ID: "
 
 #: pyload/cli/Cli.py:184
 msgid "waiting: "
-msgstr "attesa: "
+msgstr "in attesa: "
 
 #: pyload/cli/Cli.py:191 pyload/cli/Cli.py:193
 msgid "Status:"
@@ -157,7 +157,7 @@ msgstr "Gestisci Collezione"
 
 #: pyload/cli/Cli.py:208
 msgid " (Un)Pause Server"
-msgstr " Riattiva Server"
+msgstr " Pausa/Riattiva Server"
 
 #: pyload/cli/Cli.py:209
 msgid " Kill Server"
@@ -194,7 +194,7 @@ msgstr "Mostra i download in coda"
 
 #: pyload/cli/Cli.py:445
 msgid "Prints downloads in collector"
-msgstr "Mostra i download nella collezione"
+msgstr "Mostra i download nella libreria"
 
 #: pyload/cli/Cli.py:446
 msgid "Adds package to queue"
@@ -202,7 +202,7 @@ msgstr "Aggiunge pacchetti alla coda"
 
 #: pyload/cli/Cli.py:447
 msgid "Adds package to collector"
-msgstr "Aggiunge pacchetto alla collezione"
+msgstr "Aggiungi pacchetto alla collezione"
 
 #: pyload/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
@@ -287,5 +287,5 @@ msgstr "Impossibile stabilire una connessione a %(addr)s:%(port)s."
 
 #: pyload/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
-msgstr "Modalità interattiva ignorata da quando hai passato alcuni comandi."
+msgstr "Modalità interattiva ignorata dato che hai passato alcuni comandi."
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-08-07 09:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -15,22 +15,22 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/AddonManager.py:62
 #, python-format
 msgid "Error when executing %s"
-msgstr ""
+msgstr "%S を実行するとエラー"
 
 #: pyload/AddonManager.py:93
 #, python-format
 msgid "Failed activating %(name)s"
-msgstr ""
+msgstr "%(name)sをアクティブ に失敗しました"
 
 #: pyload/AddonManager.py:96
 #, python-format
 msgid "Activated addons: %s"
-msgstr ""
+msgstr "アドオンの起動: %s"
 
 #: pyload/AddonManager.py:97
 #, python-format
 msgid "Deactivated addons: %s"
-msgstr ""
+msgstr "アドオンの無効: %s"
 
 #: pyload/AddonManager.py:153
 msgid "Activating Plugins..."
@@ -38,40 +38,40 @@ msgstr "プラグインをアクティベート中..."
 
 #: pyload/AddonManager.py:162
 msgid "Deactivating Plugins..."
-msgstr ""
+msgstr "プラグインを無効にする."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
-msgstr ""
+msgstr "SSL 証明書が見つかりません。"
 
 #: pyload/web/ServerThread.py:53
 msgid "WebUI built is not available"
-msgstr ""
+msgstr "WebUI 構築がないです。"
 
 #: pyload/web/ServerThread.py:55
 msgid "Running webUI in development mode"
-msgstr ""
+msgstr "WebUI 開発モードで実行されています。"
 
 #: pyload/web/ServerThread.py:73
 msgid "Failed starting webserver: "
-msgstr ""
+msgstr "ウェブサーバーの開始に失敗しました："
 
 #: pyload/web/ServerThread.py:107
 msgid "Failed importing webserver: "
-msgstr ""
+msgstr "ウェブサーバのインポートに失敗しました："
 
 #: pyload/web/ServerThread.py:125
 msgid "This server offers no SSL, please consider using threaded instead"
-msgstr ""
+msgstr "このサーバーで SSL はありません、代わりにスレッドを使用してください"
 
 #: pyload/web/ServerThread.py:139
 #, python-format
 msgid "Starting %(name)s webserver: %(host)s:%(port)d"
-msgstr ""
+msgstr "(名) %s のウェブサーバを起動する: %d (ホスト) s: % (ポート)"
 
 #: pyload/config/default.py:14
 msgid "Remote"
-msgstr ""
+msgstr "リモート"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -79,7 +79,7 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Description"
-msgstr ""
+msgstr "説明"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -87,284 +87,284 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Long description"
-msgstr ""
+msgstr "長い説明"
 
 #: pyload/config/default.py:16 pyload/config/default.py:56
 #: pyload/config/default.py:63
 msgid "Activated"
-msgstr ""
+msgstr "アクティブ化"
 
 #: pyload/config/default.py:17 pyload/config/default.py:69
 #: pyload/config/default.py:80
 msgid "Port"
-msgstr ""
+msgstr "ポート"
 
 #: pyload/config/default.py:18 pyload/config/default.py:77
 msgid "Address"
-msgstr ""
+msgstr "アドレス"
 
 #: pyload/config/default.py:21
 msgid "Log"
-msgstr ""
+msgstr "ログ"
 
 #: pyload/config/default.py:23
 msgid "Size in kb"
-msgstr ""
+msgstr "サイズ kb"
 
 #: pyload/config/default.py:24
 msgid "Folder"
-msgstr ""
+msgstr "フォルダー"
 
 #: pyload/config/default.py:25
 msgid "File Log"
-msgstr ""
+msgstr "ファイルログ"
 
 #: pyload/config/default.py:26
 msgid "Count"
-msgstr ""
+msgstr "カウント"
 
 #: pyload/config/default.py:27
 msgid "Log Rotate"
-msgstr ""
+msgstr "ログを回転させる"
 
 #: pyload/config/default.py:30
 msgid "Permissions"
-msgstr ""
+msgstr "アクセス許可"
 
 #: pyload/config/default.py:32
 msgid "Groupname"
-msgstr ""
+msgstr "グループ名"
 
 #: pyload/config/default.py:33
 msgid "Change Group and User of Downloads"
-msgstr ""
+msgstr "ダウンロードのユーザーとグループの変更"
 
 #: pyload/config/default.py:34
 msgid "Change file mode of downloads"
-msgstr ""
+msgstr "ダウンロードのファイルモードを変更"
 
 #: pyload/config/default.py:35 pyload/config/default.py:75
 msgid "Username"
-msgstr ""
+msgstr "ユーザー名"
 
 #: pyload/config/default.py:36
 msgid "Filemode for Downloads"
-msgstr ""
+msgstr "Filemode ダウンロード"
 
 #: pyload/config/default.py:37
 msgid "Change group of running process"
-msgstr ""
+msgstr "実行中のプロセスのグループの変更"
 
 #: pyload/config/default.py:38
 msgid "Folder Permission mode"
-msgstr ""
+msgstr "フォルダーのアクセス許可モード"
 
 #: pyload/config/default.py:39
 msgid "Change user of running process"
-msgstr ""
+msgstr "実行中のプロセスのユーザーの変更"
 
 #: pyload/config/default.py:42
 msgid "General"
-msgstr ""
+msgstr "標準"
 
 #: pyload/config/default.py:44
 msgid "Language"
-msgstr ""
+msgstr "言語"
 
 #: pyload/config/default.py:45
 msgid "Download Folder"
-msgstr ""
+msgstr "フォルダーをダウンロードします。"
 
 #: pyload/config/default.py:46
 msgid "Use Checksum"
-msgstr ""
+msgstr "チェックサムを使用してください。"
 
 #: pyload/config/default.py:47
 msgid "Create folder for each package"
-msgstr ""
+msgstr "各パッケージのフォルダーを作成します。"
 
 #: pyload/config/default.py:48
 msgid "Debug Mode"
-msgstr ""
+msgstr "デバッグ モード"
 
 #: pyload/config/default.py:49
 msgid "Min Free Space (MB)"
-msgstr ""
+msgstr "分の空き領域 (MB)"
 
 #: pyload/config/default.py:50
 msgid "CPU Priority"
-msgstr ""
+msgstr "CPU 優先順位"
 
 #: pyload/config/default.py:53
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #: pyload/config/default.py:55
 msgid "SSL Certificate"
-msgstr ""
+msgstr "SSL証明書"
 
 #: pyload/config/default.py:57
 msgid "SSL Key"
-msgstr ""
+msgstr "SSL キー"
 
 #: pyload/config/default.py:60
 msgid "Webinterface"
-msgstr ""
+msgstr "ウェブインタフェース"
 
 #: pyload/config/default.py:62
 msgid "Template"
-msgstr ""
+msgstr "テンプレート"
 
 #: pyload/config/default.py:64
 msgid "Path Prefix"
-msgstr ""
+msgstr "パスプレフィックス"
 
 #: pyload/config/default.py:65
 msgid "Server"
-msgstr ""
+msgstr "サーバー"
 
 #: pyload/config/default.py:66
 msgid "Favor specific server"
-msgstr ""
+msgstr "特定のサーバーの好意"
 
 #: pyload/config/default.py:67
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #: pyload/config/default.py:68
 msgid "Use HTTPS"
-msgstr ""
+msgstr "HTTPS を使用します。"
 
 #: pyload/config/default.py:70
 msgid "Development mode"
-msgstr ""
+msgstr "開発モード"
 
 #: pyload/config/default.py:73
 msgid "Proxy"
-msgstr ""
+msgstr "プロキシ"
 
 #: pyload/config/default.py:76
 msgid "Use Proxy"
-msgstr ""
+msgstr "プロキシを使用します。"
 
 #: pyload/config/default.py:78
 msgid "Password"
-msgstr ""
+msgstr "パスワード"
 
 #: pyload/config/default.py:79
 msgid "Protocol"
-msgstr ""
+msgstr "プロトコル"
 
 #: pyload/config/default.py:83
 msgid "Reconnect"
-msgstr ""
+msgstr "再接続"
 
 #: pyload/config/default.py:85 pyload/config/default.py:106
 msgid "End"
-msgstr ""
+msgstr "終了"
 
 #: pyload/config/default.py:86
 msgid "Use Reconnect"
-msgstr ""
+msgstr "再接続を使用します。"
 
 #: pyload/config/default.py:87
 msgid "Method"
-msgstr ""
+msgstr "メソッド"
 
 #: pyload/config/default.py:88 pyload/config/default.py:105
 msgid "Start"
-msgstr ""
+msgstr "開始"
 
 #: pyload/config/default.py:91
 msgid "Download"
-msgstr ""
+msgstr "ダウンロード"
 
 #: pyload/config/default.py:93
 msgid "Max Parallel Downloads"
-msgstr ""
+msgstr "最大並列ダウンロード"
 
 #: pyload/config/default.py:94
 msgid "Limit Download Speed"
-msgstr ""
+msgstr "ダウンロード速度の制限"
 
 #: pyload/config/default.py:95
 msgid "Download interface to bind (ip or Name)"
-msgstr ""
+msgstr "名前 (ip) にバインドするインターフェイスをダウンロードします。"
 
 #: pyload/config/default.py:96
 msgid "Skip already existing files"
-msgstr ""
+msgstr "既存のファイルをスキップします。"
 
 #: pyload/config/default.py:97
 msgid "Max Download Speed in kb/s"
-msgstr ""
+msgstr "Kb/秒での最大ダウンロード速度"
 
 #: pyload/config/default.py:98
 msgid "Allow IPv6"
-msgstr ""
+msgstr "IPv6 を許可します。"
 
 #: pyload/config/default.py:99
 msgid "Max connections for one download"
-msgstr ""
+msgstr "1 つのダウンロードの最大接続数"
 
 #: pyload/config/default.py:100
 msgid "Restart failed downloads on startup"
-msgstr ""
+msgstr "起動に失敗したダウンロードを再起動します。"
 
 #: pyload/config/default.py:103
 msgid "Download Time"
-msgstr ""
+msgstr "ダウンロードにかかる時間"
 
 #: pyload/network/HTTPDownload.py:249
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
-msgstr ""
+msgstr "ダウンロード チャンクへの移行に失敗しました 1 つの接続 |。%s"
 
 #: pyload/api/DownloadApi.py:44
 #, python-format
 msgid "Added package %(name)s as folder %(folder)s"
-msgstr ""
+msgstr "追加パッケージ%(name)sをフォルダー %(folder)s として"
 
 #: pyload/api/DownloadApi.py:95
 #, python-format
 msgid "Added %d links to package"
-msgstr ""
+msgstr "%dリンクをパッケージに追加しました"
 
 #: pyload/AccountManager.py:69
 #, python-format
 msgid "Unknown account plugin %s"
-msgstr ""
+msgstr "不明なアカウント プラグイン %s"
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
-msgstr ""
+msgstr "クエリ"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Captcha request"
-msgstr ""
+msgstr "キャプチャ要求"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Please solve the captcha."
-msgstr ""
+msgstr "Captcha を解決してください。"
 
 #: pyload/remote/RemoteManager.py:35
 #, python-format
 msgid "Remote backend error: %s"
-msgstr ""
+msgstr "リモート バックエンド エラー: %s"
 
 #: pyload/remote/RemoteManager.py:80
 #, python-format
 msgid "Starting %(name)s: %(addr)s:%(port)s"
-msgstr ""
+msgstr "開始 %(name)s：%(addr)s：%(port)s"
 
 #: pyload/remote/RemoteManager.py:82
 #, python-format
 msgid "Failed loading backend %(name)s | %(error)s"
-msgstr ""
+msgstr " バックエンド %(name)sの読み込みに失敗した |%(error)s"
 
 #: pyload/FileManager.py:53
 msgid "none"
-msgstr ""
+msgstr "なし"
 
 #: pyload/FileManager.py:53
 msgid "offline"
@@ -376,11 +376,11 @@ msgstr "オンライン"
 
 #: pyload/FileManager.py:53
 msgid "queued"
-msgstr ""
+msgstr "キューに入っています。"
 
 #: pyload/FileManager.py:53
 msgid "paused"
-msgstr ""
+msgstr "一時停止"
 
 #: pyload/FileManager.py:54
 msgid "finished"
@@ -416,7 +416,7 @@ msgstr "中止しました"
 
 #: pyload/FileManager.py:56
 msgid "decrypting"
-msgstr ""
+msgstr "復号化"
 
 #: pyload/FileManager.py:56
 msgid "processing"
@@ -433,12 +433,12 @@ msgstr "不明"
 #: pyload/FileManager.py:426
 #, python-format
 msgid "Package finished: %s"
-msgstr ""
+msgstr "パッケージが完了しました: %s"
 
 #: pyload/Api.py:152
 #, python-format
 msgid "User '%s' tries to log in"
-msgstr ""
+msgstr "ユーザー '%s' にログインしようとしています。"
 
 #: pyload/Core.py:195
 msgid "Received Quit signal"
@@ -457,7 +457,7 @@ msgstr "グループの変更に失敗しました: %s"
 #: pyload/Core.py:347
 #, python-format
 msgid "Failed changing user: %s"
-msgstr "ユーザの変更に失敗しました: %s"
+msgstr "ユーザーの変更に失敗しました: %s"
 
 #: pyload/Core.py:358
 msgid "Starting"
@@ -475,7 +475,7 @@ msgstr "すべてのリンクが削除されました"
 #: pyload/Core.py:403
 #, python-format
 msgid "Download time: %s"
-msgstr ""
+msgstr "ダウンロードにかかる時間: %s"
 
 #: pyload/Core.py:418
 #, python-format
@@ -488,7 +488,7 @@ msgstr "アカウントをアクティベート中..."
 
 #: pyload/Core.py:443
 msgid "Restarting failed downloads..."
-msgstr ""
+msgstr "失敗したダウンロードを再起動する."
 
 #: pyload/Core.py:451
 msgid "pyLoad is up and running"
@@ -508,33 +508,33 @@ msgstr "シャットダウン中..."
 
 #: pyload/Core.py:579
 msgid "error while shutting down"
-msgstr "シャットダウン中のエラー"
+msgstr "シャットダウン中にエラー"
 
 #: pyload/Core.py:661
 msgid "killed pyLoad from terminal"
-msgstr ""
+msgstr "ターミナルから pyLoad　を終了しました"
 
 #: pyload/database/DatabaseBackend.py:167
 msgid "Database was deleted due to incompatible version."
-msgstr ""
+msgstr "データベースが互換性のないバージョンのため削除されました。"
 
 #: pyload/threads/DecrypterThread.py:50
 msgid "Decrypting failed"
-msgstr ""
+msgstr "復号化に失敗しました"
 
 #: pyload/threads/DecrypterThread.py:73
 #, python-format
 msgid "Decrypted %(count)d links into package %(name)s"
-msgstr ""
+msgstr "パッケージ%(name)sにリンク%(count)d復号化しました"
 
 #: pyload/threads/DecrypterThread.py:80
 msgid "No links decrypted"
-msgstr ""
+msgstr "復号化リンクがありません。"
 
 #: pyload/threads/InfoThread.py:147
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
-msgstr ""
+msgstr "%(name)sの失敗の情報取得する |%(err)s"
 
 #: pyload/threads/ThreadManager.py:155
 #, python-format
@@ -551,16 +551,16 @@ msgstr "再接続を開始中"
 
 #: pyload/threads/ThreadManager.py:212
 msgid "Failed executing reconnect script!"
-msgstr ""
+msgstr "失敗した実行スクリプト再接続 ！"
 
 #: pyload/threads/ThreadManager.py:224
 #, python-format
 msgid "Reconnected, new IP: %s"
-msgstr ""
+msgstr "再接続、新しい IP: %s"
 
 #: pyload/threads/ThreadManager.py:298
 msgid "Not enough space left on device"
-msgstr ""
+msgstr "デバイスに空き領域不足"
 
 #: pyload/threads/DownloadThread.py:64
 #, python-format
@@ -600,31 +600,31 @@ msgstr "ダウンロードが一時的にオフライン: %s"
 #: pyload/threads/DownloadThread.py:119 pyload/threads/DownloadThread.py:192
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
-msgstr ""
+msgstr "ダウンロードに失敗しました: %(name)s|%(msg)s"
 
 #: pyload/threads/DownloadThread.py:136
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
-msgstr ""
+msgstr "ホストまたは接続のリセットに接続できなかったため、1 分後接続に再試行してください。"
 
 #: pyload/threads/DownloadThread.py:171
 #, python-format
 msgid "Download skipped: %(name)s due to %(plugin)s"
-msgstr ""
+msgstr "ダウンロードをスキップしました:%(plugin)sにより %(name)s"
 
 #: pyload/threads/DownloadThread.py:188
 msgid "Internal Server Error"
-msgstr ""
+msgstr "内部サーバー エラー"
 
 #: pyload/threads/AddonThread.py:55
 msgid "An Error occurred"
-msgstr ""
+msgstr "エラーが発生しました"
 
 #: pyload/PluginManager.py:316
 #, python-format
 msgid "Error importing %(name)s: %(msg)s"
-msgstr ""
+msgstr "%(name)s：%(msg)sのインポート エラー"
 
 #: pyload/utils/JsEngine.py:188
 msgid "No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino"
-msgstr ""
+msgstr "Js エンジンが検出されると、インストールしてくださいない Spidermonkey、js ossp、pyv8、nodejs またはサイ"
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-08-02 10:02-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -50,7 +50,7 @@ msgstr "Beachte: Du kannst diesen Assistenten jederzeit wieder mit dem --setup o
 
 #: pyload/Setup.py:93
 msgid "If you have any problems with this assistent hit CTRL+C,"
-msgstr ""
+msgstr "Wenn du mit diesem Assistenten irgendwelche Probleme hast drücke STRG+C"
 
 #: pyload/Setup.py:94
 msgid "to abort and don't let him start with pyLoadCore automatically anymore."
@@ -115,7 +115,7 @@ msgstr "Möchtest du den Configordner ändern? Jetziger ist %s"
 
 #: pyload/Setup.py:136
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
-msgstr ""
+msgstr "Wenn du pyLoad auf einem Server nutzt oder wenn die home Partition auf einem internen Flashspeicher liegt wäre es eine gute Idee dies zu ändern."
 
 #: pyload/Setup.py:137
 msgid "Change config path?"
@@ -191,7 +191,7 @@ msgstr "Sprache"
 
 #: pyload/Setup.py:213
 msgid "Download folder"
-msgstr ""
+msgstr "Download Ordner"
 
 #: pyload/Setup.py:214
 msgid "Max parallel downloads"
@@ -267,7 +267,7 @@ msgstr "## SSL Setup ##"
 
 #: pyload/Setup.py:255
 msgid "Execute these commands from pyLoad config folder to make ssl certificates:"
-msgstr "Führen Sie die folgenden Kommandos im pyLoad Konfigurationsordner durch um SSL-Zertifikate zu erstellen:"
+msgstr "Führen Sie die folgenden Kommandos im pyLoad Konfigurationsordner aus, um ein SSL-Zertifikate zu erstellen:"
 
 #: pyload/Setup.py:261
 msgid "If you're done and everything went fine, you can activate ssl now."
@@ -307,11 +307,11 @@ msgstr "Setze neuen Config Pfad, momentane Konfiguration wird nicht übernommen!
 
 #: pyload/Setup.py:323
 msgid "Config path"
-msgstr ""
+msgstr "Einstellungs Pfad"
 
 #: pyload/Setup.py:331
 msgid "Config path changed, setup will now close, please restart to go on."
-msgstr ""
+msgstr "Einstellungs Pfad geändert, Setup wird jetzt geschlossen, bitte neustarten zum fortsetzen."
 
 #: pyload/Setup.py:332
 msgid "Press Enter to exit."

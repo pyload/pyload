@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-08-02 10:02-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -178,7 +178,7 @@ msgstr "%d link ellenőrzése:"
 
 #: pyload/cli/Cli.py:324
 msgid "File does not exists."
-msgstr "Az állomány nem létezik."
+msgstr "A fájl nem létezik."
 
 #: pyload/cli/Cli.py:385
 msgid "pyLoad was terminated"
@@ -254,7 +254,7 @@ msgstr "Parancsok listája:"
 
 #: pyload/cli/Cli.py:473
 msgid "Couldn't write user config file"
-msgstr "Nem sikerült írni a felhasználói beállítás állományát"
+msgstr "Nem sikerült írni a felhasználói beállítások fájlját"
 
 #: pyload/cli/Cli.py:548 pyload/cli/Cli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."

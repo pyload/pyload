@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-08-02 10:02-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Greek\n"
 "Language: el_GR\n"
@@ -15,7 +15,7 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/AddonManager.py:62
 #, python-format
 msgid "Error when executing %s"
-msgstr ""
+msgstr "Σφάλμα κατά την εκτέλεση του %s"
 
 #: pyload/AddonManager.py:93
 #, python-format
@@ -25,12 +25,12 @@ msgstr "Αποτυχία ενεργοποίησης %(name)s "
 #: pyload/AddonManager.py:96
 #, python-format
 msgid "Activated addons: %s"
-msgstr ""
+msgstr "Ενεργοποιημένα πρόσθετα: %s"
 
 #: pyload/AddonManager.py:97
 #, python-format
 msgid "Deactivated addons: %s"
-msgstr ""
+msgstr "Απενεργοποιημένα πρόσθετα: %s"
 
 #: pyload/AddonManager.py:153
 msgid "Activating Plugins..."
@@ -38,7 +38,7 @@ msgstr "Ενεργοποίηση Πρόσθετων..."
 
 #: pyload/AddonManager.py:162
 msgid "Deactivating Plugins..."
-msgstr ""
+msgstr "Απενεργοποίηση πρόσθετων..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -46,19 +46,19 @@ msgstr "Δεν βρέθηκαν πιστοποιητικά SSL."
 
 #: pyload/web/ServerThread.py:53
 msgid "WebUI built is not available"
-msgstr ""
+msgstr "Η έκδοση του WebUI δεν είναι διαθέσιμη"
 
 #: pyload/web/ServerThread.py:55
 msgid "Running webUI in development mode"
-msgstr ""
+msgstr "Το WebUI εκτελείται σε λειτουργία ανάπτυξης κώδικα"
 
 #: pyload/web/ServerThread.py:73
 msgid "Failed starting webserver: "
-msgstr ""
+msgstr "Αποτυχία έναρξης του διακομιστή web: "
 
 #: pyload/web/ServerThread.py:107
 msgid "Failed importing webserver: "
-msgstr ""
+msgstr "Αποτυχία εισαγωγής του διακομιστή web: "
 
 #: pyload/web/ServerThread.py:125
 msgid "This server offers no SSL, please consider using threaded instead"
@@ -67,11 +67,11 @@ msgstr "Αυτός ο διακομιστής δεν προσφέρει SSL, αν
 #: pyload/web/ServerThread.py:139
 #, python-format
 msgid "Starting %(name)s webserver: %(host)s:%(port)d"
-msgstr ""
+msgstr "Εκκινείται ο διακομιστής web  %(name)s : %(host)s:%(port)d"
 
 #: pyload/config/default.py:14
 msgid "Remote"
-msgstr ""
+msgstr "Απομακρυσμένo"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -79,7 +79,7 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Description"
-msgstr ""
+msgstr "Περιγραφή"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -87,7 +87,7 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Long description"
-msgstr ""
+msgstr "Πλήρης περιγραφή"
 
 #: pyload/config/default.py:16 pyload/config/default.py:56
 #: pyload/config/default.py:63
@@ -97,260 +97,260 @@ msgstr "Ενεργοποιήθηκε"
 #: pyload/config/default.py:17 pyload/config/default.py:69
 #: pyload/config/default.py:80
 msgid "Port"
-msgstr ""
+msgstr "Θύρα"
 
 #: pyload/config/default.py:18 pyload/config/default.py:77
 msgid "Address"
-msgstr ""
+msgstr "Διεύθυνση"
 
 #: pyload/config/default.py:21
 msgid "Log"
-msgstr ""
+msgstr "Αρχείο καταγραφής"
 
 #: pyload/config/default.py:23
 msgid "Size in kb"
-msgstr ""
+msgstr "Μέγεθος σε kb"
 
 #: pyload/config/default.py:24
 msgid "Folder"
-msgstr ""
+msgstr "Φάκελος"
 
 #: pyload/config/default.py:25
 msgid "File Log"
-msgstr ""
+msgstr "Αρχείο καταγραφής"
 
 #: pyload/config/default.py:26
 msgid "Count"
-msgstr ""
+msgstr "Αρίθμηση"
 
 #: pyload/config/default.py:27
 msgid "Log Rotate"
-msgstr ""
+msgstr "Ανακύκλωση αρχείου καταγραφής"
 
 #: pyload/config/default.py:30
 msgid "Permissions"
-msgstr ""
+msgstr "Δικαιώματα"
 
 #: pyload/config/default.py:32
 msgid "Groupname"
-msgstr ""
+msgstr "Όνομα ομάδας"
 
 #: pyload/config/default.py:33
 msgid "Change Group and User of Downloads"
-msgstr ""
+msgstr "Αλλαγή ομάδας και χρήστη των λήψεων"
 
 #: pyload/config/default.py:34
 msgid "Change file mode of downloads"
-msgstr ""
+msgstr "Αλλαγή της κατάστασης αρχείου των λήψεων"
 
 #: pyload/config/default.py:35 pyload/config/default.py:75
 msgid "Username"
-msgstr ""
+msgstr "Όνομα Χρήστη"
 
 #: pyload/config/default.py:36
 msgid "Filemode for Downloads"
-msgstr ""
+msgstr "Λειτουργία αρχείου για τις λήψεις"
 
 #: pyload/config/default.py:37
 msgid "Change group of running process"
-msgstr ""
+msgstr "Αλλαγή ομάδας για τις διαδικασίες που εκτελούνται"
 
 #: pyload/config/default.py:38
 msgid "Folder Permission mode"
-msgstr ""
+msgstr "Λειτουργία δικαιωμάτων φακέλων"
 
 #: pyload/config/default.py:39
 msgid "Change user of running process"
-msgstr ""
+msgstr "Αλλαγή του χρήστη για τις διαδικασίες που εκτελούνται"
 
 #: pyload/config/default.py:42
 msgid "General"
-msgstr ""
+msgstr "Γενικά"
 
 #: pyload/config/default.py:44
 msgid "Language"
-msgstr ""
+msgstr "Γλώσσα"
 
 #: pyload/config/default.py:45
 msgid "Download Folder"
-msgstr ""
+msgstr "Φάκελος για λήψεις"
 
 #: pyload/config/default.py:46
 msgid "Use Checksum"
-msgstr ""
+msgstr "Χρήση ελέγχου Checksum"
 
 #: pyload/config/default.py:47
 msgid "Create folder for each package"
-msgstr ""
+msgstr "Δημιουργία φακέλου για κάθε πακέτο"
 
 #: pyload/config/default.py:48
 msgid "Debug Mode"
-msgstr ""
+msgstr "Λειτουργία αποσφαλμάτωσης"
 
 #: pyload/config/default.py:49
 msgid "Min Free Space (MB)"
-msgstr ""
+msgstr "Ελέχιστος ελεύθερος χώρος (MB)"
 
 #: pyload/config/default.py:50
 msgid "CPU Priority"
-msgstr ""
+msgstr "Προτεραιότητα CPU"
 
 #: pyload/config/default.py:53
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #: pyload/config/default.py:55
 msgid "SSL Certificate"
-msgstr ""
+msgstr "Πιστοποιητικό SSL"
 
 #: pyload/config/default.py:57
 msgid "SSL Key"
-msgstr ""
+msgstr "Κλειδί SSL"
 
 #: pyload/config/default.py:60
 msgid "Webinterface"
-msgstr ""
+msgstr "Web περιβάλλον διαχείρισης"
 
 #: pyload/config/default.py:62
 msgid "Template"
-msgstr ""
+msgstr "Πρότυπο"
 
 #: pyload/config/default.py:64
 msgid "Path Prefix"
-msgstr ""
+msgstr "Πρόθεμα διαδρομής"
 
 #: pyload/config/default.py:65
 msgid "Server"
-msgstr ""
+msgstr "Διακομιστής"
 
 #: pyload/config/default.py:66
 msgid "Favor specific server"
-msgstr ""
+msgstr "Προτίμηση σε συγκεκριμένο διακομιστή"
 
 #: pyload/config/default.py:67
 msgid "IP"
-msgstr ""
+msgstr "Διεύθυνση IP"
 
 #: pyload/config/default.py:68
 msgid "Use HTTPS"
-msgstr ""
+msgstr "Χρήση HTTPS"
 
 #: pyload/config/default.py:70
 msgid "Development mode"
-msgstr ""
+msgstr "Λειτουργία ανάπτυξης λογισμικού"
 
 #: pyload/config/default.py:73
 msgid "Proxy"
-msgstr ""
+msgstr "Διακομιστής μεσολάβησης"
 
 #: pyload/config/default.py:76
 msgid "Use Proxy"
-msgstr ""
+msgstr "Χρήση διακομιστή μεσολάβησης"
 
 #: pyload/config/default.py:78
 msgid "Password"
-msgstr ""
+msgstr "Κωδικός πρόσβασης"
 
 #: pyload/config/default.py:79
 msgid "Protocol"
-msgstr ""
+msgstr "Πρωτόκολλο"
 
 #: pyload/config/default.py:83
 msgid "Reconnect"
-msgstr ""
+msgstr "Επανασύνδεση"
 
 #: pyload/config/default.py:85 pyload/config/default.py:106
 msgid "End"
-msgstr ""
+msgstr "Τέλος"
 
 #: pyload/config/default.py:86
 msgid "Use Reconnect"
-msgstr ""
+msgstr "Χρήση Επανασύνδεσης"
 
 #: pyload/config/default.py:87
 msgid "Method"
-msgstr ""
+msgstr "Μέθοδος"
 
 #: pyload/config/default.py:88 pyload/config/default.py:105
 msgid "Start"
-msgstr ""
+msgstr "Έναρξη"
 
 #: pyload/config/default.py:91
 msgid "Download"
-msgstr ""
+msgstr "Λήψη"
 
 #: pyload/config/default.py:93
 msgid "Max Parallel Downloads"
-msgstr ""
+msgstr "Μέγιστος αριθμός ταυτόχρονων λήψεων"
 
 #: pyload/config/default.py:94
 msgid "Limit Download Speed"
-msgstr ""
+msgstr "Περιορισμός ταχύτητας λήψης"
 
 #: pyload/config/default.py:95
 msgid "Download interface to bind (ip or Name)"
-msgstr ""
+msgstr "Διεπαφή λήψεων για δέσμευση (διεύθυνση ΙΡ ή όνομα)"
 
 #: pyload/config/default.py:96
 msgid "Skip already existing files"
-msgstr ""
+msgstr "Παράλειψη αρχείων που υπάρχουν ήδη"
 
 #: pyload/config/default.py:97
 msgid "Max Download Speed in kb/s"
-msgstr ""
+msgstr "Μέγιστη ταχύτητα λήψης σε kb/s"
 
 #: pyload/config/default.py:98
 msgid "Allow IPv6"
-msgstr ""
+msgstr "Να επιτρέπεται το IPv6"
 
 #: pyload/config/default.py:99
 msgid "Max connections for one download"
-msgstr ""
+msgstr "Μέγιστο όριο συνδέσεων για μία λήψη"
 
 #: pyload/config/default.py:100
 msgid "Restart failed downloads on startup"
-msgstr ""
+msgstr "Επανεκκίνηση αποτυχημένων λήψεων κατά την εκκίνηση"
 
 #: pyload/config/default.py:103
 msgid "Download Time"
-msgstr ""
+msgstr "Χρόνος λήψης"
 
 #: pyload/network/HTTPDownload.py:249
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
-msgstr ""
+msgstr "Η λήψη των κομματιών απέτυχε, επιστροφή σε κατάσταση μονής σύνδεσης | %s"
 
 #: pyload/api/DownloadApi.py:44
 #, python-format
 msgid "Added package %(name)s as folder %(folder)s"
-msgstr ""
+msgstr "Προστέθηκε το πακέτο %(name)s σαν φάκελος %(folder)s"
 
 #: pyload/api/DownloadApi.py:95
 #, python-format
 msgid "Added %d links to package"
-msgstr ""
+msgstr "Προστέθηκαν %d σύνδεσμοι στο πακέτο"
 
 #: pyload/AccountManager.py:69
 #, python-format
 msgid "Unknown account plugin %s"
-msgstr ""
+msgstr "Άγνωστος λογαριασμός στο πρόσθετο %s"
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
-msgstr ""
+msgstr "Ερώτημα"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Captcha request"
-msgstr ""
+msgstr "Αίτηση Captcha"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Please solve the captcha."
-msgstr ""
+msgstr "Παρακαλώ επιλύστε το captcha."
 
 #: pyload/remote/RemoteManager.py:35
 #, python-format
 msgid "Remote backend error: %s"
-msgstr ""
+msgstr "Σφάλμα απομακρυσμένου backend: %s"
 
 #: pyload/remote/RemoteManager.py:80
 #, python-format
@@ -360,11 +360,11 @@ msgstr "Γίνεται εκκίνηση  %(name)s: %(addr)s:%(port)s"
 #: pyload/remote/RemoteManager.py:82
 #, python-format
 msgid "Failed loading backend %(name)s | %(error)s"
-msgstr ""
+msgstr "Απέτυχε η φόρτωση του backend %(name)s | %(error)s"
 
 #: pyload/FileManager.py:53
 msgid "none"
-msgstr ""
+msgstr "κανένα"
 
 #: pyload/FileManager.py:53
 msgid "offline"
@@ -376,15 +376,15 @@ msgstr "συνδεμένος"
 
 #: pyload/FileManager.py:53
 msgid "queued"
-msgstr ""
+msgstr "στην ουρά"
 
 #: pyload/FileManager.py:53
 msgid "paused"
-msgstr ""
+msgstr "σε παύση"
 
 #: pyload/FileManager.py:54
 msgid "finished"
-msgstr ""
+msgstr "τελείωσε"
 
 #: pyload/FileManager.py:54
 msgid "skipped"
@@ -396,39 +396,39 @@ msgstr "απέτυχε"
 
 #: pyload/FileManager.py:54
 msgid "starting"
-msgstr ""
+msgstr "ξεκινάει"
 
 #: pyload/FileManager.py:55
 msgid "waiting"
-msgstr "αναμονή"
+msgstr "σε αναμονή"
 
 #: pyload/FileManager.py:55
 msgid "downloading"
-msgstr ""
+msgstr "σε λήψη"
 
 #: pyload/FileManager.py:55
 msgid "temp. offline"
-msgstr ""
+msgstr "προσωρινά χωρίς σύνδεση"
 
 #: pyload/FileManager.py:55
 msgid "aborted"
-msgstr ""
+msgstr "ματαιώθηκε"
 
 #: pyload/FileManager.py:56
 msgid "decrypting"
-msgstr ""
+msgstr "αποκρυπτογραφείται"
 
 #: pyload/FileManager.py:56
 msgid "processing"
-msgstr ""
+msgstr "σε εξέλιξη"
 
 #: pyload/FileManager.py:56
 msgid "custom"
-msgstr ""
+msgstr "προσαρμοσμένο"
 
 #: pyload/FileManager.py:56
 msgid "unknown"
-msgstr "Άγνωστο"
+msgstr "άγνωστο"
 
 #: pyload/FileManager.py:426
 #, python-format
@@ -438,7 +438,7 @@ msgstr "Ολοκλήρωση πακέτου: %s"
 #: pyload/Api.py:152
 #, python-format
 msgid "User '%s' tries to log in"
-msgstr ""
+msgstr "Ο χρήστης '%s' προσπαθεί να συνδεθεί"
 
 #: pyload/Core.py:195
 msgid "Received Quit signal"
@@ -461,21 +461,21 @@ msgstr "Αποτυχία αλλαγής χρήστη: %s"
 
 #: pyload/Core.py:358
 msgid "Starting"
-msgstr "Εκκίνηση"
+msgstr "Σε εκκίνηση"
 
 #: pyload/Core.py:359
 #, python-format
 msgid "Using home directory: %s"
-msgstr ""
+msgstr "Χρήση γονικού καταλόγου: %s"
 
 #: pyload/Core.py:373
 msgid "All links removed"
-msgstr "Όλα οι υπερσυνδέσμοι(links) αφαιρέθηκαν"
+msgstr "Όλοι οι συνδεσμοι αφαιρέθηκαν"
 
 #: pyload/Core.py:403
 #, python-format
 msgid "Download time: %s"
-msgstr ""
+msgstr "Χρόνος λήψης: %s"
 
 #: pyload/Core.py:418
 #, python-format
@@ -488,11 +488,11 @@ msgstr "Ενεργοποίηση Λογαριασμών..."
 
 #: pyload/Core.py:443
 msgid "Restarting failed downloads..."
-msgstr ""
+msgstr "Επανεκκίνηση αποτυχημένων λήψεων..."
 
 #: pyload/Core.py:451
 msgid "pyLoad is up and running"
-msgstr "pyLoad είναι ενεργό και εκτελείται "
+msgstr "Το pyLoad είναι ενεργό και εκτελείται "
 
 #: pyload/Core.py:474
 msgid "restarting pyLoad"
@@ -512,34 +512,34 @@ msgstr "σφάλμα κατα το κλείσιμο"
 
 #: pyload/Core.py:661
 msgid "killed pyLoad from terminal"
-msgstr ""
+msgstr "το pyLoad σταματήθηκε απο το τερματικό"
 
 #: pyload/database/DatabaseBackend.py:167
 msgid "Database was deleted due to incompatible version."
-msgstr ""
+msgstr "Βάση δεδομένων διαγράφηκε λόγω ασυμβατότητας της έκδοσης."
 
 #: pyload/threads/DecrypterThread.py:50
 msgid "Decrypting failed"
-msgstr ""
+msgstr "Η αποκρυπτογράφηση απέτυχε"
 
 #: pyload/threads/DecrypterThread.py:73
 #, python-format
 msgid "Decrypted %(count)d links into package %(name)s"
-msgstr ""
+msgstr "Αποκρυπτογραφήθηκαν %(count)d σύνδεσμοι στο πακέτο %(name)s"
 
 #: pyload/threads/DecrypterThread.py:80
 msgid "No links decrypted"
-msgstr ""
+msgstr "Δεν αποκρυπτογραφήθηκε κανένας σύνδεσμος"
 
 #: pyload/threads/InfoThread.py:147
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
-msgstr ""
+msgstr "Η ανάκτηση πληροφοριών για το %(name)s απέτυχε | %(err)s"
 
 #: pyload/threads/ThreadManager.py:155
 #, python-format
 msgid "Reconnect Failed: %s"
-msgstr "Επανασύνδεση απετυχε %s"
+msgstr "Επανασύνδεση απέτυχε %s"
 
 #: pyload/threads/ThreadManager.py:192
 msgid "Reconnect script not found!"
@@ -556,75 +556,75 @@ msgstr "Αποτυχία εκτέλεσης αρχείου εντολών επα
 #: pyload/threads/ThreadManager.py:224
 #, python-format
 msgid "Reconnected, new IP: %s"
-msgstr "Επανασύνδεση, νεα IP: %s"
+msgstr "Επανασυνδέθηκε, νέα διέυθυνση IP: %s"
 
 #: pyload/threads/ThreadManager.py:298
 msgid "Not enough space left on device"
-msgstr "Δεν υπάρχει αρκετός εναπομείναντας χώρος στην συσκευή"
+msgstr "Δεν έχει απομείνει αρκετός χώρος στην συσκευή"
 
 #: pyload/threads/DownloadThread.py:64
 #, python-format
 msgid "Download starts: %s"
-msgstr ""
+msgstr "Η λήψη ξεκινά: %s"
 
 #: pyload/threads/DownloadThread.py:70
 #, python-format
 msgid "Download finished: %s"
-msgstr ""
+msgstr "Η λήψη ολοκληρώθηκε: %s"
 
 #: pyload/threads/DownloadThread.py:75
 #, python-format
 msgid "Plugin %s is missing a function."
-msgstr ""
+msgstr "Στο πρόσθετο %s λείπει μια λειτουργία."
 
 #: pyload/threads/DownloadThread.py:83 pyload/threads/DownloadThread.py:147
 #, python-format
 msgid "Download aborted: %s"
-msgstr ""
+msgstr "Η λήψη ματαιώθηκε: %s"
 
 #: pyload/threads/DownloadThread.py:103
 #, python-format
 msgid "Download restarted: %(name)s | %(msg)s"
-msgstr ""
+msgstr "Η λήψη επανεκκινήθηκε: %(name)s | %(msg)s"
 
 #: pyload/threads/DownloadThread.py:113
 #, python-format
 msgid "Download is offline: %s"
-msgstr ""
+msgstr "Η λήψη είναι εκτός σύνδεσης: %s"
 
 #: pyload/threads/DownloadThread.py:116 pyload/threads/DownloadThread.py:187
 #, python-format
 msgid "Download is temporary offline: %s"
-msgstr ""
+msgstr "Η λήψη είναι προσωρινά εκτός σύνδεσης: %s"
 
 #: pyload/threads/DownloadThread.py:119 pyload/threads/DownloadThread.py:192
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
-msgstr ""
+msgstr "Η λήψη απέτυχε: %(name)s | %(msg)s"
 
 #: pyload/threads/DownloadThread.py:136
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
-msgstr ""
+msgstr "Αποτυχία σύνδεσης με το διακομιστή ή διακοπή σύνδεσης, αναμονή 1 λεπτό πριν γίνει κι άλλη προσπάθεια."
 
 #: pyload/threads/DownloadThread.py:171
 #, python-format
 msgid "Download skipped: %(name)s due to %(plugin)s"
-msgstr ""
+msgstr "Έγινε παράλειψη στη λήψη: %(name)s εξαιτίας του %(plugin)s"
 
 #: pyload/threads/DownloadThread.py:188
 msgid "Internal Server Error"
-msgstr ""
+msgstr "Εσωτερικό σφάλμα διακομιστή"
 
 #: pyload/threads/AddonThread.py:55
 msgid "An Error occurred"
-msgstr ""
+msgstr "Προέκυψε ένα σφάλμα"
 
 #: pyload/PluginManager.py:316
 #, python-format
 msgid "Error importing %(name)s: %(msg)s"
-msgstr ""
+msgstr "Σφάλμα κατά την εισαγωγή %(name)s: %(msg)s"
 
 #: pyload/utils/JsEngine.py:188
 msgid "No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino"
-msgstr ""
+msgstr "Καμία μηχανή js δεν βρέθηκε, παρακαλώ εγκαταστήσετε το Spidermonkey, ή το ossp-js, ή το pyv8, ή το rhino"
 

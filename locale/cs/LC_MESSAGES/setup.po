@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-08-07 09:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -14,11 +14,11 @@ msgstr "Project-Id-Version: pyload\n"
 
 #: pyload/Setup.py:72
 msgid "Would you like to configure pyLoad via Webinterface?"
-msgstr ""
+msgstr "Chcete konfigurovat pyLoad pomocí webového rozhraní?"
 
 #: pyload/Setup.py:73
 msgid "You need a Browser and a connection to this PC for it."
-msgstr ""
+msgstr "Potřebujete prohlížeč a připojení k tomuto počítači."
 
 #: pyload/Setup.py:74
 msgid "Url would be: http://hostname:8000/"
@@ -50,7 +50,7 @@ msgstr "Nezapomente: Tohoto pruvodce muzete kdykoli sputit znovu pouzitim parame
 
 #: pyload/Setup.py:93
 msgid "If you have any problems with this assistent hit CTRL+C,"
-msgstr ""
+msgstr "Pokud máte nějaké problémy s tímto pomocníkem, použijte zkratku CTRL + C,"
 
 #: pyload/Setup.py:94
 msgid "to abort and don't let him start with pyLoadCore automatically anymore."
@@ -62,7 +62,7 @@ msgstr "Az budete pripraveni na kontrolu systemu, stisknete enter."
 
 #: pyload/Setup.py:103
 msgid "Features missing: "
-msgstr ""
+msgstr "Chybějící funkce: "
 
 #: pyload/Setup.py:107
 msgid "no py-crypto available"
@@ -171,7 +171,7 @@ msgstr "Nasledujici prihlasovaci udaje jsou platne pro CLI, GUI a webove rozhran
 
 #: pyload/Setup.py:199 pyload/Setup.py:288 pyload/Setup.py:304
 msgid "Username"
-msgstr ""
+msgstr "Uživatelské jméno"
 
 #: pyload/Setup.py:205
 msgid "External clients (GUI, CLI or other) need remote access to work over the network."
@@ -187,7 +187,7 @@ msgstr "Povolit vzdálený přístup"
 
 #: pyload/Setup.py:211
 msgid "Language"
-msgstr ""
+msgstr "Jazyk"
 
 #: pyload/Setup.py:213
 msgid "Download folder"
@@ -219,11 +219,11 @@ msgstr "Adresa pro naslouchani, pokud pouzijete 127.0.0.1 nebo localhost, bude w
 
 #: pyload/Setup.py:232
 msgid "Address"
-msgstr ""
+msgstr "Adresa"
 
 #: pyload/Setup.py:233
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 #: pyload/Setup.py:235
 msgid "pyLoad offers several server backends, now following a short explanation."
@@ -259,7 +259,7 @@ msgstr "vratte se sem a zmente vestaveny server za server s vlakny."
 
 #: pyload/Setup.py:248
 msgid "Server"
-msgstr ""
+msgstr "Server"
 
 #: pyload/Setup.py:253
 msgid "## SSL Setup ##"
@@ -336,7 +336,7 @@ msgstr "Heslo: "
 
 #: pyload/Setup.py:377
 msgid "Password too short. Use at least 4 symbols."
-msgstr ""
+msgstr "Heslo je příliš krátké. Použijte nejméně 4 symboly."
 
 #: pyload/Setup.py:380
 msgid "Password (again): "

@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-08-02 10:02-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Greek\n"
 "Language: el_GR\n"
@@ -14,19 +14,19 @@ msgstr "Project-Id-Version: pyload\n"
 
 #: pyload/Setup.py:72
 msgid "Would you like to configure pyLoad via Webinterface?"
-msgstr ""
+msgstr "Θα θέλατε να ρυθμίσετε το pyLoad μέσω του περιβάλλοντος Web;"
 
 #: pyload/Setup.py:73
 msgid "You need a Browser and a connection to this PC for it."
-msgstr ""
+msgstr "Χρειάζεστε ένα πρόγραμμα περιήγησης και μια σύνδεση με αυτό το PC για αυτό το σκοπό."
 
 #: pyload/Setup.py:74
 msgid "Url would be: http://hostname:8000/"
-msgstr ""
+msgstr "Η διεύθυνση URL θα είναι: http://ΌνομαΥπολογιστή:8000/"
 
 #: pyload/Setup.py:75
 msgid "Start initial webinterface for configuration?"
-msgstr ""
+msgstr "Έναρξη του αρχικού περιβάλλοντος web για διαμόρφωση;"
 
 #: pyload/Setup.py:86
 msgid "Welcome to the pyLoad Configuration Assistent."
@@ -38,7 +38,7 @@ msgstr "Θα γίνει έλεγχος και βασική ρύθμιση του
 
 #: pyload/Setup.py:89
 msgid "The value in brackets [] always is the default value,"
-msgstr "Η τιμή στις αγκύλες [] είναι πάντα η εξ' ορισμού τιμή,"
+msgstr "Η τιμή στις αγκύλες [] είναι πάντα η προεπιλεγμένη τιμή,"
 
 #: pyload/Setup.py:90
 msgid "in case you don't want to change it or you are unsure what to choose, just hit enter."
@@ -50,7 +50,7 @@ msgstr "Μην ξεχνάτε: Μπορείτε πάντα να εκτελέσε
 
 #: pyload/Setup.py:93
 msgid "If you have any problems with this assistent hit CTRL+C,"
-msgstr ""
+msgstr "Αν αντιμετωπίσετε προβλήματα με το Βοηθό, πατήστε CTRL-C,"
 
 #: pyload/Setup.py:94
 msgid "to abort and don't let him start with pyLoadCore automatically anymore."
@@ -62,7 +62,7 @@ msgstr "Όταν είστε έτοιμος για τον έλεγχο του σ�
 
 #: pyload/Setup.py:103
 msgid "Features missing: "
-msgstr ""
+msgstr "Χαρακτηριστικά που λείπουν: "
 
 #: pyload/Setup.py:107
 msgid "no py-crypto available"
@@ -70,7 +70,7 @@ msgstr "δεν είναι διαθέσιμο το py-crypto"
 
 #: pyload/Setup.py:108
 msgid "You need this if you want to decrypt container files."
-msgstr "Αυτό απαιτείται αν θέλετε να αποκρυπτογραφήσετε αρχεία container."
+msgstr "Αυτό είναι απαραίτητο αν θέλετε να αποκρυπτογραφήσετε αρχεία container."
 
 #: pyload/Setup.py:112
 msgid "no SSL available"
@@ -78,15 +78,15 @@ msgstr "δεν είναι διαθέσιμο το SSL"
 
 #: pyload/Setup.py:113
 msgid "This is needed if you want to establish a secure connection to core or webinterface."
-msgstr "Αυτό απαιτείται για την πραγματοποίηση ασφαλής σύνδεσης με τον πυρήνα ή το Webιnterface."
+msgstr "Αυτό απαιτείται για την πραγματοποίηση ασφαλής σύνδεσης με τον πυρήνα ή το περιβάλλον Web."
 
 #: pyload/Setup.py:114
 msgid "If you only want to access locally to pyLoad ssl is not useful."
-msgstr ""
+msgstr "Αν θέλετε να έχετε πρόσβαση μόνο τοπικά στο pyLoad, το ssl δεν είναι χρήσιμο."
 
 #: pyload/Setup.py:118
 msgid "no Captcha Recognition available"
-msgstr "δεν υπάρχει διαθέσιμη αναγνώριση Captcha"
+msgstr "δεν υπάρχει διαθέσιμη Αναγνώριση Captcha"
 
 #: pyload/Setup.py:119
 msgid "Only needed for some hosters and as freeuser."
@@ -98,11 +98,11 @@ msgstr "δεν βρέθηκε μηχανή JavaScript"
 
 #: pyload/Setup.py:124
 msgid "You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino"
-msgstr "Θα το χρειαστείτε για μερικούς συνδέσμους Click'N'Load. Εγκαταστήστε Spidermonkey, ossp-js, pyv8 ή rhino"
+msgstr "Θα το χρειαστείτε για μερικούς συνδέσμους Click'N'Load. Εγκαταστήστε το Spidermonkey, ή το ossp-js, ή το pyv8 ή ή το rhino"
 
 #: pyload/Setup.py:126
 msgid "You can abort the setup now and fix some dependencies if you want."
-msgstr ""
+msgstr "Αν θέλετε μπορείτε να ακυρώσετε την εγκατάσταση τώρα και να διορθώσετε κάποιες εξαρτήσεις."
 
 #: pyload/Setup.py:128
 msgid "Continue with setup?"
@@ -111,15 +111,15 @@ msgstr "Συνέχιση με την εγκατάσταση;"
 #: pyload/Setup.py:134
 #, python-format
 msgid "Do you want to change the config path? Current is %s"
-msgstr "Θέλετε να αλλάξετε τη διαδρομή αποθήκευσης των ρυθμίσεων; Η τρέχουσα είναι %s"
+msgstr "Θέλετε να αλλάξετε τη διαδρομή του αρχείου αποθήκευσης των ρυθμίσεων; Η τρέχουσα είναι %s"
 
 #: pyload/Setup.py:136
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
-msgstr ""
+msgstr "Αν χρησιμοποιείτε το pyLoad σε εξυπηρετητή ή το διαμέρισμα home βρίσκεται σε εσωτερική μνήμη flash, θα ήταν καλή ιδέα να το αλλάξετε."
 
 #: pyload/Setup.py:137
 msgid "Change config path?"
-msgstr "Αλλαγή διαδρομής αποθήκευσης των ρυθμίσεων;"
+msgstr "Αλλαγή διαδρομής αποθήκευσης αρχείου ρυθμίσεων;"
 
 #: pyload/Setup.py:143
 msgid "Do you want to configure login data and basic settings?"
@@ -127,7 +127,7 @@ msgstr "Θέλετε να ορίσετε στοιχεία σύνδεσης κα�
 
 #: pyload/Setup.py:144
 msgid "This is recommend for first run."
-msgstr "Αυτό συνίσταται για την πρώτη εκτέλεση."
+msgstr "Αυτό συνιστάται για την πρώτη εκτέλεση."
 
 #: pyload/Setup.py:145
 msgid "Make basic setup?"
@@ -143,7 +143,7 @@ msgstr "Ρύθμιση SSL;"
 
 #: pyload/Setup.py:159
 msgid "Do you want to configure webinterface?"
-msgstr "Θέλετε να ρυθμίσετε το Web Interface;"
+msgstr "Θέλετε να ρυθμίσετε το περιβάλλον Web;"
 
 #: pyload/Setup.py:160
 msgid "Configure webinterface?"
@@ -155,11 +155,11 @@ msgstr "Η εγκατάσταση ολοκληρώθηκε με επιτυχία
 
 #: pyload/Setup.py:166
 msgid "Hit enter to exit and restart pyLoad"
-msgstr "Πατήστε Enter για να εξέλθετε και να επανεκκίνησεται το pyLoad"
+msgstr "Πατήστε Enter για να εξέλθετε και να επανεκκινήσετε το pyLoad"
 
 #: pyload/Setup.py:173
 msgid "Webinterface running for setup."
-msgstr ""
+msgstr "Το περιβάλλον Web εκετελείται για εγκατάσταση."
 
 #: pyload/Setup.py:190
 msgid "## Basic Setup ##"
@@ -167,11 +167,11 @@ msgstr "## Βασική Εγκατάσταση ##"
 
 #: pyload/Setup.py:193
 msgid "The following logindata is valid for CLI, GUI and webinterface."
-msgstr "Τα ακόλουθα στοιχεία σύνδεσης είναι έγκυρα για τη Γραμμή Εντολών, το GUI και το Web Interface."
+msgstr "Τα ακόλουθα στοιχεία σύνδεσης είναι έγκυρα για τη Γραμμή Εντολών, το GUI και το περιβάλλον Web."
 
 #: pyload/Setup.py:199 pyload/Setup.py:288 pyload/Setup.py:304
 msgid "Username"
-msgstr ""
+msgstr "Όνομα Χρήστη"
 
 #: pyload/Setup.py:205
 msgid "External clients (GUI, CLI or other) need remote access to work over the network."
@@ -179,7 +179,7 @@ msgstr "Οι εξωτερικοί πελάτες (για το GUI, τη Γραμ
 
 #: pyload/Setup.py:206
 msgid "However, if you only want to use the webinterface you may disable it to save ram."
-msgstr "Όμως, αν θέλετε να να χρησιμοποιήσετε μονο το Web Interface, μπορείτε να το απενεργοποιήσετε για να γλυτώσετε RAM."
+msgstr "Όμως, αν θέλετε να να χρησιμοποιήσετε μόνο το περιβάλλον Web, μπορείτε να το απενεργοποιήσετε για να γλυτώσετε χρήση της RAM."
 
 #: pyload/Setup.py:207
 msgid "Enable remote access"
@@ -187,15 +187,15 @@ msgstr "Ενεργοποίηση απομακρυσμένης πρόσβασης
 
 #: pyload/Setup.py:211
 msgid "Language"
-msgstr ""
+msgstr "Γλώσσα"
 
 #: pyload/Setup.py:213
 msgid "Download folder"
-msgstr ""
+msgstr "Φάκελος για λήψεις"
 
 #: pyload/Setup.py:214
 msgid "Max parallel downloads"
-msgstr "Μέγιστος αριθμός ταυτόχρονων μεταφορτώσεων"
+msgstr "Μέγιστος αριθμός ταυτόχρονων λήψεων"
 
 #: pyload/Setup.py:218
 msgid "Use Reconnect?"
@@ -207,23 +207,23 @@ msgstr "Τοποθεσία αρχείου εντολών επανασύνδεσ�
 
 #: pyload/Setup.py:226
 msgid "## Webinterface Setup ##"
-msgstr "## Εγκατάσταση Web Ιnterface ##"
+msgstr "## Εγκατάσταση Περιβάλλοντος Web ##"
 
 #: pyload/Setup.py:229
 msgid "Activate webinterface?"
-msgstr "Ενεργοποίηση Web Ιnterface;"
+msgstr "Ενεργοποίηση περιβάλλοντος Web;"
 
 #: pyload/Setup.py:231
 msgid "Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally."
-msgstr "Διεύθυνση που θα \"ακούει\". αν χρησιμοποιήσετε 127.0.0.1 ή localhost, το Web Ιnterface θα είναι προσβάσιμο μόνο τοπικά."
+msgstr "Διεύθυνση που θα \"ακούει\". Αν χρησιμοποιήσετε 127.0.0.1 ή localhost, το περιβάλλον Web θα είναι προσβάσιμο μόνο τοπικά."
 
 #: pyload/Setup.py:232
 msgid "Address"
-msgstr ""
+msgstr "Διεύθυνση"
 
 #: pyload/Setup.py:233
 msgid "Port"
-msgstr ""
+msgstr "Θύρα"
 
 #: pyload/Setup.py:235
 msgid "pyLoad offers several server backends, now following a short explanation."
@@ -231,7 +231,7 @@ msgstr "Το pyLoad προσφέρει αρκετoύς διακομιστές υ
 
 #: pyload/Setup.py:236
 msgid "Default server, this server offers SSL and is a good alternative to builtin."
-msgstr ""
+msgstr "Προεπιλεγμένο διακομιστής, αυτός ο διακομιστής προσφέρει SSL και είναι μια καλή εναλλακτική λύση από τον ενσωματωμένο."
 
 #: pyload/Setup.py:238
 msgid "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job."
@@ -239,7 +239,7 @@ msgstr "Μπορεί να χρησιμοποιήθεί από τον apache κα
 
 #: pyload/Setup.py:239
 msgid "Very fast alternative written in C, requires libev and linux knowledge."
-msgstr ""
+msgstr "Πολύ γρήγορη εναλλακτική λύση, γραμμένη σε C, απαιτεί το πακέτο libev και γνώσεις linux."
 
 #: pyload/Setup.py:240
 msgid "Get it from here: https://github.com/jonashaag/bjoern, compile it"
@@ -247,7 +247,7 @@ msgstr "Κατεβάστε το από εδώ: https://github.com/jonashaag/bjoe
 
 #: pyload/Setup.py:241
 msgid "and copy bjoern.so to pyload/lib"
-msgstr ""
+msgstr "και αντιγράψτε το bjoern.so στο pyload/lib"
 
 #: pyload/Setup.py:245
 msgid "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"
@@ -259,7 +259,7 @@ msgstr "επιστρέψτε εδώ και αλλάξτε τον με τον thr
 
 #: pyload/Setup.py:248
 msgid "Server"
-msgstr ""
+msgstr "Διακομιστής"
 
 #: pyload/Setup.py:253
 msgid "## SSL Setup ##"
@@ -303,15 +303,15 @@ msgstr "Χρήστες"
 
 #: pyload/Setup.py:322
 msgid "Setting new configpath, current configuration will not be transferred!"
-msgstr ""
+msgstr "Ορισμός καινούριας διαδρομής ρυθμίσεων, οι τρέχουσες ρυθμίσεις δεν θα μεταφερθούν!"
 
 #: pyload/Setup.py:323
 msgid "Config path"
-msgstr ""
+msgstr "Διαδρομή για το αρχείο ρυθμίσεων"
 
 #: pyload/Setup.py:331
 msgid "Config path changed, setup will now close, please restart to go on."
-msgstr ""
+msgstr "Η διαδρομή για το αρχείο ρυθμίσεων άλλαξε, η εγκατάσταση τώρα θα κλείσει, παρακαλώ κάντε επανεκκίνηση για να συνεχίστε."
 
 #: pyload/Setup.py:332
 msgid "Press Enter to exit."
@@ -324,11 +324,11 @@ msgstr "Ο ορισμός της διαδρομής ρυθμίσεων απέτ�
 
 #: pyload/Setup.py:347
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: pyload/Setup.py:349
 msgid "n"
-msgstr ""
+msgstr "n"
 
 #: pyload/Setup.py:373
 msgid "Password: "
@@ -336,7 +336,7 @@ msgstr "Κωδικός χρήστη:"
 
 #: pyload/Setup.py:377
 msgid "Password too short. Use at least 4 symbols."
-msgstr ""
+msgstr "Ο κωδικός είναι πολύ μικρός. Χρησιμοποιήστε τουλάχιστον 4 χαρακτήρες."
 
 #: pyload/Setup.py:380
 msgid "Password (again): "
@@ -356,7 +356,7 @@ msgstr "σωστό"
 
 #: pyload/Setup.py:397
 msgid "t"
-msgstr ""
+msgstr "t"
 
 #: pyload/Setup.py:400
 msgid "no"
@@ -368,7 +368,7 @@ msgstr "λάθος"
 
 #: pyload/Setup.py:400
 msgid "f"
-msgstr ""
+msgstr "f"
 
 #: pyload/Setup.py:403 pyload/Setup.py:413
 msgid "Invalid Input"

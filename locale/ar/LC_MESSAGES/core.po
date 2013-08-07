@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 11:44-0400\n"
+"PO-Revision-Date: 2013-08-02 10:02-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -15,7 +15,7 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/AddonManager.py:62
 #, python-format
 msgid "Error when executing %s"
-msgstr ""
+msgstr "خطأ عند التنفيذ %s"
 
 #: pyload/AddonManager.py:93
 #, python-format
@@ -25,12 +25,12 @@ msgstr "فشل التفعيل %(اسم)"
 #: pyload/AddonManager.py:96
 #, python-format
 msgid "Activated addons: %s"
-msgstr ""
+msgstr "الاضافات المفعلة: %s"
 
 #: pyload/AddonManager.py:97
 #, python-format
 msgid "Deactivated addons: %s"
-msgstr ""
+msgstr "الاضافات المعطلة: %s"
 
 #: pyload/AddonManager.py:153
 msgid "Activating Plugins..."
@@ -38,7 +38,7 @@ msgstr "تفعيل الاضافات..."
 
 #: pyload/AddonManager.py:162
 msgid "Deactivating Plugins..."
-msgstr ""
+msgstr "الغاء تفعيل الاضافات..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -46,32 +46,32 @@ msgstr "شهادة SSL غير موجوده."
 
 #: pyload/web/ServerThread.py:53
 msgid "WebUI built is not available"
-msgstr ""
+msgstr "بناء واجهة مستخدم الويب غير متوفر"
 
 #: pyload/web/ServerThread.py:55
 msgid "Running webUI in development mode"
-msgstr ""
+msgstr "تشغيل واحهة مستخدم الويب في وضع التطوير"
 
 #: pyload/web/ServerThread.py:73
 msgid "Failed starting webserver: "
-msgstr ""
+msgstr "فشل بدء خادم الويب: "
 
 #: pyload/web/ServerThread.py:107
 msgid "Failed importing webserver: "
-msgstr ""
+msgstr "فشل في استيراد خادم الويب: "
 
 #: pyload/web/ServerThread.py:125
 msgid "This server offers no SSL, please consider using threaded instead"
-msgstr ""
+msgstr "هذا المخدم لا يقدم خدمة SSL، يرجى النظر في استخدام بديلاً من ذلك"
 
 #: pyload/web/ServerThread.py:139
 #, python-format
 msgid "Starting %(name)s webserver: %(host)s:%(port)d"
-msgstr ""
+msgstr "بدء %(name)s خادم ويب: %(host)s :%(port)d"
 
 #: pyload/config/default.py:14
 msgid "Remote"
-msgstr ""
+msgstr "عن بعد"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -79,7 +79,7 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Description"
-msgstr ""
+msgstr "الوصف"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -87,7 +87,7 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Long description"
-msgstr ""
+msgstr "وصف مطول"
 
 #: pyload/config/default.py:16 pyload/config/default.py:56
 #: pyload/config/default.py:63
@@ -105,11 +105,11 @@ msgstr "عنوان"
 
 #: pyload/config/default.py:21
 msgid "Log"
-msgstr ""
+msgstr "سجل"
 
 #: pyload/config/default.py:23
 msgid "Size in kb"
-msgstr ""
+msgstr "الحجم بالكيلو بايت"
 
 #: pyload/config/default.py:24
 msgid "Folder"
@@ -117,31 +117,31 @@ msgstr "مجلد"
 
 #: pyload/config/default.py:25
 msgid "File Log"
-msgstr ""
+msgstr "ملف السجل"
 
 #: pyload/config/default.py:26
 msgid "Count"
-msgstr ""
+msgstr "العد"
 
 #: pyload/config/default.py:27
 msgid "Log Rotate"
-msgstr ""
+msgstr "تدوير سجل"
 
 #: pyload/config/default.py:30
 msgid "Permissions"
-msgstr ""
+msgstr "الصلاحيات"
 
 #: pyload/config/default.py:32
 msgid "Groupname"
-msgstr ""
+msgstr "اسم المجموعة"
 
 #: pyload/config/default.py:33
 msgid "Change Group and User of Downloads"
-msgstr ""
+msgstr "تغير المجموعة و المستخدم للتنزيلات"
 
 #: pyload/config/default.py:34
 msgid "Change file mode of downloads"
-msgstr ""
+msgstr "تغيير وضع ملف التنزيل"
 
 #: pyload/config/default.py:35 pyload/config/default.py:75
 msgid "Username"
@@ -149,19 +149,19 @@ msgstr "اسم المستخدم"
 
 #: pyload/config/default.py:36
 msgid "Filemode for Downloads"
-msgstr ""
+msgstr "ملف النمط للتنزيلات"
 
 #: pyload/config/default.py:37
 msgid "Change group of running process"
-msgstr ""
+msgstr "تغير المجموعة للعمليات قيد التشغيل"
 
 #: pyload/config/default.py:38
 msgid "Folder Permission mode"
-msgstr ""
+msgstr "وضع مجلد الصلاحيات"
 
 #: pyload/config/default.py:39
 msgid "Change user of running process"
-msgstr ""
+msgstr "تغير المستخدم للعمليات قيد التشغيل"
 
 #: pyload/config/default.py:42
 msgid "General"
@@ -173,51 +173,51 @@ msgstr "اللغة"
 
 #: pyload/config/default.py:45
 msgid "Download Folder"
-msgstr ""
+msgstr "مجلد التنزيلات"
 
 #: pyload/config/default.py:46
 msgid "Use Checksum"
-msgstr ""
+msgstr "استخدم المجموع الاختباري"
 
 #: pyload/config/default.py:47
 msgid "Create folder for each package"
-msgstr ""
+msgstr "إنشاء مجلد لكل حزمة"
 
 #: pyload/config/default.py:48
 msgid "Debug Mode"
-msgstr ""
+msgstr "وضع التصحيح"
 
 #: pyload/config/default.py:49
 msgid "Min Free Space (MB)"
-msgstr ""
+msgstr "الحد الادنى للمساحة الحرة (ميغابايت)"
 
 #: pyload/config/default.py:50
 msgid "CPU Priority"
-msgstr ""
+msgstr "اولوية وحدة المعالجة المركزية"
 
 #: pyload/config/default.py:53
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #: pyload/config/default.py:55
 msgid "SSL Certificate"
-msgstr ""
+msgstr "شهادة SSL"
 
 #: pyload/config/default.py:57
 msgid "SSL Key"
-msgstr ""
+msgstr "مفتاح SSL"
 
 #: pyload/config/default.py:60
 msgid "Webinterface"
-msgstr ""
+msgstr "واجهة ويب"
 
 #: pyload/config/default.py:62
 msgid "Template"
-msgstr ""
+msgstr "النماذج"
 
 #: pyload/config/default.py:64
 msgid "Path Prefix"
-msgstr ""
+msgstr "بادئة المسار"
 
 #: pyload/config/default.py:65
 msgid "Server"
@@ -225,27 +225,27 @@ msgstr "خادم"
 
 #: pyload/config/default.py:66
 msgid "Favor specific server"
-msgstr ""
+msgstr "الخادم المحدد الافضل"
 
 #: pyload/config/default.py:67
 msgid "IP"
-msgstr ""
+msgstr "عنوان انترنت"
 
 #: pyload/config/default.py:68
 msgid "Use HTTPS"
-msgstr ""
+msgstr "استخدام HTTPS"
 
 #: pyload/config/default.py:70
 msgid "Development mode"
-msgstr ""
+msgstr "وضع التطوير"
 
 #: pyload/config/default.py:73
 msgid "Proxy"
-msgstr ""
+msgstr "البروكسى"
 
 #: pyload/config/default.py:76
 msgid "Use Proxy"
-msgstr ""
+msgstr "استخدام البروكسى"
 
 #: pyload/config/default.py:78
 msgid "Password"
@@ -253,99 +253,99 @@ msgstr "كلمة المرور"
 
 #: pyload/config/default.py:79
 msgid "Protocol"
-msgstr ""
+msgstr "البروتوكول"
 
 #: pyload/config/default.py:83
 msgid "Reconnect"
-msgstr ""
+msgstr "إعادة الاتصال"
 
 #: pyload/config/default.py:85 pyload/config/default.py:106
 msgid "End"
-msgstr ""
+msgstr "نهاية"
 
 #: pyload/config/default.py:86
 msgid "Use Reconnect"
-msgstr ""
+msgstr "استخدام إعادة الاتصال"
 
 #: pyload/config/default.py:87
 msgid "Method"
-msgstr ""
+msgstr "الأسلوب"
 
 #: pyload/config/default.py:88 pyload/config/default.py:105
 msgid "Start"
-msgstr ""
+msgstr "بدء"
 
 #: pyload/config/default.py:91
 msgid "Download"
-msgstr ""
+msgstr "تنزيل"
 
 #: pyload/config/default.py:93
 msgid "Max Parallel Downloads"
-msgstr ""
+msgstr "العدد الاقصى التنزيلات المتوازيية (التنزيلات في نفس الوقت)"
 
 #: pyload/config/default.py:94
 msgid "Limit Download Speed"
-msgstr ""
+msgstr "حد الاقصى لسرعة التنزيل"
 
 #: pyload/config/default.py:95
 msgid "Download interface to bind (ip or Name)"
-msgstr ""
+msgstr "واحهة التنزيل لربط (موقع الانترنت او الاسم)"
 
 #: pyload/config/default.py:96
 msgid "Skip already existing files"
-msgstr ""
+msgstr "تخطي الملفات الموجودة حاليا"
 
 #: pyload/config/default.py:97
 msgid "Max Download Speed in kb/s"
-msgstr ""
+msgstr "سرعة التنزيل القصوى في كيلو بايت/ثانية"
 
 #: pyload/config/default.py:98
 msgid "Allow IPv6"
-msgstr ""
+msgstr "السماح IPv6"
 
 #: pyload/config/default.py:99
 msgid "Max connections for one download"
-msgstr ""
+msgstr "الحد الاعلى للاتصالات للتنزيل الواحد"
 
 #: pyload/config/default.py:100
 msgid "Restart failed downloads on startup"
-msgstr ""
+msgstr "اعادة تشغيل التنزيلات الفاشلة عند بدى التشغيل"
 
 #: pyload/config/default.py:103
 msgid "Download Time"
-msgstr ""
+msgstr "وقت التنزيل"
 
 #: pyload/network/HTTPDownload.py:249
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
-msgstr ""
+msgstr "فشل التنزيل على اجزاء, العودة الى التنزيل على اتصال واحد | %s"
 
 #: pyload/api/DownloadApi.py:44
 #, python-format
 msgid "Added package %(name)s as folder %(folder)s"
-msgstr ""
+msgstr "اضافة حزمة %(name)s كمجلد %(folder)s"
 
 #: pyload/api/DownloadApi.py:95
 #, python-format
 msgid "Added %d links to package"
-msgstr ""
+msgstr "اضافة %d روابط للحزمة"
 
 #: pyload/AccountManager.py:69
 #, python-format
 msgid "Unknown account plugin %s"
-msgstr ""
+msgstr "اضافة حساب غير معروفة %s"
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
-msgstr ""
+msgstr "الاستبيان"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Captcha request"
-msgstr ""
+msgstr "طلب كلمة التحقق"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Please solve the captcha."
-msgstr ""
+msgstr "الرجاء حل كلمة التحقق."
 
 #: pyload/remote/RemoteManager.py:35
 #, python-format
@@ -364,19 +364,19 @@ msgstr "فشل في تحميل الواجهه الخلفيه للبرنامج %(
 
 #: pyload/FileManager.py:53
 msgid "none"
-msgstr ""
+msgstr "لا شيء"
 
 #: pyload/FileManager.py:53
 msgid "offline"
-msgstr ""
+msgstr "غير متصل"
 
 #: pyload/FileManager.py:53
 msgid "online"
-msgstr ""
+msgstr "متصل"
 
 #: pyload/FileManager.py:53
 msgid "queued"
-msgstr ""
+msgstr "في قائمة الانتظار"
 
 #: pyload/FileManager.py:53
 msgid "paused"
@@ -384,51 +384,51 @@ msgstr "تم إيقاف مؤقتاً"
 
 #: pyload/FileManager.py:54
 msgid "finished"
-msgstr ""
+msgstr "تم الانتهاء"
 
 #: pyload/FileManager.py:54
 msgid "skipped"
-msgstr ""
+msgstr "تخطي"
 
 #: pyload/FileManager.py:54
 msgid "failed"
-msgstr ""
+msgstr "فشل"
 
 #: pyload/FileManager.py:54
 msgid "starting"
-msgstr ""
+msgstr "البدء"
 
 #: pyload/FileManager.py:55
 msgid "waiting"
-msgstr ""
+msgstr "انتظار"
 
 #: pyload/FileManager.py:55
 msgid "downloading"
-msgstr ""
+msgstr "جاري التنزيل"
 
 #: pyload/FileManager.py:55
 msgid "temp. offline"
-msgstr ""
+msgstr "مؤقت. غير متصل"
 
 #: pyload/FileManager.py:55
 msgid "aborted"
-msgstr ""
+msgstr "الغاء"
 
 #: pyload/FileManager.py:56
 msgid "decrypting"
-msgstr ""
+msgstr "فك تشفير"
 
 #: pyload/FileManager.py:56
 msgid "processing"
-msgstr ""
+msgstr "تجهيز"
 
 #: pyload/FileManager.py:56
 msgid "custom"
-msgstr ""
+msgstr "مخصص"
 
 #: pyload/FileManager.py:56
 msgid "unknown"
-msgstr ""
+msgstr "غير معروف"
 
 #: pyload/FileManager.py:426
 #, python-format
@@ -438,7 +438,7 @@ msgstr "انتهت الحزمه: %"
 #: pyload/Api.py:152
 #, python-format
 msgid "User '%s' tries to log in"
-msgstr ""
+msgstr "مستخدم '%s' يحاول تسجيل دخول"
 
 #: pyload/Core.py:195
 msgid "Received Quit signal"
@@ -447,7 +447,7 @@ msgstr "تم تساتقبال اشارة انهاء"
 #: pyload/Core.py:323
 #, python-format
 msgid "pyLoad already running with pid %s"
-msgstr ""
+msgstr "باي لود يعمل حاليا بمعرف العملية %s"
 
 #: pyload/Core.py:337
 #, python-format
@@ -475,7 +475,7 @@ msgstr "تم مسح جميع الروابط"
 #: pyload/Core.py:403
 #, python-format
 msgid "Download time: %s"
-msgstr ""
+msgstr "وقت التنزيل: %s"
 
 #: pyload/Core.py:418
 #, python-format
@@ -488,7 +488,7 @@ msgstr "تفعيل الحسابات..."
 
 #: pyload/Core.py:443
 msgid "Restarting failed downloads..."
-msgstr ""
+msgstr "اعادة تشغيل التنزيلات الفاشلة..."
 
 #: pyload/Core.py:451
 msgid "pyLoad is up and running"
@@ -512,29 +512,29 @@ msgstr "خطاء اثناء ايقاف التشغيل "
 
 #: pyload/Core.py:661
 msgid "killed pyLoad from terminal"
-msgstr ""
+msgstr "تم انهاء باي لود من الطرفيه"
 
 #: pyload/database/DatabaseBackend.py:167
 msgid "Database was deleted due to incompatible version."
-msgstr ""
+msgstr "تم حذف قاعدة البيانات بسبب إصدار غير متوافق."
 
 #: pyload/threads/DecrypterThread.py:50
 msgid "Decrypting failed"
-msgstr ""
+msgstr "فشل في فك تشفير"
 
 #: pyload/threads/DecrypterThread.py:73
 #, python-format
 msgid "Decrypted %(count)d links into package %(name)s"
-msgstr ""
+msgstr "تم فك تشفير %(count)d الروابط في الحزمة %(name)s"
 
 #: pyload/threads/DecrypterThread.py:80
 msgid "No links decrypted"
-msgstr ""
+msgstr "لا يوجد روابط تم فك تشفيرها"
 
 #: pyload/threads/InfoThread.py:147
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
-msgstr ""
+msgstr "فشل جلب المعلومات ل %(name)s | %(err)s"
 
 #: pyload/threads/ThreadManager.py:155
 #, python-format
@@ -565,66 +565,66 @@ msgstr "لم يتبقى مساحة كافية على الجهاز"
 #: pyload/threads/DownloadThread.py:64
 #, python-format
 msgid "Download starts: %s"
-msgstr ""
+msgstr "بدء التنزيل: %s"
 
 #: pyload/threads/DownloadThread.py:70
 #, python-format
 msgid "Download finished: %s"
-msgstr ""
+msgstr "تم الانتهاء من التنزيل: %s"
 
 #: pyload/threads/DownloadThread.py:75
 #, python-format
 msgid "Plugin %s is missing a function."
-msgstr ""
+msgstr "الاضافة %s تفتقد الى وظيفة."
 
 #: pyload/threads/DownloadThread.py:83 pyload/threads/DownloadThread.py:147
 #, python-format
 msgid "Download aborted: %s"
-msgstr ""
+msgstr "تم الغاء التنزيل: %s"
 
 #: pyload/threads/DownloadThread.py:103
 #, python-format
 msgid "Download restarted: %(name)s | %(msg)s"
-msgstr ""
+msgstr "تم اعادة تشغيل التنزيل: %(name)s | %(msg)s"
 
 #: pyload/threads/DownloadThread.py:113
 #, python-format
 msgid "Download is offline: %s"
-msgstr ""
+msgstr "التنزيل غير متصل: %s"
 
 #: pyload/threads/DownloadThread.py:116 pyload/threads/DownloadThread.py:187
 #, python-format
 msgid "Download is temporary offline: %s"
-msgstr ""
+msgstr "التنزيل غير متصل مؤقتا: %s"
 
 #: pyload/threads/DownloadThread.py:119 pyload/threads/DownloadThread.py:192
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
-msgstr ""
+msgstr "فشل التنزيل: %(name)s | %(msg)s"
 
 #: pyload/threads/DownloadThread.py:136
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
-msgstr ""
+msgstr "لايمكن الوصول الى الخادم او اعادة الاتصال, الانتظار 1 دقيقة و اعادة المحاولة."
 
 #: pyload/threads/DownloadThread.py:171
 #, python-format
 msgid "Download skipped: %(name)s due to %(plugin)s"
-msgstr ""
+msgstr "تم تخطي التنزيل: %(name)s بسبب %(plugin)s"
 
 #: pyload/threads/DownloadThread.py:188
 msgid "Internal Server Error"
-msgstr ""
+msgstr "خطأ داخلي في الخادم"
 
 #: pyload/threads/AddonThread.py:55
 msgid "An Error occurred"
-msgstr ""
+msgstr "حدث خطأ"
 
 #: pyload/PluginManager.py:316
 #, python-format
 msgid "Error importing %(name)s: %(msg)s"
-msgstr ""
+msgstr "خطأ في استيراد %(name)s: %(msg)s"
 
 #: pyload/utils/JsEngine.py:188
 msgid "No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino"
-msgstr ""
+msgstr "لم يتم العثور على محرك js, يرجى تثبيت Spidermonkey, ossp-js, pyv8 او rhino"
 

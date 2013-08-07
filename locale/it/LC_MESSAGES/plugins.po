@@ -1,8 +1,8 @@
 msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"POT-Creation-Date: 2013-07-20 22:13+0200\n"
+"PO-Revision-Date: 2013-08-07 09:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -12,39 +12,28 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
+#: pyload/plugins/network/CurlDownload.py:241
+#, python-format
+msgid "Download chunks failed, fallback to single connection | %s"
+msgstr "Download accellerato fallito, ripiego su singola connessione | %s"
+
 #: pyload/plugins/Base.py:329
 msgid "Pil and tesseract not installed and no Client connected for captcha decrypting"
-msgstr "Pil e tesseract non sono installati e nessun client è connesso per decifrare i captcha"
+msgstr "Pil e tesseract non sono installati e nessun Client è connesso per decifrare i captcha"
 
 #: pyload/plugins/Base.py:333
 msgid "No captcha result obtained in appropriate time."
-msgstr "Nessun risultato captcha ottenuto nel tempo stabilito."
+msgstr "Nessun risultato captcha ottenuto in tempo."
 
-#: pyload/plugins/Hoster.py:273 pyload/plugins/Hoster.py:307
+#: pyload/plugins/Hoster.py:282 pyload/plugins/Hoster.py:319
 #: pyload/plugins/hoster/ARD.py:76
 #, python-format
 msgid "Setting User and Group failed: %s"
-msgstr "Impostazione di utente e gruppo non riuscita: %s"
+msgstr "Impostazione di Utente e Gruppo non riuscita: %s"
 
 #: pyload/plugins/Crypter.py:136
 msgid "Not existing file or unsupported protocol"
 msgstr "File non esistente o protocollo non supportato"
-
-#: pyload/plugins/hooks/Captcha9kw.py:56
-#: pyload/plugins/addons/CaptchaTrader.py:72
-#: pyload/plugins/addons/ExpertDecoders.py:49
-#, python-format
-msgid "%s credits left"
-msgstr "%s crediti rimasti"
-
-#: pyload/plugins/hooks/Captcha9kw.py:89
-#, python-format
-msgid "NewCaptchaID from upload: %s : %s"
-msgstr "NewCaptchaID dall'upload: %s: %s"
-
-#: pyload/plugins/hooks/Captcha9kw.py:123
-msgid "Your Captcha 9kw.eu Account has not enough credits"
-msgstr "Il tuo account 9kw.eu non ha abbastanza crediti"
 
 #: pyload/plugins/hoster/RapidshareCom.py:96
 msgid "Rapidshare: Traffic Share (direct download)"
@@ -57,27 +46,31 @@ msgstr "Stai già scaricando da questo indirizzo IP, aspetta 60 secondi"
 
 #: pyload/plugins/hoster/RapidshareCom.py:127
 msgid "Invalid Auth Code, download will be restarted"
-msgstr "Auth Code invalido, il download sarà riavviato"
+msgstr "Auth Code non valido, il download sarà riavviato"
 
 #: pyload/plugins/hoster/RapidshareCom.py:193
 msgid "RapidShareCom: No free slots"
-msgstr "RapidShareCom: Non ci sono slot liberi"
+msgstr "RapidShareCom: Nessuno slot gratuito libero"
 
 #: pyload/plugins/hoster/RapidshareCom.py:196
 msgid "You need a premium account for this file"
-msgstr "Hai bisongo di un account Premium per scaricare questo file"
+msgstr "Hai bisogno di un account Premium per questo file"
 
 #: pyload/plugins/hoster/RapidshareCom.py:198
 msgid "Filename reported invalid"
 msgstr "Nome di file riportato non valido"
 
 #: pyload/plugins/hoster/RealdebridCom.py:40
-msgid "Please enter your Real-debrid account or deactivate this plugin"
-msgstr "Aggiungi il tuo account Real-debrid o disattiva questo plugin"
-
 #: pyload/plugins/hoster/Premium4Me.py:27
-msgid "Please enter your premium.to account or deactivate this plugin"
-msgstr "Aggiungi il tuo account premium.to o disattiva questo plugin"
+#: pyload/plugins/hoster/MultiDebridCom.py:39
+#: pyload/plugins/hoster/ZeveraCom.py:24
+#: pyload/plugins/hoster/AlldebridCom.py:37
+#: pyload/plugins/hoster/RehostTo.py:25 pyload/plugins/hoster/ReloadCc.py:22
+#: pyload/plugins/hoster/DebridItaliaCom.py:38
+#: pyload/plugins/hoster/PremiumizeMe.py:19
+#, python-format
+msgid "Please enter your %s account or deactivate this plugin"
+msgstr "Per favore Inserisci il tuo account %s o disattiva questo plugin"
 
 #: pyload/plugins/hoster/MegaNz.py:55
 msgid "Decryption failed"
@@ -85,19 +78,11 @@ msgstr "Decifratura non riuscita"
 
 #: pyload/plugins/hoster/MegaNz.py:99
 msgid "No file key provided in the URL"
-msgstr "Nessuno file key fornito nell'URL"
+msgstr "Nessuna chiave fornita nell'URL"
 
 #: pyload/plugins/hoster/MegaNz.py:111
 msgid "Error code:"
 msgstr "Codice di errore:"
-
-#: pyload/plugins/hoster/ZeveraCom.py:24
-msgid "Please enter your zevera.com account or deactivate this plugin"
-msgstr "Per favore Inserisci il tuo account zevera.com o disattiva questo plugin"
-
-#: pyload/plugins/hoster/RehostTo.py:25
-msgid "Please enter your rehost.to account or deactivate this plugin"
-msgstr "Aggiungi il tuo account rehost.to o disattiva questo plugin"
 
 #: pyload/plugins/hoster/FileserveCom.py:97
 msgid "Parallel download error, now waiting 60s."
@@ -107,16 +92,16 @@ msgstr "Errore durante il download parallelo, attendo 60s."
 msgid "Not logged in."
 msgstr "Non connesso."
 
-#: pyload/plugins/hoster/UploadedTo.py:134
+#: pyload/plugins/hoster/UploadedTo.py:135
 msgid "API key invalid"
 msgstr "Chiave API invalida"
 
-#: pyload/plugins/hoster/UploadedTo.py:159
+#: pyload/plugins/hoster/UploadedTo.py:160
 #, python-format
 msgid "%s: Not enough traffic left"
 msgstr "%s: Traffico rimanente non sufficiente"
 
-#: pyload/plugins/hoster/UploadedTo.py:162
+#: pyload/plugins/hoster/UploadedTo.py:163
 msgid "Traffic exceeded"
 msgstr "Traffico superato"
 
@@ -127,7 +112,7 @@ msgstr "Richiesta autorizzazione (nomeutente:password)"
 #: pyload/plugins/hoster/NetloadIn.py:143
 #: pyload/plugins/hoster/NetloadIn.py:167
 msgid "File temporarily not available"
-msgstr "File momentaneamente non disponibile"
+msgstr "File temporaneamente non disponibile"
 
 #: pyload/plugins/hoster/NetloadIn.py:180
 #, python-format
@@ -137,26 +122,23 @@ msgstr "Netload: attendo %d s tra i download."
 #: pyload/plugins/hoster/NetloadIn.py:209
 #, python-format
 msgid "Netload: waiting for captcha %d s."
-msgstr "Netload: in attesa di captcha %d s."
+msgstr "Netload: attendo %d s per il captcha."
 
 #: pyload/plugins/hoster/NetloadIn.py:248
 msgid "Downloaded File was empty"
 msgstr "Il file scaricato era vuoto"
 
-#: pyload/plugins/hoster/PremiumizeMe.py:19
-msgid "Please enter a valid premiumize.me account or deactivate this plugin"
-msgstr "Si prega di inserire un account valido premiumize.me o disattiva questo plugin"
-
 #: pyload/plugins/hoster/FilesMailRu.py:98
-msgid "There was HTML Code in the Downloaded File("
-msgstr "C'era codice HTML nel file scaricato ("
+#, python-format
+msgid "There was HTML Code in the Downloaded File(%s)...redirect error? The Download will be restarted."
+msgstr "C'era del codice HTML nel file scaricato (%s)... errore di reindirizzamento? Il download sarà riavviato."
 
 #: pyload/plugins/hoster/XHamsterCom.py:75
 #: pyload/plugins/hoster/XHamsterCom.py:84
 #: pyload/plugins/hoster/XHamsterCom.py:87
 #, python-format
 msgid "long_url: %s"
-msgstr "long_url: %s"
+msgstr "url_esteso: %s"
 
 #: pyload/plugins/Account.py:117 pyload/plugins/Account.py:123
 #, python-format
@@ -195,7 +177,7 @@ msgstr "L'account %s è scaduto; prossimo controllo fra 1 ora"
 #: pyload/plugins/Account.py:290
 #, python-format
 msgid "Login with %s"
-msgstr "Connettiti come %s"
+msgstr "Login come %s"
 
 #: pyload/plugins/Addon.py:118
 #, python-format
@@ -204,7 +186,7 @@ msgstr "Errore durante l'esecuzione degli addon: %s"
 
 #: pyload/plugins/accounts/BitshareCom.py:36
 msgid "Activate direct Download in your Bitshare Account"
-msgstr "Attiva il Direct Download sul tuo account Bitshare"
+msgstr "Attiva il download diretto sul tuo account Bitshare"
 
 #: pyload/plugins/crypter/SerienjunkiesOrg.py:128
 msgid "Downloadlimit reached"
@@ -228,6 +210,13 @@ msgstr "Script non eseguibile:"
 msgid "Error in %(script)s: %(error)s"
 msgstr "Errore in %(script)s: %(error)s"
 
+#: pyload/plugins/addons/CaptchaTrader.py:72
+#: pyload/plugins/addons/Captcha9kw.py:56
+#: pyload/plugins/addons/ExpertDecoders.py:49
+#, python-format
+msgid "%s credits left"
+msgstr "%s crediti rimasti"
+
 #: pyload/plugins/addons/CaptchaTrader.py:120
 msgid "Could not send response."
 msgstr "Non posso inviare la risposta."
@@ -235,6 +224,15 @@ msgstr "Non posso inviare la risposta."
 #: pyload/plugins/addons/CaptchaTrader.py:138
 msgid "Your CaptchaTrader Account has not enough credits"
 msgstr "Il tuo account CaptchaTrader non ha crediti sufficienti"
+
+#: pyload/plugins/addons/Captcha9kw.py:89
+#, python-format
+msgid "New CaptchaID from upload: %s : %s"
+msgstr "Nuovo CaptchaID dall'upload: %s : %s"
+
+#: pyload/plugins/addons/Captcha9kw.py:123
+msgid "Your Captcha 9kw.eu Account has not enough credits"
+msgstr "Il tuo account Captcha 9kw.eu non ha abbastanza crediti"
 
 #: pyload/plugins/addons/RehostTo.py:34
 msgid "Please add your rehost.to account first and restart pyLoad"
@@ -262,7 +260,7 @@ msgstr "Download finito: %(name)s @ %(plugin)s"
 
 #: pyload/plugins/addons/ExpertDecoders.py:98
 msgid "Your ExpertDecoders Account has not enough credits"
-msgstr "Il tuo ExpertDecoders Account ha non abbastanza crediti"
+msgstr "Il tuo account ExpertDecoders ha non abbastanza crediti"
 
 #: pyload/plugins/addons/UpdateManager.py:73
 msgid "*** Plugins have been updated, please restart pyLoad ***"
@@ -317,7 +315,7 @@ msgstr "%s non installato"
 #: pyload/plugins/addons/ExtractArchive.py:99
 #, python-format
 msgid "Could not activate %s"
-msgstr "Non posso attivare %s"
+msgstr "Impossibile attivare %s"
 
 #: pyload/plugins/addons/ExtractArchive.py:104
 msgid "Activated"
@@ -348,7 +346,7 @@ msgstr "Nessun file trovato da estrarre"
 
 #: pyload/plugins/addons/ExtractArchive.py:203
 msgid "extracting"
-msgstr "Estraggo"
+msgstr "estrazione"
 
 #: pyload/plugins/addons/ExtractArchive.py:214
 msgid "Password protected"
@@ -373,11 +371,11 @@ msgstr "Archivio danneggiato"
 
 #: pyload/plugins/addons/ExtractArchive.py:256
 msgid "CRC Mismatch"
-msgstr "Controllo CRC fallito"
+msgstr "CRC non corrispondente"
 
 #: pyload/plugins/addons/ExtractArchive.py:260
 msgid "Unknown Error"
-msgstr "Errore sconosciuto"
+msgstr "Errore Sconosciuto"
 
 #: pyload/plugins/addons/ExtractArchive.py:312
 msgid "Setting User and Group failed"
@@ -389,7 +387,7 @@ msgstr "Elenco Crypter non trovato"
 
 #: pyload/plugins/addons/LinkdecrypterCom.py:50
 msgid "Crypter list is empty"
-msgstr "Crypter lista è vuota"
+msgstr "Elenco Crypter vuoto"
 
 #: pyload/plugins/addons/IRCInterface.py:82
 #, python-format
@@ -408,7 +406,7 @@ msgstr "Rispondi usando 'c %s text on the captcha'"
 
 #: pyload/plugins/addons/PremiumizeMe.py:46
 msgid "Please add a valid premiumize.me account first and restart pyLoad."
-msgstr "Si prega di aggiungere un account valido premiumize.me prima e riavviare pyLoad."
+msgstr "Aggiungi prima un account premiumize.me valido e riavviare pyLoad."
 
 #: pyload/plugins/addons/CaptchaBrotherhood.py:69
 #, python-format

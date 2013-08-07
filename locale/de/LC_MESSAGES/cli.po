@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-08-02 10:02-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -32,7 +32,7 @@ msgstr "Kopiere die Links, die du hinzufügen willst."
 #: pyload/cli/AddPackage.py:59
 #, python-format
 msgid "Type %s when done."
-msgstr "Tippe %s wenn du fertig bist."
+msgstr "Drücke %s wenn du fertig bist."
 
 #: pyload/cli/AddPackage.py:60
 msgid "Links added: "
@@ -88,7 +88,7 @@ msgstr " - nächste Seite"
 
 #: pyload/cli/Cli.py:75 pyload/cli/Cli.py:133
 msgid " Command Line Interface"
-msgstr " Kommandozeileninterface"
+msgstr " Kommandozeile"
 
 #: pyload/cli/Cli.py:165
 #, python-format
@@ -129,7 +129,7 @@ msgstr "läuft"
 
 #: pyload/cli/Cli.py:196
 msgid "total Speed"
-msgstr "gesamte Geschwindigkeit"
+msgstr "Gesamtgeschwindigkeit"
 
 #: pyload/cli/Cli.py:196
 msgid "Files in queue"
@@ -153,7 +153,7 @@ msgstr " Warteschlange verwalten"
 
 #: pyload/cli/Cli.py:207
 msgid " Manage Collector"
-msgstr " Linksammler verwalten"
+msgstr " Linksammler anpassen"
 
 #: pyload/cli/Cli.py:208
 msgid " (Un)Pause Server"
@@ -169,7 +169,7 @@ msgstr " Beenden"
 
 #: pyload/cli/Cli.py:289 pyload/cli/Cli.py:296
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
-msgstr "Bitte benutze folgenden Syntax: add <Package name> <link> <link2> usw."
+msgstr "Bitte benutze folgenden Syntax: add <Package name> <link> <link2> ..."
 
 #: pyload/cli/Cli.py:315
 #, python-format
@@ -186,15 +186,15 @@ msgstr "pyLoad wurde beendet"
 
 #: pyload/cli/Cli.py:443
 msgid "Prints server status"
-msgstr "gibt den Server Status aus"
+msgstr "Gibt den Server Status aus"
 
 #: pyload/cli/Cli.py:444
 msgid "Prints downloads in queue"
-msgstr "gibt die Warteschlange aus"
+msgstr "Gibt die Warteschlange aus"
 
 #: pyload/cli/Cli.py:445
 msgid "Prints downloads in collector"
-msgstr "gibt die Links im Linksammler aus"
+msgstr "Gibt die Links im Linksammler aus"
 
 #: pyload/cli/Cli.py:446
 msgid "Adds package to queue"
@@ -206,15 +206,15 @@ msgstr "Fügt ein Paket zum Linksammler hinzu"
 
 #: pyload/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
-msgstr "Löscht Dateien aus der Warteschlange bzw. dem Linksammler"
+msgstr "Löscht Dateien aus der Warteschlange/Linksammler"
 
 #: pyload/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
-msgstr "Löscht Packete aus der Warteschlange bzw. dem Linksammler"
+msgstr "Löscht Packete aus der Warteschlange/Linksammler"
 
 #: pyload/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
-msgstr "Verschiebt Pakete aus der Warteschlange in den Linksammler, oder umgekehrt"
+msgstr "Verschiebt Pakete aus der Warteschlange in den Linksammler oder umgekehrt"
 
 #: pyload/cli/Cli.py:451
 msgid "Restart files"
@@ -238,11 +238,11 @@ msgstr "pausiert den Server"
 
 #: pyload/cli/Cli.py:456
 msgid "continue downloads"
-msgstr "alle Downloads fortfahren"
+msgstr "Downloads fortfahren"
 
 #: pyload/cli/Cli.py:457
 msgid "Toggle pause/unpause"
-msgstr "Pausierung umschalten"
+msgstr "Pause/Fortsetzen"
 
 #: pyload/cli/Cli.py:458
 msgid "kill server"
@@ -250,7 +250,7 @@ msgstr "Server beenden"
 
 #: pyload/cli/Cli.py:460
 msgid "List of commands:"
-msgstr "Auflistung aller Befehle:"
+msgstr "Liste aller Befehle:"
 
 #: pyload/cli/Cli.py:473
 msgid "Couldn't write user config file"
@@ -278,7 +278,7 @@ msgstr "Passwort: "
 
 #: pyload/cli/Cli.py:566 pyload/cli/Cli.py:575
 msgid "Login data is wrong."
-msgstr "Logininformationen falsch."
+msgstr "Logindaten sind falsch."
 
 #: pyload/cli/Cli.py:568 pyload/cli/Cli.py:577
 #, python-format
@@ -287,5 +287,5 @@ msgstr "Konnte keine Verbindung zu %(addr)s:%(port)s aufbauen."
 
 #: pyload/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
-msgstr "Interaktiver Modus ignoriert, da einige Befehle übergeben wurden."
+msgstr "Befehle im interaktiven Modus werden ignoriert, wenn zusätzliche Befehle übergeben wurden."
 

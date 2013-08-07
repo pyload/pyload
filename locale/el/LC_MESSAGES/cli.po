@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-08-02 10:02-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Greek\n"
 "Language: el_GR\n"
@@ -27,12 +27,12 @@ msgstr "Πακέτο: %s"
 
 #: pyload/cli/AddPackage.py:58
 msgid "Parse the links you want to add."
-msgstr "Ανάλυση συνδέσμων που θέλετε να προσθέσετε. "
+msgstr "Ανάλυση των συνδέσμων που θέλετε να προσθέσετε. "
 
 #: pyload/cli/AddPackage.py:59
 #, python-format
 msgid "Type %s when done."
-msgstr "Πληκτρολογείστε %s αν τελειώσατε.   "
+msgstr "Πληκτρολογείστε %s όταν τελειώσετε.   "
 
 #: pyload/cli/AddPackage.py:60
 msgid "Links added: "
@@ -40,7 +40,7 @@ msgstr "Σύνδεσμοι που προστέθηκαν:"
 
 #: pyload/cli/AddPackage.py:64 pyload/cli/ManageFiles.py:149
 msgid " back to main menu"
-msgstr "επιστροφή στο αρχικό menu"
+msgstr "επιστροφή στο αρχικό μενού"
 
 #: pyload/cli/ManageFiles.py:97
 msgid "Manage Packages:"
@@ -48,7 +48,7 @@ msgstr "Διαχείριση πακέτων:"
 
 #: pyload/cli/ManageFiles.py:99
 msgid "Manage Links:"
-msgstr "Διαχείριση Δεσμών:"
+msgstr "Διαχείριση Συνδέσμων:"
 
 #: pyload/cli/ManageFiles.py:104
 msgid "What do you want to move?"
@@ -64,7 +64,7 @@ msgstr "Τί θέλετε να επανεκκινήσετε;"
 
 #: pyload/cli/ManageFiles.py:113
 msgid "Choose what you want to do, or enter package number."
-msgstr ""
+msgstr "Επιλέξτε ενέργεια ή εισάγετε αριθμό πακέτου."
 
 #: pyload/cli/ManageFiles.py:115
 msgid "delete"
@@ -109,7 +109,7 @@ msgstr "Ολοκλήρωση σε: "
 
 #: pyload/cli/Cli.py:179
 msgid " ID: "
-msgstr ""
+msgstr " ID: "
 
 #: pyload/cli/Cli.py:184
 msgid "waiting: "
@@ -117,35 +117,35 @@ msgstr "αναμονή: "
 
 #: pyload/cli/Cli.py:191 pyload/cli/Cli.py:193
 msgid "Status:"
-msgstr ""
+msgstr "Κατάσταση:"
 
 #: pyload/cli/Cli.py:191
 msgid "paused"
-msgstr ""
+msgstr "σε παύση"
 
 #: pyload/cli/Cli.py:193
 msgid "running"
-msgstr ""
+msgstr "εκτελείται"
 
 #: pyload/cli/Cli.py:196
 msgid "total Speed"
-msgstr ""
+msgstr "συνολική ταχύτητα"
 
 #: pyload/cli/Cli.py:196
 msgid "Files in queue"
-msgstr ""
+msgstr "Αρχεία στην ουρά"
 
 #: pyload/cli/Cli.py:197
 msgid "Total"
-msgstr ""
+msgstr "Σύνολο"
 
 #: pyload/cli/Cli.py:203
 msgid "Menu:"
-msgstr " Menu:"
+msgstr " Μενού:"
 
 #: pyload/cli/Cli.py:205
 msgid " Add Links"
-msgstr " Προσθήκη Δεσμών"
+msgstr " Προσθήκη Συνδέσμων"
 
 #: pyload/cli/Cli.py:206
 msgid " Manage Queue"
@@ -161,7 +161,7 @@ msgstr " Ενεργοποίηση/Αδρανοποίηση"
 
 #: pyload/cli/Cli.py:209
 msgid " Kill Server"
-msgstr " Τερματισμός Διακομιστη"
+msgstr " Τερματισμός Διακομιστή"
 
 #: pyload/cli/Cli.py:210
 msgid " Quit"
@@ -174,7 +174,7 @@ msgstr "Χρήση με: add <Package name> <link> <link2> ..."
 #: pyload/cli/Cli.py:315
 #, python-format
 msgid "Checking %d links:"
-msgstr "Έλεγχος %d δεσμών:"
+msgstr "Έλεγχος %d συνδέσμων:"
 
 #: pyload/cli/Cli.py:324
 msgid "File does not exists."
@@ -186,7 +186,7 @@ msgstr "Το pyLoad τερματίστηκε"
 
 #: pyload/cli/Cli.py:443
 msgid "Prints server status"
-msgstr "Εμφανίζει τη κατάσταση του διακομιστή"
+msgstr "Εμφανίζει την κατάσταση του διακομιστή"
 
 #: pyload/cli/Cli.py:444
 msgid "Prints downloads in queue"
@@ -198,11 +198,11 @@ msgstr "Εμφανίζει τις λήψεις στο συλλέκτη"
 
 #: pyload/cli/Cli.py:446
 msgid "Adds package to queue"
-msgstr "Προσθήκη πακέτου σε ουρά"
+msgstr "Προσθέτει το πακέτο στην ουρά"
 
 #: pyload/cli/Cli.py:447
 msgid "Adds package to collector"
-msgstr "Προσθήκη πακέτου στο συλλέκτη"
+msgstr "Προσθέτει το πακέτο στο συλλέκτη"
 
 #: pyload/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
@@ -210,7 +210,7 @@ msgstr "Διαγραφή αρχείου από Ουρά/Συλλεκτη"
 
 #: pyload/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
-msgstr "Διαγραφή πακέτου από Ουρά/Συλλέκτη"
+msgstr "Διαγραφή πακέτων από Ουρά/Συλλέκτη"
 
 #: pyload/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
@@ -226,15 +226,15 @@ msgstr "Επανεκκίνηση πακέτων"
 
 #: pyload/cli/Cli.py:453
 msgid "Check online status, works with local container"
-msgstr "Έλεγχος online κατάστασης. Λειτουργεί με τοπικά container"
+msgstr "Έλεγχος κατάστασης σύνδεσης. Λειτουργεί με τοπικά container"
 
 #: pyload/cli/Cli.py:454
 msgid "Checks online status of a container file"
-msgstr "Έλεγχος online κατάστασης ενός container"
+msgstr "Έλεγχος κατάστασης σύνδεσης ενός αρχείου container"
 
 #: pyload/cli/Cli.py:455
 msgid "Pause the server"
-msgstr "Παύση του διακοκιστή"
+msgstr "Παύση του διακομιστή"
 
 #: pyload/cli/Cli.py:456
 msgid "continue downloads"
@@ -258,7 +258,7 @@ msgstr "Αδυναμία εγγραφής του αρχείου ρυθμίσεω
 
 #: pyload/cli/Cli.py:548 pyload/cli/Cli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."
-msgstr "Απαιτείται το py-openssl για σύνδεση σε αυτόν το pyLoad Core."
+msgstr "Απαιτείται το py-openssl για σύνδεση σε αυτόν τον pyLoad Core."
 
 #: pyload/cli/Cli.py:555
 msgid "Address: "

@@ -1,8 +1,8 @@
 msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"POT-Creation-Date: 2013-07-20 22:13+0200\n"
+"PO-Revision-Date: 2013-07-20 18:02-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -12,6 +12,11 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
+#: pyload/plugins/network/CurlDownload.py:241
+#, python-format
+msgid "Download chunks failed, fallback to single connection | %s"
+msgstr ""
+
 #: pyload/plugins/Base.py:329
 msgid "Pil and tesseract not installed and no Client connected for captcha decrypting"
 msgstr ""
@@ -20,7 +25,7 @@ msgstr ""
 msgid "No captcha result obtained in appropriate time."
 msgstr ""
 
-#: pyload/plugins/Hoster.py:273 pyload/plugins/Hoster.py:307
+#: pyload/plugins/Hoster.py:282 pyload/plugins/Hoster.py:319
 #: pyload/plugins/hoster/ARD.py:76
 #, python-format
 msgid "Setting User and Group failed: %s"
@@ -28,22 +33,6 @@ msgstr ""
 
 #: pyload/plugins/Crypter.py:136
 msgid "Not existing file or unsupported protocol"
-msgstr ""
-
-#: pyload/plugins/hooks/Captcha9kw.py:56
-#: pyload/plugins/addons/CaptchaTrader.py:72
-#: pyload/plugins/addons/ExpertDecoders.py:49
-#, python-format
-msgid "%s credits left"
-msgstr ""
-
-#: pyload/plugins/hooks/Captcha9kw.py:89
-#, python-format
-msgid "NewCaptchaID from upload: %s : %s"
-msgstr ""
-
-#: pyload/plugins/hooks/Captcha9kw.py:123
-msgid "Your Captcha 9kw.eu Account has not enough credits"
 msgstr ""
 
 #: pyload/plugins/hoster/RapidshareCom.py:96
@@ -72,11 +61,15 @@ msgid "Filename reported invalid"
 msgstr ""
 
 #: pyload/plugins/hoster/RealdebridCom.py:40
-msgid "Please enter your Real-debrid account or deactivate this plugin"
-msgstr ""
-
 #: pyload/plugins/hoster/Premium4Me.py:27
-msgid "Please enter your premium.to account or deactivate this plugin"
+#: pyload/plugins/hoster/MultiDebridCom.py:39
+#: pyload/plugins/hoster/ZeveraCom.py:24
+#: pyload/plugins/hoster/AlldebridCom.py:37
+#: pyload/plugins/hoster/RehostTo.py:25 pyload/plugins/hoster/ReloadCc.py:22
+#: pyload/plugins/hoster/DebridItaliaCom.py:38
+#: pyload/plugins/hoster/PremiumizeMe.py:19
+#, python-format
+msgid "Please enter your %s account or deactivate this plugin"
 msgstr ""
 
 #: pyload/plugins/hoster/MegaNz.py:55
@@ -91,14 +84,6 @@ msgstr ""
 msgid "Error code:"
 msgstr ""
 
-#: pyload/plugins/hoster/ZeveraCom.py:24
-msgid "Please enter your zevera.com account or deactivate this plugin"
-msgstr ""
-
-#: pyload/plugins/hoster/RehostTo.py:25
-msgid "Please enter your rehost.to account or deactivate this plugin"
-msgstr ""
-
 #: pyload/plugins/hoster/FileserveCom.py:97
 msgid "Parallel download error, now waiting 60s."
 msgstr ""
@@ -107,16 +92,16 @@ msgstr ""
 msgid "Not logged in."
 msgstr ""
 
-#: pyload/plugins/hoster/UploadedTo.py:134
+#: pyload/plugins/hoster/UploadedTo.py:135
 msgid "API key invalid"
 msgstr ""
 
-#: pyload/plugins/hoster/UploadedTo.py:159
+#: pyload/plugins/hoster/UploadedTo.py:160
 #, python-format
 msgid "%s: Not enough traffic left"
 msgstr ""
 
-#: pyload/plugins/hoster/UploadedTo.py:162
+#: pyload/plugins/hoster/UploadedTo.py:163
 msgid "Traffic exceeded"
 msgstr ""
 
@@ -143,12 +128,9 @@ msgstr ""
 msgid "Downloaded File was empty"
 msgstr ""
 
-#: pyload/plugins/hoster/PremiumizeMe.py:19
-msgid "Please enter a valid premiumize.me account or deactivate this plugin"
-msgstr ""
-
 #: pyload/plugins/hoster/FilesMailRu.py:98
-msgid "There was HTML Code in the Downloaded File("
+#, python-format
+msgid "There was HTML Code in the Downloaded File(%s)...redirect error? The Download will be restarted."
 msgstr ""
 
 #: pyload/plugins/hoster/XHamsterCom.py:75
@@ -228,12 +210,28 @@ msgstr ""
 msgid "Error in %(script)s: %(error)s"
 msgstr ""
 
+#: pyload/plugins/addons/CaptchaTrader.py:72
+#: pyload/plugins/addons/Captcha9kw.py:56
+#: pyload/plugins/addons/ExpertDecoders.py:49
+#, python-format
+msgid "%s credits left"
+msgstr ""
+
 #: pyload/plugins/addons/CaptchaTrader.py:120
 msgid "Could not send response."
 msgstr ""
 
 #: pyload/plugins/addons/CaptchaTrader.py:138
 msgid "Your CaptchaTrader Account has not enough credits"
+msgstr ""
+
+#: pyload/plugins/addons/Captcha9kw.py:89
+#, python-format
+msgid "New CaptchaID from upload: %s : %s"
+msgstr ""
+
+#: pyload/plugins/addons/Captcha9kw.py:123
+msgid "Your Captcha 9kw.eu Account has not enough credits"
 msgstr ""
 
 #: pyload/plugins/addons/RehostTo.py:34

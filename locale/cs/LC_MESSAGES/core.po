@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-08-07 09:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -15,7 +15,7 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/AddonManager.py:62
 #, python-format
 msgid "Error when executing %s"
-msgstr ""
+msgstr "Chyba při provádění %s"
 
 #: pyload/AddonManager.py:93
 #, python-format
@@ -25,12 +25,12 @@ msgstr "Aktivace %(name)s selhala"
 #: pyload/AddonManager.py:96
 #, python-format
 msgid "Activated addons: %s"
-msgstr ""
+msgstr "Aktivovaná rozšíření: %s"
 
 #: pyload/AddonManager.py:97
 #, python-format
 msgid "Deactivated addons: %s"
-msgstr ""
+msgstr "Deaktivovaná rozšíření: %s"
 
 #: pyload/AddonManager.py:153
 msgid "Activating Plugins..."
@@ -38,7 +38,7 @@ msgstr "Aktivuji Pluginy..."
 
 #: pyload/AddonManager.py:162
 msgid "Deactivating Plugins..."
-msgstr ""
+msgstr "Deaktivuju pluginy..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -46,7 +46,7 @@ msgstr "Certifikaty SSL nenalezeny."
 
 #: pyload/web/ServerThread.py:53
 msgid "WebUI built is not available"
-msgstr ""
+msgstr "WebUI není k dispozici"
 
 #: pyload/web/ServerThread.py:55
 msgid "Running webUI in development mode"
@@ -54,11 +54,11 @@ msgstr ""
 
 #: pyload/web/ServerThread.py:73
 msgid "Failed starting webserver: "
-msgstr ""
+msgstr "Nepodařilo se spustit webový server: "
 
 #: pyload/web/ServerThread.py:107
 msgid "Failed importing webserver: "
-msgstr ""
+msgstr "Nepodařilo se importovat webový server: "
 
 #: pyload/web/ServerThread.py:125
 msgid "This server offers no SSL, please consider using threaded instead"
@@ -71,7 +71,7 @@ msgstr ""
 
 #: pyload/config/default.py:14
 msgid "Remote"
-msgstr ""
+msgstr "Vzdálený"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -87,7 +87,7 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Long description"
-msgstr ""
+msgstr "Dlouhý popis"
 
 #: pyload/config/default.py:16 pyload/config/default.py:56
 #: pyload/config/default.py:63
@@ -97,23 +97,23 @@ msgstr "Aktivní"
 #: pyload/config/default.py:17 pyload/config/default.py:69
 #: pyload/config/default.py:80
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 #: pyload/config/default.py:18 pyload/config/default.py:77
 msgid "Address"
-msgstr ""
+msgstr "Adresa"
 
 #: pyload/config/default.py:21
 msgid "Log"
-msgstr ""
+msgstr "Log"
 
 #: pyload/config/default.py:23
 msgid "Size in kb"
-msgstr ""
+msgstr "Velikost v kb"
 
 #: pyload/config/default.py:24
 msgid "Folder"
-msgstr ""
+msgstr "Složka"
 
 #: pyload/config/default.py:25
 msgid "File Log"
@@ -121,7 +121,7 @@ msgstr ""
 
 #: pyload/config/default.py:26
 msgid "Count"
-msgstr ""
+msgstr "Počet"
 
 #: pyload/config/default.py:27
 msgid "Log Rotate"
@@ -129,11 +129,11 @@ msgstr ""
 
 #: pyload/config/default.py:30
 msgid "Permissions"
-msgstr ""
+msgstr "Oprávnění"
 
 #: pyload/config/default.py:32
 msgid "Groupname"
-msgstr ""
+msgstr "Název skupiny"
 
 #: pyload/config/default.py:33
 msgid "Change Group and User of Downloads"
@@ -145,7 +145,7 @@ msgstr ""
 
 #: pyload/config/default.py:35 pyload/config/default.py:75
 msgid "Username"
-msgstr ""
+msgstr "Uživatelské jméno"
 
 #: pyload/config/default.py:36
 msgid "Filemode for Downloads"
@@ -165,11 +165,11 @@ msgstr ""
 
 #: pyload/config/default.py:42
 msgid "General"
-msgstr ""
+msgstr "Obecné"
 
 #: pyload/config/default.py:44
 msgid "Language"
-msgstr ""
+msgstr "Jazyk"
 
 #: pyload/config/default.py:45
 msgid "Download Folder"
@@ -177,7 +177,7 @@ msgstr ""
 
 #: pyload/config/default.py:46
 msgid "Use Checksum"
-msgstr ""
+msgstr "Použít kontrolní součet"
 
 #: pyload/config/default.py:47
 msgid "Create folder for each package"
@@ -189,27 +189,27 @@ msgstr ""
 
 #: pyload/config/default.py:49
 msgid "Min Free Space (MB)"
-msgstr ""
+msgstr "Minimální volné místo (MB)"
 
 #: pyload/config/default.py:50
 msgid "CPU Priority"
-msgstr ""
+msgstr "CPU priorita"
 
 #: pyload/config/default.py:53
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #: pyload/config/default.py:55
 msgid "SSL Certificate"
-msgstr ""
+msgstr "SSL certifikát"
 
 #: pyload/config/default.py:57
 msgid "SSL Key"
-msgstr ""
+msgstr "SSL klíč"
 
 #: pyload/config/default.py:60
 msgid "Webinterface"
-msgstr ""
+msgstr "Webové rozhraní"
 
 #: pyload/config/default.py:62
 msgid "Template"
@@ -221,7 +221,7 @@ msgstr ""
 
 #: pyload/config/default.py:65
 msgid "Server"
-msgstr ""
+msgstr "Server"
 
 #: pyload/config/default.py:66
 msgid "Favor specific server"
@@ -229,11 +229,11 @@ msgstr ""
 
 #: pyload/config/default.py:67
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #: pyload/config/default.py:68
 msgid "Use HTTPS"
-msgstr ""
+msgstr "Použít HTTPS"
 
 #: pyload/config/default.py:70
 msgid "Development mode"
@@ -241,7 +241,7 @@ msgstr ""
 
 #: pyload/config/default.py:73
 msgid "Proxy"
-msgstr ""
+msgstr "Proxy"
 
 #: pyload/config/default.py:76
 msgid "Use Proxy"
@@ -249,11 +249,11 @@ msgstr ""
 
 #: pyload/config/default.py:78
 msgid "Password"
-msgstr ""
+msgstr "Heslo"
 
 #: pyload/config/default.py:79
 msgid "Protocol"
-msgstr ""
+msgstr "Protokol"
 
 #: pyload/config/default.py:83
 msgid "Reconnect"
@@ -273,11 +273,11 @@ msgstr ""
 
 #: pyload/config/default.py:88 pyload/config/default.py:105
 msgid "Start"
-msgstr ""
+msgstr "Spustit"
 
 #: pyload/config/default.py:91
 msgid "Download"
-msgstr ""
+msgstr "Stáhnout"
 
 #: pyload/config/default.py:93
 msgid "Max Parallel Downloads"
@@ -380,7 +380,7 @@ msgstr "ve fronte"
 
 #: pyload/FileManager.py:53
 msgid "paused"
-msgstr ""
+msgstr "pozastaveno"
 
 #: pyload/FileManager.py:54
 msgid "finished"
@@ -617,7 +617,7 @@ msgstr ""
 
 #: pyload/threads/AddonThread.py:55
 msgid "An Error occurred"
-msgstr ""
+msgstr "Nastala chyba"
 
 #: pyload/PluginManager.py:316
 #, python-format
@@ -626,5 +626,5 @@ msgstr "Chyba pri importu %(name)s: %(msg)s"
 
 #: pyload/utils/JsEngine.py:188
 msgid "No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino"
-msgstr ""
+msgstr "Nebyl detekován žádný JS engine. Prosím nainstalujte Spidermonkey, ossp-js, pyv8, nodejs, nebo rhino"
 

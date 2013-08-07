@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 11:44-0400\n"
+"PO-Revision-Date: 2013-08-02 10:02-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -86,88 +86,88 @@ msgstr "إذا كنت ترغب فقط في الوصول محلياً إلى با
 
 #: pyload/Setup.py:118
 msgid "no Captcha Recognition available"
-msgstr ""
+msgstr "لا يوجد تاكيد كلمة تحقق متوفر"
 
 #: pyload/Setup.py:119
 msgid "Only needed for some hosters and as freeuser."
-msgstr ""
+msgstr "مطلوب فقط من اجل بعض الخوادم و كمستخدم مجاني."
 
 #: pyload/Setup.py:123
 msgid "no JavaScript engine found"
-msgstr ""
+msgstr "لا يوجد محرك نصوص جافا"
 
 #: pyload/Setup.py:124
 msgid "You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino"
-msgstr ""
+msgstr "سوف تحتاج هذا من اجل بعض روابط اضغط لتحمل.تثبيت Spidermonkey,ossp-js, pyv8 or rhino"
 
 #: pyload/Setup.py:126
 msgid "You can abort the setup now and fix some dependencies if you want."
-msgstr ""
+msgstr "تستطيع انهاء التثبيت الان و اصلاح بعض الاعتماديات ان اردت."
 
 #: pyload/Setup.py:128
 msgid "Continue with setup?"
-msgstr ""
+msgstr "الاستمرار في التنصيب؟"
 
 #: pyload/Setup.py:134
 #, python-format
 msgid "Do you want to change the config path? Current is %s"
-msgstr ""
+msgstr "هل تريد تغير مكان الاعدادات؟ الحالي هو %s"
 
 #: pyload/Setup.py:136
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
-msgstr ""
+msgstr "اذا كنت تستخدم باي لود على خادم او على مجلد المنزل الواقع على فلاش داخلية قد تكون فكره جيدة لتغيرة."
 
 #: pyload/Setup.py:137
 msgid "Change config path?"
-msgstr ""
+msgstr "تغيير مسار الاعداد؟"
 
 #: pyload/Setup.py:143
 msgid "Do you want to configure login data and basic settings?"
-msgstr ""
+msgstr "هل تريد اعداد الاعدادات الأساسية وبيانات الدخول؟"
 
 #: pyload/Setup.py:144
 msgid "This is recommend for first run."
-msgstr ""
+msgstr "هذا مستحسن من اجل التشغيلة الاولى."
 
 #: pyload/Setup.py:145
 msgid "Make basic setup?"
-msgstr ""
+msgstr "صنع الاعدادات الاساسية؟"
 
 #: pyload/Setup.py:152
 msgid "Do you want to configure ssl?"
-msgstr ""
+msgstr "هل تريد اعداد ssl؟"
 
 #: pyload/Setup.py:153
 msgid "Configure ssl?"
-msgstr ""
+msgstr "اعداد ssl؟"
 
 #: pyload/Setup.py:159
 msgid "Do you want to configure webinterface?"
-msgstr ""
+msgstr "هل تريد اعداد واحهة الويب؟"
 
 #: pyload/Setup.py:160
 msgid "Configure webinterface?"
-msgstr ""
+msgstr "اعداد واجهة الويب؟"
 
 #: pyload/Setup.py:165
 msgid "Setup finished successfully."
-msgstr ""
+msgstr "تم انهاء التثبيت بنجاح."
 
 #: pyload/Setup.py:166
 msgid "Hit enter to exit and restart pyLoad"
-msgstr ""
+msgstr "اضغظ مفتاح الادخال للانهاء و اعادة تشغيل باي لود"
 
 #: pyload/Setup.py:173
 msgid "Webinterface running for setup."
-msgstr ""
+msgstr "واحهة الويب تعمل من اجل الاعداد."
 
 #: pyload/Setup.py:190
 msgid "## Basic Setup ##"
-msgstr ""
+msgstr "# # الإعداد الأساسي # #"
 
 #: pyload/Setup.py:193
 msgid "The following logindata is valid for CLI, GUI and webinterface."
-msgstr ""
+msgstr "بيانات تسجيل الدخول التالية صالحة لواجهة سطر الاوامر, واجهة المستخدم و واجهة الويب."
 
 #: pyload/Setup.py:199 pyload/Setup.py:288 pyload/Setup.py:304
 msgid "Username"
@@ -175,15 +175,15 @@ msgstr "اسم المستخدم"
 
 #: pyload/Setup.py:205
 msgid "External clients (GUI, CLI or other) need remote access to work over the network."
-msgstr ""
+msgstr "العملاء الخارجين (واجهة المستخدم الرسومية, واجهة سطر الاوامر او غيرها) تحتاج الى الوصول عن بعد لكي تعمل من خلال الشبكة."
 
 #: pyload/Setup.py:206
 msgid "However, if you only want to use the webinterface you may disable it to save ram."
-msgstr ""
+msgstr "على اي حال, اذا اردت ان تستخدم فقط واجهة الويب يمكنك تعطيلة لحفظ ذاكرة الوصول العشوائي."
 
 #: pyload/Setup.py:207
 msgid "Enable remote access"
-msgstr ""
+msgstr "تفعيل الوصول عن بعد"
 
 #: pyload/Setup.py:211
 msgid "Language"
@@ -191,31 +191,31 @@ msgstr "اللغة"
 
 #: pyload/Setup.py:213
 msgid "Download folder"
-msgstr ""
+msgstr "مجلد التنزيلات"
 
 #: pyload/Setup.py:214
 msgid "Max parallel downloads"
-msgstr ""
+msgstr "العدد الاقصى التنزيلات المتوازيية (التنزيلات في نفس الوقت)"
 
 #: pyload/Setup.py:218
 msgid "Use Reconnect?"
-msgstr ""
+msgstr "استخدام إعادة الاتصال؟"
 
 #: pyload/Setup.py:221
 msgid "Reconnect script location"
-msgstr ""
+msgstr "موقع البرنامج النصي لاعادة الاتصال"
 
 #: pyload/Setup.py:226
 msgid "## Webinterface Setup ##"
-msgstr ""
+msgstr "# # اعداد واجهة الويب # #"
 
 #: pyload/Setup.py:229
 msgid "Activate webinterface?"
-msgstr ""
+msgstr "تنشيط واجهة الويب؟"
 
 #: pyload/Setup.py:231
 msgid "Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally."
-msgstr ""
+msgstr "عنوان الواجهة, اذا قمت بستخدام 127.0.0.1 او localhost, واجهة الويب سوف تكون قابلة للوصول محليا فقط."
 
 #: pyload/Setup.py:232
 msgid "Address"
@@ -227,35 +227,35 @@ msgstr "المنفذ"
 
 #: pyload/Setup.py:235
 msgid "pyLoad offers several server backends, now following a short explanation."
-msgstr ""
+msgstr "يقدم باي لود خوادم متعددة للواجهة الخلفية، الآن بعد شرحاً موجزاً."
 
 #: pyload/Setup.py:236
 msgid "Default server, this server offers SSL and is a good alternative to builtin."
-msgstr ""
+msgstr "الخادم الافتراضي، هذا الخادم يوفر SSL وهو بديل جيد ل builtin."
 
 #: pyload/Setup.py:238
 msgid "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job."
-msgstr ""
+msgstr "يمكن استخدامها بواسطة أباتشي، lighttpd، يتطلب منك اعدادهم, وهي ليست مهمة سهلة جداً."
 
 #: pyload/Setup.py:239
 msgid "Very fast alternative written in C, requires libev and linux knowledge."
-msgstr ""
+msgstr "بديل سريع جداً مكتوبة في C، يتطلب libev و معرفة لنكس."
 
 #: pyload/Setup.py:240
 msgid "Get it from here: https://github.com/jonashaag/bjoern, compile it"
-msgstr ""
+msgstr "يمكنك الحصول علية من هنا : https://github.com/jonashaag/bjoern, قم بتجميعة برمجيا"
 
 #: pyload/Setup.py:241
 msgid "and copy bjoern.so to pyload/lib"
-msgstr ""
+msgstr "وقم بنسخ bjoern.so الى pyload/lib"
 
 #: pyload/Setup.py:245
 msgid "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"
-msgstr ""
+msgstr "انتباه: في بعض الحالات النادرة الخادم المدمج لا يعمل، إذا لاحظت وجود مشاكل مع واجهة الويب"
 
 #: pyload/Setup.py:246
 msgid "come back here and change the builtin server to the threaded one here."
-msgstr ""
+msgstr "عد إلى هنا وقم بتغير الخادم مدمج لذالك المذكور هنا."
 
 #: pyload/Setup.py:248
 msgid "Server"
@@ -263,72 +263,72 @@ msgstr "خادم"
 
 #: pyload/Setup.py:253
 msgid "## SSL Setup ##"
-msgstr ""
+msgstr "# # إعداد SSL # #"
 
 #: pyload/Setup.py:255
 msgid "Execute these commands from pyLoad config folder to make ssl certificates:"
-msgstr ""
+msgstr "تنفيذ هذه الأوامر من مجلد اعداد باي لود لانتاج شهادات ssl:"
 
 #: pyload/Setup.py:261
 msgid "If you're done and everything went fine, you can activate ssl now."
-msgstr ""
+msgstr "اذا انتهيت وكل شيء جرى بشكل صحيح, تستطيع تفعيل ssl الان."
 
 #: pyload/Setup.py:262
 msgid "Activate SSL?"
-msgstr ""
+msgstr "تفعيل SSL؟"
 
 #: pyload/Setup.py:278
 msgid "Select action"
-msgstr ""
+msgstr "حدد الإجراء"
 
 #: pyload/Setup.py:279
 msgid "1 - Create/Edit user"
-msgstr ""
+msgstr "1-إنشاء/تحرير المستخدم"
 
 #: pyload/Setup.py:280
 msgid "2 - List users"
-msgstr ""
+msgstr "2-قائمة المستخدمين"
 
 #: pyload/Setup.py:281
 msgid "3 - Remove user"
-msgstr ""
+msgstr "3-إزالة المستخدم"
 
 #: pyload/Setup.py:282
 msgid "4 - Quit"
-msgstr ""
+msgstr "4-إنهاء"
 
 #: pyload/Setup.py:294
 msgid "Users"
-msgstr ""
+msgstr "المستخدمين"
 
 #: pyload/Setup.py:322
 msgid "Setting new configpath, current configuration will not be transferred!"
-msgstr ""
+msgstr "تعيين مكان اعداد جديد، الاعداد الحالي لن يتم نقلة!"
 
 #: pyload/Setup.py:323
 msgid "Config path"
-msgstr ""
+msgstr "مسار الاعداد"
 
 #: pyload/Setup.py:331
 msgid "Config path changed, setup will now close, please restart to go on."
-msgstr ""
+msgstr "مسار الاعداد تغير، سوف يتم اغلاق التنصيب الان، الرجاء إعادة تشغيل للمتابعة."
 
 #: pyload/Setup.py:332
 msgid "Press Enter to exit."
-msgstr ""
+msgstr "اضغط Enter للإنهاء."
 
 #: pyload/Setup.py:336
 #, python-format
 msgid "Setting config path failed: %s"
-msgstr ""
+msgstr "فشل الإعداد مسار التكوين: %s"
 
 #: pyload/Setup.py:347
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: pyload/Setup.py:349
 msgid "n"
-msgstr ""
+msgstr "n"
 
 #: pyload/Setup.py:373
 msgid "Password: "
@@ -336,41 +336,41 @@ msgstr "كلمة المرور: "
 
 #: pyload/Setup.py:377
 msgid "Password too short. Use at least 4 symbols."
-msgstr ""
+msgstr "كلمة المرور قصيرة جداً. استخدام 4 رموز على الاقل."
 
 #: pyload/Setup.py:380
 msgid "Password (again): "
-msgstr ""
+msgstr "كلمة المرور (مرة أخرى): "
 
 #: pyload/Setup.py:386
 msgid "Passwords did not match."
-msgstr ""
+msgstr "كلمات المرور غير متطابقتين."
 
 #: pyload/Setup.py:397
 msgid "yes"
-msgstr ""
+msgstr "نعم"
 
 #: pyload/Setup.py:397
 msgid "true"
-msgstr ""
+msgstr "صحيح"
 
 #: pyload/Setup.py:397
 msgid "t"
-msgstr ""
+msgstr "t"
 
 #: pyload/Setup.py:400
 msgid "no"
-msgstr ""
+msgstr "لا"
 
 #: pyload/Setup.py:400
 msgid "false"
-msgstr ""
+msgstr "خاطئة"
 
 #: pyload/Setup.py:400
 msgid "f"
-msgstr ""
+msgstr "f"
 
 #: pyload/Setup.py:403 pyload/Setup.py:413
 msgid "Invalid Input"
-msgstr ""
+msgstr "الإدخال غير صالح"
 

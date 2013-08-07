@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:57-0400\n"
+"PO-Revision-Date: 2013-08-02 10:02-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -27,7 +27,7 @@ msgstr "Paquete: %s"
 
 #: pyload/cli/AddPackage.py:58
 msgid "Parse the links you want to add."
-msgstr "Procesar los enlaces que quieres añadir."
+msgstr "Analizar los enlaces que quieres añadir."
 
 #: pyload/cli/AddPackage.py:59
 #, python-format
@@ -64,7 +64,7 @@ msgstr "¿Qué quieres reiniciar?"
 
 #: pyload/cli/ManageFiles.py:113
 msgid "Choose what you want to do, or enter package number."
-msgstr ""
+msgstr "Elige lo que quieres hacer o introduce el número de paquete."
 
 #: pyload/cli/ManageFiles.py:115
 msgid "delete"
@@ -109,7 +109,7 @@ msgstr " Acabado el: "
 
 #: pyload/cli/Cli.py:179
 msgid " ID: "
-msgstr ""
+msgstr " ID: "
 
 #: pyload/cli/Cli.py:184
 msgid "waiting: "
@@ -117,27 +117,27 @@ msgstr "esperando: "
 
 #: pyload/cli/Cli.py:191 pyload/cli/Cli.py:193
 msgid "Status:"
-msgstr ""
+msgstr "Estado:"
 
 #: pyload/cli/Cli.py:191
 msgid "paused"
-msgstr ""
+msgstr "Pausado"
 
 #: pyload/cli/Cli.py:193
 msgid "running"
-msgstr ""
+msgstr "ejecutando"
 
 #: pyload/cli/Cli.py:196
 msgid "total Speed"
-msgstr ""
+msgstr "Velocidad total"
 
 #: pyload/cli/Cli.py:196
 msgid "Files in queue"
-msgstr ""
+msgstr "Ficheros en cola"
 
 #: pyload/cli/Cli.py:197
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: pyload/cli/Cli.py:203
 msgid "Menu:"
@@ -202,7 +202,7 @@ msgstr "Agregar paquetes a la cola"
 
 #: pyload/cli/Cli.py:447
 msgid "Adds package to collector"
-msgstr "Agregar paquetes al recolector"
+msgstr "Agrega un paquete al recolector"
 
 #: pyload/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
@@ -226,11 +226,11 @@ msgstr "Reiniciar paquetes"
 
 #: pyload/cli/Cli.py:453
 msgid "Check online status, works with local container"
-msgstr "Comprobando estado en-linea, trabajando con contenedor local"
+msgstr "Comprobar el estado en-linea, trabaja con el contenedor local"
 
 #: pyload/cli/Cli.py:454
 msgid "Checks online status of a container file"
-msgstr "Comprobando estado en-linea del contenedor"
+msgstr "Comprueba el estado en-linea de un contenedor"
 
 #: pyload/cli/Cli.py:455
 msgid "Pause the server"
@@ -258,7 +258,7 @@ msgstr "No se puede escribir el archivo de configuración del usuario"
 
 #: pyload/cli/Cli.py:548 pyload/cli/Cli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."
-msgstr "Necesitas py-openssl para conectar a este núcleo pyLoad."
+msgstr "Necesitas py-openssl para conectarte a este núcleo de pyLoad."
 
 #: pyload/cli/Cli.py:555
 msgid "Address: "

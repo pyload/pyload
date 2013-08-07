@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-08-07 09:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -27,7 +27,7 @@ msgstr "パッケージ: %s"
 
 #: pyload/cli/AddPackage.py:58
 msgid "Parse the links you want to add."
-msgstr ""
+msgstr "追加したいリンクを解析します"
 
 #: pyload/cli/AddPackage.py:59
 #, python-format
@@ -64,7 +64,7 @@ msgstr "何を再起動しますか?"
 
 #: pyload/cli/ManageFiles.py:113
 msgid "Choose what you want to do, or enter package number."
-msgstr ""
+msgstr "何をするかを選択するかパッケージ番号を入力してください。"
 
 #: pyload/cli/ManageFiles.py:115
 msgid "delete"
@@ -109,7 +109,7 @@ msgstr " 完了: "
 
 #: pyload/cli/Cli.py:179
 msgid " ID: "
-msgstr ""
+msgstr " ID: "
 
 #: pyload/cli/Cli.py:184
 msgid "waiting: "
@@ -117,27 +117,27 @@ msgstr "待機中: "
 
 #: pyload/cli/Cli.py:191 pyload/cli/Cli.py:193
 msgid "Status:"
-msgstr ""
+msgstr "ステータス:"
 
 #: pyload/cli/Cli.py:191
 msgid "paused"
-msgstr ""
+msgstr "一時停止"
 
 #: pyload/cli/Cli.py:193
 msgid "running"
-msgstr ""
+msgstr "実行しています。"
 
 #: pyload/cli/Cli.py:196
 msgid "total Speed"
-msgstr ""
+msgstr "合計速度"
 
 #: pyload/cli/Cli.py:196
 msgid "Files in queue"
-msgstr ""
+msgstr "キュー内のファイル"
 
 #: pyload/cli/Cli.py:197
 msgid "Total"
-msgstr ""
+msgstr "合計"
 
 #: pyload/cli/Cli.py:203
 msgid "Menu:"
@@ -157,11 +157,11 @@ msgstr " コレクターを管理"
 
 #: pyload/cli/Cli.py:208
 msgid " (Un)Pause Server"
-msgstr " サーバを一時停止/再開"
+msgstr " サーバーを一時停止/再開"
 
 #: pyload/cli/Cli.py:209
 msgid " Kill Server"
-msgstr " サーバを終了させる"
+msgstr " サーバーを終了させる"
 
 #: pyload/cli/Cli.py:210
 msgid " Quit"
@@ -186,15 +186,15 @@ msgstr "pyLoad が終了しました"
 
 #: pyload/cli/Cli.py:443
 msgid "Prints server status"
-msgstr "印刷サーバの状態"
+msgstr "印刷サーバーの状態"
 
 #: pyload/cli/Cli.py:444
 msgid "Prints downloads in queue"
-msgstr "キュー内の印刷ダウンロード"
+msgstr "キュー内のダウンロードを印刷"
 
 #: pyload/cli/Cli.py:445
 msgid "Prints downloads in collector"
-msgstr "コレクター内の印刷ダウンロード"
+msgstr "コレクター内のダウンロードを印刷"
 
 #: pyload/cli/Cli.py:446
 msgid "Adds package to queue"
@@ -214,7 +214,7 @@ msgstr "キュー/コレクターからパッケージを削除"
 
 #: pyload/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
-msgstr "キューからパッケージ (またはその逆) にパッケージを移動"
+msgstr "キューからコレクター (またはその逆) にパッケージを移動"
 
 #: pyload/cli/Cli.py:451
 msgid "Restart files"
@@ -234,7 +234,7 @@ msgstr "コンテナ ファイルのオンライン状態をチェック"
 
 #: pyload/cli/Cli.py:455
 msgid "Pause the server"
-msgstr "サーバを一時停止"
+msgstr "サーバーを一時停止"
 
 #: pyload/cli/Cli.py:456
 msgid "continue downloads"
@@ -246,7 +246,7 @@ msgstr "一時停止/再開を切替え"
 
 #: pyload/cli/Cli.py:458
 msgid "kill server"
-msgstr "サーバを終了させる"
+msgstr "サーバーを終了させる"
 
 #: pyload/cli/Cli.py:460
 msgid "List of commands:"
@@ -270,7 +270,7 @@ msgstr "ポート: "
 
 #: pyload/cli/Cli.py:557
 msgid "Username: "
-msgstr "ユーザ名: "
+msgstr "ユーザー名: "
 
 #: pyload/cli/Cli.py:561
 msgid "Password: "
