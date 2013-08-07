@@ -6,6 +6,11 @@ class PremiumizeMe(MultiHoster):
     __name__ = "PremiumizeMe"
     __version__ = "0.11"
     __type__ = "account"
+    __config__ = [("activated", "bool", "Activated", "False"),
+                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
+                  ("hosterList", "str", "Hoster list (comma separated)", ""),
+                  ("unloadFailing", "bool", "Revert to stanard download if download fails", "False"),
+                  ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
     __description__ = """Premiumize.Me account plugin"""
     __author_name__ = ("Florian Franzen")
     __author_mail__ = ("FlorianFranzen@gmail.com")

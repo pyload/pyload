@@ -7,6 +7,12 @@ class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
     __version__ = "0.5"
     __type__ = "account"
+    __config__ = [("activated", "bool", "Activated", "False"),
+                  ("https", "bool", "Enable HTTPS", "False"),
+                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
+                  ("hosterList", "str", "Hoster list (comma separated)", ""),
+                  ("unloadFailing", "bool", "Revert to standard download if download fails", "False"),
+                  ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
     __description__ = """Real-Debrid.com account plugin"""
     __author_name__ = ("Devirex, Hazzard")
     __author_mail__ = ("naibaf_11@yahoo.de")
