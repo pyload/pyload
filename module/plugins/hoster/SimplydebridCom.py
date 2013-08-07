@@ -52,3 +52,8 @@ class SimplydebridCom(Hoster):
         self.logDebug("Unrestricted URL: " + new_url)
 
         self.download(new_url, disposition=True)
+
+        check = self.checkDownload({"bad1": "No address associated with hostname", "bad2": "<html"})
+
+        if check == "bad1" or check == "bad2":
+            self.retry(3, 3600, 'Bad file downloaded')
