@@ -18,6 +18,8 @@
 
 from mod_pywebsocket.msgutil import send_message
 from mod_pywebsocket.util import get_class_logger
+
+from pyload.Api import User
 from pyload.remote.json_converter import loads, dumps
 
 
@@ -115,7 +117,16 @@ class AbstractHandler:
             return tuple(o)
 
     def do_login(self, req, args, kwargs):
-        user = self.api.checkAuth(*args, **kwargs)
+        user = None
+        # Cookies login when one argument is given
+        if len(args) == 1:
+            s = self.load_session(args)
+        else:
+            s = self.api.checkAuth(*args, **kwargs)
+            if s:
+                uid = s.get('uid', None)
+                user = User(uid=uid)
+
         if user:
             req.api = self.api.withUserContext(user.uid)
             return self.send_result(req, self.OK, True)

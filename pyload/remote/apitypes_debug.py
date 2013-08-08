@@ -18,7 +18,7 @@ enums = [
 ]
 
 classes = {
-	'AccountInfo' : [basestring, basestring, int, bool, int, int, int, bool, bool, bool, (dict, basestring, basestring)],
+	'AccountInfo' : [basestring, basestring, int, bool, int, int, int, bool, bool, bool, (list, ConfigItem)],
 	'AddonInfo' : [basestring, basestring, basestring],
 	'AddonService' : [basestring, basestring, (list, basestring), (None, int)],
 	'ConfigHolder' : [basestring, basestring, basestring, basestring, (list, ConfigItem), (None, (list, AddonInfo))],
@@ -72,6 +72,7 @@ methods = {
 	'generateAndAddPackages': (list, int),
 	'generateDownloadLink': basestring,
 	'generatePackages': (dict, basestring, list),
+	'getAccountInfo': AccountInfo,
 	'getAccountTypes': (list, basestring),
 	'getAccounts': (list, AccountInfo),
 	'getAddonHandler': (dict, basestring, list),
@@ -127,7 +128,7 @@ methods = {
 	'togglePause': bool,
 	'toggleReconnect': bool,
 	'unpauseServer': None,
-	'updateAccount': None,
+	'updateAccount': AccountInfo,
 	'updateAccountInfo': None,
 	'updatePackage': None,
 	'updateUserData': None,

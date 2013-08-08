@@ -14,8 +14,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/Account'], function($
         },
 
         fetch: function(options) {
-            // TODO: refresh options?
-            options = App.apiRequest('getAccounts/false', null, options);
+            options = App.apiRequest('getAccounts', null, options);
             return Backbone.Collection.prototype.fetch.call(this, options);
         }
 

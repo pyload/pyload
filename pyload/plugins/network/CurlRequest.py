@@ -152,7 +152,6 @@ class CurlRequest(Request):
             url = "%s?%s" % (url, get)
 
         self.c.setopt(pycurl.URL, url)
-        self.lastURL = url
 
         if post:
             self.c.setopt(pycurl.POST, 1)
@@ -222,6 +221,7 @@ class CurlRequest(Request):
             rep = self.getResponse()
 
         self.c.setopt(pycurl.POSTFIELDS, "")
+        self.lastURL = url
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.code = self.verifyHeader()
 

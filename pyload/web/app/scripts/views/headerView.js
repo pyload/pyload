@@ -67,6 +67,9 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                     console.log(error);
                     alert('WebSocket error' + error);
                 };
+                ws.onclose = function() {
+                    alert('WebSocket was closed');
+                };
 
                 this.ws = ws;
             },

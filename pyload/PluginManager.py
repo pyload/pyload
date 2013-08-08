@@ -199,8 +199,8 @@ class PluginManager:
         # create plugin tuple
         plugin = PluginTuple(version, plugin_re, deps, category, bool(home), filename)
 
-        # internals have no config
-        if folder == "internal":
+        # These have none or their own config
+        if folder in ("internal", "accounts", "network"):
             return plugin
 
         if folder == "addons" and "config" not in attrs and not attrs["internal"]:

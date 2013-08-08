@@ -72,18 +72,18 @@ class MultiHoster(Addon):
 
 
     @AddEventListener("account:deleted")
-    def refreshAccounts(self, plugin=None, user=None):
+    def refreshAccounts(self, plugin=None, loginname=None):
         self.logDebug("Re-checking accounts")
 
         self.plugins = {}
-        for name, account in self.core.accountManager.iterAccounts():
+        for plugin, account in self.core.accountManager.iterAccounts():
             if isinstance(account, MultiHosterAccount) and account.isUsable():
                 self.addHoster(account)
 
     @AddEventListener("account:updated")
-    def refreshAccount(self, plugin, user):
+    def refreshAccount(self, plugin, loginname):
 
-        account = self.core.accountManager.getAccount(plugin, user)
+        account = self.core.accountManager.getAccount(plugin, loginname)
         if isinstance(account, MultiHosterAccount) and account.isUsable():
             self.addHoster(account)
 

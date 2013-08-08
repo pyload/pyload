@@ -97,9 +97,9 @@ class Role:
 	User = 1
 
 class AccountInfo(BaseObject):
-	__slots__ = ['plugin', 'loginname', 'owner', 'valid', 'validuntil', 'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared', 'options']
+	__slots__ = ['plugin', 'loginname', 'owner', 'valid', 'validuntil', 'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared', 'config']
 
-	def __init__(self, plugin=None, loginname=None, owner=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, shared=None, options=None):
+	def __init__(self, plugin=None, loginname=None, owner=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, shared=None, config=None):
 		self.plugin = plugin
 		self.loginname = loginname
 		self.owner = owner
@@ -110,7 +110,7 @@ class AccountInfo(BaseObject):
 		self.premium = premium
 		self.activated = activated
 		self.shared = shared
-		self.options = options
+		self.config = config
 
 class AddonInfo(BaseObject):
 	__slots__ = ['func_name', 'description', 'value']
@@ -160,6 +160,9 @@ class ConfigItem(BaseObject):
 		self.description = description
 		self.input = input
 		self.value = value
+
+class Conflict(ExceptionObject):
+	pass
 
 class DownloadInfo(BaseObject):
 	__slots__ = ['url', 'plugin', 'hash', 'status', 'statusmsg', 'error']
@@ -415,9 +418,11 @@ class Iface(object):
 		pass
 	def generatePackages(self, links):
 		pass
+	def getAccountInfo(self, plugin, loginname, refresh):
+		pass
 	def getAccountTypes(self):
 		pass
-	def getAccounts(self, refresh):
+	def getAccounts(self):
 		pass
 	def getAddonHandler(self):
 		pass
@@ -525,7 +530,7 @@ class Iface(object):
 		pass
 	def unpauseServer(self):
 		pass
-	def updateAccount(self, plugin, login, password):
+	def updateAccount(self, plugin, loginname, password):
 		pass
 	def updateAccountInfo(self, account):
 		pass

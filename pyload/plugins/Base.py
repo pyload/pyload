@@ -92,7 +92,7 @@ class Base(object):
         self.evm = core.eventManager
         #: :class:`InteractionManager`
         self.im = core.interactionManager
-        if user:
+        if user is not None:
             #: :class:`Api`, user api when user is set
             self.api = self.core.api.withUserContext(user)
             if not self.api:

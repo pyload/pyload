@@ -18,7 +18,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($
             premium: false,
             activated: false,
             shared: false,
-            options: null
+            config: null
         },
 
         // Model Constructor

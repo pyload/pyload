@@ -294,7 +294,7 @@ struct AccountInfo {
   8: bool premium,
   9: bool activated,
   10: bool shared,
-  11: map<string, string> options,
+  11: list <ConfigItem> config,
 }
 
 struct OnlineCheck {
@@ -333,6 +333,9 @@ exception Unauthorized {
 }
 
 exception Forbidden {
+}
+
+exception Conflict {
 }
 
 
@@ -489,9 +492,12 @@ service Pyload {
   // Account Methods
   ///////////////////////
 
-  list<AccountInfo> getAccounts(1: bool refresh),
   list<string> getAccountTypes(),
-  void updateAccount(1: PluginName plugin, 2: string login, 3: string password),
+
+  list<AccountInfo> getAccounts(),
+  AccountInfo getAccountInfo(1: PluginName plugin, 2: string loginname, 3: bool refresh),
+
+  AccountInfo updateAccount(1: PluginName plugin, 2: string loginname, 3: string password),
   void updateAccountInfo(1: AccountInfo account),
   void removeAccount(1: AccountInfo account),
   

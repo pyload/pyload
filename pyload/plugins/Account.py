@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from time import time
-from traceback import print_exc
 from threading import RLock
 
-from pyload.utils import compare_time, format_size, parseFileSize, lock, to_bool
-from pyload.Api import AccountInfo
+from pyload.Api import AccountInfo, ConfigItem
 from pyload.network.CookieJar import CookieJar
+from pyload.config.convert import from_string, to_configdata
+from pyload.utils import to_string, compare_time, format_size, parseFileSize, lock
 
 from Base import Base
 
@@ -29,40 +29,30 @@ class Account(Base):
     UNLIMITED = -2
 
     # Default values
-    owner = None
     valid = True
     validuntil = -1
     trafficleft = -1
     maxtraffic = -1
     premium = True
-    activated = True
-    shared = False
 
     #: after that time [in minutes] pyload will relogin the account
     login_timeout = 600
     #: account data will be reloaded after this time
     info_threshold = 600
 
-    # known options
-    known_opt = ("time", "limitDL")
+    @classmethod
+    def fromInfoData(cls, m, info, password, options):
+        return cls(m, info.loginname, info.owner,
+                   True if info.activated else False, True if info.shared else False, password, options)
 
-    def __init__(self, manager, loginname, password, options):
-        Base.__init__(self, manager.core)
-
-        if "activated" in options:
-            self.activated = to_bool(options["activated"])
-        else:
-            self.activated = Account.activated
-
-        for opt in self.known_opt:
-            if opt not in options:
-                options[opt] = ""
-
-        for opt in options.keys():
-            if opt not in self.known_opt:
-                del options[opt]
+    def __init__(self, manager, loginname, owner, activated, shared, password, options):
+        Base.__init__(self, manager.core, owner)
 
         self.loginname = loginname
+        self.owner = owner
+        self.activated = activated
+        self.shared = shared
+        self.password = password
         self.options = options
 
         self.manager = manager
@@ -71,25 +61,58 @@ class Account(Base):
         self.timestamp = 0
         self.login_ts = 0 # timestamp for login
         self.cj = CookieJar()
-        self.password = password
         self.error = None
+
+        try:
+            self.config_data = dict(to_configdata(x) for x in self.__config__)
+        except Exception, e:
+            self.logError("Invalid config: %s" % e)
+            self.config_data = {}
 
         self.init()
 
     def toInfoData(self):
-        return AccountInfo(self.__name__, self.loginname, self.owner, self.valid, self.validuntil, self.trafficleft,
-                           self.maxtraffic,
-                           self.premium, self.activated, self.shared, self.options)
+        info = AccountInfo(self.__name__, self.loginname, self.owner, self.valid, self.validuntil, self.trafficleft,
+                           self.maxtraffic, self.premium, self.activated, self.shared, self.options)
+
+        info.config = [ConfigItem(name, item.label, item.description, item.input,
+                                  to_string(self.getConfig(name))) for name, item in
+                       self.config_data.iteritems()]
+        return info
 
     def init(self):
         pass
+
+    def getConfig(self, option):
+        """ Gets an option that was configured via the account options dialog and
+        is only valid for this specific instance."""
+        if option not in self.config_data:
+            return Base.getConfig(self, option)
+
+        if option in self.options:
+            return self.options[option]
+
+        return self.config_data[option].input.default_value
+
+    def setConfig(self, option, value):
+        """ Sets a config value for this account instance. Fallsback """
+        if option not in self.config_data:
+            return Base.setConfig(self, option, value)
+
+        value = from_string(value, self.config_data[option].input.type)
+        # given value is the default value and does not need to be saved at all
+        if value == self.config_data[option].input.default_value:
+            if option in self.options:
+                del self.options[option]
+        else:
+            self.options[option] = from_string(value, self.config_data[option].input.type)
 
     def login(self, req):
         """login into account, the cookies will be saved so the user can be recognized
 
         :param req: `Request` instance
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     def relogin(self):
         """ Force a login. """
@@ -123,8 +146,7 @@ class Account(Base):
                 _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname
                     , "msg": e})
             self.valid = False
-            if self.core.debug:
-                print_exc()
+            self.core.print_exc()
 
         return self.valid
 
@@ -134,28 +156,24 @@ class Account(Base):
         self.maxtraffic = Account.maxtraffic
         self.premium = Account.premium
 
-    def update(self, password=None, options=None):
-        """ updates the account and returns true if anything changed """
+    def setPassword(self, password):
+        """ updates the password and returns true if anything changed """
 
-        self.login_ts = 0
-        self.valid = True #set valid, so the login will be retried
+        if password != self.password:
+            self.login_ts = 0
+            self.valid = True #set valid, so the login will be retried
 
-        if "activated" in options:
-            self.activated = True if options["activated"] == "True" else False
-
-        if password:
             self.password = password
-            self.relogin()
             return True
-        if options:
-            # remove unknown options
-            for opt in options.keys():
-                if opt not in self.known_opt:
-                    del options[opt]
 
-            before = self.options
-            self.options.update(options)
-            return self.options != before
+        return False
+
+    def updateConfig(self, items):
+        """  Updates the accounts options from config items """
+        for item in items:
+            # Check if a valid option
+            if item.name in self.config_data:
+                self.setConfig(item.name, item.value)
 
     def getAccountRequest(self):
         return self.core.requestFactory.getRequest(self.cj)
@@ -163,7 +181,7 @@ class Account(Base):
     def getDownloadSettings(self):
         """ Can be overwritten to change download settings. Default is no chunkLimit, max dl limit, resumeDownload
 
-        :return: (chunkLimit, limitDL, resumeDownload) / (int, int ,bool)
+        :return: (chunkLimit, limitDL, resumeDownload) / (int, int, bool)
         """
         return -1, 0, True
 
@@ -229,9 +247,11 @@ class Account(Base):
 
     def isUsable(self):
         """Check several constraints to determine if account should be used"""
+
         if not self.valid or not self.activated: return False
 
-        if self.options["time"]:
+        # TODO: not in ui currently
+        if "time" in self.options and self.options["time"]:
             time_data = ""
             try:
                 time_data = self.options["time"]

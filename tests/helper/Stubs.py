@@ -75,6 +75,7 @@ class Core:
         self.addonManager = AddonManager()
         self.eventManager = self.evm = NoopClass()
         self.interactionManager = self.im = NoopClass()
+        self.scheduler = NoopClass()
         self.js = JsEngine()
         self.cache = {}
         self.packageCache = {}

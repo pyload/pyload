@@ -60,4 +60,9 @@ class User(UserData):
         Secondary user account share id with primary user. Only Admins have no primary id. """
         if self.hasRole(Role.Admin):
             return None
+        return self.true_primary
+
+    @property
+    def true_primary(self):
+        """ Primary handle that does not distinguish admin accounts  """
         return self.user if self.user else self.uid

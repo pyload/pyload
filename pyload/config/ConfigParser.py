@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import with_statement
-from time import sleep
 from os.path import exists
 from gettext import gettext
 from new_collections import namedtuple, OrderedDict
-
 
 from pyload.Api import Input, InputType
 from pyload.utils.fs import chmod
 
 from default import make_config
-from convert import to_input, from_string
+from convert import to_configdata, from_string
 
 CONF_VERSION = 2
 SectionTuple = namedtuple("SectionTuple", "label description explanation config")
-ConfigData = namedtuple("ConfigData", "label description input")
+
 
 class ConfigParser:
     """
@@ -109,8 +107,10 @@ class ConfigParser:
 
             for option, data in data.config.iteritems():
                 value = self.get(section, option)
-                if type(value) == unicode: value = value.encode("utf8")
-                else: value = str(value)
+                if type(value) == unicode:
+                    value = value.encode("utf8")
+                else:
+                    value = str(value)
 
                 f.write('%s = %s\n' % (option, value))
 
@@ -165,34 +165,18 @@ class ConfigParser:
         return self.config[section], self.values[section] if section in self.values else {}
 
     def addConfigSection(self, section, label, desc, expl, config):
-        """Adds a section to the config. `config` is a list of config tuples as used in plugin api defined as:
+        """Adds a section to the config. `config` is a list of config tuple as used in plugin api defined as:
         The order of the config elements is preserved with OrderedDict
         """
         d = OrderedDict()
 
         for entry in config:
-            if len(entry) != 4:
-                raise ValueError("Config entry must be of length 4")
-
-            # Values can have different roles depending on the two config formats
-            conf_name, type_label, label_desc, default_input = entry
-
-            # name, label, desc, input
-            if isinstance(default_input, Input):
-                input = default_input
-                conf_label = type_label
-                conf_desc = label_desc
-            # name, type, label, default
-            else:
-                input = Input(to_input(type_label))
-                input.default_value = from_string(default_input, input.type)
-                conf_label = label_desc
-                conf_desc = ""
-
-            d[conf_name] = ConfigData(gettext(conf_label), gettext(conf_desc), input)
+            name, data = to_configdata(entry)
+            d[name] = data
 
         data = SectionTuple(gettext(label), gettext(desc), gettext(expl), d)
         self.config[section] = data
+
 
 class Section:
     """provides dictionary like access for configparser"""

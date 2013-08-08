@@ -60,8 +60,6 @@ class AdsCaptcha(CaptchaService):
         return self.plugin.decryptCaptcha("%sChallenge.aspx" % server, get={"cid": challenge, "dummy": random()}, cookies=True, imgtype="jpg")
 
 class SolveMedia(CaptchaService):
-    def __init__(self,plugin):
-        self.plugin = plugin
 
     def challenge(self, src):
         html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript?k=%s" % src, cookies=True)

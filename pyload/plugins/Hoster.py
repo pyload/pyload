@@ -82,17 +82,13 @@ class Hoster(Base):
 
         self.ocr = None  #captcha reader instance
         #: account handler instance, see :py:class:`Account`
-        self.account = self.core.accountManager.getAccountForPlugin(self.__name__)
+        self.account = self.core.accountManager.selectAccount(self.__name__, self.user)
 
         #: premium status
         self.premium = False
-        #: username/login
-        self.user = None
 
-        if self.account and not self.account.isUsable(): self.account = None
         if self.account:
-            self.user = self.account.loginname
-            #: Browser instance, see `network.Browser`
+            #: Request instance bound to account
             self.req = self.account.getAccountRequest()
             # Default:  -1, True, True
             self.chunkLimit, self.limitDL, self.resumeDownload = self.account.getDownloadSettings()

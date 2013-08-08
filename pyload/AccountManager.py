@@ -19,7 +19,9 @@
 from threading import Lock
 from random import choice
 
+from pyload.Api import AccountInfo
 from pyload.utils import lock, json
+
 
 class AccountManager:
     """manages all accounts"""
@@ -30,111 +32,123 @@ class AccountManager:
         self.core = core
         self.lock = Lock()
 
-        self.loadAccounts()
-
-    def loadAccounts(self):
-        """loads all accounts available"""
-
+        # PluginName mapped to list of account instances
         self.accounts = {}
 
-        for plugin, loginname, activated, password, options in self.core.db.loadAccounts():
-            # put into options as used in other context
-            options = json.loads(options) if options else {}
-            options["activated"] = activated
+        self.loadAccounts()
 
-            self.createAccount(plugin, loginname, password, options)
+    def _createAccount(self, info, password, options):
+        plugin = info.plugin
+        loginname = info.loginname
+        # Owner != None must be enforced
+        if info.owner is None:
+            raise ValueError("Owner must not be null")
 
-
-    def iterAccounts(self):
-        """ yields login, account  for all accounts"""
-        for name, data in self.accounts.iteritems():
-            for login, account in data.iteritems():
-                yield login, account
-
-    def saveAccounts(self):
-        """save all account information"""
-        # TODO: multi user
-        # TODO: activated
-
-        data = []
-        for name, plugin in self.accounts.iteritems():
-            data.extend(
-                [(name, acc.loginname, 1 if acc.activated else 0, acc.password, json.dumps(acc.options)) for acc in
-                 plugin.itervalues()])
-        self.core.db.saveAccounts(data)
-
-    def createAccount(self, plugin, loginname, password, options):
         klass = self.core.pluginManager.loadClass("accounts", plugin)
         if not klass:
             self.core.log.warning(_("Unknown account plugin %s") % plugin)
             return
 
         if plugin not in self.accounts:
-            self.accounts[plugin] = {}
+            self.accounts[plugin] = []
 
         self.core.log.debug("Create account %s:%s" % (plugin, loginname))
 
-        self.accounts[plugin][loginname] = klass(self, loginname, password, options)
+        # New account instance
+        account = klass.fromInfoData(self, info, password, options)
+        self.accounts[plugin].append(account)
+        return account
 
+    def loadAccounts(self):
+        """loads all accounts available from db"""
 
-    def getAccount(self, plugin, user):
-        return self.accounts[plugin].get(user, None)
+        for info, password, options in self.core.db.loadAccounts():
+            # put into options as used in other context
+            options = json.loads(options) if options else {}
+            try:
+                self._createAccount(info, password, options)
+            except:
+                self.core.log.error(_("Could not load account %s") % info)
+                self.core.print_exc()
 
-    @lock
-    def updateAccount(self, plugin, user, password=None, options={}):
-        """add or update account"""
-        if plugin in self.accounts and user in self.accounts[plugin]:
-            acc = self.accounts[plugin][user]
-            updated = acc.update(password, options)
+    def iterAccounts(self):
+        """ yields login, account  for all accounts"""
+        for plugin, accounts in self.accounts.iteritems():
+            for account in accounts:
+                yield plugin, account
 
-            self.saveAccounts()
-            if updated: acc.scheduleRefresh(force=True)
-        else:
-            self.createAccount(plugin, user, password, options)
-            self.saveAccounts()
+    def saveAccounts(self):
+        """save all account information"""
+        data = []
+        for plugin, accounts in self.accounts.iteritems():
+            data.extend(
+                [(plugin, acc.loginname, acc.owner, 1 if acc.activated else 0, 1 if acc.shared else 0, acc.password,
+                  json.dumps(acc.options)) for acc in
+                 accounts])
+        self.core.db.saveAccounts(data)
 
-        self.sendChange(plugin, user)
-
-    @lock
-    def removeAccount(self, plugin, user):
-        """remove account"""
-        if plugin in self.accounts and user in self.accounts[plugin]:
-            del self.accounts[plugin][user]
-            self.core.db.removeAccount(plugin, user)
-            self.core.eventManager.dispatchEvent("account:deleted", plugin, user)
-        else:
-            self.core.log.debug("Remove non existent account %s %s" % (plugin, user))
-
-
-    @lock
-    def getAccountForPlugin(self, plugin):
+    def getAccount(self, plugin, loginname, user=None):
+        """ Find a account by specific user (if given) """
         if plugin in self.accounts:
-            accs = [x for x in self.accounts[plugin].values() if x.isUsable()]
+            for acc in self.accounts[plugin]:
+                if acc.loginname == loginname and (not user or acc.owner == user.true_primary):
+                    return acc
+
+    @lock
+    def updateAccount(self, plugin, loginname, password, user):
+        """add or update account"""
+        account = self.getAccount(plugin, loginname, user)
+        if account:
+            if account.setPassword(password):
+                self.saveAccounts()
+                account.scheduleRefresh(force=True)
+        else:
+            info = AccountInfo(plugin, loginname, user.true_primary, activated=True)
+            account = self._createAccount(info, password, {})
+            account.scheduleRefresh()
+            self.saveAccounts()
+
+        self.sendChange(plugin, loginname)
+        return account
+
+    @lock
+    def removeAccount(self, plugin, loginname, uid):
+        """remove account"""
+        if plugin in self.accounts:
+            for acc in self.accounts[plugin]:
+                # admins may delete accounts
+                if acc.loginname == loginname and (not uid or acc.owner == uid):
+                    self.accounts[plugin].remove(acc)
+                    self.core.db.removeAccount(plugin, loginname)
+                    self.core.evm.dispatchEvent("account:deleted", plugin, loginname)
+                    break
+
+    @lock
+    def selectAccount(self, plugin, user):
+        """ Determines suitable plugins and select one """
+        if plugin in self.accounts:
+            uid = user.true_primary if user else None
+            accs = [x for x in self.accounts[plugin] if x.isUsable() and (x.shared or x.owner == uid)]
             if accs: return choice(accs)
 
-        return None
-
     @lock
-    def getAllAccounts(self, refresh=False):
+    def getAllAccounts(self, uid):
         """ Return account info, refresh afterwards if needed
 
         :param refresh:
         :return:
         """
-        if refresh:
-            self.core.scheduler.addJob(0, self.core.accountManager.getAllAccounts)
+        # filter by owner / shared, but admins see all accounts
+        accounts = []
+        for plugin, accs in self.accounts.iteritems():
+            accounts.extend([acc for acc in accs if acc.shared or not uid or acc.owner == uid])
 
-        # load unavailable account info
-        for p_dict in self.accounts.itervalues():
-            for acc in p_dict.itervalues():
-                acc.getAccountInfo()
-
-        return self.accounts
+        return accounts
 
     def refreshAllAccounts(self):
         """ Force a refresh of every account """
         for p in self.accounts.itervalues():
-            for acc in p.itervalues():
+            for acc in p:
                 acc.getAccountInfo(True)
 
     def sendChange(self, plugin, name):
