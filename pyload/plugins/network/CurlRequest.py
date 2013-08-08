@@ -221,7 +221,7 @@ class CurlRequest(Request):
             rep = self.getResponse()
 
         self.c.setopt(pycurl.POSTFIELDS, "")
-        self.lastURL = url
+        self.lastURL = myquote(url)
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.code = self.verifyHeader()
 
