@@ -29,6 +29,7 @@ from pyload.utils.fs import fs_encode
 
 from HTTPRequest import HTTPRequest
 
+
 class WrongFormat(Exception):
     pass
 

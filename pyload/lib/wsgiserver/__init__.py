@@ -1373,7 +1373,6 @@ class ThreadPool(object):
                     pass
 
 
-
 class SSLConnection:
     """A thread-safe wrapper for an SSL.Connection.
     

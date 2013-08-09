@@ -5,6 +5,7 @@ from pyload.database import DatabaseMethods, queue, async, inner
 
 # TODO
 
+
 class StatisticMethods(DatabaseMethods):
     pass
 

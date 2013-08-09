@@ -18,6 +18,7 @@
 
 from pyload.database import DatabaseBackend, queue
 
+
 class StorageMethods():
     @queue
     def setStorage(db, identifier, key, value):

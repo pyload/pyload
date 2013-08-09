@@ -11,6 +11,7 @@ from traceback import format_exc
 from pyload.utils import primary_uid
 from pyload.utils.fs import listdir, join, save_join, stat, exists
 
+
 class BaseThread(Thread):
     """abstract base class for thread types"""
 

@@ -8,6 +8,7 @@ from pyload.utils.packagetools import parseNames
 
 from Base import Base, Retry
 
+
 class Package:
     """ Container that indicates that a new package should be created """
     def __init__(self, name, urls=None, folder=None):
@@ -40,6 +41,7 @@ class Package:
     def __hash__(self):
         return hash(self.name) ^ hash(frozenset(self.urls)) ^ hash(self.name)
 
+
 class PyFileMockup:
     """ Legacy class needed by old crypter plugins """
     def __init__(self, url, pack):
@@ -50,6 +52,7 @@ class PyFileMockup:
 
     def package(self):
         return self._package
+
 
 class Crypter(Base):
     """

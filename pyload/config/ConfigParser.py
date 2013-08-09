@@ -15,6 +15,7 @@ CONF_VERSION = 2
 SectionTuple = namedtuple("SectionTuple", "label description explanation config")
 
 
+
 class ConfigParser:
     """
     Holds and manages the configuration + meta data for config read from file.

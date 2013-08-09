@@ -3,6 +3,7 @@
 from time import time
 from Cookie import SimpleCookie
 
+
 class CookieJar(SimpleCookie):
 
     def getCookie(self, name):

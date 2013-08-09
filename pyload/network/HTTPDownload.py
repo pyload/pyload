@@ -33,6 +33,7 @@ from pyload.utils.fs import save_join, fs_encode
 
 # TODO: save content-disposition for resuming
 
+
 class HTTPDownload():
     """ loads an url, http + ftp supported """
 

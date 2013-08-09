@@ -10,6 +10,7 @@ from pyload.utils import has_method, accumulate
 
 from BaseThread import BaseThread
 
+
 class InfoThread(BaseThread):
     def __init__(self, manager, data, pid=-1, rid=-1):
         """Constructor"""

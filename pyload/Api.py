@@ -51,6 +51,7 @@ def state_string(state):
 
 from datatypes.User import User
 
+
 class Api(Iface):
     """
     **pyLoads API**

@@ -3,6 +3,7 @@
 
 from bottle import ServerAdapter as BaseAdapter
 
+
 class ServerAdapter(BaseAdapter):
     SSL = False
     NAME = ""
@@ -88,6 +89,7 @@ class MeinheldServer(ServerAdapter):
 
         server.listen((self.host, self.port))
         server.run(handler)
+
 
 # todo:ssl
 class TornadoServer(ServerAdapter):

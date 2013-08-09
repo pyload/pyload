@@ -26,6 +26,7 @@ import sys
 from sys import exit
 from module.utils import get_console_encoding
 
+
 class System_Checks():
     def __init__(self):
         self.result = ""

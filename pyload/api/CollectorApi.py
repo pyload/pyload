@@ -5,6 +5,7 @@ from pyload.Api import Api, RequirePerm, Permission
 
 from ApiComponent import ApiComponent
 
+
 class CollectorApi(ApiComponent):
     """ Link collector """
 

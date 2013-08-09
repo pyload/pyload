@@ -22,6 +22,7 @@ from pyload.utils import bits_set
 
 #TODO: activate user
 #noinspection PyUnresolvedReferences
+
 class User(UserData):
 
     @staticmethod
