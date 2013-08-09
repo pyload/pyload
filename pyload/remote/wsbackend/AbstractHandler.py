@@ -19,7 +19,7 @@
 from mod_pywebsocket.msgutil import send_message
 from mod_pywebsocket.util import get_class_logger
 
-from pyload.Api import User
+from pyload.Api import UserData
 from pyload.remote.json_converter import loads, dumps
 
 
@@ -122,11 +122,11 @@ class AbstractHandler:
         if len(args) == 1:
             s = self.load_session(args)
             if s:
-                user = User(uid=s.get('uid', None))
+                user = UserData(uid=s.get('uid', None))
         else:
             s = self.api.checkAuth(*args, **kwargs)
             if s:
-                user = User(uid=s.uid)
+                user = UserData(uid=s.uid)
 
         if user:
             req.api = self.api.withUserContext(user.uid)
