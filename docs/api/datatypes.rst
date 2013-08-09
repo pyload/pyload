@@ -62,6 +62,7 @@ for various languages. It is also a good overview of avaible methods and return 
        Video = 8,
        Document = 16,
        Archive = 32,
+       Executable = 64
      }
 
      enum FileStatus {
@@ -81,7 +82,7 @@ for various languages. It is also a good overview of avaible methods and return 
      // some may only be place holder currently not supported
      // also all input - output combination are not reasonable, see InteractionManager for further info
      // Todo: how about: time, ip, s.o.
-     enum Input {
+     enum InputType {
        NA,
        Text,
        Int,
@@ -89,18 +90,20 @@ for various languages. It is also a good overview of avaible methods and return 
        Folder,
        Textbox,
        Password,
+       Time,
        Bool,   // confirm like, yes or no dialog
        Click,  // for positional captchas
        Select,  // select from list
        Multiple,  // multiple choice from list of elements
        List, // arbitary list of elements
+       PluginList, // a list plugins from pyload
        Table  // table like data structure
      }
      // more can be implemented by need
 
      // this describes the type of the outgoing interaction
      // ensure they can be logcial or'ed
-     enum Output {
+     enum Interaction {
        All = 0,
        Notification = 1,
        Captcha = 2,
@@ -123,6 +126,12 @@ for various languages. It is also a good overview of avaible methods and return 
          User = 1
      }
 
+     struct Input {
+         1: InputType type,
+         2: optional JSONString default_value,
+         3: optional JSONString data,
+     }
+
      struct DownloadProgress {
          1: FileID fid,
          2: PackageID pid,
@@ -138,15 +147,6 @@ for various languages. It is also a good overview of avaible methods and return 
        5: ByteCount done,
        6: ByteCount total, // arbitary number, size in case of files
        7: optional DownloadProgress download
-     }
-
-     struct ServerStatus {
-       1: i16 queuedDownloads,
-       2: i16 totalDownloads,
-       3: ByteCount speed,
-       4: bool pause,
-       5: bool download,
-       6: bool reconnect
      }
 
      // download info for specific file
@@ -191,10 +191,11 @@ for various languages. It is also a good overview of avaible methods and return 
        9: UTCDate added,
        10: list<string> tags,
        11: PackageStatus status,
-       12: i16 packageorder,
-       13: PackageStats stats,
-       14: list<FileID> fids,
-       15: list<PackageID> pids,
+       12: bool shared,
+       13: i16 packageorder,
+       14: PackageStats stats,
+       15: list<FileID> fids,
+       16: list<PackageID> pids,
      }
 
      // thrift does not allow recursive datatypes, so all data is accumulated and mapped with id
@@ -214,15 +215,25 @@ for various languages. It is also a good overview of avaible methods and return 
          6: string packagename,
      }
 
+     struct ServerStatus {
+       1: ByteCount speed,
+       2: i16 linkstotal,
+       3: i16 linksqueue,
+       4: ByteCount sizetotal,
+       5: ByteCount sizequeue,
+       6: bool notifications,
+       7: bool paused,
+       8: bool download,
+       9: bool reconnect,
+     }
+
      struct InteractionTask {
        1: InteractionID iid,
-       2: Input input,
-       3: list<string> data,
-       4: Output output,
-       5: optional JSONString default_value,
-       6: string title,
-       7: string description,
-       8: PluginName plugin,
+       2: Interaction type,
+       3: Input input,
+       4: string title,
+       5: string description,
+       6: PluginName plugin,
      }
 
      struct AddonService {
@@ -242,33 +253,31 @@ for various languages. It is also a good overview of avaible methods and return 
        1: string name,
        2: string label,
        3: string description,
-       4: string type,
-       5: JSONString default_value,
-       6: JSONString value,
+       4: Input input,
+       5: JSONString value,
      }
 
      struct ConfigHolder {
-       1: string name,
+       1: string name, // for plugin this is the PluginName
        2: string label,
        3: string description,
-       4: string long_description,
+       4: string explanation,
        5: list<ConfigItem> items,
        6: optional list<AddonInfo> info,
-       7: optional list<InteractionTask> handler, // if null plugin is not loaded
      }
 
      struct ConfigInfo {
        1: string name
        2: string label,
        3: string description,
-       4: bool addon,
+       4: string category,
        5: bool user_context,
        6: optional bool activated,
      }
 
      struct EventInfo {
        1: string eventname,
-       2: list<JSONString> event_args,
+       2: list<JSONString> event_args, //will contain json objects
      }
 
      struct UserData {
@@ -297,7 +306,7 @@ for various languages. It is also a good overview of avaible methods and return 
        8: bool premium,
        9: bool activated,
        10: bool shared,
-       11: map<string, string> options,
+       11: list <ConfigItem> config,
      }
 
      struct OnlineCheck {
@@ -338,6 +347,9 @@ for various languages. It is also a good overview of avaible methods and return 
      exception Forbidden {
      }
 
+     exception Conflict {
+     }
+
 
      service Pyload {
 
@@ -368,17 +380,16 @@ for various languages. It is also a good overview of avaible methods and return 
        map<string, ConfigHolder> getConfig(),
        string getConfigValue(1: string section, 2: string option),
 
-       // two methods with ambigous classification, could be configuration or addon related
+       // two methods with ambigous classification, could be configuration or addon/plugin related
        list<ConfigInfo> getCoreConfig(),
        list<ConfigInfo> getPluginConfig(),
        list<ConfigInfo> getAvailablePlugins(),
 
-       ConfigHolder configurePlugin(1: PluginName plugin),
+       ConfigHolder loadConfig(1: string name),
 
        void setConfigValue(1: string section, 2: string option, 3: string value),
        void saveConfig(1: ConfigHolder config),
        void deleteConfig(1: PluginName plugin),
-       void setConfigHandler(1: PluginName plugin, 2: InteractionID iid, 3: JSONString value),
 
        ///////////////////////
        // Download Preparing
@@ -462,6 +473,7 @@ for various languages. It is also a good overview of avaible methods and return 
 
        TreeCollection findFiles(1: string pattern),
        TreeCollection findPackages(1: list<string> tags),
+       list<string> searchSuggestions(1: string pattern),
 
        // Modify Files/Packages
 
@@ -480,31 +492,26 @@ for various languages. It is also a good overview of avaible methods and return 
        // User Interaction
        ///////////////////////
 
-       // mode = Output types binary ORed
+       // mode = interaction types binary ORed
        bool isInteractionWaiting(1: i16 mode),
-       InteractionTask getInteractionTask(1: i16 mode),
+       list<InteractionTask> getInteractionTasks(1: i16 mode),
        void setInteractionResult(1: InteractionID iid, 2: JSONString result),
 
        // generate a download link, everybody can download the file until timeout reached
        string generateDownloadLink(1: FileID fid, 2: i16 timeout),
 
-       list<InteractionTask> getNotifications(),
-
-       ///////////////////////
-       // Event Handling
-       ///////////////////////
-
-       list<EventInfo> getEvents(1: string uuid),
-       
        ///////////////////////
        // Account Methods
        ///////////////////////
 
-       list<AccountInfo> getAccounts(1: bool refresh),
        list<string> getAccountTypes(),
-       void updateAccount(1: PluginName plugin, 2: string account, 3: string password),
+
+       list<AccountInfo> getAccounts(),
+       AccountInfo getAccountInfo(1: PluginName plugin, 2: string loginname, 3: bool refresh),
+
+       AccountInfo updateAccount(1: PluginName plugin, 2: string loginname, 3: string password),
        void updateAccountInfo(1: AccountInfo account),
-       void removeAccount(1: PluginName plugin, 2: string account),
+       void removeAccount(1: AccountInfo account),
        
        /////////////////////////
        // Auth+User Information

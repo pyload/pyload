@@ -12,7 +12,7 @@
 # serve to show the default.
 
 import sys, os
-from os.path import dirname, join, abspath
+from os.path import dirname, join, abspath, exists
 
 dir_name = join(dirname(abspath("")))
 sys.path.append(dir_name)
@@ -61,13 +61,13 @@ copyright = u'2013, pyLoad Team'
 #
 # The full version, including alpha/beta/rc tags.
 """ [[[cog
-from pavement import options
-v = options.version.split(".")
+from pyload import __version__
+v = __version__.split(".")
 cog.outl("version = '%s'" % ".".join(v[:2]))
 cog.outl("release = '%s'" % ".".join(v))
 ]]]"""
-version = '0.5'
-release = '0.5.0'
+version = '0.4'
+release = '0.4.9.9-dev'
 # [[[end]]]
 
 
@@ -129,12 +129,12 @@ html_theme = 'default'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = join(dir_name, "pyload", "web", "app", "images", "default", "logo.png")
+html_logo = join(dir_name, "pyload", "web", "app", "components", "pyload-common", "images", "logo.png")
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-html_favicon = join(dir_name, "pyload", "web", "app", "favicon.ico")
+html_favicon = join(dir_name, "pyload", "web", "app", "components", "pyload-common", "favicon.ico")
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
