@@ -35,7 +35,7 @@ def secondsToMidnight():
 
 class UnrestrictLi(Hoster):
     __name__ = "UnrestrictLi"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __type__ = "hoster"
     __pattern__ = r"https?://.*(unrestrict|unr)\.li"
     __description__ = """Unrestrict.li hoster plugin"""
@@ -48,8 +48,8 @@ class UnrestrictLi(Hoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "Unrestrict.li")
-            self.fail("No Unrestrict.li account provided")
+            self.logError(_("Please enter your %s account or deactivate this plugin.") % "Unrestrict.li")
+            self.fail("No Unrestrict.li account provided.")
 
         self.logDebug("Old URL: %s" % pyfile.url)
         if re.match(self.__pattern__, pyfile.url):
@@ -63,11 +63,14 @@ class UnrestrictLi(Hoster):
                     break
             if "File offline" in page:
                 self.offline()
+            elif "ERROR_HOSTER_TEMPORARILY_UNAVAILABLE" in page:
+                self.logInfo("Hoster temporarily unavailable, waiting 1 minute and retry.")
+                self.retry(1, 60, "Hoster is temporarily unavailable.")
             elif "You are not allowed to download from this host" in page:
-                self.fail("You are not allowed to download from this host")
+                self.fail("You are not allowed to download from this host.")
             elif "You have reached your daily limit for this host" in page:
-                self.logInfo("Reached daily limit for this host. Waiting until 00:10 GMT+2")
-                self.retry(5, secondsToMidnight(), "Daily limit for this host reached")
+                self.logInfo("Reached daily limit for this host. Waiting until 00:10 GMT+2.")
+                self.retry(3, secondsToMidnight(), "Daily limit for this host reached.")
             page = json_loads(page)
             new_url = page.keys()[0]
             self.api_data = page[new_url]
@@ -80,7 +83,7 @@ class UnrestrictLi(Hoster):
 
         if self.getConfig("history"):
             self.load("https://unrestrict.li/history/&delete=all")
-            self.logInfo("Download history deleted")
+            self.logInfo("Download history deleted.")
 
     def setNameSize(self):
         if 'name' in self.api_data:
