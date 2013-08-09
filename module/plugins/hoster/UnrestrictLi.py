@@ -35,7 +35,7 @@ def secondsToMidnight():
 
 class UnrestrictLi(Hoster):
     __name__ = "UnrestrictLi"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __type__ = "hoster"
     __pattern__ = r"https?://.*(unrestrict|unr)\.li"
     __description__ = """Unrestrict.li hoster plugin"""
@@ -63,6 +63,9 @@ class UnrestrictLi(Hoster):
                     break
             if "File offline" in page:
                 self.offline()
+            elif "ERROR_HOSTER_TEMPORARILY_UNAVAILABLE" in page:
+                self.logInfo("Hoster temporarily unavailable, waiting 1 minute and retry")
+                self.retry(5, 60, "Hoster is temporarily unavailable")
             elif "You are not allowed to download from this host" in page:
                 self.fail("You are not allowed to download from this host")
             elif "You have reached your daily limit for this host" in page:
