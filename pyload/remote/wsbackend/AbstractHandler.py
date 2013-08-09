@@ -121,11 +121,12 @@ class AbstractHandler:
         # Cookies login when one argument is given
         if len(args) == 1:
             s = self.load_session(args)
+            if s:
+                user = User(uid=s.get('uid', None))
         else:
             s = self.api.checkAuth(*args, **kwargs)
             if s:
-                uid = s.get('uid', None)
-                user = User(uid=uid)
+                user = User(uid=s.uid)
 
         if user:
             req.api = self.api.withUserContext(user.uid)
