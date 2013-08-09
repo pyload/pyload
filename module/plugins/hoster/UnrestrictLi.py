@@ -35,7 +35,7 @@ def secondsToMidnight():
 
 class UnrestrictLi(Hoster):
     __name__ = "UnrestrictLi"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __type__ = "hoster"
     __pattern__ = r"https?://.*(unrestrict|unr)\.li"
     __description__ = """Unrestrict.li hoster plugin"""
@@ -74,7 +74,8 @@ class UnrestrictLi(Hoster):
 
         self.logDebug("New URL: " + new_url)
 
-        self.setNameSize()
+        if hasattr(self, 'api_data'):
+            self.setNameSize()
 
         self.download(new_url, disposition=True)
 
