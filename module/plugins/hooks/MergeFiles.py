@@ -30,7 +30,7 @@ BUFFER_SIZE = 4096
 
 class MergeFiles(Hook):
     __name__ = "MergeFiles"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = "Merges parts splitted with hjsplit"
     __config__ = [("activated", "bool", "Activated", "False")]
     __threaded__ = ["packageFinished"]
@@ -64,7 +64,7 @@ class MergeFiles(Hook):
             for splitted_file in file_list:
                 self.logDebug("Merging part %s" % splitted_file)
                 pyfile = self.core.files.getFile(fid_dict[splitted_file])
-                pyfile.setStatus("processing")
+                pyfile.setCustomStatus(_("joining"))
                 try:
                     s_file = open(os.path.join(download_folder, splitted_file), "rb")
                     size_written = 0
@@ -83,7 +83,6 @@ class MergeFiles(Hook):
                     print traceback.print_exc()
                 finally:
                     pyfile.setProgress(100)
-                    pyfile.setStatus("finished")
                     pyfile.release()
 
             final_file.close()
