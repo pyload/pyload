@@ -21,6 +21,7 @@ path.fnmatch = new_fnmatch
 import os
 import sys
 import shutil
+import re
 from glob import glob
 from tempfile import mkdtemp
 from subprocess import call, Popen
@@ -56,25 +57,27 @@ xargs = ["--language=Python", "--add-comments=L10N",
 
 # Modules replace rules
 module_replace = [
-('from module.plugins.Hoster import Hoster', 'from pyload.plugins.Hoster import Hoster'),
-('from module.plugins.Hook import threaded, Expose, Hook', 'from pyload.plugins.Addon import threaded, Expose, Addon'),
-('from module.plugins.Hook import Hook', 'from pyload.plugins.Addon import Addon'),
-('from module.common.json_layer import json_loads, json_dumps', 'from pyload.utils import json_loads, json_dumps'),
-('from module.common.json_layer import json_loads', 'from pyload.utils import json_loads'),
-('from module.common.json_layer import json_dumps', 'from pyload.utils import json_dumps'),
-('from module.utils import parseFileSize', 'from pyload.utils import parseFileSize'),
-('from module.utils import save_join, save_path', 'from pyload.utils.fs import save_join, save_filename as save_path'),
-('from module.utils import save_join, fs_encode', 'from pyload.utils.fs import save_join, fs_encode'),
-('from module.utils import save_join', 'from pyload.utils.fs import save_join'),
-('from module.utils import fs_encode', 'from pyload.utils.fs import fs_encode'),
-('from module.unescape import unescape', 'from pyload.utils import html_unescape as unescape'),
-('from module.lib.BeautifulSoup import BeautifulSoup', 'from BeautifulSoup import BeautifulSoup'),
-('from module.lib import feedparser', 'import feedparser'),
-('self.account.getAccountInfo(self.user, ', 'self.account.getAccountInfo('),
-('self.account.getAccountInfo(self.user)', 'self.account.getAccountInfo()'),
-('self.account.accounts[self.user]["password"]', 'self.account.password'),
-("self.account.accounts[self.user]['password']", 'self.account.password'),
-('from module.', 'from pyload.')  # This should be always the last one
+    ('from module.plugins.Hoster import Hoster', 'from pyload.plugins.Hoster import Hoster'),
+    ('from module.plugins.Hook import threaded, Expose, Hook',
+     'from pyload.plugins.Addon import threaded, Expose, Addon'),
+    ('from module.plugins.Hook import Hook', 'from pyload.plugins.Addon import Addon'),
+    ('from module.common.json_layer import json_loads, json_dumps', 'from pyload.utils import json_loads, json_dumps'),
+    ('from module.common.json_layer import json_loads', 'from pyload.utils import json_loads'),
+    ('from module.common.json_layer import json_dumps', 'from pyload.utils import json_dumps'),
+    ('from module.utils import parseFileSize', 'from pyload.utils import parseFileSize'),
+    ('from module.utils import save_join, save_path',
+     'from pyload.utils.fs import save_join, save_filename as save_path'),
+    ('from module.utils import save_join, fs_encode', 'from pyload.utils.fs import save_join, fs_encode'),
+    ('from module.utils import save_join', 'from pyload.utils.fs import save_join'),
+    ('from module.utils import fs_encode', 'from pyload.utils.fs import fs_encode'),
+    ('from module.unescape import unescape', 'from pyload.utils import html_unescape as unescape'),
+    ('from module.lib.BeautifulSoup import BeautifulSoup', 'from BeautifulSoup import BeautifulSoup'),
+    ('from module.lib import feedparser', 'import feedparser'),
+    ('self.account.getAccountInfo(self.user, ', 'self.account.getAccountInfo('),
+    ('self.account.getAccountInfo(self.user)', 'self.account.getAccountInfo()'),
+    ('self.account.accounts[self.user]["password"]', 'self.account.password'),
+    ("self.account.accounts[self.user]['password']", 'self.account.password'),
+    ('from module.', 'from pyload.')  # This should be always the last one
 ]
 
 
@@ -85,7 +88,6 @@ def html():
     module = path("docs") / "pyload"
     module.rmtree()
     call_task('paver.doctools.html')
-
 
 
 @task
@@ -140,7 +142,6 @@ def webapp():
 @task
 def generate_locale():
     """ Generates localisation files """
-    # TODO restructure, many references are outdated
 
     EXCLUDE = ["pyload/lib", "pyload/cli", "pyload/setup", "pyload/plugins", "Setup.py"]
 
@@ -148,12 +149,13 @@ def generate_locale():
     makepot("plugins", path("pyload") / "plugins")
     makepot("setup", "", [], includes="./pyload/Setup.py\n")
     makepot("cli", path("pyload") / "cli", [])
-
-    # TODO: web ui
+    makepot("webUI", path("pyload") / "web" / "app", ["components", "vendor", "gettext"], endings=[".js", ".html"],
+            xxargs="--language=Python --force-po".split(" "))
 
     path("includes.txt").remove()
 
     print "Locale generated"
+
 
 @task
 @cmdopts([
@@ -181,6 +183,7 @@ def upload_translations(options):
     shutil.rmtree(tmp)
 
     print "Translations uploaded"
+
 
 @task
 @cmdopts([
@@ -218,6 +221,7 @@ def download_translations(options):
 
     shutil.rmtree(tmp)
 
+
 @task
 def compile_translations():
     """ Compile PO files to MO """
@@ -228,6 +232,7 @@ def compile_translations():
         for f in glob(language / 'LC_MESSAGES' / '*.po'):
             print "Compiling %s" % f
             call(['msgfmt', '-o', f.replace('.po', '.mo'), f])
+
 
 @task
 def tests():
@@ -289,12 +294,12 @@ def replace_module_imports():
 
 #helper functions
 
-def walk_trans(path, EXCLUDE, endings=[".py"]):
+def walk_trans(path, excludes, endings=[".py"]):
     result = ""
 
     for f in path.walkfiles():
-        if [True for x in EXCLUDE if x in f.dirname().relpath()]: continue
-        if f.name in EXCLUDE: continue
+        if [True for x in excludes if x in f.dirname().relpath()]: continue
+        if f.name in excludes: continue
 
         for e in endings:
             if f.name.endswith(e):
@@ -327,16 +332,3 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
 
     with open("locale/%s.pot" % domain, "wb") as f:
         f.write(content)
-
-
-def change_owner(dir, uid, gid):
-    for p in dir.walk():
-        p.chown(uid, gid)
-
-
-def change_mode(dir, mode, folder=False):
-    for p in dir.walk():
-        if folder and p.isdir():
-            p.chmod(mode)
-        elif p.isfile() and not folder:
-            p.chmod(mode)

@@ -4,7 +4,8 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/accounts/account'],
 
         return Backbone.Marionette.ItemView.extend({
 
-            tagName: 'tr',
+            tagName: 'div',
+            className: 'row-fluid',
             template: template,
 
             events: {

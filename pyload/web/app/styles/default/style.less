@@ -174,8 +174,8 @@ header { //  background-color: @greyDark;
     float: right;
     width: 100%;
     .centered;
-//    height: @header-height - 16px;
-//    margin: 8px 0;
+    //    height: @header-height - 16px;
+    //    margin: 8px 0;
     font-family: sans-serif;
   }
 }
@@ -240,36 +240,35 @@ header { //  background-color: @greyDark;
   padding-top: 2px;
   margin-bottom: 5px;
 
-}
-
-.actionbar > li > a {
-  margin-top: 4px;
-}
-
-.actionbar .breadcrumb {
-  margin: 0;
-  padding-top: 10px;
-  padding-bottom: 0;
-
-  .active {
-    color: @grey;
+  & > li > a, & > li > button {
+    margin-top: 4px;
   }
 
-}
+  .breadcrumb {
+    margin: 0;
+    padding-top: 10px;
+    padding-bottom: 0;
 
-.actionbar form {
-  margin-top: 6px;
-  margin-bottom: 0;
-}
+    .active {
+      color: @grey;
+    }
+  }
 
-.actionbar input, .actionbar button {
-  padding-top: 2px;
-  padding-bottom: 2px;
-}
+  form {
+    margin-top: 6px;
+    margin-bottom: 0;
+  }
 
-.actionbar .dropdown-menu i {
-  margin-top: 4px;
-  padding-right: 5px;
+  input, button {
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  .dropdown-menu i {
+    margin-top: 4px;
+    padding-right: 5px;
+  }
+
 }
 
 /*

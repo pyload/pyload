@@ -1,10 +1,15 @@
-<td>{{ plugin }}</td>
-<td>{{ loginname }}</td>
-<td>{{ valid }}</td>
-<td>{{ premium }}</td>
-<td>{{ trafficleft }}</td>
-<td>{{ shared }}</td>
-<td>{{ activated }}</td>
-<td>
-    <button type="button" class="btn btn-danger">Delete</button>
-</td>
+<div class="span3">
+    <img src="{{ pluginIcon plugin }}"> {{ plugin }}
+</div>
+<div class="span3">
+   {{ loginname }}
+</div>
+<div class="span3">
+    {{ premium }}
+    {{ formatSize trafficleft }}
+    {{ shared }}
+    {{ activated }}
+</div>
+<div class="span3">
+        <button type="button" class="btn btn-danger">Delete</button>
+</div>
