@@ -92,16 +92,20 @@ def format_time(seconds):
     minutes, seconds = divmod(seconds, 60)
     return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
 
-def uniqify(seq): #by Dave Kirby
-    """ removes duplicates from list, preserve order """
-    seen = set()
-    return [x for x in seq if x not in seen and not seen.add(x)]
+def parse_time(timestamp, pattern):
+    """ Parse a string representing a time according to a pattern and
+    return a time in seconds suitable for an account plugin. """
+    return int(time.mktime(time.strptime(timestamp, pattern)))
 
-def bits_set(bits, compare):
-    """ checks if all bits are set in compare, or bits is 0 """
-    return bits == (bits & compare)
+def parseFileSize(string, unit=None):
+    print "Deprecated parseFileSize, use parse_size"
+    return parse_size(string, unit)
 
-def parseFileSize(string, unit=None): #returns bytes
+def parse_size(string, unit=None):
+    """ Parses file size from a string. Tries to parse unit if not given.
+
+    :return: size in bytes
+    """
     if not unit:
         m = re.match(r"([\d.,]+) *([a-zA-Z]*)", string.strip().lower())
         if m:
@@ -127,6 +131,14 @@ def parseFileSize(string, unit=None): #returns bytes
 
     return traffic
 
+def uniqify(seq): #by Dave Kirby
+    """ removes duplicates from list, preserve order """
+    seen = set()
+    return [x for x in seq if x not in seen and not seen.add(x)]
+
+def bits_set(bits, compare):
+    """ checks if all bits are set in compare, or bits is 0 """
+    return bits == (bits & compare)
 
 def lock(func):
     def new(*args, **kwargs):

@@ -230,22 +230,24 @@ class Hoster(Base):
         """ fail and indicates file ist temporary offline, the core may take consequences """
         raise Fail("temp. offline")
 
-    def retry(self, max_tries=3, wait_time=1, reason=""):
+    def retry(self, max_tries=3, wait_time=1, reason="", backoff=lambda x,y: x):
         """Retries and begin again from the beginning
 
         :param max_tries: number of maximum retries
         :param wait_time: time to wait in seconds
         :param reason: reason for retrying, will be passed to fail if max_tries reached
+        :param backoff: Function to backoff the wait time, takes initial time and number of retry as argument.
+                        defaults to no backoff / fixed wait time
         """
         if 0 < max_tries <= self.retries:
             if not reason: reason = "Max retries reached"
             raise Fail(reason)
 
         self.wantReconnect = False
-        self.setWait(wait_time)
+        self.retries += 1
+        self.setWait(backoff(wait_time, self.retries))
         self.wait()
 
-        self.retries += 1
         raise Retry(reason)
 
 
