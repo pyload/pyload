@@ -311,10 +311,10 @@ class FileMethods(DatabaseMethods):
         """ data is list of tuples (name, size, status,[ hash,] url)"""
 
         # inserts media type as n-1th arguments
-        data = [t[:-1] + (guess_type(t[0]),) + t[-1] for t in data]
+        data = [t[:-1] + (guess_type(t[0]), t[-1])  for t in data]
 
         # status in (NA, Offline, Online, Queued, TempOffline)
-        if data and len(data[0]) == 4:
+        if data and len(data[0]) == 5:
             self.c.executemany(
                 'UPDATE files SET name=?, size=?, dlstatus=?, media=? WHERE url=? AND dlstatus IN (0,1,2,3,11)',
                 data)

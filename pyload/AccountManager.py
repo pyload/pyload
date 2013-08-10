@@ -128,7 +128,8 @@ class AccountManager:
         """ Determines suitable plugins and select one """
         if plugin in self.accounts:
             uid = user.true_primary if user else None
-            accs = [x for x in self.accounts[plugin] if x.isUsable() and (x.shared or x.owner == uid)]
+            # TODO: temporary allowed None user
+            accs = [x for x in self.accounts[plugin] if x.isUsable() and (x.shared or uid is None or x.owner == uid)]
             if accs: return choice(accs)
 
     @lock
