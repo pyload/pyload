@@ -7,7 +7,7 @@
 
     <li>
         <ul class="breadcrumb">
-            <li><a href="#">Local</a> <span class="divider">/</span></li>
+            <li><a href="#">{{_ "Local"}}</a> <span class="divider">/</span></li>
             <li class="active"></li>
         </ul>
     </li>
@@ -16,7 +16,7 @@
         <form class="form-search" action="#">
             <div class="input-append">
                 <input type="text" class="search-query" style="width: 120px">
-                <button type="submit" class="btn">Search</button>
+                <button type="submit" class="btn">{{ _ "Search" }}</button>
             </div>
         </form>
     </li>
@@ -24,7 +24,7 @@
         <a class="dropdown-toggle type"
            data-toggle="dropdown"
            href="#">
-            Type
+            {{_ "Type" }}
             <b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
@@ -42,15 +42,15 @@
            data-toggle="dropdown"
            href="#">
             <span class="state">
-                All
+               {{ _ "All" }}
             </span>
             <b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
-            <li><a class="filter-state" data-state="0" href="#">All</a></li>
-            <li><a class="filter-state" data-state="1" href="#">Finished</a></li>
-            <li><a class="filter-state" data-state="2" href="#">Unfinished</a></li>
-            <li><a class="filter-state" data-state="3" href="#">Failed</a></li>
+            <li><a class="filter-state" data-state="0" href="#">{{ _ "All" }}</a></li>
+            <li><a class="filter-state" data-state="1" href="#">{{ _ "Finished" }}</a></li>
+            <li><a class="filter-state" data-state="2" href="#">{{ _ "Unfinished" }}</a></li>
+            <li><a class="filter-state" data-state="3" href="#">{{ _ "Failed" }}</a></li>
         </ul>
     </li>
 </ul>

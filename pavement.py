@@ -152,6 +152,8 @@ def generate_locale():
     makepot("webUI", path("pyload") / "web" / "app", ["components", "vendor", "gettext"], endings=[".js", ".html"],
             xxargs="--language=Python --force-po".split(" "))
 
+    makehtml("webUI", path("pyload") / "web" / "app" / "templates")
+
     path("includes.txt").remove()
 
     print "Locale generated"
@@ -332,3 +334,63 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
 
     with open("locale/%s.pot" % domain, "wb") as f:
         f.write(content)
+
+def makehtml(domain, p):
+    """ Parses entries from html and append them to existing pot file"""
+
+    pot = path("locale") / "%s.pot"  % domain
+
+    with open(pot, 'rb') as f:
+        content = f.readlines()
+
+    msgids = {}
+    # parse existing ids and line
+    for i, line in enumerate(content):
+        if line.startswith("msgid "):
+            msgid = line[6:-1].strip('"')
+            msgids[msgid] = i
+
+    # TODO: parses only n=2 plural
+    single =  re.compile(r'\{\{ ?(?:gettext|_) "((?:\\.|[^"\\])*)" ?\}\}')
+    plural =  re.compile(r'\{\{ ?(?:ngettext) *"((?:\\.|[^"\\])*)" *"((?:\\.|[^"\\])*)"')
+
+    for f in p.walkfiles():
+        if not f.endswith("html"): continue
+        with open(f, "rb") as html:
+            for i, line in enumerate(html.readlines()):
+                key = None
+                nmessage = plural.search(line)
+                message = single.search(line)
+                if nmessage:
+                    key = nmessage.group(1)
+                    keyp = nmessage.group(2)
+
+                    if key not in msgids:
+                        content.append("\n")
+                        content.append('msgid "%s"\n' % key)
+                        content.append('msgid_plural "%s"\n' % keyp)
+                        content.append('msgstr[0] ""\n')
+                        content.append('msgstr[1] ""\n')
+                        msgids[key] = len(content) - 4
+
+
+                elif message:
+                    key = message.group(1)
+
+                    if key not in msgids:
+                        content.append("\n")
+                        content.append('msgid "%s"\n' % key)
+                        content.append('msgstr ""\n')
+                        msgids[key] = len(content) - 2
+
+                if key:
+                    content.insert(msgids[key], "#: %s:%d\n" % (f, i))
+                    msgids[key] += 1
+
+
+        with open(pot, 'wb') as f:
+            f.writelines(content)
+
+    print "Parsed html files"
+
+
