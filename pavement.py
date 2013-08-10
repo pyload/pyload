@@ -289,6 +289,7 @@ def replace_module_imports():
             elif '/accounts/' in path:
                 content = content.replace('self.accounts[user]["password"]', 'self.password')
                 content = content.replace("self.accounts[user]['password']", 'self.password')
+                content = content.replace('.getAccountInfo()["premium"]', '.isPremium()')
             f = open(path, 'w')
             f.write(content)
             f.close()
