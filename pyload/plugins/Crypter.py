@@ -8,8 +8,10 @@ from pyload.utils.packagetools import parseNames
 
 from Base import Base, Retry
 
+
 class Package:
     """ Container that indicates that a new package should be created """
+
     def __init__(self, name, urls=None, folder=None):
         self.name = name
         self.urls = urls if urls else []
@@ -40,8 +42,10 @@ class Package:
     def __hash__(self):
         return hash(self.name) ^ hash(frozenset(self.urls)) ^ hash(self.name)
 
+
 class PyFileMockup:
     """ Legacy class needed by old crypter plugins """
+
     def __init__(self, url, pack):
         self.url = url
         self.name = url
@@ -50,6 +54,7 @@ class PyFileMockup:
 
     def package(self):
         return self._package
+
 
 class Crypter(Base):
     """
@@ -73,6 +78,9 @@ class Crypter(Base):
 
     #: Prefix to annotate that the submited string for decrypting is indeed file content
     CONTENT_PREFIX = "filecontent:"
+
+    #: Optional name of an account plugin that should be used, but does not guarantee that one is available
+    USE_ACCOUNT = None
 
     @classmethod
     def decrypt(cls, core, url_or_urls):
@@ -100,9 +108,20 @@ class Crypter(Base):
         # eliminate duplicates
         return uniqify(ret)
 
+    # TODO: pass user to crypter
+    # TODO: crypter could not only know url, but also the name and size
     def __init__(self, core, package=None, password=None):
         Base.__init__(self, core)
-        self.req = core.requestFactory.getRequest()
+
+        self.req = None
+        # load account if set
+        if self.USE_ACCOUNT:
+            self.account = self.core.accountManager.selectAccount(self.USE_ACCOUNT, self.user)
+            if self.account:
+                self.req = self.account.getAccountRequest()
+
+        if self.req is None:
+            self.req = core.requestFactory.getRequest()
 
         # Package the plugin was initialized for, don't use this, its not guaranteed to be set
         self.package = package
@@ -158,7 +177,7 @@ class Crypter(Base):
         :param urls: list of urls
         :return: list of `Package`
         """
-        return [Package(name, purls) for name, purls in parseNames([(url,url) for url in urls]).iteritems()]
+        return [Package(name, purls) for name, purls in parseNames([(url, url) for url in urls]).iteritems()]
 
     def _decrypt(self, urls):
         """ Internal  method to select decrypting method
@@ -198,7 +217,7 @@ class Crypter(Base):
                 result.extend(to_list(self.decryptFile(c)))
                 try:
                     if f.startswith("tmp_"): remove(f)
-                except :
+                except:
                     pass
 
         return result
@@ -264,7 +283,7 @@ class Crypter(Base):
         res = [Package(name, urls) for name, urls in self.packages]
         res.extend(self.urls)
         return res
-            
+
     def clean(self):
         if hasattr(self, "req"):
             self.req.close()

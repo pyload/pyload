@@ -73,9 +73,8 @@ module_replace = [
     ('from module.unescape import unescape', 'from pyload.utils import html_unescape as unescape'),
     ('from module.lib.BeautifulSoup import BeautifulSoup', 'from BeautifulSoup import BeautifulSoup'),
     ('from module.lib import feedparser', 'import feedparser'),
-    ('self.account.getAccountInfo(self.user, ', 'self.account.getAccountInfo('),
-    ('self.account.getAccountInfo(self.user)', 'self.account.getAccountInfo()'),
-    ('self.account.getAccountInfo()["premium"]', 'self.account.isPremium()'),
+    ('self.account.getAccountInfo(self.user, ', 'self.account.getAccountData('),
+    ('self.account.getAccountInfo(self.user)', 'self.account.getAccountData()'),
     ('self.account.accounts[self.user]["password"]', 'self.account.password'),
     ("self.account.accounts[self.user]['password']", 'self.account.password'),
     ('from module.', 'from pyload.')  # This should be always the last one

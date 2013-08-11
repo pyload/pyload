@@ -237,9 +237,10 @@ class Account(Base):
         self.logDebug("Deprecated method .getAccountCookies -> use account.cj")
         return self.cj
 
-    def getAccountData(self, user):
+    def getAccountData(self, *args):
         self.logDebug("Deprecated method .getAccountData -> use fields directly")
-        return {"password": self.password}
+        return {"password": self.password, "premium": self.premium, "trafficleft": self.trafficleft,
+                "maxtraffic" : self.maxtraffic, "validuntil": self.validuntil}
 
     def isPremium(self, user=None):
         if user: self.logDebug("Deprecated Argument user for .isPremium()", user)

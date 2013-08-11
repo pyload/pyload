@@ -61,7 +61,6 @@ class AccountManager:
 
     def loadAccounts(self):
         """loads all accounts available from db"""
-
         for info, password, options in self.core.db.loadAccounts():
             # put into options as used in other context
             options = json.loads(options) if options else {}
@@ -108,7 +107,7 @@ class AccountManager:
             account.scheduleRefresh()
             self.saveAccounts()
 
-        self.sendChange(plugin, loginname)
+        self.core.eventManager.dispatchEvent("account:updated", account.toInfoData())
         return account
 
     @lock
@@ -134,11 +133,7 @@ class AccountManager:
 
     @lock
     def getAllAccounts(self, uid):
-        """ Return account info, refresh afterwards if needed
-
-        :param refresh:
-        :return:
-        """
+        """ Return account info for every visible account """
         # filter by owner / shared, but admins see all accounts
         accounts = []
         for plugin, accs in self.accounts.iteritems():
@@ -151,6 +146,3 @@ class AccountManager:
         for p in self.accounts.itervalues():
             for acc in p:
                 acc.getAccountInfo(True)
-
-    def sendChange(self, plugin, name):
-        self.core.eventManager.dispatchEvent("account:updated", plugin, name)
