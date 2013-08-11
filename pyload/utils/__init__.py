@@ -212,7 +212,7 @@ def to_string(value):
     return str(value) if not isinstance(value, basestring) else value
 
 def to_bool(value):
-    if not isinstance(value, basestring): return value
+    if not isinstance(value, basestring): return True if value else False
     return True if value.lower() in ("1", "true", "on", "an", "yes") else False
 
 def to_int(string, default=0):

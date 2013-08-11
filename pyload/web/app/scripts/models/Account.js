@@ -5,7 +5,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($
 
         // TODO
         // generated, not submitted
-        idAttribute: 'user',
+        idAttribute: 'loginname',
 
         defaults: {
             plugin: null,
@@ -30,8 +30,31 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($
 
         },
 
-        save: function(options) {
-            options = App.apiRequest('updateAccountInfo', {account: this.toJSON()}, options);
+        fetch: function(options) {
+            var refresh = _.has(options, 'refresh') && options.refresh;
+            options = App.apiRequest('getAccountInfo',
+                {plugin: this.get('plugin'),
+                    loginname: this.get('loginname'), refresh: refresh}, options);
+
+            return Backbone.Model.prototype.fetch.call(this, options);
+        },
+
+        setPassword: function(password, options) {
+            options = App.apiRequest('updateAccount',
+                {plugin: this.get('plugin'), loginname: this.get('loginname'), password: password}, options);
+
+            return $.ajax(options);
+        },
+
+        save: function() {
+            // On success wait 1sec and trigger event to reload info
+            var options = App.apiRequest('updateAccountInfo', {account: this.toJSON()}, {
+                success: function() {
+                    _.delay(function() {
+                        App.vent.trigger('accounts:updated');
+                    }, 1000);
+                }
+            });
             return $.ajax(options);
         },
 

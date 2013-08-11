@@ -16,7 +16,8 @@
         "backbone.marionette": "~1.0.3",
         "handlebars.js": "1.0.0-rc.3",
         "jed": "~0.5.4",
-        "select2": "~3.4.0"
+        "select2": "~3.4.0",
+        "momentjs": "~2.1.0"
     },
     "devDependencies": {}
 }

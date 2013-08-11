@@ -1,4 +1,4 @@
-define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abstract/itemView', 'helpers/formatTime', 'hbs!tpl/dashboard/file'],
+define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abstract/itemView', 'helpers/formatTimeLeft', 'hbs!tpl/dashboard/file'],
     function($, Backbone, _, App, Api, ItemView, formatTime, template) {
         'use strict';
 

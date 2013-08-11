@@ -1,5 +1,5 @@
 // Helpers to render the file view
-define('helpers/fileHelper', ['handlebars', 'utils/apitypes', 'helpers/formatTime'],
+define('helpers/fileHelper', ['handlebars', 'utils/apitypes', 'helpers/formatTimeLeft'],
     function(Handlebars, Api, formatTime) {
         'use strict';
 

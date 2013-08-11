@@ -1,14 +1,14 @@
 // Format bytes in human readable format
-define('helpers/formatSize', ['handlebars', './gettext'], function(Handlebars, gettext) {
+define('helpers/formatSize', ['handlebars', 'utils/i18n'], function(Handlebars, i18n) {
     'use strict';
 
     var sizes = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB'];
     function formatSize(bytes, options) {
         if (!bytes || bytes === 0) return '0 B';
         if (bytes === -1)
-            return gettext('not available');
+            return i18n.gettext('not available');
         if (bytes === -2)
-            return gettext('unlimited');
+            return i18n.gettext('unlimited');
 
         var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10);
         // round to two digits

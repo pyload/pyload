@@ -19,6 +19,7 @@ require.config({
         marionette: '../components/backbone.marionette/lib/backbone.marionette',
         handlebars: '../components/handlebars.js/dist/handlebars',
         jed: '../components/jed/jed',
+        moment: '../components/momentjs/moment',
 
         // TODO: Two hbs dependencies could be replaced
         i18nprecompile: '../components/require-handlebars-plugin/hbs/i18nprecompile',

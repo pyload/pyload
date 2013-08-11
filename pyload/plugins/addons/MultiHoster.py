@@ -81,9 +81,9 @@ class MultiHoster(Addon):
                 self.addHoster(account)
 
     @AddEventListener("account:updated")
-    def refreshAccount(self, plugin, loginname):
+    def refreshAccount(self, acc):
 
-        account = self.core.accountManager.getAccount(plugin, loginname)
+        account = self.core.accountManager.getAccount(acc.plugin, acc.loginname)
         if isinstance(account, MultiHosterAccount) and account.isUsable():
             self.addHoster(account)
 

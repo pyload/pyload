@@ -83,6 +83,8 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
         },
 
         renderContent: function() {
+            if (this.model)
+                return this.model.toJSON();
             return {};
         },
 

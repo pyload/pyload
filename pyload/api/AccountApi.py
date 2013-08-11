@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from pyload.utils import to_bool
 from pyload.Api import Api, RequirePerm, Permission, Conflict
 from ApiComponent import ApiComponent
 
@@ -49,13 +50,21 @@ class AccountApi(ApiComponent):
 
         :return: newly created or updated account info
         """
+        # TODO: None pointer
         return self.core.accountManager.updateAccount(plugin, loginname, password, self.user).toInfoData()
 
 
     @RequirePerm(Permission.Accounts)
     def updateAccountInfo(self, account):
         """ Update account settings from :class:`AccountInfo` """
-        #TODO
+        inst = self.core.accountManager.getAccount(account.plugin, account.loginname, self.user)
+        if not account:
+            return
+
+        inst.activated = to_bool(account.activated)
+        inst.shared = to_bool(account.shared)
+        inst.updateConfig(account.config)
+
 
     @RequirePerm(Permission.Accounts)
     def removeAccount(self, account):

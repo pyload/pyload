@@ -9,10 +9,39 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/accounts/account'],
             template: template,
 
             events: {
-                'click .btn-danger': 'deleteAccount'
+                'click .btn-success': 'toggle',
+                'click .btn-blue': 'edit',
+                'click .btn-yellow': 'refresh',
+                'click .btn-danger': 'remove'
             },
 
-            deleteAccount: function() {
+            modelEvents: {
+                'change': 'render'
+            },
+
+            modal: null,
+
+            toggle: function() {
+                this.model.set('activated', !this.model.get('activated'));
+                this.model.save();
+            },
+
+            edit: function() {
+                // TODO: clean the modal on view close
+                var self = this;
+                _.requireOnce(['views/accounts/accountEdit'], function(Modal) {
+                    if (self.modal === null)
+                        self.modal = new Modal({model: self.model});
+
+                    self.modal.show();
+                });
+            },
+
+            refresh: function() {
+                this.model.fetch({refresh: true});
+            },
+
+            remove: function() {
                 this.model.destroy();
             }
         });
