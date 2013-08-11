@@ -12,7 +12,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/accounts/account'],
                 'click .btn-success': 'toggle',
                 'click .btn-blue': 'edit',
                 'click .btn-yellow': 'refresh',
-                'click .btn-danger': 'remove'
+                'click .btn-danger': 'deleteAccount'
             },
 
             modelEvents: {
@@ -41,7 +41,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/accounts/account'],
                 this.model.fetch({refresh: true});
             },
 
-            remove: function() {
+            deleteAccount: function() {
                 this.model.destroy();
             }
         });

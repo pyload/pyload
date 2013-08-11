@@ -24,7 +24,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'collections/AccountList', '.
                 this.collection = new AccountList();
                 this.update();
 
-                this.listenTo(App.vent, 'accounts:updated', this.update);
+                this.listenTo(App.vent, 'account:updated', this.update);
             },
 
             update: function() {

@@ -61,8 +61,8 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'hbs!tpl/dial
 
                     $.ajax(App.apiRequest('updateAccount', {
                         plugin: plugin, loginname: login, password: password
-                    }, { success: function() {
-                        App.vent.trigger('accounts:updated');
+                    }, { success: function(data) {
+                        App.vent.trigger('account:updated', data);
                         self.hide();
                     }}));
                 }

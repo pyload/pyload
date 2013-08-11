@@ -46,8 +46,8 @@ class AccountManager:
 
         klass = self.core.pluginManager.loadClass("accounts", plugin)
         if not klass:
-            self.core.log.warning(_("Unknown account plugin %s") % plugin)
-            return
+            self.core.log.warning(_("Account plugin %s not available") % plugin)
+            raise ValueError("Account plugin %s not available" % plugin)
 
         if plugin not in self.accounts:
             self.accounts[plugin] = []

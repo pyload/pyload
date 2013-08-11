@@ -51,7 +51,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($
             var options = App.apiRequest('updateAccountInfo', {account: this.toJSON()}, {
                 success: function() {
                     _.delay(function() {
-                        App.vent.trigger('accounts:updated');
+                        App.vent.trigger('account:updated');
                     }, 1000);
                 }
             });

@@ -5,7 +5,7 @@
 <div class="modal-body">
     <form class="form-horizontal" autocomplete="off">
         <div class="control-group">
-            <label class="control-label" for="pluginSelect">
+            <label class="control-label">
                 Account
             </label>
 
@@ -23,12 +23,13 @@
                 <input type="password" id="password">
             </div>
         </div>
-        {{#if options }}
+        {{#if config }}
         <legend>
-            Options
+           {{ _ "Configuration" }}
         </legend>
+        TODO
         {{/if}}
-        <div class="account-options">
+        <div class="account-config">
         </div>
     </form>
 </div>
