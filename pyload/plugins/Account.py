@@ -185,6 +185,7 @@ class Account(Base):
         """
         return -1, 0, True
 
+    # TODO: this method is ambiguous, it returns nothing, but just retrieves the data if needed
     @lock
     def getAccountInfo(self, force=False):
         """retrieve account info's for an user, do **not** overwrite this method!\\
@@ -192,7 +193,6 @@ class Account(Base):
 
         :param name: username
         :param force: reloads cached account information
-        :return: dictionary with information
         """
         if force or self.timestamp + self.info_threshold * 60 < time():
 

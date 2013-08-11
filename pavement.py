@@ -75,6 +75,7 @@ module_replace = [
     ('from module.lib import feedparser', 'import feedparser'),
     ('self.account.getAccountInfo(self.user, ', 'self.account.getAccountInfo('),
     ('self.account.getAccountInfo(self.user)', 'self.account.getAccountInfo()'),
+    ('self.account.getAccountInfo()["premium"]', 'self.account.isPremium()'),
     ('self.account.accounts[self.user]["password"]', 'self.account.password'),
     ("self.account.accounts[self.user]['password']", 'self.account.password'),
     ('from module.', 'from pyload.')  # This should be always the last one
@@ -289,7 +290,6 @@ def replace_module_imports():
             elif '/accounts/' in path:
                 content = content.replace('self.accounts[user]["password"]', 'self.password')
                 content = content.replace("self.accounts[user]['password']", 'self.password')
-                content = content.replace('.getAccountInfo()["premium"]', '.isPremium()')
             f = open(path, 'w')
             f.write(content)
             f.close()
