@@ -102,7 +102,12 @@ def login():
 
     result = BaseEncoder().default(user)
     result["session"] = sid
-    return dumps(result)
+
+    # Return full user information if needed
+    if request.params.get('user', None):
+        return dumps(result)
+
+    return dumps(sid)
 
 
 @route("/api/logout")
