@@ -41,6 +41,8 @@ class SimplydebridCom(Hoster):
         if re.match(self.__pattern__, new_url):
             new_url = new_url
 
+        self.logDebug("New URL: %s" % new_url)
+		
         if not re.match(self.__pattern__, new_url):
             page = self.load('http://simply-debrid.com/api.php', get={'dl': new_url}) #+'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
             if 'tiger Link' in page or 'Invalid Link' in page or ('API' in page and 'ERROR' in page):
@@ -56,4 +58,4 @@ class SimplydebridCom(Hoster):
         check = self.checkDownload({"bad1": "No address associated with hostname", "bad2": "<html"})
 
         if check == "bad1" or check == "bad2":
-            self.retry(3, 3600, 'Bad file downloaded')
+            self.retry(24, 150, 'Bad file downloaded')
