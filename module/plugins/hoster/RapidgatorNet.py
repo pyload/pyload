@@ -29,13 +29,14 @@ class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\w+)"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg", "chrox", "stickell")
 
     API_URL = 'http://rapidgator.net/api/file'
 
-    FILE_INFO_PATTERN = r'Downloading:(\s*<[^>]*>)*\s*(?P<N>.*?)(\s*<[^>]*>)*\s*File size:\s*<strong>(?P<S>.*?)</strong>'
+    FILE_NAME_PATTERN = r'Downloading:(?:\s*<[^>]*>)*\s*(?P<N>.*?)(?:\s*<[^>]*>)'
+    FILE_SIZE_PATTERN = r'File size:\s*<strong>(?P<S>.*?)</strong>'
     FILE_OFFLINE_PATTERN = r'<title>File not found</title>'
 
     JSVARS_PATTERN = r"\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*'?(.*?)'?;"
