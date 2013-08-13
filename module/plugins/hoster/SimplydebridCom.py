@@ -22,7 +22,7 @@ class SimplydebridCom(Hoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.logError(_("Please enter your simply-debrid.com account or deactivate this plugin"))
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "simply-debrid.com")
             self.fail("No simply-debrid.com account provided")
 
         self.logDebug("Old URL: %s" % pyfile.url)
@@ -37,12 +37,12 @@ class SimplydebridCom(Hoster):
         new_url = new_url.replace("lumfile.com", "lumfile.se")
         if('fileparadox' in new_url):
             new_url = new_url.replace("http://", "https://")
-        
+
         if re.match(self.__pattern__, new_url):
             new_url = new_url
 
         self.logDebug("New URL: %s" % new_url)
-		
+
         if not re.match(self.__pattern__, new_url):
             page = self.load('http://simply-debrid.com/api.php', get={'dl': new_url}) #+'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
             if 'tiger Link' in page or 'Invalid Link' in page or ('API' in page and 'ERROR' in page):
