@@ -5,7 +5,7 @@ define('helpers/formatTime', ['underscore','handlebars', 'moment', 'utils/i18n']
 
     function formatTime(time, format) {
         if (time === -1)
-            return i18n.gettext('unkown');
+            return i18n.gettext('unknown');
         else if (time === -2)
             return i18n.gettext('unlimited');
 
