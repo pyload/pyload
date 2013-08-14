@@ -27,7 +27,7 @@ class WindowsPhoneToastNotify(Hook):
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force even if client is connected", False),
                   ("pushId", "pId", "pushId", ""),
-                  ("pushUrl","pUrl","pushUrl")]
+                  ("pushUrl","pUrl","pushUrl", "")]
 
     def setup(self):
         self.info = {}
