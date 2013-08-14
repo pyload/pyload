@@ -26,7 +26,8 @@ class WindowsPhoneToastNotify(Hook):
     __author_mail__ = ("voigt-andy@hotmail.de")
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force even if client is connected", False),
-                  ("pushId", "pId", "pushId", "")]
+                  ("pushId", "pId", "pushId", ""),
+                  ("pushUrl","pUrl","pushUrl")]
 
     def setup(self):
         self.info = {}
@@ -36,7 +37,7 @@ class WindowsPhoneToastNotify(Hook):
         return myxml
 
     def doRequest(self):
-        URL = "db3.notify.live.net"
+        URL = self.getConfig("pushUrl")
         request = self.getXmlData()
         webservice = httplib.HTTP(URL)
         webservice.putrequest("POST", self.getConfig("pushId"))
