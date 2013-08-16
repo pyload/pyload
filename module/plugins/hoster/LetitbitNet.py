@@ -16,9 +16,15 @@
     @author: zoidberg
 """
 
+# API Documentation:
+# http://api.letitbit.net/reg/static/api.pdf
+
+# Test links (random.bin):
+# http://letitbit.net/download/07874.0b5709a7d3beee2408bb1f2eefce/random.bin.html
+
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.common.json_layer import json_loads
+from module.common.json_layer import json_loads, json_dumps
 from module.plugins.internal.CaptchaService import ReCaptcha
 
 
@@ -26,7 +32,7 @@ class LetitbitNet(SimpleHoster):
     __name__ = "LetitbitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*(letitbit|shareflare).net/download/.*"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __description__ = """letitbit.net"""
     __author_name__ = ("zoidberg", "z00nx")
     __author_mail__ = ("zoidberg@mujmail.cz", "z00nx0@gmail.com")
@@ -120,6 +126,23 @@ class LetitbitNet(SimpleHoster):
                 self.logError(e)
         else:
             self.fail("Download did not finish correctly")
+
+    def handlePremium(self):
+        api_key = self.user
+        premium_key = self.account.getAccountData(self.user)["password"]
+
+        json_data = [api_key, ["download/direct_links", {"pass": premium_key, "link": self.pyfile.url}]]
+        api_rep = self.load('http://api.letitbit.net/json', post={'r': json_dumps(json_data)})
+        self.logDebug('API Data: ' + api_rep)
+        api_rep = json_loads(api_rep)
+
+        if api_rep['status'] == 'FAIL':
+            self.fail(api_rep['data'])
+
+        direct_link = api_rep['data'][0][0]
+        self.logDebug('Direct Link: ' + direct_link)
+
+        self.download(direct_link, disposition=True)
 
 
 getInfo = create_getInfo(LetitbitNet)
