@@ -1,5 +1,5 @@
-define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'hbs!tpl/accounts/editAccount'],
-    function($, _, App, modalView, template) {
+define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'views/input/inputRenderer', 'hbs!tpl/accounts/editAccount', 'hbs!tpl/settings/configItem'],
+    function($, _, App, modalView, renderForm, template, templateItem) {
         'use strict';
         return modalView.extend({
 
@@ -16,6 +16,10 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'hbs!tpl/acco
             },
 
             onRender: function() {
+                renderForm(this.$('.account-config'),
+                    this.model.get('config'),
+                    templateItem
+                );
             },
 
             save: function() {
@@ -23,7 +27,7 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'hbs!tpl/acco
                 if (password !== '') {
                     this.model.setPassword(password);
                 }
-
+                this.model.save();
                 this.hide();
                 return false;
             },

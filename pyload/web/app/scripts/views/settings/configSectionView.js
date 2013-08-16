@@ -1,6 +1,6 @@
-define(['jquery', 'underscore', 'backbone', 'app', '../abstract/itemView', '../input/inputLoader',
+define(['jquery', 'underscore', 'backbone', 'app', '../abstract/itemView', '../input/inputRenderer',
     'hbs!tpl/settings/config', 'hbs!tpl/settings/configItem'],
-    function($, _, Backbone, App, itemView, load_input, template, templateItem) {
+    function($, _, Backbone, App, itemView, renderForm, template, templateItem) {
         'use strict';
 
         // Renders settings over view page
@@ -9,7 +9,6 @@ define(['jquery', 'underscore', 'backbone', 'app', '../abstract/itemView', '../i
             tagName: 'div',
 
             template: template,
-            templateItem: templateItem,
 
             // Will only render one time with further attribute updates
             rendered: false,
@@ -33,19 +32,11 @@ define(['jquery', 'underscore', 'backbone', 'app', '../abstract/itemView', '../i
 //                        trigger: 'hover'
                     });
 
-                    var container = this.$('.control-content');
-                    var self = this;
-                    _.each(this.model.get('items'), function(item) {
-                        var json = item.toJSON();
-                        var el = $('<div>').html(self.templateItem(json));
-                        var InputView = load_input(item.get('input'));
-                        var input = new InputView(json).render();
-                        item.set('inputView', input);
+                    // Renders every single element
+                    renderForm(this.$('.control-content'),
+                        this.model.get('items'), templateItem,
+                        _.bind(this.render, this), this);
 
-                        self.listenTo(input, 'change', _.bind(self.render, self));
-                        el.find('.controls').append(input.el);
-                        container.append(el);
-                    });
                     this.rendered = true;
                 }
                 // Enable button if something is changed

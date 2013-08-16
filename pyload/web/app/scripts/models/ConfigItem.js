@@ -4,6 +4,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
 
         return Backbone.Model.extend({
 
+            idAttribute: 'name',
+
             defaults: {
                 name: '',
                 label: '',
@@ -29,11 +31,12 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
                 if (this.get('inputView'))
                     this.set('value', this.get('inputView').getVal());
 
-                var data = this.toJSON();
-                delete data.inputView;
-                delete data.description;
-
-                return data;
+                // These values are enough to be handled correctly
+                return {
+                    name: this.get('name'),
+                    value: this.get('value'),
+                    '@class': this.get('@class')
+                };
             }
         });
     });

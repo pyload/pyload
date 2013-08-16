@@ -1,4 +1,4 @@
-define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($, Backbone, _, App, Api) {
+define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', './ConfigItem'], function($, Backbone, _, App, Api, ConfigItem) {
     'use strict';
 
     return Backbone.Model.extend({
@@ -30,6 +30,15 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($
 
         },
 
+        parse: function(resp) {
+            // Convert config to models
+            resp.config = _.map(resp.config, function(item) {
+                return new ConfigItem(item);
+            });
+
+            return resp;
+        },
+
         fetch: function(options) {
             var refresh = _.has(options, 'refresh') && options.refresh;
             options = App.apiRequest('getAccountInfo',
@@ -47,8 +56,16 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($
         },
 
         save: function() {
+            // use changed config items only
+            var data = this.toJSON();
+            data.config = _.map(_.filter(data.config, function(c){
+                return c.isChanged();
+            }), function(c) {
+                return c.prepareSave();
+            });
+
             // On success wait 1sec and trigger event to reload info
-            var options = App.apiRequest('updateAccountInfo', {account: this.toJSON()}, {
+            var options = App.apiRequest('updateAccountInfo', {account: data}, {
                 success: function() {
                     _.delay(function() {
                         App.vent.trigger('account:updated');

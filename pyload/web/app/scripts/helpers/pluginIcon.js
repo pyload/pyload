@@ -3,7 +3,7 @@ define('helpers/pluginIcon', ['handlebars', 'app'], function(Handlebars, App) {
     'use strict';
 
     function pluginIcon(name) {
-        if (typeof name === 'object' && typeof name.get === 'function')
+        if (name && typeof name === 'object' && typeof name.get === 'function')
             name = name.get('plugin');
 
         return App.apiUrl('icons/' + name);

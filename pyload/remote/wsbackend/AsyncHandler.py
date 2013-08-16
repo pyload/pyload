@@ -71,6 +71,8 @@ class AsyncHandler(AbstractHandler):
             self.clients.remove(req)
         except ValueError: # ignore when not in list
             pass
+        except AttributeError: # connection could be uninitialized
+            pass
 
     @lock
     def add_event(self, event, *args):
