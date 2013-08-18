@@ -19,8 +19,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/login'],
 
                 var self = this;
                 var data = this.ui.form.serialize();
-                // Load user representation
-                data.user = 'true';
+                // set flag to load user representation
+                data += '&user=true';
                 var options = App.apiRequest('login', null, {
                     data: data,
                     type: 'post',
