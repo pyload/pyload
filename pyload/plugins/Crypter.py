@@ -2,6 +2,7 @@
 
 from traceback import print_exc
 
+from pyload.Api import LinkStatus
 from pyload.utils import to_list, has_method, uniqify
 from pyload.utils.fs import exists, remove, fs_encode
 from pyload.utils.packagetools import parseNames
@@ -12,16 +13,19 @@ from Base import Base, Retry
 class Package:
     """ Container that indicates that a new package should be created """
 
-    def __init__(self, name, urls=None, folder=None):
+    def __init__(self, name=None, urls=None):
         self.name = name
         self.urls = urls if urls else []
-        self.folder = folder
 
         # nested packages
         self.packs = []
 
     def addURL(self, url):
         self.urls.append(url)
+
+    def addLink(self, url, name, status, size):
+        # TODO: allow to add urls with known information
+        pass
 
     def addPackage(self, pack):
         self.packs.append(pack)

@@ -193,14 +193,13 @@ struct TreeCollection {
   3: map<PackageID, PackageInfo> packages
 }
 
-// general info about link, used for collector and online results
+// general info about link, used for online results
 struct LinkStatus {
     1: string url,
     2: string name,
     3: PluginName plugin,
     4: ByteCount size,   // size <= 0 : unknown
     5: DownloadStatus status,
-    6: string packagename,
 }
 
 struct ServerStatus {
@@ -299,7 +298,7 @@ struct AccountInfo {
 
 struct OnlineCheck {
   1: ResultID rid, // -1 -> nothing more to get
-  2: map<string, LinkStatus> data, // url to result
+  2: map<string, LinkStatus> data, // package name to result
 }
 
 // exceptions
@@ -383,12 +382,12 @@ service Pyload {
   // Download Preparing
   ///////////////////////
 
-  map<PluginName, LinkList> checkURLs(1: LinkList urls),
-  map<PluginName, LinkList> parseURLs(1: string html, 2: string url),
+  map<PluginName, LinkList> parseLinks(1: LinkList links),
 
   // parses results and generates packages
-  OnlineCheck checkOnlineStatus(1: LinkList urls),
-  OnlineCheck checkOnlineStatusContainer(1: LinkList urls, 2: string filename, 3: binary data)
+  OnlineCheck checkLinks(1: LinkList links),
+  OnlineCheck checkContainer(1: string filename, 2: binary data),
+  OnlineCheck checkHTML(1: string html, 2: string url),
 
   // poll results from previously started online check
   OnlineCheck pollResults(1: ResultID rid),
@@ -399,8 +398,6 @@ service Pyload {
   ///////////////////////
   // Download
   ///////////////////////
-
-  list<PackageID> generateAndAddPackages(1: LinkList links, 2: bool paused),
 
   PackageID createPackage(1: string name, 2: string folder, 3: PackageID root, 4: string password,
                             5: string site, 6: string comment, 7: bool paused),
@@ -426,21 +423,9 @@ service Pyload {
   void restartPackage(1: PackageID pid),
   void restartFile(1: FileID fid),
   void recheckPackage(1: PackageID pid),
-  void restartFailed(),
+  void restartFailed()
   void stopDownloads(1: list<FileID> fids),
   void stopAllDownloads(),
-
-  ///////////////////////
-  // Collector
-  ///////////////////////
-
-  list<LinkStatus> getCollector(),
-
-  void addToCollector(1: LinkList links),
-  PackageID addFromCollector(1: string name, 2: bool paused),
-  void renameCollPack(1: string name, 2: string new_name),
-  void deleteCollPack(1: string name),
-  void deleteCollLink(1: string url),
 
   ////////////////////////////
   // File Information retrieval

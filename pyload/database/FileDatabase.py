@@ -128,24 +128,6 @@ class FileMethods(DatabaseMethods):
             self.c.execute('UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? AND package=? AND owner=?',
                            (order, package, owner))
 
-    @async
-    def saveCollector(self, owner, data):
-        """ simply save the json string to database """
-        self.c.execute("INSERT INTO collector(owner, data) VALUES (?,?)", (owner, data))
-
-    @queue
-    def retrieveCollector(self, owner):
-        """ retrieve the saved string """
-        self.c.execute('SELECT data FROM collector WHERE owner=?', (owner,))
-        r = self.c.fetchone()
-        if not r: return None
-        return r[0]
-
-    @async
-    def deleteCollector(self, owner):
-        """ drop saved user collector """
-        self.c.execute('DELETE FROM collector WHERE owner=?', (owner,))
-
     @queue
     def getAllFiles(self, package=None, search=None, state=None, owner=None):
         """ Return dict with file information

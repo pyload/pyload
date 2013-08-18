@@ -75,9 +75,17 @@ class AsyncHandler(AbstractHandler):
             pass
 
     @lock
-    def add_event(self, event, *args):
+    def add_event(self, event, *args, **kwargs):
         # Convert arguments to json suited instance
         event = EventInfo(event, [x.toInfoData() if hasattr(x, 'toInfoData') else x for x in args])
+
+        # use the user kwarg argument to determine access
+        user = None
+        if 'user' in kwargs:
+            user = kwargs['user']
+            del kwargs['user']
+            if hasattr(user, 'uid'):
+                user = user.uid
 
         for req in self.clients:
             # Not logged in yet
@@ -87,6 +95,9 @@ class AsyncHandler(AbstractHandler):
             # TODO: events are security critical, this should be revised later
             # TODO: permissions? interaction etc
             if not req.api.user.isAdmin():
+                if user is not None and req.api.primaryUID != user:
+                    break
+
                 skip = False
                 for arg in args:
                     if hasattr(arg, 'owner') and arg.owner != req.api.primaryUID:

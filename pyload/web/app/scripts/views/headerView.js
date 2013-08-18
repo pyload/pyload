@@ -172,7 +172,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
 
             open_grabber: function() {
                 var self = this;
-                _.requireOnce(['views/linkGrabberModal'], function(ModalView) {
+                _.requireOnce(['views/linkgrabber/modalView'], function(ModalView) {
                     if (self.grabber === null)
                         self.grabber = new ModalView();
 

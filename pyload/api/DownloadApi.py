@@ -12,17 +12,6 @@ class DownloadApi(ApiComponent):
     """ Component to create, add, delete or modify downloads."""
 
     @RequirePerm(Permission.Add)
-    def generateAndAddPackages(self, links, paused=False):
-        """Generates and add packages
-
-        :param links: list of urls
-        :param paused: paused package
-        :return: list of package ids
-        """
-        return [self.addPackageP(name, urls, "", paused) for name, urls
-                in self.generatePackages(links).iteritems()]
-
-    @RequirePerm(Permission.Add)
     def createPackage(self, name, folder, root, password="", site="", comment="", paused=False):
         """Create a new package.
 

@@ -117,10 +117,14 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
         },
 
         destroy: function() {
+            this.onDestroy();
             this.$el.remove();
             this.dialog = null;
             this.remove();
-        }
+        },
 
+        onDestroy: function() {
+
+        }
     });
 });

@@ -4,7 +4,7 @@
 from time import time
 from traceback import print_exc
 
-from pyload.Api import LinkStatus
+from pyload.Api import LinkStatus, DownloadStatus
 from pyload.utils.packagetools import parseNames
 from pyload.utils import has_method, accumulate
 
@@ -100,17 +100,11 @@ class InfoThread(BaseThread):
 
         if len(self.cache) >= 20 or force:
             #used for package generating
-            tmp = [(name, (url, LinkStatus(name, plugin, "unknown", status, int(size))))
-            for name, size, status, url in self.cache]
+            tmp = [(name, LinkStatus(url, name, plugin, int(size), status))
+                for name, size, status, url in self.cache]
 
             data = parseNames(tmp)
-            result = {}
-            for k, v in data.iteritems():
-                for url, status in v:
-                    status.packagename = k
-                    result[url] = status
-
-            self.m.setInfoResults(self.rid, result)
+            self.m.setInfoResults(self.rid, data)
 
             self.cache = []
 

@@ -13,7 +13,7 @@
         "flot": "~0.8.1",
         "underscore": "~1.4.4",
         "backbone": "~1.0.0",
-        "backbone.marionette": "~1.0.3",
+        "backbone.marionette": "~1.1.0",
         "handlebars.js": "1.0.0-rc.3",
         "jed": "~0.5.4",
         "select2": "~3.4.0",

@@ -241,15 +241,14 @@ class InvalidConfigSection(ExceptionObject):
 		self.section = section
 
 class LinkStatus(BaseObject):
-	__slots__ = ['url', 'name', 'plugin', 'size', 'status', 'packagename']
+	__slots__ = ['url', 'name', 'plugin', 'size', 'status']
 
-	def __init__(self, url=None, name=None, plugin=None, size=None, status=None, packagename=None):
+	def __init__(self, url=None, name=None, plugin=None, size=None, status=None):
 		self.url = url
 		self.name = name
 		self.plugin = plugin
 		self.size = size
 		self.status = status
-		self.packagename = packagename
 
 class OnlineCheck(BaseObject):
 	__slots__ = ['rid', 'data']
@@ -368,8 +367,6 @@ class UserDoesNotExists(ExceptionObject):
 		self.user = user
 
 class Iface(object):
-	def addFromCollector(self, name, paused):
-		pass
 	def addLinks(self, pid, links):
 		pass
 	def addLocalFile(self, pid, name, path):
@@ -380,25 +377,19 @@ class Iface(object):
 		pass
 	def addPackageP(self, name, links, password, paused):
 		pass
-	def addToCollector(self, links):
-		pass
 	def addUser(self, username, password):
 		pass
 	def callAddon(self, plugin, func, arguments):
 		pass
 	def callAddonHandler(self, plugin, func, pid_or_fid):
 		pass
-	def checkOnlineStatus(self, urls):
+	def checkContainer(self, filename, data):
 		pass
-	def checkOnlineStatusContainer(self, urls, filename, data):
+	def checkHTML(self, html, url):
 		pass
-	def checkURLs(self, urls):
+	def checkLinks(self, links):
 		pass
 	def createPackage(self, name, folder, root, password, site, comment, paused):
-		pass
-	def deleteCollLink(self, url):
-		pass
-	def deleteCollPack(self, name):
 		pass
 	def deleteConfig(self, plugin):
 		pass
@@ -411,8 +402,6 @@ class Iface(object):
 	def findPackages(self, tags):
 		pass
 	def freeSpace(self):
-		pass
-	def generateAndAddPackages(self, links, paused):
 		pass
 	def generateDownloadLink(self, fid, timeout):
 		pass
@@ -431,8 +420,6 @@ class Iface(object):
 	def getAllUserData(self):
 		pass
 	def getAvailablePlugins(self):
-		pass
-	def getCollector(self):
 		pass
 	def getConfig(self):
 		pass
@@ -484,7 +471,7 @@ class Iface(object):
 		pass
 	def orderPackage(self, pids, position):
 		pass
-	def parseURLs(self, html, url):
+	def parseLinks(self, links):
 		pass
 	def pauseServer(self):
 		pass
@@ -497,8 +484,6 @@ class Iface(object):
 	def removeAccount(self, account):
 		pass
 	def removeUser(self, uid):
-		pass
-	def renameCollPack(self, name, new_name):
 		pass
 	def restart(self):
 		pass

@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>
+        {{_ "Add links" }}
+        <small>{{_ "paste & add links to pyLoad" }}</small>
+    </h3>
+</div>
+
+<div class="modal-body">
+    <div class="alert alert-error hidden">
+        {{_ "Upload files container failed. Please try again." }}
+    </div>
+    <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="inputLinks">{{ _ "Links" }}</label>
+
+            <div class="controls">
+                <textarea id="inputLinks" class="span4" rows="2" placeholder="{{_ " Paste your links here..."}}"></textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputContainer">{{_ "Upload container file" }}</label>
+            <div class="controls controls-row">
+                <input type="text" id="inputContainer" class="span3" readonly>
+                <button id="inputContainer-btn" class="btn span1" type="button">{{_ "Browse" }}&hellip;</button>
+            </div>
+        </div>
+
+        <legend>
+            {{_ "Packages" }}
+        </legend>
+        <div class="container-fluid prepared-packages">
+
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <!--<a class="btn btn-success"><i class="icon-plus icon-white"></i> {{_ "Add"}}</a>-->
+    <a class="btn btn-close">{{_ "Close"}}</a>
+</div>

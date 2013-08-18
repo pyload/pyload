@@ -106,7 +106,7 @@ class ThreadManager:
     def getInfoResult(self, rid):
         """returns result and clears it"""
         self.timestamp = time() + 5 * 60
-
+        # TODO: restrict user to his own results
         if rid in self.infoResults:
             data = self.infoResults[rid]
             self.infoResults[rid] = {}
@@ -116,6 +116,7 @@ class ThreadManager:
 
     @lock
     def setInfoResults(self, rid, result):
+        self.core.evm.dispatchEvent("onlineResult:updated", rid, result)
         self.infoResults[rid].update(result)
 
     def getActiveDownloads(self, user=None):

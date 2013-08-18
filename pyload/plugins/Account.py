@@ -95,9 +95,9 @@ class Account(Base):
         return self.config_data[option].input.default_value
 
     def setConfig(self, option, value):
-        """ Sets a config value for this account instance or global plugin config """
+        """ Sets a config value for this account instance. Modifying the global values is not allowed. """
         if option not in self.config_data:
-            return Base.setConfig(self, option, value)
+            return
 
         value = from_string(value, self.config_data[option].input.type)
         # given value is the default value and does not need to be saved at all

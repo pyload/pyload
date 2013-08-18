@@ -55,7 +55,7 @@ class DecrypterThread(BaseThread):
             plugin.logDebug("Decrypted", plugin_result)
             result.extend(plugin_result)
 
-        #TODO
+        #TODO package names are optional
         result = uniqify(result)
         pack_names = {}
         urls = []

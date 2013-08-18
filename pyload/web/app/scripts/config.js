@@ -59,8 +59,10 @@ require.config({
             deps: ['underscore', 'jquery'],
             exports: 'Backbone'
         },
-
-        marionette: ['backbone'],
+        marionette: {
+            deps: ['backbone'],
+            exports: 'Backbone'
+        },
         handlebars: {
             exports: 'Handlebars'
         },

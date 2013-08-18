@@ -55,23 +55,21 @@ class EventManager:
             if func in events:
                 events.remove(func)
 
-    def dispatchEvent(self, event, *args):
+    def dispatchEvent(self, event, *args, **kwargs):
         """dispatches event with args"""
         for f in self.events["event"]:
             try:
-                f(event, *args)
+                f(event, *args, **kwargs)
             except Exception, e:
                 self.log.warning("Error calling event handler %s: %s, %s, %s"
                                  % ("event", f, args, str(e)))
-                if self.core.debug:
-                    print_exc()
+                self.core.print_exc()
 
         if event in self.events:
             for f in self.events[event]:
                 try:
-                    f(*args)
+                    f(*args, **kwargs)
                 except Exception, e:
                     self.log.warning("Error calling event handler %s: %s, %s, %s"
                                      % (event, f, args, str(e)))
-                    if self.core.debug:
-                        print_exc()
+                    self.core.print_exc()
