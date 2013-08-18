@@ -42,6 +42,7 @@ class DownloadPreparingApi(ApiComponent):
         """
         hoster, crypter = self.core.pluginManager.parseUrls(links)
 
+        #: TODO: withhold crypter, derypt or add later
         # initial result does not contain the crypter links
         tmp = [(url, LinkStatus(url, url, pluginname, -1, DS.Queued)) for url, pluginname in hoster + crypter]
         data = parseNames(tmp)
@@ -77,7 +78,6 @@ class DownloadPreparingApi(ApiComponent):
             page = getURL(url)
             urls += [x[0] for x in urlmatcher.findall(page)]
 
-        # remove duplicates
         return self.checkLinks(uniqify(urls))
 
     @RequirePerm(Permission.Add)

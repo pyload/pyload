@@ -68,10 +68,12 @@ class AsyncHandler(AbstractHandler):
     def on_close(self, req):
         try:
             del req.queue
+        except AttributeError: # connection could be uninitialized
+            pass
+
+        try:
             self.clients.remove(req)
         except ValueError: # ignore when not in list
-            pass
-        except AttributeError: # connection could be uninitialized
             pass
 
     @lock

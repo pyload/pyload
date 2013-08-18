@@ -86,6 +86,10 @@ class Crypter(Base):
     #: Optional name of an account plugin that should be used, but does not guarantee that one is available
     USE_ACCOUNT = None
 
+    #: When True this crypter will not be decrypted directly and queued one by one.
+    # Needed for crypter that can't run in parallel or need to wait between decryption.
+    QUEUE_DECRYPT = False
+
     @classmethod
     def decrypt(cls, core, url_or_urls):
         """Static method to decrypt urls or content. Can be used by other plugins.

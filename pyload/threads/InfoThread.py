@@ -51,7 +51,7 @@ class InfoThread(BaseThread):
                     self.m.core.files.save()
 
         else: #post the results
-            for name, urls in crypter:
+            for name, urls in crypter.iteritems():
                 #attach container content
                 try:
                     data = self.decrypt(name, urls)
