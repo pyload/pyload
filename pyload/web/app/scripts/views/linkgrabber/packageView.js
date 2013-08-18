@@ -12,11 +12,14 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/linkgrabber/package'
             },
 
             ui: {
+                'name': '.name',
                 'table': 'table'
             },
 
             events: {
                 'click .btn-expand': 'expand',
+                'click .name': 'renamePackage',
+                'keyup .name input': 'saveName',
                 'click .btn-add': 'addPackage',
                 'click .btn-delete': 'deletePackage',
                 'click .btn-mini': 'deleteLink'
@@ -32,6 +35,17 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/linkgrabber/package'
 
             addPackage: function() {
                 this.model.add();
+            },
+
+            renamePackage: function() {
+                this.ui.name.addClass('edit');
+                this.ui.name.find('input').focus();
+            },
+
+            saveName: function(e) {
+                if (e.keyCode === 13) {
+                    this.model.setName(this.ui.name.find('input').val());
+                }
             },
 
             deletePackage: function() {

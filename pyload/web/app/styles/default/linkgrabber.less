@@ -7,6 +7,30 @@
     margin-bottom: 3px;
   }
 
+  .name {
+    padding: 0 2px;
+
+    input {
+      display: none;
+    }
+
+    &:hover {
+      border: 1px @grey dashed;
+    }
+
+    &.edit  {
+      border: none;
+      input {
+        display: inline;
+      }
+
+      strong {
+        display: none;
+      }
+    }
+
+  }
+
   img {
     height: 22px;
   }

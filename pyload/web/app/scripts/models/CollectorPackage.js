@@ -20,6 +20,11 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
                 model.trigger('destroy', model, model.collection);
             },
 
+            // overwrites original name
+            setName: function(name) {
+                this.set('new_name', name);
+            },
+
             // get the actual name
             getName: function() {
                 var new_name = this.get('new_name');
