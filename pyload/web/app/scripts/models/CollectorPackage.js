@@ -61,6 +61,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
                 };
                 var links = this.get('links');
                 data.length = links.length;
+                data.size = 0;
                 data.online = 0;
                 data.offline = 0;
                 data.unknown = 0;
@@ -73,6 +74,9 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
                         data.offline++;
                     else
                         data.unknown++;
+
+                    if (link.get('size') > 0)
+                        data.size += link.get('size');
                 });
 
                 return data;

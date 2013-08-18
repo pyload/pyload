@@ -33,8 +33,10 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/linkgrabber/package'
                 return data;
             },
 
-            addPackage: function() {
+            addPackage: function(e) {
+                e.stopPropagation();
                 this.model.add();
+                return false;
             },
 
             renamePackage: function() {
@@ -63,9 +65,11 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/linkgrabber/package'
                 this.render();
             },
 
-            expand: function() {
+            expand: function(e) {
+                e.stopPropagation();
                 this.expanded ^= true;
                 this.ui.table.toggle();
+                return false;
             }
 
         });

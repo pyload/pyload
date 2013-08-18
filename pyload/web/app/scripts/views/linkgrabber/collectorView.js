@@ -3,6 +3,15 @@ define(['jquery', 'underscore', 'backbone', 'app', './packageView'],
         'use strict';
         return Backbone.Marionette.CollectionView.extend({
             itemView: packageView,
+
+            initialize: function() {
+                this.listenTo(App.vent, 'linkcheck:updated', _.bind(this.onData, this));
+            },
+
+            onData: function(rid, result) {
+                this.updateData({data: result});
+            },
+
             updateData: function(result) {
                 var self = this;
                 _.each(result.data, function(links, name) {
@@ -16,6 +25,5 @@ define(['jquery', 'underscore', 'backbone', 'app', './packageView'],
                     pack.updateLinks(links);
                 });
             }
-
         });
     });

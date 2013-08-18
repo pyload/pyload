@@ -44,7 +44,7 @@ class AsyncHandler(AbstractHandler):
     COMMAND = "start"
 
     PROGRESS_INTERVAL = 1.5
-    EVENT_PATTERN = re.compile(r"^(package|file|interaction)", re.I)
+    EVENT_PATTERN = re.compile(r"^(package|file|interaction|linkcheck)", re.I)
     INTERACTION = Interaction.All
 
     def __init__(self, api):

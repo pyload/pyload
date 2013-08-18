@@ -35,6 +35,7 @@ from DecrypterThread import DecrypterThread
 from DownloadThread import DownloadThread
 from InfoThread import InfoThread
 
+
 class ThreadManager:
     """manages the download threads, assign jobs, reconnect etc"""
 
@@ -92,7 +93,13 @@ class ThreadManager:
         rid = self.resultIDs
         self.resultIDs += 1
 
-        InfoThread(self, data, rid=rid)
+        # maps url to plugin
+        urls = []
+        for links in data.itervalues():
+            for link in links:
+                urls.append((link.url, link.plugin))
+
+        InfoThread(self, urls, rid=rid)
 
         return rid
 
@@ -116,7 +123,7 @@ class ThreadManager:
 
     @lock
     def setInfoResults(self, rid, result):
-        self.core.evm.dispatchEvent("onlineResult:updated", rid, result)
+        self.core.evm.dispatchEvent("linkcheck:updated", rid, result)
         self.infoResults[rid].update(result)
 
     def getActiveDownloads(self, user=None):
@@ -153,7 +160,7 @@ class ThreadManager:
         try:
             self.tryReconnect()
         except Exception, e:
-            self.log.error(_("Reconnect Failed: %s") % str(e) )
+            self.log.error(_("Reconnect Failed: %s") % str(e))
             self.reconnecting.clear()
             self.core.print_exc()
 
@@ -164,7 +171,7 @@ class ThreadManager:
         except Exception, e:
             self.log.warning("Assign job error", e)
             self.core.print_exc()
-            
+
             sleep(0.5)
             self.assignJob()
             #it may be failed non critical so we try it again
@@ -229,7 +236,7 @@ class ThreadManager:
     def getIP(self):
         """retrieve current ip"""
         services = [("http://automation.whatismyip.com/n09230945.asp", "(\S+)"),
-                    ("http://checkip.dyndns.org/",".*Current IP Address: (\S+)</body>.*")]
+                    ("http://checkip.dyndns.org/", ".*Current IP Address: (\S+)</body>.*")]
 
         ip = ""
         for i in range(10):
@@ -278,10 +285,12 @@ class ThreadManager:
 
         free = [x for x in self.threads if not x.active]
 
-        inuse = [(x.active.pluginname, x.active.plugin.getDownloadLimit()) for x in self.threads if x.active and x.active.hasPlugin()]
-        inuse = [(x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) for x in inuse]
+        inuse = [(x.active.pluginname, x.active.plugin.getDownloadLimit()) for x in self.threads if
+                 x.active and x.active.hasPlugin()]
+        inuse = [(x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) for x in
+                 inuse]
         occ = tuple(sorted(uniqify([x[0] for x in inuse if 0 < x[1] <= x[2]])))
-        
+
         job = self.core.files.getJob(occ)
         if job:
             try:

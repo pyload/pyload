@@ -1,10 +1,19 @@
+.linkgrabber {
+  width: 700px !important;
+}
+
 .prepared-packages {
   hr {
     margin: 0;
   }
 
-  .package > .btn {
-    margin-bottom: 3px;
+  .package {
+    margin-bottom: 10px;
+
+    & > .btn {
+      margin-bottom: 3px;
+    }
+
   }
 
   .name {
@@ -18,7 +27,7 @@
       border: 1px @grey dashed;
     }
 
-    &.edit  {
+    &.edit {
       border: none;
       input {
         display: inline;

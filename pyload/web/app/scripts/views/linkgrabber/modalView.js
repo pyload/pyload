@@ -4,6 +4,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
         // Modal dialog for package adding - triggers package:added when package was added
         return modalView.extend({
 
+            className: 'modal linkgrabber',
             events: {
                 'keypress #inputLinks': 'addOnEnter'
             },
@@ -16,6 +17,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
             initialize: function() {
                 // Inherit parent events
                 this.events = _.extend({}, modalView.prototype.events, this.events);
+                this.listenTo(App.vent, 'package:added', _.bind(this.onAdded, this));
             },
 
             addOnEnter: function(e) {
@@ -42,6 +44,14 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
 
                 $.ajax(options);
                 this.$('#inputLinks').val('');
+            },
+
+            // Hide when there are no more packages
+            onAdded: function() {
+                if (this.collectorView !== null) {
+                    if (this.collectorView.collection.length === 0)
+                        this.hide();
+                }
             },
 
             onRender: function() {

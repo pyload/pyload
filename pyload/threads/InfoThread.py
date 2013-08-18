@@ -65,8 +65,8 @@ class InfoThread(BaseThread):
             self.m.infoResults[self.rid] = {}
 
             for pluginname, urls in plugins.iteritems():
-                plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
-                klass = getattr(plugin, pluginname)
+                plugin = self.m.core.pluginManager.getPluginModule(pluginname)
+                klass = self.m.core.pluginManager.getPluginClass(pluginname)
                 if has_method(klass, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateResult, True)
                     #force to process cache
