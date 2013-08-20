@@ -21,7 +21,7 @@ from module.common.json_layer import json_loads
 
 class UnrestrictLi(Account):
     __name__ = "UnrestrictLi"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __type__ = "account"
     __description__ = """Unrestrict.li account plugin"""
     __author_name__ = ("stickell")
@@ -41,14 +41,16 @@ class UnrestrictLi(Account):
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
 
     def login(self, user, data, req):
+        req.cj.setCookie("unrestrict.li", "lang", "EN")
         html = req.load("https://unrestrict.li/sign_in")
 
         if 'solvemedia' in html:
             self.logError("A Captcha is required. Go to http://unrestrict.li/sign_in and login, then retry")
             return
 
-        self.html = req.load("https://unrestrict.li/sign_in",
-                             post={"username": user, "password": data["password"], "signin": "Sign in"})
+        post_data = {"username": user, "password": data["password"],
+                     "remember_me": "remember", "signin": "Sign in"}
+        self.html = req.load("https://unrestrict.li/sign_in", post=post_data)
 
         if 'sign_out' not in self.html:
             self.wrongPassword()
