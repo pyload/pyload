@@ -3,8 +3,6 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', './ConfigIt
 
     return Backbone.Model.extend({
 
-        // TODO
-        // generated, not submitted
         idAttribute: 'loginname',
 
         defaults: {
@@ -36,6 +34,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', './ConfigIt
                 return new ConfigItem(item);
             });
 
+            // JS uses time based on ms
+            if (resp.validuntil > 0)
+                resp.validuntil *= 1000;
+
             return resp;
         },
 
@@ -58,7 +60,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', './ConfigIt
         save: function() {
             // use changed config items only
             var data = this.toJSON();
-            data.config = _.map(_.filter(data.config, function(c){
+            data.config = _.map(_.filter(data.config, function(c) {
                 return c.isChanged();
             }), function(c) {
                 return c.prepareSave();
