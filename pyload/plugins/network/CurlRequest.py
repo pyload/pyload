@@ -173,7 +173,7 @@ class CurlRequest(Request):
         if referer and self.lastURL:
             self.c.setopt(pycurl.REFERER, str(self.lastURL))
         else:
-            self.c.setopt(pycurl.REFERER, "")
+            self.c.setopt(pycurl.HTTPHEADER, ["Referer:"])
 
         if cookies:
             for c in self.cj.output().splitlines():
