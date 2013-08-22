@@ -10,12 +10,6 @@ class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __version__ = "0.21"
     __type__ = "account"
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("https", "bool", "Enable HTTPS", "False"),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", ""),
-                  ("unloadFailing", "bool", "Revert to stanard download if download fails", "False"),
-                  ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
     __description__ = """AllDebrid.com account plugin"""
     __author_name__ = ("Andy, Voigt")
     __author_mail__ = ("spamsales@online.de")
