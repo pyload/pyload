@@ -23,16 +23,35 @@
 # http://letitbit.net/download/07874.0b5709a7d3beee2408bb1f2eefce/random.bin.html
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+import urllib
+
+from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.common.json_layer import json_loads, json_dumps
 from module.plugins.internal.CaptchaService import ReCaptcha
+
+
+def api_download_info(url):
+    json_data = ['yw7XQy2v9', ["download/info", {"link": url}]]
+    post_data = urllib.urlencode({'r': json_dumps(json_data)})
+    api_rep = urllib.urlopen('http://api.letitbit.net/json', data=post_data).read()
+    return json_loads(api_rep)
+
+
+def getInfo(urls):
+    for url in urls:
+        api_rep = api_download_info(url)
+        if api_rep['status'] == 'OK':
+            info = api_rep['data'][0]
+            yield (info['name'], info['size'], 2, url)
+        else:
+            yield (url, 0, 1, url)
 
 
 class LetitbitNet(SimpleHoster):
     __name__ = "LetitbitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*(letitbit|shareflare).net/download/.*"
-    __version__ = "0.21"
+    __version__ = "0.23"
     __description__ = """letitbit.net"""
     __author_name__ = ("zoidberg", "z00nx")
     __author_mail__ = ("zoidberg@mujmail.cz", "z00nx0@gmail.com")
@@ -40,8 +59,6 @@ class LetitbitNet(SimpleHoster):
     CHECK_URL_PATTERN = r"ajax_check_url\s*=\s*'((http://[^/]+)[^']+)';"
     SECONDS_PATTERN = r"seconds\s*=\s*(\d+);"
     CAPTCHA_CONTROL_FIELD = r"recaptcha_control_field\s=\s'(?P<value>[^']+)'"
-    FILE_INFO_PATTERN = r'<span[^>]*>File:.*?<span[^>]*>(?P<N>[^&]+).*</span>.*?\[(?P<S>[^\]]+)\]</span>'
-    FILE_OFFLINE_PATTERN = r'>File not found<'
 
     DOMAIN = "http://letitbit.net"
     FILE_URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "letitbit.net")]
@@ -50,6 +67,15 @@ class LetitbitNet(SimpleHoster):
     def setup(self):
         self.resumeDownload = True
         #TODO confirm that resume works
+
+    def getFileInfo(self):
+        api_rep = api_download_info(self.pyfile.url)
+        if api_rep['status'] == 'OK':
+            self.api_data = api_rep['data'][0]
+            self.pyfile.name = self.api_data['name']
+            self.pyfile.size = self.api_data['size']
+        else:
+            self.offline()
 
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="ifree_form"')
@@ -143,6 +169,3 @@ class LetitbitNet(SimpleHoster):
         self.logDebug('Direct Link: ' + direct_link)
 
         self.download(direct_link, disposition=True)
-
-
-getInfo = create_getInfo(LetitbitNet)
