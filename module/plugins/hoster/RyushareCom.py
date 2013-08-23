@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
+
+# Test links (random.bin):
+# http://ryushare.com/v3u21arv593q/random.bin
+
+import re
+
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 from module.plugins.internal.CaptchaService import SolveMedia
-import re
 
 
 class RyushareCom(XFileSharingPro):
@@ -46,7 +51,7 @@ class RyushareCom(XFileSharingPro):
         if match:
             m = match.groupdict(0)
             waittime = int(m["hour"])*60*60 + int(m['min']) * 60 + int(m['sec'])
-            self.setWait(waittime,True)
+            self.setWait(waittime, True)
             retry = True
 
         self.wait()
@@ -69,7 +74,7 @@ class RyushareCom(XFileSharingPro):
             self.html = self.load(self.pyfile.url, post = inputs)
             if "WRONG CAPTCHA" in self.html:
                 self.invalidCaptcha()
-                self.logDebug("Invalid Captcha")
+                self.logInfo("Invalid Captcha")
             else:
                 self.correctCaptcha()
                 break
