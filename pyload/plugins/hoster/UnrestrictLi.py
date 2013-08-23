@@ -37,6 +37,12 @@ class UnrestrictLi(Hoster):
     __name__ = "UnrestrictLi"
     __version__ = "0.09"
     __type__ = "hoster"
+    __config__ = [("activated", "bool", "Activated", "False"),
+                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                  ("hosterList", "str", "Hoster list (comma separated)", ""),
+                  ("unloadFailing", "bool", "Revert to standard download if download fails", "False"),
+                  ("interval", "int", "Reload interval in hours (0 to disable)", "24"),
+                  ("history", "bool", "Delete History", "False")]
     __pattern__ = r"https?://.*(unrestrict|unr)\.li"
     __description__ = """Unrestrict.li hoster plugin"""
     __author_name__ = ("stickell")

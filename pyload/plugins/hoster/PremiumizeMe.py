@@ -6,6 +6,11 @@ class PremiumizeMe(Hoster):
     __name__ = "PremiumizeMe"
     __version__ = "0.12"
     __type__ = "hoster"
+    __config__ = [("activated", "bool", "Activated", "False"),
+                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
+                  ("hosterList", "str", "Hoster list (comma separated)", ""),
+                  ("unloadFailing", "bool", "Revert to stanard download if download fails", "False"),
+                  ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
     __description__ = """Premiumize.Me hoster plugin"""
 
     # Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady

@@ -11,6 +11,10 @@ class FastixRu(Hoster):
     __name__ = "FastixRu"
     __version__ = "0.02"
     __type__ = "hoster"
+    __config__ = [("activated", "bool", "Activated", "False"),
+                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                  ("unloadFailing", "bool", "Revert to standard download if download fails", "False"),
+                  ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
     __pattern__ = r"http?://.*fastix.ru\..*"
     __description__ = """Fastix hoster plugin"""
     __author_name__ = ("Massimo, Rosamilia")

@@ -4,9 +4,6 @@ class Premium4Me(MultiHoster):
     __name__ = "Premium4Me"
     __version__ = "0.03"
     __type__ = "account"
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "")]
     __description__ = """Premium.to account plugin"""
     __author_name__ = ("RaNaN", "zoidberg", "stickell")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")

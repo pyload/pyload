@@ -15,7 +15,12 @@ class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
     __version__ = "0.51"
     __type__ = "hoster"
-
+    __config__ = [("activated", "bool", "Activated", "False"),
+                  ("https", "bool", "Enable HTTPS", "False"),
+                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
+                  ("hosterList", "str", "Hoster list (comma separated)", ""),
+                  ("unloadFailing", "bool", "Revert to standard download if download fails", "False"),
+                  ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
     __pattern__ = r"https?://.*real-debrid\..*"
     __description__ = """Real-Debrid.com hoster plugin"""
     __author_name__ = ("Devirex, Hazzard")

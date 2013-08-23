@@ -28,9 +28,6 @@ class MultishareCz(MultiHoster):
     __name__ = "MultishareCz"
     __version__ = "0.02"
     __type__ = "account"
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "uloz.to")]
     __description__ = """multishare.cz account plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

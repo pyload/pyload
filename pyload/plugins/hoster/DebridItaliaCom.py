@@ -24,6 +24,11 @@ class DebridItaliaCom(Hoster):
     __name__ = "DebridItaliaCom"
     __version__ = "0.04"
     __type__ = "hoster"
+    __config__ = [("activated", "bool", "Activated", "False"),
+                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                  ("hosterList", "str", "Hoster list (comma separated)", ""),
+                  ("unloadFailing", "bool", "Revert to standard download if download fails", "False"),
+                  ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
     __pattern__ = r"https?://.*debriditalia\.com"
     __description__ = """Debriditalia.com hoster plugin"""
     __author_name__ = ("stickell")

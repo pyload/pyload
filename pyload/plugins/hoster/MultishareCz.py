@@ -24,6 +24,9 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MultishareCz(SimpleHoster):
     __name__ = "MultishareCz"
     __type__ = "hoster"
+    __config__ = [("activated", "bool", "Activated", "False"),
+                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                  ("hosterList", "str", "Hoster list (comma separated)", "uloz.to")]
     __pattern__ = r"http://(?:\w*\.)?multishare.cz/stahnout/(?P<ID>\d+).*"
     __version__ = "0.41"
     __description__ = """MultiShare.cz"""
