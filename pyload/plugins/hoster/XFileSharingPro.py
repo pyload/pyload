@@ -35,7 +35,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -73,17 +73,20 @@ class XFileSharingPro(SimpleHoster):
             else:
                 self.fail("Only premium users can download from other hosters with %s" % self.HOSTER_NAME)
         else:
-            try:
-                self.html = self.load(pyfile.url, cookies=False, decode=True)
-                self.file_info = self.getFileInfo()
-            except PluginParseError:
-                self.file_info = None
-
             self.location = self.getDirectDownloadLink()
 
             if not self.file_info:
                 pyfile.name = html_unescape(unquote(urlparse(
                     self.location if self.location else pyfile.url).path.split("/")[-1]))
+
+            # self.load will fail because pyfile.url is a direct link to the download if self.location
+            # is set so it will be executed only if pyfile.url is not a direct link (location not set).
+            if not self.location:
+                try:
+                    self.html = self.load(pyfile.url, cookies=False, decode=True)
+                    self.file_info = self.getFileInfo()
+                except PluginParseError:
+                    self.file_info = None
 
             if self.location:
                 self.startDownload(self.location)
