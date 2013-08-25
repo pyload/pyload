@@ -35,7 +35,7 @@ def secondsToMidnight():
 
 class UnrestrictLi(Hoster):
     __name__ = "UnrestrictLi"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __type__ = "hoster"
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
@@ -67,16 +67,24 @@ class UnrestrictLi(Hoster):
                 self.logDebug("JSON data: " + page)
                 if page != '':
                     break
-            if "File offline" in page:
+            else:
+                self.logInfo("Unable to get API data, waiting 1 minute and retry")
+                self.retry(5, 60, "Unable to get API data")
+
+            if 'Expired session' in page or ("You are not allowed to "
+                                             "download from this host" in page and self.premium):
+                self.account.relogin(self.user)
+                self.retry()
+            elif "File offline" in page:
                 self.offline()
-            elif "ERROR_HOSTER_TEMPORARILY_UNAVAILABLE" in page:
-                self.logInfo("Hoster temporarily unavailable, waiting 1 minute and retry")
-                self.retry(5, 60, "Hoster is temporarily unavailable")
             elif "You are not allowed to download from this host" in page:
                 self.fail("You are not allowed to download from this host")
             elif "You have reached your daily limit for this host" in page:
                 self.logInfo("Reached daily limit for this host. Waiting until 00:10 GMT+2")
                 self.retry(5, secondsToMidnight(), "Daily limit for this host reached")
+            elif "ERROR_HOSTER_TEMPORARILY_UNAVAILABLE" in page:
+                self.logInfo("Hoster temporarily unavailable, waiting 1 minute and retry")
+                self.retry(5, 60, "Hoster is temporarily unavailable")
             page = json_loads(page)
             new_url = page.keys()[0]
             self.api_data = page[new_url]
