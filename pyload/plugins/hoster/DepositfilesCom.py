@@ -11,14 +11,13 @@ class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(depositfiles\.com|dfiles\.eu)(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 
-    FILE_NAME_PATTERN = r'File name: <b title="(?P<N>[^"]+)'
-    FILE_SIZE_PATTERN = r'File size: <b>(?P<S>[0-9.]+)&nbsp;(?P<U>[kKMG])i?B</b>'
-    FILE_INFO_PATTERN = r'<script type="text/javascript">eval\( unescape\(\'(?P<N>.*?)\''
+    FILE_SIZE_PATTERN = r': <b>(?P<S>[0-9.]+)&nbsp;(?P<U>[kKMG])i?B</b>'
+    FILE_NAME_PATTERN = r'<script type="text/javascript">eval\( unescape\(\'(?P<N>.*?)\''
     FILE_OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
     FILE_URL_REPLACEMENTS = [(r"\.com(/.*?)?/files", ".com/en/files"), (r"\.html$", "")]
     FILE_NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
