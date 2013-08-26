@@ -689,17 +689,18 @@ class Api(Iface):
 
 
     @permission(PERMS.ADD)
-    def uploadContainer(self, filename, data):
+    def uploadContainer(self, filename, data, dest=Destination.Queue):
         """Uploads and adds a container file to pyLoad.
 
         :param filename: filename, extension is important so it can correctly decrypted
-        :param data: file content
+        :param data: file content as base64-string
+        :param dest: `Destination`
         """
         th = open(join(self.core.config["general"]["download_folder"], "tmp_" + filename), "wb")
-        th.write(str(data))
+        th.write(standard_b64encode(data))
         th.close()
 
-        self.addPackage(th.name, [th.name], Destination.Queue)
+        self.addPackage(th.name, [th.name], dest)
 
     @permission(PERMS.MODIFY)
     def orderPackage(self, pid, position):
