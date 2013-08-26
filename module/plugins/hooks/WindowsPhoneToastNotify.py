@@ -15,19 +15,20 @@
 
     @author: RaNaN, Godofdream, zoidberg
 """
-import sys, httplib
+import time, httplib
 from module.plugins.Hook import Hook
 
 class WindowsPhoneToastNotify(Hook):
     __name__ = "WindowsPhoneToastNotify"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Send push notifications to Windows Phone."""
     __author_name__ = ("Andy Voigt")
     __author_mail__ = ("phone-support@hotmail.de")
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force even if client is connected", False),
-                  ("pushId", "pId", "pushId", ""),
-                  ("pushUrl","pUrl","pushUrl", "")]
+                  ("pushId", "str", "pushId", ""),
+                  ("pushUrl","str","pushUrl", ""),
+                  ("pushTimeout","int","Timeout between notifications in seconds","360")]
 
     def setup(self):
         self.info = {}
@@ -50,9 +51,8 @@ class WindowsPhoneToastNotify(Hook):
         webservice.putheader("Content-length", "%d" % len(request))
         webservice.endheaders()
         webservice.send(request)
-        #statuscode, statusmessage, header = webservice.getreply()
-        #result = webservice.getfile().read()
         webservice.close()
+        self.setStorage("LAST_NOTIFY", time.time())
 
     def newCaptchaTask(self, task):
         if not self.getConfig("pushId") or not self.getConfig("pushUrl"):
@@ -60,6 +60,9 @@ class WindowsPhoneToastNotify(Hook):
 
         if self.core.isClientConnected() and not self.getConfig("force"):
             return False
-
+        
+        if (time.time() - self.getStorage("LAST_NOTIFY", 0)) >= self.getConf("pushTimeout"):
+            return False
+        
         self.doRequest()
 
