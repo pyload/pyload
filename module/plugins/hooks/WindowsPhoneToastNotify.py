@@ -28,7 +28,7 @@ class WindowsPhoneToastNotify(Hook):
                   ("force", "bool", "Force even if client is connected", False),
                   ("pushId", "str", "pushId", ""),
                   ("pushUrl","str","pushUrl", ""),
-                  ("pushTimeout","int","Timeout between notifications in seconds","360")]
+                  ("pushTimeout","int","Timeout between notifications in seconds","0")]
 
     def setup(self):
         self.info = {}
@@ -61,7 +61,7 @@ class WindowsPhoneToastNotify(Hook):
         if self.core.isClientConnected() and not self.getConfig("force"):
             return False
         
-        if (time.time() - self.getStorage("LAST_NOTIFY", 0)) >= self.getConf("pushTimeout"):
+        if (time.time() - float(self.getStorage("LAST_NOTIFY", 0))) < self.getConf("pushTimeout"):
             return False
         
         self.doRequest()
