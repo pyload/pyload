@@ -53,7 +53,7 @@ class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
     __pattern__ = r"https?://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __description__ = """Netload.in Download Hoster"""
     __author_name__ = ("spoob", "RaNaN", "Gregy")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
@@ -76,10 +76,6 @@ class NetloadIn(Hoster):
 
         if self.api_data and self.api_data["filename"]:
             self.pyfile.name = self.api_data["filename"]
-
-        if self.premium:
-            self.logDebug("Netload: Use Premium Account")
-            return True
 
         if self.download_html():
             return True
