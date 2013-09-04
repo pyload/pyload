@@ -27,12 +27,12 @@ class UploadheroCom(SimpleHoster):
     __name__ = "UploadheroCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploadhero\.com?/dl/\w+"
-    __version__ = "0.14"
-    __description__ = """UploadHero.com plugin"""
+    __version__ = "0.15"
+    __description__ = """UploadHero.co plugin"""
     __author_name__ = ("mcmyst", "zoidberg")
     __author_mail__ = ("mcmyst@hotmail.fr", "zoidberg@mujmail.cz")
 
-    SH_COOKIES = [("http://uploadhero.com", "lang", "en")]
+    SH_COOKIES = [("http://uploadhero.co", "lang", "en")]
     FILE_NAME_PATTERN = r'<div class="nom_de_fichier">(?P<N>.*?)</div>'
     FILE_SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'
     FILE_OFFLINE_PATTERN = r'<p class="titre_dl_2">|<div class="raison"><strong>Le lien du fichier ci-dessus n\'existe plus.'
@@ -43,7 +43,7 @@ class UploadheroCom(SimpleHoster):
     IP_WAIT_PATTERN = r'<span id="minutes">(\d+)</span>.*\s*<span id="seconds">(\d+)</span>'
 
     CAPTCHA_PATTERN = r'"(/captchadl\.php\?[a-z0-9]+)"'
-    FREE_URL_PATTERN = r'var magicomfg = \'<a href="(http://[^<>"]*?)"|"(http://storage\d+\.uploadhero\.com/\?d=[A-Za-z0-9]+/[^<>"/]+)"'
+    FREE_URL_PATTERN = r'var magicomfg = \'<a href="(http://[^<>"]*?)"|"(http://storage\d+\.uploadhero\.co/\?d=[A-Za-z0-9]+/[^<>"/]+)"'
 
     def handleFree(self):
         self.checkErrors()
@@ -51,7 +51,7 @@ class UploadheroCom(SimpleHoster):
         found = re.search(self.CAPTCHA_PATTERN, self.html)
         if not found:
             self.parseError("Captcha URL")
-        captcha_url = "http://uploadhero.com" + found.group(1)
+        captcha_url = "http://uploadhero.co" + found.group(1)
 
         for i in range(5):
             captcha = self.decryptCaptcha(captcha_url)
@@ -78,7 +78,7 @@ class UploadheroCom(SimpleHoster):
     def checkErrors(self):
         found = re.search(self.IP_BLOCKED_PATTERN, self.html)
         if found:
-            self.html = self.load("http://uploadhero.com%s" % found.group(1))
+            self.html = self.load("http://uploadhero.co%s" % found.group(1))
 
             found = re.search(self.IP_WAIT_PATTERN, self.html)
             wait_time = (int(found.group(1)) * 60 + int(found.group(2))) if found else 300
