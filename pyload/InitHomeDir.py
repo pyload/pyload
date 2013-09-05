@@ -24,6 +24,8 @@ from os.path import join
 import sys
 from sys import argv, platform
 
+from . import __version__
+
 import __builtin__
 
 __builtin__.owd = path.abspath("") #original working directory
@@ -80,10 +82,10 @@ elif path.exists(path.join(pypath, "pyload", "config", "configdir")):
 
 # default config dir
 if not configdir:
-    if platform in ("posix", "linux2", "darwin"):
-        configdir = path.join(homedir, ".pyload")
-    else:
-        configdir = path.join(homedir, "pyload")
+    # suffix when running dev version
+    dev = "-dev" if __version__.endswith("-dev") else ""
+    configname = ".pyload" if platform in ("posix", "linux2", "darwin") else "pyload"
+    configdir = path.join(homedir, configname + dev)
 
 if not path.exists(configdir):
     makedirs(configdir, 0700)
