@@ -27,7 +27,7 @@ class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?fastshare.cz/\d+/.+"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __description__ = """FastShare.cz"""
     __author_name__ = ("zoidberg", "stickell")
 
@@ -35,7 +35,7 @@ class FastshareCz(SimpleHoster):
     FILE_OFFLINE_PATTERN = ur'<td align=center>Tento soubor byl smazán'
     FILE_URL_REPLACEMENTS = [('#.*', '')]
 
-    FREE_URL_PATTERN = ur'<form method=post action=(/free/.*?)><b>Stáhnout FREE.*?<img src="([^"]*)">'
+    FREE_URL_PATTERN = r'action=(/free/.*?)>\s*<img src="([^"]*)"><br'
     PREMIUM_URL_PATTERN = r'(http://data\d+\.fastshare\.cz/download\.php\?id=\d+\&[^\s\"\'<>]+)'
     NOT_ENOUGH_CREDIC_PATTERN = "Nem.te dostate.n. kredit pro sta.en. tohoto souboru"
 
