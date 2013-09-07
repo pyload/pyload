@@ -54,6 +54,14 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
                 this.trigger('change');
             },
 
+            // Returns true if pack is empty now
+            removeLinks: function(links) {
+                this.get('links').remove(_.map(links, function(link) {
+                    return link.url;
+                }));
+                return this.get('links').length === 0;
+            },
+
             toJSON: function() {
                 var data = {
                     name: this.getName(),

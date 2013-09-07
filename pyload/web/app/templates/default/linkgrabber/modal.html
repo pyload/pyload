@@ -7,32 +7,29 @@
 </div>
 
 <div class="modal-body">
-    <div class="alert alert-error hidden">
-        {{_ "Upload files container failed. Please try again." }}
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span4">
+                <h3 class="pull-left">Links</h3>
+                <textarea id="inputLinks" rows="1" placeholder="{{_ " Paste your links here..."}}"></textarea>
+            </div>
+            <div class="span4">
+                <h3 class="pull-left">{{_ "Container" }}</h3>
+                <button class="btn btn-blue">{{_ "Upload" }}</button>
+            </div>
+            <div class="span4">
+                <h3 class="pull-left">{{_ "URL" }}</h3>
+                <input type="text" placeholder="{{ _ "Link to Website"}}">
+            </div>
+        </div>
     </div>
-    <form class="form-horizontal">
-        <div class="control-group">
-            <label class="control-label" for="inputLinks">{{ _ "Links" }}</label>
 
-            <div class="controls">
-                <textarea id="inputLinks" class="span4" rows="2" placeholder="{{_ " Paste your links here..."}}"></textarea>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputContainer">{{_ "Upload container file" }}</label>
-            <div class="controls controls-row">
-                <input type="text" id="inputContainer" class="span3" readonly>
-                <button id="inputContainer-btn" class="btn span1" type="button">{{_ "Browse" }}&hellip;</button>
-            </div>
-        </div>
+    <legend>
+        {{_ "Packages" }}
+    </legend>
+    <div class="container-fluid prepared-packages">
 
-        <legend>
-            {{_ "Packages" }}
-        </legend>
-        <div class="container-fluid prepared-packages">
-
-        </div>
-    </form>
+    </div>
 </div>
 
 <div class="modal-footer">

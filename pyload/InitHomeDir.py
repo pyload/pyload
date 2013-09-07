@@ -24,7 +24,7 @@ from os.path import join
 import sys
 from sys import argv, platform
 
-from . import __version__
+from . import __dev__
 
 import __builtin__
 
@@ -83,7 +83,7 @@ elif path.exists(path.join(pypath, "pyload", "config", "configdir")):
 # default config dir
 if not configdir:
     # suffix when running dev version
-    dev = "-dev" if __version__.endswith("-dev") else ""
+    dev = "-dev" if __dev__ else ""
     configname = ".pyload" if platform in ("posix", "linux2", "darwin") else "pyload"
     configdir = path.join(homedir, configname + dev)
 

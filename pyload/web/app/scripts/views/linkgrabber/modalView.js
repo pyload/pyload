@@ -6,7 +6,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
 
             className: 'modal linkgrabber',
             events: {
-                'keypress #inputLinks': 'addOnEnter'
+                'keyup #inputLinks': 'addOnKeyUp'
             },
 
             template: template,
@@ -14,18 +14,30 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
             // Holds the view that display the packages
             collectorView: null,
 
+            inputSize: 0,
+
             initialize: function() {
                 // Inherit parent events
                 this.events = _.extend({}, modalView.prototype.events, this.events);
                 this.listenTo(App.vent, 'package:added', _.bind(this.onAdded, this));
             },
 
-            addOnEnter: function(e) {
-                if (e.keyCode !== 13) return;
-                this.addPackage(e);
+            addOnKeyUp: function(e) {
+                // Enter adds the links
+                if (e.keyCode === 13)
+                    this.parseLinks();
+
+                var inputSize = this.$('#inputLinks').val().length;
+
+                // TODO: checkbox to disable this
+                // add links when several characters was pasted into box
+                if (inputSize > this.inputSize + 4)
+                    this.parseLinks();
+                else
+                    this.inputSize = inputSize;
             },
 
-            addPackage: function(e) {
+            parseLinks: function() {
                 var self = this;
                 // split, trim and remove empty links
                 var links = _.filter(_.map(this.$('#inputLinks').val().split('\n'), function(link) {
@@ -44,6 +56,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
 
                 $.ajax(options);
                 this.$('#inputLinks').val('');
+                this.inputSize = 0;
             },
 
             // Hide when there are no more packages

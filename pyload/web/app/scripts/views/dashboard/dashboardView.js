@@ -28,12 +28,12 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
 
                 var self = this;
                 // When package is added we reload the data
-                App.vent.on('package:added', function() {
+                this.listenTo(App.vent, 'package:added', function() {
                     console.log('Package tree caught, package:added event');
                     self.tree.fetch();
                 });
 
-                App.vent.on('file:updated', _.bind(this.fileUpdated, this));
+                this.listenTo(App.vent, 'file:updated', _.bind(this.fileUpdated, this));
 
                 // TODO: merge?
                 this.init();

@@ -21,7 +21,14 @@ define(['jquery', 'underscore', 'backbone', 'app', './packageView'],
                         self.collection.add(pack);
                     }
 
-                    // TODO: remove links from all other packages than pack
+                    // Remove links from other packages and delete empty ones
+                    self.collection.each(function(pack2) {
+                        console.log(pack2, links);
+                        if (pack2 !== pack)
+                            if (pack2.removeLinks(links))
+                                self.collection.remove(pack2);
+                    });
+
                     pack.updateLinks(links);
                 });
             }

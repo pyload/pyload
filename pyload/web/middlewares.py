@@ -111,6 +111,8 @@ class GzipResponse(object):
         out.close()
         return [s]
 
+    # TODO: also writes large files to stringbuffer
+    # avoids optimized send_file and causes memory shortage
     def finish_response(self, app_iter):
         if self.compressible:
             output = gzip.GzipFile(mode='wb', compresslevel=self.compress_level,
