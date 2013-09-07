@@ -25,7 +25,7 @@ from module.utils import html_unescape
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __pattern__ = None
     __type__ = "crypter"
     __description__ = """Base crypter plugin"""
@@ -39,6 +39,8 @@ class SimpleCrypter(Crypter):
 
     TITLE_PATTERN: (optional) the group defined by 'title' should be the title
     example: <title>Files of: (?P<title>[^<]+) folder</title>
+
+    If it's impossible to extract the links using the LINK_PATTERN only you can override the getLinks method.
 
     If the links are disposed on multiple pages you need to define a pattern:
 
@@ -55,7 +57,7 @@ class SimpleCrypter(Crypter):
 
         package_name, folder_name = self.getPackageNameAndFolder()
 
-        self.package_links = re.findall(self.LINK_PATTERN, self.html)
+        self.package_links = self.getLinks()
 
         if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
             self.handleMultiPages()
@@ -66,6 +68,13 @@ class SimpleCrypter(Crypter):
             self.packages = [(package_name, self.package_links, folder_name)]
         else:
             self.fail('Could not extract any links')
+
+    def getLinks(self):
+        """
+        Returns the links extracted from self.html
+        You should override this only if it's impossible to extract links using only the LINK_PATTERN.
+        """
+        return re.findall(self.LINK_PATTERN, self.html)
 
     def getPackageNameAndFolder(self):
         if hasattr(self, 'TITLE_PATTERN'):
@@ -89,4 +98,4 @@ class SimpleCrypter(Crypter):
 
         for p in range(2, pages + 1):
             self.html = self.loadPage(p)
-            self.package_links += re.findall(self.LINK_PATTERN, self.html)
+            self.package_links += self.getLinks()
