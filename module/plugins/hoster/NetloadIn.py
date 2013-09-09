@@ -53,7 +53,7 @@ class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
     __pattern__ = r"https?://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __description__ = """Netload.in Download Hoster"""
     __author_name__ = ("spoob", "RaNaN", "Gregy")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
@@ -79,7 +79,12 @@ class NetloadIn(Hoster):
 
         if self.premium:
             self.logDebug("Netload: Use Premium Account")
-            return True
+            settings = self.load("http://www.netload.in/index.php?id=2&lang=en")
+            if '<option value="2" selected="selected">Direkter Download' in settings:
+                self.logDebug("Using direct download")
+                return True
+            else:
+                self.logDebug("Direct downloads not enabled. Parsing html for a download URL")
 
         if self.download_html():
             return True
