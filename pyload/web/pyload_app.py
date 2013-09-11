@@ -17,13 +17,18 @@
     @author: RaNaN
 """
 import time
-from os.path import join
+from os.path import join, exists
 
-from bottle import route, static_file, response, redirect, template
+from bottle import route, static_file, response, request, redirect, template
 
 from webinterface import PYLOAD, PROJECT_DIR, SETUP, APP_PATH, UNAVAILALBE
 
 from utils import login_required
+
+APP_ROOT = join(PROJECT_DIR, APP_PATH)
+
+# Cache file names that are available gzipped
+GZIPPED = {}
 
 
 @route('/icons/<path:path>')
@@ -64,7 +69,19 @@ def server_static(path):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 7))
     response.headers['Cache-control'] = "public"
-    resp = static_file(path, root=join(PROJECT_DIR, APP_PATH))
+
+    # save if this resource is available as gz
+    if path not in GZIPPED:
+        GZIPPED[path] = exists(join(APP_ROOT, path + ".gz"))
+
+    # gzipped and clients accepts it
+    # TODO: index.html is not gzipped, because of template processing
+    if GZIPPED[path] and "gzip" in  request.get_header("Accept-Encoding", "") and path != "index.html":
+        response.headers['Vary'] = 'Accept-Encoding'
+        response.headers['Content-Encoding'] = 'gzip'
+        path += ".gz"
+
+    resp = static_file(path, root=APP_ROOT)
     # Also serve from .tmp folder in dev mode
     if resp.status_code == 404 and APP_PATH == "app":
         return static_file(path, root=join(PROJECT_DIR, '.tmp'))

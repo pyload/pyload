@@ -67,7 +67,7 @@ def make_config(config):
                                 ("host", "ip", _("IP"), "0.0.0.0"),
                                 ("https", "bool", _("Use HTTPS"), False),
                                 ("port", "int", _("Port"), 8001),
-                                ("develop", "str", _("Development mode"), False),
+                                ("develop", "bool", _("Development mode"), False),
                             ])
 
     config.addConfigSection("proxy", _("Proxy"), _("Description"), _("Long description"),

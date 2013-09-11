@@ -295,6 +295,18 @@ module.exports = function(grunt) {
                 src: ['**/*.js', '!*.min.js']
             }
         },
+        compress: {
+            main: {
+                options: {
+                    mode: 'gzip'
+                },
+                expand: true,
+                cwd: '<%= yeoman.dist %>',
+                dest: '<%= yeoman.dist %>',
+                src: ['**/*.{js,css,html}']
+            }
+        },
+
         // Put files not handled in other tasks here
         copy: {
             //  Copy files from third party libraries
@@ -414,7 +426,8 @@ module.exports = function(grunt) {
         'concurrent:dist',  // Run minimisation
         'uglify', // minify js
         'rev',
-        'usemin'
+        'usemin',
+        'compress'
     ]);
 
     grunt.registerTask('default', [

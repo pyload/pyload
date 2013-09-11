@@ -38,6 +38,7 @@ class PrefixMiddleware(object):
 # WSGI middleware
 # Gzip-encodes the response.
 
+# TODO: not in use anymore, because of pre-gzipped resources
 class GZipMiddleWare(object):
 
     def __init__(self, application, compress_level=6):
@@ -111,9 +112,6 @@ class GzipResponse(object):
         out.close()
         return [s]
 
-    # TODO: also writes large files to stringbuffer
-    # avoids optimized send_file and causes memory shortage
-    # pre-gzipped resources would make this obsolete
     def finish_response(self, app_iter):
         if self.compressible:
             output = gzip.GzipFile(mode='wb', compresslevel=self.compress_level,

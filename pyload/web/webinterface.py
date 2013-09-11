@@ -26,7 +26,7 @@ PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 import bottle
 from bottle import run, app
 
-from middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
+from middlewares import StripPathMiddleware, PrefixMiddleware
 
 SETUP = None
 PYLOAD = None
@@ -80,7 +80,6 @@ session_opts = {
 
 session = SessionMiddleware(app(), session_opts)
 web = StripPathMiddleware(session)
-web = GZipMiddleWare(web)
 
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
