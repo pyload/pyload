@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from urllib import unquote
-from itertools import chain
 from traceback import format_exc, print_exc
 
 from bottle import route, request, response, HTTPError, parse_auth
@@ -60,8 +59,14 @@ def call_api(func, args=""):
     if request.json:
         kwargs = request.json
 
+    # file upload, reads whole file into memory
+    for name, f in request.files.iteritems():
+        print f.length
+        kwargs["filename"] = f.filename
+        kwargs[name] = f.value
+
     # convert arguments from json to obj separately
-    for x, y in chain(request.GET.iteritems(), request.POST.iteritems()):
+    for x, y in request.params.iteritems():
         if not x or not y or x == "session": continue
         kwargs[x] = loads(unquote(y))
 

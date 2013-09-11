@@ -14,18 +14,22 @@
                 <textarea id="inputLinks" rows="1" placeholder="{{_ " Paste your links here..."}}"></textarea>
             </div>
             <div class="span4">
-                <h3 class="pull-left">{{_ "Container" }}</h3>
-                <button class="btn btn-blue">{{_ "Upload" }}</button>
+                <form action="" method="post" enctype="multipart/form-data" target="uploadTarget">
+                    <h3 class="pull-left">{{_ "Container" }}</h3>
+                    <button class="btn btn-blue btn-container">{{_ "Upload" }}</button>
+                    <input type="file" name="data" id="inputContainer" style="display: none">
+                </form>
+                <iframe id="uploadTarget" name="uploadTarget" style="display: none"></iframe>
             </div>
             <div class="span4">
                 <h3 class="pull-left">{{_ "URL" }}</h3>
-                <input type="text" placeholder="{{ _ "Link to Website"}}">
+                <input type="text" name="inputURL" id="inputURL" placeholder="{{ _ "Link to Website"}}">
             </div>
         </div>
     </div>
 
     <legend>
-        {{_ "Packages" }}
+        {{_ "Packages" }} <button class="btn btn-danger btn-small btn-remove-all"><i class="icon-trash"></i></button>
     </legend>
     <div class="container-fluid prepared-packages">
 

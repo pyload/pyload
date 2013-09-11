@@ -6,7 +6,11 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
 
             className: 'modal linkgrabber',
             events: {
-                'keyup #inputLinks': 'addOnKeyUp'
+                'keyup #inputLinks': 'addOnKeyUp',
+                'click .btn-container': 'selectContainer',
+                'change #inputContainer': 'checkContainer',
+                'keyup #inputURL': 'checkURL',
+                'click .btn-remove-all': 'clearAll'
             },
 
             template: template,
@@ -25,19 +29,19 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
             addOnKeyUp: function(e) {
                 // Enter adds the links
                 if (e.keyCode === 13)
-                    this.parseLinks();
+                    this.checkLinks();
 
                 var inputSize = this.$('#inputLinks').val().length;
 
                 // TODO: checkbox to disable this
                 // add links when several characters was pasted into box
                 if (inputSize > this.inputSize + 4)
-                    this.parseLinks();
+                    this.checkLinks();
                 else
                     this.inputSize = inputSize;
             },
 
-            parseLinks: function() {
+            checkLinks: function() {
                 var self = this;
                 // split, trim and remove empty links
                 var links = _.filter(_.map(this.$('#inputLinks').val().split('\n'), function(link) {
@@ -57,6 +61,39 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
                 $.ajax(options);
                 this.$('#inputLinks').val('');
                 this.inputSize = 0;
+            },
+
+            selectContainer: function(e) {
+                this.$('#inputContainer').trigger('click');
+            },
+
+            checkContainer: function(e) {
+                this.$('form').attr('action', App.apiUrl('api/checkContainer'));
+                this.$('form').trigger('submit');
+            },
+
+            checkURL: function(e) {
+                // check is triggered on enter
+                if (e.keyCode !== 13)
+                    return;
+
+                var self = this;
+                $.ajax(App.apiRequest('checkHTML', {
+                    html: '',
+                    url: $(e.target).val()
+                }, {
+                    success: function(data) {
+                        self.collectorView.updateData(data);
+                    }
+                }));
+
+                $(e.target).val('');
+            },
+
+            // deletes every package
+            clearAll: function(e) {
+                this.collectorView.collection.reset();
+
             },
 
             // Hide when there are no more packages
