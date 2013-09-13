@@ -27,7 +27,7 @@ class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?fastshare.cz/\d+/.+"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __description__ = """FastShare.cz"""
     __author_name__ = ("zoidberg", "stickell")
 
@@ -90,7 +90,7 @@ class FastshareCz(SimpleHoster):
             url = found.group(1)
 
         self.logDebug("PREMIUM URL: %s" % url)
-        self.download(url)
+        self.download(url, disposition=True)
 
         check = self.checkDownload({"credit": re.compile(self.NOT_ENOUGH_CREDIC_PATTERN)})
         if check == "credit":
