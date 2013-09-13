@@ -258,7 +258,7 @@ class HTTPChunk(HTTPRequest):
 
             if line.startswith("content-disposition") and "filename=" in line:
                 name = orgline.partition("filename=")[2]
-                name = name.replace('"', "").replace("'", "").replace(";", "").strip()
+                name = name.replace('"', "").replace("'", "").replace(";", "").replace("/", "_").strip()
                 self.p.nameDisposition = name
                 self.log.debug("Content-Disposition: %s" % name)
 
