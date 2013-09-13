@@ -261,7 +261,7 @@ class Core(object):
 
 
     def cleanTree(self):
-        for path, dirs, files in walk(self.path("")):
+        for path, dirs, files in walk(self.path("pyload")):
             for f in files:
                 if not f.endswith(".pyo") and not f.endswith(".pyc"):
                     continue

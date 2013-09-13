@@ -20,6 +20,10 @@ def add_header(r):
     r.headers.append("Access-Control-Allow-Origin", request.get_header('Origin', '*'))
     r.headers.append("Access-Control-Allow-Credentials", "true")
 
+# returns http error
+def error(code, msg):
+    return HTTPError(code, dumps(msg), **dict(response.headers))
+
 # accepting positional arguments, as well as kwargs via post and get
 # only forbidden path symbol are "?", which is used to separate GET data and #
 @route("/api/<func><args:re:[^#?]*>")
@@ -67,8 +71,15 @@ def call_api(func, args=""):
 
     # convert arguments from json to obj separately
     for x, y in request.params.iteritems():
-        if not x or not y or x == "session": continue
-        kwargs[x] = loads(unquote(y))
+        try:
+            if not x or not y or x == "session": continue
+            kwargs[x] = loads(unquote(y))
+        except Exception, e:
+            # Unsupported input
+            msg = "Invalid Input %s, %s : %s" % (x, y, e.message)
+            print_exc()
+            print msg
+            return error(415, msg)
 
     try:
         result = getattr(api, func)(*args, **kwargs)
@@ -77,10 +88,10 @@ def call_api(func, args=""):
         return dumps(result)
 
     except ExceptionObject, e:
-        return HTTPError(400, dumps(e), **response.headers)
+        return error(400, e.message)
     except Exception, e:
         print_exc()
-        return HTTPError(500, dumps({"error": e.message, "traceback": format_exc()}), **response.headers)
+        return error(500, {"error": e.message, "traceback": format_exc()})
 
 
 @route("/api/login")
