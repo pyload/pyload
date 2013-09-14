@@ -194,7 +194,6 @@ class Hoster(Base):
 
         return True, 10
 
-
     def setWait(self, seconds, reconnect=False):
         """Set a specific wait time later used with `wait`
         
@@ -249,7 +248,6 @@ class Hoster(Base):
         self.wait()
 
         raise Retry(reason)
-
 
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
         """Downloads the content at url to download folder

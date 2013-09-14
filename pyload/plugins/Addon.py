@@ -20,7 +20,7 @@
 from traceback import print_exc
 
 #from functools import wraps
-from module.utils import has_method, to_list
+from pyload.utils import has_method, to_list
 
 from Base import Base
 

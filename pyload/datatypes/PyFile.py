@@ -129,7 +129,6 @@ class PyFile(object):
             self.media = guess_type(name)
             self._name = name
 
-
     name = property(getName, setName)
 
     def __repr__(self):
