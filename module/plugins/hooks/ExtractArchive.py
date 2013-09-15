@@ -59,7 +59,7 @@ class ExtractArchive(Hook):
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __description__ = "Extract different kind of archives"
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
@@ -303,13 +303,13 @@ class ExtractArchive(Hook):
             if not exists(f):
                 continue
             try:
-                if self.core.config["permission"]["change_file"]:
+                if self.config["permission"]["change_file"]:
                     if isfile(f):
-                        chmod(f, int(self.core.config["permission"]["file"], 8))
+                        chmod(f, int(self.config["permission"]["file"], 8))
                     elif isdir(f):
-                        chmod(f, int(self.core.config["permission"]["folder"], 8))
+                        chmod(f, int(self.config["permission"]["folder"], 8))
 
-                if self.core.config["permission"]["change_dl"] and os.name != "nt":
+                if self.config["permission"]["change_dl"] and os.name != "nt":
                     uid = getpwnam(self.config["permission"]["user"])[2]
                     gid = getgrnam(self.config["permission"]["group"])[2]
                     chown(f, uid, gid)
