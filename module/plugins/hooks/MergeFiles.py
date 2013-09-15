@@ -30,7 +30,7 @@ BUFFER_SIZE = 4096
 
 class MergeFiles(Hook):
     __name__ = "MergeFiles"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = "Merges parts splitted with hjsplit"
     __config__ = [("activated", "bool", "Activated", "False")]
     __threaded__ = ["packageFinished"]
@@ -52,9 +52,9 @@ class MergeFiles(Hook):
                 files[data["name"][:-4]].sort()
                 fid_dict[data["name"]] = fid
 
-        download_folder = self.core.config['general']['download_folder']
+        download_folder = self.config['general']['download_folder']
 
-        if self.core.config['general']['folder_per_package']:
+        if self.config['general']['folder_per_package']:
             download_folder = save_join(download_folder, pack.folder)
 
         for name, file_list in files.iteritems():
