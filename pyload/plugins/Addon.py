@@ -108,11 +108,11 @@ class Addon(Base):
         self.init()
 
     def startPeriodical(self, interval=self.interval, wait=0):
-        if self.cb or not self.setInterval(interval):
-            return False
-        else:
+        if not self.cb and self.setInterval(interval):
             self.cb = self.core.scheduler.addJob(wait, self._periodical, threaded=False)
             return interval
+        else:
+            return False
 
     def stopPeriodical(self):
         if not self.cb:
