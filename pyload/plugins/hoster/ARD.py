@@ -40,7 +40,7 @@ class RTMP:
 
 class ARD(Hoster):
     __name__ = "ARD Mediathek"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __pattern__ = r"http://www\.ardmediathek\.de/.*"
     __config__ = []
 
@@ -67,9 +67,9 @@ class ARD(Hoster):
             location = save_join(download_folder, pyfile.package().folder)
 
             if not os.path.exists(location):
-                os.makedirs(location, int(self.core.config["permission"]["folder"], 8))
+                os.makedirs(location, int(self.config["permission"]["folder"], 8))
 
-                if self.core.config["permission"]["change_dl"] and os.name != "nt":
+                if self.config["permission"]["change_dl"] and os.name != "nt":
                     try:
                         uid = getpwnam(self.config["permission"]["user"])[2]
                         gid = getgrnam(self.config["permission"]["group"])[2]
