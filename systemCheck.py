@@ -30,8 +30,16 @@ def main():
         print("OpenSSL: missing")
 
     try:
-        import Image
-        print("image library: " + Image.VERSION)
+        try:
+            from PIL import Image
+            if hasattr(Image, 'PILLOW_VERSION'):
+                imaging_lib = "pillow " + Image.PILLOW_VERSION
+            else:
+                imaging_lib = "PIL " + Image.VERSION
+        except:
+            import Image
+            imaging_lib = "PIL " + Image.VERSION
+        print("image library: " + imaging_lib)
     except:
         print("image library: missing")
 
@@ -59,9 +67,16 @@ def main():
         core_err.append("Your py-curl version is too old, please upgrade!")
 
     try:
-        import Image
+        try:
+           from PIL import Image
+        except:
+            try:
+                import Image
+                core_info.append("You should use pillow instead of PIL. It is a fork, which suports Python3 and is actively maintained")
+            except:
+                raise
     except:
-        core_err.append("Please install py-imaging/pil to use Hoster, which use captchas.")
+        core_err.append("Please install pillow (prefered) or PIL (python-imaging) to use Hoster, which use captchas.")
 
     pipe = subprocess.PIPE
     try:

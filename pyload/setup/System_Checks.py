@@ -94,7 +94,8 @@ class System_Checks():
     def check_captcha(self):
         self.result = "" #clear result
         pil = self.check_module("Image")
-        self.print_dep("py-imaging", pil)
+        pillow = self.check_module("PIL.Image")
+        self.print_dep("pillow / py-imaging", pil or pillow)
         if os.name == "nt":
             tesser = self.check_prog([join(pypath, "tesseract", "tesseract.exe"), "-v"])
         else:

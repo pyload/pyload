@@ -23,7 +23,10 @@ import pycurl
 import StringIO
 from urllib import urlencode
 from time import sleep
-import Image
+try:
+    from PIL import Image
+except ImportError:
+    import Image
 
 from module.network.RequestFactory import getURL, getRequest
 from module.plugins.Hook import Hook
