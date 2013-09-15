@@ -104,21 +104,33 @@ class Addon(Base):
             #delete for various reasons
             self.event_map = None
 
-        #self.initPeriodical()
+        #self.startPeriodical()
         self.init()
+
+    def startPeriodical(self, interval=self.interval, wait=0):
+        if self.cb or not self.setInterval(interval):
+            return False
+        else:
+            self.cb = self.core.scheduler.addJob(wait, self._periodical, threaded=False)
+            return interval
 
     def stopPeriodical(self):
         if not self.cb:
-            return
+            return False
         r = self.core.scheduler.removeJob(self.cb)
-        self.cb = None
+        if r:
+            self.cb = None
         return r #: return True if successfully removed else False
 
-    def initPeriodical(self, wait=0):
-        if self.interval > 0:
-            self.cb = self.core.scheduler.addJob(wait, self._periodical, threaded=False)
+    def setInterval(self, interval, reset=False):
+        if interval > 0:
+            if reset:
+                return self.stopPeriodical() and self.startPeriodical(interval)
+            else:
+                self.interval = interval
+                return True
         else:
-            self.stopPeriodical()
+            return False
 
     def _periodical(self):
         try:
