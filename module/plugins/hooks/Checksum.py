@@ -54,7 +54,7 @@ def computeChecksum(local_file, algorithm):
 
 class Checksum(Hook):
     __name__ = "Checksum"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __description__ = "Verify downloaded file size and checksum (enable in general preferences)"
     __config__ = [("activated", "bool", "Activated", True),
                   ("action", "fail;retry;nothing", "What to do if check fails?", "retry"),
@@ -121,7 +121,7 @@ class Checksum(Hook):
                 if key in data:
                     checksum = computeChecksum(local_file, key.replace("-", "").lower())
                     if checksum:
-                        if checksum == data[key]:
+                        if checksum == data[key].lower():
                             self.logInfo('File integrity of "%s" verified by %s checksum (%s).' % (pyfile.name,
                                                                                                    key.upper(),
                                                                                                    checksum))
