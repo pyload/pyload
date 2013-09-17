@@ -466,7 +466,8 @@ class WebSocketRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
                 self, request, client_address, server)
         except socket.error, e:
             # Broken pipe, let it pass
-            if e.errno != 32:
+            errno = e.args[0] # errno on py < 2.6
+            if errno != 32:
                 raise
             self._logger.debug("WS: Broken pipe")
 

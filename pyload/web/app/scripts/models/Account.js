@@ -28,6 +28,14 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', './ConfigIt
 
         },
 
+        // representation handled by server
+        toServerJSON: function() {
+            var data = this.toJSON();
+            delete data.config;
+
+            return data;
+        },
+
         parse: function(resp) {
             // Convert config to models
             resp.config = _.map(resp.config, function(item) {
@@ -78,7 +86,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', './ConfigIt
         },
 
         destroy: function(options) {
-            options = App.apiRequest('removeAccount', {account: this.toJSON()}, options);
+            options = App.apiRequest('removeAccount', {account: this.toServerJSON()}, options);
             var self = this;
             options.success = function() {
                 self.trigger('destroy', self, self.collection, options);
