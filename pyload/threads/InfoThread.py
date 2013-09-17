@@ -57,7 +57,7 @@ class InfoThread(BaseThread):
                     data = self.decrypt(name, urls)
                 except:
                     print_exc()
-                    self.m.log.error("Could not decrypt container.")
+                    self.m.log.error("Could not decrypt content.")
                     data = []
 
                 accumulate(data, plugins)
@@ -148,15 +148,9 @@ class InfoThread(BaseThread):
                 result = [(url, 0, 3, url) for url in urls]
                 cb(pluginname, result)
 
-
     def decrypt(self, plugin, urls):
-        self.m.log.debug("Pre decrypting %s" % plugin)
+        self.m.log.debug("Decrypting %s" % plugin)
         klass = self.m.core.pluginManager.loadClass("crypter", plugin)
-
-        # only decrypt files
-        if has_method(klass, "decryptFile"):
-            urls = klass.decrypt(urls)
-            data, crypter = self.m.core.pluginManager.parseUrls(urls)
-            return data
-
-        return []
+        urls = klass.decrypt(self.core, urls)
+        data, crypter = self.m.core.pluginManager.parseUrls(urls)
+        return data + crypter

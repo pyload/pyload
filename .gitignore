@@ -49,8 +49,7 @@ Logs/*
 docs/module/
 docs/pyload/
 docs/_build
-pyload/plugins/container/DLC_*.py
-failed_links.txt
+DLC.py
 links.txt
 ssl.crt
 ssl.key

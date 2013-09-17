@@ -135,8 +135,6 @@ class Crypter(Base):
         self.package = package
         #: Password supplied by user
         self.password = password
-        #: Propose a renaming of the owner package
-        self.rename = None
 
         # For old style decrypter, do not use these!
         self.packages = []
@@ -236,10 +234,9 @@ class Crypter(Base):
         :return: Decrypting results
         """
         try:
-            return self._decrypt(urls)
+            return to_list(self._decrypt(urls))
         except Exception:
-            if self.core.debug:
-                print_exc()
+            self.core.print_exc()
             return []
 
     def getLocalContent(self, urls):

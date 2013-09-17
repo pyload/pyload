@@ -44,14 +44,14 @@ def call_api(func, args=""):
 
     api = get_user_api(s)
     if not api:
-        return HTTPError(401, dumps("Unauthorized"), **response.headers)
+        return error(401, "Unauthorized")
 
     if not PYLOAD.isAuthorized(func, api.user):
-        return HTTPError(403, dumps("Forbidden"), **response.headers)
+        return error(403, "Forbidden")
 
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
         print "Invalid API call", func
-        return HTTPError(404, dumps("Not Found"), **response.headers)
+        return error(404, "Not Found")
 
     # TODO: possible encoding
     # TODO Better error codes on invalid input
@@ -65,7 +65,6 @@ def call_api(func, args=""):
 
     # file upload, reads whole file into memory
     for name, f in request.files.iteritems():
-        print f.length
         kwargs["filename"] = f.filename
         kwargs[name] = f.value
 
