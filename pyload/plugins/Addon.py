@@ -120,9 +120,9 @@ class Addon(Base):
             return True
         return False
 
-    def setInterval(self, interval, reset=False):
+    def setInterval(self, interval, recount=False):
         if interval > 0:
-            if reset:
+            if recount:
                 return self.stopPeriodical() and self.startPeriodical(interval)
             else:
                 self.interval = interval
