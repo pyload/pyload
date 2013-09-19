@@ -24,16 +24,18 @@ from os import remove
 from os.path import getsize, isfile, splitext
 import re
 
-from module.utils import save_join, fs_encode
+from module.utils import save_join, fs_encode, fs_bsize
 from module.plugins.Hook import Hook
 
 
 def computeChecksum(local_file, algorithm):
+    buf = fs_bsize(local_file)
+
     if algorithm in getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")):
         h = getattr(hashlib, algorithm)()
 
         with open(local_file, 'rb') as f:
-            for chunk in iter(lambda: f.read(128 * h.block_size), b''):
+            for chunk in iter(lambda: f.read(buf), b''):
                 h.update(chunk)
 
         return h.hexdigest()
@@ -43,7 +45,7 @@ def computeChecksum(local_file, algorithm):
         last = 0
 
         with open(local_file, 'rb') as f:
-            for chunk in iter(lambda: f.read(8192), b''):
+            for chunk in iter(lambda: f.read(buf), b''):
                 last = hf(chunk, last)
 
         return "%x" % last
@@ -54,7 +56,7 @@ def computeChecksum(local_file, algorithm):
 
 class Checksum(Hook):
     __name__ = "Checksum"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __description__ = "Verify downloaded file size and checksum"
     __config__ = [
         ("activated", "bool", "Activated", True),
