@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+  # -*- coding: utf-8 -*-
 
 """
     This program is free software; you can redistribute it and/or modify
@@ -16,6 +16,7 @@
 
     @author: zoidberg
 """
+
 from __future__ import with_statement
 import hashlib
 import zlib
@@ -30,7 +31,7 @@ from module.plugins.Hook import Hook
 def computeChecksum(local_file, algorithm):
     if algorithm in getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")):
         h = getattr(hashlib, algorithm)()
-        
+
         with open(local_file, 'rb') as f:
             for chunk in iter(lambda: f.read(128 * h.block_size), b''):
                 h.update(chunk)
@@ -79,11 +80,11 @@ class Checksum(Hook):
         self.formats = self.algorithms + ['sfv', 'crc', 'hash']
 
     def downloadFinished(self, pyfile):
-        """ 
+        """
         Compute checksum for the downloaded file and compare it with the hash provided by the hoster.
         pyfile.plugin.check_data should be a dictionary which can contain:
         a) if known, the exact filesize in bytes (e.g. "size": 123456789)
-        b) hexadecimal hash string with algorithm name as key (e.g. "md5": "d76505d0869f9f928a17d42d66326307")    
+        b) hexadecimal hash string with algorithm name as key (e.g. "md5": "d76505d0869f9f928a17d42d66326307")
         """
         if hasattr(pyfile.plugin, "check_data") and (isinstance(pyfile.plugin.check_data, dict)):
             data = pyfile.plugin.check_data.copy()
@@ -123,11 +124,11 @@ class Checksum(Hook):
                     checksum = computeChecksum(local_file, key.replace("-", "").lower())
                     if checksum:
                         if checksum == data[key].lower():
-                            self.logInfo('File integrity of "%s" verified by %s checksum (%s).' % 
+                            self.logInfo('File integrity of "%s" verified by %s checksum (%s).' %
                                         (pyfile.name, key.upper(), checksum))
                             return
                         else:
-                            self.logWarning("%s checksum for file %s does not match (%s != %s)" % 
+                            self.logWarning("%s checksum for file %s does not match (%s != %s)" %
                                            (key.upper(), pyfile.name, checksum, data[key]))
                             self.checkFailed(pyfile, local_file, "Checksums do not match")
                     else:
@@ -171,8 +172,8 @@ class Checksum(Hook):
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = computeChecksum(local_file, algorithm)
                 if checksum == data["hash"]:
-                    self.logInfo('File integrity of "%s" verified by %s checksum (%s).' % 
+                    self.logInfo('File integrity of "%s" verified by %s checksum (%s).' %
                                 (data["name"], algorithm, checksum))
                 else:
-                    self.logWarning("%s checksum for file %s does not match (%s != %s)" % 
-                                    (algorithm, data["name"], checksum, data["hash"]))
+                    self.logWarning("%s checksum for file %s does not match (%s != %s)" %
+                                   (algorithm, data["name"], checksum, data["hash"]))
