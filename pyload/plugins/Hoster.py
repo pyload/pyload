@@ -18,6 +18,7 @@
 """
 
 import os
+from inspect import isclass
 from time import time
 
 if os.name != "nt":
@@ -229,18 +230,26 @@ class Hoster(Base):
         """ fail and indicates file ist temporary offline, the core may take consequences """
         raise Fail("temp. offline")
 
-    def retry(self, max_tries=3, wait_time=1, reason="", backoff=lambda x,y: x):
+    def retry(self, max_tries=3, wait_time=1, reason="", exceptionclass="Fail", backoff=lambda x,y: x):
         """Retries and begin again from the beginning
 
         :param max_tries: number of maximum retries
         :param wait_time: time to wait in seconds
         :param reason: reason for retrying, will be passed to fail if max_tries reached
+        :param exception: a string identifying an exception class from Base (ex.: "Fail", "SkipDownload", etc.), otherwise
+                          a custom class object that takes 'reason' as argument
         :param backoff: Function to backoff the wait time, takes initial time and number of retry as argument.
                         defaults to no backoff / fixed wait time
         """
         if 0 < max_tries <= self.retries:
+            if isinstance(exceptionclass, str):
+                e = getattr(Base, exceptionclass, Fail)
+            elif isclass(exceptionclass):
+                e = exceptionclass
+            else:
+                return
             if not reason: reason = "Max retries reached"
-            raise Fail(reason)
+            raise e(reason)
 
         self.wantReconnect = False
         self.retries += 1
