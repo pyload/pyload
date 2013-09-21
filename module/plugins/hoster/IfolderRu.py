@@ -24,9 +24,9 @@ class IfolderRu(SimpleHoster):
     __name__ = "IfolderRu"
     __type__ = "hoster"
     __pattern__ = r"http://(?:[^.]*\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __description__ = """rusfolder.com / ifolder.ru"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = ("zoidberg", "pulpe")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     FILE_SIZE_REPLACEMENTS = [(u'Кб', 'KB'), (u'Мб', 'MB'), (u'Гб', 'GB')]
@@ -49,7 +49,7 @@ class IfolderRu(SimpleHoster):
         self.html = self.load("http://rusfolder.com/%s" % file_id, cookies=True, decode=True)
         self.getFileInfo()
 
-        url = re.search('<a href="(http://ints\..*?=)"', self.html).group(1)
+        url = re.search('location.href = \'(http://ints\...*?=)\'', self.html).group(1)
         self.html = self.load(url, cookies=True, decode=True)
 
         url, session_id = re.search(self.SESSION_ID_PATTERN, self.html).groups()
