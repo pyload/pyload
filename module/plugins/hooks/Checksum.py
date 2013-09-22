@@ -1,4 +1,4 @@
-  # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """
     This program is free software; you can redistribute it and/or modify
@@ -60,8 +60,8 @@ class Checksum(Hook):
         ("activated", "bool", "Activated", True),
         ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
         ("max_tries", "int", "Number of retries", 2),
-        ("retry_action", "fail;nothing", "What to do if all retries fails?", "fail"),
-        ("wait_time", "int", "Time to wait before each retrying (seconds)", 1)
+        ("retry_action", "fail;nothing", "What to do if all retries fail?", "fail"),
+        ("wait_time", "int", "Time to wait before each retry (seconds)", 1)
     ]
     __author_name__ = ("zoidberg", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com")
@@ -145,7 +145,8 @@ class Checksum(Hook):
             max_tries = self.getConfig("max_tries")
             retry_action = self.getConfig("retry_action")
             if pyfile.plugin.retries < max_tries:
-                if local_file: remove(local_file)
+                if local_file:
+                    remove(local_file)
                 pyfile.plugin.retry(reason=msg, max_tries=max_tries, wait_time=self.getConfig("wait_time"))
             elif retry_action == "nothing":
                 return
