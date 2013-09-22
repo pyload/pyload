@@ -140,15 +140,18 @@ class Checksum(Hook):
                 self.logWarning("Unable to validate checksum for file %s" % pyfile.name)
 
     def checkFailed(self, pyfile, local_file, msg):
-        action = self.getConfig("check_action")
-        if action == "fail":
-            pyfile.plugin.fail(reason=msg)
-        elif action == "retry":
+        check_action = self.getConfig("check_action")
+        if check_action == "retry":
             max_tries = self.getConfig("max_tries")
-            exceptionclass = None if self.getConfig("retry_action") == "nothing" else "Fail"
-            if local_file and pyfile.plugin.retries < max_tries:
-                remove(local_file)
-            pyfile.plugin.retry(reason=msg, max_tries=max_tries, wait_time=self.getConfig("wait_time"), exceptionclass=exceptionclass)
+            retry_action = self.getConfig("retry_action")
+            if pyfile.plugin.retries < max_tries:
+                if local_file: remove(local_file)
+                pyfile.plugin.retry(reason=msg, max_tries=max_tries, wait_time=self.getConfig("wait_time"))
+            elif retry_action == "nothing":
+                return
+        elif check_action == "nothing":
+            return
+        pyfile.plugin.fail(reason=msg)
 
     def packageFinished(self, pypack):
         download_folder = save_join(self.config['general']['download_folder'], pypack.folder, "")
