@@ -19,9 +19,9 @@ import sys
 
 class MovieMover(Hook):
     __name__ = "MovieMover"
-    __version__ = "0.391"
+    __version__ = "0.392"
     __description__ = "MovieMover(MM) moves your movies for you"
-    __config__ = [("activated" , "bool" , "Activated"  , "True" ),
+    __config__ = [("activated" , "bool" , "Activated"  , "False" ),
                   ("extension", "str", "List of supported extensions", "mkv,avi,mp4,wmv"),
                   ("movies", "path", "Path to your local movies", ""),
                   ("common", "path", "Path to a file with common occurrences(one per line)", "/path/to/file.txt"),

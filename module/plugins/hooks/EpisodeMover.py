@@ -22,7 +22,7 @@ from Queue import Queue
 import time
 import urllib2
 from module.utils import fs_encode,save_path
-import module.lib.simplejson as json
+import module.common.json_layer.json as json
 from datetime import datetime as dt
 import traceback
 #from module.common.pydevsrc import pydevd 
@@ -59,9 +59,9 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.508"
+    __version__ = "0.509"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
-    __config__ = [  ("activated" , "bool" , "Activated"  , "True" ), 
+    __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
                     ("create_season", "bool","Create season folder if necessary", "False"),
                     ("extensions","list","Add your own _comma-separated_ file extensions for EM to watch for","mkv,ts,avi,wmv,mpeg"),
