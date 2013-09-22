@@ -58,8 +58,10 @@ class Checksum(Hook):
     __description__ = "Verify downloaded file size and checksum"
     __config__ = [
         ("activated", "bool", "Activated", True),
-        ("max_tries", "int", "Number of retries if check fails", 2),
-        ("action", "fail;nothing", "What to do if all retries fails?", "nothing")
+        ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
+        ("max_tries", "int", "Number of retries", 2),
+        ("retry_action", "fail;nothing", "What to do if all retries fails?", "fail"),
+        ("wait_time", "int", "Time to wait before each retrying (seconds)", 1)
     ]
     __author_name__ = ("zoidberg", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com")
@@ -70,10 +72,11 @@ class Checksum(Hook):
                'crc': r'filename=(?P<name>.+)\nsize=(?P<size>\d+)\ncrc32=(?P<hash>[0-9A-Fa-f]{8})$',
                'default': r'^(?P<hash>[0-9A-Fa-f]+)\s+\*?(?P<name>.+)$'}
 
-    def setup(self):
+    def coreReady(self):
         if not self.config['general']['checksum']:
             self.logInfo("Checksum validation is disabled in general configuration")
 
+    def setup(self):
         self.algorithms = sorted(
             getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse=True)
         self.algorithms.extend(["crc32", "adler32"])
@@ -137,14 +140,15 @@ class Checksum(Hook):
                 self.logWarning("Unable to validate checksum for file %s" % pyfile.name)
 
     def checkFailed(self, pyfile, local_file, msg):
-        max_tries = self.getConfig("max_tries")
-        if max_tries > 0:
-            if local_file:
+        action = self.getConfig("check_action")
+        if action == "fail":
+            pyfile.plugin.fail(reason=msg)
+        elif action == "retry":
+            max_tries = self.getConfig("max_tries")
+            exceptionclass = None if self.getConfig("retry_action") == "nothing" else "Fail"
+            if local_file and pyfile.plugin.retries < max_tries:
                 remove(local_file)
-            pyfile.plugin.retry(reason=msg, max_tries=max_tries)
-            if self.getConfig("action") == "nothing":
-                return
-        pyfile.plugin.fail(reason=msg)
+            pyfile.plugin.retry(reason=msg, max_tries=max_tries, wait_time=self.getConfig("wait_time"), exceptionclass=exceptionclass)
 
     def packageFinished(self, pypack):
         download_folder = save_join(self.config['general']['download_folder'], pypack.folder, "")
