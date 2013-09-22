@@ -74,10 +74,6 @@ class Checksum(Hook):
                'crc': r'filename=(?P<name>.+)\nsize=(?P<size>\d+)\ncrc32=(?P<hash>[0-9A-Fa-f]{8})$',
                'default': r'^(?P<hash>[0-9A-Fa-f]+)\s+\*?(?P<name>.+)$'}
 
-    def coreReady(self):
-        if not self.config['general']['checksum']:
-            self.logInfo("Checksum validation is disabled in general configuration")
-
     def setup(self):
         self.algorithms = sorted(
             getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse=True)
@@ -120,26 +116,28 @@ class Checksum(Hook):
             del data['size']
 
         # validate checksum
-        if data and self.config['general']['checksum']:
-            if "checksum" in data:
-                data['md5'] = data['checksum']
+        if not data:
+            return
 
-            for key in self.algorithms:
-                if key in data:
-                    checksum = computeChecksum(local_file, key.replace("-", "").lower())
-                    if checksum:
-                        if checksum == data[key].lower():
-                            self.logInfo('File integrity of "%s" verified by %s checksum (%s).' %
-                                        (pyfile.name, key.upper(), checksum))
-                            return
-                        else:
-                            self.logWarning("%s checksum for file %s does not match (%s != %s)" %
-                                           (key.upper(), pyfile.name, checksum, data[key]))
-                            self.checkFailed(pyfile, local_file, "Checksums do not match")
+        if "checksum" in data:
+            data['md5'] = data['checksum']
+
+        for key in self.algorithms:
+            if key in data:
+                checksum = computeChecksum(local_file, key.replace("-", "").lower())
+                if checksum:
+                    if checksum == data[key].lower():
+                        self.logInfo('File integrity of "%s" verified by %s checksum (%s).' %
+                                    (pyfile.name, key.upper(), checksum))
+                        return
                     else:
-                        self.logWarning("Unsupported hashing algorithm: %s" % key.upper())
-            else:
-                self.logWarning("Unable to validate checksum for file %s" % pyfile.name)
+                        self.logWarning("%s checksum for file %s does not match (%s != %s)" %
+                                       (key.upper(), pyfile.name, checksum, data[key]))
+                        self.checkFailed(pyfile, local_file, "Checksums do not match")
+                else:
+                    self.logWarning("Unsupported hashing algorithm: %s" % key.upper())
+        else:
+            self.logWarning("Unable to validate checksum for file %s" % pyfile.name)
 
     def checkFailed(self, pyfile, local_file, msg):
         check_action = self.getConfig("check_action")
