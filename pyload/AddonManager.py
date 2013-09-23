@@ -31,7 +31,7 @@ class AddonManager:
 
     def __init__(self, core):
         self.core = core
-        self.config = self.core.config
+        self.config = core.config
 
         __builtin__.addonManager = self #needed to let addons register themselves
 
@@ -73,7 +73,7 @@ class AddonManager:
                 attrs = self.core.pluginManager.loadAttributes("addons", pluginname)
                 internal = attrs.get("internal", False)
 
-                if internal or self.core.config.get(pluginname, "activated"):
+                if internal or self.config.get(pluginname, "activated"):
                     pluginClass = self.core.pluginManager.loadClass("addons", pluginname)
 
                     if not pluginClass: continue

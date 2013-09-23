@@ -266,9 +266,9 @@ class Hoster(Base):
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
-            makedirs(location, int(self.core.config["permission"]["folder"], 8))
+            makedirs(location, int(self.config["permission"]["folder"], 8))
 
-            if self.core.config["permission"]["change_dl"] and os.name != "nt":
+            if self.config["permission"]["change_dl"] and os.name != "nt":
                 try:
                     uid = getpwnam(self.config["permission"]["user"])[2]
                     gid = getgrnam(self.config["permission"]["group"])[2]
@@ -302,10 +302,10 @@ class Hoster(Base):
 
         fs_filename = fs_encode(filename)
 
-        if self.core.config["permission"]["change_file"]:
-            chmod(fs_filename, int(self.core.config["permission"]["file"], 8))
+        if self.config["permission"]["change_file"]:
+            chmod(fs_filename, int(self.config["permission"]["file"], 8))
 
-        if self.core.config["permission"]["change_dl"] and os.name != "nt":
+        if self.config["permission"]["change_dl"] and os.name != "nt":
             try:
                 uid = getpwnam(self.config["permission"]["user"])[2]
                 gid = getgrnam(self.config["permission"]["group"])[2]
@@ -385,7 +385,7 @@ class Hoster(Base):
         download_folder = self.config['general']['download_folder']
         location = save_join(download_folder, pack.folder, self.pyfile.name)
 
-        if starting and self.core.config['download']['skip_existing'] and exists(location):
+        if starting and self.config['download']['skip_existing'] and exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
                 raise SkipDownload("File exists.")

@@ -59,7 +59,7 @@ class DownloadPreparingApi(ApiComponent):
         :param data: file content
         :return: :class:`OnlineCheck`
         """
-        th = open(join(self.core.config["general"]["download_folder"], "tmp_" + filename), "wb")
+        th = open(join(self.config["general"]["download_folder"], "tmp_" + filename), "wb")
         th.write(str(data))
         th.close()
         return self.checkLinks([th.name])

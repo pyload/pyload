@@ -56,7 +56,7 @@ class DownloadApi(ApiComponent):
         :param root: parents package id
         :return: package id of the new package
         """
-        if self.core.config['general']['folder_per_package']:
+        if self.config['general']['folder_per_package']:
             folder = name
         else:
             folder = ""
@@ -91,7 +91,7 @@ class DownloadApi(ApiComponent):
         :param filename: filename, extension is important so it can correctly decrypted
         :param data: file content
         """
-        th = open(join(self.core.config["general"]["download_folder"], "tmp_" + filename), "wb")
+        th = open(join(self.config["general"]["download_folder"], "tmp_" + filename), "wb")
         th.write(str(data))
         th.close()
 

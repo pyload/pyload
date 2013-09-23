@@ -151,7 +151,7 @@ class Base(object):
 
     def setConfig(self, option, value):
         """ Set config value for current plugin """
-        self.core.config.set(self.__name__, option, value)
+        self.config.set(self.__name__, option, value)
 
     def getConf(self, option):
         """ see `getConfig` """
@@ -159,7 +159,7 @@ class Base(object):
 
     def getConfig(self, option):
         """ Returns config value for current plugin """
-        return self.core.config.get(self.__name__, option)
+        return self.config.get(self.__name__, option)
 
     def setStorage(self, key, value):
         """ Saves a value persistently to the database """

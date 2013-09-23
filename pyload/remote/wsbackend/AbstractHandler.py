@@ -46,7 +46,7 @@ class AbstractHandler:
         req.api = None #when api is set client is logged in
 
         # allow login via session when webinterface is active
-        if self.core.config['webinterface']['activated']:
+        if self.config['webinterface']['activated']:
             cookie = req.headers_in.getheader('Cookie')
             s = self.load_session(cookie)
             if s:

@@ -64,8 +64,7 @@ class PluginManager:
 
     def __init__(self, core):
         self.core = core
-
-        #self.config = self.core.config
+        self.config = core.config
         self.log = core.log
 
         self.plugins = {}
@@ -225,7 +224,7 @@ class PluginManager:
                 self.user_context[name] = True
 
             try:
-                self.core.config.addConfigSection(name, name, desc, expl, config)
+                self.config.addConfigSection(name, name, desc, expl, config)
             except:
                 self.logDebug(folder, name, "Invalid config  %s" % config)
 
