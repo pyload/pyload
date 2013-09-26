@@ -4,7 +4,7 @@ from module.plugins.Crypter import Crypter
 class XupPl(Crypter):
     __name__ = "XupPl"
     __type__ = "crypter"
-    __pattern__ = r"http(?:s)?://.*\.xup\.pl/.*"
+    __pattern__ = r"https?://.*\.xup\.pl/.*"
     __version__ = "0.1"
     __description__ = """Xup.pl Crypter Plugin"""
     __author_name__ = ("z00nx")
