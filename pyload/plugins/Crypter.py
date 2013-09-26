@@ -1,50 +1,60 @@
 # -*- coding: utf-8 -*-
 
-from traceback import print_exc
-
-from pyload.Api import LinkStatus
+from pyload.Api import LinkStatus, DownloadStatus as DS
 from pyload.utils import to_list, has_method, uniqify
 from pyload.utils.fs import exists, remove, fs_encode
 from pyload.utils.packagetools import parseNames
 
-from Base import Base, Retry
+from Base import Base, Fail, Retry, Abort
 
 
 class Package:
     """ Container that indicates that a new package should be created """
 
-    def __init__(self, name=None, urls=None):
+    def __init__(self, name=None, links=None):
         self.name = name
-        self.urls = urls if urls else []
+        self.links = []
+
+        if links:
+            self.addLinks(links)
 
         # nested packages
         self.packs = []
 
-    def addURL(self, url):
-        self.urls.append(url)
+    def addLinks(self, links):
+        """ Add one or multiple links to the package
 
-    def addLink(self, url, name, status, size):
-        # TODO: allow to add urls with known information
-        pass
+        :param links: One or list of urls or :class:`LinkStatus`
+        """
+        links = to_list(links)
+        for link in links:
+            if not isinstance(link, LinkStatus):
+                link = LinkStatus(link, link, -1, DS.Queued)
+
+            self.links.append(link)
 
     def addPackage(self, pack):
         self.packs.append(pack)
 
+    def getURLs(self):
+        return [link.url for link in self.links]
+
     def getAllURLs(self):
-        urls = self.urls
+        urls = self.getURLs()
         for p in self.packs:
             urls.extend(p.getAllURLs())
         return urls
 
     # same name and urls is enough to be equal for packages
     def __eq__(self, other):
-        return self.name == other.name and self.urls == other.urls
+        return self.name == other.name and self.links == other.links
 
     def __repr__(self):
-        return u"<CrypterPackage name=%s, links=%s, packs=%s" % (self.name, self.urls, self.packs)
+        return u"<CrypterPackage name=%s, links=[%s], packs=%s" % (self.name, ",".join(str(l) for l in self.links),
+                                                                   self.packs)
 
     def __hash__(self):
-        return hash(self.name) ^ hash(frozenset(self.urls)) ^ hash(self.name)
+        return hash(self.name) ^ hash(frozenset(self.links)) ^ hash(self.name)
 
 
 class PyFileMockup:
@@ -53,7 +63,7 @@ class PyFileMockup:
     def __init__(self, url, pack):
         self.url = url
         self.name = url
-        self._package = pack
+        self._package = None
         self.packageid = pack.id if pack else -1
 
     def package(self):
@@ -91,18 +101,21 @@ class Crypter(Base):
     QUEUE_DECRYPT = False
 
     @classmethod
-    def decrypt(cls, core, url_or_urls):
+    def decrypt(cls, core, url_or_urls, password=None):
         """Static method to decrypt urls or content. Can be used by other plugins.
         To decrypt file content prefix the string with ``CONTENT_PREFIX `` as seen above.
 
         :param core: pyLoad `Core`, needed in decrypt context
         :param url_or_urls: List of urls or single url/ file content
+        :param password: optional password used for decrypting
+
+        :raises Exception: No decryption errors are cascaded
         :return: List of decrypted urls, all package info removed
         """
         urls = to_list(url_or_urls)
-        p = cls(core)
+        p = cls(core, password)
         try:
-            result = p.processDecrypt(urls)
+            result = p._decrypt(urls)
         finally:
             p.clean()
 
@@ -113,12 +126,12 @@ class Crypter(Base):
                 ret.extend(url_or_pack.getAllURLs())
             else: # single url
                 ret.append(url_or_pack)
-        # eliminate duplicates
+                # eliminate duplicates
         return uniqify(ret)
 
     # TODO: pass user to crypter
     # TODO: crypter could not only know url, but also the name and size
-    def __init__(self, core, package=None, password=None):
+    def __init__(self, core, password=None):
         Base.__init__(self, core)
 
         self.req = None
@@ -131,8 +144,6 @@ class Crypter(Base):
         if self.req is None:
             self.req = core.requestFactory.getRequest()
 
-        # Package the plugin was initialized for, don't use this, its not guaranteed to be set
-        self.package = package
         #: Password supplied by user
         self.password = password
 
@@ -186,7 +197,7 @@ class Crypter(Base):
         return [Package(name, purls) for name, purls in parseNames([(url, url) for url in urls]).iteritems()]
 
     def _decrypt(self, urls):
-        """ Internal  method to select decrypting method
+        """Internal method to select decrypting method
 
         :param urls: List of urls/content
         :return:
@@ -208,7 +219,7 @@ class Crypter(Base):
             self.logDebug("Deprecated .decrypt() method in Crypter plugin")
             result = []
             for url in urls:
-                self.pyfile = PyFileMockup(url, self.package)
+                self.pyfile = PyFileMockup(url)
                 self.setup()
                 self.decrypt(self.pyfile)
                 result.extend(self.convertPackages())
@@ -223,21 +234,11 @@ class Crypter(Base):
                 result.extend(to_list(self.decryptFile(c)))
                 try:
                     if f.startswith("tmp_"): remove(f)
-                except:
-                    pass
+                except IOError:
+                    self.logWarning(_("Could not remove file '%s'") % f)
+                    self.core.print_exc()
 
         return result
-
-    def processDecrypt(self, urls):
-        """Catches all exceptions in decrypt methods and return results
-
-        :return: Decrypting results
-        """
-        try:
-            return to_list(self._decrypt(urls))
-        except Exception:
-            self.core.print_exc()
-            return []
 
     def getLocalContent(self, urls):
         """Load files from disk and separate to file content and url list

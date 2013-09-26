@@ -197,7 +197,7 @@ def has_method(obj, name):
 
 def accumulate(it, inv_map=None):
     """ accumulate (key, value) data to {value : [keylist]} dictionary """
-    if not inv_map:
+    if inv_map is None:
         inv_map = {}
 
     for key, value in it:

@@ -49,7 +49,7 @@ class PyFile(object):
     Represents a file object at runtime
     """
     __slots__ = ("m", "fid", "_name", "_size", "filestatus", "media", "added", "fileorder",
-                 "url", "pluginname", "hash", "status", "error", "packageid", "ownerid",
+                 "url", "pluginname", "hash", "status", "error", "packageid", "owner",
                  "lock", "plugin", "waitUntil", "abort", "statusname",
                  "reconnected", "pluginclass")
 
@@ -83,7 +83,7 @@ class PyFile(object):
         self.hash = hash
         self.status = status
         self.error = error
-        self.ownerid = owner
+        self.owner = owner
         self.packageid = package
         # database information ends here
 
@@ -183,7 +183,7 @@ class PyFile(object):
 
 
     def toInfoData(self):
-        return FileInfo(self.fid, self.getName(), self.packageid, self.ownerid, self.getSize(), self.filestatus,
+        return FileInfo(self.fid, self.getName(), self.packageid, self.owner, self.getSize(), self.filestatus,
                         self.media, self.added, self.fileorder, DownloadInfo(
                 self.url, self.pluginname, self.hash, self.status, self.getStatusName(), self.error
             )

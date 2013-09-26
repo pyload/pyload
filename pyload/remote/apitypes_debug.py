@@ -32,7 +32,7 @@ classes = {
 	'Input' : [int, (None, basestring), (None, basestring)],
 	'InteractionTask' : [int, int, Input, basestring, basestring, basestring],
 	'InvalidConfigSection' : [basestring],
-	'LinkStatus' : [basestring, basestring, basestring, int, int],
+	'LinkStatus' : [basestring, basestring, int, int, (None, basestring), (None, basestring)],
 	'OnlineCheck' : [int, (dict, basestring, LinkStatus)],
 	'PackageDoesNotExists' : [int],
 	'PackageInfo' : [int, basestring, basestring, int, int, basestring, basestring, basestring, int, (list, basestring), int, bool, int, PackageStats, (list, int), (list, int)],

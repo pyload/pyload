@@ -8,9 +8,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
 
             defaults: {
                 name: '',
-                plugin: '',
                 size: -1,
-                status: Api.DownloadStatus.Queued
+                status: Api.DownloadStatus.Queued,
+                plugin: '',
+                hash: null
             },
 
             destroy: function() {

@@ -599,8 +599,8 @@ class Core(object):
             if not self.pdb: self.pdb = Pdb()
             self.pdb.set_trace()
 
-    def print_exc(self):
-        if self.debug:
+    def print_exc(self, force=False):
+        if self.debug or force:
             print_exc()
 
     def path(self, *args):

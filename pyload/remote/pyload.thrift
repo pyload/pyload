@@ -197,9 +197,10 @@ struct TreeCollection {
 struct LinkStatus {
     1: string url,
     2: string name,
-    3: PluginName plugin,
-    4: ByteCount size,   // size <= 0 : unknown
-    5: DownloadStatus status,
+    3: ByteCount size,   // size <= 0 : unknown
+    4: DownloadStatus status,
+    5: optional PluginName plugin,
+    6: optional string hash
 }
 
 struct ServerStatus {

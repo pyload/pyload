@@ -241,14 +241,15 @@ class InvalidConfigSection(ExceptionObject):
 		self.section = section
 
 class LinkStatus(BaseObject):
-	__slots__ = ['url', 'name', 'plugin', 'size', 'status']
+	__slots__ = ['url', 'name', 'size', 'status', 'plugin', 'hash']
 
-	def __init__(self, url=None, name=None, plugin=None, size=None, status=None):
+	def __init__(self, url=None, name=None, size=None, status=None, plugin=None, hash=None):
 		self.url = url
 		self.name = name
-		self.plugin = plugin
 		self.size = size
 		self.status = status
+		self.plugin = plugin
+		self.hash = hash
 
 class OnlineCheck(BaseObject):
 	__slots__ = ['rid', 'data']

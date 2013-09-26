@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
 from threading import Thread
 from time import strftime, gmtime
-from sys import exc_info
 from types import MethodType
 from pprint import pformat
 from traceback import format_exc
@@ -11,17 +11,18 @@ from traceback import format_exc
 from pyload.utils import primary_uid
 from pyload.utils.fs import listdir, join, save_join, stat, exists
 
+
 class BaseThread(Thread):
     """abstract base class for thread types"""
 
-    def __init__(self, manager):
+    def __init__(self, manager, ower=None):
         Thread.__init__(self)
         self.setDaemon(True)
         self.m = manager #thread manager
         self.core = manager.core
         self.log = manager.core.log
 
-        #: Owner of the thread, every type should set it
+        #: Owner of the thread, every type should set it or overwrite user
         self.owner = None
 
     @property
@@ -40,13 +41,13 @@ class BaseThread(Thread):
 
         dump_name = "debug_%s_%s.zip" % (name, strftime("%d-%m-%Y_%H-%M-%S"))
         if pyfile:
-            dump = self.getFileDump(pyfile)
+            dump = self.getPluginDump(pyfile.plugin) + "\n"
+            dump += self.getFileDump(pyfile)
         else:
             dump = self.getPluginDump(plugin)
 
         try:
             import zipfile
-
             zip = zipfile.ZipFile(dump_name, "w")
 
             if exists(join("tmp", name)):
@@ -81,11 +82,11 @@ class BaseThread(Thread):
         self.log.info("Debug Report written to %s" % dump_name)
         return dump_name
 
-    def getFileDump(self, pyfile):
+    def getPluginDump(self, plugin):
         dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
-            self.m.core.api.getServerVersion(), pyfile.pluginname, pyfile.plugin.__version__, format_exc())
+            self.m.core.api.getServerVersion(), plugin.__name__, plugin.__version__, format_exc())
 
-        tb = exc_info()[2]
+        tb = sys.exc_info()[2]
         stack = []
         while tb:
             stack.append(tb.tb_frame)
@@ -109,8 +110,8 @@ class BaseThread(Thread):
 
         dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
 
-        for name in dir(pyfile.plugin):
-            attr = getattr(pyfile.plugin, name)
+        for name in dir(plugin):
+            attr = getattr(plugin, name)
             if not name.endswith("__") and type(attr) != MethodType:
                 dump += "\t%20s = " % name
                 try:
@@ -118,7 +119,10 @@ class BaseThread(Thread):
                 except Exception, e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
-        dump += "\nPYFILE OBJECT DUMP: \n\n"
+        return dump
+
+    def getFileDump(self, pyfile):
+        dump = "PYFILE OBJECT DUMP: \n\n"
 
         for name in dir(pyfile):
             attr = getattr(pyfile, name)
@@ -129,14 +133,13 @@ class BaseThread(Thread):
                 except Exception, e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
-        dump += "\n\nCONFIG: \n\n"
-        dump += pformat(self.m.core.config.values) + "\n"
-
         return dump
 
-        #TODO
-    def getPluginDump(self, plugin):
-        return ""
-
     def getSystemDump(self):
-        return ""
+        dump = "SYSTEM:\n\n"
+        dump += """Platform: %s
+Version: %s
+Encoding: %s
+FS-Encoding: %s
+        """ % (sys.platform, sys.version, sys.getdefaultencoding(), sys.getfilesystemencoding())
+        return dump

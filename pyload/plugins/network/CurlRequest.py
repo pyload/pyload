@@ -40,6 +40,7 @@ def myurlencode(data):
 
 bad_headers = range(400, 418) + range(500, 506)
 
+pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
 class CurlRequest(Request):
     """  Request class based on libcurl """

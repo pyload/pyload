@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###############################################################################
-#   Copyright(c) 2008-2012 pyLoad Team
+#   Copyright(c) 2008-2013 pyLoad Team
 #   http://www.pyload.org
 #
 #   This file is part of pyLoad.
@@ -24,9 +24,8 @@ from time import sleep, time
 from traceback import print_exc
 from random import choice
 
-import pycurl
-
 from pyload.datatypes.PyFile import PyFile
+from pyload.datatypes.OnlineCheck import OnlineCheck
 from pyload.network.RequestFactory import getURL
 from pyload.utils import lock, uniqify
 from pyload.utils.fs import free_space
@@ -63,12 +62,11 @@ class ThreadManager:
         # pool of ids for online check
         self.resultIDs = 0
 
-        # threads which are fetching hoster results
+        # saved online checks
         self.infoResults = {}
+
         # timeout for cache purge
         self.timestamp = 0
-
-        pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
         for i in range(self.core.config.get("download", "max_downloads")):
             self.createThread()
@@ -83,15 +81,18 @@ class ThreadManager:
     def createInfoThread(self, data, pid):
         """ start a thread which fetches online status and other info's """
         self.timestamp = time() + 5 * 60
-        if data: InfoThread(self, data, pid)
+        if data: InfoThread(self, None, data, pid)
 
     @lock
-    def createResultThread(self, data):
+    def createResultThread(self, user, data):
         """ creates a thread to fetch online status, returns result id """
         self.timestamp = time() + 5 * 60
 
         rid = self.resultIDs
         self.resultIDs += 1
+
+        oc = OnlineCheck(rid, user)
+        self.infoResults[rid] = oc
 
         # maps url to plugin
         urls = []
@@ -99,7 +100,7 @@ class ThreadManager:
             for link in links:
                 urls.append((link.url, link.plugin))
 
-        InfoThread(self, urls, rid=rid)
+        InfoThread(self, user, urls, oc=oc)
 
         return rid
 
@@ -108,23 +109,13 @@ class ThreadManager:
         """ Start decrypting of entered data, all links in one package are accumulated to one thread."""
         if data: DecrypterThread(self, data, pid)
 
-
     @lock
     def getInfoResult(self, rid):
-        """returns result and clears it"""
-        self.timestamp = time() + 5 * 60
-        # TODO: restrict user to his own results
-        if rid in self.infoResults:
-            data = self.infoResults[rid]
-            self.infoResults[rid] = {}
-            return data
-        else:
-            return {}
+        return self.infoResults.get(rid)
 
-    @lock
-    def setInfoResults(self, rid, result):
-        self.core.evm.dispatchEvent("linkcheck:updated", rid, result)
-        self.infoResults[rid].update(result)
+    def setInfoResults(self, oc, result):
+        self.core.evm.dispatchEvent("linkcheck:updated", oc.rid, result, owner=oc.owner)
+        oc.update(result)
 
     def getActiveDownloads(self, user=None):
         # TODO: user context
@@ -220,8 +211,7 @@ class ThreadManager:
             self.log.warning(_("Failed executing reconnect script!"))
             self.core.config["reconnect"]["activated"] = False
             self.reconnecting.clear()
-            if self.core.debug:
-                print_exc()
+            self.core.print_exc()
             return
 
         reconn.wait()
@@ -268,6 +258,8 @@ class ThreadManager:
         """ make a global curl cleanup (currently unused) """
         if self.processingIds():
             return False
+        import pycurl
+
         pycurl.global_cleanup()
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
         self.downloaded = 0
@@ -317,7 +309,3 @@ class ThreadManager:
                 if occ not in self.core.files.jobCache:
                     self.core.files.jobCache[occ] = []
                 self.core.files.jobCache[occ].append(job.id)
-
-    def cleanup(self):
-        """do global cleanup, should be called when finished with pycurl"""
-        pycurl.global_cleanup()

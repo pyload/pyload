@@ -5,7 +5,7 @@ define('helpers/linkStatus', ['underscore', 'handlebars', 'utils/apitypes', 'uti
             var s;
             if (status === Api.DownloadStatus.Online)
                 s = '<span class="text-success">' + i18n.gettext('online') + '</span>';
-            else if (status === Api.DownloadState.Offline)
+            else if (status === Api.DownloadStatus.Offline)
                 s = '<span class="text-error">' + i18n.gettext('offline') + '</span>';
             else
                 s = '<span class="text-info">' + i18n.gettext('unknown') + '</span>';

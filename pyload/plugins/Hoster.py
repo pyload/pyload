@@ -58,16 +58,14 @@ class Hoster(Base):
     @staticmethod
     def getInfo(urls):
         """This method is used to retrieve the online status of files for hoster plugins.
-        It has to *yield* list of tuples with the result in this format (name, size, status, url),
-        where status is one of API pyfile statuses.
 
         :param urls: List of urls
-        :return: yield list of tuple with results (name, size, status, url)
+        :return: yield list of :class:`LinkStatus` as result
         """
         pass
 
     def __init__(self, pyfile):
-        Base.__init__(self, pyfile.m.core)
+        Base.__init__(self, pyfile.m.core, pyfile.owner)
 
         self.wantReconnect = False
         #: enables simultaneous processing of multiple downloads

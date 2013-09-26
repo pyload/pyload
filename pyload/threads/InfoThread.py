@@ -9,25 +9,23 @@ from pyload.utils.packagetools import parseNames
 from pyload.utils import has_method, accumulate
 
 from BaseThread import BaseThread
+from DecrypterThread import DecrypterThread
 
-class InfoThread(BaseThread):
-    def __init__(self, manager, data, pid=-1, rid=-1):
-        """Constructor"""
-        BaseThread.__init__(self, manager)
 
+class InfoThread(DecrypterThread):
+    def __init__(self, manager, owner, data, pid=-1, oc=None):
+        BaseThread.__init__(self, manager, owner)
+
+        # [... (plugin, url) ...]
         self.data = data
-        self.pid = pid # package id
-        # [ .. (name, plugin) .. ]
-
-        self.rid = rid #result id
-
-        self.cache = [] #accumulated data
+        self.pid = pid
+        self.oc = oc # online check
+        # urls that already have a package name
+        self.names = {}
 
         self.start()
 
     def run(self):
-        """run method"""
-
         plugins = accumulate(self.data)
         crypter = {}
 
@@ -37,93 +35,82 @@ class InfoThread(BaseThread):
                 crypter[name] = plugins[name]
                 del plugins[name]
 
-        #directly write to database
-        if self.pid > -1:
-            for pluginname, urls in plugins.iteritems():
-                plugin = self.m.core.pluginManager.getPluginModule(pluginname)
-                klass = self.m.core.pluginManager.getPluginClass(pluginname)
-                if has_method(klass, "getInfo"):
-                    self.fetchForPlugin(pluginname, klass, urls, self.updateDB)
-                    self.m.core.files.save()
-                elif has_method(plugin, "getInfo"):
-                    self.log.debug("Deprecated .getInfo() method on module level, use classmethod instead")
-                    self.fetchForPlugin(pluginname, plugin, urls, self.updateDB)
-                    self.m.core.files.save()
+        if crypter:
+            # decrypt them
+            links, packages = self.decrypt(crypter)
+            # push these as initial result and save package names
+            self.updateResult(links)
+            for pack in packages:
+                for url in pack.getURLs():
+                    self.names[url] = pack.name
 
-        else: #post the results
-            for name, urls in crypter.iteritems():
-                #attach container content
-                try:
-                    data = self.decrypt(name, urls)
-                except:
-                    print_exc()
-                    self.m.log.error("Could not decrypt content.")
-                    data = []
+                links.extend(pack.links)
+                self.updateResult(pack.links)
 
-                accumulate(data, plugins)
+            # TODO: no plugin information pushed to GUI
+            # parse links and merge
+            hoster, crypter = self.m.core.pluginManager.parseUrls([l.url for l in links])
+            accumulate(hoster + crypter, plugins)
 
-            self.m.infoResults[self.rid] = {}
+        # db or info result
+        cb = self.updateDB if self.pid > 1 else self.updateResult
 
-            for pluginname, urls in plugins.iteritems():
-                plugin = self.m.core.pluginManager.getPluginModule(pluginname)
-                klass = self.m.core.pluginManager.getPluginClass(pluginname)
-                if has_method(klass, "getInfo"):
-                    self.fetchForPlugin(pluginname, plugin, urls, self.updateResult, True)
-                    #force to process cache
-                    if self.cache:
-                        self.updateResult(pluginname, [], True)
-                elif has_method(plugin, "getInfo"):
-                    self.log.debug("Deprecated .getInfo() method on module level, use staticmethod instead")
-                    self.fetchForPlugin(pluginname, plugin, urls, self.updateResult, True)
-                    #force to process cache
-                    if self.cache:
-                        self.updateResult(pluginname, [], True)
-                else:
-                    #generate default result
-                    result = [(url, 0, 3, url) for url in urls]
+        for pluginname, urls in plugins.iteritems():
+            plugin = self.m.core.pluginManager.getPluginModule(pluginname)
+            klass = self.m.core.pluginManager.getPluginClass(pluginname)
+            if has_method(klass, "getInfo"):
+                self.fetchForPlugin(klass, urls, cb)
+            # TODO: this branch can be removed in the future
+            elif has_method(plugin, "getInfo"):
+                self.log.debug("Deprecated .getInfo() method on module level, use staticmethod instead")
+                self.fetchForPlugin(plugin, urls, cb)
 
-                    self.updateResult(pluginname, result, True)
-
-            self.m.infoResults[self.rid]["ALL_INFO_FETCHED"] = {}
-
+        self.oc.done = True
+        self.names.clear()
         self.m.timestamp = time() + 5 * 60
 
+    def updateDB(self, result):
+        # writes results to db
+        # convert link info to tuples
+        info = [(l.name, l.size, l.status, l.url) for l in result if not l.hash]
+        info_hash = [(l.name, l.size, l.status, l.hash, l.url) for l in result if l.hash]
+        if info:
+            self.m.core.files.updateFileInfo(info, self.pid)
+        if info_hash:
+            self.m.core.files.updateFileInfo(info_hash, self.pid)
 
-    def updateDB(self, plugin, result):
-        self.m.core.files.updateFileInfo(result, self.pid)
+    def updateResult(self, result):
+        tmp = {}
+        parse = []
+        # separate these with name and without
+        for link in result:
+            if link.url in self.names:
+                tmp[link] = self.names[link.url]
+            else:
+                parse.append(link)
 
-    def updateResult(self, plugin, result, force=False):
-        #parse package name and generate result
-        #accumulate results
+        data = parseNames([(link.name, link) for link in parse])
+        # merge in packages that already have a name
+        data = accumulate(tmp.iteritems(), data)
 
-        self.cache.extend(result)
+        self.m.setInfoResults(self.oc, data)
 
-        if len(self.cache) >= 20 or force:
-            #used for package generating
-            tmp = [(name, LinkStatus(url, name, plugin, int(size), status))
-                for name, size, status, url in self.cache]
-
-            data = parseNames(tmp)
-            self.m.setInfoResults(self.rid, data)
-
-            self.cache = []
-
-    def updateCache(self, plugin, result):
-        self.cache.extend(result)
-
-    def fetchForPlugin(self, pluginname, plugin, urls, cb, err=None):
+    def fetchForPlugin(self, plugin, urls, cb):
+        """executes info fetching for given plugin and urls"""
+        # also works on module names
+        pluginname = plugin.__name__.split(".")[-1]
         try:
-            result = [] #result loaded from cache
+            cached = [] #results loaded from cache
             process = [] #urls to process
             for url in urls:
                 if url in self.m.infoCache:
-                    result.append(self.m.infoCache[url])
+                    cached.append(self.m.infoCache[url])
                 else:
                     process.append(url)
 
-            if result:
-                self.m.log.debug("Fetched %d values from cache for %s" % (len(result), pluginname))
-                cb(pluginname, result)
+            if cached:
+                self.m.log.debug("Fetched %d links from cache for %s" % (len(cached), pluginname))
+                cb(cached)
 
             if process:
                 self.m.log.debug("Run Info Fetching for %s" % pluginname)
@@ -131,26 +118,26 @@ class InfoThread(BaseThread):
                     #result = [ .. (name, size, status, url) .. ]
                     if not type(result) == list: result = [result]
 
+                    links = []
+                    # Convert results to link statuses
                     for res in result:
-                        self.m.infoCache[res[3]] = res
+                        if isinstance(res, LinkStatus):
+                            links.append(res)
+                        elif type(res) == tuple and len(res) == 4:
+                            links.append(LinkStatus(res[3], res[0], int(res[1]), res[2], pluginname))
+                        elif type(res) == tuple and len(res) == 5:
+                            links.append(LinkStatus(res[3], res[0], int(res[1]), res[2], pluginname, res[4]))
+                        else:
+                            self.m.log.debug("Invalid getInfo result: " + result)
 
-                    cb(pluginname, result)
+                    # put them on the cache
+                    for link in links:
+                        self.m.infoCache[link.url] = link
+
+                    cb(links)
 
             self.m.log.debug("Finished Info Fetching for %s" % pluginname)
         except Exception, e:
             self.m.log.warning(_("Info Fetching for %(name)s failed | %(err)s") %
                                {"name": pluginname, "err": str(e)})
-            if self.m.core.debug:
-                print_exc()
-
-            # generate default results
-            if err:
-                result = [(url, 0, 3, url) for url in urls]
-                cb(pluginname, result)
-
-    def decrypt(self, plugin, urls):
-        self.m.log.debug("Decrypting %s" % plugin)
-        klass = self.m.core.pluginManager.loadClass("crypter", plugin)
-        urls = klass.decrypt(self.core, urls)
-        data, crypter = self.m.core.pluginManager.parseUrls(urls)
-        return data + crypter
+            self.core.print_exc()
