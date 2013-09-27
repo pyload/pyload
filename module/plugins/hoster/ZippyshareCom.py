@@ -26,7 +26,7 @@ class ZippyshareCom(SimpleHoster):
     FILE_INFO_PATTERN = r'document\.getElementById\(\'dlbutton\'\)\.href = "[^;]*/(?P<N>[^"]+)";'
     FILE_OFFLINE_PATTERN = r'>File does not exist on this server</div>'
 
-    DOWNLOAD_URL_PATTERN = r"<script type=\"text/javascript\">([^<]*?)document\.getElementById\('dlbutton'\).href = ([^;]+);"
+    DOWNLOAD_URL_PATTERN = r"<script type=\"text/javascript\">([^<]*?)(document\.getElementById\('dlbutton'\).href = [^;]+;)"
     SEED_PATTERN = r'swfobject.embedSWF\("([^"]+)".*?seed: (\d+)'
     CAPTCHA_KEY_PATTERN = r'Recaptcha.create\("([^"]+)"'
     CAPTCHA_SHORTENCODE_PATTERN = r"shortencode: '([^']+)'"
@@ -69,10 +69,11 @@ class ZippyshareCom(SimpleHoster):
         if found:
             #Method #1: JS eval
             js = "\n".join(found.groups())
-            regex = r"document.getElementById\(\\*'dlbutton\\*'\).omg"
-            omg = re.search(regex + r" = ([^;]+);", js).group(1)
-            js = re.sub(regex + r" = ([^;]+);", '', js)
-            js = re.sub(regex, omg, js)
+            d = re.search(r'span id="omg" class="(\d*)"', self.html).group(1)
+            regex = r"document.getElementById\('omg'\).getAttribute\('class'\)"
+            js = re.sub(regex, d, js)
+            regex = r"document.getElementById\(\\*'dlbutton\\*'\).href = "
+            js = re.sub(regex, '', js)
             url = self.js.eval(js)
         else:
             #Method #2: SWF eval
