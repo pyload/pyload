@@ -15,7 +15,7 @@ class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
     __pattern__ = r"(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __description__ = """Zippyshare.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg", "stickell")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
