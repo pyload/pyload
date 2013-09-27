@@ -24,6 +24,7 @@ from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
 from module.utils import html_unescape
+from module.network.RequestFactory import getURL
 
 
 class XFileSharingPro(SimpleHoster):
@@ -35,7 +36,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -74,7 +75,10 @@ class XFileSharingPro(SimpleHoster):
                 self.fail("Only premium users can download from other hosters with %s" % self.HOSTER_NAME)
         else:
             try:
-                self.html = self.load(pyfile.url, cookies=False, decode=True)
+                # Due to a 0.4.9 core bug self.load would use cookies even if
+                # cookies=False. Workaround using getURL to avoid cookies.
+                # Can be reverted in 0.5 as the cookies bug has been fixed.
+                self.html = getURL(pyfile.url, decode=True)
                 self.file_info = self.getFileInfo()
             except PluginParseError:
                 self.file_info = None
