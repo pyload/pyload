@@ -35,8 +35,8 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*"
-    __version__ = "0.09"
+    __pattern__ = r"http://(?:\w*\.)?(turbobit.net|unextfiles.com)/(?!download/folder/)(?:download/free/)?(?P<ID>\w+).*"
+    __version__ = "0.10"
     __description__ = """Turbobit.net plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
