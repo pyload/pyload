@@ -5,8 +5,7 @@ from pyload.utils import to_list, has_method, uniqify
 from pyload.utils.fs import exists, remove, fs_encode
 from pyload.utils.packagetools import parseNames
 
-from Base import Base, Fail, Retry, Abort
-
+from Base import Base, Retry
 
 class Package:
     """ Container that indicates that a new package should be created """

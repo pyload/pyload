@@ -65,7 +65,9 @@ class InfoThread(DecrypterThread):
                 self.log.debug("Deprecated .getInfo() method on module level, use staticmethod instead")
                 self.fetchForPlugin(plugin, urls, cb)
 
-        self.oc.done = True
+        if self.oc:
+            self.oc.done = True
+
         self.names.clear()
         self.m.timestamp = time() + 5 * 60
 
