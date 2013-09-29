@@ -44,7 +44,6 @@ def exists(path):
 def makedirs(path, mode=0755):
     return os.makedirs(fs_encode(path), mode)
 
-# fs_decode?
 def listdir(path):
     return [fs_decode(x) for x in os.listdir(fs_encode(path))]
 

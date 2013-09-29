@@ -41,6 +41,7 @@
         // TODO
         window.pathPrefix = '/';
         window.wsAddress = configValue('{{ws}}', 'ws://%s:7227');
+        window.setup = configValue('{{setup}}', 'false');
 
         require(['config'], function(Config) {
             require(['default'], function(App) {

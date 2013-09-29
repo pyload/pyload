@@ -1,5 +1,5 @@
-define('default', ['backbone', 'jquery', 'app', 'router', 'models/UserSession'],
-    function(Backbone, $, App, Router, UserSession) {
+define('default', ['require', 'backbone', 'jquery', 'app', 'router', 'models/UserSession'],
+    function(require, Backbone, $, App, Router, UserSession) {
         'use strict';
 
         // Global ajax options
@@ -21,9 +21,17 @@ define('default', ['backbone', 'jquery', 'app', 'router', 'models/UserSession'],
         };
 
         $(function() {
-            App.user = new UserSession();
-            App.router = new Router();
-            App.start();
+            // load setup async
+            if (window.setup === 'true') {
+                require(['setup'], function(SetupRouter) {
+                    App.router = new SetupRouter();
+                    App.start();
+                });
+            } else {
+                App.user = new UserSession();
+                App.router = new Router();
+                App.start();
+            }
         });
 
         return App;

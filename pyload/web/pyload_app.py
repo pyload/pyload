@@ -23,7 +23,9 @@ from bottle import route, static_file, response, request, redirect, template
 
 from webinterface import PYLOAD, PROJECT_DIR, SETUP, APP_PATH, UNAVAILALBE
 
-from utils import login_required
+from utils import login_required, add_json_header, select_language
+
+from pyload.utils import json_dumps
 
 APP_ROOT = join(PROJECT_DIR, APP_PATH)
 
@@ -45,27 +47,42 @@ def download(fid, api):
     return static_file(name, path, download=True)
 
 
+@route("/i18n")
+@route("/i18n/:lang")
+def i18n(lang=None):
+    add_json_header(response)
+
+    if lang is None:
+        pass
+        # TODO use lang from PYLOAD.config or setup
+    else:
+        # TODO auto choose language
+        lang = select_language(["en"])
+
+    return json_dumps({})
+
 @route('/')
 def index():
     if UNAVAILALBE:
-        return server_static("unavailable.html")
+        return serve_static("unavailable.html")
 
-    if SETUP:
-        # TODO show different page
-        pass
-
-    resp = server_static('index.html')
+    resp = serve_static('index.html')
+    # set variable depending on setup mode
+    setup = 'false' if SETUP is None else 'true'
+    ws = PYLOAD.getWSAddress() if PYLOAD else False
+    web = PYLOAD.getConfigValue('webinterface', 'port') if PYLOAD else False
 
     # Render variables into the html page
     if resp.status_code == 200:
         content = resp.body.read()
-        resp.body = template(content, ws=PYLOAD.getWSAddress(), web=PYLOAD.getConfigValue('webinterface', 'port'))
+        resp.body = template(content, ws=ws, web=web, setup=setup)
+        resp.content_length = len(resp.body)
 
     return resp
 
 # Very last route that is registered, could match all uris
 @route('/<path:path>')
-def server_static(path):
+def serve_static(path):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 7))
     response.headers['Cache-control'] = "public"
@@ -76,7 +93,7 @@ def server_static(path):
 
     # gzipped and clients accepts it
     # TODO: index.html is not gzipped, because of template processing
-    if GZIPPED[path] and "gzip" in  request.get_header("Accept-Encoding", "") and path != "index.html":
+    if GZIPPED[path] and "gzip" in request.get_header("Accept-Encoding", "") and path != "index.html":
         response.headers['Vary'] = 'Accept-Encoding'
         response.headers['Content-Encoding'] = 'gzip'
         path += ".gz"

@@ -167,10 +167,13 @@ class ThreadManager:
             self.assignJob()
             #it may be failed non critical so we try it again
 
-        if (self.infoCache or self.infoResults) and self.timestamp < time():
+        if self.infoCache and self.timestamp < time():
             self.infoCache.clear()
-            self.infoResults.clear()
             self.log.debug("Cleared Result cache")
+
+        for rid in self.infoResults.keys():
+            if self.infoResults[rid].isStale():
+                del self.infoResults[rid]
 
     def tryReconnect(self):
         """checks if reconnect needed"""

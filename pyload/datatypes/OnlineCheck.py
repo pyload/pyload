@@ -5,6 +5,7 @@ from time import time
 
 from pyload.Api import OnlineCheck as OC
 
+
 class OnlineCheck:
     """  Helper class that holds result of an initiated online check """
 
@@ -15,6 +16,10 @@ class OnlineCheck:
         self.done = False
 
         self.timestamp = time()
+
+    def isStale(self, timeout=5):
+        """ checks if the data was updated or accessed recently """
+        return self.timestamp + timeout * 60 < time()
 
     def update(self, result):
         self.timestamp = time()

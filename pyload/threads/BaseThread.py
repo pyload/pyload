@@ -10,6 +10,7 @@ from traceback import format_exc
 
 from pyload.utils import primary_uid
 from pyload.utils.fs import listdir, join, save_join, stat, exists
+from pyload.setup.system import get_system_info
 
 
 class BaseThread(Thread):
@@ -137,9 +138,7 @@ class BaseThread(Thread):
 
     def getSystemDump(self):
         dump = "SYSTEM:\n\n"
-        dump += """Platform: %s
-Version: %s
-Encoding: %s
-FS-Encoding: %s
-        """ % (sys.platform, sys.version, sys.getdefaultencoding(), sys.getfilesystemencoding())
+        for k,v in get_system_info().iteritems():
+            dump += "%s: %s\n" % (k, v)
+
         return dump

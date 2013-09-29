@@ -120,21 +120,21 @@ class Core(object):
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
-                        from Setup import Setup
+                        from setup.Setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
-                        from Setup import Setup
+                        from setup.Setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.start()
                         exit()
                     elif option == "--changedir":
-                        from Setup import Setup
+                        from setup.Setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)

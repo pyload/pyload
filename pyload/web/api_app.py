@@ -6,19 +6,13 @@ from traceback import format_exc, print_exc
 
 from bottle import route, request, response, HTTPError, parse_auth
 
-from utils import set_session, get_user_api
+from utils import set_session, get_user_api, add_json_header
 from webinterface import PYLOAD, session
 
 from pyload.Api import ExceptionObject
 from pyload.remote.json_converter import loads, dumps, BaseEncoder
 from pyload.utils import remove_chars
 
-
-def add_header(r):
-    r.headers.replace("Content-type", "application/json")
-    r.headers.append("Cache-Control", "no-cache, must-revalidate")
-    r.headers.append("Access-Control-Allow-Origin", request.get_header('Origin', '*'))
-    r.headers.append("Access-Control-Allow-Credentials", "true")
 
 # returns http error
 def error(code, msg):
@@ -29,7 +23,7 @@ def error(code, msg):
 @route("/api/<func><args:re:[^#?]*>")
 @route("/api/<func><args:re:[^#?]*>", method="POST")
 def call_api(func, args=""):
-    add_header(response)
+    add_json_header(response)
 
     s = request.environ.get('beaker.session')
     # Accepts standard http auth
@@ -96,7 +90,7 @@ def call_api(func, args=""):
 @route("/api/login")
 @route("/api/login", method="POST")
 def login():
-    add_header(response)
+    add_json_header(response)
 
     username = request.params.get("username")
     password = request.params.get("password")
@@ -128,7 +122,7 @@ def login():
 @route("/api/logout")
 @route("/api/logout", method="POST")
 def logout():
-    add_header(response)
+    add_json_header(response)
 
     s = request.environ.get('beaker.session')
     s.delete()

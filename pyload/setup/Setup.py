@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###############################################################################
-#   Copyright(c) 2008-2012 pyLoad Team
+#   Copyright(c) 2008-2013 pyLoad Team
 #   http://www.pyload.org
 #
 #   This file is part of pyLoad.
@@ -16,7 +16,6 @@
 #   @author: RaNaN
 ###############################################################################
 
-import pyload.utils.pylgettext as gettext
 import os
 import sys
 import socket
@@ -26,6 +25,7 @@ from getpass import getpass
 from time import time
 from sys import exit
 
+from pyload.utils import pylgettext as gettext
 from pyload.utils.fs import abspath, dirname, exists, join, makedirs
 from pyload.utils import get_console_encoding
 from pyload.web.ServerThread import WebServer
@@ -48,40 +48,37 @@ class Setup():
         self.yes = "yes"
         self.no = "no"
 
-
     def start(self):
+        import __builtin__
+        # set the gettext translation
+        __builtin__._ = lambda x: x
+
         web = WebServer(pysetup=self)
         web.start()
 
         error = web.check_error()
+
+        # TODO: start cli in this case
         if error: #todo errno 44 port already in use
             print error
 
         url = "http://%s:%d/" % (socket.gethostbyname(socket.gethostname()), web.port)
 
-        print "Setup is started"
+        print "Setup is running at %s" % url
 
         opened = webbrowser.open_new_tab(url)
         if not opened:
-            print "Please point your browser to %s" % url
+            print "Please point your browser to the url above."
 
-
-        self.ask_lang()
-
-        print ""
-        print _("Would you like to configure pyLoad via Webinterface?")
-        print _("You need a Browser and a connection to this PC for it.")
-        print _("Url would be: http://hostname:8000/")
-        viaweb = self.ask(_("Start initial webinterface for configuration?"), self.yes, bool=True)
-        if viaweb:
-            self.start_web()
-        else:
+        cli = self.ask("Use commandline for configuration instead?", self.no, bool=True)
+        if cli:
             self.start_cli()
-
-
+        else:
+            raw_input()
 
     def start_cli(self):
 
+        self.ask_lang()
 
         print _("Welcome to the pyLoad Configuration Assistent.")
         print _("It will check your system and make a basic setup in order to run pyLoad.")
@@ -166,23 +163,6 @@ class Setup():
         print _("Hit enter to exit and restart pyLoad")
         raw_input()
         return True
-
-
-    def start_web(self):
-        print ""
-        print _("Webinterface running for setup.")
-        # TODO start browser?
-        try:
-            from pyload.web import ServerThread
-            ServerThread.setup = self
-            from pyload.web import webinterface
-            webinterface.run_simple()
-            self.web = True
-            return True
-        except Exception, e:
-            print "Webinterface failed with this error: ", e
-            print "Falling back to commandline setup."
-            self.start_cli()
 
 
     def conf_basic(self):

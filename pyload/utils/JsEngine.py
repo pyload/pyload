@@ -48,7 +48,7 @@ if not ENGINE:
 
 if not ENGINE or DEBUG:
     try:
-        find_module("PyV8")
+        import PyV8
         ENGINE = "pyv8"
         PYV8 = True
     except:
