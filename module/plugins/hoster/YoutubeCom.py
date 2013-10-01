@@ -37,7 +37,7 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:[^/]*?)youtube\.com/watch.*?[?&]v=.*"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
                   ("fmt", "int", "FMT/ITAG Number (5-102, 0 for auto)", 0),
                   (".mp4", "bool", "Allow .mp4", True),
@@ -73,7 +73,7 @@ class YoutubeCom(Hoster):
                102: (".webm", 1280, 720, 8, True)}
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        self.multiDL = self.resumeDownload = True
 
     def process(self, pyfile):
         html = self.load(pyfile.url, decode=True)

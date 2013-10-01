@@ -47,7 +47,7 @@ class WuploadCom(Hoster):
     __name__ = "WuploadCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?wupload\..*?/file/(([a-z][0-9]+/)?[0-9]+)(/.*)?"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __description__ = """Wupload com"""
     __author_name__ = ("jeix", "paulking")
     __author_mail__ = ("jeix@hasnomail.de", "")
@@ -66,8 +66,8 @@ class WuploadCom(Hoster):
         if self.account:
             self.premium = self.account.getAccountInfo(self.user)["premium"]
         if not self.premium:
-            self.chunkLimit = 1
             self.multiDL = False
+            self.chunkLimit = 1
 
     def process(self, pyfile):
         self.pyfile = pyfile

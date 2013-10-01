@@ -7,7 +7,7 @@ class JumbofilesCom(SimpleHoster):
     __name__ = "JumbofilesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*jumbofiles.com/(\w{12}).*"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """JumboFiles.com hoster plugin"""
     __author_name__ = ("godofdream")
     __author_mail__ = ("soilfiction@gmail.com")
@@ -17,8 +17,7 @@ class JumbofilesCom(SimpleHoster):
     DIRECT_LINK_PATTERN = '<meta http-equiv="refresh" content="10;url=(.+)">'
 
     def setup(self):
-        self.resumeDownload = True
-        self.multiDL = True
+        self.multiDL = self.resumeDownload = True
 
     def handleFree(self):
         ukey = re.search(self.__pattern__, self.pyfile.url).group(1)

@@ -13,7 +13,7 @@ class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?ryushare.com/\w{11,}"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = """ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell","quareevo")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it","quareevo@arcor.de")
@@ -25,7 +25,7 @@ class RyushareCom(XFileSharingPro):
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        self.multiDL = self.resumeDownload = True
         if not self.premium:
             self.limitDL = 2
         # Up to 3 chunks allowed in free downloads. Unknown for premium
@@ -85,5 +85,6 @@ class RyushareCom(XFileSharingPro):
         if 'Click here to download' in self.html:
             m = re.search(r'<a href="([^"]+)">Click here to download</a>', self.html)
             return m.group(1)
+
 
 getInfo = create_getInfo(RyushareCom)

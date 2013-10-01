@@ -36,7 +36,8 @@ def checkHTMLHeader(url):
                     url = line.split(':', 1)[1].strip()
                     if 'error.php?errno=320' in url:
                         return url, 1
-                    if not url.startswith('http://'): url = 'http://www.mediafire.com' + url
+                    if not url.startswith('http://'):
+                        url = 'http://www.mediafire.com' + url
                     break
                 elif 'content-disposition' in line:
                     return url, 2
@@ -62,7 +63,7 @@ class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/(file/|(view/?|download.php)?\?)(\w{11}|\w{15})($|/)"
-    __version__ = "0.79"
+    __version__ = "0.80"
     __description__ = """Mediafire.com plugin - free only"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -114,7 +115,8 @@ class MediafireCom(SimpleHoster):
                 self.fail("No or incorrect password")
 
         found = re.search(r'kNO = "(http://.*?)";', self.html)
-        if not found: self.parseError("Download URL")
+        if not found:
+            self.parseError("Download URL")
         download_url = found.group(1)
         self.logDebug("DOWNLOAD LINK:", download_url)
 

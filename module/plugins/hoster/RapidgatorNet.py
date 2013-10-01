@@ -29,7 +29,7 @@ class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\w+)"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __description__ = """rapidgator.net"""
     __author_name__ = ("zoidberg", "chrox", "stickell")
 
@@ -46,11 +46,10 @@ class RapidgatorNet(SimpleHoster):
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
 
     def setup(self):
-        self.resumeDownload = False
-        self.multiDL = False
-        self.sid = None
+        self.multiDL = self.resumeDownload = False
         self.chunkLimit = 1
         self.req.setOption("timeout", 120)
+        self.sid = None
 
     def process(self, pyfile):
         if self.account:

@@ -6,7 +6,7 @@ from module.plugins.Hoster import Hoster
 
 class ZeveraCom(Hoster):
     __name__ = "ZeveraCom"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __type__ = "hoster"
     __pattern__ = r"http://zevera.com/.*"
     __description__ = """zevera.com hoster plugin"""
@@ -14,7 +14,7 @@ class ZeveraCom(Hoster):
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        self.multiDL = self.resumeDownload = True
         self.chunkLimit = 1
 
     def process(self, pyfile):

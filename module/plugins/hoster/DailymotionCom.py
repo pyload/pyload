@@ -10,7 +10,7 @@ class DailymotionCom(Hoster):
     __name__ = 'DailymotionCom'
     __type__ = 'hoster'
     __pattern__ = r'http://www.dailymotion.com/.*'
-    __version__ = '0.1'
+    __version__ = '0.11'
     __description__ = """Dailymotion Video Download Hoster"""
     __author_name__ = ("Peekayy")
     __author_mail__ = ("peekayy.dev@gmail.com")
@@ -36,7 +36,8 @@ class DailymotionCom(Hoster):
 
         for quality in ('hd720URL', 'hqURL', 'sdURL', 'ldURL', ''):
             dlLink = self.getQuality(quality, allLinksInfo)
-            if dlLink is not None: break
+            if dlLink is not None:
+                break
         else:
             self.fail(r'Unable to find video URL')
 

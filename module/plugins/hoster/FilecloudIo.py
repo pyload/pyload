@@ -26,7 +26,7 @@ class FilecloudIo(SimpleHoster):
     __name__ = "FilecloudIo"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Filecloud.io (formerly Ifile.it) plugin - free account only"""
     __author_name__ = ("zoidberg")
 
@@ -43,7 +43,7 @@ class FilecloudIo(SimpleHoster):
     RECAPTCHA_KEY = '6Lf5OdISAAAAAEZObLcx5Wlv4daMaASRov1ysDB1'
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        self.multiDL = self.resumeDownload = True
         self.chunkLimit = 1
 
     def handleFree(self):

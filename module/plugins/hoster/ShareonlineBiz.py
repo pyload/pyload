@@ -48,7 +48,7 @@ class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __description__ = """Shareonline.biz Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
@@ -62,9 +62,9 @@ class ShareonlineBiz(Hoster):
         self.file_id = re.search(r"(id\=|/dl/)([a-zA-Z0-9]+)", self.pyfile.url).group(2)
         self.pyfile.url = "http://www.share-online.biz/dl/" + self.file_id
 
-        self.resumeDownload = self.premium
         self.multiDL = False
         #self.chunkLimit = 1
+        self.resumeDownload = self.premium
 
         self.check_data = None
 

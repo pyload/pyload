@@ -10,7 +10,7 @@ class TwoSharedCom(SimpleHoster):
     __name__ = "TwoSharedCom"
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?2shared.com/(account/)?(download|get|file|document|photo|video|audio)/.*"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __description__ = """2Shared Download Hoster"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -21,7 +21,7 @@ class TwoSharedCom(SimpleHoster):
     DOWNLOAD_URL_PATTERN = r"window.location ='([^']+)';"
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        self.multiDL = self.resumeDownload = True
 
     def handleFree(self):
         found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)

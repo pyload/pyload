@@ -24,7 +24,7 @@ class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
     __pattern__ = r"(http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*"
-    __version__ = "0.82"
+    __version__ = "0.83"
     __description__ = """Hellshare.cz - premium only"""
     __author_name__ = ("zoidberg")
 
@@ -34,7 +34,7 @@ class HellshareCz(SimpleHoster):
     SHOW_WINDOW_PATTERN = r'<a href="([^?]+/(\d+)/\?do=(fileDownloadButton|relatedFileDownloadButton-\2)-showDownloadWindow)"'
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True if self.account else False
+        self.multiDL = self.resumeDownload = True if self.account else False
         self.chunkLimit = 1
 
     def process(self, pyfile):

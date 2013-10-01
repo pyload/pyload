@@ -53,7 +53,7 @@ class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
     __pattern__ = r"https?://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
-    __version__ = "1.39"
+    __version__ = "1.40"
     __description__ = """Rapidshare.com Download Hoster"""
     __config__ = [["server",
                    "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera",
@@ -71,8 +71,8 @@ class RapidshareCom(Hoster):
         self.id = None
         self.name = None
 
-        self.chunkLimit = -1 if self.premium else 1
         self.multiDL = self.resumeDownload = self.premium
+        self.chunkLimit = -1 if self.premium else 1
 
     def process(self, pyfile):
         self.url = self.pyfile.url

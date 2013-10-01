@@ -6,7 +6,7 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class FilezyNet(XFileSharingPro):
     __name__ = "FilezyNet"
     __type__ = "hoster"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __pattern__ = r"http://filezy.net/.*/.*.html"
     __description__ = """filezy.net hoster plugin"""
 
@@ -17,8 +17,8 @@ class FilezyNet(XFileSharingPro):
     DOWNLOAD_JS_PATTERN = r"<script type='text/javascript'>eval(.*)"
 
     def setup(self):
-        self.resumeDownload = True
         self.multiDL = self.premium
+        self.resumeDownload = True
 
     def getDownloadLink(self):
         self.logDebug("Getting download link")
