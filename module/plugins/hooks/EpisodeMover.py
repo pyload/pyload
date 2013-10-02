@@ -22,7 +22,7 @@ from Queue import Queue
 import time
 import urllib2
 from module.utils import fs_encode,save_path
-import module.common.json_layer.json as json
+from module.common.json_layer import json
 from datetime import datetime as dt
 import traceback
 #from module.common.pydevsrc import pydevd 
