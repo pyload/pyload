@@ -21,8 +21,7 @@ class X7To(Hoster):
 
     def init(self):
         if self.premium:
-            self.multiDL = False
-            self.resumeDownload = False
+            self.multiDL = self.resumeDownload = False
             self.chunkLimit = 1
         else:
             self.multiDL = False

@@ -119,8 +119,8 @@ class DlFreeFr(SimpleHoster):
     #FILE_URL_PATTERN = r'href="(?P<url>http://.*?)">T&eacute;l&eacute;charger ce fichier'   
 
     def setup(self):
+        self.multiDL = self.resumeDownload = True
         self.limitDL = 5
-        self.resumeDownload = True
         self.chunkLimit = 1
 
     def init(self):

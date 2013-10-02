@@ -37,9 +37,8 @@ class PutlockerCom(SimpleHoster):
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
 
     def handleFree(self):
-        self.multiDL = True
+        self.multiDL = self.resumeDownload = True
         self.chunkLimit = -1
-        self.resumeDownload = True
         self.pyfile.url = re.sub(r'http://putlocker\.com', r'http://www.putlocker.com', self.pyfile.url)
 
         self.html = self.load(self.pyfile.url, decode=True)

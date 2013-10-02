@@ -61,7 +61,8 @@ class Premium4Me(Hoster):
         trb = self.getTraffic()
         self.logInfo("Filesize: %d, Traffic used %d, traffic left %d" % (pyfile.size, tra - trb, trb))
 
-        if err: self.fail(err)
+        if err:
+            self.fail(err)
 
     def getTraffic(self):
         try:

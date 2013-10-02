@@ -39,9 +39,8 @@ class NowDownloadEu(SimpleHoster):
 
     def setup(self):
         self.wantReconnect = False
-        self.multiDL = True
+        self.multiDL = self.resumeDownload = True
         self.chunkLimit = -1
-        self.resumeDownload = True
 
     def handleFree(self):
         tokenlink = re.search(self.FILE_TOKEN_PATTERN, self.html)

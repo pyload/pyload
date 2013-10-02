@@ -41,7 +41,7 @@ class IfolderRu(SimpleHoster):
     WRONG_CAPTCHA_PATTERN = ur'<font color=Red>неверный код,<br>введите еще раз</font><br>'
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True if self.account else False
+        self.resumeDownload = self.multiDL = self.account
         self.chunkLimit = 1
 
     def process(self, pyfile):

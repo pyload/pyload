@@ -62,9 +62,8 @@ class NetloadIn(Hoster):
     def setup(self):
         self.multiDL = False
         if self.premium:
-            self.multiDL = True
+            self.multiDL = self.resumeDownload = True
             self.chunkLimit = -1
-            self.resumeDownload = True
 
     def process(self, pyfile):
         self.url = pyfile.url

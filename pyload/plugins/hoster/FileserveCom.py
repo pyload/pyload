@@ -65,7 +65,7 @@ class FileserveCom(Hoster):
     # shares code with FilejungleCom and UploadstationCom
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True if self.premium else False
+        self.resumeDownload = self.multiDL = self.premium
 
         self.file_id = re.search(self.__pattern__, self.pyfile.url).group('id')
         self.url = "%s%s" % (self.URLS[0], self.file_id)
