@@ -203,7 +203,7 @@ class ThreadManager:
         self.log.debug("Old IP: %s" % oldip)
         self.core.evm.dispatchEvent("reconnect:before", oldip)
 
-        if not self.reconnecting:
+        if not self.reconnecting.isSet():
             self.log.info(_("Reconnect aborted"))
             return
 
