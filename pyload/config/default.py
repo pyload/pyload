@@ -82,6 +82,7 @@ def make_config(config):
                                 ("endTime", "time", _("End"), "0:00"),
                                 ("activated", "bool", _("Use Reconnect"), False),
                                 ("method", "str", _("Method"), "./reconnect.sh"),
+                                ("retries", "int", _("Retries"), "1"),
                                 ("startTime", "time", _("Start"), "0:00"),
                             ])
 
