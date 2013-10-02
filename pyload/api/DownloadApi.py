@@ -166,6 +166,10 @@ class DownloadApi(ApiComponent):
             if pyfile.id in fids:
                 pyfile.abortDownload()
 
+    @RequirePerm(Permission.Modify)
+    def reconnect(self):
+        self.core.threadManager.tryReconnect(True)
+
 
 if Api.extend(DownloadApi):
     del DownloadApi
