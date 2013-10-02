@@ -59,7 +59,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.509"
+    __version__ = "0.510"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -80,7 +80,8 @@ class EpisodeMover(Hook):
                     ("folder_search", "bool", "On matching failure use enclosing folder to match episode", "False"),
                     ("ignore_sample", "bool","Ignore sample files", "False"),
                     ('move_log', 'folder', 'Specify a directory to log EM operations to. (Disabled if empty)', ''),
-                    ("leading_zero", "bool", "Show leading zero for season numbers smaller 10", "False")]
+                    ("leading_zero", "bool", "Show leading zero for season numbers smaller 10", "False"),
+                    ("char_sub", "str", "Characters to substitute w/o any sanity checks (Syntax: a|b,c|b,d|,)", "")]
     __author_name__ = ("rusk")
     __author_mail__ = ("troggs@gmx.net")
     __tvdb = {}
@@ -547,7 +548,8 @@ class EpisodeMover(Hook):
             episode_name = episode.episode_name()
             episode.dst_filename = FileRenamer(self.log).parseEpisode(self.getConfig('usr_string'), episode.src_filename,
                                                               episode.show_name, episode.show_index['raw'],
-                                                              episode_name, self.getConfig('punc'))
+                                                              episode_name, self.getConfig('punc'),
+                                                              self.getConfig('char_sub'))
             episode.dst_filename = save_path(episode.dst_filename)
         try:
             episode.unicode()
@@ -966,6 +968,7 @@ class StringCleaner:
     It should not be applied to generic strings lacking an element such as "s01e01" or "1x10" (known as Progression Indicator or PI)
     '''    
     def __init__(self, common_occurrences=None):
+        self._common_occurences = None
         if common_occurrences != None:
             try:
                 if os.path.exists(common_occurrences) and \
@@ -974,8 +977,6 @@ class StringCleaner:
             except TypeError, e:
     #                self._common_occurences = common_occurrences[:]
                     self._common_occurences = ["dts","DiMENSION"]
-        else:
-            self._common_occurences = None
         
     
     def _loadOccurenceFile(self, path_to_file):
@@ -1450,17 +1451,16 @@ class FileRenamer:
         self.log = debug_logger
         
 #------------------------------PUBLIC INTERFACE-----------------------------------------
-    def parseEpisode(self, usr_string, episode, show_name, show_index, episode_name, punctuation):
+    def parseEpisode(self, usr_string, episode, show_name, show_index, episode_name, punctuation, substitute_string):
         '''This is the only public method that should be used'''
-        return self._parseEpisode(usr_string, episode, show_name, show_index, episode_name, punctuation)
+        return self._parseEpisode(usr_string, episode, show_name, show_index, episode_name, punctuation, substitute_string)
     
     def getShowIndex(self, show_index):
         return self.__convertShowIndex(show_index, 1, returnRaw=True)
-        
 #------------------------------PUBLIC INTERFACE-----------------------------------------    
         
     
-    def _parseEpisode(self, usr_string, episode, show_name, show_index, episode_name, punctuation):
+    def _parseEpisode(self, usr_string, episode, show_name, show_index, episode_name, punctuation, substitute_string):
         #pydevd.settrace("192.168.1.29",stdoutToServer=True,stderrToServer=True)
         # unicode -> string
         usr_string = str(usr_string)
@@ -1474,7 +1474,10 @@ class FileRenamer:
         self.__parseCustomElems(usr_string)
         self.__assignStdElements(show_name, show_index, episode_name, punctuation, usr_string)
         self.__parseCstmEpElems(episode)
-        return self.__constructName(usr_string, punctuation) + self.__addExtension(episode)
+        result = self.__constructName(usr_string, punctuation) + self.__addExtension(episode)
+        if substitute_string == '':
+            return result
+        return self.__substituteChars(result, substitute_string)
     
     
     def __parseIndexElem(self, usr_string):
@@ -1730,6 +1733,16 @@ class FileRenamer:
         self.elements[self.__parseIndexElem(usr_string)] = (show_index,)
         if episode_name != None:
             self.elements["%episode"] = (self.__formatEpisodeName(episode_name, punctuation),)
+            
+    def __substituteChars(self, renamee, substitute_string):
+        ''' substitute_string = "'?'|'!', " -> kv_chars = ['?'|'!'] would substitute a '?' for '!'. '''
+        seperator = '|'
+        #TODO: some sanity checks perhaps
+        for sub_pair in substitute_string.split(','):
+            if sub_pair.find(seperator) == -1: break
+            key, value = sub_pair.split(seperator)
+            renamee = renamee.replace(key, value)
+        return renamee
             
         
 class EMException(Exception):
