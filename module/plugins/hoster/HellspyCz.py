@@ -24,7 +24,7 @@ class HellspyCz(SimpleHoster):
     __name__ = "HellspyCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*(?:hellspy\.(?:cz|com|sk|hu|pl)|sciagaj.pl)(/\S+/\d+)/?.*"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __description__ = """HellSpy.cz"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -39,7 +39,7 @@ class HellspyCz(SimpleHoster):
     DOWNLOAD_URL_PATTERN = r"launchFullDownload\('([^']+)'"
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        self.multiDL = self.resumeDownload = True
         self.chunkLimit = 1
 
     def handleFree(self):

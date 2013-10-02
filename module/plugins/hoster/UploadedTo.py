@@ -89,7 +89,7 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"https?://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
-    __version__ = "0.71"
+    __version__ = "0.72"
     __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz",
@@ -101,9 +101,8 @@ class UploadedTo(Hoster):
 
     def setup(self):
         self.html = None
-        self.multiDL = False
-        self.resumeDownload = False
         self.url = False
+        self.multiDL = self.resumeDownload = False
         self.chunkLimit = 1  # critical problems with more chunks
         if self.account:
             self.premium = self.account.getAccountInfo(self.user)["premium"]

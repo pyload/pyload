@@ -8,7 +8,7 @@ class FileshareInUa(Hoster):
     __name__ = "FileshareInUa"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?fileshare.in.ua/[A-Za-z0-9]+"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """fileshare.in.ua hoster plugin"""
     __author_name__ = ("fwannmacher")
     __author_mail__ = ("felipe@warhammerproject.com")
@@ -19,8 +19,7 @@ class FileshareInUa(Hoster):
     PATTERN_OFFLINE = "This file doesn't exist, or has been removed."
 
     def setup(self):
-        self.resumeDownload = True
-        self.multiDL = True
+        self.multiDL = self.resumeDownload = True
 
     def process(self, pyfile):
         self.pyfile = pyfile

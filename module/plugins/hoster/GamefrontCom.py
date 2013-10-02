@@ -8,7 +8,7 @@ class GamefrontCom(Hoster):
     __name__ = "GamefrontCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?gamefront.com/files/[A-Za-z0-9]+"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = """gamefront.com hoster plugin"""
     __author_name__ = ("fwannmacher")
     __author_mail__ = ("felipe@warhammerproject.com")
@@ -19,8 +19,7 @@ class GamefrontCom(Hoster):
     PATTERN_OFFLINE = "This file doesn't exist, or has been removed."
 
     def setup(self):
-        self.resumeDownload = True
-        self.multiDL = True
+        self.multiDL = self.resumeDownload = True
         self.chunkLimit = -1
 
     def process(self, pyfile):

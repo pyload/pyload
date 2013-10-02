@@ -11,7 +11,7 @@ from module.utils import fs_encode
 
 class Premium4Me(Hoster):
     __name__ = "Premium4Me"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __type__ = "hoster"
 
     __pattern__ = r"http://premium.to/.*"
@@ -20,8 +20,8 @@ class Premium4Me(Hoster):
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     def setup(self):
-        self.resumeDownload = True
         self.chunkLimit = 1
+        self.resumeDownload = True
 
     def process(self, pyfile):
         if not self.account:
@@ -60,7 +60,8 @@ class Premium4Me(Hoster):
         trb = self.getTraffic()
         self.logInfo("Filesize: %d, Traffic used %d, traffic left %d" % (pyfile.size, tra - trb, trb))
 
-        if err: self.fail(err)
+        if err:
+            self.fail(err)
 
     def getTraffic(self):
         try:

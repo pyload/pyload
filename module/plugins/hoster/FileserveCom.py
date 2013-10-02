@@ -46,7 +46,7 @@ class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __description__ = """Fileserve.Com File Download Hoster"""
     __author_name__ = ("jeix", "mkaay", "paul king", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "", "zoidberg@mujmail.cz")
@@ -65,7 +65,7 @@ class FileserveCom(Hoster):
     # shares code with FilejungleCom and UploadstationCom
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True if self.premium else False
+        self.multiDL = self.resumeDownload = self.premium
 
         self.file_id = re.search(self.__pattern__, self.pyfile.url).group('id')
         self.url = "%s%s" % (self.URLS[0], self.file_id)

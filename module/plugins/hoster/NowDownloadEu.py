@@ -25,7 +25,7 @@ class NowDownloadEu(SimpleHoster):
     __name__ = "NowDownloadEu"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?nowdownload\.(eu|co)/dl/(?P<ID>[a-z0-9]+)"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """NowDownloadEu"""
     __author_name__ = ("godofdream")
     FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B </h4>'
@@ -39,9 +39,8 @@ class NowDownloadEu(SimpleHoster):
 
     def setup(self):
         self.wantReconnect = False
-        self.multiDL = True
+        self.multiDL = self.resumeDownload = True
         self.chunkLimit = -1
-        self.resumeDownload = True
 
     def handleFree(self):
         tokenlink = re.search(self.FILE_TOKEN_PATTERN, self.html)

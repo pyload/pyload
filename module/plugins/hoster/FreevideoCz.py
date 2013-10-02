@@ -39,7 +39,7 @@ class FreevideoCz(Hoster):
     __name__ = "FreevideoCz"
     __type__ = "hoster"
     __pattern__ = r"http://www.freevideo.cz/vase-videa/(.*)\.html"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __description__ = """freevideo.cz"""
     __author_name__ = ("zoidberg")
 
@@ -58,7 +58,8 @@ class FreevideoCz(Hoster):
             self.offline()
 
         found = re.search(self.URL_PATTERN, self.html)
-        if found is None: self.fail("Parse error (URL)")
+        if found is None:
+            self.fail("Parse error (URL)")
         download_url = found.group(1)
 
         pyfile.name = re.search(self.__pattern__, pyfile.url).group(1) + ".mp4"

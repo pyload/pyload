@@ -146,7 +146,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -173,8 +173,9 @@ class SimpleHoster(Hoster):
         self.file_info = {}
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True if self.premium else False
-        if isinstance(self.SH_COOKIES, list): set_cookies(self.req.cj, self.SH_COOKIES)
+        self.multiDL = self.resumeDownload = self.premium
+        if isinstance(self.SH_COOKIES, list):
+            set_cookies(self.req.cj, self.SH_COOKIES)
 
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)

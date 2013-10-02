@@ -9,7 +9,7 @@ from module.plugins.Hoster import Hoster
 
 class SimplydebridCom(Hoster):
     __name__ = "SimplydebridCom"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __type__ = "hoster"
     __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd.php/*"
     __description__ = """simply-debrid.com hoster plugin"""
@@ -17,7 +17,7 @@ class SimplydebridCom(Hoster):
     __author_mail__ = ("kagenoshin@gmx.ch")
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        self.multiDL = self.resumeDownload = True
         self.chunkLimit = 1
 
     def process(self, pyfile):

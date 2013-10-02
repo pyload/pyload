@@ -23,7 +23,7 @@ class EasybytezCom(XFileSharingPro):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w+).*"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __description__ = """easybytez.com"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -39,7 +39,7 @@ class EasybytezCom(XFileSharingPro):
     HOSTER_NAME = "easybytez.com"
 
     def setup(self):
-        self.resumeDownload = self.multiDL = self.premium
+        self.multiDL = self.resumeDownload = self.premium
 
 
 getInfo = create_getInfo(EasybytezCom)

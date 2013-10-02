@@ -9,7 +9,7 @@ class MovReelCom(SimpleHoster):
     __name__ = "MovReelCom"
     __type__ = "hoster"
     __pattern__ = r"http://movreel.com/.*"
-    __version__ = "1.00"
+    __version__ = "1.01"
     __description__ = """MovReel.com hoster plugin"""
     __author_name__ = ("JorisV83")
     __author_mail__ = ("jorisv83-pyload@yahoo.com")
@@ -18,8 +18,8 @@ class MovReelCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<b>File Not Found</b>'
 
     def setup(self):
-        self.resumeDownload = True
         self.multiDL = False
+        self.resumeDownload = True
 
     def handleFree(self):
 

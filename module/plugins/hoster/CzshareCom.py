@@ -28,7 +28,7 @@ class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.93"
+    __version__ = "0.94"
     __description__ = """CZshare.com"""
     __author_name__ = ("zoidberg")
 
@@ -48,7 +48,7 @@ class CzshareCom(SimpleHoster):
     USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([0-9., ]+)([kKMG]i?B)</strong>\s*</div><!-- .credit -->'
 
     def setup(self):
-        self.multiDL = self.resumeDownload = True if self.premium else False
+        self.multiDL = self.resumeDownload = self.premium
         self.chunkLimit = 1
 
     def checkTrafficLeft(self):

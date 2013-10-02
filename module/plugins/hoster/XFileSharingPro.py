@@ -36,7 +36,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -57,13 +57,13 @@ class XFileSharingPro(SimpleHoster):
     ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'
 
     def setup(self):
+        self.chunkLimit = 1
+
         if self.__name__ == "XFileSharingPro":
             self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
             self.multiDL = True
         else:
-            self.resumeDownload = self.multiDL = self.premium
-
-        self.chunkLimit = 1
+            self.multiDL = self.resumeDownload = self.premium
 
     def process(self, pyfile):
         self.prepare()

@@ -108,7 +108,7 @@ class DlFreeFr(SimpleHoster):
     __name__ = "DlFreeFr"
     __type__ = "hoster"
     __pattern__ = r"http://dl\.free\.fr/([a-zA-Z0-9]+|getfile\.pl\?file=/[a-zA-Z0-9]+)"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __description__ = """dl.free.fr download hoster"""
     __author_name__ = ("the-razer", "zoidberg", "Toilal")
     __author_mail__ = ("daniel_ AT gmx DOT net", "zoidberg@mujmail.cz", "toilal.dev@gmail.com")
@@ -119,9 +119,8 @@ class DlFreeFr(SimpleHoster):
     #FILE_URL_PATTERN = r'href="(?P<url>http://.*?)">T&eacute;l&eacute;charger ce fichier'   
 
     def setup(self):
-        self.multiDL = True
+        self.multiDL = self.resumeDownload = True
         self.limitDL = 5
-        self.resumeDownload = True
         self.chunkLimit = 1
 
     def init(self):
