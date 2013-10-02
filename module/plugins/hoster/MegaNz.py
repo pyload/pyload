@@ -20,7 +20,7 @@ class MegaNz(Hoster):
     __name__ = "MegaNz"
     __type__ = "hoster"
     __pattern__ = r"https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = """mega.co.nz hoster plugin"""
     __author_name__ = ("RaNaN", )
     __author_mail__ = ("ranan@pyload.org", )
@@ -69,8 +69,11 @@ class MegaNz(Hoster):
         cipher = AES.new(self.getCipherKey(key), AES.MODE_CTR, counter=ctr)
 
         self.pyfile.setStatus("decrypting")
-        f = open(self.lastDownload, "rb")
-        df = open(self.lastDownload.rsplit(self.FILE_SUFFIX)[0], "wb")
+
+        file_crypted = self.lastDownload
+        file_decrypted = file_crypted.rsplit(self.FILE_SUFFIX)[0]
+        f = open(file_crypted, "rb")
+        df = open(file_decrypted, "wb")
 
         # TODO: calculate CBC-MAC for checksum
 
@@ -84,7 +87,9 @@ class MegaNz(Hoster):
 
         f.close()
         df.close()
-        remove(self.lastDownload)
+        remove(file_crypted)
+
+        self.lastDownload = file_decrypted
 
     def process(self, pyfile):
 
