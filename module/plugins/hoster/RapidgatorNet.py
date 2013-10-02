@@ -46,8 +46,7 @@ class RapidgatorNet(SimpleHoster):
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
 
     def setup(self):
-        self.resumeDownload = False
-        self.multiDL = False
+        self.resumeDownload = self.multiDL = False
         self.sid = None
         self.chunkLimit = 1
         self.req.setOption("timeout", 120)

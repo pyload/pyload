@@ -13,9 +13,5 @@ class Share76Com(XFileSharingPro):
     FILE_INFO_PATTERN = r'<h2>\s*File:\s*<font[^>]*>(?P<N>[^>]+)</font>\s*\[<font[^>]*>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</font>\]</h2>'
     HOSTER_NAME = "share76.com"
 
-    def setup(self):
-        self.resumeDownload = self.multiDL = self.premium
-        self.chunkLimit = 1
-
 
 getInfo = create_getInfo(Share76Com)

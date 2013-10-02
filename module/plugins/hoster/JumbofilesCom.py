@@ -17,8 +17,7 @@ class JumbofilesCom(SimpleHoster):
     DIRECT_LINK_PATTERN = '<meta http-equiv="refresh" content="10;url=(.+)">'
 
     def setup(self):
-        self.resumeDownload = True
-        self.multiDL = True
+        self.resumeDownload = self.multiDL = True
 
     def handleFree(self):
         ukey = re.search(self.__pattern__, self.pyfile.url).group(1)

@@ -15,9 +15,5 @@ class UptoboxCom(XFileSharingPro):
     FILE_OFFLINE_PATTERN = r'<center>File Not Found</center>'
     HOSTER_NAME = "uptobox.com"
 
-    def setup(self):
-        self.resumeDownload = self.multiDL = self.premium
-        self.chunkLimit = 1
-
 
 getInfo = create_getInfo(UptoboxCom)

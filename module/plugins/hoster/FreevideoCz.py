@@ -47,8 +47,7 @@ class FreevideoCz(Hoster):
     FILE_OFFLINE_PATTERN = r'<h2 class="red-corner-full">Str.nka nebyla nalezena</h2>'
 
     def setup(self):
-        self.multiDL = True
-        self.resumeDownload = True
+        self.multiDL = self.resumeDownload = True
 
     def process(self, pyfile):
 
@@ -58,7 +57,8 @@ class FreevideoCz(Hoster):
             self.offline()
 
         found = re.search(self.URL_PATTERN, self.html)
-        if found is None: self.fail("Parse error (URL)")
+        if found is None:
+            self.fail("Parse error (URL)")
         download_url = found.group(1)
 
         pyfile.name = re.search(self.__pattern__, pyfile.url).group(1) + ".mp4"

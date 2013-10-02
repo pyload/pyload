@@ -36,7 +36,8 @@ class DailymotionCom(Hoster):
 
         for quality in ('hd720URL', 'hqURL', 'sdURL', 'ldURL', ''):
             dlLink = self.getQuality(quality, allLinksInfo)
-            if dlLink is not None: break
+            if dlLink is not None:
+                break
         else:
             self.fail(r'Unable to find video URL')
 

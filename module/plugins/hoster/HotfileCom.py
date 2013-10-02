@@ -49,8 +49,7 @@ class HotfileCom(Hoster):
         self.url = None
 
         if self.premium:
-            self.multiDL = True
-            self.resumeDownload = True
+            self.multiDL = self.resumeDownload = True
             self.chunkLimit = -1
         else:
             self.multiDL = False

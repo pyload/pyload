@@ -43,7 +43,7 @@ class MegasharesCom(SimpleHoster):
 
     def setup(self):
         self.resumeDownload = True
-        self.multiDL = True if self.premium else False
+        self.multiDL = self.premium
 
     def handlePremium(self):
         self.handleDownload(True)

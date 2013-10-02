@@ -101,15 +101,13 @@ class UploadedTo(Hoster):
 
     def setup(self):
         self.html = None
-        self.multiDL = False
-        self.resumeDownload = False
+        self.multiDL = self.resumeDownload = False
         self.url = False
         self.chunkLimit = 1  # critical problems with more chunks
         if self.account:
             self.premium = self.account.getAccountInfo(self.user)["premium"]
             if self.premium:
-                self.multiDL = True
-                self.resumeDownload = True
+                self.multiDL = self.resumeDownload = True
 
         self.fileID = getID(self.pyfile.url)
         self.pyfile.url = "http://uploaded.net/file/%s" % self.fileID

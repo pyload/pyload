@@ -173,8 +173,9 @@ class SimpleHoster(Hoster):
         self.file_info = {}
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True if self.premium else False
-        if isinstance(self.SH_COOKIES, list): set_cookies(self.req.cj, self.SH_COOKIES)
+        self.resumeDownload = self.multiDL = self.premium
+        if isinstance(self.SH_COOKIES, list):
+            set_cookies(self.req.cj, self.SH_COOKIES)
 
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
