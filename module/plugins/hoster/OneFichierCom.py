@@ -8,7 +8,7 @@ class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
     __pattern__ = r"(http://(\w+)\.((1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl.fr))"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __description__ = """1fichier.com download hoster"""
     __author_name__ = ("fragonib", "the-razer", "zoidberg", "imclem")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "daniel_ AT gmx DOT net", "zoidberg@mujmail.cz", "imclem on github")
@@ -57,5 +57,8 @@ class OneFichierCom(SimpleHoster):
         self.wait()
         self.retry()
 
+    def setup(self):
+        self.multiDL = self.premium
+        self.resumeDownload = True
 
 getInfo = create_getInfo(OneFichierCom)   
