@@ -53,13 +53,13 @@ class UnSkipOnFail(Hook):
             So this method returns a list of all links with equal
             package-folders and filenames as "pyfile", but except
             the data for "pyfile" itself.
-            It does NOT check the link"s status.
+            It does NOT check the link's status.
         """
         dups = []
         #: get packages (w/o files, as most file data is useless here)
         queue = self.api.getQueue()
         for package in queue:
-            #: check if package-folder equals pyfile"s package folder
+            #: check if package-folder equals pyfile's package folder
             if package.folder != pyfile.package().folder:
                 return
             #: now get packaged data w/ files/links
@@ -68,7 +68,7 @@ class UnSkipOnFail(Hook):
                 #: check if link is "skipped"
                 if link.status != 4:
                     return
-                #: check if link name collides with pdata"s name
+                #: check if link name collides with pdata's name
                 #: AND at last check if it is not pyfile itself
                 if link.name == pyfile.name and link.fid != pyfile.id:
                     dups.append(link.fid)
