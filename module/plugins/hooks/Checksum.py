@@ -22,6 +22,7 @@ import zlib
 from os import remove
 from os.path import getsize, isfile, splitext
 import re
+import base64
 
 from module.utils import save_join, fs_encode
 from module.plugins.Hook import Hook
@@ -48,13 +49,25 @@ def computeChecksum(local_file, algorithm):
 
         return "%x" % last
 
+    # Special Hash used by DDLStorage.com
+    # It compute the MD5 hash only on the first and the last 4096 bytes, then the hash is base64 encoded
+    elif algorithm == 'md5_ddlstorage':
+        h = hashlib.md5()
+
+        with open(local_file, 'rb') as f:
+            h.update(f.read(4096))
+            f.seek(-4096, 2)
+            h.update(f.read(4096))
+
+        return base64.b64encode(h.digest()).rstrip('=')
+
     else:
         return None
 
 
 class Checksum(Hook):
     __name__ = "Checksum"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __description__ = "Verify downloaded file size and checksum (enable in general preferences)"
     __config__ = [("activated", "bool", "Activated", True),
                   ("action", "fail;retry;nothing", "What to do if check fails?", "retry"),
@@ -75,6 +88,7 @@ class Checksum(Hook):
         self.algorithms = sorted(
             getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse=True)
         self.algorithms.extend(["crc32", "adler32"])
+        self.algorithms.append('md5_ddlstorage')
         self.formats = self.algorithms + ['sfv', 'crc', 'hash']
 
     def downloadFinished(self, pyfile):
