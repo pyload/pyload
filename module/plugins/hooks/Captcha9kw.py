@@ -31,7 +31,7 @@ from module.plugins.Hook import Hook
 
 class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __description__ = """send captchas to 9kw.eu"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", True),
@@ -39,6 +39,7 @@ class Captcha9kw(Hook):
                   ("confirm", "bool", "Confirm Captcha (Cost +6)", "False"),
                   ("captchaperhour", "int", "Captcha per hour (max. 9999)", "9999"),
                   ("prio", "int", "Prio 1-10 (Cost +1-10)", "0"),
+                  ("selfsolve", "bool", "Selfsolve", "False"),                  
                   ("timeout", "int", "Timeout (max. 300)", "220"),
                   ("passkey", "password", "API key", ""), ]
     __author_name__ = ("RaNaN")
@@ -80,6 +81,7 @@ class Captcha9kw(Hook):
             "confirm": self.getConfig("confirm"),
             "captchaperhour": self.getConfig("captchaperhour"),
             "maxtimeout": self.getConfig("timeout"),
+            "selfsolve": self.getConfig("selfsolve"),
             "pyload": "1",
             "source": "pyload",
             "base64": "1",
