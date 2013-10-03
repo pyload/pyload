@@ -59,7 +59,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.510"
+    __version__ = "0.511"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -81,7 +81,8 @@ class EpisodeMover(Hook):
                     ("ignore_sample", "bool","Ignore sample files", "False"),
                     ('move_log', 'folder', 'Specify a directory to log EM operations to. (Disabled if empty)', ''),
                     ("leading_zero", "bool", "Show leading zero for season numbers smaller 10", "False"),
-                    ("char_sub", "str", "Characters to substitute w/o any sanity checks (Syntax: a|b,c|b,d|,)", "")]
+                    ("char_sub", "str", "Characters to substitute w/o any sanity checks (Syntax: a|b,c|b,d|,)", ""),
+                    ("folder_sub", "bool", "Substitute characters in folders as well?", "False")]
     __author_name__ = ("rusk")
     __author_mail__ = ("troggs@gmx.net")
     __tvdb = {}
@@ -92,6 +93,11 @@ class EpisodeMover(Hook):
     __em_lock = RLock()
     event_map = {"unrarFinished":"unrarFinished",
                  "pluginConfigChanged":"updateConfig",}
+    
+       
+    def setup(self):
+        self.renamer = FileRenamer(self.log)
+        
 
 
     def updateConfig(self,plugin_name,option_name,value):
@@ -388,7 +394,7 @@ class EpisodeMover(Hook):
         path = os.path.abspath(episode.src)
         #        crntShows = {}  #add found tv episodes: {ep_file_name:(path_to_show, show_title, show_index)}  <- obsolete structure; adapt it!
         for e in self.__tvdb.keys(): # where e is an actual name of locally existing show
-            if(valdor.hasPattern(episode.src_filename, valdor.createPattern(e))): # if True we got a local match
+            if valdor.hasPattern(episode.src_filename, valdor.createPattern(e)) is not None: # if True we got a local match
                 episode.dst = os.path.join(self.__tvdb.get(e), e) 
                 episode.show_name = e # e is the (folder) name of the (locally existing) show 
                 self.logDebug(u'"%s" recognised as show "%s"' % (episode.src_filename, e))
@@ -411,21 +417,25 @@ class EpisodeMover(Hook):
                         return True # return True since the show itself was successfully matched
                 else:
                     return True
+        #TODO: break this up into two methods
         if(createShow):
             q = Query(self.getConfig("occurrences"), 10, self.getConfig("episode_language"))
             match_ = self.__getFromRmteDB(episode.src_filename, os.path.basename(path), q, False)
             if match_ is not None: #actual name of tv show
                 if os.path.exists(self.getConfig("tvshows")): # just a precaution - we don't want to leave a trail of folders across the filesystem
-                    episode.show_name = match_["name"]
+                    if self.getConfig("folder_sub") is True:
+                        episode.show_name = self.renamer.substituteChars(match_["name"], self.getConfig("char_sub"))
+                    else:
+                        episode.show_name = match_["name"]
                     episode.episode_names = match_["episode_names"]
-                    episode.dst = os.path.join(self.getConfig("tvshows"), match_["name"])
+                    episode.dst = os.path.join(self.getConfig("tvshows"), episode.show_name)
                     try:
                         os.mkdir(episode.dst) #race condition 
                         self.logInfo(u'Conclusive result on show name determination: "%s" recognised as show "%s".' % (episode.src_filename, match_["name"]))
                         self.logInfo(u'Added "%s" to local tv database and created folder "%s".' % (match_["name"], episode.dst))
                         return True
-                    except OSError, e:
-                        if e.errno == 17:
+                    except OSError, ose:
+                        if ose.errno == 17:
                             self.logDebug(u'Folder "%s" already exists. Moving on...' % episode.dst)
                             return True
             else:
@@ -466,7 +476,6 @@ class EpisodeMover(Hook):
         #crntShows = {}  #add found tv episodes: {ep_file_name:(path_to_show, show_title, show_index)}  <- obsolete structure; adapt it!
         episode = episode_obj
         valdor = PatternChecker()
-        idxr = FileRenamer(self.log)
         season = valdor.getSeason(episode.src_filename,
                                   self.getConfig("season_text"),
                                   self.getConfig("leading_zero")) # returns "Season 1" e.g.
@@ -476,7 +485,7 @@ class EpisodeMover(Hook):
         season_path = os.path.join(episode.dst, season)
         show_index = valdor.getShowIndex(episode.src_filename)
         episode.show_index["raw"] = show_index
-        episode.show_index["season"], episode.show_index["episode"] = idxr.getShowIndex(show_index)
+        episode.show_index["season"], episode.show_index["episode"] = self.renamer.getShowIndex(show_index)
         if (os.path.exists(season_path)):
             episode.dst = season_path
             self.logDebug(u'Season directory for show "%s" already exists. No creation necessary.' % episode.src_filename)
@@ -546,7 +555,7 @@ class EpisodeMover(Hook):
             return
         if self.getConfig('rename'):
             episode_name = episode.episode_name()
-            episode.dst_filename = FileRenamer(self.log).parseEpisode(self.getConfig('usr_string'), episode.src_filename,
+            episode.dst_filename = self.renamer.parseEpisode(self.getConfig('usr_string'), episode.src_filename,
                                                               episode.show_name, episode.show_index['raw'],
                                                               episode_name, self.getConfig('punc'),
                                                               self.getConfig('char_sub'))
@@ -640,12 +649,7 @@ class Episode:
                 if self.episode_names[season].has_key(episode):
                     ep_name = self.episode_names[season][episode]
                     return ep_name
-                else:
-                    return None
-            else:
-                return None
-        else:
-            return None
+        return None
         
     def unicode(self):
         t = Transcoder()
@@ -796,18 +800,16 @@ class PatternChecker:
     def hasPattern(self, string_to_check, pattern):
         """Checks a string against a (generated) regex pattern
 
-        On match True is returned otherwise False
+        On match the match object is returned otherwise None
         """
         #        re1='(' + existing_string + ')'    # Word 1
         re1 = pattern
 
         rg = re.compile(re1,re.IGNORECASE|re.DOTALL)
-        m = rg.search(StringCleaner().stripclean(string_to_check))
+        result = rg.search(StringCleaner().stripclean(string_to_check))
+        
+        return result
 
-        if m:
-            return True
-        else:
-            return False
 
     
     def createPattern(self, list_representation_of_ep_title, isString=True):
@@ -1467,7 +1469,8 @@ class FileRenamer:
         episode = episode.encode("utf8")
         show_name = str(show_name)
         show_index = str(show_index)
-        episode_name = str(episode_name)
+        if episode_name != None:
+            episode_name = str(episode_name)
         punctuation = str(punctuation)
         
         show_index = show_index.strip()
@@ -1477,7 +1480,7 @@ class FileRenamer:
         result = self.__constructName(usr_string, punctuation) + self.__addExtension(episode)
         if substitute_string == '':
             return result
-        return self.__substituteChars(result, substitute_string)
+        return self.substituteChars(result, substitute_string)
     
     
     def __parseIndexElem(self, usr_string):
@@ -1720,8 +1723,7 @@ class FileRenamer:
     def __formatEpisodeName(self, episode_name, punc):
         if episode_name is not None:
             return episode_name.strip().replace(" ", punc)
-        else:
-            return None
+        return None
         
 
     def __addExtension(self, episode):
@@ -1734,12 +1736,13 @@ class FileRenamer:
         if episode_name != None:
             self.elements["%episode"] = (self.__formatEpisodeName(episode_name, punctuation),)
             
-    def __substituteChars(self, renamee, substitute_string):
+    def substituteChars(self, renamee, substitute_string):
         ''' substitute_string = "'?'|'!', " -> kv_chars = ['?'|'!'] would substitute a '?' for '!'. '''
         seperator = '|'
         #TODO: some sanity checks perhaps
+        if substitute_string.find(seperator) == -1: return renamee #invalid/missing string
         for sub_pair in substitute_string.split(','):
-            if sub_pair.find(seperator) == -1: break
+            if sub_pair.find(seperator) == -1: return renamee
             key, value = sub_pair.split(seperator)
             renamee = renamee.replace(key, value)
         return renamee
