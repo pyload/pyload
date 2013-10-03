@@ -34,7 +34,7 @@ class HellshareCz(SimpleHoster):
     SHOW_WINDOW_PATTERN = r'<a href="([^?]+/(\d+)/\?do=(fileDownloadButton|relatedFileDownloadButton-\2)-showDownloadWindow)"'
 
     def setup(self):
-        self.resumeDownload = self.multiDL = self.account
+        self.resumeDownload = self.multiDL = True if self.account else False
         self.chunkLimit = 1
 
     def process(self, pyfile):
