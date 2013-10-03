@@ -277,10 +277,8 @@ class Core(object):
 
         self.version = CURRENT_VERSION
 
-        # TODO: Re-enable when its working again
-        # TODO: Don't forget it
-        if False and not exists("pyload.conf") and not tests:
-            from Setup import Setup
+        if not exists("pyload.conf") and not tests:
+            from setup.Setup import Setup
 
             print "This is your first start, running configuration assistant now."
             self.config = ConfigParser()

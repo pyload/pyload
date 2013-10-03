@@ -70,7 +70,11 @@ def index():
     # set variable depending on setup mode
     setup = 'false' if SETUP is None else 'true'
     ws = PYLOAD.getWSAddress() if PYLOAD else False
-    web = PYLOAD.getConfigValue('webinterface', 'port') if PYLOAD else False
+    web = None
+    if PYLOAD:
+        web = PYLOAD.getConfigValue('webinterface', 'port')
+    elif SETUP:
+        web = SETUP.config['webinterface']['port']
 
     # Render variables into the html page
     if resp.status_code == 200:

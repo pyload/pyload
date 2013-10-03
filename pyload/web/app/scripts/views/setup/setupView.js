@@ -1,6 +1,6 @@
-define(['jquery', 'backbone', 'underscore', 'app', 'models/Setup', 'hbs!tpl/setup/layout', 'hbs!tpl/setup/actionbar',
-    './welcomeView', './systemView'],
-    function($, Backbone, _, App, Setup, template, templateBar, welcomeView, systemView) {
+define(['jquery', 'backbone', 'underscore', 'app', 'models/Setup', 'hbs!tpl/setup/layout', 'hbs!tpl/setup/actionbar', 'hbs!tpl/setup/error',
+    './welcomeView', './systemView', './userView', './finishedView'],
+    function($, Backbone, _, App, Setup, template, templateBar, templateError, welcomeView, systemView, userView, finishedView) {
         'use strict';
 
         return Backbone.Marionette.ItemView.extend({
@@ -15,11 +15,14 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/Setup', 'hbs!tpl/setu
 
             pages: [
                 welcomeView,
-                systemView
+                systemView,
+                userView,
+                finishedView
             ],
 
             page: 0,
             view: null,
+            error: null,
 
             initialize: function() {
                 var self = this;
@@ -52,37 +55,66 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/Setup', 'hbs!tpl/setu
 
                 });
                 this.listenTo(this.model, 'page:next', function() {
-                    self.openPage(self.page++);
+                    self.openPage(self.page + 1);
                 });
                 this.listenTo(this.model, 'page:prev', function() {
-                    self.openPage(self.page--);
+                    self.openPage(self.page - 1);
                 });
+
+                this.listenTo(this.model, 'error', this.onError);
+                this.model.fetch();
             },
 
             openPage: function(page) {
                 console.log('Change page', page);
                 // check if number is reasonable
-                if (!_.isNumber(page) || !_.isFinite(page))
+                if (!_.isNumber(page) || !_.isFinite(page) || page < 0 || page >= this.pages.length)
                     return;
 
                 if (page === this.page)
                     return;
 
+                // Render error directly
+                if (this.error) {
+                    this.onRender();
+                    return;
+                }
+
                 this.page = page;
-                this.onRender();
+
+                var self = this;
+                this.ui.page.fadeOut({complete: function() {
+                    self.onRender();
+                }});
 
                 this.model.trigger('page:changed', page);
             },
 
+            onError: function(model, xhr) {
+                console.log('Setup error', xhr);
+                this.error = xhr;
+                this.onRender();
+            },
+
             onRender: function() {
+
                 // close old opened view
                 if (this.view)
                     this.view.close();
 
-                // TODO: animation
+                // Render error if occurred
+                if (this.error) {
+                    this.ui.page.html(templateError(this.error));
+                    return;
+                }
+
                 this.view = new this.pages[this.page]({model: this.model});
                 this.ui.page.empty();
-                this.ui.page.append(this.view.render().$el);
+
+                var el = this.view.render().el;
+                this.ui.page.append(el);
+
+                this.ui.page.fadeIn();
             }
 
         });

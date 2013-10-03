@@ -3,6 +3,8 @@
 import sys
 import os
 
+from new_collections import OrderedDict
+
 # gettext decorator, translated only when needed
 _ = lambda x: x
 
@@ -17,12 +19,12 @@ def get_system_info():
     if info is None:
         import platform
 
-        info = {
-            _("Platform"): platform.platform(),
-            _("Version"): sys.version,
-            _("Path"): os.path.abspath(""),
-            _("Encoding"): sys.getdefaultencoding(),
-            _("FS-Encoding"): sys.getfilesystemencoding()
-        }
+        info = OrderedDict([
+            (_("Platform"), platform.platform()),
+            (_("Version"), sys.version),
+            (_("Path"), os.path.abspath("")),
+            (_("Encoding"), sys.getdefaultencoding()),
+            (_("FS-Encoding"), sys.getfilesystemencoding())
+        ])
 
     return info

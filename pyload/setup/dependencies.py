@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import inspect
+
 # Provide gettext marker
 _ = lambda x: x
 
@@ -50,7 +52,7 @@ class Python(Dependency):
     def getVersion(self):
         import sys
 
-        ".".join(str(v) for v in sys.version_info[:3])
+        return ".".join(str(v) for v in sys.version_info[:3])
 
 
 class JSON(Dependency):
@@ -58,8 +60,7 @@ class JSON(Dependency):
     optional = False
 
     def isStatisfied(self):
-        # TODO
-        return True
+        return find_module("json") or find_module("simplejson")
 
 
 class PyCurl(Dependency):
@@ -67,8 +68,7 @@ class PyCurl(Dependency):
     optional = False
 
     def isStatisfied(self):
-        # TODO
-        return True
+        return find_module("pycurl")
 
 
 class Sqlite(Dependency):
@@ -76,9 +76,8 @@ class Sqlite(Dependency):
     optional = False
 
     def isStatisfied(self):
-        # TODO
-        return True
+        return find_module("sqlite3") or find_module("pysqlite2")
 
 # TODO: ssl, crypto, image, tesseract, js
 
-deps = [x for x in locals().itervalues() if issubclass(x, Dependency) and x is not Dependency]
+deps = [Python, Sqlite, PyCurl, JSON]

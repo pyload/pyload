@@ -1,5 +1,56 @@
-<h1>{{ _ "System" }} </h1>
+<h3>{{ _ "System" }} </h3>
 
-<h2>{{_ "Dependencies" }}</h2>
+<dl class="dl-horizontal">
+    {{#each system}}
+        <dt>{{ @key }}</dt>
+        <dd>{{ this }}</dd>
+    {{/each}}
+</dl>
 
-<h2>{{ _ "Optional" }}</h2>
+<h3>{{_ "Dependencies" }}</h3>
+<dl class="dl-horizontal">
+    {{#each deps.core}}
+    <dt>{{ name }}</dt>
+    <dd>
+        {{#if avail}}
+            <span class="text-success">
+                <i class="icon-ok"></i>
+                {{#if v}}
+                 ({{v}})
+                {{/if}}
+            </span>
+        {{else}}
+            <span class="text-error">
+                <i class="icon-remove"></i>
+            </span>
+        {{/if}}
+    </dd>
+    {{/each}}
+</dl>
+
+
+<h4>{{ _ "Optional" }}</h4>
+<dl class="dl-horizontal">
+    {{#each deps.opt}}
+    <dt>{{ name }}</dt>
+    <dd>
+        {{#if avail}}
+            <span class="text-success">
+                {{ _ "available" }}
+                {{#if v}}
+                 ({{v}})
+                {{/if}}
+            </span>
+        {{else}}
+            <span class="text-error">
+                {{ _ "not available" }}
+            </span>
+        {{/if}}
+    </dd>
+    {{/each}}
+</dl>
+
+
+<button class="btn btn-blue">
+    {{ _ "Next" }}
+</button>

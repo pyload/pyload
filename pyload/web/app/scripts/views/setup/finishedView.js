@@ -1,14 +1,14 @@
-define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/setup/welcome'],
+define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/setup/finished'],
     function($, Backbone, _, App, template) {
         'use strict';
 
         return Backbone.Marionette.ItemView.extend({
 
-            name: 'Language',
+            name: 'Finished',
             template: template,
 
             events: {
-                'click .btn-blue': 'nextPage'
+                'click .btn-blue': 'confirm'
             },
 
             ui: {
@@ -17,8 +17,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/setup/welcome'],
             onRender: function() {
             },
 
-            nextPage: function() {
-                this.model.trigger('page:next');
+            confirm: function() {
+                this.model.submit();
             }
 
         });

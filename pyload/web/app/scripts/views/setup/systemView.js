@@ -8,12 +8,17 @@ define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/setup/system'],
             template: template,
 
             events: {
+                'click .btn-blue': 'nextPage'
             },
 
             ui: {
             },
 
             onRender: function() {
+            },
+
+            nextPage: function() {
+                this.model.trigger('page:next');
             }
 
         });

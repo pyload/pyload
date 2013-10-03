@@ -30,17 +30,48 @@ from pyload.utils.fs import abspath, dirname, exists, join, makedirs
 from pyload.utils import get_console_encoding
 from pyload.web.ServerThread import WebServer
 
+from system import get_system_info
+from dependencies import deps
 
 class Setup():
     """
     pyLoads initial setup configuration assistant
     """
 
+    @staticmethod
+    def check_system():
+        return get_system_info()
+
+
+    @staticmethod
+    def check_deps():
+        result = {
+            "core": [],
+            "opt": []
+        }
+
+        for d in deps:
+            avail, v = d.check()
+            check = {
+                "name": d.name,
+                "avail": avail,
+                "v": v
+            }
+            if d.optional:
+                result["opt"].append(check)
+            else:
+                result["core"].append(check)
+
+        return result
+
+
     def __init__(self, path, config):
         self.path = path
         self.config = config
         self.stdin_encoding = get_console_encoding(sys.stdin.encoding)
         self.lang = None
+        self.db = None
+
         # We will create a timestamp so that the setup will be completed in a specific interval
         self.timestamp = time()
 
@@ -72,9 +103,13 @@ class Setup():
 
         cli = self.ask("Use commandline for configuration instead?", self.no, bool=True)
         if cli:
-            self.start_cli()
-        else:
-            raw_input()
+            print "Not implemented yet!"
+            print "Use web configuration or config files"
+
+        raw_input()
+
+        return True
+
 
     def start_cli(self):
 
@@ -93,34 +128,8 @@ class Setup():
         print _("When you are ready for system check, hit enter.")
         raw_input()
 
-        #self.get_page_next()
 
-
-        if len(avail) < 5:
-            print _("Features missing: ")
-            print
-
-            if not self.check_module("Crypto"):
-                print _("no py-crypto available")
-                print _("You need this if you want to decrypt container files.")
-                print ""
-
-            if not ssl:
-                print _("no SSL available")
-                print _("This is needed if you want to establish a secure connection to core or webinterface.")
-                print _("If you only want to access locally to pyLoad ssl is not useful.")
-                print ""
-
-            if not captcha:
-                print _("no Captcha Recognition available")
-                print _("Only needed for some hosters and as freeuser.")
-                print ""
-
-            if not js:
-                print _("no JavaScript engine found")
-                print _("You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino")
-
-            print _("You can abort the setup now and fix some dependencies if you want.")
+        # TODO: new system check + deps
 
         con = self.ask(_("Continue with setup?"), self.yes, bool=True)
 
@@ -151,12 +160,11 @@ class Setup():
             if ssl:
                 self.conf_ssl()
 
+        print ""
+        print _("Do you want to configure webinterface?")
+        web = self.ask(_("Configure webinterface?"), self.yes, bool=True)
         if web:
-            print ""
-            print _("Do you want to configure webinterface?")
-            web = self.ask(_("Configure webinterface?"), self.yes, bool=True)
-            if web:
-                self.conf_web()
+            self.conf_web()
 
         print ""
         print _("Setup finished successfully.")
@@ -182,18 +190,11 @@ class Setup():
         db.shutdown()
 
         print ""
-        print _("External clients (GUI, CLI or other) need remote access to work over the network.")
-        print _("However, if you only want to use the webinterface you may disable it to save ram.")
-        self.config["remote"]["activated"] = self.ask(_("Enable remote access"), self.yes, bool=True)
-
-        print ""
         langs = self.config.getMetaData("general", "language")
         self.config["general"]["language"] = self.ask(_("Language"), "en", langs.type.split(";"))
 
         self.config["general"]["download_folder"] = self.ask(_("Download folder"), "Downloads")
         self.config["download"]["max_downloads"] = self.ask(_("Max parallel downloads"), "3")
-        #print _("You should disable checksum proofing, if you have low hardware requirements.")
-        #self.config["general"]["checksum"] = self.ask(_("Proof checksum?"), "y", bool=True)
 
         reconnect = self.ask(_("Use Reconnect?"), self.no, bool=True)
         self.config["reconnect"]["activated"] = reconnect
@@ -247,12 +248,8 @@ class Setup():
             languages=[self.config["general"]["language"], "en"], fallback=True)
         translation.install(True)
 
-        from pyload.database import DatabaseBackend
+        self.openDB()
 
-        db = DatabaseBackend(None)
-        db.setup()
-
-        noaction = True
         try:
             while True:
                 print _("Select action")
@@ -267,14 +264,12 @@ class Setup():
                     print ""
                     username = self.ask(_("Username"), "User")
                     password = self.ask("", "", password=True)
-                    db.addUser(username, password)
-                    noaction = False
+                    self.db.addUser(username, password)
                 elif action == "2":
                     print ""
                     print _("Users")
                     print "-----"
-                    users = db.getAllUserData()
-                    noaction = False
+                    users = self.db.getAllUserData()
                     for user in users.itervalues():
                         print user.name
                     print "-----"
@@ -283,14 +278,31 @@ class Setup():
                     print ""
                     username = self.ask(_("Username"), "")
                     if username:
-                        db.removeUserByName(username)
-                        noaction = False
+                        self.db.removeUserByName(username)
                 elif action == "4":
-                    db.syncSave()
+                    self.db.syncSave()
                     break
         finally:
-            if not noaction:
-                db.shutdown()
+            self.closeDB()
+
+    def addUser(self, username, password):
+        self.openDB()
+        try:
+            self.db.addUser(username, password)
+        finally:
+            self.closeDB()
+
+    def openDB(self):
+        from pyload.database import DatabaseBackend
+
+        if self.db is None:
+            self.db = DatabaseBackend(None)
+            self.db.setup()
+
+    def closeDB(self):
+        if self.db is not None:
+            self.db.syncSave()
+            self.db.shutdown()
 
     def conf_path(self, trans=False):
         if trans:
