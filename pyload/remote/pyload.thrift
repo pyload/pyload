@@ -495,6 +495,9 @@ service Pyload {
   // returns own user data
   UserData getUserData(),
 
+  // works contextual, admin can change every password
+  bool setPassword(1: string username, 2: string old_password, 3: string new_password),
+
   // all user, for admins only
   map<UserID, UserData> getAllUserData(),
 
@@ -503,9 +506,6 @@ service Pyload {
   // normal user can only update their own userdata and not all attributes
   void updateUserData(1: UserData data),
   void removeUser(1: UserID uid),
-
-  // works contextual, admin can change every password
-  bool setPassword(1: string username, 2: string old_password, 3: string new_password),
 
   ///////////////////////
   // Addon Methods

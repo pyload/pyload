@@ -128,8 +128,6 @@ class Api(Iface):
     #  Auth+User Information
     #############################
 
-    # TODO
-
     @RequirePerm(Permission.All)
     def login(self, username, password, remoteip=None):
         """Login into pyLoad, this **must** be called when using rpc before any methods can be used.
@@ -153,7 +151,8 @@ class Api(Iface):
 
         return self.core.db.checkAuth(username, password)
 
-    def isAuthorized(self, func, user):
+    @staticmethod
+    def isAuthorized(func, user):
         """checks if the user is authorized for specific method
 
         :param func: function name
@@ -166,28 +165,6 @@ class Api(Iface):
             return True
         else:
             return False
-
-    # TODO
-    @RequirePerm(Permission.All)
-    def getUserData(self, username, password):
-        """similar to `checkAuth` but returns UserData thrift type """
-        user = self.checkAuth(username, password)
-        if not user:
-            raise UserDoesNotExists(username)
-
-        return user.toUserData()
-
-    def getAllUserData(self):
-        """returns all known user and info"""
-        return self.core.db.getAllUserData()
-
-    def changePassword(self, username, oldpw, newpw):
-        """ changes password for specific user """
-        return self.core.db.changePassword(username, oldpw, newpw)
-
-    def setUserPermission(self, user, permission, role):
-        self.core.db.setPermission(user, permission)
-        self.core.db.setRole(user, role)
 
 
 class UserApi(Api):
