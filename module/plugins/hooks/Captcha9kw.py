@@ -39,7 +39,7 @@ class Captcha9kw(Hook):
                   ("confirm", "bool", "Confirm Captcha (Cost +6)", "False"),
                   ("captchaperhour", "int", "Captcha per hour (max. 9999)", "9999"),
                   ("prio", "int", "Prio 1-10 (Cost +1-10)", "0"),
-                  ("selfsolve", "bool", "Selfsolve", "False"),                  
+                  ("selfsolve", "bool", "If enabled and you have a 9kw client active only you will get your captcha to solve it", "False"),                  
                   ("timeout", "int", "Timeout (max. 300)", "220"),
                   ("passkey", "password", "API key", ""), ]
     __author_name__ = ("RaNaN")
