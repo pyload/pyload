@@ -19,7 +19,7 @@ import sys
 
 class MovieMover(Hook):
     __name__ = "MovieMover"
-    __version__ = "0.392"
+    __version__ = "0.393"
     __description__ = "MovieMover(MM) moves your movies for you"
     __config__ = [("activated" , "bool" , "Activated"  , "False" ),
                   ("extension", "str", "List of supported extensions", "mkv,avi,mp4,wmv"),
@@ -983,8 +983,6 @@ class Query:
                 new = c.convertString(movie_title, 'utf8')
                 if new != movie_title:
                     return new
-        else:
-            return movie_title
         return movie_title
     
     
@@ -1009,10 +1007,7 @@ class Query:
         if retVal != None:
             if len(retVal["title"]['original']) > 0 and retVal["year"] != None:
                 return retVal
-            else:
-                return None
-        else:
-            return None
+        return None
             
     
 
