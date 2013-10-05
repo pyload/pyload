@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import ctypes
 import os
 import sys
 from os.path import join
@@ -67,6 +66,8 @@ def free_space(folder):
     folder = fs_encode(folder)
 
     if os.name == "nt":
+        import ctypes
+
         free_bytes = ctypes.c_ulonglong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
         return free_bytes.value
@@ -78,6 +79,8 @@ def fs_bsize(path):
     path = fs_encode(path)
 
     if os.name == "nt":
+        import ctypes
+
         drive = "%s\\" % os.path.splitdrive(path)[0]
         cluster_sectors, sector_size = ctypes.c_longlong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceW(ctypes.c_wchar_p(drive), ctypes.pointer(cluster_sectors), ctypes.pointer(sector_size), None, None)
