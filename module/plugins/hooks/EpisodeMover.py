@@ -15,6 +15,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import string
+import re
 from module.plugins.Hook import Hook
 from threading import Thread, RLock
 import shutil as mv
@@ -55,11 +56,12 @@ class EpisodeMover(Hook):
 #    -Add unmatched files to a log file 
 #    -Implement prioritisation for shows with same word length where one show also is the name of a rls grp: Dexter.S07E11.720p.HDTV.x264-EVOLVE.mkv
 #    -Allow bypass of certain files triggered by specific package name declared in an external text file
+#    -Modify series matching to only/alternatively use the portion before the series index (marked w/ arrows): "->A.Series.<-S01E01.blabla.release-grp.mkv"
 
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.511"
+    __version__ = "0.515"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -97,6 +99,8 @@ class EpisodeMover(Hook):
        
     def setup(self):
         self.renamer = FileRenamer(self.log)
+        self.number_of_parallel_queries = 10
+        self.language = self.getConfig("episode_language")
         
 
 
@@ -179,30 +183,6 @@ class EpisodeMover(Hook):
         self.acq_rls_ProcessingLock(path_to_file) 
      
         
-    def packageFinished(self, pypack):
-        """assembles path to package and calls doProcessing()
-        
-        In case package only contains one file doProcessing()
-        is called accordingly using the path to that file
-        """
-        if len(pypack.m.cache) == 1:# in case there is only one file left in the package
-                                    # and packageFinished() is fired before downloadFinished()
-                                    # this will increase efficiency
-            for n in pypack.m.cache.values():
-                path_to_file = os.path.join(self.config["general"]["download_folder"], pypack.folder, n.name)
-            isArchive = PatternChecker()
-            for ext in ['rar', 'zip']:
-                if isArchive.hasExtension(n.name, ext):
-                    self.logDebug(u"%s is an archive. Aborting..." % n.name)
-                    return
-            if os.path.exists(path_to_file):
-                self.acq_rls_ProcessingLock(path_to_file)
-            else:
-                self.logDebug(u'"%s" does not exist and was probably already moved.' % path_to_file)
-        else:
-            dl_dir = os.path.join(self.config["general"]["download_folder"], pypack.folder)
-            self.acq_rls_ProcessingLock(dl_dir)
-        
     def unrarFinished(self,path_to_extracted_files,path_to_downloads):
         self.acq_rls_ProcessingLock(path_to_extracted_files)
    
@@ -269,10 +249,6 @@ class EpisodeMover(Hook):
             self.logInfo(u'No video files to process in "%s". Aborting...' % path_to_file_s)
             return
         
-        #Check for presence of self-defined/custom shows
-        customShows = {} # { src : dst }
-        if False:
-            self.isCustomShow(files_, customShows)
             
         #Check if and what files are tv shows and remove bad apples
         for vid in files_.keys():
@@ -281,7 +257,7 @@ class EpisodeMover(Hook):
             else:
                 src = files_[vid]
                 crntShows.append(Episode(src=src, src_filename=vid))
-        if len(crntShows) == 0 and len(customShows) == 0:
+        if len(crntShows) == 0:
             self.logInfo(u'No tv episodes to process in "%s". Aborting...' % path_to_file_s)
             return
         
@@ -292,7 +268,7 @@ class EpisodeMover(Hook):
         for episode in crntShows:
             if not(self.isinDb(episode, self.getConfig("detection"))) is True:
                 crnt_shows.remove(episode)
-        if len(crnt_shows) == 0 and len(customShows) == 0:
+        if len(crnt_shows) == 0:
             self.logInfo(u'All found tv episodes in "%s" are not part of local tv shows. Aborting...' % path_to_file_s)
             return
         
@@ -302,16 +278,11 @@ class EpisodeMover(Hook):
         for episode in crntShows:
             if not self.hasSeasonDir(episode, self.getConfig("create_season"), self.getConfig("arbitrary")):
                 crnt_shows.remove(episode)
-        if len(crnt_shows) == 0 and len(customShows) == 0:
+        if len(crnt_shows) == 0:
             self.logInfo(u'No existing seasons found for episodes in "%s". Aborting...' % path_to_file_s)
             return
         
         crntShows = crnt_shows[:]
-        
-        #Add customShows to list of files that need moving
-        if len(customShows) > 0: #TODO: complete overhaul of custom show management!
-            for episode in customShows.keys():
-                crntShows[episode] = (customShows.get(episode), None, None)
         
                 
         #<--- The remainder of files_ is now ready to be moved to its final destination ---> 
@@ -359,18 +330,6 @@ class EpisodeMover(Hook):
         return False
     
     
-    def isCustomShow(self,collected_files, customShows):
-        path_to_shows = self.getConfig("tvshows")
-        custom_shows = [(path_to_shows, 'The Colbert Report'),
-                        (path_to_shows, 'The Daily Show')]
-        valdor = PatternChecker()
-        
-        for tuple_ in custom_shows:
-            for file_ in collected_files.keys():
-                episode = tuple_[1]
-                if valdor.hasPattern(file_, valdor.createPattern(episode)):
-                    customShows[os.path.join(collected_files.get(file_), file_)] = os.path.join(tuple_[0], tuple_[1])
-            
     def isTVEp(self,video_name, src_path):
         """checks if a file is a tv show episode"""
         valdor = PatternChecker()
@@ -398,13 +357,10 @@ class EpisodeMover(Hook):
                 episode.dst = os.path.join(self.__tvdb.get(e), e) 
                 episode.show_name = e # e is the (folder) name of the (locally existing) show 
                 self.logDebug(u'"%s" recognised as show "%s"' % (episode.src_filename, e))
-                q = QueryHandler(10, self.getConfig("episode_language"))
                 if self.getConfig("rename") is True:
                     self.logInfo(u'Querying remote resource for episode name for "%s". Please exercise patience meanwhile...' % episode.src_filename)
-                    episode_names = self.__getFromRmteDB(e,
-                                                         os.path.basename(path),
-                                                         q, returnEpisodes=True)
-                    if episode_names != None: # if True episode names were found remotely
+                    episode_names = self.__getEpisodeNamesFromRemoteDB(e)
+                    if episode_names != None: # if None no episode names were found remotely
                         episode.episode_names = episode_names
                         return True
                     else:
@@ -417,22 +373,18 @@ class EpisodeMover(Hook):
                         return True # return True since the show itself was successfully matched
                 else:
                     return True
-        #TODO: break this up into two methods
+        #TODO: break this up into two methods -> def createShowLocally()
         if(createShow):
-            q = Query(self.getConfig("occurrences"), 10, self.getConfig("episode_language"))
-            match_ = self.__getFromRmteDB(episode.src_filename, os.path.basename(path), q, False)
-            if match_ is not None: #actual name of tv show
+            if self.__getShowNameFromRemoteDB(episode) is not None: #actual name of tv show
                 if os.path.exists(self.getConfig("tvshows")): # just a precaution - we don't want to leave a trail of folders across the filesystem
                     if self.getConfig("folder_sub") is True:
-                        episode.show_name = self.renamer.substituteChars(match_["name"], self.getConfig("char_sub"))
-                    else:
-                        episode.show_name = match_["name"]
-                    episode.episode_names = match_["episode_names"]
-                    episode.dst = os.path.join(self.getConfig("tvshows"), episode.show_name)
+                        episode.show_name = self.renamer.substituteChars(episode.show_name, self.getConfig("char_sub"))
+                    show_name = episode.show_name
+                    episode.dst = os.path.join(self.getConfig("tvshows"), show_name)
                     try:
                         os.mkdir(episode.dst) #race condition 
-                        self.logInfo(u'Conclusive result on show name determination: "%s" recognised as show "%s".' % (episode.src_filename, match_["name"]))
-                        self.logInfo(u'Added "%s" to local tv database and created folder "%s".' % (match_["name"], episode.dst))
+                        self.logInfo(u'Conclusive result on show name determination: "%s" recognised as show "%s".' % (episode.src_filename, show_name))
+                        self.logInfo(u'Added "%s" to local tv database and created folder "%s".' % (show_name, episode.dst))
                         return True
                     except OSError, ose:
                         if ose.errno == 17:
@@ -446,7 +398,7 @@ class EpisodeMover(Hook):
         self.mv_logger.log_custom(u'The show "%s" is not part of the local database' % (episode.src_filename))
         return False
 
-    
+    #deprecated    
     def __getFromRmteDB(self, file_name, root_folder, query, returnEpisodes=False):
         try:
 #            def processQueries(self,list_of_possible_names, episode_name=''):
@@ -470,6 +422,69 @@ class EpisodeMover(Hook):
             except EMException, eme:
                     self.logInfo(eme.error() + " " + eme.args[0])
                     return None
+                
+    def __getShowNameFromRemoteDB(self, episode):
+        full_query_string = episode.full_query_string
+        minimal_query_string = PatternChecker().getMinimalQueryString(episode.full_query_string) # cut off file name at series index
+        minimal_query_string = [StringCleaner().clean(minimal_query_string, isFile=False),] # clean punctuation and convert to list
+        
+        try:
+            query_handler = QueryHandler(self.number_of_parallel_queries, self.language)
+            query_result = query_handler.processQueries(minimal_query_string)
+            episode.show_name = query_result["name"]
+            episode.episode_names = query_result["episode_names"]
+            self.logInfo(u'Show name minimal query successful for "%s". Proceeding...' % episode.src_filename)
+            if not episode.episode_name:
+                self.logInfo(u'Episode name determination for %s failed. Likely the particular episode is too recent.' % episode.src_filename)
+            return episode
+        except EMException, eme:
+            # lets try again using the full file name
+            pass
+        
+        # query using the full file name / full query string
+        try:
+            query = Query(self.getConfig("occurrences"),
+                          self.number_of_parallel_queries,
+                          self.language)            
+            query_result = query.sendQuery(full_query_string)
+            episode.show_name = query_result["name"]
+            episode.episode_names = query_result["episode_names"]
+            self.logInfo(u'Show name full query successful for "%s". Proceeding...' % episode.src_filename)
+            if not episode.episode_name:
+                self.logInfo(u'Episode name determination for %s failed. Likely the particular episode is too recent.' % episode.src_filename)
+            return episode
+        except EMException, eme:
+            # lets try again with the root_folder if that option is enabled
+            pass
+        
+        # query using the root folder where episode.src_filename resides in
+        root_folder = episode.root_folder
+        if self.getConfig("folder_search") is True and \
+        os.path.split(self.config.plugin["ExtractArchive"]["destination"]["value"])[1] != root_folder and \
+        os.path.split(self.config["general"]["download_folder"]) != root_folder:
+            try:
+                query_result = self.query.sendQuery(root_folder)
+                episode.show_name = query_result["name"]
+                episode.episode_names = query_result["episode_names"]
+                self.logInfo(u'Show name query successful for "%s" using its enclosing directory ("%s"). Proceeding...' \
+                             % (episode.src_filename, root_folder))
+                if not episode.episode_name:
+                    self.logInfo(u'Episode name determination for %s failed. Likely the particular episode is too recent.' % episode.src_filename)
+                    return episode
+            except EMException, eme:
+                self.logInfo(eme.error() + " " + eme.args[0])
+                return None
+            return None
+    
+    
+    def __getEpisodeNamesFromRemoteDB(self, show_name):
+        try:
+            query_handler = QueryHandler(self.number_of_parallel_queries, self.language)
+            e = query_handler.processQueries([show_name,])["episode_names"]
+            self.logInfo(u'Episode query successful for "%s". Proceeding...' % show_name)
+            return e
+        except EMException, eme:
+            return None
         
     
     def hasSeasonDir(self, episode_obj, createSeason=False, arbitrarySeason=True):
@@ -629,6 +644,7 @@ class Episode:
                  show_name="", show_index="", episode_names={}):
         self.src = src # source folder of episode
         self.src_filename = src_filename # name of episode in src folder
+        self.root_folder = os.path.basename(self.src)
         self.dst = dst # dst folder for episode
         self.dst_filename = dst_filename # dst filename for episode
         self.show_name = show_name
@@ -637,6 +653,9 @@ class Episode:
         self.show_index["episode"] = None
         self.show_index["raw"] = None
         self.episode_names = episode_names # dict of all episode names: ep_name = self.episodes["episode_names"][1][10]
+        self.full_query_string = self.src_filename
+        self.minimal_query_string = "" # file name cut at series index: "A.Series.S01E01.blabla.mkv" -> "A.Series"
+        
         
     def episode_name(self):
         if  self.show_index["season"] is not None and \
@@ -650,6 +669,7 @@ class Episode:
                     ep_name = self.episode_names[season][episode]
                     return ep_name
         return None
+
         
     def unicode(self):
         t = Transcoder()
@@ -663,13 +683,7 @@ class Episode:
             self.dst_filename = t.decode(self.dst_filename)
         if isinstance(self.show_name, str):
             self.show_name = t.decode(self.show_name)
-            
-            
-            
         
-            
-        
-
 
 import os
 class PathLoader:
@@ -747,7 +761,21 @@ class PathLoader:
         return _dict
     
 
-import re
+
+class Pattern:
+    
+    
+    def __init__(self):
+        # this is more or less a stub
+        # move all patterns from PatternChecker in here
+        # compile and then instantiate once for EpisodeMover
+        
+        # config strings
+        self.is_tv_episode = "is_tv_episode"
+        self.is_tv_episode_type1 = "S00E00"
+        
+        self.pattern = {}
+        self.pattern[self.is_tv_episode] = ""
 
 class PatternChecker:
 
@@ -924,8 +952,6 @@ class PatternChecker:
             else:
                 season_folder = season_text + " " + str(season_number)
             return season_folder
-        
-
     
     
     def getShowIndex(self, episode):
@@ -948,20 +974,29 @@ class PatternChecker:
         for c in punc:
             m = m.strip(c)
         return m
-        
-                                     
     
-            
-    #deprecated and disabled - will be removed in 2 versions from now [v500]
-#    def __generateSeason(self,season_number,season_text = "Season"):
-#        '''generates a string "Season 1" from a string "01"'''
-#        
-#        if (season_number.isdigit()):
-#            season = season_text + (int)(season_number).__str__() 
-#            return season
-#        else:
-#            return ""
+    
+    def getMinimalQueryString(self, episode_file_name):
+        efn = episode_file_name
+
+        p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
+        p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
+        p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9]){1}((\\s+)|(-+)|(_+)|(\\.+))' # ".101-", "_901 " with ESS
+        
+        m1 = re.search(p1, ef, re.IGNORECASE)
+        m2 = re.search(p2, efn, re.IGNORECASE)
+        m3 = re.search(p3, efn, re.IGNORECASE)
+
+        # arg: "a.series.s01e01.blabla.mkv
+        # return: "a.series"
+        if m1:
+            return efn[:efn.find(m1.group(0))]
+        elif m2:
+            return efn[:efn.find(m2.group(0))]
+        elif m3:
+            return efn[:efn.find(m3.group(0))]
       
+
             
 class StringCleaner:
     '''Cleans a given string from common occurrences and punctuation
@@ -1081,36 +1116,17 @@ class StringCleaner:
 class QueryGenerator:
 
 
-    def genQueryElems(self,ws_sep_string, altCombine=True):
+    def genQueryElems(self,ws_sep_string):
         """returns either the combination of all elements of a whitespace separated string
         or (I)returns a chain of all elements looped num-of-element times with each loop loosing
         the first element:
         (I) A B C-> (A,B,C),(A,B),(A),(B,C),(B),(C) 
         """
-        altCombine = True # self._combine is deprecated needs to be safely removed!
-        if altCombine:
-            return self._unpackAltCombinations(self.__alt_combine(ws_sep_string))
-        else:
-            return self._unpackCombinations(self._combine(ws_sep_string))
+        combinations = self._combine(ws_sep_string)
+        return self._unpackCombinations(combinations)
 
 
     def _combine(self,ws_sep_string):
-        try:
-            list_of_elements = ws_sep_string.split(' ')
-            for e in list_of_elements:
-                if e == '': # some cleaning
-                    list_of_elements.remove(e)
-            result = []
-            for n in range (1, len(list_of_elements) + 1):
-                pass
-#                result.append(list(combinations(list_of_elements,n)))
-    
-            return result
-        except TypeError, e:
-            pass
-
-    
-    def __alt_combine(self,ws_sep_string):
         list_of_elements = ws_sep_string.split(' ')
         for e in list_of_elements:
             if e == '': # some cleaning
@@ -1119,38 +1135,21 @@ class QueryGenerator:
         self.combines = []
         ingoing_list = list_of_elements[:]
         for elem in list_of_elements:
-            self.__start_alt_combine(ingoing_list[:])
+            self.__start_combine(ingoing_list[:])
             ingoing_list.remove(elem)
 
         return self.combines
     
     
-    def __start_alt_combine(self, remainder): 
+    def __start_combine(self, remainder): 
         self.combines.append(tuple(remainder))
-#        remainder.remove(remainder[len(remainder) - 1])
         remainder.pop(len(remainder) - 1)
         if len(remainder) == 0:
             return
-        self.__start_alt_combine(remainder)
+        self.__start_combine(remainder)
     
     
-    def _unpackCombinations(self,list_of_lists_of_tuples):
-        final_result = []
-        strg = ''
-        for inner_list in list_of_lists_of_tuples:
-            for tuple_ in inner_list:
-                for elem in tuple_:
-                    if tuple_.index(elem) == len(tuple_) - 1:
-                        strg += elem
-                        final_result.append(strg)
-                        strg = ''
-                    else:
-                        strg += elem + ' '
-                        
-        return final_result
-
-
-    def _unpackAltCombinations(self,list_of_tuples):
+    def _unpackCombinations(self,list_of_tuples):
         final_result = []
         strg = ''
         for tpl in list_of_tuples:
@@ -1196,7 +1195,15 @@ class QueryHandler:
     
         
     def processQueries(self,list_of_possible_names, episode_name=''):
-        '''processes queries by calling all necessary methods for sending queries and validating the responses'''
+        '''processes queries by calling all necessary methods for sending queries and validating the responses
+        
+        
+        #args: list_of_possible_names = []
+        #returns: dictionary with the name of the show and episode names
+        #        result["name"] -> show name
+        #        result["episode names"] -> dictionary of episode names [1][10]: Season 1 Episode 10 
+        
+        '''
         self._start_threads(list_of_possible_names)
         self.query_queue.join() # wait until all queries are done
         self._validateNameResult(episode_name, self._matchResults(list_of_possible_names, self.__shows))
@@ -1449,12 +1456,12 @@ class FileRenamer:
      
      
     def __init__(self, debug_logger):
-        self.elements = {"%show":("",), "%1index":("",)}
         self.log = debug_logger
         
 #------------------------------PUBLIC INTERFACE-----------------------------------------
     def parseEpisode(self, usr_string, episode, show_name, show_index, episode_name, punctuation, substitute_string):
         '''This is the only public method that should be used'''
+        self.elements = {"%show":("",), "%1index":("",)}
         return self._parseEpisode(usr_string, episode, show_name, show_index, episode_name, punctuation, substitute_string)
     
     def getShowIndex(self, show_index):
