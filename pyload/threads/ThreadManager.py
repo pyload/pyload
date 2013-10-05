@@ -177,7 +177,7 @@ class ThreadManager:
         if not force:
             active = [1 if x.active.plugin.wantReconnect and x.active.plugin.waiting else 2 if x.active.plugin.resumeDownload else 0 \
                      for x in self.threads if x.active]
-            if not (active.count(1) > 0 and not active.count(0)):
+            if not active.count(1) or active.count(0):
                 return
 
         if not exists(self.core.config['reconnect']['method']):
