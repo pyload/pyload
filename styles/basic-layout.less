@@ -46,7 +46,8 @@ header .logo {
 /*
     Footer
 */
-footer { // Same gradient as navbar
+footer {
+  // Same gradient as navbar
   .gradient(top, #222222, #111111);
   color: @grey;
   min-height: @footer-height; //  margin-top: -@footer-height;
@@ -55,6 +56,7 @@ footer { // Same gradient as navbar
   line-height: 16px;
   z-index: 10;
 }
+
 
 footer:before {
   position: absolute;
@@ -74,10 +76,21 @@ footer hr {
   border-bottom-color: @greyDark;
 }
 
-footer .span2, footer .span15 {
+footer .span2 {
   font-size: 12px;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 11px;
+  padding-bottom: 11px;
+}
+
+footer .block {
+  a:link, a:visited {
+    color: @grey;
+  }
+
+  a:hover {
+    color: @blue;
+  }
+
 }
 
 // This is the copyright span
@@ -88,11 +101,11 @@ footer .offset2, footer .offset1 {
 
 footer .copyright {
   background: url('@{ResourcePath}/images/logo_grey.png') no-repeat;
-  background-size: 60px 60px;
-  background-position: 8px center;
-  height: 60px;
-  padding-left: 60px;
-  padding-top: 24px;
+  background-size: 40px 40px;
+  background-position: 12px center;
+  height: 40px;
+  padding-left: 40px;
+  padding-top: 10px;
   text-align: center;
 }
 
@@ -103,5 +116,8 @@ footer h2 {
   font-weight: normal;
   line-height: 16px;
   margin: 0;
-}
 
+  a:active, a:visited {
+    color: @light !important;
+  }
+}
