@@ -463,14 +463,14 @@ class EpisodeMover(Hook):
         os.path.split(self.config.plugin["ExtractArchive"]["destination"]["value"])[1] != root_folder and \
         os.path.split(self.config["general"]["download_folder"]) != root_folder:
             try:
-                query_result = self.query.sendQuery(root_folder)
+                query_result = query.sendQuery(root_folder)
                 episode.show_name = query_result["name"]
                 episode.episode_names = query_result["episode_names"]
                 self.logInfo(u'Show name query successful for "%s" using its enclosing directory ("%s"). Proceeding...' \
                              % (episode.src_filename, root_folder))
                 if not episode.episode_name:
                     self.logInfo(u'Episode name determination for %s failed. Likely the particular episode is too recent.' % episode.src_filename)
-                    return episode
+                return episode
             except EMException, eme:
                 self.logInfo(eme.error() + " " + eme.args[0])
                 return None
@@ -1029,7 +1029,7 @@ class PatternChecker:
         p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
         p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9]){1}((\\s+)|(-+)|(_+)|(\\.+))' # ".101-", "_901 " with ESS
         
-        m1 = re.search(p1, ef, re.IGNORECASE)
+        m1 = re.search(p1, efn, re.IGNORECASE)
         m2 = re.search(p2, efn, re.IGNORECASE)
         m3 = re.search(p3, efn, re.IGNORECASE)
 
