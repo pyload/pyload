@@ -5,7 +5,6 @@ from pyload.Api import Api, RequirePerm, Permission
 
 from ApiComponent import ApiComponent
 
-
 class UserApi(ApiComponent):
     """ Api methods to retrieve user profile and manage users. """
 
@@ -23,6 +22,7 @@ class UserApi(ApiComponent):
 
     def addUser(self, username, password):
         """ Adds an user to the db.
+
         :param username: desired username
         :param password: password for authentication
         """

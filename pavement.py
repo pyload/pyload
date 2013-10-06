@@ -134,6 +134,9 @@ def webapp():
     ret = call(["bower", "install", "--no-color"])
     if ret:
         exit(ret)
+    ret = call(["bower", "update", "--no-color"])
+    if ret:
+        exit(ret)
     ret = call(["grunt", "--no-color"])
     if ret:
         exit(ret)
