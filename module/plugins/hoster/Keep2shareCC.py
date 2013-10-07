@@ -25,14 +25,14 @@ class Keep2shareCC(SimpleHoster):
     __name__ = "Keep2shareCC"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?keep2share\.cc/file/\w+"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Keep2share.cc hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
     FILE_NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
     FILE_SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
-    FILE_OFFLINE_PATTERN = r'File not found or deleted'
+    FILE_OFFLINE_PATTERN = r'File not found or deleted|Sorry, this file is blocked or deleted'
 
     DIRECT_LINK_PATTERN = r'To download this file with slow speed, use <a href="([^"]+)">this link</a>'
     WAIT_PATTERN = r'Please wait ([\d:]+) to download this file'
