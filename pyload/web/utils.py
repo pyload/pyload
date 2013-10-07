@@ -4,13 +4,20 @@
 import re
 from bottle import request, HTTPError, redirect
 
+try:
+    import zlib
+except ImportError:
+    zlib = None
+
 from webinterface import PYLOAD, SETUP
+
 
 def add_json_header(r):
     r.headers.replace("Content-type", "application/json")
     r.headers.append("Cache-Control", "no-cache, must-revalidate")
     r.headers.append("Access-Control-Allow-Origin", request.get_header('Origin', '*'))
     r.headers.append("Access-Control-Allow-Credentials", "true")
+
 
 def set_session(request, user):
     s = request.environ.get('beaker.session')
@@ -58,13 +65,12 @@ def is_mobile():
         return True
     return False
 
-def select_language(langs):
 
+def select_language(langs):
     accept = request.headers.get('Accept-Language', '')
     # TODO
 
     return langs[0]
-
 
 
 def login_required(perm=None):

@@ -13,6 +13,30 @@ from pyload.Api import ExceptionObject
 from pyload.remote.json_converter import loads, dumps, BaseEncoder
 from pyload.utils import remove_chars
 
+# used for gzip compression
+try:
+    import gzip
+    from cStringIO import StringIO
+except ImportError:
+    gzip = None
+    StringIO = None
+
+# gzips response if supported
+def json_response(obj):
+    accept = 'gzip' in request.headers.get('Accept-Encoding', '')
+    result = dumps(obj)
+    # don't compress small files
+    if gzip and accept and len(result) > 500:
+        response.headers['Vary'] = 'Accept-Encoding'
+        response.headers['Content-Encoding'] = 'gzip'
+        zbuf = StringIO()
+        zfile = gzip.GzipFile(mode='wb', compresslevel=6, fileobj=zbuf)
+        zfile.write(result)
+        zfile.close()
+        return zbuf.getvalue()
+
+    return result
+
 
 # returns http error
 def error(code, msg):
@@ -78,7 +102,7 @@ def call_api(func, args=""):
         result = getattr(api, func)(*args, **kwargs)
         # null is invalid json response
         if result is None: result = True
-        return dumps(result)
+        return json_response(result)
 
     except ExceptionObject, e:
         return error(400, e.message)
@@ -98,7 +122,7 @@ def login():
     user = PYLOAD.checkAuth(username, password, request.environ.get('REMOTE_ADDR', None))
 
     if not user:
-        return dumps(False)
+        return json_response(False)
 
     s = set_session(request, user)
 
@@ -116,7 +140,7 @@ def login():
     if request.params.get('user', None):
         return dumps(result)
 
-    return dumps(sid)
+    return json_response(sid)
 
 
 @route("/api/logout")
@@ -127,4 +151,4 @@ def logout():
     s = request.environ.get('beaker.session')
     s.delete()
 
-    return dumps(True)
+    return json_response(True)

@@ -59,6 +59,17 @@ def dumps(*args, **kwargs):
     return json.dumps(*args, **kwargs)
 
 
+def dump(*args, **kwargs):
+    if 'compact' in kwargs and kwargs['compact']:
+        kwargs['cls'] = BaseEncoderCompact
+        del kwargs['compact']
+    else:
+        kwargs['cls'] = BaseEncoder
+
+    kwargs['separators'] = separators
+    return json.dump(*args, **kwargs)
+
+
 def loads(*args, **kwargs):
     kwargs['object_hook'] = convert_obj
     return json.loads(*args, **kwargs)
