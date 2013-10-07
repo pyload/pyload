@@ -695,7 +695,7 @@ class Episode:
                  show_name="", show_index="", episode_names={}):
         self.src = src # source folder of episode
         self.src_filename = src_filename # name of episode in src folder
-        self.root_folder = os.path.basename(self.src)
+        self.root_folder = os.path.basename(os.path.abspath(self.src))
         self.dst = dst # dst folder for episode
         self.dst_filename = dst_filename # dst filename for episode
         self.show_name = show_name
