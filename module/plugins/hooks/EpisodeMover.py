@@ -426,9 +426,13 @@ class EpisodeMover(Hook):
     def __getShowNameFromRemoteDB(self, episode):
         full_query_string = episode.full_query_string
         minimal_query_string = PatternChecker().getMinimalQueryString(episode.full_query_string) # cut off file name at series index
-        minimal_query_string = [StringCleaner().clean(minimal_query_string, isFile=False),] # clean punctuation and convert to list
         
         try:
+            # FIX: Cover Error if cut off File Name returns NONE 
+            # e.g. Anger Mangangement: "poe-ams01e02.avi" -> NONE /poe cut off as common occurence, ams cut off by minimal_query_string
+            if minimal_query_string is None:
+                raise EMException(u"No Minimal query String", 1 )
+            minimal_query_string = [StringCleaner().clean(minimal_query_string, isFile=False),] # clean punctuation and convert to list
             query_handler = QueryHandler(self.number_of_parallel_queries, self.language)
             query_result = query_handler.processQueries(minimal_query_string)
             episode.show_name = query_result["name"]
@@ -463,7 +467,8 @@ class EpisodeMover(Hook):
         os.path.split(self.config.plugin["ExtractArchive"]["destination"]["value"])[1] != root_folder and \
         os.path.split(self.config["general"]["download_folder"]) != root_folder:
             try:
-                query_result = query.sendQuery(root_folder)
+                # FIX: Handle Folder Name as is, not as File
+                query_result = query.sendQuery(root_folder,isFile=False)
                 episode.show_name = query_result["name"]
                 episode.episode_names = query_result["episode_names"]
                 self.logInfo(u'Show name query successful for "%s" using its enclosing directory ("%s"). Proceeding...' \
@@ -962,12 +967,15 @@ class PatternChecker:
         p1 additionally returns a leading zero for numbers < 10 if leading_zero is True.
         """
 
+        # NEW: recognition of Filenames like blablasxxexx
         p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
+        p10 = '(\w{1})(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # ShwnmS01E01 e.g.
         p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
         p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9])((\\s+)|(-+)|(_+)|(\\.+))' # 100 - 959 
         
         
         m1 = re.search(p1, string_to_check, re.IGNORECASE)
+        m10 = re.search(p10, string_to_check, re.IGNORECASE)
         m2 = re.search(p2, string_to_check, re.IGNORECASE)
         m3 = re.search(p3, string_to_check, re.IGNORECASE)
 
@@ -975,6 +983,11 @@ class PatternChecker:
         punc = ['.', ' ', '-', '_']
         if m1:
             index = m1.group(0)
+            for c in punc:
+                index = index.strip(c)
+            season_number = int(index[1:3])
+        elif m10:
+            index = m10.group(0)[1:]
             for c in punc:
                 index = index.strip(c)
             season_number = int(index[1:3])
@@ -1002,15 +1015,19 @@ class PatternChecker:
     
     def getShowIndex(self, episode):
         p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
+        p10 = '(\w{1})(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # ShwnmS01E01 e.g.
         p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
         p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9]){1}((\\s+)|(-+)|(_+)|(\\.+))' # ".101-", "_901 " with ESS
         
         m1 = re.search(p1, episode, re.IGNORECASE)
+        m10 = re.search(p10, episode, re.IGNORECASE)
         m2 = re.search(p2, episode, re.IGNORECASE)
         m3 = re.search(p3, episode, re.IGNORECASE)
         
         if m1:
             m = m1.group(0)
+        elif m10:
+            m = m10.group(0)[1:]
         elif m2:
             m = m2.group(0)
         elif m3:
