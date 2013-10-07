@@ -463,14 +463,14 @@ class EpisodeMover(Hook):
         os.path.split(self.config.plugin["ExtractArchive"]["destination"]["value"])[1] != root_folder and \
         os.path.split(self.config["general"]["download_folder"]) != root_folder:
             try:
-                query_result = self.query.sendQuery(root_folder)
+                query_result = query.sendQuery(root_folder)
                 episode.show_name = query_result["name"]
                 episode.episode_names = query_result["episode_names"]
                 self.logInfo(u'Show name query successful for "%s" using its enclosing directory ("%s"). Proceeding...' \
                              % (episode.src_filename, root_folder))
                 if not episode.episode_name:
                     self.logInfo(u'Episode name determination for %s failed. Likely the particular episode is too recent.' % episode.src_filename)
-                    return episode
+                return episode
             except EMException, eme:
                 self.logInfo(eme.error() + " " + eme.args[0])
                 return None
@@ -536,6 +536,24 @@ class EpisodeMover(Hook):
         self.logDebug("No season folder amended by an arbitrary string was found")
         return None
     
+    def isEmptyDir(self,folder):
+    # checks a folder is empty so it can be deleted
+        if not os.listdir(folder):
+            return True
+        else:
+            return False
+	
+    def __isJunk(self, file_name):
+    # checks if file is a Junk File
+        valdor = PatternChecker()
+        # TODO: Extensions in Config
+        jextensions = ('txt,nfo,sfv,sub,idx,bmp,jpg,png')
+        extensions = string.split(jextensions, ',')
+        for ext in extensions: 
+            if (valdor.hasExtension(file_name, ext)):
+                return True
+        return False
+    
     def __isSample(self, file_name):
         match_ = re.search(
                            "((^)|(\\.+)|(-+)|(_+)|(\\s+))(sample)(($)|(\\.+)|(-+)|(\\s+)|(_+))", \
@@ -588,6 +606,7 @@ class EpisodeMover(Hook):
                     self.setPermissions(os.path.join(utf(episode.dst), utf(episode.dst_filename)))
                     self.logInfo(u'Moving of "%s" completed.' % episode.dst_filename)
                     self.mv_logger.log_mv(utf(episode.src_filename), os.path.join(utf(episode.dst), utf(episode.dst_filename)))
+                    self.cleanFolder(episode.src)
                 elif os.path.exists(os.path.join(utf(episode.dst), utf(episode.dst_filename))):
                     if self.getConfig('overwrite'):
                         self.logInfo(u'Starting to move "%s" to "%s" overwriting the destination' \
@@ -637,6 +656,33 @@ class EpisodeMover(Hook):
         for line in traceback.format_exc().split('\n'):
             self.logDebug(line)
                 
+    def cleanFolder(self,folder):
+        # clean junk files after Moving
+        # TODO: Choice in Config
+        #      Delete Junk Files?
+        #      List of Junk File extensions
+        #      Delete Folder when empty?
+        # TODO: Maybe a "Force Delete" Option
+        filelist = []
+        for f in os.listdir(folder):
+            file = os.path.join(folder,f)
+            if os.path.isfile(file):
+                if self.__isJunk(file) or self.__isSample(file):
+                    if os.path.exists(file):
+                        os.remove(file)
+                        filelist.append(f)
+            elif os.path.isdir(file):
+                if self.isEmptyDir(file):
+                    if os.path.exists(file):
+                        os.rmdir(file)
+                        filelist.append((u'%s(dir)' % f))
+        if len(filelist) > 0:
+            self.logDebug(u'Deleted Junkfiles: %s' % filelist)
+            self.logInfo(u'%s Junk File(s) deleted' % len(filelist)) 
+        if self.isEmptyDir(folder):
+            if os.path.exists(folder) and not self.config["general"]["download_folder"] == folder:
+                os.rmdir(folder)
+                self.logInfo(u'Dir %s deleted' % folder)             
 
 class Episode:
     
@@ -983,7 +1029,7 @@ class PatternChecker:
         p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
         p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9]){1}((\\s+)|(-+)|(_+)|(\\.+))' # ".101-", "_901 " with ESS
         
-        m1 = re.search(p1, ef, re.IGNORECASE)
+        m1 = re.search(p1, efn, re.IGNORECASE)
         m2 = re.search(p2, efn, re.IGNORECASE)
         m3 = re.search(p3, efn, re.IGNORECASE)
 
@@ -1527,7 +1573,7 @@ class FileRenamer:
 
     def __parseCstmEpElems(self, episode):
         for key in self.elements.keys():
-            if key != '%show' and re.match('(%[1-3]index)', key) is None and key != "%episode":
+            if key != '%show' and re.match('(%[1-3]index)', key) is None and key != '%episode' and key !='%separator':
                 for tpl_ in self.elements.get(key):
                     pattern = '((\\s+)|(-+)|(_+)|(\\.+))' + '(' + tpl_ + ')' + '((\\s+)|(-+)|(_+)|(\\.+))'
                     m_ = re.search(pattern, episode)
@@ -1557,24 +1603,18 @@ class FileRenamer:
         name = ""
         for index in indices:
             indexElem = re.search("(%[1-3]index)", usr_string).group(0)
-            if index != indices[len(indices)-1]:
-                if index[0] == '%show':
-                    name += self.__encodeShowName(self.elements.get(index[0])[0], punctuation) + punctuation
-                elif index[0] == '%episode':
-                    name += self.elements['%episode'][0] + punctuation
-                elif index[0] == indexElem:
-                    name += self.__convertShowIndex(self.elements.get(index[0])[0], int(indexElem[1])) + punctuation
-                else:
-                    name += self.elements.get(index[0])[0] + punctuation
+            if index[0] == '%show':
+                name += self.__encodeShowName(self.elements.get(index[0])[0], punctuation)
+            elif index[0] == '%episode':
+                name += self.elements['%episode'][0]
+            elif index[0] == '%separator':
+                name += self.elements['%separator'][0]
+            elif index[0] == indexElem:
+                name += self.__convertShowIndex(self.elements.get(index[0])[0], int(indexElem[1]))
             else:
-                if index[0] == '%show':
-                    name += self.__encodeShowName(self.elements.get(index[0])[0], punctuation)
-                elif index[0] == '%episode':
-                    name += self.elements['%episode'][0]
-                elif index[0] == indexElem:
-                    name += self.__convertShowIndex(self.elements.get(index[0])[0], int(indexElem[1]))
-                else:
-                    name += self.elements.get(index[0])[0]
+                name += self.elements.get(index[0])[0]
+            if index != indices[len(indices)-1]:
+                name += punctuation
         return name
     
     
@@ -1616,7 +1656,7 @@ class FileRenamer:
             else:
                 if returnRaw:
                     return self.__doIndexConversion(match.group(1), 12, returnRaw)
-                return show_index
+                return show_index.upper()
         elif match.group(2):
             if type == 1:
                 return self.__doIndexConversion(match.group(2), 21, returnRaw)
