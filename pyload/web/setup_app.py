@@ -65,6 +65,8 @@ def setup_done():
         request.params['password']
     )
 
+    SETUP.save()
+
     # mark setup as finished
     timestamp = 0
 

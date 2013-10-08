@@ -304,6 +304,10 @@ class Setup():
             self.db.syncSave()
             self.db.shutdown()
 
+    def save(self):
+        self.config.save()
+        self.closeDB()
+
     def conf_path(self, trans=False):
         if trans:
             gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
