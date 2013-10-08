@@ -26,6 +26,7 @@ from module.utils import fs_encode,save_path
 from module.common.json_layer import json
 from datetime import datetime as dt
 import traceback
+#remote debugging
 #from module.common.pydevsrc import pydevd 
 
 
@@ -61,7 +62,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.517"
+    __version__ = "0.518"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -589,7 +590,9 @@ class EpisodeMover(Hook):
             self.__mv_queue.task_done()
             return
         if self.getConfig('rename'):
-            episode_name = episode.episode_name()
+            #pydevd.settrace("192.168.1.46",stdoutToServer=True,stderrToServer=True)
+            episode_name = episode.episode_name(decode=True)
+            episode.unicode()
             episode.dst_filename = self.renamer.parseEpisode(self.getConfig('usr_string'), episode.src_filename,
                                                               episode.show_name, episode.show_index['raw'],
                                                               episode_name, self.getConfig('punc'),
@@ -706,7 +709,7 @@ class Episode:
         self.minimal_query_string = "" # file name cut at series index: "A.Series.S01E01.blabla.mkv" -> "A.Series"
         
         
-    def episode_name(self):
+    def episode_name(self, decode=False):
         if  self.show_index["season"] is not None and \
             self.show_index["episode"] is not None and \
             self.episode_names is not None and \
@@ -716,7 +719,9 @@ class Episode:
             if self.episode_names.has_key(season):
                 if self.episode_names[season].has_key(episode):
                     ep_name = self.episode_names[season][episode]
-                    return ep_name
+                    if not decode:
+                        return ep_name
+                    return Transcoder().decode(ep_name)
         return None
 
         
@@ -1533,15 +1538,14 @@ class FileRenamer:
         
     
     def _parseEpisode(self, usr_string, episode, show_name, show_index, episode_name, punctuation, substitute_string):
-        #pydevd.settrace("192.168.1.29",stdoutToServer=True,stderrToServer=True)
         # unicode -> string
-        usr_string = str(usr_string)
-        episode = episode.encode("utf8")
-        show_name = str(show_name)
-        show_index = str(show_index)
-        if episode_name != None:
-            episode_name = str(episode_name)
-        punctuation = str(punctuation)
+        #usr_string = str(usr_string)
+        #episode = episode.encode("utf8")
+        #show_name = str(show_name)
+        #show_index = str(show_index)
+        #if episode_name != None:
+        #    episode_name = str(episode_name)
+        #punctuation = str(punctuation)
         
         show_index = show_index.strip()
         self.__parseCustomElems(usr_string)
