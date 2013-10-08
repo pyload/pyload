@@ -146,7 +146,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -180,7 +180,9 @@ class SimpleHoster(Hoster):
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
         self.req.setOption("timeout", 120)
-        self.html = self.load(pyfile.url, decode = not self.SH_BROKEN_ENCODING, cookies = self.SH_COOKIES)
+        # Due to a 0.4.9 core bug self.load would keep previous cookies even if overridden by cookies parameter.
+        # Workaround using getURL. Can be reverted in 0.5 as the cookies bug has been fixed.
+        self.html = getURL(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
         self.getFileInfo()
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
