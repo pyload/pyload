@@ -26,9 +26,9 @@ class FilecloudIo(SimpleHoster):
     __name__ = "FilecloudIo"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Filecloud.io (formerly Ifile.it) plugin - free account only"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = ("zoidberg", "stickell")
 
     FILE_SIZE_PATTERN = r'{var __ab1 = (?P<S>\d+);}'
     FILE_NAME_PATTERN = r'id="aliasSpan">(?P<N>.*?)&nbsp;&nbsp;<'
@@ -108,6 +108,19 @@ class FilecloudIo(SimpleHoster):
             self.download(download_url)
         else:
             self.fail("Unexpected server response")
+
+    def handlePremium(self):
+        akey = self.account.getAccountData(self.user)['akey']
+        ukey = self.file_info['ID']
+        self.logDebug("Akey: %s | Ukey: %s" % (akey, ukey))
+        rep = self.load("http://api.filecloud.io/api-fetch_download_url.api",
+                        post={"akey": akey, "ukey": ukey})
+        self.logDebug("FetchDownloadUrl: " + rep)
+        rep = json_loads(rep)
+        if rep['status'] == 'ok':
+            self.download(rep['download_url'], disposition=True)
+        else:
+            self.fail(rep['message'])
 
 
 getInfo = create_getInfo(FilecloudIo)
