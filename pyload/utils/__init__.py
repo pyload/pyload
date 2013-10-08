@@ -193,7 +193,7 @@ def fixup(m):
 
 def has_method(obj, name):
     """ checks if 'name' was defined in obj, (false if it was inhereted) """
-    return name in obj.__dict__
+    return hasattr(obj, '__dict__') and name in obj.__dict__
 
 def accumulate(it, inv_map=None):
     """ accumulate (key, value) data to {value : [keylist]} dictionary """

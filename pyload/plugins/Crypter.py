@@ -3,9 +3,8 @@
 from pyload.Api import LinkStatus, DownloadStatus as DS
 from pyload.utils import to_list, has_method, uniqify
 from pyload.utils.fs import exists, remove, fs_encode
-from pyload.utils.packagetools import parseNames
-
 from Base import Base, Retry
+
 
 class Package:
     """ Container that indicates that a new package should be created """
@@ -186,15 +185,6 @@ class Crypter(Base):
         """
         raise NotImplementedError
 
-    def generatePackages(self, urls):
-        """Generates :class:`Package` instances and names from urls. Useful for many different links and no\
-        given package name.
-
-        :param urls: list of urls
-        :return: list of `Package`
-        """
-        return [Package(name, purls) for name, purls in parseNames([(url, url) for url in urls]).iteritems()]
-
     def _decrypt(self, urls):
         """Internal method to select decrypting method
 
@@ -205,16 +195,9 @@ class Crypter(Base):
 
         # separate local and remote files
         content, urls = self.getLocalContent(urls)
+        result = []
 
-        if has_method(cls, "decryptURLs"):
-            self.setup()
-            result = to_list(self.decryptURLs(urls))
-        elif has_method(cls, "decryptURL"):
-            result = []
-            for url in urls:
-                self.setup()
-                result.extend(to_list(self.decryptURL(url)))
-        elif has_method(cls, "decrypt"):
+        if urls and has_method(cls, "decrypt"):
             self.logDebug("Deprecated .decrypt() method in Crypter plugin")
             result = []
             for url in urls:
@@ -222,20 +205,28 @@ class Crypter(Base):
                 self.setup()
                 self.decrypt(self.pyfile)
                 result.extend(self.convertPackages())
-        else:
-            if not has_method(cls, "decryptFile") or urls:
-                self.logDebug("No suited decrypting method was overwritten in plugin")
-            result = []
-
-        if has_method(cls, "decryptFile"):
-            for f, c in content:
+        elif urls:
+            method = True
+            try:
                 self.setup()
-                result.extend(to_list(self.decryptFile(c)))
-                try:
-                    if f.startswith("tmp_"): remove(f)
-                except IOError:
-                    self.logWarning(_("Could not remove file '%s'") % f)
-                    self.core.print_exc()
+                result = to_list(self.decryptURLs(urls))
+            except NotImplementedError:
+                method = False
+
+            # this will raise error if not implemented
+            if not method:
+                for url in urls:
+                    self.setup()
+                    result.extend(to_list(self.decryptURL(url)))
+
+        for f, c in content:
+            self.setup()
+            result.extend(to_list(self.decryptFile(c)))
+            try:
+                if f.startswith("tmp_"): remove(f)
+            except IOError:
+                self.logWarning(_("Could not remove file '%s'") % f)
+                self.core.print_exc()
 
         return result
 

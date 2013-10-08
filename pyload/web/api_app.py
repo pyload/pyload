@@ -25,7 +25,7 @@ except ImportError:
 def json_response(obj):
     accept = 'gzip' in request.headers.get('Accept-Encoding', '')
     result = dumps(obj)
-    # don't compress small files
+    # don't compress small string
     if gzip and accept and len(result) > 500:
         response.headers['Vary'] = 'Accept-Encoding'
         response.headers['Content-Encoding'] = 'gzip'

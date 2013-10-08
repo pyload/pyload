@@ -94,13 +94,7 @@ class ThreadManager:
         oc = OnlineCheck(rid, user)
         self.infoResults[rid] = oc
 
-        # maps url to plugin
-        urls = []
-        for links in data.itervalues():
-            for link in links:
-                urls.append((link.url, link.plugin))
-
-        InfoThread(self, user, urls, oc=oc)
+        InfoThread(self, user, data, oc=oc)
 
         return rid
 

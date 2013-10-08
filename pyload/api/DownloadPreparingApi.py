@@ -44,9 +44,9 @@ class DownloadPreparingApi(ApiComponent):
 
         #: TODO: withhold crypter, derypt or add later
         # initial result does not contain the crypter links
-        tmp = [(url, LinkStatus(url, url, -1, DS.Queued, pluginname)) for url, pluginname in hoster + crypter]
+        tmp = [(url, LinkStatus(url, url, -1, DS.Queued, pluginname)) for url, pluginname in hoster]
         data = parseNames(tmp)
-        rid = self.core.threadManager.createResultThread(self.primaryUID, data)
+        rid = self.core.threadManager.createResultThread(self.primaryUID, hoster + crypter)
 
         return OnlineCheck(rid, data)
 

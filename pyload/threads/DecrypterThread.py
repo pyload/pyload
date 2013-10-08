@@ -3,6 +3,7 @@
 
 from time import sleep
 
+from pyload.Api import LinkStatus, DownloadStatus as DS
 from pyload.utils import uniqify, accumulate
 from pyload.plugins.Base import Abort, Retry
 from pyload.plugins.Crypter import Package
@@ -34,7 +35,7 @@ class DecrypterThread(BaseThread):
         for p in packages:
             self.m.core.api.addPackage(p.name, p.getURLs(), pack.password)
 
-    def decrypt(self, plugin_map, password=None):
+    def decrypt(self, plugin_map, password=None, err=None):
         result = []
 
         # TODO QUEUE_DECRYPT
@@ -54,6 +55,11 @@ class DecrypterThread(BaseThread):
                 plugin.logInfo(_("Decrypting aborted"))
             except Exception, e:
                 plugin.logError(_("Decrypting failed"), e)
+
+                # generate error linkStatus
+                if err:
+                    plugin_result.extend(LinkStatus(url, url, -1, DS.Failed, name) for url in urls)
+
                 if self.core.debug:
                     self.core.print_exc()
                     self.writeDebugReport(plugin.__name__, plugin=plugin)
@@ -75,7 +81,7 @@ class DecrypterThread(BaseThread):
                     pack_names[p.name].urls.extend(p.urls)
                 else:
                     if not p.name:
-                        urls.append(p)
+                        urls.extend(p.links)
                     else:
                         pack_names[p.name] = p
             else:

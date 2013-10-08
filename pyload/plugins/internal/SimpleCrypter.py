@@ -19,9 +19,8 @@
 
 import re
 
-from module.plugins.Crypter import Crypter
-from module.utils import html_unescape
-
+from pyload.plugins.Crypter import Crypter, Package
+from pyload.utils import html_unescape
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
@@ -52,11 +51,10 @@ class SimpleCrypter(Crypter):
     must return the html of the page number 'page_n'
     """
 
-    def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
+    def decryptURL(self, url):
+        self.html = self.load(url, decode=True)
 
-        package_name, folder_name = self.getPackageNameAndFolder()
-
+        package_name = self.getPackageName()
         self.package_links = self.getLinks()
 
         if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
@@ -65,9 +63,10 @@ class SimpleCrypter(Crypter):
         self.logDebug('Package has %d links' % len(self.package_links))
 
         if self.package_links:
-            self.packages = [(package_name, self.package_links, folder_name)]
+            return Package(package_name, self.package_links)
         else:
             self.fail('Could not extract any links')
+
 
     def getLinks(self):
         """
@@ -76,18 +75,15 @@ class SimpleCrypter(Crypter):
         """
         return re.findall(self.LINK_PATTERN, self.html)
 
-    def getPackageNameAndFolder(self):
+    def getPackageName(self):
         if hasattr(self, 'TITLE_PATTERN'):
             m = re.search(self.TITLE_PATTERN, self.html)
             if m:
-                name = folder = html_unescape(m.group('title').strip())
-                self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
-                return name, folder
+                name = html_unescape(m.group('title').strip())
+                self.logDebug("Found name [%s] in package info" % (name))
+                return name
 
-        name = self.pyfile.package().name
-        folder = self.pyfile.package().folder
-        self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
-        return name, folder
+        return None
 
     def handleMultiPages(self):
         pages = re.search(self.PAGES_PATTERN, self.html)

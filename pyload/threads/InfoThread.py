@@ -37,7 +37,7 @@ class InfoThread(DecrypterThread):
 
         if crypter:
             # decrypt them
-            links, packages = self.decrypt(crypter)
+            links, packages = self.decrypt(crypter, err=True)
             # push these as initial result and save package names
             self.updateResult(links)
             for pack in packages:
