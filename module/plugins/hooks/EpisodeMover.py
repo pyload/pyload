@@ -31,13 +31,13 @@ import traceback
 
 
 class EpisodeMover(Hook):
-    """This class implements means to automatically move tv episodes within the underlying file system.
+    '''This class implements means to automatically move tv episodes within the underlying file system.
        
 
     Once pointed towards the local path of tv shows EM automatically acts upon the unrarFinished, packageFinished
     downloadFinished events trying to sort out the actual tv episodes based on certain criteria such,regex pattern and so forth.
     On passing the checks the file is moved to its final destination. 
-    """
+    '''
     
 #    TODO: (in no particular order)
 #    -implement cleaning of sample files (as a hook of its own)
@@ -208,11 +208,11 @@ class EpisodeMover(Hook):
     #path_to_file_s marks the root folder of an extracted archive, a finished package
     #or a single file
     def doProcessing(self, path_to_file_s):
-        """ Process either a file or a number of files within the given path.
+        ''' Process either a file or a number of files within the given path.
 
         This includes checking each file and finally discarding of or moving it to its final resting place.
         May it rest in peace.
-        """
+        '''
         
         #populate local tv db if needed and halt main thread meanwhile
         self.start_populateTVDb()
@@ -311,20 +311,22 @@ class EpisodeMover(Hook):
     
         
     def collectFiles(self,single_path_to_files):
-        """collects all extracted/downloaded files
+        '''collects all extracted/downloaded files
         
         The search is recursive and starts atop the location either the archive was extracted to
         or the package/file was downloaded to 
-        """
+        '''
         collect = PathLoader()
         files_ = collect.loadFiles(single_path_to_files)
         return files_
     
     
     def isVideoFile(self,file_name):
-        """checks a file extension against a set of user-defined extensions"""
+        '''checks a file extension against a set of user-defined extensions
+        
+        Check if file is valid (supported) video container .
+        '''
         valdor = PatternChecker()
-        # check if file is valid (supported) video container 
         extensions = string.split(self.getConf("extensions"), ',')
         for ext in extensions: 
             if (valdor.hasExtension(file_name, ext)):
@@ -334,7 +336,7 @@ class EpisodeMover(Hook):
     
     
     def isTVEp(self,video_name, src_path):
-        """checks if a file is a tv show episode"""
+        '''checks if a file is a tv show episode'''
         valdor = PatternChecker()
         if(valdor.isTVEpisode(video_name)):
             self.logDebug(u'File "%s" is a tv episode' % video_name)
@@ -346,11 +348,10 @@ class EpisodeMover(Hook):
     
         
     def isinDb(self, episode_obj, createShow=False):    
-        """checks downloaded/extracted show against local database of tv shows
-        
+        '''checks downloaded/extracted show against local database of tv shows
         
         Returns True on a match and False if no match was produced
-        """
+        '''
         episode = episode_obj
         valdor = PatternChecker()
         path = os.path.abspath(episode.src)
@@ -543,16 +544,15 @@ class EpisodeMover(Hook):
         self.logDebug("No season folder amended by an arbitrary string was found")
         return None
     
-    def isEmptyDir(self,folder):
-    # checks a folder is empty so it can be deleted
+    def __isEmptyDir(self,folder):
+        '''checks if folder is empty so it can be deleted'''
         if not os.listdir(folder):
             return True
         return False
     
     def __isJunk(self, file_name):
-    # checks if file is a Junk File
+        '''checks if file is a Junk File so it can be deleted'''
         valdor = PatternChecker()
-        # TODO: Extensions in Config
         jextensions = self.getConfig("junk_exts")
         extensions = string.split(jextensions, ',')
         for ext in extensions: 
@@ -663,12 +663,14 @@ class EpisodeMover(Hook):
             self.logDebug(line)
                 
     def cleanFolder(self,folder):
-        # clean junk files after Moving
-        # TODO: Choice in Config
-        #      Delete Junk Files?
-        #      List of Junk File extensions
-        #      Delete Folder when empty?
-        # TODO: Maybe a "Force Delete" Option
+        '''Cleans a given folder from junk files and delete it if empty.
+        
+        cleanFolder checks every file if it has a file extension that marks it as junk file (List provided in config) and deletes it if so. 
+        Removes empty folders (i.e. empty sample folders).
+        If given folder is empty after cleaning and moving, it deletes the folder.
+        Prints removed files and directories in debug and info.
+        '''    
+        # TODO: "Force Delete" Option ?
         filelist = []
         for f in os.listdir(folder):
             file_ = os.path.join(folder,f)
@@ -678,14 +680,14 @@ class EpisodeMover(Hook):
                         os.remove(file_)
                         filelist.append(f)
             elif os.path.isdir(file_):
-                if self.isEmptyDir(file_):
+                if self.__isEmptyDir(file_):
                     if os.path.exists(file_):
                         os.rmdir(file_)
                         filelist.append((u'%s(dir)' % f))
         if len(filelist) > 0:
             self.logDebug(u'Deleted Junkfiles: %s' % filelist)
             self.logInfo(u'%s Junk File(s) deleted' % len(filelist)) 
-        if self.isEmptyDir(folder):
+        if self.__isEmptyDir(folder):
             if os.path.exists(folder) and not self.config["general"]["download_folder"] == folder:
                 os.rmdir(folder)
                 self.logInfo(u'Dir %s deleted' % folder)             
@@ -741,16 +743,16 @@ class Episode:
 
 import os
 class PathLoader:
-    """ This class implements methods for recursively searching a specific path filtering out files with their absolut path"""
+    ''' This class implements methods for recursively searching a specific path filtering out files with their absolut path'''
     
     
     def loadFiles(self,path_to_files, returnDict=True):
-        """Flat search for files which incurs self.deepLoadFiles(...) if needed
+        '''Flat search for files which incurs self.deepLoadFiles(...) if needed
 
         self.loadFiles on its own only checks the root directory on which it was called
         for files and if necessary calls a recursive search via self.deepLoadFiles(...)
         If returnDict=True a dictionary is returned otherwise a list of tuples
-        """
+        '''
         try:
             path_to_files = str(path_to_files)
             self.__files = []
@@ -773,11 +775,11 @@ class PathLoader:
 
 
     def deepLoadFiles(self,sub_dir_path,base_name):
-        """Recursively searches for files 
+        '''Recursively searches for files 
 
         Calling of this function should be left to self.loadFiles()
         which will be calling it in an event of necessity
-        """
+        '''
         sub_dir_path = os.path.join(base_name, sub_dir_path)
         for dir_name in os.listdir(sub_dir_path):
             if (os.path.isdir(os.path.join(sub_dir_path,dir_name))):
@@ -788,7 +790,7 @@ class PathLoader:
 
 
     def loadFolders(self, dir_path_to_search):
-        """Flat (non-recursive) search for folders within a specified directory."""
+        '''Flat (non-recursive) search for folders within a specified directory.'''
         paths_ = {}
         paths = []
         shows = []
@@ -836,12 +838,12 @@ class PatternChecker:
 
 
     def isTVEpisode(self, string_to_check):
-        """Checks a string for being a tv episode
+        '''Checks a string for being a tv episode
 
         Checking is done by regex on the grounds of a tv episode having
         a progression indicator in terms of its season and episode numbering
         Example: s02e11 <- 11th episode of 2nd season - its trivial I know but had to be mentioned.
-        """
+        '''
 
         pattern1 = '(s\d{2}e\d{2})' # S01E01 e.g.
         pattern2 = '(\d{1,2}x\d{1,2})' # 1x1, 10x10, 1x10, 10x1 e.g.
@@ -858,12 +860,12 @@ class PatternChecker:
 
     
     def hasExtension(self, string_to_check, ext_to_check='mkv'):
-        """Checks file extension matching a given extension
+        '''Checks file extension matching a given extension
 
         Checking is done using regex. Its possible to check for arbitrary extensions
         though in practice matching should be done for extensions of video containers
         like: mkv, avi, and so forth
-        """
+        '''
 
         re1 = '(\\.)'
         re2 = '(' + ext_to_check + ')'
@@ -880,11 +882,12 @@ class PatternChecker:
 
    
     def hasPattern(self, string_to_check, pattern):
-        """Checks a string against a (generated) regex pattern
+        '''Checks a string against a (generated) regex pattern
 
         On match the match object is returned otherwise None
-        """
-        #        re1='(' + existing_string + ')'    # Word 1
+        
+        re1='(' + existing_string + ')'    # Word 1
+        '''
         re1 = pattern
 
         rg = re.compile(re1,re.IGNORECASE|re.DOTALL)
@@ -895,7 +898,7 @@ class PatternChecker:
 
     
     def createPattern(self, list_representation_of_ep_title, isString=True):
-        """Creates a case-insensitive regex pattern based on a show title
+        '''Creates a case-insensitive regex pattern based on a show title
 
         As long as every word in the file name appears in the order its specified
         in the database of locally existing shows you are good
@@ -912,11 +915,8 @@ class PatternChecker:
         (i)   blablah.Person.of.Interest.blablah
         (ii)  blah Person of Interest blah
         (iii) blah_Person_of_Interest_blah
-        
-        
-        
-        
-        """
+        '''
+
         eps = None
         if(isString): #turn whitespace separated string into list
             string_ = StringCleaner().stripclean(list_representation_of_ep_title)
@@ -963,15 +963,15 @@ class PatternChecker:
         
     
     def getSeason(self,string_to_check, season_text = "Season", leading_zero=False):
-        """Retrieves the season number from a show index with a leading season_text.
+        '''Retrieves the season number from a show index with a leading season_text.
         
         
-        Allowed input formats are specified in p1, p2 and p3.
-        p1 additionally returns a leading zero for numbers < 10 if leading_zero is True.
-        """
+        Allowed input formats are specified in p1, (p10), p2 and p3.
+        Returns a leading zero for numbers < 10 if leading_zero is True.
+        '''
 
         p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
-        # NEW: recognition of Filenames like blablasxxexx
+        # recognition of Filenames like blablasxxexx
         # has the potential to produce false positives
         # therefore lets keep an eye on this
         p10 = '(\w{1})(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # ShwnmS01E01 e.g.
@@ -1134,7 +1134,7 @@ class StringCleaner:
         
     
     def clean_apostrophe(self, cleanee):
-        """Clean any apostrophes(') followed by (s )"""
+        '''Clean any apostrophes(') followed by (s )'''
         if cleanee.find("'s ") != -1:     
             cleanee = re.sub("'s\\s", "s ", cleanee)
         if re.search("('s$)", cleanee, re.IGNORECASE) != None:
@@ -1185,11 +1185,11 @@ class QueryGenerator:
 
 
     def genQueryElems(self,ws_sep_string):
-        """returns either the combination of all elements of a whitespace separated string
+        '''returns either the combination of all elements of a whitespace separated string
         or (I)returns a chain of all elements looped num-of-element times with each loop loosing
         the first element:
         (I) A B C-> (A,B,C),(A,B),(A),(B,C),(B),(C) 
-        """
+        '''
         combinations = self._combine(ws_sep_string)
         return self._unpackCombinations(combinations)
 
@@ -1549,36 +1549,32 @@ class FileRenamer:
         
         show_index = show_index.strip()
         self.__parseCustomElems(usr_string)
+        self.__parseCustomStrings(usr_string)
         self.__assignStdElements(show_name, show_index, episode_name, punctuation, usr_string)
         self.__parseCstmEpElems(episode)
         result = self.__constructName(usr_string, punctuation) + self.__addExtension(episode)
         if substitute_string == '':
             return result
         return self.substituteChars(result, substitute_string)
-    
-    
+
     def __parseIndexElem(self, usr_string):
         match = re.findall('(%[1-3]index)', usr_string)
         if len(match) > 1:
             return '%1index'
         else:
             return match[0]
-        
-    
+
     def __parseCustomElems(self, usr_string):
         pattern = "(%[A-z]+=)(([A-z_0-9\\-\\.]\\|?)+)"# "%show.%index.%hd=720p|1080p"
-#        "(%[A-z]+=)(([A-z_0-9\\-\\.]\\|?)+)"
         m = re.findall(pattern, usr_string)
         if m:
             return self.__unpackCustomElems(m)
-        
-    
+
     def __unpackCustomElems(self, list_of_elem_tpls):
         lst = {}
         for tple in list_of_elem_tpls:
             lst[tple[0]] = tple[1]
         return self.__assignCustomElements(lst)
-    
     
     def __assignCustomElements(self, lst_of_cstm_elems):
         '''Analyze previously found custom elements and assign them
@@ -1591,10 +1587,25 @@ class FileRenamer:
         for cst_elem in lst_of_cstm_elems.keys():
             self.elements[cst_elem[:len(cst_elem)-1]] = tuple(lst_of_cstm_elems.get(cst_elem).split('|'))
 
+    def __parseCustomStrings(self,usr_string):
+        pattern = "'([\w\d_ \\(\\)\\[\\]\\-\\.]+)'"# "%show.'('%index.')'"
+        m = re.findall(pattern, usr_string)
+        if m:
+            return self.__assignCustomStrings(m)
+            
+    def __assignCustomStrings(self,lst_of_cstm_strings):
+        '''Analyze previously found custom elements and assign them
+        
+        
+        ingoing: "%elem=val1|val2|valN"
+        assign to: self.elements = {'%elem':("val1", "val2", "valN")}
+        '''
+        for idx,item in enumerate(lst_of_cstm_strings):
+            self.elements[idx] = item
 
     def __parseCstmEpElems(self, episode):
         for key in self.elements.keys():
-            if key != '%show' and re.match('(%[1-3]index)', key) is None and key != '%episode' and key !='%separator':
+            if not isinstance(key, int) and key != '%show' and re.match('(%[1-3]index)', key) is None and key != '%episode':
                 for tpl_ in self.elements.get(key):
                     pattern = '((\\s+)|(-+)|(_+)|(\\.+))' + '(' + tpl_ + ')' + '((\\s+)|(-+)|(_+)|(\\.+))'
                     m_ = re.search(pattern, episode)
@@ -1614,28 +1625,38 @@ class FileRenamer:
     
     def __constructName(self, usr_string, punctuation='.'):
         indices = []
-        for key in self.elements.keys():
-            index = usr_string.find(key)
-            if index != -1:
-                indices.append((key,index))
-
-        indices.sort(key=lambda indices: indices[1])
+        punctflag = False
         
+        for (cnt,cstr) in enumerate(re.finditer("'([\w\d_ \\(\\)\\[\\]\\-\\.]+)'",usr_string)):
+            indices.append((cnt,cstr.start()))
+
+        for key in self.elements.keys():
+            if not isinstance(key,int):
+                index = usr_string.find(key)
+                if index != -1:
+                    indices.append((key,index))
+
+        indices.sort(key=lambda indices: indices[1])   
+
         name = ""
         for index in indices:
+            if punctflag:
+                if not isinstance(index[0],int): 
+                    name += punctuation
+            punctflag = True
+            
             indexElem = re.search("(%[1-3]index)", usr_string).group(0)
             if index[0] == '%show':
                 name += self.__encodeShowName(self.elements.get(index[0])[0], punctuation)
             elif index[0] == '%episode':
                 name += self.elements['%episode'][0]
-            elif index[0] == '%separator':
-                name += self.elements['%separator'][0]
             elif index[0] == indexElem:
                 name += self.__convertShowIndex(self.elements.get(index[0])[0], int(indexElem[1]))
+            elif isinstance(index[0],int):
+                name += self.elements[index[0]]
+                punctflag = False
             else:
                 name += self.elements.get(index[0])[0]
-            if index != indices[len(indices)-1]:
-                name += punctuation
         return name
     
     
@@ -1651,7 +1672,7 @@ class FileRenamer:
     
     
     def __convertShowIndex(self, show_index, type, returnRaw=False):
-        """Convert show index between certain types
+        '''Convert show index between certain types
         
         
         (I  )    type = 1 : S01E01, S10E11
@@ -1660,7 +1681,7 @@ class FileRenamer:
         
         if returnRaw: 
             return (SEASON_NUM,EPISODE_NUM) # (1,1) e.g.
-        """
+        '''
         
         pattern1 = '(S\d{2}E\d{2})' # S01E01 e.g.
         pattern2 = '(\d{1,2}x\d{1,2})' # 1x1, 10x10, 1x10, 10x1 e.g.
@@ -1704,12 +1725,12 @@ class FileRenamer:
         
         type is being composed by concatenating the input type with the output type
         For instance: type 1 to type 2 -> type = 12
-        '''
+
         
-#        (I  )    type = 1 : S01E01, S10E11
-#        (II )    type = 2 : 1x1, 10x11
-#        (III)    type = 3 : 101, 1011
-        
+        (I  )    type = 1 : S01E01, S10E11
+        (II )    type = 2 : 1x1, 10x11
+        (III)    type = 3 : 101, 1011
+        '''        
         season, episode = ('','')
         
         if type == 12:
@@ -1807,6 +1828,8 @@ class FileRenamer:
     def substituteChars(self, renamee, substitute_string):
         ''' substitute_string = "'?'|'!', " -> kv_chars = ['?'|'!'] would substitute a '?' for '!'. '''
         seperator = '|'
+        utfd = Transcoder().decode_utf8
+        renamee= utfd(renamee)
         #TODO: some sanity checks perhaps
         if substitute_string.find(seperator) == -1: return renamee #invalid/missing string
         for sub_pair in substitute_string.split(','):
