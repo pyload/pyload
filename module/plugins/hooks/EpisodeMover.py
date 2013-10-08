@@ -84,7 +84,9 @@ class EpisodeMover(Hook):
                     ('move_log', 'folder', 'Specify a directory to log EM operations to. (Disabled if empty)', ''),
                     ("leading_zero", "bool", "Show leading zero for season numbers smaller 10", "False"),
                     ("char_sub", "str", "Characters to substitute w/o any sanity checks (Syntax: a|b,c|b,d|,)", ""),
-                    ("folder_sub", "bool", "Substitute characters in folders as well?", "False")]
+                    ("folder_sub", "bool", "Substitute characters in folders as well?", "False"),
+                    ("junk_rm", "bool", "Automatic deletion of empty directories and files with certain (user-specified) extensions", "False"),
+                    ("junk_exts", "list", "Files with these extensions will be automatically deleted if automatic deletion is enabled", "txt,nfo,sfv,sub,idx,bmp,jpg,png"),]
     __author_name__ = ("rusk")
     __author_mail__ = ("troggs@gmx.net")
     __tvdb = {}
@@ -427,23 +429,23 @@ class EpisodeMover(Hook):
         full_query_string = episode.full_query_string
         minimal_query_string = PatternChecker().getMinimalQueryString(episode.full_query_string) # cut off file name at series index
         
-        try:
-            # FIX: Cover Error if cut off File Name returns NONE 
-            # e.g. Anger Mangangement: "poe-ams01e02.avi" -> NONE /poe cut off as common occurence, ams cut off by minimal_query_string
-            if minimal_query_string is None:
-                raise EMException(u"No Minimal query String", 1 )
-            minimal_query_string = [StringCleaner().clean(minimal_query_string, isFile=False),] # clean punctuation and convert to list
-            query_handler = QueryHandler(self.number_of_parallel_queries, self.language)
-            query_result = query_handler.processQueries(minimal_query_string)
-            episode.show_name = query_result["name"]
-            episode.episode_names = query_result["episode_names"]
-            self.logInfo(u'Show name minimal query successful for "%s". Proceeding...' % episode.src_filename)
-            if not episode.episode_name:
-                self.logInfo(u'Episode name determination for %s failed. Likely the particular episode is too recent.' % episode.src_filename)
-            return episode
-        except EMException, eme:
-            # lets try again using the full file name
-            pass
+        # in case PatternChecker() produces no workable result skip querying w/ minimal string 
+        # e.g. Anger Mangangement: "poe-ams01e02.avi" -> NONE: poe gets cut off as common occurrence, ams gets cut off by getMinimalQueryString()
+        # TODO: disable application of common occurrence removal for querying w/ minimal string (?)
+        if minimal_query_string != None:
+            try:
+                minimal_query_string = [StringCleaner().clean(minimal_query_string, isFile=False),] # clean punctuation and convert to list
+                query_handler = QueryHandler(self.number_of_parallel_queries, self.language)
+                query_result = query_handler.processQueries(minimal_query_string)
+                episode.show_name = query_result["name"]
+                episode.episode_names = query_result["episode_names"]
+                self.logInfo(u'Show name minimal query successful for "%s". Proceeding...' % episode.src_filename)
+                if not episode.episode_name:
+                    self.logInfo(u'Episode name determination for %s failed. Likely the particular episode is too recent.' % episode.src_filename)
+                return episode
+            except EMException, eme:
+                # lets try again using the full file name
+                pass
         
         # query using the full file name / full query string
         try:
@@ -467,7 +469,6 @@ class EpisodeMover(Hook):
         os.path.split(self.config.plugin["ExtractArchive"]["destination"]["value"])[1] != root_folder and \
         os.path.split(self.config["general"]["download_folder"]) != root_folder:
             try:
-                # FIX: Handle Folder Name as is, not as File
                 query_result = query.sendQuery(root_folder,isFile=False)
                 episode.show_name = query_result["name"]
                 episode.episode_names = query_result["episode_names"]
@@ -545,14 +546,13 @@ class EpisodeMover(Hook):
     # checks a folder is empty so it can be deleted
         if not os.listdir(folder):
             return True
-        else:
-            return False
-	
+        return False
+    
     def __isJunk(self, file_name):
     # checks if file is a Junk File
         valdor = PatternChecker()
         # TODO: Extensions in Config
-        jextensions = ('txt,nfo,sfv,sub,idx,bmp,jpg,png')
+        jextensions = self.getConfig("junk_exts")
         extensions = string.split(jextensions, ',')
         for ext in extensions: 
             if (valdor.hasExtension(file_name, ext)):
@@ -565,10 +565,7 @@ class EpisodeMover(Hook):
                            file_name, \
                            re.IGNORECASE
                           )
-        if match_:
-            return True
-        else:
-            return False
+        return True if match_ else False
     
     
     def add_queueMoving(self,episode_obj):
@@ -611,7 +608,8 @@ class EpisodeMover(Hook):
                     self.setPermissions(os.path.join(utf(episode.dst), utf(episode.dst_filename)))
                     self.logInfo(u'Moving of "%s" completed.' % episode.dst_filename)
                     self.mv_logger.log_mv(utf(episode.src_filename), os.path.join(utf(episode.dst), utf(episode.dst_filename)))
-                    self.cleanFolder(episode.src)
+                    if self.getConfig("junk_rm"):
+                        self.cleanFolder(episode.src)
                 elif os.path.exists(os.path.join(utf(episode.dst), utf(episode.dst_filename))):
                     if self.getConfig('overwrite'):
                         self.logInfo(u'Starting to move "%s" to "%s" overwriting the destination' \
@@ -670,16 +668,16 @@ class EpisodeMover(Hook):
         # TODO: Maybe a "Force Delete" Option
         filelist = []
         for f in os.listdir(folder):
-            file = os.path.join(folder,f)
-            if os.path.isfile(file):
-                if self.__isJunk(file) or self.__isSample(file):
-                    if os.path.exists(file):
-                        os.remove(file)
+            file_ = os.path.join(folder,f)
+            if os.path.isfile(file_):
+                if self.__isJunk(file_) or self.__isSample(file_):
+                    if os.path.exists(file_):
+                        os.remove(file_)
                         filelist.append(f)
-            elif os.path.isdir(file):
-                if self.isEmptyDir(file):
-                    if os.path.exists(file):
-                        os.rmdir(file)
+            elif os.path.isdir(file_):
+                if self.isEmptyDir(file_):
+                    if os.path.exists(file_):
+                        os.rmdir(file_)
                         filelist.append((u'%s(dir)' % f))
         if len(filelist) > 0:
             self.logDebug(u'Deleted Junkfiles: %s' % filelist)
@@ -967,8 +965,10 @@ class PatternChecker:
         p1 additionally returns a leading zero for numbers < 10 if leading_zero is True.
         """
 
-        # NEW: recognition of Filenames like blablasxxexx
         p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
+        # NEW: recognition of Filenames like blablasxxexx
+        # has the potential to produce false positives
+        # therefore lets keep an eye on this
         p10 = '(\w{1})(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # ShwnmS01E01 e.g.
         p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
         p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9])((\\s+)|(-+)|(_+)|(\\.+))' # 100 - 959 
