@@ -62,7 +62,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.518"
+    __version__ = "0.519"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -1525,19 +1525,40 @@ class FileRenamer:
      
     def __init__(self, debug_logger):
         self.log = debug_logger
+        self.show = "%show"
+        self.index1 = "%1index"
+        self.episode = "%episode"
+        self.reset()
+        
+    def reset(self):
+        '''Resets all variables to default states.
+        
+        This enables using of a single instance of this class to process multiple episodes. 
+        '''
+        # I suspect simply setting it to None would do.
+        # Serves to demonstrate the employed data structure for renaming.
+        self.elements = {self.show:("",), self.index1:("",)} 
+        
+        
+        
         
 #------------------------------PUBLIC INTERFACE-----------------------------------------
-    def parseEpisode(self, usr_string, episode, show_name, show_index, episode_name, punctuation, substitute_string):
+    def parseEpisode(self, usr_string, episode, show_name, show_index,\
+                     episode_name, punctuation, substitute_string):
         '''This is the only public method that should be used'''
-        self.elements = {"%show":("",), "%1index":("",)}
-        return self._parseEpisode(usr_string, episode, show_name, show_index, episode_name, punctuation, substitute_string)
+        self.reset()
+        return self._parseEpisode(usr_string, episode, show_name, show_index,\
+                                  episode_name, punctuation, substitute_string)
     
     def getShowIndex(self, show_index):
         return self.__convertShowIndex(show_index, 1, returnRaw=True)
 #------------------------------PUBLIC INTERFACE-----------------------------------------    
         
     
-    def _parseEpisode(self, usr_string, episode, show_name, show_index, episode_name, punctuation, substitute_string):
+    def _parseEpisode(self, usr_string, episode, show_name, show_index,\
+                      episode_name, punctuation, substitute_string):
+        # Apparently nonsensical. Everything should be either in or converted to UTF8.
+        # No point in converting to a string again. Causes UnicodeDecodeErrors as well.
         # unicode -> string
         #usr_string = str(usr_string)
         #episode = episode.encode("utf8")
@@ -1560,7 +1581,7 @@ class FileRenamer:
     def __parseIndexElem(self, usr_string):
         match = re.findall('(%[1-3]index)', usr_string)
         if len(match) > 1:
-            return '%1index'
+            return self.index1
         else:
             return match[0]
 
@@ -1605,7 +1626,8 @@ class FileRenamer:
 
     def __parseCstmEpElems(self, episode):
         for key in self.elements.keys():
-            if not isinstance(key, int) and key != '%show' and re.match('(%[1-3]index)', key) is None and key != '%episode':
+            if not isinstance(key, int) and key != self.show \
+            and re.match('(%[1-3]index)', key) is None and key != self.episode:
                 for tpl_ in self.elements.get(key):
                     pattern = '((\\s+)|(-+)|(_+)|(\\.+))' + '(' + tpl_ + ')' + '((\\s+)|(-+)|(_+)|(\\.+))'
                     m_ = re.search(pattern, episode)
@@ -1646,10 +1668,10 @@ class FileRenamer:
             punctflag = True
             
             indexElem = re.search("(%[1-3]index)", usr_string).group(0)
-            if index[0] == '%show':
+            if index[0] == self.show:
                 name += self.__encodeShowName(self.elements.get(index[0])[0], punctuation)
-            elif index[0] == '%episode':
-                name += self.elements['%episode'][0]
+            elif index[0] == self.episode:
+                name += self.elements[self.episode][0]
             elif index[0] == indexElem:
                 name += self.__convertShowIndex(self.elements.get(index[0])[0], int(indexElem[1]))
             elif isinstance(index[0],int):
@@ -1820,16 +1842,14 @@ class FileRenamer:
     
     
     def __assignStdElements(self, show_name, show_index, episode_name, punctuation, usr_string):
-        self.elements["%show"] = (self.__encodeShowName(show_name, punctuation),)
+        self.elements[self.show] = (self.__encodeShowName(show_name, punctuation),)
         self.elements[self.__parseIndexElem(usr_string)] = (show_index,)
         if episode_name != None:
-            self.elements["%episode"] = (self.__formatEpisodeName(episode_name, punctuation),)
+            self.elements[self.episode] = (self.__formatEpisodeName(episode_name, punctuation),)
             
     def substituteChars(self, renamee, substitute_string):
         ''' substitute_string = "'?'|'!', " -> kv_chars = ['?'|'!'] would substitute a '?' for '!'. '''
         seperator = '|'
-        utfd = Transcoder().decode_utf8
-        renamee= utfd(renamee)
         #TODO: some sanity checks perhaps
         if substitute_string.find(seperator) == -1: return renamee #invalid/missing string
         for sub_pair in substitute_string.split(','):
