@@ -24,13 +24,17 @@ class GooIm(SimpleHoster):
     __name__ = "GooIm"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?goo\.im/.+"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __description__ = """Goo.im hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
     FILE_NAME_PATTERN = r'<h3>Filename: (?P<N>.+)</h3>'
     FILE_OFFLINE_PATTERN = r'The file you requested was not found'
+
+    def setup(self):
+        self.chunkLimit = -1
+        self.multiDL = self.resumeDownload = True
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url)
