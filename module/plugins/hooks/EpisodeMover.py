@@ -40,24 +40,13 @@ class EpisodeMover(Hook):
     '''
     
 #    TODO: (in no particular order)
-#    -implement cleaning of sample files (as a hook of its own)
-#    -implement removing/cleaning of junk files caused by particular download that was _processed_ by EM (readmes, nfos, etc...)
-#    -implement element for %episode if DB supports that
-#    -add separator element (?)
-#    -EM localisation options for config
-#    -EM localisation option for episode names
-#    -Implement feature for defining custom strings EM can process (Colbert Report/Daily Show/...) - done though not accessible by way of the GUI
-#    -It appears multiple calls are made for a single download: check into the cause for that!
-#    -dynamic-length separator
-#    -in case no match for show name fallback to parent folder and use its names
+#    -Implement feature for defining custom strings EM can process (Colbert Report/Daily Show/...)
 #    -Overwrite if size(src) > size(dst)
-#    -Check if mixing of folders and files when querying for episode information works as intended
 #    -Implement mapping of UTF8-encoded Umlaute to ASCII-encoded Umlaute and use it for querying/matching
-#    -Do a final clean after renaming in order to remove multiple occurrences of special characters: ' .-_'
 #    -Add unmatched files to a log file 
 #    -Implement prioritisation for shows with same word length where one show also is the name of a rls grp: Dexter.S07E11.720p.HDTV.x264-EVOLVE.mkv
-#    -Allow bypass of certain files triggered by specific package name declared in an external text file
-#    -Modify series matching to only/alternatively use the portion before the series index (marked w/ arrows): "->A.Series.<-S01E01.blabla.release-grp.mkv"
+#    -Allow skipping of certain files triggered by a specific package name declared in an external text file AKA blacklisting
+#    -Implement database(mysql/plain txt/...) for saving local tv shows. Functionality: refresh on failed local match/... 
 
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
