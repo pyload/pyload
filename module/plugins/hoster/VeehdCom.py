@@ -21,7 +21,6 @@ class VeehdCom(Hoster):
         self.logDebug('[%s] %s' % (self.__name__, msg))
 
     def setup(self):
-        #self.html = None
         #self.multiDL = True
         self.req.canContinue = True
 

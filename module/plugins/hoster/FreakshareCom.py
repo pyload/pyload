@@ -16,8 +16,6 @@ class FreakshareCom(Hoster):
     __author_mail__ = ("sitacuisses@yahoo.de", "spoob@pyload.org", "mkaay@mkaay.de", "toilal.dev@gmail.com")
 
     def setup(self):
-        #self.html = None
-        #self.wantReconnect = False
         self.multiDL = False
         self.req_opts = []
 

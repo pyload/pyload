@@ -62,7 +62,6 @@ class RapidshareCom(Hoster):
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "mkaay@mkaay.de")
 
     def setup(self):
-        #self.html = None
         self.no_download = True
         self.api_data = None
         self.offset = 0

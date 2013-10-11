@@ -100,7 +100,6 @@ class UploadedTo(Hoster):
     DL_LIMIT_PATTERN = "You have reached the max. number of possible free downloads for this hour"
 
     def setup(self):
-        #self.html = None
         self.multiDL = self.resumeDownload = self.premium
         self.url = False
         self.chunkLimit = 1  # critical problems with more chunks
