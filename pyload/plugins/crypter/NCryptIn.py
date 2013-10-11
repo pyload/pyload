@@ -6,14 +6,14 @@ import re
 
 from Crypto.Cipher import AES
 from module.plugins.Crypter import Crypter
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?ncrypt.in/folder-([^/\?]+)"
-    __version__ = "1.23"
+    __version__ = "1.24"
     __description__ = """NCrypt.in Crypter Plugin"""
     __author_name__ = ("fragonib")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
