@@ -14,7 +14,8 @@ class ZeveraCom(Hoster):
     __author_mail__ = ("zoidberg@mujmail.cz")
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        #self.multiDL = True
+        self.resumeDownload = True
         self.chunkLimit = 1
 
     def process(self, pyfile):

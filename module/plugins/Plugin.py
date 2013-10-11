@@ -142,7 +142,7 @@ class Plugin(Base):
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
     __name__ = "Plugin"
-    __version__ = "0.4"
+    __version__ = "0.41"
     __pattern__ = None
     __type__ = "hoster"
     __config__ = [("name", "type", "desc", "default")]
@@ -182,7 +182,7 @@ class Plugin(Base):
             self.chunkLimit = -1 # chunk limit, -1 for unlimited
             #: enables resume (will be ignored if server dont accept chunks)
             self.resumeDownload = True
-            self.multiDL = True  #every hoster with account should provide multiple downloads
+            #self.multiDL = True  #every hoster with account should provide multiple downloads
             #: premium status
             self.premium = self.account.isPremium(self.user)
         else:

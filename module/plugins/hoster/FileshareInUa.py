@@ -19,7 +19,8 @@ class FileshareInUa(Hoster):
     PATTERN_OFFLINE = "This file doesn't exist, or has been removed."
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        #self.multiDL = True
+        self.resumeDownload = True
 
     def process(self, pyfile):
         self.pyfile = pyfile

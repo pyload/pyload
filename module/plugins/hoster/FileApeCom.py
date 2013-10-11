@@ -16,7 +16,7 @@ class FileApeCom(Hoster):
 
     def setup(self):
         self.multiDL = False
-        self.html = None
+        #self.html = None
 
     def process(self, pyfile):
         self.pyfile = pyfile

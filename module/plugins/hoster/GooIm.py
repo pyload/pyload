@@ -34,7 +34,8 @@ class GooIm(SimpleHoster):
 
     def setup(self):
         self.chunkLimit = -1
-        self.multiDL = self.resumeDownload = True
+        #self.multiDL = True
+        self.resumeDownload = True
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url)

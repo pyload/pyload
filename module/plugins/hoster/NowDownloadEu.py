@@ -38,8 +38,9 @@ class NowDownloadEu(SimpleHoster):
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<[^>]*>', '')]
 
     def setup(self):
-        self.wantReconnect = False
-        self.multiDL = self.resumeDownload = True
+        #self.wantReconnect = False
+        #self.multiDL = True
+        self.resumeDownload = True
         self.chunkLimit = -1
 
     def handleFree(self):

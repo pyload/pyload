@@ -16,8 +16,9 @@ class ShareplaceCom(Hoster):
     __author_mail__ = ("none")
 
     def setup(self):
-        self.html = None
-        self.multiDL = True
+        #self.html = None
+        #self.multiDL = True
+        pass
 
     def process(self, pyfile):
         self.pyfile = pyfile
