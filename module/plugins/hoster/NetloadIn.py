@@ -215,7 +215,7 @@ class NetloadIn(Hoster):
                 else:
                     self.pyfile.waitUntil = t
                 self.logInfo(_("Netload: waiting for captcha %d s.") % (self.pyfile.waitUntil - time()))
-                #self.setWait(wait)
+                self.setWait(wait)
                 self.wait()
                 captchawaited = True
 

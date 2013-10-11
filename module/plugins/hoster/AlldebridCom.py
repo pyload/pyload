@@ -28,7 +28,6 @@ class AlldebridCom(Hoster):
         return name
 
     def setup(self):
-        #self.tries = 0
         self.chunkLimit = 3
         self.resumeDownload = True
 

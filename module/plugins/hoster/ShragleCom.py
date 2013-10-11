@@ -46,7 +46,6 @@ class ShragleCom(Hoster):
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
 
     def setup(self):
-        #self.html = None
         self.multiDL = False
         self.check_data = None
 
