@@ -18,14 +18,14 @@
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class Keep2shareCC(SimpleHoster):
     __name__ = "Keep2shareCC"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?keep2share\.cc/file/\w+"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """Keep2share.cc hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
