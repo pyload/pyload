@@ -17,9 +17,12 @@
     @author: jeix
 """
 
+# http://www.putlocker.com/file/83C174C844583CF7
+
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster
+from os import rename
 
 
 class PutlockerCom(SimpleHoster):
@@ -28,8 +31,8 @@ class PutlockerCom(SimpleHoster):
     __pattern__ = r'http://(www\.)?putlocker\.com/(file|embed)/[A-Z0-9]+'
     __version__ = "0.28"
     __description__ = """Putlocker.Com"""
-    __author_name__ = ("jeix", "stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = ("jeix", "stickell", "Walter Purcaro")
+    __author_mail__ = ("", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     FILE_OFFLINE_PATTERN = r"This file doesn't exist, or has been removed."
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
@@ -41,10 +44,19 @@ class PutlockerCom(SimpleHoster):
 
         self.html = self.load(self.pyfile.url, decode=True)
 
+        name_old = self.pyfile.name
+
         link = self._getLink()
         if not link.startswith('http://'):
             link = "http://www.putlocker.com" + link
-        self.download(link)
+        file = self.download(link, disposition=True)
+        name = self.pyfile.name
+
+        if name > name_old:
+            name_new = re.sub(r'\.[^.]+$', "", name_old) + name[len(name_old):]
+            self.logInfo("%(name)s renamed to %(newname)s" % {"name": name, "newname": name_new})
+            self.pyfile.name = name_new
+            rename(file, file.rsplit(name)[0] + name_new)
 
     def _getLink(self):
         hash_data = re.search(r'<input type="hidden" value="([a-z0-9]+)" name="hash">', self.html)
