@@ -12,11 +12,11 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?ncrypt.in/folder-([^/\?]+)"
-    __version__ = "1.24"
+    __pattern__ = r"http://(?:www\.)?ncrypt.in/(?P<type>folder|link|frame)-([^/\?]+)"
+    __version__ = "1.25"
     __description__ = """NCrypt.in Crypter Plugin"""
-    __author_name__ = ("fragonib")
-    __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
+    __author_name__ = ("fragonib", "stickell")
+    __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "l.stickell@yahoo.it")
 
     # Constants
     _JK_KEY_ = "jk"
@@ -33,31 +33,46 @@ class NCryptIn(Crypter):
         # Init
         self.package = pyfile.package()
 
-        # Request package
-        self.html = self.load(self.pyfile.url)
-        self.cleanedHtml = self.removeCrap(self.html)
-        if not self.isOnline():
-            self.offline()
-
-        # Check for protection    
-        if self.isProtected():
-            self.html = self.unlockProtection()
+        self.type = re.search(self.__pattern__, pyfile.url).group('type')
+        if self.type in ('link', 'frame'):
+            self.handleSingle()
+        else:
+            # Request package
+            self.html = self.load(self.pyfile.url)
             self.cleanedHtml = self.removeCrap(self.html)
-            self.handleErrors()
+            if not self.isOnline():
+                self.offline()
 
-        # Get package name and folder
-        (package_name, folder_name) = self.getPackageInfo()
+            # Check for protection
+            if self.isProtected():
+                self.html = self.unlockProtection()
+                self.cleanedHtml = self.removeCrap(self.html)
+                self.handleErrors()
 
-        # Extract package links
-        package_links = []
-        package_links.extend(self.handleWebLinks())
-        package_links.extend(self.handleContainers())
-        package_links.extend(self.handleCNL2())
-        package_links = self.removeContainers(package_links)
-        package_links = set(package_links)
+            # Get package name and folder
+            (package_name, folder_name) = self.getPackageInfo()
 
-        # Pack
-        self.packages = [(package_name, package_links, folder_name)]
+            # Extract package links
+            package_links = []
+            package_links.extend(self.handleWebLinks())
+            package_links.extend(self.handleContainers())
+            package_links.extend(self.handleCNL2())
+            package_links = self.removeContainers(package_links)
+            package_links = set(package_links)
+
+            # Pack
+            self.packages = [(package_name, package_links, folder_name)]
+
+    def handleSingle(self):
+        if self.type == 'link':
+            self.pyfile.url = self.pyfile.url.replace('link', 'frame')
+        header = self.load(self.pyfile.url, just_header=True)
+        if 'location' not in header:
+            self.fail("Unable to decrypt link")
+        loc = header['location']
+        self.logDebug("Link decrypted: " + loc)
+        self.package_links = [loc]
+        self.packages = [(self.package.name, self.package_links, self.package.folder)]
 
     def removeCrap(self, content):
         patterns = (r'(type="hidden".*?(name=".*?")?.*?value=".*?")',
