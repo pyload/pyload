@@ -5,14 +5,14 @@ import re
 from os.path import join
 
 from module.plugins.Crypter import Crypter
-from module.plugins.ReCaptcha import ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class LofCc(Crypter):
     __name__ = "LofCc"
     __type__ = "container"
     __pattern__ = r"http://lof.cc/(.*)"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __description__ = """lof.cc Plugin"""
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
