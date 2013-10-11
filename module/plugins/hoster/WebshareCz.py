@@ -35,7 +35,8 @@ class WebshareCz(SimpleHoster):
     DOWNLOAD_LINK_PATTERN = r'id="download_link" href="(?P<url>.*?)"'
 
     def setup(self):
-        self.multiDL = True
+        #self.multiDL = True
+        pass
 
     def handleFree(self):
         url_a = re.search(r"(var l.*)", self.html).group(1)

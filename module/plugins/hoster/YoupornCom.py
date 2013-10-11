@@ -15,7 +15,8 @@ class YoupornCom(Hoster):
     __author_mail__ = ("willnix@pyload.org")
 
     def setup(self):
-        self.html = None
+        #self.html = None
+        pass
 
     def process(self, pyfile):
         self.pyfile = pyfile

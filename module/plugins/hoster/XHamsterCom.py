@@ -25,7 +25,8 @@ class XHamsterCom(Hoster):
     __description__ = """XHamster.com Video Download Hoster"""
 
     def setup(self):
-        self.html = None
+        #self.html = None
+        pass
 
     def process(self, pyfile):
         self.pyfile = pyfile

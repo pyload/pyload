@@ -20,7 +20,7 @@ class StreamcloudEu(XFileSharingPro):
 
     def setup(self):
         super(StreamcloudEu, self).setup()
-        self.multiDL = True
+        #self.multiDL = True
 
     def getDownloadLink(self):
         found = re.search(self.DIRECT_LINK_PATTERN, self.html, re.S)

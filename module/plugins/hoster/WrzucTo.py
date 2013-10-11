@@ -36,7 +36,8 @@ class WrzucTo(SimpleHoster):
     FILE_NAME_PATTERN = r'id="file_info">\s*<strong>(?P<N>.*?)</strong>'
 
     def setup(self):
-        self.multiDL = True
+        #self.multiDL = True
+        pass
 
     def handleFree(self):
         data = dict(re.findall(r'(md5|file): "(.*?)"', self.html))

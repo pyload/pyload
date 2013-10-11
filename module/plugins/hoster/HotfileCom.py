@@ -44,12 +44,13 @@ class HotfileCom(Hoster):
 
     def setup(self):
         self.html = [None, None]
-        self.wantReconnect = False
+        #self.wantReconnect = False
         self.htmlwithlink = None
         self.url = None
 
         if self.premium:
-            self.multiDL = self.resumeDownload = True
+            #self.multiDL = True
+            self.resumeDownload = True
             self.chunkLimit = -1
         else:
             self.multiDL = False

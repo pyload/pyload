@@ -22,14 +22,14 @@ from module.plugins.Hoster import Hoster
 
 class DebridItaliaCom(Hoster):
     __name__ = "DebridItaliaCom"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __type__ = "hoster"
     __pattern__ = r"https?://.*debriditalia\.com"
     __description__ = """Debriditalia.com hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
-    def init(self):
+    def setup(self):
         self.chunkLimit = -1
         self.resumeDownload = True
 

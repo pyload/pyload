@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 
 class FastixRu(Hoster):
     __name__ = "FastixRu"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __type__ = "hoster"
     __pattern__ = r"http?://.*fastix.ru\..*"
     __description__ = """Fastix hoster plugin"""
@@ -25,7 +25,7 @@ class FastixRu(Hoster):
             name += "%s.tmp" % randrange(100, 999)
         return name
 
-    def init(self):
+    def setup(self):
         self.chunkLimit = 3
         self.resumeDownload = True
 
