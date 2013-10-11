@@ -15,17 +15,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.DeadCrypter import DeadCrypter
 
 
-class SpeedLoadOrgFolder(SimpleCrypter):
+class SpeedLoadOrgFolder(DeadCrypter):
     __name__ = "SpeedLoadOrgFolder"
     __type__ = "crypter"
     __pattern__ = r"http://(www\.)?speedload\.org/(\d+~f$|folder/\d+/)"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __description__ = """Speedload Crypter Plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
-
-    LINK_PATTERN = r'<div class="link"><a href="(http://speedload.org/\w+)"'
-    TITLE_PATTERN = r'<title>Files of: (?P<title>[^<]+) folder</title>'
