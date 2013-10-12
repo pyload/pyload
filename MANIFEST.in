@@ -1,9 +1,11 @@
 include *.py *.md setup.* CLA MANIFEST.in
 
+
 recursive-include pyload *.py
 recursive-include pyload/plugins *_2*.pyc
 
 recursive-include pyload/remote *
+recursive-exclude pyload/remote *.py[co]
 
 recursive-include pyload/web .bowerrc .jshintrc Gruntfile.js package.json
 prune pyload/web/node_modules
@@ -17,6 +19,3 @@ recursive-include docs Makefile *.py *.conf *.rst *.svg *.png
 recursive-include tests *.py *.txt *.sh *.org
 
 recursive-include locale *.pot *.mo
-
-#recursive-exclude * __pycache__
-recursive-exclude * *.py[co]
