@@ -187,7 +187,6 @@ class CurlRequest(Request):
         if "auth" in self.options:
             self.c.setopt(pycurl.USERPWD, str(self.options["auth"]))
 
-
     def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False):
         """ load and returns a given page """
 

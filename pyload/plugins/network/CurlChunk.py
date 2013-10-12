@@ -25,7 +25,7 @@ import codecs
 import pycurl
 
 from pyload.utils import remove_chars
-from pyload.utils.fs import fs_encode
+from pyload.utils.fs import fs_encode, fs_decode
 
 from CurlRequest import CurlRequest
 
@@ -35,7 +35,7 @@ class WrongFormat(Exception):
 
 class ChunkInfo():
     def __init__(self, name):
-        self.name = unicode(name)
+        self.name = fs_decode(name)
         self.size = 0
         self.resume = False
         self.chunks = []
@@ -153,6 +153,8 @@ class CurlChunk(CurlRequest):
 
         self.sleep = 0.000
         self.lastSize = 0
+        # next to last size
+        self.nLastSize = 0
 
     def __repr__(self):
         return "<CurlChunk id=%d, size=%d, arrived=%d>" % (self.id, self.size, self.arrived)
@@ -228,6 +230,8 @@ class CurlChunk(CurlRequest):
             self.BOMChecked = True
 
         size = len(buf)
+        self.nLastSize = self.lastSize
+        self.lastSize = size
 
         self.arrived += size
 
@@ -235,7 +239,9 @@ class CurlChunk(CurlRequest):
 
         if self.p.bucket:
             sleep(self.p.bucket.consumed(size))
-        else:
+
+        # if the buffer sizes are stable no sleep will be made
+        elif size != self.lastSize or size != self.nLastSize:
             # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
             # otherwise reduce sleep time percentile (values are based on tests)
             # So in general cpu time is saved without reducing bandwidth too much
@@ -244,8 +250,6 @@ class CurlChunk(CurlRequest):
                 self.sleep += 0.002
             else:
                 self.sleep *= 0.7
-
-            self.lastSize = size
 
             sleep(self.sleep)
 
