@@ -56,13 +56,11 @@ class Checksum(Hook):
     __name__ = "Checksum"
     __version__ = "0.09"
     __description__ = "Verify downloaded file size and checksum"
-    __config__ = [
-        ("activated", "bool", "Activated", True),
-        ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
-        ("max_tries", "int", "Number of retries", 2),
-        ("retry_action", "fail;nothing", "What to do if all retries fail?", "fail"),
-        ("wait_time", "int", "Time to wait before each retry (seconds)", 1)
-    ]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
+                  ("max_tries", "int", "Number of retries", 2),
+                  ("retry_action", "fail;nothing", "What to do if all retries fail?", "fail"),
+                  ("wait_time", "int", "Time to wait before each retry (seconds)", 1)]
     __author_name__ = ("zoidberg", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com")
 
