@@ -61,8 +61,8 @@ class AlldebridCom(Hoster):
                 self.pyfile.size = parseFileSize(data["filesize"])
                 url_new = data["link"]
 
-        url_new = url_new.replace("http://", "https://") if self.getConfig("https") else \
-                  url_new.replace("https://", "http://")
+        url_new = (url_new.replace("http://", "https://") if self.getConfig("https") else
+                   url_new.replace("https://", "http://"))
 
         if url_new != url_old:
             self.logDebug("Old URL: %s" % url_old)
