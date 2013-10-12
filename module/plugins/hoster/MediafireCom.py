@@ -80,7 +80,7 @@ class MediafireCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
 
     def setup(self):
-        self.multiDL = False
+        pass
 
     def process(self, pyfile):
         pyfile.url = re.sub(r'/view/?\?', '/?', pyfile.url)
@@ -91,7 +91,6 @@ class MediafireCom(SimpleHoster):
         if result == 0:
             self.html = self.load(self.url, decode=True)
             self.checkCaptcha()
-            self.multiDL = True
             self.check_data = self.getFileInfo()
 
             if self.account:
@@ -101,7 +100,6 @@ class MediafireCom(SimpleHoster):
         elif result == 1:
             self.offline()
         else:
-            self.multiDL = True
             self.download(self.url, disposition=True)
 
     def handleFree(self):

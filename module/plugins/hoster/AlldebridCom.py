@@ -10,7 +10,7 @@ from module.utils import parseFileSize
 
 class AlldebridCom(Hoster):
     __name__ = "AlldebridCom"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*alldebrid\..*"
@@ -27,8 +27,7 @@ class AlldebridCom(Hoster):
             name += "%s.tmp" % randrange(100, 999)
         return name
 
-    def init(self):
-        self.tries = 0
+    def setup(self):
         self.chunkLimit = 3
         self.resumeDownload = True
 

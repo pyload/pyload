@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -30,8 +30,7 @@ class RealdebridCom(Hoster):
             name += "%s.tmp" % randrange(100, 999)
         return name
 
-    def init(self):
-        self.tries = 0
+    def setup(self):
         self.chunkLimit = 3
         self.resumeDownload = True
 

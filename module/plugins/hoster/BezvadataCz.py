@@ -34,7 +34,8 @@ class BezvadataCz(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<title>BezvaData \| Soubor nenalezen</title>'
 
     def setup(self):
-        self.multiDL = self.resumeDownload = True
+        #self.multiDL = True
+        self.resumeDownload = True
 
     def handleFree(self):
         #download button

@@ -43,7 +43,8 @@ class FilecloudIo(SimpleHoster):
     RECAPTCHA_KEY = '6Lf5OdISAAAAAEZObLcx5Wlv4daMaASRov1ysDB1'
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        #self.multiDL = True
+        self.resumeDownload = True
         self.chunkLimit = 1
 
     def handleFree(self):

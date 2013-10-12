@@ -28,7 +28,7 @@ class EgoFilesCom(SimpleHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?egofiles.com/(\w+)"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = """Egofiles.com Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -39,8 +39,7 @@ class EgoFilesCom(SimpleHoster):
     DIRECT_LINK_PATTERN = r'<a href="(?P<link>[^"]+)">Download ></a>'
     RECAPTCHA_KEY = '6LeXatQSAAAAAHezcjXyWAni-4t302TeYe7_gfvX'
 
-    def init(self):
-        self.file_info = {}
+    def setup(self):
         # Set English language
         self.load("https://egofiles.com/ajax/lang.php?lang=en", just_header=True)
 

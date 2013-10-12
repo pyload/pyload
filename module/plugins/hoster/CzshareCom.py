@@ -136,7 +136,6 @@ class CzshareCom(SimpleHoster):
         url = "http://%s/download.php?%s" % (found.group(1), found.group(2))
 
         self.wait()
-        self.multiDL = True
         self.download(url)
         self.checkDownloadedFile()
 

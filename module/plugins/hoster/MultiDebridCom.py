@@ -23,14 +23,14 @@ from module.common.json_layer import json_loads
 
 class MultiDebridCom(Hoster):
     __name__ = "MultiDebridCom"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __type__ = "hoster"
     __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/"
     __description__ = """Multi-debrid.com hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
-    def init(self):
+    def setup(self):
         self.chunkLimit = -1
         self.resumeDownload = True
 

@@ -21,7 +21,8 @@ class TwoSharedCom(SimpleHoster):
     DOWNLOAD_URL_PATTERN = r"window.location ='([^']+)';"
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        #self.multiDL = True
+        self.resumeDownload = True
 
     def handleFree(self):
         found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
