@@ -104,8 +104,12 @@ class Addon(Base):
             #delete for various reasons
             self.event_map = None
 
-        #self.startPeriodical()
+        self.initPeriodical()
         self.init()
+
+    def initPeriodical(self):
+        if id(self.periodical) != id(getattr(Addon, periodical)):
+            self.startPeriodical()
 
     def startPeriodical(self, interval=self.interval, wait=self.interval):
         if not self.cb and self.setInterval(interval, False):
@@ -118,7 +122,8 @@ class Addon(Base):
         if self.cb and self.core.scheduler.removeJob(self.cb):
             self.cb = None
             return True
-        return False
+        else:
+            return False
 
     def setInterval(self, interval, recount=False):
         if interval > 0:
