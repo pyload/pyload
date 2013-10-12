@@ -142,7 +142,7 @@ class Plugin(Base):
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
     __name__ = "Plugin"
-    __version__ = "0.41"
+    __version__ = "0.4"
     __pattern__ = None
     __type__ = "hoster"
     __config__ = [("name", "type", "desc", "default")]
