@@ -39,9 +39,19 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/linkgrabber/package'
                 return false;
             },
 
-            renamePackage: function() {
+            renamePackage: function(e) {
+                e.stopPropagation();
+
                 this.ui.name.addClass('edit');
                 this.ui.name.find('input').focus();
+
+                var self = this;
+                $(document).one('click', function() {
+                    self.ui.name.removeClass('edit');
+                    self.ui.name.focus();
+                });
+
+                return false;
             },
 
             saveName: function(e) {
