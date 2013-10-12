@@ -38,7 +38,7 @@ class AlldebridCom(Hoster):
         if re.match(self.__pattern__, pyfile.url):
             url_new = pyfile.url
         elif not self.account:
-            self.fail("No account provided")
+            self.fail(_("No %s account provided") % self.__name__)
         else:
             password = self.getPassword().splitlines()
             password = "" if not password else password[0]
