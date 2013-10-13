@@ -10,7 +10,7 @@ from module.utils import parseFileSize
 
 class AlldebridCom(Hoster):
     __name__ = "AlldebridCom"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*alldebrid\..*"
@@ -23,24 +23,22 @@ class AlldebridCom(Hoster):
             name = unquote(url.rsplit("/", 1)[1])
         except IndexError:
             name = "Unknown_Filename..."
-        if name.endswith("..."): #incomplete filename, append random stuff
+        if name.endswith("..."):  # incomplete filename, append random stuff
             name += "%s.tmp" % randrange(100, 999)
         return name
 
-    def init(self):
-        self.tries = 0
-        self.chunkLimit = 3
+    def setup(self):
+        self.chunkLimit = 16
         self.resumeDownload = True
 
     def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "AllDebrid")
-            self.fail("No AllDebrid account provided")
-
-        self.logDebug("AllDebrid: Old URL: %s" % pyfile.url)
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
+        elif not self.account:
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "AllDebrid")
+            self.fail("No AllDebrid account provided")
         else:
+            self.logDebug("Old URL: %s" % pyfile.url)
             password = self.getPassword().splitlines()
             password = "" if not password else password[0]
 
@@ -67,7 +65,8 @@ class AlldebridCom(Hoster):
         else:
             new_url = new_url.replace("https://", "http://")
 
-        self.logDebug("AllDebrid: New URL: %s" % new_url)
+        if new_url != pyfile.url:
+            self.logDebug("New URL: %s" % new_url)
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
             #only use when name wasnt already set

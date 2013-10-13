@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 
 class FastixRu(Hoster):
     __name__ = "FastixRu"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __type__ = "hoster"
     __pattern__ = r"http?://.*fastix.ru\..*"
     __description__ = """Fastix hoster plugin"""
@@ -25,19 +25,18 @@ class FastixRu(Hoster):
             name += "%s.tmp" % randrange(100, 999)
         return name
 
-    def init(self):
+    def setup(self):
         self.chunkLimit = 3
         self.resumeDownload = True
 
     def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "Fastix")
-            self.fail("No Fastix account provided")
-
-        self.logDebug("Old URL: %s" % pyfile.url)
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
+        elif not self.account:
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "Fastix")
+            self.fail("No Fastix account provided")
         else:
+            self.logDebug("Old URL: %s" % pyfile.url)
             api_key = self.account.getAccountData(self.user)
             api_key = api_key["api"]
             url = "http://fastix.ru/api_v2/?apikey=%s&sub=getdirectlink&link=%s" % (api_key, pyfile.url)
@@ -49,7 +48,8 @@ class FastixRu(Hoster):
             else:
                 new_url = data["downloadlink"]
 
-        self.logDebug("New URL: %s" % new_url)
+        if new_url != pyfile.url:
+            self.logDebug("New URL: %s" % new_url)
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
             #only use when name wasnt already set

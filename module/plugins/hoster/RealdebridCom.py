@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -30,20 +30,18 @@ class RealdebridCom(Hoster):
             name += "%s.tmp" % randrange(100, 999)
         return name
 
-    def init(self):
-        self.tries = 0
+    def setup(self):
         self.chunkLimit = 3
         self.resumeDownload = True
 
     def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "Real-debrid")
-            self.fail("No Real-debrid account provided")
-
-        self.logDebug("Real-Debrid: Old URL: %s" % pyfile.url)
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
+        elif not self.account:
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "Real-debrid")
+            self.fail("No Real-debrid account provided")
         else:
+            self.logDebug("Old URL: %s" % pyfile.url)
             password = self.getPassword().splitlines()
             if not password:
                 password = ""
@@ -74,7 +72,8 @@ class RealdebridCom(Hoster):
         else:
             new_url = new_url.replace("https://", "http://")
 
-        self.logDebug("Real-Debrid: New URL: %s" % new_url)
+        if new_url != pyfile.url:
+            self.logDebug("New URL: %s" % new_url)
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown") or pyfile.name.endswith('..'):
             #only use when name wasnt already set
