@@ -17,8 +17,6 @@
     @author: jeix
 """
 
-# http://www.putlocker.com/file/83C174C844583CF7
-
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster
@@ -28,7 +26,7 @@ class PutlockerCom(SimpleHoster):
     __name__ = "PutlockerCom"
     __type__ = "hoster"
     __pattern__ = r'http://(www\.)?putlocker\.com/(file|embed)/[A-Z0-9]+'
-    __version__ = "0.27"
+    __version__ = "0.28"
     __description__ = """Putlocker.Com"""
     __author_name__ = ("jeix", "stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -46,7 +44,7 @@ class PutlockerCom(SimpleHoster):
         link = self._getLink()
         if not link.startswith('http://'):
             link = "http://www.putlocker.com" + link
-        self.download(link, disposition=True)
+        self.download(link)
 
     def _getLink(self):
         hash_data = re.search(r'<input type="hidden" value="([a-z0-9]+)" name="hash">', self.html)
