@@ -10,36 +10,35 @@ from module.utils import parseFileSize
 
 class AlldebridCom(Hoster):
     __name__ = "AlldebridCom"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __type__ = "hoster"
-
     __pattern__ = r"https?://.*alldebrid\..*"
     __description__ = """Alldebrid.com hoster plugin"""
-    __author_name__ = ("Andy, Voigt")
-    __author_mail__ = ("spamsales@online.de")
+    __author_name__ = ("Andy, Voigt", "Walter Purcaro")
+    __author_mail__ = ("spamsales@online.de", "vuolter@gmail.com")
 
     def getFilename(self, url):
         try:
             name = unquote(url.rsplit("/", 1)[1])
         except IndexError:
             name = "Unknown_Filename..."
+
         if name.endswith("..."): #incomplete filename, append random stuff
             name += "%s.tmp" % randrange(100, 999)
+
         return name
 
-    def init(self):
-        self.tries = 0
-        self.chunkLimit = 3
+    def setup(self):
+        self.chunkLimit = 16
         self.resumeDownload = True
 
     def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "AllDebrid")
-            self.fail("No AllDebrid account provided")
+        url_old = pyfile.url
 
-        self.logDebug("AllDebrid: Old URL: %s" % pyfile.url)
         if re.match(self.__pattern__, pyfile.url):
-            new_url = pyfile.url
+            url_new = pyfile.url
+        elif not self.account:
+            self.fail(_("No %s account provided") % self.__name__)
         else:
             password = self.getPassword().splitlines()
             password = "" if not password else password[0]
@@ -60,20 +59,20 @@ class AlldebridCom(Hoster):
                 if self.pyfile.name and not self.pyfile.name.endswith('.tmp'):
                     self.pyfile.name = data["filename"]
                 self.pyfile.size = parseFileSize(data["filesize"])
-                new_url = data["link"]
+                url_new = data["link"]
 
-        if self.getConfig("https"):
-            new_url = new_url.replace("http://", "https://")
-        else:
-            new_url = new_url.replace("https://", "http://")
+        url_new = (url_new.replace("http://", "https://") if self.getConfig("https") else
+                   url_new.replace("https://", "http://"))
 
-        self.logDebug("AllDebrid: New URL: %s" % new_url)
+        if url_new != url_old:
+            self.logDebug("Old URL: %s" % url_old)
+            self.logDebug("New URL: %s" % url_new)
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
             #only use when name wasnt already set
-            pyfile.name = self.getFilename(new_url)
+            pyfile.name = self.getFilename(url_new)
 
-        self.download(new_url, disposition=True)
+        self.download(url_new, disposition=True)
 
         check = self.checkDownload({"error": "<title>An error occured while processing your request</title>",
                                     "empty": re.compile(r"^$")})
