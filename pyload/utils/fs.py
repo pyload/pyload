@@ -75,7 +75,8 @@ def free_space(folder):
         s = os.statvfs(folder)
         return s.f_frsize * s.f_bavail
 
-def fs_bsize(path):
+def get_bsize(path):
+    """ get optimal file system buffer size (in bytes) for i/o calls """
     path = fs_encode(path)
 
     if os.name == "nt":
