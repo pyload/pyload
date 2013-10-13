@@ -150,7 +150,7 @@ def generate_locale():
 
     makepot("core", path("pyload"), EXCLUDE)
     makepot("plugins", path("pyload") / "plugins")
-    makepot("setup", "", [], includes="./pyload/Setup.py\n")
+    makepot("setup", "", [], includes="./pyload/setup/Setup.py\n")
     makepot("cli", path("pyload") / "cli", [])
     makepot("webUI", path("pyload") / "web" / "app", ["components", "vendor", "gettext"], endings=[".js", ".html"],
             xxargs="--language=Python --force-po".split(" "))
