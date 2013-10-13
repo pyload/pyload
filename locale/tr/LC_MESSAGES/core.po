@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:57-0400\n"
+"PO-Revision-Date: 2013-10-13 12:26-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -15,7 +15,7 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/AddonManager.py:62
 #, python-format
 msgid "Error when executing %s"
-msgstr ""
+msgstr "%s yürütürken hata"
 
 #: pyload/AddonManager.py:93
 #, python-format
@@ -25,12 +25,12 @@ msgstr "Aktive etme başarısız %(name)s"
 #: pyload/AddonManager.py:96
 #, python-format
 msgid "Activated addons: %s"
-msgstr ""
+msgstr "Aktif eklentiler: %s"
 
 #: pyload/AddonManager.py:97
 #, python-format
 msgid "Deactivated addons: %s"
-msgstr ""
+msgstr "Pasif eklentiler: %s"
 
 #: pyload/AddonManager.py:153
 msgid "Activating Plugins..."
@@ -38,7 +38,7 @@ msgstr "Eklentiler etkinleştiriliyor ..."
 
 #: pyload/AddonManager.py:162
 msgid "Deactivating Plugins..."
-msgstr ""
+msgstr "Eklentiler devredışı bırakılıyor..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -46,32 +46,32 @@ msgstr "SSL sertifikaları bulunamadı."
 
 #: pyload/web/ServerThread.py:53
 msgid "WebUI built is not available"
-msgstr ""
+msgstr "WebUI kullanılamaz"
 
 #: pyload/web/ServerThread.py:55
 msgid "Running webUI in development mode"
-msgstr ""
+msgstr "webUI geliştirici modunda çalışıyor"
 
 #: pyload/web/ServerThread.py:73
 msgid "Failed starting webserver: "
-msgstr ""
+msgstr "Web sunucusu başlatma başarısız oldu:"
 
 #: pyload/web/ServerThread.py:107
 msgid "Failed importing webserver: "
-msgstr ""
+msgstr "Web sunucusundan alma başarısız oldu: "
 
 #: pyload/web/ServerThread.py:125
 msgid "This server offers no SSL, please consider using threaded instead"
-msgstr ""
+msgstr "Bu sunucu hiçbir SSL sunmuyor, kullanarak yerine dişli düşünün lütfen"
 
 #: pyload/web/ServerThread.py:139
 #, python-format
 msgid "Starting %(name)s webserver: %(host)s:%(port)d"
-msgstr ""
+msgstr "Başlıyor %(name)s websunucusu: %(host)s:%(port)d"
 
 #: pyload/config/default.py:14
 msgid "Remote"
-msgstr ""
+msgstr "Uzaktan"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -79,7 +79,7 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Description"
-msgstr ""
+msgstr "Açıklama"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -87,7 +87,7 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Long description"
-msgstr ""
+msgstr "Ayrıntılı açıklama"
 
 #: pyload/config/default.py:16 pyload/config/default.py:56
 #: pyload/config/default.py:63
@@ -97,255 +97,255 @@ msgstr "Etkinleştirildi"
 #: pyload/config/default.py:17 pyload/config/default.py:69
 #: pyload/config/default.py:80
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 #: pyload/config/default.py:18 pyload/config/default.py:77
 msgid "Address"
-msgstr ""
+msgstr "Adres"
 
 #: pyload/config/default.py:21
 msgid "Log"
-msgstr ""
+msgstr "Günlük"
 
 #: pyload/config/default.py:23
 msgid "Size in kb"
-msgstr ""
+msgstr "Boyut kb"
 
 #: pyload/config/default.py:24
 msgid "Folder"
-msgstr ""
+msgstr "Klasör"
 
 #: pyload/config/default.py:25
 msgid "File Log"
-msgstr ""
+msgstr "Dosya günlük"
 
 #: pyload/config/default.py:26
 msgid "Count"
-msgstr ""
+msgstr "Sayı"
 
 #: pyload/config/default.py:27
 msgid "Log Rotate"
-msgstr ""
+msgstr "Günlük döndürme"
 
 #: pyload/config/default.py:30
 msgid "Permissions"
-msgstr ""
+msgstr "İzinler"
 
 #: pyload/config/default.py:32
 msgid "Groupname"
-msgstr ""
+msgstr "Grupadı"
 
 #: pyload/config/default.py:33
 msgid "Change Group and User of Downloads"
-msgstr ""
+msgstr "Grup ve kullanıcı yüklemeleri değiştirme"
 
 #: pyload/config/default.py:34
 msgid "Change file mode of downloads"
-msgstr ""
+msgstr "yüklemelerin dosya modu değiştirme"
 
 #: pyload/config/default.py:35 pyload/config/default.py:75
 msgid "Username"
-msgstr ""
+msgstr "Kullanıcı Adı"
 
 #: pyload/config/default.py:36
 msgid "Filemode for Downloads"
-msgstr ""
+msgstr "Yükleme Dosya Modu"
 
 #: pyload/config/default.py:37
 msgid "Change group of running process"
-msgstr ""
+msgstr "Çalışan işlemlerin grubunu değiştirme"
 
 #: pyload/config/default.py:38
 msgid "Folder Permission mode"
-msgstr ""
+msgstr "Dosya İzin modu"
 
 #: pyload/config/default.py:39
 msgid "Change user of running process"
-msgstr ""
+msgstr "Çalışan işlemlerin kullanıcısını değiştirme"
 
 #: pyload/config/default.py:42
 msgid "General"
-msgstr ""
+msgstr "Genel"
 
 #: pyload/config/default.py:44
 msgid "Language"
-msgstr ""
+msgstr "Dil"
 
 #: pyload/config/default.py:45
 msgid "Download Folder"
-msgstr ""
+msgstr "Yükleme Klasörü"
 
 #: pyload/config/default.py:46
 msgid "Use Checksum"
-msgstr ""
+msgstr "Doğrulama kullan"
 
 #: pyload/config/default.py:47
 msgid "Create folder for each package"
-msgstr ""
+msgstr "her paket için dosya yarat"
 
 #: pyload/config/default.py:48
 msgid "Debug Mode"
-msgstr ""
+msgstr "Hata ayıklama modu"
 
 #: pyload/config/default.py:49
 msgid "Min Free Space (MB)"
-msgstr ""
+msgstr "En az boş alan (MB)"
 
 #: pyload/config/default.py:50
 msgid "CPU Priority"
-msgstr ""
+msgstr "CPU önceliği"
 
 #: pyload/config/default.py:53
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #: pyload/config/default.py:55
 msgid "SSL Certificate"
-msgstr ""
+msgstr "SSL Sertifikası"
 
 #: pyload/config/default.py:57
 msgid "SSL Key"
-msgstr ""
+msgstr "SSL anahtarı"
 
 #: pyload/config/default.py:60
 msgid "Webinterface"
-msgstr ""
+msgstr "Webarayüzü"
 
 #: pyload/config/default.py:62
 msgid "Template"
-msgstr ""
+msgstr "Şablon"
 
 #: pyload/config/default.py:64
 msgid "Path Prefix"
-msgstr ""
+msgstr "Yol öneki"
 
 #: pyload/config/default.py:65
 msgid "Server"
-msgstr ""
+msgstr "Sunucu"
 
 #: pyload/config/default.py:66
 msgid "Favor specific server"
-msgstr ""
+msgstr "Belirli sunucu"
 
 #: pyload/config/default.py:67
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #: pyload/config/default.py:68
 msgid "Use HTTPS"
-msgstr ""
+msgstr "HTTPS kullan"
 
 #: pyload/config/default.py:70
 msgid "Development mode"
-msgstr ""
+msgstr "Geliştirme modu"
 
 #: pyload/config/default.py:73
 msgid "Proxy"
-msgstr ""
+msgstr "Proxy"
 
 #: pyload/config/default.py:76
 msgid "Use Proxy"
-msgstr ""
+msgstr "Proxy kullan"
 
 #: pyload/config/default.py:78
 msgid "Password"
-msgstr ""
+msgstr "Şifre"
 
 #: pyload/config/default.py:79
 msgid "Protocol"
-msgstr ""
+msgstr "Protokol"
 
 #: pyload/config/default.py:83
 msgid "Reconnect"
-msgstr ""
+msgstr "Yeniden bağlanma"
 
 #: pyload/config/default.py:85 pyload/config/default.py:106
 msgid "End"
-msgstr ""
+msgstr "Son"
 
 #: pyload/config/default.py:86
 msgid "Use Reconnect"
-msgstr ""
+msgstr "Bağlantı sıfırlama"
 
 #: pyload/config/default.py:87
 msgid "Method"
-msgstr ""
+msgstr "Yöntem"
 
 #: pyload/config/default.py:88 pyload/config/default.py:105
 msgid "Start"
-msgstr ""
+msgstr "Başlat"
 
 #: pyload/config/default.py:91
 msgid "Download"
-msgstr ""
+msgstr "Yükleme"
 
 #: pyload/config/default.py:93
 msgid "Max Parallel Downloads"
-msgstr ""
+msgstr "Max indirme sayısı"
 
 #: pyload/config/default.py:94
 msgid "Limit Download Speed"
-msgstr ""
+msgstr "Yükleme hızını sınırla"
 
 #: pyload/config/default.py:95
 msgid "Download interface to bind (ip or Name)"
-msgstr ""
+msgstr "Yükleme arayüzü (ip veya isim)"
 
 #: pyload/config/default.py:96
 msgid "Skip already existing files"
-msgstr ""
+msgstr "Zaten varolan dosyaları atla"
 
 #: pyload/config/default.py:97
 msgid "Max Download Speed in kb/s"
-msgstr ""
+msgstr "Max indirme hızı kb/s"
 
 #: pyload/config/default.py:98
 msgid "Allow IPv6"
-msgstr ""
+msgstr "IPv6 izin ver"
 
 #: pyload/config/default.py:99
 msgid "Max connections for one download"
-msgstr ""
+msgstr "Bir yükleme için max bağlantı sayısı"
 
 #: pyload/config/default.py:100
 msgid "Restart failed downloads on startup"
-msgstr ""
+msgstr "Başarısız olan yüklemeleri başlangıçta yeniden başlat"
 
 #: pyload/config/default.py:103
 msgid "Download Time"
-msgstr ""
+msgstr "Yükleme süresi"
 
 #: pyload/network/HTTPDownload.py:249
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
-msgstr ""
+msgstr "Karşıdan yükleme başarısız, tekli bağlantıya dönün | %s"
 
 #: pyload/api/DownloadApi.py:44
 #, python-format
 msgid "Added package %(name)s as folder %(folder)s"
-msgstr ""
+msgstr "Paket %(name)s eklendi %(folder)s klasör olarak"
 
 #: pyload/api/DownloadApi.py:95
 #, python-format
 msgid "Added %d links to package"
-msgstr ""
+msgstr "Pakete %d linkleri eklendi"
 
 #: pyload/AccountManager.py:69
 #, python-format
 msgid "Unknown account plugin %s"
-msgstr ""
+msgstr "Bilinmeyen hesap eklenti %s"
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
-msgstr ""
+msgstr "Sorgu"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Captcha request"
-msgstr ""
+msgstr "Captcha isteği"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Please solve the captcha."
-msgstr ""
+msgstr "Lütfen captcha çözünüz."
 
 #: pyload/remote/RemoteManager.py:35
 #, python-format
@@ -355,99 +355,99 @@ msgstr "Uzak uç hatası: % s"
 #: pyload/remote/RemoteManager.py:80
 #, python-format
 msgid "Starting %(name)s: %(addr)s:%(port)s"
-msgstr ""
+msgstr "Başlıyor %(name)s: %(addr)s:%(port)s"
 
 #: pyload/remote/RemoteManager.py:82
 #, python-format
 msgid "Failed loading backend %(name)s | %(error)s"
-msgstr ""
+msgstr "Arka uç yüklenirken hata %(name)s | %(error)s"
 
 #: pyload/FileManager.py:53
 msgid "none"
-msgstr ""
+msgstr "hiçbiri"
 
 #: pyload/FileManager.py:53
 msgid "offline"
-msgstr ""
+msgstr "Çevrimdışı"
 
 #: pyload/FileManager.py:53
 msgid "online"
-msgstr ""
+msgstr "Çevrimiçi"
 
 #: pyload/FileManager.py:53
 msgid "queued"
-msgstr ""
+msgstr "sıraya alındı"
 
 #: pyload/FileManager.py:53
 msgid "paused"
-msgstr ""
+msgstr "Duraklatıldı"
 
 #: pyload/FileManager.py:54
 msgid "finished"
-msgstr ""
+msgstr "bitti"
 
 #: pyload/FileManager.py:54
 msgid "skipped"
-msgstr ""
+msgstr "atlandı"
 
 #: pyload/FileManager.py:54
 msgid "failed"
-msgstr ""
+msgstr "başarısız oldu"
 
 #: pyload/FileManager.py:54
 msgid "starting"
-msgstr ""
+msgstr "başlatılıyor"
 
 #: pyload/FileManager.py:55
 msgid "waiting"
-msgstr ""
+msgstr "bekliyor"
 
 #: pyload/FileManager.py:55
 msgid "downloading"
-msgstr ""
+msgstr "indiriliyor"
 
 #: pyload/FileManager.py:55
 msgid "temp. offline"
-msgstr ""
+msgstr "geçici çevrimdışı"
 
 #: pyload/FileManager.py:55
 msgid "aborted"
-msgstr ""
+msgstr "iptal edildi"
 
 #: pyload/FileManager.py:56
 msgid "decrypting"
-msgstr ""
+msgstr "çözülüyor"
 
 #: pyload/FileManager.py:56
 msgid "processing"
-msgstr ""
+msgstr "işlem devam ediyor"
 
 #: pyload/FileManager.py:56
 msgid "custom"
-msgstr ""
+msgstr "Özel"
 
 #: pyload/FileManager.py:56
 msgid "unknown"
-msgstr ""
+msgstr "bilinmeyen"
 
 #: pyload/FileManager.py:426
 #, python-format
 msgid "Package finished: %s"
-msgstr ""
+msgstr "Paket tamamlandı. %s"
 
 #: pyload/Api.py:152
 #, python-format
 msgid "User '%s' tries to log in"
-msgstr ""
+msgstr "Kullanıcı oturum açmak için '%s' dener"
 
 #: pyload/Core.py:195
 msgid "Received Quit signal"
-msgstr ""
+msgstr "Çıkış sinyali alındı"
 
 #: pyload/Core.py:323
 #, python-format
 msgid "pyLoad already running with pid %s"
-msgstr ""
+msgstr "pyLoad zaten %s pid ile çalışıyor"
 
 #: pyload/Core.py:337
 #, python-format
@@ -475,7 +475,7 @@ msgstr "Tüm bağlantılar kaldırıldı"
 #: pyload/Core.py:403
 #, python-format
 msgid "Download time: %s"
-msgstr ""
+msgstr "Yükleme süresi: %s"
 
 #: pyload/Core.py:418
 #, python-format
@@ -488,7 +488,7 @@ msgstr "Hesap etkinleştiriliyor ..."
 
 #: pyload/Core.py:443
 msgid "Restarting failed downloads..."
-msgstr ""
+msgstr "Başarısız olan yüklemeler yeniden başlatılıyor..."
 
 #: pyload/Core.py:451
 msgid "pyLoad is up and running"
@@ -500,7 +500,7 @@ msgstr "pyLoad yeniden başlatılıyor"
 
 #: pyload/Core.py:478
 msgid "pyLoad quits"
-msgstr ""
+msgstr "pyload çıkış"
 
 #: pyload/Core.py:564
 msgid "shutting down..."
@@ -508,33 +508,33 @@ msgstr "kapatılıyor ..."
 
 #: pyload/Core.py:579
 msgid "error while shutting down"
-msgstr ""
+msgstr "kapatma sırasında hata oluştu"
 
 #: pyload/Core.py:661
 msgid "killed pyLoad from terminal"
-msgstr ""
+msgstr "terminalden kapatılan pyLoad"
 
 #: pyload/database/DatabaseBackend.py:167
 msgid "Database was deleted due to incompatible version."
-msgstr ""
+msgstr "Veritabanı uygunsuz sürüm yüzünden silindi."
 
 #: pyload/threads/DecrypterThread.py:50
 msgid "Decrypting failed"
-msgstr ""
+msgstr "Çözümleme başarısız oldu"
 
 #: pyload/threads/DecrypterThread.py:73
 #, python-format
 msgid "Decrypted %(count)d links into package %(name)s"
-msgstr ""
+msgstr "Çözülmüş %(count)d linkleri %(name)s paketlerine"
 
 #: pyload/threads/DecrypterThread.py:80
 msgid "No links decrypted"
-msgstr ""
+msgstr "Hiç bağlantı çözümlenmedi"
 
 #: pyload/threads/InfoThread.py:147
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
-msgstr ""
+msgstr "Bilgisi %(name)s alınırken hata | %(err)s oluştu"
 
 #: pyload/threads/ThreadManager.py:155
 #, python-format
@@ -565,66 +565,66 @@ msgstr "Aygıtta yeterli alan yok"
 #: pyload/threads/DownloadThread.py:64
 #, python-format
 msgid "Download starts: %s"
-msgstr ""
+msgstr "Yükleme başlar: %s"
 
 #: pyload/threads/DownloadThread.py:70
 #, python-format
 msgid "Download finished: %s"
-msgstr ""
+msgstr "Yükleme bitti: %s"
 
 #: pyload/threads/DownloadThread.py:75
 #, python-format
 msgid "Plugin %s is missing a function."
-msgstr ""
+msgstr "Eklenti %s işlevi eksik."
 
 #: pyload/threads/DownloadThread.py:83 pyload/threads/DownloadThread.py:147
 #, python-format
 msgid "Download aborted: %s"
-msgstr ""
+msgstr "Yükleme iptal edildi: %s"
 
 #: pyload/threads/DownloadThread.py:103
 #, python-format
 msgid "Download restarted: %(name)s | %(msg)s"
-msgstr ""
+msgstr "Yükleme yeniden başlatıldı: %(name)s | %(msg)s"
 
 #: pyload/threads/DownloadThread.py:113
 #, python-format
 msgid "Download is offline: %s"
-msgstr ""
+msgstr "Yükleme çevrimdışı: %s"
 
 #: pyload/threads/DownloadThread.py:116 pyload/threads/DownloadThread.py:187
 #, python-format
 msgid "Download is temporary offline: %s"
-msgstr ""
+msgstr "Yükleme geçici olarak çevrımdışı: %s"
 
 #: pyload/threads/DownloadThread.py:119 pyload/threads/DownloadThread.py:192
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
-msgstr ""
+msgstr "Yükleme başarısız: %(name)s | %(msg)s"
 
 #: pyload/threads/DownloadThread.py:136
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
-msgstr ""
+msgstr "Sunucuya bağlanılamadı veya bağlantı sıfırlandı, 1 dakikalık erteleme bekleniyor."
 
 #: pyload/threads/DownloadThread.py:171
 #, python-format
 msgid "Download skipped: %(name)s due to %(plugin)s"
-msgstr ""
+msgstr "Yükleme atlandı: %(name)s bunun yüzünden %(plugin)s"
 
 #: pyload/threads/DownloadThread.py:188
 msgid "Internal Server Error"
-msgstr ""
+msgstr "İç Sunucu Hatası"
 
 #: pyload/threads/AddonThread.py:55
 msgid "An Error occurred"
-msgstr ""
+msgstr "Bir hata meydana geldi"
 
 #: pyload/PluginManager.py:316
 #, python-format
 msgid "Error importing %(name)s: %(msg)s"
-msgstr ""
+msgstr "Alınırken hata %(name)s: %(msg)s"
 
 #: pyload/utils/JsEngine.py:188
 msgid "No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino"
-msgstr ""
+msgstr "Hiçbir js engine tespit edilemedi, lütfen Spidermonkey, ossp-js, pyv8, nodejs veya rhino birini yükleyin"
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-08-02 10:02-0400\n"
+"PO-Revision-Date: 2013-10-13 12:25-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -46,7 +46,7 @@ msgstr "SSL Zertifikat nicht gefunden."
 
 #: pyload/web/ServerThread.py:53
 msgid "WebUI built is not available"
-msgstr "Webschnittstellen Programmdaten nicht verfügbar"
+msgstr "Webschnittstelle nicht verfügbar"
 
 #: pyload/web/ServerThread.py:55
 msgid "Running webUI in development mode"
@@ -157,7 +157,7 @@ msgstr "Gruppe der laufenden Prozesse ändern"
 
 #: pyload/config/default.py:38
 msgid "Folder Permission mode"
-msgstr ""
+msgstr "Berechtigungsmodus für Verzeichnisse"
 
 #: pyload/config/default.py:39
 msgid "Change user of running process"
@@ -265,7 +265,7 @@ msgstr "Ende"
 
 #: pyload/config/default.py:86
 msgid "Use Reconnect"
-msgstr "Nutze Reconnect"
+msgstr "Erneuerung der Verbindung benutzen"
 
 #: pyload/config/default.py:87
 msgid "Method"
@@ -318,7 +318,7 @@ msgstr "Downloadzeit"
 #: pyload/network/HTTPDownload.py:249
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
-msgstr "Download eines Datensegments ist gescheitert, Setze auf max. 1 Verbindung zurück | %s"
+msgstr "Eine Download Verbindung ist fehlggeschlagen, Falle zurück auf eine Verbindung | %s"
 
 #: pyload/api/DownloadApi.py:44
 #, python-format
@@ -585,7 +585,7 @@ msgstr "Download abgebrochen: %s"
 #: pyload/threads/DownloadThread.py:103
 #, python-format
 msgid "Download restarted: %(name)s | %(msg)s"
-msgstr "Download Neustart: %(name)s | %(msg)s"
+msgstr "Download erneut gestartet: %(name)s | %(msg)s"
 
 #: pyload/threads/DownloadThread.py:113
 #, python-format

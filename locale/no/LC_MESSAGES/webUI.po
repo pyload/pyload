@@ -1,0 +1,131 @@
+msgid ""
+msgstr "Project-Id-Version: pyload\n"
+"Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
+"POT-Creation-Date: 2013-08-10 11:58+0200\n"
+"PO-Revision-Date: 2013-10-13 12:25-0400\n"
+"Last-Translator: pyloadTeam <team@pyload.org>\n"
+"Language-Team: Norwegian\n"
+"Language: no_NO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.net\n"
+
+#: pyload/web/app/scripts/helpers/formatSize.js:9
+msgid "not available"
+msgstr ""
+
+#: pyload/web/app/scripts/helpers/formatSize.js:11
+msgid "unlimited"
+msgstr ""
+
+#: pyload/web/app/templates/default/admin.html:3
+#: pyload/web/app/templates/default/admin.html:4
+msgid "Admin"
+msgstr ""
+
+#: pyload/web/app/templates/default/setup.html:3
+msgid "Setup"
+msgstr ""
+
+#: pyload/web/app/templates/default/accounts/actionbar.html:2
+msgid "Add Account"
+msgstr ""
+
+#: pyload/web/app/templates/default/accounts/layout.html:2
+msgid "Accounts"
+msgstr ""
+
+#: pyload/web/app/templates/default/dashboard/actionbar.html:9
+msgid "Local"
+msgstr ""
+
+#: pyload/web/app/templates/default/dashboard/actionbar.html:18
+msgid "Search"
+msgstr ""
+
+#: pyload/web/app/templates/default/dashboard/actionbar.html:26
+msgid "Type"
+msgstr ""
+
+#: pyload/web/app/templates/default/dashboard/actionbar.html:44
+#: pyload/web/app/templates/default/dashboard/actionbar.html:49
+msgid "All"
+msgstr ""
+
+#: pyload/web/app/templates/default/dashboard/actionbar.html:50
+msgid "Finished"
+msgstr ""
+
+#: pyload/web/app/templates/default/dashboard/actionbar.html:51
+msgid "Unfinished"
+msgstr ""
+
+#: pyload/web/app/templates/default/dashboard/actionbar.html:52
+msgid "Failed"
+msgstr ""
+
+#: pyload/web/app/templates/default/dashboard/select.html:1
+msgid "1 package"
+msgid_plural "%d packages"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pyload/web/app/templates/default/dashboard/select.html:4
+msgid "1 file"
+msgid_plural "%d files"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pyload/web/app/templates/default/dialogs/addAccount.html:2
+msgid "Add an account"
+msgstr ""
+
+#: pyload/web/app/templates/default/dialogs/addAccount.html:7
+msgid "Please enter your account data"
+msgstr ""
+
+#: pyload/web/app/templates/default/dialogs/addPluginConfig.html:3
+msgid "Choose a plugin"
+msgstr ""
+
+#: pyload/web/app/templates/default/dialogs/addPluginConfig.html:9
+msgid "Please choose a plugin, which you want to configure"
+msgstr ""
+
+#: pyload/web/app/templates/default/dialogs/addPluginConfig.html:23
+#: pyload/web/app/templates/default/dialogs/linkgrabber.html:46
+msgid "Add"
+msgstr ""
+
+#: pyload/web/app/templates/default/dialogs/addPluginConfig.html:24
+#: pyload/web/app/templates/default/dialogs/linkgrabber.html:47
+#: pyload/web/app/templates/default/dialogs/interactionTask.html:35
+msgid "Close"
+msgstr ""
+
+#: pyload/web/app/templates/default/dialogs/confirmDelete.html:2
+msgid "Please confirm"
+msgstr ""
+
+#: pyload/web/app/templates/default/dialogs/confirmDelete.html:5
+msgid "Do you want to delete the selected items?"
+msgstr ""
+
+#: pyload/web/app/templates/default/dialogs/confirmDelete.html:8
+msgid "Delete"
+msgstr ""
+
+#: pyload/web/app/templates/default/dialogs/confirmDelete.html:9
+msgid "Cancel"
+msgstr ""
+
+#: pyload/web/app/templates/default/dialogs/interactionTask.html:34
+msgid "Submit"
+msgstr ""
+
+#: pyload/web/app/templates/default/header/layout.html:12
+msgid "Running..."
+msgstr ""
+

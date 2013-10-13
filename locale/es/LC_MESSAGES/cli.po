@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-08-02 10:02-0400\n"
+"PO-Revision-Date: 2013-10-13 12:26-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -258,7 +258,7 @@ msgstr "No se puede escribir el archivo de configuración del usuario"
 
 #: pyload/cli/Cli.py:548 pyload/cli/Cli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."
-msgstr "Necesitas py-openssl para conectarte a este núcleo de pyLoad."
+msgstr "Necesitas py-openssl para conectar a este núcleo pyLoad."
 
 #: pyload/cli/Cli.py:555
 msgid "Address: "

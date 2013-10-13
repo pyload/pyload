@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-20 22:13+0200\n"
-"PO-Revision-Date: 2013-08-02 10:02-0400\n"
+"PO-Revision-Date: 2013-08-31 15:21-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -58,7 +58,7 @@ msgstr "Ehhez a fájlhoz prémium hozzáférés szükséges"
 
 #: pyload/plugins/hoster/RapidshareCom.py:198
 msgid "Filename reported invalid"
-msgstr ""
+msgstr "Hibás fájlnév"
 
 #: pyload/plugins/hoster/RealdebridCom.py:40
 #: pyload/plugins/hoster/Premium4Me.py:27
@@ -78,7 +78,7 @@ msgstr "Sikertelen dekódolás"
 
 #: pyload/plugins/hoster/MegaNz.py:99
 msgid "No file key provided in the URL"
-msgstr ""
+msgstr "Nincs fájl kulcs az URL-ben"
 
 #: pyload/plugins/hoster/MegaNz.py:111
 msgid "Error code:"
@@ -138,7 +138,7 @@ msgstr "HTML kód van a letöltött fájlban (%s). Lehet, hogy átirányítási 
 #: pyload/plugins/hoster/XHamsterCom.py:87
 #, python-format
 msgid "long_url: %s"
-msgstr ""
+msgstr "hosszú_url: %s"
 
 #: pyload/plugins/Account.py:117 pyload/plugins/Account.py:123
 #, python-format

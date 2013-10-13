@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-08-02 10:02-0400\n"
+"PO-Revision-Date: 2013-10-13 12:26-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -470,7 +470,7 @@ msgstr "Usando directorio de inicio: %s"
 
 #: pyload/Core.py:373
 msgid "All links removed"
-msgstr "Todos los links fueron eliminados"
+msgstr "Se eliminaron todos los enlaces"
 
 #: pyload/Core.py:403
 #, python-format
@@ -565,7 +565,7 @@ msgstr "No hay suficiente espacio libre en el dispositivo"
 #: pyload/threads/DownloadThread.py:64
 #, python-format
 msgid "Download starts: %s"
-msgstr "Iniciando descarga: %s"
+msgstr "Inicia descarga: %s"
 
 #: pyload/threads/DownloadThread.py:70
 #, python-format

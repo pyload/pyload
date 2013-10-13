@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-10-13 12:25-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -93,7 +93,7 @@ msgstr ""
 #: pyload/cli/Cli.py:165
 #, python-format
 msgid "%s Downloads:"
-msgstr ""
+msgstr "%s Downloads:"
 
 #: pyload/cli/Cli.py:177
 msgid " Speed: "
@@ -117,7 +117,7 @@ msgstr "wachtend: "
 
 #: pyload/cli/Cli.py:191 pyload/cli/Cli.py:193
 msgid "Status:"
-msgstr ""
+msgstr "Status:"
 
 #: pyload/cli/Cli.py:191
 msgid "paused"
@@ -129,19 +129,19 @@ msgstr ""
 
 #: pyload/cli/Cli.py:196
 msgid "total Speed"
-msgstr ""
+msgstr "totale Snelheid"
 
 #: pyload/cli/Cli.py:196
 msgid "Files in queue"
-msgstr ""
+msgstr "Bestanden in wachtrij"
 
 #: pyload/cli/Cli.py:197
 msgid "Total"
-msgstr ""
+msgstr "Totaal"
 
 #: pyload/cli/Cli.py:203
 msgid "Menu:"
-msgstr ""
+msgstr "Menu:"
 
 #: pyload/cli/Cli.py:205
 msgid " Add Links"

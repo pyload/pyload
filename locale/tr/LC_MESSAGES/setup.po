@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:57-0400\n"
+"PO-Revision-Date: 2013-10-13 12:26-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -14,19 +14,19 @@ msgstr "Project-Id-Version: pyload\n"
 
 #: pyload/Setup.py:72
 msgid "Would you like to configure pyLoad via Webinterface?"
-msgstr ""
+msgstr "PyLoad'u Webarayüzü ile yapılandırmak ister misiniz?"
 
 #: pyload/Setup.py:73
 msgid "You need a Browser and a connection to this PC for it."
-msgstr ""
+msgstr "Bunun için bir internet tarayıcı ve bu PC için bağlantı ihtiyacın var."
 
 #: pyload/Setup.py:74
 msgid "Url would be: http://hostname:8000/"
-msgstr ""
+msgstr "URL şu şekilde olmalı: http://hostname:8000 /"
 
 #: pyload/Setup.py:75
 msgid "Start initial webinterface for configuration?"
-msgstr ""
+msgstr "Yapılandırma için ilk webarayüzü başlatılsın mı?"
 
 #: pyload/Setup.py:86
 msgid "Welcome to the pyLoad Configuration Assistent."
@@ -42,7 +42,7 @@ msgstr "Parantez içindeki değerler [], her zaman varsayılan değerdir"
 
 #: pyload/Setup.py:90
 msgid "in case you don't want to change it or you are unsure what to choose, just hit enter."
-msgstr ""
+msgstr "değiştirmek istemediğinde yada neyi seçeceğinden emin değilsen, sadece enter'e bas."
 
 #: pyload/Setup.py:92
 msgid "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore."
@@ -50,7 +50,7 @@ msgstr "Unutma: pyLoadCore -setup yada -s ekleyerek  bu Asistanı her zaman yeni
 
 #: pyload/Setup.py:93
 msgid "If you have any problems with this assistent hit CTRL+C,"
-msgstr ""
+msgstr "Asistan ile herhangi bir sorun yaşarsanız STRG-C tuşuna basın,"
 
 #: pyload/Setup.py:94
 msgid "to abort and don't let him start with pyLoadCore automatically anymore."
@@ -62,15 +62,15 @@ msgstr "Eğer sistem kontrolü için hazırsanız, enter'a basın."
 
 #: pyload/Setup.py:103
 msgid "Features missing: "
-msgstr ""
+msgstr "Eksik Özellikler: "
 
 #: pyload/Setup.py:107
 msgid "no py-crypto available"
-msgstr ""
+msgstr "hiçbir py-şifrelemeye ulaşılamıyor"
 
 #: pyload/Setup.py:108
 msgid "You need this if you want to decrypt container files."
-msgstr ""
+msgstr "Konteyner dosyaları şifresini çözmek istiyorsanız, buna ihtiyacın var."
 
 #: pyload/Setup.py:112
 msgid "no SSL available"
@@ -82,15 +82,15 @@ msgstr "Sisteme yada Web arayüzüne güvenli bağlantı için bu gerekli."
 
 #: pyload/Setup.py:114
 msgid "If you only want to access locally to pyLoad ssl is not useful."
-msgstr ""
+msgstr "pyLoad'a yanlızca yerel erişmek istiyorsanız, ssl önerilmez."
 
 #: pyload/Setup.py:118
 msgid "no Captcha Recognition available"
-msgstr ""
+msgstr "Erişilebilir Captcha tanılama yok"
 
 #: pyload/Setup.py:119
 msgid "Only needed for some hosters and as freeuser."
-msgstr ""
+msgstr "Sadece bazı misafirler ve bedava kullanıcılar için gerekli."
 
 #: pyload/Setup.py:123
 msgid "no JavaScript engine found"
@@ -102,7 +102,7 @@ msgstr "Bazı Click'N'Load bağlantıları için gerekli. Spidermonkey, ossp-js,
 
 #: pyload/Setup.py:126
 msgid "You can abort the setup now and fix some dependencies if you want."
-msgstr ""
+msgstr "Şuan kurulum iptal edebilir ve gerekiyorsa bazı bağımlılık gerektiren düzeltmeleri yapabilirsiniz."
 
 #: pyload/Setup.py:128
 msgid "Continue with setup?"
@@ -115,7 +115,7 @@ msgstr "Yapılandırma yolunu değiştirmek istiyor musunuz? Mevcut% s"
 
 #: pyload/Setup.py:136
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
-msgstr ""
+msgstr "Eğer pyLoad'u server üzerinde yada evdeki yerel bellek bölümünde kullanacaksan onu değiştirmek iyi fikir."
 
 #: pyload/Setup.py:137
 msgid "Change config path?"
@@ -159,7 +159,7 @@ msgstr "Çıkmak için Enter tuşuna basın ve pyLoad'ı yeniden başlatın"
 
 #: pyload/Setup.py:173
 msgid "Webinterface running for setup."
-msgstr ""
+msgstr "Webarayüzü kurulun için çalışıyor."
 
 #: pyload/Setup.py:190
 msgid "## Basic Setup ##"
@@ -167,19 +167,19 @@ msgstr "## Temel Kurulum ##"
 
 #: pyload/Setup.py:193
 msgid "The following logindata is valid for CLI, GUI and webinterface."
-msgstr ""
+msgstr "Aşağıdaki giriş verileri geçerlidir şunlar için CLI, GUI ve webarayüzü."
 
 #: pyload/Setup.py:199 pyload/Setup.py:288 pyload/Setup.py:304
 msgid "Username"
-msgstr ""
+msgstr "Kullanıcı Adı"
 
 #: pyload/Setup.py:205
 msgid "External clients (GUI, CLI or other) need remote access to work over the network."
-msgstr ""
+msgstr "Harici kullanıcılar (GUI, CLI veya diğerleri) ağ üzerinde çalışmak için uzaktan erişim ihtiyacı duyar."
 
 #: pyload/Setup.py:206
 msgid "However, if you only want to use the webinterface you may disable it to save ram."
-msgstr ""
+msgstr "Şayet sadece webarayüzü kullanmak istiyorsan onu devredışı bırakıp bellekten tasarruf edebilirsin."
 
 #: pyload/Setup.py:207
 msgid "Enable remote access"
@@ -187,23 +187,23 @@ msgstr "Uzaktan Erişim"
 
 #: pyload/Setup.py:211
 msgid "Language"
-msgstr ""
+msgstr "Dil"
 
 #: pyload/Setup.py:213
 msgid "Download folder"
-msgstr ""
+msgstr "Yükleme Klasörü"
 
 #: pyload/Setup.py:214
 msgid "Max parallel downloads"
-msgstr ""
+msgstr "Max indirme sayısı"
 
 #: pyload/Setup.py:218
 msgid "Use Reconnect?"
-msgstr ""
+msgstr "Bağlantı sıfırlama?"
 
 #: pyload/Setup.py:221
 msgid "Reconnect script location"
-msgstr ""
+msgstr "Komut dosyası konumu yeniden bağlanın"
 
 #: pyload/Setup.py:226
 msgid "## Webinterface Setup ##"
@@ -215,51 +215,51 @@ msgstr "Web arayüzü etkin?"
 
 #: pyload/Setup.py:231
 msgid "Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally."
-msgstr ""
+msgstr "Adrese bak, eğer 127.0.0.1 veya localhost kullanıyorsanız, webinterface yerel olarak erişilebilir olacaktır."
 
 #: pyload/Setup.py:232
 msgid "Address"
-msgstr ""
+msgstr "Adres"
 
 #: pyload/Setup.py:233
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 #: pyload/Setup.py:235
 msgid "pyLoad offers several server backends, now following a short explanation."
-msgstr ""
+msgstr "pyLoad şimdi kısa bir açıklama sonrasında, birçok sunucu arka uçları sunmaktadır."
 
 #: pyload/Setup.py:236
 msgid "Default server, this server offers SSL and is a good alternative to builtin."
-msgstr ""
+msgstr "Varsayılan sunucu, bu sunucu SSL sunar ve yerleşik iyi bir alternatiftir."
 
 #: pyload/Setup.py:238
 msgid "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job."
-msgstr ""
+msgstr "Tarafından kullanılabilmek için apache, lighttpd, sana onları konfigüre etmek gerektirir; ki bu çok da kolay bir iş değildir."
 
 #: pyload/Setup.py:239
 msgid "Very fast alternative written in C, requires libev and linux knowledge."
-msgstr ""
+msgstr "C ile yazılmış çok hızlı bir alternatif libev ve linux bilgisi gerektirir."
 
 #: pyload/Setup.py:240
 msgid "Get it from here: https://github.com/jonashaag/bjoern, compile it"
-msgstr ""
+msgstr "Buradan edinin: https://github.com/jonashaag/bjoern, onu derleyin"
 
 #: pyload/Setup.py:241
 msgid "and copy bjoern.so to pyload/lib"
-msgstr ""
+msgstr "ve bjoern.so pyload/lib için kopyalama"
 
 #: pyload/Setup.py:245
 msgid "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"
-msgstr ""
+msgstr "Dikkat: Bazı farklı durumlarda yerleşik sunucu çalışmıyorsa, eğer webarayüzüyle ilgili problem farke edersen"
 
 #: pyload/Setup.py:246
 msgid "come back here and change the builtin server to the threaded one here."
-msgstr ""
+msgstr "Buraya gel ve burada yerleşik sunucu dişli değiştir."
 
 #: pyload/Setup.py:248
 msgid "Server"
-msgstr ""
+msgstr "Sunucu"
 
 #: pyload/Setup.py:253
 msgid "## SSL Setup ##"
@@ -267,11 +267,11 @@ msgstr "## SSL Kurulumu ##"
 
 #: pyload/Setup.py:255
 msgid "Execute these commands from pyLoad config folder to make ssl certificates:"
-msgstr ""
+msgstr "Bu komutlar ssl sertifikaları yapmak için pyLoad config klasöründen çalıştırın:"
 
 #: pyload/Setup.py:261
 msgid "If you're done and everything went fine, you can activate ssl now."
-msgstr ""
+msgstr "Eğer yaptıysan ve her şey iyi gittiyse, ssl'yi şimdi etkinleştirebilirsiniz."
 
 #: pyload/Setup.py:262
 msgid "Activate SSL?"
@@ -303,15 +303,15 @@ msgstr "Kullanıcılar"
 
 #: pyload/Setup.py:322
 msgid "Setting new configpath, current configuration will not be transferred!"
-msgstr ""
+msgstr "Yeni ayarlar yapılandırma yolu, eski ayarlar transfer edilmeyecek!"
 
 #: pyload/Setup.py:323
 msgid "Config path"
-msgstr ""
+msgstr "Yapılandırma yolu"
 
 #: pyload/Setup.py:331
 msgid "Config path changed, setup will now close, please restart to go on."
-msgstr ""
+msgstr "Yapılandırma yolu değişti, kurulum şimdi kapanacak, devam etmek için yeniden başlatın."
 
 #: pyload/Setup.py:332
 msgid "Press Enter to exit."
@@ -336,7 +336,7 @@ msgstr "Şifre: "
 
 #: pyload/Setup.py:377
 msgid "Password too short. Use at least 4 symbols."
-msgstr ""
+msgstr "Şifre çok kısa. En az 4 sembol kullanın."
 
 #: pyload/Setup.py:380
 msgid "Password (again): "

@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-10-13 12:26-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Serbian (Cyrillic)\n"
 "Language: sr_SP\n"
@@ -14,31 +14,31 @@ msgstr "Project-Id-Version: pyload\n"
 
 #: pyload/Setup.py:72
 msgid "Would you like to configure pyLoad via Webinterface?"
-msgstr ""
+msgstr "Желите ли да подесите pyLoad преко веб интерфејса?"
 
 #: pyload/Setup.py:73
 msgid "You need a Browser and a connection to this PC for it."
-msgstr ""
+msgstr "За то вам је потребан веб прегледач и веза с овим рачунаром."
 
 #: pyload/Setup.py:74
 msgid "Url would be: http://hostname:8000/"
-msgstr ""
+msgstr "URL адреса: http://hostname:8000/"
 
 #: pyload/Setup.py:75
 msgid "Start initial webinterface for configuration?"
-msgstr ""
+msgstr "Започети веб интерфејс ради подешавања?"
 
 #: pyload/Setup.py:86
 msgid "Welcome to the pyLoad Configuration Assistent."
-msgstr "Добродошли у асистенту конфигурисања pyLoad-а."
+msgstr "Добро дошли код помоћника за подешавање pyLoad-а."
 
 #: pyload/Setup.py:87
 msgid "It will check your system and make a basic setup in order to run pyLoad."
-msgstr "Провериће систем и урадиће класично подешавање тако да можете да покренете pyLoad."
+msgstr "Он ће проверити систем и наместити основне поставке тако да можете да покренете pyLoad."
 
 #: pyload/Setup.py:89
 msgid "The value in brackets [] always is the default value,"
-msgstr "Вредност између заграде [] је стандардна вредност,"
+msgstr "Вредност у угластим заградама је подразумевана."
 
 #: pyload/Setup.py:90
 msgid "in case you don't want to change it or you are unsure what to choose, just hit enter."
@@ -50,7 +50,7 @@ msgstr "Знајте: можете поново да покренете овај
 
 #: pyload/Setup.py:93
 msgid "If you have any problems with this assistent hit CTRL+C,"
-msgstr ""
+msgstr "Ако имате проблема с овим помоћником, притисните Ctrl+C,"
 
 #: pyload/Setup.py:94
 msgid "to abort and don't let him start with pyLoadCore automatically anymore."
@@ -62,7 +62,7 @@ msgstr "Када сте спремни да проверите систем, с�
 
 #: pyload/Setup.py:103
 msgid "Features missing: "
-msgstr ""
+msgstr "Могућности које недостају: "
 
 #: pyload/Setup.py:107
 msgid "no py-crypto available"
@@ -74,7 +74,7 @@ msgstr "То Вам треба ако желите да дешифрујете �
 
 #: pyload/Setup.py:112
 msgid "no SSL available"
-msgstr "ССЛ није доступан"
+msgstr "SSL није доступан"
 
 #: pyload/Setup.py:113
 msgid "This is needed if you want to establish a secure connection to core or webinterface."
@@ -82,7 +82,7 @@ msgstr "Потребно ако желите да урадите сигурно�
 
 #: pyload/Setup.py:114
 msgid "If you only want to access locally to pyLoad ssl is not useful."
-msgstr ""
+msgstr "Ако само желите да приступите pyLoad-у локално, SSL вам није од користи."
 
 #: pyload/Setup.py:118
 msgid "no Captcha Recognition available"
@@ -94,36 +94,36 @@ msgstr "Потребно за неке хостере и као бесплата
 
 #: pyload/Setup.py:123
 msgid "no JavaScript engine found"
-msgstr "нема JavaScript мотор"
+msgstr "механизам JavaScript-а није пронађен"
 
 #: pyload/Setup.py:124
 msgid "You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino"
-msgstr "То Вам треба за неке Click'N'Load везе. Инсталирати Spidermonkey, ossp-js, pyv8 или rhino"
+msgstr "То вам треба за неке Click'N'Load везе. Инсталирајте SpiderMonkey, OSSP js, pyv8 или Rhino."
 
 #: pyload/Setup.py:126
 msgid "You can abort the setup now and fix some dependencies if you want."
-msgstr ""
+msgstr "Можете одмах да прекинете подешавање и исправите зависне елементе, ако желите."
 
 #: pyload/Setup.py:128
 msgid "Continue with setup?"
-msgstr "Наставити?"
+msgstr "Наставити са подешавањем?"
 
 #: pyload/Setup.py:134
 #, python-format
 msgid "Do you want to change the config path? Current is %s"
-msgstr "Да ли да се промени путања подешавања? Актуелно је %s"
+msgstr "Желите ли да промените путању за подешавање? Тренутна путања је %s"
 
 #: pyload/Setup.py:136
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
-msgstr ""
+msgstr "Ако користите pyLoad на серверу или на унутрашњем флешу, размислите да је промените."
 
 #: pyload/Setup.py:137
 msgid "Change config path?"
-msgstr "Промени путању конфигурације?"
+msgstr "Променити путању за подешавање?"
 
 #: pyload/Setup.py:143
 msgid "Do you want to configure login data and basic settings?"
-msgstr "Да ли да се конфигурише пријава и осносне подешавања?"
+msgstr "Желите ли да наместите податке за пријаву и основне поставке?"
 
 #: pyload/Setup.py:144
 msgid "This is recommend for first run."
@@ -135,11 +135,11 @@ msgstr "Уради осносно подешавање?"
 
 #: pyload/Setup.py:152
 msgid "Do you want to configure ssl?"
-msgstr "Да ли да се конфигурише ССЛ?"
+msgstr "Желите ли да подесите SSL?"
 
 #: pyload/Setup.py:153
 msgid "Configure ssl?"
-msgstr "Конфигуриши ССЛ?"
+msgstr "Подесити SSL?"
 
 #: pyload/Setup.py:159
 msgid "Do you want to configure webinterface?"
@@ -147,7 +147,7 @@ msgstr "Да се конфигурише веб интерфејс?"
 
 #: pyload/Setup.py:160
 msgid "Configure webinterface?"
-msgstr "Конфигуриши веб интерфејс?"
+msgstr "Подесити веб интерфејс?"
 
 #: pyload/Setup.py:165
 msgid "Setup finished successfully."
@@ -155,11 +155,11 @@ msgstr "Подешавање је успешно завршено."
 
 #: pyload/Setup.py:166
 msgid "Hit enter to exit and restart pyLoad"
-msgstr "Стиснути 'enter' за излаз и поновно покретање"
+msgstr "Притисните Enter да изађете и поново покренете pyLoad"
 
 #: pyload/Setup.py:173
 msgid "Webinterface running for setup."
-msgstr ""
+msgstr "Веб интерфејс је покренут ради подешавања."
 
 #: pyload/Setup.py:190
 msgid "## Basic Setup ##"
@@ -167,43 +167,43 @@ msgstr "## Основно подешавање ##"
 
 #: pyload/Setup.py:193
 msgid "The following logindata is valid for CLI, GUI and webinterface."
-msgstr "Ови податци пријављивања су добри за CLI, GUI и веб интерфејс."
+msgstr "Следећи подаци за пријаву важе за CLI, GUI и веб интерфејс."
 
 #: pyload/Setup.py:199 pyload/Setup.py:288 pyload/Setup.py:304
 msgid "Username"
-msgstr ""
+msgstr "Корисничко име"
 
 #: pyload/Setup.py:205
 msgid "External clients (GUI, CLI or other) need remote access to work over the network."
-msgstr ""
+msgstr "Спољним клијентима (GUI, CLI и др.) потребан је удаљени приступ како би радили преко мреже."
 
 #: pyload/Setup.py:206
 msgid "However, if you only want to use the webinterface you may disable it to save ram."
-msgstr ""
+msgstr "Међутим, ако желите да користите само веб интерфејс, можете га онемогућити како бисте сачували радну меморију."
 
 #: pyload/Setup.py:207
 msgid "Enable remote access"
-msgstr ""
+msgstr "Омогући удаљени приступ"
 
 #: pyload/Setup.py:211
 msgid "Language"
-msgstr ""
+msgstr "Језик"
 
 #: pyload/Setup.py:213
 msgid "Download folder"
-msgstr ""
+msgstr "Фасцикла за преузимање"
 
 #: pyload/Setup.py:214
 msgid "Max parallel downloads"
-msgstr "Макс истовремених преузимања"
+msgstr "Максималан број истовремених преузимања"
 
 #: pyload/Setup.py:218
 msgid "Use Reconnect?"
-msgstr "Употреби поновно привезивање?"
+msgstr "Користити поновно повезивање?"
 
 #: pyload/Setup.py:221
 msgid "Reconnect script location"
-msgstr "Смешта скрипта поновног привезивања"
+msgstr "Локација скрипта за поновно повезивање"
 
 #: pyload/Setup.py:226
 msgid "## Webinterface Setup ##"
@@ -211,19 +211,19 @@ msgstr "## Подешавање веб интерфејса ##"
 
 #: pyload/Setup.py:229
 msgid "Activate webinterface?"
-msgstr "Активирај веб интерфејс?"
+msgstr "Активирати веб интерфејс?"
 
 #: pyload/Setup.py:231
 msgid "Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally."
-msgstr "Адреса слуања, ако употребљавате 127.0.0.1 или localhost, веб интерфејст ће бити приступан само локално."
+msgstr "Адреса за пријем. Ако користите 127.0.0.1 или localhost, веб интерфејс ће бити доступан само локално."
 
 #: pyload/Setup.py:232
 msgid "Address"
-msgstr ""
+msgstr "Адреса"
 
 #: pyload/Setup.py:233
 msgid "Port"
-msgstr ""
+msgstr "Порт"
 
 #: pyload/Setup.py:235
 msgid "pyLoad offers several server backends, now following a short explanation."
@@ -231,7 +231,7 @@ msgstr "pyLoad пружа неколико системске подршке с�
 
 #: pyload/Setup.py:236
 msgid "Default server, this server offers SSL and is a good alternative to builtin."
-msgstr ""
+msgstr "Подразумевани сервер пружа SSL и добра је алтернатива уграђеном серверу."
 
 #: pyload/Setup.py:238
 msgid "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job."
@@ -239,7 +239,7 @@ msgstr "Може да га користи apache, lighttpd, потребно ј�
 
 #: pyload/Setup.py:239
 msgid "Very fast alternative written in C, requires libev and linux knowledge."
-msgstr ""
+msgstr "Веома брза алтернатива писана у језику C (захтева познавање libev-а и Linux-а)"
 
 #: pyload/Setup.py:240
 msgid "Get it from here: https://github.com/jonashaag/bjoern, compile it"
@@ -247,7 +247,7 @@ msgstr "Узети га овде: https://github.com/jonashaag/bjoern компи
 
 #: pyload/Setup.py:241
 msgid "and copy bjoern.so to pyload/lib"
-msgstr ""
+msgstr "и копирајте bjoern.so у pyload/lib"
 
 #: pyload/Setup.py:245
 msgid "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"
@@ -259,11 +259,11 @@ msgstr "вратите се овде и промените уграђен сер
 
 #: pyload/Setup.py:248
 msgid "Server"
-msgstr ""
+msgstr "Сервер"
 
 #: pyload/Setup.py:253
 msgid "## SSL Setup ##"
-msgstr "## ССЛ подешавање ##"
+msgstr "## Подешавање SSL-а ##"
 
 #: pyload/Setup.py:255
 msgid "Execute these commands from pyLoad config folder to make ssl certificates:"
@@ -275,27 +275,27 @@ msgstr "Ако сте завршили ис све је у реду, может�
 
 #: pyload/Setup.py:262
 msgid "Activate SSL?"
-msgstr "Активирај ССЛ?"
+msgstr "Активирати SSL?"
 
 #: pyload/Setup.py:278
 msgid "Select action"
-msgstr "Одабрати акцију"
+msgstr "Изаберите радњу"
 
 #: pyload/Setup.py:279
 msgid "1 - Create/Edit user"
-msgstr "1 - креирај/уреди корисник"
+msgstr "1 – креирајте/уредите корисника"
 
 #: pyload/Setup.py:280
 msgid "2 - List users"
-msgstr "2 - излистај кориснике"
+msgstr "2 – излистајте кориснике"
 
 #: pyload/Setup.py:281
 msgid "3 - Remove user"
-msgstr "3 - уклони корисника"
+msgstr "3 – уклоните корисника"
 
 #: pyload/Setup.py:282
 msgid "4 - Quit"
-msgstr "4 - излаз"
+msgstr "4 – изађите"
 
 #: pyload/Setup.py:294
 msgid "Users"
@@ -303,74 +303,74 @@ msgstr "Корисници"
 
 #: pyload/Setup.py:322
 msgid "Setting new configpath, current configuration will not be transferred!"
-msgstr ""
+msgstr "Постављање нове путање за подешавање; тренутна конфигурација неће бити пренета."
 
 #: pyload/Setup.py:323
 msgid "Config path"
-msgstr ""
+msgstr "Путања за подешавање"
 
 #: pyload/Setup.py:331
 msgid "Config path changed, setup will now close, please restart to go on."
-msgstr ""
+msgstr "Путања за подешавање је промењена. Крените поново из почетка."
 
 #: pyload/Setup.py:332
 msgid "Press Enter to exit."
-msgstr "Ентер за излаз."
+msgstr "Притисните Enter да изађете."
 
 #: pyload/Setup.py:336
 #, python-format
 msgid "Setting config path failed: %s"
-msgstr "Подешавање путање неуспешно: %s"
+msgstr "Не могу да поставим путању за подешавање: %s"
 
 #: pyload/Setup.py:347
 msgid "y"
-msgstr ""
+msgstr "д"
 
 #: pyload/Setup.py:349
 msgid "n"
-msgstr ""
+msgstr "н"
 
 #: pyload/Setup.py:373
 msgid "Password: "
-msgstr "Лозинка:"
+msgstr "Лозинка: "
 
 #: pyload/Setup.py:377
 msgid "Password too short. Use at least 4 symbols."
-msgstr ""
+msgstr "Лозинка је прекратка. Унесите бар четири симбола."
 
 #: pyload/Setup.py:380
 msgid "Password (again): "
-msgstr "Лозинка (опет):"
+msgstr "Потврда лозинке: "
 
 #: pyload/Setup.py:386
 msgid "Passwords did not match."
-msgstr "Лозинке нису исте."
+msgstr "Лозинке се не поклапају."
 
 #: pyload/Setup.py:397
 msgid "yes"
-msgstr ""
+msgstr "да"
 
 #: pyload/Setup.py:397
 msgid "true"
-msgstr ""
+msgstr "тачно"
 
 #: pyload/Setup.py:397
 msgid "t"
-msgstr ""
+msgstr "т"
 
 #: pyload/Setup.py:400
 msgid "no"
-msgstr ""
+msgstr "не"
 
 #: pyload/Setup.py:400
 msgid "false"
-msgstr ""
+msgstr "нетачно"
 
 #: pyload/Setup.py:400
 msgid "f"
-msgstr ""
+msgstr "н"
 
 #: pyload/Setup.py:403 pyload/Setup.py:413
 msgid "Invalid Input"
-msgstr ""
+msgstr "Неисправан унос"
 

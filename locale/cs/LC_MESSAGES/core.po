@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-08-07 09:03-0400\n"
+"PO-Revision-Date: 2013-10-13 12:25-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -281,11 +281,11 @@ msgstr "Stáhnout"
 
 #: pyload/config/default.py:93
 msgid "Max Parallel Downloads"
-msgstr ""
+msgstr "Maximum souběžných stahování"
 
 #: pyload/config/default.py:94
 msgid "Limit Download Speed"
-msgstr ""
+msgstr "Omezení rychlosti stahování"
 
 #: pyload/config/default.py:95
 msgid "Download interface to bind (ip or Name)"
@@ -293,27 +293,27 @@ msgstr ""
 
 #: pyload/config/default.py:96
 msgid "Skip already existing files"
-msgstr ""
+msgstr "Přeskočit již existující soubory"
 
 #: pyload/config/default.py:97
 msgid "Max Download Speed in kb/s"
-msgstr ""
+msgstr "Maximální rychlost stahování v kb/s"
 
 #: pyload/config/default.py:98
 msgid "Allow IPv6"
-msgstr ""
+msgstr "Podpora IPv6"
 
 #: pyload/config/default.py:99
 msgid "Max connections for one download"
-msgstr ""
+msgstr "Maximální počet spojení na jedno stahování"
 
 #: pyload/config/default.py:100
 msgid "Restart failed downloads on startup"
-msgstr ""
+msgstr "Restartovat selhaná stahování po startu"
 
 #: pyload/config/default.py:103
 msgid "Download Time"
-msgstr ""
+msgstr "Čas stahování"
 
 #: pyload/network/HTTPDownload.py:249
 #, python-format
@@ -341,11 +341,11 @@ msgstr ""
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Captcha request"
-msgstr ""
+msgstr "Oveřovací kód"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Please solve the captcha."
-msgstr ""
+msgstr "Prosím vyplňte ověřovací kód."
 
 #: pyload/remote/RemoteManager.py:35
 #, python-format
@@ -364,15 +364,15 @@ msgstr "Spousteni backendu %(name)s selhalo | %(error)s"
 
 #: pyload/FileManager.py:53
 msgid "none"
-msgstr ""
+msgstr "žádný"
 
 #: pyload/FileManager.py:53
 msgid "offline"
-msgstr ""
+msgstr "offline"
 
 #: pyload/FileManager.py:53
 msgid "online"
-msgstr ""
+msgstr "online"
 
 #: pyload/FileManager.py:53
 msgid "queued"
@@ -438,7 +438,7 @@ msgstr "Balicek dokoncen: %s"
 #: pyload/Api.py:152
 #, python-format
 msgid "User '%s' tries to log in"
-msgstr ""
+msgstr "Uživatel '%s' se snažil přihlásit"
 
 #: pyload/Core.py:195
 msgid "Received Quit signal"
@@ -475,7 +475,7 @@ msgstr "Všechny odkazy odstraněny"
 #: pyload/Core.py:403
 #, python-format
 msgid "Download time: %s"
-msgstr ""
+msgstr "Čas stahování: %s"
 
 #: pyload/Core.py:418
 #, python-format
@@ -488,7 +488,7 @@ msgstr "Aktivuji Ucty..."
 
 #: pyload/Core.py:443
 msgid "Restarting failed downloads..."
-msgstr ""
+msgstr "Restartuji neúspěšná stahování..."
 
 #: pyload/Core.py:451
 msgid "pyLoad is up and running"
@@ -512,24 +512,24 @@ msgstr "chyba pri vypinani"
 
 #: pyload/Core.py:661
 msgid "killed pyLoad from terminal"
-msgstr ""
+msgstr "pyLoad byl zastaven z terminálu"
 
 #: pyload/database/DatabaseBackend.py:167
 msgid "Database was deleted due to incompatible version."
-msgstr ""
+msgstr "Databáze byla odstraněna z důvodu nekompatibilní verze."
 
 #: pyload/threads/DecrypterThread.py:50
 msgid "Decrypting failed"
-msgstr ""
+msgstr "Rozšifrování selhalo"
 
 #: pyload/threads/DecrypterThread.py:73
 #, python-format
 msgid "Decrypted %(count)d links into package %(name)s"
-msgstr ""
+msgstr "Rozšifrováno %(count)d odkazů a vloženo do balíčku %(name)s"
 
 #: pyload/threads/DecrypterThread.py:80
 msgid "No links decrypted"
-msgstr ""
+msgstr "Nerozšifrován žádný odkaz"
 
 #: pyload/threads/InfoThread.py:147
 #, python-format
@@ -613,7 +613,7 @@ msgstr "Stahovani preskoceno: %(name)s v dusledku %(plugin)s"
 
 #: pyload/threads/DownloadThread.py:188
 msgid "Internal Server Error"
-msgstr ""
+msgstr "Vnitřní chyba serveru"
 
 #: pyload/threads/AddonThread.py:55
 msgid "An Error occurred"

@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-10-13 12:25-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -18,15 +18,15 @@ msgstr "Czy chcesz skonfigurować pyLoad do współpracy z interfejsem WWW?"
 
 #: pyload/Setup.py:73
 msgid "You need a Browser and a connection to this PC for it."
-msgstr ""
+msgstr "Potrzebujesz do tego przeglądarki i połączenia z komputerem."
 
 #: pyload/Setup.py:74
 msgid "Url would be: http://hostname:8000/"
-msgstr ""
+msgstr "Adres URL musi być w postaci: http://hostname:8000 /"
 
 #: pyload/Setup.py:75
 msgid "Start initial webinterface for configuration?"
-msgstr ""
+msgstr "Rozpocząć konfigurację?"
 
 #: pyload/Setup.py:86
 msgid "Welcome to the pyLoad Configuration Assistent."
@@ -50,7 +50,7 @@ msgstr "Nie zapomnij: kiedy uruchamiasz pyLoadCore zawsze możesz ponownie wybra
 
 #: pyload/Setup.py:93
 msgid "If you have any problems with this assistent hit CTRL+C,"
-msgstr ""
+msgstr "Jeśli masz jakiekolwiek problemy z asystentem wciśnij Ctlr-C,"
 
 #: pyload/Setup.py:94
 msgid "to abort and don't let him start with pyLoadCore automatically anymore."
@@ -62,7 +62,7 @@ msgstr "Naciśnij enter jak będziesz gotowy na sprawdzenie systemu."
 
 #: pyload/Setup.py:103
 msgid "Features missing: "
-msgstr ""
+msgstr "Niedostępne funkcje: "
 
 #: pyload/Setup.py:107
 msgid "no py-crypto available"
@@ -82,7 +82,7 @@ msgstr "Jest to potrzebne jeśli chcesz nawiązywać szyfrowane połączenia z C
 
 #: pyload/Setup.py:114
 msgid "If you only want to access locally to pyLoad ssl is not useful."
-msgstr ""
+msgstr "Jeśli chcesz mieć dostęp tylko lokalny - SSL nie jest użyteczne."
 
 #: pyload/Setup.py:118
 msgid "no Captcha Recognition available"
@@ -102,7 +102,7 @@ msgstr "Do dodania kilku linków jednocześnie będziesz potrzebował Click'N'Lo
 
 #: pyload/Setup.py:126
 msgid "You can abort the setup now and fix some dependencies if you want."
-msgstr ""
+msgstr "Możesz przerwać instalację i naprawić niektóre zależności."
 
 #: pyload/Setup.py:128
 msgid "Continue with setup?"
@@ -115,7 +115,7 @@ msgstr "Czy chcesz zmienić ścieżkę do plików konfiguracji? Obecnie to %s"
 
 #: pyload/Setup.py:136
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
-msgstr ""
+msgstr "Jeśli używasz pyLoad'a na serwerze lub partycji home która znajduje się na pamięci flash - dobrym pomysłem może być zmiana tego parametru."
 
 #: pyload/Setup.py:137
 msgid "Change config path?"
@@ -159,7 +159,7 @@ msgstr "Naciśnij enter aby wyjść i ponownie uruchom pyLoad"
 
 #: pyload/Setup.py:173
 msgid "Webinterface running for setup."
-msgstr ""
+msgstr "Została uruchomiona instalacja."
 
 #: pyload/Setup.py:190
 msgid "## Basic Setup ##"
@@ -191,7 +191,7 @@ msgstr "Język"
 
 #: pyload/Setup.py:213
 msgid "Download folder"
-msgstr ""
+msgstr "Folder na pobierane pliki"
 
 #: pyload/Setup.py:214
 msgid "Max parallel downloads"
@@ -231,7 +231,7 @@ msgstr "pyLoad oferuje kilka typów serwerów backends, a teraz po krótce wyja�
 
 #: pyload/Setup.py:236
 msgid "Default server, this server offers SSL and is a good alternative to builtin."
-msgstr ""
+msgstr "Domyślny serwer, ten serwer oferuje SSL i jest dobrą alternatywą dla wbudowanego."
 
 #: pyload/Setup.py:238
 msgid "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job."
@@ -239,7 +239,7 @@ msgstr "Może być używany przez apache, lighttpd, wymaga od Ciebie ich konfigu
 
 #: pyload/Setup.py:239
 msgid "Very fast alternative written in C, requires libev and linux knowledge."
-msgstr ""
+msgstr "Bardzo szybka alternatywa, napisany w C, wymaga libev i znajomości Linuxa."
 
 #: pyload/Setup.py:240
 msgid "Get it from here: https://github.com/jonashaag/bjoern, compile it"
@@ -247,7 +247,7 @@ msgstr "Pobierz go stąd: https://github.com/jonashaag/bjoern, i skompiluj go"
 
 #: pyload/Setup.py:241
 msgid "and copy bjoern.so to pyload/lib"
-msgstr ""
+msgstr "i skopiować bjoern.so do pyload/lib"
 
 #: pyload/Setup.py:245
 msgid "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"
@@ -303,15 +303,15 @@ msgstr "Użytkownicy"
 
 #: pyload/Setup.py:322
 msgid "Setting new configpath, current configuration will not be transferred!"
-msgstr ""
+msgstr "Ustawiam nową ścieżkę do plików konfiguracji, obecna konfiguracja nie zostanie tam przeniesiona!"
 
 #: pyload/Setup.py:323
 msgid "Config path"
-msgstr ""
+msgstr "Ścieżka konfiguracji"
 
 #: pyload/Setup.py:331
 msgid "Config path changed, setup will now close, please restart to go on."
-msgstr ""
+msgstr "Ścieżka do plików konfiguracji została zmieniona, Instalator zostanie teraz zamknięty, uruchom go ponownie, aby przejść dalej."
 
 #: pyload/Setup.py:332
 msgid "Press Enter to exit."
@@ -328,7 +328,7 @@ msgstr "t"
 
 #: pyload/Setup.py:349
 msgid "n"
-msgstr ""
+msgstr "n"
 
 #: pyload/Setup.py:373
 msgid "Password: "
@@ -336,7 +336,7 @@ msgstr "Hasło:"
 
 #: pyload/Setup.py:377
 msgid "Password too short. Use at least 4 symbols."
-msgstr ""
+msgstr "Hasło za krótkie. Użyj przynajmniej 4 znaków."
 
 #: pyload/Setup.py:380
 msgid "Password (again): "
@@ -356,7 +356,7 @@ msgstr "prawda"
 
 #: pyload/Setup.py:397
 msgid "t"
-msgstr ""
+msgstr "t"
 
 #: pyload/Setup.py:400
 msgid "no"
@@ -368,7 +368,7 @@ msgstr "fałsz"
 
 #: pyload/Setup.py:400
 msgid "f"
-msgstr ""
+msgstr "f"
 
 #: pyload/Setup.py:403 pyload/Setup.py:413
 msgid "Invalid Input"

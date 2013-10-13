@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-10-13 12:26-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Serbian (Cyrillic)\n"
 "Language: sr_SP\n"
@@ -15,63 +15,63 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/AddonManager.py:62
 #, python-format
 msgid "Error when executing %s"
-msgstr ""
+msgstr "Грешка при извршавању %s"
 
 #: pyload/AddonManager.py:93
 #, python-format
 msgid "Failed activating %(name)s"
-msgstr "Грешка активирања %(name)s"
+msgstr "Не могу да активирам %(name)s"
 
 #: pyload/AddonManager.py:96
 #, python-format
 msgid "Activated addons: %s"
-msgstr ""
+msgstr "Активирани прикључци: %s"
 
 #: pyload/AddonManager.py:97
 #, python-format
 msgid "Deactivated addons: %s"
-msgstr ""
+msgstr "Деактивирани прикључци: %s"
 
 #: pyload/AddonManager.py:153
 msgid "Activating Plugins..."
-msgstr "Активација додатка..."
+msgstr "Активирам прикључке…"
 
 #: pyload/AddonManager.py:162
 msgid "Deactivating Plugins..."
-msgstr ""
+msgstr "Деактивирам прикључке…"
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
-msgstr "ССЛ цертификат није нађен."
+msgstr "SSL сертификати нису пронађени."
 
 #: pyload/web/ServerThread.py:53
 msgid "WebUI built is not available"
-msgstr ""
+msgstr "Веб интерфејс није доступан"
 
 #: pyload/web/ServerThread.py:55
 msgid "Running webUI in development mode"
-msgstr ""
+msgstr "Покретање веб интерфејса у развојном режиму"
 
 #: pyload/web/ServerThread.py:73
 msgid "Failed starting webserver: "
-msgstr ""
+msgstr "Не могу да покренем веб сервер: "
 
 #: pyload/web/ServerThread.py:107
 msgid "Failed importing webserver: "
-msgstr ""
+msgstr "Не могу да увезем веб сервер: "
 
 #: pyload/web/ServerThread.py:125
 msgid "This server offers no SSL, please consider using threaded instead"
-msgstr "Сервер нема ССЛ, употребите навојен у место"
+msgstr "Овај сервер не подржава SSL. Уместо њега користите угнеждени."
 
 #: pyload/web/ServerThread.py:139
 #, python-format
 msgid "Starting %(name)s webserver: %(host)s:%(port)d"
-msgstr ""
+msgstr "Покрећем веб сервер %(name)s: %(host)s:%(port)d"
 
 #: pyload/config/default.py:14
 msgid "Remote"
-msgstr ""
+msgstr "Удаљени приступ"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -79,7 +79,7 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Description"
-msgstr ""
+msgstr "Опис"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -87,265 +87,265 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Long description"
-msgstr ""
+msgstr "Дужи опис"
 
 #: pyload/config/default.py:16 pyload/config/default.py:56
 #: pyload/config/default.py:63
 msgid "Activated"
-msgstr "Aktiviran"
+msgstr "Активирано"
 
 #: pyload/config/default.py:17 pyload/config/default.py:69
 #: pyload/config/default.py:80
 msgid "Port"
-msgstr ""
+msgstr "Порт"
 
 #: pyload/config/default.py:18 pyload/config/default.py:77
 msgid "Address"
-msgstr ""
+msgstr "Адреса"
 
 #: pyload/config/default.py:21
 msgid "Log"
-msgstr ""
+msgstr "Евиденција"
 
 #: pyload/config/default.py:23
 msgid "Size in kb"
-msgstr ""
+msgstr "Величина у килобајтима"
 
 #: pyload/config/default.py:24
 msgid "Folder"
-msgstr ""
+msgstr "Фасцикла"
 
 #: pyload/config/default.py:25
 msgid "File Log"
-msgstr ""
+msgstr "Датотека евиденције"
 
 #: pyload/config/default.py:26
 msgid "Count"
-msgstr ""
+msgstr "Број"
 
 #: pyload/config/default.py:27
 msgid "Log Rotate"
-msgstr ""
+msgstr "Ротирање евиденције"
 
 #: pyload/config/default.py:30
 msgid "Permissions"
-msgstr ""
+msgstr "Дозволе"
 
 #: pyload/config/default.py:32
 msgid "Groupname"
-msgstr ""
+msgstr "Име групе"
 
 #: pyload/config/default.py:33
 msgid "Change Group and User of Downloads"
-msgstr ""
+msgstr "Промените групу и кориснике преузимања"
 
 #: pyload/config/default.py:34
 msgid "Change file mode of downloads"
-msgstr ""
+msgstr "Промените режим преузимања"
 
 #: pyload/config/default.py:35 pyload/config/default.py:75
 msgid "Username"
-msgstr ""
+msgstr "Корисничко име"
 
 #: pyload/config/default.py:36
 msgid "Filemode for Downloads"
-msgstr ""
+msgstr "Режим преузимања"
 
 #: pyload/config/default.py:37
 msgid "Change group of running process"
-msgstr ""
+msgstr "Промените групу покренутих процеса"
 
 #: pyload/config/default.py:38
 msgid "Folder Permission mode"
-msgstr ""
+msgstr "Дозволе за фасцикле"
 
 #: pyload/config/default.py:39
 msgid "Change user of running process"
-msgstr ""
+msgstr "Промени корисника покренутог процеса"
 
 #: pyload/config/default.py:42
 msgid "General"
-msgstr ""
+msgstr "Опште"
 
 #: pyload/config/default.py:44
 msgid "Language"
-msgstr ""
+msgstr "Језик"
 
 #: pyload/config/default.py:45
 msgid "Download Folder"
-msgstr ""
+msgstr "Фасцикла за преузимања"
 
 #: pyload/config/default.py:46
 msgid "Use Checksum"
-msgstr ""
+msgstr "Контролни збир"
 
 #: pyload/config/default.py:47
 msgid "Create folder for each package"
-msgstr ""
+msgstr "Креирај фасциклу за сваки пакет"
 
 #: pyload/config/default.py:48
 msgid "Debug Mode"
-msgstr ""
+msgstr "Отклањање грешака"
 
 #: pyload/config/default.py:49
 msgid "Min Free Space (MB)"
-msgstr ""
+msgstr "Минимално слободног простора (MB)"
 
 #: pyload/config/default.py:50
 msgid "CPU Priority"
-msgstr ""
+msgstr "Приоритет процесора"
 
 #: pyload/config/default.py:53
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #: pyload/config/default.py:55
 msgid "SSL Certificate"
-msgstr ""
+msgstr "SSL сертификат"
 
 #: pyload/config/default.py:57
 msgid "SSL Key"
-msgstr ""
+msgstr "SSL кључ"
 
 #: pyload/config/default.py:60
 msgid "Webinterface"
-msgstr ""
+msgstr "Веб интерфејс"
 
 #: pyload/config/default.py:62
 msgid "Template"
-msgstr ""
+msgstr "Шаблон"
 
 #: pyload/config/default.py:64
 msgid "Path Prefix"
-msgstr ""
+msgstr "Префикс путање"
 
 #: pyload/config/default.py:65
 msgid "Server"
-msgstr ""
+msgstr "Сервер"
 
 #: pyload/config/default.py:66
 msgid "Favor specific server"
-msgstr ""
+msgstr "Жељени сервер"
 
 #: pyload/config/default.py:67
 msgid "IP"
-msgstr ""
+msgstr "IP адреса"
 
 #: pyload/config/default.py:68
 msgid "Use HTTPS"
-msgstr ""
+msgstr "HTTPS"
 
 #: pyload/config/default.py:70
 msgid "Development mode"
-msgstr ""
+msgstr "Развојни режим"
 
 #: pyload/config/default.py:73
 msgid "Proxy"
-msgstr ""
+msgstr "Посреднички сервер"
 
 #: pyload/config/default.py:76
 msgid "Use Proxy"
-msgstr ""
+msgstr "Посреднички сервер"
 
 #: pyload/config/default.py:78
 msgid "Password"
-msgstr ""
+msgstr "Лозинка"
 
 #: pyload/config/default.py:79
 msgid "Protocol"
-msgstr ""
+msgstr "Протокол"
 
 #: pyload/config/default.py:83
 msgid "Reconnect"
-msgstr ""
+msgstr "Поновно повезивање"
 
 #: pyload/config/default.py:85 pyload/config/default.py:106
 msgid "End"
-msgstr ""
+msgstr "Заврши"
 
 #: pyload/config/default.py:86
 msgid "Use Reconnect"
-msgstr ""
+msgstr "Повежи се поново"
 
 #: pyload/config/default.py:87
 msgid "Method"
-msgstr ""
+msgstr "Метод"
 
 #: pyload/config/default.py:88 pyload/config/default.py:105
 msgid "Start"
-msgstr ""
+msgstr "Покрени"
 
 #: pyload/config/default.py:91
 msgid "Download"
-msgstr ""
+msgstr "Преузми"
 
 #: pyload/config/default.py:93
 msgid "Max Parallel Downloads"
-msgstr ""
+msgstr "Максималан број истовремених преузимања"
 
 #: pyload/config/default.py:94
 msgid "Limit Download Speed"
-msgstr ""
+msgstr "Ограничи брзину преузимања"
 
 #: pyload/config/default.py:95
 msgid "Download interface to bind (ip or Name)"
-msgstr ""
+msgstr "Интерфејс преузимања (IP адреса или име)"
 
 #: pyload/config/default.py:96
 msgid "Skip already existing files"
-msgstr ""
+msgstr "Прескочи постојеће датотеке"
 
 #: pyload/config/default.py:97
 msgid "Max Download Speed in kb/s"
-msgstr ""
+msgstr "Максимална брзина преузимања (kB/с)"
 
 #: pyload/config/default.py:98
 msgid "Allow IPv6"
-msgstr ""
+msgstr "IPv6"
 
 #: pyload/config/default.py:99
 msgid "Max connections for one download"
-msgstr ""
+msgstr "Максималан број веза за једно преузимање"
 
 #: pyload/config/default.py:100
 msgid "Restart failed downloads on startup"
-msgstr ""
+msgstr "Поново покрени неуспела преузимања при покретању програма"
 
 #: pyload/config/default.py:103
 msgid "Download Time"
-msgstr ""
+msgstr "Време преузимања"
 
 #: pyload/network/HTTPDownload.py:249
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
-msgstr ""
+msgstr "Одломци преузимања нису успели. Враћање на једну везу | %s"
 
 #: pyload/api/DownloadApi.py:44
 #, python-format
 msgid "Added package %(name)s as folder %(folder)s"
-msgstr ""
+msgstr "Додат је пакет %(name)s као фасцикла %(folder)s"
 
 #: pyload/api/DownloadApi.py:95
 #, python-format
 msgid "Added %d links to package"
-msgstr ""
+msgstr "Додато је %d веза у пакет"
 
 #: pyload/AccountManager.py:69
 #, python-format
 msgid "Unknown account plugin %s"
-msgstr ""
+msgstr "Непознат прикључак за налог %s"
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
-msgstr ""
+msgstr "Упит"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Captcha request"
-msgstr ""
+msgstr "Захтев потврдног кода"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Please solve the captcha."
-msgstr ""
+msgstr "Разрешите потврдни кôд."
 
 #: pyload/remote/RemoteManager.py:35
 #, python-format
@@ -355,16 +355,16 @@ msgstr "Грешка удаљеног фида: %s"
 #: pyload/remote/RemoteManager.py:80
 #, python-format
 msgid "Starting %(name)s: %(addr)s:%(port)s"
-msgstr "покретање %(name)s: %(addr)s:%(port)s"
+msgstr "Покрећем %(name)s: %(addr)s:%(port)s"
 
 #: pyload/remote/RemoteManager.py:82
 #, python-format
 msgid "Failed loading backend %(name)s | %(error)s"
-msgstr "Погрешно учитавање фида %(name)s | %(error)s"
+msgstr "Не могу да учитам позадинску компоненту %(name)s | %(error)s"
 
 #: pyload/FileManager.py:53
 msgid "none"
-msgstr ""
+msgstr "ништа"
 
 #: pyload/FileManager.py:53
 msgid "offline"
@@ -376,11 +376,11 @@ msgstr "на мрежи"
 
 #: pyload/FileManager.py:53
 msgid "queued"
-msgstr "у редоследу"
+msgstr "на чекању"
 
 #: pyload/FileManager.py:53
 msgid "paused"
-msgstr ""
+msgstr "паузирано"
 
 #: pyload/FileManager.py:54
 msgid "finished"
@@ -392,39 +392,39 @@ msgstr "прескочено"
 
 #: pyload/FileManager.py:54
 msgid "failed"
-msgstr "неуспешно"
+msgstr "неуспело"
 
 #: pyload/FileManager.py:54
 msgid "starting"
-msgstr "стартовање"
+msgstr "започињем"
 
 #: pyload/FileManager.py:55
 msgid "waiting"
-msgstr "чекање"
+msgstr "чекам"
 
 #: pyload/FileManager.py:55
 msgid "downloading"
-msgstr "преузимање"
+msgstr "преузимам"
 
 #: pyload/FileManager.py:55
 msgid "temp. offline"
-msgstr "прив. ван мреже"
+msgstr "привремено ван мреже"
 
 #: pyload/FileManager.py:55
 msgid "aborted"
-msgstr "поништено"
+msgstr "прекинуто"
 
 #: pyload/FileManager.py:56
 msgid "decrypting"
-msgstr "дешифровање"
+msgstr "дешифрујем"
 
 #: pyload/FileManager.py:56
 msgid "processing"
-msgstr "обрада"
+msgstr "обрађујем"
 
 #: pyload/FileManager.py:56
 msgid "custom"
-msgstr "прилагоди"
+msgstr "прилагођено"
 
 #: pyload/FileManager.py:56
 msgid "unknown"
@@ -433,16 +433,16 @@ msgstr "непознато"
 #: pyload/FileManager.py:426
 #, python-format
 msgid "Package finished: %s"
-msgstr "Пакет завршен: %s"
+msgstr "Пакет је завршен: %s"
 
 #: pyload/Api.py:152
 #, python-format
 msgid "User '%s' tries to log in"
-msgstr ""
+msgstr "Корисник „%s“ покушава да се пријави."
 
 #: pyload/Core.py:195
 msgid "Received Quit signal"
-msgstr "Примање синала излаза"
+msgstr "Примљен је сигнал за излазак"
 
 #: pyload/Core.py:323
 #, python-format
@@ -452,51 +452,51 @@ msgstr "pyLoad већ ради са бројем %s"
 #: pyload/Core.py:337
 #, python-format
 msgid "Failed changing group: %s"
-msgstr "Неуспешна промена групе: %s"
+msgstr "Не могу да променим групу: %s"
 
 #: pyload/Core.py:347
 #, python-format
 msgid "Failed changing user: %s"
-msgstr "Неуспешна промена корисника: %s"
+msgstr "Не могу да променим корисника: %s"
 
 #: pyload/Core.py:358
 msgid "Starting"
-msgstr "Стартовање"
+msgstr "Покрећем"
 
 #: pyload/Core.py:359
 #, python-format
 msgid "Using home directory: %s"
-msgstr "Употреба кућне фасцикле: %s"
+msgstr "Основна фасцикла: %s"
 
 #: pyload/Core.py:373
 msgid "All links removed"
-msgstr "Све везе уклоњене"
+msgstr "Све везе су уклоњене"
 
 #: pyload/Core.py:403
 #, python-format
 msgid "Download time: %s"
-msgstr ""
+msgstr "Време преузимања: %s"
 
 #: pyload/Core.py:418
 #, python-format
 msgid "Free space: %s"
-msgstr "Слободно: %s"
+msgstr "Слободно простора: %s"
 
 #: pyload/Core.py:438
 msgid "Activating Accounts..."
-msgstr "Активација налога..."
+msgstr "Активирам налоге…"
 
 #: pyload/Core.py:443
 msgid "Restarting failed downloads..."
-msgstr ""
+msgstr "Поново покрећем неуспела преузимања…"
 
 #: pyload/Core.py:451
 msgid "pyLoad is up and running"
-msgstr "pyLoad је подигнут и ради"
+msgstr "pyLoad је спреман за коришћење"
 
 #: pyload/Core.py:474
 msgid "restarting pyLoad"
-msgstr "рестартовање pyLoad-а"
+msgstr "поновно покретање pyLoad-а"
 
 #: pyload/Core.py:478
 msgid "pyLoad quits"
@@ -504,37 +504,37 @@ msgstr "pyLoad се затвара"
 
 #: pyload/Core.py:564
 msgid "shutting down..."
-msgstr "гашење..."
+msgstr "искључујем…"
 
 #: pyload/Core.py:579
 msgid "error while shutting down"
-msgstr "грешка при гашењу"
+msgstr "грешка при искључивању"
 
 #: pyload/Core.py:661
 msgid "killed pyLoad from terminal"
-msgstr ""
+msgstr "pyLoad је окончан из терминала"
 
 #: pyload/database/DatabaseBackend.py:167
 msgid "Database was deleted due to incompatible version."
-msgstr ""
+msgstr "База података је обрисана због некомпатибилне верзије."
 
 #: pyload/threads/DecrypterThread.py:50
 msgid "Decrypting failed"
-msgstr ""
+msgstr "Дешифровање није успело"
 
 #: pyload/threads/DecrypterThread.py:73
 #, python-format
 msgid "Decrypted %(count)d links into package %(name)s"
-msgstr ""
+msgstr "Дешифровано је %(count)d веза у пакет „%(name)s“"
 
 #: pyload/threads/DecrypterThread.py:80
 msgid "No links decrypted"
-msgstr ""
+msgstr "Ниједна веза није дешифрована"
 
 #: pyload/threads/InfoThread.py:147
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
-msgstr "Привлачивљње инфо за %(name)s неуспешно | %(err)s"
+msgstr "Не могу да преузмем податке за %(name)s | %(err)s"
 
 #: pyload/threads/ThreadManager.py:155
 #, python-format
@@ -543,20 +543,20 @@ msgstr "Неуспешно поновно повезивање: %s"
 
 #: pyload/threads/ThreadManager.py:192
 msgid "Reconnect script not found!"
-msgstr "Скрипт поновног повезивања није нађен!"
+msgstr "Скрипт за поновно повезивање није пронађен."
 
 #: pyload/threads/ThreadManager.py:198
 msgid "Starting reconnect"
-msgstr "Стартовање повезивања"
+msgstr "Покрећем поновно повезивање"
 
 #: pyload/threads/ThreadManager.py:212
 msgid "Failed executing reconnect script!"
-msgstr "Погрешно покретање скрипта повезивања!"
+msgstr "Не могу да извршим скрипт за поновно повезивање."
 
 #: pyload/threads/ThreadManager.py:224
 #, python-format
 msgid "Reconnected, new IP: %s"
-msgstr "Повезано, нова ИП: %s"
+msgstr "Поново је повезано; нова IP адреса: %s"
 
 #: pyload/threads/ThreadManager.py:298
 msgid "Not enough space left on device"
@@ -565,59 +565,59 @@ msgstr "Нема довољно простора на уређају"
 #: pyload/threads/DownloadThread.py:64
 #, python-format
 msgid "Download starts: %s"
-msgstr "Преузимање почело: %s"
+msgstr "Преузимање је започето: %s"
 
 #: pyload/threads/DownloadThread.py:70
 #, python-format
 msgid "Download finished: %s"
-msgstr "Преузимање завршено: %s"
+msgstr "Преузимање је завршено: %s"
 
 #: pyload/threads/DownloadThread.py:75
 #, python-format
 msgid "Plugin %s is missing a function."
-msgstr "Додатку %s фали функција."
+msgstr "Прикључку %s недостаје функција."
 
 #: pyload/threads/DownloadThread.py:83 pyload/threads/DownloadThread.py:147
 #, python-format
 msgid "Download aborted: %s"
-msgstr "Преузимање поништено: %s"
+msgstr "Преузимање је прекинуто: %s"
 
 #: pyload/threads/DownloadThread.py:103
 #, python-format
 msgid "Download restarted: %(name)s | %(msg)s"
-msgstr "Преузимање рестартован: %(name)s | %(msg)s"
+msgstr "Преузимање је поново покренуто: %(name)s | %(msg)s"
 
 #: pyload/threads/DownloadThread.py:113
 #, python-format
 msgid "Download is offline: %s"
-msgstr "Преузимање је угашено: %s"
+msgstr "Преузимање је ван мреже: %s"
 
 #: pyload/threads/DownloadThread.py:116 pyload/threads/DownloadThread.py:187
 #, python-format
 msgid "Download is temporary offline: %s"
-msgstr "Преузимање је привремено угашено: %s"
+msgstr "Преузимање је тренутно ван мреже: %s"
 
 #: pyload/threads/DownloadThread.py:119 pyload/threads/DownloadThread.py:192
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
-msgstr "Погрешно преузимање: %(name)s | %(msg)s"
+msgstr "Преузимање није успело: %(name)s | %(msg)s"
 
 #: pyload/threads/DownloadThread.py:136
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
-msgstr "Не могу да се привежем на хост или ве веза ресетована, чекам 1 минут."
+msgstr "Не могу да се повежем са хостом или је веза прекинута. Поновно повезивање за 1 минут."
 
 #: pyload/threads/DownloadThread.py:171
 #, python-format
 msgid "Download skipped: %(name)s due to %(plugin)s"
-msgstr "Преузимање прескочен: %(name)s због %(plugin)s"
+msgstr "Преузимање је прескочено: %(name)s због %(plugin)s"
 
 #: pyload/threads/DownloadThread.py:188
 msgid "Internal Server Error"
-msgstr ""
+msgstr "Унутрашња грешка сервера"
 
 #: pyload/threads/AddonThread.py:55
 msgid "An Error occurred"
-msgstr ""
+msgstr "Дошло је до грешке"
 
 #: pyload/PluginManager.py:316
 #, python-format
@@ -626,5 +626,5 @@ msgstr "Грешка увоза %(name)s: %(msg)s"
 
 #: pyload/utils/JsEngine.py:188
 msgid "No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino"
-msgstr ""
+msgstr "Механизам JavaScript-а није откривен. Инсталирајте SpiderMonkey, OSSP js, pyv8, Node.js или Rhino."
 

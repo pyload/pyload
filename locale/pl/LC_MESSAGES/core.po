@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-10-13 12:25-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -15,7 +15,7 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/AddonManager.py:62
 #, python-format
 msgid "Error when executing %s"
-msgstr ""
+msgstr "Błąd podczas wykonywania %s"
 
 #: pyload/AddonManager.py:93
 #, python-format
@@ -25,12 +25,12 @@ msgstr "Nie powiodła się aktywacja %(name)s"
 #: pyload/AddonManager.py:96
 #, python-format
 msgid "Activated addons: %s"
-msgstr ""
+msgstr "Aktywne dodatki: %s"
 
 #: pyload/AddonManager.py:97
 #, python-format
 msgid "Deactivated addons: %s"
-msgstr ""
+msgstr "Nieaktywne dodatki: %s"
 
 #: pyload/AddonManager.py:153
 msgid "Activating Plugins..."
@@ -38,7 +38,7 @@ msgstr "Włączanie wtyczek ..."
 
 #: pyload/AddonManager.py:162
 msgid "Deactivating Plugins..."
-msgstr ""
+msgstr "Wyłączanie dodatków..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -46,19 +46,19 @@ msgstr "Nie znaleziono certyfikatów SSL."
 
 #: pyload/web/ServerThread.py:53
 msgid "WebUI built is not available"
-msgstr ""
+msgstr "WebUI nie jest dostępny"
 
 #: pyload/web/ServerThread.py:55
 msgid "Running webUI in development mode"
-msgstr ""
+msgstr "Uruchamianie webUI w trybie deweloperskim"
 
 #: pyload/web/ServerThread.py:73
 msgid "Failed starting webserver: "
-msgstr ""
+msgstr "Niepowodzenie przy uruchamianiu webserwera: "
 
 #: pyload/web/ServerThread.py:107
 msgid "Failed importing webserver: "
-msgstr ""
+msgstr "Niepowodzenie przy imporcie webserwera: "
 
 #: pyload/web/ServerThread.py:125
 msgid "This server offers no SSL, please consider using threaded instead"
@@ -67,11 +67,11 @@ msgstr "Ten serwer nie wspiera SSL, należy rozważyć użycie serwera threaded"
 #: pyload/web/ServerThread.py:139
 #, python-format
 msgid "Starting %(name)s webserver: %(host)s:%(port)d"
-msgstr ""
+msgstr "Uruchamianie webserwera %(name)s: %(host)s:%(port)d"
 
 #: pyload/config/default.py:14
 msgid "Remote"
-msgstr ""
+msgstr "Zdalny"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -79,7 +79,7 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Description"
-msgstr ""
+msgstr "Opis"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
 #: pyload/config/default.py:30 pyload/config/default.py:42
@@ -87,7 +87,7 @@ msgstr ""
 #: pyload/config/default.py:73 pyload/config/default.py:83
 #: pyload/config/default.py:91 pyload/config/default.py:103
 msgid "Long description"
-msgstr ""
+msgstr "Opis szczegółowy"
 
 #: pyload/config/default.py:16 pyload/config/default.py:56
 #: pyload/config/default.py:63
@@ -105,11 +105,11 @@ msgstr "Adres"
 
 #: pyload/config/default.py:21
 msgid "Log"
-msgstr ""
+msgstr "Dziennik zdarzeń"
 
 #: pyload/config/default.py:23
 msgid "Size in kb"
-msgstr ""
+msgstr "Rozmiar w kb"
 
 #: pyload/config/default.py:24
 msgid "Folder"
@@ -117,31 +117,31 @@ msgstr "Folder"
 
 #: pyload/config/default.py:25
 msgid "File Log"
-msgstr ""
+msgstr "Plik dziennika zdarzeń"
 
 #: pyload/config/default.py:26
 msgid "Count"
-msgstr ""
+msgstr "Licznik"
 
 #: pyload/config/default.py:27
 msgid "Log Rotate"
-msgstr ""
+msgstr "Rotowanie dziennika zdarzeń"
 
 #: pyload/config/default.py:30
 msgid "Permissions"
-msgstr ""
+msgstr "Uprawnienia"
 
 #: pyload/config/default.py:32
 msgid "Groupname"
-msgstr ""
+msgstr "Nazwa grupy"
 
 #: pyload/config/default.py:33
 msgid "Change Group and User of Downloads"
-msgstr ""
+msgstr "Zmiana grupy i użytkownika katalogu do zapisywania plików"
 
 #: pyload/config/default.py:34
 msgid "Change file mode of downloads"
-msgstr ""
+msgstr "Zmiana trybu uprawnień pobieranych plików"
 
 #: pyload/config/default.py:35 pyload/config/default.py:75
 msgid "Username"
@@ -149,19 +149,19 @@ msgstr "Nazwa użytkownika"
 
 #: pyload/config/default.py:36
 msgid "Filemode for Downloads"
-msgstr ""
+msgstr "Uprawnienia pobieranych plików w katalogu"
 
 #: pyload/config/default.py:37
 msgid "Change group of running process"
-msgstr ""
+msgstr "Zmiana grupy uruchomionych procesów"
 
 #: pyload/config/default.py:38
 msgid "Folder Permission mode"
-msgstr ""
+msgstr "Tryb uprawnień folderu"
 
 #: pyload/config/default.py:39
 msgid "Change user of running process"
-msgstr ""
+msgstr "Zmiana użytkownika uruchomionego procesu"
 
 #: pyload/config/default.py:42
 msgid "General"
@@ -173,51 +173,51 @@ msgstr "Język"
 
 #: pyload/config/default.py:45
 msgid "Download Folder"
-msgstr ""
+msgstr "Folder na pobierane pliki"
 
 #: pyload/config/default.py:46
 msgid "Use Checksum"
-msgstr ""
+msgstr "Sprawdzanie sumy kontrolnej"
 
 #: pyload/config/default.py:47
 msgid "Create folder for each package"
-msgstr ""
+msgstr "Twórz folder dla każdego pobrania"
 
 #: pyload/config/default.py:48
 msgid "Debug Mode"
-msgstr ""
+msgstr "Tryb debugowania"
 
 #: pyload/config/default.py:49
 msgid "Min Free Space (MB)"
-msgstr ""
+msgstr "Minimalna ilość wolnego miejsca (MB)"
 
 #: pyload/config/default.py:50
 msgid "CPU Priority"
-msgstr ""
+msgstr "Priorytet CPU"
 
 #: pyload/config/default.py:53
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #: pyload/config/default.py:55
 msgid "SSL Certificate"
-msgstr ""
+msgstr "Certyfikat SSL"
 
 #: pyload/config/default.py:57
 msgid "SSL Key"
-msgstr ""
+msgstr "Klucz SSL"
 
 #: pyload/config/default.py:60
 msgid "Webinterface"
-msgstr ""
+msgstr "Interfejs WWW"
 
 #: pyload/config/default.py:62
 msgid "Template"
-msgstr ""
+msgstr "Szablon"
 
 #: pyload/config/default.py:64
 msgid "Path Prefix"
-msgstr ""
+msgstr "Prefiks ścieżki"
 
 #: pyload/config/default.py:65
 msgid "Server"
@@ -225,27 +225,27 @@ msgstr "Serwer"
 
 #: pyload/config/default.py:66
 msgid "Favor specific server"
-msgstr ""
+msgstr "Specyficzny folder serwera"
 
 #: pyload/config/default.py:67
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #: pyload/config/default.py:68
 msgid "Use HTTPS"
-msgstr ""
+msgstr "Używaj HTTPS"
 
 #: pyload/config/default.py:70
 msgid "Development mode"
-msgstr ""
+msgstr "Tryb deweloperski"
 
 #: pyload/config/default.py:73
 msgid "Proxy"
-msgstr ""
+msgstr "Proxy"
 
 #: pyload/config/default.py:76
 msgid "Use Proxy"
-msgstr ""
+msgstr "Używaj Proxy"
 
 #: pyload/config/default.py:78
 msgid "Password"
@@ -253,67 +253,67 @@ msgstr "Hasło"
 
 #: pyload/config/default.py:79
 msgid "Protocol"
-msgstr ""
+msgstr "Protokół"
 
 #: pyload/config/default.py:83
 msgid "Reconnect"
-msgstr ""
+msgstr "Połącz ponownie"
 
 #: pyload/config/default.py:85 pyload/config/default.py:106
 msgid "End"
-msgstr ""
+msgstr "Zakończ"
 
 #: pyload/config/default.py:86
 msgid "Use Reconnect"
-msgstr ""
+msgstr "Używaj funkcji ponownego łączenia"
 
 #: pyload/config/default.py:87
 msgid "Method"
-msgstr ""
+msgstr "Metoda"
 
 #: pyload/config/default.py:88 pyload/config/default.py:105
 msgid "Start"
-msgstr ""
+msgstr "Start"
 
 #: pyload/config/default.py:91
 msgid "Download"
-msgstr ""
+msgstr "Pobieranie"
 
 #: pyload/config/default.py:93
 msgid "Max Parallel Downloads"
-msgstr ""
+msgstr "Maksymalna liczba równoległych pobrań"
 
 #: pyload/config/default.py:94
 msgid "Limit Download Speed"
-msgstr ""
+msgstr "Limit prędkości pobierania"
 
 #: pyload/config/default.py:95
 msgid "Download interface to bind (ip or Name)"
-msgstr ""
+msgstr "Powiązanie z interfejsem pobierań (IP lub nazwa)"
 
 #: pyload/config/default.py:96
 msgid "Skip already existing files"
-msgstr ""
+msgstr "Pomiń istniejące pliki"
 
 #: pyload/config/default.py:97
 msgid "Max Download Speed in kb/s"
-msgstr ""
+msgstr "Maksymalna prędkość pobierań w kb/s"
 
 #: pyload/config/default.py:98
 msgid "Allow IPv6"
-msgstr ""
+msgstr "Zezwalaj na IPv6"
 
 #: pyload/config/default.py:99
 msgid "Max connections for one download"
-msgstr ""
+msgstr "Maksymalna liczba połączeń dla jednego pobierania"
 
 #: pyload/config/default.py:100
 msgid "Restart failed downloads on startup"
-msgstr ""
+msgstr "Uruchom ponowne nieudane pobrania na starcie"
 
 #: pyload/config/default.py:103
 msgid "Download Time"
-msgstr ""
+msgstr "Czas pobierania"
 
 #: pyload/network/HTTPDownload.py:249
 #, python-format
@@ -323,29 +323,29 @@ msgstr "Pobranie fragmentów nie powiodło się, powrót do pojedynczego połąc
 #: pyload/api/DownloadApi.py:44
 #, python-format
 msgid "Added package %(name)s as folder %(folder)s"
-msgstr ""
+msgstr "Dodano pakiet %(name)s jako folder %(folder)s"
 
 #: pyload/api/DownloadApi.py:95
 #, python-format
 msgid "Added %d links to package"
-msgstr ""
+msgstr "Dodano linki %d do pakietu"
 
 #: pyload/AccountManager.py:69
 #, python-format
 msgid "Unknown account plugin %s"
-msgstr ""
+msgstr "Nieznana wtyczka konta %s"
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
-msgstr ""
+msgstr "Zapytanie"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Captcha request"
-msgstr ""
+msgstr "Prośba o podanie captcha"
 
 #: pyload/interaction/InteractionManager.py:111
 msgid "Please solve the captcha."
-msgstr ""
+msgstr "Proszę wpisać captcha."
 
 #: pyload/remote/RemoteManager.py:35
 #, python-format
@@ -364,15 +364,15 @@ msgstr "Bład ładowania backendu %(name)s | %(error)s"
 
 #: pyload/FileManager.py:53
 msgid "none"
-msgstr ""
+msgstr "brak"
 
 #: pyload/FileManager.py:53
 msgid "offline"
-msgstr ""
+msgstr "offline"
 
 #: pyload/FileManager.py:53
 msgid "online"
-msgstr ""
+msgstr "online"
 
 #: pyload/FileManager.py:53
 msgid "queued"
@@ -438,7 +438,7 @@ msgstr "Paczka ukończona: %s"
 #: pyload/Api.py:152
 #, python-format
 msgid "User '%s' tries to log in"
-msgstr ""
+msgstr "Użytkownik '%s' próbuje się zalogować"
 
 #: pyload/Core.py:195
 msgid "Received Quit signal"
@@ -475,7 +475,7 @@ msgstr "Wszystkie linki zostały usunięte"
 #: pyload/Core.py:403
 #, python-format
 msgid "Download time: %s"
-msgstr ""
+msgstr "Czas pobierania: %s"
 
 #: pyload/Core.py:418
 #, python-format
@@ -488,7 +488,7 @@ msgstr "Aktywacja kont ..."
 
 #: pyload/Core.py:443
 msgid "Restarting failed downloads..."
-msgstr ""
+msgstr "Ponowne uruchamianie błędnych pobrań..."
 
 #: pyload/Core.py:451
 msgid "pyLoad is up and running"
@@ -512,24 +512,24 @@ msgstr "błąd przy wyłączaniu"
 
 #: pyload/Core.py:661
 msgid "killed pyLoad from terminal"
-msgstr ""
+msgstr "zamknięcie pyLoad z terminala"
 
 #: pyload/database/DatabaseBackend.py:167
 msgid "Database was deleted due to incompatible version."
-msgstr ""
+msgstr "Baza danych została skasowana z powodu niekompatybilnej wersji."
 
 #: pyload/threads/DecrypterThread.py:50
 msgid "Decrypting failed"
-msgstr ""
+msgstr "Błąd odszyfrowania linków"
 
 #: pyload/threads/DecrypterThread.py:73
 #, python-format
 msgid "Decrypted %(count)d links into package %(name)s"
-msgstr ""
+msgstr "Rozszyfrowanie linków %(count)d do pakietu %(name)s"
 
 #: pyload/threads/DecrypterThread.py:80
 msgid "No links decrypted"
-msgstr ""
+msgstr "Nie odszyfrowano linków"
 
 #: pyload/threads/InfoThread.py:147
 #, python-format
@@ -613,11 +613,11 @@ msgstr "Pominięto pobieranie: %(name)s z powodu %(plugin)s"
 
 #: pyload/threads/DownloadThread.py:188
 msgid "Internal Server Error"
-msgstr ""
+msgstr "Wewnętrzny błąd serwera"
 
 #: pyload/threads/AddonThread.py:55
 msgid "An Error occurred"
-msgstr ""
+msgstr "Wystąpił błąd"
 
 #: pyload/PluginManager.py:316
 #, python-format
@@ -626,5 +626,5 @@ msgstr "Błąd przy imporcie %(name)s: %(msg)s"
 
 #: pyload/utils/JsEngine.py:188
 msgid "No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino"
-msgstr ""
+msgstr "Brak silnika js, należy zainstlować Spidermonkey, ossp-js, pyv8, nodejs lub lrhino"
 

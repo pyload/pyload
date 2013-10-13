@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-10-13 12:25-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -171,7 +171,7 @@ msgstr "De volgende logingegevens zijn geldig voor CLI, GUI en webinterface."
 
 #: pyload/Setup.py:199 pyload/Setup.py:288 pyload/Setup.py:304
 msgid "Username"
-msgstr ""
+msgstr "Gebruikersnaam"
 
 #: pyload/Setup.py:205
 msgid "External clients (GUI, CLI or other) need remote access to work over the network."
@@ -187,7 +187,7 @@ msgstr "Externe toegang inschakelen"
 
 #: pyload/Setup.py:211
 msgid "Language"
-msgstr ""
+msgstr "Taal"
 
 #: pyload/Setup.py:213
 msgid "Download folder"
@@ -219,11 +219,11 @@ msgstr "Listen adres, als u 127.0.0.1 of localhost gebruikt is de webinterface a
 
 #: pyload/Setup.py:232
 msgid "Address"
-msgstr ""
+msgstr "Adres"
 
 #: pyload/Setup.py:233
 msgid "Port"
-msgstr ""
+msgstr "Poort"
 
 #: pyload/Setup.py:235
 msgid "pyLoad offers several server backends, now following a short explanation."
@@ -259,7 +259,7 @@ msgstr "kom terug en verander de builtin server naar de threaded server."
 
 #: pyload/Setup.py:248
 msgid "Server"
-msgstr ""
+msgstr "Server"
 
 #: pyload/Setup.py:253
 msgid "## SSL Setup ##"

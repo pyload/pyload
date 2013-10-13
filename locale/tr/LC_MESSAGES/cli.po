@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:57-0400\n"
+"PO-Revision-Date: 2013-10-13 12:26-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -64,7 +64,7 @@ msgstr "Neleri yenilemek istersiniz?"
 
 #: pyload/cli/ManageFiles.py:113
 msgid "Choose what you want to do, or enter package number."
-msgstr ""
+msgstr "Ne yapmak istediğinizi seçin veya paket numarası girin"
 
 #: pyload/cli/ManageFiles.py:115
 msgid "delete"
@@ -109,7 +109,7 @@ msgstr " Bitiş zamanı: "
 
 #: pyload/cli/Cli.py:179
 msgid " ID: "
-msgstr ""
+msgstr "ID:"
 
 #: pyload/cli/Cli.py:184
 msgid "waiting: "
@@ -117,27 +117,27 @@ msgstr "bekleniyor: "
 
 #: pyload/cli/Cli.py:191 pyload/cli/Cli.py:193
 msgid "Status:"
-msgstr ""
+msgstr "Durum"
 
 #: pyload/cli/Cli.py:191
 msgid "paused"
-msgstr ""
+msgstr "Duraklatıldı"
 
 #: pyload/cli/Cli.py:193
 msgid "running"
-msgstr ""
+msgstr "çalışıyor"
 
 #: pyload/cli/Cli.py:196
 msgid "total Speed"
-msgstr ""
+msgstr "toplam hız"
 
 #: pyload/cli/Cli.py:196
 msgid "Files in queue"
-msgstr ""
+msgstr "Sıradaki Dosyalar"
 
 #: pyload/cli/Cli.py:197
 msgid "Total"
-msgstr ""
+msgstr "Toplam"
 
 #: pyload/cli/Cli.py:203
 msgid "Menu:"

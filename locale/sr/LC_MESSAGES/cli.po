@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-10-13 12:26-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Serbian (Cyrillic)\n"
 "Language: sr_SP\n"
@@ -14,11 +14,11 @@ msgstr "Project-Id-Version: pyload\n"
 
 #: pyload/cli/AddPackage.py:48
 msgid "Add Package:"
-msgstr "Додај пакет:"
+msgstr "Додајте пакет:"
 
 #: pyload/cli/AddPackage.py:53
 msgid "Enter a name for the new package"
-msgstr "Унети име за нов пакет"
+msgstr "Унесите име новог пакета"
 
 #: pyload/cli/AddPackage.py:57
 #, python-format
@@ -27,44 +27,44 @@ msgstr "Пакет: %s"
 
 #: pyload/cli/AddPackage.py:58
 msgid "Parse the links you want to add."
-msgstr "Прилепите везу коју желите да додате."
+msgstr "Рашчланите везе које желите да додате."
 
 #: pyload/cli/AddPackage.py:59
 #, python-format
 msgid "Type %s when done."
-msgstr "Унети %s када је готово."
+msgstr "Унесите %s када завршите."
 
 #: pyload/cli/AddPackage.py:60
 msgid "Links added: "
-msgstr "додате везе:"
+msgstr "Додато веза: "
 
 #: pyload/cli/AddPackage.py:64 pyload/cli/ManageFiles.py:149
 msgid " back to main menu"
-msgstr "назад на главни мени"
+msgstr " назад на главни мени"
 
 #: pyload/cli/ManageFiles.py:97
 msgid "Manage Packages:"
-msgstr "Уреди пакете:"
+msgstr "Управљајте пакетима:"
 
 #: pyload/cli/ManageFiles.py:99
 msgid "Manage Links:"
-msgstr "Уреди везе:"
+msgstr "Управљајте везама:"
 
 #: pyload/cli/ManageFiles.py:104
 msgid "What do you want to move?"
-msgstr "Шта да се премести?"
+msgstr "Шта желите да преместите?"
 
 #: pyload/cli/ManageFiles.py:106
 msgid "What do you want to delete?"
-msgstr "Шта да се обрише?"
+msgstr "Шта желите да обришете?"
 
 #: pyload/cli/ManageFiles.py:108
 msgid "What do you want to restart?"
-msgstr "Шта да се рестартује?"
+msgstr "Шта желите да поново покренете?"
 
 #: pyload/cli/ManageFiles.py:113
 msgid "Choose what you want to do, or enter package number."
-msgstr ""
+msgstr "Изаберите жељену радњу или унесите број пакета."
 
 #: pyload/cli/ManageFiles.py:115
 msgid "delete"
@@ -76,19 +76,19 @@ msgstr "премести"
 
 #: pyload/cli/ManageFiles.py:115
 msgid "restart"
-msgstr "рестартуј"
+msgstr "поново покрени"
 
 #: pyload/cli/ManageFiles.py:148
 msgid " - previous"
-msgstr "- назад"
+msgstr " – претходно"
 
 #: pyload/cli/ManageFiles.py:148
 msgid " - next"
-msgstr "- даље"
+msgstr " – следеће"
 
 #: pyload/cli/Cli.py:75 pyload/cli/Cli.py:133
 msgid " Command Line Interface"
-msgstr "Интерфејс командне линије"
+msgstr " Интерфејс командне линије"
 
 #: pyload/cli/Cli.py:165
 #, python-format
@@ -97,47 +97,47 @@ msgstr "%s преузимања:"
 
 #: pyload/cli/Cli.py:177
 msgid " Speed: "
-msgstr "Брзина:"
+msgstr " Брзина: "
 
 #: pyload/cli/Cli.py:177
 msgid " Size: "
-msgstr "Величина:"
+msgstr " Величина: "
 
 #: pyload/cli/Cli.py:178
 msgid " Finished in: "
-msgstr "Завршено:"
+msgstr " Завршено: "
 
 #: pyload/cli/Cli.py:179
 msgid " ID: "
-msgstr "ИД:"
+msgstr " ID: "
 
 #: pyload/cli/Cli.py:184
 msgid "waiting: "
-msgstr "чекање:"
+msgstr "на чекању: "
 
 #: pyload/cli/Cli.py:191 pyload/cli/Cli.py:193
 msgid "Status:"
-msgstr ""
+msgstr "Статус:"
 
 #: pyload/cli/Cli.py:191
 msgid "paused"
-msgstr ""
+msgstr "паузирано"
 
 #: pyload/cli/Cli.py:193
 msgid "running"
-msgstr ""
+msgstr "покренуто"
 
 #: pyload/cli/Cli.py:196
 msgid "total Speed"
-msgstr ""
+msgstr "Укупна брзина"
 
 #: pyload/cli/Cli.py:196
 msgid "Files in queue"
-msgstr ""
+msgstr "Датотеке у списку"
 
 #: pyload/cli/Cli.py:197
 msgid "Total"
-msgstr ""
+msgstr "Укупно"
 
 #: pyload/cli/Cli.py:203
 msgid "Menu:"
@@ -145,31 +145,31 @@ msgstr "Мени:"
 
 #: pyload/cli/Cli.py:205
 msgid " Add Links"
-msgstr "Додај везе"
+msgstr " Додај везе"
 
 #: pyload/cli/Cli.py:206
 msgid " Manage Queue"
-msgstr "Уреди редослед"
+msgstr " Управљај списком"
 
 #: pyload/cli/Cli.py:207
 msgid " Manage Collector"
-msgstr "Уреди колекционар"
+msgstr " Управљај сакупљачем"
 
 #: pyload/cli/Cli.py:208
 msgid " (Un)Pause Server"
-msgstr "Паузирај/настави сервер"
+msgstr " Паузирај/настави сервер"
 
 #: pyload/cli/Cli.py:209
 msgid " Kill Server"
-msgstr "Убиј сервер"
+msgstr " Окончај сервер"
 
 #: pyload/cli/Cli.py:210
 msgid " Quit"
-msgstr "Излаз"
+msgstr " Изађи"
 
 #: pyload/cli/Cli.py:289 pyload/cli/Cli.py:296
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
-msgstr "Употребите ову синтаксу: add <Package name> <link> <link2> ..."
+msgstr "Користите ову синтаксу: add <име пакета> <веза> <друга веза>…"
 
 #: pyload/cli/Cli.py:315
 #, python-format
@@ -182,55 +182,55 @@ msgstr "Датотека не постоји."
 
 #: pyload/cli/Cli.py:385
 msgid "pyLoad was terminated"
-msgstr "pyLoad је завршен"
+msgstr "pyLoad је обустављен"
 
 #: pyload/cli/Cli.py:443
 msgid "Prints server status"
-msgstr "Штампај статус сервера"
+msgstr "Штампа статус сервера"
 
 #: pyload/cli/Cli.py:444
 msgid "Prints downloads in queue"
-msgstr "Штампај преузимања у редоследу"
+msgstr "Штампа преузимања у списку"
 
 #: pyload/cli/Cli.py:445
 msgid "Prints downloads in collector"
-msgstr "Штампај преузимања у колекционару"
+msgstr "Штампа преузимања у сакупљачу"
 
 #: pyload/cli/Cli.py:446
 msgid "Adds package to queue"
-msgstr "Додај пакет у редослед"
+msgstr "Додаје пакет у списак"
 
 #: pyload/cli/Cli.py:447
 msgid "Adds package to collector"
-msgstr "Додај пакет у колекционар"
+msgstr "Додаје пакет у сакупљач"
 
 #: pyload/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
-msgstr "Бриши датотеке из редоследа/колекционара"
+msgstr "Брише датотеке из списка/сакупљача"
 
 #: pyload/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
-msgstr "Бриши пакете из редоследа/колекционара"
+msgstr "Брише пакете из списка/сакупљача"
 
 #: pyload/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
-msgstr "Преемсти пакете из редоследа у колекционару и супротно"
+msgstr "Премешта пакете из списка у сакупљач и обрнуто"
 
 #: pyload/cli/Cli.py:451
 msgid "Restart files"
-msgstr "Рестартуј датотеке"
+msgstr "Поново покрени датотеке"
 
 #: pyload/cli/Cli.py:452
 msgid "Restart packages"
-msgstr "Рестартуј пакете"
+msgstr "Поново покрени пакете"
 
 #: pyload/cli/Cli.py:453
 msgid "Check online status, works with local container"
-msgstr "Провера статуса на вези, ради са локални контејнерима"
+msgstr "Проверава доступност (ради са локалним контејнером)"
 
 #: pyload/cli/Cli.py:454
 msgid "Checks online status of a container file"
-msgstr "провера статуса на вези контејнетра"
+msgstr "Проверава доступност датотеке контејнера"
 
 #: pyload/cli/Cli.py:455
 msgid "Pause the server"
@@ -242,50 +242,50 @@ msgstr "настави преузимања"
 
 #: pyload/cli/Cli.py:457
 msgid "Toggle pause/unpause"
-msgstr "Пребаци Пауза/настави"
+msgstr "Паузирај/настави"
 
 #: pyload/cli/Cli.py:458
 msgid "kill server"
-msgstr "убиј сервер"
+msgstr "окончај сервер"
 
 #: pyload/cli/Cli.py:460
 msgid "List of commands:"
-msgstr "списак комамде:"
+msgstr "Списак команди:"
 
 #: pyload/cli/Cli.py:473
 msgid "Couldn't write user config file"
-msgstr "не могу да пишем у датотеку подешавања"
+msgstr "Не могу да пишем на датотеку са подешавањима"
 
 #: pyload/cli/Cli.py:548 pyload/cli/Cli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."
-msgstr "Треба Вам py-openssl да би се пријавили на pyLoad језгро."
+msgstr "Потребан вам је py-openssl да бисте се повезали на сервер pyLoad-а."
 
 #: pyload/cli/Cli.py:555
 msgid "Address: "
-msgstr "Адреса:"
+msgstr "Адреса: "
 
 #: pyload/cli/Cli.py:556
 msgid "Port: "
-msgstr "Порт:"
+msgstr "Порт: "
 
 #: pyload/cli/Cli.py:557
 msgid "Username: "
-msgstr "Корисник:"
+msgstr "Корисничко име: "
 
 #: pyload/cli/Cli.py:561
 msgid "Password: "
-msgstr "Лозинка:"
+msgstr "Лозинка: "
 
 #: pyload/cli/Cli.py:566 pyload/cli/Cli.py:575
 msgid "Login data is wrong."
-msgstr "Пријава није добра."
+msgstr "Подаци за пријаву су погрешни."
 
 #: pyload/cli/Cli.py:568 pyload/cli/Cli.py:577
 #, python-format
 msgid "Could not establish connection to %(addr)s:%(port)s."
-msgstr "Не могу да успоставим везу на %(addr)s:%(port)s."
+msgstr "Не могу да успоставим везу са адресом %(addr)s:%(port)s."
 
 #: pyload/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
-msgstr "Интерактивно мод је игнорисан пошто сте дали неке команде."
+msgstr "Занемарен је интерактивни режим јер сте задали неке команде."
 

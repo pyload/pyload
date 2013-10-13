@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-20 22:13+0200\n"
-"PO-Revision-Date: 2013-08-02 10:02-0400\n"
+"PO-Revision-Date: 2013-10-13 12:25-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -15,7 +15,7 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/plugins/network/CurlDownload.py:241
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
-msgstr "Download eines Datensegments ist gescheitert, Setze auf max. 1 Verbindung zurück | %s"
+msgstr "Eine Download Verbindung ist fehlggeschlagen, Falle zurück auf eine Verbindung | %s"
 
 #: pyload/plugins/Base.py:329
 msgid "Pil and tesseract not installed and no Client connected for captcha decrypting"

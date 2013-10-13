@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-08-02 10:02-0400\n"
+"PO-Revision-Date: 2013-08-31 15:21-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -324,11 +324,11 @@ msgstr "A beállítások eléri útja hibás: %s"
 
 #: pyload/Setup.py:347
 msgid "y"
-msgstr ""
+msgstr "i"
 
 #: pyload/Setup.py:349
 msgid "n"
-msgstr ""
+msgstr "n"
 
 #: pyload/Setup.py:373
 msgid "Password: "
@@ -352,11 +352,11 @@ msgstr "igen"
 
 #: pyload/Setup.py:397
 msgid "true"
-msgstr ""
+msgstr "igaz"
 
 #: pyload/Setup.py:397
 msgid "t"
-msgstr ""
+msgstr "i"
 
 #: pyload/Setup.py:400
 msgid "no"
@@ -364,11 +364,11 @@ msgstr "nem"
 
 #: pyload/Setup.py:400
 msgid "false"
-msgstr ""
+msgstr "hamis"
 
 #: pyload/Setup.py:400
 msgid "f"
-msgstr ""
+msgstr "h"
 
 #: pyload/Setup.py:403 pyload/Setup.py:413
 msgid "Invalid Input"

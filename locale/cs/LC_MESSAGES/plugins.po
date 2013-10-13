@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-20 22:13+0200\n"
-"PO-Revision-Date: 2013-08-07 09:03-0400\n"
+"PO-Revision-Date: 2013-10-13 12:25-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -241,7 +241,7 @@ msgstr ""
 #: pyload/plugins/addons/HotFolder.py:82
 #, python-format
 msgid "Added %s from HotFolder"
-msgstr ""
+msgstr "Přidán %s ze sledované složky"
 
 #: pyload/plugins/addons/ClickAndLoad.py:74
 msgid "Click'N'Load: Port 9666 already in use"
@@ -272,11 +272,11 @@ msgstr "Pluginy aktualizovány a znovu načteny"
 
 #: pyload/plugins/addons/UpdateManager.py:78
 msgid "No plugin updates available"
-msgstr ""
+msgstr "Žádné aktualizace rozšíření"
 
 #: pyload/plugins/addons/UpdateManager.py:95
 msgid "No Updates for pyLoad"
-msgstr ""
+msgstr "Žádné aktualizace pro pyLoad"
 
 #: pyload/plugins/addons/UpdateManager.py:100
 #, python-format

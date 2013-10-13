@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-20 22:13+0200\n"
-"PO-Revision-Date: 2013-07-20 18:02-0400\n"
+"PO-Revision-Date: 2013-10-13 12:25-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -19,46 +19,46 @@ msgstr "Descàrrega per trossos fallida, tornant a la connexió única | %s"
 
 #: pyload/plugins/Base.py:329
 msgid "Pil and tesseract not installed and no Client connected for captcha decrypting"
-msgstr ""
+msgstr "Pil i tesseract no estan instal·lats i no hi ha cap Client connectat per desxifrar captchas"
 
 #: pyload/plugins/Base.py:333
 msgid "No captcha result obtained in appropriate time."
-msgstr ""
+msgstr "Cap resultat de captcha obtingut en el temps apropiat."
 
 #: pyload/plugins/Hoster.py:282 pyload/plugins/Hoster.py:319
 #: pyload/plugins/hoster/ARD.py:76
 #, python-format
 msgid "Setting User and Group failed: %s"
-msgstr ""
+msgstr "Aplicació d'Usuari i el Grup ha fallat: %s"
 
 #: pyload/plugins/Crypter.py:136
 msgid "Not existing file or unsupported protocol"
-msgstr ""
+msgstr "No existeix el fitxer o protocol no suportat"
 
 #: pyload/plugins/hoster/RapidshareCom.py:96
 msgid "Rapidshare: Traffic Share (direct download)"
-msgstr ""
+msgstr "Rapidshare: Tràfic Compartit (descàrrega directa)"
 
 #: pyload/plugins/hoster/RapidshareCom.py:123
 #: pyload/plugins/hoster/RapidshareCom.py:189
 msgid "Already downloading from this ip address, waiting 60 seconds"
-msgstr ""
+msgstr "Ja s'està descarregant des de aquesta adreça IP, esperant 60 segons"
 
 #: pyload/plugins/hoster/RapidshareCom.py:127
 msgid "Invalid Auth Code, download will be restarted"
-msgstr ""
+msgstr "Codi d'Autenticació invàlid, la descàrrega serà reiniciada"
 
 #: pyload/plugins/hoster/RapidshareCom.py:193
 msgid "RapidShareCom: No free slots"
-msgstr ""
+msgstr "RapidShareCom: No hi ha espais lliures"
 
 #: pyload/plugins/hoster/RapidshareCom.py:196
 msgid "You need a premium account for this file"
-msgstr ""
+msgstr "Necessites un compte premium per aquest fitxer"
 
 #: pyload/plugins/hoster/RapidshareCom.py:198
 msgid "Filename reported invalid"
-msgstr ""
+msgstr "Nom de fitxer informat invàlid"
 
 #: pyload/plugins/hoster/RealdebridCom.py:40
 #: pyload/plugins/hoster/Premium4Me.py:27
@@ -70,182 +70,182 @@ msgstr ""
 #: pyload/plugins/hoster/PremiumizeMe.py:19
 #, python-format
 msgid "Please enter your %s account or deactivate this plugin"
-msgstr ""
+msgstr "Si us plau, introdueixi  el seu compte de %s o desactivar aquest plugin"
 
 #: pyload/plugins/hoster/MegaNz.py:55
 msgid "Decryption failed"
-msgstr ""
+msgstr "Desxifrat ha fallat"
 
 #: pyload/plugins/hoster/MegaNz.py:99
 msgid "No file key provided in the URL"
-msgstr ""
+msgstr "Cap clau de fitxer proporcionat a la URL"
 
 #: pyload/plugins/hoster/MegaNz.py:111
 msgid "Error code:"
-msgstr ""
+msgstr "Codi d'error:"
 
 #: pyload/plugins/hoster/FileserveCom.py:97
 msgid "Parallel download error, now waiting 60s."
-msgstr ""
+msgstr "Error de descàrrega paral·lela, esperant 60s."
 
 #: pyload/plugins/hoster/FileserveCom.py:208
 msgid "Not logged in."
-msgstr ""
+msgstr "No connectat."
 
 #: pyload/plugins/hoster/UploadedTo.py:135
 msgid "API key invalid"
-msgstr ""
+msgstr "Clau de API invàlida"
 
 #: pyload/plugins/hoster/UploadedTo.py:160
 #, python-format
 msgid "%s: Not enough traffic left"
-msgstr ""
+msgstr "%s: No queda suficient tràfic"
 
 #: pyload/plugins/hoster/UploadedTo.py:163
 msgid "Traffic exceeded"
-msgstr ""
+msgstr "Tràfic excedit"
 
 #: pyload/plugins/hoster/BasePlugin.py:63
 msgid "Authorization required (username:password)"
-msgstr ""
+msgstr "Autorització requerida (usuari:contrasenya)"
 
 #: pyload/plugins/hoster/NetloadIn.py:143
 #: pyload/plugins/hoster/NetloadIn.py:167
 msgid "File temporarily not available"
-msgstr ""
+msgstr "Fitxer temporalment no disponible"
 
 #: pyload/plugins/hoster/NetloadIn.py:180
 #, python-format
 msgid "Netload: waiting between downloads %d s."
-msgstr ""
+msgstr "Netload: esperant entre descàrregues %d s."
 
 #: pyload/plugins/hoster/NetloadIn.py:209
 #, python-format
 msgid "Netload: waiting for captcha %d s."
-msgstr ""
+msgstr "Netload: esperant per captcha %d s."
 
 #: pyload/plugins/hoster/NetloadIn.py:248
 msgid "Downloaded File was empty"
-msgstr ""
+msgstr "El fitxer descarregat estava buit"
 
 #: pyload/plugins/hoster/FilesMailRu.py:98
 #, python-format
 msgid "There was HTML Code in the Downloaded File(%s)...redirect error? The Download will be restarted."
-msgstr ""
+msgstr "Hi havia Codi HTML en el fitxer (%s) descarregat... error de redirecció? Se reiniciarà la descàrrega."
 
 #: pyload/plugins/hoster/XHamsterCom.py:75
 #: pyload/plugins/hoster/XHamsterCom.py:84
 #: pyload/plugins/hoster/XHamsterCom.py:87
 #, python-format
 msgid "long_url: %s"
-msgstr ""
+msgstr "long_url: %s"
 
 #: pyload/plugins/Account.py:117 pyload/plugins/Account.py:123
 #, python-format
 msgid "Could not login with account %(user)s | %(msg)s"
-msgstr ""
+msgstr "No s'ha pogut iniciar sessió amb el compte %(user)s | %(msg)s"
 
 #: pyload/plugins/Account.py:118
 msgid "Wrong Password"
-msgstr ""
+msgstr "Contrasenya Errònia"
 
 #: pyload/plugins/Account.py:184
 #, python-format
 msgid "Get Account Info for %s"
-msgstr ""
+msgstr "Obtenir Informació de la Compte per %s"
 
 #: pyload/plugins/Account.py:193
 #, python-format
 msgid "Error: %s"
-msgstr ""
+msgstr "Error: %s"
 
 #: pyload/plugins/Account.py:242
 #, python-format
 msgid "Your Time %s has a wrong format, use: 1:22-3:44"
-msgstr ""
+msgstr "L'hora %s està en un format incorrecte, empra: 1:22-3:44"
 
 #: pyload/plugins/Account.py:265
 #, python-format
 msgid "Account %s has not enough traffic, checking again in 30min"
-msgstr ""
+msgstr "El compte %s no te suficient tràfic, es tornarà a comprovar d'aquí 30min"
 
 #: pyload/plugins/Account.py:273
 #, python-format
 msgid "Account %s is expired, checking again in 1h"
-msgstr ""
+msgstr "El compte %s està caducat, es tornarà a comprovar d'aquí 1h"
 
 #: pyload/plugins/Account.py:290
 #, python-format
 msgid "Login with %s"
-msgstr ""
+msgstr "Inicieu la sessió amb %s"
 
 #: pyload/plugins/Addon.py:118
 #, python-format
 msgid "Error executing addons: %s"
-msgstr ""
+msgstr "Error executant complements: %s"
 
 #: pyload/plugins/accounts/BitshareCom.py:36
 msgid "Activate direct Download in your Bitshare Account"
-msgstr ""
+msgstr "Activa la descàrrega directa al teu compte de Bitshare"
 
 #: pyload/plugins/crypter/SerienjunkiesOrg.py:128
 msgid "Downloadlimit reached"
-msgstr ""
+msgstr "Límit de descàrrega assolit"
 
 #: pyload/plugins/addons/Premium4Me.py:30
 msgid "Please add your premium.to account first and restart pyLoad"
-msgstr ""
+msgstr "Si us plau afegir el seu compte de premium.to primer i reinicieu pyLoad"
 
 #: pyload/plugins/addons/ExternalScripts.py:53
 #, python-format
 msgid "Installed scripts for %s: "
-msgstr ""
+msgstr "Scripts instal·lats per %s: "
 
 #: pyload/plugins/addons/ExternalScripts.py:69
 msgid "Script not executable:"
-msgstr ""
+msgstr "Script no executable:"
 
 #: pyload/plugins/addons/ExternalScripts.py:79
 #, python-format
 msgid "Error in %(script)s: %(error)s"
-msgstr ""
+msgstr "Error en %(script)s: %(error)s"
 
 #: pyload/plugins/addons/CaptchaTrader.py:72
 #: pyload/plugins/addons/Captcha9kw.py:56
 #: pyload/plugins/addons/ExpertDecoders.py:49
 #, python-format
 msgid "%s credits left"
-msgstr ""
+msgstr "%s crèdits restants"
 
 #: pyload/plugins/addons/CaptchaTrader.py:120
 msgid "Could not send response."
-msgstr ""
+msgstr "No s'ha pogut enviar la resposta."
 
 #: pyload/plugins/addons/CaptchaTrader.py:138
 msgid "Your CaptchaTrader Account has not enough credits"
-msgstr ""
+msgstr "El teu compte de CaptchaTrader no te crèdits suficients"
 
 #: pyload/plugins/addons/Captcha9kw.py:89
 #, python-format
 msgid "New CaptchaID from upload: %s : %s"
-msgstr ""
+msgstr "Nou CaptchaID de càrrega: %s : %s"
 
 #: pyload/plugins/addons/Captcha9kw.py:123
 msgid "Your Captcha 9kw.eu Account has not enough credits"
-msgstr ""
+msgstr "El teu compte de 9kw.eu no te crèdits suficients"
 
 #: pyload/plugins/addons/RehostTo.py:34
 msgid "Please add your rehost.to account first and restart pyLoad"
-msgstr ""
+msgstr "Si us plau afegir el seu compte de rehost.to primer i reinicieu pyLoad"
 
 #: pyload/plugins/addons/HotFolder.py:82
 #, python-format
 msgid "Added %s from HotFolder"
-msgstr ""
+msgstr "Afegit %s des de HotFolder"
 
 #: pyload/plugins/addons/ClickAndLoad.py:74
 msgid "Click'N'Load: Port 9666 already in use"
-msgstr ""
+msgstr "Click'N'Load: El Port 9666 ja s'està en ús"
 
 #: pyload/plugins/addons/XMPPInterface.py:82
 #: pyload/plugins/addons/IRCInterface.py:75
@@ -256,40 +256,40 @@ msgstr "Paquet finalitzat: %s"
 #: pyload/plugins/addons/XMPPInterface.py:90
 #, python-format
 msgid "Download finished: %(name)s @ %(plugin)s"
-msgstr ""
+msgstr "Descàrrega finalitzada : %(name)s @ %(plugin)s"
 
 #: pyload/plugins/addons/ExpertDecoders.py:98
 msgid "Your ExpertDecoders Account has not enough credits"
-msgstr ""
+msgstr "El teu compte de ExpertDecoders no te crèdits suficients"
 
 #: pyload/plugins/addons/UpdateManager.py:73
 msgid "*** Plugins have been updated, please restart pyLoad ***"
-msgstr ""
+msgstr "* * * Plugins s'han actualitzat, si us plau reinicieu pyLoad * * *"
 
 #: pyload/plugins/addons/UpdateManager.py:75
 msgid "Plugins updated and reloaded"
-msgstr ""
+msgstr "Plugins actualitzats i recarregats"
 
 #: pyload/plugins/addons/UpdateManager.py:78
 msgid "No plugin updates available"
-msgstr ""
+msgstr "No hi ha actualitzacions de plugins disponibles"
 
 #: pyload/plugins/addons/UpdateManager.py:95
 msgid "No Updates for pyLoad"
-msgstr ""
+msgstr "No hi ha actualitzacions del pyLoad"
 
 #: pyload/plugins/addons/UpdateManager.py:100
 #, python-format
 msgid "***  New pyLoad Version %s available  ***"
-msgstr ""
+msgstr "***  La nova Versió %s de pyLoad està disponible  ***"
 
 #: pyload/plugins/addons/UpdateManager.py:101
 msgid "***  Get it here: http://pyload.org/download  ***"
-msgstr ""
+msgstr "***  Obtengui'l aquí: http://pyload.org/download  ***"
 
 #: pyload/plugins/addons/UpdateManager.py:104
 msgid "Not able to connect server for updates"
-msgstr ""
+msgstr "No es pot connectar al servidor per actualitzacions"
 
 #: pyload/plugins/addons/UpdateManager.py:148
 #, python-format

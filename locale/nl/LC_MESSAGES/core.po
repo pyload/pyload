@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-07-17 09:56-0400\n"
+"PO-Revision-Date: 2013-10-13 12:25-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -97,11 +97,11 @@ msgstr "Geactiveerd"
 #: pyload/config/default.py:17 pyload/config/default.py:69
 #: pyload/config/default.py:80
 msgid "Port"
-msgstr ""
+msgstr "Poort"
 
 #: pyload/config/default.py:18 pyload/config/default.py:77
 msgid "Address"
-msgstr ""
+msgstr "Adres"
 
 #: pyload/config/default.py:21
 msgid "Log"
@@ -113,7 +113,7 @@ msgstr ""
 
 #: pyload/config/default.py:24
 msgid "Folder"
-msgstr ""
+msgstr "Map"
 
 #: pyload/config/default.py:25
 msgid "File Log"
@@ -145,7 +145,7 @@ msgstr ""
 
 #: pyload/config/default.py:35 pyload/config/default.py:75
 msgid "Username"
-msgstr ""
+msgstr "Gebruikersnaam"
 
 #: pyload/config/default.py:36
 msgid "Filemode for Downloads"
@@ -165,11 +165,11 @@ msgstr ""
 
 #: pyload/config/default.py:42
 msgid "General"
-msgstr ""
+msgstr "Algemeen"
 
 #: pyload/config/default.py:44
 msgid "Language"
-msgstr ""
+msgstr "Taal"
 
 #: pyload/config/default.py:45
 msgid "Download Folder"
@@ -221,7 +221,7 @@ msgstr ""
 
 #: pyload/config/default.py:65
 msgid "Server"
-msgstr ""
+msgstr "Server"
 
 #: pyload/config/default.py:66
 msgid "Favor specific server"
@@ -249,7 +249,7 @@ msgstr ""
 
 #: pyload/config/default.py:78
 msgid "Password"
-msgstr ""
+msgstr "Wachtwoord"
 
 #: pyload/config/default.py:79
 msgid "Protocol"
