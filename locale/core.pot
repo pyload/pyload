@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyload 0.4.9.9-dev\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-08-10 11:58+0200\n"
+"POT-Creation-Date: 2013-10-13 18:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,16 +16,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: pyload/AccountManager.py:49
-#, python-format
-msgid "Unknown account plugin %s"
-msgstr ""
-
-#: pyload/AccountManager.py:71
-#, python-format
-msgid "Could not load account %s"
-msgstr ""
 
 #: pyload/AddonManager.py:62
 #, python-format
@@ -55,19 +45,33 @@ msgstr ""
 msgid "Deactivating Plugins..."
 msgstr ""
 
-#: pyload/api/DownloadApi.py:44
-#, python-format
-msgid "Added package %(name)s as folder %(folder)s"
+#: pyload/web/ServerThread.py:49
+msgid "SSL certificates not found."
 msgstr ""
 
-#: pyload/api/DownloadApi.py:95
-#, python-format
-msgid "Added %d links to package"
+#: pyload/web/ServerThread.py:53
+msgid "WebUI built is not available"
 msgstr ""
 
-#: pyload/Api.py:152
+#: pyload/web/ServerThread.py:55
+msgid "Running webUI in development mode"
+msgstr ""
+
+#: pyload/web/ServerThread.py:73
+msgid "Failed starting webserver: "
+msgstr ""
+
+#: pyload/web/ServerThread.py:107
+msgid "Failed importing webserver: "
+msgstr ""
+
+#: pyload/web/ServerThread.py:125
+msgid "This server offers no SSL, please consider using threaded instead"
+msgstr ""
+
+#: pyload/web/ServerThread.py:139
 #, python-format
-msgid "User '%s' tries to log in"
+msgid "Starting %(name)s webserver: %(host)s:%(port)d"
 msgstr ""
 
 #: pyload/config/default.py:14
@@ -316,82 +320,56 @@ msgstr ""
 msgid "Download Time"
 msgstr ""
 
-#: pyload/Core.py:195
-msgid "Received Quit signal"
-msgstr ""
-
-#: pyload/Core.py:323
+#: pyload/network/HTTPDownload.py:249
 #, python-format
-msgid "pyLoad already running with pid %s"
+msgid "Download chunks failed, fallback to single connection | %s"
 msgstr ""
 
-#: pyload/Core.py:337
+#: pyload/api/DownloadApi.py:33
 #, python-format
-msgid "Failed changing group: %s"
+msgid "Added package %(name)s as folder %(folder)s"
 msgstr ""
 
-#: pyload/Core.py:347
+#: pyload/api/DownloadApi.py:84
 #, python-format
-msgid "Failed changing user: %s"
+msgid "Added %d links to package"
 msgstr ""
 
-#: pyload/Core.py:358
-msgid "Starting"
-msgstr ""
-
-#: pyload/Core.py:359
+#: pyload/AccountManager.py:49
 #, python-format
-msgid "Using home directory: %s"
+msgid "Account plugin %s not available"
 msgstr ""
 
-#: pyload/Core.py:373
-msgid "All links removed"
-msgstr ""
-
-#: pyload/Core.py:403
+#: pyload/AccountManager.py:70
 #, python-format
-msgid "Download time: %s"
+msgid "Could not load account %s"
 msgstr ""
 
-#: pyload/Core.py:418
+#: pyload/interaction/InteractionManager.py:88
+msgid "Query"
+msgstr ""
+
+#: pyload/interaction/InteractionManager.py:111
+msgid "Captcha request"
+msgstr ""
+
+#: pyload/interaction/InteractionManager.py:111
+msgid "Please solve the captcha."
+msgstr ""
+
+#: pyload/remote/RemoteManager.py:35
 #, python-format
-msgid "Free space: %s"
+msgid "Remote backend error: %s"
 msgstr ""
 
-#: pyload/Core.py:438
-msgid "Activating Accounts..."
+#: pyload/remote/RemoteManager.py:80
+#, python-format
+msgid "Starting %(name)s: %(addr)s:%(port)s"
 msgstr ""
 
-#: pyload/Core.py:443
-msgid "Restarting failed downloads..."
-msgstr ""
-
-#: pyload/Core.py:451
-msgid "pyLoad is up and running"
-msgstr ""
-
-#: pyload/Core.py:474
-msgid "restarting pyLoad"
-msgstr ""
-
-#: pyload/Core.py:478
-msgid "pyLoad quits"
-msgstr ""
-
-#: pyload/Core.py:564
-msgid "shutting down..."
-msgstr ""
-
-#: pyload/Core.py:579
-msgid "error while shutting down"
-msgstr ""
-
-#: pyload/Core.py:661
-msgid "killed pyLoad from terminal"
-msgstr ""
-
-#: pyload/database/DatabaseBackend.py:167
-msgid "Database was deleted due to incompatible version."
+#: pyload/remote/RemoteManager.py:82
+#, python-format
+msgid "Failed loading backend %(name)s | %(error)s"
 msgstr ""
 
 #: pyload/FileManager.py:53
@@ -467,58 +445,131 @@ msgstr ""
 msgid "Package finished: %s"
 msgstr ""
 
-#: pyload/interaction/InteractionManager.py:88
-msgid "Query"
-msgstr ""
-
-#: pyload/interaction/InteractionManager.py:111
-msgid "Captcha request"
-msgstr ""
-
-#: pyload/interaction/InteractionManager.py:111
-msgid "Please solve the captcha."
-msgstr ""
-
-#: pyload/network/HTTPDownload.py:249
+#: pyload/Api.py:150
 #, python-format
-msgid "Download chunks failed, fallback to single connection | %s"
+msgid "User '%s' tries to log in"
 msgstr ""
 
-#: pyload/PluginManager.py:316
+#: pyload/Core.py:195
+msgid "Received Quit signal"
+msgstr ""
+
+#: pyload/Core.py:321
 #, python-format
-msgid "Error importing %(name)s: %(msg)s"
+msgid "pyLoad already running with pid %s"
 msgstr ""
 
-#: pyload/remote/RemoteManager.py:35
+#: pyload/Core.py:335
 #, python-format
-msgid "Remote backend error: %s"
+msgid "Failed changing group: %s"
 msgstr ""
 
-#: pyload/remote/RemoteManager.py:80
+#: pyload/Core.py:345
 #, python-format
-msgid "Starting %(name)s: %(addr)s:%(port)s"
+msgid "Failed changing user: %s"
 msgstr ""
 
-#: pyload/remote/RemoteManager.py:82
+#: pyload/Core.py:356
+msgid "Starting"
+msgstr ""
+
+#: pyload/Core.py:357
 #, python-format
-msgid "Failed loading backend %(name)s | %(error)s"
+msgid "Using home directory: %s"
 msgstr ""
 
-#: pyload/threads/AddonThread.py:55
-msgid "An Error occurred"
+#: pyload/Core.py:371
+msgid "All links removed"
 msgstr ""
 
-#: pyload/threads/DecrypterThread.py:50
-msgid "Decrypting failed"
+#: pyload/Core.py:401
+#, python-format
+msgid "Download time: %s"
 msgstr ""
 
-#: pyload/threads/DecrypterThread.py:73
+#: pyload/Core.py:416
+#, python-format
+msgid "Free space: %s"
+msgstr ""
+
+#: pyload/Core.py:436
+msgid "Activating Accounts..."
+msgstr ""
+
+#: pyload/Core.py:441
+msgid "Restarting failed downloads..."
+msgstr ""
+
+#: pyload/Core.py:449
+msgid "pyLoad is up and running"
+msgstr ""
+
+#: pyload/Core.py:472
+msgid "restarting pyLoad"
+msgstr ""
+
+#: pyload/Core.py:476
+msgid "pyLoad quits"
+msgstr ""
+
+#: pyload/Core.py:562
+msgid "shutting down..."
+msgstr ""
+
+#: pyload/Core.py:577
+msgid "error while shutting down"
+msgstr ""
+
+#: pyload/Core.py:659
+msgid "killed pyLoad from terminal"
+msgstr ""
+
+#: pyload/database/DatabaseBackend.py:167
+msgid "Database was deleted due to incompatible version."
+msgstr ""
+
+#: pyload/threads/DecrypterThread.py:30
 #, python-format
 msgid "Decrypted %(count)d links into package %(name)s"
 msgstr ""
 
-#: pyload/threads/DecrypterThread.py:80
-msgid "No links decrypted"
+#: pyload/threads/DecrypterThread.py:55
+msgid "Decrypting aborted"
+msgstr ""
+
+#: pyload/threads/DecrypterThread.py:57
+msgid "Decrypting failed"
+msgstr ""
+
+#: pyload/threads/InfoThread.py:143
+#, python-format
+msgid "Info Fetching for %(name)s failed | %(err)s"
+msgstr ""
+
+#: pyload/threads/ThreadManager.py:148
+#, python-format
+msgid "Reconnect Failed: %s"
+msgstr ""
+
+#: pyload/threads/ThreadManager.py:188
+msgid "Reconnect script not found!"
+msgstr ""
+
+#: pyload/threads/ThreadManager.py:194
+msgid "Starting reconnect"
+msgstr ""
+
+#: pyload/threads/ThreadManager.py:208
+msgid "Failed executing reconnect script!"
+msgstr ""
+
+#: pyload/threads/ThreadManager.py:219
+#, python-format
+msgid "Reconnected, new IP: %s"
+msgstr ""
+
+#: pyload/threads/ThreadManager.py:297
+msgid "Not enough space left on device"
 msgstr ""
 
 #: pyload/threads/DownloadThread.py:64
@@ -575,35 +626,13 @@ msgstr ""
 msgid "Internal Server Error"
 msgstr ""
 
-#: pyload/threads/InfoThread.py:147
+#: pyload/threads/AddonThread.py:55
+msgid "An Error occurred"
+msgstr ""
+
+#: pyload/PluginManager.py:316
 #, python-format
-msgid "Info Fetching for %(name)s failed | %(err)s"
-msgstr ""
-
-#: pyload/threads/ThreadManager.py:155
-#, python-format
-msgid "Reconnect Failed: %s"
-msgstr ""
-
-#: pyload/threads/ThreadManager.py:192
-msgid "Reconnect script not found!"
-msgstr ""
-
-#: pyload/threads/ThreadManager.py:198
-msgid "Starting reconnect"
-msgstr ""
-
-#: pyload/threads/ThreadManager.py:212
-msgid "Failed executing reconnect script!"
-msgstr ""
-
-#: pyload/threads/ThreadManager.py:224
-#, python-format
-msgid "Reconnected, new IP: %s"
-msgstr ""
-
-#: pyload/threads/ThreadManager.py:298
-msgid "Not enough space left on device"
+msgid "Error importing %(name)s: %(msg)s"
 msgstr ""
 
 #: pyload/utils/JsEngine.py:188
@@ -612,31 +641,6 @@ msgid ""
 "nodejs or rhino"
 msgstr ""
 
-#: pyload/web/ServerThread.py:49
-msgid "SSL certificates not found."
-msgstr ""
-
-#: pyload/web/ServerThread.py:53
-msgid "WebUI built is not available"
-msgstr ""
-
-#: pyload/web/ServerThread.py:55
-msgid "Running webUI in development mode"
-msgstr ""
-
-#: pyload/web/ServerThread.py:73
-msgid "Failed starting webserver: "
-msgstr ""
-
-#: pyload/web/ServerThread.py:107
-msgid "Failed importing webserver: "
-msgstr ""
-
-#: pyload/web/ServerThread.py:125
-msgid "This server offers no SSL, please consider using threaded instead"
-msgstr ""
-
-#: pyload/web/ServerThread.py:139
-#, python-format
-msgid "Starting %(name)s webserver: %(host)s:%(port)d"
+#: pyload/utils/packagetools.py:130
+msgid "Unnamed package"
 msgstr ""

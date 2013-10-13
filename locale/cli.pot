@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyload 0.4.9.9-dev\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-08-10 11:58+0200\n"
+"POT-Creation-Date: 2013-10-13 18:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,6 +45,50 @@ msgstr ""
 
 #: pyload/cli/AddPackage.py:64 pyload/cli/ManageFiles.py:149
 msgid " back to main menu"
+msgstr ""
+
+#: pyload/cli/ManageFiles.py:97
+msgid "Manage Packages:"
+msgstr ""
+
+#: pyload/cli/ManageFiles.py:99
+msgid "Manage Links:"
+msgstr ""
+
+#: pyload/cli/ManageFiles.py:104
+msgid "What do you want to move?"
+msgstr ""
+
+#: pyload/cli/ManageFiles.py:106
+msgid "What do you want to delete?"
+msgstr ""
+
+#: pyload/cli/ManageFiles.py:108
+msgid "What do you want to restart?"
+msgstr ""
+
+#: pyload/cli/ManageFiles.py:113
+msgid "Choose what you want to do, or enter package number."
+msgstr ""
+
+#: pyload/cli/ManageFiles.py:115
+msgid "delete"
+msgstr ""
+
+#: pyload/cli/ManageFiles.py:115
+msgid "move"
+msgstr ""
+
+#: pyload/cli/ManageFiles.py:115
+msgid "restart"
+msgstr ""
+
+#: pyload/cli/ManageFiles.py:148
+msgid " - previous"
+msgstr ""
+
+#: pyload/cli/ManageFiles.py:148
+msgid " - next"
 msgstr ""
 
 #: pyload/cli/Cli.py:75 pyload/cli/Cli.py:133
@@ -248,48 +292,4 @@ msgstr ""
 
 #: pyload/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
-msgstr ""
-
-#: pyload/cli/ManageFiles.py:97
-msgid "Manage Packages:"
-msgstr ""
-
-#: pyload/cli/ManageFiles.py:99
-msgid "Manage Links:"
-msgstr ""
-
-#: pyload/cli/ManageFiles.py:104
-msgid "What do you want to move?"
-msgstr ""
-
-#: pyload/cli/ManageFiles.py:106
-msgid "What do you want to delete?"
-msgstr ""
-
-#: pyload/cli/ManageFiles.py:108
-msgid "What do you want to restart?"
-msgstr ""
-
-#: pyload/cli/ManageFiles.py:113
-msgid "Choose what you want to do, or enter package number."
-msgstr ""
-
-#: pyload/cli/ManageFiles.py:115
-msgid "delete"
-msgstr ""
-
-#: pyload/cli/ManageFiles.py:115
-msgid "move"
-msgstr ""
-
-#: pyload/cli/ManageFiles.py:115
-msgid "restart"
-msgstr ""
-
-#: pyload/cli/ManageFiles.py:148
-msgid " - previous"
-msgstr ""
-
-#: pyload/cli/ManageFiles.py:148
-msgid " - next"
 msgstr ""
