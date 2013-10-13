@@ -17,8 +17,6 @@
     @author: jeix
 """
 
-# http://www.putlocker.com/file/83C174C844583CF7
-
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster
