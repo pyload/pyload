@@ -27,7 +27,7 @@ class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?fastshare.cz/\d+/.+"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __description__ = """FastShare.cz"""
     __author_name__ = ("zoidberg", "stickell")
 
@@ -41,8 +41,6 @@ class FastshareCz(SimpleHoster):
     NOT_ENOUGH_CREDIC_PATTERN = "Nem.te dostate.n. kredit pro sta.en. tohoto souboru"
 
     def handleFree(self):
-        self.html = self.load(self.pyfile.url)
-
         if '100% of FREE slots are full' in self.html:
             self.retry(120, 60, "No free slots")
 

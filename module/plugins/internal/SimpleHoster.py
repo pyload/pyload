@@ -146,7 +146,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -187,6 +187,8 @@ class SimpleHoster(Hoster):
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
         else:
+            # This line is required due to the getURL workaround. Can be removed in 0.5
+            self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
             self.handleFree()
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
