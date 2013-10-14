@@ -51,7 +51,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.521"
+    __version__ = "0.522"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -93,6 +93,8 @@ class EpisodeMover(Hook):
         self.renamer = FileRenamer(self.log)
         self.number_of_parallel_queries = 10
         self.language = self.getConfig("episode_language")
+        pattern_compiler = PatternCompiler() # local scope possibly enough
+        self.pattern_checker = PatternChecker(pattern_compiler)
         
 
 
@@ -164,7 +166,7 @@ class EpisodeMover(Hook):
     
     # event dispatched on completion of single file   
     def downloadFinished(self, pyfile):
-        isArchive = PatternChecker()
+        isArchive = self.pattern_checker
         for ext in ['rar', 'zip']:
             if isArchive.hasExtension(pyfile.name, ext):
                 self.logDebug(u"%s is an archive. Aborting..." % pyfile.name)
@@ -315,7 +317,7 @@ class EpisodeMover(Hook):
         
         Check if file is valid (supported) video container .
         '''
-        valdor = PatternChecker()
+        valdor = self.pattern_checker
         extensions = string.split(self.getConf("extensions"), ',')
         for ext in extensions: 
             if (valdor.hasExtension(file_name, ext)):
@@ -326,7 +328,7 @@ class EpisodeMover(Hook):
     
     def isTVEp(self,video_name, src_path):
         '''checks if a file is a tv show episode'''
-        valdor = PatternChecker()
+        valdor = self.pattern_checker
         if(valdor.isTVEpisode(video_name)):
             self.logDebug(u'File "%s" is a tv episode' % video_name)
             return True
@@ -342,7 +344,7 @@ class EpisodeMover(Hook):
         Returns True on a match and False if no match was produced
         '''
         episode = episode_obj
-        valdor = PatternChecker()
+        valdor = self.pattern_checker
         #crntShows = {}  #add found tv episodes: {ep_file_name:(path_to_show, show_title, show_index)}  <- obsolete structure; adapt it!
         for e in self.__tvdb.keys(): # where e is an actual name of locally existing show
             if valdor.hasPattern(episode.src_filename, valdor.createPattern(e)) is not None: # if True we got a local match
@@ -366,7 +368,7 @@ class EpisodeMover(Hook):
                 else:
                     return True
         if(createShow):
-            self.__createShow(episode)
+            return self.__createShow(episode)
     
 
     def __createShow(self, episode):
@@ -398,7 +400,7 @@ class EpisodeMover(Hook):
                 
     def __getShowNameFromRemoteDB(self, episode):
         full_query_string = episode.full_query_string
-        minimal_query_string = PatternChecker().getMinimalQueryString(episode.full_query_string) # cut off file name at series index
+        minimal_query_string = self.pattern_checker.getMinimalQueryString(episode.full_query_string) # cut off file name at series index
         
         root_folder = episode.root_folder
         root_folder_search_enabled = False 
@@ -472,7 +474,7 @@ class EpisodeMover(Hook):
     def hasSeasonDir(self, episode_obj, createSeason=False, arbitrarySeason=True):
         #crntShows = {}  #add found tv episodes: {ep_file_name:(path_to_show, show_title, show_index)}  <- obsolete structure; adapt it!
         episode = episode_obj
-        valdor = PatternChecker()
+        valdor = self.pattern_checker
         season = valdor.getSeason(episode.src_filename,
                                   self.getConfig("season_text"),
                                   self.getConfig("leading_zero")) # returns "Season 1" e.g.
@@ -506,7 +508,7 @@ class EpisodeMover(Hook):
     
     def getArbSeasonPath(self,path_to_show, episode_name):
         directories = PathLoader().loadFolders(path_to_show)
-        vldr = PatternChecker()
+        vldr = self.pattern_checker
         
         for dir_ in directories:
             if dir_ == vldr.checkArbitrarySeason(self.getConfig("season_text"),
@@ -526,7 +528,7 @@ class EpisodeMover(Hook):
     
     def __isJunk(self, file_name):
         '''checks if file is a Junk File so it can be deleted'''
-        valdor = PatternChecker()
+        valdor = self.pattern_checker
         jextensions = self.getConfig("junk_exts")
         extensions = string.split(jextensions, ',')
         for ext in extensions: 
@@ -792,7 +794,7 @@ class PathLoader:
     
 
 
-class Pattern:
+class PatternCompiler:
     
     
     def __init__(self):
@@ -801,14 +803,115 @@ class Pattern:
         # compile and then instantiate once for EpisodeMover
         
         # config strings
-        self.is_tv_episode = "is_tv_episode"
-        self.is_tv_episode_type1 = "S00E00"
+        self.is_tv_episode = "isTVEpisode"
         
-        self.pattern = {}
-        self.pattern[self.is_tv_episode] = ""
+        self.get_season = "getSeason"
+        self.getSeason_type1 = "type1"
+        self.getSeason_type2 = "type2"
+        self.getSeason_type3 = "type3"
+        self.getSeason_type4 = "type4"
+        
+        self.get_show_index = "getShowIndex"
+        self.getShowIndex_type1 = "type1"
+        self.getShowIndex_type2 = "type2"
+        self.getShowIndex_type3 = "type3"
+        self.getShowIndex_type4 = "type4"
+        
+        self.get_minimal_query_string = "getMinimalQueryString"
+        self.getMinimalQueryString_type1 = "type1"
+        self.getMinimalQueryString_type2 = "type2"
+        self.getMinimalQueryString_type3 = "type3"
+        
+        # compiled pattern dict
+        self.compiled_pattern = {}
+        self.compiled_pattern[self.getSeason] = {}
+        self.compiled_pattern[self.getShowIndex] = {}
+        
+        # compile all patterns and assign to pattern dict
+        self.compile_all_patterns()
+        
+        
+    def compile_all_patterns(self):
+        cp = self.compiled_pattern
+        cp[self.is_tv_episode] = self.compile_isTVEpisode()
+        cp[self.get_season] = self.compile_getSeason() 
+        cp[self.get_show_index] = self.compile_getShowIndex()
+        cp[self.get_minimal_query_string] = self.compile_getMinimalQueryString()
+        
+    def compile_isTVEpisode(self):
+        pattern1 = '(s\d{2}e\d{2})' # S01E01 e.g.
+        pattern2 = '(\d{1,2}x\d{1,2})' # 1x1, 10x10, 1x10, 10x1 e.g.
+        pattern3 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{3})((\\s+)|(-+)|(_+)|(\\.+))' # ".101-", "_901 " with ESS
+
+        return re.compile(pattern1 + '|' + pattern2 + '|' + pattern3, re.IGNORECASE|re.DOTALL)
+    
+    def compile_getSeason(self):
+        p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
+        p10 = '(\w{1})(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # ShwnmS01E01 e.g.
+        p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
+        p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9])((\\s+)|(-+)|(_+)|(\\.+))' # 100 - 959
+        
+        result_dict = {}
+        
+        result_dict[self.getSeason_type1] = re.compile(p1, re.IGNORECASE)
+        result_dict[self.getSeason_type2] = re.compile(p10, re.IGNORECASE)
+        result_dict[self.getSeason_type3] = re.compile(p2, re.IGNORECASE)
+        result_dict[self.getSeason_type4] = re.compile(p3, re.IGNORECASE)
+        
+        return result_dict
+
+    
+    def compile_getShowIndex(self):
+        p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
+        p10 = '(\w{1})(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # ShwnmS01E01 e.g.
+        p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
+        p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9]){1}((\\s+)|(-+)|(_+)|(\\.+))' # ".101-", "_901 " with ESS
+        
+        result_dict = {}
+        
+        result_dict[self.getShowIndex_type1] = re.compile(p1, re.IGNORECASE)
+        result_dict[self.getShowIndex_type2] = re.compile(p10, re.IGNORECASE)
+        result_dict[self.getShowIndex_type3] = re.compile(p2, re.IGNORECASE)
+        result_dict[self.getShowIndex_type4] = re.compile(p3, re.IGNORECASE)
+        
+        return result_dict
+
+        
+    def compile_getMinimalQueryString(self):
+        p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
+        p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
+        p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9]){1}((\\s+)|(-+)|(_+)|(\\.+))' # ".101-", "_901 " with ESS
+        
+        result_dict = {}
+        
+        result_dict[self.getMinimalQueryString_type1] = re.compile(p1, re.IGNORECASE)
+        result_dict[self.getMinimalQueryString_type2] = re.compile(p2, re.IGNORECASE)
+        result_dict[self.getMinimalQueryString_type3] = re.compile(p3, re.IGNORECASE)
+        
+        return result_dict
+        
+    
+    
+    def isTvEpisode(self):
+        return self.compiled_pattern[self.is_tv_episode]
+    
+    def getSeason(self, season_type):
+        return self.compiled_pattern[self.get_season][season_type]
+    
+    def getShowIndex(self, show_index_type):
+        return self.compiled_pattern[self.get_show_index][show_index_type]
+    
+    def getMinimalQueryString(self, minimal_query_string_type):
+        return self.compiled_pattern[self.get_minimal_query_string][minimal_query_string_type]
+            
+        
+        
+    
 
 class PatternChecker:
-
+    
+    def __init__(self, pattern_compiler):
+        self.pattern = pattern_compiler
 
 
     def isTVEpisode(self, string_to_check):
@@ -819,14 +922,8 @@ class PatternChecker:
         Example: s02e11 <- 11th episode of 2nd season - its trivial I know but had to be mentioned.
         '''
 
-        pattern1 = '(s\d{2}e\d{2})' # S01E01 e.g.
-        pattern2 = '(\d{1,2}x\d{1,2})' # 1x1, 10x10, 1x10, 10x1 e.g.
-        pattern3 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{3})((\\s+)|(-+)|(_+)|(\\.+))' # ".101-", "_901 " with ESS
-        
-
-#        rg = re.compile(re2+re3+re4+re5,re.IGNORECASE|re.DOTALL)
-        rg = re.compile(pattern1 + '|' + pattern2 + '|' + pattern3, re.IGNORECASE|re.DOTALL)
-        m = rg.search(string_to_check)
+        compiled_pattern = self.pattern.isTvEpisode()
+        m = compiled_pattern.search(string_to_check)
         if m:
             return True
         else:
@@ -943,41 +1040,36 @@ class PatternChecker:
         Allowed input formats are specified in p1, (p10), p2 and p3.
         Returns a leading zero for numbers < 10 if leading_zero is True.
         '''
-
-        p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
-        # recognition of Filenames like blablasxxexx
-        # has the potential to produce false positives
-        # therefore lets keep an eye on this
-        p10 = '(\w{1})(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # ShwnmS01E01 e.g.
-        p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
-        p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9])((\\s+)|(-+)|(_+)|(\\.+))' # 100 - 959 
         
+        p1 = self.pattern.getSeason(self.pattern.getSeason_type1)
+        p2 = self.pattern.getSeason(self.pattern.getSeason_type2)
+        p3 = self.pattern.getSeason(self.pattern.getSeason_type3)
+        p4 = self.pattern.getSeason(self.pattern.getSeason_type4)
         
-        m1 = re.search(p1, string_to_check, re.IGNORECASE)
-        m10 = re.search(p10, string_to_check, re.IGNORECASE)
-        m2 = re.search(p2, string_to_check, re.IGNORECASE)
-        m3 = re.search(p3, string_to_check, re.IGNORECASE)
-
+        type1 = re.search(p1, string_to_check)
+        type2 = re.search(p2, string_to_check)
+        type3 = re.search(p3, string_to_check)
+        type4 = re.search(p4, string_to_check)
         
         punc = ['.', ' ', '-', '_']
-        if m1:
-            index = m1.group(0)
+        if type1:
+            index = type1.group(0)
             for c in punc:
                 index = index.strip(c)
             season_number = int(index[1:3])
-        elif m10:
-            index = m10.group(0)[1:]
+        elif type2:
+            index = type2.group(0)[1:]
             for c in punc:
                 index = index.strip(c)
             season_number = int(index[1:3])
-        elif m2:
-            index = m2.group(0)
+        elif type3:
+            index = type3.group(0)
             for c in punc:
                 index = index.strip(c)
             index = index[:index.find('x')]
             season_number = int(index)
-        elif m3:
-            index = m3.group(0)
+        elif type4:
+            index = type4.group(0)
             for c in punc:
                 index = index.strip(c)
             season_number = int(index[0])
@@ -993,24 +1085,25 @@ class PatternChecker:
     
     
     def getShowIndex(self, episode):
-        p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
-        p10 = '(\w{1})(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # ShwnmS01E01 e.g.
-        p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
-        p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9]){1}((\\s+)|(-+)|(_+)|(\\.+))' # ".101-", "_901 " with ESS
         
-        m1 = re.search(p1, episode, re.IGNORECASE)
-        m10 = re.search(p10, episode, re.IGNORECASE)
-        m2 = re.search(p2, episode, re.IGNORECASE)
-        m3 = re.search(p3, episode, re.IGNORECASE)
+        p_type1 = self.pattern.getShowIndex(self.pattern.getShowIndex_type1)
+        p_type2 = self.pattern.getShowIndex(self.pattern.getShowIndex_type2)
+        p_type3 = self.pattern.getShowIndex(self.pattern.getShowIndex_type3)
+        p_type4 = self.pattern.getShowIndex(self.pattern.getShowIndex_type4)
         
-        if m1:
-            m = m1.group(0)
-        elif m10:
-            m = m10.group(0)[1:]
-        elif m2:
-            m = m2.group(0)
-        elif m3:
-            m = m3.group(0)
+        type1 = re.search(p_type1, episode)
+        type2 = re.search(p_type2, episode)
+        type3 = re.search(p_type3, episode)
+        type4 = re.search(p_type4, episode)
+        
+        if type1:
+            m = type1.group(0)
+        elif type2:
+            m = type2.group(0)[1:]
+        elif type3:
+            m = type3.group(0)
+        elif type4:
+            m = type4.group(0)
             
         punc = ['.', ' ', '-', '_']
         for c in punc:
@@ -1020,23 +1113,23 @@ class PatternChecker:
     
     def getMinimalQueryString(self, episode_file_name):
         efn = episode_file_name
-
-        p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
-        p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
-        p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9]){1}((\\s+)|(-+)|(_+)|(\\.+))' # ".101-", "_901 " with ESS
         
-        m1 = re.search(p1, efn, re.IGNORECASE)
-        m2 = re.search(p2, efn, re.IGNORECASE)
-        m3 = re.search(p3, efn, re.IGNORECASE)
+        p_type1 = self.pattern.getMinimalQueryString(self.pattern.getMinimalQueryString_type1)
+        p_type2 = self.pattern.getMinimalQueryString(self.pattern.getMinimalQueryString_type2)
+        p_type3 = self.pattern.getMinimalQueryString(self.pattern.getMinimalQueryString_type3)
+        
+        type1 = re.search(p_type1, efn)
+        type2 = re.search(p_type2, efn)
+        type3 = re.search(p_type3, efn)
 
         # arg: "a.series.s01e01.blabla.mkv
         # return: "a.series"
-        if m1:
-            return efn[:efn.find(m1.group(0))]
-        elif m2:
-            return efn[:efn.find(m2.group(0))]
-        elif m3:
-            return efn[:efn.find(m3.group(0))]
+        if type1:
+            return efn[:efn.find(type1.group(0))]
+        elif type2:
+            return efn[:efn.find(type2.group(0))]
+        elif type3:
+            return efn[:efn.find(type3.group(0))]
       
 
             
