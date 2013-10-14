@@ -51,7 +51,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.520"
+    __version__ = "0.521"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -343,8 +343,7 @@ class EpisodeMover(Hook):
         '''
         episode = episode_obj
         valdor = PatternChecker()
-        path = os.path.abspath(episode.src)
-        #        crntShows = {}  #add found tv episodes: {ep_file_name:(path_to_show, show_title, show_index)}  <- obsolete structure; adapt it!
+        #crntShows = {}  #add found tv episodes: {ep_file_name:(path_to_show, show_title, show_index)}  <- obsolete structure; adapt it!
         for e in self.__tvdb.keys(): # where e is an actual name of locally existing show
             if valdor.hasPattern(episode.src_filename, valdor.createPattern(e)) is not None: # if True we got a local match
                 episode.dst = os.path.join(self.__tvdb.get(e), e) 
@@ -366,29 +365,32 @@ class EpisodeMover(Hook):
                         return True # return True since the show itself was successfully matched
                 else:
                     return True
-        #TODO: break this up into two methods -> def createShowLocally()
         if(createShow):
-            if self.__getShowNameFromRemoteDB(episode) is not None: #actual name of tv show
-                if os.path.exists(self.getConfig("tvshows")): # just a precaution - we don't want to leave a trail of folders across the filesystem
-                    if self.getConfig("folder_sub") is True:
-                        episode.show_name = self.renamer.substituteChars(episode.show_name, self.getConfig("char_sub"))
-                    show_name = episode.show_name
-                    if episode.episode_names == {}:
-                        self.logInfo(u'No episode name for "%s" found. Applying those during renaming will not be available' % show_name)
-                    episode.dst = os.path.join(self.getConfig("tvshows"), show_name)
-                    try:
-                        os.mkdir(episode.dst) #race condition 
-                        self.logInfo(u'Conclusive result on show name determination: "%s" recognised as show "%s".' % (episode.src_filename, show_name))
-                        self.logInfo(u'Added "%s" to local tv database and created folder "%s".' % (show_name, episode.dst))
+            self.__createShow(episode)
+    
+
+    def __createShow(self, episode):
+        if self.__getShowNameFromRemoteDB(episode) is not None: #actual name of tv show
+            if os.path.exists(self.getConfig("tvshows")): # just a precaution - we don't want to leave a trail of folders across the filesystem
+                if self.getConfig("folder_sub") is True:
+                    episode.show_name = self.renamer.substituteChars(episode.show_name, self.getConfig("char_sub"))
+                show_name = episode.show_name
+                if episode.episode_names == {}:
+                    self.logInfo(u'No episode name for "%s" found. Applying those during renaming will not be available' % show_name)
+                episode.dst = os.path.join(self.getConfig("tvshows"), show_name)
+                try:
+                    os.mkdir(episode.dst) #race condition 
+                    self.logInfo(u'Conclusive result on show name determination: "%s" recognised as show "%s".' % (episode.src_filename, show_name))
+                    self.logInfo(u'Added "%s" to local tv database and created folder "%s".' % (show_name, episode.dst))
+                    return True
+                except OSError, ose:
+                    if ose.errno == 17:
+                        self.logDebug(u'Folder "%s" already exists. Moving on...' % episode.dst)
                         return True
-                    except OSError, ose:
-                        if ose.errno == 17:
-                            self.logDebug(u'Folder "%s" already exists. Moving on...' % episode.dst)
-                            return True
-            else:
-                self.logInfo(u'No conclusive result on show name determination for "%s". Skipping...' % (episode.src_filename))
-                self.mv_logger.log_custom(u'No conclusive result on show name determination for "%s". Skipping...' % (episode.src_filename))
-                return False
+        else:
+            self.logInfo(u'No conclusive result on show name determination for "%s". Skipping...' % (episode.src_filename))
+            self.mv_logger.log_custom(u'No conclusive result on show name determination for "%s". Skipping...' % (episode.src_filename))
+            return False
         self.logDebug(u'The show "%s" is not part of the local database' % (episode.src_filename))
         self.mv_logger.log_custom(u'The show "%s" is not part of the local database' % (episode.src_filename))
         return False
