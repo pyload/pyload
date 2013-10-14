@@ -51,7 +51,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.519"
+    __version__ = "0.520"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -373,6 +373,8 @@ class EpisodeMover(Hook):
                     if self.getConfig("folder_sub") is True:
                         episode.show_name = self.renamer.substituteChars(episode.show_name, self.getConfig("char_sub"))
                     show_name = episode.show_name
+                    if episode.episode_names == {}:
+                        self.logInfo(u'No episode name for "%s" found. Applying those during renaming will not be available' % show_name)
                     episode.dst = os.path.join(self.getConfig("tvshows"), show_name)
                     try:
                         os.mkdir(episode.dst) #race condition 
@@ -391,96 +393,77 @@ class EpisodeMover(Hook):
         self.mv_logger.log_custom(u'The show "%s" is not part of the local database' % (episode.src_filename))
         return False
 
-    #deprecated    
-    def __getFromRmteDB(self, file_name, root_folder, query, returnEpisodes=False):
-        try:
-#            def processQueries(self,list_of_possible_names, episode_name=''):
-            if returnEpisodes is False:
-                e = query.sendQuery(file_name)
-            else:
-                e = query.processQueries([file_name,])["episode_names"]
-            self.logInfo(u'Episode query successful for "%s". Proceeding...' % file_name)
-            return e
-        except EMException, eme:
-            if returnEpisodes is True:
-                return None
-        if self.getConfig("folder_search") is True and \
-        os.path.split(self.config.plugin["ExtractArchive"]["destination"]["value"])[1] != root_folder and \
-        os.path.split(self.config["general"]["download_folder"]) != root_folder:
-            try:
-                
-                e = query.sendQuery(root_folder)
-                self.logInfo(u'Episode query successful for "%s" using its enclosing directory ("%s"). Proceeding...' % (file_name, root_folder))
-                return e
-            except EMException, eme:
-                    self.logInfo(eme.error() + " " + eme.args[0])
-                    return None
                 
     def __getShowNameFromRemoteDB(self, episode):
         full_query_string = episode.full_query_string
         minimal_query_string = PatternChecker().getMinimalQueryString(episode.full_query_string) # cut off file name at series index
         
+        root_folder = episode.root_folder
+        root_folder_search_enabled = False 
+        if self.getConfig("folder_search") is True and \
+        os.path.split(self.config.plugin["ExtractArchive"]["destination"]["value"])[1] != root_folder and \
+        os.path.split(self.config["general"]["download_folder"]) != root_folder:
+            root_folder_search_enabled = True 
+        
         # in case PatternChecker() produces no workable result skip querying w/ minimal string 
         # e.g. Anger Mangangement: "poe-ams01e02.avi" -> NONE: poe gets cut off as common occurrence, ams gets cut off by getMinimalQueryString()
         # TODO: disable application of common occurrence removal for querying w/ minimal string (?)
         if minimal_query_string != None:
-            try:
-                minimal_query_string = [StringCleaner().clean(minimal_query_string, isFile=False),] # clean punctuation and convert to list
-                query_handler = QueryHandler(self.number_of_parallel_queries, self.language)
-                query_result = query_handler.processQueries(minimal_query_string)
+            minimal_query_string = [StringCleaner().clean(minimal_query_string, isFile=False),] # clean punctuation and convert to list
+            query_handler = QueryHandler(self.number_of_parallel_queries, self.language)
+            query_result = query_handler.processQueries(minimal_query_string)
+            if query_result != None:
                 episode.show_name = query_result["name"]
                 episode.episode_names = query_result["episode_names"]
-                self.logInfo(u'Show name minimal query successful for "%s". Proceeding...' % episode.src_filename)
-                if not episode.episode_name:
-                    self.logInfo(u'Episode name determination for %s failed. Likely the particular episode is too recent.' % episode.src_filename)
+                self.logDebug(u'Show name minimal query successful for "%s". Proceeding...' % episode.src_filename)
                 return episode
-            except EMException, eme:
+            else:
+                self.logDebug(u'Show name determination with minimal query string for "%s" failed.' \
+                              ' Trying full query string next.' % episode.src_filename)
                 # lets try again using the full file name
-                pass
         
         # query using the full file name / full query string
-        try:
-            query = Query(self.getConfig("occurrences"),
+        query = Query(self.getConfig("occurrences"),
                           self.number_of_parallel_queries,
                           self.language)            
-            query_result = query.sendQuery(full_query_string)
+        query_result = query.sendQuery(full_query_string)
+        if query_result != None:
             episode.show_name = query_result["name"]
             episode.episode_names = query_result["episode_names"]
-            self.logInfo(u'Show name full query successful for "%s". Proceeding...' % episode.src_filename)
-            if not episode.episode_name:
-                self.logInfo(u'Episode name determination for %s failed. Likely the particular episode is too recent.' % episode.src_filename)
+            self.logDebug(u'Show name full query successful for "%s". Proceeding...' % episode.src_filename)
             return episode
-        except EMException, eme:
-            # lets try again with the root_folder if that option is enabled
-            pass
+        else:
+            self.logDebug(u'Show name determination with full query string for "%s" failed.' \
+                          ' Trying next with root_folder search if enabled.' % episode.src_filename)
+        # lets try again with the root_folder if that option is enabled
         
-        # query using the root folder where episode.src_filename resides in
-        root_folder = episode.root_folder
-        if self.getConfig("folder_search") is True and \
-        os.path.split(self.config.plugin["ExtractArchive"]["destination"]["value"])[1] != root_folder and \
-        os.path.split(self.config["general"]["download_folder"]) != root_folder:
-            try:
-                query_result = query.sendQuery(root_folder,isFile=False)
+        # query using the root/parent folder where episode.src_filename resides in
+        if not root_folder_search_enabled:
+            self.logDebug(u'Skipping root_folder ("%s") search for "%s" since that option is disabled.' \
+                          % (root_folder, episode.src_filename))
+            return None
+        else:
+            query_result = query.sendQuery(root_folder,isFile=False)
+            if query_result != None:
                 episode.show_name = query_result["name"]
                 episode.episode_names = query_result["episode_names"]
-                self.logInfo(u'Show name query successful for "%s" using its enclosing directory ("%s"). Proceeding...' \
+                self.logDebug(u'Show name query successful for "%s" using its enclosing directory ("%s"). Proceeding...' \
                              % (episode.src_filename, root_folder))
-                if not episode.episode_name:
-                    self.logInfo(u'Episode name determination for %s failed. Likely the particular episode is too recent.' % episode.src_filename)
                 return episode
-            except EMException, eme:
-                self.logInfo(eme.error() + " " + eme.args[0])
+            else:
+                self.logDebug(u'Show name determination on "%s" with its parent directory "%s" failed.' \
+                              % (episode.src_filename, root_folder))
                 return None
-            return None
     
     
     def __getEpisodeNamesFromRemoteDB(self, show_name):
-        try:
-            query_handler = QueryHandler(self.number_of_parallel_queries, self.language)
-            e = query_handler.processQueries([show_name,])["episode_names"]
-            self.logInfo(u'Episode query successful for "%s". Proceeding...' % show_name)
-            return e
-        except EMException, eme:
+        query_handler = QueryHandler(self.number_of_parallel_queries, self.language)
+        query_result = query_handler.processQueries([show_name,])["episode_names"]
+        if query_result != None:
+            self.logDebug(u'Episode query successful on "%s". Proceeding...' % show_name)
+            return query_result
+        else:
+            self.logDebug(u'Episode query on "%s" failed.' % show_name)
             return None
         
     
@@ -1269,7 +1252,7 @@ class QueryHandler:
             self._sendEpisodesReq(series_id)
             return self.__shows[series_id]
         else:
-            raise EMException(u"%s either unknown or too generic." % episode_name, 1 )
+            return None
     
 
     def __add_to_queue_sendRequest(self, single_combination):
@@ -1495,7 +1478,6 @@ class Query:
     
     def sendQuery(self,episode_name, isFile=True):
         return self._query_handler.processQueries(self._generateQuery(episode_name, isFile), episode_name)
-    
     
     def _clean(self, episode_name, isFile):
         return self._cleaner.clean(episode_name, isFile)
