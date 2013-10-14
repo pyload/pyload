@@ -34,37 +34,55 @@ class PutlockerCom(SimpleHoster):
 
     FILE_OFFLINE_PATTERN = r"This file doesn't exist, or has been removed."
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
+    FILE_URL_REPLACEMENTS = [(r'http://putlocker\.com', r'http://www.putlocker.com')]
 
-    def handleFree(self):
+    def setup(self):
         self.multiDL = self.resumeDownload = True
         self.chunkLimit = -1
-        self.pyfile.url = re.sub(r'http://putlocker\.com', r'http://www.putlocker.com', self.pyfile.url)
 
-        self.html = self.load(self.pyfile.url, decode=True)
+    def checkName(self, name_old, name=self.pyfile.name):
+        if name <= name_old:
+            return
+        name_new = re.sub(r'\.[^.]+$', "", name_old) + name[len(name_old):]
+        file = self.lastDownload
+        self.pyfile.name = name_new
+        rename(file, file.rsplit(name)[0] + name_new)
+        self.logInfo("%(name)s renamed to %(newname)s" % {"name": name, "newname": name_new})
+
+    def process(self, pyfile):
+        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
+        self.req.setOption("timeout", 120)
+        # Due to a 0.4.9 core bug self.load would keep previous cookies even if overridden by cookies parameter.
+        # Workaround using getURL. Can be reverted in 0.5 as the cookies bug has been fixed.
+        self.html = getURL(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+        self.getFileInfo()
 
         name_old = self.pyfile.name
 
+        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
+            self.handlePremium()
+        else:
+            self.handleFree()
+
+        name_new = self.pyfile.name
+        self.checkName(name_old, name_new)
+
+    def handleFree(self):
         link = self._getLink()
         if not link.startswith('http://'):
             link = "http://www.putlocker.com" + link
-        file = self.download(link, disposition=True)
-        name = self.pyfile.name
-
-        if name > name_old:
-            name_new = re.sub(r'\.[^.]+$', "", name_old) + name[len(name_old):]
-            self.logInfo("%(name)s renamed to %(newname)s" % {"name": name, "newname": name_new})
-            self.pyfile.name = name_new
-            rename(file, file.rsplit(name)[0] + name_new)
+        self.download(link, disposition=True)
 
     def _getLink(self):
+        self.html = self.load(pyfile.url, decode=True)
         hash_data = re.search(r'<input type="hidden" value="([a-z0-9]+)" name="hash">', self.html)
         if not hash_data:
             self.parseError('Unable to detect hash')
 
         post_data = {"hash": hash_data.group(1), "confirm": "Continue+as+Free+User"}
         self.html = self.load(self.pyfile.url, post=post_data)
-        if ">You have exceeded the daily stream limit for your country\\. You can wait until tomorrow" in self.html or \
-                        "(>This content server has been temporarily disabled for upgrades|Try again soon\\. You can still download it below\\.<)" in self.html:
+        if (">You have exceeded the daily stream limit for your country\\. You can wait until tomorrow" in self.html or
+            "(>This content server has been temporarily disabled for upgrades|Try again soon\\. You can still download it below\\.<)" in self.html):
             self.retry(wait_time=2 * 60 * 60, reason="Download limit exceeded or server disabled")
 
         patterns = (r'(/get_file\.php\?id=[A-Z0-9]+&key=[A-Za-z0-9=]+&original=1)',
