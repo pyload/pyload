@@ -33,7 +33,7 @@ class PutlockerCom(SimpleHoster):
     __author_name__ = ("jeix", "stickell", "Walter Purcaro")
     __author_mail__ = ("", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
-    FILE_OFFLINE_PATTERN = r"This file doesn't exist, or has been removed."
+    FILE_OFFLINE_PATTERN = r'This file doesn\'t exist, or has been removed.'
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
 
     def setup(self):
@@ -60,34 +60,25 @@ class PutlockerCom(SimpleHoster):
 
         name = pyfile.name
 
-        if self.premium:
-            self.handlePremium()
-        else:
-            self.handleFree()
+        self.download(self._getLink(), disposition=True)
 
         self.processName(name)
 
-    def handleFree(self):
-        link = self._getLink()
-        if not link.startswith('http://'):
-            link = "http://www.putlocker.com" + link
-        self.download(link, disposition=True)
-
     def _getLink(self):
-        self.html = self.load(self.pyfile.url, decode=True)
+        self.html = getURL(self.pyfile.url, decode=True)
         hash_data = re.search(r'<input type="hidden" value="([a-z0-9]+)" name="hash">', self.html)
         if not hash_data:
-            self.parseError('Unable to detect hash')
+            self.parseError("Unable to detect hash")
 
         post_data = {"hash": hash_data.group(1), "confirm": "Continue+as+Free+User"}
         self.html = self.load(self.pyfile.url, post=post_data)
         if (">You have exceeded the daily stream limit for your country\\. You can wait until tomorrow" in self.html or
             "(>This content server has been temporarily disabled for upgrades|Try again soon\\. You can still download it below\\.<)" in self.html):
-            self.retry(wait_time=2 * 60 * 60, reason="Download limit exceeded or server disabled")
+            self.retry(wait_time=2 * 3600, reason="Download limit exceeded or server disabled")
 
         patterns = (r'(/get_file\.php\?id=[A-Z0-9]+&key=[A-Za-z0-9=]+&original=1)',
-                    r"(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+)",
-                    r"(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+&original=1)",
+                    r'(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+)',
+                    r'(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+&original=1)',
                     r'<a href="/gopro\.php">Tired of ads and waiting\? Go Pro!</a>[\t\n\rn ]+</div>[\t\n\rn ]+<a href="(/.*?)"')
         for pattern in patterns:
             link = re.search(pattern, self.html)
@@ -101,6 +92,7 @@ class PutlockerCom(SimpleHoster):
                 if not link:
                     link = re.search("\"(http://media\\-b\\d+\\.putlocker\\.com/download/\\d+/.*?)\"", self.html)
             else:
-                self.parseError('Unable to detect a download link')
+                self.parseError("Unable to detect a download link")
 
-        return link.group(1).replace("&amp;", "&")
+        link = link.group(1).replace("&amp;", "&")
+        return link if link.startswith("http://") else "http://www.putlocker.com" + link
