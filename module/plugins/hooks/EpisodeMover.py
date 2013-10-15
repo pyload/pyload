@@ -52,7 +52,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.523"
+    __version__ = "0.524"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -464,8 +464,9 @@ class EpisodeMover(Hook):
     
     def __getEpisodeNamesFromRemoteDB(self, show_name):
         query_handler = QueryHandler(self.number_of_parallel_queries, self.pattern_compiler, self.language)
-        query_result = query_handler.processQueries([show_name,])["episode_names"]
+        query_result = query_handler.processQueries([show_name,])
         if query_result != None:
+            query_result = query_result["episode_names"]
             self.logDebug(u'Episode query successful on "%s". Proceeding...' % show_name)
             return query_result
         else:
