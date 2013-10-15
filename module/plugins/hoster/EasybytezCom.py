@@ -47,7 +47,7 @@ class EasybytezCom(XFileSharingPro):
         #self.limitDL = [True for account in self.account.getAllAccounts() if account["valid"] and account["trafficleft"]].count(True)
         #self.logDebug("DL limit = %s" % self.limitDL)
         accounts = [True for account in self.account.getAllAccounts() if account["valid"] and account["trafficleft"]].count(True)
-        dl_active = [True for x in self.threads if x.active and x.active.hasPlugin() and x.active.pluginname == self.__name__].count(True)
+        dl_active = [True for x in self.core.threadManager.threads if x.active and x.active.hasPlugin() and x.active.pluginname == self.__name__].count(True)
         self.multiDL = True if accounts - dl_active else False
 
 
