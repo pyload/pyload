@@ -22,45 +22,28 @@ from module.plugins.Hook import Hook
 
 
 class DeleteFinished(Hook):
-    __name__ = 'DeleteFinished'
-    __version__ = '1.50'
-    __description__ = 'Automatically delete finished packages from queue'
-    __config__ = [('activated', 'bool', 'Activated', 'False'),
-                  ('mode', 'immediately;periodically', 'Delete package mode', 'periodically'),
-                  ('interval', 'int', 'Interval in hours', '72'),
-                  ('del_offline', 'bool', 'Delete packages with offline links', 'False'),
-                  ('del_password', 'bool', 'Delete packages with password', 'False'),
-                  ('del_statusmsg', 'bool', 'Delete packages with custom link status messages', 'False'),
-                  ('keep_latest', 'bool', 'Never delete lastest packages', 'False'),
-                  ('pack_number', 'int', 'Number of latest packages to keep', '5')]
-    __author_name__ = ('Walter Purcaro')
-    __author_mail__ = ('vuolter@gmail.com')
+    __name__ = "DeleteFinished"
+    __version__ = "1.50"
+    __description__ = "Automatically delete finished packages from queue"
+    __config__ = [("activated", "bool", "Activated", "False"),
+                  ("mode", "immediately;periodically", "Delete package mode", "periodically"),
+                  ("wait_time", "int", "Interval in hours", "72"),
+                  ("del_offline", "bool", "Delete packages with offline links", "False"),
+                  ("del_password", "bool", "Delete packages with password", "False"),
+                  ("del_statusmsg", "bool", "Delete packages with custom link status messages", "False"),
+                  ("keep_latest", "bool", "Never delete lastest packages", "False"),
+                  ("pack_number", "int", "Number of latest packages to keep", "5")]
+    __author_name__ = ("Walter Purcaro")
+    __author_mail__ = ("vuolter@gmail.com")
 
+    ### Overwritten methods ###
     def setup(self):
         self.info = {}
         self.packageFinished_orig = self.packageFinished
 
-    def initPeriodical(self):
-        pass
-
     def coreReady(self):
-        self.pluginConfigChanged(self.__name__, "mode", self.getConfig("mode"))
-
-    def schedule(self):
-        self.deleteFinished()
-        self.packageFinished = self.wakeup
-        self.info.schedule_cb = None
-
-    def startTimer(self):
-        self.info.schedule_cb = self.core.scheduler.addJob(self.getConfig("interval"), self.deleteFinished, threaded=False)
-
-    def stopTimer(self):
-        self.core.scheduler.removeJob(self.info.schedule_cb)
-        self.info.schedule_cb = None
-
-    def wakeup(self, arg1=None):
-        self.packageFinished = self.packageFinished_orig
-        self.startTimer()
+        v = "mode"
+        self.pluginConfigChanged(self.__name__, v, self.getConfig(v))
 
     def pluginConfigChanged(self, plugin, name, value):
         if name == "mode":
@@ -70,22 +53,41 @@ class DeleteFinished(Hook):
                 self.packageFinished = self.deleteFinished
             else:
                 self.wakeup()
-        elif name == "interval" and self.info.schedule_cb:
+        elif name == "wait_time" and self.info.schedule_cb:
             self.stopTimer()
             self.startTimer()
 
+    ### Own methods ###
+    ### Schedule control ###
+    def schedule(self):
+        self.deleteFinished()
+        self.packageFinished = self.wakeup
+        self.info.schedule_cb = None
+
+    def startTimer(self):
+        self.info.schedule_cb = self.core.scheduler.addJob(self.getConfig("wait_time"), self.deleteFinished, threaded=False)
+
+    def stopTimer(self):
+        self.core.scheduler.removeJob(self.info.schedule_cb)
+        self.info.schedule_cb = None
+
+    def wakeup(self, arg1=None):
+        self.packageFinished = self.packageFinished_orig
+        self.startTimer()
+
+    ### Task control ###
     @style.queue
     def delete(self, password, packageorder, status, statusmsg):
-        self.c.execute('DELETE FROM packages WHERE queue ? ? AND NOT EXISTS(SELECT 1 FROM links WHERE package = packages.id AND status NOT IN (?)) ?',
+        self.c.execute("DELETE FROM packages WHERE queue ? ? AND NOT EXISTS(SELECT 1 FROM links WHERE package = packages.id AND status NOT IN (?)) ?",
                        (password, packageorder, status, statusmsg))
-        self.c.execute('DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id = links.package)')
+        self.c.execute("DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id = links.package)")
 
     def deleteFinished(self, arg1=None):
-        deloffline = self.getConfig('del_offline')
-        delpassword = self.getConfig('del_password')
-        delstatusmsg = self.getConfig('del_statusmsg')
-        keeplatest = max(self.getConfig('keep_latest'), 1)
-        packnumber = self.getConfig('pack_number')
+        deloffline = self.getConfig("del_offline")
+        delpassword = self.getConfig("del_password")
+        delstatusmsg = self.getConfig("del_statusmsg")
+        keeplatest = max(self.getConfig("keep_latest"), 1)
+        packnumber = self.getConfig("pack_number")
 
         password = "AND NOT password" if not delpassword else ""
         packageorder = "AND packageorder < %s" % self.core.db._nextPackageOrder(1) - packnumber if keeplatest else ""
