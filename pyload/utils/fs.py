@@ -12,7 +12,8 @@ if sys.getfilesystemencoding().startswith('ANSI'):
     def fs_encode(string):
         if type(string) == unicode:
             return string.encode('utf8')
-        return string
+        else:
+            return string
 
     fs_decode = decode #decode utf8
 
@@ -71,7 +72,19 @@ def free_space(folder):
         ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
         return free_bytes.value
     else:
-        from os import statvfs
-
-        s = statvfs(folder)
+        s = os.statvfs(folder)
         return s.f_frsize * s.f_bavail
+
+def get_bsize(path):
+    """ get optimal file system buffer size (in bytes) for i/o calls """
+    path = fs_encode(path)
+
+    if os.name == "nt":
+        import ctypes
+
+        drive = "%s\\" % os.path.splitdrive(path)[0]
+        cluster_sectors, sector_size = ctypes.c_longlong(0)
+        ctypes.windll.kernel32.GetDiskFreeSpaceW(ctypes.c_wchar_p(drive), ctypes.pointer(cluster_sectors), ctypes.pointer(sector_size), None, None)
+        return cluster_sectors * sector_size
+    else:
+        return os.statvfs(path).f_bsize
