@@ -26,6 +26,7 @@ from module.utils import fs_encode,save_path
 from module.common.json_layer import json
 from datetime import datetime as dt
 import traceback
+import inspect
 #remote debugging
 #from module.common.pydevsrc import pydevd 
 
@@ -51,7 +52,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.522"
+    __version__ = "0.523"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -93,8 +94,8 @@ class EpisodeMover(Hook):
         self.renamer = FileRenamer(self.log)
         self.number_of_parallel_queries = 10
         self.language = self.getConfig("episode_language")
-        pattern_compiler = PatternCompiler() # local scope possibly enough
-        self.pattern_checker = PatternChecker(pattern_compiler)
+        self.pattern_compiler = PatternCompiler() # local scope possibly enough
+        self.pattern_checker = PatternChecker(self.pattern_compiler)
         
 
 
@@ -414,7 +415,7 @@ class EpisodeMover(Hook):
         # TODO: disable application of common occurrence removal for querying w/ minimal string (?)
         if minimal_query_string != None:
             minimal_query_string = [StringCleaner().clean(minimal_query_string, isFile=False),] # clean punctuation and convert to list
-            query_handler = QueryHandler(self.number_of_parallel_queries, self.language)
+            query_handler = QueryHandler(self.number_of_parallel_queries, self.pattern_compiler, self.language)
             query_result = query_handler.processQueries(minimal_query_string)
             if query_result != None:
                 episode.show_name = query_result["name"]
@@ -429,6 +430,7 @@ class EpisodeMover(Hook):
         # query using the full file name / full query string
         query = Query(self.getConfig("occurrences"),
                           self.number_of_parallel_queries,
+                          self.pattern_compiler,
                           self.language)            
         query_result = query.sendQuery(full_query_string)
         if query_result != None:
@@ -461,7 +463,7 @@ class EpisodeMover(Hook):
     
     
     def __getEpisodeNamesFromRemoteDB(self, show_name):
-        query_handler = QueryHandler(self.number_of_parallel_queries, self.language)
+        query_handler = QueryHandler(self.number_of_parallel_queries, self.pattern_compiler, self.language)
         query_result = query_handler.processQueries([show_name,])["episode_names"]
         if query_result != None:
             self.logDebug(u'Episode query successful on "%s". Proceeding...' % show_name)
@@ -795,55 +797,96 @@ class PathLoader:
 
 
 class PatternCompiler:
+    ''' All static patterns used for various tasks throughout this module are part of this class.
+    
+    To add new static patterns follow this guideline:
+    I)   Create the neccessary config strings within the constructor for accessing the self.compiled_pattern dict 
+         by staying closely to the name of the class' method that uses that pattern. If there are multiple patterns per method 
+         define as many variables as there are independent patterns and assign them the typeN variables within the constructor. 
+         If you run out of types simply create more type variables with a local scope
+    II)  Create a method prefixed with self.compile_prefix: def compile_somePattern(self): ...
+    III) Create a method that has the same name as the method that retrieves the compiled pattern and 
+         use it to return the compiled pattern. If there are multiple patterns pass a variable defining the type 
+         def somePattern(self, some_pattern_type=typeN): ...
+         
+    All methods containing the prefix "compile_" will be called at instantiation of PatternCompiler
+    '''
     
     
     def __init__(self):
-        # this is more or less a stub
-        # move all patterns from PatternChecker in here
-        # compile and then instantiate once for EpisodeMover
-        
         # config strings
+        
+        self.compile_prefix = "compile_"
+        
+        type1 = "type1"
+        type2 = "type2"
+        type3 = "type3"
+        type4 = "type4"
+
         self.is_tv_episode = "isTVEpisode"
         
         self.get_season = "getSeason"
-        self.getSeason_type1 = "type1"
-        self.getSeason_type2 = "type2"
-        self.getSeason_type3 = "type3"
-        self.getSeason_type4 = "type4"
+        self.getSeason_type1 = type1
+        self.getSeason_type2 = type2
+        self.getSeason_type3 = type3
+        self.getSeason_type4 = type4
         
         self.get_show_index = "getShowIndex"
-        self.getShowIndex_type1 = "type1"
-        self.getShowIndex_type2 = "type2"
-        self.getShowIndex_type3 = "type3"
-        self.getShowIndex_type4 = "type4"
+        self.getShowIndex_type1 = type1
+        self.getShowIndex_type2 = type2
+        self.getShowIndex_type3 = type3
+        self.getShowIndex_type4 = type4
         
         self.get_minimal_query_string = "getMinimalQueryString"
-        self.getMinimalQueryString_type1 = "type1"
-        self.getMinimalQueryString_type2 = "type2"
-        self.getMinimalQueryString_type3 = "type3"
+        self.getMinimalQueryString_type1 = type1
+        self.getMinimalQueryString_type2 = type2
+        self.getMinimalQueryString_type3 = type3
+        
+        self.get_series = "__getSeries"
+        self.get_series_seriesid = type1
+        self.get_series_seriesname = type2
+        
+        self.analyse_response = "__analyzeResponse"
+        
+        self.get_episodes = "__getEpisodes"
+        self.get_episodes_seasonnumber = type1
+        self.get_episodes_episodenumber = type2
+        self.get_episodes_episodename = type3
         
         # compiled pattern dict
         self.compiled_pattern = {}
-        self.compiled_pattern[self.getSeason] = {}
-        self.compiled_pattern[self.getShowIndex] = {}
         
         # compile all patterns and assign to pattern dict
         self.compile_all_patterns()
         
         
     def compile_all_patterns(self):
-        cp = self.compiled_pattern
-        cp[self.is_tv_episode] = self.compile_isTVEpisode()
-        cp[self.get_season] = self.compile_getSeason() 
-        cp[self.get_show_index] = self.compile_getShowIndex()
-        cp[self.get_minimal_query_string] = self.compile_getMinimalQueryString()
+        '''Calls all methods satisfying these conditions:
         
+        a) name of method starts with "compile_"
+        '''
+        
+        # structure of return value for inspect.getmembers:
+        #     result_list = [('meth_name_1', instance_method_object_1),('meth_name2', instance_method_object_2), ...]
+        for tpl in inspect.getmembers(self, self.compiles):
+            for element in tpl:
+                if inspect.ismethod(element) and element != self.compile_all_patterns:
+                    compiler_method = element
+                    compiler_method() # call it right on the spot
+
+        
+    def compiles(self, a_method):
+        if not inspect.ismethod(a_method): return False
+        return a_method.__name__.find(self.compile_prefix) == 0 and True or False
+    
+    
     def compile_isTVEpisode(self):
         pattern1 = '(s\d{2}e\d{2})' # S01E01 e.g.
         pattern2 = '(\d{1,2}x\d{1,2})' # 1x1, 10x10, 1x10, 10x1 e.g.
         pattern3 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{3})((\\s+)|(-+)|(_+)|(\\.+))' # ".101-", "_901 " with ESS
 
-        return re.compile(pattern1 + '|' + pattern2 + '|' + pattern3, re.IGNORECASE|re.DOTALL)
+        self.compiled_pattern[self.is_tv_episode] = \
+        re.compile(pattern1 + '|' + pattern2 + '|' + pattern3, re.IGNORECASE|re.DOTALL)
     
     def compile_getSeason(self):
         p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
@@ -858,7 +901,7 @@ class PatternCompiler:
         result_dict[self.getSeason_type3] = re.compile(p2, re.IGNORECASE)
         result_dict[self.getSeason_type4] = re.compile(p3, re.IGNORECASE)
         
-        return result_dict
+        self.compiled_pattern[self.get_season] = result_dict
 
     
     def compile_getShowIndex(self):
@@ -874,8 +917,7 @@ class PatternCompiler:
         result_dict[self.getShowIndex_type3] = re.compile(p2, re.IGNORECASE)
         result_dict[self.getShowIndex_type4] = re.compile(p3, re.IGNORECASE)
         
-        return result_dict
-
+        self.compiled_pattern[self.get_show_index] = result_dict
         
     def compile_getMinimalQueryString(self):
         p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
@@ -888,8 +930,49 @@ class PatternCompiler:
         result_dict[self.getMinimalQueryString_type2] = re.compile(p2, re.IGNORECASE)
         result_dict[self.getMinimalQueryString_type3] = re.compile(p3, re.IGNORECASE)
         
-        return result_dict
+        self.compiled_pattern[self.get_minimal_query_string] = result_dict
+    
+    
+    def compile__getSeries(self):
+        series_start = "(<seriesid>)"
+        series_id = "([0-9]+)"
+        series_end = "(</seriesid>)"
+        uncompiled_sid_pattern = series_start + series_id + series_end
         
+        seriesname_element_start = '(<SeriesName>)'
+        seriesname = '(.{1,})'
+        seriesname_element_end = '(</SeriesName>)'
+        uncompiled_sn_pattern = seriesname_element_start + seriesname + seriesname_element_end
+        
+        result_dict = {}
+        
+        result_dict[self.get_series_seriesid] = re.compile(uncompiled_sid_pattern)
+        result_dict[self.get_series_seriesname] = re.compile(uncompiled_sn_pattern)
+        
+        self.compiled_pattern[self.get_series] = result_dict
+        
+    
+    def compile___analyzeResponse(self):
+        seriesname_element_start = '(<SeriesName>)'
+        content_element = '(.{1,})'
+        seriesname_element_end = '(</SeriesName>)'
+        uncompiled_pattern = seriesname_element_start + content_element + seriesname_element_end
+        
+        self.compiled_pattern[self.analyse_response] = re.compile(uncompiled_pattern)
+        
+    
+    def compile___getEpisodes(self):
+        season_number_element = "(<Combined_season>)([0-9]{1,3})(</Combined_season>)"
+        episode_number_element = "(<EpisodeNumber>)([0-9]{1,3})(</EpisodeNumber>)"
+        episode_name_element = "(<EpisodeName>)(.+)(</EpisodeName>)"
+        
+        result_dict = {}
+        
+        result_dict[self.get_episodes_seasonnumber] = re.compile(season_number_element)
+        result_dict[self.get_episodes_episodenumber] = re.compile(episode_number_element)
+        result_dict[self.get_episodes_episodename] = re.compile(episode_name_element)
+        
+        self.compiled_pattern[self.get_episodes] = result_dict
     
     
     def isTvEpisode(self):
@@ -903,9 +986,23 @@ class PatternCompiler:
     
     def getMinimalQueryString(self, minimal_query_string_type):
         return self.compiled_pattern[self.get_minimal_query_string][minimal_query_string_type]
-            
+    
+    def getSeries(self, element_type):
+        if element_type == self.get_series_seriesid:
+            return self.compiled_pattern[self.get_series][self.get_series_seriesid]
+        elif element_type == self.get_series_seriesname:
+            return self.compiled_pattern[self.get_series][self.get_series_seriesname]
         
-        
+    def analyseResponse(self):
+        return self.compiled_pattern[self.analyse_response]
+    
+    def getEpisodes(self, element_type):
+        if element_type == self.get_episodes_episodename:
+            return self.compiled_pattern[self.get_episodes][self.get_episodes_episodename]
+        elif element_type == self.get_episodes_episodenumber:
+            return self.compiled_pattern[self.get_episodes][self.get_episodes_episodenumber]
+        elif element_type == self.get_episodes_seasonnumber:
+            return self.compiled_pattern[self.get_episodes][self.get_episodes_seasonnumber]
     
 
 class PatternChecker:
@@ -1315,8 +1412,9 @@ class QueryHandler:
     #http://thetvdb.com/api/603963AA95970288/series/248651//default/1/2/en.xml <-- get episode S01E02
     #http://thetvdb.com/api/603963AA95970288/series/248651/all/en.xml <- get all episodes
     
-    def __init__(self, num_parallel_queries, language="English"):
+    def __init__(self, num_parallel_queries, pattern_compiler, language="English"):
         self.query_queue = Queue(num_parallel_queries)
+        self.pattern = pattern_compiler
         self.__shows = {}
         self.language = language
         self.config = {}
@@ -1394,35 +1492,24 @@ class QueryHandler:
         if series is not None and series is not []:
             for show in series:
                 # seriesid                
-                id_s = "(<seriesid>)"
-                id = "([0-9]+)"
-                id_e = "(</seriesid>)"
-                p = id_s + id + id_e
-                ID = re.search(p, show)
+                compiled_pattern = self.pattern.getSeries\
+                (self.pattern.get_series_seriesid)
+                ID = re.search(compiled_pattern, show)
                 if ID:
                     ID = ID.group(2)
                     # SeriesName
-                    name_s = '(<SeriesName>)'
-                    name = '(.{1,})'
-                    name_e = '(</SeriesName>)'
-                    p = name_s + name + name_e
-                    SERIES = re.search(p, show).group(2)
+                    compiled_pattern = self.pattern.getSeries\
+                    (self.pattern.get_series_seriesname)
+                    SERIES = re.search(compiled_pattern, show).group(2)
                     self.__shows[ID] = {"name":SERIES,}
     
     
     def __analyzeRespone(self, response): #deprecated - use __getSeries() instead
         '''Looks for TV show names in response and on match calls _unpackResponse'''
-        sn_start = '(<SeriesName>)'
-        middle = '(.{1,})'
-        sn_end = '(</SeriesName>)'
-        pattern = sn_start + middle + sn_end
-        p = re.compile(pattern)
-
-        match_ = p.findall(response)
+        compiled_pattern = self.pattern.analyzeResponse()
+        match_ = compiled_pattern.findall(response)
         if match_:
             return self.__unpackResponse(match_)
-        else:
-            return None
 
         
     def __unpackResponse(self,list_of_tuples): #deprecated - dont use at all!
@@ -1538,9 +1625,18 @@ class QueryHandler:
     def __getEpisodes(self, response, sid):
         for episode in response.split("</Episode>"):
             try:
-                season_num = re.search("(<Combined_season>)([0-9]{1,3})(</Combined_season>)", episode).group(2)
-                ep_num = re.search("(<EpisodeNumber>)([0-9]{1,3})(</EpisodeNumber>)", episode).group(2)
-                ep_name = re.search("(<EpisodeName>)(.+)(</EpisodeName>)", episode).group(2)
+#                 season_num = re.search("(<Combined_season>)([0-9]{1,3})(</Combined_season>)", episode).group(2)
+#                 ep_num = re.search("(<EpisodeNumber>)([0-9]{1,3})(</EpisodeNumber>)", episode).group(2)
+#                 ep_name = re.search("(<EpisodeName>)(.+)(</EpisodeName>)", episode).group(2)
+                
+                season_number_pattern = self.pattern.getEpisodes(self.pattern.get_episodes_seasonnumber)
+                episode_number_pattern = self.pattern.getEpisodes(self.pattern.get_episodes_episodenumber)
+                episode_name_pattern = self.pattern.getEpisodes(self.pattern.get_episodes_episodename)
+                
+                season_num = season_number_pattern.search(episode).group(2)
+                ep_num = episode_number_pattern.search(episode).group(2)
+                ep_name = episode_name_pattern.search(episode).group(2)
+                
                 
                 if not self.__shows[sid].has_key("episode_names"):
                     self.__shows[sid]["episode_names"] = {}
@@ -1564,11 +1660,11 @@ class Query:
     This will cause far less manual work on your side. Just pass it a (tv episode) string.
     '''
     
-    def __init__(self, common_occurrences, num_queries, language="English"):
+    def __init__(self, common_occurrences, num_queries, pattern_compiler, language="English"):
         '''common_occurrences requires a path to a file with common occurrences'''
         self._cleaner = StringCleaner(common_occurrences)
         self._query_generator = QueryGenerator()
-        self._query_handler = QueryHandler(num_queries, language)
+        self._query_handler = QueryHandler(num_queries, pattern_compiler, language)
         
     
     def sendQuery(self,episode_name, isFile=True):
