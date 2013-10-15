@@ -199,7 +199,7 @@ var Package = new Class({
             });
 
             var html = "<span style='cursor: move' class='child_status sorthandle'><img src='/media/default/img/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({"icon": link.icon});
-            html += "<span style='font-size: 15px'>{name}</span><br /><div class='child_secrow'>".substitute({"name": link.name});
+            html += "<span style='font-size: 14px'><a href='{url}'>{name}</a></span><br /><div class='child_secrow'>".substitute({"url": link.url, "name": link.name});
             html += "<span class='child_status'>{statusmsg}</span>{error}&nbsp;".substitute({"statusmsg": link.statusmsg, "error":link.error});
             html += "<span class='child_status'>{format_size}</span>".substitute({"format_size": link.format_size});
             html += "<span class='child_status'>{plugin}</span>&nbsp;&nbsp;".substitute({"plugin": link.plugin});
