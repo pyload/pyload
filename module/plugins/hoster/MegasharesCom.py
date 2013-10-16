@@ -70,9 +70,9 @@ class MegasharesCom(SimpleHoster):
                     "http://d01.megashares.com/index.php?secgfx=gfx&random_num=%s" % random_num)
                 self.logInfo("Reactivating passport %s: %s %s" % (passport_num, random_num, verifyinput))
 
-                url = "http://d01.megashares.com%s&rs=check_passport_renewal" % request_uri + \
-                      "&rsargs[]=%s&rsargs[]=%s&rsargs[]=%s" % (verifyinput, random_num, passport_num) + \
-                      "&rsargs[]=replace_sec_pprenewal&rsrnd=%s" % str(int(time() * 1000))
+                url = ("http://d01.megashares.com%s&rs=check_passport_renewal" % request_uri +
+                       "&rsargs[]=%s&rsargs[]=%s&rsargs[]=%s" % (verifyinput, random_num, passport_num) +
+                       "&rsargs[]=replace_sec_pprenewal&rsrnd=%s" % str(int(time() * 1000))
                 self.logDebug(url)
                 response = self.load(url)
 

@@ -97,8 +97,8 @@ class RapidgatorNet(SimpleHoster):
         self.html = self.load(self.pyfile.url, decode=True)
         self.getFileInfo()
 
-        if "You can download files up to 500 MB in free mode" in self.html \
-            or "This file can be downloaded by premium only" in self.html:
+        if ("You can download files up to 500 MB in free mode" in self.html or
+            "This file can be downloaded by premium only" in self.html):
             self.fail("Premium account needed for download")
 
         self.checkWait()

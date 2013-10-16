@@ -68,8 +68,8 @@ class PornhostCom(Hoster):
         if self.html is None:
             self.download_html()
 
-        if re.search(r'gallery not found', self.html) is not None \
-            or re.search(r'You will be redirected to', self.html) is not None:
+        if (re.search(r'gallery not found', self.html) is not None or
+            re.search(r'You will be redirected to', self.html) is not None):
             return False
         else:
             return True

@@ -34,9 +34,9 @@ class WindowsPhoneToastNotify(Hook):
         self.info = {}
     
     def getXmlData(self):
-        myxml = "<?xml version='1.0' encoding='utf-8'?> <wp:Notification xmlns:wp='WPNotification'> " \
-                "<wp:Toast> <wp:Text1>Pyload Mobile</wp:Text1> <wp:Text2>Captcha waiting!</wp:Text2> " \
-                "</wp:Toast> </wp:Notification>"
+        myxml = ("<?xml version='1.0' encoding='utf-8'?> <wp:Notification xmlns:wp='WPNotification'> "
+                 "<wp:Toast> <wp:Text1>Pyload Mobile</wp:Text1> <wp:Text2>Captcha waiting!</wp:Text2> "
+                 "</wp:Toast> </wp:Notification>")
         return myxml
 
     def doRequest(self):

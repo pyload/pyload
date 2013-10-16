@@ -129,8 +129,8 @@ def create_getInfo(plugin):
         for url in urls:
             cj = CookieJar(plugin.__name__)
             if isinstance(plugin.SH_COOKIES, list): set_cookies(cj, plugin.SH_COOKIES)
-            file_info = parseFileInfo(plugin, url, getURL(replace_patterns(url, plugin.FILE_URL_REPLACEMENTS), \
-                decode = not plugin.SH_BROKEN_ENCODING, cookies = cj))
+            file_info = parseFileInfo(plugin, url, getURL(replace_patterns(url, plugin.FILE_URL_REPLACEMENTS),
+                                                          decode = not plugin.SH_BROKEN_ENCODING, cookies = cj))
             yield file_info
     return getInfo
 
