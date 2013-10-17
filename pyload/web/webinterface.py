@@ -55,14 +55,15 @@ if PREFIX:
     if PREFIX and not PREFIX.startswith("/"):
         PREFIX = "/" + PREFIX
 
-APP_PATH = "dist"
-UNAVAILALBE = False
+APP_PATH = "app"
+UNAVAILALBE = True
 
 # webUI build is available
 if exists(join(PROJECT_DIR, "app", "components")) and exists(join(PROJECT_DIR, ".tmp")) and config.get('webinterface', 'develop'):
-    APP_PATH = "app"
-elif not exists(join(PROJECT_DIR, "dist", "index.html")):
-    UNAVAILALBE = True
+    UNAVAILALBE = False
+elif exists(join(PROJECT_DIR, "dist", "index.html")):
+    APP_PATH = "dist"
+    UNAVAILALBE = False
 
 DEBUG = config.get("general", "debug_mode") or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)
