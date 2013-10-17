@@ -52,7 +52,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.524"
+    __version__ = "0.525"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -65,8 +65,7 @@ class EpisodeMover(Hook):
                     ("detection", "bool","TV-Show title recognition and folder creation for incoming episodes","False"),
                     ("startup", "bool","On startup search in download folder for files to process", "False"),
                     ("rename", "bool", "Automatically rename episodes", "False"),
-                    ("usr_string", "str", "Define your own naming convention for renaming", "%show %1index %hd=720p %YourElem=this|or|that"),
-                    ("punc", "str","Provide the separator for the renaming procedure","."),
+                    ("usr_string", "str", "Define your own naming convention for renaming", "%show - %1index.%episodeANYTHING%720p|1080p%"),
                     ("episode_language", """English;German;Danish;Finnish;Dutch;Italian;Spanish;French;Polish;
                     Hungarian;Greek;Turkish;Russian;Hebrew;Japanese;Portugese;Chinese;Czech;
                     Slovene;Croatian;Korean;Swedish;Norwegian""","Choose a language for episode names","English"),
@@ -91,11 +90,11 @@ class EpisodeMover(Hook):
     
        
     def setup(self):
-        self.renamer = FileRenamer(self.log)
         self.number_of_parallel_queries = 10
         self.language = self.getConfig("episode_language")
         self.pattern_compiler = PatternCompiler() # local scope possibly enough
         self.pattern_checker = PatternChecker(self.pattern_compiler)
+        self.renamer = Renamer(self.pattern_compiler)
         
 
 
@@ -376,7 +375,7 @@ class EpisodeMover(Hook):
         if self.__getShowNameFromRemoteDB(episode) is not None: #actual name of tv show
             if os.path.exists(self.getConfig("tvshows")): # just a precaution - we don't want to leave a trail of folders across the filesystem
                 if self.getConfig("folder_sub") is True:
-                    episode.show_name = self.renamer.substituteChars(episode.show_name, self.getConfig("char_sub"))
+                    episode.show_name = self.renamer.substitute_chars(episode.show_name, self.getConfig("char_sub"))
                 show_name = episode.show_name
                 if episode.episode_names == {}:
                     self.logInfo(u'No episode name for "%s" found. Applying those during renaming will not be available' % show_name)
@@ -487,7 +486,9 @@ class EpisodeMover(Hook):
         season_path = os.path.join(episode.dst, season)
         show_index = valdor.getShowIndex(episode.src_filename)
         episode.show_index["raw"] = show_index
-        episode.show_index["season"], episode.show_index["episode"] = self.renamer.getShowIndex(show_index)
+        # TODO: no clue what I am doing here; looks like legacy -> overhaul!
+        episode.show_index["season"], episode.show_index["episode"] = \
+        self.renamer.convert_show_index(show_index, 1, returnRaw=True)
         if (os.path.exists(season_path)):
             episode.dst = season_path
             self.logDebug(u'Season directory for show "%s" already exists. No creation necessary.' % episode.src_filename)
@@ -570,12 +571,8 @@ class EpisodeMover(Hook):
             return
         if self.getConfig('rename'):
             #pydevd.settrace("192.168.1.46",stdoutToServer=True,stderrToServer=True)
-            episode_name = episode.episode_name(decode=True)
             episode.unicode()
-            episode.dst_filename = self.renamer.parseEpisode(self.getConfig('usr_string'), episode.src_filename,
-                                                              episode.show_name, episode.show_index['raw'],
-                                                              episode_name, self.getConfig('punc'),
-                                                              self.getConfig('char_sub'))
+            episode.dst_filename = self.renamer.rename(episode, self.getConfig('usr_string'), self.getConfig('char_sub'))
             episode.dst_filename = save_path(episode.dst_filename)
         try:
             episode.unicode()
@@ -704,6 +701,9 @@ class Episode:
                         return ep_name
                     return Transcoder().decode(ep_name)
         return None
+    
+    def get_show_index(self):
+        return self.show_index["raw"]
 
         
     def unicode(self):
@@ -854,6 +854,13 @@ class PatternCompiler:
         self.get_episodes_episodenumber = type2
         self.get_episodes_episodename = type3
         
+        self.parse_rename_string_ = "parse_rename_string"
+        
+        self.convert_show_index_ = "convert_show_index"
+        self.convert_show_index_type1 = type1 
+        self.convert_show_index_type2 = type2 
+        self.convert_show_index_type3 = type3 
+        
         # compiled pattern dict
         self.compiled_pattern = {}
         
@@ -974,6 +981,31 @@ class PatternCompiler:
         result_dict[self.get_episodes_episodename] = re.compile(episode_name_element)
         
         self.compiled_pattern[self.get_episodes] = result_dict
+        
+        
+    def compile_parse_rename_string(self):
+        uncompiled_renaming_string = \
+        "(%show)|(%[123]index)|(%episode)|(%\\|?.*?%)"
+        
+        self.compiled_pattern[self.parse_rename_string_] = \
+        re.compile(uncompiled_renaming_string) 
+        
+    
+    def compile_convert_show_index(self):
+        uncompiled_show_index_type1 = '(S\d{2}E\d{2})'
+        uncompiled_show_index_type2= '(\d{1,2}x\d{1,2})'
+        uncompiled_show_index_type3 = '(\d{1,4})'
+        
+        result_dict = {}
+        
+        result_dict[self.convert_show_index_type1] = \
+        re.compile(uncompiled_show_index_type1, re.IGNORECASE)
+        result_dict[self.convert_show_index_type2] = \
+        re.compile(uncompiled_show_index_type2, re.IGNORECASE)
+        result_dict[self.convert_show_index_type3] = \
+        re.compile(uncompiled_show_index_type3, re.IGNORECASE)
+        
+        self.compiled_pattern[self.convert_show_index_] = result_dict
     
     
     def isTvEpisode(self):
@@ -1004,6 +1036,20 @@ class PatternCompiler:
             return self.compiled_pattern[self.get_episodes][self.get_episodes_episodenumber]
         elif element_type == self.get_episodes_seasonnumber:
             return self.compiled_pattern[self.get_episodes][self.get_episodes_seasonnumber]
+        
+    def parse_rename_string(self):
+        return self.compiled_pattern[self.parse_rename_string_]
+    
+    def convert_show_index(self, show_index_type):
+        if show_index_type == self.convert_show_index_type1:
+            return self.compiled_pattern\
+                [self.convert_show_index_][self.convert_show_index_type1]
+        elif show_index_type == self.convert_show_index_type2:
+            return self.compiled_pattern\
+                [self.convert_show_index_][self.convert_show_index_type2]
+        elif show_index_type == self.convert_show_index_type3:
+            return self.compiled_pattern\
+                [self.convert_show_index_][self.convert_show_index_type3]
     
 
 class PatternChecker:
@@ -1681,244 +1727,232 @@ class Query:
     
     def _generateQuery(self, episode_name, isFile):
         return self._combine(episode_name, isFile)
-    
-class FileRenamer:
-    '''Allows renaming of tv shows based on an user defined methodology'''
-     
-     
-    def __init__(self, debug_logger):
-        self.log = debug_logger
-        self.show = "%show"
-        self.index1 = "%1index"
-        self.episode = "%episode"
-        self.reset()
-        
-    def reset(self):
-        '''Resets all variables to default states.
-        
-        This enables using of a single instance of this class to process multiple episodes. 
-        '''
-        # I suspect simply setting it to None would do.
-        # Serves to demonstrate the employed data structure for renaming.
-        self.elements = {self.show:("",), self.index1:("",)} 
-        
-        
-        
-        
-#------------------------------PUBLIC INTERFACE-----------------------------------------
-    def parseEpisode(self, usr_string, episode, show_name, show_index,\
-                     episode_name, punctuation, substitute_string):
-        '''This is the only public method that should be used'''
-        self.reset()
-        return self._parseEpisode(usr_string, episode, show_name, show_index,\
-                                  episode_name, punctuation, substitute_string)
-    
-    def getShowIndex(self, show_index):
-        return self.__convertShowIndex(show_index, 1, returnRaw=True)
-#------------------------------PUBLIC INTERFACE-----------------------------------------    
-        
-    
-    def _parseEpisode(self, usr_string, episode, show_name, show_index,\
-                      episode_name, punctuation, substitute_string):
-        # Apparently nonsensical. Everything should be either in or converted to UTF8.
-        # No point in converting to a string again. Causes UnicodeDecodeErrors as well.
-        # unicode -> string
-        #usr_string = str(usr_string)
-        #episode = episode.encode("utf8")
-        #show_name = str(show_name)
-        #show_index = str(show_index)
-        #if episode_name != None:
-        #    episode_name = str(episode_name)
-        #punctuation = str(punctuation)
-        
-        show_index = show_index.strip()
-        self.__parseCustomElems(usr_string)
-        self.__parseCustomStrings(usr_string)
-        self.__assignStdElements(show_name, show_index, episode_name, punctuation, usr_string)
-        self.__parseCstmEpElems(episode)
-        result = self.__constructName(usr_string, punctuation) + self.__addExtension(episode)
-        if substitute_string == '':
-            return result
-        return self.substituteChars(result, substitute_string)
 
-    def __parseIndexElem(self, usr_string):
-        match = re.findall('(%[1-3]index)', usr_string)
-        if len(match) > 1:
-            return self.index1
-        else:
-            return match[0]
 
-    def __parseCustomElems(self, usr_string):
-        pattern = "(%[A-z]+=)(([A-z_0-9\\-\\.]\\|?)+)"# "%show.%index.%hd=720p|1080p"
-        m = re.findall(pattern, usr_string)
-        if m:
-            return self.__unpackCustomElems(m)
-
-    def __unpackCustomElems(self, list_of_elem_tpls):
-        lst = {}
-        for tple in list_of_elem_tpls:
-            lst[tple[0]] = tple[1]
-        return self.__assignCustomElements(lst)
+class RenameElement:
     
-    def __assignCustomElements(self, lst_of_cstm_elems):
-        '''Analyze previously found custom elements and assign them
+    def __init__(self, syntax_element, start_position, end_position):
+        self.syntax_element = syntax_element # %show, %episode, ...
+        self.start_position = start_position # start index for syntax_element in rename_string
+        self.end_position = end_position # end index for syntax_element in rename_string
+        # the actual content: "S01E01", "Breaking Bad"
+        # Also gap_content which equals syntax_element
+        self.content = None
         
-        
-        ingoing: "%elem=val1|val2|valN"
-        assign to: self.elements = {'%elem':("val1", "val2", "valN")}
-        '''
-        
-        for cst_elem in lst_of_cstm_elems.keys():
-            self.elements[cst_elem[:len(cst_elem)-1]] = tuple(lst_of_cstm_elems.get(cst_elem).split('|'))
-
-    def __parseCustomStrings(self,usr_string):
-        pattern = "'([\w\d_ \\(\\)\\[\\]\\-\\.]+)'"# "%show.'('%index.')'"
-        m = re.findall(pattern, usr_string)
-        if m:
-            return self.__assignCustomStrings(m)
+    def start(self):
+        return self.start_position
+    
+    def end(self):
+        return self.end_position
+    
+    def element(self):
+        return self.syntax_element
+    
+    def get_content(self):
+        return self.content
+    
+    
+class OrderedRenameElementDict(dict):
+    
+    def __init__(self):
+        self.custom_element_start = '%'
+        self.custom_element_end = '%'
+        self.custom_element_separator = '|'
+    
+    def order(self):
+        return sorted(list(self.values()),\
+        key=lambda RenameElement: RenameElement.start_position)
+    
+    def gaps(self):
+        ored = self.order()
+        gap_list = []
+        for index in range(0,len(ored)):
+            if index + 1 != len(ored):
+                gap_list.append\
+                ((ored[index].end(), ored[index+1].start()))
+        return gap_list
+    
+    def custom(self):
+        start = self.custom_element_start
+        end = self.custom_element_end
+        sep = self.custom_element_separator 
+        for key in self:
+            if key[0] == start and key[len(key)-1] == end:
+                    self[key].syntax_element = \
+                    self[key].syntax_element.strip(start)
+                    self[key].syntax_element = \
+                    self[key].syntax_element.split(sep)
+                    
+    def drop_empty(self):
+        empty = []
+        for key in self:
+            if self[key].content == None:
+                empty.append(key)
+        for key in empty:
+            self.pop(key)
             
-    def __assignCustomStrings(self,lst_of_cstm_strings):
-        '''Analyze previously found custom elements and assign them
-        
-        
-        ingoing: "%elem=val1|val2|valN"
-        assign to: self.elements = {'%elem':("val1", "val2", "valN")}
-        '''
-        for idx,item in enumerate(lst_of_cstm_strings):
-            self.elements[idx] = item
-
-    def __parseCstmEpElems(self, episode):
-        for key in self.elements.keys():
-            if not isinstance(key, int) and key != self.show \
-            and re.match('(%[1-3]index)', key) is None and key != self.episode:
-                for tpl_ in self.elements.get(key):
-                    pattern = '((\\s+)|(-+)|(_+)|(\\.+))' + '(' + tpl_ + ')' + '((\\s+)|(-+)|(_+)|(\\.+))'
-                    m_ = re.search(pattern, episode)
-                    if m_:
-                        self.elements[key] = (m_.group(0)[1:len(m_.group(0)) - 1],)
-                    else:
-                        tmp = list(self.elements[key])
-                        try:
-                            tmp.remove(tpl_)
-                        except ValueError, e:
-                            #TODO: check if there is a more elegant way to do this
-                            pass
-                        self.elements[key] = tuple(tmp)
-                        if len(self.elements.get(key)) == 0:
-                            self.elements.pop(key)
-        return
+    def drop_last_gap(self):
+        last_element = max(self.values(), \
+        key=lambda RenameElement: RenameElement.start_position)
+        if last_element.syntax_element[0] != self.custom_element_start:
+            self.pop(last_element.syntax_element)
+                    
     
-    def __constructName(self, usr_string, punctuation='.'):
-        indices = []
-        punctflag = False
+class Renamer:
+    
+    def __init__(self, pattern_compiler):
+        self.pattern = pattern_compiler
+        self.element_show = "%show"
+        self.element_1index = "%1index"
+        self.element_2index = "%2index"
+        self.element_3index = "%3index"
+        self.show_index_type1 = 1
+        self.show_index_type2 = 2
+        self.show_index_type3 = 3
+        self.element_episode = "%episode"
+
+    
+    def rename(self, episode, rename_string, substitute_string):
+        rename_elements = self.parse_rename_string(rename_string)
+        self.assign_content_to_standard_elements(episode, rename_elements)
+        self.assign_content_to_custom_elements(episode, rename_elements)
+        episode_name = self.construct_name(rename_elements) + \
+        Utils().get_extension(episode.src_filename)
+        episode_name = self.substitute_chars(episode_name, substitute_string)
+        return episode_name
+    
+    def parse_rename_string(self, rename_string):
+        rename_elements = OrderedRenameElementDict()
+        self.parse_rename_elements(rename_string, rename_elements)
+        self.parse_gap_content(rename_string, rename_elements)
+        return rename_elements
         
-        for (cnt,cstr) in enumerate(re.finditer("'([\w\d_ \\(\\)\\[\\]\\-\\.]+)'",usr_string)):
-            indices.append((cnt,cstr.start()))
-
-        for key in self.elements.keys():
-            if not isinstance(key,int):
-                index = usr_string.find(key)
-                if index != -1:
-                    indices.append((key,index))
-
-        indices.sort(key=lambda indices: indices[1])   
-
+            
+    def parse_rename_elements(self, rename_string, rename_elements):
+        compiled_syntax_pattern = self.pattern.parse_rename_string()
+        matches = compiled_syntax_pattern.finditer(rename_string)
+        for m in matches:
+            rename_elements[m.group(0)] = \
+            RenameElement(m.group(0), m.start(), m.end())
+ 
+    def parse_gap_content(self, rename_string, rename_elements):
+        for gap_position in rename_elements.gaps():
+            gap_start, gap_end = gap_position
+            syntax_element = rename_string[gap_start:gap_end]
+            rename_elements[syntax_element] = \
+            RenameElement(syntax_element, gap_start, gap_end)
+            rename_elements[syntax_element].content = syntax_element
+            
+    def assign_content_to_standard_elements(self, episode, rename_elements):
+        
+        rename_elements[self.element_show].content = episode.show_name
+        
+        if rename_elements.has_key(self.element_1index):
+            show_index = self.convert_show_index\
+            (episode.get_show_index(), self.show_index_type1)
+            rename_elements[self.element_1index].content = show_index
+        elif rename_elements.has_key(self.element_2index):
+            show_index = self.convert_show_index\
+            (episode.get_show_index(), self.show_index_type2)
+            rename_elements[self.element_2index].content = show_index
+        elif rename_elements.has_key(self.element_3index):
+            show_index = self.convert_show_index\
+            (episode.get_show_index(), self.show_index_type3)
+            rename_elements[self.element_2index].content = show_index
+ 
+        if episode.episode_name(decode=True) and rename_elements.has_key(self.element_episode):
+            rename_elements[self.element_episode].content = episode.episode_name(decode=True)
+        elif rename_elements.has_key(self.element_episode):
+            rename_elements.pop(self.element_episode)
+            
+    def assign_content_to_custom_elements(self, episode, rename_elements):
+        rename_elements.custom() 
+        start_end = rename_elements.custom_element_start
+        for key in rename_elements:
+            if key[0] == start_end and key[len(key)-1] == start_end:
+                for custom_element in rename_elements[key].syntax_element:
+                    compiled_pattern = re.compile(custom_element, re.IGNORECASE)
+                    a_match = compiled_pattern.search(episode.src_filename)
+                    if a_match:
+                        rename_elements[key].content = custom_element
+                        break
+                    
+                    
+    def construct_name(self, rename_elements):
         name = ""
-        for index in indices:
-            if punctflag:
-                if not isinstance(index[0],int): 
-                    name += punctuation
-            punctflag = True
-            
-            indexElem = re.search("(%[1-3]index)", usr_string).group(0)
-            if index[0] == self.show:
-                name += self.__encodeShowName(self.elements.get(index[0])[0], punctuation)
-            elif index[0] == self.episode:
-                name += self.elements[self.episode][0]
-            elif index[0] == indexElem:
-                name += self.__convertShowIndex(self.elements.get(index[0])[0], int(indexElem[1]))
-            elif isinstance(index[0],int):
-                name += self.elements[index[0]]
-                punctflag = False
-            else:
-                name += self.elements.get(index[0])[0]
+        rename_elements.drop_empty()
+        rename_elements.drop_last_gap()
+        for element in rename_elements.order():
+            name += element.get_content()
         return name
     
-    
-    def __encodeShowName(self, show_name, punctuation):
-        name = ''
-        nme_lst = show_name.split(' ')
-        for e in nme_lst:
-            if e != nme_lst[len(nme_lst) - 1]:
-                name += e + punctuation
-            else:
-                name += e
-        return name
-    
-    
-    def __convertShowIndex(self, show_index, type, returnRaw=False):
+ 
+    def convert_show_index(self, show_index, type_, returnRaw=False):
         '''Convert show index between certain types
         
         
-        (I  )    type = 1 : S01E01, S10E11
-        (II )    type = 2 : 1x1, 10x11
-        (III)    type = 3 : 101, 1011
+        (I  )    type_ = 1 : S01E01, S10E11
+        (II )    type_ = 2 : 1x1, 10x11
+        (III)    type_ = 3 : 101, 1011
         
         if returnRaw: 
             return (SEASON_NUM,EPISODE_NUM) # (1,1) e.g.
         '''
+        p = self.pattern
+        compiled_show_index_type1 = p.convert_show_index(p.convert_show_index_type1)
+        csit1 = compiled_show_index_type1
+        csit2 = p.convert_show_index(p.convert_show_index_type2)
+        csit3 = p.convert_show_index(p.convert_show_index_type3)
         
-        pattern1 = '(S\d{2}E\d{2})' # S01E01 e.g.
-        pattern2 = '(\d{1,2}x\d{1,2})' # 1x1, 10x10, 1x10, 10x1 e.g.
-        pattern3 = '(\d{1,4})' # 101, 901 with ESS
-        pattern = pattern1 + '|' + pattern2 + '|' + pattern3
-
-        match = re.match(pattern, show_index, re.IGNORECASE)
+        csit1_match = csit1.match(show_index)
+        csit2_match = csit2.match(show_index)
+        csit3_match = csit3.match(show_index)
         
-        if match.group(1):
-            if type == 2:
-                return self.__doIndexConversion(match.group(1), 12, returnRaw)
-            elif type == 3:
-                return self.__doIndexConversion(match.group(1), 13, returnRaw)
+        if csit1_match:
+            if type_ == 2:
+                return self.do_index_conversion(csit1_match.group(0), 12, returnRaw)
+            elif type_ == 3:
+                return self.do_index_conversion(csit1_match.group(0), 13, returnRaw)
             else:
                 if returnRaw:
-                    return self.__doIndexConversion(match.group(1), 12, returnRaw)
+                    return self.do_index_conversion(csit1_match.group(0), 12, returnRaw)
                 return show_index.upper()
-        elif match.group(2):
-            if type == 1:
-                return self.__doIndexConversion(match.group(2), 21, returnRaw)
-            elif type == 3:
-                return self.__doIndexConversion(match.group(2), 23, returnRaw)
+        elif csit2_match:
+            if type_ == 1:
+                return self.do_index_conversion(csit2_match.group(0), 21, returnRaw)
+            elif type_ == 3:
+                return self.do_index_conversion(csit2_match.group(0), 23, returnRaw)
             else:
                 if returnRaw:
-                    return self.__doIndexConversion(match.group(2), 21, returnRaw)
+                    return self.do_index_conversion(csit2_match.group(0), 21, returnRaw)
                 return show_index
-        elif match.group(3):
-            if type == 1:
-                return self.__doIndexConversion(match.group(3), 31, returnRaw)
-            elif type == 2:
-                return self.__doIndexConversion(match.group(3), 32, returnRaw)
+        elif csit3_match:
+            if type_ == 1:
+                return self.do_index_conversion(csit3_match.group(0), 31, returnRaw)
+            elif type_ == 2:
+                return self.do_index_conversion(csit3_match.group(0), 32, returnRaw)
             else:
                 if returnRaw:
-                    return self.__doIndexConversion(match.group(3), 31, returnRaw)
+                    return self.do_index_conversion(csit3_match.group(0), 31, returnRaw)
                 return show_index
         else:
             return show_index
         
-    def __doIndexConversion(self, show_index, type, returnRaw=False):
+
+    def do_index_conversion(self, show_index, type_, returnRaw=False):
         '''Actual conversion between show index types
         
-        type is being composed by concatenating the input type with the output type
-        For instance: type 1 to type 2 -> type = 12
+        type_ is being composed by concatenating the input type_ with the output type_
+        For instance: type_ 1 to type_ 2 -> type_ = 12
 
         
-        (I  )    type = 1 : S01E01, S10E11
-        (II )    type = 2 : 1x1, 10x11
-        (III)    type = 3 : 101, 1011
+        (I  )    type_ = 1 : S01E01, S10E11
+        (II )    type_ = 2 : 1x1, 10x11
+        (III)    type_ = 3 : 101, 1011
         '''        
         season, episode = ('','')
         
-        if type == 12:
+        if type_ == 12:
             season = show_index[1:3]
             if season[0] == '0':
                 season = season[1]
@@ -1929,7 +1963,7 @@ class FileRenamer:
                 return (int(season),int(episode))
             return season + 'x' + episode
         
-        elif type == 13:
+        elif type_ == 13:
             season = show_index[1:3]
             if season[0] == '0':
                 season = season[1]
@@ -1938,7 +1972,7 @@ class FileRenamer:
                 return (int(season),int(episode))
             return season + episode
     
-        elif type == 21:
+        elif type_ == 21:
             season = show_index[:show_index.find('x')]
             episode = show_index[show_index.find('x')+1:]
             if len(season) == 1:
@@ -1949,7 +1983,7 @@ class FileRenamer:
                 return (int(season),int(episode))
             return 'S' + season + 'E' + episode
         
-        elif type == 23:
+        elif type_ == 23:
             season = show_index[:show_index.find('x')]
             episode = show_index[show_index.find('x')+1:]
             if len(season) == 2 and season[0] == '0':
@@ -1960,7 +1994,7 @@ class FileRenamer:
                 return (int(season),int(episode))
             return season + episode
         
-        elif type == 31:
+        elif type_ == 31:
             if len(show_index) == 4:
                 season = show_index[:2]
                 episode = show_index[2:]
@@ -1971,9 +2005,9 @@ class FileRenamer:
                 return (int(season),int(episode))
             return 'S' + season + 'E' + episode
         
-        elif type == 32:
-            #2    type = 2 : 1x1, 10x11
-            #3    type = 3 : 101, 1011
+        elif type_ == 32:
+            #2    type_ = 2 : 1x1, 10x11
+            #3    type_ = 3 : 101, 1011
             if len(show_index) == 4:
                 season = show_index[:2]
                 if show_index[2] == '0':
@@ -1992,25 +2026,9 @@ class FileRenamer:
             if returnRaw:
                 return None
             return show_index
-        
-        
-    def __formatEpisodeName(self, episode_name, punc):
-        if episode_name is not None:
-            return episode_name.strip().replace(" ", punc)
-        return None
-        
 
-    def __addExtension(self, episode):
-        return episode[episode.rfind("."):]
-    
-    
-    def __assignStdElements(self, show_name, show_index, episode_name, punctuation, usr_string):
-        self.elements[self.show] = (self.__encodeShowName(show_name, punctuation),)
-        self.elements[self.__parseIndexElem(usr_string)] = (show_index,)
-        if episode_name != None:
-            self.elements[self.episode] = (self.__formatEpisodeName(episode_name, punctuation),)
-            
-    def substituteChars(self, renamee, substitute_string):
+
+    def substitute_chars(self, renamee, substitute_string):
         ''' substitute_string = "'?'|'!', " -> kv_chars = ['?'|'!'] would substitute a '?' for '!'. '''
         seperator = '|'
         #TODO: some sanity checks perhaps
@@ -2020,7 +2038,7 @@ class FileRenamer:
             key, value = sub_pair.split(seperator)
             renamee = renamee.replace(key, value)
         return renamee
-            
+
         
 class EMException(Exception):
     
@@ -2050,7 +2068,10 @@ class Utils:
         except UnicodeDecodeError, ude:
             return string
         except UnicodeEncodeError, uee:
-            return string     
+            return string  
+        
+    def get_extension(self, file_name):
+        return file_name[file_name.rfind('.'):]
 
 class Transcoder:
         
