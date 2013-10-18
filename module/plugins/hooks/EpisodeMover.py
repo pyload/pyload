@@ -52,7 +52,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.525"
+    __version__ = "0.526"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -1758,12 +1758,16 @@ class OrderedRenameElementDict(dict):
         self.custom_element_start = '%'
         self.custom_element_end = '%'
         self.custom_element_separator = '|'
+        self.is_custom = "is_custom"
+        self.is_gap = "is_gap"
     
     def order(self):
+        '''Return an sorted listed ordered by increasing starting positions'''
         return sorted(list(self.values()),\
         key=lambda RenameElement: RenameElement.start_position)
     
     def gaps(self):
+        '''Get position intervalls for all exisiting gaps'''
         ored = self.order()
         gap_list = []
         for index in range(0,len(ored)):
@@ -1773,17 +1777,22 @@ class OrderedRenameElementDict(dict):
         return gap_list
     
     def custom(self):
+        '''Find all custom elements and turn them into lists'''
         start = self.custom_element_start
         end = self.custom_element_end
         sep = self.custom_element_separator 
         for key in self:
-            if key[0] == start and key[len(key)-1] == end:
+            if self[key].syntax_element[0] == start and \
+            self[key].syntax_element[len(self[key].syntax_element)-1] == end:
                     self[key].syntax_element = \
                     self[key].syntax_element.strip(start)
                     self[key].syntax_element = \
                     self[key].syntax_element.split(sep)
+                    self[key].is_custom = True
+    
                     
     def drop_empty(self):
+        '''Drop all elements that have content==None'''
         empty = []
         for key in self:
             if self[key].content == None:
@@ -1792,10 +1801,62 @@ class OrderedRenameElementDict(dict):
             self.pop(key)
             
     def drop_last_gap(self):
+        '''Check if last gap is followed by any element and drop if not'''
         last_element = max(self.values(), \
         key=lambda RenameElement: RenameElement.start_position)
         if last_element.syntax_element[0] != self.custom_element_start:
-            self.pop(last_element.syntax_element)
+            self.pop(last_element.start_position)
+            
+    def get_element(self, syntax_element):
+        '''Search for an element using its syntax_element attribute
+        
+        This is based on the assumption that syntax_elements for all 
+        standard and custom elements are unique. Do not search for gaps! 
+        '''
+        if syntax_element[0] != self.custom_element_start: return
+        for key in self:
+            if self[key].syntax_element == syntax_element:
+                return self[key]
+            
+    def drop_element(self, syntax_element):
+        '''Drop an element based on its syntax_element attribute
+        
+        
+        This is based on the assumption that syntax_elements for all 
+        standard and custom elements are unique. Do not drop gaps with this! 
+        '''
+        if syntax_element[0] != self.custom_element_start: return
+        for key in self:
+            if self[key].syntax_element == syntax_element:
+                self.pop(key)
+                return
+            
+    def drop_multi_gaps(self):
+        '''Drop multiple gaps in a row'''
+        gap_index = []
+        index = 0
+        for element in self.order():
+            if hasattr(element, self.is_gap):
+                gap_index.append(index)
+            index += 1
+        
+        multi_gaps = []
+        index = 0
+        for idx in gap_index:
+            if idx != gap_index[len(gap_index)-1]:
+                if gap_index[index+1] - idx == 1:
+                    multi_gaps.append(gap_index[index+1])
+            index += 1
+        
+        ordered_elements = self.order()
+        for index in multi_gaps:
+            self.drop_gap(ordered_elements[index].start())
+        
+        
+    def drop_gap(self, gap_key):
+        '''Drop gap by key which is the same as the starting position'''
+        self.pop(gap_key)
+                
                     
     
 class Renamer:
@@ -1832,44 +1893,44 @@ class Renamer:
         compiled_syntax_pattern = self.pattern.parse_rename_string()
         matches = compiled_syntax_pattern.finditer(rename_string)
         for m in matches:
-            rename_elements[m.group(0)] = \
+            rename_elements[m.start()] = \
             RenameElement(m.group(0), m.start(), m.end())
  
     def parse_gap_content(self, rename_string, rename_elements):
         for gap_position in rename_elements.gaps():
             gap_start, gap_end = gap_position
             syntax_element = rename_string[gap_start:gap_end]
-            rename_elements[syntax_element] = \
+            rename_elements[gap_start] = \
             RenameElement(syntax_element, gap_start, gap_end)
-            rename_elements[syntax_element].content = syntax_element
+            rename_elements[gap_start].content = syntax_element
+            rename_elements[gap_start].is_gap = True
             
     def assign_content_to_standard_elements(self, episode, rename_elements):
         
-        rename_elements[self.element_show].content = episode.show_name
-        
-        if rename_elements.has_key(self.element_1index):
+        rename_elements.get_element(self.element_show).content = episode.show_name
+        if rename_elements.get_element(self.element_1index):
             show_index = self.convert_show_index\
             (episode.get_show_index(), self.show_index_type1)
-            rename_elements[self.element_1index].content = show_index
-        elif rename_elements.has_key(self.element_2index):
+            rename_elements.get_element(self.element_1index).content = show_index
+        elif rename_elements.get_element(self.element_2index):
             show_index = self.convert_show_index\
             (episode.get_show_index(), self.show_index_type2)
-            rename_elements[self.element_2index].content = show_index
-        elif rename_elements.has_key(self.element_3index):
+            rename_elements.get_element(self.element_2index).content = show_index
+        elif rename_elements.get_element(self.element_3index):
             show_index = self.convert_show_index\
             (episode.get_show_index(), self.show_index_type3)
-            rename_elements[self.element_2index].content = show_index
+            rename_elements.get_element(self.element_2index).content = show_index
  
-        if episode.episode_name(decode=True) and rename_elements.has_key(self.element_episode):
-            rename_elements[self.element_episode].content = episode.episode_name(decode=True)
-        elif rename_elements.has_key(self.element_episode):
-            rename_elements.pop(self.element_episode)
+        if episode.episode_name(decode=True) and rename_elements.get_element(self.element_episode):
+            rename_elements.get_element(self.element_episode).content = episode.episode_name(decode=True)
+        elif rename_elements.get_element(self.element_episode):
+            rename_elements.drop_element(self.element_episode)
             
     def assign_content_to_custom_elements(self, episode, rename_elements):
         rename_elements.custom() 
-        start_end = rename_elements.custom_element_start
+        is_custom = rename_elements.is_custom
         for key in rename_elements:
-            if key[0] == start_end and key[len(key)-1] == start_end:
+            if hasattr(rename_elements[key], is_custom):
                 for custom_element in rename_elements[key].syntax_element:
                     compiled_pattern = re.compile(custom_element, re.IGNORECASE)
                     a_match = compiled_pattern.search(episode.src_filename)
@@ -1882,6 +1943,7 @@ class Renamer:
         name = ""
         rename_elements.drop_empty()
         rename_elements.drop_last_gap()
+        rename_elements.drop_multi_gaps()
         for element in rename_elements.order():
             name += element.get_content()
         return name
