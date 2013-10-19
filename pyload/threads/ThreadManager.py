@@ -176,7 +176,7 @@ class ThreadManager:
 
         if not force:
             reconnable = [1 if x.active.plugin.wantReconnect and x.active.plugin.waiting and self.pyfile.waitUntil - time() > 60
-                          else 0 if not x.active.plugin.waiting and x.active.plugin.resumeDownload else 2
+                          else 0 if not x.active.plugin.waiting and not x.active.plugin.resumeDownload else 2
                           for x in self.threads if x.active]
             if not reconnable.count(1) or reconnable.count(0):
                 return
