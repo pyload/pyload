@@ -52,7 +52,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.526"
+    __version__ = "0.527"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -1804,7 +1804,7 @@ class OrderedRenameElementDict(dict):
         '''Check if last gap is followed by any element and drop if not'''
         last_element = max(self.values(), \
         key=lambda RenameElement: RenameElement.start_position)
-        if last_element.syntax_element[0] != self.custom_element_start:
+        if hasattr(last_element, self.is_gap):
             self.pop(last_element.start_position)
             
     def get_element(self, syntax_element):
@@ -1942,8 +1942,8 @@ class Renamer:
     def construct_name(self, rename_elements):
         name = ""
         rename_elements.drop_empty()
-        rename_elements.drop_last_gap()
         rename_elements.drop_multi_gaps()
+        rename_elements.drop_last_gap()
         for element in rename_elements.order():
             name += element.get_content()
         return name
