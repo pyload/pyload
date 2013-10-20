@@ -22,13 +22,13 @@ class EasybytezComFolder(SimpleCrypter):
     __name__ = "EasybytezComFolder"
     __type__ = "crypter"
     __pattern__ = r"https?://(www\.)?easybytez\.com/users/\w+/\w+"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """Easybytez Crypter Plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
     LINK_PATTERN = r'<div class="link"><a href="(http://www\.easybytez\.com/\w+)" target="_blank">.+</a></div>'
-    TITLE_PATTERN = r'<Title>Files of (?P<title>.+) folder</Title>'
+    TITLE_PATTERN = r'<Title>Files of .+: (?P<title>.+) folder</Title>'
     PAGES_PATTERN = r"<a href='[^']+'>(?P<pages>\d+)</a><a href='[^']+'>Next &#187;</a><br><small>\(\d+ total\)</small></div>"
 
     def loadPage(self, page_n):
