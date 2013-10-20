@@ -25,8 +25,6 @@ class RPNetBiz(Hoster):
         # Get the download link 
         response = self.load("https://premium.rpnet.biz/client_api.php?username=%s&password=%s&action=generate&links=%s" % (user, data['password'], self.pyfile.url))
         link_status = json_loads(response)['links'][0] #get the first link... since we only queried one
-        print response
-        print link_status
 
         # Check if we only have an id as a HDD link
         if 'id' in link_status:
@@ -57,3 +55,4 @@ class RPNetBiz(Hoster):
             self.fail(link_status['error'])
         else:
             self.fail("Something went wrong, not supposed to enter here")
+            

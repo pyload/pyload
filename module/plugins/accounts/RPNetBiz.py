@@ -34,3 +34,4 @@ class RPNetBiz(Account):
         # Using the rpnet API, check if valid premium account
         response = req.load("https://premium.rpnet.biz/client_api.php?username=%s&password=%s&action=showAccountInformation" % (user, self.accounts[user]['password']))            
         return json_loads(response)
+        

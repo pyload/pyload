@@ -33,7 +33,6 @@ class RPNetBiz(MultiHoster):
             return []
         
         # Extract hosters from json file 
-        print hoster_list['hosters']
         return hoster_list['hosters']
             
     def coreReady(self):
@@ -46,3 +45,4 @@ class RPNetBiz(MultiHoster):
                   
         # Run the overwriten core ready which actually enables the multihoster hook 
         return MultiHoster.coreReady(self)
+        
