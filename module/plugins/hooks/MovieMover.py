@@ -14,12 +14,12 @@ import shutil
 import time
 import urllib2
 import sys
-#from module.common.pydevsrc import pydevd 
+# from module.common.pydevsrc import pydevd 
 
 
 class MovieMover(Hook):
     __name__ = "MovieMover"
-    __version__ = "0.393"
+    __version__ = "0.394"
     __description__ = "MovieMover(MM) moves your movies for you"
     __config__ = [("activated" , "bool" , "Activated"  , "False" ),
                   ("extension", "str", "List of supported extensions", "mkv,avi,mp4,wmv"),
@@ -100,8 +100,8 @@ class MovieMover(Hook):
                 self.logDebug("caught and ignored AttributeError: 'plugin'.")
     
     
-    def packageFinished(self, pypack):
-        self.doProcessing(os.path.join(self.config["general"]["download_folder"], pypack.folder))
+#    def packageFinished(self, pypack):
+#        self.doProcessing(os.path.join(self.config["general"]["download_folder"], pypack.folder))
     
     
     def unrarFinished(self,path_to_extracted_files,path_to_downloads):
@@ -567,6 +567,7 @@ class Query:
         self._prepareQuery(file_name, year, isFile)
         self._start_threads(self.combines["queries"])
         self.query_queue.join() # halt main thread and wait for completion
+#         pydevd.settrace("192.168.1.46",stdoutToServer=True,stderrToServer=True)
         if self.__movies is None or \
         len(self.__movies) == 0:
             return None
@@ -785,7 +786,7 @@ class Query:
         self.__movies[result["id"]]["year"] = {}
         self.__movies[result["id"]]["title"]['original'] = [] 
         self.__movies[result["id"]]["title"]['original'].append(result["original_title"])
-#            pydevd.settrace("192.168.1.29",stdoutToServer=True,stderrToServer=True)
+
         if len(result["title"]) > 0:
             self.__movies[result["id"]]["title"]['standard'] = [] 
             self.__movies[result["id"]]["title"]['standard'].append(result["title"])
@@ -934,6 +935,7 @@ class Query:
     
     def __setData(self, data_tuple):
         query, year = data_tuple
+        query = query.decode("utf-8")
         query = query.encode("utf-8")
         if year != None:
             data = urlencode({
