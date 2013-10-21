@@ -1906,8 +1906,9 @@ class Renamer:
             rename_elements[gap_start].is_gap = True
             
     def assign_content_to_standard_elements(self, episode, rename_elements):
-        
-        rename_elements.get_element(self.element_show).content = episode.show_name
+        # TODO: catch Error when no Rename String is given
+        if rename_elements.get_element(self.element_show):
+            rename_elements.get_element(self.element_show).content = episode.show_name
         if rename_elements.get_element(self.element_1index):
             show_index = self.convert_show_index\
             (episode.get_show_index(), self.show_index_type1)
