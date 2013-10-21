@@ -40,6 +40,8 @@ class RPNetBiz(Account):
     def getAccountStatus(self, user, req):
         
         # Using the rpnet API, check if valid premium account
-        response = req.load("https://premium.rpnet.biz/client_api.php?username=%s&password=%s&action=showAccountInformation" % (user, self.accounts[user]['password']))            
+        response = req.load("https://premium.rpnet.biz/client_api.php?username=%s&password=%s&action=showAccountInformation" % (user, self.accounts[user]['password']))
+        self.logDebug("JSON data: %s" % response)
+
         return json_loads(response)
         
