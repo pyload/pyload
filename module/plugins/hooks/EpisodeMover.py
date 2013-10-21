@@ -52,7 +52,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.527"
+    __version__ = "0.528"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -1906,8 +1906,9 @@ class Renamer:
             rename_elements[gap_start].is_gap = True
             
     def assign_content_to_standard_elements(self, episode, rename_elements):
-        
-        rename_elements.get_element(self.element_show).content = episode.show_name
+        # TODO: catch Error when no Rename String is given
+        if rename_elements.get_element(self.element_show):
+            rename_elements.get_element(self.element_show).content = episode.show_name
         if rename_elements.get_element(self.element_1index):
             show_index = self.convert_show_index\
             (episode.get_show_index(), self.show_index_type1)
