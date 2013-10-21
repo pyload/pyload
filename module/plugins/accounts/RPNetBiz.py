@@ -14,9 +14,17 @@ class RPNetBiz(Account):
         
         # Get account information from rpnet.biz
         response = self.getAccountStatus(user, req)
-        # Parse account info. Change the trafficleft later to support per host info.
-        account_info = {"validuntil": int(response['accountInfo']['premiumExpiry']),
-                        "trafficleft": -1} 
+        try:
+            if response['accountInfo']['isPremium'] is True:
+                # Parse account info. Change the trafficleft later to support per host info.
+                account_info = {"validuntil": int(response['accountInfo']['premiumExpiry']),
+                        "trafficleft": -1, "premium": True}
+            else:
+                account_info = {"validuntil": None, "trafficleft": None, "premium": False} 
+
+        except:
+            #handle wrong password exception
+            account_info = {"validuntil": None, "trafficleft": None, "premium": False} 
 
         return account_info
 
