@@ -515,9 +515,9 @@ class Core(object):
 
         # default formatting when no one was obtained
         if not tfrm:
-            tfrm = "%d.%m.%Y %H:%M:%S"
+            tfrm = "%Y-%m-%d %H:%M:%S"
 
-        frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", tfrm)
+        frm = logging.Formatter("%(asctime)s.%(msecs)03d %(levelname)-8s  %(message)s", tfrm)
         console.setFormatter(frm)
         self.log = logging.getLogger("log") # setable in config
 
