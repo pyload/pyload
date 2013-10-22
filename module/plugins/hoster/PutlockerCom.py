@@ -35,7 +35,7 @@ class PutlockerCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r"This file doesn't exist, or has been removed."
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
 
-    FILE_URL_REPLACEMENTS = [(r'http://putlocker\.com', r'http://www.putlocker.com')]
+    FILE_URL_REPLACEMENTS = [(r'http://putlocker\.com', "http://www.putlocker.com")]
 
     def setup(self):
         self.multiDL = self.resumeDownload = True
@@ -44,7 +44,7 @@ class PutlockerCom(SimpleHoster):
     def handleFree(self):
         name = self.pyfile.name
         link = self._getLink()
-        self.logDebug("Direct link: " + link)
+        self.logDebug("Direct link: %s" % link)
         self.download(link, disposition=True)
         self.processName(name)
 
@@ -88,7 +88,7 @@ class PutlockerCom(SimpleHoster):
         if name <= name_old:
             return
         name_new = re.sub(r'\.[^.]+$', "", name_old) + name[len(name_old):]
-        file = self.lastDownload
+        filename = self.lastDownload
         self.pyfile.name = name_new
-        rename(file, file.rsplit(name)[0] + name_new)
+        rename(filename, filename.rsplit(name)[0] + name_new)
         self.logInfo("%(name)s renamed to %(newname)s" % {"name": name, "newname": name_new})
