@@ -497,7 +497,7 @@ class Core(object):
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
 
-        # time format
+        # time format (ex.: 2013-10-22 18:27:46.385 )
         tfrm = "%Y-%m-%d %H:%M:%S"
 
         frm = logging.Formatter("%(asctime)s.%(msecs)03d %(levelname)-8s  %(message)s", tfrm)
