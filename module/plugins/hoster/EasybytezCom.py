@@ -51,7 +51,7 @@ class EasybytezCom(XFileSharingPro):
             #: limitDL seems not working in pyload 0.4.9, so try to bypass it setting multiDL dynamically
             #self.limitDL = [True for account in self.account.getAllAccounts() if account["valid"] and account["trafficleft"]].count(True)
             #self.logDebug("DL limit = %s" % self.limitDL)
-            accounts = [True for account in self.account.getAllAccounts() and account["valid"] and account["trafficleft"]].count(True)
+            accounts = [True for account in self.account.getAllAccounts() if account["valid"] and account["trafficleft"]].count(True)
             dl_active = [True for x in self.core.threadManager.threads if x.active and x.active.hasPlugin() and x.active.pluginname == self.__name__].count(True)
             self.multiDL = True if accounts - dl_active else False
         else:
