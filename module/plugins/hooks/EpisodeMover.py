@@ -28,7 +28,7 @@ from datetime import datetime as dt
 import traceback
 import inspect
 #remote debugging
-#from module.common.pydevsrc import pydevd 
+# from module.common.pydevsrc import pydevd 
 
 
 class EpisodeMover(Hook):
@@ -52,7 +52,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.528"
+    __version__ = "0.529"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -570,7 +570,6 @@ class EpisodeMover(Hook):
             self.__mv_queue.task_done()
             return
         if self.getConfig('rename'):
-            #pydevd.settrace("192.168.1.46",stdoutToServer=True,stderrToServer=True)
             episode.unicode()
             episode.dst_filename = self.renamer.rename(episode, self.getConfig('usr_string'), self.getConfig('char_sub'))
             episode.dst_filename = save_path(episode.dst_filename)
@@ -2138,7 +2137,7 @@ class Utils:
 
 class Transcoder:
         
-    def encode(self, output):
+    def encode(self, output): # unicode -> byte string
         result = self.encode_ascii(output)
         if result == None:
             result = self.encode_utf8(output)
@@ -2153,7 +2152,7 @@ class Transcoder:
         return result
             
         
-    def decode(self, input):
+    def decode(self, input): # byte string -> unicode
         result = self.decode_ascii(input)
         if result == None:
             result = self.decode_utf8(input)
@@ -2278,6 +2277,7 @@ class MoveLogger:
     
     def __init__(self, dst):
         self.path = dst
+        self.transcoder = Transcoder()
         
     def timestamp(self, format_='datetime'):
         if format_ == 'datetime':
@@ -2299,6 +2299,8 @@ class MoveLogger:
         
     
     def log_custom(self, record):
+#         pydevd.settrace("192.168.1.46",stdoutToServer=True,stderrToServer=True)
+        record = self.transcoder.encode(record)
         if self.path != '':
             l = open(self.path, 'a')
             l.write('%s: %s \n' % (self.timestamp('datetime'), record))
