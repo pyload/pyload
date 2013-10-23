@@ -36,7 +36,7 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:[^/]*?)youtube\.com/watch.*?[?&]v=.*"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
                   ("fmt", "int", "FMT/ITAG Number (5-102, 0 for auto)", 0),
                   (".mp4", "bool", "Allow .mp4", True),
@@ -49,7 +49,7 @@ class YoutubeCom(Hoster):
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 
     # Invalid characters that must be removed from the file name
-    invalidChars = ':?><"|\\'
+    invalidChars = u'\u2605:?><"|\\'
 
     # name, width, height, quality ranking, 3D
     formats = {5: (".flv", 400, 240, 1, False),
