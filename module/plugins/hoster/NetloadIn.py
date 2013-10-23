@@ -59,10 +59,7 @@ class NetloadIn(Hoster):
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
 
     def setup(self):
-        self.multiDL = False
-        if self.premium:
-            self.multiDL = self.resumeDownload = True
-            self.chunkLimit = -1
+        self.multiDL = self.resumeDownload = self.premium
 
     def process(self, pyfile):
         self.url = pyfile.url

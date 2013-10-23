@@ -26,10 +26,6 @@ class DepositfilesCom(SimpleHoster):
     RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)'"
     DOWNLOAD_LINK_PATTERN = r'<form id="downloader_file_form" action="(http://.+?\.(dfiles\.eu|depositfiles\.com)/.+?)" method="post"'
 
-    def setup(self):
-        self.multiDL = False
-        self.resumeDownload = self.premium
-
     def handleFree(self):
         self.html = self.load(self.pyfile.url, post={"gateway_result": "1"}, cookies=True)
         if re.search(self.FILE_OFFLINE_PATTERN, self.html):
@@ -113,7 +109,6 @@ class DepositfilesCom(SimpleHoster):
             self.retry()
         link = unquote(
             re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
-        self.multiDL = True
         self.download(link, disposition=True)
 
 

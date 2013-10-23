@@ -39,8 +39,7 @@ class EgoFilesCom(SimpleHoster):
     DIRECT_LINK_PATTERN = r'<a href="(?P<link>[^"]+)">Download ></a>'
     RECAPTCHA_KEY = '6LeXatQSAAAAAHezcjXyWAni-4t302TeYe7_gfvX'
 
-    def init(self):
-        self.file_info = {}
+    def setup(self):
         # Set English language
         self.load("https://egofiles.com/ajax/lang.php?lang=en", just_header=True)
 

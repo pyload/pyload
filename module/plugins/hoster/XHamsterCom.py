@@ -24,9 +24,6 @@ class XHamsterCom(Hoster):
     __config__ = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
     __description__ = """XHamster.com Video Download Hoster"""
 
-    def setup(self):
-        self.html = None
-
     def process(self, pyfile):
         self.pyfile = pyfile
 
