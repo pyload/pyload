@@ -13,7 +13,7 @@ class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?ncrypt.in/(?P<type>folder|link|frame)-([^/\?]+)"
-    __version__ = "1.25"
+    __version__ = "1.31"
     __description__ = """NCrypt.in Crypter Plugin"""
     __author_name__ = ("fragonib", "stickell")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "l.stickell@yahoo.it")
@@ -23,79 +23,71 @@ class NCryptIn(Crypter):
     _CRYPTED_KEY_ = "crypted"
 
     def setup(self):
+        self.package = None
         self.html = None
         self.cleanedHtml = None
-        self.captcha = False
-        self.package = None
+        self.links_source_order = ['cnl2', 'rsdf', 'ccf', 'dlc', 'web']
+        self.protection_type = None
 
     def decrypt(self, pyfile):
-
+        
         # Init
         self.package = pyfile.package()
-
-        self.type = re.search(self.__pattern__, pyfile.url).group('type')
-        if self.type in ('link', 'frame'):
-            self.handleSingle()
+        package_links = []
+        package_name = self.package.name
+        folder_name = self.package.folder
+        
+        # Deal with single links
+        if self.isSingleLink():
+            package_links.extend(self.handleSingleLink())
+        
+        # Deal with folders
         else:
-            # Request package
-            self.html = self.load(self.pyfile.url)
-            self.cleanedHtml = self.removeCrap(self.html)
+            
+            # Request folder home
+            self.html = self.requestFolderHome()
+            self.cleanedHtml = self.removeHtmlCrap(self.html)
             if not self.isOnline():
                 self.offline()
-
-            # Check for protection
+    
+            # Check for folder protection    
             if self.isProtected():
                 self.html = self.unlockProtection()
-                self.cleanedHtml = self.removeCrap(self.html)
+                self.cleanedHtml = self.removeHtmlCrap(self.html)
                 self.handleErrors()
-
-            # Get package name and folder
+    
+            # Prepare package name and folder
             (package_name, folder_name) = self.getPackageInfo()
-
+    
             # Extract package links
-            package_links = []
-            package_links.extend(self.handleWebLinks())
-            package_links.extend(self.handleContainers())
-            package_links.extend(self.handleCNL2())
-            package_links = self.removeContainers(package_links)
+            for link_source_type in self.links_source_order:
+                package_links.extend(self.handleLinkSource(link_source_type))
+                if package_links:  # use only first source which provides links
+                    break
             package_links = set(package_links)
 
-            # Pack
-            self.packages = [(package_name, package_links, folder_name)]
+        # Pack and return links
+        if not package_links:
+            self.fail('Could not extract any links')
+        self.packages = [(package_name, package_links, folder_name)]
+        
+    def isSingleLink(self):
+        link_type = re.search(self.__pattern__, self.pyfile.url).group('type')
+        return link_type in ('link', 'frame')
 
-    def handleSingle(self):
-        if self.type == 'link':
-            self.pyfile.url = self.pyfile.url.replace('link', 'frame')
-        header = self.load(self.pyfile.url, just_header=True)
-        if 'location' not in header:
-            self.fail("Unable to decrypt link")
-        loc = header['location']
-        self.logDebug("Link decrypted: " + loc)
-        self.package_links = [loc]
-        self.packages = [(self.package.name, self.package_links, self.package.folder)]
+    def requestFolderHome(self):
+        return self.load(self.pyfile.url, decode=True)
 
-    def removeCrap(self, content):
+    def removeHtmlCrap(self, content):
         patterns = (r'(type="hidden".*?(name=".*?")?.*?value=".*?")',
                     r'display:none;">(.*?)</(div|span)>',
                     r'<div\s+class="jdownloader"(.*?)</div>',
+                    r'<table class="global">(.*?)</table>',
                     r'<iframe\s+style="display:none(.*?)</iframe>')
         for pattern in patterns:
             rexpr = re.compile(pattern, re.DOTALL)
             content = re.sub(rexpr, "", content)
         return content
-
-    def removeContainers(self, package_links):
-        tmp_package_links = package_links[:]
-        for link in tmp_package_links:
-            self.logDebug(link)
-            if ".dlc" in link or ".ccf" in link or ".rsdf" in link:
-                self.logDebug("Removing [%s] from package_links" % link)
-                package_links.remove(link)
-
-        if len(package_links) > 0:
-            return package_links
-        else:
-            return tmp_package_links
 
     def isOnline(self):
         if "Your folder does not exist" in self.cleanedHtml:
@@ -104,9 +96,14 @@ class NCryptIn(Crypter):
         return True
 
     def isProtected(self):
-        if re.search(r'''<form.*?name.*?protected.*?>''', self.cleanedHtml):
-            self.logDebug("Links are protected")
-            return True
+        form_match = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.DOTALL)
+        if form_match:
+            form_content = form_match.group(1)
+            for keyword in ("password", "captcha"):
+                if keyword in form_content:
+                    self.protection_type = keyword
+                    self.logDebug("Links are %s protected" % self.protection_type)
+                    return True
         return False
 
     def getPackageInfo(self):
@@ -136,8 +133,7 @@ class NCryptIn(Crypter):
 
         # Resolve anicaptcha
         if "anicaptcha" in form:
-            self.captcha = True
-            self.logDebug("Captcha protected, resolving captcha")
+            self.logDebug("Captcha protected")
             captchaUri = re.search(r'src="(/temp/anicaptcha/[^"]+)', form).group(1)
             captcha = self.decryptCaptcha("http://ncrypt.in" + captchaUri)
             self.logDebug("Captcha resolved [%s]" % captcha)
@@ -145,77 +141,79 @@ class NCryptIn(Crypter):
 
         # Resolve recaptcha           
         if "recaptcha" in form:
-            self.captcha = True
-            id = re.search(r'\?k=(.*?)"', form).group(1)
-            self.logDebug("Resolving ReCaptcha with key [%s]" % id)
+            self.logDebug("ReCaptcha protected")
+            captcha_key = re.search(r'\?k=(.*?)"', form).group(1)
+            self.logDebug("Resolving ReCaptcha with key [%s]" % captcha_key)
             recaptcha = ReCaptcha(self)
-            challenge, code = recaptcha.challenge(id)
+            challenge, code = recaptcha.challenge(captcha_key)
             postData['recaptcha_challenge_field'] = challenge
             postData['recaptcha_response_field'] = code
 
         # Resolve circlecaptcha
         if "circlecaptcha" in form:
-            self.captcha = True
-            self.logDebug("Captcha protected")
+            self.logDebug("CircleCaptcha protected")
             captcha_img_url = "http://ncrypt.in/classes/captcha/circlecaptcha.php"
             coords = self.decryptCaptcha(captcha_img_url, forceUser=True, imgtype="png", result_type='positional')
             self.logDebug("Captcha resolved, coords [%s]" % str(coords))
-            self.captcha_post_url = self.pyfile.url
-
             postData['circle.x'] = coords[0]
             postData['circle.y'] = coords[1]
 
         # Unlock protection
-        postData['submit_protected'] = 'Continue to folder '
-        return self.load(self.pyfile.url, post=postData)
+        postData['submit_protected'] = 'Continue to folder'
+        return self.load(self.pyfile.url, post=postData, decode=True)
 
     def handleErrors(self):
 
-        if "This password is invalid!" in self.cleanedHtml:
-            self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
-            self.fail("Incorrect password, please set right password on 'Edit package' form and retry")
+        if self.protection_type == "password":
+            if "This password is invalid!" in self.cleanedHtml:
+                self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
+                self.fail("Incorrect password, please set right password on 'Edit package' form and retry")
 
-        if self.captcha:
+        if self.protection_type == "captcha":
             if "The securitycheck was wrong!" in self.cleanedHtml:
                 self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
                 self.retry()
             else:
-                self.correctCaptcha()
+                self.correctCaptcha()    
 
-    def handleWebLinks(self):
+    def handleLinkSource(self, link_source_type):
+        
+        # Check for JS engine
+        require_js_engine = link_source_type in ('cnl2', 'rsdf', 'ccf', 'dlc')
+        if require_js_engine and not self.js:
+            self.logDebug("No JS engine available, skip %s links" % link_source_type)
+            return []
+        
+        # Select suitable handler
+        if link_source_type == 'single':
+            return self.handleSingleLink()
+        if link_source_type == 'cnl2':
+            return self.handleCNL2()
+        elif link_source_type in ('rsdf', 'ccf', 'dlc'):
+            return self.handleContainer(link_source_type)
+        elif link_source_type == 'web':
+            return self.handleWebLinks()
+        else:
+            self.fail('unknown source type "%s" (this is probably a bug)' % link_source_type)
+    
+    def handleSingleLink(self):
+
+        self.logDebug("Handling Single link")
         package_links = []
-        self.logDebug("Handling Web links")
-
-        pattern = r"(http://ncrypt\.in/link-.*?=)"
-        links = re.findall(pattern, self.html)
-        self.logDebug("Decrypting %d Web links" % len(links))
-        for i, link in enumerate(links):
-            self.logDebug("Decrypting Web link %d, %s" % (i + 1, link))
-            try:
-                url = link.replace("link-", "frame-")
-                link = self.load(url, just_header=True)['location']
-                package_links.append(link)
-            except Exception, detail:
-                self.logDebug("Error decrypting Web link %s, %s" % (link, detail))
-        return package_links
-
-    def handleContainers(self):
-        package_links = []
-        self.logDebug("Handling Container links")
-
-        pattern = r"/container/(rsdf|dlc|ccf)/([a-z0-9]+)"
-        containersLinks = re.findall(pattern, self.html)
-        self.logDebug("Decrypting %d Container links" % len(containersLinks))
-        for containerLink in containersLinks:
-            link = "http://ncrypt.in/container/%s/%s.%s" % (containerLink[0], containerLink[1], containerLink[0])
-            package_links.append(link)
+        
+        # Decrypt single link
+        decrypted_link = self.decryptLink(self.pyfile.url)
+        if decrypted_link:
+            package_links.append(decrypted_link)
+            
         return package_links
 
     def handleCNL2(self):
-        package_links = []
-        self.logDebug("Handling CNL2 links")
 
+        self.logDebug("Handling CNL2 links")
+        package_links = []
+        
         if 'cnl2_output' in self.cleanedHtml:
             try:
                 (vcrypted, vjk) = self._getCipherParams()
@@ -223,7 +221,46 @@ class NCryptIn(Crypter):
                     package_links.extend(self._getLinks(crypted, jk))
             except:
                 self.fail("Unable to decrypt CNL2 links")
+                
         return package_links
+
+    def handleContainers(self):
+
+        self.logDebug("Handling Container links")
+        package_links = []
+        
+        pattern = r"/container/(rsdf|dlc|ccf)/([a-z0-9]+)"
+        containersLinks = re.findall(pattern, self.html)
+        self.logDebug("Decrypting %d Container links" % len(containersLinks))
+        for containerLink in containersLinks:
+            link = "http://ncrypt.in/container/%s/%s.%s" % (containerLink[0], containerLink[1], containerLink[0])
+            package_links.append(link)
+            
+        return package_links
+
+    def handleWebLinks(self):
+
+        self.logDebug("Handling Web links")
+        pattern = r"(http://ncrypt\.in/link-.*?=)"
+        links = re.findall(pattern, self.html)
+        
+        package_links = []
+        self.logDebug("Decrypting %d Web links" % len(links))
+        for i, link in enumerate(links):
+            self.logDebug("Decrypting Web link %d, %s" % (i + 1, link))
+            decrypted_link = self.decrypt(link)
+            if decrypted_link:
+                package_links.append(decrypted_link)
+            
+        return package_links
+        
+    def decryptLink(self, link):        
+        try:
+            url = link.replace("link-", "frame-")
+            link = self.load(url, just_header=True)['location']
+            return link
+        except Exception, detail:
+            self.logDebug("Error decrypting link %s, %s" % (link, detail))
 
     def _getCipherParams(self):
 
