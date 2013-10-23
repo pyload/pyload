@@ -1,3 +1,4 @@
+
 .hidden {
 	display:none;
 }
@@ -670,6 +671,13 @@ ul.tabs li a
 {
     display: inline;
 }
+
+#general_form,
+#plugin_form{
+	display: block;
+	padding-left: 250px;
+}
+
 
 #tabsback
 {
