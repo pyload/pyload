@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Test links (random.bin):
-# http://ryushare.com/denawy6x6tzz/random.bin
+# http://ryushare.com/cl0jy8ric2js/random.bin
 
 import re
 
@@ -55,7 +55,7 @@ class RyushareCom(XFileSharingPro):
             retry = True
 
         self.wait()
-        if retry == True:
+        if retry:
             self.retry()
 
         for i in xrange(5):
