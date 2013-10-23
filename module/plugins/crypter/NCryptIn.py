@@ -13,7 +13,7 @@ class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?ncrypt.in/(?P<type>folder|link|frame)-([^/\?]+)"
-    __version__ = "1.31"
+    __version__ = "1.32"
     __description__ = """NCrypt.in Crypter Plugin"""
     __author_name__ = ("fragonib", "stickell")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "l.stickell@yahoo.it")
@@ -21,6 +21,8 @@ class NCryptIn(Crypter):
     # Constants
     _JK_KEY_ = "jk"
     _CRYPTED_KEY_ = "crypted"
+
+    NAME_PATTERN = r'<meta name="description" content="(?P<N>[^"]+)"'
 
     def setup(self):
         self.package = None
@@ -30,35 +32,35 @@ class NCryptIn(Crypter):
         self.protection_type = None
 
     def decrypt(self, pyfile):
-        
+
         # Init
         self.package = pyfile.package()
         package_links = []
         package_name = self.package.name
         folder_name = self.package.folder
-        
+
         # Deal with single links
         if self.isSingleLink():
             package_links.extend(self.handleSingleLink())
-        
+
         # Deal with folders
         else:
-            
+
             # Request folder home
             self.html = self.requestFolderHome()
             self.cleanedHtml = self.removeHtmlCrap(self.html)
             if not self.isOnline():
                 self.offline()
-    
+
             # Check for folder protection    
             if self.isProtected():
                 self.html = self.unlockProtection()
                 self.cleanedHtml = self.removeHtmlCrap(self.html)
                 self.handleErrors()
-    
+
             # Prepare package name and folder
             (package_name, folder_name) = self.getPackageInfo()
-    
+
             # Extract package links
             for link_source_type in self.links_source_order:
                 package_links.extend(self.handleLinkSource(link_source_type))
@@ -70,7 +72,7 @@ class NCryptIn(Crypter):
         if not package_links:
             self.fail('Could not extract any links')
         self.packages = [(package_name, package_links, folder_name)]
-        
+
     def isSingleLink(self):
         link_type = re.search(self.__pattern__, self.pyfile.url).group('type')
         return link_type in ('link', 'frame')
@@ -107,11 +109,9 @@ class NCryptIn(Crypter):
         return False
 
     def getPackageInfo(self):
-        title_re = r'<h2><span.*?class="arrow".*?>(?P<title>[^<]+).*?</span>.*?</h2>'
-        m = re.findall(title_re, self.html, re.DOTALL)
-        if m is not None:
-            title = m[-1].strip()
-            name = folder = title
+        m = re.search(self.NAME_PATTERN, self.html)
+        if m:
+            name = folder = m.group('N').strip()
             self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
         else:
             name = self.package.name
@@ -175,16 +175,16 @@ class NCryptIn(Crypter):
                 self.invalidCaptcha()
                 self.retry()
             else:
-                self.correctCaptcha()    
+                self.correctCaptcha()
 
     def handleLinkSource(self, link_source_type):
-        
+
         # Check for JS engine
         require_js_engine = link_source_type in ('cnl2', 'rsdf', 'ccf', 'dlc')
         if require_js_engine and not self.js:
             self.logDebug("No JS engine available, skip %s links" % link_source_type)
             return []
-        
+
         # Select suitable handler
         if link_source_type == 'single':
             return self.handleSingleLink()
@@ -196,24 +196,24 @@ class NCryptIn(Crypter):
             return self.handleWebLinks()
         else:
             self.fail('unknown source type "%s" (this is probably a bug)' % link_source_type)
-    
+
     def handleSingleLink(self):
 
         self.logDebug("Handling Single link")
         package_links = []
-        
+
         # Decrypt single link
         decrypted_link = self.decryptLink(self.pyfile.url)
         if decrypted_link:
             package_links.append(decrypted_link)
-            
+
         return package_links
 
     def handleCNL2(self):
 
         self.logDebug("Handling CNL2 links")
         package_links = []
-        
+
         if 'cnl2_output' in self.cleanedHtml:
             try:
                 (vcrypted, vjk) = self._getCipherParams()
@@ -221,21 +221,21 @@ class NCryptIn(Crypter):
                     package_links.extend(self._getLinks(crypted, jk))
             except:
                 self.fail("Unable to decrypt CNL2 links")
-                
+
         return package_links
 
     def handleContainers(self):
 
         self.logDebug("Handling Container links")
         package_links = []
-        
+
         pattern = r"/container/(rsdf|dlc|ccf)/([a-z0-9]+)"
         containersLinks = re.findall(pattern, self.html)
         self.logDebug("Decrypting %d Container links" % len(containersLinks))
         for containerLink in containersLinks:
             link = "http://ncrypt.in/container/%s/%s.%s" % (containerLink[0], containerLink[1], containerLink[0])
             package_links.append(link)
-            
+
         return package_links
 
     def handleWebLinks(self):
@@ -243,7 +243,7 @@ class NCryptIn(Crypter):
         self.logDebug("Handling Web links")
         pattern = r"(http://ncrypt\.in/link-.*?=)"
         links = re.findall(pattern, self.html)
-        
+
         package_links = []
         self.logDebug("Decrypting %d Web links" % len(links))
         for i, link in enumerate(links):
@@ -251,10 +251,10 @@ class NCryptIn(Crypter):
             decrypted_link = self.decrypt(link)
             if decrypted_link:
                 package_links.append(decrypted_link)
-            
+
         return package_links
-        
-    def decryptLink(self, link):        
+
+    def decryptLink(self, link):
         try:
             url = link.replace("link-", "frame-")
             link = self.load(url, just_header=True)['location']
