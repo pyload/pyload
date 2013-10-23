@@ -22,7 +22,7 @@ class RPNetBiz(Account):
             else:
                 account_info = {"validuntil": None, "trafficleft": None, "premium": False} 
 
-        except:
+        except WrongPassword:
             #handle wrong password exception
             account_info = {"validuntil": None, "trafficleft": None, "premium": False} 
 
