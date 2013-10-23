@@ -48,7 +48,7 @@ class StreamCz(Hoster):
     CDN_PATTERN = r'<param name="flashvars" value="[^"]*&id=(?P<ID>\d+)(?:&cdnLQ=(?P<cdnLQ>\d*))?(?:&cdnHQ=(?P<cdnHQ>\d*))?(?:&cdnHD=(?P<cdnHD>\d*))?&'
 
     def setup(self):
-        self.multiDL = True
+        #self.multiDL = True
         self.resumeDownload = True
 
     def process(self, pyfile):

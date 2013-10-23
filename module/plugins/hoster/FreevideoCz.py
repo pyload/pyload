@@ -47,7 +47,8 @@ class FreevideoCz(Hoster):
     FILE_OFFLINE_PATTERN = r'<h2 class="red-corner-full">Str.nka nebyla nalezena</h2>'
 
     def setup(self):
-        self.multiDL = self.resumeDownload = True
+        #self.multiDL = True
+        self.resumeDownload = True
 
     def process(self, pyfile):
 

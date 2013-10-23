@@ -25,7 +25,8 @@ class RyushareCom(XFileSharingPro):
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        #self.multiDL = True
+        self.resumeDownload = True
         if not self.premium:
             self.limitDL = 2
         # Up to 3 chunks allowed in free downloads. Unknown for premium

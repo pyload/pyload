@@ -15,7 +15,7 @@ class MyvideoDe(Hoster):
     __author_mail__ = ("spoob@pyload.org")
 
     def setup(self):
-        self.html = None
+        pass
 
     def process(self, pyfile):
         self.pyfile = pyfile

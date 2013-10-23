@@ -75,7 +75,8 @@ class YoutubeCom(Hoster):
                102: (".webm", 1280, 720, 8, True)}
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        #self.multiDL = True
+        self.resumeDownload = True
 
     def process(self, pyfile):
         html = self.load(pyfile.url, decode=True)

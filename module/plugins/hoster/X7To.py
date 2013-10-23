@@ -12,19 +12,18 @@ class X7To(Hoster):
     __name__ = "X7To"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www.)?x7.to/"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __description__ = """X7.To File Download Hoster"""
     __author_name__ = ("ernieb")
     __author_mail__ = ("ernieb")
 
     FILE_INFO_PATTERN = r'<meta name="description" content="Download: (.*?) \(([0-9,.]+) (KB|MB|GB)\)'
 
-    def init(self):
+    def setup(self):
+        self.multiDL = False
         if self.premium:
-            self.multiDL = self.resumeDownload = False
+            self.resumeDownload = False
             self.chunkLimit = 1
-        else:
-            self.multiDL = False
 
         self.file_id = re.search(r"http://x7.to/([a-zA-Z0-9]+)", self.pyfile.url).group(1)
         self.logDebug("file id is %s" % self.file_id)

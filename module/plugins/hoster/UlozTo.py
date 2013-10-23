@@ -29,7 +29,7 @@ class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
-    __version__ = "0.93"
+    __version__ = "0.94"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
@@ -106,8 +106,6 @@ class UlozTo(SimpleHoster):
 
         # self.setStorage("captcha_id", captcha_id)
         # self.setStorage("captcha_text", captcha_text)
-
-        self.multiDL = True
 
         inputs.update({captcha_id_field: captcha_id, captcha_text_field: captcha_text})
 

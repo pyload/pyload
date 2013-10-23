@@ -40,7 +40,8 @@ class ZippyshareCom(SimpleHoster):
     LAST_KNOWN_VALUES = (9, 2374755)  # time = (seed * multiply) % modulo
 
     def setup(self):
-        self.multiDL = True
+        #self.multiDL = True
+        pass
 
     def handleFree(self):
         url = self.get_file_url()
