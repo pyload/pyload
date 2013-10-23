@@ -171,8 +171,7 @@ class RapidshareCom(Hoster):
         elif int(self.api_data["status"]) > 50:
             self.api_data["status"] = str(int(self.api_data["status"]) - 50)
 
-        self.api_data["mirror"] = \
-            "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
+        self.api_data["mirror"] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
 
     def freeWait(self):
         """downloads html with the important information
@@ -195,8 +194,8 @@ class RapidshareCom(Hoster):
             self.setWait(60)
             self.logInfo(_("Already downloading from this ip address, waiting 60 seconds"))
             self.wait()
-        elif "Too many users downloading from this server right now" in result or \
-                "All free download slots are full" in result:
+        elif ("Too many users downloading from this server right now" in result or
+              "All free download slots are full" in result):
             self.setWait(120)
             self.logInfo(_("RapidShareCom: No free slots"))
             self.wait()

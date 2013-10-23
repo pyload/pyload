@@ -46,8 +46,8 @@ class FileApeCom(Hoster):
         self.wait()
 
         self.html = self.load(continuePage)
-        linkMatch = \
-            re.search(r"<div style=\"text-align:center; font-size: 30px;\"><a href=\"(http://.*?)\"", self.html)
+        linkMatch = re.search(r"<div style=\"text-align:center; font-size: 30px;\"><a href=\"(http://.*?)\"", self.html)
+
         if not linkMatch:
             linkMatch = re.search(r"\"(http://tx\d+\.fileape\.com/[a-z]+/.*?)\"", self.html)
         if linkMatch:
