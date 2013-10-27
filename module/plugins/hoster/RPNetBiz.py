@@ -45,7 +45,7 @@ class RPNetBiz(Hoster):
                 max_tries = 30
                 my_try = 0
                 success = False
-                while (my_try <= max_tries and success is False):
+                while (my_try <= max_tries and not success):
                     self.logDebug("Try: %d ; Max Tries: %d" % (my_try, max_tries))
                     response = self.load("https://premium.rpnet.biz/client_api.php?username=%s&password=%s&action=downloadInformation&id=%s" % (user, data['password'], link_status['id']))
                     self.logDebug("JSON data hdd query: %s" % response)
@@ -63,7 +63,7 @@ class RPNetBiz(Hoster):
                     self.wait()
                     my_try = my_try + 1
 
-                if success is False:
+                if not success:
                     self.fail("Waited for about 15 minutes for download to finish but failed")         
 
         if 'generated' in link_status:

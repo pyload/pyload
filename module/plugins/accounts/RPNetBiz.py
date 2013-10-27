@@ -15,7 +15,7 @@ class RPNetBiz(Account):
         # Get account information from rpnet.biz
         response = self.getAccountStatus(user, req)
         try:
-            if response['accountInfo']['isPremium'] is True:
+            if response['accountInfo']['isPremium']:
                 # Parse account info. Change the trafficleft later to support per host info.
                 account_info = {"validuntil": int(response['accountInfo']['premiumExpiry']),
                         "trafficleft": -1, "premium": True}
