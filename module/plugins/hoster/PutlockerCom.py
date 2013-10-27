@@ -26,8 +26,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class PutlockerCom(SimpleHoster):
     __name__ = "PutlockerCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(www\.)?putlocker\.com/(file|embed)/[A-Z0-9]+'
-    __version__ = "0.29"
+    __pattern__ = r'http://(?:www\.)?putlocker\.com/(mobile/)?(file|embed)/(?P<ID>[A-Z0-9]+)'
+    __version__ = "0.30"
     __description__ = """Putlocker.Com"""
     __author_name__ = ("jeix", "stickell", "Walter Purcaro")
     __author_mail__ = ("", "l.stickell@yahoo.it", "vuolter@gmail.com")
@@ -35,7 +35,7 @@ class PutlockerCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r"This file doesn't exist, or has been removed."
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
 
-    FILE_URL_REPLACEMENTS = [(r'http://putlocker\.com', r'http://www.putlocker.com')]
+    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.putlocker.com/file/\g<ID>')]
 
     def setup(self):
         self.multiDL = self.resumeDownload = True
