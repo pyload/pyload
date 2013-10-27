@@ -27,10 +27,10 @@ class AbtractExtractor:
         raise NotImplementedError
 
 
-    def __init__(self, m, file, out, fullpath, overwrite, renice):
+    def __init__(self, m, file, out, fullpath, overwrite, excludefiles, renice):
         """Initialize extractor for specific file
 
-        :param m: ExtractArchive Hook plugin
+        :param m: Extracd pylctArchive Hook plugin
         :param file: Absolute filepath
         :param out: Absolute path to destination directory
         :param fullpath: extract to fullpath
@@ -42,6 +42,7 @@ class AbtractExtractor:
         self.out = out
         self.fullpath = fullpath
         self.overwrite = overwrite
+        self.excludefiles = excludefiles
         self.renice = renice
         self.files = [] # Store extracted files here
 

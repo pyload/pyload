@@ -59,7 +59,7 @@ class ExtractArchive(Hook):
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __description__ = "Extract different kind of archives"
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
@@ -68,11 +68,12 @@ class ExtractArchive(Hook):
                   ("deletearchive", "bool", "Delete archives when done", False),
                   ("subfolder", "bool", "Create subfolder for each package", False),
                   ("destination", "folder", "Extract files to", ""),
+                  ("excludefiles", "str", "Exclude files from unpacking(seperated by ;)", "nfo;log"),
                   ("recursive", "bool", "Extract archives in archvies", True),
                   ("queue", "bool", "Wait for all downloads to be finished", True),
                   ("renice", "int", "CPU Priority", 0)]
-    __author_name__ = ("pyload Team")
-    __author_mail__ = ("admin<at>pyload.org")
+    __author_name__ = ("pyload Team", "AndroKev")
+    __author_mail__ = ("admin<at>pyload.org", "@pyloadforum")
 
     event_list = ["allDownloadsProcessed"]
 
@@ -177,7 +178,7 @@ class ExtractArchive(Hook):
                             continue
                         extracted.append(target)  # prevent extracting same file twice
 
-                        klass = plugin(self, target, out, self.getConfig("fullpath"), self.getConfig("overwrite"),
+                        klass = plugin(self, target, out, self.getConfig("fullpath"), self.getConfig("overwrite"), self.getConfig("excludefiles"),
                                        self.getConfig("renice"))
                         klass.init()
 
