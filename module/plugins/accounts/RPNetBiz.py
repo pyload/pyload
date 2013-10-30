@@ -22,7 +22,7 @@ class RPNetBiz(Account):
             else:
                 account_info = {"validuntil": None, "trafficleft": None, "premium": False} 
 
-        except WrongPassword:
+        except KeyError:
             #handle wrong password exception
             account_info = {"validuntil": None, "trafficleft": None, "premium": False} 
 
@@ -40,7 +40,7 @@ class RPNetBiz(Account):
     def getAccountStatus(self, user, req):
         
         # Using the rpnet API, check if valid premium account
-        response = req.load("https://premium.rpnet.biz/client_api.php?username=%s&password=%s&action=showAccountInformation" % (user, self.accounts[user]['password']))
+        response = req.load("https://premium.rpnet.biz/client_api.php", get={"username": user, "password": self.accounts[user]['password'], "action": "showAccountInformation"})
         self.logDebug("JSON data: %s" % response)
 
         return json_loads(response)

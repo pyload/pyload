@@ -32,7 +32,8 @@ class RPNetBiz(Hoster):
 
             self.logDebug("Original URL: %s" % pyfile.url)
             # Get the download link 
-            response = self.load("https://premium.rpnet.biz/client_api.php?username=%s&password=%s&action=generate&links=%s" % (user, data['password'], self.pyfile.url))
+            response = self.load("https://premium.rpnet.biz/client_api.php", get={"username": user, "password": data['password'], "action": "generate", "links": self.pyfile.url})
+
             self.logDebug("JSON data: %s" % response)
             link_status = json_loads(response)['links'][0] #get the first link... since we only queried one
 
@@ -47,7 +48,7 @@ class RPNetBiz(Hoster):
                 success = False
                 while (my_try <= max_tries and not success):
                     self.logDebug("Try: %d ; Max Tries: %d" % (my_try, max_tries))
-                    response = self.load("https://premium.rpnet.biz/client_api.php?username=%s&password=%s&action=downloadInformation&id=%s" % (user, data['password'], link_status['id']))
+                    response = self.load("https://premium.rpnet.biz/client_api.php", get={"username": user, "password": data['password'], "action": "downloadInformation", "id": link_status['id']})
                     self.logDebug("JSON data hdd query: %s" % response)
                     download_status = json_loads(response)['download']
 
