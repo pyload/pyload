@@ -15,6 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
+# Test links (random.bin):
+# http://k2s.cc/file/527111edfb9ba/random.bin
+
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -24,8 +27,8 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class Keep2shareCC(SimpleHoster):
     __name__ = "Keep2shareCC"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?keep2share\.cc/file/\w+"
-    __version__ = "0.03"
+    __pattern__ = r"http://(?:www\.)?(?:keep2share|k2s)\.cc/file/(?P<ID>.+)"
+    __version__ = "0.04"
     __description__ = """Keep2share.cc hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -38,6 +41,8 @@ class Keep2shareCC(SimpleHoster):
     WAIT_PATTERN = r'Please wait ([\d:]+) to download this file'
 
     RECAPTCHA_KEY = '6LcYcN0SAAAAABtMlxKj7X0hRxOY8_2U86kI1vbb'
+
+    FILE_URL_REPLACEMENTS = [(__pattern__, r"http://www.keep2share.cc/file/\g<ID>")]
 
     def handleFree(self):
         fid = re.search(r'<input type="hidden" name="slow_id" value="([^"]+)">', self.html).group(1)
