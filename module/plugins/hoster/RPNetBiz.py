@@ -39,13 +39,12 @@ class RPNetBiz(Hoster):
 
             # Check if we only have an id as a HDD link
             if 'id' in link_status:
-                self.logDebug("Need to wait atleast 30 seconds before requery")
+                self.logDebug("Need to wait at least 30 seconds before requery")
                 self.setWait(30) #wait for 30 seconds
                 self.wait()
                 '''Lets query the server again asking for the status on the link, we need to keep doing this until we reach 100'''
                 max_tries = 30
                 my_try = 0
-                success = False
                 while (my_try <= max_tries):
                     self.logDebug("Try: %d ; Max Tries: %d" % (my_try, max_tries))
                     response = self.load("https://premium.rpnet.biz/client_api.php", get={"username": user, "password": data['password'], "action": "downloadInformation", "id": link_status['id']})
@@ -54,7 +53,6 @@ class RPNetBiz(Hoster):
 
                     if download_status['status'] == '100':
                         link_status['generated'] = download_status['rpnet_link']
-                        success = True
                         self.logDebug("Successfully downloaded to rpnet HDD: %s" % link_status['generated'])
                         break
                     else:
@@ -64,7 +62,7 @@ class RPNetBiz(Hoster):
                     self.wait()
                     my_try = my_try + 1
 
-                if not success:
+                if my_try > max_tries: #We went over the limit!
                     self.fail("Waited for about 15 minutes for download to finish but failed")         
 
         if 'generated' in link_status:
