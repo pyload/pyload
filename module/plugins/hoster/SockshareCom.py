@@ -28,3 +28,5 @@ class SockshareCom(PutlockerCom):
     __description__ = """Sockshare.Com"""
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
+
+    HOSTER_NAME = "sockshare"
