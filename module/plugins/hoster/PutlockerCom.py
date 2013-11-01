@@ -66,7 +66,6 @@ class PutlockerCom(SimpleHoster):
                     r'(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+)',
                     r'(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+&original=1)',
                     r'<a href="/gopro\.php">Tired of ads and waiting\? Go Pro!</a>[\t\n\rn ]+</div>[\t\n\rn ]+<a href="(/.*?)"')
-        hostername = self.HOSTER_NAME
         for pattern in patterns:
             link = re.search(pattern, self.html)
             if link:
@@ -74,10 +73,10 @@ class PutlockerCom(SimpleHoster):
         else:
             link = re.search(r"playlist: '(/get_file\.php\?stream=[A-Za-z0-9=]+)'", self.html)
             if link:
-                self.html = self.load("http://www.%s.com%s" % (hostername, link.group(1)))
+                self.html = self.load("http://www.%s.com%s" % (self.HOSTER_NAME, link.group(1)))
                 link = re.search(r'media:content url="(http://.*?)"', self.html)
                 if not link:
-                    pattern = "\"(http://media\\-b\\d+\\.%s\\.com/download/\\d+/.*?)\"" % hostername
+                    pattern = "\"(http://media\\-b\\d+\\.%s\\.com/download/\\d+/.*?)\"" % self.HOSTER_NAME
                     link = re.search(pattern, self.html)
             else:
                 self.parseError('Unable to detect a download link')
@@ -86,7 +85,7 @@ class PutlockerCom(SimpleHoster):
         if link.startswith("http://"):
             return link
         else:
-            return "http://www.%s.com%s" % (hostername, link)
+            return "http://www.%s.com%s" % (self.HOSTER_NAME, link)
 
     def processName(self, name_old):
         name = self.pyfile.name
