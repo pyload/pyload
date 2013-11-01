@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __type__ = "hoster"
 
     __pattern__ = r"https?://.*real-debrid\..*"
@@ -48,7 +48,7 @@ class RealdebridCom(Hoster):
             else:
                 password = password[0]
 
-            url = "http://real-debrid.com/ajax/unrestrict.php?lang=en&link=%s&password=%s&time=%s" % (
+            url = "https://real-debrid.com/ajax/unrestrict.php?lang=en&link=%s&password=%s&time=%s" % (
                 quote(pyfile.url, ""), password, int(time() * 1000))
             page = self.load(url)
             data = json_loads(page)
