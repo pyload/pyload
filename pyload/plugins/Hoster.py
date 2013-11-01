@@ -176,18 +176,25 @@ class Hoster(Base):
 
         return True, 10
 
-    def setWait(self, seconds, reconnect=False):
+    def setWait(self, seconds, reconnect=None):
         """Set a specific wait time later used with `wait`
         
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
-        if reconnect:
-            self.wantReconnect = True
+        if reconnect is not None:
+            self.wantReconnect = reconnect
         self.pyfile.waitUntil = time() + int(seconds)
 
-    def wait(self):
-        """ waits the time previously set """
+    def wait(self, seconds=None, reconnect=None):
+        """ Waits the time previously set or use these from arguments. See `setWait`
+        """
+        if seconds is not None:
+            self.setWait(seconds, reconnect)
+
+        self._wait()
+
+    def _wait(self):
         self.waiting = True
         self.pyfile.setStatus("waiting")
 
