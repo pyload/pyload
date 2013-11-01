@@ -105,10 +105,11 @@ class YoutubeBatch(Crypter):
             video_links = [x for x in self.get_videos(id)]
 
             self.logInfo("%s videos found on playlist \"%s\" (channel \"%s\")" % (len(video_links), playlist_name, channel_title))
-            self.logDebug("Video links = %s" % video_links)
 
             if not video_links:
                 continue
+
+            self.logDebug("Video links = %s" % video_links)
 
             folder = join(self.config['general']['download_folder'], channel_title, playlist_name)
             self.packages.append((playlist_name, video_links, folder)) #Note: folder is NOT used actually!
