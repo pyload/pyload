@@ -34,9 +34,6 @@ from sys import argv, executable, exit
 from time import time, sleep
 from traceback import print_exc
 
-import locale
-locale.locale_alias = locale.windows_locale = {} #save ~100kb ram, no known sideeffects for now
-
 import subprocess
 subprocess.__doc__ = None # the module with the largest doc we are using
 
@@ -500,24 +497,10 @@ class Core(object):
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
 
-        # try to get a time formatting depending on system locale
-        tfrm = None
-        try: # change current locale to default if it is not set
-            current_locale = locale.getlocale()
-            if current_locale == (None, None):
-                current_locale = locale.setlocale(locale.LC_ALL, '')
+        # time format (ex.: 2013-10-22 18:27:46.385 )
+        tfrm = "%Y-%m-%d %H:%M:%S"
 
-            # We use timeformat provided by locale when available
-            if current_locale != (None, None):
-                tfrm = locale.nl_langinfo(locale.D_FMT) + " " + locale.nl_langinfo(locale.T_FMT)
-        except: # something did go wrong, locale is heavily platform dependant
-            pass
-
-        # default formatting when no one was obtained
-        if not tfrm:
-            tfrm = "%d.%m.%Y %H:%M:%S"
-
-        frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", tfrm)
+        frm = logging.Formatter("%(asctime)s.%(msecs)03d %(levelname)-8s  %(message)s", tfrm)
         console.setFormatter(frm)
         self.log = logging.getLogger("log") # setable in config
 
