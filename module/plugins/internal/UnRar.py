@@ -188,9 +188,8 @@ class UnRar(AbtractExtractor):
         
         if self.excludefiles:
             for word in self.excludefiles.split(';'):
-                args.append("-x*" + word)
+                args.append("-x%s" % word )
                 
-
         # assume yes on all queries
         args.append("-y")
 
