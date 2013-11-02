@@ -68,7 +68,7 @@ class ExtractArchive(Hook):
                   ("deletearchive", "bool", "Delete archives when done", False),
                   ("subfolder", "bool", "Create subfolder for each package", False),
                   ("destination", "folder", "Extract files to", ""),
-                  ("excludefiles", "str", "Exclude files from unpacking(seperated by ;)", "nfo;log"),
+                  ("excludefiles", "str", "Exclude files from unpacking (seperated by ;)", ""),
                   ("recursive", "bool", "Extract archives in archvies", True),
                   ("queue", "bool", "Wait for all downloads to be finished", True),
                   ("renice", "int", "CPU Priority", 0)]

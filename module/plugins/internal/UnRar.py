@@ -186,7 +186,7 @@ class UnRar(AbtractExtractor):
         #overwrite flag
         args.append("-o+") if self.overwrite else args.append("-o-")
         
-        if self.excludefiles != "":
+        if self.excludefiles:
             for word in self.excludefiles.split(';'):
                 args.append("-x*" + word)
                 
