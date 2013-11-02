@@ -177,7 +177,8 @@ class ExtractArchive(Hook):
                             self.logDebug(basename(target), "skipped")
                             continue
                         extracted.append(target)  # prevent extracting same file twice
-
+                        
+                        out = os.path.join(os.path.dirname(target), "")
                         klass = plugin(self, target, out, self.getConfig("fullpath"), self.getConfig("overwrite"), self.getConfig("excludefiles"),
                                        self.getConfig("renice"))
                         klass.init()
