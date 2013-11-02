@@ -5,7 +5,7 @@ from module.plugins.Account import Account
 
 class RealdebridCom(Account):
     __name__ = "RealdebridCom"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __type__ = "account"
     __description__ = """Real-Debrid.com account plugin"""
     __author_name__ = ("Devirex, Hazzard")
@@ -14,7 +14,7 @@ class RealdebridCom(Account):
     def loadAccountInfo(self, user, req):
         if self.pin_code:
             return {"premium": False}
-        page = req.load("http://real-debrid.com/api/account.php")
+        page = req.load("https://real-debrid.com/api/account.php")
         xml = dom.parseString(page)
         account_info = {"validuntil": int(xml.getElementsByTagName("expiration")[0].childNodes[0].nodeValue),
                         "trafficleft": -1}

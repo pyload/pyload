@@ -36,7 +36,7 @@ class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:[^/]*?)youtube\.com/watch.*?[?&]v=.*"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
                   ("fmt", "int", "FMT/ITAG Number (5-102, 0 for auto)", 0),
                   (".mp4", "bool", "Allow .mp4", True),
@@ -138,7 +138,7 @@ class YoutubeCom(Hoster):
         name = re.search(file_name_pattern, html).group(1).replace("/", "")
 
         # Cleaning invalid characters from the file name
-        name = name.encode('latin-1', 'replace')
+        name = name.encode('ascii', 'replace')
 
         pyfile.name = html_unescape(name)
 
