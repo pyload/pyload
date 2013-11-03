@@ -30,4 +30,4 @@ class SockshareCom(PutlockerCom):
     __author_mail__ = ("vuolter@gmail.com")
 
     HOSTER_NAME = "sockshare"
-    FILE_URL_REPLACEMENTS = [(self.__pattern__, r'http://www.sockshare.com/file/\g<ID>')]
+    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.sockshare.com/file/\g<ID>')]

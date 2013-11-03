@@ -35,7 +35,7 @@ class PutlockerCom(SimpleHoster):
     HOSTER_NAME = "putlocker"
     FILE_OFFLINE_PATTERN = r"This file doesn't exist, or has been removed."
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
-    FILE_URL_REPLACEMENTS = [(self.__pattern__, r'http://www.putlocker.com/file/\g<ID>')]
+    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.putlocker.com/file/\g<ID>')]
 
     def setup(self):
         self.multiDL = self.resumeDownload = True
