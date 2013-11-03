@@ -59,14 +59,15 @@ class ExtractArchive(Hook):
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __description__ = "Extract different kind of archives"
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
                   ("overwrite", "bool", "Overwrite files", True),
                   ("passwordfile", "file", "password file", "unrar_passwords.txt"),
                   ("deletearchive", "bool", "Delete archives when done", False),
-                  ("subfolder", "bool", "Create subfolder for each package", False),
+                  ("subfolder", "int", "Create subfolder, if filenr> (-1..never;0..always)", -1),
+                  ("subfoldername", "%ARCHIVENAME%;%PACKAGENAME%;%HOSTER%", "Subfoldername", "%PACKAGENAME%"),
                   ("destination", "folder", "Extract files to", ""),
                   ("excludefiles", "str", "Exclude files from unpacking (seperated by ;)", ""),
                   ("recursive", "bool", "Extract archives in archvies", True),
@@ -145,21 +146,7 @@ class ExtractArchive(Hook):
             if not p:
                 continue
 
-            # determine output folder
-            out = save_join(dl, p.folder, "")
-            # force trailing slash
-
-            if self.getConfig("destination") and self.getConfig("destination").lower() != "none":
-
-                out = save_join(dl, p.folder, self.getConfig("destination"), "")
-                #relative to package folder if destination is relative, otherwise absolute path overwrites them
-
-                if self.getConfig("subfolder"):
-                    out = join(out, fs_encode(p.folder))
-
-                if not exists(out):
-                    makedirs(out)
-
+            archive_root=True
             files_ids = [(save_join(dl, p.folder, x["name"]), x["id"]) for x in p.getChildren().itervalues()]
             matched = False
 
@@ -177,8 +164,18 @@ class ExtractArchive(Hook):
                             self.logDebug(basename(target), "skipped")
                             continue
                         extracted.append(target)  # prevent extracting same file twice
-                        
-                        out = os.path.join(os.path.dirname(target), "")
+
+                        if archive_root == True:
+                            if self.getConfig("destination") and self.getConfig("destination").lower() != "none":
+                                tmppath = save_join(self.getConfig("destination"), "%s_temp", "") % fs_encode(os.path.splitext(os.path.basename(target))[0])
+                                targetpath = save_join(self.getConfig("destination"),"")
+                            else:
+                                tmppath = save_join(os.path.dirname(target), "%s_temp", "") % fs_encode(os.path.splitext(os.path.basename(target))[0])
+                                targetpath = save_join(os.path.dirname(target),"")
+                            out = tmppath
+                        else:
+                            out = save_join(os.path.dirname(target))
+
                         klass = plugin(self, target, out, self.getConfig("fullpath"), self.getConfig("overwrite"), self.getConfig("excludefiles"),
                                        self.getConfig("renice"))
                         klass.init()
@@ -196,6 +193,35 @@ class ExtractArchive(Hook):
                                 new_files_ids.append((file, fid))  # append as new target
 
                 files_ids = new_files_ids  # also check extracted files
+                archive_root=False
+
+            if self.getConfig("destination") and self.getConfig("destination").lower() != "none":
+                targetpath = save_join(targetpath, p.folder)
+
+            if self.getConfig("subfoldername") == "%ARCHIVENAME%":foldername = os.path.basename(os.path.dirname(tmppath))[:-5]
+            elif self.getConfig("subfoldername") == "%PACKAGENAME%":foldername = p.name
+            elif self.getConfig("subfoldername") == "%HOSTER%":foldername = "HOSTER" #how do i get the hostername or the pluginname, which was used?
+            foldername = fs_encode(foldername)
+
+            if os.path.exists(tmppath): #was unrar sucessfull?
+                self.logDebug("Unrar was successful")
+                filenames = [name for name in os.listdir(tmppath)]
+                filenr=len(filenames)
+
+                for name in filenames:
+                    oldpath=save_join(tmppath, name)
+                    if self.getConfig("subfolder") == -1: #create no subfolder
+                        newpath = save_join(targetpath, name)
+                    elif self.getConfig("subfolder") == 0: #create always a subfolder
+                        newpath = save_join(targetpath, foldername, name)
+                    else:
+                        if filenr > self.getConfig("subfolder"):
+                           newpath = save_join(targetpath, foldername, name)
+                        else: newpath = save_join(targetpath, name)
+                    os.renames(oldpath,newpath)
+                    self.logDebug("Moved files from %s to %s" %(oldpath,newpath) )
+                if not os.listdir(save_join(dl, p.folder)) and p.folder!="": #if the user choose delete archives and extract to then there would be an empty-folder
+                    os.rmdir(save_join(dl, p.folder))         #this remove it
 
             if not matched:
                 self.logInfo(_("No files found to extract"))
