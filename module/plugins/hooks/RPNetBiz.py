@@ -40,7 +40,7 @@ class RPNetBiz(MultiHoster):
         self.account = self.core.accountManager.getAccountPlugin("RPNetBiz")     
         if not self.account.canUse():
             self.account = None
-            self.logError(_("Please add a valid rpnet.biz account first and restart pyLoad."))
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "rpnet")
             return
                   
         # Run the overwriten core ready which actually enables the multihoster hook 
