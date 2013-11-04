@@ -41,16 +41,16 @@ class EasybytezCom(XFileSharingPro):
     def setup(self):
         if self.premium:
             return
-
         self.resumeDownload = False
         self.chunkLimit = 1
 
+        # aggiorna info account
+        # genera lista account
+        # confronta ciascuno con quelli utilizzati da altri active e fermati quando trovi il primo libero
         #to-do: update all accounf infos before check
         
         if self.account:
-            #: limitDL seems not working in pyload 0.4.9, so try to bypass it setting multiDL dynamically
-            #self.limitDL = [True for account in self.account.getAllAccounts() if account["valid"] and account["trafficleft"]].count(True)
-            #self.logDebug("DL limit = %s" % self.limitDL)
+            #: Try to bypass it setting multiDL dynamically
             accounts = [True for account in self.account.getAllAccounts() if account["valid"] and account["trafficleft"]].count(True)
             dl_active = [True for x in self.core.threadManager.threads if x.active and x.active.hasPlugin() and x.active.pluginname == self.__name__].count(True)
             self.multiDL = True if accounts - dl_active else False
