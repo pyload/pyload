@@ -26,73 +26,84 @@ class DeleteFinished(Hook):
     __version__ = "1.50"
     __description__ = "Automatically delete finished packages from queue"
     __config__ = [("activated", "bool", "Activated", "False"),
-                  ("mode", "immediately;periodically", "Delete package mode", "periodically"),
+                  ("mode", "instant;periodical", "Delete mode", "periodical"),
                   ("wait_time", "int", "Interval in hours", "72"),
-                  ("del_offline", "bool", "Delete packages with offline links", "False"),
-                  ("del_password", "bool", "Delete packages with password", "False"),
-                  ("del_statusmsg", "bool", "Delete packages with custom link status messages", "False"),
-                  ("keep_latest", "bool", "Never delete lastest packages", "False"),
-                  ("pack_number", "int", "Number of latest packages to keep", "5")]
+                  ("del_offline", "bool", "Delete package with offline links", "False"),
+                  ("del_password", "bool", "Delete package with password", "False"),
+                  ("del_error", "bool", "Delete package with error", "True"),
+                  ("keep_latest", "int", "Number of latest packages to keep ever", "0")]
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
 
+    event_list = ["pluginConfigChanged"]
+
+    MIN_INTERVAL = 3600 #seconds
+
     ### Overwritten methods ###
+    def initPeriodical(self):
+        pass
+
     def setup(self):
-        self.info = {}
         self.packageFinished_orig = self.packageFinished
 
     def coreReady(self):
-        v = "mode"
-        self.pluginConfigChanged(self.__name__, v, self.getConfig(v))
+        config_name = "mode"
+        self.pluginConfigChanged(plugin=self.__name__, name=config_name, value=self.getConfig(config_name))
 
     def pluginConfigChanged(self, plugin, name, value):
         if name == "mode":
-            if value == "immediately":
-                if self.info.schedule_cb:
-                    self.stopTimer()
+            if value == "instant":
+                self.stopTimer()
                 self.packageFinished = self.deleteFinished
             else:
                 self.wakeup()
-        elif name == "wait_time" and self.info.schedule_cb:
-            self.stopTimer()
-            self.startTimer()
+        elif name == "wait_time" and self.cb:
+            self.restartTimer()
 
     ### Own methods ###
-    ### Schedule control ###
+    ### Schedule ###
     def schedule(self):
+        self.logDebug("Do schedule and go to sleep mode")
         self.deleteFinished()
         self.packageFinished = self.wakeup
-        self.info.schedule_cb = None
+        self.cb = None
 
     def startTimer(self):
-        self.info.schedule_cb = self.core.scheduler.addJob(self.getConfig("wait_time"), self.deleteFinished, threaded=False)
+        wait = max(self.getConfig("wait_time") * 60 * 60, self.MIN_INTERVAL)
+        self.logDebug("Start timer countdown: %s seconds" % wait)
+        self.cb = self.core.scheduler.addJob(wait, self.deleteFinished, threaded=False)
 
     def stopTimer(self):
-        self.core.scheduler.removeJob(self.info.schedule_cb)
-        self.info.schedule_cb = None
+        if not self.cb:
+            return
+        self.core.scheduler.removeJob(self.cb)
+        self.cb = None
+
+    def restartTimer(self):
+        self.stopTimer()
+        self.startTimer()
 
     def wakeup(self, arg1=None):
         self.packageFinished = self.packageFinished_orig
         self.startTimer()
 
-    ### Task control ###
+    ### Tasks ###
     @style.queue
-    def delete(self, password, packageorder, status, statusmsg):
-        self.c.execute("DELETE FROM packages WHERE queue ? ? AND NOT EXISTS(SELECT 1 FROM links WHERE package = packages.id AND status NOT IN (?)) ?",
-                       (password, packageorder, status, statusmsg))
+    def delete(self, password="", packageorder="", status="", error=""):
+        self.c.execute("DELETE FROM packages WHERE queue %(password)s %(packageorder)s AND NOT EXISTS(SELECT 1 FROM links WHERE package = packages.id AND status NOT IN (%(status)s)) %(error)s" %
+                      {"password": password, "packageorder": packageorder, "status": status, "error": error})
         self.c.execute("DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id = links.package)")
 
     def deleteFinished(self, arg1=None):
-        deloffline = self.getConfig("del_offline")
-        delpassword = self.getConfig("del_password")
-        delstatusmsg = self.getConfig("del_statusmsg")
-        keeplatest = max(self.getConfig("keep_latest"), 1)
-        packnumber = self.getConfig("pack_number")
+        del_offline = self.getConfig("del_offline")
+        del_password = self.getConfig("del_password")
+        del_error = self.getConfig("del_error")
+        keep_latest = max(self.getConfig("keep_latest"), 0)
 
-        password = "AND NOT password" if not delpassword else ""
-        packageorder = "AND packageorder < %s" % self.core.db._nextPackageOrder(1) - packnumber if keeplatest else ""
-        statuscode = "0,4" if not deloffline else "0,1,4"
-        statusmsg = "OR statusmsg" if not delstatusmsg else ""
+        c_password = "AND NOT password" if not del_password else ""
+        c_packageorder = "AND packageorder < %s" % len(self.core.api.getQueue()) - keep_latest if keep_latest else ""
+        c_statuscode = "0,4" if not del_offline else "0,1,4"
+        c_error = "OR error" if not del_error else ""
 
-        self.logInfo("delete packages from queue")
-        self.delete(password=password, packageorder=packageorder, status=statuscode, statusmsg=statusmsg)
+        self.logInfo("Delete packages from queue now")
+        self.delete(password=c_password, packageorder=c_packageorder, status=c_statuscode, error=c_error)
