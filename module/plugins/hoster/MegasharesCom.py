@@ -72,7 +72,7 @@ class MegasharesCom(SimpleHoster):
 
                 url = ("http://d01.megashares.com%s&rs=check_passport_renewal" % request_uri +
                        "&rsargs[]=%s&rsargs[]=%s&rsargs[]=%s" % (verifyinput, random_num, passport_num) +
-                       "&rsargs[]=replace_sec_pprenewal&rsrnd=%s" % str(int(time() * 1000))
+                       "&rsargs[]=replace_sec_pprenewal&rsrnd=%s" % str(int(time() * 1000)))
                 self.logDebug(url)
                 response = self.load(url)
 
