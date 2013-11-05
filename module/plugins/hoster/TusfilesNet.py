@@ -13,8 +13,17 @@ class TusfilesNet(XFileSharingPro):
 
     FILE_INFO_PATTERN = r'<li>(?P<N>[^<]+)</li>\s+<li><b>Size:</b> <small>(?P<S>[\d.]+) (?P<U>\w+)</small></li>'
     FILE_OFFLINE_PATTERN = r'The file you were looking for could not be found'
-
     HOSTER_NAME = "tusfiles.net"
+
+    def setup(self):
+        self.chunkLimit = 1
+        self.resumeDownload = self.multiDL = True
+        if self.premium:
+            self.limitDL = 5
+        elif self.account:
+            self.limitDL = 3
+        else:
+            self.limitDL = 2
 
 
 getInfo = create_getInfo(TusfilesNet)
