@@ -25,7 +25,7 @@ class MegasharesCom(SimpleHoster):
     __name__ = "MegasharesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w+\.)?megashares.com/.*"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """megashares.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
