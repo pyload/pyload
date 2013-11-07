@@ -25,7 +25,7 @@ class MegasharesCom(SimpleHoster):
     __name__ = "MegasharesCom"
     __type__ = "hoster"
     __pattern__ = r"http://(\w+\.)?megashares.com/.*"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """megashares.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -72,7 +72,7 @@ class MegasharesCom(SimpleHoster):
 
                 url = ("http://d01.megashares.com%s&rs=check_passport_renewal" % request_uri +
                        "&rsargs[]=%s&rsargs[]=%s&rsargs[]=%s" % (verifyinput, random_num, passport_num) +
-                       "&rsargs[]=replace_sec_pprenewal&rsrnd=%s" % str(int(time() * 1000))
+                       "&rsargs[]=replace_sec_pprenewal&rsrnd=%s" % str(int(time() * 1000)))
                 self.logDebug(url)
                 response = self.load(url)
 
