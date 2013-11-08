@@ -27,7 +27,7 @@ class PutlockerCom(SimpleHoster):
     __name__ = "PutlockerCom"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?putlocker\.com/(mobile/)?(file|embed)/(?P<ID>[A-Z0-9]+)'
-    __version__ = "0.30"
+    __version__ = "0.31"
     __description__ = """Putlocker.Com"""
     __author_name__ = ("jeix", "stickell", "Walter Purcaro")
     __author_mail__ = ("", "l.stickell@yahoo.it", "vuolter@gmail.com")
@@ -36,6 +36,7 @@ class PutlockerCom(SimpleHoster):
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.putlocker.com/file/\g<ID>')]
+    HOSTER_NAME = "putlocker.com"
 
     def setup(self):
         self.multiDL = self.resumeDownload = True
@@ -70,10 +71,12 @@ class PutlockerCom(SimpleHoster):
         else:
             link = re.search(r"playlist: '(/get_file\.php\?stream=[A-Za-z0-9=]+)'", self.html)
             if link:
-                self.html = self.load("http://www.putlocker.com" + link.group(1))
+                self.html = self.load("http://www.%s%s" % (self.HOSTER_NAME, link.group(1)))
                 link = re.search(r'media:content url="(http://.*?)"', self.html)
                 if not link:
-                    link = re.search("\"(http://media\\-b\\d+\\.putlocker\\.com/download/\\d+/.*?)\"", self.html)
+                    hostername = self.HOSTER_NAME.rsplit(".")
+                    pattern = "\"(http://media\\-b\\d+\\.%s\\.%s/download/\\d+/.*?)\"" % (hostername[0], hostername[1])
+                    link = re.search(pattern, self.html)
             else:
                 self.parseError('Unable to detect a download link')
 
@@ -81,14 +84,14 @@ class PutlockerCom(SimpleHoster):
         if link.startswith("http://"):
             return link
         else:
-            return "http://www.putlocker.com" + link
+            return "http://www.%s%s" % (self.HOSTER_NAME, link)
 
     def processName(self, name_old):
         name = self.pyfile.name
         if name <= name_old:
             return
         name_new = re.sub(r'\.[^.]+$', "", name_old) + name[len(name_old):]
-        file = self.lastDownload
+        filename = self.lastDownload
         self.pyfile.name = name_new
-        rename(file, file.rsplit(name)[0] + name_new)
+        rename(filename, filename.rsplit(name)[0] + name_new)
         self.logInfo("%(name)s renamed to %(newname)s" % {"name": name, "newname": name_new})
