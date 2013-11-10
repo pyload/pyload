@@ -34,7 +34,6 @@ class SafelinkingNet(Crypter):
         packageLinks = []
         postData = {"post-protect": "1"}
 
-
         self.html = self.load(url)
 
         if "link-password" in self.html:
@@ -78,4 +77,3 @@ class SafelinkingNet(Crypter):
                     packageLinks.append(link["full"])
 
         self.core.files.addLinks(packageLinks, self.pyfile.package().id)
-
