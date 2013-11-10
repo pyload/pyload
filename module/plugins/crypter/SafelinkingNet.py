@@ -39,8 +39,8 @@ class SafelinkingNet(Crypter):
         if "link-password" in self.html:
             password = pyfile.package().password
             postData["link-password"] = password
-        if "altcaptcha" in self.html:
 
+        if "altcaptcha" in self.html:
             for i in xrange(5):
                 m = re.search(self.__Solvemedia_pattern__,self.html)
                 if m:
@@ -73,7 +73,6 @@ class SafelinkingNet(Crypter):
                 if not "http://" in link["full"]:
                     packageLinks.append("https://safelinking.net/d/"+link["full"])
                 else:
-
                     packageLinks.append(link["full"])
 
         self.core.files.addLinks(packageLinks, self.pyfile.package().id)
