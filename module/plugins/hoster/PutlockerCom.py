@@ -74,8 +74,7 @@ class PutlockerCom(SimpleHoster):
                 self.html = self.load("http://www.%s%s" % (self.HOSTER_NAME, link.group(1)))
                 link = re.search(r'media:content url="(http://.*?)"', self.html)
                 if not link:
-                    hostername = self.HOSTER_NAME.rsplit(".")
-                    pattern = "\"(http://media\\-b\\d+\\.%s\\.%s/download/\\d+/.*?)\"" % (hostername[0], hostername[1])
+                    pattern = "\"(http://media\\-b\\d+\\.%s\\.%s/download/\\d+/.*?)\"" % self.HOSTER_NAME.rsplit(".")
                     link = re.search(pattern, self.html)
             else:
                 self.parseError('Unable to detect a download link')
