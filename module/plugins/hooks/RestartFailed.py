@@ -25,20 +25,20 @@ class RestartFailed(Hook):
     __version__ = "1.53"
     __description__ = "Periodically restart all failed downloads in queue"
     __config__ = [("activated", "bool", "Activated", "False"),
-                  ("interval", "int", "Interval in minutes", "10")]
+                  ("interval", "int", "Interval in minutes", "90")]
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
 
     event_list = ["pluginConfigChanged"]
 
-    MIN_INTERVAL = 60 #seconds
+    MIN_INTERVAL = 15 * 60 #seconds
 
     def periodical(self):
-        self.logDebug("Restart now all failed downloads")
+        self.logDebug("Restart all failed downloads now")
         self.core.api.restartFailed()
 
     def restartPeriodical(self, interval):
-        self.logDebug("Periodical interval: %s seconds" % interval)
+        self.logDebug("Set periodical interval to %s seconds" % interval)
         if self.cb:
             self.core.scheduler.removeJob(self.cb)
         self.interval = interval
@@ -46,8 +46,12 @@ class RestartFailed(Hook):
 
     def pluginConfigChanged(self, plugin, name, value):
         value *= 60
-        if name == "interval" and self.interval != value > self.MIN_INTERVAL:
-            self.restartPeriodical(value)
+        if name == "interval":
+            if self.interval != value > self.MIN_INTERVAL:
+                self.restartPeriodical(value)
+            else:
+                self.logWarning("Cannot change interval: given value is equal to the current or \
+                                 smaller than %s seconds" % self.MIN_INTERVAL)
 
     def coreReady(self):
-        self.pluginConfigChanged(plugin=self.__name__, name="interval", value=self.getConfig("interval"))
+        self.pluginConfigChanged(plugin="RestartFailed", name="interval", value=self.getConfig("interval"))
