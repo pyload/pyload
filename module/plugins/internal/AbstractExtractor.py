@@ -11,6 +11,9 @@ class WrongPassword(Exception):
     pass
 
 class AbtractExtractor:
+
+    __version__ = "0.1"
+
     @staticmethod
     def checkDeps():
         """ Check if system statisfy dependencies
