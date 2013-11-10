@@ -513,9 +513,9 @@ class Core(object):
         except: # something did go wrong, locale is heavily platform dependant
             pass
 
-        # default formatting when no one was obtained
+        # default formatting when no one was obtained (ex.: 2013-10-22 18:27:46)
         if not tfrm:
-            tfrm = "%d.%m.%Y %H:%M:%S"
+            tfrm = "%Y-%m-%d %H:%M:%S"
 
         frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", tfrm)
         console.setFormatter(frm)
