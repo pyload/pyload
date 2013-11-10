@@ -20,7 +20,6 @@
 
 import re
 
-from pycurl import HTTPHEADER
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
 
@@ -46,15 +45,8 @@ class Keep2shareCC(SimpleHoster):
     FILE_URL_REPLACEMENTS = [(__pattern__, r"http://www.keep2share.cc/file/\g<ID>")]
 
     def handleFree(self):
-        url = self.pyfile.url
-        
-        self.req.http.c.setopt(HTTPHEADER, ["Host: k2s.cc"])
-        if "keep2share" in self.pyfile.url:
-            url == "http://k2s.cc/file/" + re.search(self.__pattern__, url).group("ID")
-        
-
         fid = re.search(r'<input type="hidden" name="slow_id" value="([^"]+)">', self.html).group(1)
-        self.html = self.load(url, post={'yt0': '', 'slow_id': fid})
+        self.html = self.load(self.pyfile.url, post={'yt0': '', 'slow_id': fid})
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
@@ -65,48 +57,38 @@ class Keep2shareCC(SimpleHoster):
             self.process(self.pyfile)
 
         recaptcha = ReCaptcha(self)
+        for i in xrange(5):
+            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+            post_data = {'recaptcha_challenge_field': challenge,
+                         'recaptcha_response_field': response,
+                         'CaptchaForm%5Bcode%5D': '',
+                         'free': 1,
+                         'freeDownloadRequest': 1,
+                         'uniqueId': fid,
+                         'yt0': ''}
 
-        if not "recaptcha" in self.html:
-            self.html = self.load(url, post={'yt0': '', 'slow_id': fid})
-            m = re.search("window.location.href = '(.*?)'",self.html)
-            if m:
-                self.download("http://k2s.cc"+m.group(1))
-        else:
+            self.html = self.load(self.pyfile.url, post=post_data)
 
-            self.req.http.c.setopt(HTTPHEADER, ["Host: www.google.com"])
-            for i in xrange(5):
-                challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
-                post_data = {'recaptcha_challenge_field': challenge,
-                             'recaptcha_response_field': response,
-                             'CaptchaForm%5Bcode%5D': '',
-                             'free': 1,
-                             'freeDownloadRequest': 1,
-                             'uniqueId': fid,
-                             'yt0': ''}
-
-                self.req.http.c.setopt(HTTPHEADER, ["Host: k2s.cc"])
-                self.html = self.load(url, post=post_data)
-
-                if 'recaptcha' not in self.html:
-                    self.correctCaptcha()
-                    self.setWait(30)
-                    self.wait()
-                    break
-                else:
-                    self.logInfo('Wrong captcha')
-                    self.invalidCaptcha()
+            if 'recaptcha' not in self.html:
+                self.correctCaptcha()
+                self.setWait(30)
+                self.wait()
+                break
             else:
-                self.fail("All captcha attempts failed")
+                self.logInfo('Wrong captcha')
+                self.invalidCaptcha()
+        else:
+            self.fail("All captcha attempts failed")
 
-            self.html = self.load(url, post={'uniqueId': fid, 'free': 1})
+        self.html = self.load(self.pyfile.url, post={'uniqueId': fid, 'free': 1})
 
-            dl = 'http://keep2share.cc'
-            m = re.search(self.DIRECT_LINK_PATTERN, self.html, re.MULTILINE)
-            if not m:
-                self.parseError("Unable to detect direct link")
-            dl += m.group(1)
-            self.logDebug('Direct Link: ' + dl)
-            self.download(dl, disposition=True)
+        dl = 'http://keep2share.cc'
+        m = re.search(self.DIRECT_LINK_PATTERN, self.html)
+        if not m:
+            self.parseError("Unable to detect direct link")
+        dl += m.group(1)
+        self.logDebug('Direct Link: ' + dl)
+        self.download(dl, disposition=True)
 
 
 getInfo = create_getInfo(Keep2shareCC)
