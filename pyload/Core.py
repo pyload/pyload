@@ -59,6 +59,8 @@ from utils.fs import free_space, exists, makedirs, join, chmod
 
 from codecs import getwriter
 
+from utils.colorlog import ColoredFormatter
+
 # test runner overwrites sys.stdout
 if hasattr(sys.stdout, "encoding"): enc = get_console_encoding(sys.stdout.encoding)
 else: enc = "utf8"
@@ -517,7 +519,17 @@ class Core(object):
         if not tfrm:
             tfrm = "%Y-%m-%d %H:%M:%S"
 
-        frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", tfrm)
+        frm = ColoredFormatter(
+            format="%(asctime)s %(log_color)s%(bold)s%(black)s %(levelname)+8s %(reset)s %(message)s",
+            datefmt=tfrm,
+            log_colors={
+                'DEBUG':    'bg_cyan',
+                'INFO':     'bg_green',
+                'WARNING':  'bg_yellow',
+                'ERROR':    'bg_red',
+                'CRITICAL': 'bg_purple',
+            }
+        )
         console.setFormatter(frm)
         self.log = logging.getLogger("log") # setable in config
 
