@@ -520,7 +520,7 @@ class Core(object):
             tfrm = "%Y-%m-%d %H:%M:%S"
 
         frm = ColoredFormatter(
-            format="%(asctime)s %(log_color)s%(bold)s%(black)s %(levelname)+8s %(reset)s %(message)s",
+            format="%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)+8s %(reset)s %(message)s",
             datefmt=tfrm,
             log_colors={
                 'DEBUG':    'bg_cyan',
