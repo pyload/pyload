@@ -19,13 +19,18 @@
 ###
 from OCR import OCR
 
-class ShareonlineBizOCR(OCR):
-    __version__ = 0.1
+class ShareonlineBiz(OCR):
+    __name__ = "ShareonlineBiz"
+    __type__ = "captcha"
+    __version__ = 0.01
+    __description__ = """Shareonline.biz anti-captcha"""
+    __author_name__ = ("pyload Team")
+    __author_mail__ = ("admin<at>pyload.org")
     
     def __init__(self):
         OCR.__init__(self)
         
-    def get_captcha(self, image): 
+    def get_captcha(self, image, type): 
         self.load_image(image)
         self.to_greyscale()
         self.image = self.image.resize((160, 50))
