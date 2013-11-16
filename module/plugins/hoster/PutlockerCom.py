@@ -26,8 +26,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class PutlockerCom(SimpleHoster):
     __name__ = "PutlockerCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?putlocker\.com/(mobile/)?(file|embed)/(?P<ID>[A-Z0-9]+)'
-    __version__ = "0.31"
+    __pattern__ = r'http://(?:www\.)?putlocker\.com/(mobile/)?(file|embed)/(?P<ID>[a-zA-Z0-9]{15,16})'
+    __version__ = "0.32"
     __description__ = """Putlocker.Com"""
     __author_name__ = ("jeix", "stickell", "Walter Purcaro")
     __author_mail__ = ("", "l.stickell@yahoo.it", "vuolter@gmail.com")
@@ -58,9 +58,9 @@ class PutlockerCom(SimpleHoster):
         self.html = self.load(self.pyfile.url, post=post_data)
         if (">You have exceeded the daily stream limit for your country\\. You can wait until tomorrow" in self.html or
             "(>This content server has been temporarily disabled for upgrades|Try again soon\\. You can still download it below\\.<)" in self.html):
-            self.retry(wait_time=7200, reason="Download limit exceeded or server disabled")  # 2 hours wait
+            self.retry(wait_time=60 * 60 * 2, reason="Download limit exceeded or server disabled")  # 2 hours wait
 
-        patterns = (r'(/get_file\.php\?id=[A-Z0-9]+&key=[A-Za-z0-9=]+&original=1)',
+        patterns = (r'(/get_file\.php\?id=[A-Z0-9]+&key=[a-zA-Z0-9=]+&original=1)',
                     r'(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+)',
                     r'(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+&original=1)',
                     r'<a href="/gopro\.php">Tired of ads and waiting\? Go Pro!</a>[\t\n\rn ]+</div>[\t\n\rn ]+<a href="(/.*?)"')
@@ -69,7 +69,7 @@ class PutlockerCom(SimpleHoster):
             if link:
                 break
         else:
-            link = re.search(r"playlist: '(/get_file\.php\?stream=[A-Za-z0-9=]+)'", self.html)
+            link = re.search(r"playlist: '(/get_file\.php\?stream=[a-zA-Z0-9=]+)'", self.html)
             if link:
                 self.html = self.load("http://www.%s%s" % (self.HOSTER_NAME, link.group(1)))
                 link = re.search(r'media:content url="(http://.*?)"', self.html)
