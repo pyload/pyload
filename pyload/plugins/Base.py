@@ -272,11 +272,13 @@ class Base(object):
         self.logDebug("Deprecated method .correctCaptcha, use .correctTask")
         self.correctTask()
 
-    def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg',
+    def decryptCaptcha(self, url, name=self.__name__, type=None, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg',
                        result_type='textual'):
         """ Loads a captcha and decrypts it with ocr, plugin, user input
 
         :param url: url of captcha image
+        :param: name: captcha plugin name (default uses caller name)
+        :param: type: captcha type (use if the captcha plugin support more types)
         :param get: get part for request
         :param post: post part for request
         :param cookies: True if cookies should be enabled
@@ -296,11 +298,10 @@ class Base(object):
         temp_file.write(img)
         temp_file.close()
 
-        name = "%sOCR" % self.__name__
-        has_plugin = name in self.core.pluginManager.getPlugins("internal")
+        has_plugin = name in self.core.pluginManager.getPlugins("captcha")
 
         if self.core.captcha:
-            OCR = self.core.pluginManager.loadClass("internal", name)
+            OCR = self.core.pluginManager.loadClass("captcha", name)
         else:
             OCR = None
 
@@ -309,7 +310,7 @@ class Base(object):
             self.checkAbort()
 
             ocr = OCR()
-            result = ocr.get_captcha(temp_file.name)
+            result = ocr.get_captcha(temp_file.name, type)
         else:
             task = self.im.createCaptchaTask(img, imgtype, temp_file.name, self.__name__, result_type)
             self.task = task

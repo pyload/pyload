@@ -2,13 +2,18 @@
 
 from OCR import OCR
 
-class NetloadInOCR(OCR):
-    __version__ = 0.1
+class NetloadIn(OCR):
+    __name__ = "NetloadIn"
+    __type__ = "captcha"
+    __version__ = 0.01
+    __description__ = """Netload.in anti-captcha"""
+    __author_name__ = ("pyload Team")
+    __author_mail__ = ("admin<at>pyload.org")
 
     def __init__(self):
         OCR.__init__(self)
 
-    def get_captcha(self, image):
+    def get_captcha(self, image, type):
         self.load_image(image)
         self.to_greyscale()
         self.clean(3)
