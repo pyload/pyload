@@ -25,6 +25,7 @@ def make_config(config):
                                 ("file_log", "bool", _("File Log"), True),
                                 ("log_count", "int", _("Count"), 5),
                                 ("log_rotate", "bool", _("Log Rotate"), True),
+                                ("console_color", "No;Light;Full", _("Colorize Console"), "Light"),
                             ])
 
     config.addConfigSection("permission", _("Permissions"), _("Description"), _("Long description"),
