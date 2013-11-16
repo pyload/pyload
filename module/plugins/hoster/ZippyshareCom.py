@@ -198,7 +198,7 @@ class ZippyshareCom(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        for i in range(5):
+        for i in xrange(5):
             challenge, code = recaptcha.challenge(captcha_key)
 
             response = json_loads(self.load(self.file_info['HOST'] + '/rest/captcha/test',
