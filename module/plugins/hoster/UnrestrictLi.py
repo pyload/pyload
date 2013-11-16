@@ -37,7 +37,7 @@ class UnrestrictLi(Hoster):
     __name__ = "UnrestrictLi"
     __version__ = "0.11"
     __type__ = "hoster"
-    __pattern__ = r"https?://d\d{2}\.(unrestrict|unr)\.li/dl/[a-zA-Z0-9]+/.+"
+    __pattern__ = r"https?://d\d{2}\.(unrestrict|unr)\.li/dl/(?P<ID>[a-zA-Z0-9]+/[^/]+)"
     __description__ = """Unrestrict.li hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")

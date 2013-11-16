@@ -24,7 +24,7 @@ class DebridItaliaCom(Hoster):
     __name__ = "DebridItaliaCom"
     __version__ = "0.05"
     __type__ = "hoster"
-    __pattern__ = r"https?://s\d{2}\.debriditalia\.com/dl/[a-zA-Z0-9]+/.+"
+    __pattern__ = r"https?://s\d{2}\.debriditalia\.com/dl/(?P<ID>[a-zA-Z0-9]+/[^/]+)"
     __description__ = """Debriditalia.com hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
