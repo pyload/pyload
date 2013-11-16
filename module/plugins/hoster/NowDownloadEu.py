@@ -24,16 +24,18 @@ from module.utils import fixup
 class NowDownloadEu(SimpleHoster):
     __name__ = "NowDownloadEu"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?nowdownload\.(eu|co)/dl/(?P<ID>[a-z0-9]+)"
-    __version__ = "0.02"
-    __description__ = """NowDownloadEu"""
-    __author_name__ = ("godofdream")
+    __pattern__ = r"http://(?:www\.)?nowdownload\.(ch|eu|co)/(dl/|download\.php\?id=)(?P<ID>[a-z0-9]+)"
+    __version__ = "0.03"
+    __description__ = """NowDownloadCh"""
+    __author_name__ = ("godofdream", "Walter Purcaro")
+    __author_mail__ = ("", "vuolter@gmail.com")
+
     FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B </h4>'
     FILE_OFFLINE_PATTERN = r'(This file does not exist!)'
     FILE_TOKEN_PATTERN = r'"(/api/token\.php\?token=[a-z0-9]+)"'
     FILE_CONTINUE_PATTERN = r'"(/dl2/[a-z0-9]+/[a-z0-9]+)"'
     FILE_WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
-    FILE_DOWNLOAD_LINK = r'"(http://f\d+\.nowdownload\.eu/dl/[a-z0-9]+/[a-z0-9]+/[^<>"]*?)"'
+    FILE_DOWNLOAD_LINK = r'"(http://f\d+\.nowdownload\.ch/dl/[a-z0-9]+/[a-z0-9]+/[^<>"]*?)"'
 
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<[^>]*>', '')]
 
@@ -45,19 +47,21 @@ class NowDownloadEu(SimpleHoster):
     def handleFree(self):
         tokenlink = re.search(self.FILE_TOKEN_PATTERN, self.html)
         continuelink = re.search(self.FILE_CONTINUE_PATTERN, self.html)
-        if (not tokenlink) or (not continuelink):
+        if not tokenlink or not continuelink:
             self.fail('Plugin out of Date')
 
-        wait = 60
         found = re.search(self.FILE_WAIT_PATTERN, self.html)
         if found:
             wait = int(found.group(1))
+        else
+            wait = 60
 
-        self.html = self.load("http://www.nowdownload.eu" + str(tokenlink.group(1)))
+        baseurl = "http://www.nowdownload.ch"
+        self.html = self.load(baseurl + str(tokenlink.group(1)))
         self.setWait(wait)
         self.wait()
 
-        self.html = self.load("http://www.nowdownload.eu" + str(continuelink.group(1)))
+        self.html = self.load(baseurl + str(continuelink.group(1)))
 
         url = re.search(self.FILE_DOWNLOAD_LINK, self.html)
         if not url:
