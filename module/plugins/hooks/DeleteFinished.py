@@ -22,63 +22,88 @@ from module.plugins.Hook import Hook
 
 
 class DeleteFinished(Hook):
-    __name__ = 'DeleteFinished'
-    __version__ = '1.09'
-    __description__ = 'Automatically delete all finished packages from queue'
-    __config__ = [
-        ('activated', 'bool', 'Activated', 'False'),
-        ('interval', 'int', 'Delete every (hours)', '72'),
-        ('deloffline', 'bool', 'Delete packages with offline links', 'False')
-    ]
-    __author_name__ = ('Walter Purcaro')
-    __author_mail__ = ('vuolter@gmail.com')
+    __name__ = "DeleteFinished"
+    __version__ = "1.50"
+    __description__ = "Automatically delete finished packages from queue"
+    __config__ = [("activated", "bool", "Activated", "False"),
+                  ("mode", "instant;periodical", "Delete mode", "periodical"),
+                  ("wait_time", "int", "Interval in hours", "72"),
+                  ("del_offline", "bool", "Delete package with offline links", "False"),
+                  ("del_password", "bool", "Delete package with password", "False"),
+                  ("del_error", "bool", "Delete package with error", "True"),
+                  ("keep_latest", "int", "Number of latest packages to keep ever", "0")]
+    __author_name__ = ("Walter Purcaro")
+    __author_mail__ = ("vuolter@gmail.com")
 
-    ## overwritten methods ##
-    def periodical(self):
-        if not self.info['sleep']:
-            deloffline = self.getConfig('deloffline')
-            mode = '0,1,4' if deloffline else '0,4'
-            msg = 'delete all finished packages in queue list (%s packages with offline links)'
-            self.logInfo(msg % ('including' if deloffline else 'excluding'))
-            self.deleteFinished(mode)
-            self.info['sleep'] = True
-            self.addEvent('packageFinished', self.wakeup)
+    event_list = ["pluginConfigChanged"]
 
-    def pluginConfigChanged(self, plugin, name, value):
-        if name == 'interval' and value != self.interval:
-            self.interval = value * 3600
-            self.initPeriodical()
+    MIN_INTERVAL = 3600 #seconds
 
-    def unload(self):
-        self.removeEvent('packageFinished', self.wakeup)
-
-    def coreReady(self):
-        self.info = {'sleep': True}
-        interval = self.getConfig('interval')
-        self.pluginConfigChanged('DeleteFinished', 'interval', interval)
-        self.addEvent('packageFinished', self.wakeup)
-
-    ## own methods ##
-    @style.queue
-    def deleteFinished(self, mode):
-        self.c.execute('DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (%s))' % mode)
-        self.c.execute('DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id=links.package)')
-
-    def wakeup(self, pypack):
-        self.removeEvent('packageFinished', self.wakeup)
-        self.info['sleep'] = False
-
-    ## event managing ##
-    def addEvent(self, event, func):
-        """Adds an event listener for event name"""
-        if event in self.m.events:
-            if func in self.m.events[event]:
-                self.logDebug('Function already registered %s' % func)
-            else:
-                self.m.events[event].append(func)
-        else:
-            self.m.events[event] = [func]
+    ### Overwritten methods ###
+    def initPeriodical(self):
+        pass
 
     def setup(self):
-        self.m = self.manager
-        self.removeEvent = self.m.removeEvent
+        self.packageFinished_orig = self.packageFinished
+
+    def coreReady(self):
+        config_name = "mode"
+        self.pluginConfigChanged(plugin=self.__name__, name=config_name, value=self.getConfig(config_name))
+
+    def pluginConfigChanged(self, plugin, name, value):
+        if name == "mode":
+            if value == "instant":
+                self.stopTimer()
+                self.packageFinished = self.deleteFinished
+            else:
+                self.wakeup()
+        elif name == "wait_time" and self.cb:
+            self.restartTimer()
+
+    ### Own methods ###
+    ### Schedule ###
+    def schedule(self):
+        self.logDebug("Do schedule and go to sleep mode")
+        self.deleteFinished()
+        self.packageFinished = self.wakeup
+        self.cb = None
+
+    def startTimer(self):
+        wait = max(self.getConfig("wait_time") * 60 * 60, self.MIN_INTERVAL)
+        self.logDebug("Start timer countdown: %s seconds" % wait)
+        self.cb = self.core.scheduler.addJob(wait, self.deleteFinished, threaded=False)
+
+    def stopTimer(self):
+        if not self.cb:
+            return
+        self.core.scheduler.removeJob(self.cb)
+        self.cb = None
+
+    def restartTimer(self):
+        self.stopTimer()
+        self.startTimer()
+
+    def wakeup(self, arg1=None):
+        self.packageFinished = self.packageFinished_orig
+        self.startTimer()
+
+    ### Tasks ###
+    @style.queue
+    def delete(self, password="", packageorder="", status="", error=""):
+        self.c.execute("DELETE FROM packages WHERE queue %(password)s %(packageorder)s AND NOT EXISTS(SELECT 1 FROM links WHERE package = packages.id AND status NOT IN (%(status)s)) %(error)s" %
+                      {"password": password, "packageorder": packageorder, "status": status, "error": error})
+        self.c.execute("DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id = links.package)")
+
+    def deleteFinished(self, arg1=None):
+        del_offline = self.getConfig("del_offline")
+        del_password = self.getConfig("del_password")
+        del_error = self.getConfig("del_error")
+        keep_latest = max(self.getConfig("keep_latest"), 0)
+
+        c_password = "AND NOT password" if not del_password else ""
+        c_packageorder = "AND packageorder < %s" % len(self.core.api.getQueue()) - keep_latest if keep_latest else ""
+        c_statuscode = "0,4" if not del_offline else "0,1,4"
+        c_error = "OR error" if not del_error else ""
+
+        self.logInfo("Delete packages from queue now")
+        self.delete(password=c_password, packageorder=c_packageorder, status=c_statuscode, error=c_error)
