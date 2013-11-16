@@ -59,8 +59,6 @@ from utils.fs import free_space, exists, makedirs, join, chmod
 
 from codecs import getwriter
 
-from utils.colorlog import ColoredFormatter
-
 # test runner overwrites sys.stdout
 if hasattr(sys.stdout, "encoding"): enc = get_console_encoding(sys.stdout.encoding)
 else: enc = "utf8"
@@ -527,6 +525,8 @@ class Core(object):
         if self.config['log']['console_color'] == "No":
             console_frm = fh_frm
         else:
+            from lib.colorlog import ColoredFormatter
+
             if self.config['log']['console_color'] == "Light":
                 cfmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)+8s %(reset)s %(message)s"
                 clr = {
