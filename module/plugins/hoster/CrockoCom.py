@@ -10,8 +10,8 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class CrockoCom(SimpleHoster):
     __name__ = "CrockoCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?(crocko|easy-share).com/.*"
-    __version__ = "0.14"
+    __pattern__ = r"https?://(?:www\.)?(crocko|easy-share)\.com/(?P<ID>[a-zA-Z0-9]{32})"
+    __version__ = "0.15"
     __description__ = """Crocko Download Hoster"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -32,7 +32,7 @@ class CrockoCom(SimpleHoster):
         if "You need Premium membership to download this file." in self.html:
             self.fail("You need Premium membership to download this file.")
 
-        for i in range(5):
+        for i in xrange(5):
             found = re.search(self.CAPTCHA_URL_PATTERN, self.html)
             if found:
                 url, wait_time = 'http://crocko.com' + found.group(1), found.group(2)
@@ -55,7 +55,7 @@ class CrockoCom(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        for i in range(5):
+        for i in xrange(5):
             inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
             self.download(action, post=inputs)
 
