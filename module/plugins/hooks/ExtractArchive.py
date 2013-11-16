@@ -66,7 +66,7 @@ class ExtractArchive(Hook):
                   ("overwrite", "bool", "Overwrite files", True),
                   ("passwordfile", "file", "password file", "unrar_passwords.txt"),
                   ("deletearchive", "bool", "Delete archives when done", False),
-                  ("subfolder", "int", "Create subfolder, if filenr> (-1..never;0..always)", -1),
+                  ("subfolder", "int", "Create subfolder, if number of files&folders> (-1..never;0..always)", -1),
                   ("subfoldername", "%ARCHIVENAME%;%PACKAGENAME%;%HOSTER%", "Subfoldername", "%PACKAGENAME%"),
                   ("destination", "folder", "Extract files to", ""),
                   ("excludefiles", "str", "Exclude files from unpacking (seperated by ;)", ""),
@@ -206,7 +206,7 @@ class ExtractArchive(Hook):
             if os.path.exists(tmppath): #was unrar sucessfull?
                 self.logDebug("Unrar was successful")
                 filenames = [name for name in os.listdir(tmppath)]
-                filenr=len(filenames)
+                objectnumber=len(filenames) # folder & files number
 
                 for name in filenames:
                     oldpath=save_join(tmppath, name)
@@ -215,7 +215,7 @@ class ExtractArchive(Hook):
                     elif self.getConfig("subfolder") == 0: #create always a subfolder
                         newpath = save_join(targetpath, foldername, name)
                     else:
-                        if filenr > self.getConfig("subfolder"):
+                        if objectnumber > self.getConfig("subfolder"):
                            newpath = save_join(targetpath, foldername, name)
                         else: newpath = save_join(targetpath, name)
                     os.renames(oldpath,newpath)
