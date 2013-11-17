@@ -25,10 +25,12 @@ class PluginMatcher(object):
     """ Abstract class that allows modify which plugins to match and to load """
 
     def matchURL(self, url):
-        return None
+        """ Returns (type, name) of a plugin if a match is found  """
+        return
 
-    def getPlugin(self, plugin, name):
-        return False
+    def matchPlugin(self, plugin, name):
+        """ Returns (type, name) of the plugin that will be loaded instead """
+        return None
 
 
 class PluginManager:
@@ -88,6 +90,7 @@ class PluginManager:
 
             found = False
 
+            # search the history
             for ptype, name in self.history:
                 if self.loader.getPlugin(ptype, name).re.match(url):
                     res[ptype].append((url, name))
@@ -100,15 +103,30 @@ class PluginManager:
                     self.history.insert(0, found)
                 continue
 
+
+            # matcher won't go to history
+            for m in self.matcher:
+                match = m.matchURL(url)
+                if match and match[0] in res:
+                    ptype, name = match
+                    res[ptype].append((url, name))
+                    found = True
+                    break
+
+            if found:
+                continue
+
             for ptype in ("crypter", "hoster"):
                 for loader in self.loader:
                     for name, plugin in loader.getPlugins(ptype).iteritems():
                         if plugin.re.match(url):
                             res[ptype].append((url, name))
                             self.history.insert(0, (ptype, name))
-                            del self.history[10:] # cut down to size of 10
+                            del self.history[self.MATCH_HISTORY:] # cut down to size of 10
                             found = True
                             break
+                    if found: break
+                if found: break
 
             if not found:
                 res["hoster"].append((url, self.DEFAULT_PLUGIN))
@@ -122,23 +140,18 @@ class PluginManager:
             plugins.update(loader.getPlugins(plugin))
         return plugins
 
-    def findPlugin(self, name, pluginlist=("hoster", "crypter")):
-        # TODO: use matcher
-        for loader in self.loader:
-            for plugin in pluginlist:
-                if loader.hasPlugin(plugin, name):
-                    return plugin, loader.getPlugin(plugin, name)
-
-        return None, None
-
-    def getPluginClass(self, name, overwrite=True):
+    def getPluginClass(self, plugin, name, overwrite=True):
         """Gives the plugin class of a hoster or crypter plugin
 
         :param overwrite: allow the use of overwritten plugins
         """
-        # TODO: use matcher
-        type, plugin = self.findPlugin(name)
-        return self.loadClass(type, name)
+        if overwrite:
+            for m in self.matcher:
+                match = m.matchPlugin(plugin, name)
+                if match:
+                    plugin, name = match
+
+        return self.loadClass(plugin, name)
 
     def loadAttributes(self, plugin, name):
         for loader in self.loader:

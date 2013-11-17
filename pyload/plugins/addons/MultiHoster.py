@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import re
-from types import MethodType
+from random import choice
 
 from pyload.plugins.MultiHoster import MultiHoster as MultiHosterAccount, normalize
 from pyload.plugins.Addon import Addon, AddEventListener
 from pyload.PluginManager import PluginMatcher
+
 
 class MultiHoster(Addon, PluginMatcher):
     __version__ = "0.1"
@@ -17,12 +18,25 @@ class MultiHoster(Addon, PluginMatcher):
     __author_mail__ = ("support@pyload.org",)
 
     #TODO: multiple accounts - multihoster / config options
-    # TODO: rewrite for new plugin manager
 
     def init(self):
-
-        # overwritten plugins
+        # overwritten plugins mapped to list of multihoster
         self.plugins = {}
+
+        # multihoster mapped to new regexp
+        self.regexp = {}
+
+    def matchURL(self, url):
+        """ Overwritten to include new plugin regexp """
+        for hoster, regexp in self.regexp.iteritems():
+            if regexp.search(url):
+                return "hoster", hoster
+
+    def matchPlugin(self, plugin, name):
+        """ Overwritten to overwrite already supported plugins """
+        # Chooses a random multi hoster plugin
+        if name in self.plugins:
+            return plugin, choice(self.plugins[name])
 
     def addHoster(self, account):
 
@@ -47,12 +61,15 @@ class MultiHoster(Addon, PluginMatcher):
             account.logError(_("No Hoster loaded"))
             return
 
-        klass = self.core.pluginManager.getPluginClass(account.__name__)
+        klass = self.core.pluginManager.getPluginClass("hoster", account.__name__, overwrite=False)
 
         # inject plugin plugin
         account.logDebug("Overwritten Hosters: %s" % ", ".join(sorted(supported)))
         for hoster in supported:
-            self.plugins[hoster] = klass
+            if hoster in self.plugins:
+                self.plugins[hoster].append(klass.__name__)
+            else:
+                self.plugins[hoster] = [klass.__name__]
 
         account.logDebug("New Hosters: %s" % ", ".join(sorted(new_supported)))
 
@@ -62,13 +79,7 @@ class MultiHoster(Addon, PluginMatcher):
         if klass.__pattern__:
             patterns.append(klass.__pattern__)
 
-        regexp = r".*(%s).*" % "|".join(patterns)
-
-        # recreate plugin tuple for new regexp
-        hoster = self.core.pluginManager.getPlugins("hoster")
-        p = hoster[account.__name__]
-        new = PluginTuple(p.version, re.compile(regexp), p.deps, p.category, p.user, p.path)
-        hoster[account.__name__] = new
+        self.regexp[klass.__name__] = re.compile(r".*(%s).*" % "|".join(patterns))
 
 
     @AddEventListener("account:deleted")
@@ -80,7 +91,7 @@ class MultiHoster(Addon, PluginMatcher):
             if isinstance(account, MultiHosterAccount) and account.isUsable():
                 self.addHoster(account)
 
-    @AddEventListener("account:updated")
+    @AddEventListener("account:loaded")
     def refreshAccount(self, acc):
 
         account = self.core.accountManager.getAccount(acc.plugin, acc.loginname)
@@ -89,9 +100,8 @@ class MultiHoster(Addon, PluginMatcher):
 
     def activate(self):
         self.refreshAccounts()
-
         self.core.pluginManager.addMatcher(self)
-    def deactivate(self):
 
+    def deactivate(self):
         self.core.pluginManager.removeMatcher(self)
 

@@ -164,7 +164,8 @@ class PluginLoader:
                 self.log.debug(str(e))
 
             if not hasattr(Base, "__%s__" % m[0]):
-                if m[0] != "type": #TODO remove type from all plugins, its not needed
+                #TODO remove type from all plugins, its not needed
+                if m[0] != "type" and m[0] != "author_name":
                     self.logDebug(folder, name, "Unknown attribute '%s'" % m[0])
 
         return attrs

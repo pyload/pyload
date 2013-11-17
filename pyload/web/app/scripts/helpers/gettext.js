@@ -1,4 +1,4 @@
-require(['underscore', 'handlebars', 'utils/i18n'], function(_, Handlebars, i18n) {
+define(['underscore', 'handlebars', 'utils/i18n'], function(_, Handlebars, i18n) {
     'use strict';
     // These methods binds additional content directly to translated message
     function ngettext(single, plural, n) {

@@ -139,7 +139,7 @@ class PyFile(object):
     def initPlugin(self):
         """ inits plugin instance """
         if not self.plugin:
-            self.pluginclass = self.m.core.pluginManager.getPluginClass(self.pluginname)
+            self.pluginclass = self.m.core.pluginManager.getPluginClass("hoster", self.pluginname)
             self.plugin = self.pluginclass(self)
 
     @read_lock

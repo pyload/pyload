@@ -212,9 +212,6 @@ class Account(Base):
             finally:
                 req.close()
 
-            self.logDebug("Account Info: %s" % str(infos))
-            self.timestamp = time()
-
             self.restoreDefaults() # reset to initial state
             if type(infos) == dict: # copy result from dict to class
                 for k, v in infos.iteritems():
@@ -222,6 +219,10 @@ class Account(Base):
                         setattr(self, k, v)
                     else:
                         self.logDebug("Unknown attribute %s=%s" % (k, v))
+
+            self.logDebug("Account Info: %s" % str(infos))
+            self.timestamp = time()
+            self.core.evm.dispatchEvent("account:loaded", self.toInfoData())
 
     #TODO: remove user
     def loadAccountInfo(self, req):

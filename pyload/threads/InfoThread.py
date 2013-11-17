@@ -57,7 +57,7 @@ class InfoThread(DecrypterThread):
 
         for pluginname, urls in plugins.iteritems():
             plugin = self.m.core.pluginManager.loadModule("hoster", pluginname)
-            klass = self.m.core.pluginManager.getPluginClass(pluginname)
+            klass = self.m.core.pluginManager.getPluginClass("hoster", pluginname, overwrite=False)
             if has_method(klass, "getInfo"):
                 self.fetchForPlugin(klass, urls, cb)
             # TODO: this branch can be removed in the future

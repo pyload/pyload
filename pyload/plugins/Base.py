@@ -73,7 +73,7 @@ class Base(object):
     #: Url to service (to buy premium) for accounts
     __ref_url__ = ""
 
-    __author_name__ = tuple()
+    __author__ = tuple()
     __author_mail__ = tuple()
 
 
