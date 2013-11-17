@@ -35,9 +35,9 @@ class Account(Base):
     maxtraffic = -1
     premium = True
 
-    #: after that time [in minutes] pyload will relogin the account
+    # after that time [in minutes] pyload will relogin the account
     login_timeout = 600
-    #: account data will be reloaded after this time
+    # account data will be reloaded after this time
     info_threshold = 600
 
     @classmethod
@@ -59,7 +59,7 @@ class Account(Base):
 
         self.lock = RLock()
         self.timestamp = 0
-        self.login_ts = 0 # timestamp for login
+        self.login_ts = 0  # timestamp for login
         self.cj = CookieJar()
         self.error = None
 
@@ -130,21 +130,21 @@ class Account(Base):
         try:
             try:
                 self.login(req)
-            except TypeError: #TODO: temporary
+            except TypeError:  # TODO: temporary
                 self.logDebug("Deprecated .login(...) signature omit user, data")
                 self.login(self.loginname, {"password": self.password}, req)
 
             self.valid = True
         except WrongPassword:
             self.logWarning(
-                _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname
-                    , "msg": _("Wrong Password")})
+                _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname,
+                  "msg": _("Wrong Password")})
             self.valid = False
 
         except Exception, e:
             self.logWarning(
-                _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname
-                    , "msg": e})
+                _("Could not login with account %(user)s | %(msg)s") % {"user": self.loginname,
+                  "msg": e})
             self.valid = False
             self.core.print_exc()
 
@@ -161,7 +161,7 @@ class Account(Base):
 
         if password != self.password:
             self.login_ts = 0
-            self.valid = True #set valid, so the login will be retried
+            self.valid = True  # set valid, so the login will be retried
 
             self.password = password
             return True
@@ -203,7 +203,7 @@ class Account(Base):
             try:
                 try:
                     infos = self.loadAccountInfo(req)
-                except TypeError: #TODO: temporary
+                except TypeError:  # TODO: temporary
                     self.logDebug("Deprecated .loadAccountInfo(...) signature, omit user argument.")
                     infos = self.loadAccountInfo(self.loginname, req)
             except Exception, e:
@@ -215,15 +215,15 @@ class Account(Base):
             self.logDebug("Account Info: %s" % str(infos))
             self.timestamp = time()
 
-            self.restoreDefaults() # reset to initial state
-            if type(infos) == dict: # copy result from dict to class
+            self.restoreDefaults()  # reset to initial state
+            if type(infos) == dict:  # copy result from dict to class
                 for k, v in infos.iteritems():
                     if hasattr(self, k):
                         setattr(self, k, v)
                     else:
                         self.logDebug("Unknown attribute %s=%s" % (k, v))
 
-    #TODO: remove user
+    # TODO: remove user
     def loadAccountInfo(self, req):
         """ Overwrite this method and set account attributes within this method.
 
@@ -240,16 +240,18 @@ class Account(Base):
     def getAccountData(self, *args):
         self.logDebug("Deprecated method .getAccountData -> use fields directly")
         return {"password": self.password, "premium": self.premium, "trafficleft": self.trafficleft,
-                "maxtraffic" : self.maxtraffic, "validuntil": self.validuntil}
+                "maxtraffic": self.maxtraffic, "validuntil": self.validuntil}
 
     def isPremium(self, user=None):
-        if user: self.logDebug("Deprecated Argument user for .isPremium()", user)
+        if user:
+            self.logDebug("Deprecated Argument user for .isPremium()", user)
         return self.premium
 
     def isUsable(self):
         """Check several constraints to determine if account should be used"""
 
-        if not self.valid or not self.activated: return False
+        if not self.valid or not self.activated:
+            return False
 
         # TODO: not in ui currently
         if "time" in self.options and self.options["time"]:
@@ -269,7 +271,7 @@ class Account(Base):
 
         return True
 
-    def parseTraffic(self, string): #returns kbyte
+    def parseTraffic(self, string):  # returns kbyte
         return parseFileSize(string) / 1024
 
     def formatTrafficleft(self):
@@ -281,7 +283,8 @@ class Account(Base):
         raise WrongPassword
 
     def empty(self, user=None):
-        if user: self.logDebug("Deprecated argument user for .empty()", user)
+        if user:
+            self.logDebug("Deprecated argument user for .empty()", user)
 
         self.logWarning(_("Account %s has not enough traffic, checking again in 30min") % self.login)
 
@@ -289,7 +292,8 @@ class Account(Base):
         self.scheduleRefresh(30 * 60)
 
     def expired(self, user=None):
-        if user: self.logDebug("Deprecated argument user for .expired()", user)
+        if user:
+            self.logDebug("Deprecated argument user for .expired()", user)
 
         self.logWarning(_("Account %s is expired, checking again in 1h") % user)
 
@@ -305,7 +309,7 @@ class Account(Base):
     def checkLogin(self, req):
         """ checks if the user is still logged in """
         if self.login_ts + self.login_timeout * 60 < time():
-            if self.login_ts: # separate from fresh login to have better debug logs
+            if self.login_ts:  # separate from fresh login to have better debug logs
                 self.logDebug("Reached login timeout for %s" % self.loginname)
             else:
                 self.logInfo(_("Login with %s") % self.loginname)
