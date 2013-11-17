@@ -9,6 +9,6 @@ class DeadCrypter(_Crypter):
     __description__ = """Crypter is no longer available"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
-    
+
     def setup(self):
         self.fail("Crypter is no longer available")

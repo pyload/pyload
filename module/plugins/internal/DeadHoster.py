@@ -5,6 +5,7 @@ def create_getInfo(plugin):
         yield [('#N/A: ' + url, 0, 1, url) for url in urls]
     return getInfo
 
+
 class DeadHoster(_Hoster):
     __name__ = "DeadHoster"
     __type__ = "hoster"
@@ -13,6 +14,6 @@ class DeadHoster(_Hoster):
     __description__ = """Hoster is no longer available"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
-    
+
     def setup(self):
         self.fail("Hoster is no longer available")
