@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from time import mktime, strptime
 
-from pyload.plugins.MultiHoster import MultiHoster
+from module.plugins.Account import Account
 
 
-class ZeveraCom(MultiHoster):
+class ZeveraCom(Account):
     __name__ = "ZeveraCom"
     __version__ = "0.21"
     __type__ = "account"
@@ -49,7 +49,3 @@ class ZeveraCom(MultiHoster):
                         [x.split(':', 1) for x in response.splitlines() if ':' in x])
         else:
             return response
-
-    def loadHosterList(self, req):
-        page = req.load("http://www.zevera.com/jDownloader.ashx?cmd=gethosters")
-        return [x.strip() for x in page.replace("\"", "").split(",")]

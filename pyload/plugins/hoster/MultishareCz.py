@@ -18,17 +18,14 @@
 
 import re
 from random import random
-from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MultishareCz(SimpleHoster):
     __name__ = "MultishareCz"
     __type__ = "hoster"
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "uloz.to")]
     __pattern__ = r"http://(?:\w*\.)?multishare.cz/stahnout/(?P<ID>\d+).*"
-    __version__ = "0.41"
+    __version__ = "0.34"
     __description__ = """MultiShare.cz"""
     __author_name__ = ("zoidberg")
 
@@ -54,12 +51,11 @@ class MultishareCz(SimpleHoster):
         self.download("http://www.multishare.cz/html/download_free.php?ID=%s" % self.fileID)
 
     def handlePremium(self):
-        if not self.checkTrafficLeft():
+        if not self.checkCredit():
             self.logWarning("Not enough credit left to download file")
             self.resetAccount()
 
         self.download("http://www.multishare.cz/html/download_premium.php?ID=%s" % self.fileID)
-        self.checkTrafficLeft()
 
     def handleOverriden(self):
         if not self.premium:
@@ -68,14 +64,19 @@ class MultishareCz(SimpleHoster):
         self.html = self.load('http://www.multishare.cz/html/mms_ajax.php', post={"link": self.pyfile.url}, decode=True)
         self.getFileInfo()
 
-        if not self.checkTrafficLeft():
+        if not self.checkCredit():
             self.fail("Not enough credit left to download file")
 
         url = "http://dl%d.mms.multishare.cz/html/mms_process.php" % round(random() * 10000 * random())
         params = {"u_ID": self.acc_info["u_ID"], "u_hash": self.acc_info["u_hash"], "link": self.pyfile.url}
         self.logDebug(url, params)
         self.download(url, get=params)
-        self.checkTrafficLeft()
+
+    def checkCredit(self):
+        self.acc_info = self.account.getAccountInfo(self.user, True)
+        self.logInfo("User %s has %i MB left" % (self.user, self.acc_info["trafficleft"] / 1024))
+
+        return self.pyfile.size / 1024 <= self.acc_info["trafficleft"]
 
 
 getInfo = create_getInfo(MultishareCz)

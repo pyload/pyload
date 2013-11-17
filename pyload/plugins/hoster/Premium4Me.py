@@ -5,16 +5,15 @@ from urllib import quote
 from os.path import exists
 from os import remove
 
-from pyload.plugins.Hoster import Hoster
-from pyload.utils.fs import fs_encode
+from module.plugins.Hoster import Hoster
+from module.utils import fs_encode
+
 
 class Premium4Me(Hoster):
     __name__ = "Premium4Me"
     __version__ = "0.08"
     __type__ = "hoster"
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "")]
+
     __pattern__ = r"http://premium.to/.*"
     __description__ = """Premium.to hoster plugin"""
     __author_name__ = ("RaNaN", "zoidberg", "stickell")

@@ -22,7 +22,7 @@ from pycurl import FORM_FILE, LOW_SPEED_TIME
 from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL, getRequest
 from module.network.HTTPRequest import BadHeader
-from module.plugins.Addon import Addon
+from module.plugins.Hook import Hook
 
 PYLOAD_KEY = "9f65e7f381c3af2b076ea680ae96b0b7"
 
@@ -41,7 +41,7 @@ class CaptchaTraderException(Exception):
         return "<CaptchaTraderException %s>" % self.err
 
 
-class CaptchaTrader(Addon):
+class CaptchaTrader(Hook):
     __name__ = "CaptchaTrader"
     __version__ = "0.16"
     __description__ = """send captchas to captchatrader.com"""

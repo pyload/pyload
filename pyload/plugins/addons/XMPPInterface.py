@@ -19,12 +19,12 @@
 """
 
 from pyxmpp import streamtls
-from pyxmpp.all import JID, Message, Presence
+from pyxmpp.all import JID, Message
 from pyxmpp.jabber.client import JabberClient
 from pyxmpp.interface import implements
 from pyxmpp.interfaces import *
 
-from module.plugins.addons.IRCInterface import IRCInterface
+from module.plugins.hooks.IRCInterface import IRCInterface
 
 
 class XMPPInterface(IRCInterface, JabberClient):
@@ -123,25 +123,6 @@ class XMPPInterface(IRCInterface, JabberClient):
         return [
             ("normal", self.message),
         ]
-
-    def presence_control(self, stanza):
-        from_jid = unicode(stanza.get_from_jid())
-        stanza_type = stanza.get_type()
-        self.log.debug("pyLoad XMPP: %s stanza from %s" % (stanza_type,
-            from_jid))
-
-        if from_jid in self.getConfig("owners"):
-            return stanza.make_accept_response()
-
-        return stanza.make_deny_response()
-
-    def session_started(self):
-        self.stream.send(Presence())
-
-        self.stream.set_presence_handler("subscribe", self.presence_control)
-        self.stream.set_presence_handler("subscribed", self.presence_control)
-        self.stream.set_presence_handler("unsubscribe", self.presence_control)
-        self.stream.set_presence_handler("unsubscribed", self.presence_control)
 
     def message(self, stanza):
         """Message handler for the component."""
@@ -268,10 +249,3 @@ class VersionHandler(object):
         q.newTextChild(q.ns(), "name", "Echo component")
         q.newTextChild(q.ns(), "version", "1.0")
         return iq
-
-    def unload(self):
-        self.log.debug("pyLoad XMPP: unloading")
-        self.disconnect()
-
-    def deactivate(self):
-        self.unload()

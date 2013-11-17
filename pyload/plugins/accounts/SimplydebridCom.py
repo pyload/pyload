@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from time import mktime, strptime
 
-from pyload.plugins.MultiHoster import MultiHoster
+from module.plugins.Account import Account
 
 
-class SimplydebridCom(MultiHoster):
+class SimplydebridCom(Account):
     __name__ = "SimplydebridCom"
     __version__ = "0.1"
     __type__ = "account"
@@ -28,7 +28,3 @@ class SimplydebridCom(MultiHoster):
         response = req.load("http://simply-debrid.com/api.php", get=get_data, decode=True)
         if response != "02: loggin success":
             self.wrongPassword()
-
-    def loadHosterList(self, req):
-        page = req.load("http://simply-debrid.com/api.php?list=1")
-        return [x.strip() for x in page.rstrip(';').replace("\"", "").split(";")]

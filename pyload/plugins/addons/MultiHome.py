@@ -19,10 +19,10 @@
 
 from time import time
 
-from module.plugins.Addon import Addon
+from module.plugins.Hook import Hook
 
 
-class MultiHome(Addon):
+class MultiHome(Hook):
     __name__ = "MultiHome"
     __version__ = "0.11"
     __description__ = """ip address changer"""

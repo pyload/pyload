@@ -21,10 +21,10 @@
 import socket
 import thread
 
-from module.plugins.Addon import Addon
+from module.plugins.Hook import Hook
 
 
-class ClickAndLoad(Addon):
+class ClickAndLoad(Hook):
     __name__ = "ClickAndLoad"
     __version__ = "0.22"
     __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""
@@ -33,7 +33,7 @@ class ClickAndLoad(Addon):
     __author_name__ = ("RaNaN", "mkaay")
     __author_mail__ = ("RaNaN@pyload.de", "mkaay@mkaay.de")
 
-    def activate(self):
+    def coreReady(self):
         self.port = int(self.config['webinterface']['port'])
         if self.config['webinterface']['activated']:
             try:

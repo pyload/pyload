@@ -1,16 +1,12 @@
-from pyload.plugins.Hoster import Hoster
-from pyload.utils import json_loads
+from module.plugins.Hoster import Hoster
+
+from module.common.json_layer import json_loads
 
 
 class PremiumizeMe(Hoster):
     __name__ = "PremiumizeMe"
     __version__ = "0.12"
     __type__ = "hoster"
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", ""),
-                  ("unloadFailing", "bool", "Revert to stanard download if download fails", "False"),
-                  ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
     __description__ = """Premiumize.Me hoster plugin"""
 
     # Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
@@ -22,7 +18,7 @@ class PremiumizeMe(Hoster):
 
     def process(self, pyfile):
         # Check account
-        if not self.account or not self.account.isUsable():
+        if not self.account or not self.account.canUse():
             self.logError(_("Please enter your %s account or deactivate this plugin") % "premiumize.me")
             self.fail("No valid premiumize.me account provided")
 
@@ -36,10 +32,13 @@ class PremiumizeMe(Hoster):
         if temp.pop() in suffix_to_remove:
             self.pyfile.name = ".".join(temp)
 
+        # Get account data
+        (user, data) = self.account.selectAccount()
+
         # Get rewritten link using the premiumize.me api v1 (see https://secure.premiumize.me/?show=api)
         answer = self.load(
             "https://api.premiumize.me/pm-api/v1.php?method=directdownloadlink&params[login]=%s&params[pass]=%s&params[link]=%s" % (
-            self.account.loginname, self.account.password, self.pyfile.url))
+            user, data['password'], self.pyfile.url))
         data = json_loads(answer)
 
         # Check status and decide what to do

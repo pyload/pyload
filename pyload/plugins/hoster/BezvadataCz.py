@@ -20,6 +20,7 @@ import re
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
+
 class BezvadataCz(SimpleHoster):
     __name__ = "BezvadataCz"
     __type__ = "hoster"

@@ -6,6 +6,7 @@ from module.plugins.Hoster import Hoster, chunks
 from module.network.RequestFactory import getURL
 
 
+
 def getInfo(urls):
     result = []
     for chunk in chunks(urls, 10):
@@ -40,7 +41,6 @@ class FilesMailRu(Hoster):
     def setup(self):
         if not self.account:
             self.multiDL = False
-            self.chunkLimit = 1
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url)

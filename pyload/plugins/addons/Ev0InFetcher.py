@@ -18,19 +18,19 @@
 from time import mktime, time
 
 from module.lib import feedparser
-from module.plugins.Addon import Addon
+from module.plugins.Hook import Hook
 
 
-class Ev0InFetcher(Addon):
+class Ev0InFetcher(Hook):
     __name__ = "Ev0InFetcher"
     __version__ = "0.21"
     __description__ = """checks rss feeds for ev0.in"""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("interval", "int", "Check interval in minutes", "10"),
                   ("queue", "bool", "Move new shows directly to Queue", False),
-                  ("shows", "str", "Shows to check for (comma separated)", ""),
+                  ("shows", "str", "Shows to check for (comma seperated)", ""),
                   ("quality", "xvid;x264;rmvb", "Video Format", "xvid"),
-                  ("hoster", "str", "Hoster to use (comma separated)",
+                  ("hoster", "str", "Hoster to use (comma seperated)",
                    "NetloadIn,RapidshareCom,MegauploadCom,HotfileCom")]
     __author_name__ = ("mkaay")
     __author_mail__ = ("mkaay@mkaay.de")
@@ -41,8 +41,8 @@ class Ev0InFetcher(Addon):
     def filterLinks(self, links):
         results = self.core.pluginManager.parseUrls(links)
         sortedLinks = {}
-        
-        for url, hoster in results[0]:
+
+        for url, hoster in results:
             if hoster not in sortedLinks:
                 sortedLinks[hoster] = []
             sortedLinks[hoster].append(url)

@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Test links (random.bin):
+# http://www29.zippyshare.com/v/55578602/file.html
+
 import re
 import subprocess
 import tempfile
@@ -26,6 +29,8 @@ class ZippyshareCom(SimpleHoster):
     FILE_INFO_PATTERN = r'document\.getElementById\(\'dlbutton\'\)\.href = "[^;]*/(?P<N>[^"]+)";'
     FILE_OFFLINE_PATTERN = r'>File does not exist on this server</div>'
 
+    SH_COOKIES = [('zippyshare.com', 'ziplocale', 'en')]
+
     DOWNLOAD_URL_PATTERN = r"<script type=\"text/javascript\">([^<]*?)(document\.getElementById\('dlbutton'\).href = [^;]+;)"
     SEED_PATTERN = r'swfobject.embedSWF\("([^"]+)".*?seed: (\d+)'
     CAPTCHA_KEY_PATTERN = r'Recaptcha.create\("([^"]+)"'
@@ -35,16 +40,14 @@ class ZippyshareCom(SimpleHoster):
     LAST_KNOWN_VALUES = (9, 2374755)  # time = (seed * multiply) % modulo
 
     def setup(self):
-        self.html = None
-        self.wantReconnect = False
         self.multiDL = True
 
     def handleFree(self):
         url = self.get_file_url()
         if not url:
             self.fail("Download URL not found.")
-        self.logDebug("Download URL %s" % url)
-        self.download(url, cookies=True)
+        self.logDebug("Download URL: %s" % url)
+        self.download(url)
 
         check = self.checkDownload({
             "swf_values": re.compile(self.SEED_PATTERN)

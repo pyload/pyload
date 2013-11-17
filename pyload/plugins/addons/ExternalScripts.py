@@ -14,18 +14,19 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-    @author: RaNaN
+    @author: mkaay
+    @interface-version: 0.1
 """
 
 import subprocess
-from os import access, X_OK, makedirs
-from os.path import basename
+from os import listdir, access, X_OK, makedirs
+from os.path import join, exists, basename
 
-from module.plugins.Addon import Addon
-from module.utils.fs import save_join, exists, join, listdir
+from module.plugins.Hook import Hook
+from module.utils import save_join
 
 
-class ExternalScripts(Addon):
+class ExternalScripts(Hook):
     __name__ = "ExternalScripts"
     __version__ = "0.23"
     __description__ = """Run external scripts"""

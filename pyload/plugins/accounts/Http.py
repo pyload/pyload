@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.Account import Account
+from module.plugins.Account import Account
 
 
 class Http(Account):
@@ -11,9 +11,4 @@ class Http(Account):
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    __config__ = [("domain", "str", "Domain", "")]
-
     login_timeout = info_threshold = 1000000
-
-    def login(self, req):
-        pass

@@ -26,8 +26,8 @@ from module.common.json_layer import json_loads
 class BayfilesCom(SimpleHoster):
     __name__ = "BayfilesCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?bayfiles\.com/file/\w+/\w+/.*"
-    __version__ = "0.04"
+    __pattern__ = r"http://(?:www\.)?bayfiles\.(?:com|net)/file/\w+/\w+/.*"
+    __version__ = "0.05"
     __description__ = """Bayfiles.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")

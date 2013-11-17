@@ -18,8 +18,8 @@
 import re
 from datetime import datetime, timedelta
 
-from pyload.plugins.Hoster import Hoster
-from pyload.utils import json_loads
+from module.plugins.Hoster import Hoster
+from module.common.json_layer import json_loads
 
 
 def secondsToMidnight():
@@ -35,32 +35,25 @@ def secondsToMidnight():
 
 class UnrestrictLi(Hoster):
     __name__ = "UnrestrictLi"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __type__ = "hoster"
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", ""),
-                  ("unloadFailing", "bool", "Revert to standard download if download fails", "False"),
-                  ("interval", "int", "Reload interval in hours (0 to disable)", "24"),
-                  ("history", "bool", "Delete History", "False")]
     __pattern__ = r"https?://.*(unrestrict|unr)\.li"
     __description__ = """Unrestrict.li hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
-    def init(self):
+    def setup(self):
         self.chunkLimit = 16
         self.resumeDownload = True
 
     def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "Unrestrict.li")
-            self.fail("No Unrestrict.li account provided")
-
-        self.logDebug("Old URL: %s" % pyfile.url)
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
+        elif not self.account:
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "Unrestrict.li")
+            self.fail("No Unrestrict.li account provided")
         else:
+            self.logDebug("Old URL: %s" % pyfile.url)
             for i in xrange(5):
                 page = self.req.load('https://unrestrict.li/unrestrict.php',
                                      post={'link': pyfile.url, 'domain': 'long'})
@@ -89,7 +82,8 @@ class UnrestrictLi(Hoster):
             new_url = page.keys()[0]
             self.api_data = page[new_url]
 
-        self.logDebug("New URL: " + new_url)
+        if new_url != pyfile.url:
+            self.logDebug("New URL: " + new_url)
 
         if hasattr(self, 'api_data'):
             self.setNameSize()

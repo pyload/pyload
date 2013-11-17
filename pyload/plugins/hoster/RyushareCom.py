@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Test links (random.bin):
-# http://ryushare.com/v3u21arv593q/random.bin
+# http://ryushare.com/cl0jy8ric2js/random.bin
 
 import re
 
@@ -13,7 +13,7 @@ class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?ryushare.com/\w{11,}"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __description__ = """ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell","quareevo")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it","quareevo@arcor.de")
@@ -21,7 +21,7 @@ class RyushareCom(XFileSharingPro):
     HOSTER_NAME = "ryushare.com"
 
     WAIT_PATTERN = r'You have to wait ((?P<hour>\d+) hour[s]?, )?((?P<min>\d+) minute[s], )?(?P<sec>\d+) second[s]'
-    DIRECT_LINK_PATTERN = r'<a href="([^"]+)">Click here to download</a>'
+    DIRECT_LINK_PATTERN = r'(http://([^/]*?ryushare.com|\d+\.\d+\.\d+\.\d+)(:\d+/d/|/files/\w+/\w+/)[^"\'<]+)'
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
 
     def setup(self):
@@ -55,7 +55,7 @@ class RyushareCom(XFileSharingPro):
             retry = True
 
         self.wait()
-        if retry == True:
+        if retry:
             self.retry()
 
         for i in xrange(5):
@@ -83,7 +83,7 @@ class RyushareCom(XFileSharingPro):
             self.fail("You have entered 5 invalid captcha codes")
 
         if 'Click here to download' in self.html:
-            m = re.search(self.DIRECT_LINK_PATTERN, self.html)
+            m = re.search(r'<a href="([^"]+)">Click here to download</a>', self.html)
             return m.group(1)
 
 getInfo = create_getInfo(RyushareCom)

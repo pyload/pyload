@@ -3,10 +3,11 @@ from time import time
 import re
 import urllib
 
-from pyload.plugins.MultiHoster import MultiHoster
+from module.plugins.Account import Account
 from BeautifulSoup import BeautifulSoup
 
-class AlldebridCom(MultiHoster):
+
+class AlldebridCom(Account):
     __name__ = "AlldebridCom"
     __version__ = "0.21"
     __type__ = "account"
@@ -49,8 +50,3 @@ class AlldebridCom(MultiHoster):
 
         if "Invalid captcha" in page:
             self.wrongPassword()
-
-    def loadHosterList(self, req):
-        https = "https" if self.getConfig("https") else "http"
-        page = req.load(https + "://www.alldebrid.com/api.php?action=get_host").replace("\"","").strip()
-        return [x.strip() for x in page.split(",") if x.strip()]

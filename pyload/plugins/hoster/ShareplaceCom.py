@@ -15,10 +15,6 @@ class ShareplaceCom(Hoster):
     __author_name__ = ("ACCakut, based on YourfilesTo by jeix and skydancer")
     __author_mail__ = ("none")
 
-    def setup(self):
-        self.html = None
-        self.multiDL = True
-
     def process(self, pyfile):
         self.pyfile = pyfile
         self.prepare()

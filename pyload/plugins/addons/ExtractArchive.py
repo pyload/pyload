@@ -3,7 +3,8 @@
 
 import sys
 import os
-from os.path import basename, isfile, isdir, join
+from os import remove, chmod, makedirs
+from os.path import exists, basename, isfile, isdir, join
 from traceback import print_exc
 from copy import copy
 
@@ -48,17 +49,17 @@ if os.name != "nt":
     from pwd import getpwnam
     from grp import getgrnam
 
-from module.utils.fs import save_join, fs_encode, exists, remove, chmod, makedirs
-from module.plugins.Addon import Addon, threaded, Expose
+from module.utils import save_join, fs_encode
+from module.plugins.Hook import Hook, threaded, Expose
 from module.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
 
 
-class ExtractArchive(Addon):
+class ExtractArchive(Hook):
     """
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __description__ = "Extract different kind of archives"
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
@@ -67,11 +68,12 @@ class ExtractArchive(Addon):
                   ("deletearchive", "bool", "Delete archives when done", False),
                   ("subfolder", "bool", "Create subfolder for each package", False),
                   ("destination", "folder", "Extract files to", ""),
+                  ("excludefiles", "str", "Exclude files from unpacking (seperated by ;)", ""),
                   ("recursive", "bool", "Extract archives in archvies", True),
                   ("queue", "bool", "Wait for all downloads to be finished", True),
                   ("renice", "int", "CPU Priority", 0)]
-    __author_name__ = ("pyload Team")
-    __author_mail__ = ("admin<at>pyload.org")
+    __author_name__ = ("pyload Team", "AndroKev")
+    __author_mail__ = ("admin<at>pyload.org", "@pyloadforum")
 
     event_list = ["allDownloadsProcessed"]
 
@@ -176,7 +178,7 @@ class ExtractArchive(Addon):
                             continue
                         extracted.append(target)  # prevent extracting same file twice
 
-                        klass = plugin(self, target, out, self.getConfig("fullpath"), self.getConfig("overwrite"),
+                        klass = plugin(self, target, out, self.getConfig("fullpath"), self.getConfig("overwrite"), self.getConfig("excludefiles"),
                                        self.getConfig("renice"))
                         klass.init()
 

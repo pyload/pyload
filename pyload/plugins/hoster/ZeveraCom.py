@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.Hoster import Hoster
+from module.plugins.Hoster import Hoster
 
 
 class ZeveraCom(Hoster):
     __name__ = "ZeveraCom"
     __version__ = "0.21"
     __type__ = "hoster"
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "")]
     __pattern__ = r"http://zevera.com/.*"
     __description__ = """zevera.com hoster plugin"""
     __author_name__ = ("zoidberg")

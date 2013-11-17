@@ -20,58 +20,47 @@
 # http://www.fastshare.cz/2141189/random.bin
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?fastshare.cz/\d+/.+"
-    __version__ = "0.16"
+    __version__ = "0.20"
     __description__ = """FastShare.cz"""
     __author_name__ = ("zoidberg", "stickell")
 
     FILE_INFO_PATTERN = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*(?:Velikost|Size)\s*: (?P<S>[^,]+),'
-    FILE_OFFLINE_PATTERN = ur'<td align=center>Tento soubor byl smazán'
+    FILE_OFFLINE_PATTERN = 'The file  ?has been deleted'
     FILE_URL_REPLACEMENTS = [('#.*', '')]
+    SH_COOKIES = [('fastshare.cz', 'lang', 'en')]
 
     FREE_URL_PATTERN = r'action=(/free/.*?)>\s*<img src="([^"]*)"><br'
     PREMIUM_URL_PATTERN = r'(http://data\d+\.fastshare\.cz/download\.php\?id=\d+\&[^\s\"\'<>]+)'
     NOT_ENOUGH_CREDIC_PATTERN = "Nem.te dostate.n. kredit pro sta.en. tohoto souboru"
 
-    def process(self, pyfile):
-        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
-        self.req.setOption("timeout", 120)
-        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
-            self.handlePremium()
-        else:
-            self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
-            self.getFileInfo()
-            self.handleFree()
-
     def handleFree(self):
-        if u">100% FREE slotů je plných.<" in self.html:
-            self.setWait(60, False)
-            self.wait()
-            self.retry(120, "No free slots")
+        if '100% of FREE slots are full' in self.html:
+            self.retry(120, 60, "No free slots")
 
         found = re.search(self.FREE_URL_PATTERN, self.html)
         if not found:
             self.parseError("Free URL")
         action, captcha_src = found.groups()
-        captcha = self.decryptCaptcha("http://www.fastshare.cz/" + captcha_src)
-        self.download("http://www.fastshare.cz/" + action, post={"code": captcha, "submit": u"stáhnout"})
+        captcha = self.decryptCaptcha("http://www.fastshare.cz" + captcha_src)
+        self.download("http://www.fastshare.cz" + action, post={"code": captcha, "btn.x": 77, "btn.y": 18})
 
         check = self.checkDownload({
             "paralell_dl":
-            "<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"
+            "<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)",
+            "wrong_captcha": "Download for FREE"
         })
-        self.logDebug(self.req.lastEffectiveURL, self.req.lastURL, self.req.code)
 
         if check == "paralell_dl":
-            self.setWait(600, True)
-            self.wait()
-            self.retry(6, "Paralell download")
+            self.retry(6, 600, "Paralell download")
+        elif check == "wrong_captcha":
+            self.retry(5, 1, "Wrong captcha")
 
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)
@@ -90,7 +79,7 @@ class FastshareCz(SimpleHoster):
             url = found.group(1)
 
         self.logDebug("PREMIUM URL: %s" % url)
-        self.download(url)
+        self.download(url, disposition=True)
 
         check = self.checkDownload({"credit": re.compile(self.NOT_ENOUGH_CREDIC_PATTERN)})
         if check == "credit":

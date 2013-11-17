@@ -1,6 +1,7 @@
-from pyload.plugins.MultiHoster import MultiHoster
+from module.plugins.Account import Account
 
-class Premium4Me(MultiHoster):
+
+class Premium4Me(Account):
     __name__ = "Premium4Me"
     __version__ = "0.03"
     __type__ = "account"
@@ -22,7 +23,3 @@ class Premium4Me(MultiHoster):
 
         if "wrong username" in self.authcode:
             self.wrongPassword()
-
-    def loadHosterList(self, req):
-        page = req.load("http://premium.to/api/hosters.php?authcode=%s" % self.authcode)
-        return [x.strip() for x in page.replace("\"", "").split(";")]

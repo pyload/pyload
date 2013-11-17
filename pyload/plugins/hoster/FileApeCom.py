@@ -16,7 +16,6 @@ class FileApeCom(Hoster):
 
     def setup(self):
         self.multiDL = False
-        self.html = None
 
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -46,8 +45,8 @@ class FileApeCom(Hoster):
         self.wait()
 
         self.html = self.load(continuePage)
-        linkMatch = \
-            re.search(r"<div style=\"text-align:center; font-size: 30px;\"><a href=\"(http://.*?)\"", self.html)
+        linkMatch = re.search(r"<div style=\"text-align:center; font-size: 30px;\"><a href=\"(http://.*?)\"", self.html)
+
         if not linkMatch:
             linkMatch = re.search(r"\"(http://tx\d+\.fileape\.com/[a-z]+/.*?)\"", self.html)
         if linkMatch:

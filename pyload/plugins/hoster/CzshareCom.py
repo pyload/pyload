@@ -47,10 +47,6 @@ class CzshareCom(SimpleHoster):
     MULTIDL_PATTERN = r"<p><font color='red'>Z[^<]*PROFI.</font></p>"
     USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([0-9., ]+)([kKMG]i?B)</strong>\s*</div><!-- .credit -->'
 
-    def setup(self):
-        self.multiDL = self.resumeDownload = self.premium
-        self.chunkLimit = 1
-
     def checkTrafficLeft(self):
         # check if user logged in
         found = re.search(self.USER_CREDIT_PATTERN, self.html)
@@ -136,7 +132,6 @@ class CzshareCom(SimpleHoster):
         url = "http://%s/download.php?%s" % (found.group(1), found.group(2))
 
         self.wait()
-        self.multiDL = True
         self.download(url)
         self.checkDownloadedFile()
 

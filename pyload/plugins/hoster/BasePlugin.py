@@ -14,7 +14,7 @@ class BasePlugin(Hoster):
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
     __version__ = "0.19"
-    __description__ = """Base Plugin when any other didn't fit"""
+    __description__ = """Base Plugin when any other didnt fit"""
     __author_name__ = ("RaNaN")
     __author_mail__ = ("RaNaN@pyload.org")
 
@@ -30,14 +30,15 @@ class BasePlugin(Hoster):
             self.multiDL = False
             return
 
-        #TODO: remove debug
-        if pyfile.url.lower().startswith("debug"):
-            self.decryptCaptcha("http://forum.pyload.org/lib/tpl/pyload/images/pyload-logo-edited3.5-new-font-small.png", imgtype="png")
-            self.download("http://download.pyload.org/random100.bin")
-            return
+        # self.__name__ = "NetloadIn"
+        # pyfile.name = "test"
+        # self.html = self.load("http://localhost:9000/short")
+        # self.download("http://localhost:9000/short")
+        # self.api = self.load("http://localhost:9000/short")
+        # self.decryptCaptcha("http://localhost:9000/captcha")
         #
         # if pyfile.url == "79":
-        #    self.core.api.addPackage("test", [str(i) for i in range(80)], 1)
+        #     self.core.api.addPackage("test", [str(i) for i in range(80)], 1)
         #
         # return
         if pyfile.url.startswith("http"):

@@ -10,7 +10,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
-    __pattern__ = r"http://[\w\.]*?(depositfiles\.com|dfiles\.eu)(/\w{1,3})?/files/[\w]+"
+    __pattern__ = r"https?://[\w\.]*?(depositfiles\.com|dfiles\.eu)(/\w{1,3})?/files/[\w]+"
     __version__ = "0.45"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
@@ -25,10 +25,6 @@ class DepositfilesCom(SimpleHoster):
 
     RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)'"
     DOWNLOAD_LINK_PATTERN = r'<form id="downloader_file_form" action="(http://.+?\.(dfiles\.eu|depositfiles\.com)/.+?)" method="post"'
-
-    def setup(self):
-        self.multiDL = False
-        self.resumeDownload = self.premium
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, post={"gateway_result": "1"}, cookies=True)
@@ -113,7 +109,6 @@ class DepositfilesCom(SimpleHoster):
             self.retry()
         link = unquote(
             re.search('<div id="download_url">\s*<a href="(http://.+?\.depositfiles.com/.+?)"', self.html).group(1))
-        self.multiDL = True
         self.download(link, disposition=True)
 
 

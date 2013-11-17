@@ -9,6 +9,7 @@ from module.network.RequestFactory import getURL
 from module.utils import chunks
 
 
+
 def getInfo(urls):
     api_url_base = "http://api.hotfile.com/"
 

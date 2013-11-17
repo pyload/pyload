@@ -1,8 +1,8 @@
-from pyload.plugins.MultiHoster import MultiHoster
-from pyload.utils import json_loads
+from module.plugins.Account import Account
+from module.common.json_layer import json_loads
 
 
-class FastixRu(MultiHoster):
+class FastixRu(Account):
     __name__ = "FastixRu"
     __version__ = "0.02"
     __type__ = "account"
@@ -30,10 +30,3 @@ class FastixRu(MultiHoster):
         data["api"] = api
         if "error_code" in page:
             self.wrongPassword()
-
-    def loadHosterList(self, req):
-        page = req.load(
-            "http://fastix.ru/api_v2/?apikey=5182964c3f8f9a7f0b00000a_kelmFB4n1IrnCDYuIFn2y&sub=allowed_sources")
-        host_list = json_loads(page)
-        host_list = host_list['allow']
-        return host_list

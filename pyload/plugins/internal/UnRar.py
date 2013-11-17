@@ -28,7 +28,7 @@ from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPas
 
 class UnRar(AbtractExtractor):
     __name__ = "UnRar"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     # there are some more uncovered rar formats
     re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
@@ -184,7 +184,11 @@ class UnRar(AbtractExtractor):
         args = []
         #overwrite flag
         args.append("-o+") if self.overwrite else args.append("-o-")
-
+        
+        if self.excludefiles:
+            for word in self.excludefiles.split(';'):
+                args.append("-x%s" % word )
+                
         # assume yes on all queries
         args.append("-y")
 
@@ -193,7 +197,6 @@ class UnRar(AbtractExtractor):
             args.append("-p%s" % kwargs["password"])
         else:
             args.append("-p-")
-
 
         #NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)

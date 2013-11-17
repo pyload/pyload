@@ -6,21 +6,16 @@ from time import time
 from urllib import quote, unquote
 from random import randrange
 
-from pyload.utils import parseFileSize
-from pyload.utils import json_loads
-from pyload.plugins.Hoster import Hoster
+from module.utils import parseFileSize
+from module.common.json_layer import json_loads
+from module.plugins.Hoster import Hoster
 
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.51"
+    __version__ = "0.53"
     __type__ = "hoster"
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("https", "bool", "Enable HTTPS", "False"),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", ""),
-                  ("unloadFailing", "bool", "Revert to standard download if download fails", "False"),
-                  ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
+
     __pattern__ = r"https?://.*real-debrid\..*"
     __description__ = """Real-Debrid.com hoster plugin"""
     __author_name__ = ("Devirex, Hazzard")
@@ -35,27 +30,25 @@ class RealdebridCom(Hoster):
             name += "%s.tmp" % randrange(100, 999)
         return name
 
-    def init(self):
-        self.tries = 0
+    def setup(self):
         self.chunkLimit = 3
         self.resumeDownload = True
 
     def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "Real-debrid")
-            self.fail("No Real-debrid account provided")
-
-        self.logDebug("Real-Debrid: Old URL: %s" % pyfile.url)
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
+        elif not self.account:
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "Real-debrid")
+            self.fail("No Real-debrid account provided")
         else:
+            self.logDebug("Old URL: %s" % pyfile.url)
             password = self.getPassword().splitlines()
             if not password:
                 password = ""
             else:
                 password = password[0]
 
-            url = "http://real-debrid.com/ajax/unrestrict.php?lang=en&link=%s&password=%s&time=%s" % (
+            url = "https://real-debrid.com/ajax/unrestrict.php?lang=en&link=%s&password=%s&time=%s" % (
                 quote(pyfile.url, ""), password, int(time() * 1000))
             page = self.load(url)
             data = json_loads(page)
@@ -79,7 +72,8 @@ class RealdebridCom(Hoster):
         else:
             new_url = new_url.replace("https://", "http://")
 
-        self.logDebug("Real-Debrid: New URL: %s" % new_url)
+        if new_url != pyfile.url:
+            self.logDebug("New URL: %s" % new_url)
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown") or pyfile.name.endswith('..'):
             #only use when name wasnt already set

@@ -22,6 +22,7 @@ import re
 from pyload.plugins.Crypter import Crypter, Package
 from pyload.utils import html_unescape
 
+
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __version__ = "0.06"

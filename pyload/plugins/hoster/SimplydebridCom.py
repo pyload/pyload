@@ -4,16 +4,13 @@
 from urllib import quote, unquote
 import re
 
-from pyload.plugins.Hoster import Hoster
+from module.plugins.Hoster import Hoster
 
 
 class SimplydebridCom(Hoster):
     __name__ = "SimplydebridCom"
     __version__ = "0.1"
     __type__ = "hoster"
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "")]
     __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd.php/*"
     __description__ = """simply-debrid.com hoster plugin"""
     __author_name__ = ("Kagenoshin")
