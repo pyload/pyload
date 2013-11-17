@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: RaNaN
 """
 
@@ -26,6 +26,7 @@ from string import digits
 
 from module.utils import save_join, decode
 from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
+
 
 class UnRar(AbtractExtractor):
     __name__ = "UnRar"
@@ -50,7 +51,7 @@ class UnRar(AbtractExtractor):
                 p.communicate()
             except OSError:
 
-                #fallback to rar
+                # fallback to rar
                 UnRar.CMD = "rar"
                 p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
                 p.communicate()
@@ -62,11 +63,12 @@ class UnRar(AbtractExtractor):
         result = []
 
         for file, id in files_ids:
-            if not file.endswith(".rar"): continue
+            if not file.endswith(".rar"):
+                continue
 
             match = UnRar.re_splitfile.findall(file)
             if match:
-                #only add first parts
+                # only add first parts
                 if int(match[0][1]) == 1:
                     result.append((file, id))
             else:
@@ -74,12 +76,11 @@ class UnRar(AbtractExtractor):
 
         return result
 
-
     def init(self):
         self.passwordProtected = False
-        self.headerProtected = False  #list files will not work without password
-        self.smallestFile = None  #small file to test passwords
-        self.password = ""  #save the correct password
+        self.headerProtected = False  #: list files will not work without password
+        self.smallestFile = None  #: small file to test passwords
+        self.password = ""  #: save the correct password
 
     def checkArchive(self):
         p = self.call_unrar("l", "-v", self.file)
@@ -102,7 +103,7 @@ class UnRar(AbtractExtractor):
         return False
 
     def checkPassword(self, password):
-        #at this point we can only verify header protected files
+        # at this point we can only verify header protected files
         if self.headerProtected:
             p = self.call_unrar("l", "-v", self.file, password=password)
             out, err = p.communicate()
@@ -110,7 +111,6 @@ class UnRar(AbtractExtractor):
                 return False
 
         return True
-
 
     def extract(self, progress, password=None):
         command = "x" if self.fullpath else "e"
@@ -144,7 +144,7 @@ class UnRar(AbtractExtractor):
             raise CRCError
         elif "CRC failed" in err:
             raise WrongPassword
-        if err.strip(): #raise error if anything is on stderr
+        if err.strip():  #: raise error if anything is on stderr
             raise ArchiveError(err.strip())
         if p.returncode:
             raise ArchiveError("Process terminated")
@@ -152,7 +152,6 @@ class UnRar(AbtractExtractor):
         if not self.files:
             self.password = password
             self.listContent()
-
 
     def getDeleteFiles(self):
         if ".part" in self.file:
@@ -169,7 +168,7 @@ class UnRar(AbtractExtractor):
         if "Cannot open" in err:
             raise ArchiveError("Cannot open file")
 
-        if err.strip(): # only log error at this point
+        if err.strip():  #: only log error at this point
             self.m.logError(err.strip())
 
         result = set()
@@ -180,26 +179,25 @@ class UnRar(AbtractExtractor):
 
         self.files = result
 
-
     def call_unrar(self, command, *xargs, **kwargs):
         args = []
-        #overwrite flag
+        # overwrite flag
         args.append("-o+") if self.overwrite else args.append("-o-")
-        
+
         if self.excludefiles:
             for word in self.excludefiles.split(';'):
-                args.append("-x%s" % word )
-                
+                args.append("-x%s" % word)
+
         # assume yes on all queries
         args.append("-y")
 
-        #set a password
+        # set a password
         if "password" in kwargs and kwargs["password"]:
             args.append("-p%s" % kwargs["password"])
         else:
             args.append("-p-")
 
-        #NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
+        # NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
         self.m.logDebug(" ".join(call))
 
