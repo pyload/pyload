@@ -27,8 +27,8 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class Keep2shareCC(SimpleHoster):
     __name__ = "Keep2shareCC"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?(?:keep2share|k2s)\.cc/file/(?P<ID>.+)"
-    __version__ = "0.04"
+    __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>[a-zA-Z0-9]{13})"
+    __version__ = "0.05"
     __description__ = """Keep2share.cc hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -51,7 +51,7 @@ class Keep2shareCC(SimpleHoster):
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
             wait_string = m.group(1)
-            wait_time = int(wait_string[0:2]) * 3600 + int(wait_string[3:5]) * 60 + int(wait_string[6:8])
+            wait_time = int(wait_string[0:2]) * 60 * 60 + int(wait_string[3:5]) * 60 + int(wait_string[6:8])
             self.setWait(wait_time, True)
             self.wait()
             self.process(self.pyfile)
