@@ -11,6 +11,7 @@ def normalize(domain):
     """ Normalize domain/plugin name, so they are comparable """
     return remove_chars(domain.strip().lower(), "-.")
 
+
 #noinspection PyUnresolvedReferences
 class MultiHoster(Account):
     """

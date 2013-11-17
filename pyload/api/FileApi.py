@@ -74,13 +74,11 @@ class FileApi(ApiComponent):
             raise FileDoesNotExists(fid)
         return info
 
-    @RequirePerm(Permission.Download)
     def getFilePath(self, fid):
         """ Internal method to get the filepath"""
         info = self.getFileInfo(fid)
         pack = self.core.files.getPackage(info.package)
         return pack.getPath(), info.name
-
 
     @RequirePerm(Permission.All)
     def findFiles(self, pattern):

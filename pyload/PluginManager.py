@@ -15,222 +15,66 @@
 #   @author: RaNaN, mkaay
 ###############################################################################
 
-import re
 import sys
 
-from os import listdir, makedirs
-from os.path import isfile, join, exists, abspath, basename
-from sys import version_info
-from time import time
-from collections import defaultdict
+from os.path import abspath, join
+from pyload.utils.PluginLoader import LoaderFactory, PluginLoader
 
-from pyload.lib.SafeEval import const_eval as literal_eval
-from pyload.plugins.Base import Base
 
-from new_collections import namedtuple
+class PluginMatcher(object):
+    """ Abstract class that allows modify which plugins to match and to load """
 
-#TODO: ignores not updatable
+    def matchURL(self, url):
+        return None
 
-# ignore these plugin configs, mainly because plugins were wiped out
-IGNORE = (
-    "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('addons', 'UnRar'),
-    'EasyShareCom', 'FlyshareCz'
-)
-
-PluginTuple = namedtuple("PluginTuple", "version re deps category user path")
-
-class BaseAttributes(defaultdict):
-    """ Dictionary that loads defaults values from Base object """
-    def __missing__(self, key):
-        attr = "__%s__" % key
-        if not hasattr(Base, attr):
-            return defaultdict.__missing__(self, key)
-
-        return getattr(Base, attr)
+    def getPlugin(self, plugin, name):
+        return False
 
 
 class PluginManager:
-    ROOT = "pyload.plugins."
-    LOCALROOT = "localplugins."
-    TYPES = ("crypter", "hoster", "accounts", "addons", "network", "internal")
+    ROOT = "pyload.plugins"
+    LOCALROOT = "localplugins"
 
-    BUILTIN = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s?(True|False|None|[0-9x.]+)', re.I)
-    SINGLE = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(?:r|u|_)?((?:(?<!")"(?!")|\'|\().*(?:(?<!")"(?!")|\'|\)))',
-                        re.I)
-    # note the nongreedy character: that means we can not embed list and dicts
-    MULTI = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*((?:\{|\[|"{3}).*?(?:"""|\}|\]))', re.DOTALL | re.M | re.I)
-
-    NO_MATCH = re.compile(r'^no_match$')
+    MATCH_HISTORY = 10
+    DEFAULT_PLUGIN = "BasePlugin"
 
     def __init__(self, core):
         self.core = core
-
-        #self.config = self.core.config
         self.log = core.log
 
-        self.plugins = {}
-        self.modules = {} # cached modules
-        self.history = [] # match history to speedup parsing (type, name)
-        self.user_context = {} # plugins working with user context
-        self.createIndex()
+        # cached modules (type, name)
+        self.modules = {}
+        # match history to speedup parsing (type, name)
+        self.history = []
 
         #register for import addon
         sys.meta_path.append(self)
 
-    def logDebug(self, type, plugin, msg):
-        self.log.debug("Plugin %s | %s: %s" % (type, plugin, msg))
-
-    def createIndex(self):
-        """create information for all plugins available"""
         # add to path, so we can import from userplugins
         sys.path.append(abspath(""))
+        self.loader = LoaderFactory(PluginLoader(abspath(self.LOCALROOT), self.LOCALROOT, self.core.config),
+                                    PluginLoader(abspath(join(pypath, "pyload", "plugins")), self.ROOT,
+                                                 self.core.config))
 
-        if not exists("userplugins"):
-            makedirs("userplugins")
-        if not exists(join("userplugins", "__init__.py")):
-            f = open(join("userplugins", "__init__.py"), "wb")
-            f.close()
+        self.loader.checkVersions()
 
-        a = time()
-        for type in self.TYPES:
-            self.plugins[type] = self.parse(type)
+        # plugin matcher to overwrite some behaviour
+        self.matcher = []
 
-        self.log.debug("Created index of plugins in %.2f ms", (time() - a) * 1000)
+    def addMatcher(self, matcher, index=0):
+        """ Inserts matcher at given index, first position by default """
+        if not isinstance(matcher, PluginMatcher):
+            raise TypeError("Expected type of PluginMatcher, got %s instead" % type(matcher))
 
-    def parse(self, folder, home=None):
-        """  Analyze and parses all plugins in folder """
-        plugins = {}
-        if home:
-            pfolder = join("userplugins", folder)
-            if not exists(pfolder):
-                makedirs(pfolder)
-            if not exists(join(pfolder, "__init__.py")):
-                f = open(join(pfolder, "__init__.py"), "wb")
-                f.close()
+        if matcher in self.matcher:
+            self.matcher.remove(matcher)
 
-        else:
-            pfolder = join(pypath, "pyload", "plugins", folder)
+        self.matcher.insert(index, matcher)
 
-        for f in listdir(pfolder):
-            if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith(
-                    "_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
-                if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):
-                    continue
-                elif f.endswith("_26.pyc") and version_info[0:2] != (2, 6):
-                    continue
-                elif f.endswith("_27.pyc") and version_info[0:2] != (2, 7):
-                    continue
-
-                # replace suffix and version tag
-                name = f[:-3]
-                if name[-1] == ".": name = name[:-4]
-
-                plugin = self.parsePlugin(join(pfolder, f), folder, name, home)
-                if plugin:
-                    plugins[name] = plugin
-
-        if not home:
-            temp = self.parse(folder, plugins)
-            plugins.update(temp)
-
-        return plugins
-
-    def parseAttributes(self, filename, name, folder=""):
-        """ Parse attribute dict from plugin"""
-        data = open(filename, "rb")
-        content = data.read()
-        data.close()
-
-        attrs = BaseAttributes()
-        for m in self.BUILTIN.findall(content) + self.SINGLE.findall(content) + self.MULTI.findall(content):
-            #replace gettext function and eval result
-            try:
-                attrs[m[0]] = literal_eval(m[-1].replace("_(", "("))
-            except:
-                self.logDebug(folder, name, "Error when parsing: %s" % m[-1])
-                self.core.print_exc()
-
-            if not hasattr(Base, "__%s__" % m[0]):
-                if m[0] != "type": #TODO remove type from all plugins, its not needed
-                    self.logDebug(folder, name, "Unknown attribute '%s'" % m[0])
-
-        return attrs
-
-    def parsePlugin(self, filename, folder, name, home=None):
-        """  Parses a plugin from disk, folder means plugin type in this context. Also sets config.
-
-        :arg home: dict with plugins, of which the found one will be matched against (according version)
-        :returns PluginTuple"""
-
-        attrs = self.parseAttributes(filename, name, folder)
-        if not attrs: return
-
-        version = 0
-
-        if "version" in attrs:
-            try:
-                version = float(attrs["version"])
-            except ValueError:
-                self.logDebug(folder, name, "Invalid version %s" % attrs["version"])
-                version = 9 #TODO remove when plugins are fixed, causing update loops
-        else:
-            self.logDebug(folder, name, "No version attribute")
-
-        # home contains plugins from pyload root
-        if home and name in home:
-            if home[name].version >= version:
-                return
-
-        if name in IGNORE or (folder, name) in IGNORE:
-            return
-
-        if "pattern" in attrs and attrs["pattern"]:
-            try:
-                plugin_re = re.compile(attrs["pattern"], re.I)
-            except:
-                self.logDebug(folder, name, "Invalid regexp pattern '%s'" % attrs["pattern"])
-                plugin_re = self.NO_MATCH
-        else:
-            plugin_re = self.NO_MATCH
-
-        deps = attrs["dependencies"]
-        category = attrs["category"] if folder == "addons" else ""
-
-        # create plugin tuple
-        plugin = PluginTuple(version, plugin_re, deps, category, bool(home), filename)
-
-        # These have none or their own config
-        if folder in ("internal", "accounts", "network"):
-            return plugin
-
-        if folder == "addons" and "config" not in attrs and not attrs["internal"]:
-            attrs["config"] = (["activated", "bool", "Activated", False],)
-
-        if "config" in attrs and attrs["config"] is not None:
-            config = attrs["config"]
-            desc = attrs["description"]
-            expl = attrs["explanation"]
-
-            # Convert tuples to list
-            config = [list(x) for x in config]
-
-            if folder == "addons" and not attrs["internal"]:
-                for item in config:
-                    if item[0] == "activated": break
-                else: # activated flag missing
-                    config.insert(0, ("activated", "bool", "Activated", False))
-
-            # Everything that is no addon and user_context=True, is added to dict
-            if folder != "addons" or attrs["user_context"]:
-                self.user_context[name] = True
-
-            try:
-                self.core.config.addConfigSection(name, name, desc, expl, config)
-            except:
-                self.logDebug(folder, name, "Invalid config  %s" % config)
-
-        return plugin
-
+    def removeMatcher(self, matcher):
+        """ Removes a matcher if it exists """
+        if matcher in self.matcher:
+            self.matcher.remove(matcher)
 
     def parseUrls(self, urls):
         """parse plugins for given list of urls, separate to crypter and hoster"""
@@ -245,7 +89,7 @@ class PluginManager:
             found = False
 
             for ptype, name in self.history:
-                if self.plugins[ptype][name].re.match(url):
+                if self.loader.getPlugin(ptype, name).re.match(url):
                     res[ptype].append((url, name))
                     found = (ptype, name)
                     break # need to exit this loop first
@@ -257,94 +101,96 @@ class PluginManager:
                 continue
 
             for ptype in ("crypter", "hoster"):
-                for name, plugin in self.plugins[ptype].iteritems():
-                    if plugin.re.match(url):
-                        res[ptype].append((url, name))
-                        self.history.insert(0, (ptype, name))
-                        del self.history[10:] # cut down to size of 10
-                        found = True
-                        break
+                for loader in self.loader:
+                    for name, plugin in loader.getPlugins(ptype).iteritems():
+                        if plugin.re.match(url):
+                            res[ptype].append((url, name))
+                            self.history.insert(0, (ptype, name))
+                            del self.history[10:] # cut down to size of 10
+                            found = True
+                            break
 
             if not found:
-                res["hoster"].append((url, "BasePlugin"))
+                res["hoster"].append((url, self.DEFAULT_PLUGIN))
 
         return res["hoster"], res["crypter"]
 
-    def getPlugins(self, type):
-        return self.plugins.get(type, None)
+    def getPlugins(self, plugin):
+        """  Get all plugins of a certain type in a dict """
+        plugins = {}
+        for loader in self.loader:
+            plugins.update(loader.getPlugins(plugin))
+        return plugins
 
     def findPlugin(self, name, pluginlist=("hoster", "crypter")):
-        for ptype in pluginlist:
-            if name in self.plugins[ptype]:
-                return ptype, self.plugins[ptype][name]
+        # TODO: use matcher
+        for loader in self.loader:
+            for plugin in pluginlist:
+                if loader.hasPlugin(plugin, name):
+                    return plugin, loader.getPlugin(plugin, name)
+
         return None, None
 
-    def getPluginModule(self, name):
-        """ Decprecated: return plugin module from hoster|crypter"""
-        self.log.debug("Deprecated method: .getPluginModule()")
-        type, plugin = self.findPlugin(name)
-        return self.loadModule(type, name)
+    def getPluginClass(self, name, overwrite=True):
+        """Gives the plugin class of a hoster or crypter plugin
 
-    def getPluginClass(self, name):
-        """ return plugin class from hoster|crypter, always the not overwritten one """
+        :param overwrite: allow the use of overwritten plugins
+        """
+        # TODO: use matcher
         type, plugin = self.findPlugin(name)
         return self.loadClass(type, name)
 
-    #  MultiHoster will overwrite this
-    getPlugin = getPluginClass
+    def loadAttributes(self, plugin, name):
+        for loader in self.loader:
+            if loader.hasPlugin(plugin, name):
+                return loader.loadAttributes(plugin, name)
 
-    def loadAttributes(self, type, name):
-        plugin = self.plugins[type][name]
-        return self.parseAttributes(plugin.path, name, type)
+        return {}
 
-    def loadModule(self, type, name):
+    def loadModule(self, plugin, name):
         """ Returns loaded module for plugin
 
-        :param type: plugin type, subfolder of module.plugins
-        :param name:
+        :param plugin: plugin type, subfolder of module.plugins
         """
-        plugins = self.plugins[type]
-        if name in plugins:
-            if (type, name) in self.modules: return self.modules[(type, name)]
-            try:
-                # convert path to python recognizable import
-                path = basename(plugins[name].path).replace(".pyc", "").replace(".py", "")
-                module = __import__(self.ROOT + "%s.%s" % (type, path), globals(), locals(), path)
-                self.modules[(type, name)] = module # cache import, maybe unneeded
-                return module
-            except Exception, e:
-                self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
-                self.core.print_exc()
+        if (plugin, name) in self.modules: return self.modules[(plugin, name)]
+        for loader in self.loader:
+            if loader.hasPlugin(plugin, name):
+                try:
+                    module = loader.loadModule(plugin, name)
+                    # cache import
+                    self.modules[(plugin, name)] = module
+                    return module
+                except Exception, e:
+                    self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
+                    self.core.print_exc()
 
-    def loadClass(self, type, name):
+    def loadClass(self, plugin, name):
         """Returns the class of a plugin with the same name"""
-        module = self.loadModule(type, name)
+        module = self.loadModule(plugin, name)
         if module: return getattr(module, name)
 
     def find_module(self, fullname, path=None):
-        #redirecting imports if necesarry
-        if fullname.startswith(self.ROOT) or fullname.startswith(self.LOCALROOT): #separate pyload plugins
-            if fullname.startswith(self.LOCALROOT):
-                user = 1
-            else:
-                user = 0 #used as bool and int
+        #redirecting imports if necessary
+        for loader in self.loader:
+            if not fullname.startswith(loader.package):
+                continue
+
+            # TODO not well tested
+            offset = 1 - loader.package.count(".")
 
             split = fullname.split(".")
-            if len(split) != 4 - user: return
-            type, name = split[2 - user:4 - user]
+            if len(split) != 4 - offset: return
+            plugin, name = split[2 - offset:4 - offset]
 
-            if type in self.plugins and name in self.plugins[type]:
-                #userplugin is a newer version
-                if not user and self.plugins[type][name].user:
-                    return self
-                    #imported from userdir, but pyloads is newer
-                if user and not self.plugins[type][name].user:
+            # check if a different loader than the current one has the plugin
+            # in this case import needs redirect
+            for l2 in self.loader:
+                if l2 is not loader and l2.hasPlugin(plugin, name):
                     return self
 
         # TODO: Remove when all plugin imports are adapted
         if "module" in fullname:
             return self
-
 
     def load_module(self, name, replace=True):
         if name not in sys.modules:  #could be already in modules
@@ -361,6 +207,7 @@ class PluginManager:
                 self.log.debug("Old import reference detected, use %s" % name)
                 replace = False
 
+            # TODO: this still works but does not respect other loaders
             if replace:
                 if self.ROOT in name:
                     newname = name.replace(self.ROOT, self.LOCALROOT)
@@ -382,48 +229,21 @@ class PluginManager:
 
     def reloadPlugins(self, type_plugins):
         """ reloads and reindexes plugins """
-        if not type_plugins: return False
-
-        self.log.debug("Request reload of plugins: %s" % type_plugins)
-
-        as_dict = {}
-        for t, n in type_plugins:
-            if t in as_dict:
-                as_dict[t].append(n)
-            else:
-                as_dict[t] = [n]
-
-        # we do not reload addons or internals, would cause to much side effects
-        if "addons" in as_dict or "internal" in as_dict:
-            return False
-
-        for type in as_dict.iterkeys():
-            for plugin in as_dict[type]:
-                if plugin in self.plugins[type]:
-                    if (type, plugin) in self.modules:
-                        self.log.debug("Reloading %s" % plugin)
-                        reload(self.modules[(type, plugin)])
-
-        # index re-creation
-        for type in ("crypter", "container", "hoster", "captcha", "accounts"):
-            self.plugins[type] = self.parse(type)
-
-        if "accounts" in as_dict: #accounts needs to be reloaded
-            self.core.accountManager.initPlugins()
-            self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
-
-        return True
+        # TODO
+        # check if reloadable
+        # reload
+        # save new plugins
+        # update index
+        # reload accounts
 
     def isUserPlugin(self, plugin):
         """ A plugin suitable for multiple user """
-        return plugin in self.user_context
-
-    def isPluginType(self, plugin, type):
-        return plugin in self.plugins[type]
+        return any(l.isUserPlugin(plugin) for l in self.loader)
 
     def getCategory(self, plugin):
-        if plugin in self.plugins["addons"]:
-            return self.plugins["addons"][plugin].category or "addon"
+        plugin = self.loader.getPlugin("addons", plugin)
+        if plugin:
+            return plugin.category or "addon"
 
     def loadIcon(self, name):
         """ load icon for single plugin, base64 encoded"""

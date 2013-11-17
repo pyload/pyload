@@ -43,6 +43,7 @@ def serve_icon(path):
 @route("/download/:fid")
 @login_required('Download')
 def download(fid, api):
+    # TODO: check owner ship
     path, name = api.getFilePath(fid)
     return static_file(name, path, download=True)
 

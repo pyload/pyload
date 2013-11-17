@@ -11,9 +11,8 @@ typedef list<string> LinkList
 typedef string PluginName
 typedef string JSONString
 
-// NA - Not Available
 enum DownloadStatus {
-  NA,
+  NA, // No downloads status set
   Offline,
   Online,
   Queued,
@@ -26,6 +25,7 @@ enum DownloadStatus {
   Downloading,
   TempOffline,
   Aborted,
+  NotPossible,
   Decrypting,
   Processing,
   Custom,

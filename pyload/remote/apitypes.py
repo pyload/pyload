@@ -33,10 +33,11 @@ class DownloadStatus:
 	Downloading = 10
 	TempOffline = 11
 	Aborted = 12
-	Decrypting = 13
-	Processing = 14
-	Custom = 15
-	Unknown = 16
+	NotPossible = 13
+	Decrypting = 14
+	Processing = 15
+	Custom = 16
+	Unknown = 17
 
 class FileStatus:
 	Ok = 0

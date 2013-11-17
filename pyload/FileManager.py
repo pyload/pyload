@@ -52,7 +52,7 @@ class FileManager:
         # translations
         self.statusMsg = [_("none"), _("offline"), _("online"), _("queued"), _("paused"),
                           _("finished"), _("skipped"), _("failed"), _("starting"),
-                          _("waiting"), _("downloading"), _("temp. offline"), _("aborted"),
+                          _("waiting"), _("downloading"), _("temp. offline"), _("aborted"), _("not possible"),
                           _("decrypting"), _("processing"), _("custom"), _("unknown")]
 
         self.files = {} # holds instances for files

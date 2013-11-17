@@ -6,18 +6,18 @@ from types import MethodType
 
 from pyload.plugins.MultiHoster import MultiHoster as MultiHosterAccount, normalize
 from pyload.plugins.Addon import Addon, AddEventListener
-from pyload.PluginManager import PluginTuple
+from pyload.PluginManager import PluginMatcher
 
-
-class MultiHoster(Addon):
+class MultiHoster(Addon, PluginMatcher):
     __version__ = "0.1"
     __internal__ = True
     __description__ = "Gives ability to use MultiHoster services."
     __config__ = []
-    __author_mail__ = ("pyLoad Team",)
+    __author__ = ("pyLoad Team",)
     __author_mail__ = ("support@pyload.org",)
 
     #TODO: multiple accounts - multihoster / config options
+    # TODO: rewrite for new plugin manager
 
     def init(self):
 
@@ -90,17 +90,8 @@ class MultiHoster(Addon):
     def activate(self):
         self.refreshAccounts()
 
-        # new method for plugin manager
-        def getPlugin(self2, name):
-            if name in self.plugins:
-                return self.plugins[name]
-            return self2.getPluginClass(name)
-
-        pm = self.core.pluginManager
-        pm.getPlugin = MethodType(getPlugin, pm, object)
-
+        self.core.pluginManager.addMatcher(self)
     def deactivate(self):
-        #restore state
-        pm = self.core.pluginManager
-        pm.getPlugin = pm.getPluginClass
+
+        self.core.pluginManager.removeMatcher(self)
 

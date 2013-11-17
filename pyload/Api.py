@@ -40,7 +40,8 @@ stateMap = {
     DownloadState.All: frozenset(getattr(DownloadStatus, x) for x in dir(DownloadStatus) if not x.startswith("_")),
     DownloadState.Finished: frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
     DownloadState.Unfinished: None, # set below
-    DownloadState.Failed: frozenset((DownloadStatus.Failed, DownloadStatus.TempOffline, DownloadStatus.Aborted)),
+    DownloadState.Failed: frozenset((DownloadStatus.Failed, DownloadStatus.TempOffline, DownloadStatus.Aborted,
+                                     DownloadStatus.NotPossible)),
     DownloadState.Unmanaged: None, #TODO
 }
 

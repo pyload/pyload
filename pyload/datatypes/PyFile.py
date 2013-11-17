@@ -37,10 +37,11 @@ statusMap = {
     "downloading": 10,
     "temp. offline": 11,
     "aborted": 12,
-    "decrypting": 13,
-    "processing": 14,
-    "custom": 15,
-    "unknown": 16,
+    "not possible": 13,
+    "decrypting": 14,
+    "processing": 15,
+    "custom": 16,
+    "unknown": 17,
 }
 
 
@@ -138,7 +139,7 @@ class PyFile(object):
     def initPlugin(self):
         """ inits plugin instance """
         if not self.plugin:
-            self.pluginclass = self.m.core.pluginManager.getPlugin(self.pluginname)
+            self.pluginclass = self.m.core.pluginManager.getPluginClass(self.pluginname)
             self.plugin = self.pluginclass(self)
 
     @read_lock
@@ -160,7 +161,7 @@ class PyFile(object):
         self.setStatus(status)
 
     def getStatusName(self):
-        if self.status not in (13, 14) or not self.statusname:
+        if self.status not in (15, 16) or not self.statusname:
             return self.m.statusMsg[self.status]
         else:
             return self.statusname

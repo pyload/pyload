@@ -23,7 +23,6 @@ from threading import RLock
 from types import MethodType
 
 from pyload.threads.AddonThread import AddonThread
-from pyload.PluginManager import literal_eval
 from utils import lock, to_string
 
 class AddonManager:
@@ -150,7 +149,7 @@ class AddonManager:
             self.core.eventManager.removeFromEvents(getattr(addon, f))
 
     def activateAddons(self):
-        self.log.info(_("Activating Plugins..."))
+        self.log.info(_("Activating addons..."))
         for plugin in self.plugins.itervalues():
             if plugin.isActivated():
                 self.call(plugin, "activate")
@@ -159,7 +158,7 @@ class AddonManager:
 
     def deactivateAddons(self):
         """  Called when core is shutting down """
-        self.log.info(_("Deactivating Plugins..."))
+        self.log.info(_("Deactivating addons..."))
         for plugin in self.plugins.itervalues():
             self.call(plugin, "deactivate")
 

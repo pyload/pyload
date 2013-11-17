@@ -56,7 +56,7 @@ class InfoThread(DecrypterThread):
         cb = self.updateDB if self.pid > 1 else self.updateResult
 
         for pluginname, urls in plugins.iteritems():
-            plugin = self.m.core.pluginManager.getPluginModule(pluginname)
+            plugin = self.m.core.pluginManager.loadModule("hoster", pluginname)
             klass = self.m.core.pluginManager.getPluginClass(pluginname)
             if has_method(klass, "getInfo"):
                 self.fetchForPlugin(klass, urls, cb)

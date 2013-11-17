@@ -4,7 +4,7 @@ define([], function() {
 	'use strict';
 	return {
 		DownloadState: {'Failed': 3, 'All': 0, 'Unmanaged': 4, 'Finished': 1, 'Unfinished': 2},
-		DownloadStatus: {'Downloading': 10, 'NA': 0, 'Processing': 14, 'Waiting': 9, 'Decrypting': 13, 'Paused': 4, 'Failed': 7, 'Finished': 5, 'Skipped': 6, 'Unknown': 16, 'Aborted': 12, 'Online': 2, 'TempOffline': 11, 'Offline': 1, 'Custom': 15, 'Starting': 8, 'Queued': 3},
+		DownloadStatus: {'NotPossible': 13, 'Downloading': 10, 'NA': 0, 'Processing': 15, 'Waiting': 9, 'Decrypting': 14, 'Paused': 4, 'Failed': 7, 'Finished': 5, 'Skipped': 6, 'Unknown': 17, 'Aborted': 12, 'Online': 2, 'TempOffline': 11, 'Offline': 1, 'Custom': 16, 'Starting': 8, 'Queued': 3},
 		FileStatus: {'Remote': 2, 'Ok': 0, 'Missing': 1},
 		InputType: {'PluginList': 13, 'Multiple': 11, 'Int': 2, 'NA': 0, 'Time': 7, 'List': 12, 'Bool': 8, 'File': 3, 'Text': 1, 'Table': 14, 'Folder': 4, 'Password': 6, 'Click': 9, 'Select': 10, 'Textbox': 5},
 		Interaction: {'Captcha': 2, 'All': 0, 'Query': 4, 'Notification': 1},
