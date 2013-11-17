@@ -501,7 +501,7 @@ class Core(object):
         console = logging.StreamHandler(sys.stdout)
 
         # try to get a time formatting depending on system locale
-        tfrm = None
+        datefmt = None
         try: # change current locale to default if it is not set
             current_locale = locale.getlocale()
             if current_locale == (None, None):
@@ -509,16 +509,47 @@ class Core(object):
 
             # We use timeformat provided by locale when available
             if current_locale != (None, None):
-                tfrm = locale.nl_langinfo(locale.D_FMT) + " " + locale.nl_langinfo(locale.T_FMT)
+                datefmt = locale.nl_langinfo(locale.D_FMT) + " " + locale.nl_langinfo(locale.T_FMT)
         except: # something did go wrong, locale is heavily platform dependant
             pass
 
         # default formatting when no one was obtained (ex.: 2013-10-22 18:27:46)
-        if not tfrm:
-            tfrm = "%Y-%m-%d %H:%M:%S"
+        if not datefmt:
+            datefmt = "%Y-%m-%d %H:%M:%S"
 
-        frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", tfrm)
-        console.setFormatter(frm)
+        # file handler formatter
+        fhfmt = "%(asctime)s %(levelname)-8s  %(message)s"
+        fh_frm = logging.Formatter(fhfmt, datefmt)
+
+        # console formatter
+        if self.config['log']['console_color'] == "No":
+            console_frm = fh_frm
+        else:
+            from lib.colorlog import ColoredFormatter
+
+            if self.config['log']['console_color'] == "Light":
+                cfmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)+8s %(reset)s %(message)s"
+                clr = {
+                    'DEBUG':    'bg_cyan',
+                    'INFO':     'bg_green',
+                    'WARNING':  'bg_yellow',
+                    'ERROR':    'bg_red',
+                    'CRITICAL': 'bg_purple',
+                }
+            elif self.config['log']['console_color'] == "Full":
+                cfmt = "%(asctime)s %(log_color)s[%(levelname)-8s] %(message)s"
+                clr = {
+                    'DEBUG':    'cyan',
+                    'INFO':     'green',
+                    'WARNING':  'yellow',
+                    'ERROR':    'red',
+                    'CRITICAL': 'purple',
+                }
+            console_frm = ColoredFormatter(cfmt, datefmt, clr)
+        
+        #: set console formatter
+        console.setFormatter(console_frm)
+
         self.log = logging.getLogger("log") # setable in config
 
         if not exists(self.config['log']['log_folder']):
@@ -533,7 +564,8 @@ class Core(object):
             else:
                 file_handler = logging.FileHandler(join(self.config['log']['log_folder'], 'log.txt'), encoding="utf8")
 
-            file_handler.setFormatter(frm)
+            #: set file handler formatter
+            file_handler.setFormatter(fh_frm)
             self.log.addHandler(file_handler)
 
         self.log.addHandler(console) #if console logging
