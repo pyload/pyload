@@ -32,10 +32,10 @@ class Hoster(Base):
     Base plugin for hoster plugin. Overwrite getInfo for online status retrieval, process for downloading.
     """
 
-    #: Class used to make requests with `self.load`
+    # Class used to make requests with `self.load`
     REQUEST_CLASS = DefaultRequest
 
-    #: Class used to make download
+    # Class used to make download
     DOWNLOAD_CLASS = DefaultDownload
 
     @staticmethod
@@ -52,25 +52,25 @@ class Hoster(Base):
         Base.__init__(self, pyfile.m.core)
 
         self.wantReconnect = False
-        #: enables simultaneous processing of multiple downloads
+        # enables simultaneous processing of multiple downloads
         self.limitDL = 0
-        #: chunk limit
+        # chunk limit
         self.chunkLimit = 1
-        #: enables resume (will be ignored if server dont accept chunks)
+        # enables resume (will be ignored if server dont accept chunks)
         self.resumeDownload = False
 
-        #: plugin is waiting
+        # plugin is waiting
         self.waiting = False
 
-        self.ocr = None  #captcha reader instance
-        #: account handler instance, see :py:class:`Account`
+        self.ocr = None  #: captcha reader instance
+        # account handler instance, see :py:class:`Account`
         self.account = self.core.accountManager.selectAccount(self.__name__, self.user)
 
-        #: premium status
+        # premium status
         self.premium = False
 
         if self.account:
-            #: Request instance bound to account
+            # Request instance bound to account
             self.req = self.account.getAccountRequest()
             # Default:  -1, True, True
             self.chunkLimit, self.limitDL, self.resumeDownload = self.account.getDownloadSettings()
@@ -78,22 +78,22 @@ class Hoster(Base):
         else:
             self.req = self.core.requestFactory.getRequest(klass=self.REQUEST_CLASS)
 
-        #: Will hold the download class
+        # Will hold the download class
         self.dl = None
 
-        #: associated pyfile instance, see `PyFile`
+        # associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
-        self.thread = None # holds thread in future
+        self.thread = None  #: holds thread in future
 
-        #: location where the last call to download was saved
+        # location where the last call to download was saved
         self.lastDownload = ""
-        #: re match of the last call to `checkDownload`
+        # re match of the last call to `checkDownload`
         self.lastCheck = None
-        #: js engine, see `JsEngine`
+        # js engine, see `JsEngine`
         self.js = self.core.js
 
-        self.retries = 0 # amount of retries already made
-        self.html = None # some plugins store html code here
+        self.retries = 0  #: amount of retries already made
+        self.html = None  #: some plugins store html code here
 
         self.init()
 
@@ -103,7 +103,7 @@ class Hoster(Base):
     def setMultiDL(self, val):
         self.limitDL = 0 if val else 1
 
-    #: virtual attribute using self.limitDL on behind
+    # virtual attribute using self.limitDL on behind
     multiDL = property(getMultiDL, setMultiDL)
 
     def getChunkCount(self):
@@ -114,14 +114,14 @@ class Hoster(Base):
     def getDownloadLimit(self):
         if self.account:
             limit = self.account.options.get("limitDL", 0)
-            if limit == "": limit = 0
-            if self.limitDL > 0: # a limit is already set, we use the minimum
+            if limit == "":
+                limit = 0
+            elif self.limitDL > 0:  #: a limit is already set, we use the minimum
                 return min(int(limit), self.limitDL)
             else:
                 return int(limit)
         else:
             return self.limitDL
-
 
     def __call__(self):
         return self.__name__
@@ -172,13 +172,13 @@ class Hoster(Base):
         10 - not implemented
         20 - unknown error
         """
-        #@TODO checksum check addon
+        # TODO: checksum check addon
 
         return True, 10
 
     def setWait(self, seconds, reconnect=None):
         """Set a specific wait time later used with `wait`
-        
+
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
@@ -218,7 +218,7 @@ class Hoster(Base):
         """ fail and indicates file ist temporary offline, the core may take consequences """
         raise Fail("temp. offline")
 
-    def retry(self, max_tries=3, wait_time=1, reason="", backoff=lambda x,y: x):
+    def retry(self, max_tries=3, wait_time=1, reason="", backoff=lambda x, y: x):
         """Retries and begin again from the beginning
 
         :param max_tries: number of maximum retries
@@ -228,7 +228,8 @@ class Hoster(Base):
                         defaults to no backoff / fixed wait time
         """
         if 0 < max_tries <= self.retries:
-            if not reason: reason = "Max retries reached"
+            if not reason:
+                reason = "Max retries reached"
             raise Fail(reason)
 
         self.wantReconnect = False
@@ -284,7 +285,7 @@ class Hoster(Base):
             self.dl.close()
             self.pyfile.size = self.dl.size
 
-        if disposition and newname and newname != name: #triple check, just to be sure
+        if disposition and newname and newname != name:  #: triple check, just to be sure
             self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
             self.pyfile.name = newname
             filename = join(location, newname)
@@ -308,7 +309,7 @@ class Hoster(Base):
 
     def checkDownload(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
         """ checks the content of the last downloaded file, re match is saved to `lastCheck`
-        
+
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param api_size: expected file size
         :param max_size: if the file is larger then it wont be checked
@@ -317,7 +318,8 @@ class Hoster(Base):
         :return: dictionary key of the first rule that matched
         """
         lastDownload = fs_encode(self.lastDownload)
-        if not exists(lastDownload): return None
+        if not exists(lastDownload):
+            return None
 
         size = stat(lastDownload)
         size = size.st_size
@@ -330,7 +332,7 @@ class Hoster(Base):
         f = open(lastDownload, "rb")
         content = f.read(read_size if read_size else -1)
         f.close()
-        #produces encoding errors, better log to other file in the future?
+        # produces encoding errors, better log to other file in the future?
         #self.log.debug("Content: %s" % content)
         for name, rule in rules.iteritems():
             if type(rule) in (str, unicode):
@@ -346,13 +348,13 @@ class Hoster(Base):
                     self.lastCheck = m
                     return name
 
-
     def getPassword(self):
         """ get the password the user provided in the package"""
         password = self.pyfile.package().password
-        if not password: return ""
-        return password
-
+        if not password:
+            return ""
+        else:
+            return password
 
     def checkForSameFiles(self, starting=False):
         """ checks if same file was/is downloaded within same package
@@ -365,10 +367,9 @@ class Hoster(Base):
 
         for pyfile in self.core.files.cachedFiles():
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
-                if pyfile.status in (0, 12): #finished or downloading
+                if pyfile.status in (0, 12):  #: finished or downloading
                     raise SkipDownload(pyfile.pluginname)
-                elif pyfile.status in (
-                    5, 7) and starting: #a download is waiting/starting and was apparently started before
+                elif pyfile.status in (5, 7) and starting:  #: a download is waiting/starting and was apparently started before
                     raise SkipDownload(pyfile.pluginname)
 
         download_folder = self.config['general']['download_folder']
