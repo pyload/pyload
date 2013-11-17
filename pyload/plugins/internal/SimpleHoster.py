@@ -163,7 +163,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -199,21 +199,15 @@ class SimpleHoster(Hoster):
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
         self.req.setOption("timeout", 120)
-        # Due to a 0.4.9 core bug self.load would keep previous cookies even if overridden by cookies parameter.
-        # Workaround using getURL. Can be reverted in 0.5 as the cookies bug has been fixed.
-        self.html = getURL(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
         self.getFileInfo()
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
         else:
-            # This line is required due to the getURL workaround. Can be removed in 0.5
-            self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
-            if hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
-                self.fail("This link require a premium account")
             self.handleFree()
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
-        if type(url) == unicode: url = url.encode('utf8')
+        if type(url) == unicode:
+            url = url.encode('utf8')
         return Hoster.load(self, url=url, get=get, post=post, ref=ref, cookies=cookies,
                            just_header=just_header, decode=decode)
 
