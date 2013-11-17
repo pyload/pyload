@@ -58,6 +58,8 @@ class Hoster(Base):
         self.chunkLimit = 1
         #: enables resume (will be ignored if server dont accept chunks)
         self.resumeDownload = False
+        #: download ssl protected?
+        self.secureDownload = False
 
         #: plugin is waiting
         self.waiting = False
@@ -74,6 +76,7 @@ class Hoster(Base):
             self.req = self.account.getAccountRequest()
             # Default:  -1, True, True
             self.chunkLimit, self.limitDL, self.resumeDownload = self.account.getDownloadSettings()
+            self.secureDownload = self.account.sslprotected
             self.premium = self.account.isPremium()
         else:
             self.req = self.core.requestFactory.getRequest(klass=self.REQUEST_CLASS)

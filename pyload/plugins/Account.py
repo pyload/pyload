@@ -62,6 +62,7 @@ class Account(Base):
         self.login_ts = 0 # timestamp for login
         self.cj = CookieJar()
         self.error = None
+        self.sslprotected = False #: ssl connection?
 
         try:
             self.config_data = dict(to_configdata(x) for x in self.__config__)
@@ -112,6 +113,7 @@ class Account(Base):
 
         :param req: `Request` instance
         """
+        # Note: best place where check if account is ssl protected
         raise NotImplementedError
 
     def relogin(self):
