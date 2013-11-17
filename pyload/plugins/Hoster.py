@@ -125,6 +125,10 @@ class Hoster(Base):
         else:
             return self.limitDL
 
+    def checkDownloadSSL(self):
+        if self.secureDownload and not self.config["download"]["ssl"]:
+            self.secureDownload = False
+
 
     def __call__(self):
         return self.__name__
@@ -148,6 +152,7 @@ class Hoster(Base):
             self.req.reset()
 
         self.setup()
+        self.checkDownloadSSL()
 
         self.pyfile.setStatus("starting")
 

@@ -99,6 +99,7 @@ def make_config(config):
                                 ("ipv6", "bool", _("Allow IPv6"), False),
                                 ("chunks", "int", _("Max connections for one download"), 3),
                                 ("restart_failed", "bool", _("Restart failed downloads on startup"), False),
+                                ("ssl", "bool", _("Prefer SSL/TLS Connection"), True),
                             ])
 
     config.addConfigSection("downloadTime", _("Download Time"), _("Description"), _("Long description"),
