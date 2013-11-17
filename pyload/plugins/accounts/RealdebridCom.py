@@ -1,9 +1,9 @@
 import xml.dom.minidom as dom
 
-from module.plugins.Account import Account
+from pyload.plugins.MultiHoster import MultiHoster
 
 
-class RealdebridCom(Account):
+class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
     __version__ = "0.43"
     __type__ = "account"
@@ -11,7 +11,7 @@ class RealdebridCom(Account):
     __author_name__ = ("Devirex, Hazzard")
     __author_mail__ = ("naibaf_11@yahoo.de")
 
-    def loadAccountInfo(self, user, req):
+    def loadAccountInfo(self, req):
         if self.pin_code:
             return {"premium": False}
         page = req.load("https://real-debrid.com/api/account.php")
@@ -29,3 +29,7 @@ class RealdebridCom(Account):
         elif "PIN Code required" in page:
             self.logWarning('PIN code required. Please login to https://real-debrid.com using the PIN or disable the double authentication in your control panel on https://real-debrid.com.')
             self.pin_code = True
+
+    def loadHosterList(self, req):
+        page = req.load("http://real-debrid.com/api/hosters.php").replace("\"", "").strip()
+        return[x.strip() for x in page.split(",") if x.strip()]

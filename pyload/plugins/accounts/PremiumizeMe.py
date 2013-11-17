@@ -1,9 +1,8 @@
-from module.plugins.Account import Account
+from pyload.plugins.MultiHoster import MultiHoster
+from pyload.utils import json_loads
 
-from module.common.json_layer import json_loads
 
-
-class PremiumizeMe(Account):
+class PremiumizeMe(MultiHoster):
     __name__ = "PremiumizeMe"
     __version__ = "0.11"
     __type__ = "account"
@@ -40,3 +39,18 @@ class PremiumizeMe(Account):
             "https://api.premiumize.me/pm-api/v1.php?method=accountstatus&params[login]=%s&params[pass]=%s" % (
             user, self.accounts[user]['password']))
         return json_loads(answer)
+
+    def loadHosterList(self, req):
+        # Get supported hosters list from premiumize.me using the
+        # json API v1 (see https://secure.premiumize.me/?show=api)
+        answer = req.load(
+            "https://api.premiumize.me/pm-api/v1.php?method=hosterlist&params[login]=%s&params[pass]=%s" % (
+            self.loginname, self.password))
+        data = json_loads(answer)
+
+        # If account is not valid thera are no hosters available
+        if data['status'] != 200:
+            return []
+
+        # Extract hosters from json file
+        return data['result']['hosterlist']
