@@ -76,10 +76,18 @@ class PluginLoader:
     TYPES = ("crypter", "hoster", "accounts", "addons", "network", "internal")
 
     BUILTIN = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(True|False|None|[0-9x.]+)', re.I)
-    SINGLE = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(?:r|u|_)?((?:(?<!")"(?!")|\'|\().*(?:(?<!")"(?!")|\'|\)))',
+    SINGLE = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(?:r|u|_)?((?:(?<!")"(?!")|\').*(?:(?<!")"(?!")|\'))',
                         re.I)
-    # note the nongreedy character: that means we can not embed list and dicts
-    MULTI = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*((?:\{|\[|"{3}).*?(?:"""|\}|\]))', re.DOTALL | re.M | re.I)
+    # finds the beginning of a expression that could span multiple lines
+    MULTI = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(\(|\{|\[|"{3})',re.I)
+
+    # closing symbols
+    MULTI_MATCH = {
+        "{": "}",
+        "(": ")",
+        "[": "]",
+        '"""': '"""'
+    }
 
     NO_MATCH = re.compile(r'^no_match$')
 
@@ -147,7 +155,7 @@ class PluginLoader:
         data.close()
 
         attrs = BaseAttributes()
-        for m in self.BUILTIN.findall(content) + self.SINGLE.findall(content) + self.MULTI.findall(content):
+        for m in self.BUILTIN.findall(content) + self.SINGLE.findall(content) + self.parseMultiLine(content):
             #replace gettext function and eval result
             try:
                 attrs[m[0]] = literal_eval(m[-1].replace("_(", "("))
@@ -160,6 +168,35 @@ class PluginLoader:
                     self.logDebug(folder, name, "Unknown attribute '%s'" % m[0])
 
         return attrs
+
+    def parseMultiLine(self, content):
+        # regexp is not enough to parse multi line statements
+        attrs = []
+        for m in self.MULTI.finditer(content):
+            attr = m.group(1)
+            char = m.group(2)
+            # the end char to search for
+            endchar = self.MULTI_MATCH[char]
+            size = len(endchar)
+            # save number of of occurred
+            stack = 0
+            endpos = m.start(2) - size
+            for i in xrange(m.end(2), len(content) - size + 1):
+                if content[i:i+size] == endchar:
+                    # closing char seen and match now complete
+                    if stack == 0:
+                        endpos = i
+                        break
+                    else:
+                        stack -= 1
+                elif content[i:i+size] == char:
+                    stack += 1
+
+            # in case the end was not found match will be empty
+            attrs.append((attr, content[m.start(2): endpos + size]))
+
+        return attrs
+
 
     def parsePlugin(self, filename, folder, name):
         """  Parses a plugin from disk, folder means plugin type in this context. Also sets config.

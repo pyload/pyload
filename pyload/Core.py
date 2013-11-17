@@ -537,7 +537,7 @@ class Core(object):
                     'CRITICAL': 'bg_purple',
                 }
             elif self.config['log']['console_color'] == "Light":
-                cfmt = "%(log_color)s%(asctime)s %(levelname)+8s %(message)s"
+                cfmt = "%(log_color)s%(asctime)s %(levelname)-8s %(message)s"
                 clr = {
                     'DEBUG':    'cyan',
                     'WARNING':  'yellow',
