@@ -522,12 +522,10 @@ class Core(object):
         fh_frm = logging.Formatter(fhfmt, datefmt)
 
         # console formatter
-        if self.config['log']['console_color'] == "No":
-            console_frm = fh_frm
-        else:
+        if self.config['log']['console_color']:
             from lib.colorlog import ColoredFormatter
 
-            if self.config['log']['console_color'] == "Full":
+            if self.config['log']['color_theme'] == "full":
                 cfmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)+8s %(reset)s %(message)s"
                 clr = {
                     'DEBUG':    'bg_cyan',
@@ -536,8 +534,8 @@ class Core(object):
                     'ERROR':    'bg_red',
                     'CRITICAL': 'bg_purple',
                 }
-            elif self.config['log']['console_color'] == "Light":
-                cfmt = "%(log_color)s%(asctime)s %(levelname)-8s %(message)s"
+            elif self.config['log']['color_theme'] == "light":
+                cfmt = "%(log_color)s%(asctime)s %(levelname)-8s  %(message)s"
                 clr = {
                     'DEBUG':    'cyan',
                     'WARNING':  'yellow',
@@ -545,7 +543,9 @@ class Core(object):
                     'CRITICAL': 'purple',
                 }
             console_frm = ColoredFormatter(cfmt, datefmt, clr)
-        
+        else:
+            console_frm = fh_frm
+
         #: set console formatter
         console.setFormatter(console_frm)
 
