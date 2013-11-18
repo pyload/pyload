@@ -84,7 +84,7 @@ class Addon(Base):
         Base.__init__(self, core, user)
 
         #: Provide information in dict here, usable by API `getInfo`
-        self.info = None
+        self.info = {}
 
         #: Callback of periodical job task, used by addonmanager
         self.cb = None

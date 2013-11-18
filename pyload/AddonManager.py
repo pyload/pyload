@@ -194,7 +194,7 @@ class AddonManager:
 
     def getInfo(self, plugin):
         info = {}
-        if plugin in self.plugins and self.plugins[plugin].info:
+        if plugin in self.plugins and dict: self.plugins[plugin].info:
             info = dict([(x, to_string(y))
             for x, y in self.plugins[plugin].info.iteritems()])
 
