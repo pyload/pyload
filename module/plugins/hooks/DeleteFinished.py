@@ -37,14 +37,14 @@ class DeleteFinished(Hook):
 
     event_list = ["pluginConfigChanged"]
 
-    MIN_INTERVAL = 3600 #seconds
+    MIN_INTERVAL = 3600  #: seconds
 
     ### Overwritten methods ###
     def initPeriodical(self):
         pass
 
     def setup(self):
-        self.packageFinished_orig = self.packageFinished
+        self._packageFinished = self.packageFinished
 
     def coreReady(self):
         config_name = "mode"
@@ -84,7 +84,7 @@ class DeleteFinished(Hook):
         self.startTimer()
 
     def wakeup(self, arg1=None):
-        self.packageFinished = self.packageFinished_orig
+        self.packageFinished = self._packageFinished
         self.startTimer()
 
     ### Tasks ###
