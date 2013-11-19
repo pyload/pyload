@@ -26,7 +26,7 @@ from pycurl import error
 
 from pyload.plugins.Base import Fail, Retry, Abort
 from pyload.plugins.Hoster import Reconnect, SkipDownload
-from pyload.network.HTTPRequest import BadHeader
+from pyload.plugins.Request import ResponseException
 
 from BaseThread import BaseThread
 
@@ -182,7 +182,7 @@ class DownloadThread(BaseThread):
 
 
             except Exception, e:
-                if isinstance(e, BadHeader) and e.code == 500:
+                if isinstance(e, ResponseException) and e.code == 500:
                     pyfile.setStatus("temp. offline")
                     self.log.warning(_("Download is temporary offline: %s") % pyfile.name)
                     pyfile.error = _("Internal Server Error")
