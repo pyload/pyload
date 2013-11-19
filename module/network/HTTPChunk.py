@@ -132,6 +132,7 @@ class HTTPChunk(HTTPRequest):
         self.size = range[1] - range[0] if range else -1
         self.arrived = 0
         self.lastURL = self.p.referer
+        self.lastEffectiveURL = None
 
         self.c = pycurl.Curl()
 
