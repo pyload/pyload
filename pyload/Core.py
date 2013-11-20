@@ -526,7 +526,7 @@ class Core(object):
             from lib.colorlog import ColoredFormatter
 
             if self.config['log']['color_theme'] == "full":
-                cfmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)+8s %(reset)s %(message)s"
+                cfmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)-8s %(reset)s %(message)s"
                 clr = {
                     'DEBUG':    'bg_cyan',
                     'INFO':     'bg_green',
