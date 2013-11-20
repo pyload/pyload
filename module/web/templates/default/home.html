@@ -93,6 +93,8 @@ var LinkEntry = new Class({
             this.elements = {
                 tr: $("link_{id}".substitute({id: this.id})),
                 name: $("link_{id}_name".substitute({id: this.id})),
+                url: $("link_{id}_url".substitute({id: this.id})),
+                plugin: $("link_{id}_plugin".substitute({id: this.id})),
                 status: $("link_{id}_status".substitute({id: this.id})),
                 info: $("link_{id}_info".substitute({id: this.id})),
                 bleft: $("link_{id}_bleft".substitute({id: this.id})),
@@ -113,8 +115,13 @@ var LinkEntry = new Class({
                     'opacity': 0
                 }
                 }),
-                name: new Element('td', {
-                'html': item.name
+                name: new Element('a', {
+                	'html': item.name,
+                	'target' : '_blank',
+                	'href': item.url
+                }),
+                plugin: new Element('td', {
+                	'html': item.plugin
                 }),
                 status: new Element('td', {
                 'html': item.statusmsg
@@ -151,7 +158,7 @@ var LinkEntry = new Class({
                 })
             };
             
-            this.elements.tr.adopt(this.elements.name,this.elements.status,this.elements.info,this.elements.bleft,new Element('td').adopt(this.elements.percent,this.elements.remove));
+            this.elements.tr.adopt(new Element('td').adopt(this.elements.name),this.elements.plugin,this.elements.status,this.elements.info,this.elements.bleft,new Element('td').adopt(this.elements.percent,this.elements.remove));
             this.elements.pgbTr.adopt(new Element('td',{'colspan':5}).adopt(this.elements.pgb));
             this.initEffects();
             }catch(e){
@@ -171,6 +178,8 @@ var LinkEntry = new Class({
         },
         update: function(item){
                 this.elements.name.set('text', item.name);
+                this.elements.name.set('href', item.url);
+                this.elements.plugin.set('text', item.plugin);
                 this.elements.status.set('text', item.statusmsg);
                 this.elements.info.set('text', item.info);
                 this.elements.bleft.set('text', item.format_size);
@@ -235,6 +244,7 @@ var LinkEntry = new Class({
     <thead>
   <tr class="header">
     <th>{{_("Name")}}</th>
+    <th>{{_("Plugin")}}</th>
     <th>{{_("Status")}}</th>
     <th>{{_("Information")}}</th>
     <th>{{_("Size")}}</th>
@@ -245,7 +255,8 @@ var LinkEntry = new Class({
   
   {% for link in content %}
   <tr id="link_{{ link.id }}">
-    <td id="link_{{ link.id }}_name">{{ link.name }}</td>
+	<td><a id="link_{{ link.id }}_name" target="_blank" href="{{ link.url }}">{{ link.name }}</a></td>
+	<td id="link_{{ link.id }}_plugin">{{ link.plugin }}</td>
     <td id="link_{{ link.id }}_status">{{ link.status }}</td>
     <td id="link_{{ link.id }}_info">{{ link.info }}</td>
     <td id="link_{{ link.id }}_bleft">{{ link.format_size }}</td>

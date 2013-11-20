@@ -303,7 +303,7 @@ class Api(Iface):
                 pyfile.id, pyfile.name, pyfile.getSpeed(), pyfile.getETA(), pyfile.formatETA(),
                 pyfile.getBytesLeft(), pyfile.getSize(), pyfile.formatSize(), pyfile.getPercent(),
                 pyfile.status, pyfile.getStatusName(), pyfile.formatWait(),
-                pyfile.waitUntil, pyfile.packageid, pyfile.package().name, pyfile.pluginname))
+                pyfile.waitUntil, pyfile.packageid, pyfile.package().name, pyfile.pluginname, pyfile.url))
 
         return data
 
