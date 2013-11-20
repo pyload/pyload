@@ -66,6 +66,7 @@ class ExtractArchive(Hook):
                   ("overwrite", "bool", "Overwrite files", True),
                   ("passwordfile", "file", "password file", "unrar_passwords.txt"),
                   ("deletearchive", "bool", "Delete archives when done", False),
+                  ("trashpath", "folder", "Delete archives to", ""),
                   ("subfolder", "int", "Create subfolder, if number of files&folders> (-1..never;0..always)", -1),
                   ("subfoldername", "%ARCHIVENAME%;%PACKAGENAME%;%HOSTER%", "Subfoldername", "%PACKAGENAME%"),
                   ("destination", "folder", "Extract files to", ""),
@@ -204,27 +205,49 @@ class ExtractArchive(Hook):
             foldername = fs_encode(foldername)
 
             if os.path.exists(tmppath): #was unrar sucessfull?
-                self.logDebug("Unrar was successful")
-                filenames = [name for name in os.listdir(tmppath)]
+                self.logDebug("Unrar was successful!")
+                filenames = os.listdir(tmppath)
                 objectnumber=len(filenames) # folder & files number
 
-                for name in filenames:
-                    oldpath=save_join(tmppath, name)
-                    if self.getConfig("subfolder") == -1: #create no subfolder
-                        newpath = save_join(targetpath, name)
-                    elif self.getConfig("subfolder") == 0: #create always a subfolder
-                        newpath = save_join(targetpath, foldername, name)
-                    else:
-                        if objectnumber > self.getConfig("subfolder"):
-                           newpath = save_join(targetpath, foldername, name)
-                        else: newpath = save_join(targetpath, name)
-                    os.renames(oldpath,newpath)
-                    self.logDebug("Moved files from %s to %s" %(oldpath,newpath) )
-                if not os.listdir(save_join(dl, p.folder)) and p.folder!="": #if the user choose delete archives and extract to then there would be an empty-folder
-                    os.rmdir(save_join(dl, p.folder))         #this remove it
+                if self.getConfig("subfolder") == -1: #create no subfolder
+                    subfolder = ""
+                elif self.getConfig("subfolder") == 0: #create always a subfolder
+                    subfolder = foldername
+                else:
+                    if objectnumber > self.getConfig("subfolder"):
+                       subfolder = foldername
+                    else: subfolder = ""
+
+                self.movefiles(tmppath, targetpath, subfolder, filenames)
+                if os.path.exists(tmppath) and len(os.listdir(tmppath)) == 0:
+                        os.rmdir(tmppath)
 
             if not matched:
                 self.logInfo(_("No files found to extract"))
+
+    def movefiles(self, tmppath, targetpath, subfolder, filenames):
+        #~ print(tmppath)
+        #~ print(targetpath)
+        #~ print(subfolder)
+        #~ print(filenames)
+
+        for filename in filenames:
+            if os.path.isdir(save_join(tmppath, filename)):
+                self.movefiles(save_join(tmppath, filename), save_join(targetpath, filename), subfolder, os.listdir(save_join(tmppath, filename)))
+                continue
+            oldpath = save_join(tmppath, filename)
+            newpath = save_join(targetpath, subfolder, filename)
+            if os.path.exists(newpath):
+                if self.getConfig("overwrite"):
+                    remove(newpath)
+                    os.renames(oldpath, newpath)
+                    self.logDebug("overwrote file: %s" %newpath)
+                else:
+                    remove(oldpath)
+                    if len(os.listdir(tmppath)) == 0: os.rmdir(tmppath)
+                    self.logDebug("skipped file: %s" %newpath)
+            else:
+                os.renames(oldpath, newpath)
 
     def startExtracting(self, plugin, fid, passwords, thread):
         pyfile = self.core.files.getFile(fid)
@@ -274,7 +297,17 @@ class ExtractArchive(Hook):
                 self.logInfo(_("Deleting %s files") % len(files))
                 for f in files:
                     if exists(f):
-                        remove(f)
+                        if self.getConfig("trashpath") and self.getConfig("trashpath").strip().lower() != "none":
+                            #create a tmp-lock file, because the rename-function delete the Downlaodfolder
+                            tmpfile=save_join(self.config['general']['download_folder'],"tmp.lock")
+                            open(tmpfile,"w").close()
+                            t = save_join(self.getConfig("trashpath"),basename(f))
+                            if os.path.exists(t):
+                                remove(t) #to keep always the latest archive in the trashfolder
+                            os.renames(f, t)
+                            remove(tmpfile)
+                        else:
+                            remove(f)
                     else:
                         self.logDebug("%s does not exists" % f)
 
