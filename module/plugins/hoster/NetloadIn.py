@@ -52,7 +52,7 @@ def getInfo(urls):
 class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?netload\.in/(?:(?P<SP>datei)|(?P<LP>index.php\?id=10&file_id=))(?P<ID>[a-zA-Z0-9]{10})(?(SP)\.htm)"
+    __pattern__ = r"https?://(?:www\.)?netload\.in/(?:(?P<SP>datei)|(?P<LP>index.php\?(?:[^/]*&)?(?P<KP>id=10&)?(?:[^/]+&)?file_id=))(?P<ID>[a-zA-Z0-9]{10})(?(KP)|&(?:[^/]+&)?id=10)(?(SP)\.htm)"
     __version__ = "0.46"
     __description__ = """Netload.in Download Hoster"""
     __author_name__ = ("spoob", "RaNaN", "Gregy", "Walter Purcaro")
