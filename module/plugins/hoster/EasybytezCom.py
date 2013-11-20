@@ -23,10 +23,10 @@ class EasybytezCom(XFileSharingPro):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w+).*"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __description__ = """easybytez.com"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __author_name__ = ("zoidberg", "stickell", "Walter Purcaro")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     FILE_INFO_PATTERN = r'<span class="name">(?P<N>.+)</span><br>\s*<span class="size">(?P<S>[^<]+)</span>'
     FILE_OFFLINE_PATTERN = r'<h1>File not available</h1>'
@@ -39,7 +39,23 @@ class EasybytezCom(XFileSharingPro):
     HOSTER_NAME = "easybytez.com"
 
     def setup(self):
-        self.resumeDownload = self.multiDL = self.premium
+        if self.premium:
+            return
+        self.resumeDownload = False
+        self.chunkLimit = 1
+
+        # aggiorna info account
+        # genera lista account
+        # confronta ciascuno con quelli utilizzati da altri active e fermati quando trovi il primo libero
+        #to-do: update all accounf infos before check
+        
+        if self.account:
+            #: Try to bypass it setting multiDL dynamically
+            accounts = [True for account in self.account.getAllAccounts() if account["valid"] and account["trafficleft"]].count(True)
+            dl_active = [True for x in self.core.threadManager.threads if x.active and x.active.hasPlugin() and x.active.pluginname == self.__name__].count(True)
+            self.multiDL = True if accounts - dl_active else False
+        else:
+            self.multiDL = False
 
 
 getInfo = create_getInfo(EasybytezCom)
