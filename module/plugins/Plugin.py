@@ -20,6 +20,8 @@
 from time import time, sleep
 from random import randint
 
+import re
+
 import os
 from os import remove, makedirs, chmod, stat
 from os.path import exists, join
@@ -589,6 +591,7 @@ class Plugin(Base):
                 5, 7) and starting: #a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
 
+        # Skip existing files
         download_folder = self.config['general']['download_folder']
         location = save_join(download_folder, pack.folder, self.pyfile.name)
 
@@ -603,6 +606,21 @@ class Plugin(Base):
                 raise SkipDownload(pyfile[0])
 
             self.log.debug("File %s not skipped, because it does not exists." % self.pyfile.name)
+            
+        # Skip matched by regex
+        matched = False
+        try:
+            pattern = self.config["download"]["skip_regex"]
+            if pattern:
+                m = re.match(pattern, self.pyfile.name, re.IGNORECASE)
+                matched = m is not None
+        except re.error:
+            self.log.debug("Invalid skip regex pattern '%s', file not skipped." % pattern)
+            pass
+                
+        if matched:
+            raise SkipDownload("File name match pattern [%s]" % pattern)
+        
 
     def clean(self):
         """ clean everything and remove references """
