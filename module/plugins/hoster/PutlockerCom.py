@@ -26,7 +26,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class PutlockerCom(SimpleHoster):
     __name__ = "PutlockerCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?putlocker\.com/(mobile/)?(file|embed)/(?P<ID>[a-zA-Z0-9]{15,16})'
+    __pattern__ = r'http://(?:www\.)?putlocker\.com/(mobile/)?(file|embed)/(?P<ID>[a-zA-Z0-9]+)'
     __version__ = "0.32"
     __description__ = """Putlocker.Com"""
     __author_name__ = ("jeix", "stickell", "Walter Purcaro")
