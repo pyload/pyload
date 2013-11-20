@@ -153,7 +153,6 @@ class HTTPRequest():
             url = "%s?%s" % (url, get)
 
         self.c.setopt(pycurl.URL, url)
-        self.c.lastUrl = url
 
         if post:
             self.c.setopt(pycurl.POST, 1)
@@ -172,6 +171,9 @@ class HTTPRequest():
         else:
             self.c.setopt(pycurl.POST, 0)
 
+        if self.lastEffectiveURL:
+            self.lastURL = self.lastEffectiveURL
+            
         if referer and self.lastURL:
             self.c.setopt(pycurl.REFERER, str(self.lastURL))
 
