@@ -24,7 +24,7 @@ from module.utils import fixup
 class NowDownloadEu(SimpleHoster):
     __name__ = "NowDownloadEu"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?nowdownload\.(ch|eu|co)/(dl/|download\.php\?id=)(?P<ID>[a-z0-9]+)"
+    __pattern__ = r"http://(?:www\.)?nowdownload\.(ch|eu|co)/(dl/|download\.php\?id=)(?P<ID>[a-zA-Z0-9]+)"
     __version__ = "0.03"
     __description__ = """NowDownloadCh"""
     __author_name__ = ("godofdream", "Walter Purcaro")
