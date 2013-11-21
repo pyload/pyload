@@ -45,7 +45,6 @@ class HotfileCom(Hoster):
 
     def setup(self):
         self.html = [None, None]
-        self.wantReconnect = False
         self.htmlwithlink = None
         self.url = None
 
