@@ -108,8 +108,32 @@ class Addon(Base):
         self.init()
 
     def initPeriodical(self):
-        if self.interval >=1:
-            self.cb = self.core.scheduler.addJob(0, self._periodical, threaded=False)
+        if id(self.periodical) != id(getattr(Addon, periodical)):
+            self.startPeriodical()
+
+    def startPeriodical(self, interval=self.interval, wait=self.interval):
+        if not self.cb and self.setInterval(interval, False):
+            self.cb = self.core.scheduler.addJob(wait, self._periodical, threaded=False)
+            return interval
+        else:
+            return False
+
+    def stopPeriodical(self):
+        if self.cb and self.core.scheduler.removeJob(self.cb):
+            self.cb = None
+            return True
+        else:
+            return False
+
+    def setInterval(self, interval, recount=False):
+        if interval > 0:
+            if recount:
+                return self.stopPeriodical() and self.startPeriodical(interval)
+            else:
+                self.interval = interval
+                return True
+        else:
+            return False
 
     def _periodical(self):
         try:
@@ -119,7 +143,8 @@ class Addon(Base):
             if self.core.debug:
                 print_exc()
 
-        self.cb = self.core.scheduler.addJob(self.interval, self._periodical, threaded=False)
+        if self.cb:
+            self.cb = self.core.scheduler.addJob(self.interval, self._periodical, threaded=False)
 
     def __repr__(self):
         return "<Addon %s>" % self.__name__
