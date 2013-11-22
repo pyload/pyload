@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from traceback import print_exc
-
 #from functools import wraps
 from pyload.utils import has_method, to_list
 
@@ -27,23 +25,58 @@ def AddEventListener(event):
     return _klass
 
 
-def AddonHandler(desc, media=None):
-    """ Register Handler for files, packages, or arbitrary callable methods.
-        To let the method work on packages/files, media must be set and the argument named pid or fid.
+def AddonHandler(label, desc, package=True, media=-1):
+    """ Register Handler for files, packages, or arbitrary callable methods. In case package is True (default)
+        The method should only accept a pid as argument. When media is set it will work on files
+        and should accept a fileid. Only when both is None the method can be arbitrary.
 
-    :param desc: verbose description
-    :param media: if True or bits of media type
+    :param label: verbose name
+    :param desc: short description
+    :param package: True if method works withs packages
+    :param media: media type of the file to work with.
     """
-    pass
+
+    class _klass(object):
+        def __new__(cls, f, *args, **kwargs):
+            addonManager.addAddonHandler(class_name(f.__module__), f.func_name, label, desc,
+                                         f.func_code.co_varnames[1:], package, media)
+            return f
+
+    return _klass
 
 
-def AddonInfo(desc):
-    """ Called to retrieve information about the current state.
-    Decorated method must return anything convertable into string.
+def AddonProperty(name, desc, default=None, fire_event=True):
+    """ Use this function to declare class variables, that will be exposed as :class:`AddonInfo`.
+        It works similar to the @property function. You declare the variable like `state = AddonProperty(...)`
+        and use it as any other variable.
 
+    :param name: display name
     :param desc: verbose description
+    :param default: the default value
+    :param fire_event: Fire `addon:property:change` event, when modified
     """
-    pass
+
+    # generated name for the attribute
+    h = "__Property" + str(hash(name) ^ hash(desc))
+
+    addonManager.addInfoProperty(h, name, desc)
+
+    def _get(self):
+        if not hasattr(self, h):
+            return default
+
+        return getattr(self, h)
+
+    def _set(self, value):
+        if fire_event:
+            self.manager.dispatchEvent("addon:property:change", value)
+
+        return setattr(self, h, value)
+
+    def _del(self):
+        return delattr(self, h)
+
+    return property(_get, _set, _del)
 
 
 def threaded(f):
@@ -72,9 +105,6 @@ class Addon(Base):
 
     def __init__(self, core, manager, user=None):
         Base.__init__(self, core, user)
-
-        #: Provide information in dict here, usable by API `getInfo`
-        self.info = None
 
         #: Callback of periodical job task, used by addonManager
         self.cb = None
@@ -130,9 +160,8 @@ class Addon(Base):
         try:
             if self.isActivated(): self.periodical()
         except Exception, e:
-            self.core.log.error(_("Error executing addons: %s") % str(e))
-            if self.core.debug:
-                print_exc()
+            self.core.log.error(_("Error executing addon: %s") % str(e))
+            self.core.print_exc()
 
         if self.cb:
             self.cb = self.core.scheduler.addJob(self.interval, self._periodical, threaded=False)

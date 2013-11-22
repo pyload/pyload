@@ -226,13 +226,15 @@ struct InteractionTask {
 
 struct AddonService {
   1: string func_name,
-  2: string description,
-  3: list<string> arguments,
-  4: optional i16 media,
+  2: string label,
+  3: string description,
+  4: list<string> arguments,
+  5: bool pack,
+  6: i16 media,
 }
 
 struct AddonInfo {
-  1: string func_name,
+  1: string name,
   2: string description,
   3: JSONString value,
 }
@@ -511,17 +513,16 @@ service Pyload {
   // Addon Methods
   ///////////////////////
 
-  //map<PluginName, list<AddonInfo>> getAllInfo(),
-  //list<AddonInfo> getInfoByPlugin(1: PluginName plugin),
+  map<PluginName, list<AddonInfo>> getAllInfo(),
+  list<AddonInfo> getInfoByPlugin(1: PluginName plugin),
 
   map<PluginName, list<AddonService>> getAddonHandler(),
-  bool hasAddonHandler(1: PluginName plugin, 2: string func),
 
-  void callAddon(1: PluginName plugin, 2: string func, 3: list<JSONString> arguments)
+  JSONString callAddon(1: PluginName plugin, 2: string func, 3: list<JSONString> arguments)
         throws (1: ServiceDoesNotExists e, 2: ServiceException ex),
 
   // special variant of callAddon that works on the media types, acccepting integer
-  void callAddonHandler(1: PluginName plugin, 2: string func, 3: PackageID pid_or_fid)
+  JSONString callAddonHandler(1: PluginName plugin, 2: string func, 3: PackageID pid_or_fid)
         throws (1: ServiceDoesNotExists e, 2: ServiceException ex),
 
 

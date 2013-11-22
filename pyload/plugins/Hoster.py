@@ -9,7 +9,7 @@ if os.name != "nt":
     from grp import getgrnam
 
 from pyload.utils import chunks as _chunks
-from pyload.utils.fs import save_join, save_filename, fs_encode, fs_decode, \
+from pyload.utils.fs import save_join, safe_filename, fs_encode, fs_decode, \
     remove, makedirs, chmod, stat, exists, join
 
 from Base import Base, Fail, Retry
@@ -268,7 +268,7 @@ class Hoster(Base):
 
         # convert back to unicode
         location = fs_decode(location)
-        name = save_filename(self.pyfile.name)
+        name = safe_filename(self.pyfile.name)
 
         filename = join(location, name)
 

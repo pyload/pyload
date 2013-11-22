@@ -48,7 +48,7 @@ def makedirs(path, mode=0755):
 def listdir(path):
     return [fs_decode(x) for x in os.listdir(fs_encode(path))]
 
-def save_filename(name):
+def safe_filename(name):
     #remove some chars
     if os.name == 'nt':
         return remove_chars(name, '/\\?%*:|"<>,')
@@ -58,9 +58,12 @@ def save_filename(name):
 def stat(name):
     return os.stat(fs_encode(name))
 
-def save_join(*args):
+def safe_join(*args):
     """ joins a path, encoding aware """
     return fs_encode(join(*[x if type(x) == unicode else decode(x) for x in args]))
+
+def save_join(*args):
+    return safe_join(*args)
 
 def free_space(folder):
     folder = fs_encode(folder)

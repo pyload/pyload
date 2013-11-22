@@ -182,6 +182,8 @@ class PluginLoader:
             # save number of of occurred
             stack = 0
             endpos = m.start(2) - size
+
+            #TODO: strings must be parsed too, otherwise breaks very easily
             for i in xrange(m.end(2), len(content) - size + 1):
                 if content[i:i+size] == endchar:
                     # closing char seen and match now complete

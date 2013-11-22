@@ -114,20 +114,22 @@ class AccountInfo(BaseObject):
 		self.config = config
 
 class AddonInfo(BaseObject):
-	__slots__ = ['func_name', 'description', 'value']
+	__slots__ = ['name', 'description', 'value']
 
-	def __init__(self, func_name=None, description=None, value=None):
-		self.func_name = func_name
+	def __init__(self, name=None, description=None, value=None):
+		self.name = name
 		self.description = description
 		self.value = value
 
 class AddonService(BaseObject):
-	__slots__ = ['func_name', 'description', 'arguments', 'media']
+	__slots__ = ['func_name', 'label', 'description', 'arguments', 'pack', 'media']
 
-	def __init__(self, func_name=None, description=None, arguments=None, media=None):
+	def __init__(self, func_name=None, label=None, description=None, arguments=None, pack=None, media=None):
 		self.func_name = func_name
+		self.label = label
 		self.description = description
 		self.arguments = arguments
+		self.pack = pack
 		self.media = media
 
 class ConfigHolder(BaseObject):
@@ -419,6 +421,8 @@ class Iface(object):
 		pass
 	def getAllFiles(self):
 		pass
+	def getAllInfo(self):
+		pass
 	def getAllUserData(self):
 		pass
 	def getAvailablePlugins(self):
@@ -436,6 +440,8 @@ class Iface(object):
 	def getFilteredFileTree(self, pid, full, state):
 		pass
 	def getFilteredFiles(self, state):
+		pass
+	def getInfoByPlugin(self, plugin):
 		pass
 	def getInteractionTasks(self, mode):
 		pass
@@ -456,8 +462,6 @@ class Iface(object):
 	def getUserData(self):
 		pass
 	def getWSAddress(self):
-		pass
-	def hasAddonHandler(self, plugin, func):
 		pass
 	def isInteractionWaiting(self, mode):
 		pass

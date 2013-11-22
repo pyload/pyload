@@ -49,12 +49,13 @@ if os.name != "nt":
     from pwd import getpwnam
     from grp import getgrnam
 
-from module.utils import save_join, fs_encode
-from module.plugins.Hook import Hook, threaded, Expose
-from module.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
+from pyload.utils.fs import safe_join as save_join, fs_encode
+
+from pyload.plugins.Addon import Addon, threaded, AddonHandler, AddonProperty
+from pyload.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
 
 
-class ExtractArchive(Hook):
+class ExtractArchive(Addon):
     """
     Provides: unrarFinished (folder, filename)
     """
@@ -77,7 +78,7 @@ class ExtractArchive(Hook):
 
     event_list = ["allDownloadsProcessed"]
 
-    def setup(self):
+    def init(self):
         self.plugins = []
         self.passwords = []
         names = []
@@ -111,10 +112,10 @@ class ExtractArchive(Hook):
         # queue with package ids
         self.queue = []
 
-    @Expose
-    def extractPackage(self, id):
+    @AddonHandler(_("Extract package"), _("Scans package for archives and extract them"))
+    def extractPackage(self, pid):
         """ Extract package with given id"""
-        self.manager.startThread(self.extract, [id])
+        self.manager.startThread(self.extract, [pid])
 
     def packageFinished(self, pypack):
         if self.getConfig("queue"):
@@ -267,10 +268,24 @@ class ExtractArchive(Hook):
 
         return []
 
-    @Expose
+    # TODO: config handler for passwords?
+
     def getPasswords(self):
         """ List of saved passwords """
         return self.passwords
+
+    def addPassword(self, pw):
+        """  Adds a password to saved list"""
+        pwfile = self.getConfig("passwordfile")
+
+        if pw in self.passwords:
+            self.passwords.remove(pw)
+        self.passwords.insert(0, pw)
+
+        f = open(pwfile, "wb")
+        for pw in self.passwords:
+            f.write(pw + "\n")
+        f.close()
 
     def reloadPasswords(self):
         pwfile = self.getConfig("passwordfile")
@@ -284,20 +299,6 @@ class ExtractArchive(Hook):
         f.close()
 
         self.passwords = passwords
-
-    @Expose
-    def addPassword(self, pw):
-        """  Adds a password to saved list"""
-        pwfile = self.getConfig("passwordfile")
-
-        if pw in self.passwords:
-            self.passwords.remove(pw)
-        self.passwords.insert(0, pw)
-
-        f = open(pwfile, "wb")
-        for pw in self.passwords:
-            f.write(pw + "\n")
-        f.close()
 
     def setPermissions(self, files):
         for f in files:

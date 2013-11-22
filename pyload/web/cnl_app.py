@@ -6,7 +6,7 @@ from urllib import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
 
-from pyload.utils.fs import save_filename
+from pyload.utils.fs import safe_filename
 
 from bottle import route, request, HTTPError
 from webinterface import PYLOAD, DL_ROOT, JS
@@ -55,7 +55,7 @@ def addcrypted():
     package = request.forms.get('referer', 'ClickAndLoad Package')
     dlc = request.forms['crypted'].replace(" ", "+")
 
-    dlc_path = join(DL_ROOT, save_filename(package) + ".dlc")
+    dlc_path = join(DL_ROOT, safe_filename(package) + ".dlc")
     dlc_file = open(dlc_path, "wb")
     dlc_file.write(dlc)
     dlc_file.close()
