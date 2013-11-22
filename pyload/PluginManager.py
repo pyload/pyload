@@ -66,7 +66,7 @@ class PluginManager:
     def addMatcher(self, matcher, index=0):
         """ Inserts matcher at given index, first position by default """
         if not isinstance(matcher, PluginMatcher):
-            raise TypeError("Expected type of PluginMatcher, got %s instead" % type(matcher))
+            raise TypeError("Expected type of PluginMatcher, got '%s' instead" % type(matcher))
 
         if matcher in self.matcher:
             self.matcher.remove(matcher)
@@ -103,8 +103,7 @@ class PluginManager:
                     self.history.insert(0, found)
                 continue
 
-
-            # matcher won't go to history
+            # matcher are tried secondly, they won't go to history
             for m in self.matcher:
                 match = m.matchURL(url)
                 if match and match[0] in res:
@@ -122,7 +121,7 @@ class PluginManager:
                         if plugin.re.match(url):
                             res[ptype].append((url, name))
                             self.history.insert(0, (ptype, name))
-                            del self.history[self.MATCH_HISTORY:] # cut down to size of 10
+                            del self.history[self.MATCH_HISTORY:] # cut down to size
                             found = True
                             break
                     if found: break

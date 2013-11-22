@@ -5,6 +5,7 @@ from pyload.Api import Api, RequirePerm, Permission
 
 from ApiComponent import ApiComponent
 
+
 class AddonApi(ApiComponent):
     """ Methods to interact with addons """
 
@@ -22,6 +23,7 @@ class AddonApi(ApiComponent):
         :return: dict of attr names mapped to value {"name": value}
         """
         return self.core.addonManager.getInfo(plugin)
+
 
 if Api.extend(AddonApi):
     del AddonApi

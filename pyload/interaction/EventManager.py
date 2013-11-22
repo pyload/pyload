@@ -57,13 +57,9 @@ class EventManager:
 
     def dispatchEvent(self, event, *args, **kwargs):
         """dispatches event with args"""
-        for f in self.events["event"]:
-            try:
-                f(event, *args, **kwargs)
-            except Exception, e:
-                self.log.warning("Error calling event handler %s: %s, %s, %s"
-                                 % ("event", f, args, str(e)))
-                self.core.print_exc()
+        # dispatch the meta event
+        if event != "event":
+            self.dispatchEvent("event", *(event,) + args, **kwargs)
 
         if event in self.events:
             for f in self.events[event]:

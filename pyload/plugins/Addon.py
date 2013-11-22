@@ -1,28 +1,12 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: RaNaN
-"""
-
 from traceback import print_exc
 
 #from functools import wraps
 from pyload.utils import has_method, to_list
 
 from Base import Base
+
 
 def class_name(p):
     return p.rpartition(".")[2]
@@ -33,11 +17,13 @@ def AddEventListener(event):
 
     :param event: Name of event or list of them.
     """
+
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
             for ev in to_list(event):
                 addonManager.addEventListener(class_name(f.__module__), f.func_name, ev)
             return f
+
     return _klass
 
 
@@ -50,6 +36,7 @@ def AddonHandler(desc, media=None):
     """
     pass
 
+
 def AddonInfo(desc):
     """ Called to retrieve information about the current state.
     Decorated method must return anything convertable into string.
@@ -58,13 +45,16 @@ def AddonInfo(desc):
     """
     pass
 
+
 def threaded(f):
     """ Decorator to run method in a thread. """
 
     #@wraps(f)
-    def run(*args,**kwargs):
+    def run(*args, **kwargs):
         addonManager.startThread(f, *args, **kwargs)
+
     return run
+
 
 class Addon(Base):
     """
@@ -78,7 +68,7 @@ class Addon(Base):
     event_map = None
 
     #: periodic call interval in seconds
-    interval = 60
+    interval = 0
 
     def __init__(self, core, manager, user=None):
         Base.__init__(self, core, user)
@@ -86,7 +76,7 @@ class Addon(Base):
         #: Provide information in dict here, usable by API `getInfo`
         self.info = None
 
-        #: Callback of periodical job task, used by addonmanager
+        #: Callback of periodical job task, used by addonManager
         self.cb = None
 
         #: `AddonManager`
@@ -97,41 +87,42 @@ class Addon(Base):
             for event, funcs in self.event_map.iteritems():
                 if type(funcs) in (list, tuple):
                     for f in funcs:
-                        self.evm.listenTo(event, getattr(self,f))
+                        self.evm.listenTo(event, getattr(self, f))
                 else:
-                    self.evm.listenTo(event, getattr(self,funcs))
+                    self.evm.listenTo(event, getattr(self, funcs))
 
             #delete for various reasons
             self.event_map = None
 
-        self.initPeriodical()
         self.init()
 
-    def initPeriodical(self):
-        if id(self.periodical) != id(getattr(Addon, periodical)):
-            self.startPeriodical()
+        # start periodically if set
+        self.startPeriodical(self.interval, 0)
 
-    def startPeriodical(self, interval=self.interval, wait=self.interval):
-        if not self.cb and self.setInterval(interval, False):
-            self.cb = self.core.scheduler.addJob(wait, self._periodical, threaded=False)
-            return interval
-        else:
+    def startPeriodical(self, interval, wait):
+        """ Starts the periodical calls with given interval. Older entries will be canceled.
+        :param interval: interval in seconds
+        :param wait: time to wait in seconds before periodically starts
+        :return: True if s
+        """
+        if interval < 1:
             return False
 
+        # stop running callback
+        if self.cb:
+            self.stopPeriodical()
+
+        self.cb = self.core.scheduler.addJob(wait, self._periodical, threaded=False)
+        self.interval = interval
+        return True
+
     def stopPeriodical(self):
+        """ Stops periodical call if existing
+        :return: True if the callback was stopped, false otherwise.
+        """
         if self.cb and self.core.scheduler.removeJob(self.cb):
             self.cb = None
             return True
-        else:
-            return False
-
-    def setInterval(self, interval, recount=False):
-        if interval > 0:
-            if recount:
-                return self.stopPeriodical() and self.startPeriodical(interval)
-            else:
-                self.interval = interval
-                return True
         else:
             return False
 
@@ -185,7 +176,7 @@ class Addon(Base):
     # public events starts from here
     def downloadPreparing(self, pyfile):
         pass
-    
+
     def downloadFinished(self, pyfile):
         pass
 
