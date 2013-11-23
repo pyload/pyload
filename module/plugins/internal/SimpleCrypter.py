@@ -53,7 +53,7 @@ class SimpleCrypter(Crypter):
     must return the html of the page number 'page_n'
     """
 
-    FILE_SIZE_REPLACEMENTS = []
+    FILE_URL_REPLACEMENTS = []
 
     def decrypt(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
