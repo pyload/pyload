@@ -25,7 +25,7 @@ class MultiDebridCom(Hoster):
     __name__ = "MultiDebridCom"
     __version__ = "0.03"
     __type__ = "hoster"
-    __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/"
+    __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/(?P<ID>.+)"
     __description__ = """Multi-debrid.com hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
