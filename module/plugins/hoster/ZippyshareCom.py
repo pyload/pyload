@@ -17,7 +17,7 @@ from module.common.json_layer import json_loads
 class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
-    __pattern__ = r"(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/(?:(?P<SP>v/)|(?P<LP>view.jsp\?(?:.*&)?key=))(?P<ID>\d{8})(?(SP)/file.html)"
+    __pattern__ = r"(?P<HOST>http://www\d*\.zippyshare\.com)/(?:(?P<SP>v/)|(?P<LP>view.jsp\?(?:[^/]*&)?key=))(?P<ID>\d+)(?(SP)/file.html)"
     __version__ = "0.42"
     __description__ = """Zippyshare.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg", "stickell")
@@ -129,7 +129,7 @@ class ZippyshareCom(SimpleHoster):
 
             if multiply and modulo:
                 self.logDebug("TIME = (%s * %s) %s" % (file_seed, multiply, modulo))
-                url = "/download?key=%s&time=%d" % (self.file_info['KEY'],
+                url = "/download?key=%s&time=%d" % (self.file_info['ID'],
                                                     (int(file_seed) * int(multiply)) % int(modulo))
                 return url
 
