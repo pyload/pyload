@@ -117,7 +117,7 @@ class OCR(object):
         except:
             pass
         
-    def get_captcha(self, name):
+    def get_captcha(self, image, type=None):
         raise NotImplementedError
 
     def to_greyscale(self):
