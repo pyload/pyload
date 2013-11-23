@@ -150,6 +150,7 @@ class ExtractArchive(Hook):
             archive_root=True
             files_ids = [(save_join(dl, p.folder, x["name"]), x["id"]) for x in p.getChildren().itervalues()]
             matched = False
+            tmppath_list = []
 
             # check as long there are unseen files
             while files_ids:
@@ -168,12 +169,12 @@ class ExtractArchive(Hook):
 
                         if archive_root == True:
                             if self.getConfig("destination") and self.getConfig("destination").lower() != "none":
-                                tmppath = save_join(self.getConfig("destination"), "%s_temp", "") % fs_encode(os.path.splitext(os.path.basename(target))[0])
+                                out = save_join(self.getConfig("destination"), "%s_temp", "") % fs_encode(os.path.splitext(os.path.basename(target))[0])
                                 targetpath = save_join(self.getConfig("destination"),"")
                             else:
-                                tmppath = save_join(os.path.dirname(target), "%s_temp", "") % fs_encode(os.path.splitext(os.path.basename(target))[0])
+                                out = save_join(os.path.dirname(target), "%s_temp", "") % fs_encode(os.path.splitext(os.path.basename(target))[0])
                                 targetpath = save_join(os.path.dirname(target),"")
-                            out = tmppath
+                            tmppath_list.append(out)
                         else:
                             out = save_join(os.path.dirname(target))
 
@@ -199,28 +200,29 @@ class ExtractArchive(Hook):
             if self.getConfig("destination") and self.getConfig("destination").lower() != "none":
                 targetpath = save_join(targetpath, p.folder)
 
-            if self.getConfig("subfoldername") == "%ARCHIVENAME%":foldername = os.path.basename(os.path.dirname(tmppath))[:-5]
-            elif self.getConfig("subfoldername") == "%PACKAGENAME%":foldername = p.name
-            elif self.getConfig("subfoldername") == "%HOSTER%":foldername = "HOSTER" #how do i get the hostername or the pluginname, which was used?
-            foldername = fs_encode(foldername)
+            for tmppath in tmppath_list:
+                if self.getConfig("subfoldername") == "%ARCHIVENAME%":foldername = os.path.basename(os.path.dirname(tmppath))[:-5]
+                elif self.getConfig("subfoldername") == "%PACKAGENAME%":foldername = p.name
+                elif self.getConfig("subfoldername") == "%HOSTER%":foldername = "HOSTER" #how do i get the hostername or the pluginname, which was used?
+                foldername = fs_encode(foldername)
 
-            if os.path.exists(tmppath): #was unrar sucessfull?
-                self.logDebug("Unrar was successful!")
-                filenames = os.listdir(tmppath)
-                objectnumber=len(filenames) # folder & files number
+                if os.path.exists(tmppath): #was unrar sucessfull?
+                    self.logDebug("Unrar was successful!")
+                    filenames = os.listdir(tmppath)
+                    objectnumber=len(filenames) # folder & files number
 
-                if self.getConfig("subfolder") == -1: #create no subfolder
-                    subfolder = ""
-                elif self.getConfig("subfolder") == 0: #create always a subfolder
-                    subfolder = foldername
-                else:
-                    if objectnumber > self.getConfig("subfolder"):
-                       subfolder = foldername
-                    else: subfolder = ""
+                    if self.getConfig("subfolder") == -1: #create no subfolder
+                        subfolder = ""
+                    elif self.getConfig("subfolder") == 0: #create always a subfolder
+                        subfolder = foldername
+                    else:
+                        if objectnumber > self.getConfig("subfolder"):
+                           subfolder = foldername
+                        else: subfolder = ""
 
-                self.movefiles(tmppath, targetpath, subfolder, filenames)
-                if os.path.exists(tmppath) and len(os.listdir(tmppath)) == 0:
-                        os.rmdir(tmppath)
+                    self.movefiles(tmppath, targetpath, subfolder, filenames)
+                    if os.path.exists(tmppath) and len(os.listdir(tmppath)) == 0:
+                            os.rmdir(tmppath)
 
             if not matched:
                 self.logInfo(_("No files found to extract"))
