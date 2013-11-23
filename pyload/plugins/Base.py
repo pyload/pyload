@@ -282,7 +282,7 @@ class Base(object):
         :param cookies: True if cookies should be enabled
         :param forceUser: if True, ocr is not used
         :param imgtype: Type of the Image
-        :param captcha_type: use if the captcha plugin support more types
+        :param captcha_type: use to identify captcha type to process when decrypt plugin supports many more
         :param result_type: 'textual' if text is written on the captcha\
         or 'positional' for captcha where the user have to click\
         on a specific region on the captcha
