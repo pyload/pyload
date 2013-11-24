@@ -1,4 +1,4 @@
-require(['underscore','handlebars'], function(_, Handlebars) {
+define(['underscore','handlebars'], function(_, Handlebars) {
     'use strict';
 
     function truncate(fullStr, options) {
