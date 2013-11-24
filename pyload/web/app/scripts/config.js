@@ -17,6 +17,7 @@ require.config({
         underscore: '../components/underscore/underscore',
         backbone: '../components/backbone/backbone',
         marionette: '../components/backbone.marionette/lib/backbone.marionette',
+        // version must be tested carefully, many are broken for amd
         handlebars: '../components/handlebars.js/dist/handlebars',
         jed: '../components/jed/jed',
         moment: '../components/momentjs/moment',
