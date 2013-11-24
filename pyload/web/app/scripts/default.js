@@ -1,5 +1,6 @@
-define('default', ['require', 'backbone', 'jquery', 'app', 'router', 'models/UserSession'],
-    function(require, Backbone, $, App, Router, UserSession) {
+define('default', ['require', 'backbone', 'jquery', 'app', 'router',
+    'models/UserSession', 'models/AddonHandler'],
+    function(require, Backbone, $, App, Router, UserSession, AddonHandler) {
         'use strict';
 
         // Global ajax options
@@ -19,6 +20,8 @@ define('default', ['require', 'backbone', 'jquery', 'app', 'router', 'models/Use
             Backbone.$.ajaxSetup.call(Backbone.$, options);
             return Backbone.$.ajax.apply(Backbone.$, arguments);
         };
+
+        App.addons = new AddonHandler();
 
         $(function() {
             // load setup async

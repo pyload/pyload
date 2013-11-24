@@ -107,7 +107,7 @@ class WebServer(threading.Thread):
                 log.error(_("Failed importing webserver: " + e.message))
 
         if unavailable: # Just log whats not available to have some debug information
-            log.debug("Unavailable webserver: " + ",".join(unavailable))
+            log.debug("Unavailable webserver: " + ", ".join(unavailable))
 
         if not server and self.force_server:
             server = self.force_server # just return the name

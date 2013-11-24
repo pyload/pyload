@@ -1,5 +1,5 @@
-define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashboard/package'],
-    function($, App, itemView, _, template) {
+define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashboard/package', 'hbs!tpl/dashboard/submenu'],
+    function($, App, itemView, _, template, templateSubmenu) {
         'use strict';
 
         // Renders a single package item
@@ -12,7 +12,9 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashb
                 'click .package-name, .btn-open': 'open',
                 'click .icon-refresh': 'restart',
                 'click .select': 'select',
-                'click .btn-delete': 'deleteItem'
+                'click .icon-chevron-down': 'loadMenu',
+                'click .btn-delete': 'deleteItem',
+                'click .dropdown-submenu a': 'invokeAddon'
             },
 
             // Ul for child packages (unused)
@@ -44,13 +46,16 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashb
                 return this;
             },
 
+            renderSubmenu: function(addons) {
+                this.$('.dropdown-submenu ul').html(templateSubmenu(addons));
+            },
+
             unrender: function() {
                 itemView.prototype.unrender.apply(this);
 
                 // TODO: display other package
                 App.vent.trigger('dashboard:loading', null);
             },
-
 
             // TODO
             // Toggle expanding of packages
@@ -70,6 +75,20 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashb
                 this.model.set('selected', !checked, {silent: true});
                 this.$('.select').toggleClass('icon-check').toggleClass('icon-check-empty');
                 App.vent.trigger('package:selection');
+            },
+
+            loadMenu: function() {
+                App.addons.getForType(true, null, _.bind(this.renderSubmenu, this));
+            },
+
+            invokeAddon: function(e) {
+                var el = $(e.target);
+                // clicked on icon
+                if (el.context.tagName === 'IMG')
+                    el = el.parent();
+
+                App.addons.invoke(el.data('plugin'), el.data('func'), this.model.get('pid'));
             }
+
         });
     });

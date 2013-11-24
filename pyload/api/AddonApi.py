@@ -35,7 +35,7 @@ class AddonApi(ApiComponent):
         handler = {}
         for name, data in self.core.addonManager.iterAddons():
             if data.handler:
-                handler[name] = data.handler
+                handler[name] = data.handler.values()
         return handler
 
     @RequirePerm(Permission.Interaction)
