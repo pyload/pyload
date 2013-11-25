@@ -26,13 +26,13 @@ from module.plugins.Account import Account
 
 class FshareVn(Account):
     __name__ = "FshareVn"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __type__ = "account"
     __description__ = """fshare.vn account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = ("zoidberg", "stickell")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
-    VALID_UNTIL_PATTERN = ur'<dt>Thời hạn dùng:</dt>\s*<dd>([^<]+)</dd>'
+    VALID_UNTIL_PATTERN = ur'<dt>Lần đăng nhập trước:</dt>\s*<dd>([^<]+)</dd>'
     TRAFFIC_LEFT_PATTERN = ur'<dt>Tổng Dung Lượng Tài Khoản</dt>\s*<dd[^>]*>([0-9.]+) ([kKMG])B</dd>'
     DIRECT_DOWNLOAD_PATTERN = ur'<input type="checkbox"\s*([^=>]*)[^>]*/>Kích hoạt download trực tiếp</dt>'
 
@@ -41,7 +41,7 @@ class FshareVn(Account):
         found = re.search(self.VALID_UNTIL_PATTERN, html)
         if found:
             premium = True
-            validuntil = mktime(strptime(found.group(1), '%I:%M:%S %p %d-%m-%Y'))
+            validuntil = mktime(strptime(found.group(1), '%d-%m-%Y'))
             found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
             trafficleft = float(found.group(1)) * 1024 ** {
                 'k': 0, 'K': 0, 'M': 1, 'G': 2}[found.group(2)] if found else 0
