@@ -26,11 +26,11 @@ from module.common.json_layer import json_loads
 class BayfilesCom(SimpleHoster):
     __name__ = "BayfilesCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?bayfiles\.(?:com|net)/file/\w+/\w+/.*"
-    __version__ = "0.05"
+    __pattern__ = r"https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>[a-zA-Z0-9]+/[a-zA-Z0-9]+/[^/]+)"
+    __version__ = "0.06"
     __description__ = """Bayfiles.com plugin - free only"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = ("zoidberg", "Walter Purcaro")
+    __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com")
 
     FILE_INFO_PATTERN = r'<p title="(?P<N>[^"]+)">[^<]*<strong>(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B</strong></p>'
     FILE_OFFLINE_PATTERN = r'(<p>The requested file could not be found.</p>|<title>404 Not Found</title>)'
@@ -53,7 +53,7 @@ class BayfilesCom(SimpleHoster):
             self.parseError('VARS')
         vfid, delay = found.groups()
 
-        response = json_loads(self.load('http://bayfiles.com/ajax_download', get={
+        response = json_loads(self.load('https://bayfiles.com/ajax_download', get={
             "_": time() * 1000,
             "action": "startTimer",
             "vfid": vfid}, decode=True))
@@ -64,12 +64,12 @@ class BayfilesCom(SimpleHoster):
         self.setWait(int(delay))
         self.wait()
 
-        self.html = self.load('http://bayfiles.com/ajax_download', get={
+        self.html = self.load('https://bayfiles.com/ajax_download', get={
             "token": response['token'],
             "action": "getLink",
             "vfid": vfid})
 
-        # Get final link and download        
+        # Get final link and download
         found = re.search(self.LINK_PATTERN, self.html)
         if not found:
             self.parseError("Free link")
@@ -90,9 +90,9 @@ class BayfilesCom(SimpleHoster):
             "notfound": re.compile(r"<title>404 Not Found</title>")
         })
         if check == "waitforfreeslots":
-            self.retry(60, 300, "Wait for free slot")
+            self.retry(30, 60 * 5, "Wait for free slot")
         elif check == "notfound":
-            self.retry(60, 300, "404 Not found")
+            self.retry(30, 60 * 5, "404 Not found")
 
 
 getInfo = create_getInfo(BayfilesCom)
