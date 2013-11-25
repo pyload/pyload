@@ -21,11 +21,12 @@ import re
 
 from pyload.plugins.Crypter import Crypter, Package
 from pyload.utils import html_unescape
+from pyload.plugins.internal.SimpleHoster import replace_patterns
 
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __pattern__ = None
     __type__ = "crypter"
     __description__ = """Base crypter plugin"""
@@ -52,7 +53,11 @@ class SimpleCrypter(Crypter):
     must return the html of the page number 'page_n'
     """
 
+    FILE_URL_REPLACEMENTS = []
+
     def decryptURL(self, url):
+        url = replace_patterns(url, self.FILE_URL_REPLACEMENTS)
+    
         self.html = self.load(url, decode=True)
 
         package_name = self.getPackageName()
