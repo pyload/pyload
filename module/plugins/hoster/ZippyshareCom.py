@@ -17,8 +17,8 @@ from module.common.json_layer import json_loads
 class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
-    __pattern__ = r"(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)"
-    __version__ = "0.41"
+    __pattern__ = r"(?P<HOST>http://www\d*\.zippyshare\.com)/(?:(?P<SP>v/)|(?P<LP>view.jsp\?(?:[^/]*&)?key=))(?P<ID>\d+)(?(SP)/file.html)"
+    __version__ = "0.42"
     __description__ = """Zippyshare.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg", "stickell")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -129,7 +129,7 @@ class ZippyshareCom(SimpleHoster):
 
             if multiply and modulo:
                 self.logDebug("TIME = (%s * %s) %s" % (file_seed, multiply, modulo))
-                url = "/download?key=%s&time=%d" % (self.file_info['KEY'],
+                url = "/download?key=%s&time=%d" % (self.file_info['ID'],
                                                     (int(file_seed) * int(multiply)) % int(modulo))
                 return url
 
@@ -198,7 +198,7 @@ class ZippyshareCom(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        for i in range(5):
+        for i in xrange(5):
             challenge, code = recaptcha.challenge(captcha_key)
 
             response = json_loads(self.load(self.file_info['HOST'] + '/rest/captcha/test',
