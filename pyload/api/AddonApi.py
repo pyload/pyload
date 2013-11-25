@@ -39,14 +39,14 @@ class AddonApi(ApiComponent):
         return handler
 
     @RequirePerm(Permission.Interaction)
-    def callAddon(self, plugin, func, arguments):
+    def invokeAddon(self, plugin, func, func_args):
         """ Calls any function exposed by an addon """
-        pass
+        return self.core.addonManager.invoke(plugin, func, func_args)
 
     @RequirePerm(Permission.Interaction)
-    def callAddonHandler(self, plugin, func, pid_or_fid):
+    def invokeAddonHandler(self, plugin, func, pid_or_fid):
         """ Calls an addon handler registered to work with packages or files  """
-        pass
+        return self.invokeAddon(plugin, func, (pid_or_fid, ))
 
 
 if Api.extend(AddonApi):

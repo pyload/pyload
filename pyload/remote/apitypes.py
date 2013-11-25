@@ -194,7 +194,7 @@ class EventInfo(BaseObject):
 		self.eventname = eventname
 		self.event_args = event_args
 
-class FileDoesNotExists(ExceptionObject):
+class FileDoesNotExist(ExceptionObject):
 	__slots__ = ['fid']
 
 	def __init__(self, fid=None):
@@ -261,7 +261,7 @@ class OnlineCheck(BaseObject):
 		self.rid = rid
 		self.data = data
 
-class PackageDoesNotExists(ExceptionObject):
+class PackageDoesNotExist(ExceptionObject):
 	__slots__ = ['pid']
 
 	def __init__(self, pid=None):
@@ -323,7 +323,7 @@ class ServerStatus(BaseObject):
 		self.download = download
 		self.reconnect = reconnect
 
-class ServiceDoesNotExists(ExceptionObject):
+class ServiceDoesNotExist(ExceptionObject):
 	__slots__ = ['plugin', 'func']
 
 	def __init__(self, plugin=None, func=None):
@@ -364,7 +364,7 @@ class UserData(BaseObject):
 		self.user = user
 		self.templateName = templateName
 
-class UserDoesNotExists(ExceptionObject):
+class UserDoesNotExist(ExceptionObject):
 	__slots__ = ['user']
 
 	def __init__(self, user=None):
@@ -382,10 +382,6 @@ class Iface(object):
 	def addPackageP(self, name, links, password, paused):
 		pass
 	def addUser(self, username, password):
-		pass
-	def callAddon(self, plugin, func, arguments):
-		pass
-	def callAddonHandler(self, plugin, func, pid_or_fid):
 		pass
 	def checkContainer(self, filename, data):
 		pass
@@ -462,6 +458,10 @@ class Iface(object):
 	def getUserData(self):
 		pass
 	def getWSAddress(self):
+		pass
+	def invokeAddon(self, plugin, func, func_args):
+		pass
+	def invokeAddonHandler(self, plugin, func, pid_or_fid):
 		pass
 	def isInteractionWaiting(self, mode):
 		pass

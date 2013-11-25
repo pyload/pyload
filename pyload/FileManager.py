@@ -21,7 +21,7 @@ from ReadWriteLock import ReadWriteLock
 
 from pyload.utils import lock, read_lock
 
-from Api import PackageStatus, DownloadStatus as DS, TreeCollection, PackageDoesNotExists
+from Api import PackageStatus, DownloadStatus as DS, TreeCollection, PackageDoesNotExist
 from datatypes.PyFile import PyFile
 from datatypes.PyPackage import PyPackage, RootPackage
 
@@ -529,8 +529,8 @@ class FileManager:
 
         p = self.getPackageInfo(pid)
         dest = self.getPackageInfo(root)
-        if not p: raise PackageDoesNotExists(pid)
-        if not dest: raise PackageDoesNotExists(root)
+        if not p: raise PackageDoesNotExist(pid)
+        if not dest: raise PackageDoesNotExist(root)
 
         # cantor won't be happy if we put the package in itself
         if pid == root or p.root == root: return False
@@ -552,7 +552,7 @@ class FileManager:
         if not f or f.package == pid:
             return False
         if not self.getPackageInfo(pid):
-            raise PackageDoesNotExists(pid)
+            raise PackageDoesNotExist(pid)
 
         # TODO move real files
 

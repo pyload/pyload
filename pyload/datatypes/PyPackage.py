@@ -66,9 +66,9 @@ class PyPackage:
             self.comment, self.password, self.added, self.tags, self.status, self.shared, self.packageorder
         )
 
-    def getChildren(self):
-        """get fids of container files"""
-        return self.m.getPackageInfo(self.pid).fids
+    def getFiles(self):
+        """get contaied files data"""
+        return self.m.core.db.getAllFiles(package=self.pid)
 
     def getPath(self, name=""):
         self.timestamp = time()

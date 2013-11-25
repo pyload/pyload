@@ -49,7 +49,12 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'],
 
             // dispatches call to the plugin
             invoke: function(plugin, func, args, success) {
-                console.log(plugin, func, args);
+                console.log('Invoking addon', plugin, func, args);
+                return $.ajax(App.apiRequest('invokeAddon', {
+                    plugin: plugin,
+                    func: func,
+                    func_args: args
+                }, {sucess: success}));
             }
         });
     });

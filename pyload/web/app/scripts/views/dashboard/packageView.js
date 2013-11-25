@@ -87,7 +87,7 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashb
                 if (el.context.tagName === 'IMG')
                     el = el.parent();
 
-                App.addons.invoke(el.data('plugin'), el.data('func'), this.model.get('pid'));
+                App.addons.invoke(el.data('plugin'), el.data('func'), [this.model.get('pid')]);
             }
 
         });

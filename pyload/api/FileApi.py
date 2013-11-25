@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pyload.Api import Api, RequirePerm, Permission, DownloadState, PackageDoesNotExists, FileDoesNotExists
+from pyload.Api import Api, RequirePerm, Permission, DownloadState, PackageDoesNotExist, FileDoesNotExist
 from pyload.utils import uniqify
 
 from ApiComponent import ApiComponent
@@ -52,12 +52,12 @@ class FileApi(ApiComponent):
         """Returns information about package, without detailed information about containing files
 
         :param pid: package id
-        :raises PackageDoesNotExists:
+        :raises PackageDoesNotExist:
         :return: :class:`PackageInfo`
         """
         info = self.core.files.getPackageInfo(pid)
         if not info:
-            raise PackageDoesNotExists(pid)
+            raise PackageDoesNotExist(pid)
         return info
 
     @RequirePerm(Permission.All)
@@ -65,13 +65,13 @@ class FileApi(ApiComponent):
         """ Info for specific file
 
         :param fid: file id
-        :raises FileDoesNotExists:
+        :raises FileDoesNotExist:
         :return: :class:`FileInfo`
 
         """
         info = self.core.files.getFileInfo(fid)
         if not info:
-            raise FileDoesNotExists(fid)
+            raise FileDoesNotExist(fid)
         return info
 
     def getFilePath(self, fid):
@@ -103,7 +103,7 @@ class FileApi(ApiComponent):
         """
         pid = pack.pid
         p = self.core.files.getPackage(pid)
-        if not p: raise PackageDoesNotExists(pid)
+        if not p: raise PackageDoesNotExist(pid)
 
         #TODO: fix
         for key, value in data.iteritems():
@@ -124,7 +124,7 @@ class FileApi(ApiComponent):
 
         :param pid: package id
         :param root: package id of new root
-        :raises PackageDoesNotExists: When pid or root is missing
+        :raises PackageDoesNotExist: When pid or root is missing
         :return: False if package can't be moved
         """
         return self.core.files.movePackage(pid, root)

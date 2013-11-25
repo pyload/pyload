@@ -51,9 +51,10 @@ if os.name != "nt":
 
 from pyload.utils.fs import safe_join as save_join, fs_encode
 
-from pyload.plugins.Addon import Addon, threaded, AddonHandler, AddonProperty
+from pyload.plugins.Addon import Addon, threaded, AddonHandler
 from pyload.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
 
+# TODO: plugin needs a rewrite to work on unfinished packages
 
 class ExtractArchive(Addon):
     """
@@ -161,7 +162,7 @@ class ExtractArchive(Addon):
                 if not exists(out):
                     makedirs(out)
 
-            files_ids = [(save_join(dl, p.folder, x["name"]), x["id"]) for x in p.getChildren().itervalues()]
+            files_ids = [(save_join(dl, p.folder, f.name), f.fid) for f in p.getFiles().itervalues()]
             matched = False
 
             # check as long there are unseen files

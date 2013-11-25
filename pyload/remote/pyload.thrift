@@ -306,19 +306,19 @@ struct OnlineCheck {
 
 // exceptions
 
-exception PackageDoesNotExists {
+exception PackageDoesNotExist {
   1: PackageID pid
 }
 
-exception FileDoesNotExists {
+exception FileDoesNotExist {
   1: FileID fid
 }
 
-exception UserDoesNotExists {
+exception UserDoesNotExist {
   1: string user
 }
 
-exception ServiceDoesNotExists {
+exception ServiceDoesNotExist {
   1: string plugin
   2: string func
 }
@@ -414,8 +414,8 @@ service Pyload {
 
   PackageID uploadContainer(1: string filename, 2: binary data),
 
-  void addLinks(1: PackageID pid, 2: LinkList links) throws (1: PackageDoesNotExists e),
-  void addLocalFile(1: PackageID pid, 2: string name, 3: string path) throws (1: PackageDoesNotExists e)
+  void addLinks(1: PackageID pid, 2: LinkList links) throws (1: PackageDoesNotExist e),
+  void addLocalFile(1: PackageID pid, 2: string name, 3: string path) throws (1: PackageDoesNotExist e)
 
   // these are real file operations and WILL delete files on disk
   void deleteFiles(1: list<FileID> fids),
@@ -444,8 +444,8 @@ service Pyload {
   // same as above with full=False
   TreeCollection getPackageContent(1: PackageID pid),
 
-  PackageInfo getPackageInfo(1: PackageID pid) throws (1: PackageDoesNotExists e),
-  FileInfo getFileInfo(1: FileID fid) throws (1: FileDoesNotExists e),
+  PackageInfo getPackageInfo(1: PackageID pid) throws (1: PackageDoesNotExist e),
+  FileInfo getFileInfo(1: FileID fid) throws (1: FileDoesNotExist e),
 
   TreeCollection findFiles(1: string pattern),
   TreeCollection findPackages(1: list<string> tags),
@@ -454,12 +454,12 @@ service Pyload {
   // Modify Files/Packages
 
   // moving package while downloading is not possible, so they will return bool to indicate success
-  void updatePackage(1: PackageInfo pack) throws (1: PackageDoesNotExists e),
-  bool setPackageFolder(1: PackageID pid, 2: string path) throws (1: PackageDoesNotExists e),
+  void updatePackage(1: PackageInfo pack) throws (1: PackageDoesNotExist e),
+  bool setPackageFolder(1: PackageID pid, 2: string path) throws (1: PackageDoesNotExist e),
 
   // as above, this will move files on disk
-  bool movePackage(1: PackageID pid, 2: PackageID root) throws (1: PackageDoesNotExists e),
-  bool moveFiles(1: list<FileID> fids, 2: PackageID pid) throws (1: PackageDoesNotExists e),
+  bool movePackage(1: PackageID pid, 2: PackageID root) throws (1: PackageDoesNotExist e),
+  bool moveFiles(1: list<FileID> fids, 2: PackageID pid) throws (1: PackageDoesNotExist e),
 
   void orderPackage(1: list<PackageID> pids, 2: i16 position),
   void orderFiles(1: list<FileID> fids, 2: PackageID pid, 3: i16 position),
@@ -518,12 +518,12 @@ service Pyload {
 
   map<PluginName, list<AddonService>> getAddonHandler(),
 
-  JSONString callAddon(1: PluginName plugin, 2: string func, 3: list<JSONString> arguments)
-        throws (1: ServiceDoesNotExists e, 2: ServiceException ex),
+  JSONString invokeAddon(1: PluginName plugin, 2: string func, 3: list<JSONString> func_args)
+        throws (1: ServiceDoesNotExist e, 2: ServiceException ex),
 
   // special variant of callAddon that works on the media types, acccepting integer
-  JSONString callAddonHandler(1: PluginName plugin, 2: string func, 3: PackageID pid_or_fid)
-        throws (1: ServiceDoesNotExists e, 2: ServiceException ex),
+  JSONString invokeAddonHandler(1: PluginName plugin, 2: string func, 3: PackageID pid_or_fid)
+        throws (1: ServiceDoesNotExist e, 2: ServiceException ex),
 
 
   //scheduler

@@ -18,7 +18,6 @@
 import __builtin__
 
 from gettext import gettext
-from copy import copy
 from thread import start_new_thread
 from threading import RLock
 
@@ -27,7 +26,7 @@ from new_collections import namedtuple
 
 from types import MethodType
 
-from pyload.Api import AddonService, AddonInfo
+from pyload.Api import AddonService, AddonInfo, ServiceException, ServiceDoesNotExist
 from pyload.threads.AddonThread import AddonThread
 from utils import lock, to_string
 
@@ -70,13 +69,26 @@ class AddonManager:
                 self.call(inst, event, *args)
         self.dispatchEvent(eventName, *args)
 
-    def call(self, addon, f, *args):
+    def call(self, plugin, f, *args):
         try:
-            func = getattr(addon, f)
+            func = getattr(plugin, f)
             return func(*args)
         except Exception, e:
-            addon.logError(_("Error when executing %s" % f), e)
+            plugin.logError(_("Error when executing %s" % f), e)
             self.core.print_exc()
+
+    def invoke(self, plugin, func_name, args):
+        """ Invokes a registered method """
+
+        if plugin not in self.plugins and func_name not in self.plugins[plugin].handler:
+            raise ServiceDoesNotExist(plugin, func_name)
+
+        # TODO: choose correct instance
+        try:
+            func = getattr(self.plugins[plugin].instances[0], func_name)
+            return func(*args)
+        except Exception, e:
+            raise ServiceException(e.message)
 
     @lock
     def createIndex(self):
@@ -159,7 +171,7 @@ class AddonManager:
         self.log.debug("Removed callback %s" % self.core.scheduler.removeJob(addon.cb))
 
         # todo: only delete instances, meta data is lost otherwise
-        del self.plugins[addon.__name__]
+        del self.plugins[addon.__name__].instances[:]
 
         # TODO: could be improved
         #remove event listener
