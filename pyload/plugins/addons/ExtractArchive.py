@@ -210,7 +210,7 @@ class ExtractArchive(Addon):
         thread.addActive(pyfile)  # keep this file until everything is done
 
         try:
-            progress = lambda x: pyfile.setProgress(x)
+            progress = lambda x: thread.setProgress(x)
             success = False
 
             if not plugin.checkArchive():

@@ -16,7 +16,7 @@ from pyload.setup.system import get_system_info
 class BaseThread(Thread):
     """abstract base class for thread types"""
 
-    def __init__(self, manager, ower=None):
+    def __init__(self, manager, owner=None):
         Thread.__init__(self)
         self.setDaemon(True)
         self.m = manager #thread manager
@@ -24,7 +24,7 @@ class BaseThread(Thread):
         self.log = manager.core.log
 
         #: Owner of the thread, every type should set it or overwrite user
-        self.owner = None
+        self.owner = owner
 
     @property
     def user(self):

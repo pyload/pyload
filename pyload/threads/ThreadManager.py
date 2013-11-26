@@ -27,7 +27,7 @@ from random import choice
 from pyload.datatypes.PyFile import PyFile
 from pyload.datatypes.OnlineCheck import OnlineCheck
 from pyload.network.RequestFactory import getURL
-from pyload.utils import lock, uniqify
+from pyload.utils import lock, uniqify, to_list
 from pyload.utils.fs import free_space
 
 from DecrypterThread import DecrypterThread
@@ -118,13 +118,12 @@ class ThreadManager:
     def getProgressList(self, user=None):
         info = []
 
-        # TODO: local threads can create multiple progresses
         for thread in self.threads + self.localThreads:
             # skip if not belong to current user
-            if user and thread.user != user: continue
+            if user is not None and thread.owner != user: continue
 
             progress = thread.getProgress()
-            if progress: info.append(progress)
+            if progress: info.extend(to_list(progress))
 
         return info
 

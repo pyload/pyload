@@ -4,9 +4,9 @@ from urlparse import urlparse
 from re import search
 from urllib import unquote
 
-from module.network.HTTPRequest import BadHeader
-from module.plugins.Hoster import Hoster
-from module.utils import html_unescape, remove_chars
+from pyload.plugins.Request import ResponseException
+from pyload.plugins.Hoster import Hoster
+from pyload.utils import html_unescape, remove_chars
 
 
 class BasePlugin(Hoster):
@@ -45,7 +45,7 @@ class BasePlugin(Hoster):
 
             try:
                 self.downloadFile(pyfile)
-            except BadHeader, e:
+            except ResponseException, e:
                 if e.code in (401, 403):
                     self.logDebug("Auth required")
 
@@ -79,7 +79,7 @@ class BasePlugin(Hoster):
 
             # self.load does not raise a BadHeader on 404 responses, do it here
             if 'code' in header and header['code'] == 404:
-                raise BadHeader(404)
+                raise ResponseException(404)
 
             if 'location' in header:
                 self.logDebug("Location: " + header['location'])

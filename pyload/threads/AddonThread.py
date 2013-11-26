@@ -4,6 +4,7 @@
 from copy import copy
 from traceback import print_exc
 
+from pyload.Api import ProgressInfo
 from BaseThread import BaseThread
 
 class AddonThread(BaseThread):
@@ -18,6 +19,7 @@ class AddonThread(BaseThread):
         self.kwargs = kwargs
 
         self.active = []
+        self.progress = 0
 
         m.localThreads.append(self)
 
@@ -25,6 +27,18 @@ class AddonThread(BaseThread):
 
     def getActiveFiles(self):
         return self.active
+
+    # TODO: multiple progresses
+    def setProgress(self, progress, pyfile=None):
+        """  Sets progress for the thread in percent"""
+        self.progress = progress
+
+    def getProgress(self):
+        """ Progress of the thread  """
+        if self.active:
+            active = self.active[0]
+            return ProgressInfo(active.pluginname, active.name, active.getStatusName(), 0,
+                                self.progress, 100)
 
     def addActive(self, pyfile):
         """ Adds a pyfile to active list and thus will be displayed on overview"""
