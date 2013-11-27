@@ -10,9 +10,9 @@ from module.plugins.Plugin import chunks
 
 
 def getInfo(urls):
-    ##  returns list of tupels (name, size (in bytes), status (see FileDatabase), url)
+    ## returns list of tupels (name, size (in bytes), status (see FileDatabase), url)
 
-    apiurl = "http://api.netload.in/info.php?auth=Zf9SnQh9WiReEsb18akjvQGqT0I830e8&bz=1&md5=1&file_id="
+    apiurl = "https://api.netload.in/info.php?auth=Zf9SnQh9WiReEsb18akjvQGqT0I830e8&bz=1&md5=1&file_id="
     id_regex = re.compile(NetloadIn.__pattern__)
     urls_per_query = 80
 
@@ -21,7 +21,7 @@ def getInfo(urls):
         for url in chunk:
             match = id_regex.search(url)
             if match:
-                ids = ids + match.group(1) + ";"
+                ids = ids + match.group("ID") + ";"
 
         api = getURL(apiurl + ids, decode=True)
 
@@ -52,11 +52,11 @@ def getInfo(urls):
 class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
-    __pattern__ = r"https?://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
-    __version__ = "0.45"
+    __pattern__ = r"https?://(?:www\.)?netload\.in/(?:(?P<SP>datei)|(?P<LP>index.php\?(?:[^/]*&)?(?P<KP>id=10&)?(?:[^/]+&)?file_id=))(?P<ID>[a-zA-Z0-9]{10})(?(KP)|&(?:[^/]+&)?id=10)(?(SP)\.htm)"
+    __version__ = "0.46"
     __description__ = """Netload.in Download Hoster"""
-    __author_name__ = ("spoob", "RaNaN", "Gregy")
-    __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
+    __author_name__ = ("spoob", "RaNaN", "Gregy", "Walter Purcaro")
+    __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz", "vuolter@gmail.com")
 
     def setup(self):
         self.multiDL = self.resumeDownload = self.premium
@@ -75,7 +75,7 @@ class NetloadIn(Hoster):
 
         if self.premium:
             self.logDebug("Netload: Use Premium Account")
-            settings = self.load("http://www.netload.in/index.php?id=2&lang=en")
+            settings = self.load("https://www.netload.in/index.php?id=2&lang=en")
             if '<option value="2" selected="selected">Direkter Download' in settings:
                 self.logDebug("Using direct download")
                 return True
@@ -93,17 +93,18 @@ class NetloadIn(Hoster):
         id_regex = re.compile(self.__pattern__)
         match = id_regex.search(url)
 
-        if match:
-            #normalize url
-            self.url = 'http://www.netload.in/datei%s.htm' % match.group(1)
-            self.logDebug("URL: %s" % self.url)
-        else:
+        if not match:
             self.api_data = False
             return
 
-        apiurl = "http://api.netload.in/info.php"
+        id = match.group("ID")
+
+        self.url = 'https://www.netload.in/datei%s.htm' % id # normalize url
+        self.logDebug("URL: %s" % self.url)
+
+        apiurl = "https://api.netload.in/info.php"
         src = self.load(apiurl, cookies=False,
-                        get={"file_id": match.group(1), "auth": "Zf9SnQh9WiReEsb18akjvQGqT0I830e8", "bz": "1",
+                        get={"file_id": id, "auth": "Zf9SnQh9WiReEsb18akjvQGqT0I830e8", "bz": "1",
                              "md5": "1"}, decode=True).strip()
         if not src and n <= 3:
             sleep(0.2)
@@ -159,7 +160,7 @@ class NetloadIn(Hoster):
                     self.pyfile.name = name
 
         captchawaited = False
-        for i in range(10):
+        for i in xrange(10):
 
             if not page:
                 page = self.load(self.url)
@@ -190,7 +191,7 @@ class NetloadIn(Hoster):
             self.logDebug("Netload: Trying to find captcha")
 
             try:
-                url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)',
+                url_captcha_html = "https://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)',
                                                                     page).group(1).replace("amp;", "")
             except:
                 page = None
@@ -198,7 +199,7 @@ class NetloadIn(Hoster):
 
             try:
                 page = self.load(url_captcha_html, cookies=True)
-                captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', page).group(1)
+                captcha_url = "https://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', page).group(1)
             except:
                 self.logDebug("Netload: Could not find captcha, try again from beginning")
                 captchawaited = False
@@ -217,7 +218,7 @@ class NetloadIn(Hoster):
                 captchawaited = True
 
             captcha = self.decryptCaptcha(captcha_url)
-            page = self.load("http://netload.in/index.php?id=10", post={"file_id": file_id, "captcha_check": captcha},
+            page = self.load("https://netload.in/index.php?id=10", post={"file_id": file_id, "captcha_check": captcha},
                              cookies=True)
 
         return False
@@ -232,7 +233,7 @@ class NetloadIn(Hoster):
                 self.logDebug("Netload: Backup try for final link")
                 file_url_pattern = r"<a href=\"(.+)\" class=\"Orange_Link\">Click here"
                 attempt = re.search(file_url_pattern, page)
-                return "http://netload.in/" + attempt.group(1)
+                return "https://netload.in/" + attempt.group(1)
         except:
             self.logDebug("Netload: Getting final link failed")
             return None
