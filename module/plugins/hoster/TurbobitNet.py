@@ -36,7 +36,7 @@ class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?(turbobit.net|unextfiles.com)/(?!download/folder/)(?:download/free/)?(?P<ID>\w+).*"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __description__ = """Turbobit.net plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
@@ -168,6 +168,7 @@ class TurbobitNet(SimpleHoster):
 
     def handlePremium(self):
         self.logDebug("Premium download as user %s" % self.user)
+        self.html = self.load(self.pyfile.url)  # Useless in 0.5
         self.downloadFile()
 
     def downloadFile(self):
