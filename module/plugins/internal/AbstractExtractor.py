@@ -1,14 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 class ArchiveError(Exception):
     pass
+
 
 class CRCError(Exception):
     pass
 
+
 class WrongPassword(Exception):
     pass
+
 
 class AbtractExtractor:
 
@@ -29,7 +33,6 @@ class AbtractExtractor:
         """
         raise NotImplementedError
 
-
     def __init__(self, m, file, out, fullpath, overwrite, excludefiles, renice):
         """Initialize extractor for specific file
 
@@ -47,13 +50,11 @@ class AbtractExtractor:
         self.overwrite = overwrite
         self.excludefiles = excludefiles
         self.renice = renice
-        self.files = [] # Store extracted files here
-
+        self.files = []  #: Store extracted files here
 
     def init(self):
         """ Initialize additional data structures """
         pass
-
 
     def checkArchive(self):
         """Check if password if needed. Raise ArchiveError if integrity is

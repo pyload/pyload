@@ -21,11 +21,13 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class EasybytezComFolder(SimpleCrypter):
     __name__ = "EasybytezComFolder"
     __type__ = "crypter"
-    __pattern__ = r"https?://(www\.)?easybytez\.com/users/\w+/\w+"
-    __version__ = "0.03"
+    __pattern__ = r"http://(?:www\.)?easybytez\.com/users/(?P<ID>\d+/\d+)"
+    __version__ = "0.04"
     __description__ = """Easybytez Crypter Plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
+
+    FILE_URL_REPLACEMENTS = [(__pattern__, r"http://www.easybytez.com/users/\g<ID>")]
 
     LINK_PATTERN = r'<div class="link"><a href="(http://www\.easybytez\.com/\w+)" target="_blank">.+</a></div>'
     TITLE_PATTERN = r'<Title>Files of \d+: (?P<title>.+) folder</Title>'
