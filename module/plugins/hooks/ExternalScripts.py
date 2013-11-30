@@ -20,7 +20,7 @@
 
 import subprocess
 from os import listdir, access, X_OK, makedirs
-from os.path import join, exists, basename
+from os.path import join, exists, basename, abspath
 
 from module.plugins.Hook import Hook
 from module.utils import save_join
@@ -73,7 +73,7 @@ class ExternalScripts(Hook):
     def callScript(self, script, *args):
         try:
             cmd = [script] + [str(x) if not isinstance(x, basestring) else x for x in args]
-            self.logDebug("Executing %(script)s: %(cmd)s" % {"script": os.path.abspath(script), "cmd": " ".join(cmd)})
+            self.logDebug("Executing %(script)s: %(cmd)s" % {"script": abspath(script), "cmd": " ".join(cmd)})
             #output goes to pyload
             subprocess.Popen(cmd, bufsize=-1)
         except Exception, e:
