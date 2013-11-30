@@ -208,6 +208,8 @@ class PluginManager:
         if name not in sys.modules:  #could be already in modules
 
             # TODO: only temporary
+            # TODO: strange side effects are caused by this workaround
+            # e.g a class instance is not associated correctly with its on instance because of wrong module names
             if name.endswith("module"):
                 # name = "pyload."
                 name = name.replace(".module", "")

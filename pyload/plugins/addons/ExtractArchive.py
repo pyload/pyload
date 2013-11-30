@@ -254,7 +254,7 @@ class ExtractArchive(Addon):
                         self.logDebug("%s does not exists" % f)
 
             self.logInfo(basename(plugin.file), _("Extracting finished"))
-            self.manager.dispatchEvent("unrarFinished", plugin.out, plugin.file)
+            self.manager.dispatchEvent("extracting:finished", plugin.out, plugin.file)
 
             return plugin.getExtractedFiles()
 

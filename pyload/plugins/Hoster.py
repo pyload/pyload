@@ -89,8 +89,6 @@ class Hoster(Base):
         self.lastDownload = ""
         #: re match of the last call to `checkDownload`
         self.lastCheck = None
-        #: js engine, see `JsEngine`
-        self.js = self.core.js
 
         self.retries = 0 # amount of retries already made
         self.html = None # some plugins store html code here

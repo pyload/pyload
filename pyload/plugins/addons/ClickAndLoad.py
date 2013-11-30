@@ -21,10 +21,9 @@
 import socket
 import thread
 
-from module.plugins.Hook import Hook
+from pyload.plugins.Addon import Addon
 
-
-class ClickAndLoad(Hook):
+class ClickAndLoad(Addon):
     __name__ = "ClickAndLoad"
     __version__ = "0.22"
     __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""
@@ -36,15 +35,12 @@ class ClickAndLoad(Hook):
     def coreReady(self):
         self.port = int(self.config['webinterface']['port'])
         if self.config['webinterface']['activated']:
-            try:
-                if self.getConfig("extern"):
-                    ip = "0.0.0.0"
-                else:
-                    ip = "127.0.0.1"
+            if self.getConfig("extern"):
+                ip = "0.0.0.0"
+            else:
+                ip = "127.0.0.1"
 
-                thread.start_new_thread(proxy, (self, ip, self.port, 9666))
-            except:
-                self.logError("ClickAndLoad port already in use.")
+            thread.start_new_thread(proxy, (self, ip, self.port, 9666))
 
 
 def proxy(self, *settings):

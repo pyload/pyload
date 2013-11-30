@@ -105,6 +105,9 @@ class Base(object):
         #: last interaction task
         self.task = None
 
+        #: js engine, see `JsEngine`
+        self.js = self.core.js
+
     def __getitem__(self, item):
         """ Retrieves meta data attribute """
         return getattr(self, "__%s__" % item)

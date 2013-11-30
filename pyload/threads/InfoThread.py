@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from time import time
-from traceback import print_exc
 
 from pyload.Api import LinkStatus, DownloadStatus
 from pyload.utils.packagetools import parseNames

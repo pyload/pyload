@@ -384,6 +384,7 @@ class Core(object):
         self.api = Api(self)
 
         self.scheduler = Scheduler(self)
+        self.js = JsEngine()
 
         #hell yeah, so many important managers :D
         self.pluginManager = PluginManager(self)
@@ -392,8 +393,6 @@ class Core(object):
         self.threadManager = ThreadManager(self)
         self.addonManager = AddonManager(self)
         self.remoteManager = RemoteManager(self)
-
-        self.js = JsEngine()
 
         # enough initialization for test cases
         if tests: return

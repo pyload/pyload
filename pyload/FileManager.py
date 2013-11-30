@@ -489,7 +489,7 @@ class FileManager:
         files = [self.getFileInfo(fid) for fid in fids]
         orders = [f.fileorder for f in files]
         if min(orders) + len(files) != max(orders) + 1:
-            raise Exception("Tried to reorder non continous block of files")
+            raise Exception("Tried to reorder non continuous block of files")
 
         # minimum fileorder
         f = reduce(lambda x,y: x if x.fileorder < y.fileorder else y, files)

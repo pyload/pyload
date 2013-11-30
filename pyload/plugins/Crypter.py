@@ -48,8 +48,8 @@ class Package:
         return self.name == other.name and self.links == other.links
 
     def __repr__(self):
-        return u"<CrypterPackage name=%s, links=[%s], packs=%s" % (self.name, ",".join(str(l) for l in self.links),
-                                                                   self.packs)
+        return u"<CrypterPackage name=%s, links=[%s], packs=%s>" % (self.name, ", ".join(str(l) for l in self.links),
+                                                                    self.packs)
 
     def __hash__(self):
         return hash(self.name) ^ hash(frozenset(self.links)) ^ hash(self.name)
@@ -58,14 +58,20 @@ class Package:
 class PyFileMockup:
     """ Legacy class needed by old crypter plugins """
 
-    def __init__(self, url, pack):
+    def __init__(self, url, pack_name):
         self.url = url
         self.name = url
-        self._package = None
-        self.packageid = pack.id if pack else -1
+        self.packageid = -1
+        self.pack_name = pack_name + " Package"
 
     def package(self):
-        return self._package
+        # mockes the pyfile package
+        class PyPackage:
+            def __init__(self, f):
+                self.name = f.pack_name
+                self.folder = self.name
+
+        return PyPackage(self)
 
 
 class Crypter(Base):
@@ -145,6 +151,7 @@ class Crypter(Base):
         #: Password supplied by user
         self.password = password
 
+        # TODO: removed in future
         # For old style decrypter, do not use these!
         self.packages = []
         self.urls = []
@@ -201,7 +208,7 @@ class Crypter(Base):
             self.logDebug("Deprecated .decrypt() method in Crypter plugin")
             result = []
             for url in urls:
-                self.pyfile = PyFileMockup(url)
+                self.pyfile = PyFileMockup(url, cls.__name__)
                 self.setup()
                 self.decrypt(self.pyfile)
                 result.extend(self.convertPackages())
@@ -276,7 +283,11 @@ class Crypter(Base):
     def convertPackages(self):
         """ Deprecated """
         self.logDebug("Deprecated method .convertPackages()")
-        res = [Package(name, urls) for name, urls in self.packages]
+        res = []
+        for pack in self.packages:
+            # only use name and urls
+            res.append(Package(pack[0], pack[1]))
+
         res.extend(self.urls)
         return res
 

@@ -42,51 +42,61 @@ class DecrypterThread(BaseThread):
 
         for name, urls in plugin_map.iteritems():
             klass = self.m.core.pluginManager.loadClass("crypter", name)
-            plugin = klass(self.m.core, password)
+            plugin = None
             plugin_result = []
 
-            try:
+            #TODO: dependency check, there is a new error code for this
+            if not klass:
+                plugin_result.extend(LinkStatus(url, url, -1, DS.NotPossible, name) for url in urls)
+                self.log.debug("Plugin for decrypting was not loaded")
+            else:
                 try:
-                    plugin_result = plugin._decrypt(urls)
-                except Retry:
-                    sleep(1)
-                    plugin_result = plugin._decrypt(urls)
-            except Abort:
-                plugin.logInfo(_("Decrypting aborted"))
-            except Exception, e:
-                plugin.logError(_("Decrypting failed"), e)
+                    plugin = klass(self.m.core, password)
 
-                # generate error linkStatus
-                if err:
-                    plugin_result.extend(LinkStatus(url, url, -1, DS.Failed, name) for url in urls)
+                    try:
+                        plugin_result = plugin._decrypt(urls)
+                    except Retry:
+                        sleep(1)
+                        plugin_result = plugin._decrypt(urls)
 
-                if self.core.debug:
-                    self.core.print_exc()
-                    self.writeDebugReport(plugin.__name__, plugin=plugin)
-            finally:
-                plugin.clean()
+                    plugin.logDebug("Decrypted", plugin_result)
 
-            plugin.logDebug("Decrypted", plugin_result)
+                except Abort:
+                    plugin.logInfo(_("Decrypting aborted"))
+                except Exception, e:
+                    plugin.logError(_("Decrypting failed"), e)
+
+                    # generate error linkStatus
+                    if err:
+                        plugin_result.extend(LinkStatus(url, url, -1, DS.Failed, name) for url in urls)
+
+                    if self.core.debug:
+                        self.core.print_exc()
+                        self.writeDebugReport(plugin.__name__, plugin=plugin)
+                finally:
+                    if plugin:
+                        plugin.clean()
+
             result.extend(plugin_result)
 
         # generated packages
-        pack_names = {}
+        packs = {}
         # urls without package
         urls = []
 
         # merge urls and packages
         for p in result:
             if isinstance(p, Package):
-                if p.name in pack_names:
-                    pack_names[p.name].urls.extend(p.urls)
+                if p.name in packs:
+                    packs[p.name].urls.extend(p.urls)
                 else:
                     if not p.name:
                         urls.extend(p.links)
                     else:
-                        pack_names[p.name] = p
+                        packs[p.name] = p
             else:
                 urls.append(p)
 
         urls = uniqify(urls)
 
-        return urls, pack_names.values()
+        return urls, packs.values()

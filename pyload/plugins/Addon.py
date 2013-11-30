@@ -97,9 +97,6 @@ class Addon(Base):
 
     """
 
-    #: automatically register event listeners for functions, attribute will be deleted don't use it yourself
-    event_map = None
-
     #: periodic call interval in seconds
     interval = 0
 
@@ -111,18 +108,6 @@ class Addon(Base):
 
         #: `AddonManager`
         self.manager = manager
-
-        #register events
-        if self.event_map:
-            for event, funcs in self.event_map.iteritems():
-                if type(funcs) in (list, tuple):
-                    for f in funcs:
-                        self.evm.listenTo(event, getattr(self, f))
-                else:
-                    self.evm.listenTo(event, getattr(self, funcs))
-
-            #delete for various reasons
-            self.event_map = None
 
         self.init()
 

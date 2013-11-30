@@ -20,13 +20,14 @@
 
 import subprocess
 from os import listdir, access, X_OK, makedirs
-from os.path import join, exists, basename
-
-from module.plugins.Hook import Hook
-from module.utils import save_join
+from os.path import join, exists, basename, abspath
 
 
-class ExternalScripts(Hook):
+from pyload.plugins.Addon import Addon, AddEventListener
+from pyload.utils.fs import safe_join
+
+
+class ExternalScripts(Addon):
     __name__ = "ExternalScripts"
     __version__ = "0.23"
     __description__ = """Run external scripts"""
@@ -34,13 +35,12 @@ class ExternalScripts(Hook):
     __author_name__ = ("mkaay", "RaNaN", "spoob")
     __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org")
 
-    event_list = ["unrarFinished", "allDownloadsFinished", "allDownloadsProcessed"]
 
-    def setup(self):
+    def activate(self):
         self.scripts = {}
 
         folders = ['download_preparing', 'download_finished', 'package_finished',
-                   'before_reconnect', 'after_reconnect', 'unrar_finished',
+                   'before_reconnect', 'after_reconnect', 'extracting_finished',
                    'all_dls_finished', 'all_dls_processed']
 
         for folder in folders:
@@ -73,7 +73,7 @@ class ExternalScripts(Hook):
     def callScript(self, script, *args):
         try:
             cmd = [script] + [str(x) if not isinstance(x, basestring) else x for x in args]
-            self.logDebug("Executing %(script)s: %(cmd)s" % {"script": os.path.abspath(script), "cmd": " ".join(cmd)})
+            self.logDebug("Executing %(script)s: %(cmd)s" % {"script": abspath(script), "cmd": " ".join(cmd)})
             #output goes to pyload
             subprocess.Popen(cmd, bufsize=-1)
         except Exception, e:
@@ -86,13 +86,13 @@ class ExternalScripts(Hook):
     def downloadFinished(self, pyfile):
         for script in self.scripts['download_finished']:
             self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.name,
-                            save_join(self.config['general']['download_folder'],
+                            safe_join(self.config['general']['download_folder'],
                                       pyfile.package().folder, pyfile.name), pyfile.id)
 
     def packageFinished(self, pypack):
         for script in self.scripts['package_finished']:
             folder = self.config['general']['download_folder']
-            folder = save_join(folder, pypack.folder)
+            folder = safe_join(folder, pypack.folder)
 
             self.callScript(script, pypack.name, folder, pypack.password, pypack.id)
 
@@ -104,14 +104,17 @@ class ExternalScripts(Hook):
         for script in self.scripts['after_reconnect']:
             self.callScript(script, ip)
 
-    def unrarFinished(self, folder, fname):
-        for script in self.scripts["unrar_finished"]:
+    @AddEventListener("extracting:finished")
+    def extractingFinished(self, folder, fname):
+        for script in self.scripts["extracting_finished"]:
             self.callScript(script, folder, fname)
 
+    @AddEventListener("download:allFinished")
     def allDownloadsFinished(self):
         for script in self.scripts["all_dls_finished"]:
             self.callScript(script)
 
+    @AddEventListener("download:allProcessed")
     def allDownloadsProcessed(self):
         for script in self.scripts["all_dls_processed"]:
             self.callScript(script)
