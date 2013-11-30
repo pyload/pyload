@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyload 0.4.9.9-dev\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-10-13 18:16+0200\n"
+"POT-Creation-Date: 2013-11-30 16:17+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,6 +60,14 @@ msgid_plural "%d files"
 msgstr[0] ""
 msgstr[1] ""
 
+#: pyload/web/app/templates/default/dashboard/package.html:33
+msgid "Addons"
+msgstr ""
+
+#: pyload/web/app/templates/default/dashboard/package.html:35
+msgid "Loading..."
+msgstr ""
+
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
 msgid "Local"
 msgstr ""
@@ -102,7 +110,7 @@ msgid "Confirm"
 msgstr ""
 
 #: pyload/web/app/templates/default/setup/finished.html:20
-msgid "Pleae add a user first."
+msgid "Please add a user first."
 msgstr ""
 
 #: pyload/web/app/templates/default/setup/welcome.html:0
@@ -169,7 +177,7 @@ msgstr ""
 msgid "Try to restart it or open a bug report."
 msgstr ""
 
-#: pyload/web/app/templates/default/header/layout.html:12
+#: pyload/web/app/templates/default/header/layout.html:13
 msgid "Running..."
 msgstr ""
 
