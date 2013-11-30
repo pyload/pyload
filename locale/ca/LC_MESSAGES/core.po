@@ -1,8 +1,8 @@
 msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-10-13 12:25-0400\n"
+"POT-Creation-Date: 2013-11-30 16:17+0100\n"
+"PO-Revision-Date: 2013-11-30 10:25-0500\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -12,33 +12,33 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
-#: pyload/AddonManager.py:62
+#: pyload/AddonManager.py:77
 #, python-format
 msgid "Error when executing %s"
 msgstr "Error quan s'executa %s"
 
-#: pyload/AddonManager.py:93
+#: pyload/AddonManager.py:121
 #, python-format
 msgid "Failed activating %(name)s"
 msgstr "L'activació de %(name)s ha fallat"
 
-#: pyload/AddonManager.py:96
+#: pyload/AddonManager.py:124
 #, python-format
 msgid "Activated addons: %s"
 msgstr "Complements activats: %s"
 
-#: pyload/AddonManager.py:97
+#: pyload/AddonManager.py:125
 #, python-format
 msgid "Deactivated addons: %s"
 msgstr "Complementos desactivados: %s"
 
-#: pyload/AddonManager.py:153
-msgid "Activating Plugins..."
-msgstr "Activant Plugins..."
+#: pyload/AddonManager.py:184
+msgid "Activating addons..."
+msgstr ""
 
-#: pyload/AddonManager.py:162
-msgid "Deactivating Plugins..."
-msgstr "Desactivant Plugins..."
+#: pyload/AddonManager.py:194
+msgid "Deactivating addons..."
+msgstr ""
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -74,32 +74,32 @@ msgid "Remote"
 msgstr "Remot"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
-#: pyload/config/default.py:30 pyload/config/default.py:42
-#: pyload/config/default.py:53 pyload/config/default.py:60
-#: pyload/config/default.py:73 pyload/config/default.py:83
-#: pyload/config/default.py:91 pyload/config/default.py:103
+#: pyload/config/default.py:32 pyload/config/default.py:44
+#: pyload/config/default.py:55 pyload/config/default.py:62
+#: pyload/config/default.py:75 pyload/config/default.py:85
+#: pyload/config/default.py:93 pyload/config/default.py:105
 msgid "Description"
 msgstr "Descripció"
 
 #: pyload/config/default.py:14 pyload/config/default.py:21
-#: pyload/config/default.py:30 pyload/config/default.py:42
-#: pyload/config/default.py:53 pyload/config/default.py:60
-#: pyload/config/default.py:73 pyload/config/default.py:83
-#: pyload/config/default.py:91 pyload/config/default.py:103
+#: pyload/config/default.py:32 pyload/config/default.py:44
+#: pyload/config/default.py:55 pyload/config/default.py:62
+#: pyload/config/default.py:75 pyload/config/default.py:85
+#: pyload/config/default.py:93 pyload/config/default.py:105
 msgid "Long description"
 msgstr "Descripció llarga"
 
-#: pyload/config/default.py:16 pyload/config/default.py:56
-#: pyload/config/default.py:63
+#: pyload/config/default.py:16 pyload/config/default.py:58
+#: pyload/config/default.py:65
 msgid "Activated"
 msgstr "Activat"
 
-#: pyload/config/default.py:17 pyload/config/default.py:69
-#: pyload/config/default.py:80
+#: pyload/config/default.py:17 pyload/config/default.py:71
+#: pyload/config/default.py:82
 msgid "Port"
 msgstr ""
 
-#: pyload/config/default.py:18 pyload/config/default.py:77
+#: pyload/config/default.py:18 pyload/config/default.py:79
 msgid "Address"
 msgstr ""
 
@@ -127,213 +127,221 @@ msgstr "Compte"
 msgid "Log Rotate"
 msgstr "Rotar el Registre"
 
-#: pyload/config/default.py:30
+#: pyload/config/default.py:28
+msgid "Colorize Console"
+msgstr ""
+
+#: pyload/config/default.py:29
+msgid "Color Theme"
+msgstr ""
+
+#: pyload/config/default.py:32
 msgid "Permissions"
 msgstr "Permisos"
 
-#: pyload/config/default.py:32
+#: pyload/config/default.py:34
 msgid "Groupname"
 msgstr "Nom del grup"
 
-#: pyload/config/default.py:33
+#: pyload/config/default.py:35
 msgid "Change Group and User of Downloads"
 msgstr "Canviar Grup i Usuari de descàrregues"
 
-#: pyload/config/default.py:34
+#: pyload/config/default.py:36
 msgid "Change file mode of downloads"
 msgstr "Canviar el mode de fixter de descárregues"
 
-#: pyload/config/default.py:35 pyload/config/default.py:75
+#: pyload/config/default.py:37 pyload/config/default.py:77
 msgid "Username"
 msgstr ""
 
-#: pyload/config/default.py:36
+#: pyload/config/default.py:38
 msgid "Filemode for Downloads"
 msgstr "Mode de fitxer per descàrregues"
 
-#: pyload/config/default.py:37
+#: pyload/config/default.py:39
 msgid "Change group of running process"
 msgstr "Canviar el grup del procés en execució"
 
-#: pyload/config/default.py:38
+#: pyload/config/default.py:40
 msgid "Folder Permission mode"
 msgstr "Mode de Permís Carpeta"
 
-#: pyload/config/default.py:39
+#: pyload/config/default.py:41
 msgid "Change user of running process"
 msgstr "Canviar usuari del procés en execució"
 
-#: pyload/config/default.py:42
+#: pyload/config/default.py:44
 msgid "General"
 msgstr ""
 
-#: pyload/config/default.py:44
+#: pyload/config/default.py:46
 msgid "Language"
 msgstr ""
 
-#: pyload/config/default.py:45
+#: pyload/config/default.py:47
 msgid "Download Folder"
 msgstr "Carpeta de Descárregues"
 
-#: pyload/config/default.py:46
+#: pyload/config/default.py:48
 msgid "Use Checksum"
 msgstr "Utilitza Checksum"
 
-#: pyload/config/default.py:47
+#: pyload/config/default.py:49
 msgid "Create folder for each package"
 msgstr "Crear una carpeta per a cada paquet"
 
-#: pyload/config/default.py:48
+#: pyload/config/default.py:50
 msgid "Debug Mode"
 msgstr "Mode Depuració"
 
-#: pyload/config/default.py:49
+#: pyload/config/default.py:51
 msgid "Min Free Space (MB)"
 msgstr "Mínim Espai Lliure (MB)"
 
-#: pyload/config/default.py:50
+#: pyload/config/default.py:52
 msgid "CPU Priority"
 msgstr "Prioritat CPU"
 
-#: pyload/config/default.py:53
+#: pyload/config/default.py:55
 msgid "SSL"
 msgstr "SSL"
 
-#: pyload/config/default.py:55
+#: pyload/config/default.py:57
 msgid "SSL Certificate"
 msgstr "Certificat SSL"
 
-#: pyload/config/default.py:57
+#: pyload/config/default.py:59
 msgid "SSL Key"
 msgstr "Clau SSL"
 
-#: pyload/config/default.py:60
+#: pyload/config/default.py:62
 msgid "Webinterface"
 msgstr "Interfície Web"
 
-#: pyload/config/default.py:62
+#: pyload/config/default.py:64
 msgid "Template"
 msgstr "Plantilla"
 
-#: pyload/config/default.py:64
+#: pyload/config/default.py:66
 msgid "Path Prefix"
 msgstr "Prefix de ruta"
 
-#: pyload/config/default.py:65
+#: pyload/config/default.py:67
 msgid "Server"
 msgstr ""
 
-#: pyload/config/default.py:66
+#: pyload/config/default.py:68
 msgid "Favor specific server"
 msgstr "Afavorir servidor específic"
 
-#: pyload/config/default.py:67
+#: pyload/config/default.py:69
 msgid "IP"
 msgstr "IP"
 
-#: pyload/config/default.py:68
+#: pyload/config/default.py:70
 msgid "Use HTTPS"
 msgstr "Utilitza HTTPS"
 
-#: pyload/config/default.py:70
+#: pyload/config/default.py:72
 msgid "Development mode"
 msgstr "Mode Desenvolupament"
 
-#: pyload/config/default.py:73
+#: pyload/config/default.py:75
 msgid "Proxy"
 msgstr "Proxy"
 
-#: pyload/config/default.py:76
+#: pyload/config/default.py:78
 msgid "Use Proxy"
 msgstr "Utilitza Proxy"
 
-#: pyload/config/default.py:78
+#: pyload/config/default.py:80
 msgid "Password"
 msgstr ""
 
-#: pyload/config/default.py:79
+#: pyload/config/default.py:81
 msgid "Protocol"
 msgstr "Protocol"
 
-#: pyload/config/default.py:83
+#: pyload/config/default.py:85
 msgid "Reconnect"
 msgstr "Reconnectar"
 
-#: pyload/config/default.py:85 pyload/config/default.py:106
+#: pyload/config/default.py:87 pyload/config/default.py:108
 msgid "End"
 msgstr "Final"
 
-#: pyload/config/default.py:86
+#: pyload/config/default.py:88
 msgid "Use Reconnect"
 msgstr "Utilitzar Reconnectar"
 
-#: pyload/config/default.py:87
+#: pyload/config/default.py:89
 msgid "Method"
 msgstr "Mètode"
 
-#: pyload/config/default.py:88 pyload/config/default.py:105
+#: pyload/config/default.py:90 pyload/config/default.py:107
 msgid "Start"
 msgstr "Iniciar"
 
-#: pyload/config/default.py:91
+#: pyload/config/default.py:93
 msgid "Download"
 msgstr "Descarregar"
 
-#: pyload/config/default.py:93
+#: pyload/config/default.py:95
 msgid "Max Parallel Downloads"
 msgstr "Màxim descàrregues paral·les"
 
-#: pyload/config/default.py:94
+#: pyload/config/default.py:96
 msgid "Limit Download Speed"
 msgstr "Limitar la velocitat de descàrrega"
 
-#: pyload/config/default.py:95
+#: pyload/config/default.py:97
 msgid "Download interface to bind (ip or Name)"
 msgstr "Interfície de Descàrrega a associar (IP o Nom)"
 
-#: pyload/config/default.py:96
+#: pyload/config/default.py:98
 msgid "Skip already existing files"
 msgstr "Ometre fitxers ja existents"
 
-#: pyload/config/default.py:97
+#: pyload/config/default.py:99
 msgid "Max Download Speed in kb/s"
 msgstr "Velocitat de Descàrrega Máx. en kb/s"
 
-#: pyload/config/default.py:98
+#: pyload/config/default.py:100
 msgid "Allow IPv6"
 msgstr "Permetre IPv6"
 
-#: pyload/config/default.py:99
+#: pyload/config/default.py:101
 msgid "Max connections for one download"
 msgstr "Connexions Màx. per una descàrrega"
 
-#: pyload/config/default.py:100
+#: pyload/config/default.py:102
 msgid "Restart failed downloads on startup"
 msgstr "Reiniciar descàrregues fallides en l'arrencada"
 
-#: pyload/config/default.py:103
+#: pyload/config/default.py:105
 msgid "Download Time"
 msgstr "Temps de Descàrrega"
 
-#: pyload/network/HTTPDownload.py:249
-#, python-format
-msgid "Download chunks failed, fallback to single connection | %s"
-msgstr "Descàrrega per trossos fallida, tornant a la connexió única | %s"
-
-#: pyload/api/DownloadApi.py:44
+#: pyload/api/DownloadApi.py:33
 #, python-format
 msgid "Added package %(name)s as folder %(folder)s"
 msgstr "Afegit paquet %(name)s com a carpeta %(folder)s"
 
-#: pyload/api/DownloadApi.py:95
+#: pyload/api/DownloadApi.py:84
 #, python-format
 msgid "Added %d links to package"
 msgstr "Afegits %d enllaços al paquet"
 
-#: pyload/AccountManager.py:69
+#: pyload/AccountManager.py:49
 #, python-format
-msgid "Unknown account plugin %s"
-msgstr "Conta desconeguda del plugin %s"
+msgid "Account plugin %s not available"
+msgstr ""
+
+#: pyload/AccountManager.py:70
+#, python-format
+msgid "Could not load account %s"
+msgstr ""
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
@@ -414,6 +422,10 @@ msgstr "temporalment fora de línia"
 msgid "aborted"
 msgstr "avortat"
 
+#: pyload/FileManager.py:55
+msgid "not possible"
+msgstr ""
+
 #: pyload/FileManager.py:56
 msgid "decrypting"
 msgstr "desxifrant"
@@ -435,7 +447,7 @@ msgstr "deconegut"
 msgid "Package finished: %s"
 msgstr "Paquet finalitzat: %s"
 
-#: pyload/Api.py:152
+#: pyload/Api.py:151
 #, python-format
 msgid "User '%s' tries to log in"
 msgstr "Usuari '%s' intenta iniciar sessió"
@@ -444,73 +456,73 @@ msgstr "Usuari '%s' intenta iniciar sessió"
 msgid "Received Quit signal"
 msgstr "S'ha rebut la senyal de Sortida"
 
-#: pyload/Core.py:323
+#: pyload/Core.py:321
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr "ja s'estat executant pyLoad amb el pid %s"
 
-#: pyload/Core.py:337
+#: pyload/Core.py:335
 #, python-format
 msgid "Failed changing group: %s"
 msgstr "Ha fallat el canvi de el grup: %s"
 
-#: pyload/Core.py:347
+#: pyload/Core.py:345
 #, python-format
 msgid "Failed changing user: %s"
 msgstr "Ha fallat el canvi d'usuari: %s"
 
-#: pyload/Core.py:358
+#: pyload/Core.py:356
 msgid "Starting"
 msgstr "Començant"
 
-#: pyload/Core.py:359
+#: pyload/Core.py:357
 #, python-format
 msgid "Using home directory: %s"
 msgstr "Emprant el directori d'inici: %s"
 
-#: pyload/Core.py:373
+#: pyload/Core.py:371
 msgid "All links removed"
 msgstr "Tots els enllaços eliminats"
 
-#: pyload/Core.py:403
+#: pyload/Core.py:401
 #, python-format
 msgid "Download time: %s"
 msgstr "Temps de Descàrrega: %s"
 
-#: pyload/Core.py:418
+#: pyload/Core.py:416
 #, python-format
 msgid "Free space: %s"
 msgstr "Espai lliure: %s"
 
-#: pyload/Core.py:438
+#: pyload/Core.py:436
 msgid "Activating Accounts..."
 msgstr "Activant Comptes..."
 
-#: pyload/Core.py:443
+#: pyload/Core.py:441
 msgid "Restarting failed downloads..."
 msgstr "Reiniciant descàrregues fallides..."
 
-#: pyload/Core.py:451
+#: pyload/Core.py:449
 msgid "pyLoad is up and running"
 msgstr "pyLoad està en funcionament"
 
-#: pyload/Core.py:474
+#: pyload/Core.py:472
 msgid "restarting pyLoad"
 msgstr "reiniciant pyLoad"
 
-#: pyload/Core.py:478
+#: pyload/Core.py:476
 msgid "pyLoad quits"
 msgstr "pyLoad està sortint"
 
-#: pyload/Core.py:564
+#: pyload/Core.py:593
 msgid "shutting down..."
 msgstr "apagant..."
 
-#: pyload/Core.py:579
+#: pyload/Core.py:608
 msgid "error while shutting down"
 msgstr "ha succeït un error mentre s'apagava"
 
-#: pyload/Core.py:661
+#: pyload/Core.py:690
 msgid "killed pyLoad from terminal"
 msgstr "pyLoad tancat pel terminal"
 
@@ -518,47 +530,47 @@ msgstr "pyLoad tancat pel terminal"
 msgid "Database was deleted due to incompatible version."
 msgstr "Base de dades suprimit a causa de versió incompatible."
 
-#: pyload/threads/DecrypterThread.py:50
-msgid "Decrypting failed"
-msgstr "Desxifrar fracassat"
-
-#: pyload/threads/DecrypterThread.py:73
+#: pyload/threads/DecrypterThread.py:30
 #, python-format
 msgid "Decrypted %(count)d links into package %(name)s"
 msgstr "Desxifrat %(count)d enllaços en paquet %(name)s"
 
-#: pyload/threads/DecrypterThread.py:80
-msgid "No links decrypted"
-msgstr "Cap enllaç desxifrat"
+#: pyload/threads/DecrypterThread.py:55
+msgid "Decrypting aborted"
+msgstr ""
 
-#: pyload/threads/InfoThread.py:147
+#: pyload/threads/DecrypterThread.py:57
+msgid "Decrypting failed"
+msgstr "Desxifrar fracassat"
+
+#: pyload/threads/InfoThread.py:143
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
 msgstr "Obtenint informació per %(name)s failed | %(err)s"
 
-#: pyload/threads/ThreadManager.py:155
+#: pyload/threads/ThreadManager.py:147
 #, python-format
 msgid "Reconnect Failed: %s"
 msgstr "Reconnexió fallida: %s"
 
-#: pyload/threads/ThreadManager.py:192
+#: pyload/threads/ThreadManager.py:187
 msgid "Reconnect script not found!"
 msgstr "No s'ha trobat l'script de reconnexió!"
 
-#: pyload/threads/ThreadManager.py:198
+#: pyload/threads/ThreadManager.py:193
 msgid "Starting reconnect"
 msgstr "Iniciant reconnexió"
 
-#: pyload/threads/ThreadManager.py:212
+#: pyload/threads/ThreadManager.py:207
 msgid "Failed executing reconnect script!"
 msgstr "L'execució de l'script de reconnexió ha fallat!"
 
-#: pyload/threads/ThreadManager.py:224
+#: pyload/threads/ThreadManager.py:218
 #, python-format
 msgid "Reconnected, new IP: %s"
 msgstr "Reconnectat, nova IP: %s"
 
-#: pyload/threads/ThreadManager.py:298
+#: pyload/threads/ThreadManager.py:296
 msgid "Not enough space left on device"
 msgstr "No queda suficient espai lliure al dispositiu"
 
@@ -615,11 +627,11 @@ msgstr "Descàrrega omitida: %(name)s due to %(plugin)s"
 msgid "Internal Server Error"
 msgstr "Error de Servidor Intern"
 
-#: pyload/threads/AddonThread.py:55
+#: pyload/threads/AddonThread.py:69
 msgid "An Error occurred"
 msgstr "S'ha produït un Error"
 
-#: pyload/PluginManager.py:316
+#: pyload/PluginManager.py:176
 #, python-format
 msgid "Error importing %(name)s: %(msg)s"
 msgstr "Error important %(name)s: %(msg)s"
@@ -627,4 +639,8 @@ msgstr "Error important %(name)s: %(msg)s"
 #: pyload/utils/JsEngine.py:188
 msgid "No js engine detected, please install either Spidermonkey, ossp-js, pyv8, nodejs or rhino"
 msgstr "No s'ha detectat cap motor js, si us plau instal·la Spidermonkey, ossp-js, pyv8 o rhino"
+
+#: pyload/utils/packagetools.py:130
+msgid "Unnamed package"
+msgstr ""
 

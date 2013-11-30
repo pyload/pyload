@@ -1,8 +1,8 @@
 msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-07-20 22:13+0200\n"
-"PO-Revision-Date: 2013-08-07 09:03-0400\n"
+"POT-Creation-Date: 2013-11-30 16:17+0100\n"
+"PO-Revision-Date: 2013-11-30 10:25-0500\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -12,191 +12,200 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: crowdin.net\n"
 
-#: pyload/plugins/network/CurlDownload.py:241
+#: pyload/plugins/network/CurlDownload.py:245
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
 msgstr "ダウンロード チャンクへの移行に失敗しました 1 つの接続 |。%s"
 
-#: pyload/plugins/Base.py:329
+#: pyload/plugins/Base.py:327
 msgid "Pil and tesseract not installed and no Client connected for captcha decrypting"
 msgstr "Pil とテッセラクト インストールされていないクライアント接続 captcha 解読"
 
-#: pyload/plugins/Base.py:333
+#: pyload/plugins/Base.py:331
 msgid "No captcha result obtained in appropriate time."
 msgstr "適切な時期に取得したキャプチャ結果はありません。"
 
-#: pyload/plugins/Hoster.py:282 pyload/plugins/Hoster.py:319
-#: pyload/plugins/hoster/ARD.py:76
+#: pyload/plugins/Hoster.py:267 pyload/plugins/Hoster.py:304
+#: pyload/plugins/hoster/ARD.py:79
 #, python-format
 msgid "Setting User and Group failed: %s"
 msgstr "ユーザーとグループの設定に失敗しました: %s"
 
-#: pyload/plugins/Crypter.py:136
+#: pyload/plugins/Crypter.py:170
 msgid "Not existing file or unsupported protocol"
 msgstr "存在しないファイルまたはサポートされていないプロトコル"
 
-#: pyload/plugins/hoster/RapidshareCom.py:96
+#: pyload/plugins/Crypter.py:228
+#, python-format
+msgid "Could not remove file '%s'"
+msgstr ""
+
+#: pyload/plugins/hoster/RapidshareCom.py:100
 msgid "Rapidshare: Traffic Share (direct download)"
 msgstr "急流: トラフィックを共有 (ダウンロードによる直販)"
 
-#: pyload/plugins/hoster/RapidshareCom.py:123
-#: pyload/plugins/hoster/RapidshareCom.py:189
+#: pyload/plugins/hoster/RapidshareCom.py:127
+#: pyload/plugins/hoster/RapidshareCom.py:194
 msgid "Already downloading from this ip address, waiting 60 seconds"
 msgstr "既にこの ip アドレスからダウンロードする、60 秒を待っています。"
 
-#: pyload/plugins/hoster/RapidshareCom.py:127
+#: pyload/plugins/hoster/RapidshareCom.py:131
 msgid "Invalid Auth Code, download will be restarted"
 msgstr "無効な認証コード、ダウンロードが再起動"
 
-#: pyload/plugins/hoster/RapidshareCom.py:193
+#: pyload/plugins/hoster/RapidshareCom.py:199
 msgid "RapidShareCom: No free slots"
 msgstr "RapidShareCom： 空きスロット"
 
-#: pyload/plugins/hoster/RapidshareCom.py:196
+#: pyload/plugins/hoster/RapidshareCom.py:202
 msgid "You need a premium account for this file"
 msgstr "このファイルのプレミアム アカウントを必要があります。"
 
-#: pyload/plugins/hoster/RapidshareCom.py:198
+#: pyload/plugins/hoster/RapidshareCom.py:204
 msgid "Filename reported invalid"
 msgstr "無効なファイル名を報告"
 
-#: pyload/plugins/hoster/RealdebridCom.py:40
-#: pyload/plugins/hoster/Premium4Me.py:27
-#: pyload/plugins/hoster/MultiDebridCom.py:39
-#: pyload/plugins/hoster/ZeveraCom.py:24
-#: pyload/plugins/hoster/AlldebridCom.py:37
-#: pyload/plugins/hoster/RehostTo.py:25 pyload/plugins/hoster/ReloadCc.py:22
-#: pyload/plugins/hoster/DebridItaliaCom.py:38
-#: pyload/plugins/hoster/PremiumizeMe.py:19
+#: pyload/plugins/hoster/RPNetBiz.py:26
+#: pyload/plugins/hoster/RealdebridCom.py:41
+#: pyload/plugins/hoster/Premium4Me.py:28
+#: pyload/plugins/hoster/MultiDebridCom.py:46
+#: pyload/plugins/hoster/FastixRu.py:36 pyload/plugins/hoster/ZeveraCom.py:22
+#: pyload/plugins/hoster/UnrestrictLi.py:53
+#: pyload/plugins/hoster/SimplydebridCom.py:25
+#: pyload/plugins/hoster/AlldebridCom.py:38
+#: pyload/plugins/hoster/RehostTo.py:26 pyload/plugins/hoster/ReloadCc.py:24
+#: pyload/plugins/hoster/DebridItaliaCom.py:45
+#: pyload/plugins/hoster/PremiumizeMe.py:22
+#: pyload/plugins/addons/RPNetBiz.py:43
 #, python-format
 msgid "Please enter your %s account or deactivate this plugin"
 msgstr "%S アカウントを入力するか、このプラグインを無効にしてください。"
 
-#: pyload/plugins/hoster/MegaNz.py:55
+#: pyload/plugins/hoster/MegaNz.py:56
 msgid "Decryption failed"
 msgstr "復号化に失敗しました"
 
-#: pyload/plugins/hoster/MegaNz.py:99
+#: pyload/plugins/hoster/MegaNz.py:106
 msgid "No file key provided in the URL"
 msgstr "URL で提供されるファイル キーがありません。"
 
-#: pyload/plugins/hoster/MegaNz.py:111
+#: pyload/plugins/hoster/MegaNz.py:118
 msgid "Error code:"
 msgstr "エラー コード:"
 
-#: pyload/plugins/hoster/FileserveCom.py:97
+#: pyload/plugins/hoster/FileserveCom.py:99
 msgid "Parallel download error, now waiting 60s."
 msgstr "並列ダウンロード エラー、60秒を待っています。"
 
-#: pyload/plugins/hoster/FileserveCom.py:208
+#: pyload/plugins/hoster/FileserveCom.py:215
 msgid "Not logged in."
 msgstr "ログインしていません。"
 
-#: pyload/plugins/hoster/UploadedTo.py:135
+#: pyload/plugins/hoster/UploadedTo.py:129
 msgid "API key invalid"
 msgstr "API キーが無効です。"
 
-#: pyload/plugins/hoster/UploadedTo.py:160
+#: pyload/plugins/hoster/UploadedTo.py:153
 #, python-format
 msgid "%s: Not enough traffic left"
 msgstr "%s：十分なトラフィックがない"
 
-#: pyload/plugins/hoster/UploadedTo.py:163
+#: pyload/plugins/hoster/UploadedTo.py:156
 msgid "Traffic exceeded"
 msgstr "トラフィックを超えています"
 
-#: pyload/plugins/hoster/BasePlugin.py:63
+#: pyload/plugins/hoster/BasePlugin.py:65
 msgid "Authorization required (username:password)"
 msgstr " (username:password)承認が必要"
 
-#: pyload/plugins/hoster/NetloadIn.py:143
-#: pyload/plugins/hoster/NetloadIn.py:167
+#: pyload/plugins/hoster/NetloadIn.py:146
+#: pyload/plugins/hoster/NetloadIn.py:170
 msgid "File temporarily not available"
 msgstr "ファイルが一時的に利用できません。"
 
-#: pyload/plugins/hoster/NetloadIn.py:180
+#: pyload/plugins/hoster/NetloadIn.py:183
 #, python-format
 msgid "Netload: waiting between downloads %d s."
 msgstr "Netload: ダウンロード %d 秒間待機しています。"
 
-#: pyload/plugins/hoster/NetloadIn.py:209
+#: pyload/plugins/hoster/NetloadIn.py:214
 #, python-format
 msgid "Netload: waiting for captcha %d s."
 msgstr "Netload: キャプチャ %d 秒を待っています。"
 
-#: pyload/plugins/hoster/NetloadIn.py:248
+#: pyload/plugins/hoster/NetloadIn.py:252
 msgid "Downloaded File was empty"
 msgstr "ダウンロードしたファイルが空だった"
 
-#: pyload/plugins/hoster/FilesMailRu.py:98
+#: pyload/plugins/hoster/FilesMailRu.py:99
 #, python-format
-msgid "There was HTML Code in the Downloaded File(%s)...redirect error? The Download will be restarted."
-msgstr "ダウンロードしたファイル (%s). の HTML コードがあったエラーをリダイレクトですか？ダウンロードが再開されます。"
+msgid "There was HTML Code in the Downloaded File (%s)...redirect error? The Download will be restarted."
+msgstr ""
 
-#: pyload/plugins/hoster/XHamsterCom.py:75
-#: pyload/plugins/hoster/XHamsterCom.py:84
-#: pyload/plugins/hoster/XHamsterCom.py:87
+#: pyload/plugins/hoster/XHamsterCom.py:74
+#: pyload/plugins/hoster/XHamsterCom.py:83
+#: pyload/plugins/hoster/XHamsterCom.py:86
 #, python-format
 msgid "long_url: %s"
 msgstr "long_url: %s"
 
-#: pyload/plugins/Account.py:117 pyload/plugins/Account.py:123
+#: pyload/plugins/Account.py:140 pyload/plugins/Account.py:146
 #, python-format
 msgid "Could not login with account %(user)s | %(msg)s"
 msgstr "アカウント%(user)s ではログインできませんでした |%(msg)s"
 
-#: pyload/plugins/Account.py:118
+#: pyload/plugins/Account.py:141
 msgid "Wrong Password"
 msgstr "間違ったパスワード"
 
-#: pyload/plugins/Account.py:184
+#: pyload/plugins/Account.py:202
 #, python-format
 msgid "Get Account Info for %s"
 msgstr "%sのアカウント情報を取得します。"
 
-#: pyload/plugins/Account.py:193
+#: pyload/plugins/Account.py:211
 #, python-format
 msgid "Error: %s"
 msgstr "エラー: %s"
 
-#: pyload/plugins/Account.py:242
+#: pyload/plugins/Account.py:264
 #, python-format
 msgid "Your Time %s has a wrong format, use: 1:22-3:44"
 msgstr "%s時間、形式が間違っていますを使用して: 1:22-3:44"
 
-#: pyload/plugins/Account.py:265
+#: pyload/plugins/Account.py:287
 #, python-format
 msgid "Account %s has not enough traffic, checking again in 30min"
 msgstr "アカウント %s が十分なトラフィックがない、30 分でもう一度チェック"
 
-#: pyload/plugins/Account.py:273
+#: pyload/plugins/Account.py:295
 #, python-format
 msgid "Account %s is expired, checking again in 1h"
 msgstr "アカウント %s は有効期限が切れて、1 h でもう一度チェック"
 
-#: pyload/plugins/Account.py:290
+#: pyload/plugins/Account.py:312
 #, python-format
 msgid "Login with %s"
 msgstr "%sでログイン"
 
-#: pyload/plugins/Addon.py:118
+#: pyload/plugins/Addon.py:163
 #, python-format
-msgid "Error executing addons: %s"
-msgstr "アドオンを実行中のエラー: %s"
+msgid "Error executing addon: %s"
+msgstr ""
 
-#: pyload/plugins/accounts/BitshareCom.py:36
+#: pyload/plugins/accounts/BitshareCom.py:37
 msgid "Activate direct Download in your Bitshare Account"
 msgstr "Bitshare アカウントで直接のダウンロードを有効にします。"
 
-#: pyload/plugins/crypter/SerienjunkiesOrg.py:128
+#: pyload/plugins/crypter/SerienjunkiesOrg.py:130
 msgid "Downloadlimit reached"
 msgstr "ダウンロード制限に達しました"
 
-#: pyload/plugins/addons/Premium4Me.py:30
+#: pyload/plugins/addons/Premium4Me.py:29
 msgid "Please add your premium.to account first and restart pyLoad"
-msgstr "まず、premium.to アカウントを追加し、pyLoad を再起動してください。"
+msgstr ""
 
-#: pyload/plugins/addons/ExternalScripts.py:53
+#: pyload/plugins/addons/ExternalScripts.py:54
 #, python-format
 msgid "Installed scripts for %s: "
 msgstr "%s のインストール スクリプト"
@@ -205,36 +214,36 @@ msgstr "%s のインストール スクリプト"
 msgid "Script not executable:"
 msgstr "スクリプトがない実行可能ファイル:"
 
-#: pyload/plugins/addons/ExternalScripts.py:79
+#: pyload/plugins/addons/ExternalScripts.py:80
 #, python-format
 msgid "Error in %(script)s: %(error)s"
 msgstr "%(script)s のエラー：%(error)s"
 
-#: pyload/plugins/addons/CaptchaTrader.py:72
-#: pyload/plugins/addons/Captcha9kw.py:56
-#: pyload/plugins/addons/ExpertDecoders.py:49
+#: pyload/plugins/addons/CaptchaTrader.py:69
+#: pyload/plugins/addons/Captcha9kw.py:59
+#: pyload/plugins/addons/ExpertDecoders.py:50
 #, python-format
 msgid "%s credits left"
 msgstr "%s のクレジットを左"
 
-#: pyload/plugins/addons/CaptchaTrader.py:120
+#: pyload/plugins/addons/CaptchaTrader.py:117
 msgid "Could not send response."
 msgstr "応答を送信できませんでした。"
 
-#: pyload/plugins/addons/CaptchaTrader.py:138
+#: pyload/plugins/addons/CaptchaTrader.py:135
 msgid "Your CaptchaTrader Account has not enough credits"
 msgstr "あなたの CaptchaTrader アカウントが十分なクレジット"
 
-#: pyload/plugins/addons/Captcha9kw.py:89
+#: pyload/plugins/addons/Captcha9kw.py:93
 #, python-format
 msgid "New CaptchaID from upload: %s : %s"
 msgstr "アップロードから新しい CaptchaID: %s: %s"
 
-#: pyload/plugins/addons/Captcha9kw.py:123
+#: pyload/plugins/addons/Captcha9kw.py:129
 msgid "Your Captcha 9kw.eu Account has not enough credits"
 msgstr "あなたのキャプチャ 9kw.eu アカウントが十分なクレジット"
 
-#: pyload/plugins/addons/RehostTo.py:34
+#: pyload/plugins/addons/RehostTo.py:32
 msgid "Please add your rehost.to account first and restart pyLoad"
 msgstr "まず、rehost.to アカウントを追加し、pyLoad を再起動してください。"
 
@@ -243,38 +252,38 @@ msgstr "まず、rehost.to アカウントを追加し、pyLoad を再起動し�
 msgid "Added %s from HotFolder"
 msgstr "HotFolder から%s追加 "
 
-#: pyload/plugins/addons/ClickAndLoad.py:74
+#: pyload/plugins/addons/ClickAndLoad.py:75
 msgid "Click'N'Load: Port 9666 already in use"
 msgstr "Click'N'Load: 使用中のポート 9666"
 
-#: pyload/plugins/addons/XMPPInterface.py:82
-#: pyload/plugins/addons/IRCInterface.py:75
+#: pyload/plugins/addons/XMPPInterface.py:83
+#: pyload/plugins/addons/IRCInterface.py:74
 #, python-format
 msgid "Package finished: %s"
 msgstr "パッケージが完了しました: %s"
 
-#: pyload/plugins/addons/XMPPInterface.py:90
+#: pyload/plugins/addons/XMPPInterface.py:91
 #, python-format
 msgid "Download finished: %(name)s @ %(plugin)s"
 msgstr "ダウンロード完了: %(name)s @ %(plugin)s"
 
-#: pyload/plugins/addons/ExpertDecoders.py:98
+#: pyload/plugins/addons/ExpertDecoders.py:95
 msgid "Your ExpertDecoders Account has not enough credits"
 msgstr "あなたの ExpertDecoders アカウントが十分なクレジット"
 
-#: pyload/plugins/addons/UpdateManager.py:73
+#: pyload/plugins/addons/UpdateManager.py:74
 msgid "*** Plugins have been updated, please restart pyLoad ***"
 msgstr "* * * プラグインが更新されて、pyLoad を再起動してください * * *"
 
-#: pyload/plugins/addons/UpdateManager.py:75
+#: pyload/plugins/addons/UpdateManager.py:76
 msgid "Plugins updated and reloaded"
 msgstr "プラグインの更新し、再読み込み"
 
-#: pyload/plugins/addons/UpdateManager.py:78
+#: pyload/plugins/addons/UpdateManager.py:79
 msgid "No plugin updates available"
 msgstr "プラグインの更新はありません。"
 
-#: pyload/plugins/addons/UpdateManager.py:95
+#: pyload/plugins/addons/UpdateManager.py:96
 msgid "No Updates for pyLoad"
 msgstr "PyLoad の更新"
 
@@ -306,86 +315,94 @@ msgstr "%sを更新するときのエラー"
 msgid "Version mismatch"
 msgstr "バージョンの不一致"
 
-#: pyload/plugins/addons/ExtractArchive.py:92
+#: pyload/plugins/addons/ExtractArchive.py:97
 #, python-format
 msgid "No %s installed"
 msgstr "%s がインストールされました"
 
-#: pyload/plugins/addons/ExtractArchive.py:94
 #: pyload/plugins/addons/ExtractArchive.py:99
+#: pyload/plugins/addons/ExtractArchive.py:104
 #, python-format
 msgid "Could not activate %s"
 msgstr "%S をアクティブにできませんでした。"
 
-#: pyload/plugins/addons/ExtractArchive.py:104
+#: pyload/plugins/addons/ExtractArchive.py:109
 msgid "Activated"
 msgstr "アクティブ化"
 
-#: pyload/plugins/addons/ExtractArchive.py:106
+#: pyload/plugins/addons/ExtractArchive.py:111
 msgid "No Extract plugins activated"
 msgstr "アクティブ化のプラグインがない"
 
-#: pyload/plugins/addons/ExtractArchive.py:118
+#: pyload/plugins/addons/ExtractArchive.py:116
+msgid "Extract package"
+msgstr ""
+
+#: pyload/plugins/addons/ExtractArchive.py:116
+msgid "Scans package for archives and extract them"
+msgstr ""
+
+#: pyload/plugins/addons/ExtractArchive.py:123
 #, python-format
 msgid "Package %s queued for later extracting"
 msgstr "パッケージ %s は、抽出後のキュー"
 
-#: pyload/plugins/addons/ExtractArchive.py:143
+#: pyload/plugins/addons/ExtractArchive.py:146
 #, python-format
 msgid "Check package %s"
 msgstr "パッケージ %s をチェック"
 
-#: pyload/plugins/addons/ExtractArchive.py:183
+#: pyload/plugins/addons/ExtractArchive.py:187
 #, python-format
 msgid "Extract to %s"
 msgstr "%S を抽出します。"
 
-#: pyload/plugins/addons/ExtractArchive.py:197
+#: pyload/plugins/addons/ExtractArchive.py:202
 msgid "No files found to extract"
 msgstr "ファイルを抽出するが見つかりません"
 
-#: pyload/plugins/addons/ExtractArchive.py:203
+#: pyload/plugins/addons/ExtractArchive.py:209
 msgid "extracting"
 msgstr "展開中"
 
-#: pyload/plugins/addons/ExtractArchive.py:214
+#: pyload/plugins/addons/ExtractArchive.py:220
 msgid "Password protected"
 msgstr "パスワードで保護されています"
 
-#: pyload/plugins/addons/ExtractArchive.py:234
+#: pyload/plugins/addons/ExtractArchive.py:241
 msgid "Wrong password"
 msgstr "正しくないパスワード"
 
-#: pyload/plugins/addons/ExtractArchive.py:242
+#: pyload/plugins/addons/ExtractArchive.py:249
 #, python-format
 msgid "Deleting %s files"
 msgstr "%s 個のファイルを削除中"
 
-#: pyload/plugins/addons/ExtractArchive.py:247
+#: pyload/plugins/addons/ExtractArchive.py:256
 msgid "Extracting finished"
 msgstr "展開が完了しました"
 
-#: pyload/plugins/addons/ExtractArchive.py:254
+#: pyload/plugins/addons/ExtractArchive.py:262
 msgid "Archive Error"
 msgstr "アーカイブ エラー"
 
-#: pyload/plugins/addons/ExtractArchive.py:256
+#: pyload/plugins/addons/ExtractArchive.py:264
 msgid "CRC Mismatch"
 msgstr "CRC が不一致"
 
-#: pyload/plugins/addons/ExtractArchive.py:260
+#: pyload/plugins/addons/ExtractArchive.py:268
 msgid "Unknown Error"
 msgstr "不明なエラー"
 
-#: pyload/plugins/addons/ExtractArchive.py:312
+#: pyload/plugins/addons/ExtractArchive.py:320
 msgid "Setting User and Group failed"
 msgstr "ユーザー設定およびグループに失敗しました"
 
-#: pyload/plugins/addons/LinkdecrypterCom.py:36
+#: pyload/plugins/addons/LinkdecrypterCom.py:37
 msgid "Crypter list not found"
 msgstr "Crypter リストが見つかりません"
 
-#: pyload/plugins/addons/LinkdecrypterCom.py:50
+#: pyload/plugins/addons/LinkdecrypterCom.py:51
 msgid "Crypter list is empty"
 msgstr "Crypter リストは空です。"
 
@@ -394,31 +411,31 @@ msgstr "Crypter リストは空です。"
 msgid "Download finished: %(name)s @ %(plugin)s "
 msgstr "ダウンロード完了: %(name)s @ %(plugin)s"
 
-#: pyload/plugins/addons/IRCInterface.py:94
+#: pyload/plugins/addons/IRCInterface.py:95
 #, python-format
 msgid "New Captcha Request: %s"
 msgstr "新しいキャプチャ要求: %s"
 
-#: pyload/plugins/addons/IRCInterface.py:95
+#: pyload/plugins/addons/IRCInterface.py:96
 #, python-format
 msgid "Answer with 'c %s text on the captcha'"
 msgstr "'C %s テキストのキャプチャを' と答え"
 
-#: pyload/plugins/addons/PremiumizeMe.py:46
+#: pyload/plugins/addons/PremiumizeMe.py:48
 msgid "Please add a valid premiumize.me account first and restart pyLoad."
-msgstr "最初の premiumize.me の有効なアカウントを追加して、pyLoad を再起動してください。"
+msgstr ""
 
 #: pyload/plugins/addons/CaptchaBrotherhood.py:69
 #, python-format
 msgid "%d credits left"
 msgstr "%d のクレジットを残った"
 
-#: pyload/plugins/addons/MultiHoster.py:29
+#: pyload/plugins/addons/MultiHoster.py:43
 #, python-format
 msgid "Activated %s"
 msgstr "アクティブ化 %s"
 
-#: pyload/plugins/addons/MultiHoster.py:47
+#: pyload/plugins/addons/MultiHoster.py:61
 msgid "No Hoster loaded"
 msgstr "ホスティング サービスが読み込まれていません"
 

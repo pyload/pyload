@@ -1,8 +1,8 @@
 msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-08-31 15:21-0400\n"
+"POT-Creation-Date: 2013-11-30 16:17+0100\n"
+"PO-Revision-Date: 2013-11-30 10:25-0500\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -12,365 +12,290 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
-#: pyload/Setup.py:72
-msgid "Would you like to configure pyLoad via Webinterface?"
-msgstr "Szeretnéd a pyLoad-ot webes felületen beállítani?"
-
-#: pyload/Setup.py:73
-msgid "You need a Browser and a connection to this PC for it."
-msgstr "Szükséged lesz egy böngészőre és egy kapcsolatra ehhez a számítógéphez."
-
-#: pyload/Setup.py:74
-msgid "Url would be: http://hostname:8000/"
-msgstr "A cím: http://hostname:8000/"
-
-#: pyload/Setup.py:75
-msgid "Start initial webinterface for configuration?"
-msgstr "Webes felület indítása a beállításokhoz?"
-
-#: pyload/Setup.py:86
+#: pyload/setup/Setup.py:118
 msgid "Welcome to the pyLoad Configuration Assistent."
 msgstr "Üdvözöllek a pyLoad beállítási segédben."
 
-#: pyload/Setup.py:87
+#: pyload/setup/Setup.py:119
 msgid "It will check your system and make a basic setup in order to run pyLoad."
 msgstr "Ellenőrizzük a rendszert és létrehozunk egy alap beállítást a pyLoad számára."
 
-#: pyload/Setup.py:89
+#: pyload/setup/Setup.py:121
 msgid "The value in brackets [] always is the default value,"
 msgstr "A [] közötti érték minden esetben az alapértelmezett érték,"
 
-#: pyload/Setup.py:90
+#: pyload/setup/Setup.py:122
 msgid "in case you don't want to change it or you are unsure what to choose, just hit enter."
 msgstr "ha nem akarod megváltoztatni, vagy nem vagy biztos benne mit válassz, csak nyomj entert."
 
-#: pyload/Setup.py:92
+#: pyload/setup/Setup.py:124
 msgid "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore."
 msgstr "Ne feledd: a segédhez visszatérhetsz ha a pyLoadCore-t a --setup vagy -s paraméterekkel indítod."
 
-#: pyload/Setup.py:93
+#: pyload/setup/Setup.py:125
 msgid "If you have any problems with this assistent hit CTRL+C,"
 msgstr "Ha bármi probléma lépne fel a segéd futása közben nyomj STRG-C kombinációt,"
 
-#: pyload/Setup.py:94
+#: pyload/setup/Setup.py:126
 msgid "to abort and don't let him start with pyLoadCore automatically anymore."
 msgstr "a megszakításhoz, és hogy ne induljon el újra automatikusan."
 
-#: pyload/Setup.py:96
+#: pyload/setup/Setup.py:128
 msgid "When you are ready for system check, hit enter."
 msgstr "Ha készen állsz a rendszer ellenőrzésre, nyomj Entert."
 
-#: pyload/Setup.py:103
-msgid "Features missing: "
-msgstr "Hiányzó szolgáltatások: "
-
-#: pyload/Setup.py:107
-msgid "no py-crypto available"
-msgstr "py-crypto nem elérhető"
-
-#: pyload/Setup.py:108
-msgid "You need this if you want to decrypt container files."
-msgstr "Erre szükséged van a konténer fájlok dekódolásához."
-
-#: pyload/Setup.py:112
-msgid "no SSL available"
-msgstr "SSL nem elérhető"
-
-#: pyload/Setup.py:113
-msgid "This is needed if you want to establish a secure connection to core or webinterface."
-msgstr "Erre szükséged van, ha biztonságos kapcsolatot szeretnél a mag vagy webes felület eléréséhez."
-
-#: pyload/Setup.py:114
-msgid "If you only want to access locally to pyLoad ssl is not useful."
-msgstr "Ha csak helyben akarod elérni a pyLoad-ot, az ssl nem szükséges."
-
-#: pyload/Setup.py:118
-msgid "no Captcha Recognition available"
-msgstr "nincs elérhető Captcha felismerő"
-
-#: pyload/Setup.py:119
-msgid "Only needed for some hosters and as freeuser."
-msgstr "Csak néhány szolgáltatóhoz kell és ingyenes felhasználóként."
-
-#: pyload/Setup.py:123
-msgid "no JavaScript engine found"
-msgstr "nincs JavaScript motor"
-
-#: pyload/Setup.py:124
-msgid "You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino"
-msgstr "Néhány Click'N'Load linknek szüksége van erre. Telepítsd a Spidermonkey, ossp-js, pyv8 vagy rhino csomagokat"
-
-#: pyload/Setup.py:126
-msgid "You can abort the setup now and fix some dependencies if you want."
-msgstr "Most megszakíthatod a telepítést, és kijavíthatod az esetleges hibákat."
-
-#: pyload/Setup.py:128
+#: pyload/setup/Setup.py:134
 msgid "Continue with setup?"
 msgstr "Folytatod a beállítást?"
 
-#: pyload/Setup.py:134
+#: pyload/setup/Setup.py:140
 #, python-format
 msgid "Do you want to change the config path? Current is %s"
 msgstr "Megváltoztatod a konfigurációs fájlok helyét? A jelenlegi: %s"
 
-#: pyload/Setup.py:136
+#: pyload/setup/Setup.py:142
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
 msgstr "Ha a pyLoad-ot a belső tárolóban futtatja a fő partíción, ajánlott megváltoztatni."
 
-#: pyload/Setup.py:137
+#: pyload/setup/Setup.py:143
 msgid "Change config path?"
 msgstr "Megváltoztatod a konfigurációs fájlok helyét?"
 
-#: pyload/Setup.py:143
+#: pyload/setup/Setup.py:149
 msgid "Do you want to configure login data and basic settings?"
 msgstr "Be akarod állítani a bejelentkezési adatokat és az általános beállításokat?"
 
-#: pyload/Setup.py:144
+#: pyload/setup/Setup.py:150
 msgid "This is recommend for first run."
 msgstr "Ajánlott az első futtatásnál."
 
-#: pyload/Setup.py:145
+#: pyload/setup/Setup.py:151
 msgid "Make basic setup?"
 msgstr "Létre akarod hozni az általános beállításokat?"
 
-#: pyload/Setup.py:152
+#: pyload/setup/Setup.py:158
 msgid "Do you want to configure ssl?"
 msgstr "Be akarod állítani az ssl-t?"
 
-#: pyload/Setup.py:153
+#: pyload/setup/Setup.py:159
 msgid "Configure ssl?"
 msgstr "Beállítod az ssl-t?"
 
-#: pyload/Setup.py:159
+#: pyload/setup/Setup.py:164
 msgid "Do you want to configure webinterface?"
 msgstr "Beállítod a webes kezelőfelületet?"
 
-#: pyload/Setup.py:160
+#: pyload/setup/Setup.py:165
 msgid "Configure webinterface?"
 msgstr "Beállítod a webes kezelőfelületet?"
 
-#: pyload/Setup.py:165
+#: pyload/setup/Setup.py:170
 msgid "Setup finished successfully."
 msgstr "A beállítások sikeresen elvégezve."
 
-#: pyload/Setup.py:166
+#: pyload/setup/Setup.py:171
 msgid "Hit enter to exit and restart pyLoad"
 msgstr "Nyomj entert a kilépéshez majd indítsd újra a pyLoad-ot"
 
-#: pyload/Setup.py:173
-msgid "Webinterface running for setup."
-msgstr "Webes felület indítása a beállításokhoz."
-
-#: pyload/Setup.py:190
+#: pyload/setup/Setup.py:178
 msgid "## Basic Setup ##"
 msgstr "## Általános beállítások ##"
 
-#: pyload/Setup.py:193
+#: pyload/setup/Setup.py:181
 msgid "The following logindata is valid for CLI, GUI and webinterface."
 msgstr "Ezek a belépési adatok a következőkhöz alkalmasak: CLI, GUI, web felület."
 
-#: pyload/Setup.py:199 pyload/Setup.py:288 pyload/Setup.py:304
+#: pyload/setup/Setup.py:187 pyload/setup/Setup.py:265
+#: pyload/setup/Setup.py:279
 msgid "Username"
 msgstr "Felhasználónév"
 
-#: pyload/Setup.py:205
-msgid "External clients (GUI, CLI or other) need remote access to work over the network."
-msgstr "Külső kliensek (GUI, CLI, ...) számára szükséges távoli elérés a hálózaton keresztüli működéshez."
-
-#: pyload/Setup.py:206
-msgid "However, if you only want to use the webinterface you may disable it to save ram."
-msgstr "Ha csak a webes felületet használod, akkor kikapcsolhatod, hogy memóriát takaríts meg."
-
-#: pyload/Setup.py:207
-msgid "Enable remote access"
-msgstr "Távoli hozzáférés engedélyezése"
-
-#: pyload/Setup.py:211
+#: pyload/setup/Setup.py:194
 msgid "Language"
 msgstr "Nyelv"
 
-#: pyload/Setup.py:213
+#: pyload/setup/Setup.py:196
 msgid "Download folder"
 msgstr "Letöltési könyvtár"
 
-#: pyload/Setup.py:214
+#: pyload/setup/Setup.py:197
 msgid "Max parallel downloads"
 msgstr "Max. egyidejű letöltés"
 
-#: pyload/Setup.py:218
+#: pyload/setup/Setup.py:199
 msgid "Use Reconnect?"
 msgstr "Újracsatlakozás használata?"
 
-#: pyload/Setup.py:221
+#: pyload/setup/Setup.py:202
 msgid "Reconnect script location"
 msgstr "Újracsatlakozó script helye"
 
-#: pyload/Setup.py:226
+#: pyload/setup/Setup.py:207
 msgid "## Webinterface Setup ##"
 msgstr "## Webes felület Beállítása ##"
 
-#: pyload/Setup.py:229
+#: pyload/setup/Setup.py:210
 msgid "Activate webinterface?"
 msgstr "Webes felület engedélyezése?"
 
-#: pyload/Setup.py:231
+#: pyload/setup/Setup.py:212
 msgid "Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally."
 msgstr "Figyelt cím, ha csak helyben akarod elérni akkor használd az 127.0.0.1 vagy localhost nevet."
 
-#: pyload/Setup.py:232
+#: pyload/setup/Setup.py:213
 msgid "Address"
 msgstr "Cím"
 
-#: pyload/Setup.py:233
+#: pyload/setup/Setup.py:214
 msgid "Port"
 msgstr "Port"
 
-#: pyload/Setup.py:235
+#: pyload/setup/Setup.py:216
 msgid "pyLoad offers several server backends, now following a short explanation."
 msgstr "A pyLoad számos backend szerver lehetőséget nyújt, ezekről következik egy rövid ismertető."
 
-#: pyload/Setup.py:236
+#: pyload/setup/Setup.py:217
 msgid "Default server, this server offers SSL and is a good alternative to builtin."
 msgstr "Alap beállítás, ez a szerver támogatja az SSL-t és jó alternatíva lehet a beépítettel szemben."
 
-#: pyload/Setup.py:238
+#: pyload/setup/Setup.py:219
 msgid "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job."
 msgstr "Használható több web-szerverrel (apache, lighttpd) egyéni beállítást igényel, ami nem egyszerű."
 
-#: pyload/Setup.py:239
+#: pyload/setup/Setup.py:220
 msgid "Very fast alternative written in C, requires libev and linux knowledge."
 msgstr "Nagyon gyors C-ben írt alternatíva, libev és linux ismeretek szükségesek hozzá."
 
-#: pyload/Setup.py:240
+#: pyload/setup/Setup.py:221
 msgid "Get it from here: https://github.com/jonashaag/bjoern, compile it"
 msgstr "Letölthető innen: https://github.com/jonashaag/bjoern, le kell fordítani"
 
-#: pyload/Setup.py:241
+#: pyload/setup/Setup.py:222
 msgid "and copy bjoern.so to pyload/lib"
 msgstr "és a bjoern.so fájlt a pyload/lib könyvtárba másolni"
 
-#: pyload/Setup.py:245
+#: pyload/setup/Setup.py:226
 msgid "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"
 msgstr "Figyelem: Néhány kivételes esetben a beépített szerver nem működik megfelelően. Ha hibát észlel a webes felületen"
 
-#: pyload/Setup.py:246
+#: pyload/setup/Setup.py:227
 msgid "come back here and change the builtin server to the threaded one here."
 msgstr "térjen vissza ide, és válasszon másik szervert."
 
-#: pyload/Setup.py:248
+#: pyload/setup/Setup.py:229
 msgid "Server"
 msgstr "Szerver"
 
-#: pyload/Setup.py:253
+#: pyload/setup/Setup.py:234
 msgid "## SSL Setup ##"
 msgstr "## SSL beállítás ##"
 
-#: pyload/Setup.py:255
+#: pyload/setup/Setup.py:236
 msgid "Execute these commands from pyLoad config folder to make ssl certificates:"
 msgstr "Futtasd ezeket a parancsokat a konfigurációs könyvtárban, az ssl tanúsítványok elkészítéséhez:"
 
-#: pyload/Setup.py:261
+#: pyload/setup/Setup.py:242
 msgid "If you're done and everything went fine, you can activate ssl now."
 msgstr "Ha kész vagy, és minden rendben, akkor aktiválhatod az ssl-t."
 
-#: pyload/Setup.py:262
+#: pyload/setup/Setup.py:243
 msgid "Activate SSL?"
 msgstr "SSL engedélyezése?"
 
-#: pyload/Setup.py:278
+#: pyload/setup/Setup.py:255
 msgid "Select action"
 msgstr "Válassz műveletet"
 
-#: pyload/Setup.py:279
+#: pyload/setup/Setup.py:256
 msgid "1 - Create/Edit user"
 msgstr "1 - Felhasználó szerkesztés/felvétel"
 
-#: pyload/Setup.py:280
+#: pyload/setup/Setup.py:257
 msgid "2 - List users"
 msgstr "2 - Felhasználók listázása"
 
-#: pyload/Setup.py:281
+#: pyload/setup/Setup.py:258
 msgid "3 - Remove user"
 msgstr "3 - Felhasználó törlése"
 
-#: pyload/Setup.py:282
+#: pyload/setup/Setup.py:259
 msgid "4 - Quit"
 msgstr "4 - Kilépés"
 
-#: pyload/Setup.py:294
+#: pyload/setup/Setup.py:270
 msgid "Users"
 msgstr "Felhasználók"
 
-#: pyload/Setup.py:322
+#: pyload/setup/Setup.py:318
 msgid "Setting new configpath, current configuration will not be transferred!"
 msgstr "A konfigurációs fájlok új helye, a jelenlegi konfiguráció nem kerül áthelyezésre."
 
-#: pyload/Setup.py:323
+#: pyload/setup/Setup.py:319
 msgid "Config path"
 msgstr "Konfiguráció helye"
 
-#: pyload/Setup.py:331
+#: pyload/setup/Setup.py:327
 msgid "Config path changed, setup will now close, please restart to go on."
 msgstr "A konfigurációs fájlok helye megváltozott."
 
-#: pyload/Setup.py:332
+#: pyload/setup/Setup.py:328
 msgid "Press Enter to exit."
 msgstr "Nyomj Entert a kilépéshez."
 
-#: pyload/Setup.py:336
+#: pyload/setup/Setup.py:332
 #, python-format
 msgid "Setting config path failed: %s"
 msgstr "A beállítások eléri útja hibás: %s"
 
-#: pyload/Setup.py:347
+#: pyload/setup/Setup.py:343
 msgid "y"
 msgstr "i"
 
-#: pyload/Setup.py:349
+#: pyload/setup/Setup.py:345
 msgid "n"
 msgstr "n"
 
-#: pyload/Setup.py:373
+#: pyload/setup/Setup.py:369
 msgid "Password: "
 msgstr "Jelszó: "
 
-#: pyload/Setup.py:377
+#: pyload/setup/Setup.py:373
 msgid "Password too short. Use at least 4 symbols."
 msgstr "Rövid jelszó. Legalább 4 karaktert használj."
 
-#: pyload/Setup.py:380
+#: pyload/setup/Setup.py:376
 msgid "Password (again): "
 msgstr "Jelszó (ismét): "
 
-#: pyload/Setup.py:386
+#: pyload/setup/Setup.py:382
 msgid "Passwords did not match."
 msgstr "A jelszavak nem egyeznek."
 
-#: pyload/Setup.py:397
+#: pyload/setup/Setup.py:393
 msgid "yes"
 msgstr "igen"
 
-#: pyload/Setup.py:397
+#: pyload/setup/Setup.py:393
 msgid "true"
 msgstr "igaz"
 
-#: pyload/Setup.py:397
+#: pyload/setup/Setup.py:393
 msgid "t"
 msgstr "i"
 
-#: pyload/Setup.py:400
+#: pyload/setup/Setup.py:396
 msgid "no"
 msgstr "nem"
 
-#: pyload/Setup.py:400
+#: pyload/setup/Setup.py:396
 msgid "false"
 msgstr "hamis"
 
-#: pyload/Setup.py:400
+#: pyload/setup/Setup.py:396
 msgid "f"
 msgstr "h"
 
-#: pyload/Setup.py:403 pyload/Setup.py:413
+#: pyload/setup/Setup.py:399 pyload/setup/Setup.py:409
 msgid "Invalid Input"
 msgstr "Hibás érték"
 

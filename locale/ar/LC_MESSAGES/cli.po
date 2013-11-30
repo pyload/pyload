@@ -1,15 +1,15 @@
 msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-08-31 15:21-0400\n"
+"POT-Creation-Date: 2013-11-30 16:17+0100\n"
+"PO-Revision-Date: 2013-11-30 10:25-0500\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural= n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 "X-Generator: crowdin.net\n"
 
 #: pyload/cli/AddPackage.py:48
@@ -169,7 +169,7 @@ msgstr " إنهاء"
 
 #: pyload/cli/Cli.py:289 pyload/cli/Cli.py:296
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
-msgstr "الرجاء استخدام بناء الجملة التالي: إضافة < اسم الحزمة > <رابط><رابط2> ..."
+msgstr "الرجاء استخدام بناء الجملة التالي: إضافة <Package name><link><link2> ..."
 
 #: pyload/cli/Cli.py:315
 #, python-format
@@ -214,7 +214,7 @@ msgstr "حذف حزم من قائمة الانتظار/جامع الروابط"
 
 #: pyload/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
-msgstr "نقل الحزم من قائمة انتظار إلى جامع الروابط أو العكس بالعكس"
+msgstr "نقل الحزم من قائمة الانتظار إلى جامع الروابط أو العكس بالعكس"
 
 #: pyload/cli/Cli.py:451
 msgid "Restart files"
@@ -238,7 +238,7 @@ msgstr "إيقاف الخادم مؤقتا"
 
 #: pyload/cli/Cli.py:456
 msgid "continue downloads"
-msgstr "متابعة التحميل"
+msgstr "متابعة التنزيلات"
 
 #: pyload/cli/Cli.py:457
 msgid "Toggle pause/unpause"

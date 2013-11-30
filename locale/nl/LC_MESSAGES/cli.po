@@ -1,8 +1,8 @@
 msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-10-13 12:25-0400\n"
+"POT-Creation-Date: 2013-11-30 16:17+0100\n"
+"PO-Revision-Date: 2013-11-30 10:25-0500\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -32,11 +32,11 @@ msgstr "Parse de links die je wilt toevoegen."
 #: pyload/cli/AddPackage.py:59
 #, python-format
 msgid "Type %s when done."
-msgstr "Typ %s als het klaar is."
+msgstr "Type %s als het klaar is."
 
 #: pyload/cli/AddPackage.py:60
 msgid "Links added: "
-msgstr "Links toegevoegd: "
+msgstr "Toegevoegde links: "
 
 #: pyload/cli/AddPackage.py:64 pyload/cli/ManageFiles.py:149
 msgid " back to main menu"
@@ -64,7 +64,7 @@ msgstr "Wat wil je herstarten?"
 
 #: pyload/cli/ManageFiles.py:113
 msgid "Choose what you want to do, or enter package number."
-msgstr ""
+msgstr "Kies wat je wilt doen of vul pakketnummer in."
 
 #: pyload/cli/ManageFiles.py:115
 msgid "delete"
@@ -88,7 +88,7 @@ msgstr " - volgende"
 
 #: pyload/cli/Cli.py:75 pyload/cli/Cli.py:133
 msgid " Command Line Interface"
-msgstr ""
+msgstr " Opdrachtprompt"
 
 #: pyload/cli/Cli.py:165
 #, python-format
@@ -109,7 +109,7 @@ msgstr " Compleet in: "
 
 #: pyload/cli/Cli.py:179
 msgid " ID: "
-msgstr ""
+msgstr " ID: "
 
 #: pyload/cli/Cli.py:184
 msgid "waiting: "
@@ -121,11 +121,11 @@ msgstr "Status:"
 
 #: pyload/cli/Cli.py:191
 msgid "paused"
-msgstr ""
+msgstr "gepauzeerd"
 
 #: pyload/cli/Cli.py:193
 msgid "running"
-msgstr ""
+msgstr "lopend"
 
 #: pyload/cli/Cli.py:196
 msgid "total Speed"
@@ -258,7 +258,7 @@ msgstr "Kan configuratiebestand voor gebruiker niet aanmaken"
 
 #: pyload/cli/Cli.py:548 pyload/cli/Cli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."
-msgstr "Om verbinding te maken met deze pyLoad Core is py-openssl nodig."
+msgstr "Om verbinding te maken met pyLoad is py-openssl noodzakelijk."
 
 #: pyload/cli/Cli.py:555
 msgid "Address: "

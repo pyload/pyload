@@ -1,29 +1,29 @@
 msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2013-07-17 15:39+0200\n"
-"PO-Revision-Date: 2013-10-13 12:25-0400\n"
+"POT-Creation-Date: 2013-11-30 16:17+0100\n"
+"PO-Revision-Date: 2013-11-30 10:25-0500\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Hindi\n"
 "Language: hi_IN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
 #: pyload/cli/AddPackage.py:48
 msgid "Add Package:"
-msgstr ""
+msgstr "पैकेज जोड़ें:"
 
 #: pyload/cli/AddPackage.py:53
 msgid "Enter a name for the new package"
-msgstr ""
+msgstr "नए पैकेज को नाम दें "
 
 #: pyload/cli/AddPackage.py:57
 #, python-format
 msgid "Package: %s"
-msgstr ""
+msgstr "पैकेज: %s"
 
 #: pyload/cli/AddPackage.py:58
 msgid "Parse the links you want to add."
@@ -32,15 +32,15 @@ msgstr ""
 #: pyload/cli/AddPackage.py:59
 #, python-format
 msgid "Type %s when done."
-msgstr ""
+msgstr "पूरा होने पर %s टाइप करें "
 
 #: pyload/cli/AddPackage.py:60
 msgid "Links added: "
-msgstr ""
+msgstr "जोड़े गए लिंक"
 
 #: pyload/cli/AddPackage.py:64 pyload/cli/ManageFiles.py:149
 msgid " back to main menu"
-msgstr ""
+msgstr "मुख्या मेन्यू पर वापस जाएं "
 
 #: pyload/cli/ManageFiles.py:97
 msgid "Manage Packages:"
@@ -68,7 +68,7 @@ msgstr ""
 
 #: pyload/cli/ManageFiles.py:115
 msgid "delete"
-msgstr ""
+msgstr "मिटायें "
 
 #: pyload/cli/ManageFiles.py:115
 msgid "move"
@@ -76,15 +76,15 @@ msgstr ""
 
 #: pyload/cli/ManageFiles.py:115
 msgid "restart"
-msgstr ""
+msgstr "पुनःआरंभ करें "
 
 #: pyload/cli/ManageFiles.py:148
 msgid " - previous"
-msgstr ""
+msgstr "-पिछला "
 
 #: pyload/cli/ManageFiles.py:148
 msgid " - next"
-msgstr ""
+msgstr "-अगला "
 
 #: pyload/cli/Cli.py:75 pyload/cli/Cli.py:133
 msgid " Command Line Interface"
@@ -93,15 +93,15 @@ msgstr ""
 #: pyload/cli/Cli.py:165
 #, python-format
 msgid "%s Downloads:"
-msgstr ""
+msgstr "%s डाउनलोड:"
 
 #: pyload/cli/Cli.py:177
 msgid " Speed: "
-msgstr ""
+msgstr " गति: "
 
 #: pyload/cli/Cli.py:177
 msgid " Size: "
-msgstr ""
+msgstr " आकार: "
 
 #: pyload/cli/Cli.py:178
 msgid " Finished in: "
@@ -109,15 +109,15 @@ msgstr ""
 
 #: pyload/cli/Cli.py:179
 msgid " ID: "
-msgstr ""
+msgstr " आईडी: "
 
 #: pyload/cli/Cli.py:184
 msgid "waiting: "
-msgstr ""
+msgstr "प्रतीक्षा में :"
 
 #: pyload/cli/Cli.py:191 pyload/cli/Cli.py:193
 msgid "Status:"
-msgstr ""
+msgstr "स्थिति:"
 
 #: pyload/cli/Cli.py:191
 msgid "paused"
@@ -129,7 +129,7 @@ msgstr ""
 
 #: pyload/cli/Cli.py:196
 msgid "total Speed"
-msgstr ""
+msgstr "कुल गति"
 
 #: pyload/cli/Cli.py:196
 msgid "Files in queue"
@@ -137,15 +137,15 @@ msgstr ""
 
 #: pyload/cli/Cli.py:197
 msgid "Total"
-msgstr ""
+msgstr "कुल"
 
 #: pyload/cli/Cli.py:203
 msgid "Menu:"
-msgstr ""
+msgstr "मेन्यू "
 
 #: pyload/cli/Cli.py:205
 msgid " Add Links"
-msgstr ""
+msgstr "लिंक्स जोड़ें"
 
 #: pyload/cli/Cli.py:206
 msgid " Manage Queue"
@@ -238,7 +238,7 @@ msgstr ""
 
 #: pyload/cli/Cli.py:456
 msgid "continue downloads"
-msgstr ""
+msgstr "डाउनलोड जारी रखें "
 
 #: pyload/cli/Cli.py:457
 msgid "Toggle pause/unpause"
@@ -246,11 +246,11 @@ msgstr ""
 
 #: pyload/cli/Cli.py:458
 msgid "kill server"
-msgstr ""
+msgstr "सर्वर बंद करें "
 
 #: pyload/cli/Cli.py:460
 msgid "List of commands:"
-msgstr ""
+msgstr "कमांड सूची "
 
 #: pyload/cli/Cli.py:473
 msgid "Couldn't write user config file"
@@ -266,15 +266,15 @@ msgstr ""
 
 #: pyload/cli/Cli.py:556
 msgid "Port: "
-msgstr ""
+msgstr "पोर्ट: "
 
 #: pyload/cli/Cli.py:557
 msgid "Username: "
-msgstr ""
+msgstr "उपयोगकर्ता नाम: "
 
 #: pyload/cli/Cli.py:561
 msgid "Password: "
-msgstr ""
+msgstr "पासवर्ड: "
 
 #: pyload/cli/Cli.py:566 pyload/cli/Cli.py:575
 msgid "Login data is wrong."
