@@ -7,14 +7,18 @@
     {{ name }}
     </span>
 
-    <div class="package-frame">
+    <div class="package-frame{{#if paused}} paused{{/if}}">
         <div class="tag-area">
             <!--<span class="badge badge-success"><i class="icon-tag"></i>video</span>-->
             <!--<span class="badge badge-success badge-ghost"><i class="icon-tag"></i> Add Tag</span>-->
         </div>
         <div class="package-indicator">
             <i class="icon-plus-sign btn-move" data-toggle="tooltip" title="Move files here"></i>
-            <i class="icon-pause" data-toggle="tooltip" title="Pause Package"></i>
+            {{#if paused}}
+                <i class="icon-play toggle-paused" data-toggle="tooltip" title="Unpause Package"></i>
+            {{else}}
+                <i class="icon-pause toggle-paused" data-toggle="tooltip" title="Pause Package"></i>
+            {{/if}}
             <i class="icon-refresh" data-toggle="tooltip" title="Restart Package"></i>
             {{#if shared }}
             <i class="icon-eye-open" data-toggle="tooltip" title="Package is public"></i>

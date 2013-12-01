@@ -37,12 +37,12 @@ class DownloadApi(ApiComponent):
 
 
     @RequirePerm(Permission.Add)
-    def addPackage(self, name, links, password=""):
+    def addPackage(self, name, links, password="", paused=False):
         """Convenient method to add a package to the top-level and for adding links.
 
         :return: package id
         """
-        return self.addPackageChild(name, links, password, -1, False)
+        return self.addPackageChild(name, links, password, -1, paused)
 
     @RequirePerm(Permission.Add)
     def addPackageP(self, name, links, password, paused):
@@ -61,7 +61,7 @@ class DownloadApi(ApiComponent):
         else:
             folder = ""
 
-        pid = self.createPackage(name, folder, root, password)
+        pid = self.createPackage(name, folder, root, password, paused=paused)
         self.addLinks(pid, links)
 
         return pid

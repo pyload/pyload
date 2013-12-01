@@ -5,6 +5,7 @@ import re
 from urllib import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
+from traceback import print_exc
 
 from pyload.utils.fs import safe_filename
 
@@ -16,6 +17,10 @@ try:
 except:
     pass
 
+def generate_and_add(urls, paused):
+    packs = PYLOAD.generatePackages(urls)
+    for name, urls in packs.iteritems():
+        PYLOAD.addPackage(name, urls, paused=paused)
 
 def local_check(function):
     def _view(*args, **kwargs):
@@ -42,9 +47,9 @@ def add(request):
     urls = filter(lambda x: x != "", request.POST['urls'].split("\n"))
 
     if package:
-        PYLOAD.addPackage(package, urls, 0)
+        PYLOAD.addPackage(package, urls, paused=True)
     else:
-        PYLOAD.generateAndAddPackages(urls, 0)
+        generate_and_add(urls, True)
 
     return ""
 
@@ -61,7 +66,7 @@ def addcrypted():
     dlc_file.close()
 
     try:
-        PYLOAD.addPackage(package, [dlc_path], 0)
+        PYLOAD.addPackage(package, [dlc_path], paused=True)
     except:
         return HTTPError()
     else:
@@ -108,11 +113,12 @@ def addcrypted2():
 
     try:
         if package:
-            PYLOAD.addPackage(package, result, 0)
+            PYLOAD.addPackage(package, result, paused=True)
         else:
-            PYLOAD.generateAndAddPackages(result, 0)
+            generate_and_add(result, True)
     except:
-        return "failed can't add"
+        print_exc()
+        return "failed"
     else:
         return "success\r\n"
 
@@ -125,16 +131,17 @@ def flashgot():
     if request.environ['HTTP_REFERER'] != "http://localhost:9666/flashgot" and request.environ['HTTP_REFERER'] != "http://127.0.0.1:9666/flashgot":
         return HTTPError()
 
-    autostart = int(request.forms.get('autostart', 0))
+    autostart = bool(int(request.forms.get('autostart', 0)))
     package = request.forms.get('package', None)
     urls = filter(lambda x: x != "", request.forms['urls'].split("\n"))
+
+    # TODO: folder?
     folder = request.forms.get('dir', None)
 
     if package:
-        PYLOAD.addPackage(package, urls, autostart)
+        PYLOAD.addPackage(package, urls, paused=autostart)
     else:
-        PYLOAD.generateAndAddPackages(urls, autostart)
-
+        generate_and_add(urls, autostart)
     return ""
 
 @route("/crossdomain.xml")

@@ -28,10 +28,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
 
                 var self = this;
                 // When package is added we reload the data
-                this.listenTo(App.vent, 'package:added', function() {
-                    console.log('Package tree caught, package:added event');
-                    self.tree.fetch();
-                });
+                this.listenTo(App.vent, 'package:added', _.bind(this.fetch, this));
+                this.listenTo(App.vent, 'package:inserted', _.bind(this.fetch, this));
 
                 this.listenTo(App.vent, 'file:updated', _.bind(this.fileUpdated, this));
 
@@ -57,6 +55,11 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
                 }});
 
                 this.$('.input').select2({tags: ['a', 'b', 'sdf']});
+            },
+
+            fetch: function() {
+                console.log('Fetching package tree');
+                this.tree.fetch();
             },
 
             update: function() {

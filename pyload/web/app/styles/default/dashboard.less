@@ -85,6 +85,10 @@
 
     .package-frame {
       background-color: @light;
+      &.paused {
+        .stripes(fade(@yellowLightest, 90%), @light);
+     }
+
     }
   }
 

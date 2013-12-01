@@ -11,6 +11,7 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashb
             events: {
                 'click .package-name, .btn-open': 'open',
                 'click .icon-refresh': 'restart',
+                'click .toggle-paused': 'pause',
                 'click .select': 'select',
                 'click .icon-chevron-down': 'loadMenu',
                 'click .btn-delete': 'deleteItem',
@@ -66,6 +67,10 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashb
             open: function(e) {
                 e.preventDefault();
                 App.dashboard.openPackage(this.model);
+            },
+
+            pause: function(e) {
+                this.model.togglePaused();
             },
 
             select: function(e) {

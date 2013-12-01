@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pyload.Api import Api, RequirePerm, Permission, DownloadState, PackageDoesNotExist, FileDoesNotExist
+from pyload.Api import Api, RequirePerm, Permission, DownloadState, PackageStatus as PS, PackageDoesNotExist, FileDoesNotExist
 from pyload.utils import uniqify
 
 from ApiComponent import ApiComponent
@@ -114,8 +114,24 @@ class FileApi(ApiComponent):
         self.core.files.save()
 
     @RequirePerm(Permission.Modify)
-    def setPackageFolder(self, pid, path):
-        pass
+    def setPackagePaused(self, pid, paused):
+        """ Sets the paused state of a package if possible.
+
+        :param pid:  package id
+        :param paused: desired paused state of the package
+        :return the new package status
+        """
+        p = self.core.files.getPackage(pid)
+        if not p: raise PackageDoesNotExist(pid)
+
+        if p.status == PS.Ok and paused:
+            p.status = PS.Paused
+        elif p.status == PS.Paused and not paused:
+            p.status = PS.Ok
+
+        p.sync()
+
+        return p.status
 
     @RequirePerm(Permission.Modify)
     def movePackage(self, pid, root):

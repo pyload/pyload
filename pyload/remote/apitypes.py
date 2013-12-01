@@ -507,7 +507,7 @@ class Iface(object):
 		pass
 	def setInteractionResult(self, iid, result):
 		pass
-	def setPackageFolder(self, pid, path):
+	def setPackagePaused(self, pid, paused):
 		pass
 	def setPassword(self, username, old_password, new_password):
 		pass

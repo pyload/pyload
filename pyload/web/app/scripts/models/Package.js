@@ -1,5 +1,5 @@
-define(['jquery', 'backbone', 'underscore', 'app', 'collections/FileList', 'require'],
-    function($, Backbone, _, App, FileList, require) {
+define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collections/FileList', 'require'],
+    function($, Backbone, _, App, Api, FileList, require) {
         'use strict';
 
         return Backbone.Model.extend({
@@ -36,6 +36,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'collections/FileList', 'requ
             toJSON: function(options) {
                 var obj = Backbone.Model.prototype.toJSON.call(this, options);
                 obj.percent = Math.round(obj.stats.linksdone * 100 / obj.stats.linkstotal);
+                obj.paused = obj.status === Api.PackageStatus.Paused;
 
                 return obj;
             },
@@ -62,6 +63,21 @@ define(['jquery', 'backbone', 'underscore', 'app', 'collections/FileList', 'requ
 
             save: function(options) {
                 // TODO
+            },
+
+            togglePaused: function() {
+                var self = this;
+                var paused = this.get('status') === Api.PackageStatus.Paused;
+
+                $.ajax(App.apiRequest('setPackagePaused', {
+                    pid: this.get('pid'),
+                    paused: !paused
+                }, {
+                    success: function(data) {
+                        console.log('New package status', data);
+                        self.set('status', data);
+                    }
+                }));
             },
 
             destroy: function(options) {

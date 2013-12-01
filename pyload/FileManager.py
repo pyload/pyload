@@ -374,6 +374,7 @@ class FileManager:
         if pid in self.packages:
             del self.packages[pid]
 
+    @invalidate
     def updateFile(self, pyfile):
         """updates file"""
         self.db.updateFile(pyfile)
@@ -381,6 +382,7 @@ class FileManager:
         # This event is thrown with pyfile or only fid
         self.evm.dispatchEvent("file:updated", pyfile)
 
+    @invalidate
     def updatePackage(self, pypack):
         """updates a package"""
         self.db.updatePackage(pypack)

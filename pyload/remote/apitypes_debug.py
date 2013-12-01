@@ -115,7 +115,7 @@ methods = {
 	'searchSuggestions': (list, basestring),
 	'setConfigValue': None,
 	'setInteractionResult': None,
-	'setPackageFolder': bool,
+	'setPackagePaused': int,
 	'setPassword': bool,
 	'stopAllDownloads': None,
 	'stopDownloads': None,
