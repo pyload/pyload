@@ -22,7 +22,7 @@ from module.plugins.Account import Account
 
 class BitshareCom(Account):
     __name__ = "BitshareCom"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __type__ = "account"
     __description__ = """Bitshare account plugin"""
     __author_name__ = ("Paul King")
@@ -34,7 +34,7 @@ class BitshareCom(Account):
             return {"validuntil": -1, "trafficleft": -1, "premium": False}
 
         if not '<input type="checkbox" name="directdownload" checked="checked" />' in page:
-            self.core.log.warning(_("Activate direct Download in your Bitshare Account"))
+            self.logWarning(_("Activate direct Download in your Bitshare Account"))
 
         return {"validuntil": -1, "trafficleft": -1, "premium": True}
 
