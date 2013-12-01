@@ -20,7 +20,7 @@ class XHamsterCom(Hoster):
     __name__ = "XHamsterCom"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?xhamster\.com/movies/.+"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __config__ = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
     __description__ = """XHamster.com Video Download Hoster"""
 
@@ -71,7 +71,7 @@ class XHamsterCom(Hoster):
                 self.fail("Parse error (file_url)")
             file_url = file_url.group(1)
             long_url = srv_url + file_url
-            self.logDebug(_("long_url: %s") % long_url)
+            self.logDebug("long_url: %s" % long_url)
         else:
             if flashvars["file"]:
                 file_url = unquote(flashvars["file"])
@@ -80,10 +80,10 @@ class XHamsterCom(Hoster):
 
             if url_mode == '3':
                 long_url = file_url
-                self.logDebug(_("long_url: %s") % long_url)
+                self.logDebug("long_url: %s" % long_url)
             else:
                 long_url = srv_url + "key=" + file_url
-                self.logDebug(_("long_url: %s") % long_url)
+                self.logDebug("long_url: %s" % long_url)
 
         return long_url
 
