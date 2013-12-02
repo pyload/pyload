@@ -15,9 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
-# Test links (random.bin):
-# http://www.filefactory.com/file/ymxkmdud2o3/n/random.bin
-
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster
@@ -57,7 +54,7 @@ class FilefactoryCom(SimpleHoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __description__ = """Filefactory.Com File Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -68,7 +65,10 @@ class FilefactoryCom(SimpleHoster):
         if not re.match(self.__pattern__ + r'/n/.+', pyfile.url):  # Not in standard format
             header = self.load(pyfile.url, just_header=True)
             if 'location' in header:
-                self.pyfile.url = 'http://www.filefactory.com' + header['location']
+                if header['location'].startswith("http"):
+                    self.pyfile.url = header['location']
+                else:
+                    self.pyfile.url = 'http://www.filefactory.com' + header['location']
 
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
@@ -121,6 +121,9 @@ class FilefactoryCom(SimpleHoster):
                 url = "http://www.filefactory.com" + url
         elif 'content-disposition' in header:
             url = self.pyfile.url
+            m = re.search(r'filename="([^"]+)"', header['content-disposition'])
+            if m:
+                self.pyfile.name = m.group(1)
         else:
             html = self.load(self.pyfile.url)
             found = re.search(self.DIRECT_LINK_PATTERN, html)
