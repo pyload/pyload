@@ -17,63 +17,20 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.network.RequestFactory import getURL
-from module.utils import parseFileSize
-
-
-def getInfo(urls):
-    file_info = list()
-    list_ids = dict()
-
-    # Create a dict id:url. Will be used to retrieve original url
-    for url in urls:
-        m = re.search(FilefactoryCom.__pattern__, url)
-        list_ids[m.group('id')] = url
-
-    # WARN: There could be a limit of urls for request
-    post_data = {'func': 'links', 'links': '\n'.join(urls)}
-    rep = getURL('http://www.filefactory.com/tool/links.php', post=post_data, decode=True)
-
-    # Online links
-    for m in re.finditer(
-            r'innerText">\s*<h1 class="name">(?P<N>.+) \((?P<S>[\w.]+) (?P<U>\w+)\)</h1>\s*<p>http://www.filefactory.com/file/(?P<ID>\w+).*</p>\s*<p class="hidden size">',
-            rep):
-        file_info.append((m.group('N'), parseFileSize(m.group('S'), m.group('U')), 2, list_ids[m.group('ID')]))
-
-    # Offline links
-    for m in re.finditer(
-            r'innerText">\s*<h1>(http://www.filefactory.com/file/(?P<ID>\w+)/)</h1>\s*<p>\1</p>\s*<p class="errorResponse">Error: file not found</p>',
-            rep):
-        file_info.append((list_ids[m.group('ID')], 0, 1, list_ids[m.group('ID')]))
-
-    return file_info
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilefactoryCom(SimpleHoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __description__ = """Filefactory.Com File Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
+    FILE_INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">(?P<S>[\d.]+) (?P<U>\w+) uploaded'
     DIRECT_LINK_PATTERN = r'<section id="downloadLink">\s*<p class="textAlignCenter">\s*<a href="([^"]+)">[^<]+</a>\s*</p>\s*</section>'
-
-    def process(self, pyfile):
-        if not re.match(self.__pattern__ + r'/n/.+', pyfile.url):  # Not in standard format
-            header = self.load(pyfile.url, just_header=True)
-            if 'location' in header:
-                if header['location'].startswith("http"):
-                    self.pyfile.url = header['location']
-                else:
-                    self.pyfile.url = 'http://www.filefactory.com' + header['location']
-
-        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
-            self.handlePremium()
-        else:
-            self.handleFree()
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
@@ -82,25 +39,32 @@ class FilefactoryCom(SimpleHoster):
         elif "All free download slots on this server are currently in use" in self.html:
             self.retry(50, 900, "All free slots are busy")
 
-        # Load the page that contains the direct link
-        url = re.search(r"document\.location\.host \+\s*'(.+)';", self.html)
-        if not url:
-            self.parseError('Unable to detect free link')
-        url = 'http://www.filefactory.com' + url.group(1)
-        self.html = self.load(url, decode=True)
+        m = re.search(r'data-href-direct="(http://[^"]+)"', self.html)
+        if m:
+            self.setWait(30)
+            self.wait()
+            direct = m.group(1)
+        else:  # This section could be completely useless now
+            # Load the page that contains the direct link
+            url = re.search(r"document\.location\.host \+\s*'(.+)';", self.html)
+            if not url:
+                self.parseError('Unable to detect free link')
+            url = 'http://www.filefactory.com' + url.group(1)
+            self.html = self.load(url, decode=True)
 
-        # Free downloads wait time
-        waittime = re.search(r'id="startWait" value="(\d+)"', self.html)
-        if not waittime:
-            self.parseError('Unable to detect wait time')
-        self.setWait(int(waittime.group(1)))
-        self.wait()
+            # Free downloads wait time
+            waittime = re.search(r'id="startWait" value="(\d+)"', self.html)
+            if not waittime:
+                self.parseError('Unable to detect wait time')
+            self.setWait(int(waittime.group(1)))
+            self.wait()
 
-        # Parse the direct link and download it
-        direct = re.search(r'data-href-direct="(.*)" class="button', self.html)
-        if not direct:
-            self.parseError('Unable to detect free direct link')
-        direct = direct.group(1)
+            # Parse the direct link and download it
+            direct = re.search(r'data-href-direct="(.*)" class="button', self.html)
+            if not direct:
+                self.parseError('Unable to detect free direct link')
+            direct = direct.group(1)
+
         self.logDebug('DIRECT LINK: ' + direct)
         self.download(direct, disposition=True)
 
@@ -121,9 +85,6 @@ class FilefactoryCom(SimpleHoster):
                 url = "http://www.filefactory.com" + url
         elif 'content-disposition' in header:
             url = self.pyfile.url
-            m = re.search(r'filename="([^"]+)"', header['content-disposition'])
-            if m:
-                self.pyfile.name = m.group(1)
         else:
             html = self.load(self.pyfile.url)
             found = re.search(self.DIRECT_LINK_PATTERN, html)
@@ -134,3 +95,6 @@ class FilefactoryCom(SimpleHoster):
 
         self.logDebug('DIRECT PREMIUM LINK: ' + url)
         self.download(url, disposition=True)
+
+
+getInfo = create_getInfo(FilefactoryCom)
