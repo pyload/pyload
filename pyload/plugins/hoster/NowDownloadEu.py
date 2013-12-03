@@ -25,7 +25,7 @@ class NowDownloadEu(SimpleHoster):
     __name__ = "NowDownloadEu"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?nowdownload\.(ch|co|eu|sx)/(dl/|download\.php\?id=)(?P<ID>\w+)"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = """NowDownloadCh"""
     __author_name__ = ("godofdream", "Walter Purcaro")
     __author_mail__ = ("", "vuolter@gmail.com")
@@ -52,7 +52,7 @@ class NowDownloadEu(SimpleHoster):
         found = re.search(self.FILE_WAIT_PATTERN, self.html)
         if found:
             wait = int(found.group(1))
-        else
+        else:
             wait = 60
 
         baseurl = "http://www.nowdownload.ch"
