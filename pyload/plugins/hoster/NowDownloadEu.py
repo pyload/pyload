@@ -52,7 +52,7 @@ class NowDownloadEu(SimpleHoster):
         found = re.search(self.FILE_WAIT_PATTERN, self.html)
         if found:
             wait = int(found.group(1))
-        else
+        else:
             wait = 60
 
         baseurl = "http://www.nowdownload.ch"
