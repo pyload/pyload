@@ -36,9 +36,6 @@ class ConfigApi(ApiComponent):
         :param option:
         :param value: new config value
         """
-        if option in ("limit_speed", "max_speed"): #not so nice to update the limit
-            self.core.requestFactory.updateBucket()
-
         self.core.config.set(section, option, value, self.primaryUID)
 
     def getConfig(self):

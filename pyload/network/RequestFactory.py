@@ -26,6 +26,8 @@ class RequestFactory:
         self.bucket = Bucket()
         self.updateBucket()
 
+        self.core.evm.listenTo("config:changed", self.updateConfig)
+
     def getURL(self, *args, **kwargs):
         """ see HTTPRequest for argument list """
         h = DefaultRequest(self.getConfig())
@@ -83,6 +85,11 @@ class RequestFactory:
                 "username": username,
                 "password": pw,
             }
+
+    def updateConfig(self, section, option, value):
+        """ Updates the bucket when a config value changed """
+        if option in ("limit_speed", "max_speed"):
+            self.updateBucket()
 
     def getConfig(self):
         """returns options needed for pycurl"""
