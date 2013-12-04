@@ -30,6 +30,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
                 // When package is added we reload the data
                 this.listenTo(App.vent, 'package:added', _.bind(this.fetch, this));
                 this.listenTo(App.vent, 'package:inserted', _.bind(this.fetch, this));
+                this.listenTo(App.vent, 'package:destroyed', _.bind(this.packageDestroyed, this));
 
                 this.listenTo(App.vent, 'file:updated', _.bind(this.fileUpdated, this));
 
@@ -170,6 +171,13 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
                             App.vent.trigger('dashboard:updated');
                         }});
                     }
+            },
+
+            // destroys files when opened package is deleted
+            packageDestroyed: function(pack) {
+                // TODO: could be improved
+                if (pack.get('files') === this.files)
+                    App.vent.trigger('dashboard:destroyContent')
             }
         });
     });

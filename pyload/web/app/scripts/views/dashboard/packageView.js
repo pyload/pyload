@@ -53,9 +53,7 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashb
 
             unrender: function() {
                 itemView.prototype.unrender.apply(this);
-
-                // TODO: display other package
-                App.vent.trigger('dashboard:loading', null);
+                App.vent.trigger('package:destroyed', this.model);
             },
 
             // TODO
