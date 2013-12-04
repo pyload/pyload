@@ -177,7 +177,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
             packageDestroyed: function(pack) {
                 // TODO: could be improved
                 if (pack.get('files') === this.files)
-                    App.vent.trigger('dashboard:destroyContent')
+                    App.vent.trigger('dashboard:destroyContent');
             }
         });
     });
