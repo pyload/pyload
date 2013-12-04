@@ -13,7 +13,8 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/linkgrabber/package'
 
             ui: {
                 'name': '.name',
-                'table': 'table'
+                'table': 'table',
+                'password': '.password'
             },
 
             events: {
@@ -21,6 +22,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/linkgrabber/package'
                 'click .name': 'renamePackage',
                 'keyup .name input': 'saveName',
                 'click .btn-add': 'addPackage',
+                'click .btn-password': 'togglePassword',
                 'click .btn-delete': 'deletePackage',
                 'click .btn-mini': 'deleteLink'
             },
@@ -35,6 +37,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/linkgrabber/package'
 
             addPackage: function(e) {
                 e.stopPropagation();
+                this.model.set('password', this.ui.password.val());
                 this.model.add();
                 return false;
             },
@@ -80,6 +83,12 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/linkgrabber/package'
                 this.expanded ^= true;
                 this.ui.table.toggle();
                 return false;
+            },
+
+            togglePassword: function(e) {
+                var el = $(e.target);
+                el.find('i').toggleClass('icon-lock icon-unlock');
+                this.ui.password.toggle();
             }
 
         });

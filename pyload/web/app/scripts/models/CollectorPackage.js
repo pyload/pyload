@@ -6,6 +6,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
             idAttribute: 'name',
             defaults: {
                 name: 'Unnamed package',
+                password: null,
                 new_name: null,
                 links: null
             },
@@ -41,7 +42,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
 
                 $.ajax(App.apiRequest('addPackage',
                     {name: this.getName(),
-                        links: links},
+                        links: links,
+                        password: this.get('password')},
                     {success: function() {
                         self.destroy();
                         App.vent.trigger('package:added');
