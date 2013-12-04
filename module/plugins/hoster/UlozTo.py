@@ -17,19 +17,19 @@
 """
 
 import re
+import time
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-
+from module.common.json_layer import json_loads
 
 def convertDecimalPrefix(m):
     # decimal prefixes used in filesize and traffic
     return ("%%.%df" % {'k': 3, 'M': 6, 'G': 9}[m.group(2)] % float(m.group(1))).replace('.', '')
 
-
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
-    __version__ = "0.93"
+    __version__ = "0.94"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
@@ -80,36 +80,41 @@ class UlozTo(SimpleHoster):
         if not action or not inputs:
             self.parseError("free download form")
 
-        # get and decrypt captcha
-        captcha_id_field = captcha_text_field = None
-
+        # I don't know how to check captcha form changes
         for key in inputs.keys():
-            found = re.match("captcha.*(id|text|value)", key)
+            found = re.match("(captcha_value|timestamp|salt|hash)", key)
             if found:
-                if found.group(1) == "id":
-                    captcha_id_field = key
-                else:
-                    captcha_text_field = key
+                if found.group(1) == "captcha_value":
+                    junk_captcha_value = key
+                elif found.group(1) == "timestamp":
+                    junk_timestamp = key
+                elif found.group(1) == "salt":
+                    junk_salt = key
+                elif found.group(1) == "hash":
+                    junk_hash = key
 
-        if not captcha_id_field or not captcha_text_field:
-            self.parseError("CAPTCHA form changed")
+        if not junk_captcha_value or not junk_timestamp or not junk_salt or not junk_hash:
+            self.parseError("CAPTCHA form changed")    
 
-        # captcha_id = self.getStorage("captcha_id")
-        # captcha_text = self.getStorage("captcha_text")
-        #
-        # if not captcha_id or not captcha_text:
+        # get and decrypt captcha
+        my_timestamp = int(time.time())
+        self.logDebug('my_timestamp = ' + str(my_timestamp))
 
-        captcha_id = inputs[captcha_id_field]
-        captcha_text = self.decryptCaptcha("http://img.uloz.to/captcha/%s.png" % captcha_id)
+        xapca = self.load("http://www.ulozto.net/reloadXapca.php", get = { "rnd": str(my_timestamp)})
+        self.logDebug('xapca = ' + str(xapca))
 
-        self.logDebug(' CAPTCHA ID:' + captcha_id + ' CAPTCHA TEXT:' + captcha_text)
+        data = json_loads(xapca)
+        self.logDebug('image = ' + str(data["image"]))
+        self.logDebug('sound = ' + str(data["sound"]))
+        self.logDebug('timestamp = ' + str(data["timestamp"]))
+        self.logDebug('salt = ' + str(data["salt"]))
+        self.logDebug('hash = ' + str(data["hash"]))
 
-        # self.setStorage("captcha_id", captcha_id)
-        # self.setStorage("captcha_text", captcha_text)
+        captcha_text = self.decryptCaptcha(str(data["image"]))
 
         self.multiDL = True
 
-        inputs.update({captcha_id_field: captcha_id, captcha_text_field: captcha_text})
+        inputs.update({"timestamp": data["timestamp"], "salt": data["salt"], "hash": data["hash"], "captcha_value": captcha_text})
 
         self.download("http://www.ulozto.net" + action, post=inputs, cookies=True, disposition=True)
 
