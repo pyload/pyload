@@ -25,12 +25,18 @@ from module.utils import remove_chars
 
 class LinkdecrypterCom(Hook):
     __name__ = "LinkdecrypterCom"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __description__ = """linkdecrypter.com - regexp loader"""
     __config__ = [("activated", "bool", "Activated", "False")]
     __author_name__ = ("zoidberg")
 
     def coreReady(self):
+        try:
+            self.loadPatterns()
+        except Exception, e:
+            self.logError(e)
+
+    def loadPatterns(self):
         page = getURL("http://linkdecrypter.com/")
         m = re.search(r'<b>Supported\(\d+\)</b>: <i>([^+<]*)', page)
         if not m:
