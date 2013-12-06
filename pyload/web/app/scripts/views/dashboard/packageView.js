@@ -15,6 +15,8 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashb
                 'click .select': 'select',
                 'click .icon-chevron-down': 'loadMenu',
                 'click .btn-delete': 'deleteItem',
+                'click .btn-edit': 'edit',
+                'click .btn-add': 'add',
                 'click .dropdown-submenu a': 'invokeAddon'
             },
 
@@ -78,6 +80,16 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashb
                 this.model.set('selected', !checked, {silent: true});
                 this.$('.select').toggleClass('icon-check').toggleClass('icon-check-empty');
                 App.vent.trigger('package:selection');
+            },
+
+            edit: function() {
+                var model = this.model;
+                _.requireOnce(['views/dashboard/editPackageView'], function(ModalView) {
+                    new ModalView({model: model}).show();
+                });
+            },
+
+            add: function() {
             },
 
             loadMenu: function() {

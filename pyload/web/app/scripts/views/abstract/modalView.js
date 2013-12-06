@@ -31,6 +31,11 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
             }
         },
 
+        // Class method that will show a temporary instance
+        display: function() {
+
+        },
+
         // TODO: whole modal stuff is not very elegant
         render: function() {
             this.$el.html(this.template(this.renderContent()));
@@ -110,8 +115,14 @@ define(['jquery', 'backbone', 'underscore', 'omniwindow'], function($, Backbone,
         },
 
         confirm: function() {
-            if (this.confirmCallback)
-                this.confirmCallback.apply();
+            // Call the confirms given or from extended class
+            if (this.confirmCallback) {
+                if (this.confirmCallback.apply() === false)
+                    return;
+            } else if (_.isFunction(this.constructor.prototype.confirmCallback)) {
+                if (this.constructor.prototype.confirmCallback.call(this) === false)
+                    return;
+            }
 
             this.hide();
         },

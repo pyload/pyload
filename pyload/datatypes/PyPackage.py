@@ -66,6 +66,12 @@ class PyPackage:
             self.comment, self.password, self.added, self.tags, self.status, self.shared, self.packageorder
         )
 
+    def updateFromInfoData(self, pack):
+        """ Updated allowed values from info data """
+        for attr in PackageInfo.__slots__:
+            if attr in ("site", "comment", "password"):
+                setattr(self, attr, getattr(pack, attr))
+
     def getFiles(self):
         """get contaied files data"""
         return self.m.core.db.getAllFiles(package=self.pid)
@@ -88,7 +94,7 @@ class PyPackage:
 
     def deleteIfEmpty(self):
         """  True if deleted  """
-        if not len(self.getChildren()):
+        if not len(self.getFiles()):
             self.delete()
             return True
         return False

@@ -98,18 +98,13 @@ class FileApi(ApiComponent):
     def updatePackage(self, pack):
         """Allows to modify several package attributes.
 
-        :param pid: package id
-        :param data: :class:`PackageInfo`
+        :param pack: :class:`PackageInfo`
+        :return updated package info
         """
         pid = pack.pid
         p = self.core.files.getPackage(pid)
         if not p: raise PackageDoesNotExist(pid)
-
-        #TODO: fix
-        for key, value in data.iteritems():
-            if key == "id": continue
-            setattr(p, key, value)
-
+        p.updateFromInfoData(pack)
         p.sync()
         self.core.files.save()
 

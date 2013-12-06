@@ -41,6 +41,17 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
                 return obj;
             },
 
+            toServerJSON: function() {
+                var obj = Backbone.Model.prototype.toJSON.call(this);
+                return {
+                    pid: obj.pid,
+                    site: obj.site,
+                    comment: obj.comment,
+                    password: obj.password,
+                    '@class': 'PackageInfo'
+                };
+            },
+
             // Changes url + method and delegates call to super class
             fetch: function(options) {
                 options = App.apiRequest(
@@ -61,8 +72,14 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
                 return Backbone.Model.prototype.fetch.call(this, options);
             },
 
+            // sync some attributes with the server
             save: function(options) {
-                // TODO
+                options = App.apiRequest(
+                    'updatePackage',
+                    {pack: this.toServerJSON()},
+                    options);
+
+                return Backbone.Model.prototype.fetch.call(this, options);
             },
 
             togglePaused: function() {
@@ -123,7 +140,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
 
                     return resp.root;
                 }
-                return Backbone.model.prototype.parse.call(this, resp);
+                return Backbone.Model.prototype.parse.call(this, resp);
             },
 
             // Any time a model attribute is set, this method is called

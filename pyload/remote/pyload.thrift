@@ -454,7 +454,7 @@ service Pyload {
   // Modify Files/Packages
 
   // moving package while downloading is not possible, so they will return bool to indicate success
-  void updatePackage(1: PackageInfo pack) throws (1: PackageDoesNotExist e),
+  PackageInfo updatePackage(1: PackageInfo pack) throws (1: PackageDoesNotExist e),
   PackageStatus setPackagePaused(1: PackageID pid, 2: bool paused) throws (1: PackageDoesNotExist e),
 
   // as above, this will move files on disk
