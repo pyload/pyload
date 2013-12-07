@@ -184,9 +184,24 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
             // TODO: render inserted files
             // reload the package
             onPackageUpdated: function(pid) {
+                var self = this;
                 var pack = this.tree.get('packages').get(pid);
-                if (pack)
-                    pack.fetch();
+                if (pack) {
+                    var files = pack.get('files');
+                    if (files)
+                        var fids = files.pluck('fid');
+
+                    // add the new files if this is the current open package
+                    pack.fetch({success: function() {
+                        if (!self.files || self.files !== files)
+                            return;
+
+                        var new_fids = _.difference(files.pluck('fid'), fids);
+                        _.each(new_fids, function(fid, i) {
+                            self.appendFile(files.get(fid), i);
+                        });
+                    }});
+                }
             }
         });
     });
