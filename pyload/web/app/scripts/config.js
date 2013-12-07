@@ -34,6 +34,12 @@ require.config({
         tpl: '../templates/default'
     },
 
+    map: {
+        '*': {
+            'Handlebars': 'handlebars'
+        }
+    },
+
     hbs: {
         disableI18n: true,
         helperPathCallback:       // Callback to determine the path to look for helpers

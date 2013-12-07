@@ -181,7 +181,6 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
                     App.vent.trigger('dashboard:destroyContent');
             },
 
-            // TODO: render inserted files
             // reload the package
             onPackageUpdated: function(pid) {
                 var self = this;

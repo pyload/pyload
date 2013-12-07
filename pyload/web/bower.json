@@ -5,7 +5,7 @@
         "pyload-common": "https://github.com/pyload/pyload-common.git",
         "requirejs": "2.1.9",
         "requirejs-text": "*",
-        "require-handlebars-plugin": "*",
+        "require-handlebars-plugin": "0.4.0",
         "jquery": "~1.9.1",
         "jquery.transit": "~0.9.9",
         "jquery.cookie": "~1.3.1",
