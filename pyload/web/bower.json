@@ -9,7 +9,7 @@
         "jquery": "~1.9.1",
         "jquery.transit": "~0.9.9",
         "jquery.cookie": "~1.3.1",
-        "jquery.animate-enhanced": "*",
+        "jquery.animate-enhanced": "5190d403fa007395e8599dfe5e23ecee66d3d62e",
         "flot": "~0.8.2",
         "underscore": "~1.5.0",
         "backbone": "1.1.0",
