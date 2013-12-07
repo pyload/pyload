@@ -21,6 +21,10 @@ define(['jquery', 'underscore', 'backbone', 'app', './packageView'],
                         self.collection.add(pack);
                     }
 
+                    // set destination pid
+                    if (self.model)
+                        pack.set('pid', self.model.get('pid'));
+
                     // Remove links from other packages and delete empty ones
                     self.collection.each(function(pack2) {
                         console.log(pack2, links);

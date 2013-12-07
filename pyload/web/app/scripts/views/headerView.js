@@ -56,6 +56,11 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                     self.ui.progress.appendWithAnimation(new ProgressView({model: model}).render().el);
                 });
 
+                // Listen to open the link grabber
+                this.listenTo(App.vent, 'linkgrabber:open', function(pack) {
+                    self.open_grabber(null, pack);
+                });
+
                 // TODO: button to start stop refresh
                 var ws = App.openWebSocket('/async');
                 ws.onopen = function() {
@@ -170,12 +175,13 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 this.$('.popover').animate({opacity: 'toggle'});
             },
 
-            open_grabber: function() {
+            open_grabber: function(e, model) {
                 var self = this;
                 _.requireOnce(['views/linkgrabber/modalView'], function(ModalView) {
                     if (self.grabber === null)
                         self.grabber = new ModalView();
 
+                    self.grabber.setModel(model);
                     self.grabber.show();
                 });
             },

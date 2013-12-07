@@ -8,7 +8,8 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
                 name: 'Unnamed package',
                 password: null,
                 new_name: null,
-                links: null
+                links: null,
+                pid: null
             },
 
             initialize: function() {
@@ -39,16 +40,33 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
             add: function() {
                 var self = this;
                 var links = this.get('links').pluck('url');
+                var pid = this.get('pid');
 
-                $.ajax(App.apiRequest('addPackage',
-                    {name: this.getName(),
-                        links: links,
-                        password: this.get('password')},
-                    {success: function() {
-                        self.destroy();
-                        App.vent.trigger('package:added');
-                    }}));
-
+                if (pid !== null && _.isNumber(pid)) {
+                    console.log('Adding links to package', pid);
+                    $.ajax(App.apiRequest('addLinks',
+                        {
+                            pid: pid,
+                            links: links
+                        },
+                        {
+                            success: function() {
+                                self.destroy();
+                                App.vent.trigger('collectorPackage:added');
+                            }}));
+                }
+                else
+                    $.ajax(App.apiRequest('addPackage',
+                        {
+                            name: this.getName(),
+                            links: links,
+                            password: this.get('password')
+                        },
+                        {
+                            success: function() {
+                                self.destroy();
+                                App.vent.trigger('collectorPackage:added');
+                            }}));
             },
 
             updateLinks: function(links) {

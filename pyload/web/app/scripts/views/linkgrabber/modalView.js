@@ -23,7 +23,15 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
             initialize: function() {
                 // Inherit parent events
                 this.events = _.extend({}, modalView.prototype.events, this.events);
-                this.listenTo(App.vent, 'package:added', _.bind(this.onAdded, this));
+                this.listenTo(App.vent, 'collectorPackage:added', _.bind(this.onAdded, this));
+            },
+
+            // sets a new models as target and render
+            setModel: function(model) {
+                if (this.model !== model) {
+                    this.model = model;
+                    this.render();
+                }
             },
 
             addOnKeyUp: function(e) {
@@ -106,7 +114,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
 
             onRender: function() {
                 // anonymous collection
-                this.collectorView = new CollectorView({collection: new (Backbone.Collection.extend({
+                this.collectorView = new CollectorView({model: this.model, collection: new (Backbone.Collection.extend({
                     model: CollectorPackage
                 }))()});
                 this.collectorView.setElement(this.$('.prepared-packages'));

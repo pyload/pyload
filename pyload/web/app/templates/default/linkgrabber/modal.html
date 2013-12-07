@@ -29,7 +29,12 @@
     </div>
 
     <legend>
-        {{_ "Packages" }} <button class="btn btn-danger btn-small btn-remove-all"><i class="icon-trash"></i></button>
+        {{#if name}}
+            {{_ "Adding links to package: %s" name}}
+        {{else}}
+            {{_ "Packages" }}
+        {{/if}}
+        &nbsp;<button class="btn btn-danger btn-small btn-remove-all"><i class="icon-trash"></i></button>
     </legend>
     <div class="container-fluid prepared-packages">
 

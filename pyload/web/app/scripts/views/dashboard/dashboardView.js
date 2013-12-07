@@ -28,9 +28,9 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
 
                 var self = this;
                 // When package is added we reload the data
-                this.listenTo(App.vent, 'package:added', _.bind(this.fetch, this));
                 this.listenTo(App.vent, 'package:inserted', _.bind(this.fetch, this));
-                this.listenTo(App.vent, 'package:destroyed', _.bind(this.packageDestroyed, this));
+                this.listenTo(App.vent, 'package:destroyed', _.bind(this.onPackageDestroyed, this));
+                this.listenTo(App.vent, 'package:updated', _.bind(this.onPackageUpdated, this));
 
                 this.listenTo(App.vent, 'file:updated', _.bind(this.fileUpdated, this));
 
@@ -46,6 +46,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
                 // TODO: put in separated function
                 // TODO: order of elements?
                 // Init the tree and callback for package added
+                // open newly added package in dashboard
                 this.tree.fetch({success: function() {
                     self.update();
                     self.tree.get('packages').on('add', function(pack) {
@@ -174,10 +175,18 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
             },
 
             // destroys files when opened package is deleted
-            packageDestroyed: function(pack) {
+            onPackageDestroyed: function(pack) {
                 // TODO: could be improved
                 if (pack.get('files') === this.files)
                     App.vent.trigger('dashboard:destroyContent');
+            },
+
+            // TODO: render inserted files
+            // reload the package
+            onPackageUpdated: function(pid) {
+                var pack = this.tree.get('packages').get(pid);
+                if (pack)
+                    pack.fetch();
             }
         });
     });

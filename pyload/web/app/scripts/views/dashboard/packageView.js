@@ -90,6 +90,7 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashb
             },
 
             add: function() {
+                App.vent.trigger('linkgrabber:open', this.model);
             },
 
             loadMenu: function() {
