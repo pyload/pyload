@@ -238,6 +238,10 @@ class Account(Base):
         self.logDebug("Deprecated method .getAccountCookies -> use account.cj")
         return self.cj
 
+    def selectAccount(self, *args):
+        self.logDebug("Deprecated method .selectAccount() -> use fields directly")
+        return self.loginname, self.getAccountData()
+
     def getAccountData(self, *args):
         self.logDebug("Deprecated method .getAccountData -> use fields directly")
         return {"password": self.password, "premium": self.premium, "trafficleft": self.trafficleft,
