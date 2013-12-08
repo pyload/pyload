@@ -92,7 +92,7 @@ class Base(object):
         self.im = core.interactionManager
         if owner is not None:
             #: :class:`Api`, user api when user is set
-            self.api = self.core.api.withUserContext(user)
+            self.api = self.core.api.withUserContext(owner)
             if not self.api:
                 raise Exception("Plugin running with invalid user")
 
