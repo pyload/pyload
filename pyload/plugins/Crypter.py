@@ -141,7 +141,7 @@ class Crypter(Base):
         self.req = None
         # load account if set
         if self.USE_ACCOUNT:
-            self.account = self.core.accountManager.selectAccount(self.USE_ACCOUNT, self.user)
+            self.account = self.core.accountManager.selectAccount(self.USE_ACCOUNT, self.owner)
             if self.account:
                 self.req = self.account.getAccountRequest()
 

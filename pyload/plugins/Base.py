@@ -77,7 +77,7 @@ class Base(object):
     __author_mail__ = tuple()
 
 
-    def __init__(self, core, user=None):
+    def __init__(self, core, owner=None):
         self.__name__ = self.__class__.__name__
 
         #: Core instance
@@ -90,17 +90,17 @@ class Base(object):
         self.evm = core.eventManager
         #: :class:`InteractionManager`
         self.im = core.interactionManager
-        if user is not None:
+        if owner is not None:
             #: :class:`Api`, user api when user is set
             self.api = self.core.api.withUserContext(user)
             if not self.api:
                 raise Exception("Plugin running with invalid user")
 
             #: :class:`User`, user related to this plugin
-            self.user = self.api.user
+            self.owner = self.api.user
         else:
             self.api = self.core.api
-            self.user = None
+            self.owner = None
 
         #: last interaction task
         self.task = None

@@ -64,7 +64,7 @@ class Hoster(Base):
 
         self.ocr = None  #captcha reader instance
         #: account handler instance, see :py:class:`Account`
-        self.account = self.core.accountManager.selectAccount(self.__name__, self.user)
+        self.account = self.core.accountManager.selectAccount(self.__name__, self.owner)
 
         #: premium status
         self.premium = False
@@ -94,6 +94,12 @@ class Hoster(Base):
         self.html = None # some plugins store html code here
 
         self.init()
+
+    @property
+    def user(self):
+        self.logDebug("Deprecated usage of self.user -> use self.account.loginname")
+        if self.account:
+            return self.account.loginname
 
     def getMultiDL(self):
         return self.limitDL <= 0
