@@ -77,7 +77,7 @@ module_replace = [
     ('self.account.getAccountInfo(self.user)', 'self.account.getAccountData()'),
     ('self.account.accounts[self.user]["password"]', 'self.account.password'),
     ("self.account.accounts[self.user]['password']", 'self.account.password'),
-    (".canUse()", '.isUsable(self)'),
+    (".canUse()", '.isUsable()'),
     ('from module.', 'from pyload.')  # This should be always the last one
 ]
 
