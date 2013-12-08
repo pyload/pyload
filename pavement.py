@@ -66,7 +66,7 @@ module_replace = [
     ('from module.common.json_layer import json_dumps', 'from pyload.utils import json_dumps'),
     ('from module.utils import parseFileSize', 'from pyload.utils import parseFileSize'),
     ('from module.utils import save_join, save_path',
-     'from pyload.utils.fs import save_join, save_filename as save_path'),
+     'from pyload.utils.fs import save_join, safe_filename as save_path'),
     ('from module.utils import save_join, fs_encode', 'from pyload.utils.fs import save_join, fs_encode'),
     ('from module.utils import save_join', 'from pyload.utils.fs import save_join'),
     ('from module.utils import fs_encode', 'from pyload.utils.fs import fs_encode'),
@@ -77,6 +77,7 @@ module_replace = [
     ('self.account.getAccountInfo(self.user)', 'self.account.getAccountData()'),
     ('self.account.accounts[self.user]["password"]', 'self.account.password'),
     ("self.account.accounts[self.user]['password']", 'self.account.password'),
+    (".canUse()", '.isUsable(self)'),
     ('from module.', 'from pyload.')  # This should be always the last one
 ]
 
