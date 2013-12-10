@@ -61,6 +61,6 @@ class FastixRu(Hoster):
                                     "empty": re.compile(r"^$")})
 
         if check == "error":
-            self.retry(reason="An error occurred while generating link.", wait_time=60)
+            self.retry(wait_time=60, reason="An error occurred while generating link.")
         elif check == "empty":
-            self.retry(reason="Downloaded File was empty.", wait_time=60)
+            self.retry(wait_time=60, reason="Downloaded File was empty.")

@@ -52,7 +52,7 @@ class MegasharesCom(SimpleHoster):
         self.html = self.load(self.pyfile.url, decode=True)
 
         if self.NO_SLOTS_PATTERN in self.html:
-            self.retry(wait_time=300)
+            self.retry(wait_time=5 * 60)
 
         self.getFileInfo()
         #if self.pyfile.size > 576716800: self.fail("This file is too large for free download")
@@ -78,7 +78,7 @@ class MegasharesCom(SimpleHoster):
 
                 if 'Thank you for reactivating your passport.' in response:
                     self.correctCaptcha()
-                    self.retry(0)
+                    self.retry()
                 else:
                     self.invalidCaptcha()
             else:
@@ -94,8 +94,8 @@ class MegasharesCom(SimpleHoster):
 
         if not data_left:
             found = re.search(self.PASSPORT_RENEW_PATTERN, self.html)
-            renew = (found.group(1) + 60 * (found.group(2) + 60 * found.group(3))) if found else 600
-            self.retry(renew, 15, "Unable to get passport")
+            renew = found.group(1) + found.group(2) + found.group(3) * 60 * 60 if found else 10 * 60
+            self.retry(max_tries=15, wait_time=renew, reason="Unable to get passport")
 
         self.handleDownload(False)
 

@@ -51,7 +51,7 @@ class ShareRapidCom(SimpleHoster):
             self.html = self.load(pyfile.url, decode=True)
         except BadHeader, e:
             self.account.relogin(self.user)
-            self.retry(3, 0, str(e))
+            self.retry(max_tries=3, reason=str(e))
 
         self.getFileInfo()
 
@@ -64,7 +64,7 @@ class ShareRapidCom(SimpleHoster):
         else:
             if re.search(self.ERR_LOGIN_PATTERN, self.html):
                 self.relogin(self.user)
-                self.retry(3, 0, "User login failed")
+                self.retry(max_tries=3, reason="User login failed")
             elif re.search(self.ERR_CREDIT_PATTERN, self.html):
                 self.fail("Not enough credit left")
             else:

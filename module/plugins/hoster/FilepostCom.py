@@ -122,8 +122,8 @@ class FilepostCom(SimpleHoster):
         # see the two lines commented out with  "# ~?".
         if 'error' in json_response['js']:
             if json_response['js']['error'] == 'download_delay':
-                self.retry(json_response['js']['params']['next_download'])
-                # ~? self.retry(js_answer['params']['next_download'])
+                self.retry(wait_time=json_response['js']['params']['next_download'])
+                # ~? self.retry(wait_time=js_answer['params']['next_download'])
             elif 'Wrong file password' in json_response['js']['error']:
                 return None
             elif 'You entered a wrong CAPTCHA code' in json_response['js']['error']:

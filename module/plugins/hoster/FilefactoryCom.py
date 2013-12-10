@@ -37,7 +37,7 @@ class FilefactoryCom(SimpleHoster):
         if "Currently only Premium Members can download files larger than" in self.html:
             self.fail("File too large for free download")
         elif "All free download slots on this server are currently in use" in self.html:
-            self.retry(50, 900, "All free slots are busy")
+            self.retry(50, 15 * 60, "All free slots are busy")
 
         m = re.search(r'data-href-direct="(http://[^"]+)"', self.html)
         if m:
@@ -73,7 +73,7 @@ class FilefactoryCom(SimpleHoster):
 
         if check == "multiple":
             self.logDebug("Parallel downloads detected; waiting 15 minutes")
-            self.retry(wait_time=15 * 60, reason='Parallel downloads')
+            self.retry(wait_time=15 * 60, reason="Parallel downloads")
         elif check == "error":
             self.fail("Unknown error")
 

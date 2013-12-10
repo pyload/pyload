@@ -72,7 +72,7 @@ class UploadingCom(SimpleHoster):
         if found:
             self.pyfile.error = found.group(1)
             self.logWarning(self.pyfile.error)
-            self.retry(max_tries=6, wait_time=21600 if found.group(2) else 900, reason=self.pyfile.error)
+            self.retry(max_tries=6, wait_time=6 * 60 * 60 if found.group(2) else 15 * 60, reason=self.pyfile.error)
 
         ajax_url = "http://uploading.com/files/get/?ajax"
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])

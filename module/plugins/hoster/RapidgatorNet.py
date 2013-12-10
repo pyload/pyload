@@ -183,7 +183,7 @@ class RapidgatorNet(SimpleHoster):
         self.logDebug("Waiting %d minutes" % wait_time)
         self.setWait(wait_time * 60, True)
         self.wait()
-        self.retry(max_tries=24)
+        self.retry(24)
 
     def getJsonResponse(self, url):
         response = self.load(url, decode=True)

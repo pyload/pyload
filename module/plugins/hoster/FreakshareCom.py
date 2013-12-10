@@ -53,7 +53,7 @@ class FreakshareCom(Hoster):
                 self.invalidCaptcha()
                 self.retry()
             elif check == "downloadserver":
-                self.retry(5, 900, 'No Download server')
+                self.retry(5, 15 * 60, "No Download server")
 
     def prepare(self):
         pyfile = self.pyfile
@@ -123,7 +123,7 @@ class FreakshareCom(Hoster):
 
         if "Your Traffic is used up for today" in self.html:
             self.wantReconnect = True
-            return 24 * 3600
+            return 24 * 60 * 60
 
         timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[.\d]*;', self.html)
         if timestring:

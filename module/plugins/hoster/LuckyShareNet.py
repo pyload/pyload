@@ -31,7 +31,7 @@ class LuckyShareNet(SimpleHoster):
             else:
                 self.parseError('Unable to detect wait time between free downloads')
         elif 'Hash expired' in rep:
-            self.retry(reason='Hash expired')
+            self.retry(reason="Hash expired")
         return json_loads(rep)
 
     # TODO: There should be a filesize limit for free downloads

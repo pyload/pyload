@@ -100,12 +100,12 @@ class FshareVn(SimpleHoster):
         if found:
             self.logInfo("Wait until %s ICT" % found.group(1))
             wait_until = mktime(strptime(found.group(1), "%d/%m/%Y %H:%M"))
-            self.setWait(wait_until - mktime(gmtime()) - 7 * 3600, True)
+            self.setWait(wait_until - mktime(gmtime()) - 7 * 60 * 60, True)
             self.wait()
             self.retry()
         elif '<ul class="message-error">' in self.html:
             self.logError("Unknown error occured or wait time not parsed")
-            self.retry(30, 120, "Unknown error")
+            self.retry(30, 2 * 60, "Unknown error")
 
     def checkDownloadedFile(self):
         # check download

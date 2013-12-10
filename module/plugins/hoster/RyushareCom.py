@@ -50,7 +50,7 @@ class RyushareCom(XFileSharingPro):
         match = re.search(self.WAIT_PATTERN, self.html)
         if match:
             m = match.groupdict(0)
-            waittime = int(m["hour"])*60*60 + int(m['min']) * 60 + int(m['sec'])
+            waittime = int(m["hour"]) * 60 * 60 + int(m['min']) * 60 + int(m['sec'])
             self.setWait(waittime, True)
             retry = True
 

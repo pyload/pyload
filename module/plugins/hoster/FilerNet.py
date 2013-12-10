@@ -54,7 +54,7 @@ class FilerNet(SimpleHoster):
         m = re.search(r'musst du <span id="time">(\d+)</span> Sekunden warten', self.html)
         if m:
             waittime = int(m.group(1))
-            self.retry(3, waittime, 'Wait between free downloads')
+            self.retry(3, waittime, "Wait between free downloads")
 
         self.getFileInfo()
 
