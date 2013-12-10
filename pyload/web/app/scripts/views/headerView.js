@@ -233,13 +233,8 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                     if (prog.isDownload() && App.dashboard.files) {
                         var file = App.dashboard.files.get(prog.get('download').fid);
                         if (file) {
-                            file.set({
-                                progress: prog.getPercent(),
-                                eta: prog.get('eta'),
-                                size: prog.get('total')
-                            }, {silent: true});
                             file.setDownloadStatus(prog.get('download').status);
-                            file.trigger('change:progress');
+                            file.trigger('change:progress', prog);
                         }
                     }
                 });

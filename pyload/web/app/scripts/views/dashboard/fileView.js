@@ -18,7 +18,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
                 this.listenTo(this.model, 'change', this.render);
                 // This will be triggered manually and changed before with silent=true
                 this.listenTo(this.model, 'change:visible', this.visibility_changed);
-                this.listenTo(this.model, 'change:progress', this.progress_changed);
+                this.listenTo(this.model, 'change:progress', this.onProgressChanged);
                 this.listenTo(this.model, 'remove', this.unrender);
                 this.listenTo(App.vent, 'dashboard:destroyContent', this.destroy);
             },
@@ -77,17 +77,26 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
                 }
             },
 
-            progress_changed: function() {
+            onProgressChanged: function(prog) {
                 // TODO: progress for non download statuses
                 if (!this.model.isDownload())
                     return;
 
+                // criteria for re-rendering
+                // ensure that the dl bar is rendered
+                var render = !this.$('.progress .bar') || this.model.get('size') !== prog.get('total');
+
+                this.model.set({
+                    progress: prog.getPercent(),
+                    eta: prog.get('eta'),
+                    size: prog.get('total')
+                }, {silent: true});
+
                 if (this.model.get('download').status === Api.DownloadStatus.Downloading) {
-                    var bar = this.$('.progress .bar');
-                    if (!bar) { // ensure that the dl bar is rendered
+                    if (render)
                         this.render();
-                        bar = this.$('.progress .bar');
-                    }
+
+                    var bar = this.$('.progress .bar');
 
                     bar.width(this.model.get('progress') + '%');
                     bar.html('&nbsp;&nbsp;' + formatTime(this.model.get('eta')));
