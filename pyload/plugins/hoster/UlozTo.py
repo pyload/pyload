@@ -29,7 +29,7 @@ class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
-    __version__ = "0.94"
+    __version__ = "0.95"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
@@ -80,42 +80,33 @@ class UlozTo(SimpleHoster):
         if not action or not inputs:
             self.parseError("free download form")
 
-        # I don't know how to check captcha form changes
-        for key in inputs.keys():
-            found = re.match("(captcha_value|timestamp|salt|hash)", key)
-            if found:
-                if found.group(1) == "captcha_value":
-                    junk_captcha_value = key
-                elif found.group(1) == "timestamp":
-                    junk_timestamp = key
-                elif found.group(1) == "salt":
-                    junk_salt = key
-                elif found.group(1) == "hash":
-                    junk_hash = key
-
-        if not junk_captcha_value or not junk_timestamp or not junk_salt or not junk_hash:
-            self.parseError("CAPTCHA form changed")    
-
+        self.logDebug('inputs.keys() = ' + str(inputs.keys()))
         # get and decrypt captcha
-        my_timestamp = int(time.time())
-        self.logDebug('my_timestamp = ' + str(my_timestamp))
+        if inputs.has_key('captcha_value') and inputs.has_key('captcha_id') and inputs.has_key('captcha_key'):
+            # Old version - last seen 9.12.2013
+            self.logDebug('Using "old" version')
 
-        xapca = self.load("http://www.ulozto.net/reloadXapca.php", get = { "rnd": str(my_timestamp)})
-        self.logDebug('xapca = ' + str(xapca))
+            captcha_value = self.decryptCaptcha("http://img.uloz.to/captcha/%s.png" % inputs['captcha_id'])
+            self.logDebug('CAPTCHA ID: ' + inputs['captcha_id'] + ', CAPTCHA VALUE: ' + captcha_value)
 
-        data = json_loads(xapca)
-        self.logDebug('image = ' + str(data["image"]))
-        self.logDebug('sound = ' + str(data["sound"]))
-        self.logDebug('timestamp = ' + str(data["timestamp"]))
-        self.logDebug('salt = ' + str(data["salt"]))
-        self.logDebug('hash = ' + str(data["hash"]))
+            inputs.update({'captcha_id': inputs['captcha_id'], 'captcha_key': inputs['captcha_key'], 'captcha_value': captcha_value})
 
-        captcha_text = self.decryptCaptcha(str(data["image"]))
+        elif inputs.has_key("captcha_value") and inputs.has_key("timestamp") and inputs.has_key("salt") and inputs.has_key("hash"):
+            # New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
+            self.logDebug('Using "new" version')
+
+            xapca = self.load("http://www.ulozto.net/reloadXapca.php", get = { "rnd": str(int(time.time()))})
+            self.logDebug('xapca = ' + str(xapca))
+
+            data = json_loads(xapca)
+            captcha_value = self.decryptCaptcha(str(data['image']))
+            self.logDebug('CAPTCHA HASH: ' + data['hash'] + ', CAPTCHA SALT: ' + str(data['salt']) + ', CAPTCHA VALUE: ' + captcha_value)
+
+            inputs.update({'timestamp': data['timestamp'], 'salt': data['salt'], 'hash': data['hash'], 'captcha_value': captcha_value})
+        else:
+            self.parseError("CAPTCHA form changed")
 
         self.multiDL = True
-
-        inputs.update({"timestamp": data["timestamp"], "salt": data["salt"], "hash": data["hash"], "captcha_value": captcha_text})
-
         self.download("http://www.ulozto.net" + action, post=inputs, cookies=True, disposition=True)
 
     def handlePremium(self):
@@ -142,8 +133,8 @@ class UlozTo(SimpleHoster):
         })
 
         if check == "wrong_captcha":
-            self.delStorage("captcha_id")
-            self.delStorage("captcha_text")
+            #self.delStorage("captcha_id")
+            #self.delStorage("captcha_text")
             self.invalidCaptcha()
             self.retry(reason="Wrong captcha code")
         elif check == "offline":
