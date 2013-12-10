@@ -143,7 +143,7 @@ class RapidgatorNet(SimpleHoster):
                 else:
                     self.parseError("Captcha")
 
-        for i in range(5):
+        for _ in xrange(5):
             self.checkWait()
             captcha_challenge, captcha_response = captcha.challenge(captcha_key)
 

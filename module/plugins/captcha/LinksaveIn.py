@@ -29,8 +29,8 @@ class LinksaveIn(OCR):
                 break
             frame = im.copy()
             pix = frame.load()
-            for x in range(frame.size[0]):
-                for y in range(frame.size[1]):
+            for x in xrange(frame.size[0]):
+                for y in xrange(frame.size[1]):
                     if lut[pix[x, y]] != (0,0,0):
                         npix[x, y] = lut[pix[x, y]]
             frame_nr += 1
@@ -57,8 +57,8 @@ class LinksaveIn(OCR):
             
             bgpix = bg.load()
             pix = img.load()
-            for x in range(bg.size[0]):
-                for y in range(bg.size[1]):
+            for x in xrange(bg.size[0]):
+                for y in xrange(bg.size[1]):
                     rgb_bg = bglut[bgpix[x, y]]
                     rgb_c = lut[pix[x, y]]
                     try:
@@ -90,8 +90,8 @@ class LinksaveIn(OCR):
         bgpix = bg.load()
         pix = img.load()
         orgpix = self.image.load()
-        for x in range(bg.size[0]):
-            for y in range(bg.size[1]):
+        for x in xrange(bg.size[0]):
+            for y in xrange(bg.size[1]):
                 rgb_bg = bglut[bgpix[x, y]]
                 rgb_c = lut[pix[x, y]]
                 if rgb_c == rgb_bg:
@@ -102,8 +102,8 @@ class LinksaveIn(OCR):
         pix = new.load()
         orgpix = self.image.load()
         thresh = 4
-        for x in range(new.size[0]):
-            for y in range(new.size[1]):
+        for x in xrange(new.size[0]):
+            for y in xrange(new.size[1]):
                 rgb = orgpix[x, y]
                 r, g, b = rgb
                 pix[x, y] = (255,255,255)

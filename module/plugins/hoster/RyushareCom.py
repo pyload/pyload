@@ -58,7 +58,7 @@ class RyushareCom(XFileSharingPro):
         if retry:
             self.retry()
 
-        for i in xrange(5):
+        for _ in xrange(5):
             
             m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
             if not m:

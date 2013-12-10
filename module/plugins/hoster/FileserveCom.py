@@ -161,7 +161,7 @@ class FileserveCom(Hoster):
         captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group("key")
         recaptcha = ReCaptcha(self)
 
-        for i in range(5):
+        for _ in xrange(5):
             challenge, code = recaptcha.challenge(captcha_key)
 
             response = json_loads(self.load(self.URLS[2],

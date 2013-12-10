@@ -62,7 +62,7 @@ class IfolderRu(SimpleHoster):
         self.wait()
 
         captcha_url = "http://ints.rusfolder.com/random/images/?session=%s" % session_id
-        for i in range(5):
+        for _ in xrange(5):
             self.html = self.load(url, cookies=True)
             action, inputs = self.parseHtmlForm('ID="Form1"')
             inputs['ints_session'] = re.search(self.INTS_SESSION_PATTERN, self.html).group(1)

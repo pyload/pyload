@@ -79,7 +79,7 @@ class FilecloudIo(SimpleHoster):
             captcha_key = found.group(1) if found else self.RECAPTCHA_KEY
             data["ctype"] = "recaptcha"
 
-            for i in range(5):
+            for _ in xrange(5):
                 data["recaptcha_challenge"], data["recaptcha_response"] = recaptcha.challenge(captcha_key)
 
                 json_url = "http://filecloud.io/download-request.json"
