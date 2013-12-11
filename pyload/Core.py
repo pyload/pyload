@@ -313,7 +313,6 @@ class Core(object):
         self.config.loadDefault()
 
         self.debug = self.doDebug or self.config['general']['debug_mode']
-        self.remote &= self.config['remote']['activated']
 
         pid = self.isAlreadyRunning()
         # don't exit when in test runner
