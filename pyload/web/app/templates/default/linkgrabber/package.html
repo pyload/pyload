@@ -12,6 +12,7 @@
 <table class="table table-condensed" {{#unless expanded}}style="display: none"{{/unless}}>
     <tbody>
     {{#each links}}
+    {{#unless ignored}}
     <tr>
         <td class="link-name">{{ name }}</td>
         <td><img src="{{ pluginIcon plugin }}"> {{ plugin }}</td>
@@ -19,6 +20,7 @@
         <td>{{ linkStatus status }}</td>
         <td><button class="btn btn-danger btn-mini" data-index={{@index}}><i class="icon-trash"></i></button></td>
     </tr>
+    {{/unless}}
     {{/each}}
     </tbody>
 </table>
@@ -41,4 +43,14 @@
 <span class="text-info">
     {{ unknown }} {{_ "unknown" }}
 </span>
+
+<div class="plugin-list pull-right">
+    {{#each plugins}}
+        <span class="plugin-item{{#if ignored}} ignored{{/if}}" data-plugin="{{@key}}">
+           <img src="{{ pluginIcon @key}}">
+            &nbsp;{{@key}}: {{count}}
+        </span>
+    {{/each}}
+</div>
+
 {{/if}}

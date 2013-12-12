@@ -9,11 +9,13 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
                 password: null,
                 new_name: null,
                 links: null,
-                pid: null
+                pid: null,
+                ignored: null // list of ignored plugins
             },
 
             initialize: function() {
                 this.set('links', new LinkList());
+                this.set('ignored', {});
             },
 
             destroy: function() {
@@ -39,7 +41,13 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
             // Add the package to pyload
             add: function() {
                 var self = this;
-                var links = this.get('links').pluck('url');
+                // Filter the ignored links and retrieve urls
+                var links = _.map(this.get('links').filter(function(link) {
+                    return !_.has(self.get('ignored'), link.get('plugin'));
+                }), function(link) {
+                    return link.get('url');
+                });
+
                 var pid = this.get('pid');
 
                 if (pid !== null && _.isNumber(pid)) {
@@ -87,24 +95,41 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
                     name: this.getName(),
                     links: this.get('links').toJSON()
                 };
-                var links = this.get('links');
-                data.length = links.length;
+                // Summary
+                data.length = data.links.length;
                 data.size = 0;
                 data.online = 0;
                 data.offline = 0;
                 data.unknown = 0;
+                data.plugins = {};
 
-                // Summary
-                links.each(function(link) {
-                    if (link.get('status') === Api.DownloadStatus.Online)
+                // map of ignored plugins
+                var ignored = this.get('ignored');
+
+                _.each(data.links, function(link) {
+
+                    link.ignored = _.has(ignored, link.plugin);
+
+                    if (link.status === Api.DownloadStatus.Online)
                         data.online++;
-                    else if (link.get('status') === Api.DownloadStatus.Offline)
+                    else if (link.status === Api.DownloadStatus.Offline)
                         data.offline++;
                     else
                         data.unknown++;
 
-                    if (link.get('size') > 0)
-                        data.size += link.get('size');
+                    if (link.size > 0)
+                        data.size += link.size;
+
+                    if (_.has(data.plugins, link.plugin))
+                        data.plugins[link.plugin].count++;
+                    else {
+                        data.plugins[link.plugin] = {
+                            count: 1,
+                            ignored: link.ignored
+                        };
+
+                    }
+
                 });
 
                 return data;

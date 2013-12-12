@@ -24,7 +24,8 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/linkgrabber/package'
                 'click .btn-add': 'addPackage',
                 'click .btn-password': 'togglePassword',
                 'click .btn-delete': 'deletePackage',
-                'click .btn-mini': 'deleteLink'
+                'click .btn-mini': 'deleteLink',
+                'click .plugin-item': 'togglePlugin'
             },
 
             expanded: false,
@@ -89,6 +90,18 @@ define(['jquery', 'underscore', 'backbone', 'app', 'hbs!tpl/linkgrabber/package'
                 var el = $(e.target);
                 el.find('i').toggleClass('icon-lock icon-unlock');
                 this.ui.password.toggle();
+            },
+
+            togglePlugin: function(e) {
+                var el = $(e.target);
+                var plugin = el.data('plugin');
+                var ignored = this.model.get('ignored');
+                if (_.has(ignored, plugin))
+                    delete ignored[plugin];
+                else
+                    ignored[plugin] = true;
+
+                this.render();
             }
 
         });
