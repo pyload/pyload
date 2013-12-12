@@ -22,7 +22,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class HellspyCz(DeadHoster):
     __name__ = "HellspyCz"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:\w+\.)*?(hellspy\.(?:cz|com|sk)|sciagaj.pl)(?P<ID>/\S+/\d+)"
+    __pattern__ = r"https?://(?:\w+\.)*?(hellspy\.(?:cz|com|sk)|sciagaj\.pl)(?P<ID>/\S+/\d+)"
     __version__ = "0.28"
     __description__ = """HellSpy.cz"""
     __author_name__ = ("zoidberg")
