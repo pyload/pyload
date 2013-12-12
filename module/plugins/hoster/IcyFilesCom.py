@@ -22,7 +22,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class IcyFilesCom(DeadHoster):
     __name__ = "IcyFilesCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?icyfiles\.com/(?P<ID>\w+)"
+    __pattern__ = r"http://(?:www\.)?icyfiles\.com/(.*)"
     __version__ = "0.06"
     __description__ = """IcyFiles.com plugin - free only"""
     __author_name__ = ("godofdream")

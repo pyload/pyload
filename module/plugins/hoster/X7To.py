@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class X7To(DeadHoster):
     __name__ = "X7To"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?x7\.to/(?P<ID>\w+)"
+    __pattern__ = r"http://(?:www.)?x7.to/"
     __version__ = "0.41"
     __description__ = """X7.To File Download Hoster"""
     __author_name__ = ("ernieb")

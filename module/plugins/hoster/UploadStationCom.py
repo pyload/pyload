@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class UploadStationCom(DeadHoster):
     __name__ = "UploadStationCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?uploadstation\.com/file/(?P<ID>\w+)"
+    __pattern__ = r"http://(?:www\.)?uploadstation\.com/file/(?P<id>[A-Za-z0-9]+)"
     __version__ = "0.52"
     __description__ = """UploadStation.Com File Download Hoster"""
     __author_name__ = ("fragonib", "zoidberg")
