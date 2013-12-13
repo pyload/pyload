@@ -14,7 +14,7 @@ of the available components listed by topic can be found below.
     pyload.api.DownloadPreparingApi.DownloadPreparingApi
     pyload.api.DownloadApi.DownloadApi
     pyload.api.FileApi.FileApi
-    pyload.api.CollectorApi.CollectorApi
+    pyload.api.MediaFinderApi.MediaFinderApi
     pyload.api.AccountApi.AccountApi
     pyload.api.UserInteractionApi.UserInteractionApi
     pyload.api.AddonApi.AddonApi

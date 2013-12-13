@@ -45,7 +45,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($
         destroy: function(options) {
             // also not working when using data
             options = App.apiRequest(
-                'deleteFiles/[' + this.get('fid') + ']',
+                'removeFiles/[' + this.get('fid') + ']',
                 null, options);
             options.method = 'post';
 

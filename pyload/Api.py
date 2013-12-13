@@ -41,7 +41,7 @@ stateMap = {
     DownloadState.Finished: frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
     DownloadState.Unfinished: None, # set below
     DownloadState.Failed: frozenset((DownloadStatus.Failed, DownloadStatus.TempOffline, DownloadStatus.Aborted,
-                                     DownloadStatus.NotPossible)),
+                                     DownloadStatus.NotPossible, DownloadStatus.FileMismatch)),
     DownloadState.Unmanaged: None, #TODO
 }
 

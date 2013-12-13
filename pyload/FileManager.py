@@ -51,9 +51,9 @@ class FileManager:
 
         # translations
         self.statusMsg = [_("none"), _("offline"), _("online"), _("queued"), _("paused"),
-                          _("finished"), _("skipped"), _("failed"), _("starting"),
-                          _("waiting"), _("downloading"), _("temp. offline"), _("aborted"), _("not possible"),
-                          _("decrypting"), _("processing"), _("custom"), _("unknown")]
+                          _("finished"), _("skipped"), _("failed"), _("starting"),_("waiting"),
+                          _("downloading"), _("temp. offline"), _("aborted"), _("not possible"), _("missing"),
+                          _("file mismatch"), _("decrypting"), _("processing"), _("custom"), _("unknown")]
 
         self.files = {} # holds instances for files
         self.packages = {}  # same for packages
@@ -312,7 +312,7 @@ class FileManager:
 
     @lock
     @invalidate
-    def deletePackage(self, pid):
+    def removePackage(self, pid):
         """delete package and all contained links"""
 
         p = self.getPackage(pid)
@@ -325,9 +325,6 @@ class FileManager:
             if pyfile.packageid == pid:
                 pyfile.abortDownload()
 
-        # TODO: delete child packages
-        # TODO: delete folder
-
         self.db.deletePackage(pid)
         self.releasePackage(pid)
 
@@ -339,7 +336,7 @@ class FileManager:
 
     @lock
     @invalidate
-    def deleteFile(self, fid):
+    def removeFile(self, fid):
         """deletes links"""
 
         f = self.getFile(fid)
@@ -351,7 +348,6 @@ class FileManager:
         if fid in self.core.threadManager.processingIds():
             f.abortDownload()
 
-        # TODO: delete real file
 
         self.db.deleteFile(fid, f.fileorder, f.packageid)
         self.releaseFile(fid)

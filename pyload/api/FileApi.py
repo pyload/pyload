@@ -152,6 +152,21 @@ class FileApi(ApiComponent):
         """
         return self.core.files.moveFiles(fids, pid)
 
+    def deleteFiles(self, fids):
+        """ Deletes files from disk
+        :param fids: list of file ids
+        :return: False if any file can't be deleted currently
+        """
+        # TODO
+
+
+    def deletePackages(self, pids):
+        """ Delete package and all content from disk recursively
+        :param pids: list of package ids
+        :return: False if any package can't be deleted currently
+        """
+        # TODO
+
     @RequirePerm(Permission.Modify)
     def orderPackage(self, pid, position):
         """Set new position for a package.

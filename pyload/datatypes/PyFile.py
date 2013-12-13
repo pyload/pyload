@@ -38,10 +38,12 @@ statusMap = {
     "temp. offline": 11,
     "aborted": 12,
     "not possible": 13,
-    "decrypting": 14,
-    "processing": 15,
-    "custom": 16,
-    "unknown": 17,
+    "missing": 14,
+    "file mismatch": 15,
+    "decrypting": 16,
+    "processing": 17,
+    "custom": 18,
+    "unknown": 19,
 }
 
 

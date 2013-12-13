@@ -34,10 +34,12 @@ class DownloadStatus:
 	TempOffline = 11
 	Aborted = 12
 	NotPossible = 13
-	Decrypting = 14
-	Processing = 15
-	Custom = 16
-	Unknown = 17
+	Missing = 14
+	FileMismatch = 15
+	Decrypting = 16
+	Processing = 17
+	Custom = 18
+	Unknown = 19
 
 class FileStatus:
 	Ok = 0
@@ -488,6 +490,10 @@ class Iface(object):
 	def recheckPackage(self, pid):
 		pass
 	def removeAccount(self, account):
+		pass
+	def removeFiles(self, fids):
+		pass
+	def removePackages(self, pids):
 		pass
 	def removeUser(self, uid):
 		pass

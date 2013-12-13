@@ -98,24 +98,24 @@ class DownloadApi(ApiComponent):
         return self.addPackage(th.name, [th.name])
 
     @RequirePerm(Permission.Delete)
-    def deleteFiles(self, fids):
-        """Deletes several file entries from pyload.
+    def removeFiles(self, fids):
+        """Removes several file entries from pyload.
 
         :param fids: list of file ids
         """
         for fid in fids:
-            self.core.files.deleteFile(fid)
+            self.core.files.removeFile(fid)
 
         self.core.files.save()
 
     @RequirePerm(Permission.Delete)
-    def deletePackages(self, pids):
-        """Deletes packages and containing links.
+    def removePackages(self, pids):
+        """Rempve packages and containing links.
 
         :param pids: list of package ids
         """
         for pid in pids:
-            self.core.files.deletePackage(pid)
+            self.core.files.removePackage(pid)
 
         self.core.files.save()
 

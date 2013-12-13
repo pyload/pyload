@@ -100,7 +100,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'collection
             destroy: function(options) {
                 // TODO: Not working when using data?, array seems to break it
                 options = App.apiRequest(
-                    'deletePackages/[' + this.get('pid') + ']',
+                    'removePackages/[' + this.get('pid') + ']',
                     null, options);
                 options.method = 'post';
 

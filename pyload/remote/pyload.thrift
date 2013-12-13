@@ -26,6 +26,8 @@ enum DownloadStatus {
   TempOffline,
   Aborted,
   NotPossible,
+  Missing,
+  FileMismatch,
   Decrypting,
   Processing,
   Custom,
@@ -417,9 +419,9 @@ service Pyload {
   void addLinks(1: PackageID pid, 2: LinkList links) throws (1: PackageDoesNotExist e),
   void addLocalFile(1: PackageID pid, 2: string name, 3: string path) throws (1: PackageDoesNotExist e)
 
-  // these are real file operations and WILL delete files on disk
-  void deleteFiles(1: list<FileID> fids),
-  void deletePackages(1: list<PackageID> pids), // delete the whole folder recursive
+  // removes the links with out actually deleting the files
+  void removeFiles(1: list<FileID> fids),
+  void removePackages(1: list<PackageID> pids), // remove the whole folder recursive
 
   // Modify Downloads
 
@@ -430,9 +432,9 @@ service Pyload {
   void stopDownloads(1: list<FileID> fids),
   void stopAllDownloads(),
 
-  ////////////////////////////
+  ///////////////////////////////
   // File Information retrieval
-  ////////////////////////////
+  ///////////////////////////////
 
   TreeCollection getAllFiles(),
   TreeCollection getFilteredFiles(1: DownloadState state),
@@ -460,6 +462,9 @@ service Pyload {
   // as above, this will move files on disk
   bool movePackage(1: PackageID pid, 2: PackageID root) throws (1: PackageDoesNotExist e),
   bool moveFiles(1: list<FileID> fids, 2: PackageID pid) throws (1: PackageDoesNotExist e),
+
+  bool deletePackages(1: list<PackageID> pids), // remove the whole folder recursive
+  bool deleteFiles(1: list<FileID> fids),
 
   void orderPackage(1: list<PackageID> pids, 2: i16 position),
   void orderFiles(1: list<FileID> fids, 2: PackageID pid, 3: i16 position),
@@ -524,6 +529,10 @@ service Pyload {
   // special variant of callAddon that works on the media types, acccepting integer
   JSONString invokeAddonHandler(1: PluginName plugin, 2: string func, 3: PackageID pid_or_fid)
         throws (1: ServiceDoesNotExist e, 2: ServiceException ex),
+
+  ///////////////////////
+  // Media finder
+  ///////////////////////
 
 
   //scheduler

@@ -45,6 +45,7 @@ class FileMethods(DatabaseMethods):
         # sum is None when no elements are added
         return (r[0], r[1] if r[1] is not None else 0) if r else (0, 0)
 
+    # TODO: missing and not possible DLs ?
     @queue
     def queuestats(self, user=None):
         """ number and size of files in queue not finished yet"""
@@ -409,8 +410,8 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def restartFailed(self, owner=None):
-        # status=queued, where status in failed, aborted, temp offline
-        self.c.execute("UPDATE files SET dlstatus=3, error='' WHERE dlstatus IN (7, 11, 12)")
+        # status=queued, where status in failed, aborted, temp offline, file mismatch
+        self.c.execute("UPDATE files SET dlstatus=3, error='' WHERE dlstatus IN (7, 11, 12, 15)")
 
     @queue
     def findDuplicates(self, id, folder, filename):

@@ -532,7 +532,7 @@ class Core(object):
                     'ERROR':    'bg_red',
                     'CRITICAL': 'bg_purple',
                 }
-            elif self.config['log']['color_theme'] == "light":
+            else: #light theme
                 cfmt = "%(log_color)s%(asctime)s %(levelname)-8s  %(message)s"
                 clr = {
                     'DEBUG':    'cyan',
@@ -540,6 +540,7 @@ class Core(object):
                     'ERROR':    'red',
                     'CRITICAL': 'purple',
                 }
+
             console_frm = ColoredFormatter(cfmt, datefmt, clr)
         else:
             console_frm = fh_frm
@@ -572,7 +573,6 @@ class Core(object):
         for h in list(self.log.handlers):
             self.log.removeHandler(h)
             h.close()
-
 
     def restart(self):
         self.shutdown()
