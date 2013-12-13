@@ -27,13 +27,13 @@ from module.utils import parseFileSize
 
 class EasybytezCom(Account):
     __name__ = "EasybytezCom"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __type__ = "account"
     __description__ = """EasyBytez.com account plugin"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
 
-    VALID_UNTIL_PATTERN = r'<TR><TD>Premium account expire:</TD><TD><b>([^<]+)</b>'
+    VALID_UNTIL_PATTERN = r'Premium account expire:</TD><TD><b>([^<]+)</b>'
     TRAFFIC_LEFT_PATTERN = r'<TR><TD>Traffic available today:</TD><TD><b>(?P<S>[^<]+)</b>'
 
     def loadAccountInfo(self, user, req):
@@ -47,7 +47,7 @@ class EasybytezCom(Account):
             premium = True
             trafficleft = -1
             try:
-                self.logDebug(found.group(1))
+                self.logDebug("Expire date: " + found.group(1))
                 validuntil = mktime(strptime(found.group(1), "%d %B %Y"))
             except Exception, e:
                 self.logError(e)
@@ -57,6 +57,7 @@ class EasybytezCom(Account):
                 trafficleft = found.group(1)
                 if "Unlimited" in trafficleft:
                     premium = True
+                    trafficleft = -1
                 else:
                     trafficleft = parseFileSize(trafficleft) / 1024
 
