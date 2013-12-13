@@ -27,8 +27,8 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class Keep2shareCC(SimpleHoster):
     __name__ = "Keep2shareCC"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>[a-zA-Z0-9]{13})"
-    __version__ = "0.05"
+    __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)"
+    __version__ = "0.06"
     __description__ = """Keep2share.cc hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -42,20 +42,29 @@ class Keep2shareCC(SimpleHoster):
 
     RECAPTCHA_KEY = '6LcYcN0SAAAAABtMlxKj7X0hRxOY8_2U86kI1vbb'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r"http://www.keep2share.cc/file/\g<ID>")]
+    FILE_URL_REPLACEMENTS = [(__pattern__, r"http://keep2share.cc/file/\g<ID>")]
 
     def handleFree(self):
-        fid = re.search(r'<input type="hidden" name="slow_id" value="([^"]+)">', self.html).group(1)
-        self.html = self.load(self.pyfile.url, post={'yt0': '', 'slow_id': fid})
+        self.fid = re.search(r'<input type="hidden" name="slow_id" value="([^"]+)">', self.html).group(1)
+        self.html = self.load(self.pyfile.url, post={'yt0': '', 'slow_id': self.fid})
 
-        m = re.search(self.WAIT_PATTERN, self.html)
-        if m:
-            wait_string = m.group(1)
-            wait_time = int(wait_string[0:2]) * 60 * 60 + int(wait_string[3:5]) * 60 + int(wait_string[6:8])
-            self.setWait(wait_time, True)
+        m = re.search(r"function download\(\){.*window\.location\.href = '([^']+)';", self.html, re.DOTALL)
+        if m:  # Direct mode
+            self.startDownload("http://www.keep2share.cc" + m.group(1))
+        else:
+            self.handleCaptcha()
+
+            self.setWait(30)
             self.wait()
-            self.process(self.pyfile)
 
+            self.html = self.load(self.pyfile.url, post={'uniqueId': self.fid, 'free': 1})
+
+            m = re.search(self.DIRECT_LINK_PATTERN, self.html)
+            if not m:
+                self.parseError("Unable to detect direct link")
+            self.startDownload('http://keep2share.cc' + m.group(1))
+
+    def handleCaptcha(self):
         recaptcha = ReCaptcha(self)
         for i in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
@@ -64,15 +73,13 @@ class Keep2shareCC(SimpleHoster):
                          'CaptchaForm%5Bcode%5D': '',
                          'free': 1,
                          'freeDownloadRequest': 1,
-                         'uniqueId': fid,
+                         'uniqueId': self.fid,
                          'yt0': ''}
 
             self.html = self.load(self.pyfile.url, post=post_data)
 
             if 'recaptcha' not in self.html:
                 self.correctCaptcha()
-                self.setWait(30)
-                self.wait()
                 break
             else:
                 self.logInfo('Wrong captcha')
@@ -80,15 +87,9 @@ class Keep2shareCC(SimpleHoster):
         else:
             self.fail("All captcha attempts failed")
 
-        self.html = self.load(self.pyfile.url, post={'uniqueId': fid, 'free': 1})
-
-        dl = 'http://keep2share.cc'
-        m = re.search(self.DIRECT_LINK_PATTERN, self.html)
-        if not m:
-            self.parseError("Unable to detect direct link")
-        dl += m.group(1)
-        self.logDebug('Direct Link: ' + dl)
-        self.download(dl, disposition=True)
+    def startDownload(self, url):
+        self.logDebug('Direct Link: ' + url)
+        self.download(url, disposition=True)
 
 
 getInfo = create_getInfo(Keep2shareCC)
