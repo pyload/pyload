@@ -27,12 +27,12 @@ class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?fastshare.cz/\d+/.+"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __description__ = """FastShare.cz"""
     __author_name__ = ("zoidberg", "stickell")
 
     FILE_INFO_PATTERN = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*(?:Velikost|Size)\s*: (?P<S>[^,]+),'
-    FILE_OFFLINE_PATTERN = 'The file  ?has been deleted'
+    FILE_OFFLINE_PATTERN = '(?:The file  ?has been deleted|Requested page not found)'
     FILE_URL_REPLACEMENTS = [('#.*', '')]
     SH_COOKIES = [('fastshare.cz', 'lang', 'en')]
 
