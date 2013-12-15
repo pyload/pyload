@@ -38,47 +38,42 @@ _available_processors = {}
 
 class ExtensionProcessorInterface(object):
 
+    def __init__(self, request):
+        self._request = request
+        self._active = True
+
+    def request(self):
+        return self._request
+
     def name(self):
         return None
 
-    def get_extension_response(self):
-        return None
-
-    def setup_stream_options(self, stream_options):
+    def check_consistency_with_other_processors(self, processors):
         pass
 
+    def set_active(self, active):
+        self._active = active
 
-class DeflateStreamExtensionProcessor(ExtensionProcessorInterface):
-    """WebSocket DEFLATE stream extension processor.
+    def is_active(self):
+        return self._active
 
-    Specification:
-    Section 9.2.1 in
-    http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-10
-    """
-
-    def __init__(self, request):
-        self._logger = util.get_class_logger(self)
-
-        self._request = request
-
-    def name(self):
-        return common.DEFLATE_STREAM_EXTENSION
+    def _get_extension_response_internal(self):
+        return None
 
     def get_extension_response(self):
-        if len(self._request.get_parameter_names()) != 0:
-            return None
+        if self._active:
+            response = self._get_extension_response_internal()
+            if response is None:
+                self._active = False
+            return response
+        return None
 
-        self._logger.debug(
-            'Enable %s extension', common.DEFLATE_STREAM_EXTENSION)
-
-        return common.ExtensionParameter(common.DEFLATE_STREAM_EXTENSION)
+    def _setup_stream_options_internal(self, stream_options):
+        pass
 
     def setup_stream_options(self, stream_options):
-        stream_options.deflate_stream = True
-
-
-_available_processors[common.DEFLATE_STREAM_EXTENSION] = (
-    DeflateStreamExtensionProcessor)
+        if self._active:
+            self._setup_stream_options_internal(stream_options)
 
 
 def _log_compression_ratio(logger, original_bytes, total_original_bytes,
@@ -109,6 +104,17 @@ def _log_decompression_ratio(logger, received_bytes, total_received_bytes,
         (ratio, average_ratio))
 
 
+def _validate_window_bits(bits):
+    if bits is not None:
+        try:
+            bits = int(bits)
+        except ValueError, e:
+            return False
+        if bits < 8 or bits > 15:
+            return False
+    return True
+
+
 class DeflateFrameExtensionProcessor(ExtensionProcessorInterface):
     """WebSocket Per-frame DEFLATE extension processor.
 
@@ -120,9 +126,8 @@ class DeflateFrameExtensionProcessor(ExtensionProcessorInterface):
     _NO_CONTEXT_TAKEOVER_PARAM = 'no_context_takeover'
 
     def __init__(self, request):
+        ExtensionProcessorInterface.__init__(self, request)
         self._logger = util.get_class_logger(self)
-
-        self._request = request
 
         self._response_window_bits = None
         self._response_no_context_takeover = False
@@ -143,7 +148,7 @@ class DeflateFrameExtensionProcessor(ExtensionProcessorInterface):
     def name(self):
         return common.DEFLATE_FRAME_EXTENSION
 
-    def get_extension_response(self):
+    def _get_extension_response_internal(self):
         # Any unknown parameter will be just ignored.
 
         window_bits = self._request.get_parameter_value(
@@ -155,13 +160,8 @@ class DeflateFrameExtensionProcessor(ExtensionProcessorInterface):
                 self._NO_CONTEXT_TAKEOVER_PARAM) is not None):
             return None
 
-        if window_bits is not None:
-            try:
-                window_bits = int(window_bits)
-            except ValueError, e:
-                return None
-            if window_bits < 8 or window_bits > 15:
-                return None
+        if not _validate_window_bits(window_bits):
+            return None
 
         self._deflater = util._RFC1979Deflater(
             window_bits, no_context_takeover)
@@ -191,7 +191,7 @@ class DeflateFrameExtensionProcessor(ExtensionProcessorInterface):
 
         return response
 
-    def setup_stream_options(self, stream_options):
+    def _setup_stream_options_internal(self, stream_options):
 
         class _OutgoingFilter(object):
 
@@ -311,8 +311,8 @@ class CompressionExtensionProcessorBase(ExtensionProcessorInterface):
     _METHOD_PARAM = 'method'
 
     def __init__(self, request):
+        ExtensionProcessorInterface.__init__(self, request)
         self._logger = util.get_class_logger(self)
-        self._request = request
         self._compression_method_name = None
         self._compression_processor = None
         self._compression_processor_hook = None
@@ -357,7 +357,7 @@ class CompressionExtensionProcessorBase(ExtensionProcessorInterface):
         self._compression_processor = compression_processor
         return processor_response
 
-    def get_extension_response(self):
+    def _get_extension_response_internal(self):
         processor_response = self._get_compression_processor_response()
         if processor_response is None:
             return None
@@ -372,7 +372,7 @@ class CompressionExtensionProcessorBase(ExtensionProcessorInterface):
             (self._request.name(), self._compression_method_name))
         return response
 
-    def setup_stream_options(self, stream_options):
+    def _setup_stream_options_internal(self, stream_options):
         if self._compression_processor is None:
             return
         self._compression_processor.setup_stream_options(stream_options)
@@ -418,7 +418,7 @@ class DeflateMessageProcessor(ExtensionProcessorInterface):
     _C2S_NO_CONTEXT_TAKEOVER_PARAM = 'c2s_no_context_takeover'
 
     def __init__(self, request):
-        self._request = request
+        ExtensionProcessorInterface.__init__(self, request)
         self._logger = util.get_class_logger(self)
 
         self._c2s_max_window_bits = None
@@ -445,18 +445,13 @@ class DeflateMessageProcessor(ExtensionProcessorInterface):
     def name(self):
         return 'deflate'
 
-    def get_extension_response(self):
+    def _get_extension_response_internal(self):
         # Any unknown parameter will be just ignored.
 
         s2c_max_window_bits = self._request.get_parameter_value(
             self._S2C_MAX_WINDOW_BITS_PARAM)
-        if s2c_max_window_bits is not None:
-            try:
-                s2c_max_window_bits = int(s2c_max_window_bits)
-            except ValueError, e:
-                return None
-            if s2c_max_window_bits < 8 or s2c_max_window_bits > 15:
-                return None
+        if not _validate_window_bits(s2c_max_window_bits):
+            return None
 
         s2c_no_context_takeover = self._request.has_parameter(
             self._S2C_NO_CONTEXT_TAKEOVER_PARAM)
@@ -502,7 +497,7 @@ class DeflateMessageProcessor(ExtensionProcessorInterface):
 
         return response
 
-    def setup_stream_options(self, stream_options):
+    def _setup_stream_options_internal(self, stream_options):
         class _OutgoingMessageFilter(object):
 
             def __init__(self, parent):
@@ -676,41 +671,71 @@ class MuxExtensionProcessor(ExtensionProcessorInterface):
     _QUOTA_PARAM = 'quota'
 
     def __init__(self, request):
-        self._request = request
+        ExtensionProcessorInterface.__init__(self, request)
+        self._quota = 0
+        self._extensions = []
 
     def name(self):
         return common.MUX_EXTENSION
 
-    def get_extension_response(self, ws_request,
-                               logical_channel_extensions):
-        # Mux extension cannot be used after extensions that depend on
-        # frame boundary, extension data field, or any reserved bits
-        # which are attributed to each frame.
-        for extension in logical_channel_extensions:
-            name = extension.name()
-            if (name == common.PERFRAME_COMPRESSION_EXTENSION or
-                name == common.DEFLATE_FRAME_EXTENSION or
-                name == common.X_WEBKIT_DEFLATE_FRAME_EXTENSION):
-                return None
+    def check_consistency_with_other_processors(self, processors):
+        before_mux = True
+        for processor in processors:
+            name = processor.name()
+            if name == self.name():
+                before_mux = False
+                continue
+            if not processor.is_active():
+                continue
+            if before_mux:
+                # Mux extension cannot be used after extensions
+                # that depend on frame boundary, extension data field, or any
+                # reserved bits which are attributed to each frame.
+                if (name == common.PERFRAME_COMPRESSION_EXTENSION or
+                    name == common.DEFLATE_FRAME_EXTENSION or
+                    name == common.X_WEBKIT_DEFLATE_FRAME_EXTENSION):
+                    self.set_active(False)
+                    return
+            else:
+                # Mux extension should not be applied before any history-based
+                # compression extension.
+                if (name == common.PERFRAME_COMPRESSION_EXTENSION or
+                    name == common.DEFLATE_FRAME_EXTENSION or
+                    name == common.X_WEBKIT_DEFLATE_FRAME_EXTENSION or
+                    name == common.PERMESSAGE_COMPRESSION_EXTENSION or
+                    name == common.X_WEBKIT_PERMESSAGE_COMPRESSION_EXTENSION):
+                    self.set_active(False)
+                    return
 
+    def _get_extension_response_internal(self):
+        self._active = False
         quota = self._request.get_parameter_value(self._QUOTA_PARAM)
-        if quota is None:
-            ws_request.mux_quota = 0
-        else:
+        if quota is not None:
             try:
                 quota = int(quota)
             except ValueError, e:
                 return None
             if quota < 0 or quota >= 2 ** 32:
                 return None
-            ws_request.mux_quota = quota
+            self._quota = quota
 
-        ws_request.mux = True
-        ws_request.mux_extensions = logical_channel_extensions
+        self._active = True
         return common.ExtensionParameter(common.MUX_EXTENSION)
 
-    def setup_stream_options(self, stream_options):
+    def _setup_stream_options_internal(self, stream_options):
         pass
+
+    def set_quota(self, quota):
+        self._quota = quota
+
+    def quota(self):
+        return self._quota
+
+    def set_extensions(self, extensions):
+        self._extensions = extensions
+
+    def extensions(self):
+        return self._extensions
 
 
 _available_processors[common.MUX_EXTENSION] = MuxExtensionProcessor

@@ -280,7 +280,7 @@ def parse_frame(receive_bytes, logger=None,
     if logger.isEnabledFor(common.LOGLEVEL_FINE):
         unmask_start = time.time()
 
-    bytes = masker.mask(raw_payload_bytes)
+    unmasked_bytes = masker.mask(raw_payload_bytes)
 
     if logger.isEnabledFor(common.LOGLEVEL_FINE):
         logger.log(
@@ -288,7 +288,7 @@ def parse_frame(receive_bytes, logger=None,
             'Done unmasking payload data at %s MB/s',
             payload_length / (time.time() - unmask_start) / 1000 / 1000)
 
-    return opcode, bytes, fin, rsv1, rsv2, rsv3
+    return opcode, unmasked_bytes, fin, rsv1, rsv2, rsv3
 
 
 class FragmentedFrameBuilder(object):
@@ -403,9 +403,6 @@ class StreamOptions(object):
         self.encode_text_message_to_utf8 = True
         self.mask_send = False
         self.unmask_receive = True
-        # RFC6455 disallows fragmented control frames, but mux extension
-        # relaxes the restriction.
-        self.allow_fragmented_control_frame = False
 
 
 class Stream(StreamBase):
@@ -463,10 +460,10 @@ class Stream(StreamBase):
                            unmask_receive=self._options.unmask_receive)
 
     def _receive_frame_as_frame_object(self):
-        opcode, bytes, fin, rsv1, rsv2, rsv3 = self._receive_frame()
+        opcode, unmasked_bytes, fin, rsv1, rsv2, rsv3 = self._receive_frame()
 
         return Frame(fin=fin, rsv1=rsv1, rsv2=rsv2, rsv3=rsv3,
-                     opcode=opcode, payload=bytes)
+                     opcode=opcode, payload=unmasked_bytes)
 
     def receive_filtered_frame(self):
         """Receives a frame and applies frame filters and message filters.
@@ -602,8 +599,7 @@ class Stream(StreamBase):
             else:
                 # Start of fragmentation frame
 
-                if (not self._options.allow_fragmented_control_frame and
-                    common.is_control_opcode(frame.opcode)):
+                if common.is_control_opcode(frame.opcode):
                     raise InvalidFrameException(
                         'Control frames must not be fragmented')
 
@@ -672,7 +668,7 @@ class Stream(StreamBase):
                 reason = ''
         self._send_closing_handshake(code, reason)
         self._logger.debug(
-            'Sent ack for client-initiated closing handshake '
+            'Acknowledged closing handshake initiated by the peer '
             '(code=%r, reason=%r)', code, reason)
 
     def _process_ping_message(self, message):
@@ -815,13 +811,15 @@ class Stream(StreamBase):
 
         self._write(frame)
 
-    def close_connection(self, code=common.STATUS_NORMAL_CLOSURE, reason=''):
+    def close_connection(self, code=common.STATUS_NORMAL_CLOSURE, reason='',
+                         wait_response=True):
         """Closes a WebSocket connection.
 
         Args:
             code: Status code for close frame. If code is None, a close
                 frame with empty body will be sent.
             reason: string representing close reason.
+            wait_response: True when caller want to wait the response.
         Raises:
             BadOperationException: when reason is specified with code None
             or reason is not an instance of both str and unicode.
@@ -844,11 +842,11 @@ class Stream(StreamBase):
 
         self._send_closing_handshake(code, reason)
         self._logger.debug(
-            'Sent server-initiated closing handshake (code=%r, reason=%r)',
+            'Initiated closing handshake (code=%r, reason=%r)',
             code, reason)
 
         if (code == common.STATUS_GOING_AWAY or
-            code == common.STATUS_PROTOCOL_ERROR):
+            code == common.STATUS_PROTOCOL_ERROR) or not wait_response:
             # It doesn't make sense to wait for a close frame if the reason is
             # protocol error or that the server is going away. For some of
             # other reasons, it might not make sense to wait for a close frame,

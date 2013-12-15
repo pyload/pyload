@@ -48,10 +48,11 @@ class WebSocketBackend(BackendBase):
         # tls is needed when requested or webUI is also on tls
         if self.core.api.isWSSecure():
             from wsbackend.Server import import_ssl
-            if import_ssl():
+            tls_module = import_ssl()
+            if tls_module:
                 options.use_tls = True
+                options.tls_module = tls_module
                 options.certificate = self.core.config['ssl']['cert']
-                options.ca_certificate = options.certificate
                 options.private_key = self.core.config['ssl']['key']
                 self.core.log.info(_('Using secure WebSocket'))
             else:
