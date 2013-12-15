@@ -157,6 +157,6 @@ class FlupFCGIServer(ServerAdapter):
         flup.server.fcgi.WSGIServer(handler, **self.options).run()
 
 # Order is important and gives every server precedence over others!
-all_server = [BjoernServer, TornadoServer, EventletServer, CherryPyWSGI]
+all_server = [TornadoServer, EventletServer, CherryPyWSGI]
 # Some are deactivated because they have some flaws
 ##all_server = [FapwsServer, MeinheldServer, BjoernServer, TornadoServer, EventletServer, CherryPyWSGI]

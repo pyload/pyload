@@ -35,9 +35,11 @@ from time import time, sleep
 from traceback import print_exc
 
 import locale
+
 locale.locale_alias = locale.windows_locale = {} #save ~100kb ram, no known sideeffects for now
 
 import subprocess
+
 subprocess.__doc__ = None # the module with the largest doc we are using
 
 import InitHomeDir
@@ -60,8 +62,10 @@ from utils.fs import free_space, exists, makedirs, join, chmod
 from codecs import getwriter
 
 # test runner overwrites sys.stdout
-if hasattr(sys.stdout, "encoding"): enc = get_console_encoding(sys.stdout.encoding)
-else: enc = "utf8"
+if hasattr(sys.stdout, "encoding"):
+    enc = get_console_encoding(sys.stdout.encoding)
+else:
+    enc = "utf8"
 
 sys._stdout = sys.stdout
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
@@ -100,9 +104,9 @@ class Core(object):
         if len(argv) > 1:
             try:
                 options, args = getopt(argv[1:], 'vchdusqp:',
-                    ["version", "clear", "clean", "help", "debug", "user",
-                     "setup", "configdir=", "changedir", "daemon",
-                     "quit", "status", "no-remote","pidfile="])
+                                       ["version", "clear", "clean", "help", "debug", "user",
+                                        "setup", "configdir=", "changedir", "daemon",
+                                        "quit", "status", "no-remote", "pidfile="])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
@@ -299,14 +303,16 @@ class Core(object):
 
             exit()
 
-        try: signal.signal(signal.SIGQUIT, self.quit)
-        except: pass
+        try:
+            signal.signal(signal.SIGQUIT, self.quit)
+        except:
+            pass
 
         self.config = ConfigParser()
 
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("pyLoad", self.path("locale"),
-                                          languages=[self.config['general']['language'],"en"],fallback=True)
+                                          languages=[self.config['general']['language'], "en"], fallback=True)
         translation.install(True)
 
         # load again so translations are propagated
@@ -448,19 +454,19 @@ class Core(object):
         self.eventManager.dispatchEvent("core:ready")
 
         #test api
-#        from pyload.common.APIExerciser import startApiExerciser
-#        startApiExerciser(self, 3)
+        #        from pyload.common.APIExerciser import startApiExerciser
+        #        startApiExerciser(self, 3)
 
         #some memory stats
-#        from guppy import hpy
-#        hp=hpy()
-#        print hp.heap()
-#        import objgraph
-#        objgraph.show_most_common_types(limit=30)
-#        import memdebug
-#        memdebug.start(8002)
-#        from meliae import scanner
-#        scanner.dump_all_objects(self.path('objs.json'))
+        #        from guppy import hpy
+        #        hp=hpy()
+        #        print hp.heap()
+        #        import objgraph
+        #        objgraph.show_most_common_types(limit=30)
+        #        import memdebug
+        #        memdebug.start(8002)
+        #        from meliae import scanner
+        #        scanner.dump_all_objects(self.path('objs.json'))
 
         locals().clear()
 
@@ -491,9 +497,8 @@ class Core(object):
         self.db.manager = self.files #ugly?
 
     def init_webserver(self):
-        if self.config['webinterface']['activated']:
-            self.webserver = WebServer(self)
-            self.webserver.start()
+        self.webserver = WebServer(self)
+        self.webserver.start()
 
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
@@ -526,18 +531,18 @@ class Core(object):
             if self.config['log']['color_theme'] == "full":
                 cfmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)-8s %(reset)s %(message)s"
                 clr = {
-                    'DEBUG':    'bg_cyan',
-                    'INFO':     'bg_green',
-                    'WARNING':  'bg_yellow',
-                    'ERROR':    'bg_red',
+                    'DEBUG': 'bg_cyan',
+                    'INFO': 'bg_green',
+                    'WARNING': 'bg_yellow',
+                    'ERROR': 'bg_red',
                     'CRITICAL': 'bg_purple',
                 }
             else: #light theme
                 cfmt = "%(log_color)s%(asctime)s %(levelname)-8s  %(message)s"
                 clr = {
-                    'DEBUG':    'cyan',
-                    'WARNING':  'yellow',
-                    'ERROR':    'red',
+                    'DEBUG': 'cyan',
+                    'WARNING': 'yellow',
+                    'ERROR': 'red',
                     'CRITICAL': 'purple',
                 }
 
@@ -578,10 +583,10 @@ class Core(object):
         self.shutdown()
         chdir(owd)
         # close some open fds
-        for i in range(3,50):
+        for i in range(3, 50):
             try:
                 close(i)
-            except :
+            except:
                 pass
 
         execl(executable, executable, *sys.argv)
@@ -591,9 +596,9 @@ class Core(object):
         self.log.info(_("shutting down..."))
         self.eventManager.dispatchEvent("coreShutdown")
         try:
-            if self.config['webinterface']['activated'] and hasattr(self, "webserver"):
+            if hasattr(self, "webserver"):
                 pass # TODO: quit webserver?
-#                self.webserver.quit()
+                #                self.webserver.quit()
 
             for thread in self.threadManager.threads:
                 thread.put("quit")
@@ -616,12 +621,14 @@ class Core(object):
         """ stop and open an ipython shell inplace"""
         if self.debug:
             from IPython import embed
+
             sys.stdout = sys._stdout
             embed()
 
     def breakpoint(self):
         if self.debug:
             from IPython.core.debugger import Pdb
+
             sys.stdout = sys._stdout
             if not self.pdb: self.pdb = Pdb()
             self.pdb.set_trace()
@@ -678,7 +685,7 @@ def main():
     #from module.lib.rename_process import renameProcess
     #renameProcess('pyLoadCore')
     if "--daemon" in sys.argv:
-            deamon()
+        deamon()
     else:
         pyload_core = Core()
         try:

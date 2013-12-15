@@ -62,21 +62,27 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 });
 
                 // TODO: button to start stop refresh
-                var ws = App.openWebSocket('/async');
-                ws.onopen = function() {
-                    ws.send(JSON.stringify('start'));
-                };
-                // TODO compare with polling
-                ws.onmessage = _.bind(this.onData, this);
-                ws.onerror = function(error) {
-                    console.log(error);
-                    alert('WebSocket error' + error);
-                };
-                ws.onclose = function() {
-                    alert('WebSocket was closed');
-                };
+                // TODO: catch ws errors / switch into ws less mode
+                try {
+                    var ws = App.openWebSocket('/async');
+                    ws.onopen = function() {
+                        ws.send(JSON.stringify('start'));
+                    };
+                    // TODO compare with polling
+                    ws.onmessage = _.bind(this.onData, this);
+                    ws.onerror = function(error) {
+                        console.log(error);
+                        alert('WebSocket error ' + error);
+                    };
+                    ws.onclose = function() {
+                        alert('WebSocket was closed');
+                    };
 
-                this.ws = ws;
+                    this.ws = ws;
+
+                } catch (e) {
+                    alert('Could not open WebSocket: ' + e);
+                }
             },
 
             gotoDashboard: function() {

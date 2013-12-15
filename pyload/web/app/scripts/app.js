@@ -41,8 +41,11 @@ define([
     };
 
     App.apiUrl = function(path) {
-        var url = window.hostProtocol + window.hostAddress + ':' + window.hostPort + window.pathPrefix + path;
-        return url;
+        var prefix = window.pathPrefix;
+        if (window.external !== 'false')
+            prefix = window.hostProtocol + window.hostAddress + ':' + window.hostPort + prefix;
+
+        return prefix + '/' + path;
     };
 
     // Add Global Helper functions

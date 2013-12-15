@@ -33,14 +33,13 @@ class ClickAndLoad(Addon):
     __author_mail__ = ("RaNaN@pyload.de", "mkaay@mkaay.de")
 
     def coreReady(self):
-        self.port = int(self.config['webinterface']['port'])
-        if self.config['webinterface']['activated']:
-            if self.getConfig("extern"):
-                ip = "0.0.0.0"
-            else:
-                ip = "127.0.0.1"
+        self.port = int(self.config['webUI']['port'])
+        if self.getConfig("extern"):
+            ip = "0.0.0.0"
+        else:
+            ip = "127.0.0.1"
 
-            thread.start_new_thread(proxy, (self, ip, self.port, 9666))
+        thread.start_new_thread(proxy, (self, ip, self.port, 9666))
 
 
 def proxy(self, *settings):

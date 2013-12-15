@@ -11,12 +11,6 @@ def make_config(config):
     # Check if gettext is installed
     _ = lambda x: x
 
-    config.addConfigSection("remote", _("Remote"), _("Description"), _("Long description"),
-                            [
-                                ("port", "int", _("Port"), 7227),
-                                ("listenaddr", "ip", _("Address"), "0.0.0.0"),
-                            ])
-
     config.addConfigSection("log", _("Log"), _("Description"), _("Long description"),
                             [
                                 ("log_size", "int", _("Size in kb"), 100),
@@ -58,16 +52,18 @@ def make_config(config):
                                 ("key", "file", _("SSL Key"), "ssl.key"),
                             ])
 
-    config.addConfigSection("webinterface", _("Webinterface"), _("Description"), _("Long description"),
+    config.addConfigSection("webUI", _("webUI"), _("Description"), _("Long description"),
                             [
                                 ("template", "str", _("Template"), "default"),
-                                ("activated", "bool", _("Activated"), True),
                                 ("prefix", "str", _("Path Prefix"), ""),
+                                ("external", "bool", _("Served external"), False),
                                 ("server", "auto;threaded;fallback;fastcgi", _("Server"), "auto"),
                                 ("force_server", "str", _("Favor specific server"), ""),
                                 ("host", "ip", _("IP"), "0.0.0.0"),
                                 ("https", "bool", _("Use HTTPS"), False),
                                 ("port", "int", _("Port"), 8001),
+                                ("wsHost", "ip", _("IP"), "0.0.0.0"),
+                                ("wsPort", "int", _("Port"), 7227),
                                 ("develop", "bool", _("Development mode"), False),
                             ])
 

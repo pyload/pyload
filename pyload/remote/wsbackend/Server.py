@@ -67,6 +67,7 @@ _MAX_MEMORIZED_LINES = 1024
 
 def import_ssl():
     global _HAS_SSL, _HAS_OPEN_SSL
+    global ssl, OpenSSL
     try:
         import ssl
         _HAS_SSL = True
@@ -76,6 +77,8 @@ def import_ssl():
             _HAS_OPEN_SSL = True
         except ImportError:
             pass
+
+    return _HAS_OPEN_SSL or _HAS_SSL
 
 
 class _StandaloneConnection(object):
@@ -648,6 +651,8 @@ class DefaultOptions:
     private_key = ''
     certificate = ''
     ca_certificate = ''
+    tls_client_ca = ''
+    tls_client_auth = False
     dispatcher = None
     request_queue_size = _DEFAULT_REQUEST_QUEUE_SIZE
     use_basic_auth = False

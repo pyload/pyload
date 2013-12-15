@@ -21,7 +21,7 @@ from os.path import join, exists
 
 from bottle import route, static_file, response, request, redirect, template
 
-from webinterface import PYLOAD, PROJECT_DIR, SETUP, APP_PATH, UNAVAILALBE
+from webinterface import PYLOAD, PROJECT_DIR, SETUP, APP_PATH, UNAVAILALBE, PREFIX
 
 from utils import login_required, add_json_header, select_language
 
@@ -71,16 +71,17 @@ def index():
     # set variable depending on setup mode
     setup = 'false' if SETUP is None else 'true'
     ws = PYLOAD.getWSAddress() if PYLOAD else False
+    external = PYLOAD.getConfigValue('webUI', 'external') if PYLOAD else None
     web = None
     if PYLOAD:
-        web = PYLOAD.getConfigValue('webinterface', 'port')
+        web = PYLOAD.getConfigValue('webUI', 'port')
     elif SETUP:
-        web = SETUP.config['webinterface']['port']
+        web = SETUP.config['webUI']['port']
 
     # Render variables into the html page
     if resp.status_code == 200:
         content = resp.body.read()
-        resp.body = template(content, ws=ws, web=web, setup=setup)
+        resp.body = template(content, ws=ws, web=web, setup=setup, external=external, prefix=PREFIX)
         resp.content_length = len(resp.body)
 
     return resp

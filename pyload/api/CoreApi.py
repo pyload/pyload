@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from pyload.Api import Api, RequirePerm, Permission, ServerStatus, Interaction
-from pyload.utils.fs import join, free_space
+from pyload.utils.fs import join, free_space, exists
 from pyload.utils import compare_time
 
 from ApiComponent import ApiComponent
@@ -15,11 +15,26 @@ class CoreApi(ApiComponent):
         """pyLoad Core version """
         return self.core.version
 
+    def isWSSecure(self):
+        # needs to use TLS when either requested or webUI is also using encryption
+        if not self.core.config['ssl']['activated'] or self.core.config['webUI']['https']:
+            return False
+
+        if not exists(self.core.config['ssl']['cert']) or not exists(self.core.config['ssl']['key']):
+            self.core.log.warning(_('SSL key or certificate not found'))
+            return False
+
+        return True
+
     @RequirePerm(Permission.All)
     def getWSAddress(self):
         """Gets and address for the websocket based on configuration"""
-        # TODO SSL (wss)
-        return "ws://%%s:%d" % self.core.config['remote']['port']
+        if self.isWSSecure():
+            ws = "wss"
+        else:
+            ws = "ws"
+
+        return "%s://%%s:%d" % (ws, self.core.config['webUI']['wsPort'])
 
     @RequirePerm(Permission.All)
     def getServerStatus(self):

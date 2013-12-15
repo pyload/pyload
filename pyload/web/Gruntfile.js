@@ -21,7 +21,8 @@ module.exports = function(grunt) {
     var yeomanConfig = {
         app: 'app',
         dist: 'dist',
-        banner: '/* Copyright(c) 2008-2013 pyLoad Team */\n'
+        banner: '/* Copyright(c) 2008-2013 pyLoad Team */\n',
+        protocol: 'http'
     };
 
     grunt.initConfig({
@@ -50,7 +51,8 @@ module.exports = function(grunt) {
             options: {
                 port: 9000,
                 // change this to '0.0.0.0' to access the server from outside
-                hostname: 'localhost'
+                hostname: 'localhost',
+                protocol: '<%= yeoman.protocol %>'
             },
             livereload: {
                 options: {
@@ -85,7 +87,7 @@ module.exports = function(grunt) {
         },
         open: { // Opens the webbrowser
             server: {
-                path: 'http://localhost:<%= connect.options.port %>'
+                path: '<%= yeoman.protocol %>://localhost:<%= connect.options.port %>'
             }
         },
         clean: {

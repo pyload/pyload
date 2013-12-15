@@ -22,7 +22,7 @@
 
         // Use value set by templateEngine or default val
         function configValue(string, defaultValue) {
-            if (string.indexOf('{{') > -1)
+            if (string.indexOf('{{') > -1 && string !== 'None' && string !== '')
                 return defaultValue;
             return string;
         }
@@ -38,10 +38,10 @@
         window.hostProtocol = window.location.protocol +  '//';
         window.hostAddress = window.location.hostname;
         window.hostPort = configValue('{{web}}', '8001');
-        // TODO
-        window.pathPrefix = '/';
+        window.external = configValue('{{external}}', 'true').toLowerCase();
+        window.pathPrefix = configValue('{{prefix}}', '');
         window.wsAddress = configValue('{{ws}}', 'ws://%s:7227');
-        window.setup = configValue('{{setup}}', 'false');
+        window.setup = configValue('{{setup}}', 'false').toLowerCase();
 
         require(['config'], function(Config) {
             require(['default'], function(App) {
