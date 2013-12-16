@@ -65,6 +65,10 @@ def i18n(lang=None):
 
 @route('/')
 def index():
+    # the browser should not set this, but remove in case to to avoid cached requests
+    if 'HTTP_IF_MODIFIED_SINCE' in request.environ:
+        del request.environ['HTTP_IF_MODIFIED_SINCE']
+
     if UNAVAILALBE:
         return serve_static("unavailable.html")
 
@@ -85,8 +89,11 @@ def index():
         resp.body = template(content, ws=ws, web=web, setup=setup, external=external, prefix=PREFIX)
         resp.content_length = len(resp.body)
 
-    # tell the browser to don't cache it
-    resp.headers["Cache-Control"] = "no-cache, must-revalidate"
+    # these page should not be cached at all
+    resp.headers.append("Cache-Control", "no-cache")
+    # they are rendered and last modified would be wrong
+    if "Last-Modified" in resp.headers:
+        del resp.headers["Last-Modified"]
 
     return resp
 
@@ -99,17 +106,28 @@ def serve_static(path):
 
     # gzipped and clients accepts it
     # TODO: index.html is not gzipped, because of template processing
+    gzipped = False
     if GZIPPED[path] and "gzip" in request.get_header("Accept-Encoding", "") and path != "index.html":
-        response.headers['Vary'] = 'Accept-Encoding'
-        response.headers['Content-Encoding'] = 'gzip'
+        gzipped = True
         path += ".gz"
 
     resp = static_file(path, root=APP_ROOT)
+
     # Also serve from .tmp folder in dev mode
     if resp.status_code == 404 and APP_PATH == "app":
         resp = static_file(path, root=join(PROJECT_DIR, '.tmp'))
 
-    if resp.status_code == 200:
+    if path.endswith(".html") or path.endswith(".html.gz"):
+        # tell the browser all html files must be revalidated
+        resp.headers["Cache-Control"] = "must-revalidate"
+    elif resp.status_code == 200:
+        # expires after 7 days
+        resp.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
         resp.headers['Cache-control'] = "public"
+
+    if gzipped:
+        resp.headers['Vary'] = 'Accept-Encoding'
+        resp.headers['Content-Encoding'] = 'gzip'
 
     return resp
