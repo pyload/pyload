@@ -509,7 +509,7 @@ class Core(object):
         fh_frm = logging.Formatter(fhfmt, datefmt)
 
         # console formatter
-        if self.config['log']['console_color']:
+        if self.config['log']['console_color'] and os.name != "nt":
             from lib.colorlog import ColoredFormatter
 
             if self.config['log']['color_theme'] == "full":
