@@ -62,6 +62,7 @@ def i18n(lang=None):
 
     return json_dumps({})
 
+
 @route('/')
 def index():
     if UNAVAILALBE:
@@ -84,15 +85,14 @@ def index():
         resp.body = template(content, ws=ws, web=web, setup=setup, external=external, prefix=PREFIX)
         resp.content_length = len(resp.body)
 
+    # tell the browser to don't cache it
+    resp.headers["Cache-Control"] = "no-cache, must-revalidate"
+
     return resp
 
 # Very last route that is registered, could match all uris
 @route('/<path:path>')
 def serve_static(path):
-    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
-    response.headers['Cache-control'] = "public"
-
     # save if this resource is available as gz
     if path not in GZIPPED:
         GZIPPED[path] = exists(join(APP_ROOT, path + ".gz"))
@@ -107,6 +107,9 @@ def serve_static(path):
     resp = static_file(path, root=APP_ROOT)
     # Also serve from .tmp folder in dev mode
     if resp.status_code == 404 and APP_PATH == "app":
-        return static_file(path, root=join(PROJECT_DIR, '.tmp'))
+        resp = static_file(path, root=join(PROJECT_DIR, '.tmp'))
+
+    if resp.status_code == 200:
+        resp.headers['Cache-control'] = "public"
 
     return resp
