@@ -17,10 +17,10 @@
     @author: Walter Purcaro
 """
 
+from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.PyFile import statusMap
-import json
 import re
 
 
@@ -32,7 +32,7 @@ def getInfo(urls):
     for url in urls:
         id = regex.search(url).group("ID")
         page = getURL(apiurl + id, get=request)
-        info = json.loads(page)
+        info = json_loads(page)
 
         if "title" in info:
             name = info["title"] + ".mp4"
@@ -65,7 +65,7 @@ class DailymotionCom(Hoster):
     __author_mail__ = ("vuolter@gmail.com")
 
     def setup(self):
-        self.resumeDownload = True
+        self.resumeDownload = self.multiDL = True
 
     def getStreams(self):
         streams = []
@@ -106,11 +106,9 @@ class DailymotionCom(Hoster):
     def checkInfo(self, pyfile):
         pyfile.name, pyfile.size, pyfile.status, pyfile.url = getInfo([pyfile.url])[0]
         if pyfile.status == 1:
-            self.fail("offline")
+            self.offline()
         elif pyfile.status == 6:
-            delay = 600
-            self.logInfo("Wait %s minutes because video is temporarily unavailable now" % delay / 60)
-            self.retry(wait_time=delay, reason="temp. offline")
+            self.tempOffline()
 
     def process(self, pyfile):
         self.checkInfo(pyfile)
