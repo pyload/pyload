@@ -30,7 +30,7 @@ def getInfo(urls):
     apiurl = "https://api.dailymotion.com/video/"
     request = {"fields": "access_error,status,title"}
     for url in urls:
-        id = regex.search(url).group("ID")
+        id   = regex.search(url).group("ID")
         page = getURL(apiurl + id, get=request)
         info = json_loads(page)
 
@@ -57,7 +57,7 @@ def getInfo(urls):
 class DailymotionCom(Hoster):
     __name__ = "DailymotionCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://www.dailymotion.com/.*?video/(?P<ID>[\w^_]+)"
+    __pattern__ = r"https?://(?:www\.)?dailymotion\.com/.*?video/(?P<ID>[\w^_]+)"
     __version__ = "0.2"
     __config__ = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "HD 720p")]
     __description__ = """Dailymotion Video Download Hoster"""
@@ -88,14 +88,14 @@ class DailymotionCom(Hoster):
         return quality
 
     def getLink(self, streams, quality):
-        idx = 0
-
         if quality > 0:
             for x, s in reversed([item for item in enumerate(streams)]):
                 qf = s[0][1]
                 if qf <= quality:
                     idx = x
                     break
+            else:
+                idx = 0
         else:
             idx = quality
 
