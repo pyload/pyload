@@ -113,7 +113,7 @@ class DailymotionCom(Hoster):
     def process(self, pyfile):
         self.checkInfo(pyfile)
 
-        id = re.search(self.__pattern__, pyfile.url).group("ID")
+        id = re.match(self.__pattern__, pyfile.url).group("ID")
         self.html = self.load("http://www.dailymotion.com/embed/video/" + id, decode=True)
 
         streams = self.getStreams()
