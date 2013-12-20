@@ -128,7 +128,7 @@ class XFileSharingPro(SimpleHoster):
         self.startDownload(url)
 
     def getDownloadLink(self):
-        for i in range(5):
+        for i in xrange(5):
             self.logDebug("Getting download link: #%d" % i)
             data = self.getPostParameters()
 
@@ -182,7 +182,7 @@ class XFileSharingPro(SimpleHoster):
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
         elif inputs['st'] == 'Can not leech file':
-            self.retry(max_tries=20, wait_time=180, reason=inputs['st'])
+            self.retry(max_tries=20, wait_time=3 * 60, reason=inputs['st'])
         else:
             self.fail(inputs['st'])
 
@@ -238,7 +238,7 @@ class XFileSharingPro(SimpleHoster):
         return self.errmsg
 
     def getPostParameters(self):
-        for _ in range(3):
+        for _ in xrange(3):
             if not self.errmsg:
                 self.checkErrors()
 

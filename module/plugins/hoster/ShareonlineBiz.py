@@ -78,9 +78,9 @@ class ShareonlineBiz(Hoster):
         # check = self.checkDownload({"failure": re.compile(self.ERROR_INFO_PATTERN)})
         # if check == "failure":
         #     try:
-        #         self.retry(reason = self.lastCheck.group(1).decode("utf8"))
+        #         self.retry(reason=self.lastCheck.group(1).decode("utf8"))
         #     except:
-        #         self.retry(reason = "Unknown error")
+        #         self.retry(reason="Unknown error")
 
         if self.api_data:
             self.check_data = {"size": int(self.api_data['size']), "md5": self.api_data['md5']}
@@ -115,7 +115,7 @@ class ShareonlineBiz(Hoster):
         found = re.search(r'var wait=(\d+);', self.html)
 
         recaptcha = ReCaptcha(self)
-        for i in range(5):
+        for _ in xrange(5):
             challenge, response = recaptcha.challenge("6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX")
             self.setWait(int(found.group(1)) if found else 30)
             response = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time() * 1000)), post={
@@ -144,7 +144,7 @@ class ShareonlineBiz(Hoster):
         if check == "cookie":
             self.retry(5, 60, "Cookie failure")
         elif check == "fail":
-            self.retry(5, 300, "Download failed")
+            self.retry(5, 5 * 60, "Download failed")
 
     def checkErrors(self):
         found = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)

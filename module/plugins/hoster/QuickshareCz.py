@@ -84,9 +84,9 @@ class QuickshareCz(SimpleHoster):
         found = re.search(r'/chyba/(\d+)', download_url)
         if found:
             if found.group(1) == '1':
-                self.retry(max_tries=60, wait_time=120, reason="This IP is already downloading")
+                self.retry(60, 2 * 60, "This IP is already downloading")
             elif found.group(1) == '2':
-                self.retry(max_tries=60, wait_time=60, reason="No free slots available")
+                self.retry(60, 60, "No free slots available")
             else:
                 self.fail('Error %d' % found.group(1))
 

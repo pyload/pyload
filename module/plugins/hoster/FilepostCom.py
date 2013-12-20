@@ -87,9 +87,9 @@ class FilepostCom(SimpleHoster):
             # Solve recaptcha
             recaptcha = ReCaptcha(self)
 
-            for pokus in range(5):
+            for i in xrange(5):
                 get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
-                if pokus:
+                if i:
                     post_dict["recaptcha_challenge_field"], post_dict["recaptcha_response_field"] = recaptcha.challenge(
                         captcha_key)
                     self.logDebug(u"RECAPTCHA: %s : %s : %s" % (
@@ -97,10 +97,10 @@ class FilepostCom(SimpleHoster):
 
                 download_url = self.getJsonResponse(get_dict, post_dict, 'link')
                 if download_url:
-                    if pokus:
+                    if i:
                         self.correctCaptcha()
                     break
-                elif pokus:
+                elif i:
                     self.invalidCaptcha()
 
             else:
@@ -122,8 +122,8 @@ class FilepostCom(SimpleHoster):
         # see the two lines commented out with  "# ~?".
         if 'error' in json_response['js']:
             if json_response['js']['error'] == 'download_delay':
-                self.retry(json_response['js']['params']['next_download'])
-                # ~? self.retry(js_answer['params']['next_download'])
+                self.retry(wait_time=json_response['js']['params']['next_download'])
+                # ~? self.retry(wait_time=js_answer['params']['next_download'])
             elif 'Wrong file password' in json_response['js']['error']:
                 return None
             elif 'You entered a wrong CAPTCHA code' in json_response['js']['error']:

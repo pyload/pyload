@@ -62,7 +62,7 @@ class FilecloudIo(SimpleHoster):
             self.account.form_data = {"recaptcha_challenge_field": captcha_challenge,
                                       "recaptcha_response_field": captcha_response}
             self.account.relogin(self.user)
-            self.retry(max_tries=2)
+            self.retry(2)
 
         json_url = "http://filecloud.io/download-request.json"
         response = self.load(json_url, post=data)
@@ -79,7 +79,7 @@ class FilecloudIo(SimpleHoster):
             captcha_key = found.group(1) if found else self.RECAPTCHA_KEY
             data["ctype"] = "recaptcha"
 
-            for i in range(5):
+            for _ in xrange(5):
                 data["recaptcha_challenge"], data["recaptcha_response"] = recaptcha.challenge(captcha_key)
 
                 json_url = "http://filecloud.io/download-request.json"

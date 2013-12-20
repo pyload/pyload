@@ -45,7 +45,7 @@ class DateiTo(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        for i in range(10):
+        for _ in xrange(10):
             self.logDebug("URL", url, "POST", data)
             self.html = self.load(url, post=data)
             self.checkErrors()

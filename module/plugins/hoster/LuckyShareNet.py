@@ -31,7 +31,7 @@ class LuckyShareNet(SimpleHoster):
             else:
                 self.parseError('Unable to detect wait time between free downloads')
         elif 'Hash expired' in rep:
-            self.retry(reason='Hash expired')
+            self.retry(reason="Hash expired")
         return json_loads(rep)
 
     # TODO: There should be a filesize limit for free downloads
@@ -47,7 +47,7 @@ class LuckyShareNet(SimpleHoster):
         self.wait()
 
         recaptcha = ReCaptcha(self)
-        for i in xrange(5):
+        for _ in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             rep = self.load(r"http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s" %
                             (challenge, response, json['hash']), decode=True)

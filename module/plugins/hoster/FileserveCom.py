@@ -133,9 +133,9 @@ class FileserveCom(Hoster):
             self.doLongWait(self.lastCheck)
         elif check == "limit":
             #download limited reached for today (not a exact time known)
-            self.setWait(180 * 60, True) # wait 3 hours
+            self.setWait(3 * 60 * 60, True) # wait 3 hours #TO-DO: resolve waittime using UnrestrictLi's secondsToMidnight
             self.wait()
-            self.retry(max_tries=0)
+            self.retry()
 
         self.thread.m.reconnecting.wait(3)  # Ease issue with later downloads appearing to be in parallel
 
@@ -161,7 +161,7 @@ class FileserveCom(Hoster):
         captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group("key")
         recaptcha = ReCaptcha(self)
 
-        for i in range(5):
+        for _ in xrange(5):
             challenge, code = recaptcha.challenge(captcha_key)
 
             response = json_loads(self.load(self.URLS[2],
@@ -178,7 +178,7 @@ class FileserveCom(Hoster):
             self.fail("Invalid captcha")
 
     def doLongWait(self, m):
-        wait_time = (int(m.group(1)) * {'seconds': 1, 'minutes': 60, 'hours': 3600}[m.group(2)]) if m else 720
+        wait_time = (int(m.group(1)) * {'seconds': 1, 'minutes': 60, 'hours': 3600}[m.group(2)]) if m else 12 * 60
         self.setWait(wait_time, True)
         self.wait()
         self.retry()

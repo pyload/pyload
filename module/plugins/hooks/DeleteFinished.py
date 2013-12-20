@@ -46,7 +46,7 @@ class DeleteFinished(Hook):
 
     def pluginConfigChanged(self, plugin, name, value):
         if name == 'interval' and value != self.interval:
-            self.interval = value * 3600
+            self.interval = value * 60 * 60
             self.initPeriodical()
 
     def unload(self):

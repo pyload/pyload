@@ -37,7 +37,7 @@ class LixIn(Crypter):
 
         matches = re.search(self.CAPTCHA_PATTERN, self.html)
         if matches:
-            for i in range(5):
+            for _ in xrange(5):
                 matches = re.search(self.CAPTCHA_PATTERN, self.html)
                 if matches:
                     self.logDebug("trying captcha")

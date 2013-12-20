@@ -50,7 +50,7 @@ class TurbobitNetFolder(SimpleCrypter):
         for i in grid['rows']:
             ids.append(i['id'])
 
-        for p in range(2, pages + 1):
+        for p in xrange(2, pages + 1):
             grid = self.load('http://turbobit.net/downloadfolder/gridFile',
                              get={'id_folder': folder_id, 'rows': 200, 'page': p}, decode=True)
             grid = json_loads(grid)

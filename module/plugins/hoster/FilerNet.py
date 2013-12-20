@@ -54,7 +54,7 @@ class FilerNet(SimpleHoster):
         m = re.search(r'musst du <span id="time">(\d+)</span> Sekunden warten', self.html)
         if m:
             waittime = int(m.group(1))
-            self.retry(3, waittime, 'Wait between free downloads')
+            self.retry(3, waittime, "Wait between free downloads")
 
         self.getFileInfo()
 
@@ -76,7 +76,7 @@ class FilerNet(SimpleHoster):
 
         downloadURL = ''
         recaptcha = ReCaptcha(self)
-        for i in xrange(5):
+        for _ in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,

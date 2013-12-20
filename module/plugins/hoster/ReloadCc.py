@@ -63,13 +63,13 @@ class ReloadCc(Hoster):
             elif e.code == 409:
                 self.logWarning("The hoster seems to be a limited hoster and you've used your daily traffic for this hoster: %s" % self.pyfile.url)
                 # Wait for 6 hours and retry up to 4 times => one day
-                self.retry(max_retries=4, wait_time=(3600 * 6), reason="Limited hoster traffic limit exceeded")
+                self.retry(4, 6 * 60 * 60, "Limited hoster traffic limit exceeded")
             elif e.code == 429:
                 # Too many connections, wait 2 minutes and try again
-                self.retry(max_retries=5, wait_time=120, reason="Too many concurrent connections")
+                self.retry(5, 2 * 60, "Too many concurrent connections")
             elif e.code == 503:
                 # Retry in 10 minutes
-                self.retry(wait_time=600,
+                self.retry(wait_time=10 * 60,
                            reason="Reload.cc is currently in maintenance mode! Please check again later.")
             else:
                 self.fail(
@@ -103,7 +103,7 @@ class ReloadCc(Hoster):
                     self.fail("Password required for file access")
                 elif e.code == 429:
                     # Too many connections, wait 2 minutes and try again
-                    self.retry(max_retries=5, wait_time=120, reason="Too many concurrent connections")
+                    self.retry(5, 2 * 60, "Too many concurrent connections")
                 else:
                     self.fail(
                         "Internal error within Reload.cc. Please contact the Reload.cc support for further information."

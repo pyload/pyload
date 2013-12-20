@@ -47,7 +47,7 @@ class HotfileCom(Account):
             info["premium_until"] = info["premium_until"][:19]
             zone = int(zone[:3])
 
-            validuntil = int(mktime(strptime(info["premium_until"], "%Y-%m-%d %H:%M:%S"))) + (zone * 3600)
+            validuntil = int(mktime(strptime(info["premium_until"], "%Y-%m-%d %H:%M:%S"))) + (zone * 60 * 60)
             tmp = {"validuntil": validuntil, "trafficleft": -1, "premium": True}
 
         elif info['is_premium'] == '0':

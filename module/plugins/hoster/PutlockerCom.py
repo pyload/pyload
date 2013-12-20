@@ -58,7 +58,7 @@ class PutlockerCom(SimpleHoster):
         self.html = self.load(self.pyfile.url, post=post_data)
         if (">You have exceeded the daily stream limit for your country\\. You can wait until tomorrow" in self.html or
             "(>This content server has been temporarily disabled for upgrades|Try again soon\\. You can still download it below\\.<)" in self.html):
-            self.retry(wait_time=60 * 60 * 2, reason="Download limit exceeded or server disabled")  # 2 hours wait
+            self.retry(wait_time=2 * 60 * 60, reason="Download limit exceeded or server disabled")  # 2 hours wait
 
         patterns = (r'(/get_file\.php\?id=[A-Z0-9]+&key=[a-zA-Z0-9=]+&original=1)',
                     r'(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+)',

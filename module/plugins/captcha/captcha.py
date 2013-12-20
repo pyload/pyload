@@ -186,7 +186,7 @@ class OCR(object):
         highest = {}
         counts = {}
 
-        for angle in range(-45, 45):
+        for angle in xrange(-45, 45):
 
             tmpimage = self.image.rotate(angle)
 
