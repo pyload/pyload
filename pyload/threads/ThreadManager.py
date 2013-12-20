@@ -167,21 +167,24 @@ class ThreadManager:
         for rid in self.infoResults.keys():
             if self.infoResults[rid].isStale():
                 del self.infoResults[rid]
-
-    def tryReconnect(self):
+  
+    def tryReconnect(self, force=False):
         """checks if reconnect needed"""
 
         if not (self.core.config["reconnect"]["activated"] and self.core.api.isTimeReconnect()):
             return False
 
-        active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.threads if x.active]
-
-        if not (0 < active.count(True) == len(active)):
-            return False
+        if not force:
+            reconnable = [1 if x.active.plugin.wantReconnect and x.active.plugin.waiting and self.pyfile.waitUntil - time() > 60
+                          else 0 if not x.active.plugin.waiting and not x.active.plugin.resumeDownload else 2
+                          for x in self.threads if x.active]
+            if not reconnable.count(1) or reconnable.count(0):
+                return
 
         if not exists(self.core.config['reconnect']['method']):
-            if exists(join(pypath, self.core.config['reconnect']['method'])):
-                self.core.config['reconnect']['method'] = join(pypath, self.core.config['reconnect']['method'])
+            reconn_path = join(pypath, self.core.config['reconnect']['method'])
+            if exists():
+                self.core.config['reconnect']['method'] = reconn_path
             else:
                 self.core.config["reconnect"]["activated"] = False
                 self.log.warning(_("Reconnect script not found!"))
@@ -192,32 +195,43 @@ class ThreadManager:
         #Do reconnect
         self.log.info(_("Starting reconnect"))
 
+        reconnected = False
+
         while [x.active.plugin.waiting for x in self.threads if x.active].count(True) != 0:
             sleep(0.25)
 
-        ip = self.getIP()
+        oldip = self.getIP()
+        self.log.debug("Old IP: %s" % oldip)
+        self.core.evm.dispatchEvent("reconnect:before", oldip)
 
-        self.core.evm.dispatchEvent("reconnect:before", ip)
-
-        self.log.debug("Old IP: %s" % ip)
+        if not self.reconnecting.isSet():
+            self.log.info(_("Reconnect aborted"))
+            return
 
         try:
-            reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
+            retries = self.config["reconnect"]["retries"]
+            for i in xrange((retries if retries > 0 else 0) + 1):
+                reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
+                newip = self.getIP()
+                if newip != oldip:
+                    reconnected = True
+                    break
+            reconn.wait()
+            sleep(1)
         except:
             self.log.warning(_("Failed executing reconnect script!"))
             self.core.config["reconnect"]["activated"] = False
-            self.reconnecting.clear()
             self.core.print_exc()
-            return
-
-        reconn.wait()
-        sleep(1)
-        ip = self.getIP()
-        self.core.evm.dispatchEvent("reconnect:after", ip)
-
-        self.log.info(_("Reconnected, new IP: %s") % ip)
 
         self.reconnecting.clear()
+
+        self.log.debug("Current IP: %s" % newip)
+        if reconnected:
+            self.log.info(_("Reconnect succeed"))
+            self.core.evm.dispatchEvent("reconnect:after", newip, oldip)
+        else:
+            self.log.info(_("Reconnect failed"))
+            self.core.evm.dispatchEvent("reconnect:failed", newip)
 
     def getIP(self):
         """retrieve current ip"""

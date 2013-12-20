@@ -11,16 +11,22 @@ class EventManager:
     **Known Events:**
     Most addon methods exist as events. These are some additional known events.
 
-    ===================== ================ ===========================================================
-    Name                      Arguments      Description
-    ===================== ================ ===========================================================
-    event                 eventName, *args Called for every event, with eventName and original args
-    download:preparing    fid              A download was just queued and will be prepared now.
-    download:start        fid              A plugin will immediately start the download afterwards.
-    download:allProcessed                  All links were handled, pyLoad would idle afterwards.
-    download:allFinished                   All downloads in the queue are finished.
-    config:changed        sec, opt, value  The config was changed.
-    ===================== ================ ===========================================================
+    ======================= ======================== ==========================================================
+    Name                    Arguments                Description
+    ======================= ======================== ==========================================================
+    event                   eventName, *args         Called for every event, with eventName and original args
+    download:preparing      pyfile                   A download was just queued and will be prepared now
+    download:start          pyfile, url, filename    A plugin will immediately start the download afterwards
+    download:finished       pyfile                   Fired when a download is completed
+    download:failed         pyfile                   Fired when downloading fails
+    download:allProcessed                            All links were handled, pyLoad would idle afterwards
+    download:allFinished                             All downloads in the queue are finished.
+    package:finished        pypack                   Fired when a package is completed
+    reconnect:before        ip                       Fired before trying to change IP address
+    reconnect:after         ip, oldip                Fired after succesfully changed IP address
+    reconnect:failed        ip                       Fired if fails to got a new IP
+    config:changed          section, option, value   The config was changed.
+    ======================= ======================== ==========================================================
 
     | Notes:
     |    download:allProcessed is *always* called before download:allFinished.

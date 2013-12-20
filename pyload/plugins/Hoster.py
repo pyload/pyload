@@ -206,7 +206,7 @@ class Hoster(Base):
             self.thread.m.reconnecting.wait(2)
 
             self.checkAbort()
-            if self.thread.m.reconnecting.isSet():
+            if self.thread.m.reconnecting.isSet() and self.wantReconnect:
                 self.waiting = False
                 self.wantReconnect = False
                 raise Reconnect
