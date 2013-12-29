@@ -21,6 +21,7 @@
 
 import pycurl
 import re
+from urlparse import urljoin
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
@@ -30,7 +31,7 @@ class FilerNet(SimpleHoster):
     __name__ = "FilerNet"
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?filer\.net/get/(\w+)"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """Filer.net Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -87,9 +88,9 @@ class FilerNet(SimpleHoster):
             self.load(self.pyfile.url, post=post_data)
             self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
-            if 'location' in self.req.http.header:
-                location = re.search(r'location: (\S+)', self.req.http.header).group(1)
-                downloadURL = 'http://filer.net' + location
+            if 'location' in self.req.http.header.lower():
+                location = re.search(r'location: (\S+)', self.req.http.header, re.I).group(1)
+                downloadURL = urljoin('http://filer.net', location)
                 self.correctCaptcha()
                 break
             else:
