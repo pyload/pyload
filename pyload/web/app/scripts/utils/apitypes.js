@@ -11,6 +11,7 @@ define([], function() {
 		MediaType: {'All': 0, 'Audio': 2, 'Image': 4, 'Executable': 64, 'Other': 1, 'Video': 8, 'Document': 16, 'Archive': 32},
 		PackageStatus: {'Paused': 1, 'Remote': 3, 'Folder': 2, 'Ok': 0},
 		Permission: {'All': 0, 'Interaction': 32, 'Modify': 4, 'Add': 1, 'Accounts': 16, 'Plugins': 64, 'Download': 8, 'Delete': 2},
+		ProgressType: {'LinkCheck': 8, 'All': 0, 'FileOperation': 32, 'Decrypting': 4, 'Other': 1, 'Download': 2, 'Addon': 16},
 		Role: {'Admin': 0, 'User': 1},
 	};
 });

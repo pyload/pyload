@@ -95,6 +95,15 @@ class Permission:
 	Interaction = 32
 	Plugins = 64
 
+class ProgressType:
+	All = 0
+	Other = 1
+	Download = 2
+	Decrypting = 4
+	LinkCheck = 8
+	Addon = 16
+	FileOperation = 32
+
 class Role:
 	Admin = 0
 	User = 1
@@ -300,15 +309,17 @@ class PackageStats(BaseObject):
 		self.sizedone = sizedone
 
 class ProgressInfo(BaseObject):
-	__slots__ = ['plugin', 'name', 'statusmsg', 'eta', 'done', 'total', 'download']
+	__slots__ = ['plugin', 'name', 'statusmsg', 'eta', 'done', 'total', 'owner', 'type', 'download']
 
-	def __init__(self, plugin=None, name=None, statusmsg=None, eta=None, done=None, total=None, download=None):
+	def __init__(self, plugin=None, name=None, statusmsg=None, eta=None, done=None, total=None, owner=None, type=None, download=None):
 		self.plugin = plugin
 		self.name = name
 		self.statusmsg = statusmsg
 		self.eta = eta
 		self.done = done
 		self.total = total
+		self.owner = owner
+		self.type = type
 		self.download = download
 
 class ServerStatus(BaseObject):

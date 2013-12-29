@@ -4,7 +4,7 @@
 from copy import copy
 from traceback import print_exc
 
-from pyload.Api import ProgressInfo
+from pyload.Api import ProgressInfo, ProgressType
 from BaseThread import BaseThread
 
 class AddonThread(BaseThread):
@@ -38,7 +38,7 @@ class AddonThread(BaseThread):
         if self.active:
             active = self.active[0]
             return ProgressInfo(active.pluginname, active.name, active.getStatusName(), 0,
-                                self.progress, 100)
+                                self.progress, 100, self.owner, ProgressType.Addon)
 
     def addActive(self, pyfile):
         """ Adds a pyfile to active list and thus will be displayed on overview"""

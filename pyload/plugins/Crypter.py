@@ -6,11 +6,19 @@ from pyload.utils.fs import exists, remove, fs_encode
 from Base import Base, Retry
 
 
+# represent strings as LinkStatus
+def to_link_list(links, status=DS.Queued):
+    return [LinkStatus(link, link, -1, status) if isinstance(link, basestring) else link
+            for link in links]
+
+
 class Package:
     """ Container that indicates that a new package should be created """
 
     def __init__(self, name=None, links=None):
         self.name = name
+
+        # list of link status
         self.links = []
 
         if links:
@@ -24,12 +32,7 @@ class Package:
 
         :param links: One or list of urls or :class:`LinkStatus`
         """
-        links = to_list(links)
-        for link in links:
-            if not isinstance(link, LinkStatus):
-                link = LinkStatus(link, link, -1, DS.Queued)
-
-            self.links.append(link)
+        self.links.extend(to_link_list(to_list(links)))
 
     def addPackage(self, pack):
         self.packs.append(pack)
@@ -128,13 +131,16 @@ class Crypter(Base):
         for url_or_pack in result:
             if isinstance(url_or_pack, Package): #package
                 ret.extend(url_or_pack.getAllURLs())
-            else: # single url
-                ret.append(url_or_pack)
-                # eliminate duplicates
+            elif isinstance(url_or_pack, LinkStatus): #link
+                ret.append(url_or_pack.url)
+            else:
+                core.log.debug("Invalid decrypter result: " + url_or_pack)
+
         return uniqify(ret)
 
+
+    __type__ = "crypter"
     # TODO: pass user to crypter
-    # TODO: crypter could not only know url, but also the name and size
     def __init__(self, core, password=None):
         Base.__init__(self, core)
 
@@ -196,7 +202,7 @@ class Crypter(Base):
         """Internal method to select decrypting method
 
         :param urls: List of urls/content
-        :return:
+        :return: (links, packages)
         """
         cls = self.__class__
 
@@ -235,7 +241,7 @@ class Crypter(Base):
                 self.logWarning(_("Could not remove file '%s'") % f)
                 self.core.print_exc()
 
-        return result
+        return to_link_list(result)
 
     def getLocalContent(self, urls):
         """Load files from disk and separate to file content and url list

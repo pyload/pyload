@@ -40,7 +40,10 @@ class Base(object):
     """
     The Base plugin class with all shared methods and every possible attribute for plugin definition.
     """
+    #: Version as string or number
     __version__ = "0.1"
+    # Type of the plugin, will be inherited and should not be set!
+    __type__ = ""
     #: Regexp pattern which will be matched for download/crypter plugins
     __pattern__ = r""
     #: Internal addon plugin which is always loaded
@@ -149,6 +152,11 @@ class Base(object):
     def getName(self):
         """ Name of the plugin class """
         return self.__name__
+
+    @property
+    def pattern(self):
+        """  Gives the compiled pattern of the plugin """
+        return self.core.pluginManager.getPlugin(self.__type__, self.__name__).re
 
     def setConfig(self, option, value):
         """ Set config value for current plugin """

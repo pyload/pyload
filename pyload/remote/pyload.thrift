@@ -116,6 +116,16 @@ enum Role {
     User = 1
 }
 
+enum ProgressType {
+    All = 0,
+    Other = 1,
+    Download = 2,
+    Decrypting = 4,
+    LinkCheck = 8,
+    Addon = 16,
+    FileOperation = 32,
+}
+
 struct Input {
     1: InputType type,
     2: optional JSONString default_value,
@@ -135,8 +145,10 @@ struct ProgressInfo {
   3: string statusmsg,
   4: i32 eta, // in seconds
   5: ByteCount done,
-  6: ByteCount total, // arbitary number, size in case of files
-  7: optional DownloadProgress download
+  6: ByteCount total, // arbitary number, size in case of files,
+  7: UserID owner,
+  8: ProgressType type,
+  9: optional DownloadProgress download //only given when progress type download
 }
 
 // download info for specific file

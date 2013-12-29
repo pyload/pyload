@@ -45,6 +45,8 @@ class Account(Base):
         return cls(m, info.loginname, info.owner,
                    True if info.activated else False, True if info.shared else False, password, options)
 
+    __type__ = "account"
+
     def __init__(self, manager, loginname, owner, activated, shared, password, options):
         Base.__init__(self, manager.core, owner)
 

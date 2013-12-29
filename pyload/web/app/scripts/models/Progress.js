@@ -14,6 +14,8 @@ define(['jquery', 'backbone', 'underscore', 'utils/apitypes'], function($, Backb
             eta: -1,
             done: -1,
             total: -1,
+            owner: -1,
+            type: 0,
             download: null
         },
 

@@ -47,6 +47,8 @@ class Hoster(Base):
         """
         pass
 
+    __type__ = "hoster"
+
     def __init__(self, pyfile):
         # TODO: pyfile.owner, but it's not correct yet
         Base.__init__(self, pyfile.m.core)

@@ -100,6 +100,8 @@ class Addon(Base):
     #: periodic call interval in seconds
     interval = 0
 
+    __type__ = "addon"
+
     def __init__(self, core, manager, user=None):
         Base.__init__(self, core, user)
 

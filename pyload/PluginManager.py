@@ -132,6 +132,10 @@ class PluginManager:
 
         return res["hoster"], res["crypter"]
 
+    def getPlugin(self, plugin, name):
+        """ Retrieves the plugin tuple for a single plugin or none """
+        return self.loader.getPlugin(plugin, name)
+
     def getPlugins(self, plugin):
         """  Get all plugins of a certain type in a dict """
         plugins = {}
@@ -179,7 +183,10 @@ class PluginManager:
     def loadClass(self, plugin, name):
         """Returns the class of a plugin with the same name"""
         module = self.loadModule(plugin, name)
-        if module: return getattr(module, name)
+        try:
+            if module: return getattr(module, name)
+        except AttributeError:
+            self.log.error(_("Plugin does not define class '%s'") % name)
 
     def find_module(self, fullname, path=None):
         #redirecting imports if necessary

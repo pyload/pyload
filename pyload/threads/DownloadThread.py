@@ -216,7 +216,6 @@ class DownloadThread(BaseThread):
         if self.active:
             return self.active.getProgressInfo()
 
-
     def put(self, job):
         """assign a job to the thread"""
         self.queue.put(job)

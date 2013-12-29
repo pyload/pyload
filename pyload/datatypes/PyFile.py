@@ -19,7 +19,7 @@
 from time import sleep, time
 from ReadWriteLock import ReadWriteLock
 
-from pyload.Api import ProgressInfo, DownloadProgress, FileInfo, DownloadInfo, DownloadStatus
+from pyload.Api import ProgressInfo, ProgressType, DownloadProgress, FileInfo, DownloadInfo, DownloadStatus
 from pyload.utils import lock, read_lock
 from pyload.utils.filetypes import guess_type
 
@@ -276,5 +276,5 @@ class PyFile(object):
 
     def getProgressInfo(self):
         return ProgressInfo(self.pluginname, self.name, self.getStatusName(), self.getETA(),
-                            self.getBytesArrived(), self.getSize(),
+                            self.getBytesArrived(), self.getSize(), self.owner, ProgressType.Download,
                             DownloadProgress(self.fid, self.packageid, self.getSpeed(), self.status))

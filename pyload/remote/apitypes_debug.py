@@ -14,6 +14,7 @@ enums = [
 	"MediaType",
 	"PackageStatus",
 	"Permission",
+	"ProgressType",
 	"Role",
 ]
 
@@ -37,7 +38,7 @@ classes = {
 	'PackageDoesNotExist' : [int],
 	'PackageInfo' : [int, basestring, basestring, int, int, basestring, basestring, basestring, int, (list, basestring), int, bool, int, PackageStats, (list, int), (list, int)],
 	'PackageStats' : [int, int, int, int],
-	'ProgressInfo' : [basestring, basestring, basestring, int, int, int, (None, DownloadProgress)],
+	'ProgressInfo' : [basestring, basestring, basestring, int, int, int, int, int, (None, DownloadProgress)],
 	'ServerStatus' : [int, int, int, int, int, bool, bool, bool, bool],
 	'ServiceDoesNotExist' : [basestring, basestring],
 	'ServiceException' : [basestring],
