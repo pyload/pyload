@@ -24,12 +24,12 @@ class FilefactoryCom(SimpleHoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __description__ = """Filefactory.Com File Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
-    FILE_INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">(?P<S>[\d.]+) (?P<U>\w+) uploaded'
+    FILE_INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.]+) (?P<U>\w+) uploaded'
     DIRECT_LINK_PATTERN = r'<section id="downloadLink">\s*<p class="textAlignCenter">\s*<a href="([^"]+)">[^<]+</a>\s*</p>\s*</section>'
 
     def handleFree(self):
@@ -41,8 +41,13 @@ class FilefactoryCom(SimpleHoster):
 
         m = re.search(r'data-href-direct="(http://[^"]+)"', self.html)
         if m:
-            self.setWait(30)
-            self.wait()
+            t = re.search(r'<div id="countdown_clock" data-delay="(\d+)">', self.html)
+            if t:
+                t = t.group(1)
+            else:
+                self.logDebug("Unable to detect countdown duration. Guessing 60 seconds")
+                t = 60
+            self.wait(t)
             direct = m.group(1)
         else:  # This section could be completely useless now
             # Load the page that contains the direct link
