@@ -163,7 +163,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
@@ -277,3 +277,9 @@ class SimpleHoster(Hoster):
         size = self.pyfile.size / 1024
         self.logInfo("Filesize: %i KiB, Traffic left for user %s: %i KiB" % (size, self.user, traffic))
         return size <= traffic
+
+    # TODO: Remove in 0.5
+    def wait(self, seconds=False, reconnect=False):
+        if seconds:
+            self.setWait(seconds, reconnect)
+        super(SimpleHoster, self).wait()
