@@ -59,7 +59,16 @@ class Request(object):
         if name == "":
             self.options.clear()
         else:
-            del self.options[name]
+            if name in self.options:
+                del self.options[name]
+
+    def addAuth(self, user, pwd):
+        """  Adds authentication information to the request """
+        self.options["auth"] = user + ":" + pwd
+
+    def removeAuth(self):
+        """ Removes authentication from the request """
+        self.unsetOption("auth")
 
     def load(self, uri, *args, **kwargs):
         """  Loads given resource from given uri. Args and kwargs depends on implementation"""

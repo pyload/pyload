@@ -63,7 +63,7 @@ class CurlRequest(Request):
         self.c.setopt(pycurl.WRITEFUNCTION, self.write)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
-    # TODO: addAuth, addHeader
+    # TODO: addHeader
 
     @property
     def http(self):
@@ -137,6 +137,9 @@ class CurlRequest(Request):
 
         if "timeout" in options:
             self.c.setopt(pycurl.LOW_SPEED_TIME, options["timeout"])
+
+        if "auth" in options:
+            self.c.setopt(pycurl.USERPWD, str(options["auth"]))
 
     def initOptions(self, options):
         """  Sets same options as available in pycurl  """
