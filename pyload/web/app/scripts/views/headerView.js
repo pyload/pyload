@@ -1,8 +1,8 @@
-define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'collections/ProgressList',
+define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus',
     'views/progressView', 'views/notificationView', 'helpers/formatSize', 'hbs!tpl/header/layout',
     'hbs!tpl/header/status', 'hbs!tpl/header/progressbar', 'hbs!tpl/header/progressSup', 'hbs!tpl/header/progressSub' , 'flot'],
     function(
-        $, _, Backbone, App, ServerStatus, ProgressList, ProgressView, NotificationView, formatSize, template, templateStatus, templateProgress, templateSup, templateSub) {
+        $, _, Backbone, App, ServerStatus, ProgressView, NotificationView, formatSize, template, templateStatus, templateProgress, templateSup, templateSub) {
         'use strict';
         // Renders the header with all information
         return Backbone.Marionette.ItemView.extend({
@@ -32,7 +32,6 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
             // models and data
             ws: null,
             status: null,
-            progressList: null,
             speeds: null,
 
             // sub view
@@ -51,8 +50,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 this.status = new ServerStatus();
                 this.listenTo(this.status, 'change', this.update);
 
-                this.progressList = new ProgressList();
-                this.listenTo(this.progressList, 'add', function(model) {
+                this.listenTo(App.progressList, 'add', function(model) {
                     self.ui.progress.appendWithAnimation(new ProgressView({model: model}).render().el);
                 });
 
@@ -140,7 +138,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                 );
 
                 var data = {tasks: 0, downloads: 0, speed: 0, single: false};
-                this.progressList.each(function(progress) {
+                App.progressList.each(function(progress) {
                     if (progress.isDownload()) {
                         data.downloads++;
                         data.speed += progress.get('download').speed;
@@ -150,7 +148,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
 
                 // Show progress of one task
                 if (data.tasks + data.downloads === 1) {
-                    var progress = this.progressList.at(0);
+                    var progress = App.progressList.at(0);
                     data.single = true;
                     data.eta = progress.get('eta');
                     data.percent = progress.getPercent();
@@ -233,9 +231,9 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus', 'colle
                         prog.pid = prog.plugin + prog.name;
                 });
 
-                this.progressList.set(progress);
+                App.progressList.set(progress);
                 // update currently open files with progress
-                this.progressList.each(function(prog) {
+                App.progressList.each(function(prog) {
                     if (prog.isDownload() && App.dashboard.files) {
                         var file = App.dashboard.files.get(prog.get('download').fid);
                         if (file) {

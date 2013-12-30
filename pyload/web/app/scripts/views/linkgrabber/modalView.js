@@ -1,5 +1,5 @@
-define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'views/abstract/modalView', './collectorView', 'hbs!tpl/linkgrabber/modal'],
-    function($, _, Backbone, App, CollectorPackage, modalView, CollectorView, template) {
+define(['jquery', 'underscore', 'backbone', 'app', 'utils/apitypes', 'models/CollectorPackage', 'views/abstract/modalView', './collectorView', 'hbs!tpl/linkgrabber/modal'],
+    function($, _, Backbone, App, Api, CollectorPackage, modalView, CollectorView, template) {
         'use strict';
         // Modal dialog for package adding - triggers package:added when package was added
         return modalView.extend({
@@ -24,6 +24,11 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
                 // Inherit parent events
                 this.events = _.extend({}, modalView.prototype.events, this.events);
                 this.listenTo(App.vent, 'collectorPackage:added', _.bind(this.onAdded, this));
+
+                var update = _.bind(this.onProgressChange, this);
+                this.listenTo(App.progressList, 'add', update);
+                this.listenTo(App.progressList, 'remove', update);
+                this.listenTo(App.progressList, 'change', update);
             },
 
             // sets a new models as target and render
@@ -123,7 +128,18 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/CollectorPackage', 'v
             onDestroy: function() {
                 if (this.collectorView)
                     this.collectorView.close();
-            }
+            },
 
+            onProgressChange: function() {
+                var progress = App.progressList.byType(Api.ProgressType.LinkCheck | Api.ProgressType.Decrypting);
+                if (progress.length > 0) {
+                    // show indicator
+                    this.$('.status-text').html(progress[0].get('statusmsg'));
+                    this.$('.status').fadeIn();
+                } else {
+                    // hide indicator
+                    this.$('.status').fadeOut();
+                }
+            }
         });
     });

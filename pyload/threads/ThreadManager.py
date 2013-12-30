@@ -19,7 +19,7 @@
 from os.path import exists, join
 import re
 from subprocess import Popen
-from threading import Event, Lock
+from threading import Event, RLock
 from time import sleep, time
 from traceback import print_exc
 from random import choice
@@ -53,7 +53,7 @@ class ThreadManager:
         self.reconnecting.clear()
         self.downloaded = 0 #number of files downloaded since last cleanup
 
-        self.lock = Lock()
+        self.lock = RLock()
 
         # some operations require to fetch url info from hoster, so we caching them so it wont be done twice
         # contains a timestamp and will be purged after timeout
@@ -71,13 +71,23 @@ class ThreadManager:
         for i in range(self.core.config.get("download", "max_downloads")):
             self.createThread()
 
-
     def createThread(self):
         """create a download thread"""
 
         thread = DownloadThread(self)
         self.threads.append(thread)
 
+    @lock
+    def addThread(self, thread):
+        self.localThreads.append(thread)
+
+    @lock
+    def removeThread(self, thread):
+        """ Remove a thread from the local list """
+        if thread in self.localThreads:
+            self.localThreads.remove(thread)
+
+    @lock
     def createInfoThread(self, data, pid):
         """ start a thread which fetches online status and other info's """
         self.timestamp = time() + 5 * 60

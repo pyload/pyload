@@ -1,6 +1,6 @@
 define('default', ['require', 'backbone', 'jquery', 'app', 'router',
-    'models/UserSession', 'models/AddonHandler'],
-    function(require, Backbone, $, App, Router, UserSession, AddonHandler) {
+    'models/UserSession', 'models/AddonHandler', 'collections/ProgressList'],
+    function(require, Backbone, $, App, Router, UserSession, AddonHandler, ProgressList) {
         'use strict';
 
         // Global ajax options
@@ -21,7 +21,9 @@ define('default', ['require', 'backbone', 'jquery', 'app', 'router',
             return Backbone.$.ajax.apply(Backbone.$, arguments);
         };
 
+        // global available models / collections
         App.addons = new AddonHandler();
+        App.progressList = new ProgressList();
 
         $(function() {
             // load setup async

@@ -30,6 +30,10 @@ class BaseThread(Thread):
     def user(self):
         return primary_uid(self.owner)
 
+    def finished(self):
+        """ Remove thread from list  """
+        self.m.removeThread(self)
+
     def getProgress(self):
         """ retrieves progress information about the current running task
 

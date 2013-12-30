@@ -21,7 +21,7 @@ class AddonThread(BaseThread):
         self.active = []
         self.progress = 0
 
-        m.localThreads.append(self)
+        m.addThread(self)
 
         self.start()
 
@@ -76,4 +76,4 @@ class AddonThread(BaseThread):
             for x in local:
                 self.finishFile(x)
 
-            self.m.localThreads.remove(self)
+            self.finished()
