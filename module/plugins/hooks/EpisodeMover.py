@@ -52,7 +52,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.529"
+    __version__ = "0.530"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -76,7 +76,9 @@ class EpisodeMover(Hook):
                     ("char_sub", "str", "Characters to substitute w/o any sanity checks (Syntax: a|b,c|b,d|,)", ""),
                     ("folder_sub", "bool", "Substitute characters in folders as well?", "False"),
                     ("junk_rm", "bool", "Automatic deletion of empty directories and files with certain (user-specified) extensions", "False"),
-                    ("junk_exts", "list", "Files with these extensions will be automatically deleted if automatic deletion is enabled", "txt,nfo,sfv,sub,idx,bmp,jpg,png"),]
+                    ("junk_exts", "list", "Files with these extensions will be automatically deleted if automatic deletion is enabled", "txt,nfo,sfv,sub,idx,bmp,jpg,png"),
+                    ("blacklist", "path", "/path/to/blacklist.txt (or relative to pyload config folder)", ""),
+                    ("bl_switch", "bool", "Blacklisting", "False"),]
     __author_name__ = ("rusk")
     __author_mail__ = ("troggs@gmx.net")
     __tvdb = {}
@@ -226,6 +228,15 @@ class EpisodeMover(Hook):
             else:
                 self.logInfo(u'"%s" is not for me to handle. Aborting...' % path_to_file_s)
             return
+        
+        
+        # check if any of the collected files are blacklisted
+        if self.getConfig("bl_switch") is True:
+            for file_ in files_.keys():
+                if self.__isBlacklisted(files_[file_]) is True:
+                    files_.pop(file_)
+                    self.logDebug(u'The path of the file "%s" is blacklisted and it will not be proccessed.' % file_)
+        
 
         #Check for sample files is enabled
         if self.getConfig("ignore_sample") is True:
@@ -548,6 +559,42 @@ class EpisodeMover(Hook):
                            re.IGNORECASE
                           )
         return True if match_ else False
+    
+    def __isBlacklisted(self, path_to_file):
+        """checks if a file should not be processed based on part of its path"""
+        
+        blacklist_file_name = "blacklist.txt"
+        path_to_blacklist = self.getConfig("blacklist")
+        blacklist_file = os.path.join(path_to_blacklist, blacklist_file_name)
+        if not os.path.exists(blacklist_file):
+            return False
+        
+        blacklist = []
+        for line in open(blacklist_file):
+            blacklist.append(line.replace("\n", ""))
+        
+        extract_path = self.config.plugin["ExtractArchive"]["destination"]["value"]
+        dl_path = self.config["general"]["download_folder"]
+        if path_to_file.find(extract_path) != -1: 
+            new_path = path_to_file[len(extract_path):] 
+            testees = new_path.split(os.sep)
+            while testees.count("") != 0:
+                testees.remove("")    
+            for entry in blacklist:
+                for testee in testees:
+                    if entry.lower() == testee.lower():
+                        return True # file is blacklisted
+        
+            
+        elif path_to_file.find(dl_path) != -1:
+            new_path = path_to_file[len(dl_path):]
+            testees = new_path.split(os.sep)
+            while testees.count("") != 0:
+                testees.remove("")    
+            for entry in blacklist:
+                for testee in testees:
+                    if entry.lower() == testee.lower():
+                        return True # file is blacklisted
     
     
     def add_queueMoving(self,episode_obj):
