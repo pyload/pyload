@@ -21,7 +21,7 @@ module.exports = function(grunt) {
     var yeomanConfig = {
         app: 'app',
         dist: 'dist',
-        banner: '/* Copyright(c) 2008-2013 pyLoad Team */\n',
+        banner: '/* Copyright(c) 2008-2014 pyLoad Team */\n',
         protocol: 'http'
     };
 
