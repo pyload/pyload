@@ -28,7 +28,7 @@ from datetime import datetime as dt
 import traceback
 import inspect
 #remote debugging
-# from module.common.pydevsrc import pydevd 
+#from module.common.pydevsrc import pydevd 
 
 
 class EpisodeMover(Hook):
@@ -139,8 +139,9 @@ class EpisodeMover(Hook):
     
     
     def coreReady(self):
-        ConfigDumper(self).dump()
-        #ConfigDumper(self).load('/home/pyload/workspace/pyload/tests/test_suite/em_debug_config.cfg')
+        #ConfigDumper(self).dump()
+        #pydevd.settrace("192.168.1.46",stdoutToServer=True,stderrToServer=True)
+        #ConfigDumper(self).load('/root/.pyload/Logs/em_debug.conf')
         self.mv_logger = \
         MoveLogger(self.getConfig('move_log') +\
                    'moving_log.txt')
@@ -2268,8 +2269,14 @@ class ConfigDumper:
     def load(self, src):
         self.config_dict = json.loads(open(src).readline())
         #def setPlugin(self, plugin, option, value):
+        exclude = [
+                   'outline',
+                   'desc',
+                   'tvshows',
+                   'occurrences'
+                  ]
         for option in self.config_dict.keys():
-            if option not in (u'outline', u'desc'):
+            if option not in exclude:
                 self.config_parser.setPlugin(self.hook_name, option, self.config_dict[option]['value'])
         
 
@@ -2299,7 +2306,6 @@ class MoveLogger:
         
     
     def log_custom(self, record):
-#         pydevd.settrace("192.168.1.46",stdoutToServer=True,stderrToServer=True)
         record = self.transcoder.encode(record)
         if self.path != '':
             l = open(self.path, 'a')
