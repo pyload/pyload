@@ -8,7 +8,7 @@ from json_converter import loads, dumps
 from apitypes import Unauthorized, Forbidden
 
 class WSClient:
-    URL = "ws://localhost:7227/api"
+    URL = "ws://localhost:7447/api"
 
     def __init__(self, url=None):
         self.url = url or self.URL

@@ -40,7 +40,7 @@
         window.hostPort = configValue('{{web}}', '8001');
         window.external = configValue('{{external}}', 'true').toLowerCase();
         window.pathPrefix = configValue('{{prefix}}', '');
-        window.wsAddress = configValue('{{ws}}', 'ws://%s:7227');
+        window.wsAddress = configValue('{{ws}}', 'ws://%s:7447');
         window.setup = configValue('{{setup}}', 'false').toLowerCase();
 
         require(['config'], function(Config) {

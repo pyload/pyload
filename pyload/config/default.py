@@ -63,7 +63,7 @@ def make_config(config):
                                 ("https", "bool", _("Use HTTPS"), False),
                                 ("port", "int", _("Port"), 8001),
                                 ("wsHost", "ip", _("IP"), "0.0.0.0"),
-                                ("wsPort", "int", _("Port"), 7227),
+                                ("wsPort", "int", _("Port"), 7447),
                                 ("develop", "bool", _("Development mode"), False),
                             ])
 
