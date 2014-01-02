@@ -500,8 +500,6 @@ class Core(object):
         self.webserver.start()
 
     def init_logger(self, level):
-        console = logging.StreamHandler(sys.stdout)
-
         datefmt = "%Y-%m-%d %H:%M:%S"
 
         # file handler formatter
@@ -543,6 +541,7 @@ class Core(object):
             if color: console_frm = ColoredFormatter(cfmt, datefmt, clr)
 
         # set console formatter
+        console = logging.StreamHandler(sys.stdout)
         console.setFormatter(console_frm)
 
         self.log = logging.getLogger("log") # setable in config
