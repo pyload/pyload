@@ -507,9 +507,10 @@ class Core(object):
         # file handler formatter
         fhfmt = "%(asctime)s %(levelname)-8s  %(message)s"
         fh_frm = logging.Formatter(fhfmt, datefmt)
+        console_frm = fh_frm
 
         # console formatter
-        if self.config['log']['console_color'] and os.name != "nt":
+        if self.config['log']['console_color']:
             from lib.colorlog import ColoredFormatter
 
             if self.config['log']['color_theme'] == "full":
@@ -530,11 +531,18 @@ class Core(object):
                     'CRITICAL': 'purple',
                 }
 
-            console_frm = ColoredFormatter(cfmt, datefmt, clr)
-        else:
-            console_frm = fh_frm
+            color = True
+            if os.name == "nt":
+                try:
+                    import colorama
+                    colorama.init()
+                except:
+                    color = False
+                    print "Install 'colorama' to use the colored log on windows"
 
-        #: set console formatter
+            if color: console_frm = ColoredFormatter(cfmt, datefmt, clr)
+
+        # set console formatter
         console.setFormatter(console_frm)
 
         self.log = logging.getLogger("log") # setable in config
