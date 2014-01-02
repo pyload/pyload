@@ -36,7 +36,7 @@ class DecrypterThread(BaseThread):
         if links:
             self.log.info(
                 _("Decrypted %(count)d links into package %(name)s") % {"count": len(links), "name": pack.name})
-            self.m.core.api.addFiles(self.pid, [l.url for l in links])
+            self.m.core.api.addLinks(self.pid, [l.url for l in links])
 
         # TODO: add single package into this one and rename it?
         # TODO: nested packages
@@ -63,7 +63,8 @@ class DecrypterThread(BaseThread):
             #TODO: dependency check, there is a new error code for this
             # TODO: decrypting with result yielding
             if not klass:
-                plugin_result.extend(LinkStatus(url, url, -1, DS.NotPossible, name) for url in urls)
+                if err:
+                    plugin_result.extend(LinkStatus(url, url, -1, DS.NotPossible, name) for url in urls)
                 self.log.debug("Plugin for decrypting was not loaded")
             else:
                 try:
