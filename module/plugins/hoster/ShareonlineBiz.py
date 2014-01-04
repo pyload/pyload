@@ -16,7 +16,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 def getInfo(urls):
     api_url_base = "http://api.share-online.biz/linkcheck.php"
 
-    tohttp = lambda urls: [x.replace("https://", "http://") for x in urls]
+    urls = [url.replace("https://", "http://") for url in urls]
 
     for chunk in chunks(tohttp(urls), 90):
         api_param_file = {"links": "\n".join(x.replace("http://www.share-online.biz/dl/", "").rstrip("/") for x in
@@ -28,7 +28,7 @@ def getInfo(urls):
                 continue
             fields = res.split(";")
 
-            if fields[1] in ("OK"):
+            if fields[1] == "OK":
                 status = 2
             elif fields[1] in ("DELETED", "NOT FOUND"):
                 status = 1
@@ -189,18 +189,3 @@ class ShareonlineBiz(Hoster):
 
             self.wait()
             self.retry(max_tries=25, reason=msg)
-
-    # def checksum(self, local_file):
-        # if self.api_data and "md5" in self.api_data and self.api_data["md5"]:
-            # h = hashlib.md5()
-            # f = open(local_file, "rb")
-            # h.update(f.read())
-            # f.close()
-            # hexd = h.hexdigest()
-            # if hexd == self.api_data["md5"]:
-                # return True, 0
-            # else:
-                # return False, 1
-        # else:
-            # self.logWarning("MD5 checksum missing")
-            # return True, 5
