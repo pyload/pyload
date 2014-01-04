@@ -13,10 +13,8 @@ def getInfo(urls):
         if 'Location: http://cloudzer.net/404' in header:
             file_info = (url, 0, 1, url)
         else:
-            if url.endswith('/'):
-                api_data = getURL(url + 'status')
-            else:
-                api_data = getURL(url + '/status')
+            fid = re.search(CloudzerNet.__pattern__, url).group('ID')
+            api_data = getURL('http://cloudzer.net/file/%s/status' % fid)
             name, size = api_data.splitlines()
             size = parseFileSize(size)
             file_info = (name, size, 2, url)
@@ -27,7 +25,7 @@ class CloudzerNet(SimpleHoster):
     __name__ = "CloudzerNet"
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(cloudzer\.net/file/|clz\.to/(file/)?)(?P<ID>\w+).*"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """Cloudzer.net hoster plugin"""
     __author_name__ = ("gs", "z00nx", "stickell")
     __author_mail__ = ("I-_-I-_-I@web.de", "z00nx0@gmail.com", "l.stickell@yahoo.it")
