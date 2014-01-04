@@ -18,7 +18,7 @@ class AlldebridCom(MultiHoster):
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", "False"),
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
-    __description__ = """Real-Debrid.com hook plugin"""
+    __description__ = """Alldebrid.com hook plugin"""
     __author_name__ = ("Andy, Voigt")
     __author_mail__ = ("spamsales@online.de")
 
