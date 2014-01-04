@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+
 from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.common.json_layer import json_loads
 from module.plugins.internal.CaptchaService import ReCaptcha
@@ -30,9 +31,7 @@ class CloudzerNet(SimpleHoster):
     __author_name__ = ("gs", "z00nx", "stickell")
     __author_mail__ = ("I-_-I-_-I@web.de", "z00nx0@gmail.com", "l.stickell@yahoo.it")
 
-    FILE_SIZE_PATTERN = '<span class="size">(?P<S>[^<]+)</span>'
     WAIT_PATTERN = '<meta name="wait" content="(\d+)">'
-    FILE_OFFLINE_PATTERN = r'Please check the URL for typing errors, respectively'
     CAPTCHA_KEY = '6Lcqz78SAAAAAPgsTYF3UlGf2QFQCNuPMenuyHF3'
 
     def handleFree(self):
@@ -69,3 +68,18 @@ class CloudzerNet(SimpleHoster):
                 url = response["url"]
                 self.logDebug("Download link", url)
                 self.download(url, disposition=True)
+
+    def getFileInfo(self):
+        self.logDebug("URL: %s" % self.pyfile.url)
+
+        header = getURL(self.pyfile.url, just_header=True)
+
+        if 'Location: http://cloudzer.net/404' in header:
+            self.offline()
+        else:
+            self.fid = re.search(self.__pattern__, self.pyfile.url).group('ID')
+            api_data = getURL('http://cloudzer.net/file/%s/status' % self.fid)
+            self.pyfile.name, size = api_data.splitlines()
+            self.pyfile.size = parseFileSize(size)
+
+        self.logDebug("FILE NAME: %s FILE SIZE: %s" % (self.pyfile.name, self.pyfile.size))
