@@ -87,7 +87,7 @@ def index():
     if resp.status_code == 200:
         content = resp.body.read()
         resp.body = template(content, ws=ws, web=web, setup=setup, external=external, prefix=PREFIX)
-        resp.content_length = len(resp.body)
+        resp.content_length = len(resp.body) + 1
 
     # these page should not be cached at all
     resp.headers.append("Cache-Control", "no-cache")

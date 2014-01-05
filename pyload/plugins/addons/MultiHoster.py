@@ -34,6 +34,10 @@ class MultiHoster(Addon, PluginMatcher):
 
     def matchPlugin(self, plugin, name):
         """ Overwritten to overwrite already supported plugins """
+
+        # TODO: check if account is usable
+        # TODO: multiuser
+
         # Chooses a random multi hoster plugin
         if name in self.plugins:
             return plugin, choice(self.plugins[name])
@@ -63,6 +67,9 @@ class MultiHoster(Addon, PluginMatcher):
 
         klass = self.core.pluginManager.getPluginClass("hoster", account.__name__, overwrite=False)
 
+        if not klass:
+            return
+
         # inject plugin plugin
         account.logDebug("Overwritten Hosters: %s" % ", ".join(sorted(supported)))
         for hoster in supported:
@@ -82,7 +89,7 @@ class MultiHoster(Addon, PluginMatcher):
         self.regexp[klass.__name__] = re.compile(r".*(%s).*" % "|".join(patterns))
 
 
-    @AddEventListener("account:deleted")
+    @AddEventListener(["account:deleted", "account:updated"])
     def refreshAccounts(self, plugin=None, loginname=None):
         self.logDebug("Re-checking accounts")
 
