@@ -345,9 +345,13 @@ class EpisodeMover(Hook):
             self.logDebug(u'File "%s" is a tv episode' % video_name)
             return True
         else:
-            self.logDebug(u'File "%s" is not a tv episode' % video_name)
-            self.mv_logger.log_custom(u'File %s is not a tv episode' % video_name)
-            return False
+            if self.getConfig("folder_search") and (valdor.isTVEpisode(src_path)):
+                self.logDebug(u'Folder "%s" is a tv episode' % src_path)
+                return True
+            else:
+                self.logDebug(u'File "%s" is not a tv episode' % video_name)
+                self.mv_logger.log_custom(u'File %s is not a tv episode' % video_name)
+                return False
     
         
     def isinDb(self, episode_obj, createShow=False):    
@@ -359,7 +363,8 @@ class EpisodeMover(Hook):
         valdor = self.pattern_checker
         #crntShows = {}  #add found tv episodes: {ep_file_name:(path_to_show, show_title, show_index)}  <- obsolete structure; adapt it!
         for e in self.__tvdb.keys(): # where e is an actual name of locally existing show
-            if valdor.hasPattern(episode.src_filename, valdor.createPattern(e)) is not None: # if True we got a local match
+            if (valdor.hasPattern(episode.src_filename, valdor.createPattern(e)) is not None) or /
+            (self.getConfig("folder_search") and valdor.hasPattern(episode.root_folder, valdor.createPattern(e)) is not None): # if True we got a local match
                 episode.dst = os.path.join(self.__tvdb.get(e), e) 
                 episode.show_name = e # e is the (folder) name of the (locally existing) show 
                 self.logDebug(u'"%s" recognised as show "%s"' % (episode.src_filename, e))
@@ -489,24 +494,29 @@ class EpisodeMover(Hook):
         #crntShows = {}  #add found tv episodes: {ep_file_name:(path_to_show, show_title, show_index)}  <- obsolete structure; adapt it!
         episode = episode_obj
         valdor = self.pattern_checker
-        season = valdor.getSeason(episode.src_filename,
+        episode_name_for_show_index=episode.src_filename
+        if self.getConfig("folder_search") and \
+        valdor.hasPattern(episode.src_filename, valdor.createPattern(episode.show_name)) is None and \
+        valdor.hasPattern(episode.root_folder, valdor.createPattern(episode.show_name)) is not None:
+            episode_name_for_show_index=episode.root_folder
+        season = valdor.getSeason(episode_name_for_show_index,
                                   self.getConfig("season_text"),
                                   self.getConfig("leading_zero")) # returns "Season 1" e.g.
         if season == None:
-            self.logDebug(u'No valid show index could be extracted from "%s". Skipping...' % episode.src_filename)
+            self.logDebug(u'No valid show index could be extracted from "%s". Skipping...' % episode_name_for_show_index)
             return False
         season_path = os.path.join(episode.dst, season)
-        show_index = valdor.getShowIndex(episode.src_filename)
+        show_index = valdor.getShowIndex(episode_name_for_show_index)
         episode.show_index["raw"] = show_index
         # TODO: no clue what I am doing here; looks like legacy -> overhaul!
         episode.show_index["season"], episode.show_index["episode"] = \
         self.renamer.convert_show_index(show_index, 1, returnRaw=True)
         if (os.path.exists(season_path)):
             episode.dst = season_path
-            self.logDebug(u'Season directory for show "%s" already exists. No creation necessary.' % episode.src_filename)
+            self.logDebug(u'Season directory for show "%s" already exists. No creation necessary.' % episode_name_for_show_index)
             return True
         elif arbitrarySeason is True:
-            arbSeason = self.getArbSeasonPath(episode.dst, episode.src_filename)
+            arbSeason = self.getArbSeasonPath(episode.dst, episode_name_for_show_index)
             if arbSeason is not None:
                 season_path = os.path.join(episode.dst, arbSeason)
                 episode.dst = season_path
@@ -515,7 +525,7 @@ class EpisodeMover(Hook):
         if createSeason is True and os.path.exists(season_path) is not True:
             os.mkdir(season_path)
             episode.dst = season_path
-            self.logInfo(u'Season directory for show "%s" does not exist. Directory "%s" is being created' % (episode.src_filename,season))
+            self.logInfo(u'Season directory for show "%s" does not exist. Directory "%s" is being created' % (episode_name_for_show_index,season))
             return True
         elif createSeason is False and os.path.exists(season_path) is False:
             self.logDebug(u'Season directory for show "%s" does not exist. Directory "%s" is not being created' % (episode.show_name,season))
