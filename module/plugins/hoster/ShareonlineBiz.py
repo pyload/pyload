@@ -18,7 +18,7 @@ def getInfo(urls):
 
     urls = [url.replace("https://", "http://") for url in urls]
 
-    for chunk in chunks(tohttp(urls), 90):
+    for chunk in chunks(urls, 90):
         api_param_file = {"links": "\n".join(x.replace("http://www.share-online.biz/dl/", "").rstrip("/") for x in
                                              chunk)}  # api only supports old style links
         src = getURL(api_url_base, post=api_param_file, decode=True)
@@ -160,7 +160,7 @@ class ShareonlineBiz(Hoster):
 
             dlLink = dlinfo["url"]
             if dlLink == "server_under_maintenance":
-                self.tempoffline()
+                self.tempOffline()
             else:
                 self.multiDL = True
                 self.download(dlLink)
