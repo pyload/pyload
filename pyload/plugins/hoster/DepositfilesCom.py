@@ -10,8 +10,8 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://[\w\.]*?(depositfiles\.com|dfiles\.eu)(/\w{1,3})?/files/[\w]+"
-    __version__ = "0.45"
+    __pattern__ = r"https?://[\w\.]*?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/[\w]+"
+    __version__ = "0.46"
     __description__ = """Depositfiles.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
