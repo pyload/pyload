@@ -17,12 +17,12 @@
     @author: Walter Purcaro
 """
 
-from module.plugins.Crypter import Crypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 import re
 
 
-class TnyCz(Crypter):
+class TnyCz(SimpleCrypter):
     __name__ = "TnyCz"
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?tny\.cz/\w+"
@@ -31,16 +31,8 @@ class TnyCz(Crypter):
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
 
-    def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
+    TITLE_PATTERN = r'<title>(?P<title>.+) - .+</title>'
 
-        m = re.search(r'<title>(.+)</title>', self.html)
-        name = folder = m.group(1).rsplit(" - ")[0]
-
+    def getLinks(self):
         m = re.search(r'<a id=\'save_paste\' href="(.+save\.php\?hash=.+)">', self.html)
-        if m:
-            links = re.findall(".+", self.load(m.group(1), decode=True))
-            if links:
-                self.packages = [(name, links, folder)]
-                return
-        self.fail('Could not extract any links')
+        return re.findall(".+", self.load(m.group(1), decode=True)) if m else None
