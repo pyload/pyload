@@ -36,7 +36,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -101,7 +101,7 @@ class XFileSharingPro(SimpleHoster):
         if not hasattr(self, "HOSTER_NAME"):
             self.HOSTER_NAME = re.search(self.__pattern__, self.pyfile.url).group(1)
         if not hasattr(self, "DIRECT_LINK_PATTERN"):
-            self.DIRECT_LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)' % self.HOSTER_NAME
+            self.DIRECT_LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)' % self.HOSTER_NAME
 
         self.captcha = self.errmsg = None
         self.passwords = self.getPassword().splitlines()
