@@ -8,6 +8,7 @@ from pyload.utils.fs import join
 
 from ApiComponent import ApiComponent
 
+
 class DownloadApi(ApiComponent):
     """ Component to create, add, delete or modify downloads."""
 
@@ -62,7 +63,7 @@ class DownloadApi(ApiComponent):
             folder = ""
 
         pid = self.createPackage(name, folder, root, password, paused=paused)
-        self.addLinks(pid, links)
+        self.addLinks(pid, links, paused)
 
         return pid
 
@@ -75,11 +76,9 @@ class DownloadApi(ApiComponent):
         """
         hoster, crypter = self.core.pluginManager.parseUrls(links)
 
+        self.core.files.addLinks(hoster + crypter, pid)
         if hoster:
-            self.core.files.addLinks(hoster, pid)
             self.core.threadManager.createInfoThread(hoster, pid)
-
-        self.core.threadManager.createDecryptThread(crypter, pid)
 
         self.core.log.info((_("Added %d links to package") + " #%d" % pid) % len(hoster))
         self.core.files.save()
