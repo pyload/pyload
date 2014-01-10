@@ -26,14 +26,14 @@ from module.common.json_layer import json_loads
 class ExtabitCom(SimpleHoster):
     __name__ = "ExtabitCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w+\.)*extabit\.com/(file|go|fid)/(?P<ID>\w+)"
-    __version__ = "0.4"
+    __pattern__ = r"http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)"
+    __version__ = "0.5"
     __description__ = """Extabit.com"""
     __author_name__ = ("zoidberg")
 
     FILE_NAME_PATTERN = r'<th>File:</th>\s*<td class="col-fileinfo">\s*<div title="(?P<N>[^"]+)">'
     FILE_SIZE_PATTERN = r'<th>Size:</th>\s*<td class="col-fileinfo">(?P<S>[^<]+)</td>'
-    FILE_OFFLINE_PATTERN = r'<h1>File not found</h1>'
+    FILE_OFFLINE_PATTERN = r'>File not found<'
     TEMP_OFFLINE_PATTERN = r">(File is temporary unavailable|No download mirror)<"
 
     DOWNLOAD_LINK_PATTERN = r'[\'"](http://guest\d+\.extabit\.com/[a-z0-9]+/.*?)[\'"]'
@@ -59,7 +59,7 @@ class ExtabitCom(SimpleHoster):
             recaptcha = ReCaptcha(self)
             captcha_key = m.group(1)
 
-            for i in range(5):
+            for _ in xrange(5):
                 get_data = {"type": "recaptcha"}
                 get_data["challenge"], get_data["capture"] = recaptcha.challenge(captcha_key)
                 response = json_loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
