@@ -19,22 +19,23 @@
 
 from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter
-from os.path import join
+from module.utils import save_join
 
+from urlparse import urljoin
 import re
 
 
 class DailymotionBatch(Crypter):
     __name__ = "DailymotionBatch"
     __type__ = "crypter"
-    __pattern__ = r"https?://(?:www\.)?dailymotion\.com/.*?(?P<TYPE>playlist|user)/(?P<ID>[\w^_]+)"
+    __pattern__ = r"https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)"
     __version__ = "0.01"
     __description__ = """Dailymotion Channel & Playlist Decrypter"""
     __author_name__ = ("Walter Purcaro")
     __author_mail__ = ("vuolter@gmail.com")
 
     def api_response(self, ref, req=None):
-        url = "https://api.dailymotion.com/" + ref
+        url = urljoin("https://api.dailymotion.com/", ref)
         page = self.load(url, get=req)
         return json_loads(page)
 
@@ -105,6 +106,6 @@ class DailymotionBatch(Crypter):
 
         for p_id, p_name, p_owner in playlists:
             p_videos = self.getVideos(p_id)
-            p_folder = join(self.config['general']['download_folder'], p_owner, p_name)
+            p_folder = save_join(self.config['general']['download_folder'], p_owner, p_name)
             self.logDebug("%s video/s found on playlist \"%s\"" % (len(p_videos), p_name))
             self.packages.append((p_name, p_videos, p_folder))  #: folder is NOT recognized by pyload 0.4.9!
