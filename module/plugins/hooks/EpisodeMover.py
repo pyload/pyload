@@ -720,6 +720,7 @@ class EpisodeMover(Hook):
                         os.remove(file_)
                         filelist.append(f)
             elif os.path.isdir(file_):
+                cleanFolder(file_)
                 if self.__isEmptyDir(file_):
                     if os.path.exists(file_):
                         os.rmdir(file_)
