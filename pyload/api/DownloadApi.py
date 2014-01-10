@@ -80,7 +80,7 @@ class DownloadApi(ApiComponent):
         if hoster:
             self.core.threadManager.createInfoThread(hoster, pid)
 
-        self.core.log.info((_("Added %d links to package") + " #%d" % pid) % len(hoster))
+        self.core.log.info((_("Added %d links to package") + " #%d" % pid) % len(hoster+crypter))
         self.core.files.save()
 
     @RequirePerm(Permission.Add)

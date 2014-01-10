@@ -150,7 +150,7 @@ class ThreadManager:
         return [x.id for x in self.getActiveFiles()]
 
     def work(self):
-        """run all task which have to be done (this is for repetetive call by core)"""
+        """run all task which have to be done (this is for repetitive call by core)"""
         try:
             self.tryReconnect()
         except Exception, e:
