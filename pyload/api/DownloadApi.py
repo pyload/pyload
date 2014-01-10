@@ -63,7 +63,7 @@ class DownloadApi(ApiComponent):
             folder = ""
 
         pid = self.createPackage(name, folder, root, password, paused=paused)
-        self.addLinks(pid, links, paused)
+        self.addLinks(pid, links)
 
         return pid
 
