@@ -19,6 +19,7 @@
 # http://k2s.cc/file/527111edfb9ba/random.bin
 
 import re
+from urlparse import urlparse, urljoin
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
@@ -28,7 +29,7 @@ class Keep2shareCC(SimpleHoster):
     __name__ = "Keep2shareCC"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __description__ = """Keep2share.cc hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -42,27 +43,27 @@ class Keep2shareCC(SimpleHoster):
 
     RECAPTCHA_KEY = '6LcYcN0SAAAAABtMlxKj7X0hRxOY8_2U86kI1vbb'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r"http://keep2share.cc/file/\g<ID>")]
-
     def handleFree(self):
+        self.sanitize_url()
+        self.html = self.load(self.pyfile.url)
+
         self.fid = re.search(r'<input type="hidden" name="slow_id" value="([^"]+)">', self.html).group(1)
         self.html = self.load(self.pyfile.url, post={'yt0': '', 'slow_id': self.fid})
 
         m = re.search(r"function download\(\){.*window\.location\.href = '([^']+)';", self.html, re.DOTALL)
         if m:  # Direct mode
-            self.startDownload("http://www.keep2share.cc" + m.group(1))
+            self.startDownload(m.group(1))
         else:
             self.handleCaptcha()
 
-            self.setWait(30)
-            self.wait()
+            self.wait(30)
 
             self.html = self.load(self.pyfile.url, post={'uniqueId': self.fid, 'free': 1})
 
             m = re.search(self.DIRECT_LINK_PATTERN, self.html)
             if not m:
                 self.parseError("Unable to detect direct link")
-            self.startDownload('http://keep2share.cc' + m.group(1))
+            self.startDownload(m.group(1))
 
     def handleCaptcha(self):
         recaptcha = ReCaptcha(self)
@@ -88,8 +89,16 @@ class Keep2shareCC(SimpleHoster):
             self.fail("All captcha attempts failed")
 
     def startDownload(self, url):
-        self.logDebug('Direct Link: ' + url)
-        self.download(url, disposition=True)
+        d = urljoin(self.base_url, url)
+        self.logDebug('Direct Link: ' + d)
+        self.download(d, disposition=True)
+
+    def sanitize_url(self):
+        header = self.load(self.pyfile.url, just_header=True)
+        if 'location' in header:
+            self.pyfile.url = header['location']
+        p = urlparse(self.pyfile.url)
+        self.base_url = "%s://%s" % (p.scheme, p.hostname)
 
 
 getInfo = create_getInfo(Keep2shareCC)
