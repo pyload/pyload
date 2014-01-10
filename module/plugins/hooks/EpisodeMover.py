@@ -362,14 +362,14 @@ class EpisodeMover(Hook):
         episode = episode_obj
         valdor = self.pattern_checker
         #crntShows = {}  #add found tv episodes: {ep_file_name:(path_to_show, show_title, show_index)}  <- obsolete structure; adapt it!
+        filename=self.renamer.substitute_chars(episode.src_filename, self.getConfig("char_sub"))
+        if self.getConfig("folder_sub"):
+            foldername=self.renamer.substitute_chars(episode.root_folder, self.getConfig("char_sub"))
+            self.logInfo(u'Searching local Database for "%s". On matching Failure Searching for "%s".' %(filename,foldername))
+        else:
+            foldername=episode.root_folder
+            self.logInfo(u'Searching local Database for "%s".' %filename)
         for e in self.__tvdb.keys(): # where e is an actual name of locally existing show
-            filename=self.renamer.substitute_chars(episode.src_filename, self.getConfig("char_sub"))
-            if self.getConfig("folder_sub"):
-                foldername=self.renamer.substitute_chars(episode.root_folder, self.getConfig("char_sub"))
-                self.logInfo(u'Searching local Database for "%s". On matching Failure Searching for "%s".' %(filename,foldername))
-            else:
-                foldername=episode.root_folder
-                self.logInfo(u'Searching local Database for "%s".' %filename)
             if (valdor.hasPattern(filename, valdor.createPattern(e)) is not None) or \
             (self.getConfig("folder_search") and valdor.hasPattern(foldername, valdor.createPattern(e)) is not None): # if True we got a local match
                 episode.dst = os.path.join(self.__tvdb.get(e), e) 
