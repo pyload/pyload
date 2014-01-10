@@ -349,8 +349,8 @@ class EpisodeMover(Hook):
                 self.logDebug(u'Folder "%s" is a tv episode' % src_path)
                 return True
             else:
-                self.logDebug(u'File "%s" is not a tv episode' % video_name)
-                self.mv_logger.log_custom(u'File %s is not a tv episode' % video_name)
+                self.logDebug(u'File "%s" in Folder "%s" is not a tv episode' % (video_name,src_path))
+                self.mv_logger.log_custom(u'File "%s" in Folder "%s" is not a tv episode' % (video_name,src_path))
                 return False
     
         
