@@ -29,7 +29,7 @@ class TurbobitNetFolder(SimpleCrypter):
     __name__ = "TurbobitNetFolder"
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """Turbobit.net Folder Plugin"""
     __author_name__ = ("stickell", "Walter Purcaro")
     __author_mail__ = ("l.stickell@yahoo.it", "vuolter@gmail.com")
@@ -43,9 +43,13 @@ class TurbobitNetFolder(SimpleCrypter):
 
         for i in grid['rows']:
             yield i['id']
+        else:
+            return
 
         yield self._getLinks(id, page + 1)
 
     def getLinks(self):
         folder_id = re.match(self.__pattern__, self.pyfile.url).group('ID')
-        return map(format_links, self._getLinks(folder_id))
+        links = map(format_links, list(self._getLinks(folder_id)))
+        self.logDebug("Links = %s" % links)
+        return links
