@@ -1,31 +1,30 @@
 # -*- coding: utf-8 -*-
 
-import sys
-from os.path import abspath, dirname, join
+from os.path import join
 from time import strftime
 from traceback import format_exc
-from collections import defaultdict
-
-sys.path.append(abspath(join(dirname(__file__), "..", "..", "pyload", "lib")))
-sys.path.append(abspath(join(dirname(__file__), "..", "..")))
 
 import __builtin__
 
 from pyload.Api import Role
+from pyload.Core import Core
+from pyload.InitHomeDir import init_dir
 from pyload.datatypes.User import User
-from pyload.datatypes.PyPackage import PyPackage
 from pyload.threads.BaseThread import BaseThread
 from pyload.config.ConfigParser import ConfigParser
-from pyload.network.RequestFactory import RequestFactory
-from pyload.PluginManager import PluginManager
-from pyload.utils.JsEngine import JsEngine
+
+init_dir(join("tests", "config"))
 
 from logging import log, DEBUG, INFO, WARN, ERROR
-
 
 # Do nothing
 def noop(*args, **kwargs):
     pass
+
+
+class NoopClass:
+    def __getattr__(self, item):
+        return noop
 
 
 ConfigParser.save = noop
@@ -45,80 +44,31 @@ class LogStub:
         log(WARN, *args)
 
 
-class NoLog:
-    def debug(self, *args):
-        pass
-
-    def info(self, *args):
-        pass
-
-    def error(self, *args):
-        log(ERROR, *args)
-
-    def warning(self, *args):
-        log(WARN, *args)
-
-
-class Core:
+class TestCore(Core):
     def __init__(self):
-        self.log = NoLog()
+        super(TestCore, self).__init__()
+        self.start(tests=True)
 
-        self.api = self.core = self
-        self.threadManager = self
-        self.debug = True
-        self.captcha = True
-        self.config = ConfigParser()
-        self.pluginManager = PluginManager(self)
-        self.requestFactory = RequestFactory(self)
-        __builtin__.pyreq = self.requestFactory
-        self.accountManager = AccountManager()
-        self.addonManager = AddonManager()
-        self.eventManager = self.evm = NoopClass()
-        self.interactionManager = self.im = NoopClass()
-        self.scheduler = NoopClass()
-        self.js = JsEngine()
-        self.cache = {}
-        self.packageCache = {}
-
-        self.statusMsg = defaultdict(lambda: "statusmsg")
-
+        self.db.getUserData = self.getUserData
         self.log = LogStub()
 
     def getServerVersion(self):
         return "TEST_RUNNER on %s" % strftime("%d %h %Y")
 
-    def path(self, path):
-        return path
+    def init_logger(self, level):
+        # init with empty logger
+        self.log = NoopClass()
 
-    def updateFile(self, *args):
-        pass
-
-    def updatePackage(self, *args):
-        pass
-
-    def processingIds(self, *args):
-        return []
-
-    def getPackage(self, *args):
-        return PyPackage(self, 0, "tmp", "tmp", -1, 0, "", "", "", 0, "", 0, 0, 0)
-
-    def print_exc(self):
+    def print_exc(self, force=False):
         log(ERROR, format_exc())
 
+    def getUserData(self, uid):
+        if uid == 0:
+            return adminUser
+        elif uid == 1:
+            return normalUser
 
-class NoopClass:
-    def __getattr__(self, item):
-        return noop
-
-
-class AddonManager(NoopClass):
-    def activePlugins(self):
-        return []
-
-
-class AccountManager:
-    def getAccountForPlugin(self, name):
-        return None
+        return otherUser
 
 
 class Thread(BaseThread):
@@ -136,10 +86,11 @@ class Thread(BaseThread):
         return dump
 
 
+Core = TestCore
+
 __builtin__._ = lambda x: x
-__builtin__.pypath = abspath(join(dirname(__file__), "..", ".."))
-__builtin__.addonManager = AddonManager()
-__builtin__.pyreq = None
 
 adminUser = User(None, uid=0, role=Role.Admin)
 normalUser = User(None, uid=1, role=Role.User)
+otherUser = User(None, uid=2, role=Role.User)
+

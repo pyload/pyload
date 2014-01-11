@@ -30,6 +30,7 @@ import os
 from os import _exit, execl, getcwd, remove, walk, chdir, close
 import signal
 import sys
+import gettext
 from sys import argv, executable, exit
 from time import time, sleep
 from traceback import print_exc
@@ -41,7 +42,8 @@ import subprocess
 
 subprocess.__doc__ = None # the module with the largest doc we are using
 
-import InitHomeDir
+from InitHomeDir import init_dir
+init_dir()
 
 from AccountManager import AccountManager
 from config.ConfigParser import ConfigParser
@@ -54,7 +56,6 @@ from Scheduler import Scheduler
 from remote.RemoteManager import RemoteManager
 from utils.JsEngine import JsEngine
 
-import utils.pylgettext as gettext
 from utils import formatSize, get_console_encoding
 from utils.fs import free_space, exists, makedirs, join, chmod
 
@@ -73,19 +74,11 @@ sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 # - configurable auth system ldap/mysql
 # - cron job like sheduler
 # - plugin stack / multi decrypter
-# - media plugin type
-# - general progress info
 # - content attribute for files / sync status
 # - sync with disk content / file manager / nested packages
 # - sync between pyload cores
 # - new attributes (date|sync status)
-# - embedded packages
-# - would require new/modified link collector concept
-# - pausable links/packages
-# - toggable accounts
-# - interaction manager
 # - improve external scripts
-# - make pyload undestructable to fail plugins -> see ConfigParser first
 
 class Core(object):
     """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
@@ -309,7 +302,6 @@ class Core(object):
 
         self.config = ConfigParser()
 
-        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("pyLoad", self.path("locale"),
                                           languages=[self.config['general']['language'], "en"], fallback=True)
         translation.install(True)
@@ -383,6 +375,7 @@ class Core(object):
         from AddonManager import AddonManager
         from interaction.InteractionManager import InteractionManager
         from threads.ThreadManager import ThreadManager
+        from DownloadManager import DownloadManager
 
         Api.initComponents()
         self.api = Api(self)
@@ -395,6 +388,7 @@ class Core(object):
         self.interactionManager = self.im = InteractionManager(self)
         self.accountManager = AccountManager(self)
         self.threadManager = ThreadManager(self)
+        self.downloadManager = DownloadManager(self)
         self.addonManager = AddonManager(self)
         self.remoteManager = RemoteManager(self)
 
@@ -481,6 +475,7 @@ class Core(object):
                 _exit(0)
                 # TODO check exits codes, clean exit is still blocked
 
+            self.downloadManager.work()
             self.threadManager.work()
             self.interactionManager.work()
             self.scheduler.work()

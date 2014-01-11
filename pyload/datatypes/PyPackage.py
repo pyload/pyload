@@ -90,7 +90,7 @@ class PyPackage:
         self.m.releasePackage(self.id)
 
     def delete(self):
-        self.m.deletePackage(self.id)
+        self.m.removePackage(self.id)
 
     def deleteIfEmpty(self):
         """  True if deleted  """

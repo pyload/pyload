@@ -19,13 +19,14 @@
 import os
 import sys
 import socket
+import gettext
 import webbrowser
 
 from getpass import getpass
 from time import time
 from sys import exit
 
-from pyload.utils import pylgettext as gettext
+
 from pyload.utils.fs import abspath, dirname, exists, join, makedirs
 from pyload.utils import get_console_encoding
 from pyload.web.ServerThread import WebServer

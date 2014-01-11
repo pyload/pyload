@@ -1,23 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-
-	This modules inits working directories and global variables, pydir and homedir
-"""
+###############################################################################
+#   Copyright(c) 2008-2014 pyLoad Team
+#   http://www.pyload.org
+#
+#   This file is part of pyLoad.
+#   pyLoad is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   Subjected to the terms and conditions in LICENSE
+#
+#   @author: RaNaN
+###############################################################################
 
 from os import makedirs, path, chdir
 from os.path import join
@@ -87,10 +83,17 @@ if not configdir:
     configname = ".pyload" if platform in ("posix", "linux2", "darwin") else "pyload"
     configdir = path.join(homedir, configname + dev)
 
-if not path.exists(configdir):
-    makedirs(configdir, 0700)
+def init_dir(other_path=None):
+    # switch to pyload home directory, or path at other_path
+    global configdir
 
-__builtin__.configdir = configdir
-chdir(configdir)
+    if other_path is not None:
+        configdir = join(pypath, other_path)
+
+    if not path.exists(configdir):
+        makedirs(configdir, 0700)
+
+    __builtin__.configdir = configdir
+    chdir(configdir)
 
 #print "Using %s as working directory." % configdir

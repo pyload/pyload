@@ -4,17 +4,12 @@ from unittest import TestCase
 
 from tests.helper.Stubs import Core, adminUser, normalUser
 
-from pyload.database import DatabaseBackend
-from pyload.AccountManager import AccountManager
-
 
 class TestAccountManager(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.core = Core()
-        cls.db = DatabaseBackend(cls.core)
-        cls.core.db = cls.db
-        cls.db.setup()
+        cls.db = cls.core.db
 
     @classmethod
     def tearDownClass(cls):
@@ -22,7 +17,7 @@ class TestAccountManager(TestCase):
 
     def setUp(self):
         self.db.purgeAccounts()
-        self.manager = AccountManager(self.core)
+        self.manager = self.core.accountManager
 
     def test_access(self):
         account = self.manager.updateAccount("Http", "User", "somepw", adminUser)

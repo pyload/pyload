@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###############################################################################
-#   Copyright(c) 2008-2012 pyLoad Team
+#   Copyright(c) 2008-2014 pyLoad Team
 #   http://www.pyload.org
 #
 #   This file is part of pyLoad.
@@ -35,14 +35,12 @@ def invalidate(func):
 
     return new
 
-# TODO: needs to be replaced later
-OWNER = 0
-
 class FileManager:
     """Handles all request made to obtain information,
     modify status or other request for links or packages"""
 
     ROOT_PACKAGE = -1
+    ROOT_OWNER = -1
 
     def __init__(self, core):
         """Constructor"""
@@ -94,17 +92,17 @@ class FileManager:
         pass
 
     @invalidate
-    def addLinks(self, data, package):
+    def addLinks(self, data, pid, owner):
         """Add links, data = (plugin, url) tuple. Internal method should use API."""
-        self.db.addLinks(data, package, OWNER)
-        self.evm.dispatchEvent("package:updated", package)
+        self.db.addLinks(data, pid, owner)
+        self.evm.dispatchEvent("package:updated", pid)
 
 
     @invalidate
-    def addPackage(self, name, folder, root, password, site, comment, paused):
+    def addPackage(self, name, folder, root, password, site, comment, paused, owner):
         """Adds a package to database"""
         pid = self.db.addPackage(name, folder, root, password, site, comment,
-            PackageStatus.Paused if paused else PackageStatus.Ok, OWNER)
+            PackageStatus.Paused if paused else PackageStatus.Ok, owner)
         p = self.db.getPackageInfo(pid)
 
         self.evm.dispatchEvent("package:inserted", pid, p.root, p.packageorder)
@@ -115,7 +113,7 @@ class FileManager:
     def getPackage(self, pid):
         """return package instance"""
         if pid == self.ROOT_PACKAGE:
-            return RootPackage(self, OWNER)
+            return RootPackage(self, self.ROOT_OWNER)
         elif pid in self.packages:
             pack = self.packages[pid]
             pack.timestamp = time()
@@ -133,7 +131,7 @@ class FileManager:
     def getPackageInfo(self, pid):
         """returns dict with package information"""
         if pid == self.ROOT_PACKAGE:
-            pack = RootPackage(self, OWNER).toInfoData()
+            pack = RootPackage(self, self.ROOT_OWNER).toInfoData()
         elif pid in self.packages:
             pack = self.packages[pid].toInfoData()
             pack.stats = self.db.getStatsForPackage(pid)
@@ -177,7 +175,7 @@ class FileManager:
     @read_lock
     def getTree(self, pid, full, state, search=None):
         """  return a TreeCollection and fill the info data of containing packages.
-             optional filter only unfnished files
+             optional filter only unfinished files
         """
         view = TreeCollection(pid)
 
@@ -202,7 +200,7 @@ class FileManager:
 
         # root package is not in database, create an instance
         if pid == self.ROOT_PACKAGE:
-            view.root = RootPackage(self, OWNER).toInfoData()
+            view.root = RootPackage(self, self.ROOT_OWNER).toInfoData()
             packs[self.ROOT_PACKAGE] = view.root
         elif pid in packs:
             view.root = packs[pid]
@@ -533,8 +531,6 @@ class FileManager:
         # cantor won't be happy if we put the package in itself
         if pid == root or p.root == root: return False
 
-        # TODO move real folders
-
         # we assume pack is not in use anyway, so we can release it
         self.releasePackage(pid)
         self.db.movePackage(p.root, p.packageorder, pid, root)
@@ -551,8 +547,6 @@ class FileManager:
             return False
         if not self.getPackageInfo(pid):
             raise PackageDoesNotExist(pid)
-
-        # TODO move real files
 
         self.db.moveFiles(f.package, fids, pid)
 

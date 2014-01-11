@@ -2,7 +2,7 @@
 
 from random import choice
 
-from tests.helper.Stubs import Core
+from tests.helper.Stubs import Core, normalUser
 from tests.helper.BenchmarkTest import BenchmarkTest
 
 from pyload.database import DatabaseBackend
@@ -10,8 +10,6 @@ from pyload.database import DatabaseBackend
 DatabaseBackend.async = DatabaseBackend.queue
 
 from pyload.Api import DownloadState
-from pyload.FileManager import FileManager
-
 
 class TestFileManager(BenchmarkTest):
     bench = ["add_packages", "add_files", "get_files_root", "get",
@@ -24,18 +22,16 @@ class TestFileManager(BenchmarkTest):
     @classmethod
     def setUpClass(cls):
         c = Core()
-        # db needs seperate initialisation
-        cls.db = c.db = DatabaseBackend(c)
-        cls.db.setup()
+        # db needs separate initialisation
+        cls.db = c.db
         cls.db.purgeAll()
 
-        cls.m = cls.db.manager = FileManager(c)
+        cls.m = cls.db.manager = c.files
 
     @classmethod
     def tearDownClass(cls):
         cls.db.purgeAll()
         cls.db.shutdown()
-
 
     # benchmarker ignore setup
     def setUp(self):
@@ -48,7 +44,7 @@ class TestFileManager(BenchmarkTest):
 
     def test_add_packages(self):
         for i in range(100):
-            pid = self.m.addPackage("name", "folder", choice(self.pids), "", "", "", False)
+            pid = self.m.addPackage("name", "folder", choice(self.pids), "", "", "", False, normalUser.uid)
             self.pids.append(pid)
 
         if -1 in self.pids:
@@ -56,7 +52,7 @@ class TestFileManager(BenchmarkTest):
 
     def test_add_files(self):
         for pid in self.pids:
-            self.m.addLinks([("plugin %d" % i, "url %s" % i) for i in range(self.count)], pid)
+            self.m.addLinks([("plugin %d" % i, "url %s" % i) for i in range(self.count)], pid, normalUser.uid)
 
         count = self.m.getQueueStats()[0]
         files = self.count * len(self.pids)
@@ -120,14 +116,14 @@ class TestFileManager(BenchmarkTest):
         for fid in view.root.fids: assert fid in view.files
 
     def test_delete(self):
-        self.m.deleteFile(self.count * 5)
-        self.m.deletePackage(choice(self.pids))
+        self.m.removeFile(self.count * 5)
+        self.m.removePackage(choice(self.pids))
 
     def test_order_package(self):
-        parent = self.m.addPackage("order", "", -1, "", "", "", False)
-        self.m.addLinks([("url", "plugin") for i in range(100)], parent)
+        parent = self.m.addPackage("order", "", -1, "", "", "", False, normalUser.uid)
+        self.m.addLinks([("url", "plugin") for i in range(100)], parent, normalUser.uid)
 
-        pids = [self.m.addPackage("c", "", parent, "", "", "", False) for i in range(5)]
+        pids = [self.m.addPackage("c", "", parent, "", "", "", False, normalUser.uid) for i in range(5)]
         v = self.m.getTree(parent, False, None)
         self.assert_ordered(pids, 0, 5, v.root.pids, v.packages, True)
 
@@ -143,8 +139,8 @@ class TestFileManager(BenchmarkTest):
 
 
     def test_order_files(self):
-        parent = self.m.addPackage("order", "", -1, "", "", "", False)
-        self.m.addLinks([("url", "plugin") for i in range(100)], parent)
+        parent = self.m.addPackage("order", "", -1, "", "", "", False, normalUser.uid)
+        self.m.addLinks([("url", "plugin") for i in range(100)], parent, normalUser.uid)
         v = self.m.getTree(parent, False, None)
 
         fids = v.root.fids[10:20]
@@ -206,7 +202,7 @@ class TestFileManager(BenchmarkTest):
         self.m.movePackage(pid, -1)
         v = self.m.getTree(-1, False, False)
 
-        assert v.root.pids[-1] == pid
+        assert pid in v.root.pids
         assert sorted([p.packageorder for p in v.packages.values()]) == range(len(v.packages))
 
         v = self.m.getTree(pid, False, False)
