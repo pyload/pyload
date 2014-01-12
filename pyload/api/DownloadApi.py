@@ -32,7 +32,7 @@ class DownloadApi(ApiComponent):
         folder = folder.replace("http://", "").replace(":", "").replace("\\", "_").replace("..", "")
 
         self.core.log.info(_("Added package %(name)s as folder %(folder)s") % {"name": name, "folder": folder})
-        pid = self.core.files.addPackage(name, folder, root, password, site, comment, paused, self.primaryUID)
+        pid = self.core.files.addPackage(name, folder, root, password, site, comment, paused, self.user.true_primary)
 
         return pid
 
@@ -76,7 +76,7 @@ class DownloadApi(ApiComponent):
         """
         hoster, crypter = self.core.pluginManager.parseUrls(links)
 
-        self.core.files.addLinks(hoster + crypter, pid, self.primaryUID)
+        self.core.files.addLinks(hoster + crypter, pid, self.user.true_primary)
         if hoster:
             self.core.threadManager.createInfoThread(hoster, pid)
 
