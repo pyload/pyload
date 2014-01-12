@@ -16,6 +16,12 @@
 #   @author: RaNaN
 ###############################################################################
 
+from threading import Event
+from ReadWriteLock import ReadWriteLock
+
+from utils import lock, read_lock, primary_uid
+from threads.DownloadThread import DownloadThread
+from threads.DecrypterThread import DecrypterThread
 
 class DownloadManager:
     """ Schedules and manages download and decrypter jobs. """
@@ -23,6 +29,42 @@ class DownloadManager:
     def __init__(self, core):
         self.core = core
 
+        #: won't start download when true
+        self.paused = True
+
+        #: each thread is in exactly one category
+        self.free = []
+        #: a thread that in working must have a pyfile as active attribute
+        self.working = []
+
+        #: indicates when reconnect has occured
+        self.reconnecting = Event()
+        self.reconnecting.clear()
+
+        self.lock = ReadWriteLock()
+
+    @lock
+    def done(self, thread):
+        """ Switch thread from working to free state """
+        self.working.remove(thread)
+        self.free.append(thread)
+
+    @read_lock
+    def activeDownloads(self, user):
+        """ retrieve pyfiles of running downloads  """
+        uid = primary_uid(user)
+        return [x.active for x in self.working if uid is None or x.active.owner == uid]
+
+    def getProgressList(self, user):
+        """ Progress of all running downloads """
+        return [p.getProgressInfo() for p in self.activeDownloads(user)]
+
+    def canDownload(self, user):
+        """ check if a user is eligible to start a new download """
+
+    def abort(self):
+        """ Cancels all downloads """
+
     def work(self):
-        """ Does the periodical work """
+        """ main routine that does the periodical work """
 

@@ -36,8 +36,7 @@ from InfoThread import InfoThread
 
 
 class ThreadManager:
-    """manages the download threads, assign jobs, reconnect etc"""
-
+    """manages all non download related threads and jobs """
 
     def __init__(self, core):
         """Constructor"""
