@@ -21,6 +21,7 @@ from ReadWriteLock import ReadWriteLock
 
 from pyload.Api import ProgressInfo, ProgressType, DownloadProgress, FileInfo, DownloadInfo, DownloadStatus
 from pyload.utils import lock, read_lock
+from pyload.utils.fs import safe_filename
 from pyload.utils.filetypes import guess_type
 
 statusMap = {
@@ -75,7 +76,7 @@ class PyFile(object):
         self.m = manager
 
         self.fid = int(fid)
-        self._name = name
+        self._name = safe_filename(name)
         self._size = size
         self.filestatus = filestatus
         self.media = media
@@ -126,6 +127,8 @@ class PyFile(object):
         """ Only set unicode or utf8 strings as name """
         if type(name) == str:
             name = name.decode("utf8")
+
+        name = safe_filename(name)
 
         # media type is updated if needed
         if self._name != name:

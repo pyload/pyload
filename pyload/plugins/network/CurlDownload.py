@@ -97,7 +97,7 @@ class CurlDownload(Download):
             fo.close()
 
         if self.name:
-            self.filename = save_join(dirname(self.path), self.name)
+            self.path = save_join(dirname(self.path), self.name)
 
         move(init, fs_encode(self.path))
         self.info.remove() #remove info file
@@ -254,7 +254,7 @@ class CurlDownload(Download):
                         #let first chunk load the rest and update the info file
                         init.resetRange()
                         self.info.clear()
-                        self.info.addChunk("%s.chunk0" % self.filename, (0, self.size))
+                        self.info.addChunk("%s.chunk0" % self.path, (0, self.size))
                         self.info.save()
                     elif failed:
                         raise ex

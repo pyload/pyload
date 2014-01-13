@@ -274,7 +274,7 @@ class Hoster(Base):
 
         # convert back to unicode
         location = fs_decode(location)
-        name = safe_filename(self.pyfile.name)
+        name = self.pyfile.name
 
         filename = join(location, name)
 

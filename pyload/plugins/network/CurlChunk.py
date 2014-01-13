@@ -16,22 +16,18 @@
 #   @author: RaNaN
 ###############################################################################
 
+
+import re
 from os import remove, stat, fsync
 from os.path import exists
 from time import sleep
-from re import search
 
 import codecs
 import pycurl
 
-from pyload.utils import remove_chars
-from pyload.utils.fs import fs_encode, fs_decode
+from pyload.utils.fs import fs_encode, fs_decode, safe_filename
 
 from CurlRequest import CurlRequest
-
-class WrongFormat(Exception):
-    pass
-
 
 class ChunkInfo():
     def __init__(self, name):
@@ -91,7 +87,7 @@ class ChunkInfo():
             size = size[5:]
         else:
             fh.close()
-            raise WrongFormat()
+            raise TypeError("chunk.file has wrong format")
         ci = ChunkInfo(name)
         ci.loaded = True
         ci.setSize(size)
@@ -104,7 +100,7 @@ class ChunkInfo():
                 name = name[5:]
                 range = range[6:].split("-")
             else:
-                raise WrongFormat()
+                raise TypeError("chunk.file has wrong format")
 
             ci.addChunk(name, (long(range[0]), long(range[1])))
         fh.close()
@@ -123,6 +119,7 @@ class ChunkInfo():
     def getChunkRange(self, index):
         return self.chunks[index][1]
 
+re_filename = re.compile(r"filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", re.I)
 
 class CurlChunk(CurlRequest):
     def __init__(self, id, parent, range=None, resume=False):
@@ -215,7 +212,7 @@ class CurlChunk(CurlRequest):
         if not self.range and self.header.endswith("\r\n\r\n"):
             self.parseHeader()
         elif not self.range and buf.startswith("150") and "data connection" in buf: #ftp file size parsing
-            size = search(r"(\d+) bytes", buf)
+            size = re.search(r"(\d+) bytes", buf)
             if size:
                 self.p._size = int(size.group(1))
                 self.p.chunkSupport = True
@@ -266,9 +263,9 @@ class CurlChunk(CurlRequest):
 
             if "content-disposition" in line:
 
-                m = search("filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", line)
+                m = re_filename.search(orgline.strip())
                 if m:
-                    name = remove_chars(m.groupdict()['name'], "\"';/").strip()
+                    name = safe_filename(m.groupdict()['name']).strip("\"' ")
                     self.p._name = name
                     self.log.debug("Content-Disposition: %s" % name)
 
