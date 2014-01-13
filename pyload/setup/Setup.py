@@ -244,7 +244,6 @@ class Setup():
         self.config["ssl"]["activated"] = self.ask(_("Activate SSL?"), self.yes, bool=True)
 
     def set_user(self):
-        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("setup", join(self.path, "locale"),
             languages=[self.config["general"]["language"], "en"], fallback=True)
         translation.install(True)
@@ -311,7 +310,6 @@ class Setup():
 
     def conf_path(self, trans=False):
         if trans:
-            gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
             translation = gettext.translation("setup", join(self.path, "locale"),
                 languages=[self.config["general"]["language"], "en"], fallback=True)
             translation.install(True)
@@ -336,7 +334,6 @@ class Setup():
     def ask_lang(self):
         langs = self.config.getMetaData("general", "language").type.split(";")
         self.lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", langs)
-        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.lang, "en"], fallback=True)
         translation.install(True)
 
