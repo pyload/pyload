@@ -721,17 +721,13 @@ class EpisodeMover(Hook):
                         filelist.append(f)
             elif os.path.isdir(file_):
                 self.cleanFolder(file_)
-                if self.__isEmptyDir(file_):
-                    if os.path.exists(file_):
-                        os.rmdir(file_)
-                        filelist.append((u'%s(dir)' % f))
         if len(filelist) > 0:
             self.logDebug(u'Deleted Junkfiles: %s' % filelist)
             self.logInfo(u'%s Junk File(s) deleted' % len(filelist)) 
         if self.__isEmptyDir(folder):
             if os.path.exists(folder) and not self.config["general"]["download_folder"] == folder:
                 os.rmdir(folder)
-                self.logInfo(u'Dir %s deleted' % folder)             
+                self.logInfo(u'Dir %s deleted' % folder)
 
 class Episode:
     
