@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -18,98 +17,135 @@
     @author: Walter Purcaro
 """
 
+from urlparse import urljoin
 import re
-import json
 
+from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter
-from os.path import join
+from module.utils import save_join
 
 API_KEY = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
 
 
 class YoutubeBatch(Crypter):
     __name__ = "YoutubeBatch"
-    __type__ = "container"
-    __pattern__ = r"https?://(?:[^/]*?)youtube\.com/(?:(view_play_list|playlist|.*?feature=PlayList|user)(?:.*?[?&](?:list|p)=|/))([a-zA-Z0-9-_]+)"
-    __version__ = "0.94"
-    __description__ = """Youtube.com Channel Download Plugin"""
-    __author_name__ = ("RaNaN", "Spoob", "zoidberg", "roland", "Walter Purcaro")
-    __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "zoidberg@mujmail.cz", "roland@enkore.de", "vuolter@gmail.com")
+    __type__ = "crypter"
+    __pattern__ = r"https?://(?:www\.)?(m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)"
+    __version__ = "1.00"
+    __description__ = """Youtube.com channel & playlist decrypter"""
+    __config__ = [("likes", "bool", "Grab user (channel) liked videos", "False"),
+                  ("favorites", "bool", "Grab user (channel) favorite videos", "False"),
+                  ("uploads", "bool", "Grab channel unplaylisted videos", "True")]
+    __author_name__ = ("Walter Purcaro")
+    __author_mail__ = ("vuolter@gmail.com")
 
-    def json_response(self, api, req):
+    def api_response(self, ref, req):
         req.update({"key": API_KEY})
-        url = "https://www.googleapis.com/youtube/v3/" + api
+        url = urljoin("https://www.googleapis.com/youtube/v3/", ref)
         page = self.load(url, get=req)
-        return json.loads(page)
+        return json_loads(page)
 
-    def get_playlist_baseinfos(self, playlist_id):
-        res = self.json_response("playlists", {"part": "snippet", "id": playlist_id})
+    def getChannel(self, user):
+        channels = self.api_response("channels", {"part": "id,snippet,contentDetails", "forUsername": user, "maxResults": "50"})
+        if channels["items"]:
+            channel = channels["items"][0]
+            return {"id": channel["id"],
+                    "title": channel["snippet"]["title"],
+                    "relatedPlaylists": channel["contentDetails"]["relatedPlaylists"],
+                    "user": user}  # One lone channel for user?
 
-        snippet = res["items"][0]["snippet"]
-        playlist_name = snippet["title"]
-        channel_title = snippet["channelTitle"]
-        return playlist_name, channel_title
+    def getPlaylist(self, p_id):
+        playlists = self.api_response("playlists", {"part": "snippet", "id": p_id})
+        if playlists["items"]:
+            playlist = playlists["items"][0]
+            return {"id": p_id,
+                    "title": playlist["snippet"]["title"],
+                    "channelId": playlist["snippet"]["channelId"],
+                    "channelTitle": playlist["snippet"]["channelTitle"]}
 
-    def get_channel_id(self, user_name):
-        res = self.json_response("channels", {"part": "id", "forUsername": user_name})
-        return res["items"][0]["id"]
-
-    def get_playlists(self, user_name, token=None):
-        channel_id = self.get_channel_id(user_name)
-        req = {"part": "id", "maxResults": "50", "channelId": channel_id}
+    def _getPlaylists(self, id, token=None):
+        req = {"part": "id", "maxResults": "50", "channelId": id}
         if token:
             req.update({"pageToken": token})
-        res = self.json_response("playlists", req)
 
-        for item in res["items"]:
-            yield item["id"]
+        playlists = self.api_response("playlists", req)
 
-        if "nextPageToken" in res:
-            for item in self.get_playlists(user_name, res["nextPageToken"]):
+        for playlist in playlists["items"]:
+            yield playlist["id"]
+
+        if "nextPageToken" in playlists:
+            for item in self._getPlaylists(id, playlists["nextPageToken"]):
                 yield item
 
-    def get_videos(self, playlist_id, token=None):
-        req = {"part": "snippet", "maxResults": "50", "playlistId": playlist_id}
+    def getPlaylists(self, ch_id):
+        return map(self.getPlaylist, self._getPlaylists(ch_id))
+
+    def _getVideosId(self, id, token=None):
+        req = {"part": "contentDetails", "maxResults": "50", "playlistId": id}
         if token:
             req.update({"pageToken": token})
-        res = self.json_response("playlistItems", req)
 
-        for item in res["items"]:
-            yield "http://youtube.com/watch?v=" + item["snippet"]["resourceId"]["videoId"]
+        playlist = self.api_response("playlistItems", req)
 
-        if "nextPageToken" in res:
-            for item in self.get_videos(playlist_id, res["nextPageToken"]):
+        for item in playlist["items"]:
+            yield item["contentDetails"]["videoId"]
+
+        if "nextPageToken" in playlist:
+            for item in self._getVideosId(id, playlist["nextPageToken"]):
                 yield item
+
+    def getVideosId(self, p_id):
+        return list(self._getVideosId(p_id))
 
     def decrypt(self, pyfile):
-        match_obj = re.match(self.__pattern__, pyfile.url)
-        match_type, match_result = match_obj.group(1), match_obj.group(2)
-        playlist_ids = []
+        match = re.match(self.__pattern__, pyfile.url)
+        m_id = match.group("ID")
+        m_type = match.group("TYPE")
 
-        #: is a channel username or just a playlist id?
-        if match_type == "user":
-            ids = self.get_playlists(match_result)
-            playlist_ids.extend(ids)
+        if m_type == "user":
+            self.logDebug("Url recognized as Channel")
+            user = m_id
+            channel = self.getChannel(user)
+
+            if channel:
+                playlists = self.getPlaylists(channel["id"])
+                self.logDebug("%s playlist\s found on channel \"%s\"" % (len(playlists), channel["title"]))
+
+                relatedplaylist = {p_name: self.getPlaylist(p_id) for p_name, p_id in channel["relatedPlaylists"].iteritems()}
+                self.logDebug("Channel's related playlists found = %s" % relatedplaylist.keys())
+
+                relatedplaylist["uploads"]["title"] = "Unplaylisted videos"
+                relatedplaylist["uploads"]["checkDups"] = True  #: checkDups flag
+
+                for p_name, p_data in relatedplaylist.iteritems():
+                    if self.getConfig(p_name):
+                        p_data["title"] += " of " + user
+                        playlists.append(p_data)
+            else:
+                playlists = []
         else:
-            playlist_ids.append(match_result)
+            self.logDebug("Url recognized as Playlist")
+            playlists = [self.getPlaylist(m_id)]
 
-        self.logDebug("Playlist IDs = %s" % playlist_ids)
+        if not playlists:
+            self.fail("No playlist available")
 
-        if not playlist_ids:
-            self.fail("Wrong url")
+        addedvideos = []
+        urlize = lambda x: "https://www.youtube.com/watch?v=" + x
+        for p in playlists:
+            p_name = p["title"]
+            p_videos = self.getVideosId(p["id"])
+            p_folder = save_join(self.config['general']['download_folder'], p["channelTitle"], p_name)
+            self.logDebug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
 
-        for id in playlist_ids:
-            self.logDebug("Processing playlist id: %s" % id)
-
-            playlist_name, channel_title = self.get_playlist_baseinfos(id)
-            video_links = [x for x in self.get_videos(id)]
-
-            self.logInfo("%s videos found on playlist \"%s\" (channel \"%s\")" % (len(video_links), playlist_name, channel_title))
-
-            if not video_links:
+            if not p_videos:
                 continue
+            elif "checkDups" in p:
+                p_urls = [urlize(v_id) for v_id in p_videos if v_id not in addedvideos]
+                self.logDebug("%s video\s available on playlist \"%s\" after duplicates cleanup" % (len(p_urls), p_name))
+            else:
+                p_urls = map(urlize, p_videos)
 
-            self.logDebug("Video links = %s" % video_links)
+            self.packages.append((p_name, p_urls, p_folder))  #: folder is NOT recognized by pyload 0.4.9!
 
-            folder = join(self.config['general']['download_folder'], channel_title, playlist_name)
-            self.packages.append((playlist_name, video_links, folder)) #Note: folder is NOT used actually!
+            addedvideos.extend(p_videos)
