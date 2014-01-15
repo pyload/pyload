@@ -24,13 +24,13 @@ class FilefactoryCom(SimpleHoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __description__ = """Filefactory.Com File Download Hoster"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
     FILE_INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.]+) (?P<U>\w+) uploaded'
-    DIRECT_LINK_PATTERN = r'<section id="downloadLink">\s*<p class="textAlignCenter">\s*<a href="([^"]+)">[^<]+</a>\s*</p>\s*</section>'
+    DIRECT_LINK_PATTERN = r'<a href="(https?://[^"]+)"[^>]*><i[^>]*></i> Download with FileFactory Premium</a>'
     FILE_OFFLINE_PATTERN = r'<h2>File Removed</h2>'
 
     def handleFree(self):
@@ -92,6 +92,7 @@ class FilefactoryCom(SimpleHoster):
         elif 'content-disposition' in header:
             url = self.pyfile.url
         else:
+            self.logInfo('You could enable "Direct Downloads" on http://filefactory.com/account/')
             html = self.load(self.pyfile.url)
             found = re.search(self.DIRECT_LINK_PATTERN, html)
             if found:
