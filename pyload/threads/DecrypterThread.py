@@ -31,7 +31,7 @@ class DecrypterThread(BaseThread):
         return self.progress
 
     def run(self):
-        pack = self.m.core.files.getPackage(self.pid)
+        pack = self.core.files.getPackage(self.pid)
         api = self.core.api.withUserContext(self.owner)
         links, packages = self.decrypt(accumulate(self.data), pack.password)
 
@@ -40,12 +40,14 @@ class DecrypterThread(BaseThread):
                 _("Decrypted %(count)d links into package %(name)s") % {"count": len(links), "name": pack.name})
             api.addLinks(self.pid, [l.url for l in links])
 
-        # TODO: add single package into this one and rename it?
-        # TODO: nested packages
-        for p in packages:
-            api.addPackage(p.name, p.getURLs(), pack.password)
+        # if there is only one package links will be added to current one
+        if len(packages) == 1:
+            api.addLinks(self.pid, packages[0].getURLs())
+        else:
+            for p in packages:
+                api.addPackage(p.name, p.getURLs(), pack.password)
 
-        self.m.core.files.setDownloadStatus(self.fid, DS.Finished if not self.error else DS.Failed)
+        self.core.files.setDownloadStatus(self.fid, DS.Finished if not self.error else DS.Failed)
         self.m.done(self)
 
     def decrypt(self, plugin_map, password=None, err=False):
@@ -55,7 +57,7 @@ class DecrypterThread(BaseThread):
                                          0, 0, len(self.data), self.owner, ProgressType.Decrypting)
         # TODO QUEUE_DECRYPT
         for name, urls in plugin_map.iteritems():
-            klass = self.m.core.pluginManager.loadClass("crypter", name)
+            klass = self.core.pluginManager.loadClass("crypter", name)
             plugin = None
             plugin_result = []
 
@@ -72,7 +74,7 @@ class DecrypterThread(BaseThread):
                 self.log.debug("Plugin '%s' for decrypting was not loaded" % name)
             else:
                 try:
-                    plugin = klass(self.m.core, password)
+                    plugin = klass(self.core, password)
 
                     try:
                         plugin_result = plugin._decrypt(urls)
