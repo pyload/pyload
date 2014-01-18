@@ -42,7 +42,7 @@ class DecrypterThread(BaseThread):
         for p in packages:
             self.m.core.api.addPackage(p.name, p.getURLs(), pack.password)
 
-        self.finished()
+        self.m.done(self)
 
     def decrypt(self, plugin_map, password=None, err=False):
         result = []

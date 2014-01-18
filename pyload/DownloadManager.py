@@ -72,7 +72,6 @@ class DownloadManager:
     @lock
     def stop(self, thread):
         """  Removes a thread from all lists  """
-
         if thread in self.free:
             self.free.remove(thread)
 
@@ -290,7 +289,7 @@ class DownloadManager:
         occ = defaultdict(lambda: -1)
         # decrypter are treated as occupied
         for p in self.decrypter:
-            progress = p.getProgressInfo()
+            progress = p.getProgress()
             if progress:
                 occ[progress.plugin] = 0
 
