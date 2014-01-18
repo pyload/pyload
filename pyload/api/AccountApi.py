@@ -27,12 +27,12 @@ class AccountApi(ApiComponent):
         return [acc.toInfoData() for acc in accounts]
 
     @RequirePerm(Permission.Accounts)
-    def getAccountInfo(self, plugin, loginname, refresh=False):
+    def getAccountInfo(self, aid, plugin, refresh=False):
         """ Returns :class:`AccountInfo` for a specific account
 
             :param refresh: reload account info
         """
-        account = self.core.accountManager.getAccount(plugin, loginname)
+        account = self.core.accountManager.getAccount(aid, plugin)
 
         # Admins can see and refresh accounts
         if not account or (self.primaryUID and self.primaryUID != account.owner):
@@ -45,20 +45,27 @@ class AccountApi(ApiComponent):
         return account.toInfoData()
 
     @RequirePerm(Permission.Accounts)
-    def updateAccount(self, plugin, loginname, password):
-        """Creates an account if not existent or updates the password
+    def createAccount(self, plugin, loginname, password):
+        """  Creates a new account
 
-        :return: newly created or updated account info
+        :return class:`AccountInfo`
         """
-        # TODO: None pointer
-        return self.core.accountManager.updateAccount(plugin, loginname, password, self.user).toInfoData()
+        return self.core.accountManager.createAccount(plugin, loginname, password, self.user.true_primary).toInfoData()
+
+    @RequirePerm(Permission.Accounts)
+    def updateAccount(self, aid, plugin, loginname, password):
+        """Updates loginname and password of an existent account
+
+        :return: updated account info
+        """
+        return self.core.accountManager.updateAccount(aid, plugin, loginname, password, self.user).toInfoData()
 
 
     @RequirePerm(Permission.Accounts)
     def updateAccountInfo(self, account):
         """ Update account settings from :class:`AccountInfo` """
-        inst = self.core.accountManager.getAccount(account.plugin, account.loginname, self.user)
-        if not account:
+        inst = self.core.accountManager.getAccount(account.aid, account.plugin, self.user)
+        if not inst:
             return
 
         inst.activated = to_bool(account.activated)
@@ -72,7 +79,7 @@ class AccountApi(ApiComponent):
 
         :param account: :class:`ÀccountInfo` instance
         """
-        self.core.accountManager.removeAccount(account.plugin, account.loginname, self.primaryUID)
+        self.core.accountManager.removeAccount(account.aid, account.plugin, self.primaryUID)
 
 
 if Api.extend(AccountApi):

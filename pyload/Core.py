@@ -388,7 +388,7 @@ class Core(object):
         self.interactionManager = self.im = InteractionManager(self)
         self.accountManager = AccountManager(self)
         self.threadManager = ThreadManager(self)
-        self.downloadManager = DownloadManager(self)
+        self.downloadManager = self.dlm = DownloadManager(self)
         self.addonManager = AddonManager(self)
         self.remoteManager = RemoteManager(self)
 
@@ -438,7 +438,8 @@ class Core(object):
             self.log.info(_("Restarting failed downloads..."))
             self.api.restartFailed()
 
-        self.threadManager.pause = False
+        # start downloads
+        self.dlm.paused = False
         self.running = True
 
         self.addonManager.activateAddons()
@@ -474,11 +475,15 @@ class Core(object):
                 self.removeLogger()
                 _exit(0)
                 # TODO check exits codes, clean exit is still blocked
+            try:
+                self.downloadManager.work()
+                self.threadManager.work()
+                self.interactionManager.work()
+                self.scheduler.work()
+            except Exception, e:
+                self.log.critical(_("Critical error: ") + str(e))
+                self.print_exc()
 
-            self.downloadManager.work()
-            self.threadManager.work()
-            self.interactionManager.work()
-            self.scheduler.work()
 
     def setupDB(self):
         from database import DatabaseBackend
@@ -586,10 +591,8 @@ class Core(object):
                 pass # TODO: quit webserver?
                 #                self.webserver.quit()
 
-            for thread in self.threadManager.threads:
-                thread.put("quit")
-
-            self.api.stopAllDownloads()
+            self.dlm.abort()
+            self.dlm.shutdown()
             self.addonManager.deactivateAddons()
 
         except:

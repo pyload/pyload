@@ -1,8 +1,8 @@
-define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus',
+define(['jquery', 'underscore', 'backbone', 'app', 'models/StatusInfo',
     'views/progressView', 'views/notificationView', 'helpers/formatSize', 'hbs!tpl/header/layout',
     'hbs!tpl/header/status', 'hbs!tpl/header/progressbar', 'hbs!tpl/header/progressSup', 'hbs!tpl/header/progressSub' , 'flot'],
     function(
-        $, _, Backbone, App, ServerStatus, ProgressView, NotificationView, formatSize, template, templateStatus, templateProgress, templateSup, templateSub) {
+        $, _, Backbone, App, StatusInfo, ProgressView, NotificationView, formatSize, template, templateStatus, templateProgress, templateSup, templateSub) {
         'use strict';
         // Renders the header with all information
         return Backbone.Marionette.ItemView.extend({
@@ -47,7 +47,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus',
 
                 this.model = App.user;
 
-                this.status = new ServerStatus();
+                this.status = new StatusInfo();
                 this.listenTo(this.status, 'change', this.update);
 
                 this.listenTo(App.progressList, 'add', function(model) {
@@ -194,7 +194,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ServerStatus',
                 var data = JSON.parse(evt.data);
                 if (data === null) return;
 
-                if (data['@class'] === 'ServerStatus') {
+                if (data['@class'] === 'StatusInfo') {
                     this.status.set(data);
 
                     // There tasks at the server, but not in queue: so fetch them

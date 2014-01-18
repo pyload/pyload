@@ -36,10 +36,11 @@ class DownloadStatus:
 	NotPossible = 13
 	Missing = 14
 	FileMismatch = 15
-	Decrypting = 16
-	Processing = 17
-	Custom = 18
-	Unknown = 19
+	Occupied = 16
+	Decrypting = 17
+	Processing = 18
+	Custom = 19
+	Unknown = 20
 
 class FileStatus:
 	Ok = 0
@@ -55,13 +56,15 @@ class InputType:
 	Textbox = 5
 	Password = 6
 	Time = 7
-	Bool = 8
-	Click = 9
-	Select = 10
-	Multiple = 11
-	List = 12
-	PluginList = 13
-	Table = 14
+	TimeSpan = 8
+	ByteSize = 9
+	Bool = 10
+	Click = 11
+	Select = 12
+	Multiple = 13
+	List = 14
+	PluginList = 15
+	Table = 16
 
 class Interaction:
 	All = 0
@@ -109,9 +112,10 @@ class Role:
 	User = 1
 
 class AccountInfo(BaseObject):
-	__slots__ = ['plugin', 'loginname', 'owner', 'valid', 'validuntil', 'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared', 'config']
+	__slots__ = ['aid', 'plugin', 'loginname', 'owner', 'valid', 'validuntil', 'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared', 'config']
 
-	def __init__(self, plugin=None, loginname=None, owner=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, shared=None, config=None):
+	def __init__(self, aid=None, plugin=None, loginname=None, owner=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, shared=None, config=None):
+		self.aid = aid
 		self.plugin = plugin
 		self.loginname = loginname
 		self.owner = owner
@@ -322,20 +326,6 @@ class ProgressInfo(BaseObject):
 		self.type = type
 		self.download = download
 
-class ServerStatus(BaseObject):
-	__slots__ = ['speed', 'linkstotal', 'linksqueue', 'sizetotal', 'sizequeue', 'notifications', 'paused', 'download', 'reconnect']
-
-	def __init__(self, speed=None, linkstotal=None, linksqueue=None, sizetotal=None, sizequeue=None, notifications=None, paused=None, download=None, reconnect=None):
-		self.speed = speed
-		self.linkstotal = linkstotal
-		self.linksqueue = linksqueue
-		self.sizetotal = sizetotal
-		self.sizequeue = sizequeue
-		self.notifications = notifications
-		self.paused = paused
-		self.download = download
-		self.reconnect = reconnect
-
 class ServiceDoesNotExist(ExceptionObject):
 	__slots__ = ['plugin', 'func']
 
@@ -348,6 +338,21 @@ class ServiceException(ExceptionObject):
 
 	def __init__(self, msg=None):
 		self.msg = msg
+
+class StatusInfo(BaseObject):
+	__slots__ = ['speed', 'linkstotal', 'linksqueue', 'sizetotal', 'sizequeue', 'notifications', 'paused', 'download', 'reconnect', 'quota']
+
+	def __init__(self, speed=None, linkstotal=None, linksqueue=None, sizetotal=None, sizequeue=None, notifications=None, paused=None, download=None, reconnect=None, quota=None):
+		self.speed = speed
+		self.linkstotal = linkstotal
+		self.linksqueue = linksqueue
+		self.sizetotal = sizetotal
+		self.sizequeue = sizequeue
+		self.notifications = notifications
+		self.paused = paused
+		self.download = download
+		self.reconnect = reconnect
+		self.quota = quota
 
 class TreeCollection(BaseObject):
 	__slots__ = ['root', 'files', 'packages']
@@ -402,6 +407,8 @@ class Iface(object):
 		pass
 	def checkLinks(self, links):
 		pass
+	def createAccount(self, plugin, loginname, password):
+		pass
 	def createPackage(self, name, folder, root, password, site, comment, paused):
 		pass
 	def deleteConfig(self, plugin):
@@ -420,7 +427,7 @@ class Iface(object):
 		pass
 	def generatePackages(self, links):
 		pass
-	def getAccountInfo(self, plugin, loginname, refresh):
+	def getAccountInfo(self, aid, plugin, refresh):
 		pass
 	def getAccountTypes(self):
 		pass
@@ -464,9 +471,11 @@ class Iface(object):
 		pass
 	def getProgressInfo(self):
 		pass
-	def getServerStatus(self):
+	def getQuota(self):
 		pass
 	def getServerVersion(self):
+		pass
+	def getStatusInfo(self):
 		pass
 	def getUserData(self):
 		pass
@@ -538,7 +547,7 @@ class Iface(object):
 		pass
 	def unpauseServer(self):
 		pass
-	def updateAccount(self, plugin, loginname, password):
+	def updateAccount(self, aid, plugin, loginname, password):
 		pass
 	def updateAccountInfo(self, account):
 		pass

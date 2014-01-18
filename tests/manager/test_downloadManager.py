@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tests.helper.Stubs import Core, normalUser, adminUser
+from tests.helper.Stubs import Core, normalUser, adminUser, otherUser
 from tests.helper.BenchmarkTest import BenchmarkTest
 
 from pyload.database import DatabaseBackend
@@ -9,13 +9,21 @@ DatabaseBackend.async = DatabaseBackend.queue
 
 class TestDownloadManager(BenchmarkTest):
 
-    bench = ["add_links", "db"]
+    bench = ["add_links", "simple", "empty"]
+
+    USER = 2
+    PACKAGES = 10
+    LINKS = 50
+    PLUGINS = 10
 
     @classmethod
     def setUpClass(cls):
         cls.c = Core()
         cls.db = cls.c.db
         cls.db.purgeAll()
+        cls.db.addDebugUser(normalUser.uid)
+        cls.db.addDebugUser(adminUser.uid)
+        cls.db.addDebugUser(otherUser.uid)
 
         cls.files = cls.c.files
         cls.m = cls.c.downloadManager
@@ -30,12 +38,18 @@ class TestDownloadManager(BenchmarkTest):
 
     def test_add_links(self):
         # just generate some links and files
-        for i in range(10):
-            pid = self.files.addPackage("name %d", "folder", -1, "", "", "", False, normalUser.uid)
-            self.files.addLinks([("plugin%d" % i, "url%d" %i) for i in range(50)], pid, normalUser.uid)
+        for user in (adminUser, normalUser):
+            for i in range(self.PACKAGES):
+                pid = self.files.addPackage("name %d", "folder", -1, "", "", "", False, user.uid)
+                self.files.addLinks([( "url%d" %i, "plugin%d" % (i % self.PLUGINS)) for i in range(self.LINKS)], pid, user.uid)
 
-    def test_db(self):
-        pass
+    def test_simple(self):
+        jobs = self.db.getJobs([])
+        assert len(jobs) == 2
+
+    def test_empty(self):
+        assert not self.db.getJobs(["plugin%d" % i for i in range(self.PLUGINS)])
+
 
 
 if __name__ == "__main__":

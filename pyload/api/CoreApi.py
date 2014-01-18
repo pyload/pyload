@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pyload.Api import Api, RequirePerm, Permission, ServerStatus, Interaction
+from pyload.Api import Api, RequirePerm, Permission, StatusInfo, Interaction
 from pyload.utils.fs import join, free_space, exists
 from pyload.utils import compare_time
 
@@ -37,24 +37,24 @@ class CoreApi(ApiComponent):
         return "%s://%%s:%d" % (ws, self.core.config['webUI']['wsPort'])
 
     @RequirePerm(Permission.All)
-    def getServerStatus(self):
+    def getStatusInfo(self):
         """Some general information about the current status of pyLoad.
 
-        :return: `ServerStatus`
+        :return: `StatusInfo`
         """
         queue = self.core.files.getQueueStats(self.primaryUID)
         total = self.core.files.getDownloadStats(self.primaryUID)
 
-        serverStatus = ServerStatus(0,
+        serverStatus = StatusInfo(0,
                                     total[0], queue[0],
                                     total[1], queue[1],
                                     self.isInteractionWaiting(Interaction.All),
-                                    not self.core.threadManager.pause and self.isTimeDownload(),
-                                    self.core.threadManager.pause,
-                                    self.core.config['reconnect']['activated'] and self.isTimeReconnect())
+                                    not self.core.dlm.paused and self.isTimeDownload(),
+                                    self.core.dlm.paused,
+                                    self.core.config['reconnect']['activated'] and self.isTimeReconnect(),
+                                    self.getQuota())
 
-
-        for pyfile in self.core.threadManager.getActiveDownloads(self.primaryUID):
+        for pyfile in self.core.dlm.activeDownloads(self.primaryUID):
             serverStatus.speed += pyfile.getSpeed() #bytes/s
 
         return serverStatus
@@ -65,23 +65,24 @@ class CoreApi(ApiComponent):
 
         :rtype: list of :class:`ProgressInfo`
         """
-        return self.core.threadManager.getProgressList(self.primaryUID)
+        return self.core.dlm.getProgressList(self.primaryUID) +\
+            self.core.threadManager.getProgressList(self.primaryUID)
 
     def pauseServer(self):
         """Pause server: It won't start any new downloads, but nothing gets aborted."""
-        self.core.threadManager.pause = True
+        self.core.dlm.paused = True
 
     def unpauseServer(self):
         """Unpause server: New Downloads will be started."""
-        self.core.threadManager.pause = False
+        self.core.dlm.paused = False
 
     def togglePause(self):
         """Toggle pause state.
 
         :return: new pause state
         """
-        self.core.threadManager.pause ^= True
-        return self.core.threadManager.pause
+        self.core.dlm.paused ^= True
+        return self.core.dlm.paused
 
     def toggleReconnect(self):
         """Toggle reconnect activation.

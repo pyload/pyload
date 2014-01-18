@@ -90,7 +90,7 @@ class MultiHoster(Addon, PluginMatcher):
 
 
     @AddEventListener(["account:deleted", "account:updated"])
-    def refreshAccounts(self, plugin=None, loginname=None):
+    def refreshAccounts(self, plugin=None, loginname=None, user=None):
         self.logDebug("Re-checking accounts")
 
         self.plugins = {}

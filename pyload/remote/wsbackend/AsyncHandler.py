@@ -171,12 +171,8 @@ class AsyncHandler(AbstractHandler):
             pass
 
         if req.t <= time():
-            # TODO: server status is not enough
-            # modify core api to include progress? think of other needed information to show
-            # eta is quite wrong currently
-            # notifications
-            self.send(req, self.api.getServerStatus())
-            self.send(req, self.api.getProgressInfo())
+            self.send(req, req.api.getStatusInfo())
+            self.send(req, req.api.getProgressInfo())
 
             # update time for next update
             req.t = time() + req.interval

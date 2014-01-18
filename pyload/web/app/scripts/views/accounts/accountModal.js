@@ -59,7 +59,7 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', 'hbs!tpl/dial
                         password = this.$('#password').val(),
                         self = this;
 
-                    $.ajax(App.apiRequest('updateAccount', {
+                    $.ajax(App.apiRequest('createAccount', {
                         plugin: plugin, loginname: login, password: password
                     }, { success: function(data) {
                         App.vent.trigger('account:updated', data);

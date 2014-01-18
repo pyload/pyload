@@ -44,6 +44,14 @@ class UserMethods(DatabaseMethods):
             self.c.execute('INSERT INTO users (name, password) VALUES (?, ?)', (user, password))
 
     @queue
+    def addDebugUser(self, uid):
+        # just add a user with uid to db
+        try:
+            self.c.execute('INSERT INTO users (uid, name, password) VALUES (?, ?, ?)', (uid, "debugUser", random_salt()))
+        except:
+            pass
+
+    @queue
     def getUserData(self, name=None, uid=None):
         qry = ('SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
                'hddquota, user, template FROM "users" WHERE ')

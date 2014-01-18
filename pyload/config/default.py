@@ -38,10 +38,9 @@ def make_config(config):
                             [
                                 ("language", "en;de;fr;it;es;nl;sv;ru;pl;cs;sr;pt_BR", _("Language"), "en"),
                                 ("download_folder", "folder", _("Download Folder"), "Downloads"),
-                                ("checksum", "bool", _("Use Checksum"), False),
                                 ("folder_per_package", "bool", _("Create folder for each package"), True),
                                 ("debug_mode", "bool", _("Debug Mode"), False),
-                                ("min_free_space", "int", _("Min Free Space (MB)"), 200),
+                                ("min_free_space", "int", _("Min Free Space (MB)"), 512),
                                 ("renice", "int", _("CPU Priority"), 0),
                             ])
 
@@ -79,20 +78,23 @@ def make_config(config):
 
     config.addConfigSection("reconnect", _("Reconnect"), _("Description"), _("Long description"),
                             [
-                                ("endTime", "time", _("End"), "0:00"),
                                 ("activated", "bool", _("Use Reconnect"), False),
                                 ("method", "str", _("Method"), "./reconnect.sh"),
+                                ("wait", "str", _("Wait for reconnect"), False),
                                 ("startTime", "time", _("Start"), "0:00"),
+                                ("endTime", "time", _("End"), "0:00"),
                             ])
 
     config.addConfigSection("download", _("Download"), _("Description"), _("Long description"),
                             [
-                                ("max_downloads", "int", _("Max Parallel Downloads"), 3),
-                                ("limit_speed", "bool", _("Limit Download Speed"), False),
+                                ("max_downloads", "int", _("Max parallel downloads"), 3),
+                                ("wait_downloads", "int", _("Start downloads while waiting"), 2),
+                                ("limit_speed", "bool", _("Limit download speed"), False),
                                 ("interface", "str", _("Download interface to bind (ip or Name)"), ""),
                                 ("skip_existing", "bool", _("Skip already existing files"), False),
-                                ("max_speed", "int", _("Max Download Speed in kb/s"), -1),
+                                ("max_speed", "int", _("Max download speed in kb/s"), -1),
                                 ("ipv6", "bool", _("Allow IPv6"), False),
+                                ("ssl", "bool", _("Prefer SSL downloads"), True),
                                 ("chunks", "int", _("Max connections for one download"), 3),
                                 ("restart_failed", "bool", _("Restart failed downloads on startup"), False),
                             ])

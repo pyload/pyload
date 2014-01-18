@@ -35,6 +35,7 @@ def invalidate(func):
 
     return new
 
+
 class FileManager:
     """Handles all request made to obtain information,
     modify status or other request for links or packages"""
@@ -49,9 +50,10 @@ class FileManager:
 
         # translations
         self.statusMsg = [_("none"), _("offline"), _("online"), _("queued"), _("paused"),
-                          _("finished"), _("skipped"), _("failed"), _("starting"),_("waiting"),
+                          _("finished"), _("skipped"), _("failed"), _("starting"), _("waiting"),
                           _("downloading"), _("temp. offline"), _("aborted"), _("not possible"), _("missing"),
-                          _("file mismatch"), _("decrypting"), _("processing"), _("custom"), _("unknown")]
+                          _("file mismatch"), _("occupied"), _("decrypting"), _("processing"), _("custom"),
+                          _("unknown")]
 
         self.files = {} # holds instances for files
         self.packages = {}  # same for packages
@@ -93,7 +95,7 @@ class FileManager:
 
     @invalidate
     def addLinks(self, data, pid, owner):
-        """Add links, data = (plugin, url) tuple. Internal method should use API."""
+        """Add links, data = (url, plugin) tuple. Internal method should use API."""
         self.db.addLinks(data, pid, owner)
         self.evm.dispatchEvent("package:updated", pid)
 
@@ -102,7 +104,7 @@ class FileManager:
     def addPackage(self, name, folder, root, password, site, comment, paused, owner):
         """Adds a package to database"""
         pid = self.db.addPackage(name, folder, root, password, site, comment,
-            PackageStatus.Paused if paused else PackageStatus.Ok, owner)
+                                 PackageStatus.Paused if paused else PackageStatus.Ok, owner)
         p = self.db.getPackageInfo(pid)
 
         self.evm.dispatchEvent("package:inserted", pid, p.root, p.packageorder)
@@ -250,46 +252,14 @@ class FileManager:
 
 
     @lock
-    def getJob(self, occ):
-        """get suitable job"""
+    def getJobs(self, occ):
 
-        #TODO only accessed by one thread, should not need a lock
-        #TODO needs to be approved for new database
-        #TODO clean mess
-        #TODO improve selection of valid jobs
+        # load jobs with file info
+        if occ not in self.jobCache:
+            self.jobCache[occ] = dict([(k, self.getFileInfo(fid)) for k, fid
+                                       in self.db.getJobs(occ).iteritems()])
 
-        if occ in self.jobCache:
-            if self.jobCache[occ]:
-                id = self.jobCache[occ].pop()
-                if id == "empty":
-                    pyfile = None
-                    self.jobCache[occ].append("empty")
-                else:
-                    pyfile = self.getFile(id)
-            else:
-                jobs = self.db.getJob(occ)
-                jobs.reverse()
-                if not jobs:
-                    self.jobCache[occ].append("empty")
-                    pyfile = None
-                else:
-                    self.jobCache[occ].extend(jobs)
-                    pyfile = self.getFile(self.jobCache[occ].pop())
-
-        else:
-            self.jobCache = {} #better not caching to much
-            jobs = self.db.getJob(occ)
-            jobs.reverse()
-            self.jobCache[occ] = jobs
-
-            if not jobs:
-                self.jobCache[occ].append("empty")
-                pyfile = None
-            else:
-                pyfile = self.getFile(self.jobCache[occ].pop())
-
-
-        return pyfile
+        return self.jobCache[occ]
 
     def getDownloadStats(self, user=None):
         """ return number of downloads  """
@@ -346,7 +316,6 @@ class FileManager:
         if fid in self.core.threadManager.processingIds():
             f.abortDownload()
 
-
         self.db.deleteFile(fid, f.fileorder, f.packageid)
         self.releaseFile(fid)
 
@@ -375,6 +344,17 @@ class FileManager:
 
         # This event is thrown with pyfile or only fid
         self.evm.dispatchEvent("file:updated", pyfile)
+
+    @invalidate
+    @read_lock
+    def setDownloadStatus(self, fid, status):
+        """ sets a download status for a file """
+        if fid in self.files:
+            self.files[fid].setStatus(status)
+        else:
+            self.db.setDownloadStatus(fid, status)
+
+        self.evm.dispatchEvent("file:updated", fid)
 
     @invalidate
     def updatePackage(self, pypack):
@@ -488,7 +468,7 @@ class FileManager:
             raise Exception("Tried to reorder non continuous block of files")
 
         # minimum fileorder
-        f = reduce(lambda x,y: x if x.fileorder < y.fileorder else y, files)
+        f = reduce(lambda x, y: x if x.fileorder < y.fileorder else y, files)
         order = f.fileorder
 
         self.db.orderFiles(pid, fids, order, position)
@@ -507,12 +487,12 @@ class FileManager:
         elif f.fileorder < position:
             for pyfile in self.files.itervalues():
                 if pyfile.packageid != f.package or pyfile.fileorder < 0: continue
-                if position >= pyfile.fileorder >= f.fileorder+diff:
+                if position >= pyfile.fileorder >= f.fileorder + diff:
                     pyfile.fileorder -= diff
 
             for i, fid in enumerate(fids):
                 if fid in self.files:
-                    self.files[fid].fileorder = position -diff + i + 1
+                    self.files[fid].fileorder = position - diff + i + 1
 
         self.db.commit()
 

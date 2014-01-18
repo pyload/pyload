@@ -13,7 +13,8 @@ define(['jquery', 'backbone', 'underscore'],
                 notifications: -1,
                 paused: false,
                 download: false,
-                reconnect: false
+                reconnect: false,
+                quota: -1
             },
 
             // Model Constructor
@@ -23,7 +24,7 @@ define(['jquery', 'backbone', 'underscore'],
 
             fetch: function(options) {
                 options || (options = {});
-                options.url = 'api/getServerStatus';
+                options.url = 'api/getStatusInfo';
 
                 return Backbone.Model.prototype.fetch.call(this, options);
             },

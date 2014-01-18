@@ -18,6 +18,7 @@
     @author: RaNaN
 """
 
+from threading import Event
 from Queue import Queue
 from time import sleep, time
 from traceback import print_exc
@@ -37,6 +38,9 @@ class DownloadThread(BaseThread):
         """Constructor"""
         BaseThread.__init__(self, manager)
 
+        self.isWorking = Event()
+        self.isWorking.clear()
+
         self.queue = Queue() # job queue
         self.active = None
 
@@ -53,12 +57,19 @@ class DownloadThread(BaseThread):
 
             if self.active == "quit":
                 self.active = None
-                self.m.threads.remove(self)
+                self.m.stop(self)
                 return True
 
             try:
-                if not pyfile.hasPlugin(): continue
+                pyfile.initPlugin()
+
+                # after initialization the thread is fully ready
+                self.isWorking.set()
+
                 #this pyfile was deleted while queuing
+                # TODO: what will happen with new thread manager?
+                #if not pyfile.hasPlugin(): continue
+
 
                 pyfile.plugin.checkForSameFiles(starting=True)
                 self.log.info(_("Download starts: %s" % pyfile.name))
@@ -204,7 +215,9 @@ class DownloadThread(BaseThread):
                 self.core.files.save()
                 pyfile.checkIfProcessed()
                 exc_clear()
-
+                # manager could still be waiting for it
+                self.isWorking.set()
+                self.m.done(self)
             
             #pyfile.plugin.req.clean()
 

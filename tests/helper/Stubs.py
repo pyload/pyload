@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from os.path import join
 from time import strftime
 from traceback import format_exc
 
 import __builtin__
 
+from pyload.InitHomeDir import init_dir
+
+init_dir(join("tests", "config"), True)
+
 from pyload.Api import Role
 from pyload.Core import Core
-from pyload.InitHomeDir import init_dir
 from pyload.datatypes.User import User
 from pyload.threads.BaseThread import BaseThread
 from pyload.config.ConfigParser import ConfigParser
-
-init_dir(join("tests", "config"))
 
 from logging import log, DEBUG, INFO, WARN, ERROR
 
@@ -94,3 +96,9 @@ adminUser = User(None, uid=0, role=Role.Admin)
 normalUser = User(None, uid=1, role=Role.User)
 otherUser = User(None, uid=2, role=Role.User)
 
+# fixes the module paths because we changed the directory
+for name, m in sys.modules.iteritems():
+    if not name.startswith("tests") or not m or not hasattr(m, "__path__"):
+        continue
+
+    m.__path__[0] = join("..", "..", m.__path__[0])

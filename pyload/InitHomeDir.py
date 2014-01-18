@@ -59,6 +59,7 @@ else:
 __builtin__.homedir = homedir
 
 configdir = None
+final = False
 args = " ".join(argv)
 # dirty method to set configdir from commandline arguments
 if "--configdir=" in args:
@@ -83,9 +84,15 @@ if not configdir:
     configname = ".pyload" if platform in ("posix", "linux2", "darwin") else "pyload"
     configdir = path.join(homedir, configname + dev)
 
-def init_dir(other_path=None):
+
+def init_dir(other_path=None, no_change=False):
     # switch to pyload home directory, or path at other_path
     global configdir
+    global final
+
+    if final: return
+
+    if no_change: final = True
 
     if other_path is not None:
         configdir = join(pypath, other_path)

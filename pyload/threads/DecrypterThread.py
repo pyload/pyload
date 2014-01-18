@@ -23,7 +23,6 @@ class DecrypterThread(BaseThread):
         # holds the progress, while running
         self.progress = None
 
-        self.m.addThread(self)
         self.start()
 
     def getProgress(self):

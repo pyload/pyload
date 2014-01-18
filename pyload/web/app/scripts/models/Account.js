@@ -3,9 +3,10 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', './ConfigIt
 
     return Backbone.Model.extend({
 
-        idAttribute: 'loginname',
+        idAttribute: 'aid',
 
         defaults: {
+            aid: null,
             plugin: null,
             loginname: null,
             owner: -1,
@@ -53,14 +54,15 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', './ConfigIt
             var refresh = _.has(options, 'refresh') && options.refresh;
             options = App.apiRequest('getAccountInfo',
                 {plugin: this.get('plugin'),
-                    loginname: this.get('loginname'), refresh: refresh}, options);
+                    aid: this.get('aid'), refresh: refresh}, options);
 
             return Backbone.Model.prototype.fetch.call(this, options);
         },
 
         setPassword: function(password, options) {
             options = App.apiRequest('updateAccount',
-                {plugin: this.get('plugin'), loginname: this.get('loginname'), password: password}, options);
+                {aid: this.get('aid'),
+                    plugin: this.get('plugin'), loginname: this.get('loginname'), password: password}, options);
 
             return $.ajax(options);
         },

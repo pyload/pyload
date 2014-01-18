@@ -5,6 +5,7 @@ typedef i32 PackageID
 typedef i32 ResultID
 typedef i32 InteractionID
 typedef i32 UserID
+typedef i32 AccountID
 typedef i64 UTCDate
 typedef i64 ByteCount
 typedef list<string> LinkList
@@ -28,6 +29,7 @@ enum DownloadStatus {
   NotPossible,
   Missing,
   FileMismatch,
+  Occupied,
   Decrypting,
   Processing,
   Custom,
@@ -71,7 +73,6 @@ enum PackageStatus {
 // types for user interaction
 // some may only be place holder currently not supported
 // also all input - output combination are not reasonable, see InteractionManager for further info
-// Todo: how about: time, ip, s.o.
 enum InputType {
   NA,
   Text,
@@ -81,6 +82,8 @@ enum InputType {
   Textbox,
   Password,
   Time,
+  TimeSpan,
+  ByteSize, // size in bytes
   Bool,   // confirm like, yes or no dialog
   Click,  // for positional captchas
   Select,  // select from list
@@ -217,7 +220,7 @@ struct LinkStatus {
     6: optional string hash
 }
 
-struct ServerStatus {
+struct StatusInfo {
   1: ByteCount speed,
   2: i16 linkstotal,
   3: i16 linksqueue,
@@ -227,6 +230,7 @@ struct ServerStatus {
   7: bool paused,
   8: bool download,
   9: bool reconnect,
+  10: ByteCount quota
 }
 
 struct InteractionTask {
@@ -300,17 +304,18 @@ struct UserData {
 }
 
 struct AccountInfo {
-  1: PluginName plugin,
-  2: string loginname,
-  3: UserID owner,
-  4: bool valid,
-  5: UTCDate validuntil,
-  6: ByteCount trafficleft,
-  7: ByteCount maxtraffic,
-  8: bool premium,
-  9: bool activated,
-  10: bool shared,
-  11: list <ConfigItem> config,
+  1: AccountID aid,
+  2: PluginName plugin,
+  3: string loginname,
+  4: UserID owner,
+  5: bool valid,
+  6: UTCDate validuntil,
+  7: ByteCount trafficleft,
+  8: ByteCount maxtraffic,
+  9: bool premium,
+  10: bool activated,
+  11: bool shared,
+  13: list <ConfigItem> config,
 }
 
 struct OnlineCheck {
@@ -363,7 +368,7 @@ service Pyload {
 
   string getServerVersion(),
   string getWSAddress(),
-  ServerStatus getServerStatus(),
+  StatusInfo getStatusInfo(),
   list<ProgressInfo> getProgressInfo(),
 
   list<string> getLog(1: i32 offset),
@@ -500,9 +505,10 @@ service Pyload {
   list<string> getAccountTypes(),
 
   list<AccountInfo> getAccounts(),
-  AccountInfo getAccountInfo(1: PluginName plugin, 2: string loginname, 3: bool refresh),
+  AccountInfo getAccountInfo(1: AccountID aid, 2: PluginName plugin, 3: bool refresh),
 
-  AccountInfo updateAccount(1: PluginName plugin, 2: string loginname, 3: string password),
+  AccountInfo createAccount(1: PluginName plugin, 2: string loginname, 3: string password),
+  AccountInfo updateAccount(1:AccountID aid, 2: PluginName plugin, 3: string loginname, 4: string password),
   void updateAccountInfo(1: AccountInfo account),
   void removeAccount(1: AccountInfo account),
   
@@ -541,6 +547,15 @@ service Pyload {
   // special variant of callAddon that works on the media types, acccepting integer
   JSONString invokeAddonHandler(1: PluginName plugin, 2: string func, 3: PackageID pid_or_fid)
         throws (1: ServiceDoesNotExist e, 2: ServiceException ex),
+
+
+  ///////////////////////
+  // Statistics Api
+  ///////////////////////
+
+  ByteCount getQuota(),
+
+
 
   ///////////////////////
   // Media finder

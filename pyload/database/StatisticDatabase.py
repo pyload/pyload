@@ -3,11 +3,10 @@
 
 from pyload.database import DatabaseMethods, queue, async, inner
 
-# TODO
 
 class StatisticMethods(DatabaseMethods):
-    pass
-
+    def addEntry(self, user, plugin, premium, amount):
+        pass
 
 
 StatisticMethods.register()

@@ -30,7 +30,7 @@ except:
     import sqlite3
 
 DB = None
-DB_VERSION = 6
+DB_VERSION = 7
 
 
 def set_DB(db):
@@ -298,6 +298,7 @@ class DatabaseBackend(Thread):
         )
         self.c.execute('CREATE INDEX IF NOT EXISTS "file_index" ON files(package, owner)')
         self.c.execute('CREATE INDEX IF NOT EXISTS "file_owner" ON files(owner)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS "file_plugin" ON files(plugin)')
 
         self.c.execute(
             'CREATE TRIGGER IF NOT EXISTS "insert_file" AFTER INSERT ON "files"'
@@ -366,30 +367,32 @@ class DatabaseBackend(Thread):
 
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "accounts" ('
+            '"aid" INTEGER PRIMARY KEY AUTOINCREMENT, '
             '"plugin" TEXT NOT NULL, '
             '"loginname" TEXT NOT NULL, '
-            '"owner" INTEGER NOT NULL DEFAULT -1, '
+            '"owner" INTEGER NOT NULL, '
             '"activated" INTEGER NOT NULL DEFAULT 1, '
             '"password" TEXT DEFAULT "", '
             '"shared" INTEGER NOT NULL DEFAULT 0, '
             '"options" TEXT DEFAULT "", '
-            'FOREIGN KEY(owner) REFERENCES users(uid), '
-            'PRIMARY KEY (plugin, loginname, owner) ON CONFLICT REPLACE'
+            'FOREIGN KEY(owner) REFERENCES users(uid)'
             ')'
         )
 
+        self.c.execute('CREATE INDEX IF NOT EXISTS "accounts_login" ON accounts(plugin, loginname)')
+
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "stats" ('
+            '"id" INTEGER PRIMARY KEY AUTOINCREMENT, '
             '"user" INTEGER NOT NULL, '
             '"plugin" TEXT NOT NULL, '
             '"time" INTEGER NOT NULL, '
             '"premium" INTEGER DEFAULT 0 NOT NULL, '
             '"amount" INTEGER DEFAULT 0 NOT NULL, '
-            'FOREIGN KEY(user) REFERENCES users(uid), '
-            'PRIMARY KEY(user, plugin, time)'
+            'FOREIGN KEY(user) REFERENCES users(uid)'
             ')'
         )
-        self.c.execute('CREATE INDEX IF NOT EXISTS "stats_time" ON stats(time)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS "stats_time" ON stats(user, time)')
 
         #try to lower ids
         self.c.execute('SELECT max(fid) FROM files')

@@ -19,7 +19,7 @@ enums = [
 ]
 
 classes = {
-	'AccountInfo' : [basestring, basestring, int, bool, int, int, int, bool, bool, bool, (list, ConfigItem)],
+	'AccountInfo' : [int, basestring, basestring, int, bool, int, int, int, bool, bool, bool, (list, ConfigItem)],
 	'AddonInfo' : [basestring, basestring, basestring],
 	'AddonService' : [basestring, basestring, basestring, (list, basestring), bool, int],
 	'ConfigHolder' : [basestring, basestring, basestring, basestring, (list, ConfigItem), (None, (list, AddonInfo))],
@@ -39,9 +39,9 @@ classes = {
 	'PackageInfo' : [int, basestring, basestring, int, int, basestring, basestring, basestring, int, (list, basestring), int, bool, int, PackageStats, (list, int), (list, int)],
 	'PackageStats' : [int, int, int, int],
 	'ProgressInfo' : [basestring, basestring, basestring, int, int, int, int, int, (None, DownloadProgress)],
-	'ServerStatus' : [int, int, int, int, int, bool, bool, bool, bool],
 	'ServiceDoesNotExist' : [basestring, basestring],
 	'ServiceException' : [basestring],
+	'StatusInfo' : [int, int, int, int, int, bool, bool, bool, bool, int],
 	'TreeCollection' : [PackageInfo, (dict, int, FileInfo), (dict, int, PackageInfo)],
 	'UserData' : [int, basestring, basestring, int, int, basestring, int, int, basestring, int, int, basestring],
 	'UserDoesNotExist' : [basestring],
@@ -57,6 +57,7 @@ methods = {
 	'checkContainer': OnlineCheck,
 	'checkHTML': OnlineCheck,
 	'checkLinks': OnlineCheck,
+	'createAccount': AccountInfo,
 	'createPackage': int,
 	'deleteConfig': None,
 	'deleteFiles': bool,
@@ -88,8 +89,9 @@ methods = {
 	'getPackageInfo': PackageInfo,
 	'getPluginConfig': (list, ConfigInfo),
 	'getProgressInfo': (list, ProgressInfo),
-	'getServerStatus': ServerStatus,
+	'getQuota': int,
 	'getServerVersion': basestring,
+	'getStatusInfo': StatusInfo,
 	'getUserData': UserData,
 	'getWSAddress': basestring,
 	'invokeAddon': basestring,

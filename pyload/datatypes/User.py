@@ -54,6 +54,9 @@ class User(UserData):
     def isAdmin(self):
         return self.hasRole(Role.Admin)
 
+    def isOwner(self, obj):
+        return self.primary is None or obj.owner == self.true_primary
+
     @property
     def primary(self):
         """ Primary user id, Internal user handle used for most operations

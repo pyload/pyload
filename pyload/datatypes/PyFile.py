@@ -41,10 +41,11 @@ statusMap = {
     "not possible": 13,
     "missing": 14,
     "file mismatch": 15,
-    "decrypting": 16,
-    "processing": 17,
-    "custom": 18,
-    "unknown": 19,
+    "occupied": 16,
+    "decrypting": 17,
+    "processing": 18,
+    "custom": 19,
+    "unknown": 20,
 }
 
 
@@ -205,7 +206,7 @@ class PyFile(object):
     def abortDownload(self):
         """abort pyfile if possible"""
         # TODO: abort timeout, currently dead locks
-        while self.id in self.m.core.threadManager.processingIds():
+        while self.id in self.m.core.dlm.processingIds():
             self.abort = True
             if self.plugin and self.plugin.req:
                 self.plugin.req.abort()
@@ -225,7 +226,7 @@ class PyFile(object):
     def finishIfDone(self):
         """set status to finish and release file if every thread is finished with it"""
 
-        if self.id in self.m.core.threadManager.processingIds():
+        if self.id in self.m.core.dlm.processingIds():
             return False
 
         self.setStatus("finished")

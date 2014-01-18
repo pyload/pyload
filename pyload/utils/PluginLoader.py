@@ -40,6 +40,7 @@ class BaseAttributes(defaultdict):
 
         return getattr(Base, attr)
 
+
 class LoaderFactory:
     """ Container for multiple plugin loaders  """
 
@@ -62,6 +63,15 @@ class LoaderFactory:
                         if l2 is not loader:
                             l2.removePlugin(plugin_type, plugin, info.version)
 
+    def findPlugin(self, name):
+        """ Finds a plugin type for given name """
+        for loader in self.loader:
+            for t in loader.TYPES:
+                if loader.hasPlugin(t, name):
+                    return t
+
+        return None
+
     def getPlugin(self, plugin, name):
         """ retrieve a plugin from an available loader """
         for loader in self.loader:
@@ -79,7 +89,7 @@ class PluginLoader:
     SINGLE = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(?:r|u|_)?((?:(?<!")"(?!")|\').*(?:(?<!")"(?!")|\'))',
                         re.I)
     # finds the beginning of a expression that could span multiple lines
-    MULTI = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(\(|\{|\[|"{3})',re.I)
+    MULTI = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(\(|\{|\[|"{3})', re.I)
 
     # closing symbols
     MULTI_MATCH = {
@@ -185,14 +195,14 @@ class PluginLoader:
 
             #TODO: strings must be parsed too, otherwise breaks very easily
             for i in xrange(m.end(2), len(content) - size + 1):
-                if content[i:i+size] == endchar:
+                if content[i:i + size] == endchar:
                     # closing char seen and match now complete
                     if stack == 0:
                         endpos = i
                         break
                     else:
                         stack -= 1
-                elif content[i:i+size] == char:
+                elif content[i:i + size] == char:
                     stack += 1
 
             # in case the end was not found match will be empty

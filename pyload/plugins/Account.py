@@ -42,14 +42,15 @@ class Account(Base):
 
     @classmethod
     def fromInfoData(cls, m, info, password, options):
-        return cls(m, info.loginname, info.owner,
+        return cls(m, info.aid, info.loginname, info.owner,
                    True if info.activated else False, True if info.shared else False, password, options)
 
     __type__ = "account"
 
-    def __init__(self, manager, loginname, owner, activated, shared, password, options):
+    def __init__(self, manager, aid, loginname, owner, activated, shared, password, options):
         Base.__init__(self, manager.core, owner)
 
+        self.aid = aid
         self.loginname = loginname
         self.owner = owner
         self.activated = activated
@@ -74,7 +75,7 @@ class Account(Base):
         self.init()
 
     def toInfoData(self):
-        info = AccountInfo(self.__name__, self.loginname, self.owner, self.valid, self.validuntil, self.trafficleft,
+        info = AccountInfo(self.aid, self.__name__, self.loginname, self.owner, self.valid, self.validuntil, self.trafficleft,
                            self.maxtraffic, self.premium, self.activated, self.shared, self.options)
 
         info.config = [ConfigItem(name, item.label, item.description, item.input,
@@ -158,13 +159,14 @@ class Account(Base):
         self.maxtraffic = Account.maxtraffic
         self.premium = Account.premium
 
-    def setPassword(self, password):
-        """ updates the password and returns true if anything changed """
+    def setLogin(self, loginname, password):
+        """ updates the loginname and password and returns true if anything changed """
 
-        if password != self.password:
+        if password != self.password or loginname != self.loginname:
             self.login_ts = 0
             self.valid = True #set valid, so the login will be retried
 
+            self.loginname = loginname
             self.password = password
             return True
 

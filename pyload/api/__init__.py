@@ -1,5 +1,5 @@
 __all__ = ["CoreApi", "ConfigApi", "DownloadApi", "DownloadPreparingApi", "FileApi",
-            "UserInteractionApi", "AccountApi", "AddonApi", "UserApi"]
+            "UserInteractionApi", "AccountApi", "AddonApi", "UserApi", "StatisticsApi"]
 
 # Import all components
 # from .import *

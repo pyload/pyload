@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###############################################################################
-#   Copyright(c) 2008-2013 pyLoad Team
+#   Copyright(c) 2008-2014 pyLoad Team
 #   http://www.pyload.org
 #
 #   This file is part of pyLoad.
@@ -12,7 +12,7 @@
 #
 #   Subjected to the terms and conditions in LICENSE
 #
-#   @author: RaNaN, mkaay
+#   @author: RaNaN
 ###############################################################################
 
 import sys
@@ -131,6 +131,10 @@ class PluginManager:
                 res["hoster"].append((url, self.DEFAULT_PLUGIN))
 
         return res["hoster"], res["crypter"]
+
+    def findPlugin(self, name):
+        """ Finds the type to a plugin name """
+        return self.loader.findPlugin(name)
 
     def getPlugin(self, plugin, name):
         """ Retrieves the plugin tuple for a single plugin or none """

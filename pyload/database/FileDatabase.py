@@ -314,6 +314,10 @@ class FileMethods(DatabaseMethods):
                         f.hash, f.status, f.error, f.fid))
 
     @async
+    def setDownloadStatus(self, fid, status):
+        self.c.execute('UPDATE files SET dlstatus=? WHERE fid=?', (status, fid))
+
+    @async
     def updatePackage(self, p):
         self.c.execute(
             'UPDATE packages SET name=?, folder=?, site=?, comment=?, password=?, tags=?, status=?, shared=? WHERE pid=?',
@@ -383,22 +387,28 @@ class FileMethods(DatabaseMethods):
         # status -> queued
         self.c.execute('UPDATE files SET status=3 WHERE package=?', (pid,))
 
-
-    # TODO: multi user approach
     @queue
-    def getJob(self, occ):
+    def getJobs(self, occ):
         """return pyfile ids, which are suitable for download and don't use a occupied plugin"""
         cmd = "(%s)" % ", ".join(["'%s'" % x for x in occ])
-        #TODO
 
-        # dlstatus in online, queued | package status = ok
-        cmd = ("SELECT f.fid FROM files as f INNER JOIN packages as p ON f.package=p.pid "
-               "WHERE f.plugin NOT IN %s AND f.dlstatus IN (2,3) AND p.status=0 "
-               "ORDER BY p.packageorder ASC, f.fileorder ASC LIMIT 5") % cmd
+        # dlstatus in online, queued, occupied | package status = ok
+        cmd = ("SELECT f.owner, f.fid FROM files as f INNER JOIN packages as p ON f.package=p.pid "
+               "WHERE f.owner=? AND f.plugin NOT IN %s AND f.dlstatus IN (2,3,16) AND p.status=0 "
+               "ORDER BY p.packageorder ASC, f.fileorder ASC LIMIT 1") % cmd
 
-        self.c.execute(cmd)
 
-        return [x[0] for x in self.c]
+        self.c.execute("SELECT uid FROM users")
+        uids = self.c.fetchall()
+        jobs = {}
+        # get jobs for all uids
+        for uid in uids:
+            self.c.execute(cmd, uid)
+            r = self.c.fetchone()
+            if r:
+                jobs[r[0]] = r[1]
+
+        return jobs
 
     @queue
     def getUnfinished(self, pid):

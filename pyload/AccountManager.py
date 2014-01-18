@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###############################################################################
-#   Copyright(c) 2008-2013 pyLoad Team
+#   Copyright(c) 2008-2014 pyLoad Team
 #   http://www.pyload.org
 #
 #   This file is part of pyLoad.
@@ -13,8 +13,9 @@
 #
 #   Subjected to the terms and conditions in LICENSE
 #
-#   @author: RaNaN, mkaay
+#   @author: RaNaN
 ###############################################################################
+
 
 from threading import Lock
 from random import choice
@@ -81,45 +82,55 @@ class AccountManager:
         data = []
         for plugin, accounts in self.accounts.iteritems():
             data.extend(
-                [(plugin, acc.loginname, acc.owner, 1 if acc.activated else 0, 1 if acc.shared else 0, acc.password,
-                  json.dumps(acc.options)) for acc in
+                [(acc.loginname, 1 if acc.activated else 0, 1 if acc.shared else 0, acc.password,
+                  json.dumps(acc.options), acc.aid) for acc in
                  accounts])
         self.core.db.saveAccounts(data)
 
-    def getAccount(self, plugin, loginname, user=None):
+    def getAccount(self, aid, plugin, user=None):
         """ Find a account by specific user (if given) """
         if plugin in self.accounts:
             for acc in self.accounts[plugin]:
-                if acc.loginname == loginname and (not user or acc.owner == user.true_primary):
+                if acc.aid == aid and (not user or acc.owner == user.true_primary):
                     return acc
 
     @lock
-    def updateAccount(self, plugin, loginname, password, user):
+    def createAccount(self, plugin, loginname, password, uid):
+        """ Creates a new account """
+
+        aid = self.core.db.createAccount(plugin, loginname, password, uid)
+        info = AccountInfo(aid, plugin, loginname, uid, activated=True)
+        account = self._createAccount(info, password, {})
+        account.scheduleRefresh()
+        self.saveAccounts()
+
+        self.core.eventManager.dispatchEvent("account:created", account.toInfoData())
+        return account
+
+    @lock
+    def updateAccount(self, aid, plugin, loginname, password, user):
         """add or update account"""
-        account = self.getAccount(plugin, loginname, user)
-        if account:
-            if account.setPassword(password):
-                self.saveAccounts()
-                account.scheduleRefresh(force=True)
-        else:
-            info = AccountInfo(plugin, loginname, user.true_primary, activated=True)
-            account = self._createAccount(info, password, {})
-            account.scheduleRefresh()
+        account = self.getAccount(aid, plugin, user)
+        if not account:
+            return
+
+        if account.setLogin(loginname, password):
             self.saveAccounts()
+            account.scheduleRefresh(force=True)
 
         self.core.eventManager.dispatchEvent("account:updated", account.toInfoData())
         return account
 
     @lock
-    def removeAccount(self, plugin, loginname, uid):
+    def removeAccount(self, aid, plugin, uid):
         """remove account"""
         if plugin in self.accounts:
             for acc in self.accounts[plugin]:
                 # admins may delete accounts
-                if acc.loginname == loginname and (not uid or acc.owner == uid):
+                if acc.aid == aid and (not uid or acc.owner == uid):
                     self.accounts[plugin].remove(acc)
-                    self.core.db.removeAccount(plugin, loginname)
-                    self.core.evm.dispatchEvent("account:deleted", plugin, loginname)
+                    self.core.db.removeAccount(aid)
+                    self.core.evm.dispatchEvent("account:deleted", aid, user=uid)
                     break
 
     @lock
