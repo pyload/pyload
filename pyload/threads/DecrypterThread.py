@@ -35,18 +35,19 @@ class DecrypterThread(BaseThread):
         api = self.core.api.withUserContext(self.owner)
         links, packages = self.decrypt(accumulate(self.data), pack.password)
 
+        # if there is only one package links will be added to current one
+        if len(packages) == 1:
+            # TODO: also rename the package (optionally)
+            links.extend(packages[0].links)
+            del packages[0]
+
         if links:
             self.log.info(
                 _("Decrypted %(count)d links into package %(name)s") % {"count": len(links), "name": pack.name})
             api.addLinks(self.pid, [l.url for l in links])
 
-        # if there is only one package links will be added to current one
-        if len(packages) == 1:
-            # TODO: also rename the package (optionally)
-            api.addLinks(self.pid, packages[0].getURLs())
-        else:
-            for p in packages:
-                api.addPackage(p.name, p.getURLs(), pack.password)
+        for p in packages:
+            api.addPackage(p.name, p.getURLs(), pack.password)
 
         self.core.files.setDownloadStatus(self.fid, DS.Finished if not self.error else DS.Failed)
         self.m.done(self)
