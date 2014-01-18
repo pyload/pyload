@@ -97,7 +97,7 @@ class DownloadManager:
     @lock
     def startDecrypterThread(self, info):
         """ Start decrypting of entered data, all links in one package are accumulated to one thread."""
-        self.decrypter.append(DecrypterThread(self, [(info.download.plugin, info.download.url)], info.pid))
+        self.decrypter.append(DecrypterThread(self, [(info.download.plugin, info.download.url)], info.package))
 
     @read_lock
     def activeDownloads(self, uid=None):
@@ -120,7 +120,7 @@ class DownloadManager:
 
     def processingIds(self):
         """get a id list of all pyfiles processed"""
-        return [x.id for x in self.activeDownloads(None)]
+        return [x.fid for x in self.activeDownloads(None)]
 
     @read_lock
     def abort(self):
