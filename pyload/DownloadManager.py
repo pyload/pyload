@@ -98,7 +98,7 @@ class DownloadManager:
     @lock
     def startDecrypterThread(self, info):
         """ Start decrypting of entered data, all links in one package are accumulated to one thread."""
-        self.decrypter.append(DecrypterThread(self, [(info.download.plugin, info.download.url)],
+        self.decrypter.append(DecrypterThread(self, [(info.download.url, info.download.plugin)],
                                               info.fid, info.package, info.owner))
 
     @read_lock

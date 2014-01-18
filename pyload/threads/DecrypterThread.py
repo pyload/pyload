@@ -16,7 +16,7 @@ class DecrypterThread(BaseThread):
 
     def __init__(self, manager, data, fid, pid, owner):
         BaseThread.__init__(self, manager, owner)
-        # [... (plugin, url) ...]
+        # [... (url, plugin) ...]
         self.data = data
         self.fid = fid
         self.pid = pid
@@ -44,7 +44,7 @@ class DecrypterThread(BaseThread):
         for p in packages:
             self.m.core.api.addPackage(p.name, p.getURLs(), pack.password)
 
-        self.m.core.files.setDownloadStatus(self.fid, "finished" if not self.error else "failed")
+        self.m.core.files.setDownloadStatus(self.fid, DS.Finished if not self.error else DS.Failed)
         self.m.done(self)
 
     def decrypt(self, plugin_map, password=None, err=False):
@@ -68,7 +68,7 @@ class DecrypterThread(BaseThread):
                 self.error = True
                 if err:
                     plugin_result.extend(LinkStatus(url, url, -1, DS.NotPossible, name) for url in urls)
-                self.log.debug("Plugin '%s' for decrypting was not loaded" % plugin)
+                self.log.debug("Plugin '%s' for decrypting was not loaded" % name)
             else:
                 try:
                     plugin = klass(self.m.core, password)
