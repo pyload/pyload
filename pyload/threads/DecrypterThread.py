@@ -32,17 +32,18 @@ class DecrypterThread(BaseThread):
 
     def run(self):
         pack = self.m.core.files.getPackage(self.pid)
+        api = self.core.api.withUserContext(self.owner)
         links, packages = self.decrypt(accumulate(self.data), pack.password)
 
         if links:
             self.log.info(
                 _("Decrypted %(count)d links into package %(name)s") % {"count": len(links), "name": pack.name})
-            self.m.core.api.addLinks(self.pid, [l.url for l in links])
+            api.addLinks(self.pid, [l.url for l in links])
 
         # TODO: add single package into this one and rename it?
         # TODO: nested packages
         for p in packages:
-            self.m.core.api.addPackage(p.name, p.getURLs(), pack.password)
+            api.addPackage(p.name, p.getURLs(), pack.password)
 
         self.m.core.files.setDownloadStatus(self.fid, DS.Finished if not self.error else DS.Failed)
         self.m.done(self)
