@@ -313,7 +313,7 @@ class FileManager:
         pid = f.packageid
         order = f.fileorder
 
-        if fid in self.core.threadManager.processingIds():
+        if fid in self.core.dlm.processingIds():
             f.abortDownload()
 
         self.db.deleteFile(fid, f.fileorder, f.packageid)

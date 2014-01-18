@@ -206,7 +206,7 @@ class PyFile(object):
     def abortDownload(self):
         """abort pyfile if possible"""
         # TODO: abort timeout, currently dead locks
-        while self.id in self.m.core.dlm.processingIds():
+        while self.fid in self.m.core.dlm.processingIds():
             self.abort = True
             if self.plugin and self.plugin.req:
                 self.plugin.req.abort()

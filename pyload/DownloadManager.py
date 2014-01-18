@@ -97,7 +97,7 @@ class DownloadManager:
     @lock
     def startDecrypterThread(self, info):
         """ Start decrypting of entered data, all links in one package are accumulated to one thread."""
-        self.decrypter.append(DecrypterThread(self, [(info.plugin, info.url)], info.pid))
+        self.decrypter.append(DecrypterThread(self, [(info.download.plugin, info.download.url)], info.pid))
 
     @read_lock
     def activeDownloads(self, uid=None):
@@ -106,12 +106,17 @@ class DownloadManager:
                 if uid is None or x.active.owner == uid]
 
     @read_lock
+    def waitingDownloads(self):
+        """ all waiting downloads """
+        return [x.active for x in self.working if x.active.hasStatus("waiting")]
+
+    @read_lock
     def getProgressList(self, uid):
         """ Progress of all running downloads """
         # decrypter progress could be none
         return filter(lambda x: x is not None,
                       [p.getProgress() for p in self.working + self.decrypter
-                if uid is None or p.owner == uid])
+                       if uid is None or p.owner == uid])
 
     def processingIds(self):
         """get a id list of all pyfiles processed"""
@@ -149,10 +154,20 @@ class DownloadManager:
 
         self.assignJobs()
 
+        # TODO: clean free threads
+
     def assignJobs(self):
         """ Load jobs from db and try to assign them """
 
         limit = self.core.config['download']['max_downloads'] - len(self.activeDownloads())
+
+        # check for waiting dl rule
+        if limit <= 0:
+            # increase limit if there are waiting downloads
+            limit += min(self.waitingDownloads(), self.core.config['download']['wait_downloads'] +
+                                                  self.core.config['download']['max_downloads'] - len(
+                self.activeDownloads()))
+
         slots = self.getRemainingPluginSlots()
         occ = tuple([plugin for plugin, v in slots.iteritems() if v == 0])
         jobs = self.core.files.getJobs(occ)
@@ -181,8 +196,8 @@ class DownloadManager:
     def chooseJobs(self, jobs, k):
         """ make a fair choice of which k jobs to start """
         # TODO: prefer admins, make a fairer choice?
-        if k >= len(jobs):
-            return jobs
+        if k <= 0: return []
+        if k >= len(jobs): return jobs
 
         return sample(jobs, k)
 
