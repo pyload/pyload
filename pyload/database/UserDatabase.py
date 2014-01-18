@@ -32,22 +32,25 @@ def random_salt():
 
 class UserMethods(DatabaseMethods):
     @queue
-    def addUser(self, user, password):
+    def addUser(self, user, password, role, permission):
         salt = random_salt()
         h = sha1(salt + password)
         password = salt + h.hexdigest()
 
         self.c.execute('SELECT name FROM users WHERE name=?', (user, ))
         if self.c.fetchone() is not None:
-            self.c.execute('UPDATE users SET password=? WHERE name=?', (password, user))
+            self.c.execute('UPDATE users SET password=?, role=?, permission=? WHERE name=?',
+                           (password, role, permission, user))
         else:
-            self.c.execute('INSERT INTO users (name, password) VALUES (?, ?)', (user, password))
+            self.c.execute('INSERT INTO users (name, role, permission, password) VALUES (?, ?, ?, ?)',
+                           (user, role, permission, password))
 
     @queue
     def addDebugUser(self, uid):
         # just add a user with uid to db
         try:
-            self.c.execute('INSERT INTO users (uid, name, password) VALUES (?, ?, ?)', (uid, "debugUser", random_salt()))
+            self.c.execute('INSERT INTO users (uid, name, password) VALUES (?, ?, ?)',
+                           (uid, "debugUser", random_salt()))
         except:
             pass
 
@@ -116,18 +119,10 @@ class UserMethods(DatabaseMethods):
 
         return False
 
-    @async
-    def setPermission(self, user, perms):
-        self.c.execute("UPDATE users SET permission=? WHERE name=?", (perms, user))
-
-    @async
-    def setRole(self, user, role):
-        self.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
-
     # TODO update methods
     @async
     def removeUserByName(self, name):
-        self.c.execute("SELECT uid from users WHERE name=?", (name,))
+        self.c.execute("SELECT uid FROM users WHERE name=?", (name,))
         uid = self.c.fetchone()
         if uid:
             # deletes user and all associated accounts

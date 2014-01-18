@@ -6,9 +6,14 @@ from pyload.utils import uniqify
 
 from ApiComponent import ApiComponent
 
+
 # TODO: user context
 class FileApi(ApiComponent):
     """Everything related to available packages or files. Deleting, Modifying and so on."""
+
+    def checkResult(self, info):
+        """ Internal method to verify result and owner """
+        return info and (not self.primaryUID or info.owner == self.primaryUID)
 
     @RequirePerm(Permission.All)
     def getAllFiles(self):
@@ -29,7 +34,7 @@ class FileApi(ApiComponent):
         :param full: go down the complete tree or only the first layer
         :return: :class:`TreeCollection`
         """
-        return self.core.files.getTree(pid, full, DownloadState.All)
+        return self.core.files.getTree(pid, full, DownloadState.All, self.primaryUID)
 
     @RequirePerm(Permission.All)
     def getFilteredFileTree(self, pid, full, state):
@@ -40,7 +45,7 @@ class FileApi(ApiComponent):
         :param state: :class:`DownloadState`, the attributes used for filtering
         :return: :class:`TreeCollection`
         """
-        return self.core.files.getTree(pid, full, state)
+        return self.core.files.getTree(pid, full, state, self.primaryUID)
 
     @RequirePerm(Permission.All)
     def getPackageContent(self, pid):
@@ -56,7 +61,7 @@ class FileApi(ApiComponent):
         :return: :class:`PackageInfo`
         """
         info = self.core.files.getPackageInfo(pid)
-        if not info:
+        if not self.checkResult(info):
             raise PackageDoesNotExist(pid)
         return info
 
@@ -70,7 +75,7 @@ class FileApi(ApiComponent):
 
         """
         info = self.core.files.getFileInfo(fid)
-        if not info:
+        if not self.checkResult(info):
             raise FileDoesNotExist(fid)
         return info
 
@@ -82,7 +87,7 @@ class FileApi(ApiComponent):
 
     @RequirePerm(Permission.All)
     def findFiles(self, pattern):
-        return self.core.files.getTree(-1, True, DownloadState.All, pattern)
+        return self.core.files.getTree(-1, True, DownloadState.All, self.primaryUID, pattern)
 
     @RequirePerm(Permission.All)
     def searchSuggestions(self, pattern):
@@ -103,7 +108,8 @@ class FileApi(ApiComponent):
         """
         pid = pack.pid
         p = self.core.files.getPackage(pid)
-        if not p: raise PackageDoesNotExist(pid)
+        if not self.checkResult(p):
+            raise PackageDoesNotExist(pid)
         p.updateFromInfoData(pack)
         p.sync()
         self.core.files.save()
@@ -117,7 +123,8 @@ class FileApi(ApiComponent):
         :return the new package status
         """
         p = self.core.files.getPackage(pid)
-        if not p: raise PackageDoesNotExist(pid)
+        if not self.checkResult(p):
+            raise PackageDoesNotExist(pid)
 
         if p.status == PS.Ok and paused:
             p.status = PS.Paused
@@ -128,6 +135,7 @@ class FileApi(ApiComponent):
 
         return p.status
 
+    # TODO: multiuser etc..
     @RequirePerm(Permission.Modify)
     def movePackage(self, pid, root):
         """ Set a new root for specific package. This will also moves the files on disk\

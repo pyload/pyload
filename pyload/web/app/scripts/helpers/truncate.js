@@ -6,7 +6,7 @@ define(['underscore','handlebars'], function(_, Handlebars) {
         if (_.isNumber(options))
             strLen = options;
 
-        if (fullStr.length <= strLen) return fullStr;
+        if (!fullStr || fullStr.length <= strLen) return fullStr;
 
         var separator = options.separator || '…';
 

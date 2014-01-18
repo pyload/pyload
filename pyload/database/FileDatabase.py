@@ -38,8 +38,8 @@ class FileMethods(DatabaseMethods):
             self.c.execute("SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus != 0")
         else:
             self.c.execute(
-                "SELECT COUNT(*), SUM(f.size) FROM files f, packages p WHERE f.package = p.pid  AND dlstatus != 0",
-                user)
+                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE f.owner=? AND dlstatus != 0",
+                (user,))
 
         r = self.c.fetchone()
         # sum is None when no elements are added
@@ -54,8 +54,8 @@ class FileMethods(DatabaseMethods):
             self.c.execute("SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus NOT IN (0,5,6)")
         else:
             self.c.execute(
-                "SELECT COUNT(*), SUM(f.size) FROM files f, package p WHERE f.package = p.pid AND p.owner=? AND dlstatus NOT IN (0,5,6)",
-                user)
+                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE f.owner=? AND dlstatus NOT IN (0,5,6)",
+                (user,))
 
         r = self.c.fetchone()
         return (r[0], r[1] if r[1] is not None else 0) if r else (0, 0)
@@ -75,8 +75,8 @@ class FileMethods(DatabaseMethods):
             self.c.execute("SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10)")
         else:
             self.c.execute(
-                "SELECT COUNT(*), SUM(f.size) FROM files f, packages p WHERE f.package = p.pid  AND dlstatus IN (2,3,8,9,10)",
-                user)
+                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE f.owner=? AND dlstatus IN (2,3,8,9,10)",
+                (user,))
         r = self.c.fetchone()
         return (r[0], r[1] if r[1] is not None else 0) if r else (0, 0)
 

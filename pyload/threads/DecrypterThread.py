@@ -42,6 +42,7 @@ class DecrypterThread(BaseThread):
 
         # if there is only one package links will be added to current one
         if len(packages) == 1:
+            # TODO: also rename the package (optionally)
             api.addLinks(self.pid, packages[0].getURLs())
         else:
             for p in packages:

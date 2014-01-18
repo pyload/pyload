@@ -175,7 +175,7 @@ class FileManager:
         return self.db.getFileInfo(fid)
 
     @read_lock
-    def getTree(self, pid, full, state, search=None):
+    def getTree(self, pid, full, state, owner=None, search=None):
         """  return a TreeCollection and fill the info data of containing packages.
              optional filter only unfinished files
         """
@@ -184,8 +184,8 @@ class FileManager:
         # for depth=1, we don't need to retrieve all files/packages
         root = pid if not full else None
 
-        packs = self.db.getAllPackages(root)
-        files = self.db.getAllFiles(package=root, state=state, search=search)
+        packs = self.db.getAllPackages(root, owner=owner)
+        files = self.db.getAllFiles(package=root, state=state, search=search, owner=owner)
 
         # updating from cache
         for fid, f in self.files.iteritems():

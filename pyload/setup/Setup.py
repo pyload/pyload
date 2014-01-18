@@ -27,6 +27,7 @@ from time import time
 from sys import exit
 
 
+from pyload.Api import Role
 from pyload.utils.fs import abspath, dirname, exists, join, makedirs
 from pyload.utils import get_console_encoding
 from pyload.web.ServerThread import WebServer
@@ -264,7 +265,9 @@ class Setup():
                     print ""
                     username = self.ask(_("Username"), "User")
                     password = self.ask("", "", password=True)
-                    self.db.addUser(username, password)
+                    admin = self.ask("Admin?", self.yes, bool=True)
+
+                    self.db.addUser(username, password, Role.Admin if admin else Role.User, 0b1111111)
                 elif action == "2":
                     print ""
                     print _("Users")
@@ -285,10 +288,10 @@ class Setup():
         finally:
             self.closeDB()
 
-    def addUser(self, username, password):
+    def addUser(self, username, password, role=Role.Admin):
         self.openDB()
         try:
-            self.db.addUser(username, password)
+            self.db.addUser(username, password, role, 0b1111111)
         finally:
             self.closeDB()
 
