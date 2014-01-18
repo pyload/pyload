@@ -7,7 +7,7 @@ from module.plugins.Hook import Hook
 
 class XFileSharingPro(Hook):
     __name__ = "XFileSharingPro"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __type__ = "hook"
     __config__ = [("activated", "bool", "Activated", "True"),
                   ("loadDefault", "bool", "Include default (built-in) hoster list", "True"),
