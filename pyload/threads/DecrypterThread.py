@@ -14,14 +14,16 @@ from BaseThread import BaseThread
 class DecrypterThread(BaseThread):
     """thread for decrypting"""
 
-    def __init__(self, manager, data, pid):
-        # TODO: owner
-        BaseThread.__init__(self, manager)
+    def __init__(self, manager, data, fid, pid, owner):
+        BaseThread.__init__(self, manager, owner)
         # [... (plugin, url) ...]
         self.data = data
+        self.fid = fid
         self.pid = pid
         # holds the progress, while running
         self.progress = None
+        # holds if an error happened
+        self.error = False
 
         self.start()
 
@@ -42,6 +44,7 @@ class DecrypterThread(BaseThread):
         for p in packages:
             self.m.core.api.addPackage(p.name, p.getURLs(), pack.password)
 
+        self.m.core.api.files.setDownloadStatus(self.fid, "finished" if not self.error else "failed")
         self.m.done(self)
 
     def decrypt(self, plugin_map, password=None, err=False):
@@ -82,6 +85,7 @@ class DecrypterThread(BaseThread):
                 except Exception, e:
                     plugin.logError(_("Decrypting failed"), e)
 
+                    self.error = True
                     # generate error linkStatus
                     if err:
                         plugin_result.extend(LinkStatus(url, url, -1, DS.Failed, name) for url in urls)

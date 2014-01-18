@@ -63,11 +63,13 @@ class DownloadManager:
     @lock
     def done(self, thread):
         """ Switch thread from working to free state """
-        self.working.remove(thread)
         # only download threads will be re-used
         if isinstance(thread, DownloadThread):
+            self.working.remove(thread)
             self.free.append(thread)
             thread.isWorking.clear()
+        elif isinstance(thread, DecrypterThread):
+            self.decrypter.remove(thread)
 
     @lock
     def stop(self, thread):
@@ -96,7 +98,8 @@ class DownloadManager:
     @lock
     def startDecrypterThread(self, info):
         """ Start decrypting of entered data, all links in one package are accumulated to one thread."""
-        self.decrypter.append(DecrypterThread(self, [(info.download.plugin, info.download.url)], info.package))
+        self.decrypter.append(DecrypterThread(self, [(info.download.plugin, info.download.url)],
+                                              info.fid, info.package, info.owner))
 
     @read_lock
     def activeDownloads(self, uid=None):
