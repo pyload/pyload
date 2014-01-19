@@ -13,6 +13,7 @@ class FileApi(ApiComponent):
 
     def checkResult(self, info):
         """ Internal method to verify result and owner """
+        #TODO: shared?
         return info and (not self.primaryUID or info.owner == self.primaryUID)
 
     @RequirePerm(Permission.All)

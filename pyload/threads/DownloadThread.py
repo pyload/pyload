@@ -148,15 +148,16 @@ class DownloadThread(BaseThread):
                     pyfile.waitUntil = wait
                     pyfile.setStatus("waiting")
                     while time() < wait:
-                        sleep(1)
+                        sleep(0.5)
+
                         if pyfile.abort:
                             break
 
                     if pyfile.abort:
                         self.log.info(_("Download aborted: %s") % pyfile.name)
                         pyfile.setStatus("aborted")
-
-                        self.clean(pyfile)
+                        # don't clean, aborting function does this itself
+                        # self.clean(pyfile)
                     else:
                         self.queue.put(pyfile)
 
@@ -215,7 +216,10 @@ class DownloadThread(BaseThread):
                 exc_clear()
                 # manager could still be waiting for it
                 self.isWorking.set()
-                self.m.done(self)
+
+                # only done when job was not put back
+                if self.queue.empty():
+                    self.m.done(self)
             
             #pyfile.plugin.req.clean()
 
@@ -233,7 +237,6 @@ class DownloadThread(BaseThread):
 
     def clean(self, pyfile):
         """ set thread inactive and release pyfile """
-        self.active = False
         pyfile.release()
 
     def stop(self):

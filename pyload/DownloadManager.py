@@ -65,6 +65,8 @@ class DownloadManager:
         """ Switch thread from working to free state """
         # only download threads will be re-used
         if isinstance(thread, DownloadThread):
+            # clean local var
+            thread.active = None
             self.working.remove(thread)
             self.free.append(thread)
             thread.isWorking.clear()
@@ -76,8 +78,7 @@ class DownloadManager:
         """  Removes a thread from all lists  """
         if thread in self.free:
             self.free.remove(thread)
-
-        if thread in self.working:
+        elif thread in self.working:
             self.working.remove(thread)
 
     @lock
@@ -89,7 +90,7 @@ class DownloadManager:
         else:
             thread = DownloadThread(self)
 
-        thread.put(PyFile.fromInfoData(self.core.files, info))
+        thread.put(self.core.files.getFile(info.fid))
 
         # wait until it picked up the task
         thread.isWorking.wait()
@@ -190,6 +191,8 @@ class DownloadManager:
             # we know exactly the number of remaining jobs
             # or only can start one job if limit is not known
             to_schedule = slots[plugin] if plugin in slots else 1
+            # -1 means no limit
+            to_schedule = len(jobs) if to_schedule == -1 else to_schedule
             # start all chosen jobs
             for job in self.chooseJobs(jobs, to_schedule):
                 # if the job was started the limit will be reduced
@@ -216,7 +219,7 @@ class DownloadManager:
 
         if plugin == "hoster":
             # this job can't be started
-            if limit == 0:
+            if limit <= 0:
                 return False
 
             self.startDownloadThread(info)
@@ -284,7 +287,7 @@ class DownloadManager:
     @read_lock
     def wantReconnect(self):
         """ number of downloads that are waiting for reconnect """
-        active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.working]
+        active = [x.active.hasPlugin() and x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.working]
         return active.count(True)
 
     @read_lock

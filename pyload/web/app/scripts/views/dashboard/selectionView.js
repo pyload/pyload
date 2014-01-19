@@ -118,7 +118,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/dashboard/select'],
                         });
 
                     if (fids.length > 0)
-                        $.ajax(App.apiRequest('deleteFiles', {fids: fids}));
+                        $.ajax(App.apiRequest('removeFiles', {fids: fids}));
 
                     this.deselect();
                 }, this);

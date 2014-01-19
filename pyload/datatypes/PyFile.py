@@ -151,7 +151,7 @@ class PyFile(object):
     @read_lock
     def hasPlugin(self):
         """Thread safe way to determine this file has initialized plugin attribute"""
-        return hasattr(self, "plugin") and self.plugin
+        return self.plugin is not None
 
     def package(self):
         """ return package instance"""
@@ -182,9 +182,9 @@ class PyFile(object):
     @lock
     def release(self):
         """sync and remove from cache"""
-        if hasattr(self, "plugin") and self.plugin:
+        if self.plugin is not None:
             self.plugin.clean()
-            del self.plugin
+            self.plugin = None
 
         self.m.releaseFile(self.fid)
 
@@ -202,30 +202,28 @@ class PyFile(object):
     def move(self, pid):
         pass
 
-    @read_lock
     def abortDownload(self):
         """abort pyfile if possible"""
         # TODO: abort timeout, currently dead locks
         while self.fid in self.m.core.dlm.processingIds():
+
+            self.lock.acquire(shared=True)
             self.abort = True
             if self.plugin and self.plugin.req:
                 self.plugin.req.abort()
                 if self.plugin.dl:
                     self.plugin.dl.abort()
+            self.lock.release()
 
-            sleep(0.1)
+            sleep(0.5)
 
         self.abort = False
-        if self.plugin:
-            self.plugin.req.abort()
-            if self.plugin.dl:
-                self.plugin.dl.abort()
-
         self.release()
 
     def finishIfDone(self):
         """set status to finish and release file if every thread is finished with it"""
 
+        # TODO: this is wrong now, it should check if addons are using it
         if self.id in self.m.core.dlm.processingIds():
             return False
 

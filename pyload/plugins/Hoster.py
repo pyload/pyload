@@ -206,7 +206,6 @@ class Hoster(Base):
 
         while self.pyfile.waitUntil > time():
             self.thread.m.reconnecting.wait(2)
-
             self.checkAbort()
             if self.thread.m.reconnecting.isSet():
                 self.waiting = False
