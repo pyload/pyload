@@ -200,7 +200,7 @@ class DownloadManager:
     def chooseJobs(self, jobs, k):
         """ make a fair choice of which k jobs to start """
         # TODO: prefer admins, make a fairer choice?
-        if k <= 0 or k: return []
+        if k <= 0: return []
         if k >= len(jobs): return jobs
 
         return sample(jobs, k)
@@ -291,7 +291,7 @@ class DownloadManager:
     @read_lock
     def getRemainingPluginSlots(self):
         """  dict of plugin names mapped to remaining dls  """
-        occ = defaultdict(lambda: -1)
+        occ = {}
         # decrypter are treated as occupied
         for p in self.decrypter:
             progress = p.getProgress()
@@ -302,8 +302,8 @@ class DownloadManager:
         for t in self.working:
             if not t.active.hasPlugin(): continue
             limit = t.active.plugin.getDownloadLimit()
-            # limit < 0 means no limit
-            occ[t.active.pluginname] = limit if limit >= 0 else float('inf')
+            # limit <= 0 means no limit
+            occ[t.active.pluginname] = limit if limit > 0 else float('inf')
 
         # subtract with running downloads
         for t in self.working:
