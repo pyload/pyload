@@ -95,7 +95,8 @@ class DownloadThread(BaseThread):
 
                 pyfile.setStatus("aborted")
 
-                self.clean(pyfile)
+                # abort cleans the file
+                # self.clean(pyfile)
                 continue
 
             except Reconnect:
