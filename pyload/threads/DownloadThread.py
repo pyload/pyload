@@ -191,7 +191,6 @@ class DownloadThread(BaseThread):
 
                 continue
 
-
             except Exception, e:
                 if isinstance(e, ResponseException) and e.code == 500:
                     pyfile.setStatus("temp. offline")

@@ -191,8 +191,6 @@ class DownloadManager:
             # we know exactly the number of remaining jobs
             # or only can start one job if limit is not known
             to_schedule = slots[plugin] if plugin in slots else 1
-            # -1 means no limit
-            to_schedule = len(jobs) if to_schedule == -1 else to_schedule
             # start all chosen jobs
             for job in self.chooseJobs(jobs, to_schedule):
                 # if the job was started the limit will be reduced
@@ -202,7 +200,7 @@ class DownloadManager:
     def chooseJobs(self, jobs, k):
         """ make a fair choice of which k jobs to start """
         # TODO: prefer admins, make a fairer choice?
-        if k <= 0: return []
+        if k <= 0 or k: return []
         if k >= len(jobs): return jobs
 
         return sample(jobs, k)
@@ -304,8 +302,8 @@ class DownloadManager:
         for t in self.working:
             if not t.active.hasPlugin(): continue
             limit = t.active.plugin.getDownloadLimit()
-            if limit < 0: continue
-            occ[t.active.pluginname] = limit
+            # limit < 0 means no limit
+            occ[t.active.pluginname] = limit if limit >= 0 else float('inf')
 
         # subtract with running downloads
         for t in self.working:
