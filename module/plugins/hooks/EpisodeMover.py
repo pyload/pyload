@@ -365,9 +365,11 @@ class EpisodeMover(Hook):
         filename=self.renamer.substitute_chars(episode.src_filename, self.getConfig("char_sub"))
         if self.getConfig("folder_sub"):
             foldername=self.renamer.substitute_chars(episode.root_folder, self.getConfig("char_sub"))
-            self.logInfo(u'Searching local Database for "%s". On matching Failure Searching for "%s".' %(filename,foldername))
         else:
             foldername=episode.root_folder
+        if self.getConfig("folder_search"):
+            self.logInfo(u'Searching local Database for "%s". On matching Failure Searching for "%s".' %(filename,foldername))
+        else:
             self.logInfo(u'Searching local Database for "%s".' %filename)
         for e in self.__tvdb.keys(): # where e is an actual name of locally existing show
             if (valdor.hasPattern(filename, valdor.createPattern(e)) is not None) or \
