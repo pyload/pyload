@@ -37,7 +37,7 @@ class FilestubeCom(SimpleCrypter):
         matches = re.findall('^(.*?)$', linklist)
         return matches
       else:
-        matches = re.findall(self.LINK_PATTERN, self.html)
+        matches = re.findall(self.LINK_PATTERN2, self.html)
         if matches:
           return matches
         else:
