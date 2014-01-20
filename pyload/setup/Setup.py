@@ -267,7 +267,7 @@ class Setup():
                     password = self.ask("", "", password=True)
                     admin = self.ask("Admin?", self.yes, bool=True)
 
-                    self.db.addUser(username, password, Role.Admin if admin else Role.User, 0b1111111)
+                    self.db.addUser(username, password, Role.Admin if admin else Role.User, int('1111111', 2))
                 elif action == "2":
                     print ""
                     print _("Users")
@@ -291,7 +291,7 @@ class Setup():
     def addUser(self, username, password, role=Role.Admin):
         self.openDB()
         try:
-            self.db.addUser(username, password, role, 0b1111111)
+            self.db.addUser(username, password, role, int('1111111', 2))
         finally:
             self.closeDB()
 
