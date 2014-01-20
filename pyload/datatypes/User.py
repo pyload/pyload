@@ -51,11 +51,11 @@ class User(UserData):
 
         return self.role == role
 
+    def hasAccess(self, obj):
+        return self.primary is None or obj.owner == self.true_primary
+
     def isAdmin(self):
         return self.hasRole(Role.Admin)
-
-    def isOwner(self, obj):
-        return self.primary is None or obj.owner == self.true_primary
 
     @property
     def primary(self):

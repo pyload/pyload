@@ -218,6 +218,7 @@ class PyFile(object):
             sleep(0.5)
 
         self.abort = False
+        self.setStatus("aborted")
         self.release()
 
     def finishIfDone(self):

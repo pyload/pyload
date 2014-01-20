@@ -126,16 +126,11 @@ class DownloadManager:
         """get a id list of all pyfiles processed"""
         return [x.fid for x in self.activeDownloads(None)]
 
-    @read_lock
-    def abort(self):
-        """ Cancels all downloads """
-        # TODO: may dead lock
-        for t in self.working:
-            t.active.abortDownload()
 
     @read_lock
     def shutdown(self):
         """  End all threads """
+        self.paused = True
         for thread in self.working + self.free:
             thread.put("quit")
 
@@ -168,7 +163,7 @@ class DownloadManager:
         # check for waiting dl rule
         if limit <= 0:
             # increase limit if there are waiting downloads
-            limit += min(self.waitingDownloads(), self.core.config['download']['wait_downloads'] +
+            limit += min(len(self.waitingDownloads()), self.core.config['download']['wait_downloads'] +
                                                   self.core.config['download']['max_downloads'] - len(
                 self.activeDownloads()))
 

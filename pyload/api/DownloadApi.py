@@ -148,7 +148,9 @@ class DownloadApi(ApiComponent):
     @RequirePerm(Permission.Modify)
     def stopAllDownloads(self):
         """Aborts all running downloads."""
-        self.core.dlm.abort()
+        for pyfile in self.core.files.cachedFiles():
+            if self.hasAccess(pyfile):
+                pyfile.abortDownload()
 
     @RequirePerm(Permission.Modify)
     def stopDownloads(self, fids):
@@ -159,7 +161,7 @@ class DownloadApi(ApiComponent):
         """
         pyfiles = self.core.files.cachedFiles()
         for pyfile in pyfiles:
-            if pyfile.id in fids:
+            if pyfile.id in fids and self.hasAccess(pyfile):
                 pyfile.abortDownload()
 
 

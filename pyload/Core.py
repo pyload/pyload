@@ -36,6 +36,7 @@ from time import time, sleep
 from traceback import print_exc
 
 import locale
+
 locale.locale_alias = locale.windows_locale = {} #save ~100kb ram, no known sideeffects for now
 
 import subprocess
@@ -43,6 +44,7 @@ import subprocess
 subprocess.__doc__ = None # the module with the largest doc we are using
 
 from InitHomeDir import init_dir
+
 init_dir()
 
 from AccountManager import AccountManager
@@ -533,6 +535,7 @@ class Core(object):
             if os.name == "nt":
                 try:
                     import colorama
+
                     colorama.init()
                 except:
                     color = False
@@ -591,8 +594,8 @@ class Core(object):
                 pass # TODO: quit webserver?
                 #                self.webserver.quit()
 
-            self.dlm.abort()
             self.dlm.shutdown()
+            self.api.stopAllDownloads()
             self.addonManager.deactivateAddons()
 
         except:

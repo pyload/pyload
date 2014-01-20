@@ -81,6 +81,12 @@ class Api(Iface):
     def primaryUID(self):
         return self.user.primary if self.user else None
 
+
+    def hasAccess(self, obj):
+        """ Helper method to determine if a user has access to a resource.
+         Works for obj that provides .owner attribute. Core admin has always access."""
+        return self.user is None or self.user.hasAccess(obj)
+
     @classmethod
     def initComponents(cls):
         # Allow extending the api
