@@ -6,6 +6,7 @@
 from apitypes import *
 
 enums = [
+	"Connection",
 	"DownloadState",
 	"DownloadStatus",
 	"FileStatus",
@@ -26,7 +27,7 @@ classes = {
 	'ConfigInfo' : [basestring, basestring, basestring, basestring, bool, (None, bool)],
 	'ConfigItem' : [basestring, basestring, basestring, Input, basestring],
 	'DownloadInfo' : [basestring, basestring, basestring, int, basestring, basestring],
-	'DownloadProgress' : [int, int, int, int],
+	'DownloadProgress' : [int, int, int, int, int],
 	'EventInfo' : [basestring, (list, basestring)],
 	'FileDoesNotExist' : [int],
 	'FileInfo' : [int, basestring, int, int, int, int, int, int, int, (None, DownloadInfo)],

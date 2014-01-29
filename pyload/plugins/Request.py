@@ -33,6 +33,7 @@ class Request(object):
 
         # Last response code
         self.code = 0
+        self.flags = 0
         self.doAbort = False
         self.initContext()
 

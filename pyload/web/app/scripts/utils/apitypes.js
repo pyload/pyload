@@ -3,6 +3,7 @@
 define([], function() {
 	'use strict';
 	return {
+		Connection: {'All': 0, 'Resumable': 1, 'Secure': 2},
 		DownloadState: {'Failed': 3, 'All': 0, 'Unmanaged': 4, 'Finished': 1, 'Unfinished': 2},
 		DownloadStatus: {'NotPossible': 13, 'FileMismatch': 15, 'Downloading': 10, 'Missing': 14, 'NA': 0, 'Processing': 18, 'Waiting': 9, 'Decrypting': 17, 'Paused': 4, 'Failed': 7, 'Finished': 5, 'Skipped': 6, 'Unknown': 20, 'Aborted': 12, 'Online': 2, 'Starting': 8, 'TempOffline': 11, 'Offline': 1, 'Custom': 19, 'Occupied': 16, 'Queued': 3},
 		FileStatus: {'Remote': 2, 'Ok': 0, 'Missing': 1},

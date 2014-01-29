@@ -129,6 +129,12 @@ enum ProgressType {
     FileOperation = 32,
 }
 
+enum Connection {
+    All = 0,
+    Resumable = 1,
+    Secure = 2,
+}
+
 struct Input {
     1: InputType type,
     2: optional JSONString default_value,
@@ -139,7 +145,8 @@ struct DownloadProgress {
     1: FileID fid,
     2: PackageID pid,
     3: ByteCount speed, // per second
-    4: DownloadStatus status,
+    4: Connection conn,
+    5: DownloadStatus status,
 }
 
 struct ProgressInfo {
@@ -315,7 +322,7 @@ struct AccountInfo {
   9: bool premium,
   10: bool activated,
   11: bool shared,
-  13: list <ConfigItem> config,
+  12: list <ConfigItem> config,
 }
 
 struct OnlineCheck {

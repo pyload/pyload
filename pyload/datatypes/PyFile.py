@@ -20,7 +20,7 @@ from time import sleep, time
 from ReadWriteLock import ReadWriteLock
 
 from pyload.Api import ProgressInfo, ProgressType, DownloadProgress, FileInfo, DownloadInfo, DownloadStatus
-from pyload.utils import lock, read_lock
+from pyload.utils import lock, read_lock, try_catch
 from pyload.utils.fs import safe_filename
 from pyload.utils.filetypes import guess_type
 
@@ -47,7 +47,6 @@ statusMap = {
     "custom": 19,
     "unknown": 20,
 }
-
 
 class PyFile(object):
     """
@@ -192,8 +191,7 @@ class PyFile(object):
     def toInfoData(self):
         return FileInfo(self.fid, self.getName(), self.packageid, self.owner, self.getSize(), self.filestatus,
                         self.media, self.added, self.fileorder, DownloadInfo(
-                self.url, self.pluginname, self.hash, self.status, self.getStatusName(), self.error
-            )
+                self.url, self.pluginname, self.hash, self.status, self.getStatusName(), self.error)
         )
 
     def getPath(self):
@@ -204,7 +202,6 @@ class PyFile(object):
 
     def abortDownload(self):
         """abort pyfile if possible"""
-        # TODO: abort timeout, currently dead locks
         while self.fid in self.m.core.dlm.processingIds():
 
             self.lock.acquire(shared=True)
@@ -236,36 +233,28 @@ class PyFile(object):
     def checkIfProcessed(self):
         self.m.checkAllLinksProcessed(self.id)
 
+    @try_catch(0)
     def getSpeed(self):
         """ calculates speed """
-        try:
-            return self.plugin.dl.speed
-        except:
-            return 0
+        return self.plugin.dl.speed
 
+    @try_catch(0)
     def getETA(self):
-        """ gets established time of arrival / or waiting time"""
-        try:
-            if self.status == DownloadStatus.Waiting:
-                return self.waitUntil - time()
+        """ gets estimated time of arrival / or waiting time"""
+        if self.status == DownloadStatus.Waiting:
+            return self.waitUntil - time()
 
-            return self.getBytesLeft() / self.getSpeed()
-        except:
-            return 0
+        return self.getBytesLeft() / self.getSpeed()
 
+    @try_catch(0)
     def getBytesArrived(self):
         """ gets bytes arrived """
-        try:
-            return self.plugin.dl.arrived
-        except:
-            return 0
+        return self.plugin.dl.arrived
 
+    @try_catch(0)
     def getBytesLeft(self):
         """ gets bytes left """
-        try:
-            return self.plugin.dl.size - self.plugin.dl.arrived
-        except:
-            return 0
+        return self.plugin.dl.size - self.plugin.dl.arrived
 
     def getSize(self):
         """ get size of download """
@@ -277,7 +266,11 @@ class PyFile(object):
         except:
             return self.size
 
+    @try_catch(0)
+    def getFlags(self):
+        return self.plugin.dl.flags
+
     def getProgressInfo(self):
         return ProgressInfo(self.pluginname, self.name, self.getStatusName(), self.getETA(),
                             self.getBytesArrived(), self.getSize(), self.owner, ProgressType.Download,
-                            DownloadProgress(self.fid, self.packageid, self.getSpeed(), self.status))
+                            DownloadProgress(self.fid, self.packageid, self.getSpeed(), self.getFlags(), self.status))

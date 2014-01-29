@@ -23,6 +23,7 @@ from shutil import move
 
 import pycurl
 
+from pyload.Api import Connection
 from pyload.plugins.Base import Abort
 from pyload.network.CookieJar import CookieJar
 from pyload.utils.fs import save_join, fs_encode
@@ -170,6 +171,7 @@ class CurlDownload(Download):
             #need to create chunks
             if not chunksCreated and self.chunkSupport and self.size: #will be set later by first chunk
 
+                self.flags ^= Connection.Resumable
                 if not resume:
                     self.info.setSize(self.size)
                     self.info.createChunks(chunks)

@@ -18,12 +18,14 @@ except ImportError: #use system simplejson if available
 json_loads = json.loads
 json_dumps = json.dumps
 
+
 def decode(string):
     """ decode string to unicode with utf8 """
     if type(string) == str:
         return string.decode("utf8", "replace")
     else:
         return string
+
 
 def encode(string):
     """ decode string to utf8 """
@@ -51,6 +53,7 @@ def get_console_encoding(enc):
 
     return enc
 
+
 def compare_time(start, end):
     start = map(int, start)
     end = map(int, end)
@@ -58,17 +61,25 @@ def compare_time(start, end):
     if start == end: return True
 
     now = list(time.localtime()[3:5])
-    if start < now < end: return True
-    elif start > end and (now > start or now < end): return True
-    elif start < now > end < start: return True
-    else: return False
+    if start < now < end:
+        return True
+    elif start > end and (now > start or now < end):
+        return True
+    elif start < now > end < start:
+        return True
+    else:
+        return False
+
 
 def to_list(value):
-    return value if type(value) == list else list(value) if type(value) == set else ([value] if value is not None else [])
+    return value if type(value) == list else list(value) if type(value) == set else (
+    [value] if value is not None else [])
+
 
 def formatSize(size):
     print "Deprecated formatSize, use format_size"
     return format_size(size)
+
 
 def format_size(bytes):
     bytes = int(bytes)
@@ -79,12 +90,15 @@ def format_size(bytes):
         steps += 1
     return "%.2f %s" % (bytes, sizes[steps])
 
+
 def formatSpeed(speed):
     print "Deprecated formatSpeed, use format_speed"
     return format_speed(speed)
 
+
 def format_speed(speed):
     return format_size(speed) + "/s"
+
 
 def format_time(seconds):
     if seconds < 0: return "00:00:00"
@@ -92,14 +106,17 @@ def format_time(seconds):
     minutes, seconds = divmod(seconds, 60)
     return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
 
+
 def parse_time(timestamp, pattern):
     """ Parse a string representing a time according to a pattern and
     return a time in seconds suitable for an account plugin. """
     return int(time.mktime(time.strptime(timestamp, pattern)))
 
+
 def parseFileSize(string, unit=None):
     print "Deprecated parseFileSize, use parse_size"
     return parse_size(string, unit)
+
 
 def parse_size(string, unit=None):
     """ Parses file size from a string. Tries to parse unit if not given.
@@ -131,14 +148,17 @@ def parse_size(string, unit=None):
 
     return traffic
 
+
 def uniqify(seq): #by Dave Kirby
     """ removes duplicates from list, preserve order """
     seen = set()
     return [x for x in seq if x not in seen and not seen.add(x)]
 
+
 def bits_set(bits, compare):
     """ checks if all bits are set in compare, or bits is 0 """
     return bits == (bits & compare)
+
 
 def lock(func):
     def new(*args, **kwargs):
@@ -151,6 +171,7 @@ def lock(func):
 
     return new
 
+
 def read_lock(func):
     def new(*args, **kwargs):
         args[0].lock.acquire(shared=True)
@@ -160,6 +181,7 @@ def read_lock(func):
             args[0].lock.release()
 
     return new
+
 
 def chunks(iterable, size):
     it = iter(iterable)
@@ -195,6 +217,7 @@ def has_method(obj, name):
     """ checks if 'name' was defined in obj, (false if it was inhereted) """
     return hasattr(obj, '__dict__') and name in obj.__dict__
 
+
 def accumulate(it, inv_map=None):
     """ accumulate (key, value) data to {value : [keylist]} dictionary """
     if inv_map is None:
@@ -208,12 +231,15 @@ def accumulate(it, inv_map=None):
 
     return inv_map
 
+
 def to_string(value):
     return str(value) if not isinstance(value, basestring) else value
+
 
 def to_bool(value):
     if not isinstance(value, basestring): return True if value else False
     return True if value.lower() in ("1", "true", "on", "an", "yes") else False
+
 
 def to_int(string, default=0):
     """ return int from string or default """
@@ -221,6 +247,7 @@ def to_int(string, default=0):
         return int(string)
     except ValueError:
         return default
+
 
 def get_index(l, value):
     """ .index method that also works on tuple and python 2.5 """
@@ -231,14 +258,31 @@ def get_index(l, value):
     # Matches behavior of list.index
     raise ValueError("list.index(x): x not in list")
 
+
 def primary_uid(user):
     """ Gets primary user id for user instances or ints """
     if type(user) == int: return user
     return user.primary if user else None
 
+
 def html_unescape(text):
     """Removes HTML or XML character references and entities from a text string"""
     return re.sub("&#?\w+;", fixup, text)
+
+
+def try_catch(fallback):
+    """ Decorator that executes the function and returns the value or fallback on any exception """
+    def wrap(f):
+        def new(*args, **kwargs):
+            try:
+                return f(*args, **kwargs)
+            except:
+                return fallback
+
+        return new
+
+    return wrap
+
 
 if __name__ == "__main__":
     print remove_chars("ab'cdgdsf''ds'", "'ghd")

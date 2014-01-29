@@ -4,13 +4,20 @@
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 
 class BaseObject(object):
+	__version__ = (0, 4, 9, 9)
 	__slots__ = []
 
 	def __str__(self):
 		return "<%s %s>" % (self.__class__.__name__, ", ".join("%s=%s" % (k,getattr(self,k)) for k in self.__slots__))
 
 class ExceptionObject(Exception):
+	__version__ = (0, 4, 9, 9)
 	__slots__ = []
+
+class Connection:
+	All = 0
+	Resumable = 1
+	Secure = 2
 
 class DownloadState:
 	All = 0
@@ -194,12 +201,13 @@ class DownloadInfo(BaseObject):
 		self.error = error
 
 class DownloadProgress(BaseObject):
-	__slots__ = ['fid', 'pid', 'speed', 'status']
+	__slots__ = ['fid', 'pid', 'speed', 'conn', 'status']
 
-	def __init__(self, fid=None, pid=None, speed=None, status=None):
+	def __init__(self, fid=None, pid=None, speed=None, conn=None, status=None):
 		self.fid = fid
 		self.pid = pid
 		self.speed = speed
+		self.conn = conn
 		self.status = status
 
 class EventInfo(BaseObject):
