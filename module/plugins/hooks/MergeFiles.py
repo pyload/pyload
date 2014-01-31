@@ -32,7 +32,7 @@ BUFFER_SIZE = 4096
 class MergeFiles(Hook):
     __name__ = "MergeFiles"
     __version__ = "0.12"
-    __description__ = "Merges parts splitted with hjsplit"
+    __description__ = """Merges parts splitted with hjsplit"""
     __config__ = [("activated", "bool", "Activated", "False")]
     __threaded__ = ["packageFinished"]
     __author_name__ = "and9000"

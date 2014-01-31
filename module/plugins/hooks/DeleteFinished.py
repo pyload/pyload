@@ -25,7 +25,7 @@ from module.plugins.Hook import Hook
 class DeleteFinished(Hook):
     __name__ = 'DeleteFinished'
     __version__ = '1.09'
-    __description__ = 'Automatically delete all finished packages from queue'
+    __description__ = """Automatically delete all finished packages from queue"""
     __config__ = [
         ('activated', 'bool', 'Activated', 'False'),
         ('interval', 'int', 'Delete every (hours)', '72'),

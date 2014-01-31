@@ -7,7 +7,7 @@ from module.plugins.Hook import Hook
 class RestartFailed(Hook):
     __name__ = "RestartFailed"
     __version__ = "1.52"
-    __description__ = "restartedFailed Packages after defined time"
+    __description__ = """restartedFailed Packages after defined time"""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("interval", "int", "Interval in Minutes", "15")]
 

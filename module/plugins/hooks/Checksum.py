@@ -56,7 +56,7 @@ def computeChecksum(local_file, algorithm):
 class Checksum(Hook):
     __name__ = "Checksum"
     __version__ = "0.12"
-    __description__ = "Verify downloaded file size and checksum"
+    __description__ = """Verify downloaded file size and checksum"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
                   ("max_tries", "int", "Number of retries", 2),
