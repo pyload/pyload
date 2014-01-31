@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
