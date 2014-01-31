@@ -14,8 +14,8 @@ class XFileSharingPro(Hook):
                   ("includeList", "str", "Include hosters (comma separated)", ""),
                   ("excludeList", "str", "Exclude hosters (comma separated)", "")]
     __description__ = """Hoster URL pattern loader for the generic XFileSharingPro plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def coreReady(self):
         self.loadPattern()

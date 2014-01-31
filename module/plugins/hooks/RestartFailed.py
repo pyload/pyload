@@ -10,8 +10,8 @@ class RestartFailed(Hook):
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("interval", "int", "Interval in Minutes", "15")]
 
-    __author_name__ = ("bambie")
-    __author_mail__ = ("bambie@gulli.com")
+    __author_name__ = "bambie"
+    __author_mail__ = "bambie@gulli.com"
 
     interval = 300
 

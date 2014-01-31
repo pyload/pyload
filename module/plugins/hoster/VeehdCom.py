@@ -14,8 +14,8 @@ class VeehdCom(Hoster):
     ]
     __version__ = '0.23'
     __description__ = """Veehd.com Download Hoster"""
-    __author_name__ = ('cat')
-    __author_mail__ = ('cat@pyload')
+    __author_name__ = 'cat'
+    __author_mail__ = 'cat@pyload'
 
     def _debug(self, msg):
         self.logDebug('[%s] %s' % (self.__name__, msg))

@@ -13,7 +13,7 @@ class ShareplaceCom(Hoster):
     __version__ = "0.11"
     __description__ = """Shareplace.com Download Hoster"""
     __author_name__ = ("ACCakut, based on YourfilesTo by jeix and skydancer")
-    __author_mail__ = ("none")
+    __author_mail__ = "none"
 
     def process(self, pyfile):
         self.pyfile = pyfile

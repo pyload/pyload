@@ -27,7 +27,7 @@ class YibaishiwuCom(SimpleHoster):
     __pattern__ = r"http://(?:www\.)?(?:u\.)?115.com/file/(?P<ID>\w+)"
     __version__ = "0.12"
     __description__ = """115.com"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
 
     FILE_NAME_PATTERN = r"file_name: '(?P<N>[^']+)'"
     FILE_SIZE_PATTERN = r"file_size: '(?P<S>[^']+)'"

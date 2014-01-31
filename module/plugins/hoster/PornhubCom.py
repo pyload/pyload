@@ -11,8 +11,8 @@ class PornhubCom(Hoster):
     __pattern__ = r'http://[\w\.]*?pornhub\.com/view_video\.php\?viewkey=[\w\d]+'
     __version__ = "0.5"
     __description__ = """Pornhub.com Download Hoster"""
-    __author_name__ = ("jeix")
-    __author_mail__ = ("jeix@hasnomail.de")
+    __author_name__ = "jeix"
+    __author_mail__ = "jeix@hasnomail.de"
 
     def process(self, pyfile):
         self.download_html()

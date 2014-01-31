@@ -29,8 +29,8 @@ class Container(Crypter):
     __pattern__ = None
     __type__ = "container"
     __description__ = """Base container plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
 
 
     def preprocessing(self, thread):

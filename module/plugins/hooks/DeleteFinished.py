@@ -31,8 +31,8 @@ class DeleteFinished(Hook):
         ('interval', 'int', 'Delete every (hours)', '72'),
         ('deloffline', 'bool', 'Delete packages with offline links', 'False')
     ]
-    __author_name__ = ('Walter Purcaro')
-    __author_mail__ = ('vuolter@gmail.com')
+    __author_name__ = 'Walter Purcaro'
+    __author_mail__ = 'vuolter@gmail.com'
 
     ## overwritten methods ##
     def periodical(self):

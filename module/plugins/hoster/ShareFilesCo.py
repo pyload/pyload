@@ -10,8 +10,8 @@ class ShareFilesCo(XFileSharingPro):
     __pattern__ = r"http://(www\.)?sharefiles\.co/\w{12}"
     __version__ = "0.01"
     __description__ = """Sharefiles.co hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     HOSTER_NAME = "sharefiles.co"
 

@@ -25,7 +25,7 @@ class BitshareCom(Account):
     __version__ = "0.12"
     __type__ = "account"
     __description__ = """Bitshare account plugin"""
-    __author_name__ = ("Paul King")
+    __author_name__ = "Paul King"
 
     def loadAccountInfo(self, user, req):
         page = req.load("http://bitshare.com/mysettings.html")

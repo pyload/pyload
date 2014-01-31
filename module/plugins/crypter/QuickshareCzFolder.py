@@ -10,8 +10,8 @@ class QuickshareCzFolder(Crypter):
     __pattern__ = r"http://(www\.)?quickshare.cz/slozka-\d+.*"
     __version__ = "0.1"
     __description__ = """Quickshare.cz Folder Plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FOLDER_PATTERN = r'<textarea[^>]*>(.*?)</textarea>'
     LINK_PATTERN = r'(http://www.quickshare.cz/\S+)'

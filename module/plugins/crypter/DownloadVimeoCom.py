@@ -13,8 +13,8 @@ class DownloadVimeoCom(Crypter):
     ## The download from dailymotion failed with a 403
     __version__ = '0.1'
     __description__ = """Video Download Plugin based on downloadvimeo.com"""
-    __author_name__ = ('4Christopher')
-    __author_mail__ = ('4Christopher@gmx.de')
+    __author_name__ = '4Christopher'
+    __author_mail__ = '4Christopher@gmx.de'
     BASE_URL = 'http://downloadvimeo.com'
 
     def decrypt(self, pyfile):

@@ -22,8 +22,8 @@ class WindowsPhoneToastNotify(Hook):
     __name__ = "WindowsPhoneToastNotify"
     __version__ = "0.02"
     __description__ = """Send push notifications to Windows Phone."""
-    __author_name__ = ("Andy Voigt")
-    __author_mail__ = ("phone-support@hotmail.de")
+    __author_name__ = "Andy Voigt"
+    __author_mail__ = "phone-support@hotmail.de"
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force even if client is connected", False),
                   ("pushId", "str", "pushId", ""),

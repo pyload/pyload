@@ -15,8 +15,8 @@ class BasePlugin(Hoster):
     __pattern__ = r"^unmatchable$"
     __version__ = "0.19"
     __description__ = """Base Plugin when any other didnt fit"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
 
     def setup(self):
         self.chunkLimit = -1

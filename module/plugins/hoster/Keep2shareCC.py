@@ -31,8 +31,8 @@ class Keep2shareCC(SimpleHoster):
     __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)"
     __version__ = "0.08"
     __description__ = """Keep2share.cc hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
     FILE_SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
