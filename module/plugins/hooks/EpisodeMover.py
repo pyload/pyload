@@ -52,7 +52,7 @@ class EpisodeMover(Hook):
 #    Notes: 
 #    -use "self.manager.dispatchEvent("name_of_the_event", arg1, arg2, ..., argN)" to define your own events! ;)
     __name__ = "EpisodeMover"
-    __version__ = "0.530"
+    __version__ = "0.531"
     __description__ = "EpisodeMover(EM) moves episodes to their final destination after downloading or extraction"
     __config__ = [  ("activated" , "bool" , "Activated"  , "False" ), 
                     ("tvshows", "folder", "This is the path to the locally existing tv shows", ""),
@@ -345,9 +345,13 @@ class EpisodeMover(Hook):
             self.logDebug(u'File "%s" is a tv episode' % video_name)
             return True
         else:
-            self.logDebug(u'File "%s" is not a tv episode' % video_name)
-            self.mv_logger.log_custom(u'File %s is not a tv episode' % video_name)
-            return False
+            if self.getConfig("folder_search") and (valdor.isTVEpisode(src_path)):
+                self.logDebug(u'Folder "%s" is a tv episode' % src_path)
+                return True
+            else:
+                self.logDebug(u'File "%s" in Folder "%s" is not a tv episode' % (video_name,src_path))
+                self.mv_logger.log_custom(u'File "%s" in Folder "%s" is not a tv episode' % (video_name,src_path))
+                return False
     
         
     def isinDb(self, episode_obj, createShow=False):    
@@ -358,8 +362,18 @@ class EpisodeMover(Hook):
         episode = episode_obj
         valdor = self.pattern_checker
         #crntShows = {}  #add found tv episodes: {ep_file_name:(path_to_show, show_title, show_index)}  <- obsolete structure; adapt it!
+        filename=self.renamer.substitute_chars(episode.src_filename, self.getConfig("char_sub"))
+        if self.getConfig("folder_sub"):
+            foldername=self.renamer.substitute_chars(episode.root_folder, self.getConfig("char_sub"))
+        else:
+            foldername=episode.root_folder
+        if self.getConfig("folder_search"):
+            self.logInfo(u'Searching local Database for "%s". On matching Failure Searching for "%s".' %(filename,foldername))
+        else:
+            self.logInfo(u'Searching local Database for "%s".' %filename)
         for e in self.__tvdb.keys(): # where e is an actual name of locally existing show
-            if valdor.hasPattern(episode.src_filename, valdor.createPattern(e)) is not None: # if True we got a local match
+            if (valdor.hasPattern(filename, valdor.createPattern(e)) is not None) or \
+            (self.getConfig("folder_search") and valdor.hasPattern(foldername, valdor.createPattern(e)) is not None): # if True we got a local match
                 episode.dst = os.path.join(self.__tvdb.get(e), e) 
                 episode.show_name = e # e is the (folder) name of the (locally existing) show 
                 self.logDebug(u'"%s" recognised as show "%s"' % (episode.src_filename, e))
@@ -489,24 +503,29 @@ class EpisodeMover(Hook):
         #crntShows = {}  #add found tv episodes: {ep_file_name:(path_to_show, show_title, show_index)}  <- obsolete structure; adapt it!
         episode = episode_obj
         valdor = self.pattern_checker
-        season = valdor.getSeason(episode.src_filename,
+        episode_name_for_show_index=episode.src_filename
+        if self.getConfig("folder_search") and \
+        valdor.hasPattern(episode.src_filename, valdor.createPattern(episode.show_name)) is None and \
+        valdor.hasPattern(episode.root_folder, valdor.createPattern(episode.show_name)) is not None:
+            episode_name_for_show_index=episode.root_folder
+        season = valdor.getSeason(episode_name_for_show_index,
                                   self.getConfig("season_text"),
                                   self.getConfig("leading_zero")) # returns "Season 1" e.g.
         if season == None:
-            self.logDebug(u'No valid show index could be extracted from "%s". Skipping...' % episode.src_filename)
+            self.logDebug(u'No valid show index could be extracted from "%s". Skipping...' % episode_name_for_show_index)
             return False
         season_path = os.path.join(episode.dst, season)
-        show_index = valdor.getShowIndex(episode.src_filename)
+        show_index = valdor.getShowIndex(episode_name_for_show_index)
         episode.show_index["raw"] = show_index
         # TODO: no clue what I am doing here; looks like legacy -> overhaul!
         episode.show_index["season"], episode.show_index["episode"] = \
         self.renamer.convert_show_index(show_index, 1, returnRaw=True)
         if (os.path.exists(season_path)):
             episode.dst = season_path
-            self.logDebug(u'Season directory for show "%s" already exists. No creation necessary.' % episode.src_filename)
+            self.logDebug(u'Season directory for show "%s" already exists. No creation necessary.' % episode_name_for_show_index)
             return True
         elif arbitrarySeason is True:
-            arbSeason = self.getArbSeasonPath(episode.dst, episode.src_filename)
+            arbSeason = self.getArbSeasonPath(episode.dst, episode_name_for_show_index)
             if arbSeason is not None:
                 season_path = os.path.join(episode.dst, arbSeason)
                 episode.dst = season_path
@@ -515,7 +534,7 @@ class EpisodeMover(Hook):
         if createSeason is True and os.path.exists(season_path) is not True:
             os.mkdir(season_path)
             episode.dst = season_path
-            self.logInfo(u'Season directory for show "%s" does not exist. Directory "%s" is being created' % (episode.src_filename,season))
+            self.logInfo(u'Season directory for show "%s" does not exist. Directory "%s" is being created' % (episode_name_for_show_index,season))
             return True
         elif createSeason is False and os.path.exists(season_path) is False:
             self.logDebug(u'Season directory for show "%s" does not exist. Directory "%s" is not being created' % (episode.show_name,season))
@@ -703,17 +722,14 @@ class EpisodeMover(Hook):
                         os.remove(file_)
                         filelist.append(f)
             elif os.path.isdir(file_):
-                if self.__isEmptyDir(file_):
-                    if os.path.exists(file_):
-                        os.rmdir(file_)
-                        filelist.append((u'%s(dir)' % f))
+                self.cleanFolder(file_)
         if len(filelist) > 0:
             self.logDebug(u'Deleted Junkfiles: %s' % filelist)
             self.logInfo(u'%s Junk File(s) deleted' % len(filelist)) 
         if self.__isEmptyDir(folder):
             if os.path.exists(folder) and not self.config["general"]["download_folder"] == folder:
                 os.rmdir(folder)
-                self.logInfo(u'Dir %s deleted' % folder)             
+                self.logInfo(u'Dir %s deleted' % folder)
 
 class Episode:
     
@@ -944,7 +960,7 @@ class PatternCompiler:
         re.compile(pattern1 + '|' + pattern2 + '|' + pattern3, re.IGNORECASE|re.DOTALL)
     
     def compile_getSeason(self):
-        p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
+        p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+)|$)' # S01E01 e.g.
         p10 = '(\w{1})(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # ShwnmS01E01 e.g.
         p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
         p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9])((\\s+)|(-+)|(_+)|(\\.+))' # 100 - 959
@@ -960,7 +976,7 @@ class PatternCompiler:
 
     
     def compile_getShowIndex(self):
-        p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # S01E01 e.g.
+        p1 = '((\\s+)|(-+)|(_+)|(\\.+))(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+)|$)' # S01E01 e.g.
         p10 = '(\w{1})(s\d{2}e\d{2})((\\s+)|(-+)|(_+)|(\\.+))' # ShwnmS01E01 e.g.
         p2 = '((\\s+)|(-+)|(_+)|(\\.+))(\d{1,2}x\d{1,2})((\\s+)|(-+)|(_+)|(\\.+))' # 1x1, 10x10, 1x10, 10x1 e.g.
         p3 = '((\\s+)|(-+)|(_+)|(\\.+))([1-9][0-5][0-9]){1}((\\s+)|(-+)|(_+)|(\\.+))' # ".101-", "_901 " with ESS
