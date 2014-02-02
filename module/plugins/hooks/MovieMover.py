@@ -14,12 +14,12 @@ import shutil
 import time
 import urllib2
 import sys
-# from module.common.pydevsrc import pydevd 
-
+#from module.common.pydevsrc import pydevd 
+#pydevd.settrace("192.168.1.29",stdoutToServer=True,stderrToServer=True)
 
 class MovieMover(Hook):
     __name__ = "MovieMover"
-    __version__ = "0.394"
+    __version__ = "0.395"
     __description__ = "MovieMover(MM) moves your movies for you"
     __config__ = [("activated" , "bool" , "Activated"  , "False" ),
                   ("extension", "str", "List of supported extensions", "mkv,avi,mp4,wmv"),
@@ -45,6 +45,10 @@ class MovieMover(Hook):
     __movie_queue = Queue(1) # one moving operation at a time
 
     #TODO:
+    #-- 02.02.2014 --
+    #-Order in which to match against particular sources (filename, dirname, remote db)
+    #-Enforce matching only for a particular date if provided
+    #-- LEGACY -- 
     #-Convenience features such as overwriting/moving of single files within a package
     #-On failing to match a movie assume articles for local combinations
     #-Add separator element (?)
@@ -567,7 +571,6 @@ class Query:
         self._prepareQuery(file_name, year, isFile)
         self._start_threads(self.combines["queries"])
         self.query_queue.join() # halt main thread and wait for completion
-#         pydevd.settrace("192.168.1.46",stdoutToServer=True,stderrToServer=True)
         if self.__movies is None or \
         len(self.__movies) == 0:
             return None
@@ -750,6 +753,7 @@ class Query:
             request = urllib2.Request(url_)
             request.add_header('Accept', 'application/json')
             try:
+                connection = None
                 connection = urllib2.urlopen(request)
             except HTTPError, e:
                 if len(e.args) > 0:
@@ -762,6 +766,14 @@ class Query:
                 if ue.args[0] == "<urlopen error [Errno -2] Name or service not known>":
                         time.sleep(10)
                         connection = urllib2.urlopen(request)
+            if connection is None:
+                    try:
+                        raise EnvironmentError("Missing response")
+                    except EnvironmentError, ee:
+                        if ee.args[0] == "Missing response":
+                            time.sleep(10)
+                            self.__searchMovie(single_combination)
+                            return
             resp = connection.read()
             self.__analyzeResponse(resp)
 
@@ -892,18 +904,24 @@ class Query:
         for id in self.__movies:
             for language in self.__movies[id]["title"]:
                 for title in self.__movies[id]["title"][language]:
-                    p = re.compile(self.__generatePattern(self.__strip(title),False,True), re.IGNORECASE)
-                    match_ = p.search(self.__strip(movie_name))
-                    if match_:
-                        if len(matches) < len(match_.group(7)): #crucial!:
-                            match_id = id
-                            matches = match_.group(7)
+                    try:
+                        p = re.compile(self.__generatePattern(self.__strip(title),False,True), re.IGNORECASE)
+                        match_ = p.search(self.__strip(movie_name))
+                        if match_:
+                            if len(matches) < len(match_.group(7)): #crucial!:
+                                match_id = id
+                                matches = match_.group(7)
+                    except Exception, e:
+                        if e.args[0] == "nothing to repeat":
+                            pass
+                        else:
+                            raise                        
         if len(matches) > 2:
             if self.config['movie_year'] != None:
                 match_id = self._dateValidation(matches, match_id, self.config['movie_year'])
             return self.__movies[match_id]
         return None
-
+            
     
     def _dateValidation(self, matched_title, match_id, given_release_yr):
         """On existence of multiple identical titles try to narrow them further down by release year"""
