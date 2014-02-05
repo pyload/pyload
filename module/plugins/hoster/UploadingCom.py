@@ -1,5 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 import re
 from pycurl import HTTPHEADER
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 from module.common.json_layer import json_loads
 
@@ -27,14 +28,14 @@ class UploadingCom(SimpleHoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __description__ = """Uploading.Com File Download Hoster"""
     __author_name__ = ("jeix", "mkaay", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
 
-    FILE_NAME_PATTERN = r'<title>Download (?P<N>.*?) for free on uploading.com</title>'
-    FILE_SIZE_PATTERN = r'<span>File size: (?P<S>.*?)</span>'
-    FILE_OFFLINE_PATTERN = r'<h2.*?>The requested file is not found</h2>'
+    FILE_NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
+    FILE_SIZE_PATTERN = r'size tip_container">(?P<S>[\d.]+) (?P<U>\w+)<'
+    FILE_OFFLINE_PATTERN = r'Page not found!'
 
     def process(self, pyfile):
         # set lang to english

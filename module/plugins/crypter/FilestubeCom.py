@@ -21,8 +21,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FilestubeCom(SimpleCrypter):
     __name__ = "FilestubeCom"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:w{3}.)?filestube\.com/\w+"
-    __version__ = "0.01"
+    __pattern__ = r"http://(?:w{3}.)?filestube\.(?:com|to)/\w+"
+    __version__ = "0.02"
     __description__ = """Filestube.com Plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
