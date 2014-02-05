@@ -8,7 +8,7 @@ class NetloadInOCR(OCR):
     def __init__(self):
         OCR.__init__(self)
 
-    def get_captcha(self, image):
+    def get_captcha(self, image, type):
         self.load_image(image)
         self.to_greyscale()
         self.clean(3)

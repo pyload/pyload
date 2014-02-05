@@ -284,7 +284,7 @@ class Base(object):
         self.correctTask()
 
     def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg',
-                       result_type='textual'):
+                       captcha_type=None, result_type='textual', plugin_name=__name__):
         """ Loads a captcha and decrypts it with ocr, plugin, user input
 
         :param url: url of captcha image
@@ -293,9 +293,11 @@ class Base(object):
         :param cookies: True if cookies should be enabled
         :param forceUser: if True, ocr is not used
         :param imgtype: Type of the Image
+        :param captcha_type: use to identify captcha type to process when decrypt plugin supports many more
         :param result_type: 'textual' if text is written on the captcha\
         or 'positional' for captcha where the user have to click\
         on a specific region on the captcha
+        :param plugin_name: name of the plugin to use for decrypt captcha (default look for caller name)
 
         :return: result of decrypting
         """
@@ -307,11 +309,10 @@ class Base(object):
         temp_file.write(img)
         temp_file.close()
 
-        name = "%sOCR" % self.__name__
-        has_plugin = name in self.core.pluginManager.getPlugins("internal")
+        has_plugin = plugin_name in self.core.pluginManager.getPlugins("internal")
 
         if self.core.captcha:
-            OCR = self.core.pluginManager.loadClass("internal", name)
+            OCR = self.core.pluginManager.loadClass("internal", plugin_name)
         else:
             OCR = None
 
@@ -320,7 +321,7 @@ class Base(object):
             self.checkAbort()
 
             ocr = OCR()
-            result = ocr.get_captcha(temp_file.name)
+            result = ocr.get_captcha(temp_file.name, captcha_type)
         else:
             task = self.im.createCaptchaTask(img, imgtype, temp_file.name, self.__name__, result_type)
             self.task = task
