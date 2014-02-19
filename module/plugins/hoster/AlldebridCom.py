@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -15,8 +16,8 @@ class AlldebridCom(Hoster):
 
     __pattern__ = r"https?://.*alldebrid\..*"
     __description__ = """Alldebrid.com hoster plugin"""
-    __author_name__ = ("Andy, Voigt")
-    __author_mail__ = ("spamsales@online.de")
+    __author_name__ = "Andy Voigt"
+    __author_mail__ = "spamsales@online.de"
 
     def getFilename(self, url):
         try:

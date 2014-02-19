@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 ############################################################################
@@ -29,8 +30,8 @@ class DebridItaliaCom(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
     __description__ = """Debriditalia.com hook plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     def getHoster(self):
         return ["netload.in", "hotfile.com", "rapidshare.com", "multiupload.com",

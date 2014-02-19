@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
@@ -30,7 +31,7 @@ class WarserverCz(SimpleHoster):
     __pattern__ = r"http://(?:\w*\.)?warserver.cz/stahnout/(?P<ID>\d+)/.+"
     __version__ = "0.12"
     __description__ = """Warserver.cz"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
 
     FILE_NAME_PATTERN = r'<h1.*?>(?P<N>[^<]+)</h1>'
     FILE_SIZE_PATTERN = r'<li>Velikost: <strong>(?P<S>[^<]+)</strong>'

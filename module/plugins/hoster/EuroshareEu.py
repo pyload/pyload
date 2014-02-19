@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
@@ -26,7 +27,7 @@ class EuroshareEu(SimpleHoster):
     __pattern__ = r"http://(\w*\.)?euroshare.(eu|sk|cz|hu|pl)/file/.*"
     __version__ = "0.25"
     __description__ = """Euroshare.eu"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
 
     FILE_INFO_PATTERN = r'<span style="float: left;"><strong>(?P<N>.+?)</strong> \((?P<S>.+?)\)</span>'
     FILE_OFFLINE_PATTERN = ur'<h2>S.bor sa nena.iel</h2>|Požadovaná stránka neexistuje!'

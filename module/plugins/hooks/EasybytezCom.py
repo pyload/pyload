@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -13,8 +14,8 @@ class EasybytezCom(MultiHoster):
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
     __description__ = """EasyBytez.com hook plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def getHoster(self):
         self.account = self.core.accountManager.getAccountPlugin(self.__name__)

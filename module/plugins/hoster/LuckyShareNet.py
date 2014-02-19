@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -13,8 +14,8 @@ class LuckyShareNet(SimpleHoster):
     __pattern__ = r"https?://(www\.)?luckyshare.net/(?P<ID>\d{10,})"
     __version__ = "0.02"
     __description__ = """LuckyShare.net Download Hoster"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r"<h1 class='file_name'>(?P<N>\S+)</h1>\s*<span class='file_size'>Filesize: (?P<S>[\d.]+)(?P<U>\w+)</span>"
     FILE_OFFLINE_PATTERN = 'There is no such file available'

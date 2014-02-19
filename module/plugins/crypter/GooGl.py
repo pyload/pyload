@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 ############################################################################
@@ -25,8 +26,8 @@ class GooGl(Crypter):
     __pattern__ = r"https?://(www\.)?goo\.gl/\w+"
     __version__ = "0.01"
     __description__ = """Goo.gl Crypter Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     API_URL = 'https://www.googleapis.com/urlshortener/v1/url'
 

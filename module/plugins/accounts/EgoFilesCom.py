@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -12,8 +13,8 @@ class EgoFilesCom(Account):
     __version__ = "0.2"
     __type__ = "account"
     __description__ = """egofiles.com account plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     PREMIUM_ACCOUNT_PATTERN = '<br/>\s*Premium: (?P<P>[^/]*) / Traffic left: (?P<T>[\d.]*) (?P<U>\w*)\s*\\n\s*<br/>'
 

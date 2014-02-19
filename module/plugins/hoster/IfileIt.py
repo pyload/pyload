@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
@@ -28,7 +29,7 @@ class IfileIt(SimpleHoster):
     __pattern__ = r"^unmatchable$"
     __version__ = "0.27"
     __description__ = """Ifile.it"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
 
     #EVAL_PATTERN = r'(eval\(function\(p,a,c,k,e,d\).*)'
     #DEC_PATTERN = r"requestBtn_clickEvent[^}]*url:\s*([^,]+)"

@@ -1,24 +1,25 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+###############################################################################
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as
+#  published by the Free Software Foundation, either version 3 of the
+#  License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#  @author: Walter Purcaro
+###############################################################################
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: Walter Purcaro
-"""
-
-from urlparse import urljoin
 import re
+from urlparse import urljoin
 
 from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter
@@ -30,14 +31,14 @@ API_KEY = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
 class YoutubeBatch(Crypter):
     __name__ = "YoutubeBatch"
     __type__ = "crypter"
-    __pattern__ = r"https?://(?:www\.)?(m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)"
+    __pattern__ = r'https?://(?:www\.)?(m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)'
     __version__ = "1.00"
     __description__ = """Youtube.com channel & playlist decrypter"""
     __config__ = [("likes", "bool", "Grab user (channel) liked videos", "False"),
                   ("favorites", "bool", "Grab user (channel) favorite videos", "False"),
                   ("uploads", "bool", "Grab channel unplaylisted videos", "True")]
-    __author_name__ = ("Walter Purcaro")
-    __author_mail__ = ("vuolter@gmail.com")
+    __author_name__ = "Walter Purcaro"
+    __author_mail__ = "vuolter@gmail.com"
 
     def api_response(self, ref, req):
         req.update({"key": API_KEY})

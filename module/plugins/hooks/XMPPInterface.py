@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -39,8 +40,8 @@ class XMPPInterface(IRCInterface, JabberClient):
                   ("info_file", "bool", "Inform about every file finished", "False"),
                   ("info_pack", "bool", "Inform about every package finished", "True"),
                   ("captcha", "bool", "Send captcha requests", "True")]
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
 
     implements(IMessageHandlersProvider)
 

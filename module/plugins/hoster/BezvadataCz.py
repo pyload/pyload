@@ -1,4 +1,5 @@
-﻿# -*- coding: utf-8 -*-
+﻿#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,8 +27,8 @@ class BezvadataCz(SimpleHoster):
     __pattern__ = r"http://(\w*\.)*bezvadata.cz/stahnout/.*"
     __version__ = "0.24"
     __description__ = """BezvaData.cz"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'
     FILE_SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[^<]+)</li>'

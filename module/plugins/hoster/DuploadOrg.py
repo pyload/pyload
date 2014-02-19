@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 ############################################################################
@@ -24,8 +25,8 @@ class DuploadOrg(XFileSharingPro):
     __pattern__ = r"http://(www\.)?dupload\.org/\w{12}"
     __version__ = "0.01"
     __description__ = """Dupload.grg hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     HOSTER_NAME = "dupload.org"
 

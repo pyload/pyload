@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 ############################################################################
@@ -27,7 +28,7 @@ class DataHuFolder(SimpleCrypter):
     __version__ = "0.03"
     __description__ = """Data.hu Folder Plugin"""
     __author_name__ = ("crash", "stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_mail__ = "l.stickell@yahoo.it"
 
     LINK_PATTERN = r"<a href='(http://data\.hu/get/.+)' target='_blank'>\1</a>"
     TITLE_PATTERN = ur'<title>(?P<title>.+) Let\xf6lt\xe9se</title>'

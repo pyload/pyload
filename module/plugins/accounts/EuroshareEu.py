@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -28,8 +29,8 @@ class EuroshareEu(Account):
     __version__ = "0.01"
     __type__ = "account"
     __description__ = """euroshare.eu account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def loadAccountInfo(self, user, req):
         self.relogin(user)

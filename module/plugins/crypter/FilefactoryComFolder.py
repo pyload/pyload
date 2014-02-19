@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -10,8 +11,8 @@ class FilefactoryComFolder(Crypter):
     __pattern__ = r"(http://(www\.)?filefactory\.com/f/\w+).*"
     __version__ = "0.1"
     __description__ = """Filefactory.com Folder Plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FOLDER_PATTERN = r'<table class="items" cellspacing="0" cellpadding="0">(.*?)</table>'
     LINK_PATTERN = r'<td class="name"><a href="([^"]+)">'

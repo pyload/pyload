@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
@@ -29,8 +30,8 @@ class GigapetaCom(SimpleHoster):
     __pattern__ = r"http://(?:www\.)?gigapeta\.com/dl/\w+"
     __version__ = "0.01"
     __description__ = """GigaPeta.com plugin - free only"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     SH_COOKIES = [("http://gigapeta.com", "lang", "us")]
     FILE_NAME_PATTERN = r'<img src=".*" alt="file" />-->\s*(?P<N>.*?)\s*</td>'

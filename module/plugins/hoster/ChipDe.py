@@ -11,8 +11,8 @@ class ChipDe(Crypter):
     __pattern__ = r"http://(?:www\.)?chip.de/video/.*\.html"
     __version__ = "0.1"
     __description__ = """Chip.de Container Plugin"""
-    __author_name__ = ('4Christopher')
-    __author_mail__ = ('4Christopher@gmx.de')
+    __author_name__ = '4Christopher'
+    __author_mail__ = '4Christopher@gmx.de'
 
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url)

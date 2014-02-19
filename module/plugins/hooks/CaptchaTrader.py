@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
@@ -49,8 +50,8 @@ class CaptchaTrader(Hook):
                   ("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Password", ""), ]
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
 
     SUBMIT_URL = "http://api.captchatrader.com/submit"
     RESPOND_URL = "http://api.captchatrader.com/respond"

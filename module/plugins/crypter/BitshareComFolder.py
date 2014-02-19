@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 ############################################################################
@@ -24,8 +25,8 @@ class BitshareComFolder(SimpleCrypter):
     __pattern__ = r"http://(?:www\.)?bitshare\.com/\?d=\w+"
     __version__ = "0.01"
     __description__ = """Bitshare.com Folder Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     LINK_PATTERN = r'<a href="(http://bitshare.com/files/.+)">.+</a></td>'
     TITLE_PATTERN = r'View public folder "(?P<title>.+)"</h1>'

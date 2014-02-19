@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # should be working
@@ -16,8 +17,8 @@ class FastixRu(MultiHoster):
                   ("unloadFailing", "bool", "Revert to standard download if download fails", "False"),
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
     __description__ = """Fastix hook plugin"""
-    __author_name__ = ("Massimo, Rosamilia")
-    __author_mail__ = ("max@spiritix.eu")
+    __author_name__ = "Massimo Rosamilia"
+    __author_mail__ = "max@spiritix.eu"
 
     def getHoster(self):
         page = getURL(

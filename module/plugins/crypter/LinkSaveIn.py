@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 #
@@ -21,8 +22,8 @@ class LinkSaveIn(Crypter):
     __pattern__ = r"http://(www\.)?linksave.in/(?P<id>\w+)$"
     __version__ = "2.01"
     __description__ = """LinkSave.in Crypter Plugin"""
-    __author_name__ = ("fragonib")
-    __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
+    __author_name__ = "fragonib"
+    __author_mail__ = "fragonib[AT]yahoo[DOT]es"
 
     # Constants
     _JK_KEY_ = "jk"

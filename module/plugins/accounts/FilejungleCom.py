@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -28,8 +29,8 @@ class FilejungleCom(Account):
     __version__ = "0.11"
     __type__ = "account"
     __description__ = """filejungle.com account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     login_timeout = 60
 

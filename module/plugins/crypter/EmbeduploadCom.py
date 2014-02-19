@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -13,8 +14,8 @@ class EmbeduploadCom(Crypter):
     __description__ = """EmbedUpload.com crypter"""
     __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "embedupload"),
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     LINK_PATTERN = r'<div id="([^"]+)"[^>]*>\s*<a href="([^"]+)" target="_blank" (?:class="DownloadNow"|style="color:red")>'
 

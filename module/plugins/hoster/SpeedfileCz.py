@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
@@ -25,7 +26,7 @@ class SpeedfileCz(DeadHoster):
     __pattern__ = r"http://speedfile.cz/.*"
     __version__ = "0.32"
     __description__ = """speedfile.cz"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
 
 
 getInfo = create_getInfo(SpeedfileCz)

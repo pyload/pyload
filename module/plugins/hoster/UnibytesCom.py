@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
@@ -27,7 +28,7 @@ class UnibytesCom(SimpleHoster):
     __pattern__ = r"http://(www\.)?unibytes\.com/[a-zA-Z0-9-._ ]{11}B"
     __version__ = "0.1"
     __description__ = """UniBytes.com"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
 
     FILE_INFO_PATTERN = r'<span[^>]*?id="fileName"[^>]*>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
     DOMAIN = 'http://www.unibytes.com'

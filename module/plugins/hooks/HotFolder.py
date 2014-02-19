@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -39,8 +40,8 @@ class HotFolder(Hook):
                   ("keep", "bool", "Keep added containers", "True"),
                   ("file", "str", "Link file", "links.txt")]
     __threaded__ = []
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.de")
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.de"
 
     def setup(self):
         self.interval = 10

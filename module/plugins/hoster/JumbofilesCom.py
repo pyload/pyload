@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -9,8 +10,8 @@ class JumbofilesCom(SimpleHoster):
     __pattern__ = r"http://(?:\w*\.)*jumbofiles.com/(\w{12}).*"
     __version__ = "0.02"
     __description__ = """JumboFiles.com hoster plugin"""
-    __author_name__ = ("godofdream")
-    __author_mail__ = ("soilfiction@gmail.com")
+    __author_name__ = "godofdream"
+    __author_mail__ = "soilfiction@gmail.com"
 
     FILE_INFO_PATTERN = '<TR><TD>(?P<N>[^<]+?)\s*<small>\((?P<S>[\d.]+)\s*(?P<U>[KMG][bB])\)</small></TD></TR>'
     FILE_OFFLINE_PATTERN = 'Not Found or Deleted / Disabled due to inactivity or DMCA'

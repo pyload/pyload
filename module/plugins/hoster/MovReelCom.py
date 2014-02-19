@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #import re
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
@@ -9,8 +10,8 @@ class MovReelCom(XFileSharingPro):
     __pattern__ = r"http://movreel.com/.*"
     __version__ = "1.20"
     __description__ = """MovReel.com hoster plugin"""
-    __author_name__ = ("JorisV83")
-    __author_mail__ = ("jorisv83-pyload@yahoo.com")
+    __author_name__ = "JorisV83"
+    __author_mail__ = "jorisv83-pyload@yahoo.com"
 
     #FILE_NAME_PATTERN = r'<b>Filename:</b>(?P<N>.*?)<br>'
     #FILE_SIZE_PATTERN = r'<b>Size:</b>(?P<S>.*?)<br>'

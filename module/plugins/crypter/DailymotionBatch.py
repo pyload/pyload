@@ -1,24 +1,25 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+###############################################################################
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as
+#  published by the Free Software Foundation, either version 3 of the
+#  License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#  @author: Walter Purcaro
+###############################################################################
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: Walter Purcaro
-"""
-
-from urlparse import urljoin
 import re
+from urlparse import urljoin
 
 from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter
@@ -28,11 +29,11 @@ from module.utils import save_join
 class DailymotionBatch(Crypter):
     __name__ = "DailymotionBatch"
     __type__ = "crypter"
-    __pattern__ = r"https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)"
+    __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
     __version__ = "0.01"
-    __description__ = """Dailymotion channel & playlist decrypter"""
-    __author_name__ = ("Walter Purcaro")
-    __author_mail__ = ("vuolter@gmail.com")
+    __description__ = """Dailymotion.com channel & playlist decrypter"""
+    __author_name__ = "Walter Purcaro"
+    __author_mail__ = "vuolter@gmail.com"
 
     def api_response(self, ref, req=None):
         url = urljoin("https://api.dailymotion.com/", ref)

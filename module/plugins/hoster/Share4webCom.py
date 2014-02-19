@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from module.plugins.hoster.UnibytesCom import UnibytesCom
@@ -10,7 +11,7 @@ class Share4webCom(UnibytesCom):
     __pattern__ = r"http://(www\.)?share4web\.com/get/\w+"
     __version__ = "0.1"
     __description__ = """Share4web.com"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
 
     DOMAIN = 'http://www.share4web.com'
 

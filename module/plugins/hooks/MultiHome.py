@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -28,8 +29,8 @@ class MultiHome(Hook):
     __description__ = """ip address changer"""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("interfaces", "str", "Interfaces", "None")]
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
 
     def setup(self):
         self.register = {}

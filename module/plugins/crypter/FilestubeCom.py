@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 ############################################################################
@@ -24,8 +25,8 @@ class FilestubeCom(SimpleCrypter):
     __pattern__ = r"http://(?:w{3}.)?filestube\.(?:com|to)/\w+"
     __version__ = "0.02"
     __description__ = """Filestube.com Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     LINK_PATTERN = r"link_download'\]\); renderGo\('(http://[^)]+)'\);"
     TITLE_PATTERN = r"<title>(?P<title>.+) download"

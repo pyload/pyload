@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
@@ -28,7 +29,7 @@ class LinkdecrypterCom(Hook):
     __version__ = "0.19"
     __description__ = """linkdecrypter.com - regexp loader"""
     __config__ = [("activated", "bool", "Activated", "False")]
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
 
     def coreReady(self):
         try:

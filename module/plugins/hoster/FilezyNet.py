@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import re
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo

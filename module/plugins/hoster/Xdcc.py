@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -42,8 +43,8 @@ class Xdcc(Hoster):
         ("realname", "str", "Realname", "pyloadreal")
     ]
     __description__ = """A Plugin that allows you to download from an IRC XDCC bot"""
-    __author_name__ = ("jeix")
-    __author_mail__ = ("jeix@hasnomail.com")
+    __author_name__ = "jeix"
+    __author_mail__ = "jeix@hasnomail.com"
 
     def setup(self):
         self.debug = 0  # 0,1,2

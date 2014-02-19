@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 ############################################################################
@@ -42,8 +43,8 @@ class WebshareCz(SimpleHoster):
     __pattern__ = r"https?://(?:www\.)?webshare.cz/(?:#/)?file/(?P<ID>\w+)"
     __version__ = "0.13"
     __description__ = """WebShare.cz hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     def handleFree(self):
         api_data = self.load('https://webshare.cz/api/file_link/', post={'ident': self.fid})

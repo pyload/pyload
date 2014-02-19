@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from module.network.RequestFactory import getURL
@@ -12,8 +13,8 @@ class ZeveraCom(MultiHoster):
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
     __description__ = """Real-Debrid.com hook plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def getHoster(self):
         page = getURL("http://www.zevera.com/jDownloader.ashx?cmd=gethosters")

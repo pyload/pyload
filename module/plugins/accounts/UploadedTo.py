@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -28,8 +29,8 @@ class UploadedTo(Account):
     __version__ = "0.26"
     __type__ = "account"
     __description__ = """ul.net account plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
 
     def loadAccountInfo(self, user, req):
 

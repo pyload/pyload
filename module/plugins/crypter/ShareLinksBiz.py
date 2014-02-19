@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import base64
@@ -14,8 +15,8 @@ class ShareLinksBiz(Crypter):
     __pattern__ = r"(?P<base>http://[\w\.]*?(share-links|s2l)\.biz)/(?P<id>_?[0-9a-z]+)(/.*)?"
     __version__ = "1.13"
     __description__ = """Share-Links.biz Crypter"""
-    __author_name__ = ("fragonib")
-    __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
+    __author_name__ = "fragonib"
+    __author_mail__ = "fragonib[AT]yahoo[DOT]es"
 
     def setup(self):
         self.baseUrl = None

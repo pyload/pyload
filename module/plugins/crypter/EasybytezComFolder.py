@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 ############################################################################
@@ -24,8 +25,8 @@ class EasybytezComFolder(SimpleCrypter):
     __pattern__ = r"http://(?:www\.)?easybytez\.com/users/(?P<ID>\d+/\d+)"
     __version__ = "0.05"
     __description__ = """Easybytez Crypter Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r"http://www.easybytez.com/users/\g<ID>?per_page=10000")]
 

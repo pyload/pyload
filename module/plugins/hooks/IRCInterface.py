@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -48,8 +49,8 @@ class IRCInterface(Thread, Hook):
                   ("info_file", "bool", "Inform about every file finished", "False"),
                   ("info_pack", "bool", "Inform about every package finished", "True"),
                   ("captcha", "bool", "Send captcha requests", "True")]
-    __author_name__ = ("Jeix")
-    __author_mail__ = ("Jeix@hasnomail.com")
+    __author_name__ = "Jeix"
+    __author_mail__ = "Jeix@hasnomail.com"
 
     def __init__(self, core, manager):
         Thread.__init__(self)

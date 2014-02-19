@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -11,7 +12,7 @@ class UlozTo(Account):
     __type__ = "account"
     __description__ = """uloz.to account plugin"""
     __author_name__ = ("zoidberg", "pulpe")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a href="http://www.ulozto.net/kredit" title="[^"]*?GB = ([0-9.]+) MB"'
 

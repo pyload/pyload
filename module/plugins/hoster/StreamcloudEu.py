@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from time import sleep
 import re
@@ -12,8 +13,8 @@ class StreamcloudEu(XFileSharingPro):
     __pattern__ = r"http://(www\.)?streamcloud\.eu/\S+"
     __version__ = "0.03"
     __description__ = """Streamcloud.eu hoster plugin"""
-    __author_name__ = ("seoester")
-    __author_mail__ = ("seoester@googlemail.com")
+    __author_name__ = "seoester"
+    __author_mail__ = "seoester@googlemail.com"
 
     HOSTER_NAME = "streamcloud.eu"
     DIRECT_LINK_PATTERN = r'file: "(http://(stor|cdn)\d+\.streamcloud.eu:?\d*/.*/video\.(mp4|flv))",'
