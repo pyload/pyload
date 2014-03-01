@@ -49,7 +49,7 @@ class PutlockerCom(SimpleHoster):
 
     def _getLink(self):
         self.html = self.load(self.pyfile.url, post={"confirm": re.search(r'name="confirm" value="(.*)"', self.html).group(1)})
-        return re.search(r'<a href="(.*)" id=\'external_download\'', self.html).group(1)
+        return re.search(r'<a href="(https?://dl\.firedrive\.com/.*?)"', self.html).group(1)
 
 
 getInfo = create_getInfo(PutlockerCom)
