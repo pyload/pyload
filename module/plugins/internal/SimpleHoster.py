@@ -206,13 +206,13 @@ class SimpleHoster(Hoster):
         if not premium_only:  # Usually premium only pages doesn't show the file information
             self.getFileInfo()
 
+        # Preload html for both handlers
+        self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
         elif premium_only:
             self.fail("This link require a premium account")
         else:
-            # This line is required due to the getURL workaround. Can be removed in 0.5
-            self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
             self.handleFree()
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
