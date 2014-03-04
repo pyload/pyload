@@ -28,7 +28,7 @@ class Vipleech4uCom(MultiHoster):
             'share-online':['share-online.biz','egoshare.com'],
             'youtube':['youtube.com'],
             'turbobit':['turbobit.net','unextfiles.com'],
-            'firedrive':['firedrive.com'],
+            'firedrive':['firedrive.com','putlocker.com'],
             'filepost':['filepost.com','fp.io'],
             'netload':['netload.in'],
             'uploadhero':['uploadhero.com'],

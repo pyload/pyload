@@ -45,6 +45,9 @@ class Vipleech4uCom(Hoster):
         #switch to the manager and see what's happening
         page = self.load('http://vipleech4u.com/unrestrict.php', get={'link':new_url,'premium_acc':'on'})
 
+        if re.search(r'You have generated maximum links available to you today', page ,re.I):
+            self.fail('Daily limit reached.')
+
         filename = self.FILENAME_PATTERN.search(page)
         host = self.HOST_PATTERN.search(page)
         path = self.PATH_PATTERN.search(page)
