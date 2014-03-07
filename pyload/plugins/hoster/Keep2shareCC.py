@@ -16,7 +16,7 @@
 ############################################################################
 
 # Test links (random.bin):
-# http://k2s.cc/file/527111edfb9ba/random.bin
+# http://k2s.cc/file/55fb73e1c00c5/random.bin
 
 import re
 from urlparse import urlparse, urljoin
@@ -29,7 +29,7 @@ class Keep2shareCC(SimpleHoster):
     __name__ = "Keep2shareCC"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)"
-    __version__ = "0.08"
+    __version__ = "0.10"
     __description__ = """Keep2share.cc hoster plugin"""
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
@@ -40,6 +40,7 @@ class Keep2shareCC(SimpleHoster):
 
     DIRECT_LINK_PATTERN = r'To download this file with slow speed, use <a href="([^"]+)">this link</a>'
     WAIT_PATTERN = r'Please wait ([\d:]+) to download this file'
+    ALREADY_DOWNLOADING_PATTERN = r'Free account does not allow to download more than one file at the same time'
 
     RECAPTCHA_KEY = '6LcYcN0SAAAAABtMlxKj7X0hRxOY8_2U86kI1vbb'
 
@@ -59,6 +60,22 @@ class Keep2shareCC(SimpleHoster):
             self.wait(30)
 
             self.html = self.load(self.pyfile.url, post={'uniqueId': self.fid, 'free': 1})
+
+            m = re.search(self.WAIT_PATTERN, self.html)
+            if m:
+                self.logDebug('Hoster told us to wait for %s' % m.group(1))
+                # string to time convert courtesy of https://stackoverflow.com/questions/10663720
+                ftr = [3600, 60, 1]
+                wait_time = sum([a * b for a, b in zip(ftr, map(int, m.group(1).split(':')))])
+                self.wait(wait_time, reconnect=True)
+                self.retry()
+
+            m = re.search(self.ALREADY_DOWNLOADING_PATTERN, self.html)
+            if m:
+                # if someone is already downloading on our line, wait 30min and retry
+                self.logDebug('Already downloading, waiting for 30 minutes')
+                self.wait(1800, reconnect=True)
+                self.retry()
 
             m = re.search(self.DIRECT_LINK_PATTERN, self.html)
             if not m:
