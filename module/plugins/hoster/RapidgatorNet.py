@@ -37,7 +37,6 @@ class RapidgatorNet(SimpleHoster):
 
     API_URL = 'http://rapidgator.net/api/file'
 
-    
     FILE_NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
     FILE_SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d\.]+) (?P<U>\w+)</strong>'
     FILE_OFFLINE_PATTERN = r'>(File not found|Error 404)'
@@ -45,6 +44,7 @@ class RapidgatorNet(SimpleHoster):
     JSVARS_PATTERN = r"\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*'?(.*?)'?;"
     FREE_ERROR_PATTERN = r'You can download files up to|This file can be downloaded by premium only'
     DOWNLOAD_LINK_PATTERN = r"return '(http://\w+.rapidgator.net/.*)';"
+
     RECAPTCHA_KEY_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
     ADSCAPTCHA_SRC_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']*)'
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.*?)"'
@@ -99,11 +99,7 @@ class RapidgatorNet(SimpleHoster):
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
 
-        found = re.search(self.FREE_ERROR_PATTERN, self.html)
-        if found:
-            self.fail("Premium account needed for download")
-
-        self.checkWait()
+        self.checkFree()
 
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.html))
         self.logDebug(jsvars)
@@ -127,7 +123,7 @@ class RapidgatorNet(SimpleHoster):
         url = "http://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
         self.html = self.load(url)
 
-        for _ in range(5):
+        for _ in xrange(5):
             found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
             if found:
                 link = found.group(1)
@@ -171,7 +167,11 @@ class RapidgatorNet(SimpleHoster):
 
         return captcha, captcha_key
 
-    def checkWait(self):
+    def checkFree(self):
+        found = re.search(self.FREE_ERROR_PATTERN, self.html)
+        if found:
+            self.fail("Premium account needed for download")
+
         found = re.search(r"(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)",
                           self.html)
         if found:
@@ -187,6 +187,7 @@ class RapidgatorNet(SimpleHoster):
 
         self.logDebug("Waiting %d minutes" % wait_time)
         self.wait(wait_time * 60, True)
+        self.retry()
 
     def getJsonResponse(self, url):
         response = self.load(url, decode=True)
