@@ -1,8 +1,7 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # Test links (random.bin):
-# http://www29.zippyshare.com/v/55578602/file.html
+# http://www8.zippyshare.com/v/3120421/file.html
 
 import re
 import subprocess
@@ -18,7 +17,7 @@ class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
     __pattern__ = r"(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __description__ = """Zippyshare.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg", "stickell")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -31,7 +30,7 @@ class ZippyshareCom(SimpleHoster):
 
     SH_COOKIES = [('zippyshare.com', 'ziplocale', 'en')]
 
-    DOWNLOAD_URL_PATTERN = r"<script type=\"text/javascript\">([^<]*?)(document\.getElementById\('dlbutton'\).href = [^;]+;)"
+    DOWNLOAD_URL_PATTERN = r"<script type=\"text/javascript\">([^<]*?)(document\.getElementById\('dlbutton'\).href\s*=\s*[^;]+;)"
     SEED_PATTERN = r'swfobject.embedSWF\("([^"]+)".*?seed: (\d+)'
     CAPTCHA_KEY_PATTERN = r'Recaptcha.create\("([^"]+)"'
     CAPTCHA_SHORTENCODE_PATTERN = r"shortencode: '([^']+)'"
@@ -66,8 +65,6 @@ class ZippyshareCom(SimpleHoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        url = None
-
         found = re.search(self.DOWNLOAD_URL_PATTERN, self.html, re.S)
         #Method #1: JS eval
         if found and re.search(r'span id="omg" class="(\d*)"', self.html):
@@ -84,7 +81,8 @@ class ZippyshareCom(SimpleHoster):
             omg = re.search(regex + r" = ([^;]+);", js).group(1)
             js = re.sub(regex + r" = ([^;]+);", '', js)
             js = re.sub(regex, omg, js)
-            js = re.sub(r"document.getElementById\(\\*'dlbutton\\*'\).href = ", '', js)
+            js = re.sub(r"document.getElementById\(\\*'dlbutton\\*'\).href\s*= ", '', js)
+            js = re.sub(r"function someFunction\(\) {", '', js)
             url = self.js.eval(js)
         elif found and re.search(r"document.getElementById\(\\*'dlbutton\\*'\).href = \"", self.html):
             js = "\n".join(found.groups())
@@ -210,7 +208,7 @@ class ZippyshareCom(SimpleHoster):
                                                   'response': code,
                                                   'shortencode': shortencode}))
             self.logDebug("reCaptcha response : %s" % response)
-            if response == True:
+            if response:
                 self.correctCaptcha()
                 break
             else:
