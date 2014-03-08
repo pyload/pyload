@@ -21,6 +21,7 @@
 # http://www.fastshare.cz/2141189/random.bin
 
 import re
+from urlparse import urljoin
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -38,7 +39,7 @@ class FastshareCz(SimpleHoster):
     FILE_OFFLINE_PATTERN = '>(The file has been deleted|Requested page not found)'
 
     FILE_URL_REPLACEMENTS = [("#.*", "")]
-    SH_COOKIES = [("fastshare.cz", "lang", "en")]
+    SH_COOKIES = [(".fastshare.cz", "lang", "en")]
 
     FREE_URL_PATTERN = r'action=(/free/.*?)>\s*<img src="([^"]*)"><br'
     PREMIUM_URL_PATTERN = r'(http://data\d+\.fastshare\.cz/download\.php\?id=\d+&)'
@@ -55,8 +56,8 @@ class FastshareCz(SimpleHoster):
             self.parseError("Free URL")
 
         baseurl = "http://www.fastshare.cz"
-        captcha = self.decryptCaptcha(baseurl + captcha_src)
-        self.download(baseurl + action, post={"code": captcha, "btn.x": 77, "btn.y": 18})
+        captcha = self.decryptCaptcha(urljoin(baseurl, captcha_src))
+        self.download(urljoin(baseurl, action), post={"code": captcha, "btn.x": 77, "btn.y": 18})
 
         check = self.checkDownload({
             "paralell_dl":
@@ -75,6 +76,9 @@ class FastshareCz(SimpleHoster):
             url = header["location"]
         else:
             self.html = self.load(self.pyfile.url)
+
+            self.getFileInfo()  #
+
             if self.CREDIT_PATTERN in self.html:
                 self.logWarning("Not enough traffic left")
                 self.resetAccount()
