@@ -27,7 +27,7 @@ class Vipleech4uCom(Account):
         if status and validuntil:
             print status
             print validuntil
-            return {"trafficleft": -1, "validuntil": mktime(strptime(validuntil, "%d-%m-%Y"))}
+            return {"trafficleft": -1, "validuntil": mktime(strptime("%s 23:59" %validuntil, "%d-%m-%Y %H:%M"))}
         else:
             return {"premium": False}
 
