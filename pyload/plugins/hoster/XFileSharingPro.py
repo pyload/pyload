@@ -21,7 +21,7 @@ from random import random
 from urllib import unquote
 from urlparse import urlparse
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
 from module.utils import html_unescape
 from module.network.RequestFactory import getURL
@@ -36,7 +36,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -44,10 +44,10 @@ class XFileSharingPro(SimpleHoster):
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[^<]+)\)</font>'
     FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
-    FILE_OFFLINE_PATTERN = r'<(b|h[1-6])>File Not Found</(b|h[1-6])>|This file has been removed'
+    FILE_OFFLINE_PATTERN = r'>\w+ (Not Found|file (was|has been) removed)'
 
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
-    LONG_WAIT_PATTERN = r'(?P<H>\d+(?=\s*hour))?.*?(?P<M>\d+(?=\s*minute))?.*?(?P<S>\d+(?=\s*second))?'
+    #LONG_WAIT_PATTERN = r'(?P<H>\d+(?=\s*hour))?.*?(?P<M>\d+(?=\s*minute))?.*?(?P<S>\d+(?=\s*second))?'
     OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
     CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
@@ -68,7 +68,9 @@ class XFileSharingPro(SimpleHoster):
     def process(self, pyfile):
         self.prepare()
 
-        if not re.match(self.__pattern__, self.pyfile.url):
+        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
+
+        if not re.match(self.__pattern__, pyfile.url):
             if self.premium:
                 self.handleOverriden()
             else:
@@ -128,7 +130,7 @@ class XFileSharingPro(SimpleHoster):
         self.startDownload(url)
 
     def getDownloadLink(self):
-        for i in range(5):
+        for i in xrange(5):
             self.logDebug("Getting download link: #%d" % i)
             data = self.getPostParameters()
 
@@ -238,7 +240,7 @@ class XFileSharingPro(SimpleHoster):
         return self.errmsg
 
     def getPostParameters(self):
-        for _ in range(3):
+        for _ in xrange(3):
             if not self.errmsg:
                 self.checkErrors()
 
