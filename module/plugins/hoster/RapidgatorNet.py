@@ -42,7 +42,9 @@ class RapidgatorNet(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'>(File not found|Error 404)'
 
     JSVARS_PATTERN = r"\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*'?(.*?)'?;"
-    FREE_ERROR_PATTERN = r'You can download files up to|This file can be downloaded by premium only'
+    PREMIUM_ONLY_ERROR_PATTERN = r'You can download files up to|This file can be downloaded by premium only<'
+    DOWNLOAD_LIMIT_ERROR_PATTERN = r'You have reached your (daily|hourly) downloads limit'
+    WAIT_PATTERN = r'(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)'
     DOWNLOAD_LINK_PATTERN = r"return '(http://\w+.rapidgator.net/.*)';"
 
     RECAPTCHA_KEY_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
@@ -168,16 +170,16 @@ class RapidgatorNet(SimpleHoster):
         return captcha, captcha_key
 
     def checkFree(self):
-        found = re.search(self.FREE_ERROR_PATTERN, self.html)
+        found = re.search(self.PREMIUM_ONLY_ERROR_PATTERN, self.html)
         if found:
             self.fail("Premium account needed for download")
+        else:
+            found = re.search(self.WAIT_PATTERN, self.html)
 
-        found = re.search(r"(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)",
-                          self.html)
         if found:
             wait_time = int(found.group(1)) * {"hour": 60, "min": 1}[found.group(2)]
         else:
-            found = re.search(r"You have reached your (daily|hourly) downloads limit", self.html)
+            found = re.search(self.DOWNLOAD_LIMIT_ERROR_PATTERN, self.html)
             if not found:
                 return
             elif found.group(1) == "daily":
