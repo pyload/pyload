@@ -17,7 +17,7 @@ class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
     __pattern__ = r"(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __description__ = """Zippyshare.com Download Hoster"""
     __author_name__ = ("spoob", "zoidberg", "stickell")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -82,8 +82,7 @@ class ZippyshareCom(SimpleHoster):
             js = re.sub(regex + r" = ([^;]+);", '', js)
             js = re.sub(regex, omg, js)
             js = re.sub(r"document.getElementById\(\\*'dlbutton\\*'\).href\s*= ", '', js)
-            js = re.sub(r"(function som(e|d)Function\(\) {)|(var som(e|d)function = function\(\) {)",
-                        '', js, flags=re.I)
+            js = re.sub(r"(?i)(function som(e|d)Function\(\) {)|(var som(e|d)function = function\(\) {)", '', js)
             url = self.js.eval(js)
         elif found and re.search(r"document.getElementById\(\\*'dlbutton\\*'\).href = \"", self.html):
             js = "\n".join(found.groups())
