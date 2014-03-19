@@ -10,7 +10,7 @@ class ZDF(Hoster):
     # Based on zdfm by Roland Beermann
     # http://github.com/enkore/zdfm/
     __name__ = "ZDF Mediathek"
-    __version__ = "0.7"
+    __version__ = "0.8"
     __pattern__ = r"http://www\.zdf\.de/ZDFmediathek/[^0-9]*([0-9]+)[^0-9]*"
     __config__ = []
 
@@ -23,11 +23,12 @@ class ZDF(Hoster):
 
     @staticmethod
     def video_valid(video):
-        return video.findtext("url").startswith("http") and video.findtext("url").endswith(".mp4")
+        return video.findtext("url").startswith("http") and video.findtext("url").endswith(".mp4") and \
+               video.findtext("facets/facet").startswith("progressive")
 
     @staticmethod
     def get_id(url):
-        return int(re.search(r"[^0-9]*([0-9]+)[^0-9]*", url).group(1))
+        return int(re.search(r"[^0-9]*([0-9]{4,})[^0-9]*", url).group(1))
 
     def process(self, pyfile):
         xml = fromstring(self.load(XML_API % self.get_id(pyfile.url)))
