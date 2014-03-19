@@ -15,8 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
+import re
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
-
 
 class FilestubeCom(SimpleCrypter):
     __name__ = "FilestubeCom"
@@ -27,5 +27,18 @@ class FilestubeCom(SimpleCrypter):
     __author_name__ = ("stickell")
     __author_mail__ = ("l.stickell@yahoo.it")
 
-    LINK_PATTERN = r"link_download'\]\); renderGo\('(http://[^)]+)'\);"
+    COPY_PASTE_LINKS = r'<pre id="copy_paste_links".*?>(.*?)</pre>'
+    LINK_PATTERN2 = r'<a class="gobut" href="(http://.+?)" title="Download Now!" rel="nofollow"'
     TITLE_PATTERN = r"<title>(?P<title>.+) download"
+
+    def getLinks(self):
+      linklist = re.search(self.COPY_PASTE_LINKS, self.html, re.MULTILINE)
+      if linklist:
+        matches = re.findall('^(.*?)$', linklist)
+        return matches
+      else:
+        matches = re.findall(self.LINK_PATTERN2, self.html)
+        if matches:
+          return matches
+        else:
+          raise Exception("no links to extract")
