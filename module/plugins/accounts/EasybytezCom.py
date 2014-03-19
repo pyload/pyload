@@ -49,7 +49,7 @@ class EasybytezCom(Account):
                 validuntil = mktime(strptime(found.group(1), "%d %B %Y"))
             except Exception, e:
                 self.logError(e)
-            if validuntil>mktime(gmtime()):
+            if validuntil > mktime(gmtime()):
                 premium = True
                 trafficleft = -1
         else:
