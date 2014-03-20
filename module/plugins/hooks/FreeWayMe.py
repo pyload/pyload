@@ -17,7 +17,7 @@
     @author: Nicolas Giese
 """
 
-from module.network.RequestFactory import getURL, getRequest
+from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 
 class FreeWayMe(MultiHoster):
@@ -34,8 +34,6 @@ class FreeWayMe(MultiHoster):
     __author_mail__ = ("james@free-way.me")
 
     def getHoster(self):
-        req = getRequest()
-        hostis = req.load("https://www.free-way.me/ajax/jd.php", get={"id": 3}).replace("\"", "").strip()
-        req.close()
+        hostis = getURL("https://www.free-way.me/ajax/jd.php", get={"id": 3}).replace("\"", "").strip()
         self.logDebug("hosters: %s" % hostis)
         return [x.strip() for x in hostis.split(",") if x.strip()]

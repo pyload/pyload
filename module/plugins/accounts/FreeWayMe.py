@@ -31,7 +31,7 @@ class FreeWayMe(Account):
 
     def loadAccountInfo(self, user, req):
         status = self.getAccountStatus(user, req)
-        if status is False:
+        if not status:
             return False
         self.logDebug(status)
 
@@ -54,7 +54,7 @@ class FreeWayMe(Account):
         status = self.getAccountStatus(user, req)
 
         # Check if user and password are valid
-        if status is False:
+        if not status:
             self.wrongPassword()
 
     def getAccountStatus(self, user, req):
