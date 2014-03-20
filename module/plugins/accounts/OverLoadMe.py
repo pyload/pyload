@@ -11,7 +11,7 @@ class OverLoadMe(Account):
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
-        page = req.load("https://api.over-load.me/account.php?user=%s&auth=%s" % (user, data["password"])).strip()
+        page = req.load("https://api.over-load.me/account.php", get={"user": user, "auth": data["password"]}).strip()
         data = json_loads(page)
 
         # Check for premium
@@ -22,7 +22,7 @@ class OverLoadMe(Account):
         return account_info
 
     def login(self, user, data, req):
-        jsondata = req.load("https://api.over-load.me/account.php?user=%s&auth=%s" % (user, data["password"])).strip()
+        jsondata = req.load("https://api.over-load.me/account.php", get={"user": user, "auth": data["password"]}).strip()
         data = json_loads(jsondata)
 
         if data["err"] == 1:
