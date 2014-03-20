@@ -42,12 +42,10 @@ class OverLoadMe(Hoster):
             self.logDebug("Old URL: %s" % pyfile.url)
             data = self.account.getAccountData(self.user)
             
-            url = "https://api.over-load.me/getdownload.php?auth=%s&link=%s" % (data["password"], (quote(pyfile.url, "")))
-            self.logDebug("New URL: %s" % url)
-            page = self.load(url)
+            page = self.load("https://api.over-load.me/getdownload.php" , get={"auth": data["password"], "link": pyfile.url})
             data = json_loads(page)
             
-            self.logWarning("Returned Data: %s" % data)
+            self.logDebug("Returned Data: %s" % data)
 
             if data["err"] == 1:
                 self.logWarning(data["msg"])
