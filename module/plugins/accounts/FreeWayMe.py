@@ -37,7 +37,7 @@ class FreeWayMe(Account):
 
         account_info = {"validuntil": -1, "premium": False}
         if status["premium"] == "Free":
-            account_info["trafficleft"] = int(status["guthaben"])*1024
+            account_info["trafficleft"] = int(status["guthaben"]) * 1024
         elif status["premium"] == "Spender":
             account_info["trafficleft"] = -1
         elif status["premium"] == "Flatrate":
@@ -59,7 +59,7 @@ class FreeWayMe(Account):
 
     def getAccountStatus(self, user, req):
         answer = req.load("https://www.free-way.me/ajax/jd.php",
-            get={"id": 4, "user": user, "pass": self.accounts[user]["password"]})
+                          get={"id": 4, "user": user, "pass": self.accounts[user]["password"]})
         self.logDebug("login: %s" % answer)
         if answer == "Invalid login":
             self.wrongPassword()
