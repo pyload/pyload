@@ -136,7 +136,7 @@ def get_source(options):
             file.chmod(0755)
 
     (pyload / ".hgtags").remove()
-    (pyload / ".hgignore").remove()
+    (pyload / ".gitignore").remove()
     #(pyload / "docs").rmtree()
 
     f = open(pyload / "__init__.py", "wb")
