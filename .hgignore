@@ -1,41 +1,6 @@
-*.py[cod]
-
-# C extensions
-*.so
-
-# Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
-.installed.cfg
-lib/*
-lib64
-__pycache__
-
-# Installer logs
-pip-log.txt
-
-# Unit test / coverage reports
-.coverage
-.tox
-nosetests.xml
-
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
-
-# PyCharm
-.idea
-
 # ignoreing unneeded files, using glob syntax
+syntax: glob
+*.pyc
 *~
 *.pidaproject
 .svn
@@ -60,6 +25,7 @@ cert.pem
 module/web/pyload.db
 *.svg
 *.prefs
+*.po
 *.orig
 *.rej
 pyload/*
