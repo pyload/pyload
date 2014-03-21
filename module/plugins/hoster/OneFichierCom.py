@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# Test links (random.bin):
+# http://5pnm24ltcw.1fichier.com/
+
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
@@ -8,7 +11,7 @@ class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
     __pattern__ = r"(http://(\w+)\.((1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl.fr))"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __description__ = """1fichier.com download hoster"""
     __author_name__ = ("fragonib", "the-razer", "zoidberg", "imclem")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "daniel_ AT gmx DOT net", "zoidberg@mujmail.cz", "imclem on github")
@@ -42,8 +45,11 @@ class OneFichierCom(SimpleHoster):
         if "pass" in inputs:
             inputs['pass'] = self.getPassword()
 
-        self.html=self.load(url, post=inputs)
-        download_url = re.search(self.DOWNLOAD_LINK_PATTERN, self.html).group(1)
+        self.html = self.load(url, post=inputs)
+        m = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
+        if not m:
+            self.parseError("Unable to detect download link")
+        download_url = m.group(1)
 
         self.download(download_url)
 

@@ -18,7 +18,7 @@
 """
 
 import re
-from time import mktime, strptime
+from time import mktime, strptime, gmtime
 
 from module.plugins.Account import Account
 from module.plugins.internal.SimpleHoster import parseHtmlForm
@@ -27,7 +27,7 @@ from module.utils import parseFileSize
 
 class EasybytezCom(Account):
     __name__ = "EasybytezCom"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __type__ = "account"
     __description__ = """EasyBytez.com account plugin"""
     __author_name__ = ("zoidberg")
@@ -44,19 +44,19 @@ class EasybytezCom(Account):
 
         found = re.search(self.VALID_UNTIL_PATTERN, html)
         if found:
-            premium = True
-            trafficleft = -1
             try:
                 self.logDebug("Expire date: " + found.group(1))
                 validuntil = mktime(strptime(found.group(1), "%d %B %Y"))
             except Exception, e:
                 self.logError(e)
+            if validuntil > mktime(gmtime()):
+                premium = True
+                trafficleft = -1
         else:
             found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
             if found:
                 trafficleft = found.group(1)
                 if "Unlimited" in trafficleft:
-                    premium = True
                     trafficleft = -1
                 else:
                     trafficleft = parseFileSize(trafficleft) / 1024
