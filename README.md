@@ -1,5 +1,4 @@
-Description
-===========
+# pyLoad
 
 pyLoad is a free and open source downloader for 1-click-hosting sites
 like rapidshare.com or uploaded.to.
@@ -15,15 +14,14 @@ or help us out, visit http://github.com/pyload/pyload
 Documentation about extending pyLoad can be found at http://docs.pyload.org or join us at #pyload on irc.freenode.net
 
 Dependencies
-============
+------------
 
 You need at least python 2.5 to run pyLoad and all of these required libaries.
 They should be automatically installed when using pip install.
 The prebuilt pyload packages also install these dependencies or have them included, so manuall install
 is only needed when installing pyLoad from source.
 
-Required
---------
+### Required
 
 - pycurl a.k.a python-curl
 - jinja2
@@ -33,8 +31,7 @@ Required
 
 Some plugins require additional packages, only install these when needed.
 
-Optional
---------
+### Optional
 
 - pycrypto: RSDF/CCF/DLC support
 - tesseract, python-pil a.k.a python-imaging: Automatic captcha recognition for a small amount of plugins
@@ -44,7 +41,7 @@ Optional
 - pyOpenSSL: For SSL connection
 
 First start
-===========
+-----------
 
 Note: If you installed pyload via package-manager `python pyLoadCore.py` is probably equivalent to `pyLoadCore`
 
@@ -59,7 +56,7 @@ For a list of options use::
     python pyLoadCore.py -h
 
 Configuration
-=============
+-------------
 
 After finishing the setup assistent pyLoad is ready to use and more configuration can be done via webinterface.
 Additionally you could simply edit the config files located in your pyLoad home dir (defaults to: ~/.pyload)
@@ -70,8 +67,7 @@ To restart the configure assistent run::
 
     python pyLoadCore.py -s
 
-Adding downloads
-----------------
+### Adding downloads
 
 To start the CLI and connect to a local server, run::
 
@@ -84,5 +80,5 @@ for more options refer to::
 The webinterface can be accessed when pointing your webbrowser to the ip and configured port, defaults to http://localhost:8000
 
 Notes
-=====
+-----
 For more information, see http://pyload.org/
