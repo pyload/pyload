@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
+###############################################################################
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 3 of the License,
+#  or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#  See the GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, see <http://www.gnu.org/licenses/>.
+#
+#  @author: zoidberg
+###############################################################################
 
 import re
 from random import random
@@ -36,7 +36,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -225,8 +225,8 @@ class XFileSharingPro(SimpleHoster):
                 self.setWait(3600, True)
                 self.wait()
                 self.retry(25)
-            elif 'countdown' in self.errmsg or 'Expired session' in self.errmsg:
-                self.retry(3)
+            elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
+                self.retry()
             elif 'maintenance' in self.errmsg:
                 self.tempOffline()
             elif 'download files up to' in self.errmsg:
