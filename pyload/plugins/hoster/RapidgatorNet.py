@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ###############################################################################
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -29,8 +28,8 @@ from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia, AdsCap
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?rapidgator\.net/file/\w+"
-    __version__ = "0.20"
+    __pattern__ = r"http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+"
+    __version__ = "0.21"
     __description__ = """Rapidgator.net hoster plugin"""
     __author_name__ = ("zoidberg", "chrox", "stickell", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "", "l.stickell@yahoo.it", "vuolter@gmail.com")
