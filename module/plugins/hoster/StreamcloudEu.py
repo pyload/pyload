@@ -27,7 +27,7 @@ class StreamcloudEu(XFileSharingPro):
         if found:
             return found.group(1)
 
-        for i in range(5):
+        for i in xrange(5):
             self.logDebug("Getting download link: #%d" % i)
             data = self.getPostParameters()
             httpRequest = HTTPRequest(options=self.req.options)
@@ -53,7 +53,7 @@ class StreamcloudEu(XFileSharingPro):
         return found.group(1)
 
     def getPostParameters(self):
-        for i in range(3):
+        for _ in xrange(3):
             if not self.errmsg:
                 self.checkErrors()
 
