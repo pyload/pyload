@@ -371,7 +371,7 @@ if __name__ == "__main__":
 
     a = time()
 
-    test = ["http://www.youtube.com/watch?v=%s" % x for x in range(0, 100)]
+    test = ["http://www.youtube.com/watch?v=%s" % x for x in xrange(0, 100)]
     print p.parseUrls(test)
 
     b = time()

@@ -43,7 +43,7 @@ class GigapetaCom(SimpleHoster):
 
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
-        for i in range(5):
+        for _ in xrange(5):
             self.checkErrors()
 
             captcha = self.decryptCaptcha(captcha_url)

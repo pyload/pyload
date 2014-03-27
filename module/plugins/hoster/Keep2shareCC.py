@@ -84,7 +84,7 @@ class Keep2shareCC(SimpleHoster):
 
     def handleCaptcha(self):
         recaptcha = ReCaptcha(self)
-        for i in xrange(5):
+        for _ in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,
