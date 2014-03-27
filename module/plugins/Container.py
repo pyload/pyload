@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -38,19 +38,19 @@ class Container(Crypter):
 
         self.setup()
         self.thread = thread
-        
+
         self.loadToDisk()
 
         self.decrypt(self.pyfile)
         self.deleteTmp()
-        
+
         self.createPackages()
-    
+
 
     def loadToDisk(self):
         """loads container to disk if its stored remotely and overwrite url, 
         or check existent on several places at disk"""
-        
+
         if self.pyfile.url.startswith("http"):
             self.pyfile.name = re.findall("([^\/=]+)", self.pyfile.url)[-1]
             content = self.load(self.pyfile.url)
@@ -58,7 +58,7 @@ class Container(Crypter):
             f = open(self.pyfile.url, "wb" )
             f.write(content)
             f.close()
-            
+
         else:
             self.pyfile.name = basename(self.pyfile.url)
             if not exists(self.pyfile.url):
@@ -66,7 +66,7 @@ class Container(Crypter):
                     self.pyfile.url = join(pypath, self.pyfile.url)
                 else:
                     self.fail(_("File not exists."))
-      
+
 
     def deleteTmp(self):
         if self.pyfile.name.startswith("tmp_"):

@@ -19,5 +19,5 @@ class MovReelCom(XFileSharingPro):
     DIRECT_LINK_PATTERN = r'<a href="(http://[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/.*)">Download Link</a>'
     #OVR_DOWNLOAD_LINK_PATTERN = "var file_link = '(.*)';"
     HOSTER_NAME = "movreel.com"
-    
+
 getInfo = create_getInfo(MovReelCom)
