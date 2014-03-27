@@ -73,7 +73,7 @@ class SolveMedia(CaptchaService):
         try:
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">', html).group(1)
         except:
-            self.plugin.fail("solvmedia error")
+            self.plugin.fail("solvemedia error")
         result = self.result(challenge)
 
         return challenge, result

@@ -48,7 +48,7 @@ class SafelinkingNet(Crypter):
                     if m:
                         captchaKey = m.group(1)
                         captcha = SolveMedia(self)
-                        captchaProvider = "Solvmedia"
+                        captchaProvider = "Solvemedia"
                     else:
                         self.fail("Error parsing captcha")
 
