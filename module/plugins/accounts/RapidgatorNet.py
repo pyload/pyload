@@ -25,9 +25,9 @@ class RapidgatorNet(Account):
     __name__ = "RapidgatorNet"
     __version__ = "0.04"
     __type__ = "account"
-    __description__ = """rapidgator.net account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Rapidgator.net account plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     API_URL = 'http://rapidgator.net/api/user'
 

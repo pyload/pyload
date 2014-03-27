@@ -10,9 +10,9 @@ class CatShareNet(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?catshare.net/\w{16}.*"
     __version__ = "0.01"
-    __description__ = """CatShare.net Download Hoster"""
-    __author_name__ = ("z00nx")
-    __author_mail__ = ("z00nx0@gmail.com")
+    __description__ = """CatShare.net hoster plugin"""
+    __author_name__ = "z00nx"
+    __author_mail__ = "z00nx0@gmail.com"
 
     FILE_INFO_PATTERN = r'<h3 class="pull-left"[^>]+>(?P<N>.*)</h3>\s+<h3 class="pull-right"[^>]+>(?P<S>.*)</h3>'
     FILE_OFFLINE_PATTERN = r'Podany plik zosta'

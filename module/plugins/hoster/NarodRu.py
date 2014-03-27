@@ -26,8 +26,9 @@ class NarodRu(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?narod(\.yandex)?\.ru/(disk|start/[0-9]+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+"
     __version__ = "0.1"
-    __description__ = """Narod.ru"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Narod.ru hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<dt class="name">(?:<[^<]*>)*(?P<N>[^<]+)</dt>'
     FILE_SIZE_PATTERN = r'<dd class="size">(?P<S>\d[^<]*)</dd>'
@@ -41,7 +42,7 @@ class NarodRu(SimpleHoster):
     DOWNLOAD_LINK_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'
 
     def handleFree(self):
-        for i in range(5):
+        for _ in xrange(5):
             self.html = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random() * 777))
             found = re.search(self.CAPTCHA_PATTERN, self.html)
             if not found:

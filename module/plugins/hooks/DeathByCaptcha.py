@@ -61,7 +61,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Hook):
     __name__ = "DeathByCaptcha"
     __version__ = "0.03"
-    __description__ = """send captchas to DeathByCaptcha.com"""
+    __description__ = """Send captchas to DeathByCaptcha.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
@@ -147,7 +147,7 @@ class DeathByCaptcha(Hook):
             raise DeathByCaptchaException(response)
         ticket = response['captcha']
 
-        for i in range(24):
+        for _ in xrange(24):
             sleep(5)
             response = self.call_api("captcha/%d" % ticket, False)
             if response['text'] and response['is_correct']:

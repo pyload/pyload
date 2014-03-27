@@ -10,9 +10,9 @@ class FileserveComFolder(Crypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?fileserve.com/list/\w+"
     __version__ = "0.11"
-    __description__ = """FileServeCom.com Folder Plugin"""
-    __author_name__ = ("fionnc")
-    __author_mail__ = ("fionnc@gmail.com")
+    __description__ = """FileServe.com folder decrypter plugin"""
+    __author_name__ = "fionnc"
+    __author_mail__ = "fionnc@gmail.com"
 
     FOLDER_PATTERN = r'<table class="file_list">(.*?)</table>'
     LINK_PATTERN = r'<a href="([^"]+)" class="sheet_icon wbold">'

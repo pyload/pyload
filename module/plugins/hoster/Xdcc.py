@@ -41,9 +41,9 @@ class Xdcc(Hoster):
         ("ident", "str", "Ident", "pyloadident"),
         ("realname", "str", "Realname", "pyloadreal")
     ]
-    __description__ = """A Plugin that allows you to download from an IRC XDCC bot"""
-    __author_name__ = ("jeix")
-    __author_mail__ = ("jeix@hasnomail.com")
+    __description__ = """Download from IRC XDCC bot"""
+    __author_name__ = "jeix"
+    __author_mail__ = "jeix@hasnomail.com"
 
     def setup(self):
         self.debug = 0  # 0,1,2
@@ -55,7 +55,7 @@ class Xdcc(Hoster):
         self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="XDCC")
 
         self.pyfile = pyfile
-        for i in range(0, 3):
+        for _ in xrange(0, 3):
             try:
                 nmn = self.doDownload(pyfile.url)
                 self.logDebug("%s: Download of %s finished." % (self.__name__, nmn))

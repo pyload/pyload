@@ -15,8 +15,8 @@ class BasePlugin(Hoster):
     __pattern__ = r"^unmatchable$"
     __version__ = "0.19"
     __description__ = """Base Plugin when any other didnt fit"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
 
     def setup(self):
         self.chunkLimit = -1
@@ -38,7 +38,7 @@ class BasePlugin(Hoster):
         # self.decryptCaptcha("http://localhost:9000/captcha")
         #
         # if pyfile.url == "79":
-        #     self.core.api.addPackage("test", [str(i) for i in range(80)], 1)
+        #     self.core.api.addPackage("test", [str(i) for i in xrange(80)], 1)
         #
         # return
         if pyfile.url.startswith("http"):
@@ -74,7 +74,7 @@ class BasePlugin(Hoster):
     def downloadFile(self, pyfile):
         url = pyfile.url
 
-        for i in range(5):
+        for _ in xrange(5):
             header = self.load(url, just_header=True)
 
             # self.load does not raise a BadHeader on 404 responses, do it here

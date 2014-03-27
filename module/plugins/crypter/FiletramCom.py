@@ -23,7 +23,7 @@ class FiletramCom(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?filetram.com/[^/]+/.+"
     __version__ = "0.01"
-    __description__ = """Filetram.com Plugin"""
+    __description__ = """Filetram.com decrypter plugin"""
     __author_name__ = ("igel", "stickell")
     __author_mail__ = ("igelkun@myopera.com", "l.stickell@yahoo.it")
 

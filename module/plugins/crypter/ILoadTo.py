@@ -8,6 +8,6 @@ class ILoadTo(DeadCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://iload\.to/go/\d+-[\w\.-]+/"
     __version__ = "0.11"
-    __description__ = """iload.to Crypter Plugin"""
-    __author_name__ = ("hzpz")
-    __author_mail__ = ("")
+    __description__ = """Iload.to decrypter plugin"""
+    __author_name__ = "hzpz"
+    __author_mail__ = ""

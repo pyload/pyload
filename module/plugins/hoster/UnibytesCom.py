@@ -26,8 +26,9 @@ class UnibytesCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?unibytes\.com/[a-zA-Z0-9-._ ]{11}B"
     __version__ = "0.1"
-    __description__ = """UniBytes.com"""
-    __author_name__ = ("zoidberg")
+    __description__ = """UniBytes.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = r'<span[^>]*?id="fileName"[^>]*>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
     DOMAIN = 'http://www.unibytes.com'
@@ -39,7 +40,7 @@ class UnibytesCom(SimpleHoster):
         action, post_data = self.parseHtmlForm('id="startForm"')
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
-        for i in range(8):
+        for _ in xrange(8):
             self.logDebug(action, post_data)
             self.html = self.load(self.DOMAIN + action, post=post_data)
 

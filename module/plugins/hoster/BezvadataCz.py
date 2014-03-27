@@ -25,9 +25,9 @@ class BezvadataCz(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*bezvadata.cz/stahnout/.*"
     __version__ = "0.24"
-    __description__ = """BezvaData.cz"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """BezvaData.cz hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'
     FILE_SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[^<]+)</li>'
@@ -46,7 +46,7 @@ class BezvadataCz(SimpleHoster):
         #captcha form
         self.html = self.load(url)
         self.checkErrors()
-        for i in range(5):
+        for _ in xrange(5):
             action, inputs = self.parseHtmlForm('frm-stahnoutFreeForm')
             if not inputs:
                 self.parseError("FreeForm")

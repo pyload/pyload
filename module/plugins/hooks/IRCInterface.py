@@ -37,7 +37,7 @@ from module.Api import PackageDoesNotExists, FileDoesNotExists
 class IRCInterface(Thread, Hook):
     __name__ = "IRCInterface"
     __version__ = "0.11"
-    __description__ = """connect to irc and let owner perform different tasks"""
+    __description__ = """Connect to irc and let owner perform different tasks"""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("host", "str", "IRC-Server Address", "Enter your server here!"),
                   ("port", "int", "IRC-Server Port", "6667"),
@@ -48,8 +48,8 @@ class IRCInterface(Thread, Hook):
                   ("info_file", "bool", "Inform about every file finished", "False"),
                   ("info_pack", "bool", "Inform about every package finished", "True"),
                   ("captcha", "bool", "Send captcha requests", "True")]
-    __author_name__ = ("Jeix")
-    __author_mail__ = ("Jeix@hasnomail.com")
+    __author_name__ = "Jeix"
+    __author_mail__ = "Jeix@hasnomail.com"
 
     def __init__(self, core, manager):
         Thread.__init__(self)

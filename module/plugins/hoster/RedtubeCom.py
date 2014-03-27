@@ -11,9 +11,9 @@ class RedtubeCom(Hoster):
     __type__ = "hoster"
     __pattern__ = r'http://[\w\.]*?redtube\.com/\d+'
     __version__ = "0.2"
-    __description__ = """Redtube.com Download Hoster"""
-    __author_name__ = ("jeix")
-    __author_mail__ = ("jeix@hasnomail.de")
+    __description__ = """Redtube.com hoster plugin"""
+    __author_name__ = "jeix"
+    __author_mail__ = "jeix@hasnomail.de"
 
     def process(self, pyfile):
         self.download_html()

@@ -12,11 +12,11 @@ class MultiuploadCom(Crypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?multiupload.com/(\w+)"
     __version__ = "0.01"
-    __description__ = """MultiUpload.com crypter"""
+    __description__ = """MultiUpload.com decrypter plugin"""
     __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "multiupload"),
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     ML_LINK_PATTERN = r'<div id="downloadbutton_" style=""><a href="([^"]+)"'
 

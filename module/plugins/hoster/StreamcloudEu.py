@@ -12,8 +12,8 @@ class StreamcloudEu(XFileSharingPro):
     __pattern__ = r"http://(www\.)?streamcloud\.eu/\S+"
     __version__ = "0.03"
     __description__ = """Streamcloud.eu hoster plugin"""
-    __author_name__ = ("seoester")
-    __author_mail__ = ("seoester@googlemail.com")
+    __author_name__ = "seoester"
+    __author_mail__ = "seoester@googlemail.com"
 
     HOSTER_NAME = "streamcloud.eu"
     DIRECT_LINK_PATTERN = r'file: "(http://(stor|cdn)\d+\.streamcloud.eu:?\d*/.*/video\.(mp4|flv))",'
@@ -27,7 +27,7 @@ class StreamcloudEu(XFileSharingPro):
         if found:
             return found.group(1)
 
-        for i in range(5):
+        for i in xrange(5):
             self.logDebug("Getting download link: #%d" % i)
             data = self.getPostParameters()
             httpRequest = HTTPRequest(options=self.req.options)
@@ -53,7 +53,7 @@ class StreamcloudEu(XFileSharingPro):
         return found.group(1)
 
     def getPostParameters(self):
-        for i in range(3):
+        for _ in xrange(3):
             if not self.errmsg:
                 self.checkErrors()
 

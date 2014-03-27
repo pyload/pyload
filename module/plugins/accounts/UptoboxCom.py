@@ -7,8 +7,8 @@ class UptoboxCom(XFSPAccount):
     __version__ = "0.02"
     __type__ = "account"
     __description__ = """DDLStorage.com account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     MAIN_PAGE = "http://uptobox.com/"
 

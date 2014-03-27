@@ -26,8 +26,8 @@ class GooIm(SimpleHoster):
     __pattern__ = r"http://(?:www\.)?goo\.im/.+"
     __version__ = "0.02"
     __description__ = """Goo.im hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_NAME_PATTERN = r'<h3>Filename: (?P<N>.+)</h3>'
     FILE_OFFLINE_PATTERN = r'The file you requested was not found'

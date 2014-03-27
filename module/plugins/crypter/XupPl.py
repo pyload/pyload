@@ -6,9 +6,9 @@ class XupPl(Crypter):
     __type__ = "crypter"
     __pattern__ = r"https?://.*\.xup\.pl/.*"
     __version__ = "0.1"
-    __description__ = """Xup.pl Crypter Plugin"""
-    __author_name__ = ("z00nx")
-    __author_mail__ = ("z00nx0@gmail.com")
+    __description__ = """Xup.pl decrypter plugin"""
+    __author_name__ = "z00nx"
+    __author_mail__ = "z00nx0@gmail.com"
 
     def decrypt(self, pyfile):
         header = self.load(self.pyfile.url, just_header=True)

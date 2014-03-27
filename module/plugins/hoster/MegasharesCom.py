@@ -26,9 +26,9 @@ class MegasharesCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(\w+\.)?megashares.com/.*"
     __version__ = "0.24"
-    __description__ = """megashares.com plugin - free only"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Megashares.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = '<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'
     FILE_SIZE_PATTERN = '<strong><span class="black">Filesize:</span></strong> (?P<S>[0-9.]+) (?P<U>[kKMG])i?B<br />'
@@ -63,7 +63,7 @@ class MegasharesCom(SimpleHoster):
             passport_num = found.group(1)
             request_uri = re.search(self.REQUEST_URI_PATTERN, self.html).group(1)
 
-            for _ in range(5):
+            for _ in xrange(5):
                 random_num = re.search(self.REACTIVATE_NUM_PATTERN, self.html).group(1)
 
                 verifyinput = self.decryptCaptcha(

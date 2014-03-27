@@ -38,8 +38,8 @@ class TurbobitNet(SimpleHoster):
     __pattern__ = r"http://(?:\w*\.)?(turbobit.net|unextfiles.com)/(?!download/folder/)(?:download/free/)?(?P<ID>\w+).*"
     __version__ = "0.11"
     __description__ = """Turbobit.net plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     # long filenames are shortened
     FILE_INFO_PATTERN = r"<span class='file-icon1[^>]*>(?P<N>[^<]+)</span>\s*\((?P<S>[^\)]+)\)\s*</h1>"
@@ -70,7 +70,7 @@ class TurbobitNet(SimpleHoster):
         self.downloadFile()
 
     def solveCaptcha(self):
-        for i in range(5):
+        for _ in xrange(5):
             found = re.search(self.LIMIT_WAIT_PATTERN, self.html)
             if found:
                 wait_time = int(found.group(1))
@@ -135,7 +135,7 @@ class TurbobitNet(SimpleHoster):
 
         found = re.search("(/\w+/timeout\.js\?\w+=)([^\"\'<>]+)", self.html)
         url = "http://turbobit.net%s%s" % (found.groups() if found else (
-        '/files/timeout.js?ver=', ''.join(random.choice('0123456789ABCDEF') for x in range(32))))
+        '/files/timeout.js?ver=', ''.join(random.choice('0123456789ABCDEF') for _ in xrange(32))))
         fun = self.load(url)
 
         self.setWait(65, False)

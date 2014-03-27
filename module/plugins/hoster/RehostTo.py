@@ -10,9 +10,9 @@ class RehostTo(Hoster):
     __version__ = "0.13"
     __type__ = "hoster"
     __pattern__ = r"https?://.*rehost.to\..*"
-    __description__ = """rehost.com hoster plugin"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __description__ = """Rehost.com hoster plugin"""
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
 
     def getFilename(self, url):
         return unquote(url.rsplit("/", 1)[1])

@@ -13,9 +13,9 @@ class ShareLinksBiz(Crypter):
     __type__ = "crypter"
     __pattern__ = r"(?P<base>http://[\w\.]*?(share-links|s2l)\.biz)/(?P<id>_?[0-9a-z]+)(/.*)?"
     __version__ = "1.13"
-    __description__ = """Share-Links.biz Crypter"""
-    __author_name__ = ("fragonib")
-    __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
+    __description__ = """Share-Links.biz decrypter plugin"""
+    __author_name__ = "fragonib"
+    __author_mail__ = "fragonib[AT]yahoo[DOT]es"
 
     def setup(self):
         self.baseUrl = None

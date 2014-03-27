@@ -29,8 +29,9 @@ class CzshareCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
     __version__ = "0.93"
-    __description__ = """CZshare.com"""
-    __author_name__ = ("zoidberg")
+    __description__ = """CZshare.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
     FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B\s*</div>'
@@ -107,7 +108,7 @@ class CzshareCom(SimpleHoster):
 
         # get and decrypt captcha        
         captcha_url = 'http://czshare.com/captcha.php'
-        for i in range(5):
+        for _ in xrange(5):
             inputs['captchastring2'] = self.decryptCaptcha(captcha_url)
             self.html = self.load(parsed_url, cookies=True, post=inputs, decode=True)
             if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.html:

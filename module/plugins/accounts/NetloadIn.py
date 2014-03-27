@@ -27,7 +27,7 @@ class NetloadIn(Account):
     __name__ = "NetloadIn"
     __version__ = "0.22"
     __type__ = "account"
-    __description__ = """netload.in account plugin"""
+    __description__ = """Netload.in account plugin"""
     __author_name__ = ("RaNaN", "CryNickSystems")
     __author_mail__ = ("RaNaN@pyload.org", "webmaster@pcProfil.de")
 

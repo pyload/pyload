@@ -26,8 +26,8 @@ class DebridItaliaCom(Hoster):
     __type__ = "hoster"
     __pattern__ = r"https?://.*debriditalia\.com"
     __description__ = """Debriditalia.com hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     def setup(self):
         self.chunkLimit = -1

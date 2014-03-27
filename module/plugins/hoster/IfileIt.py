@@ -28,7 +28,8 @@ class IfileIt(SimpleHoster):
     __pattern__ = r"^unmatchable$"
     __version__ = "0.27"
     __description__ = """Ifile.it"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     #EVAL_PATTERN = r'(eval\(function\(p,a,c,k,e,d\).*)'
     #DEC_PATTERN = r"requestBtn_clickEvent[^}]*url:\s*([^,]+)"
@@ -53,7 +54,7 @@ class IfileIt(SimpleHoster):
             recaptcha = ReCaptcha(self)
             post_data["ctype"] = "recaptcha"
 
-            for i in range(5):
+            for _ in xrange(5):
                 post_data["recaptcha_challenge"], post_data["recaptcha_response"] = recaptcha.challenge(captcha_key)
                 json_response = json_loads(self.load(json_url, post=post_data))
                 self.logDebug(json_response)

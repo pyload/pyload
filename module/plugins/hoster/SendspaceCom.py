@@ -25,8 +25,9 @@ class SendspaceCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?sendspace.com/file/.*"
     __version__ = "0.13"
-    __description__ = """sendspace.com plugin - free only"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Sendspace.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     DOWNLOAD_URL_PATTERN = r'<a id="download_button" href="([^"]+)"'
     FILE_NAME_PATTERN = r'<h2 class="bgray">\s*<(?:b|strong)>(?P<N>[^<]+)</'
@@ -37,7 +38,7 @@ class SendspaceCom(SimpleHoster):
 
     def handleFree(self):
         params = {}
-        for i in range(3):
+        for _ in xrange(3):
             found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
             if found:
                 if 'captcha_hash' in params:

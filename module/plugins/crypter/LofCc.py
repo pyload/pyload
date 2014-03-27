@@ -8,6 +8,6 @@ class LofCc(DeadCrypter):
     __type__ = "container"
     __pattern__ = r"http://lof.cc/(.*)"
     __version__ = "0.21"
-    __description__ = """lof.cc Plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __description__ = """Lof.cc decrypter plugin"""
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"

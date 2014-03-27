@@ -27,12 +27,12 @@ class BayfilesCom(Account):
     __name__ = "BayfilesCom"
     __version__ = "0.02"
     __type__ = "account"
-    __description__ = """bayfiles.com account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Bayfiles.com account plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def loadAccountInfo(self, user, req):
-        for i in range(2):
+        for _ in xrange(2):
             response = json_loads(req.load("http://api.bayfiles.com/v1/account/info"))
             self.logDebug(response)
             if not response["error"]:

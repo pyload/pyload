@@ -10,9 +10,9 @@ class PornhostCom(Hoster):
     __type__ = "hoster"
     __pattern__ = r'http://[\w\.]*?pornhost\.com/([0-9]+/[0-9]+\.html|[0-9]+)'
     __version__ = "0.2"
-    __description__ = """Pornhost.com Download Hoster"""
-    __author_name__ = ("jeix")
-    __author_mail__ = ("jeix@hasnomail.de")
+    __description__ = """Pornhost.com hoster plugin"""
+    __author_name__ = "jeix"
+    __author_mail__ = "jeix@hasnomail.de"
 
     def process(self, pyfile):
         self.download_html()

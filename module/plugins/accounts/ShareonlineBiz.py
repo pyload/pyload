@@ -24,7 +24,7 @@ class ShareonlineBiz(Account):
     __name__ = "ShareonlineBiz"
     __version__ = "0.24"
     __type__ = "account"
-    __description__ = """share-online.biz account plugin"""
+    __description__ = """Share-online.biz account plugin"""
     __author_name__ = ("mkaay", "zoidberg")
     __author_mail__ = ("mkaay@mkaay.de", "zoidberg@mujmail.cz")
 

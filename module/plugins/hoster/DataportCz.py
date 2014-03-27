@@ -24,8 +24,9 @@ class DataportCz(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:.*?\.)?dataport.cz/file/(.*)"
     __version__ = "0.37"
-    __description__ = """Dataport.cz plugin - free only"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Dataport.cz hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<span itemprop="name">(?P<N>[^<]+)</span>'
     FILE_SIZE_PATTERN = r'<td class="fil">Velikost</td>\s*<td>(?P<S>[^<]+)</td>'
@@ -38,7 +39,7 @@ class DataportCz(SimpleHoster):
     def handleFree(self):
         captchas = {"1": "jkeG", "2": "hMJQ", "3": "vmEK", "4": "ePQM", "5": "blBd"}
 
-        for i in range(60):
+        for _ in xrange(60):
             action, inputs = self.parseHtmlForm('free_download_form')
             self.logDebug(action, inputs)
             if not action or not inputs:

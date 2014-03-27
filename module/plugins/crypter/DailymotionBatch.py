@@ -30,9 +30,9 @@ class DailymotionBatch(Crypter):
     __type__ = "crypter"
     __pattern__ = r"https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)"
     __version__ = "0.01"
-    __description__ = """Dailymotion channel & playlist decrypter"""
-    __author_name__ = ("Walter Purcaro")
-    __author_mail__ = ("vuolter@gmail.com")
+    __description__ = """Dailymotion.com channel & playlist decrypter"""
+    __author_name__ = "Walter Purcaro"
+    __author_mail__ = "vuolter@gmail.com"
 
     def api_response(self, ref, req=None):
         url = urljoin("https://api.dailymotion.com/", ref)

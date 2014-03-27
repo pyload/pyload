@@ -26,9 +26,10 @@ from module.utils import remove_chars
 class LinkdecrypterCom(Hook):
     __name__ = "LinkdecrypterCom"
     __version__ = "0.19"
-    __description__ = """linkdecrypter.com - regexp loader"""
+    __description__ = """Linkdecrypter.com hook plugin"""
     __config__ = [("activated", "bool", "Activated", "False")]
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def coreReady(self):
         try:

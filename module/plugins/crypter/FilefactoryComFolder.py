@@ -9,9 +9,9 @@ class FilefactoryComFolder(Crypter):
     __type__ = "crypter"
     __pattern__ = r"(http://(www\.)?filefactory\.com/f/\w+).*"
     __version__ = "0.1"
-    __description__ = """Filefactory.com Folder Plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Filefactory.com folder decrypter plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FOLDER_PATTERN = r'<table class="items" cellspacing="0" cellpadding="0">(.*?)</table>'
     LINK_PATTERN = r'<td class="name"><a href="([^"]+)">'
@@ -23,7 +23,7 @@ class FilefactoryComFolder(Crypter):
         html = self.load(url_base)
 
         new_links = []
-        for i in range(1, 100):
+        for i in xrange(1, 100):
             self.logInfo("Fetching links from page %i" % i)
             found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
             if found is None: self.fail("Parse error (FOLDER)")

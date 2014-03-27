@@ -26,9 +26,9 @@ class DateiTo(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html"
     __version__ = "0.02"
-    __description__ = """Datei.to plugin - free only"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Datei.to hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'Dateiname:</td>\s*<td colspan="2"><strong>(?P<N>.*?)</'
     FILE_SIZE_PATTERN = r'Dateigr&ouml;&szlig;e:</td>\s*<td colspan="2">(?P<S>.*?)</'
@@ -45,7 +45,7 @@ class DateiTo(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        for i in range(10):
+        for _ in xrange(10):
             self.logDebug("URL", url, "POST", data)
             self.html = self.load(url, post=data)
             self.checkErrors()

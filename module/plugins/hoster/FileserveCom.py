@@ -47,8 +47,8 @@ class FileserveCom(Hoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*"
     __version__ = "0.51"
-    __description__ = """Fileserve.Com File Download Hoster"""
-    __author_name__ = ("jeix", "mkaay", "paul king", "zoidberg")
+    __description__ = """Fileserve.com hoster plugin"""
+    __author_name__ = ("jeix", "mkaay", "Paul King", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "", "zoidberg@mujmail.cz")
 
     URLS = ['http://www.fileserve.com/file/', 'http://www.fileserve.com/link-checker.php',
@@ -161,7 +161,7 @@ class FileserveCom(Hoster):
         captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group("key")
         recaptcha = ReCaptcha(self)
 
-        for i in range(5):
+        for _ in xrange(5):
             challenge, code = recaptcha.challenge(captcha_key)
 
             response = json_loads(self.load(self.URLS[2],

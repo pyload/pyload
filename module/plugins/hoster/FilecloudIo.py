@@ -27,8 +27,9 @@ class FilecloudIo(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*"
     __version__ = "0.02"
-    __description__ = """Filecloud.io (formerly Ifile.it) plugin - free account only"""
+    __description__ = """Filecloud.io hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     FILE_SIZE_PATTERN = r'{var __ab1 = (?P<S>\d+);}'
     FILE_NAME_PATTERN = r'id="aliasSpan">(?P<N>.*?)&nbsp;&nbsp;<'
@@ -79,7 +80,7 @@ class FilecloudIo(SimpleHoster):
             captcha_key = found.group(1) if found else self.RECAPTCHA_KEY
             data["ctype"] = "recaptcha"
 
-            for i in range(5):
+            for _ in xrange(5):
                 data["recaptcha_challenge"], data["recaptcha_response"] = recaptcha.challenge(captcha_key)
 
                 json_url = "http://filecloud.io/download-request.json"

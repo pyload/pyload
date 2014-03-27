@@ -38,9 +38,9 @@ class Account(Base):
     __name__ = "Account"
     __version__ = "0.2"
     __type__ = "account"
-    __description__ = """Account Plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __description__ = """Base account plugin"""
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
 
     #: after that time [in minutes] pyload will relogin the account
     login_timeout = 600

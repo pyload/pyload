@@ -25,9 +25,9 @@ class IfolderRu(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:[^.]*\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*"
     __version__ = "0.38"
-    __description__ = """rusfolder.com / ifolder.ru"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Ifolder.ru hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_SIZE_REPLACEMENTS = [(u'Кб', 'KB'), (u'Мб', 'MB'), (u'Гб', 'GB')]
     FILE_NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
@@ -62,7 +62,7 @@ class IfolderRu(SimpleHoster):
         self.wait()
 
         captcha_url = "http://ints.rusfolder.com/random/images/?session=%s" % session_id
-        for i in range(5):
+        for _ in xrange(5):
             self.html = self.load(url, cookies=True)
             action, inputs = self.parseHtmlForm('ID="Form1"')
             inputs['ints_session'] = re.search(self.INTS_SESSION_PATTERN, self.html).group(1)

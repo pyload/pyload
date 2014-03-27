@@ -25,9 +25,9 @@ class UploadedToFolder(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/(?P<id>\w+)"
     __version__ = "0.3"
-    __description__ = """UploadedTo Crypter Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __description__ = """UploadedTo decrypter plugin"""
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     PLAIN_PATTERN = r'<small class="date"><a href="(?P<plain>[\w/]+)" onclick='
     TITLE_PATTERN = r'<title>(?P<title>[^<]+)</title>'

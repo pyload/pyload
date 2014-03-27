@@ -9,9 +9,9 @@ class UlozToFolder(Crypter):
     __type__ = "crypter"
     __pattern__ = r"http://.*(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(m|soubory)/.*"
     __version__ = "0.2"
-    __description__ = """Uloz.to Folder Plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Uloz.to folder decrypter plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FOLDER_PATTERN = r'<ul class="profile_files">(.*?)</ul>'
     LINK_PATTERN = r'<br /><a href="/([^"]+)">[^<]+</a>'
@@ -21,7 +21,7 @@ class UlozToFolder(Crypter):
         html = self.load(self.pyfile.url)
 
         new_links = []
-        for i in range(1, 100):
+        for i in xrange(1, 100):
             self.logInfo("Fetching links from page %i" % i)
             found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
             if found is None:

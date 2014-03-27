@@ -12,7 +12,7 @@ class DepositfilesCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"https?://[\w\.]*?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/[\w]+"
     __version__ = "0.46"
-    __description__ = """Depositfiles.com Download Hoster"""
+    __description__ = """Depositfiles.com hoster plugin"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 
@@ -71,7 +71,7 @@ class DepositfilesCom(SimpleHoster):
         self.wait()
         recaptcha = ReCaptcha(self)
 
-        for i in range(5):
+        for _ in xrange(5):
             self.html = self.load("http://depositfiles.com/get_file.php", get=params)
 
             if '<input type=button value="Continue" onclick="check_recaptcha' in self.html:

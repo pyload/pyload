@@ -11,9 +11,9 @@ class EgoFilesCom(Account):
     __name__ = "EgoFilesCom"
     __version__ = "0.2"
     __type__ = "account"
-    __description__ = """egofiles.com account plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __description__ = """Egofiles.com account plugin"""
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     PREMIUM_ACCOUNT_PATTERN = '<br/>\s*Premium: (?P<P>[^/]*) / Traffic left: (?P<T>[\d.]*) (?P<U>\w*)\s*\\n\s*<br/>'
 

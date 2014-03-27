@@ -14,9 +14,9 @@ class SafelinkingNet(Crypter):
     __type__ = 'crypter'
     __pattern__ = r'https?://safelinking.net/([pd])/\w+'
     __version__ = '0.1'
-    __description__ = 'Safelinking.net Crypter Plugin'
-    __author_name__ = 'quareevo'
-    __author_mail__ = 'quareevo@arcor.de'
+    __description__ = """Safelinking.net decrypter plugin"""
+    __author_name__ = "quareevo"
+    __author_mail__ = "quareevo@arcor.de"
 
     __Solvemedia_pattern__ = "solvemediaApiKey = '([\w\.\-_]+)';"
 
@@ -43,12 +43,12 @@ class SafelinkingNet(Crypter):
                 postData["link-password"] = password
 
             if "altcaptcha" in self.html:
-                for i in xrange(5):
+                for _ in xrange(5):
                     m = re.search(self.__Solvemedia_pattern__, self.html)
                     if m:
                         captchaKey = m.group(1)
                         captcha = SolveMedia(self)
-                        captchaProvider = "Solvmedia"
+                        captchaProvider = "Solvemedia"
                     else:
                         self.fail("Error parsing captcha")
 

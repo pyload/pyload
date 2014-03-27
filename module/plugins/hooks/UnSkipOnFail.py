@@ -26,10 +26,10 @@ from module.PyFile import PyFile
 class UnSkipOnFail(Hook):
     __name__ = 'UnSkipOnFail'
     __version__ = '0.01'
-    __description__ = 'When a download fails, restart "skipped" duplicates.'
+    __description__ = """When a download fails, restart skipped duplicates"""
     __config__ = [('activated', 'bool', 'Activated', True), ]
-    __author_name__ = ('hagg',)
-    __author_mail__ = ('')
+    __author_name__ = "hagg"
+    __author_mail__ = ""
 
     def downloadFailed(self, pyfile):
         pyfile_name = basename(pyfile.name)

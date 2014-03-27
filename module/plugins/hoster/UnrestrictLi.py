@@ -39,8 +39,8 @@ class UnrestrictLi(Hoster):
     __type__ = "hoster"
     __pattern__ = r"https?://.*(unrestrict|unr)\.li"
     __description__ = """Unrestrict.li hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     def setup(self):
         self.chunkLimit = 16
@@ -54,7 +54,7 @@ class UnrestrictLi(Hoster):
             self.fail("No Unrestrict.li account provided")
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
-            for i in xrange(5):
+            for _ in xrange(5):
                 page = self.req.load('https://unrestrict.li/unrestrict.php',
                                      post={'link': pyfile.url, 'domain': 'long'})
                 self.logDebug("JSON data: " + page)

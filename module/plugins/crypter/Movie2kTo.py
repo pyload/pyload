@@ -8,6 +8,6 @@ class Movie2kTo(DeadCrypter):
     __type__ = "container"
     __pattern__ = r"http://(?:www\.)?movie2k\.to/(.*)\.html"
     __version__ = "0.51"
-    __description__ = """Movie2k.to Container Plugin"""
-    __author_name__ = ("4Christopher")
-    __author_mail__ = ("4Christopher@gmx.de")
+    __description__ = """Movie2k.to decrypter plugin"""
+    __author_name__ = "4Christopher"
+    __author_mail__ = "4Christopher@gmx.de"

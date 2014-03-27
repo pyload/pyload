@@ -11,9 +11,9 @@ class LixIn(Crypter):
     __type__ = "container"
     __pattern__ = r"http://(www.)?lix.in/(?P<id>.*)"
     __version__ = "0.22"
-    __description__ = """Lix.in Container Plugin"""
-    __author_name__ = ("spoob")
-    __author_mail__ = ("spoob@pyload.org")
+    __description__ = """Lix.in decrypter plugin"""
+    __author_name__ = "spoob"
+    __author_mail__ = "spoob@pyload.org"
 
     CAPTCHA_PATTERN = '<img src="(?P<image>captcha_img.php\?.*?)"'
     SUBMIT_PATTERN = r"value='continue.*?'"
@@ -37,7 +37,7 @@ class LixIn(Crypter):
 
         matches = re.search(self.CAPTCHA_PATTERN, self.html)
         if matches:
-            for i in range(5):
+            for _ in xrange(5):
                 matches = re.search(self.CAPTCHA_PATTERN, self.html)
                 if matches:
                     self.logDebug("trying captcha")

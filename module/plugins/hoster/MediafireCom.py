@@ -28,7 +28,7 @@ def replace_eval(js_expr):
 
 def checkHTMLHeader(url):
     try:
-        for i in range(3):
+        for _ in xrange(3):
             header = getURL(url, just_header=True)
             for line in header.splitlines():
                 line = line.lower()
@@ -64,7 +64,7 @@ class MediafireCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/(file/|(view/?|download.php)?\?)(\w{11}|\w{15})($|/)"
     __version__ = "0.79"
-    __description__ = """Mediafire.com plugin - free only"""
+    __description__ = """Mediafire.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
@@ -123,7 +123,7 @@ class MediafireCom(SimpleHoster):
         self.download(download_url)
 
     def checkCaptcha(self):
-        for i in xrange(5):
+        for _ in xrange(5):
             found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
             if found:
                 captcha_key = found.group(1)

@@ -31,8 +31,8 @@ class Keep2shareCC(SimpleHoster):
     __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)"
     __version__ = "0.10"
     __description__ = """Keep2share.cc hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
     FILE_SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
@@ -84,7 +84,7 @@ class Keep2shareCC(SimpleHoster):
 
     def handleCaptcha(self):
         recaptcha = ReCaptcha(self)
-        for i in xrange(5):
+        for _ in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,

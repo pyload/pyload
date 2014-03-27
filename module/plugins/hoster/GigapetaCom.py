@@ -28,9 +28,9 @@ class GigapetaCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?gigapeta\.com/dl/\w+"
     __version__ = "0.01"
-    __description__ = """GigaPeta.com plugin - free only"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """GigaPeta.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     SH_COOKIES = [("http://gigapeta.com", "lang", "us")]
     FILE_NAME_PATTERN = r'<img src=".*" alt="file" />-->\s*(?P<N>.*?)\s*</td>'
@@ -43,7 +43,7 @@ class GigapetaCom(SimpleHoster):
 
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
-        for i in range(5):
+        for _ in xrange(5):
             self.checkErrors()
 
             captcha = self.decryptCaptcha(captcha_url)

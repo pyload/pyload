@@ -11,9 +11,9 @@ class StealthTo(Crypter):
     __type__ = "container"
     __pattern__ = r"http://(www\.)?stealth.to/folder/"
     __version__ = "0.1"
-    __description__ = """Stealth.to Container Plugin"""
-    __author_name__ = ("spoob")
-    __author_mail__ = ("spoob@pyload.org")
+    __description__ = """Stealth.to decrypter plugin"""
+    __author_name__ = "spoob"
+    __author_mail__ = "spoob@pyload.org"
 
     def __init__(self, parent):
         Crypter.__init__(self, parent)
@@ -38,7 +38,7 @@ class StealthTo(Crypter):
             if re.search(r"name=\"id\"", input[0]):
                 ids.append(re.search(r"value=\"([^\"]+)", input[0]).group(1))
 
-        for i in range(0, len(ids)):
+        for i in xrange(0, len(ids)):
             self.req.load(url + "/web",
                           post={"authenticity_token": ats[i], "id": str(ids[i]), "link": ("download_" + str(ids[i]))},
                           cookies=True)

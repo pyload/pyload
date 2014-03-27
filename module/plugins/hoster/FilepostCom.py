@@ -34,9 +34,9 @@ class FilepostCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*"
     __version__ = "0.27"
-    __description__ = """Filepost.com plugin - free only"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Filepost.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = r'<input type="text" id="url" value=\'<a href[^>]*>(?P<N>[^>]+?) - (?P<S>[0-9\.]+ [kKMG]i?B)</a>\' class="inp_text"/>'
     #FILE_INFO_PATTERN = r'<h1>(?P<N>[^<]+)</h1>\s*<div class="ul">\s*<ul>\s*<li><span>Size:</span> (?P<S>[0-9.]+) (?P<U>[kKMG])i?B</li>'
@@ -87,9 +87,9 @@ class FilepostCom(SimpleHoster):
             # Solve recaptcha
             recaptcha = ReCaptcha(self)
 
-            for pokus in range(5):
+            for i in xrange(5):
                 get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
-                if pokus:
+                if i:
                     post_dict["recaptcha_challenge_field"], post_dict["recaptcha_response_field"] = recaptcha.challenge(
                         captcha_key)
                     self.logDebug(u"RECAPTCHA: %s : %s : %s" % (
@@ -97,10 +97,10 @@ class FilepostCom(SimpleHoster):
 
                 download_url = self.getJsonResponse(get_dict, post_dict, 'link')
                 if download_url:
-                    if pokus:
+                    if i:
                         self.correctCaptcha()
                     break
-                elif pokus:
+                elif i:
                     self.invalidCaptcha()
 
             else:

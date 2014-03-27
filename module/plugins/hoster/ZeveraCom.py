@@ -9,9 +9,9 @@ class ZeveraCom(Hoster):
     __version__ = "0.21"
     __type__ = "hoster"
     __pattern__ = r"http://zevera.com/.*"
-    __description__ = """zevera.com hoster plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Zevera.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def setup(self):
         self.resumeDownload = self.multiDL = True
@@ -51,7 +51,7 @@ class ZeveraCom(Hoster):
     #     last_size = retries = 0
     #     olink = self.pyfile.url #quote(self.pyfile.url.encode('utf_8'))
     #
-    #     for i in range(100):
+    #     for _ in xrange(100):
     #         self.retData = self.account.loadAPIRequest(self.req, cmd = 'download_request', olink = olink)
     #         self.checkAPIErrors(self.retData)
     #

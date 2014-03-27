@@ -10,9 +10,9 @@ class RgHostNet(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?rghost\.net/\d+(?:r=\d+)?"
     __version__ = "0.01"
-    __description__ = """RgHost.net Download Hoster"""
-    __author_name__ = ("z00nx")
-    __author_mail__ = ("z00nx0@gmail.com")
+    __description__ = """RgHost.net hoster plugin"""
+    __author_name__ = "z00nx"
+    __author_mail__ = "z00nx0@gmail.com"
 
     FILE_INFO_PATTERN = r'<h1>\s+(<a[^>]+>)?(?P<N>[^<]+)(</a>)?\s+<small[^>]+>\s+\((?P<S>[^)]+)\)\s+</small>\s+</h1>'
     FILE_OFFLINE_PATTERN = r'File is deleted|this page is not found'

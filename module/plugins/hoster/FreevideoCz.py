@@ -40,8 +40,9 @@ class FreevideoCz(Hoster):
     __type__ = "hoster"
     __pattern__ = r"http://www.freevideo.cz/vase-videa/(.*)\.html"
     __version__ = "0.2"
-    __description__ = """freevideo.cz"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Freevideo.cz hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     URL_PATTERN = r'clip: {\s*url: "([^"]+)"'
     FILE_OFFLINE_PATTERN = r'<h2 class="red-corner-full">Str.nka nebyla nalezena</h2>'

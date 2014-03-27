@@ -12,9 +12,9 @@ class LuckyShareNet(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?luckyshare.net/(?P<ID>\d{10,})"
     __version__ = "0.02"
-    __description__ = """LuckyShare.net Download Hoster"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __description__ = """LuckyShare.net hoster plugin"""
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r"<h1 class='file_name'>(?P<N>\S+)</h1>\s*<span class='file_size'>Filesize: (?P<S>[\d.]+)(?P<U>\w+)</span>"
     FILE_OFFLINE_PATTERN = 'There is no such file available'
@@ -47,7 +47,7 @@ class LuckyShareNet(SimpleHoster):
         self.wait()
 
         recaptcha = ReCaptcha(self)
-        for i in xrange(5):
+        for _ in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             rep = self.load(r"http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s" %
                             (challenge, response, json['hash']), decode=True)

@@ -12,9 +12,9 @@ class BitshareCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))"
     __version__ = "0.49"
-    __description__ = """Bitshare.Com File Download Hoster"""
-    __author_name__ = ("paulking", "fragonib")
-    __author_mail__ = (None, "fragonib[AT]yahoo[DOT]es")
+    __description__ = """Bitshare.com hoster plugin"""
+    __author_name__ = ("Paul King", "fragonib")
+    __author_mail__ = ("", "fragonib[AT]yahoo[DOT]es")
 
     HOSTER_DOMAIN = "bitshare.com"
     FILE_OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
@@ -105,7 +105,7 @@ class BitshareCom(SimpleHoster):
             self.logDebug("File is captcha protected")
             id = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group(1)
             # Try up to 3 times
-            for i in range(3):
+            for i in xrange(3):
                 self.logDebug("Resolving ReCaptcha with key [%s], round %d" % (id, i + 1))
                 recaptcha = ReCaptcha(self)
                 challenge, code = recaptcha.challenge(id)
