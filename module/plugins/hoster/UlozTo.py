@@ -30,7 +30,7 @@ class UlozTo(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
     __version__ = "0.95"
-    __description__ = """uloz.to"""
+    __description__ = """Uloz.to hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

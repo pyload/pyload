@@ -11,7 +11,7 @@ class StealthTo(Crypter):
     __type__ = "container"
     __pattern__ = r"http://(www\.)?stealth.to/folder/"
     __version__ = "0.1"
-    __description__ = """Stealth.to Container Plugin"""
+    __description__ = """Stealth.to decrypter plugin"""
     __author_name__ = "spoob"
     __author_mail__ = "spoob@pyload.org"
 

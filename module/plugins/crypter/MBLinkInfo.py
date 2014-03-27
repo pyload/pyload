@@ -8,6 +8,6 @@ class MBLinkInfo(DeadCrypter):
     __type__ = "container"
     __pattern__ = r"http://(?:www\.)?mblink\.info/?\?id=(\d+)"
     __version__ = "0.03"
-    __description__ = """MBLink.Info Container Plugin"""
+    __description__ = """MBLink.info decrypter plugin"""
     __author_name__ = ("Gummibaer", "stickell")
     __author_mail__ = ("Gummibaer@wiki-bierkiste.de", "l.stickell@yahoo.it")

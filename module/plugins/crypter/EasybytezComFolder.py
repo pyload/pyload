@@ -23,7 +23,7 @@ class EasybytezComFolder(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?easybytez\.com/users/(?P<ID>\d+/\d+)"
     __version__ = "0.05"
-    __description__ = """Easybytez Crypter Plugin"""
+    __description__ = """Easybytez.com decrypter plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

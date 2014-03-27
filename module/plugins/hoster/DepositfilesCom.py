@@ -12,7 +12,7 @@ class DepositfilesCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"https?://[\w\.]*?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/[\w]+"
     __version__ = "0.46"
-    __description__ = """Depositfiles.com Download Hoster"""
+    __description__ = """Depositfiles.com hoster plugin"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 

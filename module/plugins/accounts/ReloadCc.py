@@ -9,7 +9,7 @@ class ReloadCc(Account):
     __name__ = "ReloadCc"
     __version__ = "0.3"
     __type__ = "account"
-    __description__ = """Reload.Cc account plugin"""
+    __description__ = """Reload.cc account plugin"""
 
     __author_name__ = "Reload Team"
     __author_mail__ = "hello@reload.cc"

@@ -9,7 +9,7 @@ class CzshareComFolder(Crypter):
     __type__ = "crypter"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/folders/.*"
     __version__ = "0.1"
-    __description__ = """Czshare.com Folder Plugin"""
+    __description__ = """Czshare.com folder decrypter plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

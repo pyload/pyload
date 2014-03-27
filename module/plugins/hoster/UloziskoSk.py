@@ -25,7 +25,7 @@ class UloziskoSk(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?ulozisko.sk/.*"
     __version__ = "0.23"
-    __description__ = """Ulozisko.sk"""
+    __description__ = """Ulozisko.sk hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

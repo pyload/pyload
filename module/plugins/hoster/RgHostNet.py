@@ -10,7 +10,7 @@ class RgHostNet(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?rghost\.net/\d+(?:r=\d+)?"
     __version__ = "0.01"
-    __description__ = """RgHost.net Download Hoster"""
+    __description__ = """RgHost.net hoster plugin"""
     __author_name__ = "z00nx"
     __author_mail__ = "z00nx0@gmail.com"
 

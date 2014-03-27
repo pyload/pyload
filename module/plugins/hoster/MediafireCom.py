@@ -64,7 +64,7 @@ class MediafireCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*mediafire\.com/(file/|(view/?|download.php)?\?)(\w{11}|\w{15})($|/)"
     __version__ = "0.79"
-    __description__ = """Mediafire.com plugin - free only"""
+    __description__ = """Mediafire.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 

@@ -6,7 +6,7 @@ class NosvideoCom(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?nosvideo\.com/\?v=\w+"
     __version__ = "0.01"
-    __description__ = """Nosvideo.com Plugin"""
+    __description__ = """Nosvideo.com decrypter plugin"""
     __author_name__ = "igel"
     __author_mail__ = "igelkun@myopera.com"
 

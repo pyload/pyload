@@ -52,7 +52,7 @@ class LetitbitNet(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*(letitbit|shareflare).net/download/.*"
     __version__ = "0.23"
-    __description__ = """letitbit.net"""
+    __description__ = """Letitbit.net hoster plugin"""
     __author_name__ = ("zoidberg", "z00nx")
     __author_mail__ = ("zoidberg@mujmail.cz", "z00nx0@gmail.com")
 

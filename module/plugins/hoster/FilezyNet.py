@@ -8,7 +8,7 @@ class FilezyNet(XFileSharingPro):
     __type__ = "hoster"
     __version__ = "0.1"
     __pattern__ = r"http://filezy.net/.*/.*.html"
-    __description__ = """filezy.net hoster plugin"""
+    __description__ = """Filezy.net hoster plugin"""
 
     HOSTER_NAME = "filezy.net"
 

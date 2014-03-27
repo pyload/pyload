@@ -9,7 +9,7 @@ class ReloadCc(Hoster):
     __name__ = "ReloadCc"
     __version__ = "0.5"
     __type__ = "hoster"
-    __description__ = """Reload.Cc hoster plugin"""
+    __description__ = """Reload.cc hoster plugin"""
 
     # Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
     # create the regex patterns for us using getHosters in our ReloadCc hook.

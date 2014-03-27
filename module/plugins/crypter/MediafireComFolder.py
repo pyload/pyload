@@ -11,7 +11,7 @@ class MediafireComFolder(Crypter):
     __type__ = "crypter"
     __pattern__ = r"http://(\w*\.)*mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))"
     __version__ = "0.14"
-    __description__ = """Mediafire.com Folder Plugin"""
+    __description__ = """Mediafire.com folder decrypter plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

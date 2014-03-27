@@ -23,7 +23,7 @@ class DuploadOrgFolder(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(www\.)?dupload\.org/folder/\d+/"
     __version__ = "0.01"
-    __description__ = """Dupload.org Folder Plugin"""
+    __description__ = """Dupload.org folder decrypter plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

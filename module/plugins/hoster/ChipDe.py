@@ -10,7 +10,7 @@ class ChipDe(Crypter):
     __type__ = "container"
     __pattern__ = r"http://(?:www\.)?chip.de/video/.*\.html"
     __version__ = "0.1"
-    __description__ = """Chip.de Container Plugin"""
+    __description__ = """Chip.de hoster plugin"""
     __author_name__ = "4Christopher"
     __author_mail__ = "4Christopher@gmx.de"
 

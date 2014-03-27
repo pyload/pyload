@@ -9,7 +9,7 @@ class FileshareInUa(Hoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?fileshare.in.ua/[A-Za-z0-9]+"
     __version__ = "0.01"
-    __description__ = """fileshare.in.ua hoster plugin"""
+    __description__ = """Fileshare.in.ua hoster plugin"""
     __author_name__ = "fwannmacher"
     __author_mail__ = "felipe@warhammerproject.com"
 

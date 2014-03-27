@@ -41,7 +41,7 @@ class Xdcc(Hoster):
         ("ident", "str", "Ident", "pyloadident"),
         ("realname", "str", "Realname", "pyloadreal")
     ]
-    __description__ = """A Plugin that allows you to download from an IRC XDCC bot"""
+    __description__ = """Download from IRC XDCC bot"""
     __author_name__ = "jeix"
     __author_mail__ = "jeix@hasnomail.com"
 

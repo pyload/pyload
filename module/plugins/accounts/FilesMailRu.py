@@ -24,7 +24,7 @@ class FilesMailRu(Account):
     __name__ = "FilesMailRu"
     __version__ = "0.1"
     __type__ = "account"
-    __description__ = """filesmail.ru account plugin"""
+    __description__ = """Filesmail.ru account plugin"""
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
 

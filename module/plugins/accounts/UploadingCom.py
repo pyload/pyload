@@ -27,7 +27,7 @@ class UploadingCom(Account):
     __name__ = "UploadingCom"
     __version__ = "0.1"
     __type__ = "account"
-    __description__ = """uploading.com account plugin"""
+    __description__ = """Uploading.com account plugin"""
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"
 

@@ -27,7 +27,7 @@ class EuroshareEu(Account):
     __name__ = "EuroshareEu"
     __version__ = "0.01"
     __type__ = "account"
-    __description__ = """euroshare.eu account plugin"""
+    __description__ = """Euroshare.eu account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

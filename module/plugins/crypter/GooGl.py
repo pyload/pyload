@@ -24,7 +24,7 @@ class GooGl(Crypter):
     __type__ = "crypter"
     __pattern__ = r"https?://(www\.)?goo\.gl/\w+"
     __version__ = "0.01"
-    __description__ = """Goo.gl Crypter Plugin"""
+    __description__ = """Goo.gl decrypter plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

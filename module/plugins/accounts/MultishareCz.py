@@ -28,7 +28,7 @@ class MultishareCz(Account):
     __name__ = "MultishareCz"
     __version__ = "0.02"
     __type__ = "account"
-    __description__ = """multishare.cz account plugin"""
+    __description__ = """Multishare.cz account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

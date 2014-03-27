@@ -11,7 +11,7 @@ class TwoSharedCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://[\w\.]*?2shared.com/(account/)?(download|get|file|document|photo|video|audio)/.*"
     __version__ = "0.11"
-    __description__ = """2Shared Download Hoster"""
+    __description__ = """2Shared.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
