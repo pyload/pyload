@@ -26,7 +26,7 @@ class MultiHome(Hook):
     __name__ = "MultiHome"
     __version__ = "0.11"
     __description__ = """Ip address changer"""
-    __config__ = [("activated", "bool", "Activated", "False"),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("interfaces", "str", "Interfaces", "None")]
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"

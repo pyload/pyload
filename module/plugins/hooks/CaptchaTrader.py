@@ -48,7 +48,7 @@ class CaptchaTrader(Hook):
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
-                  ("passkey", "password", "Password", ""), ]
+                  ("passkey", "password", "Password", "")]
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
 

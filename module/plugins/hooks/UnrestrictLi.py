@@ -24,12 +24,12 @@ class UnrestrictLi(MultiHoster):
     __name__ = "UnrestrictLi"
     __version__ = "0.02"
     __type__ = "hook"
-    __config__ = [("activated", "bool", "Activated", "False"),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
-                  ("unloadFailing", "bool", "Revert to standard download if download fails", "False"),
-                  ("interval", "int", "Reload interval in hours (0 to disable)", "24"),
-                  ("history", "bool", "Delete History", "False")]
+                  ("unloadFailing", "bool", "Revert to standard download if download fails", False),
+                  ("interval", "int", "Reload interval in hours (0 to disable)", 24),
+                  ("history", "bool", "Delete History", False)]
 
     __description__ = """Unrestrict.li hook plugin"""
     __author_name__ = "stickell"

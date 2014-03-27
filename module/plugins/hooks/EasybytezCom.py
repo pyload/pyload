@@ -9,7 +9,7 @@ class EasybytezCom(MultiHoster):
     __name__ = "EasybytezCom"
     __version__ = "0.03"
     __type__ = "hook"
-    __config__ = [("activated", "bool", "Activated", "False"),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
     __description__ = """EasyBytez.com hook plugin"""

@@ -27,13 +27,13 @@ class DeleteFinished(Hook):
     __name__ = "DeleteFinished"
     __version__ = "2.00"
     __description__ = """Automatically delete finished packages from queue"""
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("interval", "int", "Smart check interval in hours (0 to run immediately)", "72"),
-                  ("del_offline", "bool", "Delete package with offline links", "False"),
-                  ("del_password", "bool", "Delete package with password", "True"),
-                  ("del_error", "bool", "Delete package with errors", "True"),
-                  ("keep_latest", "int", "Number of latest packages to keep", "0"),
-                  ("log", "bool", "Log the list of packages deleted", "True")]
+    __config__ = [("activated", "bool", "Activated", False),
+                  ("interval", "int", "Smart check interval in hours (0 to run immediately)", 72),
+                  ("del_offline", "bool", "Delete package with offline links", False),
+                  ("del_password", "bool", "Delete package with password", True),
+                  ("del_error", "bool", "Delete package with errors", True),
+                  ("keep_latest", "int", "Number of latest packages to keep", 0),
+                  ("log", "bool", "Log the list of packages deleted", True)]
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
 

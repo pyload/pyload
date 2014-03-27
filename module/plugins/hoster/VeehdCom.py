@@ -8,10 +8,8 @@ class VeehdCom(Hoster):
     __name__ = 'VeehdCom'
     __type__ = 'hoster'
     __pattern__ = r'http://veehd\.com/video/\d+_\S+'
-    __config__ = [
-        ('filename_spaces', 'bool', "Allow spaces in filename", 'False'),
-        ('replacement_char', 'str', "Filename replacement character", '_'),
-    ]
+    __config__ = [("filename_spaces", "bool", "Allow spaces in filename", False),
+                  ("replacement_char", "str", "Filename replacement character", "_")]
     __version__ = '0.23'
     __description__ = """Veehd.com hoster plugin"""
     __author_name__ = "cat"

@@ -10,7 +10,7 @@ class ReloadCc(MultiHoster):
     __type__ = "hook"
     __description__ = """Reload.cc hook plugin"""
 
-    __config__ = [("activated", "bool", "Activated", "False"),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
