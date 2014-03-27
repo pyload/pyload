@@ -5,7 +5,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 class MBLinkInfo(DeadCrypter):
     __name__ = "MBLinkInfo"
-    __type__ = "container"
+    __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?mblink\.info/?\?id=(\d+)"
     __version__ = "0.03"
     __description__ = """MBLink.info decrypter plugin"""

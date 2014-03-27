@@ -10,7 +10,7 @@ from module.unescape import unescape
 
 class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
-    __type__ = "container"
+    __type__ = "crypter"
     __pattern__ = r"http://.*?(serienjunkies.org|dokujunkies.org)/.*?"
     __version__ = "0.39"
     __config__ = [
