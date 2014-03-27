@@ -41,7 +41,8 @@ class StreamCz(Hoster):
     __pattern__ = r"http://www.stream.cz/[^/]+/\d+.*"
     __version__ = "0.1"
     __description__ = """stream.cz"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_OFFLINE_PATTERN = r'<h1 class="commonTitle">Str.nku nebylo mo.n. nal.zt \(404\)</h1>'
     FILE_NAME_PATTERN = r'<link rel="video_src" href="http://www.stream.cz/\w+/(\d+)-([^"]+)" />'

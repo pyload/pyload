@@ -26,7 +26,8 @@ class SendspaceCom(SimpleHoster):
     __pattern__ = r"http://(www\.)?sendspace.com/file/.*"
     __version__ = "0.13"
     __description__ = """sendspace.com plugin - free only"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     DOWNLOAD_URL_PATTERN = r'<a id="download_button" href="([^"]+)"'
     FILE_NAME_PATTERN = r'<h2 class="bgray">\s*<(?:b|strong)>(?P<N>[^<]+)</'

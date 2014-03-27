@@ -24,8 +24,8 @@ class PastebinCom(SimpleCrypter):
     __pattern__ = r"http://(?:w{3}.)?pastebin\.com/\w+"
     __version__ = "0.01"
     __description__ = """Pastebin.com Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     LINK_PATTERN = r'<div class="de\d+">(https?://[^ <]+)(?:[^<]*)</div>'
     TITLE_PATTERN = r'<div class="paste_box_line1" title="(?P<title>[^"]+)">'

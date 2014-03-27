@@ -12,8 +12,8 @@ class HotfileFolderCom(Crypter):
     __pattern__ = r"http://(?:www\.)?hotfile.com/list/\w+/\w+"
     __version__ = "0.1"
     __description__ = """HotfileFolder Download Plugin"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
 
     def decrypt(self, pyfile):
         html = self.load(pyfile.url)

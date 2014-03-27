@@ -10,8 +10,8 @@ class ZeveraCom(Hoster):
     __type__ = "hoster"
     __pattern__ = r"http://zevera.com/.*"
     __description__ = """zevera.com hoster plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def setup(self):
         self.resumeDownload = self.multiDL = True

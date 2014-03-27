@@ -10,7 +10,7 @@ class WuploadCom(DeadHoster):
     __pattern__ = r"http://[\w\.]*?wupload\..*?/file/(([a-z][0-9]+/)?[0-9]+)(/.*)?"
     __version__ = "0.23"
     __description__ = """Wupload com"""
-    __author_name__ = ("jeix", "paulking")
+    __author_name__ = ("jeix", "Paul King")
     __author_mail__ = ("jeix@hasnomail.de", "")
 
 

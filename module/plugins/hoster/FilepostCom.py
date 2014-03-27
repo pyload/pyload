@@ -35,8 +35,8 @@ class FilepostCom(SimpleHoster):
     __pattern__ = r"https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*"
     __version__ = "0.27"
     __description__ = """Filepost.com plugin - free only"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = r'<input type="text" id="url" value=\'<a href[^>]*>(?P<N>[^>]+?) - (?P<S>[0-9\.]+ [kKMG]i?B)</a>\' class="inp_text"/>'
     #FILE_INFO_PATTERN = r'<h1>(?P<N>[^<]+)</h1>\s*<div class="ul">\s*<ul>\s*<li><span>Size:</span> (?P<S>[0-9.]+) (?P<U>[kKMG])i?B</li>'

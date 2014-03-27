@@ -28,7 +28,8 @@ class IfileIt(SimpleHoster):
     __pattern__ = r"^unmatchable$"
     __version__ = "0.27"
     __description__ = """Ifile.it"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     #EVAL_PATTERN = r'(eval\(function\(p,a,c,k,e,d\).*)'
     #DEC_PATTERN = r"requestBtn_clickEvent[^}]*url:\s*([^,]+)"

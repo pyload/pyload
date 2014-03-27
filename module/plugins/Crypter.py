@@ -25,8 +25,8 @@ class Crypter(Plugin):
     __pattern__ = None
     __type__ = "container"
     __description__ = """Base crypter plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
     
     def __init__(self, pyfile):
         Plugin.__init__(self, pyfile)

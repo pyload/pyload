@@ -27,8 +27,8 @@ class HundredEightyUploadCom(XFileSharingPro):
     __pattern__ = r"http://(?:\w*\.)?180upload\.com/(\w+).*"
     __version__ = "0.01"
     __description__ = """180upload.com hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_NAME_PATTERN = r'Filename:</b></td><td nowrap>(?P<N>.+)</td></tr>-->'
     FILE_SIZE_PATTERN = r'Size:</b></td><td>(?P<S>[\d.]+) (?P<U>[A-Z]+)\s*<small>'

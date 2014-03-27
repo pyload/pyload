@@ -11,8 +11,8 @@ class MyvideoDe(Hoster):
     __pattern__ = r"http://(www\.)?myvideo.de/watch/"
     __version__ = "0.9"
     __description__ = """Myvideo.de Video Download Hoster"""
-    __author_name__ = ("spoob")
-    __author_mail__ = ("spoob@pyload.org")
+    __author_name__ = "spoob"
+    __author_mail__ = "spoob@pyload.org"
 
     def process(self, pyfile):
         self.pyfile = pyfile

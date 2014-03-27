@@ -26,8 +26,8 @@ class FilefactoryCom(SimpleHoster):
     __pattern__ = r"https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)"
     __version__ = "0.47"
     __description__ = """Filefactory.Com File Download Hoster"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.]+) (?P<U>\w+) uploaded'
     DIRECT_LINK_PATTERN = r'<a href="(https?://[^"]+)"[^>]*><i[^>]*></i> Download with FileFactory Premium</a>'

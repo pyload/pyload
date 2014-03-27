@@ -7,7 +7,7 @@ class RarefileNet(XFSPAccount):
     __version__ = "0.02"
     __type__ = "account"
     __description__ = """RareFile.net account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     MAIN_PAGE = "http://rarefile.net/"

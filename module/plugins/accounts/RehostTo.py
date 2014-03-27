@@ -6,8 +6,8 @@ class RehostTo(Account):
     __version__ = "0.1"
     __type__ = "account"
     __description__ = """Rehost.to account plugin"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)

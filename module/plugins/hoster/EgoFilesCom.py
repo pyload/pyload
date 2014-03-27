@@ -30,8 +30,8 @@ class EgoFilesCom(SimpleHoster):
     __pattern__ = r"https?://(www\.)?egofiles.com/(\w+)"
     __version__ = "0.13"
     __description__ = """Egofiles.com Download Hoster"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r'<div class="down-file">\s+(?P<N>[^\t]+)\s+<div class="file-properties">\s+(File size|Rozmiar): (?P<S>[\w.]+) (?P<U>\w+) \|'
     FILE_OFFLINE_PATTERN = r'(File size|Rozmiar): 0 KB'

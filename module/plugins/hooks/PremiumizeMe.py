@@ -16,8 +16,8 @@ class PremiumizeMe(MultiHoster):
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", "False"),
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
-    __author_name__ = ("Florian Franzen")
-    __author_mail__ = ("FlorianFranzen@gmail.com")
+    __author_name__ = "Florian Franzen"
+    __author_mail__ = "FlorianFranzen@gmail.com"
 
     def getHoster(self):
         # If no accounts are available there will be no hosters available

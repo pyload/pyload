@@ -25,7 +25,8 @@ class SpeedfileCz(DeadHoster):
     __pattern__ = r"http://speedfile.cz/.*"
     __version__ = "0.32"
     __description__ = """speedfile.cz"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
 
 getInfo = create_getInfo(SpeedfileCz)

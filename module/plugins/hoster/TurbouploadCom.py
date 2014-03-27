@@ -25,8 +25,8 @@ class TurbouploadCom(DeadHoster):
     __pattern__ = r"http://(?:\w*\.)?turboupload.com/(\w+).*"
     __version__ = "0.03"
     __description__ = """turboupload.com"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
 
 getInfo = create_getInfo(TurbouploadCom)

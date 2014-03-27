@@ -25,8 +25,8 @@ class FreeWayMe(Hoster):
     __type__ = "hoster"
     __pattern__ = r"https://free-way.me/.*"
     __description__ = """FreeWayMe hoster plugin"""
-    __author_name__ = ("Nicolas Giese")
-    __author_mail__ = ("james@free-way.me")
+    __author_name__ = "Nicolas Giese"
+    __author_mail__ = "james@free-way.me"
 
     def setup(self):
         self.resumeDownload = False
