@@ -57,8 +57,7 @@ class EgoFilesCom(SimpleHoster):
         if 'For next free download you have to wait' in self.html:
             m = re.search(self.WAIT_TIME_PATTERN, self.html).groupdict('0')
             waittime = int(m['m']) * 60 + int(m['s'])
-            self.setWait(waittime, True)
-            self.wait()
+            self.wait((waittime, True)
 
         downloadURL = ''
         recaptcha = ReCaptcha(self)

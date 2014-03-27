@@ -50,8 +50,7 @@ class UnibytesCom(SimpleHoster):
                 break
 
             if '>Somebody else is already downloading using your IP-address<' in self.html:
-                self.setWait(600, True)
-                self.wait()
+                self.wait(10 * 60, True)
                 self.retry()
 
             if post_data['step'] == 'last':
@@ -68,8 +67,7 @@ class UnibytesCom(SimpleHoster):
 
             if last_step == 'timer':
                 found = re.search(self.WAIT_PATTERN, self.html)
-                self.setWait(int(found.group(1)) if found else 60, False)
-                self.wait()
+                self.wait(int(found.group(1)) if found else 60, False)
             elif last_step in ('captcha', 'last'):
                 post_data['captcha'] = self.decryptCaptcha(self.DOMAIN + '/captcha.jpg')
         else:

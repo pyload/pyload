@@ -96,7 +96,7 @@ class CzshareCom(SimpleHoster):
         # get download ticket and parse html
         self.html = self.load(parsed_url, cookies=True, decode=True)
         if re.search(self.MULTIDL_PATTERN, self.html):
-            self.longWait(300, 12)
+            self.longWait(5 * 60, 12)
 
         try:
             form = re.search(self.FREE_FORM_PATTERN, self.html, re.DOTALL).group(1)
@@ -114,7 +114,7 @@ class CzshareCom(SimpleHoster):
             if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.html:
                 self.invalidCaptcha()
             elif re.search(self.MULTIDL_PATTERN, self.html):
-                self.longWait(300, 12)
+                self.longWait(5 * 60, 12)
             else:
                 self.correctCaptcha()
                 break
@@ -150,7 +150,7 @@ class CzshareCom(SimpleHoster):
         if check == "credit":
             self.resetAccount()
         elif check == "multi_dl":
-            self.longWait(300, 12)
+            self.longWait(5 * 60, 12)
         elif check == "captcha_err":
             self.invalidCaptcha()
             self.retry()

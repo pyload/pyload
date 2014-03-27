@@ -215,15 +215,13 @@ class XFileSharingPro(SimpleHoster):
             if 'wait' in self.errmsg:
                 wait_time = sum([int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in
                                  re.findall(r'(\d+)\s*(hour|minute|second)?', self.errmsg)])
-                self.setWait(wait_time, True)
-                self.wait()
+                self.wait(wait_time, True)
             elif 'captcha' in self.errmsg:
                 self.invalidCaptcha()
             elif 'premium' in self.errmsg and 'require' in self.errmsg:
                 self.fail("File can be downloaded by premium users only")
             elif 'limit' in self.errmsg:
-                self.setWait(3600, True)
-                self.wait()
+                self.wait(1 * 60 * 60, True)
                 self.retry(25)
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
                 self.retry()

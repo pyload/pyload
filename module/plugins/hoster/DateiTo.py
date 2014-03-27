@@ -81,17 +81,15 @@ class DateiTo(SimpleHoster):
         if found:
             found = re.search(self.WAIT_PATTERN, self.html)
             wait_time = int(found.group(1)) if found else 30
-            self.setWait(wait_time + 1, False)
-            self.wait(300)
+            self.wait(wait_time + 1, False)
             self.retry()
 
     def doWait(self):
         found = re.search(self.WAIT_PATTERN, self.html)
         wait_time = int(found.group(1)) if found else 30
-        self.setWait(wait_time + 1, False)
 
         self.load('http://datei.to/ajax/download.php', post={'P': 'Ads'})
-        self.wait()
+        self.wait(wait_time + 1, False)
 
 
 getInfo = create_getInfo(DateiTo)

@@ -23,8 +23,7 @@ class CatShareNet(SimpleHoster):
         found = re.search(self.SECONDS_PATTERN, self.html)
         seconds = int(found.group(1))
         self.logDebug("Seconds found", seconds)
-        self.setWait(seconds + 1)
-        self.wait()
+        self.wait(seconds + 1)
         recaptcha = ReCaptcha(self)
         challenge, code = recaptcha.challenge(self.RECAPTCHA_KEY)
         post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": code}
