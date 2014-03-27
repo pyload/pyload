@@ -18,4 +18,3 @@ class ReCaptcha():
 
     def result(self, server, challenge):
         return self.plugin.decryptCaptcha("%simage"%server, get={"c":challenge}, cookies=True, imgtype="jpg")
-        

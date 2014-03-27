@@ -39,4 +39,3 @@ class CCF(Container):
         tempdlc.close()
 
         self.packages.append((tempdlc_name, [tempdlc_name], tempdlc_name))
-

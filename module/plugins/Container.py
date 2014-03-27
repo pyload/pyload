@@ -71,5 +71,3 @@ class Container(Crypter):
     def deleteTmp(self):
         if self.pyfile.name.startswith("tmp_"):
             remove(self.pyfile.url)
-
-        

@@ -77,4 +77,4 @@ class OneFichierCom(SimpleHoster):
         self.multiDL = self.premium
         self.resumeDownload = True
 
-getInfo = create_getInfo(OneFichierCom)   
+getInfo = create_getInfo(OneFichierCom)

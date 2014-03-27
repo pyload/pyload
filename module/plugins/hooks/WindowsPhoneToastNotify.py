@@ -65,4 +65,3 @@ class WindowsPhoneToastNotify(Hook):
             return False
         
         self.doRequest()
-
