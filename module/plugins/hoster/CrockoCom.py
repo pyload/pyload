@@ -11,7 +11,7 @@ class CrockoCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?(crocko|easy-share).com/\w+"
     __version__ = "0.16"
-    __description__ = """Crocko Download Hoster"""
+    __description__ = """Crocko hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

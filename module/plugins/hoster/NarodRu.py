@@ -26,7 +26,7 @@ class NarodRu(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?narod(\.yandex)?\.ru/(disk|start/[0-9]+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+"
     __version__ = "0.1"
-    __description__ = """Narod.ru"""
+    __description__ = """Narod.ru hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

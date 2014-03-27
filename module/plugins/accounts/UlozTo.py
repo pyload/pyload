@@ -9,7 +9,7 @@ class UlozTo(Account):
     __name__ = "UlozTo"
     __version__ = "0.06"
     __type__ = "account"
-    __description__ = """uloz.to account plugin"""
+    __description__ = """Uloz.to account plugin"""
     __author_name__ = ("zoidberg", "pulpe")
     __author_mail__ = "zoidberg@mujmail.cz"
 

@@ -10,7 +10,7 @@ class YoupornCom(Hoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?youporn\.com/watch/.+"
     __version__ = "0.2"
-    __description__ = """Youporn.com Video Download Hoster"""
+    __description__ = """Youporn.com hoster plugin"""
     __author_name__ = "willnix"
     __author_mail__ = "willnix@pyload.org"
 

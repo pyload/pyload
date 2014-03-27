@@ -24,7 +24,7 @@ class TurbouploadCom(DeadHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)?turboupload.com/(\w+).*"
     __version__ = "0.03"
-    __description__ = """turboupload.com"""
+    __description__ = """Turboupload.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

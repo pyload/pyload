@@ -23,7 +23,7 @@ class BitshareComFolder(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?bitshare\.com/\?d=\w+"
     __version__ = "0.01"
-    __description__ = """Bitshare.com Folder Plugin"""
+    __description__ = """Bitshare.com folder decrypter plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

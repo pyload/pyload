@@ -12,7 +12,7 @@ class LuckyShareNet(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?luckyshare.net/(?P<ID>\d{10,})"
     __version__ = "0.02"
-    __description__ = """LuckyShare.net Download Hoster"""
+    __description__ = """LuckyShare.net hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

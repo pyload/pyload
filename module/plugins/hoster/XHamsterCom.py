@@ -22,7 +22,7 @@ class XHamsterCom(Hoster):
     __pattern__ = r"http://(www\.)?xhamster\.com/movies/.+"
     __version__ = "0.12"
     __config__ = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
-    __description__ = """XHamster.com Video Download Hoster"""
+    __description__ = """XHamster.com hoster plugin"""
 
     def process(self, pyfile):
         self.pyfile = pyfile

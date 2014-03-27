@@ -29,7 +29,7 @@ class DlProtectCom(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?dl-protect\.com/((en|fr)/)?(?P<ID>\w+)"
     __version__ = "0.01"
-    __description__ = """dl-protect.com decrypter plugin"""
+    __description__ = """Dl-protect.com decrypter plugin"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
 

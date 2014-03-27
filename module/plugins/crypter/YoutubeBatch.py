@@ -32,7 +32,7 @@ class YoutubeBatch(Crypter):
     __type__ = "crypter"
     __pattern__ = r"https?://(?:www\.)?(m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)"
     __version__ = "1.00"
-    __description__ = """Youtube.com channel & playlist decrypter"""
+    __description__ = """Youtube.com channel & playlist decrypter plugin"""
     __config__ = [("likes", "bool", "Grab user (channel) liked videos", "False"),
                   ("favorites", "bool", "Grab user (channel) favorite videos", "False"),
                   ("uploads", "bool", "Grab channel unplaylisted videos", "True")]

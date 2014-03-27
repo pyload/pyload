@@ -14,7 +14,7 @@ class SafelinkingNet(Crypter):
     __type__ = 'crypter'
     __pattern__ = r'https?://safelinking.net/([pd])/\w+'
     __version__ = '0.1'
-    __description__ = 'Safelinking.net Crypter Plugin'
+    __description__ = """Safelinking.net decrypter plugin"""
     __author_name__ = "quareevo"
     __author_mail__ = "quareevo@arcor.de"
 

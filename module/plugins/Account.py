@@ -38,7 +38,7 @@ class Account(Base):
     __name__ = "Account"
     __version__ = "0.2"
     __type__ = "account"
-    __description__ = """Account Plugin"""
+    __description__ = """Base account plugin"""
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"
 

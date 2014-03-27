@@ -10,7 +10,7 @@ class FileserveComFolder(Crypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?fileserve.com/list/\w+"
     __version__ = "0.11"
-    __description__ = """FileServeCom.com Folder Plugin"""
+    __description__ = """FileServe.com folder decrypter plugin"""
     __author_name__ = "fionnc"
     __author_mail__ = "fionnc@gmail.com"
 

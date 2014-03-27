@@ -27,7 +27,7 @@ class FilecloudIo(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*"
     __version__ = "0.02"
-    __description__ = """Filecloud.io (formerly Ifile.it) plugin - free account only"""
+    __description__ = """Filecloud.io hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 

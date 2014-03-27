@@ -25,7 +25,7 @@ class FilefactoryCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)"
     __version__ = "0.47"
-    __description__ = """Filefactory.Com File Download Hoster"""
+    __description__ = """Filefactory.com hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

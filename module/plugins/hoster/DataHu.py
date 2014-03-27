@@ -28,7 +28,7 @@ class DataHu(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?data.hu/get/\w+"
     __version__ = "0.01"
-    __description__ = """Data.hu Download Hoster"""
+    __description__ = """Data.hu hoster plugin"""
     __author_name__ = ("crash", "stickell")
     __author_mail__ = "l.stickell@yahoo.it"
 

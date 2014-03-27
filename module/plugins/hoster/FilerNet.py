@@ -32,7 +32,7 @@ class FilerNet(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?filer\.net/get/(\w+)"
     __version__ = "0.03"
-    __description__ = """Filer.net Download Hoster"""
+    __description__ = """Filer.net hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

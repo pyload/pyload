@@ -27,7 +27,7 @@ class HellshareCz(Account):
     __name__ = "HellshareCz"
     __version__ = "0.14"
     __type__ = "account"
-    __description__ = """hellshare.cz account plugin"""
+    __description__ = """Hellshare.cz account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

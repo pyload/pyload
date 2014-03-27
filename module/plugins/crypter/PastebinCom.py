@@ -23,7 +23,7 @@ class PastebinCom(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:w{3}.)?pastebin\.com/\w+"
     __version__ = "0.01"
-    __description__ = """Pastebin.com Plugin"""
+    __description__ = """Pastebin.com decrypter plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

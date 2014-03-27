@@ -29,7 +29,7 @@ class SimpleCrypter(Crypter):
     __version__ = "0.07"
     __pattern__ = None
     __type__ = "crypter"
-    __description__ = """Base crypter plugin"""
+    __description__ = """Simple decrypter plugin"""
     __author_name__ = ("stickell", "zoidberg")
     __author_mail__ = ("l.stickell@yahoo.it", "zoidberg@mujmail.cz")
     """

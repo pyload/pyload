@@ -10,9 +10,8 @@ class DownloadVimeoCom(Crypter):
     __name__ = 'DownloadVimeoCom'
     __type__ = 'crypter'
     __pattern__ = r'(?:http://vimeo\.com/\d*|http://smotri\.com/video/view/\?id=.*)'
-    ## The download from dailymotion failed with a 403
     __version__ = '0.1'
-    __description__ = """Video Download Plugin based on downloadvimeo.com"""
+    __description__ = """Vimeo.com decrypter plugin"""
     __author_name__ = "4Christopher"
     __author_mail__ = "4Christopher@gmx.de"
 

@@ -9,7 +9,7 @@ class LetitbitNetFolder(Crypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?letitbit.net/folder/\w+"
     __version__ = "0.1"
-    __description__ = """Letitbit.net Folder Plugin"""
+    __description__ = """Letitbit.net folder decrypter plugin"""
     __author_name__ = ("DHMH", "z00nx")
     __author_mail__ = ("webmaster@pcProfil.de", "z00nx0@gmail.com")
 

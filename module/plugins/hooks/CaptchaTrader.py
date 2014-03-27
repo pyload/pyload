@@ -44,7 +44,7 @@ class CaptchaTraderException(Exception):
 class CaptchaTrader(Hook):
     __name__ = "CaptchaTrader"
     __version__ = "0.16"
-    __description__ = """send captchas to captchatrader.com"""
+    __description__ = """Send captchas to captchatrader.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),

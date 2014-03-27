@@ -26,7 +26,7 @@ class NowDownloadEu(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?nowdownload\.(ch|co|eu|sx)/(dl/|download\.php\?id=)(?P<ID>\w+)"
     __version__ = "0.05"
-    __description__ = """NowDownloadCh"""
+    __description__ = """NowDownload.ch hoster plugin"""
     __author_name__ = ("godofdream", "Walter Purcaro")
     __author_mail__ = ("soilfiction@gmail.com", "vuolter@gmail.com")
 

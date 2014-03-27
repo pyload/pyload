@@ -25,7 +25,7 @@ class FreetexthostCom(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:w{3}.)?freetexthost\.com/\w+"
     __version__ = "0.01"
-    __description__ = """Freetexthost.com Plugin"""
+    __description__ = """Freetexthost.com decrypter plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
