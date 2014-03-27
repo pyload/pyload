@@ -74,7 +74,7 @@ class Keep2shareCC(SimpleHoster):
             if m:
                 # if someone is already downloading on our line, wait 30min and retry
                 self.logDebug('Already downloading, waiting for 30 minutes')
-                self.wait(1800, reconnect=True)
+                self.wait(30 * 60, reconnect=True)
                 self.retry()
 
             m = re.search(self.DIRECT_LINK_PATTERN, self.html)

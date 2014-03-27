@@ -103,7 +103,7 @@ class DepositfilesCom(SimpleHoster):
     def handlePremium(self):
         if '<span class="html_download_api-gold_traffic_limit">' in self.html:
             self.logWarning("Download limit reached")
-            self.retry(25, 3600, "Download limit reached")
+            self.retry(25, 60 * 60, "Download limit reached")
         elif 'onClick="show_gold_offer' in self.html:
             self.account.relogin(self.user)
             self.retry()

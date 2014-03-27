@@ -34,7 +34,7 @@ class AlldebridCom(Account):
                                                                                                   data["password"]))
             self.logDebug(page)
             xml = dom.parseString(page)
-            exp_time = time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 86400
+            exp_time = time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 24 * 60 * 60
         account_info = {"validuntil": exp_time, "trafficleft": -1}
         return account_info
 

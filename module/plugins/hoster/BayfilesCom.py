@@ -90,9 +90,9 @@ class BayfilesCom(SimpleHoster):
             "notfound": re.compile(r"<title>404 Not Found</title>")
         })
         if check == "waitforfreeslots":
-            self.retry(30, 60 * 5, "Wait for free slot")
+            self.retry(30, 5 * 60, "Wait for free slot")
         elif check == "notfound":
-            self.retry(30, 60 * 5, "404 Not found")
+            self.retry(30, 5 * 60, "404 Not found")
 
 
 getInfo = create_getInfo(BayfilesCom)
