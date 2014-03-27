@@ -15,8 +15,8 @@ class ReloadCc(Hoster):
     # create the regex patterns for us using getHosters in our ReloadCc hook.
     __pattern__ = None
 
-    __author_name__ = ("Reload Team")
-    __author_mail__ = ("hello@reload.cc")
+    __author_name__ = "Reload Team"
+    __author_mail__ = "hello@reload.cc"
 
     def process(self, pyfile):
         # Check account

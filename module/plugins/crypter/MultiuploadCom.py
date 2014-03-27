@@ -15,8 +15,8 @@ class MultiuploadCom(Crypter):
     __description__ = """MultiUpload.com crypter"""
     __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "multiupload"),
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     ML_LINK_PATTERN = r'<div id="downloadbutton_" style=""><a href="([^"]+)"'
 

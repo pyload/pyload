@@ -11,8 +11,8 @@ class YoupornCom(Hoster):
     __pattern__ = r"http://(www\.)?youporn\.com/watch/.+"
     __version__ = "0.2"
     __description__ = """Youporn.com Video Download Hoster"""
-    __author_name__ = ("willnix")
-    __author_mail__ = ("willnix@pyload.org")
+    __author_name__ = "willnix"
+    __author_mail__ = "willnix@pyload.org"
 
     def process(self, pyfile):
         self.pyfile = pyfile

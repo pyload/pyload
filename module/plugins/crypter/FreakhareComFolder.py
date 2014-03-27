@@ -26,8 +26,8 @@ class FreakhareComFolder(SimpleCrypter):
     __pattern__ = r"http://(?:www\.)?freakshare\.com/folder/.+"
     __version__ = "0.01"
     __description__ = """Freakhare.com Folder Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     LINK_PATTERN = r'<a href="(http://freakshare.com/files/[^"]+)" target="_blank">'
     TITLE_PATTERN = r'Folder:</b> (?P<title>.+)'

@@ -10,7 +10,8 @@ class FileApeCom(DeadHoster):
     __pattern__ = r"http://(www\.)?fileape\.com/(index\.php\?act=download\&id=|dl/)\w+"
     __version__ = "0.12"
     __description__ = """FileApe Download Hoster"""
-    __author_name__ = ("espes")
+    __author_name__ = "espes"
+    __author_mail__ = ""
 
 
 getInfo = create_getInfo(FileApeCom)

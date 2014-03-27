@@ -31,8 +31,8 @@ class MultiDebridCom(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
     __description__ = """Multi-debrid.com hook plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     def getHoster(self):
         json_data = getURL('http://multi-debrid.com/api.php?hosts', decode=True)

@@ -33,8 +33,8 @@ class FilerNet(SimpleHoster):
     __pattern__ = r"https?://(www\.)?filer\.net/get/(\w+)"
     __version__ = "0.03"
     __description__ = """Filer.net Download Hoster"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>\w+)</small></h1>'
     FILE_OFFLINE_PATTERN = r'Nicht gefunden'

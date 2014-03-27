@@ -8,8 +8,8 @@ class RealdebridCom(Account):
     __version__ = "0.43"
     __type__ = "account"
     __description__ = """Real-Debrid.com account plugin"""
-    __author_name__ = ("Devirex, Hazzard")
-    __author_mail__ = ("naibaf_11@yahoo.de")
+    __author_name__ = "Devirex Hazzard"
+    __author_mail__ = "naibaf_11@yahoo.de"
 
     def loadAccountInfo(self, user, req):
         if self.pin_code:

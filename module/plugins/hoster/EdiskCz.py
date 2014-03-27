@@ -26,7 +26,8 @@ class EdiskCz(SimpleHoster):
     __pattern__ = r"http://(\w*\.)?edisk.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*"
     __version__ = "0.21"
     __description__ = """Edisk.cz"""
-    __author_name__ = ("zoidberg")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     URL_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'
     FILE_INFO_PATTERN = r'<span class="fl" title="(?P<N>[^"]+)">\s*.*?\((?P<S>[0-9.]*) (?P<U>[kKMG])i?B\)</h1></span>'

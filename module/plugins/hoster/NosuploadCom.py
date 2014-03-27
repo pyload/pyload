@@ -12,6 +12,7 @@ class NosuploadCom(XFileSharingPro):
     __pattern__ = r"http://(?:www\.)?nosupload\.com/\?d=\w{12}"
     __description__ = """nosupload.com hoster plugin"""
     __author_name__ = "igel"
+    __author_mail__ = "igelkun@myopera.com"
 
     HOSTER_NAME = "nosupload.com"
 

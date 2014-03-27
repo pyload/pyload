@@ -32,8 +32,8 @@ class Ev0InFetcher(Hook):
                   ("quality", "xvid;x264;rmvb", "Video Format", "xvid"),
                   ("hoster", "str", "Hoster to use (comma seperated)",
                    "NetloadIn,RapidshareCom,MegauploadCom,HotfileCom")]
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
 
     def setup(self):
         self.interval = self.getConfig("interval") * 60

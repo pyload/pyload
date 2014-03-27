@@ -26,8 +26,8 @@ class RestartFailed(Hook):
     __description__ = "Periodically restart all failed downloads in queue"
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("interval", "int", "Interval in minutes", "90")]
-    __author_name__ = ("Walter Purcaro")
-    __author_mail__ = ("vuolter@gmail.com")
+    __author_name__ = "Walter Purcaro"
+    __author_mail__ = "vuolter@gmail.com"
 
     event_list = ["pluginConfigChanged"]
 

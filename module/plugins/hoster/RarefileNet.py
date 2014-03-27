@@ -12,8 +12,8 @@ class RarefileNet(XFileSharingPro):
     __pattern__ = r"http://(?:\w*\.)*rarefile.net/\w{12}"
     __version__ = "0.03"
     __description__ = """Rarefile.net hoster plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<td><font color="red">(?P<N>.*?)</font></td>'
     FILE_SIZE_PATTERN = r'<td>Size : (?P<S>.+?)&nbsp;'

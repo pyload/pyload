@@ -48,7 +48,7 @@ class FileserveCom(Hoster):
     __pattern__ = r"http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*"
     __version__ = "0.51"
     __description__ = """Fileserve.Com File Download Hoster"""
-    __author_name__ = ("jeix", "mkaay", "paul king", "zoidberg")
+    __author_name__ = ("jeix", "mkaay", "Paul King", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "", "zoidberg@mujmail.cz")
 
     URLS = ['http://www.fileserve.com/file/', 'http://www.fileserve.com/link-checker.php',

@@ -13,8 +13,8 @@ class RPNetBiz(MultiHoster):
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", "False"),
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
-    __author_name__ = ("Dman")
-    __author_mail__ = ("dmanugm@gmail.com")
+    __author_name__ = "Dman"
+    __author_mail__ = "dmanugm@gmail.com"
 
     def getHoster(self):
         # No hosts supported if no account
