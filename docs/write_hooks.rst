@@ -26,7 +26,7 @@ All Hooks should start with something like this: ::
                 __threaded__ = ["downloadFinished"]
                 __author_name__ = ("Me")
                 __author_mail__ = ("me@has-no-mail.com")
-                
+
 All meta-data is defined in the header, you need at least one option at ``__config__`` so the user can toggle your
 hook on and off. Dont't overwrite the ``init`` method if not neccesary, use ``setup`` instead.
 
@@ -117,7 +117,7 @@ Sounds complicated but is very easy to do. Just use the ``Expose`` decorator: ::
         """
         Your Hook code here.
         """
-        
+
         @Expose
         def invoke(self, arg):
             print "Invoked with", arg
@@ -158,5 +158,5 @@ Usable with: ::
 Example
 -------
     Sorry but you won't find an example here ;-)
-    
+
     Look at :file:`module/plugins/hooks` and you will find plenty examples there.

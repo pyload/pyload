@@ -317,7 +317,6 @@ class DownloadThread(PluginThread):
                 pyfile.checkIfProcessed()
                 exc_clear()
 
-            
             #pyfile.plugin.req.clean()
 
             self.active = False
@@ -461,7 +460,7 @@ class HookThread(PluginThread):
                 #dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in e.args[0]:
                     raise
-                
+
                 del self.kwargs["thread"]
                 self.f(*self.args, **self.kwargs)
         finally:

@@ -492,7 +492,6 @@ def admin():
             for perm in perms:
                 user[name]["perms"][perm] = False
 
-            
             for perm in request.POST.getall("%s|perms" % name):
                 user[name]["perms"][perm] = True
 

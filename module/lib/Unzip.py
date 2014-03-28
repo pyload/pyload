@@ -4,7 +4,7 @@ import os
 class Unzip:
     def __init__(self):
         pass
-        
+
     def extract(self, file, dir):
         if not dir.endswith(':') and not os.path.exists(dir):
             os.mkdir(dir)

@@ -19,11 +19,11 @@ CONF_VERSION = 1
 class ConfigParser:
     """
     holds and manage the configuration
-    
+
     current dict layout:
-    
+
     {
-    
+
      section : { 
       option : { 
             value:
@@ -31,10 +31,9 @@ class ConfigParser:
             desc:
       }
       desc: 
-    
+
     }
-    
-    
+
     """
 
 

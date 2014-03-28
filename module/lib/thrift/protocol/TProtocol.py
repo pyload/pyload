@@ -279,7 +279,7 @@ class TProtocolBase:
     obj = obj_class()
     obj.read(self)
     return obj
-  
+
   def readContainerMap(self, spec):
     results = dict()
     key_ttype, key_spec = spec[0], spec[1]
