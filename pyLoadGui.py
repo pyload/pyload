@@ -762,4 +762,3 @@ if __name__ == "__main__":
     renameProcess('pyLoadGui')
     app = main()
     app.loop()
-

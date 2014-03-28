@@ -122,4 +122,3 @@ class TProcessPoolServer(TServer):
         self.stopCondition.acquire()
         self.stopCondition.notify()
         self.stopCondition.release()
-

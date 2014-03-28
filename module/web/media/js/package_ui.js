@@ -374,4 +374,3 @@ var Package = new Class({
     }
 
 });
-

@@ -69,4 +69,3 @@ class TExceptionBase(Exception):
   __ne__ = TBase.__ne__.im_func
   read = TBase.read.im_func
   write = TBase.write.im_func
-
