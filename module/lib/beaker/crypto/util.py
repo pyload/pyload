@@ -6,9 +6,9 @@ try:
     # Use PyCrypto (if available)
     from Crypto.Hash import HMAC as hmac, SHA as hmac_sha1
     sha1 = hmac_sha1.new
-    
+
 except ImportError:
-    
+
     # PyCrypto not available.  Use the Python standard library.
     import hmac
 

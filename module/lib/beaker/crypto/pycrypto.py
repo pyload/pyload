@@ -9,16 +9,16 @@ try:
     def aesEncrypt(data, key):
         cipher = aes.AES(key)
         return cipher.process(data)
-    
+
     # magic.
     aesDecrypt = aesEncrypt
-    
+
 except ImportError:
     from Crypto.Cipher import AES
 
     def aesEncrypt(data, key):
         cipher = AES.new(key)
-        
+
         data = data + (" " * (16 - (len(data) % 16)))
         return cipher.encrypt(data)
 

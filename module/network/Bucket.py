@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: RaNaN
 """
 
@@ -47,7 +47,7 @@ class Bucket:
             time = -self.tokens/float(self.rate)
         else:
             time = 0
-        
+
 
         self.lock.release()
         return time

@@ -284,7 +284,7 @@ def update_accounts():
     for name, value in request.POST.iteritems():
         value = value.strip()
         if not value: continue
-        
+
         tmp, user = name.split(";")
         plugin, action = tmp.split("|")
 

@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: RaNaN
 """
 from getpass import getpass
@@ -475,7 +475,7 @@ class Setup():
                     return p1
                 else:
                     print _("Passwords did not match.")
-                    
+
         while True:
             try:
                 input = raw_input(qst + " %s: " % info)

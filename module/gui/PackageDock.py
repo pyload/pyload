@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 import re
@@ -28,7 +28,7 @@ class NewPackageDock(QDockWidget):
         self.setWidget(self.widget)
         self.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)
         self.hide()
-    
+
     def slotDone(self):
         text = str(self.widget.box.toPlainText())
         pw   = str(self.widget.passwordInput.text())
@@ -62,21 +62,21 @@ class NewPackageWindow(QWidget):
         self.dock = dock
         self.setLayout(QGridLayout())
         layout = self.layout()
-        
+
         nameLabel = QLabel(_("Name"))
         nameInput = QLineEdit()
         passwordLabel = QLabel(_("Password"))
         passwordInput = QLineEdit()
-        
+
         linksLabel = QLabel(_("Links in this Package"))
-        
+
         self.box = QTextEdit()
         self.nameInput = nameInput
         self.passwordInput = passwordInput
-        
+
         save = QPushButton(_("Create"))
         parseUri = QPushButton(_("Filter URLs"))
-        
+
         layout.addWidget(nameLabel, 0, 0)
         layout.addWidget(nameInput, 0, 1)
         layout.addWidget(passwordLabel, 1, 0)
