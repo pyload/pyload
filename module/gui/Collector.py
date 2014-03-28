@@ -404,4 +404,3 @@ class CollectorView(QTreeView):
         self.setColumnWidth(3, 100)
 
         self.setEditTriggers(QAbstractItemView.DoubleClicked | QAbstractItemView.EditKeyPressed)
-

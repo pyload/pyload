@@ -401,4 +401,3 @@ class TProtocolBase:
 class TProtocolFactory:
   def getProtocol(self, trans):
     pass
-

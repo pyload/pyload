@@ -349,4 +349,3 @@ if __name__ == "__main__":
     print end-start
 
     db.error()
-

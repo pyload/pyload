@@ -143,4 +143,3 @@ if __name__ == "__main__":
     #browser.getPage("http://google.com/search?q=bar")
 
     browser.httpDownload("http://speedtest.netcologne.de/test_10mb.bin", "test_10mb.bin")
-

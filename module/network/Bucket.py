@@ -58,4 +58,3 @@ class Bucket:
             delta = self.rate * (now - self.timestamp)
             self.tokens = min(self.rate, self.tokens + delta)
             self.timestamp = now
-

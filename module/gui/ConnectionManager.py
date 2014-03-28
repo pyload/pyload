@@ -299,4 +299,3 @@ class ConnectionManager(QWidget):
             data = self.getData()
             self.hide()
             self.emit(SIGNAL("save"), data)
-
