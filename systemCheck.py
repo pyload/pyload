@@ -134,7 +134,7 @@ def main():
         print("\nPossible improvements for webinterface:\n")
         for line in web_info:
             print(line)
-        
+
 
 if __name__ == "__main__":
     main()

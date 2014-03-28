@@ -126,7 +126,7 @@ class HookManager:
                 if self.core.config.getPlugin(pluginname, "activated"):
                     pluginClass = self.core.pluginManager.loadClass("hooks", pluginname)
                     if not pluginClass: continue
-                    
+
                     plugin = pluginClass(self.core, self)
                     plugins.append(plugin)
                     self.pluginMap[pluginClass.__name__] = plugin
@@ -312,4 +312,4 @@ class HookManager:
                     % (event, f, args, str(e)))
                     if self.core.debug:
                         traceback.print_exc()
-    
+

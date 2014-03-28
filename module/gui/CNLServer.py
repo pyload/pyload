@@ -43,7 +43,7 @@ class CNLServer(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.setDaemon(True)
-        
+
         self.stop = False
         self.stopped = False
 
@@ -54,7 +54,7 @@ class CNLServer(Thread):
         except:
             self.stopped = True
             return
-        
+
         self.stopped = False
         while self.keep_running():
             httpd.handle_request()

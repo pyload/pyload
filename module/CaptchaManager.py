@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay, RaNaN
 """
 
@@ -70,7 +70,7 @@ class CaptchaManager():
             except:
                 if self.core.debug:
                     print_exc()
-            
+
         if task.handler or cli: #the captcha was handled
             self.tasks.append(task)
             return True

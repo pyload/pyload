@@ -189,7 +189,7 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
     If *namedtuple_as_object* is true (default: ``True``),
     :class:`tuple` subclasses with ``_asdict()`` methods will be encoded
     as JSON objects.
-    
+
     If *tuple_as_array* is true (default: ``True``),
     :class:`tuple` (and subclasses) will be encoded as JSON arrays.
 
@@ -268,7 +268,7 @@ def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
     If *namedtuple_as_object* is true (default: ``True``),
     :class:`tuple` subclasses with ``_asdict()`` methods will be encoded
     as JSON objects.
-    
+
     If *tuple_as_array* is true (default: ``True``),
     :class:`tuple` (and subclasses) will be encoded as JSON arrays.
 

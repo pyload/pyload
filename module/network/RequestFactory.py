@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay, RaNaN
 """
 
@@ -67,7 +67,7 @@ class RequestFactory():
             rep = h.load(*args, **kwargs)
         finally:
             h.close()
-            
+
         return rep
 
     def getCookieJar(self, pluginName, account=None):

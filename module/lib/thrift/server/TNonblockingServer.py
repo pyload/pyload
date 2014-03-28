@@ -81,7 +81,7 @@ def socket_exception(func):
 
 class Connection:
     """Basic class is represented connection.
-    
+
     It can be in state:
         WAIT_LEN --- connection is reading request len.
         WAIT_MESSAGE --- connection is reading request.
@@ -102,7 +102,7 @@ class Connection:
 
     def _read_len(self):
         """Reads length of request.
-        
+
         It's really paranoic routine and it may be replaced by 
         self.socket.recv(4)."""
         read = self.socket.recv(4 - len(self.message))
@@ -162,14 +162,14 @@ class Connection:
     @locked
     def ready(self, all_ok, message):
         """Callback function for switching state and waking up main thread.
-        
+
         This function is the only function witch can be called asynchronous.
-        
+
         The ready can switch Connection to three states:
             WAIT_LEN if request was oneway.
             SEND_ANSWER if request was processed in normal way.
             CLOSED if request throws unexpected exception.
-        
+
         The one wakes up main thread.
         """
         assert self.status == WAIT_PROCESS
@@ -243,12 +243,12 @@ class TNonblockingServer:
 
     def wake_up(self):
         """Wake up main thread.
-        
+
         The server usualy waits in select call in we should terminate one.
         The simplest way is using socketpair.
-        
+
         Select always wait to read from the first socket of socketpair.
-        
+
         In this case, we can just write anything to the second socket from
         socketpair."""
         self._write.send('1')
@@ -265,10 +265,10 @@ class TNonblockingServer:
             if connection.is_closed():
                 del self.clients[i]
         return select.select(readable, writable, readable)
-        
+
     def handle(self):
         """Handle requests.
-       
+
         WARNING! You must call prepare BEFORE calling handle.
         """
         assert self.prepared, "You have to call prepare before handle"
@@ -302,7 +302,7 @@ class TNonblockingServer:
             self.tasks.put([None, None, None, None, None])
         self.socket.close()
         self.prepared = False
-        
+
     def serve(self):
         """Serve forever."""
         self.prepare()

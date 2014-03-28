@@ -157,7 +157,7 @@ class JSONEncoder(object):
 
         If namedtuple_as_object is true (the default), tuple subclasses with
         ``_asdict()`` methods will be encoded as JSON objects.
-        
+
         If tuple_as_array is true (the default), tuple (and subclasses) will
         be encoded as JSON arrays.
         """

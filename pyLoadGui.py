@@ -276,11 +276,11 @@ class main(QObject):
         overview.queue = self.queue
         self.connect(self.queue, SIGNAL("updateCount"), overview.queueChanged)
         self.queue.start()
-    
+
     def slotUpdateCount(self, pc, fc):
         self.mainWindow.packageCount.setText("%i" % pc)
         self.mainWindow.fileCount.setText("%i" % fc)
-    
+
     def refreshServerStatus(self):
         """
             refresh server status and overall speed in the status bar
@@ -431,12 +431,12 @@ class main(QObject):
                 thread.start_new_thread(self.core.start, (False, False))
                 while not self.core.running:
                     sleep(0.5)
-                    
+
                 self.connector.proxy = self.core.api
                 self.connector.internal = True
 
                 #self.connector.setConnectionData("127.0.0.1", config.get("remote","port"), "anonymous", "anonymous")
-        
+
         self.startMain()
 #        try:
 #            host = data["host"]
@@ -588,14 +588,14 @@ class main(QObject):
             text = self.clipboard.text()
             pattern = re.compile(r"(http|https|ftp)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?/.*)?")
             matches = pattern.finditer(text)
-            
+
             # thanks to: jmansour //#139
             links = [str(match.group(0)) for match in matches]
             if len(links) == 0:
                 return
-                
+
             filenames = [link.rpartition("/")[2] for link in links]
-            
+
             packagename = commonprefix(filenames)
             if len(packagename) == 0:
                 packagename = filenames[0]
@@ -678,14 +678,14 @@ class main(QObject):
                 if self.core.shuttedDown:
                     break
                 sleep(0.5)
-    
+
     def slotConnectionLost(self):
         if not self.connectionLost:
             self.connectionLost = True
             m = QMessageBox(QMessageBox.Critical, _("Connection lost"), _("Lost connection to the core!"), QMessageBox.Ok)
             m.exec_()
             self.slotQuit()
-    
+
     class Loop():
         def __init__(self, parent):
             self.parent = parent

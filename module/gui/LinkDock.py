@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -27,7 +27,7 @@ class NewLinkDock(QDockWidget):
         self.setWidget(self.widget)
         self.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)
         self.hide()
-    
+
     def slotDone(self):
         text = str(self.widget.box.toPlainText())
         lines = text.splitlines()
@@ -41,16 +41,16 @@ class NewLinkWindow(QWidget):
         self.dock = dock
         self.setLayout(QVBoxLayout())
         layout = self.layout()
-        
+
         explanationLabel = QLabel("Select a package and then click Add button.")
         boxLabel = QLabel("Paste URLs here:")
         self.box = QTextEdit()
-        
+
         save = QPushButton("Add")
-        
+
         layout.addWidget(explanationLabel)
         layout.addWidget(boxLabel)
         layout.addWidget(self.box)
         layout.addWidget(save)
-        
+
         self.connect(save, SIGNAL("clicked()"), self.dock.slotDone)

@@ -146,7 +146,7 @@ class ThreadManager:
             self.log.warning("Assign job error", e)
             if self.core.debug:
                 print_exc()
-            
+
             sleep(0.5)
             self.assignJob()
             #it may be failed non critical so we try it again
@@ -267,7 +267,7 @@ class ThreadManager:
         onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
 
         occ = [x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
-        
+
         occ.sort()
         occ = tuple(set(occ))
         job = self.core.files.getJob(occ)
