@@ -74,7 +74,7 @@ class NCryptIn(Crypter):
         self.packages = [(package_name, package_links, folder_name)]
 
     def isSingleLink(self):
-        link_type = re.search(self.__pattern__, self.pyfile.url).group('type')
+        link_type = re.match(self.__pattern__, self.pyfile.url).group('type')
         return link_type in ('link', 'frame')
 
     def requestFolderHome(self):

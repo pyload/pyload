@@ -78,7 +78,7 @@ class RapidshareCom(Hoster):
         self.prepare()
 
     def prepare(self):
-        m = re.search(self.__pattern__, self.url)
+        m = re.match(self.__pattern__, self.url)
 
         if m.group("name"):
             self.id = m.group("id")

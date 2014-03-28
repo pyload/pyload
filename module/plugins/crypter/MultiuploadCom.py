@@ -26,7 +26,7 @@ class MultiuploadCom(Crypter):
         ml_url = found.group(1) if found else None
 
         json_list = json_loads(self.load("http://multiupload.com/progress/", get={
-            "d": re.search(self.__pattern__, pyfile.url).group(1),
+            "d": re.match(self.__pattern__, pyfile.url).group(1),
             "r": str(int(time() * 1000))
         }))
         new_links = []

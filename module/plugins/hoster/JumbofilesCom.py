@@ -20,7 +20,7 @@ class JumbofilesCom(SimpleHoster):
         self.resumeDownload = self.multiDL = True
 
     def handleFree(self):
-        ukey = re.search(self.__pattern__, self.pyfile.url).group(1)
+        ukey = re.match(self.__pattern__, self.pyfile.url).group(1)
         post_data = {"id": ukey, "op": "download3", "rand": ""}
         html = self.load(self.pyfile.url, post=post_data, decode=True)
         url = re.search(self.DIRECT_LINK_PATTERN, html).group(1)

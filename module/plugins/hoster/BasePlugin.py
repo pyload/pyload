@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from urlparse import urlparse
-from re import search
+from re import match, search
 from urllib import unquote
 
 from module.network.HTTPRequest import BadHeader
@@ -83,7 +83,7 @@ class BasePlugin(Hoster):
 
             if 'location' in header:
                 self.logDebug("Location: " + header['location'])
-                base = search(r'https?://[^/]+', url).group(0)
+                base = match(r'https?://[^/]+', url).group(0)
                 if header['location'].startswith("http"):
                     url = unquote(header['location'])
                 elif header['location'].startswith("/"):

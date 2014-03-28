@@ -37,7 +37,7 @@ class LuckyShareNet(SimpleHoster):
     # TODO: There should be a filesize limit for free downloads
     # TODO: Some files could not be downloaded in free mode
     def handleFree(self):
-        file_id = re.search(self.__pattern__, self.pyfile.url).group('ID')
+        file_id = re.match(self.__pattern__, self.pyfile.url).group('ID')
         self.logDebug('File ID: ' + file_id)
         rep = self.load(r"http://luckyshare.net/download/request/type/time/file/" + file_id, decode=True)
         self.logDebug('JSON: ' + rep)

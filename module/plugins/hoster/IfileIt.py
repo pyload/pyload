@@ -40,7 +40,7 @@ class IfileIt(SimpleHoster):
     TEMP_OFFLINE_PATTERN = r'<span class="msg_red">Downloading of this file is temporarily disabled</span>'
 
     def handleFree(self):
-        ukey = re.search(self.__pattern__, self.pyfile.url).group(1)
+        ukey = re.match(self.__pattern__, self.pyfile.url).group(1)
         json_url = 'http://ifile.it/new_download-request.json'
         post_data = {"ukey": ukey, "ab": "0"}
 
