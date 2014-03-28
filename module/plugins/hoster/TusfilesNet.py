@@ -23,11 +23,13 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class TusfilesNet(XFileSharingPro):
     __name__ = "TusfilesNet"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?(tusfiles\.net)/(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/(?P<ID>\w+)'
     __version__ = "0.03"
     __description__ = """Tusfiles.net hoster plugin"""
     __author_name__ = ("stickell", "Walter Purcaro")
     __author_mail__ = ("l.stickell@yahoo.it", "vuolter@gmail.com")
+
+    HOSTER_NAME = "tusfiles.net"
 
     FILE_INFO_PATTERN = r'<li>(?P<N>.+)</li>\s+<li><b>\w+:</b> <small>(?P<S>[\d.]+) (?P<U>\w+)</small></li>'
     FILE_OFFLINE_PATTERN = r'>File Not Found|<Title>TusFiles - Fast Sharing Files!'

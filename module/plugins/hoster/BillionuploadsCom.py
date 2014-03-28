@@ -11,9 +11,10 @@ class BillionuploadsCom(XFileSharingPro):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
+    HOSTER_NAME = "billionuploads.com"
+
     FILE_NAME_PATTERN = r'<b>Filename:</b>(?P<N>.*?)<br>'
     FILE_SIZE_PATTERN = r'<b>Size:</b>(?P<S>.*?)<br>'
-    HOSTER_NAME = "billionuploads.com"
 
 
 getInfo = create_getInfo(BillionuploadsCom)
