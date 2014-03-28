@@ -31,7 +31,7 @@ def getInfo(urls):
 class FilesMailRu(Hoster):
     __name__ = "FilesMailRu"
     __type__ = "hoster"
-    __pattern__ = r"http://files\.mail\.ru/.*"
+    __pattern__ = r"http://(?:www\.)?files\.mail\.ru/.*"
     __version__ = "0.31"
     __description__ = """Files.mail.ru hoster plugin"""
     __author_name__ = "oZiRiz"

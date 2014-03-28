@@ -26,7 +26,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class QuickshareCz(SimpleHoster):
     __name__ = "QuickshareCz"
     __type__ = "hoster"
-    __pattern__ = r"http://.*quickshare.cz/stahnout-soubor/.*"
+    __pattern__ = r"http://(?:[^/]*\.)?quickshare.cz/stahnout-soubor/.*"
     __version__ = "0.54"
     __description__ = """Quickshare.cz hoster plugin"""
     __author_name__ = "zoidberg"

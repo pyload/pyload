@@ -25,7 +25,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MultishareCz(SimpleHoster):
     __name__ = "MultishareCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?multishare.cz/stahnout/(?P<ID>\d+).*"
+    __pattern__ = r"http://(?:www\.)?multishare.cz/stahnout/(?P<ID>\d+).*"
     __version__ = "0.34"
     __description__ = """MultiShare.cz hoster plugin"""
     __author_name__ = "zoidberg"

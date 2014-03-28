@@ -8,7 +8,7 @@ from module.plugins.Crypter import Crypter
 class StealthTo(Crypter):
     __name__ = "StealthTo"
     __type__ = "crypter"
-    __pattern__ = r"http://(www\.)?stealth.to/folder/"
+    __pattern__ = r"http://(?:www\.)?stealth.to/folder/"
     __version__ = "0.1"
     __description__ = """Stealth.to decrypter plugin"""
     __author_name__ = "spoob"

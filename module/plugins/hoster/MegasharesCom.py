@@ -25,7 +25,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MegasharesCom(SimpleHoster):
     __name__ = "MegasharesCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w+\.)?megashares.com/.*"
+    __pattern__ = r"http://(?:www\.)?megashares.com/.*"
     __version__ = "0.24"
     __description__ = """Megashares.com hoster plugin"""
     __author_name__ = "zoidberg"

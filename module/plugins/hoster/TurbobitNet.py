@@ -36,7 +36,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?(turbobit.net|unextfiles.com)/(?!download/folder/)(?:download/free/)?(?P<ID>\w+).*"
+    __pattern__ = r"http://(?:www\.)?(turbobit.net|unextfiles.com)/(?!download/folder/)(?:download/free/)?(?P<ID>\w+).*"
     __version__ = "0.11"
     __description__ = """Turbobit.net plugin"""
     __author_name__ = "zoidberg"
@@ -46,7 +46,7 @@ class TurbobitNet(SimpleHoster):
     FILE_INFO_PATTERN = r"<span class='file-icon1[^>]*>(?P<N>[^<]+)</span>\s*\((?P<S>[^\)]+)\)\s*</h1>"
     FILE_NAME_PATTERN = r'<meta name="keywords" content="\s+(?P<N>[^,]+)'  # full name but missing on page2
     FILE_OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
-    FILE_URL_REPLACEMENTS = [(r"http://(?:\w*\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*",
+    FILE_URL_REPLACEMENTS = [(r"http://(?:www\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*",
                               "http://turbobit.net/\g<ID>.html")]
     SH_COOKIES = [("turbobit.net", "user_lang", "en")]
 

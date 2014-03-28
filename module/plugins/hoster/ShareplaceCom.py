@@ -8,7 +8,7 @@ from module.plugins.Hoster import Hoster
 class ShareplaceCom(Hoster):
     __name__ = "ShareplaceCom"
     __type__ = "hoster"
-    __pattern__ = r"(http://)?(www\.)?shareplace\.(com|org)/\?[a-zA-Z0-9]+"
+    __pattern__ = r"(http://)?(?:www\.)?shareplace\.(com|org)/\?[a-zA-Z0-9]+"
     __version__ = "0.11"
     __description__ = """Shareplace.com hoster plugin"""
     __author_name__ = "ACCakut"

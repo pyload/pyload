@@ -8,7 +8,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class CatShareNet(SimpleHoster):
     __name__ = "CatShareNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?catshare.net/\w{16}.*"
+    __pattern__ = r"http://(?:www\.)?catshare.net/\w{16}.*"
     __version__ = "0.01"
     __description__ = """CatShare.net hoster plugin"""
     __author_name__ = "z00nx"

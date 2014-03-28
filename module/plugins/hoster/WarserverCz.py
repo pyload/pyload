@@ -28,7 +28,7 @@ from module.utils import html_unescape
 class WarserverCz(SimpleHoster):
     __name__ = "WarserverCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?warserver.cz/stahnout/(?P<ID>\d+)/.+"
+    __pattern__ = r"http://(?:www\.)?warserver.cz/stahnout/(?P<ID>\d+)/.+"
     __version__ = "0.12"
     __description__ = """Warserver.cz hoster plugin"""
     __author_name__ = "zoidberg"
