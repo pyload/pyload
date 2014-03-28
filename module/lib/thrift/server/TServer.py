@@ -270,5 +270,3 @@ class TForkingServer(TServer):
         self.children.remove(pid)
       else:
         break
-
-

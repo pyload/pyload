@@ -312,4 +312,3 @@ class HookManager:
                     % (event, f, args, str(e)))
                     if self.core.debug:
                         traceback.print_exc()
-

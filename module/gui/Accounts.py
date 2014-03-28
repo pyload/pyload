@@ -210,4 +210,3 @@ class AccountDelegate(QItemDelegate):
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
             return
         QItemDelegate.paint(self, painter, option, index)
-

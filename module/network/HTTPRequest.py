@@ -303,4 +303,3 @@ if __name__ == "__main__":
     url = "http://pyload.org"
     c = HTTPRequest()
     print c.load(url)
-

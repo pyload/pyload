@@ -5531,4 +5531,3 @@ class setCaptchaResult_result(TBase):
 
   thrift_spec = (
   )
-

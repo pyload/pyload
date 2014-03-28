@@ -91,4 +91,3 @@ class CaptchaDockWidget(QWidget):
         self.dock.emit(SIGNAL("done"), tid, str(text))
         self.dock.hide()
         self.dock.processing = False
-
