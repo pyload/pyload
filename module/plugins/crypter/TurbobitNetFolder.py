@@ -23,7 +23,7 @@ from module.common.json_layer import json_loads
 class TurbobitNetFolder(SimpleCrypter):
     __name__ = "TurbobitNetFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)"
+    __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
     __version__ = "0.03"
     __description__ = """Turbobit.net folder decrypter plugin"""
     __author_name__ = ("stickell", "Walter Purcaro")

@@ -23,7 +23,7 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class HundredEightyUploadCom(XFileSharingPro):
     __name__ = "HundredEightyUploadCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?180upload\.com/(\w+).*"
+    __pattern__ = r'http://(?:www\.)?180upload\.com/(\w+).*'
     __version__ = "0.01"
     __description__ = """180upload.com hoster plugin"""
     __author_name__ = "stickell"

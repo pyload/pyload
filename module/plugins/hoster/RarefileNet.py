@@ -9,7 +9,7 @@ from module.utils import html_unescape
 class RarefileNet(XFileSharingPro):
     __name__ = "RarefileNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?rarefile.net/\w{12}"
+    __pattern__ = r'http://(?:www\.)?rarefile.net/\w{12}'
     __version__ = "0.03"
     __description__ = """Rarefile.net hoster plugin"""
     __author_name__ = "zoidberg"

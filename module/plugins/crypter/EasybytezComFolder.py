@@ -20,7 +20,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class EasybytezComFolder(SimpleCrypter):
     __name__ = "EasybytezComFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?easybytez\.com/users/(?P<ID>\d+/\d+)"
+    __pattern__ = r'http://(?:www\.)?easybytez\.com/users/(?P<ID>\d+/\d+)'
     __version__ = "0.05"
     __description__ = """Easybytez.com decrypter plugin"""
     __author_name__ = "stickell"

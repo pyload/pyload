@@ -36,7 +36,7 @@ class XFileSharingPro(SimpleHoster):
     """
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __pattern__ = r"^unmatchable$"
+    __pattern__ = r'^unmatchable$'
     __version__ = "0.28"
     __description__ = """XFileSharingPro base hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")

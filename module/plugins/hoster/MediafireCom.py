@@ -63,7 +63,7 @@ def getInfo(urls):
 class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?mediafire\.com/(file/|(view/?|download.php)?\?)(\w{11}|\w{15})($|/)"
+    __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download.php)?\?)(\w{11}|\w{15})($|/)'
     __version__ = "0.79"
     __description__ = """Mediafire.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")

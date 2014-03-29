@@ -20,7 +20,7 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class DuploadOrg(XFileSharingPro):
     __name__ = "DuploadOrg"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?dupload\.org/\w{12}"
+    __pattern__ = r'http://(?:www\.)?dupload\.org/\w{12}'
     __version__ = "0.01"
     __description__ = """Dupload.grg hoster plugin"""
     __author_name__ = "stickell"

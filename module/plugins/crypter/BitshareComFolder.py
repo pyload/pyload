@@ -20,7 +20,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class BitshareComFolder(SimpleCrypter):
     __name__ = "BitshareComFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?bitshare\.com/\?d=\w+"
+    __pattern__ = r'http://(?:www\.)?bitshare\.com/\?d=\w+'
     __version__ = "0.01"
     __description__ = """Bitshare.com folder decrypter plugin"""
     __author_name__ = "stickell"

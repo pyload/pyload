@@ -8,7 +8,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class FreakshareCom(Hoster):
     __name__ = "FreakshareCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?freakshare\.(net|com)/files/\S*?/"
+    __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
     __version__ = "0.38"
     __description__ = """Freakshare.com hoster plugin"""
     __author_name__ = ("sitacuisses", "spoob", "mkaay", "Toilal")

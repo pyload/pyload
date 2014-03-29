@@ -51,7 +51,7 @@ def getInfo(urls):
 class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
+    __pattern__ = r'https?://(?:www\.)?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))'
     __version__ = "1.39"
     __description__ = """Rapidshare.com hoster plugin"""
     __config__ = [("server",

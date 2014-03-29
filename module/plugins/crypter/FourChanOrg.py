@@ -11,7 +11,7 @@ class FourChanOrg(Crypter):
     __name__ = "FourChanOrg"
     __type__ = "crypter"
     __version__ = "0.3"
-    __pattern__ = r"http://(?:www\.)?boards\.4chan.org/\w+/res/(\d+)"
+    __pattern__ = r'http://(?:www\.)?boards\.4chan.org/\w+/res/(\d+)'
     __description__ = """4chan.org folder decrypter plugin"""
 
     def decrypt(self, pyfile):

@@ -28,7 +28,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia, AdsCap
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+"
+    __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
     __version__ = "0.21"
     __description__ = """Rapidgator.net hoster plugin"""
     __author_name__ = ("zoidberg", "chrox", "stickell", "Walter Purcaro")

@@ -12,7 +12,7 @@ from module.plugins.Crypter import Crypter
 class RelinkUs(Crypter):
     __name__ = "RelinkUs"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?relink.us/(f/|((view|go).php\?id=))(?P<id>.+)"
+    __pattern__ = r'http://(?:www\.)?relink.us/(f/|((view|go).php\?id=))(?P<id>.+)'
     __version__ = "3.0"
     __description__ = """Relink.us decrypter plugin"""
     __author_name__ = "fragonib"

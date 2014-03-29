@@ -30,7 +30,7 @@ API_KEY = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
 class YoutubeBatch(Crypter):
     __name__ = "YoutubeBatch"
     __type__ = "crypter"
-    __pattern__ = r"https?://(?:www\.)?(m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)"
+    __pattern__ = r'https?://(?:www\.)?(m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)'
     __version__ = "1.00"
     __description__ = """Youtube.com channel & playlist decrypter plugin"""
     __config__ = [("likes", "bool", "Grab user (channel) liked videos", False),

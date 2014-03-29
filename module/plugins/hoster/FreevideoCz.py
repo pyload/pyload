@@ -39,7 +39,7 @@ def getInfo(urls):
 class FreevideoCz(Hoster):
     __name__ = "FreevideoCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?freevideo.cz/vase-videa/(.*)\.html"
+    __pattern__ = r'http://(?:www\.)?freevideo.cz/vase-videa/(.*)\.html'
     __version__ = "0.2"
     __description__ = """Freevideo.cz hoster plugin"""
     __author_name__ = "zoidberg"

@@ -15,7 +15,7 @@ class RealdebridCom(Hoster):
     __version__ = "0.53"
     __type__ = "hoster"
 
-    __pattern__ = r"https?://(?:[^/]*\.)?real-debrid\..*"
+    __pattern__ = r'https?://(?:[^/]*\.)?real-debrid\..*'
     __description__ = """Real-Debrid.com hoster plugin"""
     __author_name__ = "Devirex Hazzard"
     __author_mail__ = "naibaf_11@yahoo.de"

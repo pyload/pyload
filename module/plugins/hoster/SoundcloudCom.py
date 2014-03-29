@@ -9,7 +9,7 @@ from module.plugins.Hoster import Hoster
 class SoundcloudCom(Hoster):
     __name__ = "SoundcloudCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?soundcloud\.com/(?P<UID>.*?)/(?P<SID>.*)"
+    __pattern__ = r'https?://(?:www\.)?soundcloud\.com/(?P<UID>.*?)/(?P<SID>.*)'
     __version__ = "0.1"
     __description__ = """SoundCloud.com hoster plugin"""
     __author_name__ = "Peekayy"

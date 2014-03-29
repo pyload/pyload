@@ -16,7 +16,7 @@ from module.common.json_layer import json_loads
 class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
-    __pattern__ = r"(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)"
+    __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)'
     __version__ = "0.46"
     __description__ = """Zippyshare.com hoster plugin"""
     __author_name__ = ("spoob", "zoidberg", "stickell")

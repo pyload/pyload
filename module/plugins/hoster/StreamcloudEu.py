@@ -10,7 +10,7 @@ from module.network.HTTPRequest import HTTPRequest
 class StreamcloudEu(XFileSharingPro):
     __name__ = "StreamcloudEu"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?streamcloud\.eu/\S+"
+    __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\S+'
     __version__ = "0.03"
     __description__ = """Streamcloud.eu hoster plugin"""
     __author_name__ = "seoester"

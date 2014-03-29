@@ -6,7 +6,7 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class CramitIn(XFileSharingPro):
     __name__ = "CramitIn"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?cramit.in/\w{12}"
+    __pattern__ = r'http://(?:www\.)?cramit.in/\w{12}'
     __version__ = "0.04"
     __description__ = """Cramit.in hoster plugin"""
     __author_name__ = "zoidberg"

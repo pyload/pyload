@@ -25,7 +25,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class NarodRu(SimpleHoster):
     __name__ = "NarodRu"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/[0-9]+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+"
+    __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/[0-9]+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
     __version__ = "0.1"
     __description__ = """Narod.ru hoster plugin"""
     __author_name__ = "zoidberg"
