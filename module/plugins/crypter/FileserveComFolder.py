@@ -18,7 +18,7 @@ class FileserveComFolder(Crypter):
     LINK_PATTERN = r'<a href="([^"]+)" class="sheet_icon wbold">'
 
     def decrypt(self, pyfile):
-        html = self.load(self.pyfile.url)
+        html = self.load(pyfile.url)
 
         new_links = []
 
@@ -28,6 +28,6 @@ class FileserveComFolder(Crypter):
         new_links.extend(re.findall(self.LINK_PATTERN, folder.group(1)))
 
         if new_links:
-            self.core.files.addLinks(map(lambda s: "http://fileserve.com%s" % s, new_links), self.pyfile.package().id)
+            self.core.files.addLinks(map(lambda s: "http://fileserve.com%s" % s, new_links), pyfile.package().id)
         else:
             self.fail('Could not extract any links')

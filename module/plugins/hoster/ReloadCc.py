@@ -28,13 +28,13 @@ class ReloadCc(Hoster):
 
         # In some cases hostsers do not supply us with a filename at download, so we
         # are going to set a fall back filename (e.g. for freakshare or xfileshare)
-        self.pyfile.name = self.pyfile.name.split('/').pop()  # Remove everthing before last slash
+        pyfile.name = pyfile.name.split('/').pop()  # Remove everthing before last slash
 
         # Correction for automatic assigned filename: Removing html at end if needed
         suffix_to_remove = ["html", "htm", "php", "php3", "asp", "shtm", "shtml", "cfml", "cfm"]
-        temp = self.pyfile.name.split('.')
+        temp = pyfile.name.split('.')
         if temp.pop() in suffix_to_remove:
-            self.pyfile.name = ".".join(temp)
+            pyfile.name = ".".join(temp)
 
         # Get account data
         (user, data) = self.account.selectAccount()
@@ -43,7 +43,7 @@ class ReloadCc(Hoster):
             via='pyload',
             v=1,
             user=user,
-            uri=self.pyfile.url
+            uri=pyfile.url
         )
 
         try:
@@ -63,7 +63,7 @@ class ReloadCc(Hoster):
             elif e.code == 403:
                 self.fail("Your account is disabled. Please contact the Reload.cc support!")
             elif e.code == 409:
-                self.logWarning("The hoster seems to be a limited hoster and you've used your daily traffic for this hoster: %s" % self.pyfile.url)
+                self.logWarning("The hoster seems to be a limited hoster and you've used your daily traffic for this hoster: %s" % pyfile.url)
                 # Wait for 6 hours and retry up to 4 times => one day
                 self.retry(4, 6 * 60 * 60, "Limited hoster traffic limit exceeded")
             elif e.code == 429:

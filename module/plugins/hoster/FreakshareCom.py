@@ -32,7 +32,7 @@ class FreakshareCom(Hoster):
             self.prepare()
             self.get_file_url()
 
-            self.download(self.pyfile.url, post=self.req_opts)
+            self.download(pyfile.url, post=self.req_opts)
 
             check = self.checkDownload({"bad": "bad try",
                                         "paralell": "> Sorry, you cant download more then 1 files at time. <",

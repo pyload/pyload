@@ -27,7 +27,7 @@ class SafelinkingNet(Crypter):
             self.load(url)
             m = re.search("^Location: (.+)$", self.req.http.header, re.MULTILINE)
             if m:
-                self.core.files.addLinks([m.group(1)], self.pyfile.package().id)
+                self.core.files.addLinks([m.group(1)], pyfile.package().id)
             else:
                 self.fail("Couldn't find forwarded Link")
 
@@ -77,4 +77,4 @@ class SafelinkingNet(Crypter):
                     else:
                         packageLinks.append(link["full"])
 
-            self.core.files.addLinks(packageLinks, self.pyfile.package().id)
+            self.core.files.addLinks(packageLinks, pyfile.package().id)

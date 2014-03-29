@@ -28,7 +28,7 @@ class CCF(Container):
         tempdlc_content = opener.open('http://service.jdownloader.net/dlcrypt/getDLC.php', params).read()
 
         download_folder = self.config['general']['download_folder']
-        location = download_folder #join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
+        location = download_folder #join(download_folder, pyfile.package().folder.decode(sys.getfilesystemencoding()))
         if not exists(location): 
             makedirs(location)
 

@@ -138,7 +138,7 @@ class UploadedTo(Hoster):
 
             pyfile.name = html_unescape(self.data[2])
 
-        # self.pyfile.name = self.get_file_name()
+        # pyfile.name = self.get_file_name()
 
         if self.premium:
             self.handlePremium()

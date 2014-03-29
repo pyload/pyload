@@ -29,7 +29,7 @@ class FileshareInUa(Hoster):
         if not self._checkOnline():
             self.offline()
 
-        self.pyfile.name = self._getName()
+        pyfile.name = self._getName()
 
         self.link = self._getLink()
 

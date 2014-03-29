@@ -48,7 +48,7 @@ class ZeveraCom(Hoster):
     #     self.logDebug("zevera.com: Old URL: %s" % pyfile.url)
     #
     #     last_size = retries = 0
-    #     olink = self.pyfile.url #quote(self.pyfile.url.encode('utf_8'))
+    #     olink = pyfile.url #quote(pyfile.url.encode('utf_8'))
     #
     #     for _ in xrange(100):
     #         self.retData = self.account.loadAPIRequest(self.req, cmd = 'download_request', olink = olink)
@@ -95,7 +95,7 @@ class ZeveraCom(Hoster):
     #         self.logError(retData['ErrorCode'], retData['ErrorMessage'])
     #         #self.fail('ERROR: ' + retData['ErrorMessage'])
     #
-    #     if self.pyfile.size / 1024000 > retData['AccountInfo']['AvailableTODAYTrafficForUseInMBytes']:
+    #     if pyfile.size / 1024000 > retData['AccountInfo']['AvailableTODAYTrafficForUseInMBytes']:
     #         self.logWarning("Not enough data left to download the file")
     #
     # def crazyDecode(self, ustring):

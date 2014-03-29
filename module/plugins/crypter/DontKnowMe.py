@@ -18,5 +18,5 @@ class DontKnowMe(Crypter):
     LINK_PATTERN = r"http://dontknow.me/at/\?(.+)$"
 
     def decrypt(self, pyfile):
-        link = re.findall(self.LINK_PATTERN, self.pyfile.url)[0]
-        self.core.files.addLinks([urllib.unquote(link)], self.pyfile.package().id)
+        link = re.findall(self.LINK_PATTERN, pyfile.url)[0]
+        self.core.files.addLinks([urllib.unquote(link)], pyfile.package().id)

@@ -22,4 +22,4 @@ class FourChanOrg(Crypter):
         for image in images:
             urls.append("http://" + image)
 
-        self.core.files.addLinks(urls, self.pyfile.package().id)
+        self.core.files.addLinks(urls, pyfile.package().id)

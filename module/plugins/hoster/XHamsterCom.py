@@ -32,7 +32,7 @@ class XHamsterCom(Hoster):
         if self.getConfig("type"):
             self.desired_fmt = self.getConfig("type")
 
-        self.pyfile.name = self.get_file_name() + self.desired_fmt
+        pyfile.name = self.get_file_name() + self.desired_fmt
         self.download(self.get_file_url())
 
     def download_html(self):

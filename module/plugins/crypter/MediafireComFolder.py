@@ -52,6 +52,6 @@ class MediafireComFolder(Crypter):
             new_links.append(url)
 
         if new_links:
-            self.core.files.addLinks(new_links, self.pyfile.package().id)
+            self.core.files.addLinks(new_links, pyfile.package().id)
         else:
             self.fail('Could not extract any links')

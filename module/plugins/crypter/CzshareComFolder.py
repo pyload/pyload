@@ -18,7 +18,7 @@ class CzshareComFolder(Crypter):
     #NEXT_PAGE_PATTERN = r'<a class="next " href="/([^"]+)">&nbsp;</a>'
 
     def decrypt(self, pyfile):
-        html = self.load(self.pyfile.url)
+        html = self.load(pyfile.url)
 
         new_links = []
         found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
@@ -26,6 +26,6 @@ class CzshareComFolder(Crypter):
         new_links.extend(re.findall(self.LINK_PATTERN, found.group(1)))
 
         if new_links:
-            self.core.files.addLinks(new_links, self.pyfile.package().id)
+            self.core.files.addLinks(new_links, pyfile.package().id)
         else:
             self.fail('Could not extract any links')

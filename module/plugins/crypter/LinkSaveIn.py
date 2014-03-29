@@ -44,7 +44,7 @@ class LinkSaveIn(Crypter):
         self.req.cj.setCookie(self.HOSTER_DOMAIN, "Linksave_Language", "english")
 
         # Request package
-        self.html = self.load(self.pyfile.url)
+        self.html = self.load(pyfile.url)
         if not self.isOnline():
             self.offline()
 
