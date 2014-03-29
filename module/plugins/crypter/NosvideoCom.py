@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 

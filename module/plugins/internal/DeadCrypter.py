@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from module.plugins.Crypter import Crypter as _Crypter
 
 
