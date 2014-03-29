@@ -29,7 +29,7 @@ class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
-    __version__ = "0.95"
+    __version__ = "0.96"
     __description__ = """uloz.to"""
     __author_name__ = ("zoidberg")
 
@@ -40,10 +40,12 @@ class UlozTo(SimpleHoster):
     FILE_SIZE_REPLACEMENTS = [('([0-9.]+)\s([kMG])B', convertDecimalPrefix)]
     FILE_URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "www.ulozto.net")]
 
+    ADULT_PATTERN = r'<form action="(?P<link>[^\"]*)" method="post" id="frm-askAgeForm">'
     PASSWD_PATTERN = r'<div class="passwordProtectedFile">'
     VIPLINK_PATTERN = r'<a href="[^"]*\?disclaimer=1" class="linkVip">'
     FREE_URL_PATTERN = r'<div class="freeDownloadForm"><form action="([^"]+)"'
     PREMIUM_URL_PATTERN = r'<div class="downloadForm"><form action="([^"]+)"'
+    TOKEN_PATTERN = r'<input type="hidden" name="_token_" id="[^\"]*" value="(?P<token>[^\"]*)" />'
 
     def setup(self):
         self.multiDL = self.premium
@@ -52,6 +54,17 @@ class UlozTo(SimpleHoster):
     def process(self, pyfile):
         pyfile.url = re.sub(r"(?<=http://)([^/]+)", "www.ulozto.net", pyfile.url)
         self.html = self.load(pyfile.url, decode=True, cookies=True)
+
+        if re.search(self.ADULT_PATTERN, self.html):
+            self.logInfo("Adult content confirmation needed. Proceeding..")
+
+            found = re.search(self.TOKEN_PATTERN, self.html)
+            if not found:
+                self.parseError('TOKEN')
+            token = found.group(1)
+
+            self.html = self.load(pyfile.url, get={"do": "askAgeForm-submit"},
+                                  post={"agree": "Confirm", "_token_": token}, cookies=True)
 
         passwords = self.getPassword().splitlines()
         while self.PASSWD_PATTERN in self.html:
