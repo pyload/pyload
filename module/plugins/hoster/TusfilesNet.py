@@ -12,8 +12,6 @@
 #
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  @author: Walter Purcaro
 ###############################################################################
 
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
@@ -25,12 +23,12 @@ class TusfilesNet(XFileSharingPro):
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/(?P<ID>\w+)'
     __version__ = "0.03"
     __description__ = """Tusfiles.net hoster plugin"""
-    __author_name__ = ("stickell", "Walter Purcaro")
-    __author_mail__ = ("l.stickell@yahoo.it", "vuolter@gmail.com")
+    __author_name__ = "Walter Purcaro"
+    __author_mail__ = "vuolter@gmail.com"
 
     HOSTER_NAME = "tusfiles.net"
 
-    FILE_INFO_PATTERN = r'<li>(?P<N>.+)</li>\s+<li><b>\w+:</b> <small>(?P<S>[\d.]+) (?P<U>\w+)</small></li>'
+    FILE_INFO_PATTERN = r'\](?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)\['
     FILE_OFFLINE_PATTERN = r'>File Not Found|<Title>TusFiles - Fast Sharing Files!'
 
     SH_COOKIES = [(".tusfiles.net", "lang", "english")]
