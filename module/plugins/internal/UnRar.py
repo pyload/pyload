@@ -30,12 +30,14 @@ from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPas
 
 class UnRar(AbtractExtractor):
     __name__ = "UnRar"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     # there are some more uncovered rar formats
+    re_version = re.compile(r"(UNRAR 5[\.\d]+ freeware)")
     re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
     re_partfiles = re.compile(r".*\.(rar|r[0-9]+)", re.I)
     re_filelist = re.compile(r"(.+)\s+(\d+)\s+(\d+)\s+")
+    re_filelist5 = re.compile(r"(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)")
     re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)", re.I)
     CMD = "unrar"
 
@@ -91,10 +93,16 @@ class UnRar(AbtractExtractor):
             return True
 
         # output only used to check if passworded files are present
-        for name, size, packed in  self.re_filelist.findall(out):
-            if name.startswith("*"):
-                self.passwordProtected = True
-                return True
+        if self.re_version.search(out):
+            for attr, size, name in  self.re_filelist5.findall(out):
+                if attr.startswith("*"):
+                    self.passwordProtected = True
+                    return True
+        else:
+            for name, size, packed in  self.re_filelist.findall(out):
+                if name.startswith("*"):
+                    self.passwordProtected = True
+                    return True
 
         self.listContent()
         if not self.files:
