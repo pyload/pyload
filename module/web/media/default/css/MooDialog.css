@@ -44,7 +44,7 @@
 }
 
 .MooDialog .close {
-	background: url(/media/img/dialog-close.png) no-repeat;
+	background: url(../../img/dialog-close.png) no-repeat;
 	width: 16px;
 	height: 16px;
 	display: block;
@@ -76,17 +76,17 @@
 .MooDialog .MooDialogConfirm,
 .MooDialog .MooDialogPrompt,
 .MooDialog .MooDialogError {
-	background: url(/media/img/dialog-warning.png) no-repeat;
+	background: url(../../img/dialog-warning.png) no-repeat;
 	padding-left: 40px;
 	min-height: 40px;
 }
 
 .MooDialog .MooDialogConfirm,
 .MooDialog .MooDialogPromt {
-	background: url(/media/img/dialog-question.png) no-repeat;
+	background: url(../../img/dialog-question.png) no-repeat;
 }
 
 .MooDialog .MooDialogError {
-	background: url(/media/img/dialog-error.png) no-repeat;
+	background: url(../../img/dialog-error.png) no-repeat;
 }
 
