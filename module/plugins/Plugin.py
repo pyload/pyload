@@ -142,7 +142,7 @@ class Plugin(Base):
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
     __name__ = "Plugin"
-    __version__ = "0.4"
+    __version__ = "0.5"
     __pattern__ = None
     __type__ = "hoster"
     __config__ = [("name", "type", "desc", "default")]
@@ -261,7 +261,7 @@ class Plugin(Base):
         return True, 10
 
 
-    def setWait(self, seconds, reconnect=False):
+    def setWait(self, seconds, reconnect=None):
         """Set a specific wait time later used with `wait`
 
         :param seconds: wait time in seconds
@@ -271,15 +271,23 @@ class Plugin(Base):
             self.wantReconnect = True
         self.pyfile.waitUntil = time() + int(seconds)
 
-    def wait(self):
-        """ waits the time previously set """
+    def wait(self, seconds=None, reconnect=None):
+        """ Waits the time previously set or use these from arguments. See `setWait`
+        """
+        if seconds:
+            self.setWait(seconds, reconnect)
+
+        self._wait()
+
+    def _wait(self):
         self.waiting = True
         self.pyfile.setStatus("waiting")
 
         while self.pyfile.waitUntil > time():
             self.thread.m.reconnecting.wait(2)
 
-            if self.pyfile.abort: raise Abort
+            if self.pyfile.abort:
+                raise Abort
             if self.thread.m.reconnecting.isSet():
                 self.waiting = False
                 self.wantReconnect = False
