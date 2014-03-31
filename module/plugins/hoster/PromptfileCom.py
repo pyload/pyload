@@ -36,13 +36,19 @@ class PromptfileCom(SimpleHoster):
 
     def handleFree(self):
         # STAGE 1: get link to continue
-        chash = re.search(self.CHASH_PATTERN, self.html).group(1)
+        m = re.search(self.CHASH_PATTERN, self.html)
+        if not m:
+            self.parseError("Unable to detect chash")
+        chash = m.group(1)
         self.logDebug("read chash %s" % chash)
         # continue to stage2
         self.html = self.load(self.pyfile.url, decode=True, post={'chash':chash})
         
         # STAGE 2: get the direct link
-        direct = re.search(self.DIRECT_LINK_PATTERN, self.html, re.MULTILINE | re.DOTALL).group(1)
+        m = re.search(self.DIRECT_LINK_PATTERN, self.html, re.MULTILINE | re.DOTALL)
+        if not m:
+            self.parseError("Unable to detect direct link")
+        direct = m.group(1)
         self.logDebug('found direct link: ' + direct)
         self.download(direct, disposition=True)
 
