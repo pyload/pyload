@@ -1,5 +1,4 @@
 {% autoescape true %}
-(function() {
   var root;
 
   root = this;
@@ -71,5 +70,4 @@
     });
   });
 
-}).call(this);
 {% endautoescape %}

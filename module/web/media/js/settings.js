@@ -1,5 +1,4 @@
 {% autoescape true %}
-(function() {
   var SettingsUI, root;
 
   root = this;
@@ -135,5 +134,4 @@
 
   })();
 
-}).call(this);
 {% endautoescape %}

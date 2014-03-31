@@ -1,5 +1,4 @@
 {% autoescape true %}
-(function() {
   var LoadJsonToContent, clear_captcha, humanFileSize, load_captcha, on_captcha_click, parseUri, root, set_captcha, submit_captcha;
 
   root = this;
@@ -217,5 +216,4 @@
     return submit_captcha();
   };
 
-}).call(this);
 {% endautoescape %}
