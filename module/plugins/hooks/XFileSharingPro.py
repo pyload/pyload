@@ -7,7 +7,7 @@ from module.plugins.Hook import Hook
 
 class XFileSharingPro(Hook):
     __name__ = "XFileSharingPro"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __type__ = "hook"
     __config__ = [("activated", "bool", "Activated", "True"),
                   ("loadDefault", "bool", "Include default (built-in) hoster list", "True"),
@@ -40,7 +40,8 @@ class XFileSharingPro(Hook):
                 "uploadville.com", "vidbull.com", "zalaa.com", "zomgupload.com", "kupload.org", "movbay.org",
                 "multishare.org", "omegave.org", "toucansharing.org", "uflinq.org", "banicrazy.info", "flowhot.info",
                 "upbrasil.info", "shareyourfilez.biz", "bzlink.us", "cloudcache.cc", "fileserver.cc", "farshare.to",
-                "filemaze.ws", "filehost.ws", "filestock.ru", "moidisk.ru", "4up.im", "100shared.com",
+                "filemaze.ws", "filehost.ws", "filestock.ru", "moidisk.ru", "4up.im", "100shared.com", "sharesix.com",
+                "thefile.me", "filenuke.com","sharerepo.com","mightyupload.com",
                 #WRONG FILE NAME:
                 "sendmyway.com", "upchi.co.il",
                 #NOT WORKING:
