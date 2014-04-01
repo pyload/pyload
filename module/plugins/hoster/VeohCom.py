@@ -39,17 +39,15 @@ class VeohCom(SimpleHoster):
 
     def handleFree(self):
         q = self.getConfig("quality")
-
         pattern = r'"fullPreviewHash%sPath":"(.+?)"' % q
         found = re.search(pattern, self.html)
         if found:
             self.pyfile.name += ".mp4"
-
             link = found.group(1).replace("\\", "")
             self.logDebug("Download link: " + link)
             self.download(link)
         else:
-            self.fail("No %s quality video found, retry changing quality setting" % q)
+            self.fail("No %s quality video found" % q)
 
 
 getInfo = create_getInfo(VeohCom)
