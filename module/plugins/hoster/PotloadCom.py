@@ -24,38 +24,70 @@ class PotloadCom(SimpleHoster):
     __config__ = []
     
     WAIT_TIME_SEC = 22
+    # http://potload.com/nfzxfl8gntaz => nfzxfl8gntaz
     PATTERN_ID_FROM_URL = r'[a-z,A-Z,0-9]{1,}$'
     
-    # http://potload.com/nfzxfl8gntaz => nfzxfl8gntaz
     PATTERN_HTML_FILENAME1 = r'<h3>.*\([0-9]*.*</h3>'
     PATTERN_HTML_FILENAME2 = r'>.* \('
-    #<h3>test.zip (106 B)</h3>
+    #<h3>test.zip (106 B)</h3> => >test.zip (
     
+    PATTERN_HTML_TOKEN = r'rand" value="[a-z,0-9]*'
     
+    PATTERN_HTML_TARGET_URL = r'downloadurl">[^/d]*<a href="[^"]*'
+    
+    def setup(self):
+        self.multiDL = False
+        
     def process(self, pyfile):
-		print "#" + pyfile.url + "#"
-	#	ID = re.
-	#	"[a-z,A-Z,0-9]{1,}$"
+       
+        # initial page
+        firstpage=self.load(pyfile.url, cookies=True)
+        
+        # check for offline
+        if not re.search("<h2>DOWNLOAD FILE:</h2>", firstpage, flags=re.IGNORECASE):
+            self.offline()
+            return	        
+        
+        #self.wantReconnect = True
+        
+        # get filename (for post data)
+        ret = re.search(self.PATTERN_HTML_FILENAME1, firstpage, flags=re.IGNORECASE)
+        form = ret.group(0)
+        ret = re.search(self.PATTERN_HTML_FILENAME2, form, flags=re.IGNORECASE)
+        extract = ret.group(0)
+        filename = extract[1:-2]
+        self.pyfile.name = filename
+
+        
+
+        
+        # page where we have to wait (and submit first pkg of data)
+        secondpage = self.load(pyfile.url, post={"op": "download1", "usr_login": "", "id": re.search(self.PATTERN_ID_FROM_URL, pyfile.url).group(0),
+            "fname":filename, "referer":pyfile.url, "method_free":"Slow+Download"},
+            cookies=True)
+        
+        
+        # get token
+        ret = re.search(self.PATTERN_HTML_TOKEN, secondpage, flags=re.IGNORECASE | re.DOTALL)
+        token = ret.group(0)[13:]
+
 		
-		# initial page
-		print self.load(pyfile.url)
-		
-		# page where we have to wait (and get ids, ...)
-		secondpage = self.load(pyfile.url, post={"op": "download1", "usr_login": "", "id": re.search(self.PATTERN_ID_FROM_URL, pyfile.url).group(0),
-			"fname":"test.zip", "referer":pyfile.url},
-			cookies=True)
-		
-		print secondpage
-		
-		ret = re.search(r'<Form method="POST".*</Form>', secondpage, flags=re.IGNORECASE | re.DOTALL)
-		form = ret.group(0)
-		print "#############################################"
-		print "#############################################"
-		print "#############################################"
-		print form
-		self.setWait(self.WAIT_TIME_SEC)
-		
-		# page where we get the final link
+        self.setWait(self.WAIT_TIME_SEC)
+        self.logDebug("PotLoad: final wait %d seconds" % self.WAIT_TIME_SEC)
+        self.wait()      
+        
+        # get page which provides link
+        thirdpage = self.load(pyfile.url, post={"op": "download2", "usr_login": "", "id": re.search(self.PATTERN_ID_FROM_URL, pyfile.url).group(0),
+            "fname":filename, "referer":pyfile.url, "method_free":"Slow+Download", "rand":token},
+            cookies=True)
+        
+        # filter link
+        ret = re.search(self.PATTERN_HTML_TARGET_URL, thirdpage, flags=re.IGNORECASE | re.DOTALL)
+        link = ret.group(0)[25:]
+
+        
+        
+        self.download(link, disposition=True)
 		
 		
 
