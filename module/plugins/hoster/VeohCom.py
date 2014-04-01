@@ -22,7 +22,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class VeohCom(SimpleHoster):
     __name__ = "VeohCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?veoh\.com/(watch|videos)/v\w+'
+    __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
     __version__ = "0.1"
     __config__ = [("quality", "Low;High", "Quality", "High")]
     __description__ = """Veoh.com hoster plugin"""
@@ -32,10 +32,13 @@ class VeohCom(SimpleHoster):
     FILE_NAME_PATTERN = r'<meta name="title" content="(?P<N>.*?)"'
     FILE_OFFLINE_PATTERN = r'>Sorry, we couldn\'t find the video you were looking for'
 
+    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.veoh.com/watch/\g<ID>')]
+
     SH_COOKIES = [(".veoh.com", "lassieLocale", "en")]
 
     def setup(self):
         self.resumeDownload = self.multiDL = True
+        self.chunkLimit = -1
 
     def handleFree(self):
         q = self.getConfig("quality")
@@ -47,7 +50,7 @@ class VeohCom(SimpleHoster):
             self.logDebug("Download link: " + link)
             self.download(link)
         else:
-            self.fail("No %s quality video found" % q)
+            self.fail("No %s quality video found" % q.lower())
 
 
 getInfo = create_getInfo(VeohCom)
