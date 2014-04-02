@@ -1,17 +1,29 @@
 # -*- coding: utf-8 -*-
 
+############################################################################
+# This program is free software: you can redistribute it and/or modify     #
+# it under the terms of the GNU Affero General Public License as           #
+# published by the Free Software Foundation, either version 3 of the       #
+# License, or (at your option) any later version.                          #
+#                                                                          #
+# This program is distributed in the hope that it will be useful,          #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the             #
+# GNU Affero General Public License for more details.                      #
+#                                                                          #
+# You should have received a copy of the GNU Affero General Public License #
+# along with this program. If not, see <http://www.gnu.org/licenses/>.     #
+############################################################################
+
 # Test links (test.zip):
 # http://potload.com/nfzxfl8gntaz
 
+
+
 import re
-import subprocess
-import tempfile
-import os
+
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
-from module.plugins.internal.CaptchaService import ReCaptcha
-from module.common.json_layer import json_loads
-
 
 class PotloadCom(SimpleHoster):
     __name__ = "PotloadCom"
@@ -31,6 +43,9 @@ class PotloadCom(SimpleHoster):
     PATTERN_HTML_FILENAME2 = r'>.* \('
     #<h3>test.zip (106 B)</h3> => >test.zip (
     
+    PATTERN_HTML_WAITTIME1 = r'You have to wait [0-9]* seconds till next download'
+    PATTERN_HTML_WAITTIME2 = r'[0-9]{1,}'
+    
     PATTERN_HTML_TOKEN = r'rand" value="[a-z,0-9]*'
     
     PATTERN_HTML_TARGET_URL = r'downloadurl">[^/d]*<a href="[^"]*'
@@ -48,7 +63,6 @@ class PotloadCom(SimpleHoster):
             self.offline()
             return	        
         
-        #self.wantReconnect = True
         
         # get filename (for post data)
         ret = re.search(self.PATTERN_HTML_FILENAME1, firstpage, flags=re.IGNORECASE)
@@ -57,9 +71,17 @@ class PotloadCom(SimpleHoster):
         extract = ret.group(0)
         filename = extract[1:-2]
         self.pyfile.name = filename
-
         
 
+        # check wait time
+        ret = re.search(self.PATTERN_HTML_WAITTIME1, firstpage, flags=re.IGNORECASE)
+        if ret:
+            form = ret.group(0)
+            ret = re.search(self.PATTERN_HTML_WAITTIME2, form, flags=re.IGNORECASE)
+            extract = int(ret.group(0))+1
+            self.setWait(extract)
+            self.logDebug("PotLoad: too many downloads -> wait %d seconds" % extract)
+            self.wait()      
         
         # page where we have to wait (and submit first pkg of data)
         secondpage = self.load(pyfile.url, post={"op": "download1", "usr_login": "", "id": re.search(self.PATTERN_ID_FROM_URL, pyfile.url).group(0),
@@ -73,7 +95,7 @@ class PotloadCom(SimpleHoster):
 
 		
         self.setWait(self.WAIT_TIME_SEC)
-        self.logDebug("PotLoad: final wait %d seconds" % self.WAIT_TIME_SEC)
+        self.logDebug("PotLoad: regular wait %d seconds" % self.WAIT_TIME_SEC)
         self.wait()      
         
         # get page which provides link
