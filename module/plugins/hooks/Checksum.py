@@ -55,7 +55,7 @@ def computeChecksum(local_file, algorithm):
 class Checksum(Hook):
     __name__ = "Checksum"
     __version__ = "0.12"
-    __description__ = "Verify downloaded file size and checksum"
+    __description__ = """Verify downloaded file size and checksum"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
                   ("max_tries", "int", "Number of retries", 2),
@@ -145,7 +145,7 @@ class Checksum(Hook):
             if pyfile.plugin.retries < max_tries:
                 if local_file:
                     remove(local_file)
-                pyfile.plugin.retry(reason=msg, max_tries=max_tries, wait_time=self.getConfig("wait_time"))
+                pyfile.plugin.retry(max_tries=max_tries, wait_time=self.getConfig("wait_time"), reason=msg)
             elif retry_action == "nothing":
                 return
         elif check_action == "nothing":

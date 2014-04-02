@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -30,11 +29,11 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class FilerNet(SimpleHoster):
     __name__ = "FilerNet"
     __type__ = "hoster"
-    __pattern__ = r"https?://(www\.)?filer\.net/get/(\w+)"
+    __pattern__ = r'https?://(?:www\.)?filer\.net/get/(\w+)'
     __version__ = "0.03"
-    __description__ = """Filer.net Download Hoster"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __description__ = """Filer.net hoster plugin"""
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>\w+)</small></h1>'
     FILE_OFFLINE_PATTERN = r'Nicht gefunden'
@@ -55,7 +54,7 @@ class FilerNet(SimpleHoster):
         m = re.search(r'musst du <span id="time">(\d+)</span> Sekunden warten', self.html)
         if m:
             waittime = int(m.group(1))
-            self.retry(3, waittime, 'Wait between free downloads')
+            self.retry(3, waittime, "Wait between free downloads")
 
         self.getFileInfo()
 
@@ -77,7 +76,7 @@ class FilerNet(SimpleHoster):
 
         downloadURL = ''
         recaptcha = ReCaptcha(self)
-        for i in xrange(5):
+        for _ in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,

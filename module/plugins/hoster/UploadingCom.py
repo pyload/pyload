@@ -27,9 +27,9 @@ from module.common.json_layer import json_loads
 class UploadingCom(SimpleHoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)"
+    __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)'
     __version__ = "0.34"
-    __description__ = """Uploading.Com File Download Hoster"""
+    __description__ = """Uploading.com hoster plugin"""
     __author_name__ = ("jeix", "mkaay", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
 
@@ -44,8 +44,8 @@ class UploadingCom(SimpleHoster):
         self.req.cj.setCookie("uploading.com", "setlang", "en")
         self.req.cj.setCookie("uploading.com", "_lang", "en")
 
-        if not "/get/" in self.pyfile.url:
-            self.pyfile.url = self.pyfile.url.replace("/files", "/files/get")
+        if not "/get/" in pyfile.url:
+            pyfile.url = pyfile.url.replace("/files", "/files/get")
 
         self.html = self.load(pyfile.url, decode=True)
         self.file_info = self.getFileInfo()
@@ -73,7 +73,7 @@ class UploadingCom(SimpleHoster):
         if found:
             self.pyfile.error = found.group(1)
             self.logWarning(self.pyfile.error)
-            self.retry(max_tries=6, wait_time=21600 if found.group(2) else 900, reason=self.pyfile.error)
+            self.retry(max_tries=6, wait_time=6 * 60 * 60 if found.group(2) else 15 * 60, reason=self.pyfile.error)
 
         ajax_url = "http://uploading.com/files/get/?ajax"
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
@@ -83,8 +83,7 @@ class UploadingCom(SimpleHoster):
         if 'answer' in response and 'wait_time' in response['answer']:
             wait_time = int(response['answer']['wait_time'])
             self.logInfo("%s: Waiting %d seconds." % (self.__name__, wait_time))
-            self.setWait(wait_time)
-            self.wait()
+            self.wait(wait_time)
         else:
             self.pluginParseError("AJAX/WAIT")
 
@@ -107,8 +106,7 @@ class UploadingCom(SimpleHoster):
         check = self.checkDownload({"html": re.compile("\A<!DOCTYPE html PUBLIC")})
         if check == "html":
             self.logWarning("Redirected to a HTML page, wait 10 minutes and retry")
-            self.setWait(600, True)
-            self.wait()
+            self.wait(10 * 60, True)
 
 
 getInfo = create_getInfo(UploadingCom)

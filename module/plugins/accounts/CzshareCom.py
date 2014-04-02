@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: zoidberg
 """
 
@@ -27,7 +27,7 @@ class CzshareCom(Account):
     __name__ = "CzshareCom"
     __version__ = "0.13"
     __type__ = "account"
-    __description__ = """czshare.com account plugin"""
+    __description__ = """Czshare.com account plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 

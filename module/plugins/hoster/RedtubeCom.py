@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -9,11 +8,11 @@ from module.unescape import unescape
 class RedtubeCom(Hoster):
     __name__ = "RedtubeCom"
     __type__ = "hoster"
-    __pattern__ = r'http://[\w\.]*?redtube\.com/\d+'
+    __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'
     __version__ = "0.2"
-    __description__ = """Redtube.com Download Hoster"""
-    __author_name__ = ("jeix")
-    __author_mail__ = ("jeix@hasnomail.de")
+    __description__ = """Redtube.com hoster plugin"""
+    __author_name__ = "jeix"
+    __author_mail__ = "jeix@hasnomail.de"
 
     def process(self, pyfile):
         self.download_html()

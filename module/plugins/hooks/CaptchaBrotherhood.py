@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,7 +47,7 @@ class CaptchaBrotherhoodException(Exception):
 class CaptchaBrotherhood(Hook):
     __name__ = "CaptchaBrotherhood"
     __version__ = "0.04"
-    __description__ = """send captchas to CaptchaBrotherhood.com"""
+    __description__ = """Send captchas to CaptchaBrotherhood.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
@@ -112,7 +113,7 @@ class CaptchaBrotherhood(Hook):
 
         ticket = response[3:]
 
-        for i in range(15):
+        for _ in xrange(15):
             sleep(5)
             response = self.get_api("askCaptchaResult", ticket)
             if response.startswith("OK-answered"):

@@ -12,9 +12,9 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?ncrypt.in/(?P<type>folder|link|frame)-([^/\?]+)"
+    __pattern__ = r'http://(?:www\.)?ncrypt.in/(?P<type>folder|link|frame)-([^/\?]+)'
     __version__ = "1.32"
-    __description__ = """NCrypt.in Crypter Plugin"""
+    __description__ = """NCrypt.in decrypter plugin"""
     __author_name__ = ("fragonib", "stickell")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "l.stickell@yahoo.it")
 
@@ -74,7 +74,7 @@ class NCryptIn(Crypter):
         self.packages = [(package_name, package_links, folder_name)]
 
     def isSingleLink(self):
-        link_type = re.search(self.__pattern__, self.pyfile.url).group('type')
+        link_type = re.match(self.__pattern__, self.pyfile.url).group('type')
         return link_type in ('link', 'frame')
 
     def requestFolderHome(self):

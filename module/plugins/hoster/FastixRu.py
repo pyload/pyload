@@ -11,10 +11,10 @@ class FastixRu(Hoster):
     __name__ = "FastixRu"
     __version__ = "0.04"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>[a-zA-Z0-9]{24})"
+    __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>[a-zA-Z0-9]{24})'
     __description__ = """Fastix hoster plugin"""
-    __author_name__ = ("Massimo Rosamilia")
-    __author_mail__ = ("max@spiritix.eu")
+    __author_name__ = "Massimo Rosamilia"
+    __author_mail__ = "max@spiritix.eu"
 
     def getFilename(self, url):
         try:
@@ -61,6 +61,6 @@ class FastixRu(Hoster):
                                     "empty": re.compile(r"^$")})
 
         if check == "error":
-            self.retry(reason="An error occurred while generating link.", wait_time=60)
+            self.retry(wait_time=60, reason="An error occurred while generating link.")
         elif check == "empty":
-            self.retry(reason="Downloaded File was empty.", wait_time=60)
+            self.retry(wait_time=60, reason="Downloaded File was empty.")

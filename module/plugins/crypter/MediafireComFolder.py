@@ -9,11 +9,11 @@ from module.common.json_layer import json_loads
 class MediafireComFolder(Crypter):
     __name__ = "MediafireComFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(\w*\.)*mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))"
+    __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
     __version__ = "0.14"
-    __description__ = """Mediafire.com Folder Plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Mediafire.com folder decrypter plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FOLDER_KEY_PATTERN = r"var afI= '(\w+)';"
     FILE_URL_PATTERN = '<meta property="og:url" content="http://www.mediafire.com/\?(\w+)"/>'
@@ -52,6 +52,6 @@ class MediafireComFolder(Crypter):
             new_links.append(url)
 
         if new_links:
-            self.core.files.addLinks(new_links, self.pyfile.package().id)
+            self.core.files.addLinks(new_links, pyfile.package().id)
         else:
             self.fail('Could not extract any links')

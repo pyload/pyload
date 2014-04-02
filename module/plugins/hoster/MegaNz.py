@@ -19,9 +19,9 @@ from module.plugins.Hoster import Hoster
 class MegaNz(Hoster):
     __name__ = "MegaNz"
     __type__ = "hoster"
-    __pattern__ = r"https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)"
+    __pattern__ = r'https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)'
     __version__ = "0.14"
-    __description__ = """mega.co.nz hoster plugin"""
+    __description__ = """Mega.co.nz hoster plugin"""
     __author_name__ = ("RaNaN", )
     __author_mail__ = ("ranan@pyload.org", )
 
@@ -96,7 +96,7 @@ class MegaNz(Hoster):
         key = None
 
         # match is guaranteed because plugin was chosen to handle url
-        node = re.search(self.__pattern__, pyfile.url).group(2)
+        node = re.match(self.__pattern__, pyfile.url).group(2)
         if "!" in node:
             node, key = node.split("!")
 

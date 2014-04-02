@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -23,11 +22,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilefactoryCom(SimpleHoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)"
+    __pattern__ = r'https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)'
     __version__ = "0.47"
-    __description__ = """Filefactory.Com File Download Hoster"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __description__ = """Filefactory.com hoster plugin"""
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.]+) (?P<U>\w+) uploaded'
     DIRECT_LINK_PATTERN = r'<a href="(https?://[^"]+)"[^>]*><i[^>]*></i> Download with FileFactory Premium</a>'
@@ -39,7 +38,7 @@ class FilefactoryCom(SimpleHoster):
         if "Currently only Premium Members can download files larger than" in self.html:
             self.fail("File too large for free download")
         elif "All free download slots on this server are currently in use" in self.html:
-            self.retry(50, 900, "All free slots are busy")
+            self.retry(50, 15 * 60, "All free slots are busy")
 
         m = re.search(r'data-href-direct="(http://[^"]+)"', self.html)
         if m:
@@ -63,8 +62,7 @@ class FilefactoryCom(SimpleHoster):
             waittime = re.search(r'id="startWait" value="(\d+)"', self.html)
             if not waittime:
                 self.parseError('Unable to detect wait time')
-            self.setWait(int(waittime.group(1)))
-            self.wait()
+            self.wait(int(waittime.group(1)))
 
             # Parse the direct link and download it
             direct = re.search(r'data-href-direct="(.*)" class="button', self.html)
@@ -80,7 +78,7 @@ class FilefactoryCom(SimpleHoster):
 
         if check == "multiple":
             self.logDebug("Parallel downloads detected; waiting 15 minutes")
-            self.retry(wait_time=15 * 60, reason='Parallel downloads')
+            self.retry(wait_time=15 * 60, reason="Parallel downloads")
         elif check == "error":
             self.fail("Unknown error")
 

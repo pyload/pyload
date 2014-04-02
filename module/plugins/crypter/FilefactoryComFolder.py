@@ -7,11 +7,11 @@ from module.plugins.Crypter import Crypter
 class FilefactoryComFolder(Crypter):
     __name__ = "FilefactoryComFolder"
     __type__ = "crypter"
-    __pattern__ = r"(http://(www\.)?filefactory\.com/f/\w+).*"
+    __pattern__ = r'(http://(?:www\.)?filefactory\.com/f/\w+).*'
     __version__ = "0.1"
-    __description__ = """Filefactory.com Folder Plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Filefactory.com folder decrypter plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FOLDER_PATTERN = r'<table class="items" cellspacing="0" cellpadding="0">(.*?)</table>'
     LINK_PATTERN = r'<td class="name"><a href="([^"]+)">'
@@ -19,11 +19,11 @@ class FilefactoryComFolder(Crypter):
     NEXT_PAGE_PATTERN = r'<li class="current">.*?</li>\s*<li class=""><a href="([^"]+)">'
 
     def decrypt(self, pyfile):
-        url_base = re.search(self.__pattern__, self.pyfile.url).group(1)
+        url_base = re.match(self.__pattern__, pyfile.url).group(1)
         html = self.load(url_base)
 
         new_links = []
-        for i in range(1, 100):
+        for i in xrange(1, 100):
             self.logInfo("Fetching links from page %i" % i)
             found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
             if found is None: self.fail("Parse error (FOLDER)")
@@ -40,6 +40,6 @@ class FilefactoryComFolder(Crypter):
             self.logInfo("Limit of 99 pages reached, aborting")
 
         if new_links:
-            self.core.files.addLinks(new_links, self.pyfile.package().id)
+            self.core.files.addLinks(new_links, pyfile.package().id)
         else:
             self.fail('Could not extract any links')

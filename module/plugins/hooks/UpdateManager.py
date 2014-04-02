@@ -31,12 +31,12 @@ from module.plugins.Hook import threaded, Expose, Hook
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
     __version__ = "0.15"
-    __description__ = """checks for updates"""
-    __config__ = [("activated", "bool", "Activated", "True"),
-                  ("interval", "int", "Check interval in minutes", "480"),
+    __description__ = """Checks for updates"""
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("interval", "int", "Check interval in minutes", 480),
                   ("debug", "bool", "Check for plugin changes when in debug mode", False)]
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("ranan@pyload.org")
+    __author_name__ = "RaNaN"
+    __author_mail__ = "ranan@pyload.org"
 
     URL = "http://get.pyload.org/check2/%s/"
     MIN_TIME = 3 * 60 * 60  # 3h minimum check interval

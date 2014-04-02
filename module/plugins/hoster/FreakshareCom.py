@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -9,9 +8,9 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class FreakshareCom(Hoster):
     __name__ = "FreakshareCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?freakshare\.(net|com)/files/\S*?/"
+    __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
     __version__ = "0.38"
-    __description__ = """Freakshare.com Download Hoster"""
+    __description__ = """Freakshare.com hoster plugin"""
     __author_name__ = ("sitacuisses", "spoob", "mkaay", "Toilal")
     __author_mail__ = ("sitacuisses@yahoo.de", "spoob@pyload.org", "mkaay@mkaay.de", "toilal.dev@gmail.com")
 
@@ -33,7 +32,7 @@ class FreakshareCom(Hoster):
             self.prepare()
             self.get_file_url()
 
-            self.download(self.pyfile.url, post=self.req_opts)
+            self.download(pyfile.url, post=self.req_opts)
 
             check = self.checkDownload({"bad": "bad try",
                                         "paralell": "> Sorry, you cant download more then 1 files at time. <",
@@ -53,7 +52,7 @@ class FreakshareCom(Hoster):
                 self.invalidCaptcha()
                 self.retry()
             elif check == "downloadserver":
-                self.retry(5, 900, 'No Download server')
+                self.retry(5, 15 * 60, "No Download server")
 
     def prepare(self):
         pyfile = self.pyfile
@@ -123,7 +122,7 @@ class FreakshareCom(Hoster):
 
         if "Your Traffic is used up for today" in self.html:
             self.wantReconnect = True
-            return 24 * 3600
+            return 24 * 60 * 60
 
         timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[.\d]*;', self.html)
         if timestring:

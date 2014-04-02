@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -27,11 +26,11 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class EgoFilesCom(SimpleHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(www\.)?egofiles.com/(\w+)"
+    __pattern__ = r'https?://(?:www\.)?egofiles.com/(\w+)'
     __version__ = "0.13"
-    __description__ = """Egofiles.com Download Hoster"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __description__ = """Egofiles.com hoster plugin"""
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r'<div class="down-file">\s+(?P<N>[^\t]+)\s+<div class="file-properties">\s+(File size|Rozmiar): (?P<S>[\w.]+) (?P<U>\w+) \|'
     FILE_OFFLINE_PATTERN = r'(File size|Rozmiar): 0 KB'
@@ -57,12 +56,11 @@ class EgoFilesCom(SimpleHoster):
         if 'For next free download you have to wait' in self.html:
             m = re.search(self.WAIT_TIME_PATTERN, self.html).groupdict('0')
             waittime = int(m['m']) * 60 + int(m['s'])
-            self.setWait(waittime, True)
-            self.wait()
+            self.wait((waittime, True)
 
         downloadURL = ''
         recaptcha = ReCaptcha(self)
-        for i in xrange(5):
+        for _ in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response}

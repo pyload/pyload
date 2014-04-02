@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: zoidberg
 """
 
@@ -31,7 +31,7 @@ class FilecloudIo(Account):
 
     def loadAccountInfo(self, user, req):
         # It looks like the first API request always fails, so we retry 5 times, it should work on the second try
-        for _ in range(5):
+        for _ in xrange(5):
             rep = req.load("https://secure.filecloud.io/api-fetch_apikey.api",
                            post={"username": user, "password": self.accounts[user]['password']})
             rep = json_loads(rep)

@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: zoidberg
 """
 
@@ -26,9 +26,9 @@ class QuickshareCz(Account):
     __name__ = "QuickshareCz"
     __version__ = "0.01"
     __type__ = "account"
-    __description__ = """quickshare.cz account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Quickshare.cz account plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.quickshare.cz/premium", decode=True)

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -9,21 +8,21 @@ from module.lib.BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
 
 class HoerbuchIn(Crypter):
     __name__ = "HoerbuchIn"
-    __type__ = "container"
-    __pattern__ = r"http://(www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out.php\?.+|protection/folder_\d+\.html)"
+    __type__ = "crypter"
+    __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out.php\?.+|protection/folder_\d+\.html)'
     __version__ = "0.6"
-    __description__ = """Hoerbuch.in Container Plugin"""
+    __description__ = """Hoerbuch.in decrypter plugin"""
     __author_name__ = ("spoob", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
 
-    article = re.compile("http://(www\.)?hoerbuch\.in/wp/horbucher/\d+/.+/")
-    protection = re.compile("http://(www\.)?hoerbuch\.in/protection/folder_\d+.html")
+    article = re.compile("http://(?:www\.)?hoerbuch\.in/wp/horbucher/\d+/.+/")
+    protection = re.compile("http://(?:www\.)?hoerbuch\.in/protection/folder_\d+.html")
 
     def decrypt(self, pyfile):
         self.pyfile = pyfile
 
-        if self.article.match(self.pyfile.url):
-            src = self.load(self.pyfile.url)
+        if self.article.match(pyfile.url):
+            src = self.load(pyfile.url)
             soup = BeautifulSoup(src, convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
 
             abookname = soup.find("a", attrs={"rel": "bookmark"}).text
@@ -31,11 +30,11 @@ class HoerbuchIn(Crypter):
                 package = "%s (%s)" % (abookname, a.previousSibling.previousSibling.text[:-1])
                 links = self.decryptFolder(a["href"])
 
-                self.packages.append((package, links, self.pyfile.package().folder))
+                self.packages.append((package, links, pyfile.package().folder))
         else:
-            links = self.decryptFolder(self.pyfile.url)
+            links = self.decryptFolder(pyfile.url)
 
-            self.packages.append((self.pyfile.package().name, links, self.pyfile.package().folder))
+            self.packages.append((pyfile.package().name, links, pyfile.package().folder))
 
     def decryptFolder(self, url):
         m = self.protection.search(url)

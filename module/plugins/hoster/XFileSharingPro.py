@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 ###############################################################################
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -35,14 +36,14 @@ class XFileSharingPro(SimpleHoster):
     """
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __pattern__ = r"^unmatchable$"
-    __version__ = "0.27"
-    __description__ = """XFileSharingPro common hoster base"""
+    __pattern__ = r'^unmatchable$'
+    __version__ = "0.28"
+    __description__ = """XFileSharingPro base hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
-    FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[^<]+)\)</font>'
+    FILE_SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>\w+)?\)</font>'
     FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
     FILE_OFFLINE_PATTERN = r'>\w+ (Not Found|file (was|has been) removed)'
 
@@ -101,7 +102,7 @@ class XFileSharingPro(SimpleHoster):
     def prepare(self):
         """ Initialize important variables """
         if not hasattr(self, "HOSTER_NAME"):
-            self.HOSTER_NAME = re.search(self.__pattern__, self.pyfile.url).group(1)
+            self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1)
         if not hasattr(self, "DIRECT_LINK_PATTERN"):
             self.DIRECT_LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)' % self.HOSTER_NAME
 
@@ -184,7 +185,7 @@ class XFileSharingPro(SimpleHoster):
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
         elif inputs['st'] == 'Can not leech file':
-            self.retry(max_tries=20, wait_time=180, reason=inputs['st'])
+            self.retry(max_tries=20, wait_time=3 * 60, reason=inputs['st'])
         else:
             self.fail(inputs['st'])
 
@@ -215,15 +216,13 @@ class XFileSharingPro(SimpleHoster):
             if 'wait' in self.errmsg:
                 wait_time = sum([int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in
                                  re.findall(r'(\d+)\s*(hour|minute|second)?', self.errmsg)])
-                self.setWait(wait_time, True)
-                self.wait()
+                self.wait(wait_time, True)
             elif 'captcha' in self.errmsg:
                 self.invalidCaptcha()
             elif 'premium' in self.errmsg and 'require' in self.errmsg:
                 self.fail("File can be downloaded by premium users only")
             elif 'limit' in self.errmsg:
-                self.setWait(3600, True)
-                self.wait()
+                self.wait(1 * 60 * 60, True)
                 self.retry(25)
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
                 self.retry()

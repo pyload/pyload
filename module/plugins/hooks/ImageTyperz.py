@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -42,7 +43,7 @@ class ImageTyperzException(Exception):
 class ImageTyperz(Hook):
     __name__ = "ImageTyperz"
     __version__ = "0.04"
-    __description__ = """send captchas to ImageTyperz.com"""
+    __description__ = """Send captchas to ImageTyperz.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),

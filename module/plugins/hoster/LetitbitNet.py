@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -50,9 +51,9 @@ def getInfo(urls):
 class LetitbitNet(SimpleHoster):
     __name__ = "LetitbitNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*(letitbit|shareflare).net/download/.*"
+    __pattern__ = r'http://(?:www\.)?(letitbit|shareflare).net/download/.*'
     __version__ = "0.23"
-    __description__ = """letitbit.net"""
+    __description__ = """Letitbit.net hoster plugin"""
     __author_name__ = ("zoidberg", "z00nx")
     __author_mail__ = ("zoidberg@mujmail.cz", "z00nx0@gmail.com")
 
@@ -97,8 +98,7 @@ class LetitbitNet(SimpleHoster):
         #     ajax_check_url, captcha_url = re.search(self.CHECK_URL_PATTERN, self.html).groups()
         #     found = re.search(self.SECONDS_PATTERN, self.html)
         #     seconds = int(found.group(1)) if found else 60
-        #     self.setWait(seconds+1)
-        #     self.wait()
+        #     self.wait(seconds+1)
         # except Exception, e:
         #     self.logError(e)
         #     self.parseError("page 3 / js")
@@ -109,8 +109,7 @@ class LetitbitNet(SimpleHoster):
         found = re.search(self.CAPTCHA_CONTROL_FIELD, self.html)
         recaptcha_control_field = found.group(1)
         self.logDebug("ReCaptcha control field found", recaptcha_control_field)
-        self.setWait(seconds + 1)
-        self.wait()
+        self.wait(seconds + 1)
 
         response = self.load("%s/ajax/download3.php" % self.DOMAIN, post=" ", cookies=True)
         if response != '1':
@@ -128,8 +127,7 @@ class LetitbitNet(SimpleHoster):
             self.invalidCaptcha()
         if response == "error_free_download_blocked":
             self.logInfo("Daily limit reached, waiting 24 hours")
-            self.setWait(24 * 60 * 60)
-            self.wait()
+            self.wait(24 * 60 * 60)
         if response == "error_wrong_captcha":
             self.logInfo("Wrong Captcha")
             self.invalidCaptcha()

@@ -1,7 +1,7 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from urlparse import urlparse
-from re import search
+from re import match, search
 from urllib import unquote
 
 from module.network.HTTPRequest import BadHeader
@@ -12,11 +12,11 @@ from module.utils import html_unescape, remove_chars
 class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"
-    __pattern__ = r"^unmatchable$"
+    __pattern__ = r'^unmatchable$'
     __version__ = "0.19"
     __description__ = """Base Plugin when any other didnt fit"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
 
     def setup(self):
         self.chunkLimit = -1
@@ -38,7 +38,7 @@ class BasePlugin(Hoster):
         # self.decryptCaptcha("http://localhost:9000/captcha")
         #
         # if pyfile.url == "79":
-        #     self.core.api.addPackage("test", [str(i) for i in range(80)], 1)
+        #     self.core.api.addPackage("test", [str(i) for i in xrange(80)], 1)
         #
         # return
         if pyfile.url.startswith("http"):
@@ -74,7 +74,7 @@ class BasePlugin(Hoster):
     def downloadFile(self, pyfile):
         url = pyfile.url
 
-        for i in range(5):
+        for _ in xrange(5):
             header = self.load(url, just_header=True)
 
             # self.load does not raise a BadHeader on 404 responses, do it here
@@ -83,7 +83,7 @@ class BasePlugin(Hoster):
 
             if 'location' in header:
                 self.logDebug("Location: " + header['location'])
-                base = search(r'https?://[^/]+', url).group(0)
+                base = match(r'https?://[^/]+', url).group(0)
                 if header['location'].startswith("http"):
                     url = unquote(header['location'])
                 elif header['location'].startswith("/"):

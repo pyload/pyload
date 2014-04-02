@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,10 +29,11 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
+    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
     __version__ = "0.96"
-    __description__ = """uloz.to"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Uloz.to hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<a href="#download" class="jsShowDownload">(?P<N>[^<]+)</a>'
     FILE_SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[0-9.]+\s[kMG]?B)</span>'
@@ -157,8 +159,7 @@ class UlozTo(SimpleHoster):
         elif check == "server_error":
             self.logError("Server error, try downloading later")
             self.multiDL = False
-            self.setWait(3600, True)
-            self.wait()
+            self.wait(1 * 60 * 60, True)
             self.retry()
         elif check == "not_found":
             self.fail("Server error - file not downloadable")

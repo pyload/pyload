@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -24,11 +23,11 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class HugefilesNet(XFileSharingPro):
     __name__ = "HugefilesNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?hugefiles\.net/\w{12}"
+    __pattern__ = r'http://(?:www\.)?hugefiles\.net/\w{12}'
     __version__ = "0.01"
     __description__ = """Hugefiles.net hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     HOSTER_NAME = "hugefiles.net"
 

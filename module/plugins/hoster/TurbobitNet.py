@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     Copyright (C) 2012  pyLoad team
     Copyright (C) 2012  JD-Team support@jdownloader.org
@@ -35,17 +36,17 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?(turbobit.net|unextfiles.com)/(?!download/folder/)(?:download/free/)?(?P<ID>\w+).*"
+    __pattern__ = r'http://(?:www\.)?(turbobit.net|unextfiles.com)/(?!download/folder/)(?:download/free/)?(?P<ID>\w+).*'
     __version__ = "0.11"
     __description__ = """Turbobit.net plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     # long filenames are shortened
     FILE_INFO_PATTERN = r"<span class='file-icon1[^>]*>(?P<N>[^<]+)</span>\s*\((?P<S>[^\)]+)\)\s*</h1>"
     FILE_NAME_PATTERN = r'<meta name="keywords" content="\s+(?P<N>[^,]+)'  # full name but missing on page2
     FILE_OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
-    FILE_URL_REPLACEMENTS = [(r"http://(?:\w*\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*",
+    FILE_URL_REPLACEMENTS = [(r"http://(?:www\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*",
                               "http://turbobit.net/\g<ID>.html")]
     SH_COOKIES = [("turbobit.net", "user_lang", "en")]
 
@@ -70,12 +71,11 @@ class TurbobitNet(SimpleHoster):
         self.downloadFile()
 
     def solveCaptcha(self):
-        for i in range(5):
+        for _ in xrange(5):
             found = re.search(self.LIMIT_WAIT_PATTERN, self.html)
             if found:
                 wait_time = int(found.group(1))
-                self.setWait(wait_time, wait_time > 60)
-                self.wait()
+                self.wait(wait_time, wait_time > 60)
                 self.retry()
 
             action, inputs = self.parseHtmlForm("action='#'")
@@ -135,7 +135,7 @@ class TurbobitNet(SimpleHoster):
 
         found = re.search("(/\w+/timeout\.js\?\w+=)([^\"\'<>]+)", self.html)
         url = "http://turbobit.net%s%s" % (found.groups() if found else (
-        '/files/timeout.js?ver=', ''.join(random.choice('0123456789ABCDEF') for x in range(32))))
+        '/files/timeout.js?ver=', ''.join(random.choice('0123456789ABCDEF') for _ in xrange(32))))
         fun = self.load(url)
 
         self.setWait(65, False)

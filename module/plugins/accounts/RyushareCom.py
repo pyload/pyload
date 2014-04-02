@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from module.plugins.internal.XFSPAccount import XFSPAccount
 
 
@@ -6,7 +7,7 @@ class RyushareCom(XFSPAccount):
     __name__ = "RyushareCom"
     __version__ = "0.03"
     __type__ = "account"
-    __description__ = """ryushare.com account plugin"""
+    __description__ = """Ryushare.com account plugin"""
     __author_name__ = ("zoidberg", "trance4us")
     __author_mail__ = ("zoidberg@mujmail.cz", "")
 

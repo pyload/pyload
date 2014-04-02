@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -44,7 +45,7 @@ class BypassCaptchaException(Exception):
 class BypassCaptcha(Hook):
     __name__ = "BypassCaptcha"
     __version__ = "0.04"
-    __description__ = """send captchas to BypassCaptcha.com"""
+    __description__ = """Send captchas to BypassCaptcha.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force BC even if client is connected", False),
                   ("passkey", "password", "Passkey", "")]

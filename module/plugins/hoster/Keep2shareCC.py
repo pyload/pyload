@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -28,11 +27,11 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class Keep2shareCC(SimpleHoster):
     __name__ = "Keep2shareCC"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)"
+    __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
     __version__ = "0.10"
     __description__ = """Keep2share.cc hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
     FILE_SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
@@ -74,7 +73,7 @@ class Keep2shareCC(SimpleHoster):
             if m:
                 # if someone is already downloading on our line, wait 30min and retry
                 self.logDebug('Already downloading, waiting for 30 minutes')
-                self.wait(1800, reconnect=True)
+                self.wait(30 * 60, reconnect=True)
                 self.retry()
 
             m = re.search(self.DIRECT_LINK_PATTERN, self.html)
@@ -84,7 +83,7 @@ class Keep2shareCC(SimpleHoster):
 
     def handleCaptcha(self):
         recaptcha = ReCaptcha(self)
-        for i in xrange(5):
+        for _ in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,

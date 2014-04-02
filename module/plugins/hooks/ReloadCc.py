@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from module.plugins.internal.MultiHoster import MultiHoster
 
 from module.common.json_layer import json_loads
@@ -10,12 +12,12 @@ class ReloadCc(MultiHoster):
     __type__ = "hook"
     __description__ = """Reload.cc hook plugin"""
 
-    __config__ = [("activated", "bool", "Activated", "False"),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
-    __author_name__ = ("Reload Team")
-    __author_mail__ = ("hello@reload.cc")
+    __author_name__ = "Reload Team"
+    __author_mail__ = "hello@reload.cc"
 
     interval = 0  # Disable periodic calls
 

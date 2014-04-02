@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -12,7 +11,7 @@ class FlyFilesNet(SimpleHoster):
     __name__ = "FlyFilesNet"
     __version__ = "0.1"
     __type__ = "hoster"
-    __pattern__ = r'http://flyfiles\.net/.*'
+    __pattern__ = r'http://(?:www\.)?flyfiles\.net/.*'
 
     SESSION_PATTERN = r'flyfiles\.net/(.*)/.*'
     FILE_NAME_PATTERN = r'flyfiles\.net/.*/(.*)'
@@ -31,8 +30,7 @@ class FlyFilesNet(SimpleHoster):
 
         if parsed_url == '#downlink|' or parsed_url == "#downlink|#":
             self.logWarning("Could not get the download URL. Please wait 10 minutes.")
-            self.setWait(600, True)  # wait 10 minutes
-            self.wait()
+            self.wait(10 * 60, True)
             self.retry()
 
         download_url = parsed_url.replace('#downlink|', '')

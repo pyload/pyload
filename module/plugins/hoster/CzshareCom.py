@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,10 +28,11 @@ from module.utils import parseFileSize
 class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
+    __pattern__ = r'http://(?:www\.)?czshare\.(com|cz)/(\d+/|download.php\?).*'
     __version__ = "0.93"
-    __description__ = """CZshare.com"""
-    __author_name__ = ("zoidberg")
+    __description__ = """CZshare.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
     FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B\s*</div>'
@@ -95,7 +97,7 @@ class CzshareCom(SimpleHoster):
         # get download ticket and parse html
         self.html = self.load(parsed_url, cookies=True, decode=True)
         if re.search(self.MULTIDL_PATTERN, self.html):
-            self.longWait(300, 12)
+            self.longWait(5 * 60, 12)
 
         try:
             form = re.search(self.FREE_FORM_PATTERN, self.html, re.DOTALL).group(1)
@@ -107,13 +109,13 @@ class CzshareCom(SimpleHoster):
 
         # get and decrypt captcha        
         captcha_url = 'http://czshare.com/captcha.php'
-        for i in range(5):
+        for _ in xrange(5):
             inputs['captchastring2'] = self.decryptCaptcha(captcha_url)
             self.html = self.load(parsed_url, cookies=True, post=inputs, decode=True)
             if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.html:
                 self.invalidCaptcha()
             elif re.search(self.MULTIDL_PATTERN, self.html):
-                self.longWait(300, 12)
+                self.longWait(5 * 60, 12)
             else:
                 self.correctCaptcha()
                 break
@@ -149,7 +151,7 @@ class CzshareCom(SimpleHoster):
         if check == "credit":
             self.resetAccount()
         elif check == "multi_dl":
-            self.longWait(300, 12)
+            self.longWait(5 * 60, 12)
         elif check == "captcha_err":
             self.invalidCaptcha()
             self.retry()

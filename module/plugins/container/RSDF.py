@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import base64
@@ -10,14 +9,13 @@ from module.plugins.Container import Container
 class RSDF(Container):
     __name__ = "RSDF"
     __version__ = "0.21"
-    __pattern__ = r".*\.rsdf"
-    __description__ = """RSDF Container Decode Plugin"""
+    __pattern__ = r'.+\.rsdf'
+    __description__ = """RSDF container decrypter plugin"""
     __author_name__ = ("RaNaN", "spoob")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org")
 
-    
     def decrypt(self, pyfile):
-    
+
         from Crypto.Cipher import AES
 
         infile = pyfile.url.replace("\n", "")
@@ -46,4 +44,4 @@ class RSDF(Container):
                 links.append(decryptedUrl)
 
             self.log.debug("%s: adding package %s with %d links" % (self.__name__,pyfile.package().name,len(links)))
-            self.packages.append((pyfile.package().name, links))        
+            self.packages.append((pyfile.package().name, links))

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # v1.36
@@ -52,12 +51,12 @@ def getInfo(urls):
 class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://[\w\.]*?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))"
+    __pattern__ = r'https?://(?:www\.)?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))'
     __version__ = "1.39"
-    __description__ = """Rapidshare.com Download Hoster"""
-    __config__ = [["server",
+    __description__ = """Rapidshare.com hoster plugin"""
+    __config__ = [("server",
                    "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera",
-                   "Preferred Server", "None"]]
+                   "Preferred Server", "None")]
     __author_name__ = ("spoob", "RaNaN", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "mkaay@mkaay.de")
 
@@ -74,11 +73,11 @@ class RapidshareCom(Hoster):
         self.multiDL = self.resumeDownload = self.premium
 
     def process(self, pyfile):
-        self.url = self.pyfile.url
+        self.url = pyfile.url
         self.prepare()
 
     def prepare(self):
-        m = re.search(self.__pattern__, self.url)
+        m = re.match(self.__pattern__, self.url)
 
         if m.group("name"):
             self.id = m.group("id")

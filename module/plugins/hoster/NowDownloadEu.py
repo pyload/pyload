@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,11 +25,11 @@ from module.utils import fixup
 class NowDownloadEu(SimpleHoster):
     __name__ = "NowDownloadEu"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?nowdownload\.(ch|co|eu|sx)/(dl/|download\.php\?id=)(?P<ID>\w+)"
+    __pattern__ = r'http://(?:www\.)?nowdownload\.(ch|co|eu|sx)/(dl/|download\.php\?id=)(?P<ID>\w+)'
     __version__ = "0.05"
-    __description__ = """NowDownloadCh"""
+    __description__ = """NowDownload.ch hoster plugin"""
     __author_name__ = ("godofdream", "Walter Purcaro")
-    __author_mail__ = ("", "vuolter@gmail.com")
+    __author_mail__ = ("soilfiction@gmail.com", "vuolter@gmail.com")
 
     FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B </h4>'
     FILE_OFFLINE_PATTERN = r'(This file does not exist!)'
@@ -57,8 +58,7 @@ class NowDownloadEu(SimpleHoster):
 
         baseurl = "http://www.nowdownload.ch"
         self.html = self.load(baseurl + str(tokenlink.group(1)))
-        self.setWait(wait)
-        self.wait()
+        self.wait(wait)
 
         self.html = self.load(baseurl + str(continuelink.group(1)))
 

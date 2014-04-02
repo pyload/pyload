@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: zoidberg
 """
 
@@ -27,9 +27,9 @@ class FilejungleCom(Account):
     __name__ = "FilejungleCom"
     __version__ = "0.11"
     __type__ = "account"
-    __description__ = """filejungle.com account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Filejungle.com account plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     login_timeout = 60
 

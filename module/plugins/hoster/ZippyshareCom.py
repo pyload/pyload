@@ -16,9 +16,9 @@ from module.common.json_layer import json_loads
 class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
-    __pattern__ = r"(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)"
+    __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)'
     __version__ = "0.46"
-    __description__ = """Zippyshare.com Download Hoster"""
+    __description__ = """Zippyshare.com hoster plugin"""
     __author_name__ = ("spoob", "zoidberg", "stickell")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
     __config__ = [("swfdump_path", "string", "Path to swfdump", "")]
@@ -60,7 +60,7 @@ class ZippyshareCom(SimpleHoster):
             elif swf_sts == '1':
                 self.setStorage("swf_sts", 2)
 
-            self.retry(max_tries=1)
+            self.retry(1)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -200,7 +200,7 @@ class ZippyshareCom(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        for i in range(5):
+        for _ in xrange(5):
             challenge, code = recaptcha.challenge(captcha_key)
 
             response = json_loads(self.load(self.file_info['HOST'] + '/rest/captcha/test',

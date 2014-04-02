@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -35,7 +34,7 @@ def which(program):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:[^/]*?)youtube\.com/watch.*?[?&]v=.*"
+    __pattern__ = r'https?://(?:[^/]*\.)?youtube\.com/watch.*?[?&]v=.*'
     __version__ = "0.39"
     __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
                   ("fmt", "int", "FMT/ITAG Number (5-102, 0 for auto)", 0),
@@ -44,7 +43,7 @@ class YoutubeCom(Hoster):
                   (".webm", "bool", "Allow .webm", False),
                   (".3gp", "bool", "Allow .3gp", False),
                   ("3d", "bool", "Prefer 3D", False)]
-    __description__ = """Youtube.com Video Download Hoster"""
+    __description__ = """Youtube.com hoster plugin"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -8,11 +7,11 @@ from module.plugins.Hoster import Hoster
 class YoupornCom(Hoster):
     __name__ = "YoupornCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?youporn\.com/watch/.+"
+    __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
     __version__ = "0.2"
-    __description__ = """Youporn.com Video Download Hoster"""
-    __author_name__ = ("willnix")
-    __author_mail__ = ("willnix@pyload.org")
+    __description__ = """Youporn.com hoster plugin"""
+    __author_name__ = "willnix"
+    __author_mail__ = "willnix@pyload.org"
 
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -20,7 +19,7 @@ class YoupornCom(Hoster):
         if not self.file_exists():
             self.offline()
 
-        self.pyfile.name = self.get_file_name()
+        pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
     def download_html(self):

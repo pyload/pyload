@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -23,11 +22,11 @@ def getInfo(urls):
 class ShareRapidCom(SimpleHoster):
     __name__ = "ShareRapidCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?((share(-?rapid\.(biz|com|cz|info|eu|net|org|pl|sk)|-(central|credit|free|net)\.cz|-ms\.net)|(s-?rapid|rapids)\.(cz|sk))|(e-stahuj|mediatack|premium-rapidshare|rapidshare-premium|qiuck)\.cz|kadzet\.com|stahuj-zdarma\.eu|strelci\.net|universal-share\.com)/stahuj/(?P<id>\w+)"
+    __pattern__ = r'http://(?:www\.)?((share(-?rapid\.(biz|com|cz|info|eu|net|org|pl|sk)|-(central|credit|free|net)\.cz|-ms\.net)|(s-?rapid|rapids)\.(cz|sk))|(e-stahuj|mediatack|premium-rapidshare|rapidshare-premium|qiuck)\.cz|kadzet\.com|stahuj-zdarma\.eu|strelci\.net|universal-share\.com)/stahuj/(?P<id>\w+)'
     __version__ = "0.53"
-    __description__ = """Share-rapid.com plugin - premium only"""
+    __description__ = """Share-rapid.com hoster plugin"""
     __author_name__ = ("MikyWoW", "zoidberg", "stickell")
-    __author_mail__ = ("MikyWoW@seznam.cz", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __author_mail__ = ("mikywow@seznam.cz", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     FILE_NAME_PATTERN = r'<h1[^>]*><span[^>]*>(?:<a[^>]*>)?(?P<N>[^<]+)'
     FILE_SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong></td>'
@@ -51,7 +50,7 @@ class ShareRapidCom(SimpleHoster):
             self.html = self.load(pyfile.url, decode=True)
         except BadHeader, e:
             self.account.relogin(self.user)
-            self.retry(3, 0, str(e))
+            self.retry(max_tries=3, reason=str(e))
 
         self.getFileInfo()
 
@@ -64,8 +63,8 @@ class ShareRapidCom(SimpleHoster):
         else:
             if re.search(self.ERR_LOGIN_PATTERN, self.html):
                 self.relogin(self.user)
-                self.retry(3, 0, "User login failed")
+                self.retry(max_tries=3, reason="User login failed")
             elif re.search(self.ERR_CREDIT_PATTERN, self.html):
                 self.fail("Not enough credit left")
             else:
-                self.fail("Download link not found")           
+                self.fail("Download link not found")

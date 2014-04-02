@@ -10,9 +10,9 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __pattern__ = r"(http://(\w+)\.((1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl.fr))"
+    __pattern__ = r'(http://(\w+)\.((1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl.fr))'
     __version__ = "0.50"
-    __description__ = """1fichier.com download hoster"""
+    __description__ = """1fichier.com hoster plugin"""
     __author_name__ = ("fragonib", "the-razer", "zoidberg", "imclem")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "daniel_ AT gmx DOT net", "zoidberg@mujmail.cz", "imclem on github")
 
@@ -29,7 +29,7 @@ class OneFichierCom(SimpleHoster):
     RETRY_TIME = 15*60 #Default retry time in seconds (if detected parallel download)
 
     def process(self, pyfile):
-        found = re.search(self.__pattern__, pyfile.url)
+        found = re.match(self.__pattern__, pyfile.url)
         file_id = found.group(2)
         url = "http://%s.%s/en/" % (found.group(2), found.group(3))
         self.html = self.load(url, decode=True)
@@ -69,12 +69,11 @@ class OneFichierCom(SimpleHoster):
             self.waitAndRetry(int(self.lastcheck.group(1)) * 60)
 
     def waitAndRetry(self, wait_time):
-        self.setWait(wait_time, True)
-        self.wait()
+        self.wait(wait_time, True)
         self.retry()
 
     def setup(self):
         self.multiDL = self.premium
         self.resumeDownload = True
 
-getInfo = create_getInfo(OneFichierCom)   
+getInfo = create_getInfo(OneFichierCom)

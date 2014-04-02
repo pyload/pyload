@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -27,11 +26,11 @@ def doubleDecode(m):
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?fshare.vn/file/.*"
+    __pattern__ = r'http://(?:www\.)?fshare.vn/file/.*'
     __version__ = "0.16"
-    __description__ = """FshareVn Download Hoster"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """FshareVn hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = r'<p>(?P<N>[^<]+)<\\/p>[\\trn\s]*<p>(?P<S>[0-9,.]+)\s*(?P<U>[kKMG])i?B<\\/p>'
     FILE_OFFLINE_PATTERN = r'<div class=\\"f_left file_w\\"|<\\/p>\\t\\t\\t\\t\\r\\n\\t\\t<p><\\/p>\\t\\t\\r\\n\\t\\t<p>0 KB<\\/p>'
@@ -100,12 +99,11 @@ class FshareVn(SimpleHoster):
         if found:
             self.logInfo("Wait until %s ICT" % found.group(1))
             wait_until = mktime(strptime(found.group(1), "%d/%m/%Y %H:%M"))
-            self.setWait(wait_until - mktime(gmtime()) - 7 * 3600, True)
-            self.wait()
+            self.wait(wait_until - mktime(gmtime()) - 7 * 60 * 60, True)
             self.retry()
         elif '<ul class="message-error">' in self.html:
             self.logError("Unknown error occured or wait time not parsed")
-            self.retry(30, 120, "Unknown error")
+            self.retry(30, 2 * 60, "Unknown error")
 
     def checkDownloadedFile(self):
         # check download

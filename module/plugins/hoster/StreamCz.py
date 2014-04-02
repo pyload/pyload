@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,10 +39,11 @@ def getInfo(urls):
 class StreamCz(Hoster):
     __name__ = "StreamCz"
     __type__ = "hoster"
-    __pattern__ = r"http://www.stream.cz/[^/]+/\d+.*"
+    __pattern__ = r'http://(?:www\.)?stream.cz/[^/]+/\d+.*'
     __version__ = "0.1"
-    __description__ = """stream.cz"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Stream.cz hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_OFFLINE_PATTERN = r'<h1 class="commonTitle">Str.nku nebylo mo.n. nal.zt \(404\)</h1>'
     FILE_NAME_PATTERN = r'<link rel="video_src" href="http://www.stream.cz/\w+/(\d+)-([^"]+)" />'
@@ -77,4 +79,4 @@ class StreamCz(Hoster):
 
         download_url = "http://cdn-dispatcher.stream.cz/?id=" + cdnid
         self.logInfo("STREAM (%s): %s" % (cdnkey[-2:], download_url))
-        self.download(download_url)         
+        self.download(download_url)

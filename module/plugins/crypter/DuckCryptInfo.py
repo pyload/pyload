@@ -7,12 +7,12 @@ from module.plugins.Crypter import Crypter
 
 class DuckCryptInfo(Crypter):
     __name__ = "DuckCryptInfo"
-    __type__ = "container"
-    __pattern__ = r"http://(?:www\.)?duckcrypt.info/(folder|wait|link)/(\w+)/?(\w*)"
+    __type__ = "crypter"
+    __pattern__ = r'http://(?:www\.)?duckcrypt.info/(folder|wait|link)/(\w+)/?(\w*)'
     __version__ = "0.02"
-    __description__ = """DuckCrypt.Info Container Plugin"""
-    __author_name__ = ("godofdream")
-    __author_mail__ = ("soilfiction@gmail.com")
+    __description__ = """DuckCrypt.info decrypter plugin"""
+    __author_name__ = "godofdream"
+    __author_mail__ = "soilfiction@gmail.com"
 
     TIMER_PATTERN = r'<span id="timer">(.*)</span>'
 
@@ -24,7 +24,7 @@ class DuckCryptInfo(Crypter):
         #if found:
         #    self.logDebug("Sleeping for" % found.group(1))
         #    self.setWait(int(found.group(1)) ,False)
-        found = re.search(self.__pattern__, url)
+        found = re.match(self.__pattern__, url)
         if not found:
             self.fail('Weird error in link')
         if str(found.group(1)) == "link":
@@ -35,7 +35,7 @@ class DuckCryptInfo(Crypter):
 
     def handleFolder(self, found):
         src = self.load("http://duckcrypt.info/ajax/auth.php?hash=" + str(found.group(2)))
-        found = re.search(self.__pattern__, src)
+        found = re.match(self.__pattern__, src)
         self.logDebug("Redirectet to " + str(found.group(0)))
         src = self.load(str(found.group(0)))
         soup = BeautifulSoup(src)

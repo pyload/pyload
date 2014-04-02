@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import re
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
@@ -7,8 +8,8 @@ class FilezyNet(XFileSharingPro):
     __name__ = "FilezyNet"
     __type__ = "hoster"
     __version__ = "0.1"
-    __pattern__ = r"http://filezy.net/.*/.*.html"
-    __description__ = """filezy.net hoster plugin"""
+    __pattern__ = r'http://(?:www\.)?filezy.net/.*/.*.html'
+    __description__ = """Filezy.net hoster plugin"""
 
     HOSTER_NAME = "filezy.net"
 

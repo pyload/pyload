@@ -9,7 +9,7 @@ class Premium4Me(MultiHoster):
     __version__ = "0.03"
     __type__ = "hook"
 
-    __config__ = [("activated", "bool", "Activated", "False"),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
     __description__ = """Premium.to hook plugin"""

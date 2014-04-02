@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,9 +27,9 @@ from module.common.json_layer import json_loads
 class BayfilesCom(SimpleHoster):
     __name__ = "BayfilesCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>[a-zA-Z0-9]+/[a-zA-Z0-9]+/[^/]+)"
+    __pattern__ = r'https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>[a-zA-Z0-9]+/[a-zA-Z0-9]+/[^/]+)'
     __version__ = "0.06"
-    __description__ = """Bayfiles.com plugin - free only"""
+    __description__ = """Bayfiles.com hoster plugin"""
     __author_name__ = ("zoidberg", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com")
 
@@ -43,8 +44,7 @@ class BayfilesCom(SimpleHoster):
     def handleFree(self):
         found = re.search(self.WAIT_PATTERN, self.html)
         if found:
-            self.setWait(int(found.group(1)) * 60)
-            self.wait()
+            self.wait(int(found.group(1)) * 60)
             self.retry()
 
         # Get download token
@@ -61,8 +61,7 @@ class BayfilesCom(SimpleHoster):
         if not "token" in response or not response['token']:
             self.fail('No token')
 
-        self.setWait(int(delay))
-        self.wait()
+        self.wait(int(delay))
 
         self.html = self.load('https://bayfiles.com/ajax_download', get={
             "token": response['token'],
@@ -90,9 +89,9 @@ class BayfilesCom(SimpleHoster):
             "notfound": re.compile(r"<title>404 Not Found</title>")
         })
         if check == "waitforfreeslots":
-            self.retry(30, 60 * 5, "Wait for free slot")
+            self.retry(30, 5 * 60, "Wait for free slot")
         elif check == "notfound":
-            self.retry(30, 60 * 5, "404 Not found")
+            self.retry(30, 5 * 60, "404 Not found")
 
 
 getInfo = create_getInfo(BayfilesCom)

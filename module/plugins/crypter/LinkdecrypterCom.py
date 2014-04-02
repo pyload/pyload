@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,8 +25,9 @@ class LinkdecrypterCom(Crypter):
     __name__ = "LinkdecrypterCom"
     __type__ = "crypter"
     __version__ = "0.27"
-    __description__ = """linkdecrypter.com"""
+    __description__ = """Linkdecrypter.com"""
     __author_name__ = ("zoidberg", "flowlee")
+    __author_mail__ = ("zoidberg@mujmail.cz", "")
 
     TEXTAREA_PATTERN = r'<textarea name="links" wrap="off" readonly="1" class="caja_des">(.+)</textarea>'
     PASSWORD_PATTERN = r'<input type="text" name="password"'
@@ -39,7 +41,7 @@ class LinkdecrypterCom(Crypter):
         # API not working anymore
         new_links = self.decryptHTML()
         if new_links:
-            self.core.files.addLinks(new_links, self.pyfile.package().id)
+            self.core.files.addLinks(new_links, pyfile.package().id)
         else:
             self.fail('Could not extract any links')
 

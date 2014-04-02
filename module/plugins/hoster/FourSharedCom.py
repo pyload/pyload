@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -9,9 +8,9 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FourSharedCom(SimpleHoster):
     __name__ = "FourSharedCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(www\.)?4shared(\-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+?/.*"
+    __pattern__ = r'https?://(?:www\.)?4shared(\-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+?/.*'
     __version__ = "0.29"
-    __description__ = """4Shared Download Hoster"""
+    __description__ = """4Shared.com hoster plugin"""
     __author_name__ = ("jeix", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "zoidberg@mujmail.cz")
 
@@ -49,8 +48,7 @@ class FourSharedCom(SimpleHoster):
         except:
             pass
 
-        self.setWait(20)
-        self.wait()
+        self.wait(20)
         self.download(link)
 
 

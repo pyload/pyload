@@ -10,13 +10,13 @@ from module.common.json_layer import json_loads
 class MultiuploadCom(Crypter):
     __name__ = "MultiuploadCom"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?multiupload.com/(\w+)"
+    __pattern__ = r'http://(?:www\.)?multiupload.com/(\w+)'
     __version__ = "0.01"
-    __description__ = """MultiUpload.com crypter"""
+    __description__ = """MultiUpload.com decrypter plugin"""
     __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "multiupload"),
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     ML_LINK_PATTERN = r'<div id="downloadbutton_" style=""><a href="([^"]+)"'
 
@@ -26,7 +26,7 @@ class MultiuploadCom(Crypter):
         ml_url = found.group(1) if found else None
 
         json_list = json_loads(self.load("http://multiupload.com/progress/", get={
-            "d": re.search(self.__pattern__, pyfile.url).group(1),
+            "d": re.match(self.__pattern__, pyfile.url).group(1),
             "r": str(int(time() * 1000))
         }))
         new_links = []
@@ -55,7 +55,7 @@ class MultiuploadCom(Crypter):
                         new_links.append(url)
 
         if new_links:
-            self.core.files.addLinks(new_links, self.pyfile.package().id)
+            self.core.files.addLinks(new_links, pyfile.package().id)
         else:
             self.fail('Could not extract any links')
 

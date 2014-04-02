@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: zoidberg
 """
 
@@ -28,8 +28,8 @@ class WarserverCz(Account):
     __version__ = "0.02"
     __type__ = "account"
     __description__ = """Warserver.cz account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     VALID_UNTIL_PATTERN = ur'<li>Neomezené stahování do: <strong>(.+?)<'
     TRAFFIC_LEFT_PATTERN = ur'<li>Kredit: <strong>(.+?)<'

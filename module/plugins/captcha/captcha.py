@@ -1,5 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 #
 #Copyright (C) 2009 kingzero, RaNaN
 #
@@ -33,9 +33,9 @@ import JpegImagePlugin
 
 
 class OCR(object):
-    
+
     __name__ = "OCR"
-    
+
     def __init__(self):
         self.logger = logging.getLogger("log")
 
@@ -53,7 +53,7 @@ class OCR(object):
 
     def run(self, command):
         """Run a command"""
-            
+
         popen = subprocess.Popen(command, bufsize = -1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         popen.wait()
         output = popen.stdout.read() +" | "+ popen.stderr.read()
@@ -63,8 +63,7 @@ class OCR(object):
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         #self.logger.debug("create tmp tif")
-        
-        
+
         #tmp = tempfile.NamedTemporaryFile(suffix=".tif")
         tmp = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
         tmp.close()
@@ -72,7 +71,7 @@ class OCR(object):
         #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
         tmpTxt = open(join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
         tmpTxt.close()
-        
+
         self.logger.debug("save tiff")
         self.image.save(tmp.name, 'TIFF')
 
@@ -80,7 +79,7 @@ class OCR(object):
             tessparams = [join(pypath,"tesseract","tesseract.exe")]
         else:
             tessparams = ['tesseract']
-        
+
         tessparams.extend( [abspath(tmp.name), abspath(tmpTxt.name).replace(".txt", "")] )
 
         if subset and (digits or lowercase or uppercase):
@@ -98,7 +97,7 @@ class OCR(object):
             tessparams.append("nobatch")
             tessparams.append(abspath(tmpSub.name))
             tmpSub.close()
-            
+
         self.logger.debug("run tesseract")
         self.run(tessparams)
         self.logger.debug("read txt")
@@ -117,7 +116,7 @@ class OCR(object):
                 os.remove(tmpSub.name)
         except:
             pass
-        
+
     def get_captcha(self, name):
         raise NotImplementedError
 
@@ -186,7 +185,7 @@ class OCR(object):
         highest = {}
         counts = {}
 
-        for angle in range(-45, 45):
+        for angle in xrange(-45, 45):
 
             tmpimage = self.image.rotate(angle)
 
@@ -312,4 +311,3 @@ if __name__ == '__main__':
     ocr.run_tesser()
     print "Tesseract", ocr.result_captcha
     ocr.image.save("derotated.jpg")
-    

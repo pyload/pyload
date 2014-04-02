@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -52,9 +51,9 @@ def getInfo(urls):
 class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
-    __pattern__ = r"https?://.*netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)"
+    __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)'
     __version__ = "0.45"
-    __description__ = """Netload.in Download Hoster"""
+    __description__ = """Netload.in hoster plugin"""
     __author_name__ = ("spoob", "RaNaN", "Gregy")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
 
@@ -64,7 +63,7 @@ class NetloadIn(Hoster):
     def process(self, pyfile):
         self.url = pyfile.url
         self.prepare()
-        self.pyfile.setStatus("downloading")
+        pyfile.setStatus("downloading")
         self.proceed(self.url)
 
     def prepare(self):
@@ -159,7 +158,7 @@ class NetloadIn(Hoster):
                     self.pyfile.name = name
 
         captchawaited = False
-        for i in range(10):
+        for i in xrange(10):
 
             if not page:
                 page = self.load(self.url)
