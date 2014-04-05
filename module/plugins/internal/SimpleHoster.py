@@ -110,7 +110,7 @@ def parseFileInfo(self, url='', html=''):
 
             for pattern in ("FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):
                 try:
-                    info.update(re.search(getattr(self, pattern), html, re.MULTILINE).groupdict())
+                    info.update(re.search(getattr(self, pattern), html).groupdict())
                     online = True
                 except AttributeError:
                     continue
