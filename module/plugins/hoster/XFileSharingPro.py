@@ -52,7 +52,7 @@ class XFileSharingPro(SimpleHoster):
     OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
     CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
     RECAPTCHA_URL_PATTERN = r'http://[^"\']+?recaptcha[^"\']+?\?k=([^"\']+)"'
-    CAPTCHA_DIV_PATTERN = r'Enter code.*?<div.*?>(.*?)</div>'
+    CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.*?)</div>'
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
     ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'
 
