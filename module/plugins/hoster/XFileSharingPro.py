@@ -36,7 +36,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r"^unmatchable$"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __description__ = """XFileSharingPro common hoster base"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -52,7 +52,7 @@ class XFileSharingPro(SimpleHoster):
     OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
     CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
     RECAPTCHA_URL_PATTERN = r'http://[^"\']+?recaptcha[^"\']+?\?k=([^"\']+)"'
-    CAPTCHA_DIV_PATTERN = r'<b>Enter code.*?<div.*?>(.*?)</div>'
+    CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.*?)</div>'
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
     ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'
 
@@ -315,7 +315,7 @@ class XFileSharingPro(SimpleHoster):
                 inputs['code'] = self.decryptCaptcha(captcha_url)
                 return 2
             else:
-                found = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.S)
+                found = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
                 if found:
                     captcha_div = found.group(1)
                     self.logDebug(captcha_div)
