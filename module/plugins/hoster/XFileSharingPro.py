@@ -315,7 +315,7 @@ class XFileSharingPro(SimpleHoster):
                 inputs['code'] = self.decryptCaptcha(captcha_url)
                 return 2
             else:
-                found = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.MULTILINE | re.DOTALL)
+                found = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
                 if found:
                     captcha_div = found.group(1)
                     self.logDebug(captcha_div)
