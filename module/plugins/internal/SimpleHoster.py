@@ -68,7 +68,7 @@ def parseHtmlForm(attr_str, html, input_names=None):
                         continue
                     elif isinstance(val, tuple) and inputs[key] in val:
                         continue
-                    inelif hasattr(val, "search") and re.match(val, inputs[key]):
+                    elif hasattr(val, "search") and re.match(val, inputs[key]):
                         continue
                     break  # attibute value does not match
                 else:
