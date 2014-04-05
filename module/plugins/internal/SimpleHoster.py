@@ -68,7 +68,7 @@ def parseHtmlForm(attr_str, html, input_names=None):
                         continue
                     elif isinstance(val, tuple) and inputs[key] in val:
                         continue
-                    elif hasattr(val, "search") and re.match(val, inputs[key]):
+                    inelif hasattr(val, "search") and re.match(val, inputs[key]):
                         continue
                     break  # attibute value does not match
                 else:
@@ -110,7 +110,7 @@ def parseFileInfo(self, url='', html=''):
 
             for pattern in ("FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):
                 try:
-                    info.update(re.search(getattr(self, pattern), html).groupdict())
+                    info.update(re.search(getattr(self, pattern), html, re.MULTILINE).groupdict())
                     online = True
                 except AttributeError:
                     continue
