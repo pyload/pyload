@@ -91,7 +91,7 @@ class Connector(QObject):
         self.connectionID = uuid().hex
 
         if not server_version == SERVER_VERSION:
-            self.emit(SIGNAL("errorBox"), _("server is version %(new)s client accepts version %(current)s") % { "new": server_version, "current": SERVER_VERSION})
+            self.emit(SIGNAL("errorBox"), _("server is version %(new)s client accepts version %(current)s") % {"new": server_version, "current": SERVER_VERSION})
             return False
 
         return True

@@ -81,7 +81,7 @@ It requires a `dict` that maps event names to function names or a `list` of func
         """
         Your Hook code here.
         """
-        event_map = {"downloadFinished" : "doSomeWork",
+        event_map = {"downloadFinished": "doSomeWork",
                      "allDownloadsFnished": "someMethod",
                      "coreReady": "initialize"}
 

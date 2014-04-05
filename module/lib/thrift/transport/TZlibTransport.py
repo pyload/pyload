@@ -125,7 +125,7 @@ class TZlibTransport(TTransportBase, CReadableTransport):
 
   def getCompRatio(self):
     '''
-    Get the current measured compression ratios (in,out) from
+    Get the current measured compression ratios (in, out) from
     this transport.
 
     Returns a tuple of: 

@@ -190,10 +190,10 @@ class Setup():
         """ make a systemcheck and return the results"""
         print _("## System Check ##")
 
-        if sys.version_info[:2] > (2, 7):
+        if sys.version_info[:2] > (2,7):
             print _("Your python version is to new, Please use Python 2.6/2.7")
             python = False
-        elif sys.version_info[:2] < (2, 5):
+        elif sys.version_info[:2] < (2,5):
             print _("Your python version is to old, Please use at least Python 2.5")
             python = False
         else:
@@ -489,10 +489,10 @@ class Setup():
                 input = default
 
             if bool:
-                # yes, true,t are inputs for booleans with value true
+                # yes, true, t are inputs for booleans with value true
                 if input.lower().strip() in [self.yes, _("yes"), _("true"), _("t"), "yes"]:
                     return True
-                # no, false,f are inputs for booleans with value false
+                # no, false, f are inputs for booleans with value false
                 elif input.lower().strip() in [self.no, _("no"), _("false"), _("f"), "no"]:
                     return False
                 else:

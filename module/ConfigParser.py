@@ -24,8 +24,8 @@ class ConfigParser:
 
     {
 
-     section : { 
-      option : { 
+     section: { 
+      option: { 
             value:
             type:
             desc:

@@ -41,7 +41,7 @@ def initReport():
 			reports.append(f)
 		
 	for i, f in enumerate(reports):
-		print "%s. %s" % (i,f) 
+		print "%s. %s" % (i, f) 
 	
 	choice = raw_input("Choose Report: ")
 	

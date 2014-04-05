@@ -15,7 +15,7 @@ from base64 import b64encode, b64decode
 
 __all__ = ['SignedCookie', 'Session']
 
-getpid = hasattr(os, 'getpid') and os.getpid or (lambda : '')
+getpid = hasattr(os, 'getpid') and os.getpid or (lambda: '')
 
 class SignedCookie(Cookie.BaseCookie):
     """Extends python cookie to give digital signature support"""

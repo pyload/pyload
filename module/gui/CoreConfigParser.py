@@ -52,7 +52,7 @@ class ConfigParser:
 
         conf = {}
 
-        section, option, value, typ, desc = "","","","",""
+        section, option, value, typ, desc = "", "", "", "", ""
 
         listmode = False
 
@@ -75,20 +75,20 @@ class ConfigParser:
                     section, none, desc = line[:-1].partition('-')
                     section = section.strip()
                     desc = desc.replace('"', "").strip()
-                    conf[section] = { "desc" : desc }
+                    conf[section] = {"desc": desc}
                 else:
                     if listmode:
 
                         if line.endswith("]"):
                             listmode = False
-                            line = line.replace("]","")
+                            line = line.replace("]", "")
 
                         value += [self.cast(typ, x.strip()) for x in line.split(",") if x]
 
                         if not listmode:
-                            conf[section][option] = { "desc" : desc,
-                                                      "type" : typ,
-                                                      "value" : value} 
+                            conf[section][option] = {"desc": desc,
+                                                      "type": typ,
+                                                      "value": value} 
 
                     else:
                         content, none, value = line.partition("=")
@@ -113,9 +113,9 @@ class ConfigParser:
                             value = self.cast(typ, value)
 
                         if not listmode:
-                            conf[section][option] = { "desc" : desc,
-                                                      "type" : typ,
-                                                      "value" : value}
+                            conf[section][option] = {"desc": desc,
+                                                      "type": typ,
+                                                      "value": value}
 
             except:
                 pass
@@ -132,7 +132,7 @@ class ConfigParser:
         if typ == "int":
             return int(value)
         elif typ == "bool":
-            return True if value.lower() in ("1","true", "on", "an","yes") else False
+            return True if value.lower() in ("1", "true", "on", "an", "yes") else False
         else:
             return value
 

@@ -78,7 +78,7 @@ def strxor(a, b):
     return "".join([chr(ord(x) ^ ord(y)) for (x, y) in zip(a, b)])
 
 class PBKDF2(object):
-    """PBKDF2.py : PKCS#5 v2.0 Password-Based Key Derivation
+    """PBKDF2.py: PKCS#5 v2.0 Password-Based Key Derivation
 
     This implementation takes a passphrase and a salt (and optionally an
     iteration count, a digest module, and a MAC module) and provides a

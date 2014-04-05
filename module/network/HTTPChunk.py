@@ -269,7 +269,7 @@ class HTTPChunk(HTTPRequest):
 
     def stop(self):
         """The download will not proceed after next call of writeBody"""
-        self.range = [0,0]
+        self.range = [0, 0]
         self.size = 0
 
     def resetRange(self):

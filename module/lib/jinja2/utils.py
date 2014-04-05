@@ -77,7 +77,7 @@ except NameError:
 # This is used in a couple of places.  As far as Jinja is concerned
 # filenames are unicode *or* bytestrings in 2.x and unicode only in
 # 3.x because compile cannot handle bytes
-if sys.version_info < (3, 0):
+if sys.version_info < (3,0):
     def _encode_filename(filename):
         if isinstance(filename, unicode):
             return filename.encode('utf-8')

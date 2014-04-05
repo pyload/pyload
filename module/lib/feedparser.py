@@ -52,7 +52,7 @@ USER_AGENT = "UniversalFeedParser/%s +http://feedparser.org/" % __version__
 
 # HTTP "Accept" header to send to servers when downloading feeds.  If you don't
 # want to send an Accept header, set this to None.
-ACCEPT_HEADER = "application/atom+xml,application/rdf+xml,application/rss+xml,application/x-netcdf,application/xml;q=0.9,text/xml;q=0.2,*/*;q=0.1"
+ACCEPT_HEADER = "application/atom+xml, application/rdf+xml, application/rss+xml, application/x-netcdf, application/xml;q=0.9, text/xml;q=0.2,*/*;q=0.1"
 
 # List of preferred XML parsers, by SAX driver name.  These will be tried first,
 # but if they're not installed, Python will keep searching through its own list
@@ -167,7 +167,7 @@ try:
     _XML_AVAILABLE = 1
 except:
     _XML_AVAILABLE = 0
-    def _xmlescape(data,entities={}):
+    def _xmlescape(data, entities={}):
         data = data.replace('&', '&amp;')
         data = data.replace('>', '&gt;')
         data = data.replace('<', '&lt;')
@@ -203,7 +203,7 @@ except:
   import htmlentitydefs
   name2codepoint={}
   codepoint2name={}
-  for (name,codepoint) in htmlentitydefs.entitydefs.iteritems():
+  for (name, codepoint) in htmlentitydefs.entitydefs.iteritems():
     if codepoint.startswith('&#'): codepoint=unichr(int(codepoint[2:-1]))
     name2codepoint[name]=ord(codepoint)
     codepoint2name[ord(codepoint)]=name
@@ -235,8 +235,8 @@ if sgmllib.endbracket.search(' <').start(0):
             # Overriding the built-in sgmllib.endbracket regex allows the
             # parser to find angle brackets embedded in element attributes.
             self.endbracket = re.compile('''([^'"<>]|"[^"]*"(?=>|/|\s|\w+=)|'[^']*'(?=>|/|\s|\w+=))*(?=[<>])|.*?(?=[<>])''')
-        def search(self,string,index=0):
-            match = self.endbracket.match(string,index)
+        def search(self, string, index=0):
+            match = self.endbracket.match(string, index)
             if match is not None:
                 # Returning a new object in the calling thread's context
                 # resolves a thread-safety.
@@ -299,7 +299,7 @@ class FeedParserDict(UserDict):
         if key == 'category':
             return UserDict.__getitem__(self, 'tags')[0]['term']
         if key == 'enclosures':
-            norel = lambda link: FeedParserDict([(name,value) for (name,value) in link.items() if name!='rel'])
+            norel = lambda link: FeedParserDict([(name, value) for (name, value) in link.items() if name!='rel'])
             return [norel(link) for link in UserDict.__getitem__(self, 'links') if link['rel']=='enclosure']
         if key == 'license':
             for link in UserDict.__getitem__(self, 'links'):
@@ -378,22 +378,22 @@ def _ebcdic_to_ascii(s):
     global _ebcdic_to_ascii_map
     if not _ebcdic_to_ascii_map:
         emap = (
-            0,1,2,3,156,9,134,127,151,141,142,11,12,13,14,15,
-            16,17,18,19,157,133,8,135,24,25,146,143,28,29,30,31,
-            128,129,130,131,132,10,23,27,136,137,138,139,140,5,6,7,
-            144,145,22,147,148,149,150,4,152,153,154,155,20,21,158,26,
-            32,160,161,162,163,164,165,166,167,168,91,46,60,40,43,33,
-            38,169,170,171,172,173,174,175,176,177,93,36,42,41,59,94,
-            45,47,178,179,180,181,182,183,184,185,124,44,37,95,62,63,
-            186,187,188,189,190,191,192,193,194,96,58,35,64,39,61,34,
-            195,97,98,99,100,101,102,103,104,105,196,197,198,199,200,201,
-            202,106,107,108,109,110,111,112,113,114,203,204,205,206,207,208,
-            209,126,115,116,117,118,119,120,121,122,210,211,212,213,214,215,
-            216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,
-            123,65,66,67,68,69,70,71,72,73,232,233,234,235,236,237,
-            125,74,75,76,77,78,79,80,81,82,238,239,240,241,242,243,
-            92,159,83,84,85,86,87,88,89,90,244,245,246,247,248,249,
-            48,49,50,51,52,53,54,55,56,57,250,251,252,253,254,255
+            0, 1, 2, 3, 156, 9, 134, 127, 151, 141, 142, 11, 12, 13, 14, 15,
+            16, 17, 18, 19, 157, 133, 8, 135, 24, 25, 146, 143, 28, 29, 30, 31,
+            128, 129, 130, 131, 132, 10, 23, 27, 136, 137, 138, 139, 140, 5, 6, 7,
+            144, 145, 22, 147, 148, 149, 150, 4, 152, 153, 154, 155, 20, 21, 158, 26,
+            32, 160, 161, 162, 163, 164, 165, 166, 167, 168, 91, 46, 60, 40, 43, 33,
+            38, 169, 170, 171, 172, 173, 174, 175, 176, 177, 93, 36, 42, 41, 59, 94,
+            45, 47, 178, 179, 180, 181, 182, 183, 184, 185, 124, 44, 37, 95, 62, 63,
+            186, 187, 188, 189, 190, 191, 192, 193, 194, 96, 58, 35, 64, 39, 61, 34,
+            195, 97, 98, 99, 100, 101, 102, 103, 104, 105, 196, 197, 198, 199, 200, 201,
+            202, 106, 107, 108, 109, 110, 111, 112, 113, 114, 203, 204, 205, 206, 207, 208,
+            209, 126, 115, 116, 117, 118, 119, 120, 121, 122, 210, 211, 212, 213, 214, 215,
+            216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231,
+            123, 65, 66, 67, 68, 69, 70, 71, 72, 73, 232, 233, 234, 235, 236, 237,
+            125, 74, 75, 76, 77, 78, 79, 80, 81, 82, 238, 239, 240, 241, 242, 243,
+            92, 159, 83, 84, 85, 86, 87, 88, 89, 90, 244, 245, 246, 247, 248, 249,
+            48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 250, 251, 252, 253, 254, 255
             )
         _ebcdic_to_ascii_map = _maketrans( \
             _l2bytes(range(256)), _l2bytes(emap))
@@ -780,7 +780,7 @@ class _FeedParserMixin:
         return data
 
     def strattrs(self, attrs):
-        return ''.join([' %s="%s"' % (t[0],_xmlescape(t[1],{'"':'&quot;'})) for t in attrs])
+        return ''.join([' %s="%s"' % (t[0],_xmlescape(t[1], {'"':'&quot;'})) for t in attrs])
 
     def push(self, element, expectingText):
         self.elementstack.append([element, expectingText, []])
@@ -1271,7 +1271,7 @@ class _FeedParserMixin:
         else:
             author, email = context.get(key), None
             if not author: return
-            emailmatch = re.search(r'''(([a-zA-Z0-9\_\-\.\+]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?))(\?subject=\S+)?''', author)
+            emailmatch = re.search(r'''(([a-zA-Z0-9\_\-\.\+]+)@((\[[0-9]{1, 3}\.[0-9]{1, 3}\.[0-9]{1, 3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2, 4}|[0-9]{1, 3})(\]?))(\?subject=\S+)?''', author)
             if emailmatch:
                 email = emailmatch.group(0)
                 # probably a better way to do the following, but it passes all the tests
@@ -1756,7 +1756,7 @@ if _XML_AVAILABLE:
             if prefix:
                 localname = prefix.lower() + ':' + localname
             elif namespace and not qname: #Expat
-                for name,value in self.namespacesInUse.items():
+                for name, value in self.namespacesInUse.items():
                      if name and value == namespace:
                          localname = name + ':' + localname
                          break
@@ -1786,7 +1786,7 @@ if _XML_AVAILABLE:
             if prefix:
                 localname = prefix + ':' + localname
             elif namespace and not qname: #Expat
-                for name,value in self.namespacesInUse.items():
+                for name, value in self.namespacesInUse.items():
                      if name and value == namespace:
                          localname = name + ':' + localname
                          break
@@ -1827,7 +1827,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
         else:
             return '<' + tag + '></' + tag + '>'
 
-    def parse_starttag(self,i):
+    def parse_starttag(self, i):
         j=sgmllib.SGMLParser.parse_starttag(self, i)
         if self._type == 'application/xhtml+xml':
             if j>2 and self.rawdata[j-2:j]=='/>':
@@ -1902,7 +1902,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
         # called for each character reference, e.g. for '&#160;', ref will be '160'
         # Reconstruct the original character reference.
         if ref.startswith('x'):
-            value = unichr(int(ref[1:],16))
+            value = unichr(int(ref[1:], 16))
         else:
             value = unichr(int(ref))
 
@@ -2000,7 +2000,7 @@ class _LooseFeedParser(_FeedParserMixin, _BaseHTMLProcessor):
         return data
 
     def strattrs(self, attrs):
-        return ''.join([' %s="%s"' % (n,v.replace('"','&quot;')) for n,v in attrs])
+        return ''.join([' %s="%s"' % (n, v.replace('"','&quot;')) for n, v in attrs])
 
 class _MicroformatsParser:
     STRING = 1
@@ -2010,7 +2010,7 @@ class _MicroformatsParser:
     EMAIL = 5
 
     known_xfn_relationships = ['contact', 'acquaintance', 'friend', 'met', 'co-worker', 'coworker', 'colleague', 'co-resident', 'coresident', 'neighbor', 'child', 'parent', 'sibling', 'brother', 'sister', 'spouse', 'wife', 'husband', 'kin', 'relative', 'muse', 'crush', 'date', 'sweetheart', 'me']
-    known_binary_extensions =  ['zip','rar','exe','gz','tar','tgz','tbz2','bz2','z','7z','dmg','img','sit','sitx','hqx','deb','rpm','bz2','jar','rar','iso','bin','msi','mp2','mp3','ogg','ogm','mp4','m4v','m4a','avi','wma','wmv']
+    known_binary_extensions = ['zip','rar','exe','gz','tar','tgz','tbz2','bz2','z','7z','dmg','img','sit','sitx','hqx','deb','rpm','bz2','jar','rar','iso','bin','msi','mp2','mp3','ogg','ogm','mp4','m4v','m4a','avi','wma','wmv']
 
     def __init__(self, data, baseuri, encoding):
         self.document = BeautifulSoup.BeautifulSoup(data)
@@ -2545,7 +2545,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
       'transparent', 'underline', 'white', 'yellow']
 
     valid_css_values = re.compile('^(#[0-9a-f]+|rgb\(\d+%?,\d*%?,?\d*%?\)?|' +
-      '\d{0,2}\.?\d{0,2}(cm|em|ex|in|mm|pc|pt|px|%|,|\))?)$')
+      '\d{0, 2}\.?\d{0, 2}(cm|em|ex|in|mm|pc|pt|px|%|,|\))?)$')
 
     mathml_elements = ['annotation', 'annotation-xml', 'maction', 'math',
       'merror', 'mfenced', 'mfrac', 'mi', 'mmultiscripts', 'mn', 'mo', 'mover', 'mpadded',
@@ -2651,25 +2651,25 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
                     self.svg_elements = lower
                     self.svg_elem_map = dict([(a.lower(),a) for a in mix])
                 acceptable_attributes = self.svg_attributes
-                tag = self.svg_elem_map.get(tag,tag)
+                tag = self.svg_elem_map.get(tag, tag)
                 keymap = self.svg_attr_map
             elif not tag in self.acceptable_elements:
                 return
 
         # declare xlink namespace, if needed
         if self.mathmlOK or self.svgOK:
-            if filter(lambda (n,v): n.startswith('xlink:'),attrs):
+            if filter(lambda (n, v): n.startswith('xlink:'),attrs):
                 if not ('xmlns:xlink','http://www.w3.org/1999/xlink') in attrs:
                     attrs.append(('xmlns:xlink','http://www.w3.org/1999/xlink'))
 
         clean_attrs = []
         for key, value in self.normalize_attrs(attrs):
             if key in acceptable_attributes:
-                key=keymap.get(key,key)
-                clean_attrs.append((key,value))
+                key=keymap.get(key, key)
+                clean_attrs.append((key, value))
             elif key=='style':
                 clean_value = self.sanitize_style(value)
-                if clean_value: clean_attrs.append((key,clean_value))
+                if clean_value: clean_attrs.append((key, clean_value))
         _BaseHTMLProcessor.unknown_starttag(self, tag, clean_attrs)
 
     def unknown_endtag(self, tag):
@@ -2679,7 +2679,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
             if self.mathmlOK and tag in self.mathml_elements:
                 if tag == 'math' and self.mathmlOK: self.mathmlOK -= 1
             elif self.svgOK and tag in self.svg_elements:
-                tag = self.svg_elem_map.get(tag,tag)
+                tag = self.svg_elem_map.get(tag, tag)
                 if tag == 'svg' and self.svgOK: self.svgOK -= 1
             else:
                 return
@@ -2705,7 +2705,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         if re.sub("\s*[-\w]+\s*:\s*[^:;]*;?", '', style).strip(): return ''
 
         clean = []
-        for prop,value in re.findall("([-\w]+)\s*:\s*([^:;]*)",style):
+        for prop, value in re.findall("([-\w]+)\s*:\s*([^:;]*)",style):
           if not value: continue
           if prop.lower() in self.acceptable_css_properties:
               clean.append(prop + ': ' + value + ';')
@@ -2875,7 +2875,7 @@ def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, h
 
         # iri support
         try:
-            if isinstance(url_file_stream_or_string,unicode):
+            if isinstance(url_file_stream_or_string, unicode):
                 url_file_stream_or_string = url_file_stream_or_string.encode('idna').decode('utf-8')
             else:
                 url_file_stream_or_string = url_file_stream_or_string.decode('utf-8').encode('idna').decode('utf-8')
@@ -2932,7 +2932,7 @@ def _build_urllib2_request(url, agent, etag, modified, referrer, auth, request_h
     if ACCEPT_HEADER:
         request.add_header('Accept', ACCEPT_HEADER)
     # use this for whatever -- cookies, special headers, etc
-    # [('Cookie','Something'),('x-special-header','Another Value')]
+    # [('Cookie','Something'), ('x-special-header','Another Value')]
     for header_name, header_value in request_headers.items():
         request.add_header(header_name, header_value)
     request.add_header('A-IM', 'feed') # RFC 3229 support
@@ -3391,8 +3391,8 @@ def _getCharacterEncoding(http_headers, xml_data):
     Furthermore, discussion on the atom-syntax mailing list with the
     author of RFC 3023 leads me to the conclusion that any document
     served with a Content-Type of text/* and no charset parameter
-    must be treated as us-ascii.  (We now do this.)  And also that it
-    must always be flagged as non-well-formed.  (We now do this too.)
+    must be treated as us-ascii. (We now do this.)  And also that it
+    must always be flagged as non-well-formed. (We now do this too.)
 
     If Content-Type is unspecified (input was local file or non-HTTP source)
     or unrecognized (server just got it totally wrong), then go by the
@@ -3570,7 +3570,7 @@ def _stripDoctype(data):
     '''
     start = re.search(_s2bytes('<\w'), data)
     start = start and start.start() or -1
-    head,data = data[:start+1], data[start+1:]
+    head, data = data[:start+1], data[start+1:]
 
     entity_pattern = re.compile(_s2bytes(r'^\s*<!ENTITY([^>]*?)>'), re.MULTILINE)
     entity_results=entity_pattern.findall(head)
