@@ -296,7 +296,7 @@ class MainWindow(QMainWindow):
         self.collectorContext.buttons["push"] = QAction(QIcon(join(pypath, "icons", "push_small.png")), _("Push to queue"), self.collectorContext)
         self.collectorContext.buttons["edit"] = QAction(QIcon(join(pypath, "icons", "edit_small.png")), _("Edit Name"), self.collectorContext)
         self.collectorContext.buttons["restart"] = QAction(QIcon(join(pypath, "icons", "refresh_small.png")), _("Restart"), self.collectorContext)
-        self.collectorContext.buttons["refresh"] = QAction(QIcon(join(pypath, "icons", "refresh1_small.png")),_("Refresh Status"), self.collectorContext)
+        self.collectorContext.buttons["refresh"] = QAction(QIcon(join(pypath, "icons", "refresh1_small.png")), _("Refresh Status"), self.collectorContext)
         self.collectorContext.addAction(self.collectorContext.buttons["push"])
         self.collectorContext.addSeparator()
         self.collectorContext.buttons["add"] = self.collectorContext.addMenu(QIcon(join(pypath, "icons", "add_small.png")), _("Add"))

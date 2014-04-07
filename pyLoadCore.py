@@ -292,7 +292,7 @@ class Core(object):
 
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("pyLoad", self.path("locale"),
-                                          languages=[self.config['general']['language'],"en"],fallback=True)
+                                          languages=[self.config['general']['language'], "en"], fallback=True)
         translation.install(True)
 
         self.debug = self.doDebug or self.config['general']['debug_mode']
@@ -567,7 +567,7 @@ class Core(object):
         self.shutdown()
         chdir(owd)
         # close some open fds
-        for i in range(3,50):
+        for i in range(3, 50):
             try:
                 close(i)
             except :

@@ -77,7 +77,7 @@ except NameError:
 # This is used in a couple of places.  As far as Jinja is concerned
 # filenames are unicode *or* bytestrings in 2.x and unicode only in
 # 3.x because compile cannot handle bytes
-if sys.version_info < (3,0):
+if sys.version_info < (3, 0):
     def _encode_filename(filename):
         if isinstance(filename, unicode):
             return filename.encode('utf-8')
@@ -269,7 +269,7 @@ def urlize(text, trim_url_limit=None, nofollow=False):
     attribute.
     """
     trim_url = lambda x, limit=trim_url_limit: limit is not None \
-                         and (x[:limit] + (len(x) >=limit and '...'
+                         and (x[:limit] + (len(x) >= limit and '...'
                          or '')) or x
     words = _word_split_re.split(unicode(escape(text)))
     nofollow_attr = nofollow and ' rel="nofollow"' or ''

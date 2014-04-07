@@ -780,7 +780,7 @@ class _FeedParserMixin:
         return data
 
     def strattrs(self, attrs):
-        return ''.join([' %s="%s"' % (t[0],_xmlescape(t[1], {'"':'&quot;'})) for t in attrs])
+        return ''.join([' %s="%s"' % (t[0], _xmlescape(t[1], {'"':'&quot;'})) for t in attrs])
 
     def push(self, element, expectingText):
         self.elementstack.append([element, expectingText, []])
@@ -796,9 +796,9 @@ class _FeedParserMixin:
             # only if all the remaining content is nested underneath it.
             # This means that the divs would be retained in the following:
             #    <div>foo</div><div>bar</div>
-            while pieces and len(pieces)>1 and not pieces[-1].strip():
+            while pieces and len(pieces)> 1 and not pieces[-1].strip():
                 del pieces[-1]
-            while pieces and len(pieces)>1 and not pieces[0].strip():
+            while pieces and len(pieces)> 1 and not pieces[0].strip():
                 del pieces[0]
             if pieces and (pieces[0] == '<div>' or pieces[0].startswith('<div ')) and pieces[-1]=='</div>':
                 depth = 0
@@ -1830,7 +1830,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
     def parse_starttag(self, i):
         j=sgmllib.SGMLParser.parse_starttag(self, i)
         if self._type == 'application/xhtml+xml':
-            if j>2 and self.rawdata[j-2:j]=='/>':
+            if j > 2 and self.rawdata[j-2:j]=='/>':
                 self.unknown_endtag(self.lasttag)
         return j
 
@@ -2658,7 +2658,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
 
         # declare xlink namespace, if needed
         if self.mathmlOK or self.svgOK:
-            if filter(lambda (n, v): n.startswith('xlink:'),attrs):
+            if filter(lambda (n, v): n.startswith('xlink:'), attrs):
                 if not ('xmlns:xlink','http://www.w3.org/1999/xlink') in attrs:
                     attrs.append(('xmlns:xlink','http://www.w3.org/1999/xlink'))
 
@@ -3587,7 +3587,7 @@ def _stripDoctype(data):
     replacement=_s2bytes('')
     if len(doctype_results)==1 and entity_results:
        safe_pattern=re.compile(_s2bytes('\s+(\w+)\s+"(&#\w+;|[^&"]*)"'))
-       safe_entities=filter(lambda e: safe_pattern.match(e),entity_results)
+       safe_entities=filter(lambda e: safe_pattern.match(e), entity_results)
        if safe_entities:
            replacement=_s2bytes('<!DOCTYPE feed [\n  <!ENTITY') + _s2bytes('>\n  <!ENTITY ').join(safe_entities) + _s2bytes('>\n]>')
     data = doctype_pattern.sub(replacement, head) + data

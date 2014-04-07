@@ -190,10 +190,10 @@ class Setup():
         """ make a systemcheck and return the results"""
         print _("## System Check ##")
 
-        if sys.version_info[:2] > (2,7):
+        if sys.version_info[:2] > (2, 7):
             print _("Your python version is to new, Please use Python 2.6/2.7")
             python = False
-        elif sys.version_info[:2] < (2,5):
+        elif sys.version_info[:2] < (2, 5):
             print _("Your python version is to old, Please use at least Python 2.5")
             python = False
         else:

@@ -148,13 +148,13 @@ if cmd == 'getConfigValue':
   if len(args) != 3:
     print 'getConfigValue requires 3 args'
     sys.exit(1)
-  pp.pprint(client.getConfigValue(args[0],args[1],args[2],))
+  pp.pprint(client.getConfigValue(args[0], args[1], args[2],))
 
 elif cmd == 'setConfigValue':
   if len(args) != 4:
     print 'setConfigValue requires 4 args'
     sys.exit(1)
-  pp.pprint(client.setConfigValue(args[0],args[1],args[2],args[3],))
+  pp.pprint(client.setConfigValue(args[0], args[1], args[2], args[3],))
 
 elif cmd == 'getConfig':
   if len(args) != 0:
@@ -256,7 +256,7 @@ elif cmd == 'parseURLs':
   if len(args) != 2:
     print 'parseURLs requires 2 args'
     sys.exit(1)
-  pp.pprint(client.parseURLs(args[0],args[1],))
+  pp.pprint(client.parseURLs(args[0], args[1],))
 
 elif cmd == 'checkOnlineStatus':
   if len(args) != 1:
@@ -268,7 +268,7 @@ elif cmd == 'checkOnlineStatusContainer':
   if len(args) != 3:
     print 'checkOnlineStatusContainer requires 3 args'
     sys.exit(1)
-  pp.pprint(client.checkOnlineStatusContainer(eval(args[0]),args[1],args[2],))
+  pp.pprint(client.checkOnlineStatusContainer(eval(args[0]), args[1], args[2],))
 
 elif cmd == 'pollResults':
   if len(args) != 1:
@@ -340,25 +340,25 @@ elif cmd == 'generateAndAddPackages':
   if len(args) != 2:
     print 'generateAndAddPackages requires 2 args'
     sys.exit(1)
-  pp.pprint(client.generateAndAddPackages(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.generateAndAddPackages(eval(args[0]), eval(args[1]),))
 
 elif cmd == 'addPackage':
   if len(args) != 3:
     print 'addPackage requires 3 args'
     sys.exit(1)
-  pp.pprint(client.addPackage(args[0],eval(args[1]),eval(args[2]),))
+  pp.pprint(client.addPackage(args[0], eval(args[1]), eval(args[2]),))
 
 elif cmd == 'addFiles':
   if len(args) != 2:
     print 'addFiles requires 2 args'
     sys.exit(1)
-  pp.pprint(client.addFiles(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.addFiles(eval(args[0]), eval(args[1]),))
 
 elif cmd == 'uploadContainer':
   if len(args) != 2:
     print 'uploadContainer requires 2 args'
     sys.exit(1)
-  pp.pprint(client.uploadContainer(args[0],args[1],))
+  pp.pprint(client.uploadContainer(args[0], args[1],))
 
 elif cmd == 'deleteFiles':
   if len(args) != 1:
@@ -418,37 +418,37 @@ elif cmd == 'setPackageName':
   if len(args) != 2:
     print 'setPackageName requires 2 args'
     sys.exit(1)
-  pp.pprint(client.setPackageName(eval(args[0]),args[1],))
+  pp.pprint(client.setPackageName(eval(args[0]), args[1],))
 
 elif cmd == 'movePackage':
   if len(args) != 2:
     print 'movePackage requires 2 args'
     sys.exit(1)
-  pp.pprint(client.movePackage(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.movePackage(eval(args[0]), eval(args[1]),))
 
 elif cmd == 'moveFiles':
   if len(args) != 2:
     print 'moveFiles requires 2 args'
     sys.exit(1)
-  pp.pprint(client.moveFiles(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.moveFiles(eval(args[0]), eval(args[1]),))
 
 elif cmd == 'orderPackage':
   if len(args) != 2:
     print 'orderPackage requires 2 args'
     sys.exit(1)
-  pp.pprint(client.orderPackage(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.orderPackage(eval(args[0]), eval(args[1]),))
 
 elif cmd == 'orderFile':
   if len(args) != 2:
     print 'orderFile requires 2 args'
     sys.exit(1)
-  pp.pprint(client.orderFile(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.orderFile(eval(args[0]), eval(args[1]),))
 
 elif cmd == 'setPackageData':
   if len(args) != 2:
     print 'setPackageData requires 2 args'
     sys.exit(1)
-  pp.pprint(client.setPackageData(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.setPackageData(eval(args[0]), eval(args[1]),))
 
 elif cmd == 'deleteFinished':
   if len(args) != 0:
@@ -484,25 +484,25 @@ elif cmd == 'updateAccount':
   if len(args) != 4:
     print 'updateAccount requires 4 args'
     sys.exit(1)
-  pp.pprint(client.updateAccount(eval(args[0]),args[1],args[2],eval(args[3]),))
+  pp.pprint(client.updateAccount(eval(args[0]), args[1], args[2], eval(args[3]),))
 
 elif cmd == 'removeAccount':
   if len(args) != 2:
     print 'removeAccount requires 2 args'
     sys.exit(1)
-  pp.pprint(client.removeAccount(eval(args[0]),args[1],))
+  pp.pprint(client.removeAccount(eval(args[0]), args[1],))
 
 elif cmd == 'login':
   if len(args) != 2:
     print 'login requires 2 args'
     sys.exit(1)
-  pp.pprint(client.login(args[0],args[1],))
+  pp.pprint(client.login(args[0], args[1],))
 
 elif cmd == 'getUserData':
   if len(args) != 2:
     print 'getUserData requires 2 args'
     sys.exit(1)
-  pp.pprint(client.getUserData(args[0],args[1],))
+  pp.pprint(client.getUserData(args[0], args[1],))
 
 elif cmd == 'getAllUserData':
   if len(args) != 0:
@@ -520,7 +520,7 @@ elif cmd == 'hasService':
   if len(args) != 2:
     print 'hasService requires 2 args'
     sys.exit(1)
-  pp.pprint(client.hasService(eval(args[0]),args[1],))
+  pp.pprint(client.hasService(eval(args[0]), args[1],))
 
 elif cmd == 'call':
   if len(args) != 1:
@@ -562,7 +562,7 @@ elif cmd == 'setCaptchaResult':
   if len(args) != 2:
     print 'setCaptchaResult requires 2 args'
     sys.exit(1)
-  pp.pprint(client.setCaptchaResult(eval(args[0]),args[1],))
+  pp.pprint(client.setCaptchaResult(eval(args[0]), args[1],))
 
 else:
   print 'Unrecognized method %s' % cmd

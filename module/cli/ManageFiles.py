@@ -107,7 +107,7 @@ class ManageFiles(Handler):
             elif self.mode == "r":
                 println(line, _("What do you want to restart?"))
 
-            println(line + 1, "Enter single number, comma seperated numbers or ranges. eg. 1,2,3 or 1-3.")
+            println(line + 1, "Enter single number, comma seperated numbers or ranges. eg. 1, 2, 3 or 1-3.")
             line += 2
         else:
             println(line, _("Choose what yout want to do or enter package number."))

@@ -540,7 +540,7 @@ class FileHandler:
         urls = []
 
         for pyfile in data.itervalues():
-            if pyfile["status"] not in (0,12,13):
+            if pyfile["status"] not in (0, 12, 13):
                 urls.append((pyfile["url"], pyfile["plugin"]))
 
         self.core.threadManager.createInfoThread(urls, pid)
@@ -583,13 +583,13 @@ class FileMethods():
     @style.queue
     def queuecount(self, queue):
         """ number of files in queue not finished yet"""
-        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status NOT IN (0,4)", (queue,))
+        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status NOT IN (0, 4)", (queue,))
         return self.c.fetchone()[0]
 
     @style.queue
     def processcount(self, queue, fid):
         """ number of files which have to be proccessed """
-        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status IN (2,3,5,7,12) AND l.id != ?", (queue, str(fid)))
+        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status IN (2, 3, 5, 7, 12) AND l.id != ?", (queue, str(fid)))
         return self.c.fetchone()[0]
 
     @style.inner
@@ -764,16 +764,16 @@ class FileMethods():
 
     @style.async
     def updateLink(self, f):
-        self.c.execute('UPDATE links SET url=?,name=?,size=?,status=?,error=?,package=? WHERE id=?', (f.url, f.name, f.size, f.status, f.error, str(f.packageid), str(f.id)))
+        self.c.execute('UPDATE links SET url=?, name=?, size=?, status=?, error=?, package=? WHERE id=?', (f.url, f.name, f.size, f.status, f.error, str(f.packageid), str(f.id)))
 
     @style.queue
     def updatePackage(self, p):
-        self.c.execute('UPDATE packages SET name=?,folder=?,site=?,password=?,queue=? WHERE id=?', (p.name, p.folder, p.site, p.password, p.queue, str(p.id)))
+        self.c.execute('UPDATE packages SET name=?, folder=?, site=?, password=?, queue=? WHERE id=?', (p.name, p.folder, p.site, p.password, p.queue, str(p.id)))
 
     @style.queue    
     def updateLinkInfo(self, data):
         """ data is list of tupels (name, size, status, url) """
-        self.c.executemany('UPDATE links SET name=?, size=?, status=? WHERE url=? AND status IN (1,2,3,14)', data)
+        self.c.executemany('UPDATE links SET name=?, size=?, status=? WHERE url=? AND status IN (1, 2, 3, 14)', data)
         ids = []
         self.c.execute('SELECT id FROM links WHERE url IN (\'%s\')' % "','".join([x[3] for x in data]))
         for r in self.c:
@@ -847,7 +847,7 @@ class FileMethods():
 
         cmd += ")"
 
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN %s) OR l.plugin IN %s) AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % (cmd, pre)
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN %s) OR l.plugin IN %s) AND l.status IN (2, 3, 14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % (cmd, pre)
 
         self.c.execute(cmd) # very bad!
 
@@ -856,7 +856,7 @@ class FileMethods():
     @style.queue
     def getPluginJob(self, plugins):
         """returns pyfile ids with suited plugins"""
-        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN %s AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % plugins
+        cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN %s AND l.status IN (2, 3, 14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5" % plugins
 
         self.c.execute(cmd) # very bad!
 
@@ -866,17 +866,17 @@ class FileMethods():
     def getUnfinished(self, pid):
         """return list of max length 3 ids with pyfiles in package not finished or processed"""
 
-        self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0,4,13) LIMIT 3", (str(pid),))
+        self.c.execute("SELECT id FROM links WHERE package=? AND status NOT IN (0, 4, 13) LIMIT 3", (str(pid),))
         return [r[0] for r in self.c]
 
     @style.queue
     def deleteFinished(self):
-        self.c.execute("DELETE FROM links WHERE status IN (0,4)")
+        self.c.execute("DELETE FROM links WHERE status IN (0, 4)")
         self.c.execute("DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE packages.id=links.package)")
 
     @style.queue
     def restartFailed(self):
-        self.c.execute("UPDATE links SET status=3, error='' WHERE status IN (6,8,9)")
+        self.c.execute("UPDATE links SET status=3, error='' WHERE status IN (6, 8, 9)")
 
     @style.queue
     def findDuplicates(self, id, folder, filename):

@@ -88,7 +88,7 @@ except ImportError: # pragma: no cover
                 raise ImportError("JSON support requires Python 2.6 or simplejson.")
             json_lds = json_dumps
 
-py3k = sys.version_info >= (3,0,0)
+py3k = sys.version_info >= (3, 0, 0)
 NCTextIOWrapper = None
 
 if py3k: # pragma: no cover
@@ -98,7 +98,7 @@ if py3k: # pragma: no cover
     def touni(x, enc='utf8', err='strict'):
         """ Convert anything to unicode """
         return str(x, enc, err) if isinstance(x, bytes) else str(x)
-    if sys.version_info < (3,2,0):
+    if sys.version_info < (3, 2, 0):
         from io import TextIOWrapper
         class NCTextIOWrapper(TextIOWrapper):
             ''' Garbage collecting an io.TextIOWrapper(buffer) instance closes
