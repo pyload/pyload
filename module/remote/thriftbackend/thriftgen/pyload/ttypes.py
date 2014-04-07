@@ -190,22 +190,22 @@ class DownloadInfo(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'fid', None, None, ), # 1
-    (2, TType.STRING, 'name', None, None, ), # 2
-    (3, TType.I64, 'speed', None, None, ), # 3
-    (4, TType.I32, 'eta', None, None, ), # 4
-    (5, TType.STRING, 'format_eta', None, None, ), # 5
-    (6, TType.I64, 'bleft', None, None, ), # 6
-    (7, TType.I64, 'size', None, None, ), # 7
-    (8, TType.STRING, 'format_size', None, None, ), # 8
-    (9, TType.BYTE, 'percent', None, None, ), # 9
-    (10, TType.I32, 'status', None, None, ), # 10
-    (11, TType.STRING, 'statusmsg', None, None, ), # 11
-    (12, TType.STRING, 'format_wait', None, None, ), # 12
-    (13, TType.I64, 'wait_until', None, None, ), # 13
-    (14, TType.I32, 'packageID', None, None, ), # 14
-    (15, TType.STRING, 'packageName', None, None, ), # 15
-    (16, TType.STRING, 'plugin', None, None, ), # 16
+    (1, TType.I32, 'fid', None, None,), # 1
+    (2, TType.STRING, 'name', None, None,), # 2
+    (3, TType.I64, 'speed', None, None,), # 3
+    (4, TType.I32, 'eta', None, None,), # 4
+    (5, TType.STRING, 'format_eta', None, None,), # 5
+    (6, TType.I64, 'bleft', None, None,), # 6
+    (7, TType.I64, 'size', None, None,), # 7
+    (8, TType.STRING, 'format_size', None, None,), # 8
+    (9, TType.BYTE, 'percent', None, None,), # 9
+    (10, TType.I32, 'status', None, None,), # 10
+    (11, TType.STRING, 'statusmsg', None, None,), # 11
+    (12, TType.STRING, 'format_wait', None, None,), # 12
+    (13, TType.I64, 'wait_until', None, None,), # 13
+    (14, TType.I32, 'packageID', None, None,), # 14
+    (15, TType.STRING, 'packageName', None, None,), # 15
+    (16, TType.STRING, 'plugin', None, None,), # 16
   )
 
   def __init__(self, fid=None, name=None, speed=None, eta=None, format_eta=None, bleft=None, size=None, format_size=None, percent=None, status=None, statusmsg=None, format_wait=None, wait_until=None, packageID=None, packageName=None, plugin=None,):
@@ -251,13 +251,13 @@ class ServerStatus(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.BOOL, 'pause', None, None, ), # 1
-    (2, TType.I16, 'active', None, None, ), # 2
-    (3, TType.I16, 'queue', None, None, ), # 3
-    (4, TType.I16, 'total', None, None, ), # 4
-    (5, TType.I64, 'speed', None, None, ), # 5
-    (6, TType.BOOL, 'download', None, None, ), # 6
-    (7, TType.BOOL, 'reconnect', None, None, ), # 7
+    (1, TType.BOOL, 'pause', None, None,), # 1
+    (2, TType.I16, 'active', None, None,), # 2
+    (3, TType.I16, 'queue', None, None,), # 3
+    (4, TType.I16, 'total', None, None,), # 4
+    (5, TType.I64, 'speed', None, None,), # 5
+    (6, TType.BOOL, 'download', None, None,), # 6
+    (7, TType.BOOL, 'reconnect', None, None,), # 7
   )
 
   def __init__(self, pause=None, active=None, queue=None, total=None, speed=None, download=None, reconnect=None,):
@@ -288,10 +288,10 @@ class ConfigItem(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRING, 'description', None, None, ), # 2
-    (3, TType.STRING, 'value', None, None, ), # 3
-    (4, TType.STRING, 'type', None, None, ), # 4
+    (1, TType.STRING, 'name', None, None,), # 1
+    (2, TType.STRING, 'description', None, None,), # 2
+    (3, TType.STRING, 'value', None, None,), # 3
+    (4, TType.STRING, 'type', None, None,), # 4
   )
 
   def __init__(self, name=None, description=None, value=None, type=None,):
@@ -319,10 +319,10 @@ class ConfigSection(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRING, 'description', None, None, ), # 2
-    (3, TType.LIST, 'items', (TType.STRUCT, (ConfigItem, ConfigItem.thrift_spec)), None, ), # 3
-    (4, TType.STRING, 'outline', None, None, ), # 4
+    (1, TType.STRING, 'name', None, None,), # 1
+    (2, TType.STRING, 'description', None, None,), # 2
+    (3, TType.LIST, 'items', (TType.STRUCT, (ConfigItem, ConfigItem.thrift_spec)), None,), # 3
+    (4, TType.STRING, 'outline', None, None,), # 4
   )
 
   def __init__(self, name=None, description=None, items=None, outline=None,):
@@ -364,17 +364,17 @@ class FileData(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'fid', None, None, ), # 1
-    (2, TType.STRING, 'url', None, None, ), # 2
-    (3, TType.STRING, 'name', None, None, ), # 3
-    (4, TType.STRING, 'plugin', None, None, ), # 4
-    (5, TType.I64, 'size', None, None, ), # 5
-    (6, TType.STRING, 'format_size', None, None, ), # 6
-    (7, TType.I32, 'status', None, None, ), # 7
-    (8, TType.STRING, 'statusmsg', None, None, ), # 8
-    (9, TType.I32, 'packageID', None, None, ), # 9
-    (10, TType.STRING, 'error', None, None, ), # 10
-    (11, TType.I16, 'order', None, None, ), # 11
+    (1, TType.I32, 'fid', None, None,), # 1
+    (2, TType.STRING, 'url', None, None,), # 2
+    (3, TType.STRING, 'name', None, None,), # 3
+    (4, TType.STRING, 'plugin', None, None,), # 4
+    (5, TType.I64, 'size', None, None,), # 5
+    (6, TType.STRING, 'format_size', None, None,), # 6
+    (7, TType.I32, 'status', None, None,), # 7
+    (8, TType.STRING, 'statusmsg', None, None,), # 8
+    (9, TType.I32, 'packageID', None, None,), # 9
+    (10, TType.STRING, 'error', None, None,), # 10
+    (11, TType.I16, 'order', None, None,), # 11
   )
 
   def __init__(self, fid=None, url=None, name=None, plugin=None, size=None, format_size=None, status=None, statusmsg=None, packageID=None, error=None, order=None,):
@@ -427,19 +427,19 @@ class PackageData(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'pid', None, None, ), # 1
-    (2, TType.STRING, 'name', None, None, ), # 2
-    (3, TType.STRING, 'folder', None, None, ), # 3
-    (4, TType.STRING, 'site', None, None, ), # 4
-    (5, TType.STRING, 'password', None, None, ), # 5
-    (6, TType.I32, 'dest', None, None, ), # 6
-    (7, TType.I16, 'order', None, None, ), # 7
-    (8, TType.I16, 'linksdone', None, None, ), # 8
-    (9, TType.I64, 'sizedone', None, None, ), # 9
-    (10, TType.I64, 'sizetotal', None, None, ), # 10
-    (11, TType.I16, 'linkstotal', None, None, ), # 11
-    (12, TType.LIST, 'links', (TType.STRUCT, (FileData, FileData.thrift_spec)), None, ), # 12
-    (13, TType.LIST, 'fids', (TType.I32, None), None, ), # 13
+    (1, TType.I32, 'pid', None, None,), # 1
+    (2, TType.STRING, 'name', None, None,), # 2
+    (3, TType.STRING, 'folder', None, None,), # 3
+    (4, TType.STRING, 'site', None, None,), # 4
+    (5, TType.STRING, 'password', None, None,), # 5
+    (6, TType.I32, 'dest', None, None,), # 6
+    (7, TType.I16, 'order', None, None,), # 7
+    (8, TType.I16, 'linksdone', None, None,), # 8
+    (9, TType.I64, 'sizedone', None, None,), # 9
+    (10, TType.I64, 'sizetotal', None, None,), # 10
+    (11, TType.I16, 'linkstotal', None, None,), # 11
+    (12, TType.LIST, 'links', (TType.STRUCT, (FileData, FileData.thrift_spec)), None,), # 12
+    (13, TType.LIST, 'fids', (TType.I32, None), None,), # 13
   )
 
   def __init__(self, pid=None, name=None, folder=None, site=None, password=None, dest=None, order=None, linksdone=None, sizedone=None, sizetotal=None, linkstotal=None, links=None, fids=None,):
@@ -486,15 +486,15 @@ class InteractionTask(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'iid', None, None, ), # 1
-    (2, TType.I32, 'input', None, None, ), # 2
-    (3, TType.LIST, 'structure', (TType.STRING, None), None, ), # 3
-    (4, TType.LIST, 'preset', (TType.STRING, None), None, ), # 4
-    (5, TType.I32, 'output', None, None, ), # 5
-    (6, TType.LIST, 'data', (TType.STRING, None), None, ), # 6
-    (7, TType.STRING, 'title', None, None, ), # 7
-    (8, TType.STRING, 'description', None, None, ), # 8
-    (9, TType.STRING, 'plugin', None, None, ), # 9
+    (1, TType.I32, 'iid', None, None,), # 1
+    (2, TType.I32, 'input', None, None,), # 2
+    (3, TType.LIST, 'structure', (TType.STRING, None), None,), # 3
+    (4, TType.LIST, 'preset', (TType.STRING, None), None,), # 4
+    (5, TType.I32, 'output', None, None,), # 5
+    (6, TType.LIST, 'data', (TType.STRING, None), None,), # 6
+    (7, TType.STRING, 'title', None, None,), # 7
+    (8, TType.STRING, 'description', None, None,), # 8
+    (9, TType.STRING, 'plugin', None, None,), # 9
   )
 
   def __init__(self, iid=None, input=None, structure=None, preset=None, output=None, data=None, title=None, description=None, plugin=None,):
@@ -527,10 +527,10 @@ class CaptchaTask(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.I16, 'tid', None, None, ), # 1
-    (2, TType.STRING, 'data', None, None, ), # 2
-    (3, TType.STRING, 'type', None, None, ), # 3
-    (4, TType.STRING, 'resultType', None, None, ), # 4
+    (1, TType.I16, 'tid', None, None,), # 1
+    (2, TType.STRING, 'data', None, None,), # 2
+    (3, TType.STRING, 'type', None, None,), # 3
+    (4, TType.STRING, 'resultType', None, None,), # 4
   )
 
   def __init__(self, tid=None, data=None, type=None, resultType=None,):
@@ -558,10 +558,10 @@ class EventInfo(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'eventname', None, None, ), # 1
-    (2, TType.I32, 'id', None, None, ), # 2
-    (3, TType.I32, 'type', None, None, ), # 3
-    (4, TType.I32, 'destination', None, None, ), # 4
+    (1, TType.STRING, 'eventname', None, None,), # 1
+    (2, TType.I32, 'id', None, None,), # 2
+    (3, TType.I32, 'type', None, None,), # 3
+    (4, TType.I32, 'destination', None, None,), # 4
   )
 
   def __init__(self, eventname=None, id=None, type=None, destination=None,):
@@ -591,11 +591,11 @@ class UserData(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRING, 'email', None, None, ), # 2
-    (3, TType.I32, 'role', None, None, ), # 3
-    (4, TType.I32, 'permission', None, None, ), # 4
-    (5, TType.STRING, 'templateName', None, None, ), # 5
+    (1, TType.STRING, 'name', None, None,), # 1
+    (2, TType.STRING, 'email', None, None,), # 2
+    (3, TType.I32, 'role', None, None,), # 3
+    (4, TType.I32, 'permission', None, None,), # 4
+    (5, TType.STRING, 'templateName', None, None,), # 5
   )
 
   def __init__(self, name=None, email=None, role=None, permission=None, templateName=None,):
@@ -632,14 +632,14 @@ class AccountInfo(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.I64, 'validuntil', None, None, ), # 1
-    (2, TType.STRING, 'login', None, None, ), # 2
-    (3, TType.MAP, 'options', (TType.STRING, None, TType.LIST, (TType.STRING, None)), None, ), # 3
-    (4, TType.BOOL, 'valid', None, None, ), # 4
-    (5, TType.I64, 'trafficleft', None, None, ), # 5
-    (6, TType.I64, 'maxtraffic', None, None, ), # 6
-    (7, TType.BOOL, 'premium', None, None, ), # 7
-    (8, TType.STRING, 'type', None, None, ), # 8
+    (1, TType.I64, 'validuntil', None, None,), # 1
+    (2, TType.STRING, 'login', None, None,), # 2
+    (3, TType.MAP, 'options', (TType.STRING, None, TType.LIST, (TType.STRING, None)), None,), # 3
+    (4, TType.BOOL, 'valid', None, None,), # 4
+    (5, TType.I64, 'trafficleft', None, None,), # 5
+    (6, TType.I64, 'maxtraffic', None, None,), # 6
+    (7, TType.BOOL, 'premium', None, None,), # 7
+    (8, TType.STRING, 'type', None, None,), # 8
   )
 
   def __init__(self, validuntil=None, login=None, options=None, valid=None, trafficleft=None, maxtraffic=None, premium=None, type=None,):
@@ -671,10 +671,10 @@ class ServiceCall(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'plugin', None, None, ), # 1
-    (2, TType.STRING, 'func', None, None, ), # 2
-    (3, TType.LIST, 'arguments', (TType.STRING, None), None, ), # 3
-    (4, TType.BOOL, 'parseArguments', None, None, ), # 4
+    (1, TType.STRING, 'plugin', None, None,), # 1
+    (2, TType.STRING, 'func', None, None,), # 2
+    (3, TType.LIST, 'arguments', (TType.STRING, None), None,), # 3
+    (4, TType.BOOL, 'parseArguments', None, None,), # 4
   )
 
   def __init__(self, plugin=None, func=None, arguments=None, parseArguments=None,):
@@ -704,11 +704,11 @@ class OnlineStatus(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'name', None, None, ), # 1
-    (2, TType.STRING, 'plugin', None, None, ), # 2
-    (3, TType.STRING, 'packagename', None, None, ), # 3
-    (4, TType.I32, 'status', None, None, ), # 4
-    (5, TType.I64, 'size', None, None, ), # 5
+    (1, TType.STRING, 'name', None, None,), # 1
+    (2, TType.STRING, 'plugin', None, None,), # 2
+    (3, TType.STRING, 'packagename', None, None,), # 3
+    (4, TType.I32, 'status', None, None,), # 4
+    (5, TType.I64, 'size', None, None,), # 5
   )
 
   def __init__(self, name=None, plugin=None, packagename=None, status=None, size=None,):
@@ -733,8 +733,8 @@ class OnlineCheck(TBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'rid', None, None, ), # 1
-    (2, TType.MAP, 'data', (TType.STRING, None, TType.STRUCT, (OnlineStatus, OnlineStatus.thrift_spec)), None, ), # 2
+    (1, TType.I32, 'rid', None, None,), # 1
+    (2, TType.MAP, 'data', (TType.STRING, None, TType.STRUCT, (OnlineStatus, OnlineStatus.thrift_spec)), None,), # 2
   )
 
   def __init__(self, rid=None, data=None,):
@@ -754,7 +754,7 @@ class PackageDoesNotExists(TExceptionBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'pid', None, None, ), # 1
+    (1, TType.I32, 'pid', None, None,), # 1
   )
 
   def __init__(self, pid=None,):
@@ -776,7 +776,7 @@ class FileDoesNotExists(TExceptionBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'fid', None, None, ), # 1
+    (1, TType.I32, 'fid', None, None,), # 1
   )
 
   def __init__(self, fid=None,):
@@ -800,8 +800,8 @@ class ServiceDoesNotExists(TExceptionBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'plugin', None, None, ), # 1
-    (2, TType.STRING, 'func', None, None, ), # 2
+    (1, TType.STRING, 'plugin', None, None,), # 1
+    (2, TType.STRING, 'func', None, None,), # 2
   )
 
   def __init__(self, plugin=None, func=None,):
@@ -824,7 +824,7 @@ class ServiceException(TExceptionBase):
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'msg', None, None, ), # 1
+    (1, TType.STRING, 'msg', None, None,), # 1
   )
 
   def __init__(self, msg=None,):

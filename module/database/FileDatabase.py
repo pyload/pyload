@@ -577,13 +577,13 @@ class FileMethods():
     @style.queue
     def filecount(self, queue):
         """returns number of files in queue"""
-        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=?", (queue, ))
+        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=?", (queue,))
         return self.c.fetchone()[0]
 
     @style.queue
     def queuecount(self, queue):
         """ number of files in queue not finished yet"""
-        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status NOT IN (0,4)", (queue, ))
+        self.c.execute("SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status NOT IN (0,4)", (queue,))
         return self.c.fetchone()[0]
 
     @style.queue
@@ -717,7 +717,7 @@ class FileMethods():
     @style.queue
     def getLinkData(self, id):
         """get link information as dict"""
-        self.c.execute('SELECT id, url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?', (str(id), ))
+        self.c.execute('SELECT id, url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?', (str(id),))
         data = {}
         r = self.c.fetchone()
         if not r:
@@ -741,7 +741,7 @@ class FileMethods():
     @style.queue
     def getPackageData(self, id):
         """get data about links for a package"""
-        self.c.execute('SELECT id, url, name, size, status, error, plugin, package, linkorder FROM links WHERE package=? ORDER BY linkorder', (str(id), ))
+        self.c.execute('SELECT id, url, name, size, status, error, plugin, package, linkorder FROM links WHERE package=? ORDER BY linkorder', (str(id),))
 
         data = {}
         for r in self.c:
@@ -818,7 +818,7 @@ class FileMethods():
     @style.queue
     def getPackage(self, id):
         """return package instance from id"""
-        self.c.execute("SELECT name, folder, site, password, queue, packageorder FROM packages WHERE id=?", (str(id), ))
+        self.c.execute("SELECT name, folder, site, password, queue, packageorder FROM packages WHERE id=?", (str(id),))
         r = self.c.fetchone()
         if not r: return None
         return PyPackage(self.manager, id, * r)
@@ -827,7 +827,7 @@ class FileMethods():
     @style.queue
     def getFile(self, id):
         """return link instance from id"""
-        self.c.execute("SELECT url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?", (str(id), ))
+        self.c.execute("SELECT url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?", (str(id),))
         r = self.c.fetchone()
         if not r: return None
         return PyFile(self.manager, id, * r)
