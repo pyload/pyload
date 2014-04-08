@@ -4,8 +4,12 @@ from paver.easy import *
 from paver.setuputils import setup
 from paver.doctools import cog
 
+import os
 import sys
+import shutil
 import re
+from glob import glob
+from tempfile import mkdtemp
 from urllib import urlretrieve
 from subprocess import call, Popen, PIPE
 from zipfile import ZipFile
@@ -238,6 +242,83 @@ def generate_locale():
     path("includes.txt").remove()
 
     print "Locale generated"
+
+
+@task
+@cmdopts([
+    ('key=', 'k', 'api key')
+])
+def upload_translations(options):
+    """ Uploads the locale files to translation server """
+    tmp = path(mkdtemp())
+
+    shutil.copy('locale/crowdin.yaml', tmp)
+    os.mkdir(tmp / 'pyLoad')
+    for f in glob('locale/*.pot'):
+        if os.path.isfile(f):
+            shutil.copy(f, tmp / 'pyLoad')
+
+    config = tmp / 'crowdin.yaml'
+    content = open(config, 'rb').read()
+    content = content.format(key=options.key, tmp=tmp)
+    f = open(config, 'wb')
+    f.write(content)
+    f.close()
+
+    call(['crowdin-cli', '-c', config, 'upload', 'source'])
+
+    shutil.rmtree(tmp)
+
+    print "Translations uploaded"
+
+
+@task
+@cmdopts([
+    ('key=', 'k', 'api key')
+])
+def download_translations(options):
+    """ Downloads the translated files from translation server """
+    tmp = path(mkdtemp())
+
+    shutil.copy('locale/crowdin.yaml', tmp)
+    os.mkdir(tmp / 'pyLoad')
+    for f in glob('locale/*.pot'):
+        if os.path.isfile(f):
+            shutil.copy(f, tmp / 'pyLoad')
+
+    config = tmp / 'crowdin.yaml'
+    content = open(config, 'rb').read()
+    content = content.format(key=options.key, tmp=tmp)
+    f = open(config, 'wb')
+    f.write(content)
+    f.close()
+
+    call(['crowdin-cli', '-c', config, 'download'])
+
+    for language in (tmp / 'pyLoad').listdir():
+        if not language.isdir():
+            continue
+
+        target = path('locale') / language.basename()
+        print "Copy language %s" % target
+        if target.exists():
+            shutil.rmtree(target)
+
+        shutil.copytree(language, target)
+
+    shutil.rmtree(tmp)
+
+
+@task
+def compile_translations():
+    """ Compile PO files to MO """
+    for language in path('locale').listdir():
+        if not language.isdir():
+            continue
+
+        for f in glob(language / 'LC_MESSAGES' / '*.po'):
+            print "Compiling %s" % f
+            call(['msgfmt', '-o', f.replace('.po', '.mo'), f])
 
 
 @task
