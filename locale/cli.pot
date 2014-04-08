@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.9\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-12-07 19:21+0100\n"
+"POT-Creation-Date: 2014-04-08 15:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -224,6 +224,36 @@ msgstr ""
 msgid "Interactive mode ignored since you passed some commands."
 msgstr ""
 
+#: module/cli/AddPackage.py:48
+msgid "Add Package:"
+msgstr ""
+
+#: module/cli/AddPackage.py:53
+msgid "Enter a name for the new package"
+msgstr ""
+
+#: module/cli/AddPackage.py:57
+#, python-format
+msgid "Package: %s"
+msgstr ""
+
+#: module/cli/AddPackage.py:58
+msgid "Parse the links you want to add."
+msgstr ""
+
+#: module/cli/AddPackage.py:59
+#, python-format
+msgid "Type %s when done."
+msgstr ""
+
+#: module/cli/AddPackage.py:60
+msgid "Links added: "
+msgstr ""
+
+#: module/cli/AddPackage.py:64 module/cli/ManageFiles.py:149
+msgid " back to main menu"
+msgstr ""
+
 #: module/cli/ManageFiles.py:97
 msgid "Manage Packages:"
 msgstr ""
@@ -266,34 +296,4 @@ msgstr ""
 
 #: module/cli/ManageFiles.py:148
 msgid " - next"
-msgstr ""
-
-#: module/cli/ManageFiles.py:149 module/cli/AddPackage.py:64
-msgid " back to main menu"
-msgstr ""
-
-#: module/cli/AddPackage.py:48
-msgid "Add Package:"
-msgstr ""
-
-#: module/cli/AddPackage.py:53
-msgid "Enter a name for the new package"
-msgstr ""
-
-#: module/cli/AddPackage.py:57
-#, python-format
-msgid "Package: %s"
-msgstr ""
-
-#: module/cli/AddPackage.py:58
-msgid "Parse the links you want to add."
-msgstr ""
-
-#: module/cli/AddPackage.py:59
-#, python-format
-msgid "Type %s when done."
-msgstr ""
-
-#: module/cli/AddPackage.py:60
-msgid "Links added: "
 msgstr ""

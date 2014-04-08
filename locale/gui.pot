@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.9\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2011-12-07 19:21+0100\n"
+"POT-Creation-Date: 2014-04-08 15:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,215 +58,6 @@ msgstr ""
 
 #: pyLoadGui.py:725 module/gui/MainWindow.py:133
 msgid "Exit"
-msgstr ""
-
-#: module/gui/Connector.py:76
-msgid "bad login credentials"
-msgstr ""
-
-#: module/gui/Connector.py:78
-msgid "no ssl support"
-msgstr ""
-
-#: module/gui/Connector.py:80
-msgid "can't connect to host"
-msgstr ""
-
-#: module/gui/Connector.py:94
-#, python-format
-msgid "server is version %(new)s client accepts version %(current)s"
-msgstr ""
-
-#: module/gui/Collector.py:47
-msgid "finished"
-msgstr ""
-
-#: module/gui/Collector.py:48
-msgid "offline"
-msgstr ""
-
-#: module/gui/Collector.py:49
-msgid "online"
-msgstr ""
-
-#: module/gui/Collector.py:50
-msgid "queued"
-msgstr ""
-
-#: module/gui/Collector.py:51
-msgid "skipped"
-msgstr ""
-
-#: module/gui/Collector.py:52
-msgid "waiting"
-msgstr ""
-
-#: module/gui/Collector.py:53
-msgid "temp. offline"
-msgstr ""
-
-#: module/gui/Collector.py:54
-msgid "starting"
-msgstr ""
-
-#: module/gui/Collector.py:55
-msgid "failed"
-msgstr ""
-
-#: module/gui/Collector.py:56
-msgid "aborted"
-msgstr ""
-
-#: module/gui/Collector.py:57
-msgid "decrypting"
-msgstr ""
-
-#: module/gui/Collector.py:58
-msgid "custom"
-msgstr ""
-
-#: module/gui/Collector.py:59
-msgid "downloading"
-msgstr ""
-
-#: module/gui/Collector.py:60
-msgid "processing"
-msgstr ""
-
-#: module/gui/Collector.py:284 module/gui/PackageDock.py:66
-#: module/gui/Queue.py:152
-msgid "Name"
-msgstr ""
-
-#: module/gui/Collector.py:286 module/gui/Queue.py:156
-msgid "Plugin"
-msgstr ""
-
-#: module/gui/Collector.py:288 module/gui/Queue.py:154
-msgid "Status"
-msgstr ""
-
-#: module/gui/Collector.py:290 module/gui/Queue.py:158
-msgid "Size"
-msgstr ""
-
-#: module/gui/Accounts.py:75
-msgid "not valid"
-msgstr ""
-
-#: module/gui/Accounts.py:77 module/gui/Accounts.py:207
-msgid "n/a"
-msgstr ""
-
-#: module/gui/Accounts.py:80
-msgid "%a, %d %b %Y %H:%M"
-msgstr ""
-
-#: module/gui/Accounts.py:83 module/gui/Accounts.py:205
-msgid "unlimited"
-msgstr ""
-
-#: module/gui/Accounts.py:138 module/gui/AccountEdit.py:38
-msgid "Type"
-msgstr ""
-
-#: module/gui/Accounts.py:140 module/gui/AccountEdit.py:39
-msgid "Login"
-msgstr ""
-
-#: module/gui/Accounts.py:142
-msgid "Valid until"
-msgstr ""
-
-#: module/gui/Accounts.py:144
-msgid "Traffic left"
-msgstr ""
-
-#: module/gui/SettingsWidget.py:74
-msgid "General"
-msgstr ""
-
-#: module/gui/SettingsWidget.py:75
-msgid "Plugins"
-msgstr ""
-
-#: module/gui/SettingsWidget.py:89
-msgid "Reload"
-msgstr ""
-
-#: module/gui/SettingsWidget.py:90 module/gui/ConnectionManager.py:206
-#: module/gui/AccountEdit.py:53
-msgid "Save"
-msgstr ""
-
-#: module/gui/SettingsWidget.py:192
-msgid "Yes"
-msgstr ""
-
-#: module/gui/SettingsWidget.py:193
-msgid "No"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:42 module/gui/ConnectionManager.py:185
-msgid "pyLoad ConnectionManager"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:47
-msgid "New"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:48 module/gui/MainWindow.py:324
-msgid "Edit"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:49 module/gui/MainWindow.py:275
-#: module/gui/MainWindow.py:295 module/gui/MainWindow.py:323
-msgid "Remove"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:50
-msgid "Connect"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:56
-msgid "Connect:"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:73
-msgid "Use internal Core:"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:117
-#, python-format
-msgid "%s (Default)"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:190
-msgid "Name:"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:191
-msgid "Host:"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:192
-msgid "Local:"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:193
-msgid "User:"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:194
-msgid "Password:"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:195
-msgid "Port:"
-msgstr ""
-
-#: module/gui/ConnectionManager.py:207 module/gui/CaptchaDock.py:65
-msgid "Cancel"
 msgstr ""
 
 #: module/gui/MainWindow.py:44
@@ -375,6 +166,11 @@ msgstr ""
 msgid "New Account"
 msgstr ""
 
+#: module/gui/MainWindow.py:275 module/gui/MainWindow.py:295
+#: module/gui/MainWindow.py:323 module/gui/ConnectionManager.py:49
+msgid "Remove"
+msgstr ""
+
 #: module/gui/MainWindow.py:276 module/gui/MainWindow.py:298
 msgid "Restart"
 msgstr ""
@@ -397,6 +193,10 @@ msgstr ""
 
 #: module/gui/MainWindow.py:299
 msgid "Refresh Status"
+msgstr ""
+
+#: module/gui/MainWindow.py:324 module/gui/ConnectionManager.py:48
+msgid "Edit"
 msgstr ""
 
 #: module/gui/MainWindow.py:402
@@ -428,6 +228,121 @@ msgstr ""
 msgid "Open container"
 msgstr ""
 
+#: module/gui/Collector.py:47
+msgid "finished"
+msgstr ""
+
+#: module/gui/Collector.py:48
+msgid "offline"
+msgstr ""
+
+#: module/gui/Collector.py:49
+msgid "online"
+msgstr ""
+
+#: module/gui/Collector.py:50
+msgid "queued"
+msgstr ""
+
+#: module/gui/Collector.py:51
+msgid "skipped"
+msgstr ""
+
+#: module/gui/Collector.py:52
+msgid "waiting"
+msgstr ""
+
+#: module/gui/Collector.py:53
+msgid "temp. offline"
+msgstr ""
+
+#: module/gui/Collector.py:54
+msgid "starting"
+msgstr ""
+
+#: module/gui/Collector.py:55
+msgid "failed"
+msgstr ""
+
+#: module/gui/Collector.py:56
+msgid "aborted"
+msgstr ""
+
+#: module/gui/Collector.py:57
+msgid "decrypting"
+msgstr ""
+
+#: module/gui/Collector.py:58
+msgid "custom"
+msgstr ""
+
+#: module/gui/Collector.py:59
+msgid "downloading"
+msgstr ""
+
+#: module/gui/Collector.py:60
+msgid "processing"
+msgstr ""
+
+#: module/gui/Collector.py:284 module/gui/PackageDock.py:66
+#: module/gui/Queue.py:152
+msgid "Name"
+msgstr ""
+
+#: module/gui/Collector.py:286 module/gui/Queue.py:156
+msgid "Plugin"
+msgstr ""
+
+#: module/gui/Collector.py:288 module/gui/Queue.py:154
+msgid "Status"
+msgstr ""
+
+#: module/gui/Collector.py:290 module/gui/Queue.py:158
+msgid "Size"
+msgstr ""
+
+#: module/gui/connector.py:76
+msgid "bad login credentials"
+msgstr ""
+
+#: module/gui/connector.py:78
+msgid "no ssl support"
+msgstr ""
+
+#: module/gui/connector.py:80
+msgid "can't connect to host"
+msgstr ""
+
+#: module/gui/connector.py:94
+#, python-format
+msgid "server is version %(new)s client accepts version %(current)s"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:74
+msgid "General"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:75
+msgid "Plugins"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:89
+msgid "Reload"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:90 module/gui/AccountEdit.py:53
+#: module/gui/ConnectionManager.py:206
+msgid "Save"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:192
+msgid "Yes"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:193
+msgid "No"
+msgstr ""
+
 #: module/gui/PackageDock.py:25
 msgid "New Package"
 msgstr ""
@@ -456,29 +371,40 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: module/gui/AccountEdit.py:32
-msgid "Edit account"
+#: module/gui/CaptchaDock.py:65 module/gui/ConnectionManager.py:207
+msgid "Cancel"
 msgstr ""
 
-#: module/gui/AccountEdit.py:40
-msgid "New password"
+#: module/gui/Accounts.py:75
+msgid "not valid"
 msgstr ""
 
-#: module/gui/AccountEdit.py:83
-msgid "Create account"
+#: module/gui/Accounts.py:77 module/gui/Accounts.py:207
+msgid "n/a"
 msgstr ""
 
-#: module/gui/Queue.py:160
-msgid "ETA"
+#: module/gui/Accounts.py:80
+msgid "%a, %d %b %Y %H:%M"
 msgstr ""
 
-#: module/gui/Queue.py:162
-msgid "Progress"
+#: module/gui/Accounts.py:83 module/gui/Accounts.py:205
+msgid "unlimited"
 msgstr ""
 
-#: module/gui/Queue.py:384
-#, python-format
-msgid "waiting %d seconds"
+#: module/gui/Accounts.py:138 module/gui/AccountEdit.py:38
+msgid "Type"
+msgstr ""
+
+#: module/gui/Accounts.py:140 module/gui/AccountEdit.py:39
+msgid "Login"
+msgstr ""
+
+#: module/gui/Accounts.py:142
+msgid "Valid until"
+msgstr ""
+
+#: module/gui/Accounts.py:144
+msgid "Traffic left"
 msgstr ""
 
 #: module/gui/Overview.py:71 module/gui/Overview.py:152
@@ -508,4 +434,78 @@ msgstr ""
 
 #: module/gui/Overview.py:158 module/gui/Overview.py:160
 msgid "Size:"
+msgstr ""
+
+#: module/gui/AccountEdit.py:32
+msgid "Edit account"
+msgstr ""
+
+#: module/gui/AccountEdit.py:40
+msgid "New password"
+msgstr ""
+
+#: module/gui/AccountEdit.py:83
+msgid "Create account"
+msgstr ""
+
+#: module/gui/Queue.py:160
+msgid "ETA"
+msgstr ""
+
+#: module/gui/Queue.py:162
+msgid "Progress"
+msgstr ""
+
+#: module/gui/Queue.py:384
+#, python-format
+msgid "waiting %d seconds"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:42 module/gui/ConnectionManager.py:185
+msgid "pyLoad ConnectionManager"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:47
+msgid "New"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:50
+msgid "Connect"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:56
+msgid "Connect:"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:73
+msgid "Use internal Core:"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:117
+#, python-format
+msgid "%s (Default)"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:190
+msgid "Name:"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:191
+msgid "Host:"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:192
+msgid "Local:"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:193
+msgid "User:"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:194
+msgid "Password:"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:195
+msgid "Port:"
 msgstr ""
