@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -38,7 +38,7 @@ msgstr "Nem létező fájl, vagy nem támogatott protokoll"
 #: pyload/plugins/Crypter.py:228
 #, python-format
 msgid "Could not remove file '%s'"
-msgstr ""
+msgstr "A '%s' fájl nem törölhető"
 
 #: pyload/plugins/hoster/RapidshareCom.py:100
 msgid "Rapidshare: Traffic Share (direct download)"
@@ -140,7 +140,7 @@ msgstr "A letöltött fájl üres"
 #: pyload/plugins/hoster/FilesMailRu.py:99
 #, python-format
 msgid "There was HTML Code in the Downloaded File (%s)...redirect error? The Download will be restarted."
-msgstr ""
+msgstr "HTML kód van a letöltött fájlban (%s). Lehet, hogy átirányítási hiba, a letöltés újra lesz indítva."
 
 #: pyload/plugins/hoster/XHamsterCom.py:74
 #: pyload/plugins/hoster/XHamsterCom.py:83
@@ -191,7 +191,7 @@ msgstr "Bejelentkezés mint %s"
 #: pyload/plugins/Addon.py:163
 #, python-format
 msgid "Error executing addon: %s"
-msgstr ""
+msgstr "Hiba a bővítmény futtatása közben: %s"
 
 #: pyload/plugins/accounts/BitshareCom.py:37
 msgid "Activate direct Download in your Bitshare Account"
@@ -203,7 +203,7 @@ msgstr "A letöltési korlát elérve"
 
 #: pyload/plugins/addons/Premium4Me.py:29
 msgid "Please add your premium.to account first and restart pyLoad"
-msgstr ""
+msgstr "Először adj meg rehost.to hozzáférést majd indítsd újra a pyLoad-ot"
 
 #: pyload/plugins/addons/ExternalScripts.py:54
 #, python-format
@@ -336,11 +336,11 @@ msgstr "Nincs kicsomagoló bővítmény aktiválva"
 
 #: pyload/plugins/addons/ExtractArchive.py:116
 msgid "Extract package"
-msgstr ""
+msgstr "Csomag kitömörítése"
 
 #: pyload/plugins/addons/ExtractArchive.py:116
 msgid "Scans package for archives and extract them"
-msgstr ""
+msgstr "Archívum csomagvizsgálat, és kicsomagolás"
 
 #: pyload/plugins/addons/ExtractArchive.py:123
 #, python-format
@@ -423,7 +423,7 @@ msgstr "Válaszolj ezzel: 'c %s szöveg a captcha-n'"
 
 #: pyload/plugins/addons/PremiumizeMe.py:48
 msgid "Please add a valid premiumize.me account first and restart pyLoad."
-msgstr ""
+msgstr "Először adj meg premiumize.me hozzáférést majd indítsd újra a pyLoad-ot."
 
 #: pyload/plugins/addons/CaptchaBrotherhood.py:69
 #, python-format

@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -55,11 +55,11 @@ msgstr[1] "%d bestanden"
 
 #: pyload/web/app/templates/default/dashboard/package.html:33
 msgid "Addons"
-msgstr ""
+msgstr "Extra's"
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
 msgid "Loading..."
-msgstr ""
+msgstr "Bezig met laden..."
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
 msgid "Local"
@@ -104,7 +104,7 @@ msgstr "Bevestigen"
 
 #: pyload/web/app/templates/default/setup/finished.html:20
 msgid "Please add a user first."
-msgstr ""
+msgstr "Voeg eerst een gebruiker toe a.u.b."
 
 #: pyload/web/app/templates/default/setup/welcome.html:0
 msgid "Welcome!"
@@ -172,7 +172,7 @@ msgstr "Probeer het programma te herstarten of open een bug-rapport."
 
 #: pyload/web/app/templates/default/header/layout.html:13
 msgid "Running..."
-msgstr "Draait..."
+msgstr "Bezig..."
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:3
 msgid "Choose a plugin"
@@ -219,7 +219,7 @@ msgstr "Annuleren"
 
 #: pyload/web/app/templates/default/dialogs/interactionTask.html:34
 msgid "Submit"
-msgstr "Verzenden"
+msgstr "Verstuur"
 
 #: pyload/web/app/templates/default/accounts/account.html:5
 msgid "premium"
@@ -293,5 +293,5 @@ msgstr "Pakketten"
 msgid "%d link"
 msgid_plural "%d links"
 msgstr[0] "%d link"
-msgstr[1] ""
+msgstr[1] "%d links"
 

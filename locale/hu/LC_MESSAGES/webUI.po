@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -55,11 +55,11 @@ msgstr[1] "%d fájl"
 
 #: pyload/web/app/templates/default/dashboard/package.html:33
 msgid "Addons"
-msgstr ""
+msgstr "Kiegészítők"
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
 msgid "Loading..."
-msgstr ""
+msgstr "Betöltés..."
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
 msgid "Local"
@@ -92,35 +92,35 @@ msgstr "Sikertelen"
 
 #: pyload/web/app/templates/default/setup/finished.html:3
 msgid "Nearly Done"
-msgstr ""
+msgstr "Majdnem kész"
 
 #: pyload/web/app/templates/default/setup/finished.html:7
 msgid "Please check your settings."
-msgstr ""
+msgstr "Kérjük, ellenőrizd a beállításokat."
 
 #: pyload/web/app/templates/default/setup/finished.html:15
 msgid "Confirm"
-msgstr ""
+msgstr "Megerősítés"
 
 #: pyload/web/app/templates/default/setup/finished.html:20
 msgid "Please add a user first."
-msgstr ""
+msgstr "Előbb adj hozzá egy felhasználót."
 
 #: pyload/web/app/templates/default/setup/welcome.html:0
 msgid "Welcome!"
-msgstr ""
+msgstr "Üdvözöllek!"
 
 #: pyload/web/app/templates/default/setup/welcome.html:2
 msgid "pyLoad is running and ready for configuration."
-msgstr ""
+msgstr "A pyLoad fut és a készen áll a konfigurálásra."
 
 #: pyload/web/app/templates/default/setup/welcome.html:5
 msgid "Select your language:"
-msgstr ""
+msgstr "Nyelv:"
 
 #: pyload/web/app/templates/default/setup/welcome.html:12
 msgid "Start configuration"
-msgstr ""
+msgstr "Konfigurálás indítása"
 
 #: pyload/web/app/templates/default/setup/layout.html:2
 msgid "Setup"
@@ -128,47 +128,47 @@ msgstr "Beállítás"
 
 #: pyload/web/app/templates/default/setup/system.html:0
 msgid "System"
-msgstr ""
+msgstr "Rendszer"
 
 #: pyload/web/app/templates/default/setup/system.html:9
 msgid "Dependencies"
-msgstr ""
+msgstr "Függőségek"
 
 #: pyload/web/app/templates/default/setup/system.html:31
 msgid "Optional"
-msgstr ""
+msgstr "Választható"
 
 #: pyload/web/app/templates/default/setup/system.html:38
 msgid "available"
-msgstr ""
+msgstr "elérhető"
 
 #: pyload/web/app/templates/default/setup/system.html:54
 msgid "Next"
-msgstr ""
+msgstr "Következő"
 
 #: pyload/web/app/templates/default/setup/error.html:1
 msgid "Setup timed out"
-msgstr ""
+msgstr "Időtúllépés beállítása"
 
 #: pyload/web/app/templates/default/setup/error.html:2
 msgid "Setup was closed due to inactivity. Please restart it to continue configuration."
-msgstr ""
+msgstr "A telepítő inaktivitás miatt zárva volt. Kérjük, indítsd újra, hogy folytasd a konfigurálást."
 
 #: pyload/web/app/templates/default/setup/error.html:5
 msgid "Setup finished"
-msgstr ""
+msgstr "A beállítás kész"
 
 #: pyload/web/app/templates/default/setup/error.html:6
 msgid "Setup was successful. You can restart pyLoad now."
-msgstr ""
+msgstr "A telepítés sikeres volt. A PyLoad most már újraindítható."
 
 #: pyload/web/app/templates/default/setup/error.html:9
 msgid "Setup failed"
-msgstr ""
+msgstr "A beállítás nem sikerült"
 
 #: pyload/web/app/templates/default/setup/error.html:11
 msgid "Try to restart it or open a bug report."
-msgstr ""
+msgstr "Próbáld meg újraindítani, vagy nyiss egy hibajegyet."
 
 #: pyload/web/app/templates/default/header/layout.html:13
 msgid "Running..."
@@ -223,7 +223,7 @@ msgstr "Küldés"
 
 #: pyload/web/app/templates/default/accounts/account.html:5
 msgid "premium"
-msgstr ""
+msgstr "prémium"
 
 #: pyload/web/app/templates/default/accounts/account.html:7
 msgid "valid"
@@ -235,19 +235,19 @@ msgstr "érvénytelen"
 
 #: pyload/web/app/templates/default/accounts/account.html:23
 msgid "Traffic left:"
-msgstr ""
+msgstr "A hátralévő forgalom:"
 
 #: pyload/web/app/templates/default/accounts/account.html:27
 msgid "Valid until:"
-msgstr ""
+msgstr "Lejár:"
 
 #: pyload/web/app/templates/default/accounts/editAccount.html:2
 msgid "Edit account"
-msgstr ""
+msgstr "Fiók szerkesztése"
 
 #: pyload/web/app/templates/default/accounts/editAccount.html:27
 msgid "Configuration"
-msgstr ""
+msgstr "Beállítás"
 
 #: pyload/web/app/templates/default/accounts/layout.html:2
 msgid "Accounts"
@@ -259,39 +259,39 @@ msgstr "Fiók hozzáadása"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:3
 msgid "Add links"
-msgstr ""
+msgstr "Hivatkozások hozzáadása"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:4
 msgid "paste & add links to pyLoad"
-msgstr ""
+msgstr "hivatkozások beszúrása és hozzáadása a pyLoad-hoz"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:13
 msgid " Paste your links here..."
-msgstr ""
+msgstr " Szúrd be a linket ide..."
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:17
 msgid "Container"
-msgstr ""
+msgstr "Konténer"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:18
 msgid "Upload"
-msgstr ""
+msgstr "Feltöltés"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:24
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:25
 msgid "Link to Website"
-msgstr ""
+msgstr "Link a weboldalhoz"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:31
 msgid "Packages"
-msgstr ""
+msgstr "Csomagok"
 
 #: pyload/web/app/templates/default/linkgrabber/package.html:19
 msgid "%d link"
 msgid_plural "%d links"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d link"
+msgstr[1] "%d link"
 

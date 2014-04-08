@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -15,55 +15,55 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/plugins/network/CurlDownload.py:245
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
-msgstr ""
+msgstr "分區下載失敗，採用單一連接下載｜%s"
 
 #: pyload/plugins/Base.py:327
 msgid "Pil and tesseract not installed and no Client connected for captcha decrypting"
-msgstr ""
+msgstr "尚未安裝Pil及tesseract，尚未連接至需要解析的客戶端"
 
 #: pyload/plugins/Base.py:331
 msgid "No captcha result obtained in appropriate time."
-msgstr ""
+msgstr "輸入驗證碼逾時"
 
 #: pyload/plugins/Hoster.py:267 pyload/plugins/Hoster.py:304
 #: pyload/plugins/hoster/ARD.py:79
 #, python-format
 msgid "Setting User and Group failed: %s"
-msgstr ""
+msgstr "設置使用者和組失敗： %s"
 
 #: pyload/plugins/Crypter.py:170
 msgid "Not existing file or unsupported protocol"
-msgstr ""
+msgstr "檔案不存在或是不支援"
 
 #: pyload/plugins/Crypter.py:228
 #, python-format
 msgid "Could not remove file '%s'"
-msgstr ""
+msgstr "無法移除檔案 '%s'"
 
 #: pyload/plugins/hoster/RapidshareCom.py:100
 msgid "Rapidshare: Traffic Share (direct download)"
-msgstr ""
+msgstr "Rapidshare: Traffic Share (direct download)"
 
 #: pyload/plugins/hoster/RapidshareCom.py:127
 #: pyload/plugins/hoster/RapidshareCom.py:194
 msgid "Already downloading from this ip address, waiting 60 seconds"
-msgstr ""
+msgstr "此IP位址已在下載另一項目，請等待六十秒後重試"
 
 #: pyload/plugins/hoster/RapidshareCom.py:131
 msgid "Invalid Auth Code, download will be restarted"
-msgstr ""
+msgstr "驗證失敗，任務即將重試"
 
 #: pyload/plugins/hoster/RapidshareCom.py:199
 msgid "RapidShareCom: No free slots"
-msgstr ""
+msgstr "RapidShareCom: No free slots"
 
 #: pyload/plugins/hoster/RapidshareCom.py:202
 msgid "You need a premium account for this file"
-msgstr ""
+msgstr "此檔案需要高級用戶才能下載"
 
 #: pyload/plugins/hoster/RapidshareCom.py:204
 msgid "Filename reported invalid"
-msgstr ""
+msgstr "不正確的檔名"
 
 #: pyload/plugins/hoster/RPNetBiz.py:26
 #: pyload/plugins/hoster/RealdebridCom.py:41
@@ -79,363 +79,363 @@ msgstr ""
 #: pyload/plugins/addons/RPNetBiz.py:43
 #, python-format
 msgid "Please enter your %s account or deactivate this plugin"
-msgstr ""
+msgstr "請輸入你的帳戶或是停用此模組"
 
 #: pyload/plugins/hoster/MegaNz.py:56
 msgid "Decryption failed"
-msgstr ""
+msgstr "解析失敗"
 
 #: pyload/plugins/hoster/MegaNz.py:106
 msgid "No file key provided in the URL"
-msgstr ""
+msgstr "URL未提供金鑰"
 
 #: pyload/plugins/hoster/MegaNz.py:118
 msgid "Error code:"
-msgstr ""
+msgstr "錯誤碼："
 
 #: pyload/plugins/hoster/FileserveCom.py:99
 msgid "Parallel download error, now waiting 60s."
-msgstr ""
+msgstr "同時下載錯誤，60秒後重試"
 
 #: pyload/plugins/hoster/FileserveCom.py:215
 msgid "Not logged in."
-msgstr ""
+msgstr "未登入"
 
 #: pyload/plugins/hoster/UploadedTo.py:129
 msgid "API key invalid"
-msgstr ""
+msgstr "API金鑰無效"
 
 #: pyload/plugins/hoster/UploadedTo.py:153
 #, python-format
 msgid "%s: Not enough traffic left"
-msgstr ""
+msgstr "%s: 流量已用完"
 
 #: pyload/plugins/hoster/UploadedTo.py:156
 msgid "Traffic exceeded"
-msgstr ""
+msgstr "超出流量限制"
 
 #: pyload/plugins/hoster/BasePlugin.py:65
 msgid "Authorization required (username:password)"
-msgstr ""
+msgstr "需要認證（帳號：密碼）"
 
 #: pyload/plugins/hoster/NetloadIn.py:146
 #: pyload/plugins/hoster/NetloadIn.py:170
 msgid "File temporarily not available"
-msgstr ""
+msgstr "檔案暫時無法下載"
 
 #: pyload/plugins/hoster/NetloadIn.py:183
 #, python-format
 msgid "Netload: waiting between downloads %d s."
-msgstr ""
+msgstr "Netload: waiting between downloads %d s."
 
 #: pyload/plugins/hoster/NetloadIn.py:214
 #, python-format
 msgid "Netload: waiting for captcha %d s."
-msgstr ""
+msgstr "Netload: waiting for captcha %d s."
 
 #: pyload/plugins/hoster/NetloadIn.py:252
 msgid "Downloaded File was empty"
-msgstr ""
+msgstr "下載的檔案是空的"
 
 #: pyload/plugins/hoster/FilesMailRu.py:99
 #, python-format
 msgid "There was HTML Code in the Downloaded File (%s)...redirect error? The Download will be restarted."
-msgstr ""
+msgstr "下載檔案中包含HTML語法，解析錯誤嗎？準備重試"
 
 #: pyload/plugins/hoster/XHamsterCom.py:74
 #: pyload/plugins/hoster/XHamsterCom.py:83
 #: pyload/plugins/hoster/XHamsterCom.py:86
 #, python-format
 msgid "long_url: %s"
-msgstr ""
+msgstr "long_url: %s"
 
 #: pyload/plugins/Account.py:140 pyload/plugins/Account.py:146
 #, python-format
 msgid "Could not login with account %(user)s | %(msg)s"
-msgstr ""
+msgstr "無法登入%(user)s ｜%(msg)s"
 
 #: pyload/plugins/Account.py:141
 msgid "Wrong Password"
-msgstr ""
+msgstr "密碼錯誤"
 
 #: pyload/plugins/Account.py:202
 #, python-format
 msgid "Get Account Info for %s"
-msgstr ""
+msgstr "為了 %s 而取得帳戶資訊"
 
 #: pyload/plugins/Account.py:211
 #, python-format
 msgid "Error: %s"
-msgstr ""
+msgstr "錯誤: %s"
 
 #: pyload/plugins/Account.py:264
 #, python-format
 msgid "Your Time %s has a wrong format, use: 1:22-3:44"
-msgstr ""
+msgstr "時間格式錯誤 ( %s )，請使用 1:22-3:44"
 
 #: pyload/plugins/Account.py:287
 #, python-format
 msgid "Account %s has not enough traffic, checking again in 30min"
-msgstr ""
+msgstr "帳戶 %s 流量用鑿，30分鐘後重新檢查"
 
 #: pyload/plugins/Account.py:295
 #, python-format
 msgid "Account %s is expired, checking again in 1h"
-msgstr ""
+msgstr "帳戶 %s 已過期，一小時後重試"
 
 #: pyload/plugins/Account.py:312
 #, python-format
 msgid "Login with %s"
-msgstr ""
+msgstr "使用 %s 登錄"
 
 #: pyload/plugins/Addon.py:163
 #, python-format
 msgid "Error executing addon: %s"
-msgstr ""
+msgstr "執行外掛 %s 錯誤"
 
 #: pyload/plugins/accounts/BitshareCom.py:37
 msgid "Activate direct Download in your Bitshare Account"
-msgstr ""
+msgstr "從您的Bitshare帳號中直接下載"
 
 #: pyload/plugins/crypter/SerienjunkiesOrg.py:130
 msgid "Downloadlimit reached"
-msgstr ""
+msgstr "已達到下載流量上限"
 
 #: pyload/plugins/addons/Premium4Me.py:29
 msgid "Please add your premium.to account first and restart pyLoad"
-msgstr ""
+msgstr "請先添加premium.to帳戶並重新啟動pyLoad"
 
 #: pyload/plugins/addons/ExternalScripts.py:54
 #, python-format
 msgid "Installed scripts for %s: "
-msgstr ""
+msgstr "%s 已安裝的腳本"
 
 #: pyload/plugins/addons/ExternalScripts.py:69
 msgid "Script not executable:"
-msgstr ""
+msgstr "無法執行腳本"
 
 #: pyload/plugins/addons/ExternalScripts.py:80
 #, python-format
 msgid "Error in %(script)s: %(error)s"
-msgstr ""
+msgstr "%(script)s： %(error)s"
 
 #: pyload/plugins/addons/CaptchaTrader.py:69
 #: pyload/plugins/addons/Captcha9kw.py:59
 #: pyload/plugins/addons/ExpertDecoders.py:50
 #, python-format
 msgid "%s credits left"
-msgstr ""
+msgstr "額度剩餘 %s"
 
 #: pyload/plugins/addons/CaptchaTrader.py:117
 msgid "Could not send response."
-msgstr ""
+msgstr "無法發送回應。"
 
 #: pyload/plugins/addons/CaptchaTrader.py:135
 msgid "Your CaptchaTrader Account has not enough credits"
-msgstr ""
+msgstr "CaptchaTrader帳戶額度不足"
 
 #: pyload/plugins/addons/Captcha9kw.py:93
 #, python-format
 msgid "New CaptchaID from upload: %s : %s"
-msgstr ""
+msgstr "上傳新的CaptchaID：%s:%s"
 
 #: pyload/plugins/addons/Captcha9kw.py:129
 msgid "Your Captcha 9kw.eu Account has not enough credits"
-msgstr ""
+msgstr "9kw.eu帳戶額度不足"
 
 #: pyload/plugins/addons/RehostTo.py:32
 msgid "Please add your rehost.to account first and restart pyLoad"
-msgstr ""
+msgstr "請先添加rehost.to帳戶並重新啟動pyLoad"
 
 #: pyload/plugins/addons/HotFolder.py:82
 #, python-format
 msgid "Added %s from HotFolder"
-msgstr ""
+msgstr "從HotFolder增加 %s"
 
 #: pyload/plugins/addons/ClickAndLoad.py:75
 msgid "Click'N'Load: Port 9666 already in use"
-msgstr ""
+msgstr "Click'N'Load: 9666阜已被使用"
 
 #: pyload/plugins/addons/XMPPInterface.py:83
 #: pyload/plugins/addons/IRCInterface.py:74
 #, python-format
 msgid "Package finished: %s"
-msgstr ""
+msgstr "套件已完成： %s"
 
 #: pyload/plugins/addons/XMPPInterface.py:91
 #, python-format
 msgid "Download finished: %(name)s @ %(plugin)s"
-msgstr ""
+msgstr "%(name)s @ %(plugin)s 完成"
 
 #: pyload/plugins/addons/ExpertDecoders.py:95
 msgid "Your ExpertDecoders Account has not enough credits"
-msgstr ""
+msgstr "ExpertDecoders帳戶額度不足"
 
 #: pyload/plugins/addons/UpdateManager.py:74
 msgid "*** Plugins have been updated, please restart pyLoad ***"
-msgstr ""
+msgstr "＊＊＊外掛已更新，請重新啟動pyLoad＊＊＊"
 
 #: pyload/plugins/addons/UpdateManager.py:76
 msgid "Plugins updated and reloaded"
-msgstr ""
+msgstr "外掛已更新"
 
 #: pyload/plugins/addons/UpdateManager.py:79
 msgid "No plugin updates available"
-msgstr ""
+msgstr "外掛沒有可用的更新"
 
 #: pyload/plugins/addons/UpdateManager.py:96
 msgid "No Updates for pyLoad"
-msgstr ""
+msgstr "pyLoad沒有可用的更新"
 
 #: pyload/plugins/addons/UpdateManager.py:100
 #, python-format
 msgid "***  New pyLoad Version %s available  ***"
-msgstr ""
+msgstr "＊＊＊pyLoad有新版本%s可使用＊＊＊"
 
 #: pyload/plugins/addons/UpdateManager.py:101
 msgid "***  Get it here: http://pyload.org/download  ***"
-msgstr ""
+msgstr "*** 請從此下載 http://pyload.org/download ***"
 
 #: pyload/plugins/addons/UpdateManager.py:104
 msgid "Not able to connect server for updates"
-msgstr ""
+msgstr "無法連線至更新伺服器"
 
 #: pyload/plugins/addons/UpdateManager.py:148
 #, python-format
 msgid "New version of %(type)s|%(name)s : %(version).2f"
-msgstr ""
+msgstr "新版本 %(type)s|%(name)s : %(version).2f"
 
 #: pyload/plugins/addons/UpdateManager.py:157
 #: pyload/plugins/addons/UpdateManager.py:162
 #, python-format
 msgid "Error when updating %s"
-msgstr ""
+msgstr "更新 %s 時發生錯誤"
 
 #: pyload/plugins/addons/UpdateManager.py:162
 msgid "Version mismatch"
-msgstr ""
+msgstr "版本不合"
 
 #: pyload/plugins/addons/ExtractArchive.py:97
 #, python-format
 msgid "No %s installed"
-msgstr ""
+msgstr "未安裝 %s"
 
 #: pyload/plugins/addons/ExtractArchive.py:99
 #: pyload/plugins/addons/ExtractArchive.py:104
 #, python-format
 msgid "Could not activate %s"
-msgstr ""
+msgstr "無法啟用 %s"
 
 #: pyload/plugins/addons/ExtractArchive.py:109
 msgid "Activated"
-msgstr ""
+msgstr "已啟用"
 
 #: pyload/plugins/addons/ExtractArchive.py:111
 msgid "No Extract plugins activated"
-msgstr ""
+msgstr "解壓縮外掛未啟用"
 
 #: pyload/plugins/addons/ExtractArchive.py:116
 msgid "Extract package"
-msgstr ""
+msgstr "解壓縮下載任務的檔案"
 
 #: pyload/plugins/addons/ExtractArchive.py:116
 msgid "Scans package for archives and extract them"
-msgstr ""
+msgstr "掃描任務中的檔案並解開"
 
 #: pyload/plugins/addons/ExtractArchive.py:123
 #, python-format
 msgid "Package %s queued for later extracting"
-msgstr ""
+msgstr "任務 %s 已排入解壓佇列"
 
 #: pyload/plugins/addons/ExtractArchive.py:146
 #, python-format
 msgid "Check package %s"
-msgstr ""
+msgstr "檢查下載任務 %s"
 
 #: pyload/plugins/addons/ExtractArchive.py:187
 #, python-format
 msgid "Extract to %s"
-msgstr ""
+msgstr "解壓縮至 %s"
 
 #: pyload/plugins/addons/ExtractArchive.py:202
 msgid "No files found to extract"
-msgstr ""
+msgstr "無法找到壓縮檔"
 
 #: pyload/plugins/addons/ExtractArchive.py:209
 msgid "extracting"
-msgstr ""
+msgstr "解壓縮中"
 
 #: pyload/plugins/addons/ExtractArchive.py:220
 msgid "Password protected"
-msgstr ""
+msgstr "被加密的壓縮檔"
 
 #: pyload/plugins/addons/ExtractArchive.py:241
 msgid "Wrong password"
-msgstr ""
+msgstr "密碼錯誤"
 
 #: pyload/plugins/addons/ExtractArchive.py:249
 #, python-format
 msgid "Deleting %s files"
-msgstr ""
+msgstr "刪除檔案 %s"
 
 #: pyload/plugins/addons/ExtractArchive.py:256
 msgid "Extracting finished"
-msgstr ""
+msgstr "解壓縮完成"
 
 #: pyload/plugins/addons/ExtractArchive.py:262
 msgid "Archive Error"
-msgstr ""
+msgstr "壓縮檔損毀"
 
 #: pyload/plugins/addons/ExtractArchive.py:264
 msgid "CRC Mismatch"
-msgstr ""
+msgstr "CRC不正確"
 
 #: pyload/plugins/addons/ExtractArchive.py:268
 msgid "Unknown Error"
-msgstr ""
+msgstr "未知錯誤"
 
 #: pyload/plugins/addons/ExtractArchive.py:320
 msgid "Setting User and Group failed"
-msgstr ""
+msgstr "設定使用者及群組失敗"
 
 #: pyload/plugins/addons/LinkdecrypterCom.py:37
 msgid "Crypter list not found"
-msgstr ""
+msgstr "未找到Crypter清單"
 
 #: pyload/plugins/addons/LinkdecrypterCom.py:51
 msgid "Crypter list is empty"
-msgstr ""
+msgstr "Crypter清單是空的"
 
 #: pyload/plugins/addons/IRCInterface.py:82
 #, python-format
 msgid "Download finished: %(name)s @ %(plugin)s "
-msgstr ""
+msgstr "%(name)s @ %(plugin)s 已完成"
 
 #: pyload/plugins/addons/IRCInterface.py:95
 #, python-format
 msgid "New Captcha Request: %s"
-msgstr ""
+msgstr "驗證碼請求: %s"
 
 #: pyload/plugins/addons/IRCInterface.py:96
 #, python-format
 msgid "Answer with 'c %s text on the captcha'"
-msgstr ""
+msgstr "請輸入驗證碼上的文字 %s"
 
 #: pyload/plugins/addons/PremiumizeMe.py:48
 msgid "Please add a valid premiumize.me account first and restart pyLoad."
-msgstr ""
+msgstr "請先設定premiumize.me帳戶並重新啟動pyLoad"
 
 #: pyload/plugins/addons/CaptchaBrotherhood.py:69
 #, python-format
 msgid "%d credits left"
-msgstr ""
+msgstr "額度剩下 %d"
 
 #: pyload/plugins/addons/MultiHoster.py:43
 #, python-format
 msgid "Activated %s"
-msgstr ""
+msgstr "已啟動 %s"
 
 #: pyload/plugins/addons/MultiHoster.py:61
 msgid "No Hoster loaded"
-msgstr ""
+msgstr "找不到任何Hoster"
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-04-08 08:51-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -34,11 +34,11 @@ msgstr "Pasif eklentiler: %s"
 
 #: pyload/AddonManager.py:184
 msgid "Activating addons..."
-msgstr ""
+msgstr "Eklentiler aktif..."
 
 #: pyload/AddonManager.py:194
 msgid "Deactivating addons..."
-msgstr ""
+msgstr "Eklentileri devre dışı bırakılıyor..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -129,11 +129,11 @@ msgstr "Günlük döndürme"
 
 #: pyload/config/default.py:28
 msgid "Colorize Console"
-msgstr ""
+msgstr "Konsol renklendirme"
 
 #: pyload/config/default.py:29
 msgid "Color Theme"
-msgstr ""
+msgstr "Renk teması"
 
 #: pyload/config/default.py:32
 msgid "Permissions"
@@ -424,7 +424,7 @@ msgstr "iptal edildi"
 
 #: pyload/FileManager.py:55
 msgid "not possible"
-msgstr ""
+msgstr "mümkün değil"
 
 #: pyload/FileManager.py:56
 msgid "decrypting"

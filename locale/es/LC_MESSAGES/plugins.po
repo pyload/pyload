@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -191,7 +191,7 @@ msgstr "Iniciar sesión con %s"
 #: pyload/plugins/Addon.py:163
 #, python-format
 msgid "Error executing addon: %s"
-msgstr ""
+msgstr "Error al ejecutar complemento: %s"
 
 #: pyload/plugins/accounts/BitshareCom.py:37
 msgid "Activate direct Download in your Bitshare Account"
@@ -203,16 +203,16 @@ msgstr "Limite de descargas alcanzado"
 
 #: pyload/plugins/addons/Premium4Me.py:29
 msgid "Please add your premium.to account first and restart pyLoad"
-msgstr ""
+msgstr "Por favor, añada primero su cuenta premium.to y reinicie pyLoad"
 
 #: pyload/plugins/addons/ExternalScripts.py:54
 #, python-format
 msgid "Installed scripts for %s: "
-msgstr "Scripts instalados para %s: "
+msgstr "Código instalado para %s: "
 
 #: pyload/plugins/addons/ExternalScripts.py:69
 msgid "Script not executable:"
-msgstr "Script no ejecutable:"
+msgstr "Código no ejecutable:"
 
 #: pyload/plugins/addons/ExternalScripts.py:80
 #, python-format
@@ -228,11 +228,11 @@ msgstr "%s créditos restantes"
 
 #: pyload/plugins/addons/CaptchaTrader.py:117
 msgid "Could not send response."
-msgstr "No se pudo enviar la respuesta."
+msgstr "No se ha podido enviar la respuesta."
 
 #: pyload/plugins/addons/CaptchaTrader.py:135
 msgid "Your CaptchaTrader Account has not enough credits"
-msgstr "Tu cuenta de CaptchaTrader no tiene créditos suficientes"
+msgstr "Su cuenta de CaptchaTrader no tiene créditos suficientes"
 
 #: pyload/plugins/addons/Captcha9kw.py:93
 #, python-format
@@ -241,16 +241,16 @@ msgstr "Nuevo CaptchaID desde carga: %s: %s"
 
 #: pyload/plugins/addons/Captcha9kw.py:129
 msgid "Your Captcha 9kw.eu Account has not enough credits"
-msgstr "Tu Cuenta Captcha 9kw.eu no tiene suficientes créditos"
+msgstr "Su Cuenta Captcha 9kw.eu no tiene suficientes créditos"
 
 #: pyload/plugins/addons/RehostTo.py:32
 msgid "Please add your rehost.to account first and restart pyLoad"
-msgstr "Por favor, agrega primero tu cuenta rehost.to y reinicia pyLoad"
+msgstr "Por favor, añada primero su cuenta rehost.to y reinicie pyLoad"
 
 #: pyload/plugins/addons/HotFolder.py:82
 #, python-format
 msgid "Added %s from HotFolder"
-msgstr "Agregado %s desde HotFolder"
+msgstr "Añadido %s desde HotFolder"
 
 #: pyload/plugins/addons/ClickAndLoad.py:75
 msgid "Click'N'Load: Port 9666 already in use"
@@ -260,7 +260,7 @@ msgstr "Click'N'Load: Puerto 9666 ya está en uso"
 #: pyload/plugins/addons/IRCInterface.py:74
 #, python-format
 msgid "Package finished: %s"
-msgstr "Paquete acabado: %s"
+msgstr "Paquete terminado: %s"
 
 #: pyload/plugins/addons/XMPPInterface.py:91
 #, python-format
@@ -269,11 +269,11 @@ msgstr "Descarga finalizada: %(name)s @ %(plugin)s"
 
 #: pyload/plugins/addons/ExpertDecoders.py:95
 msgid "Your ExpertDecoders Account has not enough credits"
-msgstr "Tu cuenta de  ExpertDecoders no suficientes créditos"
+msgstr "Su cuenta de  ExpertDecoders no suficientes créditos"
 
 #: pyload/plugins/addons/UpdateManager.py:74
 msgid "*** Plugins have been updated, please restart pyLoad ***"
-msgstr "*** Los plugins han sido actualizados, por favor reinicia pyLoad ***"
+msgstr "*** Los plugins se han actualizado, por favor reinicie pyLoad ***"
 
 #: pyload/plugins/addons/UpdateManager.py:76
 msgid "Plugins updated and reloaded"
@@ -281,7 +281,7 @@ msgstr "Plugins actualizados y cargados de nuevo"
 
 #: pyload/plugins/addons/UpdateManager.py:79
 msgid "No plugin updates available"
-msgstr "No hay actualizaciones de plugins disponibles"
+msgstr "No hay disponibles actualizaciones de plugins"
 
 #: pyload/plugins/addons/UpdateManager.py:96
 msgid "No Updates for pyLoad"
@@ -294,11 +294,11 @@ msgstr "***  Nueva versión %s de pyLoad disponible  ***"
 
 #: pyload/plugins/addons/UpdateManager.py:101
 msgid "***  Get it here: http://pyload.org/download  ***"
-msgstr "***  Obténla aquí: http://pyload.org/download  ***"
+msgstr "***  Descarguela aquí: http://pyload.org/download  ***"
 
 #: pyload/plugins/addons/UpdateManager.py:104
 msgid "Not able to connect server for updates"
-msgstr "Imposible conectar con el servidor para actualizaciones"
+msgstr "No se puede conectar con el servidor para actualizar"
 
 #: pyload/plugins/addons/UpdateManager.py:148
 #, python-format
@@ -324,7 +324,7 @@ msgstr "%s no instalado"
 #: pyload/plugins/addons/ExtractArchive.py:104
 #, python-format
 msgid "Could not activate %s"
-msgstr "No pude activar %s"
+msgstr "No se puede activar %s"
 
 #: pyload/plugins/addons/ExtractArchive.py:109
 msgid "Activated"
@@ -332,15 +332,15 @@ msgstr "Activado"
 
 #: pyload/plugins/addons/ExtractArchive.py:111
 msgid "No Extract plugins activated"
-msgstr "No se activaron plugins de extracción"
+msgstr "No se ha activado ningún plugin de extracción"
 
 #: pyload/plugins/addons/ExtractArchive.py:116
 msgid "Extract package"
-msgstr ""
+msgstr "Extraer paquete"
 
 #: pyload/plugins/addons/ExtractArchive.py:116
 msgid "Scans package for archives and extract them"
-msgstr ""
+msgstr "Analiza el paquete en busca de archivos y los extrae"
 
 #: pyload/plugins/addons/ExtractArchive.py:123
 #, python-format
@@ -359,7 +359,7 @@ msgstr "Extraer a %s"
 
 #: pyload/plugins/addons/ExtractArchive.py:202
 msgid "No files found to extract"
-msgstr "No se encontraron ficheros que extraer"
+msgstr "No se encontraron archivos para extraer"
 
 #: pyload/plugins/addons/ExtractArchive.py:209
 msgid "extracting"
@@ -376,7 +376,7 @@ msgstr "Contraseña errónea"
 #: pyload/plugins/addons/ExtractArchive.py:249
 #, python-format
 msgid "Deleting %s files"
-msgstr "Borrando ficheros %s"
+msgstr "Borrando archivos %s"
 
 #: pyload/plugins/addons/ExtractArchive.py:256
 msgid "Extracting finished"
@@ -396,11 +396,11 @@ msgstr "Error Desconocido"
 
 #: pyload/plugins/addons/ExtractArchive.py:320
 msgid "Setting User and Group failed"
-msgstr "Falló el ajuste de usuario y grupo"
+msgstr "Error de configuración de usuario y grupo"
 
 #: pyload/plugins/addons/LinkdecrypterCom.py:37
 msgid "Crypter list not found"
-msgstr "No se encontró lista de cifradores"
+msgstr "No se ha encontrado lista de cifradores"
 
 #: pyload/plugins/addons/LinkdecrypterCom.py:51
 msgid "Crypter list is empty"
@@ -423,7 +423,7 @@ msgstr "Conteste con 'c %s texto al captcha'"
 
 #: pyload/plugins/addons/PremiumizeMe.py:48
 msgid "Please add a valid premiumize.me account first and restart pyLoad."
-msgstr ""
+msgstr "Por favor, agrega primero una cuenta válida de premiumize.me y reinicia pyLoad."
 
 #: pyload/plugins/addons/CaptchaBrotherhood.py:69
 #, python-format

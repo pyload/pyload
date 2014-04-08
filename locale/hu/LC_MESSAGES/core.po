@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -34,11 +34,11 @@ msgstr "Bővítmény deaktiválása: %s"
 
 #: pyload/AddonManager.py:184
 msgid "Activating addons..."
-msgstr ""
+msgstr "Bővítmények aktiválása..."
 
 #: pyload/AddonManager.py:194
 msgid "Deactivating addons..."
-msgstr ""
+msgstr "Bővítmények deaktiválása..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -129,11 +129,11 @@ msgstr "Log Forgatás"
 
 #: pyload/config/default.py:28
 msgid "Colorize Console"
-msgstr ""
+msgstr "Konzol színezése"
 
 #: pyload/config/default.py:29
 msgid "Color Theme"
-msgstr ""
+msgstr "Kinézet"
 
 #: pyload/config/default.py:32
 msgid "Permissions"
@@ -336,12 +336,12 @@ msgstr "%d link a csomaghoz adva"
 #: pyload/AccountManager.py:49
 #, python-format
 msgid "Account plugin %s not available"
-msgstr ""
+msgstr "Fiók bővítmény nem elérhető: %s"
 
 #: pyload/AccountManager.py:70
 #, python-format
 msgid "Could not load account %s"
-msgstr ""
+msgstr "Fiók nem betölthető: %s"
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
@@ -424,7 +424,7 @@ msgstr "megszakított"
 
 #: pyload/FileManager.py:55
 msgid "not possible"
-msgstr ""
+msgstr "nem lehetséges"
 
 #: pyload/FileManager.py:56
 msgid "decrypting"
@@ -537,7 +537,7 @@ msgstr "%(count)d link dekódolása a(z) %(name)s csomagba"
 
 #: pyload/threads/DecrypterThread.py:55
 msgid "Decrypting aborted"
-msgstr ""
+msgstr "Dekódolás megszakítva"
 
 #: pyload/threads/DecrypterThread.py:57
 msgid "Decrypting failed"
@@ -642,5 +642,5 @@ msgstr "Nem észlelhető js motor, kérlek telepítsd valamelyiket: Spidermonkey
 
 #: pyload/utils/packagetools.py:130
 msgid "Unnamed package"
-msgstr ""
+msgstr "Névtelen csomag"
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-04-08 08:51-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -36,7 +36,7 @@ msgstr "Drücke %s wenn du fertig bist."
 
 #: pyload/cli/AddPackage.py:60
 msgid "Links added: "
-msgstr "Links hinzugefügt: "
+msgstr "Hinzugefügte Links: "
 
 #: pyload/cli/AddPackage.py:64 pyload/cli/ManageFiles.py:149
 msgid " back to main menu"
@@ -169,7 +169,7 @@ msgstr " Beenden"
 
 #: pyload/cli/Cli.py:289 pyload/cli/Cli.py:296
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
-msgstr "Bitte benutze folgenden Syntax: add <Package name> <link> <link2> ..."
+msgstr "Bitte benutze folgende Syntax: add <Package name> <link> <link2> ..."
 
 #: pyload/cli/Cli.py:315
 #, python-format
@@ -186,23 +186,23 @@ msgstr "pyLoad wurde beendet"
 
 #: pyload/cli/Cli.py:443
 msgid "Prints server status"
-msgstr "Gibt den Server Status aus"
+msgstr "Zeigt den Server-Status"
 
 #: pyload/cli/Cli.py:444
 msgid "Prints downloads in queue"
-msgstr "Gibt die Warteschlange aus"
+msgstr "Zeigt die Warteschlange"
 
 #: pyload/cli/Cli.py:445
 msgid "Prints downloads in collector"
-msgstr "Gibt die Links im Linksammler aus"
+msgstr "Zeigt den Linksammler"
 
 #: pyload/cli/Cli.py:446
 msgid "Adds package to queue"
-msgstr "Fügt Packete der Warteschlange hinzu"
+msgstr "Fügt Paket der Warteschlange hinzu"
 
 #: pyload/cli/Cli.py:447
 msgid "Adds package to collector"
-msgstr "Fügt ein Paket zum Linksammler hinzu"
+msgstr "Fügt Paket zum Linksammler hinzu"
 
 #: pyload/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
@@ -210,7 +210,7 @@ msgstr "Löscht Dateien aus der Warteschlange/Linksammler"
 
 #: pyload/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
-msgstr "Löscht Packete aus der Warteschlange/Linksammler"
+msgstr "Löscht Pakete aus der Warteschlange/Linksammler"
 
 #: pyload/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
@@ -238,7 +238,7 @@ msgstr "pausiert den Server"
 
 #: pyload/cli/Cli.py:456
 msgid "continue downloads"
-msgstr "Downloads fortfahren"
+msgstr "Downloads fortsetzen"
 
 #: pyload/cli/Cli.py:457
 msgid "Toggle pause/unpause"

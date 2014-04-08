@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -14,16 +14,16 @@ msgstr "Project-Id-Version: pyload\n"
 
 #: pyload/cli/AddPackage.py:48
 msgid "Add Package:"
-msgstr "新增套件:"
+msgstr "新增下載任務："
 
 #: pyload/cli/AddPackage.py:53
 msgid "Enter a name for the new package"
-msgstr "輸入新增套件名稱"
+msgstr "輸入新任務名稱"
 
 #: pyload/cli/AddPackage.py:57
 #, python-format
 msgid "Package: %s"
-msgstr "套件: %s"
+msgstr "任務：%s"
 
 #: pyload/cli/AddPackage.py:58
 msgid "Parse the links you want to add."
@@ -32,7 +32,7 @@ msgstr "分析你想加入的連結。"
 #: pyload/cli/AddPackage.py:59
 #, python-format
 msgid "Type %s when done."
-msgstr "類型 %s 後完成。"
+msgstr "完成後請輸入 %s"
 
 #: pyload/cli/AddPackage.py:60
 msgid "Links added: "
@@ -44,7 +44,7 @@ msgstr "回到主選單"
 
 #: pyload/cli/ManageFiles.py:97
 msgid "Manage Packages:"
-msgstr "套件管理:"
+msgstr "管理任務"
 
 #: pyload/cli/ManageFiles.py:99
 msgid "Manage Links:"
@@ -64,7 +64,7 @@ msgstr "你想要重啟?"
 
 #: pyload/cli/ManageFiles.py:113
 msgid "Choose what you want to do, or enter package number."
-msgstr "選擇你想要的操作，或輸入套件編號。"
+msgstr "輸入任務編號或選擇想要的操作"
 
 #: pyload/cli/ManageFiles.py:115
 msgid "delete"
@@ -169,7 +169,7 @@ msgstr "離開"
 
 #: pyload/cli/Cli.py:289 pyload/cli/Cli.py:296
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
-msgstr "請使用此語法: add <套件名稱> <連結> <連結2> ..."
+msgstr "請使用此語法: add 任務名稱> <連結> <連結2> ..."
 
 #: pyload/cli/Cli.py:315
 #, python-format
@@ -198,11 +198,11 @@ msgstr "顯示收集器中下載項目"
 
 #: pyload/cli/Cli.py:446
 msgid "Adds package to queue"
-msgstr "新增套件到佇列"
+msgstr "新增任務到佇列"
 
 #: pyload/cli/Cli.py:447
 msgid "Adds package to collector"
-msgstr "新增套件到收集器"
+msgstr "新增任務到收集器"
 
 #: pyload/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
@@ -210,11 +210,11 @@ msgstr "從佇列/收集器中刪除檔案"
 
 #: pyload/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
-msgstr "從佇列/收集器中刪除套件"
+msgstr "從佇列/收集器中刪除任務"
 
 #: pyload/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
-msgstr "在佇列或收集器中移動套件"
+msgstr "在佇列或收集器中移動任務"
 
 #: pyload/cli/Cli.py:451
 msgid "Restart files"
@@ -222,7 +222,7 @@ msgstr "重新開始檔案"
 
 #: pyload/cli/Cli.py:452
 msgid "Restart packages"
-msgstr "重新開始套件"
+msgstr "重新開始任務"
 
 #: pyload/cli/Cli.py:453
 msgid "Check online status, works with local container"

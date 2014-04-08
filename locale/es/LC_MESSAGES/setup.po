@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -18,7 +18,7 @@ msgstr "Bienvenido al Asistente de Configuración de pyLoad."
 
 #: pyload/setup/Setup.py:119
 msgid "It will check your system and make a basic setup in order to run pyLoad."
-msgstr "Revisará su sistema y creará una configuración básica para ejecutar pyLoad."
+msgstr "Se revisará tu sistema y se hará una configuración básica para ejecutar pyLoad."
 
 #: pyload/setup/Setup.py:121
 msgid "The value in brackets [] always is the default value,"
@@ -34,7 +34,7 @@ msgstr "No lo olvides: siempre puedes volver a ejecutar este asistente con el pa
 
 #: pyload/setup/Setup.py:125
 msgid "If you have any problems with this assistent hit CTRL+C,"
-msgstr "Si tienes algún problema con este asistente presiona Ctrl-C,"
+msgstr "Si tiene algún problema con este asistente presione CTRL + C,"
 
 #: pyload/setup/Setup.py:126
 msgid "to abort and don't let him start with pyLoadCore automatically anymore."
@@ -46,16 +46,16 @@ msgstr "Cuando estés listo para la revisión del sistema, presiona entrar."
 
 #: pyload/setup/Setup.py:134
 msgid "Continue with setup?"
-msgstr "¿Deseas continuar con el asistente?"
+msgstr "¿Desea continuar con el asistente?"
 
 #: pyload/setup/Setup.py:140
 #, python-format
 msgid "Do you want to change the config path? Current is %s"
-msgstr "¿Quieres cambiar la ruta de configuración? Actualmente es %s"
+msgstr "¿Quiere cambiar la ruta de configuración? Actualmente es %s"
 
 #: pyload/setup/Setup.py:142
 msgid "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
-msgstr "Si usas pyLoad en un servidor o la partición primaria reside en una memoria flash interna, puede ser buena idea cambiarla."
+msgstr "Si usa pyLoad en un servidor o la partición primaria reside en una memoria flash interna, puede ser buena idea cambiarla."
 
 #: pyload/setup/Setup.py:143
 msgid "Change config path?"
@@ -63,7 +63,7 @@ msgstr "¿Cambiar la ruta de configuración?"
 
 #: pyload/setup/Setup.py:149
 msgid "Do you want to configure login data and basic settings?"
-msgstr "¿Quieres configurar los datos de acceso y la configuración básica?"
+msgstr "¿Quiere configurar los datos de acceso y la configuración básica?"
 
 #: pyload/setup/Setup.py:150
 msgid "This is recommend for first run."
@@ -71,11 +71,11 @@ msgstr "Esto se recomienda en la primera ejecución."
 
 #: pyload/setup/Setup.py:151
 msgid "Make basic setup?"
-msgstr "¿Realizar la instalación básica?"
+msgstr "¿Realizar la configuración básica?"
 
 #: pyload/setup/Setup.py:158
 msgid "Do you want to configure ssl?"
-msgstr "¿Quieres configurar SSL?"
+msgstr "¿Quiere configurar SSL?"
 
 #: pyload/setup/Setup.py:159
 msgid "Configure ssl?"
@@ -83,7 +83,7 @@ msgstr "¿Configurar SSL?"
 
 #: pyload/setup/Setup.py:164
 msgid "Do you want to configure webinterface?"
-msgstr "¿Quieres configurar la interfaz web?"
+msgstr "¿Quiere configurar la interfaz web?"
 
 #: pyload/setup/Setup.py:165
 msgid "Configure webinterface?"
@@ -91,7 +91,7 @@ msgstr "¿Configurar la interfaz web?"
 
 #: pyload/setup/Setup.py:170
 msgid "Setup finished successfully."
-msgstr "Instalación finalizada con éxito."
+msgstr "Configuración finalizada con éxito."
 
 #: pyload/setup/Setup.py:171
 msgid "Hit enter to exit and restart pyLoad"
@@ -99,7 +99,7 @@ msgstr "Pulse entrar para salir y reiniciar pyLoad"
 
 #: pyload/setup/Setup.py:178
 msgid "## Basic Setup ##"
-msgstr "## Instalación básica ##"
+msgstr "## Configuración básica ##"
 
 #: pyload/setup/Setup.py:181
 msgid "The following logindata is valid for CLI, GUI and webinterface."
@@ -132,7 +132,7 @@ msgstr "Ubicación del script de reconexión"
 
 #: pyload/setup/Setup.py:207
 msgid "## Webinterface Setup ##"
-msgstr "## Instalación de la Interfaz Web ##"
+msgstr "## Configuración de la Interfaz Web ##"
 
 #: pyload/setup/Setup.py:210
 msgid "Activate webinterface?"
@@ -160,7 +160,7 @@ msgstr "Servidor predeterminado, este servidor ofrece SSL y es una buena alterna
 
 #: pyload/setup/Setup.py:219
 msgid "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job."
-msgstr "Puede usarse por apache, lighttpd, requiere que lo configures, lo cual no es una tarea fácil."
+msgstr "Puede ser usado por apache, lighttpd, requiere que lo configures, lo cual no es una tarea fácil."
 
 #: pyload/setup/Setup.py:220
 msgid "Very fast alternative written in C, requires libev and linux knowledge."
@@ -212,7 +212,7 @@ msgstr "1 - Crear/Editar usuario"
 
 #: pyload/setup/Setup.py:257
 msgid "2 - List users"
-msgstr "2 - Lista de usuarios"
+msgstr "2 - Listado de usuarios"
 
 #: pyload/setup/Setup.py:258
 msgid "3 - Remove user"
@@ -261,7 +261,7 @@ msgstr "Contraseña: "
 
 #: pyload/setup/Setup.py:373
 msgid "Password too short. Use at least 4 symbols."
-msgstr "La contraseña es demasiado corta. Usa al menos 4 símbolos."
+msgstr "La contraseña es demasiado corta. Use al menos 4 símbolos."
 
 #: pyload/setup/Setup.py:376
 msgid "Password (again): "

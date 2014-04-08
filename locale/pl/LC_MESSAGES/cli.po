@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -44,7 +44,7 @@ msgstr "powrót do głównego menu"
 
 #: pyload/cli/ManageFiles.py:97
 msgid "Manage Packages:"
-msgstr "Zarządzali paczkami:"
+msgstr "Zarządzanie pakietami:"
 
 #: pyload/cli/ManageFiles.py:99
 msgid "Manage Links:"
@@ -149,7 +149,7 @@ msgstr "Dodaj linki"
 
 #: pyload/cli/Cli.py:206
 msgid " Manage Queue"
-msgstr "zarządzaj kolejką"
+msgstr " Zarządzaj kolejką"
 
 #: pyload/cli/Cli.py:207
 msgid " Manage Collector"
@@ -206,7 +206,7 @@ msgstr "Dodaje paczkę do poczekalni"
 
 #: pyload/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
-msgstr "Usuń Pliki z Kolejki lub Poczekalni"
+msgstr "Usuń pliki z Kolejki/Poczekalni"
 
 #: pyload/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
@@ -234,7 +234,7 @@ msgstr "Sprawdź stan online pliku kontenera"
 
 #: pyload/cli/Cli.py:455
 msgid "Pause the server"
-msgstr "Czasowo wstrzymaj serwer"
+msgstr "Wstrzymaj serwer"
 
 #: pyload/cli/Cli.py:456
 msgid "continue downloads"
@@ -242,7 +242,7 @@ msgstr "kontynuuj pobieranie"
 
 #: pyload/cli/Cli.py:457
 msgid "Toggle pause/unpause"
-msgstr "Przełącz na wstrzymanie/pracę"
+msgstr "Wstrzymaj/Wznów"
 
 #: pyload/cli/Cli.py:458
 msgid "kill server"

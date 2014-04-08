@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -191,7 +191,7 @@ msgstr "Identifié avec %s"
 #: pyload/plugins/Addon.py:163
 #, python-format
 msgid "Error executing addon: %s"
-msgstr ""
+msgstr "Erreur lors de l'exécution du plugin: %s"
 
 #: pyload/plugins/accounts/BitshareCom.py:37
 msgid "Activate direct Download in your Bitshare Account"
@@ -203,7 +203,7 @@ msgstr "Limite de téléchargement atteinte"
 
 #: pyload/plugins/addons/Premium4Me.py:29
 msgid "Please add your premium.to account first and restart pyLoad"
-msgstr ""
+msgstr "Veuillez tout d'abord ajouter votre compte premium.to et redémarrez pyLoad"
 
 #: pyload/plugins/addons/ExternalScripts.py:54
 #, python-format
@@ -336,11 +336,11 @@ msgstr "Pas de plugin d'extraction activé"
 
 #: pyload/plugins/addons/ExtractArchive.py:116
 msgid "Extract package"
-msgstr ""
+msgstr "Extraire le paquet"
 
 #: pyload/plugins/addons/ExtractArchive.py:116
 msgid "Scans package for archives and extract them"
-msgstr ""
+msgstr "Recherche et extraction des archives du paquet"
 
 #: pyload/plugins/addons/ExtractArchive.py:123
 #, python-format
@@ -423,7 +423,7 @@ msgstr "Répondre avec ' le texte c %s sur le captcha'"
 
 #: pyload/plugins/addons/PremiumizeMe.py:48
 msgid "Please add a valid premiumize.me account first and restart pyLoad."
-msgstr ""
+msgstr "Veuillez d'abord ajouter un compte valide premiumize.me et redémarrez pyLoad."
 
 #: pyload/plugins/addons/CaptchaBrotherhood.py:69
 #, python-format

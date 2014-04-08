@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Greek\n"
 "Language: el_GR\n"
@@ -55,11 +55,11 @@ msgstr[1] ""
 
 #: pyload/web/app/templates/default/dashboard/package.html:33
 msgid "Addons"
-msgstr ""
+msgstr "Πρόσθετα"
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
 msgid "Loading..."
-msgstr ""
+msgstr "Φόρτωση..."
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
 msgid "Local"
@@ -104,7 +104,7 @@ msgstr "Επιβεβαίωση"
 
 #: pyload/web/app/templates/default/setup/finished.html:20
 msgid "Please add a user first."
-msgstr ""
+msgstr "Παρακαλώ προσθέσετε ένα χρήστη πρώτα."
 
 #: pyload/web/app/templates/default/setup/welcome.html:0
 msgid "Welcome!"

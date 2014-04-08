@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -15,17 +15,17 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/web/app/templates/default/admin.html:3
 #: pyload/web/app/templates/default/admin.html:4
 msgid "Admin"
-msgstr ""
+msgstr "Administrador"
 
 #: pyload/web/app/scripts/helpers/formatSize.js:9
 #: pyload/web/app/templates/default/setup/system.html:45
 msgid "not available"
-msgstr ""
+msgstr "no disponible"
 
 #: pyload/web/app/scripts/helpers/formatSize.js:11
 #: pyload/web/app/scripts/helpers/formatTime.js:10
 msgid "unlimited"
-msgstr ""
+msgstr "il·limitat"
 
 #: pyload/web/app/templates/default/linkgrabber/package.html:25
 #: pyload/web/app/scripts/helpers/linkStatus.js:7
@@ -44,254 +44,254 @@ msgstr "deconegut"
 #: pyload/web/app/templates/default/dashboard/select.html:1
 msgid "1 package"
 msgid_plural "%d packages"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 paquet"
+msgstr[1] "%d paquets"
 
 #: pyload/web/app/templates/default/dashboard/select.html:4
 msgid "1 file"
 msgid_plural "%d files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 fitxer"
+msgstr[1] "%d fitxers"
 
 #: pyload/web/app/templates/default/dashboard/package.html:33
 msgid "Addons"
-msgstr ""
+msgstr "Complements"
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
 msgid "Loading..."
-msgstr ""
+msgstr "Carregant..."
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
 msgid "Local"
-msgstr ""
+msgstr "Local"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:18
 msgid "Search"
-msgstr ""
+msgstr "Cerca"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:26
 msgid "Type"
-msgstr ""
+msgstr "Tipus"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:44
 #: pyload/web/app/templates/default/dashboard/actionbar.html:49
 msgid "All"
-msgstr ""
+msgstr "Tots"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:50
 msgid "Finished"
-msgstr ""
+msgstr "Acabat"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:51
 msgid "Unfinished"
-msgstr ""
+msgstr "Inconclús"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:52
 msgid "Failed"
-msgstr ""
+msgstr "Ha fallat"
 
 #: pyload/web/app/templates/default/setup/finished.html:3
 msgid "Nearly Done"
-msgstr ""
+msgstr "Gairebé Fet"
 
 #: pyload/web/app/templates/default/setup/finished.html:7
 msgid "Please check your settings."
-msgstr ""
+msgstr "Si us plau, comproveu la vostra configuració."
 
 #: pyload/web/app/templates/default/setup/finished.html:15
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmeu"
 
 #: pyload/web/app/templates/default/setup/finished.html:20
 msgid "Please add a user first."
-msgstr ""
+msgstr "Si us plau afegiu un usuari primer."
 
 #: pyload/web/app/templates/default/setup/welcome.html:0
 msgid "Welcome!"
-msgstr ""
+msgstr "Benvingut!"
 
 #: pyload/web/app/templates/default/setup/welcome.html:2
 msgid "pyLoad is running and ready for configuration."
-msgstr ""
+msgstr "pyLoad està funcionant i preparat per a la configuració."
 
 #: pyload/web/app/templates/default/setup/welcome.html:5
 msgid "Select your language:"
-msgstr ""
+msgstr "Seleccioni el seu idioma:"
 
 #: pyload/web/app/templates/default/setup/welcome.html:12
 msgid "Start configuration"
-msgstr ""
+msgstr "Començar la configuració"
 
 #: pyload/web/app/templates/default/setup/layout.html:2
 msgid "Setup"
-msgstr ""
+msgstr "Configuració"
 
 #: pyload/web/app/templates/default/setup/system.html:0
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: pyload/web/app/templates/default/setup/system.html:9
 msgid "Dependencies"
-msgstr ""
+msgstr "Dependències"
 
 #: pyload/web/app/templates/default/setup/system.html:31
 msgid "Optional"
-msgstr ""
+msgstr "Opcional"
 
 #: pyload/web/app/templates/default/setup/system.html:38
 msgid "available"
-msgstr ""
+msgstr "disponible"
 
 #: pyload/web/app/templates/default/setup/system.html:54
 msgid "Next"
-msgstr ""
+msgstr "Següent"
 
 #: pyload/web/app/templates/default/setup/error.html:1
 msgid "Setup timed out"
-msgstr ""
+msgstr "Configuració fora de temps"
 
 #: pyload/web/app/templates/default/setup/error.html:2
 msgid "Setup was closed due to inactivity. Please restart it to continue configuration."
-msgstr ""
+msgstr "La configuració s'ha tancat a causa de la inactivitat. Si us plau, torneu a iniciar per continuar la configuració."
 
 #: pyload/web/app/templates/default/setup/error.html:5
 msgid "Setup finished"
-msgstr ""
+msgstr "Configuració acabada"
 
 #: pyload/web/app/templates/default/setup/error.html:6
 msgid "Setup was successful. You can restart pyLoad now."
-msgstr ""
+msgstr "La configuració ha estat correcte. Ara pot reiniciar pyLoad."
 
 #: pyload/web/app/templates/default/setup/error.html:9
 msgid "Setup failed"
-msgstr ""
+msgstr "La configuració ha fallat"
 
 #: pyload/web/app/templates/default/setup/error.html:11
 msgid "Try to restart it or open a bug report."
-msgstr ""
+msgstr "Intenti tornar-la a iniciar o obri un informe d'error."
 
 #: pyload/web/app/templates/default/header/layout.html:13
 msgid "Running..."
-msgstr ""
+msgstr "En execució..."
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:3
 msgid "Choose a plugin"
-msgstr ""
+msgstr "Trieu un conector"
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:9
 msgid "Please choose a plugin, which you want to configure"
-msgstr ""
+msgstr "Si us plau, trieu el conector que voleu configurar"
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:23
 #: pyload/web/app/templates/default/linkgrabber/modal.html:39
 msgid "Add"
-msgstr ""
+msgstr "Afegir"
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:24
 #: pyload/web/app/templates/default/linkgrabber/modal.html:40
 #: pyload/web/app/templates/default/dialogs/interactionTask.html:35
 msgid "Close"
-msgstr ""
+msgstr "Tancar"
 
 #: pyload/web/app/templates/default/dialogs/addAccount.html:2
 msgid "Add an account"
-msgstr ""
+msgstr "Afegeix un compte"
 
 #: pyload/web/app/templates/default/dialogs/addAccount.html:7
 msgid "Please enter your account data"
-msgstr ""
+msgstr "Si us plau, introduiu les vostres dades del compte"
 
 #: pyload/web/app/templates/default/dialogs/confirmDelete.html:2
 msgid "Please confirm"
-msgstr ""
+msgstr "Si us plau, confirmeu"
 
 #: pyload/web/app/templates/default/dialogs/confirmDelete.html:5
 msgid "Do you want to delete the selected items?"
-msgstr ""
+msgstr "Voleu suprimir els elements seleccionats?"
 
 #: pyload/web/app/templates/default/dialogs/confirmDelete.html:8
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: pyload/web/app/templates/default/dialogs/confirmDelete.html:9
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel·lar"
 
 #: pyload/web/app/templates/default/dialogs/interactionTask.html:34
 msgid "Submit"
-msgstr ""
+msgstr "Enviar"
 
 #: pyload/web/app/templates/default/accounts/account.html:5
 msgid "premium"
-msgstr ""
+msgstr "prèmium"
 
 #: pyload/web/app/templates/default/accounts/account.html:7
 msgid "valid"
-msgstr ""
+msgstr "vàlid"
 
 #: pyload/web/app/templates/default/accounts/account.html:12
 msgid "invalid"
-msgstr ""
+msgstr "invàlid"
 
 #: pyload/web/app/templates/default/accounts/account.html:23
 msgid "Traffic left:"
-msgstr ""
+msgstr "Tràfic restant:"
 
 #: pyload/web/app/templates/default/accounts/account.html:27
 msgid "Valid until:"
-msgstr ""
+msgstr "Vàlid fins:"
 
 #: pyload/web/app/templates/default/accounts/editAccount.html:2
 msgid "Edit account"
-msgstr ""
+msgstr "Edita el compte"
 
 #: pyload/web/app/templates/default/accounts/editAccount.html:27
 msgid "Configuration"
-msgstr ""
+msgstr "Configuració"
 
 #: pyload/web/app/templates/default/accounts/layout.html:2
 msgid "Accounts"
-msgstr ""
+msgstr "Comptes"
 
 #: pyload/web/app/templates/default/accounts/actionbar.html:2
 msgid "Add Account"
-msgstr ""
+msgstr "Afegir compte"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:3
 msgid "Add links"
-msgstr ""
+msgstr "Afegir enllaços"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:4
 msgid "paste & add links to pyLoad"
-msgstr ""
+msgstr "enganxar & afegir enllaços a pyLoad"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:13
 msgid " Paste your links here..."
-msgstr ""
+msgstr " Enganxar els enllaços aquí..."
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:17
 msgid "Container"
-msgstr ""
+msgstr "Contenidor"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:18
 msgid "Upload"
-msgstr ""
+msgstr "Càrrega"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:24
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:25
 msgid "Link to Website"
-msgstr ""
+msgstr "Enllaç a lloc web"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:31
 msgid "Packages"
-msgstr ""
+msgstr "Paquets"
 
 #: pyload/web/app/templates/default/linkgrabber/package.html:19
 msgid "%d link"
 msgid_plural "%d links"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d enllaç"
+msgstr[1] "%d enllaços"
 

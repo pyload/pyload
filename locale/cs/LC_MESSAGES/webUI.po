@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -15,12 +15,12 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/web/app/templates/default/admin.html:3
 #: pyload/web/app/templates/default/admin.html:4
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: pyload/web/app/scripts/helpers/formatSize.js:9
 #: pyload/web/app/templates/default/setup/system.html:45
 msgid "not available"
-msgstr ""
+msgstr "není k dispozici"
 
 #: pyload/web/app/scripts/helpers/formatSize.js:11
 #: pyload/web/app/scripts/helpers/formatTime.js:10
@@ -44,145 +44,145 @@ msgstr "neznamy"
 #: pyload/web/app/templates/default/dashboard/select.html:1
 msgid "1 package"
 msgid_plural "%d packages"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "1 balíček"
+msgstr[1] "%d balíčky"
+msgstr[2] "%d balíčků"
 
 #: pyload/web/app/templates/default/dashboard/select.html:4
 msgid "1 file"
 msgid_plural "%d files"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "1 soubor"
+msgstr[1] "%d soubory"
+msgstr[2] "%d souborů"
 
 #: pyload/web/app/templates/default/dashboard/package.html:33
 msgid "Addons"
-msgstr ""
+msgstr "Addony"
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
 msgid "Loading..."
-msgstr ""
+msgstr "Načítání..."
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
 msgid "Local"
-msgstr ""
+msgstr "Lokální"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:18
 msgid "Search"
-msgstr ""
+msgstr "Hledat"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:26
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:44
 #: pyload/web/app/templates/default/dashboard/actionbar.html:49
 msgid "All"
-msgstr ""
+msgstr "Vše"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:50
 msgid "Finished"
-msgstr ""
+msgstr "Dokončeno"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:51
 msgid "Unfinished"
-msgstr ""
+msgstr "Nedokončeno"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:52
 msgid "Failed"
-msgstr ""
+msgstr "Selhalo"
 
 #: pyload/web/app/templates/default/setup/finished.html:3
 msgid "Nearly Done"
-msgstr ""
+msgstr "Téměř dokončeno"
 
 #: pyload/web/app/templates/default/setup/finished.html:7
 msgid "Please check your settings."
-msgstr ""
+msgstr "Prosím zkontrolujte nastavení."
 
 #: pyload/web/app/templates/default/setup/finished.html:15
 msgid "Confirm"
-msgstr ""
+msgstr "Potvrdit"
 
 #: pyload/web/app/templates/default/setup/finished.html:20
 msgid "Please add a user first."
-msgstr ""
+msgstr "Nejdříve prosím přidejte uživatele."
 
 #: pyload/web/app/templates/default/setup/welcome.html:0
 msgid "Welcome!"
-msgstr ""
+msgstr "Vítejte!"
 
 #: pyload/web/app/templates/default/setup/welcome.html:2
 msgid "pyLoad is running and ready for configuration."
-msgstr ""
+msgstr "pyLoad je spuštěn a připraven k nastavení."
 
 #: pyload/web/app/templates/default/setup/welcome.html:5
 msgid "Select your language:"
-msgstr ""
+msgstr "Zadejte svůj jazyk:"
 
 #: pyload/web/app/templates/default/setup/welcome.html:12
 msgid "Start configuration"
-msgstr ""
+msgstr "Zahájit konfiguraci"
 
 #: pyload/web/app/templates/default/setup/layout.html:2
 msgid "Setup"
-msgstr ""
+msgstr "Nastavení"
 
 #: pyload/web/app/templates/default/setup/system.html:0
 msgid "System"
-msgstr ""
+msgstr "Systém"
 
 #: pyload/web/app/templates/default/setup/system.html:9
 msgid "Dependencies"
-msgstr ""
+msgstr "Závislosti"
 
 #: pyload/web/app/templates/default/setup/system.html:31
 msgid "Optional"
-msgstr ""
+msgstr "Volitelné"
 
 #: pyload/web/app/templates/default/setup/system.html:38
 msgid "available"
-msgstr ""
+msgstr "k dispozici"
 
 #: pyload/web/app/templates/default/setup/system.html:54
 msgid "Next"
-msgstr ""
+msgstr "Další"
 
 #: pyload/web/app/templates/default/setup/error.html:1
 msgid "Setup timed out"
-msgstr ""
+msgstr "Vypršel časový limit pro nastavení"
 
 #: pyload/web/app/templates/default/setup/error.html:2
 msgid "Setup was closed due to inactivity. Please restart it to continue configuration."
-msgstr ""
+msgstr "Nastavení bylo kvůli neaktivitě ukončeno. Pro pokračování konfigurace ho prosím restartujte."
 
 #: pyload/web/app/templates/default/setup/error.html:5
 msgid "Setup finished"
-msgstr ""
+msgstr "Nastavení dokončeno"
 
 #: pyload/web/app/templates/default/setup/error.html:6
 msgid "Setup was successful. You can restart pyLoad now."
-msgstr ""
+msgstr "Nastavení bylo úspěšné. nyní můžete pyLoad restartovat."
 
 #: pyload/web/app/templates/default/setup/error.html:9
 msgid "Setup failed"
-msgstr ""
+msgstr "Nastavení selhalo"
 
 #: pyload/web/app/templates/default/setup/error.html:11
 msgid "Try to restart it or open a bug report."
-msgstr ""
+msgstr "Zkuste ho restartovat, případně nahlásit chybu."
 
 #: pyload/web/app/templates/default/header/layout.html:13
 msgid "Running..."
-msgstr ""
+msgstr "Běží..."
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:3
 msgid "Choose a plugin"
-msgstr ""
+msgstr "Vyberte plugin"
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:9
 msgid "Please choose a plugin, which you want to configure"
-msgstr ""
+msgstr "Prosím vyberte plugin, který chcete nastavit"
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:23
 #: pyload/web/app/templates/default/linkgrabber/modal.html:39
@@ -197,19 +197,19 @@ msgstr "Zavřít"
 
 #: pyload/web/app/templates/default/dialogs/addAccount.html:2
 msgid "Add an account"
-msgstr ""
+msgstr "Přidat účet"
 
 #: pyload/web/app/templates/default/dialogs/addAccount.html:7
 msgid "Please enter your account data"
-msgstr ""
+msgstr "Zadejte prosím údaje k účtu"
 
 #: pyload/web/app/templates/default/dialogs/confirmDelete.html:2
 msgid "Please confirm"
-msgstr ""
+msgstr "Prosím potvrďte"
 
 #: pyload/web/app/templates/default/dialogs/confirmDelete.html:5
 msgid "Do you want to delete the selected items?"
-msgstr ""
+msgstr "Chcete smazat vybrané položky?"
 
 #: pyload/web/app/templates/default/dialogs/confirmDelete.html:8
 msgid "Delete"
@@ -225,7 +225,7 @@ msgstr "Odeslat"
 
 #: pyload/web/app/templates/default/accounts/account.html:5
 msgid "premium"
-msgstr ""
+msgstr "premium"
 
 #: pyload/web/app/templates/default/accounts/account.html:7
 msgid "valid"
@@ -237,19 +237,19 @@ msgstr "neplatný"
 
 #: pyload/web/app/templates/default/accounts/account.html:23
 msgid "Traffic left:"
-msgstr ""
+msgstr "Zbývá traffic:"
 
 #: pyload/web/app/templates/default/accounts/account.html:27
 msgid "Valid until:"
-msgstr ""
+msgstr "Platný do:"
 
 #: pyload/web/app/templates/default/accounts/editAccount.html:2
 msgid "Edit account"
-msgstr ""
+msgstr "Upravit účet"
 
 #: pyload/web/app/templates/default/accounts/editAccount.html:27
 msgid "Configuration"
-msgstr ""
+msgstr "Konfigurace"
 
 #: pyload/web/app/templates/default/accounts/layout.html:2
 msgid "Accounts"
@@ -257,44 +257,44 @@ msgstr "Účty"
 
 #: pyload/web/app/templates/default/accounts/actionbar.html:2
 msgid "Add Account"
-msgstr ""
+msgstr "Přidat Účet"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:3
 msgid "Add links"
-msgstr ""
+msgstr "Přidat odkazy"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:4
 msgid "paste & add links to pyLoad"
-msgstr ""
+msgstr "vložit & přidat odkazy pro pyLoad"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:13
 msgid " Paste your links here..."
-msgstr ""
+msgstr " Sem prosím vložte své odkazy..."
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:17
 msgid "Container"
-msgstr ""
+msgstr "Kontejner"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:18
 msgid "Upload"
-msgstr ""
+msgstr "Upload"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:24
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:25
 msgid "Link to Website"
-msgstr ""
+msgstr "Odkaz na webové stránky"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:31
 msgid "Packages"
-msgstr ""
+msgstr "Balíčky"
 
 #: pyload/web/app/templates/default/linkgrabber/package.html:19
 msgid "%d link"
 msgid_plural "%d links"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d odkaz"
+msgstr[1] "%d odkazy"
+msgstr[2] "%d odkazů"
 

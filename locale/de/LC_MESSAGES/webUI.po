@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-04-08 08:51-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -55,11 +55,11 @@ msgstr[1] "%d Dateien"
 
 #: pyload/web/app/templates/default/dashboard/package.html:33
 msgid "Addons"
-msgstr ""
+msgstr "Erweiterungen"
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
 msgid "Loading..."
-msgstr ""
+msgstr "Lade..."
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
 msgid "Local"
@@ -84,7 +84,7 @@ msgstr "Fertig"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:51
 msgid "Unfinished"
-msgstr "nicht abgeschlossen"
+msgstr "Ausstehend"
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:52
 msgid "Failed"
@@ -104,7 +104,7 @@ msgstr "Bestätigen"
 
 #: pyload/web/app/templates/default/setup/finished.html:20
 msgid "Please add a user first."
-msgstr ""
+msgstr "Bitte füge erst einen Benutzer hinzu."
 
 #: pyload/web/app/templates/default/setup/welcome.html:0
 msgid "Welcome!"
@@ -112,7 +112,7 @@ msgstr "Herzlich Willkommen!"
 
 #: pyload/web/app/templates/default/setup/welcome.html:2
 msgid "pyLoad is running and ready for configuration."
-msgstr "PyLoad wird ausgeführt und ist bereit für die Konfiguration."
+msgstr "PyLoad wird ausgeführt und bereit für die Konfiguration."
 
 #: pyload/web/app/templates/default/setup/welcome.html:5
 msgid "Select your language:"
@@ -156,7 +156,7 @@ msgstr "Die Konfiguration wurde aufgrund von Inaktivität beendet. Starte die Ko
 
 #: pyload/web/app/templates/default/setup/error.html:5
 msgid "Setup finished"
-msgstr "Setup beendet"
+msgstr "Konfiguration abgeschlossen"
 
 #: pyload/web/app/templates/default/setup/error.html:6
 msgid "Setup was successful. You can restart pyLoad now."

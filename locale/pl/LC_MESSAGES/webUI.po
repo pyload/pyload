@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -57,11 +57,11 @@ msgstr[2] "%d ;plików"
 
 #: pyload/web/app/templates/default/dashboard/package.html:33
 msgid "Addons"
-msgstr ""
+msgstr "Dodatki"
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
 msgid "Loading..."
-msgstr ""
+msgstr "Ładowanie..."
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
 msgid "Local"
@@ -106,7 +106,7 @@ msgstr "Potwierdź"
 
 #: pyload/web/app/templates/default/setup/finished.html:20
 msgid "Please add a user first."
-msgstr ""
+msgstr "Proszę dodać użytkownika."
 
 #: pyload/web/app/templates/default/setup/welcome.html:0
 msgid "Welcome!"
@@ -118,7 +118,7 @@ msgstr "pyLoad jest uruchomiony i gotowy do konfiguracji."
 
 #: pyload/web/app/templates/default/setup/welcome.html:5
 msgid "Select your language:"
-msgstr "Wybierz jezyk:"
+msgstr "Wybierz swój język:"
 
 #: pyload/web/app/templates/default/setup/welcome.html:12
 msgid "Start configuration"

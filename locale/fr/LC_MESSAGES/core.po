@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -34,11 +34,11 @@ msgstr "Extensions désactivées: %s"
 
 #: pyload/AddonManager.py:184
 msgid "Activating addons..."
-msgstr ""
+msgstr "Activation des extensions..."
 
 #: pyload/AddonManager.py:194
 msgid "Deactivating addons..."
-msgstr ""
+msgstr "Désactivation des extensions..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -129,11 +129,11 @@ msgstr "Log tournant"
 
 #: pyload/config/default.py:28
 msgid "Colorize Console"
-msgstr ""
+msgstr "Coloriser la console"
 
 #: pyload/config/default.py:29
 msgid "Color Theme"
-msgstr ""
+msgstr "Couleur du thème"
 
 #: pyload/config/default.py:32
 msgid "Permissions"
@@ -341,7 +341,7 @@ msgstr "Compte du plugin %s non disponible"
 #: pyload/AccountManager.py:70
 #, python-format
 msgid "Could not load account %s"
-msgstr "N'a pas pu charger le compte %s"
+msgstr "Le compte %s n'a pas pu être chargé"
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
@@ -424,7 +424,7 @@ msgstr "annulé"
 
 #: pyload/FileManager.py:55
 msgid "not possible"
-msgstr ""
+msgstr "impossible"
 
 #: pyload/FileManager.py:56
 msgid "decrypting"
@@ -537,7 +537,7 @@ msgstr "Décryptage de %(count)d liens dans les paquets %(name)s"
 
 #: pyload/threads/DecrypterThread.py:55
 msgid "Decrypting aborted"
-msgstr "Décryptage abandonné"
+msgstr "Décryptage interrompu"
 
 #: pyload/threads/DecrypterThread.py:57
 msgid "Decrypting failed"

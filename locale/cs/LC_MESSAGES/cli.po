@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -23,24 +23,24 @@ msgstr "Zadej název nového balíčku"
 #: pyload/cli/AddPackage.py:57
 #, python-format
 msgid "Package: %s"
-msgstr "Balicek: %s"
+msgstr "Balíček: %s"
 
 #: pyload/cli/AddPackage.py:58
 msgid "Parse the links you want to add."
-msgstr "Analyzuje odkazy ktere chcete pridat."
+msgstr "Analyzuje odkazy které chcete přidat."
 
 #: pyload/cli/AddPackage.py:59
 #, python-format
 msgid "Type %s when done."
-msgstr "Pokud jste hotovi, napiste %s"
+msgstr "Pokud jste hotovi, napište %s"
 
 #: pyload/cli/AddPackage.py:60
 msgid "Links added: "
-msgstr "Pridano odkazu: "
+msgstr "Přidáno odkazů: "
 
 #: pyload/cli/AddPackage.py:64 pyload/cli/ManageFiles.py:149
 msgid " back to main menu"
-msgstr " zpet do hlavniho menu"
+msgstr " zpět do hlavního menu"
 
 #: pyload/cli/ManageFiles.py:97
 msgid "Manage Packages:"
@@ -80,20 +80,20 @@ msgstr "restartovat"
 
 #: pyload/cli/ManageFiles.py:148
 msgid " - previous"
-msgstr " - predchozi"
+msgstr " - předchozí"
 
 #: pyload/cli/ManageFiles.py:148
 msgid " - next"
-msgstr " - dalsi"
+msgstr " - další"
 
 #: pyload/cli/Cli.py:75 pyload/cli/Cli.py:133
 msgid " Command Line Interface"
-msgstr " Prikazova radka"
+msgstr " Příkazová řádka"
 
 #: pyload/cli/Cli.py:165
 #, python-format
 msgid "%s Downloads:"
-msgstr "%s Stahovani:"
+msgstr "%s Stahování:"
 
 #: pyload/cli/Cli.py:177
 msgid " Speed: "
@@ -105,7 +105,7 @@ msgstr " Velikost: "
 
 #: pyload/cli/Cli.py:178
 msgid " Finished in: "
-msgstr " Dokonceno za: "
+msgstr " Dokončeno za: "
 
 #: pyload/cli/Cli.py:179
 msgid " ID: "
@@ -113,7 +113,7 @@ msgstr " ID: "
 
 #: pyload/cli/Cli.py:184
 msgid "waiting: "
-msgstr "ceka: "
+msgstr "čeká: "
 
 #: pyload/cli/Cli.py:191 pyload/cli/Cli.py:193
 msgid "Status:"
@@ -137,7 +137,7 @@ msgstr "Souborů ve frontě"
 
 #: pyload/cli/Cli.py:197
 msgid "Total"
-msgstr "Celken"
+msgstr "Celkem"
 
 #: pyload/cli/Cli.py:203
 msgid "Menu:"
@@ -145,7 +145,7 @@ msgstr "Menu:"
 
 #: pyload/cli/Cli.py:205
 msgid " Add Links"
-msgstr " Pridat Odkazy"
+msgstr " Přidat Odkazy"
 
 #: pyload/cli/Cli.py:206
 msgid " Manage Queue"
@@ -157,11 +157,11 @@ msgstr " Správa Sběrače"
 
 #: pyload/cli/Cli.py:208
 msgid " (Un)Pause Server"
-msgstr " Pozastavit/Rozbehnout server"
+msgstr " Pozastavit/Spustit server"
 
 #: pyload/cli/Cli.py:209
 msgid " Kill Server"
-msgstr " Ukoncit server"
+msgstr " Ukončit server"
 
 #: pyload/cli/Cli.py:210
 msgid " Quit"
@@ -169,7 +169,7 @@ msgstr " Konec"
 
 #: pyload/cli/Cli.py:289 pyload/cli/Cli.py:296
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
-msgstr "Prosim použijte tuto syntaxi: add <Jmeno balicku> <odkaz> <odkaz2> ..."
+msgstr "Prosím použijte tuto syntaxi: add <Jmeno balicku> <odkaz> <odkaz2> ..."
 
 #: pyload/cli/Cli.py:315
 #, python-format
@@ -182,23 +182,23 @@ msgstr "Soubor neexistuje."
 
 #: pyload/cli/Cli.py:385
 msgid "pyLoad was terminated"
-msgstr "pyLoad byl ukoncen"
+msgstr "pyLoad byl ukončen"
 
 #: pyload/cli/Cli.py:443
 msgid "Prints server status"
-msgstr "Vypise stav serveru"
+msgstr "Vypíše stav serveru"
 
 #: pyload/cli/Cli.py:444
 msgid "Prints downloads in queue"
-msgstr "Vypise stahovani ve fronte"
+msgstr "Vypíše stahování ve frontě"
 
 #: pyload/cli/Cli.py:445
 msgid "Prints downloads in collector"
-msgstr "Vypise stahovani ve sberaci"
+msgstr "Vypíše stahování ve sběrači"
 
 #: pyload/cli/Cli.py:446
 msgid "Adds package to queue"
-msgstr "Prida balicek do fronty"
+msgstr "Přidá balíček do fronty"
 
 #: pyload/cli/Cli.py:447
 msgid "Adds package to collector"
@@ -206,11 +206,11 @@ msgstr "Přidá balíček do sběrače"
 
 #: pyload/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
-msgstr "Smazat soubory z fronty/sberace"
+msgstr "Smazat soubory z fronty/sběrače"
 
 #: pyload/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
-msgstr "Smazat balicky z fronty/sberace"
+msgstr "Smazat balíčky z fronty/sběrače"
 
 #: pyload/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"

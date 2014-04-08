@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -34,11 +34,11 @@ msgstr "Complementos desactivados: %s"
 
 #: pyload/AddonManager.py:184
 msgid "Activating addons..."
-msgstr ""
+msgstr "Activando complementos..."
 
 #: pyload/AddonManager.py:194
 msgid "Deactivating addons..."
-msgstr ""
+msgstr "Desactivando complementos..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -129,11 +129,11 @@ msgstr "Rotar el registro"
 
 #: pyload/config/default.py:28
 msgid "Colorize Console"
-msgstr ""
+msgstr "Colorear Consola"
 
 #: pyload/config/default.py:29
 msgid "Color Theme"
-msgstr ""
+msgstr "Tema de Color"
 
 #: pyload/config/default.py:32
 msgid "Permissions"
@@ -165,7 +165,7 @@ msgstr "Cambiar grupo del proceso en ejecución"
 
 #: pyload/config/default.py:40
 msgid "Folder Permission mode"
-msgstr "Modo de Permiso Carpeta"
+msgstr "Modo de Permiso de Carpeta"
 
 #: pyload/config/default.py:41
 msgid "Change user of running process"
@@ -289,7 +289,7 @@ msgstr "Descargar"
 
 #: pyload/config/default.py:95
 msgid "Max Parallel Downloads"
-msgstr "Máximas Descargas Paralelas"
+msgstr "Máx. Descargas Paralelas"
 
 #: pyload/config/default.py:96
 msgid "Limit Download Speed"
@@ -392,7 +392,7 @@ msgstr "Pausado"
 
 #: pyload/FileManager.py:54
 msgid "finished"
-msgstr "acabado"
+msgstr "Terminado"
 
 #: pyload/FileManager.py:54
 msgid "skipped"
@@ -424,7 +424,7 @@ msgstr "abortado"
 
 #: pyload/FileManager.py:55
 msgid "not possible"
-msgstr ""
+msgstr "No es posible"
 
 #: pyload/FileManager.py:56
 msgid "decrypting"
@@ -445,12 +445,12 @@ msgstr "desconocido"
 #: pyload/FileManager.py:426
 #, python-format
 msgid "Package finished: %s"
-msgstr "Paquete acabado: %s"
+msgstr "Paquete terminado: %s"
 
 #: pyload/Api.py:151
 #, python-format
 msgid "User '%s' tries to log in"
-msgstr "Usuario '%s' intenta iniciar sesión"
+msgstr "El usuario '%s' intenta iniciar sesión"
 
 #: pyload/Core.py:195
 msgid "Received Quit signal"
@@ -482,7 +482,7 @@ msgstr "Usando directorio de inicio: %s"
 
 #: pyload/Core.py:371
 msgid "All links removed"
-msgstr "Se eliminaron todos los enlaces"
+msgstr "Se han eliminado todos los enlaces"
 
 #: pyload/Core.py:401
 #, python-format
@@ -524,7 +524,7 @@ msgstr "ha ocurrido un error mientras se apagaba"
 
 #: pyload/Core.py:690
 msgid "killed pyLoad from terminal"
-msgstr "pyload terminado desde el Terminal"
+msgstr "pyload apagado desde el Terminal"
 
 #: pyload/database/DatabaseBackend.py:167
 msgid "Database was deleted due to incompatible version."
@@ -533,7 +533,7 @@ msgstr "El archivo de la base de datos fue eliminado por ser de una versión inc
 #: pyload/threads/DecrypterThread.py:30
 #, python-format
 msgid "Decrypted %(count)d links into package %(name)s"
-msgstr "Desccifrados %(count)d enlaces en el paquete %(name)s"
+msgstr "%(count)d enlaces descifrados en el paquete %(name)s"
 
 #: pyload/threads/DecrypterThread.py:55
 msgid "Decrypting aborted"
@@ -541,7 +541,7 @@ msgstr "Desencriptado abortado"
 
 #: pyload/threads/DecrypterThread.py:57
 msgid "Decrypting failed"
-msgstr "Descifrado fallido"
+msgstr "Ha fallado el descifrado"
 
 #: pyload/threads/InfoThread.py:143
 #, python-format
@@ -577,7 +577,7 @@ msgstr "No hay suficiente espacio libre en el dispositivo"
 #: pyload/threads/DownloadThread.py:64
 #, python-format
 msgid "Download starts: %s"
-msgstr "Inicia descarga: %s"
+msgstr "Iniciando descarga: %s"
 
 #: pyload/threads/DownloadThread.py:70
 #, python-format

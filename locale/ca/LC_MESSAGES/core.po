@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -34,11 +34,11 @@ msgstr "Complementos desactivados: %s"
 
 #: pyload/AddonManager.py:184
 msgid "Activating addons..."
-msgstr ""
+msgstr "Activant conectors..."
 
 #: pyload/AddonManager.py:194
 msgid "Deactivating addons..."
-msgstr ""
+msgstr "Desactivant conectors..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -97,11 +97,11 @@ msgstr "Activat"
 #: pyload/config/default.py:17 pyload/config/default.py:71
 #: pyload/config/default.py:82
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 #: pyload/config/default.py:18 pyload/config/default.py:79
 msgid "Address"
-msgstr ""
+msgstr "Adreça"
 
 #: pyload/config/default.py:21
 msgid "Log"
@@ -113,7 +113,7 @@ msgstr "Mida en kb"
 
 #: pyload/config/default.py:24
 msgid "Folder"
-msgstr ""
+msgstr "Carpeta"
 
 #: pyload/config/default.py:25
 msgid "File Log"
@@ -129,11 +129,11 @@ msgstr "Rotar el Registre"
 
 #: pyload/config/default.py:28
 msgid "Colorize Console"
-msgstr ""
+msgstr "Acolorir consola"
 
 #: pyload/config/default.py:29
 msgid "Color Theme"
-msgstr ""
+msgstr "Tema de colors"
 
 #: pyload/config/default.py:32
 msgid "Permissions"
@@ -153,7 +153,7 @@ msgstr "Canviar el mode de fixter de descárregues"
 
 #: pyload/config/default.py:37 pyload/config/default.py:77
 msgid "Username"
-msgstr ""
+msgstr "Nom d'usuari"
 
 #: pyload/config/default.py:38
 msgid "Filemode for Downloads"
@@ -173,11 +173,11 @@ msgstr "Canviar usuari del procés en execució"
 
 #: pyload/config/default.py:44
 msgid "General"
-msgstr ""
+msgstr "General"
 
 #: pyload/config/default.py:46
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 #: pyload/config/default.py:47
 msgid "Download Folder"
@@ -229,7 +229,7 @@ msgstr "Prefix de ruta"
 
 #: pyload/config/default.py:67
 msgid "Server"
-msgstr ""
+msgstr "Servidor"
 
 #: pyload/config/default.py:68
 msgid "Favor specific server"
@@ -257,7 +257,7 @@ msgstr "Utilitza Proxy"
 
 #: pyload/config/default.py:80
 msgid "Password"
-msgstr ""
+msgstr "Contrasenya"
 
 #: pyload/config/default.py:81
 msgid "Protocol"
@@ -336,12 +336,12 @@ msgstr "Afegits %d enllaços al paquet"
 #: pyload/AccountManager.py:49
 #, python-format
 msgid "Account plugin %s not available"
-msgstr ""
+msgstr "El connector per comptes %s no està disponible"
 
 #: pyload/AccountManager.py:70
 #, python-format
 msgid "Could not load account %s"
-msgstr ""
+msgstr "No s'ha pogut carregar el compte %s"
 
 #: pyload/interaction/InteractionManager.py:88
 msgid "Query"
@@ -424,7 +424,7 @@ msgstr "avortat"
 
 #: pyload/FileManager.py:55
 msgid "not possible"
-msgstr ""
+msgstr "no és possible"
 
 #: pyload/FileManager.py:56
 msgid "decrypting"
@@ -537,7 +537,7 @@ msgstr "Desxifrat %(count)d enllaços en paquet %(name)s"
 
 #: pyload/threads/DecrypterThread.py:55
 msgid "Decrypting aborted"
-msgstr ""
+msgstr "Desxiframent avortat"
 
 #: pyload/threads/DecrypterThread.py:57
 msgid "Decrypting failed"
@@ -642,5 +642,5 @@ msgstr "No s'ha detectat cap motor js, si us plau instal·la Spidermonkey, ossp-
 
 #: pyload/utils/packagetools.py:130
 msgid "Unnamed package"
-msgstr ""
+msgstr "Paquet sense nom"
 

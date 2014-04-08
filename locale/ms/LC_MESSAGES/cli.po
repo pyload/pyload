@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Malay\n"
 "Language: ms_MY\n"
@@ -14,16 +14,16 @@ msgstr "Project-Id-Version: pyload\n"
 
 #: pyload/cli/AddPackage.py:48
 msgid "Add Package:"
-msgstr ""
+msgstr "Tambah pakej:"
 
 #: pyload/cli/AddPackage.py:53
 msgid "Enter a name for the new package"
-msgstr ""
+msgstr "Masukkan nama untuk pakej baru"
 
 #: pyload/cli/AddPackage.py:57
 #, python-format
 msgid "Package: %s"
-msgstr ""
+msgstr "Pakej: %s"
 
 #: pyload/cli/AddPackage.py:58
 msgid "Parse the links you want to add."
@@ -36,43 +36,43 @@ msgstr ""
 
 #: pyload/cli/AddPackage.py:60
 msgid "Links added: "
-msgstr ""
+msgstr "Pautan ditambah: "
 
 #: pyload/cli/AddPackage.py:64 pyload/cli/ManageFiles.py:149
 msgid " back to main menu"
-msgstr ""
+msgstr " kembali ke menu utama"
 
 #: pyload/cli/ManageFiles.py:97
 msgid "Manage Packages:"
-msgstr ""
+msgstr "Menguruskan pakej:"
 
 #: pyload/cli/ManageFiles.py:99
 msgid "Manage Links:"
-msgstr ""
+msgstr "Menguruskan pautan:"
 
 #: pyload/cli/ManageFiles.py:104
 msgid "What do you want to move?"
-msgstr ""
+msgstr "Apakah yang anda ingin mengalih?"
 
 #: pyload/cli/ManageFiles.py:106
 msgid "What do you want to delete?"
-msgstr ""
+msgstr "Apakah yang anda ingin hapuskan?"
 
 #: pyload/cli/ManageFiles.py:108
 msgid "What do you want to restart?"
-msgstr ""
+msgstr "Apakah yang anda ingin memulakan semula?"
 
 #: pyload/cli/ManageFiles.py:113
 msgid "Choose what you want to do, or enter package number."
-msgstr ""
+msgstr "Pilih apa yang anda ingin lakukan, atau masukkan nombor pakej."
 
 #: pyload/cli/ManageFiles.py:115
 msgid "delete"
-msgstr ""
+msgstr "hapuskan"
 
 #: pyload/cli/ManageFiles.py:115
 msgid "move"
-msgstr ""
+msgstr "mengalih"
 
 #: pyload/cli/ManageFiles.py:115
 msgid "restart"

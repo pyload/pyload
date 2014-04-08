@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -34,11 +34,11 @@ msgstr "Addon disattivati: %s"
 
 #: pyload/AddonManager.py:184
 msgid "Activating addons..."
-msgstr ""
+msgstr "Attivazione estensioni..."
 
 #: pyload/AddonManager.py:194
 msgid "Deactivating addons..."
-msgstr ""
+msgstr "Disattivazione estensioni..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -129,11 +129,11 @@ msgstr "Rotazione Log"
 
 #: pyload/config/default.py:28
 msgid "Colorize Console"
-msgstr ""
+msgstr "Colora Console"
 
 #: pyload/config/default.py:29
 msgid "Color Theme"
-msgstr ""
+msgstr "Tema Colore"
 
 #: pyload/config/default.py:32
 msgid "Permissions"
@@ -424,7 +424,7 @@ msgstr "annullato"
 
 #: pyload/FileManager.py:55
 msgid "not possible"
-msgstr ""
+msgstr "impossibile"
 
 #: pyload/FileManager.py:56
 msgid "decrypting"
@@ -516,7 +516,7 @@ msgstr "esco da pyLoad"
 
 #: pyload/Core.py:593
 msgid "shutting down..."
-msgstr "chiusura..."
+msgstr "spegnimento..."
 
 #: pyload/Core.py:608
 msgid "error while shutting down"

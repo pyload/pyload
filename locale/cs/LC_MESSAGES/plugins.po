@@ -2,7 +2,7 @@ msgid ""
 msgstr "Project-Id-Version: pyload\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
 "POT-Creation-Date: 2013-11-30 16:17+0100\n"
-"PO-Revision-Date: 2013-11-30 10:25-0500\n"
+"PO-Revision-Date: 2014-03-22 14:03-0400\n"
 "Last-Translator: pyloadTeam <team@pyload.org>\n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -15,39 +15,39 @@ msgstr "Project-Id-Version: pyload\n"
 #: pyload/plugins/network/CurlDownload.py:245
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
-msgstr "Stahování chunků selhalo, přecházím na jediné přepojení | %s"
+msgstr "Stahování částí selhalo, přecházím na jediné připojení | %s"
 
 #: pyload/plugins/Base.py:327
 msgid "Pil and tesseract not installed and no Client connected for captcha decrypting"
-msgstr ""
+msgstr "Pil a tesseract nejsou nainstalovány a není připojen žádný klient pro rozpoznávání Captchy"
 
 #: pyload/plugins/Base.py:331
 msgid "No captcha result obtained in appropriate time."
-msgstr ""
+msgstr "V potřebném čase nebyly získány žádné výsledky pro Captcha."
 
 #: pyload/plugins/Hoster.py:267 pyload/plugins/Hoster.py:304
 #: pyload/plugins/hoster/ARD.py:79
 #, python-format
 msgid "Setting User and Group failed: %s"
-msgstr "Nastavení uživatelů a skupin se nezdařilo: %s"
+msgstr "Nastavení uživatele a skupiny se nezdařilo: %s"
 
 #: pyload/plugins/Crypter.py:170
 msgid "Not existing file or unsupported protocol"
-msgstr ""
+msgstr "Neexistující soubor nebo nepodporovaný protokol"
 
 #: pyload/plugins/Crypter.py:228
 #, python-format
 msgid "Could not remove file '%s'"
-msgstr ""
+msgstr "Nelze odstranit soubor '%s'"
 
 #: pyload/plugins/hoster/RapidshareCom.py:100
 msgid "Rapidshare: Traffic Share (direct download)"
-msgstr ""
+msgstr "RapidShare: Traffic Share (přímé stažení)"
 
 #: pyload/plugins/hoster/RapidshareCom.py:127
 #: pyload/plugins/hoster/RapidshareCom.py:194
 msgid "Already downloading from this ip address, waiting 60 seconds"
-msgstr ""
+msgstr "Z této ip adresy již stahování probíhá, čekám 60 sekund"
 
 #: pyload/plugins/hoster/RapidshareCom.py:131
 msgid "Invalid Auth Code, download will be restarted"
@@ -63,7 +63,7 @@ msgstr "Pro tento soubor potřebujete prémiový účet"
 
 #: pyload/plugins/hoster/RapidshareCom.py:204
 msgid "Filename reported invalid"
-msgstr ""
+msgstr "Ohlášeno neplatné jméno souboru"
 
 #: pyload/plugins/hoster/RPNetBiz.py:26
 #: pyload/plugins/hoster/RealdebridCom.py:41
@@ -79,7 +79,7 @@ msgstr ""
 #: pyload/plugins/addons/RPNetBiz.py:43
 #, python-format
 msgid "Please enter your %s account or deactivate this plugin"
-msgstr ""
+msgstr "Prosím vložte svůj %s účet nebo tento plugin deaktivujte"
 
 #: pyload/plugins/hoster/MegaNz.py:56
 msgid "Decryption failed"
@@ -87,7 +87,7 @@ msgstr "Dešifrování selhalo"
 
 #: pyload/plugins/hoster/MegaNz.py:106
 msgid "No file key provided in the URL"
-msgstr ""
+msgstr "URL neobsahuje klíč souboru"
 
 #: pyload/plugins/hoster/MegaNz.py:118
 msgid "Error code:"
@@ -95,7 +95,7 @@ msgstr "Kód chyby:"
 
 #: pyload/plugins/hoster/FileserveCom.py:99
 msgid "Parallel download error, now waiting 60s."
-msgstr ""
+msgstr "Chyba souběžného stahování, čekám 60s."
 
 #: pyload/plugins/hoster/FileserveCom.py:215
 msgid "Not logged in."
@@ -108,15 +108,15 @@ msgstr "Neplatný API klíč"
 #: pyload/plugins/hoster/UploadedTo.py:153
 #, python-format
 msgid "%s: Not enough traffic left"
-msgstr ""
+msgstr "%s: Nezbývá dostatečný traffic"
 
 #: pyload/plugins/hoster/UploadedTo.py:156
 msgid "Traffic exceeded"
-msgstr ""
+msgstr "Překročen Traffic"
 
 #: pyload/plugins/hoster/BasePlugin.py:65
 msgid "Authorization required (username:password)"
-msgstr ""
+msgstr "Je vyžadována autorizace (username:password)"
 
 #: pyload/plugins/hoster/NetloadIn.py:146
 #: pyload/plugins/hoster/NetloadIn.py:170
@@ -126,12 +126,12 @@ msgstr "Soubor není dočasně k dispozici"
 #: pyload/plugins/hoster/NetloadIn.py:183
 #, python-format
 msgid "Netload: waiting between downloads %d s."
-msgstr ""
+msgstr "Netload: čekání mezi stahováním %d s."
 
 #: pyload/plugins/hoster/NetloadIn.py:214
 #, python-format
 msgid "Netload: waiting for captcha %d s."
-msgstr ""
+msgstr "Netload: čekám na captchu %d s."
 
 #: pyload/plugins/hoster/NetloadIn.py:252
 msgid "Downloaded File was empty"
@@ -140,19 +140,19 @@ msgstr "Stažený soubor byl prázdný"
 #: pyload/plugins/hoster/FilesMailRu.py:99
 #, python-format
 msgid "There was HTML Code in the Downloaded File (%s)...redirect error? The Download will be restarted."
-msgstr ""
+msgstr "Ve staženém souboru (%s) byl nalezen HTML kód... Chyba přesměrování? Stahování bude restartováno."
 
 #: pyload/plugins/hoster/XHamsterCom.py:74
 #: pyload/plugins/hoster/XHamsterCom.py:83
 #: pyload/plugins/hoster/XHamsterCom.py:86
 #, python-format
 msgid "long_url: %s"
-msgstr ""
+msgstr "dlouhá url: %s"
 
 #: pyload/plugins/Account.py:140 pyload/plugins/Account.py:146
 #, python-format
 msgid "Could not login with account %(user)s | %(msg)s"
-msgstr ""
+msgstr "Nezdařílo se přihlášení k účtu %(user)s | %(msg)s"
 
 #: pyload/plugins/Account.py:141
 msgid "Wrong Password"
@@ -161,7 +161,7 @@ msgstr "Špatné heslo"
 #: pyload/plugins/Account.py:202
 #, python-format
 msgid "Get Account Info for %s"
-msgstr ""
+msgstr "Získat informace o účtu %s"
 
 #: pyload/plugins/Account.py:211
 #, python-format
@@ -171,44 +171,44 @@ msgstr "Chyba: %s"
 #: pyload/plugins/Account.py:264
 #, python-format
 msgid "Your Time %s has a wrong format, use: 1:22-3:44"
-msgstr ""
+msgstr "Chybný formát času (%s), použijte 1:22-3:44"
 
 #: pyload/plugins/Account.py:287
 #, python-format
 msgid "Account %s has not enough traffic, checking again in 30min"
-msgstr ""
+msgstr "Účet %s nemá nedostatek trafficu, další kontrola za 30min"
 
 #: pyload/plugins/Account.py:295
 #, python-format
 msgid "Account %s is expired, checking again in 1h"
-msgstr ""
+msgstr "Účet %s vypršel, další kontrola za 1h"
 
 #: pyload/plugins/Account.py:312
 #, python-format
 msgid "Login with %s"
-msgstr ""
+msgstr "Přihlásit jako %s"
 
 #: pyload/plugins/Addon.py:163
 #, python-format
 msgid "Error executing addon: %s"
-msgstr ""
+msgstr "Chyba při spuštění addonu: %s"
 
 #: pyload/plugins/accounts/BitshareCom.py:37
 msgid "Activate direct Download in your Bitshare Account"
-msgstr ""
+msgstr "Aktivovat přímé stahování na vašem Bitshare accountu"
 
 #: pyload/plugins/crypter/SerienjunkiesOrg.py:130
 msgid "Downloadlimit reached"
-msgstr ""
+msgstr "Dosažen limit pro stahování"
 
 #: pyload/plugins/addons/Premium4Me.py:29
 msgid "Please add your premium.to account first and restart pyLoad"
-msgstr ""
+msgstr "Nejdříve prosím přidejte váš premium.to účet a restartujte pyLoad"
 
 #: pyload/plugins/addons/ExternalScripts.py:54
 #, python-format
 msgid "Installed scripts for %s: "
-msgstr ""
+msgstr "Nainstalované skripty pro %s: "
 
 #: pyload/plugins/addons/ExternalScripts.py:69
 msgid "Script not executable:"
@@ -217,7 +217,7 @@ msgstr "Skript není spustitelný:"
 #: pyload/plugins/addons/ExternalScripts.py:80
 #, python-format
 msgid "Error in %(script)s: %(error)s"
-msgstr ""
+msgstr "Chyba v %(script)s: %(error)s"
 
 #: pyload/plugins/addons/CaptchaTrader.py:69
 #: pyload/plugins/addons/Captcha9kw.py:59
@@ -232,20 +232,20 @@ msgstr "Nelze odeslat odpověď."
 
 #: pyload/plugins/addons/CaptchaTrader.py:135
 msgid "Your CaptchaTrader Account has not enough credits"
-msgstr ""
+msgstr "Na vašem CaptchaTrader účtu není dostatek kreditu"
 
 #: pyload/plugins/addons/Captcha9kw.py:93
 #, python-format
 msgid "New CaptchaID from upload: %s : %s"
-msgstr ""
+msgstr "Nové CaptchaID z uploadu: %s : %s"
 
 #: pyload/plugins/addons/Captcha9kw.py:129
 msgid "Your Captcha 9kw.eu Account has not enough credits"
-msgstr ""
+msgstr "Na vašem captcha účtu 9kw.eu není dostatek kreditu"
 
 #: pyload/plugins/addons/RehostTo.py:32
 msgid "Please add your rehost.to account first and restart pyLoad"
-msgstr ""
+msgstr "Nejdříve prosím přidejte váš rehost.to účet a restartujte pyLoad"
 
 #: pyload/plugins/addons/HotFolder.py:82
 #, python-format
@@ -254,7 +254,7 @@ msgstr "Přidán %s ze sledované složky"
 
 #: pyload/plugins/addons/ClickAndLoad.py:75
 msgid "Click'N'Load: Port 9666 already in use"
-msgstr ""
+msgstr "Click'N'Load: Port 9666 se již používá"
 
 #: pyload/plugins/addons/XMPPInterface.py:83
 #: pyload/plugins/addons/IRCInterface.py:74
@@ -265,11 +265,11 @@ msgstr "Balicek dokoncen: %s"
 #: pyload/plugins/addons/XMPPInterface.py:91
 #, python-format
 msgid "Download finished: %(name)s @ %(plugin)s"
-msgstr ""
+msgstr "Stahování dokončeno: %(name)s @ %(plugin)s"
 
 #: pyload/plugins/addons/ExpertDecoders.py:95
 msgid "Your ExpertDecoders Account has not enough credits"
-msgstr ""
+msgstr "Na vašm ExpertDecoders účtu není dostatek kreditu"
 
 #: pyload/plugins/addons/UpdateManager.py:74
 msgid "*** Plugins have been updated, please restart pyLoad ***"
@@ -298,12 +298,12 @@ msgstr "***  Získejte ji zde: http://pyload.org/download  ***"
 
 #: pyload/plugins/addons/UpdateManager.py:104
 msgid "Not able to connect server for updates"
-msgstr ""
+msgstr "Nelze se připojit k update serveru"
 
 #: pyload/plugins/addons/UpdateManager.py:148
 #, python-format
 msgid "New version of %(type)s|%(name)s : %(version).2f"
-msgstr ""
+msgstr "Nová verze %(type)s|%(name)s : %(version).2f"
 
 #: pyload/plugins/addons/UpdateManager.py:157
 #: pyload/plugins/addons/UpdateManager.py:162
@@ -318,7 +318,7 @@ msgstr "Nesprávná verze"
 #: pyload/plugins/addons/ExtractArchive.py:97
 #, python-format
 msgid "No %s installed"
-msgstr ""
+msgstr "%s není nainstalován"
 
 #: pyload/plugins/addons/ExtractArchive.py:99
 #: pyload/plugins/addons/ExtractArchive.py:104
@@ -332,20 +332,20 @@ msgstr "Aktivní"
 
 #: pyload/plugins/addons/ExtractArchive.py:111
 msgid "No Extract plugins activated"
-msgstr ""
+msgstr "Nejsou aktivovány žádné rozbalovací pluginy"
 
 #: pyload/plugins/addons/ExtractArchive.py:116
 msgid "Extract package"
-msgstr ""
+msgstr "Rozbalit balíček"
 
 #: pyload/plugins/addons/ExtractArchive.py:116
 msgid "Scans package for archives and extract them"
-msgstr ""
+msgstr "Hledá v balíčcích archivy a rozbaluje je"
 
 #: pyload/plugins/addons/ExtractArchive.py:123
 #, python-format
 msgid "Package %s queued for later extracting"
-msgstr ""
+msgstr "Balíček %s zařazen do fronty pro pozdější rozbalení"
 
 #: pyload/plugins/addons/ExtractArchive.py:146
 #, python-format
@@ -359,7 +359,7 @@ msgstr "Rozbalit do %s"
 
 #: pyload/plugins/addons/ExtractArchive.py:202
 msgid "No files found to extract"
-msgstr ""
+msgstr "Nenalezeny žádné soubory k rozbalení"
 
 #: pyload/plugins/addons/ExtractArchive.py:209
 msgid "extracting"
@@ -380,7 +380,7 @@ msgstr "Mažu %s souborů"
 
 #: pyload/plugins/addons/ExtractArchive.py:256
 msgid "Extracting finished"
-msgstr ""
+msgstr "Rozbalení dokončeno"
 
 #: pyload/plugins/addons/ExtractArchive.py:262
 msgid "Archive Error"
@@ -396,39 +396,39 @@ msgstr "Neznámá chyba"
 
 #: pyload/plugins/addons/ExtractArchive.py:320
 msgid "Setting User and Group failed"
-msgstr ""
+msgstr "Nastavení Uživatele a Skupiny selhalo"
 
 #: pyload/plugins/addons/LinkdecrypterCom.py:37
 msgid "Crypter list not found"
-msgstr ""
+msgstr "Seznam pluginů Crypter nenalezen"
 
 #: pyload/plugins/addons/LinkdecrypterCom.py:51
 msgid "Crypter list is empty"
-msgstr ""
+msgstr "Seznam pluginů Crypter je prázdný"
 
 #: pyload/plugins/addons/IRCInterface.py:82
 #, python-format
 msgid "Download finished: %(name)s @ %(plugin)s "
-msgstr ""
+msgstr "Stahování dokončeno: %(name)s @ %(plugin)s "
 
 #: pyload/plugins/addons/IRCInterface.py:95
 #, python-format
 msgid "New Captcha Request: %s"
-msgstr ""
+msgstr "Nový požadavek na Captchu: %s"
 
 #: pyload/plugins/addons/IRCInterface.py:96
 #, python-format
 msgid "Answer with 'c %s text on the captcha'"
-msgstr ""
+msgstr "Odpovězte \"c %s text z captchy\""
 
 #: pyload/plugins/addons/PremiumizeMe.py:48
 msgid "Please add a valid premiumize.me account first and restart pyLoad."
-msgstr ""
+msgstr "Nejdříve prosím přidejte váš premiumize.me účet a restartujte pyLoad."
 
 #: pyload/plugins/addons/CaptchaBrotherhood.py:69
 #, python-format
 msgid "%d credits left"
-msgstr ""
+msgstr "Zbývá %d kreditů"
 
 #: pyload/plugins/addons/MultiHoster.py:43
 #, python-format
@@ -437,5 +437,5 @@ msgstr "Aktivováno %s"
 
 #: pyload/plugins/addons/MultiHoster.py:61
 msgid "No Hoster loaded"
-msgstr ""
+msgstr "Nenačten žádný plugin Hoster"
 
