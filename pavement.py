@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 from paver.easy import *
 from paver.setuputils import setup
 from paver.doctools import cog
@@ -91,7 +90,8 @@ options(
 )
 
 # xgettext args
-xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad",
+xargs = ["--language=Python", "--add-comments=L10N",
+         "--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad",
          "--package-version=%s" % options.version, "--msgid-bugs-address='bugs@pyload.org'"]
 
 @task
