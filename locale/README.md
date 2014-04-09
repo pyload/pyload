@@ -1,4 +1,4 @@
-# Localization
+# Localization [![Crowdin](http://translate.pyload.org/badges/pyload/localized.png)](http://translate.pyload.org/project/pyload)
 
 The localization process take place on Crowdin:
 
@@ -34,7 +34,7 @@ to automatically upload the updated POTs on Crowdin for the localization process
 
 `paver upload_translations -k [api_key]`
 
-the API Key can be retrieved in the Settings panel of the project on Crowdin.
+the API Key can be retrieved in the Settings panel of the project on Crowdin. This is allowed only to administrators.
 
 ## Retrieve updated PO files
 
