@@ -1,0 +1,295 @@
+msgid ""
+msgstr "Project-Id-Version: pyload\n"
+"Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
+"POT-Creation-Date: 2014-04-08 15:01+0200\n"
+"PO-Revision-Date: 2014-04-09 05:39-0400\n"
+"Last-Translator: pyloadTeam <team@pyload.org>\n"
+"Language-Team: Hungarian\n"
+"Language: hu_HU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.net\n"
+
+#: pyLoadCli.py:75 pyLoadCli.py:133
+msgid " Command Line Interface"
+msgstr " Parancssoros felület"
+
+#: pyLoadCli.py:165
+#, python-format
+msgid "%s Downloads:"
+msgstr "%s letöltés:"
+
+#: pyLoadCli.py:177
+msgid " Speed: "
+msgstr " Sebesség: "
+
+#: pyLoadCli.py:177
+msgid " Size: "
+msgstr " Méret: "
+
+#: pyLoadCli.py:178
+msgid " Finished in: "
+msgstr " Befejezve: "
+
+#: pyLoadCli.py:179
+msgid " ID: "
+msgstr " ID: "
+
+#: pyLoadCli.py:184
+msgid "waiting: "
+msgstr "várakozás: "
+
+#: pyLoadCli.py:191 pyLoadCli.py:193
+msgid "Status:"
+msgstr "Állapot:"
+
+#: pyLoadCli.py:191
+msgid "paused"
+msgstr "felfüggesztve"
+
+#: pyLoadCli.py:193
+msgid "running"
+msgstr "fut"
+
+#: pyLoadCli.py:196
+msgid "total Speed"
+msgstr "össz. sebesség"
+
+#: pyLoadCli.py:196
+msgid "Files in queue"
+msgstr "Várólistás fájlok"
+
+#: pyLoadCli.py:197
+msgid "Total"
+msgstr "Összesen"
+
+#: pyLoadCli.py:203
+msgid "Menu:"
+msgstr "Menü:"
+
+#: pyLoadCli.py:205
+msgid " Add Links"
+msgstr " Link hozzáadás"
+
+#: pyLoadCli.py:206
+msgid " Manage Queue"
+msgstr " Várólista kezelése"
+
+#: pyLoadCli.py:207
+msgid " Manage Collector"
+msgstr " Gyűjtő kezelése"
+
+#: pyLoadCli.py:208
+msgid " (Un)Pause Server"
+msgstr " Szerver szüneteltetése/folytatása"
+
+#: pyLoadCli.py:209
+msgid " Kill Server"
+msgstr " Szerver kilövése (Kill)"
+
+#: pyLoadCli.py:210
+msgid " Quit"
+msgstr " Bezárás"
+
+#: pyLoadCli.py:289 pyLoadCli.py:296
+msgid "Please use this syntax: add <Package name> <link> <link2> ..."
+msgstr "Használd a következő formát: add <Csomag neve> <link> <link2> ..."
+
+#: pyLoadCli.py:315
+#, python-format
+msgid "Checking %d links:"
+msgstr "%d link ellenőrzése:"
+
+#: pyLoadCli.py:324
+msgid "File does not exists."
+msgstr "A fájl nem létezik."
+
+#: pyLoadCli.py:385
+msgid "pyLoad was terminated"
+msgstr "pyLoad leállítva"
+
+#: pyLoadCli.py:443
+msgid "Prints server status"
+msgstr "Szerver állapota"
+
+#: pyLoadCli.py:444
+msgid "Prints downloads in queue"
+msgstr "Várólistás fájlok"
+
+#: pyLoadCli.py:445
+msgid "Prints downloads in collector"
+msgstr "Gyűjtőben levő letöltések"
+
+#: pyLoadCli.py:446
+msgid "Adds package to queue"
+msgstr "Csomag várólistához adása"
+
+#: pyLoadCli.py:447
+msgid "Adds package to collector"
+msgstr "Csomag gyűjtőhöz adása"
+
+#: pyLoadCli.py:448
+msgid "Delete Files from Queue/Collector"
+msgstr "Fájl törlése várólista/gyűjtő"
+
+#: pyLoadCli.py:449
+msgid "Delete Packages from Queue/Collector"
+msgstr "Csomag törlése várólista/gyűjtő"
+
+#: pyLoadCli.py:450
+msgid "Move Packages from Queue to Collector or vice versa"
+msgstr "Csomag áthelyezése a várólista és a gyűjtő között"
+
+#: pyLoadCli.py:451
+msgid "Restart files"
+msgstr "Fájlok újraindítása"
+
+#: pyLoadCli.py:452
+msgid "Restart packages"
+msgstr "Csomagok újraindítása"
+
+#: pyLoadCli.py:453
+msgid "Check online status, works with local container"
+msgstr "Online státusz ellenőrzése, csak helyi konténer esetében"
+
+#: pyLoadCli.py:454
+msgid "Checks online status of a container file"
+msgstr "A konténer fájl online státuszának ellenőrzése"
+
+#: pyLoadCli.py:455
+msgid "Pause the server"
+msgstr "Szerver szüneteltetése"
+
+#: pyLoadCli.py:456
+msgid "continue downloads"
+msgstr "letöltések folytatása"
+
+#: pyLoadCli.py:457
+msgid "Toggle pause/unpause"
+msgstr "Szüneteltetés/folytatás"
+
+#: pyLoadCli.py:458
+msgid "kill server"
+msgstr "szerver kilövése (Kill)"
+
+#: pyLoadCli.py:460
+msgid "List of commands:"
+msgstr "Parancsok listája:"
+
+#: pyLoadCli.py:473
+msgid "Couldn't write user config file"
+msgstr "Nem sikerült írni a felhasználói beállítások fájlját"
+
+#: pyLoadCli.py:548
+msgid "You need py-openssl to connect to this pyLoad Core."
+msgstr "Ehhez a pyLoad maghoz való csatlakozáshoz szükséged van py-openssl-re."
+
+#: pyLoadCli.py:555
+msgid "Address: "
+msgstr "Cím: "
+
+#: pyLoadCli.py:556
+msgid "Port: "
+msgstr "Port: "
+
+#: pyLoadCli.py:557
+msgid "Username: "
+msgstr "Felhasználó: "
+
+#: pyLoadCli.py:561
+msgid "Password: "
+msgstr "Jelszó: "
+
+#: pyLoadCli.py:566 pyLoadCli.py:575
+msgid "Login data is wrong."
+msgstr "Hibás belépési adatok."
+
+#: pyLoadCli.py:568 pyLoadCli.py:577
+#, python-format
+msgid "Could not establish connection to %(addr)s:%(port)s."
+msgstr "Nem sikerült kapcsolódni ide: %(addr)s:%(port)s."
+
+#: pyLoadCli.py:580
+msgid "You need py-openssl to connect to this pyLoad core."
+msgstr "Ehhez a pyLoad maghoz való csatlakozáshoz szükséged van py-openssl-re."
+
+#: pyLoadCli.py:582
+msgid "Interactive mode ignored since you passed some commands."
+msgstr "Az interaktív mód néhány parancs után figyelmen kívül hagyva."
+
+#: module/cli/AddPackage.py:48
+msgid "Add Package:"
+msgstr "Csomag hozzáadása:"
+
+#: module/cli/AddPackage.py:53
+msgid "Enter a name for the new package"
+msgstr "Add meg az új csomag nevét"
+
+#: module/cli/AddPackage.py:57
+#, python-format
+msgid "Package: %s"
+msgstr "Csomag: %s"
+
+#: module/cli/AddPackage.py:58
+msgid "Parse the links you want to add."
+msgstr "Hozzáadandó linkek."
+
+#: module/cli/AddPackage.py:59
+#, python-format
+msgid "Type %s when done."
+msgstr "Írd %s miután végeztél."
+
+#: module/cli/AddPackage.py:60
+msgid "Links added: "
+msgstr "Link felvéve: "
+
+#: module/cli/AddPackage.py:64 module/cli/ManageFiles.py:149
+msgid " back to main menu"
+msgstr " vissza a főmenübe"
+
+#: module/cli/ManageFiles.py:97
+msgid "Manage Packages:"
+msgstr "Csomagok kezelése:"
+
+#: module/cli/ManageFiles.py:99
+msgid "Manage Links:"
+msgstr "Linkek kezelése:"
+
+#: module/cli/ManageFiles.py:104
+msgid "What do you want to move?"
+msgstr "Mit szeretnél áthelyezni?"
+
+#: module/cli/ManageFiles.py:106
+msgid "What do you want to delete?"
+msgstr "Mit szeretnél törölni?"
+
+#: module/cli/ManageFiles.py:108
+msgid "What do you want to restart?"
+msgstr "Mit szeretnél újraindítani?"
+
+#: module/cli/ManageFiles.py:113
+msgid "Choose what yout want to do or enter package number."
+msgstr "Válaszd ki mit szeretnél csinálni, vagy adj meg egy csomag számot."
+
+#: module/cli/ManageFiles.py:115
+msgid "delete"
+msgstr "törlés"
+
+#: module/cli/ManageFiles.py:115
+msgid "move"
+msgstr "áthelyezés"
+
+#: module/cli/ManageFiles.py:115
+msgid "restart"
+msgstr "újraindítás"
+
+#: module/cli/ManageFiles.py:148
+msgid " - previous"
+msgstr " - előző"
+
+#: module/cli/ManageFiles.py:148
+msgid " - next"
+msgstr " - következő"
+

@@ -1,0 +1,295 @@
+msgid ""
+msgstr "Project-Id-Version: pyload\n"
+"Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
+"POT-Creation-Date: 2014-04-08 15:01+0200\n"
+"PO-Revision-Date: 2014-04-09 05:38-0400\n"
+"Last-Translator: pyloadTeam <team@pyload.org>\n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: crowdin.net\n"
+
+#: pyLoadCli.py:75 pyLoadCli.py:133
+msgid " Command Line Interface"
+msgstr " Interface en ligne de commande"
+
+#: pyLoadCli.py:165
+#, python-format
+msgid "%s Downloads:"
+msgstr "%s téléchargement(s) :"
+
+#: pyLoadCli.py:177
+msgid " Speed: "
+msgstr " Vitesse : "
+
+#: pyLoadCli.py:177
+msgid " Size: "
+msgstr " Taille : "
+
+#: pyLoadCli.py:178
+msgid " Finished in: "
+msgstr " Fini dans : "
+
+#: pyLoadCli.py:179
+msgid " ID: "
+msgstr " ID : "
+
+#: pyLoadCli.py:184
+msgid "waiting: "
+msgstr "en attente : "
+
+#: pyLoadCli.py:191 pyLoadCli.py:193
+msgid "Status:"
+msgstr "Statut:"
+
+#: pyLoadCli.py:191
+msgid "paused"
+msgstr "en pause"
+
+#: pyLoadCli.py:193
+msgid "running"
+msgstr "en cours"
+
+#: pyLoadCli.py:196
+msgid "total Speed"
+msgstr "Vitesse totale"
+
+#: pyLoadCli.py:196
+msgid "Files in queue"
+msgstr "Fichiers en attente"
+
+#: pyLoadCli.py:197
+msgid "Total"
+msgstr ""
+
+#: pyLoadCli.py:203
+msgid "Menu:"
+msgstr "Menu :"
+
+#: pyLoadCli.py:205
+msgid " Add Links"
+msgstr " Ajouter des liens"
+
+#: pyLoadCli.py:206
+msgid " Manage Queue"
+msgstr "Gérer la file d'attente"
+
+#: pyLoadCli.py:207
+msgid " Manage Collector"
+msgstr "Gérer le collecteur"
+
+#: pyLoadCli.py:208
+msgid " (Un)Pause Server"
+msgstr "Mettre en pause/Restaurer le serveur"
+
+#: pyLoadCli.py:209
+msgid " Kill Server"
+msgstr " Stopper le serveur"
+
+#: pyLoadCli.py:210
+msgid " Quit"
+msgstr " Quitter"
+
+#: pyLoadCli.py:289 pyLoadCli.py:296
+msgid "Please use this syntax: add <Package name> <link> <link2> ..."
+msgstr "Utilisez cette syntaxe : add <Nom paquet> <lien> <lien2> ..."
+
+#: pyLoadCli.py:315
+#, python-format
+msgid "Checking %d links:"
+msgstr "Vérification de %d liens :"
+
+#: pyLoadCli.py:324
+msgid "File does not exists."
+msgstr "Le fichier n'existe pas."
+
+#: pyLoadCli.py:385
+msgid "pyLoad was terminated"
+msgstr "pyLoad a quitté"
+
+#: pyLoadCli.py:443
+msgid "Prints server status"
+msgstr "Affiche le statut du serveur"
+
+#: pyLoadCli.py:444
+msgid "Prints downloads in queue"
+msgstr "affiche les téléchargements en file d'attente"
+
+#: pyLoadCli.py:445
+msgid "Prints downloads in collector"
+msgstr "affiche les téléchargements dans le collecteur"
+
+#: pyLoadCli.py:446
+msgid "Adds package to queue"
+msgstr "Ajouter le paquet à la file d'attente"
+
+#: pyLoadCli.py:447
+msgid "Adds package to collector"
+msgstr "Ajouter le paquet au collecteur"
+
+#: pyLoadCli.py:448
+msgid "Delete Files from Queue/Collector"
+msgstr "Supprimer les fichiers de la file d'attente/du collecteur"
+
+#: pyLoadCli.py:449
+msgid "Delete Packages from Queue/Collector"
+msgstr "Supprimer les paquets de la file d'attente/du collecteur"
+
+#: pyLoadCli.py:450
+msgid "Move Packages from Queue to Collector or vice versa"
+msgstr "Déplacer les paquets de la file d'attente au collecteur ou vice versa"
+
+#: pyLoadCli.py:451
+msgid "Restart files"
+msgstr "Redémarrer les fichiers"
+
+#: pyLoadCli.py:452
+msgid "Restart packages"
+msgstr "Redémarrer les paquets"
+
+#: pyLoadCli.py:453
+msgid "Check online status, works with local container"
+msgstr "Vérifie le statut en ligne (fonctionne avec un conteneur local)"
+
+#: pyLoadCli.py:454
+msgid "Checks online status of a container file"
+msgstr "Vérifie le statut en ligne d'un fichier conteneur"
+
+#: pyLoadCli.py:455
+msgid "Pause the server"
+msgstr "Mettre le serveur en pause"
+
+#: pyLoadCli.py:456
+msgid "continue downloads"
+msgstr "continuer les téléchargements"
+
+#: pyLoadCli.py:457
+msgid "Toggle pause/unpause"
+msgstr "Basculer pause/reprendre"
+
+#: pyLoadCli.py:458
+msgid "kill server"
+msgstr "stopper le serveur"
+
+#: pyLoadCli.py:460
+msgid "List of commands:"
+msgstr "Liste des commandes :"
+
+#: pyLoadCli.py:473
+msgid "Couldn't write user config file"
+msgstr "Impossible d'écrire le fichier de configuration"
+
+#: pyLoadCli.py:548
+msgid "You need py-openssl to connect to this pyLoad Core."
+msgstr "Vous avez besoin de py-openssl pour vous connecter à ce Core pyLoad."
+
+#: pyLoadCli.py:555
+msgid "Address: "
+msgstr "Adresse: "
+
+#: pyLoadCli.py:556
+msgid "Port: "
+msgstr "Port : "
+
+#: pyLoadCli.py:557
+msgid "Username: "
+msgstr "Nom d'utilisateur: "
+
+#: pyLoadCli.py:561
+msgid "Password: "
+msgstr "Mot de passe : "
+
+#: pyLoadCli.py:566 pyLoadCli.py:575
+msgid "Login data is wrong."
+msgstr "Les identifiants sont incorrects."
+
+#: pyLoadCli.py:568 pyLoadCli.py:577
+#, python-format
+msgid "Could not establish connection to %(addr)s:%(port)s."
+msgstr "Impossible d'établir la connexion à %(addr)s:%(port)s."
+
+#: pyLoadCli.py:580
+msgid "You need py-openssl to connect to this pyLoad core."
+msgstr "Vous avez besoin de py-openssl pour vous connecter au moteur de Pyload."
+
+#: pyLoadCli.py:582
+msgid "Interactive mode ignored since you passed some commands."
+msgstr "Mode interactif ignoré jusqu'à ce que vous entriez des commandes."
+
+#: module/cli/AddPackage.py:48
+msgid "Add Package:"
+msgstr "Ajouter un paquet:"
+
+#: module/cli/AddPackage.py:53
+msgid "Enter a name for the new package"
+msgstr "Entrez un nom pour le nouveau paquet"
+
+#: module/cli/AddPackage.py:57
+#, python-format
+msgid "Package: %s"
+msgstr "Paquet : %s"
+
+#: module/cli/AddPackage.py:58
+msgid "Parse the links you want to add."
+msgstr "Analyse des liens que vous voulez ajouter."
+
+#: module/cli/AddPackage.py:59
+#, python-format
+msgid "Type %s when done."
+msgstr "Tapez %s une fois fini."
+
+#: module/cli/AddPackage.py:60
+msgid "Links added: "
+msgstr "Liens ajoutés : "
+
+#: module/cli/AddPackage.py:64 module/cli/ManageFiles.py:149
+msgid " back to main menu"
+msgstr " retour au menu principal"
+
+#: module/cli/ManageFiles.py:97
+msgid "Manage Packages:"
+msgstr "Gérer les paquets:"
+
+#: module/cli/ManageFiles.py:99
+msgid "Manage Links:"
+msgstr "Gérer les liens:"
+
+#: module/cli/ManageFiles.py:104
+msgid "What do you want to move?"
+msgstr "Que voulez-vous déplacer ?"
+
+#: module/cli/ManageFiles.py:106
+msgid "What do you want to delete?"
+msgstr "Que voulez-vous supprimer ?"
+
+#: module/cli/ManageFiles.py:108
+msgid "What do you want to restart?"
+msgstr "Que voulez-vous redémarrer ?"
+
+#: module/cli/ManageFiles.py:113
+msgid "Choose what yout want to do or enter package number."
+msgstr "Choisissez ce que vous voulez faire ou entrez le numéro du paquet."
+
+#: module/cli/ManageFiles.py:115
+msgid "delete"
+msgstr "supprimer"
+
+#: module/cli/ManageFiles.py:115
+msgid "move"
+msgstr "déplacer"
+
+#: module/cli/ManageFiles.py:115
+msgid "restart"
+msgstr "redémarrer"
+
+#: module/cli/ManageFiles.py:148
+msgid " - previous"
+msgstr " - précédent"
+
+#: module/cli/ManageFiles.py:148
+msgid " - next"
+msgstr " - suivant"
+

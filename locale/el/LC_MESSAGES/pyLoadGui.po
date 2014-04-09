@@ -1,0 +1,507 @@
+msgid ""
+msgstr "Project-Id-Version: pyload\n"
+"Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
+"POT-Creation-Date: 2014-04-08 15:01+0200\n"
+"PO-Revision-Date: 2014-04-09 05:39-0400\n"
+"Last-Translator: pyloadTeam <team@pyload.org>\n"
+"Language-Team: Greek\n"
+"Language: el_GR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.net\n"
+
+#: pyLoadGui.py:290
+msgid "paused"
+msgstr "σε παύση"
+
+#: pyLoadGui.py:292
+msgid "running"
+msgstr "εκτελείται"
+
+#: pyLoadGui.py:332
+msgid "Unnamed"
+msgstr "Ανώνυμο"
+
+#: pyLoadGui.py:655
+#, python-format
+msgid "Finished downloading of '%s'"
+msgstr "Τελείωσε η μεταφορά του '%s'"
+
+#: pyLoadGui.py:657
+#, python-format
+msgid "Failed downloading '%s'!"
+msgstr "Απέτυχε η μεταφορά του '%s'!"
+
+#: pyLoadGui.py:660
+#, python-format
+msgid "Added '%s' to queue"
+msgstr "Προστέθηκε το '%s' στην ουρά"
+
+#: pyLoadGui.py:685
+msgid "Connection lost"
+msgstr "Η σύνδεση χάθηκε"
+
+#: pyLoadGui.py:685
+msgid "Lost connection to the core!"
+msgstr "Χάθηκε η σύνδεση με τον πυρήνα!"
+
+#: pyLoadGui.py:720
+msgid "Show"
+msgstr "Εμφάνιση"
+
+#: pyLoadGui.py:725 module/gui/MainWindow.py:133
+msgid "Exit"
+msgstr "Έξοδος"
+
+#: module/gui/MainWindow.py:44
+msgid "pyLoad Client"
+msgstr "πελάτης pyLoad"
+
+#: module/gui/MainWindow.py:92
+msgid "Packages:"
+msgstr "Πακέτα:"
+
+#: module/gui/MainWindow.py:96
+msgid "Files:"
+msgstr "Αρχεία:"
+
+#: module/gui/MainWindow.py:100
+msgid "Status:"
+msgstr "Κατάσταση:"
+
+#: module/gui/MainWindow.py:104
+msgid "Space:"
+msgstr "Διαθ. χώρος:"
+
+#: module/gui/MainWindow.py:108
+msgid "Speed:"
+msgstr "Ταχύτητα:"
+
+#: module/gui/MainWindow.py:129
+msgid "File"
+msgstr "Aρχείο"
+
+#: module/gui/MainWindow.py:130
+msgid "Connections"
+msgstr "Συνδέσεις"
+
+#: module/gui/MainWindow.py:134
+msgid "Connection manager"
+msgstr "Διαχ. συνδέσεων"
+
+#: module/gui/MainWindow.py:156
+msgid "Overview"
+msgstr "Επισκόπηση"
+
+#: module/gui/MainWindow.py:157
+msgid "Queue"
+msgstr ""
+
+#: module/gui/MainWindow.py:158
+msgid "Collector"
+msgstr ""
+
+#: module/gui/MainWindow.py:159
+msgid "Accounts"
+msgstr "Λογαριασμοί"
+
+#: module/gui/MainWindow.py:160
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+
+#: module/gui/MainWindow.py:161
+msgid "Log"
+msgstr "Αρχείο καταγραφής"
+
+#: module/gui/MainWindow.py:190
+msgid "Hide Toolbar"
+msgstr "Απόκρυψη γραμμής εργαλείων"
+
+#: module/gui/MainWindow.py:194
+msgid "Toggle Pause/Resume"
+msgstr "Εναλλαγή Παύσης/Συνέχειας"
+
+#: module/gui/MainWindow.py:200
+msgid "Stop"
+msgstr "Διακοπή"
+
+#: module/gui/MainWindow.py:202 module/gui/MainWindow.py:302
+#: module/gui/MainWindow.py:322
+msgid "Add"
+msgstr "Προσθήκη"
+
+#: module/gui/MainWindow.py:204
+msgid "Check Clipboard"
+msgstr "Έλεγχος πρόχειρου"
+
+#: module/gui/MainWindow.py:211 module/gui/MainWindow.py:308
+#: module/gui/Overview.py:101
+msgid "Package"
+msgstr "Πακέτο"
+
+#: module/gui/MainWindow.py:212 module/gui/MainWindow.py:309
+msgid "Container"
+msgstr "Δοχείο"
+
+#: module/gui/MainWindow.py:213
+msgid "Account"
+msgstr "Λογαριασμός"
+
+#: module/gui/MainWindow.py:214 module/gui/MainWindow.py:310
+msgid "Links"
+msgstr "Σύνδεσμοι"
+
+#: module/gui/MainWindow.py:238
+msgid "Push selected packages to queue"
+msgstr "Προώθηση επιλεγμένων πακέτων στην ουρά"
+
+#: module/gui/MainWindow.py:261
+msgid "New Account"
+msgstr "Νέος λογαριασμός"
+
+#: module/gui/MainWindow.py:275 module/gui/MainWindow.py:295
+#: module/gui/MainWindow.py:323 module/gui/ConnectionManager.py:49
+msgid "Remove"
+msgstr "Αφαίρεση"
+
+#: module/gui/MainWindow.py:276 module/gui/MainWindow.py:298
+msgid "Restart"
+msgstr "Επανεκκίνηση"
+
+#: module/gui/MainWindow.py:277
+msgid "Pull out"
+msgstr "Αφαίρεση"
+
+#: module/gui/MainWindow.py:278
+msgid "Abort"
+msgstr "Ματαίωση"
+
+#: module/gui/MainWindow.py:279 module/gui/MainWindow.py:297
+msgid "Edit Name"
+msgstr "Επεξ. Ονόματος"
+
+#: module/gui/MainWindow.py:296
+msgid "Push to queue"
+msgstr "Προώθηση στην ουρά"
+
+#: module/gui/MainWindow.py:299
+msgid "Refresh Status"
+msgstr "Ανανέωση κατάστασης"
+
+#: module/gui/MainWindow.py:324 module/gui/ConnectionManager.py:48
+msgid "Edit"
+msgstr "Έπεξεργασία"
+
+#: module/gui/MainWindow.py:402
+#, python-format
+msgid "All Container Types (%s)"
+msgstr "Όλοι οι τύποι δοχείων (%s)"
+
+#: module/gui/MainWindow.py:403
+#, python-format
+msgid "DLC (%s)"
+msgstr ""
+
+#: module/gui/MainWindow.py:404
+#, python-format
+msgid "CCF (%s)"
+msgstr ""
+
+#: module/gui/MainWindow.py:405
+#, python-format
+msgid "RSDF (%s)"
+msgstr ""
+
+#: module/gui/MainWindow.py:406
+#, python-format
+msgid "Text Files (%s)"
+msgstr "Αρχεία κειμένου (%s)"
+
+#: module/gui/MainWindow.py:408
+msgid "Open container"
+msgstr "Άνοιγμα δοχείου"
+
+#: module/gui/Collector.py:47
+msgid "finished"
+msgstr "τελείωσε"
+
+#: module/gui/Collector.py:48
+msgid "offline"
+msgstr "αποσυνδεμένος"
+
+#: module/gui/Collector.py:49
+msgid "online"
+msgstr "συνδεμένος"
+
+#: module/gui/Collector.py:50
+msgid "queued"
+msgstr "στην ουρά"
+
+#: module/gui/Collector.py:51
+msgid "skipped"
+msgstr "προσπεράστηκε"
+
+#: module/gui/Collector.py:52
+msgid "waiting"
+msgstr "σε αναμονή"
+
+#: module/gui/Collector.py:53
+msgid "temp. offline"
+msgstr "προσωρινά χωρίς σύνδεση"
+
+#: module/gui/Collector.py:54
+msgid "starting"
+msgstr "ξεκινάει"
+
+#: module/gui/Collector.py:55
+msgid "failed"
+msgstr "απέτυχε"
+
+#: module/gui/Collector.py:56
+msgid "aborted"
+msgstr "ματαιώθηκε"
+
+#: module/gui/Collector.py:57
+msgid "decrypting"
+msgstr "αποκρυπτογραφείται"
+
+#: module/gui/Collector.py:58
+msgid "custom"
+msgstr "προσαρμοσμένο"
+
+#: module/gui/Collector.py:59
+msgid "downloading"
+msgstr "σε λήψη"
+
+#: module/gui/Collector.py:60
+msgid "processing"
+msgstr "σε εξέλιξη"
+
+#: module/gui/Collector.py:284 module/gui/PackageDock.py:66
+#: module/gui/Queue.py:152
+msgid "Name"
+msgstr "Όνομα"
+
+#: module/gui/Collector.py:286 module/gui/Queue.py:156
+msgid "Plugin"
+msgstr "Πρόσθετα"
+
+#: module/gui/Collector.py:288 module/gui/Queue.py:154
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: module/gui/Collector.py:290 module/gui/Queue.py:158
+msgid "Size"
+msgstr "Μέγεθος"
+
+#: module/gui/connector.py:76
+msgid "bad login credentials"
+msgstr "λάθος στοιχεία σύνδεσης"
+
+#: module/gui/connector.py:78
+msgid "no ssl support"
+msgstr "χωρίς υποστήριξη ssl"
+
+#: module/gui/connector.py:80
+msgid "can't connect to host"
+msgstr "αδύνατη η σύνδεση με τον κεντρικό υπολογιστή"
+
+#: module/gui/connector.py:94
+#, python-format
+msgid "server is version %(new)s client accepts version %(current)s"
+msgstr "εξυπηρετητής είναι έκδοση %(new)s το πρόγραμμα πελάτης δέχεται έκδοση %(current)s"
+
+#: module/gui/SettingsWidget.py:74
+msgid "General"
+msgstr "Γενικά"
+
+#: module/gui/SettingsWidget.py:75
+msgid "Plugins"
+msgstr "Πρόσθετα"
+
+#: module/gui/SettingsWidget.py:89
+msgid "Reload"
+msgstr "Επαναφόρτωση"
+
+#: module/gui/SettingsWidget.py:90 module/gui/AccountEdit.py:53
+#: module/gui/ConnectionManager.py:206
+msgid "Save"
+msgstr "Αποθήκευση"
+
+#: module/gui/SettingsWidget.py:192
+msgid "Yes"
+msgstr "Ναι"
+
+#: module/gui/SettingsWidget.py:193
+msgid "No"
+msgstr "Όχι"
+
+#: module/gui/PackageDock.py:25
+msgid "New Package"
+msgstr "Νέο πακέτο"
+
+#: module/gui/PackageDock.py:68
+msgid "Password"
+msgstr "Κωδικός πρόσβασης"
+
+#: module/gui/PackageDock.py:71
+msgid "Links in this Package"
+msgstr "Σύνδεσμοι στο πακέτο"
+
+#: module/gui/PackageDock.py:77
+msgid "Create"
+msgstr "Δημιουργία"
+
+#: module/gui/PackageDock.py:78
+msgid "Filter URLs"
+msgstr "Φιλτράρισμα URLs"
+
+#: module/gui/CaptchaDock.py:29
+msgid "Captcha"
+msgstr ""
+
+#: module/gui/CaptchaDock.py:64
+msgid "OK"
+msgstr "ΟΚ"
+
+#: module/gui/CaptchaDock.py:65 module/gui/ConnectionManager.py:207
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+#: module/gui/Accounts.py:75
+msgid "not valid"
+msgstr "άκυρο"
+
+#: module/gui/Accounts.py:77 module/gui/Accounts.py:207
+msgid "n/a"
+msgstr "n/a"
+
+#: module/gui/Accounts.py:80
+msgid "%a, %d %b %Y %H:%M"
+msgstr ""
+
+#: module/gui/Accounts.py:83 module/gui/Accounts.py:205
+msgid "unlimited"
+msgstr "απεριόριστο"
+
+#: module/gui/Accounts.py:138 module/gui/AccountEdit.py:38
+msgid "Type"
+msgstr "Τύπος"
+
+#: module/gui/Accounts.py:140 module/gui/AccountEdit.py:39
+msgid "Login"
+msgstr "Σύνδεση"
+
+#: module/gui/Accounts.py:142
+msgid "Valid until"
+msgstr "Έγκυρο εως"
+
+#: module/gui/Accounts.py:144
+msgid "Traffic left"
+msgstr "Εναπομείνουσα κίνηση"
+
+#: module/gui/Overview.py:71 module/gui/Overview.py:152
+msgid "Downloading"
+msgstr "Μεταφορτώνεται"
+
+#: module/gui/Overview.py:83
+msgid "Queued"
+msgstr "Σε αναμονή"
+
+#: module/gui/Overview.py:147
+msgid "ETA: "
+msgstr "Εκτιμ. χρόνος που απομένει: "
+
+#: module/gui/Overview.py:149
+msgid "Parts: "
+msgstr "Τμήματα: "
+
+#: module/gui/Overview.py:151
+msgid "Finished"
+msgstr "Ολοκληρώθηκε"
+
+#: module/gui/Overview.py:155
+#, python-format
+msgid "Speed: %s"
+msgstr "Ταχύτητα: %s"
+
+#: module/gui/Overview.py:158 module/gui/Overview.py:160
+msgid "Size:"
+msgstr "Μέγεθος:"
+
+#: module/gui/AccountEdit.py:32
+msgid "Edit account"
+msgstr "Επεξ. λογαριασμού"
+
+#: module/gui/AccountEdit.py:40
+msgid "New password"
+msgstr "Νέος κωδικός χρήστη"
+
+#: module/gui/AccountEdit.py:83
+msgid "Create account"
+msgstr "Δημιουργία λογαριασμού"
+
+#: module/gui/Queue.py:160
+msgid "ETA"
+msgstr "Εκτιμ. χρόνος που απομένει"
+
+#: module/gui/Queue.py:162
+msgid "Progress"
+msgstr "Πρόοδος"
+
+#: module/gui/Queue.py:384
+#, python-format
+msgid "waiting %d seconds"
+msgstr "αναμονή %d δευτερόλεπτα"
+
+#: module/gui/ConnectionManager.py:42 module/gui/ConnectionManager.py:185
+msgid "pyLoad ConnectionManager"
+msgstr "Διαχειριστής συνδέσεων pyLoad"
+
+#: module/gui/ConnectionManager.py:47
+msgid "New"
+msgstr "Νέο"
+
+#: module/gui/ConnectionManager.py:50
+msgid "Connect"
+msgstr "Σύνδεση"
+
+#: module/gui/ConnectionManager.py:56
+msgid "Connect:"
+msgstr "Σύνδεση:"
+
+#: module/gui/ConnectionManager.py:73
+msgid "Use internal Core:"
+msgstr "Χρήση εσωτερικού πυρήνα:"
+
+#: module/gui/ConnectionManager.py:117
+#, python-format
+msgid "%s (Default)"
+msgstr "%s (Προεπιλογή)"
+
+#: module/gui/ConnectionManager.py:190
+msgid "Name:"
+msgstr "Όνομα:"
+
+#: module/gui/ConnectionManager.py:191
+msgid "Host:"
+msgstr "Διακομιστής:"
+
+#: module/gui/ConnectionManager.py:192
+msgid "Local:"
+msgstr "Τοπικό:"
+
+#: module/gui/ConnectionManager.py:193
+msgid "User:"
+msgstr "Χρήστης:"
+
+#: module/gui/ConnectionManager.py:194
+msgid "Password:"
+msgstr "Κωδικός Πρόσβασης:"
+
+#: module/gui/ConnectionManager.py:195
+msgid "Port:"
+msgstr "Πόρτα:"
+

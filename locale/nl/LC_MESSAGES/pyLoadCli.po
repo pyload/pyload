@@ -1,0 +1,295 @@
+msgid ""
+msgstr "Project-Id-Version: pyload\n"
+"Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
+"POT-Creation-Date: 2014-04-08 15:01+0200\n"
+"PO-Revision-Date: 2014-04-09 05:38-0400\n"
+"Last-Translator: pyloadTeam <team@pyload.org>\n"
+"Language-Team: Dutch\n"
+"Language: nl_NL\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.net\n"
+
+#: pyLoadCli.py:75 pyLoadCli.py:133
+msgid " Command Line Interface"
+msgstr " Opdrachtprompt"
+
+#: pyLoadCli.py:165
+#, python-format
+msgid "%s Downloads:"
+msgstr ""
+
+#: pyLoadCli.py:177
+msgid " Speed: "
+msgstr " Snelheid: "
+
+#: pyLoadCli.py:177
+msgid " Size: "
+msgstr " Grootte: "
+
+#: pyLoadCli.py:178
+msgid " Finished in: "
+msgstr " Compleet in: "
+
+#: pyLoadCli.py:179
+msgid " ID: "
+msgstr ""
+
+#: pyLoadCli.py:184
+msgid "waiting: "
+msgstr "wachtend: "
+
+#: pyLoadCli.py:191 pyLoadCli.py:193
+msgid "Status:"
+msgstr ""
+
+#: pyLoadCli.py:191
+msgid "paused"
+msgstr "gepauzeerd"
+
+#: pyLoadCli.py:193
+msgid "running"
+msgstr "lopend"
+
+#: pyLoadCli.py:196
+msgid "total Speed"
+msgstr "totale Snelheid"
+
+#: pyLoadCli.py:196
+msgid "Files in queue"
+msgstr "Bestanden in wachtrij"
+
+#: pyLoadCli.py:197
+msgid "Total"
+msgstr "Totaal"
+
+#: pyLoadCli.py:203
+msgid "Menu:"
+msgstr ""
+
+#: pyLoadCli.py:205
+msgid " Add Links"
+msgstr " Links toevoegen"
+
+#: pyLoadCli.py:206
+msgid " Manage Queue"
+msgstr "Wachtrij beheren"
+
+#: pyLoadCli.py:207
+msgid " Manage Collector"
+msgstr "Verzamelaar beheren"
+
+#: pyLoadCli.py:208
+msgid " (Un)Pause Server"
+msgstr " (De)Pauzeren Server"
+
+#: pyLoadCli.py:209
+msgid " Kill Server"
+msgstr " Server afsluiten"
+
+#: pyLoadCli.py:210
+msgid " Quit"
+msgstr " Afsluiten"
+
+#: pyLoadCli.py:289 pyLoadCli.py:296
+msgid "Please use this syntax: add <Package name> <link> <link2> ..."
+msgstr "Gebruik deze opbouw: add <Package name> <link> <link2> enz"
+
+#: pyLoadCli.py:315
+#, python-format
+msgid "Checking %d links:"
+msgstr "Controleren van %d links:"
+
+#: pyLoadCli.py:324
+msgid "File does not exists."
+msgstr "Bestand bestaat niet."
+
+#: pyLoadCli.py:385
+msgid "pyLoad was terminated"
+msgstr "pyLoad was afgesloten"
+
+#: pyLoadCli.py:443
+msgid "Prints server status"
+msgstr "Server status weergeven"
+
+#: pyLoadCli.py:444
+msgid "Prints downloads in queue"
+msgstr "Downloads in wachtrij weergeven"
+
+#: pyLoadCli.py:445
+msgid "Prints downloads in collector"
+msgstr "Downloads in verzamelaar weergeven"
+
+#: pyLoadCli.py:446
+msgid "Adds package to queue"
+msgstr "Pakketten toevoegen aan wachtrij"
+
+#: pyLoadCli.py:447
+msgid "Adds package to collector"
+msgstr "Pakket toevoegen aan verzamelaar"
+
+#: pyLoadCli.py:448
+msgid "Delete Files from Queue/Collector"
+msgstr "Bestanden verwijderen uit Wachtrij/Verzamelaar"
+
+#: pyLoadCli.py:449
+msgid "Delete Packages from Queue/Collector"
+msgstr "Pakketten verwijderen uit Wachtrij/Verzamelaar"
+
+#: pyLoadCli.py:450
+msgid "Move Packages from Queue to Collector or vice versa"
+msgstr "Verplaats pakketten van Wachtrij naar Verzamelaar of omgekeerd"
+
+#: pyLoadCli.py:451
+msgid "Restart files"
+msgstr "Bestanden herstarten"
+
+#: pyLoadCli.py:452
+msgid "Restart packages"
+msgstr "Pakketten herstarten"
+
+#: pyLoadCli.py:453
+msgid "Check online status, works with local container"
+msgstr "Controleer online status, werkt met lokale container"
+
+#: pyLoadCli.py:454
+msgid "Checks online status of a container file"
+msgstr "Controleert de online status van een container bestand"
+
+#: pyLoadCli.py:455
+msgid "Pause the server"
+msgstr "Server pauzeren"
+
+#: pyLoadCli.py:456
+msgid "continue downloads"
+msgstr "downloads hervatten"
+
+#: pyLoadCli.py:457
+msgid "Toggle pause/unpause"
+msgstr "Pauzeren/Starten"
+
+#: pyLoadCli.py:458
+msgid "kill server"
+msgstr "server afsluiten"
+
+#: pyLoadCli.py:460
+msgid "List of commands:"
+msgstr "Lijst met commands:"
+
+#: pyLoadCli.py:473
+msgid "Couldn't write user config file"
+msgstr "Kan configuratiebestand voor gebruiker niet aanmaken"
+
+#: pyLoadCli.py:548
+msgid "You need py-openssl to connect to this pyLoad Core."
+msgstr "Om verbinding te maken met deze pyLoad Core is py-openssl nodig."
+
+#: pyLoadCli.py:555
+msgid "Address: "
+msgstr "Adres: "
+
+#: pyLoadCli.py:556
+msgid "Port: "
+msgstr "Poort: "
+
+#: pyLoadCli.py:557
+msgid "Username: "
+msgstr "Gebruikersnaam: "
+
+#: pyLoadCli.py:561
+msgid "Password: "
+msgstr "Wachtwoord: "
+
+#: pyLoadCli.py:566 pyLoadCli.py:575
+msgid "Login data is wrong."
+msgstr "Login gegevens verkeerd."
+
+#: pyLoadCli.py:568 pyLoadCli.py:577
+#, python-format
+msgid "Could not establish connection to %(addr)s:%(port)s."
+msgstr "Kan geen verbinding maken met %(addr)s:%(port)s."
+
+#: pyLoadCli.py:580
+msgid "You need py-openssl to connect to this pyLoad core."
+msgstr "Om verbinding te maken met pyLoad is py-openssl noodzakelijk."
+
+#: pyLoadCli.py:582
+msgid "Interactive mode ignored since you passed some commands."
+msgstr "Interactieve modus wordt genegeerd, omdat je commando's hebt ingevult."
+
+#: module/cli/AddPackage.py:48
+msgid "Add Package:"
+msgstr "Pakket toevoegen:"
+
+#: module/cli/AddPackage.py:53
+msgid "Enter a name for the new package"
+msgstr "Naam invullen voor nieuw pakket"
+
+#: module/cli/AddPackage.py:57
+#, python-format
+msgid "Package: %s"
+msgstr "Pakket: %s"
+
+#: module/cli/AddPackage.py:58
+msgid "Parse the links you want to add."
+msgstr "Parse de links die je wilt toevoegen."
+
+#: module/cli/AddPackage.py:59
+#, python-format
+msgid "Type %s when done."
+msgstr "Type %s als het klaar is."
+
+#: module/cli/AddPackage.py:60
+msgid "Links added: "
+msgstr "Toegevoegde links: "
+
+#: module/cli/AddPackage.py:64 module/cli/ManageFiles.py:149
+msgid " back to main menu"
+msgstr " terug naar hoofdmenu"
+
+#: module/cli/ManageFiles.py:97
+msgid "Manage Packages:"
+msgstr "Pakketten beheren:"
+
+#: module/cli/ManageFiles.py:99
+msgid "Manage Links:"
+msgstr "Links beheren:"
+
+#: module/cli/ManageFiles.py:104
+msgid "What do you want to move?"
+msgstr "Wat wil je verplaatsen?"
+
+#: module/cli/ManageFiles.py:106
+msgid "What do you want to delete?"
+msgstr "Wat wil je verwijderen?"
+
+#: module/cli/ManageFiles.py:108
+msgid "What do you want to restart?"
+msgstr "Wat wil je herstarten?"
+
+#: module/cli/ManageFiles.py:113
+msgid "Choose what yout want to do or enter package number."
+msgstr "Kies wat je wilt doen of vul pakketnummer in."
+
+#: module/cli/ManageFiles.py:115
+msgid "delete"
+msgstr "verwijderen"
+
+#: module/cli/ManageFiles.py:115
+msgid "move"
+msgstr "verplaatsen"
+
+#: module/cli/ManageFiles.py:115
+msgid "restart"
+msgstr "herstarten"
+
+#: module/cli/ManageFiles.py:148
+msgid " - previous"
+msgstr " - vorige"
+
+#: module/cli/ManageFiles.py:148
+msgid " - next"
+msgstr " - volgende"
+
