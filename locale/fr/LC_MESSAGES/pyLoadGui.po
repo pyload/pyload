@@ -1,0 +1,507 @@
+msgid ""
+msgstr "Project-Id-Version: pyload\n"
+"Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
+"POT-Creation-Date: 2014-04-08 15:01+0200\n"
+"PO-Revision-Date: 2014-04-09 05:38-0400\n"
+"Last-Translator: pyloadTeam <team@pyload.org>\n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: crowdin.net\n"
+
+#: pyLoadGui.py:290
+msgid "paused"
+msgstr "en pause"
+
+#: pyLoadGui.py:292
+msgid "running"
+msgstr "en cours"
+
+#: pyLoadGui.py:332
+msgid "Unnamed"
+msgstr "Anonyme"
+
+#: pyLoadGui.py:655
+#, python-format
+msgid "Finished downloading of '%s'"
+msgstr "Téléchargement terminé '%s'"
+
+#: pyLoadGui.py:657
+#, python-format
+msgid "Failed downloading '%s'!"
+msgstr "Téléchargement échoué '%s'!"
+
+#: pyLoadGui.py:660
+#, python-format
+msgid "Added '%s' to queue"
+msgstr "Ajout de '%s' à la file d'attente"
+
+#: pyLoadGui.py:685
+msgid "Connection lost"
+msgstr "Connexion perdue"
+
+#: pyLoadGui.py:685
+msgid "Lost connection to the core!"
+msgstr "Connexion au noyau perdue !"
+
+#: pyLoadGui.py:720
+msgid "Show"
+msgstr "Voir"
+
+#: pyLoadGui.py:725 module/gui/MainWindow.py:133
+msgid "Exit"
+msgstr "Quitter"
+
+#: module/gui/MainWindow.py:44
+msgid "pyLoad Client"
+msgstr "client pyLoad"
+
+#: module/gui/MainWindow.py:92
+msgid "Packages:"
+msgstr "Paquets:"
+
+#: module/gui/MainWindow.py:96
+msgid "Files:"
+msgstr "Fichiers:"
+
+#: module/gui/MainWindow.py:100
+msgid "Status:"
+msgstr "Statut:"
+
+#: module/gui/MainWindow.py:104
+msgid "Space:"
+msgstr "Espace:"
+
+#: module/gui/MainWindow.py:108
+msgid "Speed:"
+msgstr "Vitesse :"
+
+#: module/gui/MainWindow.py:129
+msgid "File"
+msgstr "Fichier"
+
+#: module/gui/MainWindow.py:130
+msgid "Connections"
+msgstr "Connexions"
+
+#: module/gui/MainWindow.py:134
+msgid "Connection manager"
+msgstr "Gestionnaire de connexion"
+
+#: module/gui/MainWindow.py:156
+msgid "Overview"
+msgstr "Aperçu"
+
+#: module/gui/MainWindow.py:157
+msgid "Queue"
+msgstr "File d'attente "
+
+#: module/gui/MainWindow.py:158
+msgid "Collector"
+msgstr "Paquets"
+
+#: module/gui/MainWindow.py:159
+msgid "Accounts"
+msgstr "Comptes"
+
+#: module/gui/MainWindow.py:160
+msgid "Settings"
+msgstr "Réglages"
+
+#: module/gui/MainWindow.py:161
+msgid "Log"
+msgstr ""
+
+#: module/gui/MainWindow.py:190
+msgid "Hide Toolbar"
+msgstr "Caché la Barre"
+
+#: module/gui/MainWindow.py:194
+msgid "Toggle Pause/Resume"
+msgstr "Basculer Pause/Reprise"
+
+#: module/gui/MainWindow.py:200
+msgid "Stop"
+msgstr "Arrêter"
+
+#: module/gui/MainWindow.py:202 module/gui/MainWindow.py:302
+#: module/gui/MainWindow.py:322
+msgid "Add"
+msgstr "Ajouter"
+
+#: module/gui/MainWindow.py:204
+msgid "Check Clipboard"
+msgstr "Vérifier le presse-papiers"
+
+#: module/gui/MainWindow.py:211 module/gui/MainWindow.py:308
+#: module/gui/Overview.py:101
+msgid "Package"
+msgstr "Paquet"
+
+#: module/gui/MainWindow.py:212 module/gui/MainWindow.py:309
+msgid "Container"
+msgstr "Conteneur"
+
+#: module/gui/MainWindow.py:213
+msgid "Account"
+msgstr "Compte"
+
+#: module/gui/MainWindow.py:214 module/gui/MainWindow.py:310
+msgid "Links"
+msgstr "Liens"
+
+#: module/gui/MainWindow.py:238
+msgid "Push selected packages to queue"
+msgstr "Ajouter les paquets sélectionnés à la file d'attente"
+
+#: module/gui/MainWindow.py:261
+msgid "New Account"
+msgstr "Nouveau Compte"
+
+#: module/gui/MainWindow.py:275 module/gui/MainWindow.py:295
+#: module/gui/MainWindow.py:323 module/gui/ConnectionManager.py:49
+msgid "Remove"
+msgstr "Supprimer"
+
+#: module/gui/MainWindow.py:276 module/gui/MainWindow.py:298
+msgid "Restart"
+msgstr "Redémarrer"
+
+#: module/gui/MainWindow.py:277
+msgid "Pull out"
+msgstr "Retirer"
+
+#: module/gui/MainWindow.py:278
+msgid "Abort"
+msgstr "Abandon"
+
+#: module/gui/MainWindow.py:279 module/gui/MainWindow.py:297
+msgid "Edit Name"
+msgstr "Editer Nom"
+
+#: module/gui/MainWindow.py:296
+msgid "Push to queue"
+msgstr "Ajouter en file d'attente"
+
+#: module/gui/MainWindow.py:299
+msgid "Refresh Status"
+msgstr "Rafraîchir Status"
+
+#: module/gui/MainWindow.py:324 module/gui/ConnectionManager.py:48
+msgid "Edit"
+msgstr "Edition"
+
+#: module/gui/MainWindow.py:402
+#, python-format
+msgid "All Container Types (%s)"
+msgstr "Tous types de conteneurs (%s)"
+
+#: module/gui/MainWindow.py:403
+#, python-format
+msgid "DLC (%s)"
+msgstr ""
+
+#: module/gui/MainWindow.py:404
+#, python-format
+msgid "CCF (%s)"
+msgstr ""
+
+#: module/gui/MainWindow.py:405
+#, python-format
+msgid "RSDF (%s)"
+msgstr ""
+
+#: module/gui/MainWindow.py:406
+#, python-format
+msgid "Text Files (%s)"
+msgstr "Fichiers Texte (%s)"
+
+#: module/gui/MainWindow.py:408
+msgid "Open container"
+msgstr "Ouvrir conteneur"
+
+#: module/gui/Collector.py:47
+msgid "finished"
+msgstr "fini"
+
+#: module/gui/Collector.py:48
+msgid "offline"
+msgstr "hors ligne"
+
+#: module/gui/Collector.py:49
+msgid "online"
+msgstr "en ligne"
+
+#: module/gui/Collector.py:50
+msgid "queued"
+msgstr "en file d'attente"
+
+#: module/gui/Collector.py:51
+msgid "skipped"
+msgstr "ignoré"
+
+#: module/gui/Collector.py:52
+msgid "waiting"
+msgstr "en attente"
+
+#: module/gui/Collector.py:53
+msgid "temp. offline"
+msgstr "temp. hors ligne"
+
+#: module/gui/Collector.py:54
+msgid "starting"
+msgstr "démarrage"
+
+#: module/gui/Collector.py:55
+msgid "failed"
+msgstr "échoué"
+
+#: module/gui/Collector.py:56
+msgid "aborted"
+msgstr "annulé"
+
+#: module/gui/Collector.py:57
+msgid "decrypting"
+msgstr "décryptage"
+
+#: module/gui/Collector.py:58
+msgid "custom"
+msgstr "personnalisé"
+
+#: module/gui/Collector.py:59
+msgid "downloading"
+msgstr "téléchargement en cours"
+
+#: module/gui/Collector.py:60
+msgid "processing"
+msgstr "traitement en cours"
+
+#: module/gui/Collector.py:284 module/gui/PackageDock.py:66
+#: module/gui/Queue.py:152
+msgid "Name"
+msgstr "Nom"
+
+#: module/gui/Collector.py:286 module/gui/Queue.py:156
+msgid "Plugin"
+msgstr "Plugin"
+
+#: module/gui/Collector.py:288 module/gui/Queue.py:154
+msgid "Status"
+msgstr "Status"
+
+#: module/gui/Collector.py:290 module/gui/Queue.py:158
+msgid "Size"
+msgstr "Taille"
+
+#: module/gui/connector.py:76
+msgid "bad login credentials"
+msgstr "mauvais login"
+
+#: module/gui/connector.py:78
+msgid "no ssl support"
+msgstr "pas de support ssl"
+
+#: module/gui/connector.py:80
+msgid "can't connect to host"
+msgstr "impossible de se connecter à l'hôte"
+
+#: module/gui/connector.py:94
+#, python-format
+msgid "server is version %(new)s client accepts version %(current)s"
+msgstr "le serveur est en version %(new)s le cient accepte la version %(current)s"
+
+#: module/gui/SettingsWidget.py:74
+msgid "General"
+msgstr "Général"
+
+#: module/gui/SettingsWidget.py:75
+msgid "Plugins"
+msgstr ""
+
+#: module/gui/SettingsWidget.py:89
+msgid "Reload"
+msgstr "Recharger"
+
+#: module/gui/SettingsWidget.py:90 module/gui/AccountEdit.py:53
+#: module/gui/ConnectionManager.py:206
+msgid "Save"
+msgstr "Sauver"
+
+#: module/gui/SettingsWidget.py:192
+msgid "Yes"
+msgstr "Oui"
+
+#: module/gui/SettingsWidget.py:193
+msgid "No"
+msgstr "Non"
+
+#: module/gui/PackageDock.py:25
+msgid "New Package"
+msgstr "Nouveau Package"
+
+#: module/gui/PackageDock.py:68
+msgid "Password"
+msgstr "Mot de passe"
+
+#: module/gui/PackageDock.py:71
+msgid "Links in this Package"
+msgstr "Liens dans ce paquet"
+
+#: module/gui/PackageDock.py:77
+msgid "Create"
+msgstr "Créer"
+
+#: module/gui/PackageDock.py:78
+msgid "Filter URLs"
+msgstr "Filtrer les URL"
+
+#: module/gui/CaptchaDock.py:29
+msgid "Captcha"
+msgstr ""
+
+#: module/gui/CaptchaDock.py:64
+msgid "OK"
+msgstr ""
+
+#: module/gui/CaptchaDock.py:65 module/gui/ConnectionManager.py:207
+msgid "Cancel"
+msgstr "Annuler"
+
+#: module/gui/Accounts.py:75
+msgid "not valid"
+msgstr "invalide"
+
+#: module/gui/Accounts.py:77 module/gui/Accounts.py:207
+msgid "n/a"
+msgstr "n/a"
+
+#: module/gui/Accounts.py:80
+msgid "%a, %d %b %Y %H:%M"
+msgstr ""
+
+#: module/gui/Accounts.py:83 module/gui/Accounts.py:205
+msgid "unlimited"
+msgstr "Illimité"
+
+#: module/gui/Accounts.py:138 module/gui/AccountEdit.py:38
+msgid "Type"
+msgstr ""
+
+#: module/gui/Accounts.py:140 module/gui/AccountEdit.py:39
+msgid "Login"
+msgstr "Identifiant"
+
+#: module/gui/Accounts.py:142
+msgid "Valid until"
+msgstr "Valide jusqu'au"
+
+#: module/gui/Accounts.py:144
+msgid "Traffic left"
+msgstr "Trafic restant"
+
+#: module/gui/Overview.py:71 module/gui/Overview.py:152
+msgid "Downloading"
+msgstr "Téléchargement en cours"
+
+#: module/gui/Overview.py:83
+msgid "Queued"
+msgstr "File d'attente"
+
+#: module/gui/Overview.py:147
+msgid "ETA: "
+msgstr "ETA:"
+
+#: module/gui/Overview.py:149
+msgid "Parts: "
+msgstr ""
+
+#: module/gui/Overview.py:151
+msgid "Finished"
+msgstr "Terminé"
+
+#: module/gui/Overview.py:155
+#, python-format
+msgid "Speed: %s"
+msgstr "Vitesse: %s"
+
+#: module/gui/Overview.py:158 module/gui/Overview.py:160
+msgid "Size:"
+msgstr "Taille:"
+
+#: module/gui/AccountEdit.py:32
+msgid "Edit account"
+msgstr "Editer compte"
+
+#: module/gui/AccountEdit.py:40
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#: module/gui/AccountEdit.py:83
+msgid "Create account"
+msgstr "Créer compte"
+
+#: module/gui/Queue.py:160
+msgid "ETA"
+msgstr ""
+
+#: module/gui/Queue.py:162
+msgid "Progress"
+msgstr "Progression"
+
+#: module/gui/Queue.py:384
+#, python-format
+msgid "waiting %d seconds"
+msgstr "attente %d secondes"
+
+#: module/gui/ConnectionManager.py:42 module/gui/ConnectionManager.py:185
+msgid "pyLoad ConnectionManager"
+msgstr "Gestionnaire de connexion de pyLoad"
+
+#: module/gui/ConnectionManager.py:47
+msgid "New"
+msgstr "Nouveau"
+
+#: module/gui/ConnectionManager.py:50
+msgid "Connect"
+msgstr "Connexion"
+
+#: module/gui/ConnectionManager.py:56
+msgid "Connect:"
+msgstr "Connexion:"
+
+#: module/gui/ConnectionManager.py:73
+msgid "Use internal Core:"
+msgstr "Utiliser le module interne:"
+
+#: module/gui/ConnectionManager.py:117
+#, python-format
+msgid "%s (Default)"
+msgstr "%s (Défaut)"
+
+#: module/gui/ConnectionManager.py:190
+msgid "Name:"
+msgstr "Nom :"
+
+#: module/gui/ConnectionManager.py:191
+msgid "Host:"
+msgstr "Hôte :"
+
+#: module/gui/ConnectionManager.py:192
+msgid "Local:"
+msgstr "Local :"
+
+#: module/gui/ConnectionManager.py:193
+msgid "User:"
+msgstr "Utilisateur :"
+
+#: module/gui/ConnectionManager.py:194
+msgid "Password:"
+msgstr "Mot de passe :"
+
+#: module/gui/ConnectionManager.py:195
+msgid "Port:"
+msgstr "Port :"
+

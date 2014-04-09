@@ -1,0 +1,295 @@
+msgid ""
+msgstr "Project-Id-Version: pyload\n"
+"Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
+"POT-Creation-Date: 2014-04-08 15:01+0200\n"
+"PO-Revision-Date: 2014-04-09 05:38-0400\n"
+"Last-Translator: pyloadTeam <team@pyload.org>\n"
+"Language-Team: Czech\n"
+"Language: cs_CZ\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: crowdin.net\n"
+
+#: pyLoadCli.py:75 pyLoadCli.py:133
+msgid " Command Line Interface"
+msgstr " Příkazová řádka"
+
+#: pyLoadCli.py:165
+#, python-format
+msgid "%s Downloads:"
+msgstr "%s Stahování:"
+
+#: pyLoadCli.py:177
+msgid " Speed: "
+msgstr " Rychlost: "
+
+#: pyLoadCli.py:177
+msgid " Size: "
+msgstr " Velikost: "
+
+#: pyLoadCli.py:178
+msgid " Finished in: "
+msgstr " Dokončeno za: "
+
+#: pyLoadCli.py:179
+msgid " ID: "
+msgstr ""
+
+#: pyLoadCli.py:184
+msgid "waiting: "
+msgstr "čeká: "
+
+#: pyLoadCli.py:191 pyLoadCli.py:193
+msgid "Status:"
+msgstr "Stav:"
+
+#: pyLoadCli.py:191
+msgid "paused"
+msgstr "pozastaveno"
+
+#: pyLoadCli.py:193
+msgid "running"
+msgstr "probíhá"
+
+#: pyLoadCli.py:196
+msgid "total Speed"
+msgstr "celková rychlost"
+
+#: pyLoadCli.py:196
+msgid "Files in queue"
+msgstr "Souborů ve frontě"
+
+#: pyLoadCli.py:197
+msgid "Total"
+msgstr "Celkem"
+
+#: pyLoadCli.py:203
+msgid "Menu:"
+msgstr ""
+
+#: pyLoadCli.py:205
+msgid " Add Links"
+msgstr " Přidat Odkazy"
+
+#: pyLoadCli.py:206
+msgid " Manage Queue"
+msgstr " Správa fronty"
+
+#: pyLoadCli.py:207
+msgid " Manage Collector"
+msgstr " Správa Sběrače"
+
+#: pyLoadCli.py:208
+msgid " (Un)Pause Server"
+msgstr " Pozastavit/Spustit server"
+
+#: pyLoadCli.py:209
+msgid " Kill Server"
+msgstr " Ukončit server"
+
+#: pyLoadCli.py:210
+msgid " Quit"
+msgstr " Konec"
+
+#: pyLoadCli.py:289 pyLoadCli.py:296
+msgid "Please use this syntax: add <Package name> <link> <link2> ..."
+msgstr "Prosím použijte tuto syntaxi: add <Jmeno balicku> <odkaz> <odkaz2> ..."
+
+#: pyLoadCli.py:315
+#, python-format
+msgid "Checking %d links:"
+msgstr "Kontroluji  %d odkazů:"
+
+#: pyLoadCli.py:324
+msgid "File does not exists."
+msgstr "Soubor neexistuje."
+
+#: pyLoadCli.py:385
+msgid "pyLoad was terminated"
+msgstr "pyLoad byl ukončen"
+
+#: pyLoadCli.py:443
+msgid "Prints server status"
+msgstr "Vypíše stav serveru"
+
+#: pyLoadCli.py:444
+msgid "Prints downloads in queue"
+msgstr "Vypíše stahování ve frontě"
+
+#: pyLoadCli.py:445
+msgid "Prints downloads in collector"
+msgstr "Vypíše stahování ve sběrači"
+
+#: pyLoadCli.py:446
+msgid "Adds package to queue"
+msgstr "Přidá balíček do fronty"
+
+#: pyLoadCli.py:447
+msgid "Adds package to collector"
+msgstr "Přidá balíček do sběrače"
+
+#: pyLoadCli.py:448
+msgid "Delete Files from Queue/Collector"
+msgstr "Smazat soubory z fronty/sběrače"
+
+#: pyLoadCli.py:449
+msgid "Delete Packages from Queue/Collector"
+msgstr "Smazat balíčky z fronty/sběrače"
+
+#: pyLoadCli.py:450
+msgid "Move Packages from Queue to Collector or vice versa"
+msgstr "Přesun balíčku z fronty do sběrače nebo naopak"
+
+#: pyLoadCli.py:451
+msgid "Restart files"
+msgstr "Restart souborů"
+
+#: pyLoadCli.py:452
+msgid "Restart packages"
+msgstr "Restart balíčků"
+
+#: pyLoadCli.py:453
+msgid "Check online status, works with local container"
+msgstr "Zkontrolovat stav online - funguje s místním zásobníkem"
+
+#: pyLoadCli.py:454
+msgid "Checks online status of a container file"
+msgstr "Zkontroluje online stav souboru ze zásobníku"
+
+#: pyLoadCli.py:455
+msgid "Pause the server"
+msgstr "Pozastavit server"
+
+#: pyLoadCli.py:456
+msgid "continue downloads"
+msgstr "pokracovat ve stahovani"
+
+#: pyLoadCli.py:457
+msgid "Toggle pause/unpause"
+msgstr "Prepnout pozastaveni/beh"
+
+#: pyLoadCli.py:458
+msgid "kill server"
+msgstr "ukoncit server"
+
+#: pyLoadCli.py:460
+msgid "List of commands:"
+msgstr "Seznam prikazu:"
+
+#: pyLoadCli.py:473
+msgid "Couldn't write user config file"
+msgstr "Nemohu zapsat nastavení uživatele"
+
+#: pyLoadCli.py:548
+msgid "You need py-openssl to connect to this pyLoad Core."
+msgstr "Pro pripojeni k tomuto jadru pyLoad je vyzadovano py-openssl."
+
+#: pyLoadCli.py:555
+msgid "Address: "
+msgstr "Adresa: "
+
+#: pyLoadCli.py:556
+msgid "Port: "
+msgstr ""
+
+#: pyLoadCli.py:557
+msgid "Username: "
+msgstr "Uzivatelske jmeno: "
+
+#: pyLoadCli.py:561
+msgid "Password: "
+msgstr "Heslo: "
+
+#: pyLoadCli.py:566 pyLoadCli.py:575
+msgid "Login data is wrong."
+msgstr "Prihlasovaci udaje jsou chybne."
+
+#: pyLoadCli.py:568 pyLoadCli.py:577
+#, python-format
+msgid "Could not establish connection to %(addr)s:%(port)s."
+msgstr "Nelze vytvorit pripojeni k %(addr)s:%(port)s."
+
+#: pyLoadCli.py:580
+msgid "You need py-openssl to connect to this pyLoad core."
+msgstr "K pripojeni na toto pyLoad jadro potrebujete py-openssl."
+
+#: pyLoadCli.py:582
+msgid "Interactive mode ignored since you passed some commands."
+msgstr "Byly zadany prikazy, interaktivni mod je ignorovan."
+
+#: module/cli/AddPackage.py:48
+msgid "Add Package:"
+msgstr "Přidat Balíček:"
+
+#: module/cli/AddPackage.py:53
+msgid "Enter a name for the new package"
+msgstr "Zadej název nového balíčku"
+
+#: module/cli/AddPackage.py:57
+#, python-format
+msgid "Package: %s"
+msgstr "Balíček: %s"
+
+#: module/cli/AddPackage.py:58
+msgid "Parse the links you want to add."
+msgstr "Analyzuje odkazy které chcete přidat."
+
+#: module/cli/AddPackage.py:59
+#, python-format
+msgid "Type %s when done."
+msgstr "Pokud jste hotovi, napište %s"
+
+#: module/cli/AddPackage.py:60
+msgid "Links added: "
+msgstr "Přidáno odkazů: "
+
+#: module/cli/AddPackage.py:64 module/cli/ManageFiles.py:149
+msgid " back to main menu"
+msgstr " zpět do hlavního menu"
+
+#: module/cli/ManageFiles.py:97
+msgid "Manage Packages:"
+msgstr "Správa balíčků:"
+
+#: module/cli/ManageFiles.py:99
+msgid "Manage Links:"
+msgstr " Spravovat Odkazy:"
+
+#: module/cli/ManageFiles.py:104
+msgid "What do you want to move?"
+msgstr "Co chcete přesunout?"
+
+#: module/cli/ManageFiles.py:106
+msgid "What do you want to delete?"
+msgstr "Co chcete smazat?"
+
+#: module/cli/ManageFiles.py:108
+msgid "What do you want to restart?"
+msgstr "Co chcete restartovat?"
+
+#: module/cli/ManageFiles.py:113
+msgid "Choose what yout want to do or enter package number."
+msgstr "Vyberte si, co chcete dělat, nebo zadejte číslo balíčku."
+
+#: module/cli/ManageFiles.py:115
+msgid "delete"
+msgstr "smazat"
+
+#: module/cli/ManageFiles.py:115
+msgid "move"
+msgstr "přesunout"
+
+#: module/cli/ManageFiles.py:115
+msgid "restart"
+msgstr "restartovat"
+
+#: module/cli/ManageFiles.py:148
+msgid " - previous"
+msgstr " - předchozí"
+
+#: module/cli/ManageFiles.py:148
+msgid " - next"
+msgstr " - další"
+
