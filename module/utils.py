@@ -159,7 +159,7 @@ def parseFileSize(string, unit=None): #returns bytes
 
 def lock(func):
     def new(*args):
-        #print "Handler: %s args: %s" % (func,args[1:])
+        #print "Handler: %s args: %s" % (func, args[1:])
         args[0].lock.acquire()
         try:
             return func(*args)

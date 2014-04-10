@@ -88,7 +88,7 @@ except ImportError: # pragma: no cover
                 raise ImportError("JSON support requires Python 2.6 or simplejson.")
             json_lds = json_dumps
 
-py3k = sys.version_info >= (3,0,0)
+py3k = sys.version_info >= (3, 0, 0)
 NCTextIOWrapper = None
 
 if py3k: # pragma: no cover
@@ -98,7 +98,7 @@ if py3k: # pragma: no cover
     def touni(x, enc='utf8', err='strict'):
         """ Convert anything to unicode """
         return str(x, enc, err) if isinstance(x, bytes) else str(x)
-    if sys.version_info < (3,2,0):
+    if sys.version_info < (3, 2, 0):
         from io import TextIOWrapper
         class NCTextIOWrapper(TextIOWrapper):
             ''' Garbage collecting an io.TextIOWrapper(buffer) instance closes
@@ -394,7 +394,7 @@ class Router(object):
         if not builder: raise RouteBuildError("No route with that name.", _name)
         try:
             for i, value in enumerate(anons): query['anon%d'%i] = value
-            url = ''.join([f(query.pop(n)) if n else f for (n,f) in builder])
+            url = ''.join([f(query.pop(n)) if n else f for (n, f) in builder])
             return url if not query else url+'?'+urlencode(query)
         except KeyError, e:
             raise RouteBuildError('Missing URL argument: %r' % e.args[0])
@@ -425,7 +425,7 @@ class Router(object):
         if 'GET' in allowed and 'HEAD' not in allowed:
             allowed.append('HEAD')
         raise HTTPError(405, "Method not allowed.",
-                        header=[('Allow',",".join(allowed))])
+                        header=[('Allow', ",".join(allowed))])
 
 
 
@@ -1876,12 +1876,12 @@ def parse_date(ims):
 
 
 def parse_auth(header):
-    """ Parse rfc2617 HTTP authentication header string (basic) and return (user,pass) tuple or None"""
+    """ Parse rfc2617 HTTP authentication header string (basic) and return (user, pass) tuple or None"""
     try:
         method, data = header.split(None, 1)
         if method.lower() == 'basic':
             #TODO: Add 2to3 save base64[encode/decode] functions.
-            user, pwd = touni(base64.b64decode(tob(data))).split(':',1)
+            user, pwd = touni(base64.b64decode(tob(data))).split(':', 1)
             return user, pwd
     except (KeyError, ValueError):
         return None
@@ -2049,7 +2049,7 @@ class ServerAdapter(object):
         pass
 
     def __repr__(self):
-        args = ', '.join(['%s=%s'%(k,repr(v)) for k, v in self.options.items()])
+        args = ', '.join(['%s=%s'%(k, repr(v)) for k, v in self.options.items()])
         return "%s(%s)" % (self.__class__.__name__, args)
 
 
@@ -2598,9 +2598,9 @@ class SimpleTALTemplate(BaseTemplate):
         for dictarg in args: kwargs.update(dictarg)
         # TODO: maybe reuse a context instead of always creating one
         context = simpleTALES.Context()
-        for k,v in self.defaults.items():
+        for k, v in self.defaults.items():
             context.addGlobal(k, v)
-        for k,v in kwargs.items():
+        for k, v in kwargs.items():
             context.addGlobal(k, v)
         output = StringIO()
         self.tpl.expand(context, output)
@@ -2691,7 +2691,7 @@ class SimpleTemplate(BaseTemplate):
                 if m: self.encoding = m.group(1)
                 if m: line = line.replace('coding','coding (removed)')
             if line.strip()[:2].count('%') == 1:
-                line = line.split('%',1)[1].lstrip() # Full line following the %
+                line = line.split('%', 1)[1].lstrip() # Full line following the %
                 cline = self.split_comment(line).strip()
                 cmd = re.split(r'[^a-zA-Z0-9_]', cline)[0]
                 flush() # You are actually reading this? Good luck, it's a mess :)
@@ -2749,7 +2749,7 @@ class SimpleTemplate(BaseTemplate):
             subtpl, rargs = env['_rebase']
             rargs['_base'] = _stdout[:] #copy stdout
             del _stdout[:] # clear stdout
-            return self.subtemplate(subtpl,_stdout,rargs)
+            return self.subtemplate(subtpl, _stdout, rargs)
         return env
 
     def render(self, *args, **kwargs):
@@ -2839,7 +2839,7 @@ HTTP_CODES[428] = "Precondition Required"
 HTTP_CODES[429] = "Too Many Requests"
 HTTP_CODES[431] = "Request Header Fields Too Large"
 HTTP_CODES[511] = "Network Authentication Required"
-_HTTP_STATUS_LINES = dict((k, '%d %s'%(k,v)) for (k,v) in HTTP_CODES.iteritems())
+_HTTP_STATUS_LINES = dict((k, '%d %s'%(k, v)) for (k, v) in HTTP_CODES.iteritems())
 
 #: The default template used for error pages. Override with @error()
 ERROR_PAGE_TEMPLATE = """

@@ -31,8 +31,8 @@ Encoding basic Python object hierarchies::
 Compact encoding::
 
     >>> import simplejson as json
-    >>> json.dumps([1,2,3,{'4': 5, '6': 7}], separators=(',',':'))
-    '[1,2,3,{"4":5,"6":7}]'
+    >>> json.dumps([1, 2, 3, {'4': 5, '6': 7}], separators=(',',':'))
+    '[1, 2, 3, {"4": 5, "6": 7}]'
 
 Pretty printing::
 

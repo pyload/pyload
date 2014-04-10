@@ -489,10 +489,10 @@ class Setup():
                 input = default
 
             if bool:
-                # yes, true,t are inputs for booleans with value true
+                # yes, true, t are inputs for booleans with value true
                 if input.lower().strip() in [self.yes, _("yes"), _("true"), _("t"), "yes"]:
                     return True
-                # no, false,f are inputs for booleans with value false
+                # no, false, f are inputs for booleans with value false
                 elif input.lower().strip() in [self.no, _("no"), _("false"), _("f"), "no"]:
                     return False
                 else:

@@ -202,7 +202,7 @@ class TProtocolBase:
 
   # tuple of: ( 'reader method' name, is_container boolean, 'writer_method' name )
   _TTYPE_HANDLERS = (
-       (None, None, False), # 0 == TType,STOP
+       (None, None, False), # 0 == TType, STOP
        (None, None, False), # 1 == TType.VOID # TODO: handle void?
        ('readBool', 'writeBool', False), # 2 == TType.BOOL
        ('readByte',  'writeByte', False), # 3 == TType.BYTE and I08
@@ -298,7 +298,7 @@ class TProtocolBase:
         v_val = val_reader()
       else:
         v_val = self.readFieldByTType(val_ttype, val_spec)
-      # this raises a TypeError with unhashable keys types. i.e. d=dict(); d[[0,1]] = 2 fails
+      # this raises a TypeError with unhashable keys types. i.e. d=dict(); d[[0, 1]] = 2 fails
       results[k_val] = v_val
     self.readMapEnd()
     return results

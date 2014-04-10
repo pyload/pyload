@@ -93,7 +93,7 @@ class CNLHandler(BaseHTTPRequestHandler):
                 resp += "\r\n"
                 self.start_response(resp)
                 self.wfile.write(resp)
-            except Exception,e :
+            except Exception, e:
                 self.send_error(500, str(e))
         else:
             self.send_error(404, "Not Found")
@@ -139,7 +139,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         IV = Key
 
         obj = AES.new(Key, AES.MODE_CBC, IV)
-        result = obj.decrypt(crypted).replace("\x00", "").replace("\r","").split("\n")
+        result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
         result = filter(lambda x: x != "", result)
 

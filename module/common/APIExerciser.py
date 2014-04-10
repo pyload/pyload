@@ -23,7 +23,7 @@ def createURLs():
 
     return urls
 
-AVOID = (0,3,8)
+AVOID = (0, 3, 8)
 
 idPool = 0
 sumCalled = 0

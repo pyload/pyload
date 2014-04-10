@@ -79,7 +79,7 @@ class ThriftClientProtocol(basic.Int32StringReceiver):
         self.started.callback(self.client)
 
     def connectionLost(self, reason=connectionDone):
-        for k,v in self.client._reqs.iteritems():
+        for k, v in self.client._reqs.iteritems():
             tex = TTransport.TTransportException(
                 type=TTransport.TTransportException.END_OF_FILE,
                 message='Connection closed')

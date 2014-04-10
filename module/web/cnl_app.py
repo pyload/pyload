@@ -100,7 +100,7 @@ def addcrypted2():
     IV = Key
 
     obj = AES.new(Key, AES.MODE_CBC, IV)
-    result = obj.decrypt(crypted).replace("\x00", "").replace("\r","").split("\n")
+    result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
     result = filter(lambda x: x != "", result)
 
