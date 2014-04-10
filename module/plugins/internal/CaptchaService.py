@@ -21,18 +21,38 @@ import re
 
 
 class CaptchaService():
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     def __init__(self, plugin):
         self.plugin = plugin
 
 
 class ReCaptcha():
+    RECAPTCHA_KEY_PATTERN = r"https?://(?:www\.)?google\.com/recaptcha/api/challenge\?k=(?P<key>\w+)"
+    RECAPTCHA_KEY_AJAX_PATTERN = r"Recaptcha\.create\s*\(\s*[\"'](?P<key>\w+)[\"']\s*,"
+
+    recaptcha_key = None
+
     def __init__(self, plugin):
         self.plugin = plugin
 
-    def challenge(self, id):
-        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={"k": id}, cookies=True)
+    def detect_key(self, html):
+        m = re.search(self.RECAPTCHA_KEY_PATTERN, html)
+        if not m:
+            m = re.search(self.RECAPTCHA_KEY_AJAX_PATTERN, html)
+        if m:
+            self.recaptcha_key = m.group('key')
+            return self.recaptcha_key
+        else:
+            return None
+
+    def challenge(self, key=None):
+        if not key and self.recaptcha_key:
+            key = self.recaptcha_key
+        elif not (key or self.recaptcha_key):
+            raise TypeError("ReCaptcha key not found")
+
+        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={"k": key}, cookies=True)
 
         try:
             challenge = re.search("challenge : '(.*?)',", js).group(1)
@@ -44,7 +64,8 @@ class ReCaptcha():
         return challenge, result
 
     def result(self, server, challenge):
-        return self.plugin.decryptCaptcha("%simage" % server, get={"c": challenge}, cookies=True, forceUser=True, imgtype="jpg")
+        return self.plugin.decryptCaptcha("%simage" % server, get={"c": challenge},
+                                          cookies=True, forceUser=True, imgtype="jpg")
 
 
 class AdsCaptcha(CaptchaService):
@@ -61,7 +82,8 @@ class AdsCaptcha(CaptchaService):
         return challenge, result
 
     def result(self, server, challenge):
-        return self.plugin.decryptCaptcha("%sChallenge.aspx" % server, get={"cid": challenge, "dummy": random()}, cookies=True, imgtype="jpg")
+        return self.plugin.decryptCaptcha("%sChallenge.aspx" % server, get={"cid": challenge, "dummy": random()},
+                                          cookies=True, imgtype="jpg")
 
 
 class SolveMedia(CaptchaService):
@@ -71,7 +93,8 @@ class SolveMedia(CaptchaService):
     def challenge(self, src):
         html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript?k=%s" % src, cookies=True)
         try:
-            challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">', html).group(1)
+            challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
+                                  html).group(1)
         except:
             self.plugin.fail("solvmedia error")
         result = self.result(challenge)
