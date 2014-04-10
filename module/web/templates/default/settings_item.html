@@ -3,7 +3,7 @@
     <tr><th colspan="2">{{ section.outline }}</th></tr>
     {% endif %}
     {% for okey, option in section.iteritems() %}
-        {% if okey not in ("desc","outline") %}
+        {% if okey not in ("desc", "outline") %}
             <tr>
                 <td><label for="{{skey}}|{{okey}}"
                            style="color:#424242;">{{ option.desc }}:</label></td>

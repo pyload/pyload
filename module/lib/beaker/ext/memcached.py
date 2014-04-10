@@ -45,7 +45,7 @@ class MemcachedNamespaceManager(NamespaceManager):
 
     def get_creation_lock(self, key):
         return file_synchronizer(
-            identifier="memcachedcontainer/funclock/%s" % self.namespace,lock_dir = self.lock_dir)
+            identifier="memcachedcontainer/funclock/%s" % self.namespace, lock_dir = self.lock_dir)
 
     def _format_key(self, key):
         return self.namespace + '_' + key.replace(' ', '\302\267')

@@ -24,7 +24,7 @@ from module.utils import formatSize
 
 from module.remote.thriftbackend.ThriftClient import Destination, FileDoesNotExists, ElementType
 
-statusMapReverse = dict((v,k) for k, v in statusMap.iteritems())
+statusMapReverse = dict((v, k) for k, v in statusMap.iteritems())
 
 translatedStatusMap = {} # -> CollectorModel.__init__
 

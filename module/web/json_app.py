@@ -242,7 +242,7 @@ def load_config(category, section):
         conf = PYLOAD.getPluginConfigDict()
 
     for key, option in conf[section].iteritems():
-        if key in ("desc","outline"): continue
+        if key in ("desc", "outline"): continue
 
         if ";" in option["type"]:
             option["list"] = option["type"].split(";")

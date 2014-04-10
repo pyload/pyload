@@ -194,7 +194,7 @@ struct OnlineStatus {
     2: PluginName plugin,
     3: string packagename,
     4: DownloadStatus status,
-    5: i64 size,   // size <= 0 : unknown
+    5: i64 size,   // size <= 0: unknown
 }
 
 struct OnlineCheck {
@@ -311,7 +311,7 @@ service Pyload {
 
   //services
 
-  // servicename : description
+  // servicename: description
   map<PluginName, map<string, string>> getServices(),
   bool hasService(1: PluginName plugin, 2: string func),
   string call(1: ServiceCall info) throws (1: ServiceDoesNotExists ex, 2: ServiceException e),
@@ -319,7 +319,7 @@ service Pyload {
 
   //info
   // {plugin: {name: value}}
-  map<PluginName, map<string,string>> getAllInfo(),
+  map<PluginName, map<string, string>> getAllInfo(),
   map<string, string> getInfoByPlugin(1: PluginName plugin),
 
   //scheduler

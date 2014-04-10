@@ -89,8 +89,8 @@ class HTTPRequest():
         if pycurl.version_info()[7]:
             self.c.setopt(pycurl.ENCODING, "gzip, deflate")
         self.c.setopt(pycurl.HTTPHEADER, ["Accept: */*",
-                                          "Accept-Language: en-US,en",
-                                          "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+                                          "Accept-Language: en-US, en",
+                                          "Accept-Charset: ISO-8859-1, utf-8;q=0.7,*;q=0.7",
                                           "Connection: keep-alive",
                                           "Keep-Alive: 300",
                                           "Expect:"])

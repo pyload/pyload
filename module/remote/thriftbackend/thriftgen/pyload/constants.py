@@ -3,7 +3,7 @@
 #
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 #
-#  options string: py:slots,dynamic
+#  options string: py:slots, dynamic
 #
 
 from thrift.Thrift import TType, TMessageType, TException

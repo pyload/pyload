@@ -32,8 +32,8 @@ Example:
   cookies = cookielib.CookieJar()
   opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookies),
                                 MultipartPostHandler.MultipartPostHandler)
-  params = { "username" : "bob", "password" : "riviera",
-             "file" : open("filename", "rb") }
+  params = {"username": "bob", "password": "riviera",
+             "file": open("filename", "rb") }
   opener.open("http://wwww.bobsite.com/upload/", params)
 
 Further Example:
@@ -123,9 +123,9 @@ def main():
     def validateFile(url):
         temp = tempfile.mkstemp(suffix=".html")
         write(temp[0], opener.open(url).read())
-        params = { "ss" : "0",            # show source
-                   "doctype" : "Inline",
-                   "uploaded_file" : open(temp[1], "rb") }
+        params = {"ss": "0",            # show source
+                   "doctype": "Inline",
+                   "uploaded_file": open(temp[1], "rb") }
         print opener.open(validatorURL, params).read()
         remove(temp[1])
 
