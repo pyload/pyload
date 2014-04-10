@@ -26,7 +26,7 @@ class UserMethods():
     @style.queue
     def checkAuth(db, user, password):
         c = db.c
-        c.execute('SELECT id, name, password, role, permission, template, email FROM "users" WHERE name=?', (user, ))
+        c.execute('SELECT id, name, password, role, permission, template, email FROM "users" WHERE name=?', (user,))
         r = c.fetchone()
         if not r:
             return {}
@@ -47,7 +47,7 @@ class UserMethods():
         password = salt + h.hexdigest()
 
         c = db.c
-        c.execute('SELECT name FROM users WHERE name=?', (user, ))
+        c.execute('SELECT name FROM users WHERE name=?', (user,))
         if c.fetchone() is not None:
             c.execute('UPDATE users SET password=? WHERE name=?', (password, user))
         else:
@@ -56,7 +56,7 @@ class UserMethods():
 
     @style.queue
     def changePassword(db, user, oldpw, newpw):
-        db.c.execute('SELECT id, name, password FROM users WHERE name=?', (user, ))
+        db.c.execute('SELECT id, name, password FROM users WHERE name=?', (user,))
         r = db.c.fetchone()
         if not r:
             return False
@@ -103,6 +103,6 @@ class UserMethods():
 
     @style.queue
     def removeUser(db, user):
-        db.c.execute('DELETE FROM users WHERE name=?', (user, ))
+        db.c.execute('DELETE FROM users WHERE name=?', (user,))
 
 DatabaseBackend.registerSub(UserMethods)

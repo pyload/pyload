@@ -222,7 +222,7 @@ class DatabaseBackend(Thread):
         SELECT p.id AS id, SUM(l.size) AS sizetotal, COUNT(l.id) AS linkstotal, linksdone, sizedone\
         FROM packages p JOIN links l ON p.id = l.package LEFT OUTER JOIN\
         (SELECT p.id AS id, COUNT(*) AS linksdone, SUM(l.size) AS sizedone \
-        FROM packages p JOIN links l ON p.id = l.package AND l.status in (0,4,13) GROUP BY p.id) s ON s.id = p.id \
+        FROM packages p JOIN links l ON p.id = l.package AND l.status in (0, 4, 13) GROUP BY p.id) s ON s.id = p.id \
         GROUP BY p.id')
 
         #try to lower ids
@@ -281,12 +281,12 @@ class DatabaseBackend(Thread):
         self.conn.rollback()
 
     def async(self, f, *args, **kwargs):
-        args = (self, ) + args
+        args = (self,) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
 
     def queue(self, f, *args, **kwargs):
-        args = (self, ) + args
+        args = (self,) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
         job.wait()

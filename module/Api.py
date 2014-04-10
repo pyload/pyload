@@ -1011,7 +1011,7 @@ class Api(Iface):
     def getAllInfo(self):
         """Returns all information stored by hook plugins. Values are always strings
 
-        :return: {"plugin": {"name": value } }
+        :return: {"plugin": {"name": value}}
         """
         return self.core.hookManager.getAllInfo()
 

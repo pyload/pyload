@@ -389,7 +389,7 @@ def logs(item=-1):
     reversed = s.get('reversed', False)
 
     warning = ""
-    conf = PYLOAD.getConfigValue("log","file_log")
+    conf = PYLOAD.getConfigValue("log", "file_log")
     if not conf:
         warning = "Warning: File log is disabled, see settings page."
 

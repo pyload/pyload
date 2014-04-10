@@ -27,7 +27,7 @@ from traceback import print_exc
 
 class Forwarder():
 
-    def __init__(self, extip,extport=9666):
+    def __init__(self, extip, extport=9666):
         print "Start portforwarding to %s:%s" % (extip, extport)
         proxy(extip, extport, 9666)
 

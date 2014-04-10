@@ -40,7 +40,7 @@ class ConnectionManager(QWidget):
         buttonLayout = QVBoxLayout()
 
         self.setWindowTitle(_("pyLoad ConnectionManager"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         connList = QListWidget()
 
@@ -118,7 +118,7 @@ class ConnectionManager(QWidget):
                 self.connList.setCurrentItem(item)
 
     def slotNew(self):
-        data = {"id":uuid().hex, "type":"remote", "default":False, "name":"", "host":"", "port":"7228", "user":"admin", "password":""}
+        data = {"id": uuid().hex, "type":"remote", "default": False, "name":"", "host":"", "port":"7228", "user":"admin", "password":""}
         self.edit.setData(data)
         self.edit.show()
 
@@ -183,7 +183,7 @@ class ConnectionManager(QWidget):
             QWidget.__init__(self)
 
             self.setWindowTitle(_("pyLoad ConnectionManager"))
-            self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+            self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
             grid = QGridLayout()
 
@@ -201,7 +201,7 @@ class ConnectionManager(QWidget):
             password = QLineEdit()
             password.setEchoMode(QLineEdit.Password)
             port = QSpinBox()
-            port.setRange(1,10000)
+            port.setRange(1, 10000)
 
             save = QPushButton(_("Save"))
             cancel = QPushButton(_("Cancel"))
