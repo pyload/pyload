@@ -44,8 +44,9 @@ class DdlstorageCom(XFileSharingPro):
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
-    FILE_INFO_PATTERN = r'<p class="sub_title"[^>]*>(?P<N>.+) \((?P<S>[^)]+)\)</p>'
     HOSTER_NAME = "ddlstorage.com"
+
+    FILE_INFO_PATTERN = r'<p class="sub_title"[^>]*>(?P<N>.+) \((?P<S>[^)]+)\)</p>'
 
     def prepare(self):
         self.getAPIData()

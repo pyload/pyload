@@ -28,6 +28,8 @@ class EasybytezCom(XFileSharingPro):
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
+    HOSTER_NAME = "easybytez.com"
+
     FILE_INFO_PATTERN = r'<span class="name">(?P<N>.+)</span><br>\s*<span class="size">(?P<S>[^<]+)</span>'
     FILE_OFFLINE_PATTERN = r'<h1>File not available</h1>'
 
@@ -35,8 +37,6 @@ class EasybytezCom(XFileSharingPro):
     OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
     ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<Center><b>)(.*?)</'
-
-    HOSTER_NAME = "easybytez.com"
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium

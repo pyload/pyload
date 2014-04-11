@@ -30,10 +30,10 @@ class HundredEightyUploadCom(XFileSharingPro):
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
+    HOSTER_NAME = "180upload.com"
+
     FILE_NAME_PATTERN = r'Filename:</b></td><td nowrap>(?P<N>.+)</td></tr>-->'
     FILE_SIZE_PATTERN = r'Size:</b></td><td>(?P<S>[\d.]+) (?P<U>[A-Z]+)\s*<small>'
-
-    HOSTER_NAME = "180upload.com"
 
 
 getInfo = create_getInfo(HundredEightyUploadCom)

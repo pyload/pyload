@@ -27,8 +27,8 @@ class MegareleaseOrg(XFileSharingPro):
     __author_name__ = ("derek3x", "stickell")
     __author_mail__ = ("derek3x@vmail.me", "l.stickell@yahoo.it")
 
-    FILE_INFO_PATTERN = r'<font color="red">%s/(?P<N>.+)</font> \((?P<S>[^)]+)\)</font>' % __pattern__
-
     HOSTER_NAME = "megarelease.org"
+
+    FILE_INFO_PATTERN = r'<font color="red">%s/(?P<N>.+)</font> \((?P<S>[^)]+)\)</font>' % __pattern__
 
 getInfo = create_getInfo(MegareleaseOrg)

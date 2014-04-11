@@ -13,7 +13,6 @@ class FileshareInUa(Hoster):
     __author_name__ = "fwannmacher"
     __author_mail__ = "felipe@warhammerproject.com"
 
-    HOSTER_NAME = "fileshare.in.ua"
     PATTERN_FILENAME = r'<h3 class="b-filename">(.*?)</h3>'
     PATTERN_FILESIZE = r'<b class="b-filesize">(.*?)</b>'
     PATTERN_OFFLINE = "This file doesn't exist, or has been removed."

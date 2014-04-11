@@ -11,8 +11,9 @@ class FilerioCom(XFileSharingPro):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    FILE_OFFLINE_PATTERN = '<b>&quot;File Not Found&quot;</b>|File has been removed due to Copyright Claim'
     HOSTER_NAME = "filerio.in"
+
+    FILE_OFFLINE_PATTERN = '<b>&quot;File Not Found&quot;</b>|File has been removed due to Copyright Claim'
     FILE_URL_REPLACEMENTS = [(r'http://.*?/', 'http://filerio.in/')]
 
     def setup(self):

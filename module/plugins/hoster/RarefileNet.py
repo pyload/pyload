@@ -15,10 +15,11 @@ class RarefileNet(XFileSharingPro):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
+    HOSTER_NAME = "rarefile.net"
+
     FILE_NAME_PATTERN = r'<td><font color="red">(?P<N>.*?)</font></td>'
     FILE_SIZE_PATTERN = r'<td>Size : (?P<S>.+?)&nbsp;'
     DIRECT_LINK_PATTERN = r'<a href="(?P<link>[^"]+)">(?P=link)</a>'
-    HOSTER_NAME = "rarefile.net"
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
