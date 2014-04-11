@@ -270,7 +270,7 @@ class SerienjunkiesOrg(Crypter):
         framePattern = re.compile("^http://download.(serienjunkies.org|dokujunkies.org)/frame/go-.*?/$")
         url = pyfile.url
         if framePattern.match(url):
-            self.packages.append((self.pyfile.package().name, [self.handleFrame(url)], self.pyfile.package().name))
+            self.packages.append((pyfile.package().name, [self.handleFrame(url)], pyfile.package().name))
         elif episodePattern.match(url):
             self.handleEpisode(url)
         elif oldStyleLink.match(url):

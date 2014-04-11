@@ -35,6 +35,6 @@ class GooGl(Crypter):
         rep = json_loads(rep)
 
         if 'longUrl' in rep:
-            self.core.files.addLinks([rep['longUrl']], self.pyfile.package().id)
+            self.core.files.addLinks([rep['longUrl']], pyfile.package().id)
         else:
             self.fail('Unable to expand shortened link')

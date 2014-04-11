@@ -19,7 +19,7 @@ class FilefactoryComFolder(Crypter):
     NEXT_PAGE_PATTERN = r'<li class="current">.*?</li>\s*<li class=""><a href="([^"]+)">'
 
     def decrypt(self, pyfile):
-        url_base = re.match(self.__pattern__, self.pyfile.url).group(1)
+        url_base = re.match(self.__pattern__, pyfile.url).group(1)
         html = self.load(url_base)
 
         new_links = []
@@ -40,6 +40,6 @@ class FilefactoryComFolder(Crypter):
             self.logInfo("Limit of 99 pages reached, aborting")
 
         if new_links:
-            self.core.files.addLinks(new_links, self.pyfile.package().id)
+            self.core.files.addLinks(new_links, pyfile.package().id)
         else:
             self.fail('Could not extract any links')

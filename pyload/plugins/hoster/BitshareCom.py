@@ -36,12 +36,12 @@ class BitshareCom(SimpleHoster):
         self.pyfile = pyfile
 
         # File id
-        m = re.match(self.__pattern__, self.pyfile.url)
+        m = re.match(self.__pattern__, pyfile.url)
         self.file_id = max(m.group('id1'), m.group('id2'))
         self.logDebug("File id is [%s]" % self.file_id)
 
         # Load main page
-        self.html = self.load(self.pyfile.url, ref=False, decode=True)
+        self.html = self.load(pyfile.url, ref=False, decode=True)
 
         # Check offline
         if re.search(self.FILE_OFFLINE_PATTERN, self.html):
@@ -55,11 +55,11 @@ class BitshareCom(SimpleHoster):
             self.retry()
 
         # File name
-        m = re.match(self.__pattern__, self.pyfile.url)
+        m = re.match(self.__pattern__, pyfile.url)
         name1 = m.group('name') if m else None
         m = re.search(self.FILE_INFO_PATTERN, self.html)
         name2 = m.group('N') if m else None
-        self.pyfile.name = max(name1, name2)
+        pyfile.name = max(name1, name2)
 
         # Ajax file id
         self.ajaxid = re.search(self.FILE_AJAXID_PATTERN, self.html).group(1)

@@ -21,8 +21,8 @@ class HoerbuchIn(Crypter):
     def decrypt(self, pyfile):
         self.pyfile = pyfile
 
-        if self.article.match(self.pyfile.url):
-            src = self.load(self.pyfile.url)
+        if self.article.match(pyfile.url):
+            src = self.load(pyfile.url)
             soup = BeautifulSoup(src, convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
 
             abookname = soup.find("a", attrs={"rel": "bookmark"}).text
@@ -30,11 +30,11 @@ class HoerbuchIn(Crypter):
                 package = "%s (%s)" % (abookname, a.previousSibling.previousSibling.text[:-1])
                 links = self.decryptFolder(a["href"])
 
-                self.packages.append((package, links, self.pyfile.package().folder))
+                self.packages.append((package, links, pyfile.package().folder))
         else:
-            links = self.decryptFolder(self.pyfile.url)
+            links = self.decryptFolder(pyfile.url)
 
-            self.packages.append((self.pyfile.package().name, links, self.pyfile.package().folder))
+            self.packages.append((pyfile.package().name, links, pyfile.package().folder))
 
     def decryptFolder(self, url):
         m = self.protection.search(url)

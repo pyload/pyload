@@ -63,7 +63,7 @@ class NetloadIn(Hoster):
     def process(self, pyfile):
         self.url = pyfile.url
         self.prepare()
-        self.pyfile.setStatus("downloading")
+        pyfile.setStatus("downloading")
         self.proceed(self.url)
 
     def prepare(self):

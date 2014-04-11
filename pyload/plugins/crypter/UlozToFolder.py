@@ -18,7 +18,7 @@ class UlozToFolder(Crypter):
     NEXT_PAGE_PATTERN = r'<a class="next " href="/([^"]+)">&nbsp;</a>'
 
     def decrypt(self, pyfile):
-        html = self.load(self.pyfile.url)
+        html = self.load(pyfile.url)
 
         new_links = []
         for i in xrange(1, 100):
@@ -37,6 +37,6 @@ class UlozToFolder(Crypter):
             self.logInfo("Limit of 99 pages reached, aborting")
 
         if new_links:
-            self.core.files.addLinks(map(lambda s: "http://ulozto.net/%s" % s, new_links), self.pyfile.package().id)
+            self.core.files.addLinks(map(lambda s: "http://ulozto.net/%s" % s, new_links), pyfile.package().id)
         else:
             self.fail('Could not extract any links')

@@ -17,7 +17,7 @@ class LetitbitNetFolder(Crypter):
     LINK_PATTERN = r'<a href="([^"]+)" target="_blank">'
 
     def decrypt(self, pyfile):
-        html = self.load(self.pyfile.url)
+        html = self.load(pyfile.url)
 
         new_links = []
 
@@ -28,6 +28,6 @@ class LetitbitNetFolder(Crypter):
         new_links.extend(re.findall(self.LINK_PATTERN, folder.group(0)))
 
         if new_links:
-            self.core.files.addLinks(new_links, self.pyfile.package().id)
+            self.core.files.addLinks(new_links, pyfile.package().id)
         else:
             self.fail('Could not extract any links')

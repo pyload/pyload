@@ -44,8 +44,8 @@ class UploadingCom(SimpleHoster):
         self.req.cj.setCookie("uploading.com", "setlang", "en")
         self.req.cj.setCookie("uploading.com", "_lang", "en")
 
-        if not "/get/" in self.pyfile.url:
-            self.pyfile.url = self.pyfile.url.replace("/files", "/files/get")
+        if not "/get/" in pyfile.url:
+            pyfile.url = pyfile.url.replace("/files", "/files/get")
 
         self.html = self.load(pyfile.url, decode=True)
         self.file_info = self.getFileInfo()
