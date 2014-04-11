@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
