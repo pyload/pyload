@@ -50,9 +50,7 @@ class BitshareCom(SimpleHoster):
         if re.search(self.TRAFFIC_USED_UP, self.html):
             self.logInfo("Your Traffic is used up for today. Wait 1800 seconds or reconnect!")
             self.logDebug("Waiting %d seconds." % 1800)
-            self.setWait(1800, True)
-            self.wantReconnect = True
-            self.wait()
+            self.wait(30 * 60, True)
             self.retry()
 
         # File name
@@ -93,11 +91,9 @@ class BitshareCom(SimpleHoster):
         if wait > 0:
             self.logDebug("Waiting %d seconds." % wait)
             if wait < 120:
-                self.setWait(wait, False)
-                self.wait()
+                self.wait(wait, False)
             else:
-                self.setWait(wait - 55, True)
-                self.wait()
+                self.wait(wait - 55, True)
                 self.retry()
 
         # Resolve captcha

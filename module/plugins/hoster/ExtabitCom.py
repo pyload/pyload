@@ -45,11 +45,9 @@ class ExtabitCom(SimpleHoster):
 
         m = re.search(r"Next free download from your ip will be available in <b>(\d+)\s*minutes", self.html)
         if m:
-            self.setWait(int(m.group(1)) * 60, True)
-            self.wait()
+            self.wait(int(m.group(1)) * 60, True)
         elif "The daily downloads limit from your IP is exceeded" in self.html:
-            self.setWait(3600, True)
-            self.wait()
+            self.wait(1 * 60 * 60, True)
 
         self.logDebug("URL: " + self.req.http.lastEffectiveURL)
         m = re.match(self.__pattern__, self.req.http.lastEffectiveURL)

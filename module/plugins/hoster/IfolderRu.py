@@ -58,8 +58,7 @@ class IfolderRu(SimpleHoster):
         url = "http://ints.rusfolder.com/ints/frame/?session=%s" % session_id
         self.html = self.load(url, cookies=True)
 
-        self.setWait(31, False)
-        self.wait()
+        self.wait(31, False)
 
         captcha_url = "http://ints.rusfolder.com/random/images/?session=%s" % session_id
         for _ in xrange(5):

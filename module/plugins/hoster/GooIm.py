@@ -41,8 +41,7 @@ class GooIm(SimpleHoster):
         m = re.search(r'MD5sum: (?P<MD5>[0-9a-z]{32})</h3>', self.html)
         if m:
             self.check_data = {"md5": m.group('MD5')}
-        self.setWait(10)
-        self.wait()
+        self.wait(10)
 
         header = self.load(self.pyfile.url, just_header=True)
         if header['location']:

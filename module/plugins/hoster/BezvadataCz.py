@@ -82,14 +82,13 @@ class BezvadataCz(SimpleHoster):
         #countdown
         found = re.search(r'id="countdown">(\d\d):(\d\d)<', self.html)
         wait_time = (int(found.group(1)) * 60 + int(found.group(2)) + 1) if found else 120
-        self.setWait(wait_time, False)
-        self.wait()
+        self.wait(wait_time, False)
 
         self.download(url)
 
     def checkErrors(self):
         if 'images/button-download-disable.png' in self.html:
-            self.longWait(300, 24)  # parallel dl limit
+            self.longWait(5 * 60, 24)  # parallel dl limit
         elif '<div class="infobox' in self.html:
             self.tempOffline()
 

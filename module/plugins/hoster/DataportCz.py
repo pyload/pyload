@@ -58,8 +58,7 @@ class DataportCz(SimpleHoster):
                 raise PluginParseError('invalid captcha')
             elif check == "slot":
                 self.logDebug("No free slots - wait 60s and retry")
-                self.setWait(60, False)
-                self.wait()
+                self.wait(60, False)
                 self.html = self.load(self.pyfile.url, decode=True)
                 continue
             else:

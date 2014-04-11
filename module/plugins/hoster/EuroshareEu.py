@@ -59,7 +59,7 @@ class EuroshareEu(SimpleHoster):
 
     def handleFree(self):
         if re.search(self.ERR_PARDL_PATTERN, self.html) is not None:
-            self.longWait(300, 12)
+            self.longWait(5 * 60, 12)
 
         found = re.search(self.FREE_URL_PATTERN, self.html)
         if found is None:
@@ -70,7 +70,7 @@ class EuroshareEu(SimpleHoster):
 
         check = self.checkDownload({"multi_dl": re.compile(self.ERR_PARDL_PATTERN)})
         if check == "multi_dl":
-            self.longWait(300, 12)
+            self.longWait(5 * 60, 12)
 
 
 getInfo = create_getInfo(EuroshareEu)

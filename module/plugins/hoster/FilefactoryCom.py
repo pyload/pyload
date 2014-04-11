@@ -63,8 +63,7 @@ class FilefactoryCom(SimpleHoster):
             waittime = re.search(r'id="startWait" value="(\d+)"', self.html)
             if not waittime:
                 self.parseError('Unable to detect wait time')
-            self.setWait(int(waittime.group(1)))
-            self.wait()
+            self.wait(int(waittime.group(1)))
 
             # Parse the direct link and download it
             direct = re.search(r'data-href-direct="(.*)" class="button', self.html)

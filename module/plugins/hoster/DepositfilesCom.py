@@ -33,17 +33,14 @@ class DepositfilesCom(SimpleHoster):
 
         if re.search(r'File is checked, please try again in a minute.', self.html) is not None:
             self.logInfo("DepositFiles.com: The file is being checked. Waiting 1 minute.")
-            self.setWait(61)
-            self.wait()
+            self.wait(61)
             self.retry()
 
         wait = re.search(r'html_download_api-limit_interval\">(\d+)</span>', self.html)
         if wait:
             wait_time = int(wait.group(1))
             self.logInfo("%s: Traffic used up. Waiting %d seconds." % (self.__name__, wait_time))
-            self.setWait(wait_time)
-            self.wantReconnect = True
-            self.wait()
+            self.wait(wait_time, True)
             self.retry()
 
         wait = re.search(r'>Try in (\d+) minutes or use GOLD account', self.html)

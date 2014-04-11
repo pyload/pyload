@@ -69,8 +69,7 @@ class OneFichierCom(SimpleHoster):
             self.waitAndRetry(int(self.lastcheck.group(1)) * 60)
 
     def waitAndRetry(self, wait_time):
-        self.setWait(wait_time, True)
-        self.wait()
+        self.wait(wait_time, True)
         self.retry()
 
     def setup(self):

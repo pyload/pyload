@@ -83,8 +83,7 @@ class UploadingCom(SimpleHoster):
         if 'answer' in response and 'wait_time' in response['answer']:
             wait_time = int(response['answer']['wait_time'])
             self.logInfo("%s: Waiting %d seconds." % (self.__name__, wait_time))
-            self.setWait(wait_time)
-            self.wait()
+            self.wait(wait_time)
         else:
             self.pluginParseError("AJAX/WAIT")
 
@@ -107,8 +106,7 @@ class UploadingCom(SimpleHoster):
         check = self.checkDownload({"html": re.compile("\A<!DOCTYPE html PUBLIC")})
         if check == "html":
             self.logWarning("Redirected to a HTML page, wait 10 minutes and retry")
-            self.setWait(600, True)
-            self.wait()
+            self.wait(10 * 60, True)
 
 
 getInfo = create_getInfo(UploadingCom)

@@ -35,8 +35,7 @@ class CrockoCom(SimpleHoster):
             found = re.search(self.CAPTCHA_URL_PATTERN, self.html)
             if found:
                 url, wait_time = 'http://crocko.com' + found.group(1), found.group(2)
-                self.setWait(wait_time)
-                self.wait()
+                self.wait(wait_time)
                 self.html = self.load(url)
             else:
                 break

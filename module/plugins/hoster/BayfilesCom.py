@@ -43,8 +43,7 @@ class BayfilesCom(SimpleHoster):
     def handleFree(self):
         found = re.search(self.WAIT_PATTERN, self.html)
         if found:
-            self.setWait(int(found.group(1)) * 60)
-            self.wait()
+            self.wait(int(found.group(1)) * 60)
             self.retry()
 
         # Get download token
@@ -61,8 +60,7 @@ class BayfilesCom(SimpleHoster):
         if not "token" in response or not response['token']:
             self.fail('No token')
 
-        self.setWait(int(delay))
-        self.wait()
+        self.wait(int(delay))
 
         self.html = self.load('https://bayfiles.com/ajax_download', get={
             "token": response['token'],

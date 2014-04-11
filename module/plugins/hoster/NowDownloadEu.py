@@ -57,8 +57,7 @@ class NowDownloadEu(SimpleHoster):
 
         baseurl = "http://www.nowdownload.ch"
         self.html = self.load(baseurl + str(tokenlink.group(1)))
-        self.setWait(wait)
-        self.wait()
+        self.wait(wait)
 
         self.html = self.load(baseurl + str(continuelink.group(1)))
 
