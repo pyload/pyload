@@ -10,7 +10,7 @@ class FourChanOrg(Crypter):
     # Based on 4chandl by Roland Beermann
     # https://gist.github.com/enkore/3492599
     __name__ = "FourChanOrg"
-    __type__ = "container"
+    __type__ = "crypter"
     __version__ = "0.3"
     __pattern__ = r"http://boards\.4chan.org/\w+/res/(\d+)"
     __description__ = """4chan.org folder decrypter plugin"""

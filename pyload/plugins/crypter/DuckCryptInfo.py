@@ -7,7 +7,7 @@ from module.plugins.Crypter import Crypter
 
 class DuckCryptInfo(Crypter):
     __name__ = "DuckCryptInfo"
-    __type__ = "container"
+    __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?duckcrypt.info/(folder|wait|link)/(\w+)/?(\w*)"
     __version__ = "0.02"
     __description__ = """DuckCrypt.info decrypter plugin"""
