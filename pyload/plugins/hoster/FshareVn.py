@@ -100,8 +100,7 @@ class FshareVn(SimpleHoster):
         if found:
             self.logInfo("Wait until %s ICT" % found.group(1))
             wait_until = mktime(strptime(found.group(1), "%d/%m/%Y %H:%M"))
-            self.setWait(wait_until - mktime(gmtime()) - 7 * 60 * 60, True)
-            self.wait()
+            self.wait(wait_until - mktime(gmtime()) - 7 * 60 * 60, True)
             self.retry()
         elif '<ul class="message-error">' in self.html:
             self.logError("Unknown error occured or wait time not parsed")

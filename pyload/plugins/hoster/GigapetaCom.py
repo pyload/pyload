@@ -68,8 +68,7 @@ class GigapetaCom(SimpleHoster):
     def checkErrors(self):
         if "All threads for IP" in self.html:
             self.logDebug("Your IP is already downloading a file - wait and retry")
-            self.setWait(300, True)
-            self.wait()
+            self.wait(5 * 60, True)
             self.retry()
 
 

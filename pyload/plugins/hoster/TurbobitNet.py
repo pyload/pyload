@@ -74,8 +74,7 @@ class TurbobitNet(SimpleHoster):
             found = re.search(self.LIMIT_WAIT_PATTERN, self.html)
             if found:
                 wait_time = int(found.group(1))
-                self.setWait(wait_time, wait_time > 60)
-                self.wait()
+                self.wait(wait_time, wait_time > 60)
                 self.retry()
 
             action, inputs = self.parseHtmlForm("action='#'")

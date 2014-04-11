@@ -97,8 +97,7 @@ class LetitbitNet(SimpleHoster):
         #     ajax_check_url, captcha_url = re.search(self.CHECK_URL_PATTERN, self.html).groups()
         #     found = re.search(self.SECONDS_PATTERN, self.html)
         #     seconds = int(found.group(1)) if found else 60
-        #     self.setWait(seconds+1)
-        #     self.wait()
+        #     self.wait(seconds+1)
         # except Exception, e:
         #     self.logError(e)
         #     self.parseError("page 3 / js")
@@ -109,8 +108,7 @@ class LetitbitNet(SimpleHoster):
         found = re.search(self.CAPTCHA_CONTROL_FIELD, self.html)
         recaptcha_control_field = found.group(1)
         self.logDebug("ReCaptcha control field found", recaptcha_control_field)
-        self.setWait(seconds + 1)
-        self.wait()
+        self.wait(seconds + 1)
 
         response = self.load("%s/ajax/download3.php" % self.DOMAIN, post=" ", cookies=True)
         if response != '1':
@@ -128,8 +126,7 @@ class LetitbitNet(SimpleHoster):
             self.invalidCaptcha()
         if response == "error_free_download_blocked":
             self.logInfo("Daily limit reached, waiting 24 hours")
-            self.setWait(24 * 60 * 60)
-            self.wait()
+            self.wait(24 * 60 * 60)
         if response == "error_wrong_captcha":
             self.logInfo("Wrong Captcha")
             self.invalidCaptcha()

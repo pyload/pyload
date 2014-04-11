@@ -64,8 +64,7 @@ class FilepostCom(SimpleHoster):
         wait_time = int(self.getJsonResponse(get_dict, post_dict, 'wait_time'))
 
         if wait_time > 0:
-            self.setWait(wait_time)
-            self.wait()
+            self.wait(wait_time)
 
         post_dict = {"token": flp_token, "code": file_id, "file_pass": ''}
 

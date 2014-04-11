@@ -158,8 +158,7 @@ class UlozTo(SimpleHoster):
         elif check == "server_error":
             self.logError("Server error, try downloading later")
             self.multiDL = False
-            self.setWait(3600, True)
-            self.wait()
+            self.wait(1 * 60 * 60, True)
             self.retry()
         elif check == "not_found":
             self.fail("Server error - file not downloadable")

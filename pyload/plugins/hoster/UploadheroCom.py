@@ -82,8 +82,7 @@ class UploadheroCom(SimpleHoster):
 
             found = re.search(self.IP_WAIT_PATTERN, self.html)
             wait_time = (int(found.group(1)) * 60 + int(found.group(2))) if found else 5 * 60
-            self.setWait(wait_time, True)
-            self.wait()
+            self.wait(wait_time, True)
             self.retry()
 
 

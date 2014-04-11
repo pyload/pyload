@@ -49,8 +49,7 @@ class FourSharedCom(SimpleHoster):
         except:
             pass
 
-        self.setWait(20)
-        self.wait()
+        self.wait(20)
         self.download(link)
 
 
