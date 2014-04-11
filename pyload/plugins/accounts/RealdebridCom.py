@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import xml.dom.minidom as dom
 
 from pyload.plugins.MultiHoster import MultiHoster

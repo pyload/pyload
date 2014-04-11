@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from module.plugins.Hoster import Hoster as _Hoster
 
 def create_getInfo(plugin):
