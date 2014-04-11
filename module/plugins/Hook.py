@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
     @interface-version: 0.2
 """
@@ -108,7 +108,7 @@ class Hook(Base):
 
     def __repr__(self):
         return "<Hook %s>" % self.__name__
-               
+
     def setup(self):
         """ more init stuff if needed """
         pass
@@ -116,11 +116,11 @@ class Hook(Base):
     def unload(self):
         """ called when hook was deactivated """
         pass
-    
+
     def isActivated(self):
         """ checks if hook is activated"""
         return self.config.getPlugin(self.__name__, "activated")
-    
+
 
     #event methods - overwrite these if needed    
     def coreReady(self):
@@ -128,25 +128,25 @@ class Hook(Base):
 
     def coreExiting(self):
         pass
-    
+
     def downloadPreparing(self, pyfile):
         pass
-    
+
     def downloadFinished(self, pyfile):
         pass
-    
+
     def downloadFailed(self, pyfile):
         pass
-    
+
     def packageFinished(self, pypack):
         pass
 
     def beforeReconnecting(self, ip):
         pass
-    
+
     def afterReconnecting(self, ip):
         pass
-    
+
     def periodical(self):
         pass
 

@@ -19,7 +19,7 @@ class CCF(Container):
     __author_mail__ = "Willnix@pyload.org"
 
     def decrypt(self, pyfile):
-    
+
         infile = pyfile.url.replace("\n", "")
 
         opener = build_opener(MultipartPostHandler)
@@ -32,7 +32,7 @@ class CCF(Container):
         location = download_folder #join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
         if not exists(location): 
             makedirs(location)
-            
+
         tempdlc_name = join(location, "tmp_%s.dlc" % pyfile.name)
         tempdlc = open(tempdlc_name, "w")
         tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.DOTALL).group(1))

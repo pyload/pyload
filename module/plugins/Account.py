@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -76,7 +76,7 @@ class Account(Base):
     def _login(self, user, data):
         # set timestamp for login
         self.timestamps[user] = time()
-        
+
         req = self.getAccountRequest(user)
         try:
             self.login(user, data, req)

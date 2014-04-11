@@ -20,22 +20,22 @@ class LinkList(Container):
             file_enc = codecs.lookup(self.getConfig("encoding")).name
         except:
             file_enc = "utf-8"
-        
+
         print repr(pyfile.url)
         print pyfile.url
-        
+
         file_name = fs_encode(pyfile.url)
-        
+
         txt = codecs.open(file_name, 'r', file_enc)
         links = txt.readlines()
         curPack = "Parsed links from %s" % pyfile.name
-        
+
         packages = {curPack:[],}
-        
+
         for link in links:
             link = link.strip()
             if not link: continue
-            
+
             if link.startswith(";"):
                 continue
             if link.startswith("[") and link.endswith("]"):
@@ -45,15 +45,15 @@ class LinkList(Container):
                 continue
             packages[curPack].append(link)
         txt.close()
-        
+
         # empty packages fix
 
         delete = []
-        
+
         for key,value in packages.iteritems():
             if not value:
                 delete.append(key)
-                
+
         for key in delete:
             del packages[key]
 
@@ -63,6 +63,6 @@ class LinkList(Container):
                 txt.close()
             except:
                 self.log.warning(_("LinkList could not be cleared."))
-        
+
         for name, links in packages.iteritems():
             self.packages.append((name, links, name))

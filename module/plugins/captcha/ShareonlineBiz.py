@@ -21,10 +21,10 @@ from captcha import OCR
 
 class ShareonlineBiz(OCR):
     __name__ = "ShareonlineBiz"
-    
+
     def __init__(self):
         OCR.__init__(self)
-        
+
     def get_captcha(self, image): 
         self.load_image(image)
         self.to_greyscale()
@@ -35,7 +35,7 @@ class ShareonlineBiz(OCR):
         #self.derotate_by_average()
 
         letters = self.split_captcha_letters()
-        
+
         final = ""
         for letter in letters:
             self.image = letter

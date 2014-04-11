@@ -11,7 +11,7 @@ class LinksaveIn(OCR):
     def __init__(self):
         OCR.__init__(self)
         self.data_dir = dirname(abspath(__file__)) + sep + "LinksaveIn" + sep
-    
+
     def load_image(self, image):
         im = Image.open(image)
         frame_nr = 0
@@ -38,7 +38,7 @@ class LinksaveIn(OCR):
         self.image = new.copy()
         self.pixels = self.image.load()
         self.result_captcha = ''
-    
+
     def get_bg(self):
         stat = {}
         cstat = {}
@@ -46,15 +46,15 @@ class LinksaveIn(OCR):
         for bgpath in glob(self.data_dir+"bg/*.gif"):
             stat[bgpath] = 0
             bg = Image.open(bgpath)
-            
+
             bglut = bg.resize((256, 1))
             bglut.putdata(range(256))
             bglut = list(bglut.convert("RGB").getdata())
-            
+
             lut = img.resize((256, 1))
             lut.putdata(range(256))
             lut = list(lut.convert("RGB").getdata())
-            
+
             bgpix = bg.load()
             pix = img.load()
             for x in xrange(bg.size[0]):
@@ -74,19 +74,19 @@ class LinksaveIn(OCR):
                 bg = bgpath
                 max_p = value
         return bg
-    
+
     def substract_bg(self, bgpath):
         bg = Image.open(bgpath)
         img = self.image.convert("P")
-        
+
         bglut = bg.resize((256, 1))
         bglut.putdata(range(256))
         bglut = list(bglut.convert("RGB").getdata())
-        
+
         lut = img.resize((256, 1))
         lut.putdata(range(256))
         lut = list(lut.convert("RGB").getdata())
-        
+
         bgpix = bg.load()
         pix = img.load()
         orgpix = self.image.load()
@@ -96,7 +96,7 @@ class LinksaveIn(OCR):
                 rgb_c = lut[pix[x, y]]
                 if rgb_c == rgb_bg:
                     orgpix[x, y] = (255,255,255)
-    
+
     def eval_black_white(self):
         new = Image.new("RGB", (140, 75))
         pix = new.load()
@@ -117,7 +117,7 @@ class LinksaveIn(OCR):
                     pix[x, y] = (0,0,0)
         self.image = new
         self.pixels = self.image.load()
-    
+
     def get_captcha(self, image):
         self.load_image(image)
         bg = self.get_bg()
@@ -135,7 +135,7 @@ class LinksaveIn(OCR):
             self.image.save(ocr.data_dir+"letter%d.png" % n)
             self.run_tesser(True, True, False, False)
             final += self.result_captcha
-        
+
         return final
 
 if __name__ == '__main__':
@@ -143,5 +143,5 @@ if __name__ == '__main__':
     ocr = LinksaveIn()
     testurl = "http://linksave.in/captcha/cap.php?hsh=2229185&code=ZzHdhl3UffV3lXTH5U4b7nShXj%2Bwma1vyoNBcbc6lcc%3D"
     urllib.urlretrieve(testurl, ocr.data_dir+"captcha.gif")
-    
+
     print ocr.get_captcha(ocr.data_dir+'captcha.gif')
