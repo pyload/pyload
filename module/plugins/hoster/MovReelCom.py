@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 #import re
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 #from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME

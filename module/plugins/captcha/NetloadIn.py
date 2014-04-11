@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from captcha import OCR
 
 class NetloadIn(OCR):

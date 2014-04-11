@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from module.plugins.internal.XFSPAccount import XFSPAccount
 from module.plugins.internal.SimpleHoster import parseHtmlForm
 

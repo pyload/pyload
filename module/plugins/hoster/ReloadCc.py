@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from module.plugins.Hoster import Hoster
 
 from module.common.json_layer import json_loads
