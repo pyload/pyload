@@ -147,7 +147,7 @@ class DeathByCaptcha(Hook):
             raise DeathByCaptchaException(response)
         ticket = response['captcha']
 
-        for i in range(24):
+        for _ in xrange(24):
             sleep(5)
             response = self.call_api("captcha/%d" % ticket, False)
             if response['text'] and response['is_correct']:
