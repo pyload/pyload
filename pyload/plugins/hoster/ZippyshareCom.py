@@ -60,7 +60,7 @@ class ZippyshareCom(SimpleHoster):
             elif swf_sts == '1':
                 self.setStorage("swf_sts", 2)
 
-            self.retry(max_tries=1)
+            self.retry(1)
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath

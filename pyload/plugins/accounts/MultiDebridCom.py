@@ -31,7 +31,7 @@ class MultiDebridCom(MultiHoster):
 
     def loadAccountInfo(self, user, req):
         if 'days_left' in self.json_data:
-            validuntil = int(time() + self.json_data['days_left'] * 86400)
+            validuntil = int(time() + self.json_data['days_left'] * 24 * 60 * 60)
             return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
         else:
             self.logError('Unable to get account information')

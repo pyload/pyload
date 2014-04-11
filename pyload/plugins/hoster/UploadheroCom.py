@@ -81,7 +81,7 @@ class UploadheroCom(SimpleHoster):
             self.html = self.load("http://uploadhero.co%s" % found.group(1))
 
             found = re.search(self.IP_WAIT_PATTERN, self.html)
-            wait_time = (int(found.group(1)) * 60 + int(found.group(2))) if found else 300
+            wait_time = (int(found.group(1)) * 60 + int(found.group(2))) if found else 5 * 60
             self.setWait(wait_time, True)
             self.wait()
             self.retry()
