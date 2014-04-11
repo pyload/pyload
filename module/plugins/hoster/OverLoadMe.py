@@ -15,8 +15,8 @@ class OverLoadMe(Hoster):
     __type__ = "hoster"
     __pattern__ = r"https?://.*overload\.me.*"
     __description__ = """Over-Load.me hoster plugin"""
-    __author_name__ = ("marley")
-    __author_mail__ = ("marley@over-load.me")
+    __author_name__ = "marley"
+    __author_mail__ = "marley@over-load.me"
 
     def getFilename(self, url):
         try:

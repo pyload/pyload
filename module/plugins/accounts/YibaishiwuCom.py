@@ -27,8 +27,8 @@ class YibaishiwuCom(Account):
     __version__ = "0.01"
     __type__ = "account"
     __description__ = """115.com account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     ACCOUNT_INFO_PATTERN = r'var USER_PERMISSION = {(.*?)}'
 

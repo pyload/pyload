@@ -27,7 +27,7 @@ class ShareRapidCom(SimpleHoster):
     __version__ = "0.53"
     __description__ = """Share-rapid.com plugin - premium only"""
     __author_name__ = ("MikyWoW", "zoidberg", "stickell")
-    __author_mail__ = ("MikyWoW@seznam.cz", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __author_mail__ = ("mikywow@seznam.cz", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     FILE_NAME_PATTERN = r'<h1[^>]*><span[^>]*>(?:<a[^>]*>)?(?P<N>[^<]+)'
     FILE_SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong></td>'

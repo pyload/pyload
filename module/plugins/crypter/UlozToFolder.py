@@ -10,8 +10,8 @@ class UlozToFolder(Crypter):
     __pattern__ = r"http://.*(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(m|soubory)/.*"
     __version__ = "0.2"
     __description__ = """Uloz.to Folder Plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FOLDER_PATTERN = r'<ul class="profile_files">(.*?)</ul>'
     LINK_PATTERN = r'<br /><a href="/([^"]+)">[^<]+</a>'

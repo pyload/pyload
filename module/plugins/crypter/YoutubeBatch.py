@@ -36,8 +36,8 @@ class YoutubeBatch(Crypter):
     __config__ = [("likes", "bool", "Grab user (channel) liked videos", "False"),
                   ("favorites", "bool", "Grab user (channel) favorite videos", "False"),
                   ("uploads", "bool", "Grab channel unplaylisted videos", "True")]
-    __author_name__ = ("Walter Purcaro")
-    __author_mail__ = ("vuolter@gmail.com")
+    __author_name__ = "Walter Purcaro"
+    __author_mail__ = "vuolter@gmail.com"
 
     def api_response(self, ref, req):
         req.update({"key": API_KEY})

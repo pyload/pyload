@@ -30,7 +30,7 @@ class DataHu(SimpleHoster):
     __version__ = "0.01"
     __description__ = """Data.hu Download Hoster"""
     __author_name__ = ("crash", "stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = ur'<title>(?P<N>.*) \((?P<S>[^)]+)\) let\xf6lt\xe9se</title>'
     FILE_OFFLINE_PATTERN = ur'Az adott f\xe1jl nem l\xe9tezik'

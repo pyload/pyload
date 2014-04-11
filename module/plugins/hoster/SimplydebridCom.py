@@ -13,8 +13,8 @@ class SimplydebridCom(Hoster):
     __type__ = "hoster"
     __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd.php/*"
     __description__ = """simply-debrid.com hoster plugin"""
-    __author_name__ = ("Kagenoshin")
-    __author_mail__ = ("kagenoshin@gmx.ch")
+    __author_name__ = "Kagenoshin"
+    __author_mail__ = "kagenoshin@gmx.ch"
 
     def setup(self):
         self.resumeDownload = self.multiDL = True

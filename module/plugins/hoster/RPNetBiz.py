@@ -10,8 +10,8 @@ class RPNetBiz(Hoster):
     __type__ = "hoster"
     __description__ = """RPNet.Biz hoster plugin"""
     __pattern__ = r"https?://.*rpnet\.biz"
-    __author_name__ = ("Dman")
-    __author_mail__ = ("dmanugm@gmail.com")
+    __author_name__ = "Dman"
+    __author_mail__ = "dmanugm@gmail.com"
 
     def setup(self):
         self.chunkLimit = -1

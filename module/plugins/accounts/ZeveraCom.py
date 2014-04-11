@@ -9,8 +9,8 @@ class ZeveraCom(Account):
     __version__ = "0.21"
     __type__ = "account"
     __description__ = """Zevera.com account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def loadAccountInfo(self, user, req):
         data = self.getAPIData(req)

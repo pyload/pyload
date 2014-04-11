@@ -16,8 +16,8 @@ class RehostTo(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
     __description__ = """rehost.to hook plugin"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
 
     def getHoster(self):
         page = getURL("http://rehost.to/api.php?cmd=get_supported_och_dl&long_ses=%s" % self.long_ses)

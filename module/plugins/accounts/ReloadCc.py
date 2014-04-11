@@ -11,8 +11,8 @@ class ReloadCc(Account):
     __type__ = "account"
     __description__ = """Reload.Cc account plugin"""
 
-    __author_name__ = ("Reload Team")
-    __author_mail__ = ("hello@reload.cc")
+    __author_name__ = "Reload Team"
+    __author_mail__ = "hello@reload.cc"
 
     def loadAccountInfo(self, user, req):
 

@@ -12,8 +12,8 @@ class MultiloadCz(Crypter):
     __description__ = """multiload.cz"""
     __config__ = [("usedHoster", "str", "Prefered hoster list (bar-separated) ", ""),
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FOLDER_PATTERN = r'<form action="" method="get"><textarea[^>]*>([^>]*)</textarea></form>'
     LINK_PATTERN = r'<p class="manager-server"><strong>([^<]+)</strong></p><p class="manager-linky"><a href="([^"]+)">'

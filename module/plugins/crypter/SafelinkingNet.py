@@ -15,8 +15,8 @@ class SafelinkingNet(Crypter):
     __pattern__ = r'https?://safelinking.net/([pd])/\w+'
     __version__ = '0.1'
     __description__ = 'Safelinking.net Crypter Plugin'
-    __author_name__ = 'quareevo'
-    __author_mail__ = 'quareevo@arcor.de'
+    __author_name__ = "quareevo"
+    __author_mail__ = "quareevo@arcor.de"
 
     __Solvemedia_pattern__ = "solvemediaApiKey = '([\w\.\-_]+)';"
 

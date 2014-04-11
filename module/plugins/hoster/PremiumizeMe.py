@@ -13,8 +13,8 @@ class PremiumizeMe(Hoster):
     # create the regex patterns for us using getHosters in our PremiumizeMe hook.
     __pattern__ = None
 
-    __author_name__ = ("Florian Franzen")
-    __author_mail__ = ("FlorianFranzen@gmail.com")
+    __author_name__ = "Florian Franzen"
+    __author_mail__ = "FlorianFranzen@gmail.com"
 
     def process(self, pyfile):
         # Check account

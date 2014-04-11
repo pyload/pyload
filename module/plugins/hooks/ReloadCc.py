@@ -14,8 +14,8 @@ class ReloadCc(MultiHoster):
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
-    __author_name__ = ("Reload Team")
-    __author_mail__ = ("hello@reload.cc")
+    __author_name__ = "Reload Team"
+    __author_mail__ = "hello@reload.cc"
 
     interval = 0  # Disable periodic calls
 

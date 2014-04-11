@@ -29,6 +29,7 @@ class FilecloudIo(SimpleHoster):
     __version__ = "0.02"
     __description__ = """Filecloud.io (formerly Ifile.it) plugin - free account only"""
     __author_name__ = ("zoidberg", "stickell")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     FILE_SIZE_PATTERN = r'{var __ab1 = (?P<S>\d+);}'
     FILE_NAME_PATTERN = r'id="aliasSpan">(?P<N>.*?)&nbsp;&nbsp;<'
