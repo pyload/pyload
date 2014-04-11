@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class CrockoCom(SimpleHoster):
     __name__ = "CrockoCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?(crocko|easy-share).com/\w+"
+    __pattern__ = r'http://(?:www\.)?(crocko|easy-share).com/\w+'
     __version__ = "0.16"
     __description__ = """Crocko hoster plugin"""
     __author_name__ = "zoidberg"

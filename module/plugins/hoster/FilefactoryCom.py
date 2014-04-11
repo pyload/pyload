@@ -22,7 +22,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilefactoryCom(SimpleHoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)"
+    __pattern__ = r'https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)'
     __version__ = "0.47"
     __description__ = """Filefactory.com hoster plugin"""
     __author_name__ = "stickell"

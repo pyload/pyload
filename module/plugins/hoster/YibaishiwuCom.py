@@ -25,7 +25,7 @@ from module.common.json_layer import json_loads
 class YibaishiwuCom(SimpleHoster):
     __name__ = "YibaishiwuCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?(?:u\.)?115.com/file/(?P<ID>\w+)"
+    __pattern__ = r'http://(?:www\.)?(?:u\.)?115.com/file/(?P<ID>\w+)'
     __version__ = "0.12"
     __description__ = """115.com hoster plugin"""
     __author_name__ = "zoidberg"

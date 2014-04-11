@@ -9,7 +9,7 @@ from module.lib.BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
 class HoerbuchIn(Crypter):
     __name__ = "HoerbuchIn"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out.php\?.+|protection/folder_\d+\.html)"
+    __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out.php\?.+|protection/folder_\d+\.html)'
     __version__ = "0.6"
     __description__ = """Hoerbuch.in decrypter plugin"""
     __author_name__ = ("spoob", "mkaay")

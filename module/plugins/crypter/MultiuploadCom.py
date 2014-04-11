@@ -10,7 +10,7 @@ from module.common.json_layer import json_loads
 class MultiuploadCom(Crypter):
     __name__ = "MultiuploadCom"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?multiupload.com/(\w+)"
+    __pattern__ = r'http://(?:www\.)?multiupload.com/(\w+)'
     __version__ = "0.01"
     __description__ = """MultiUpload.com decrypter plugin"""
     __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "multiupload"),

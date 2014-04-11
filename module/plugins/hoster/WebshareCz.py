@@ -38,7 +38,7 @@ def getInfo(urls):
 class WebshareCz(SimpleHoster):
     __name__ = "WebshareCz"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?webshare.cz/(?:#/)?file/(?P<ID>\w+)"
+    __pattern__ = r'https?://(?:www\.)?webshare.cz/(?:#/)?file/(?P<ID>\w+)'
     __version__ = "0.13"
     __description__ = """WebShare.cz hoster plugin"""
     __author_name__ = "stickell"

@@ -25,7 +25,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileStoreTo(SimpleHoster):
     __name__ = "FileStoreTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)"
+    __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
     __version__ = "0.01"
     __description__ = """FileStore.to hoster plugin"""
     __author_name__ = ("Walter Purcaro", "stickell")

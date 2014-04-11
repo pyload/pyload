@@ -24,7 +24,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class IfolderRu(SimpleHoster):
     __name__ = "IfolderRu"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*"
+    __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*'
     __version__ = "0.38"
     __description__ = """Ifolder.ru hoster plugin"""
     __author_name__ = "zoidberg"

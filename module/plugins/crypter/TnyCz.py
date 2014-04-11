@@ -25,7 +25,7 @@ import re
 class TnyCz(SimpleCrypter):
     __name__ = "TnyCz"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?tny\.cz/\w+"
+    __pattern__ = r'http://(?:www\.)?tny\.cz/\w+'
     __version__ = "0.01"
     __description__ = """Tny.cz decrypter plugin"""
     __author_name__ = "Walter Purcaro"

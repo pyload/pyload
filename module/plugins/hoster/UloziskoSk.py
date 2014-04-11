@@ -24,7 +24,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, P
 class UloziskoSk(SimpleHoster):
     __name__ = "UloziskoSk"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?ulozisko.sk/.*"
+    __pattern__ = r'http://(?:www\.)?ulozisko.sk/.*'
     __version__ = "0.23"
     __description__ = """Ulozisko.sk hoster plugin"""
     __author_name__ = "zoidberg"

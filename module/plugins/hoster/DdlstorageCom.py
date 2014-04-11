@@ -39,7 +39,7 @@ def getInfo(urls):
 class DdlstorageCom(XFileSharingPro):
     __name__ = "DdlstorageCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?ddlstorage.com/(?P<ID>\w{12})"
+    __pattern__ = r'http://(?:www\.)?ddlstorage.com/(?P<ID>\w{12})'
     __version__ = "1.00"
     __description__ = """DDLStorage.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")

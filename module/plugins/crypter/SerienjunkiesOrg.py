@@ -11,7 +11,7 @@ from module.unescape import unescape
 class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?(serienjunkies.org|dokujunkies.org)/.*?"
+    __pattern__ = r'http://(?:www\.)?(serienjunkies.org|dokujunkies.org)/.*?'
     __version__ = "0.39"
     __config__ = [("changeNameSJ", "Packagename;Show;Season;Format;Episode", "Take SJ.org name", "Show"),
                   ("changeNameDJ", "Packagename;Show;Format;Episode", "Take DJ.org name", "Show"),

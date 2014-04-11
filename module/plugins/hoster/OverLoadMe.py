@@ -13,7 +13,7 @@ class OverLoadMe(Hoster):
     __name__ = "OverLoadMe"
     __version__ = "0.01"
     __type__ = "hoster"
-    __pattern__ = r"https?://.*overload\.me.*"
+    __pattern__ = r'https?://.*overload\.me.*'
     __description__ = """Over-Load.me hoster plugin"""
     __author_name__ = "marley"
     __author_mail__ = "marley@over-load.me"

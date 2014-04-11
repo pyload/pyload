@@ -7,7 +7,7 @@ from module.plugins.Crypter import Crypter
 class LetitbitNetFolder(Crypter):
     __name__ = "LetitbitNetFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?letitbit.net/folder/\w+"
+    __pattern__ = r'http://(?:www\.)?letitbit.net/folder/\w+'
     __version__ = "0.1"
     __description__ = """Letitbit.net folder decrypter plugin"""
     __author_name__ = ("DHMH", "z00nx")

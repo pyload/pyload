@@ -13,7 +13,7 @@ class AlldebridCom(Hoster):
     __version__ = "0.34"
     __type__ = "hoster"
 
-    __pattern__ = r"https?://(?:[^/]*\.)?alldebrid\..*"
+    __pattern__ = r'https?://(?:[^/]*\.)?alldebrid\..*'
     __description__ = """Alldebrid.com hoster plugin"""
     __author_name__ = "Andy Voigt"
     __author_mail__ = "spamsales@online.de"

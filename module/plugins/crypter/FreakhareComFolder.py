@@ -22,7 +22,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FreakhareComFolder(SimpleCrypter):
     __name__ = "FreakhareComFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?freakshare\.com/folder/.+"
+    __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'
     __version__ = "0.01"
     __description__ = """Freakhare.com folder decrypter plugin"""
     __author_name__ = "stickell"

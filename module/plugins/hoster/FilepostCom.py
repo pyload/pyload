@@ -33,7 +33,7 @@ from module.common.json_layer import json_loads
 class FilepostCom(SimpleHoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*"
+    __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*'
     __version__ = "0.27"
     __description__ = """Filepost.com hoster plugin"""
     __author_name__ = "zoidberg"

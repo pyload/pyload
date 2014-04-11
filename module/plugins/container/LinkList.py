@@ -7,7 +7,7 @@ from module.plugins.Container import Container
 class LinkList(Container):
     __name__ = "LinkList"
     __version__ = "0.12"
-    __pattern__ = r".+\.txt$"
+    __pattern__ = r'.+\.txt$'
     __description__ = """Read link lists in txt format"""
     __config__ = [("clear", "bool", "Clear Linklist after adding", False),
                   ("encoding", "string", "File encoding (default utf-8)", "")]

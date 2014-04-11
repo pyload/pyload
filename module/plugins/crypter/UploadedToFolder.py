@@ -22,7 +22,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class UploadedToFolder(SimpleCrypter):
     __name__ = "UploadedToFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/(?P<id>\w+)"
+    __pattern__ = r'http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/(?P<id>\w+)'
     __version__ = "0.3"
     __description__ = """UploadedTo decrypter plugin"""
     __author_name__ = "stickell"
