@@ -13,7 +13,6 @@ class GamefrontCom(Hoster):
     __author_name__ = "fwannmacher"
     __author_mail__ = "felipe@warhammerproject.com"
 
-    HOSTER_NAME = "gamefront.com"
     PATTERN_FILENAME = r'<title>(.*?) | Game Front'
     PATTERN_FILESIZE = r'<dt>File Size:</dt>[\n\s]*<dd>(.*?)</dd>'
     PATTERN_OFFLINE = "This file doesn't exist, or has been removed."
