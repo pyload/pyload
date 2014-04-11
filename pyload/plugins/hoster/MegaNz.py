@@ -96,7 +96,7 @@ class MegaNz(Hoster):
         key = None
 
         # match is guaranteed because plugin was chosen to handle url
-        node = re.search(self.__pattern__, pyfile.url).group(2)
+        node = re.match(self.__pattern__, pyfile.url).group(2)
         if "!" in node:
             node, key = node.split("!")
 

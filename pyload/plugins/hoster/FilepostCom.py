@@ -46,7 +46,7 @@ class FilepostCom(SimpleHoster):
 
     def handleFree(self):
         # Find token and captcha key
-        file_id = re.search(self.__pattern__, self.pyfile.url).group(1)
+        file_id = re.match(self.__pattern__, self.pyfile.url).group(1)
 
         found = re.search(self.FLP_TOKEN_PATTERN, self.html)
         if not found:

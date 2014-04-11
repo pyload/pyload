@@ -82,7 +82,7 @@ class Xdcc(Hoster):
         if not exists(location):
             makedirs(location)
 
-        m = re.search(r'xdcc://(.*?)/#?(.*?)/(.*?)/#?(\d+)/?', url)
+        m = re.match(r'xdcc://(.*?)/#?(.*?)/(.*?)/#?(\d+)/?', url)
         server = m.group(1)
         chan = m.group(2)
         bot = m.group(3)

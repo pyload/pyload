@@ -19,7 +19,7 @@ class FilefactoryComFolder(Crypter):
     NEXT_PAGE_PATTERN = r'<li class="current">.*?</li>\s*<li class=""><a href="([^"]+)">'
 
     def decrypt(self, pyfile):
-        url_base = re.search(self.__pattern__, self.pyfile.url).group(1)
+        url_base = re.match(self.__pattern__, self.pyfile.url).group(1)
         html = self.load(url_base)
 
         new_links = []

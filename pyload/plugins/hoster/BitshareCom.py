@@ -54,7 +54,7 @@ class BitshareCom(SimpleHoster):
             self.retry()
 
         # File name
-        m = re.search(self.__pattern__, self.pyfile.url)
+        m = re.match(self.__pattern__, self.pyfile.url)
         name1 = m.group('name') if m else None
         m = re.search(self.FILE_INFO_PATTERN, self.html)
         name2 = m.group('N') if m else None

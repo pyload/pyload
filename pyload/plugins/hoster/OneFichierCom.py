@@ -29,7 +29,7 @@ class OneFichierCom(SimpleHoster):
     RETRY_TIME = 15*60 #Default retry time in seconds (if detected parallel download)
 
     def process(self, pyfile):
-        found = re.search(self.__pattern__, pyfile.url)
+        found = re.match(self.__pattern__, pyfile.url)
         file_id = found.group(2)
         url = "http://%s.%s/en/" % (found.group(2), found.group(3))
         self.html = self.load(url, decode=True)

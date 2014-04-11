@@ -62,6 +62,6 @@ class FreevideoCz(Hoster):
             self.fail("Parse error (URL)")
         download_url = found.group(1)
 
-        pyfile.name = re.search(self.__pattern__, pyfile.url).group(1) + ".mp4"
+        pyfile.name = re.match(self.__pattern__, pyfile.url).group(1) + ".mp4"
 
         self.download(download_url)
