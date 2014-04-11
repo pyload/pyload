@@ -32,7 +32,7 @@ class WindowsPhoneToastNotify(Hook):
 
     def setup(self):
         self.info = {}
-    
+
     def getXmlData(self):
         myxml = ("<?xml version='1.0' encoding='utf-8'?> <wp:Notification xmlns:wp='WPNotification'> "
                  "<wp:Toast> <wp:Text1>Pyload Mobile</wp:Text1> <wp:Text2>Captcha waiting!</wp:Text2> "
@@ -60,8 +60,8 @@ class WindowsPhoneToastNotify(Hook):
 
         if self.core.isClientConnected() and not self.getConfig("force"):
             return False
-        
+
         if (time.time() - float(self.getStorage("LAST_NOTIFY", 0))) < self.getConf("pushTimeout"):
             return False
-        
+
         self.doRequest()

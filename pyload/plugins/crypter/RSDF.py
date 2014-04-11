@@ -15,9 +15,8 @@ class RSDF(Crypter):
     __author_name__ = ("RaNaN", "spoob")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org")
 
-    
     def decrypt(self, pyfile):
-    
+
         from Crypto.Cipher import AES
 
         infile = pyfile.url.replace("\n", "")
