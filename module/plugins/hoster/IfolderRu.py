@@ -45,7 +45,7 @@ class IfolderRu(SimpleHoster):
         self.chunkLimit = 1
 
     def process(self, pyfile):
-        file_id = re.search(self.__pattern__, pyfile.url).group('ID')
+        file_id = re.match(self.__pattern__, pyfile.url).group('ID')
         self.html = self.load("http://rusfolder.com/%s" % file_id, cookies=True, decode=True)
         self.getFileInfo()
 

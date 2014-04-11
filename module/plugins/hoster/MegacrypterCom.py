@@ -26,7 +26,7 @@ class MegacrypterCom(MegaNz):
 
     def process(self, pyfile):
         # match is guaranteed because plugin was chosen to handle url
-        node = re.search(self.__pattern__, pyfile.url).group(1)
+        node = re.match(self.__pattern__, pyfile.url).group(1)
 
         # get Mega.co.nz link info
         info = self.callApi(link=node, m="info")

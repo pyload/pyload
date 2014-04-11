@@ -63,7 +63,7 @@ class ShareLinksBiz(Crypter):
         url = pyfile.url
         if 's2l.biz' in url:
             url = self.load(url, just_header=True)['location']
-        self.baseUrl = re.search(self.__pattern__, url).group(1)
+        self.baseUrl = re.match(self.__pattern__, url).group(1)
         self.fileId = re.match(self.__pattern__, url).group('id')
         self.package = pyfile.package()
 

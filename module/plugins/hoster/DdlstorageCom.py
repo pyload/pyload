@@ -52,7 +52,7 @@ class DdlstorageCom(XFileSharingPro):
         super(DdlstorageCom, self).prepare()
 
     def getAPIData(self):
-        file_id = re.search(self.__pattern__, self.pyfile.url).group('ID')
+        file_id = re.match(self.__pattern__, self.pyfile.url).group('ID')
         data = {'client_id': 53472,
                 'file_code': file_id}
         if self.user:

@@ -22,7 +22,7 @@ class LixIn(Crypter):
     def decrypt(self, pyfile):
         url = pyfile.url
 
-        matches = re.search(self.__pattern__, url)
+        matches = re.match(self.__pattern__, url)
         if not matches:
             self.fail("couldn't identify file id")
 

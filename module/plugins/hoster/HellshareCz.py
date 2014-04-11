@@ -41,7 +41,7 @@ class HellshareCz(SimpleHoster):
     def process(self, pyfile):
         if not self.account:
             self.fail("User not logged in")
-        pyfile.url = re.search(self.__pattern__, pyfile.url).group(1)
+        pyfile.url = re.match(self.__pattern__, pyfile.url).group(1)
         self.html = self.load(pyfile.url, decode=True)
         self.getFileInfo()
         if not self.checkTrafficLeft():

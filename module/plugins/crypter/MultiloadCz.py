@@ -22,7 +22,7 @@ class MultiloadCz(Crypter):
         self.html = self.load(self.pyfile.url, decode=True)
         new_links = []
 
-        if re.search(self.__pattern__, self.pyfile.url).group(1) == "slozka":
+        if re.match(self.__pattern__, self.pyfile.url).group(1) == "slozka":
             found = re.search(self.FOLDER_PATTERN, self.html)
             if found is not None:
                 new_links.extend(found.group(1).split())

@@ -24,7 +24,7 @@ class DuckCryptInfo(Crypter):
         #if found:
         #    self.logDebug("Sleeping for" % found.group(1))
         #    self.setWait(int(found.group(1)) ,False)
-        found = re.search(self.__pattern__, url)
+        found = re.match(self.__pattern__, url)
         if not found:
             self.fail('Weird error in link')
         if str(found.group(1)) == "link":
@@ -35,7 +35,7 @@ class DuckCryptInfo(Crypter):
 
     def handleFolder(self, found):
         src = self.load("http://duckcrypt.info/ajax/auth.php?hash=" + str(found.group(2)))
-        found = re.search(self.__pattern__, src)
+        found = re.match(self.__pattern__, src)
         self.logDebug("Redirectet to " + str(found.group(0)))
         src = self.load(str(found.group(0)))
         soup = BeautifulSoup(src)

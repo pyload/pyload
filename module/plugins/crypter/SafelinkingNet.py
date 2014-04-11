@@ -22,7 +22,7 @@ class SafelinkingNet(Crypter):
 
     def decrypt(self, pyfile):
         url = pyfile.url
-        if re.search(self.__pattern__, url).group(1) == "d":
+        if re.match(self.__pattern__, url).group(1) == "d":
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
             self.load(url)
             m = re.search("^Location: (.+)$", self.req.http.header, re.MULTILINE)

@@ -98,7 +98,7 @@ class XHamsterCom(Hoster):
             file_name = re.search(file_name_pattern, self.html)
             if file_name is None:
                 file_name_pattern = r"http://[www.]+xhamster\.com/movies/.*/(.*?)\.html?"
-                file_name = re.search(file_name_pattern, self.pyfile.url)
+                file_name = re.match(file_name_pattern, self.pyfile.url)
                 if file_name is None:
                     file_name_pattern = r"<div id=\"element_str_id\" style=\"display:none;\">(.*)</div>"
                     file_name = re.search(file_name_pattern, self.html)
