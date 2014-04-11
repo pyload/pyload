@@ -108,7 +108,7 @@ class CzshareCom(SimpleHoster):
 
         # get and decrypt captcha        
         captcha_url = 'http://czshare.com/captcha.php'
-        for i in range(5):
+        for _ in xrange(5):
             inputs['captchastring2'] = self.decryptCaptcha(captcha_url)
             self.html = self.load(parsed_url, cookies=True, post=inputs, decode=True)
             if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.html:

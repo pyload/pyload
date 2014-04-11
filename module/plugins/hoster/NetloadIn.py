@@ -159,7 +159,7 @@ class NetloadIn(Hoster):
                     self.pyfile.name = name
 
         captchawaited = False
-        for i in range(10):
+        for i in xrange(10):
 
             if not page:
                 page = self.load(self.url)
