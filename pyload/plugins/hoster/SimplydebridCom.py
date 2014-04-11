@@ -12,7 +12,7 @@ class SimplydebridCom(Hoster):
     __version__ = "0.1"
     __type__ = "hoster"
     __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd.php/*"
-    __description__ = """simply-debrid.com hoster plugin"""
+    __description__ = """Simply-debrid.com hoster plugin"""
     __author_name__ = "Kagenoshin"
     __author_mail__ = "kagenoshin@gmx.ch"
 

@@ -26,7 +26,7 @@ class QuickshareCz(Account):
     __name__ = "QuickshareCz"
     __version__ = "0.01"
     __type__ = "account"
-    __description__ = """quickshare.cz account plugin"""
+    __description__ = """Quickshare.cz account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

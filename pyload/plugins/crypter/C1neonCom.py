@@ -8,6 +8,6 @@ class C1neonCom(DeadCrypter):
     __type__ = "container"
     __pattern__ = r"http://(www\.)?c1neon.com/.*?"
     __version__ = "0.05"
-    __description__ = """C1neon.Com Container Plugin"""
+    __description__ = """C1neon.com decrypter plugin"""
     __author_name__ = "godofdream"
     __author_mail__ = "soilfiction@gmail.com"

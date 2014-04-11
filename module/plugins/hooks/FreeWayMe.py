@@ -24,7 +24,7 @@ class FreeWayMe(MultiHoster):
     __name__ = "FreeWayMe"
     __version__ = "0.11"
     __type__ = "hook"
-    __description__ = """FreeWayMe hook plugin"""
+    __description__ = """FreeWay.me hook plugin"""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),

@@ -9,7 +9,7 @@ class FilefactoryComFolder(Crypter):
     __type__ = "crypter"
     __pattern__ = r"(http://(www\.)?filefactory\.com/f/\w+).*"
     __version__ = "0.1"
-    __description__ = """Filefactory.com Folder Plugin"""
+    __description__ = """Filefactory.com folder decrypter plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

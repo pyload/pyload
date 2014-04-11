@@ -8,7 +8,7 @@ class X7To(DeadHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:www.)?x7.to/"
     __version__ = "0.41"
-    __description__ = """X7.To File Download Hoster"""
+    __description__ = """X7.to hoster plugin"""
     __author_name__ = "ernieb"
     __author_mail__ = "ernieb"
 

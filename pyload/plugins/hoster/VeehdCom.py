@@ -13,7 +13,7 @@ class VeehdCom(Hoster):
         ('replacement_char', 'str', "Filename replacement character", '_'),
     ]
     __version__ = '0.23'
-    __description__ = """Veehd.com Download Hoster"""
+    __description__ = """Veehd.com hoster plugin"""
     __author_name__ = "cat"
     __author_mail__ = "cat@pyload"
 

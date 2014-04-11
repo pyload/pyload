@@ -166,7 +166,7 @@ class SimpleHoster(Hoster):
     __version__ = "0.33"
     __pattern__ = None
     __type__ = "hoster"
-    __description__ = """Base hoster plugin"""
+    __description__ = """Simple hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
     """

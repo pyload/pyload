@@ -27,7 +27,7 @@ class FileStoreTo(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?filestore\.to/\?d=(?P<ID>\w+)"
     __version__ = "0.01"
-    __description__ = """FileStore.to download hoster"""
+    __description__ = """FileStore.to hoster plugin"""
     __author_name__ = ("Walter Purcaro", "stickell")
     __author_mail__ = ("vuolter@gmail.com", "l.stickell@yahoo.it")
 

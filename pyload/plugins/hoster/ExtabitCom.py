@@ -28,7 +28,7 @@ class ExtabitCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)"
     __version__ = "0.5"
-    __description__ = """Extabit.com"""
+    __description__ = """Extabit.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

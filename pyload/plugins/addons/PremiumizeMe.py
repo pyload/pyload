@@ -8,7 +8,7 @@ class PremiumizeMe(MultiHoster):
     __name__ = "PremiumizeMe"
     __version__ = "0.12"
     __type__ = "hook"
-    __description__ = """Premiumize.Me hook plugin"""
+    __description__ = """Premiumize.me hook plugin"""
 
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),

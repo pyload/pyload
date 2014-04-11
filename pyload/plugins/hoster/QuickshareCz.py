@@ -27,7 +27,7 @@ class QuickshareCz(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://.*quickshare.cz/stahnout-soubor/.*"
     __version__ = "0.54"
-    __description__ = """Quickshare.cz"""
+    __description__ = """Quickshare.cz hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

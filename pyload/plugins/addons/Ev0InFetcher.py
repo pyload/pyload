@@ -24,7 +24,7 @@ from module.plugins.Hook import Hook
 class Ev0InFetcher(Hook):
     __name__ = "Ev0InFetcher"
     __version__ = "0.21"
-    __description__ = """checks rss feeds for ev0.in"""
+    __description__ = """Checks rss feeds for Ev0.in"""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("interval", "int", "Check interval in minutes", "10"),
                   ("queue", "bool", "Move new shows directly to Queue", False),

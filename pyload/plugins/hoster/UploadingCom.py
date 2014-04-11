@@ -29,7 +29,7 @@ class UploadingCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)"
     __version__ = "0.34"
-    __description__ = """Uploading.Com File Download Hoster"""
+    __description__ = """Uploading.com hoster plugin"""
     __author_name__ = ("jeix", "mkaay", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
 

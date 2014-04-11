@@ -7,7 +7,7 @@ class RPNetBiz(MultiHoster):
     __name__ = "RPNetBiz"
     __version__ = "0.1"
     __type__ = "hook"
-    __description__ = """RPNet.Biz hook plugin"""
+    __description__ = """RPNet.biz hook plugin"""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),

@@ -25,7 +25,7 @@ class DataHuFolder(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(www\.)?data.hu/dir/\w+"
     __version__ = "0.03"
-    __description__ = """Data.hu Folder Plugin"""
+    __description__ = """Data.hu folder decrypter plugin"""
     __author_name__ = ("crash", "stickell")
     __author_mail__ = "l.stickell@yahoo.it"
 

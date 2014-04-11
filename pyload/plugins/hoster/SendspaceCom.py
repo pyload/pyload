@@ -25,7 +25,7 @@ class SendspaceCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?sendspace.com/file/.*"
     __version__ = "0.13"
-    __description__ = """sendspace.com plugin - free only"""
+    __description__ = """Sendspace.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

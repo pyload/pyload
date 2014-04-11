@@ -11,7 +11,7 @@ class LixIn(Crypter):
     __type__ = "container"
     __pattern__ = r"http://(www.)?lix.in/(?P<id>.*)"
     __version__ = "0.22"
-    __description__ = """Lix.in Container Plugin"""
+    __description__ = """Lix.in decrypter plugin"""
     __author_name__ = "spoob"
     __author_mail__ = "spoob@pyload.org"
 

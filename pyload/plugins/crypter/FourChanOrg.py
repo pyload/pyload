@@ -13,7 +13,7 @@ class FourChanOrg(Crypter):
     __type__ = "container"
     __version__ = "0.3"
     __pattern__ = r"http://boards\.4chan.org/\w+/res/(\d+)"
-    __description__ = "Downloader for entire 4chan threads"
+    __description__ = """4chan.org folder decrypter plugin"""
 
     def decrypt(self, pyfile):
         pagehtml = self.load(pyfile.url)

@@ -23,7 +23,7 @@ class DdlstorageComFolder(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:\w*\.)*?ddlstorage.com/folder/\w{10}"
     __version__ = "0.02"
-    __description__ = """DDLStorage.com Folder Plugin"""
+    __description__ = """DDLStorage.com folder decrypter plugin"""
     __author_name__ = ("godofdream", "stickell")
     __author_mail__ = ("soilfiction@gmail.com", "l.stickell@yahoo.it")
 

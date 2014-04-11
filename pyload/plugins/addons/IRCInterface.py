@@ -37,7 +37,7 @@ from module.Api import PackageDoesNotExists, FileDoesNotExists
 class IRCInterface(Thread, Addon):
     __name__ = "IRCInterface"
     __version__ = "0.11"
-    __description__ = """connect to irc and let owner perform different tasks"""
+    __description__ = """Connect to irc and let owner perform different tasks"""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("host", "str", "IRC-Server Address", "Enter your server here!"),
                   ("port", "int", "IRC-Server Port", "6667"),
