@@ -61,9 +61,9 @@ class RealdebridCom(Hoster):
                     self.logWarning(data["message"])
                     self.tempOffline()
             else:
-                if self.pyfile.name is not None and self.pyfile.name.endswith('.tmp') and data["file_name"]:
-                    self.pyfile.name = data["file_name"]
-                self.pyfile.size = parseFileSize(data["file_size"])
+                if pyfile.name is not None and pyfile.name.endswith('.tmp') and data["file_name"]:
+                    pyfile.name = data["file_name"]
+                pyfile.size = parseFileSize(data["file_size"])
                 new_url = data['generated_links'][0][-1]
 
         if self.getConfig("https"):

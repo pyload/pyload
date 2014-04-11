@@ -34,7 +34,7 @@ class RPNetBiz(Hoster):
             # Get the download link 
             response = self.load("https://premium.rpnet.biz/client_api.php",
                                  get={"username": user, "password": data['password'],
-                                      "action": "generate", "links": self.pyfile.url})
+                                      "action": "generate", "links": pyfile.url})
 
             self.logDebug("JSON data: %s" % response)
             link_status = json_loads(response)['links'][0]  # get the first link... since we only queried one

@@ -55,9 +55,9 @@ class AlldebridCom(Hoster):
                     self.logWarning(data["error"])
                     self.tempOffline()
             else:
-                if self.pyfile.name and not self.pyfile.name.endswith('.tmp'):
-                    self.pyfile.name = data["filename"]
-                self.pyfile.size = parseFileSize(data["filesize"])
+                if pyfile.name and not pyfile.name.endswith('.tmp'):
+                    pyfile.name = data["filename"]
+                pyfile.size = parseFileSize(data["filesize"])
                 new_url = data["link"]
 
         if self.getConfig("https"):

@@ -13,8 +13,8 @@ class XupPl(Crypter):
     __author_mail__ = "z00nx0@gmail.com"
 
     def decrypt(self, pyfile):
-        header = self.load(self.pyfile.url, just_header=True)
+        header = self.load(pyfile.url, just_header=True)
         if 'location' in header:
-            self.core.files.addLinks([header['location']], self.pyfile.package().id)
+            self.core.files.addLinks([header['location']], pyfile.package().id)
         else:
             self.fail('Unable to find link')

@@ -73,7 +73,7 @@ class RapidshareCom(Hoster):
         self.multiDL = self.resumeDownload = self.premium
 
     def process(self, pyfile):
-        self.url = self.pyfile.url
+        self.url = pyfile.url
         self.prepare()
 
     def prepare(self):

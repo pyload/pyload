@@ -55,4 +55,4 @@ class LixIn(Crypter):
         new_link = matches.group("link")
         self.logDebug("Found link %s, adding to package" % new_link)
 
-        self.packages.append((self.pyfile.package().name, [new_link], self.pyfile.package().name))
+        self.packages.append((pyfile.package().name, [new_link], pyfile.package().name))

@@ -51,9 +51,9 @@ class OverLoadMe(Hoster):
                 self.logWarning(data["msg"])
                 self.tempOffline()
             else:
-                if self.pyfile.name is not None and self.pyfile.name.endswith('.tmp') and data["filename"]:
-                    self.pyfile.name = data["filename"]
-                    self.pyfile.size = parseFileSize(data["filesize"])
+                if pyfile.name is not None and pyfile.name.endswith('.tmp') and data["filename"]:
+                    pyfile.name = data["filename"]
+                    pyfile.size = parseFileSize(data["filesize"])
                 new_url = data["downloadlink"]
 
         if self.getConfig("https"):

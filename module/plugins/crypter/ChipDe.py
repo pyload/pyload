@@ -21,4 +21,4 @@ class ChipDe(Crypter):
         except:
             self.fail('Failed to find the URL')
 
-        self.packages.append((self.pyfile.package().name, [url], self.pyfile.package().folder))
+        self.packages.append((pyfile.package().name, [url], pyfile.package().folder))

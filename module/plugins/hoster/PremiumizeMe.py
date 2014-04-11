@@ -26,13 +26,13 @@ class PremiumizeMe(Hoster):
 
         # In some cases hostsers do not supply us with a filename at download, so we
         # are going to set a fall back filename (e.g. for freakshare or xfileshare)
-        self.pyfile.name = self.pyfile.name.split('/').pop()  # Remove everthing before last slash
+        pyfile.name = pyfile.name.split('/').pop()  # Remove everthing before last slash
 
         # Correction for automatic assigned filename: Removing html at end if needed
         suffix_to_remove = ["html", "htm", "php", "php3", "asp", "shtm", "shtml", "cfml", "cfm"]
-        temp = self.pyfile.name.split('.')
+        temp = pyfile.name.split('.')
         if temp.pop() in suffix_to_remove:
-            self.pyfile.name = ".".join(temp)
+            pyfile.name = ".".join(temp)
 
         # Get account data
         (user, data) = self.account.selectAccount()
@@ -40,7 +40,7 @@ class PremiumizeMe(Hoster):
         # Get rewritten link using the premiumize.me api v1 (see https://secure.premiumize.me/?show=api)
         answer = self.load(
             "https://api.premiumize.me/pm-api/v1.php?method=directdownloadlink&params[login]=%s&params[pass]=%s&params[link]=%s" % (
-            user, data['password'], self.pyfile.url))
+            user, data['password'], pyfile.url))
         data = json_loads(answer)
 
         # Check status and decide what to do

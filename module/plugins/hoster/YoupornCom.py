@@ -19,7 +19,7 @@ class YoupornCom(Hoster):
         if not self.file_exists():
             self.offline()
 
-        self.pyfile.name = self.get_file_name()
+        pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
     def download_html(self):
