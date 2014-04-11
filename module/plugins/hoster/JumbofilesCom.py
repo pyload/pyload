@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class JumbofilesCom(SimpleHoster):
     __name__ = "JumbofilesCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*jumbofiles.com/(\w{12}).*"
+    __pattern__ = r"http://(?:www\.)?jumbofiles.com/(\w{12}).*"
     __version__ = "0.02"
     __description__ = """JumboFiles.com hoster plugin"""
     __author_name__ = "godofdream"

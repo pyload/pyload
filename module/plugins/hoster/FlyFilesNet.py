@@ -11,7 +11,7 @@ class FlyFilesNet(SimpleHoster):
     __name__ = "FlyFilesNet"
     __version__ = "0.1"
     __type__ = "hoster"
-    __pattern__ = r'http://flyfiles\.net/.*'
+    __pattern__ = r'http://(?:www\.)?flyfiles\.net/.*'
 
     SESSION_PATTERN = r'flyfiles\.net/(.*)/.*'
     FILE_NAME_PATTERN = r'flyfiles\.net/.*/(.*)'

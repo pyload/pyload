@@ -7,7 +7,7 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class MovReelCom(XFileSharingPro):
     __name__ = "MovReelCom"
     __type__ = "hoster"
-    __pattern__ = r"http://movreel.com/.*"
+    __pattern__ = r"http://(?:www\.)?movreel.com/.*"
     __version__ = "1.20"
     __description__ = """MovReel.com hoster plugin"""
     __author_name__ = "JorisV83"

@@ -28,7 +28,7 @@ from module.utils import parseFileSize
 class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
+    __pattern__ = r"http://(?:www\.)?czshare\.(com|cz)/(\d+/|download.php\?).*"
     __version__ = "0.93"
     __description__ = """CZshare.com hoster plugin"""
     __author_name__ = "zoidberg"

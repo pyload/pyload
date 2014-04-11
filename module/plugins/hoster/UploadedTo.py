@@ -88,7 +88,7 @@ def getInfo(urls):
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __pattern__ = r"https?://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
+    __pattern__ = r"https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
     __version__ = "0.72"
     __description__ = """Uploaded.net hoster plugin"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")

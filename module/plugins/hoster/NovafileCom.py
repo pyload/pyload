@@ -10,7 +10,7 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class NovafileCom(XFileSharingPro):
     __name__ = "NovafileCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*novafile\.com/\w{12}"
+    __pattern__ = r"http://(?:www\.)?novafile\.com/\w{12}"
     __version__ = "0.02"
     __description__ = """Novafile.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")

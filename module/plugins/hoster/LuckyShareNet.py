@@ -10,7 +10,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class LuckyShareNet(SimpleHoster):
     __name__ = "LuckyShareNet"
     __type__ = "hoster"
-    __pattern__ = r"https?://(www\.)?luckyshare.net/(?P<ID>\d{10,})"
+    __pattern__ = r"https?://(?:www\.)?luckyshare.net/(?P<ID>\d{10,})"
     __version__ = "0.02"
     __description__ = """LuckyShare.net hoster plugin"""
     __author_name__ = "stickell"

@@ -7,7 +7,7 @@ from module.plugins.Crypter import Crypter
 class QuickshareCzFolder(Crypter):
     __name__ = "QuickshareCzFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(www\.)?quickshare.cz/slozka-\d+.*"
+    __pattern__ = r"http://(?:www\.)?quickshare.cz/slozka-\d+.*"
     __version__ = "0.1"
     __description__ = """Quickshare.cz folder decrypter plugin"""
     __author_name__ = "zoidberg"

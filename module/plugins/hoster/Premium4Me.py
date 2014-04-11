@@ -13,7 +13,7 @@ class Premium4Me(Hoster):
     __version__ = "0.08"
     __type__ = "hoster"
 
-    __pattern__ = r"http://premium.to/.*"
+    __pattern__ = r"http://(?:www\.)?premium.to/.*"
     __description__ = """Premium.to hoster plugin"""
     __author_name__ = ("RaNaN", "zoidberg", "stickell")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")

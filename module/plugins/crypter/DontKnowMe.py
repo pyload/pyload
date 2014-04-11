@@ -9,7 +9,7 @@ from module.plugins.Crypter import Crypter
 class DontKnowMe(Crypter):
     __name__ = "DontKnowMe"
     __type__ = "crypter"
-    __pattern__ = r"http://dontknow.me/at/\?.+$"
+    __pattern__ = r"http://(?:www\.)?dontknow.me/at/\?.+$"
     __version__ = "0.1"
     __description__ = """DontKnow.me decrypter plugin"""
     __author_name__ = "selaux"

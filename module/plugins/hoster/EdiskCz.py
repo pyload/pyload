@@ -24,7 +24,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EdiskCz(SimpleHoster):
     __name__ = "EdiskCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)?edisk.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*"
+    __pattern__ = r"http://(?:www\.)?edisk.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*"
     __version__ = "0.21"
     __description__ = """Edisk.cz hoster plugin"""
     __author_name__ = "zoidberg"
