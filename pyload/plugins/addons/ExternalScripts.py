@@ -31,7 +31,7 @@ class ExternalScripts(Addon):
     __name__ = "ExternalScripts"
     __version__ = "0.23"
     __description__ = """Run external scripts"""
-    __config__ = [("activated", "bool", "Activated", "True")]
+    __config__ = [("activated", "bool", "Activated", True)]
     __author_name__ = ("mkaay", "RaNaN", "spoob")
     __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org")
 

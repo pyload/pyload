@@ -27,8 +27,8 @@ class ClickAndLoad(Addon):
     __name__ = "ClickAndLoad"
     __version__ = "0.22"
     __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""
-    __config__ = [("activated", "bool", "Activated", "True"),
-                  ("extern", "bool", "Allow external link adding", "False")]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("extern", "bool", "Allow external link adding", False)]
     __author_name__ = ("RaNaN", "mkaay")
     __author_mail__ = ("RaNaN@pyload.de", "mkaay@mkaay.de")
 

@@ -33,10 +33,10 @@ class HotFolder(Hook):
     __name__ = "HotFolder"
     __version__ = "0.11"
     __description__ = """Observe folder and file for changes and add container and links"""
-    __config__ = [("activated", "bool", "Activated", "False"),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("folder", "str", "Folder to observe", "container"),
-                  ("watch_file", "bool", "Observe link file", "False"),
-                  ("keep", "bool", "Keep added containers", "True"),
+                  ("watch_file", "bool", "Observe link file", False),
+                  ("keep", "bool", "Keep added containers", True),
                   ("file", "str", "Link file", "links.txt")]
     __threaded__ = []
     __author_name__ = "RaNaN"

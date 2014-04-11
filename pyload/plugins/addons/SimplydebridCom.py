@@ -8,7 +8,7 @@ class SimplydebridCom(MultiHoster):
     __name__ = "SimplydebridCom"
     __version__ = "0.01"
     __type__ = "hook"
-    __config__ = [("activated", "bool", "Activated", "False"),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
     __description__ = """Simply-Debrid.com hook plugin"""

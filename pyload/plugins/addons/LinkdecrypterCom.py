@@ -27,7 +27,7 @@ class LinkdecrypterCom(Hook):
     __name__ = "LinkdecrypterCom"
     __version__ = "0.19"
     __description__ = """Linkdecrypter.com hook plugin"""
-    __config__ = [("activated", "bool", "Activated", "False")]
+    __config__ = [("activated", "bool", "Activated", False)]
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
