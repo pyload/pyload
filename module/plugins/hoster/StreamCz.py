@@ -78,4 +78,4 @@ class StreamCz(Hoster):
 
         download_url = "http://cdn-dispatcher.stream.cz/?id=" + cdnid
         self.logInfo("STREAM (%s): %s" % (cdnkey[-2:], download_url))
-        self.download(download_url)         
+        self.download(download_url)

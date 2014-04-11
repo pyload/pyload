@@ -312,4 +312,3 @@ if __name__ == '__main__':
     ocr.run_tesser()
     print "Tesseract", ocr.result_captcha
     ocr.image.save("derotated.jpg")
-    

@@ -69,4 +69,3 @@ class Crypter(Plugin):
 
         if self.urls:
             self.core.api.generateAndAddPackages(self.urls)
-            

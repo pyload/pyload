@@ -377,4 +377,3 @@ if __name__ == "__main__":
     b = time()
 
     print b - a, "s"
-    
