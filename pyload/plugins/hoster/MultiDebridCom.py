@@ -32,8 +32,8 @@ class MultiDebridCom(Hoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
     __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/"
     __description__ = """Multi-debrid.com hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     def setup(self):
         self.chunkLimit = -1

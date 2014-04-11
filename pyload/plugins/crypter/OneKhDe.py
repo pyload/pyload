@@ -13,8 +13,8 @@ class OneKhDe(Crypter):
     __pattern__ = r"http://(www\.)?1kh.de/f/"
     __version__ = "0.1"
     __description__ = """1kh.de Container Plugin"""
-    __author_name__ = ("spoob")
-    __author_mail__ = ("spoob@pyload.org")
+    __author_name__ = "spoob"
+    __author_mail__ = "spoob@pyload.org"
 
     def __init__(self, parent):
         Crypter.__init__(self, parent)

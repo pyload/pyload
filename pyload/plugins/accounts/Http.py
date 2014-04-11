@@ -8,8 +8,8 @@ class Http(Account):
     __version__ = "0.01"
     __type__ = "account"
     __description__ = """Http dummy account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     __config__ = [("domain", "str", "Domain", "")]
 

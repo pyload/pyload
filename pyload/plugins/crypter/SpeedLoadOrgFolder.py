@@ -24,5 +24,5 @@ class SpeedLoadOrgFolder(DeadCrypter):
     __pattern__ = r"http://(www\.)?speedload\.org/(\d+~f$|folder/\d+/)"
     __version__ = "0.3"
     __description__ = """Speedload Crypter Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"

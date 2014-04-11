@@ -26,6 +26,7 @@ class LinkdecrypterCom(Crypter):
     __version__ = "0.27"
     __description__ = """linkdecrypter.com"""
     __author_name__ = ("zoidberg", "flowlee")
+    __author_mail__ = ("zoidberg@mujmail.cz", "")
 
     TEXTAREA_PATTERN = r'<textarea name="links" wrap="off" readonly="1" class="caja_des">(.+)</textarea>'
     PASSWORD_PATTERN = r'<input type="text" name="password"'

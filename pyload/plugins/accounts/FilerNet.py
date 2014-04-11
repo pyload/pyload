@@ -27,8 +27,8 @@ class FilerNet(Account):
     __version__ = "0.01"
     __type__ = "account"
     __description__ = """Filer.net account plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     TOKEN_PATTERN = r'_csrf_token" value="([^"]+)" />'
     WALID_UNTIL_PATTERN = r"Der Premium-Zugang ist gültig bis (.+)\.\s*</td>"

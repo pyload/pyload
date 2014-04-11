@@ -7,8 +7,8 @@ class PremiumizeMe(MultiHoster):
     __version__ = "0.11"
     __type__ = "account"
     __description__ = """Premiumize.Me account plugin"""
-    __author_name__ = ("Florian Franzen")
-    __author_mail__ = ("FlorianFranzen@gmail.com")
+    __author_name__ = "Florian Franzen"
+    __author_mail__ = "FlorianFranzen@gmail.com"
 
     def loadAccountInfo(self, user, req):
         # Get user data from premiumize.me

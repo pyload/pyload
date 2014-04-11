@@ -34,8 +34,8 @@ class MergeFiles(Hook):
     __description__ = "Merges parts splitted with hjsplit"
     __config__ = [("activated", "bool", "Activated", "False")]
     __threaded__ = ["packageFinished"]
-    __author_name__ = ("and9000")
-    __author_mail__ = ("me@has-no-mail.com")
+    __author_name__ = "and9000"
+    __author_mail__ = "me@has-no-mail.com"
 
     def setup(self):
         # nothing to do

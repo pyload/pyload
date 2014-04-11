@@ -26,8 +26,8 @@ class DebridItaliaCom(MultiHoster):
     __version__ = "0.1"
     __type__ = "account"
     __description__ = """debriditalia.com account plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     WALID_UNTIL_PATTERN = r"Premium valid till: (?P<D>[^|]+) \|"
 

@@ -25,8 +25,8 @@ class IcyFilesCom(DeadHoster):
     __pattern__ = r"http://(?:www\.)?icyfiles\.com/(.*)"
     __version__ = "0.06"
     __description__ = """IcyFiles.com plugin - free only"""
-    __author_name__ = ("godofdream")
-    __author_mail__ = ("soilfiction@gmail.com")
+    __author_name__ = "godofdream"
+    __author_mail__ = "soilfiction@gmail.com"
 
 
 getInfo = create_getInfo(IcyFilesCom)

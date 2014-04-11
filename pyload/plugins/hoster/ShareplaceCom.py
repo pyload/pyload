@@ -12,8 +12,8 @@ class ShareplaceCom(Hoster):
     __pattern__ = r"(http://)?(www\.)?shareplace\.(com|org)/\?[a-zA-Z0-9]+"
     __version__ = "0.11"
     __description__ = """Shareplace.com Download Hoster"""
-    __author_name__ = ("ACCakut, based on YourfilesTo by jeix and skydancer")
-    __author_mail__ = ("none")
+    __author_name__ = "ACCakut"
+    __author_mail__ = ""
 
     def process(self, pyfile):
         self.pyfile = pyfile

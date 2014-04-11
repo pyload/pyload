@@ -9,8 +9,8 @@ class SimplydebridCom(MultiHoster):
     __version__ = "0.1"
     __type__ = "account"
     __description__ = """Simply-Debrid.com account plugin"""
-    __author_name__ = ("Kagenoshin")
-    __author_mail__ = ("kagenoshin@gmx.ch")
+    __author_name__ = "Kagenoshin"
+    __author_mail__ = "kagenoshin@gmx.ch"
 
     def loadAccountInfo(self, user, req):
         get_data = {'login': 2, 'u': self.loginname, 'p': self.password}

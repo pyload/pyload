@@ -9,5 +9,5 @@ class CryptItCom(DeadCrypter):
     __pattern__ = r"http://[\w\.]*?crypt-it\.com/(s|e|d|c)/[\w]+"
     __version__ = "0.11"
     __description__ = """Crypt.It.com Container Plugin"""
-    __author_name__ = ("jeix")
-    __author_mail__ = ("jeix@hasnomail.de")
+    __author_name__ = "jeix"
+    __author_mail__ = "jeix@hasnomail.de"

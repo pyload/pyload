@@ -12,8 +12,8 @@ class AlldebridCom(MultiHoster):
     __version__ = "0.22"
     __type__ = "account"
     __description__ = """AllDebrid.com account plugin"""
-    __author_name__ = ("Andy, Voigt")
-    __author_mail__ = ("spamsales@online.de")
+    __author_name__ = "Andy Voigt"
+    __author_mail__ = "spamsales@online.de"
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)

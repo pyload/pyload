@@ -30,7 +30,7 @@ class SockshareCom(SimpleHoster):
     __version__ = "0.02"
     __description__ = """Sockshare.com hoster plugin"""
     __author_name__ = ("jeix", "stickell", "Walter Purcaro")
-    __author_mail__ = ("", "l.stickell@yahoo.it", "vuolter@gmail.com")
+    __author_mail__ = ("jeix@hasnomail.de", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
     FILE_OFFLINE_PATTERN = r'>This file doesn\'t exist, or has been removed.<'

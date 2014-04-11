@@ -13,8 +13,8 @@ class DDLMusicOrg(Crypter):
     __pattern__ = r"http://[\w\.]*?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+"
     __version__ = "0.3"
     __description__ = """ddl-music.org Container Plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
 
     def setup(self):
         self.multiDL = False
