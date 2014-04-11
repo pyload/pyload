@@ -36,11 +36,9 @@ class Xdcc(Hoster):
     __version__ = "0.32"
     __pattern__ = r'xdcc://.*?(/#?.*?)?/.*?/#?\d+/?'  # xdcc://irc.Abjects.net/#channel/[XDCC]|Shit/#0004/
     __type__ = "hoster"
-    __config__ = [
-        ("nick", "str", "Nickname", "pyload"),
-        ("ident", "str", "Ident", "pyloadident"),
-        ("realname", "str", "Realname", "pyloadreal")
-    ]
+    __config__ = [("nick", "str", "Nickname", "pyload"),
+                  ("ident", "str", "Ident", "pyloadident"),
+                  ("realname", "str", "Realname", "pyloadreal")]
     __description__ = """Download from IRC XDCC bot"""
     __author_name__ = "jeix"
     __author_mail__ = "jeix@hasnomail.com"

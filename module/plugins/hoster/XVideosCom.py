@@ -8,7 +8,9 @@ class XVideosCom(Hoster):
     __name__ = "XVideos.com"
     __version__ = "0.1"
     __pattern__ = r"http://www\.xvideos\.com/video([0-9]+)/.*"
-    __config__ = []
+    __description__ = """XVideos.com hoster plugin"""
+    __author_name__ = ""
+    __author_mail__ = ""
 
     def process(self, pyfile):
         site = self.load(pyfile.url)

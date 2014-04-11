@@ -34,7 +34,7 @@ class ExpertDecoders(Hook):
     __description__ = """Send captchas to expertdecoders.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", False),
-                  ("passkey", "password", "Access key", ""), ]
+                  ("passkey", "password", "Access key", "")]
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
 

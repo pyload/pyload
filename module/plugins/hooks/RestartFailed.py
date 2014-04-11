@@ -24,8 +24,8 @@ class RestartFailed(Hook):
     __name__ = "RestartFailed"
     __version__ = "1.53"
     __description__ = """Periodically restart all failed downloads in queue"""
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("interval", "int", "Interval in minutes", "90")]
+    __config__ = [("activated", "bool", "Activated", False),
+                  ("interval", "int", "Interval in minutes", 90)]
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
 

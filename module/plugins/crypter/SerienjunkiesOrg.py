@@ -13,16 +13,14 @@ class SerienjunkiesOrg(Crypter):
     __type__ = "crypter"
     __pattern__ = r"http://.*?(serienjunkies.org|dokujunkies.org)/.*?"
     __version__ = "0.39"
-    __config__ = [
-        ("changeNameSJ", "Packagename;Show;Season;Format;Episode", "Take SJ.org name", "Show"),
-        ("changeNameDJ", "Packagename;Show;Format;Episode", "Take DJ.org name", "Show"),
-        ("randomPreferred", "bool", "Randomize Preferred-List", False),
-        ("hosterListMode", "OnlyOne;OnlyPreferred(One);OnlyPreferred(All);All",
-         "Use for hosters (if supported)", "All"),
-        ("hosterList", "str", "Preferred Hoster list (comma separated)",
-         "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
-        ("ignoreList", "str", "Ignored Hoster list (comma separated)", "MegauploadCom")
-    ]
+    __config__ = [("changeNameSJ", "Packagename;Show;Season;Format;Episode", "Take SJ.org name", "Show"),
+                  ("changeNameDJ", "Packagename;Show;Format;Episode", "Take DJ.org name", "Show"),
+                  ("randomPreferred", "bool", "Randomize Preferred-List", False),
+                  ("hosterListMode", "OnlyOne;OnlyPreferred(One);OnlyPreferred(All);All",
+                   "Use for hosters (if supported)", "All"),
+                  ("hosterList", "str", "Preferred Hoster list (comma separated)",
+                   "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
+                  ("ignoreList", "str", "Ignored Hoster list (comma separated)", "MegauploadCom")]
     __description__ = """Serienjunkies.org decrypter plugin"""
     __author_name__ = ("mkaay", "godofdream")
     __author_mail__ = ("mkaay@mkaay.de", "soilfiction@gmail.com")

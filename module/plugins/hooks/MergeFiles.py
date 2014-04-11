@@ -32,7 +32,7 @@ class MergeFiles(Hook):
     __name__ = "MergeFiles"
     __version__ = "0.12"
     __description__ = """Merges parts splitted with hjsplit"""
-    __config__ = [("activated", "bool", "Activated", "False")]
+    __config__ = [("activated", "bool", "Activated", False)]
     __threaded__ = ["packageFinished"]
     __author_name__ = "and9000"
     __author_mail__ = "me@has-no-mail.com"

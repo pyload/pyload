@@ -26,10 +26,10 @@ class DownloadScheduler(Hook):
     __name__ = "DownloadScheduler"
     __version__ = "0.21"
     __description__ = """Download Scheduler"""
-    __config__ = [("activated", "bool", "Activated", "False"),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("timetable", "str", "List time periods as hh:mm full or number(kB/s)",
                    "0:00 full, 7:00 250, 10:00 0, 17:00 150"),
-                  ("abort", "bool", "Abort active downloads when start period with speed 0", "False")]
+                  ("abort", "bool", "Abort active downloads when start period with speed 0", False)]
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
