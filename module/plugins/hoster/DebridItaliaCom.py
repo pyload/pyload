@@ -58,4 +58,4 @@ class DebridItaliaCom(Hoster):
         check = self.checkDownload({"empty": re.compile(r"^$")})
 
         if check == "empty":
-            self.retry(5, 120, 'Empty file downloaded')
+            self.retry(5, 2 * 60, "Empty file downloaded")

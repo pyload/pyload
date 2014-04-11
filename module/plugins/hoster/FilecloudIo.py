@@ -63,7 +63,7 @@ class FilecloudIo(SimpleHoster):
             self.account.form_data = {"recaptcha_challenge_field": captcha_challenge,
                                       "recaptcha_response_field": captcha_response}
             self.account.relogin(self.user)
-            self.retry(max_tries=2)
+            self.retry(2)
 
         json_url = "http://filecloud.io/download-request.json"
         response = self.load(json_url, post=data)

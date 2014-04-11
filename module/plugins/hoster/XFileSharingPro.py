@@ -184,7 +184,7 @@ class XFileSharingPro(SimpleHoster):
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
         elif inputs['st'] == 'Can not leech file':
-            self.retry(max_tries=20, wait_time=180, reason=inputs['st'])
+            self.retry(max_tries=20, wait_time=3 * 60, reason=inputs['st'])
         else:
             self.fail(inputs['st'])
 

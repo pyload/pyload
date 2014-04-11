@@ -66,9 +66,9 @@ class FastshareCz(SimpleHoster):
         })
 
         if check == "paralell_dl":
-            self.retry(6, 600, "Paralell download")
+            self.retry(6, 10 * 60, "Paralell download")
         elif check == "wrong_captcha":
-            self.retry(5, 1, "Wrong captcha")
+            self.retry(max_tries=5, reason="Wrong captcha")
 
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)

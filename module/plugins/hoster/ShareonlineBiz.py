@@ -73,9 +73,9 @@ class ShareonlineBiz(Hoster):
         # check = self.checkDownload({"failure": re.compile(self.ERROR_INFO_PATTERN)})
         # if check == "failure":
         #     try:
-        #         self.retry(reason = self.lastCheck.group(1).decode("utf8"))
+        #         self.retry(reason=self.lastCheck.group(1).decode("utf8"))
         #     except:
-        #         self.retry(reason = "Unknown error")
+        #         self.retry(reason="Unknown error")
 
         if self.api_data:
             self.check_data = {"size": int(self.api_data['size']), "md5": self.api_data['md5']}
@@ -138,7 +138,7 @@ class ShareonlineBiz(Hoster):
         if check == "cookie":
             self.retry(5, 60, "Cookie failure")
         elif check == "fail":
-            self.retry(5, 300, "Download failed")
+            self.retry(5, 5 * 60, "Download failed")
 
     def handlePremium(self):  # should be working better loading (account) api internally
         self.account.getAccountInfo(self.user, True)
