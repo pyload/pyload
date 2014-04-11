@@ -24,7 +24,7 @@ from module.plugins.Plugin import chunks
 class FilejungleCom(FileserveCom):
     __name__ = "FilejungleCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?filejungle\.com/f/(?P<id>[^/]+).*"
+    __pattern__ = r'http://(?:www\.)?filejungle\.com/f/(?P<id>[^/]+).*'
     __version__ = "0.51"
     __description__ = """Filejungle.com hoster plugin"""
     __author_name__ = "zoidberg"

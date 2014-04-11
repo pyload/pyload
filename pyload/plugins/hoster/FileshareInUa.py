@@ -9,7 +9,7 @@ from module.utils import parseFileSize
 class FileshareInUa(Hoster):
     __name__ = "FileshareInUa"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?fileshare.in.ua/[A-Za-z0-9]+"
+    __pattern__ = r'http://(?:www\.)?fileshare.in.ua/[A-Za-z0-9]+'
     __version__ = "0.01"
     __description__ = """Fileshare.in.ua hoster plugin"""
     __author_name__ = "fwannmacher"

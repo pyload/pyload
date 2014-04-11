@@ -12,7 +12,7 @@ from pyload.utils import html_unescape, remove_chars
 class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"
-    __pattern__ = r"^unmatchable$"
+    __pattern__ = r'^unmatchable$'
     __version__ = "0.19"
     __description__ = """Base Plugin when any other didnt fit"""
     __author_name__ = "RaNaN"

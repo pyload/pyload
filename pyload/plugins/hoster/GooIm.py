@@ -22,7 +22,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class GooIm(SimpleHoster):
     __name__ = "GooIm"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?goo\.im/.+"
+    __pattern__ = r'http://(?:www\.)?goo\.im/.+'
     __version__ = "0.02"
     __description__ = """Goo.im hoster plugin"""
     __author_name__ = "stickell"

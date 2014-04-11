@@ -27,7 +27,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class GigapetaCom(SimpleHoster):
     __name__ = "GigapetaCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?gigapeta\.com/dl/\w+"
+    __pattern__ = r'http://(?:www\.)?gigapeta\.com/dl/\w+'
     __version__ = "0.01"
     __description__ = """GigaPeta.com hoster plugin"""
     __author_name__ = "zoidberg"

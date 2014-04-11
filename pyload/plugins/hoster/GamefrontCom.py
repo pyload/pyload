@@ -9,7 +9,7 @@ from module.utils import parseFileSize
 class GamefrontCom(Hoster):
     __name__ = "GamefrontCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?gamefront.com/files/[A-Za-z0-9]+"
+    __pattern__ = r'http://(?:www\.)?gamefront.com/files/[A-Za-z0-9]+'
     __version__ = "0.04"
     __description__ = """Gamefront.com hoster plugin"""
     __author_name__ = "fwannmacher"

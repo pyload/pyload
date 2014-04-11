@@ -39,7 +39,7 @@ def getInfo(urls):
 class StreamCz(Hoster):
     __name__ = "StreamCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?stream.cz/[^/]+/\d+.*"
+    __pattern__ = r'http://(?:www\.)?stream.cz/[^/]+/\d+.*'
     __version__ = "0.1"
     __description__ = """Stream.cz hoster plugin"""
     __author_name__ = "zoidberg"

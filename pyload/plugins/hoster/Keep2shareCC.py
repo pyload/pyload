@@ -27,7 +27,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class Keep2shareCC(SimpleHoster):
     __name__ = "Keep2shareCC"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)"
+    __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
     __version__ = "0.10"
     __description__ = """Keep2share.cc hoster plugin"""
     __author_name__ = "stickell"

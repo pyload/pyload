@@ -8,7 +8,7 @@ from module.plugins.Crypter import Crypter
 class HotfileFolderCom(Crypter):
     __name__ = "HotfileFolderCom"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?hotfile.com/list/\w+/\w+"
+    __pattern__ = r'http://(?:www\.)?hotfile.com/list/\w+/\w+'
     __version__ = "0.1"
     __description__ = """Hotfile.com folder decrypter plugin"""
     __author_name__ = "RaNaN"

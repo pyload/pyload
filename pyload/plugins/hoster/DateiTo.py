@@ -25,7 +25,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class DateiTo(SimpleHoster):
     __name__ = "DateiTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html"
+    __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
     __version__ = "0.02"
     __description__ = """Datei.to hoster plugin"""
     __author_name__ = "zoidberg"

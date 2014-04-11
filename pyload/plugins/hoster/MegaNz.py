@@ -19,7 +19,7 @@ from module.plugins.Hoster import Hoster
 class MegaNz(Hoster):
     __name__ = "MegaNz"
     __type__ = "hoster"
-    __pattern__ = r"https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)"
+    __pattern__ = r'https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)'
     __version__ = "0.14"
     __description__ = """Mega.co.nz hoster plugin"""
     __author_name__ = ("RaNaN", )

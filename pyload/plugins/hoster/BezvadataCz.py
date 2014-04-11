@@ -25,7 +25,7 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BezvadataCz(SimpleHoster):
     __name__ = "BezvadataCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?bezvadata.cz/stahnout/.*"
+    __pattern__ = r'http://(?:www\.)?bezvadata.cz/stahnout/.*'
     __version__ = "0.24"
     __description__ = """BezvaData.cz hoster plugin"""
     __author_name__ = "zoidberg"

@@ -26,7 +26,7 @@ def doubleDecode(m):
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?fshare.vn/file/.*"
+    __pattern__ = r'http://(?:www\.)?fshare.vn/file/.*'
     __version__ = "0.16"
     __description__ = """FshareVn hoster plugin"""
     __author_name__ = "zoidberg"

@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RgHostNet(SimpleHoster):
     __name__ = "RgHostNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?rghost\.net/\d+(?:r=\d+)?"
+    __pattern__ = r'http://(?:www\.)?rghost\.net/\d+(?:r=\d+)?'
     __version__ = "0.01"
     __description__ = """RgHost.net hoster plugin"""
     __author_name__ = "z00nx"

@@ -26,7 +26,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class EgoFilesCom(SimpleHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?egofiles.com/(\w+)"
+    __pattern__ = r'https?://(?:www\.)?egofiles.com/(\w+)'
     __version__ = "0.13"
     __description__ = """Egofiles.com hoster plugin"""
     __author_name__ = "stickell"

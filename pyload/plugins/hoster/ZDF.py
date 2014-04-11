@@ -13,7 +13,7 @@ class ZDF(Hoster):
     # http://github.com/enkore/zdfm/
     __name__ = "ZDF Mediathek"
     __version__ = "0.8"
-    __pattern__ = r"http://(?:www\.)?zdf\.de/ZDFmediathek/[^0-9]*([0-9]+)[^0-9]*"
+    __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/[^0-9]*([0-9]+)[^0-9]*'
     __description__ = """ZDF.de hoster plugin"""
     __author_name__ = ""
     __author_mail__ = ""

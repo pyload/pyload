@@ -23,7 +23,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class SpeedfileCz(DeadHoster):
     __name__ = "SpeedFileCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?speedfile.cz/.*"
+    __pattern__ = r'http://(?:www\.)?speedfile.cz/.*'
     __version__ = "0.32"
     __description__ = """Speedfile.cz hoster plugin"""
     __author_name__ = "zoidberg"

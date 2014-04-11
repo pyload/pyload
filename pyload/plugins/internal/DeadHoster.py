@@ -11,7 +11,7 @@ def create_getInfo(plugin):
 class DeadHoster(_Hoster):
     __name__ = "DeadHoster"
     __type__ = "hoster"
-    __pattern__ = r""
+    __pattern__ = None
     __version__ = "0.11"
     __description__ = """Hoster is no longer available"""
     __author_name__ = "zoidberg"

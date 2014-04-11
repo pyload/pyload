@@ -7,7 +7,7 @@ from module.plugins.Hoster import Hoster
 class YoupornCom(Hoster):
     __name__ = "YoupornCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?youporn\.com/watch/.+"
+    __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
     __version__ = "0.2"
     __description__ = """Youporn.com hoster plugin"""
     __author_name__ = "willnix"

@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class MediafireComFolder(Crypter):
     __name__ = "MediafireComFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))"
+    __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
     __version__ = "0.14"
     __description__ = """Mediafire.com folder decrypter plugin"""
     __author_name__ = "zoidberg"

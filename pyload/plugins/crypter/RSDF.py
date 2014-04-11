@@ -9,7 +9,7 @@ from module.plugins.Crypter import Crypter
 class RSDF(Crypter):
     __name__ = "RSDF"
     __version__ = "0.21"
-    __pattern__ = r".*\.rsdf"
+    __pattern__ = r'.*\.rsdf'
     __description__ = """RSDF container decrypter plugin"""
     __author_name__ = ("RaNaN", "spoob")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org")
