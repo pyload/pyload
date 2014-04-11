@@ -12,9 +12,9 @@ from module.plugins.internal.CaptchaService import SolveMedia
 class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?ryushare\.com/\w+"
+    __pattern__ = r'http://(?:www\.)?ryushare\.com/\w+'
     __version__ = "0.15"
-    __description__ = """ryushare.com hoster plugin"""
+    __description__ = """Ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell", "quareevo")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "quareevo@arcor.de")
 
@@ -30,22 +30,22 @@ class RyushareCom(XFileSharingPro):
         retry = False
         self.html = self.load(self.pyfile.url)
         action, inputs = self.parseHtmlForm(input_names={"op": re.compile("^download")})
-        if 'method_premium' in inputs:
-            del inputs['method_premium']
+        if "method_premium" in inputs:
+            del inputs["method_premium"]
 
         self.html = self.load(self.pyfile.url, post=inputs)
         action, inputs = self.parseHtmlForm('F1')
 
         self.setWait(65)
         # Wait 1 hour
-        if 'You have reached the download-limit!!!' in self.html:
+        if "You have reached the download-limit" in self.html:
             self.setWait(1 * 60 * 60, True)
             retry = True
 
         match = re.search(self.WAIT_PATTERN, self.html)
         if match:
             m = match.groupdict(0)
-            waittime = int(m["hour"]) * 60 * 60 + int(m['min']) * 60 + int(m['sec'])
+            waittime = int(m["hour"]) * 60 * 60 + int(m["min"]) * 60 + int(m["sec"])
             self.setWait(waittime, True)
             retry = True
 
@@ -75,7 +75,7 @@ class RyushareCom(XFileSharingPro):
         else:
             self.fail("You have entered 5 invalid captcha codes")
 
-        if 'Click here to download' in self.html:
+        if "Click here to download" in self.html:
             m = re.search(r'<a href="([^"]+)">Click here to download</a>', self.html)
             return m.group(1)
 
