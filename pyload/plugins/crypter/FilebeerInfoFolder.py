@@ -11,4 +11,3 @@ class FilebeerInfoFolder(DeadCrypter):
     __description__ = """Filebeer.info folder decrypter plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
-

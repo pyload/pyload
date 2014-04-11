@@ -68,4 +68,4 @@ class ShareRapidCom(SimpleHoster):
             elif re.search(self.ERR_CREDIT_PATTERN, self.html):
                 self.fail("Not enough credit left")
             else:
-                self.fail("Download link not found")           
+                self.fail("Download link not found")

@@ -68,4 +68,4 @@ class Premium4Me(Hoster):
             traffic = int(self.load("http://premium.to/api/traffic.php?authcode=%s" % self.account.authcode))
         except:
             traffic = 0
-        return traffic       
+        return traffic
