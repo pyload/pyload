@@ -29,7 +29,7 @@ from urllib import unquote
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
 
-from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP, env
+from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP, PREFIX, env
 
 from utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
@@ -115,7 +115,7 @@ def favicon():
 @route('/login', method="GET")
 def login():
     if not PYLOAD and SETUP:
-        redirect("/setup")
+        redirect(PREFIX + "/setup")
     else:
         return render_to_response("login.html", proc=[pre_processor])
 
@@ -136,7 +136,7 @@ def login_post():
         return render_to_response("login.html", {"errors": True}, [pre_processor])
 
     set_session(request, info)
-    return redirect("/")
+    return redirect(PREFIX + "/")
 
 
 @route("/logout")
@@ -155,7 +155,7 @@ def home():
     except:
         s = request.environ.get('beaker.session')
         s.delete()
-        return redirect("/login")
+        return redirect(PREFIX + "/login")
 
     for link in res:
         if link["status"] == 12:
