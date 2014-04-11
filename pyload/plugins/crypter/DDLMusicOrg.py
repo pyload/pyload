@@ -9,7 +9,7 @@ from module.plugins.Crypter import Crypter
 class DDLMusicOrg(Crypter):
     __name__ = "DDLMusicOrg"
     __type__ = "crypter"
-    __pattern__ = r"http://[\w\.]*?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+"
+    __pattern__ = r"http://(?:www\.)?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+"
     __version__ = "0.3"
     __description__ = """Ddl-music.org decrypter plugin"""
     __author_name__ = "mkaay"

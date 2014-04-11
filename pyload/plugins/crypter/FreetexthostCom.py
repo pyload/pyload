@@ -22,7 +22,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FreetexthostCom(SimpleCrypter):
     __name__ = "FreetexthostCom"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:w{3}.)?freetexthost\.com/\w+"
+    __pattern__ = r"http://(?:www\.)?freetexthost\.com/\w+"
     __version__ = "0.01"
     __description__ = """Freetexthost.com decrypter plugin"""
     __author_name__ = "stickell"

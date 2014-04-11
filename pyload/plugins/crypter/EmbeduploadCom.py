@@ -8,7 +8,7 @@ from module.network.HTTPRequest import BadHeader
 class EmbeduploadCom(Crypter):
     __name__ = "EmbeduploadCom"
     __type__ = "crypter"
-    __pattern__ = r"http://(www\.)?embedupload.com/\?d=.*"
+    __pattern__ = r"http://(?:www\.)?embedupload.com/\?d=.*"
     __version__ = "0.02"
     __description__ = """EmbedUpload.com decrypter plugin"""
     __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "embedupload"),

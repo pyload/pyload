@@ -23,7 +23,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class TurbouploadCom(DeadHoster):
     __name__ = "TurbouploadCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?turboupload.com/(\w+).*"
+    __pattern__ = r"http://(?:www\.)?turboupload.com/(\w+).*"
     __version__ = "0.03"
     __description__ = """Turboupload.com hoster plugin"""
     __author_name__ = "zoidberg"

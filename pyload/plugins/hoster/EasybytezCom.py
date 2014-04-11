@@ -23,7 +23,7 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class EasybytezCom(XFileSharingPro):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w+).*"
+    __pattern__ = r"http://(?:www\.)?easybytez.com/(\w+).*"
     __version__ = "0.17"
     __description__ = """Easybytez.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")

@@ -11,7 +11,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class BitshareCom(SimpleHoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))"
+    __pattern__ = r"http://(?:www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))"
     __version__ = "0.49"
     __description__ = """Bitshare.com hoster plugin"""
     __author_name__ = ("Paul King", "fragonib")

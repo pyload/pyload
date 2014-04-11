@@ -34,7 +34,7 @@ from module.plugins.Hoster import Hoster
 class Xdcc(Hoster):
     __name__ = "Xdcc"
     __version__ = "0.32"
-    __pattern__ = r'xdcc://.*?(/#?.*?)?/.*?/#?\d+/?'  # xdcc://irc.Abjects.net/#channel/[XDCC]|Shit/#0004/
+    __pattern__ = r'xdcc://([^/]*?)(/#?.*?)?/.*?/#?\d+/?'  # xdcc://irc.Abjects.net/#channel/[XDCC]|Shit/#0004/
     __type__ = "hoster"
     __config__ = [("nick", "str", "Nickname", "pyload"),
                   ("ident", "str", "Ident", "pyloadident"),

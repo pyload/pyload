@@ -23,7 +23,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, P
 class DataportCz(SimpleHoster):
     __name__ = "DataportCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:.*?\.)?dataport.cz/file/(.*)"
+    __pattern__ = r"http://(?:www\.)?dataport.cz/file/(.*)"
     __version__ = "0.37"
     __description__ = """Dataport.cz hoster plugin"""
     __author_name__ = "zoidberg"

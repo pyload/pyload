@@ -24,7 +24,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class SendspaceCom(SimpleHoster):
     __name__ = "SendspaceCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?sendspace.com/file/.*"
+    __pattern__ = r"http://(?:www\.)?sendspace.com/file/.*"
     __version__ = "0.13"
     __description__ = """Sendspace.com hoster plugin"""
     __author_name__ = "zoidberg"

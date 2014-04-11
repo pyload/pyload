@@ -25,7 +25,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DataHu(SimpleHoster):
     __name__ = "DataHu"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?data.hu/get/\w+"
+    __pattern__ = r"http://(?:www\.)?data.hu/get/\w+"
     __version__ = "0.01"
     __description__ = """Data.hu hoster plugin"""
     __author_name__ = ("crash", "stickell")

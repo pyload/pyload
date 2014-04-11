@@ -12,7 +12,7 @@ from module.lib.BeautifulSoup import BeautifulSoup
 class SafelinkingNet(Crypter):
     __name__ = 'SafelinkingNet'
     __type__ = 'crypter'
-    __pattern__ = r'https?://safelinking.net/([pd])/\w+'
+    __pattern__ = r'https?://(?:www\.)?safelinking.net/([pd])/\w+'
     __version__ = '0.1'
     __description__ = """Safelinking.net decrypter plugin"""
     __author_name__ = "quareevo"

@@ -7,7 +7,7 @@ from module.plugins.Crypter import Crypter
 class FilefactoryComFolder(Crypter):
     __name__ = "FilefactoryComFolder"
     __type__ = "crypter"
-    __pattern__ = r"(http://(www\.)?filefactory\.com/f/\w+).*"
+    __pattern__ = r"(http://(?:www\.)?filefactory\.com/f/\w+).*"
     __version__ = "0.1"
     __description__ = """Filefactory.com folder decrypter plugin"""
     __author_name__ = "zoidberg"

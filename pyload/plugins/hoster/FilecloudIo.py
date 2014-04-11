@@ -26,7 +26,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class FilecloudIo(SimpleHoster):
     __name__ = "FilecloudIo"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*"
+    __pattern__ = r"http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*"
     __version__ = "0.02"
     __description__ = """Filecloud.io hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")

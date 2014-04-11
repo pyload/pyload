@@ -24,7 +24,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
-    __pattern__ = r"(http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*"
+    __pattern__ = r"(http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*"
     __version__ = "0.82"
     __description__ = """Hellshare.cz hoster plugin"""
     __author_name__ = "zoidberg"

@@ -22,7 +22,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class DataHuFolder(SimpleCrypter):
     __name__ = "DataHuFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(www\.)?data.hu/dir/\w+"
+    __pattern__ = r"http://(?:www\.)?data.hu/dir/\w+"
     __version__ = "0.03"
     __description__ = """Data.hu folder decrypter plugin"""
     __author_name__ = ("crash", "stickell")
