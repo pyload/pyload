@@ -46,7 +46,7 @@ class CaptchaBrotherhoodException(Exception):
 class CaptchaBrotherhood(Hook):
     __name__ = "CaptchaBrotherhood"
     __version__ = "0.04"
-    __description__ = """send captchas to CaptchaBrotherhood.com"""
+    __description__ = """Send captchas to CaptchaBrotherhood.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),

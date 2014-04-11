@@ -24,7 +24,7 @@ class DataportCz(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:.*?\.)?dataport.cz/file/(.*)"
     __version__ = "0.37"
-    __description__ = """Dataport.cz plugin - free only"""
+    __description__ = """Dataport.cz hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

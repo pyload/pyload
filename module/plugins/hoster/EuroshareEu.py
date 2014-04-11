@@ -25,7 +25,7 @@ class EuroshareEu(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)?euroshare.(eu|sk|cz|hu|pl)/file/.*"
     __version__ = "0.25"
-    __description__ = """Euroshare.eu"""
+    __description__ = """Euroshare.eu hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

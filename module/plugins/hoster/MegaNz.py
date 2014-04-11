@@ -21,7 +21,7 @@ class MegaNz(Hoster):
     __type__ = "hoster"
     __pattern__ = r"https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)"
     __version__ = "0.14"
-    __description__ = """mega.co.nz hoster plugin"""
+    __description__ = """Mega.co.nz hoster plugin"""
     __author_name__ = ("RaNaN", )
     __author_mail__ = ("ranan@pyload.org", )
 

@@ -27,7 +27,7 @@ class FilejungleCom(Account):
     __name__ = "FilejungleCom"
     __version__ = "0.11"
     __type__ = "account"
-    __description__ = """filejungle.com account plugin"""
+    __description__ = """Filejungle.com account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

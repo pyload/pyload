@@ -9,7 +9,7 @@ class GamefrontCom(Hoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*?gamefront.com/files/[A-Za-z0-9]+"
     __version__ = "0.04"
-    __description__ = """gamefront.com hoster plugin"""
+    __description__ = """Gamefront.com hoster plugin"""
     __author_name__ = "fwannmacher"
     __author_mail__ = "felipe@warhammerproject.com"
 

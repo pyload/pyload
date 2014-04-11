@@ -23,7 +23,7 @@ class SerienjunkiesOrg(Crypter):
          "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
         ("ignoreList", "str", "Ignored Hoster list (comma separated)", "MegauploadCom")
     ]
-    __description__ = """serienjunkies.org Container Plugin"""
+    __description__ = """Serienjunkies.org decrypter plugin"""
     __author_name__ = ("mkaay", "godofdream")
     __author_mail__ = ("mkaay@mkaay.de", "soilfiction@gmail.com")
 

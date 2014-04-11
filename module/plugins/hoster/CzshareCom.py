@@ -29,7 +29,7 @@ class CzshareCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
     __version__ = "0.93"
-    __description__ = """CZshare.com"""
+    __description__ = """CZshare.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

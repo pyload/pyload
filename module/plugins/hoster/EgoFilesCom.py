@@ -29,7 +29,7 @@ class EgoFilesCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"https?://(www\.)?egofiles.com/(\w+)"
     __version__ = "0.13"
-    __description__ = """Egofiles.com Download Hoster"""
+    __description__ = """Egofiles.com hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

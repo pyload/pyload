@@ -25,7 +25,7 @@ class ShareRapidCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?((share(-?rapid\.(biz|com|cz|info|eu|net|org|pl|sk)|-(central|credit|free|net)\.cz|-ms\.net)|(s-?rapid|rapids)\.(cz|sk))|(e-stahuj|mediatack|premium-rapidshare|rapidshare-premium|qiuck)\.cz|kadzet\.com|stahuj-zdarma\.eu|strelci\.net|universal-share\.com)/stahuj/(?P<id>\w+)"
     __version__ = "0.53"
-    __description__ = """Share-rapid.com plugin - premium only"""
+    __description__ = """Share-rapid.com hoster plugin"""
     __author_name__ = ("MikyWoW", "zoidberg", "stickell")
     __author_mail__ = ("mikywow@seznam.cz", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 

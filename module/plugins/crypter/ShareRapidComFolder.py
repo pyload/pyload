@@ -8,7 +8,7 @@ class ShareRapidComFolder(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?((share(-?rapid\.(biz|com|cz|info|eu|net|org|pl|sk)|-(central|credit|free|net)\.cz|-ms\.net)|(s-?rapid|rapids)\.(cz|sk))|(e-stahuj|mediatack|premium-rapidshare|rapidshare-premium|qiuck)\.cz|kadzet\.com|stahuj-zdarma\.eu|strelci\.net|universal-share\.com)/(slozka/.+)"
     __version__ = "0.01"
-    __description__ = """Share-Rapid.com Folder Plugin"""
+    __description__ = """Share-Rapid.com folder decrypter plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

@@ -25,7 +25,7 @@ class HellshareCz(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"(http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*"
     __version__ = "0.82"
-    __description__ = """Hellshare.cz - premium only"""
+    __description__ = """Hellshare.cz hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

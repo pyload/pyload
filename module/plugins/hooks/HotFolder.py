@@ -32,7 +32,7 @@ from module.plugins.Hook import Hook
 class HotFolder(Hook):
     __name__ = "HotFolder"
     __version__ = "0.11"
-    __description__ = """observe folder and file for changes and add container and links"""
+    __description__ = """Observe folder and file for changes and add container and links"""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("folder", "str", "Folder to observe", "container"),
                   ("watch_file", "bool", "Observe link file", "False"),

@@ -30,7 +30,7 @@ from module.plugins.hooks.IRCInterface import IRCInterface
 class XMPPInterface(IRCInterface, JabberClient):
     __name__ = "XMPPInterface"
     __version__ = "0.11"
-    __description__ = """connect to jabber and let owner perform different tasks"""
+    __description__ = """Connect to jabber and let owner perform different tasks"""
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),
                   ("pw", "str", "Password", ""),

@@ -26,7 +26,7 @@ class DateiTo(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html"
     __version__ = "0.02"
-    __description__ = """Datei.to plugin - free only"""
+    __description__ = """Datei.to hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

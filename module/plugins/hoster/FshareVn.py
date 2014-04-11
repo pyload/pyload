@@ -29,7 +29,7 @@ class FshareVn(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?fshare.vn/file/.*"
     __version__ = "0.16"
-    __description__ = """FshareVn Download Hoster"""
+    __description__ = """FshareVn hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

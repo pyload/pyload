@@ -8,7 +8,7 @@ class DepositfilesComFolder(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(www\.)?depositfiles.com/folders/\w+"
     __version__ = "0.01"
-    __description__ = """Depositfiles.com Folder Plugin"""
+    __description__ = """Depositfiles.com folder decrypter plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

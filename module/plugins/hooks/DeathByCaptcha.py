@@ -61,7 +61,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Hook):
     __name__ = "DeathByCaptcha"
     __version__ = "0.03"
-    __description__ = """send captchas to DeathByCaptcha.com"""
+    __description__ = """Send captchas to DeathByCaptcha.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),

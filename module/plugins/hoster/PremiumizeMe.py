@@ -7,7 +7,7 @@ class PremiumizeMe(Hoster):
     __name__ = "PremiumizeMe"
     __version__ = "0.12"
     __type__ = "hoster"
-    __description__ = """Premiumize.Me hoster plugin"""
+    __description__ = """Premiumize.me hoster plugin"""
 
     # Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
     # create the regex patterns for us using getHosters in our PremiumizeMe hook.

@@ -20,7 +20,7 @@ class LinkSaveIn(Crypter):
     __type__ = "crypter"
     __pattern__ = r"http://(www\.)?linksave.in/(?P<id>\w+)$"
     __version__ = "2.01"
-    __description__ = """LinkSave.in Crypter Plugin"""
+    __description__ = """LinkSave.in decrypter plugin"""
     __author_name__ = "fragonib"
     __author_mail__ = "fragonib[AT]yahoo[DOT]es"
 

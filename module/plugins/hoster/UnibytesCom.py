@@ -26,7 +26,7 @@ class UnibytesCom(SimpleHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(www\.)?unibytes\.com/[a-zA-Z0-9-._ ]{11}B"
     __version__ = "0.1"
-    __description__ = """UniBytes.com"""
+    __description__ = """UniBytes.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

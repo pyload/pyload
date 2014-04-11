@@ -60,7 +60,7 @@ class ExtractArchive(Hook):
     """
     __name__ = "ExtractArchive"
     __version__ = "0.16"
-    __description__ = "Extract different kind of archives"
+    __description__ = """Extract different kind of archives"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
                   ("overwrite", "bool", "Overwrite files", True),

@@ -9,7 +9,7 @@ class ZeveraCom(Hoster):
     __version__ = "0.21"
     __type__ = "hoster"
     __pattern__ = r"http://zevera.com/.*"
-    __description__ = """zevera.com hoster plugin"""
+    __description__ = """Zevera.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

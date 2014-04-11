@@ -27,7 +27,7 @@ class HotfileCom(Account):
     __name__ = "HotfileCom"
     __version__ = "0.2"
     __type__ = "account"
-    __description__ = """hotfile.com account plugin"""
+    __description__ = """Hotfile.com account plugin"""
     __author_name__ = ("mkaay", "JoKoT3")
     __author_mail__ = ("mkaay@mkaay.de", "jokot3@gmail.com")
 

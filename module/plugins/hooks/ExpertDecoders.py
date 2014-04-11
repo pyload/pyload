@@ -31,7 +31,7 @@ from module.plugins.Hook import Hook
 class ExpertDecoders(Hook):
     __name__ = "ExpertDecoders"
     __version__ = "0.01"
-    __description__ = """send captchas to expertdecoders.com"""
+    __description__ = """Send captchas to expertdecoders.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Access key", ""), ]

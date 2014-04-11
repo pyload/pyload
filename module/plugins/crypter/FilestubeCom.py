@@ -23,7 +23,7 @@ class FilestubeCom(SimpleCrypter):
     __type__ = "crypter"
     __pattern__ = r"http://(?:w{3}.)?filestube\.(?:com|to)/\w+"
     __version__ = "0.03"
-    __description__ = """Filestube.com Plugin"""
+    __description__ = """Filestube.com decrypter plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

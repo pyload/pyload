@@ -24,7 +24,7 @@ class IcyFilesCom(DeadHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?icyfiles\.com/(.*)"
     __version__ = "0.06"
-    __description__ = """IcyFiles.com plugin - free only"""
+    __description__ = """IcyFiles.com hoster plugin"""
     __author_name__ = "godofdream"
     __author_mail__ = "soilfiction@gmail.com"
 

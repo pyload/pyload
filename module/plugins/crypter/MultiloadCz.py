@@ -9,7 +9,7 @@ class MultiloadCz(Crypter):
     __type__ = "crypter"
     __pattern__ = r"http://.*multiload.cz/(stahnout|slozka)/.*"
     __version__ = "0.4"
-    __description__ = """multiload.cz"""
+    __description__ = """Multiload.cz decrypter plugin"""
     __config__ = [("usedHoster", "str", "Prefered hoster list (bar-separated) ", ""),
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
     __author_name__ = "zoidberg"

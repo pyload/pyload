@@ -146,7 +146,7 @@ class Plugin(Base):
     __pattern__ = None
     __type__ = "hoster"
     __config__ = [("name", "type", "desc", "default")]
-    __description__ = """Base Plugin"""
+    __description__ = """Base plugin"""
     __author_name__ = ("RaNaN", "spoob", "mkaay")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
 

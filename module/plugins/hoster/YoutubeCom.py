@@ -44,7 +44,7 @@ class YoutubeCom(Hoster):
                   (".webm", "bool", "Allow .webm", False),
                   (".3gp", "bool", "Allow .3gp", False),
                   ("3d", "bool", "Prefer 3D", False)]
-    __description__ = """Youtube.com Video Download Hoster"""
+    __description__ = """Youtube.com hoster plugin"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 

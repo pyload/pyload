@@ -24,7 +24,7 @@ class HellspyCz(DeadHoster):
     __type__ = "hoster"
     __pattern__ = r"http://(?:\w*\.)*(?:hellspy\.(?:cz|com|sk|hu|pl)|sciagaj.pl)(/\S+/\d+)/?.*"
     __version__ = "0.28"
-    __description__ = """HellSpy.cz"""
+    __description__ = """HellSpy.cz hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
