@@ -5,7 +5,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 class SecuredIn(DeadCrypter):
     __name__ = "SecuredIn"
-    __type__ = "container"
+    __type__ = "crypter"
     __pattern__ = r"http://[\w\.]*?secured\.in/download-[\d]+-[\w]{8}\.html"
     __version__ = "0.21"
     __description__ = """Secured.in decrypter plugin"""

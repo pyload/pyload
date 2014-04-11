@@ -5,7 +5,7 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 class C1neonCom(DeadCrypter):
     __name__ = "C1neonCom"
-    __type__ = "container"
+    __type__ = "crypter"
     __pattern__ = r"http://(www\.)?c1neon.com/.*?"
     __version__ = "0.05"
     __description__ = """C1neon.com decrypter plugin"""

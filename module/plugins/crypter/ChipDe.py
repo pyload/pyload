@@ -7,10 +7,10 @@ from module.plugins.Crypter import Crypter
 
 class ChipDe(Crypter):
     __name__ = "ChipDe"
-    __type__ = "container"
+    __type__ = "crypter"
     __pattern__ = r"http://(?:www\.)?chip.de/video/.*\.html"
     __version__ = "0.1"
-    __description__ = """Chip.de hoster plugin"""
+    __description__ = """Chip.de decrypter plugin"""
     __author_name__ = "4Christopher"
     __author_mail__ = "4Christopher@gmx.de"
 
