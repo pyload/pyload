@@ -88,7 +88,7 @@ def formatSize(size):
     """formats size of bytes"""
     size = int(size)
     steps = 0
-    sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
+    sizes = ("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB")
     while size > 1000:
         size /= 1024.0
         steps += 1
@@ -132,7 +132,7 @@ def uniqify(seq, idfun=None):
 
 def parseFileSize(string, unit=None): #returns bytes
     if not unit:
-        m = re.match(r"(\d*[\.,]?\d+)(.*)", string.strip().lower())
+        m = re.match(r"([\d.,]+) *([a-zA-Z]*)", string.strip().lower())
         if m:
             traffic = float(m.group(1).replace(",", "."))
             unit = m.group(2)
@@ -147,11 +147,17 @@ def parseFileSize(string, unit=None): #returns bytes
     #ignore case
     unit = unit.lower().strip()
 
-    if unit in ("gb", "gig", "gbyte", "gigabyte", "gib", "g"):
+    if unit in ("eb", "ebyte", "exabyte", "eib", "e"):
+        traffic *= 1 << 60
+    elif unit in ("pb", "pbyte", "petabyte", "pib", "p"):
+        traffic *= 1 << 50
+    elif unit in ("tb", "tbyte", "terabyte", "tib", "t"):
+        traffic *= 1 << 40
+    elif unit in ("gb", "gbyte", "gigabyte", "gib", "g", "gig"):
         traffic *= 1 << 30
     elif unit in ("mb", "mbyte", "megabyte", "mib", "m"):
         traffic *= 1 << 20
-    elif unit in ("kb", "kib", "kilobyte", "kbyte", "k"):
+    elif unit in ("kb", "kbyte", "kilobyte", "kib", "k"):
         traffic *= 1 << 10
 
     return traffic
