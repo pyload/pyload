@@ -34,7 +34,7 @@ class CzshareCom(Account):
     CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([0-9 ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'
 
     def loadAccountInfo(self, user, req):
-        html = req.load("http://czshare.com/prehled_kreditu/")
+        html = req.load("http://sdilej.cz/prehled_kreditu/")
 
         found = re.search(self.CREDIT_LEFT_PATTERN, html)
         if not found:
@@ -47,7 +47,7 @@ class CzshareCom(Account):
 
     def login(self, user, data, req):
 
-        html = req.load('https://czshare.com/index.php', post={
+        html = req.load('https://sdilej.cz/index.php', post={
             "Prihlasit": "Prihlasit",
             "login-password": data["password"],
             "login-name": user
