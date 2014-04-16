@@ -17,7 +17,7 @@ class MegaDebrid(Hook):
 	__config__ = [ ("login" , "str" , "login"  , "" ), ("password" , "str" , "password"  , "" ) ]
 	__threaded__ = ["linksAdded"]
 	__author_name__ = ("D.Ducatel")
-	__author_mail__ = ("david.ducatel@yahoo.fr")
+	__author_mail__ = ("dducatel@je-geek.fr")
 
 	# Define the callback on HookManager event
 	event_map = {"linksAdded" : "linksAddedCallback"}
