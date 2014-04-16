@@ -14,7 +14,7 @@ class MegaDebrid(Hook):
 	__name__ = "MegaDebrid"
 	__version__ = "0.1"
 	__description__ = "Debrid link with Mega-Debrid.eu"
-	__config__ = [ ("login" , "str" , "login"  , "" ), ("password" , "str" , "password"  , "" ) ]
+	__config__ = [ ("login" , "str" , "login"  , "" ), ("password" , "password" , "password"  , "" ) ]
 	__threaded__ = ["linksAdded"]
 	__author_name__ = ("D.Ducatel")
 	__author_mail__ = ("dducatel@je-geek.fr")
