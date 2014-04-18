@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from urllib import quote, unquote
 import re
 
 from module.plugins.Hoster import Hoster
