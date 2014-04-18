@@ -26,7 +26,7 @@ class OneFichierCom(SimpleHoster):
     WAITING_PATTERN = "Warning ! Without premium status, you must wait up to (\d+) minutes between each downloads"
     LAST_DOWNLOAD_DELAY = "Your last download finished (\d+) minutes ago"
     NOT_PARALLEL = r"Warning ! Without premium status, you can download only one file at a time"
-    RETRY_TIME = 15*60 #Default retry time in seconds (if detected parallel download)
+    RETRY_TIME = 15*60  # Default retry time in seconds (if detected parallel download)
 
     def process(self, pyfile):
         found = re.match(self.__pattern__, pyfile.url)
@@ -38,13 +38,13 @@ class OneFichierCom(SimpleHoster):
 
         found = re.search(self.WAITING_PATTERN, self.html)
         if found:
-            last_delay=0
+            last_delay = 0
             # retrieve the delay from the last download to substract from required delay
             found_delay = re.search(self.LAST_DOWNLOAD_DELAY, self.html)
             if found_delay:
-                last_delay=int(found_delay.group(1))
+                last_delay = int(found_delay.group(1))
             self.waitAndRetry((int(found.group(1)) - last_delay) * 60)
-        else: #detect parallel download
+        else:  # detect parallel download
             found = re.search(self.NOT_PARALLEL, self.html)
             if found:
                 self.waitAndRetry(self.RETRY_TIME)

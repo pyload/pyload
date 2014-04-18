@@ -19,6 +19,7 @@
 
 from module.plugins.Hoster import Hoster
 
+
 class FreeWayMe(Hoster):
     __name__ = "FreeWayMe"
     __version__ = "0.11"

@@ -132,7 +132,7 @@ class Xdcc(Hoster):
                     sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
 
             else:
-                if (dl_time + self.timeout) < time.time(): # todo: add in config
+                if (dl_time + self.timeout) < time.time():  # todo: add in config
                     sock.send("QUIT :byebye\r\n")
                     sock.close()
                     self.fail("XDCC Bot did not answer")
