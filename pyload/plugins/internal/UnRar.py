@@ -93,12 +93,12 @@ class UnRar(AbtractExtractor):
 
         # output only used to check if passworded files are present
         if self.re_version.search(out):
-            for attr, size, name in  self.re_filelist5.findall(out):
+            for attr, size, name in self.re_filelist5.findall(out):
                 if attr.startswith("*"):
                     self.passwordProtected = True
                     return True
         else:
-            for name, size, packed in  self.re_filelist.findall(out):
+            for name, size, packed in self.re_filelist.findall(out):
                 if name.startswith("*"):
                     self.passwordProtected = True
                     return True
