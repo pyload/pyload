@@ -28,9 +28,9 @@ from module.utils import parseFileSize
 class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?czshare\.(com|cz)/(\d+/|download.php\?).*'
-    __version__ = "0.93"
-    __description__ = """CZshare.com hoster plugin"""
+    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download.php\?).*'
+    __version__ = "0.94"
+    __description__ = """CZshare.com hoster plugin, now Sdilej.cz"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
@@ -39,7 +39,7 @@ class CzshareCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
 
     FILE_SIZE_REPLACEMENTS = [(' ', '')]
-    FILE_URL_REPLACEMENTS = [(r'http://[^/]*/download.php\?.*?id=(\w+).*', r'http://czshare.com/\1/x/')]
+    FILE_URL_REPLACEMENTS = [(r'http://[^/]*/download.php\?.*?id=(\w+).*', r'http://sdilej.cz/\1/x/')]
     SH_CHECK_TRAFFIC = True
 
     FREE_URL_PATTERN = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
@@ -83,7 +83,7 @@ class CzshareCom(SimpleHoster):
             self.resetAccount()
 
         # download the file, destination is determined by pyLoad
-        self.download("http://czshare.com/profi_down.php", post=inputs, disposition=True)
+        self.download("http://sdilej.cz/profi_down.php", post=inputs, disposition=True)
         self.checkDownloadedFile()
 
     def handleFree(self):
@@ -91,7 +91,7 @@ class CzshareCom(SimpleHoster):
         found = re.search(self.FREE_URL_PATTERN, self.html)
         if found is None:
             raise PluginParseError('Free URL')
-        parsed_url = "http://czshare.com" + found.group(1)
+        parsed_url = "http://sdilej.cz" + found.group(1)
         self.logDebug("PARSED_URL:" + parsed_url)
 
         # get download ticket and parse html
@@ -108,7 +108,7 @@ class CzshareCom(SimpleHoster):
             raise PluginParseError('Form')
 
         # get and decrypt captcha        
-        captcha_url = 'http://czshare.com/captcha.php'
+        captcha_url = 'http://sdilej.cz/captcha.php'
         for _ in xrange(5):
             inputs['captchastring2'] = self.decryptCaptcha(captcha_url)
             self.html = self.load(parsed_url, cookies=True, post=inputs, decode=True)
