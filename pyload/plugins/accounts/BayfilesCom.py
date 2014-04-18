@@ -25,7 +25,7 @@ from module.common.json_layer import json_loads
 
 class BayfilesCom(Account):
     __name__ = "BayfilesCom"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __type__ = "account"
     __description__ = """Bayfiles.com account plugin"""
     __author_name__ = "zoidberg"
@@ -38,7 +38,7 @@ class BayfilesCom(Account):
             if not response["error"]:
                 break
             self.logWarning(response["error"])
-            self.relogin()
+            self.relogin(user)
 
         return {"premium": bool(response['premium']), "trafficleft": -1,
                 "validuntil": response['expires'] if response['expires'] >= int(time()) else -1}
