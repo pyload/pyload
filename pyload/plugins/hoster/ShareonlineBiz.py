@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from base64 import b64decode
-import hashlib
-import random
-from time import time, sleep
+from time import time
 
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
