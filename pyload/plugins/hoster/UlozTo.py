@@ -30,7 +30,7 @@ class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
-    __version__ = "0.96"
+    __version__ = "0.97"
     __description__ = """Uloz.to hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -97,7 +97,7 @@ class UlozTo(SimpleHoster):
 
         self.logDebug('inputs.keys() = ' + str(inputs.keys()))
         # get and decrypt captcha
-        if inputs.has_key('captcha_value') and inputs.has_key('captcha_id') and inputs.has_key('captcha_key'):
+        if all(key in inputs for key in ('captcha_value', 'captcha_id', 'captcha_key')):
             # Old version - last seen 9.12.2013
             self.logDebug('Using "old" version')
 
@@ -106,7 +106,7 @@ class UlozTo(SimpleHoster):
 
             inputs.update({'captcha_id': inputs['captcha_id'], 'captcha_key': inputs['captcha_key'], 'captcha_value': captcha_value})
 
-        elif inputs.has_key("captcha_value") and inputs.has_key("timestamp") and inputs.has_key("salt") and inputs.has_key("hash"):
+        elif all(key in inputs for key in ('captcha_value', 'timestamp', 'salt', 'hash')):
             # New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
             self.logDebug('Using "new" version')
 

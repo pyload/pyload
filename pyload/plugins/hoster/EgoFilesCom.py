@@ -27,7 +27,7 @@ class EgoFilesCom(SimpleHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
     __pattern__ = r'https?://(?:www\.)?egofiles.com/(\w+)'
-    __version__ = "0.14"
+    __version__ = "0.15"
     __description__ = """Egofiles.com hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
@@ -83,7 +83,7 @@ class EgoFilesCom(SimpleHoster):
 
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)
-        if header.has_key('location'):
+        if 'location' in header:
             self.logDebug('DIRECT LINK from header: ' + header['location'])
             self.download(header['location'])
         else:
