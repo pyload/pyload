@@ -18,10 +18,11 @@
 """
 
 import re
+from random import random
 
 
-class CaptchaService():    
-    __version__ = "0.03"
+class CaptchaService():
+    __version__ = "0.04"
 
     def __init__(self, plugin):
         self.plugin = plugin
