@@ -150,7 +150,7 @@ class MultiHoster(Hook):
 
             # create new regexp
             regexp = r".*(%s).*" % "|".join([x.replace(".", "\\.") for x in self.new_supported])
-            if hasattr(klass, "__pattern__") and isinstance(klass.__pattern__, basestring)  and '://' in klass.__pattern__:
+            if hasattr(klass, "__pattern__") and isinstance(klass.__pattern__, basestring) and '://' in klass.__pattern__:
                 regexp = r"%s|%s" % (klass.__pattern__, regexp)
 
             self.logDebug("Regexp: %s" % regexp)
