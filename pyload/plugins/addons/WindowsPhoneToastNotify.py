@@ -16,8 +16,10 @@
 
     @author: RaNaN, Godofdream, zoidberg
 """
-import time, httplib
+import time
+import httplib
 from module.plugins.Hook import Hook
+
 
 class WindowsPhoneToastNotify(Hook):
     __name__ = "WindowsPhoneToastNotify"

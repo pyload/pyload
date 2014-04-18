@@ -20,6 +20,7 @@
 from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 
+
 class FreeWayMe(MultiHoster):
     __name__ = "FreeWayMe"
     __version__ = "0.11"
