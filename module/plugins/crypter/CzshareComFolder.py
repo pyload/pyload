@@ -7,9 +7,9 @@ from module.plugins.Crypter import Crypter
 class CzshareComFolder(Crypter):
     __name__ = "CzshareComFolder"
     __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?czshare\.(com|cz)/folders/.*'
-    __version__ = "0.1"
-    __description__ = """Czshare.com folder decrypter plugin"""
+    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.*'
+    __version__ = "0.2"
+    __description__ = """Czshare.com folder decrypter plugin, now Sdilej.cz"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
