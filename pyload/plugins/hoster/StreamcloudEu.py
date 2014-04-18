@@ -11,7 +11,7 @@ class StreamcloudEu(XFileSharingPro):
     __name__ = "StreamcloudEu"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\S+'
-    __version__ = "0.03"
+    __version__ = "0.04"
     __description__ = """Streamcloud.eu hoster plugin"""
     __author_name__ = "seoester"
     __author_mail__ = "seoester@googlemail.com"
@@ -55,7 +55,7 @@ class StreamcloudEu(XFileSharingPro):
         return found.group(1)
 
     def getPostParameters(self):
-        for _ in xrange(3):
+        for i in xrange(3):
             if not self.errmsg:
                 self.checkErrors()
 
