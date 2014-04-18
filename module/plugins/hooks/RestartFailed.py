@@ -31,7 +31,7 @@ class RestartFailed(Hook):
 
     event_list = ["pluginConfigChanged"]
 
-    MIN_INTERVAL = 15 * 60 #seconds
+    MIN_INTERVAL = 15 * 60  # seconds
 
     def periodical(self):
         self.logDebug("Restart all failed downloads now")
