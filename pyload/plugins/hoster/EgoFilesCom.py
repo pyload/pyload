@@ -27,7 +27,7 @@ class EgoFilesCom(SimpleHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
     __pattern__ = r'https?://(?:www\.)?egofiles.com/(\w+)'
-    __version__ = "0.13"
+    __version__ = "0.14"
     __description__ = """Egofiles.com hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
@@ -56,7 +56,7 @@ class EgoFilesCom(SimpleHoster):
         if 'For next free download you have to wait' in self.html:
             m = re.search(self.WAIT_TIME_PATTERN, self.html).groupdict('0')
             waittime = int(m['m']) * 60 + int(m['s'])
-            self.wait((waittime, True)
+            self.wait(waittime, True)
 
         downloadURL = ''
         recaptcha = ReCaptcha(self)
