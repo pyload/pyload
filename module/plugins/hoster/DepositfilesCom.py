@@ -20,7 +20,7 @@ class DepositfilesCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
     FILE_URL_REPLACEMENTS = [(r"\.com(/.*?)?/files", ".com/en/files"), (r"\.html$", "")]
     FILE_NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
-                              (r'.*<b title="(?P<N>[^"]+).*', "\g<N>" )]
+                              (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
 
     RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)'"
     DOWNLOAD_LINK_PATTERN = r'<form id="downloader_file_form" action="(http://.+?\.(dfiles\.eu|depositfiles\.com)/.+?)" method="post"'

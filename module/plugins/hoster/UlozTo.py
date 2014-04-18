@@ -26,6 +26,7 @@ def convertDecimalPrefix(m):
     # decimal prefixes used in filesize and traffic
     return ("%%.%df" % {'k': 3, 'M': 6, 'G': 9}[m.group(2)] % float(m.group(1))).replace('.', '')
 
+
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
@@ -110,7 +111,7 @@ class UlozTo(SimpleHoster):
             # New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
             self.logDebug('Using "new" version')
 
-            xapca = self.load("http://www.ulozto.net/reloadXapca.php", get = { "rnd": str(int(time.time()))})
+            xapca = self.load("http://www.ulozto.net/reloadXapca.php", get={"rnd": str(int(time.time()))})
             self.logDebug('xapca = ' + str(xapca))
 
             data = json_loads(xapca)

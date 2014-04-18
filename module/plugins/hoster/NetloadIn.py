@@ -40,7 +40,7 @@ def getInfo(urls):
                     size = int(tmp[2])
                 except:
                     size = 0
-                result.append((tmp[1], size, 2 if tmp[3] == "online" else 1, chunk[i] ))
+                result.append((tmp[1], size, 2 if tmp[3] == "online" else 1, chunk[i]))
             except:
                 print "Netload prefetch: Error while processing response: "
                 print r

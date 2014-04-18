@@ -91,7 +91,7 @@ class FileserveCom(Hoster):
 
         if "fail" in action:
             if action["fail"] == "timeLimit":
-                self.html = self.load(self.url,post={"checkDownload": "showError", "errorType": "timeLimit"},
+                self.html = self.load(self.url, post={"checkDownload": "showError", "errorType": "timeLimit"},
                                       decode=True)
 
                 self.doLongWait(re.search(self.LONG_WAIT_PATTERN, self.html))
@@ -134,7 +134,7 @@ class FileserveCom(Hoster):
             self.doLongWait(self.lastCheck)
         elif check == "limit":
             #download limited reached for today (not a exact time known)
-            self.setWait(3 * 60 * 60, True) # wait 3 hours #TO-DO: resolve waittime using UnrestrictLi's secondsToMidnight
+            self.setWait(3 * 60 * 60, True)  # wait 3 hours #TO-DO: resolve waittime using UnrestrictLi's secondsToMidnight
             self.wait()
             self.retry()
 
