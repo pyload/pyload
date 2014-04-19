@@ -3,14 +3,20 @@
 
 from os.path import isabs
 
-from pyload.Api import Api, RequirePerm, Permission
+from pyload.Api import Api, RequirePerm, Permission, Role
 from pyload.utils.fs import join
 
 from ApiComponent import ApiComponent
 
-
 class DownloadApi(ApiComponent):
     """ Component to create, add, delete or modify downloads."""
+
+    # TODO: workaround for link adding without owner
+    def truePrimary(self):
+        if self.user:
+            return self.user.true_primary
+        else:
+            return self.core.db.getUserData(role=Role.Admin).uid
 
     @RequirePerm(Permission.Add)
     def createPackage(self, name, folder, root, password="", site="", comment="", paused=False):
@@ -32,7 +38,7 @@ class DownloadApi(ApiComponent):
         folder = folder.replace("http://", "").replace(":", "").replace("\\", "_").replace("..", "")
 
         self.core.log.info(_("Added package %(name)s as folder %(folder)s") % {"name": name, "folder": folder})
-        pid = self.core.files.addPackage(name, folder, root, password, site, comment, paused, self.user.true_primary)
+        pid = self.core.files.addPackage(name, folder, root, password, site, comment, paused, self.truePrimary())
 
         return pid
 
@@ -76,7 +82,7 @@ class DownloadApi(ApiComponent):
         """
         hoster, crypter = self.core.pluginManager.parseUrls(links)
 
-        self.core.files.addLinks(hoster + crypter, pid, self.user.true_primary)
+        self.core.files.addLinks(hoster + crypter, pid, self.truePrimary())
         if hoster:
             self.core.threadManager.createInfoThread(hoster, pid)
 

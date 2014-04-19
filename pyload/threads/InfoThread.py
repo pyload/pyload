@@ -22,6 +22,8 @@ class InfoThread(DecrypterThread):
         # urls that already have a package name
         self.names = {}
 
+        self.progress = None
+
         self.m.addThread(self)
         self.start()
 

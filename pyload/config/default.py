@@ -94,7 +94,7 @@ def make_config(config):
                                 ("skip_existing", "bool", _("Skip already existing files"), False),
                                 ("max_speed", "int", _("Max download speed in kb/s"), -1),
                                 ("ipv6", "bool", _("Allow IPv6"), False),
-                                ("ssl", "bool", _("Prefer SSL downloads"), True),
+                                ("ssl", "bool", _("Force SSL downloads"), False),
                                 ("chunks", "int", _("Max connections for one download"), 3),
                                 ("restart_failed", "bool", _("Restart failed downloads on startup"), False),
                             ])

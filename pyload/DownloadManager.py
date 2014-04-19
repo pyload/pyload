@@ -26,8 +26,6 @@ from ReadWriteLock import ReadWriteLock
 
 from Api import DownloadStatus as DS
 
-from datatypes.PyFile import PyFile
-
 from utils import lock, read_lock
 from utils.fs import exists, join, free_space
 
@@ -221,7 +219,7 @@ class DownloadManager:
         elif plugin == "crypter":
             self.startDecrypterThread(info)
         else:
-            self.log.error(_("Plugin type '%s' is can be used for downloading") % plugin)
+            self.log.error(_("Plugin type '%s' can't be used for downloading") % plugin)
 
         return False
 

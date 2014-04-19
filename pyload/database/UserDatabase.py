@@ -55,7 +55,7 @@ class UserMethods(DatabaseMethods):
             pass
 
     @queue
-    def getUserData(self, name=None, uid=None):
+    def getUserData(self, name=None, uid=None, role=None):
         qry = ('SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
                'hddquota, user, template FROM "users" WHERE ')
 
@@ -67,6 +67,12 @@ class UserMethods(DatabaseMethods):
 
         elif uid is not None:
             self.c.execute(qry + "uid=?", (uid,))
+            r = self.c.fetchone()
+            if r:
+                return UserData(*r)
+
+        elif role is not None:
+            self.c.execute(qry + "role=?", (role,))
             r = self.c.fetchone()
             if r:
                 return UserData(*r)
