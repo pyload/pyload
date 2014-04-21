@@ -42,6 +42,7 @@ bad_headers = range(400, 418) + range(500, 506)
 
 pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
+
 class CurlRequest(Request):
     """  Request class based on libcurl """
 
@@ -56,6 +57,7 @@ class CurlRequest(Request):
         self.rep = StringIO()
         self.lastURL = None
         self.lastEffectiveURL = None
+        self.header = ""
 
         # cookiejar defines the context
         self.cj = self.context
@@ -96,18 +98,20 @@ class CurlRequest(Request):
         self.c.setopt(pycurl.COOKIEFILE, "")
         self.c.setopt(pycurl.COOKIEJAR, "")
 
-        #self.c.setopt(pycurl.VERBOSE, 1)
+        # self.c.setopt(pycurl.VERBOSE, 1)
 
         self.c.setopt(pycurl.USERAGENT,
                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64;en; rv:5.0) Gecko/20110619 Firefox/5.0")
         if pycurl.version_info()[7]:
             self.c.setopt(pycurl.ENCODING, "gzip, deflate")
-        self.c.setopt(pycurl.HTTPHEADER, ["Accept: */*",
-                                          "Accept-Language: en-US,en",
-                                          "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-                                          "Connection: keep-alive",
-                                          "Keep-Alive: 300",
-                                          "Expect:"])
+
+        self.headers.update(
+            {"Accept": "*/*",
+             "Accept-Language": "en-US,en",
+             "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+             "Connection": "keep-alive",
+             "Keep-Alive": "300",
+             "Expect": ""})
 
     def setInterface(self, options):
 
@@ -175,9 +179,9 @@ class CurlRequest(Request):
             self.c.setopt(pycurl.POST, 0)
 
         if referer and self.lastURL:
-            self.c.setopt(pycurl.REFERER, str(self.lastURL))
+            self.headers["Referer"] = str(self.lastURL)
         else:
-            self.c.setopt(pycurl.HTTPHEADER, ["Referer:"])
+            self.headers["Referer"] = ""
 
         if cookies:
             for c in self.cj.output().splitlines():
@@ -190,6 +194,8 @@ class CurlRequest(Request):
         if "auth" in self.options:
             self.c.setopt(pycurl.USERPWD, str(self.options["auth"]))
 
+        self.c.setopt(pycurl.HTTPHEADER, self.headers.to_headerlist())
+
     def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False):
         """ load and returns a given page """
 
@@ -199,6 +205,8 @@ class CurlRequest(Request):
         self.header = ""
 
         if "header" in self.options:
+            # TODO
+            print "custom header not implemented"
             self.c.setopt(pycurl.HTTPHEADER, self.options["header"])
 
         if just_header:
@@ -226,6 +234,8 @@ class CurlRequest(Request):
         self.c.setopt(pycurl.POSTFIELDS, "")
         self.lastURL = myquote(url)
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
+        if self.lastEffectiveURL:
+            self.lastURL = self.lastEffectiveURL
         self.code = self.verifyHeader()
 
         if cookies:

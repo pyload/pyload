@@ -2,6 +2,7 @@
 
 from logging import getLogger
 
+from pyload.network.HeaderDict import HeaderDict
 
 class ResponseException(Exception):
     def __init__(self, code, content=""):
@@ -30,6 +31,8 @@ class Request(object):
 
         # Store options in dict
         self.options = {} if options is None else options
+
+        self.headers = HeaderDict()
 
         # Last response code
         self.code = 0

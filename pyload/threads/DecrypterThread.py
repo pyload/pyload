@@ -5,7 +5,7 @@ from time import sleep
 
 from pyload.Api import LinkStatus, DownloadStatus as DS, ProgressInfo, ProgressType
 from pyload.utils import uniqify, accumulate
-from pyload.plugins.Base import Abort, Retry
+from pyload.plugins.Base import Abort, Retry, Fail
 from pyload.plugins.Crypter import Package
 
 from BaseThread import BaseThread
@@ -96,7 +96,8 @@ class DecrypterThread(BaseThread):
                     if err:
                         plugin_result.extend(LinkStatus(url, url, -1, DS.Failed, name) for url in urls)
 
-                    if self.core.debug:
+                    # no debug for intentional errors
+                    if self.core.debug and not isinstance(e, Fail):
                         self.core.print_exc()
                         self.writeDebugReport(plugin.__name__, plugin=plugin)
                 finally:

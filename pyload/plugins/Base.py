@@ -283,7 +283,7 @@ class Base(object):
         self.logDebug("Deprecated method .correctCaptcha, use .correctTask")
         self.correctTask()
 
-    def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg',
+    def decryptCaptcha(self, url, get={}, post={}, cookies=True, forceUser=False, imgtype='jpg',
                        result_type='textual'):
         """ Loads a captcha and decrypts it with ocr, plugin, user input
 
