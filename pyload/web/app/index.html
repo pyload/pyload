@@ -22,7 +22,7 @@
 
         // Use value set by templateEngine or default val
         function configValue(string, defaultValue) {
-            if (string.indexOf('{{') > -1 && string !== 'None' && string !== '')
+            if (string.indexOf('{'+'{') > -1 && string !== 'None' && string !== '')
                 return defaultValue;
             return string;
         }
