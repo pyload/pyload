@@ -3,6 +3,7 @@
 
 from urllib import unquote
 from traceback import format_exc, print_exc
+from cStringIO import StringIO
 
 from bottle import route, request, response, HTTPError, parse_auth
 
@@ -16,10 +17,8 @@ from pyload.utils import remove_chars
 # used for gzip compression
 try:
     import gzip
-    from cStringIO import StringIO
 except ImportError:
     gzip = None
-    StringIO = None
 
 # gzips response if supported
 def json_response(obj):
@@ -84,7 +83,10 @@ def call_api(func, args=""):
     # file upload, reads whole file into memory
     for name, f in request.files.iteritems():
         kwargs["filename"] = f.filename
-        kwargs[name] = f.value
+        content = StringIO()
+        f.save(content)
+        kwargs[name] = content.getvalue()
+        content.close()
 
     # convert arguments from json to obj separately
     for x, y in request.params.iteritems():
