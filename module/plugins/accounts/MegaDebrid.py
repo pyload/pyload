@@ -14,26 +14,37 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
-from module.plugins.internal.MultiHoster import MultiHoster
-from module.network.RequestFactory import getURL
+from module.plugins.Account import Account
 from module.common.json_layer import json_loads
 
 
-class MegaDebrid(MultiHoster):
+class MegaDebrid(Account):
 	__name__ = "MegaDebrid"
-	__version__ = "0.01"
-	__type__ = "hook"
-	__config__ = [	("activated", "bool", "Activated", False),
-					("unloadFailing", "bool", "Revert to standard download if download fails", False)]
-	__description__ = """mega-debrid.eu hook plugin"""
+	__version__ = "0.1"
+	__type__ = "account"
+	__description__ = """mega-debrid.eu account plugin"""
 	__author_name__ = "D.Ducatel"
 	__author_mail__ = "dducatel@je-geek.fr"
 
-	def getHoster(self):
-		reponse = getURL('http://www.mega-debrid.eu/api.php?action=getHosters')
-		json_data = json_loads(reponse)
+	# Define the base URL of MegaDebrid api
+	API_URL = "https://www.mega-debrid.eu/api.php"
 
-		if json_data["response_code"] == "ok" :
-			host_list = [element[0] for element in json_data['hosters']]
+	def loadAccountInfo(self, user, req):
 
-		return host_list
+		data = self.getAccountData(user)
+		url = "{0}?action=connectUser&login={1}&password={2}".format(self.API_URL, user, data["password"])
+		jsonResponse = req.load(url)
+		response = json_loads(jsonResponse)
+		
+		if response["response_code"] == "ok" :
+			return {"premium": True, "validuntil": float(response["vip_end"]), "status" : True}
+		else:
+			self.logError(response)
+			return {"status" : False, "premium": False}
+
+	def login(self, user, data, req):
+
+		url = "{0}?action=connectUser&login={1}&password={2}".format(self.API_URL, user, data["password"])
+		response = json_loads(req.load(url))
+		if response["response_code"] != "ok" :
+			 self.wrongPassword()
