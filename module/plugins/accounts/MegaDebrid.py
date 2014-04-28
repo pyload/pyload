@@ -31,6 +31,7 @@ class MegaDebrid(Account):
 
 	def loadAccountInfo(self, user, req):
 
+		data = self.getAccountData(user)
 		jsonResponse = req.load(self.API_URL, get={'action': 'connectUser', 'login': user, 'password': data["password"]})
 		response = json_loads(jsonResponse)
 		
