@@ -31,9 +31,7 @@ class MegaDebrid(Account):
 
 	def loadAccountInfo(self, user, req):
 
-		data = self.getAccountData(user)
-		url = "{0}?action=connectUser&login={1}&password={2}".format(self.API_URL, user, data["password"])
-		jsonResponse = req.load(url)
+		jsonResponse = req.load(self.API_URL, get={'action': 'connectUser', 'login': user, 'password': data["password"]})
 		response = json_loads(jsonResponse)
 		
 		if response["response_code"] == "ok" :
@@ -43,8 +41,8 @@ class MegaDebrid(Account):
 			return {"status" : False, "premium": False}
 
 	def login(self, user, data, req):
-
-		url = "{0}?action=connectUser&login={1}&password={2}".format(self.API_URL, user, data["password"])
-		response = json_loads(req.load(url))
+		
+		jsonResponse = req.load(self.API_URL, get={'action': 'connectUser', 'login': user, 'password': data["password"]})
+		response = json_loads(jsonResponse)
 		if response["response_code"] != "ok" :
 			 self.wrongPassword()

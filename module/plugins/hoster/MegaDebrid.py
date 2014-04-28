@@ -43,10 +43,6 @@ class MegaDebrid(Hoster):
 
 			self.logDebug("Old URL: %s" % pyfile.url)
 			new_url = self.debridLink(pyfile.url)
-		
-			if new_url == pyfile.url:
-				self.exitOnFail(_("Impossible to debrid %s")% new_url )
-
 			self.logDebug("New URL: " + new_url)
 			
 		self.download(new_url, disposition=True)
@@ -58,9 +54,9 @@ class MegaDebrid(Hoster):
 		Return True if succeed
 		"""
 		user, data = self.account.selectAccount()
-		url = "{0}?action=connectUser&login={1}&password={2}".format(self.API_URL, user, data['password'])
-		response = json_loads(self.req.load(url))
-		
+		jsonResponse = self.load(self.API_URL, get={'action': 'connectUser', 'login': user, 'password': data["password"]})
+		response = json_loads(jsonResponse)
+
 		if response["response_code"] == "ok" :
 			self.token = response["token"]
 			return True
@@ -73,14 +69,14 @@ class MegaDebrid(Hoster):
 		Debrid a link
 		Return The debrided link if succeed or original link if fail
 		"""
-		params = { "link" : linkToDebrid }
-		url = "{0}?action=getLink&token={1}".format(self.API_URL, self.token)
-		response = json_loads(self.req.load(url, post=params))
+		jsonResponse = self.load(self.API_URL, get={'action': 'getLink', 'token': self.token}, post={ "link" : linkToDebrid })
+		response = json_loads(jsonResponse)
+
 		if response["response_code"] == "ok" :
 			debridedLink = response["debridLink"][1:-1]
 			return debridedLink
 		else :
-			return linkToDebrid
+			self.exitOnFail(_("Impossible to debrid %s")% new_url )
 
 	def exitOnFail(self, msg):
 		"""
