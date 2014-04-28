@@ -30,6 +30,15 @@ class MegaDebrid(Hoster):
 
 	# Define the base URL of MegaDebrid api
 	API_URL = "https://www.mega-debrid.eu/api.php"
+	
+	def getFilename(self, url):
+		try:
+			name = unquote(url.rsplit("/", 1)[1])
+		except IndexError:
+			name = "Unknown_Filename..."
+			if name.endswith("..."):  # incomplete filename, append random stuff
+				name += "%s.tmp" % randrange(100, 999)
+		return name
 
 	def process(self, pyfile):
 		if re.match(self.__pattern__, pyfile.url):
