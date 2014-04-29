@@ -91,7 +91,7 @@ class Captcha9kw(Hook):
             "action": "usercaptchaupload"})
 
         if response.isdigit():
-            self.logInfo(_("New CaptchaID from upload: %s : %s") % (response, task.captchaFile))
+            self.logInfo(("New CaptchaID from upload: %s : %s") % (response, task.captchaFile))
 
             for _ in xrange(1, 100, 1):
                 response2 = getURL(self.API_URL, get={"apikey": self.getConfig("passkey"), "id": response,
