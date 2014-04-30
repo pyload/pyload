@@ -27,7 +27,7 @@ class MovReelCom(XFileSharingPro):
         XFileSharingPro.prepare(self)
         if self.account != None:
             info = self.account.getAccountInfo(self.user, True)
-            self.logInfo("info"+str(info))
+            self.logDebug("info"+str(info))
             self.premium = info['premium']
         
 
