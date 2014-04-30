@@ -12,11 +12,11 @@ class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
     __pattern__ = r'(http://(?P<id>\w+)\.(?P<host>(1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl.fr))/?'
-    __version__ = "0.60"
+    __version__ = "0.61"
     __description__ = """1fichier.com hoster plugin"""
-    __author_name__ = ("fragonib", "the-razer", "zoidberg", "imclem", "stickell")
+    __author_name__ = ("fragonib", "the-razer", "zoidberg", "imclem", "stickell", "Elrick69")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "daniel_ AT gmx DOT net", "zoidberg@mujmail.cz",
-                       "imclem on github", "l.stickell@yahoo.it")
+                       "imclem on github", "l.stickell@yahoo.it","elrick69[AT]rocketmail[DOT]com")
 
     FILE_NAME_PATTERN = r'">Filename :</th>\s*<td>(?P<N>[^<]+)</td>'
     FILE_SIZE_PATTERN = r'<th>Size :</th>\s*<td>(?P<S>[^<]+)</td>'
@@ -44,6 +44,21 @@ class OneFichierCom(SimpleHoster):
             if found:
                 self.waitAndRetry(self.RETRY_TIME)
 
+        url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['id'])
+        if not url:
+            self.parseError("Download link not found")
+
+        # Check for protection 
+        if "pass" in inputs:
+            inputs['pass'] = self.getPassword()
+        inputs['submit'] = "Download"
+
+        self.download(url, post=inputs)
+
+        # Check download 
+        self.checkDownloadedFile()
+
+    def handlePremium(self):
         url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['id'])
         if not url:
             self.parseError("Download link not found")
