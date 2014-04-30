@@ -15,6 +15,7 @@
 ############################################################################
 
 import re
+from urllib import unquote
 from module.plugins.Hoster import Hoster
 from module.common.json_layer import json_loads
 
@@ -33,12 +34,9 @@ class MegaDebrid(Hoster):
 	
 	def getFilename(self, url):
 		try:
-			name = unquote(url.rsplit("/", 1)[1])
+			return unquote(url.rsplit("/", 1)[1])
 		except IndexError:
-			name = "Unknown_Filename..."
-			if name.endswith("..."):  # incomplete filename, append random stuff
-				name += "%s.tmp" % randrange(100, 999)
-		return name
+			return ""
 
 	def process(self, pyfile):
 		if re.match(self.__pattern__, pyfile.url):
@@ -53,7 +51,11 @@ class MegaDebrid(Hoster):
 			self.logDebug("Old URL: %s" % pyfile.url)
 			new_url = self.debridLink(pyfile.url)
 			self.logDebug("New URL: " + new_url)
-			
+		
+
+		filename = self.getFilename(new_url)
+		if filename != "":
+			pyfile.name = filename
 		self.download(new_url, disposition=True)
 
 
