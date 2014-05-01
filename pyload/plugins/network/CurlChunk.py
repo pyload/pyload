@@ -25,7 +25,7 @@ from time import sleep
 import codecs
 import pycurl
 
-from pyload.plugins.Request import Request
+from pyload.network.HeaderDict import HeaderDict
 from pyload.utils.fs import fs_encode, fs_decode, safe_filename
 
 from CurlRequest import CurlRequest
@@ -124,7 +124,6 @@ re_filename = re.compile(r"filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", re
 
 class CurlChunk(CurlRequest):
     def __init__(self, id, parent, range=None, resume=False):
-        Request.__init__(self, None, parent.getContext()[0])
         self.setContext(*parent.getContext())
 
         self.id = id
@@ -141,6 +140,7 @@ class CurlChunk(CurlRequest):
 
         self.header = ""
         self.headerParsed = False #indicates if the header has been processed
+        self.headers = HeaderDict()
 
         self.fp = None #file handle
 
