@@ -1,5 +1,22 @@
 # -*- coding: utf-8 -*-
 
+"""
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License,
+    or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See the GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+    @author: t4skforce
+"""
+
 import re
 from module.plugins.Account import Account
 from module.plugins.internal.SimpleHoster import parseHtmlForm
@@ -13,6 +30,11 @@ class MovReelCom(Account):
     __description__ = """Movreel.com account plugin"""
     __author_name__ = ("t4skforce")
     __author_mail__ = ("t4skforce1337[AT]gmail[DOT]com")
+    
+    #: after that time [in minutes] pyload will relogin the account
+    login_timeout = 60
+    #: account data will be reloaded after this time
+    info_threshold = 30
 
     MAIN_PAGE = "http://movreel.com/"
     FREE_PATTERN = r'>Upgrade to premium<'
