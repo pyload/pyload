@@ -26,7 +26,7 @@ from module.utils import parseFileSize
 
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __type__ = "account"
     __description__ = """XFileSharingPro base account plugin"""
     __author_name__ = "zoidberg"
@@ -36,12 +36,14 @@ class XFSPAccount(Account):
 
     VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:</TD><TD><b>([^<]+)</b>'
     TRAFFIC_LEFT_PATTERN = r'>Traffic available today:</TD><TD><b>([^<]+)</b>'
+    LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|>Error<'
+    PREMIUM_PATTERN = r'>Renew premium<'
 
     def loadAccountInfo(self, user, req):
         html = req.load(self.MAIN_PAGE + "?op=my_account", decode=True)
 
         validuntil = trafficleft = None
-        premium = True if '>Renew premium<' in html else False
+        premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
         found = re.search(self.VALID_UNTIL_PATTERN, html)
         if found:
@@ -61,7 +63,7 @@ class XFSPAccount(Account):
                 else:
                     trafficleft = parseFileSize(trafficleft) / 1024
 
-        return ({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
+        return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
 
     def login(self, user, data, req):
         html = req.load('%slogin.html' % self.MAIN_PAGE, decode=True)
@@ -76,5 +78,5 @@ class XFSPAccount(Account):
 
         html = req.load(self.MAIN_PAGE, post=inputs, decode=True)
 
-        if 'Incorrect Login or Password' in html or '>Error<' in html:
+        if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrongPassword()
