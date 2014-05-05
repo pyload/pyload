@@ -23,7 +23,7 @@ from module.common.json_layer import json_loads
 
 class MegaDebridEu(Hoster):
     __name__ = "MegaDebridEu"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __type__ = "hoster"
     __pattern__ = r'^https?://(?:w{3}\d+\.mega-debrid.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[^/]+/.+$'
     __description__ = """mega-debrid.eu hoster plugin"""

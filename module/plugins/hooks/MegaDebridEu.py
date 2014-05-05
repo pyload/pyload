@@ -14,36 +14,29 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
-from module.plugins.Account import Account
+from module.plugins.internal.MultiHoster import MultiHoster
+from module.network.RequestFactory import getURL
 from module.common.json_layer import json_loads
 
 
-class MegaDebridEu(Account):
+class MegaDebridEu(MultiHoster):
     __name__ = "MegaDebridEu"
-    __version__ = "0.1"
-    __type__ = "account"
-    __description__ = """mega-debrid.eu account plugin"""
+    __version__ = "0.02"
+    __type__ = "hook"
+    __config__ = [("activated", "bool", "Activated", False),
+                  ("unloadFailing", "bool", "Revert to standard download if download fails", False)]
+    __description__ = """mega-debrid.eu hook plugin"""
     __author_name__ = "D.Ducatel"
     __author_mail__ = "dducatel@je-geek.fr"
 
-    # Define the base URL of MegaDebrid api
-    API_URL = "https://www.mega-debrid.eu/api.php"
+    def getHoster(self):
+        reponse = getURL('http://www.mega-debrid.eu/api.php?action=getHosters')
+        json_data = json_loads(reponse)
 
-    def loadAccountInfo(self, user, req):
-        data = self.getAccountData(user)
-        jsonResponse = req.load(self.API_URL,
-                                get={'action': 'connectUser', 'login': user, 'password': data["password"]})
-        response = json_loads(jsonResponse)
-
-        if response["response_code"] == "ok":
-            return {"premium": True, "validuntil": float(response["vip_end"]), "status": True}
+        if json_data["response_code"] == "ok":
+            host_list = [element[0] for element in json_data['hosters']]
         else:
-            self.logError(response)
-            return {"status": False, "premium": False}
+            self.logError("Unable to retrieve hoster list")
+            host_list = list()
 
-    def login(self, user, data, req):
-        jsonResponse = req.load(self.API_URL,
-                                get={'action': 'connectUser', 'login': user, 'password': data["password"]})
-        response = json_loads(jsonResponse)
-        if response["response_code"] != "ok":
-            self.wrongPassword()
+        return host_list
