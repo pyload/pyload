@@ -132,9 +132,13 @@ class ShareonlineBiz(Hoster):
             "fail": re.compile(r"<title>Share-Online")
         })
         if check == "cookie":
+            self.invalidCaptcha()
             self.retry(5, 60, "Cookie failure")
         elif check == "fail":
+            self.invalidCaptcha()
             self.retry(5, 5 * 60, "Download failed")
+        else:
+            self.correctCaptcha()
 
     def handlePremium(self):  # should be working better loading (account) api internally
         self.account.getAccountInfo(self.user, True)
