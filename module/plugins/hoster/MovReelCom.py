@@ -9,10 +9,10 @@ class MovReelCom(XFileSharingPro):
     __name__ = "MovReelCom"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?movreel.com/.*'
-    __version__ = "1.20"
+    __version__ = "1.21"
     __description__ = """MovReel.com hoster plugin"""
-    __author_name__ = "JorisV83"
-    __author_mail__ = "jorisv83-pyload@yahoo.com"
+    __author_name__ = ("JorisV83","t4skforce")
+    __author_mail__ = ("jorisv83-pyload@yahoo.com","t4skforce1337[AT]gmail[DOT]com")
 
     HOSTER_NAME = "movreel.com"
 
@@ -22,6 +22,13 @@ class MovReelCom(XFileSharingPro):
     FILE_OFFLINE_PATTERN = r'<b>File Not Found</b><br><br>'
     DIRECT_LINK_PATTERN = r'<a href="(http://[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/.*)">Download Link</a>'
     #OVR_DOWNLOAD_LINK_PATTERN = "var file_link = '(.*)';"
-
+    
+    def prepare(self):
+        XFileSharingPro.prepare(self)
+        if self.account != None:
+            info = self.account.getAccountInfo(self.user, True)
+            self.logDebug("info"+str(info))
+            self.premium = info['premium']
+        
 
 getInfo = create_getInfo(MovReelCom)
