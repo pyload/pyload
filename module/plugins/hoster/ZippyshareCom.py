@@ -17,7 +17,7 @@ class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)'
-    __version__ = "0.46"
+    __version__ = "0.47"
     __description__ = """Zippyshare.com hoster plugin"""
     __author_name__ = ("spoob", "zoidberg", "stickell")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -65,39 +65,24 @@ class ZippyshareCom(SimpleHoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html, re.S)
-        #Method #1: JS eval
-        if found and re.search(r'span id="omg" class="(\d*)"', self.html):
-            js = "\n".join(found.groups())
-            d = re.search(r'span id="omg" class="(\d*)"', self.html).group(1)
-            regex = r"document.getElementById\('omg'\).getAttribute\('class'\)"
-            js = re.sub(regex, d, js)
-            regex = r"document.getElementById\(\\*'dlbutton\\*'\).href = "
-            js = re.sub(regex, '', js)
-            url = self.js.eval(js)
-        elif found and re.search(r"document.getElementById\(\\*'dlbutton\\*'\).omg", self.html):
-            js = "\n".join(found.groups())
-            regex = r"document.getElementById\(\\*'dlbutton\\*'\).omg"
-            omg = re.search(regex + r" = ([^;]+);", js).group(1)
-            js = re.sub(regex + r" = ([^;]+);", '', js)
-            js = re.sub(regex, omg, js)
-            js = re.sub(r"document.getElementById\(\\*'dlbutton\\*'\).href\s*= ", '', js)
-            js = re.sub(r"(?i)(function som(e|d)Function\(\) {)|(var som(e|d)function = function\(\) {)", '', js)
-            url = self.js.eval(js)
-        elif found and re.search(r"document.getElementById\(\\*'dlbutton\\*'\).href = \"", self.html):
-            js = "\n".join(found.groups())
-            js = re.sub(r"document.getElementById\(\\*'dlbutton\\*'\).href = ", '', js)
-            url = self.js.eval(js)
-        else:
-            #Method #2: SWF eval
-            url = self.swf_eval()
+        url = None
+        url_parts = re.search("(addthis:url=\"(http://www(\d+).zippyshare.com/v/(\d*)/file.html))",self.html)
+        sub = url_parts.group(2)
+        number = url_parts.group(4)
+        self.logInfo(number)
+        self.logInfo(sub)
+        a = int(re.search("<script type=\"text/javascript\">([^<]*?)(var a = (\d*);)",self.html).group(3))
+        k = 78956;
 
-            if not url:
-                #Method #3: Captcha
-                url = self.do_recaptcha()
+        zahl = ((a+3)%k)*((a+3)%3) + 18
+
+        dateiname = re.search(r'>Name:</font>\s*<font [^>]*>(?P<N>[^<]+)</font><br />',self.html).group('N');
+
+        url = "/d/"+str(number)+"/"+str(zahl)+"/"+dateiname
+        self.logInfo(self.file_info['HOST']+url)
 
         return self.file_info['HOST'] + url
-
+        
     def swf_eval(self):
         multiply = modulo = None
         seed_search = re.search(self.SEED_PATTERN, self.html)
