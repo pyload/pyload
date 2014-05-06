@@ -22,7 +22,8 @@ class ZippyshareCom(SimpleHoster):
     FILE_INFO_PATTERN = r'document\.getElementById\(\'dlbutton\'\)\.href = "[^;]*/(?P<N>[^"]+)";'
     FILE_OFFLINE_PATTERN = r'>File does not exist on this server</div>'
 
-
+    SH_COOKIES = [('zippyshare.com', 'ziplocale', 'en')]
+    
     def setup(self):
         self.multiDL = True
 
@@ -34,22 +35,29 @@ class ZippyshareCom(SimpleHoster):
         self.download(url)
 
     def get_file_url(self):
-        " returns the absolute downloadable filepath"
+        """returns the absolute downloadable filepath"""
         url_parts = re.search("(addthis:url=\"(http://www(\d+).zippyshare.com/v/(\d*)/file.html))", self.html)
-        sub = url_parts.group(2)
         number = url_parts.group(4)
-        check = None
+        check = re.search("<script type=\"text/javascript\">([^<]*?)(var a = (\d*);)", self.html)
         if check is not None:
             a = int(re.search("<script type=\"text/javascript\">([^<]*?)(var a = (\d*);)", self.html).group(3))
-            k = int(re.search("(\d*%(\d*))",self.html).group(1))
+            k = int(re.search("<script type=\"text/javascript\">([^<]*?)(\d*%(\d*))", self.html).group(3))
             checksum = ((a + 3) % k) * ((a + 3) % 3) + 18
         else:
-            numbers = re.search("((\d*)\s\%\s(\d*)\s\+\s(\d*)\s\%\s(\d*))", self.html)
             # This might work but is insecure
-            # zahl = eval(numbers.group(0))
-            checksum = ((int(numbers.group(2)) % int(numbers.group(3))) +(int(numbers.group(4)) % int(numbers.group(5))))
-
-        self.logInfo(zahl)
+            # checksum = eval(re.search("((\d*)\s\%\s(\d*)\s\+\s(\d*)\s\%\s(\d*))", self.html).group(0))
+            
+            a = int(re.search("((?P<a>\d*)\s\%\s(?P<b>\d*)\s\+\s(?P<c>\d*)\s\%\s(?P<k>\d*))", self.html).group("a"))
+            b = int(re.search("((?P<a>\d*)\s\%\s(?P<b>\d*)\s\+\s(?P<c>\d*)\s\%\s(?P<k>\d*))", self.html).group("b"))
+            c = int(re.search("((?P<a>\d*)\s\%\s(?P<b>\d*)\s\+\s(?P<c>\d*)\s\%\s(?P<k>\d*))", self.html).group("c"))
+            k = int(re.search("((?P<a>\d*)\s\%\s(?P<b>\d*)\s\+\s(?P<c>\d*)\s\%\s(?P<k>\d*))", self.html).group("k"))
+            if a == c:
+                checksum = ((a%b)+(a%k)) 
+            else:
+                checksum = ((a%b)+(c%k))
+                
+        self.logInfo(checksum)
+        
         filename = re.search(r'>Name:</font>\s*<font [^>]*>(?P<N>[^<]+)</font><br />', self.html).group('N')
 
         url = "/d/" + str(number) + "/" + str(checksum) + "/" + filename
