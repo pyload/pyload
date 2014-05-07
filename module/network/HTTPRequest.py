@@ -193,6 +193,10 @@ class HTTPRequest():
         if just_header:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)
             self.c.setopt(pycurl.NOBODY, 1)
+            if post:
+                self.c.setopt(pycurl.POST, 1)
+            else:
+                self.c.setopt(pycurl.HTTPGET, 1)
             self.c.perform()
             rep = self.header
 
