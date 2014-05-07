@@ -154,7 +154,8 @@ class UpdateManager(Hook):
 
             reloads.append((prefix, name))
 
-        self.executeBlacklist(blacklist)
+        if blacklist:
+            self.executeBlacklist(blacklist)
 
         self.reloaded = self.core.pluginManager.reloadPlugins(reloads)
 
