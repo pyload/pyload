@@ -9,12 +9,14 @@ from module.common.json_layer import json_loads, json_dumps
 
 class LinksnappyCom(Hoster):
     __name__ = "LinksnappyCom"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "hoster"
     __pattern__ = r'https?://(?:[^/]*\.)?linksnappy\.com'
     __description__ = """Linksnappy.com hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
+
+    SINGLE_CHUNK_HOSTERS = ('easybytez.com')
 
     def setup(self):
         self.chunkLimit = -1
@@ -28,8 +30,7 @@ class LinksnappyCom(Hoster):
             self.fail("No Linksnappy.com account provided")
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
-            host = urlsplit(pyfile.url).netloc
-            host = re.search(r'[\w-]+\.\w+$', host).group(0)
+            host = self._get_host(pyfile.url)
             json_params = json_dumps({'link': pyfile.url,
                                       'type': host,
                                       'username': self.user,
@@ -47,7 +48,21 @@ class LinksnappyCom(Hoster):
             pyfile.name = j['filename']
             new_url = j['generated']
 
+            if host in self.SINGLE_CHUNK_HOSTERS:
+                self.chunkLimit = 1
+            else:
+                self.setup()
+
         if new_url != pyfile.url:
             self.logDebug("New URL: " + new_url)
 
         self.download(new_url, disposition=True)
+
+        check = self.checkDownload({"html302": "<title>302 Found</title>"})
+        if check == "html302":
+            self.retry(wait_time=5, reason="Linksnappy returns only HTML data.")
+
+    @staticmethod
+    def _get_host(url):
+        host = urlsplit(url).netloc
+        return re.search(r'[\w-]+\.\w+$', host).group(0)
