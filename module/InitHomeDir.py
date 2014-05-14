@@ -58,7 +58,7 @@ args = " ".join(argv[1:])
 if "--configdir=" in args:
     for aa in argv:
         if aa[0:12] == "--configdir=":
-            configdir = args[12:].strip()
+            configdir = aa[12:].strip()
 elif path.exists(path.join(pypath, "module", "config", "configdir")):
     f = open(path.join(pypath, "module", "config", "configdir"), "rb")
     c = f.read().strip()
