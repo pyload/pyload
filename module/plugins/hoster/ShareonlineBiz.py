@@ -39,7 +39,7 @@ class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download.php\?id=|dl/)(?P<ID>\w+)'
-    __version__ = "0.39"
+    __version__ = "0.40"
     __description__ = """Shareonline.biz hoster plugin"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "Walter Purcaro")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "vuolter@gmail.com")
@@ -115,8 +115,12 @@ class ShareonlineBiz(Hoster):
                 'recaptcha_response_field': response})
 
             if not response == '0':
+                self.correctCaptcha()
                 break
+            else:
+                self.invalidCaptcha()
         else:
+            self.invalidCaptcha()
             self.fail("No valid captcha solution received")
 
         download_url = response.decode("base64")
