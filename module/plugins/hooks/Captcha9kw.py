@@ -101,34 +101,33 @@ class Captcha9kw(Hook):
 		for hosterthing in hosteroptions:
 		        hosterdetails = hosterthing.split(":");
 
-		        if len(hosterdetails) > 0:
-		                if hosterdetails[0].lower() == pluginname.lower():
-		                        for hosterdetail in hosterdetails:
-		                                hosteroption = hosterdetail.split("=");
+		        if len(hosterdetails) > 0 and hosterdetails[0].lower() == pluginname.lower():
+	                        for hosterdetail in hosterdetails:
+	                                hosteroption = hosterdetail.split("=");
 
-		                                if len(hosteroption) > 1:
-		                                        if hosteroption[0].lower() == 'prio' and hosteroption[1].isdigit():
-		                                                prio_option = hosteroption[1]
-		                                        elif hosteroption[0].lower() == 'timeout' and hosteroption[1].isdigit():
-		                                                timeout_option = hosteroption[1]
-		                                        elif hosteroption[0].lower() == 'cph' and hosteroption[1].isdigit():
-		                                                captchaperhour_option = hosteroption[1]
-		                                        elif hosteroption[0].lower() == 'selfsolve' and hosteroption[1].isdigit():
-		                                                selfsolve_option = hosteroptions[1]
-		                                        elif hosteroption[0].lower() == 'confirm' and hosteroption[1].isdigit():
-		                                                confirm_option = hosteroptions[1]
-		                                        elif hosteroption[0].lower() == 'max' and hosteroption[1].isdigit():
-		                                                max_option = hosteroptions[1]
-		                                        elif hosteroption[0].lower() == 'min' and hosteroption[1].isdigit():
-		                                                min_option = hosteroptions[1]
-		                                        elif hosteroption[0].lower() == 'case-sensitive' and hosteroption[1].isdigit():
-		                                                case_sensitive_option = hosteroptions[1]
-		                                        elif hosteroption[0].lower() == 'math' and hosteroption[1].isdigit():
-		                                                math_option = hosteroptions[1]
-		                                        elif hosteroption[0].lower() == 'numeric' and hosteroption[1].isdigit():
-		                                                numeric_option = hosteroptions[1]
-		                                        elif hosteroption[0].lower() == 'phrase' and hosteroption[1].isdigit():
-		                                                phrase_option = hosteroptions[1]
+	                                if len(hosteroption) > 1:
+	                                        if hosteroption[0].lower() == 'prio' and hosteroption[1].isdigit():
+	                                                prio_option = hosteroption[1]
+	                                        elif hosteroption[0].lower() == 'timeout' and hosteroption[1].isdigit():
+	                                                timeout_option = hosteroption[1]
+	                                        elif hosteroption[0].lower() == 'cph' and hosteroption[1].isdigit():
+	                                                captchaperhour_option = hosteroption[1]
+	                                        elif hosteroption[0].lower() == 'selfsolve' and hosteroption[1].isdigit():
+	                                                selfsolve_option = hosteroptions[1]
+	                                        elif hosteroption[0].lower() == 'confirm' and hosteroption[1].isdigit():
+	                                                confirm_option = hosteroptions[1]
+	                                        elif hosteroption[0].lower() == 'max' and hosteroption[1].isdigit():
+	                                                max_option = hosteroptions[1]
+	                                        elif hosteroption[0].lower() == 'min' and hosteroption[1].isdigit():
+	                                                min_option = hosteroptions[1]
+	                                        elif hosteroption[0].lower() == 'case-sensitive' and hosteroption[1].isdigit():
+	                                                case_sensitive_option = hosteroptions[1]
+	                                        elif hosteroption[0].lower() == 'math' and hosteroption[1].isdigit():
+	                                                math_option = hosteroptions[1]
+	                                        elif hosteroption[0].lower() == 'numeric' and hosteroption[1].isdigit():
+	                                                numeric_option = hosteroptions[1]
+	                                        elif hosteroption[0].lower() == 'phrase' and hosteroption[1].isdigit():
+	                                                phrase_option = hosteroptions[1]
 
 	for _ in xrange(1, 5, 1): 
             try:
@@ -217,14 +216,12 @@ class Captcha9kw(Hook):
 		for hosterthing in hosteroptions:
 		        hosterdetails = hosterthing.split(":");
 
-		        if len(hosterdetails) > 0:
-		                if hosterdetails[0].lower() == pluginname.lower():
-		                        for hosterdetail in hosterdetails:
-		                                hosteroption = hosterdetail.split("=");
+		        if len(hosterdetails) > 0 and hosterdetails[0].lower() == pluginname.lower():
+	                        for hosterdetail in hosterdetails:
+	                                hosteroption = hosterdetail.split("=");
 
-		                                if len(hosteroption) > 1:
-		                                        if hosteroption[0].lower() == 'timeout' and hosteroption[1].isdigit():
-		                                                timeout_option = hosteroption[1]
+	                                if len(hosteroption) > 1 and hosteroption[0].lower() == 'timeout' and hosteroption[1].isdigit():
+                                                timeout_option = hosteroption[1]
 
             task.handler.append(self)
 	    task.setWaiting(int(timeout_option))
