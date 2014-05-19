@@ -18,14 +18,17 @@ def getInfo(urls):
         ids[m.group('ID')] = url
 
     for chunk in chunks(ids.keys(), 5):
-        api = getURL('http://www.ddlstorage.com/cgi-bin/api_req.cgi',
-                     post={'req_type': 'file_info_free',
-                           'client_id': 53472,
-                           'file_code': ','.join(chunk),
-                           'sign': md5('file_info_free%d%s%s' % (53472, ','.join(chunk),
-                                                                 '25JcpU2dPOKg8E2OEoRqMSRu068r0Cv3')).hexdigest()})
-        api = api.replace('<pre>', '').replace('</pre>', '')
-        api = json_loads(api)
+        for _ in xrange(5):
+            api = getURL('http://www.ddlstorage.com/cgi-bin/api_req.cgi',
+                         post={'req_type': 'file_info_free',
+                               'client_id': 53472,
+                               'file_code': ','.join(chunk),
+                               'sign': md5('file_info_free%d%s%s' % (53472, ','.join(chunk),
+                                                                     '25JcpU2dPOKg8E2OEoRqMSRu068r0Cv3')).hexdigest()})
+            api = api.replace('<pre>', '').replace('</pre>', '')
+            api = json_loads(api)
+            if 'error' not in api:
+                break
 
         result = list()
         for el in api:
@@ -40,7 +43,7 @@ class DdlstorageCom(XFileSharingPro):
     __name__ = "DdlstorageCom"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?ddlstorage.com/(?P<ID>\w{12})'
-    __version__ = "1.00"
+    __version__ = "1.01"
     __description__ = """DDLStorage.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
