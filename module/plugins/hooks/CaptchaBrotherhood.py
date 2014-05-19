@@ -24,7 +24,7 @@ import pycurl
 import StringIO
 from urllib import urlencode
 from time import sleep
-import Image
+from PIL import Image
 
 from module.network.RequestFactory import getURL, getRequest
 from module.plugins.Hook import Hook
@@ -46,7 +46,7 @@ class CaptchaBrotherhoodException(Exception):
 
 class CaptchaBrotherhood(Hook):
     __name__ = "CaptchaBrotherhood"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __description__ = """Send captchas to CaptchaBrotherhood.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
