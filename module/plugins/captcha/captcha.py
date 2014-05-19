@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 #
 #Copyright (C) 2009 kingzero, RaNaN
 #
@@ -17,23 +16,22 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
+
 from __future__ import with_statement
 import os
 from os.path import join
 from os.path import abspath
 import logging
 import subprocess
-#import tempfile
 
-import Image
-import TiffImagePlugin
-import PngImagePlugin
-import GifImagePlugin
-import JpegImagePlugin
+from PIL import Image
+from PIL import TiffImagePlugin
+from PIL import PngImagePlugin
+from PIL import GifImagePlugin
+from PIL import JpegImagePlugin
 
 
 class OCR(object):
-
     __name__ = "OCR"
 
     def __init__(self):
@@ -54,16 +52,15 @@ class OCR(object):
     def run(self, command):
         """Run a command"""
 
-        popen = subprocess.Popen(command, bufsize = -1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        popen = subprocess.Popen(command, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         popen.wait()
-        output = popen.stdout.read() +" | "+ popen.stderr.read()
+        output = popen.stdout.read() + " | " + popen.stderr.read()
         popen.stdout.close()
         popen.stderr.close()
         self.logger.debug("Tesseract ReturnCode %s Output: %s" % (popen.returncode, output))
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         #self.logger.debug("create tmp tif")
-
         #tmp = tempfile.NamedTemporaryFile(suffix=".tif")
         tmp = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
         tmp.close()
@@ -76,11 +73,11 @@ class OCR(object):
         self.image.save(tmp.name, 'TIFF')
 
         if os.name == "nt":
-            tessparams = [join(pypath,"tesseract","tesseract.exe")]
+            tessparams = [join(pypath, "tesseract", "tesseract.exe")]
         else:
             tessparams = ['tesseract']
 
-        tessparams.extend( [abspath(tmp.name), abspath(tmpTxt.name).replace(".txt", "")] )
+        tessparams.extend([abspath(tmp.name), abspath(tmpTxt.name).replace(".txt", "")])
 
         if subset and (digits or lowercase or uppercase):
             #self.logger.debug("create temp subset config")
@@ -143,28 +140,37 @@ class OCR(object):
 
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] == 255: continue
+                if pixels[x, y] == 255:
+                    continue
                 # no point in processing white pixels since we only want to remove black pixel
                 count = 0
 
                 try:
-                    if pixels[x-1, y-1] != 255: count += 1
-                    if pixels[x-1, y] != 255: count += 1
-                    if pixels[x-1, y + 1] != 255: count += 1
-                    if pixels[x, y + 1] != 255: count += 1
-                    if pixels[x + 1, y + 1] != 255: count += 1
-                    if pixels[x + 1, y] != 255: count += 1
-                    if pixels[x + 1, y-1] != 255: count += 1
-                    if pixels[x, y-1] != 255: count += 1
+                    if pixels[x - 1, y - 1] != 255:
+                        count += 1
+                    if pixels[x - 1, y] != 255:
+                        count += 1
+                    if pixels[x - 1, y + 1] != 255:
+                        count += 1
+                    if pixels[x, y + 1] != 255:
+                        count += 1
+                    if pixels[x + 1, y + 1] != 255:
+                        count += 1
+                    if pixels[x + 1, y] != 255:
+                        count += 1
+                    if pixels[x + 1, y - 1] != 255:
+                        count += 1
+                    if pixels[x, y - 1] != 255:
+                        count += 1
                 except:
                     pass
 
-        # not enough neighbors are dark pixels so mark this pixel
-            # to be changed to white
+                # not enough neighbors are dark pixels so mark this pixel
+                # to be changed to white
                 if count < allowed:
                     pixels[x, y] = 1
 
-            # second pass: this time set all 1's to 255 (white)
+        # second pass: this time set all 1's to 255 (white)
         for x in xrange(w):
             for y in xrange(h):
                 if pixels[x, y] == 1: pixels[x, y] = 255
@@ -197,7 +203,6 @@ class OCR(object):
                 for y in xrange(h):
                     if pixels[x, y] == 0:
                         pixels[x, y] = 255
-
 
             count = {}
 
