@@ -1,5 +1,5 @@
 from captcha import OCR
-import Image
+from PIL import Image
 from os import sep
 from os.path import dirname
 from os.path import abspath

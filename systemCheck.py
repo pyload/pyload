@@ -6,11 +6,12 @@ import sys
 
 #very ugly prints, but at least it works with python 3
 
+
 def main():
     print("#####   System Information   #####\n")
     print("Platform:", sys.platform)
     print("Operating System:", os.name)
-    print("Python:", sys.version.replace("\n", "")+ "\n")
+    print("Python:", sys.version.replace("\n", "") + "\n")
 
     try:
         import pycurl
@@ -24,7 +25,6 @@ def main():
     except:
         print("py-crypto:", "missing")
 
-
     try:
         import OpenSSL
         print("OpenSSL:", OpenSSL.version.__version__)
@@ -32,7 +32,7 @@ def main():
         print("OpenSSL:", "missing")
 
     try:
-        import Image
+        from PIL import Image
         print("image libary:", Image.VERSION)
     except:
         print("image libary:", "missing")
@@ -60,14 +60,13 @@ def main():
     except:
         core_err.append("Please install py-curl to use pyLoad.")
 
-
     try:
         from pycurl import AUTOREFERER
     except:
         core_err.append("Your py-curl version is to old, please upgrade!")
 
     try:
-        import Image
+        from PIL import Image
     except:
         core_err.append("Please install py-imaging/pil to use Hoster, which uses captchas.")
 
@@ -94,7 +93,6 @@ def main():
         for line in core_info:
             print(line)
 
-
     print("\n##  pyLoadGui  ##")
 
     gui_err = []
@@ -111,7 +109,6 @@ def main():
     else:
         print("No Problems detected, pyLoadGui should work fine.")
 
-
     print("\n##  Webinterface  ##")
 
     web_err = []
@@ -121,7 +118,6 @@ def main():
         import flup
     except:
         web_info.append("Install Flup to use FastCGI or optional webservers.")
-
 
     if web_err:
         print("The system check has detected some errors:\n")
