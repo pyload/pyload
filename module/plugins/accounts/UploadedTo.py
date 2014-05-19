@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -27,9 +27,9 @@ class UploadedTo(Account):
     __name__ = "UploadedTo"
     __version__ = "0.26"
     __type__ = "account"
-    __description__ = """ul.net account plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __description__ = """Uploaded.to account plugin"""
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
 
     def loadAccountInfo(self, user, req):
 
@@ -50,8 +50,8 @@ class UploadedTo(Account):
                 raw_valid = re.findall(r"(\d+) (Week|weeks|days|day|hours|hour)", raw_valid)
                 validuntil = time()
                 for n, u in raw_valid:
-                    validuntil += 3600 * int(n) * {"Week": 168, "weeks": 168, "days": 24,
-                                                   "day": 24, "hours": 1, "hour": 1}[u]
+                    validuntil += int(n) * 60 * 60 * {"Week": 168, "weeks": 168, "days": 24,
+                                                      "day": 24, "hours": 1, "hour": 1}[u]
 
             return {"validuntil": validuntil, "trafficleft": traffic, "maxtraffic": 50 * 1024 * 1024}
         else:

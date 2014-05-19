@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -9,9 +8,9 @@ from module.plugins.Hoster import Hoster
 class YourfilesTo(Hoster):
     __name__ = "YourfilesTo"
     __type__ = "hoster"
-    __pattern__ = r"(http://)?(www\.)?yourfiles\.(to|biz)/\?d=[a-zA-Z0-9]+"
+    __pattern__ = r'(http://)?(?:www\.)?yourfiles\.(to|biz)/\?d=[a-zA-Z0-9]+'
     __version__ = "0.21"
-    __description__ = """Youfiles.to Download Hoster"""
+    __description__ = """Youfiles.to hoster plugin"""
     __author_name__ = ("jeix", "skydancer")
     __author_mail__ = ("jeix@hasnomail.de", "skydancer@hasnomail.de")
 

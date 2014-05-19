@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -19,10 +18,10 @@ def clean_json(json_expr):
 class XHamsterCom(Hoster):
     __name__ = "XHamsterCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?xhamster\.com/movies/.+"
+    __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
     __version__ = "0.12"
     __config__ = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
-    __description__ = """XHamster.com Video Download Hoster"""
+    __description__ = """XHamster.com hoster plugin"""
 
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -33,7 +32,7 @@ class XHamsterCom(Hoster):
         if self.getConfig("type"):
             self.desired_fmt = self.getConfig("type")
 
-        self.pyfile.name = self.get_file_name() + self.desired_fmt
+        pyfile.name = self.get_file_name() + self.desired_fmt
         self.download(self.get_file_url())
 
     def download_html(self):
@@ -98,7 +97,7 @@ class XHamsterCom(Hoster):
             file_name = re.search(file_name_pattern, self.html)
             if file_name is None:
                 file_name_pattern = r"http://[www.]+xhamster\.com/movies/.*/(.*?)\.html?"
-                file_name = re.search(file_name_pattern, self.pyfile.url)
+                file_name = re.match(file_name_pattern, self.pyfile.url)
                 if file_name is None:
                     file_name_pattern = r"<div id=\"element_str_id\" style=\"display:none;\">(.*)</div>"
                     file_name = re.search(file_name_pattern, self.html)

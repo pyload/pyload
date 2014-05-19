@@ -26,9 +26,9 @@ class FreakshareCom(Account):
     __name__ = "FreakshareCom"
     __version__ = "0.1"
     __type__ = "account"
-    __description__ = """freakshare.com account plugin"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __description__ = """Freakshare.com account plugin"""
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
 
     def loadAccountInfo(self, user, req):
         page = req.load("http://freakshare.com/")

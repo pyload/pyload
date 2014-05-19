@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,10 +24,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, P
 class UloziskoSk(SimpleHoster):
     __name__ = "UloziskoSk"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)?ulozisko.sk/.*"
+    __pattern__ = r'http://(?:www\.)?ulozisko.sk/.*'
     __version__ = "0.23"
-    __description__ = """Ulozisko.sk"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Ulozisko.sk hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     URL_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'
     ID_PATTERN = r'<input type = "hidden" name = "id" value = "([^"]+)" />'

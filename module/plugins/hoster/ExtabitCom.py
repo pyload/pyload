@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,10 +27,11 @@ from module.common.json_layer import json_loads
 class ExtabitCom(SimpleHoster):
     __name__ = "ExtabitCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)"
+    __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
     __version__ = "0.5"
-    __description__ = """Extabit.com"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Extabit.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<th>File:</th>\s*<td class="col-fileinfo">\s*<div title="(?P<N>[^"]+)">'
     FILE_SIZE_PATTERN = r'<th>Size:</th>\s*<td class="col-fileinfo">(?P<S>[^<]+)</td>'
@@ -44,11 +46,9 @@ class ExtabitCom(SimpleHoster):
 
         m = re.search(r"Next free download from your ip will be available in <b>(\d+)\s*minutes", self.html)
         if m:
-            self.setWait(int(m.group(1)) * 60, True)
-            self.wait()
+            self.wait(int(m.group(1)) * 60, True)
         elif "The daily downloads limit from your IP is exceeded" in self.html:
-            self.setWait(3600, True)
-            self.wait()
+            self.wait(1 * 60 * 60, True)
 
         self.logDebug("URL: " + self.req.http.lastEffectiveURL)
         m = re.match(self.__pattern__, self.req.http.lastEffectiveURL)

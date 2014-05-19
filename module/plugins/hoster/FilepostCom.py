@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,11 +33,11 @@ from module.common.json_layer import json_loads
 class FilepostCom(SimpleHoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*"
+    __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*'
     __version__ = "0.27"
-    __description__ = """Filepost.com plugin - free only"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Filepost.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = r'<input type="text" id="url" value=\'<a href[^>]*>(?P<N>[^>]+?) - (?P<S>[0-9\.]+ [kKMG]i?B)</a>\' class="inp_text"/>'
     #FILE_INFO_PATTERN = r'<h1>(?P<N>[^<]+)</h1>\s*<div class="ul">\s*<ul>\s*<li><span>Size:</span> (?P<S>[0-9.]+) (?P<U>[kKMG])i?B</li>'
@@ -46,7 +47,7 @@ class FilepostCom(SimpleHoster):
 
     def handleFree(self):
         # Find token and captcha key
-        file_id = re.search(self.__pattern__, self.pyfile.url).group(1)
+        file_id = re.match(self.__pattern__, self.pyfile.url).group(1)
 
         found = re.search(self.FLP_TOKEN_PATTERN, self.html)
         if not found:
@@ -64,8 +65,7 @@ class FilepostCom(SimpleHoster):
         wait_time = int(self.getJsonResponse(get_dict, post_dict, 'wait_time'))
 
         if wait_time > 0:
-            self.setWait(wait_time)
-            self.wait()
+            self.wait(wait_time)
 
         post_dict = {"token": flp_token, "code": file_id, "file_pass": ''}
 
@@ -87,9 +87,9 @@ class FilepostCom(SimpleHoster):
             # Solve recaptcha
             recaptcha = ReCaptcha(self)
 
-            for pokus in range(5):
+            for i in xrange(5):
                 get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
-                if pokus:
+                if i:
                     post_dict["recaptcha_challenge_field"], post_dict["recaptcha_response_field"] = recaptcha.challenge(
                         captcha_key)
                     self.logDebug(u"RECAPTCHA: %s : %s : %s" % (
@@ -97,10 +97,10 @@ class FilepostCom(SimpleHoster):
 
                 download_url = self.getJsonResponse(get_dict, post_dict, 'link')
                 if download_url:
-                    if pokus:
+                    if i:
                         self.correctCaptcha()
                     break
-                elif pokus:
+                elif i:
                     self.invalidCaptcha()
 
             else:
@@ -122,8 +122,8 @@ class FilepostCom(SimpleHoster):
         # see the two lines commented out with  "# ~?".
         if 'error' in json_response['js']:
             if json_response['js']['error'] == 'download_delay':
-                self.retry(json_response['js']['params']['next_download'])
-                # ~? self.retry(js_answer['params']['next_download'])
+                self.retry(wait_time=json_response['js']['params']['next_download'])
+                # ~? self.retry(wait_time=js_answer['params']['next_download'])
             elif 'Wrong file password' in json_response['js']['error']:
                 return None
             elif 'You entered a wrong CAPTCHA code' in json_response['js']['error']:

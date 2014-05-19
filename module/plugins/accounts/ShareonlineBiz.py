@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -24,7 +24,7 @@ class ShareonlineBiz(Account):
     __name__ = "ShareonlineBiz"
     __version__ = "0.24"
     __type__ = "account"
-    __description__ = """share-online.biz account plugin"""
+    __description__ = """Share-online.biz account plugin"""
     __author_name__ = ("mkaay", "zoidberg")
     __author_mail__ = ("mkaay@mkaay.de", "zoidberg@mujmail.cz")
 

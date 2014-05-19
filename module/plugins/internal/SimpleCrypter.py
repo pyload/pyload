@@ -29,7 +29,7 @@ class SimpleCrypter(Crypter):
     __version__ = "0.07"
     __pattern__ = None
     __type__ = "crypter"
-    __description__ = """Base crypter plugin"""
+    __description__ = """Simple decrypter plugin"""
     __author_name__ = ("stickell", "zoidberg")
     __author_mail__ = ("l.stickell@yahoo.it", "zoidberg@mujmail.cz")
     """
@@ -101,6 +101,6 @@ class SimpleCrypter(Crypter):
         else:
             pages = 1
 
-        for p in range(2, pages + 1):
+        for p in xrange(2, pages + 1):
             self.html = self.loadPage(p)
             self.package_links += self.getLinks()

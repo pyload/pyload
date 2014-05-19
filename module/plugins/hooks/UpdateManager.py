@@ -1,26 +1,9 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
-
 import sys
 import re
-from os import stat
-from os.path import join, exists
+from os import remove, stat
+from os.path import join, isfile
 from time import time
 
 from module.ConfigParser import IGNORE
@@ -30,15 +13,15 @@ from module.plugins.Hook import threaded, Expose, Hook
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.15"
-    __description__ = """checks for updates"""
-    __config__ = [("activated", "bool", "Activated", "True"),
-                  ("interval", "int", "Check interval in minutes", "480"),
+    __version__ = "0.16"
+    __description__ = """Checks for updates"""
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("interval", "int", "Check interval in minutes", 480),
                   ("debug", "bool", "Check for plugin changes when in debug mode", False)]
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("ranan@pyload.org")
+    __author_name__ = ("RaNaN", "stickell")
+    __author_mail__ = ("ranan@pyload.org", "l.stickell@yahoo.it")
 
-    URL = "http://get.pyload.org/check2/%s/"
+    URL = "http://updatemanager.pyload.org"
     MIN_TIME = 3 * 60 * 60  # 3h minimum check interval
 
     @property
@@ -64,7 +47,6 @@ class UpdateManager(Hook):
 
     @threaded
     def periodical(self):
-
         updates = self.checkForUpdate()
         if updates:
             self.checkPlugins(updates)
@@ -85,10 +67,9 @@ class UpdateManager(Hook):
 
     def checkForUpdate(self):
         """checks if an update is available, return result"""
-
         try:
             if self.version == "None":  # No updated known
-                version_check = getURL(self.URL % self.core.api.getServerVersion()).splitlines()
+                version_check = getURL(self.URL, get={'v': self.core.api.getServerVersion()}).splitlines()
                 self.version = version_check[0]
 
                 # Still no updates, plugins will be checked
@@ -99,7 +80,6 @@ class UpdateManager(Hook):
             self.info["pyload"] = True
             self.logInfo(_("***  New pyLoad Version %s available  ***") % self.version)
             self.logInfo(_("***  Get it here: http://pyload.org/download  ***"))
-
         except:
             self.logWarning(_("Not able to connect server for updates"))
 
@@ -117,7 +97,12 @@ class UpdateManager(Hook):
         vre = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
         url = updates[0]
         schema = updates[1].split("|")
-        updates = updates[2:]
+        if 'BLACKLIST' in updates:
+            blacklist = updates[updates.index('BLACKLIST') + 1:]
+            updates = updates[2:updates.index('BLACKLIST')]
+        else:
+            blacklist = None
+            updates = updates[2:]
 
         for plugin in updates:
             info = dict(zip(schema, plugin.split("|")))
@@ -169,10 +154,24 @@ class UpdateManager(Hook):
 
             reloads.append((prefix, name))
 
+        if blacklist:
+            self.executeBlacklist(blacklist)
+
         self.reloaded = self.core.pluginManager.reloadPlugins(reloads)
 
-    def checkChanges(self):
+    def executeBlacklist(self, blacklist):
+        for b in blacklist:
+            type, name = b.split('|')
+            if isfile(join("userplugins", type, name)):
+                self.logInfo(_("Removing blacklisted plugin %(type)s|%(name)s") % {
+                    "type": type,
+                    "name": name
+                })
+                remove(join("userplugins", type, name))
+            if isfile(join("userplugins", type, name.replace('.py', '.pyc'))):
+                remove(join("userplugins", type, name.replace('.py', '.pyc')))
 
+    def checkChanges(self):
         if self.last_check + max(self.getConfig("interval") * 60, self.MIN_TIME) < time():
             self.old_periodical()
             self.last_check = time()
@@ -188,7 +187,7 @@ class UpdateManager(Hook):
             id = (type, name)
             if type in self.core.pluginManager.plugins:
                 f = m.__file__.replace(".pyc", ".py")
-                if not exists(f):
+                if not isfile(f):
                     continue
 
                 mtime = stat(f).st_mtime

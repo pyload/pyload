@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,10 +24,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
-    __pattern__ = r"(http://(?:.*\.)*hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*"
+    __pattern__ = r'(http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*'
     __version__ = "0.82"
-    __description__ = """Hellshare.cz - premium only"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Hellshare.cz hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<h1 id="filename"[^>]*>(?P<N>[^<]+)</h1>'
     FILE_SIZE_PATTERN = r'<strong id="FileSize_master">(?P<S>[0-9.]*)&nbsp;(?P<U>[kKMG])i?B</strong>'
@@ -40,7 +42,7 @@ class HellshareCz(SimpleHoster):
     def process(self, pyfile):
         if not self.account:
             self.fail("User not logged in")
-        pyfile.url = re.search(self.__pattern__, pyfile.url).group(1)
+        pyfile.url = re.match(self.__pattern__, pyfile.url).group(1)
         self.html = self.load(pyfile.url, decode=True)
         self.getFileInfo()
         if not self.checkTrafficLeft():

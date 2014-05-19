@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -27,7 +26,7 @@ class FilefactoryCom(Account):
     __name__ = "FilefactoryCom"
     __version__ = "0.14"
     __type__ = "account"
-    __description__ = """filefactory.com account plugin"""
+    __description__ = """Filefactory.com account plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 

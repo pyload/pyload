@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -24,8 +23,8 @@ class LetitbitNet(Account):
     __version__ = "0.01"
     __type__ = "account"
     __description__ = """Letitbit.net account plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     def loadAccountInfo(self, user, req):
         ## DISABLED BECAUSE IT GET 'key exausted' EVEN IF VALID ##

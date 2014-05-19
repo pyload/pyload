@@ -30,7 +30,7 @@ class ExternalScripts(Hook):
     __name__ = "ExternalScripts"
     __version__ = "0.23"
     __description__ = """Run external scripts"""
-    __config__ = [("activated", "bool", "Activated", "True")]
+    __config__ = [("activated", "bool", "Activated", True)]
     __author_name__ = ("mkaay", "RaNaN", "spoob")
     __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org")
 
@@ -51,7 +51,7 @@ class ExternalScripts(Hook):
 
         for script_type, names in self.scripts.iteritems():
             if names:
-                self.logInfo((_("Installed scripts for %s: ") % script_type ) + ", ".join([basename(x) for x in names]))
+                self.logInfo((_("Installed scripts for %s: ") % script_type) + ", ".join([basename(x) for x in names]))
 
     def initPluginType(self, folder, path):
         if not exists(path):

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -59,12 +58,12 @@ def getInfo(urls):
 class DailymotionCom(Hoster):
     __name__ = "DailymotionCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?dailymotion\.com/.*?video/(?P<ID>[\w^_]+)"
+    __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*?video/(?P<ID>[\w^_]+)'
     __version__ = "0.2"
     __config__ = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "HD 720p")]
-    __description__ = """Dailymotion Video Download Hoster"""
-    __author_name__ = ("Walter Purcaro")
-    __author_mail__ = ("vuolter@gmail.com")
+    __description__ = """Dailymotion.com hoster plugin"""
+    __author_name__ = "Walter Purcaro"
+    __author_mail__ = "vuolter@gmail.com"
 
     def setup(self):
         self.resumeDownload = self.multiDL = True

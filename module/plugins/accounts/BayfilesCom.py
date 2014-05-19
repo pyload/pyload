@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: zoidberg
 """
 
@@ -25,20 +25,20 @@ from module.common.json_layer import json_loads
 
 class BayfilesCom(Account):
     __name__ = "BayfilesCom"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __type__ = "account"
-    __description__ = """bayfiles.com account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Bayfiles.com account plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def loadAccountInfo(self, user, req):
-        for i in range(2):
+        for _ in xrange(2):
             response = json_loads(req.load("http://api.bayfiles.com/v1/account/info"))
             self.logDebug(response)
             if not response["error"]:
                 break
             self.logWarning(response["error"])
-            self.relogin()
+            self.relogin(user)
 
         return {"premium": bool(response['premium']), "trafficleft": -1,
                 "validuntil": response['expires'] if response['expires'] >= int(time()) else -1}

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,17 +28,18 @@ from module.utils import parseFileSize
 class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)*czshare\.(com|cz)/(\d+/|download.php\?).*"
-    __version__ = "0.93"
-    __description__ = """CZshare.com"""
-    __author_name__ = ("zoidberg")
+    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download.php\?).*'
+    __version__ = "0.94"
+    __description__ = """CZshare.com hoster plugin, now Sdilej.cz"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
     FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B\s*</div>'
     FILE_OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
 
     FILE_SIZE_REPLACEMENTS = [(' ', '')]
-    FILE_URL_REPLACEMENTS = [(r'http://[^/]*/download.php\?.*?id=(\w+).*', r'http://czshare.com/\1/x/')]
+    FILE_URL_REPLACEMENTS = [(r'http://[^/]*/download.php\?.*?id=(\w+).*', r'http://sdilej.cz/\1/x/')]
     SH_CHECK_TRAFFIC = True
 
     FREE_URL_PATTERN = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
@@ -81,7 +83,7 @@ class CzshareCom(SimpleHoster):
             self.resetAccount()
 
         # download the file, destination is determined by pyLoad
-        self.download("http://czshare.com/profi_down.php", post=inputs, disposition=True)
+        self.download("http://sdilej.cz/profi_down.php", post=inputs, disposition=True)
         self.checkDownloadedFile()
 
     def handleFree(self):
@@ -89,13 +91,13 @@ class CzshareCom(SimpleHoster):
         found = re.search(self.FREE_URL_PATTERN, self.html)
         if found is None:
             raise PluginParseError('Free URL')
-        parsed_url = "http://czshare.com" + found.group(1)
+        parsed_url = "http://sdilej.cz" + found.group(1)
         self.logDebug("PARSED_URL:" + parsed_url)
 
         # get download ticket and parse html
         self.html = self.load(parsed_url, cookies=True, decode=True)
         if re.search(self.MULTIDL_PATTERN, self.html):
-            self.longWait(300, 12)
+            self.longWait(5 * 60, 12)
 
         try:
             form = re.search(self.FREE_FORM_PATTERN, self.html, re.DOTALL).group(1)
@@ -106,14 +108,14 @@ class CzshareCom(SimpleHoster):
             raise PluginParseError('Form')
 
         # get and decrypt captcha        
-        captcha_url = 'http://czshare.com/captcha.php'
-        for i in range(5):
+        captcha_url = 'http://sdilej.cz/captcha.php'
+        for _ in xrange(5):
             inputs['captchastring2'] = self.decryptCaptcha(captcha_url)
             self.html = self.load(parsed_url, cookies=True, post=inputs, decode=True)
             if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.html:
                 self.invalidCaptcha()
             elif re.search(self.MULTIDL_PATTERN, self.html):
-                self.longWait(300, 12)
+                self.longWait(5 * 60, 12)
             else:
                 self.correctCaptcha()
                 break
@@ -149,7 +151,7 @@ class CzshareCom(SimpleHoster):
         if check == "credit":
             self.resetAccount()
         elif check == "multi_dl":
-            self.longWait(300, 12)
+            self.longWait(5 * 60, 12)
         elif check == "captcha_err":
             self.invalidCaptcha()
             self.retry()

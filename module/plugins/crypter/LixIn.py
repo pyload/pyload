@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -8,12 +7,12 @@ from module.plugins.Crypter import Crypter
 
 class LixIn(Crypter):
     __name__ = "LixIn"
-    __type__ = "container"
-    __pattern__ = r"http://(www.)?lix.in/(?P<id>.*)"
+    __type__ = "crypter"
+    __pattern__ = r'http://(www.)?lix.in/(?P<id>.*)'
     __version__ = "0.22"
-    __description__ = """Lix.in Container Plugin"""
-    __author_name__ = ("spoob")
-    __author_mail__ = ("spoob@pyload.org")
+    __description__ = """Lix.in decrypter plugin"""
+    __author_name__ = "spoob"
+    __author_mail__ = "spoob@pyload.org"
 
     CAPTCHA_PATTERN = '<img src="(?P<image>captcha_img.php\?.*?)"'
     SUBMIT_PATTERN = r"value='continue.*?'"
@@ -22,7 +21,7 @@ class LixIn(Crypter):
     def decrypt(self, pyfile):
         url = pyfile.url
 
-        matches = re.search(self.__pattern__, url)
+        matches = re.match(self.__pattern__, url)
         if not matches:
             self.fail("couldn't identify file id")
 
@@ -37,7 +36,7 @@ class LixIn(Crypter):
 
         matches = re.search(self.CAPTCHA_PATTERN, self.html)
         if matches:
-            for i in range(5):
+            for _ in xrange(5):
                 matches = re.search(self.CAPTCHA_PATTERN, self.html)
                 if matches:
                     self.logDebug("trying captcha")
@@ -56,4 +55,4 @@ class LixIn(Crypter):
         new_link = matches.group("link")
         self.logDebug("Found link %s, adding to package" % new_link)
 
-        self.packages.append((self.pyfile.package().name, [new_link], self.pyfile.package().name))
+        self.packages.append((pyfile.package().name, [new_link], pyfile.package().name))

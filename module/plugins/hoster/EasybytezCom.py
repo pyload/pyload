@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,11 +23,13 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class EasybytezCom(XFileSharingPro):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?easybytez.com/(\w+).*"
+    __pattern__ = r'http://(?:www\.)?easybytez.com/(\w+).*'
     __version__ = "0.17"
-    __description__ = """easybytez.com"""
+    __description__ = """Easybytez.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+
+    HOSTER_NAME = "easybytez.com"
 
     FILE_INFO_PATTERN = r'<span class="name">(?P<N>.+)</span><br>\s*<span class="size">(?P<S>[^<]+)</span>'
     FILE_OFFLINE_PATTERN = r'<h1>File not available</h1>'
@@ -35,8 +38,6 @@ class EasybytezCom(XFileSharingPro):
     OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
     ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<Center><b>)(.*?)</'
-
-    HOSTER_NAME = "easybytez.com"
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium

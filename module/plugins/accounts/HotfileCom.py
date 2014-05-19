@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay, JoKoT3
 """
 
@@ -27,7 +27,7 @@ class HotfileCom(Account):
     __name__ = "HotfileCom"
     __version__ = "0.2"
     __type__ = "account"
-    __description__ = """hotfile.com account plugin"""
+    __description__ = """Hotfile.com account plugin"""
     __author_name__ = ("mkaay", "JoKoT3")
     __author_mail__ = ("mkaay@mkaay.de", "jokot3@gmail.com")
 
@@ -47,7 +47,7 @@ class HotfileCom(Account):
             info["premium_until"] = info["premium_until"][:19]
             zone = int(zone[:3])
 
-            validuntil = int(mktime(strptime(info["premium_until"], "%Y-%m-%d %H:%M:%S"))) + (zone * 3600)
+            validuntil = int(mktime(strptime(info["premium_until"], "%Y-%m-%d %H:%M:%S"))) + (zone * 60 * 60)
             tmp = {"validuntil": validuntil, "trafficleft": -1, "premium": True}
 
         elif info['is_premium'] == '0':

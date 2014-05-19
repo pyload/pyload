@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import xml.dom.minidom as dom
 from time import time
 import re
@@ -12,8 +14,8 @@ class AlldebridCom(Account):
     __version__ = "0.22"
     __type__ = "account"
     __description__ = """AllDebrid.com account plugin"""
-    __author_name__ = ("Andy, Voigt")
-    __author_mail__ = ("spamsales@online.de")
+    __author_name__ = "Andy Voigt"
+    __author_mail__ = "spamsales@online.de"
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
@@ -34,7 +36,7 @@ class AlldebridCom(Account):
                                                                                                   data["password"]))
             self.logDebug(page)
             xml = dom.parseString(page)
-            exp_time = time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 86400
+            exp_time = time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 24 * 60 * 60
         account_info = {"validuntil": exp_time, "trafficleft": -1}
         return account_info
 

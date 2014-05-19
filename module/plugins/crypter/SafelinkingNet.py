@@ -12,22 +12,22 @@ from module.lib.BeautifulSoup import BeautifulSoup
 class SafelinkingNet(Crypter):
     __name__ = 'SafelinkingNet'
     __type__ = 'crypter'
-    __pattern__ = r'https?://safelinking.net/([pd])/\w+'
+    __pattern__ = r'https?://(?:www\.)?safelinking.net/([pd])/\w+'
     __version__ = '0.1'
-    __description__ = 'Safelinking.net Crypter Plugin'
-    __author_name__ = 'quareevo'
-    __author_mail__ = 'quareevo@arcor.de'
+    __description__ = """Safelinking.net decrypter plugin"""
+    __author_name__ = "quareevo"
+    __author_mail__ = "quareevo@arcor.de"
 
     __Solvemedia_pattern__ = "solvemediaApiKey = '([\w\.\-_]+)';"
 
     def decrypt(self, pyfile):
         url = pyfile.url
-        if re.search(self.__pattern__, url).group(1) == "d":
+        if re.match(self.__pattern__, url).group(1) == "d":
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
             self.load(url)
             m = re.search("^Location: (.+)$", self.req.http.header, re.MULTILINE)
             if m:
-                self.core.files.addLinks([m.group(1)], self.pyfile.package().id)
+                self.core.files.addLinks([m.group(1)], pyfile.package().id)
             else:
                 self.fail("Couldn't find forwarded Link")
 
@@ -43,12 +43,12 @@ class SafelinkingNet(Crypter):
                 postData["link-password"] = password
 
             if "altcaptcha" in self.html:
-                for i in xrange(5):
+                for _ in xrange(5):
                     m = re.search(self.__Solvemedia_pattern__, self.html)
                     if m:
                         captchaKey = m.group(1)
                         captcha = SolveMedia(self)
-                        captchaProvider = "Solvmedia"
+                        captchaProvider = "Solvemedia"
                     else:
                         self.fail("Error parsing captcha")
 
@@ -77,4 +77,4 @@ class SafelinkingNet(Crypter):
                     else:
                         packageLinks.append(link["full"])
 
-            self.core.files.addLinks(packageLinks, self.pyfile.package().id)
+            self.core.files.addLinks(packageLinks, pyfile.package().id)

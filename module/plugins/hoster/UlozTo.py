@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,13 +26,15 @@ def convertDecimalPrefix(m):
     # decimal prefixes used in filesize and traffic
     return ("%%.%df" % {'k': 3, 'M': 6, 'G': 9}[m.group(2)] % float(m.group(1))).replace('.', '')
 
+
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)"
-    __version__ = "0.96"
-    __description__ = """uloz.to"""
-    __author_name__ = ("zoidberg")
+    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
+    __version__ = "0.97"
+    __description__ = """Uloz.to hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<a href="#download" class="jsShowDownload">(?P<N>[^<]+)</a>'
     FILE_SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[0-9.]+\s[kMG]?B)</span>'
@@ -95,7 +98,7 @@ class UlozTo(SimpleHoster):
 
         self.logDebug('inputs.keys() = ' + str(inputs.keys()))
         # get and decrypt captcha
-        if inputs.has_key('captcha_value') and inputs.has_key('captcha_id') and inputs.has_key('captcha_key'):
+        if all(key in inputs for key in ('captcha_value', 'captcha_id', 'captcha_key')):
             # Old version - last seen 9.12.2013
             self.logDebug('Using "old" version')
 
@@ -104,11 +107,11 @@ class UlozTo(SimpleHoster):
 
             inputs.update({'captcha_id': inputs['captcha_id'], 'captcha_key': inputs['captcha_key'], 'captcha_value': captcha_value})
 
-        elif inputs.has_key("captcha_value") and inputs.has_key("timestamp") and inputs.has_key("salt") and inputs.has_key("hash"):
+        elif all(key in inputs for key in ('captcha_value', 'timestamp', 'salt', 'hash')):
             # New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
             self.logDebug('Using "new" version')
 
-            xapca = self.load("http://www.ulozto.net/reloadXapca.php", get = { "rnd": str(int(time.time()))})
+            xapca = self.load("http://www.ulozto.net/reloadXapca.php", get={"rnd": str(int(time.time()))})
             self.logDebug('xapca = ' + str(xapca))
 
             data = json_loads(xapca)
@@ -157,8 +160,7 @@ class UlozTo(SimpleHoster):
         elif check == "server_error":
             self.logError("Server error, try downloading later")
             self.multiDL = False
-            self.setWait(3600, True)
-            self.wait()
+            self.wait(1 * 60 * 60, True)
             self.retry()
         elif check == "not_found":
             self.fail("Server error - file not downloadable")

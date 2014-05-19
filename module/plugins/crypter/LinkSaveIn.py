@@ -18,11 +18,11 @@ from module.unescape import unescape
 class LinkSaveIn(Crypter):
     __name__ = "LinkSaveIn"
     __type__ = "crypter"
-    __pattern__ = r"http://(www\.)?linksave.in/(?P<id>\w+)$"
+    __pattern__ = r'http://(?:www\.)?linksave.in/(?P<id>\w+)$'
     __version__ = "2.01"
-    __description__ = """LinkSave.in Crypter Plugin"""
-    __author_name__ = ("fragonib")
-    __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
+    __description__ = """LinkSave.in decrypter plugin"""
+    __author_name__ = "fragonib"
+    __author_mail__ = "fragonib[AT]yahoo[DOT]es"
 
     # Constants
     _JK_KEY_ = "jk"
@@ -44,7 +44,7 @@ class LinkSaveIn(Crypter):
         self.req.cj.setCookie(self.HOSTER_DOMAIN, "Linksave_Language", "english")
 
         # Request package
-        self.html = self.load(self.pyfile.url)
+        self.html = self.load(pyfile.url)
         if not self.isOnline():
             self.offline()
 

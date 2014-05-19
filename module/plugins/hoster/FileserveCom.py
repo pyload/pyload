@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -45,10 +46,10 @@ def checkFile(plugin, urls):
 class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*"
+    __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*'
     __version__ = "0.51"
-    __description__ = """Fileserve.Com File Download Hoster"""
-    __author_name__ = ("jeix", "mkaay", "paul king", "zoidberg")
+    __description__ = """Fileserve.com hoster plugin"""
+    __author_name__ = ("jeix", "mkaay", "Paul King", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "", "zoidberg@mujmail.cz")
 
     URLS = ['http://www.fileserve.com/file/', 'http://www.fileserve.com/link-checker.php',
@@ -67,7 +68,7 @@ class FileserveCom(Hoster):
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
 
-        self.file_id = re.search(self.__pattern__, self.pyfile.url).group('id')
+        self.file_id = re.match(self.__pattern__, self.pyfile.url).group('id')
         self.url = "%s%s" % (self.URLS[0], self.file_id)
         self.logDebug("File ID: %s URL: %s" % (self.file_id, self.url))
 
@@ -90,7 +91,7 @@ class FileserveCom(Hoster):
 
         if "fail" in action:
             if action["fail"] == "timeLimit":
-                self.html = self.load(self.url,post={"checkDownload": "showError", "errorType": "timeLimit"},
+                self.html = self.load(self.url, post={"checkDownload": "showError", "errorType": "timeLimit"},
                                       decode=True)
 
                 self.doLongWait(re.search(self.LONG_WAIT_PATTERN, self.html))
@@ -133,9 +134,9 @@ class FileserveCom(Hoster):
             self.doLongWait(self.lastCheck)
         elif check == "limit":
             #download limited reached for today (not a exact time known)
-            self.setWait(180 * 60, True) # wait 3 hours
+            self.setWait(3 * 60 * 60, True)  # wait 3 hours #TO-DO: resolve waittime using UnrestrictLi's secondsToMidnight
             self.wait()
-            self.retry(max_tries=0)
+            self.retry()
 
         self.thread.m.reconnecting.wait(3)  # Ease issue with later downloads appearing to be in parallel
 
@@ -161,7 +162,7 @@ class FileserveCom(Hoster):
         captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group("key")
         recaptcha = ReCaptcha(self)
 
-        for i in range(5):
+        for _ in xrange(5):
             challenge, code = recaptcha.challenge(captcha_key)
 
             response = json_loads(self.load(self.URLS[2],
@@ -178,7 +179,7 @@ class FileserveCom(Hoster):
             self.fail("Invalid captcha")
 
     def doLongWait(self, m):
-        wait_time = (int(m.group(1)) * {'seconds': 1, 'minutes': 60, 'hours': 3600}[m.group(2)]) if m else 720
+        wait_time = (int(m.group(1)) * {'seconds': 1, 'minutes': 60, 'hours': 3600}[m.group(2)]) if m else 12 * 60
         self.setWait(wait_time, True)
         self.wait()
         self.retry()

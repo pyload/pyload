@@ -18,10 +18,11 @@
 """
 
 import re
+from random import random
 
 
 class CaptchaService():
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     def __init__(self, plugin):
         self.plugin = plugin
@@ -96,7 +97,7 @@ class SolveMedia(CaptchaService):
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
                                   html).group(1)
         except:
-            self.plugin.fail("solvmedia error")
+            self.plugin.fail("solvemedia error")
         result = self.result(challenge)
 
         return challenge, result

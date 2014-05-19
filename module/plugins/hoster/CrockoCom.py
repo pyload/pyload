@@ -9,11 +9,11 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class CrockoCom(SimpleHoster):
     __name__ = "CrockoCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?(crocko|easy-share).com/\w+"
+    __pattern__ = r'http://(?:www\.)?(crocko|easy-share).com/\w+'
     __version__ = "0.16"
-    __description__ = """Crocko Download Hoster"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Crocko hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<span class="fz24">Download:\s*<strong>(?P<N>.*)'
     FILE_SIZE_PATTERN = r'<span class="tip1"><span class="inner">(?P<S>[^<]+)</span></span>'
@@ -35,8 +35,7 @@ class CrockoCom(SimpleHoster):
             found = re.search(self.CAPTCHA_URL_PATTERN, self.html)
             if found:
                 url, wait_time = 'http://crocko.com' + found.group(1), found.group(2)
-                self.setWait(wait_time)
-                self.wait()
+                self.wait(wait_time)
                 self.html = self.load(url)
             else:
                 break

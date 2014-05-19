@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,10 +25,11 @@ from module.common.json_layer import json_loads
 class YibaishiwuCom(SimpleHoster):
     __name__ = "YibaishiwuCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?(?:u\.)?115.com/file/(?P<ID>\w+)"
+    __pattern__ = r'http://(?:www\.)?(?:u\.)?115.com/file/(?P<ID>\w+)'
     __version__ = "0.12"
-    __description__ = """115.com"""
-    __author_name__ = ("zoidberg")
+    __description__ = """115.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r"file_name: '(?P<N>[^']+)'"
     FILE_SIZE_PATTERN = r"file_size: '(?P<S>[^']+)'"

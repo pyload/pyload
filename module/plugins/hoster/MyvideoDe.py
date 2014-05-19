@@ -8,11 +8,11 @@ from module.unescape import unescape
 class MyvideoDe(Hoster):
     __name__ = "MyvideoDe"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?myvideo.de/watch/"
+    __pattern__ = r'http://(?:www\.)?myvideo.de/watch/'
     __version__ = "0.9"
-    __description__ = """Myvideo.de Video Download Hoster"""
-    __author_name__ = ("spoob")
-    __author_mail__ = ("spoob@pyload.org")
+    __description__ = """Myvideo.de hoster plugin"""
+    __author_name__ = "spoob"
+    __author_mail__ = "spoob@pyload.org"
 
     def process(self, pyfile):
         self.pyfile = pyfile

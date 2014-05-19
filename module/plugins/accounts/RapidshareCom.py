@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -25,8 +25,8 @@ class RapidshareCom(Account):
     __version__ = "0.22"
     __type__ = "account"
     __description__ = """Rapidshare.com account plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,11 +24,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class IfolderRu(SimpleHoster):
     __name__ = "IfolderRu"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:[^.]*\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*"
+    __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*'
     __version__ = "0.38"
-    __description__ = """rusfolder.com / ifolder.ru"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Ifolder.ru hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_SIZE_REPLACEMENTS = [(u'Кб', 'KB'), (u'Мб', 'MB'), (u'Гб', 'GB')]
     FILE_NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
@@ -45,7 +46,7 @@ class IfolderRu(SimpleHoster):
         self.chunkLimit = 1
 
     def process(self, pyfile):
-        file_id = re.search(self.__pattern__, pyfile.url).group('ID')
+        file_id = re.match(self.__pattern__, pyfile.url).group('ID')
         self.html = self.load("http://rusfolder.com/%s" % file_id, cookies=True, decode=True)
         self.getFileInfo()
 
@@ -58,11 +59,10 @@ class IfolderRu(SimpleHoster):
         url = "http://ints.rusfolder.com/ints/frame/?session=%s" % session_id
         self.html = self.load(url, cookies=True)
 
-        self.setWait(31, False)
-        self.wait()
+        self.wait(31, False)
 
         captcha_url = "http://ints.rusfolder.com/random/images/?session=%s" % session_id
-        for i in range(5):
+        for _ in xrange(5):
             self.html = self.load(url, cookies=True)
             action, inputs = self.parseHtmlForm('ID="Form1"')
             inputs['ints_session'] = re.search(self.INTS_SESSION_PATTERN, self.html).group(1)

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -9,12 +8,12 @@ from module.plugins.Crypter import Crypter
 
 class OneKhDe(Crypter):
     __name__ = "OneKhDe"
-    __type__ = "container"
-    __pattern__ = r"http://(www\.)?1kh.de/f/"
+    __type__ = "crypter"
+    __pattern__ = r'http://(?:www\.)?1kh.de/f/'
     __version__ = "0.1"
-    __description__ = """1kh.de Container Plugin"""
-    __author_name__ = ("spoob")
-    __author_mail__ = ("spoob@pyload.org")
+    __description__ = """1kh.de decrypter plugin"""
+    __author_name__ = "spoob"
+    __author_mail__ = "spoob@pyload.org"
 
     def __init__(self, parent):
         Crypter.__init__(self, parent)

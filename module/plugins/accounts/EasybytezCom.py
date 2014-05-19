@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: zoidberg
 """
 
@@ -30,8 +30,8 @@ class EasybytezCom(Account):
     __version__ = "0.04"
     __type__ = "account"
     __description__ = """EasyBytez.com account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     VALID_UNTIL_PATTERN = r'Premium account expire:</TD><TD><b>([^<]+)</b>'
     TRAFFIC_LEFT_PATTERN = r'<TR><TD>Traffic available today:</TD><TD><b>(?P<S>[^<]+)</b>'

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,10 +39,11 @@ def getInfo(urls):
 class FreevideoCz(Hoster):
     __name__ = "FreevideoCz"
     __type__ = "hoster"
-    __pattern__ = r"http://www.freevideo.cz/vase-videa/(.*)\.html"
+    __pattern__ = r'http://(?:www\.)?freevideo.cz/vase-videa/(.*)\.html'
     __version__ = "0.2"
-    __description__ = """freevideo.cz"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Freevideo.cz hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     URL_PATTERN = r'clip: {\s*url: "([^"]+)"'
     FILE_OFFLINE_PATTERN = r'<h2 class="red-corner-full">Str.nka nebyla nalezena</h2>'
@@ -61,6 +63,6 @@ class FreevideoCz(Hoster):
             self.fail("Parse error (URL)")
         download_url = found.group(1)
 
-        pyfile.name = re.search(self.__pattern__, pyfile.url).group(1) + ".mp4"
+        pyfile.name = re.match(self.__pattern__, pyfile.url).group(1) + ".mp4"
 
         self.download(download_url)

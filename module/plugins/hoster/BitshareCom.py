@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import with_statement
 
 import re
@@ -10,11 +11,11 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class BitshareCom(SimpleHoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))"
+    __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))'
     __version__ = "0.49"
-    __description__ = """Bitshare.Com File Download Hoster"""
-    __author_name__ = ("paulking", "fragonib")
-    __author_mail__ = (None, "fragonib[AT]yahoo[DOT]es")
+    __description__ = """Bitshare.com hoster plugin"""
+    __author_name__ = ("Paul King", "fragonib")
+    __author_mail__ = ("", "fragonib[AT]yahoo[DOT]es")
 
     HOSTER_DOMAIN = "bitshare.com"
     FILE_OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
@@ -35,12 +36,12 @@ class BitshareCom(SimpleHoster):
         self.pyfile = pyfile
 
         # File id
-        m = re.match(self.__pattern__, self.pyfile.url)
+        m = re.match(self.__pattern__, pyfile.url)
         self.file_id = max(m.group('id1'), m.group('id2'))
         self.logDebug("File id is [%s]" % self.file_id)
 
         # Load main page
-        self.html = self.load(self.pyfile.url, ref=False, decode=True)
+        self.html = self.load(pyfile.url, ref=False, decode=True)
 
         # Check offline
         if re.search(self.FILE_OFFLINE_PATTERN, self.html):
@@ -50,17 +51,15 @@ class BitshareCom(SimpleHoster):
         if re.search(self.TRAFFIC_USED_UP, self.html):
             self.logInfo("Your Traffic is used up for today. Wait 1800 seconds or reconnect!")
             self.logDebug("Waiting %d seconds." % 1800)
-            self.setWait(1800, True)
-            self.wantReconnect = True
-            self.wait()
+            self.wait(30 * 60, True)
             self.retry()
 
         # File name
-        m = re.search(self.__pattern__, self.pyfile.url)
+        m = re.match(self.__pattern__, pyfile.url)
         name1 = m.group('name') if m else None
         m = re.search(self.FILE_INFO_PATTERN, self.html)
         name2 = m.group('N') if m else None
-        self.pyfile.name = max(name1, name2)
+        pyfile.name = max(name1, name2)
 
         # Ajax file id
         self.ajaxid = re.search(self.FILE_AJAXID_PATTERN, self.html).group(1)
@@ -93,11 +92,9 @@ class BitshareCom(SimpleHoster):
         if wait > 0:
             self.logDebug("Waiting %d seconds." % wait)
             if wait < 120:
-                self.setWait(wait, False)
-                self.wait()
+                self.wait(wait, False)
             else:
-                self.setWait(wait - 55, True)
-                self.wait()
+                self.wait(wait - 55, True)
                 self.retry()
 
         # Resolve captcha
@@ -105,7 +102,7 @@ class BitshareCom(SimpleHoster):
             self.logDebug("File is captcha protected")
             id = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group(1)
             # Try up to 3 times
-            for i in range(3):
+            for i in xrange(3):
                 self.logDebug("Resolving ReCaptcha with key [%s], round %d" % (id, i + 1))
                 recaptcha = ReCaptcha(self)
                 challenge, code = recaptcha.challenge(id)

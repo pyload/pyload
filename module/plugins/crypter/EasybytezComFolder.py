@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -21,11 +20,11 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class EasybytezComFolder(SimpleCrypter):
     __name__ = "EasybytezComFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?easybytez\.com/users/(?P<ID>\d+/\d+)"
+    __pattern__ = r'http://(?:www\.)?easybytez\.com/users/(?P<ID>\d+/\d+)'
     __version__ = "0.05"
-    __description__ = """Easybytez Crypter Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __description__ = """Easybytez.com decrypter plugin"""
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r"http://www.easybytez.com/users/\g<ID>?per_page=10000")]
 

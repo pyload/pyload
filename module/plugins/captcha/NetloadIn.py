@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from captcha import OCR
 
 class NetloadIn(OCR):
@@ -11,9 +13,9 @@ class NetloadIn(OCR):
         self.clean(3)
         self.clean(3)
         self.run_tesser(True, True, False, False)
-        
+
         self.result_captcha = self.result_captcha.replace(" ", "")[:4] # cut to 4 numbers
-        
+
         return self.result_captcha
 
 if __name__ == '__main__':

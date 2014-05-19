@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: jeix
     @author: mkaay
 """
@@ -30,7 +30,7 @@ class Ftp(Hoster):
     __version__ = "0.41"
     __pattern__ = r'(ftps?|sftp)://(.*?:.*?@)?.*?/.*'  # ftp://user:password@ftp.server.org/path/to/file
     __type__ = "hoster"
-    __description__ = """A Plugin that allows you to download from an from an ftp directory"""
+    __description__ = """Download from ftp directory"""
     __author_name__ = ("jeix", "mkaay", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.com", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
 

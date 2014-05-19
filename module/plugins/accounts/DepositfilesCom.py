@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -27,7 +27,7 @@ class DepositfilesCom(Account):
     __name__ = "DepositfilesCom"
     __version__ = "0.2"
     __type__ = "account"
-    __description__ = """depositfiles.com account plugin"""
+    __description__ = """Depositfiles.com account plugin"""
     __author_name__ = ("mkaay", "stickell")
     __author_mail__ = ("mkaay@mkaay.de", "l.stickell@yahoo.it")
 

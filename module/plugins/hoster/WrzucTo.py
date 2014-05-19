@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,11 +26,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class WrzucTo(SimpleHoster):
     __name__ = "WrzucTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w+\.)*?wrzuc\.to/([a-zA-Z0-9]+(\.wt|\.html)|(\w+/?linki/[a-zA-Z0-9]+))"
+    __pattern__ = r'http://(?:www\.)?wrzuc\.to/([a-zA-Z0-9]+(\.wt|\.html)|(\w+/?linki/[a-zA-Z0-9]+))'
     __version__ = "0.01"
-    __description__ = """Wrzuc.to plugin - free only"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Wrzuc.to hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     SH_COOKIES = [("http://www.wrzuc.to", "language", "en")]
     FILE_SIZE_PATTERN = r'class="info">\s*<tr>\s*<td>(?P<S>.*?)</td>'

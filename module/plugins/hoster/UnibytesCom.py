@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,10 +25,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UnibytesCom(SimpleHoster):
     __name__ = "UnibytesCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?unibytes\.com/[a-zA-Z0-9-._ ]{11}B"
+    __pattern__ = r'http://(?:www\.)?unibytes\.com/[a-zA-Z0-9-._ ]{11}B'
     __version__ = "0.1"
-    __description__ = """UniBytes.com"""
-    __author_name__ = ("zoidberg")
+    __description__ = """UniBytes.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = r'<span[^>]*?id="fileName"[^>]*>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
     DOMAIN = 'http://www.unibytes.com'
@@ -39,7 +41,7 @@ class UnibytesCom(SimpleHoster):
         action, post_data = self.parseHtmlForm('id="startForm"')
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
-        for i in range(8):
+        for _ in xrange(8):
             self.logDebug(action, post_data)
             self.html = self.load(self.DOMAIN + action, post=post_data)
 
@@ -49,8 +51,7 @@ class UnibytesCom(SimpleHoster):
                 break
 
             if '>Somebody else is already downloading using your IP-address<' in self.html:
-                self.setWait(600, True)
-                self.wait()
+                self.wait(10 * 60, True)
                 self.retry()
 
             if post_data['step'] == 'last':
@@ -67,8 +68,7 @@ class UnibytesCom(SimpleHoster):
 
             if last_step == 'timer':
                 found = re.search(self.WAIT_PATTERN, self.html)
-                self.setWait(int(found.group(1)) if found else 60, False)
-                self.wait()
+                self.wait(int(found.group(1)) if found else 60, False)
             elif last_step in ('captcha', 'last'):
                 post_data['captcha'] = self.decryptCaptcha(self.DOMAIN + '/captcha.jpg')
         else:

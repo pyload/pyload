@@ -33,7 +33,7 @@ def getAPIData(urls):
         post["id_%s" % i] = id
         idMap[id] = url
 
-    for i in xrange(5):
+    for _ in xrange(5):
         api = unicode(getURL("http://uploaded.net/api/filemultiple", post=post, decode=False), 'iso-8859-1')
         if api != "can't find request":
             break
@@ -88,9 +88,9 @@ def getInfo(urls):
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __pattern__ = r"https?://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
+    __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
     __version__ = "0.72"
-    __description__ = """Uploaded.net Download Hoster"""
+    __description__ = """Uploaded.net hoster plugin"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz",
                        "netpok@gmail.com", "l.stickell@yahoo.it")
@@ -138,7 +138,7 @@ class UploadedTo(Hoster):
 
             pyfile.name = html_unescape(self.data[2])
 
-        # self.pyfile.name = self.get_file_name()
+        # pyfile.name = self.get_file_name()
 
         if self.premium:
             self.handlePremium()
@@ -175,7 +175,7 @@ class UploadedTo(Hoster):
 
         if 'var free_enabled = false;' in self.html:
             self.logError("Free-download capacities exhausted.")
-            self.retry(24, 300)
+            self.retry(max_tries=24, wait_time=5 * 60)
 
         found = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
         if not found:
@@ -189,7 +189,7 @@ class UploadedTo(Hoster):
         url = "http://uploaded.net/io/ticket/captcha/%s" % self.fileID
         downloadURL = ""
 
-        for i in range(5):
+        for _ in xrange(5):
             re_captcha = ReCaptcha(self)
             challenge, result = re_captcha.challenge(challengeId.group(1))
             options = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": result}

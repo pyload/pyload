@@ -19,14 +19,15 @@
 
 from module.plugins.Hoster import Hoster
 
+
 class FreeWayMe(Hoster):
     __name__ = "FreeWayMe"
     __version__ = "0.11"
     __type__ = "hoster"
-    __pattern__ = r"https://free-way.me/.*"
+    __pattern__ = r'https://(?:www\.)?free-way.me/.*'
     __description__ = """FreeWayMe hoster plugin"""
-    __author_name__ = ("Nicolas Giese")
-    __author_mail__ = ("james@free-way.me")
+    __author_name__ = "Nicolas Giese"
+    __author_mail__ = "james@free-way.me"
 
     def setup(self):
         self.resumeDownload = False

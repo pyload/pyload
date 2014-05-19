@@ -11,11 +11,11 @@ from module.plugins.Crypter import Crypter
 class ShareLinksBiz(Crypter):
     __name__ = "ShareLinksBiz"
     __type__ = "crypter"
-    __pattern__ = r"(?P<base>http://[\w\.]*?(share-links|s2l)\.biz)/(?P<id>_?[0-9a-z]+)(/.*)?"
+    __pattern__ = r'(?P<base>http://(?:www\.)?(share-links|s2l)\.biz)/(?P<id>_?[0-9a-z]+)(/.*)?'
     __version__ = "1.13"
-    __description__ = """Share-Links.biz Crypter"""
-    __author_name__ = ("fragonib")
-    __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
+    __description__ = """Share-Links.biz decrypter plugin"""
+    __author_name__ = "fragonib"
+    __author_mail__ = "fragonib[AT]yahoo[DOT]es"
 
     def setup(self):
         self.baseUrl = None
@@ -63,7 +63,7 @@ class ShareLinksBiz(Crypter):
         url = pyfile.url
         if 's2l.biz' in url:
             url = self.load(url, just_header=True)['location']
-        self.baseUrl = re.search(self.__pattern__, url).group(1)
+        self.baseUrl = re.match(self.__pattern__, url).group(1)
         self.fileId = re.match(self.__pattern__, url).group('id')
         self.package = pyfile.package()
 

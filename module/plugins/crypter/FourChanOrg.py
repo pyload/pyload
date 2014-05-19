@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -10,10 +9,10 @@ class FourChanOrg(Crypter):
     # Based on 4chandl by Roland Beermann
     # https://gist.github.com/enkore/3492599
     __name__ = "FourChanOrg"
-    __type__ = "container"
+    __type__ = "crypter"
     __version__ = "0.3"
-    __pattern__ = r"http://boards\.4chan.org/\w+/res/(\d+)"
-    __description__ = "Downloader for entire 4chan threads"
+    __pattern__ = r'http://(?:www\.)?boards\.4chan.org/\w+/res/(\d+)'
+    __description__ = """4chan.org folder decrypter plugin"""
 
     def decrypt(self, pyfile):
         pagehtml = self.load(pyfile.url)
@@ -23,4 +22,4 @@ class FourChanOrg(Crypter):
         for image in images:
             urls.append("http://" + image)
 
-        self.core.files.addLinks(urls, self.pyfile.package().id)
+        self.core.files.addLinks(urls, pyfile.package().id)

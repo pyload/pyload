@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -10,9 +9,9 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://[\w\.]*?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/[\w]+"
+    __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/[\w]+'
     __version__ = "0.46"
-    __description__ = """Depositfiles.com Download Hoster"""
+    __description__ = """Depositfiles.com hoster plugin"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
 
@@ -21,7 +20,7 @@ class DepositfilesCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
     FILE_URL_REPLACEMENTS = [(r"\.com(/.*?)?/files", ".com/en/files"), (r"\.html$", "")]
     FILE_NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
-                              (r'.*<b title="(?P<N>[^"]+).*', "\g<N>" )]
+                              (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
 
     RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)'"
     DOWNLOAD_LINK_PATTERN = r'<form id="downloader_file_form" action="(http://.+?\.(dfiles\.eu|depositfiles\.com)/.+?)" method="post"'
@@ -33,17 +32,14 @@ class DepositfilesCom(SimpleHoster):
 
         if re.search(r'File is checked, please try again in a minute.', self.html) is not None:
             self.logInfo("DepositFiles.com: The file is being checked. Waiting 1 minute.")
-            self.setWait(61)
-            self.wait()
+            self.wait(61)
             self.retry()
 
         wait = re.search(r'html_download_api-limit_interval\">(\d+)</span>', self.html)
         if wait:
             wait_time = int(wait.group(1))
             self.logInfo("%s: Traffic used up. Waiting %d seconds." % (self.__name__, wait_time))
-            self.setWait(wait_time)
-            self.wantReconnect = True
-            self.wait()
+            self.wait(wait_time, True)
             self.retry()
 
         wait = re.search(r'>Try in (\d+) minutes or use GOLD account', self.html)
@@ -71,7 +67,7 @@ class DepositfilesCom(SimpleHoster):
         self.wait()
         recaptcha = ReCaptcha(self)
 
-        for i in range(5):
+        for _ in xrange(5):
             self.html = self.load("http://depositfiles.com/get_file.php", get=params)
 
             if '<input type=button value="Continue" onclick="check_recaptcha' in self.html:
@@ -103,7 +99,7 @@ class DepositfilesCom(SimpleHoster):
     def handlePremium(self):
         if '<span class="html_download_api-gold_traffic_limit">' in self.html:
             self.logWarning("Download limit reached")
-            self.retry(25, 3600, "Download limit reached")
+            self.retry(25, 60 * 60, "Download limit reached")
         elif 'onClick="show_gold_offer' in self.html:
             self.account.relogin(self.user)
             self.retry()

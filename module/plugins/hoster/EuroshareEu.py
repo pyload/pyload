@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,10 +24,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EuroshareEu(SimpleHoster):
     __name__ = "EuroshareEu"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)?euroshare.(eu|sk|cz|hu|pl)/file/.*"
+    __pattern__ = r'http://(?:www\.)?euroshare.(eu|sk|cz|hu|pl)/file/.*'
     __version__ = "0.25"
-    __description__ = """Euroshare.eu"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Euroshare.eu hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = r'<span style="float: left;"><strong>(?P<N>.+?)</strong> \((?P<S>.+?)\)</span>'
     FILE_OFFLINE_PATTERN = ur'<h2>S.bor sa nena.iel</h2>|Požadovaná stránka neexistuje!'
@@ -58,7 +60,7 @@ class EuroshareEu(SimpleHoster):
 
     def handleFree(self):
         if re.search(self.ERR_PARDL_PATTERN, self.html) is not None:
-            self.longWait(300, 12)
+            self.longWait(5 * 60, 12)
 
         found = re.search(self.FREE_URL_PATTERN, self.html)
         if found is None:
@@ -69,7 +71,7 @@ class EuroshareEu(SimpleHoster):
 
         check = self.checkDownload({"multi_dl": re.compile(self.ERR_PARDL_PATTERN)})
         if check == "multi_dl":
-            self.longWait(300, 12)
+            self.longWait(5 * 60, 12)
 
 
 getInfo = create_getInfo(EuroshareEu)

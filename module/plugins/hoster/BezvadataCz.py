@@ -1,4 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,11 +24,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BezvadataCz(SimpleHoster):
     __name__ = "BezvadataCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)*bezvadata.cz/stahnout/.*"
+    __pattern__ = r'http://(?:www\.)?bezvadata.cz/stahnout/.*'
     __version__ = "0.24"
-    __description__ = """BezvaData.cz"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """BezvaData.cz hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'
     FILE_SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[^<]+)</li>'
@@ -46,7 +47,7 @@ class BezvadataCz(SimpleHoster):
         #captcha form
         self.html = self.load(url)
         self.checkErrors()
-        for i in range(5):
+        for _ in xrange(5):
             action, inputs = self.parseHtmlForm('frm-stahnoutFreeForm')
             if not inputs:
                 self.parseError("FreeForm")
@@ -82,14 +83,13 @@ class BezvadataCz(SimpleHoster):
         #countdown
         found = re.search(r'id="countdown">(\d\d):(\d\d)<', self.html)
         wait_time = (int(found.group(1)) * 60 + int(found.group(2)) + 1) if found else 120
-        self.setWait(wait_time, False)
-        self.wait()
+        self.wait(wait_time, False)
 
         self.download(url)
 
     def checkErrors(self):
         if 'images/button-download-disable.png' in self.html:
-            self.longWait(300, 24)  # parallel dl limit
+            self.longWait(5 * 60, 24)  # parallel dl limit
         elif '<div class="infobox' in self.html:
             self.tempOffline()
 

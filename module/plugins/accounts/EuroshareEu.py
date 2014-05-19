@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: zoidberg
 """
 
@@ -27,9 +27,9 @@ class EuroshareEu(Account):
     __name__ = "EuroshareEu"
     __version__ = "0.01"
     __type__ = "account"
-    __description__ = """euroshare.eu account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Euroshare.eu account plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def loadAccountInfo(self, user, req):
         self.relogin(user)

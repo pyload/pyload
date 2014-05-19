@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ###############################################################################
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -66,9 +65,9 @@ class FastshareCz(SimpleHoster):
         })
 
         if check == "paralell_dl":
-            self.retry(6, 600, "Paralell download")
+            self.retry(6, 10 * 60, "Paralell download")
         elif check == "wrong_captcha":
-            self.retry(5, 1, "Wrong captcha")
+            self.retry(max_tries=5, reason="Wrong captcha")
 
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)

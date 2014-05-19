@@ -28,7 +28,7 @@ class FshareVn(Account):
     __name__ = "FshareVn"
     __version__ = "0.06"
     __type__ = "account"
-    __description__ = """fshare.vn account plugin"""
+    __description__ = """Fshare.vn account plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 

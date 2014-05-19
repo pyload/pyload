@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,24 +16,26 @@
 
     @author: RaNaN, Godofdream, zoidberg
 """
-import time, httplib
+import time
+import httplib
 from module.plugins.Hook import Hook
+
 
 class WindowsPhoneToastNotify(Hook):
     __name__ = "WindowsPhoneToastNotify"
     __version__ = "0.02"
-    __description__ = """Send push notifications to Windows Phone."""
-    __author_name__ = ("Andy Voigt")
-    __author_mail__ = ("phone-support@hotmail.de")
+    __description__ = """Send push notifications to Windows Phone"""
+    __author_name__ = "Andy Voigt"
+    __author_mail__ = "phone-support@hotmail.de"
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force even if client is connected", False),
                   ("pushId", "str", "pushId", ""),
-                  ("pushUrl","str","pushUrl", ""),
-                  ("pushTimeout","int","Timeout between notifications in seconds","0")]
+                  ("pushUrl", "str", "pushUrl", ""),
+                  ("pushTimeout", "int", "Timeout between notifications in seconds", 0)]
 
     def setup(self):
         self.info = {}
-    
+
     def getXmlData(self):
         myxml = ("<?xml version='1.0' encoding='utf-8'?> <wp:Notification xmlns:wp='WPNotification'> "
                  "<wp:Toast> <wp:Text1>Pyload Mobile</wp:Text1> <wp:Text2>Captcha waiting!</wp:Text2> "
@@ -60,9 +63,8 @@ class WindowsPhoneToastNotify(Hook):
 
         if self.core.isClientConnected() and not self.getConfig("force"):
             return False
-        
+
         if (time.time() - float(self.getStorage("LAST_NOTIFY", 0))) < self.getConf("pushTimeout"):
             return False
-        
-        self.doRequest()
 
+        self.doRequest()

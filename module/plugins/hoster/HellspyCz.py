@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,11 +23,11 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class HellspyCz(DeadHoster):
     __name__ = "HellspyCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*(?:hellspy\.(?:cz|com|sk|hu|pl)|sciagaj.pl)(/\S+/\d+)/?.*"
+    __pattern__ = r'http://(?:www\.)?(?:hellspy\.(?:cz|com|sk|hu|pl)|sciagaj.pl)(/\S+/\d+)/?.*'
     __version__ = "0.28"
-    __description__ = """HellSpy.cz"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """HellSpy.cz hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
 
 getInfo = create_getInfo(HellspyCz)

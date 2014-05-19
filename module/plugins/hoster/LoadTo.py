@@ -27,7 +27,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class LoadTo(SimpleHoster):
     __name__ = "LoadTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?load\.to/\w+"
+    __pattern__ = r'http://(?:www\.)?load\.to/\w+'
     __version__ = "0.13"
     __description__ = """Load.to hoster plugin"""
     __author_name__ = ("halfman", "stickell")

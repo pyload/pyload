@@ -1,11 +1,7 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
-from base64 import b64decode
-import hashlib
-import random
-from time import time, sleep
+from time import time
 
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
@@ -42,9 +38,9 @@ def getInfo(urls):
 class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download.php\?id=|dl/)(?P<ID>\w+)"
-    __version__ = "0.38"
-    __description__ = """Shareonline.biz Download Hoster"""
+    __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download.php\?id=|dl/)(?P<ID>\w+)'
+    __version__ = "0.40"
+    __description__ = """Shareonline.biz hoster plugin"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "Walter Purcaro")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "vuolter@gmail.com")
 
@@ -73,9 +69,9 @@ class ShareonlineBiz(Hoster):
         # check = self.checkDownload({"failure": re.compile(self.ERROR_INFO_PATTERN)})
         # if check == "failure":
         #     try:
-        #         self.retry(reason = self.lastCheck.group(1).decode("utf8"))
+        #         self.retry(reason=self.lastCheck.group(1).decode("utf8"))
         #     except:
-        #         self.retry(reason = "Unknown error")
+        #         self.retry(reason="Unknown error")
 
         if self.api_data:
             self.check_data = {"size": int(self.api_data['size']), "md5": self.api_data['md5']}
@@ -119,8 +115,12 @@ class ShareonlineBiz(Hoster):
                 'recaptcha_response_field': response})
 
             if not response == '0':
+                self.correctCaptcha()
                 break
+            else:
+                self.invalidCaptcha()
         else:
+            self.invalidCaptcha()
             self.fail("No valid captcha solution received")
 
         download_url = response.decode("base64")
@@ -136,9 +136,13 @@ class ShareonlineBiz(Hoster):
             "fail": re.compile(r"<title>Share-Online")
         })
         if check == "cookie":
+            self.invalidCaptcha()
             self.retry(5, 60, "Cookie failure")
         elif check == "fail":
-            self.retry(5, 300, "Download failed")
+            self.invalidCaptcha()
+            self.retry(5, 5 * 60, "Download failed")
+        else:
+            self.correctCaptcha()
 
     def handlePremium(self):  # should be working better loading (account) api internally
         self.account.getAccountInfo(self.user, True)

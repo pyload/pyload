@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from module.plugins.Account import Account
 from module.common.json_layer import json_loads
 
@@ -7,8 +9,8 @@ class OverLoadMe(Account):
     __version__ = "0.01"
     __type__ = "account"
     __description__ = """Over-Load.me account plugin"""
-    __author_name__ = ("marley")
-    __author_mail__ = ("marley@over-load.me")
+    __author_name__ = "marley"
+    __author_mail__ = "marley@over-load.me"
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)

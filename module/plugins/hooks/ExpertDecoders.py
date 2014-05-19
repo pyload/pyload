@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,10 +32,10 @@ from module.plugins.Hook import Hook
 class ExpertDecoders(Hook):
     __name__ = "ExpertDecoders"
     __version__ = "0.01"
-    __description__ = """send captchas to expertdecoders.com"""
+    __description__ = """Send captchas to expertdecoders.com"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", False),
-                  ("passkey", "password", "Access key", ""), ]
+                  ("passkey", "password", "Access key", "")]
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
 

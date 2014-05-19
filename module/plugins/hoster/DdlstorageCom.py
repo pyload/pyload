@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import re
 from hashlib import md5
 
@@ -38,21 +39,22 @@ def getInfo(urls):
 class DdlstorageCom(XFileSharingPro):
     __name__ = "DdlstorageCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*?ddlstorage.com/(?P<ID>\w{12})"
+    __pattern__ = r'http://(?:www\.)?ddlstorage.com/(?P<ID>\w{12})'
     __version__ = "1.00"
     __description__ = """DDLStorage.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
-    FILE_INFO_PATTERN = r'<p class="sub_title"[^>]*>(?P<N>.+) \((?P<S>[^)]+)\)</p>'
     HOSTER_NAME = "ddlstorage.com"
+
+    FILE_INFO_PATTERN = r'<p class="sub_title"[^>]*>(?P<N>.+) \((?P<S>[^)]+)\)</p>'
 
     def prepare(self):
         self.getAPIData()
         super(DdlstorageCom, self).prepare()
 
     def getAPIData(self):
-        file_id = re.search(self.__pattern__, self.pyfile.url).group('ID')
+        file_id = re.match(self.__pattern__, self.pyfile.url).group('ID')
         data = {'client_id': 53472,
                 'file_code': file_id}
         if self.user:

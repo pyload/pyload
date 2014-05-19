@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -27,9 +27,9 @@ class UploadingCom(Account):
     __name__ = "UploadingCom"
     __version__ = "0.1"
     __type__ = "account"
-    __description__ = """uploading.com account plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __description__ = """Uploading.com account plugin"""
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
 
     def loadAccountInfo(self, user, req):
         src = req.load("http://uploading.com/")

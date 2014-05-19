@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -23,11 +22,11 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FreetexthostCom(SimpleCrypter):
     __name__ = "FreetexthostCom"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:w{3}.)?freetexthost\.com/\w+"
+    __pattern__ = r'http://(?:www\.)?freetexthost\.com/\w+'
     __version__ = "0.01"
-    __description__ = """Freetexthost.com Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __description__ = """Freetexthost.com decrypter plugin"""
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     def getLinks(self):
         m = re.search(r'<div id="contentsinner">\s*(.+)<div class="viewcount">', self.html, re.DOTALL)
