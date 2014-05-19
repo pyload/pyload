@@ -25,11 +25,11 @@ import logging
 import subprocess
 #import tempfile
 
-import Image
-import TiffImagePlugin
-import PngImagePlugin
-import GifImagePlugin
-import JpegImagePlugin
+from PIL import Image
+from PIL import TiffImagePlugin
+from PIL import PngImagePlugin
+from PIL import GifImagePlugin
+from PIL import JpegImagePlugin
 
 
 class OCR(object):
