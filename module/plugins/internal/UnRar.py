@@ -33,7 +33,7 @@ class UnRar(AbtractExtractor):
     __version__ = "0.15"
 
     # there are some more uncovered rar formats
-    re_version = re.compile(r"(UNRAR 5[\.\d]+ freeware)")
+    re_version = re.compile(r"(UNRAR 5[\.\d]+(.*?)freeware)")
     re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
     re_partfiles = re.compile(r".*\.(rar|r[0-9]+)", re.I)
     re_filelist = re.compile(r"(.+)\s+(\d+)\s+(\d+)\s+")
