@@ -37,7 +37,7 @@ class XFileSharingPro(SimpleHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
     __pattern__ = r'^unmatchable$'
-    __version__ = "0.30"
+    __version__ = "0.31"
     __description__ = """XFileSharingPro base hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -157,7 +157,6 @@ class XFileSharingPro(SimpleHoster):
         return found.group(1)
 
     def handlePremium(self):
-        self.html = self.load(self.pyfile.url)
         self.html = self.load(self.pyfile.url, post=self.getPostParameters())
         found = re.search(self.DIRECT_LINK_PATTERN, self.html)
         if not found:
