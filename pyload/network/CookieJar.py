@@ -9,11 +9,21 @@ class CookieJar(SimpleCookie):
         return self[name].value
 
     def setCookie(self, domain, name, value, path="/", exp=None, secure="FALSE"):
-        if not exp: exp = time() + 3600 * 24 * 180
-
         self[name] = value
         self[name]["domain"] = domain
         self[name]["path"] = path
-        self[name]["expires"] = exp
+        
+        #Value of expires should be integer if possible
+        # otherwise the cookie won't be used
+        expire=0
+        if not exp:
+	        expires = time() + 3600 * 24 * 180
+        else:
+            try:
+                expires = int(exp)
+            except ValueError:
+                expires = exp
+        
+        self[name]["expires"] = expires
         if secure == "TRUE":
             self[name]["secure"] = secure
