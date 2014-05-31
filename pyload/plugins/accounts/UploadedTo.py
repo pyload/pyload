@@ -25,7 +25,7 @@ from module.plugins.Account import Account
 
 class UploadedTo(Account):
     __name__ = "UploadedTo"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __type__ = "account"
     __description__ = """Uploaded.to account plugin"""
     __author_name__ = "mkaay"
@@ -42,7 +42,7 @@ class UploadedTo(Account):
             raw_traffic = re.search(r'<th colspan="2"><b class="cB">([^<]+)', html).group(1).replace('.', '')
             raw_valid = re.search(r"<td>Duration:</td>\s*<th>([^<]+)", html, re.MULTILINE).group(1).strip()
 
-            traffic = int(self.parseTraffic(raw_traffic))
+            traffic = int(self.parseTraffic(raw_traffic)) * 1024
 
             if raw_valid == "unlimited":
                 validuntil = -1
