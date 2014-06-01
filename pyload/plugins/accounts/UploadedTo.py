@@ -25,13 +25,13 @@ from module.plugins.Account import Account
 
 class UploadedTo(Account):
     __name__ = "UploadedTo"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __type__ = "account"
     __description__ = """Uploaded.to account plugin"""
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"
 
-    def loadAccountInfo(self, user, req):
+    def loadAccountInfo(self, req):
 
         req.load("http://uploaded.net/language/en")
         html = req.load("http://uploaded.net/me")
