@@ -3,6 +3,8 @@ define(['jquery', 'underscore', 'app', 'utils/apitypes', 'views/abstract/modalVi
         'use strict';
         return modalView.extend({
 
+            className: 'query-modal',
+
             events: {
                 'click #captchaImage': 'onClick',
                 'click .btn-success': 'submit',
@@ -32,9 +34,6 @@ define(['jquery', 'underscore', 'app', 'utils/apitypes', 'views/abstract/modalVi
                 if (this.model.isCaptcha()) {
                     data.captcha = input[0];
                     data.type = input[1];
-
-                    if (input.type == Api.InputType.Click)
-                        data.click = true;
                 }
                 return data;
             },
@@ -44,6 +43,9 @@ define(['jquery', 'underscore', 'app', 'utils/apitypes', 'views/abstract/modalVi
                 var input = this.model.get('input');
                 var InputView = load_input(input);
                 this.input = new InputView({input: input});
+                if (input.type == Api.InputType.Click)
+                    this.$('#captchaImage').css('cursor', 'crosshair');
+
                 // only renders after wards
                 this.$('#inputField').append(this.input.render().el);
             },
@@ -53,6 +55,7 @@ define(['jquery', 'underscore', 'app', 'utils/apitypes', 'views/abstract/modalVi
                 var posX = el.offset().left,
                     posY = el.offset().top;
 
+                 // TODO: calculate image size, scale positions to displayed / real image size
                 this.input.onClick(Math.round(e.pageX - posX), Math.round(e.pageY - posY));
             },
 
