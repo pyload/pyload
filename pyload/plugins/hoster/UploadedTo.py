@@ -146,10 +146,10 @@ class UploadedTo(Hoster):
             self.handleFree()
 
     def handlePremium(self):
-        self.account.getAccountInfo(True)
+        info = self.account.getAccountInfo(self.user, True)
         self.logDebug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name": self.__name__,
-                                                                           "left": self.account.trafficleft / 1024 / 1024})
-        if int(self.data[1]) / 1024 > self.account.trafficleft:
+                                                                           "left": info["trafficleft"] / 1024 / 1024})
+        if int(self.data[1]) / 1024 > info["trafficleft"]:
             self.logInfo(_("%s: Not enough traffic left" % self.__name__))
             self.account.empty(self.user)
             self.resetAccount()
