@@ -3,11 +3,7 @@ define('helpers/formatSize', ['handlebars', 'utils/i18n'], function(Handlebars, 
     'use strict';
 
     var sizes = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB'];
-    function formatSize(bytes, options, multiplier) {
-        //multiplier 1024 is used for trafficleft because trafficleft is in KiB
-        if (typeof multiplier === 'number')
-           bytes = bytes * multiplier;
-        
+    function formatSize(bytes, options) {
         if (!bytes || bytes === 0) return '0 B';
         if (bytes === -1)
             return i18n.gettext('not available');
