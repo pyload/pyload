@@ -1,9 +1,10 @@
-define(['jquery', 'underscore', 'app', 'views/abstract/modalView', './input/inputLoader', 'hbs!tpl/dialogs/interactionTask'],
-    function($, _, App, modalView, load_input, template) {
+define(['jquery', 'underscore', 'app', 'utils/apitypes', 'views/abstract/modalView', './input/inputLoader', 'hbs!tpl/dialogs/interactionTask'],
+    function($, _, App, Api, modalView, load_input, template) {
         'use strict';
         return modalView.extend({
 
             events: {
+                'click #captchaImage': 'onClick',
                 'click .btn-success': 'submit',
                 'submit form': 'submit'
             },
@@ -31,6 +32,9 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', './input/inpu
                 if (this.model.isCaptcha()) {
                     data.captcha = input[0];
                     data.type = input[1];
+
+                    if (input.type == Api.InputType.Click)
+                        data.click = true;
                 }
                 return data;
             },
@@ -42,6 +46,14 @@ define(['jquery', 'underscore', 'app', 'views/abstract/modalView', './input/inpu
                 this.input = new InputView({input: input});
                 // only renders after wards
                 this.$('#inputField').append(this.input.render().el);
+            },
+
+            onClick: function(e) {
+                var el = $(e.target);
+                var posX = el.offset().left,
+                    posY = el.offset().top;
+
+                this.input.onClick(Math.round(e.pageX - posX), Math.round(e.pageY - posY));
             },
 
             submit: function(e) {
