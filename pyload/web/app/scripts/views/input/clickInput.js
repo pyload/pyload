@@ -27,7 +27,7 @@ define(['jquery', 'backbone', 'underscore', 'helpers/gettext', './inputView'], f
         },
 
         onClick: function(x,y) {
-            this.$el.val(x + "," + y);
+            this.$el.val(x + ',' + y);
             this.onChange();
         },
 
