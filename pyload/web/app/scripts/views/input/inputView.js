@@ -38,6 +38,11 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
             return this;
         },
 
+        // triggered by captcha clicks
+        onClick: function(x,y) {
+
+        },
+
         renderInput: function() {
             // Overwrite this
         },

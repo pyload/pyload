@@ -31,6 +31,9 @@ class InfoThread(DecrypterThread):
         plugins = accumulate(self.data)
         crypter = {}
 
+        # db or info result
+        cb = self.updateDB if self.pid > 1 else self.updateResult
+
         # filter out crypter plugins
         for name in self.m.core.pluginManager.getPlugins("crypter"):
             if name in plugins:
@@ -41,21 +44,18 @@ class InfoThread(DecrypterThread):
             # decrypt them
             links, packages = self.decrypt(crypter, err=True)
             # push these as initial result and save package names
-            self.updateResult(links)
+            cb(links)
             for pack in packages:
                 for url in pack.getURLs():
                     self.names[url] = pack.name
 
                 links.extend(pack.links)
-                self.updateResult(pack.links)
+                cb(pack.links)
 
             # TODO: no plugin information pushed to GUI
             # parse links and merge
             hoster, crypter = self.m.core.pluginManager.parseUrls([l.url for l in links])
             accumulate(hoster + crypter, plugins)
-
-        # db or info result
-        cb = self.updateDB if self.pid > 1 else self.updateResult
 
         self.progress = ProgressInfo("BasePlugin", "", _("online check"), 0, 0, sum(len(urls) for urls in plugins.itervalues()),
                                      self.owner, ProgressType.LinkCheck)
@@ -102,6 +102,7 @@ class InfoThread(DecrypterThread):
         # merge in packages that already have a name
         data = accumulate(tmp.iteritems(), data)
 
+        # TODO: self.oc is None ?!
         self.m.setInfoResults(self.oc, data)
 
     def fetchForPlugin(self, plugin, urls, cb):
