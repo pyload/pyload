@@ -7,7 +7,7 @@ define('helpers/formatSize', ['handlebars', 'utils/i18n'], function(Handlebars, 
         //multiplier 1024 is used for trafficleft because trafficleft is in KiB
         if (typeof multiplier === 'number')
            bytes = bytes * multiplier;
-        
+
         if (!bytes || bytes === 0) return '0 B';
         if (bytes === -1)
             return i18n.gettext('not available');
