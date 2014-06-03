@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     This program is free software; you can redistribute it and/or modify
@@ -16,7 +15,7 @@
 
     @author: RaNaN
 
-	This modules inits working directories and global variables, pydir and homedir
+    This modules inits working directories and global variables, pydir and homedir
 """
 
 from os import makedirs, path, chdir
@@ -25,7 +24,8 @@ import sys
 from sys import argv, platform
 
 import __builtin__
-__builtin__.owd = path.abspath("") #original working directory
+
+__builtin__.owd = path.abspath("")  # original working directory
 __builtin__.pypath = path.abspath(path.join(__file__, "..", ".."))
 
 sys.path.append(join(pypath, "module", "lib"))
@@ -56,13 +56,9 @@ args = " ".join(argv[1:])
 
 # dirty method to set configdir from commandline arguments
 if "--configdir=" in args:
-    pos = args.find("--configdir=")
-    end = args.find("-", pos + 12)
-
-    if end == -1:
-        configdir = args[pos + 12:].strip()
-    else:
-        configdir = args[pos + 12:end].strip()
+    for aa in argv:
+        if aa.startswith("--configdir="):
+            configdir = aa.replace("--configdir=", "", 1).strip()
 elif path.exists(path.join(pypath, "module", "config", "configdir")):
     f = open(path.join(pypath, "module", "config", "configdir"), "rb")
     c = f.read().strip()
