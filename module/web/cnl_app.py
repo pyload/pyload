@@ -14,17 +14,15 @@ try:
 except:
     pass
 
-
 def local_check(function):
     def _view(*args, **kwargs):
-        if request.environ.get('REMOTE_ADDR', "0") in ('127.0.0.1', 'localhost') \
-        or request.environ.get('HTTP_HOST','0') == '127.0.0.1:9666':
+        if request.environ.get("REMOTE_ADDR", "0") in ("127.0.0.1", "localhost") \
+        or or request.environ.get("HTTP_HOST", "0") in ("127.0.0.1:9666", "localhost:9666"):
             return function(*args, **kwargs)
         else:
             return HTTPError(403, "Forbidden")
 
     return _view
-
 
 @route("/flash")
 @route("/flash/:id")
@@ -49,7 +47,6 @@ def add(request):
 @route("/flash/addcrypted", method="POST")
 @local_check
 def addcrypted():
-
     package = request.forms.get('referer', 'ClickAndLoad Package')
     dlc = request.forms['crypted'].replace(" ", "+")
 
@@ -68,7 +65,6 @@ def addcrypted():
 @route("/flash/addcrypted2", method="POST")
 @local_check
 def addcrypted2():
-
     package = request.forms.get("source", None)
     crypted = request.forms["crypted"]
     jk = request.forms["jk"]
@@ -149,7 +145,6 @@ def crossdomain():
 @route("/flash/checkSupportForUrl")
 @local_check
 def checksupport():
-
     url = request.GET.get("url")
     res = PYLOAD.checkURLs([url])
     supported = (not res[0][1] is None)
