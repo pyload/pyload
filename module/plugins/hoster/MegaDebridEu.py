@@ -15,7 +15,7 @@
 ############################################################################
 
 import re
-from urllib import unquote
+from urllib import unquote_plus
 
 from module.plugins.Hoster import Hoster
 from module.common.json_layer import json_loads
@@ -23,7 +23,7 @@ from module.common.json_layer import json_loads
 
 class MegaDebridEu(Hoster):
     __name__ = "MegaDebridEu"
-    __version__ = "0.2"
+    __version__ = "0.3"
     __type__ = "hoster"
     __pattern__ = r'^https?://(?:w{3}\d+\.mega-debrid.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[^/]+/.+$'
     __description__ = """mega-debrid.eu hoster plugin"""
@@ -35,7 +35,7 @@ class MegaDebridEu(Hoster):
 
     def getFilename(self, url):
         try:
-            return unquote(url.rsplit("/", 1)[1])
+            return unquote_plus(url.rsplit("/", 1)[1])
         except IndexError:
             return ""
 
