@@ -40,7 +40,7 @@ class FilefactoryCom(SimpleHoster):
         elif "All free download slots on this server are currently in use" in self.html:
             self.retry(50, 15 * 60, "All free slots are busy")
 
-        m = re.search(r'data-href="(http://[^"]+)"', self.html)
+        m = re.search(r'data-href(?:-direct)?="(http://[^"]+)"', self.html)
         if m:
             t = re.search(r'<div id="countdown_clock" data-delay="(\d+)">', self.html)
             if t:
@@ -65,7 +65,7 @@ class FilefactoryCom(SimpleHoster):
             self.wait(int(waittime.group(1)))
 
             # Parse the direct link and download it
-            direct = re.search(r'data-href="(.*)" class="button', self.html)
+            direct = re.search(r'data-href(?:-direct)?="(.*)" class="button', self.html)
             if not direct:
                 self.parseError('Unable to detect free direct link')
             direct = direct.group(1)
