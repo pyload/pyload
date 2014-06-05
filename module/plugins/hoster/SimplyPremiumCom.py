@@ -95,8 +95,13 @@ class SimplyPremiumCom(Hoster):
             except ValueError:
                 self.pyfile.size = 0
 
-            new_url = 'http://www.simply-premium.com/premium.php?link=' + pyfile.url
-
+            try:
+                start = page.index( '<download>' ) + len( '<download>' )
+                end = page.index( '</download>', start )
+                new_url = page[start:end]
+            except ValueError:
+                new_url = 'http://www.simply-premium.com/premium.php?link=' + pyfile.url
+				
         if new_url != pyfile.url:
             self.logDebug("New URL: " + new_url)
 
