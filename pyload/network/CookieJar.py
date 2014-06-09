@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime, timedelta
 from time import time
-from Cookie import SimpleCookie
+import Cookie
 
-class CookieJar(SimpleCookie):
+# monkey patch for 32 bit systems
+def _getdate(future=0, weekdayname=Cookie._weekdayname, monthname=Cookie._monthname):
+    dt = datetime.now() + timedelta(seconds=int(future))
+    return "%s, %02d %3s %4d %02d:%02d:%02d GMT" % \
+           (weekdayname[dt.weekday()], dt.day, monthname[dt.month], dt.year, dt.hour, dt.minute, dt.second)
 
+Cookie._getdate = _getdate
+
+class CookieJar(Cookie.SimpleCookie):
     def getCookie(self, name):
         return self[name].value
 
@@ -12,18 +20,17 @@ class CookieJar(SimpleCookie):
         self[name] = value
         self[name]["domain"] = domain
         self[name]["path"] = path
-        
-        #Value of expires should be integer if possible
+
+        # Value of expires should be integer if possible
         # otherwise the cookie won't be used
-        expire=0
         if not exp:
-	        expires = time() + 3600 * 24 * 180
+            expires = time() + 3600 * 24 * 180
         else:
             try:
                 expires = int(exp)
             except ValueError:
                 expires = exp
-        
+
         self[name]["expires"] = expires
         if secure == "TRUE":
             self[name]["secure"] = secure
