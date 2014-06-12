@@ -8,7 +8,7 @@ from module.common.json_layer import json_loads
 
 class LinksnappyCom(Account):
     __name__ = "LinksnappyCom"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "account"
     __description__ = """Linksnappy.com account plugin"""
     __author_name__ = "stickell"
@@ -24,9 +24,13 @@ class LinksnappyCom(Account):
         if j['error']:
             return {"premium": False}
 
-        validuntil = float(j['return']['expire'])
+        validuntil = j['return']['expire']
         if validuntil == 'lifetime':
             validuntil = -1
+        elif validuntil == 'expired':
+            return {"premium": False}
+        else:
+            validuntil = float(validuntil)
 
         if 'trafficleft' not in j['return'] or isinstance(j['return']['trafficleft'], str):
             trafficleft = -1
