@@ -37,6 +37,6 @@ class SimplyPremiumCom(MultiHoster):
         json_data = getURL('http://www.simply-premium.com/api/hosts.php?format=json&online=1')
         json_data = json_loads(json_data)
 
-        host_list = [element['host'] for element in json_data['result']]
+        host_list = [element['regex'] for element in json_data['result']]
 
         return host_list
