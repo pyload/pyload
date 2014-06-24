@@ -81,6 +81,8 @@ class HTTPRequest():
         self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
         self.c.setopt(pycurl.LOW_SPEED_TIME, 30)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
+        self.c.setopt(pycurl.SSLVERSION, 3)
+        self.c.setopt(pycurl.SSL_CIPHER_LIST, 'SSLv3')
 
         #self.c.setopt(pycurl.VERBOSE, 1)
 
