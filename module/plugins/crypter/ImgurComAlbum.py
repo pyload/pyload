@@ -34,7 +34,7 @@ class ImgurComAlbum(Crypter):
       
       #determine a name for the newly added package
       name = "imgurCom_"
-      regex = re.search(__pattern__, pyfile.url)
+      regex = re.search(self.__pattern__, pyfile.url)
       if regex.group("FOLDER"):
         name = name + regex.group("FOLDER") + "_"
       name = name + regex.group("ID")  
