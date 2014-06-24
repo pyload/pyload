@@ -23,10 +23,13 @@ class ImgurComAlbum(Crypter):
       parsed_urls = set()
       #Iterate over raw_urls and add add the set - uniqizes the urls automatically
       for i, url in enumerate(raw_urls):
-        #delete lower case 's' at the end of directlinks (those are thumbnails) and add http:// for BasePlugin
-        temp_url = "http://"+re.sub(r's\.', '.', url)
+        #delete lower case 's' at the end of directlinks (those are thumbnails)
+        if re.search(r'\w{7}s\.'+filetypes, url):
+          url = re.sub(r's\.', '.', url)
+        #add http:// for BasePlugin
+        temp_url = "http://" + url
         parsed_urls.add(temp_url)
-        self.logDebug('New url: '+temp_url)
+        self.logDebug('New url: ' + temp_url)
       name = "imgurCom_" + re.search(r'imgur\.com/(?:a/|gallery/|)(\w{5,7})', pyfile.url).group(1)
       self.logDebug('Determined name for package: '+name)
       self.packages.append((name, list(parsed_urls), name))
