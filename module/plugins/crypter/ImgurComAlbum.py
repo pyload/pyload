@@ -15,18 +15,20 @@ class ImgurComAlbum(Crypter):
     
     html = self.load(pyfile.url)
     
-    filetypes="(?:jpeg|jpg|png|gif|apng)"
+    filetypes = "(?:jpeg|jpg|png|gif|apng)"
     
-    parsed_urls = re.findall(r'i\.imgur\.com/\w{7}\.'+filetypes, html)
-   
-    if parsed_urls:
-      #uniqize the list of parsed urls
-      parsed_urls=list(set(parsed_urls))
-      for i, url in enumerate(parsed_urls):
-        parsed_urls[i] = "http://"+url
-        self.logDebug('New url: '+parsed_urls[i])
+    raw_urls = re.findall(r'i\.imgur\.com/\w{7}[s]?\.'+filetypes, html)
+    
+    if raw_urls:
+      parsed_urls = set()
+      #Iterate over raw_urls and add add the set - uniqizes the urls automatically
+      for i, url in enumerate(raw_urls):
+        #Add http for BasePlugin and delete lower case 's' (those are thumbnails)
+        temp_url = "http://"+url.replace("s", "")
+        parsed_urls.add(temp_url)
+        self.logDebug('New url: '+temp_url)
       name = "imgurCom_" + re.search(r'imgur\.com/(?:a/|gallery/|)(\w{5,7})', pyfile.url).group(1)
       self.logDebug('Determined name for package: '+name)
-      self.packages.append((name, parsed_urls, name))
+      self.packages.append((name, list(parsed_urls), name))
     else:
       self.logInfo('No urls found')
