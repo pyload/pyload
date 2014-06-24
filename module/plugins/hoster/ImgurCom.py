@@ -20,8 +20,8 @@ class ImgurCom(Hoster):
     if parsed_urls:
       #for now only the last file will show up in queue - it still downloads all files
       for single_url in parsed_urls:
-        single_url="http://"+dl
+        single_url="http://"+single_url
         pyfile.name = re.search(r'\w{7}\.\w{3,4}', single_url).group(0)
-        print self.download(single_url)
+        self.download(single_url)
     else:
       self.logInfo('No urls found')
