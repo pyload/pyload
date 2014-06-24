@@ -7,6 +7,7 @@ from urllib import unquote
 
 from module.utils import html_unescape
 from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import replace_patterns
 
 
 def which(program):
@@ -34,8 +35,8 @@ def which(program):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:[^/]*\.)?youtube\.com/watch.*?[?&]v=.*'
-    __version__ = "0.39"
+    __pattern__ = r'https?://(?:[^/]*\.)?(?:youtube\.com|youtu\.be)/watch.*?[?&]v=.*'
+    __version__ = "0.40"
     __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
                   ("fmt", "int", "FMT/ITAG Number (5-102, 0 for auto)", 0),
                   (".mp4", "bool", "Allow .mp4", True),
@@ -46,6 +47,11 @@ class YoutubeCom(Hoster):
     __description__ = """Youtube.com hoster plugin"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
+
+    FILE_URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]
+
+    # Invalid characters that must be removed from the file name
+    invalidChars = u'\u2605:?><"|\\'
 
     # name, width, height, quality ranking, 3D
     formats = {5: (".flv", 400, 240, 1, False),
@@ -74,6 +80,7 @@ class YoutubeCom(Hoster):
         self.resumeDownload = self.multiDL = True
 
     def process(self, pyfile):
+        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
         html = self.load(pyfile.url, decode=True)
 
         if re.search(r'<div id="player-unavailable" class="\s*player-width player-height\s*">', html):
@@ -138,6 +145,8 @@ class YoutubeCom(Hoster):
 
         # Cleaning invalid characters from the file name
         name = name.encode('ascii', 'replace')
+        for c in self.invalidChars:
+            name = name.replace(c, '_')
 
         pyfile.name = html_unescape(name)
 
