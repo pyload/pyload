@@ -21,7 +21,6 @@ class ImgurCom(Hoster):
     if single_url:
       #complete downloadable url
       single_url="http://"+single_url.group(0)
-      print single_url
       #parse name for file
       pyfile.name = re.search(r'\w{7}\.'+filetypes, single_url).group(0)
       self.download(single_url)
