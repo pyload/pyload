@@ -6,7 +6,7 @@ class ImgurComAlbum(Crypter):
   __type__ = "crypter"
   __version__ = "0.1"
   __description__ = """Imgur.com decrypter plugin"""
-  __pattern__ = r"http[s]?://imgur\.com/(?:a/|gallery/|)\w{5,7}"
+  __pattern__ = r"http[s]?://imgur\.com/(?P<FOLDER>a|gallery|)/(?P<ID>\w{5,7})"
   __config__ = []
   __author_name_ = "nath_schwarz"
   __author_mail_ = "nathan.notwhite@gmail.com"
@@ -33,7 +33,11 @@ class ImgurComAlbum(Crypter):
         self.logDebug('New url: ' + temp_url)
       
       #determine a name for the newly added package
-      name = "imgurCom_" + re.search(r'imgur\.com/(?:a/|gallery/|)(\w{5,7})', pyfile.url).group(1)
+      name = "imgurCom_"
+      regex = re.search(__pattern__, pyfile.url)
+      if regex.group("FOLDER"):
+        name = name + regex.group("FOLDER") + "_"
+      name = name + regex.group("ID")  
       self.logDebug('Determined name for package: '+name)
       
       self.packages.append((name, list(parsed_urls), name))
