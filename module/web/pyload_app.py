@@ -269,13 +269,12 @@ def config():
             data.validuntil  = _("not available")
         else:
             t = time.localtime(data.validuntil)
-            data.validuntil  = time.strftime("%d.%m.%Y", t)
+            data.validuntil  = time.strftime("%d.%m.%Y - %H:%M:%S", t)
 
-        if "time" in data.options:
-            try:
-                data.options["time"] = data.options["time"][0]
-            except:
-                data.options["time"] = "0:00-0:00"
+        try:
+            data.options["time"] = data.options["time"][0]
+        except:
+            data.options["time"] = "0:00-0:00"
 
         if "limitDL" in data.options:
             data.options["limitdl"] = data.options["limitDL"][0]
