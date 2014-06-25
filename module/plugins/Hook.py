@@ -88,8 +88,9 @@ class Hook(Base):
 
             self.event_list = None
 
-        self.initPeriodical()
         self.setup()
+        self.initPeriodical()
+
 
     def initPeriodical(self):
         if self.interval >=1:
