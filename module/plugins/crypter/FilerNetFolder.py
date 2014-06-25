@@ -27,7 +27,7 @@ class FilerNetFolder(Crypter):
         parsed_urls.add(temp_url)
      
       #determine a name for the newly added package
-      name = "filerNet_" + re.search(__pattern__, pyfile.url).group("ID")
+      name = re.search(r'h3>[\n.]*(?P<NAME>test).*<small', html).group("NAME")
       self.logDebug('Determined name for package: '+name)
       
       self.packages.append((name, list(parsed_urls), name))
