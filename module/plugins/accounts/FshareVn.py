@@ -26,7 +26,7 @@ from module.plugins.Account import Account
 
 class FshareVn(Account):
     __name__ = "FshareVn"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __type__ = "account"
     __description__ = """Fshare.vn account plugin"""
     __author_name__ = ("zoidberg", "stickell")
@@ -63,10 +63,10 @@ class FshareVn(Account):
         self.html = req.load('https://www.fshare.vn/login.php', post={
             "login_password": data['password'],
             "login_useremail": user,
-            "url_refe": "https://www.fshare.vn/login.php"
+            "url_refe": "http://www.fshare.vn/index.php"
         }, referer=True, decode=True)
 
-        if not '<img alt="VIP"' in self.html:
+        if not re.search(r'<img\s+alt="VIP"', self.html):
             self.wrongPassword()
 
     def getTrafficLeft(self):
