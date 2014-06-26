@@ -14,7 +14,7 @@ from module.plugins.Hook import threaded, Expose, Hook
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """Check for updates"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -223,7 +223,7 @@ class UpdateManager(Hook):
 
         for type, name in type_plugins:
             py = join("userplugins", type, name)
-            pyc = py[::-1].replace('.py', '.pyc')[::-1]
+            pyc = join("userplugins", type, name.replace('.py', '.pyc'))
             if isfile(py):
                 id = (type, name)
                 remove(py)
