@@ -36,7 +36,7 @@ class MegacrypterCom(MegaNz):
         dl = self.callApi(link=node, m="dl")
 
         # TODO: map error codes, implement password protection
-        # if info["pass"] == true:
+        # if info["pass"] == True:
         #    crypted_file_key, md5_file_key = info["key"].split("#")
 
         key = self.b64_decode(info["key"])
