@@ -34,12 +34,12 @@ def secondsToMidnight():
 
 class SimplyPremiumCom(Hoster):
     __name__ = "SimplyPremiumCom"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "hoster"
     __pattern__ = r"https?://.*(simply-premium)\.com"
     __description__ = """Simply-Premium.Com hoster plugin"""
-    __author_name__ = ("EvolutionClip")
-    __author_mail__ = ("evolutionclip@live.de")
+    __author_name__ = "EvolutionClip"
+    __author_mail__ = "evolutionclip@live.de"
 
     def setup(self):
         self.chunkLimit = 16
@@ -82,20 +82,19 @@ class SimplyPremiumCom(Hoster):
             #self.api_data = page[new_url]
 
             try:
-                start = page.index('<name>') + len('<name>')
-                end = page.index('</name>', start)
-                self.pyfile.name = page[start:end]
-            except ValueError:
+                self.pyfile.name = re.search(r'<name>([^<]+)</name>', page).group(1)
+            except AttributeError:
                 self.pyfile.name = ""
 
             try:
-                start = page.index('<size>') + len('<size>')
-                end = page.index('</size>', start)
-                self.pyfile.size = int(float(page[start:end]))
-            except ValueError:
+                self.pyfile.size = re.search(r'<size>(\d+)</size>', page).group(1)
+            except AttributeError:
                 self.pyfile.size = 0
 
-            new_url = 'http://www.simply-premium.com/premium.php?link=' + pyfile.url
+            try:
+                new_url = re.search(r'<download>([^<]+)</download>', page).group(1)
+            except AttributeError:
+                new_url = 'http://www.simply-premium.com/premium.php?link=' + pyfile.url
 
         if new_url != pyfile.url:
             self.logDebug("New URL: " + new_url)
