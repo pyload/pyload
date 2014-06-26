@@ -14,7 +14,7 @@ from module.plugins.Hook import threaded, Expose, Hook
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __description__ = """Check for updates"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
