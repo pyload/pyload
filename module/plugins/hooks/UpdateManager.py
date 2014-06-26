@@ -47,7 +47,7 @@ class UpdateManager(Hook):
         self.cb2 = None
         self.interval = self.MIN_TIME
         self.updating = False
-        self.info = {"pyload": False, "plugins": False}
+        self.info = {"pyload": False, "version": None, "plugins": False}
         self.mtimes = {}  #: store modification time for each plugin
 
 
@@ -115,10 +115,10 @@ class UpdateManager(Hook):
             r = False
         else:
             newversion = data[0]
-            # self.info["pyload"] = newversion
             self.logInfo(_("***  New pyLoad Version %s available  ***") % newversion)
             self.logInfo(_("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
             r = self.info["pyload"] = True
+            self.info["version"] = newversion
         return r
 
     def _updatePlugins(self, updates):
