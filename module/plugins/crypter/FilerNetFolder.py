@@ -14,8 +14,5 @@ class FilerNetFolder(SimpleCrypter):
   TITLE_PATTERN = r'<h3>(?P<title>.+) - <small'
 
   def getLinks(self):
-    urls = re.findall(self.LINK_PATTERN, self.html)
-    for url in urls:
-      urls[urls.index(url)] = "http://filer.net/get/"+re.search(r'\w{16}', url).group(0)
-    urls = list(set(urls))
-    return urls
+    f: lambda url: "http:filer.net/get/" + re.search(r'\w{16}', url).group(0)
+    return list(set(map(f, re.finall(self.LINK_PATTERN, self.html))))
