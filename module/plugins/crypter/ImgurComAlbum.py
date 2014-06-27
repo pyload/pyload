@@ -6,7 +6,7 @@ class ImgurComAlbum(SimpleCrypter):
   __type__ = "crypter"
   __version__ = "0.3"
   __description__ = """Imgur.com decrypter plugin"""
-  __pattern__ = r"http[s]?://imgur\.com/(a|gallery|)/?\w{5,7}"
+  __pattern__ = r"https?://imgur\.com/(a|gallery|)/?\w{5,7}"
   __author_name_ = "nath_schwarz"
   __author_mail_ = "nathan.notwhite@gmail.com"
 
