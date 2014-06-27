@@ -10,13 +10,12 @@ class FilerNetFolder(SimpleCrypter):
   __author_name_ = "nath_schwarz"
   __author_mail_ = "nathan.notwhite@gmail.com"
 
+  LINK_PATTERN = r'/get/[\w]{16}'
   TITLE_PATTERN = r'<h3>(?P<title>.+) - <small'
-  LINK_PATTERN = r'/get/(\w{16})'
 
   def getLinks(self):
-    urls = re.findall(LINK_PATTERN, self.html)
+    urls = re.findall(self.LINK_PATTERN, self.html)
     for url in urls:
       urls[urls.index(url)] = "http://filer.net/get/"+re.search(r'\w{16}', url).group(0)
     urls = list(set(urls))
     return urls
-
