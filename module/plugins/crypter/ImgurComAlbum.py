@@ -15,12 +15,7 @@ class ImgurComAlbum(SimpleCrypter):
 
   def getLinks(self):
     urls = re.findall(self.LINK_PATTERN, self.html)
-    #Uniquize list
-    urls = list(set(urls))
     for url in urls:
-      print url
-      temp ="http://"+ re.sub(r'(\w{7})s\.', r'\1.', url)
-      urls[urls.index(url)] = temp
-      print temp
+      urls[urls.index(url)] = "http://"+ re.sub(r'(\w{7})s\.', r'\1.', url)
     urls = list(set(urls))
     return urls
