@@ -9,11 +9,61 @@ def _import_c_make_scanner():
         return None
 c_make_scanner = _import_c_make_scanner()
 
-__all__ = ['make_scanner']
+__all__ = ['make_scanner', 'JSONDecodeError']
 
 NUMBER_RE = re.compile(
     r'(-?(?:0|[1-9]\d*))(\.\d+)?([eE][-+]?\d+)?',
     (re.VERBOSE | re.MULTILINE | re.DOTALL))
+
+class JSONDecodeError(ValueError):
+    """Subclass of ValueError with the following additional properties:
+
+    msg: The unformatted error message
+    doc: The JSON document being parsed
+    pos: The start index of doc where parsing failed
+    end: The end index of doc where parsing failed (may be None)
+    lineno: The line corresponding to pos
+    colno: The column corresponding to pos
+    endlineno: The line corresponding to end (may be None)
+    endcolno: The column corresponding to end (may be None)
+
+    """
+    # Note that this exception is used from _speedups
+    def __init__(self, msg, doc, pos, end=None):
+        ValueError.__init__(self, errmsg(msg, doc, pos, end=end))
+        self.msg = msg
+        self.doc = doc
+        self.pos = pos
+        self.end = end
+        self.lineno, self.colno = linecol(doc, pos)
+        if end is not None:
+            self.endlineno, self.endcolno = linecol(doc, end)
+        else:
+            self.endlineno, self.endcolno = None, None
+
+    def __reduce__(self):
+        return self.__class__, (self.msg, self.doc, self.pos, self.end)
+
+
+def linecol(doc, pos):
+    lineno = doc.count('\n', 0, pos) + 1
+    if lineno == 1:
+        colno = pos + 1
+    else:
+        colno = pos - doc.rindex('\n', 0, pos)
+    return lineno, colno
+
+
+def errmsg(msg, doc, pos, end=None):
+    lineno, colno = linecol(doc, pos)
+    msg = msg.replace('%r', repr(doc[pos:pos + 1]))
+    if end is None:
+        fmt = '%s: line %d column %d (char %d)'
+        return fmt % (msg, lineno, colno, pos)
+    endlineno, endcolno = linecol(doc, end)
+    fmt = '%s: line %d column %d - line %d column %d (char %d - %d)'
+    return fmt % (msg, lineno, colno, endlineno, endcolno, pos, end)
+
 
 def py_make_scanner(context):
     parse_object = context.parse_object
@@ -30,10 +80,11 @@ def py_make_scanner(context):
     memo = context.memo
 
     def _scan_once(string, idx):
+        errmsg = 'Expecting value'
         try:
             nextchar = string[idx]
         except IndexError:
-            raise StopIteration
+            raise JSONDecodeError(errmsg, string, idx)
 
         if nextchar == '"':
             return parse_string(string, idx + 1, encoding, strict)
@@ -64,9 +115,14 @@ def py_make_scanner(context):
         elif nextchar == '-' and string[idx:idx + 9] == '-Infinity':
             return parse_constant('-Infinity'), idx + 9
         else:
-            raise StopIteration
+            raise JSONDecodeError(errmsg, string, idx)
 
     def scan_once(string, idx):
+        if idx < 0:
+            # Ensure the same behavior as the C speedup, otherwise
+            # this would work for *some* negative string indices due
+            # to the behavior of __getitem__ for strings. #98
+            raise JSONDecodeError('Expecting value', string, idx)
         try:
             return _scan_once(string, idx)
         finally:

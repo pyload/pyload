@@ -14,15 +14,15 @@ Encoding basic Python object hierarchies::
     >>> import simplejson as json
     >>> json.dumps(['foo', {'bar': ('baz', None, 1.0, 2)}])
     '["foo", {"bar": ["baz", null, 1.0, 2]}]'
-    >>> print json.dumps("\"foo\bar")
+    >>> print(json.dumps("\"foo\bar"))
     "\"foo\bar"
-    >>> print json.dumps(u'\u1234')
+    >>> print(json.dumps(u'\u1234'))
     "\u1234"
-    >>> print json.dumps('\\')
+    >>> print(json.dumps('\\'))
     "\\"
-    >>> print json.dumps({"c": 0, "b": 0, "a": 0}, sort_keys=True)
+    >>> print(json.dumps({"c": 0, "b": 0, "a": 0}, sort_keys=True))
     {"a": 0, "b": 0, "c": 0}
-    >>> from StringIO import StringIO
+    >>> from simplejson.compat import StringIO
     >>> io = StringIO()
     >>> json.dump(['streaming API'], io)
     >>> io.getvalue()
@@ -31,14 +31,14 @@ Encoding basic Python object hierarchies::
 Compact encoding::
 
     >>> import simplejson as json
-    >>> json.dumps([1,2,3,{'4': 5, '6': 7}], separators=(',',':'))
+    >>> obj = [1,2,3,{'4': 5, '6': 7}]
+    >>> json.dumps(obj, separators=(',',':'), sort_keys=True)
     '[1,2,3,{"4":5,"6":7}]'
 
 Pretty printing::
 
     >>> import simplejson as json
-    >>> s = json.dumps({'4': 5, '6': 7}, sort_keys=True, indent='    ')
-    >>> print '\n'.join([l.rstrip() for l in  s.splitlines()])
+    >>> print(json.dumps({'4': 5, '6': 7}, sort_keys=True, indent='    '))
     {
         "4": 5,
         "6": 7
@@ -52,7 +52,7 @@ Decoding JSON::
     True
     >>> json.loads('"\\"foo\\bar"') == u'"foo\x08ar'
     True
-    >>> from StringIO import StringIO
+    >>> from simplejson.compat import StringIO
     >>> io = StringIO('["streaming API"]')
     >>> json.load(io)[0] == 'streaming API'
     True
@@ -95,33 +95,35 @@ Using simplejson.tool from the shell to validate and pretty-print::
         "json": "obj"
     }
     $ echo '{ 1.2:3.4}' | python -m simplejson.tool
-    Expecting property name: line 1 column 2 (char 2)
+    Expecting property name: line 1 column 3 (char 2)
 """
-__version__ = '2.2.1'
+from __future__ import absolute_import
+__version__ = '3.5.3'
 __all__ = [
     'dump', 'dumps', 'load', 'loads',
     'JSONDecoder', 'JSONDecodeError', 'JSONEncoder',
-    'OrderedDict',
+    'OrderedDict', 'simple_first',
 ]
 
 __author__ = 'Bob Ippolito <bob@redivi.com>'
 
 from decimal import Decimal
 
-from decoder import JSONDecoder, JSONDecodeError
-from encoder import JSONEncoder
+from .scanner import JSONDecodeError
+from .decoder import JSONDecoder
+from .encoder import JSONEncoder, JSONEncoderForHTML
 def _import_OrderedDict():
     import collections
     try:
         return collections.OrderedDict
     except AttributeError:
-        import ordered_dict
+        from . import ordered_dict
         return ordered_dict.OrderedDict
 OrderedDict = _import_OrderedDict()
 
 def _import_c_make_encoder():
     try:
-        from simplejson._speedups import make_encoder
+        from ._speedups import make_encoder
         return make_encoder
     except ImportError:
         return None
@@ -138,34 +140,41 @@ _default_encoder = JSONEncoder(
     use_decimal=True,
     namedtuple_as_object=True,
     tuple_as_array=True,
+    bigint_as_string=False,
+    item_sort_key=None,
+    for_json=False,
+    ignore_nan=False,
+    int_as_string_bitcount=None,
 )
 
 def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
-        allow_nan=True, cls=None, indent=None, separators=None,
-        encoding='utf-8', default=None, use_decimal=True,
-        namedtuple_as_object=True, tuple_as_array=True,
-        **kw):
+         allow_nan=True, cls=None, indent=None, separators=None,
+         encoding='utf-8', default=None, use_decimal=True,
+         namedtuple_as_object=True, tuple_as_array=True,
+         bigint_as_string=False, sort_keys=False, item_sort_key=None,
+         for_json=False, ignore_nan=False, int_as_string_bitcount=None, **kw):
     """Serialize ``obj`` as a JSON formatted stream to ``fp`` (a
     ``.write()``-supporting file-like object).
 
-    If ``skipkeys`` is true then ``dict`` keys that are not basic types
+    If *skipkeys* is true then ``dict`` keys that are not basic types
     (``str``, ``unicode``, ``int``, ``long``, ``float``, ``bool``, ``None``)
     will be skipped instead of raising a ``TypeError``.
 
-    If ``ensure_ascii`` is false, then the some chunks written to ``fp``
+    If *ensure_ascii* is false, then the some chunks written to ``fp``
     may be ``unicode`` instances, subject to normal Python ``str`` to
     ``unicode`` coercion rules. Unless ``fp.write()`` explicitly
     understands ``unicode`` (as in ``codecs.getwriter()``) this is likely
     to cause an error.
 
-    If ``check_circular`` is false, then the circular reference check
+    If *check_circular* is false, then the circular reference check
     for container types will be skipped and a circular reference will
     result in an ``OverflowError`` (or worse).
 
-    If ``allow_nan`` is false, then it will be a ``ValueError`` to
+    If *allow_nan* is false, then it will be a ``ValueError`` to
     serialize out of range ``float`` values (``nan``, ``inf``, ``-inf``)
-    in strict compliance of the JSON specification, instead of using the
-    JavaScript equivalents (``NaN``, ``Infinity``, ``-Infinity``).
+    in strict compliance of the original JSON specification, instead of using
+    the JavaScript equivalents (``NaN``, ``Infinity``, ``-Infinity``). See
+    *ignore_nan* for ECMA-262 compliant behavior.
 
     If *indent* is a string, then JSON array elements and object members
     will be pretty-printed with a newline followed by that string repeated
@@ -174,14 +183,16 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
     versions of simplejson earlier than 2.1.0, an integer is also accepted
     and is converted to a string with that many spaces.
 
-    If ``separators`` is an ``(item_separator, dict_separator)`` tuple
-    then it will be used instead of the default ``(', ', ': ')`` separators.
-    ``(',', ':')`` is the most compact JSON representation.
+    If specified, *separators* should be an
+    ``(item_separator, key_separator)`` tuple.  The default is ``(', ', ': ')``
+    if *indent* is ``None`` and ``(',', ': ')`` otherwise.  To get the most
+    compact JSON representation, you should specify ``(',', ':')`` to eliminate
+    whitespace.
 
-    ``encoding`` is the character encoding for str instances, default is UTF-8.
+    *encoding* is the character encoding for str instances, default is UTF-8.
 
-    ``default(obj)`` is a function that should return a serializable version
-    of obj or raise TypeError. The default simply raises TypeError.
+    *default(obj)* is a function that should return a serializable version
+    of obj or raise ``TypeError``. The default simply raises ``TypeError``.
 
     If *use_decimal* is true (default: ``True``) then decimal.Decimal
     will be natively serialized to JSON with full precision.
@@ -189,13 +200,41 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
     If *namedtuple_as_object* is true (default: ``True``),
     :class:`tuple` subclasses with ``_asdict()`` methods will be encoded
     as JSON objects.
-    
+
     If *tuple_as_array* is true (default: ``True``),
     :class:`tuple` (and subclasses) will be encoded as JSON arrays.
 
+    If *bigint_as_string* is true (default: ``False``), ints 2**53 and higher
+    or lower than -2**53 will be encoded as strings. This is to avoid the
+    rounding that happens in Javascript otherwise. Note that this is still a
+    lossy operation that will not round-trip correctly and should be used
+    sparingly.
+
+    If *int_as_string_bitcount* is a positive number (n), then int of size
+    greater than or equal to 2**n or lower than or equal to -2**n will be
+    encoded as strings.
+
+    If specified, *item_sort_key* is a callable used to sort the items in
+    each dictionary. This is useful if you want to sort items other than
+    in alphabetical order by key. This option takes precedence over
+    *sort_keys*.
+
+    If *sort_keys* is true (default: ``False``), the output of dictionaries
+    will be sorted by item.
+
+    If *for_json* is true (default: ``False``), objects with a ``for_json()``
+    method will use the return value of that method for encoding as JSON
+    instead of the object.
+
+    If *ignore_nan* is true (default: ``False``), then out of range
+    :class:`float` values (``nan``, ``inf``, ``-inf``) will be serialized as
+    ``null`` in compliance with the ECMA-262 specification. If true, this will
+    override *allow_nan*.
+
     To use a custom ``JSONEncoder`` subclass (e.g. one that overrides the
     ``.default()`` method to serialize additional types), specify it with
-    the ``cls`` kwarg.
+    the ``cls`` kwarg. NOTE: You should use *default* or *for_json* instead
+    of subclassing whenever possible.
 
     """
     # cached encoder
@@ -203,7 +242,9 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
         check_circular and allow_nan and
         cls is None and indent is None and separators is None and
         encoding == 'utf-8' and default is None and use_decimal
-        and namedtuple_as_object and tuple_as_array and not kw):
+        and namedtuple_as_object and tuple_as_array
+        and not bigint_as_string and int_as_string_bitcount is None
+        and not item_sort_key and not for_json and not ignore_nan and not kw):
         iterable = _default_encoder.iterencode(obj)
     else:
         if cls is None:
@@ -214,6 +255,12 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
             default=default, use_decimal=use_decimal,
             namedtuple_as_object=namedtuple_as_object,
             tuple_as_array=tuple_as_array,
+            bigint_as_string=bigint_as_string,
+            sort_keys=sort_keys,
+            item_sort_key=item_sort_key,
+            for_json=for_json,
+            ignore_nan=ignore_nan,
+            int_as_string_bitcount=int_as_string_bitcount,
             **kw).iterencode(obj)
     # could accelerate with writelines in some versions of Python, at
     # a debuggability cost
@@ -222,11 +269,11 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
 
 
 def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
-        allow_nan=True, cls=None, indent=None, separators=None,
-        encoding='utf-8', default=None, use_decimal=True,
-        namedtuple_as_object=True,
-        tuple_as_array=True,
-        **kw):
+          allow_nan=True, cls=None, indent=None, separators=None,
+          encoding='utf-8', default=None, use_decimal=True,
+          namedtuple_as_object=True, tuple_as_array=True,
+          bigint_as_string=False, sort_keys=False, item_sort_key=None,
+          for_json=False, ignore_nan=False, int_as_string_bitcount=None, **kw):
     """Serialize ``obj`` to a JSON formatted ``str``.
 
     If ``skipkeys`` is false then ``dict`` keys that are not basic types
@@ -253,9 +300,11 @@ def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
     versions of simplejson earlier than 2.1.0, an integer is also accepted
     and is converted to a string with that many spaces.
 
-    If ``separators`` is an ``(item_separator, dict_separator)`` tuple
-    then it will be used instead of the default ``(', ', ': ')`` separators.
-    ``(',', ':')`` is the most compact JSON representation.
+    If specified, ``separators`` should be an
+    ``(item_separator, key_separator)`` tuple.  The default is ``(', ', ': ')``
+    if *indent* is ``None`` and ``(',', ': ')`` otherwise.  To get the most
+    compact JSON representation, you should specify ``(',', ':')`` to eliminate
+    whitespace.
 
     ``encoding`` is the character encoding for str instances, default is UTF-8.
 
@@ -268,21 +317,52 @@ def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
     If *namedtuple_as_object* is true (default: ``True``),
     :class:`tuple` subclasses with ``_asdict()`` methods will be encoded
     as JSON objects.
-    
+
     If *tuple_as_array* is true (default: ``True``),
     :class:`tuple` (and subclasses) will be encoded as JSON arrays.
 
+    If *bigint_as_string* is true (not the default), ints 2**53 and higher
+    or lower than -2**53 will be encoded as strings. This is to avoid the
+    rounding that happens in Javascript otherwise.
+
+    If *int_as_string_bitcount* is a positive number (n), then int of size
+    greater than or equal to 2**n or lower than or equal to -2**n will be
+    encoded as strings.
+
+    If specified, *item_sort_key* is a callable used to sort the items in
+    each dictionary. This is useful if you want to sort items other than
+    in alphabetical order by key. This option takes precendence over
+    *sort_keys*.
+
+    If *sort_keys* is true (default: ``False``), the output of dictionaries
+    will be sorted by item.
+
+    If *for_json* is true (default: ``False``), objects with a ``for_json()``
+    method will use the return value of that method for encoding as JSON
+    instead of the object.
+
+    If *ignore_nan* is true (default: ``False``), then out of range
+    :class:`float` values (``nan``, ``inf``, ``-inf``) will be serialized as
+    ``null`` in compliance with the ECMA-262 specification. If true, this will
+    override *allow_nan*.
+
     To use a custom ``JSONEncoder`` subclass (e.g. one that overrides the
     ``.default()`` method to serialize additional types), specify it with
-    the ``cls`` kwarg.
+    the ``cls`` kwarg. NOTE: You should use *default* instead of subclassing
+    whenever possible.
 
     """
     # cached encoder
-    if (not skipkeys and ensure_ascii and
+    if (
+        not skipkeys and ensure_ascii and
         check_circular and allow_nan and
         cls is None and indent is None and separators is None and
         encoding == 'utf-8' and default is None and use_decimal
-        and namedtuple_as_object and tuple_as_array and not kw):
+        and namedtuple_as_object and tuple_as_array
+        and not bigint_as_string and int_as_string_bitcount is None
+        and not sort_keys and not item_sort_key and not for_json
+        and not ignore_nan and not kw
+    ):
         return _default_encoder.encode(obj)
     if cls is None:
         cls = JSONEncoder
@@ -293,6 +373,12 @@ def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
         use_decimal=use_decimal,
         namedtuple_as_object=namedtuple_as_object,
         tuple_as_array=tuple_as_array,
+        bigint_as_string=bigint_as_string,
+        sort_keys=sort_keys,
+        item_sort_key=item_sort_key,
+        for_json=for_json,
+        ignore_nan=ignore_nan,
+        int_as_string_bitcount=int_as_string_bitcount,
         **kw).encode(obj)
 
 
@@ -347,7 +433,8 @@ def load(fp, encoding=None, cls=None, object_hook=None, parse_float=None,
     parse_float=decimal.Decimal for parity with ``dump``.
 
     To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
-    kwarg.
+    kwarg. NOTE: You should use *object_hook* or *object_pairs_hook* instead
+    of subclassing whenever possible.
 
     """
     return loads(fp.read(),
@@ -403,7 +490,8 @@ def loads(s, encoding=None, cls=None, object_hook=None, parse_float=None,
     parse_float=decimal.Decimal for parity with ``dump``.
 
     To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
-    kwarg.
+    kwarg. NOTE: You should use *object_hook* or *object_pairs_hook* instead
+    of subclassing whenever possible.
 
     """
     if (cls is None and encoding is None and object_hook is None and
@@ -431,14 +519,14 @@ def loads(s, encoding=None, cls=None, object_hook=None, parse_float=None,
 
 
 def _toggle_speedups(enabled):
-    import simplejson.decoder as dec
-    import simplejson.encoder as enc
-    import simplejson.scanner as scan
+    from . import decoder as dec
+    from . import encoder as enc
+    from . import scanner as scan
     c_make_encoder = _import_c_make_encoder()
     if enabled:
         dec.scanstring = dec.c_scanstring or dec.py_scanstring
         enc.c_make_encoder = c_make_encoder
-        enc.encode_basestring_ascii = (enc.c_encode_basestring_ascii or 
+        enc.encode_basestring_ascii = (enc.c_encode_basestring_ascii or
             enc.py_encode_basestring_ascii)
         scan.make_scanner = scan.c_make_scanner or scan.py_make_scanner
     else:
@@ -464,3 +552,9 @@ def _toggle_speedups(enabled):
        encoding='utf-8',
        default=None,
    )
+
+def simple_first(kv):
+    """Helper function to pass to item_sort_key to sort simple
+    elements to the top, then container elements.
+    """
+    return (isinstance(kv[1], (list, dict, tuple)), kv[0])
