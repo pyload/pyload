@@ -1,31 +1,51 @@
-*.py[cod]
-
-# C extensions
-*.so
-
 # Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
-.installed.cfg
+bin/*
+build/*
+dist/*
+env/*
 lib/*
-lib64
-__pycache__
+lib64/*
+parts/*
+var/*
+sdist/*
 
-# Installer logs
+# Common pyLoad directories
+Downloads/*
+Logs/*
+docs/_build/*
+docs/module/*
+docs/pyload/*
+#module/*
+pyload/*
+
+# Common MacOS & Windows files
+*.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp stuff
+__pycache__
+.tmp
+temp
+
+# Installers stuff
+.installed.cfg
 pip-log.txt
 
 # Unit test / coverage reports
 .coverage
 .tox
 nosetests.xml
+
+# Compiled files
+*.so
+#*.py[cod]
+
+# EGG
+*.egg
+*.egg-info
+develop-eggs
+eggs
 
 # Mr Developer
 .mr.developer.cfg
@@ -35,36 +55,31 @@ nosetests.xml
 # PyCharm
 .idea
 
-# ignoreing unneeded files, using glob syntax
-*~
-*.pidaproject
+# Other development files
 .svn
-*.DS_Store
-*.egg-info
+*~
+*.orig
+*.pidaproject
+*.prefs
 *.project
 *.pydevproject
-Downloads/*
-container/*
-Logs/*
-docs/module/
-docs/_build
-module/plugins/container/DLC_*.py
-failed_links.txt
-module/config/gui.xml
-module/config/core.xml
-module/config/plugin.xml
-links.txt
+*.rej
+DLC_*.py
+paver-minilib.zip
+
+# Certificates
+cert.pem
 ssl.crt
 ssl.key
-cert.pem
+
+# Common pyLoad files
+*_links.txt
+links.txt
+module/config/core.xml
+module/config/gui.xml
+module/config/plugin.xml
 module/web/pyload.db
-*.svg
-*.prefs
-*.orig
-*.rej
-pyload/*
-dist/*
-build/*
-setup.py
-paver-minilib.zip
-env/*
+#pyload/config/core.xml
+#pyload/config/gui.xml
+#pyload/config/plugin.xml
+#pyload/web/pyload.db
