@@ -19,8 +19,8 @@
 
 from thrift.Thrift import *
 
-class TProtocolException(TException):
 
+class TProtocolException(TException):
   """Custom Protocol Exception class"""
 
   UNKNOWN = 0
@@ -33,14 +33,14 @@ class TProtocolException(TException):
     TException.__init__(self, message)
     self.type = type
 
-class TProtocolBase:
 
+class TProtocolBase:
   """Base class for Thrift protocol driver."""
 
   def __init__(self, trans):
     self.trans = trans
 
-  def writeMessageBegin(self, name, type, seqid):
+  def writeMessageBegin(self, name, ttype, seqid):
     pass
 
   def writeMessageEnd(self):
@@ -52,7 +52,7 @@ class TProtocolBase:
   def writeStructEnd(self):
     pass
 
-  def writeFieldBegin(self, name, type, id):
+  def writeFieldBegin(self, name, ttype, fid):
     pass
 
   def writeFieldEnd(self):
@@ -79,7 +79,7 @@ class TProtocolBase:
   def writeSetEnd(self):
     pass
 
-  def writeBool(self, bool):
+  def writeBool(self, bool_val):
     pass
 
   def writeByte(self, byte):
@@ -97,7 +97,7 @@ class TProtocolBase:
   def writeDouble(self, dub):
     pass
 
-  def writeString(self, str):
+  def writeString(self, str_val):
     pass
 
   def readMessageBegin(self):
@@ -157,69 +157,69 @@ class TProtocolBase:
   def readString(self):
     pass
 
-  def skip(self, type):
-    if type == TType.STOP:
+  def skip(self, ttype):
+    if ttype == TType.STOP:
       return
-    elif type == TType.BOOL:
+    elif ttype == TType.BOOL:
       self.readBool()
-    elif type == TType.BYTE:
+    elif ttype == TType.BYTE:
       self.readByte()
-    elif type == TType.I16:
+    elif ttype == TType.I16:
       self.readI16()
-    elif type == TType.I32:
+    elif ttype == TType.I32:
       self.readI32()
-    elif type == TType.I64:
+    elif ttype == TType.I64:
       self.readI64()
-    elif type == TType.DOUBLE:
+    elif ttype == TType.DOUBLE:
       self.readDouble()
-    elif type == TType.STRING:
+    elif ttype == TType.STRING:
       self.readString()
-    elif type == TType.STRUCT:
+    elif ttype == TType.STRUCT:
       name = self.readStructBegin()
       while True:
-        (name, type, id) = self.readFieldBegin()
-        if type == TType.STOP:
+        (name, ttype, id) = self.readFieldBegin()
+        if ttype == TType.STOP:
           break
-        self.skip(type)
+        self.skip(ttype)
         self.readFieldEnd()
       self.readStructEnd()
-    elif type == TType.MAP:
+    elif ttype == TType.MAP:
       (ktype, vtype, size) = self.readMapBegin()
-      for i in range(size):
+      for i in xrange(size):
         self.skip(ktype)
         self.skip(vtype)
       self.readMapEnd()
-    elif type == TType.SET:
+    elif ttype == TType.SET:
       (etype, size) = self.readSetBegin()
-      for i in range(size):
+      for i in xrange(size):
         self.skip(etype)
       self.readSetEnd()
-    elif type == TType.LIST:
+    elif ttype == TType.LIST:
       (etype, size) = self.readListBegin()
-      for i in range(size):
+      for i in xrange(size):
         self.skip(etype)
       self.readListEnd()
 
-  # tuple of: ( 'reader method' name, is_container boolean, 'writer_method' name )
+  # tuple of: ( 'reader method' name, is_container bool, 'writer_method' name )
   _TTYPE_HANDLERS = (
-       (None, None, False), # 0 == TType,STOP
-       (None, None, False), # 1 == TType.VOID # TODO: handle void?
-       ('readBool', 'writeBool', False), # 2 == TType.BOOL
-       ('readByte',  'writeByte', False), # 3 == TType.BYTE and I08
-       ('readDouble', 'writeDouble', False), # 4 == TType.DOUBLE
-       (None, None, False), # 5, undefined
-       ('readI16', 'writeI16', False), # 6 == TType.I16
-       (None, None, False), # 7, undefined
-       ('readI32', 'writeI32', False), # 8 == TType.I32
-       (None, None, False), # 9, undefined
-       ('readI64', 'writeI64', False), # 10 == TType.I64
-       ('readString', 'writeString', False), # 11 == TType.STRING and UTF7
-       ('readContainerStruct', 'writeContainerStruct', True), # 12 == TType.STRUCT
-       ('readContainerMap', 'writeContainerMap', True), # 13 == TType.MAP
-       ('readContainerSet', 'writeContainerSet', True), # 14 == TType.SET
-       ('readContainerList', 'writeContainerList', True), # 15 == TType.LIST
-       (None, None, False), # 16 == TType.UTF8 # TODO: handle utf8 types?
-       (None, None, False)# 17 == TType.UTF16 # TODO: handle utf16 types?
+       (None, None, False),  # 0 TType.STOP
+       (None, None, False),  # 1 TType.VOID # TODO: handle void?
+       ('readBool', 'writeBool', False),  # 2 TType.BOOL
+       ('readByte',  'writeByte', False),  # 3 TType.BYTE and I08
+       ('readDouble', 'writeDouble', False),  # 4 TType.DOUBLE
+       (None, None, False),  # 5 undefined
+       ('readI16', 'writeI16', False),  # 6 TType.I16
+       (None, None, False),  # 7 undefined
+       ('readI32', 'writeI32', False),  # 8 TType.I32
+       (None, None, False),  # 9 undefined
+       ('readI64', 'writeI64', False),  # 10 TType.I64
+       ('readString', 'writeString', False),  # 11 TType.STRING and UTF7
+       ('readContainerStruct', 'writeContainerStruct', True),  # 12 *.STRUCT
+       ('readContainerMap', 'writeContainerMap', True),  # 13 TType.MAP
+       ('readContainerSet', 'writeContainerSet', True),  # 14 TType.SET
+       ('readContainerList', 'writeContainerList', True),  # 15 TType.LIST
+       (None, None, False),  # 16 TType.UTF8 # TODO: handle utf8 types?
+       (None, None, False)  # 17 TType.UTF16 # TODO: handle utf16 types?
       )
 
   def readFieldByTType(self, ttype, spec):
@@ -270,7 +270,7 @@ class TProtocolBase:
       container_reader = self._TTYPE_HANDLERS[set_type][0]
       val_reader = getattr(self, container_reader)
       for idx in xrange(set_len):
-        results.add(val_reader(tspec)) 
+        results.add(val_reader(tspec))
     self.readSetEnd()
     return results
 
@@ -279,13 +279,14 @@ class TProtocolBase:
     obj = obj_class()
     obj.read(self)
     return obj
-  
+
   def readContainerMap(self, spec):
     results = dict()
     key_ttype, key_spec = spec[0], spec[1]
     val_ttype, val_spec = spec[2], spec[3]
     (map_ktype, map_vtype, map_len) = self.readMapBegin()
-    # TODO: compare types we just decoded with thrift_spec and abort/skip if types disagree
+    # TODO: compare types we just decoded with thrift_spec and
+    # abort/skip if types disagree
     key_reader = getattr(self, self._TTYPE_HANDLERS[key_ttype][0])
     val_reader = getattr(self, self._TTYPE_HANDLERS[val_ttype][0])
     # list values are simple types
@@ -298,7 +299,8 @@ class TProtocolBase:
         v_val = val_reader()
       else:
         v_val = self.readFieldByTType(val_ttype, val_spec)
-      # this raises a TypeError with unhashable keys types. i.e. d=dict(); d[[0,1]] = 2 fails
+      # this raises a TypeError with unhashable keys types
+      # i.e. this fails: d=dict(); d[[0,1]] = 2
       results[k_val] = v_val
     self.readMapEnd()
     return results
@@ -329,7 +331,7 @@ class TProtocolBase:
 
   def writeContainerList(self, val, spec):
     self.writeListBegin(spec[0], len(val))
-    r_handler, w_handler, is_container  = self._TTYPE_HANDLERS[spec[0]]
+    r_handler, w_handler, is_container = self._TTYPE_HANDLERS[spec[0]]
     e_writer = getattr(self, w_handler)
     if not is_container:
       for elem in val:
@@ -398,7 +400,7 @@ class TProtocolBase:
     else:
       writer(val)
 
+
 class TProtocolFactory:
   def getProtocol(self, trans):
     pass
-

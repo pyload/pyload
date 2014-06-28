@@ -19,6 +19,7 @@
 
 import sys
 
+
 class TType:
   STOP   = 0
   VOID   = 1
@@ -38,7 +39,7 @@ class TType:
   UTF8   = 16
   UTF16  = 17
 
-  _VALUES_TO_NAMES = ( 'STOP',
+  _VALUES_TO_NAMES = ('STOP',
                       'VOID',
                       'BOOL',
                       'BYTE',
@@ -48,46 +49,48 @@ class TType:
                       None,
                       'I32',
                       None,
-                       'I64',
-                       'STRING',
-                       'STRUCT',
-                       'MAP',
-                       'SET',
-                       'LIST',
-                       'UTF8',
-                       'UTF16' )
+                     'I64',
+                     'STRING',
+                     'STRUCT',
+                     'MAP',
+                     'SET',
+                     'LIST',
+                     'UTF8',
+                     'UTF16')
+
 
 class TMessageType:
-  CALL  = 1
+  CALL = 1
   REPLY = 2
   EXCEPTION = 3
   ONEWAY = 4
 
-class TProcessor:
 
+class TProcessor:
   """Base class for procsessor, which works on two streams."""
 
   def process(iprot, oprot):
     pass
 
-class TException(Exception):
 
+class TException(Exception):
   """Base class for all thrift exceptions."""
 
   # BaseException.message is deprecated in Python v[2.6,3.0)
-  if (2,6,0) <= sys.version_info < (3,0):
+  if (2, 6, 0) <= sys.version_info < (3, 0):
     def _get_message(self):
-	    return self._message
+      return self._message
+
     def _set_message(self, message):
-	    self._message = message
+      self._message = message
     message = property(_get_message, _set_message)
 
   def __init__(self, message=None):
     Exception.__init__(self, message)
     self.message = message
 
-class TApplicationException(TException):
 
+class TApplicationException(TException):
   """Application level thrift exceptions."""
 
   UNKNOWN = 0
@@ -98,6 +101,9 @@ class TApplicationException(TException):
   MISSING_RESULT = 5
   INTERNAL_ERROR = 6
   PROTOCOL_ERROR = 7
+  INVALID_TRANSFORM = 8
+  INVALID_PROTOCOL = 9
+  UNSUPPORTED_CLIENT_TYPE = 10
 
   def __init__(self, type=UNKNOWN, message=None):
     TException.__init__(self, message)
@@ -116,6 +122,16 @@ class TApplicationException(TException):
       return 'Bad sequence ID'
     elif self.type == self.MISSING_RESULT:
       return 'Missing result'
+    elif self.type == self.INTERNAL_ERROR:
+      return 'Internal error'
+    elif self.type == self.PROTOCOL_ERROR:
+      return 'Protocol error'
+    elif self.type == self.INVALID_TRANSFORM:
+      return 'Invalid transform'
+    elif self.type == self.INVALID_PROTOCOL:
+      return 'Invalid protocol'
+    elif self.type == self.UNSUPPORTED_CLIENT_TYPE:
+      return 'Unsupported client type'
     else:
       return 'Default (unknown) TApplicationException'
 
@@ -127,12 +143,12 @@ class TApplicationException(TException):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.message = iprot.readString();
+          self.message = iprot.readString()
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.I32:
-          self.type = iprot.readI32();
+          self.type = iprot.readI32()
         else:
           iprot.skip(ftype)
       else:
@@ -142,11 +158,11 @@ class TApplicationException(TException):
 
   def write(self, oprot):
     oprot.writeStructBegin('TApplicationException')
-    if self.message != None:
+    if self.message is not None:
       oprot.writeFieldBegin('message', TType.STRING, 1)
       oprot.writeString(self.message)
       oprot.writeFieldEnd()
-    if self.type != None:
+    if self.type is not None:
       oprot.writeFieldBegin('type', TType.I32, 2)
       oprot.writeI32(self.type)
       oprot.writeFieldEnd()
