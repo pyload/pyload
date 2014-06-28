@@ -55,8 +55,10 @@ def pre_processor():
 
         # check if update check is available
         if info:
-            if info["pyload"] == "True": update = True
-            if info["plugins"] == "True": plugins = True
+            if info["pyload"] == "True":
+                update = info["version"]
+            if info["plugins"] == "True":
+                plugins = True
 
 
     return {"user": user,
