@@ -323,28 +323,35 @@ class PluginManager:
 
 
     def reloadPlugins(self, type_plugins):
-        """ reloads and reindexes plugins """
-        if not type_plugins: return False
+        """ reload and reindex plugins """
+        if not type_plugins:
+            return None
 
         self.log.debug("Request reload of plugins: %s" % type_plugins)
 
+        reloaded = []
+
         as_dict = {}
         for t,n in type_plugins:
-            if t in as_dict:
+            if t in ("hooks", "internal"):  #: do not reload hooks or internals, because would cause to much side effects
+                continue
+            elif t in as_dict:
                 as_dict[t].append(n)
             else:
                 as_dict[t] = [n]
 
-        # we do not reload hooks or internals, would cause to much side effects
-        if "hooks" in as_dict or "internal" in as_dict:
-            return False
-
         for type in as_dict.iterkeys():
             for plugin in as_dict[type]:
-                if plugin in self.plugins[type]:
-                    if "module" in self.plugins[type][plugin]:
-                        self.log.debug("Reloading %s" % plugin)
+                if plugin in self.plugins[type] and "module" in self.plugins[type][plugin]:
+                    self.log.debug("Reloading %s" % plugin)
+                    id = (type, plugin)
+                    try:
                         reload(self.plugins[type][plugin]["module"])
+                    except Exception, e:
+                        self.log.error("Error when reloading %s" % id, str(e))
+                        continue
+                    else:
+                        reloaded.append(id)
 
         #index creation
         self.plugins["crypter"] = self.crypterPlugins = self.parse("crypter", pattern=True)
@@ -353,11 +360,15 @@ class PluginManager:
         self.plugins["captcha"] = self.captchaPlugins = self.parse("captcha")
         self.plugins["accounts"] = self.accountPlugins = self.parse("accounts")
 
-        if "accounts" in as_dict: #accounts needs to be reloaded
+        if "accounts" in as_dict:  #: accounts needs to be reloaded
             self.core.accountManager.initPlugins()
             self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
 
-        return True
+        return reloaded  #: return a list of the plugins successfully reloaded
+
+    def reloadPlugin(self, type_plugin):
+        """ reload and reindex ONE plugin """
+        return True if self.reloadPlugins(type_plugin) else False
 
 
 
