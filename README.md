@@ -1,85 +1,95 @@
-![pyLoad](/logo.png "pyLoad")
+![pyLoad](/docs/resources/banner.png "pyLoad")
 =============================
 
-**pyLoad** is a free and open source download manager for all kind of operating systems and devices,
-designed to be extremely lightweight and runnable on common computers or headless servers.
+**pyLoad** is a Free and Open Source download manager written entirely in Python, available for all kind of operating systems and devices,
+designed to be extremely lightweight and executable either on common computers or on headless servers.
 
-Its modern web interface allows to manage downloads across networks and easily access them from anywhere.
-All common video-sites, one-click-hosters, container formats and well known web standards are supported to download files for you.
-Additionaly it has a great variety of plugins to automate common tasks and make unattended running possible.
+Its web interface allows full managing and easily remote access from anywhere.
 
-pyLoad has a full featured and well documented API, is easily extendable and accessible by external tools.
-It is written entirely in Python and under heavy development.
+All common video-sites, one-click-hosters, container formats and well known web standards are supported to allow you to download files.
+Additionaly, pyLoad has a great variety of plugins to automate common tasks and make unattended running possible.
+
+pyLoad has a fully featured and well documented API, is easily extendable and accessible by external tools.
 
 
 Dependencies
 ------------
 
-**You need at least python 2.5 to run pyLoad and all of these required libaries.**
-They should be automatically installed when using pip install.
-The pre-built pyload packages also install these dependencies or have them included, so manual install
-is only needed when installing pyLoad from source.
+**You need at least python 2.5 or at most python 2.7 to run pyLoad and its required libaries.**
+**Python 3 is not yet supported!**
 
 ### Required ###
 
  - **beaker**
  - **jinja2**
- - **pycurl** (a.k.a python-curl)
- - **simplejson**: For python 2.5
+ - **pycurl** (python-curl)
+ - **simplejson** for python 2.5 only
  - **thrift**
 
-Some plugins require additional packages, install these only when needed.
+Some plugins want additional packages, install them only when needed.
 
 ### Optional ###
 
  - **BeautifulSoup**
+ - **bjoern** (<https://github.com/jonashaag/bjoern>) for best web interface performance
  - **feedparser**
- - **jsengine** (spidermonkey, ossp-js, pyv8, rhino): Needed by several hosters (ex.: ClickNLoad)
- - **pycrypto**: For RSDF/CCF/DLC support
- - **pyOpenSSL**: For SSL connection
- - **tesseract**, **python-pil** (a.k.a python-imaging): For automatic captcha recognition support
+ - **jsengine** (spidermonkey, ossp-js, pyv8, rhino) needed by several hosters (ex.: ClickNLoad)
+ - **pycrypto** for RSDF/CCF/DLC support
+ - **pyOpenSSL** for SSL connection support
+ - **tesseract**, **python-pil** (python-imaging) for automatic captcha recognition support
+
+You can install them using the Python Package Index:
+
+    pip install <package-name>
+
+Indeed, pre-built pyLoad packages have all yet included, so manual install is required only when you get pyLoad source code.
 
 
-First start
+Usage
 -----------
 
-***Note:***
-If you installed pyload via package-manager `python pyLoadCore.py` is probably equivalent to `pyLoadCore`.
+### First start ###
 
 Run:
 
     python pyLoadCore.py
 
-and follow the instructions of the setup assistant.
+and follow the setup assistant instructions.
 
-For a list of options use:
+> ***Note:***
+If you installed pyLoad by package-manager, command `python pyLoadCore.py` is probably equivalent to `pyload` or `pyLoadCore`.
+
+Additionally, you can whenever restart the setup assistant typing:
+
+    python pyLoadCore.py -s
+
+Or you can even edit configuration files located in your pyLoad home directory (default to `~/.pyload`)
+with your favorite editor.
+For a short description of all the configuration options available visit <http://pyload.org/configuration>.
+
+
+### Web interface ###
+
+Run:
+
+    python pyLoadCore.py
+
+So, to retrieve it point your web browser to the socket address configured by setup (default to `http://localhost:8000`).
+
+You can get the list of accepted arguments typing:
 
     python pyLoadCore.py -h
 
 
-Configuration
--------------
+### Command Line Interface ###
 
-After finishing the setup assistant pyLoad is ready to use and more configuration can be done via webinterface.
-Additionally you could simply edit the configuration files located in your pyLoad home directory (default to `~/.pyload`)
-with your favorite editor and edit the appropriate options. For a short description of
-the options take a look at <http://pyload.org/configuration>.
-
-To restart the configure assistant run:
-
-    python pyLoadCore.py -s
-
-### Adding downloads ###
-
-To start the Command Line Interface and connect to a local server, run:
+Run:
 
     python pyLoadCli.py -l
 
-for more options refer to:
+You can get the list of accepted arguments typing:
 
     python pyLoadCli.py -h
-
-The webinterface can be accessed when pointing your webbrowser to the IP and configured port, defaults to `http://localhost:8000`.
 
 
 Notes

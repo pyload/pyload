@@ -43,7 +43,7 @@ def main():
     core_err = []
     core_info = []
 
-    if sys.version_info > (2, 8):
+    if sys.version_info > (2, 7):
         core_err.append("Your python version is to new, Please use Python 2.6/2.7")
 
     if sys.version_info < (2, 5):
