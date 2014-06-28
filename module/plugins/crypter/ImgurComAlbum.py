@@ -1,5 +1,6 @@
 import re
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.utils import uniqify
 
 class ImgurComAlbum(SimpleCrypter):
   __name__ = "ImgurComAlbum"
@@ -15,4 +16,4 @@ class ImgurComAlbum(SimpleCrypter):
 
   def getLinks(self):
     f = lambda url: "http://" + re.sub(r'(\w{7})s\.', r'\1.', url)
-    return list(set(map(f, re.findall(self.LINK_PATTERN, self.html))))
+    return uniqify(map(f, re.findall(self.LINK_PATTERN, self.html)))
