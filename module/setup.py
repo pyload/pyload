@@ -1,48 +1,30 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
-from getpass import getpass
-import module.common.pylgettext as gettext
 import os
-from os import makedirs
-from os.path import abspath
-from os.path import dirname
-from os.path import exists
-from os.path import join
-from subprocess import PIPE
-from subprocess import call
 import sys
-from sys import exit
+
+import module.common.pylgettext as gettext
+
+from getpass import getpass
+from os import makedirs
+from os.path import abspath, dirname, exists, join
+from subprocess import PIPE, call
+
 from module.utils import get_console_encoding
 
+
 class Setup():
-    """
-    pyLoads initial setup configuration assistent
-    """
+    """ pyLoads initial setup configuration assistant """
 
     def __init__(self, path, config):
         self.path = path
         self.config = config
         self.stdin_encoding = get_console_encoding(sys.stdin.encoding)
 
+
     def start(self):
         langs = self.config.getMetaData("general", "language")["type"].split(";")
-        lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", langs)
+        lang = self.ask(u"Choose your Language", "en", langs)
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("setup", join(self.path, "locale"), languages=[lang, "en"], fallback=True)
         translation.install(True)
@@ -67,16 +49,15 @@ class Setup():
         #                print "Setup failed with this error: ", e
         #                print "Falling back to commandline setup."
 
-
         print ""
-        print _("Welcome to the pyLoad Configuration Assistent.")
+        print _("Welcome to the pyLoad Configuration Assistant.")
         print _("It will check your system and make a basic setup in order to run pyLoad.")
         print ""
         print _("The value in brackets [] always is the default value,")
         print _("in case you don't want to change it or you are unsure what to choose, just hit enter.")
         print _(
-            "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore.")
-        print _("If you have any problems with this assistent hit STRG-C,")
+            "Don't forget: You can always rerun this assistant with --setup or -s parameter, when you start pyLoadCore.")
+        print _("If you have any problems with this assistant hit STRG-C,")
         print _("to abort and don't let him start with pyLoadCore automatically anymore.")
         print ""
         print _("When you are ready for system check, hit enter.")
@@ -186,6 +167,7 @@ class Setup():
         raw_input()
         return True
 
+
     def system_check(self):
         """ make a systemcheck and return the results"""
         print _("## System Check ##")
@@ -265,6 +247,7 @@ class Setup():
 
         return basic, ssl, captcha, gui, web, js
 
+
     def conf_basic(self):
         print ""
         print _("## Basic Setup ##")
@@ -284,7 +267,7 @@ class Setup():
         print ""
         print _("External clients (GUI, CLI or other) need remote access to work over the network.")
         print _("However, if you only want to use the webinterface you may disable it to save ram.")
-        self.config["remote"]["activated"] = self.ask(_("Enable remote access"), self.yes, bool=True)
+        self.config["remote"]["activated"] = self.ask(_("Enable remote access"), self.no, bool=True)
 
         print ""
         langs = self.config.getMetaData("general", "language")
@@ -329,6 +312,7 @@ class Setup():
         self.config["webinterface"]["server"] = self.ask(_("Server"), "builtin",
             ["builtin", "threaded", "fastcgi", "lightweight"])
 
+
     def conf_ssl(self):
         print ""
         print _("## SSL Setup ##")
@@ -342,6 +326,7 @@ class Setup():
         print _("If you're done and everything went fine, you can activate ssl now.")
 
         self.config["ssl"]["activated"] = self.ask(_("Activate SSL?"), self.yes, bool=True)
+
 
     def set_user(self):
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
@@ -393,6 +378,7 @@ class Setup():
             if not noaction:
                 db.shutdown()
 
+
     def conf_path(self, trans=False):
         if trans:
             gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
@@ -412,9 +398,10 @@ class Setup():
             print _("Configpath changed, setup will now close, please restart to go on.")
             print _("Press Enter to exit.")
             raw_input()
-            exit()
+            sys.exit()
         except Exception, e:
             print _("Setting config path failed: %s") % str(e)
+
 
     def print_dep(self, name, value):
         """Print Status of dependency"""
@@ -431,6 +418,7 @@ class Setup():
         except:
             return False
 
+
     def check_prog(self, command):
         pipe = PIPE
         try:
@@ -438,6 +426,7 @@ class Setup():
             return True
         except:
             return False
+
 
     def ask(self, qst, default, answers=[], bool=False, password=False):
         """produce one line to asking for input"""
@@ -459,13 +448,18 @@ class Setup():
         if password:
             p1 = True
             p2 = False
+            pwlen = 8
             while p1 != p2:
                 # getpass(_("Password: ")) will crash on systems with broken locales (Win, NAS)
+                print _("Warning: Consider a password of 10 or more symbols if you expect to access from outside your local network (ex. internet).")
                 sys.stdout.write(_("Password: "))
                 p1 = getpass("")
 
-                if len(p1) < 4:
-                    print _("Password too short. Use at least 4 symbols.")
+                if len(p1) < pwlen:
+                    print _("Password too short! Use at least %s symbols." % pwlen)
+                    continue
+                elif not p1.isalnum():
+                    print _("Password must be alphanumeric.")
                     continue
 
                 sys.stdout.write(_("Password (again): "))
@@ -481,7 +475,7 @@ class Setup():
                 input = raw_input(qst + " %s: " % info)
             except KeyboardInterrupt:
                 print "\nSetup interrupted"
-                exit()
+                sys.exit()
 
             input = input.decode(self.stdin_encoding)
 
