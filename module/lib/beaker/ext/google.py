@@ -10,6 +10,7 @@ log = logging.getLogger(__name__)
 
 db = None
 
+
 class GoogleNamespaceManager(OpenResourceNamespaceManager):
     tables = {}
 
@@ -23,11 +24,11 @@ class GoogleNamespaceManager(OpenResourceNamespaceManager):
         except ImportError:
             raise InvalidCacheBackendError("Datastore cache backend requires the "
                                            "'google.appengine.ext' library")
-    
+
     def __init__(self, namespace, table_name='beaker_cache', **params):
         """Creates a datastore namespace manager"""
         OpenResourceNamespaceManager.__init__(self, namespace)
-        
+
         def make_cache():
             table_dict = dict(created=db.DateTimeProperty(),
                               accessed=db.DateTimeProperty(),
@@ -40,11 +41,11 @@ class GoogleNamespaceManager(OpenResourceNamespaceManager):
         self._is_new = False
         self.loaded = False
         self.log_debug = logging.DEBUG >= log.getEffectiveLevel()
-        
+
         # Google wants namespaces to start with letters, change the namespace
         # to start with a letter
         self.namespace = 'p%s' % self.namespace
-    
+
     def get_access_lock(self):
         return null_synchronizer()
 
@@ -52,14 +53,14 @@ class GoogleNamespaceManager(OpenResourceNamespaceManager):
         # this is weird, should probably be present
         return null_synchronizer()
 
-    def do_open(self, flags):
+    def do_open(self, flags, replace):
         # If we already loaded the data, don't bother loading it again
         if self.loaded:
             self.flags = flags
             return
-        
+
         item = self.cache.get_by_key_name(self.namespace)
-        
+
         if not item:
             self._is_new = True
             self.hash = {}
@@ -74,7 +75,7 @@ class GoogleNamespaceManager(OpenResourceNamespaceManager):
                 self._is_new = True
         self.flags = flags
         self.loaded = True
-    
+
     def do_close(self):
         if self.flags is not None and (self.flags == 'c' or self.flags == 'w'):
             if self._is_new:
@@ -90,12 +91,12 @@ class GoogleNamespaceManager(OpenResourceNamespaceManager):
                 item.accessed = datetime.now()
                 item.put()
         self.flags = None
-    
+
     def do_remove(self):
         item = self.cache.get_by_key_name(self.namespace)
         item.delete()
         self.hash = {}
-        
+
         # We can retain the fact that we did a load attempt, but since the
         # file is gone this will be a new namespace should it be saved.
         self._is_new = True
@@ -103,9 +104,9 @@ class GoogleNamespaceManager(OpenResourceNamespaceManager):
     def __getitem__(self, key):
         return self.hash[key]
 
-    def __contains__(self, key): 
-        return self.hash.has_key(key)
-        
+    def __contains__(self, key):
+        return key in self.hash
+
     def __setitem__(self, key, value):
         self.hash[key] = value
 
@@ -114,7 +115,7 @@ class GoogleNamespaceManager(OpenResourceNamespaceManager):
 
     def keys(self):
         return self.hash.keys()
-        
+
 
 class GoogleContainer(Container):
     namespace_class = GoogleNamespaceManager

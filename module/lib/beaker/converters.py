@@ -1,3 +1,5 @@
+
+
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 def asbool(obj):
@@ -11,6 +13,7 @@ def asbool(obj):
             raise ValueError(
                 "String is not true/false: %r" % obj)
     return bool(obj)
+
 
 def aslist(obj, sep=None, strip=True):
     if isinstance(obj, (str, unicode)):

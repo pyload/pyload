@@ -16,6 +16,7 @@ import jarray
 # Initialization vector filled with zeros
 _iv = IvParameterSpec(jarray.zeros(16, 'b'))
 
+
 def aesEncrypt(data, key):
     cipher = Cipher.getInstance('AES/CTR/NoPadding')
     skeySpec = SecretKeySpec(key, 'AES')
@@ -24,6 +25,7 @@ def aesEncrypt(data, key):
 
 # magic.
 aesDecrypt = aesEncrypt
+
 
 def getKeyLength():
     maxlen = Cipher.getMaxAllowedKeyLength('AES/CTR/NoPadding')
