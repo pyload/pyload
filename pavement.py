@@ -208,11 +208,10 @@ def compile_js():
 def generate_locale():
     """ Generates localisation files """
 
-    EXCLUDE = ["BeautifulSoup.py", "module/gui", "module/cli", "web/locale", "web/ajax", "web/cnl", "web/pyload",
+    EXCLUDE = ["BeautifulSoup.py", "module/cli", "web/locale", "web/ajax", "web/cnl", "web/pyload",
                "setup.py"]
     makepot("core", path("module"), EXCLUDE, "./pyLoadCore.py\n")
 
-    makepot("gui", path("module") / "gui", [], includes="./pyLoadGui.py\n")
     makepot("cli", path("module") / "cli", [], includes="./pyLoadCli.py\n")
     makepot("setup", "", [], includes="./module/setup.py\n")
 

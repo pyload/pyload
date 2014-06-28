@@ -923,10 +923,8 @@ class Api(Iface):
         """
         if self.core.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":
             return "local"
-        if self.core.startedInGui and remoteip == "127.0.0.1":
-            return "local"
-
-        return self.core.db.checkAuth(username, password)
+        else:
+            return self.core.db.checkAuth(username, password)
 
     def isAuthorized(self, func, userdata):
         """checks if the user is authorized for specific method

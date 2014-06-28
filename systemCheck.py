@@ -37,12 +37,6 @@ def main():
     except:
         print("image libary:", "missing")
 
-    try:
-        import PyQt4.QtCore
-        print("pyqt:", PyQt4.QtCore.PYQT_VERSION_STR)
-    except:
-        print("pyqt:", "missing")
-
     print("\n\n#####   System Status   #####")
     print("\n##  pyLoadCore  ##")
 
@@ -92,22 +86,6 @@ def main():
         print("\nPossible improvements for pyload:\n")
         for line in core_info:
             print(line)
-
-    print("\n##  pyLoadGui  ##")
-
-    gui_err = []
-
-    try:
-        import PyQt4
-    except:
-        gui_err.append("GUI won't work without pyqt4 !!")
-
-    if gui_err:
-        print("The system check has detected some errors:\n")
-        for err in gui_err:
-            print(err)
-    else:
-        print("No Problems detected, pyLoadGui should work fine.")
 
     print("\n##  Webinterface  ##")
 

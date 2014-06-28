@@ -63,7 +63,7 @@ class Setup():
         print _("When you are ready for system check, hit enter.")
         raw_input()
 
-        basic, ssl, captcha, gui, web, js = self.system_check()
+        basic, ssl, captcha, web, js = self.system_check()
         print ""
 
         if not basic:
@@ -79,12 +79,16 @@ class Setup():
         print ""
 
         avail = []
-        if self.check_module("Crypto"): avail.append(_("container decrypting"))
-        if ssl: avail.append(_("ssl connection"))
-        if captcha: avail.append(_("automatic captcha decryption"))
-        if gui: avail.append(_("GUI"))
-        if web: avail.append(_("Webinterface"))
-        if js: avail.append(_("extended Click'N'Load"))
+        if self.check_module("Crypto"):
+            avail.append(_("container decrypting"))
+        if ssl:
+            avail.append(_("ssl connection"))
+        if captcha:
+            avail.append(_("automatic captcha decryption"))
+        if web:
+            avail.append(_("Webinterface"))
+        if js:
+            avail.append(_("extended Click'N'Load"))
 
         string = ""
 
@@ -112,11 +116,6 @@ class Setup():
             if not captcha:
                 print _("no Captcha Recognition available")
                 print _("Only needed for some hosters and as freeuser.")
-                print ""
-
-            if not gui:
-                print _("Gui not available")
-                print _("The Graphical User Interface.")
                 print ""
 
             if not js:
@@ -214,10 +213,6 @@ class Setup():
 
         print ""
 
-        gui = self.check_module("PyQt4")
-        self.print_dep("PyQt4", gui)
-
-        print ""
         jinja = True
 
         try:
@@ -247,7 +242,7 @@ class Setup():
         js = True if JsEngine.ENGINE else False
         self.print_dep(_("JS engine"), js)
 
-        return basic, ssl, captcha, gui, web, js
+        return basic, ssl, captcha, web, js
 
 
     def conf_basic(self):
@@ -255,7 +250,7 @@ class Setup():
         print _("## Basic Setup ##")
 
         print ""
-        print _("The following logindata is valid for CLI, GUI and webinterface.")
+        print _("The following logindata is valid for CLI and webinterface.")
 
         from module.database import DatabaseBackend
 

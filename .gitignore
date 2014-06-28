@@ -76,10 +76,8 @@ ssl.key
 *_links.txt
 links.txt
 module/config/core.xml
-module/config/gui.xml
 module/config/plugin.xml
 module/web/pyload.db
 #pyload/config/core.xml
-#pyload/config/gui.xml
 #pyload/config/plugin.xml
 #pyload/web/pyload.db

@@ -69,7 +69,6 @@ class Core(object):
 
     def __init__(self):
         self.doDebug = False
-        self.startedInGui = False
         self.running = False
         self.daemon = False
         self.remote = True
