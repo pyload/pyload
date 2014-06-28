@@ -1,5 +1,6 @@
 import re
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.utils import uniqify
 
 class FilerNetFolder(SimpleCrypter):
   __name__ = "FilerNetFolder"
@@ -15,4 +16,4 @@ class FilerNetFolder(SimpleCrypter):
 
   def getLinks(self):
     f: lambda url: "http:filer.net/get/" + re.search(r'\w{16}', url).group(0)
-    return list(set(map(f, re.finall(self.LINK_PATTERN, self.html))))
+    return uniqify(map(f, re.finall(self.LINK_PATTERN, self.html)))
