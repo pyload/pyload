@@ -30,45 +30,45 @@ class WebServer(threading.Thread):
         import webinterface
         global webinterface
 
-        if self.https:
-            if not exists(self.cert) or not exists(self.key):
-                log.warning(_("SSL certificates not found."))
-                self.https = False
+        reset = False
+
+        if self.https and (not exists(self.cert) or not exists(self.key)):
+            log.warning(_("SSL certificates not found."))
+            self.https = False
 
         if self.server in ("lighttpd", "nginx"):
             log.warning(_("Sorry, we dropped support for starting %s directly within pyLoad") % self.server)
             log.warning(_("You can use the threaded server which offers good performance and ssl,"))
             log.warning(_("of course you can still use your existing %s with pyLoads fastcgi server") % self.server)
             log.warning(_("sample configs are located in the module/web/servers directory"))
-            self.server = "builtin"
-
-        if self.server == "fastcgi":
+            reset = True
+        elif self.server == "fastcgi":
             try:
                 import flup
             except:
                 log.warning(_("Can't use %(server)s, python-flup is not installed!") % {
                     "server": self.server})
-                self.server = "builtin"
-        elif self.server == "lightweight":
-            try:
-                import bjoern
-            except Exception, e:
-                log.error(_("Error importing lightweight server: %s") % e)
-                log.warning(_("You need to download and compile bjoern, https://github.com/jonashaag/bjoern"))
-                log.warning(_("Copy the boern.so to module/lib folder or use setup.py install"))
-                log.warning(_("Of course you need to be familiar with linux and know how to compile software"))
-                self.server = "builtin"
+                reset = True
 
-        if os.name == "nt":
-            self.core.log.info(_("Server set to threaded, due to known performance problems on windows."))
-            self.core.config['webinterface']['server'] = "threaded"
-            self.server = "threaded"
+        if reset or self.server == "lightweight":
+            if os.name != "nt":
+                try:
+                    import bjoern
+                except Exception, e:
+                    log.error(_("Error importing lightweight server: %s") % e)
+                    log.warning(_("You need to download and compile bjoern, https://github.com/jonashaag/bjoern"))
+                    log.warning(_("Copy the boern.so to module/lib folder or use setup.py install"))
+                    log.warning(_("Of course you need to be familiar with linux and know how to compile software"))
+                    self.server = "builtin"
+            else:
+                self.core.log.info(_("Server set to threaded, due to known performance problems on windows."))
+                self.core.config['webinterface']['server'] = "threaded"
+                self.server = "threaded"
 
-
-        if self.server == "fastcgi":
-            self.start_fcgi()
-        elif self.server == "threaded":
+        if self.server == "threaded":
             self.start_threaded()
+        elif self.server == "fastcgi":
+            self.start_fcgi()
         elif self.server == "lightweight":
             self.start_lightweight()
         else:

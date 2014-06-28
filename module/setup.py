@@ -237,6 +237,8 @@ class Setup():
         self.print_dep("jinja2", jinja)
         beaker = self.check_module("beaker")
         self.print_dep("beaker", beaker)
+        bjoern = self.check_module("bjoern")
+        self.print_dep("bjoern", bjoern)
 
         web = sqlite and beaker
 
@@ -296,21 +298,26 @@ class Setup():
         self.config["webinterface"]["port"] = self.ask(_("Port"), "8000")
         print ""
         print _("pyLoad offers several server backends, now following a short explanation.")
-        print "builtin:", _("Default server, best choice if you dont know which one to choose.")
-        print "threaded:", _("This server offers SSL and is a good alternative to builtin.")
+        print "builtin:", _("Default server; best choice if you plan to use pyLoad just for you.")
+        print "threaded:", _("Support SSL connection and can serve simultaneously more client flawlessly.")
         print "fastcgi:", _(
-            "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job.")
-        print "lightweight:", _("Very fast alternative written in C, requires libev and linux knowlegde.")
-        print "\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it")
-        print "\t", _("and copy bjoern.so to module/lib")
+            "Can be used by apache, lighttpd, etc.; needs to be properly configured before.")
+        if os.name != "nt":
+            print "lightweight:", _("Very fast alternative to builtin; requires libev and bjoern packages.")
 
         print
         print _(
             "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface")
         print _("come back here and change the builtin server to the threaded one here.")
 
-        self.config["webinterface"]["server"] = self.ask(_("Server"), "builtin",
-            ["builtin", "threaded", "fastcgi", "lightweight"])
+        if os.name == "nt":
+            servers = ["builtin", "threaded", "fastcgi"]
+            default = "threaded"
+        else:
+            servers = ["builtin", "threaded", "fastcgi", "lightweight"]
+            default = "lightweight" if self.check_module("bjoern") else "builtin"
+
+        self.config["webinterface"]["server"] = self.ask(_("Server"), default, servers)
 
 
     def conf_ssl(self):

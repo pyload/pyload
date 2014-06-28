@@ -130,7 +130,7 @@ def run_simple(host="0.0.0.0", port="8000"):
 
 
 def run_lightweight(host="0.0.0.0", port="8000"):
-    run(app=web, host=host, port=port, quiet=True, server="bjoern")
+    run(app=web, host=host, port=port, server="bjoern", quiet=True)
 
 
 def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
