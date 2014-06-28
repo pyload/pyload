@@ -31,3 +31,4 @@ def deserialize(base, buf, protocol_factory = TBinaryProtocol.TBinaryProtocolFac
     protocol = protocol_factory.getProtocol(transport)
     base.read(protocol)
     return base
+

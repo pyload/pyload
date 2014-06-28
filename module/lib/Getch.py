@@ -65,7 +65,7 @@ class _GetchMacCarbon:
         else:
             #
             # The event contains the following info:
-            # (what, msg, when, where, mod)=Carbon.Evt.GetNextEvent(0x0008)[1]
+            # (what,msg,when,where,mod)=Carbon.Evt.GetNextEvent(0x0008)[1]
             #
             # The message (msg) contains the ASCII char which is
             # extracted with the 0x000000FF charCodeMask; this

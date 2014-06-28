@@ -507,7 +507,7 @@ class Keyword(Helper):
 
 
 class CondExpr(Expr):
-    """A conditional expression (inline if expression). (``{{
+    """A conditional expression (inline if expression).  (``{{
     foo if bar else baz }}``)
     """
     fields = ('test', 'expr1', 'expr2')
