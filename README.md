@@ -15,15 +15,15 @@ pyLoad has a fully featured and well documented API, is easily extendable and ac
 Dependencies
 ------------
 
-**You need at least python 2.5 or at most python 2.7 to run pyLoad and its required libaries.**
-**Python 3 is not yet supported!**
+ - **You need at least python 2.5 or at most python 2.7 to run pyLoad and its required libaries**
+ - **Python 3 is not yet supported**
 
 ### Required ###
 
  - **beaker**
  - **jinja2**
  - **pycurl** (python-curl)
- - **simplejson** for python 2.5 only
+ - **simplejson** (only for python 2.5)
  - **thrift**
 
 Some plugins want additional packages, install them only when needed.
@@ -31,9 +31,9 @@ Some plugins want additional packages, install them only when needed.
 ### Optional ###
 
  - **BeautifulSoup**
- - **bjoern** (<https://github.com/jonashaag/bjoern>) for best web interface performance
+ - **bjoern** (<https://github.com/jonashaag/bjoern>) for a better web interface performance
  - **feedparser**
- - **jsengine** (spidermonkey, ossp-js, pyv8, rhino) needed by several hosters (ex.: ClickNLoad)
+ - **jsengine** (spidermonkey, ossp-js, pyv8, rhino, node.js) needed by several hosters (ex.: ClickNLoad)
  - **pycrypto** for RSDF/CCF/DLC support
  - **pyOpenSSL** for SSL connection support
  - **tesseract**, **python-pil** (python-imaging) for automatic captcha recognition support
@@ -56,7 +56,7 @@ Run:
 
 and follow the setup assistant instructions.
 
-> ***Note:***
+> **Note:**
 If you installed pyLoad by package-manager, command `python pyLoadCore.py` is probably equivalent to `pyload` or `pyLoadCore`.
 
 Additionally, you can whenever restart the setup assistant typing:
