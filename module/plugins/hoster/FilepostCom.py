@@ -33,7 +33,7 @@ class FilepostCom(SimpleHoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
     __pattern__ = r"https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __description__ = """Filepost.com plugin - free only"""
     __author_name__ = ("zoidberg")
     __author_mail__ = ("zoidberg@mujmail.cz")
