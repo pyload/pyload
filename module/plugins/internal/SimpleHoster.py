@@ -169,15 +169,19 @@ class SimpleHoster(Hoster):
     __description__ = """Simple hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+
     """
-    These patterns should be defined by each hoster:
-    FILE_INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>units)'
-    or FILE_NAME_PATTERN = r'(?P<N>file_name)'
-    and FILE_SIZE_PATTERN = r'(?P<S>file_size) (?P<U>units)'
+    Following patterns should be defined by each hoster:
+    FILE_INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>size_unit)'
+    or
+      FILE_NAME_PATTERN = r'(?P<N>file_name)'
+      FILE_SIZE_PATTERN = r'(?P<S>file_size) (?P<U>size_unit)'
+
     FILE_OFFLINE_PATTERN = r'File (deleted|not found)'
     TEMP_OFFLINE_PATTERN = r'Server maintainance'
 
-    You can also define a PREMIUM_ONLY_PATTERN to detect links that can be downloaded only with a premium account.
+    You can also define:
+    PREMIUM_ONLY_PATTERN = r'Premium account required'
     """
 
     FILE_SIZE_REPLACEMENTS = []
