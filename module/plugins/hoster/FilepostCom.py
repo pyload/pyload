@@ -34,7 +34,7 @@ class FilepostCom(SimpleHoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*'
-    __version__ = "0.27"
+    __version__ = "0.28"
     __description__ = """Filepost.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -44,6 +44,7 @@ class FilepostCom(SimpleHoster):
     FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>|<div class="file_info file_info_deleted">'
     RECAPTCHA_KEY_PATTERN = r"Captcha.init\({\s*key:\s*'([^']+)'"
     FLP_TOKEN_PATTERN = r"set_store_options\({token: '([^']+)'"
+    PREMIUM_ONLY_PATTERN = r'members only. Please upgrade to premium|a premium membership is required to download this file'
 
     def handleFree(self):
         # Find token and captcha key
