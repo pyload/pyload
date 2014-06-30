@@ -16,24 +16,27 @@ class LomafileCom(SimpleHoster):
   FILE_OFFLINE_PATTERN = r'Software error'
 
   def handleFree(self):
-    captcha_id =  re.search(r'src="http://lomafile\.com/captchas/(?P<id>\w+)\.jpg"', self.html).group("id")
-    captcha = self.decryptCaptcha("http://lomafile.com/captchas/"+captcha_id+".jpg")
+    for _ in range(3):
+      captcha_id =  re.search(r'src="http://lomafile\.com/captchas/(?P<id>\w+)\.jpg"', self.html).group("id")
+      captcha = self.decryptCaptcha("http://lomafile.com/captchas/"+captcha_id+".jpg")
 
-    form_id = re.search(r'name="id" value="(?P<id>\w+)"', self.html).group("id")
+      form_id = re.search(r'name="id" value="(?P<id>\w+)"', self.html).group("id")
 
-    self.wait(60)
-    self.html = self.load(self.pyfile.url, post={
-      "op": "download2",
-      "id": form_id,
-      "rand": captcha_id,
-      "code": captcha,
-      "down_direct": "1"})
+      self.wait(60)
+      self.html = self.load(self.pyfile.url, post={
+        "op": "download2",
+        "id": form_id,
+        "rand": captcha_id,
+        "code": captcha,
+        "down_direct": "1"})
 
-    download_url = re.search(r'http://[\d\.]+:\d+/d/\w+/[\w\.]+', self.html)
-    if not download_url:
-      self.invalidCaptcha()
-      self.fail()
+      download_url = re.search(r'http://[\d\.]+:\d+/d/\w+/[\w\.]+', self.html)
+      if not download_url:
+        self.invalidCaptcha()
+        self.logDebug("Invalid captcha.")
+      else:
+        download_url = download_url.group(0)
+        self.logDebug("Download URL: %s" % download_url)
+        self.download(download_url)
     else:
-      download_url = download_url.group(0)
-      self.logDebug("Download URL: %s" % download_url)
-      self.download(download_url)
+      self.fail("Invalid captcha-code entered.")
