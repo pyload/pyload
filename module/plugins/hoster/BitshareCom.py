@@ -12,7 +12,7 @@ class BitshareCom(SimpleHoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))'
-    __version__ = "0.49"
+    __version__ = "0.50"
     __description__ = """Bitshare.com hoster plugin"""
     __author_name__ = ("Paul King", "fragonib")
     __author_mail__ = ("", "fragonib[AT]yahoo[DOT]es")
@@ -69,6 +69,12 @@ class BitshareCom(SimpleHoster):
         url = self.getDownloadUrl()
         self.logDebug("Downloading file with url [%s]" % url)
         self.download(url)
+
+        check = self.checkDownload({"404": ">404 Not Found<", "Error": ">Error occured<"})
+        if check == "404":
+            self.retry(3, 60, 'Error 404')
+        elif check == "error":
+            self.retry(5, 5 * 60, "Bitshare host : Error occured")
 
     def getDownloadUrl(self):
         # Return location if direct download is active
