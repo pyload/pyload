@@ -1,5 +1,5 @@
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class LomafileCom(SimpleHoster):
