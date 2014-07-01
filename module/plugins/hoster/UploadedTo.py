@@ -218,7 +218,7 @@ class UploadedTo(Hoster):
                 downloadURL = re.search("url:'([^']+)", result).group(1)
                 break
             else:
-                self.fail("Unknown error '%s'", result)
+                self.fail("Unknown error '%s'" % result)
 
         if not downloadURL:
             self.fail("No Download url retrieved/all captcha attempts failed")
