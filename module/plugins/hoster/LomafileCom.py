@@ -17,12 +17,22 @@ class LomafileCom(SimpleHoster):
 
   def handleFree(self):
     for _ in range(3):
-      captcha_id =  re.search(r'src="http://lomafile\.com/captchas/(?P<id>\w+)\.jpg"', self.html).group("id")
+      captcha_id =  re.search(r'src="http://lomafile\.com/captchas/(?P<id>\w+)\.jpg"', self.html)
+      if not captcha_id:
+        self.parseError("Unable to parse captcha id.")
+      else:
+        captcha_id = captcha_id.group("id")
+
+      form_id = re.search(r'name="id" value="(?P<id>\w+)"', self.html)
+      if not form_id:
+        self.parseError("Unable to parse form id").
+      else:
+        form_id = form_id.group("id")
+
       captcha = self.decryptCaptcha("http://lomafile.com/captchas/"+captcha_id+".jpg")
 
-      form_id = re.search(r'name="id" value="(?P<id>\w+)"', self.html).group("id")
-
       self.wait(60)
+
       self.html = self.load(self.pyfile.url, post={
         "op": "download2",
         "id": form_id,
