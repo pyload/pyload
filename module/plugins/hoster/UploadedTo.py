@@ -89,7 +89,7 @@ class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __pattern__ = r"https?://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
-    __version__ = "0.72"
+    __version__ = "0.73"
     __description__ = """Uploaded.net Download Hoster"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz",
@@ -210,7 +210,7 @@ class UploadedTo(Hoster):
                 self.setWait(3 * 60 * 60, True)
                 self.wait()
                 self.retry()
-            elif 'err:"captcha"' in result:
+            elif '"err":"captcha"' in result:
                 self.logError("ul.net captcha is disabled")
                 self.invalidCaptcha()
             elif "type:'download'" in result:
@@ -218,7 +218,7 @@ class UploadedTo(Hoster):
                 downloadURL = re.search("url:'([^']+)", result).group(1)
                 break
             else:
-                self.fail("Unknown error '%s'")
+                self.fail("Unknown error '%s'", result)
 
         if not downloadURL:
             self.fail("No Download url retrieved/all captcha attempts failed")
