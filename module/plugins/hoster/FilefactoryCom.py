@@ -16,14 +16,26 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+from module.network.RequestFactory import getURL
+
+
+def getInfo(urls):
+    for url in urls:
+        h = getURL(url, just_header=True)
+        m = re.search(r'Location: (.+)\r\n', h)
+        if m and not re.match(m.group(1), FilefactoryCom.__pattern__):  # It's a direct link! Skipping
+            yield (url, 0, 3, url)
+        else:  # It's a standard html page
+            file_info = parseFileInfo(FilefactoryCom, url, getURL(url))
+            yield file_info
 
 
 class FilefactoryCom(SimpleHoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)'
-    __version__ = "0.48"
+    __version__ = "0.49"
     __description__ = """Filefactory.com hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
@@ -101,6 +113,3 @@ class FilefactoryCom(SimpleHoster):
 
         self.logDebug('DIRECT PREMIUM LINK: ' + url)
         self.download(url, disposition=True)
-
-
-getInfo = create_getInfo(FilefactoryCom)
