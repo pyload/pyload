@@ -21,12 +21,12 @@ import re
 
 from module.plugins.Crypter import Crypter
 from module.utils import html_unescape
-from module.plugins.internal.SimpleHoster import replace_patterns
+from module.plugins.internal.SimpleHoster import replace_patterns, set_cookies
 
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __pattern__ = None
     __type__ = "crypter"
     __description__ = """Simple decrypter plugin"""
@@ -54,6 +54,12 @@ class SimpleCrypter(Crypter):
     """
 
     FILE_URL_REPLACEMENTS = []
+
+    SH_COOKIES = True  # or False or list of tuples [(domain, name, value)]
+
+    def setup(self):
+        if isinstance(self.SH_COOKIES, list):
+            set_cookies(self.req.cj, self.SH_COOKIES)
 
     def decrypt(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
