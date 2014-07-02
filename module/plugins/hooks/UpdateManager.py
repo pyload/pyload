@@ -14,7 +14,7 @@ from module.plugins.Hook import threaded, Expose, Hook
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __description__ = """Check for updates"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -25,15 +25,21 @@ class UpdateManager(Hook):
     __author_mail__ = ("ranan@pyload.org", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     SERVER_URL = "http://updatemanager.pyload.org"
-    MIN_TIME = 3 * 60 * 60  #: 3h minimum check interval
+    MIN_TIME = 3 * 60 * 60  #: 3h minimum check interval (seconds)
 
     event_list = ["pluginConfigChanged"]
 
 
     def pluginConfigChanged(self, plugin, name, value):
-        if name == "interval" and 0 < value != self.interval:
-            self.interval = max(value * 60 * 60, self.MIN_TIME)
-            self.initPeriodical()
+        if name == "interval":
+            interval = value * 60 * 60
+            if self.MIN_TIME <= interval != self.interval:
+                if self.cb:
+                    self.core.scheduler.removeJob(self.cb)
+                self.interval = interval
+                self.initPeriodical()
+            else:
+                self.logWarning("Invalid interval value, kept current")
         elif name == "reloadplugins":
             if self.cb2:
                 self.core.scheduler.removeJob(self.cb2)
