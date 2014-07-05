@@ -1,22 +1,27 @@
-![pyLoad](/docs/resources/banner.png "pyLoad")
+[![pyLoad](/docs/resources/banner.png "pyLoad")](http://pyload.org/)
 =============================
 
-**pyLoad** is a Free and Open Source download manager written entirely in Python, available for all kind of operating systems and devices,
-designed to be extremely lightweight and executable either on common computers or on headless servers.
+[![Translation Status](http://translate.pyload.org/badges/pyload/localized.png "Translation Status")](http://translate.pyload.org/project/pyload/)
 
-Its web interface allows full managing and easily remote access from anywhere.
+**pyLoad** is a Free and Open Source download manager written entirely in Python and designed to be extremely lightweight.
+
+pyLoad is available for all kind of operating systems and devices:
+You could install it on a computer, but also on a headless servers, a router, a smart usb-stick running linux... almost whatever you want!
+
+You can control it entirely by web.
+Its web user interface allows full managing and easily remote access to your download from anywhere, online, or in your personal network..
 
 All common video-sites, one-click-hosters, container formats and well known web standards are supported to allow you to download files.
 Additionaly, pyLoad has a great variety of plugins to automate common tasks and make unattended running possible.
 
-pyLoad has a fully featured and well documented API, is easily extendable and accessible by external tools.
+pyLoad has a fully featured and well documented API, it's easily extendable and accessible by external tools, cross-platform apps or other softwares.
 
 
 Dependencies
 ------------
 
  - **You need at least python 2.5 or at most python 2.7 to run pyLoad and its required libaries**
- - **Python 3 is not yet supported**
+ - **Python 3 and PyPy are not yet supported**
 
 ### Required ###
 
@@ -31,7 +36,7 @@ Some plugins want additional packages, install them only when needed.
 ### Optional ###
 
  - **BeautifulSoup**
- - **bjoern** (<https://github.com/jonashaag/bjoern>) for a better web interface performance
+ - **bjoern** (<https://github.com/jonashaag/bjoern>) for a better web user interface performance
  - **feedparser**
  - **jsengine** (spidermonkey, ossp-js, pyv8, rhino, node.js) needed by several hosters (ex.: ClickNLoad)
  - **pycrypto** for RSDF/CCF/DLC support
@@ -68,7 +73,7 @@ with your favorite editor.
 For a short description of all the configuration options available visit <http://pyload.org/configuration>.
 
 
-### Web interface ###
+### Web User Interface ###
 
 Run:
 
