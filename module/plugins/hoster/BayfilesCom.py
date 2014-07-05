@@ -28,7 +28,7 @@ class BayfilesCom(SimpleHoster):
     __name__ = "BayfilesCom"
     __type__ = "hoster"
     __pattern__ = r'https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>[a-zA-Z0-9]+/[a-zA-Z0-9]+/[^/]+)'
-    __version__ = "0.06"
+    __version__ = "0.07"
     __description__ = """Bayfiles.com hoster plugin"""
     __author_name__ = ("zoidberg", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com")
@@ -53,7 +53,7 @@ class BayfilesCom(SimpleHoster):
             self.parseError('VARS')
         vfid, delay = found.groups()
 
-        response = json_loads(self.load('https://bayfiles.com/ajax_download', get={
+        response = json_loads(self.load('http://bayfiles.com/ajax_download', get={
             "_": time() * 1000,
             "action": "startTimer",
             "vfid": vfid}, decode=True))
@@ -63,7 +63,7 @@ class BayfilesCom(SimpleHoster):
 
         self.wait(int(delay))
 
-        self.html = self.load('https://bayfiles.com/ajax_download', get={
+        self.html = self.load('http://bayfiles.com/ajax_download', get={
             "token": response['token'],
             "action": "getLink",
             "vfid": vfid})
