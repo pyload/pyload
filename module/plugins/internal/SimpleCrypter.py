@@ -54,7 +54,7 @@ class SimpleCrypter(Crypter):
     If the links are disposed on multiple pages you need to define a pattern:
 
       PAGES_PATTERN: The group defined by 'pages' must be the total number of pages
-        example: PAGES_PATTERN = r''
+        example: PAGES_PATTERN = r'Pages: (?P<pages>\d+)'
 
     and a function:
 
