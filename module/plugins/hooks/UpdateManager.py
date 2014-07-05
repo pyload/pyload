@@ -14,7 +14,7 @@ from module.plugins.Hook import threaded, Expose, Hook
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __description__ = """Check for updates"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -34,8 +34,7 @@ class UpdateManager(Hook):
         if name == "interval":
             interval = value * 60 * 60
             if self.MIN_TIME <= interval != self.interval:
-                if self.cb:
-                    self.core.scheduler.removeJob(self.cb)
+                self.core.scheduler.removeJob(self.cb)
                 self.interval = interval
                 self.initPeriodical()
             else:
@@ -43,10 +42,11 @@ class UpdateManager(Hook):
         elif name == "reloadplugins":
             if self.cb2:
                 self.core.scheduler.removeJob(self.cb2)
-            if value and self.core.debug:
+            if value == True and self.core.debug:
                 self.periodical2()
 
     def coreReady(self):
+        self.pluginConfigChanged(self.__name__, "interval", self.getConfig("interval"))
         self.pluginConfigChanged(self.__name__, "reloadplugins", self.getConfig("reloadplugins"))
 
     def setup(self):
@@ -89,7 +89,6 @@ class UpdateManager(Hook):
 
         return True if self.core.pluginManager.reloadPlugins(reloads) else False
 
-    @threaded
     def periodical(self):
         if not self.info["pyload"] and not (self.getConfig("nodebugupdate") and self.core.debug):
             self.updating = True
@@ -108,6 +107,7 @@ class UpdateManager(Hook):
         return self.update(onlyplugin=True)
 
     @Expose
+    @threaded
     def update(self, onlyplugin=False):
         """ check for updates """
         data = self.server_response()
