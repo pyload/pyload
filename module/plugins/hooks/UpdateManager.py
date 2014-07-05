@@ -25,7 +25,7 @@ class UpdateManager(Hook):
     __author_mail__ = ("ranan@pyload.org", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     SERVER_URL = "http://updatemanager.pyload.org"
-    MIN_TIME = 3 * 60 * 60  #: 3h minimum check interval (seconds)
+    MIN_INTERVAL = 3 * 60 * 60  #: 3h minimum check interval (value is in seconds)
 
     event_list = ["pluginConfigChanged"]
 
@@ -33,7 +33,7 @@ class UpdateManager(Hook):
     def pluginConfigChanged(self, plugin, name, value):
         if name == "interval":
             interval = value * 60 * 60
-            if self.MIN_TIME <= interval != self.interval:
+            if self.MIN_INTERVAL <= interval != self.interval:
                 self.core.scheduler.removeJob(self.cb)
                 self.interval = interval
                 self.initPeriodical()
@@ -51,7 +51,7 @@ class UpdateManager(Hook):
 
     def setup(self):
         self.cb2 = None
-        self.interval = self.MIN_TIME
+        self.interval = self.MIN_INTERVAL
         self.updating = False
         self.info = {"pyload": False, "version": None, "plugins": False}
         self.mtimes = {}  #: store modification time for each plugin
@@ -107,7 +107,6 @@ class UpdateManager(Hook):
         return self.update(onlyplugin=True)
 
     @Expose
-    @threaded
     def update(self, onlyplugin=False):
         """ check for updates """
         data = self.server_response()
@@ -127,6 +126,7 @@ class UpdateManager(Hook):
             self.info["version"] = newversion
         return r
 
+    @threaded
     def _updatePlugins(self, updates):
         """ check for plugin updates """
 
