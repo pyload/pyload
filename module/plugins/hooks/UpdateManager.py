@@ -42,7 +42,7 @@ class UpdateManager(Hook):
         elif name == "reloadplugins":
             if self.cb2:
                 self.core.scheduler.removeJob(self.cb2)
-            if value == True and self.core.debug:
+            if value is True and self.core.debug:
                 self.periodical2()
 
     def coreReady(self):
