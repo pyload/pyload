@@ -60,7 +60,7 @@ class DailymotionCom(Hoster):
     __type__ = "hoster"
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*?video/(?P<ID>[\w^_]+)'
     __version__ = "0.2"
-    __config__ = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "HD 720p")]
+    __config__ = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]
     __description__ = """Dailymotion.com hoster plugin"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
