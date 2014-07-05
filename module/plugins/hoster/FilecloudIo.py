@@ -34,7 +34,7 @@ class FilecloudIo(SimpleHoster):
 
     FILE_SIZE_PATTERN = r'{var __ab1 = (?P<S>\d+);}'
     FILE_NAME_PATTERN = r'id="aliasSpan">(?P<N>.*?)&nbsp;&nbsp;<'
-    FILE_OFFLINE_PATTERN = r'l10n.(FILES__DOESNT_EXIST|REMOVED)'
+    OFFLINE_PATTERN = r'l10n.(FILES__DOESNT_EXIST|REMOVED)'
     TEMP_OFFLINE_PATTERN = r'l10n.FILES__WARNING'
 
     UKEY_PATTERN = r"'ukey'\s*:'(\w+)',"

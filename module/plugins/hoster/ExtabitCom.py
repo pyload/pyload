@@ -35,7 +35,7 @@ class ExtabitCom(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<th>File:</th>\s*<td class="col-fileinfo">\s*<div title="(?P<N>[^"]+)">'
     FILE_SIZE_PATTERN = r'<th>Size:</th>\s*<td class="col-fileinfo">(?P<S>[^<]+)</td>'
-    FILE_OFFLINE_PATTERN = r'>File not found<'
+    OFFLINE_PATTERN = r'>File not found<'
     TEMP_OFFLINE_PATTERN = r">(File is temporary unavailable|No download mirror)<"
 
     DOWNLOAD_LINK_PATTERN = r'[\'"](http://guest\d+\.extabit\.com/[a-z0-9]+/.*?)[\'"]'

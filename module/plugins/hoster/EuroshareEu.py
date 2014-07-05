@@ -31,7 +31,7 @@ class EuroshareEu(SimpleHoster):
     __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = r'<span style="float: left;"><strong>(?P<N>.+?)</strong> \((?P<S>.+?)\)</span>'
-    FILE_OFFLINE_PATTERN = ur'<h2>S.bor sa nena.iel</h2>|Požadovaná stránka neexistuje!'
+    OFFLINE_PATTERN = ur'<h2>S.bor sa nena.iel</h2>|Požadovaná stránka neexistuje!'
 
     FREE_URL_PATTERN = r'<a href="(/file/\d+/[^/]*/download/)"><div class="downloadButton"'
     ERR_PARDL_PATTERN = r'<h2>Prebieha s.ahovanie</h2>|<p>Naraz je z jednej IP adresy mo.n. s.ahova. iba jeden s.bor'

@@ -29,7 +29,7 @@ class PromptfileCom(SimpleHoster):
     __author_name__ = ("igel")
 
     FILE_INFO_PATTERN = r'<span style="[^"]*" title="[^"]*">(?P<N>.*?) \((?P<S>[\d.]+) (?P<U>\w+)\)</span>'
-    FILE_OFFLINE_PATTERN = r'<span style="[^"]*" title="File Not Found">File Not Found</span>'
+    OFFLINE_PATTERN = r'<span style="[^"]*" title="File Not Found">File Not Found</span>'
 
     CHASH_PATTERN = r'<input type="hidden" name="chash" value="([^"]*)" />'
     DIRECT_LINK_PATTERN = r"clip: {\s*url: '(https?://(?:www\.)promptfile[^']*)',"

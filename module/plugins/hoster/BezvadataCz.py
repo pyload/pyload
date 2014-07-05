@@ -32,7 +32,7 @@ class BezvadataCz(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'
     FILE_SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[^<]+)</li>'
-    FILE_OFFLINE_PATTERN = r'<title>BezvaData \| Soubor nenalezen</title>'
+    OFFLINE_PATTERN = r'<title>BezvaData \| Soubor nenalezen</title>'
 
     def setup(self):
         self.multiDL = self.resumeDownload = True

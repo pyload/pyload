@@ -34,7 +34,7 @@ class EdiskCz(SimpleHoster):
     FILE_INFO_PATTERN = r'<span class="fl" title="(?P<N>[^"]+)">\s*.*?\((?P<S>[0-9.]*) (?P<U>[kKMG])i?B\)</h1></span>'
     ACTION_PATTERN = r'/en/download/(\d+/.*\.html)'
     DLLINK_PATTERN = r'http://.*edisk.cz.*\.html'
-    FILE_OFFLINE_PATTERN = r'<h3>This file does not exist due to one of the following:</h3><ul><li>'
+    OFFLINE_PATTERN = r'<h3>This file does not exist due to one of the following:</h3><ul><li>'
 
     def setup(self):
         self.multiDL = False

@@ -32,7 +32,7 @@ class NowDownloadEu(SimpleHoster):
     __author_mail__ = ("soilfiction@gmail.com", "vuolter@gmail.com")
 
     FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B </h4>'
-    FILE_OFFLINE_PATTERN = r'(This file does not exist!)'
+    OFFLINE_PATTERN = r'(This file does not exist!)'
     FILE_TOKEN_PATTERN = r'"(/api/token\.php\?token=[a-z0-9]+)"'
     FILE_CONTINUE_PATTERN = r'"(/dl2/[a-z0-9]+/[a-z0-9]+)"'
     FILE_WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'

@@ -38,7 +38,7 @@ class RapidgatorNet(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
     FILE_SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d\.]+) (?P<U>\w+)</strong>'
-    FILE_OFFLINE_PATTERN = r'>(File not found|Error 404)'
+    OFFLINE_PATTERN = r'>(File not found|Error 404)'
 
     JSVARS_PATTERN = r"\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*'?(.*?)'?;"
     PREMIUM_ONLY_ERROR_PATTERN = r'You can download files up to|This file can be downloaded by premium only<'

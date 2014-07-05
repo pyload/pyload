@@ -17,7 +17,7 @@ class LuckyShareNet(SimpleHoster):
     __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r"<h1 class='file_name'>(?P<N>\S+)</h1>\s*<span class='file_size'>Filesize: (?P<S>[\d.]+)(?P<U>\w+)</span>"
-    FILE_OFFLINE_PATTERN = 'There is no such file available'
+    OFFLINE_PATTERN = 'There is no such file available'
     RECAPTCHA_KEY = '6LdivsgSAAAAANWh-d7rPE1mus4yVWuSQIJKIYNw'
 
     def parseJson(self, rep):

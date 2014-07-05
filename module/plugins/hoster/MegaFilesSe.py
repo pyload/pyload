@@ -14,7 +14,7 @@ class MegaFilesSe(XFileSharingPro):
 
     HOSTER_NAME = "megafiles.se"
 
-    FILE_OFFLINE_PATTERN = r'<b><font[^>]*>File Not Found</font></b><br><br>'
+    OFFLINE_PATTERN = r'<b><font[^>]*>File Not Found</font></b><br><br>'
     FILE_NAME_PATTERN = r'<div[^>]+>\s*<b>(?P<N>[^<]+)</b>\s*</div>'
 
 

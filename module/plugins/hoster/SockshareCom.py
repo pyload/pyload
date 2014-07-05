@@ -32,7 +32,7 @@ class SockshareCom(SimpleHoster):
     __author_mail__ = ("jeix@hasnomail.de", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
-    FILE_OFFLINE_PATTERN = r'>This file doesn\'t exist, or has been removed.<'
+    OFFLINE_PATTERN = r'>This file doesn\'t exist, or has been removed.<'
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.sockshare.com/file/\g<ID>')]
 

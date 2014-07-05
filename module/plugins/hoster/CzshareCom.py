@@ -36,7 +36,7 @@ class CzshareCom(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
     FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B\s*</div>'
-    FILE_OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
+    OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
 
     FILE_SIZE_REPLACEMENTS = [(' ', '')]
     FILE_URL_REPLACEMENTS = [(r'http://[^/]*/download.php\?.*?id=(\w+).*', r'http://sdilej.cz/\1/x/')]

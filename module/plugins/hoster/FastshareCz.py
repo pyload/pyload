@@ -35,7 +35,7 @@ class FastshareCz(SimpleHoster):
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     FILE_INFO_PATTERN = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*Size\s*: (?P<S>\d+) (?P<U>\w+),'
-    FILE_OFFLINE_PATTERN = '>(The file has been deleted|Requested page not found)'
+    OFFLINE_PATTERN = '>(The file has been deleted|Requested page not found)'
 
     FILE_URL_REPLACEMENTS = [("#.*", "")]
     SH_COOKIES = [(".fastshare.cz", "lang", "en")]

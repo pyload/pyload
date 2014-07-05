@@ -15,7 +15,7 @@ class IFileWs(XFileSharingPro):
     HOSTER_NAME = "ifile.ws"
 
     FILE_INFO_PATTERN = '<h1\s+style="display:inline;">(?P<N>[^<]+)</h1>\s+\[(?P<S>[^]]+)\]'
-    FILE_OFFLINE_PATTERN = 'File Not Found|The file was removed by administrator'
+    OFFLINE_PATTERN = 'File Not Found|The file was removed by administrator'
     LONG_WAIT_PATTERN = "(?P<M>\d(?=\s+minutes)).*(?P<S>\d+(?=\s+seconds))"
 
 

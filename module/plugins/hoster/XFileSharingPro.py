@@ -45,7 +45,7 @@ class XFileSharingPro(SimpleHoster):
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     FILE_SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>\w+)?\)</font>'
     FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
-    FILE_OFFLINE_PATTERN = r'>\w+ (Not Found|file (was|has been) removed)'
+    OFFLINE_PATTERN = r'>\w+ (Not Found|file (was|has been) removed)'
 
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
     #LONG_WAIT_PATTERN = r'(?P<H>\d+(?=\s*hour))?.*?(?P<M>\d+(?=\s*minute))?.*?(?P<S>\d+(?=\s*second))?'

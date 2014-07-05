@@ -17,7 +17,7 @@ class CrockoCom(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<span class="fz24">Download:\s*<strong>(?P<N>.*)'
     FILE_SIZE_PATTERN = r'<span class="tip1"><span class="inner">(?P<S>[^<]+)</span></span>'
-    FILE_OFFLINE_PATTERN = r"<h1>Sorry,<br />the page you're looking for <br />isn't here.</h1>|File not found"
+    OFFLINE_PATTERN = r"<h1>Sorry,<br />the page you're looking for <br />isn't here.</h1>|File not found"
     DOWNLOAD_URL_PATTERN = r"window.location ='([^']+)';"
     CAPTCHA_URL_PATTERN = re.compile(r"u='(/file_contents/captcha/\w+)';\s*w='(\d+)';")
     CAPTCHA_KEY_PATTERN = re.compile(r'Recaptcha.create\("([^"]+)"')

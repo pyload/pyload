@@ -33,7 +33,7 @@ class FshareVn(SimpleHoster):
     __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = r'<p>(?P<N>[^<]+)<\\/p>[\\trn\s]*<p>(?P<S>[0-9,.]+)\s*(?P<U>[kKMG])i?B<\\/p>'
-    FILE_OFFLINE_PATTERN = r'<div class=\\"f_left file_w\\"|<\\/p>\\t\\t\\t\\t\\r\\n\\t\\t<p><\\/p>\\t\\t\\r\\n\\t\\t<p>0 KB<\\/p>'
+    OFFLINE_PATTERN = r'<div class=\\"f_left file_w\\"|<\\/p>\\t\\t\\t\\t\\r\\n\\t\\t<p><\\/p>\\t\\t\\r\\n\\t\\t<p>0 KB<\\/p>'
     FILE_NAME_REPLACEMENTS = [("(.*)", doubleDecode)]
     DOWNLOAD_URL_PATTERN = r'action="(http://download.*?)[#"]'
     VIP_URL_PATTERN = r'<form action="([^>]+)" method="get" name="frm_download">'

@@ -16,7 +16,7 @@ class FourSharedCom(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<meta name="title" content="(?P<N>.+?)"'
     FILE_SIZE_PATTERN = '<span title="Size: (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B">'
-    FILE_OFFLINE_PATTERN = 'The file link that you requested is not valid\.|This file was deleted.'
+    OFFLINE_PATTERN = 'The file link that you requested is not valid\.|This file was deleted.'
     FILE_NAME_REPLACEMENTS = [(r"&#(\d+).", lambda m: unichr(int(m.group(1))))]
     FILE_SIZE_REPLACEMENTS = [(",", "")]
 

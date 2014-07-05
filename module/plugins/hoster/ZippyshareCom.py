@@ -20,7 +20,7 @@ class ZippyshareCom(SimpleHoster):
     FILE_NAME_PATTERN = r'<title>Zippyshare\.com - (?P<N>[^<]+)</title>'
     FILE_SIZE_PATTERN = r'>Size:</font>\s*<font [^>]*>(?P<S>[0-9.,]+) (?P<U>[kKMG]+)i?B</font><br />'
     FILE_INFO_PATTERN = r'document\.getElementById\(\'dlbutton\'\)\.href = "[^;]*/(?P<N>[^"]+)";'
-    FILE_OFFLINE_PATTERN = r'>File does not exist on this server</div>'
+    OFFLINE_PATTERN = r'>File does not exist on this server</div>'
 
     SH_COOKIES = [('zippyshare.com', 'ziplocale', 'en')]
 

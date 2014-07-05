@@ -31,7 +31,7 @@ class DataportCz(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<span itemprop="name">(?P<N>[^<]+)</span>'
     FILE_SIZE_PATTERN = r'<td class="fil">Velikost</td>\s*<td>(?P<S>[^<]+)</td>'
-    FILE_OFFLINE_PATTERN = r'<h2>Soubor nebyl nalezen</h2>'
+    OFFLINE_PATTERN = r'<h2>Soubor nebyl nalezen</h2>'
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.dataport.cz/file/\1')]
 
     CAPTCHA_URL_PATTERN = r'<section id="captcha_bg">\s*<img src="(.*?)"'

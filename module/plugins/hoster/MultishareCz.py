@@ -32,7 +32,7 @@ class MultishareCz(SimpleHoster):
     __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = ur'(?:<li>Název|Soubor): <strong>(?P<N>[^<]+)</strong><(?:/li><li|br)>Velikost: <strong>(?P<S>[^<]+)</strong>'
-    FILE_OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
+    OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
     FILE_SIZE_REPLACEMENTS = [('&nbsp;', '')]
 
     def process(self, pyfile):

@@ -33,7 +33,7 @@ class NarodRu(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<dt class="name">(?:<[^<]*>)*(?P<N>[^<]+)</dt>'
     FILE_SIZE_PATTERN = r'<dd class="size">(?P<S>\d[^<]*)</dd>'
-    FILE_OFFLINE_PATTERN = r'<title>404</title>|Файл удален с сервиса|Закончился срок хранения файла\.'
+    OFFLINE_PATTERN = r'<title>404</title>|Файл удален с сервиса|Закончился срок хранения файла\.'
 
     FILE_SIZE_REPLACEMENTS = [(u'КБ', 'KB'), (u'МБ', 'MB'), (u'ГБ', 'GB')]
     FILE_URL_REPLACEMENTS = [("narod.yandex.ru/", "narod.ru/"),

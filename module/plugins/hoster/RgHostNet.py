@@ -14,7 +14,7 @@ class RgHostNet(SimpleHoster):
     __author_mail__ = "z00nx0@gmail.com"
 
     FILE_INFO_PATTERN = r'<h1>\s+(<a[^>]+>)?(?P<N>[^<]+)(</a>)?\s+<small[^>]+>\s+\((?P<S>[^)]+)\)\s+</small>\s+</h1>'
-    FILE_OFFLINE_PATTERN = r'File is deleted|this page is not found'
+    OFFLINE_PATTERN = r'File is deleted|this page is not found'
     DOWNLOAD_LINK_PATTERN = '''<a\s+href="([^"]+)"\s+class="btn\s+large\s+download"[^>]+>Download</a>'''
 
     def handleFree(self):

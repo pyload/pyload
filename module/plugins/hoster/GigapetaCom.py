@@ -36,7 +36,7 @@ class GigapetaCom(SimpleHoster):
     SH_COOKIES = [("http://gigapeta.com", "lang", "us")]
     FILE_NAME_PATTERN = r'<img src=".*" alt="file" />-->\s*(?P<N>.*?)\s*</td>'
     FILE_SIZE_PATTERN = r'<th>\s*Size\s*</th>\s*<td>\s*(?P<S>.*?)\s*</td>'
-    FILE_OFFLINE_PATTERN = r'<div id="page_error">'
+    OFFLINE_PATTERN = r'<div id="page_error">'
 
     def handleFree(self):
         captcha_key = str(randint(1, 100000000))

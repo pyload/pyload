@@ -45,7 +45,7 @@ class TurbobitNet(SimpleHoster):
     # long filenames are shortened
     FILE_INFO_PATTERN = r"<span class='file-icon1[^>]*>(?P<N>[^<]+)</span>\s*\((?P<S>[^\)]+)\)\s*</h1>"
     FILE_NAME_PATTERN = r'<meta name="keywords" content="\s+(?P<N>[^,]+)'  # full name but missing on page2
-    FILE_OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
+    OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
     FILE_URL_REPLACEMENTS = [(r"http://(?:www\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*",
                               "http://turbobit.net/\g<ID>.html")]
     SH_COOKIES = [("turbobit.net", "user_lang", "en")]

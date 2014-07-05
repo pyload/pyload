@@ -98,7 +98,8 @@ def parseFileInfo(self, url='', html=''):
             if hasattr(self, "html"):
                 self.html = html
 
-        if hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):
+        if (hasattr(self, "OFFLINE_PATTERN") and re.search(self.OFFLINE_PATTERN, html)) or \
+           (hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html)):
             # File offline
             info['status'] = 1
         else:
@@ -163,7 +164,7 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Simple hoster plugin"""
@@ -172,16 +173,25 @@ class SimpleHoster(Hoster):
 
     """
     Following patterns should be defined by each hoster:
-    FILE_INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>size_unit)'
-    or
-      FILE_NAME_PATTERN = r'(?P<N>file_name)'
-      FILE_SIZE_PATTERN = r'(?P<S>file_size) (?P<U>size_unit)'
 
-    FILE_OFFLINE_PATTERN = r'File (deleted|not found)'
-    TEMP_OFFLINE_PATTERN = r'Server maintainance'
+      FILE_INFO_PATTERN: Name and Size of the file
+        example: FILE_INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>size_unit)'
+      or
+        FILE_NAME_PATTERN: Name that will be set for the file
+          example: FILE_NAME_PATTERN = r'(?P<N>file_name)'
+        FILE_SIZE_PATTERN: Size that will be checked for the file
+          example: FILE_SIZE_PATTERN = r'(?P<S>file_size) (?P<U>size_unit)'
 
-    You can also define:
-    PREMIUM_ONLY_PATTERN = r'Premium account required'
+      OFFLINE_PATTERN: Checks if the file is yet available online
+        example: OFFLINE_PATTERN = r'File (deleted|not found)'
+      or:
+        FILE_OFFLINE_PATTERN: Deprecated
+
+      TEMP_OFFLINE_PATTERN: Checks if the file is temporarily offline
+        example: TEMP_OFFLINE_PATTERN = r'Server maintainance'
+
+      PREMIUM_ONLY_PATTERN: (optional) Checks if the file can be downloaded only with a premium account
+        example: PREMIUM_ONLY_PATTERN = r'Premium account required'
     """
 
     FILE_SIZE_REPLACEMENTS = []

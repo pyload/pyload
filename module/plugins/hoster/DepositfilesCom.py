@@ -17,7 +17,7 @@ class DepositfilesCom(SimpleHoster):
 
     FILE_SIZE_PATTERN = r': <b>(?P<S>[0-9.]+)&nbsp;(?P<U>[kKMG])i?B</b>'
     FILE_NAME_PATTERN = r'<script type="text/javascript">eval\( unescape\(\'(?P<N>.*?)\''
-    FILE_OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
+    OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
     FILE_URL_REPLACEMENTS = [(r"\.com(/.*?)?/files", ".com/en/files"), (r"\.html$", "")]
     FILE_NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
                               (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
@@ -27,7 +27,7 @@ class DepositfilesCom(SimpleHoster):
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, post={"gateway_result": "1"}, cookies=True)
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html):
+        if re.search(self.OFFLINE_PATTERN, self.html):
             self.offline()
 
         if re.search(r'File is checked, please try again in a minute.', self.html) is not None:

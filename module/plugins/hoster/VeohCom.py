@@ -30,7 +30,7 @@ class VeohCom(SimpleHoster):
     __author_mail__ = "vuolter@gmail.com"
 
     FILE_NAME_PATTERN = r'<meta name="title" content="(?P<N>.*?)"'
-    FILE_OFFLINE_PATTERN = r'>Sorry, we couldn\'t find the video you were looking for'
+    OFFLINE_PATTERN = r'>Sorry, we couldn\'t find the video you were looking for'
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.veoh.com/watch/\g<ID>')]
 

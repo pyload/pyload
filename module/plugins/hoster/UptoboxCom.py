@@ -36,7 +36,7 @@ class UptoboxCom(XFileSharingPro):
     HOSTER_NAME = "uptobox.com"
 
     FILE_INFO_PATTERN = r'"para_title">(?P<N>.+) \((?P<S>[\d\.]+) (?P<U>\w+)\)'
-    FILE_OFFLINE_PATTERN = r'>(File not found|Access Denied|404 Not Found)'
+    OFFLINE_PATTERN = r'>(File not found|Access Denied|404 Not Found)'
     TEMP_OFFLINE_PATTERN = r'>This server is in maintenance mode'
 
     WAIT_PATTERN = r'>(\d+)</span> seconds<'

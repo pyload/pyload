@@ -17,7 +17,7 @@ class VidPlayNet(XFileSharingPro):
 
     HOSTER_NAME = "vidplay.net"
 
-    FILE_OFFLINE_PATTERN = r'<b>File Not Found</b><br>\s*<br>'
+    OFFLINE_PATTERN = r'<b>File Not Found</b><br>\s*<br>'
     FILE_NAME_PATTERN = r'<b>Password:</b></div>\s*<h[1-6]>(?P<N>[^<]+)</h[1-6]>'
     DIRECT_LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<&]+)' % HOSTER_NAME
 

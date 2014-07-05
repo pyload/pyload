@@ -28,7 +28,7 @@ def getInfo(urls):
     for url in urls:
 
         html = getURL(url)
-        if re.search(StreamCz.FILE_OFFLINE_PATTERN, html):
+        if re.search(StreamCz.OFFLINE_PATTERN, html):
             # File offline
             result.append((url, 0, 1, url))
         else:
@@ -45,7 +45,7 @@ class StreamCz(Hoster):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    FILE_OFFLINE_PATTERN = r'<h1 class="commonTitle">Str.nku nebylo mo.n. nal.zt \(404\)</h1>'
+    OFFLINE_PATTERN = r'<h1 class="commonTitle">Str.nku nebylo mo.n. nal.zt \(404\)</h1>'
     FILE_NAME_PATTERN = r'<link rel="video_src" href="http://www.stream.cz/\w+/(\d+)-([^"]+)" />'
     CDN_PATTERN = r'<param name="flashvars" value="[^"]*&id=(?P<ID>\d+)(?:&cdnLQ=(?P<cdnLQ>\d*))?(?:&cdnHQ=(?P<cdnHQ>\d*))?(?:&cdnHD=(?P<cdnHD>\d*))?&'
 
@@ -57,7 +57,7 @@ class StreamCz(Hoster):
 
         self.html = self.load(pyfile.url, decode=True)
 
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html):
+        if re.search(self.OFFLINE_PATTERN, self.html):
             self.offline()
 
         found = re.search(self.CDN_PATTERN, self.html)

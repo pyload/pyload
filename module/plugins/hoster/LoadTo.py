@@ -35,7 +35,7 @@ class LoadTo(SimpleHoster):
 
     FILE_INFO_PATTERN = r'<a [^>]+>(?P<N>.+)</a></h3>\s*Size: (?P<S>\d+) (?P<U>[kKmMgG]?i?[bB])'
     URL_PATTERN = r'<form method="post" action="(.+?)"'
-    FILE_OFFLINE_PATTERN = r'Can\'t find file. Please check URL.'
+    OFFLINE_PATTERN = r'Can\'t find file. Please check URL.'
     WAIT_PATTERN = r'type="submit" value="Download \((\d+)\)"'
     RECAPTCHA_PATTERN = r'http://www.google.com/recaptcha/api/challenge'
     RECAPTCHA_KEY = "6Lc34eISAAAAAKNbPVyxBgNriTjPRmF-FA1oxApG"
@@ -49,7 +49,7 @@ class LoadTo(SimpleHoster):
         self.getFileInfo()
 
         # Check if File is online
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html):
+        if re.search(self.OFFLINE_PATTERN, self.html):
             self.offline()
 
         # Search for Download URL

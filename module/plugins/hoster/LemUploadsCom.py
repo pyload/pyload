@@ -17,7 +17,7 @@ class LemUploadsCom(XFileSharingPro):
 
     HOSTER_NAME = "lemuploads.com"
 
-    FILE_OFFLINE_PATTERN = r'<b>File Not Found</b><br><br>'
+    OFFLINE_PATTERN = r'<b>File Not Found</b><br><br>'
     FILE_NAME_PATTERN = r'<b>Password:</b></div>\s*<h2>(?P<N>[^<]+)</h2>'
 
 

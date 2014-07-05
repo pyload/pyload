@@ -34,7 +34,7 @@ class QuickshareCz(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>[^<]+)</td>'
     FILE_SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</td>'
-    FILE_OFFLINE_PATTERN = r'<script type="text/javascript">location.href=\'/chyba\';</script>'
+    OFFLINE_PATTERN = r'<script type="text/javascript">location.href=\'/chyba\';</script>'
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)

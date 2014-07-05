@@ -14,7 +14,7 @@ class UpstoreNet(SimpleHoster):
     __author_name__ = ("igel")
 
     FILE_INFO_PATTERN = r'<div class="comment">.*?</div>\s*\n<h2 style="margin:0">(?P<N>.*?)</h2>\s*\n<div class="comment">\s*\n\s*(?P<S>[\d.]+) (?P<U>\w+)'
-    FILE_OFFLINE_PATTERN = r'<span class="error">File not found</span>'
+    OFFLINE_PATTERN = r'<span class="error">File not found</span>'
 
     WAIT_PATTERN = r"var sec = (\d+)"
     CHASH_PATTERN = r'<input type="hidden" name="hash" value="([^"]*)">'

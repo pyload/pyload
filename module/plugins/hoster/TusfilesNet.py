@@ -29,7 +29,7 @@ class TusfilesNet(XFileSharingPro):
     HOSTER_NAME = "tusfiles.net"
 
     FILE_INFO_PATTERN = r'\](?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)\['
-    FILE_OFFLINE_PATTERN = r'>File Not Found|<Title>TusFiles - Fast Sharing Files!'
+    OFFLINE_PATTERN = r'>File Not Found|<Title>TusFiles - Fast Sharing Files!'
 
     SH_COOKIES = [(".tusfiles.net", "lang", "english")]
 

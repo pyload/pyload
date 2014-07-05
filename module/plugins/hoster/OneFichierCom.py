@@ -20,7 +20,7 @@ class OneFichierCom(SimpleHoster):
 
     FILE_NAME_PATTERN = r'">Filename :</th>\s*<td>(?P<N>[^<]+)</td>'
     FILE_SIZE_PATTERN = r'<th>Size :</th>\s*<td>(?P<S>[^<]+)</td>'
-    FILE_OFFLINE_PATTERN = r'The (requested)? file (could not be found|has been deleted)'
+    OFFLINE_PATTERN = r'The (requested)? file (could not be found|has been deleted)'
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://\g<id>.\g<host>/en/')]
 

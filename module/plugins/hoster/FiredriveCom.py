@@ -30,7 +30,7 @@ class FiredriveCom(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<b>Name:</b> (?P<N>.+) <br>'
     FILE_SIZE_PATTERN = r'<b>Size:</b> (?P<S>[\d.]+) (?P<U>[a-zA-Z]+) <br>'
-    FILE_OFFLINE_PATTERN = r'class="sad_face_image"'
+    OFFLINE_PATTERN = r'class="sad_face_image"'
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.firedrive.com/file/\g<ID>')]
 

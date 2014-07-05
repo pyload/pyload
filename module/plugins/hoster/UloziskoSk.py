@@ -35,7 +35,7 @@ class UloziskoSk(SimpleHoster):
     FILE_NAME_PATTERN = r'<div class="down1">(?P<N>[^<]+)</div>'
     FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong><br />'
     CAPTCHA_PATTERN = r'<img src="(/obrazky/obrazky.php\?fid=[^"]+)" alt="" />'
-    FILE_OFFLINE_PATTERN = ur'<span class = "red">Zadaný súbor neexistuje z jedného z nasledujúcich dôvodov:</span>'
+    OFFLINE_PATTERN = ur'<span class = "red">Zadaný súbor neexistuje z jedného z nasledujúcich dôvodov:</span>'
     IMG_PATTERN = ur'<strong>PRE ZVÄČŠENIE KLIKNITE NA OBRÁZOK</strong><br /><a href = "([^"]+)">'
 
     def process(self, pyfile):

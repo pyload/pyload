@@ -33,7 +33,7 @@ class DateiTo(SimpleHoster):
 
     FILE_NAME_PATTERN = r'Dateiname:</td>\s*<td colspan="2"><strong>(?P<N>.*?)</'
     FILE_SIZE_PATTERN = r'Dateigr&ouml;&szlig;e:</td>\s*<td colspan="2">(?P<S>.*?)</'
-    FILE_OFFLINE_PATTERN = r'>Datei wurde nicht gefunden<|>Bitte wähle deine Datei aus... <'
+    OFFLINE_PATTERN = r'>Datei wurde nicht gefunden<|>Bitte wähle deine Datei aus... <'
     PARALELL_PATTERN = r'>Du lädst bereits eine Datei herunter<'
 
     WAIT_PATTERN = r'countdown\({seconds: (\d+)'

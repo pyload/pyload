@@ -29,7 +29,7 @@ class GooIm(SimpleHoster):
     __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_NAME_PATTERN = r'<h3>Filename: (?P<N>.+)</h3>'
-    FILE_OFFLINE_PATTERN = r'The file you requested was not found'
+    OFFLINE_PATTERN = r'The file you requested was not found'
 
     def setup(self):
         self.chunkLimit = -1

@@ -36,7 +36,7 @@ class FilerNet(SimpleHoster):
     __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>\w+)</small></h1>'
-    FILE_OFFLINE_PATTERN = r'Nicht gefunden'
+    OFFLINE_PATTERN = r'Nicht gefunden'
     RECAPTCHA_KEY = '6LcFctISAAAAAAgaeHgyqhNecGJJRnxV1m_vAz3V'
     DIRECT_LINK_PATTERN = r'href="([^"]+)">Get download</a>'
 

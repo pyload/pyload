@@ -36,7 +36,7 @@ class UploadheroCom(SimpleHoster):
     SH_COOKIES = [("http://uploadhero.co", "lang", "en")]
     FILE_NAME_PATTERN = r'<div class="nom_de_fichier">(?P<N>.*?)</div>'
     FILE_SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'
-    FILE_OFFLINE_PATTERN = r'<p class="titre_dl_2">|<div class="raison"><strong>Le lien du fichier ci-dessus n\'existe plus.'
+    OFFLINE_PATTERN = r'<p class="titre_dl_2">|<div class="raison"><strong>Le lien du fichier ci-dessus n\'existe plus.'
 
     DOWNLOAD_URL_PATTERN = r'<a href="([^"]+)" id="downloadnow"'
 

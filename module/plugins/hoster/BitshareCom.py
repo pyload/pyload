@@ -18,7 +18,7 @@ class BitshareCom(SimpleHoster):
     __author_mail__ = ("", "fragonib[AT]yahoo[DOT]es")
 
     HOSTER_DOMAIN = "bitshare.com"
-    FILE_OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
+    OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
     FILE_INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)</h1>'
     FILE_AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
     CAPTCHA_KEY_PATTERN = r"http://api\.recaptcha\.net/challenge\?k=(.*?) "
@@ -44,7 +44,7 @@ class BitshareCom(SimpleHoster):
         self.html = self.load(pyfile.url, ref=False, decode=True)
 
         # Check offline
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html):
+        if re.search(self.OFFLINE_PATTERN, self.html):
             self.offline()
 
         # Check Traffic used up

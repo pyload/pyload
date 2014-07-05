@@ -32,7 +32,7 @@ class HellshareCz(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<h1 id="filename"[^>]*>(?P<N>[^<]+)</h1>'
     FILE_SIZE_PATTERN = r'<strong id="FileSize_master">(?P<S>[0-9.]*)&nbsp;(?P<U>[kKMG])i?B</strong>'
-    FILE_OFFLINE_PATTERN = r'<h1>File not found.</h1>'
+    OFFLINE_PATTERN = r'<h1>File not found.</h1>'
     SHOW_WINDOW_PATTERN = r'<a href="([^?]+/(\d+)/\?do=(fileDownloadButton|relatedFileDownloadButton-\2)-showDownloadWindow)"'
 
     def setup(self):

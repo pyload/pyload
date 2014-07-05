@@ -39,7 +39,7 @@ class UlozTo(SimpleHoster):
     FILE_NAME_PATTERN = r'<title>(?P<N>[^<]+) \| Uloz.to</title>'
     FILE_SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[0-9.]+\s[kMG]?B)</span>'
     FILE_INFO_PATTERN = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'
-    FILE_OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
+    OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
     FILE_SIZE_REPLACEMENTS = [('([0-9.]+)\s([kMG])B', convertDecimalPrefix)]
     FILE_URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "www.ulozto.net")]
 
@@ -142,7 +142,7 @@ class UlozTo(SimpleHoster):
     def doCheckDownload(self):
         check = self.checkDownload({
             "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
-            "offline": re.compile(self.FILE_OFFLINE_PATTERN),
+            "offline": re.compile(self.OFFLINE_PATTERN),
             "passwd": self.PASSWD_PATTERN,
             "server_error": 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  # paralell dl, server overload etc.
             "not_found": "<title>Ulož.to</title>"

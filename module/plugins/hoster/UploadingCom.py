@@ -35,7 +35,7 @@ class UploadingCom(SimpleHoster):
 
     FILE_NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
     FILE_SIZE_PATTERN = r'size tip_container">(?P<S>[\d.]+) (?P<U>\w+)<'
-    FILE_OFFLINE_PATTERN = r'Page not found!'
+    OFFLINE_PATTERN = r'Page not found!'
 
     def process(self, pyfile):
         # set lang to english

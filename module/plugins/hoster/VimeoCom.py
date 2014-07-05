@@ -31,7 +31,7 @@ class VimeoCom(SimpleHoster):
     __author_mail__ = "vuolter@gmail.com"
 
     FILE_NAME_PATTERN = r'<title>(?P<N>.+) on Vimeo<'
-    FILE_OFFLINE_PATTERN = r'class="exception_header"'
+    OFFLINE_PATTERN = r'class="exception_header"'
     TEMP_OFFLINE_PATTERN = r'Please try again in a few minutes.<'
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'https://www.vimeo.com/\g<ID>')]

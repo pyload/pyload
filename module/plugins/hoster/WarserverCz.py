@@ -36,7 +36,7 @@ class WarserverCz(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<h1.*?>(?P<N>[^<]+)</h1>'
     FILE_SIZE_PATTERN = r'<li>Velikost: <strong>(?P<S>[^<]+)</strong>'
-    FILE_OFFLINE_PATTERN = r'<h1>Soubor nenalezen</h1>'
+    OFFLINE_PATTERN = r'<h1>Soubor nenalezen</h1>'
 
     PREMIUM_URL_PATTERN = r'href="(http://[^/]+/dwn-premium.php.*?)"'
     DOMAIN = "http://csd01.coolshare.cz"

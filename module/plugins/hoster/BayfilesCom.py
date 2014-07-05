@@ -34,7 +34,7 @@ class BayfilesCom(SimpleHoster):
     __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com")
 
     FILE_INFO_PATTERN = r'<p title="(?P<N>[^"]+)">[^<]*<strong>(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B</strong></p>'
-    FILE_OFFLINE_PATTERN = r'(<p>The requested file could not be found.</p>|<title>404 Not Found</title>)'
+    OFFLINE_PATTERN = r'(<p>The requested file could not be found.</p>|<title>404 Not Found</title>)'
 
     WAIT_PATTERN = r'>Your IP [0-9.]* has recently downloaded a file\. Upgrade to premium or wait (\d+) minutes\.<'
     VARS_PATTERN = r'var vfid = (\d+);\s*var delay = (\d+);'

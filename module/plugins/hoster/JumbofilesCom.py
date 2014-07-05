@@ -14,7 +14,7 @@ class JumbofilesCom(SimpleHoster):
     __author_mail__ = "soilfiction@gmail.com"
 
     FILE_INFO_PATTERN = '<TR><TD>(?P<N>[^<]+?)\s*<small>\((?P<S>[\d.]+)\s*(?P<U>[KMG][bB])\)</small></TD></TR>'
-    FILE_OFFLINE_PATTERN = 'Not Found or Deleted / Disabled due to inactivity or DMCA'
+    OFFLINE_PATTERN = 'Not Found or Deleted / Disabled due to inactivity or DMCA'
     DIRECT_LINK_PATTERN = '<meta http-equiv="refresh" content="10;url=(.+)">'
 
     def setup(self):

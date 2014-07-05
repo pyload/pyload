@@ -40,7 +40,7 @@ class MegasharesCom(SimpleHoster):
     REACTIVATE_PASSPORT_PATTERN = r'<input[^>]*id="passport_num" value="(\w+)" />'
     REQUEST_URI_PATTERN = r'var request_uri = "([^"]+)";'
     NO_SLOTS_PATTERN = r'<dd class="red">All download slots for this link are currently filled'
-    FILE_OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted)'
+    OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted)'
 
     def setup(self):
         self.resumeDownload = True

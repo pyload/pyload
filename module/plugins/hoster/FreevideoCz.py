@@ -28,7 +28,7 @@ def getInfo(urls):
     for url in urls:
 
         html = getURL(url)
-        if re.search(FreevideoCz.FILE_OFFLINE_PATTERN, html):
+        if re.search(FreevideoCz.OFFLINE_PATTERN, html):
             # File offline
             result.append((url, 0, 1, url))
         else:
@@ -46,7 +46,7 @@ class FreevideoCz(Hoster):
     __author_mail__ = "zoidberg@mujmail.cz"
 
     URL_PATTERN = r'clip: {\s*url: "([^"]+)"'
-    FILE_OFFLINE_PATTERN = r'<h2 class="red-corner-full">Str.nka nebyla nalezena</h2>'
+    OFFLINE_PATTERN = r'<h2 class="red-corner-full">Str.nka nebyla nalezena</h2>'
 
     def setup(self):
         self.multiDL = self.resumeDownload = True
@@ -55,7 +55,7 @@ class FreevideoCz(Hoster):
 
         self.html = self.load(pyfile.url, decode=True)
 
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html):
+        if re.search(self.OFFLINE_PATTERN, self.html):
             self.offline()
 
         found = re.search(self.URL_PATTERN, self.html)
