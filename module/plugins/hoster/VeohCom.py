@@ -23,8 +23,8 @@ class VeohCom(SimpleHoster):
     __name__ = "VeohCom"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
-    __version__ = "0.1"
-    __config__ = [("quality", "Low;High", "Quality", "High")]
+    __version__ = "0.2"
+    __config__ = [("quality", "Low;High;Auto", "Quality", "Auto")]
     __description__ = """Veoh.com hoster plugin"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
@@ -41,16 +41,22 @@ class VeohCom(SimpleHoster):
         self.chunkLimit = -1
 
     def handleFree(self):
-        q = self.getConfig("quality")
-        pattern = r'"fullPreviewHash%sPath":"(.+?)"' % q
-        found = re.search(pattern, self.html)
-        if found:
-            self.pyfile.name += ".mp4"
-            link = found.group(1).replace("\\", "")
-            self.logDebug("Download link: " + link)
-            self.download(link)
+        quality = self.getConfig("quality")
+        if quality == "Auto":
+            quality = ("High", "Low")
+        for q in quality:
+            pattern = r'"fullPreviewHash%sPath":"(.+?)"' % q
+            found = re.search(pattern, self.html)
+            if found:
+                self.pyfile.name += ".mp4"
+                link = found.group(1).replace("\\", "")
+                self.logDebug("Download link: " + link)
+                self.download(link)
+                return
+            else:
+                self.logInfo("No %s quality video found" % q.upper())
         else:
-            self.fail("No %s quality video found" % q.lower())
+            self.fail("No video found!")
 
 
 getInfo = create_getInfo(VeohCom)
