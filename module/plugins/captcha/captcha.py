@@ -268,7 +268,7 @@ class OCR(object):
 
                     black_pixel_in_col = True
 
-            if black_pixel_in_col == False and started == True:
+            if black_pixel_in_col is False and started is True:
                 rect = (firstX, topY, lastX, bottomY)
                 new_captcha = captcha.crop(rect)
 
