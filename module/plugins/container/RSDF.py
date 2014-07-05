@@ -39,7 +39,7 @@ class RSDF(Container):
 
             links = []
             for link in data:
-                if link == '':
+                if not link:
                     continue
                 link = base64.b64decode(link)
                 link = obj.decrypt(link)

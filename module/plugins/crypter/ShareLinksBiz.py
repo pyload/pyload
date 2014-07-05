@@ -11,7 +11,7 @@ from module.plugins.Crypter import Crypter
 class ShareLinksBiz(Crypter):
     __name__ = "ShareLinksBiz"
     __type__ = "crypter"
-    __pattern__ = r'(?P<base>http://(?:www\.)?(share-links|s2l)\.biz)/(?P<id>_?[0-9a-z]+)(/.*)?'
+    __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
     __version__ = "1.13"
     __description__ = """Share-Links.biz decrypter plugin"""
     __author_name__ = "fragonib"
@@ -64,7 +64,7 @@ class ShareLinksBiz(Crypter):
         if 's2l.biz' in url:
             url = self.load(url, just_header=True)['location']
         self.baseUrl = re.match(self.__pattern__, url).group(1)
-        self.fileId = re.match(self.__pattern__, url).group('id')
+        self.fileId = re.match(self.__pattern__, url).group('ID')
         self.package = pyfile.package()
 
     def isOnline(self):
