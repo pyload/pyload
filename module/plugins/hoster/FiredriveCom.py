@@ -12,8 +12,6 @@
 #
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  @author: Walter Purcaro
 ###############################################################################
 
 import re
@@ -21,18 +19,18 @@ import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class PutlockerCom(SimpleHoster):
-    __name__ = "PutlockerCom"
+class FiredriveCom(SimpleHoster):
+    __name__ = "FiredriveCom"
     __type__ = "hoster"
     __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
-    __version__ = "0.33"
+    __version__ = "0.01"
     __description__ = """Firedrive.com hoster plugin"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
 
     FILE_NAME_PATTERN = r'<b>Name:</b> (?P<N>.+) <br>'
     FILE_SIZE_PATTERN = r'<b>Size:</b> (?P<S>[\d.]+) (?P<U>[a-zA-Z]+) <br>'
-    FILE_OFFLINE_PATTERN = r"<div class=\"sad_face_image\">"
+    FILE_OFFLINE_PATTERN = r'class="sad_face_image"'
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.firedrive.com/file/\g<ID>')]
 
@@ -50,4 +48,4 @@ class PutlockerCom(SimpleHoster):
         return re.search(r'<a href="(https?://dl\.firedrive\.com/.*?)"', self.html).group(1)
 
 
-getInfo = create_getInfo(PutlockerCom)
+getInfo = create_getInfo(FiredriveCom)
