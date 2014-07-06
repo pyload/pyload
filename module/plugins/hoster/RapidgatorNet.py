@@ -17,10 +17,13 @@
 ###############################################################################
 
 import re
+
 from pycurl import HTTPHEADER
 
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
+
+from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia, AdsCaptcha
 
@@ -29,7 +32,7 @@ class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
-    __version__ = "0.21"
+    __version__ = "0.22"
     __description__ = """Rapidgator.net hoster plugin"""
     __author_name__ = ("zoidberg", "chrox", "stickell", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "", "l.stickell@yahoo.it", "vuolter@gmail.com")
@@ -182,12 +185,13 @@ class RapidgatorNet(SimpleHoster):
             if not found:
                 return
             elif found.group(1) == "daily":
-                wait_time = 60
+                self.logWarning("You have reached your daily downloads limit for today")
+                wait_time = secondsToMidnight(gmt=2)
             else:
-                wait_time = 24 * 60
+                wait_time = 1 * 60 * 60
 
-        self.logDebug("Waiting %d minutes" % wait_time)
-        self.wait(wait_time * 60, True)
+        self.logDebug("Waiting %d minutes" % wait_time / 60)
+        self.wait(wait_time, True)
         self.retry()
 
     def getJsonResponse(self, url):

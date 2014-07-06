@@ -49,8 +49,7 @@ class BitshareCom(SimpleHoster):
 
         # Check Traffic used up
         if re.search(self.TRAFFIC_USED_UP, self.html):
-            self.logInfo("Your Traffic is used up for today. Wait 1800 seconds or reconnect!")
-            self.logDebug("Waiting %d seconds." % 1800)
+            self.logInfo("Your Traffic is used up for today")
             self.wait(30 * 60, True)
             self.retry()
 

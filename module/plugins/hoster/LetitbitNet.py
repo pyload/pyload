@@ -13,22 +13,21 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 # API Documentation:
 # http://api.letitbit.net/reg/static/api.pdf
-
 # Test links (random.bin):
 # http://letitbit.net/download/07874.0b5709a7d3beee2408bb1f2eefce/random.bin.html
 
 import re
 import urllib
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.common.json_layer import json_loads, json_dumps
+
+from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 def api_download_info(url):
@@ -52,7 +51,7 @@ class LetitbitNet(SimpleHoster):
     __name__ = "LetitbitNet"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?(letitbit|shareflare).net/download/.*'
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """Letitbit.net hoster plugin"""
     __author_name__ = ("zoidberg", "z00nx")
     __author_mail__ = ("zoidberg@mujmail.cz", "z00nx0@gmail.com")
@@ -126,10 +125,10 @@ class LetitbitNet(SimpleHoster):
         if not response:
             self.invalidCaptcha()
         if response == "error_free_download_blocked":
-            self.logInfo("Daily limit reached, waiting 24 hours")
-            self.wait(24 * 60 * 60)
+            self.logWarning("Daily limit reached")
+            self.wait(secondsToMidnight(gmt=2), True)
         if response == "error_wrong_captcha":
-            self.logInfo("Wrong Captcha")
+            self.logError("Wrong Captcha")
             self.invalidCaptcha()
             self.retry()
         elif response.startswith('['):

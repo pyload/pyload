@@ -19,6 +19,7 @@
 import re
 from os import rename
 
+from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
@@ -26,7 +27,7 @@ class SockshareCom(SimpleHoster):
     __name__ = "SockshareCom"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?sockshare\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """Sockshare.com hoster plugin"""
     __author_name__ = ("jeix", "stickell", "Walter Purcaro")
     __author_mail__ = ("jeix@hasnomail.de", "l.stickell@yahoo.it", "vuolter@gmail.com")
@@ -54,9 +55,11 @@ class SockshareCom(SimpleHoster):
 
         post_data = {"hash": hash_data.group(1), "confirm": "Continue+as+Free+User"}
         self.html = self.load(self.pyfile.url, post=post_data)
-        if (">You have exceeded the daily stream limit for your country\\. You can wait until tomorrow" in self.html or
-            "(>This content server has been temporarily disabled for upgrades|Try again soon\\. You can still download it below\\.<)" in self.html):
-            self.retry(wait_time=60 * 60 * 2, reason="Download limit exceeded or server disabled")  # 2 hours wait
+        if ">You have exceeded the daily stream limit for your country\\. You can wait until tomorrow" in self.html:
+            self.logWarning("You have exceeded your daily stream limit for today")
+            self.wait(secondsToMidnight(gmt=2), True)
+        elif "(>This content server has been temporarily disabled for upgrades|Try again soon\\. You can still download it below\\.<)" in self.html):
+            self.retry(wait_time=2 * 60 * 60, reason="Server temporarily offline")  # 2 hours wait
 
         patterns = (r'(/get_file\.php\?id=[A-Z0-9]+&key=[a-zA-Z0-9=]+&original=1)',
                     r'(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+)',

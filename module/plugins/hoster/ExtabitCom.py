@@ -13,22 +13,22 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 import re
 
+from module.common.json_layer import json_loads
+
+from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
-from module.common.json_layer import json_loads
 
 
 class ExtabitCom(SimpleHoster):
     __name__ = "ExtabitCom"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
-    __version__ = "0.5"
+    __version__ = "0.6"
     __description__ = """Extabit.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -48,7 +48,8 @@ class ExtabitCom(SimpleHoster):
         if m:
             self.wait(int(m.group(1)) * 60, True)
         elif "The daily downloads limit from your IP is exceeded" in self.html:
-            self.wait(1 * 60 * 60, True)
+            self.logWarning("You have reached your daily downloads limit for today")
+            self.wait(secondsToMidnight(gmt=2), True)
 
         self.logDebug("URL: " + self.req.http.lastEffectiveURL)
         m = re.match(self.__pattern__, self.req.http.lastEffectiveURL)

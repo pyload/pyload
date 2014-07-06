@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from module.plugins.Hoster import Hoster
+from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import ReCaptcha
 
 
@@ -9,7 +11,7 @@ class FreakshareCom(Hoster):
     __name__ = "FreakshareCom"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
-    __version__ = "0.38"
+    __version__ = "0.39"
     __description__ = """Freakshare.com hoster plugin"""
     __author_name__ = ("sitacuisses", "spoob", "mkaay", "Toilal")
     __author_mail__ = ("sitacuisses@yahoo.de", "spoob@pyload.org", "mkaay@mkaay.de", "toilal.dev@gmail.com")
@@ -122,7 +124,7 @@ class FreakshareCom(Hoster):
 
         if "Your Traffic is used up for today" in self.html:
             self.wantReconnect = True
-            return 24 * 60 * 60
+            return secondsToMidnight(gmt=2)
 
         timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[.\d]*;', self.html)
         if timestring:

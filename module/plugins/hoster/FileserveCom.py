@@ -16,12 +16,15 @@
 """
 
 import re
-from module.plugins.Hoster import Hoster
+
 from module.network.RequestFactory import getURL
-from module.plugins.internal.CaptchaService import ReCaptcha
 from module.common.json_layer import json_loads
+from module.plugins.internal.CaptchaService import ReCaptcha
 from module.utils import parseFileSize
+
+from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
+from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 
 
 def checkFile(plugin, urls):
@@ -47,7 +50,7 @@ class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*'
-    __version__ = "0.51"
+    __version__ = "0.52"
     __description__ = """Fileserve.com hoster plugin"""
     __author_name__ = ("jeix", "mkaay", "Paul King", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "", "zoidberg@mujmail.cz")
@@ -133,8 +136,8 @@ class FileserveCom(Hoster):
         elif check == "wait":
             self.doLongWait(self.lastCheck)
         elif check == "limit":
-            #download limited reached for today (not a exact time known)
-            self.setWait(3 * 60 * 60, True)  # wait 3 hours #TO-DO: resolve waittime using UnrestrictLi's secondsToMidnight
+            self.logWarning("Download limited reached for today")
+            self.setWait(secondsToMidnight(gmt=2), True)
             self.wait()
             self.retry()
 
