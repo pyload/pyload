@@ -31,7 +31,6 @@ class StahnuTo(Account):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    #login_timeout = 60
 
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.stahnu.to/")

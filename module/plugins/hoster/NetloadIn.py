@@ -176,9 +176,9 @@ class NetloadIn(Hoster):
                 return True
             if ">An access request has been made from IP address <" in page:
                 wait = self.get_wait_time(page)
-                if wait == 0:
+                if not wait:
                     self.logDebug("Netload: Wait was 0 setting 30")
-                    wait = 30
+                    wait = 30 * 60
                 self.logInfo(_("Netload: waiting between downloads %d s." % wait))
                 self.wantReconnect = True
                 self.setWait(wait)
