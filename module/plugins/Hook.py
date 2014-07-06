@@ -55,7 +55,7 @@ class Hook(Base):
     event_list = None  # dont make duplicate entries in event_map
 
 
-    #: periodic call interval in secondc
+    #: periodic call interval in seconds
     interval = 60
 
     def __init__(self, core, manager):
@@ -100,7 +100,7 @@ class Hook(Base):
         try:
             if self.isActivated(): self.periodical()
         except Exception, e:
-            self.core.log.error(_("Error executing hooks: %s") % str(e))
+            self.logError(_("Error executing hooks: %s") % str(e))
             if self.core.debug:
                 print_exc()
 
