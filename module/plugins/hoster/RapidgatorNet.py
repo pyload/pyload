@@ -29,7 +29,7 @@ class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
     __pattern__ = r"http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __description__ = """Rapidgator.net hoster plugin"""
     __author_name__ = ("zoidberg", "chrox", "stickell", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "", "l.stickell@yahoo.it", "vuolter@gmail.com")
@@ -182,9 +182,9 @@ class RapidgatorNet(SimpleHoster):
             if not found:
                 return
             elif found.group(1) == "daily":
-                wait_time = 60
+                wait_time = 12 * 60
             else:
-                wait_time = 24 * 60
+                wait_time = 60
 
         self.logDebug("Waiting %d minutes" % wait_time)
         self.wait(wait_time * 60, True)
