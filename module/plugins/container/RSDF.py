@@ -46,5 +46,5 @@ class RSDF(Container):
                 decryptedUrl = link.replace('CCF: ', '')
                 links.append(decryptedUrl)
 
-            self.log.debug("%s: adding package %s with %d links" % (self.__name__, pyfile.package().name, len(links)))
+            self.logDebug("%s: adding package %s with %d links" % (self.__name__, pyfile.package().name, len(links)))
             self.packages.append((pyfile.package().name, links))
