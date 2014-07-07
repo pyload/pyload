@@ -3,26 +3,26 @@
 import sys
 import re
 
+from operator import itemgetter
 from os import remove, stat
 from os.path import join, isfile
 from time import time
 
-from module.ConfigParser import IGNORE
 from module.network.RequestFactory import getURL
 from module.plugins.Hook import threaded, Expose, Hook
 
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.26"
+    __version__ = "0.30"
     __description__ = """Check for updates"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
                   ("interval", "int", "Check interval in hours", 8),
                   ("reloadplugins", "bool", "Monitor plugins for code changes (debug mode only)", True),
                   ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
-    __author_name__ = ("RaNaN", "stickell", "Walter Purcaro")
-    __author_mail__ = ("ranan@pyload.org", "l.stickell@yahoo.it", "vuolter@gmail.com")
+    __author_name__ = "Walter Purcaro"
+    __author_mail__ = "vuolter@gmail.com"
 
     SERVER_URL = "http://updatemanager.pyload.org"
     MIN_INTERVAL = 3 * 60 * 60  #: 3h minimum check interval (value is in seconds)
@@ -38,7 +38,7 @@ class UpdateManager(Hook):
                 self.interval = interval
                 self.initPeriodical()
             else:
-                self.logWarning("Invalid interval value, kept current")
+                self.logDebug("Invalid interval value, kept current")
         elif name == "reloadplugins":
             if self.cb2:
                 self.core.scheduler.removeJob(self.cb2)
@@ -66,8 +66,9 @@ class UpdateManager(Hook):
     def autoreloadPlugins(self):
         """ reload and reindex all modified plugins """
         modules = filter(
-            lambda m: m and (m.__name__.startswith("module.plugins.") or m.__name__.startswith(
-                "userplugins.")) and m.__name__.count(".") >= 2, sys.modules.itervalues())
+            lambda m: m and (m.__name__.startswith("module.plugins.") or
+                             m.__name__.startswith("userplugins.")) and
+                             m.__name__.count(".") >= 2, sys.modules.itervalues())
 
         reloads = []
 
@@ -137,19 +138,19 @@ class UpdateManager(Hook):
 
         vre = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
         url = updates[0]
-        schema = updates[1].split("|")
-        if 'BLACKLIST' in updates:
+        schema = updates[1].split('|')
+        if "BLACKLIST" in updates:
             blacklist = updates[updates.index('BLACKLIST') + 1:]
             updates = updates[2:updates.index('BLACKLIST')]
         else:
             blacklist = None
             updates = updates[2:]
 
-        for plugin in updates:
-            info = dict(zip(schema, plugin.split("|")))
-            filename = info["name"]
-            prefix = info["type"]
-            version = info["version"]
+        data = sorted(map(lambda x: dict(zip(schema, x.split('|'))), updates), key=itemgetter("type", "name"))
+        for plugin in data:
+            filename = plugin["name"]
+            prefix = plugin["type"]
+            version = plugin["version"]
 
             if filename.endswith(".pyc"):
                 name = filename[:filename.find("_")]
@@ -164,37 +165,35 @@ class UpdateManager(Hook):
 
             plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
 
-            if name not in plugins or name in IGNORE or (type, name) in IGNORE:
-                continue
-
-            oldver = float(plugins[name]["v"])
+            oldver = float(plugins[name]["v"]) if name in plugins else None
             newver = float(version)
 
-            if oldver >= newver:
-                continue
+            if not oldver:
+                msg = "New version of [%(type)s] %(name)s (v%(newver)s)"
+            elif newver > oldver:
+                msg = "New version of [%(type)s] %(name)s (v%(oldver)s -> v%(newver)s)"
             else:
-                self.logInfo(_("New version of [%(type)s] %(name)s (v%(oldver)s -> v%(newver)s)") % {
-                    "type": type,
-                    "name": name,
-                    "oldver": oldver,
-                    "newver": newver
-                })
+                continue
+
+            self.logInfo(_(msg) % {
+                "type": type,
+                "name": name,
+                "oldver": oldver,
+                "newver": newver
+            })
 
             try:
-                content = getURL(url % info)
+                content = getURL(url % plugin)
+                m = vre.search(content)
+                if m and m.group(2) == version:
+                    f = open(join("userplugins", prefix, filename), "wb")
+                    f.write(content)
+                    f.close()
+                    updated.append((prefix, name))
+                else:
+                    raise Exception(_("Version mismatch"))
             except Exception, e:
                 self.logError(_("Error when updating plugin %s") % filename, str(e))
-                continue
-
-            m = vre.search(content)
-            if not m or m.group(2) != version:
-                self.logError(_("Error when updating plugin %s") % name, _("Version mismatch"))
-                continue
-
-            f = open(join("userplugins", prefix, filename), "wb")
-            f.write(content)
-            f.close()
-            updated.append((prefix, name))
 
         if blacklist:
             removed = self.removePlugins(map(lambda x: x.split('|'), blacklist))
@@ -230,11 +229,15 @@ class UpdateManager(Hook):
         for type, name in type_plugins:
             py = join("userplugins", type, name)
             pyc = join("userplugins", type, name.replace('.py', '.pyc'))
-            if isfile(py):
-                id = (type, name)
-                remove(py)
+            id = (type, name)
+            try:
+                if isfile(py):
+                    remove(py)
+                if isfile(pyc):
+                    remove(pyc)
+            except Exception, e:
+                self.logError("Error when deleting %s" % id, str(e))
+            else:
                 removed.append(id)
-            if isfile(pyc):
-                remove(pyc)
 
         return removed  #: return a list of the plugins successfully removed
