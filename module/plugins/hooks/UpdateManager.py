@@ -9,7 +9,7 @@ from os.path import join, isfile
 from time import time
 
 from module.network.RequestFactory import getURL
-from module.plugins.Hook import threaded, Expose, Hook
+from module.plugins.Hook import Expose, Hook, threaded
 
 
 class UpdateManager(Hook):
@@ -34,14 +34,14 @@ class UpdateManager(Hook):
         if name == "interval":
             interval = value * 60 * 60
             if self.MIN_INTERVAL <= interval != self.interval:
-                self.core.scheduler.removeJob(self.cb)
+                self.scheduler.removeJob(self.cb)
                 self.interval = interval
                 self.initPeriodical()
             else:
                 self.logDebug("Invalid interval value, kept current")
         elif name == "reloadplugins":
             if self.cb2:
-                self.core.scheduler.removeJob(self.cb2)
+                self.scheduler.removeJob(self.cb2)
             if value is True and self.core.debug:
                 self.periodical2()
 
@@ -50,6 +50,7 @@ class UpdateManager(Hook):
         self.pluginConfigChanged(self.__name__, "reloadplugins", self.getConfig("reloadplugins"))
 
     def setup(self):
+        self.scheduler = self.core.scheduler
         self.cb2 = None
         self.interval = self.MIN_INTERVAL
         self.updating = False
@@ -60,7 +61,7 @@ class UpdateManager(Hook):
     def periodical2(self):
         if not self.updating:
             self.autoreloadPlugins()
-        self.cb2 = self.core.scheduler.addJob(10, self.periodical2, threaded=True)
+        self.cb2 = self.scheduler.addJob(10, self.periodical2, threaded=True)
 
     @Expose
     def autoreloadPlugins(self):
@@ -210,7 +211,7 @@ class UpdateManager(Hook):
             else:
                 self.logInfo(_("*** Plugins have been updated, pyLoad will be restarted now ***"))
                 self.info["plugins"] = True
-                self.core.scheduler.addJob(4, self.core.api.restart(), threaded=False)  #: risky, but pyload doesn't let more
+                self.scheduler.addJob(4, self.core.api.restart(), threaded=False)  #: risky, but pyload doesn't let more
             return True
         else:
             self.logInfo(_("No plugin updates available"))
