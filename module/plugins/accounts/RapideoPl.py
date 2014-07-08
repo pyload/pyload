@@ -48,7 +48,7 @@ class RapideoPl(Account):
         try:
             result = loads(self.runAuthQuery())
         except:
-            #todo: ret?
+            #todo: return or let it be thrown?
             return
 
         premium = False
@@ -84,8 +84,8 @@ class RapideoPl(Account):
         if "errno" in response.keys():
             self.wrongPassword()
 
-        data['usr'] = user
-        data['pwd'] = crypto.md5(data['password']).hexdigest()
+        data['usr'] = self._usr
+        data['pwd'] = self._pwd
 
     def createAuthQuery(self):
 
