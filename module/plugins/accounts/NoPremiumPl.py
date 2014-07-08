@@ -48,7 +48,7 @@ class NoPremiumPl(Account):
         try:
             result = loads(self.runAuthQuery())
         except:
-            #todo: ret?
+            #todo: return or let it be thrown?
             return
 
         premium = False
