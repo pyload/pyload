@@ -1,10 +1,6 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-@author: Pawel W. <dev@nopremium.pl>
-"""
-
 from module.plugins.internal.MultiHoster import MultiHoster
 from module.network.RequestFactory import getURL
 
