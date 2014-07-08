@@ -1,10 +1,6 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-@author: Pawel W. <dev@rapideo.pl>
-"""
-
 from datetime import datetime
 
 from module.plugins.Account import Account
