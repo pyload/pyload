@@ -7,6 +7,7 @@ from module.plugins.Account import Account
 from time import mktime
 from module.common.json_layer import json_loads as loads
 
+
 class RapideoPl(Account):
     __name__ = "RapideoPl"
     __version__ = "0.01"
