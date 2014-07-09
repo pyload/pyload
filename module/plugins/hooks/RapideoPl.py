@@ -8,6 +8,7 @@ try:
 except ImportError:
     from simplejson import loads
 
+
 class RapideoPl(MultiHoster):
     __name__ = "RapideoPl"
     __version__ = "0.01"
@@ -24,8 +25,8 @@ class RapideoPl(MultiHoster):
     __author_mail__ = ("dev@rapideo.pl")
 
     def getHoster(self):
-
         hostings = loads(getURL("https://www.rapideo.pl/clipboard.php?json=3").strip())
+
         return [domain for row in hostings for domain in row["domains"] if row["sdownload"] == "0"]
 
     def getHosterCached(self):

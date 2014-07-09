@@ -52,9 +52,7 @@ class RapideoPl(SimpleHoster):
         return self.load(self._api_url, post=query)
 
     def process(self, pyfile):
-
         self.get_username_password()
-
         try:
             data = self.runFileQuery(pyfile.url, 'fileinfo')
         except Exception as e:
