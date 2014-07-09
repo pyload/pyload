@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+import hashlib
 
 from module.plugins.Account import Account
 from time import mktime
-import module.lib.beaker.crypto as crypto
 
-try:
-    from json import loads, dumps
-except ImportError:
-    from module.common.json_layer import json_loads as loads
-    from module.common.json_layer import json_dumps as dumps
+from module.common.json_layer import json_loads as loads
 
 
 class NoPremiumPl(Account):
@@ -61,7 +57,7 @@ class NoPremiumPl(Account):
 
     def login(self, user, data, req):
         self._usr = user
-        self._pwd = crypto.sha1(crypto.md5(data["password"]).hexdigest()).hexdigest()
+        self._pwd = hashlib.sha1(hashlib.md5(data["password"]).hexdigest()).hexdigest()
         self._req = req
 
         try:
