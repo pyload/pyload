@@ -3,6 +3,7 @@
 from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.common.json_layer import json_loads as loads
 
+
 class NoPremiumPl(SimpleHoster):
     __name__ = "NoPremiumPl"
     __version__ = "0.01"
