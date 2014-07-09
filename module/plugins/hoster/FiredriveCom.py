@@ -23,7 +23,7 @@ class FiredriveCom(SimpleHoster):
     __name__ = "FiredriveCom"
     __type__ = "hoster"
     __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
-    __version__ = "0.02"
+    __version__ = "0.03"
     __description__ = """Firedrive.com hoster plugin"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
@@ -35,6 +35,9 @@ class FiredriveCom(SimpleHoster):
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.firedrive.com/file/\g<ID>')]
 
+    LINK_PATTERN = r'<a href="(https?://dl\.firedrive\.com/\?key=.+?)"'
+
+
     def setup(self):
         self.multiDL = self.resumeDownload = True
         self.chunkLimit = -1
@@ -45,12 +48,16 @@ class FiredriveCom(SimpleHoster):
         self.download(link, disposition=True)
 
     def _getLink(self):
-        f = re.search(r'<a href="(https?://dl\.firedrive\.com/\?key=.+?)"', self.html)
+        f = re.search(self.LINK_PATTERN, self.html)
         if f:
             return f.group(1)
         else:
             self.html = self.load(self.pyfile.url, post={"confirm": re.search(r'name="confirm" value="(.+?)"', self.html).group(1)})
-            return self._getLink()
+            f = re.search(self.LINK_PATTERN, self.html)
+            if f:
+                return f.group(1)
+            else:
+                self.parseError("Direct download link not found")
 
 
 getInfo = create_getInfo(FiredriveCom)
