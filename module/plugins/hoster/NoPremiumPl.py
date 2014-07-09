@@ -21,6 +21,16 @@ class NoPremiumPl(SimpleHoster):
                   "password": "",
                   "url": ""}
 
+    _error_codes = {
+        0: "[%s] Incorrect login credentials",
+        1: "[%s] Not enough transfer to download - top-up your account",
+        2: "[%s] Incorrect / dead link",
+        3: "[%s] Error connecting to hosting, try again later",
+        9: "[%s] Premium account has expired",
+        15: "[%s] Hosting no longer supported",
+        80: "[%s] Too many incorrect login attempts, account blocked for 24h"
+    }
+
     _usr = False
     _pwd = False
 
@@ -30,7 +40,7 @@ class NoPremiumPl(SimpleHoster):
 
     def get_username_password(self):
         if not self.account:
-            self.fail("[NoPremium.pl] Zaloguj się we wtyczce NoPremium.pl lub ją wyłącz")
+            self.fail(_("Please enter your %s account or deactivate this plugin") % "NoPremium.pl")
         else:
             self._usr = self.account.getAccountData(self.user).get('usr')
             self._pwd = self.account.getAccountData(self.user).get('pwd')
@@ -65,39 +75,21 @@ class NoPremiumPl(SimpleHoster):
         self.logDebug(parsed)
 
         if "errno" in parsed.keys():
-
-            if parsed["errno"] == 0:
-                self.fail("[NoPremium.pl] Niepoprawne dane logowania")
-
-            elif parsed["errno"] == 80:
-                self.fail("[NoPremium.pl] Zbyt dużo niepoprawnych logowań, konto zablokowane na 24h")
-
-            elif parsed["errno"] == 1:
-                self.fail("[NoPremium.pl] Za mało transferu - doładuj aby pobrać")
-
-            elif parsed["errno"] == 9:
-                self.fail("[NoPremium.pl] Konto wygasło")
-
-            elif parsed["errno"] == 2:
-                self.fail("[NoPremium.pl] Niepoprawny / wygasły link")
-
-            elif parsed["errno"] == 3:
-                self.fail("[NoPremium.pl] Błąd łączenia z hostingiem")
-
-            elif parsed["errno"] == 15:
-                self.fail("[NoPremium.pl] Hosting nie jest już wspierany")
-
+            if parsed["errno"] in self._error_codes:
+                # error code in known
+                self.fail(self._error_codes[parsed["errno"]] % self.__name__)
             else:
+                # error code isn't yet added to plugin
                 self.fail(
                     parsed["errstring"]
-                    or "Nieznany błąd (kod: {})".format(parsed["errno"])
+                    or "Unknown error (code: %s)" % parsed["errno"]
                 )
 
         if "sdownload" in parsed:
             if parsed["sdownload"] == "1":
                 self.fail(
-                    "Pobieranie z {} jest możliwe tylko przy bezpośrednim użyciu \
-                    NoPremium.pl. Zaktualizuj wtyczkę.".format(parsed["hosting"]))
+                    "Download from %s is possible only using NoPremium.pl webiste \
+                    directly. Update this plugin." % parsed["hosting"])
 
         pyfile.name = parsed["filename"]
         pyfile.size = parsed["filesize"]
