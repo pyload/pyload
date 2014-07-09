@@ -10,6 +10,7 @@ from os.path import join
 from string import maketrans
 from htmlentitydefs import name2codepoint
 
+
 def chmod(*args):
     try:
         os.chmod(*args)
@@ -27,18 +28,24 @@ def decode(string):
 
 def remove_chars(string, repl):
     """ removes all chars in repl from string"""
-    if type(string) == str:
-        return string.translate(maketrans("", ""), repl)
-    elif type(string) == unicode:
-        return string.translate(dict([(ord(s), None) for s in repl]))
+    if type(repl) == unicode:
+        for badc in list(repl):
+            string = string.replace(badc, "")
+        return string
+    else:
+        if type(string) == str:
+            return string.translate(maketrans("", ""), repl)
+        elif type(string) == unicode:
+            return string.translate(dict([(ord(s), None) for s in repl]))
 
 
 def save_path(name):
     #remove some chars
     if os.name == 'nt':
-        return remove_chars(name, '/\\?%*:|"<>')
+        return remove_chars(name, u'\00\01\02\03\04\05\06\07\10\11\12\13\14\15\16\17\20\21\22\23\24\25\26\27\30\31\32'
+                                  u'\33\34\35\36\37/\\?%*:|"<>')
     else:
-        return remove_chars(name, '/\\"')
+        return remove_chars(name, u'\0/\\"')
 
 
 def save_join(*args):
@@ -61,6 +68,7 @@ if sys.getfilesystemencoding().startswith('ANSI'):
 else:
     fs_encode = fs_decode = lambda x: x  # do nothing
 
+
 def get_console_encoding(enc):
     if os.name == "nt": 
         if enc == "cp65001": # aka UTF-8
@@ -70,6 +78,7 @@ def get_console_encoding(enc):
         enc = "utf8"
 
     return enc
+
 
 def compare_time(start, end):
     start = map(int, start)
