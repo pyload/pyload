@@ -1,4 +1,3 @@
-# !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 try:
@@ -10,11 +9,9 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class RapideoPl(SimpleHoster):
-
     __name__ = "RapideoPl"
     __version__ = "0.01"
     __type__ = "hoster"
-
     __description__ = "Rapideo.pl hoster plugin"
     __author_name__ = ("goddie")
     __author_mail__ = ("dev@rapideo.pl")
@@ -31,28 +28,20 @@ class RapideoPl(SimpleHoster):
     _pwd = False
 
     def setup(self):
-
         self.resumeDownload = True
         self.multiDL = True
 
     def get_username_password(self):
-
         if not self.account:
-
             self.fail("[Rapideo.pl] Login to Rapideo.pl plugin or turn plugin off")
-
         else:
-
             self._usr = self.account.getAccountData(self.user).get('usr')
             self._pwd = self.account.getAccountData(self.user).get('pwd')
 
     def runFileQuery(self, url, mode=None):
-
         query = self._api_query.copy()
-
         query["username"] = self._usr
         query["password"] = self._pwd
-
         query["url"] = url
 
         if mode == "fileinfo":
@@ -60,7 +49,6 @@ class RapideoPl(SimpleHoster):
             query['loc'] = 1
 
         self.logDebug(query)
-
         return self.load(self._api_url, post=query)
 
     def process(self, pyfile):
