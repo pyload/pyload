@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+import hashlib
 
 from module.plugins.Account import Account
 from time import mktime
-import module.lib.beaker.crypto as crypto
-
-try:
-    from json import loads
-except ImportError:
-    from simplejson import loads
-
+from module.common.json_layer import json_loads as loads
 
 class RapideoPl(Account):
     __name__ = "RapideoPl"
@@ -60,7 +55,7 @@ class RapideoPl(Account):
 
     def login(self, user, data, req):
         self._usr = user
-        self._pwd = crypto.md5(data["password"]).hexdigest()
+        self._pwd = hashlib.md5(data["password"]).hexdigest()
         self._req = req
         try:
             response = loads(self.runAuthQuery())

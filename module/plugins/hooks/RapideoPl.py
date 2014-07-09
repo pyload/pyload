@@ -2,12 +2,7 @@
 
 from module.plugins.internal.MultiHoster import MultiHoster
 from module.network.RequestFactory import getURL
-
-try:
-    from json import loads
-except ImportError:
-    from simplejson import loads
-
+from module.common.json_layer import json_loads as loads
 
 class RapideoPl(MultiHoster):
     __name__ = "RapideoPl"
