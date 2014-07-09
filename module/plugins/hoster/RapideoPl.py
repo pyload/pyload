@@ -20,6 +20,16 @@ class RapideoPl(SimpleHoster):
                   "password": "",
                   "url": ""}
 
+    _error_codes = {
+        0: "[%s] Incorrect login credentials",
+        1: "[%s] Not enough transfer to download - top-up your account",
+        2: "[%s] Incorrect / dead link",
+        3: "[%s] Error connecting to hosting, try again later",
+        9: "[%s] Premium account has expired",
+        15: "[%s] Hosting no longer supported",
+        80: "[%s] Too many incorrect login attempts, account blocked for 24h"
+    }
+
     _usr = False
     _pwd = False
 
@@ -29,7 +39,7 @@ class RapideoPl(SimpleHoster):
 
     def get_username_password(self):
         if not self.account:
-            self.fail("[Rapideo.pl] Login to Rapideo.pl plugin or turn plugin off")
+            self.fail(_("Please enter your %s account or deactivate this plugin") % "Rapideo.pl")
         else:
             self._usr = self.account.getAccountData(self.user).get('usr')
             self._pwd = self.account.getAccountData(self.user).get('pwd')
@@ -64,39 +74,21 @@ class RapideoPl(SimpleHoster):
         self.logDebug(parsed)
 
         if "errno" in parsed.keys():
-
-            if parsed["errno"] == 0:
-                self.fail("[Rapideo.pl] Invalid account credentials")
-
-            elif parsed["errno"] == 80:
-                self.fail("[Rapideo.pl] Too much incorrect login attempts, account blocked for 24h")
-
-            elif parsed["errno"] == 1:
-                self.fail("[Rapideo.pl] Not enough transfer - top up to download")
-
-            elif parsed["errno"] == 9:
-                self.fail("[Rapideo.pl] Account expired")
-
-            elif parsed["errno"] == 2:
-                self.fail("[Rapideo.pl] Invalid / dead link")
-
-            elif parsed["errno"] == 3:
-                self.fail("[Rapideo.pl] Error connecting to host")
-
-            elif parsed["errno"] == 15:
-                self.fail("[Rapideo.pl] Hosting no longer supported")
-
+            if parsed["errno"] in self._error_codes:
+                # error code in known
+                self.fail(self._error_codes[parsed["errno"]] % self.__name__)
             else:
+                # error code isn't yet added to plugin
                 self.fail(
                     parsed["errstring"]
-                    or "Unknown error (code: {})".format(parsed["errno"])
+                    or "Unknown error (code: %s)" % parsed["errno"]
                 )
 
         if "sdownload" in parsed:
             if parsed["sdownload"] == "1":
                 self.fail(
-                    "Download from {} is possible only when using \
-                    Rapideo.pl directly. Update this plugin.".format(parsed["hosting"]))
+                    "Download from %s is possible only using Rapideo.pl webiste \
+                    directly. Update this plugin." % parsed["hosting"])
 
         pyfile.name = parsed["filename"]
         pyfile.size = parsed["filesize"]
