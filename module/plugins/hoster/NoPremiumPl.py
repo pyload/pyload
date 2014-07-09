@@ -9,6 +9,7 @@ class NoPremiumPl(SimpleHoster):
     __version__ = "0.01"
     __type__ = "hoster"
 
+    __pattern__ = r"https?://direct\.nopremium\.pl.*"
     __description__ = "NoPremium.pl hoster plugin"
     __author_name__ = ("goddie")
     __author_mail__ = ("dev@nopremium.pl")
