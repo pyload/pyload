@@ -4,9 +4,10 @@ from module.plugins.internal.MultiHoster import MultiHoster
 from module.network.RequestFactory import getURL
 
 try:
-    from json import loads
+    from json import loads, dumps
 except ImportError:
-    from simplejson import loads
+    from module.common.json_layer import json_loads as loads
+    from module.common.json_layer import json_dumps as dumps
 
 class NoPremiumPl(MultiHoster):
     __name__ = "NoPremiumPl"

@@ -3,7 +3,8 @@
 try:
     from json import loads, dumps
 except ImportError:
-    from simplejson import loads
+    from module.common.json_layer import json_loads as loads
+    from module.common.json_layer import json_dumps as dumps
 
 from module.plugins.internal.SimpleHoster import SimpleHoster
 

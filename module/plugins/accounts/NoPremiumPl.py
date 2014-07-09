@@ -7,9 +7,10 @@ from time import mktime
 import module.lib.beaker.crypto as crypto
 
 try:
-    from json import loads
+    from json import loads, dumps
 except ImportError:
-    from simplejson import loads
+    from module.common.json_layer import json_loads as loads
+    from module.common.json_layer import json_dumps as dumps
 
 
 class NoPremiumPl(Account):
