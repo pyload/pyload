@@ -41,6 +41,7 @@ def remove_chars(string, repl):
 
 def save_path(name):
     #remove some chars
+    name = name.encode('ascii', 'replace')  # Non-ASCII chars usually breaks file saving. Replacing.
     if os.name == 'nt':
         return remove_chars(name, u'\00\01\02\03\04\05\06\07\10\11\12\13\14\15\16\17\20\21\22\23\24\25\26\27\30\31\32'
                                   u'\33\34\35\36\37/\\?%*:|"<>')
