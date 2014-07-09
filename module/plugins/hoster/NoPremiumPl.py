@@ -9,7 +9,6 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class NoPremiumPl(SimpleHoster):
-
     __name__ = "NoPremiumPl"
     __version__ = "0.01"
     __type__ = "hoster"
@@ -30,42 +29,31 @@ class NoPremiumPl(SimpleHoster):
     _pwd = False
 
     def setup(self):
-
         self.resumeDownload = True
         self.multiDL = True
 
     def get_username_password(self):
-
         if not self.account:
-
             self.fail("[NoPremium.pl] Zaloguj się we wtyczce NoPremium.pl lub ją wyłącz")
-
         else:
-
             self._usr = self.account.getAccountData(self.user).get('usr')
             self._pwd = self.account.getAccountData(self.user).get('pwd')
 
     def runFileQuery(self, url, mode=None):
-
         query = self._api_query.copy()
-
         query["username"] = self._usr
         query["password"] = self._pwd
-
         query["url"] = url
 
         if mode == "fileinfo":
             query['check'] = 2
             query['loc'] = 1
-
         self.logDebug(query)
 
         return self.load(self._api_url, post=query)
 
     def process(self, pyfile):
-
         self.get_username_password()
-
         try:
             data = self.runFileQuery(pyfile.url, 'fileinfo')
         except Exception as e:

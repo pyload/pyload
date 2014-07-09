@@ -24,8 +24,8 @@ class NoPremiumPl(MultiHoster):
     __author_mail__ = ("dev@nopremium.pl")
 
     def getHoster(self):
-
         hostings = loads(getURL("https://www.nopremium.pl/clipboard.php?json=3").strip())
+
         return [domain for row in hostings for domain in row["domains"] if row["sdownload"] == "0"]
 
     def getHosterCached(self):
