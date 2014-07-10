@@ -21,26 +21,27 @@ class RelinkUs(Crypter):
     # Constants
     PREFERRED_LINK_SOURCES = ['cnl2', 'dlc', 'web']
 
-    OFFLINE_TOKEN = "<title>Tattooside"
-    PASSWORD_TOKEN = "container_password.php"
-    PASSWORD_ERROR_ROKEN = "You have entered an incorrect password"
-    PASSWORD_SUBMIT_URL = "http://www.relink.us/container_password.php"
-    CAPTCHA_TOKEN = "container_captcha.php"
-    CAPTCHA_ERROR_ROKEN = "You have solved the captcha wrong"
-    CAPTCHA_IMG_URL = "http://www.relink.us/core/captcha/circlecaptcha.php"
-    CAPTCHA_SUBMIT_URL = "http://www.relink.us/container_captcha.php"
-    FILE_TITLE_REGEX = r"<th>Title</th><td><i>(.*)</i></td></tr>"
-    FILE_NOTITLE = 'No title'
+    OFFLINE_TOKEN = r'<title>Tattooside'
+    PASSWORD_TOKEN = r'container_password\.php'
+    PASSWORD_ERROR_ROKEN = r'You have entered an incorrect password'
+    PASSWORD_SUBMIT_URL = r'http://www\.relink\.us/container_password\.php'
+    CAPTCHA_TOKEN = r'container_captcha\.php'
+    CAPTCHA_ERROR_ROKEN = r'You have solved the captcha wrong'
+    CAPTCHA_IMG_URL = r'http://www\.relink\.us/core/captcha/circlecaptcha\.php'
+    CAPTCHA_SUBMIT_URL = r'http://www\.relink\.us/container_captcha\.php'
+    FILE_TITLE_REGEX = r'<th>Title</th><td><i>(.*)</i></td></tr>'
+    FILE_NOTITLE = r'No title'
 
     CNL2_FORM_REGEX = r'<form id="cnl_form-(.*?)</form>'
     CNL2_FORMINPUT_REGEX = r'<input.*?name="%s".*?value="(.*?)"'
     CNL2_JK_KEY = "jk"
     CNL2_CRYPTED_KEY = "crypted"
     DLC_LINK_REGEX = r'<a href=".*?" class="dlc_button" target="_blank">'
-    DLC_DOWNLOAD_URL = "http://www.relink.us/download.php"
+    DLC_DOWNLOAD_URL = r'http://www\.relink\.us/download\.php'
     WEB_FORWARD_REGEX = r"getFile\('(?P<link>.+)'\)"
-    WEB_FORWARD_URL = "http://www.relink.us/frame.php"
+    WEB_FORWARD_URL = r'http://www\.relink\.us/frame\.php'
     WEB_LINK_REGEX = r'<iframe name="Container" height="100%" frameborder="no" width="100%" src="(?P<link>.+)"></iframe>'
+
 
     def setup(self):
         self.fileid = None

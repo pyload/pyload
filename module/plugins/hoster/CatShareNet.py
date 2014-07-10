@@ -16,8 +16,11 @@ class CatShareNet(SimpleHoster):
 
     FILE_INFO_PATTERN = r'<h3 class="pull-left"[^>]+>(?P<N>.*)</h3>\s+<h3 class="pull-right"[^>]+>(?P<S>.*)</h3>'
     OFFLINE_PATTERN = r'Podany plik zosta'
-    SECONDS_PATTERN = 'var\s+count\s+=\s+(\d+);'
+
+    SECONDS_PATTERN = r'var\s+count\s+=\s+(\d+);'
+
     RECAPTCHA_KEY = "6Lfln9kSAAAAANZ9JtHSOgxUPB9qfDFeLUI_QMEy"
+
 
     def handleFree(self):
         found = re.search(self.SECONDS_PATTERN, self.html)

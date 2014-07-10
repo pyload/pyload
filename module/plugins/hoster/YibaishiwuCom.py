@@ -35,10 +35,11 @@ class YibaishiwuCom(SimpleHoster):
     FILE_SIZE_PATTERN = r"file_size: '(?P<S>[^']+)'"
     OFFLINE_PATTERN = ur'<h3><i style="color:red;">哎呀！提取码不存在！不妨搜搜看吧！</i></h3>'
 
-    AJAX_URL_PATTERN = r'(/\?ct=(pickcode|download)[^"\']+)'
+    LINK_PATTERN = r'(/\?ct=(pickcode|download)[^"\']+)'
+
 
     def handleFree(self):
-        found = re.search(self.AJAX_URL_PATTERN, self.html)
+        found = re.search(self.LINK_PATTERN, self.html)
         if not found:
             self.parseError("AJAX URL")
         url = found.group(1)

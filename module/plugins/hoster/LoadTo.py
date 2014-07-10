@@ -35,10 +35,12 @@ class LoadTo(SimpleHoster):
 
     FILE_INFO_PATTERN = r'<head><title>(?P<N>.+) \/\/ Load.to</title>'
     FILE_SIZE_PATTERN = r'<a [^>]+>(?P<Z>.+)</a></h3>\s*Size: (?P<S>.*) (?P<U>[kKmMgG]?i?[bB])'
-    URL_PATTERN = r'<form method="post" action="(.+?)"'
-    OFFLINE_PATTERN = r'Can\'t find file. Please check URL.'
+    OFFLINE_PATTERN = r'Can\'t find file\. Please check URL'
+
+    LINK_PATTERN = r'<form method="post" action="(.+?)"'
     WAIT_PATTERN = r'type="submit" value="Download \((\d+)\)"'
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.noscript\?k=([^"]+)'
+
 
     def setup(self):
         self.multiDL = True
@@ -53,7 +55,7 @@ class LoadTo(SimpleHoster):
             self.offline()
 
         # Search for Download URL
-        m = re.search(self.URL_PATTERN, self.html)
+        m = re.search(self.LINK_PATTERN, self.html)
         if not m:
             self.parseError("Unable to detect download URL")
 
@@ -72,7 +74,7 @@ class LoadTo(SimpleHoster):
             captcha_key = found.group(1)
             solvemedia = SolveMedia(self)
             captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
-            self.download(download_url,post={"adcopy_challenge": captcha_challenge, "adcopy_response": captcha_response})
+            self.download(download_url, post={"adcopy_challenge": captcha_challenge, "adcopy_response": captcha_response})
             check = self.checkDownload({"404": re.compile("\A<h1>404 Not Found</h1>")})
             if check == "404":
                 self.logWarning("The captcha you entered was incorrect. Please try again.")

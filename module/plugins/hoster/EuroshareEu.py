@@ -39,6 +39,7 @@ class EuroshareEu(SimpleHoster):
 
     FILE_URL_REPLACEMENTS = [(r"(http://[^/]*\.)(sk|cz|hu|pl)/", r"\1eu/")]
 
+
     def setup(self):
         self.multiDL = self.resumeDownload = self.premium
         self.req.setOption("timeout", 120)

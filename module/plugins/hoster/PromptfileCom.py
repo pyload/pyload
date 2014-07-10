@@ -32,7 +32,7 @@ class PromptfileCom(SimpleHoster):
     OFFLINE_PATTERN = r'<span style="[^"]*" title="File Not Found">File Not Found</span>'
 
     CHASH_PATTERN = r'<input type="hidden" name="chash" value="([^"]*)" />'
-    DIRECT_LINK_PATTERN = r"clip: {\s*url: '(https?://(?:www\.)promptfile[^']*)',"
+    LINK_PATTERN = r"clip: {\s*url: '(https?://(?:www\.)promptfile[^']*)',"
 
     def handleFree(self):
         # STAGE 1: get link to continue
@@ -45,7 +45,7 @@ class PromptfileCom(SimpleHoster):
         self.html = self.load(self.pyfile.url, decode=True, post={'chash': chash})
 
         # STAGE 2: get the direct link
-        m = re.search(self.DIRECT_LINK_PATTERN, self.html, re.MULTILINE | re.DOTALL)
+        m = re.search(self.LINK_PATTERN, self.html, re.MULTILINE | re.DOTALL)
         if not m:
             self.parseError("Unable to detect direct link")
         direct = m.group(1)

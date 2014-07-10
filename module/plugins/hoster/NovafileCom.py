@@ -20,7 +20,7 @@ class NovafileCom(XFileSharingPro):
 
     FILE_SIZE_PATTERN = r'<div class="size">(?P<S>.+?)</div>'
     ERROR_PATTERN = r'class="alert[^"]*alert-separate"[^>]*>\s*(?:<p>)?(.*?)\s*</'
-    DIRECT_LINK_PATTERN = r'<a href="(http://s\d+\.novafile\.com/.*?)" class="btn btn-green">Download File</a>'
+    LINK_PATTERN = r'<a href="(http://s\d+\.novafile\.com/.*?)" class="btn btn-green">Download File</a>'
     WAIT_PATTERN = r'<p>Please wait <span id="count"[^>]*>(\d+)</span> seconds</p>'
 
     def setup(self):

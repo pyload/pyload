@@ -30,11 +30,12 @@ class EdiskCz(SimpleHoster):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    URL_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'
     FILE_INFO_PATTERN = r'<span class="fl" title="(?P<N>[^"]+)">\s*.*?\((?P<S>[0-9.]*) (?P<U>[kKMG])i?B\)</h1></span>'
-    ACTION_PATTERN = r'/en/download/(\d+/.*\.html)'
-    DLLINK_PATTERN = r'http://.*edisk.cz.*\.html'
     OFFLINE_PATTERN = r'<h3>This file does not exist due to one of the following:</h3><ul><li>'
+
+    ACTION_PATTERN = r'/en/download/(\d+/.*\.html)'
+    LINK_PATTERN = r'http://.*edisk.cz.*\.html'
+
 
     def setup(self):
         self.multiDL = False
@@ -58,7 +59,7 @@ class EdiskCz(SimpleHoster):
             "action": action
         })
 
-        if not re.match(self.DLLINK_PATTERN, url):
+        if not re.match(self.LINK_PATTERN, url):
             self.fail("Unexpected server response")
 
         self.download(url)

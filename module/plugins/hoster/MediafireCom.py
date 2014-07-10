@@ -69,7 +69,7 @@ class MediafireCom(SimpleHoster):
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
-    DOWNLOAD_LINK_PATTERN = r'<div class="download_link"[^>]*(?:z-index:(?P<zindex>\d+))?[^>]*>\s*<a href="(?P<href>http://[^"]+)"'
+    LINK_PATTERN = r'<div class="download_link"[^>]*(?:z-index:(?P<zindex>\d+))?[^>]*>\s*<a href="(?P<href>http://[^"]+)"'
     JS_KEY_PATTERN = r"DoShow\('mfpromo1'\);[^{]*{((\w+)='';.*?)eval\(\2\);"
     JS_ZMODULO_PATTERN = r"\('z-index'\)\) \% (\d+)\)\);"
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.noscript\?k=([^"]+)'
@@ -115,7 +115,7 @@ class MediafireCom(SimpleHoster):
             else:
                 self.fail("No or incorrect password")
 
-        found = re.search(r'kNO = "(http://.*?)";', self.html)
+        found = re.search(r'kNO = r"(http://.*?)";', self.html)
         if not found:
             self.parseError("Download URL")
         download_url = found.group(1)

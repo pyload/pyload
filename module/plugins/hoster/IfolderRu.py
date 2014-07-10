@@ -38,7 +38,7 @@ class IfolderRu(SimpleHoster):
     SESSION_ID_PATTERN = r'<a href=(http://ints.(?:rusfolder.com|ifolder.ru)/ints/sponsor/\?bi=\d*&session=([^&]+)&u=[^>]+)>'
     INTS_SESSION_PATTERN = r'\(\'ints_session\'\);\s*if\(tag\)\{tag.value = "([^"]+)";\}'
     HIDDEN_INPUT_PATTERN = r"var v = .*?name='([^']+)' value='1'"
-    DOWNLOAD_LINK_PATTERN = r'<a id="download_file_href" href="([^"]+)"'
+    LINK_PATTERN = r'<a id="download_file_href" href="([^"]+)"'
     WRONG_CAPTCHA_PATTERN = ur'<font color=Red>неверный код,<br>введите еще раз</font><br>'
 
     def setup(self):
@@ -79,7 +79,7 @@ class IfolderRu(SimpleHoster):
         else:
             self.fail("Invalid captcha")
 
-        download_url = re.search(self.DOWNLOAD_LINK_PATTERN, self.html).group(1)
+        download_url = re.search(self.LINK_PATTERN, self.html).group(1)
         self.correctCaptcha()
         self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)

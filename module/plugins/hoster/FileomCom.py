@@ -41,7 +41,7 @@ class FileomCom(XFileSharingPro):
 
     ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)(?:\'|</)'
 
-    DIRECT_LINK_PATTERN = r"var url2 = '(.+?)';"
+    LINK_PATTERN = r"var url2 = '(.+?)';"
 
     def setup(self):
         self.resumeDownload = self.premium

@@ -17,13 +17,15 @@ class TwoSharedCom(SimpleHoster):
     FILE_NAME_PATTERN = r'<h1>(?P<N>.*)</h1>'
     FILE_SIZE_PATTERN = r'<span class="dtitle">File size:</span>\s*(?P<S>[0-9,.]+) (?P<U>[kKMG])i?B'
     OFFLINE_PATTERN = r'The file link that you requested is not valid\.|This file was deleted\.'
-    DOWNLOAD_URL_PATTERN = r"window.location ='([^']+)';"
+
+    LINK_PATTERN = r"window.location ='([^']+)';"
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True
 
     def handleFree(self):
-        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
+        found = re.search(self.LINK_PATTERN, self.html)
         if not found:
             self.parseError('Download link')
         link = found.group(1)

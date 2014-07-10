@@ -34,10 +34,12 @@ class FshareVn(SimpleHoster):
 
     FILE_INFO_PATTERN = r'<p>(?P<N>[^<]+)<\\/p>[\\trn\s]*<p>(?P<S>[0-9,.]+)\s*(?P<U>[kKMG])i?B<\\/p>'
     OFFLINE_PATTERN = r'<div class=\\"f_left file_w\\"|<\\/p>\\t\\t\\t\\t\\r\\n\\t\\t<p><\\/p>\\t\\t\\r\\n\\t\\t<p>0 KB<\\/p>'
+
     FILE_NAME_REPLACEMENTS = [("(.*)", doubleDecode)]
-    DOWNLOAD_URL_PATTERN = r'action="(http://download.*?)[#"]'
-    VIP_URL_PATTERN = r'<form action="([^>]+)" method="get" name="frm_download">'
+
+    LINK_PATTERN = r'action="(http://download.*?)[#"]'
     WAIT_PATTERN = ur'Lượt tải xuống kế tiếp là:\s*(.*?)\s*<'
+
 
     def process(self, pyfile):
         self.html = self.load('http://www.fshare.vn/check_link.php', post={
@@ -79,7 +81,7 @@ class FshareVn(SimpleHoster):
         found = re.search(r'var count = (\d+)', self.html)
         self.setWait(int(found.group(1)) if found else 30)
 
-        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
+        found = re.search(self.LINK_PATTERN, self.html)
         if not found:
             self.parseError('FREE DL URL')
         self.url = found.group(1)

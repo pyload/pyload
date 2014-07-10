@@ -37,8 +37,9 @@ class FilerNet(SimpleHoster):
 
     FILE_INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>\w+)</small></h1>'
     OFFLINE_PATTERN = r'Nicht gefunden'
-    RECAPTCHA_KEY = '6LcFctISAAAAAAgaeHgyqhNecGJJRnxV1m_vAz3V'
-    DIRECT_LINK_PATTERN = r'href="([^"]+)">Get download</a>'
+    RECAPTCHA_KEY = "6LcFctISAAAAAAgaeHgyqhNecGJJRnxV1m_vAz3V"
+    LINK_PATTERN = r'href="([^"]+)">Get download</a>'
+
 
     def process(self, pyfile):
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
@@ -74,7 +75,7 @@ class FilerNet(SimpleHoster):
         hash_data = inputs['hash']
         self.logDebug('Hash: ' + hash_data)
 
-        downloadURL = ''
+        downloadURL = r''
         recaptcha = ReCaptcha(self)
         for _ in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
@@ -107,7 +108,7 @@ class FilerNet(SimpleHoster):
             dl = self.pyfile.url
         else:  # Direct Download OFF
             html = self.load(self.pyfile.url)
-            m = re.search(self.DIRECT_LINK_PATTERN, html)
+            m = re.search(self.LINK_PATTERN, html)
             if not m:
                 self.parseError("Unable to detect direct link, try to enable 'Direct download' in your user settings")
             dl = 'http://filer.net' + m.group(1)

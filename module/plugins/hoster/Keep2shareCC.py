@@ -37,11 +37,12 @@ class Keep2shareCC(SimpleHoster):
     FILE_SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
     OFFLINE_PATTERN = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
 
-    DIRECT_LINK_PATTERN = r'To download this file with slow speed, use <a href="([^"]+)">this link</a>'
+    LINK_PATTERN = r'To download this file with slow speed, use <a href="([^"]+)">this link</a>'
     WAIT_PATTERN = r'Please wait ([\d:]+) to download this file'
     ALREADY_DOWNLOADING_PATTERN = r'Free account does not allow to download more than one file at the same time'
 
-    RECAPTCHA_KEY = '6LcYcN0SAAAAABtMlxKj7X0hRxOY8_2U86kI1vbb'
+    RECAPTCHA_KEY = "6LcYcN0SAAAAABtMlxKj7X0hRxOY8_2U86kI1vbb"
+
 
     def handleFree(self):
         self.sanitize_url()
@@ -76,7 +77,7 @@ class Keep2shareCC(SimpleHoster):
                 self.wait(30 * 60, reconnect=True)
                 self.retry()
 
-            m = re.search(self.DIRECT_LINK_PATTERN, self.html)
+            m = re.search(self.LINK_PATTERN, self.html)
             if not m:
                 self.parseError("Unable to detect direct link")
             self.startDownload(m.group(1))

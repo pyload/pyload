@@ -18,7 +18,7 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.common.json_layer import json_loads
 from module.plugins.internal.CaptchaService import ReCaptcha
 
@@ -39,10 +39,11 @@ class FilecloudIo(SimpleHoster):
 
     UKEY_PATTERN = r"'ukey'\s*:'(\w+)',"
     AB1_PATTERN = r"if\( __ab1 == '(\w+)' \)"
-    ERROR_MSG_PATTERN = r"var __error_msg\s*=\s*l10n\.(.*?);"
-    DOWNLOAD_LINK_PATTERN = r'"(http://s\d+.filecloud.io/%s/\d+/.*?)"'
+    ERROR_MSG_PATTERN = r'var __error_msg\s*=\s*l10n\.(.*?);'
+    LINK_PATTERN = r'"(http://s\d+.filecloud.io/%s/\d+/.*?)"'
     RECAPTCHA_KEY_PATTERN = r"var __recaptcha_public\s*=\s*'([^']+)';"
-    RECAPTCHA_KEY = '6Lf5OdISAAAAAEZObLcx5Wlv4daMaASRov1ysDB1'
+    RECAPTCHA_KEY = "6Lf5OdISAAAAAEZObLcx5Wlv4daMaASRov1ysDB1"
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True
@@ -53,7 +54,7 @@ class FilecloudIo(SimpleHoster):
 
         found = re.search(self.AB1_PATTERN, self.html)
         if not found:
-            raise PluginParseError("__AB1")
+            self.parseError("__AB1")
         data["__ab1"] = found.group(1)
 
         if not self.account:
@@ -99,9 +100,9 @@ class FilecloudIo(SimpleHoster):
 
         if response["dl"]:
             self.html = self.load('http://filecloud.io/download.html')
-            found = re.search(self.DOWNLOAD_LINK_PATTERN % self.file_info['ID'], self.html)
+            found = re.search(self.LINK_PATTERN % self.file_info['ID'], self.html)
             if not found:
-                raise PluginParseError("Download URL")
+                self.parseError("Download URL")
             download_url = found.group(1)
             self.logDebug("Download URL: %s" % download_url)
 

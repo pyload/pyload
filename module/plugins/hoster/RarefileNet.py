@@ -19,7 +19,7 @@ class RarefileNet(XFileSharingPro):
 
     FILE_NAME_PATTERN = r'<td><font color="red">(?P<N>.*?)</font></td>'
     FILE_SIZE_PATTERN = r'<td>Size : (?P<S>.+?)&nbsp;'
-    DIRECT_LINK_PATTERN = r'<a href="(?P<link>[^"]+)">(?P=link)</a>'
+    LINK_PATTERN = r'<a href="(?P<link>[^"]+)">(?P=link)</a>'
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium

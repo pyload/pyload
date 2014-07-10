@@ -32,7 +32,7 @@ class DlProtectCom(SimpleCrypter):
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
 
-    OFFLINE_PATTERN = ">Unfortunately, the link you are looking for is not found"
+    OFFLINE_PATTERN = r'>Unfortunately, the link you are looking for is not found'
 
     def getLinks(self):
         # Direct link with redirect

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-#Testlink:
-#http://remixshare.com/download/p946u
-#
+
+# Test link:
+# http://remixshare.com/download/p946u
+
+# Note:
 # The remixshare.com website is very very slow, so
 # if your download not starts because of pycurl timeouts:
 # Adjust timeouts in /usr/share/pyload/module/network/HTTPRequest.py
-#
+
 
 import re
 
@@ -24,9 +26,9 @@ class RemixshareCom(SimpleHoster):
     FILE_INFO_PATTERN = r'title=\'.+?\'>(?P<N>.+?)</span><span class=\'light2\'>&nbsp;\((?P<S>\d+)&nbsp;(?P<U>\w+)\)<'
     OFFLINE_PATTERN = r'<h1>Ooops!<'
 
-    WAIT_PATTERN = r'var XYZ = "(\d+)"'
-    FILE_URL_PATTERN = r'(http://remixshare.com/downloadfinal/.+?)"'
-    FILE_TOKEN_PATTERN = r'var acc = (\d+)'
+    LINK_PATTERN = r'(http://remixshare\.com/downloadfinal/.+?)"'
+    TOKEN_PATTERN = r'var acc = (\d+)'
+    WAIT_PATTERN = r'var XYZ = r"(\d+)"'
 
 
     def setup(self):
@@ -34,12 +36,12 @@ class RemixshareCom(SimpleHoster):
         self.chunkLimit = 1
 
     def handleFree(self):
-        b = re.search(self.FILE_URL_PATTERN, self.html)
+        b = re.search(self.LINK_PATTERN, self.html)
         if not b:
-            self.fail("Can not parse download url")
-        c = re.search(self.FILE_TOKEN_PATTERN, self.html)
+            self.parseError("Cannot parse download url")
+        c = re.search(self.TOKEN_PATTERN, self.html)
         if not c:
-            self.fail("Can not parse file token")
+            self.parseError("Cannot parse file token")
         dl_url = b.group(1) + c.group(1)
 
         #Check if we have to wait
@@ -49,7 +51,7 @@ class RemixshareCom(SimpleHoster):
             self.wait(seconds.group(1))
 
         # Finally start downloading...
-        self.logDebug("Download-URL: " + dl_url)
+        self.logDebug("Download URL = r" + dl_url)
         self.download(dl_url, disposition=True)
 
 

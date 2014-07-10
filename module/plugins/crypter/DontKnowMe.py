@@ -15,7 +15,7 @@ class DontKnowMe(Crypter):
     __author_name__ = "selaux"
     __author_mail__ = ""
 
-    LINK_PATTERN = r"http://dontknow.me/at/\?(.+)$"
+    LINK_PATTERN = r'http://dontknow.me/at/\?(.+)$'
 
     def decrypt(self, pyfile):
         link = re.findall(self.LINK_PATTERN, pyfile.url)[0]

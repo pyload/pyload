@@ -33,18 +33,19 @@ class UploadheroCom(SimpleHoster):
     __author_name__ = ("mcmyst", "zoidberg")
     __author_mail__ = ("mcmyst@hotmail.fr", "zoidberg@mujmail.cz")
 
-    SH_COOKIES = [("http://uploadhero.co", "lang", "en")]
     FILE_NAME_PATTERN = r'<div class="nom_de_fichier">(?P<N>.*?)</div>'
     FILE_SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'
     OFFLINE_PATTERN = r'<p class="titre_dl_2">|<div class="raison"><strong>Le lien du fichier ci-dessus n\'existe plus.'
 
-    DOWNLOAD_URL_PATTERN = r'<a href="([^"]+)" id="downloadnow"'
+    SH_COOKIES = [("http://uploadhero.co", "lang", "en")]
 
     IP_BLOCKED_PATTERN = r'href="(/lightbox_block_download.php\?min=.*?)"'
     IP_WAIT_PATTERN = r'<span id="minutes">(\d+)</span>.*\s*<span id="seconds">(\d+)</span>'
 
     CAPTCHA_PATTERN = r'"(/captchadl\.php\?[a-z0-9]+)"'
     FREE_URL_PATTERN = r'var magicomfg = \'<a href="(http://[^<>"]*?)"|"(http://storage\d+\.uploadhero\.co/\?d=[A-Za-z0-9]+/[^<>"/]+)"'
+    PREMIUM_URL_PATTERN = r'<a href="([^"]+)" id="downloadnow"'
+
 
     def handleFree(self):
         self.checkErrors()
@@ -72,7 +73,7 @@ class UploadheroCom(SimpleHoster):
     def handlePremium(self):
         self.logDebug("%s: Use Premium Account" % self.__name__)
         self.html = self.load(self.pyfile.url)
-        link = re.search(self.DOWNLOAD_URL_PATTERN, self.html).group(1)
+        link = re.search(self.PREMIUM_URL_PATTERN, self.html).group(1)
         self.logDebug("Downloading link : '%s'" % link)
         self.download(link)
 

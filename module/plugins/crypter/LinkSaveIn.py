@@ -27,7 +27,7 @@ class LinkSaveIn(Crypter):
     # Constants
     _JK_KEY_ = "jk"
     _CRYPTED_KEY_ = "crypted"
-    HOSTER_DOMAIN = "linksave.in"
+    HOSTER_NAME = "linksave.in"
 
     def setup(self):
         self.html = None
@@ -41,7 +41,7 @@ class LinkSaveIn(Crypter):
         # Init
         self.package = pyfile.package()
         self.fileid = re.match(self.__pattern__, pyfile.url).group('id')
-        self.req.cj.setCookie(self.HOSTER_DOMAIN, "Linksave_Language", "english")
+        self.req.cj.setCookie(self.HOSTER_NAME, "Linksave_Language", "english")
 
         # Request package
         self.html = self.load(pyfile.url)

@@ -26,5 +26,5 @@ class FilestubeCom(SimpleCrypter):
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
-    LINK_PATTERN = r"<a class=\"file-link-main(?: noref)?\" [^>]* href=\"(http://[^\"]+)"
-    TITLE_PATTERN = r"<h1\s*> (?P<title>.+)  download\s*</h1>"
+    LINK_PATTERN = r'<a class=\"file-link-main(?: noref)?\" [^>]* href=\"(http://[^\"]+)'
+    TITLE_PATTERN = r'<h1\s*> (?P<title>.+)  download\s*</h1>'

@@ -15,10 +15,10 @@ class RgHostNet(SimpleHoster):
 
     FILE_INFO_PATTERN = r'<h1>\s+(<a[^>]+>)?(?P<N>[^<]+)(</a>)?\s+<small[^>]+>\s+\((?P<S>[^)]+)\)\s+</small>\s+</h1>'
     OFFLINE_PATTERN = r'File is deleted|this page is not found'
-    DOWNLOAD_LINK_PATTERN = '''<a\s+href="([^"]+)"\s+class="btn\s+large\s+download"[^>]+>Download</a>'''
+    LINK_PATTERN = r'''<a\s+href="([^"]+)"\s+class="btn\s+large\s+download"[^>]+>Download</a>'''
 
     def handleFree(self):
-        found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
+        found = re.search(self.LINK_PATTERN, self.html)
         if not found:
             self.parseError("Unable to detect the direct link")
         download_link = found.group(1)

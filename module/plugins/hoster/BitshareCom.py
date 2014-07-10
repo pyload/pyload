@@ -17,15 +17,15 @@ class BitshareCom(SimpleHoster):
     __author_name__ = ("Paul King", "fragonib")
     __author_mail__ = ("", "fragonib[AT]yahoo[DOT]es")
 
-    HOSTER_DOMAIN = "bitshare.com"
+    HOSTER_NAME = "bitshare.com"
     OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
     FILE_INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)</h1>'
     FILE_AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
-    CAPTCHA_KEY_PATTERN = r"http://api\.recaptcha\.net/challenge\?k=(.*?) "
-    TRAFFIC_USED_UP = r"Your Traffic is used up for today. Upgrade to premium to continue!"
+    CAPTCHA_KEY_PATTERN = r'http://api\.recaptcha\.net/challenge\?k=(.*?) '
+    TRAFFIC_USED_UP = r'Your Traffic is used up for today. Upgrade to premium to continue!'
 
     def setup(self):
-        self.req.cj.setCookie(self.HOSTER_DOMAIN, "language_selection", "EN")
+        self.req.cj.setCookie(self.HOSTER_NAME, "language_selection", "EN")
         self.multiDL = self.premium
         self.chunkLimit = 1
 

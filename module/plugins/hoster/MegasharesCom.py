@@ -31,16 +31,18 @@ class MegasharesCom(SimpleHoster):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    FILE_NAME_PATTERN = '<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'
-    FILE_SIZE_PATTERN = '<strong><span class="black">Filesize:</span></strong> (?P<S>[0-9.]+) (?P<U>[kKMG])i?B<br />'
-    DOWNLOAD_URL_PATTERN = r'<div id="show_download_button_%d"[^>]*>\s*<a href="([^"]+)">'
+    FILE_NAME_PATTERN = r'<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'
+    FILE_SIZE_PATTERN = r'<strong><span class="black">Filesize:</span></strong> (?P<S>[0-9.]+) (?P<U>[kKMG])i?B<br />'
+    OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted)'
+
+    LINK_PATTERN = r'<div id="show_download_button_%d"[^>]*>\s*<a href="([^"]+)">'
     PASSPORT_LEFT_PATTERN = r'Your Download Passport is: <[^>]*>(\w+).*\s*You have\s*<[^>]*>\s*([0-9.]+) ([kKMG]i?B)'
     PASSPORT_RENEW_PATTERN = r'Your download passport will renew in\s*<strong>(\d+)</strong>:<strong>(\d+)</strong>:<strong>(\d+)</strong>'
     REACTIVATE_NUM_PATTERN = r'<input[^>]*id="random_num" value="(\d+)" />'
     REACTIVATE_PASSPORT_PATTERN = r'<input[^>]*id="passport_num" value="(\w+)" />'
     REQUEST_URI_PATTERN = r'var request_uri = "([^"]+)";'
     NO_SLOTS_PATTERN = r'<dd class="red">All download slots for this link are currently filled'
-    OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted)'
+
 
     def setup(self):
         self.resumeDownload = True
@@ -102,7 +104,7 @@ class MegasharesCom(SimpleHoster):
 
     def handleDownload(self, premium=False):
         # Find download link;
-        found = re.search(self.DOWNLOAD_URL_PATTERN % (1 if premium else 2), self.html)
+        found = re.search(self.LINK_PATTERN % (1 if premium else 2), self.html)
         msg = '%s download URL' % ('Premium' if premium else 'Free')
         if not found:
             self.parseError(msg)

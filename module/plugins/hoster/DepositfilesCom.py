@@ -23,7 +23,7 @@ class DepositfilesCom(SimpleHoster):
                               (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
 
     RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)'"
-    DOWNLOAD_LINK_PATTERN = r'<form id="downloader_file_form" action="(http://.+?\.(dfiles\.eu|depositfiles\.com)/.+?)" method="post"'
+    LINK_PATTERN = r'<form id="downloader_file_form" action="(http://.+?\.(dfiles\.eu|depositfiles\.com)/.+?)" method="post"'
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, post={"gateway_result": "1"}, cookies=True)
@@ -79,7 +79,7 @@ class DepositfilesCom(SimpleHoster):
                 self.logDebug(params)
                 continue
 
-            found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
+            found = re.search(self.LINK_PATTERN, self.html)
             if found:
                 if 'response' in params:
                     self.correctCaptcha()

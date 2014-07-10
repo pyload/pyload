@@ -27,7 +27,7 @@ class GooGl(Crypter):
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
-    API_URL = 'https://www.googleapis.com/urlshortener/v1/url'
+    API_URL = "https://www.googleapis.com/urlshortener/v1/url"
 
     def decrypt(self, pyfile):
         rep = self.load(self.API_URL, get={'shortUrl': pyfile.url})

@@ -194,8 +194,8 @@ class SimpleHoster(Hoster):
         example: PREMIUM_ONLY_PATTERN = r'Premium account required'
     """
 
-    FILE_SIZE_REPLACEMENTS = []
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
+    FILE_SIZE_REPLACEMENTS = []
     FILE_URL_REPLACEMENTS = []
 
     SH_BROKEN_ENCODING = False  # Set to True or encoding name if encoding in http header is not correct

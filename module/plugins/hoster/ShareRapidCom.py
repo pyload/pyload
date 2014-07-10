@@ -32,11 +32,12 @@ class ShareRapidCom(SimpleHoster):
     FILE_SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong></td>'
     OFFLINE_PATTERN = ur'Nastala chyba 404|Soubor byl smazán'
 
-    DOWNLOAD_URL_PATTERN = r'<a href="([^"]+)" title="Stahnout">([^<]+)</a>'
+    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://share-rapid.com/stahuj/\g<id>')]
+
+    LINK_PATTERN = r'<a href="([^"]+)" title="Stahnout">([^<]+)</a>'
     ERR_LOGIN_PATTERN = ur'<div class="error_div"><strong>Stahování je přístupné pouze přihlášeným uživatelům'
     ERR_CREDIT_PATTERN = ur'<div class="error_div"><strong>Stahování zdarma je možné jen přes náš'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://share-rapid.com/stahuj/\g<id>')]
 
     def setup(self):
         self.chunkLimit = 1
@@ -54,7 +55,7 @@ class ShareRapidCom(SimpleHoster):
 
         self.getFileInfo()
 
-        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
+        found = re.search(self.LINK_PATTERN, self.html)
         if found:
             link = found.group(1)
             self.logDebug("Premium link: %s" % link)

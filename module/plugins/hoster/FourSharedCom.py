@@ -15,14 +15,16 @@ class FourSharedCom(SimpleHoster):
     __author_mail__ = ("jeix@hasnomail.de", "zoidberg@mujmail.cz")
 
     FILE_NAME_PATTERN = r'<meta name="title" content="(?P<N>.+?)"'
-    FILE_SIZE_PATTERN = '<span title="Size: (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B">'
-    OFFLINE_PATTERN = 'The file link that you requested is not valid\.|This file was deleted.'
+    FILE_SIZE_PATTERN = r'<span title="Size: (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B">'
+    OFFLINE_PATTERN = r'The file link that you requested is not valid\.|This file was deleted.'
+
     FILE_NAME_REPLACEMENTS = [(r"&#(\d+).", lambda m: unichr(int(m.group(1))))]
     FILE_SIZE_REPLACEMENTS = [(",", "")]
 
-    DOWNLOAD_BUTTON_PATTERN = 'id="btnLink" href="(.*?)"'
-    FID_PATTERN = 'name="d3fid" value="(.*?)"'
     DOWNLOAD_URL_PATTERN = r'name="d3link" value="(.*?)"'
+    DOWNLOAD_BUTTON_PATTERN = r'id="btnLink" href="(.*?)"'
+    FID_PATTERN = r'name="d3fid" value="(.*?)"'
+
 
     def handleFree(self):
         if not self.account:

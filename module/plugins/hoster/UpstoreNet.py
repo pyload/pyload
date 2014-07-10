@@ -16,9 +16,9 @@ class UpstoreNet(SimpleHoster):
     FILE_INFO_PATTERN = r'<div class="comment">.*?</div>\s*\n<h2 style="margin:0">(?P<N>.*?)</h2>\s*\n<div class="comment">\s*\n\s*(?P<S>[\d.]+) (?P<U>\w+)'
     OFFLINE_PATTERN = r'<span class="error">File not found</span>'
 
-    WAIT_PATTERN = r"var sec = (\d+)"
+    WAIT_PATTERN = r'var sec = (\d+)'
     CHASH_PATTERN = r'<input type="hidden" name="hash" value="([^"]*)">'
-    DIRECT_LINK_PATTERN = r'<a href="(https?://.*?)" target="_blank"><b>'
+    LINK_PATTERN = r'<a href="(https?://.*?)" target="_blank"><b>'
 
     def handleFree(self):
         # STAGE 1: get link to continue
@@ -55,7 +55,7 @@ class UpstoreNet(SimpleHoster):
             self.html = self.load(self.pyfile.url, post=post_data, decode=True)
 
             # STAGE 3: get direct link
-            m = re.search(self.DIRECT_LINK_PATTERN, self.html, re.DOTALL)
+            m = re.search(self.LINK_PATTERN, self.html, re.DOTALL)
             if m:
                 break
 

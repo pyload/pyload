@@ -23,7 +23,7 @@ class RyushareCom(XFileSharingPro):
     FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[\d\.]+) (?P<U>\w+)'
 
     WAIT_PATTERN = r'You have to wait ((?P<hour>\d+) hour[s]?, )?((?P<min>\d+) minute[s], )?(?P<sec>\d+) second[s]'
-    DIRECT_LINK_PATTERN = r'(http://([^/]*?ryushare.com|\d+\.\d+\.\d+\.\d+)(:\d+/d/|/files/\w+/\w+/)[^"\'<]+)'
+    LINK_PATTERN = r'(http://([^/]*?ryushare.com|\d+\.\d+\.\d+\.\d+)(:\d+/d/|/files/\w+/\w+/)[^"\'<]+)'
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
 
     def getDownloadLink(self):

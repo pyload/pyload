@@ -42,20 +42,22 @@ class XFileSharingPro(SimpleHoster):
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
+    FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     FILE_SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>\w+)?\)</font>'
-    FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
     OFFLINE_PATTERN = r'>\w+ (Not Found|file (was|has been) removed)'
 
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
-    #LONG_WAIT_PATTERN = r'(?P<H>\d+(?=\s*hour))?.*?(?P<M>\d+(?=\s*minute))?.*?(?P<S>\d+(?=\s*second))?'
-    OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
-    OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
+
+    OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
+
     CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
     RECAPTCHA_URL_PATTERN = r'http://[^"\']+?recaptcha[^"\']+?\?k=([^"\']+)"'
     CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.*?)</div>'
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
+
     ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'
+
 
     def setup(self):
         if self.__name__ == "XFileSharingPro":
@@ -103,8 +105,8 @@ class XFileSharingPro(SimpleHoster):
         """ Initialize important variables """
         if not hasattr(self, "HOSTER_NAME"):
             self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1)
-        if not hasattr(self, "DIRECT_LINK_PATTERN"):
-            self.DIRECT_LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)' % self.HOSTER_NAME
+        if not hasattr(self, "LINK_PATTERN"):
+            self.LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)' % self.HOSTER_NAME
 
         self.captcha = self.errmsg = None
         self.passwords = self.getPassword().splitlines()
@@ -120,7 +122,7 @@ class XFileSharingPro(SimpleHoster):
 
         location = None
         found = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
-        if found and re.match(self.DIRECT_LINK_PATTERN, found.group(1)):
+        if found and re.match(self.LINK_PATTERN, found.group(1)):
             location = found.group(1).strip()
 
         return location
@@ -144,7 +146,7 @@ class XFileSharingPro(SimpleHoster):
             if found:
                 break
 
-            found = re.search(self.DIRECT_LINK_PATTERN, self.html, re.S)
+            found = re.search(self.LINK_PATTERN, self.html, re.S)
             if found:
                 break
 
@@ -158,7 +160,7 @@ class XFileSharingPro(SimpleHoster):
 
     def handlePremium(self):
         self.html = self.load(self.pyfile.url, post=self.getPostParameters())
-        found = re.search(self.DIRECT_LINK_PATTERN, self.html)
+        found = re.search(self.LINK_PATTERN, self.html)
         if not found:
             self.parseError('DIRECT LINK')
         self.startDownload(found.group(1))
@@ -190,7 +192,7 @@ class XFileSharingPro(SimpleHoster):
             self.fail(inputs['st'])
 
         #get easybytez.com link for uploaded file
-        found = re.search(self.OVR_DOWNLOAD_LINK_PATTERN, self.html)
+        found = re.search(self.OVR_LINK_PATTERN, self.html)
         if not found:
             self.parseError('DIRECT LINK (OVR)')
         self.pyfile.url = found.group(1)

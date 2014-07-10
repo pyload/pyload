@@ -24,7 +24,7 @@ from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter
 from module.utils import save_join
 
-API_KEY = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
+API_URL = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
 
 
 class YoutubeBatch(Crypter):

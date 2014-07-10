@@ -13,7 +13,7 @@ class Share4webCom(UnibytesCom):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    DOMAIN = 'http://www.share4web.com'
+    HOSTER_NAME = "share4web.com"
 
 
 getInfo = create_getInfo(UnibytesCom)

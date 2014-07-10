@@ -36,9 +36,9 @@ class ExtabitCom(SimpleHoster):
     FILE_NAME_PATTERN = r'<th>File:</th>\s*<td class="col-fileinfo">\s*<div title="(?P<N>[^"]+)">'
     FILE_SIZE_PATTERN = r'<th>Size:</th>\s*<td class="col-fileinfo">(?P<S>[^<]+)</td>'
     OFFLINE_PATTERN = r'>File not found<'
-    TEMP_OFFLINE_PATTERN = r">(File is temporary unavailable|No download mirror)<"
+    TEMP_OFFLINE_PATTERN = r'>(File is temporary unavailable|No download mirror)<'
 
-    DOWNLOAD_LINK_PATTERN = r'[\'"](http://guest\d+\.extabit\.com/[a-z0-9]+/.*?)[\'"]'
+    LINK_PATTERN = r'[\'"](http://guest\d+\.extabit\.com/[a-z0-9]+/.*?)[\'"]'
 
     def handleFree(self):
         if r">Only premium users can download this file" in self.html:
@@ -78,7 +78,7 @@ class ExtabitCom(SimpleHoster):
             self.parseError('JSON')
 
         self.html = self.load("http://extabit.com/file/%s%s" % (fileID, response['href']))
-        m = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
+        m = re.search(self.LINK_PATTERN, self.html)
         if not m:
             self.parseError('Download URL')
         url = m.group(1)

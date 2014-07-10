@@ -18,7 +18,7 @@
 """
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UloziskoSk(SimpleHoster):
@@ -30,13 +30,15 @@ class UloziskoSk(SimpleHoster):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    URL_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'
-    ID_PATTERN = r'<input type = "hidden" name = "id" value = "([^"]+)" />'
     FILE_NAME_PATTERN = r'<div class="down1">(?P<N>[^<]+)</div>'
     FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong><br />'
-    CAPTCHA_PATTERN = r'<img src="(/obrazky/obrazky.php\?fid=[^"]+)" alt="" />'
     OFFLINE_PATTERN = ur'<span class = "red">Zadaný súbor neexistuje z jedného z nasledujúcich dôvodov:</span>'
+
+    LINK_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'
+    ID_PATTERN = r'<input type = "hidden" name = "id" value = "([^"]+)" />'
+    CAPTCHA_PATTERN = r'<img src="(/obrazky/obrazky.php\?fid=[^"]+)" alt="" />'
     IMG_PATTERN = ur'<strong>PRE ZVÄČŠENIE KLIKNITE NA OBRÁZOK</strong><br /><a href = "([^"]+)">'
+
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
@@ -50,21 +52,21 @@ class UloziskoSk(SimpleHoster):
             self.handleFree()
 
     def handleFree(self):
-        found = re.search(self.URL_PATTERN, self.html)
+        found = re.search(self.LINK_PATTERN, self.html)
         if found is None:
-            raise PluginParseError('URL')
+            self.parseError('URL')
         parsed_url = 'http://www.ulozisko.sk' + found.group(1)
 
         found = re.search(self.ID_PATTERN, self.html)
         if found is None:
-            raise PluginParseError('ID')
+            self.parseError('ID')
         id = found.group(1)
 
         self.logDebug('URL:' + parsed_url + ' ID:' + id)
 
         found = re.search(self.CAPTCHA_PATTERN, self.html)
         if found is None:
-            raise PluginParseError('CAPTCHA')
+            self.parseError('CAPTCHA')
         captcha_url = 'http://www.ulozisko.sk' + found.group(1)
 
         captcha = self.decryptCaptcha(captcha_url, cookies=True)

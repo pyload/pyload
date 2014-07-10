@@ -41,7 +41,7 @@ class UptoboxCom(XFileSharingPro):
 
     WAIT_PATTERN = r'>(\d+)</span> seconds<'
 
-    DIRECT_LINK_PATTERN = r'"(https?://\w+\.uptobox\.com/d/.*?)"'
+    LINK_PATTERN = r'"(https?://\w+\.uptobox\.com/d/.*?)"'
 
     def handleCaptcha(self, inputs):
         found = re.search(self.SOLVEMEDIA_PATTERN, self.html)

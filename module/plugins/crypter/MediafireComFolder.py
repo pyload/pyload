@@ -16,7 +16,8 @@ class MediafireComFolder(Crypter):
     __author_mail__ = "zoidberg@mujmail.cz"
 
     FOLDER_KEY_PATTERN = r"var afI= '(\w+)';"
-    FILE_URL_PATTERN = '<meta property="og:url" content="http://www.mediafire.com/\?(\w+)"/>'
+    FILE_URL_PATTERN = r'<meta property="og:url" content="http://www.mediafire.com/\?(\w+)"/>'
+
 
     def decrypt(self, pyfile):
         new_links = []

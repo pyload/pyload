@@ -32,18 +32,20 @@ class UnibytesCom(SimpleHoster):
     __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = r'<span[^>]*?id="fileName"[^>]*>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
-    DOMAIN = 'http://www.unibytes.com'
 
+    HOSTER_NAME = "unibytes.com"
     WAIT_PATTERN = r'Wait for <span id="slowRest">(\d+)</span> sec'
-    DOWNLOAD_LINK_PATTERN = r'<a href="([^"]+)">Download</a>'
+    LINK_PATTERN = r'<a href="([^"]+)">Download</a>'
+
 
     def handleFree(self):
+        domain = "http://www." + self.HOSTER_NAME
         action, post_data = self.parseHtmlForm('id="startForm"')
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
         for _ in xrange(8):
             self.logDebug(action, post_data)
-            self.html = self.load(self.DOMAIN + action, post=post_data)
+            self.html = self.load(domain + action, post=post_data)
 
             found = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
             if found:
@@ -55,7 +57,7 @@ class UnibytesCom(SimpleHoster):
                 self.retry()
 
             if post_data['step'] == 'last':
-                found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
+                found = re.search(self.LINK_PATTERN, self.html)
                 if found:
                     url = found.group(1)
                     self.correctCaptcha()
@@ -70,7 +72,7 @@ class UnibytesCom(SimpleHoster):
                 found = re.search(self.WAIT_PATTERN, self.html)
                 self.wait(int(found.group(1)) if found else 60, False)
             elif last_step in ('captcha', 'last'):
-                post_data['captcha'] = self.decryptCaptcha(self.DOMAIN + '/captcha.jpg')
+                post_data['captcha'] = self.decryptCaptcha(domain + '/captcha.jpg')
         else:
             self.fail("No valid captcha code entered")
 

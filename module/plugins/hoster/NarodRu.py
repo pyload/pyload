@@ -40,7 +40,7 @@ class NarodRu(SimpleHoster):
                              (r"/start/[0-9]+\.\w+-narod\.yandex\.ru/([0-9]{6,15})/\w+/(\w+)", r"/disk/\1/\2")]
 
     CAPTCHA_PATTERN = r'<number url="(.*?)">(\w+)</number>'
-    DOWNLOAD_LINK_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'
+    LINK_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'
 
     def handleFree(self):
         for _ in xrange(5):
@@ -53,7 +53,7 @@ class NarodRu(SimpleHoster):
             post_data['rep'] = self.decryptCaptcha(captcha_url)
 
             self.html = self.load(self.pyfile.url, post=post_data, decode=True)
-            found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
+            found = re.search(self.LINK_PATTERN, self.html)
             if found:
                 url = 'http://narod.ru' + found.group(1)
                 self.correctCaptcha()

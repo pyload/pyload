@@ -17,7 +17,7 @@ class FileshareInUa(Hoster):
 
     PATTERN_FILENAME = r'<h3 class="b-filename">(.*?)</h3>'
     PATTERN_FILESIZE = r'<b class="b-filesize">(.*?)</b>'
-    PATTERN_OFFLINE = "This file doesn't exist, or has been removed."
+    PATTERN_OFFLINE = r"This file doesn't exist, or has been removed."
 
     def setup(self):
         self.resumeDownload = self.multiDL = True

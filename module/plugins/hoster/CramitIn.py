@@ -15,7 +15,7 @@ class CramitIn(XFileSharingPro):
     HOSTER_NAME = "cramit.in"
 
     FILE_INFO_PATTERN = r'<span class=t2>\s*(?P<N>.*?)</span>.*?<small>\s*\((?P<S>.*?)\)'
-    DIRECT_LINK_PATTERN = r'href="(http://cramit.in/file_download/.*?)"'
+    LINK_PATTERN = r'href="(http://cramit.in/file_download/.*?)"'
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium

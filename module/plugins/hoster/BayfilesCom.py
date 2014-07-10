@@ -38,7 +38,7 @@ class BayfilesCom(SimpleHoster):
 
     WAIT_PATTERN = r'>Your IP [0-9.]* has recently downloaded a file\. Upgrade to premium or wait (\d+) minutes\.<'
     VARS_PATTERN = r'var vfid = (\d+);\s*var delay = (\d+);'
-    LINK_PATTERN = r"javascript:window.location.href = '([^']+)';"
+    FREE_LINK_PATTERN = r"javascript:window.location.href = '([^']+)';"
     PREMIUM_LINK_PATTERN = r'(?:<a class="highlighted-btn" href="|(?=http://s\d+\.baycdn\.com/dl/))(.*?)"'
 
     def handleFree(self):
@@ -69,7 +69,7 @@ class BayfilesCom(SimpleHoster):
             "vfid": vfid})
 
         # Get final link and download
-        found = re.search(self.LINK_PATTERN, self.html)
+        found = re.search(self.FREE_LINK_PATTERN, self.html)
         if not found:
             self.parseError("Free link")
         self.startDownload(found.group(1))

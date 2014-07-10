@@ -26,7 +26,7 @@ class File4safeCom(XFileSharingPro):
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
         found = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
-        if found and re.match(self.DIRECT_LINK_PATTERN, found.group(1)):
+        if found and re.match(self.LINK_PATTERN, found.group(1)):
             location = found.group(1).strip()
             self.startDownload(location)
         else:

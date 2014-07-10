@@ -35,8 +35,9 @@ class EgoFilesCom(SimpleHoster):
     FILE_INFO_PATTERN = r'<div class="down-file">\s+(?P<N>[^\t]+)\s+<div class="file-properties">\s+(File size|Rozmiar): (?P<S>[\w.]+) (?P<U>\w+) \|'
     OFFLINE_PATTERN = r'(File size|Rozmiar): 0 KB'
     WAIT_TIME_PATTERN = r'For next free download you have to wait <strong>((?P<m>\d*)m)? ?((?P<s>\d+)s)?</strong>'
-    DIRECT_LINK_PATTERN = r'<a href="(?P<link>[^"]+)">Download ></a>'
-    RECAPTCHA_KEY = '6LeXatQSAAAAAHezcjXyWAni-4t302TeYe7_gfvX'
+    LINK_PATTERN = r'<a href="(?P<link>[^"]+)">Download ></a>'
+    RECAPTCHA_KEY = "6LeXatQSAAAAAHezcjXyWAni-4t302TeYe7_gfvX"
+
 
     def setup(self):
         # Set English language
@@ -58,14 +59,14 @@ class EgoFilesCom(SimpleHoster):
             waittime = int(m['m']) * 60 + int(m['s'])
             self.wait(waittime, True)
 
-        downloadURL = ''
+        downloadURL = r''
         recaptcha = ReCaptcha(self)
         for _ in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response}
             self.html = self.load(self.pyfile.url, post=post_data, decode=True)
-            m = re.search(self.DIRECT_LINK_PATTERN, self.html)
+            m = re.search(self.LINK_PATTERN, self.html)
             if not m:
                 self.logInfo('Wrong captcha')
                 self.invalidCaptcha()

@@ -56,13 +56,15 @@ class LetitbitNet(SimpleHoster):
     __author_name__ = ("zoidberg", "z00nx")
     __author_mail__ = ("zoidberg@mujmail.cz", "z00nx0@gmail.com")
 
-    CHECK_URL_PATTERN = r"ajax_check_url\s*=\s*'((http://[^/]+)[^']+)';"
-    SECONDS_PATTERN = r"seconds\s*=\s*(\d+);"
-    CAPTCHA_CONTROL_FIELD = r"recaptcha_control_field\s=\s'(?P<value>[^']+)'"
-
-    DOMAIN = "http://letitbit.net"
     FILE_URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "letitbit.net")]
+
+    HOSTER_NAME = "letitbit.net"
+
+    #CHECK_URL_PATTERN = r"ajax_check_url\s*=\s*'((http://[^/]+)[^']+)';"
+    SECONDS_PATTERN = r'seconds\s*=\s*(\d+);'
+    CAPTCHA_CONTROL_FIELD = r"recaptcha_control_field\s=\s'(?P<value>[^']+)'"
     RECAPTCHA_KEY = "6Lc9zdMSAAAAAF-7s2wuQ-036pLRbM0p8dDaQdAM"
+
 
     def setup(self):
         self.resumeDownload = True
@@ -81,11 +83,13 @@ class LetitbitNet(SimpleHoster):
         action, inputs = self.parseHtmlForm('id="ifree_form"')
         if not action:
             self.parseError("page 1 / ifree_form")
+
+        domain = "http://www." + self.HOSTER_NAME
         self.pyfile.size = float(inputs['sssize'])
         self.logDebug(action, inputs)
         inputs['desc'] = ""
 
-        self.html = self.load(self.DOMAIN + action, post=inputs, cookies=True)
+        self.html = self.load(domain + action, post=inputs, cookies=True)
 
         # action, inputs = self.parseHtmlForm('id="d3_form"')
         # if not action: self.parseError("page 2 / d3_form")
@@ -110,7 +114,7 @@ class LetitbitNet(SimpleHoster):
         self.logDebug("ReCaptcha control field found", recaptcha_control_field)
         self.wait(seconds + 1)
 
-        response = self.load("%s/ajax/download3.php" % self.DOMAIN, post=" ", cookies=True)
+        response = self.load("%s/ajax/download3.php" % domain, post=" ", cookies=True)
         if response != '1':
             self.parseError('Unknown response - ajax_check_url')
         self.logDebug(response)
@@ -120,7 +124,7 @@ class LetitbitNet(SimpleHoster):
         post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response,
                      "recaptcha_control_field": recaptcha_control_field}
         self.logDebug("Post data to send", post_data)
-        response = self.load('%s/ajax/check_recaptcha.php' % self.DOMAIN, post=post_data, cookies=True)
+        response = self.load('%s/ajax/check_recaptcha.php' % domain, post=post_data, cookies=True)
         self.logDebug(response)
         if not response:
             self.invalidCaptcha()

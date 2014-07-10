@@ -21,6 +21,7 @@ class OboomCom(Hoster):
 
     RECAPTCHA_KEY = "6LdqpO0SAAAAAJGHXo63HyalP7H4qlRs_vff0kJX"
 
+
     def loadUrl(self, url, get=None):
         if not get:
             get = dict()

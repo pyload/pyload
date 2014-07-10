@@ -29,7 +29,7 @@ class FilezyNet(XFileSharingPro):
 
         obfuscated_js = re.search(self.DOWNLOAD_JS_PATTERN, self.html)
         dl_file_now = self.js.eval(obfuscated_js.group(1))
-        link = re.search(self.DIRECT_LINK_PATTERN, dl_file_now)
+        link = re.search(self.LINK_PATTERN, dl_file_now)
         return link.group(1)
 
 

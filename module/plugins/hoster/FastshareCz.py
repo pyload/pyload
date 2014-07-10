@@ -35,14 +35,16 @@ class FastshareCz(SimpleHoster):
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     FILE_INFO_PATTERN = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*Size\s*: (?P<S>\d+) (?P<U>\w+),'
-    OFFLINE_PATTERN = '>(The file has been deleted|Requested page not found)'
+    OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found)'
 
     FILE_URL_REPLACEMENTS = [("#.*", "")]
+
     SH_COOKIES = [(".fastshare.cz", "lang", "en")]
 
     FREE_URL_PATTERN = r'action=(/free/.*?)>\s*<img src="([^"]*)"><br'
     PREMIUM_URL_PATTERN = r'(http://data\d+\.fastshare\.cz/download\.php\?id=\d+&)'
-    CREDIT_PATTERN = " credit for "
+    CREDIT_PATTERN = r' credit for '
+
 
     def handleFree(self):
         if "> 100% of FREE slots are full" in self.html:

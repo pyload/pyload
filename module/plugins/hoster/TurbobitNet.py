@@ -42,18 +42,19 @@ class TurbobitNet(SimpleHoster):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    # long filenames are shortened
-    FILE_INFO_PATTERN = r"<span class='file-icon1[^>]*>(?P<N>[^<]+)</span>\s*\((?P<S>[^\)]+)\)\s*</h1>"
-    FILE_NAME_PATTERN = r'<meta name="keywords" content="\s+(?P<N>[^,]+)'  # full name but missing on page2
+    FILE_INFO_PATTERN = r"<span class='file-icon1[^>]*>(?P<N>[^<]+)</span>\s*\((?P<S>[^\)]+)\)\s*</h1>"  #: long filenames are shortened
+    FILE_NAME_PATTERN = r'<meta name="keywords" content="\s+(?P<N>[^,]+)'  #: full name but missing on page2
     OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
+
     FILE_URL_REPLACEMENTS = [(r"http://(?:www\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*",
                               "http://turbobit.net/\g<ID>.html")]
     SH_COOKIES = [("turbobit.net", "user_lang", "en")]
 
-    CAPTCHA_KEY_PATTERN = r'src="http://api\.recaptcha\.net/challenge\?k=([^"]+)"'
-    DOWNLOAD_URL_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
+    LINK_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
     LIMIT_WAIT_PATTERN = r'<div id="time-limit-text">\s*.*?<span id=\'timeout\'>(\d+)</span>'
+    CAPTCHA_KEY_PATTERN = r'src="http://api\.recaptcha\.net/challenge\?k=([^"]+)"'
     CAPTCHA_SRC_PATTERN = r'<img alt="Captcha" src="(.*?)"'
+
 
     def handleFree(self):
         self.url = "http://turbobit.net/download/free/%s" % self.file_info['ID']
@@ -172,7 +173,7 @@ class TurbobitNet(SimpleHoster):
         self.downloadFile()
 
     def downloadFile(self):
-        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
+        found = re.search(self.LINK_PATTERN, self.html)
         if not found:
             self.parseError("download link")
         self.url = "http://turbobit.net" + found.group('url')

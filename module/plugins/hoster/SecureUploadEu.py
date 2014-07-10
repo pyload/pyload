@@ -14,8 +14,8 @@ class SecureUploadEu(XFileSharingPro):
 
     HOSTER_NAME = "secureupload.eu"
 
-    FILE_INFO_PATTERN = '<h3>Downloading (?P<N>[^<]+) \((?P<S>[^<]+)\)</h3>'
-    OFFLINE_PATTERN = 'The file was removed|File Not Found'
+    FILE_INFO_PATTERN = r'<h3>Downloading (?P<N>[^<]+) \((?P<S>[^<]+)\)</h3>'
+    OFFLINE_PATTERN = r'The file was removed|File Not Found'
 
 
 getInfo = create_getInfo(SecureUploadEu)

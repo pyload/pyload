@@ -13,4 +13,4 @@ class NosvideoCom(SimpleCrypter):
     __author_mail__ = "igelkun@myopera.com"
 
     LINK_PATTERN = r'href="(http://(?:w{3}\.)?nosupload.com/\?d=\w+)"'
-    TITLE_PATTERN = r"<[tT]itle>Watch (?P<title>.+)</[tT]itle>"
+    TITLE_PATTERN = r'<[tT]itle>Watch (?P<title>.+)</[tT]itle>'

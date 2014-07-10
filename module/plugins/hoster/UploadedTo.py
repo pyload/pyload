@@ -97,7 +97,7 @@ class UploadedTo(Hoster):
 
     FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
     OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
-    DL_LIMIT_PATTERN = "You have reached the max. number of possible free downloads for this hour"
+    DL_LIMIT_PATTERN = r'You have reached the max. number of possible free downloads for this hour'
 
     def setup(self):
         self.multiDL = self.resumeDownload = self.premium

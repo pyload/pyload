@@ -33,13 +33,13 @@ class DataHu(SimpleHoster):
 
     FILE_INFO_PATTERN = ur'<title>(?P<N>.*) \((?P<S>[^)]+)\) let\xf6lt\xe9se</title>'
     OFFLINE_PATTERN = ur'Az adott f\xe1jl nem l\xe9tezik'
-    DIRECT_LINK_PATTERN = r'<div class="download_box_button"><a href="([^"]+)">'
+    LINK_PATTERN = r'<div class="download_box_button"><a href="([^"]+)">'
 
     def handleFree(self):
         self.resumeDownload = True
         self.html = self.load(self.pyfile.url, decode=True)
 
-        m = re.search(self.DIRECT_LINK_PATTERN, self.html)
+        m = re.search(self.LINK_PATTERN, self.html)
         if m:
             url = m.group(1)
             self.logDebug('Direct link: ' + url)

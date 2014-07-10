@@ -37,7 +37,7 @@ class RapidgatorNet(SimpleHoster):
     __author_name__ = ("zoidberg", "chrox", "stickell", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
-    API_URL = 'http://rapidgator.net/api/file'
+    API_URL = "http://rapidgator.net/api/file"
 
     FILE_NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
     FILE_SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d\.]+) (?P<U>\w+)</strong>'
@@ -47,7 +47,7 @@ class RapidgatorNet(SimpleHoster):
     PREMIUM_ONLY_ERROR_PATTERN = r'You can download files up to|This file can be downloaded by premium only<'
     DOWNLOAD_LIMIT_ERROR_PATTERN = r'You have reached your (daily|hourly) downloads limit'
     WAIT_PATTERN = r'(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)'
-    DOWNLOAD_LINK_PATTERN = r"return '(http://\w+.rapidgator.net/.*)';"
+    LINK_PATTERN = r"return '(http://\w+.rapidgator.net/.*)';"
 
     RECAPTCHA_KEY_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
     ADSCAPTCHA_SRC_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']*)'
@@ -128,7 +128,7 @@ class RapidgatorNet(SimpleHoster):
         self.html = self.load(url)
 
         for _ in xrange(5):
-            found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
+            found = re.search(self.LINK_PATTERN, self.html)
             if found:
                 link = found.group(1)
                 self.logDebug(link)

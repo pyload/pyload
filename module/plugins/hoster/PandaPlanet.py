@@ -20,7 +20,7 @@ class PandaPlanet(XFileSharingPro):
 
     FILE_SIZE_PATTERN = r'File Size:</b>\s*</td>\s*<td[^>]*>(?P<S>[^<]+)</td>\s*</tr>'
     FILE_NAME_PATTERN = r'File Name:</b>\s*</td>\s*<td[^>]*>(?P<N>[^<]+)</td>\s*</tr>'
-    DIRECT_LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+\/(?!video\.mp4)[^"\'<]+)' % HOSTER_NAME
+    LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+\/(?!video\.mp4)[^"\'<]+)' % HOSTER_NAME
 
 
 getInfo = create_getInfo(PandaPlanet)

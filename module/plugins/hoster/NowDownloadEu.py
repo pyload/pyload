@@ -33,24 +33,26 @@ class NowDownloadEu(SimpleHoster):
 
     FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B </h4>'
     OFFLINE_PATTERN = r'(This file does not exist!)'
-    FILE_TOKEN_PATTERN = r'"(/api/token\.php\?token=[a-z0-9]+)"'
-    FILE_CONTINUE_PATTERN = r'"(/dl2/[a-z0-9]+/[a-z0-9]+)"'
-    FILE_WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
-    FILE_DOWNLOAD_LINK = r'"(http://f\d+\.nowdownload\.ch/dl/[a-z0-9]+/[a-z0-9]+/[^<>"]*?)"'
+
+    TOKEN_PATTERN = r'"(/api/token\.php\?token=[a-z0-9]+)"'
+    CONTINUE_PATTERN = r'"(/dl2/[a-z0-9]+/[a-z0-9]+)"'
+    WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
+    LINK_PATTERN = r'"(http://f\d+\.nowdownload\.ch/dl/[a-z0-9]+/[a-z0-9]+/[^<>"]*?)"'
 
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<[^>]*>', '')]
+
 
     def setup(self):
         self.multiDL = self.resumeDownload = True
         self.chunkLimit = -1
 
     def handleFree(self):
-        tokenlink = re.search(self.FILE_TOKEN_PATTERN, self.html)
-        continuelink = re.search(self.FILE_CONTINUE_PATTERN, self.html)
+        tokenlink = re.search(self.TOKEN_PATTERN, self.html)
+        continuelink = re.search(self.CONTINUE_PATTERN, self.html)
         if not tokenlink or not continuelink:
             self.fail('Plugin out of Date')
 
-        found = re.search(self.FILE_WAIT_PATTERN, self.html)
+        found = re.search(self.WAIT_PATTERN, self.html)
         if found:
             wait = int(found.group(1))
         else:
@@ -62,7 +64,7 @@ class NowDownloadEu(SimpleHoster):
 
         self.html = self.load(baseurl + str(continuelink.group(1)))
 
-        url = re.search(self.FILE_DOWNLOAD_LINK, self.html)
+        url = re.search(self.LINK_PATTERN, self.html)
         if not url:
             self.fail('Download Link not Found (Plugin out of Date?)')
         self.logDebug('Download link: ' + str(url.group(1)))

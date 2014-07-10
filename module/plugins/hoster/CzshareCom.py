@@ -21,7 +21,7 @@
 # http://czshare.com/5278880/random.bin
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.utils import parseFileSize
 
 
@@ -40,6 +40,7 @@ class CzshareCom(SimpleHoster):
 
     FILE_SIZE_REPLACEMENTS = [(' ', '')]
     FILE_URL_REPLACEMENTS = [(r'http://[^/]*/download.php\?.*?id=(\w+).*', r'http://sdilej.cz/\1/x/')]
+
     SH_CHECK_TRAFFIC = True
 
     FREE_URL_PATTERN = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
@@ -48,6 +49,7 @@ class CzshareCom(SimpleHoster):
     FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)"[^>]*/>'
     MULTIDL_PATTERN = r"<p><font color='red'>Z[^<]*PROFI.</font></p>"
     USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([0-9., ]+)([kKMG]i?B)</strong>\s*</div><!-- .credit -->'
+
 
     def checkTrafficLeft(self):
         # check if user logged in
@@ -90,7 +92,7 @@ class CzshareCom(SimpleHoster):
         # get free url
         found = re.search(self.FREE_URL_PATTERN, self.html)
         if found is None:
-            raise PluginParseError('Free URL')
+            self.parseError('Free URL')
         parsed_url = "http://sdilej.cz" + found.group(1)
         self.logDebug("PARSED_URL:" + parsed_url)
 
@@ -105,7 +107,7 @@ class CzshareCom(SimpleHoster):
             self.pyfile.size = int(inputs['size'])
         except Exception, e:
             self.logError(e)
-            raise PluginParseError('Form')
+            self.parseError('Form')
 
         # get and decrypt captcha        
         captcha_url = 'http://sdilej.cz/captcha.php'
@@ -129,7 +131,7 @@ class CzshareCom(SimpleHoster):
         self.logDebug("WAIT URL", self.req.lastEffectiveURL)
         found = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.lastEffectiveURL)
         if not found:
-            raise PluginParseError('Download URL')
+            self.parseError('Download URL')
 
         url = "http://%s/download.php?%s" % (found.group(1), found.group(2))
 

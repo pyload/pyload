@@ -45,8 +45,10 @@ class FreevideoCz(Hoster):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    URL_PATTERN = r'clip: {\s*url: "([^"]+)"'
     OFFLINE_PATTERN = r'<h2 class="red-corner-full">Str.nka nebyla nalezena</h2>'
+
+    LINK_PATTERN = r'clip: {\s*url: "([^"]+)"'
+
 
     def setup(self):
         self.multiDL = self.resumeDownload = True
@@ -58,7 +60,7 @@ class FreevideoCz(Hoster):
         if re.search(self.OFFLINE_PATTERN, self.html):
             self.offline()
 
-        found = re.search(self.URL_PATTERN, self.html)
+        found = re.search(self.LINK_PATTERN, self.html)
         if found is None:
             self.fail("Parse error (URL)")
         download_url = found.group(1)

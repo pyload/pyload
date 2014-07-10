@@ -28,7 +28,7 @@ class UploadingCom(SimpleHoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)'
-    __version__ = "0.34"
+    __version__ = "0.35"
     __description__ = """Uploading.com hoster plugin"""
     __author_name__ = ("jeix", "mkaay", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
@@ -85,21 +85,21 @@ class UploadingCom(SimpleHoster):
             self.logInfo("%s: Waiting %d seconds." % (self.__name__, wait_time))
             self.wait(wait_time)
         else:
-            self.pluginParseError("AJAX/WAIT")
+            self.parseError("AJAX/WAIT")
 
         response = json_loads(
             self.load(ajax_url, post={'action': 'get_link', 'code': self.file_info['ID'], 'pass': 'false'}))
         if 'answer' in response and 'link' in response['answer']:
             url = response['answer']['link']
         else:
-            self.pluginParseError("AJAX/URL")
+            self.parseError("AJAX/URL")
 
         self.html = self.load(url)
         found = re.search(r'<form id="file_form" action="(.*?)"', self.html)
         if found:
             url = found.group(1)
         else:
-            self.pluginParseError("URL")
+            self.parseError("URL")
 
         self.download(url)
 
