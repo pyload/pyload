@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from captcha import OCR
+from module.plugins.OCR import OCR
 
 class NetloadIn(OCR):
     __name__ = "NetloadIn"

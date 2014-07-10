@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-from captcha import OCR
+from module.plugins.OCR import OCR
 
 class ShareonlineBiz(OCR):
     __name__ = "ShareonlineBiz"

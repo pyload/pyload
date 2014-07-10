@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from captcha import OCR
+from module.plugins.OCR import OCR
 from PIL import Image
 from os import sep
 from os.path import dirname
