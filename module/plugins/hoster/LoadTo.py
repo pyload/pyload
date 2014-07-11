@@ -28,12 +28,12 @@ class LoadTo(SimpleHoster):
     __name__ = "LoadTo"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
-    __version__ = "0.14"
+    __version__ = "0.15"
     __description__ = """Load.to hoster plugin"""
     __author_name__ = ("halfman", "stickell")
     __author_mail__ = ("Pulpan3@gmail.com", "l.stickell@yahoo.it")
 
-    FILE_INFO_PATTERN = r'<head><title>(?P<N>.+) \/\/ Load.to</title>'
+    FILE_NAME_PATTERN = r'<head><title>(?P<N>.+) \/\/ Load.to</title>'
     FILE_SIZE_PATTERN = r'<a [^>]+>(?P<Z>.+)</a></h3>\s*Size: (?P<S>.*) (?P<U>[kKmMgG]?i?[bB])'
     OFFLINE_PATTERN = r'Can\'t find file\. Please check URL'
 
