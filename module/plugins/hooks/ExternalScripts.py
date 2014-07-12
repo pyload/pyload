@@ -28,18 +28,18 @@ from module.utils import save_join
 
 class ExternalScripts(Hook):
     __name__ = "ExternalScripts"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __description__ = """Run external scripts"""
     __config__ = [("activated", "bool", "Activated", True)]
     __author_name__ = ("mkaay", "RaNaN", "spoob")
     __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org")
 
-    event_list = ["unrarFinished", "allDownloadsFinished", "allDownloadsProcessed"]
+    event_list = ["unrarFinished", "packageFinishedUnrar", "allDownloadsFinished", "allDownloadsProcessed"]
 
     def setup(self):
         self.scripts = {}
 
-        folders = ['download_preparing', 'download_finished', 'package_finished',
+        folders = ['download_preparing', 'download_finished', 'package_finished', 'package_finished_unrar',
                    'before_reconnect', 'after_reconnect', 'unrar_finished',
                    'all_dls_finished', 'all_dls_processed']
 
@@ -91,6 +91,13 @@ class ExternalScripts(Hook):
 
     def packageFinished(self, pypack):
         for script in self.scripts['package_finished']:
+            folder = self.config['general']['download_folder']
+            folder = save_join(folder, pypack.folder)
+
+            self.callScript(script, pypack.name, folder, pypack.password, pypack.id)
+
+    def packageFinishedUnrar(self, pypack):
+        for script in self.scripts['package_finished_unrar']:
             folder = self.config['general']['download_folder']
             folder = save_join(folder, pypack.folder)
 

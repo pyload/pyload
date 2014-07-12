@@ -58,7 +58,7 @@ class ExtractArchive(Hook):
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __description__ = """Extract different kind of archives"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
@@ -197,6 +197,8 @@ class ExtractArchive(Hook):
 
             if not matched:
                 self.logInfo(_("No files found to extract"))
+
+            self.manager.dispatchEvent("packageFinishedUnrar", p)
 
     def startExtracting(self, plugin, fid, passwords, thread):
         pyfile = self.core.files.getFile(fid)
