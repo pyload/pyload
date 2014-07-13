@@ -287,7 +287,7 @@ class Account(Base):
     def checkLogin(self, user):
         """ checks if user is still logged in """
         if user in self.timestamps:
-            if self.login_timeout > 0 and self.timestamps[user] + self.login_timeout * 60 > time():
+            if self.login_timeout > 0 and self.timestamps[user] + self.login_timeout * 60 < time():
                 self.logDebug("Reached login timeout for %s" % user)
                 return self.relogin(user)
             else:
