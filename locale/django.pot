@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.9\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2014-04-08 15:01+0200\n"
+"POT-Creation-Date: 2014-07-13 20:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -541,7 +541,8 @@ msgid "Webinterface"
 msgstr ""
 
 #: module/web/templates/default/base.html:39
-msgid "pyLoad Update available!"
+#, python-format
+msgid "New pyLoad version %s available!"
 msgstr ""
 
 #: module/web/templates/default/base.html:46
@@ -667,22 +668,22 @@ msgstr ""
 msgid "Please repeat the new password."
 msgstr ""
 
-#: module/web/pyload_app.py:125
+#: module/web/pyload_app.py:127
 msgid "You dont have permission to access this page."
 msgstr ""
 
-#: module/web/pyload_app.py:193
+#: module/web/pyload_app.py:195
 msgid "Download directory not found."
 msgstr ""
 
-#: module/web/pyload_app.py:260 module/web/pyload_app.py:267
+#: module/web/pyload_app.py:262 module/web/pyload_app.py:269
 msgid "unlimited"
 msgstr ""
 
-#: module/web/pyload_app.py:262 module/web/pyload_app.py:269
+#: module/web/pyload_app.py:264 module/web/pyload_app.py:271
 msgid "not available"
 msgstr ""
 
-#: module/web/pyload_app.py:508
+#: module/web/pyload_app.py:509
 msgid "Run pyLoadCore.py -s to access the setup."
 msgstr ""
