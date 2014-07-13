@@ -66,6 +66,9 @@ class Crypter(Plugin):
 
             if self.pyfile.package().password:
                 self.core.api.setPackageData(pid, {"password": self.pyfile.package().password})
+                
+            if self.pyfile.package().folder:
+                self.core.api.setPackageData(pid, {"folder": self.pyfile.package().folder})
 
         if self.urls:
             self.core.api.generateAndAddPackages(self.urls)
