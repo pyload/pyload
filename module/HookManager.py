@@ -123,7 +123,7 @@ class HookManager:
             try:
                 #hookClass = getattr(plugin, plugin.__name__)
 
-                if self.core.config.getPlugin(pluginname, "activated"):
+                if self.config.getPlugin(pluginname, "activated"):
                     pluginClass = self.core.pluginManager.loadClass("hooks", pluginname)
                     if not pluginClass: continue
 

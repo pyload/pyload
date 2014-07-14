@@ -43,7 +43,7 @@ class PluginManager:
     def __init__(self, core):
         self.core = core
 
-        #self.config = self.core.config
+        self.config = core.config
         self.log = core.log
 
         self.plugins = {}
@@ -155,7 +155,7 @@ class PluginManager:
 
                 # internals have no config
                 if folder == "internal":
-                    self.core.config.deleteConfig(name)
+                    self.config.deleteConfig(name)
                     continue
 
                 config = self.CONFIG.findall(content)
@@ -178,7 +178,7 @@ class PluginManager:
                         if append: config.append(["activated", "bool", "Activated", False])
 
                     try:
-                        self.core.config.addPluginConfig(name, config, desc)
+                        self.config.addPluginConfig(name, config, desc)
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
 
@@ -188,7 +188,7 @@ class PluginManager:
                     config = (["activated", "bool", "Activated", False],)
 
                     try:
-                        self.core.config.addPluginConfig(name, config, desc)
+                        self.config.addPluginConfig(name, config, desc)
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
 
