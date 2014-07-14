@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # JDownloader/src/jd/controlling/LinkGrabberPackager.java
 
 import re

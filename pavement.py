@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from paver.easy import *
@@ -206,7 +207,7 @@ def compile_js():
 
 @task
 def generate_locale():
-    """ Generates localisation files """
+    """ Generates localization files """
 
     EXCLUDE = ["BeautifulSoup.py", "module/cli", "web/locale", "web/ajax", "web/cnl", "web/pyload",
                "setup.py"]
