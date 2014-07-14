@@ -16,6 +16,6 @@ class RyushareCom(XFSPAccount):
     def login(self, user, data, req):
         req.lastURL = "http://ryushare.com/login.python"
         html = req.load("http://ryushare.com/login.python",
-                        post={"login": user, "password": data["password"], "op": "login"})
+                        post={"login": user, "password": data['password'], "op": "login"})
         if 'Incorrect Login or Password' in html or '>Error<' in html:
             self.wrongPassword()

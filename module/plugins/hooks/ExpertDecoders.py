@@ -51,14 +51,14 @@ class ExpertDecoders(Hook):
 
         if response.isdigit():
             self.logInfo(_("%s credits left") % response)
-            self.info["credits"] = credits = int(response)
+            self.info['credits'] = credits = int(response)
             return credits
         else:
             self.logError(response)
             return 0
 
     def processCaptcha(self, task):
-        task.data["ticket"] = ticket = uuid4()
+        task.data['ticket'] = ticket = uuid4()
         result = None
 
         with open(task.captchaFile, 'rb') as f:
@@ -102,7 +102,7 @@ class ExpertDecoders(Hook):
 
             try:
                 response = getURL(self.API_URL, post={"action": "refund", "key": self.getConfig("passkey"),
-                                                      "gen_task_id": task.data["ticket"]})
+                                                      "gen_task_id": task.data['ticket']})
                 self.logInfo("Request refund: %s" % response)
 
             except BadHeader, e:

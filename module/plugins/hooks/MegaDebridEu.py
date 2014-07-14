@@ -36,7 +36,7 @@ class MegaDebridEu(MultiHoster):
         reponse = getURL('http://www.mega-debrid.eu/api.php?action=getHosters')
         json_data = json_loads(reponse)
 
-        if json_data["response_code"] == "ok":
+        if json_data['response_code'] == "ok":
             host_list = [element[0] for element in json_data['hosters']]
         else:
             self.logError("Unable to retrieve hoster list")

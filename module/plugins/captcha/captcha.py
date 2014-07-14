@@ -84,7 +84,7 @@ class OCR(object):
         if os.name == "nt":
             tessparams = [join(pypath,"tesseract","tesseract.exe")]
         else:
-            tessparams = ['tesseract']
+            tessparams = ["tesseract"]
 
         tessparams.extend( [abspath(tmp.name), abspath(tmpTxt.name).replace(".txt", "")] )
 

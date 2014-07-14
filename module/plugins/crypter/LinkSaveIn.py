@@ -34,7 +34,7 @@ class LinkSaveIn(Crypter):
         self.fileid = None
         self.captcha = False
         self.package = None
-        self.preferred_sources = ['cnl2', 'rsdf', 'ccf', 'dlc', 'web']
+        self.preferred_sources = ["cnl2", "rsdf", "ccf", "dlc", "web"]
 
     def decrypt(self, pyfile):
         # Init

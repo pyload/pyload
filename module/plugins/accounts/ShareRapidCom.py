@@ -21,7 +21,7 @@ class ShareRapidCom(Account):
         found = re.search(ur'<td>Max. počet paralelních stahování: </td><td>(\d+)', src)
         if found:
             data = self.getAccountData(user)
-            data["options"]["limitDL"] = [int(found.group(1))]
+            data['options']['limitDL'] = [int(found.group(1))]
 
         found = re.search(ur'<td>Paušální stahování aktivní. Vyprší </td><td><strong>(.*?)</strong>', src)
         if found:
@@ -44,6 +44,6 @@ class ShareRapidCom(Account):
             htm = req.load("http://sharerapid.cz/prihlaseni/",
                            post={"hash": hashes,
                                  "login": user,
-                                 "pass1": data["password"],
+                                 "pass1": data['password'],
                                  "remember": 0,
                                  "sbmt": u"Přihlásit"}, cookies=True)

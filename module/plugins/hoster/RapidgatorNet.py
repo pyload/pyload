@@ -110,13 +110,13 @@ class RapidgatorNet(SimpleHoster):
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 
         url = "http://rapidgator.net%s?fid=%s" % (
-            jsvars.get('startTimerUrl', '/download/AjaxStartTimer'), jsvars["fid"])
+            jsvars.get('startTimerUrl', '/download/AjaxStartTimer'), jsvars['fid'])
         jsvars.update(self.getJsonResponse(url))
 
         self.wait(int(jsvars.get('secs', 45)) + 1, False)
 
         url = "http://rapidgator.net%s?sid=%s" % (
-            jsvars.get('getDownloadUrl', '/download/AjaxGetDownload'), jsvars["sid"])
+            jsvars.get('getDownloadUrl', '/download/AjaxGetDownload'), jsvars['sid'])
         jsvars.update(self.getJsonResponse(url))
 
         self.req.http.lastURL = self.pyfile.url

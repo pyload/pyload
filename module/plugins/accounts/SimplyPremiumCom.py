@@ -49,7 +49,7 @@ class SimplyPremiumCom(Account):
         if data['password'] == '' or data['password'] == '0':
             post_data = {"key": user}
         else:
-            post_data = {"login_name": user, "login_pass": data["password"]}
+            post_data = {"login_name": user, "login_pass": data['password']}
 
         self.html = req.load("http://www.simply-premium.com/login.php", post=post_data)
 

@@ -19,7 +19,7 @@ class RelinkUs(Crypter):
     __author_mail__ = "fragonib[AT]yahoo[DOT]es"
 
     # Constants
-    PREFERRED_LINK_SOURCES = ['cnl2', 'dlc', 'web']
+    PREFERRED_LINK_SOURCES = ["cnl2", "dlc", "web"]
 
     OFFLINE_TOKEN = r'<title>Tattooside'
     PASSWORD_TOKEN = r'container_password\.php'
@@ -197,7 +197,7 @@ class RelinkUs(Crypter):
             try:
                 dlc = self.load(container_url)
                 dlc_filename = self.fileid + ".dlc"
-                dlc_filepath = os.path.join(self.config["general"]["download_folder"], dlc_filename)
+                dlc_filepath = os.path.join(self.config['general']['download_folder'], dlc_filename)
                 f = open(dlc_filepath, "wb")
                 f.write(dlc)
                 f.close()

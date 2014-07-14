@@ -61,7 +61,7 @@ class DdlstorageCom(XFileSharingPro):
         data = {'client_id': 53472,
                 'file_code': file_id}
         if self.user:
-            passwd = self.account.getAccountData(self.user)["password"]
+            passwd = self.account.getAccountData(self.user)['password']
             data['req_type'] = 'file_info_reg'
             data['user_login'] = self.user
             data['user_password'] = md5(passwd).hexdigest()

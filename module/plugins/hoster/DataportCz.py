@@ -46,8 +46,8 @@ class DataportCz(SimpleHoster):
             if not action or not inputs:
                 self.parseError('free_download_form')
 
-            if "captchaId" in inputs and inputs["captchaId"] in captchas:
-                inputs['captchaCode'] = captchas[inputs["captchaId"]]
+            if "captchaId" in inputs and inputs['captchaId'] in captchas:
+                inputs['captchaCode'] = captchas[inputs['captchaId']]
             else:
                 self.parseError('captcha')
 

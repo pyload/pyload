@@ -64,8 +64,8 @@ class XFileSharingPro(Hook):
         #self.logDebug(regexp)
 
         dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
-        dict["pattern"] = regexp
-        dict["re"] = re.compile(regexp)
+        dict['pattern'] = regexp
+        dict['re'] = re.compile(regexp)
         self.logDebug("Pattern loaded - handling %d hosters" % len(hosterList))
 
     def getConfigSet(self, option):
@@ -74,5 +74,5 @@ class XFileSharingPro(Hook):
 
     def unload(self):
         dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
-        dict["pattern"] = r"^unmatchable$"
-        dict["re"] = re.compile(r"^unmatchable$")
+        dict['pattern'] = r'^unmatchable$'
+        dict['re'] = re.compile(r'^unmatchable$')

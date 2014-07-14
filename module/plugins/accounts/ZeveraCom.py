@@ -27,7 +27,7 @@ class ZeveraCom(Account):
 
     def login(self, user, data, req):
         self.loginname = user
-        self.password = data["password"]
+        self.password = data['password']
         if self.getAPIData(req) == "No traffic":
             self.wrongPassword()
 

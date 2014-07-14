@@ -26,7 +26,7 @@ class RehostTo(Hoster):
             self.fail("No rehost.to account provided")
 
         data = self.account.getAccountInfo(self.user)
-        long_ses = data["long_ses"]
+        long_ses = data['long_ses']
 
         self.logDebug("Rehost.to: Old URL: %s" % pyfile.url)
         new_url = "http://rehost.to/process_download.php?user=cookie&pass=%s&dl=%s" % (long_ses, quote(pyfile.url, ""))

@@ -78,7 +78,7 @@ class HellshareCz(Account):
 
         html = req.load('http://www.hellshare.com/login?do=loginForm-submit', post={
             "login": "Log in",
-            "password": data["password"],
+            "password": data['password'],
             "username": user,
             "perm_login": "on"
         })

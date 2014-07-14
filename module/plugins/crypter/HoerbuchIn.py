@@ -28,7 +28,7 @@ class HoerbuchIn(Crypter):
             abookname = soup.find("a", attrs={"rel": "bookmark"}).text
             for a in soup.findAll("a", attrs={"href": self.protection}):
                 package = "%s (%s)" % (abookname, a.previousSibling.previousSibling.text[:-1])
-                links = self.decryptFolder(a["href"])
+                links = self.decryptFolder(a['href'])
 
                 self.packages.append((package, links, pyfile.package().folder))
         else:

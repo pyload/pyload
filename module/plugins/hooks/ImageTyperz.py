@@ -136,7 +136,7 @@ class ImageTyperz(Hook):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             response = getURL(self.RESPOND_URL, post={"action": "SETBADIMAGE", "username": self.getConfig("username"),
                                                       "password": self.getConfig("passkey"),
-                                                      "imageid": task.data["ticket"]})
+                                                      "imageid": task.data['ticket']})
 
             if response == "SUCCESS":
                 self.logInfo("Bad captcha solution received, requested refund")
@@ -151,5 +151,5 @@ class ImageTyperz(Hook):
             task.error = e.getCode()
             return
 
-        task.data["ticket"] = ticket
+        task.data['ticket'] = ticket
         task.setResult(result)

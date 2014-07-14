@@ -95,7 +95,7 @@ class UpdateManager(Hook):
         return True if self.core.pluginManager.reloadPlugins(reloads) else False
 
     def periodical(self):
-        if not self.info["pyload"] and not (self.getConfig("nodebugupdate") and self.core.debug):
+        if not self.info['pyload'] and not (self.getConfig("nodebugupdate") and self.core.debug):
             self.updating = True
             self.update(onlyplugin=True if self.getConfig("mode") == "plugins only" else False)
             self.updating = False
@@ -127,15 +127,15 @@ class UpdateManager(Hook):
             newversion = data[0]
             self.logInfo(_("***  New pyLoad Version %s available  ***") % newversion)
             self.logInfo(_("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
-            r = self.info["pyload"] = True
-            self.info["version"] = newversion
+            r = self.info['pyload'] = True
+            self.info['version'] = newversion
         return r
 
     @threaded
     def _updatePlugins(self, updates):
         """ check for plugin updates """
 
-        if self.info["plugins"]:
+        if self.info['plugins']:
             return False  #: plugins were already updated
 
         updated = []
@@ -152,9 +152,9 @@ class UpdateManager(Hook):
 
         data = sorted(map(lambda x: dict(zip(schema, x.split('|'))), updates), key=itemgetter("type", "name"))
         for plugin in data:
-            filename = plugin["name"]
-            prefix = plugin["type"]
-            version = plugin["version"]
+            filename = plugin['name']
+            prefix = plugin['type']
+            version = plugin['version']
 
             if filename.endswith(".pyc"):
                 name = filename[:filename.find("_")]
@@ -169,7 +169,7 @@ class UpdateManager(Hook):
 
             plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
 
-            oldver = float(plugins[name]["v"]) if name in plugins else None
+            oldver = float(plugins[name]['v']) if name in plugins else None
             newver = float(version)
 
             if not oldver:
@@ -213,7 +213,7 @@ class UpdateManager(Hook):
                 self.logInfo(_("Plugins updated and reloaded"))
             else:
                 self.logInfo(_("*** Plugins have been updated, pyLoad will be restarted now ***"))
-                self.info["plugins"] = True
+                self.info['plugins'] = True
                 self.scheduler.addJob(4, self.core.api.restart(), threaded=False)  #: risky, but pyload doesn't let more
             return True
         else:

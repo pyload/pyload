@@ -87,7 +87,7 @@ class RapidshareCom(Hoster):
             self.name = m.group("name_new")
 
         self.download_api_data()
-        if self.api_data["status"] == "1":
+        if self.api_data['status'] == "1":
             self.pyfile.name = self.get_file_name()
 
             if self.premium:
@@ -95,15 +95,15 @@ class RapidshareCom(Hoster):
             else:
                 self.handleFree()
 
-        elif self.api_data["status"] == "2":
+        elif self.api_data['status'] == "2":
             self.logInfo(_("Rapidshare: Traffic Share (direct download)"))
             self.pyfile.name = self.get_file_name()
 
             self.download(self.pyfile.url, get={"directstart": 1})
 
-        elif self.api_data["status"] in ("0", "4", "5"):
+        elif self.api_data['status'] in ("0", "4", "5"):
             self.offline()
-        elif self.api_data["status"] == "3":
+        elif self.api_data['status'] == "3":
             self.tempOffline()
         else:
             self.fail("Unknown response code.")
@@ -133,7 +133,7 @@ class RapidshareCom(Hoster):
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
         self.logDebug("%s: Use Premium Account" % self.__name__)
-        url = self.api_data["mirror"]
+        url = self.api_data['mirror']
         self.download(url, get={"directstart": 1})
 
     def download_api_data(self, force=False):
@@ -163,12 +163,12 @@ class RapidshareCom(Hoster):
         self.api_data = {"fileid": fields[0], "filename": fields[1], "size": int(fields[2]), "serverid": fields[3],
                          "status": fields[4], "shorthost": fields[5], "checksum": fields[6].strip().lower()}
 
-        if int(self.api_data["status"]) > 100:
-            self.api_data["status"] = str(int(self.api_data["status"]) - 100)
-        elif int(self.api_data["status"]) > 50:
-            self.api_data["status"] = str(int(self.api_data["status"]) - 50)
+        if int(self.api_data['status']) > 100:
+            self.api_data['status'] = str(int(self.api_data['status']) - 100)
+        elif int(self.api_data['status']) > 50:
+            self.api_data['status'] = str(int(self.api_data['status']) - 50)
 
-        self.api_data["mirror"] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
+        self.api_data['mirror'] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
 
     def freeWait(self):
         """downloads html with the important information
@@ -214,14 +214,14 @@ class RapidshareCom(Hoster):
                        "name": name,
                        "host": data[0],
                        "auth": data[1],
-                       "server": self.api_data["serverid"],
-                       "size": self.api_data["size"]}
+                       "server": self.api_data['serverid'],
+                       "size": self.api_data['size']}
             self.setWait(int(data[2]) + 2 + self.offset)
             self.wait()
 
             return dl_dict
 
     def get_file_name(self):
-        if self.api_data["filename"]:
-            return self.api_data["filename"]
+        if self.api_data['filename']:
+            return self.api_data['filename']
         return self.url.split("/")[-1]

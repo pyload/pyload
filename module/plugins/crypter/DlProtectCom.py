@@ -53,14 +53,14 @@ class DlProtectCom(SimpleCrypter):
             post_req.update({"i": b64time, "submitform": "Decrypt+link"})
 
             if ">Password :" in self.html:
-                post_req["pwd"] = self.getPassword()
+                post_req['pwd'] = self.getPassword()
 
             if ">Security Code" in self.html:
                 captcha_id = re.search(r'/captcha\.php\?uid=(.+?)"', self.html).group(1)
                 captcha_url = "http://www.dl-protect.com/captcha.php?uid=" + captcha_id
                 captcha_code = self.decryptCaptcha(captcha_url, imgtype="gif")
 
-                post_req["secure"] = captcha_code
+                post_req['secure'] = captcha_code
 
         self.html = self.load(self.pyfile.url, post=post_req)
 

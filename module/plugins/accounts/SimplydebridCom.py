@@ -24,7 +24,7 @@ class SimplydebridCom(Account):
 
     def login(self, user, data, req):
         self.loginname = user
-        self.password = data["password"]
+        self.password = data['password']
         get_data = {'login': 1, 'u': self.loginname, 'p': self.password}
         response = req.load("http://simply-debrid.com/api.php", get=get_data, decode=True)
         if response != "02: loggin success":

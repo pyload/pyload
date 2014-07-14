@@ -41,7 +41,7 @@ class StahnuTo(Account):
     def login(self, user, data, req):
         html = req.load("http://www.stahnu.to/login.php", post={
             "username": user,
-            "password": data["password"],
+            "password": data['password'],
             "submit": "Login"})
 
         if not '<a href="logout.php">' in html:

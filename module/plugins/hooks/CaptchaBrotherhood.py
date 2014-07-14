@@ -71,7 +71,7 @@ class CaptchaBrotherhood(Hook):
         else:
             credits = int(response[3:])
             self.logInfo(_("%d credits left") % credits)
-            self.info["credits"] = credits
+            self.info['credits'] = credits
             return credits
 
     def submit(self, captcha, captchaType="file", match=None):
@@ -167,5 +167,5 @@ class CaptchaBrotherhood(Hook):
             task.error = e.getCode()
             return
 
-        task.data["ticket"] = ticket
+        task.data['ticket'] = ticket
         task.setResult(result)

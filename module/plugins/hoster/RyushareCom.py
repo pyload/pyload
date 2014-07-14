@@ -31,7 +31,7 @@ class RyushareCom(XFileSharingPro):
         self.html = self.load(self.pyfile.url)
         action, inputs = self.parseHtmlForm(input_names={"op": re.compile("^download")})
         if "method_premium" in inputs:
-            del inputs["method_premium"]
+            del inputs['method_premium']
 
         self.html = self.load(self.pyfile.url, post=inputs)
         action, inputs = self.parseHtmlForm('F1')
@@ -45,7 +45,7 @@ class RyushareCom(XFileSharingPro):
         match = re.search(self.WAIT_PATTERN, self.html)
         if match:
             m = match.groupdict(0)
-            waittime = int(m["hour"]) * 60 * 60 + int(m["min"]) * 60 + int(m["sec"])
+            waittime = int(m['hour']) * 60 * 60 + int(m['min']) * 60 + int(m['sec'])
             self.setWait(waittime, True)
             retry = True
 
@@ -62,8 +62,8 @@ class RyushareCom(XFileSharingPro):
             captcha = SolveMedia(self)
             challenge, response = captcha.challenge(captchaKey)
 
-            inputs["adcopy_challenge"] = challenge
-            inputs["adcopy_response"] = response
+            inputs['adcopy_challenge'] = challenge
+            inputs['adcopy_response'] = response
 
             self.html = self.load(self.pyfile.url, post=inputs)
             if "WRONG CAPTCHA" in self.html:

@@ -125,11 +125,11 @@ class BypassCaptcha(Hook):
 
     def captchaCorrect(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            self.respond(task.data["ticket"], True)
+            self.respond(task.data['ticket'], True)
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            self.respond(task.data["ticket"], False)
+            self.respond(task.data['ticket'], False)
 
     def processCaptcha(self, task):
         c = task.captchaFile
@@ -139,5 +139,5 @@ class BypassCaptcha(Hook):
             task.error = e.getCode()
             return
 
-        task.data["ticket"] = ticket
+        task.data['ticket'] = ticket
         task.setResult(result)

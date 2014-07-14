@@ -51,7 +51,7 @@ class FilefactoryCom(Account):
 
         html = req.load("http://www.filefactory.com/member/signin.php", post={
             "loginEmail": user,
-            "loginPassword": data["password"],
+            "loginPassword": data['password'],
             "Submit": "Sign In"})
 
         if req.lastEffectiveURL != "http://www.filefactory.com/account/":

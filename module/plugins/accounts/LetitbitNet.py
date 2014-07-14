@@ -29,7 +29,7 @@ class LetitbitNet(Account):
     def loadAccountInfo(self, user, req):
         ## DISABLED BECAUSE IT GET 'key exausted' EVEN IF VALID ##
         # api_key = self.accounts[user]['password']
-        # json_data = [api_key, ["key/info"]]
+        # json_data = [api_key, ['key/info']]
         # api_rep = req.load('http://api.letitbit.net/json', post={'r': json_dumps(json_data)})
         # self.logDebug('API Key Info: ' + api_rep)
         # api_rep = json_loads(api_rep)

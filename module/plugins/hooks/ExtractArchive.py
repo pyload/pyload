@@ -163,7 +163,7 @@ class ExtractArchive(Hook):
                 if not exists(out):
                     makedirs(out)
 
-            files_ids = [(save_join(dl, p.folder, x["name"]), x["id"]) for x in p.getChildren().itervalues()]
+            files_ids = [(save_join(dl, p.folder, x['name']), x['id']) for x in p.getChildren().itervalues()]
             matched = False
 
             # check as long there are unseen files
@@ -307,15 +307,15 @@ class ExtractArchive(Hook):
             if not exists(f):
                 continue
             try:
-                if self.config["permission"]["change_file"]:
+                if self.config['permission']['change_file']:
                     if isfile(f):
-                        chmod(f, int(self.config["permission"]["file"], 8))
+                        chmod(f, int(self.config['permission']['file'], 8))
                     elif isdir(f):
-                        chmod(f, int(self.config["permission"]["folder"], 8))
+                        chmod(f, int(self.config['permission']['folder'], 8))
 
-                if self.config["permission"]["change_dl"] and os.name != "nt":
-                    uid = getpwnam(self.config["permission"]["user"])[2]
-                    gid = getgrnam(self.config["permission"]["group"])[2]
+                if self.config['permission']['change_dl'] and os.name != "nt":
+                    uid = getpwnam(self.config['permission']['user'])[2]
+                    gid = getgrnam(self.config['permission']['group'])[2]
                     chown(f, uid, gid)
             except Exception, e:
                 self.logWarning(_("Setting User and Group failed"), e)

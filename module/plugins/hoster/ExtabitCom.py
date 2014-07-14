@@ -62,7 +62,7 @@ class ExtabitCom(SimpleHoster):
 
             for _ in xrange(5):
                 get_data = {"type": "recaptcha"}
-                get_data["challenge"], get_data["capture"] = recaptcha.challenge(captcha_key)
+                get_data['challenge'], get_data['capture'] = recaptcha.challenge(captcha_key)
                 response = json_loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
                 if "ok" in response:
                     self.correctCaptcha()

@@ -60,7 +60,7 @@ class UploadedTo(Account):
         req.load("http://uploaded.net/language/en")
         req.cj.setCookie("uploaded.net", "lang", "en")
 
-        page = req.load("http://uploaded.net/io/login", post={"id": user, "pw": data["password"], "_": ""})
+        page = req.load("http://uploaded.net/io/login", post={"id": user, "pw": data['password'], "_": ""})
 
         if "User and password do not match!" in page:
             self.wrongPassword()

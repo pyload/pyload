@@ -40,7 +40,7 @@ class SafelinkingNet(Crypter):
 
             if "link-password" in self.html:
                 password = pyfile.package().password
-                postData["link-password"] = password
+                postData['link-password'] = password
 
             if "altcaptcha" in self.html:
                 for _ in xrange(5):
@@ -53,8 +53,8 @@ class SafelinkingNet(Crypter):
                         self.fail("Error parsing captcha")
 
                     challenge, response = captcha.challenge(captchaKey)
-                    postData["adcopy_challenge"] = challenge
-                    postData["adcopy_response"] = response
+                    postData['adcopy_challenge'] = challenge
+                    postData['adcopy_response'] = response
 
                     self.html = self.load(url, post=postData)
                     if "The password you entered was incorrect" in self.html:
@@ -72,9 +72,9 @@ class SafelinkingNet(Crypter):
             if m:
                 linkDict = json_loads(m.group(1))
                 for link in linkDict:
-                    if not "http://" in link["full"]:
-                        packageLinks.append("https://safelinking.net/d/" + link["full"])
+                    if not "http://" in link['full']:
+                        packageLinks.append("https://safelinking.net/d/" + link['full'])
                     else:
-                        packageLinks.append(link["full"])
+                        packageLinks.append(link['full'])
 
             self.core.files.addLinks(packageLinks, pyfile.package().id)

@@ -155,25 +155,25 @@ class IRCInterface(Thread, Hook):
                 self.handle_events(msg)
 
     def handle_events(self, msg):
-        if not msg["origin"].split("!", 1)[0] in self.getConfig("owner").split():
+        if not msg['origin'].split("!", 1)[0] in self.getConfig("owner").split():
             return
 
-        if msg["target"].split("!", 1)[0] != self.getConfig("nick"):
+        if msg['target'].split("!", 1)[0] != self.getConfig("nick"):
             return
 
-        if msg["action"] != "PRIVMSG":
+        if msg['action'] != "PRIVMSG":
             return
 
         # HANDLE CTCP ANTI FLOOD/BOT PROTECTION
-        if msg["text"] == "\x01VERSION\x01":
+        if msg['text'] == "\x01VERSION\x01":
             self.logDebug("Sending CTCP VERSION.")
             self.sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
             return
-        elif msg["text"] == "\x01TIME\x01":
+        elif msg['text'] == "\x01TIME\x01":
             self.logDebug("Sending CTCP TIME.")
             self.sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
             return
-        elif msg["text"] == "\x01LAG\x01":
+        elif msg['text'] == "\x01LAG\x01":
             self.logDebug("Received CTCP LAG.")  # don't know how to answer
             return
 
@@ -181,7 +181,7 @@ class IRCInterface(Thread, Hook):
         args = None
 
         try:
-            temp = msg["text"].split()
+            temp = msg['text'].split()
             trigger = temp[0]
             if len(temp) > 1:
                 args = temp[1:]
@@ -192,7 +192,7 @@ class IRCInterface(Thread, Hook):
         try:
             res = handler(args)
             for line in res:
-                self.response(line, msg["origin"])
+                self.response(line, msg['origin'])
         except Exception, e:
             self.logError("pyLoad IRC: " + repr(e))
 
@@ -258,7 +258,7 @@ class IRCInterface(Thread, Hook):
 
     def event_info(self, args):
         if not args:
-            return ['ERROR: Use info like this: info <id>']
+            return ["ERROR: Use info like this: info <id>"]
 
         info = None
         try:
@@ -271,7 +271,7 @@ class IRCInterface(Thread, Hook):
 
     def event_packinfo(self, args):
         if not args:
-            return ['ERROR: Use packinfo like this: packinfo <id>']
+            return ["ERROR: Use packinfo like this: packinfo <id>"]
 
         lines = []
         pack = None
@@ -321,7 +321,7 @@ class IRCInterface(Thread, Hook):
     def event_add(self, args):
         if len(args) < 2:
             return ['ERROR: Add links like this: "add <packagename|id> links". ',
-                    'This will add the link <link> to to the package <package> / the package with id <id>!']
+                    "This will add the link <link> to to the package <package> / the package with id <id>!"]
 
         pack = args[0].strip()
         links = [x.strip() for x in args[1:]]
@@ -336,7 +336,7 @@ class IRCInterface(Thread, Hook):
 
             #TODO add links
 
-            return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack["name"], id)]
+            return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack['name'], id)]
 
         except:
             # create new package

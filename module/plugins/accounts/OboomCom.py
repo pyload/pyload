@@ -16,7 +16,7 @@ class OboomCom(Account):
     __author_mail__ = "stanley.foerster@gmail.com"
 
     def loadAccountData(self, user, req):
-        passwd = self.getAccountData(user)["password"]
+        passwd = self.getAccountData(user)['password']
         salt = passwd[::-1]
         pbkdf2 = PBKDF2(passwd, salt, 1000).hexread(16)
         result = json_loads(req.load("https://www.oboom.com/1.0/login", get={"auth": user, "pass": pbkdf2}))
@@ -27,17 +27,17 @@ class OboomCom(Account):
 
     def loadAccountInfo(self, name, req):
         accountData = self.loadAccountData(name, req)
-        userData = accountData["user"]
+        userData = accountData['user']
 
         if "premium_unix" in userData:
-            validUntilUtc = int(userData["premium_unix"])
+            validUntilUtc = int(userData['premium_unix'])
             if validUntilUtc > int(time.time()):
                 premium = True
                 validUntil = validUntilUtc
-                traffic = userData["traffic"]
-                trafficLeft = traffic["current"]
-                maxTraffic = traffic["max"]
-                session = accountData["session"]
+                traffic = userData['traffic']
+                trafficLeft = traffic['current']
+                maxTraffic = traffic['max']
+                session = accountData['session']
                 return {"premium": premium,
                         "validuntil": validUntil,
                         "trafficleft": trafficLeft / 1024,

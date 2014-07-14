@@ -72,7 +72,7 @@ class FastshareCz(SimpleHoster):
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)
         if "location" in header:
-            url = header["location"]
+            url = header['location']
         else:
             self.html = self.load(self.pyfile.url)
 

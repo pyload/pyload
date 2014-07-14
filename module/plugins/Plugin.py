@@ -207,8 +207,8 @@ class Plugin(Base):
 
     def getChunkCount(self):
         if self.chunkLimit <= 0:
-            return self.config["download"]["chunks"]
-        return min(self.config["download"]["chunks"], self.chunkLimit)
+            return self.config['download']['chunks']
+        return min(self.config['download']['chunks'], self.chunkLimit)
 
     def __call__(self):
         return self.__name__
@@ -478,12 +478,12 @@ class Plugin(Base):
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
-            makedirs(location, int(self.core.config["permission"]["folder"], 8))
+            makedirs(location, int(self.core.config['permission']['folder'], 8))
 
-            if self.core.config["permission"]["change_dl"] and os.name != "nt":
+            if self.core.config['permission']['change_dl'] and os.name != "nt":
                 try:
-                    uid = getpwnam(self.config["permission"]["user"])[2]
-                    gid = getgrnam(self.config["permission"]["group"])[2]
+                    uid = getpwnam(self.config['permission']['user'])[2]
+                    gid = getgrnam(self.config['permission']['group'])[2]
 
                     chown(location, uid, gid)
                 except Exception, e:
@@ -511,13 +511,13 @@ class Plugin(Base):
 
         fs_filename = fs_encode(filename)
 
-        if self.core.config["permission"]["change_file"]:
-            chmod(fs_filename, int(self.core.config["permission"]["file"], 8))
+        if self.core.config['permission']['change_file']:
+            chmod(fs_filename, int(self.core.config['permission']['file'], 8))
 
-        if self.core.config["permission"]["change_dl"] and os.name != "nt":
+        if self.core.config['permission']['change_dl'] and os.name != "nt":
             try:
-                uid = getpwnam(self.config["permission"]["user"])[2]
-                gid = getgrnam(self.config["permission"]["group"])[2]
+                uid = getpwnam(self.config['permission']['user'])[2]
+                gid = getgrnam(self.config['permission']['group'])[2]
 
                 chown(fs_filename, uid, gid)
             except Exception, e:

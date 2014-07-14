@@ -54,16 +54,16 @@ class RealdebridCom(Hoster):
 
             self.logDebug("Returned Data: %s" % data)
 
-            if data["error"] != 0:
-                if data["message"] == "Your file is unavailable on the hoster.":
+            if data['error'] != 0:
+                if data['message'] == "Your file is unavailable on the hoster.":
                     self.offline()
                 else:
-                    self.logWarning(data["message"])
+                    self.logWarning(data['message'])
                     self.tempOffline()
             else:
-                if pyfile.name is not None and pyfile.name.endswith('.tmp') and data["file_name"]:
-                    pyfile.name = data["file_name"]
-                pyfile.size = parseFileSize(data["file_size"])
+                if pyfile.name is not None and pyfile.name.endswith('.tmp') and data['file_name']:
+                    pyfile.name = data['file_name']
+                pyfile.size = parseFileSize(data['file_size'])
                 new_url = data['generated_links'][0][-1]
 
         if self.getConfig("https"):

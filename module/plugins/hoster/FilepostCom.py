@@ -90,10 +90,10 @@ class FilepostCom(SimpleHoster):
             for i in xrange(5):
                 get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
                 if i:
-                    post_dict["recaptcha_challenge_field"], post_dict["recaptcha_response_field"] = recaptcha.challenge(
+                    post_dict['recaptcha_challenge_field'], post_dict['recaptcha_response_field'] = recaptcha.challenge(
                         captcha_key)
                     self.logDebug(u"RECAPTCHA: %s : %s : %s" % (
-                        captcha_key, post_dict["recaptcha_challenge_field"], post_dict["recaptcha_response_field"]))
+                        captcha_key, post_dict['recaptcha_challenge_field'], post_dict['recaptcha_response_field']))
 
                 download_url = self.getJsonResponse(get_dict, post_dict, 'link')
                 if download_url:

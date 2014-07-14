@@ -28,8 +28,8 @@ class FilejungleCom(FileserveCom):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    URLS = ['http://www.filejungle.com/f/', 'http://www.filejungle.com/check_links.php',
-            'http://www.filejungle.com/checkReCaptcha.php']
+    URLS = ["http://www.filejungle.com/f/", "http://www.filejungle.com/check_links.php",
+            "http://www.filejungle.com/checkReCaptcha.php"]
     LINKCHECK_TR = r'<li>\s*(<div class="col1">.*?)</li>'
     LINKCHECK_TD = r'<div class="(?:col )?col\d">(?:<[^>]*>|&nbsp;)*([^<]*)'
 

@@ -47,7 +47,7 @@ class UnrestrictLi(Account):
             self.logError("A Captcha is required. Go to http://unrestrict.li/sign_in and login, then retry")
             return
 
-        post_data = {"username": user, "password": data["password"],
+        post_data = {"username": user, "password": data['password'],
                      "remember_me": "remember", "signin": "Sign in"}
         self.html = req.load("https://unrestrict.li/sign_in", post=post_data)
 

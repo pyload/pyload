@@ -183,7 +183,7 @@ class DeathByCaptcha(Hook):
             self.logError(e.getDesc())
             return False
 
-        balance, rate = self.info["balance"], self.info["rate"]
+        balance, rate = self.info['balance'], self.info['rate']
         self.logInfo("Account balance: US$%.3f (%d captchas left at %.2f cents each)" % (balance / 100,
                                                                                          balance // rate, rate))
 
@@ -196,7 +196,7 @@ class DeathByCaptcha(Hook):
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             try:
-                response = self.call_api("captcha/%d/report" % task.data["ticket"], True)
+                response = self.call_api("captcha/%d/report" % task.data['ticket'], True)
             except DeathByCaptchaException, e:
                 self.logError(e.getDesc())
             except Exception, e:
@@ -211,5 +211,5 @@ class DeathByCaptcha(Hook):
             self.logError(e.getDesc())
             return
 
-        task.data["ticket"] = ticket
+        task.data['ticket'] = ticket
         task.setResult(result)

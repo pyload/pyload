@@ -48,7 +48,7 @@ class TurbobitNet(Account):
 
         html = req.load("http://turbobit.net/user/login", post={
             "user[login]": user,
-            "user[pass]": data["password"],
+            "user[pass]": data['password'],
             "user[submit]": "Login"})
 
         if not '<div class="menu-item user-name">' in html:

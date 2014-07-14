@@ -53,7 +53,7 @@ class YibaishiwuCom(SimpleHoster):
 
         for m in mirrors:
             try:
-                url = m['url'].replace('\\', '')
+                url = m['url'].replace("\\", "")
                 self.logDebug("Trying URL: " + url)
                 self.download(url)
                 break

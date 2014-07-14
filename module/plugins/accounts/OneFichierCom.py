@@ -40,7 +40,7 @@ class OneFichierCom(Account):
 
         html = req.load("http://1fichier.com/login.pl?lg=en", post={
             "mail": user,
-            "pass": data["password"],
+            "pass": data['password'],
             "Login": "Login"})
 
         if r'<div class="error_message">Invalid username or password.</div>' in html:

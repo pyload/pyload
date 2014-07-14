@@ -68,15 +68,15 @@ class MultishareCz(SimpleHoster):
             self.fail("Not enough credit left to download file")
 
         url = "http://dl%d.mms.multishare.cz/html/mms_process.php" % round(random() * 10000 * random())
-        params = {"u_ID": self.acc_info["u_ID"], "u_hash": self.acc_info["u_hash"], "link": self.pyfile.url}
+        params = {"u_ID": self.acc_info['u_ID'], "u_hash": self.acc_info['u_hash'], "link": self.pyfile.url}
         self.logDebug(url, params)
         self.download(url, get=params)
 
     def checkCredit(self):
         self.acc_info = self.account.getAccountInfo(self.user, True)
-        self.logInfo("User %s has %i MB left" % (self.user, self.acc_info["trafficleft"] / 1024))
+        self.logInfo("User %s has %i MB left" % (self.user, self.acc_info['trafficleft'] / 1024))
 
-        return self.pyfile.size / 1024 <= self.acc_info["trafficleft"]
+        return self.pyfile.size / 1024 <= self.acc_info['trafficleft']
 
 
 getInfo = create_getInfo(MultishareCz)

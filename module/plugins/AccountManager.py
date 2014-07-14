@@ -106,7 +106,7 @@ class AccountManager():
             elif line.startswith("@"):
                 try:
                     option = line[1:].split()
-                    self.accounts[plugin][name]["options"][option[0]] = [] if len(option) < 2 else ([option[1]] if len(option) < 3 else option[1:])
+                    self.accounts[plugin][name]['options'][option[0]] = [] if len(option) < 2 else ([option[1]] if len(option) < 3 else option[1:])
                 except:
                     pass
 
@@ -126,9 +126,9 @@ class AccountManager():
             f.write(plugin+":\n")
 
             for name,data in accounts.iteritems():
-                f.write("\n\t%s:%s\n" % (name,data["password"]) )
-                if data["options"]:
-                    for option, values in data["options"].iteritems():
+                f.write("\n\t%s:%s\n" % (name,data['password']) )
+                if data['options']:
+                    for option, values in data['options'].iteritems():
                         f.write("\t@%s %s\n" % (option, " ".join(values)))
 
         f.close()

@@ -45,8 +45,8 @@ class DailymotionBatch(Crypter):
         if "error" in playlist:
             return
 
-        name = playlist["name"]
-        owner = playlist["owner.screenname"]
+        name = playlist['name']
+        owner = playlist['owner.screenname']
         return name, owner
 
     def _getPlaylists(self, user_id, page=1):
@@ -57,10 +57,10 @@ class DailymotionBatch(Crypter):
         if "error" in user:
             return
 
-        for playlist in user["list"]:
-            yield playlist["id"]
+        for playlist in user['list']:
+            yield playlist['id']
 
-        if user["has_more"]:
+        if user['has_more']:
             for item in self._getPlaylists(user_id, page + 1):
                 yield item
 
@@ -75,10 +75,10 @@ class DailymotionBatch(Crypter):
         if "error" in playlist:
             return
 
-        for video in playlist["list"]:
-            yield video["url"]
+        for video in playlist['list']:
+            yield video['url']
 
-        if playlist["has_more"]:
+        if playlist['has_more']:
             for item in self._getVideos(id, page + 1):
                 yield item
 

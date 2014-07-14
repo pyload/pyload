@@ -48,7 +48,7 @@ class FilecloudIo(Account):
         rep = json_loads(rep)
 
         if rep['is_premium'] == 1:
-            return {"validuntil": int(rep["premium_until"]), "trafficleft": -1}
+            return {"validuntil": int(rep['premium_until']), "trafficleft": -1}
         else:
             return {"premium": False}
 
@@ -59,8 +59,8 @@ class FilecloudIo(Account):
         if not hasattr(self, "form_data"):
             self.form_data = {}
 
-        self.form_data["username"] = user
-        self.form_data["password"] = data['password']
+        self.form_data['username'] = user
+        self.form_data['password'] = data['password']
 
         html = req.load('https://secure.filecloud.io/user-login_p.html',
                         post=self.form_data,

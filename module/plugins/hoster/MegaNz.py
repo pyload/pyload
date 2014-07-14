@@ -110,7 +110,7 @@ class MegaNz(Hoster):
         dl = self.callApi(a="g", g=1, p=node, ssl=1)[0]
 
         if "e" in dl:
-            e = dl["e"]
+            e = dl['e']
             # ETEMPUNAVAIL (-18): Resource temporarily not available, please try again later
             if e == -18:
                 self.retry()
@@ -121,12 +121,12 @@ class MegaNz(Hoster):
         # EACCESS (-11): Access violation (e.g., trying to write to a read-only share)
 
         key = self.b64_decode(key)
-        attr = self.decryptAttr(dl["at"], key)
+        attr = self.decryptAttr(dl['at'], key)
 
-        pyfile.name = attr["n"] + self.FILE_SUFFIX
+        pyfile.name = attr['n'] + self.FILE_SUFFIX
 
-        self.download(dl["g"])
+        self.download(dl['g'])
         self.decryptFile(key)
 
         # Everything is finished and final name can be set
-        pyfile.name = attr["n"]
+        pyfile.name = attr['n']

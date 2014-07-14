@@ -84,17 +84,17 @@ class ShareonlineBiz(Hoster):
         fields = src.split(";")
         self.api_data = {"fileid": fields[0],
                          "status": fields[1]}
-        if not self.api_data["status"] == "OK":
+        if not self.api_data['status'] == "OK":
             self.offline()
         else:
-            self.api_data["filename"] = fields[2]
-            self.api_data["size"] = fields[3]  # in bytes
-            self.api_data["md5"] = fields[4].strip().lower().replace("\n\n", "")  # md5
+            self.api_data['filename'] = fields[2]
+            self.api_data['size'] = fields[3]  # in bytes
+            self.api_data['md5'] = fields[4].strip().lower().replace("\n\n", "")  # md5
 
     def handleFree(self):
         self.loadAPIData()
-        self.pyfile.name = self.api_data["filename"]
-        self.pyfile.size = int(self.api_data["size"])
+        self.pyfile.name = self.api_data['filename']
+        self.pyfile.size = int(self.api_data['size'])
 
         self.html = self.load(self.pyfile.url, cookies=True)  # refer, stuff
         self.setWait(3)
@@ -147,7 +147,7 @@ class ShareonlineBiz(Hoster):
     def handlePremium(self):  #: should be working better loading (account) api internally
         self.account.getAccountInfo(self.user, True)
         src = self.load("http://api.share-online.biz/account.php",
-                        {"username": self.user, "password": self.account.accounts[self.user]["password"],
+                        {"username": self.user, "password": self.account.accounts[self.user]['password'],
                          "act": "download", "lid": self.file_id})
 
         self.api_data = dlinfo = {}
@@ -156,13 +156,13 @@ class ShareonlineBiz(Hoster):
             dlinfo[key.lower()] = value
 
         self.logDebug(dlinfo)
-        if not dlinfo["status"] == "online":
+        if not dlinfo['status'] == "online":
             self.offline()
         else:
-            self.pyfile.name = dlinfo["name"]
-            self.pyfile.size = int(dlinfo["size"])
+            self.pyfile.name = dlinfo['name']
+            self.pyfile.size = int(dlinfo['size'])
 
-            dlLink = dlinfo["url"]
+            dlLink = dlinfo['url']
             if dlLink == "server_under_maintenance":
                 self.tempOffline()
             else:

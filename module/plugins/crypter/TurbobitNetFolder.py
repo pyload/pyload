@@ -36,9 +36,9 @@ class TurbobitNetFolder(SimpleCrypter):
                              get={"rootId": id, "rows": 200, "page": page}, decode=True)
         grid = json_loads(gridFile)
 
-        if grid["rows"]:
-            for i in grid["rows"]:
-                yield i["id"]
+        if grid['rows']:
+            for i in grid['rows']:
+                yield i['id']
             for id in self._getLinks(id, page + 1):
                 yield id
         else:

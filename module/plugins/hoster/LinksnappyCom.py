@@ -34,7 +34,7 @@ class LinksnappyCom(Hoster):
             json_params = json_dumps({'link': pyfile.url,
                                       'type': host,
                                       'username': self.user,
-                                      'password': self.account.getAccountData(self.user)["password"]})
+                                      'password': self.account.getAccountData(self.user)['password']})
             r = self.load('http://gen.linksnappy.com/genAPI.php',
                           post={'genLinks': json_params})
             self.logDebug("JSON data: " + r)

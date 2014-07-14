@@ -48,17 +48,17 @@ class IfileIt(SimpleHoster):
         if json_response['status'] == 3:
             self.offline()
 
-        if json_response["captcha"]:
+        if json_response['captcha']:
             captcha_key = re.search(self.RECAPTCHA_KEY_PATTERN, self.html).group(1)
             recaptcha = ReCaptcha(self)
-            post_data["ctype"] = "recaptcha"
+            post_data['ctype'] = "recaptcha"
 
             for _ in xrange(5):
-                post_data["recaptcha_challenge"], post_data["recaptcha_response"] = recaptcha.challenge(captcha_key)
+                post_data['recaptcha_challenge'], post_data['recaptcha_response'] = recaptcha.challenge(captcha_key)
                 json_response = json_loads(self.load(json_url, post=post_data))
                 self.logDebug(json_response)
 
-                if json_response["retry"]:
+                if json_response['retry']:
                     self.invalidCaptcha()
                 else:
                     self.correctCaptcha()
@@ -69,7 +69,7 @@ class IfileIt(SimpleHoster):
         if not "ticket_url" in json_response:
             self.parseError("Download URL")
 
-        self.download(json_response["ticket_url"])
+        self.download(json_response['ticket_url'])
 
 
 getInfo = create_getInfo(IfileIt)

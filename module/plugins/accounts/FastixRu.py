@@ -14,7 +14,7 @@ class FastixRu(Account):
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
-        page = req.load("http://fastix.ru/api_v2/?apikey=%s&sub=getaccountdetails" % (data["api"]))
+        page = req.load("http://fastix.ru/api_v2/?apikey=%s&sub=getaccountdetails" % (data['api']))
         page = json_loads(page)
         points = page['points']
         kb = float(points)
@@ -26,9 +26,9 @@ class FastixRu(Account):
         return account_info
 
     def login(self, user, data, req):
-        page = req.load("http://fastix.ru/api_v2/?sub=get_apikey&email=%s&password=%s" % (user, data["password"]))
+        page = req.load("http://fastix.ru/api_v2/?sub=get_apikey&email=%s&password=%s" % (user, data['password']))
         api = json_loads(page)
         api = api['apikey']
-        data["api"] = api
+        data['api'] = api
         if "error_code" in page:
             self.wrongPassword()

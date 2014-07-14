@@ -37,6 +37,6 @@ class EgoFilesCom(Account):
         html = req.load("http://egofiles.com/ajax/register.php",
                         post={"log": 1,
                               "loginV": user,
-                              "passV": data["password"]})
+                              "passV": data['password']})
         if 'Login successful' not in html:
             self.wrongPassword()

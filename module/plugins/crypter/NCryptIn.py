@@ -28,7 +28,7 @@ class NCryptIn(Crypter):
         self.package = None
         self.html = None
         self.cleanedHtml = None
-        self.links_source_order = ['cnl2', 'rsdf', 'ccf', 'dlc', 'web']
+        self.links_source_order = ["cnl2", "rsdf", "ccf", "dlc", "web"]
         self.protection_type = None
 
     def decrypt(self, pyfile):

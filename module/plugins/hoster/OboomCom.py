@@ -34,7 +34,7 @@ class OboomCom(Hoster):
         if self.premium:
             accountInfo = self.account.getAccountInfo(self.user, True)
             if "session" in accountInfo:
-                self.sessionToken = accountInfo["session"]
+                self.sessionToken = accountInfo['session']
             else:
                 self.fail("Could not retrieve premium session")
         else:
@@ -88,9 +88,9 @@ class OboomCom(Hoster):
         result = self.loadUrl(apiUrl, params)
         if result[0] == 200:
             item = result[1][0]
-            if item["state"] == "online":
-                self.fileSize = item["size"]
-                self.fileName = item["name"]
+            if item['state'] == "online":
+                self.fileSize = item['size']
+                self.fileName = item['name']
             else:
                 self.offline()
         else:
@@ -100,10 +100,10 @@ class OboomCom(Hoster):
         apiUrl = "https://api.oboom.com/1.0/dl"
         params = {"item": self.fileId, "http_errors": 0}
         if self.premium:
-            params["token"] = self.sessionToken
+            params['token'] = self.sessionToken
         else:
-            params["token"] = self.downloadToken
-            params["auth"] = self.downloadAuth
+            params['token'] = self.downloadToken
+            params['auth'] = self.downloadAuth
 
         result = self.loadUrl(apiUrl, params)
         if result[0] == 200:

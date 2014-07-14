@@ -42,19 +42,19 @@ class OverLoadMe(Hoster):
             data = self.account.getAccountData(self.user)
 
             page = self.load("https://api.over-load.me/getdownload.php",
-                             get={"auth": data["password"], "link": pyfile.url})
+                             get={"auth": data['password'], "link": pyfile.url})
             data = json_loads(page)
 
             self.logDebug("Returned Data: %s" % data)
 
-            if data["err"] == 1:
-                self.logWarning(data["msg"])
+            if data['err'] == 1:
+                self.logWarning(data['msg'])
                 self.tempOffline()
             else:
-                if pyfile.name is not None and pyfile.name.endswith('.tmp') and data["filename"]:
-                    pyfile.name = data["filename"]
-                    pyfile.size = parseFileSize(data["filesize"])
-                new_url = data["downloadlink"]
+                if pyfile.name is not None and pyfile.name.endswith('.tmp') and data['filename']:
+                    pyfile.name = data['filename']
+                    pyfile.size = parseFileSize(data['filesize'])
+                new_url = data['downloadlink']
 
         if self.getConfig("https"):
             new_url = new_url.replace("http://", "https://")

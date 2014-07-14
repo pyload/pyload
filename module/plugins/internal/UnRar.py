@@ -203,8 +203,8 @@ class UnRar(AbtractExtractor):
         args.append("-y")
 
         # set a password
-        if "password" in kwargs and kwargs["password"]:
-            args.append("-p%s" % kwargs["password"])
+        if "password" in kwargs and kwargs['password']:
+            args.append("-p%s" % kwargs['password'])
         else:
             args.append("-p-")
 

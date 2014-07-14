@@ -55,7 +55,7 @@ class FilerNet(Account):
         self.html = req.load("https://filer.net/login")
         token = re.search(self.TOKEN_PATTERN, self.html).group(1)
         self.html = req.load("https://filer.net/login_check",
-                             post={"_username": user, "_password": data["password"],
+                             post={"_username": user, "_password": data['password'],
                                    "_remember_me": "on", "_csrf_token": token, "_target_path": "https://filer.net/"})
         if 'Logout' not in self.html:
             self.wrongPassword()

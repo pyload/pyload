@@ -40,6 +40,6 @@ class DepositfilesCom(Account):
     def login(self, user, data, req):
         req.load("http://depositfiles.com/de/gold/payment.php")
         src = req.load("http://depositfiles.com/de/login.php", get={"return": "/de/gold/payment.php"},
-                       post={"login": user, "password": data["password"]})
+                       post={"login": user, "password": data['password']})
         if r'<div class="error_message">Sie haben eine falsche Benutzername-Passwort-Kombination verwendet.</div>' in src:
             self.wrongPassword()

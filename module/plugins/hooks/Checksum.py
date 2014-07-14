@@ -80,7 +80,7 @@ class Checksum(Hook):
         self.algorithms = sorted(
             getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse=True)
         self.algorithms.extend(["crc32", "adler32"])
-        self.formats = self.algorithms + ['sfv', 'crc', 'hash']
+        self.formats = self.algorithms + ["sfv", "crc", "hash"]
 
     def downloadFinished(self, pyfile):
         """
@@ -158,15 +158,15 @@ class Checksum(Hook):
         download_folder = save_join(self.config['general']['download_folder'], pypack.folder, "")
 
         for link in pypack.getChildren().itervalues():
-            file_type = splitext(link["name"])[1][1:].lower()
+            file_type = splitext(link['name'])[1][1:].lower()
             #self.logDebug(link, file_type)
 
             if file_type not in self.formats:
                 continue
 
-            hash_file = fs_encode(save_join(download_folder, link["name"]))
+            hash_file = fs_encode(save_join(download_folder, link['name']))
             if not isfile(hash_file):
-                self.logWarning("File not found: %s" % link["name"])
+                self.logWarning("File not found: %s" % link['name'])
                 continue
 
             with open(hash_file) as f:
@@ -174,14 +174,14 @@ class Checksum(Hook):
 
             for m in re.finditer(self.regexps.get(file_type, self.regexps['default']), text):
                 data = m.groupdict()
-                self.logDebug(link["name"], data)
+                self.logDebug(link['name'], data)
 
-                local_file = fs_encode(save_join(download_folder, data["name"]))
+                local_file = fs_encode(save_join(download_folder, data['name']))
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = computeChecksum(local_file, algorithm)
-                if checksum == data["hash"]:
+                if checksum == data['hash']:
                     self.logInfo('File integrity of "%s" verified by %s checksum (%s).' %
-                                (data["name"], algorithm, checksum))
+                                (data['name'], algorithm, checksum))
                 else:
                     self.logWarning("%s checksum for file %s does not match (%s != %s)" %
-                                   (algorithm, data["name"], checksum, data["hash"]))
+                                   (algorithm, data['name'], checksum, data['hash']))

@@ -45,21 +45,21 @@ class YoutubeBatch(Crypter):
 
     def getChannel(self, user):
         channels = self.api_response("channels", {"part": "id,snippet,contentDetails", "forUsername": user, "maxResults": "50"})
-        if channels["items"]:
-            channel = channels["items"][0]
-            return {"id": channel["id"],
-                    "title": channel["snippet"]["title"],
-                    "relatedPlaylists": channel["contentDetails"]["relatedPlaylists"],
+        if channels['items']:
+            channel = channels['items'][0]
+            return {"id": channel['id'],
+                    "title": channel['snippet']['title'],
+                    "relatedPlaylists": channel['contentDetails']['relatedPlaylists'],
                     "user": user}  # One lone channel for user?
 
     def getPlaylist(self, p_id):
         playlists = self.api_response("playlists", {"part": "snippet", "id": p_id})
-        if playlists["items"]:
-            playlist = playlists["items"][0]
+        if playlists['items']:
+            playlist = playlists['items'][0]
             return {"id": p_id,
-                    "title": playlist["snippet"]["title"],
-                    "channelId": playlist["snippet"]["channelId"],
-                    "channelTitle": playlist["snippet"]["channelTitle"]}
+                    "title": playlist['snippet']['title'],
+                    "channelId": playlist['snippet']['channelId'],
+                    "channelTitle": playlist['snippet']['channelTitle']}
 
     def _getPlaylists(self, id, token=None):
         req = {"part": "id", "maxResults": "50", "channelId": id}
@@ -68,11 +68,11 @@ class YoutubeBatch(Crypter):
 
         playlists = self.api_response("playlists", req)
 
-        for playlist in playlists["items"]:
-            yield playlist["id"]
+        for playlist in playlists['items']:
+            yield playlist['id']
 
         if "nextPageToken" in playlists:
-            for item in self._getPlaylists(id, playlists["nextPageToken"]):
+            for item in self._getPlaylists(id, playlists['nextPageToken']):
                 yield item
 
     def getPlaylists(self, ch_id):
@@ -85,11 +85,11 @@ class YoutubeBatch(Crypter):
 
         playlist = self.api_response("playlistItems", req)
 
-        for item in playlist["items"]:
-            yield item["contentDetails"]["videoId"]
+        for item in playlist['items']:
+            yield item['contentDetails']['videoId']
 
         if "nextPageToken" in playlist:
-            for item in self._getVideosId(id, playlist["nextPageToken"]):
+            for item in self._getVideosId(id, playlist['nextPageToken']):
                 yield item
 
     def getVideosId(self, p_id):
@@ -106,18 +106,18 @@ class YoutubeBatch(Crypter):
             channel = self.getChannel(user)
 
             if channel:
-                playlists = self.getPlaylists(channel["id"])
-                self.logDebug("%s playlist\s found on channel \"%s\"" % (len(playlists), channel["title"]))
+                playlists = self.getPlaylists(channel['id'])
+                self.logDebug("%s playlist\s found on channel \"%s\"" % (len(playlists), channel['title']))
 
-                relatedplaylist = {p_name: self.getPlaylist(p_id) for p_name, p_id in channel["relatedPlaylists"].iteritems()}
+                relatedplaylist = {p_name: self.getPlaylist(p_id) for p_name, p_id in channel['relatedPlaylists'].iteritems()}
                 self.logDebug("Channel's related playlists found = %s" % relatedplaylist.keys())
 
-                relatedplaylist["uploads"]["title"] = "Unplaylisted videos"
-                relatedplaylist["uploads"]["checkDups"] = True  #: checkDups flag
+                relatedplaylist['uploads']['title'] = "Unplaylisted videos"
+                relatedplaylist['uploads']['checkDups'] = True  #: checkDups flag
 
                 for p_name, p_data in relatedplaylist.iteritems():
                     if self.getConfig(p_name):
-                        p_data["title"] += " of " + user
+                        p_data['title'] += " of " + user
                         playlists.append(p_data)
             else:
                 playlists = []
@@ -131,9 +131,9 @@ class YoutubeBatch(Crypter):
         addedvideos = []
         urlize = lambda x: "https://www.youtube.com/watch?v=" + x
         for p in playlists:
-            p_name = p["title"]
-            p_videos = self.getVideosId(p["id"])
-            p_folder = save_join(self.config['general']['download_folder'], p["channelTitle"], p_name)
+            p_name = p['title']
+            p_videos = self.getVideosId(p['id'])
+            p_folder = save_join(self.config['general']['download_folder'], p['channelTitle'], p_name)
             self.logDebug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
 
             if not p_videos:

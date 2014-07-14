@@ -47,12 +47,12 @@ class MergeFiles(Hook):
         files = {}
         fid_dict = {}
         for fid, data in pack.getChildren().iteritems():
-            if re.search("\.[0-9]{3}$", data["name"]):
-                if data["name"][:-4] not in files:
-                    files[data["name"][:-4]] = []
-                files[data["name"][:-4]].append(data["name"])
-                files[data["name"][:-4]].sort()
-                fid_dict[data["name"]] = fid
+            if re.search("\.[0-9]{3}$", data['name']):
+                if data['name'][:-4] not in files:
+                    files[data['name'][:-4]] = []
+                files[data['name'][:-4]].append(data['name'])
+                files[data['name'][:-4]].sort()
+                fid_dict[data['name']] = fid
 
         download_folder = self.config['general']['download_folder']
 

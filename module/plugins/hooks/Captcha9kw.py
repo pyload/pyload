@@ -60,7 +60,7 @@ class Captcha9kw(Hook):
 
         if response.isdigit():
             self.logInfo(_("%s credits left") % response)
-            self.info["credits"] = credits = int(response)
+            self.info['credits'] = credits = int(response)
             return credits
         else:
             self.logError(response)
@@ -106,7 +106,7 @@ class Captcha9kw(Hook):
                 time.sleep(3)
 
             result = response2
-            task.data["ticket"] = response
+            task.data['ticket'] = response
             self.logInfo("result %s : %s" % (response, result))
             task.setResult(result)
         else:
@@ -142,7 +142,7 @@ class Captcha9kw(Hook):
                                         "correct": "1",
                                         "pyload": "1",
                                         "source": "pyload",
-                                        "id": task.data["ticket"]})
+                                        "id": task.data['ticket']})
                 self.logInfo("Request correct: %s" % response)
 
             except BadHeader, e:
@@ -161,7 +161,7 @@ class Captcha9kw(Hook):
                                         "correct": "2",
                                         "pyload": "1",
                                         "source": "pyload",
-                                        "id": task.data["ticket"]})
+                                        "id": task.data['ticket']})
                 self.logInfo("Request refund: %s" % response)
 
             except BadHeader, e:

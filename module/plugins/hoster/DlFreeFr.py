@@ -56,7 +56,7 @@ class AdYouLike:
 
         res = self.plugin.load(
             r'http://api-ayl.appspot.com/challenge?key=%(ayl_key)s&env=%(ayl_env)s&callback=%(callback)s' % {
-            "ayl_key": ayl_data[self.engine]["key"], "ayl_env": ayl_data["all"]["env"],
+            "ayl_key": ayl_data[self.engine]['key'], "ayl_env": ayl_data['all']['env'],
             "callback": self.ADYOULIKE_CALLBACK})
 
         found = re.search(self.ADYOULIKE_CHALLENGE_PATTERN, res)
@@ -83,7 +83,7 @@ class AdYouLike:
         """
         response = None
         try:
-            instructions_visual = challenge["translations"][ayl["all"]["lang"]]["instructions_visual"]
+            instructions_visual = challenge['translations'][ayl['all']['lang']]['instructions_visual']
             found = re.search(u".*«(.*)».*", instructions_visual)
             if found:
                 response = found.group(1).strip()
@@ -98,9 +98,9 @@ class AdYouLike:
             self.plugin.fail("AdYouLike result failed")
 
         return {"_ayl_captcha_engine": self.engine,
-                "_ayl_env": ayl["all"]["env"],
-                "_ayl_tid": challenge["tid"],
-                "_ayl_token_challenge": challenge["token"],
+                "_ayl_env": ayl['all']['env'],
+                "_ayl_tid": challenge['tid'],
+                "_ayl_token_challenge": challenge['token'],
                 "_ayl_response": response}
 
 

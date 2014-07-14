@@ -33,7 +33,7 @@ class AlldebridCom(Account):
         except:
             data = self.getAccountData(user)
             page = req.load("http://www.alldebrid.com/api.php?action=info_user&login=%s&pw=%s" % (user,
-                                                                                                  data["password"]))
+                                                                                                  data['password']))
             self.logDebug(page)
             xml = dom.parseString(page)
             exp_time = time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 24 * 60 * 60
@@ -41,7 +41,7 @@ class AlldebridCom(Account):
         return account_info
 
     def login(self, user, data, req):
-        urlparams = urllib.urlencode({'action': 'login', 'login_login': user, 'login_password': data["password"]})
+        urlparams = urllib.urlencode({'action': 'login', 'login_login': user, 'login_password': data['password']})
         page = req.load("http://www.alldebrid.com/register/?%s" % urlparams)
 
         if "This login doesn't exist" in page:

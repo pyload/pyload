@@ -40,9 +40,9 @@ class ExternalScripts(Hook):
     def setup(self):
         self.scripts = {}
 
-        folders = ['download_preparing', 'download_finished', 'package_finished',
-                   'before_reconnect', 'after_reconnect', 'unrar_finished',
-                   'all_dls_finished', 'all_dls_processed']
+        folders = ["download_preparing", "download_finished", "package_finished",
+                   "before_reconnect", "after_reconnect", "unrar_finished",
+                   "all_dls_finished", "all_dls_processed"]
 
         for folder in folders:
             self.scripts[folder] = []
@@ -106,13 +106,13 @@ class ExternalScripts(Hook):
             self.callScript(script, ip)
 
     def unrarFinished(self, folder, fname):
-        for script in self.scripts["unrar_finished"]:
+        for script in self.scripts['unrar_finished']:
             self.callScript(script, folder, fname)
 
     def allDownloadsFinished(self):
-        for script in self.scripts["all_dls_finished"]:
+        for script in self.scripts['all_dls_finished']:
             self.callScript(script)
 
     def allDownloadsProcessed(self):
-        for script in self.scripts["all_dls_processed"]:
+        for script in self.scripts['all_dls_processed']:
             self.callScript(script)

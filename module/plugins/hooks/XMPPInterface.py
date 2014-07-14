@@ -121,9 +121,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
         The handlers returned will be called when matching message is received
         in a client session."""
-        return [
-            ("normal", self.message),
-        ]
+        return [("normal", self.message)]
 
     def message(self, stanza):
         """Message handler for the component."""
@@ -231,9 +229,7 @@ class VersionHandler(object):
     def get_iq_get_handlers(self):
         """Return list of tuples (element_name, namespace, handler) describing
         handlers of <iq type='get'/> stanzas"""
-        return [
-            ("query", "jabber:iq:version", self.get_version),
-        ]
+        return [("query", "jabber:iq:version", self.get_version)]
 
     def get_iq_set_handlers(self):
         """Return empty list, as this class provides no <iq type='set'/> stanza handler."""

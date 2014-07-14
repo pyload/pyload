@@ -38,7 +38,7 @@ class FastixRu(Hoster):
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             api_key = self.account.getAccountData(self.user)
-            api_key = api_key["api"]
+            api_key = api_key['api']
             url = "http://fastix.ru/api_v2/?apikey=%s&sub=getdirectlink&link=%s" % (api_key, pyfile.url)
             page = self.load(url)
             data = json_loads(page)
@@ -46,7 +46,7 @@ class FastixRu(Hoster):
             if "error\":true" in page:
                 self.offline()
             else:
-                new_url = data["downloadlink"]
+                new_url = data['downloadlink']
 
         if new_url != pyfile.url:
             self.logDebug("New URL: %s" % new_url)

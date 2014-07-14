@@ -21,7 +21,7 @@ class Premium4Me(Account):
 
     def login(self, user, data, req):
         self.authcode = req.load("http://premium.to/api/getauthcode.php?username=%s&password=%s" % (
-                                 user, data["password"])).strip()
+                                 user, data['password'])).strip()
 
         if "wrong username" in self.authcode:
             self.wrongPassword()

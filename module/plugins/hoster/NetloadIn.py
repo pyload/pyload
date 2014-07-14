@@ -69,8 +69,8 @@ class NetloadIn(Hoster):
     def prepare(self):
         self.download_api_data()
 
-        if self.api_data and self.api_data["filename"]:
-            self.pyfile.name = self.api_data["filename"]
+        if self.api_data and self.api_data['filename']:
+            self.pyfile.name = self.api_data['filename']
 
         if self.premium:
             self.logDebug("Netload: Use Premium Account")
@@ -113,13 +113,13 @@ class NetloadIn(Hoster):
         self.api_data = {}
         if src and ";" in src and src not in ("unknown file_data", "unknown_server_data", "No input file specified."):
             lines = src.split(";")
-            self.api_data["exists"] = True
-            self.api_data["fileid"] = lines[0]
-            self.api_data["filename"] = lines[1]
-            self.api_data["size"] = lines[2]
-            self.api_data["status"] = lines[3]
-            if self.api_data["status"] == "online":
-                self.api_data["checksum"] = lines[4].strip()
+            self.api_data['exists'] = True
+            self.api_data['fileid'] = lines[0]
+            self.api_data['filename'] = lines[1]
+            self.api_data['size'] = lines[2]
+            self.api_data['status'] = lines[3]
+            if self.api_data['status'] == "online":
+                self.api_data['checksum'] = lines[4].strip()
             else:
                 self.api_data = False  # check manually since api data is useless sometimes
 

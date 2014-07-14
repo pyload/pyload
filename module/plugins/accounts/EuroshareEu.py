@@ -47,7 +47,7 @@ class EuroshareEu(Account):
         html = req.load('http://euroshare.eu/customer-zone/login/', post={
             "trvale": "1",
             "login": user,
-            "password": data["password"]
+            "password": data['password']
         }, decode=True)
 
         if u">Nesprávne prihlasovacie meno alebo heslo" in html:

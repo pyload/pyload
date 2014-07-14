@@ -55,8 +55,8 @@ class FileserveCom(Hoster):
     __author_name__ = ("jeix", "mkaay", "Paul King", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "", "zoidberg@mujmail.cz")
 
-    URLS = ['http://www.fileserve.com/file/', 'http://www.fileserve.com/link-checker.php',
-            'http://www.fileserve.com/checkReCaptcha.php']
+    URLS = ["http://www.fileserve.com/file/", "http://www.fileserve.com/link-checker.php",
+            "http://www.fileserve.com/checkReCaptcha.php"]
     LINKCHECK_TR = r'<tr>\s*(<td>http://www.fileserve\.com/file/.*?)</tr>'
     LINKCHECK_TD = r'<td>(?:<[^>]*>|&nbsp;)*([^<]*)'
 
@@ -93,24 +93,24 @@ class FileserveCom(Hoster):
         self.logDebug(action)
 
         if "fail" in action:
-            if action["fail"] == "timeLimit":
+            if action['fail'] == "timeLimit":
                 self.html = self.load(self.url, post={"checkDownload": "showError", "errorType": "timeLimit"},
                                       decode=True)
 
                 self.doLongWait(re.search(self.LONG_WAIT_PATTERN, self.html))
 
-            elif action["fail"] == "parallelDownload":
+            elif action['fail'] == "parallelDownload":
                 self.logWarning(_("Parallel download error, now waiting 60s."))
                 self.retry(wait_time=60, reason="parallelDownload")
 
             else:
-                self.fail("Download check returned %s" % action["fail"])
+                self.fail("Download check returned %s" % action['fail'])
 
         elif "success" in action:
-            if action["success"] == "showCaptcha":
+            if action['success'] == "showCaptcha":
                 self.doCaptcha()
                 self.doTimmer()
-            elif action["success"] == "showTimmer":
+            elif action['success'] == "showTimmer":
                 self.doTimmer()
 
         else:
@@ -173,7 +173,7 @@ class FileserveCom(Hoster):
                                                   'recaptcha_response_field': code,
                                                   'recaptcha_shortencode_field': self.file_id}))
             self.logDebug("reCaptcha response : %s" % response)
-            if not response["success"]:
+            if not response['success']:
                 self.invalidCaptcha()
             else:
                 self.correctCaptcha()
@@ -193,7 +193,7 @@ class FileserveCom(Hoster):
             #try api download
             response = self.load("http://app.fileserve.com/api/download/premium/",
                                  post={"username": self.user,
-                                       "password": self.account.getAccountData(self.user)["password"],
+                                       "password": self.account.getAccountData(self.user)['password'],
                                        "shorten": self.file_id},
                                  decode=True)
             if response:

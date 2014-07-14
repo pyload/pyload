@@ -34,14 +34,14 @@ def getInfo(urls):
         info = json_loads(page)
 
         if "title" in info:
-            name = info["title"] + ".mp4"
+            name = info['title'] + ".mp4"
         else:
             name = url
 
-        if "error" in info or info["access_error"]:
+        if "error" in info or info['access_error']:
             status = "offline"
         else:
-            status = info["status"]
+            status = info['status']
             if status in ("ready", "published"):
                 status = "online"
             elif status in ("waiting", "processing"):

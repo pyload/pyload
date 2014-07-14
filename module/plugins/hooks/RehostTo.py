@@ -34,7 +34,7 @@ class RehostTo(MultiHoster):
             return
 
         data = self.account.getAccountInfo(user)
-        self.ses = data["ses"]
-        self.long_ses = data["long_ses"]
+        self.ses = data['ses']
+        self.long_ses = data['long_ses']
 
         return MultiHoster.coreReady(self)

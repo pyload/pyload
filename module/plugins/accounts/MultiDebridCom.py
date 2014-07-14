@@ -38,7 +38,7 @@ class MultiDebridCom(Account):
     def login(self, user, data, req):
         # Password to use is the API-Password written in http://multi-debrid.com/myaccount
         self.html = req.load("http://multi-debrid.com/api.php",
-                             get={"user": user, "pass": data["password"]})
+                             get={"user": user, "pass": data['password']})
         self.logDebug('JSON data: ' + self.html)
         self.json_data = json_loads(self.html)
         if self.json_data['status'] != 'ok':

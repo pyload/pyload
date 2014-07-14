@@ -258,7 +258,7 @@ class XFileSharingPro(SimpleHoster):
 
             self.logDebug(self.HOSTER_NAME, inputs)
 
-            if 'op' in inputs and inputs['op'] in ('download2', 'download3'):
+            if 'op' in inputs and inputs['op'] in ("download2", "download3"):
                 if "password" in inputs:
                     if self.passwords:
                         inputs['password'] = self.passwords.pop(0)

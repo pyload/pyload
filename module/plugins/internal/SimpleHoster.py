@@ -291,7 +291,7 @@ class SimpleHoster(Hoster):
         return parseHtmlForm(attr_str, self.html, input_names)
 
     def checkTrafficLeft(self):
-        traffic = self.account.getAccountInfo(self.user, True)["trafficleft"]
+        traffic = self.account.getAccountInfo(self.user, True)['trafficleft']
         if traffic == -1:
             return True
         size = self.pyfile.size / 1024

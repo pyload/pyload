@@ -50,7 +50,7 @@ class FilejungleCom(Account):
     def login(self, user, data, req):
         html = req.load(self.URL + "login.php", post={
             "loginUserName": user,
-            "loginUserPassword": data["password"],
+            "loginUserPassword": data['password'],
             "loginFormSubmit": "Login",
             "recaptcha_challenge_field": "",
             "recaptcha_response_field": "",
