@@ -13,7 +13,7 @@ from subprocess import PIPE, call
 from module.utils import get_console_encoding
 
 
-class Setup():
+class Setup:
     """ pyLoads initial setup configuration assistant """
 
     def __init__(self, path, config):

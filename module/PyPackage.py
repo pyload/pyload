@@ -20,7 +20,7 @@
 from module.PullEvents import UpdateEvent
 from module.utils import save_path
 
-class PyPackage():
+class PyPackage:
     """
     Represents a package object at runtime
     """

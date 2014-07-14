@@ -22,7 +22,7 @@ import random
 from DatabaseBackend import DatabaseBackend
 from DatabaseBackend import style
 
-class UserMethods():
+class UserMethods:
     @style.queue
     def checkAuth(db, user, password):
         c = db.c

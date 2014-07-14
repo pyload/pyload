@@ -78,7 +78,7 @@ if not ENGINE or DEBUG:
     except:
         pass
 
-class JsEngine():
+class JsEngine:
     def __init__(self):
         self.engine = ENGINE
         self.init = False

@@ -20,7 +20,7 @@
 from time import time
 from module.utils import uniqify
 
-class PullManager():
+class PullManager:
     def __init__(self, core):
         self.core = core
         self.clients = []
@@ -52,7 +52,7 @@ class PullManager():
         for client in self.clients:
             client.addEvent(event)
 
-class Client():
+class Client:
     def __init__(self, uuid):
         self.uuid = uuid
         self.lastActive = time()
@@ -69,7 +69,7 @@ class Client():
     def addEvent(self, event):
         self.events.append(event)
 
-class UpdateEvent():
+class UpdateEvent:
     def __init__(self, itype, iid, destination):
         assert itype == "pack" or itype == "file"
         assert destination == "queue" or destination == "collector"
@@ -80,7 +80,7 @@ class UpdateEvent():
     def toList(self):
         return ["update", self.destination, self.type, self.id]
 
-class RemoveEvent():
+class RemoveEvent:
     def __init__(self, itype, iid, destination):
         assert itype == "pack" or itype == "file"
         assert destination == "queue" or destination == "collector"
@@ -91,7 +91,7 @@ class RemoveEvent():
     def toList(self):
         return ["remove", self.destination, self.type, self.id]
 
-class InsertEvent():
+class InsertEvent:
     def __init__(self, itype, iid, after, destination):
         assert itype == "pack" or itype == "file"
         assert destination == "queue" or destination == "collector"
@@ -103,7 +103,7 @@ class InsertEvent():
     def toList(self):
         return ["insert", self.destination, self.type, self.id, self.after]
 
-class ReloadAllEvent():
+class ReloadAllEvent:
     def __init__(self, destination):
         assert destination == "queue" or destination == "collector"
         self.destination = destination
@@ -111,10 +111,10 @@ class ReloadAllEvent():
     def toList(self):
         return ["reload", self.destination]
 
-class AccountUpdateEvent():
+class AccountUpdateEvent:
     def toList(self):
         return ["account"]
 
-class ConfigUpdateEvent():
+class ConfigUpdateEvent:
     def toList(self):
         return ["config"]

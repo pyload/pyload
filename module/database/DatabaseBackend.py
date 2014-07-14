@@ -34,7 +34,7 @@ except:
 
 DB_VERSION = 4
 
-class style():
+class style:
     db = None
 
     @classmethod
@@ -65,7 +65,7 @@ class style():
                 return cls.db.async(f, *args, **kwargs)
         return x
 
-class DatabaseJob():
+class DatabaseJob:
     def __init__(self, f, *args, **kwargs):
         self.done = Event()
 
@@ -309,7 +309,7 @@ if __name__ == "__main__":
     db = DatabaseBackend()
     db.setup()
 
-    class Test():
+    class Test:
         @style.queue
         def insert(db):
             c = db.createCursor()

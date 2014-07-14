@@ -21,7 +21,7 @@ from time import time
 from traceback import print_exc
 from threading import Lock
 
-class CaptchaManager():
+class CaptchaManager:
     def __init__(self, core):
         self.lock = Lock()
         self.core = core
@@ -80,7 +80,7 @@ class CaptchaManager():
         return False
 
 
-class CaptchaTask():
+class CaptchaTask:
     def __init__(self, id, img, format, file, result_type='textual'):
         self.id = str(id)
         self.captchaImg = img

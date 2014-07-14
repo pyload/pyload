@@ -573,7 +573,7 @@ class FileHandler:
         """ restart all failed links """
         self.db.restartFailed()
 
-class FileMethods():
+class FileMethods:
     @style.queue
     def filecount(self, queue):
         """returns number of files in queue"""

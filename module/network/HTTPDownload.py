@@ -31,7 +31,7 @@ from HTTPRequest import BadHeader
 from module.plugins.Plugin import Abort
 from module.utils import save_join, fs_encode
 
-class HTTPDownload():
+class HTTPDownload:
     """ loads a url http + ftp """
 
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,

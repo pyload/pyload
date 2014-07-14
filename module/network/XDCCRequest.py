@@ -31,7 +31,7 @@ from select import select
 from module.plugins.Plugin import Abort
 
 
-class XDCCRequest():
+class XDCCRequest:
     def __init__(self, timeout=30, proxies={}):
 
         self.proxies = proxies

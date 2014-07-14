@@ -27,7 +27,7 @@ from module.utils import chmod, lock
 
 ACC_VERSION = 1
 
-class AccountManager():
+class AccountManager:
     """manages all accounts"""
 
     #----------------------------------------------------------------------
