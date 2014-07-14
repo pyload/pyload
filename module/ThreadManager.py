@@ -156,7 +156,7 @@ class ThreadManager:
             self.infoResults.clear()
             self.log.debug("Cleared Result cache")
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def tryReconnect(self):
         """checks if reconnect needed"""
 
@@ -227,7 +227,7 @@ class ThreadManager:
 
         return ip
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def checkThreadCount(self):
         """checks if there are need for increasing or reducing thread count"""
 
@@ -251,7 +251,7 @@ class ThreadManager:
         self.log.debug("Cleaned up pycurl")
         return True
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def assignJob(self):
         """assing a job to a thread if possible"""
 

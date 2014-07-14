@@ -68,12 +68,12 @@ class FileHandler:
             return func(*args)
         return new
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def save(self):
         """saves all data to backend"""
         self.db.commit()
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def syncSave(self):
         """saves all data to backend and waits until all data are written"""
         pyfiles = self.cache.values()
@@ -131,7 +131,7 @@ class FileHandler:
         #@TODO change from reloadAll event to package update event
         self.core.pullManager.addEvent(ReloadAllEvent("collector"))
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     @lock
     @change
     def addPackage(self, name, folder, queue=0):
@@ -142,7 +142,7 @@ class FileHandler:
         self.core.pullManager.addEvent(e)
         return lastID
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     @lock
     @change
     def deletePackage(self, id):
@@ -178,7 +178,7 @@ class FileHandler:
                 pack.order -= 1
                 pack.notifyChange()
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     @lock
     @change
     def deleteLink(self, id):
@@ -213,19 +213,19 @@ class FileHandler:
                 pyfile.order -= 1
                 pyfile.notifyChange()
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def releaseLink(self, id):
         """removes pyfile from cache"""
         if id in self.cache:
             del self.cache[id]
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def releasePackage(self, id):
         """removes package from cache"""
         if id in self.packageCache:
             del self.packageCache[id]
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def updateLink(self, pyfile):
         """updates link"""
         self.db.updateLink(pyfile)
@@ -233,7 +233,7 @@ class FileHandler:
         e = UpdateEvent("file", pyfile.id, "collector" if not pyfile.package().queue else "queue")
         self.core.pullManager.addEvent(e)
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def updatePackage(self, pypack):
         """updates a package"""
         self.db.updatePackage(pypack)
@@ -241,7 +241,7 @@ class FileHandler:
         e = UpdateEvent("pack", pypack.id, "collector" if not pypack.queue else "queue")
         self.core.pullManager.addEvent(e)
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def getPackage(self, id):
         """return package instance"""
 
@@ -250,7 +250,7 @@ class FileHandler:
         else:
             return self.db.getPackage(id)
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def getPackageData(self, id):
         """returns dict with package information"""
         pack = self.getPackage(id)
@@ -274,7 +274,7 @@ class FileHandler:
 
         return pack
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def getFileData(self, id):
         """returns dict with file information"""
         if id in self.cache:
@@ -282,7 +282,7 @@ class FileHandler:
 
         return self.db.getLinkData(id)
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def getFile(self, id):
         """returns pyfile instance"""
         if id in self.cache:
@@ -290,7 +290,7 @@ class FileHandler:
         else:
             return self.db.getFile(id)
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     @lock
     def getJob(self, occ):
         """get suitable job"""
@@ -823,7 +823,7 @@ class FileMethods:
         if not r: return None
         return PyPackage(self.manager, id, * r)
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     @style.queue
     def getFile(self, id):
         """return link instance from id"""

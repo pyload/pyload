@@ -30,7 +30,7 @@ ACC_VERSION = 1
 class AccountManager:
     """manages all accounts"""
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def __init__(self, core):
         """Constructor"""
 
@@ -66,7 +66,8 @@ class AccountManager:
             plugins.append(self.getAccountPlugin(plugin))
 
         return plugins
-    #----------------------------------------------------------------------
+
+    #--------------------------------------------------------------------------
     def loadAccounts(self):
         """loads all accounts available"""
 
@@ -112,7 +113,8 @@ class AccountManager:
             elif ":" in line:
                 name, sep, pw = line.partition(":")
                 self.accounts[plugin][name] = {"password": pw, "options": {}, "valid": True}
-    #----------------------------------------------------------------------
+
+    #--------------------------------------------------------------------------
     def saveAccounts(self):
         """save all account information"""
 
@@ -132,7 +134,7 @@ class AccountManager:
         f.close()
         chmod(f.name, 0600)
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def initAccountPlugins(self):
         """init names"""
         for name in self.core.pluginManager.getAccountPlugins():

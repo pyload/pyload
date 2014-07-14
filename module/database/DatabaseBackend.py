@@ -190,7 +190,7 @@ class DatabaseBackend(Thread):
             except:
                 print "Filedatabase could NOT be converted."
 
-    #--convert scripts start
+    #convert scripts start-----------------------------------------------------
 
     def _convertV2(self):
         self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
@@ -207,7 +207,7 @@ class DatabaseBackend(Thread):
         except:
             print "Database was converted from v3 to v4."
 
-    #--convert scripts end
+    #convert scripts end-------------------------------------------------------
 
     def _createTables(self):
         """create tables for database"""

@@ -40,7 +40,7 @@ from Api import OnlineStatus
 class PluginThread(Thread):
     """abstract base class for thread types"""
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def __init__(self, manager):
         """Constructor"""
         Thread.__init__(self)
@@ -150,7 +150,7 @@ class PluginThread(Thread):
 class DownloadThread(PluginThread):
     """thread for downloading files from 'real' hoster plugins"""
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def __init__(self, manager):
         """Constructor"""
         PluginThread.__init__(self, manager)
@@ -160,7 +160,7 @@ class DownloadThread(PluginThread):
 
         self.start()
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def run(self):
         """run method"""
         pyfile = None
@@ -422,7 +422,7 @@ class DecrypterThread(PluginThread):
 class HookThread(PluginThread):
     """thread for hooks"""
 
-    #----------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     def __init__(self, m, function, args, kwargs):
         """Constructor"""
         PluginThread.__init__(self, m)
