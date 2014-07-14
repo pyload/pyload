@@ -23,6 +23,7 @@ class MultiDebridCom(MultiHoster):
     __name__ = "MultiDebridCom"
     __version__ = "0.01"
     __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
@@ -32,6 +33,7 @@ class MultiDebridCom(MultiHoster):
     __description__ = """Multi-debrid.com hook plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
+
 
     def getHoster(self):
         json_data = getURL('http://multi-debrid.com/api.php?hosts', decode=True)

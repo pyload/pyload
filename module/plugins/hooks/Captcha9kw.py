@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay, RaNaN, zoidberg
 """
 from __future__ import with_statement
 
@@ -31,7 +29,8 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
     __version__ = "0.09"
-    __description__ = """Send captchas to 9kw.eu"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", True),
                   ("https", "bool", "Enable HTTPS", False),
@@ -43,10 +42,13 @@ class Captcha9kw(Hook):
                    False),
                   ("timeout", "int", "Timeout (max. 300)", 300),
                   ("passkey", "password", "API key", "")]
+
+    __description__ = """Send captchas to 9kw.eu"""
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
 
     API_URL = "://www.9kw.eu/index.cgi"
+
 
     def setup(self):
         self.API_URL = "https" + self.API_URL if self.getConfig("https") else "http" + self.API_URL

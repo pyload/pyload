@@ -33,8 +33,14 @@ import JpegImagePlugin
 
 
 class OCR(object):
-
     __name__ = "OCR"
+    __type__ = "ocr"
+    __version__ = "0.1"
+
+    __description__ = """OCR base plugin"""
+    __author_name__ = "pyLoad Team"
+    __author_mail__ = "admin@pyload.org"
+
 
     def __init__(self):
         self.logger = logging.getLogger("log")

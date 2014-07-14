@@ -19,6 +19,7 @@ class RehostTo(MultiHoster):
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
 
+
     def getHoster(self):
         page = getURL("http://rehost.to/api.php?cmd=get_supported_och_dl&long_ses=%s" % self.long_ses)
         return [x.strip() for x in page.replace("\"", "").split(",")]

@@ -10,8 +10,10 @@ from module.plugins.internal.SimpleHoster import PluginParseError, replace_patte
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __version__ = "0.10"
-    __pattern__ = None
     __type__ = "crypter"
+
+    __pattern__ = None
+
     __description__ = """Simple decrypter plugin"""
     __author_name__ = ("stickell", "zoidberg", "Walter Purcaro")
     __author_mail__ = ("l.stickell@yahoo.it", "zoidberg@mujmail.cz", "vuolter@gmail.com")
@@ -47,8 +49,8 @@ class SimpleCrypter(Crypter):
 
     URL_REPLACEMENTS = []
 
-
     SH_COOKIES = True  # or False or list of tuples [(domain, name, value)]
+
 
     def setup(self):
         if isinstance(self.SH_COOKIES, list):

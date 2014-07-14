@@ -23,11 +23,14 @@ class MegaDebridEu(MultiHoster):
     __name__ = "MegaDebridEu"
     __version__ = "0.02"
     __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("unloadFailing", "bool", "Revert to standard download if download fails", False)]
+
     __description__ = """mega-debrid.eu hook plugin"""
     __author_name__ = "D.Ducatel"
     __author_mail__ = "dducatel@je-geek.fr"
+
 
     def getHoster(self):
         reponse = getURL('http://www.mega-debrid.eu/api.php?action=getHosters')

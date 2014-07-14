@@ -1,15 +1,23 @@
 # -*- coding: utf-8 -*-
 
-from captcha import OCR
-import Image
-from os import sep
-from os.path import dirname
-from os.path import abspath
+from PIL import Image
 from glob import glob
+from os import sep
+from os.path import abspath, dirname
+
+from module.plugins.OCR import OCR
 
 
 class LinksaveIn(OCR):
     __name__ = "LinksaveIn"
+    __version__ = "0.1"
+    __type__ = "ocr"
+
+    __description__ = """Linksave.in ocr plugin"""
+    __author_name__ = "pyLoad Team"
+    __author_mail__ = "admin@pyload.org"
+
+
     def __init__(self):
         OCR.__init__(self)
         self.data_dir = dirname(abspath(__file__)) + sep + "LinksaveIn" + sep
@@ -140,10 +148,11 @@ class LinksaveIn(OCR):
 
         return final
 
+
 if __name__ == '__main__':
     import urllib
+
     ocr = LinksaveIn()
     testurl = "http://linksave.in/captcha/cap.php?hsh=2229185&code=ZzHdhl3UffV3lXTH5U4b7nShXj%2Bwma1vyoNBcbc6lcc%3D"
     urllib.urlretrieve(testurl, ocr.data_dir+"captcha.gif")
-
     print ocr.get_captcha(ocr.data_dir+'captcha.gif')

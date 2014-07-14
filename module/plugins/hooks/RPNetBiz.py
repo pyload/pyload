@@ -9,14 +9,17 @@ class RPNetBiz(MultiHoster):
     __name__ = "RPNetBiz"
     __version__ = "0.1"
     __type__ = "hook"
-    __description__ = """RPNet.biz hook plugin"""
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
+
+    __description__ = """RPNet.biz hook plugin"""
     __author_name__ = "Dman"
     __author_mail__ = "dmanugm@gmail.com"
+
 
     def getHoster(self):
         # No hosts supported if no account

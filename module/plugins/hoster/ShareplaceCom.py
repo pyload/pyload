@@ -12,7 +12,7 @@ class ShareplaceCom(Hoster):
     __version__ = "0.11"
     __description__ = """Shareplace.com hoster plugin"""
     __author_name__ = "ACCakut"
-    __author_mail__ = ""
+    __author_mail__ = None
 
     def process(self, pyfile):
         self.pyfile = pyfile

@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
 """
 
 import os
@@ -32,6 +30,10 @@ class UnRar(AbtractExtractor):
     __name__ = "UnRar"
     __version__ = "0.16"
 
+    __description__ = """Rar extractor plugin"""
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
+
     # there are some more uncovered rar formats
     re_version = re.compile(r"(UNRAR 5[\.\d]+(.*?)freeware)")
     re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
@@ -40,6 +42,7 @@ class UnRar(AbtractExtractor):
     re_filelist5 = re.compile(r"(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)")
     re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)", re.I)
     CMD = "unrar"
+
 
     @staticmethod
     def checkDeps():

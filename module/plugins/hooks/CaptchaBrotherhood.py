@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay, RaNaN, zoidberg
 """
 from __future__ import with_statement
 
@@ -47,15 +45,19 @@ class CaptchaBrotherhoodException(Exception):
 class CaptchaBrotherhood(Hook):
     __name__ = "CaptchaBrotherhood"
     __version__ = "0.05"
-    __description__ = """Send captchas to CaptchaBrotherhood.com"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Password", "")]
+
+    __description__ = """Send captchas to CaptchaBrotherhood.com"""
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
 
     API_URL = "http://www.captchabrotherhood.com/"
+
 
     def setup(self):
         self.info = {}

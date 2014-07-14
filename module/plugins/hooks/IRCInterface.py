@@ -13,10 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-    @author: jeix
-    @interface-version: 0.2
 """
 
 from select import select
@@ -37,7 +33,8 @@ from module.Api import PackageDoesNotExists, FileDoesNotExists
 class IRCInterface(Thread, Hook):
     __name__ = "IRCInterface"
     __version__ = "0.11"
-    __description__ = """Connect to irc and let owner perform different tasks"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("host", "str", "IRC-Server Address", "Enter your server here!"),
                   ("port", "int", "IRC-Server Port", 6667),
@@ -48,8 +45,11 @@ class IRCInterface(Thread, Hook):
                   ("info_file", "bool", "Inform about every file finished", False),
                   ("info_pack", "bool", "Inform about every package finished", True),
                   ("captcha", "bool", "Send captcha requests", True)]
+
+    __description__ = """Connect to irc and let owner perform different tasks"""
     __author_name__ = "Jeix"
     __author_mail__ = "Jeix@hasnomail.com"
+
 
     def __init__(self, core, manager):
         Thread.__init__(self)

@@ -21,6 +21,7 @@ class DebridItaliaCom(MultiHoster):
     __name__ = "DebridItaliaCom"
     __version__ = "0.07"
     __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
@@ -30,6 +31,7 @@ class DebridItaliaCom(MultiHoster):
     __description__ = """Debriditalia.com hook plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
+
 
     def getHoster(self):
         return ["netload.in", "hotfile.com", "rapidshare.com", "multiupload.com",

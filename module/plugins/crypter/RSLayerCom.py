@@ -10,4 +10,4 @@ class RSLayerCom(DeadCrypter):
     __version__ = "0.21"
     __description__ = """RS-Layer.com decrypter plugin"""
     __author_name__ = "hzpz"
-    __author_mail__ = ""
+    __author_mail__ = None

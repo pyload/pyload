@@ -59,7 +59,8 @@ class ExtractArchive(Hook):
     """
     __name__ = "ExtractArchive"
     __version__ = "0.16"
-    __description__ = """Extract different kind of archives"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
                   ("overwrite", "bool", "Overwrite files", True),
@@ -71,10 +72,13 @@ class ExtractArchive(Hook):
                   ("recursive", "bool", "Extract archives in archvies", True),
                   ("queue", "bool", "Wait for all downloads to be finished", True),
                   ("renice", "int", "CPU Priority", 0)]
-    __author_name__ = ("pyload Team", "AndroKev")
-    __author_mail__ = ("admin<at>pyload.org", "@pyloadforum")
+
+    __description__ = """Extract different kind of archives"""
+    __author_name__ = ("pyLoad Team", "AndroKev")
+    __author_mail__ = ("admin@pyload.org", "@pyloadforum")
 
     event_list = ["allDownloadsProcessed"]
+
 
     def setup(self):
         self.plugins = []

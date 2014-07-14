@@ -23,6 +23,7 @@ class UnrestrictLi(MultiHoster):
     __name__ = "UnrestrictLi"
     __version__ = "0.02"
     __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
@@ -33,6 +34,7 @@ class UnrestrictLi(MultiHoster):
     __description__ = """Unrestrict.li hook plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
+
 
     def getHoster(self):
         json_data = getURL('http://unrestrict.li/api/jdownloader/hosts.php?format=json')

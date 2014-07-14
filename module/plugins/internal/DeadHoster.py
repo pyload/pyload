@@ -11,12 +11,15 @@ def create_getInfo(plugin):
 
 class DeadHoster(_Hoster):
     __name__ = "DeadHoster"
-    __type__ = "hoster"
-    __pattern__ = None
     __version__ = "0.11"
+    __type__ = "hoster"
+
+    __pattern__ = None
+
     __description__ = """Hoster is no longer available"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
+
 
     def setup(self):
         self.fail("Hoster is no longer available")

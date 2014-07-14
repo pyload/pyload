@@ -10,7 +10,7 @@ class Share76Com(DeadHoster):
     __version__ = "0.04"
     __description__ = """Share76.com hoster plugin"""
     __author_name__ = "me"
-    __author_mail__ = ""
+    __author_mail__ = None
 
 
 getInfo = create_getInfo(Share76Com)

@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
 """
 
 from time import time
@@ -25,11 +23,15 @@ from module.plugins.Hook import Hook
 class MultiHome(Hook):
     __name__ = "MultiHome"
     __version__ = "0.11"
-    __description__ = """Ip address changer"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("interfaces", "str", "Interfaces", "None")]
+
+    __description__ = """Ip address changer"""
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"
+
 
     def setup(self):
         self.register = {}

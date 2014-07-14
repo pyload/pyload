@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 #
 #Copyright (C) 2009 kingzero, RaNaN
 #
@@ -17,10 +16,19 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-from captcha import OCR
+
+from module.plugins.OCR import OCR
+
 
 class ShareonlineBiz(OCR):
     __name__ = "ShareonlineBiz"
+    __version__ = "0.1"
+    __type__ = "ocr"
+
+    __description__ = """Shareonline.biz ocr plugin"""
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
+
 
     def __init__(self):
         OCR.__init__(self)
@@ -46,8 +54,10 @@ class ShareonlineBiz(OCR):
 
         #tesseract at 60%
 
+
 if __name__ == '__main__':
     import urllib
+
     ocr = ShareonlineBiz()
     urllib.urlretrieve("http://www.share-online.biz/captcha.php", "captcha.jpeg")
-    print  ocr.get_captcha('captcha.jpeg')
+    print ocr.get_captcha('captcha.jpeg')

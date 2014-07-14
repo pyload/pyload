@@ -9,13 +9,16 @@ class XFileSharingPro(Hook):
     __name__ = "XFileSharingPro"
     __version__ = "0.11"
     __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", True),
                   ("loadDefault", "bool", "Include default (built-in) hoster list", True),
                   ("includeList", "str", "Include hosters (comma separated)", ""),
                   ("excludeList", "str", "Exclude hosters (comma separated)", "")]
+
     __description__ = """XFileSharingPro hook plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
+
 
     def coreReady(self):
         self.loadPattern()

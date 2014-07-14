@@ -5,7 +5,13 @@ from random import random
 
 
 class CaptchaService():
+    __name__ = "CaptchaService"
     __version__ = "0.05"
+
+    __description__ = """Captcha service plugin"""
+    __author_name__ = "pyLoad Team"
+    __author_mail__ = "admin@pyload.org"
+
 
     def __init__(self, plugin):
         self.plugin = plugin
@@ -16,6 +22,7 @@ class ReCaptcha():
     RECAPTCHA_KEY_AJAX_PATTERN = r"Recaptcha\.create\s*\(\s*[\"'](?P<key>\w+)[\"']\s*,"
 
     recaptcha_key = None
+
 
     def __init__(self, plugin):
         self.plugin = plugin

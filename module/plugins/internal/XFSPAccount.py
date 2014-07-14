@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 import re
@@ -28,6 +26,7 @@ class XFSPAccount(Account):
     __name__ = "XFSPAccount"
     __version__ = "0.06"
     __type__ = "account"
+
     __description__ = """XFileSharingPro base account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -38,6 +37,7 @@ class XFSPAccount(Account):
     TRAFFIC_LEFT_PATTERN = r'>Traffic available today:</TD><TD><b>([^<]+)</b>'
     LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|>Error<'
     PREMIUM_PATTERN = r'>Renew premium<'
+
 
     def loadAccountInfo(self, user, req):
         html = req.load(self.MAIN_PAGE + "?op=my_account", decode=True)

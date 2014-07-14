@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 from urlparse import urlparse
 import re
@@ -165,8 +163,10 @@ class PluginParseError(Exception):
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __version__ = "0.34"
-    __pattern__ = None
     __type__ = "hoster"
+
+    __pattern__ = None
+
     __description__ = """Simple hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -201,6 +201,7 @@ class SimpleHoster(Hoster):
     SH_BROKEN_ENCODING = False  # Set to True or encoding name if encoding in http header is not correct
     SH_COOKIES = True  # or False or list of tuples [(domain, name, value)]
     SH_CHECK_TRAFFIC = False  # True = force check traffic left for a premium account
+
 
     def init(self):
         self.file_info = {}

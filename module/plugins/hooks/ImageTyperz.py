@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay, RaNaN, zoidberg
 """
 from __future__ import with_statement
 from thread import start_new_thread
@@ -43,17 +41,21 @@ class ImageTyperzException(Exception):
 class ImageTyperz(Hook):
     __name__ = "ImageTyperz"
     __version__ = "0.04"
-    __description__ = """Send captchas to ImageTyperz.com"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
                   ("force", "bool", "Force IT even if client is connected", False)]
+
+    __description__ = """Send captchas to ImageTyperz.com"""
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
 
     SUBMIT_URL = "http://captchatypers.com/Forms/UploadFileAndGetTextNEW.ashx"
     RESPOND_URL = "http://captchatypers.com/Forms/SetBadImage.ashx"
     GETCREDITS_URL = "http://captchatypers.com/Forms/RequestBalance.ashx"
+
 
     def setup(self):
         self.info = {}

@@ -7,11 +7,12 @@ from module.plugins.Hook import Hook
 
 
 class MultiHoster(Hook):
-    """
-    Generic MultiHoster plugin
-    """
-
+    __name__ = "AbtractExtractor"
     __version__ = "0.19"
+
+    __description__ = """Generic MultiHoster plugin"""
+    __author_name__ = "pyLoad Team"
+    __author_mail__ = "admin@pyload.org"
 
     replacements = [("2shared.com", "twoshared.com"), ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
                     ("ifile.it", "filecloud.io"), ("easy-share.com", "crocko.com"), ("freakshare.net", "freakshare.com"),
@@ -19,6 +20,7 @@ class MultiHoster(Hook):
                     ("ul.to", "uploaded.to"), ("uploaded.net", "uploaded.to"), ("1fichier.com", "onefichier.com")]
     ignored = []
     interval = 24 * 60 * 60  #: reload hosters daily
+
 
     def setup(self):
         self.hosters = []

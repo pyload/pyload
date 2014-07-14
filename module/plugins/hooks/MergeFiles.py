@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: and9000
 """
 
 import os
@@ -23,7 +21,7 @@ import traceback
 
 from os.path import join
 from module.utils import save_join, fs_encode
-from module.plugins.Hook import Hook
+from module.plugins.Hook import Hook, threaded
 
 BUFFER_SIZE = 4096
 
@@ -31,16 +29,20 @@ BUFFER_SIZE = 4096
 class MergeFiles(Hook):
     __name__ = "MergeFiles"
     __version__ = "0.12"
-    __description__ = """Merges parts splitted with hjsplit"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False)]
-    __threaded__ = ["packageFinished"]
+
+    __description__ = """Merges parts splitted with hjsplit"""
     __author_name__ = "and9000"
     __author_mail__ = "me@has-no-mail.com"
+
 
     def setup(self):
         # nothing to do
         pass
 
+    @threaded
     def packageFinished(self, pack):
         files = {}
         fid_dict = {}

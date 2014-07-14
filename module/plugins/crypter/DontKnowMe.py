@@ -13,7 +13,7 @@ class DontKnowMe(Crypter):
     __version__ = "0.1"
     __description__ = """DontKnow.me decrypter plugin"""
     __author_name__ = "selaux"
-    __author_mail__ = ""
+    __author_mail__ = None
 
     LINK_PATTERN = r'http://dontknow.me/at/\?(.+)$'
 

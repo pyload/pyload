@@ -20,9 +20,12 @@ from module.plugins.Hook import Hook
 class RestartFailed(Hook):
     __name__ = "RestartFailed"
     __version__ = "1.55"
-    __description__ = """Periodically restart all failed downloads in queue"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("interval", "int", "Check interval in minutes", 90)]
+
+    __description__ = """Periodically restart all failed downloads in queue"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
 

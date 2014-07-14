@@ -15,8 +15,8 @@ class ZDF(Hoster):
     __version__ = "0.8"
     __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/[^0-9]*([0-9]+)[^0-9]*'
     __description__ = """ZDF.de hoster plugin"""
-    __author_name__ = ""
-    __author_mail__ = ""
+    __author_name__ = None
+    __author_mail__ = None
 
     @staticmethod
     def video_key(video):

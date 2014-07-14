@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 import re
@@ -27,10 +25,14 @@ from module.utils import remove_chars
 class LinkdecrypterCom(Hook):
     __name__ = "LinkdecrypterCom"
     __version__ = "0.19"
-    __description__ = """Linkdecrypter.com hook plugin"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False)]
+
+    __description__ = """Linkdecrypter.com hook plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
+
 
     def coreReady(self):
         try:

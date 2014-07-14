@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 from __future__ import with_statement
@@ -55,12 +53,15 @@ def computeChecksum(local_file, algorithm):
 class Checksum(Hook):
     __name__ = "Checksum"
     __version__ = "0.12"
-    __description__ = """Verify downloaded file size and checksum"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
                   ("max_tries", "int", "Number of retries", 2),
                   ("retry_action", "fail;nothing", "What to do if all retries fail?", "fail"),
                   ("wait_time", "int", "Time to wait before each retry (seconds)", 1)]
+
+    __description__ = """Verify downloaded file size and checksum"""
     __author_name__ = ("zoidberg", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com")
 
@@ -69,6 +70,7 @@ class Checksum(Hook):
                'md5': r'^(?P<name>[0-9A-Fa-f]{32})  (?P<file>.+)$',
                'crc': r'filename=(?P<name>.+)\nsize=(?P<size>\d+)\ncrc32=(?P<hash>[0-9A-Fa-f]{8})$',
                'default': r'^(?P<hash>[0-9A-Fa-f]+)\s+\*?(?P<name>.+)$'}
+
 
     def coreReady(self):
         if not self.config['general']['checksum']:

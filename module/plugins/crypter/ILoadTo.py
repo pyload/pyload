@@ -10,4 +10,4 @@ class ILoadTo(DeadCrypter):
     __version__ = "0.11"
     __description__ = """Iload.to decrypter plugin"""
     __author_name__ = "hzpz"
-    __author_mail__ = ""
+    __author_mail__ = None

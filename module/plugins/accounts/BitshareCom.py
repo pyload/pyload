@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: pking
 """
 
 from module.plugins.Account import Account
@@ -26,7 +24,7 @@ class BitshareCom(Account):
     __type__ = "account"
     __description__ = """Bitshare account plugin"""
     __author_name__ = "Paul King"
-    __author_mail__ = ""
+    __author_mail__ = None
 
     def loadAccountInfo(self, user, req):
         page = req.load("http://bitshare.com/mysettings.html")

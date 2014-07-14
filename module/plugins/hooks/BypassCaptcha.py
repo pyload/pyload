@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN, Godofdream, zoidberg
 """
 
 from thread import start_new_thread
@@ -45,16 +43,20 @@ class BypassCaptchaException(Exception):
 class BypassCaptcha(Hook):
     __name__ = "BypassCaptcha"
     __version__ = "0.04"
-    __description__ = """Send captchas to BypassCaptcha.com"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force BC even if client is connected", False),
                   ("passkey", "password", "Passkey", "")]
+
+    __description__ = """Send captchas to BypassCaptcha.com"""
     __author_name__ = ("RaNaN", "Godofdream", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "soilfcition@gmail.com", "zoidberg@mujmail.cz")
 
     SUBMIT_URL = "http://bypasscaptcha.com/upload.php"
     RESPOND_URL = "http://bypasscaptcha.com/check_value.php"
     GETCREDITS_URL = "http://bypasscaptcha.com/ex_left.php"
+
 
     def setup(self):
         self.info = {}

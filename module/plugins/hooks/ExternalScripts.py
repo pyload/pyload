@@ -13,9 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
-    @interface-version: 0.1
 """
 
 import subprocess
@@ -29,12 +26,16 @@ from module.utils import save_join
 class ExternalScripts(Hook):
     __name__ = "ExternalScripts"
     __version__ = "0.23"
-    __description__ = """Run external scripts"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", True)]
+
+    __description__ = """Run external scripts"""
     __author_name__ = ("mkaay", "RaNaN", "spoob")
     __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org")
 
     event_list = ["unrarFinished", "allDownloadsFinished", "allDownloadsProcessed"]
+
 
     def setup(self):
         self.scripts = {}

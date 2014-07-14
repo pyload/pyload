@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay, RaNaN, zoidberg
 """
 from __future__ import with_statement
 
@@ -62,15 +60,19 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Hook):
     __name__ = "DeathByCaptcha"
     __version__ = "0.03"
-    __description__ = """Send captchas to DeathByCaptcha.com"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
                   ("force", "bool", "Force DBC even if client is connected", False)]
+
+    __description__ = """Send captchas to DeathByCaptcha.com"""
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
 
     API_URL = "http://api.dbcapi.me/api/"
+
 
     def setup(self):
         self.info = {}

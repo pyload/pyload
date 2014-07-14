@@ -15,12 +15,15 @@ from module.plugins.Hook import Expose, Hook, threaded
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
     __version__ = "0.31"
-    __description__ = """Check for updates"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
                   ("interval", "int", "Check interval in hours", 8),
                   ("reloadplugins", "bool", "Monitor plugins for code changes (debug mode only)", True),
                   ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
+
+    __description__ = """Check for updates"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
 
