@@ -23,7 +23,7 @@ from module.common.json_layer import json_loads
 
 class MegaDebridEu(Hoster):
     __name__ = "MegaDebridEu"
-    __version__ = "0.3"
+    __version__ = "0.4"
     __type__ = "hoster"
     __pattern__ = r'^https?://(?:w{3}\d+\.mega-debrid.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[^/]+/.+$'
     __description__ = """mega-debrid.eu hoster plugin"""
@@ -46,7 +46,7 @@ class MegaDebridEu(Hoster):
             self.exitOnFail(_("Please enter your %s account or deactivate this plugin") % "Mega-debrid.eu")
         else:
             if not self.connectToApi():
-                self.exitOnFail(_("Impossible to connect to %s") % "Mega-debrid.eu")
+                self.exitOnFail(_("Unable to connect to %s") % "Mega-debrid.eu")
 
             self.logDebug("Old URL: %s" % pyfile.url)
             new_url = self.debridLink(pyfile.url)
@@ -86,7 +86,7 @@ class MegaDebridEu(Hoster):
             debridedLink = response["debridLink"][1:-1]
             return debridedLink
         else:
-            self.exitOnFail(_("Impossible to debrid %s") % linkToDebrid)
+            self.exitOnFail("Unable to debrid %s" % linkToDebrid)
 
     def exitOnFail(self, msg):
         """

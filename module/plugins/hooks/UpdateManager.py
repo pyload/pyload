@@ -14,7 +14,7 @@ from module.plugins.Hook import Expose, Hook, threaded
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __description__ = """Check for updates"""
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -101,7 +101,7 @@ class UpdateManager(Hook):
         try:
             return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
         except:
-            self.logWarning(_("Not able to connect server to get updates"))
+            self.logWarning(_("Unable to contact server to get updates"))
 
     @Expose
     def updatePlugins(self):
@@ -115,7 +115,7 @@ class UpdateManager(Hook):
         if not data:
             r = False
         elif data[0] == "None":
-            self.logInfo(_("No pyLoad version available"))
+            self.logInfo(_("No new pyLoad version available"))
             updates = data[1:]
             r = self._updatePlugins(updates)
         elif onlyplugin:
@@ -194,7 +194,7 @@ class UpdateManager(Hook):
                 else:
                     raise Exception(_("Version mismatch"))
             except Exception, e:
-                self.logError(_("Error when updating plugin %s") % filename, str(e))
+                self.logError(_("Error updating plugin %s") % filename, str(e))
 
         if blacklist:
             removed = self.removePlugins(map(lambda x: x.split('|'), blacklist))
@@ -237,7 +237,7 @@ class UpdateManager(Hook):
                 if isfile(pyc):
                     remove(pyc)
             except Exception, e:
-                self.logError("Error when deleting %s" % id, str(e))
+                self.logError("Error deleting %s" % id, str(e))
             else:
                 removed.append(id)
 
