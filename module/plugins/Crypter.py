@@ -49,14 +49,14 @@ class Crypter(Plugin):
 
             links = [x.decode("utf-8") for x in links]
 
-            pid = self.core.api.addPackage(name, links, self.pyfile.package().queue)
+            pid = self.api.addPackage(name, links, self.pyfile.package().queue)
 
             if name != folder is not None:
-                self.core.api.setPackageData(pid, {"folder": folder})  #: Due to not break API addPackage method right now
+                self.api.setPackageData(pid, {"folder": folder})  #: Due to not break API addPackage method right now
                 self.logDebug("Set package %(name)s folder to %(folder)s" % {"name": name, "folder": folder})
 
             if self.pyfile.package().password:
-                self.core.api.setPackageData(pid, {"password": self.pyfile.package().password})
+                self.api.setPackageData(pid, {"password": self.pyfile.package().password})
 
         if self.urls:
-            self.core.api.generateAndAddPackages(self.urls)
+            self.api.generateAndAddPackages(self.urls)

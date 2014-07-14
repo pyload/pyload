@@ -153,10 +153,13 @@ class Plugin(Base):
     def __init__(self, pyfile):
         Base.__init__(self, pyfile.m.core)
 
+        #: engage wan reconnection
         self.wantReconnect = False
-        #: enables simultaneous processing of multiple downloads
+
+        #: enable simultaneous processing of multiple downloads
         self.multiDL = True
         self.limitDL = 0
+
         #: chunk limit
         self.chunkLimit = 1
         self.resumeDownload = False
@@ -165,7 +168,9 @@ class Plugin(Base):
         self.waitUntil = 0
         self.waiting = False
 
-        self.ocr = None  #captcha reader instance
+        #: captcha reader instance
+        self.ocr = None
+
         #: account handler instance, see :py:class:`Account`
         self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__)
 
@@ -174,7 +179,9 @@ class Plugin(Base):
         #: username/login
         self.user = None
 
-        if self.account and not self.account.canUse(): self.account = None
+        if self.account and not self.account.canUse():
+            self.account = None
+
         if self.account:
             self.user, data = self.account.selectAccount()
             #: Browser instance, see `network.Browser`
@@ -190,18 +197,28 @@ class Plugin(Base):
 
         #: associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
+
         self.thread = None # holds thread in future
 
         #: location where the last call to download was saved
         self.lastDownload = ""
         #: re match of the last call to `checkDownload`
         self.lastCheck = None
+
         #: js engine, see `JsEngine`
         self.js = self.core.js
-        self.cTask = None #captcha task
 
-        self.retries = 0 # amount of retries already made
-        self.html = None # some plugins store html code here
+        #: captcha task
+        self.cTask = None
+
+        #: amount of retries already made
+        self.retries = 0
+
+        #: some plugins store html code here
+        self.html = None
+
+        #: quick caller for API
+        self.api = self.core.api 
 
         self.init()
 
