@@ -31,7 +31,7 @@ if os.name != "nt":
 
 from itertools import islice
 
-from module.utils import save_join, save_path, fs_encode, fs_decode
+from module.utils import safe_join, safe_path, fs_encode, fs_decode
 
 def chunks(iterable, size):
     it = iter(iterable)
@@ -483,7 +483,7 @@ class Plugin(Base):
 
         download_folder = self.config['general']['download_folder']
 
-        location = save_join(download_folder, self.pyfile.package().folder)
+        location = safe_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
             makedirs(location, int(self.core.config["permission"]["folder"], 8))
@@ -499,7 +499,7 @@ class Plugin(Base):
 
         # convert back to unicode
         location = fs_decode(location)
-        name = save_path(self.pyfile.name)
+        name = safe_path(self.pyfile.name)
 
         filename = join(location, name)
 
@@ -598,7 +598,7 @@ class Plugin(Base):
                     raise SkipDownload(pyfile.pluginname)
 
         download_folder = self.config['general']['download_folder']
-        location = save_join(download_folder, pack.folder, self.pyfile.name)
+        location = safe_join(download_folder, pack.folder, self.pyfile.name)
 
         if starting and self.core.config['download']['skip_existing'] and exists(location):
             size = os.stat(location).st_size

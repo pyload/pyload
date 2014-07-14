@@ -18,7 +18,7 @@
 """
 
 from module.PullEvents import UpdateEvent
-from module.utils import save_path
+from module.utils import safe_path
 
 class PyPackage:
     """
@@ -39,7 +39,7 @@ class PyPackage:
 
     @property
     def folder(self):
-        return save_path(self._folder)
+        return safe_path(self._folder)
 
     def toDict(self):
         """ Returns a dictionary representation of the data.

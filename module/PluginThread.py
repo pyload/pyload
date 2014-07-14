@@ -34,7 +34,7 @@ from pycurl import error
 from PyFile import PyFile
 from plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 from common.packagetools import parseNames
-from utils import save_join
+from utils import safe_join
 from Api import OnlineStatus
 
 class PluginThread(Thread):
@@ -64,11 +64,11 @@ class PluginThread(Thread):
             for f in listdir(join("tmp", pyfile.pluginname)):
                 try:
                     # avoid encoding errors
-                    zip.write(join("tmp", pyfile.pluginname, f), save_join(pyfile.pluginname, f))
+                    zip.write(join("tmp", pyfile.pluginname, f), safe_join(pyfile.pluginname, f))
                 except:
                     pass
 
-            info = zipfile.ZipInfo(save_join(pyfile.pluginname, "debug_Report.txt"), gmtime())
+            info = zipfile.ZipInfo(safe_join(pyfile.pluginname, "debug_Report.txt"), gmtime())
             info.external_attr = 0644 << 16L # change permissions
 
             zip.writestr(info, dump)

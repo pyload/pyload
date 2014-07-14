@@ -39,7 +39,7 @@ def remove_chars(string, repl):
             return string.translate(dict([(ord(s), None) for s in repl]))
 
 
-def save_path(name):
+def safe_path(name):
     #remove some chars
     name = name.encode('ascii', 'replace')  # Non-ASCII chars usually breaks file saving. Replacing.
     if os.name == 'nt':
@@ -49,7 +49,7 @@ def save_path(name):
         return remove_chars(name, u'\0/\\"')
 
 
-def save_join(*args):
+def safe_join(*args):
     """ joins a path, encoding aware """
     return fs_encode(join(*[x if type(x) == unicode else decode(x) for x in args]))
 

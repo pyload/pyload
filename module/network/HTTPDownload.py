@@ -29,7 +29,7 @@ from HTTPChunk import ChunkInfo, HTTPChunk
 from HTTPRequest import BadHeader
 
 from module.plugins.Plugin import Abort
-from module.utils import save_join, fs_encode
+from module.utils import safe_join, fs_encode
 
 class HTTPDownload:
     """ loads a url http + ftp """
@@ -114,7 +114,7 @@ class HTTPDownload:
             fo.close()
 
         if self.nameDisposition and self.disposition:
-            self.filename = save_join(dirname(self.filename), self.nameDisposition)
+            self.filename = safe_join(dirname(self.filename), self.nameDisposition)
 
         move(init, fs_encode(self.filename))
         self.info.remove() #remove info file
