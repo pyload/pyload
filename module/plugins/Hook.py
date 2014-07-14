@@ -41,7 +41,6 @@ class Hook(Base):
     __name__ = "Hook"
     __version__ = "0.2"
     __type__ = "hook"
-    __threaded__ = []
     __config__ = [("name", "type", "desc", "default")]
     __description__ = """Interface for hook"""
     __author_name__ = ("mkaay", "RaNaN")

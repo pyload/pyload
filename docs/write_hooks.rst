@@ -23,7 +23,6 @@ All Hooks should start with something like this: ::
                 __version__ = "0.1"
                 __description__ = "Does really cool stuff"
                 __config__ = [ ("activated" , "bool" , "Activated"  , "True" ) ]
-                __threaded__ = ["downloadFinished"]
                 __author_name__ = ("Me")
                 __author_mail__ = ("me@has-no-mail.com")
 
@@ -64,9 +63,6 @@ A basic excerpt would look like: ::
 
         def downloadFinished(self, pyfile):
             print "A Download just finished."
-
-Another important feature to mention can be seen at the ``__threaded__`` parameter. Function names listed will be executed
-in a thread, in order to not block the main thread. This should be used for all kind of longer processing tasks.
 
 Another and more flexible and powerful way is to use event listener.
 All hook methods exists as event and very useful additional events are dispatched by the core. For a little overview look

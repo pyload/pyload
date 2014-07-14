@@ -219,10 +219,7 @@ class HookManager:
     def downloadFinished(self, pyfile):
         for plugin in self.plugins:
             if plugin.isActivated():
-                if "downloadFinished" in plugin.__threaded__:
-                    self.startThread(plugin.downloadFinished, pyfile)
-                else:
-                    plugin.downloadFinished(pyfile)
+                plugin.downloadFinished(pyfile)
 
         self.dispatchEvent("downloadFinished", pyfile)
 
@@ -231,10 +228,7 @@ class HookManager:
     def downloadFailed(self, pyfile):
         for plugin in self.plugins:
             if plugin.isActivated():
-                if "downloadFailed" in plugin.__threaded__:
-                    self.startThread(plugin.downloadFinished, pyfile)
-                else:
-                    plugin.downloadFailed(pyfile)
+                plugin.downloadFailed(pyfile)
 
         self.dispatchEvent("downloadFailed", pyfile)
 
@@ -242,10 +236,7 @@ class HookManager:
     def packageFinished(self, package):
         for plugin in self.plugins:
             if plugin.isActivated():
-                if "packageFinished" in plugin.__threaded__:
-                    self.startThread(plugin.packageFinished, package)
-                else:
-                    plugin.packageFinished(package)
+                plugin.packageFinished(package)
 
         self.dispatchEvent("packageFinished", package)
 
