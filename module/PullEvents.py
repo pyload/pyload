@@ -46,7 +46,7 @@ class PullManager:
         if not validUuid:
             self.newClient(uuid)
             events = [ReloadAllEvent("queue").toList(), ReloadAllEvent("collector").toList()]
-        return uniqify(events, repr)
+        return uniqify(events)
 
     def addEvent(self, event):
         for client in self.clients:
