@@ -9,11 +9,13 @@ class UlozTo(Account):
     __name__ = "UlozTo"
     __version__ = "0.06"
     __type__ = "account"
+
     __description__ = """Uloz.to account plugin"""
     __author_name__ = ("zoidberg", "pulpe")
     __author_mail__ = "zoidberg@mujmail.cz"
 
     TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a href="/kredit" title="[^"]*?GB = ([0-9.]+) MB"'
+
 
     def loadAccountInfo(self, user, req):
         #this cookie gets lost somehow after each request

@@ -24,11 +24,13 @@ class DebridItaliaCom(Account):
     __name__ = "DebridItaliaCom"
     __version__ = "0.1"
     __type__ = "account"
+
     __description__ = """Debriditalia.com account plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
     WALID_UNTIL_PATTERN = r"Premium valid till: (?P<D>[^|]+) \|"
+
 
     def loadAccountInfo(self, user, req):
         if 'Account premium not activated' in self.html:

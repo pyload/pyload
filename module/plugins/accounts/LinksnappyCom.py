@@ -10,9 +10,11 @@ class LinksnappyCom(Account):
     __name__ = "LinksnappyCom"
     __version__ = "0.02"
     __type__ = "account"
+
     __description__ = """Linksnappy.com account plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
+
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)

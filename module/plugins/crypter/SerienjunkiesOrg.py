@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 
-import re
-from time import sleep
 import random
-from module.plugins.Crypter import Crypter
+import re
+
+from time import sleep
+
 from module.lib.BeautifulSoup import BeautifulSoup
+from module.plugins.Crypter import Crypter
 from module.unescape import unescape
 
 
 class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?(serienjunkies.org|dokujunkies.org)/.*?'
     __version__ = "0.39"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?(serienjunkies.org|dokujunkies.org)/.*?'
     __config__ = [("changeNameSJ", "Packagename;Show;Season;Format;Episode", "Take SJ.org name", "Show"),
                   ("changeNameDJ", "Packagename;Show;Format;Episode", "Take DJ.org name", "Show"),
                   ("randomPreferred", "bool", "Randomize Preferred-List", False),
@@ -21,9 +24,11 @@ class SerienjunkiesOrg(Crypter):
                   ("hosterList", "str", "Preferred Hoster list (comma separated)",
                    "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
                   ("ignoreList", "str", "Ignored Hoster list (comma separated)", "MegauploadCom")]
+
     __description__ = """Serienjunkies.org decrypter plugin"""
     __author_name__ = ("mkaay", "godofdream")
     __author_mail__ = ("mkaay@mkaay.de", "soilfiction@gmail.com")
+
 
     def setup(self):
         self.multiDL = False

@@ -24,9 +24,11 @@ class QuickshareCz(Account):
     __name__ = "QuickshareCz"
     __version__ = "0.01"
     __type__ = "account"
+
     __description__ = """Quickshare.cz account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
+
 
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.quickshare.cz/premium", decode=True)

@@ -7,6 +7,7 @@ class CramitIn(XFSPAccount):
     __name__ = "CramitIn"
     __version__ = "0.01"
     __type__ = "account"
+
     __description__ = """Cramit.in account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"

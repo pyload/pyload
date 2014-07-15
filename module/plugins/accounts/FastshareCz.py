@@ -24,11 +24,13 @@ class FastshareCz(Account):
     __name__ = "FastshareCz"
     __version__ = "0.03"
     __type__ = "account"
+
     __description__ = """Fastshare.cz account plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     CREDIT_PATTERN = r'(?:Kredit|Credit)\s*</td>\s*<td[^>]*>([\d. \w]+)&nbsp;'
+
 
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.fastshare.cz/user", decode=True)

@@ -24,9 +24,11 @@ class MultiDebridCom(Account):
     __name__ = "MultiDebridCom"
     __version__ = "0.01"
     __type__ = "account"
+
     __description__ = """Multi-debrid.com account plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
+
 
     def loadAccountInfo(self, user, req):
         if 'days_left' in self.json_data:

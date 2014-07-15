@@ -11,9 +11,11 @@ class UploadheroCom(Account):
     __name__ = "UploadheroCom"
     __version__ = "0.2"
     __type__ = "account"
+
     __description__ = """Uploadhero.co account plugin"""
     __author_name__ = "mcmyst"
     __author_mail__ = "mcmyst@hotmail.fr"
+
 
     def loadAccountInfo(self, user, req):
         premium_pattern = re.compile('Il vous reste <span class="bleu">([0-9]+)</span> jours premium.')

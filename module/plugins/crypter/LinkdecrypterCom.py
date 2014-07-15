@@ -21,8 +21,11 @@ from module.plugins.Crypter import Crypter
 
 class LinkdecrypterCom(Crypter):
     __name__ = "LinkdecrypterCom"
-    __type__ = "crypter"
     __version__ = "0.27"
+    __type__ = "crypter"
+
+    __pattern__ = None
+
     __description__ = """Linkdecrypter.com"""
     __author_name__ = ("zoidberg", "flowlee")
     __author_mail__ = ("zoidberg@mujmail.cz", "")
@@ -31,6 +34,7 @@ class LinkdecrypterCom(Crypter):
     PASSWORD_PATTERN = r'<input type="text" name="password"'
     CAPTCHA_PATTERN = r'<img class="captcha" src="(.+?)"(.*?)>'
     REDIR_PATTERN = r'<i>(Click <a href="./">here</a> if your browser does not redirect you).</i>'
+
 
     def decrypt(self, pyfile):
 

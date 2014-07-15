@@ -7,16 +7,19 @@ from module.network.HTTPRequest import BadHeader
 
 class EmbeduploadCom(Crypter):
     __name__ = "EmbeduploadCom"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?embedupload.com/\?d=.*'
     __version__ = "0.02"
-    __description__ = """EmbedUpload.com decrypter plugin"""
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?embedupload.com/\?d=.*'
     __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "embedupload"),
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
+
+    __description__ = """EmbedUpload.com decrypter plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
     LINK_PATTERN = r'<div id="([^"]+)"[^>]*>\s*<a href="([^"]+)" target="_blank" (?:class="DownloadNow"|style="color:red")>'
+
 
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)

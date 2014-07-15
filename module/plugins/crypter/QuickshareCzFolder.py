@@ -6,15 +6,18 @@ from module.plugins.Crypter import Crypter
 
 class QuickshareCzFolder(Crypter):
     __name__ = "QuickshareCzFolder"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?quickshare.cz/slozka-\d+.*'
     __version__ = "0.1"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?quickshare.cz/slozka-\d+.*'
+
     __description__ = """Quickshare.cz folder decrypter plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
     FOLDER_PATTERN = r'<textarea[^>]*>(.*?)</textarea>'
     LINK_PATTERN = r'(http://www.quickshare.cz/\S+)'
+
 
     def decrypt(self, pyfile):
         html = self.load(pyfile.url)

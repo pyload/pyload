@@ -11,9 +11,11 @@ class OboomCom(Account):
     __name__ = "OboomCom"
     __version__ = "0.1"
     __type__ = "account"
+
     __description__ = """Oboom.com account plugin"""
     __author_name__ = "stanley"
     __author_mail__ = "stanley.foerster@gmail.com"
+
 
     def loadAccountData(self, user, req):
         passwd = self.getAccountData(user)['password']

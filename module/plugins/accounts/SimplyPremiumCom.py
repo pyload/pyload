@@ -22,9 +22,11 @@ class SimplyPremiumCom(Account):
     __name__ = "SimplyPremiumCom"
     __version__ = "0.01"
     __type__ = "account"
+
     __description__ = """Simply-Premium.com account plugin"""
     __author_name__ = "EvolutionClip"
     __author_mail__ = "evolutionclip@live.de"
+
 
     def loadAccountInfo(self, user, req):
         json_data = req.load('http://www.simply-premium.com/api/user.php?format=json')

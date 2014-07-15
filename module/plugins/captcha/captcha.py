@@ -301,7 +301,6 @@ class OCR(object):
         return letters
 
     def correct(self, values, var=None):
-
         if var:
             result = var
         else:

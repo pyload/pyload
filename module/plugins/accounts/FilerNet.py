@@ -25,6 +25,7 @@ class FilerNet(Account):
     __name__ = "FilerNet"
     __version__ = "0.01"
     __type__ = "account"
+
     __description__ = """Filer.net account plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
@@ -33,6 +34,7 @@ class FilerNet(Account):
     WALID_UNTIL_PATTERN = r"Der Premium-Zugang ist gültig bis (.+)\.\s*</td>"
     TRAFFIC_PATTERN = r'Traffic</th>\s*<td>([^<]+)</td>'
     FREE_PATTERN = r'Account Status</th>\s*<td>\s*Free'
+
 
     def loadAccountInfo(self, user, req):
         self.html = req.load("https://filer.net/profile")

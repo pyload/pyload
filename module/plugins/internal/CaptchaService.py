@@ -79,6 +79,7 @@ class AdsCaptcha(CaptchaService):
 
 
 class SolveMedia(CaptchaService):
+
     def challenge(self, src):
         html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript?k=%s" % src, cookies=True)
         try:

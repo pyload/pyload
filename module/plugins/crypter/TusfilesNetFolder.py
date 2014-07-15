@@ -23,9 +23,11 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 class TusfilesNetFolder(SimpleCrypter):
     __name__ = "TusfilesNetFolder"
-    __type__ = "crypter"
-    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)/?'
     __version__ = "0.02"
+    __type__ = "crypter"
+
+    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)/?'
+
     __description__ = """Tusfiles.net folder decrypter plugin"""
     __author_name__ = ("Walter Purcaro", "stickell")
     __author_mail__ = ("vuolter@gmail.com", "l.stickell@yahoo.it")
@@ -35,6 +37,7 @@ class TusfilesNetFolder(SimpleCrypter):
     PAGES_PATTERN = r'>\((?P<pages>\d+) \w+\)<'
 
     URL_REPLACEMENTS = [(__pattern__, r'https://www.tusfiles.net/go/\g<ID>/')]
+
 
     def loadPage(self, page_n):
         return self.load(urljoin(self.pyfile.url, str(page_n)), decode=True)

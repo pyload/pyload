@@ -7,12 +7,15 @@ from module.plugins.Crypter import Crypter
 
 class HotfileFolderCom(Crypter):
     __name__ = "HotfileFolderCom"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?hotfile.com/list/\w+/\w+'
     __version__ = "0.1"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?hotfile.com/list/\w+/\w+'
+
     __description__ = """Hotfile.com folder decrypter plugin"""
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
+
 
     def decrypt(self, pyfile):
         html = self.load(pyfile.url)

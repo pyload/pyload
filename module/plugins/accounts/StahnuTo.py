@@ -25,6 +25,7 @@ class StahnuTo(Account):
     __name__ = "StahnuTo"
     __version__ = "0.02"
     __type__ = "account"
+
     __description__ = """StahnuTo account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"

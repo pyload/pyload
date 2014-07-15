@@ -10,12 +10,15 @@ from module.plugins.Crypter import Crypter
 
 class ShareLinksBiz(Crypter):
     __name__ = "ShareLinksBiz"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
     __version__ = "1.13"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
+
     __description__ = """Share-Links.biz decrypter plugin"""
     __author_name__ = "fragonib"
     __author_mail__ = "fragonib[AT]yahoo[DOT]es"
+
 
     def setup(self):
         self.baseUrl = None

@@ -7,6 +7,7 @@ class MovReelCom(XFSPAccount):
     __name__ = "MovReelCom"
     __version__ = "0.01"
     __type__ = "account"
+
     __description__ = """Movreel.com account plugin"""
     __author_name__ = "t4skforce"
     __author_mail__ = "t4skforce1337[AT]gmail[DOT]com"

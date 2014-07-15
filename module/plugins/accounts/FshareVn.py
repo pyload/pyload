@@ -26,6 +26,7 @@ class FshareVn(Account):
     __name__ = "FshareVn"
     __version__ = "0.07"
     __type__ = "account"
+
     __description__ = """Fshare.vn account plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -34,6 +35,7 @@ class FshareVn(Account):
     LIFETIME_PATTERN = ur'<dt>Lần đăng nhập trước:</dt>\s*<dd>[^<]+</dd>'
     TRAFFIC_LEFT_PATTERN = ur'<dt>Tổng Dung Lượng Tài Khoản</dt>\s*<dd[^>]*>([0-9.]+) ([kKMG])B</dd>'
     DIRECT_DOWNLOAD_PATTERN = ur'<input type="checkbox"\s*([^=>]*)[^>]*/>Kích hoạt download trực tiếp</dt>'
+
 
     def loadAccountInfo(self, user, req):
         self.html = req.load("http://www.fshare.vn/account_info.php", decode=True)

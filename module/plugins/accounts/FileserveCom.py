@@ -25,9 +25,11 @@ class FileserveCom(Account):
     __name__ = "FileserveCom"
     __version__ = "0.2"
     __type__ = "account"
+
     __description__ = """Fileserve.com account plugin"""
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"
+
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)

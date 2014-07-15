@@ -11,14 +11,17 @@ from module.lib.BeautifulSoup import BeautifulSoup
 
 class SafelinkingNet(Crypter):
     __name__ = "SafelinkingNet"
-    __type__ = "crypter"
-    __pattern__ = r'https?://(?:www\.)?safelinking.net/([pd])/\w+'
     __version__ = "0.1"
+    __type__ = "crypter"
+
+    __pattern__ = r'https?://(?:www\.)?safelinking.net/([pd])/\w+'
+
     __description__ = """Safelinking.net decrypter plugin"""
     __author_name__ = "quareevo"
     __author_mail__ = "quareevo@arcor.de"
 
-    __Solvemedia_pattern__ = "solvemediaApiKey = '([\w\.\-_]+)';"
+    SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w\.\-_]+)';"
+
 
     def decrypt(self, pyfile):
         url = pyfile.url
@@ -44,7 +47,7 @@ class SafelinkingNet(Crypter):
 
             if "altcaptcha" in self.html:
                 for _ in xrange(5):
-                    m = re.search(self.__Solvemedia_pattern__, self.html)
+                    m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
                     if m:
                         captchaKey = m.group(1)
                         captcha = SolveMedia(self)

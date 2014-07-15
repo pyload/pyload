@@ -25,9 +25,11 @@ class DepositfilesCom(Account):
     __name__ = "DepositfilesCom"
     __version__ = "0.2"
     __type__ = "account"
+
     __description__ = """Depositfiles.com account plugin"""
     __author_name__ = ("mkaay", "stickell")
     __author_mail__ = ("mkaay@mkaay.de", "l.stickell@yahoo.it")
+
 
     def loadAccountInfo(self, user, req):
         src = req.load("http://depositfiles.com/de/gold/")

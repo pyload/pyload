@@ -9,9 +9,11 @@ class ShareRapidCom(Account):
     __name__ = "ShareRapidCom"
     __version__ = "0.33"
     __type__ = "account"
+
     __description__ = """ShareRapid account plugin"""
     __author_name__ = ("MikyWoW", "zoidberg")
     __author_mail__ = ("mikywow@seznam.cz", "zoidberg@mujmail.cz")
+
 
     login_timeout = 60
 

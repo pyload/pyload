@@ -23,9 +23,11 @@ class FreeWayMe(Account):
     __name__ = "FreeWayMe"
     __version__ = "0.11"
     __type__ = "account"
+
     __description__ = """FreeWayMe account plugin"""
     __author_name__ = "Nicolas Giese"
     __author_mail__ = "james@free-way.me"
+
 
     def loadAccountInfo(self, user, req):
         status = self.getAccountStatus(user, req)

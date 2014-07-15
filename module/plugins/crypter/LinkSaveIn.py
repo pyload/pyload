@@ -17,9 +17,11 @@ from module.unescape import unescape
 
 class LinkSaveIn(Crypter):
     __name__ = "LinkSaveIn"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?linksave.in/(?P<id>\w+)$'
     __version__ = "2.01"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?linksave.in/(?P<id>\w+)$'
+
     __description__ = """LinkSave.in decrypter plugin"""
     __author_name__ = "fragonib"
     __author_mail__ = "fragonib[AT]yahoo[DOT]es"
@@ -28,6 +30,7 @@ class LinkSaveIn(Crypter):
     _JK_KEY_ = "jk"
     _CRYPTED_KEY_ = "crypted"
     HOSTER_NAME = "linksave.in"
+
 
     def setup(self):
         self.html = None

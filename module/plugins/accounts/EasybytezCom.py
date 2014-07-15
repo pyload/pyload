@@ -27,12 +27,14 @@ class EasybytezCom(Account):
     __name__ = "EasybytezCom"
     __version__ = "0.04"
     __type__ = "account"
+
     __description__ = """EasyBytez.com account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
     VALID_UNTIL_PATTERN = r'Premium account expire:</TD><TD><b>([^<]+)</b>'
     TRAFFIC_LEFT_PATTERN = r'<TR><TD>Traffic available today:</TD><TD><b>(?P<S>[^<]+)</b>'
+
 
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.easybytez.com/?op=my_account", decode=True)

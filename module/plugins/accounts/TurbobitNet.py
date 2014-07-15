@@ -25,6 +25,7 @@ class TurbobitNet(Account):
     __name__ = "TurbobitNet"
     __version__ = "0.01"
     __type__ = "account"
+
     __description__ = """TurbobitNet account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"

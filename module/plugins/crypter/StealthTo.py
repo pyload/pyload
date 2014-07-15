@@ -7,12 +7,15 @@ from module.plugins.Crypter import Crypter
 
 class StealthTo(Crypter):
     __name__ = "StealthTo"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?stealth.to/folder/'
     __version__ = "0.1"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?stealth.to/folder/'
+
     __description__ = """Stealth.to decrypter plugin"""
     __author_name__ = "spoob"
     __author_mail__ = "spoob@pyload.org"
+
 
     def __init__(self, parent):
         Crypter.__init__(self, parent)

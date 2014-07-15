@@ -24,11 +24,13 @@ class YibaishiwuCom(Account):
     __name__ = "YibaishiwuCom"
     __version__ = "0.01"
     __type__ = "account"
+
     __description__ = """115.com account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
     ACCOUNT_INFO_PATTERN = r'var USER_PERMISSION = {(.*?)}'
+
 
     def loadAccountInfo(self, user, req):
         #self.relogin(user)

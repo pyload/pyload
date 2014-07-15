@@ -25,9 +25,11 @@ class BayfilesCom(Account):
     __name__ = "BayfilesCom"
     __version__ = "0.03"
     __type__ = "account"
+
     __description__ = """Bayfiles.com account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
+
 
     def loadAccountInfo(self, user, req):
         for _ in xrange(2):

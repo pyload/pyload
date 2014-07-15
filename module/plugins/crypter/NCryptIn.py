@@ -5,24 +5,27 @@ import binascii
 import re
 
 from Crypto.Cipher import AES
+
 from module.plugins.Crypter import Crypter
 from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class NCryptIn(Crypter):
     __name__ = "NCryptIn"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?ncrypt.in/(?P<type>folder|link|frame)-([^/\?]+)'
     __version__ = "1.32"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?ncrypt.in/(?P<type>folder|link|frame)-([^/\?]+)'
+
     __description__ = """NCrypt.in decrypter plugin"""
     __author_name__ = ("fragonib", "stickell")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "l.stickell@yahoo.it")
 
-    # Constants
-    _JK_KEY_ = "jk"
-    _CRYPTED_KEY_ = "crypted"
+    JK_KEY = "jk"
+    CRYPTED_KEY = "crypted"
 
     NAME_PATTERN = r'<meta name="description" content="(?P<N>[^"]+)"'
+
 
     def setup(self):
         self.package = None
@@ -264,11 +267,11 @@ class NCryptIn(Crypter):
         pattern = r'<input.*?name="%s".*?value="(.*?)"'
 
         # Get jk
-        jk_re = pattern % NCryptIn._JK_KEY_
+        jk_re = pattern % NCryptIn.JK_KEY
         vjk = re.findall(jk_re, self.html)
 
         # Get crypted
-        crypted_re = pattern % NCryptIn._CRYPTED_KEY_
+        crypted_re = pattern % NCryptIn.CRYPTED_KEY
         vcrypted = re.findall(crypted_re, self.html)
 
         # Log and return

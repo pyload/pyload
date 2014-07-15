@@ -15,6 +15,7 @@
 ###############################################################################
 
 import re
+
 from base64 import urlsafe_b64encode
 from time import time
 
@@ -23,14 +24,17 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 class DlProtectCom(SimpleCrypter):
     __name__ = "DlProtectCom"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?dl-protect\.com/((en|fr)/)?(?P<ID>\w+)'
     __version__ = "0.01"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?dl-protect\.com/((en|fr)/)?(?P<ID>\w+)'
+
     __description__ = """Dl-protect.com decrypter plugin"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
 
     OFFLINE_PATTERN = r'>Unfortunately, the link you are looking for is not found'
+
 
     def getLinks(self):
         # Direct link with redirect

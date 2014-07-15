@@ -6,17 +6,20 @@ from module.plugins.Crypter import Crypter
 
 class MultiloadCz(Crypter):
     __name__ = "MultiloadCz"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:[^/]*\.)?multiload.cz/(stahnout|slozka)/.*'
     __version__ = "0.4"
-    __description__ = """Multiload.cz decrypter plugin"""
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:[^/]*\.)?multiload.cz/(stahnout|slozka)/.*'
     __config__ = [("usedHoster", "str", "Prefered hoster list (bar-separated) ", ""),
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
+
+    __description__ = """Multiload.cz decrypter plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
     FOLDER_PATTERN = r'<form action="" method="get"><textarea[^>]*>([^>]*)</textarea></form>'
     LINK_PATTERN = r'<p class="manager-server"><strong>([^<]+)</strong></p><p class="manager-linky"><a href="([^"]+)">'
+
 
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)

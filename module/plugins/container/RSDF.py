@@ -10,10 +10,13 @@ from module.plugins.Container import Container
 class RSDF(Container):
     __name__ = "RSDF"
     __version__ = "0.22"
+
     __pattern__ = r'.+\.rsdf'
+
     __description__ = """RSDF container decrypter plugin"""
     __author_name__ = ("RaNaN", "spoob")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org")
+
 
     def decrypt(self, pyfile):
 

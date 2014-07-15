@@ -7,9 +7,11 @@ from module.plugins.Crypter import Crypter
 
 class LixIn(Crypter):
     __name__ = "LixIn"
-    __type__ = "crypter"
-    __pattern__ = r'http://(www.)?lix.in/(?P<id>.*)'
     __version__ = "0.22"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(www.)?lix.in/(?P<id>.*)'
+
     __description__ = """Lix.in decrypter plugin"""
     __author_name__ = "spoob"
     __author_mail__ = "spoob@pyload.org"
@@ -17,6 +19,7 @@ class LixIn(Crypter):
     CAPTCHA_PATTERN = r'<img src="(?P<image>captcha_img.php\?.*?)"'
     SUBMIT_PATTERN = r"value='continue.*?'"
     LINK_PATTERN = r'name="ifram" src="(?P<link>.*?)"'
+
 
     def decrypt(self, pyfile):
         url = pyfile.url

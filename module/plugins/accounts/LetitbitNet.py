@@ -22,9 +22,11 @@ class LetitbitNet(Account):
     __name__ = "LetitbitNet"
     __version__ = "0.01"
     __type__ = "account"
+
     __description__ = """Letitbit.net account plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
+
 
     def loadAccountInfo(self, user, req):
         ## DISABLED BECAUSE IT GET 'key exausted' EVEN IF VALID ##

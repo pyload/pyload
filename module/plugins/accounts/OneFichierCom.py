@@ -11,6 +11,7 @@ class OneFichierCom(Account):
     __name__ = "OneFichierCom"
     __version__ = "0.1"
     __type__ = "account"
+
     __description__ = """1fichier.com account plugin"""
     __author_name__ = "Elrick69"
     __author_mail__ = "elrick69[AT]rocketmail[DOT]com"

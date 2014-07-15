@@ -7,11 +7,13 @@ class RyushareCom(XFSPAccount):
     __name__ = "RyushareCom"
     __version__ = "0.03"
     __type__ = "account"
+
     __description__ = """Ryushare.com account plugin"""
     __author_name__ = ("zoidberg", "trance4us")
     __author_mail__ = ("zoidberg@mujmail.cz", "")
 
     MAIN_PAGE = "http://ryushare.com/"
+
 
     def login(self, user, data, req):
         req.lastURL = "http://ryushare.com/login.python"

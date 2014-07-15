@@ -22,14 +22,17 @@ from module.common.json_layer import json_loads
 
 class TurbobitNetFolder(SimpleCrypter):
     __name__ = "TurbobitNetFolder"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
     __version__ = "0.03"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
+
     __description__ = """Turbobit.net folder decrypter plugin"""
     __author_name__ = ("stickell", "Walter Purcaro")
     __author_mail__ = ("l.stickell@yahoo.it", "vuolter@gmail.com")
 
     TITLE_PATTERN = r"src='/js/lib/grid/icon/folder.png'> <span>(?P<title>.+?)</span>"
+
 
     def _getLinks(self, id, page=1):
         gridFile = self.load("http://turbobit.net/downloadfolder/gridFile",

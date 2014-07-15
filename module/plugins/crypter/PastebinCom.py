@@ -19,9 +19,11 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 class PastebinCom(SimpleCrypter):
     __name__ = "PastebinCom"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?pastebin\.com/\w+'
     __version__ = "0.01"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?pastebin\.com/\w+'
+
     __description__ = """Pastebin.com decrypter plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"

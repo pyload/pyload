@@ -6,9 +6,11 @@ from module.plugins.Crypter import Crypter
 
 class UlozToFolder(Crypter):
     __name__ = "UlozToFolder"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(m|soubory)/.*'
     __version__ = "0.2"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(m|soubory)/.*'
+
     __description__ = """Uloz.to folder decrypter plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -16,6 +18,7 @@ class UlozToFolder(Crypter):
     FOLDER_PATTERN = r'<ul class="profile_files">(.*?)</ul>'
     LINK_PATTERN = r'<br /><a href="/([^"]+)">[^<]+</a>'
     NEXT_PAGE_PATTERN = r'<a class="next " href="/([^"]+)">&nbsp;</a>'
+
 
     def decrypt(self, pyfile):
         html = self.load(pyfile.url)

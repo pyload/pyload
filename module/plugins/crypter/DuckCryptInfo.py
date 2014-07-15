@@ -7,14 +7,17 @@ from module.plugins.Crypter import Crypter
 
 class DuckCryptInfo(Crypter):
     __name__ = "DuckCryptInfo"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?duckcrypt.info/(folder|wait|link)/(\w+)/?(\w*)'
     __version__ = "0.02"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?duckcrypt.info/(folder|wait|link)/(\w+)/?(\w*)'
+
     __description__ = """DuckCrypt.info decrypter plugin"""
     __author_name__ = "godofdream"
     __author_mail__ = "soilfiction@gmail.com"
 
     TIMER_PATTERN = r'<span id="timer">(.*)</span>'
+
 
     def decrypt(self, pyfile):
         url = pyfile.url

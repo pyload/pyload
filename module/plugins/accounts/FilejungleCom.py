@@ -25,6 +25,7 @@ class FilejungleCom(Account):
     __name__ = "FilejungleCom"
     __version__ = "0.11"
     __type__ = "account"
+
     __description__ = """Filejungle.com account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -34,6 +35,7 @@ class FilejungleCom(Account):
     URL = "http://filejungle.com/"
     TRAFFIC_LEFT_PATTERN = r'"/extend_premium\.php">Until (\d+ [A-Za-z]+ \d+)<br'
     LOGIN_FAILED_PATTERN = r'<span htmlfor="loginUser(Name|Password)" generated="true" class="fail_info">'
+
 
     def loadAccountInfo(self, user, req):
         html = req.load(self.URL + "dashboard.php")

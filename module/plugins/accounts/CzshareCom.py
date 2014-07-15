@@ -25,11 +25,13 @@ class CzshareCom(Account):
     __name__ = "CzshareCom"
     __version__ = "0.14"
     __type__ = "account"
+
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([0-9 ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'
+
 
     def loadAccountInfo(self, user, req):
         html = req.load("http://sdilej.cz/prehled_kreditu/")

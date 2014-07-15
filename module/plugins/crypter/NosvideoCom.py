@@ -5,9 +5,11 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 class NosvideoCom(SimpleCrypter):
     __name__ = "NosvideoCom"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?nosvideo\.com/\?v=\w+'
     __version__ = "0.01"
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?nosvideo\.com/\?v=\w+'
+
     __description__ = """Nosvideo.com decrypter plugin"""
     __author_name__ = "igel"
     __author_mail__ = "igelkun@myopera.com"

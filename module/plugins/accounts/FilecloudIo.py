@@ -23,9 +23,11 @@ class FilecloudIo(Account):
     __name__ = "FilecloudIo"
     __version__ = "0.02"
     __type__ = "account"
+
     __description__ = """FilecloudIo account plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+
 
     def loadAccountInfo(self, user, req):
         # It looks like the first API request always fails, so we retry 5 times, it should work on the second try

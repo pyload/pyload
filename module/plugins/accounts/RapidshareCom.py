@@ -22,9 +22,11 @@ class RapidshareCom(Account):
     __name__ = "RapidshareCom"
     __version__ = "0.22"
     __type__ = "account"
+
     __description__ = """Rapidshare.com account plugin"""
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"
+
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)

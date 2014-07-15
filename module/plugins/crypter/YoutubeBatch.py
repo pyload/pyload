@@ -15,8 +15,9 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-from urlparse import urljoin
 import re
+
+from urlparse import urljoin
 
 from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter
@@ -27,15 +28,18 @@ API_URL = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
 
 class YoutubeBatch(Crypter):
     __name__ = "YoutubeBatch"
-    __type__ = "crypter"
-    __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)'
     __version__ = "1.00"
-    __description__ = """Youtube.com channel & playlist decrypter plugin"""
+    __type__ = "crypter"
+
+    __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)'
     __config__ = [("likes", "bool", "Grab user (channel) liked videos", False),
                   ("favorites", "bool", "Grab user (channel) favorite videos", False),
                   ("uploads", "bool", "Grab channel unplaylisted videos", True)]
+
+    __description__ = """Youtube.com channel & playlist decrypter plugin"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
+
 
     def api_response(self, ref, req):
         req.update({"key": API_KEY})

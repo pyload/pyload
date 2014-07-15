@@ -26,12 +26,14 @@ class MultishareCz(Account):
     __name__ = "MultishareCz"
     __version__ = "0.02"
     __type__ = "account"
+
     __description__ = """Multishare.cz account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
     TRAFFIC_LEFT_PATTERN = r'<span class="profil-zvyrazneni">Kredit:</span>\s*<strong>(?P<S>[0-9,]+)&nbsp;(?P<U>\w+)</strong>'
     ACCOUNT_INFO_PATTERN = r'<input type="hidden" id="(u_ID|u_hash)" name="[^"]*" value="([^"]+)">'
+
 
     def loadAccountInfo(self, user, req):
         #self.relogin(user)
