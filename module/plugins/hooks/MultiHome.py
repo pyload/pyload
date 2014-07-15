@@ -73,6 +73,7 @@ class MultiHome(Hook):
 
 
 class Interface(object):
+
     def __init__(self, adress):
         self.adress = adress
         self.history = {}

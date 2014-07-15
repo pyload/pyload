@@ -89,7 +89,7 @@ class CzshareCom(SimpleHoster):
     def handleFree(self):
         # get free url
         found = re.search(self.FREE_URL_PATTERN, self.html)
-        if found is None:
+        if not found:
             self.parseError('Free URL')
         parsed_url = "http://sdilej.cz" + found.group(1)
         self.logDebug("PARSED_URL:" + parsed_url)

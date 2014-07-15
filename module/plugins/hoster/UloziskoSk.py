@@ -51,19 +51,19 @@ class UloziskoSk(SimpleHoster):
 
     def handleFree(self):
         found = re.search(self.LINK_PATTERN, self.html)
-        if found is None:
+        if not found:
             self.parseError('URL')
         parsed_url = 'http://www.ulozisko.sk' + found.group(1)
 
         found = re.search(self.ID_PATTERN, self.html)
-        if found is None:
+        if not found:
             self.parseError('ID')
         id = found.group(1)
 
         self.logDebug('URL:' + parsed_url + ' ID:' + id)
 
         found = re.search(self.CAPTCHA_PATTERN, self.html)
-        if found is None:
+        if not found:
             self.parseError('CAPTCHA')
         captcha_url = 'http://www.ulozisko.sk' + found.group(1)
 

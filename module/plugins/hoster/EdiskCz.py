@@ -44,7 +44,7 @@ class EdiskCz(SimpleHoster):
         self.logDebug('URL:' + url)
 
         found = re.search(self.ACTION_PATTERN, url)
-        if found is None:
+        if not found:
             self.parseError("ACTION")
         action = found.group(1)
 

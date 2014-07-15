@@ -21,7 +21,7 @@ class PornhostCom(Hoster):
         pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
-    ###   old interface
+    # Old interface
     def download_html(self):
         url = self.pyfile.url
         self.html = self.load(url)
@@ -29,7 +29,7 @@ class PornhostCom(Hoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         file_url = re.search(r'download this file</label>.*?<a href="(.*?)"', self.html)
@@ -46,7 +46,7 @@ class PornhostCom(Hoster):
         return file_url
 
     def get_file_name(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         name = re.search(r'<title>pornhost\.com - free file hosting with a twist - gallery(.*?)</title>', self.html)
@@ -64,7 +64,7 @@ class PornhostCom(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         if (re.search(r'gallery not found', self.html) is not None or

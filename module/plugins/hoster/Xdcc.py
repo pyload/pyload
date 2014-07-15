@@ -62,7 +62,7 @@ class Xdcc(Hoster):
                 else:
                     errno = e.args[0]
 
-                if errno in (10054,):
+                if errno == 10054:
                     self.logDebug("XDCC: Server blocked our ip, retry in 5 min")
                     self.setWait(300)
                     self.wait()

@@ -44,9 +44,16 @@ class YibaishiwuCom(SimpleHoster):
         self.logDebug(('FREEUSER' if found.group(2) == 'download' else 'GUEST') + ' URL', url)
 
         response = json_loads(self.load("http://115.com" + url, decode=False))
-        for mirror in (response['urls'] if 'urls' in response else response['data'] if 'data' in response else []):
+        if "urls" in response:
+            mirrors = response['urls'] 
+        elif "data" in response:
+            mirrors = response['data']
+        else:
+            mirrors = None
+
+        for m in mirrors:
             try:
-                url = mirror['url'].replace('\\', '')
+                url = m['url'].replace('\\', '')
                 self.logDebug("Trying URL: " + url)
                 self.download(url)
                 break

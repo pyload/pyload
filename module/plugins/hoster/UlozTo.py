@@ -98,7 +98,7 @@ class UlozTo(SimpleHoster):
 
         self.logDebug('inputs.keys() = ' + str(inputs.keys()))
         # get and decrypt captcha
-        if all(key in inputs for key in ('captcha_value', 'captcha_id', 'captcha_key')):
+        if all(key in inputs for key in ("captcha_value", "captcha_id", "captcha_key")):
             # Old version - last seen 9.12.2013
             self.logDebug('Using "old" version')
 
@@ -107,7 +107,7 @@ class UlozTo(SimpleHoster):
 
             inputs.update({'captcha_id': inputs['captcha_id'], 'captcha_key': inputs['captcha_key'], 'captcha_value': captcha_value})
 
-        elif all(key in inputs for key in ('captcha_value', 'timestamp', 'salt', 'hash')):
+        elif all(key in inputs for key in ("captcha_value", "timestamp", "salt", "hash")):
             # New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
             self.logDebug('Using "new" version')
 

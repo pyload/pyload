@@ -30,4 +30,5 @@ class MegareleaseOrg(XFileSharingPro):
 
     FILE_INFO_PATTERN = r'<font color="red">%s/(?P<N>.+)</font> \((?P<S>[^)]+)\)</font>' % __pattern__
 
+
 getInfo = create_getInfo(MegareleaseOrg)

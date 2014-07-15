@@ -57,7 +57,9 @@ class Ev0InFetcher(Hook):
                 continue
         return []
 
+
     def periodical(self):
+
         def normalizefiletitle(filename):
             filename = filename.replace('.', ' ')
             filename = filename.replace('_', ' ')

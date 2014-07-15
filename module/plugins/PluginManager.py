@@ -29,6 +29,7 @@ from traceback import print_exc
 from module.lib.SafeEval import const_eval as literal_eval
 from module.ConfigParser import IGNORE
 
+
 class PluginManager:
     ROOT = "module.plugins."
     USERROOT = "userplugins."

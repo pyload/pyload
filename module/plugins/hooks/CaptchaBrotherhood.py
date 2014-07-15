@@ -29,6 +29,7 @@ from module.plugins.Hook import Hook
 
 
 class CaptchaBrotherhoodException(Exception):
+
     def __init__(self, err):
         self.err = err
 

@@ -60,6 +60,7 @@ class ReCaptcha:
 
 
 class AdsCaptcha(CaptchaService):
+
     def challenge(self, src):
         js = self.plugin.req.load(src, cookies=True)
 

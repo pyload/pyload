@@ -4,8 +4,10 @@ from module.plugins.Hoster import Hoster as _Hoster
 
 
 def create_getInfo(plugin):
+
     def getInfo(urls):
         yield [('#N/A: ' + url, 0, 1, url) for url in urls]
+
     return getInfo
 
 

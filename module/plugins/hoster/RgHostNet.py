@@ -24,4 +24,5 @@ class RgHostNet(SimpleHoster):
         download_link = found.group(1)
         self.download(download_link, disposition=True)
 
+
 getInfo = create_getInfo(RgHostNet)

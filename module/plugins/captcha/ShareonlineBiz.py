@@ -20,6 +20,7 @@
 from module.plugins.OCR import OCR
 
 
+
 class ShareonlineBiz(OCR):
     __name__ = "ShareonlineBiz"
     __version__ = "0.1"
@@ -33,7 +34,7 @@ class ShareonlineBiz(OCR):
     def __init__(self):
         OCR.__init__(self)
 
-    def get_captcha(self, image): 
+    def get_captcha(self, image):
         self.load_image(image)
         self.to_greyscale()
         self.image = self.image.resize((160, 50))

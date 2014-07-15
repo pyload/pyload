@@ -5,6 +5,7 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 #from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 
 
+
 class MovReelCom(XFileSharingPro):
     __name__ = "MovReelCom"
     __type__ = "hoster"

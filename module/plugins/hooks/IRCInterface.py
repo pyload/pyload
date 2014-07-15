@@ -311,12 +311,10 @@ class IRCInterface(Thread, Hook):
         return lines
 
     def event_start(self, args):
-
         self.api.unpauseServer()
         return ["INFO: Starting downloads."]
 
     def event_stop(self, args):
-
         self.api.pauseServer()
         return ["INFO: No new downloads will be started."]
 
@@ -415,6 +413,7 @@ class IRCInterface(Thread, Hook):
 
 
 class IRCError(Exception):
+
     def __init__(self, value):
         self.value = value
 

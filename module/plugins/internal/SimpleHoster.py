@@ -53,7 +53,7 @@ def parseHtmlForm(attr_str, html, input_names=None):
             name = parseHtmlTagAttrValue("name", inputtag.group(1))
             if name:
                 value = parseHtmlTagAttrValue("value", inputtag.group(1))
-                if value is None:
+                if not value:
                     inputs[name] = inputtag.group(3) or ''
                 else:
                     inputs[name] = value
@@ -135,6 +135,7 @@ def parseFileInfo(self, url='', html=''):
 
 
 def create_getInfo(plugin):
+
     def getInfo(urls):
         for url in urls:
             cj = CookieJar(plugin.__name__)
@@ -152,6 +153,7 @@ def timestamp():
 
 
 class PluginParseError(Exception):
+
     def __init__(self, msg):
         Exception.__init__(self)
         self.value = 'Parse error (%s) - plugin may be out of date' % msg

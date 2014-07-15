@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -26,8 +25,8 @@ class SimplyPremiumCom(Hoster):
     __name__ = "SimplyPremiumCom"
     __version__ = "0.03"
     __type__ = "hoster"
-    __pattern__ = r"https?://.*(simply-premium)\.com"
-    __description__ = """Simply-Premium.Com hoster plugin"""
+    __pattern__ = r'https?://.*(simply-premium)\.com'
+    __description__ = """Simply-Premium.com hoster plugin"""
     __author_name__ = "EvolutionClip"
     __author_mail__ = "evolutionclip@live.de"
 

@@ -24,7 +24,7 @@ def getInfo(urls):
 
         api = getURL(apiurl + ids, decode=True)
 
-        if api is None or len(api) < 10:
+        if not api or len(api) < 10:
             print "Netload prefetch: failed "
             return
         if api.find("unknown_auth") >= 0:

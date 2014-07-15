@@ -37,7 +37,6 @@ class LinkSaveIn(Crypter):
         self.preferred_sources = ['cnl2', 'rsdf', 'ccf', 'dlc', 'web']
 
     def decrypt(self, pyfile):
-
         # Init
         self.package = pyfile.package()
         self.fileid = re.match(self.__pattern__, pyfile.url).group('id')
@@ -124,11 +123,11 @@ class LinkSaveIn(Crypter):
                 self.correctCaptcha()
 
     def handleLinkSource(self, type_):
-        if type_ == 'cnl2':
+        if type_ == "cnl2":
             return self.handleCNL2()
-        elif type_ in ('rsdf', 'ccf', 'dlc'):
+        elif type_ in ("rsdf", "ccf", "dlc"):
             return self.handleContainer(type_)
-        elif type_ == 'web':
+        elif type_ == "web":
             return self.handleWebLinks()
         else:
             self.fail('unknown source type "%s" (this is probably a bug)' % type_)
@@ -189,7 +188,6 @@ class LinkSaveIn(Crypter):
         return package_links
 
     def _getCipherParams(self):
-
         # Get jk
         jk_re = r'<INPUT.*?NAME="%s".*?VALUE="(.*?)"' % LinkSaveIn._JK_KEY_
         vjk = re.findall(jk_re, self.html)
@@ -203,7 +201,6 @@ class LinkSaveIn(Crypter):
         return vcrypted, vjk
 
     def _getLinks(self, crypted, jk):
-
         # Get key
         jreturn = self.js.eval("%s f()" % jk)
         self.logDebug("JsEngine returns value [%s]" % jreturn)

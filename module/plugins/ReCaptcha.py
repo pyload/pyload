@@ -2,7 +2,9 @@
 
 import re
 
+
 class ReCaptcha():
+
     def __init__(self, plugin):
         self.plugin = plugin
 

@@ -23,7 +23,7 @@ class NetfolderIn(SimpleCrypter):
         # Check for password protection    
         if self.isPasswordProtected():
             self.html = self.submitPassword()
-            if self.html is None:
+            if not self.html:
                 self.fail("Incorrect password, please set right password on Add package form and retry")
 
         # Get package name and folder
@@ -36,7 +36,6 @@ class NetfolderIn(SimpleCrypter):
         self.packages = [(package_name, package_links, folder_name)]
 
     def isPasswordProtected(self):
-
         if '<input type="password" name="password"' in self.html:
             self.logDebug("Links are password protected")
             return True

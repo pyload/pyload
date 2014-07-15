@@ -56,7 +56,8 @@ class MegasharesCom(SimpleHoster):
             self.retry(wait_time=5 * 60)
 
         self.getFileInfo()
-        #if self.pyfile.size > 576716800: self.fail("This file is too large for free download")
+        # if self.pyfile.size > 576716800:
+        #     self.fail("This file is too large for free download")
 
         # Reactivate passport if needed
         found = re.search(self.REACTIVATE_PASSPORT_PATTERN, self.html)

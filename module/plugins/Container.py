@@ -23,6 +23,7 @@ from os.path import join, exists, basename
 from os import remove
 import re
 
+
 class Container(Crypter):
     __name__ = "Container"
     __version__ = "0.1"

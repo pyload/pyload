@@ -24,7 +24,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class MultiUpOrg(SimpleCrypter):
     __name__ = "MultiUpOrg"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?multiup\.org/(en|fr)/(?P<TYPE>project|download|miror)/\w+(/\w+)?"
+    __pattern__ = r'http://(?:www\.)?multiup\.org/(en|fr)/(?P<TYPE>project|download|miror)/\w+(/\w+)?'
     __version__ = "0.01"
     __description__ = """MultiUp.org crypter plugin"""
     __author_name__ = "Walter Purcaro"

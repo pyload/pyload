@@ -83,4 +83,5 @@ class OneFichierCom(SimpleHoster):
         self.retry()
 
 
+
 getInfo = create_getInfo(OneFichierCom)

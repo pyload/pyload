@@ -69,7 +69,7 @@ class UnibytesCom(SimpleHoster):
             if last_step == 'timer':
                 found = re.search(self.WAIT_PATTERN, self.html)
                 self.wait(int(found.group(1)) if found else 60, False)
-            elif last_step in ('captcha', 'last'):
+            elif last_step in ("captcha", "last"):
                 post_data['captcha'] = self.decryptCaptcha(domain + '/captcha.jpg')
         else:
             self.fail("No valid captcha code entered")

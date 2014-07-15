@@ -27,6 +27,7 @@ from module.utils import chmod, lock
 
 ACC_VERSION = 1
 
+
 class AccountManager():
     """manages all accounts"""
 
@@ -47,7 +48,6 @@ class AccountManager():
         self.initAccountPlugins()
         self.loadAccounts()
 
-
     def getAccountPlugin(self, plugin):
         """get account instance for plugin or None if anonymous"""
         if plugin in self.accounts:
@@ -66,6 +66,7 @@ class AccountManager():
             plugins.append(self.getAccountPlugin(plugin))
 
         return plugins
+
     #----------------------------------------------------------------------
     def loadAccounts(self):
         """loads all accounts available"""
@@ -112,6 +113,7 @@ class AccountManager():
             elif ":" in line:
                 name, sep, pw = line.partition(":")
                 self.accounts[plugin][name] = {"password": pw, "options": {}, "valid": True}
+
     #----------------------------------------------------------------------
     def saveAccounts(self):
         """save all account information"""

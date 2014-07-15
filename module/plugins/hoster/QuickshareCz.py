@@ -66,7 +66,7 @@ class QuickshareCz(SimpleHoster):
     def handleFree(self):
         # get download url
         download_url = '%s/download.php' % self.jsvars['server']
-        data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ('ID1', 'ID2', 'ID3', 'ID4'))
+        data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ("ID1", "ID2", "ID3", "ID4"))
         self.logDebug("FREE URL1:" + download_url, data)
 
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
@@ -95,7 +95,7 @@ class QuickshareCz(SimpleHoster):
 
     def handlePremium(self):
         download_url = '%s/download_premium.php' % self.jsvars['server']
-        data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ('ID1', 'ID2', 'ID4', 'ID5'))
+        data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ("ID1", "ID2", "ID4", "ID5"))
         self.logDebug("PREMIUM URL:" + download_url, data)
         self.download(download_url, get=data)
 

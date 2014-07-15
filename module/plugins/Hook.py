@@ -22,6 +22,7 @@ from traceback import print_exc
 
 from Plugin import Base
 
+
 class Expose(object):
     """ used for decoration to declare rpc services """
 
@@ -29,10 +30,13 @@ class Expose(object):
         hookManager.addRPC(f.__module__, f.func_name, f.func_doc)
         return f
 
+
 def threaded(f):
+
     def run(*args,**kwargs):
         hookManager.startThread(f, *args, **kwargs)
     return run
+
 
 class Hook(Base):
     """

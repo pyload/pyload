@@ -31,7 +31,7 @@ class ShareplaceCom(Hoster):
         self.wait()
 
     def get_waiting_time(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         #var zzipitime = 15;
@@ -62,7 +62,7 @@ class ShareplaceCom(Hoster):
             self.fail("absolute filepath could not be found. offline? ")
 
     def get_file_name(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         return re.search("<title>\s*(.*?)\s*</title>", self.html).group(1)
@@ -70,7 +70,7 @@ class ShareplaceCom(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         if re.search(r"HTTP Status 404", self.html) is not None:

@@ -32,7 +32,6 @@ class DuckCryptInfo(Crypter):
         else:
             self.handleFolder(found)
 
-
     def handleFolder(self, found):
         src = self.load("http://duckcrypt.info/ajax/auth.php?hash=" + str(found.group(2)))
         found = re.match(self.__pattern__, src)

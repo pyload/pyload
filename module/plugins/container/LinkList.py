@@ -4,6 +4,7 @@ import codecs
 from module.utils import fs_encode
 from module.plugins.Container import Container
 
+
 class LinkList(Container):
     __name__ = "LinkList"
     __version__ = "0.12"
@@ -33,7 +34,8 @@ class LinkList(Container):
 
         for link in links:
             link = link.strip()
-            if not link: continue
+            if not link:
+                continue
 
             if link.startswith(";"):
                 continue

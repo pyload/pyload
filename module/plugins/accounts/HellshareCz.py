@@ -36,7 +36,7 @@ class HellshareCz(Account):
         html = req.load("http://www.hellshare.com/")
 
         found = re.search(self.CREDIT_LEFT_PATTERN, html)
-        if found is None:
+        if not found:
             trafficleft = None
             validuntil = None
             premium = False

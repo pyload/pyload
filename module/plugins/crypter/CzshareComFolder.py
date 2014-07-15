@@ -22,7 +22,8 @@ class CzshareComFolder(Crypter):
 
         new_links = []
         found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
-        if found is None: self.fail("Parse error (FOLDER)")
+        if not found:
+            self.fail("Parse error (FOLDER)")
         new_links.extend(re.findall(self.LINK_PATTERN, found.group(1)))
 
         if new_links:

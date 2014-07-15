@@ -21,7 +21,7 @@ class QuickshareCzFolder(Crypter):
 
         new_links = []
         found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
-        if found is None:
+        if not found:
             self.fail("Parse error (FOLDER)")
         new_links.extend(re.findall(self.LINK_PATTERN, found.group(1)))
 

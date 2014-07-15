@@ -51,7 +51,6 @@ class RelinkUs(Crypter):
         self.captcha = False
 
     def decrypt(self, pyfile):
-
         # Init
         self.initPackage(pyfile)
 
@@ -226,7 +225,6 @@ class RelinkUs(Crypter):
         return package_links
 
     def _getCipherParams(self, cnl2_form):
-
         # Get jk
         jk_re = self.CNL2_FORMINPUT_REGEX % self.CNL2_JK_KEY
         vjk = re.findall(jk_re, cnl2_form, re.IGNORECASE)
@@ -240,7 +238,6 @@ class RelinkUs(Crypter):
         return vcrypted, vjk
 
     def _getLinks(self, crypted, jk):
-
         # Get key
         jreturn = self.js.eval("%s f()" % jk)
         self.logDebug("JsEngine returns value [%s]" % jreturn)

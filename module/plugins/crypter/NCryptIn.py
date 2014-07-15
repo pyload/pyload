@@ -32,7 +32,6 @@ class NCryptIn(Crypter):
         self.protection_type = None
 
     def decrypt(self, pyfile):
-
         # Init
         self.package = pyfile.package()
         package_links = []
@@ -75,7 +74,7 @@ class NCryptIn(Crypter):
 
     def isSingleLink(self):
         link_type = re.match(self.__pattern__, self.pyfile.url).group('type')
-        return link_type in ('link', 'frame')
+        return link_type in ("link", "frame")
 
     def requestFolderHome(self):
         return self.load(self.pyfile.url, decode=True)
@@ -163,7 +162,6 @@ class NCryptIn(Crypter):
         return self.load(self.pyfile.url, post=postData, decode=True)
 
     def handleErrors(self):
-
         if self.protection_type == "password":
             if "This password is invalid!" in self.cleanedHtml:
                 self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
@@ -178,9 +176,8 @@ class NCryptIn(Crypter):
                 self.correctCaptcha()
 
     def handleLinkSource(self, link_source_type):
-
         # Check for JS engine
-        require_js_engine = link_source_type in ('cnl2', 'rsdf', 'ccf', 'dlc')
+        require_js_engine = link_source_type in ("cnl2", "rsdf", "ccf", "dlc")
         if require_js_engine and not self.js:
             self.logDebug("No JS engine available, skip %s links" % link_source_type)
             return []
@@ -190,9 +187,9 @@ class NCryptIn(Crypter):
             return self.handleSingleLink()
         if link_source_type == 'cnl2':
             return self.handleCNL2()
-        elif link_source_type in ('rsdf', 'ccf', 'dlc'):
+        elif link_source_type in ("rsdf", "ccf", "dlc"):
             return self.handleContainer(link_source_type)
-        elif link_source_type == 'web':
+        elif link_source_type == "web":
             return self.handleWebLinks()
         else:
             self.fail('unknown source type "%s" (this is probably a bug)' % link_source_type)
@@ -279,7 +276,6 @@ class NCryptIn(Crypter):
         return vcrypted, vjk
 
     def _getLinks(self, crypted, jk):
-
         # Get key
         jreturn = self.js.eval("%s f()" % jk)
         self.logDebug("JsEngine returns value [%s]" % jreturn)

@@ -8,10 +8,11 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class UpstoreNet(SimpleHoster):
     __name__ = "UpstoreNet"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?upstore\.net/"
+    __pattern__ = r'https?://(?:www\.)?upstore\.net/'
     __version__ = "0.02"
     __description__ = """Upstore.Net File Download Hoster"""
-    __author_name__ = ("igel")
+    __author_name__ = "igel"
+    __author_mail__ = "igelkun@myopera.com"
 
     FILE_INFO_PATTERN = r'<div class="comment">.*?</div>\s*\n<h2 style="margin:0">(?P<N>.*?)</h2>\s*\n<div class="comment">\s*\n\s*(?P<S>[\d.]+) (?P<U>\w+)'
     OFFLINE_PATTERN = r'<span class="error">File not found</span>'
@@ -19,6 +20,7 @@ class UpstoreNet(SimpleHoster):
     WAIT_PATTERN = r'var sec = (\d+)'
     CHASH_PATTERN = r'<input type="hidden" name="hash" value="([^"]*)">'
     LINK_PATTERN = r'<a href="(https?://.*?)" target="_blank"><b>'
+
 
     def handleFree(self):
         # STAGE 1: get link to continue

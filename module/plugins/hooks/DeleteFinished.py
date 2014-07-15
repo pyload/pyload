@@ -20,8 +20,8 @@ from module.plugins.Hook import Hook
 
 
 class DeleteFinished(Hook):
-    __name__ = 'DeleteFinished'
-    __version__ = '1.09'
+    __name__ = "DeleteFinished"
+    __version__ = "1.09"
     __type__ = "hook"
 
     __config__ = [('activated', 'bool', 'Activated', 'False'),
@@ -29,8 +29,8 @@ class DeleteFinished(Hook):
                   ('deloffline', 'bool', 'Delete packages with offline links', 'False')]
 
     __description__ = """Automatically delete all finished packages from queue"""
-    __author_name__ = ('Walter Purcaro')
-    __author_mail__ = ('vuolter@gmail.com')
+    __author_name__ = "Walter Purcaro"
+    __author_mail__ = "vuolter@gmail.com"
 
 
     ## overwritten methods ##

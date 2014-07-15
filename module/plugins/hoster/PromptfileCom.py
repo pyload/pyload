@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -23,10 +22,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class PromptfileCom(SimpleHoster):
     __name__ = "PromptfileCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?promptfile\.com/"
+    __pattern__ = r'https?://(?:www\.)?promptfile\.com/'
     __version__ = "0.1"
-    __description__ = """Promptfile.Com File Download Hoster"""
-    __author_name__ = ("igel")
+    __description__ = """Promptfile.com hoster plugin"""
+    __author_name__ = "igel"
+    __author_mail__ = "igelkun@myopera.com"
 
     FILE_INFO_PATTERN = r'<span style="[^"]*" title="[^"]*">(?P<N>.*?) \((?P<S>[\d.]+) (?P<U>\w+)\)</span>'
     OFFLINE_PATTERN = r'<span style="[^"]*" title="File Not Found">File Not Found</span>'
@@ -49,7 +49,7 @@ class PromptfileCom(SimpleHoster):
         if not m:
             self.parseError("Unable to detect direct link")
         direct = m.group(1)
-        self.logDebug('found direct link: ' + direct)
+        self.logDebug("found direct link: " + direct)
         self.download(direct, disposition=True)
 
 

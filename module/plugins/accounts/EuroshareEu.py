@@ -34,7 +34,7 @@ class EuroshareEu(Account):
         html = req.load("http://euroshare.eu/customer-zone/settings/")
 
         found = re.search('id="input_expire_date" value="(\d+\.\d+\.\d+ \d+:\d+)"', html)
-        if found is None:
+        if not found:
             premium, validuntil = False, -1
         else:
             premium = True

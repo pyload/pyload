@@ -7,7 +7,7 @@ class Vipleech4uCom(DeadHoster):
     __name__ = "Vipleech4uCom"
     __version__ = "0.2"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?vipleech4u\.com/manager\.php"
+    __pattern__ = r'http://(?:www\.)?vipleech4u\.com/manager\.php'
     __description__ = """Vipleech4u.com hoster plugin"""
     __author_name__ = "Kagenoshin"
     __author_mail__ = "kagenoshin@gmx.ch"

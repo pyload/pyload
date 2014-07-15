@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -15,17 +14,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
-from module.plugins.Account import Account
 from module.common.json_layer import json_loads
+from module.plugins.Account import Account
 
 
 class SimplyPremiumCom(Account):
     __name__ = "SimplyPremiumCom"
     __version__ = "0.01"
     __type__ = "account"
-    __description__ = """Simply-Premium.Com account plugin"""
-    __author_name__ = ("EvolutionClip")
-    __author_mail__ = ("evolutionclip@live.de")
+    __description__ = """Simply-Premium.com account plugin"""
+    __author_name__ = "EvolutionClip"
+    __author_mail__ = "evolutionclip@live.de"
 
     def loadAccountInfo(self, user, req):
         json_data = req.load('http://www.simply-premium.com/api/user.php?format=json')

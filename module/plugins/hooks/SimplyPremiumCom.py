@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -15,9 +14,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
 ############################################################################
 
-from module.plugins.internal.MultiHoster import MultiHoster
-from module.network.RequestFactory import getURL
 from module.common.json_layer import json_loads
+from module.network.RequestFactory import getURL
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class SimplyPremiumCom(MultiHoster):
@@ -31,7 +30,7 @@ class SimplyPremiumCom(MultiHoster):
                   ("unloadFailing", "bool", "Revert to standard download if download fails", "False"),
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
-    __description__ = """Simply-Premium.Com hook plugin"""
+    __description__ = """Simply-Premium.com hook plugin"""
     __author_name__ = "EvolutionClip"
     __author_mail__ = "evolutionclip@live.de"
 

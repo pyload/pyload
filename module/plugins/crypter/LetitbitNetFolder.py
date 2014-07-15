@@ -22,7 +22,7 @@ class LetitbitNetFolder(Crypter):
         new_links = []
 
         folder = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
-        if folder is None:
+        if not folder:
             self.fail("Parse error (FOLDER)")
 
         new_links.extend(re.findall(self.LINK_PATTERN, folder.group(0)))

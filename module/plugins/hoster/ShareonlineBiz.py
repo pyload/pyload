@@ -144,7 +144,7 @@ class ShareonlineBiz(Hoster):
         else:
             self.correctCaptcha()
 
-    def handlePremium(self):  # should be working better loading (account) api internally
+    def handlePremium(self):  #: should be working better loading (account) api internally
         self.account.getAccountInfo(self.user, True)
         src = self.load("http://api.share-online.biz/account.php",
                         {"username": self.user, "password": self.account.accounts[self.user]["password"],
@@ -179,9 +179,9 @@ class ShareonlineBiz(Hoster):
         msg = found.group(1) if found else ""
         self.logError(err, msg or "Unknown error occurred")
 
-        if err in ('invalid'):
+        if err == "invalid":
             self.fail(msg or "File not available")
-        elif err in ('freelimit', 'size', 'proxy'):
+        elif err in ("freelimit", "size", "proxy"):
             self.fail(msg or "Premium account needed")
         else:
             if err in 'server':

@@ -27,6 +27,7 @@ PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"
 
 
 class BypassCaptchaException(Exception):
+
     def __init__(self, err):
         self.err = err
 

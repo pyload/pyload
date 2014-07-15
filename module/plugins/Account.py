@@ -25,6 +25,7 @@ from threading import RLock
 from Plugin import Base
 from module.utils import compare_time, parseFileSize, lock
 
+
 class WrongPassword(Exception):
     pass
 

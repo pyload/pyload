@@ -92,8 +92,9 @@ class LetitbitNet(SimpleHoster):
         self.html = self.load(domain + action, post=inputs, cookies=True)
 
         # action, inputs = self.parseHtmlForm('id="d3_form"')
-        # if not action: self.parseError("page 2 / d3_form")
-        # #self.logDebug(action, inputs)
+        # if not action:
+        #     self.parseError("page 2 / d3_form")
+        # self.logDebug(action, inputs)
         #
         # self.html = self.load(action, post = inputs, cookies = True)
         #

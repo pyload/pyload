@@ -19,6 +19,7 @@
 
 from module.plugins.Plugin import Plugin
 
+
 class Crypter(Plugin):
     __name__ = "Crypter"
     __version__ = "0.1"

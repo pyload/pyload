@@ -29,7 +29,7 @@ class RedtubeCom(Hoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         file_url = unescape(re.search(r'hashlink=(http.*?)"', self.html).group(1))
@@ -37,7 +37,7 @@ class RedtubeCom(Hoster):
         return file_url
 
     def get_file_name(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         name = re.search('<title>(.*?)- RedTube - Free Porn Videos</title>', self.html).group(1).strip() + ".flv"
@@ -46,7 +46,7 @@ class RedtubeCom(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         if re.search(r'This video has been removed.', self.html) is not None:

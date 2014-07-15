@@ -46,7 +46,7 @@ class FileshareInUa(Hoster):
 
     def _getName(self):
         name = re.search(self.PATTERN_FILENAME, self.html)
-        if name is None:
+        if not name:
             self.fail("%s: Plugin broken." % self.__name__)
 
         return name.group(1)
@@ -66,7 +66,7 @@ def getInfo(urls):
         else:
             name = re.search(FileshareInUa.PATTERN_FILENAME, html)
 
-            if name is None:
+            if not name:
                 result.append((url, 0, 1, url))
                 continue
 

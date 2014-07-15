@@ -10,12 +10,13 @@ from module.network.CookieJar import CookieJar
 
 
 class CustomBrowser(Browser):
+
     def __init__(self, bucket=None, options={}):
         Browser.__init__(self, bucket, options)
 
     def load(self, *args, **kwargs):
         post = kwargs.get("post")
-        if post is None:
+        if not post:
             if len(args) > 2:
                 post = args[2]
         if post:

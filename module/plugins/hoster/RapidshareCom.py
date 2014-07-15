@@ -109,7 +109,6 @@ class RapidshareCom(Hoster):
             self.fail("Unknown response code.")
 
     def handleFree(self):
-
         while self.no_download:
             self.dl_dict = self.freeWait()
 

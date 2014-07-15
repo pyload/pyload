@@ -12,8 +12,8 @@ class MegacrypterCom(MegaNz):
     __pattern__ = r'(https?://[a-z0-9]{0,10}\.?megacrypter\.com/[a-zA-Z0-9!_\-]+)'
     __version__ = "0.2"
     __description__ = """Megacrypter.com decrypter plugin"""
-    __author_name__ = ("GonzaloSR", )
-    __author_mail__ = ("gonzalo@gonzalosr.com", )
+    __author_name__ = "GonzaloSR"
+    __author_mail__ = "gonzalo@gonzalosr.com"
 
     API_URL = "http://megacrypter.com/api"
     FILE_SUFFIX = ".crypted"

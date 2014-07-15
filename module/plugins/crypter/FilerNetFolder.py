@@ -8,7 +8,7 @@ class FilerNetFolder(SimpleCrypter):
     __type__ = "crypter"
     __version__ = "0.3"
     __description__ = """Filer.net decrypter plugin"""
-    __pattern__ = r"https?://filer\.net/folder/\w{16}"
+    __pattern__ = r'https?://filer\.net/folder/\w{16}'
     __author_name_ = ("nath_schwarz", "stickell")
     __author_mail_ = ("nathan.notwhite@gmail.com", "l.stickell@yahoo.it")
 

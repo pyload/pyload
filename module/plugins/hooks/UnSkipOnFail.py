@@ -22,8 +22,8 @@ from module.PyFile import PyFile
 
 
 class UnSkipOnFail(Hook):
-    __name__ = 'UnSkipOnFail'
-    __version__ = '0.01'
+    __name__ = "UnSkipOnFail"
+    __version__ = "0.01"
     __type__ = "hook"
 
     __config__ = [("activated", "bool", "Activated", True)]

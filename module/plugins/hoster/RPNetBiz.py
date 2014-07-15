@@ -20,7 +20,6 @@ class RPNetBiz(Hoster):
         self.resumeDownload = True
 
     def process(self, pyfile):
-
         if re.match(self.__pattern__, pyfile.url):
             link_status = {'generated': pyfile.url}
         elif not self.account:

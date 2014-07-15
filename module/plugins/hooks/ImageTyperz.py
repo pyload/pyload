@@ -25,6 +25,7 @@ from module.plugins.Hook import Hook
 
 
 class ImageTyperzException(Exception):
+
     def __init__(self, err):
         self.err = err
 

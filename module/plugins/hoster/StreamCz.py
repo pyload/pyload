@@ -59,7 +59,7 @@ class StreamCz(Hoster):
             self.offline()
 
         found = re.search(self.CDN_PATTERN, self.html)
-        if found is None:
+        if not found:
             self.fail("Parse error (CDN)")
         cdn = found.groupdict()
         self.logDebug(cdn)
@@ -71,7 +71,7 @@ class StreamCz(Hoster):
             self.fail("Stream URL not found")
 
         found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if found is None:
+        if not found:
             self.fail("Parse error (NAME)")
         pyfile.name = "%s-%s.%s.mp4" % (found.group(2), found.group(1), cdnkey[-2:])
 

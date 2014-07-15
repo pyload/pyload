@@ -43,7 +43,7 @@ class DownloadScheduler(Hook):
         self.updateSchedule()
 
     def updateSchedule(self, schedule=None):
-        if schedule is None:
+        if not schedule:
             schedule = self.getConfig("timetable")
 
         schedule = re.findall("(\d{1,2}):(\d{2})[\s]*(-?\d+)",

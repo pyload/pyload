@@ -23,6 +23,7 @@ def getInfo(self):
         #result = [ .. (name, size, status, url) .. ]
         return
 
+
 class Hoster(Plugin):
     __name__ = "Hoster"
     __version__ = "0.1"
