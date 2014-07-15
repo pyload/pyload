@@ -18,6 +18,6 @@ class XupPl(Crypter):
     def decrypt(self, pyfile):
         header = self.load(pyfile.url, just_header=True)
         if 'location' in header:
-            self.core.files.addLinks([header['location']], pyfile.package().id)
+            self.urls = [header['location']]
         else:
             self.fail('Unable to find link')

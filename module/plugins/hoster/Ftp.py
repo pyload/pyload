@@ -75,13 +75,12 @@ class Ftp(Hoster):
             #Naive ftp directory listing          
             if re.search(r'^25\d.*?"', self.req.http.header, re.M):
                 pyfile.url = pyfile.url.rstrip('/')
-                pkgname = "/".join((pyfile.package().name, urlparse(pyfile.url).path.rpartition('/')[2]))
+                pkgname = "/".join(pyfile.package().name, urlparse(pyfile.url).path.rpartition('/')[2])
                 pyfile.url += '/'
                 self.req.http.c.setopt(48, 1)  # CURLOPT_DIRLISTONLY
                 response = self.load(pyfile.url, decode=False)
                 links = [pyfile.url + quote(x) for x in response.splitlines()]
                 self.logDebug("LINKS", links)
-                self.core.api.addPackage(pkgname, links, 1)
-                #self.core.files.addLinks(links, pyfile.package().id)
+                self.core.api.addPackage(pkgname, links)
             else:
                 self.fail("Unexpected server response")

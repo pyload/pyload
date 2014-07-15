@@ -21,10 +21,5 @@ class FourChanOrg(Crypter):
 
     def decrypt(self, pyfile):
         pagehtml = self.load(pyfile.url)
-
         images = set(re.findall(r'(images\.4chan\.org/[^/]*/src/[^"<]*)', pagehtml))
-        urls = []
-        for image in images:
-            urls.append("http://" + image)
-
-        self.core.files.addLinks(urls, pyfile.package().id)
+        self.urls = ["http://" + image for image in images]

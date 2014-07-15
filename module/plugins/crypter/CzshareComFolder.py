@@ -17,19 +17,15 @@ class CzshareComFolder(Crypter):
 
     FOLDER_PATTERN = r'<tr class="subdirectory">\s*<td>\s*<table>(.*?)</table>'
     LINK_PATTERN = r'<td class="col2"><a href="([^"]+)">info</a></td>'
-    #NEXT_PAGE_PATTERN = r'<a class="next " href="/([^"]+)">&nbsp;</a>'
 
 
     def decrypt(self, pyfile):
         html = self.load(pyfile.url)
 
-        new_links = []
         found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
         if not found:
             self.fail("Parse error (FOLDER)")
-        new_links.extend(re.findall(self.LINK_PATTERN, found.group(1)))
 
-        if new_links:
-            self.core.files.addLinks(new_links, pyfile.package().id)
-        else:
+        self.urls.extend(re.findall(self.LINK_PATTERN, found.group(1)))
+        if not self.urls:
             self.fail('Could not extract any links')

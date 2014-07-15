@@ -41,4 +41,4 @@ class CCF(Container):
         tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.DOTALL).group(1))
         tempdlc.close()
 
-        self.packages.append((tempdlc_name, [tempdlc_name], tempdlc_name))
+        self.urls = [tempdlc_name]

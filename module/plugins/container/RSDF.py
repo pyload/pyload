@@ -40,14 +40,12 @@ class RSDF(Container):
             data = binascii.unhexlify(''.join(data.split()))
             data = data.splitlines()
 
-            links = []
             for link in data:
                 if not link:
                     continue
                 link = base64.b64decode(link)
                 link = obj.decrypt(link)
                 decryptedUrl = link.replace('CCF: ', '')
-                links.append(decryptedUrl)
+                self.urls.append(decryptedUrl)
 
-            self.logDebug("%s: adding package %s with %d links" % (self.__name__, pyfile.package().name, len(links)))
-            self.packages.append((pyfile.package().name, links))
+            self.log.debug("%s: adding package %s with %d links" % (self.__name__,pyfile.package().name,len(links)))

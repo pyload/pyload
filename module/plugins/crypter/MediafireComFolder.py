@@ -22,8 +22,6 @@ class MediafireComFolder(Crypter):
 
 
     def decrypt(self, pyfile):
-        new_links = []
-
         url, result = checkHTMLHeader(pyfile.url)
         self.logDebug('Location (%d): %s' % (result, url))
 
@@ -33,7 +31,7 @@ class MediafireComFolder(Crypter):
             found = re.search(self.FILE_URL_PATTERN, html)
             if found:
                 # file page
-                new_links.append("http://www.mediafire.com/file/%s" % found.group(1))
+                self.urls.append("http://www.mediafire.com/file/%s" % found.group(1))
             else:
                 # folder page
                 found = re.search(self.FOLDER_KEY_PATTERN, html)
@@ -46,15 +44,13 @@ class MediafireComFolder(Crypter):
                     #self.logInfo(json_resp)
                     if json_resp['response']['result'] == "Success":
                         for link in json_resp['response']['folder_info']['files']:
-                            new_links.append("http://www.mediafire.com/file/%s" % link['quickkey'])
+                            self.urls.append("http://www.mediafire.com/file/%s" % link['quickkey'])
                     else:
                         self.fail(json_resp['response']['message'])
         elif result == 1:
             self.offline()
         else:
-            new_links.append(url)
+            self.urls.append(url)
 
-        if new_links:
-            self.core.files.addLinks(new_links, pyfile.package().id)
-        else:
+        if not self.urls:
             self.fail('Could not extract any links')

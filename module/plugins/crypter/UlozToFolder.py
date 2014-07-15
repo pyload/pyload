@@ -40,6 +40,6 @@ class UlozToFolder(Crypter):
             self.logInfo("Limit of 99 pages reached, aborting")
 
         if new_links:
-            self.core.files.addLinks(map(lambda s: "http://ulozto.net/%s" % s, new_links), pyfile.package().id)
+            self.urls = [map(lambda s: "http://ulozto.net/%s" % s, new_links)]
         else:
             self.fail('Could not extract any links')

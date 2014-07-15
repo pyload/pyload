@@ -43,6 +43,6 @@ class DDLMusicOrg(Crypter):
                                            "linknr": linknr})
         m = re.search(r"<form id=\"ff\" action=\"(.*?)\" method=\"post\">", htmlwithlink)
         if m:
-            self.packages.append((pyfile.package().name, [m.group(1)], pyfile.package().folder))
+            self.urls = [m.group(1)]
         else:
             self.retry()

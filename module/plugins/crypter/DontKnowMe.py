@@ -22,4 +22,4 @@ class DontKnowMe(Crypter):
 
     def decrypt(self, pyfile):
         link = re.findall(self.LINK_PATTERN, pyfile.url)[0]
-        self.core.files.addLinks([urllib.unquote(link)], pyfile.package().id)
+        self.urls = [urllib.unquote(link)]

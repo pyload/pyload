@@ -32,6 +32,6 @@ class FileserveComFolder(Crypter):
         new_links.extend(re.findall(self.LINK_PATTERN, folder.group(1)))
 
         if new_links:
-            self.core.files.addLinks(map(lambda s: "http://fileserve.com%s" % s, new_links), pyfile.package().id)
+            self.urls = [map(lambda s: "http://fileserve.com%s" % s, new_links)]
         else:
             self.fail('Could not extract any links')

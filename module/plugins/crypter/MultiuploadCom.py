@@ -32,34 +32,31 @@ class MultiuploadCom(Crypter):
             "d": re.match(self.__pattern__, pyfile.url).group(1),
             "r": str(int(time() * 1000))
         }))
-        new_links = []
 
         prefered_set = map(lambda s: s.lower().split('.')[0], set(self.getConfig("preferedHoster").split('|')))
 
         if ml_url and 'multiupload' in prefered_set:
-            new_links.append(ml_url)
+            self.urls.append(ml_url)
 
         for link in json_list:
             if link['service'].lower() in prefered_set and int(link['status']) and not int(link['deleted']):
                 url = self.getLocation(link['url'])
                 if url:
-                    new_links.append(url)
+                    self.urls.append(url)
 
-        if not new_links:
+        if not self.urls:
             ignored_set = map(lambda s: s.lower().split('.')[0], set(self.getConfig("ignoredHoster").split('|')))
 
             if 'multiupload' not in ignored_set:
-                new_links.append(ml_url)
+                self.urls.append(ml_url)
 
             for link in json_list:
                 if link['service'].lower() not in ignored_set and int(link['status']) and not int(link['deleted']):
                     url = self.getLocation(link['url'])
                     if url:
-                        new_links.append(url)
+                        self.urls.append(url)
 
-        if new_links:
-            self.core.files.addLinks(new_links, pyfile.package().id)
-        else:
+        if not self.urls:
             self.fail('Could not extract any links')
 
     def getLocation(self, url):

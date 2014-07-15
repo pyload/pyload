@@ -23,23 +23,20 @@ class MultiloadCz(Crypter):
 
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
-        new_links = []
 
         if re.match(self.__pattern__, pyfile.url).group(1) == "slozka":
             found = re.search(self.FOLDER_PATTERN, self.html)
             if found is not None:
-                new_links.extend(found.group(1).split())
+                self.urls.extend(found.group(1).split())
         else:
             found = re.findall(self.LINK_PATTERN, self.html)
             if found:
                 prefered_set = set(self.getConfig("usedHoster").split('|'))
-                new_links.extend([x[1] for x in found if x[0] in prefered_set])
+                self.urls.extend([x[1] for x in found if x[0] in prefered_set])
 
-                if not new_links:
+                if not self.urls:
                     ignored_set = set(self.getConfig("ignoredHoster").split('|'))
-                    new_links.extend([x[1] for x in found if x[0] not in ignored_set])
+                    self.urls.extend([x[1] for x in found if x[0] not in ignored_set])
 
-        if new_links:
-            self.core.files.addLinks(new_links, pyfile.package().id)
-        else:
+        if not self.urls:
             self.fail('Could not extract any links')

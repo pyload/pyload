@@ -52,8 +52,6 @@ class DuckCryptInfo(Crypter):
     def handleLink(self, url):
         src = self.load(url)
         soup = BeautifulSoup(src)
-        link = soup.find("iframe")['src']
-        if not link:
+        self.urls = [soup.find("iframe")["src"]]
+        if not self.urls:
             self.logDebug('no links found - (Plugin out of date?)')
-        else:
-            self.core.files.addLinks([link], self.pyfile.package().id)

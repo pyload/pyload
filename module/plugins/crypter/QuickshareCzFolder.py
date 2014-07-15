@@ -22,13 +22,10 @@ class QuickshareCzFolder(Crypter):
     def decrypt(self, pyfile):
         html = self.load(pyfile.url)
 
-        new_links = []
         found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
         if not found:
             self.fail("Parse error (FOLDER)")
-        new_links.extend(re.findall(self.LINK_PATTERN, found.group(1)))
+        self.urls.extend(re.findall(self.LINK_PATTERN, found.group(1)))
 
-        if new_links:
-            self.core.files.addLinks(new_links, pyfile.package().id)
-        else:
+        if not self.urls:
             self.fail('Could not extract any links')

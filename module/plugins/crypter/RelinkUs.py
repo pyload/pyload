@@ -94,10 +94,9 @@ class RelinkUs(Crypter):
         self.fileid = re.match(self.__pattern__, pyfile.url).group('id')
         self.package = pyfile.package()
         self.password = self.getPassword()
-        self.url = pyfile.url
 
     def requestPackage(self):
-        self.html = self.load(self.url, decode=True)
+        self.html = self.load(self.pyfile.url, decode=True)
 
     def isOnline(self):
         if self.OFFLINE_TOKEN in self.html:

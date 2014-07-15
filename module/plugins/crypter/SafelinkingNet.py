@@ -30,13 +30,12 @@ class SafelinkingNet(Crypter):
             self.load(url)
             m = re.search("^Location: (.+)$", self.req.http.header, re.MULTILINE)
             if m:
-                self.core.files.addLinks([m.group(1)], pyfile.package().id)
+                self.urls = [m.group(1)]
             else:
                 self.fail("Couldn't find forwarded Link")
 
         else:
             password = ""
-            packageLinks = []
             postData = {"post-protect": "1"}
 
             self.html = self.load(url)
@@ -76,8 +75,6 @@ class SafelinkingNet(Crypter):
                 linkDict = json_loads(m.group(1))
                 for link in linkDict:
                     if not "http://" in link['full']:
-                        packageLinks.append("https://safelinking.net/d/" + link['full'])
+                        self.urls.append("https://safelinking.net/d/" + link['full'])
                     else:
-                        packageLinks.append(link['full'])
-
-            self.core.files.addLinks(packageLinks, pyfile.package().id)
+                        self.urls.append(link['full'])

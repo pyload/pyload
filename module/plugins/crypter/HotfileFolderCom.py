@@ -27,4 +27,4 @@ class HotfileFolderCom(Crypter):
 
         new_links = [x[0] for x in new_links]
 
-        self.packages.append((name, new_links, name))
+        self.packages = [(name, new_links, name)]

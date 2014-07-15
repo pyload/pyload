@@ -22,15 +22,11 @@ class LetitbitNetFolder(Crypter):
     def decrypt(self, pyfile):
         html = self.load(pyfile.url)
 
-        new_links = []
-
         folder = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
         if not folder:
             self.fail("Parse error (FOLDER)")
 
-        new_links.extend(re.findall(self.LINK_PATTERN, folder.group(0)))
+        self.urls.extend(re.findall(self.LINK_PATTERN, folder.group(0)))
 
-        if new_links:
-            self.core.files.addLinks(new_links, pyfile.package().id)
-        else:
+        if not self.urls:
             self.fail('Could not extract any links')

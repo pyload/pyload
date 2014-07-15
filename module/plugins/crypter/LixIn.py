@@ -54,8 +54,6 @@ class LixIn(Crypter):
         matches = re.search(self.LINK_PATTERN, self.html)
         if not matches:
             self.fail("can't find destination url")
-
-        new_link = matches.group("link")
-        self.logDebug("Found link %s, adding to package" % new_link)
-
-        self.packages.append((pyfile.package().name, [new_link], pyfile.package().name))
+        else:
+            self.urls = [matches.group("link")]
+            self.logDebug("Found link %s, adding to package" % self.urls[0])

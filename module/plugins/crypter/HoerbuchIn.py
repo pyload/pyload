@@ -33,11 +33,9 @@ class HoerbuchIn(Crypter):
                 package = "%s (%s)" % (abookname, a.previousSibling.previousSibling.text[:-1])
                 links = self.decryptFolder(a['href'])
 
-                self.packages.append((package, links, pyfile.package().folder))
+                self.packages.append((package, links, package))
         else:
-            links = self.decryptFolder(pyfile.url)
-
-            self.packages.append((pyfile.package().name, links, pyfile.package().folder))
+            self.urls = self.decryptFolder(pyfile.url)
 
     def decryptFolder(self, url):
         m = self.protection.search(url)

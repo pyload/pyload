@@ -41,10 +41,8 @@ class LinkdecrypterCom(Crypter):
         self.passwords = self.getPassword().splitlines()
 
         # API not working anymore
-        new_links = self.decryptHTML()
-        if new_links:
-            self.core.files.addLinks(new_links, pyfile.package().id)
-        else:
+        self.urls = self.decryptHTML()
+        if not self.urls:
             self.fail('Could not extract any links')
 
     def decryptAPI(self):
