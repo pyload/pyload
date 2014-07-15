@@ -60,7 +60,6 @@ class LetitbitNet(SimpleHoster):
 
     HOSTER_NAME = "letitbit.net"
 
-    #CHECK_URL_PATTERN = r"ajax_check_url\s*=\s*'((http://[^/]+)[^']+)';"
     SECONDS_PATTERN = r'seconds\s*=\s*(\d+);'
     CAPTCHA_CONTROL_FIELD = r"recaptcha_control_field\s=\s'(?P<value>[^']+)'"
     RECAPTCHA_KEY = "6Lc9zdMSAAAAAF-7s2wuQ-036pLRbM0p8dDaQdAM"
