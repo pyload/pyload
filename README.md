@@ -57,16 +57,16 @@ Usage
 
 Run:
 
-    python pyLoadCore.py
+    python pyload.py
 
 and follow the setup assistant instructions.
 
 > **Note:**
-If you installed pyLoad by package-manager, command `python pyLoadCore.py` is probably equivalent to `pyload` or `pyLoadCore`.
+If you installed pyLoad by package-manager, command `python pyload.py` is probably equivalent to `pyload`.
 
 Additionally, you can whenever restart the setup assistant typing:
 
-    python pyLoadCore.py -s
+    python pyload.py -s
 
 Or you can even edit configuration files located in your pyLoad home directory (default to `~/.pyload`)
 with your favorite editor.
@@ -77,24 +77,24 @@ For a short description of all the configuration options available visit <http:/
 
 Run:
 
-    python pyLoadCore.py
+    python pyload.py
 
 So, to retrieve it point your web browser to the socket address configured by setup (default to `http://localhost:8000`).
 
 You can get the list of accepted arguments typing:
 
-    python pyLoadCore.py -h
+    python pyload.py -h
 
 
 ### Command Line Interface ###
 
 Run:
 
-    python pyLoadCli.py -l
+    python pyload-cli.py -l
 
 You can get the list of accepted arguments typing:
 
-    python pyLoadCli.py -h
+    python pyload-cli.py -h
 
 
 Notes

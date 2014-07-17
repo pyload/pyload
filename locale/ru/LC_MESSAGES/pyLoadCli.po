@@ -12,210 +12,210 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: crowdin.net\n"
 
-#: pyLoadCli.py:75 pyLoadCli.py:133
+#: module/cli/Cli.py:75 module/cli/Cli.py:133
 msgid " Command Line Interface"
 msgstr "Интерфейс командной строки"
 
-#: pyLoadCli.py:165
+#: module/cli/Cli.py:165
 #, python-format
 msgid "%s Downloads:"
 msgstr "%s загрузок:"
 
-#: pyLoadCli.py:177
+#: module/cli/Cli.py:177
 msgid " Speed: "
 msgstr "Скорость: "
 
-#: pyLoadCli.py:177
+#: module/cli/Cli.py:177
 msgid " Size: "
 msgstr "Размер: "
 
-#: pyLoadCli.py:178
+#: module/cli/Cli.py:178
 msgid " Finished in: "
 msgstr "Закончено в: "
 
-#: pyLoadCli.py:179
+#: module/cli/Cli.py:179
 msgid " ID: "
 msgstr "ID: "
 
-#: pyLoadCli.py:184
+#: module/cli/Cli.py:184
 msgid "waiting: "
 msgstr "ожидание: "
 
-#: pyLoadCli.py:191 pyLoadCli.py:193
+#: module/cli/Cli.py:191 module/cli/Cli.py:193
 msgid "Status:"
 msgstr "Состояние:"
 
-#: pyLoadCli.py:191
+#: module/cli/Cli.py:191
 msgid "paused"
 msgstr "приостановлено"
 
-#: pyLoadCli.py:193
+#: module/cli/Cli.py:193
 msgid "running"
 msgstr "в процессе"
 
-#: pyLoadCli.py:196
+#: module/cli/Cli.py:196
 msgid "total Speed"
 msgstr "общая скорость"
 
-#: pyLoadCli.py:196
+#: module/cli/Cli.py:196
 msgid "Files in queue"
 msgstr "Файлов в очереди"
 
-#: pyLoadCli.py:197
+#: module/cli/Cli.py:197
 msgid "Total"
 msgstr "Всего"
 
-#: pyLoadCli.py:203
+#: module/cli/Cli.py:203
 msgid "Menu:"
 msgstr "Меню:"
 
-#: pyLoadCli.py:205
+#: module/cli/Cli.py:205
 msgid " Add Links"
 msgstr "Добавить ссылки"
 
-#: pyLoadCli.py:206
+#: module/cli/Cli.py:206
 msgid " Manage Queue"
 msgstr "Управление очередью"
 
-#: pyLoadCli.py:207
+#: module/cli/Cli.py:207
 msgid " Manage Collector"
 msgstr "Управление коллектором ссылок"
 
-#: pyLoadCli.py:208
+#: module/cli/Cli.py:208
 msgid " (Un)Pause Server"
 msgstr "Запустить/Приостановить сервер"
 
-#: pyLoadCli.py:209
+#: module/cli/Cli.py:209
 msgid " Kill Server"
 msgstr "Остановить сервер"
 
-#: pyLoadCli.py:210
+#: module/cli/Cli.py:210
 msgid " Quit"
 msgstr "Выход"
 
-#: pyLoadCli.py:289 pyLoadCli.py:296
+#: module/cli/Cli.py:289 module/cli/Cli.py:296
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
 msgstr "Используйте шаблон: add <Имя контейнера> <ссылка1> <ссылка2> ..."
 
-#: pyLoadCli.py:315
+#: module/cli/Cli.py:315
 #, python-format
 msgid "Checking %d links:"
 msgstr "Проверка %d ссылки:"
 
-#: pyLoadCli.py:324
+#: module/cli/Cli.py:324
 msgid "File does not exists."
 msgstr "Файл не найден."
 
-#: pyLoadCli.py:385
+#: module/cli/Cli.py:385
 msgid "pyLoad was terminated"
 msgstr "Работа pyLoad была принудительно завершена"
 
-#: pyLoadCli.py:443
+#: module/cli/Cli.py:443
 msgid "Prints server status"
 msgstr "Показать состояние сервера"
 
-#: pyLoadCli.py:444
+#: module/cli/Cli.py:444
 msgid "Prints downloads in queue"
 msgstr "Показать закачки в очереди"
 
-#: pyLoadCli.py:445
+#: module/cli/Cli.py:445
 msgid "Prints downloads in collector"
 msgstr "Показать закачки в списке коллектора"
 
-#: pyLoadCli.py:446
+#: module/cli/Cli.py:446
 msgid "Adds package to queue"
 msgstr "Добавить контейнер в очередь"
 
-#: pyLoadCli.py:447
+#: module/cli/Cli.py:447
 msgid "Adds package to collector"
 msgstr "Добавляет контейнер в коллектор ссылок"
 
-#: pyLoadCli.py:448
+#: module/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
 msgstr "Удалить файлы из очереди/коллектора"
 
-#: pyLoadCli.py:449
+#: module/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
 msgstr "Удалить контейнер из очереди/коллектора"
 
-#: pyLoadCli.py:450
+#: module/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
 msgstr "Переместить пакет(ы) из очереди в коллектор и наоборот"
 
-#: pyLoadCli.py:451
+#: module/cli/Cli.py:451
 msgid "Restart files"
 msgstr "Перезапустить файлы"
 
-#: pyLoadCli.py:452
+#: module/cli/Cli.py:452
 msgid "Restart packages"
 msgstr "Перезапустить пакеты"
 
-#: pyLoadCli.py:453
+#: module/cli/Cli.py:453
 msgid "Check online status, works with local container"
 msgstr "Проверка статуса связи, действует с местными контейнерами"
 
-#: pyLoadCli.py:454
+#: module/cli/Cli.py:454
 msgid "Checks online status of a container file"
 msgstr "Проверяет состояние файла-контейнера"
 
-#: pyLoadCli.py:455
+#: module/cli/Cli.py:455
 msgid "Pause the server"
 msgstr "Приостановить сервер"
 
-#: pyLoadCli.py:456
+#: module/cli/Cli.py:456
 msgid "continue downloads"
 msgstr "продолжить закачки"
 
-#: pyLoadCli.py:457
+#: module/cli/Cli.py:457
 msgid "Toggle pause/unpause"
 msgstr "Переключить пауза/продолжить"
 
-#: pyLoadCli.py:458
+#: module/cli/Cli.py:458
 msgid "kill server"
 msgstr "остановить сервер"
 
-#: pyLoadCli.py:460
+#: module/cli/Cli.py:460
 msgid "List of commands:"
 msgstr "Список команд: "
 
-#: pyLoadCli.py:473
+#: module/cli/Cli.py:473
 msgid "Couldn't write user config file"
 msgstr "Записать файл конфигурации пользователя не удалось"
 
-#: pyLoadCli.py:548
+#: module/cli/Cli.py:548
 msgid "You need py-openssl to connect to this pyLoad Core."
 msgstr "Для соединения с ядром pyLoad необходим пакет py-openssl."
 
-#: pyLoadCli.py:555
+#: module/cli/Cli.py:555
 msgid "Address: "
 msgstr "Адрес: "
 
-#: pyLoadCli.py:556
+#: module/cli/Cli.py:556
 msgid "Port: "
 msgstr "Порт: "
 
-#: pyLoadCli.py:557
+#: module/cli/Cli.py:557
 msgid "Username: "
 msgstr "Имя пользователя: "
 
-#: pyLoadCli.py:561
+#: module/cli/Cli.py:561
 msgid "Password: "
 msgstr "Пароль: "
 
-#: pyLoadCli.py:566 pyLoadCli.py:575
+#: module/cli/Cli.py:566 module/cli/Cli.py:575
 msgid "Login data is wrong."
 msgstr "Неправильные учётные данные."
 
-#: pyLoadCli.py:568 pyLoadCli.py:577
+#: module/cli/Cli.py:568 module/cli/Cli.py:577
 #, python-format
 msgid "Could not establish connection to %(addr)s:%(port)s."
 msgstr "Невозможно подключиться к %(addr)s:%(port)s."
 
-#: pyLoadCli.py:580
+#: module/cli/Cli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."
 msgstr "Для соединения с ядром pyLoad необходим пакет py-openssl."
 
-#: pyLoadCli.py:582
+#: module/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
 msgstr "В связи с тем, что были введены ряд команд, интерактивный режим был прерван."
 

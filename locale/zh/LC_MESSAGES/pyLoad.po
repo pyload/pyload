@@ -12,120 +12,120 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: crowdin.net\n"
 
-#: pyLoadCore.py:182
+#: pyload.py:182
 msgid "Received Quit signal"
 msgstr "收到退出訊號"
 
-#: pyLoadCore.py:303
+#: pyload.py:303
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr "pyLoad已經在執行，pid %s"
 
-#: pyLoadCore.py:317
+#: pyload.py:317
 #, python-format
 msgid "Failed changing group: %s"
 msgstr "無法改變群組： %s"
 
-#: pyLoadCore.py:327
+#: pyload.py:327
 #, python-format
 msgid "Failed changing user: %s"
 msgstr "無法改變使用者： %s"
 
-#: pyLoadCore.py:329
+#: pyload.py:329
 msgid "folder for logs"
 msgstr "LOG文件夹"
 
-#: pyLoadCore.py:340
+#: pyload.py:340
 msgid "Starting"
 msgstr "開始"
 
-#: pyLoadCore.py:341
+#: pyload.py:341
 #, python-format
 msgid "Using home directory: %s"
 msgstr "使用家目錄： %s"
 
-#: pyLoadCore.py:350
+#: pyload.py:350
 msgid "pycrypto to decode container files"
 msgstr "使用pycrypto解密文件"
 
-#: pyLoadCore.py:353
+#: pyload.py:353
 msgid "folder for temporary files"
 msgstr "临时文件夹"
 
-#: pyLoadCore.py:358
+#: pyload.py:358
 msgid "folder for downloads"
 msgstr "下载文件夹"
 
-#: pyLoadCore.py:361
+#: pyload.py:361
 msgid "OpenSSL for secure connection"
 msgstr "使用OpenSSL安全登陆"
 
-#: pyLoadCore.py:365
+#: pyload.py:365
 msgid "Moving old user config to DB"
 msgstr "将旧用户设定移入数据库"
 
-#: pyLoadCore.py:368
-msgid "Please check your logindata with ./pyLoadCore.py -u"
-msgstr "请执行./pyLoadCore.py -u 来确认你的logindata"
+#: pyload.py:368
+msgid "Please check your logindata with ./pyload.py -u"
+msgstr "请执行./pyload.py -u 来确认你的logindata"
 
-#: pyLoadCore.py:371
+#: pyload.py:371
 msgid "All links removed"
 msgstr "刪除所有連結"
 
-#: pyLoadCore.py:402
+#: pyload.py:402
 #, python-format
 msgid "Downloadtime: %s"
 msgstr "下载时间：%s"
 
-#: pyLoadCore.py:412
+#: pyload.py:412
 #, python-format
 msgid "Free space: %s"
 msgstr "剩餘空間： %s"
 
-#: pyLoadCore.py:432
+#: pyload.py:432
 msgid "Activating Accounts..."
 msgstr "啟動帳戶..."
 
-#: pyLoadCore.py:438
+#: pyload.py:438
 msgid "Activating Plugins..."
 msgstr "激活插件中..."
 
-#: pyLoadCore.py:441
+#: pyload.py:441
 msgid "pyLoad is up and running"
 msgstr "pyLoad已是最新的狀態"
 
-#: pyLoadCore.py:460
+#: pyload.py:460
 msgid "restarting pyLoad"
 msgstr "重新啟動pyLoad"
 
-#: pyLoadCore.py:464
+#: pyload.py:464
 msgid "pyLoad quits"
 msgstr "離開pyLoad"
 
-#: pyLoadCore.py:521
+#: pyload.py:521
 #, python-format
 msgid "Install %s"
 msgstr "安装 %s"
 
-#: pyLoadCore.py:557
+#: pyload.py:557
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr "无法找到%(desc)s: %(name)s"
 
-#: pyLoadCore.py:559
+#: pyload.py:559
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr "无法创建%(desc)s: %(name)s"
 
-#: pyLoadCore.py:580
+#: pyload.py:580
 msgid "shutting down..."
 msgstr "關閉..."
 
-#: pyLoadCore.py:597
+#: pyload.py:597
 msgid "error while shutting down"
 msgstr "關閉時出現錯誤"
 
-#: pyLoadCore.py:661
+#: pyload.py:661
 msgid "killed pyLoad from Terminal"
 msgstr ""
 
@@ -333,7 +333,7 @@ msgid "not available"
 msgstr ""
 
 #: module/web/pyload_app.py:508
-msgid "Run pyLoadCore.py -s to access the setup."
+msgid "Run pyload.py -s to access the setup."
 msgstr ""
 
 #: module/network/HTTPDownload.py:245

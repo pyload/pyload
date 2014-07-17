@@ -56,9 +56,9 @@ class Setup:
         print _("The value in brackets [] always is the default value,")
         print _("in case you don't want to change it or you are unsure what to choose, just hit enter.")
         print _(
-            "Don't forget: You can always rerun this assistant with --setup or -s parameter, when you start pyLoadCore.")
+            "Don't forget: You can always rerun this assistant with --setup or -s parameter, when you start pyload.py .")
         print _("If you have any problems with this assistant hit STRG-C,")
-        print _("to abort and don't let him start with pyLoadCore automatically anymore.")
+        print _("to abort and don't let him start with pyload.py automatically anymore.")
         print
         print _("When you are ready for system check, hit enter.")
         raw_input()

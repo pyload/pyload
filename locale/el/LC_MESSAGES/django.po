@@ -679,6 +679,6 @@ msgid "not available"
 msgstr "μη διαθέσιμο"
 
 #: module/web/pyload_app.py:508
-msgid "Run pyLoadCore.py -s to access the setup."
-msgstr "Εκτελέστε την εντολή pyLoadCore.py -s για πρόσβαση στην εγκατάσταση."
+msgid "Run pyload.py -s to access the setup."
+msgstr "Εκτελέστε την εντολή pyload.py -s για πρόσβαση στην εγκατάσταση."
 

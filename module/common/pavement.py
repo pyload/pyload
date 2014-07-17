@@ -210,9 +210,9 @@ def generate_locale():
 
     EXCLUDE = ["BeautifulSoup.py", "module/cli", "web/locale", "web/ajax", "web/cnl", "web/pyload",
                "setup.py"]
-    makepot("core", path("module"), EXCLUDE, "./pyLoadCore.py\n")
+    makepot("core", path("module"), EXCLUDE, "./pyload.py\n")
 
-    makepot("cli", path("module") / "cli", [], includes="./pyLoadCli.py\n")
+    makepot("cli", path("module") / "cli", [], includes="./pyload-cli.py\n")
     makepot("setup", "", [], includes="./module/setup.py\n")
 
     EXCLUDE = ["ServerThread.py", "web/media/default"]

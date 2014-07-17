@@ -12,210 +12,210 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
-#: pyLoadCli.py:75 pyLoadCli.py:133
+#: module/cli/Cli.py:75 module/cli/Cli.py:133
 msgid " Command Line Interface"
 msgstr " Parancssoros felület"
 
-#: pyLoadCli.py:165
+#: module/cli/Cli.py:165
 #, python-format
 msgid "%s Downloads:"
 msgstr "%s letöltés:"
 
-#: pyLoadCli.py:177
+#: module/cli/Cli.py:177
 msgid " Speed: "
 msgstr " Sebesség: "
 
-#: pyLoadCli.py:177
+#: module/cli/Cli.py:177
 msgid " Size: "
 msgstr " Méret: "
 
-#: pyLoadCli.py:178
+#: module/cli/Cli.py:178
 msgid " Finished in: "
 msgstr " Befejezve: "
 
-#: pyLoadCli.py:179
+#: module/cli/Cli.py:179
 msgid " ID: "
 msgstr " ID: "
 
-#: pyLoadCli.py:184
+#: module/cli/Cli.py:184
 msgid "waiting: "
 msgstr "várakozás: "
 
-#: pyLoadCli.py:191 pyLoadCli.py:193
+#: module/cli/Cli.py:191 module/cli/Cli.py:193
 msgid "Status:"
 msgstr "Állapot:"
 
-#: pyLoadCli.py:191
+#: module/cli/Cli.py:191
 msgid "paused"
 msgstr "felfüggesztve"
 
-#: pyLoadCli.py:193
+#: module/cli/Cli.py:193
 msgid "running"
 msgstr "fut"
 
-#: pyLoadCli.py:196
+#: module/cli/Cli.py:196
 msgid "total Speed"
 msgstr "össz. sebesség"
 
-#: pyLoadCli.py:196
+#: module/cli/Cli.py:196
 msgid "Files in queue"
 msgstr "Várólistás fájlok"
 
-#: pyLoadCli.py:197
+#: module/cli/Cli.py:197
 msgid "Total"
 msgstr "Összesen"
 
-#: pyLoadCli.py:203
+#: module/cli/Cli.py:203
 msgid "Menu:"
 msgstr "Menü:"
 
-#: pyLoadCli.py:205
+#: module/cli/Cli.py:205
 msgid " Add Links"
 msgstr " Link hozzáadás"
 
-#: pyLoadCli.py:206
+#: module/cli/Cli.py:206
 msgid " Manage Queue"
 msgstr " Várólista kezelése"
 
-#: pyLoadCli.py:207
+#: module/cli/Cli.py:207
 msgid " Manage Collector"
 msgstr " Gyűjtő kezelése"
 
-#: pyLoadCli.py:208
+#: module/cli/Cli.py:208
 msgid " (Un)Pause Server"
 msgstr " Szerver szüneteltetése/folytatása"
 
-#: pyLoadCli.py:209
+#: module/cli/Cli.py:209
 msgid " Kill Server"
 msgstr " Szerver kilövése (Kill)"
 
-#: pyLoadCli.py:210
+#: module/cli/Cli.py:210
 msgid " Quit"
 msgstr " Bezárás"
 
-#: pyLoadCli.py:289 pyLoadCli.py:296
+#: module/cli/Cli.py:289 module/cli/Cli.py:296
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
 msgstr "Használd a következő formát: add <Csomag neve> <link> <link2> ..."
 
-#: pyLoadCli.py:315
+#: module/cli/Cli.py:315
 #, python-format
 msgid "Checking %d links:"
 msgstr "%d link ellenőrzése:"
 
-#: pyLoadCli.py:324
+#: module/cli/Cli.py:324
 msgid "File does not exists."
 msgstr "A fájl nem létezik."
 
-#: pyLoadCli.py:385
+#: module/cli/Cli.py:385
 msgid "pyLoad was terminated"
 msgstr "pyLoad leállítva"
 
-#: pyLoadCli.py:443
+#: module/cli/Cli.py:443
 msgid "Prints server status"
 msgstr "Szerver állapota"
 
-#: pyLoadCli.py:444
+#: module/cli/Cli.py:444
 msgid "Prints downloads in queue"
 msgstr "Várólistás fájlok"
 
-#: pyLoadCli.py:445
+#: module/cli/Cli.py:445
 msgid "Prints downloads in collector"
 msgstr "Gyűjtőben levő letöltések"
 
-#: pyLoadCli.py:446
+#: module/cli/Cli.py:446
 msgid "Adds package to queue"
 msgstr "Csomag várólistához adása"
 
-#: pyLoadCli.py:447
+#: module/cli/Cli.py:447
 msgid "Adds package to collector"
 msgstr "Csomag gyűjtőhöz adása"
 
-#: pyLoadCli.py:448
+#: module/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
 msgstr "Fájl törlése várólista/gyűjtő"
 
-#: pyLoadCli.py:449
+#: module/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
 msgstr "Csomag törlése várólista/gyűjtő"
 
-#: pyLoadCli.py:450
+#: module/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
 msgstr "Csomag áthelyezése a várólista és a gyűjtő között"
 
-#: pyLoadCli.py:451
+#: module/cli/Cli.py:451
 msgid "Restart files"
 msgstr "Fájlok újraindítása"
 
-#: pyLoadCli.py:452
+#: module/cli/Cli.py:452
 msgid "Restart packages"
 msgstr "Csomagok újraindítása"
 
-#: pyLoadCli.py:453
+#: module/cli/Cli.py:453
 msgid "Check online status, works with local container"
 msgstr "Online státusz ellenőrzése, csak helyi konténer esetében"
 
-#: pyLoadCli.py:454
+#: module/cli/Cli.py:454
 msgid "Checks online status of a container file"
 msgstr "A konténer fájl online státuszának ellenőrzése"
 
-#: pyLoadCli.py:455
+#: module/cli/Cli.py:455
 msgid "Pause the server"
 msgstr "Szerver szüneteltetése"
 
-#: pyLoadCli.py:456
+#: module/cli/Cli.py:456
 msgid "continue downloads"
 msgstr "letöltések folytatása"
 
-#: pyLoadCli.py:457
+#: module/cli/Cli.py:457
 msgid "Toggle pause/unpause"
 msgstr "Szüneteltetés/folytatás"
 
-#: pyLoadCli.py:458
+#: module/cli/Cli.py:458
 msgid "kill server"
 msgstr "szerver kilövése (Kill)"
 
-#: pyLoadCli.py:460
+#: module/cli/Cli.py:460
 msgid "List of commands:"
 msgstr "Parancsok listája:"
 
-#: pyLoadCli.py:473
+#: module/cli/Cli.py:473
 msgid "Couldn't write user config file"
 msgstr "Nem sikerült írni a felhasználói beállítások fájlját"
 
-#: pyLoadCli.py:548
+#: module/cli/Cli.py:548
 msgid "You need py-openssl to connect to this pyLoad Core."
 msgstr "Ehhez a pyLoad maghoz való csatlakozáshoz szükséged van py-openssl-re."
 
-#: pyLoadCli.py:555
+#: module/cli/Cli.py:555
 msgid "Address: "
 msgstr "Cím: "
 
-#: pyLoadCli.py:556
+#: module/cli/Cli.py:556
 msgid "Port: "
 msgstr "Port: "
 
-#: pyLoadCli.py:557
+#: module/cli/Cli.py:557
 msgid "Username: "
 msgstr "Felhasználó: "
 
-#: pyLoadCli.py:561
+#: module/cli/Cli.py:561
 msgid "Password: "
 msgstr "Jelszó: "
 
-#: pyLoadCli.py:566 pyLoadCli.py:575
+#: module/cli/Cli.py:566 module/cli/Cli.py:575
 msgid "Login data is wrong."
 msgstr "Hibás belépési adatok."
 
-#: pyLoadCli.py:568 pyLoadCli.py:577
+#: module/cli/Cli.py:568 module/cli/Cli.py:577
 #, python-format
 msgid "Could not establish connection to %(addr)s:%(port)s."
 msgstr "Nem sikerült kapcsolódni ide: %(addr)s:%(port)s."
 
-#: pyLoadCli.py:580
+#: module/cli/Cli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."
 msgstr "Ehhez a pyLoad maghoz való csatlakozáshoz szükséged van py-openssl-re."
 
-#: pyLoadCli.py:582
+#: module/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
 msgstr "Az interaktív mód néhány parancs után figyelmen kívül hagyva."
 

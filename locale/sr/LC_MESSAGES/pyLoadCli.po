@@ -12,210 +12,210 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: crowdin.net\n"
 
-#: pyLoadCli.py:75 pyLoadCli.py:133
+#: module/cli/Cli.py:75 module/cli/Cli.py:133
 msgid " Command Line Interface"
 msgstr " Интерфејс командне линије"
 
-#: pyLoadCli.py:165
+#: module/cli/Cli.py:165
 #, python-format
 msgid "%s Downloads:"
 msgstr "%s преузимања:"
 
-#: pyLoadCli.py:177
+#: module/cli/Cli.py:177
 msgid " Speed: "
 msgstr " Брзина: "
 
-#: pyLoadCli.py:177
+#: module/cli/Cli.py:177
 msgid " Size: "
 msgstr " Величина: "
 
-#: pyLoadCli.py:178
+#: module/cli/Cli.py:178
 msgid " Finished in: "
 msgstr " Завршено: "
 
-#: pyLoadCli.py:179
+#: module/cli/Cli.py:179
 msgid " ID: "
 msgstr " ID: "
 
-#: pyLoadCli.py:184
+#: module/cli/Cli.py:184
 msgid "waiting: "
 msgstr "на чекању: "
 
-#: pyLoadCli.py:191 pyLoadCli.py:193
+#: module/cli/Cli.py:191 module/cli/Cli.py:193
 msgid "Status:"
 msgstr "Статус:"
 
-#: pyLoadCli.py:191
+#: module/cli/Cli.py:191
 msgid "paused"
 msgstr "паузирано"
 
-#: pyLoadCli.py:193
+#: module/cli/Cli.py:193
 msgid "running"
 msgstr "покренуто"
 
-#: pyLoadCli.py:196
+#: module/cli/Cli.py:196
 msgid "total Speed"
 msgstr "Укупна брзина"
 
-#: pyLoadCli.py:196
+#: module/cli/Cli.py:196
 msgid "Files in queue"
 msgstr "Датотеке у списку"
 
-#: pyLoadCli.py:197
+#: module/cli/Cli.py:197
 msgid "Total"
 msgstr "Укупно"
 
-#: pyLoadCli.py:203
+#: module/cli/Cli.py:203
 msgid "Menu:"
 msgstr "Мени:"
 
-#: pyLoadCli.py:205
+#: module/cli/Cli.py:205
 msgid " Add Links"
 msgstr " Додај везе"
 
-#: pyLoadCli.py:206
+#: module/cli/Cli.py:206
 msgid " Manage Queue"
 msgstr " Управљај списком"
 
-#: pyLoadCli.py:207
+#: module/cli/Cli.py:207
 msgid " Manage Collector"
 msgstr " Управљај сакупљачем"
 
-#: pyLoadCli.py:208
+#: module/cli/Cli.py:208
 msgid " (Un)Pause Server"
 msgstr " Паузирај/настави сервер"
 
-#: pyLoadCli.py:209
+#: module/cli/Cli.py:209
 msgid " Kill Server"
 msgstr " Окончај сервер"
 
-#: pyLoadCli.py:210
+#: module/cli/Cli.py:210
 msgid " Quit"
 msgstr " Изађи"
 
-#: pyLoadCli.py:289 pyLoadCli.py:296
+#: module/cli/Cli.py:289 module/cli/Cli.py:296
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
 msgstr "Користите ову синтаксу: add <име пакета> <веза> <друга веза>…"
 
-#: pyLoadCli.py:315
+#: module/cli/Cli.py:315
 #, python-format
 msgid "Checking %d links:"
 msgstr "Провера %d веза:"
 
-#: pyLoadCli.py:324
+#: module/cli/Cli.py:324
 msgid "File does not exists."
 msgstr "Датотека не постоји."
 
-#: pyLoadCli.py:385
+#: module/cli/Cli.py:385
 msgid "pyLoad was terminated"
 msgstr "pyLoad је обустављен"
 
-#: pyLoadCli.py:443
+#: module/cli/Cli.py:443
 msgid "Prints server status"
 msgstr "Штампа статус сервера"
 
-#: pyLoadCli.py:444
+#: module/cli/Cli.py:444
 msgid "Prints downloads in queue"
 msgstr "Штампа преузимања у списку"
 
-#: pyLoadCli.py:445
+#: module/cli/Cli.py:445
 msgid "Prints downloads in collector"
 msgstr "Штампа преузимања у сакупљачу"
 
-#: pyLoadCli.py:446
+#: module/cli/Cli.py:446
 msgid "Adds package to queue"
 msgstr "Додаје пакет у списак"
 
-#: pyLoadCli.py:447
+#: module/cli/Cli.py:447
 msgid "Adds package to collector"
 msgstr "Додаје пакет у сакупљач"
 
-#: pyLoadCli.py:448
+#: module/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
 msgstr "Брише датотеке из списка/сакупљача"
 
-#: pyLoadCli.py:449
+#: module/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
 msgstr "Брише пакете из списка/сакупљача"
 
-#: pyLoadCli.py:450
+#: module/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
 msgstr "Премешта пакете из списка у сакупљач и обрнуто"
 
-#: pyLoadCli.py:451
+#: module/cli/Cli.py:451
 msgid "Restart files"
 msgstr "Поново покрени датотеке"
 
-#: pyLoadCli.py:452
+#: module/cli/Cli.py:452
 msgid "Restart packages"
 msgstr "Поново покрени пакете"
 
-#: pyLoadCli.py:453
+#: module/cli/Cli.py:453
 msgid "Check online status, works with local container"
 msgstr "Проверава доступност (ради са локалним контејнером)"
 
-#: pyLoadCli.py:454
+#: module/cli/Cli.py:454
 msgid "Checks online status of a container file"
 msgstr "Проверава доступност датотеке контејнера"
 
-#: pyLoadCli.py:455
+#: module/cli/Cli.py:455
 msgid "Pause the server"
 msgstr "Паузирај сервер"
 
-#: pyLoadCli.py:456
+#: module/cli/Cli.py:456
 msgid "continue downloads"
 msgstr "настави преузимања"
 
-#: pyLoadCli.py:457
+#: module/cli/Cli.py:457
 msgid "Toggle pause/unpause"
 msgstr "Паузирај/настави"
 
-#: pyLoadCli.py:458
+#: module/cli/Cli.py:458
 msgid "kill server"
 msgstr "окончај сервер"
 
-#: pyLoadCli.py:460
+#: module/cli/Cli.py:460
 msgid "List of commands:"
 msgstr "Списак команди:"
 
-#: pyLoadCli.py:473
+#: module/cli/Cli.py:473
 msgid "Couldn't write user config file"
 msgstr "Не могу да пишем на датотеку са подешавањима"
 
-#: pyLoadCli.py:548
+#: module/cli/Cli.py:548
 msgid "You need py-openssl to connect to this pyLoad Core."
 msgstr "Треба вам py-openssl да би се привезали на pyLoad језгро."
 
-#: pyLoadCli.py:555
+#: module/cli/Cli.py:555
 msgid "Address: "
 msgstr "Адреса: "
 
-#: pyLoadCli.py:556
+#: module/cli/Cli.py:556
 msgid "Port: "
 msgstr "Порт: "
 
-#: pyLoadCli.py:557
+#: module/cli/Cli.py:557
 msgid "Username: "
 msgstr "Корисничко име: "
 
-#: pyLoadCli.py:561
+#: module/cli/Cli.py:561
 msgid "Password: "
 msgstr "Лозинка: "
 
-#: pyLoadCli.py:566 pyLoadCli.py:575
+#: module/cli/Cli.py:566 module/cli/Cli.py:575
 msgid "Login data is wrong."
 msgstr "Подаци за пријаву су погрешни."
 
-#: pyLoadCli.py:568 pyLoadCli.py:577
+#: module/cli/Cli.py:568 module/cli/Cli.py:577
 #, python-format
 msgid "Could not establish connection to %(addr)s:%(port)s."
 msgstr "Не могу да успоставим везу са адресом %(addr)s:%(port)s."
 
-#: pyLoadCli.py:580
+#: module/cli/Cli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."
 msgstr "Потребан вам је py-openssl да бисте се повезали на сервер pyLoad-а."
 
-#: pyLoadCli.py:582
+#: module/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
 msgstr "Занемарен је интерактивни режим јер сте задали неке команде."
 

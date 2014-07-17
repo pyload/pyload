@@ -37,16 +37,16 @@ msgid "in case you don't want to change it or you are unsure what to choose, jus
 msgstr "en caso de que non queira cambialo ou non estea seguro de que opción elixir, só prema entrar."
 
 #: module/setup.py:78
-msgid "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore."
-msgstr "Non o esqueza: Sempre pode volver a executar este asistente co parámetro --setup ou -s cando inicie pyLoadCore."
+msgid "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyload.py ."
+msgstr "Non o esqueza: Sempre pode volver a executar este asistente co parámetro --setup ou -s cando inicie pyload.py ."
 
 #: module/setup.py:79
 msgid "If you have any problems with this assistent hit STRG-C,"
 msgstr "Se ten algún problema co asistente presione Ctrl-C,"
 
 #: module/setup.py:80
-msgid "to abort and don't let him start with pyLoadCore automatically anymore."
-msgstr "para abortar e non permitirlle volver a iniciarse automaticamente con pyLoadCore."
+msgid "to abort and don't let him start with pyload.py automatically anymore."
+msgstr "para abortar e non permitirlle volver a iniciarse automaticamente con pyload.py ."
 
 #: module/setup.py:82
 msgid "When you are ready for system check, hit enter."

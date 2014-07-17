@@ -685,5 +685,5 @@ msgid "not available"
 msgstr ""
 
 #: module/web/pyload_app.py:509
-msgid "Run pyLoadCore.py -s to access the setup."
+msgid "Run pyload.py -s to access the setup."
 msgstr ""

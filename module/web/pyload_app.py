@@ -505,7 +505,7 @@ def admin():
 @route("/setup")
 def setup():
     if PYLOAD or not SETUP:
-        return base([_("Run pyLoadCore.py -s to access the setup.")])
+        return base([_("Run pyload.py -s to access the setup.")])
 
     return render_to_response('setup.html', {"user": False, "perms": False})
 

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #Copyright (C) 2008-2014 RaNaN
@@ -57,7 +56,7 @@ class Cli:
         self.command = command
 
         if not self.command:
-            renameProcess('pyLoadCli')
+            renameProcess('pyload-cli')
             self.getch = Getch()
             self.input = ""
             self.inputline = 0
@@ -392,12 +391,12 @@ class RefreshThread(Thread):
 
 def print_help(config):
     print
-    print "pyLoadCli Copyright (c) 2008-2014 the pyLoad Team"
+    print "pyLoad CLI Copyright (c) 2008-2014 the pyLoad Team"
     print
-    print "Usage: [python] pyLoadCli.py [options] [command]"
+    print "Usage: [python] pyload-cli.py [options] [command]"
     print
     print "<Commands>"
-    print "See pyLoadCli.py -c for a complete listing."
+    print "See pyload-cli.py -c for a complete listing."
     print
     print "<Options>"
     print "  -i, --interactive", " Start in interactive mode"
@@ -465,7 +464,7 @@ def print_commands():
 
 def writeConfig(opts):
     try:
-        with open(join(homedir, ".pyloadcli"), "w") as cfgfile:
+        with open(join(homedir, ".pyload-cli"), "w") as cfgfile:
             cfgfile.write("[cli]")
             for opt in opts:
                 cfgfile.write("%s=%s\n" % (opt, opts[opt]))
@@ -484,14 +483,14 @@ def main():
         config["language"] = "en"
 
     configFile = ConfigParser.ConfigParser()
-    configFile.read(join(homedir, ".pyloadcli"))
+    configFile.read(join(homedir, ".pyload-cli"))
 
     if configFile.has_section("cli"):
         for opt in configFile.items("cli"):
             config[opt[0]] = opt[1]
 
     gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-    translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
+    translation = gettext.translation("Cli", join(pypath, "locale"),
         languages=[config["language"], "en"], fallback=True)
     translation.install(unicode=True)
 
@@ -517,7 +516,7 @@ def main():
             elif option in ("-l", "--language"):
                 config["language"] = params
                 gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-                translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
+                translation = gettext.translation("Cli", join(pypath, "locale"),
                     languages=[config["language"], "en"], fallback=True)
                 translation.install(unicode=True)
             elif option in ("-h", "--help"):
@@ -584,7 +583,3 @@ def main():
     if client:
         writeConfig(config)
         cli = Cli(client, command)
-
-
-if __name__ == "__main__":
-    main()

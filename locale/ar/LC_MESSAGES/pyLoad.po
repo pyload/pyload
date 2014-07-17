@@ -12,120 +12,120 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 "X-Generator: crowdin.net\n"
 
-#: pyLoadCore.py:182
+#: pyload.py:182
 msgid "Received Quit signal"
 msgstr "تم استقبال اشارة انهاء"
 
-#: pyLoadCore.py:303
+#: pyload.py:303
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr "باي لود يعمل حاليا بمعرف العملية %s"
 
-#: pyLoadCore.py:317
+#: pyload.py:317
 #, python-format
 msgid "Failed changing group: %s"
 msgstr "فشل في تغيير المجموعه: %s"
 
-#: pyLoadCore.py:327
+#: pyload.py:327
 #, python-format
 msgid "Failed changing user: %s"
 msgstr "فشل في تغيير المستخدم: %s"
 
-#: pyLoadCore.py:329
+#: pyload.py:329
 msgid "folder for logs"
 msgstr "مجلد للتقارير"
 
-#: pyLoadCore.py:340
+#: pyload.py:340
 msgid "Starting"
 msgstr "بدء"
 
-#: pyLoadCore.py:341
+#: pyload.py:341
 #, python-format
 msgid "Using home directory: %s"
 msgstr "استخدام مجلد المنزل: %s"
 
-#: pyLoadCore.py:350
+#: pyload.py:350
 msgid "pycrypto to decode container files"
 msgstr ""
 
-#: pyLoadCore.py:353
+#: pyload.py:353
 msgid "folder for temporary files"
 msgstr "مجلد للملفات المؤقتة"
 
-#: pyLoadCore.py:358
+#: pyload.py:358
 msgid "folder for downloads"
 msgstr "مجلد للتحميلات"
 
-#: pyLoadCore.py:361
+#: pyload.py:361
 msgid "OpenSSL for secure connection"
 msgstr "OpenSSL لاتصال امن"
 
-#: pyLoadCore.py:365
+#: pyload.py:365
 msgid "Moving old user config to DB"
 msgstr "نقل اعدادت المستخدم القديم الى قاعدة البيانات"
 
-#: pyLoadCore.py:368
-msgid "Please check your logindata with ./pyLoadCore.py -u"
-msgstr "يرجى التاكد من بيانات الدخول بستخدام ./pyLoadCore.py -u"
+#: pyload.py:368
+msgid "Please check your logindata with ./pyload.py -u"
+msgstr "يرجى التاكد من بيانات الدخول بستخدام ./pyload.py -u"
 
-#: pyLoadCore.py:371
+#: pyload.py:371
 msgid "All links removed"
 msgstr "تم مسح جميع الروابط"
 
-#: pyLoadCore.py:402
+#: pyload.py:402
 #, python-format
 msgid "Downloadtime: %s"
 msgstr "وقت التحميل: %"
 
-#: pyLoadCore.py:412
+#: pyload.py:412
 #, python-format
 msgid "Free space: %s"
 msgstr "المساحه الحره: %s"
 
-#: pyLoadCore.py:432
+#: pyload.py:432
 msgid "Activating Accounts..."
 msgstr "تفعيل الحسابات..."
 
-#: pyLoadCore.py:438
+#: pyload.py:438
 msgid "Activating Plugins..."
 msgstr "تفعيل الاضافات..."
 
-#: pyLoadCore.py:441
+#: pyload.py:441
 msgid "pyLoad is up and running"
 msgstr "باي ولد محدث و يعمل"
 
-#: pyLoadCore.py:460
+#: pyload.py:460
 msgid "restarting pyLoad"
 msgstr "اعادة تشغيل باي لود"
 
-#: pyLoadCore.py:464
+#: pyload.py:464
 msgid "pyLoad quits"
 msgstr "اغلاق باي لود"
 
-#: pyLoadCore.py:521
+#: pyload.py:521
 #, python-format
 msgid "Install %s"
 msgstr "التثبيت %"
 
-#: pyLoadCore.py:557
+#: pyload.py:557
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr "لا يمكن ايجاد %(وصف): %(اسم)"
 
-#: pyLoadCore.py:559
+#: pyload.py:559
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr "لا يمكن انشاء %(وصف): %(اسم)"
 
-#: pyLoadCore.py:580
+#: pyload.py:580
 msgid "shutting down..."
 msgstr "جاري ايقاف التشغيل..."
 
-#: pyLoadCore.py:597
+#: pyload.py:597
 msgid "error while shutting down"
 msgstr "خطاء اثناء ايقاف التشغيل "
 
-#: pyLoadCore.py:661
+#: pyload.py:661
 msgid "killed pyLoad from Terminal"
 msgstr "انهاء باي لود من الطرفيه"
 
@@ -333,8 +333,8 @@ msgid "not available"
 msgstr "غير متوفر"
 
 #: module/web/pyload_app.py:508
-msgid "Run pyLoadCore.py -s to access the setup."
-msgstr "قم بتشغيل pyLoadCore.py -s لتبداء التثبيت"
+msgid "Run pyload.py -s to access the setup."
+msgstr "قم بتشغيل pyload.py -s لتبداء التثبيت"
 
 #: module/network/HTTPDownload.py:245
 #, python-format

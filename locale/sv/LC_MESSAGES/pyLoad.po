@@ -12,120 +12,120 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
-#: pyLoadCore.py:182
+#: pyload.py:182
 msgid "Received Quit signal"
 msgstr "Tog emot avslutningssignal"
 
-#: pyLoadCore.py:303
+#: pyload.py:303
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr "pyLoad körs redan med pid %s"
 
-#: pyLoadCore.py:317
+#: pyload.py:317
 #, python-format
 msgid "Failed changing group: %s"
 msgstr "Misslyckades att ändra gruppen %s"
 
-#: pyLoadCore.py:327
+#: pyload.py:327
 #, python-format
 msgid "Failed changing user: %s"
 msgstr "Kunde inte ändra användaren: %s"
 
-#: pyLoadCore.py:329
+#: pyload.py:329
 msgid "folder for logs"
 msgstr "mapp för loggar"
 
-#: pyLoadCore.py:340
+#: pyload.py:340
 msgid "Starting"
 msgstr "Startar"
 
-#: pyLoadCore.py:341
+#: pyload.py:341
 #, python-format
 msgid "Using home directory: %s"
 msgstr "Använder hemkatalog: %s"
 
-#: pyLoadCore.py:350
+#: pyload.py:350
 msgid "pycrypto to decode container files"
 msgstr "pyCrypto avkodar containerfiler"
 
-#: pyLoadCore.py:353
+#: pyload.py:353
 msgid "folder for temporary files"
 msgstr "mapp för temporära filer"
 
-#: pyLoadCore.py:358
+#: pyload.py:358
 msgid "folder for downloads"
 msgstr "mapp för hämtningar"
 
-#: pyLoadCore.py:361
+#: pyload.py:361
 msgid "OpenSSL for secure connection"
 msgstr "OpenSSL för säker anslutning"
 
-#: pyLoadCore.py:365
+#: pyload.py:365
 msgid "Moving old user config to DB"
 msgstr "Flyttar gamla användarinställningar till databasen"
 
-#: pyLoadCore.py:368
-msgid "Please check your logindata with ./pyLoadCore.py -u"
-msgstr "Kontrollera dina login-uppgifter med './pyLoadCore.py -u'"
+#: pyload.py:368
+msgid "Please check your logindata with ./pyload.py -u"
+msgstr "Kontrollera dina login-uppgifter med './pyload.py -u'"
 
-#: pyLoadCore.py:371
+#: pyload.py:371
 msgid "All links removed"
 msgstr "Alla länkar togs bort"
 
-#: pyLoadCore.py:402
+#: pyload.py:402
 #, python-format
 msgid "Downloadtime: %s"
 msgstr "Hämtningstid: %s"
 
-#: pyLoadCore.py:412
+#: pyload.py:412
 #, python-format
 msgid "Free space: %s"
 msgstr "Ledigt utrymme: %s"
 
-#: pyLoadCore.py:432
+#: pyload.py:432
 msgid "Activating Accounts..."
 msgstr "Aktiverar konton..."
 
-#: pyLoadCore.py:438
+#: pyload.py:438
 msgid "Activating Plugins..."
 msgstr "Aktiverar tilläggsprogram..."
 
-#: pyLoadCore.py:441
+#: pyload.py:441
 msgid "pyLoad is up and running"
 msgstr "pyLoad är igång"
 
-#: pyLoadCore.py:460
+#: pyload.py:460
 msgid "restarting pyLoad"
 msgstr "startar om pyLoad"
 
-#: pyLoadCore.py:464
+#: pyload.py:464
 msgid "pyLoad quits"
 msgstr "pyLoad avslutas"
 
-#: pyLoadCore.py:521
+#: pyload.py:521
 #, python-format
 msgid "Install %s"
 msgstr "Installera %s"
 
-#: pyLoadCore.py:557
+#: pyload.py:557
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr "kunde inte hitta %(desc)s: %(name)s"
 
-#: pyLoadCore.py:559
+#: pyload.py:559
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr "kunde inte skapa %(desc)s: %(name)s"
 
-#: pyLoadCore.py:580
+#: pyload.py:580
 msgid "shutting down..."
 msgstr "stänger ner..."
 
-#: pyLoadCore.py:597
+#: pyload.py:597
 msgid "error while shutting down"
 msgstr "fel vid nedstängning"
 
-#: pyLoadCore.py:661
+#: pyload.py:661
 msgid "killed pyLoad from Terminal"
 msgstr "dödade pyLoad från Terminal"
 
@@ -333,8 +333,8 @@ msgid "not available"
 msgstr "inte tillgänglig"
 
 #: module/web/pyload_app.py:508
-msgid "Run pyLoadCore.py -s to access the setup."
-msgstr "Kör pyLoadCore.py -s för att komma åt konfigurationen."
+msgid "Run pyload.py -s to access the setup."
+msgstr "Kör pyload.py -s för att komma åt konfigurationen."
 
 #: module/network/HTTPDownload.py:245
 #, python-format

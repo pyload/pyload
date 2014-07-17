@@ -37,15 +37,15 @@ msgid "in case you don't want to change it or you are unsure what to choose, jus
 msgstr "ha nem akarod megváltoztatni, vagy nem vagy biztos benne mit válassz, csak nyomj entert."
 
 #: module/setup.py:78
-msgid "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore."
-msgstr "Ne feledd: a segédhez visszatérhetsz ha a pyLoadCore-t a --setup vagy -s paraméterekkel indítod."
+msgid "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyload.py ."
+msgstr "Ne feledd: a segédhez visszatérhetsz ha a pyload.py-t a --setup vagy -s paraméterekkel indítod."
 
 #: module/setup.py:79
 msgid "If you have any problems with this assistent hit STRG-C,"
 msgstr "Ha bármi probléma lépne fel a segéd futása közben nyomj STRG-C kombinációt"
 
 #: module/setup.py:80
-msgid "to abort and don't let him start with pyLoadCore automatically anymore."
+msgid "to abort and don't let him start with pyload.py automatically anymore."
 msgstr "a megszakításhoz, és hogy ne induljon el újra automatikusan."
 
 #: module/setup.py:82

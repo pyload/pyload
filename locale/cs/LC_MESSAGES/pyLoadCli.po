@@ -12,210 +12,210 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: crowdin.net\n"
 
-#: pyLoadCli.py:75 pyLoadCli.py:133
+#: module/cli/Cli.py:75 module/cli/Cli.py:133
 msgid " Command Line Interface"
 msgstr " Příkazová řádka"
 
-#: pyLoadCli.py:165
+#: module/cli/Cli.py:165
 #, python-format
 msgid "%s Downloads:"
 msgstr "%s Stahování:"
 
-#: pyLoadCli.py:177
+#: module/cli/Cli.py:177
 msgid " Speed: "
 msgstr " Rychlost: "
 
-#: pyLoadCli.py:177
+#: module/cli/Cli.py:177
 msgid " Size: "
 msgstr " Velikost: "
 
-#: pyLoadCli.py:178
+#: module/cli/Cli.py:178
 msgid " Finished in: "
 msgstr " Dokončeno za: "
 
-#: pyLoadCli.py:179
+#: module/cli/Cli.py:179
 msgid " ID: "
 msgstr ""
 
-#: pyLoadCli.py:184
+#: module/cli/Cli.py:184
 msgid "waiting: "
 msgstr "čeká: "
 
-#: pyLoadCli.py:191 pyLoadCli.py:193
+#: module/cli/Cli.py:191 module/cli/Cli.py:193
 msgid "Status:"
 msgstr "Stav:"
 
-#: pyLoadCli.py:191
+#: module/cli/Cli.py:191
 msgid "paused"
 msgstr "pozastaveno"
 
-#: pyLoadCli.py:193
+#: module/cli/Cli.py:193
 msgid "running"
 msgstr "probíhá"
 
-#: pyLoadCli.py:196
+#: module/cli/Cli.py:196
 msgid "total Speed"
 msgstr "celková rychlost"
 
-#: pyLoadCli.py:196
+#: module/cli/Cli.py:196
 msgid "Files in queue"
 msgstr "Souborů ve frontě"
 
-#: pyLoadCli.py:197
+#: module/cli/Cli.py:197
 msgid "Total"
 msgstr "Celkem"
 
-#: pyLoadCli.py:203
+#: module/cli/Cli.py:203
 msgid "Menu:"
 msgstr ""
 
-#: pyLoadCli.py:205
+#: module/cli/Cli.py:205
 msgid " Add Links"
 msgstr " Přidat Odkazy"
 
-#: pyLoadCli.py:206
+#: module/cli/Cli.py:206
 msgid " Manage Queue"
 msgstr " Správa fronty"
 
-#: pyLoadCli.py:207
+#: module/cli/Cli.py:207
 msgid " Manage Collector"
 msgstr " Správa Sběrače"
 
-#: pyLoadCli.py:208
+#: module/cli/Cli.py:208
 msgid " (Un)Pause Server"
 msgstr " Pozastavit/Spustit server"
 
-#: pyLoadCli.py:209
+#: module/cli/Cli.py:209
 msgid " Kill Server"
 msgstr " Ukončit server"
 
-#: pyLoadCli.py:210
+#: module/cli/Cli.py:210
 msgid " Quit"
 msgstr " Konec"
 
-#: pyLoadCli.py:289 pyLoadCli.py:296
+#: module/cli/Cli.py:289 module/cli/Cli.py:296
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
 msgstr "Prosím použijte tuto syntaxi: add <Jmeno balicku> <odkaz> <odkaz2> ..."
 
-#: pyLoadCli.py:315
+#: module/cli/Cli.py:315
 #, python-format
 msgid "Checking %d links:"
 msgstr "Kontroluji  %d odkazů:"
 
-#: pyLoadCli.py:324
+#: module/cli/Cli.py:324
 msgid "File does not exists."
 msgstr "Soubor neexistuje."
 
-#: pyLoadCli.py:385
+#: module/cli/Cli.py:385
 msgid "pyLoad was terminated"
 msgstr "pyLoad byl ukončen"
 
-#: pyLoadCli.py:443
+#: module/cli/Cli.py:443
 msgid "Prints server status"
 msgstr "Vypíše stav serveru"
 
-#: pyLoadCli.py:444
+#: module/cli/Cli.py:444
 msgid "Prints downloads in queue"
 msgstr "Vypíše stahování ve frontě"
 
-#: pyLoadCli.py:445
+#: module/cli/Cli.py:445
 msgid "Prints downloads in collector"
 msgstr "Vypíše stahování ve sběrači"
 
-#: pyLoadCli.py:446
+#: module/cli/Cli.py:446
 msgid "Adds package to queue"
 msgstr "Přidá balíček do fronty"
 
-#: pyLoadCli.py:447
+#: module/cli/Cli.py:447
 msgid "Adds package to collector"
 msgstr "Přidá balíček do sběrače"
 
-#: pyLoadCli.py:448
+#: module/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
 msgstr "Smazat soubory z fronty/sběrače"
 
-#: pyLoadCli.py:449
+#: module/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
 msgstr "Smazat balíčky z fronty/sběrače"
 
-#: pyLoadCli.py:450
+#: module/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
 msgstr "Přesun balíčku z fronty do sběrače nebo naopak"
 
-#: pyLoadCli.py:451
+#: module/cli/Cli.py:451
 msgid "Restart files"
 msgstr "Restart souborů"
 
-#: pyLoadCli.py:452
+#: module/cli/Cli.py:452
 msgid "Restart packages"
 msgstr "Restart balíčků"
 
-#: pyLoadCli.py:453
+#: module/cli/Cli.py:453
 msgid "Check online status, works with local container"
 msgstr "Zkontrolovat stav online - funguje s místním zásobníkem"
 
-#: pyLoadCli.py:454
+#: module/cli/Cli.py:454
 msgid "Checks online status of a container file"
 msgstr "Zkontroluje online stav souboru ze zásobníku"
 
-#: pyLoadCli.py:455
+#: module/cli/Cli.py:455
 msgid "Pause the server"
 msgstr "Pozastavit server"
 
-#: pyLoadCli.py:456
+#: module/cli/Cli.py:456
 msgid "continue downloads"
 msgstr "pokracovat ve stahovani"
 
-#: pyLoadCli.py:457
+#: module/cli/Cli.py:457
 msgid "Toggle pause/unpause"
 msgstr "Prepnout pozastaveni/beh"
 
-#: pyLoadCli.py:458
+#: module/cli/Cli.py:458
 msgid "kill server"
 msgstr "ukoncit server"
 
-#: pyLoadCli.py:460
+#: module/cli/Cli.py:460
 msgid "List of commands:"
 msgstr "Seznam prikazu:"
 
-#: pyLoadCli.py:473
+#: module/cli/Cli.py:473
 msgid "Couldn't write user config file"
 msgstr "Nemohu zapsat nastavení uživatele"
 
-#: pyLoadCli.py:548
+#: module/cli/Cli.py:548
 msgid "You need py-openssl to connect to this pyLoad Core."
 msgstr "Pro pripojeni k tomuto jadru pyLoad je vyzadovano py-openssl."
 
-#: pyLoadCli.py:555
+#: module/cli/Cli.py:555
 msgid "Address: "
 msgstr "Adresa: "
 
-#: pyLoadCli.py:556
+#: module/cli/Cli.py:556
 msgid "Port: "
 msgstr ""
 
-#: pyLoadCli.py:557
+#: module/cli/Cli.py:557
 msgid "Username: "
 msgstr "Uzivatelske jmeno: "
 
-#: pyLoadCli.py:561
+#: module/cli/Cli.py:561
 msgid "Password: "
 msgstr "Heslo: "
 
-#: pyLoadCli.py:566 pyLoadCli.py:575
+#: module/cli/Cli.py:566 module/cli/Cli.py:575
 msgid "Login data is wrong."
 msgstr "Prihlasovaci udaje jsou chybne."
 
-#: pyLoadCli.py:568 pyLoadCli.py:577
+#: module/cli/Cli.py:568 module/cli/Cli.py:577
 #, python-format
 msgid "Could not establish connection to %(addr)s:%(port)s."
 msgstr "Nelze vytvorit pripojeni k %(addr)s:%(port)s."
 
-#: pyLoadCli.py:580
+#: module/cli/Cli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."
 msgstr "K pripojeni na toto pyLoad jadro potrebujete py-openssl."
 
-#: pyLoadCli.py:582
+#: module/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
 msgstr "Byly zadany prikazy, interaktivni mod je ignorovan."
 

@@ -17,120 +17,120 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pyLoadCore.py:181
+#: pyload.py:181
 msgid "Received Quit signal"
 msgstr ""
 
-#: pyLoadCore.py:302
+#: pyload.py:302
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr ""
 
-#: pyLoadCore.py:316
+#: pyload.py:316
 #, python-format
 msgid "Failed changing group: %s"
 msgstr ""
 
-#: pyLoadCore.py:326
+#: pyload.py:326
 #, python-format
 msgid "Failed changing user: %s"
 msgstr ""
 
-#: pyLoadCore.py:328
+#: pyload.py:328
 msgid "folder for logs"
 msgstr ""
 
-#: pyLoadCore.py:339
+#: pyload.py:339
 msgid "Starting"
 msgstr ""
 
-#: pyLoadCore.py:340
+#: pyload.py:340
 #, python-format
 msgid "Using home directory: %s"
 msgstr ""
 
-#: pyLoadCore.py:349
+#: pyload.py:349
 msgid "pycrypto to decode container files"
 msgstr ""
 
-#: pyLoadCore.py:352
+#: pyload.py:352
 msgid "folder for temporary files"
 msgstr ""
 
-#: pyLoadCore.py:357
+#: pyload.py:357
 msgid "folder for downloads"
 msgstr ""
 
-#: pyLoadCore.py:360
+#: pyload.py:360
 msgid "OpenSSL for secure connection"
 msgstr ""
 
-#: pyLoadCore.py:364
+#: pyload.py:364
 msgid "Moving old user config to DB"
 msgstr ""
 
-#: pyLoadCore.py:367
-msgid "Please check your logindata with ./pyLoadCore.py -u"
+#: pyload.py:367
+msgid "Please check your logindata with ./pyload.py -u"
 msgstr ""
 
-#: pyLoadCore.py:370
+#: pyload.py:370
 msgid "All links removed"
 msgstr ""
 
-#: pyLoadCore.py:401
+#: pyload.py:401
 #, python-format
 msgid "Downloadtime: %s"
 msgstr ""
 
-#: pyLoadCore.py:411
+#: pyload.py:411
 #, python-format
 msgid "Free space: %s"
 msgstr ""
 
-#: pyLoadCore.py:431
+#: pyload.py:431
 msgid "Activating Accounts..."
 msgstr ""
 
-#: pyLoadCore.py:437
+#: pyload.py:437
 msgid "Activating Plugins..."
 msgstr ""
 
-#: pyLoadCore.py:440
+#: pyload.py:440
 msgid "pyLoad is up and running"
 msgstr ""
 
-#: pyLoadCore.py:459
+#: pyload.py:459
 msgid "restarting pyLoad"
 msgstr ""
 
-#: pyLoadCore.py:463
+#: pyload.py:463
 msgid "pyLoad quits"
 msgstr ""
 
-#: pyLoadCore.py:520
+#: pyload.py:520
 #, python-format
 msgid "Install %s"
 msgstr ""
 
-#: pyLoadCore.py:556
+#: pyload.py:556
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr ""
 
-#: pyLoadCore.py:558
+#: pyload.py:558
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr ""
 
-#: pyLoadCore.py:579
+#: pyload.py:579
 msgid "shutting down..."
 msgstr ""
 
-#: pyLoadCore.py:596
+#: pyload.py:596
 msgid "error while shutting down"
 msgstr ""
 
-#: pyLoadCore.py:660
+#: pyload.py:660
 msgid "killed pyLoad from Terminal"
 msgstr ""
 
@@ -341,7 +341,7 @@ msgid "not available"
 msgstr ""
 
 #: module/web/pyload_app.py:509
-msgid "Run pyLoadCore.py -s to access the setup."
+msgid "Run pyload.py -s to access the setup."
 msgstr ""
 
 #: module/network/HTTPDownload.py:245

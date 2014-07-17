@@ -37,16 +37,16 @@ msgid "in case you don't want to change it or you are unsure what to choose, jus
 msgstr "tryck bara Enter i de fall du inte vill ändra det eller om du är osäker vad du ska välja."
 
 #: module/setup.py:78
-msgid "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore."
-msgstr "Glöm inte: Du kan alltid köra denna guide igen med --setup eller parametern -s, när du startar pyLoadCore."
+msgid "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyload.py ."
+msgstr "Glöm inte: Du kan alltid köra denna guide igen med --setup eller parametern -s, när du startar pyload.py ."
 
 #: module/setup.py:79
 msgid "If you have any problems with this assistent hit STRG-C,"
 msgstr "Om du får några problem med denna guide så tryck Ctrl-C,"
 
 #: module/setup.py:80
-msgid "to abort and don't let him start with pyLoadCore automatically anymore."
-msgstr "för att avbryta och låt bli att starta automatiskt med pyLoadCore."
+msgid "to abort and don't let him start with pyload.py automatically anymore."
+msgstr "för att avbryta och låt bli att starta automatiskt med pyload.py ."
 
 #: module/setup.py:82
 msgid "When you are ready for system check, hit enter."

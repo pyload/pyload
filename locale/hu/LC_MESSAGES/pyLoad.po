@@ -12,120 +12,120 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
-#: pyLoadCore.py:182
+#: pyload.py:182
 msgid "Received Quit signal"
 msgstr "Leállítási jel érkezett"
 
-#: pyLoadCore.py:303
+#: pyload.py:303
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr "a pyLoad már fut az alábbi pid számmal: %s"
 
-#: pyLoadCore.py:317
+#: pyload.py:317
 #, python-format
 msgid "Failed changing group: %s"
 msgstr "Sikertelen csoport váltás: %s"
 
-#: pyLoadCore.py:327
+#: pyload.py:327
 #, python-format
 msgid "Failed changing user: %s"
 msgstr "Sikertelen felhasználó váltás: %s"
 
-#: pyLoadCore.py:329
+#: pyload.py:329
 msgid "folder for logs"
 msgstr "könyvtár a naplóknak"
 
-#: pyLoadCore.py:340
+#: pyload.py:340
 msgid "Starting"
 msgstr "Indítás"
 
-#: pyLoadCore.py:341
+#: pyload.py:341
 #, python-format
 msgid "Using home directory: %s"
 msgstr "Főkönyvtár használata: %s"
 
-#: pyLoadCore.py:350
+#: pyload.py:350
 msgid "pycrypto to decode container files"
 msgstr "pycrypto a konténer fájlok dekódolásához"
 
-#: pyLoadCore.py:353
+#: pyload.py:353
 msgid "folder for temporary files"
 msgstr "könyvtár az átmeneti fájloknak"
 
-#: pyLoadCore.py:358
+#: pyload.py:358
 msgid "folder for downloads"
 msgstr "könyvtár a letöltéseknek"
 
-#: pyLoadCore.py:361
+#: pyload.py:361
 msgid "OpenSSL for secure connection"
 msgstr "OpenSSL a biztonságos kapcsolathoz"
 
-#: pyLoadCore.py:365
+#: pyload.py:365
 msgid "Moving old user config to DB"
 msgstr ""
 
-#: pyLoadCore.py:368
-msgid "Please check your logindata with ./pyLoadCore.py -u"
-msgstr "Ellenőrizd a belépési adataid a következő paranccsal: ./pyLoadCore.py -u"
+#: pyload.py:368
+msgid "Please check your logindata with ./pyload.py -u"
+msgstr "Ellenőrizd a belépési adataid a következő paranccsal: ./pyload.py -u"
 
-#: pyLoadCore.py:371
+#: pyload.py:371
 msgid "All links removed"
 msgstr "Minden link törölve"
 
-#: pyLoadCore.py:402
+#: pyload.py:402
 #, python-format
 msgid "Downloadtime: %s"
 msgstr "Letöltési idő: %s"
 
-#: pyLoadCore.py:412
+#: pyload.py:412
 #, python-format
 msgid "Free space: %s"
 msgstr "Szabad hely: %s"
 
-#: pyLoadCore.py:432
+#: pyload.py:432
 msgid "Activating Accounts..."
 msgstr "Hozzáférések aktiválása..."
 
-#: pyLoadCore.py:438
+#: pyload.py:438
 msgid "Activating Plugins..."
 msgstr "Bővítmények aktiválása..."
 
-#: pyLoadCore.py:441
+#: pyload.py:441
 msgid "pyLoad is up and running"
 msgstr "pyLoad fut"
 
-#: pyLoadCore.py:460
+#: pyload.py:460
 msgid "restarting pyLoad"
 msgstr "pyLoad újraindítása"
 
-#: pyLoadCore.py:464
+#: pyload.py:464
 msgid "pyLoad quits"
 msgstr "pyLoad kilép"
 
-#: pyLoadCore.py:521
+#: pyload.py:521
 #, python-format
 msgid "Install %s"
 msgstr "Telepítés %s"
 
-#: pyLoadCore.py:557
+#: pyload.py:557
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr ""
 
-#: pyLoadCore.py:559
+#: pyload.py:559
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr ""
 
-#: pyLoadCore.py:580
+#: pyload.py:580
 msgid "shutting down..."
 msgstr "leállítás..."
 
-#: pyLoadCore.py:597
+#: pyload.py:597
 msgid "error while shutting down"
 msgstr "hiba leállítás közben"
 
-#: pyLoadCore.py:661
+#: pyload.py:661
 msgid "killed pyLoad from Terminal"
 msgstr "pyLoad kilőve konzolról"
 
@@ -333,8 +333,8 @@ msgid "not available"
 msgstr "nem elérhető"
 
 #: module/web/pyload_app.py:508
-msgid "Run pyLoadCore.py -s to access the setup."
-msgstr "A beállításhoz futtasd: pyLoadCore.py -s."
+msgid "Run pyload.py -s to access the setup."
+msgstr "A beállításhoz futtasd: pyload.py -s."
 
 #: module/network/HTTPDownload.py:245
 #, python-format

@@ -37,15 +37,15 @@ msgid "in case you don't want to change it or you are unsure what to choose, jus
 msgstr "如果您不知道該如何設定或是不需改變，請直接按下Enter"
 
 #: module/setup.py:78
-msgid "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore."
-msgstr "小提醒： 您以後可以透過pyLoadCore -s 或是 pyLoadCore --setup重新執行設定助手"
+msgid "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyload.py ."
+msgstr "小提醒： 您以後可以透過pyLoadCore -s 或是 pyload.py --setup重新執行設定助手"
 
 #: module/setup.py:79
 msgid "If you have any problems with this assistent hit STRG-C,"
 msgstr "如果你对本助理有任何疑问，请摁STRG-C，"
 
 #: module/setup.py:80
-msgid "to abort and don't let him start with pyLoadCore automatically anymore."
+msgid "to abort and don't let him start with pyload.py automatically anymore."
 msgstr "不再讓設定助手與pyLoad同時啟動"
 
 #: module/setup.py:82

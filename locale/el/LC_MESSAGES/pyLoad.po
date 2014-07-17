@@ -12,120 +12,120 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
-#: pyLoadCore.py:182
+#: pyload.py:182
 msgid "Received Quit signal"
 msgstr "Ελήφθη σήμα εγκατάλειψης"
 
-#: pyLoadCore.py:303
+#: pyload.py:303
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr "Το pyLoad εκτελείται ήδη με pid %s"
 
-#: pyLoadCore.py:317
+#: pyload.py:317
 #, python-format
 msgid "Failed changing group: %s"
 msgstr "Αποτυχία αλλαγής ομάδας: %s"
 
-#: pyLoadCore.py:327
+#: pyload.py:327
 #, python-format
 msgid "Failed changing user: %s"
 msgstr "Αποτυχία αλλαγής χρήστη: %s"
 
-#: pyLoadCore.py:329
+#: pyload.py:329
 msgid "folder for logs"
 msgstr "φάκελος για αρχεία καταγραφής"
 
-#: pyLoadCore.py:340
+#: pyload.py:340
 msgid "Starting"
 msgstr "Σε εκκίνηση"
 
-#: pyLoadCore.py:341
+#: pyload.py:341
 #, python-format
 msgid "Using home directory: %s"
 msgstr "Χρήση γονικού καταλόγου: %s"
 
-#: pyLoadCore.py:350
+#: pyload.py:350
 msgid "pycrypto to decode container files"
 msgstr "το pycrypto θα αποκωδικοποιήσει τα περιέχοντα αρχεία"
 
-#: pyLoadCore.py:353
+#: pyload.py:353
 msgid "folder for temporary files"
 msgstr "φάκελος για προσωρινά αρχεία"
 
-#: pyLoadCore.py:358
+#: pyload.py:358
 msgid "folder for downloads"
 msgstr "φάκελος για κατεβασμένα"
 
-#: pyLoadCore.py:361
+#: pyload.py:361
 msgid "OpenSSL for secure connection"
 msgstr "OpenSSL για ασφαλή σύνδεση"
 
-#: pyLoadCore.py:365
+#: pyload.py:365
 msgid "Moving old user config to DB"
 msgstr ""
 
-#: pyLoadCore.py:368
-msgid "Please check your logindata with ./pyLoadCore.py -u"
-msgstr "Παρακαλώ ελέγξτε τα στοιχεία σύνδεσης με τη χρήση του ./pyLoadCore.py -u"
+#: pyload.py:368
+msgid "Please check your logindata with ./pyload.py -u"
+msgstr "Παρακαλώ ελέγξτε τα στοιχεία σύνδεσης με τη χρήση του ./pyload.py -u"
 
-#: pyLoadCore.py:371
+#: pyload.py:371
 msgid "All links removed"
 msgstr "Όλοι οι συνδεσμοι αφαιρέθηκαν"
 
-#: pyLoadCore.py:402
+#: pyload.py:402
 #, python-format
 msgid "Downloadtime: %s"
 msgstr "Χρόνος κατεβάσματος: %s"
 
-#: pyLoadCore.py:412
+#: pyload.py:412
 #, python-format
 msgid "Free space: %s"
 msgstr "Ελέυθερος χώρος στο δίσκο: %s"
 
-#: pyLoadCore.py:432
+#: pyload.py:432
 msgid "Activating Accounts..."
 msgstr "Ενεργοποίηση Λογαριασμών..."
 
-#: pyLoadCore.py:438
+#: pyload.py:438
 msgid "Activating Plugins..."
 msgstr "Ενεργοποίηση Πρόσθετων..."
 
-#: pyLoadCore.py:441
+#: pyload.py:441
 msgid "pyLoad is up and running"
 msgstr "Το pyLoad είναι ενεργό και εκτελείται "
 
-#: pyLoadCore.py:460
+#: pyload.py:460
 msgid "restarting pyLoad"
 msgstr "το pyLoad επανεκκινείται"
 
-#: pyLoadCore.py:464
+#: pyload.py:464
 msgid "pyLoad quits"
 msgstr "το pyLoad σταματάει"
 
-#: pyLoadCore.py:521
+#: pyload.py:521
 #, python-format
 msgid "Install %s"
 msgstr "Εγκατάσταση %s"
 
-#: pyLoadCore.py:557
+#: pyload.py:557
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr "δεν βρεθηκε(καν) %(desc)s: %(name)s"
 
-#: pyLoadCore.py:559
+#: pyload.py:559
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr "δεν διμιουργήθηκε(καν) %(desc)s: %(name)s"
 
-#: pyLoadCore.py:580
+#: pyload.py:580
 msgid "shutting down..."
 msgstr "κλείσιμο..."
 
-#: pyLoadCore.py:597
+#: pyload.py:597
 msgid "error while shutting down"
 msgstr "σφάλμα κατα το κλείσιμο"
 
-#: pyLoadCore.py:661
+#: pyload.py:661
 msgid "killed pyLoad from Terminal"
 msgstr "το pyLoad σταματήθηκε απο το Τερματικο"
 
@@ -333,8 +333,8 @@ msgid "not available"
 msgstr "μη διαθέσιμο"
 
 #: module/web/pyload_app.py:508
-msgid "Run pyLoadCore.py -s to access the setup."
-msgstr "Εκτελέστε την εντολή pyLoadCore.py -s για πρόσβαση στην εγκατάσταση."
+msgid "Run pyload.py -s to access the setup."
+msgstr "Εκτελέστε την εντολή pyload.py -s για πρόσβαση στην εγκατάσταση."
 
 #: module/network/HTTPDownload.py:245
 #, python-format
