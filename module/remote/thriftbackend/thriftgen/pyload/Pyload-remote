@@ -18,9 +18,9 @@ import Pyload
 from ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
-  print ''
+  print
   print 'Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] function [arg1 [arg2...]]'
-  print ''
+  print
   print 'Functions:'
   print '  string getConfigValue(string category, string option, string section)'
   print '  void setConfigValue(string category, string option, string value, string section)'
@@ -92,7 +92,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  CaptchaTask getCaptchaTask(bool exclusive)'
   print '  string getCaptchaTaskStatus(TaskID tid)'
   print '  void setCaptchaResult(TaskID tid, string result)'
-  print ''
+  print
   sys.exit(0)
 
 pp = pprint.PrettyPrinter(indent = 2)

@@ -34,7 +34,7 @@ class Setup:
         #Input shorthand for no
         self.no = _("n")
 
-        #        print ""
+        #        print
         #        print _("Would you like to configure pyLoad via Webinterface?")
         #        print _("You need a Browser and a connection to this PC for it.")
         #        viaweb = self.ask(_("Start initial webinterface for configuration?"), "y", bool=True)
@@ -49,22 +49,23 @@ class Setup:
         #                print "Setup failed with this error: ", e
         #                print "Falling back to commandline setup."
 
-        print ""
+        print
         print _("Welcome to the pyLoad Configuration Assistant.")
         print _("It will check your system and make a basic setup in order to run pyLoad.")
-        print ""
+        print
         print _("The value in brackets [] always is the default value,")
         print _("in case you don't want to change it or you are unsure what to choose, just hit enter.")
         print _(
             "Don't forget: You can always rerun this assistant with --setup or -s parameter, when you start pyLoadCore.")
         print _("If you have any problems with this assistant hit STRG-C,")
         print _("to abort and don't let him start with pyLoadCore automatically anymore.")
-        print ""
+        print
         print _("When you are ready for system check, hit enter.")
         raw_input()
+        print
 
         basic, ssl, captcha, web, js = self.system_check()
-        print ""
+        print
 
         if not basic:
             print _("You need pycurl, sqlite and python 2.5, 2.6 or 2.7 to run pyLoad.")
@@ -74,9 +75,10 @@ class Setup:
             return False
 
         raw_input(_("System check finished, hit enter to see your status report."))
-        print ""
+        print
+        print
         print _("## Status ##")
-        print ""
+        print
 
         avail = []
         if self.check_module("Crypto"):
@@ -95,8 +97,11 @@ class Setup:
         for av in avail:
             string += ", " + av
 
-        print _("Features available:") + string[1:]
-        print ""
+        print _("Features available:")
+        print
+        print string[1:]
+        print
+        print
 
         if len(avail) < 5:
             print _("Featues missing: ")
@@ -105,18 +110,18 @@ class Setup:
             if not self.check_module("Crypto"):
                 print _("no py-crypto available")
                 print _("You need this if you want to decrypt container files.")
-                print ""
+                print
 
             if not ssl:
                 print _("no SSL available")
                 print _("This is needed if you want to establish a secure connection to core or webinterface.")
                 print _("If you only want to access locally to pyLoad ssl is not usefull.")
-                print ""
+                print
 
             if not captcha:
                 print _("no Captcha Recognition available")
                 print _("Only needed for some hosters and as freeuser.")
-                print ""
+                print
 
             if not js:
                 print _("no JavaScript engine found")
@@ -129,8 +134,9 @@ class Setup:
         if not con:
             return False
 
-        print ""
-        print _("Do you want to change the config path? Current is %s") % abspath("")
+        print
+        print _("Do you want to change the config path?")
+        print _("CURRENT CONFIG PATH: %s") % abspath("")
         print _(
             "If you use pyLoad on a server or the home partition lives on an iternal flash it may be a good idea to change it.")
         path = self.ask(_("Change config path?"), self.no, bool=True)
@@ -138,7 +144,7 @@ class Setup:
             self.conf_path()
             #calls exit when changed
 
-        print ""
+        print
         print _("Do you want to configure login data and basic settings?")
         print _("This is recommend for first run.")
         con = self.ask(_("Make basic setup?"), self.yes, bool=True)
@@ -147,20 +153,21 @@ class Setup:
             self.conf_basic()
 
         if ssl:
-            print ""
+            print
             print _("Do you want to configure ssl?")
             ssl = self.ask(_("Configure ssl?"), self.no, bool=True)
             if ssl:
+                print
                 self.conf_ssl()
 
         if web:
-            print ""
+            print
             print _("Do you want to configure webinterface?")
             web = self.ask(_("Configure webinterface?"), self.yes, bool=True)
             if web:
                 self.conf_web()
 
-        print ""
+        print
         print _("Setup finished successfully.")
         print _("Hit enter to exit and restart pyLoad")
         raw_input()
@@ -170,6 +177,7 @@ class Setup:
     def system_check(self):
         """ make a systemcheck and return the results"""
         print _("## System Check ##")
+        print
 
         if sys.version_info[:2] > (2, 7):
             print _("Your python version is to new, Please use Python 2.6/2.7")
@@ -189,7 +197,7 @@ class Setup:
 
         basic = python and curl and sqlite
 
-        print ""
+        print
 
         crypto = self.check_module("Crypto")
         self.print_dep("pycrypto", crypto)
@@ -197,7 +205,7 @@ class Setup:
         ssl = self.check_module("OpenSSL")
         self.print_dep("py-OpenSSL", ssl)
 
-        print ""
+        print
 
         pil = self.check_module("Image")
         self.print_dep("py-imaging", pil)
@@ -211,7 +219,7 @@ class Setup:
 
         captcha = pil and tesser
 
-        print ""
+        print
 
         jinja = True
 
@@ -246,10 +254,10 @@ class Setup:
 
 
     def conf_basic(self):
-        print ""
+        print
         print _("## Basic Setup ##")
 
-        print ""
+        print
         print _("The following logindata is valid for CLI and webinterface.")
 
         from module.database import DatabaseBackend
@@ -261,12 +269,12 @@ class Setup:
         db.addUser(username, password)
         db.shutdown()
 
-        print ""
+        print
         print _("External clients (GUI, CLI or other) need remote access to work over the network.")
         print _("However, if you only want to use the webinterface you may disable it to save ram.")
         self.config["remote"]["activated"] = self.ask(_("Enable remote access"), self.no, bool=True)
 
-        print ""
+        print
         langs = self.config.getMetaData("general", "language")
         self.config["general"]["language"] = self.ask(_("Language"), "en", langs["type"].split(";"))
 
@@ -282,16 +290,16 @@ class Setup:
 
 
     def conf_web(self):
-        print ""
+        print
         print _("## Webinterface Setup ##")
 
-        print ""
+        print
         self.config["webinterface"]["activated"] = self.ask(_("Activate webinterface?"), self.yes, bool=True)
-        print ""
+        print
         print _("Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally.")
         self.config["webinterface"]["host"] = self.ask(_("Address"), "0.0.0.0")
         self.config["webinterface"]["port"] = self.ask(_("Port"), "8000")
-        print ""
+        print
         print _("pyLoad offers several server backends, now following a short explanation.")
         print "builtin:", _("Default server; best choice if you plan to use pyLoad just for you.")
         print "threaded:", _("Support SSL connection and can serve simultaneously more client flawlessly.")
@@ -316,15 +324,14 @@ class Setup:
 
 
     def conf_ssl(self):
-        print ""
         print _("## SSL Setup ##")
-        print ""
+        print
         print _("Execute these commands from pyLoad config folder to make ssl certificates:")
-        print ""
+        print
         print "openssl genrsa -out ssl.key 1024"
         print "openssl req -new -key ssl.key -out ssl.csr"
         print "openssl req -days 36500 -x509 -key ssl.key -in ssl.csr > ssl.crt "
-        print ""
+        print
         print _("If you're done and everything went fine, you can activate ssl now.")
 
         self.config["ssl"]["activated"] = self.ask(_("Activate SSL?"), self.yes, bool=True)
@@ -353,13 +360,13 @@ class Setup:
                 if not action in ("1", "2", "3", "4"):
                     continue
                 elif action == "1":
-                    print ""
+                    print
                     username = self.ask(_("Username"), "User")
                     password = self.ask("", "", password=True)
                     db.addUser(username, password)
                     noaction = False
                 elif action == "2":
-                    print ""
+                    print
                     print _("Users")
                     print "-----"
                     users = db.listUsers()
@@ -367,9 +374,9 @@ class Setup:
                     for user in users:
                         print user
                     print "-----"
-                    print ""
+                    print
                 elif action == "3":
-                    print ""
+                    print
                     username = self.ask(_("Username"), "")
                     if username:
                         db.removeUser(username)

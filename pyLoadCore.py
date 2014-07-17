@@ -142,14 +142,14 @@ class Core(object):
                 exit()
 
     def print_help(self):
-        print ""
+        print
         print "pyLoad v%s     2008-2014 the pyLoad Team" % CURRENT_VERSION
-        print ""
+        print
         if sys.argv[0].endswith(".py"):
             print "Usage: python pyLoadCore.py [options]"
         else:
             print "Usage: pyLoadCore [options]"
-        print ""
+        print
         print "<Options>"
         print "  -v, --version", " " * 10, "Print version to terminal"
         print "  -c, --clear", " " * 12, "Delete all saved packages/links"
@@ -166,7 +166,7 @@ class Core(object):
         print "  --clean", " " * 16, "Remove .pyc/.pyo files"
         print "  -q, --quit", " " * 13, "Quit running pyLoad instance"
         print "  -h, --help", " " * 13, "Display this help screen"
-        print ""
+        print
 
     def toggle_pause(self):
         if self.threadManager.pause:
