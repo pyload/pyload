@@ -32,7 +32,7 @@ from module.ConfigParser import IGNORE
 class PluginManager:
     ROOT = "module.plugins."
     USERROOT = "userplugins."
-    TYPES = ("crypter", "container", "hoster", "captcha", "accounts", "hooks", "internal")
+    TYPES = ("accounts", "container", "crypter", "hooks", "hoster", "internal",  "ocr")
 
     PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
     VERSION = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
@@ -68,7 +68,7 @@ class PluginManager:
         self.plugins["container"] = self.containerPlugins = self.parse("container", pattern=True)
         self.plugins["hoster"] = self.hosterPlugins = self.parse("hoster", pattern=True)
 
-        self.plugins["captcha"] = self.captchaPlugins = self.parse("captcha")
+        self.plugins["ocr"] = self.captchaPlugins = self.parse("ocr")
         self.plugins["accounts"] = self.accountPlugins = self.parse("accounts")
         self.plugins["hooks"] = self.hookPlugins = self.parse("hooks")
         self.plugins["internal"] = self.internalPlugins = self.parse("internal")
@@ -357,7 +357,7 @@ class PluginManager:
         self.plugins["crypter"] = self.crypterPlugins = self.parse("crypter", pattern=True)
         self.plugins["container"] = self.containerPlugins = self.parse("container", pattern=True)
         self.plugins["hoster"] = self.hosterPlugins = self.parse("hoster", pattern=True)
-        self.plugins["captcha"] = self.captchaPlugins = self.parse("captcha")
+        self.plugins["ocr"] = self.captchaPlugins = self.parse("ocr")
         self.plugins["accounts"] = self.accountPlugins = self.parse("accounts")
 
         if "accounts" in as_dict:  #: accounts needs to be reloaded
