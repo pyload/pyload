@@ -27,7 +27,7 @@ if sys.version_info <= (2, 5):
 
 setup(
     name="pyload",
-    version="0.4.9",
+    version="0.4.10",
     description='Fast, lightweight and full featured download manager.',
     long_description=open(PROJECT_DIR / "README.md").read(),
     keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),

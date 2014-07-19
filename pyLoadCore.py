@@ -18,7 +18,7 @@
     @author: sebnapi
     @author: RaNaN
     @author: mkaay
-    @version: v0.4.9
+    @version: v0.4.10
 """
 CURRENT_VERSION = '0.4.9'
 
