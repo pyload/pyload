@@ -10,13 +10,17 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD.
 """
-from collections import deque
 from jinja2 import nodes
-from jinja2.defaults import *
+from jinja2.defaults import BLOCK_START_STRING, \
+     BLOCK_END_STRING, VARIABLE_START_STRING, VARIABLE_END_STRING, \
+     COMMENT_START_STRING, COMMENT_END_STRING, LINE_STATEMENT_PREFIX, \
+     LINE_COMMENT_PREFIX, TRIM_BLOCKS, NEWLINE_SEQUENCE, \
+     KEEP_TRAILING_NEWLINE, LSTRIP_BLOCKS
 from jinja2.environment import Environment
-from jinja2.runtime import Undefined, concat
+from jinja2.runtime import concat
 from jinja2.exceptions import TemplateAssertionError, TemplateSyntaxError
-from jinja2.utils import contextfunction, import_string, Markup, next
+from jinja2.utils import contextfunction, import_string, Markup
+from jinja2._compat import next, with_metaclass, string_types, iteritems
 
 
 # the only real useful gettext functions for a Jinja template.  Note
@@ -34,7 +38,7 @@ class ExtensionRegistry(type):
         return rv
 
 
-class Extension(object):
+class Extension(with_metaclass(ExtensionRegistry, object)):
     """Extensions can be used to add extra functionality to the Jinja template
     system at the parser level.  Custom extensions are bound to an environment
     but may not store environment specific data on `self`.  The reason for
@@ -52,7 +56,6 @@ class Extension(object):
     is a terrible name, ``fragment_cache_prefix`` on the other hand is a good
     name as includes the name of the extension (fragment cache).
     """
-    __metaclass__ = ExtensionRegistry
 
     #: if this extension parses this is the list of tags it's listening to.
     tags = set()
@@ -103,7 +106,9 @@ class Extension(object):
 
     def attr(self, name, lineno=None):
         """Return an attribute node for the current extension.  This is useful
-        to pass constants on extensions to generated template code::
+        to pass constants on extensions to generated template code.
+
+        ::
 
             self.attr('_my_attribute', lineno=lineno)
         """
@@ -203,7 +208,7 @@ class InternationalizationExtension(Extension):
             self.environment.globals.pop(key, None)
 
     def _extract(self, source, gettext_functions=GETTEXT_FUNCTIONS):
-        if isinstance(source, basestring):
+        if isinstance(source, string_types):
             source = self.environment.parse(source)
         return extract_from_ast(source, gettext_functions)
 
@@ -216,6 +221,7 @@ class InternationalizationExtension(Extension):
         # defined in the body of the trans block too, but this is checked at
         # a later state.
         plural_expr = None
+        plural_expr_assignment = None
         variables = {}
         while parser.stream.current.type != 'block_end':
             if variables:
@@ -239,7 +245,13 @@ class InternationalizationExtension(Extension):
                 variables[name.value] = var = nodes.Name(name.value, 'load')
 
             if plural_expr is None:
-                plural_expr = var
+                if isinstance(var, nodes.Call):
+                    plural_expr = nodes.Name('_trans', 'load')
+                    variables[name.value] = plural_expr
+                    plural_expr_assignment = nodes.Assign(
+                        nodes.Name('_trans', 'store'), var)
+                else:
+                    plural_expr = var
                 num_called_num = name.value == 'num'
 
         parser.stream.expect('block_end')
@@ -289,7 +301,10 @@ class InternationalizationExtension(Extension):
                                bool(referenced),
                                num_called_num and have_plural)
         node.set_lineno(lineno)
-        return node
+        if plural_expr_assignment is not None:
+            return [plural_expr_assignment, node]
+        else:
+            return node
 
     def _parse_block(self, parser, allow_pluralize):
         """Parse until the next block tag with a given name."""
@@ -352,7 +367,7 @@ class InternationalizationExtension(Extension):
         # enough to handle the variable expansion and autoescape
         # handling itself
         if self.environment.newstyle_gettext:
-            for key, value in variables.iteritems():
+            for key, value in iteritems(variables):
                 # the function adds that later anyways in case num was
                 # called num, so just skip it.
                 if num_called_num and key == 'num':
@@ -474,7 +489,7 @@ def extract_from_ast(node, gettext_functions=GETTEXT_FUNCTIONS,
         strings = []
         for arg in node.args:
             if isinstance(arg, nodes.Const) and \
-               isinstance(arg.value, basestring):
+               isinstance(arg.value, string_types):
                 strings.append(arg.value)
             else:
                 strings.append(None)
@@ -550,6 +565,10 @@ def babel_extract(fileobj, keywords, comment_tags, options):
        The `newstyle_gettext` flag can be set to `True` to enable newstyle
        gettext calls.
 
+    .. versionchanged:: 2.7
+       A `silent` option can now be provided.  If set to `False` template
+       syntax errors are propagated instead of being ignored.
+
     :param fileobj: the file-like object the messages should be extracted from
     :param keywords: a list of keywords (i.e. function names) that should be
                      recognized as translation functions
@@ -569,8 +588,10 @@ def babel_extract(fileobj, keywords, comment_tags, options):
         extensions.add(InternationalizationExtension)
 
     def getbool(options, key, default=False):
-        options.get(key, str(default)).lower() in ('1', 'on', 'yes', 'true')
+        return options.get(key, str(default)).lower() in \
+            ('1', 'on', 'yes', 'true')
 
+    silent = getbool(options, 'silent', True)
     environment = Environment(
         options.get('block_start_string', BLOCK_START_STRING),
         options.get('block_end_string', BLOCK_END_STRING),
@@ -581,7 +602,10 @@ def babel_extract(fileobj, keywords, comment_tags, options):
         options.get('line_statement_prefix') or LINE_STATEMENT_PREFIX,
         options.get('line_comment_prefix') or LINE_COMMENT_PREFIX,
         getbool(options, 'trim_blocks', TRIM_BLOCKS),
-        NEWLINE_SEQUENCE, frozenset(extensions),
+        getbool(options, 'lstrip_blocks', LSTRIP_BLOCKS),
+        NEWLINE_SEQUENCE,
+        getbool(options, 'keep_trailing_newline', KEEP_TRAILING_NEWLINE),
+        frozenset(extensions),
         cache_size=0,
         auto_reload=False
     )
@@ -593,7 +617,9 @@ def babel_extract(fileobj, keywords, comment_tags, options):
     try:
         node = environment.parse(source)
         tokens = list(environment.lex(environment.preprocess(source)))
-    except TemplateSyntaxError, e:
+    except TemplateSyntaxError as e:
+        if not silent:
+            raise
         # skip templates with syntax errors
         return
 
