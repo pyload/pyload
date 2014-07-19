@@ -10,7 +10,7 @@ from os import makedirs
 from os.path import abspath, dirname, exists, join
 from subprocess import PIPE, call
 
-from module.utils import get_console_encoding
+from module.utils import get_console_encoding, versiontuple
 
 
 class Setup:
@@ -24,7 +24,7 @@ class Setup:
 
     def start(self):
         langs = self.config.getMetaData("general", "language")["type"].split(";")
-        lang = self.ask(u"Choose your Language", "en", langs)
+        lang = self.ask(u"Choose setup language", "en", langs)
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("setup", join(self.path, "locale"), languages=[lang, "en"], fallback=True)
         translation.install(True)
@@ -50,6 +50,7 @@ class Setup:
         #                print "Falling back to commandline setup."
 
         print
+        print
         print _("Welcome to the pyLoad Configuration Assistant.")
         print _("It will check your system and make a basic setup in order to run pyLoad.")
         print
@@ -60,18 +61,23 @@ class Setup:
         print _("If you have any problems with this assistant hit STRG-C,")
         print _("to abort and don't let him start with pyload.py automatically anymore.")
         print
-        print _("When you are ready for system check, hit enter.")
-        raw_input()
+        print
+        raw_input(_("When you are ready for system check, hit enter."))
+        print
         print
 
         basic, ssl, captcha, web, js = self.system_check()
+        print
         print
 
         if not basic:
             print _("You need pycurl, sqlite and python 2.5, 2.6 or 2.7 to run pyLoad.")
             print _("Please correct this and re-run pyLoad.")
+            print
             print _("Setup will now close.")
-            raw_input()
+            print
+            print
+            raw_input(_("Press Enter to exit."))
             return False
 
         raw_input(_("System check finished, hit enter to see your status report."))
@@ -88,7 +94,7 @@ class Setup:
         if captcha:
             avail.append(_("automatic captcha decryption"))
         if web:
-            avail.append(_("Webinterface"))
+            avail.append(_("webinterface"))
         if js:
             avail.append(_("extended Click'N'Load"))
 
@@ -97,50 +103,50 @@ class Setup:
         for av in avail:
             string += ", " + av
 
-        print _("Features available:")
-        print
-        print string[1:]
-        print
+        print _("AVAILABLE FEATURES:") + string[1:]
         print
 
         if len(avail) < 5:
-            print _("Featues missing: ")
-            print
+            print _("MISSING FEATURES: ")
 
             if not self.check_module("Crypto"):
-                print _("no py-crypto available")
+                print _("- no py-crypto available")
                 print _("You need this if you want to decrypt container files.")
                 print
 
             if not ssl:
-                print _("no SSL available")
+                print _("- no SSL available")
                 print _("This is needed if you want to establish a secure connection to core or webinterface.")
                 print _("If you only want to access locally to pyLoad ssl is not usefull.")
                 print
 
             if not captcha:
-                print _("no Captcha Recognition available")
+                print _("- no Captcha Recognition available")
                 print _("Only needed for some hosters and as freeuser.")
                 print
 
             if not js:
-                print _("no JavaScript engine found")
+                print _("- no JavaScript engine found")
                 print _("You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino")
+                print
 
+            print
             print _("You can abort the setup now and fix some dependicies if you want.")
 
+        print
         con = self.ask(_("Continue with setup?"), self.yes, bool=True)
 
         if not con:
             return False
 
         print
-        print _("Do you want to change the config path?")
+        print
         print _("CURRENT CONFIG PATH: %s") % abspath("")
-        print _(
-            "If you use pyLoad on a server or the home partition lives on an iternal flash it may be a good idea to change it.")
-        path = self.ask(_("Change config path?"), self.no, bool=True)
+        print
+        print _("NOTE: If you use pyLoad on a server or the home partition lives on an iternal flash it may be a good idea to change it.")
+        path = self.ask(_("Do you want to change the config path?"), self.no, bool=True)
         if path:
+            print
             self.conf_path()
             #calls exit when changed
 
@@ -150,6 +156,8 @@ class Setup:
         con = self.ask(_("Make basic setup?"), self.yes, bool=True)
 
         if con:
+            print
+            print
             self.conf_basic()
 
         if ssl:
@@ -158,6 +166,7 @@ class Setup:
             ssl = self.ask(_("Configure ssl?"), self.no, bool=True)
             if ssl:
                 print
+                print
                 self.conf_ssl()
 
         if web:
@@ -165,17 +174,30 @@ class Setup:
             print _("Do you want to configure webinterface?")
             web = self.ask(_("Configure webinterface?"), self.yes, bool=True)
             if web:
+                print
+                print
                 self.conf_web()
 
         print
-        print _("Setup finished successfully.")
-        print _("Hit enter to exit and restart pyLoad")
-        raw_input()
+        print
+        print _("Setup finished successfully!")
+        print
+        print
+        raw_input(_("Hit enter to exit and restart pyLoad."))
         return True
 
 
     def system_check(self):
         """ make a systemcheck and return the results"""
+
+        print _("## System Information ##")
+        print
+        print _("Platform: %s") % sys.platform
+        print _("Operating System: %s") % os.name
+        print _("Python: %s") % sys.version.replace("\n", "")
+        print
+        print
+
         print _("## System Check ##")
         print
 
@@ -221,49 +243,53 @@ class Setup:
 
         print
 
-        jinja = True
-
         try:
             import jinja2
 
             v = jinja2.__version__
-            if v and "unknown" not in v:
-                if not v.startswith("2.5") and not v.startswith("2.6"):
-                    print _("Your installed jinja2 version %s seems too old.") % jinja2.__version__
-                    print _("You can safely continue but if the webinterface is not working,")
-                    print _("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary.")
-                    print
-                    jinja = False
+            if v and versiontuple(v) < (2, 5, 0):
+                jinja = False
+            else:
+                jinja = True
         except:
-            pass
+            jinja = False
 
-        self.print_dep("jinja2", jinja)
+        jinja = self.print_dep("jinja2", jinja)
+
         beaker = self.check_module("beaker")
         self.print_dep("beaker", beaker)
+
         bjoern = self.check_module("bjoern")
         self.print_dep("bjoern", bjoern)
 
         web = sqlite and beaker
 
         from module.common import JsEngine
-
         js = True if JsEngine.ENGINE else False
         self.print_dep(_("JS engine"), js)
+
+        if not jinja:
+            print
+            print
+            print _("WARNING: Your installed jinja2 version %s seems too old.") % jinja2.__version__
+            print _("You can safely continue but if the webinterface is not working,")
+            print _("please upgrade or uninstall it, because pyLoad self-includes jinja2 libary.")
 
         return basic, ssl, captcha, web, js
 
 
     def conf_basic(self):
-        print
         print _("## Basic Setup ##")
 
         print
         print _("The following logindata is valid for CLI and webinterface.")
-
+        
         from module.database import DatabaseBackend
 
         db = DatabaseBackend(None)
         db.setup()
+        print _("NOTE: Consider a password of 10 or more symbols if you expect to access from outside your local network (ex. internet).")
+        print
         username = self.ask(_("Username"), "User")
         password = self.ask("", "", password=True)
         db.addUser(username, password)
@@ -276,13 +302,13 @@ class Setup:
 
         print
         langs = self.config.getMetaData("general", "language")
-        self.config["general"]["language"] = self.ask(_("Language"), "en", langs["type"].split(";"))
+        self.config["general"]["language"] = self.ask(_("Choose pyLoad language"), "en", langs["type"].split(";"))
 
-        self.config["general"]["download_folder"] = self.ask(_("Downloadfolder"), "Downloads")
+        print
+        self.config["general"]["download_folder"] = self.ask(_("Download folder"), "Downloads")
+        print
         self.config["download"]["max_downloads"] = self.ask(_("Max parallel downloads"), "3")
-        #print _("You should disable checksum proofing, if you have low hardware requirements.")
-        #self.config["general"]["checksum"] = self.ask(_("Proof checksum?"), "y", bool=True)
-
+        print
         reconnect = self.ask(_("Use Reconnect?"), self.no, bool=True)
         self.config["reconnect"]["activated"] = reconnect
         if reconnect:
@@ -290,7 +316,6 @@ class Setup:
 
 
     def conf_web(self):
-        print
         print _("## Webinterface Setup ##")
 
         print
@@ -301,16 +326,15 @@ class Setup:
         self.config["webinterface"]["port"] = self.ask(_("Port"), "8000")
         print
         print _("pyLoad offers several server backends, now following a short explanation.")
-        print "builtin:", _("Default server; best choice if you plan to use pyLoad just for you.")
-        print "threaded:", _("Support SSL connection and can serve simultaneously more client flawlessly.")
-        print "fastcgi:", _(
+        print "- builtin:", _("Default server; best choice if you plan to use pyLoad just for you.")
+        print "- threaded:", _("Support SSL connection and can serve simultaneously more client flawlessly.")
+        print "- fastcgi:", _(
             "Can be used by apache, lighttpd, etc.; needs to be properly configured before.")
         if os.name != "nt":
-            print "lightweight:", _("Very fast alternative to builtin; requires libev and bjoern packages.")
+            print "- lightweight:", _("Very fast alternative to builtin; requires libev and bjoern packages.")
 
         print
-        print _(
-            "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface")
+        print _("NOTE: In some rare cases the builtin server is not working, if you notice problems with the webinterface")
         print _("come back here and change the builtin server to the threaded one here.")
 
         if os.name == "nt":
@@ -395,8 +419,8 @@ class Setup:
                 languages=[self.config["general"]["language"], "en"], fallback=True)
             translation.install(True)
 
-        print _("Setting new configpath, current configuration will not be transfered!")
-        path = self.ask(_("Configpath"), abspath(""))
+        print _("Setting new config path, current configuration will not be transfered!")
+        path = self.ask(_("CONFIG PATH"), abspath(""))
         try:
             path = join(pypath, path)
             if not exists(path):
@@ -404,9 +428,12 @@ class Setup:
             f = open(join(pypath, "module", "config", "configdir"), "wb")
             f.write(path)
             f.close()
-            print _("Configpath changed, setup will now close, please restart to go on.")
-            print _("Press Enter to exit.")
-            raw_input()
+            print
+            print
+            print _("pyLoad config path changed, setup will now close!")
+            print
+            print
+            raw_input(_("Press Enter to exit."))
             sys.exit()
         except Exception, e:
             print _("Setting config path failed: %s") % str(e)
@@ -417,7 +444,7 @@ class Setup:
         if value:
             print _("%s: OK") % name
         else:
-            print _("%s: missing") % name
+            print _("%s: MISSING") % name
 
 
     def check_module(self, module):
@@ -460,7 +487,6 @@ class Setup:
             pwlen = 8
             while p1 != p2:
                 # getpass(_("Password: ")) will crash on systems with broken locales (Win, NAS)
-                print _("Warning: Consider a password of 10 or more symbols if you expect to access from outside your local network (ex. internet).")
                 sys.stdout.write(_("Password: "))
                 p1 = getpass("")
 

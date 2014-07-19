@@ -40,7 +40,7 @@ def remove_chars(string, repl):
 
 
 def safe_path(name):
-    #remove some chars
+    """ remove bad chars """
     name = name.encode('ascii', 'replace')  # Non-ASCII chars usually breaks file saving. Replacing.
     if os.name == 'nt':
         return remove_chars(name, u'\00\01\02\03\04\05\06\07\10\11\12\13\14\15\16\17\20\21\22\23\24\25\26\27\30\31\32'
@@ -48,10 +48,18 @@ def safe_path(name):
     else:
         return remove_chars(name, u'\0/\\"')
 
+#: Deprecated method
+def save_path(name):
+    return safe_path(name)
+
 
 def safe_join(*args):
     """ joins a path, encoding aware """
     return fs_encode(join(*[x if type(x) == unicode else decode(x) for x in args]))
+
+#: Deprecated method
+def save_join(*args):
+    return safe_join(*args)
 
 
 # File System Encoding functions:
@@ -213,3 +221,7 @@ def fixup(m):
 def html_unescape(text):
     """Removes HTML or XML character references and entities from a text string"""
     return re.sub("&#?\w+;", fixup, text)
+
+
+def versiontuple(v):  #: By kindall (http://stackoverflow.com/a/11887825)
+    return tuple(map(int, (v.split("."))))
