@@ -153,9 +153,3 @@ class JsEngine:
 
     def error(self):
         return _("No js engine detected, please install either Spidermonkey, ossp-js, pyv8 or rhino")
-
-if __name__ == "__main__":
-    js = JsEngine()
-
-    test = u'"ü"+"ä"'
-    js.eval(test)

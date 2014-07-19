@@ -371,21 +371,3 @@ class Section:
     def __setitem__(self, item, value):
         """setitem"""
         self.parser.set(self.section, item, value)
-
-
-if __name__ == "__main__":
-    pypath = ""
-
-    from time import time
-
-    a = time()
-
-    c = ConfigParser()
-
-    b = time()
-
-    print "sec", b - a
-
-    print c.config
-
-    c.saveConfig(c.config, "user.conf")

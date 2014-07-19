@@ -323,17 +323,3 @@ class HTTPDownload:
             del self.cj
         if hasattr(self, "info"):
             del self.info
-
-if __name__ == "__main__":
-    url = "http://speedtest.netcologne.de/test_100mb.bin"
-
-    from Bucket import Bucket
-
-    bucket = Bucket()
-    bucket.setRate(200 * 1024)
-    bucket = None
-
-    print "starting"
-
-    dwnld = HTTPDownload(url, "test_100mb.bin", bucket=bucket)
-    dwnld.download(chunks=3, resume=True)

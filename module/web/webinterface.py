@@ -150,7 +150,3 @@ def run_fcgi(host="0.0.0.0", port="8000"):
     from bottle import FlupFCGIServer
 
     run(app=web, host=host, port=port, server=FlupFCGIServer, quiet=True)
-
-
-if __name__ == "__main__":
-    run(app=web, port=8001)

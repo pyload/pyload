@@ -213,8 +213,3 @@ def fixup(m):
 def html_unescape(text):
     """Removes HTML or XML character references and entities from a text string"""
     return re.sub("&#?\w+;", fixup, text)
-
-if __name__ == "__main__":
-    print freeSpace(".")
-
-    print remove_chars("ab'cdgdsf''ds'", "'ghd")

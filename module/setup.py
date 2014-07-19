@@ -510,8 +510,3 @@ class Setup:
                     return input
                 else:
                     print _("Invalid Input")
-
-
-if __name__ == "__main__":
-    test = Setup(join(abspath(dirname(__file__)), ".."), None)
-    test.start()

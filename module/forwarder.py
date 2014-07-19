@@ -59,13 +59,3 @@ def forward(source, destination):
         else:
             #source.shutdown(socket.SHUT_RD)
             destination.shutdown(socket.SHUT_WR)
-
-if __name__ == "__main__":
-    args = argv[1:]
-    if not args:
-        print "Usage: forwarder.py <remote ip> <remote port>"
-        exit()
-    if len(args) == 1:
-        args.append(9666)
-
-    f = Forwarder(args[0], int(args[1]))

@@ -369,22 +369,3 @@ class PluginManager:
     def reloadPlugin(self, type_plugin):
         """ reload and reindex ONE plugin """
         return True if self.reloadPlugins(type_plugin) else False
-
-
-
-if __name__ == "__main__":
-    _ = lambda x: x
-    pypath = "/home/christian/Projekte/pyload-0.4/module/plugins"
-
-    from time import time
-
-    p = PluginManager(None)
-
-    a = time()
-
-    test = ["http://www.youtube.com/watch?v=%s" % x for x in xrange(0, 100)]
-    print p.parseUrls(test)
-
-    b = time()
-
-    print b - a, "s"

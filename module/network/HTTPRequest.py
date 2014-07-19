@@ -301,8 +301,3 @@ class HTTPRequest:
         if hasattr(self, "c"):
             self.c.close()
             del self.c
-
-if __name__ == "__main__":
-    url = "http://pyload.org"
-    c = HTTPRequest()
-    print c.load(url)

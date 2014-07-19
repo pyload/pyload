@@ -84,6 +84,3 @@ class BaseObject(object):
     f.write("\n")
 
     f.close()
-
-if __name__ == "__main__":
-    main()
