@@ -1,0 +1,73 @@
+/* ----------- stylized ----------- */
+.window_box h1{
+    font-size:14px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+.window_box p{
+    font-size:11px;
+    color:#666666;
+    margin-bottom:20px;
+    border-bottom:solid 1px #b7ddf2;
+    padding-bottom:10px;
+}
+.window_box label{
+    display:block;
+    font-weight:bold;
+    text-align:right;
+    width:240px;
+    float:left;
+}
+.window_box .small{
+    color:#666666;
+    display:block;
+    font-size:11px;
+    font-weight:normal;
+    text-align:right;
+    width:240px;
+}
+.window_box select, .window_box input{
+    float:left;
+    font-size:12px;
+    padding:4px 2px;
+    border:solid 1px #aacfe4;
+    width:300px;
+    margin:2px 0 20px 10px;
+}
+.window_box .cont{
+    float:left;
+    font-size:12px;
+    padding: 0px 10px 15px 0px;
+    width:300px;
+    margin:0px 0px 0px 10px;
+}
+.window_box .cont input{
+    float: none;
+    margin: 0px 15px 0px 1px;
+}
+.window_box textarea{
+    float:left;
+    font-size:12px;
+    padding:4px 2px;
+    border:solid 1px #aacfe4;
+    width:300px;
+    margin:2px 0 20px 10px;
+}
+.window_box button, .styled_button{
+    clear:both;
+    margin-left:150px;
+    width:125px;
+    height:31px;
+    background:#666666 url(../img/button.png) no-repeat;
+    text-align:center;
+    line-height:31px;
+    color:#FFFFFF;
+    font-size:11px;
+    font-weight:bold;
+    border: 0px;
+}
+
+.styled_button {
+    margin-left: 15px;
+    cursor: pointer;
+}

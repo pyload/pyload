@@ -28,7 +28,7 @@ from urllib import unquote
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
 
-from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP, env
+from webinterface import PYLOAD, PYLOAD_DIR, THEME, THEME_DIR, SETUP, env
 
 from utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
@@ -84,8 +84,8 @@ def error500(error):
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
 
 # render js
-@route("/media/js/<path:re:.+\.js>")
-def js_dynamic(path):
+@route('/<tml>/js/<file:path>')
+def js_dynamic(tml, file):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 2))
     response.headers['Cache-control'] = "public"
@@ -93,24 +93,24 @@ def js_dynamic(path):
 
     try:
         # static files are not rendered
-        if "static" not in path and "mootools" not in path:
-            t = env.get_template("js/%s" % path)
-            return t.render()
+        if ".static" not in file:
+            path = "%s/js/%s" % (THEME, file)
+            return env.get_template(path).render()
         else:
-            return static_file(path, root=join(PROJECT_DIR, "media", "js"))
+            return static_file(file, root=join(THEME_DIR, tml, "js"))
     except:
         return HTTPError(404, "Not Found")
 
-@route('/media/<path:path>')
-def server_static(path):
+@route('/<tml>/<type>/<file:path>')
+def server_static(tml, type, file):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 7))
     response.headers['Cache-control'] = "public"
-    return static_file(path, root=join(PROJECT_DIR, "media"))
+    return static_file(file, root=join(THEME_DIR, tml, type))
 
 @route('/favicon.ico')
 def favicon():
-    return static_file("favicon.ico", root=join(PROJECT_DIR, "media", "img"))
+    return static_file("icon.ico", root=join(PYLOAD_DIR, "docs", "resources"))
 
 
 @route('/login', method="GET")
@@ -126,7 +126,7 @@ def nopermission():
     return base([_("You dont have permission to access this page.")])
 
 
-@route("/login", method="POST")
+@route('/login', method='POST')
 def login_post():
     user = request.forms.get("username")
     password = request.forms.get("password")
@@ -140,15 +140,15 @@ def login_post():
     return redirect("/")
 
 
-@route("/logout")
+@route('/logout')
 def logout():
     s = request.environ.get('beaker.session')
     s.delete()
     return render_to_response("logout.html", proc=[pre_processor])
 
 
-@route("/")
-@route("/home")
+@route('/')
+@route('/home')
 @login_required("LIST")
 def home():
     try:
@@ -165,7 +165,7 @@ def home():
     return render_to_response("home.html", {"res": res}, [pre_processor])
 
 
-@route("/queue")
+@route('/queue')
 @login_required("LIST")
 def queue():
     queue = PYLOAD.getQueue()
@@ -175,7 +175,7 @@ def queue():
     return render_to_response('queue.html', {'content': queue, 'target': 1}, [pre_processor])
 
 
-@route("/collector")
+@route('/collector')
 @login_required('LIST')
 def collector():
     queue = PYLOAD.getCollector()
@@ -185,7 +185,7 @@ def collector():
     return render_to_response('queue.html', {'content': queue, 'target': 0}, [pre_processor])
 
 
-@route("/downloads")
+@route('/downloads')
 @login_required('DOWNLOAD')
 def downloads():
     root = PYLOAD.getConfigValue("general", "download_folder")
@@ -221,7 +221,7 @@ def downloads():
     return render_to_response('downloads.html', {'files': data}, [pre_processor])
 
 
-@route("/downloads/get/<path:re:.+>")
+@route('/downloads/get/<path:path>')
 @login_required("DOWNLOAD")
 def get_download(path):
     path = unquote(path).decode("utf8")
@@ -239,7 +239,7 @@ def get_download(path):
 
 
 
-@route("/settings")
+@route('/settings')
 @login_required('SETTINGS')
 def config():
     conf = PYLOAD.getConfig()
@@ -287,10 +287,10 @@ def config():
         [pre_processor])
 
 
-@route("/filechooser")
-@route("/pathchooser")
-@route("/filechooser/:file#.+#")
-@route("/pathchooser/:path#.+#")
+@route('/filechooser')
+@route('/pathchooser')
+@route('/filechooser/<file:path>')
+@route('/pathchooser/<path:path>')
 @login_required('STATUS')
 def path(file="", path=""):
     if file:
@@ -377,10 +377,10 @@ def path(file="", path=""):
              'absolute': abs}, [])
 
 
-@route("/logs")
-@route("/logs", method="POST")
-@route("/logs/:item")
-@route("/logs/:item", method="POST")
+@route('/logs')
+@route('/logs', method='POST')
+@route('/logs/<item>')
+@route('/logs/<item>', method='POST')
 @login_required('LOGS')
 def logs(item=-1):
     s = request.environ.get('beaker.session')
@@ -464,8 +464,8 @@ def logs(item=-1):
         [pre_processor])
 
 
-@route("/admin")
-@route("/admin", method="POST")
+@route('/admin')
+@route('/admin', method='POST')
 @login_required("ADMIN")
 def admin():
     # convert to dict
@@ -502,7 +502,7 @@ def admin():
     return render_to_response("admin.html", {"users": user, "permlist": perms}, [pre_processor])
 
 
-@route("/setup")
+@route('/setup')
 def setup():
     if PYLOAD or not SETUP:
         return base([_("Run pyload.py -s to access the setup.")])
@@ -510,7 +510,7 @@ def setup():
     return render_to_response('setup.html', {"user": False, "perms": False})
 
 
-@route("/info")
+@route('/info')
 def info():
     conf = PYLOAD.getConfigDict()
 

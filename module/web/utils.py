@@ -17,16 +17,15 @@
 """
 from bottle import request, HTTPError, redirect, ServerAdapter
 
-from webinterface import env, TEMPLATE
+from webinterface import env, THEME
 
 from module.Api import has_permission, PERMS, ROLE
 
-def render_to_response(name, args={}, proc=[]):
+def render_to_response(file, args={}, proc=[]):
     for p in proc:
         args.update(p())
-
-    t = env.get_template(TEMPLATE + "/" + name)
-    return t.render(**args)
+    path = "%s/tml/%s" % (THEME, file)
+    return env.get_template(path).render(**args)
 
 
 def parse_permissions(session):

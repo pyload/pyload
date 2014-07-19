@@ -26,15 +26,15 @@ def local_check(function):
     return _view
 
 
-@route("/flash")
-@route("/flash/:id")
-@route("/flash", method="POST")
+@route('/flash')
+@route('/flash/<id>')
+@route('/flash', method='POST')
 @local_check
 def flash(id="0"):
     return "JDownloader\r\n"
 
 
-@route("/flash/add", method="POST")
+@route('/flash/add', method='POST')
 @local_check
 def add(request):
     package = request.POST.get('referer', None)
@@ -48,7 +48,7 @@ def add(request):
     return ""
 
 
-@route("/flash/addcrypted", method="POST")
+@route('/flash/addcrypted', method='POST')
 @local_check
 def addcrypted():
     package = request.forms.get('referer', 'ClickAndLoad Package')
@@ -67,7 +67,7 @@ def addcrypted():
         return "success\r\n"
 
 
-@route("/flash/addcrypted2", method="POST")
+@route('/flash/addcrypted2', method='POST')
 @local_check
 def addcrypted2():
     package = request.forms.get("source", None)
@@ -116,10 +116,10 @@ def addcrypted2():
         return "success\r\n"
 
 
-@route("/flashgot_pyload")
-@route("/flashgot_pyload", method="POST")
-@route("/flashgot")
-@route("/flashgot", method="POST")
+@route('/flashgot_pyload')
+@route('/flashgot_pyload', method='POST')
+@route('/flashgot')
+@route('/flashgot', method='POST')
 @local_check
 def flashgot():
     if request.environ['HTTP_REFERER'] != "http://localhost:9666/flashgot" and \
@@ -139,7 +139,7 @@ def flashgot():
     return ""
 
 
-@route("/crossdomain.xml")
+@route('/crossdomain.xml')
 @local_check
 def crossdomain():
     rep = "<?xml version=\"1.0\"?>\n"
@@ -150,7 +150,7 @@ def crossdomain():
     return rep
 
 
-@route("/flash/checkSupportForUrl")
+@route('/flash/checkSupportForUrl')
 @local_check
 def checksupport():
     url = request.GET.get("url")
@@ -160,7 +160,7 @@ def checksupport():
     return str(supported).lower()
 
 
-@route("/jdcheck.js")
+@route('/jdcheck.js')
 @local_check
 def jdcheck():
     rep = "jdownloader=true;\n"
