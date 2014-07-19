@@ -20,7 +20,7 @@ pyLoad has a fully featured and well documented API, it's easily extendable and 
 Dependencies
 ------------
 
- - **You need at least python 2.5 or at most python 2.7 to run pyLoad and its required libaries**
+ - **You need at least python 2.5 or at most python 2.7 to run pyLoad and its required software libraries**
  - **Python 3 and PyPy are not yet supported**
 
 ### Required ###
@@ -36,7 +36,7 @@ Some plugins want additional packages, install them only when needed.
 ### Optional ###
 
  - **BeautifulSoup**
- - **bjoern** (<https://github.com/jonashaag/bjoern>) for a better web user interface performance
+ - **bjoern** (<https://github.com/jonashaag/bjoern>) for a better webapp experience
  - **feedparser**
  - **jsengine** (spidermonkey, ossp-js, pyv8, rhino, node.js) needed by several hosters (ex.: ClickNLoad)
  - **pycrypto** for RSDF/CCF/DLC support
