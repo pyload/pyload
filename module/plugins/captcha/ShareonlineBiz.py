@@ -17,8 +17,7 @@
 #
 ###
 
-from module.plugins.OCR import OCR
-
+from captcha import OCR
 
 
 class ShareonlineBiz(OCR):
