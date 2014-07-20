@@ -5,16 +5,17 @@ import sys
 
 from operator import itemgetter
 from os import remove, stat
-from os.path import join, isfile
+from os.path import isfile
 from time import time
 
 from module.network.RequestFactory import getURL
 from module.plugins.Hook import Expose, Hook, threaded
+from module.utils import save_join
 
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __type__ = "hook"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -63,7 +64,7 @@ class UpdateManager(Hook):
     def periodical2(self):
         if not self.updating:
             self.autoreloadPlugins()
-        self.cb2 = self.scheduler.addJob(4, self.periodical2, threaded=False)
+        self.cb2 = self.scheduler.addJob(10, self.periodical2, threaded=False)
 
     @Expose
     def autoreloadPlugins(self):
@@ -197,7 +198,7 @@ class UpdateManager(Hook):
                 content = getURL(url % plugin)
                 m = vre.search(content)
                 if m and m.group(2) == version:
-                    f = open(join("userplugins", prefix, filename), "wb")
+                    f = open(save_join("userplugins", prefix, filename), "wb")
                     f.write(content)
                     f.close()
                     updated.append((prefix, name))
@@ -207,10 +208,13 @@ class UpdateManager(Hook):
                 self.logError(_("Error updating plugin %s") % filename, str(e))
 
         if blacklist:
-            blacklisted = sorted(map(lambda x: x.split('|'), blacklist))
-            for t, n in blacklisted:
-                if t == "hook":
-                    self.manager.deactivateHook(n)
+            blacklisted = sorted(map(lambda x: (x.split('|')[0], x.split('|')[1].rsplit('.', 1)[0]), blacklist))
+
+            # Always protect UpdateManager from self-removing
+            try:
+                blacklisted.remove(("hook", "UpdateManager"))
+            except:
+                pass
 
             removed = self.removePlugins(blacklisted)
             for t, n in removed:
@@ -246,16 +250,32 @@ class UpdateManager(Hook):
         removed = []
 
         for type, name in type_plugins:
-            id = (type, name)
-            pyfile = join("userplugins", type, name)
-            pycfile = pyfile.replace(".py", ".pyc")
-            try:
-                if isfile(pyfile):
-                    remove(pyfile)
-                    removed.append(id)
-                if isfile(pycfile):
-                    remove(pycfile)
-            except Exception, e:
-                self.logError("Error deleting %s" % id, str(e))
+            rflag = False
+            py_file = name + ".py"
+            pyc_file = name + ".pyc"
+
+            for root in ("userplugins", save_join(pypath, "module", "plugins")):
+                py_filename = save_join(root, type, py_file)
+                pyc_filename = save_join(root, type, pyc_file)
+
+                if isfile(py_filename):
+                    try:
+                        remove(py_filename)
+                    except Exception, e:
+                        self.logError("Error deleting file %s" % py_filename, str(e))
+                        rflag = False
+                    else:
+                        rflag = True
+
+                if isfile(pyc_filename):
+                    try:
+                        if type == "hook":
+                            self.manager.deactivateHook(name)
+                        remove(pyc_filename)
+                    except Exception, e:
+                        self.logError("Error deleting file %s" % pyc_filename, str(e))
+            if rflag:
+                id = (type, name)
+                removed.append(id)
 
         return removed  #: return a list of the plugins successfully removed
