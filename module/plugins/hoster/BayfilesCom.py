@@ -40,16 +40,16 @@ class BayfilesCom(SimpleHoster):
     PREMIUM_LINK_PATTERN = r'(?:<a class="highlighted-btn" href="|(?=http://s\d+\.baycdn\.com/dl/))(.*?)"'
 
     def handleFree(self):
-        found = re.search(self.WAIT_PATTERN, self.html)
-        if found:
-            self.wait(int(found.group(1)) * 60)
+        m = re.search(self.WAIT_PATTERN, self.html)
+        if m:
+            self.wait(int(m.group(1)) * 60)
             self.retry()
 
         # Get download token
-        found = re.search(self.VARS_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.VARS_PATTERN, self.html)
+        if m is None:
             self.parseError('VARS')
-        vfid, delay = found.groups()
+        vfid, delay = m.groups()
 
         response = json_loads(self.load('http://bayfiles.com/ajax_download', get={
             "_": time() * 1000,
@@ -67,16 +67,16 @@ class BayfilesCom(SimpleHoster):
             "vfid": vfid})
 
         # Get final link and download
-        found = re.search(self.FREE_LINK_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.FREE_LINK_PATTERN, self.html)
+        if m is None:
             self.parseError("Free link")
-        self.startDownload(found.group(1))
+        self.startDownload(m.group(1))
 
     def handlePremium(self):
-        found = re.search(self.PREMIUM_LINK_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.PREMIUM_LINK_PATTERN, self.html)
+        if m is None:
             self.parseError("Premium link")
-        self.startDownload(found.group(1))
+        self.startDownload(m.group(1))
 
     def startDownload(self, url):
         self.logDebug("%s URL: %s" % ("Premium" if self.premium else "Free", url))

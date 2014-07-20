@@ -61,10 +61,10 @@ class UlozTo(SimpleHoster):
         if re.search(self.ADULT_PATTERN, self.html):
             self.logInfo("Adult content confirmation needed. Proceeding..")
 
-            found = re.search(self.TOKEN_PATTERN, self.html)
-            if found is None:
+            m = re.search(self.TOKEN_PATTERN, self.html)
+            if m is None:
                 self.parseError('TOKEN')
-            token = found.group(1)
+            token = m.group(1)
 
             self.html = self.load(pyfile.url, get={"do": "askAgeForm-submit"},
                                   post={"agree": "Confirm", "_token_": token}, cookies=True)
@@ -132,10 +132,10 @@ class UlozTo(SimpleHoster):
 
     def findDownloadURL(self, premium=False):
         msg = "%s link" % ("Premium" if premium else "Free")
-        found = re.search(self.PREMIUM_URL_PATTERN if premium else self.FREE_URL_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.PREMIUM_URL_PATTERN if premium else self.FREE_URL_PATTERN, self.html)
+        if m is None:
             self.parseError(msg)
-        parsed_url = "http://www.ulozto.net" + found.group(1)
+        parsed_url = "http://www.ulozto.net" + m.group(1)
         self.logDebug("%s: %s" % (msg, parsed_url))
         return parsed_url
 

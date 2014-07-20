@@ -51,17 +51,17 @@ class CzshareCom(SimpleHoster):
 
     def checkTrafficLeft(self):
         # check if user logged in
-        found = re.search(self.USER_CREDIT_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.USER_CREDIT_PATTERN, self.html)
+        if m is None:
             self.account.relogin(self.user)
             self.html = self.load(self.pyfile.url, cookies=True, decode=True)
-            found = re.search(self.USER_CREDIT_PATTERN, self.html)
-            if found is None:
+            m = re.search(self.USER_CREDIT_PATTERN, self.html)
+            if m is None:
                 return False
 
         # check user credit
         try:
-            credit = parseFileSize(found.group(1).replace(' ', ''), found.group(2))
+            credit = parseFileSize(m.group(1).replace(' ', ''), m.group(2))
             self.logInfo("Premium download for %i KiB of Credit" % (self.pyfile.size / 1024))
             self.logInfo("User %s has %i KiB left" % (self.user, credit / 1024))
             if credit < self.pyfile.size:
@@ -88,10 +88,10 @@ class CzshareCom(SimpleHoster):
 
     def handleFree(self):
         # get free url
-        found = re.search(self.FREE_URL_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.FREE_URL_PATTERN, self.html)
+        if m is None:
             self.parseError('Free URL')
-        parsed_url = "http://sdilej.cz" + found.group(1)
+        parsed_url = "http://sdilej.cz" + m.group(1)
         self.logDebug("PARSED_URL:" + parsed_url)
 
         # get download ticket and parse html
@@ -122,16 +122,16 @@ class CzshareCom(SimpleHoster):
         else:
             self.fail("No valid captcha code entered")
 
-        found = re.search("countdown_number = (\d+);", self.html)
-        self.setWait(int(found.group(1)) if found else 50)
+        m = re.search("countdown_number = (\d+);", self.html)
+        self.setWait(int(m.group(1)) if m else 50)
 
         # download the file, destination is determined by pyLoad
         self.logDebug("WAIT URL", self.req.lastEffectiveURL)
-        found = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.lastEffectiveURL)
-        if found is None:
+        m = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.lastEffectiveURL)
+        if m is None:
             self.parseError('Download URL')
 
-        url = "http://%s/download.php?%s" % (found.group(1), found.group(2))
+        url = "http://%s/download.php?%s" % (m.group(1), m.group(2))
 
         self.wait()
         self.download(url)

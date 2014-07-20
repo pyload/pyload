@@ -61,7 +61,7 @@ class QuickshareCz(SimpleHoster):
 
         check = self.checkDownload({"err": re.compile(r"\AChyba!")}, max_size=100)
         if check == "err":
-            self.fail("File not found or plugin defect")
+            self.fail("File not m or plugin defect")
 
     def handleFree(self):
         # get download url
@@ -74,21 +74,21 @@ class QuickshareCz(SimpleHoster):
         self.header = self.req.http.header
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
-        found = re.search("Location\s*:\s*(.*)", self.header, re.I)
-        if found is None:
+        m = re.search("Location\s*:\s*(.*)", self.header, re.I)
+        if m is None:
             self.fail('File not found')
-        download_url = found.group(1)
+        download_url = m.group(1)
         self.logDebug("FREE URL2:" + download_url)
 
         # check errors
-        found = re.search(r'/chyba/(\d+)', download_url)
-        if found:
-            if found.group(1) == '1':
+        m = re.search(r'/chyba/(\d+)', download_url)
+        if m:
+            if m.group(1) == '1':
                 self.retry(60, 2 * 60, "This IP is already downloading")
-            elif found.group(1) == '2':
+            elif m.group(1) == '2':
                 self.retry(60, 60, "No free slots available")
             else:
-                self.fail('Error %d' % found.group(1))
+                self.fail('Error %d' % m.group(1))
 
         # download file
         self.download(download_url)

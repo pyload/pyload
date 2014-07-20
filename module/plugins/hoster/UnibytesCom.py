@@ -45,9 +45,9 @@ class UnibytesCom(SimpleHoster):
             self.logDebug(action, post_data)
             self.html = self.load(domain + action, post=post_data)
 
-            found = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
-            if found:
-                url = found.group(1)
+            m = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
+            if m:
+                url = m.group(1)
                 break
 
             if '>Somebody else is already downloading using your IP-address<' in self.html:
@@ -55,9 +55,9 @@ class UnibytesCom(SimpleHoster):
                 self.retry()
 
             if post_data['step'] == 'last':
-                found = re.search(self.LINK_PATTERN, self.html)
-                if found:
-                    url = found.group(1)
+                m = re.search(self.LINK_PATTERN, self.html)
+                if m:
+                    url = m.group(1)
                     self.correctCaptcha()
                     break
                 else:
@@ -67,8 +67,8 @@ class UnibytesCom(SimpleHoster):
             action, post_data = self.parseHtmlForm('id="stepForm"')
 
             if last_step == 'timer':
-                found = re.search(self.WAIT_PATTERN, self.html)
-                self.wait(int(found.group(1)) if found else 60, False)
+                m = re.search(self.WAIT_PATTERN, self.html)
+                self.wait(int(m.group(1)) if m else 60, False)
             elif last_step in ("captcha", "last"):
                 post_data['captcha'] = self.decryptCaptcha(domain + '/captcha.jpg')
         else:

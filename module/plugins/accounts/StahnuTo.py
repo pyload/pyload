@@ -34,8 +34,8 @@ class StahnuTo(Account):
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.stahnu.to/")
 
-        found = re.search(r'>VIP: (\d+.*)<', html)
-        trafficleft = parseFileSize(found.group(1)) * 1024 if found else 0
+        m = re.search(r'>VIP: (\d+.*)<', html)
+        trafficleft = parseFileSize(m.group(1)) * 1024 if m else 0
 
         return {"premium": trafficleft > (512 * 1024), "trafficleft": trafficleft, "validuntil": -1}
 

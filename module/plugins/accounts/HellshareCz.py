@@ -37,13 +37,13 @@ class HellshareCz(Account):
         self.relogin(user)
         html = req.load("http://www.hellshare.com/")
 
-        found = re.search(self.CREDIT_LEFT_PATTERN, html)
-        if found is None:
+        m = re.search(self.CREDIT_LEFT_PATTERN, html)
+        if m is None:
             trafficleft = None
             validuntil = None
             premium = False
         else:
-            credit = found.group(1)
+            credit = m.group(1)
             premium = True
             try:
                 if "." in credit:

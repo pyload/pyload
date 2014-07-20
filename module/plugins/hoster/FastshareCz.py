@@ -48,9 +48,9 @@ class FastshareCz(SimpleHoster):
         if "> 100% of FREE slots are full" in self.html:
             self.retry(120, 60, "No free slots")
 
-        found = re.search(self.FREE_URL_PATTERN, self.html)
-        if found:
-            action, captcha_src = found.groups()
+        m = re.search(self.FREE_URL_PATTERN, self.html)
+        if m:
+            action, captcha_src = m.groups()
         else:
             self.parseError("Free URL")
 
@@ -82,9 +82,9 @@ class FastshareCz(SimpleHoster):
                 self.logWarning("Not enough traffic left")
                 self.resetAccount()
             else:
-                found = re.search(self.PREMIUM_URL_PATTERN, self.html)
-                if found:
-                    url = found.group(1)
+                m = re.search(self.PREMIUM_URL_PATTERN, self.html)
+                if m:
+                    url = m.group(1)
                 else:
                     self.parseError("Premium URL")
 

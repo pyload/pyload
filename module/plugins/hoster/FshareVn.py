@@ -78,13 +78,13 @@ class FshareVn(SimpleHoster):
 
         self.checkErrors()
 
-        found = re.search(r'var count = (\d+)', self.html)
-        self.setWait(int(found.group(1)) if found else 30)
+        m = re.search(r'var count = (\d+)', self.html)
+        self.setWait(int(m.group(1)) if m else 30)
 
-        found = re.search(self.LINK_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
             self.parseError('FREE DL URL')
-        self.url = found.group(1)
+        self.url = m.group(1)
         self.logDebug("FREE DL URL: %s" % self.url)
 
         self.wait()
@@ -97,10 +97,10 @@ class FshareVn(SimpleHoster):
         if '/error.php?' in self.req.lastEffectiveURL or u"Liên kết bạn chọn không tồn" in self.html:
             self.offline()
 
-        found = re.search(self.WAIT_PATTERN, self.html)
-        if found:
-            self.logInfo("Wait until %s ICT" % found.group(1))
-            wait_until = mktime(strptime(found.group(1), "%d/%m/%Y %H:%M"))
+        m = re.search(self.WAIT_PATTERN, self.html)
+        if m:
+            self.logInfo("Wait until %s ICT" % m.group(1))
+            wait_until = mktime(strptime(m.group(1), "%d/%m/%Y %H:%M"))
             self.wait(wait_until - mktime(gmtime()) - 7 * 60 * 60, True)
             self.retry()
         elif '<ul class="message-error">' in self.html:
@@ -114,4 +114,4 @@ class FshareVn(SimpleHoster):
         })
 
         if check == "not_found":
-            self.fail("File not found on server")
+            self.fail("File not m on server")

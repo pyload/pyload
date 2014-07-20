@@ -45,10 +45,10 @@ class FshareVn(Account):
             trafficleft = self.getTrafficLeft()
             return {"validuntil": -1, "trafficleft": trafficleft, "premium": True}
 
-        found = re.search(self.VALID_UNTIL_PATTERN, html)
-        if found:
+        m = re.search(self.VALID_UNTIL_PATTERN, html)
+        if m:
             premium = True
-            validuntil = mktime(strptime(found.group(1), '%I:%M:%S %p %d-%m-%Y'))
+            validuntil = mktime(strptime(m.group(1), '%I:%M:%S %p %d-%m-%Y'))
             trafficleft = self.getTrafficLeft()
         else:
             premium = False
@@ -70,5 +70,5 @@ class FshareVn(Account):
             self.wrongPassword()
 
     def getTrafficLeft(self):
-        found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        return float(found.group(1)) * 1024 ** {'k': 0, 'K': 0, 'M': 1, 'G': 2}[found.group(2)] if found else 0
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        return float(m.group(1)) * 1024 ** {'k': 0, 'K': 0, 'M': 1, 'G': 2}[m.group(2)] if m else 0

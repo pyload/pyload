@@ -25,18 +25,18 @@ class MultiloadCz(Crypter):
         self.html = self.load(pyfile.url, decode=True)
 
         if re.match(self.__pattern__, pyfile.url).group(1) == "slozka":
-            found = re.search(self.FOLDER_PATTERN, self.html)
-            if found:
-                self.urls.extend(found.group(1).split())
+            m = re.search(self.FOLDER_PATTERN, self.html)
+            if m:
+                self.urls.extend(m.group(1).split())
         else:
-            found = re.findall(self.LINK_PATTERN, self.html)
-            if found:
+            m = re.findall(self.LINK_PATTERN, self.html)
+            if m:
                 prefered_set = set(self.getConfig("usedHoster").split('|'))
-                self.urls.extend([x[1] for x in found if x[0] in prefered_set])
+                self.urls.extend([x[1] for x in m if x[0] in prefered_set])
 
                 if not self.urls:
                     ignored_set = set(self.getConfig("ignoredHoster").split('|'))
-                    self.urls.extend([x[1] for x in found if x[0] not in ignored_set])
+                    self.urls.extend([x[1] for x in m if x[0] not in ignored_set])
 
         if not self.urls:
             self.fail('Could not extract any links')

@@ -113,19 +113,19 @@ class MediafireCom(SimpleHoster):
             else:
                 self.fail("No or incorrect password")
 
-        found = re.search(r'kNO = r"(http://.*?)";', self.html)
-        if found is None:
+        m = re.search(r'kNO = r"(http://.*?)";', self.html)
+        if m is None:
             self.parseError("Download URL")
-        download_url = found.group(1)
+        download_url = m.group(1)
         self.logDebug("DOWNLOAD LINK:", download_url)
 
         self.download(download_url)
 
     def checkCaptcha(self):
         for _ in xrange(5):
-            found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-            if found:
-                captcha_key = found.group(1)
+            m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+            if m:
+                captcha_key = m.group(1)
                 solvemedia = SolveMedia(self)
                 captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
                 self.html = self.load(self.url, post={"adcopy_challenge": captcha_challenge,

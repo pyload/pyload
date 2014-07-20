@@ -33,9 +33,9 @@ class QuickshareCz(Account):
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.quickshare.cz/premium", decode=True)
 
-        found = re.search(r'Stav kreditu: <strong>(.+?)</strong>', html)
-        if found:
-            trafficleft = parseFileSize(found.group(1)) / 1024
+        m = re.search(r'Stav kreditu: <strong>(.+?)</strong>', html)
+        if m:
+            trafficleft = parseFileSize(m.group(1)) / 1024
             premium = True if trafficleft else False
         else:
             trafficleft = None

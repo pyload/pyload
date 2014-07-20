@@ -25,10 +25,10 @@ class TwoSharedCom(SimpleHoster):
         self.resumeDownload = self.multiDL = True
 
     def handleFree(self):
-        found = re.search(self.LINK_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
             self.parseError('Download link')
-        link = found.group(1)
+        link = m.group(1)
         self.logDebug("Download URL %s" % link)
 
         self.download(link)

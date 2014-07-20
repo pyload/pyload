@@ -30,22 +30,22 @@ class FourSharedCom(SimpleHoster):
         if not self.account:
             self.fail("User not logged in")
 
-        found = re.search(self.DOWNLOAD_BUTTON_PATTERN, self.html)
-        if found:
-            link = found.group(1)
+        m = re.search(self.DOWNLOAD_BUTTON_PATTERN, self.html)
+        if m:
+            link = m.group(1)
         else:
             link = re.sub(r'/(download|get|file|document|photo|video|audio)/', r'/get/', self.pyfile.url)
 
         self.html = self.load(link)
 
-        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
+        if m is None:
             self.parseError('Download link')
-        link = found.group(1)
+        link = m.group(1)
 
         try:
-            found = re.search(self.FID_PATTERN, self.html)
-            response = self.load('http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId=%s' % found.group(1))
+            m = re.search(self.FID_PATTERN, self.html)
+            response = self.load('http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId=%s' % m.group(1))
             self.logDebug(response)
         except:
             pass

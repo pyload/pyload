@@ -47,11 +47,11 @@ class VeehdCom(Hoster):
         if not self.html:
             self.download_html()
 
-        found = re.search(r'<title[^>]*>([^<]+) on Veehd</title>', self.html)
-        if found is None:
+        m = re.search(r'<title[^>]*>([^<]+) on Veehd</title>', self.html)
+        if m is None:
             self.fail("video title not found")
 
-        name = found.group(1)
+        name = m.group(1)
 
         # replace unwanted characters in filename
         if self.getConfig('filename_spaces'):
@@ -67,9 +67,9 @@ class VeehdCom(Hoster):
         if not self.html:
             self.download_html()
 
-        found = re.search(r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/[^"]+)"',
+        m = re.search(r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/[^"]+)"',
                           self.html)
-        if found is None:
+        if m is None:
             self.fail("embedded video url not found")
 
-        return found.group(1)
+        return m.group(1)

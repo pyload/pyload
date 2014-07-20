@@ -108,9 +108,9 @@ class FilefactoryCom(SimpleHoster):
         else:
             self.logInfo('You could enable "Direct Downloads" on http://filefactory.com/account/')
             html = self.load(self.pyfile.url)
-            found = re.search(self.LINK_PATTERN, html)
-            if found:
-                url = found.group(1)
+            m = re.search(self.LINK_PATTERN, html)
+            if m:
+                url = m.group(1)
             else:
                 self.parseError('Unable to detect premium direct link')
 

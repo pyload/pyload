@@ -42,9 +42,9 @@ class RyushareCom(XFileSharingPro):
             self.setWait(1 * 60 * 60, True)
             retry = True
 
-        found = re.search(self.WAIT_PATTERN, self.html)
-        if found:
-            wait = found.groupdict(0)
+        m = re.search(self.WAIT_PATTERN, self.html)
+        if m:
+            wait = m.groupdict(0)
             waittime = int(wait['hour']) * 60 * 60 + int(wait['min']) * 60 + int(wait['sec'])
             self.setWait(waittime, True)
             retry = True
@@ -54,11 +54,11 @@ class RyushareCom(XFileSharingPro):
             self.retry()
 
         for _ in xrange(5):
-            found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-            if found is None:
+            m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+            if m is None:
                 self.parseError("Error parsing captcha")
 
-            captchaKey = found.group(1)
+            captchaKey = m.group(1)
             captcha = SolveMedia(self)
             challenge, response = captcha.challenge(captchaKey)
 

@@ -42,22 +42,22 @@ class UptoboxCom(XFileSharingPro):
     LINK_PATTERN = r'"(https?://\w+\.uptobox\.com/d/.*?)"'
 
     def handleCaptcha(self, inputs):
-        found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-        if found:
-            captcha_key = found.group(1)
+        m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+        if m:
+            captcha_key = m.group(1)
             captcha = SolveMedia(self)
             inputs['adcopy_challenge'], inputs['adcopy_response'] = captcha.challenge(captcha_key)
             return 4
         else:
-            found = re.search(self.CAPTCHA_URL_PATTERN, self.html)
-            if found:
-                captcha_url = found.group(1)
+            m = re.search(self.CAPTCHA_URL_PATTERN, self.html)
+            if m:
+                captcha_url = m.group(1)
                 inputs['code'] = self.decryptCaptcha(captcha_url)
                 return 2
             else:
-                found = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
-                if found:
-                    captcha_div = found.group(1)
+                m = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
+                if m:
+                    captcha_div = m.group(1)
                     self.logDebug(captcha_div)
                     numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>',
                                           html_unescape(captcha_div))
@@ -65,9 +65,9 @@ class UptoboxCom(XFileSharingPro):
                     self.logDebug("CAPTCHA", inputs['code'], numerals)
                     return 3
                 else:
-                    found = re.search(self.RECAPTCHA_URL_PATTERN, self.html)
-                    if found:
-                        recaptcha_key = unquote(found.group(1))
+                    m = re.search(self.RECAPTCHA_URL_PATTERN, self.html)
+                    if m:
+                        recaptcha_key = unquote(m.group(1))
                         self.logDebug("RECAPTCHA KEY: %s" % recaptcha_key)
                         recaptcha = ReCaptcha(self)
                         inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(

@@ -27,8 +27,8 @@ class EasybytezCom(MultiHoster):
             req = self.account.getAccountRequest(user)
             page = req.load("http://www.easybytez.com")
 
-            found = re.search(r'</textarea>\s*Supported sites:(.*)', page)
-            return found.group(1).split(',')
+            m = re.search(r'</textarea>\s*Supported sites:(.*)', page)
+            return m.group(1).split(',')
         except Exception, e:
             self.logDebug(e)
             self.logWarning("Unable to load supported hoster list, using last known")

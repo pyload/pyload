@@ -37,10 +37,10 @@ class BezvadataCz(SimpleHoster):
 
     def handleFree(self):
         #download button
-        found = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
-        if found is None:
+        m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
+        if m is None:
             self.parseError("page1 URL")
-        url = "http://bezvadata.cz%s" % found.group(1)
+        url = "http://bezvadata.cz%s" % m.group(1)
 
         #captcha form
         self.html = self.load(url)
@@ -50,14 +50,14 @@ class BezvadataCz(SimpleHoster):
             if not inputs:
                 self.parseError("FreeForm")
 
-            found = re.search(r'<img src="data:image/png;base64,(.*?)"', self.html)
-            if found is None:
+            m = re.search(r'<img src="data:image/png;base64,(.*?)"', self.html)
+            if m is None:
                 self.parseError("captcha img")
 
             #captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
             self.load, proper_load = self.loadcaptcha, self.load
             try:
-                inputs['captcha'] = self.decryptCaptcha(found.group(1), imgtype='png')
+                inputs['captcha'] = self.decryptCaptcha(m.group(1), imgtype='png')
             finally:
                 self.load = proper_load
 
@@ -72,15 +72,15 @@ class BezvadataCz(SimpleHoster):
         #download url
         self.html = self.load("http://bezvadata.cz%s" % action, post=inputs)
         self.checkErrors()
-        found = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
-        if found is None:
+        m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
+        if m is None:
             self.parseError("page2 URL")
-        url = "http://bezvadata.cz%s" % found.group(1)
+        url = "http://bezvadata.cz%s" % m.group(1)
         self.logDebug("DL URL %s" % url)
 
         #countdown
-        found = re.search(r'id="countdown">(\d\d):(\d\d)<', self.html)
-        wait_time = (int(found.group(1)) * 60 + int(found.group(2)) + 1) if found else 120
+        m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.html)
+        wait_time = (int(m.group(1)) * 60 + int(m.group(2)) + 1) if m else 120
         self.wait(wait_time, False)
 
         self.download(url)

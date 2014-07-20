@@ -95,7 +95,7 @@ class NCryptIn(Crypter):
 
     def isOnline(self):
         if "Your folder does not exist" in self.cleanedHtml:
-            self.logDebug("File not found")
+            self.logDebug("File not m")
             return False
         return True
 
@@ -111,14 +111,14 @@ class NCryptIn(Crypter):
         return False
 
     def getPackageInfo(self):
-        found = re.search(self.NAME_PATTERN, self.html)
-        if found:
-            name = folder = found.group('N').strip()
+        m = re.search(self.NAME_PATTERN, self.html)
+        if m:
+            name = folder = m.group('N').strip()
             self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
         else:
             name = self.package.name
             folder = self.package.folder
-            self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
+            self.logDebug("Package info not m, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
         return name, folder
 
     def unlockProtection(self):

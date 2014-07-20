@@ -56,15 +56,15 @@ class DateiTo(SimpleHoster):
                 elif data['P'] == 'IV':
                     break
 
-            found = re.search(self.DATA_PATTERN, self.html)
-            if found is None:
+            m = re.search(self.DATA_PATTERN, self.html)
+            if m is None:
                 self.parseError('data')
-            url = 'http://datei.to/' + found.group(1)
-            data = dict(x.split('=') for x in found.group(2).split('&'))
+            url = 'http://datei.to/' + m.group(1)
+            data = dict(x.split('=') for x in m.group(2).split('&'))
 
             if url.endswith('recaptcha.php'):
-                found = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
-                recaptcha_key = found.group(1) if found else "6LdBbL8SAAAAAI0vKUo58XRwDd5Tu_Ze1DA7qTao"
+                m = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
+                recaptcha_key = m.group(1) if m else "6LdBbL8SAAAAAI0vKUo58XRwDd5Tu_Ze1DA7qTao"
 
                 data['recaptcha_challenge_field'], data['recaptcha_response_field'] = recaptcha.challenge(recaptcha_key)
 
@@ -76,16 +76,16 @@ class DateiTo(SimpleHoster):
         self.download(download_url)
 
     def checkErrors(self):
-        found = re.search(self.PARALELL_PATTERN, self.html)
-        if found:
-            found = re.search(self.WAIT_PATTERN, self.html)
-            wait_time = int(found.group(1)) if found else 30
+        m = re.search(self.PARALELL_PATTERN, self.html)
+        if m:
+            m = re.search(self.WAIT_PATTERN, self.html)
+            wait_time = int(m.group(1)) if m else 30
             self.wait(wait_time + 1, False)
             self.retry()
 
     def doWait(self):
-        found = re.search(self.WAIT_PATTERN, self.html)
-        wait_time = int(found.group(1)) if found else 30
+        m = re.search(self.WAIT_PATTERN, self.html)
+        wait_time = int(m.group(1)) if m else 30
 
         self.load('http://datei.to/ajax/download.php', post={'P': 'Ads'})
         self.wait(wait_time + 1, False)

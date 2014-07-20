@@ -67,11 +67,11 @@ class UploadingCom(SimpleHoster):
         raise Exception("Plugin defect.")
 
     def handleFree(self):
-        found = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
-        if found:
-            self.pyfile.error = found.group(1)
+        m = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
+        if m:
+            self.pyfile.error = m.group(1)
             self.logWarning(self.pyfile.error)
-            self.retry(max_tries=6, wait_time=6 * 60 * 60 if found.group(2) else 15 * 60, reason=self.pyfile.error)
+            self.retry(max_tries=6, wait_time=6 * 60 * 60 if m.group(2) else 15 * 60, reason=self.pyfile.error)
 
         ajax_url = "http://uploading.com/files/get/?ajax"
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
@@ -93,9 +93,9 @@ class UploadingCom(SimpleHoster):
             self.parseError("AJAX/URL")
 
         self.html = self.load(url)
-        found = re.search(r'<form id="file_form" action="(.*?)"', self.html)
-        if found:
-            url = found.group(1)
+        m = re.search(r'<form id="file_form" action="(.*?)"', self.html)
+        if m:
+            url = m.group(1)
         else:
             self.parseError("URL")
 

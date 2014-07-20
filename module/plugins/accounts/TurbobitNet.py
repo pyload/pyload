@@ -34,10 +34,10 @@ class TurbobitNet(Account):
     def loadAccountInfo(self, user, req):
         html = req.load("http://turbobit.net")
 
-        found = re.search(r'<u>Turbo Access</u> to ([0-9.]+)', html)
-        if found:
+        m = re.search(r'<u>Turbo Access</u> to ([0-9.]+)', html)
+        if m:
             premium = True
-            validuntil = mktime(strptime(found.group(1), "%d.%m.%Y"))
+            validuntil = mktime(strptime(m.group(1), "%d.%m.%Y"))
         else:
             premium = False
             validuntil = -1

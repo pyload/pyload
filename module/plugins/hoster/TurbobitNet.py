@@ -68,9 +68,9 @@ class TurbobitNet(SimpleHoster):
 
     def solveCaptcha(self):
         for _ in xrange(5):
-            found = re.search(self.LIMIT_WAIT_PATTERN, self.html)
-            if found:
-                wait_time = int(found.group(1))
+            m = re.search(self.LIMIT_WAIT_PATTERN, self.html)
+            if m:
+                wait_time = int(m.group(1))
                 self.wait(wait_time, wait_time > 60)
                 self.retry()
 
@@ -81,15 +81,15 @@ class TurbobitNet(SimpleHoster):
 
             if inputs['captcha_type'] == 'recaptcha':
                 recaptcha = ReCaptcha(self)
-                found = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
-                captcha_key = found.group(1) if found else '6LcTGLoSAAAAAHCWY9TTIrQfjUlxu6kZlTYP50_c'
+                m = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
+                captcha_key = m.group(1) if m else '6LcTGLoSAAAAAHCWY9TTIrQfjUlxu6kZlTYP50_c'
                 inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(
                     captcha_key)
             else:
-                found = re.search(self.CAPTCHA_SRC_PATTERN, self.html)
-                if found is None:
+                m = re.search(self.CAPTCHA_SRC_PATTERN, self.html)
+                if m is None:
                     self.parseError('captcha')
-                captcha_url = found.group(1)
+                captcha_url = m.group(1)
                 inputs['captcha_response'] = self.decryptCaptcha(captcha_url)
 
             self.logDebug(inputs)
@@ -129,8 +129,8 @@ class TurbobitNet(SimpleHoster):
     def getDownloadUrl(self, rtUpdate):
         self.req.http.lastURL = self.url
 
-        found = re.search("(/\w+/timeout\.js\?\w+=)([^\"\'<>]+)", self.html)
-        url = "http://turbobit.net%s%s" % (found.groups() if found else (
+        m = re.search("(/\w+/timeout\.js\?\w+=)([^\"\'<>]+)", self.html)
+        url = "http://turbobit.net%s%s" % (m.groups() if m else (
         '/files/timeout.js?ver=', ''.join(random.choice('0123456789ABCDEF') for _ in xrange(32))))
         fun = self.load(url)
 
@@ -168,10 +168,10 @@ class TurbobitNet(SimpleHoster):
         self.downloadFile()
 
     def downloadFile(self):
-        found = re.search(self.LINK_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
             self.parseError("download link")
-        self.url = "http://turbobit.net" + found.group('url')
+        self.url = "http://turbobit.net" + m.group('url')
         self.logDebug(self.url)
         self.download(self.url)
 

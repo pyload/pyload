@@ -18,10 +18,10 @@ class RgHostNet(SimpleHoster):
     LINK_PATTERN = r'''<a\s+href="([^"]+)"\s+class="btn\s+large\s+download"[^>]+>Download</a>'''
 
     def handleFree(self):
-        found = re.search(self.LINK_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
             self.parseError("Unable to detect the direct link")
-        download_link = found.group(1)
+        download_link = m.group(1)
         self.download(download_link, disposition=True)
 
 

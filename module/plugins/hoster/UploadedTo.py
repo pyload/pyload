@@ -54,17 +54,22 @@ def getAPIData(urls):
 def parseFileInfo(self, url='', html=''):
     if not html and hasattr(self, "html"):
         html = self.html
-    name, size, status, found, fileid = url, 0, 3, None, None
+
+    name = url
+    size = 0
+    fileid = None
 
     if re.search(self.OFFLINE_PATTERN, html):
         # File offline
         status = 1
     else:
-        found = re.search(self.FILE_INFO_PATTERN, html)
-        if found:
-            name, fileid = html_unescape(found.group('N')), found.group('ID')
-            size = parseFileSize(found.group('S'))
+        m = re.search(self.FILE_INFO_PATTERN, html)
+        if m:
+            name, fileid = html_unescape(m.group('N')), m.group('ID')
+            size = parseFileSize(m.group('S'))
             status = 2
+        else:
+            status = 3
 
     return name, size, status, fileid
 
@@ -163,10 +168,10 @@ class UploadedTo(Hoster):
         else:
             #Indirect download
             self.html = self.load("http://uploaded.net/file/%s" % self.fileID)
-            found = re.search(r'<div class="tfree".*\s*<form method="post" action="(.*?)"', self.html)
-            if found is None:
-                self.fail("Download URL not found. Try to enable direct downloads.")
-            url = found.group(1)
+            m = re.search(r'<div class="tfree".*\s*<form method="post" action="(.*?)"', self.html)
+            if m is None:
+                self.fail("Download URL not m. Try to enable direct downloads.")
+            url = m.group(1)
             print "Premium URL: " + url
             self.download(url, post={})
 
@@ -177,10 +182,10 @@ class UploadedTo(Hoster):
             self.logError("Free-download capacities exhausted.")
             self.retry(max_tries=24, wait_time=5 * 60)
 
-        found = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
-        if found is None:
+        m = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
+        if m is None:
             self.fail("File not downloadable for free users")
-        self.setWait(int(found.group(1)))
+        self.setWait(int(m.group(1)))
 
         js = self.load("http://uploaded.net/js/download.js", decode=True)
 

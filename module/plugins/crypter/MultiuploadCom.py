@@ -25,8 +25,8 @@ class MultiuploadCom(Crypter):
 
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url)
-        found = re.search(self.ML_LINK_PATTERN, self.html)
-        ml_url = found.group(1) if found else None
+        m = re.search(self.ML_LINK_PATTERN, self.html)
+        ml_url = m.group(1) if m else None
 
         json_list = json_loads(self.load("http://multiupload.com/progress/", get={
             "d": re.match(self.__pattern__, pyfile.url).group(1),

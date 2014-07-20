@@ -25,9 +25,9 @@ class File4safeCom(XFileSharingPro):
         self.header = self.req.http.header
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
-        found = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
-        if found and re.match(self.LINK_PATTERN, found.group(1)):
-            location = found.group(1).strip()
+        m = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
+        if m and re.match(self.LINK_PATTERN, m.group(1)):
+            location = m.group(1).strip()
             self.startDownload(location)
         else:
             self.parseError("Unable to detect premium download link")

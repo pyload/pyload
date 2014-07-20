@@ -50,9 +50,9 @@ class NowDownloadEu(SimpleHoster):
         if tokenlink is None or continuelink is None:
             self.fail('Plugin out of Date')
 
-        found = re.search(self.WAIT_PATTERN, self.html)
-        if found:
-            wait = int(found.group(1))
+        m = re.search(self.WAIT_PATTERN, self.html)
+        if m:
+            wait = int(m.group(1))
         else:
             wait = 60
 

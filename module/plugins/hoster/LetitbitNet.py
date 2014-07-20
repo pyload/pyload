@@ -99,18 +99,18 @@ class LetitbitNet(SimpleHoster):
         #
         # try:
         #     ajax_check_url, captcha_url = re.search(self.CHECK_URL_PATTERN, self.html).groups()
-        #     found = re.search(self.SECONDS_PATTERN, self.html)
-        #     seconds = int(found.group(1)) if found else 60
+        #     m = re.search(self.SECONDS_PATTERN, self.html)
+        #     seconds = int(m.group(1)) if m else 60
         #     self.wait(seconds+1)
         # except Exception, e:
         #     self.logError(e)
         #     self.parseError("page 3 / js")
 
-        found = re.search(self.SECONDS_PATTERN, self.html)
-        seconds = int(found.group(1)) if found else 60
+        m = re.search(self.SECONDS_PATTERN, self.html)
+        seconds = int(m.group(1)) if m else 60
         self.logDebug("Seconds found", seconds)
-        found = re.search(self.CAPTCHA_CONTROL_FIELD, self.html)
-        recaptcha_control_field = found.group(1)
+        m = re.search(self.CAPTCHA_CONTROL_FIELD, self.html)
+        recaptcha_control_field = m.group(1)
         self.logDebug("ReCaptcha control field found", recaptcha_control_field)
         self.wait(seconds + 1)
 

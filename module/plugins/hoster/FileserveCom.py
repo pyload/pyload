@@ -151,10 +151,10 @@ class FileserveCom(Hoster):
             self.fail("Failed getting wait time")
 
         if self.__name__ == "FilejungleCom":
-            found = re.search(r'"waitTime":(\d+)', response)
-            if found is None:
+            m = re.search(r'"waitTime":(\d+)', response)
+            if m is None:
                 self.fail("Cannot get wait time")
-            wait_time = int(found.group(1))
+            wait_time = int(m.group(1))
         else:
             wait_time = int(response) + 3
 

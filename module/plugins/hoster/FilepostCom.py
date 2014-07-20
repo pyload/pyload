@@ -49,15 +49,15 @@ class FilepostCom(SimpleHoster):
         # Find token and captcha key
         file_id = re.match(self.__pattern__, self.pyfile.url).group(1)
 
-        found = re.search(self.FLP_TOKEN_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.FLP_TOKEN_PATTERN, self.html)
+        if m is None:
             self.parseError("Token")
-        flp_token = found.group(1)
+        flp_token = m.group(1)
 
-        found = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
+        if m is None:
             self.parseError("Captcha key")
-        captcha_key = found.group(1)
+        captcha_key = m.group(1)
 
         # Get wait time
         get_dict = {'SID': self.req.cj.getCookie('SID'), 'JsHttpRequest': str(int(time() * 10000)) + '-xml'}

@@ -40,8 +40,8 @@ class OneFichierCom(SimpleHoster):
             self.logInfo('You have to wait been each free download! Retrying in %d seconds.' % self.WAIT_TIME)
             self.waitAndRetry(self.WAIT_TIME)
         else:  # detect parallel download
-            found = re.search(self.NOT_PARALLEL, self.html)
-            if found:
+            m = re.search(self.NOT_PARALLEL, self.html)
+            if m:
                 self.waitAndRetry(self.RETRY_TIME)
 
         url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['id'])

@@ -23,8 +23,8 @@ class UlozTo(Account):
         html = req.load("http://www.ulozto.net/", decode=True)
         req.cj.setCookie("www.ulozto.net", "ULOSESSID", self.phpsessid)
 
-        found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        trafficleft = int(float(found.group(1).replace(' ', '').replace(',', '.')) * 1000 * 1.048) if found else 0
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        trafficleft = int(float(m.group(1).replace(' ', '').replace(',', '.')) * 1000 * 1.048) if m else 0
         self.premium = True if trafficleft else False
 
         return {"validuntil": -1, "trafficleft": trafficleft}

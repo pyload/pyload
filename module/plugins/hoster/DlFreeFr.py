@@ -46,9 +46,9 @@ class AdYouLike:
 
     def challenge(self, html):
         adyoulike_data_string = None
-        found = re.search(self.ADYOULIKE_INPUT_PATTERN, html)
-        if found:
-            adyoulike_data_string = found.group(1)
+        m = re.search(self.ADYOULIKE_INPUT_PATTERN, html)
+        if m:
+            adyoulike_data_string = m.group(1)
         else:
             self.plugin.fail("Can't read AdYouLike input data")
 
@@ -61,10 +61,10 @@ class AdYouLike:
             "ayl_key": ayl_data[self.engine]['key'], "ayl_env": ayl_data['all']['env'],
             "callback": self.ADYOULIKE_CALLBACK})
 
-        found = re.search(self.ADYOULIKE_CHALLENGE_PATTERN, res)
+        m = re.search(self.ADYOULIKE_CHALLENGE_PATTERN, res)
         challenge_string = None
-        if found:
-            challenge_string = found.group(1)
+        if m:
+            challenge_string = m.group(1)
         else:
             self.plugin.fail("Invalid AdYouLike challenge")
         challenge_data = json_loads(challenge_string)
@@ -86,9 +86,9 @@ class AdYouLike:
         response = None
         try:
             instructions_visual = challenge['translations'][ayl['all']['lang']]['instructions_visual']
-            found = re.search(u".*«(.*)».*", instructions_visual)
-            if found:
-                response = found.group(1).strip()
+            m = re.search(u".*«(.*)».*", instructions_visual)
+            if m:
+                response = m.group(1).strip()
             else:
                 self.plugin.fail("Can't parse instructions visual")
         except KeyError:
@@ -166,10 +166,10 @@ class DlFreeFr(SimpleHoster):
         self.load("http://dl.free.fr/getfile.pl", post=inputs)
         headers = self.getLastHeaders()
         if headers.get("code") == 302 and "set-cookie" in headers and "location" in headers:
-            found = re.search("(.*?)=(.*?); path=(.*?); domain=(.*?)", headers.get("set-cookie"))
+            m = re.search("(.*?)=(.*?); path=(.*?); domain=(.*?)", headers.get("set-cookie"))
             cj = CookieJar(__name__)
-            if found:
-                cj.setCookie(found.group(4), found.group(1), found.group(2), found.group(3))
+            if m:
+                cj.setCookie(m.group(4), m.group(1), m.group(2), m.group(3))
             else:
                 self.fail("Cookie error")
             location = headers.get("location")

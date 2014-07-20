@@ -62,11 +62,11 @@ class LoadTo(SimpleHoster):
             self.wait(m.group(1))
 
         # Load.to is using solvemedia captchas since ~july 2014:
-        found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+        if m is None:
             self.download(download_url)
         else:
-            captcha_key = found.group(1)
+            captcha_key = m.group(1)
             solvemedia = SolveMedia(self)
             captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
             self.download(download_url, post={"adcopy_challenge": captcha_challenge, "adcopy_response": captcha_response})

@@ -43,10 +43,10 @@ class EdiskCz(SimpleHoster):
 
         self.logDebug('URL:' + url)
 
-        found = re.search(self.ACTION_PATTERN, url)
-        if found is None:
+        m = re.search(self.ACTION_PATTERN, url)
+        if m is None:
             self.parseError("ACTION")
-        action = found.group(1)
+        action = m.group(1)
 
         self.html = self.load(url, decode=True)
         self.getFileInfo()

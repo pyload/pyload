@@ -33,23 +33,23 @@ class CrockoCom(SimpleHoster):
             self.fail("You need Premium membership to download this file.")
 
         for _ in xrange(5):
-            found = re.search(self.CAPTCHA_URL_PATTERN, self.html)
-            if found:
-                url, wait_time = 'http://crocko.com' + found.group(1), found.group(2)
+            m = re.search(self.CAPTCHA_URL_PATTERN, self.html)
+            if m:
+                url, wait_time = 'http://crocko.com' + m.group(1), m.group(2)
                 self.wait(wait_time)
                 self.html = self.load(url)
             else:
                 break
 
-        found = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
+        if m is None:
             self.parseError('Captcha KEY')
-        captcha_key = found.group(1)
+        captcha_key = m.group(1)
 
-        found = re.search(self.FORM_PATTERN, self.html, re.DOTALL)
-        if found is None:
+        m = re.search(self.FORM_PATTERN, self.html, re.DOTALL)
+        if m is None:
             self.parseError('ACTION')
-        action, form = found.groups()
+        action, form = m.groups()
         inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
 
         recaptcha = ReCaptcha(self)

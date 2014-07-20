@@ -37,11 +37,11 @@ class YibaishiwuCom(SimpleHoster):
 
 
     def handleFree(self):
-        found = re.search(self.LINK_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
             self.parseError("AJAX URL")
-        url = found.group(1)
-        self.logDebug(('FREEUSER' if found.group(2) == 'download' else 'GUEST') + ' URL', url)
+        url = m.group(1)
+        self.logDebug(('FREEUSER' if m.group(2) == 'download' else 'GUEST') + ' URL', url)
 
         response = json_loads(self.load("http://115.com" + url, decode=False))
         if "urls" in response:
@@ -51,9 +51,9 @@ class YibaishiwuCom(SimpleHoster):
         else:
             mirrors = None
 
-        for m in mirrors:
+        for mr in mirrors:
             try:
-                url = m['url'].replace("\\", "")
+                url = mr['url'].replace("\\", "")
                 self.logDebug("Trying URL: " + url)
                 self.download(url)
                 break

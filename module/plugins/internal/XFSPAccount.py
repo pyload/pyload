@@ -45,19 +45,19 @@ class XFSPAccount(Account):
         validuntil = trafficleft = None
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
-        found = re.search(self.VALID_UNTIL_PATTERN, html)
-        if found:
+        m = re.search(self.VALID_UNTIL_PATTERN, html)
+        if m:
             premium = True
             trafficleft = -1
             try:
-                self.logDebug(found.group(1))
-                validuntil = mktime(strptime(found.group(1), "%d %B %Y"))
+                self.logDebug(m.group(1))
+                validuntil = mktime(strptime(m.group(1), "%d %B %Y"))
             except Exception, e:
                 self.logError(e)
         else:
-            found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-            if found:
-                trafficleft = found.group(1)
+            m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+            if m:
+                trafficleft = m.group(1)
                 if "Unlimited" in trafficleft:
                     premium = True
                 else:

@@ -67,9 +67,9 @@ class Ftp(Hoster):
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.logDebug(self.req.http.header)
 
-        found = re.search(r"Content-Length:\s*(\d+)", response)
-        if found:
-            pyfile.size = int(found.group(1))
+        m = re.search(r"Content-Length:\s*(\d+)", response)
+        if m:
+            pyfile.size = int(m.group(1))
             self.download(pyfile.url)
         else:
             #Naive ftp directory listing          

@@ -35,9 +35,9 @@ class FastshareCz(Account):
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.fastshare.cz/user", decode=True)
 
-        found = re.search(self.CREDIT_PATTERN, html)
-        if found:
-            trafficleft = parseFileSize(found.group(1)) / 1024
+        m = re.search(self.CREDIT_PATTERN, html)
+        if m:
+            trafficleft = parseFileSize(m.group(1)) / 1024
             premium = True if trafficleft else False
         else:
             trafficleft = None

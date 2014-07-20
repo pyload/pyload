@@ -61,10 +61,10 @@ class EuroshareEu(SimpleHoster):
         if re.search(self.ERR_PARDL_PATTERN, self.html) is not None:
             self.longWait(5 * 60, 12)
 
-        found = re.search(self.FREE_URL_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.FREE_URL_PATTERN, self.html)
+        if m is None:
             self.parseError("Parse error (URL)")
-        parsed_url = "http://euroshare.eu%s" % found.group(1)
+        parsed_url = "http://euroshare.eu%s" % m.group(1)
         self.logDebug("URL", parsed_url)
         self.download(parsed_url, disposition=True)
 

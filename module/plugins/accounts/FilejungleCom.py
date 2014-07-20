@@ -39,10 +39,10 @@ class FilejungleCom(Account):
 
     def loadAccountInfo(self, user, req):
         html = req.load(self.URL + "dashboard.php")
-        found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if found:
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        if m:
             premium = True
-            validuntil = mktime(strptime(found.group(1), "%d %b %Y"))
+            validuntil = mktime(strptime(m.group(1), "%d %b %Y"))
         else:
             premium = False
             validuntil = -1

@@ -46,10 +46,10 @@ class VeohCom(SimpleHoster):
             quality = ("High", "Low")
         for q in quality:
             pattern = r'"fullPreviewHash%sPath":"(.+?)"' % q
-            found = re.search(pattern, self.html)
-            if found:
+            m = re.search(pattern, self.html)
+            if m:
                 self.pyfile.name += ".mp4"
-                link = found.group(1).replace("\\", "")
+                link = m.group(1).replace("\\", "")
                 self.logDebug("Download link: " + link)
                 self.download(link)
                 return

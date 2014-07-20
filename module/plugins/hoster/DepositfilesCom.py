@@ -59,16 +59,16 @@ class DepositfilesCom(SimpleHoster):
         if wait:
             self.setWait(int(wait.group(1)))
 
-        found = re.search(r"var fid = '(\w+)';", self.html)
-        if found is None:
+        m = re.search(r"var fid = '(\w+)';", self.html)
+        if m is None:
             self.retry(wait_time=5)
-        params = {'fid': found.group(1)}
+        params = {'fid': m.group(1)}
         self.logDebug("FID: %s" % params['fid'])
 
         captcha_key = '6LdRTL8SAAAAAE9UOdWZ4d0Ky-aeA7XfSqyWDM2m'
-        found = re.search(self.RECAPTCHA_PATTERN, self.html)
-        if found:
-            captcha_key = found.group(1)
+        m = re.search(self.RECAPTCHA_PATTERN, self.html)
+        if m:
+            captcha_key = m.group(1)
         self.logDebug("CAPTCHA_KEY: %s" % captcha_key)
 
         self.wait()
@@ -86,11 +86,11 @@ class DepositfilesCom(SimpleHoster):
                 self.logDebug(params)
                 continue
 
-            found = re.search(self.FREE_LINK_PATTERN, self.html)
-            if found:
+            m = re.search(self.FREE_LINK_PATTERN, self.html)
+            if m:
                 if 'response' in params:
                     self.correctCaptcha()
-                link = unquote(found.group(1))
+                link = unquote(m.group(1))
                 self.logDebug("LINK: %s" % link)
                 break
             else:

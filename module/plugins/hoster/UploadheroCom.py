@@ -48,18 +48,18 @@ class UploadheroCom(SimpleHoster):
     def handleFree(self):
         self.checkErrors()
 
-        found = re.search(self.CAPTCHA_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.CAPTCHA_PATTERN, self.html)
+        if m is None:
             self.parseError("Captcha URL")
-        captcha_url = "http://uploadhero.co" + found.group(1)
+        captcha_url = "http://uploadhero.co" + m.group(1)
 
         for _ in xrange(5):
             captcha = self.decryptCaptcha(captcha_url)
             self.html = self.load(self.pyfile.url, get={"code": captcha})
-            found = re.search(self.FREE_URL_PATTERN, self.html)
-            if found:
+            m = re.search(self.FREE_URL_PATTERN, self.html)
+            if m:
                 self.correctCaptcha()
-                download_url = found.group(1) or found.group(2)
+                download_url = m.group(1) or m.group(2)
                 break
             else:
                 self.invalidCaptcha()
@@ -76,12 +76,12 @@ class UploadheroCom(SimpleHoster):
         self.download(link)
 
     def checkErrors(self):
-        found = re.search(self.IP_BLOCKED_PATTERN, self.html)
-        if found:
-            self.html = self.load("http://uploadhero.co%s" % found.group(1))
+        m = re.search(self.IP_BLOCKED_PATTERN, self.html)
+        if m:
+            self.html = self.load("http://uploadhero.co%s" % m.group(1))
 
-            found = re.search(self.IP_WAIT_PATTERN, self.html)
-            wait_time = (int(found.group(1)) * 60 + int(found.group(2))) if found else 5 * 60
+            m = re.search(self.IP_WAIT_PATTERN, self.html)
+            wait_time = (int(m.group(1)) * 60 + int(m.group(2))) if m else 5 * 60
             self.wait(wait_time, True)
             self.retry()
 

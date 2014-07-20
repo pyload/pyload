@@ -51,9 +51,9 @@ class ShareRapidCom(SimpleHoster):
             self.account.relogin(self.user)
             self.retry(max_tries=3, reason=str(e))
 
-        found = re.search(self.LINK_PATTERN, self.html)
-        if found:
-            link = found.group(1)
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m:
+            link = m.group(1)
             self.logDebug("Premium link: %s" % link)
             self.download(link, disposition=True)
         else:

@@ -39,8 +39,8 @@ class MultishareCz(Account):
         #self.relogin(user)
         html = req.load("http://www.multishare.cz/profil/", decode=True)
 
-        found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        trafficleft = parseFileSize(found.group('S'), found.group('U')) / 1024 if found else 0
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        trafficleft = parseFileSize(m.group('S'), m.group('U')) / 1024 if m else 0
         self.premium = True if trafficleft else False
 
         html = req.load("http://www.multishare.cz/", decode=True)

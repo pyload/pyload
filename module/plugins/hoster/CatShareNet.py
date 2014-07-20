@@ -23,8 +23,8 @@ class CatShareNet(SimpleHoster):
 
 
     def handleFree(self):
-        found = re.search(self.SECONDS_PATTERN, self.html)
-        seconds = int(found.group(1))
+        m = re.search(self.SECONDS_PATTERN, self.html)
+        seconds = int(m.group(1))
         self.logDebug("Seconds found", seconds)
         self.wait(seconds + 1)
         recaptcha = ReCaptcha(self)

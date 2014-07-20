@@ -72,17 +72,17 @@ class LinkdecrypterCom(Crypter):
         self.html = self.load('http://linkdecrypter.com/', post=post_dict, cookies=True, decode=True)
 
         while self.passwords or retries:
-            found = re.search(self.TEXTAREA_PATTERN, self.html, flags=re.DOTALL)
-            if found:
-                return [x for x in found.group(1).splitlines() if '[LINK-ERROR]' not in x]
+            m = re.search(self.TEXTAREA_PATTERN, self.html, flags=re.DOTALL)
+            if m:
+                return [x for x in m.group(1).splitlines() if '[LINK-ERROR]' not in x]
 
-            found = re.search(self.CAPTCHA_PATTERN, self.html)
-            if found:
-                captcha_url = 'http://linkdecrypter.com/' + found.group(1)
-                result_type = "positional" if "getPos" in found.group(2) else "textual"
+            m = re.search(self.CAPTCHA_PATTERN, self.html)
+            if m:
+                captcha_url = 'http://linkdecrypter.com/' + m.group(1)
+                result_type = "positional" if "getPos" in m.group(2) else "textual"
 
-                found = re.search(r"<p><i><b>([^<]+)</b></i></p>", self.html)
-                msg = found.group(1) if found else ""
+                m = re.search(r"<p><i><b>([^<]+)</b></i></p>", self.html)
+                msg = m.group(1) if m else ""
                 self.logInfo("Captcha protected link", result_type, msg)
 
                 captcha = self.decryptCaptcha(captcha_url, result_type=result_type)

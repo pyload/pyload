@@ -126,9 +126,9 @@ class RapidgatorNet(SimpleHoster):
         self.html = self.load(url)
 
         for _ in xrange(5):
-            found = re.search(self.LINK_PATTERN, self.html)
-            if found:
-                link = found.group(1)
+            m = re.search(self.LINK_PATTERN, self.html)
+            if m:
+                link = m.group(1)
                 self.logDebug(link)
                 self.download(link, disposition=True)
                 break
@@ -150,19 +150,19 @@ class RapidgatorNet(SimpleHoster):
             self.parseError("Download link")
 
     def getCaptcha(self):
-        found = re.search(self.ADSCAPTCHA_SRC_PATTERN, self.html)
-        if found:
-            captcha_key = found.group(1)
+        m = re.search(self.ADSCAPTCHA_SRC_PATTERN, self.html)
+        if m:
+            captcha_key = m.group(1)
             captcha = AdsCaptcha(self)
         else:
-            found = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
-            if found:
-                captcha_key = found.group(1)
+            m = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
+            if m:
+                captcha_key = m.group(1)
                 captcha = ReCaptcha(self)
             else:
-                found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-                if found:
-                    captcha_key = found.group(1)
+                m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+                if m:
+                    captcha_key = m.group(1)
                     captcha = SolveMedia(self)
                 else:
                     self.parseError("Captcha")
@@ -170,19 +170,19 @@ class RapidgatorNet(SimpleHoster):
         return captcha, captcha_key
 
     def checkFree(self):
-        found = re.search(self.PREMIUM_ONLY_ERROR_PATTERN, self.html)
-        if found:
+        m = re.search(self.PREMIUM_ONLY_ERROR_PATTERN, self.html)
+        if m:
             self.fail("Premium account needed for download")
         else:
-            found = re.search(self.WAIT_PATTERN, self.html)
+            m = re.search(self.WAIT_PATTERN, self.html)
 
-        if found:
-            wait_time = int(found.group(1)) * {"hour": 60, "min": 1}[found.group(2)]
+        if m:
+            wait_time = int(m.group(1)) * {"hour": 60, "min": 1}[m.group(2)]
         else:
-            found = re.search(self.DOWNLOAD_LIMIT_ERROR_PATTERN, self.html)
-            if found is None:
+            m = re.search(self.DOWNLOAD_LIMIT_ERROR_PATTERN, self.html)
+            if m is None:
                 return
-            elif found.group(1) == "daily":
+            elif m.group(1) == "daily":
                 self.logWarning("You have reached your daily downloads limit for today")
                 wait_time = secondsToMidnight(gmt=2)
             else:

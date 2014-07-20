@@ -26,14 +26,14 @@ class UlozToFolder(Crypter):
         new_links = []
         for i in xrange(1, 100):
             self.logInfo("Fetching links from page %i" % i)
-            found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
-            if found is None:
+            m = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
+            if m is None:
                 self.fail("Parse error (FOLDER)")
 
-            new_links.extend(re.findall(self.LINK_PATTERN, found.group(1)))
-            found = re.search(self.NEXT_PAGE_PATTERN, html)
-            if found:
-                html = self.load("http://ulozto.net/" + found.group(1))
+            new_links.extend(re.findall(self.LINK_PATTERN, m.group(1)))
+            m = re.search(self.NEXT_PAGE_PATTERN, html)
+            if m:
+                html = self.load("http://ulozto.net/" + m.group(1))
             else:
                 break
         else:

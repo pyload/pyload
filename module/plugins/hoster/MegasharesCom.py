@@ -60,9 +60,9 @@ class MegasharesCom(SimpleHoster):
         #     self.fail("This file is too large for free download")
 
         # Reactivate passport if needed
-        found = re.search(self.REACTIVATE_PASSPORT_PATTERN, self.html)
-        if found:
-            passport_num = found.group(1)
+        m = re.search(self.REACTIVATE_PASSPORT_PATTERN, self.html)
+        if m:
+            passport_num = m.group(1)
             request_uri = re.search(self.REQUEST_URI_PATTERN, self.html).group(1)
 
             for _ in xrange(5):
@@ -87,28 +87,28 @@ class MegasharesCom(SimpleHoster):
                 self.fail("Failed to reactivate passport")
 
         # Check traffic left on passport
-        found = re.search(self.PASSPORT_LEFT_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.PASSPORT_LEFT_PATTERN, self.html)
+        if m is None:
             self.fail('Passport not found')
-        self.logInfo("Download passport: %s" % found.group(1))
-        data_left = float(found.group(2)) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[found.group(3)]
-        self.logInfo("Data left: %s %s (%d MB needed)" % (found.group(2), found.group(3), self.pyfile.size / 1048576))
+        self.logInfo("Download passport: %s" % m.group(1))
+        data_left = float(m.group(2)) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[m.group(3)]
+        self.logInfo("Data left: %s %s (%d MB needed)" % (m.group(2), m.group(3), self.pyfile.size / 1048576))
 
         if not data_left:
-            found = re.search(self.PASSPORT_RENEW_PATTERN, self.html)
-            renew = found.group(1) + found.group(2) + found.group(3) * 60 * 60 if found else 10 * 60
+            m = re.search(self.PASSPORT_RENEW_PATTERN, self.html)
+            renew = m.group(1) + m.group(2) + m.group(3) * 60 * 60 if m else 10 * 60
             self.retry(max_tries=15, wait_time=renew, reason="Unable to get passport")
 
         self.handleDownload(False)
 
     def handleDownload(self, premium=False):
         # Find download link;
-        found = re.search(self.LINK_PATTERN % (1 if premium else 2), self.html)
+        m = re.search(self.LINK_PATTERN % (1 if premium else 2), self.html)
         msg = '%s download URL' % ('Premium' if premium else 'Free')
-        if found is None:
+        if m is None:
             self.parseError(msg)
 
-        download_url = found.group(1)
+        download_url = m.group(1)
         self.logDebug("%s: %s" % (msg, download_url))
         self.download(download_url)
 

@@ -35,12 +35,12 @@ class EuroshareEu(Account):
         self.relogin(user)
         html = req.load("http://euroshare.eu/customer-zone/settings/")
 
-        found = re.search('id="input_expire_date" value="(\d+\.\d+\.\d+ \d+:\d+)"', html)
-        if found is None:
+        m = re.search('id="input_expire_date" value="(\d+\.\d+\.\d+ \d+:\d+)"', html)
+        if m is None:
             premium, validuntil = False, -1
         else:
             premium = True
-            validuntil = mktime(strptime(found.group(1), "%d.%m.%Y %H:%M"))
+            validuntil = mktime(strptime(m.group(1), "%d.%m.%Y %H:%M"))
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 

@@ -42,30 +42,30 @@ class UloziskoSk(SimpleHoster):
         self.html = self.load(pyfile.url, decode=True)
         self.getFileInfo()
 
-        found = re.search(self.IMG_PATTERN, self.html)
-        if found:
-            url = "http://ulozisko.sk" + found.group(1)
+        m = re.search(self.IMG_PATTERN, self.html)
+        if m:
+            url = "http://ulozisko.sk" + m.group(1)
             self.download(url)
         else:
             self.handleFree()
 
     def handleFree(self):
-        found = re.search(self.LINK_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
             self.parseError('URL')
-        parsed_url = 'http://www.ulozisko.sk' + found.group(1)
+        parsed_url = 'http://www.ulozisko.sk' + m.group(1)
 
-        found = re.search(self.ID_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.ID_PATTERN, self.html)
+        if m is None:
             self.parseError('ID')
-        id = found.group(1)
+        id = m.group(1)
 
         self.logDebug('URL:' + parsed_url + ' ID:' + id)
 
-        found = re.search(self.CAPTCHA_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.CAPTCHA_PATTERN, self.html)
+        if m is None:
             self.parseError('CAPTCHA')
-        captcha_url = 'http://www.ulozisko.sk' + found.group(1)
+        captcha_url = 'http://www.ulozisko.sk' + m.group(1)
 
         captcha = self.decryptCaptcha(captcha_url, cookies=True)
 

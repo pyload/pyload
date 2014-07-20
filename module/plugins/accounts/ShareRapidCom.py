@@ -21,19 +21,19 @@ class ShareRapidCom(Account):
     def loadAccountInfo(self, user, req):
         src = req.load("http://megarapid.cz/mujucet/", decode=True)
 
-        found = re.search(ur'<td>Max. počet paralelních stahování: </td><td>(\d+)', src)
-        if found:
+        m = re.search(ur'<td>Max. počet paralelních stahování: </td><td>(\d+)', src)
+        if m:
             data = self.getAccountData(user)
-            data['options']['limitDL'] = [int(found.group(1))]
+            data['options']['limitDL'] = [int(m.group(1))]
 
-        found = re.search(ur'<td>Paušální stahování aktivní. Vyprší </td><td><strong>(.*?)</strong>', src)
-        if found:
-            validuntil = mktime(strptime(found.group(1), "%d.%m.%Y - %H:%M"))
+        m = re.search(ur'<td>Paušální stahování aktivní. Vyprší </td><td><strong>(.*?)</strong>', src)
+        if m:
+            validuntil = mktime(strptime(m.group(1), "%d.%m.%Y - %H:%M"))
             return {"premium": True, "trafficleft": -1, "validuntil": validuntil}
 
-        found = re.search(r'<tr><td>Kredit</td><td>(.*?) GiB', src)
-        if found:
-            trafficleft = float(found.group(1)) * (1 << 20)
+        m = re.search(r'<tr><td>Kredit</td><td>(.*?) GiB', src)
+        if m:
+            trafficleft = float(m.group(1)) * (1 << 20)
             return {"premium": True, "trafficleft": trafficleft, "validuntil": -1}
 
         return {"premium": False, "trafficleft": None, "validuntil": None}

@@ -40,21 +40,21 @@ class SendspaceCom(SimpleHoster):
     def handleFree(self):
         params = {}
         for _ in xrange(3):
-            found = re.search(self.LINK_PATTERN, self.html)
-            if found:
+            m = re.search(self.LINK_PATTERN, self.html)
+            if m:
                 if 'captcha_hash' in params:
                     self.correctCaptcha()
-                download_url = found.group(1)
+                download_url = m.group(1)
                 break
 
-            found = re.search(self.CAPTCHA_PATTERN, self.html)
-            if found:
+            m = re.search(self.CAPTCHA_PATTERN, self.html)
+            if m:
                 if 'captcha_hash' in params:
                     self.invalidCaptcha()
-                captcha_url1 = "http://www.sendspace.com/" + found.group(1)
-                found = re.search(self.USER_CAPTCHA_PATTERN, self.html)
-                captcha_url2 = "http://www.sendspace.com/" + found.group(1)
-                params = {'captcha_hash': found.group(2),
+                captcha_url1 = "http://www.sendspace.com/" + m.group(1)
+                m = re.search(self.USER_CAPTCHA_PATTERN, self.html)
+                captcha_url2 = "http://www.sendspace.com/" + m.group(1)
+                params = {'captcha_hash': m.group(2),
                           'captcha_submit': 'Verify',
                           'captcha_answer': self.decryptCaptcha(captcha_url1) + " " + self.decryptCaptcha(captcha_url2)}
             else:

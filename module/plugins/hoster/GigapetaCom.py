@@ -53,9 +53,9 @@ class GigapetaCom(SimpleHoster):
                 "captcha": captcha,
                 "download": "Download"})
 
-            found = re.search(r"Location\s*:\s*(.*)", self.req.http.header, re.I)
-            if found:
-                download_url = found.group(1)
+            m = re.search(r"Location\s*:\s*(.*)", self.req.http.header, re.I)
+            if m:
+                download_url = m.group(1)
                 break
             elif "Entered figures don&#96;t coincide with the picture" in self.html:
                 self.invalidCaptcha()

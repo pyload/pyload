@@ -63,10 +63,10 @@ class StreamCz(Hoster):
         if re.search(self.OFFLINE_PATTERN, self.html):
             self.offline()
 
-        found = re.search(self.CDN_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.CDN_PATTERN, self.html)
+        if m is None:
             self.fail("Parse error (CDN)")
-        cdn = found.groupdict()
+        cdn = m.groupdict()
         self.logDebug(cdn)
         for cdnkey in ("cdnHD", "cdnHQ", "cdnLQ"):
             if cdnkey in cdn and cdn[cdnkey] > '':
@@ -75,10 +75,10 @@ class StreamCz(Hoster):
         else:
             self.fail("Stream URL not found")
 
-        found = re.search(self.FILE_NAME_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.FILE_NAME_PATTERN, self.html)
+        if m is None:
             self.fail("Parse error (NAME)")
-        pyfile.name = "%s-%s.%s.mp4" % (found.group(2), found.group(1), cdnkey[-2:])
+        pyfile.name = "%s-%s.%s.mp4" % (m.group(2), m.group(1), cdnkey[-2:])
 
         download_url = "http://cdn-dispatcher.stream.cz/?id=" + cdnid
         self.logInfo("STREAM (%s): %s" % (cdnkey[-2:], download_url))

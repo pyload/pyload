@@ -46,10 +46,10 @@ class HellshareCz(SimpleHoster):
         if not self.checkTrafficLeft():
             self.fail("Not enough traffic left for user %s." % self.user)
 
-        found = re.search(self.SHOW_WINDOW_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.SHOW_WINDOW_PATTERN, self.html)
+        if m is None:
             self.parseError('SHOW WINDOW')
-        self.url = "http://www.hellshare.com" + found.group(1)
+        self.url = "http://www.hellshare.com" + m.group(1)
         self.logDebug("DOWNLOAD URL: " + self.url)
 
         self.download(self.url)

@@ -119,9 +119,9 @@ class XFileSharingPro(SimpleHoster):
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
         location = None
-        found = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
-        if found and re.match(self.LINK_PATTERN, found.group(1)):
-            location = found.group(1).strip()
+        m = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
+        if m and re.match(self.LINK_PATTERN, m.group(1)):
+            location = m.group(1).strip()
 
         return location
 
@@ -140,12 +140,12 @@ class XFileSharingPro(SimpleHoster):
             self.header = self.req.http.header
             self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
-            found = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
-            if found:
+            m = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
+            if m:
                 break
 
-            found = re.search(self.LINK_PATTERN, self.html, re.S)
-            if found:
+            m = re.search(self.LINK_PATTERN, self.html, re.S)
+            if m:
                 break
 
         else:
@@ -154,14 +154,14 @@ class XFileSharingPro(SimpleHoster):
             else:
                 self.fail("Download link not found")
 
-        return found.group(1)
+        return m.group(1)
 
     def handlePremium(self):
         self.html = self.load(self.pyfile.url, post=self.getPostParameters())
-        found = re.search(self.LINK_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
             self.parseError('DIRECT LINK')
-        self.startDownload(found.group(1))
+        self.startDownload(m.group(1))
 
     def handleOverriden(self):
         #only tested with easybytez.com
@@ -190,10 +190,10 @@ class XFileSharingPro(SimpleHoster):
             self.fail(inputs['st'])
 
         #get easybytez.com link for uploaded file
-        found = re.search(self.OVR_LINK_PATTERN, self.html)
-        if found is None:
+        m = re.search(self.OVR_LINK_PATTERN, self.html)
+        if m is None:
             self.parseError('DIRECT LINK (OVR)')
-        self.pyfile.url = found.group(1)
+        self.pyfile.url = m.group(1)
         header = self.load(self.pyfile.url, just_header=True)
         if 'location' in header:  # Direct link
             self.startDownload(self.pyfile.url)
@@ -208,9 +208,9 @@ class XFileSharingPro(SimpleHoster):
         self.download(link, disposition=True)
 
     def checkErrors(self):
-        found = re.search(self.ERROR_PATTERN, self.html)
-        if found:
-            self.errmsg = found.group(1)
+        m = re.search(self.ERROR_PATTERN, self.html)
+        if m:
+            self.errmsg = m.group(1)
             self.logWarning(re.sub(r"<.*?>", " ", self.errmsg))
 
             if 'wait' in self.errmsg:
@@ -266,9 +266,9 @@ class XFileSharingPro(SimpleHoster):
                         self.fail("No or invalid passport")
 
                 if not self.premium:
-                    found = re.search(self.WAIT_PATTERN, self.html)
-                    if found:
-                        wait_time = int(found.group(1)) + 1
+                    m = re.search(self.WAIT_PATTERN, self.html)
+                    if m:
+                        wait_time = int(m.group(1)) + 1
                         self.setWait(wait_time, False)
                     else:
                         wait_time = 0
@@ -300,32 +300,32 @@ class XFileSharingPro(SimpleHoster):
             self.parseError('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
 
     def handleCaptcha(self, inputs):
-        found = re.search(self.RECAPTCHA_URL_PATTERN, self.html)
-        if found:
-            recaptcha_key = unquote(found.group(1))
+        m = re.search(self.RECAPTCHA_URL_PATTERN, self.html)
+        if m:
+            recaptcha_key = unquote(m.group(1))
             self.logDebug("RECAPTCHA KEY: %s" % recaptcha_key)
             recaptcha = ReCaptcha(self)
             inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(recaptcha_key)
             return 1
         else:
-            found = re.search(self.CAPTCHA_URL_PATTERN, self.html)
-            if found:
-                captcha_url = found.group(1)
+            m = re.search(self.CAPTCHA_URL_PATTERN, self.html)
+            if m:
+                captcha_url = m.group(1)
                 inputs['code'] = self.decryptCaptcha(captcha_url)
                 return 2
             else:
-                found = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
-                if found:
-                    captcha_div = found.group(1)
+                m = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
+                if m:
+                    captcha_div = m.group(1)
                     self.logDebug(captcha_div)
                     numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
                     inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
                     self.logDebug("CAPTCHA", inputs['code'], numerals)
                     return 3
                 else:
-                    found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-                    if found:
-                        captcha_key = found.group(1)
+                    m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+                    if m:
+                        captcha_key = m.group(1)
                         captcha = SolveMedia(self)
                         inputs['adcopy_challenge'], inputs['adcopy_response'] = captcha.challenge(captcha_key)
                         return 4
