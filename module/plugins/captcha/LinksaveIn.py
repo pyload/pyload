@@ -147,12 +147,3 @@ class LinksaveIn(OCR):
             final += self.result_captcha
 
         return final
-
-
-if __name__ == '__main__':
-    import urllib
-
-    ocr = LinksaveIn()
-    testurl = "http://linksave.in/captcha/cap.php?hsh=2229185&code=ZzHdhl3UffV3lXTH5U4b7nShXj%2Bwma1vyoNBcbc6lcc%3D"
-    urllib.urlretrieve(testurl, ocr.data_dir+"captcha.gif")
-    print ocr.get_captcha(ocr.data_dir+'captcha.gif')

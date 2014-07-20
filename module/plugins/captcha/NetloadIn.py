@@ -26,11 +26,3 @@ class NetloadIn(OCR):
         self.result_captcha = self.result_captcha.replace(" ", "")[:4] # cut to 4 numbers
 
         return self.result_captcha
-
-
-if __name__ == '__main__':
-    import urllib
-
-    ocr = NetloadIn()
-    urllib.urlretrieve("http://netload.in/share/includes/captcha.php", "captcha.png")
-    print ocr.get_captcha('captcha.png')

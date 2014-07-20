@@ -21,11 +21,3 @@ class GigasizeCom(OCR):
         self.threshold(2.8)
         self.run_tesser(True, False, False, True)
         return self.result_captcha
-
-
-if __name__ == '__main__':
-    import urllib
-
-    ocr = GigasizeCom()
-    urllib.urlretrieve('http://www.gigasize.com/randomImage.php', "gigasize_tmp.jpg")
-    print ocr.get_captcha('gigasize_tmp.jpg')
