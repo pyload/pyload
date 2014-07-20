@@ -37,10 +37,10 @@ class UploadingCom(SimpleHoster):
 
     def process(self, pyfile):
         # set lang to english
-        self.req.cj.setCookie("uploading.com", "lang", "1")
-        self.req.cj.setCookie("uploading.com", "language", "1")
-        self.req.cj.setCookie("uploading.com", "setlang", "en")
-        self.req.cj.setCookie("uploading.com", "_lang", "en")
+        self.req.cj.setCookie(".uploading.com", "lang", "1")
+        self.req.cj.setCookie(".uploading.com", "language", "1")
+        self.req.cj.setCookie(".uploading.com", "setlang", "en")
+        self.req.cj.setCookie(".uploading.com", "_lang", "en")
 
         if not "/get/" in pyfile.url:
             pyfile.url = pyfile.url.replace("/files", "/files/get")

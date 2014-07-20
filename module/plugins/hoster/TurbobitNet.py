@@ -43,7 +43,7 @@ class TurbobitNet(SimpleHoster):
 
     FILE_URL_REPLACEMENTS = [(r"http://(?:www\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*",
                               "http://turbobit.net/\g<ID>.html")]
-    SH_COOKIES = [("turbobit.net", "user_lang", "en")]
+    SH_COOKIES = [(".turbobit.net", "user_lang", "en")]
 
     LINK_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
     LIMIT_WAIT_PATTERN = r'<div id="time-limit-text">\s*.*?<span id=\'timeout\'>(\d+)</span>'

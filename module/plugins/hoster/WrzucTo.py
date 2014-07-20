@@ -30,9 +30,11 @@ class WrzucTo(SimpleHoster):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    SH_COOKIES = [("http://www.wrzuc.to", "language", "en")]
-    FILE_SIZE_PATTERN = r'class="info">\s*<tr>\s*<td>(?P<S>.*?)</td>'
     FILE_NAME_PATTERN = r'id="file_info">\s*<strong>(?P<N>.*?)</strong>'
+    FILE_SIZE_PATTERN = r'class="info">\s*<tr>\s*<td>(?P<S>.*?)</td>'
+
+    SH_COOKIES = [(".wrzuc.to", "language", "en")]
+
 
     def setup(self):
         self.multiDL = True

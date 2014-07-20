@@ -26,9 +26,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 class LoadTo(SimpleHoster):
     __name__ = "LoadTo"
-    __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?load\.to/\w+'
     __version__ = "0.15"
+    __type__ = "hoster"
+
+    __pattern__ = r'http://(?:www\.)?load\.to/\w+'
+
     __description__ = """Load.to hoster plugin"""
     __author_name__ = ("halfman", "stickell")
     __author_mail__ = ("Pulpan3@gmail.com", "l.stickell@yahoo.it")
@@ -46,14 +48,7 @@ class LoadTo(SimpleHoster):
         self.multiDL = True
         self.chunkLimit = 1
 
-    def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
-        self.getFileInfo()
-
-        # Check if File is online
-        if re.search(self.OFFLINE_PATTERN, self.html):
-            self.offline()
-
+    def handleFree(self):
         # Search for Download URL
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
