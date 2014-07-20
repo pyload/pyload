@@ -67,7 +67,7 @@ class EgoFilesCom(SimpleHoster):
                          'recaptcha_response_field': response}
             self.html = self.load(self.pyfile.url, post=post_data, decode=True)
             m = re.search(self.LINK_PATTERN, self.html)
-            if not m:
+            if m is None:
                 self.logInfo('Wrong captcha')
                 self.invalidCaptcha()
             elif hasattr(m, 'group'):
@@ -91,7 +91,7 @@ class EgoFilesCom(SimpleHoster):
             self.html = self.load(self.pyfile.url, decode=True)
             self.getFileInfo()
             m = re.search(r'<a href="(?P<link>[^"]+)">Download ></a>', self.html)
-            if not m:
+            if m is None:
                 self.parseError('Unable to detect direct download url')
             else:
                 self.logDebug('DIRECT URL from html: ' + m.group('link'))

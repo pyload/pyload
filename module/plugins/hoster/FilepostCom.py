@@ -50,12 +50,12 @@ class FilepostCom(SimpleHoster):
         file_id = re.match(self.__pattern__, self.pyfile.url).group(1)
 
         found = re.search(self.FLP_TOKEN_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError("Token")
         flp_token = found.group(1)
 
         found = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError("Captcha key")
         captcha_key = found.group(1)
 

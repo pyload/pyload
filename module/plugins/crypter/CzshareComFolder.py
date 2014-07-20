@@ -23,7 +23,7 @@ class CzshareComFolder(Crypter):
         html = self.load(pyfile.url)
 
         found = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
-        if not found:
+        if found is None:
             self.fail("Parse error (FOLDER)")
 
         self.urls.extend(re.findall(self.LINK_PATTERN, found.group(1)))

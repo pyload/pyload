@@ -29,7 +29,7 @@ class ReCaptcha:
 
     def detect_key(self, html):
         m = re.search(self.RECAPTCHA_KEY_PATTERN, html)
-        if not m:
+        if m is None:
             m = re.search(self.RECAPTCHA_KEY_AJAX_PATTERN, html)
         if m:
             self.recaptcha_key = m.group('key')
@@ -38,9 +38,9 @@ class ReCaptcha:
             return None
 
     def challenge(self, key=None):
-        if not key and self.recaptcha_key:
+        if key is None and self.recaptcha_key:
             key = self.recaptcha_key
-        elif not (key or self.recaptcha_key):
+        else:
             raise TypeError("ReCaptcha key not found")
 
         js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={"k": key}, cookies=True)

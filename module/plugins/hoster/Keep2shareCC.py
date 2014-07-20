@@ -78,7 +78,7 @@ class Keep2shareCC(SimpleHoster):
                 self.retry()
 
             m = re.search(self.LINK_PATTERN, self.html)
-            if not m:
+            if m is None:
                 self.parseError("Unable to detect direct link")
             self.startDownload(m.group(1))
 

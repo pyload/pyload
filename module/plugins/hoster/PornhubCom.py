@@ -51,17 +51,15 @@ class PornhubCom(Hoster):
 
         content = new_content
 
-        file_url = re.search(r'flv_url.*(http.*?)##post_roll', content).group(1)
-
-        return file_url
+        return re.search(r'flv_url.*(http.*?)##post_roll', content).group(1)
 
     def get_file_name(self):
         if not self.html:
             self.download_html()
 
-        match = re.search(r'<title[^>]+>([^<]+) - ', self.html)
-        if match:
-            name = match.group(1)
+        found = re.search(r'<title[^>]+>([^<]+) - ', self.html)
+        if found:
+            name = found.group(1)
         else:
             matches = re.findall('<h1>(.*?)</h1>', self.html)
             if len(matches) > 1:

@@ -66,7 +66,7 @@ class FilefactoryCom(SimpleHoster):
         else:  # This section could be completely useless now
             # Load the page that contains the direct link
             url = re.search(r"document\.location\.host \+\s*'(.+)';", self.html)
-            if not url:
+            if url is None:
                 self.parseError('Unable to detect free link')
             url = 'http://www.filefactory.com' + url.group(1)
             self.html = self.load(url, decode=True)

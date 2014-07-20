@@ -57,7 +57,7 @@ class DateiTo(SimpleHoster):
                     break
 
             found = re.search(self.DATA_PATTERN, self.html)
-            if not found:
+            if found is None:
                 self.parseError('data')
             url = 'http://datei.to/' + found.group(1)
             data = dict(x.split('=') for x in found.group(2).split('&'))

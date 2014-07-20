@@ -66,7 +66,7 @@ class XHamsterCom(Hoster):
 
         if self.desired_fmt == ".mp4":
             file_url = re.search(r"<a href=\"" + srv_url + "(.+?)\"", self.html)
-            if not file_url:
+            if file_url is None:
                 self.fail("Parse error (file_url)")
             file_url = file_url.group(1)
             long_url = srv_url + file_url
@@ -90,21 +90,21 @@ class XHamsterCom(Hoster):
         if not self.html:
             self.download_html()
 
-        file_name_pattern = r"<title>(.*?) - xHamster\.com</title>"
-        file_name = re.search(file_name_pattern, self.html)
-        if not file_name:
-            file_name_pattern = r"<h1 >(.*)</h1>"
-            file_name = re.search(file_name_pattern, self.html)
-            if not file_name:
-                file_name_pattern = r"http://[www.]+xhamster\.com/movies/.*/(.*?)\.html?"
-                file_name = re.match(file_name_pattern, self.pyfile.url)
-                if not file_name:
-                    file_name_pattern = r"<div id=\"element_str_id\" style=\"display:none;\">(.*)</div>"
-                    file_name = re.search(file_name_pattern, self.html)
-                    if not file_name:
+        pattern = r"<title>(.*?) - xHamster\.com</title>"
+        name = re.search(pattern, self.html)
+        if name is None:
+            pattern = r"<h1 >(.*)</h1>"
+            name = re.search(pattern, self.html)
+            if name is None:
+                pattern = r"http://[www.]+xhamster\.com/movies/.*/(.*?)\.html?"
+                name = re.match(file_name_pattern, self.pyfile.url)
+                if name is None:
+                    pattern = r"<div id=\"element_str_id\" style=\"display:none;\">(.*)</div>"
+                    name = re.search(pattern, self.html)
+                    if name is None:
                         return "Unknown"
 
-        return file_name.group(1)
+        return name.group(1)
 
     def file_exists(self):
         """ returns True or False

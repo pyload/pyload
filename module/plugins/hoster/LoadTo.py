@@ -56,7 +56,7 @@ class LoadTo(SimpleHoster):
 
         # Search for Download URL
         m = re.search(self.LINK_PATTERN, self.html)
-        if not m:
+        if m is None:
             self.parseError("Unable to detect download URL")
 
         download_url = m.group(1)
@@ -68,7 +68,7 @@ class LoadTo(SimpleHoster):
 
         # Load.to is using solvemedia captchas since ~july 2014:
         found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.download(download_url)
         else:
             captcha_key = found.group(1)

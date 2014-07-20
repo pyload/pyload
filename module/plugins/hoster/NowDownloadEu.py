@@ -47,7 +47,7 @@ class NowDownloadEu(SimpleHoster):
     def handleFree(self):
         tokenlink = re.search(self.TOKEN_PATTERN, self.html)
         continuelink = re.search(self.CONTINUE_PATTERN, self.html)
-        if not tokenlink or not continuelink:
+        if tokenlink is None or continuelink is None:
             self.fail('Plugin out of Date')
 
         found = re.search(self.WAIT_PATTERN, self.html)
@@ -63,7 +63,7 @@ class NowDownloadEu(SimpleHoster):
         self.html = self.load(baseurl + str(continuelink.group(1)))
 
         url = re.search(self.LINK_PATTERN, self.html)
-        if not url:
+        if url is None:
             self.fail('Download Link not Found (Plugin out of Date?)')
         self.logDebug('Download link: ' + str(url.group(1)))
         self.download(str(url.group(1)))

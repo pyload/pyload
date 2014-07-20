@@ -24,26 +24,26 @@ class LixIn(Crypter):
     def decrypt(self, pyfile):
         url = pyfile.url
 
-        matches = re.match(self.__pattern__, url)
-        if not matches:
+        m = re.match(self.__pattern__, url)
+        if m is None:
             self.fail("couldn't identify file id")
 
-        id = matches.group("id")
+        id = m.group("id")
         self.logDebug("File id is %s" % id)
 
         self.html = self.req.load(url, decode=True)
 
-        matches = re.search(self.SUBMIT_PATTERN, self.html)
-        if not matches:
+        m = re.search(self.SUBMIT_PATTERN, self.html)
+        if m is None:
             self.fail("link doesn't seem valid")
 
-        matches = re.search(self.CAPTCHA_PATTERN, self.html)
-        if matches:
+        m = re.search(self.CAPTCHA_PATTERN, self.html)
+        if m:
             for _ in xrange(5):
-                matches = re.search(self.CAPTCHA_PATTERN, self.html)
-                if matches:
+                m = re.search(self.CAPTCHA_PATTERN, self.html)
+                if m:
                     self.logDebug("trying captcha")
-                    captcharesult = self.decryptCaptcha("http://lix.in/" + matches.group("image"))
+                    captcharesult = self.decryptCaptcha("http://lix.in/" + m.group("image"))
                 self.html = self.req.load(url, decode=True,
                                           post={"capt": captcharesult, "submit": "submit", "tiny": id})
             else:
@@ -51,9 +51,9 @@ class LixIn(Crypter):
         else:
             self.html = self.req.load(url, decode=True, post={"submit": "submit", "tiny": id})
 
-        matches = re.search(self.LINK_PATTERN, self.html)
-        if not matches:
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
             self.fail("can't find destination url")
         else:
-            self.urls = [matches.group("link")]
+            self.urls = [m.group("link")]
             self.logDebug("Found link %s, adding to package" % self.urls[0])

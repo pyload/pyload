@@ -51,7 +51,7 @@ class FilecloudIo(SimpleHoster):
         data = {"ukey": self.file_info['ID']}
 
         found = re.search(self.AB1_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError("__AB1")
         data['__ab1'] = found.group(1)
 
@@ -99,7 +99,7 @@ class FilecloudIo(SimpleHoster):
         if response['dl']:
             self.html = self.load('http://filecloud.io/download.html')
             found = re.search(self.LINK_PATTERN % self.file_info['ID'], self.html)
-            if not found:
+            if found is None:
                 self.parseError("Download URL")
             download_url = found.group(1)
             self.logDebug("Download URL: %s" % download_url)

@@ -75,7 +75,7 @@ class QuickshareCz(SimpleHoster):
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
         found = re.search("Location\s*:\s*(.*)", self.header, re.I)
-        if not found:
+        if found is None:
             self.fail('File not found')
         download_url = found.group(1)
         self.logDebug("FREE URL2:" + download_url)

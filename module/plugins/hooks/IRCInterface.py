@@ -59,12 +59,9 @@ class IRCInterface(Thread, Hook):
         self.api = core.api  # todo, only use api
 
     def coreReady(self):
-        self.new_package = {}
-
         self.abort = False
-
-        self.links_added = 0
         self.more = []
+        self.new_package = {}
 
         self.start()
 

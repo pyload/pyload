@@ -38,7 +38,7 @@ class BezvadataCz(SimpleHoster):
     def handleFree(self):
         #download button
         found = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
-        if not found:
+        if found is None:
             self.parseError("page1 URL")
         url = "http://bezvadata.cz%s" % found.group(1)
 
@@ -51,7 +51,7 @@ class BezvadataCz(SimpleHoster):
                 self.parseError("FreeForm")
 
             found = re.search(r'<img src="data:image/png;base64,(.*?)"', self.html)
-            if not found:
+            if found is None:
                 self.parseError("captcha img")
 
             #captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
@@ -73,7 +73,7 @@ class BezvadataCz(SimpleHoster):
         self.html = self.load("http://bezvadata.cz%s" % action, post=inputs)
         self.checkErrors()
         found = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
-        if not found:
+        if found is None:
             self.parseError("page2 URL")
         url = "http://bezvadata.cz%s" % found.group(1)
         self.logDebug("DL URL %s" % url)

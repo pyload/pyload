@@ -79,7 +79,7 @@ class ExtabitCom(SimpleHoster):
 
         self.html = self.load("http://extabit.com/file/%s%s" % (fileID, response['href']))
         m = re.search(self.LINK_PATTERN, self.html)
-        if not m:
+        if m is None:
             self.parseError('Download URL')
         url = m.group(1)
         self.logDebug("Download URL: " + url)

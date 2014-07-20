@@ -52,11 +52,11 @@ class CzshareCom(SimpleHoster):
     def checkTrafficLeft(self):
         # check if user logged in
         found = re.search(self.USER_CREDIT_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.account.relogin(self.user)
             self.html = self.load(self.pyfile.url, cookies=True, decode=True)
             found = re.search(self.USER_CREDIT_PATTERN, self.html)
-            if not found:
+            if found is None:
                 return False
 
         # check user credit
@@ -89,7 +89,7 @@ class CzshareCom(SimpleHoster):
     def handleFree(self):
         # get free url
         found = re.search(self.FREE_URL_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError('Free URL')
         parsed_url = "http://sdilej.cz" + found.group(1)
         self.logDebug("PARSED_URL:" + parsed_url)
@@ -128,7 +128,7 @@ class CzshareCom(SimpleHoster):
         # download the file, destination is determined by pyLoad
         self.logDebug("WAIT URL", self.req.lastEffectiveURL)
         found = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.lastEffectiveURL)
-        if not found:
+        if found is None:
             self.parseError('Download URL')
 
         url = "http://%s/download.php?%s" % (found.group(1), found.group(2))

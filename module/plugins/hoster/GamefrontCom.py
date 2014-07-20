@@ -32,12 +32,12 @@ class GamefrontCom(Hoster):
 
         pyfile.name = self._getName()
 
-        self.link = self._getLink()
+        link = self._getLink()
 
-        if not self.link.startswith('http://'):
-            self.link = "http://www.gamefront.com/" + self.link
+        if not link.startswith('http://'):
+            link = "http://www.gamefront.com/" + link
 
-        self.download(self.link)
+        self.download(link)
 
     def _checkOnline(self):
         if re.search(self.PATTERN_OFFLINE, self.html):
@@ -47,7 +47,7 @@ class GamefrontCom(Hoster):
 
     def _getName(self):
         name = re.search(self.PATTERN_FILENAME, self.html)
-        if not name:
+        if name is None:
             self.fail("%s: Plugin broken." % self.__name__)
 
         return name.group(1)
@@ -55,9 +55,7 @@ class GamefrontCom(Hoster):
     def _getLink(self):
         self.html2 = self.load("http://www.gamefront.com/" + re.search("(files/service/thankyou\\?id=[A-Za-z0-9]+)",
                                                                        self.html).group(1))
-        self.link = re.search("<a href=\"(http://media[0-9]+\.gamefront.com/.*)\">click here</a>", self.html2)
-
-        return self.link.group(1).replace("&amp;", "&")
+        return re.search("<a href=\"(http://media[0-9]+\.gamefront.com/.*)\">click here</a>", self.html2).group(1).replace("&amp;", "&")
 
 
 def getInfo(urls):
@@ -70,15 +68,13 @@ def getInfo(urls):
             result.append((url, 0, 1, url))
         else:
             name = re.search(GamefrontCom.PATTERN_FILENAME, html)
-
-            if not name:
+            if name is None:
                 result.append((url, 0, 1, url))
-                continue
+            else:
+                name = name.group(1)
+                size = re.search(GamefrontCom.PATTERN_FILESIZE, html)
+                size = parseFileSize(size.group(1))
 
-            name = name.group(1)
-            size = re.search(GamefrontCom.PATTERN_FILESIZE, html)
-            size = parseFileSize(size.group(1))
-
-            result.append((name, size, 3, url))
+                result.append((name, size, 3, url))
 
     yield result

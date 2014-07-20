@@ -37,7 +37,7 @@ class CzshareCom(Account):
         html = req.load("http://sdilej.cz/prehled_kreditu/")
 
         found = re.search(self.CREDIT_LEFT_PATTERN, html)
-        if not found:
+        if found is None:
             return {"validuntil": 0, "trafficleft": 0}
         else:
             credits = float(found.group(1).replace(' ', '').replace(',', '.'))

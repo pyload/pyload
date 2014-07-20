@@ -48,7 +48,7 @@ class WebshareCz(SimpleHoster):
         api_data = self.load('https://webshare.cz/api/file_link/', post={'ident': self.fid})
         self.logDebug("API data: " + api_data)
         m = re.search('<link>(.+)</link>', api_data)
-        if not m:
+        if m is None:
             self.parseError('Unable to detect direct link')
         direct = m.group(1)
         self.logDebug("Direct link: " + direct)

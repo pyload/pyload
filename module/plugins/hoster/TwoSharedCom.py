@@ -26,7 +26,7 @@ class TwoSharedCom(SimpleHoster):
 
     def handleFree(self):
         found = re.search(self.LINK_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError('Download link')
         link = found.group(1)
         self.logDebug("Download URL %s" % link)

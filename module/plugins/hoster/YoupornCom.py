@@ -32,8 +32,7 @@ class YoupornCom(Hoster):
         if not self.html:
             self.download_html()
 
-        file_url = re.search(r'(http://download\.youporn\.com/download/\d+\?save=1)">', self.html).group(1)
-        return file_url
+        return re.search(r'(http://download\.youporn\.com/download/\d+\?save=1)">', self.html).group(1)
 
     def get_file_name(self):
         if not self.html:

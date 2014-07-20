@@ -40,8 +40,7 @@ class RedtubeCom(Hoster):
         if not self.html:
             self.download_html()
 
-        name = re.search('<title>(.*?)- RedTube - Free Porn Videos</title>', self.html).group(1).strip() + ".flv"
-        return name
+        return re.search('<title>(.*?)- RedTube - Free Porn Videos</title>', self.html).group(1).strip() + ".flv"
 
     def file_exists(self):
         """ returns True or False

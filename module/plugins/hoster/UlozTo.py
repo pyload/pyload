@@ -62,7 +62,7 @@ class UlozTo(SimpleHoster):
             self.logInfo("Adult content confirmation needed. Proceeding..")
 
             found = re.search(self.TOKEN_PATTERN, self.html)
-            if not found:
+            if found is None:
                 self.parseError('TOKEN')
             token = found.group(1)
 
@@ -133,7 +133,7 @@ class UlozTo(SimpleHoster):
     def findDownloadURL(self, premium=False):
         msg = "%s link" % ("Premium" if premium else "Free")
         found = re.search(self.PREMIUM_URL_PATTERN if premium else self.FREE_URL_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError(msg)
         parsed_url = "http://www.ulozto.net" + found.group(1)
         self.logDebug("%s: %s" % (msg, parsed_url))

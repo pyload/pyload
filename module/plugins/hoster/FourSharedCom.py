@@ -39,7 +39,7 @@ class FourSharedCom(SimpleHoster):
         self.html = self.load(link)
 
         found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError('Download link')
         link = found.group(1)
 

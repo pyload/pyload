@@ -53,7 +53,7 @@ class DepositfilesCom(SimpleHoster):
             self.setWait(int(wait.group(1)))
 
         found = re.search(r"var fid = '(\w+)';", self.html)
-        if not found:
+        if found is None:
             self.retry(wait_time=5)
         params = {'fid': found.group(1)}
         self.logDebug("FID: %s" % params['fid'])

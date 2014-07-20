@@ -44,7 +44,7 @@ class NarodRu(SimpleHoster):
         for _ in xrange(5):
             self.html = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random() * 777))
             found = re.search(self.CAPTCHA_PATTERN, self.html)
-            if not found:
+            if found is None:
                 self.parseError('Captcha')
             post_data = {"action": "sendcapcha"}
             captcha_url, post_data['key'] = found.groups()

@@ -48,7 +48,7 @@ class ZippyshareCom(SimpleHoster):
             # checksum = eval(re.search("((\d*)\s\%\s(\d*)\s\+\s(\d*)\s\%\s(\d*))", self.html).group(0))
 
             m = re.search(r"((?P<a>\d*)\s%\s(?P<b>\d*)\s\+\s(?P<c>\d*)\s%\s(?P<k>\d*))", self.html)
-            if not m:
+            if m is None:
                 self.parseError("Unable to detect values to calculate direct link")
             a = int(m.group("a"))
             b = int(m.group("b"))

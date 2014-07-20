@@ -49,7 +49,7 @@ class UploadheroCom(SimpleHoster):
         self.checkErrors()
 
         found = re.search(self.CAPTCHA_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError("Captcha URL")
         captcha_url = "http://uploadhero.co" + found.group(1)
 

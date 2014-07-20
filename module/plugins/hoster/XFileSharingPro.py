@@ -159,7 +159,7 @@ class XFileSharingPro(SimpleHoster):
     def handlePremium(self):
         self.html = self.load(self.pyfile.url, post=self.getPostParameters())
         found = re.search(self.LINK_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError('DIRECT LINK')
         self.startDownload(found.group(1))
 
@@ -191,7 +191,7 @@ class XFileSharingPro(SimpleHoster):
 
         #get easybytez.com link for uploaded file
         found = re.search(self.OVR_LINK_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError('DIRECT LINK (OVR)')
         self.pyfile.url = found.group(1)
         header = self.load(self.pyfile.url, just_header=True)

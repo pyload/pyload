@@ -26,7 +26,7 @@ class FileserveComFolder(Crypter):
         new_links = []
 
         folder = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
-        if not folder:
+        if folder is None:
             self.fail("Parse error (FOLDER)")
 
         new_links.extend(re.findall(self.LINK_PATTERN, folder.group(1)))

@@ -171,7 +171,7 @@ class ShareonlineBiz(Hoster):
 
     def checkErrors(self):
         found = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
-        if not found:
+        if found is None:
             return
 
         err = found.group(1)

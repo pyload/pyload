@@ -100,20 +100,20 @@ class NCryptIn(Crypter):
         return True
 
     def isProtected(self):
-        form_match = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.DOTALL)
-        if form_match:
-            form_content = form_match.group(1)
+        form = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.DOTALL)
+        if form is not None:
+            content = form.group(1)
             for keyword in ("password", "captcha"):
-                if keyword in form_content:
+                if keyword in content:
                     self.protection_type = keyword
                     self.logDebug("Links are %s protected" % self.protection_type)
                     return True
         return False
 
     def getPackageInfo(self):
-        m = re.search(self.NAME_PATTERN, self.html)
-        if m:
-            name = folder = m.group('N').strip()
+        found = re.search(self.NAME_PATTERN, self.html)
+        if found:
+            name = folder = found.group('N').strip()
             self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
         else:
             name = self.package.name

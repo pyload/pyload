@@ -180,7 +180,7 @@ class RapidgatorNet(SimpleHoster):
             wait_time = int(found.group(1)) * {"hour": 60, "min": 1}[found.group(2)]
         else:
             found = re.search(self.DOWNLOAD_LIMIT_ERROR_PATTERN, self.html)
-            if not found:
+            if found is None:
                 return
             elif found.group(1) == "daily":
                 self.logWarning("You have reached your daily downloads limit for today")

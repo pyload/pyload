@@ -47,10 +47,11 @@ class VeehdCom(Hoster):
         if not self.html:
             self.download_html()
 
-        match = re.search(r'<title[^>]*>([^<]+) on Veehd</title>', self.html)
-        if not match:
+        found = re.search(r'<title[^>]*>([^<]+) on Veehd</title>', self.html)
+        if found is None:
             self.fail("video title not found")
-        name = match.group(1)
+
+        name = found.group(1)
 
         # replace unwanted characters in filename
         if self.getConfig('filename_spaces'):
@@ -58,9 +59,7 @@ class VeehdCom(Hoster):
         else:
             pattern = '[^0-9A-Za-z\.]+'
 
-        name = re.sub(pattern, self.getConfig('replacement_char'),
-                      name)
-        return name + '.avi'
+        return re.sub(pattern, self.getConfig('replacement_char'), name) + '.avi'
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -68,10 +67,9 @@ class VeehdCom(Hoster):
         if not self.html:
             self.download_html()
 
-        match = re.search(r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/[^"]+)"',
+        found = re.search(r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/[^"]+)"',
                           self.html)
-        if not match:
+        if found is None:
             self.fail("embedded video url not found")
-        file_url = match.group(1)
 
-        return file_url
+        return found.group(1)

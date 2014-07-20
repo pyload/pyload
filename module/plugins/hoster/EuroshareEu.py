@@ -62,7 +62,7 @@ class EuroshareEu(SimpleHoster):
             self.longWait(5 * 60, 12)
 
         found = re.search(self.FREE_URL_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError("Parse error (URL)")
         parsed_url = "http://euroshare.eu%s" % found.group(1)
         self.logDebug("URL", parsed_url)

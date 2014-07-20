@@ -47,7 +47,7 @@ class BayfilesCom(SimpleHoster):
 
         # Get download token
         found = re.search(self.VARS_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError('VARS')
         vfid, delay = found.groups()
 
@@ -68,13 +68,13 @@ class BayfilesCom(SimpleHoster):
 
         # Get final link and download
         found = re.search(self.FREE_LINK_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError("Free link")
         self.startDownload(found.group(1))
 
     def handlePremium(self):
         found = re.search(self.PREMIUM_LINK_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError("Premium link")
         self.startDownload(found.group(1))
 

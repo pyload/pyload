@@ -19,7 +19,7 @@ class RgHostNet(SimpleHoster):
 
     def handleFree(self):
         found = re.search(self.LINK_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError("Unable to detect the direct link")
         download_link = found.group(1)
         self.download(download_link, disposition=True)

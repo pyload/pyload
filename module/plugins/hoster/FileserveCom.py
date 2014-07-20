@@ -152,7 +152,7 @@ class FileserveCom(Hoster):
 
         if self.__name__ == "FilejungleCom":
             found = re.search(r'"waitTime":(\d+)', response)
-            if not found:
+            if found is None:
                 self.fail("Cannot get wait time")
             wait_time = int(found.group(1))
         else:

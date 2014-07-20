@@ -114,7 +114,7 @@ class MediafireCom(SimpleHoster):
                 self.fail("No or incorrect password")
 
         found = re.search(r'kNO = r"(http://.*?)";', self.html)
-        if not found:
+        if found is None:
             self.parseError("Download URL")
         download_url = found.group(1)
         self.logDebug("DOWNLOAD LINK:", download_url)

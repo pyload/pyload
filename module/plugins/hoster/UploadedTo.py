@@ -164,7 +164,7 @@ class UploadedTo(Hoster):
             #Indirect download
             self.html = self.load("http://uploaded.net/file/%s" % self.fileID)
             found = re.search(r'<div class="tfree".*\s*<form method="post" action="(.*?)"', self.html)
-            if not found:
+            if found is None:
                 self.fail("Download URL not found. Try to enable direct downloads.")
             url = found.group(1)
             print "Premium URL: " + url
@@ -178,7 +178,7 @@ class UploadedTo(Hoster):
             self.retry(max_tries=24, wait_time=5 * 60)
 
         found = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
-        if not found:
+        if found is None:
             self.fail("File not downloadable for free users")
         self.setWait(int(found.group(1)))
 

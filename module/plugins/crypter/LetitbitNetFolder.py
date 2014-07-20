@@ -23,7 +23,7 @@ class LetitbitNetFolder(Crypter):
         html = self.load(pyfile.url)
 
         folder = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
-        if not folder:
+        if folder is None:
             self.fail("Parse error (FOLDER)")
 
         self.urls.extend(re.findall(self.LINK_PATTERN, folder.group(0)))

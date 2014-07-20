@@ -42,12 +42,12 @@ class CrockoCom(SimpleHoster):
                 break
 
         found = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError('Captcha KEY')
         captcha_key = found.group(1)
 
         found = re.search(self.FORM_PATTERN, self.html, re.DOTALL)
-        if not found:
+        if found is None:
             self.parseError('ACTION')
         action, form = found.groups()
         inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))

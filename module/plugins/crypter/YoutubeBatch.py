@@ -100,9 +100,9 @@ class YoutubeBatch(Crypter):
         return list(self._getVideosId(p_id))
 
     def decrypt(self, pyfile):
-        match = re.match(self.__pattern__, pyfile.url)
-        m_id = match.group("ID")
-        m_type = match.group("TYPE")
+        m = re.match(self.__pattern__, pyfile.url)
+        m_id = m.group("ID")
+        m_type = m.group("TYPE")
 
         if m_type == "user":
             self.logDebug("Url recognized as Channel")

@@ -19,24 +19,24 @@ class SoundcloudCom(Hoster):
         # default UserAgent of HTTPRequest fails for this hoster so we use this one
         self.req.http.c.setopt(pycurl.USERAGENT, 'Mozilla/5.0')
         page = self.load(pyfile.url)
-        match = re.search(r'<div class="haudio.*?large.*?" data-sc-track="(?P<ID>[0-9]*)"', page)
+        found = re.search(r'<div class="haudio.*?large.*?" data-sc-track="(?P<ID>[0-9]*)"', page)
         songId = clientId = ""
-        if match:
-            songId = match.group("ID")
+        if found:
+            songId = found.group("ID")
         if len(songId) <= 0:
             self.logError("Could not find song id")
             self.offline()
         else:
-            match = re.search(r'"clientID":"(?P<CID>.*?)"', page)
-            if match:
-                clientId = match.group("CID")
+            found = re.search(r'"clientID":"(?P<CID>.*?)"', page)
+            if found:
+                clientId = found.group("CID")
 
             if len(clientId) <= 0:
                 clientId = "b45b1aa10f1ac2941910a7f0d10f8e28"
 
-            match = re.search(r'<em itemprop="name">\s(?P<TITLE>.*?)\s</em>', page)
-            if match:
-                pyfile.name = match.group("TITLE") + ".mp3"
+            found = re.search(r'<em itemprop="name">\s(?P<TITLE>.*?)\s</em>', page)
+            if found:
+                pyfile.name = found.group("TITLE") + ".mp3"
             else:
                 pyfile.name = re.match(self.__pattern__, pyfile.url).group("SID") + ".mp3"
 

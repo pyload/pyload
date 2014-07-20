@@ -42,10 +42,10 @@ class RyushareCom(XFileSharingPro):
             self.setWait(1 * 60 * 60, True)
             retry = True
 
-        match = re.search(self.WAIT_PATTERN, self.html)
-        if match:
-            m = match.groupdict(0)
-            waittime = int(m['hour']) * 60 * 60 + int(m['min']) * 60 + int(m['sec'])
+        found = re.search(self.WAIT_PATTERN, self.html)
+        if found:
+            wait = found.groupdict(0)
+            waittime = int(wait['hour']) * 60 * 60 + int(wait['min']) * 60 + int(wait['sec'])
             self.setWait(waittime, True)
             retry = True
 
@@ -54,11 +54,11 @@ class RyushareCom(XFileSharingPro):
             self.retry()
 
         for _ in xrange(5):
-            m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-            if not m:
+            found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+            if found is None:
                 self.parseError("Error parsing captcha")
 
-            captchaKey = m.group(1)
+            captchaKey = found.group(1)
             captcha = SolveMedia(self)
             challenge, response = captcha.challenge(captchaKey)
 
@@ -76,8 +76,7 @@ class RyushareCom(XFileSharingPro):
             self.fail("You have entered 5 invalid captcha codes")
 
         if "Click here to download" in self.html:
-            m = re.search(r'<a href="([^"]+)">Click here to download</a>', self.html)
-            return m.group(1)
+            return re.search(r'<a href="([^"]+)">Click here to download</a>', self.html).group(1)
 
 
 getInfo = create_getInfo(RyushareCom)

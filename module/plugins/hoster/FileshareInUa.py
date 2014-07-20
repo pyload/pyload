@@ -31,12 +31,12 @@ class FileshareInUa(Hoster):
 
         pyfile.name = self._getName()
 
-        self.link = self._getLink()
+        link = self._getLink()
 
-        if not self.link.startswith('http://'):
-            self.link = "http://fileshare.in.ua" + self.link
+        if not link.startswith('http://'):
+            link = "http://fileshare.in.ua" + link
 
-        self.download(self.link)
+        self.download(link)
 
     def _checkOnline(self):
         if re.search(self.PATTERN_OFFLINE, self.html):
@@ -46,7 +46,7 @@ class FileshareInUa(Hoster):
 
     def _getName(self):
         name = re.search(self.PATTERN_FILENAME, self.html)
-        if not name:
+        if name is None:
             self.fail("%s: Plugin broken." % self.__name__)
 
         return name.group(1)
@@ -66,7 +66,7 @@ def getInfo(urls):
         else:
             name = re.search(FileshareInUa.PATTERN_FILENAME, html)
 
-            if not name:
+            if name is None:
                 result.append((url, 0, 1, url))
                 continue
 

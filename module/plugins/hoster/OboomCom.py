@@ -23,7 +23,7 @@ class OboomCom(Hoster):
 
 
     def loadUrl(self, url, get=None):
-        if not get:
+        if get is None:
             get = dict()
         return json_loads(self.load(url, get, decode=True))
 

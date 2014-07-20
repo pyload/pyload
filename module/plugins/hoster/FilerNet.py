@@ -109,7 +109,7 @@ class FilerNet(SimpleHoster):
         else:  # Direct Download OFF
             html = self.load(self.pyfile.url)
             m = re.search(self.LINK_PATTERN, html)
-            if not m:
+            if m is None:
                 self.parseError("Unable to detect direct link, try to enable 'Direct download' in your user settings")
             dl = 'http://filer.net' + m.group(1)
 

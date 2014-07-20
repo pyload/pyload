@@ -28,7 +28,7 @@ class DuckCryptInfo(Crypter):
         #    self.logDebug("Sleeping for" % found.group(1))
         #    self.setWait(int(found.group(1)) ,False)
         found = re.match(self.__pattern__, url)
-        if not found:
+        if found is None:
             self.fail('Weird error in link')
         if str(found.group(1)) == "link":
             self.handleLink(url)

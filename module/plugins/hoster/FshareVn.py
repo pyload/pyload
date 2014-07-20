@@ -82,7 +82,7 @@ class FshareVn(SimpleHoster):
         self.setWait(int(found.group(1)) if found else 30)
 
         found = re.search(self.LINK_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError('FREE DL URL')
         self.url = found.group(1)
         self.logDebug("FREE DL URL: %s" % self.url)

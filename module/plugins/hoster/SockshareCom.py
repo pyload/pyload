@@ -72,7 +72,7 @@ class SockshareCom(SimpleHoster):
             if link:
                 self.html = self.load("http://www.sockshare.com" + link.group(1))
                 link = re.search(r'media:content url="(http://.*?)"', self.html)
-                if not link:
+                if link is None:
                     link = re.search(r'\"(http://media\\-b\\d+\\.sockshare\\.com/download/\\d+/.*?)\"', self.html)
             else:
                 self.parseError('Unable to detect a download link')

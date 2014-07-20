@@ -87,7 +87,7 @@ class TurbobitNet(SimpleHoster):
                     captcha_key)
             else:
                 found = re.search(self.CAPTCHA_SRC_PATTERN, self.html)
-                if not found:
+                if found is None:
                     self.parseError('captcha')
                 captcha_url = found.group(1)
                 inputs['captcha_response'] = self.decryptCaptcha(captcha_url)
@@ -169,7 +169,7 @@ class TurbobitNet(SimpleHoster):
 
     def downloadFile(self):
         found = re.search(self.LINK_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError("download link")
         self.url = "http://turbobit.net" + found.group('url')
         self.logDebug(self.url)

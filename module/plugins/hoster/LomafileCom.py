@@ -42,7 +42,7 @@ class LomafileCom(SimpleHoster):
                 "down_direct": "1"})
 
             download_url = re.search(r'http://[\d\.]+:\d+/d/\w+/[\w\.]+', self.html)
-            if not download_url:
+            if download_url is None:
                 self.invalidCaptcha()
                 self.logDebug("Invalid captcha.")
             else:

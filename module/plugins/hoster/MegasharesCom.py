@@ -88,7 +88,7 @@ class MegasharesCom(SimpleHoster):
 
         # Check traffic left on passport
         found = re.search(self.PASSPORT_LEFT_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.fail('Passport not found')
         self.logInfo("Download passport: %s" % found.group(1))
         data_left = float(found.group(2)) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[found.group(3)]
@@ -105,7 +105,7 @@ class MegasharesCom(SimpleHoster):
         # Find download link;
         found = re.search(self.LINK_PATTERN % (1 if premium else 2), self.html)
         msg = '%s download URL' % ('Premium' if premium else 'Free')
-        if not found:
+        if found is None:
             self.parseError(msg)
 
         download_url = found.group(1)

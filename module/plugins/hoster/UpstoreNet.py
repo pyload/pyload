@@ -25,7 +25,7 @@ class UpstoreNet(SimpleHoster):
     def handleFree(self):
         # STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.html)
-        if not m:
+        if m is None:
             self.parseError("could not detect hash")
         chash = m.group(1)
         self.logDebug("read hash " + chash)
@@ -42,7 +42,7 @@ class UpstoreNet(SimpleHoster):
         # try the captcha 5 times
         for i in xrange(5):
             m = re.search(self.WAIT_PATTERN, self.html)
-            if not m:
+            if m is None:
                 self.parseError("could not find wait pattern")
             wait_time = m.group(1)
 
@@ -61,7 +61,7 @@ class UpstoreNet(SimpleHoster):
             if m:
                 break
 
-        if not m:
+        if m is None:
             self.parseError("could not detect direct link")
 
         direct = m.group(1)

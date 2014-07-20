@@ -39,7 +39,7 @@ class HoerbuchIn(Crypter):
 
     def decryptFolder(self, url):
         m = self.protection.search(url)
-        if not m:
+        if m is None:
             self.fail("Bad URL")
         url = m.group(0)
 

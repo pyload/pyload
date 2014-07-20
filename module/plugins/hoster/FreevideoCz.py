@@ -59,7 +59,7 @@ class FreevideoCz(Hoster):
             self.offline()
 
         found = re.search(self.LINK_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.fail("Parse error (URL)")
         download_url = found.group(1)
 

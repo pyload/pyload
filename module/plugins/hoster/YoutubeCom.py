@@ -154,7 +154,7 @@ class YoutubeCom(Hoster):
         ffmpeg = which("ffmpeg")
         if ffmpeg and time:
             m, s = time.groups()[1:]
-            if not m:
+            if m is None:
                 m = "0"
 
             pyfile.name += " (starting at %s:%s)" % (m, s)

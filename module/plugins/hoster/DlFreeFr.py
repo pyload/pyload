@@ -16,9 +16,10 @@ class CustomBrowser(Browser):
 
     def load(self, *args, **kwargs):
         post = kwargs.get("post")
-        if not post:
-            if len(args) > 2:
-                post = args[2]
+
+        if post is None and len(args) > 2:
+            post = args[2]
+
         if post:
             self.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
             self.http.c.setopt(pycurl.POST, 1)
@@ -27,6 +28,7 @@ class CustomBrowser(Browser):
             self.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
             self.http.c.setopt(pycurl.POST, 0)
             self.http.c.setopt(pycurl.CUSTOMREQUEST, "GET")
+
         return Browser.load(self, *args, **kwargs)
 
 

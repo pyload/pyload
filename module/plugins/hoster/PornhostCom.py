@@ -32,29 +32,27 @@ class PornhostCom(Hoster):
         if not self.html:
             self.download_html()
 
-        file_url = re.search(r'download this file</label>.*?<a href="(.*?)"', self.html)
-        if not file_url:
-            file_url = re.search(r'"(http://dl[0-9]+\.pornhost\.com/files/.*?/.*?/.*?/.*?/.*?/.*?\..*?)"', self.html)
-            if not file_url:
-                file_url = re.search(r'width: 894px; height: 675px">.*?<img src="(.*?)"', self.html)
-                if not file_url:
-                    file_url = re.search(r'"http://file[0-9]+\.pornhost\.com/[0-9]+/.*?"',
-                                         self.html)  # TODO: fix this one since it doesn't match
+        url = re.search(r'download this file</label>.*?<a href="(.*?)"', self.html)
+        if url is None:
+            url = re.search(r'"(http://dl[0-9]+\.pornhost\.com/files/.*?/.*?/.*?/.*?/.*?/.*?\..*?)"', self.html)
+            if url is None:
+                url = re.search(r'width: 894px; height: 675px">.*?<img src="(.*?)"', self.html)
+                if url is None:
+                    url = re.search(r'"http://file[0-9]+\.pornhost\.com/[0-9]+/.*?"',
+                                    self.html)  # TODO: fix this one since it doesn't match
 
-        file_url = file_url.group(1).strip()
-
-        return file_url
+        return url.group(1).strip()
 
     def get_file_name(self):
         if not self.html:
             self.download_html()
 
         name = re.search(r'<title>pornhost\.com - free file hosting with a twist - gallery(.*?)</title>', self.html)
-        if not name:
+        if name is None:
             name = re.search(r'id="url" value="http://www\.pornhost\.com/(.*?)/"', self.html)
-            if not name:
+            if name is None:
                 name = re.search(r'<title>pornhost\.com - free file hosting with a twist -(.*?)</title>', self.html)
-                if not name:
+                if name is None:
                     name = re.search(r'"http://file[0-9]+\.pornhost\.com/.*?/(.*?)"', self.html)
 
         name = name.group(1).strip() + ".flv"

@@ -26,7 +26,7 @@ class MultiloadCz(Crypter):
 
         if re.match(self.__pattern__, pyfile.url).group(1) == "slozka":
             found = re.search(self.FOLDER_PATTERN, self.html)
-            if found is not None:
+            if found:
                 self.urls.extend(found.group(1).split())
         else:
             found = re.findall(self.LINK_PATTERN, self.html)

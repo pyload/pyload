@@ -38,7 +38,7 @@ class YibaishiwuCom(SimpleHoster):
 
     def handleFree(self):
         found = re.search(self.LINK_PATTERN, self.html)
-        if not found:
+        if found is None:
             self.parseError("AJAX URL")
         url = found.group(1)
         self.logDebug(('FREEUSER' if found.group(2) == 'download' else 'GUEST') + ' URL', url)

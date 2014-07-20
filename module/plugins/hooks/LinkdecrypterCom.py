@@ -43,7 +43,7 @@ class LinkdecrypterCom(Hook):
     def loadPatterns(self):
         page = getURL("http://linkdecrypter.com/")
         m = re.search(r'<b>Supported\(\d+\)</b>: <i>([^+<]*)', page)
-        if not m:
+        if m is None:
             self.logError(_("Crypter list not found"))
             return
 
