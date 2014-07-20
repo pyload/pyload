@@ -51,7 +51,7 @@ class UnrestrictLi(Account):
 
         post_data = {"username": user, "password": data['password'],
                      "remember_me": "remember", "signin": "Sign in"}
-        self.html = req.load("https://unrestrict.li/sign_in", post=post_data)
+        html = req.load("https://unrestrict.li/sign_in", post=post_data)
 
-        if 'sign_out' not in self.html:
+        if 'sign_out' not in html:
             self.wrongPassword()

@@ -37,14 +37,14 @@ class FilerNet(Account):
 
 
     def loadAccountInfo(self, user, req):
-        self.html = req.load("https://filer.net/profile")
+        html = req.load("https://filer.net/profile")
 
         # Free user
-        if re.search(self.FREE_PATTERN, self.html):
+        if re.search(self.FREE_PATTERN, html):
             return {"premium": False, "validuntil": None, "trafficleft": None}
 
-        until = re.search(self.WALID_UNTIL_PATTERN, self.html)
-        traffic = re.search(self.TRAFFIC_PATTERN, self.html)
+        until = re.search(self.WALID_UNTIL_PATTERN, html)
+        traffic = re.search(self.TRAFFIC_PATTERN, html)
         if until and traffic:
             validuntil = int(time.mktime(time.strptime(until.group(1), "%d.%m.%Y %H:%M:%S")))
             trafficleft = parseFileSize(traffic.group(1)) / 1024
@@ -54,10 +54,10 @@ class FilerNet(Account):
             return {"premium": False, "validuntil": None, "trafficleft": None}
 
     def login(self, user, data, req):
-        self.html = req.load("https://filer.net/login")
-        token = re.search(self.TOKEN_PATTERN, self.html).group(1)
-        self.html = req.load("https://filer.net/login_check",
+        html = req.load("https://filer.net/login")
+        token = re.search(self.TOKEN_PATTERN, html).group(1)
+        html = req.load("https://filer.net/login_check",
                              post={"_username": user, "_password": data['password'],
                                    "_remember_me": "on", "_csrf_token": token, "_target_path": "https://filer.net/"})
-        if 'Logout' not in self.html:
+        if 'Logout' not in html:
             self.wrongPassword()

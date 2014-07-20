@@ -38,14 +38,14 @@ class FshareVn(Account):
 
 
     def loadAccountInfo(self, user, req):
-        self.html = req.load("http://www.fshare.vn/account_info.php", decode=True)
+        html = req.load("http://www.fshare.vn/account_info.php", decode=True)
 
-        if re.search(self.LIFETIME_PATTERN, self.html):
+        if re.search(self.LIFETIME_PATTERN, html):
             self.logDebug("Lifetime membership detected")
             trafficleft = self.getTrafficLeft()
             return {"validuntil": -1, "trafficleft": trafficleft, "premium": True}
 
-        found = re.search(self.VALID_UNTIL_PATTERN, self.html)
+        found = re.search(self.VALID_UNTIL_PATTERN, html)
         if found:
             premium = True
             validuntil = mktime(strptime(found.group(1), '%I:%M:%S %p %d-%m-%Y'))
@@ -60,15 +60,15 @@ class FshareVn(Account):
     def login(self, user, data, req):
         req.http.c.setopt(REFERER, "https://www.fshare.vn/login.php")
 
-        self.html = req.load('https://www.fshare.vn/login.php', post={
+        html = req.load('https://www.fshare.vn/login.php', post={
             "login_password": data['password'],
             "login_useremail": user,
             "url_refe": "http://www.fshare.vn/index.php"
         }, referer=True, decode=True)
 
-        if not re.search(r'<img\s+alt="VIP"', self.html):
+        if not re.search(r'<img\s+alt="VIP"', html):
             self.wrongPassword()
 
     def getTrafficLeft(self):
-        found = re.search(self.TRAFFIC_LEFT_PATTERN, self.html)
+        found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         return float(found.group(1)) * 1024 ** {'k': 0, 'K': 0, 'M': 1, 'G': 2}[found.group(2)] if found else 0

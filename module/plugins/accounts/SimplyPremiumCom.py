@@ -53,7 +53,7 @@ class SimplyPremiumCom(Account):
         else:
             post_data = {"login_name": user, "login_pass": data['password']}
 
-        self.html = req.load("http://www.simply-premium.com/login.php", post=post_data)
+        html = req.load("http://www.simply-premium.com/login.php", post=post_data)
 
-        if 'logout' not in self.html:
+        if 'logout' not in html:
             self.wrongPassword()
