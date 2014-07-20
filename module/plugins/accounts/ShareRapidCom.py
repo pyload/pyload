@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from time import mktime, strptime
 from module.plugins.Account import Account
 
 
 class ShareRapidCom(Account):
     __name__ = "ShareRapidCom"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __type__ = "account"
 
-    __description__ = """ShareRapid account plugin"""
+    __description__ = """MegaRapid.cz account plugin"""
     __author_name__ = ("MikyWoW", "zoidberg")
     __author_mail__ = ("mikywow@seznam.cz", "zoidberg@mujmail.cz")
 
-
     login_timeout = 60
 
+
     def loadAccountInfo(self, user, req):
-        src = req.load("http://sharerapid.cz/mujucet/", decode=True)
+        src = req.load("http://megarapid.cz/mujucet/", decode=True)
 
         found = re.search(ur'<td>Max. počet paralelních stahování: </td><td>(\d+)', src)
         if found:
@@ -38,12 +39,12 @@ class ShareRapidCom(Account):
         return {"premium": False, "trafficleft": None, "validuntil": None}
 
     def login(self, user, data, req):
-        htm = req.load("http://sharerapid.cz/prihlaseni/", cookies=True)
+        htm = req.load("http://megarapid.cz/prihlaseni/", cookies=True)
         if "Heslo:" in htm:
             start = htm.index('id="inp_hash" name="hash" value="')
             htm = htm[start + 33:]
             hashes = htm[0:32]
-            htm = req.load("http://sharerapid.cz/prihlaseni/",
+            htm = req.load("http://megarapid.cz/prihlaseni/",
                            post={"hash": hashes,
                                  "login": user,
                                  "pass1": data['password'],
