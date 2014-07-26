@@ -30,7 +30,7 @@ def getAPIData(urls):
 
     for i, url in enumerate(urls):
         id = getID(url)
-        post["id_%s" % i] = id
+        post['id_%s' % i] = id
         idMap[id] = url
 
     for _ in xrange(5):
