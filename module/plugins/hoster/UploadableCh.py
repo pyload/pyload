@@ -56,7 +56,7 @@ class UploadableCh(SimpleHoster):
         
         # Submit the captcha solution
         post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": code, "recaptcha_shortencode_field": file_id}
-        c = self.load(base_url+"/checkReCaptcha.php", cookies=True, post=post_data, decode=True)
+        self.load(base_url+"/checkReCaptcha.php", cookies=True, post=post_data, decode=True)
         time.sleep(3)
         
         # Get ready for downloading
@@ -79,4 +79,3 @@ class UploadableCh(SimpleHoster):
             self.retry()
         
 getInfo = create_getInfo(UploadableCh)
-
