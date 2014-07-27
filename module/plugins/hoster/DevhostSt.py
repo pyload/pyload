@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 #Testlink:
 #http://d-h.st/mM8
 
@@ -27,8 +26,6 @@ class DevhostSt(SimpleHoster):
     def handleFree(self):
         dl_url = re.search(self.LINK_PATTERN, self.html).group(1)
         self.logDebug("Download-URL = r" + dl_url)
-        if not dl_url:
-            self.parseError("Can not parse download url")
         self.download(dl_url, disposition=True)
 
 getInfo = create_getInfo(DevhostSt)
