@@ -61,7 +61,7 @@ class UploadableCh(SimpleHoster):
         
         # Get ready for downloading
         post_data = {"downloadLink": "show"}
-        self.load(not_so_long_url, cookies=True, post=post_data, disposition=True)
+        self.load(not_so_long_url, cookies=True, post=post_data, decode=True)
         time.sleep(3)
         
         # Download the file
