@@ -37,12 +37,6 @@ class SxrCom(Crypter):
         except:
             self.fail("Unable to decrypt package")
 
-    def isOnline(self):
-        if "sorry.png" in self.html:
-            self.logDebug("File not found")
-            return False
-        return True
-
 
     def requestPackageInfo(self):
         return self.load(self.pyfile.url)
