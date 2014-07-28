@@ -38,10 +38,6 @@ class SxrCom(Crypter):
             self.fail("Unable to decrypt package")
 
 
-    def requestPackageInfo(self):
-        return self.load(self.pyfile.url)
-
-
     def getLinks(self, url):
         linklist = []
         name = self.package.name
