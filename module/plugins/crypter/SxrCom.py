@@ -21,8 +21,10 @@ class SxrCom(Crypter):
     PATTERN_DL_LINK_PAGE       = re.compile(r'"(dl_links_\d+_\d+\.html)"', flags=re.IGNORECASE)
     PATTERN_REDIRECT_LINKS     = re.compile(r'value="(http://sexuria\.com/out\.php\?id=\d+\&part=\d+\&link=\d+)" readonly', flags=re.IGNORECASE)
 
+
     def setup(self):
         self.html = None
+
 
     def decrypt(self, pyfile):
         # Init
@@ -39,11 +41,13 @@ class SxrCom(Crypter):
 
 
     def getLinks(self, url):
+        # Initialize
         linklist = []
         name = self.package.name
         folder = self.package.folder
         password = None
 
+        # Process url
         if re.match(self.PATTERN_SUPPORTED_MAIN, url):
             # Processing main page
             html = self.load(url)
