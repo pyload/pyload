@@ -9,8 +9,8 @@ class SxrCom(Crypter):
     __pattern__ = r"http://(www\.)?sexuria\.com/(v1/)?Pornos_Kostenlos_.+?_(\d+)\.html|http://(www\.)?sexuria\.com/(v1/)?dl_links_\d+_\d+\.html|http://(www\.)?sexuria\.com/out\.php\?id=(\d+)\&part=\d+\&link=\d+"
     __version__ = "0.2"
     __description__ = """Sexuria.com Crypter Plugin"""
-    __author_name__ = ("NETHeader")
-    __author_mail__ = ("NETHead[AT]gmx[DOT]de")
+    __author_name__ = ("NETHead")
+    __author_mail__ = ("NETHead[AT]gmx[DOT]net")
 
     # Constants
     PATTERN_SUPPORTED_MAIN     = re.compile(r'http://(www\.)?sexuria\.com/(v1/)?Pornos_Kostenlos_.+?_(\d+)\.html', flags=re.IGNORECASE)
