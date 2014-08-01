@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
+
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UpstoreNet(SimpleHoster):
     __name__ = "UpstoreNet"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?upstore\.net/'
     __version__ = "0.02"
+
+    __pattern__ = r'https?://(?:www\.)?upstore\.net/'
+
     __description__ = """Upstore.Net File Download Hoster"""
     __author_name__ = "igel"
     __author_mail__ = "igelkun@myopera.com"

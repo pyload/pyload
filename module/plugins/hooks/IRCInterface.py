@@ -1,39 +1,25 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
-from select import select
+import re
 import socket
-from threading import Thread
 import time
+
+from pycurl import FORM_FILE
+from select import select
+from threading import Thread
 from time import sleep
 from traceback import print_exc
-import re
-from pycurl import FORM_FILE
 
-from module.plugins.Hook import Hook
-from module.network.RequestFactory import getURL
-from module.utils import formatSize
 from module.Api import PackageDoesNotExists, FileDoesNotExists
+from module.network.RequestFactory import getURL
+from module.plugins.Hook import Hook
+from module.utils import formatSize
 
 
 class IRCInterface(Thread, Hook):
     __name__ = "IRCInterface"
-    __version__ = "0.11"
     __type__ = "hook"
+    __version__ = "0.11"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("host", "str", "IRC-Server Address", "Enter your server here!"),

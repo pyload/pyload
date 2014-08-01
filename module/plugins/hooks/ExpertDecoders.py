@@ -1,36 +1,21 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
 from __future__ import with_statement
 
-from thread import start_new_thread
-from pycurl import LOW_SPEED_TIME
-from uuid import uuid4
 from base64 import b64encode
+from pycurl import LOW_SPEED_TIME
+from thread import start_new_thread
+from uuid import uuid4
 
-from module.network.RequestFactory import getURL, getRequest
 from module.network.HTTPRequest import BadHeader
-
+from module.network.RequestFactory import getURL, getRequest
 from module.plugins.Hook import Hook
 
 
 class ExpertDecoders(Hook):
     __name__ = "ExpertDecoders"
-    __version__ = "0.01"
     __type__ = "hook"
+    __version__ = "0.01"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", False),

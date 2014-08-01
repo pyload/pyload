@@ -1,29 +1,16 @@
 # -*- coding: utf-8 -*-
 
-###############################################################################
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License,
-#  or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#  See the GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, see <http://www.gnu.org/licenses/>.
-###############################################################################
-
 import re
+
+from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from random import random
 from urllib import unquote
 from urlparse import urlparse
-from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
-from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
-from module.utils import html_unescape
+
 from module.network.RequestFactory import getURL
+from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
+from module.utils import html_unescape
 
 
 class XFileSharingPro(SimpleHoster):
@@ -34,8 +21,10 @@ class XFileSharingPro(SimpleHoster):
     """
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __pattern__ = r'^unmatchable$'
     __version__ = "0.31"
+
+    __pattern__ = r'^unmatchable$'
+
     __description__ = """XFileSharingPro base hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")

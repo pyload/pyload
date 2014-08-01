@@ -7,8 +7,8 @@ from module.plugins.Crypter import Crypter
 
 class FileserveComFolder(Crypter):
     __name__ = "FileserveComFolder"
-    __version__ = "0.11"
     __type__ = "crypter"
+    __version__ = "0.11"
 
     __pattern__ = r'http://(?:www\.)?fileserve.com/list/\w+'
 

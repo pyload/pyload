@@ -1,21 +1,7 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
+
 from pycurl import FOLLOWLOCATION
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -24,8 +10,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class QuickshareCz(SimpleHoster):
     __name__ = "QuickshareCz"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:[^/]*\.)?quickshare.cz/stahnout-soubor/.*'
     __version__ = "0.54"
+
+    __pattern__ = r'http://(?:[^/]*\.)?quickshare.cz/stahnout-soubor/.*'
+
     __description__ = """Quickshare.cz hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -33,6 +21,7 @@ class QuickshareCz(SimpleHoster):
     FILE_NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>[^<]+)</td>'
     FILE_SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</td>'
     OFFLINE_PATTERN = r'<script type="text/javascript">location.href=\'/chyba\';</script>'
+
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)

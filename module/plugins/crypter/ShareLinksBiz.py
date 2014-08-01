@@ -10,8 +10,8 @@ from module.plugins.Crypter import Crypter
 
 class ShareLinksBiz(Crypter):
     __name__ = "ShareLinksBiz"
-    __version__ = "1.13"
     __type__ = "crypter"
+    __version__ = "1.13"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
 

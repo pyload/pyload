@@ -1,22 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from urlparse import urlsplit
 
-from module.plugins.Hoster import Hoster
 from module.common.json_layer import json_loads, json_dumps
+from module.plugins.Hoster import Hoster
 
 
 class LinksnappyCom(Hoster):
     __name__ = "LinksnappyCom"
-    __version__ = "0.02"
     __type__ = "hoster"
+    __version__ = "0.02"
+
     __pattern__ = r'https?://(?:[^/]*\.)?linksnappy\.com'
+
     __description__ = """Linksnappy.com hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
     SINGLE_CHUNK_HOSTERS = ('easybytez.com')
+
 
     def setup(self):
         self.chunkLimit = -1

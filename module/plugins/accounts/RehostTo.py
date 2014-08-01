@@ -5,8 +5,8 @@ from module.plugins.Account import Account
 
 class RehostTo(Account):
     __name__ = "RehostTo"
-    __version__ = "0.1"
     __type__ = "account"
+    __version__ = "0.1"
 
     __description__ = """Rehost.to account plugin"""
     __author_name__ = "RaNaN"

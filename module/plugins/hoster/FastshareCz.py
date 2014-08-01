@@ -1,23 +1,10 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as
-#  published by the Free Software Foundation, either version 3 of the
-#  License, or (at your option) any later version.
 #
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Affero General Public License for more details.
-#
-#  You should have received a copy of the GNU Affero General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-###############################################################################
-
-# Test links (random.bin):
+# Test links:
 # http://www.fastshare.cz/2141189/random.bin
 
 import re
+
 from urlparse import urljoin
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -26,8 +13,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
     __version__ = "0.22"
+
+    __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
+
     __description__ = """FastShare.cz hoster plugin"""
     __author_name__ = ("zoidberg", "stickell", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")

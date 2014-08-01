@@ -5,8 +5,8 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 class SecuredIn(DeadCrypter):
     __name__ = "SecuredIn"
-    __version__ = "0.21"
     __type__ = "crypter"
+    __version__ = "0.21"
 
     __pattern__ = r'http://(?:www\.)?secured\.in/download-[\d]+-[\w]{8}\.html'
 

@@ -6,8 +6,10 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class PotloadCom(XFileSharingPro):
     __name__ = "PotloadCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?potload\.com/\w{12}'
     __version__ = "0.01"
+
+    __pattern__ = r'http://(?:www\.)?potload\.com/\w{12}'
+
     __description__ = """Potload.com hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"

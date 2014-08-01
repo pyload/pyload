@@ -2,15 +2,17 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class CrockoCom(SimpleHoster):
     __name__ = "CrockoCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?(crocko|easy-share).com/\w+'
     __version__ = "0.16"
+
+    __pattern__ = r'http://(?:www\.)?(crocko|easy-share).com/\w+'
+
     __description__ = """Crocko hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"

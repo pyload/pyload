@@ -5,8 +5,8 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 class LofCc(DeadCrypter):
     __name__ = "LofCc"
-    __version__ = "0.21"
     __type__ = "crypter"
+    __version__ = "0.21"
 
     __pattern__ = r'http://(?:www\.)?lof.cc/(.*)'
 

@@ -7,8 +7,8 @@ from module.common.json_layer import json_loads
 
 class PremiumizeMe(Account):
     __name__ = "PremiumizeMe"
-    __version__ = "0.11"
     __type__ = "account"
+    __version__ = "0.11"
 
     __description__ = """Premiumize.me account plugin"""
     __author_name__ = "Florian Franzen"

@@ -5,8 +5,8 @@ from module.plugins.Account import Account
 
 class Premium4Me(Account):
     __name__ = "Premium4Me"
-    __version__ = "0.03"
     __type__ = "account"
+    __version__ = "0.03"
 
     __description__ = """Premium.to account plugin"""
     __author_name__ = ("RaNaN", "zoidberg", "stickell")

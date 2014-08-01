@@ -1,24 +1,10 @@
 # -*- coding: utf-8 -*-
-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
-# Test links (random.bin):
+#
+# Test links:
 # http://czshare.com/5278880/random.bin
 
 import re
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.utils import parseFileSize
 
@@ -26,8 +12,10 @@ from module.utils import parseFileSize
 class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download.php\?).*'
     __version__ = "0.94"
+
+    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download.php\?).*'
+
     __description__ = """CZshare.com hoster plugin, now Sdilej.cz"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -107,7 +95,7 @@ class CzshareCom(SimpleHoster):
             self.logError(e)
             self.parseError('Form')
 
-        # get and decrypt captcha        
+        # get and decrypt captcha
         captcha_url = 'http://sdilej.cz/captcha.php'
         for _ in xrange(5):
             inputs['captchastring2'] = self.decryptCaptcha(captcha_url)

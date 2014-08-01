@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from time import strptime, mktime, gmtime
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 
 
 def getInfo(urls):
@@ -26,8 +27,10 @@ def doubleDecode(m):
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?fshare.vn/file/.*'
     __version__ = "0.16"
+
+    __pattern__ = r'http://(?:www\.)?fshare.vn/file/.*'
+
     __description__ = """FshareVn hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"

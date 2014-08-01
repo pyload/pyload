@@ -10,8 +10,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 class BitshareCom(SimpleHoster):
     __name__ = "BitshareCom"
-    __version__ = "0.50"
     __type__ = "hoster"
+    __version__ = "0.50"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))'
 

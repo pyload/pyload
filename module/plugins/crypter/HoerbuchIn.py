@@ -2,14 +2,15 @@
 
 import re
 
-from module.plugins.Crypter import Crypter
 from module.lib.BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
+
+from module.plugins.Crypter import Crypter
 
 
 class HoerbuchIn(Crypter):
     __name__ = "HoerbuchIn"
-    __version__ = "0.6"
     __type__ = "crypter"
+    __version__ = "0.6"
 
     __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out.php\?.+|protection/folder_\d+\.html)'
 

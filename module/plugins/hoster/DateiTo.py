@@ -1,30 +1,18 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DateiTo(SimpleHoster):
     __name__ = "DateiTo"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
     __version__ = "0.02"
+
+    __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
+
     __description__ = """Datei.to hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -37,6 +25,7 @@ class DateiTo(SimpleHoster):
     WAIT_PATTERN = r'countdown\({seconds: (\d+)'
     DATA_PATTERN = r'url: "(.*?)", data: "(.*?)",'
     RECAPTCHA_KEY_PATTERN = r'Recaptcha.create\("(.*?)"'
+
 
     def handleFree(self):
         url = 'http://datei.to/ajax/download.php'

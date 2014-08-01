@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from time import sleep
 import re
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from time import sleep
+
 from module.network.HTTPRequest import HTTPRequest
+from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
 
 
 class StreamcloudEu(XFileSharingPro):
     __name__ = "StreamcloudEu"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\S+'
     __version__ = "0.04"
+
+    __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\S+'
+
     __description__ = """Streamcloud.eu hoster plugin"""
     __author_name__ = "seoester"
     __author_mail__ = "seoester@googlemail.com"
@@ -19,6 +22,7 @@ class StreamcloudEu(XFileSharingPro):
     HOSTER_NAME = "streamcloud.eu"
 
     LINK_PATTERN = r'file: "(http://(stor|cdn)\d+\.streamcloud.eu:?\d*/.*/video\.(mp4|flv))",'
+
 
     def setup(self):
         super(StreamcloudEu, self).setup()

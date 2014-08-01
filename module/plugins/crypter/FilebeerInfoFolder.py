@@ -5,8 +5,8 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 class FilebeerInfoFolder(DeadCrypter):
     __name__ = "FilebeerInfoFolder"
-    __version__ = "0.02"
     __type__ = "crypter"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?filebeer\.info/(\d+~f).*'
 

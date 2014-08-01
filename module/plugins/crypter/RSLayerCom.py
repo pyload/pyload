@@ -5,8 +5,8 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 class RSLayerCom(DeadCrypter):
     __name__ = "RSLayerCom"
-    __version__ = "0.21"
     __type__ = "crypter"
+    __version__ = "0.21"
 
     __pattern__ = r'http://(?:www\.)?rs-layer.com/directory-'
 

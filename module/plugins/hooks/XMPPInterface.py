@@ -1,33 +1,18 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 from pyxmpp import streamtls
 from pyxmpp.all import JID, Message
-from pyxmpp.jabber.client import JabberClient
 from pyxmpp.interface import implements
 from pyxmpp.interfaces import *
+from pyxmpp.jabber.client import JabberClient
 
 from module.plugins.hooks.IRCInterface import IRCInterface
 
 
 class XMPPInterface(IRCInterface, JabberClient):
     __name__ = "XMPPInterface"
-    __version__ = "0.11"
     __type__ = "hook"
+    __version__ = "0.11"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),

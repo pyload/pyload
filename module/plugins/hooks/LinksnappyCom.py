@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiHoster import MultiHoster
-from module.network.RequestFactory import getURL
 from module.common.json_layer import json_loads
+from module.network.RequestFactory import getURL
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class LinksnappyCom(MultiHoster):
     __name__ = "LinksnappyCom"
-    __version__ = "0.01"
     __type__ = "hook"
+    __version__ = "0.01"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),

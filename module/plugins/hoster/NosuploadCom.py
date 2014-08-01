@@ -9,7 +9,9 @@ class NosuploadCom(XFileSharingPro):
     __name__ = "NosuploadCom"
     __type__ = "hoster"
     __version__ = "0.1"
+
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
+
     __description__ = """Nosupload.com hoster plugin"""
     __author_name__ = "igel"
     __author_mail__ = "igelkun@myopera.com"
@@ -19,6 +21,7 @@ class NosuploadCom(XFileSharingPro):
     FILE_SIZE_PATTERN = r'<p><strong>Size:</strong> (?P<S>[0-9\.]+) (?P<U>[kKMG]?B)</p>'
     LINK_PATTERN = r'<a class="select" href="(http://.+?)">Download</a>'
     WAIT_PATTERN = r'Please wait.*?>(\d+)</span>'
+
 
     def getDownloadLink(self):
         # stage1: press the "Free Download" button

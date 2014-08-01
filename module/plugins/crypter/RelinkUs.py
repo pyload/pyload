@@ -11,8 +11,8 @@ from module.plugins.Crypter import Crypter
 
 class RelinkUs(Crypter):
     __name__ = "RelinkUs"
-    __version__ = "3.0"
     __type__ = "crypter"
+    __version__ = "3.0"
 
     __pattern__ = r'http://(?:www\.)?relink.us/(f/|((view|go).php\?id=))(?P<id>.+)'
 
@@ -63,7 +63,7 @@ class RelinkUs(Crypter):
         if not self.isOnline():
             self.offline()
 
-        # Check for protection    
+        # Check for protection
         if self.isPasswordProtected():
             self.unlockPasswordProtection()
             self.handleErrors()
@@ -133,7 +133,7 @@ class RelinkUs(Crypter):
     def getPackageInfo(self):
         name = folder = None
 
-        # Try to get info from web        
+        # Try to get info from web
         m = re.search(self.FILE_TITLE_REGEX, self.html)
         if m is not None:
             title = m.group(1).strip()
@@ -147,7 +147,7 @@ class RelinkUs(Crypter):
             folder = self.package.folder
             self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
 
-        # Return package info 
+        # Return package info
         return name, folder
 
     def handleErrors(self):

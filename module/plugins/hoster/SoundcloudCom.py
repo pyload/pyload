@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import re
 import pycurl
+import re
 
 from module.plugins.Hoster import Hoster
 
@@ -9,11 +9,14 @@ from module.plugins.Hoster import Hoster
 class SoundcloudCom(Hoster):
     __name__ = "SoundcloudCom"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?soundcloud\.com/(?P<UID>.*?)/(?P<SID>.*)'
     __version__ = "0.1"
+
+    __pattern__ = r'https?://(?:www\.)?soundcloud\.com/(?P<UID>.*?)/(?P<SID>.*)'
+
     __description__ = """SoundCloud.com hoster plugin"""
     __author_name__ = "Peekayy"
     __author_mail__ = "peekayy.dev@gmail.com"
+
 
     def process(self, pyfile):
         # default UserAgent of HTTPRequest fails for this hoster so we use this one

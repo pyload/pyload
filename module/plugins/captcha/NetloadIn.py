@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from captcha import OCR
+from module.plugins.captcha import OCR
 
 
 class NetloadIn(OCR):
     __name__ = "NetloadIn"
-    __version__ = "0.1"
     __type__ = "ocr"
+    __version__ = "0.1"
 
     __description__ = """Netload.in ocr plugin"""
     __author_name__ = "pyLoad Team"

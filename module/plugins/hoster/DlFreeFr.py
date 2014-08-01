@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import re
 import pycurl
+import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns
 from module.common.json_layer import json_loads
 from module.network.Browser import Browser
 from module.network.CookieJar import CookieJar
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns
 
 
 class CustomBrowser(Browser):
@@ -109,8 +109,10 @@ class AdYouLike:
 class DlFreeFr(SimpleHoster):
     __name__ = "DlFreeFr"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?dl\.free\.fr/([a-zA-Z0-9]+|getfile\.pl\?file=/[a-zA-Z0-9]+)'
     __version__ = "0.25"
+
+    __pattern__ = r'http://(?:www\.)?dl\.free\.fr/([a-zA-Z0-9]+|getfile\.pl\?file=/[a-zA-Z0-9]+)'
+
     __description__ = """Dl.free.fr hoster plugin"""
     __author_name__ = ("the-razer", "zoidberg", "Toilal")
     __author_mail__ = ("daniel_ AT gmx DOT net", "zoidberg@mujmail.cz", "toilal.dev@gmail.com")
@@ -148,7 +150,7 @@ class DlFreeFr(SimpleHoster):
                 self.html = self.load(valid_url)
                 self.handleFree()
             else:
-                # Direct access to requested file for users using free.fr as Internet Service Provider. 
+                # Direct access to requested file for users using free.fr as Internet Service Provider.
                 self.download(valid_url, disposition=True)
         elif headers.get('code') == 404:
             self.offline()

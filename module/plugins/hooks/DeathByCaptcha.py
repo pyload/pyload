@@ -1,31 +1,18 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
 from __future__ import with_statement
 
-from thread import start_new_thread
-from pycurl import FORM_FILE, HTTPHEADER
-from time import sleep
-from base64 import b64encode
 import re
 
-from module.network.RequestFactory import getRequest
-from module.network.HTTPRequest import BadHeader
-from module.plugins.Hook import Hook
+from base64 import b64encode
+from pycurl import FORM_FILE, HTTPHEADER
+from thread import start_new_thread
+from time import sleep
+
 from module.common.json_layer import json_loads
+from module.network.HTTPRequest import BadHeader
+from module.network.RequestFactory import getRequest
+from module.plugins.Hook import Hook
 
 
 class DeathByCaptchaException(Exception):
@@ -59,8 +46,8 @@ class DeathByCaptchaException(Exception):
 
 class DeathByCaptcha(Hook):
     __name__ = "DeathByCaptcha"
-    __version__ = "0.03"
     __type__ = "hook"
+    __version__ = "0.03"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
@@ -134,7 +121,7 @@ class DeathByCaptcha(Hook):
             raise DeathByCaptchaException('service-overload')
 
     def submit(self, captcha, captchaType="file", match=None):
-        #workaround multipart-post bug in HTTPRequest.py 
+        #workaround multipart-post bug in HTTPRequest.py
         if re.match("^[A-Za-z0-9]*$", self.getConfig("passkey")):
             multipart = True
             data = (FORM_FILE, captcha)

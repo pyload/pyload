@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-
 #
-# v2.01 - hagg
 # * cnl2 and web links are skipped if JS is not available (instead of failing the package)
 # * only best available link source is used (priority: cnl2>rsdf>ccf>dlc>web
-#
 
 import base64
 import binascii
@@ -17,8 +14,8 @@ from module.unescape import unescape
 
 class LinkSaveIn(Crypter):
     __name__ = "LinkSaveIn"
-    __version__ = "2.01"
     __type__ = "crypter"
+    __version__ = "2.01"
 
     __pattern__ = r'http://(?:www\.)?linksave.in/(?P<id>\w+)$'
 

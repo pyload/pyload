@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-
-# Test link:
+#
+# Test links:
 # http://remixshare.com/download/p946u
-
+#
 # Note:
 # The remixshare.com website is very very slow, so
 # if your download not starts because of pycurl timeouts:
 # Adjust timeouts in /usr/share/pyload/module/network/HTTPRequest.py
-
 
 import re
 
@@ -17,8 +16,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RemixshareCom(SimpleHoster):
     __name__ = "RemixshareCom"
     __type__ = "hoster"
-    __pattern__ = r'https?://remixshare\.com/(download|dl)/\w+'
     __version__ = "0.01"
+
+    __pattern__ = r'https?://remixshare\.com/(download|dl)/\w+'
+
     __description__ = """Remixshare.com hoster plugin"""
     __author_name__ = ("zapp-brannigan", "Walter Purcaro")
     __author_mail__ = ("fuerst.reinje@web.de", "vuolter@gmail.com")

@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiHoster import MultiHoster
 from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class RPNetBiz(MultiHoster):
     __name__ = "RPNetBiz"
-    __version__ = "0.1"
     __type__ = "hook"
+    __version__ = "0.1"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
@@ -37,7 +37,7 @@ class RPNetBiz(MultiHoster):
         if 'error' in hoster_list:
             return []
 
-        # Extract hosters from json file 
+        # Extract hosters from json file
         return hoster_list['hosters']
 
     def coreReady(self):
@@ -48,5 +48,5 @@ class RPNetBiz(MultiHoster):
             self.logError(_("Please enter your %s account or deactivate this plugin") % "rpnet")
             return
 
-        # Run the overwriten core ready which actually enables the multihoster hook 
+        # Run the overwriten core ready which actually enables the multihoster hook
         return MultiHoster.coreReady(self)

@@ -6,8 +6,8 @@ from module.common.json_layer import json_loads
 
 class FastixRu(Account):
     __name__ = "FastixRu"
-    __version__ = "0.02"
     __type__ = "account"
+    __version__ = "0.02"
 
     __description__ = """Fastix account plugin"""
     __author_name__ = "Massimo Rosamilia"

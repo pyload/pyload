@@ -6,8 +6,8 @@ from module.plugins.Crypter import Crypter
 
 class ChipDe(Crypter):
     __name__ = "ChipDe"
-    __version__ = "0.1"
     __type__ = "crypter"
+    __version__ = "0.1"
 
     __pattern__ = r'http://(?:www\.)?chip.de/video/.*\.html'
 

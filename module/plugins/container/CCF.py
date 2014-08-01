@@ -3,11 +3,13 @@
 import re
 
 from os import makedirs
-from os.path import exists, join
+from os.path import exists
 from urllib2 import build_opener
 
 from module.lib.MultipartPostHandler import MultipartPostHandler
+
 from module.plugins.Container import Container
+from module.utils import save_join
 
 
 class CCF(Container):
@@ -32,11 +34,8 @@ class CCF(Container):
         tempdlc_content = opener.open('http://service.jdownloader.net/dlcrypt/getDLC.php', params).read()
 
         download_folder = self.config['general']['download_folder']
-        location = download_folder #join(download_folder, pyfile.package().folder.decode(sys.getfilesystemencoding()))
-        if not exists(location): 
-            makedirs(location)
 
-        tempdlc_name = join(location, "tmp_%s.dlc" % pyfile.name)
+        tempdlc_name = save_join(download_folder, "tmp_%s.dlc" % pyfile.name)
         tempdlc = open(tempdlc_name, "w")
         tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.DOTALL).group(1))
         tempdlc.close()

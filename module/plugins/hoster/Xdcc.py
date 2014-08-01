@@ -1,45 +1,32 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
-from os.path import join
-from os.path import exists
-from os import makedirs
 import re
-import sys
-import time
 import socket
 import struct
+import sys
+import time
+
+from os import makedirs
+from os.path import exists, join
 from select import select
 
-from module.utils import save_join
 from module.plugins.Hoster import Hoster
+from module.utils import save_join
 
 
 class Xdcc(Hoster):
     __name__ = "Xdcc"
-    __version__ = "0.32"
-    __pattern__ = r'xdcc://([^/]*?)(/#?.*?)?/.*?/#?\d+/?'  # xdcc://irc.Abjects.net/#channel/[XDCC]|Shit/#0004/
     __type__ = "hoster"
+    __version__ = "0.32"
+
     __config__ = [("nick", "str", "Nickname", "pyload"),
                   ("ident", "str", "Ident", "pyloadident"),
                   ("realname", "str", "Realname", "pyloadreal")]
+
     __description__ = """Download from IRC XDCC bot"""
     __author_name__ = "jeix"
     __author_mail__ = "jeix@hasnomail.com"
+
 
     def setup(self):
         self.debug = 0  # 0,1,2
@@ -74,11 +61,6 @@ class Xdcc(Hoster):
 
     def doDownload(self, url):
         self.pyfile.setStatus("waiting")  # real link
-
-        download_folder = self.config['general']['download_folder']
-        location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
-        if not exists(location):
-            makedirs(location)
 
         m = re.match(r'xdcc://(.*?)/#?(.*?)/(.*?)/#?(\d+)/?', url)
         server = m.group(1)
@@ -203,7 +185,10 @@ class Xdcc(Hoster):
             self.req.filesize = int(m.group(4))
 
         self.pyfile.name = packname
-        filename = save_join(location, packname)
+
+        download_folder = self.config['general']['download_folder']
+        filename = save_join(download_folder, packname)
+
         self.logInfo("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
 
         self.pyfile.setStatus("downloading")

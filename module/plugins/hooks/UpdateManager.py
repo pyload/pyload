@@ -5,7 +5,7 @@ import sys
 
 from operator import itemgetter
 from os import remove, stat
-from os.path import isfile
+from os.path import isfile, join
 from time import time
 
 from module.network.RequestFactory import getURL
@@ -257,7 +257,7 @@ class UpdateManager(Hook):
             py_file = name + ".py"
             pyc_file = name + ".pyc"
 
-            for root in ("userplugins", save_join(pypath, "module", "plugins")):
+            for root in ("userplugins", join(pypath, "module", "plugins")):
                 py_filename = save_join(root, type, py_file)
                 pyc_filename = save_join(root, type, pyc_file)
 

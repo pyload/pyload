@@ -9,8 +9,8 @@ from module.plugins.Account import Account
 
 class DepositfilesCom(Account):
     __name__ = "DepositfilesCom"
-    __version__ = "0.3"
     __type__ = "account"
+    __version__ = "0.3"
 
     __description__ = """Depositfiles.com account plugin"""
     __author_name__ = ("mkaay", "stickell", "Walter Purcaro")

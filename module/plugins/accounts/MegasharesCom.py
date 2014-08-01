@@ -8,8 +8,8 @@ from module.plugins.Account import Account
 
 class MegasharesCom(Account):
     __name__ = "MegasharesCom"
-    __version__ = "0.02"
     __type__ = "account"
+    __version__ = "0.02"
 
     __description__ = """Megashares.com account plugin"""
     __author_name__ = "zoidberg"

@@ -13,8 +13,8 @@ def create_getInfo(plugin):
 
 class DeadHoster(_Hoster):
     __name__ = "DeadHoster"
-    __version__ = "0.11"
     __type__ = "hoster"
+    __version__ = "0.11"
 
     __pattern__ = None
 

@@ -7,8 +7,8 @@ from module.plugins.Account import Account
 
 class UlozTo(Account):
     __name__ = "UlozTo"
-    __version__ = "0.06"
     __type__ = "account"
+    __version__ = "0.06"
 
     __description__ = """Uloz.to account plugin"""
     __author_name__ = ("zoidberg", "pulpe")

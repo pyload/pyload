@@ -1,39 +1,21 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-
-    changelog:
-      0.27 - 2012-08-12 - hgg
-          fix "global name 'js_answer' is not defined" bug
-          fix captcha bug #1 (failed on non-english "captcha wrong" errors)
-"""
-
 import re
+
 from time import time
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.CaptchaService import ReCaptcha
 from module.common.json_layer import json_loads
+from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilepostCom(SimpleHoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*'
     __version__ = "0.28"
+
+    __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*'
+
     __description__ = """Filepost.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -44,6 +26,7 @@ class FilepostCom(SimpleHoster):
     PREMIUM_ONLY_PATTERN = r'members only. Please upgrade to premium|a premium membership is required to download this file'
     RECAPTCHA_KEY_PATTERN = r"Captcha.init\({\s*key:\s*'([^']+)'"
     FLP_TOKEN_PATTERN = r"set_store_options\({token: '([^']+)'"
+
 
     def handleFree(self):
         # Find token and captcha key
@@ -70,7 +53,7 @@ class FilepostCom(SimpleHoster):
         post_dict = {"token": flp_token, "code": file_id, "file_pass": ''}
 
         if 'var is_pass_exists = true;' in self.html:
-            # Solve password            
+            # Solve password
             for file_pass in self.getPassword().splitlines():
                 get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
                 post_dict['file_pass'] = file_pass

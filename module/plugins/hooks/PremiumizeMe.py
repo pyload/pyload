@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiHoster import MultiHoster
-
 from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class PremiumizeMe(MultiHoster):
     __name__ = "PremiumizeMe"
-    __version__ = "0.12"
     __type__ = "hook"
+    __version__ = "0.12"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
@@ -40,7 +39,7 @@ class PremiumizeMe(MultiHoster):
         if data['status'] != 200:
             return []
 
-        # Extract hosters from json file 
+        # Extract hosters from json file
         return data['result']['hosterlist']
 
     def coreReady(self):
@@ -51,5 +50,5 @@ class PremiumizeMe(MultiHoster):
             self.logError(_("Please add a valid premiumize.me account first and restart pyLoad."))
             return
 
-        # Run the overwriten core ready which actually enables the multihoster hook 
+        # Run the overwriten core ready which actually enables the multihoster hook
         return MultiHoster.coreReady(self)

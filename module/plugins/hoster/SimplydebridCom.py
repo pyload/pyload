@@ -7,12 +7,15 @@ from module.plugins.Hoster import Hoster
 
 class SimplydebridCom(Hoster):
     __name__ = "SimplydebridCom"
-    __version__ = "0.1"
     __type__ = "hoster"
+    __version__ = "0.1"
+
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd.php/*'
+
     __description__ = """Simply-debrid.com hoster plugin"""
     __author_name__ = "Kagenoshin"
     __author_mail__ = "kagenoshin@gmx.ch"
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True

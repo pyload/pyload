@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
+
+from urllib import unquote
+
 from module.plugins.Hoster import Hoster
 
 
 class ShareplaceCom(Hoster):
     __name__ = "ShareplaceCom"
     __type__ = "hoster"
-    __pattern__ = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?[a-zA-Z0-9]+'
     __version__ = "0.11"
+
+    __pattern__ = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?[a-zA-Z0-9]+'
+
     __description__ = """Shareplace.com hoster plugin"""
     __author_name__ = "ACCakut"
     __author_mail__ = None
+
 
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -53,7 +58,7 @@ class ShareplaceCom(Hoster):
         url = re.search(r"var beer = '(.*?)';", self.html)
         if url:
             url = url.group(1)
-            url = urllib.unquote(
+            url = unquote(
                 url.replace("http://http:/", "").replace("vvvvvvvvv", "").replace("lllllllll", "").replace(
                     "teletubbies", ""))
             self.logDebug("URL: %s" % url)

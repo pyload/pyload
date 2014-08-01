@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-
-# Test links (random.bin):
+#
+# Test links:
 # http://ryushare.com/cl0jy8ric2js/random.bin
 
 import re
@@ -12,8 +12,10 @@ from module.plugins.internal.CaptchaService import SolveMedia
 class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?ryushare\.com/\w+'
     __version__ = "0.15"
+
+    __pattern__ = r'http://(?:www\.)?ryushare\.com/\w+'
+
     __description__ = """Ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell", "quareevo")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "quareevo@arcor.de")
@@ -25,6 +27,7 @@ class RyushareCom(XFileSharingPro):
     WAIT_PATTERN = r'You have to wait ((?P<hour>\d+) hour[s]?, )?((?P<min>\d+) minute[s], )?(?P<sec>\d+) second[s]'
     LINK_PATTERN = r'(http://([^/]*?ryushare.com|\d+\.\d+\.\d+\.\d+)(:\d+/d/|/files/\w+/\w+/)[^"\'<]+)'
     SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
+
 
     def getDownloadLink(self):
         retry = False

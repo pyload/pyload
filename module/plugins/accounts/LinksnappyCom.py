@@ -8,8 +8,8 @@ from module.common.json_layer import json_loads
 
 class LinksnappyCom(Account):
     __name__ = "LinksnappyCom"
-    __version__ = "0.02"
     __type__ = "account"
+    __version__ = "0.02"
 
     __description__ = """Linksnappy.com account plugin"""
     __author_name__ = "stickell"

@@ -5,8 +5,8 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 class Movie2kTo(DeadCrypter):
     __name__ = "Movie2kTo"
-    __version__ = "0.51"
     __type__ = "crypter"
+    __version__ = "0.51"
 
     __pattern__ = r'http://(?:www\.)?movie2k\.to/(.*)\.html'
 

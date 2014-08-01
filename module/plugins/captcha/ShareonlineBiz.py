@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from captcha import OCR
+from module.plugins.captcha import OCR
 
 
 class ShareonlineBiz(OCR):
     __name__ = "ShareonlineBiz"
-    __version__ = "0.1"
     __type__ = "ocr"
+    __version__ = "0.1"
 
     __description__ = """Shareonline.biz ocr plugin"""
     __author_name__ = "RaNaN"

@@ -1,32 +1,32 @@
 # -*- coding: utf-8 -*-
 
-import re
 import random
-from array import array
-from os import remove
-from base64 import standard_b64decode
+import re
 
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
+from array import array
+from base64 import standard_b64decode
+from os import remove
 
 from module.common.json_layer import json_loads, json_dumps
 from module.plugins.Hoster import Hoster
-
-#def getInfo(urls):
-#    pass
 
 
 class MegaNz(Hoster):
     __name__ = "MegaNz"
     __type__ = "hoster"
-    __pattern__ = r'https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)'
     __version__ = "0.14"
+
+    __pattern__ = r'https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)'
+
     __description__ = """Mega.co.nz hoster plugin"""
     __author_name__ = "RaNaN"
     __author_mail__ = "ranan@pyload.org"
 
     API_URL = "https://g.api.mega.co.nz/cs?id=%d"
     FILE_SUFFIX = ".crypted"
+
 
     def b64_decode(self, data):
         data = data.replace("-", "+").replace("_", "/")

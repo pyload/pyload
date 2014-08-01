@@ -1,20 +1,7 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as
-#  published by the Free Software Foundation, either version 3 of the
-#  License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Affero General Public License for more details.
-#
-#  You should have received a copy of the GNU Affero General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-###############################################################################
 
 import re
+
 from urllib import unquote
 
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
@@ -25,8 +12,10 @@ from module.utils import html_unescape
 class UptoboxCom(XFileSharingPro):
     __name__ = "UptoboxCom"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?uptobox\.com/\w+'
     __version__ = "0.09"
+
+    __pattern__ = r'https?://(?:www\.)?uptobox\.com/\w+'
+
     __description__ = """Uptobox.com hoster plugin"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
@@ -40,6 +29,7 @@ class UptoboxCom(XFileSharingPro):
     WAIT_PATTERN = r'>(\d+)</span> seconds<'
 
     LINK_PATTERN = r'"(https?://\w+\.uptobox\.com/d/.*?)"'
+
 
     def handleCaptcha(self, inputs):
         m = re.search(self.SOLVEMEDIA_PATTERN, self.html)

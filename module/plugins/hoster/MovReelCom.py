@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-#import re
 from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
-#from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
-
 
 
 class MovReelCom(XFileSharingPro):
     __name__ = "MovReelCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?movreel.com/.*'
     __version__ = "1.20"
+
+    __pattern__ = r'http://(?:www\.)?movreel.com/.*'
+
     __description__ = """MovReel.com hoster plugin"""
     __author_name__ = "JorisV83"
     __author_mail__ = "jorisv83-pyload@yahoo.com"

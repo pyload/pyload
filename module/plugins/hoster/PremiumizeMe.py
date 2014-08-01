@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Hoster import Hoster
-
 from module.common.json_layer import json_loads
+from module.plugins.Hoster import Hoster
 
 
 class PremiumizeMe(Hoster):
     __name__ = "PremiumizeMe"
-    __version__ = "0.12"
     __type__ = "hoster"
+    __version__ = "0.12"
+
+    __pattern__ = None  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
+
     __description__ = """Premiumize.me hoster plugin"""
-
-    # Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
-    # create the regex patterns for us using getHosters in our PremiumizeMe hook.
-    __pattern__ = None
-
     __author_name__ = "Florian Franzen"
     __author_mail__ = "FlorianFranzen@gmail.com"
+
 
     def process(self, pyfile):
         # Check account

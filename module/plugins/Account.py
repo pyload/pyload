@@ -1,28 +1,11 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
-"""
-
 from random import choice
 from time import time
 from traceback import print_exc
 from threading import RLock
 
-from Plugin import Base
+from module.plugins.Plugin import Base
 from module.utils import compare_time, parseFileSize, lock
 
 
@@ -37,8 +20,9 @@ class Account(Base):
     associated hoster plugin. Plugin should also provide `loadAccountInfo`
     """
     __name__ = "Account"
-    __version__ = "0.3"
     __type__ = "account"
+    __version__ = "0.3"
+
     __description__ = """Base account plugin"""
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"

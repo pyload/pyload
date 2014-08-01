@@ -6,8 +6,10 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class BillionuploadsCom(XFileSharingPro):
     __name__ = "BillionuploadsCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?billionuploads.com/\w{12}'
     __version__ = "0.01"
+
+    __pattern__ = r'http://(?:www\.)?billionuploads.com/\w{12}'
+
     __description__ = """Billionuploads.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"

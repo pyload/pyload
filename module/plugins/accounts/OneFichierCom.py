@@ -9,8 +9,8 @@ from module.plugins.Account import Account
 
 class OneFichierCom(Account):
     __name__ = "OneFichierCom"
-    __version__ = "0.1"
     __type__ = "account"
+    __version__ = "0.1"
 
     __description__ = """1fichier.com account plugin"""
     __author_name__ = "Elrick69"

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from random import random
 
 

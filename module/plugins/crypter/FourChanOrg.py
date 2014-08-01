@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Based on 4chandl by Roland Beermann
-# https://gist.github.com/enkore/3492599
+#
+# Based on 4chandl by Roland Beermann (https://gist.github.com/enkore/3492599)
 
 import re
 
@@ -9,8 +9,8 @@ from module.plugins.Crypter import Crypter
 
 class FourChanOrg(Crypter):
     __name__ = "FourChanOrg"
-    __version__ = "0.3"
     __type__ = "crypter"
+    __version__ = "0.3"
 
     __pattern__ = r'http://(?:www\.)?boards\.4chan.org/\w+/res/(\d+)'
 

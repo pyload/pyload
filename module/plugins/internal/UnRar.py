@@ -1,29 +1,15 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import os
 import re
-from os.path import join
-from glob import glob
-from subprocess import Popen, PIPE
-from string import digits
 
-from module.utils import save_join, decode
+from glob import glob
+from os.path import join
+from string import digits
+from subprocess import Popen, PIPE
+
 from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
+from module.utils import save_join, decode
 
 
 class UnRar(AbtractExtractor):
@@ -34,6 +20,8 @@ class UnRar(AbtractExtractor):
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
 
+    CMD = "unrar"
+
     # there are some more uncovered rar formats
     re_version = re.compile(r"(UNRAR 5[\.\d]+(.*?)freeware)")
     re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
@@ -41,7 +29,6 @@ class UnRar(AbtractExtractor):
     re_filelist = re.compile(r"(.+)\s+(\d+)\s+(\d+)\s+")
     re_filelist5 = re.compile(r"(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)")
     re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)", re.I)
-    CMD = "unrar"
 
 
     @staticmethod

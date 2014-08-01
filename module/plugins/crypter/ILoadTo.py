@@ -5,8 +5,8 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 class ILoadTo(DeadCrypter):
     __name__ = "ILoadTo"
-    __version__ = "0.11"
     __type__ = "crypter"
+    __version__ = "0.11"
 
     __pattern__ = r'http://(?:www\.)?iload\.to/go/\d+-[\w\.-]+/'
 

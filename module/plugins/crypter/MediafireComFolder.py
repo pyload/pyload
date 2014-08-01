@@ -8,8 +8,8 @@ from module.common.json_layer import json_loads
 
 class MediafireComFolder(Crypter):
     __name__ = "MediafireComFolder"
-    __version__ = "0.14"
     __type__ = "crypter"
+    __version__ = "0.14"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
 
@@ -26,7 +26,7 @@ class MediafireComFolder(Crypter):
         self.logDebug('Location (%d): %s' % (result, url))
 
         if result == 0:
-            # load and parse html            
+            # load and parse html
             html = self.load(pyfile.url)
             m = re.search(self.FILE_URL_PATTERN, html)
             if m:

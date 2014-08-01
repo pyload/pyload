@@ -6,8 +6,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 class Premium4Me(MultiHoster):
     __name__ = "Premium4Me"
-    __version__ = "0.03"
     __type__ = "hook"
+    __version__ = "0.03"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),

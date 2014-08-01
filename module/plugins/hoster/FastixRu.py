@@ -1,20 +1,25 @@
 # -*- coding: utf-8 -*-
 
 import re
-from urllib import unquote
+
 from random import randrange
-from module.plugins.Hoster import Hoster
+from urllib import unquote
+
 from module.common.json_layer import json_loads
+from module.plugins.Hoster import Hoster
 
 
 class FastixRu(Hoster):
     __name__ = "FastixRu"
-    __version__ = "0.04"
     __type__ = "hoster"
+    __version__ = "0.04"
+
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>[a-zA-Z0-9]{24})'
+
     __description__ = """Fastix hoster plugin"""
     __author_name__ = "Massimo Rosamilia"
     __author_mail__ = "max@spiritix.eu"
+
 
     def getFilename(self, url):
         try:

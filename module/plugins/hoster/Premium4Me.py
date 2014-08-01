@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from urllib import quote
-from os.path import exists
 from os import remove
+from os.path import exists
+from urllib import quote
 
 from module.plugins.Hoster import Hoster
 from module.utils import fs_encode
@@ -10,13 +10,15 @@ from module.utils import fs_encode
 
 class Premium4Me(Hoster):
     __name__ = "Premium4Me"
-    __version__ = "0.08"
     __type__ = "hoster"
+    __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?premium.to/.*'
+
     __description__ = """Premium.to hoster plugin"""
     __author_name__ = ("RaNaN", "zoidberg", "stickell")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+
 
     def setup(self):
         self.resumeDownload = True

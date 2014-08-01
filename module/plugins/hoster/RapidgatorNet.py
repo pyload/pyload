@@ -1,18 +1,4 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as
-#  published by the Free Software Foundation, either version 3 of the
-#  License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Affero General Public License for more details.
-#
-#  You should have received a copy of the GNU Affero General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-###############################################################################
 
 import re
 
@@ -20,17 +6,18 @@ from pycurl import HTTPHEADER
 
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
-
 from module.plugins.hoster.UnrestrictLi import secondsToMidnight
+from module.plugins.internal.CaptchaService import AdsCaptcha, ReCaptcha, SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia, AdsCaptcha
 
 
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
     __version__ = "0.22"
+
+    __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
+
     __description__ = """Rapidgator.net hoster plugin"""
     __author_name__ = ("zoidberg", "chrox", "stickell", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "", "l.stickell@yahoo.it", "vuolter@gmail.com")
@@ -50,6 +37,7 @@ class RapidgatorNet(SimpleHoster):
     RECAPTCHA_KEY_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
     ADSCAPTCHA_SRC_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']*)'
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.*?)"'
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium

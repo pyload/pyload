@@ -6,8 +6,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.43"
     __type__ = "hook"
+    __version__ = "0.43"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("https", "bool", "Enable HTTPS", False),

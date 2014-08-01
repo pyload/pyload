@@ -5,8 +5,8 @@ from module.plugins.Crypter import Crypter
 
 class XupPl(Crypter):
     __name__ = "XupPl"
-    __version__ = "0.1"
     __type__ = "crypter"
+    __version__ = "0.1"
 
     __pattern__ = r'https?://(?:[^/]*\.)?xup\.pl/.*'
 

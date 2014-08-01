@@ -5,13 +5,13 @@ from glob import glob
 from os import sep
 from os.path import abspath, dirname
 
-from captcha import OCR
+from module.plugins.captcha import OCR
 
 
 class LinksaveIn(OCR):
     __name__ = "LinksaveIn"
-    __version__ = "0.1"
     __type__ = "ocr"
+    __version__ = "0.1"
 
     __description__ = """Linksave.in ocr plugin"""
     __author_name__ = "pyLoad Team"

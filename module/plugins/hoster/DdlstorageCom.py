@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from hashlib import md5
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro
+from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
-from module.common.json_layer import json_loads
+from module.plugins.hoster.XFileSharingPro import XFileSharingPro
 
 
 def getInfo(urls):
@@ -42,8 +43,10 @@ def getInfo(urls):
 class DdlstorageCom(XFileSharingPro):
     __name__ = "DdlstorageCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?ddlstorage.com/(?P<ID>\w{12})'
     __version__ = "1.01"
+
+    __pattern__ = r'http://(?:www\.)?ddlstorage.com/(?P<ID>\w{12})'
+
     __description__ = """DDLStorage.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -51,6 +54,7 @@ class DdlstorageCom(XFileSharingPro):
     HOSTER_NAME = "ddlstorage.com"
 
     FILE_INFO_PATTERN = r'<p class="sub_title"[^>]*>(?P<N>.+) \((?P<S>[^)]+)\)</p>'
+
 
     def prepare(self):
         self.getAPIData()

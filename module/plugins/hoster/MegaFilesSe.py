@@ -6,8 +6,10 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class MegaFilesSe(XFileSharingPro):
     __name__ = "MegaFilesSe"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?megafiles\.se/\w{12}'
     __version__ = "0.01"
+
+    __pattern__ = r'http://(?:www\.)?megafiles\.se/\w{12}'
+
     __description__ = """MegaFiles.se hoster plugin"""
     __author_name__ = "t4skforce"
     __author_mail__ = "t4skforce1337[AT]gmail[DOT]com"

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from module.plugins.Hoster import Hoster
 from module.unescape import unescape
 
@@ -8,11 +9,14 @@ from module.unescape import unescape
 class MyvideoDe(Hoster):
     __name__ = "MyvideoDe"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?myvideo.de/watch/'
     __version__ = "0.9"
+
+    __pattern__ = r'http://(?:www\.)?myvideo.de/watch/'
+
     __description__ = """Myvideo.de hoster plugin"""
     __author_name__ = "spoob"
     __author_mail__ = "spoob@pyload.org"
+
 
     def process(self, pyfile):
         self.pyfile = pyfile

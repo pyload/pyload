@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
+
+from urllib import unquote
 
 from module.plugins.Crypter import Crypter
 
 
 class DontKnowMe(Crypter):
     __name__ = "DontKnowMe"
-    __version__ = "0.1"
     __type__ = "crypter"
+    __version__ = "0.1"
 
     __pattern__ = r'http://(?:www\.)?dontknow.me/at/\?.+$'
 
@@ -22,4 +23,4 @@ class DontKnowMe(Crypter):
 
     def decrypt(self, pyfile):
         link = re.findall(self.LINK_PATTERN, pyfile.url)[0]
-        self.urls = [urllib.unquote(link)]
+        self.urls = [unquote(link)]
