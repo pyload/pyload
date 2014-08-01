@@ -15,7 +15,7 @@ class UploadableCh(SimpleHoster):
     __author_name__ = ("zapp-brannigan")
     __author_mail__ = ("fuerst.reinje@web.de")
     
-    FILE_INFO_PATTERN = r"""div id=\"file_name\" title=.+>(?P<N>.+)<span class=\"filename_normal\">\((?P<S>.*) (?P<U>[kKmMbB]|Bytes)\)</span><"""
+    FILE_INFO_PATTERN = r"""div id=\"file_name\" title=.*>(?P<N>.+)<span class=\"filename_normal\">\((?P<S>.*) (?P<U>[kKmMgG]?i?[bB].*)\)</span><"""
     RECAPTCHA_KEY = "6LdlJuwSAAAAAPJbPIoUhyqOJd7-yrah5Nhim5S3"
     WAIT_PATTERN = r'data-time=\"(\d+)\" data-format'
     FILE_ID = r'name=\"recaptcha_shortencode_field\" value=\"(.+)\"'
@@ -34,6 +34,7 @@ class UploadableCh(SimpleHoster):
         file_id = re.search(self.FILE_ID,self.html).group(1)
         long_url = base_url+"/file/"+file_id+"/"+self.pyfile.name
         not_so_long_url = base_url+"/file/"+file_id
+        self.logDebug("filename: "+pyfile.name)
         self.logDebug("base_url: "+base_url)
         self.logDebug("file_id: "+file_id)
         self.logDebug("long_url: "+long_url)
@@ -73,6 +74,7 @@ class UploadableCh(SimpleHoster):
         if check == "wait_or_reconnect":
             self.logInfo("Downloadlimit reached, please wait or reconnect")
             self.setWait(60*60,True)
+            self.wait()
             self.retry()
         elif check == "is_html":
             self.logInfo("The downloaded file is html, maybe you entered a wrong captcha")
