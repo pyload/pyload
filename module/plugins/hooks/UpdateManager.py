@@ -15,8 +15,8 @@ from module.utils import save_join
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.33"
     __type__ = "hook"
+    __version__ = "0.34"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -52,6 +52,9 @@ class UpdateManager(Hook):
     def coreReady(self):
         self.pluginConfigChanged(self.__name__, "interval", self.getConfig("interval"))
         self.pluginConfigChanged(self.__name__, "reloadplugins", self.getConfig("reloadplugins"))
+
+    def unload(self):
+        self.pluginConfigChanged(self.__name__, "reloadplugins", False)
 
     def setup(self):
         self.scheduler = self.core.scheduler
@@ -181,7 +184,7 @@ class UpdateManager(Hook):
             newver = float(version)
 
             if not oldver:
-                msg = "New version of [%(type)s] %(name)s (v%(newver)s)"
+                msg = "New [%(type)s] %(name)s (v%(newver)s)"
             elif newver > oldver:
                 msg = "New version of [%(type)s] %(name)s (v%(oldver)s -> v%(newver)s)"
             else:
