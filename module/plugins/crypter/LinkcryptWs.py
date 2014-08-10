@@ -34,6 +34,9 @@ class LinkCryptWS(Crypter):
         self.fileid = None
         self.captcha = False
         self.package = None
+        self.x = None
+        self.y = None
+        self.password = None
         self.preferred_sources = ['cnl', 'dlc', 'web'] #['cnl', 'rsdf', 'ccf', 'dlc', 'web']
         
     def decrypt(self, pyfile):
@@ -50,16 +53,11 @@ class LinkCryptWS(Crypter):
         #self.req.cj.setCookie(self.HOSTER_DOMAIN, "Linksave_Language", "english")
         
         # Request package
-        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko") #better chance to not get those key-captchas
+        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0") #better chance to not get those key-captchas
         self.html = self.load(self.pyfile.url)
 
         """if not self.isOnline():
             self.offline()"""
-        
-        # Check for protection    
-        """if self.isPasswordProtected():
-            self.unlockPasswordProtection()
-            self.handleErrors()"""
 
         if(self.isKeyCaptchaProtected()):
             self.retry(4,30,"Can't handle Key-Captcha")
@@ -67,6 +65,11 @@ class LinkCryptWS(Crypter):
         if self.isCaptchaProtected():
             self.captcha = True
             self.unlockCaptchaProtection()
+            self.handleErrors()
+
+        # Check for protection    
+        if self.isPasswordProtected():
+            self.unlockPasswordProtection()
             self.handleErrors()
 
         # Get package name and folder
@@ -104,7 +107,7 @@ class LinkCryptWS(Crypter):
         return True
     
     def isPasswordProtected(self):
-        if re.search(r'''<input.*?type="password"''', self.html):
+        if re.search(r'''class="key".*?<input.*?type="password"''', self.html, re.I | re.S):
             self.logDebug("Links are password protected")
             return True
         
@@ -120,15 +123,19 @@ class LinkCryptWS(Crypter):
         return False
         
     def unlockPasswordProtection(self):
-        password = self.getPassword()
-        self.logDebug("Submitting password [%s] for protected links" % password)
-        post = {"id": self.fileid, "besucherpasswort": password, 'login': 'submit'}
+        self.password = self.getPassword()
+        self.logDebug("Submitting password [%s] for protected links" % self.password)
+        post = {"password": self.password}
+        """if not self.x and not self.y:
+            post['x'] = self.x
+            post['y'] = self.y"""
         self.html = self.load(self.pyfile.url, post=post)
-        print self.html
             
     def unlockCaptchaProtection(self):
         captcha_url = re.search(r'<form.*?id\s*?=\s*?"captcha"[^>]*?>.*?<\s*?input.*?src="([^"]*?)"', self.html, re.I | re.S).group(1)
         captcha_code = self.decryptCaptcha(captcha_url, forceUser=True, imgtype="gif", result_type='positional')
+        self.x = captcha_code[0]
+        self.y = captcha_code[1]
         self.html = self.load(self.pyfile.url, post={"x": captcha_code[0], "y": captcha_code[1]})   
 
     def getPackageInfo(self):
@@ -138,7 +145,7 @@ class LinkCryptWS(Crypter):
         return name, folder
     
     def handleErrors(self):      
-        if "The visitorpassword you have entered is wrong" in self.html:
+        if self.password and re.search(r'''class="key".*?<input.*?type="password"''', self.html, re.I | re.S):
             self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
             self.fail("Incorrect password, please set right password on 'Edit package' form and retry")  
 
