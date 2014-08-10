@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
-class DdlstorageComFolder(SimpleCrypter):
+class DdlstorageComFolder(DeadCrypter):
     __name__ = "DdlstorageComFolder"
     __type__ = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?ddlstorage.com/folder/\w{10}'
+    __pattern__ = r'https?://(?:www\.)?ddlstorage\.com/folder/\w+'
 
     __description__ = """DDLStorage.com folder decrypter plugin"""
     __author_name__ = ("godofdream", "stickell")
     __author_mail__ = ("soilfiction@gmail.com", "l.stickell@yahoo.it")
 
-    LINK_PATTERN = r'<a class="sub_title" style="text-decoration:none;" href="(http://www.ddlstorage.com/.*)">'
+
+getInfo = create_getInfo(SpeedLoadOrg)
