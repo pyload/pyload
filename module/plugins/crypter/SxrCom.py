@@ -58,7 +58,7 @@ class SxrCom(Crypter):
             # Processing direct redirect link (out.php)
             id = re.search(self.PATTERN_SUPPORTED_REDIRECT, url).group('id')
             if id:
-                linklist.append("http://sexuria.com/Pornos_Kostenlos_liebe_" + id + ".html")
+                linklist.append("http://sexuria.com/v1/Pornos_Kostenlos_liebe_" + id + ".html")
         elif re.match(self.PATTERN_SUPPORTED_CRYPT, url):
             # Processing crypted link (dl_links)
             id = re.search(self.PATTERN_SUPPORTED_CRYPT, url).group('id')
