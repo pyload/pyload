@@ -1,5 +1,18 @@
 # -*- coding: utf-8 -*-
 
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 3 of the License,
+#   or (at your option) any later version.
+
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#   See the GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, see <http://www.gnu.org/licenses/>.
+    
 from module.plugins.Crypter import Crypter
 import re
 
@@ -7,7 +20,7 @@ class SxrCom(Crypter):
     __name__ = "SxrCom"
     __type__ = "crypter"
     __pattern__ = r"http://(www\.)?sexuria\.com/(v1/)?Pornos_Kostenlos_.+?_(\d+)\.html|http://(www\.)?sexuria\.com/(v1/)?dl_links_\d+_\d+\.html|http://(www\.)?sexuria\.com/out\.php\?id=(\d+)\&part=\d+\&link=\d+"
-    __version__ = "0.3"
+    __version__ = "0.4"
     __description__ = """Sexuria.com Crypter Plugin"""
     __author_name__ = ("NETHead")
     __author_mail__ = ("NETHead[AT]gmx[DOT]net")
@@ -21,10 +34,8 @@ class SxrCom(Crypter):
     PATTERN_DL_LINK_PAGE       = re.compile(r'"(dl_links_\d+_\d+\.html)"', flags=re.IGNORECASE)
     PATTERN_REDIRECT_LINKS     = re.compile(r'value="(http://sexuria\.com/out\.php\?id=\d+\&part=\d+\&link=\d+)" readonly', flags=re.IGNORECASE)
 
-
     def setup(self):
-        self.html = None
-
+        self.html = ''
 
     def decrypt(self, pyfile):
         # Init
@@ -32,22 +43,17 @@ class SxrCom(Crypter):
         self.package = pyfile.package()
 
         # Get package links
-        try:
-            (package_name, package_links, folder_name, password) = self.getLinks(self.pyfile.url)
-            self.packages = [(package_name, package_links, folder_name)]
+        (package_name, package_links, folder_name, password) = self.getLinks(self.pyfile.url)
+        self.packages = [(package_name, package_links, folder_name)]
+        if password:
             self.pyfile.package().password = password
-        except:
-            self.fail("Unable to decrypt package")
-
 
     def getLinks(self, url):
-        # Initialize
         linklist = []
         name = self.package.name
         folder = self.package.folder
-        password = None
+        password = ''
 
-        # Process url
         if re.match(self.PATTERN_SUPPORTED_MAIN, url):
             # Processing main page
             html = self.load(url)
@@ -62,14 +68,14 @@ class SxrCom(Crypter):
         elif re.match(self.PATTERN_SUPPORTED_CRYPT, url):
             # Processing crypted link (dl_links)
             id = re.search(self.PATTERN_SUPPORTED_CRYPT, url).group('id')
-            html = self.load("http://sexuria.com/v1/Pornos_Kostenlos_info_" + id + ".html")
+            html = self.load("http://sexuria.com/v1/Pornos_Kostenlos_info_" + id + ".html", decode=True)
             title = re.search(self.PATTERN_TITLE, html).group('title').strip()
             if title:
                 name = folder = title
                 self.logDebug("Package info found, name [%s] and folder [%s]" % (name, folder))
-            pwd = re.search(self.PATTERN_PASSWORD, html).group('pwd')
+            pwd = re.search(self.PATTERN_PASSWORD, html).group('pwd').strip()
             if pwd:
-                password = pwd.strip()
+                password = pwd
                 self.logDebug("Password info [%s] found" % password)
             html = self.load(url)
             links = re.findall(self.PATTERN_REDIRECT_LINKS, html)
@@ -84,6 +90,10 @@ class SxrCom(Crypter):
                         self.logDebug("Decrypter broken for link %s" % link)
                     else:
                         linklist.append(finallink)
+
+        # Notice the user if no link could be extracted 
+        if linklist == []:
+            self.fail("Could not extract any links (out of date ?)")
 
         # Log and return
         self.logDebug("Result: %d supported links" % len(linklist))
