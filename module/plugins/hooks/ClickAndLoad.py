@@ -13,9 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: RaNaN
-    @interface-version: 0.2
 """
 
 import socket
@@ -27,11 +24,15 @@ from module.plugins.Hook import Hook
 class ClickAndLoad(Hook):
     __name__ = "ClickAndLoad"
     __version__ = "0.22"
+    __type__ = "hook"
+
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("extern", "bool", "Allow external link adding", False)]
+
     __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""
-    __config__ = [("activated", "bool", "Activated", "True"),
-                  ("extern", "bool", "Allow external link adding", "False")]
     __author_name__ = ("RaNaN", "mkaay")
     __author_mail__ = ("RaNaN@pyload.de", "mkaay@mkaay.de")
+
 
     def coreReady(self):
         self.port = int(self.config['webinterface']['port'])

@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay
 """
 
 import re
@@ -27,9 +25,11 @@ class NetloadIn(Account):
     __name__ = "NetloadIn"
     __version__ = "0.22"
     __type__ = "account"
-    __description__ = """netload.in account plugin"""
+
+    __description__ = """Netload.in account plugin"""
     __author_name__ = ("RaNaN", "CryNickSystems")
     __author_mail__ = ("RaNaN@pyload.org", "webmaster@pcProfil.de")
+
 
     def loadAccountInfo(self, user, req):
         page = req.load("http://netload.in/index.php?id=2&lang=de")

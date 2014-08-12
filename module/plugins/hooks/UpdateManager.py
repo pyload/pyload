@@ -1,129 +1,168 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
-
-import sys
 import re
-from os import stat
-from os.path import join, exists
+import sys
+
+from operator import itemgetter
+from os import remove, stat
+from os.path import isfile
 from time import time
 
-from module.ConfigParser import IGNORE
 from module.network.RequestFactory import getURL
-from module.plugins.Hook import threaded, Expose, Hook
+from module.plugins.Hook import Expose, Hook, threaded
+from module.utils import save_join
 
 
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
-    __version__ = "0.15"
-    __description__ = """checks for updates"""
-    __config__ = [("activated", "bool", "Activated", "True"),
-                  ("interval", "int", "Check interval in minutes", "480"),
-                  ("debug", "bool", "Check for plugin changes when in debug mode", False)]
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("ranan@pyload.org")
+    __version__ = "0.33"
+    __type__ = "hook"
 
-    URL = "http://get.pyload.org/check2/%s/"
-    MIN_TIME = 3 * 60 * 60  # 3h minimum check interval
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
+                  ("interval", "int", "Check interval in hours", 8),
+                  ("reloadplugins", "bool", "Monitor plugins for code changes (debug mode only)", True),
+                  ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
 
-    @property
-    def debug(self):
-        return self.core.debug and self.getConfig("debug")
+    __description__ = """Check for updates"""
+    __author_name__ = "Walter Purcaro"
+    __author_mail__ = "vuolter@gmail.com"
+
+    event_list = ["pluginConfigChanged"]
+
+    SERVER_URL = "http://updatemanager.pyload.org"
+    MIN_INTERVAL = 3 * 60 * 60  #: 3h minimum check interval (value is in seconds)
+
+
+    def pluginConfigChanged(self, plugin, name, value):
+        if name == "interval":
+            interval = value * 60 * 60
+            if self.MIN_INTERVAL <= interval != self.interval:
+                self.scheduler.removeJob(self.cb)
+                self.interval = interval
+                self.initPeriodical()
+            else:
+                self.logDebug("Invalid interval value, kept current")
+        elif name == "reloadplugins":
+            if self.cb2:
+                self.scheduler.removeJob(self.cb2)
+            if value is True and self.core.debug:
+                self.periodical2()
+
+    def coreReady(self):
+        self.pluginConfigChanged(self.__name__, "interval", self.getConfig("interval"))
+        self.pluginConfigChanged(self.__name__, "reloadplugins", self.getConfig("reloadplugins"))
 
     def setup(self):
-        if self.debug:
-            self.logDebug("Monitoring file changes")
-            self.interval = 4
-            self.last_check = 0  # timestamp of updatecheck
-            self.old_periodical = self.periodical
-            self.periodical = self.checkChanges
-            self.mtimes = {}  # recordes times
-        else:
-            self.interval = max(self.getConfig("interval") * 60, self.MIN_TIME)
+        self.scheduler = self.core.scheduler
+        self.cb2 = None
+        self.interval = self.MIN_INTERVAL
+        self.updating = False
+        self.info = {"pyload": False, "version": None, "plugins": False}
+        self.mtimes = {}  #: store modification time for each plugin
 
-        self.updated = False
-        self.reloaded = True
-        self.version = "None"
-
-        self.info = {"pyload": False, "plugins": False}
-
-    @threaded
-    def periodical(self):
-
-        updates = self.checkForUpdate()
-        if updates:
-            self.checkPlugins(updates)
-
-        if self.updated and not self.reloaded:
-            self.info["plugins"] = True
-            self.logInfo(_("*** Plugins have been updated, please restart pyLoad ***"))
-        elif self.updated and self.reloaded:
-            self.logInfo(_("Plugins updated and reloaded"))
-            self.updated = False
-        elif self.version == "None":
-            self.logInfo(_("No plugin updates available"))
+    def periodical2(self):
+        if not self.updating:
+            self.autoreloadPlugins()
+        self.cb2 = self.scheduler.addJob(10, self.periodical2, threaded=False)
 
     @Expose
-    def recheckForUpdates(self):
-        """recheck if updates are available"""
-        self.periodical()
-
-    def checkForUpdate(self):
-        """checks if an update is available, return result"""
-
-        try:
-            if self.version == "None":  # No updated known
-                version_check = getURL(self.URL % self.core.api.getServerVersion()).splitlines()
-                self.version = version_check[0]
-
-                # Still no updates, plugins will be checked
-                if self.version == "None":
-                    self.logInfo(_("No Updates for pyLoad"))
-                    return version_check[1:]
-
-            self.info["pyload"] = True
-            self.logInfo(_("***  New pyLoad Version %s available  ***") % self.version)
-            self.logInfo(_("***  Get it here: http://pyload.org/download  ***"))
-
-        except:
-            self.logWarning(_("Not able to connect server for updates"))
-
-        return None  # Nothing will be done
-
-    def checkPlugins(self, updates):
-        """ checks for plugins updates"""
-
-        # plugins were already updated
-        if self.info["plugins"]:
-            return
+    def autoreloadPlugins(self):
+        """ reload and reindex all modified plugins """
+        modules = filter(
+            lambda m: m and (m.__name__.startswith("module.plugins.") or
+                             m.__name__.startswith("userplugins.")) and
+                             m.__name__.count(".") >= 2, sys.modules.itervalues()
+        )
 
         reloads = []
 
+        for m in modules:
+            root, type, name = m.__name__.rsplit(".", 2)
+            id = (type, name)
+            if type in self.core.pluginManager.plugins:
+                f = m.__file__.replace(".pyc", ".py")
+                if not isfile(f):
+                    continue
+
+                mtime = stat(f).st_mtime
+
+                if id not in self.mtimes:
+                    self.mtimes[id] = mtime
+                elif self.mtimes[id] < mtime:
+                    reloads.append(id)
+                    self.mtimes[id] = mtime
+
+        return True if self.core.pluginManager.reloadPlugins(reloads) else False
+
+    def periodical(self):
+        if not self.info['pyload'] and not (self.getConfig("nodebugupdate") and self.core.debug):
+            self.updateThread()
+
+    def server_request(self):
+        try:
+            return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
+        except:
+            self.logWarning(_("Unable to contact server to get updates"))
+
+    @threaded
+    def updateThread(self):
+        self.updating = True
+        status = self.update(onlyplugin=True if self.getConfig("mode") == "plugins only" else False)
+        if status == 2:
+            self.core.api.restart()
+        else:
+            self.updating = False
+
+    @Expose
+    def updatePlugins(self):
+        """ simple wrapper for calling plugin update quickly """
+        return self.update(onlyplugin=True)
+
+    @Expose
+    def update(self, onlyplugin=False):
+        """ check for updates """
+        data = self.server_request()
+        if not data:
+            exitcode = 0
+        elif data[0] == "None":
+            self.logInfo(_("No new pyLoad version available"))
+            updates = data[1:]
+            exitcode = self._updatePlugins(updates)
+        elif onlyplugin:
+            exitcode = 0
+        else:
+            newversion = data[0]
+            self.logInfo(_("***  New pyLoad Version %s available  ***") % newversion)
+            self.logInfo(_("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
+            exitcode = 3
+            self.info['pyload'] = True
+            self.info['version'] = newversion
+        return exitcode  #: 0 = No plugins updated; 1 = Plugins updated; 2 = Plugins updated, but restart required; 3 = No plugins updated, new pyLoad version available
+
+    def _updatePlugins(self, updates):
+        """ check for plugin updates """
+
+        if self.info['plugins']:
+            return False  #: plugins were already updated
+
+        updated = []
+
         vre = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
         url = updates[0]
-        schema = updates[1].split("|")
-        updates = updates[2:]
+        schema = updates[1].split('|')
+        if "BLACKLIST" in updates:
+            blacklist = updates[updates.index('BLACKLIST') + 1:]
+            updates = updates[2:updates.index('BLACKLIST')]
+        else:
+            blacklist = None
+            updates = updates[2:]
 
-        for plugin in updates:
-            info = dict(zip(schema, plugin.split("|")))
-            filename = info["name"]
-            prefix = info["type"]
-            version = info["version"]
+        upgradable = sorted(map(lambda x: dict(zip(schema, x.split('|'))), updates), key=itemgetter("type", "name"))
+        for plugin in upgradable:
+            filename = plugin['name']
+            prefix = plugin['type']
+            version = plugin['version']
 
             if filename.endswith(".pyc"):
                 name = filename[:filename.find("_")]
@@ -138,65 +177,105 @@ class UpdateManager(Hook):
 
             plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
 
-            if name in plugins:
-                if float(plugins[name]["v"]) >= float(version):
-                    continue
+            oldver = float(plugins[name]['v']) if name in plugins else None
+            newver = float(version)
 
-            if name in IGNORE or (type, name) in IGNORE:
+            if not oldver:
+                msg = "New version of [%(type)s] %(name)s (v%(newver)s)"
+            elif newver > oldver:
+                msg = "New version of [%(type)s] %(name)s (v%(oldver)s -> v%(newver)s)"
+            else:
                 continue
 
-            self.logInfo(_("New version of %(type)s|%(name)s : %(version).2f") % {
+            self.logInfo(_(msg) % {
                 "type": type,
                 "name": name,
-                "version": float(version)
+                "oldver": oldver,
+                "newver": newver
             })
 
             try:
-                content = getURL(url % info)
+                content = getURL(url % plugin)
+                m = vre.search(content)
+                if m and m.group(2) == version:
+                    f = open(save_join("userplugins", prefix, filename), "wb")
+                    f.write(content)
+                    f.close()
+                    updated.append((prefix, name))
+                else:
+                    raise Exception(_("Version mismatch"))
             except Exception, e:
-                self.logWarning(_("Error when updating %s") % filename, str(e))
-                continue
+                self.logError(_("Error updating plugin %s") % filename, str(e))
 
-            m = vre.search(content)
-            if not m or m.group(2) != version:
-                self.logWarning(_("Error when updating %s") % name, _("Version mismatch"))
-                continue
+        if blacklist:
+            blacklisted = sorted(map(lambda x: (x.split('|')[0], x.split('|')[1].rsplit('.', 1)[0]), blacklist))
 
-            f = open(join("userplugins", prefix, filename), "wb")
-            f.write(content)
-            f.close()
-            self.updated = True
+            # Always protect UpdateManager from self-removing
+            try:
+                blacklisted.remove(("hook", "UpdateManager"))
+            except:
+                pass
 
-            reloads.append((prefix, name))
+            removed = self.removePlugins(blacklisted)
+            for t, n in removed:
+                self.logInfo(_("Removed blacklisted plugin [%(type)s] %(name)s") % {
+                    "type": t,
+                    "name": n
+                })
 
-        self.reloaded = self.core.pluginManager.reloadPlugins(reloads)
+        if updated:
+            reloaded = self.core.pluginManager.reloadPlugins(updated)
+            if reloaded:
+                self.logInfo(_("Plugins updated and reloaded"))
+                exitcode = 1
+            else:
+                self.logInfo(_("*** Plugins have been updated, but need a pyLoad restart to be reloaded ***"))
+                self.info['plugins'] = True
+                exitcode = 2
+        else:
+            self.logInfo(_("No plugin updates available"))
+            exitcode = 0
 
-    def checkChanges(self):
+        return exitcode  #: 0 = No plugins updated; 1 = Plugins updated; 2 = Plugins updated, but restart required
 
-        if self.last_check + max(self.getConfig("interval") * 60, self.MIN_TIME) < time():
-            self.old_periodical()
-            self.last_check = time()
+    @Expose
+    def removePlugins(self, type_plugins):
+        """ delete plugins from disk"""
 
-        modules = filter(
-            lambda m: m and (m.__name__.startswith("module.plugins.") or m.__name__.startswith(
-                "userplugins.")) and m.__name__.count(".") >= 2, sys.modules.itervalues())
+        if not type_plugins:
+            return None
 
-        reloads = []
+        self.logDebug("Request deletion of plugins: %s" % type_plugins)
 
-        for m in modules:
-            root, type, name = m.__name__.rsplit(".", 2)
-            id = (type, name)
-            if type in self.core.pluginManager.plugins:
-                f = m.__file__.replace(".pyc", ".py")
-                if not exists(f):
-                    continue
+        removed = []
 
-                mtime = stat(f).st_mtime
+        for type, name in type_plugins:
+            rflag = False
+            py_file = name + ".py"
+            pyc_file = name + ".pyc"
 
-                if id not in self.mtimes:
-                    self.mtimes[id] = mtime
-                elif self.mtimes[id] < mtime:
-                    reloads.append(id)
-                    self.mtimes[id] = mtime
+            for root in ("userplugins", save_join(pypath, "module", "plugins")):
+                py_filename = save_join(root, type, py_file)
+                pyc_filename = save_join(root, type, pyc_file)
 
-        self.core.pluginManager.reloadPlugins(reloads)
+                if isfile(py_filename):
+                    try:
+                        remove(py_filename)
+                    except Exception, e:
+                        self.logError("Error deleting file %s" % py_filename, str(e))
+                        rflag = False
+                    else:
+                        rflag = True
+
+                if isfile(pyc_filename):
+                    try:
+                        if type == "hook":
+                            self.manager.deactivateHook(name)
+                        remove(pyc_filename)
+                    except Exception, e:
+                        self.logError("Error deleting file %s" % pyc_filename, str(e))
+            if rflag:
+                id = (type, name)
+                removed.append(id)
+
+        return removed  #: return a list of the plugins successfully removed

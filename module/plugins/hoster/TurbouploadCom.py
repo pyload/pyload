@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
@@ -22,11 +21,11 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class TurbouploadCom(DeadHoster):
     __name__ = "TurbouploadCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?turboupload.com/(\w+).*"
+    __pattern__ = r'http://(?:www\.)?turboupload.com/(\w+).*'
     __version__ = "0.03"
-    __description__ = """turboupload.com"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __description__ = """Turboupload.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
 
 getInfo = create_getInfo(TurbouploadCom)

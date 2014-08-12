@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -23,14 +22,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class GooIm(SimpleHoster):
     __name__ = "GooIm"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?goo\.im/.+"
+    __pattern__ = r'http://(?:www\.)?goo\.im/.+'
     __version__ = "0.02"
     __description__ = """Goo.im hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_NAME_PATTERN = r'<h3>Filename: (?P<N>.+)</h3>'
-    FILE_OFFLINE_PATTERN = r'The file you requested was not found'
+    OFFLINE_PATTERN = r'The file you requested was not found'
 
     def setup(self):
         self.chunkLimit = -1
@@ -41,8 +40,7 @@ class GooIm(SimpleHoster):
         m = re.search(r'MD5sum: (?P<MD5>[0-9a-z]{32})</h3>', self.html)
         if m:
             self.check_data = {"md5": m.group('MD5')}
-        self.setWait(10)
-        self.wait()
+        self.wait(10)
 
         header = self.load(self.pyfile.url, just_header=True)
         if header['location']:

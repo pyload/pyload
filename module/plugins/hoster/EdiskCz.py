@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 import re
@@ -23,16 +22,18 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EdiskCz(SimpleHoster):
     __name__ = "EdiskCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(\w*\.)?edisk.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*"
+    __pattern__ = r'http://(?:www\.)?edisk.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*'
     __version__ = "0.21"
-    __description__ = """Edisk.cz"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Edisk.cz hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
-    URL_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'
     FILE_INFO_PATTERN = r'<span class="fl" title="(?P<N>[^"]+)">\s*.*?\((?P<S>[0-9.]*) (?P<U>[kKMG])i?B\)</h1></span>'
+    OFFLINE_PATTERN = r'<h3>This file does not exist due to one of the following:</h3><ul><li>'
+
     ACTION_PATTERN = r'/en/download/(\d+/.*\.html)'
-    DLLINK_PATTERN = r'http://.*edisk.cz.*\.html'
-    FILE_OFFLINE_PATTERN = r'<h3>This file does not exist due to one of the following:</h3><ul><li>'
+    LINK_PATTERN = r'http://.*edisk.cz.*\.html'
+
 
     def setup(self):
         self.multiDL = False
@@ -42,10 +43,10 @@ class EdiskCz(SimpleHoster):
 
         self.logDebug('URL:' + url)
 
-        found = re.search(self.ACTION_PATTERN, url)
-        if found is None:
+        m = re.search(self.ACTION_PATTERN, url)
+        if m is None:
             self.parseError("ACTION")
-        action = found.group(1)
+        action = m.group(1)
 
         self.html = self.load(url, decode=True)
         self.getFileInfo()
@@ -56,7 +57,7 @@ class EdiskCz(SimpleHoster):
             "action": action
         })
 
-        if not re.match(self.DLLINK_PATTERN, url):
+        if not re.match(self.LINK_PATTERN, url):
             self.fail("Unexpected server response")
 
         self.download(url)

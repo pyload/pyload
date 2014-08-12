@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay
 """
 
 from time import time
@@ -25,18 +23,22 @@ from module.plugins.Hook import Hook
 class MultiHome(Hook):
     __name__ = "MultiHome"
     __version__ = "0.11"
-    __description__ = """ip address changer"""
-    __config__ = [("activated", "bool", "Activated", "False"),
+    __type__ = "hook"
+
+    __config__ = [("activated", "bool", "Activated", False),
                   ("interfaces", "str", "Interfaces", "None")]
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+
+    __description__ = """Ip address changer"""
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
+
 
     def setup(self):
         self.register = {}
         self.interfaces = []
         self.parseInterfaces(self.getConfig("interfaces").split(";"))
         if not self.interfaces:
-            self.parseInterfaces([self.config["download"]["interface"]])
+            self.parseInterfaces([self.config['download']['interface']])
             self.setConfig("interfaces", self.toConfig())
 
     def toConfig(self):
@@ -71,6 +73,7 @@ class MultiHome(Hook):
 
 
 class Interface(object):
+
     def __init__(self, adress):
         self.adress = adress
         self.history = {}

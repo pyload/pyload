@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -8,12 +7,15 @@ from module.plugins.Crypter import Crypter
 
 class HotfileFolderCom(Crypter):
     __name__ = "HotfileFolderCom"
-    __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?hotfile.com/list/\w+/\w+"
     __version__ = "0.1"
-    __description__ = """HotfileFolder Download Plugin"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?hotfile.com/list/\w+/\w+'
+
+    __description__ = """Hotfile.com folder decrypter plugin"""
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
+
 
     def decrypt(self, pyfile):
         html = self.load(pyfile.url)
@@ -25,4 +27,4 @@ class HotfileFolderCom(Crypter):
 
         new_links = [x[0] for x in new_links]
 
-        self.packages.append((name, new_links, name))
+        self.packages = [(name, new_links, name)]

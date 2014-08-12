@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 import re
@@ -27,23 +25,25 @@ class HellshareCz(Account):
     __name__ = "HellshareCz"
     __version__ = "0.14"
     __type__ = "account"
-    __description__ = """hellshare.cz account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+
+    __description__ = """Hellshare.cz account plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+|\d\d\.\d\d\.)</th>'
+
 
     def loadAccountInfo(self, user, req):
         self.relogin(user)
         html = req.load("http://www.hellshare.com/")
 
-        found = re.search(self.CREDIT_LEFT_PATTERN, html)
-        if found is None:
+        m = re.search(self.CREDIT_LEFT_PATTERN, html)
+        if m is None:
             trafficleft = None
             validuntil = None
             premium = False
         else:
-            credit = found.group(1)
+            credit = m.group(1)
             premium = True
             try:
                 if "." in credit:
@@ -80,7 +80,7 @@ class HellshareCz(Account):
 
         html = req.load('http://www.hellshare.com/login?do=loginForm-submit', post={
             "login": "Log in",
-            "password": data["password"],
+            "password": data['password'],
             "username": user,
             "perm_login": "on"
         })

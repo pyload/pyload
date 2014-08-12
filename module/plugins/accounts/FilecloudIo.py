@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: zoidberg
 """
 
 from module.plugins.Account import Account
@@ -25,13 +23,15 @@ class FilecloudIo(Account):
     __name__ = "FilecloudIo"
     __version__ = "0.02"
     __type__ = "account"
+
     __description__ = """FilecloudIo account plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
+
     def loadAccountInfo(self, user, req):
         # It looks like the first API request always fails, so we retry 5 times, it should work on the second try
-        for _ in range(5):
+        for _ in xrange(5):
             rep = req.load("https://secure.filecloud.io/api-fetch_apikey.api",
                            post={"username": user, "password": self.accounts[user]['password']})
             rep = json_loads(rep)
@@ -50,7 +50,7 @@ class FilecloudIo(Account):
         rep = json_loads(rep)
 
         if rep['is_premium'] == 1:
-            return {"validuntil": int(rep["premium_until"]), "trafficleft": -1}
+            return {"validuntil": int(rep['premium_until']), "trafficleft": -1}
         else:
             return {"premium": False}
 
@@ -61,8 +61,8 @@ class FilecloudIo(Account):
         if not hasattr(self, "form_data"):
             self.form_data = {}
 
-        self.form_data["username"] = user
-        self.form_data["password"] = data['password']
+        self.form_data['username'] = user
+        self.form_data['password'] = data['password']
 
         html = req.load('https://secure.filecloud.io/user-login_p.html',
                         post=self.form_data,

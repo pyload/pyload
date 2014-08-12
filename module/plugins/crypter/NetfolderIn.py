@@ -7,14 +7,17 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 class NetfolderIn(SimpleCrypter):
     __name__ = "NetfolderIn"
-    __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?netfolder.in/((?P<id1>\w+)/\w+|folder.php\?folder_id=(?P<id2>\w+))"
     __version__ = "0.6"
-    __description__ = """NetFolder Crypter Plugin"""
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?netfolder.in/((?P<id1>\w+)/\w+|folder.php\?folder_id=(?P<id2>\w+))'
+
+    __description__ = """NetFolder.in decrypter plugin"""
     __author_name__ = ("RaNaN", "fragonib")
     __author_mail__ = ("RaNaN@pyload.org", "fragonib[AT]yahoo[DOT]es")
 
     TITLE_PATTERN = r'<div class="Text">Inhalt des Ordners <span(.*)>(?P<title>.+)</span></div>'
+
 
     def decrypt(self, pyfile):
         # Request package
@@ -23,7 +26,7 @@ class NetfolderIn(SimpleCrypter):
         # Check for password protection    
         if self.isPasswordProtected():
             self.html = self.submitPassword()
-            if self.html is None:
+            if not self.html:
                 self.fail("Incorrect password, please set right password on Add package form and retry")
 
         # Get package name and folder
@@ -36,7 +39,6 @@ class NetfolderIn(SimpleCrypter):
         self.packages = [(package_name, package_links, folder_name)]
 
     def isPasswordProtected(self):
-
         if '<input type="password" name="password"' in self.html:
             self.logDebug("Links are password protected")
             return True

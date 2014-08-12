@@ -8,15 +8,18 @@ from module.plugins.Crypter import Crypter
 
 class DontKnowMe(Crypter):
     __name__ = "DontKnowMe"
-    __type__ = "crypter"
-    __pattern__ = r"http://dontknow.me/at/\?.+$"
     __version__ = "0.1"
-    __description__ = """DontKnowMe"""
-    __author_name__ = ("selaux")
-    __author_mail__ = ("")
+    __type__ = "crypter"
 
-    LINK_PATTERN = r"http://dontknow.me/at/\?(.+)$"
+    __pattern__ = r'http://(?:www\.)?dontknow.me/at/\?.+$'
+
+    __description__ = """DontKnow.me decrypter plugin"""
+    __author_name__ = "selaux"
+    __author_mail__ = None
+
+    LINK_PATTERN = r'http://dontknow.me/at/\?(.+)$'
+
 
     def decrypt(self, pyfile):
-        link = re.findall(self.LINK_PATTERN, self.pyfile.url)[0]
-        self.core.files.addLinks([urllib.unquote(link)], self.pyfile.package().id)
+        link = re.findall(self.LINK_PATTERN, pyfile.url)[0]
+        self.urls = [urllib.unquote(link)]

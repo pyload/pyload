@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
@@ -22,10 +21,11 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class SpeedfileCz(DeadHoster):
     __name__ = "SpeedFileCz"
     __type__ = "hoster"
-    __pattern__ = r"http://speedfile.cz/.*"
+    __pattern__ = r'http://(?:www\.)?speedfile.cz/.*'
     __version__ = "0.32"
-    __description__ = """speedfile.cz"""
-    __author_name__ = ("zoidberg")
+    __description__ = """Speedfile.cz hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
 
 getInfo = create_getInfo(SpeedfileCz)

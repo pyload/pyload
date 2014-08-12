@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -13,8 +12,6 @@
 #
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  @author: Walter Purcaro
 ############################################################################
 
 
@@ -37,14 +34,14 @@ def getInfo(urls):
         info = json_loads(page)
 
         if "title" in info:
-            name = info["title"] + ".mp4"
+            name = info['title'] + ".mp4"
         else:
             name = url
 
-        if "error" in info or info["access_error"]:
+        if "error" in info or info['access_error']:
             status = "offline"
         else:
-            status = info["status"]
+            status = info['status']
             if status in ("ready", "published"):
                 status = "online"
             elif status in ("waiting", "processing"):
@@ -59,12 +56,12 @@ def getInfo(urls):
 class DailymotionCom(Hoster):
     __name__ = "DailymotionCom"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?dailymotion\.com/.*?video/(?P<ID>[\w^_]+)"
+    __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*?video/(?P<ID>[\w^_]+)'
     __version__ = "0.2"
-    __config__ = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "HD 720p")]
-    __description__ = """Dailymotion Video Download Hoster"""
-    __author_name__ = ("Walter Purcaro")
-    __author_mail__ = ("vuolter@gmail.com")
+    __config__ = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]
+    __description__ = """Dailymotion.com hoster plugin"""
+    __author_name__ = "Walter Purcaro"
+    __author_mail__ = "vuolter@gmail.com"
 
     def setup(self):
         self.resumeDownload = self.multiDL = True

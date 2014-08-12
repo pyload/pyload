@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -24,10 +23,10 @@ class DebridItaliaCom(Hoster):
     __name__ = "DebridItaliaCom"
     __version__ = "0.05"
     __type__ = "hoster"
-    __pattern__ = r"https?://.*debriditalia\.com"
+    __pattern__ = r'https?://(?:[^/]*\.)?debriditalia\.com'
     __description__ = """Debriditalia.com hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     def setup(self):
         self.chunkLimit = -1
@@ -58,4 +57,4 @@ class DebridItaliaCom(Hoster):
         check = self.checkDownload({"empty": re.compile(r"^$")})
 
         if check == "empty":
-            self.retry(5, 120, 'Empty file downloaded')
+            self.retry(5, 2 * 60, "Empty file downloaded")

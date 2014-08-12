@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: Walter Purcaro
 """
 
 import re
@@ -25,14 +23,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileStoreTo(SimpleHoster):
     __name__ = "FileStoreTo"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?filestore\.to/\?d=(?P<ID>\w+)"
+    __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
     __version__ = "0.01"
-    __description__ = """FileStore.to download hoster"""
+    __description__ = """FileStore.to hoster plugin"""
     __author_name__ = ("Walter Purcaro", "stickell")
     __author_mail__ = ("vuolter@gmail.com", "l.stickell@yahoo.it")
 
     FILE_INFO_PATTERN = r'File: <span[^>]*>(?P<N>.+)</span><br />Size: (?P<S>[\d,.]+) (?P<U>\w+)'
-    FILE_OFFLINE_PATTERN = r'>Download-Datei wurde nicht gefunden<'
+    OFFLINE_PATTERN = r'>Download-Datei wurde nicht gefunden<'
 
     def setup(self):
         self.resumeDownload = self.multiDL = True

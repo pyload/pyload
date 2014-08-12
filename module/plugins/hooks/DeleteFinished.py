@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: Walter Purcaro
 """
 
 from module.database import style
@@ -22,16 +20,18 @@ from module.plugins.Hook import Hook
 
 
 class DeleteFinished(Hook):
-    __name__ = 'DeleteFinished'
-    __version__ = '1.09'
-    __description__ = 'Automatically delete all finished packages from queue'
-    __config__ = [
-        ('activated', 'bool', 'Activated', 'False'),
-        ('interval', 'int', 'Delete every (hours)', '72'),
-        ('deloffline', 'bool', 'Delete packages with offline links', 'False')
-    ]
-    __author_name__ = ('Walter Purcaro')
-    __author_mail__ = ('vuolter@gmail.com')
+    __name__ = "DeleteFinished"
+    __version__ = "1.09"
+    __type__ = "hook"
+
+    __config__ = [('activated', 'bool', 'Activated', 'False'),
+                  ('interval', 'int', 'Delete every (hours)', '72'),
+                  ('deloffline', 'bool', 'Delete packages with offline links', 'False')]
+
+    __description__ = """Automatically delete all finished packages from queue"""
+    __author_name__ = "Walter Purcaro"
+    __author_mail__ = "vuolter@gmail.com"
+
 
     ## overwritten methods ##
     def periodical(self):

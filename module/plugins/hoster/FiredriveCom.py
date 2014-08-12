@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ###############################################################################
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -13,8 +12,6 @@
 #
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  @author: Walter Purcaro
 ###############################################################################
 
 import re
@@ -22,20 +19,24 @@ import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class PutlockerCom(SimpleHoster):
-    __name__ = "PutlockerCom"
+class FiredriveCom(SimpleHoster):
+    __name__ = "FiredriveCom"
     __type__ = "hoster"
     __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
-    __version__ = "0.33"
+    __version__ = "0.03"
     __description__ = """Firedrive.com hoster plugin"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
 
     FILE_NAME_PATTERN = r'<b>Name:</b> (?P<N>.+) <br>'
     FILE_SIZE_PATTERN = r'<b>Size:</b> (?P<S>[\d.]+) (?P<U>[a-zA-Z]+) <br>'
-    FILE_OFFLINE_PATTERN = r"<div class=\"sad_face_image\">"
+    OFFLINE_PATTERN = r'class="sad_face_image"|>No such page here.<'
+    TEMP_OFFLINE_PATTERN = r'>(File Temporarily Unavailable|Server Error. Try again later)'
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.firedrive.com/file/\g<ID>')]
+
+    LINK_PATTERN = r'<a href="(https?://dl\.firedrive\.com/\?key=.+?)"'
+
 
     def setup(self):
         self.multiDL = self.resumeDownload = True
@@ -47,8 +48,16 @@ class PutlockerCom(SimpleHoster):
         self.download(link, disposition=True)
 
     def _getLink(self):
-        self.html = self.load(self.pyfile.url, post={"confirm": re.search(r'name="confirm" value="(.*)"', self.html).group(1)})
-        return re.search(r'<a href="(https?://dl\.firedrive\.com/.*?)"', self.html).group(1)
+        f = re.search(self.LINK_PATTERN, self.html)
+        if f:
+            return f.group(1)
+        else:
+            self.html = self.load(self.pyfile.url, post={"confirm": re.search(r'name="confirm" value="(.+?)"', self.html).group(1)})
+            f = re.search(self.LINK_PATTERN, self.html)
+            if f:
+                return f.group(1)
+            else:
+                self.parseError("Direct download link not found")
 
 
-getInfo = create_getInfo(PutlockerCom)
+getInfo = create_getInfo(FiredriveCom)

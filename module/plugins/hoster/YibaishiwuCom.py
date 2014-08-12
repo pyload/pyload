@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 import re
@@ -24,28 +23,37 @@ from module.common.json_layer import json_loads
 class YibaishiwuCom(SimpleHoster):
     __name__ = "YibaishiwuCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?(?:u\.)?115.com/file/(?P<ID>\w+)"
+    __pattern__ = r'http://(?:www\.)?(?:u\.)?115.com/file/(?P<ID>\w+)'
     __version__ = "0.12"
-    __description__ = """115.com"""
-    __author_name__ = ("zoidberg")
+    __description__ = """115.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r"file_name: '(?P<N>[^']+)'"
     FILE_SIZE_PATTERN = r"file_size: '(?P<S>[^']+)'"
-    FILE_OFFLINE_PATTERN = ur'<h3><i style="color:red;">哎呀！提取码不存在！不妨搜搜看吧！</i></h3>'
+    OFFLINE_PATTERN = ur'<h3><i style="color:red;">哎呀！提取码不存在！不妨搜搜看吧！</i></h3>'
 
-    AJAX_URL_PATTERN = r'(/\?ct=(pickcode|download)[^"\']+)'
+    LINK_PATTERN = r'(/\?ct=(pickcode|download)[^"\']+)'
+
 
     def handleFree(self):
-        found = re.search(self.AJAX_URL_PATTERN, self.html)
-        if not found:
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
             self.parseError("AJAX URL")
-        url = found.group(1)
-        self.logDebug(('FREEUSER' if found.group(2) == 'download' else 'GUEST') + ' URL', url)
+        url = m.group(1)
+        self.logDebug(('FREEUSER' if m.group(2) == 'download' else 'GUEST') + ' URL', url)
 
         response = json_loads(self.load("http://115.com" + url, decode=False))
-        for mirror in (response['urls'] if 'urls' in response else response['data'] if 'data' in response else []):
+        if "urls" in response:
+            mirrors = response['urls'] 
+        elif "data" in response:
+            mirrors = response['data']
+        else:
+            mirrors = None
+
+        for mr in mirrors:
             try:
-                url = mirror['url'].replace('\\', '')
+                url = mr['url'].replace("\\", "")
                 self.logDebug("Trying URL: " + url)
                 self.download(url)
                 break

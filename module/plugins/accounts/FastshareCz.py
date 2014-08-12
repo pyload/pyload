@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: zoidberg
 """
 
 import re
@@ -26,18 +24,20 @@ class FastshareCz(Account):
     __name__ = "FastshareCz"
     __version__ = "0.03"
     __type__ = "account"
-    __description__ = """fastshare.cz account plugin"""
+
+    __description__ = """Fastshare.cz account plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     CREDIT_PATTERN = r'(?:Kredit|Credit)\s*</td>\s*<td[^>]*>([\d. \w]+)&nbsp;'
 
+
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.fastshare.cz/user", decode=True)
 
-        found = re.search(self.CREDIT_PATTERN, html)
-        if found:
-            trafficleft = parseFileSize(found.group(1)) / 1024
+        m = re.search(self.CREDIT_PATTERN, html)
+        if m:
+            trafficleft = parseFileSize(m.group(1)) / 1024
             premium = True if trafficleft else False
         else:
             trafficleft = None

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -39,17 +38,17 @@ def getInfo(urls):
 class WebshareCz(SimpleHoster):
     __name__ = "WebshareCz"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?webshare.cz/(?:#/)?file/(?P<ID>\w+)"
+    __pattern__ = r'https?://(?:www\.)?webshare.cz/(?:#/)?file/(?P<ID>\w+)'
     __version__ = "0.13"
     __description__ = """WebShare.cz hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
 
     def handleFree(self):
         api_data = self.load('https://webshare.cz/api/file_link/', post={'ident': self.fid})
         self.logDebug("API data: " + api_data)
         m = re.search('<link>(.+)</link>', api_data)
-        if not m:
+        if m is None:
             self.parseError('Unable to detect direct link')
         direct = m.group(1)
         self.logDebug("Direct link: " + direct)
@@ -58,7 +57,7 @@ class WebshareCz(SimpleHoster):
     def getFileInfo(self):
         self.logDebug("URL: %s" % self.pyfile.url)
 
-        self.fid = re.search(self.__pattern__, self.pyfile.url).group('ID')
+        self.fid = re.match(self.__pattern__, self.pyfile.url).group('ID')
 
         self.load(self.pyfile.url)
         api_data = self.load('https://webshare.cz/api/file_info/', post={'ident': self.fid})

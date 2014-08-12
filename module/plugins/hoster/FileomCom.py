@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ###############################################################################
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -13,8 +12,6 @@
 #
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  @author: Walter Purcaro
 ###############################################################################
 
 # Test links (random.bin):
@@ -42,7 +39,7 @@ class FileomCom(XFileSharingPro):
 
     ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)(?:\'|</)'
 
-    DIRECT_LINK_PATTERN = r"var url2 = '(.+?)';"
+    LINK_PATTERN = r"var url2 = '(.+?)';"
 
     def setup(self):
         self.resumeDownload = self.premium

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -23,9 +22,11 @@ class UnrestrictLi(Account):
     __name__ = "UnrestrictLi"
     __version__ = "0.03"
     __type__ = "account"
+
     __description__ = """Unrestrict.li account plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
+
 
     def loadAccountInfo(self, user, req):
         json_data = req.load('http://unrestrict.li/api/jdownloader/user.php?format=json')
@@ -48,9 +49,9 @@ class UnrestrictLi(Account):
             self.logError("A Captcha is required. Go to http://unrestrict.li/sign_in and login, then retry")
             return
 
-        post_data = {"username": user, "password": data["password"],
+        post_data = {"username": user, "password": data['password'],
                      "remember_me": "remember", "signin": "Sign in"}
-        self.html = req.load("https://unrestrict.li/sign_in", post=post_data)
+        html = req.load("https://unrestrict.li/sign_in", post=post_data)
 
-        if 'sign_out' not in self.html:
+        if 'sign_out' not in html:
             self.wrongPassword()

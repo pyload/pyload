@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: hgg
 """
 from os.path import basename
 
@@ -24,12 +22,16 @@ from module.PyFile import PyFile
 
 
 class UnSkipOnFail(Hook):
-    __name__ = 'UnSkipOnFail'
-    __version__ = '0.01'
-    __description__ = 'When a download fails, restart "skipped" duplicates.'
-    __config__ = [('activated', 'bool', 'Activated', True), ]
-    __author_name__ = ('hagg',)
-    __author_mail__ = ('')
+    __name__ = "UnSkipOnFail"
+    __version__ = "0.01"
+    __type__ = "hook"
+
+    __config__ = [("activated", "bool", "Activated", True)]
+
+    __description__ = """When a download fails, restart skipped duplicates"""
+    __author_name__ = "hagg"
+    __author_mail__ = None
+
 
     def downloadFailed(self, pyfile):
         pyfile_name = basename(pyfile.name)

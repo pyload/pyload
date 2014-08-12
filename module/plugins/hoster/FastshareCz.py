@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ###############################################################################
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -13,8 +12,6 @@
 #
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  @author: zoidberg
 ###############################################################################
 
 # Test links (random.bin):
@@ -36,22 +33,24 @@ class FastshareCz(SimpleHoster):
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     FILE_INFO_PATTERN = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*Size\s*: (?P<S>\d+) (?P<U>\w+),'
-    FILE_OFFLINE_PATTERN = '>(The file has been deleted|Requested page not found)'
+    OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found)'
 
     FILE_URL_REPLACEMENTS = [("#.*", "")]
+
     SH_COOKIES = [(".fastshare.cz", "lang", "en")]
 
     FREE_URL_PATTERN = r'action=(/free/.*?)>\s*<img src="([^"]*)"><br'
     PREMIUM_URL_PATTERN = r'(http://data\d+\.fastshare\.cz/download\.php\?id=\d+&)'
-    CREDIT_PATTERN = " credit for "
+    CREDIT_PATTERN = r' credit for '
+
 
     def handleFree(self):
         if "> 100% of FREE slots are full" in self.html:
             self.retry(120, 60, "No free slots")
 
-        found = re.search(self.FREE_URL_PATTERN, self.html)
-        if found:
-            action, captcha_src = found.groups()
+        m = re.search(self.FREE_URL_PATTERN, self.html)
+        if m:
+            action, captcha_src = m.groups()
         else:
             self.parseError("Free URL")
 
@@ -66,14 +65,14 @@ class FastshareCz(SimpleHoster):
         })
 
         if check == "paralell_dl":
-            self.retry(6, 600, "Paralell download")
+            self.retry(6, 10 * 60, "Paralell download")
         elif check == "wrong_captcha":
-            self.retry(5, 1, "Wrong captcha")
+            self.retry(max_tries=5, reason="Wrong captcha")
 
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)
         if "location" in header:
-            url = header["location"]
+            url = header['location']
         else:
             self.html = self.load(self.pyfile.url)
 
@@ -83,9 +82,9 @@ class FastshareCz(SimpleHoster):
                 self.logWarning("Not enough traffic left")
                 self.resetAccount()
             else:
-                found = re.search(self.PREMIUM_URL_PATTERN, self.html)
-                if found:
-                    url = found.group(1)
+                m = re.search(self.PREMIUM_URL_PATTERN, self.html)
+                if m:
+                    url = m.group(1)
                 else:
                     self.parseError("Premium URL")
 

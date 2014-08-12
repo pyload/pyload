@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import re
 
 from module.plugins.Hoster import Hoster
@@ -8,17 +10,16 @@ class RPNetBiz(Hoster):
     __name__ = "RPNetBiz"
     __version__ = "0.1"
     __type__ = "hoster"
-    __description__ = """RPNet.Biz hoster plugin"""
-    __pattern__ = r"https?://.*rpnet\.biz"
-    __author_name__ = ("Dman")
-    __author_mail__ = ("dmanugm@gmail.com")
+    __description__ = """RPNet.biz hoster plugin"""
+    __pattern__ = r'https?://.*rpnet\.biz'
+    __author_name__ = "Dman"
+    __author_mail__ = "dmanugm@gmail.com"
 
     def setup(self):
         self.chunkLimit = -1
         self.resumeDownload = True
 
     def process(self, pyfile):
-
         if re.match(self.__pattern__, pyfile.url):
             link_status = {'generated': pyfile.url}
         elif not self.account:
@@ -32,7 +33,7 @@ class RPNetBiz(Hoster):
             # Get the download link 
             response = self.load("https://premium.rpnet.biz/client_api.php",
                                  get={"username": user, "password": data['password'],
-                                      "action": "generate", "links": self.pyfile.url})
+                                      "action": "generate", "links": pyfile.url})
 
             self.logDebug("JSON data: %s" % response)
             link_status = json_loads(response)['links'][0]  # get the first link... since we only queried one

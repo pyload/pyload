@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: godofdream
 """
 
 from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
@@ -22,11 +21,11 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class IcyFilesCom(DeadHoster):
     __name__ = "IcyFilesCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?icyfiles\.com/(.*)"
+    __pattern__ = r'http://(?:www\.)?icyfiles\.com/(.*)'
     __version__ = "0.06"
-    __description__ = """IcyFiles.com plugin - free only"""
-    __author_name__ = ("godofdream")
-    __author_mail__ = ("soilfiction@gmail.com")
+    __description__ = """IcyFiles.com hoster plugin"""
+    __author_name__ = "godofdream"
+    __author_mail__ = "soilfiction@gmail.com"
 
 
 getInfo = create_getInfo(IcyFilesCom)

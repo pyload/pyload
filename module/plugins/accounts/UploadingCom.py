@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay
 """
 
 from time import time, strptime, mktime
@@ -27,9 +25,11 @@ class UploadingCom(Account):
     __name__ = "UploadingCom"
     __version__ = "0.1"
     __type__ = "account"
-    __description__ = """uploading.com account plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+
+    __description__ = """Uploading.com account plugin"""
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
+
 
     def loadAccountInfo(self, user, req):
         src = req.load("http://uploading.com/")
@@ -52,4 +52,4 @@ class UploadingCom(Account):
         req.cj.setCookie("uploading.com", "_lang", "en")
         req.load("http://uploading.com/")
         req.load("http://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time() * 1000),
-                 post={"email": user, "password": data["password"], "remember": "on"})
+                 post={"email": user, "password": data['password'], "remember": "on"})

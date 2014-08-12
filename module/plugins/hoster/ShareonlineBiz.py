@@ -1,11 +1,7 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
-from base64 import b64decode
-import hashlib
-import random
-from time import time, sleep
+from time import time
 
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
@@ -42,9 +38,9 @@ def getInfo(urls):
 class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
-    __pattern__ = r"https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download.php\?id=|dl/)(?P<ID>\w+)"
-    __version__ = "0.38"
-    __description__ = """Shareonline.biz Download Hoster"""
+    __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download.php\?id=|dl/)(?P<ID>\w+)'
+    __version__ = "0.40"
+    __description__ = """Shareonline.biz hoster plugin"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "Walter Purcaro")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "vuolter@gmail.com")
 
@@ -73,9 +69,9 @@ class ShareonlineBiz(Hoster):
         # check = self.checkDownload({"failure": re.compile(self.ERROR_INFO_PATTERN)})
         # if check == "failure":
         #     try:
-        #         self.retry(reason = self.lastCheck.group(1).decode("utf8"))
+        #         self.retry(reason=self.lastCheck.group(1).decode("utf8"))
         #     except:
-        #         self.retry(reason = "Unknown error")
+        #         self.retry(reason="Unknown error")
 
         if self.api_data:
             self.check_data = {"size": int(self.api_data['size']), "md5": self.api_data['md5']}
@@ -88,17 +84,17 @@ class ShareonlineBiz(Hoster):
         fields = src.split(";")
         self.api_data = {"fileid": fields[0],
                          "status": fields[1]}
-        if not self.api_data["status"] == "OK":
+        if not self.api_data['status'] == "OK":
             self.offline()
         else:
-            self.api_data["filename"] = fields[2]
-            self.api_data["size"] = fields[3]  # in bytes
-            self.api_data["md5"] = fields[4].strip().lower().replace("\n\n", "")  # md5
+            self.api_data['filename'] = fields[2]
+            self.api_data['size'] = fields[3]  # in bytes
+            self.api_data['md5'] = fields[4].strip().lower().replace("\n\n", "")  # md5
 
     def handleFree(self):
         self.loadAPIData()
-        self.pyfile.name = self.api_data["filename"]
-        self.pyfile.size = int(self.api_data["size"])
+        self.pyfile.name = self.api_data['filename']
+        self.pyfile.size = int(self.api_data['size'])
 
         self.html = self.load(self.pyfile.url, cookies=True)  # refer, stuff
         self.setWait(3)
@@ -107,20 +103,24 @@ class ShareonlineBiz(Hoster):
         self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free": "1", "choice": "free"}, decode=True)
         self.checkErrors()
 
-        found = re.search(r'var wait=(\d+);', self.html)
+        m = re.search(r'var wait=(\d+);', self.html)
 
         recaptcha = ReCaptcha(self)
         for _ in xrange(5):
             challenge, response = recaptcha.challenge("6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX")
-            self.setWait(int(found.group(1)) if found else 30)
+            self.setWait(int(m.group(1)) if m else 30)
             response = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time() * 1000)), post={
                 'dl_free': '1',
                 'recaptcha_challenge_field': challenge,
                 'recaptcha_response_field': response})
 
             if not response == '0':
+                self.correctCaptcha()
                 break
+            else:
+                self.invalidCaptcha()
         else:
+            self.invalidCaptcha()
             self.fail("No valid captcha solution received")
 
         download_url = response.decode("base64")
@@ -136,14 +136,18 @@ class ShareonlineBiz(Hoster):
             "fail": re.compile(r"<title>Share-Online")
         })
         if check == "cookie":
+            self.invalidCaptcha()
             self.retry(5, 60, "Cookie failure")
         elif check == "fail":
-            self.retry(5, 300, "Download failed")
+            self.invalidCaptcha()
+            self.retry(5, 5 * 60, "Download failed")
+        else:
+            self.correctCaptcha()
 
-    def handlePremium(self):  # should be working better loading (account) api internally
+    def handlePremium(self):  #: should be working better loading (account) api internally
         self.account.getAccountInfo(self.user, True)
         src = self.load("http://api.share-online.biz/account.php",
-                        {"username": self.user, "password": self.account.accounts[self.user]["password"],
+                        {"username": self.user, "password": self.account.accounts[self.user]['password'],
                          "act": "download", "lid": self.file_id})
 
         self.api_data = dlinfo = {}
@@ -152,13 +156,13 @@ class ShareonlineBiz(Hoster):
             dlinfo[key.lower()] = value
 
         self.logDebug(dlinfo)
-        if not dlinfo["status"] == "online":
+        if not dlinfo['status'] == "online":
             self.offline()
         else:
-            self.pyfile.name = dlinfo["name"]
-            self.pyfile.size = int(dlinfo["size"])
+            self.pyfile.name = dlinfo['name']
+            self.pyfile.size = int(dlinfo['size'])
 
-            dlLink = dlinfo["url"]
+            dlLink = dlinfo['url']
             if dlLink == "server_under_maintenance":
                 self.tempOffline()
             else:
@@ -166,18 +170,18 @@ class ShareonlineBiz(Hoster):
                 self.download(dlLink)
 
     def checkErrors(self):
-        found = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
-        if not found:
+        m = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
+        if m is None:
             return
 
-        err = found.group(1)
-        found = re.search(self.ERROR_INFO_PATTERN, self.html)
-        msg = found.group(1) if found else ""
+        err = m.group(1)
+        m = re.search(self.ERROR_INFO_PATTERN, self.html)
+        msg = m.group(1) if m else ""
         self.logError(err, msg or "Unknown error occurred")
 
-        if err in ('invalid'):
+        if err == "invalid":
             self.fail(msg or "File not available")
-        elif err in ('freelimit', 'size', 'proxy'):
+        elif err in ("freelimit", "size", "proxy"):
             self.fail(msg or "Premium account needed")
         else:
             if err in 'server':
