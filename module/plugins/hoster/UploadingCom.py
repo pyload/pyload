@@ -26,14 +26,14 @@ class UploadingCom(SimpleHoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)'
-    __version__ = "0.35"
+    __version__ = "0.36"
     __description__ = """Uploading.com hoster plugin"""
     __author_name__ = ("jeix", "mkaay", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
 
     FILE_NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
     FILE_SIZE_PATTERN = r'size tip_container">(?P<S>[\d.]+) (?P<U>\w+)<'
-    OFFLINE_PATTERN = r'Page not found!'
+    OFFLINE_PATTERN = r'(?:Page|file) not found'
 
     def process(self, pyfile):
         # set lang to english
