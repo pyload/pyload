@@ -13,6 +13,8 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program; if not, see <http://www.gnu.org/licenses/>.
     
+#   @author: NETHead
+
 from module.plugins.Crypter import Crypter
 import re
 
@@ -20,7 +22,7 @@ class SxrCom(Crypter):
     __name__ = "SxrCom"
     __type__ = "crypter"
     __pattern__ = r"http://(www\.)?sexuria\.com/(v1/)?Pornos_Kostenlos_.+?_(\d+)\.html|http://(www\.)?sexuria\.com/(v1/)?dl_links_\d+_\d+\.html|http://(www\.)?sexuria\.com/out\.php\?id=(\d+)\&part=\d+\&link=\d+"
-    __version__ = "0.4"
+    __version__ = "0.5"
     __description__ = """Sexuria.com Crypter Plugin"""
     __author_name__ = ("NETHead")
     __author_mail__ = ("NETHead[AT]gmx[DOT]net")
@@ -35,7 +37,7 @@ class SxrCom(Crypter):
     PATTERN_REDIRECT_LINKS     = re.compile(r'value="(http://sexuria\.com/out\.php\?id=\d+\&part=\d+\&link=\d+)" readonly', flags=re.IGNORECASE)
 
     def setup(self):
-        self.html = ''
+        self.html = None
 
     def decrypt(self, pyfile):
         # Init
@@ -43,16 +45,16 @@ class SxrCom(Crypter):
         self.package = pyfile.package()
 
         # Get package links
-        (package_name, package_links, folder_name, password) = self.getLinks(self.pyfile.url)
-        self.packages = [(package_name, package_links, folder_name)]
-        if password:
-            self.pyfile.package().password = password
-
-    def getLinks(self, url):
+        (package_name, package_links, folder_name, package_pwd) = self.decryptLinks(self.pyfile.url)
+        if package_pwd:
+            self.pyfile.package().password = package_pwd        
+        self.packages.append((package_name, package_links, folder_name))
+        
+    def decryptLinks(self, url):
         linklist = []
         name = self.package.name
         folder = self.package.folder
-        password = ''
+        password = None
 
         if re.match(self.PATTERN_SUPPORTED_MAIN, url):
             # Processing main page
@@ -61,42 +63,42 @@ class SxrCom(Crypter):
             for link in links:
                 linklist.append("http://sexuria.com/v1/" + link)
         elif re.match(self.PATTERN_SUPPORTED_REDIRECT, url):
-            # Processing direct redirect link (out.php)
+            # Processing direct redirect link (out.php), redirecting to main page
             id = re.search(self.PATTERN_SUPPORTED_REDIRECT, url).group('id')
             if id:
                 linklist.append("http://sexuria.com/v1/Pornos_Kostenlos_liebe_" + id + ".html")
         elif re.match(self.PATTERN_SUPPORTED_CRYPT, url):
-            # Processing crypted link (dl_links)
+            # Extract info from main file
             id = re.search(self.PATTERN_SUPPORTED_CRYPT, url).group('id')
             html = self.load("http://sexuria.com/v1/Pornos_Kostenlos_info_" + id + ".html", decode=True)
             title = re.search(self.PATTERN_TITLE, html).group('title').strip()
             if title:
                 name = folder = title
                 self.logDebug("Package info found, name [%s] and folder [%s]" % (name, folder))
-            pwd = re.search(self.PATTERN_PASSWORD, html).group('pwd').strip()
+            pwd = re.search(self.PATTERN_PASSWORD, html).group('pwd')
             if pwd:
-                password = pwd
+                password = pwd.strip()
                 self.logDebug("Password info [%s] found" % password)
+            # Process link (dl_link)
             html = self.load(url)
             links = re.findall(self.PATTERN_REDIRECT_LINKS, html)
-            self.logDebug("Found %d redirect links " % len(links))
             if len(links) == 0:
-                self.logDebug("Decrypter broken for link %s" % link)
+                self.LogError("Decrypter SxrCom broken for link %s" % link)
             else:
                 for link in links:
                     link = link.replace("http://sexuria.com/", "http://www.sexuria.com/")
                     finallink = self.load(link, just_header = True)['location']
                     if (finallink == None) or ("sexuria.com/" in finallink):
-                        self.logDebug("Decrypter broken for link %s" % link)
+                        self.LogError("Decrypter SxrCom broken for link %s" % link)
                     else:
                         linklist.append(finallink)
 
         # Notice the user if no link could be extracted 
         if linklist == []:
-            self.fail("Could not extract any links (out of date ?)")
+            self.fail("Could not extract any links (out of date?)")
 
         # Log and return
-        self.logDebug("Result: %d supported links" % len(linklist))
+        self.logDebug("SxrCom result: %d supported links" % len(linklist))
         for i, link in enumerate(linklist):
             self.logDebug("Supported link %d, %s" % (i+1, link))
 
