@@ -58,15 +58,22 @@ class ExtractArchive(Hook):
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
+<<<<<<< HEAD
+    __version__ = "0.17"
+    __description__ = "Extract different kind of archives"
+=======
     __version__ = "0.16"
     __type__ = "hook"
 
+>>>>>>> pyload/stable
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
                   ("overwrite", "bool", "Overwrite files", True),
                   ("passwordfile", "file", "password file", "unrar_passwords.txt"),
                   ("deletearchive", "bool", "Delete archives when done", False),
-                  ("subfolder", "bool", "Create subfolder for each package", False),
+                  ("trashpath", "folder", "Delete archives to", ""),
+                  ("subfolder", "int", "Create subfolder, if number of files&folders> (-1..never;0..always)", -1),
+                  ("subfoldername", "%ARCHIVENAME%;%PACKAGENAME%;%HOSTER%", "Subfoldername", "%PACKAGENAME%"),
                   ("destination", "folder", "Extract files to", ""),
                   ("excludefiles", "str", "Exclude files from unpacking (seperated by ;)", ""),
                   ("recursive", "bool", "Extract archives in archvies", True),
@@ -148,6 +155,10 @@ class ExtractArchive(Hook):
             if not p:
                 continue
 
+<<<<<<< HEAD
+            archive_root=True
+            files_ids = [(save_join(dl, p.folder, x["name"]), x["id"]) for x in p.getChildren().itervalues()]
+=======
             # determine output folder
             out = save_join(dl, p.folder, "")
             # force trailing slash
@@ -164,7 +175,9 @@ class ExtractArchive(Hook):
                     makedirs(out)
 
             files_ids = [(save_join(dl, p.folder, x['name']), x['id']) for x in p.getChildren().itervalues()]
+>>>>>>> pyload/stable
             matched = False
+            tmppath_list = []
 
             # check as long there are unseen files
             while files_ids:
@@ -180,6 +193,17 @@ class ExtractArchive(Hook):
                             self.logDebug(basename(target), "skipped")
                             continue
                         extracted.append(target)  # prevent extracting same file twice
+
+                        if archive_root == True:
+                            if self.getConfig("destination") and self.getConfig("destination").lower() != "none":
+                                out = save_join(self.getConfig("destination"), "%s_temp", "") % fs_encode(os.path.splitext(os.path.basename(target))[0])
+                                targetpath = save_join(self.getConfig("destination"),"")
+                            else:
+                                out = save_join(os.path.dirname(target), "%s_temp", "") % fs_encode(os.path.splitext(os.path.basename(target))[0])
+                                targetpath = save_join(os.path.dirname(target),"")
+                            tmppath_list.append(out)
+                        else:
+                            out = save_join(os.path.dirname(target))
 
                         klass = plugin(self, target, out, self.getConfig("fullpath"), self.getConfig("overwrite"), self.getConfig("excludefiles"),
                                        self.getConfig("renice"))
@@ -198,9 +222,59 @@ class ExtractArchive(Hook):
                                 new_files_ids.append((file, fid))  # append as new target
 
                 files_ids = new_files_ids  # also check extracted files
+                archive_root=False
+
+            if self.getConfig("destination") and self.getConfig("destination").lower() != "none":
+                targetpath = save_join(targetpath, p.folder)
+
+            for tmppath in tmppath_list:
+                if self.getConfig("subfoldername") == "%ARCHIVENAME%":foldername = os.path.basename(os.path.dirname(tmppath))[:-5]
+                elif self.getConfig("subfoldername") == "%PACKAGENAME%":foldername = p.name
+                elif self.getConfig("subfoldername") == "%HOSTER%":foldername = "HOSTER" #how do i get the hostername or the pluginname, which was used?
+                foldername = fs_encode(foldername)
+
+                if os.path.exists(tmppath): #was unrar sucessfull?
+                    self.logDebug("Unrar was successful!")
+                    filenames = os.listdir(tmppath)
+                    objectnumber=len(filenames) # folder & files number
+
+                    if self.getConfig("subfolder") == -1: #create no subfolder
+                        subfolder = ""
+                    elif self.getConfig("subfolder") == 0: #create always a subfolder
+                        subfolder = foldername
+                    else:
+                        if objectnumber > self.getConfig("subfolder"):
+                           subfolder = foldername
+                        else: subfolder = ""
+
+                    self.movefiles(tmppath, targetpath, subfolder, filenames)
+                    if os.path.exists(tmppath) and len(os.listdir(tmppath)) == 0:
+                            os.rmdir(tmppath)
 
             if not matched:
                 self.logInfo(_("No files found to extract"))
+
+    def movefiles(self, tmppath, targetpath, subfolder, filenames):
+        for filename in filenames:
+            oldpath = save_join(tmppath, filename)
+            newpath = save_join(targetpath, subfolder, filename)
+
+            if os.path.isdir(oldpath):
+                # if subfolder != "" and not os.path.exists(save_join(targetpath, subfolder)): os.makedirs(save_join(targetpath, subfolder))
+                self.movefiles(save_join(tmppath, filename), newpath, "", os.listdir(save_join(tmppath, filename)))
+                continue
+
+            if os.path.exists(newpath):
+                if self.getConfig("overwrite"):
+                    remove(newpath)
+                    os.renames(oldpath, newpath)
+                    self.logDebug("overwrote file: %s" %newpath)
+                else:
+                    remove(oldpath)
+                    if len(os.listdir(tmppath)) == 0: os.rmdir(tmppath)
+                    self.logDebug("skipped file: %s" %newpath)
+            else:
+                os.renames(oldpath, newpath)
 
     def startExtracting(self, plugin, fid, passwords, thread):
         pyfile = self.core.files.getFile(fid)
@@ -250,7 +324,17 @@ class ExtractArchive(Hook):
                 self.logInfo(_("Deleting %s files") % len(files))
                 for f in files:
                     if exists(f):
-                        remove(f)
+                        if self.getConfig("trashpath") and self.getConfig("trashpath").strip().lower() != "none":
+                            #create a tmp-lock file, because the rename-function delete the Downlaodfolder
+                            tmpfile=save_join(self.config['general']['download_folder'],".tmp.lock")
+                            open(tmpfile,"w").close()
+                            t = save_join(self.getConfig("trashpath"),basename(f))
+                            if os.path.exists(t):
+                                remove(t) #to keep always the latest archive in the trashfolder
+                            os.renames(f, t)
+                            remove(tmpfile)
+                        else:
+                            remove(f)
                     else:
                         self.logDebug("%s does not exists" % f)
 
