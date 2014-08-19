@@ -165,7 +165,7 @@ class UnRar(AbtractExtractor):
             self.listContent()
 
     def getDeleteFiles(self):
-        if ".part" in self.file:
+        if ".part" in os.path.basename(self.file):
             return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
         # get files which matches .r* and filter unsuited files out
         parts = glob(re.sub(r"(?<=\.r)ar$", "*", self.file, re.IGNORECASE))
