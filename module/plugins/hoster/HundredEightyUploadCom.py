@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -24,16 +23,16 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class HundredEightyUploadCom(XFileSharingPro):
     __name__ = "HundredEightyUploadCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)?180upload\.com/(\w+).*"
+    __pattern__ = r'http://(?:www\.)?180upload\.com/(\w+).*'
     __version__ = "0.01"
     __description__ = """180upload.com hoster plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
+
+    HOSTER_NAME = "180upload.com"
 
     FILE_NAME_PATTERN = r'Filename:</b></td><td nowrap>(?P<N>.+)</td></tr>-->'
     FILE_SIZE_PATTERN = r'Size:</b></td><td>(?P<S>[\d.]+) (?P<U>[A-Z]+)\s*<small>'
-
-    HOSTER_NAME = "180upload.com"
 
 
 getInfo = create_getInfo(HundredEightyUploadCom)

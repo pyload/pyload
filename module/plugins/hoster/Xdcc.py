@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: jeix
 """
 
 from os.path import join
@@ -34,16 +32,14 @@ from module.plugins.Hoster import Hoster
 class Xdcc(Hoster):
     __name__ = "Xdcc"
     __version__ = "0.32"
-    __pattern__ = r'xdcc://.*?(/#?.*?)?/.*?/#?\d+/?'  # xdcc://irc.Abjects.net/#channel/[XDCC]|Shit/#0004/
+    __pattern__ = r'xdcc://([^/]*?)(/#?.*?)?/.*?/#?\d+/?'  # xdcc://irc.Abjects.net/#channel/[XDCC]|Shit/#0004/
     __type__ = "hoster"
-    __config__ = [
-        ("nick", "str", "Nickname", "pyload"),
-        ("ident", "str", "Ident", "pyloadident"),
-        ("realname", "str", "Realname", "pyloadreal")
-    ]
-    __description__ = """A Plugin that allows you to download from an IRC XDCC bot"""
-    __author_name__ = ("jeix")
-    __author_mail__ = ("jeix@hasnomail.com")
+    __config__ = [("nick", "str", "Nickname", "pyload"),
+                  ("ident", "str", "Ident", "pyloadident"),
+                  ("realname", "str", "Realname", "pyloadreal")]
+    __description__ = """Download from IRC XDCC bot"""
+    __author_name__ = "jeix"
+    __author_mail__ = "jeix@hasnomail.com"
 
     def setup(self):
         self.debug = 0  # 0,1,2
@@ -55,7 +51,7 @@ class Xdcc(Hoster):
         self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="XDCC")
 
         self.pyfile = pyfile
-        for i in range(0, 3):
+        for _ in xrange(0, 3):
             try:
                 nmn = self.doDownload(pyfile.url)
                 self.logDebug("%s: Download of %s finished." % (self.__name__, nmn))
@@ -66,7 +62,7 @@ class Xdcc(Hoster):
                 else:
                     errno = e.args[0]
 
-                if errno in (10054,):
+                if errno == 10054:
                     self.logDebug("XDCC: Server blocked our ip, retry in 5 min")
                     self.setWait(300)
                     self.wait()
@@ -84,7 +80,7 @@ class Xdcc(Hoster):
         if not exists(location):
             makedirs(location)
 
-        m = re.search(r'xdcc://(.*?)/#?(.*?)/(.*?)/#?(\d+)/?', url)
+        m = re.match(r'xdcc://(.*?)/#?(.*?)/(.*?)/#?(\d+)/?', url)
         server = m.group(1)
         chan = m.group(2)
         bot = m.group(3)
@@ -134,7 +130,7 @@ class Xdcc(Hoster):
                     sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
 
             else:
-                if (dl_time + self.timeout) < time.time(): # todo: add in config
+                if (dl_time + self.timeout) < time.time():  # todo: add in config
                     sock.send("QUIT :byebye\r\n")
                     sock.close()
                     self.fail("XDCC Bot did not answer")
@@ -170,31 +166,31 @@ class Xdcc(Hoster):
                     "text": msg[3][1:]
                 }
 
-                if nick == msg["target"][0:len(nick)] and "PRIVMSG" == msg["action"]:
-                    if msg["text"] == "\x01VERSION\x01":
+                if nick == msg['target'][0:len(nick)] and "PRIVMSG" == msg['action']:
+                    if msg['text'] == "\x01VERSION\x01":
                         self.logDebug("XDCC: Sending CTCP VERSION.")
                         sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
-                    elif msg["text"] == "\x01TIME\x01":
+                    elif msg['text'] == "\x01TIME\x01":
                         self.logDebug("Sending CTCP TIME.")
                         sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
-                    elif msg["text"] == "\x01LAG\x01":
+                    elif msg['text'] == "\x01LAG\x01":
                         pass  # don't know how to answer
 
-                if not (bot == msg["origin"][0:len(bot)]
-                        and nick == msg["target"][0:len(nick)]
-                        and msg["action"] in ("PRIVMSG", "NOTICE")):
+                if not (bot == msg['origin'][0:len(bot)]
+                        and nick == msg['target'][0:len(nick)]
+                        and msg['action'] in ("PRIVMSG", "NOTICE")):
                     continue
 
                 if self.debug is 1:
-                    print "%s: %s" % (msg["origin"], msg["text"])
+                    print "%s: %s" % (msg['origin'], msg['text'])
 
-                if "You already requested that pack" in msg["text"]:
+                if "You already requested that pack" in msg['text']:
                     retry = time.time() + 300
 
-                if "you must be on a known channel to request a pack" in msg["text"]:
+                if "you must be on a known channel to request a pack" in msg['text']:
                     self.fail("Wrong channel")
 
-                m = re.match('\x01DCC SEND (.*?) (\d+) (\d+)(?: (\d+))?\x01', msg["text"])
+                m = re.match('\x01DCC SEND (.*?) (\d+) (\d+)(?: (\d+))?\x01', msg['text'])
                 if m:
                     done = True
 

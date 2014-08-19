@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -26,21 +25,21 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DataHu(SimpleHoster):
     __name__ = "DataHu"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?data.hu/get/\w+"
+    __pattern__ = r'http://(?:www\.)?data.hu/get/\w+'
     __version__ = "0.01"
-    __description__ = """Data.hu Download Hoster"""
+    __description__ = """Data.hu hoster plugin"""
     __author_name__ = ("crash", "stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = ur'<title>(?P<N>.*) \((?P<S>[^)]+)\) let\xf6lt\xe9se</title>'
-    FILE_OFFLINE_PATTERN = ur'Az adott f\xe1jl nem l\xe9tezik'
-    DIRECT_LINK_PATTERN = r'<div class="download_box_button"><a href="([^"]+)">'
+    OFFLINE_PATTERN = ur'Az adott f\xe1jl nem l\xe9tezik'
+    LINK_PATTERN = r'<div class="download_box_button"><a href="([^"]+)">'
 
     def handleFree(self):
         self.resumeDownload = True
         self.html = self.load(self.pyfile.url, decode=True)
 
-        m = re.search(self.DIRECT_LINK_PATTERN, self.html)
+        m = re.search(self.LINK_PATTERN, self.html)
         if m:
             url = m.group(1)
             self.logDebug('Direct link: ' + url)

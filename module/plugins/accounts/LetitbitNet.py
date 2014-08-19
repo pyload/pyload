@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -23,14 +22,16 @@ class LetitbitNet(Account):
     __name__ = "LetitbitNet"
     __version__ = "0.01"
     __type__ = "account"
+
     __description__ = """Letitbit.net account plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
+
 
     def loadAccountInfo(self, user, req):
         ## DISABLED BECAUSE IT GET 'key exausted' EVEN IF VALID ##
         # api_key = self.accounts[user]['password']
-        # json_data = [api_key, ["key/info"]]
+        # json_data = [api_key, ['key/info']]
         # api_rep = req.load('http://api.letitbit.net/json', post={'r': json_dumps(json_data)})
         # self.logDebug('API Key Info: ' + api_rep)
         # api_rep = json_loads(api_rep)

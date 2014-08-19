@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay
 """
 
 from time import mktime, strptime
@@ -27,32 +25,34 @@ class FileserveCom(Account):
     __name__ = "FileserveCom"
     __version__ = "0.2"
     __type__ = "account"
-    __description__ = """fileserve.com account plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+
+    __description__ = """Fileserve.com account plugin"""
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
+
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
 
-        page = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data["password"],
+        page = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],
                                                                      "submit": "Submit+Query"})
         res = json_loads(page)
 
-        if res["type"] == "premium":
-            validuntil = mktime(strptime(res["expireTime"], "%Y-%m-%d %H:%M:%S"))
-            return {"trafficleft": res["traffic"], "validuntil": validuntil}
+        if res['type'] == "premium":
+            validuntil = mktime(strptime(res['expireTime'], "%Y-%m-%d %H:%M:%S"))
+            return {"trafficleft": res['traffic'], "validuntil": validuntil}
         else:
             return {"premium": False, "trafficleft": None, "validuntil": None}
 
     def login(self, user, data, req):
-        page = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data["password"],
+        page = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],
                                                                      "submit": "Submit+Query"})
         res = json_loads(page)
 
-        if not res["type"]:
+        if not res['type']:
             self.wrongPassword()
 
         #login at fileserv page
         req.load("http://www.fileserve.com/login.php",
-                 post={"loginUserName": user, "loginUserPassword": data["password"], "autoLogin": "checked",
+                 post={"loginUserName": user, "loginUserPassword": data['password'], "autoLogin": "checked",
                        "loginFormSubmit": "Login"})

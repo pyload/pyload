@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -22,15 +21,18 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 class DataHuFolder(SimpleCrypter):
     __name__ = "DataHuFolder"
-    __type__ = "crypter"
-    __pattern__ = r"http://(www\.)?data.hu/dir/\w+"
     __version__ = "0.03"
-    __description__ = """Data.hu Folder Plugin"""
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?data.hu/dir/\w+'
+
+    __description__ = """Data.hu folder decrypter plugin"""
     __author_name__ = ("crash", "stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __author_mail__ = "l.stickell@yahoo.it"
 
     LINK_PATTERN = r"<a href='(http://data\.hu/get/.+)' target='_blank'>\1</a>"
     TITLE_PATTERN = ur'<title>(?P<title>.+) Let\xf6lt\xe9se</title>'
+
 
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)

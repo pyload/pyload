@@ -1,20 +1,18 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
-from base64 import b64decode
-import hashlib
-import random
-from time import time, sleep
+from time import time
 
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
 from module.plugins.Plugin import chunks
-from module.plugins.internal.CaptchaService import ReCaptcha as _ReCaptcha
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 def getInfo(urls):
     api_url_base = "http://api.share-online.biz/linkcheck.php"
+
+    urls = [url.replace("https://", "http://") for url in urls]
 
     for chunk in chunks(urls, 90):
         api_param_file = {"links": "\n".join(x.replace("http://www.share-online.biz/dl/", "").rstrip("/") for x in
@@ -37,21 +35,14 @@ def getInfo(urls):
         yield result
 
 
-#suppress ocr plugin
-class ReCaptcha(_ReCaptcha):
-    def result(self, server, challenge):
-        return self.plugin.decryptCaptcha("%simage" % server, get={"c": challenge},
-                                          cookies=True, forceUser=True, imgtype="jpg")
-
-
 class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
-    __pattern__ = r"http://[\w\.]*?(share\-online\.biz|egoshare\.com)/(download.php\?id\=|dl/)[\w]+"
-    __version__ = "0.36"
-    __description__ = """Shareonline.biz Download Hoster"""
-    __author_name__ = ("spoob", "mkaay", "zoidberg")
-    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
+    __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download.php\?id=|dl/)(?P<ID>\w+)'
+    __version__ = "0.40"
+    __description__ = """Shareonline.biz hoster plugin"""
+    __author_name__ = ("spoob", "mkaay", "zoidberg", "Walter Purcaro")
+    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "vuolter@gmail.com")
 
     ERROR_INFO_PATTERN = r'<p class="b">Information:</p>\s*<div>\s*<strong>(.*?)</strong>'
 
@@ -59,7 +50,7 @@ class ShareonlineBiz(Hoster):
         # range request not working?
         #  api supports resume, only one chunk
         #  website isn't supporting resuming in first place
-        self.file_id = re.search(r"(id\=|/dl/)([a-zA-Z0-9]+)", self.pyfile.url).group(2)
+        self.file_id = re.match(self.__pattern__, self.pyfile.url).group("ID")
         self.pyfile.url = "http://www.share-online.biz/dl/" + self.file_id
 
         self.resumeDownload = self.premium
@@ -70,7 +61,7 @@ class ShareonlineBiz(Hoster):
 
     def process(self, pyfile):
         if self.premium:
-            self.handleAPIPremium()
+            self.handlePremium()
             #web-download fallback removed - didn't work anyway
         else:
             self.handleFree()
@@ -78,32 +69,32 @@ class ShareonlineBiz(Hoster):
         # check = self.checkDownload({"failure": re.compile(self.ERROR_INFO_PATTERN)})
         # if check == "failure":
         #     try:
-        #         self.retry(reason = self.lastCheck.group(1).decode("utf8"))
+        #         self.retry(reason=self.lastCheck.group(1).decode("utf8"))
         #     except:
-        #         self.retry(reason = "Unknown error")
+        #         self.retry(reason="Unknown error")
 
         if self.api_data:
             self.check_data = {"size": int(self.api_data['size']), "md5": self.api_data['md5']}
 
-    def downloadAPIData(self):
+    def loadAPIData(self):
         api_url_base = "http://api.share-online.biz/linkcheck.php?md5=1"
-        api_param_file = {"links": self.pyfile.url.replace(
-            "http://www.share-online.biz/dl/", "")}  # api only supports old style links
+        api_param_file = {"links": self.file_id}  # api only supports old style links
         src = self.load(api_url_base, cookies=False, post=api_param_file, decode=True)
 
         fields = src.split(";")
         self.api_data = {"fileid": fields[0],
                          "status": fields[1]}
-        if not self.api_data["status"] == "OK":
+        if not self.api_data['status'] == "OK":
             self.offline()
-        self.api_data["filename"] = fields[2]
-        self.api_data["size"] = fields[3]  # in bytes
-        self.api_data["md5"] = fields[4].strip().lower().replace("\n\n", "")  # md5
+        else:
+            self.api_data['filename'] = fields[2]
+            self.api_data['size'] = fields[3]  # in bytes
+            self.api_data['md5'] = fields[4].strip().lower().replace("\n\n", "")  # md5
 
     def handleFree(self):
-        self.downloadAPIData()
-        self.pyfile.name = self.api_data["filename"]
-        self.pyfile.size = int(self.api_data["size"])
+        self.loadAPIData()
+        self.pyfile.name = self.api_data['filename']
+        self.pyfile.size = int(self.api_data['size'])
 
         self.html = self.load(self.pyfile.url, cookies=True)  # refer, stuff
         self.setWait(3)
@@ -112,21 +103,24 @@ class ShareonlineBiz(Hoster):
         self.html = self.load("%s/free/" % self.pyfile.url, post={"dl_free": "1", "choice": "free"}, decode=True)
         self.checkErrors()
 
-        found = re.search(r'var wait=(\d+);', self.html)
+        m = re.search(r'var wait=(\d+);', self.html)
 
         recaptcha = ReCaptcha(self)
-        for i in range(5):
+        for _ in xrange(5):
             challenge, response = recaptcha.challenge("6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX")
-            self.setWait(int(found.group(1)) if found else 30)
+            self.setWait(int(m.group(1)) if m else 30)
             response = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time() * 1000)), post={
                 'dl_free': '1',
                 'recaptcha_challenge_field': challenge,
                 'recaptcha_response_field': response})
 
             if not response == '0':
+                self.correctCaptcha()
                 break
-
+            else:
+                self.invalidCaptcha()
         else:
+            self.invalidCaptcha()
             self.fail("No valid captcha solution received")
 
         download_url = response.decode("base64")
@@ -142,36 +136,18 @@ class ShareonlineBiz(Hoster):
             "fail": re.compile(r"<title>Share-Online")
         })
         if check == "cookie":
+            self.invalidCaptcha()
             self.retry(5, 60, "Cookie failure")
         elif check == "fail":
-            self.retry(5, 300, "Download failed")
+            self.invalidCaptcha()
+            self.retry(5, 5 * 60, "Download failed")
+        else:
+            self.correctCaptcha()
 
-    def checkErrors(self):
-        found = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
-        if found:
-            err = found.group(1)
-            found = re.search(self.ERROR_INFO_PATTERN, self.html)
-            msg = found.group(1) if found else ""
-            self.logError(err, msg or "Unknown error occurred")
-
-            if err in ('freelimit', 'size', 'proxy'):
-                self.fail(msg or "Premium account needed")
-            if err in 'invalid':
-                self.fail(msg or "File not available")
-            elif err in 'server':
-                self.setWait(600, False)
-            elif err in 'expired':
-                self.setWait(30, False)
-            else:
-                self.setWait(300, True)
-
-            self.wait()
-            self.retry(max_tries=25, reason=msg)
-
-    def handleAPIPremium(self):  # should be working better
+    def handlePremium(self):  #: should be working better loading (account) api internally
         self.account.getAccountInfo(self.user, True)
         src = self.load("http://api.share-online.biz/account.php",
-                        {"username": self.user, "password": self.account.accounts[self.user]["password"],
+                        {"username": self.user, "password": self.account.accounts[self.user]['password'],
                          "act": "download", "lid": self.file_id})
 
         self.api_data = dlinfo = {}
@@ -180,30 +156,40 @@ class ShareonlineBiz(Hoster):
             dlinfo[key.lower()] = value
 
         self.logDebug(dlinfo)
-        if not dlinfo["status"] == "online":
+        if not dlinfo['status'] == "online":
             self.offline()
-
-        self.pyfile.name = dlinfo["name"]
-        self.pyfile.size = int(dlinfo["size"])
-
-        dlLink = dlinfo["url"]
-        if dlLink == "server_under_maintenance":
-            self.tempoffline()
         else:
-            self.multiDL = True
-            self.download(dlLink)
+            self.pyfile.name = dlinfo['name']
+            self.pyfile.size = int(dlinfo['size'])
 
-    def checksum(self, local_file):
-        if self.api_data and "md5" in self.api_data and self.api_data["md5"]:
-            h = hashlib.md5()
-            f = open(local_file, "rb")
-            h.update(f.read())
-            f.close()
-            hexd = h.hexdigest()
-            if hexd == self.api_data["md5"]:
-                return True, 0
+            dlLink = dlinfo['url']
+            if dlLink == "server_under_maintenance":
+                self.tempOffline()
             else:
-                return False, 1
+                self.multiDL = True
+                self.download(dlLink)
+
+    def checkErrors(self):
+        m = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
+        if m is None:
+            return
+
+        err = m.group(1)
+        m = re.search(self.ERROR_INFO_PATTERN, self.html)
+        msg = m.group(1) if m else ""
+        self.logError(err, msg or "Unknown error occurred")
+
+        if err == "invalid":
+            self.fail(msg or "File not available")
+        elif err in ("freelimit", "size", "proxy"):
+            self.fail(msg or "Premium account needed")
         else:
-            self.logWarning("MD5 checksum missing")
-            return True, 5
+            if err in 'server':
+                self.setWait(600, False)
+            elif err in 'expired':
+                self.setWait(30, False)
+            else:
+                self.setWait(300, True)
+
+            self.wait()
+            self.retry(max_tries=25, reason=msg)

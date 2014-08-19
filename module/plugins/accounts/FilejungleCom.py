@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: zoidberg
 """
 
 import re
@@ -27,9 +25,10 @@ class FilejungleCom(Account):
     __name__ = "FilejungleCom"
     __version__ = "0.11"
     __type__ = "account"
-    __description__ = """filejungle.com account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+
+    __description__ = """Filejungle.com account plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     login_timeout = 60
 
@@ -37,12 +36,13 @@ class FilejungleCom(Account):
     TRAFFIC_LEFT_PATTERN = r'"/extend_premium\.php">Until (\d+ [A-Za-z]+ \d+)<br'
     LOGIN_FAILED_PATTERN = r'<span htmlfor="loginUser(Name|Password)" generated="true" class="fail_info">'
 
+
     def loadAccountInfo(self, user, req):
         html = req.load(self.URL + "dashboard.php")
-        found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if found:
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        if m:
             premium = True
-            validuntil = mktime(strptime(found.group(1), "%d %b %Y"))
+            validuntil = mktime(strptime(m.group(1), "%d %b %Y"))
         else:
             premium = False
             validuntil = -1
@@ -52,7 +52,7 @@ class FilejungleCom(Account):
     def login(self, user, data, req):
         html = req.load(self.URL + "login.php", post={
             "loginUserName": user,
-            "loginUserPassword": data["password"],
+            "loginUserPassword": data['password'],
             "loginFormSubmit": "Login",
             "recaptcha_challenge_field": "",
             "recaptcha_response_field": "",

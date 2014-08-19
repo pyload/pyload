@@ -19,11 +19,11 @@ from module.plugins.Hoster import Hoster
 class MegaNz(Hoster):
     __name__ = "MegaNz"
     __type__ = "hoster"
-    __pattern__ = r"https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)"
+    __pattern__ = r'https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)'
     __version__ = "0.14"
-    __description__ = """mega.co.nz hoster plugin"""
-    __author_name__ = ("RaNaN", )
-    __author_mail__ = ("ranan@pyload.org", )
+    __description__ = """Mega.co.nz hoster plugin"""
+    __author_name__ = "RaNaN"
+    __author_mail__ = "ranan@pyload.org"
 
     API_URL = "https://g.api.mega.co.nz/cs?id=%d"
     FILE_SUFFIX = ".crypted"
@@ -96,7 +96,7 @@ class MegaNz(Hoster):
         key = None
 
         # match is guaranteed because plugin was chosen to handle url
-        node = re.search(self.__pattern__, pyfile.url).group(2)
+        node = re.match(self.__pattern__, pyfile.url).group(2)
         if "!" in node:
             node, key = node.split("!")
 
@@ -110,7 +110,7 @@ class MegaNz(Hoster):
         dl = self.callApi(a="g", g=1, p=node, ssl=1)[0]
 
         if "e" in dl:
-            e = dl["e"]
+            e = dl['e']
             # ETEMPUNAVAIL (-18): Resource temporarily not available, please try again later
             if e == -18:
                 self.retry()
@@ -121,12 +121,12 @@ class MegaNz(Hoster):
         # EACCESS (-11): Access violation (e.g., trying to write to a read-only share)
 
         key = self.b64_decode(key)
-        attr = self.decryptAttr(dl["at"], key)
+        attr = self.decryptAttr(dl['at'], key)
 
-        pyfile.name = attr["n"] + self.FILE_SUFFIX
+        pyfile.name = attr['n'] + self.FILE_SUFFIX
 
-        self.download(dl["g"])
+        self.download(dl['g'])
         self.decryptFile(key)
 
         # Everything is finished and final name can be set
-        pyfile.name = attr["n"]
+        pyfile.name = attr['n']

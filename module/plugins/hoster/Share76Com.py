@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+
+from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
-class Share76Com(XFileSharingPro):
+class Share76Com(DeadHoster):
     __name__ = "Share76Com"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*?share76.com/\w{12}"
-    __version__ = "0.03"
-    __description__ = """share76.com hoster plugin"""
-    __author_name__ = ("me")
-
-    FILE_INFO_PATTERN = r'<h2>\s*File:\s*<font[^>]*>(?P<N>[^>]+)</font>\s*\[<font[^>]*>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</font>\]</h2>'
-    HOSTER_NAME = "share76.com"
+    __pattern__ = r'http://(?:www\.)?share76.com/\w{12}'
+    __version__ = "0.04"
+    __description__ = """Share76.com hoster plugin"""
+    __author_name__ = "me"
+    __author_mail__ = None
 
 
 getInfo = create_getInfo(Share76Com)

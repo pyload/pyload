@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -20,9 +19,11 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 class SpeedLoadOrgFolder(DeadCrypter):
     __name__ = "SpeedLoadOrgFolder"
-    __type__ = "crypter"
-    __pattern__ = r"http://(www\.)?speedload\.org/(\d+~f$|folder/\d+/)"
     __version__ = "0.3"
-    __description__ = """Speedload Crypter Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?speedload\.org/(\d+~f$|folder/\d+/)'
+
+    __description__ = """Speedload decrypter plugin"""
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"

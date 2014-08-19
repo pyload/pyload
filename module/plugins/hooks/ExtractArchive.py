@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sys
@@ -59,8 +58,14 @@ class ExtractArchive(Hook):
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
+<<<<<<< HEAD
     __version__ = "0.17"
     __description__ = "Extract different kind of archives"
+=======
+    __version__ = "0.16"
+    __type__ = "hook"
+
+>>>>>>> pyload/stable
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
                   ("overwrite", "bool", "Overwrite files", True),
@@ -74,10 +79,13 @@ class ExtractArchive(Hook):
                   ("recursive", "bool", "Extract archives in archvies", True),
                   ("queue", "bool", "Wait for all downloads to be finished", True),
                   ("renice", "int", "CPU Priority", 0)]
-    __author_name__ = ("pyload Team", "AndroKev")
-    __author_mail__ = ("admin<at>pyload.org", "@pyloadforum")
+
+    __description__ = """Extract different kind of archives"""
+    __author_name__ = ("pyLoad Team", "AndroKev")
+    __author_mail__ = ("admin@pyload.org", "@pyloadforum")
 
     event_list = ["allDownloadsProcessed"]
+
 
     def setup(self):
         self.plugins = []
@@ -147,8 +155,27 @@ class ExtractArchive(Hook):
             if not p:
                 continue
 
+<<<<<<< HEAD
             archive_root=True
             files_ids = [(save_join(dl, p.folder, x["name"]), x["id"]) for x in p.getChildren().itervalues()]
+=======
+            # determine output folder
+            out = save_join(dl, p.folder, "")
+            # force trailing slash
+
+            if self.getConfig("destination") and self.getConfig("destination").lower() != "none":
+
+                out = save_join(dl, p.folder, self.getConfig("destination"), "")
+                #relative to package folder if destination is relative, otherwise absolute path overwrites them
+
+                if self.getConfig("subfolder"):
+                    out = join(out, fs_encode(p.folder))
+
+                if not exists(out):
+                    makedirs(out)
+
+            files_ids = [(save_join(dl, p.folder, x['name']), x['id']) for x in p.getChildren().itervalues()]
+>>>>>>> pyload/stable
             matched = False
             tmppath_list = []
 
@@ -364,15 +391,15 @@ class ExtractArchive(Hook):
             if not exists(f):
                 continue
             try:
-                if self.config["permission"]["change_file"]:
+                if self.config['permission']['change_file']:
                     if isfile(f):
-                        chmod(f, int(self.config["permission"]["file"], 8))
+                        chmod(f, int(self.config['permission']['file'], 8))
                     elif isdir(f):
-                        chmod(f, int(self.config["permission"]["folder"], 8))
+                        chmod(f, int(self.config['permission']['folder'], 8))
 
-                if self.config["permission"]["change_dl"] and os.name != "nt":
-                    uid = getpwnam(self.config["permission"]["user"])[2]
-                    gid = getgrnam(self.config["permission"]["group"])[2]
+                if self.config['permission']['change_dl'] and os.name != "nt":
+                    uid = getpwnam(self.config['permission']['user'])[2]
+                    gid = getgrnam(self.config['permission']['group'])[2]
                     chown(f, uid, gid)
             except Exception, e:
                 self.logWarning(_("Setting User and Group failed"), e)

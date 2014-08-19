@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from urllib import quote
@@ -14,7 +13,7 @@ class Premium4Me(Hoster):
     __version__ = "0.08"
     __type__ = "hoster"
 
-    __pattern__ = r"http://premium.to/.*"
+    __pattern__ = r'http://(?:www\.)?premium.to/.*'
     __description__ = """Premium.to hoster plugin"""
     __author_name__ = ("RaNaN", "zoidberg", "stickell")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -42,7 +41,7 @@ class Premium4Me(Hoster):
         check = self.checkDownload({"nopremium": "No premium account available"})
 
         if check == "nopremium":
-            self.retry(60, 300, 'No premium account available')
+            self.retry(60, 5 * 60, "No premium account available")
 
         err = ''
         if self.req.http.code == '420':
@@ -68,4 +67,4 @@ class Premium4Me(Hoster):
             traffic = int(self.load("http://premium.to/api/traffic.php?authcode=%s" % self.account.authcode))
         except:
             traffic = 0
-        return traffic       
+        return traffic

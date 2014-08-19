@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 from time import mktime, strptime
@@ -26,25 +24,32 @@ from module.plugins.Account import Account
 
 class FshareVn(Account):
     __name__ = "FshareVn"
-    __version__ = "0.04"
+    __version__ = "0.07"
     __type__ = "account"
-    __description__ = """fshare.vn account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+
+    __description__ = """Fshare.vn account plugin"""
+    __author_name__ = ("zoidberg", "stickell")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
     VALID_UNTIL_PATTERN = ur'<dt>Thời hạn dùng:</dt>\s*<dd>([^<]+)</dd>'
+    LIFETIME_PATTERN = ur'<dt>Lần đăng nhập trước:</dt>\s*<dd>[^<]+</dd>'
     TRAFFIC_LEFT_PATTERN = ur'<dt>Tổng Dung Lượng Tài Khoản</dt>\s*<dd[^>]*>([0-9.]+) ([kKMG])B</dd>'
     DIRECT_DOWNLOAD_PATTERN = ur'<input type="checkbox"\s*([^=>]*)[^>]*/>Kích hoạt download trực tiếp</dt>'
 
+
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.fshare.vn/account_info.php", decode=True)
-        found = re.search(self.VALID_UNTIL_PATTERN, html)
-        if found:
+
+        if re.search(self.LIFETIME_PATTERN, html):
+            self.logDebug("Lifetime membership detected")
+            trafficleft = self.getTrafficLeft()
+            return {"validuntil": -1, "trafficleft": trafficleft, "premium": True}
+
+        m = re.search(self.VALID_UNTIL_PATTERN, html)
+        if m:
             premium = True
-            validuntil = mktime(strptime(found.group(1), '%I:%M:%S %p %d-%m-%Y'))
-            found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-            trafficleft = float(found.group(1)) * 1024 ** {
-                'k': 0, 'K': 0, 'M': 1, 'G': 2}[found.group(2)] if found else 0
+            validuntil = mktime(strptime(m.group(1), '%I:%M:%S %p %d-%m-%Y'))
+            trafficleft = self.getTrafficLeft()
         else:
             premium = False
             validuntil = None
@@ -58,8 +63,12 @@ class FshareVn(Account):
         html = req.load('https://www.fshare.vn/login.php', post={
             "login_password": data['password'],
             "login_useremail": user,
-            "url_refe": "https://www.fshare.vn/login.php"
+            "url_refe": "http://www.fshare.vn/index.php"
         }, referer=True, decode=True)
 
-        if not '<img alt="VIP"' in html:
+        if not re.search(r'<img\s+alt="VIP"', html):
             self.wrongPassword()
+
+    def getTrafficLeft(self):
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        return float(m.group(1)) * 1024 ** {'k': 0, 'K': 0, 'M': 1, 'G': 2}[m.group(2)] if m else 0

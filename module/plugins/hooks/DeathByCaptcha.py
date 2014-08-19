@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay, RaNaN, zoidberg
 """
 from __future__ import with_statement
 
@@ -61,15 +60,19 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Hook):
     __name__ = "DeathByCaptcha"
     __version__ = "0.03"
-    __description__ = """send captchas to DeathByCaptcha.com"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
                   ("force", "bool", "Force DBC even if client is connected", False)]
+
+    __description__ = """Send captchas to DeathByCaptcha.com"""
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
 
     API_URL = "http://api.dbcapi.me/api/"
+
 
     def setup(self):
         self.info = {}
@@ -147,7 +150,7 @@ class DeathByCaptcha(Hook):
             raise DeathByCaptchaException(response)
         ticket = response['captcha']
 
-        for i in range(24):
+        for _ in xrange(24):
             sleep(5)
             response = self.call_api("captcha/%d" % ticket, False)
             if response['text'] and response['is_correct']:
@@ -180,7 +183,7 @@ class DeathByCaptcha(Hook):
             self.logError(e.getDesc())
             return False
 
-        balance, rate = self.info["balance"], self.info["rate"]
+        balance, rate = self.info['balance'], self.info['rate']
         self.logInfo("Account balance: US$%.3f (%d captchas left at %.2f cents each)" % (balance / 100,
                                                                                          balance // rate, rate))
 
@@ -193,7 +196,7 @@ class DeathByCaptcha(Hook):
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             try:
-                response = self.call_api("captcha/%d/report" % task.data["ticket"], True)
+                response = self.call_api("captcha/%d/report" % task.data['ticket'], True)
             except DeathByCaptchaException, e:
                 self.logError(e.getDesc())
             except Exception, e:
@@ -208,5 +211,5 @@ class DeathByCaptcha(Hook):
             self.logError(e.getDesc())
             return
 
-        task.data["ticket"] = ticket
+        task.data['ticket'] = ticket
         task.setResult(result)

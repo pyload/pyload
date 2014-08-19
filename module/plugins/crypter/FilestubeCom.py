@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -20,12 +19,14 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 class FilestubeCom(SimpleCrypter):
     __name__ = "FilestubeCom"
+    __version__ = "0.03"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:w{3}.)?filestube\.com/\w+"
-    __version__ = "0.01"
-    __description__ = """Filestube.com Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
 
-    LINK_PATTERN = r"link_download'\]\); renderGo\('(http://[^)]+)'\);"
-    TITLE_PATTERN = r"<title>(?P<title>.+) download"
+    __pattern__ = r'http://(?:www\.)?filestube\.(?:com|to)/\w+'
+
+    __description__ = """Filestube.com decrypter plugin"""
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
+
+    LINK_PATTERN = r'<a class=\"file-link-main(?: noref)?\" [^>]* href=\"(http://[^\"]+)'
+    TITLE_PATTERN = r'<h1\s*> (?P<title>.+)  download\s*</h1>'

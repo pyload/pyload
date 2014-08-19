@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 from urlparse import urlparse
 import re
@@ -55,7 +53,7 @@ def parseHtmlForm(attr_str, html, input_names=None):
             name = parseHtmlTagAttrValue("name", inputtag.group(1))
             if name:
                 value = parseHtmlTagAttrValue("value", inputtag.group(1))
-                if value is None:
+                if not value:
                     inputs[name] = inputtag.group(3) or ''
                 else:
                     inputs[name] = value
@@ -98,7 +96,8 @@ def parseFileInfo(self, url='', html=''):
             if hasattr(self, "html"):
                 self.html = html
 
-        if hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):
+        if (hasattr(self, "OFFLINE_PATTERN") and re.search(self.OFFLINE_PATTERN, html)) or \
+           (hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html)):
             # File offline
             info['status'] = 1
         else:
@@ -136,6 +135,7 @@ def parseFileInfo(self, url='', html=''):
 
 
 def create_getInfo(plugin):
+
     def getInfo(urls):
         for url in urls:
             cj = CookieJar(plugin.__name__)
@@ -153,6 +153,7 @@ def timestamp():
 
 
 class PluginParseError(Exception):
+
     def __init__(self, msg):
         Exception.__init__(self)
         self.value = 'Parse error (%s) - plugin may be out of date' % msg
@@ -163,30 +164,46 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.31"
-    __pattern__ = None
+    __version__ = "0.34"
     __type__ = "hoster"
-    __description__ = """Base hoster plugin"""
+
+    __pattern__ = None
+
+    __description__ = """Simple hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
-    """
-    These patterns should be defined by each hoster:
-    FILE_INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>units)'
-    or FILE_NAME_PATTERN = r'(?P<N>file_name)'
-    and FILE_SIZE_PATTERN = r'(?P<S>file_size) (?P<U>units)'
-    FILE_OFFLINE_PATTERN = r'File (deleted|not found)'
-    TEMP_OFFLINE_PATTERN = r'Server maintainance'
 
-    You can also define a PREMIUM_ONLY_PATTERN to detect links that can be downloaded only with a premium account.
+    """
+    Following patterns should be defined by each hoster:
+
+      FILE_INFO_PATTERN: Name and Size of the file
+        example: FILE_INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>size_unit)'
+      or
+        FILE_NAME_PATTERN: Name that will be set for the file
+          example: FILE_NAME_PATTERN = r'(?P<N>file_name)'
+        FILE_SIZE_PATTERN: Size that will be checked for the file
+          example: FILE_SIZE_PATTERN = r'(?P<S>file_size) (?P<U>size_unit)'
+
+      OFFLINE_PATTERN: Checks if the file is yet available online
+        example: OFFLINE_PATTERN = r'File (deleted|not found)'
+      or:
+        FILE_OFFLINE_PATTERN: Deprecated
+
+      TEMP_OFFLINE_PATTERN: Checks if the file is temporarily offline
+        example: TEMP_OFFLINE_PATTERN = r'Server maintainance'
+
+      PREMIUM_ONLY_PATTERN: (optional) Checks if the file can be downloaded only with a premium account
+        example: PREMIUM_ONLY_PATTERN = r'Premium account required'
     """
 
-    FILE_SIZE_REPLACEMENTS = []
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
+    FILE_SIZE_REPLACEMENTS = []
     FILE_URL_REPLACEMENTS = []
 
     SH_BROKEN_ENCODING = False  # Set to True or encoding name if encoding in http header is not correct
     SH_COOKIES = True  # or False or list of tuples [(domain, name, value)]
     SH_CHECK_TRAFFIC = False  # True = force check traffic left for a premium account
+
 
     def init(self):
         self.file_info = {}
@@ -202,18 +219,22 @@ class SimpleHoster(Hoster):
         # Due to a 0.4.9 core bug self.load would keep previous cookies even if overridden by cookies parameter.
         # Workaround using getURL. Can be reverted in 0.5 as the cookies bug has been fixed.
         self.html = getURL(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
-        self.getFileInfo()
+        premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
+        if not premium_only:  # Usually premium only pages doesn't show the file information
+            self.getFileInfo()
+
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
+        elif premium_only:
+            self.fail("This link require a premium account")
         else:
             # This line is required due to the getURL workaround. Can be removed in 0.5
             self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
-            if hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
-                self.fail("This link require a premium account")
             self.handleFree()
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
-        if type(url) == unicode: url = url.encode('utf8')
+        if type(url) == unicode:
+            url = url.encode('utf8')
         return Hoster.load(self, url=url, get=get, post=post, ref=ref, cookies=cookies,
                            just_header=just_header, decode=decode)
 
@@ -270,9 +291,15 @@ class SimpleHoster(Hoster):
         return parseHtmlForm(attr_str, self.html, input_names)
 
     def checkTrafficLeft(self):
-        traffic = self.account.getAccountInfo(self.user, True)["trafficleft"]
+        traffic = self.account.getAccountInfo(self.user, True)['trafficleft']
         if traffic == -1:
             return True
         size = self.pyfile.size / 1024
         self.logInfo("Filesize: %i KiB, Traffic left for user %s: %i KiB" % (size, self.user, traffic))
         return size <= traffic
+
+    # TODO: Remove in 0.5
+    def wait(self, seconds=False, reconnect=False):
+        if seconds:
+            self.setWait(seconds, reconnect)
+        super(SimpleHoster, self).wait()

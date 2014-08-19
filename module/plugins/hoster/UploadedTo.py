@@ -33,7 +33,7 @@ def getAPIData(urls):
         post["id_%s" % i] = id
         idMap[id] = url
 
-    for i in xrange(5):
+    for _ in xrange(5):
         api = unicode(getURL("http://uploaded.net/api/filemultiple", post=post, decode=False), 'iso-8859-1')
         if api != "can't find request":
             break
@@ -54,17 +54,22 @@ def getAPIData(urls):
 def parseFileInfo(self, url='', html=''):
     if not html and hasattr(self, "html"):
         html = self.html
-    name, size, status, found, fileid = url, 0, 3, None, None
 
-    if re.search(self.FILE_OFFLINE_PATTERN, html):
+    name = url
+    size = 0
+    fileid = None
+
+    if re.search(self.OFFLINE_PATTERN, html):
         # File offline
         status = 1
     else:
-        found = re.search(self.FILE_INFO_PATTERN, html)
-        if found:
-            name, fileid = html_unescape(found.group('N')), found.group('ID')
-            size = parseFileSize(found.group('S'))
+        m = re.search(self.FILE_INFO_PATTERN, html)
+        if m:
+            name, fileid = html_unescape(m.group('N')), m.group('ID')
+            size = parseFileSize(m.group('S'))
             status = 2
+        else:
+            status = 3
 
     return name, size, status, fileid
 
@@ -88,16 +93,16 @@ def getInfo(urls):
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __pattern__ = r"https?://[\w\.-]*?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"
-    __version__ = "0.72"
-    __description__ = """Uploaded.net Download Hoster"""
+    __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
+    __version__ = "0.73"
+    __description__ = """Uploaded.net hoster plugin"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz",
                        "netpok@gmail.com", "l.stickell@yahoo.it")
 
     FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
-    FILE_OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
-    DL_LIMIT_PATTERN = "You have reached the max. number of possible free downloads for this hour"
+    OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
+    DL_LIMIT_PATTERN = r'You have reached the max. number of possible free downloads for this hour'
 
     def setup(self):
         self.multiDL = self.resumeDownload = self.premium
@@ -138,7 +143,7 @@ class UploadedTo(Hoster):
 
             pyfile.name = html_unescape(self.data[2])
 
-        # self.pyfile.name = self.get_file_name()
+        # pyfile.name = self.get_file_name()
 
         if self.premium:
             self.handlePremium()
@@ -148,8 +153,8 @@ class UploadedTo(Hoster):
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
         self.logDebug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name": self.__name__,
-                                                                           "left": info["trafficleft"] / 1024 / 1024})
-        if int(self.data[1]) / 1024 > info["trafficleft"]:
+                                                                           "left": info['trafficleft'] / 1024 / 1024})
+        if int(self.data[1]) / 1024 > info['trafficleft']:
             self.logInfo(_("%s: Not enough traffic left" % self.__name__))
             self.account.empty(self.user)
             self.resetAccount()
@@ -163,10 +168,10 @@ class UploadedTo(Hoster):
         else:
             #Indirect download
             self.html = self.load("http://uploaded.net/file/%s" % self.fileID)
-            found = re.search(r'<div class="tfree".*\s*<form method="post" action="(.*?)"', self.html)
-            if not found:
-                self.fail("Download URL not found. Try to enable direct downloads.")
-            url = found.group(1)
+            m = re.search(r'<div class="tfree".*\s*<form method="post" action="(.*?)"', self.html)
+            if m is None:
+                self.fail("Download URL not m. Try to enable direct downloads.")
+            url = m.group(1)
             print "Premium URL: " + url
             self.download(url, post={})
 
@@ -175,12 +180,12 @@ class UploadedTo(Hoster):
 
         if 'var free_enabled = false;' in self.html:
             self.logError("Free-download capacities exhausted.")
-            self.retry(24, 300)
+            self.retry(max_tries=24, wait_time=5 * 60)
 
-        found = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
-        if not found:
+        m = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
+        if m is None:
             self.fail("File not downloadable for free users")
-        self.setWait(int(found.group(1)))
+        self.setWait(int(m.group(1)))
 
         js = self.load("http://uploaded.net/js/download.js", decode=True)
 
@@ -189,7 +194,7 @@ class UploadedTo(Hoster):
         url = "http://uploaded.net/io/ticket/captcha/%s" % self.fileID
         downloadURL = ""
 
-        for i in range(5):
+        for _ in xrange(5):
             re_captcha = ReCaptcha(self)
             challenge, result = re_captcha.challenge(challengeId.group(1))
             options = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": result}
@@ -210,7 +215,7 @@ class UploadedTo(Hoster):
                 self.setWait(3 * 60 * 60, True)
                 self.wait()
                 self.retry()
-            elif 'err:"captcha"' in result:
+            elif '"err":"captcha"' in result:
                 self.logError("ul.net captcha is disabled")
                 self.invalidCaptcha()
             elif "type:'download'" in result:
@@ -218,7 +223,7 @@ class UploadedTo(Hoster):
                 downloadURL = re.search("url:'([^']+)", result).group(1)
                 break
             else:
-                self.fail("Unknown error '%s'")
+                self.fail("Unknown error '%s'" % result)
 
         if not downloadURL:
             self.fail("No Download url retrieved/all captcha attempts failed")

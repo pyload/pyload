@@ -1,20 +1,16 @@
 # -*- coding: utf-8 -*-
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+
+from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
-class SharebeesCom(XFileSharingPro):
+class SharebeesCom(DeadHoster):
     __name__ = "SharebeesCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*?sharebees.com/\w{12}"
-    __version__ = "0.01"
+    __pattern__ = r'http://(?:www\.)?sharebees.com/\w{12}'
+    __version__ = "0.02"
     __description__ = """ShareBees hoster plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
-
-    FILE_NAME_PATTERN = r'<p class="file-name" ><.*?>\s*(?P<N>.+)'
-    FILE_SIZE_PATTERN = r'<small>\((?P<S>\d+) bytes\)</small>'
-    FORM_PATTERN = 'F1'
-    HOSTER_NAME = "sharebees.com"
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
 
 getInfo = create_getInfo(SharebeesCom)

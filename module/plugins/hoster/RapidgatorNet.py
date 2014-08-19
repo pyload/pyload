@@ -1,52 +1,58 @@
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
+###############################################################################
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as
+#  published by the Free Software Foundation, either version 3 of the
+#  License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+###############################################################################
 
 import re
+
 from pycurl import HTTPHEADER
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia, AdsCaptcha
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
+
+from module.plugins.hoster.UnrestrictLi import secondsToMidnight
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia, AdsCaptcha
 
 
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?(rapidgator.net)/file/(\w+)"
-    __version__ = "0.19"
-    __description__ = """rapidgator.net"""
-    __author_name__ = ("zoidberg", "chrox", "stickell")
+    __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
+    __version__ = "0.22"
+    __description__ = """Rapidgator.net hoster plugin"""
+    __author_name__ = ("zoidberg", "chrox", "stickell", "Walter Purcaro")
+    __author_mail__ = ("zoidberg@mujmail.cz", "", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
-    API_URL = 'http://rapidgator.net/api/file'
+    API_URL = "http://rapidgator.net/api/file"
 
-    FILE_NAME_PATTERN = r'Downloading:(?:\s*<[^>]*>)*\s*(?P<N>.*?)(?:\s*<[^>]*>)'
-    FILE_SIZE_PATTERN = r'File size:\s*<strong>(?P<S>.*?)</strong>'
-    FILE_OFFLINE_PATTERN = r'<title>File not found</title>'
+    FILE_NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
+    FILE_SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d\.]+) (?P<U>\w+)</strong>'
+    OFFLINE_PATTERN = r'>(File not found|Error 404)'
 
     JSVARS_PATTERN = r"\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*'?(.*?)'?;"
-    DOWNLOAD_LINK_PATTERN = r"return '(http[^']+)';\s*}\s*}\s*}?\);"
-    RECAPTCHA_KEY_PATTERN = r'"http://api.recaptcha.net/challenge?k=(.*?)"'
-    ADSCAPTCHA_SRC_PATTERN = r'(http://api.adscaptcha.com/Get.aspx[^"\']*)'
-    SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
+    PREMIUM_ONLY_ERROR_PATTERN = r'You can download files up to|This file can be downloaded by premium only<'
+    DOWNLOAD_LIMIT_ERROR_PATTERN = r'You have reached your (daily|hourly) downloads limit'
+    WAIT_PATTERN = r'(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)'
+    LINK_PATTERN = r"return '(http://\w+.rapidgator.net/.*)';"
+
+    RECAPTCHA_KEY_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
+    ADSCAPTCHA_SRC_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']*)'
+    SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.*?)"'
 
     def setup(self):
-        self.resumeDownload = self.multiDL = False
+        self.resumeDownload = self.multiDL = self.premium
         self.sid = None
         self.chunkLimit = 1
         self.req.setOption("timeout", 120)
@@ -60,7 +66,7 @@ class RapidgatorNet(SimpleHoster):
         else:
             self.handleFree()
 
-    def getAPIResponse(self, cmd):
+    def api_response(self, cmd):
         try:
             json = self.load('%s/%s' % (self.API_URL, cmd),
                              get={'sid': self.sid,
@@ -85,23 +91,17 @@ class RapidgatorNet(SimpleHoster):
 
     def handlePremium(self):
         #self.logDebug("ACCOUNT_DATA", self.account.getAccountData(self.user))
-        self.api_data = self.getAPIResponse('info')
+        self.api_data = self.api_response('info')
         self.api_data['md5'] = self.api_data['hash']
         self.pyfile.name = self.api_data['filename']
         self.pyfile.size = self.api_data['size']
-        url = self.getAPIResponse('download')['url']
-        self.multiDL = True
+        url = self.api_response('download')['url']
         self.download(url)
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
-        self.getFileInfo()
 
-        if ("You can download files up to 500 MB in free mode" in self.html or
-            "This file can be downloaded by premium only" in self.html):
-            self.fail("Premium account needed for download")
-
-        self.checkWait()
+        self.checkFree()
 
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.html))
         self.logDebug(jsvars)
@@ -110,14 +110,13 @@ class RapidgatorNet(SimpleHoster):
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 
         url = "http://rapidgator.net%s?fid=%s" % (
-            jsvars.get('startTimerUrl', '/download/AjaxStartTimer'), jsvars["fid"])
+            jsvars.get('startTimerUrl', '/download/AjaxStartTimer'), jsvars['fid'])
         jsvars.update(self.getJsonResponse(url))
 
-        self.setWait(int(jsvars.get('secs', 30)) + 1, False)
-        self.wait()
+        self.wait(int(jsvars.get('secs', 45)) + 1, False)
 
         url = "http://rapidgator.net%s?sid=%s" % (
-            jsvars.get('getDownloadUrl', '/download/AjaxGetDownload'), jsvars["sid"])
+            jsvars.get('getDownloadUrl', '/download/AjaxGetDownload'), jsvars['sid'])
         jsvars.update(self.getJsonResponse(url))
 
         self.req.http.lastURL = self.pyfile.url
@@ -125,65 +124,73 @@ class RapidgatorNet(SimpleHoster):
 
         url = "http://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
         self.html = self.load(url)
-        found = re.search(self.ADSCAPTCHA_SRC_PATTERN, self.html)
-        if found:
-            captcha_key = found.group(1)
+
+        for _ in xrange(5):
+            m = re.search(self.LINK_PATTERN, self.html)
+            if m:
+                link = m.group(1)
+                self.logDebug(link)
+                self.download(link, disposition=True)
+                break
+            else:
+                captcha, captcha_key = self.getCaptcha()
+                captcha_challenge, captcha_response = captcha.challenge(captcha_key)
+
+                self.html = self.load(url, post={
+                    "DownloadCaptchaForm[captcha]": "",
+                    "adcopy_challenge": captcha_challenge,
+                    "adcopy_response": captcha_response
+                })
+
+                if "The verification code is incorrect" in self.html:
+                    self.invalidCaptcha()
+                else:
+                    self.correctCaptcha()
+        else:
+            self.parseError("Download link")
+
+    def getCaptcha(self):
+        m = re.search(self.ADSCAPTCHA_SRC_PATTERN, self.html)
+        if m:
+            captcha_key = m.group(1)
             captcha = AdsCaptcha(self)
         else:
-            found = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
-            if found:
-                captcha_key = found.group(1)
+            m = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
+            if m:
+                captcha_key = m.group(1)
                 captcha = ReCaptcha(self)
-
             else:
-                found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-                if found:
-                    captcha_key = found.group(1)
+                m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+                if m:
+                    captcha_key = m.group(1)
                     captcha = SolveMedia(self)
                 else:
                     self.parseError("Captcha")
 
-        for i in range(5):
-            self.checkWait()
-            captcha_challenge, captcha_response = captcha.challenge(captcha_key)
+        return captcha, captcha_key
 
-            self.html = self.load(url, post={
-                "DownloadCaptchaForm[captcha]": "",
-                "adcopy_challenge": captcha_challenge,
-                "adcopy_response": captcha_response
-            })
-
-            if 'The verification code is incorrect' in self.html:
-                self.invalidCaptcha()
-            else:
-                self.correctCaptcha()
-                break
+    def checkFree(self):
+        m = re.search(self.PREMIUM_ONLY_ERROR_PATTERN, self.html)
+        if m:
+            self.fail("Premium account needed for download")
         else:
-            self.fail("No valid captcha solution received")
+            m = re.search(self.WAIT_PATTERN, self.html)
 
-        found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
-        if not found:
-            self.parseError("download link")
-        download_url = found.group(1)
-        self.logDebug(download_url)
-        self.download(download_url)
-
-    def checkWait(self):
-        found = re.search(r"(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)",
-                          self.html)
-        if found:
-            wait_time = int(found.group(1)) * {"hour": 60, "min": 1}[found.group(2)]
+        if m:
+            wait_time = int(m.group(1)) * {"hour": 60, "min": 1}[m.group(2)]
         else:
-            found = re.search(r"You have reached your (daily|hourly) downloads limit", self.html)
-            if found:
-                wait_time = 60
-            else:
+            m = re.search(self.DOWNLOAD_LIMIT_ERROR_PATTERN, self.html)
+            if m is None:
                 return
+            elif m.group(1) == "daily":
+                self.logWarning("You have reached your daily downloads limit for today")
+                wait_time = secondsToMidnight(gmt=2)
+            else:
+                wait_time = 1 * 60 * 60
 
-        self.logDebug("Waiting %d minutes" % wait_time)
-        self.setWait(wait_time * 60, True)
-        self.wait()
-        self.retry(max_tries=24)
+        self.logDebug("Waiting %d minutes" % wait_time / 60)
+        self.wait(wait_time, True)
+        self.retry()
 
     def getJsonResponse(self, url):
         response = self.load(url, decode=True)

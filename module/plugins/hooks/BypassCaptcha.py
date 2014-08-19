@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN, Godofdream, zoidberg
 """
 
 from thread import start_new_thread
@@ -28,6 +27,7 @@ PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"
 
 
 class BypassCaptchaException(Exception):
+
     def __init__(self, err):
         self.err = err
 
@@ -44,16 +44,20 @@ class BypassCaptchaException(Exception):
 class BypassCaptcha(Hook):
     __name__ = "BypassCaptcha"
     __version__ = "0.04"
-    __description__ = """send captchas to BypassCaptcha.com"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force BC even if client is connected", False),
                   ("passkey", "password", "Passkey", "")]
+
+    __description__ = """Send captchas to BypassCaptcha.com"""
     __author_name__ = ("RaNaN", "Godofdream", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "soilfcition@gmail.com", "zoidberg@mujmail.cz")
 
     SUBMIT_URL = "http://bypasscaptcha.com/upload.php"
     RESPOND_URL = "http://bypasscaptcha.com/check_value.php"
     GETCREDITS_URL = "http://bypasscaptcha.com/ex_left.php"
+
 
     def setup(self):
         self.info = {}
@@ -121,11 +125,11 @@ class BypassCaptcha(Hook):
 
     def captchaCorrect(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            self.respond(task.data["ticket"], True)
+            self.respond(task.data['ticket'], True)
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            self.respond(task.data["ticket"], False)
+            self.respond(task.data['ticket'], False)
 
     def processCaptcha(self, task):
         c = task.captchaFile
@@ -135,5 +139,5 @@ class BypassCaptcha(Hook):
             task.error = e.getCode()
             return
 
-        task.data["ticket"] = ticket
+        task.data['ticket'] = ticket
         task.setResult(result)

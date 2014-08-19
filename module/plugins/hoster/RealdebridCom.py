@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -16,10 +15,10 @@ class RealdebridCom(Hoster):
     __version__ = "0.53"
     __type__ = "hoster"
 
-    __pattern__ = r"https?://.*real-debrid\..*"
+    __pattern__ = r'https?://(?:[^/]*\.)?real-debrid\..*'
     __description__ = """Real-Debrid.com hoster plugin"""
-    __author_name__ = ("Devirex, Hazzard")
-    __author_mail__ = ("naibaf_11@yahoo.de")
+    __author_name__ = "Devirex Hazzard"
+    __author_mail__ = "naibaf_11@yahoo.de"
 
     def getFilename(self, url):
         try:
@@ -55,16 +54,16 @@ class RealdebridCom(Hoster):
 
             self.logDebug("Returned Data: %s" % data)
 
-            if data["error"] != 0:
-                if data["message"] == "Your file is unavailable on the hoster.":
+            if data['error'] != 0:
+                if data['message'] == "Your file is unavailable on the hoster.":
                     self.offline()
                 else:
-                    self.logWarning(data["message"])
+                    self.logWarning(data['message'])
                     self.tempOffline()
             else:
-                if self.pyfile.name is not None and self.pyfile.name.endswith('.tmp') and data["file_name"]:
-                    self.pyfile.name = data["file_name"]
-                self.pyfile.size = parseFileSize(data["file_size"])
+                if pyfile.name is not None and pyfile.name.endswith('.tmp') and data['file_name']:
+                    pyfile.name = data['file_name']
+                pyfile.size = parseFileSize(data['file_size'])
                 new_url = data['generated_links'][0][-1]
 
         if self.getConfig("https"):
@@ -86,4 +85,4 @@ class RealdebridCom(Hoster):
 
         if check == "error":
             #usual this download can safely be retried
-            self.retry(reason="An error occured while generating link.", wait_time=60)
+            self.retry(wait_time=60, reason="An error occured while generating link.")

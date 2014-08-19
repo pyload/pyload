@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -21,14 +20,17 @@ from module.common.json_layer import json_loads
 
 class GooGl(Crypter):
     __name__ = "GooGl"
-    __type__ = "crypter"
-    __pattern__ = r"https?://(www\.)?goo\.gl/\w+"
     __version__ = "0.01"
-    __description__ = """Goo.gl Crypter Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __type__ = "crypter"
 
-    API_URL = 'https://www.googleapis.com/urlshortener/v1/url'
+    __pattern__ = r'https?://(?:www\.)?goo\.gl/\w+'
+
+    __description__ = """Goo.gl decrypter plugin"""
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
+
+    API_URL = "https://www.googleapis.com/urlshortener/v1/url"
+
 
     def decrypt(self, pyfile):
         rep = self.load(self.API_URL, get={'shortUrl': pyfile.url})
@@ -36,6 +38,6 @@ class GooGl(Crypter):
         rep = json_loads(rep)
 
         if 'longUrl' in rep:
-            self.core.files.addLinks([rep['longUrl']], self.pyfile.package().id)
+            self.urls = [rep['longUrl']]
         else:
             self.fail('Unable to expand shortened link')

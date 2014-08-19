@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -20,16 +19,16 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 class EasybytezComFolder(SimpleCrypter):
     __name__ = "EasybytezComFolder"
+    __version__ = "0.06"
     __type__ = "crypter"
-    __pattern__ = r"https?://(www\.)?easybytez\.com/users/\w+/\w+"
-    __version__ = "0.03"
-    __description__ = """Easybytez Crypter Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
 
-    LINK_PATTERN = r'<div class="link"><a href="(http://www\.easybytez\.com/\w+)" target="_blank">.+</a></div>'
+    __pattern__ = r'http://(?:www\.)?easybytez\.com/users/(?P<ID>\d+/\d+)'
+
+    __description__ = """Easybytez.com decrypter plugin"""
+    __author_name__ = "stickell"
+    __author_mail__ = "l.stickell@yahoo.it"
+
+    URL_REPLACEMENTS = [(__pattern__, r"http://www.easybytez.com/users/\g<ID>?per_page=10000")]
+
+    LINK_PATTERN = r'<td><a href="(http://www\.easybytez\.com/\w+)" target="_blank">.+(?:</a>)?</td>'
     TITLE_PATTERN = r'<Title>Files of \d+: (?P<title>.+) folder</Title>'
-    PAGES_PATTERN = r"<a href='[^']+'>(?P<pages>\d+)</a><a href='[^']+'>Next &#187;</a><br><small>\(\d+ total\)</small></div>"
-
-    def loadPage(self, page_n):
-        return self.load(self.pyfile.url, get={'page': page_n}, decode=True)

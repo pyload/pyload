@@ -9,12 +9,12 @@ from module.common.json_layer import json_loads
 
 class FastixRu(Hoster):
     __name__ = "FastixRu"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __type__ = "hoster"
-    __pattern__ = r"http?://.*fastix.ru\..*"
+    __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>[a-zA-Z0-9]{24})'
     __description__ = """Fastix hoster plugin"""
-    __author_name__ = ("Massimo, Rosamilia")
-    __author_mail__ = ("max@spiritix.eu")
+    __author_name__ = "Massimo Rosamilia"
+    __author_mail__ = "max@spiritix.eu"
 
     def getFilename(self, url):
         try:
@@ -38,7 +38,7 @@ class FastixRu(Hoster):
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             api_key = self.account.getAccountData(self.user)
-            api_key = api_key["api"]
+            api_key = api_key['api']
             url = "http://fastix.ru/api_v2/?apikey=%s&sub=getdirectlink&link=%s" % (api_key, pyfile.url)
             page = self.load(url)
             data = json_loads(page)
@@ -46,7 +46,7 @@ class FastixRu(Hoster):
             if "error\":true" in page:
                 self.offline()
             else:
-                new_url = data["downloadlink"]
+                new_url = data['downloadlink']
 
         if new_url != pyfile.url:
             self.logDebug("New URL: %s" % new_url)
@@ -61,6 +61,6 @@ class FastixRu(Hoster):
                                     "empty": re.compile(r"^$")})
 
         if check == "error":
-            self.retry(reason="An error occurred while generating link.", wait_time=60)
+            self.retry(wait_time=60, reason="An error occurred while generating link.")
         elif check == "empty":
-            self.retry(reason="Downloaded File was empty.", wait_time=60)
+            self.retry(wait_time=60, reason="Downloaded File was empty.")

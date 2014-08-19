@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: zoidberg
 """
 
 from module.plugins.Account import Account
@@ -25,11 +23,13 @@ class RapidgatorNet(Account):
     __name__ = "RapidgatorNet"
     __version__ = "0.04"
     __type__ = "account"
-    __description__ = """rapidgator.net account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+
+    __description__ = """Rapidgator.net account plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     API_URL = 'http://rapidgator.net/api/user'
+
 
     def loadAccountInfo(self, user, req):
         try:

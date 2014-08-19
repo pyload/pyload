@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: RaNaN
 """
 
 import zipfile
@@ -22,9 +20,15 @@ import sys
 
 from module.plugins.internal.AbstractExtractor import AbtractExtractor
 
+
 class UnZip(AbtractExtractor):
     __name__ = "UnZip"
     __version__ = "0.1"
+
+    __description__ = """Zip extractor plugin"""
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
+
 
     @staticmethod
     def checkDeps():

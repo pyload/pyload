@@ -1,16 +1,27 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 
 class ArchiveError(Exception):
     pass
 
+
 class CRCError(Exception):
     pass
+
 
 class WrongPassword(Exception):
     pass
 
+
 class AbtractExtractor:
+    __name__ = "AbtractExtractor"
+    __version__ = "0.1"
+
+    __description__ = """Abtract extractor plugin"""
+    __author_name__ = "pyLoad Team"
+    __author_mail__ = "admin@pyload.org"
+
+
     @staticmethod
     def checkDeps():
         """ Check if system statisfy dependencies
@@ -25,7 +36,6 @@ class AbtractExtractor:
         :return: List of targets, id tuple list
         """
         raise NotImplementedError
-
 
     def __init__(self, m, file, out, fullpath, overwrite, excludefiles, renice):
         """Initialize extractor for specific file
@@ -44,13 +54,11 @@ class AbtractExtractor:
         self.overwrite = overwrite
         self.excludefiles = excludefiles
         self.renice = renice
-        self.files = [] # Store extracted files here
-
+        self.files = []  #: Store extracted files here
 
     def init(self):
         """ Initialize additional data structures """
         pass
-
 
     def checkArchive(self):
         """Check if password if needed. Raise ArchiveError if integrity is

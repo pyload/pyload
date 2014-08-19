@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,62 +13,19 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
-import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
-class HellspyCz(SimpleHoster):
+class HellspyCz(DeadHoster):
     __name__ = "HellspyCz"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*(?:hellspy\.(?:cz|com|sk|hu|pl)|sciagaj.pl)(/\S+/\d+)/?.*"
-    __version__ = "0.27"
-    __description__ = """HellSpy.cz"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
-
-    FILE_SIZE_PATTERN = r'<span class="filesize right">(?P<S>[0-9.]+)\s*<span>(?P<U>[kKMG])i?B'
-    FILE_NAME_PATTERN = r'<h1 title="(?P<N>.*?)"'
-    FILE_OFFLINE_PATTERN = r'<h2>(404 - Page|File) not found</h2>'
-    FILE_URL_REPLACEMENTS = [(__pattern__, r"http://www.hellspy.com\1")]
-
-    CREDIT_LEFT_PATTERN = r'<strong>Credits: </strong>\s*(\d+)'
-    DOWNLOAD_AGAIN_PATTERN = r'<a id="button-download-start"[^>]*title="You can download the file without deducting your credit.">'
-    DOWNLOAD_URL_PATTERN = r"launchFullDownload\('([^']+)'"
-
-    def setup(self):
-        self.resumeDownload = self.multiDL = True
-        self.chunkLimit = 1
-
-    def handleFree(self):
-        self.fail("Only premium users can download from HellSpy.cz")
-
-    def handlePremium(self):
-        # set PHPSESSID cookie
-        cj = self.account.getAccountCookies(self.user)
-        cj.setCookie(".hellspy.com", "PHPSESSID", self.account.phpsessid)
-        self.logDebug("PHPSESSID: " + cj.getCookie("PHPSESSID"))
-
-        info = self.account.getAccountInfo(self.user, True)
-        self.logInfo("User %s has %i credits left" % (self.user, info["trafficleft"] / 1024))
-
-        if self.pyfile.size / 1024 > info["trafficleft"]:
-            self.logWarning("Not enough credit left to download file")
-
-        # get premium download URL and download
-        self.html = self.load(self.pyfile.url + "?download=1")
-        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
-        if not found:
-            self.parseError("Download URL")
-        url = found.group(1)
-        self.logDebug("Download URL: " + url)
-        self.download(url)
-
-        info = self.account.getAccountInfo(self.user, True)
-        self.logInfo("User %s has %i credits left" % (self.user, info["trafficleft"] / 1024))
+    __pattern__ = r'http://(?:www\.)?(?:hellspy\.(?:cz|com|sk|hu|pl)|sciagaj.pl)(/\S+/\d+)/?.*'
+    __version__ = "0.28"
+    __description__ = """HellSpy.cz hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
 
 getInfo = create_getInfo(HellspyCz)

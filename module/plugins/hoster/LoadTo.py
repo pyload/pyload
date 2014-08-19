@@ -1,61 +1,80 @@
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: halfman
-"""
+############################################################################
+# This program is free software: you can redistribute it and/or modify     #
+# it under the terms of the GNU Affero General Public License as           #
+# published by the Free Software Foundation, either version 3 of the       #
+# License, or (at your option) any later version.                          #
+#                                                                          #
+# This program is distributed in the hope that it will be useful,          #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
+# GNU Affero General Public License for more details.                      #
+#                                                                          #
+# You should have received a copy of the GNU Affero General Public License #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
+############################################################################
 
 # Test links (random.bin):
-# http://www.load.to/dNsmgXRk4/random.bin
-# http://www.load.to/edbNTxcUb/random100.bin
+# http://www.load.to/JWydcofUY6/random.bin
+# http://www.load.to/oeSmrfkXE/random100.bin
 
 import re
+
+from module.plugins.internal.CaptchaService import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class LoadTo(SimpleHoster):
     __name__ = "LoadTo"
+    __version__ = "0.15"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?load\.to/\w+"
-    __version__ = "0.12"
+
+    __pattern__ = r'http://(?:www\.)?load\.to/\w+'
+
     __description__ = """Load.to hoster plugin"""
     __author_name__ = ("halfman", "stickell")
     __author_mail__ = ("Pulpan3@gmail.com", "l.stickell@yahoo.it")
 
-    FILE_INFO_PATTERN = r'<a [^>]+>(?P<N>.+)</a></h3>\s*Size: (?P<S>\d+) Bytes'
-    URL_PATTERN = r'<form method="post" action="(.+?)"'
-    FILE_OFFLINE_PATTERN = r'Can\'t find file. Please check URL.<br />'
+    FILE_NAME_PATTERN = r'<head><title>(?P<N>.+) \/\/ Load.to</title>'
+    FILE_SIZE_PATTERN = r'<a [^>]+>(?P<Z>.+)</a></h3>\s*Size: (?P<S>.*) (?P<U>[kKmMgG]?i?[bB])'
+    OFFLINE_PATTERN = r'Can\'t find file\. Please check URL'
+
+    LINK_PATTERN = r'<form method="post" action="(.+?)"'
     WAIT_PATTERN = r'type="submit" value="Download \((\d+)\)"'
+    SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.noscript\?k=([^"]+)'
+
 
     def setup(self):
-        self.multiDL = False
+        self.multiDL = True
+        self.chunkLimit = 1
 
-    def process(self, pyfile):
+    def handleFree(self):
+        # Search for Download URL
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
+            self.parseError("Unable to detect download URL")
 
-        self.html = self.load(pyfile.url, decode=True)
+        download_url = m.group(1)
 
-        found = re.search(self.URL_PATTERN, self.html)
-        if not found:
-            self.parseError('URL')
-        download_url = found.group(1)
+        # Set Timer - may be obsolete
+        m = re.search(self.WAIT_PATTERN, self.html)
+        if m:
+            self.wait(m.group(1))
 
-        timmy = re.search(self.WAIT_PATTERN, self.html)
-        if timmy:
-            self.setWait(timmy.group(1))
-            self.wait()
-
-        self.download(download_url, disposition=True)
+        # Load.to is using solvemedia captchas since ~july 2014:
+        m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+        if m is None:
+            self.download(download_url)
+        else:
+            captcha_key = m.group(1)
+            solvemedia = SolveMedia(self)
+            captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
+            self.download(download_url, post={"adcopy_challenge": captcha_challenge, "adcopy_response": captcha_response})
+            check = self.checkDownload({"404": re.compile("\A<h1>404 Not Found</h1>")})
+            if check == "404":
+                self.logWarning("The captcha you entered was incorrect. Please try again.")
+                self.invalidCaptcha()
+                self.retry()
 
 
 getInfo = create_getInfo(LoadTo)

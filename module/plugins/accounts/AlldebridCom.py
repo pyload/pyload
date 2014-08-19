@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import xml.dom.minidom as dom
 from time import time
 import re
@@ -9,11 +11,13 @@ from BeautifulSoup import BeautifulSoup
 
 class AlldebridCom(Account):
     __name__ = "AlldebridCom"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __type__ = "account"
+
     __description__ = """AllDebrid.com account plugin"""
-    __author_name__ = ("Andy, Voigt")
-    __author_mail__ = ("spamsales@online.de")
+    __author_name__ = "Andy Voigt"
+    __author_mail__ = "spamsales@online.de"
+
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
@@ -22,7 +26,7 @@ class AlldebridCom(Account):
         #Try to parse expiration date directly from the control panel page (better accuracy)        
         try:
             time_text = soup.find('div', attrs={'class': 'remaining_time_text'}).strong.string
-            self.log.debug("Account expires in: %s" % time_text)
+            self.logDebug("Account expires in: %s" % time_text)
             p = re.compile('\d+')
             exp_data = p.findall(time_text)
             exp_time = time() + int(exp_data[0]) * 24 * 60 * 60 + int(
@@ -31,15 +35,15 @@ class AlldebridCom(Account):
         except:
             data = self.getAccountData(user)
             page = req.load("http://www.alldebrid.com/api.php?action=info_user&login=%s&pw=%s" % (user,
-                                                                                                  data["password"]))
-            self.log.debug(page)
+                                                                                                  data['password']))
+            self.logDebug(page)
             xml = dom.parseString(page)
-            exp_time = time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 86400
+            exp_time = time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 24 * 60 * 60
         account_info = {"validuntil": exp_time, "trafficleft": -1}
         return account_info
 
     def login(self, user, data, req):
-        urlparams = urllib.urlencode({'action': 'login', 'login_login': user, 'login_password': data["password"]})
+        urlparams = urllib.urlencode({'action': 'login', 'login_login': user, 'login_password': data['password']})
         page = req.load("http://www.alldebrid.com/register/?%s" % urlparams)
 
         if "This login doesn't exist" in page:

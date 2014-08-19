@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: zoidberg
 """
 
 from time import mktime, strptime
@@ -27,20 +25,22 @@ class EuroshareEu(Account):
     __name__ = "EuroshareEu"
     __version__ = "0.01"
     __type__ = "account"
-    __description__ = """euroshare.eu account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+
+    __description__ = """Euroshare.eu account plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
+
 
     def loadAccountInfo(self, user, req):
         self.relogin(user)
         html = req.load("http://euroshare.eu/customer-zone/settings/")
 
-        found = re.search('id="input_expire_date" value="(\d+\.\d+\.\d+ \d+:\d+)"', html)
-        if found is None:
+        m = re.search('id="input_expire_date" value="(\d+\.\d+\.\d+ \d+:\d+)"', html)
+        if m is None:
             premium, validuntil = False, -1
         else:
             premium = True
-            validuntil = mktime(strptime(found.group(1), "%d.%m.%Y %H:%M"))
+            validuntil = mktime(strptime(m.group(1), "%d.%m.%Y %H:%M"))
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
@@ -49,7 +49,7 @@ class EuroshareEu(Account):
         html = req.load('http://euroshare.eu/customer-zone/login/', post={
             "trvale": "1",
             "login": user,
-            "password": data["password"]
+            "password": data['password']
         }, decode=True)
 
         if u">Nesprávne prihlasovacie meno alebo heslo" in html:

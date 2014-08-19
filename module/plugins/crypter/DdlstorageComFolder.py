@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ############################################################################
 # This program is free software: you can redistribute it and/or modify     #
 # it under the terms of the GNU Affero General Public License as           #
@@ -20,11 +19,13 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 class DdlstorageComFolder(SimpleCrypter):
     __name__ = "DdlstorageComFolder"
-    __type__ = "crypter"
-    __pattern__ = r"http://(?:\w*\.)*?ddlstorage.com/folder/\w{10}"
     __version__ = "0.02"
-    __description__ = """DDLStorage.com Folder Plugin"""
+    __type__ = "crypter"
+
+    __pattern__ = r'http://(?:www\.)?ddlstorage.com/folder/\w{10}'
+
+    __description__ = """DDLStorage.com folder decrypter plugin"""
     __author_name__ = ("godofdream", "stickell")
     __author_mail__ = ("soilfiction@gmail.com", "l.stickell@yahoo.it")
 
-    LINK_PATTERN = '<a class="sub_title" style="text-decoration:none;" href="(http://www.ddlstorage.com/.*)">'
+    LINK_PATTERN = r'<a class="sub_title" style="text-decoration:none;" href="(http://www.ddlstorage.com/.*)">'

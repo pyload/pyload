@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 import re
@@ -24,43 +23,47 @@ from module.utils import fixup
 class NowDownloadEu(SimpleHoster):
     __name__ = "NowDownloadEu"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?nowdownload\.(eu|co)/dl/(?P<ID>[a-z0-9]+)"
-    __version__ = "0.02"
-    __description__ = """NowDownloadEu"""
-    __author_name__ = ("godofdream")
+    __pattern__ = r'http://(?:www\.)?nowdownload\.(ch|co|eu|sx)/(dl/|download\.php\?id=)(?P<ID>\w+)'
+    __version__ = "0.05"
+    __description__ = """NowDownload.ch hoster plugin"""
+    __author_name__ = ("godofdream", "Walter Purcaro")
+    __author_mail__ = ("soilfiction@gmail.com", "vuolter@gmail.com")
+
     FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B </h4>'
-    FILE_OFFLINE_PATTERN = r'(This file does not exist!)'
-    FILE_TOKEN_PATTERN = r'"(/api/token\.php\?token=[a-z0-9]+)"'
-    FILE_CONTINUE_PATTERN = r'"(/dl2/[a-z0-9]+/[a-z0-9]+)"'
-    FILE_WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
-    FILE_DOWNLOAD_LINK = r'"(http://f\d+\.nowdownload\.eu/dl/[a-z0-9]+/[a-z0-9]+/[^<>"]*?)"'
+    OFFLINE_PATTERN = r'(This file does not exist!)'
+
+    TOKEN_PATTERN = r'"(/api/token\.php\?token=[a-z0-9]+)"'
+    CONTINUE_PATTERN = r'"(/dl2/[a-z0-9]+/[a-z0-9]+)"'
+    WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
+    LINK_PATTERN = r'"(http://f\d+\.nowdownload\.ch/dl/[a-z0-9]+/[a-z0-9]+/[^<>"]*?)"'
 
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<[^>]*>', '')]
 
+
     def setup(self):
-        self.wantReconnect = False
         self.multiDL = self.resumeDownload = True
         self.chunkLimit = -1
 
     def handleFree(self):
-        tokenlink = re.search(self.FILE_TOKEN_PATTERN, self.html)
-        continuelink = re.search(self.FILE_CONTINUE_PATTERN, self.html)
-        if (not tokenlink) or (not continuelink):
+        tokenlink = re.search(self.TOKEN_PATTERN, self.html)
+        continuelink = re.search(self.CONTINUE_PATTERN, self.html)
+        if tokenlink is None or continuelink is None:
             self.fail('Plugin out of Date')
 
-        wait = 60
-        found = re.search(self.FILE_WAIT_PATTERN, self.html)
-        if found:
-            wait = int(found.group(1))
+        m = re.search(self.WAIT_PATTERN, self.html)
+        if m:
+            wait = int(m.group(1))
+        else:
+            wait = 60
 
-        self.html = self.load("http://www.nowdownload.eu" + str(tokenlink.group(1)))
-        self.setWait(wait)
-        self.wait()
+        baseurl = "http://www.nowdownload.ch"
+        self.html = self.load(baseurl + str(tokenlink.group(1)))
+        self.wait(wait)
 
-        self.html = self.load("http://www.nowdownload.eu" + str(continuelink.group(1)))
+        self.html = self.load(baseurl + str(continuelink.group(1)))
 
-        url = re.search(self.FILE_DOWNLOAD_LINK, self.html)
-        if not url:
+        url = re.search(self.LINK_PATTERN, self.html)
+        if url is None:
             self.fail('Download Link not Found (Plugin out of Date?)')
         self.logDebug('Download link: ' + str(url.group(1)))
         self.download(str(url.group(1)))

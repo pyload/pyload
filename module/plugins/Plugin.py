@@ -146,7 +146,7 @@ class Plugin(Base):
     __pattern__ = None
     __type__ = "hoster"
     __config__ = [("name", "type", "desc", "default")]
-    __description__ = """Base Plugin"""
+    __description__ = """Base plugin"""
     __author_name__ = ("RaNaN", "spoob", "mkaay")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
 
@@ -207,8 +207,8 @@ class Plugin(Base):
 
     def getChunkCount(self):
         if self.chunkLimit <= 0:
-            return self.config["download"]["chunks"]
-        return min(self.config["download"]["chunks"], self.chunkLimit)
+            return self.config['download']['chunks']
+        return min(self.config['download']['chunks'], self.chunkLimit)
 
     def __call__(self):
         return self.__name__
@@ -263,7 +263,7 @@ class Plugin(Base):
 
     def setWait(self, seconds, reconnect=False):
         """Set a specific wait time later used with `wait`
-        
+
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
@@ -339,7 +339,7 @@ class Plugin(Base):
         :param result_type: 'textual' if text is written on the captcha\
         or 'positional' for captcha where the user have to click\
         on a specific region on the captcha
-        
+
         :return: result of decrypting
         """
 
@@ -478,12 +478,12 @@ class Plugin(Base):
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
-            makedirs(location, int(self.core.config["permission"]["folder"], 8))
+            makedirs(location, int(self.core.config['permission']['folder'], 8))
 
-            if self.core.config["permission"]["change_dl"] and os.name != "nt":
+            if self.core.config['permission']['change_dl'] and os.name != "nt":
                 try:
-                    uid = getpwnam(self.config["permission"]["user"])[2]
-                    gid = getgrnam(self.config["permission"]["group"])[2]
+                    uid = getpwnam(self.config['permission']['user'])[2]
+                    gid = getgrnam(self.config['permission']['group'])[2]
 
                     chown(location, uid, gid)
                 except Exception, e:
@@ -511,13 +511,13 @@ class Plugin(Base):
 
         fs_filename = fs_encode(filename)
 
-        if self.core.config["permission"]["change_file"]:
-            chmod(fs_filename, int(self.core.config["permission"]["file"], 8))
+        if self.core.config['permission']['change_file']:
+            chmod(fs_filename, int(self.core.config['permission']['file'], 8))
 
-        if self.core.config["permission"]["change_dl"] and os.name != "nt":
+        if self.core.config['permission']['change_dl'] and os.name != "nt":
             try:
-                uid = getpwnam(self.config["permission"]["user"])[2]
-                gid = getgrnam(self.config["permission"]["group"])[2]
+                uid = getpwnam(self.config['permission']['user'])[2]
+                gid = getgrnam(self.config['permission']['group'])[2]
 
                 chown(fs_filename, uid, gid)
             except Exception, e:
@@ -528,7 +528,7 @@ class Plugin(Base):
 
     def checkDownload(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
         """ checks the content of the last downloaded file, re match is saved to `lastCheck`
-        
+
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param api_size: expected file size
         :param max_size: if the file is larger then it wont be checked

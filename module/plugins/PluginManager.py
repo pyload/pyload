@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay, RaNaN
 """
 
@@ -28,6 +28,7 @@ from traceback import print_exc
 
 from module.lib.SafeEval import const_eval as literal_eval
 from module.ConfigParser import IGNORE
+
 
 class PluginManager:
     ROOT = "module.plugins."
@@ -79,11 +80,11 @@ class PluginManager:
         """
         returns dict with information 
         home contains parsed plugins from module.
-        
+
         {
         name : {path, version, config, (pattern, re), (plugin, class)}
         }
-        
+
         """
         plugins = {}
         if home:
@@ -371,10 +372,9 @@ if __name__ == "__main__":
 
     a = time()
 
-    test = ["http://www.youtube.com/watch?v=%s" % x for x in range(0, 100)]
+    test = ["http://www.youtube.com/watch?v=%s" % x for x in xrange(0, 100)]
     print p.parseUrls(test)
 
     b = time()
 
     print b - a, "s"
-    

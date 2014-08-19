@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
 """
 
 import re
@@ -25,20 +24,31 @@ from module.utils import remove_chars
 
 class LinkdecrypterCom(Hook):
     __name__ = "LinkdecrypterCom"
-    __version__ = "0.18"
-    __description__ = """linkdecrypter.com - regexp loader"""
-    __config__ = [("activated", "bool", "Activated", "False")]
-    __author_name__ = ("zoidberg")
+    __version__ = "0.19"
+    __type__ = "hook"
+
+    __config__ = [("activated", "bool", "Activated", False)]
+
+    __description__ = """Linkdecrypter.com hook plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
+
 
     def coreReady(self):
+        try:
+            self.loadPatterns()
+        except Exception, e:
+            self.logError(e)
+
+    def loadPatterns(self):
         page = getURL("http://linkdecrypter.com/")
         m = re.search(r'<b>Supported\(\d+\)</b>: <i>([^+<]*)', page)
-        if not m:
+        if m is None:
             self.logError(_("Crypter list not found"))
             return
 
         builtin = [name.lower() for name in self.core.pluginManager.crypterPlugins.keys()]
-        builtin.extend(["downloadserienjunkiesorg"])
+        builtin.append("downloadserienjunkiesorg")
 
         crypter_pattern = re.compile("(\w[\w.-]+)")
         online = []
@@ -54,7 +64,7 @@ class LinkdecrypterCom(Hook):
         regexp = r"https?://([^.]+\.)*?(%s)/.*" % "|".join(online)
 
         dict = self.core.pluginManager.crypterPlugins[self.__name__]
-        dict["pattern"] = regexp
-        dict["re"] = re.compile(regexp)
+        dict['pattern'] = regexp
+        dict['re'] = re.compile(regexp)
 
         self.logDebug("REGEXP: " + regexp)

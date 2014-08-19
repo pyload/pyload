@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -12,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay, RaNaN, zoidberg
 """
 from __future__ import with_statement
 from thread import start_new_thread
@@ -26,6 +25,7 @@ from module.plugins.Hook import Hook
 
 
 class ImageTyperzException(Exception):
+
     def __init__(self, err):
         self.err = err
 
@@ -42,17 +42,21 @@ class ImageTyperzException(Exception):
 class ImageTyperz(Hook):
     __name__ = "ImageTyperz"
     __version__ = "0.04"
-    __description__ = """send captchas to ImageTyperz.com"""
+    __type__ = "hook"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
                   ("force", "bool", "Force IT even if client is connected", False)]
+
+    __description__ = """Send captchas to ImageTyperz.com"""
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
 
     SUBMIT_URL = "http://captchatypers.com/Forms/UploadFileAndGetTextNEW.ashx"
     RESPOND_URL = "http://captchatypers.com/Forms/SetBadImage.ashx"
     GETCREDITS_URL = "http://captchatypers.com/Forms/RequestBalance.ashx"
+
 
     def setup(self):
         self.info = {}
@@ -132,7 +136,7 @@ class ImageTyperz(Hook):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             response = getURL(self.RESPOND_URL, post={"action": "SETBADIMAGE", "username": self.getConfig("username"),
                                                       "password": self.getConfig("passkey"),
-                                                      "imageid": task.data["ticket"]})
+                                                      "imageid": task.data['ticket']})
 
             if response == "SUCCESS":
                 self.logInfo("Bad captcha solution received, requested refund")
@@ -147,5 +151,5 @@ class ImageTyperz(Hook):
             task.error = e.getCode()
             return
 
-        task.data["ticket"] = ticket
+        task.data['ticket'] = ticket
         task.setResult(result)

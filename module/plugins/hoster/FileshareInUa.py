@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import re
 from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
@@ -7,16 +9,15 @@ from module.utils import parseFileSize
 class FileshareInUa(Hoster):
     __name__ = "FileshareInUa"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*?fileshare.in.ua/[A-Za-z0-9]+"
+    __pattern__ = r'http://(?:www\.)?fileshare.in.ua/[A-Za-z0-9]+'
     __version__ = "0.01"
-    __description__ = """fileshare.in.ua hoster plugin"""
-    __author_name__ = ("fwannmacher")
-    __author_mail__ = ("felipe@warhammerproject.com")
+    __description__ = """Fileshare.in.ua hoster plugin"""
+    __author_name__ = "fwannmacher"
+    __author_mail__ = "felipe@warhammerproject.com"
 
-    HOSTER_NAME = "fileshare.in.ua"
     PATTERN_FILENAME = r'<h3 class="b-filename">(.*?)</h3>'
     PATTERN_FILESIZE = r'<b class="b-filesize">(.*?)</b>'
-    PATTERN_OFFLINE = "This file doesn't exist, or has been removed."
+    PATTERN_OFFLINE = r"This file doesn't exist, or has been removed."
 
     def setup(self):
         self.resumeDownload = self.multiDL = True
@@ -28,14 +29,14 @@ class FileshareInUa(Hoster):
         if not self._checkOnline():
             self.offline()
 
-        self.pyfile.name = self._getName()
+        pyfile.name = self._getName()
 
-        self.link = self._getLink()
+        link = self._getLink()
 
-        if not self.link.startswith('http://'):
-            self.link = "http://fileshare.in.ua" + self.link
+        if not link.startswith('http://'):
+            link = "http://fileshare.in.ua" + link
 
-        self.download(self.link)
+        self.download(link)
 
     def _checkOnline(self):
         if re.search(self.PATTERN_OFFLINE, self.html):

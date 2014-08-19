@@ -13,8 +13,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
 """
 import re
 from time import strptime, mktime
@@ -26,9 +24,11 @@ class FreakshareCom(Account):
     __name__ = "FreakshareCom"
     __version__ = "0.1"
     __type__ = "account"
-    __description__ = """freakshare.com account plugin"""
-    __author_name__ = ("RaNaN")
-    __author_mail__ = ("RaNaN@pyload.org")
+
+    __description__ = """Freakshare.com account plugin"""
+    __author_name__ = "RaNaN"
+    __author_mail__ = "RaNaN@pyload.org"
+
 
     def loadAccountInfo(self, user, req):
         page = req.load("http://freakshare.com/")

@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+
+from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
-class BoltsharingCom(XFileSharingPro):
+class BoltsharingCom(DeadHoster):
     __name__ = "BoltsharingCom"
     __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*?boltsharing.com/\w{12}"
-    __version__ = "0.01"
+    __pattern__ = r'http://(?:www\.)?boltsharing.com/\w{12}'
+    __version__ = "0.02"
     __description__ = """Boltsharing.com hoster plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
-
-    HOSTER_NAME = "boltsharing.com"
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
 
 getInfo = create_getInfo(BoltsharingCom)

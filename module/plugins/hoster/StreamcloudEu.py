@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from time import sleep
 import re
 
@@ -9,25 +10,26 @@ from module.network.HTTPRequest import HTTPRequest
 class StreamcloudEu(XFileSharingPro):
     __name__ = "StreamcloudEu"
     __type__ = "hoster"
-    __pattern__ = r"http://(www\.)?streamcloud\.eu/\S+"
-    __version__ = "0.02"
+    __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\S+'
+    __version__ = "0.04"
     __description__ = """Streamcloud.eu hoster plugin"""
-    __author_name__ = ("seoester")
-    __author_mail__ = ("seoester@googlemail.com")
+    __author_name__ = "seoester"
+    __author_mail__ = "seoester@googlemail.com"
 
     HOSTER_NAME = "streamcloud.eu"
-    DIRECT_LINK_PATTERN = r'file: "(http://(stor|cdn)\d+\.streamcloud.eu:?\d*/.*/video\.mp4)",'
+
+    LINK_PATTERN = r'file: "(http://(stor|cdn)\d+\.streamcloud.eu:?\d*/.*/video\.(mp4|flv))",'
 
     def setup(self):
         super(StreamcloudEu, self).setup()
         self.multiDL = True
 
     def getDownloadLink(self):
-        found = re.search(self.DIRECT_LINK_PATTERN, self.html, re.S)
-        if found:
-            return found.group(1)
+        m = re.search(self.LINK_PATTERN, self.html, re.S)
+        if m:
+            return m.group(1)
 
-        for i in range(5):
+        for i in xrange(5):
             self.logDebug("Getting download link: #%d" % i)
             data = self.getPostParameters()
             httpRequest = HTTPRequest(options=self.req.options)
@@ -36,12 +38,12 @@ class StreamcloudEu(XFileSharingPro):
             self.html = httpRequest.load(self.pyfile.url, post=data, referer=False, cookies=True, decode=True)
             self.header = httpRequest.header
 
-            found = re.search("Location\s*:\s*(.*)", self.header, re.I)
-            if found:
+            m = re.search("Location\s*:\s*(.*)", self.header, re.I)
+            if m:
                 break
 
-            found = re.search(self.DIRECT_LINK_PATTERN, self.html, re.S)
-            if found:
+            m = re.search(self.LINK_PATTERN, self.html, re.S)
+            if m:
                 break
 
         else:
@@ -50,10 +52,10 @@ class StreamcloudEu(XFileSharingPro):
             else:
                 self.fail("Download link not found")
 
-        return found.group(1)
+        return m.group(1)
 
     def getPostParameters(self):
-        for i in range(3):
+        for i in xrange(3):
             if not self.errmsg:
                 self.checkErrors()
 
@@ -72,7 +74,7 @@ class StreamcloudEu(XFileSharingPro):
 
             self.logDebug(self.HOSTER_NAME, inputs)
 
-            if 'op' in inputs and inputs['op'] in ('download1', 'download2', 'download3'):
+            if 'op' in inputs and inputs['op'] in ("download1", "download2", "download3"):
                 if "password" in inputs:
                     if self.passwords:
                         inputs['password'] = self.passwords.pop(0)
@@ -80,9 +82,9 @@ class StreamcloudEu(XFileSharingPro):
                         self.fail("No or invalid passport")
 
                 if not self.premium:
-                    found = re.search(self.WAIT_PATTERN, self.html)
-                    if found:
-                        wait_time = int(found.group(1)) + 1
+                    m = re.search(self.WAIT_PATTERN, self.html)
+                    if m:
+                        wait_time = int(m.group(1)) + 1
                         self.setWait(wait_time, False)
                     else:
                         wait_time = 0

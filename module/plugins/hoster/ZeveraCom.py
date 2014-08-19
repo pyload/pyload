@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from module.plugins.Hoster import Hoster
@@ -8,10 +7,10 @@ class ZeveraCom(Hoster):
     __name__ = "ZeveraCom"
     __version__ = "0.21"
     __type__ = "hoster"
-    __pattern__ = r"http://zevera.com/.*"
-    __description__ = """zevera.com hoster plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __pattern__ = r'http://(?:www\.)?zevera.com/.*'
+    __description__ = """Zevera.com hoster plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
 
     def setup(self):
         self.resumeDownload = self.multiDL = True
@@ -49,9 +48,9 @@ class ZeveraCom(Hoster):
     #     self.logDebug("zevera.com: Old URL: %s" % pyfile.url)
     #
     #     last_size = retries = 0
-    #     olink = self.pyfile.url #quote(self.pyfile.url.encode('utf_8'))
+    #     olink = pyfile.url #quote(pyfile.url.encode('utf_8'))
     #
-    #     for i in range(100):
+    #     for _ in xrange(100):
     #         self.retData = self.account.loadAPIRequest(self.req, cmd = 'download_request', olink = olink)
     #         self.checkAPIErrors(self.retData)
     #
@@ -96,7 +95,7 @@ class ZeveraCom(Hoster):
     #         self.logError(retData['ErrorCode'], retData['ErrorMessage'])
     #         #self.fail('ERROR: ' + retData['ErrorMessage'])
     #
-    #     if self.pyfile.size / 1024000 > retData['AccountInfo']['AvailableTODAYTrafficForUseInMBytes']:
+    #     if pyfile.size / 1024000 > retData['AccountInfo']['AvailableTODAYTrafficForUseInMBytes']:
     #         self.logWarning("Not enough data left to download the file")
     #
     # def crazyDecode(self, ustring):

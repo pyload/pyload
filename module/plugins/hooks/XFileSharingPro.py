@@ -7,15 +7,18 @@ from module.plugins.Hook import Hook
 
 class XFileSharingPro(Hook):
     __name__ = "XFileSharingPro"
-    __version__ = "0.06"
+    __version__ = "0.11"
     __type__ = "hook"
-    __config__ = [("activated", "bool", "Activated", "True"),
-                  ("loadDefault", "bool", "Include default (built-in) hoster list", "True"),
+
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("loadDefault", "bool", "Include default (built-in) hoster list", True),
                   ("includeList", "str", "Include hosters (comma separated)", ""),
                   ("excludeList", "str", "Exclude hosters (comma separated)", "")]
-    __description__ = """Hoster URL pattern loader for the generic XFileSharingPro plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+
+    __description__ = """XFileSharingPro hook plugin"""
+    __author_name__ = "zoidberg"
+    __author_mail__ = "zoidberg@mujmail.cz"
+
 
     def coreReady(self):
         self.loadPattern()
@@ -30,7 +33,7 @@ class XFileSharingPro(Hook):
                 "aieshare.com", "asixfiles.com", "banashare.com", "cyberlocker.ch", "eyesfile.co", "eyesfile.com",
                 "fileband.com", "filedwon.com", "filedownloads.org", "hipfile.com", "kingsupload.com", "mlfat4arab.com",
                 "netuploaded.com", "odsiebie.pl", "q4share.com", "ravishare.com", "uptobox.com", "verzend.be",
-                "xvidstage.com",
+                "xvidstage.com", "thefile.me", "sharesix.com", "hostingbulk.com",
                 #NOT TESTED:
                 "bebasupload.com", "boosterking.com", "divxme.com", "filevelocity.com", "glumbouploads.com",
                 "grupload.com", "heftyfile.com", "host4desi.com", "laoupload.com", "linkzhost.com", "movreel.com",
@@ -40,7 +43,8 @@ class XFileSharingPro(Hook):
                 "uploadville.com", "vidbull.com", "zalaa.com", "zomgupload.com", "kupload.org", "movbay.org",
                 "multishare.org", "omegave.org", "toucansharing.org", "uflinq.org", "banicrazy.info", "flowhot.info",
                 "upbrasil.info", "shareyourfilez.biz", "bzlink.us", "cloudcache.cc", "fileserver.cc", "farshare.to",
-                "filemaze.ws", "filehost.ws", "filestock.ru", "moidisk.ru", "4up.im", "100shared.com",
+                "filemaze.ws", "filehost.ws", "filestock.ru", "moidisk.ru", "4up.im", "100shared.com", "sharesix.com",
+                "thefile.me", "filenuke.com", "sharerepo.com", "mightyupload.com",
                 #WRONG FILE NAME:
                 "sendmyway.com", "upchi.co.il",
                 #NOT WORKING:
@@ -60,8 +64,8 @@ class XFileSharingPro(Hook):
         #self.logDebug(regexp)
 
         dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
-        dict["pattern"] = regexp
-        dict["re"] = re.compile(regexp)
+        dict['pattern'] = regexp
+        dict['re'] = re.compile(regexp)
         self.logDebug("Pattern loaded - handling %d hosters" % len(hosterList))
 
     def getConfigSet(self, option):
@@ -70,5 +74,5 @@ class XFileSharingPro(Hook):
 
     def unload(self):
         dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
-        dict["pattern"] = r"^unmatchable$"
-        dict["re"] = re.compile(r"^unmatchable$")
+        dict['pattern'] = r'^unmatchable$'
+        dict['re'] = re.compile(r'^unmatchable$')

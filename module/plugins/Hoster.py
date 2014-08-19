@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -23,11 +23,12 @@ def getInfo(self):
         #result = [ .. (name, size, status, url) .. ]
         return
 
+
 class Hoster(Plugin):
     __name__ = "Hoster"
     __version__ = "0.1"
     __pattern__ = None
     __type__ = "hoster"
     __description__ = """Base hoster plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+    __author_name__ = "mkaay"
+    __author_mail__ = "mkaay@mkaay.de"
