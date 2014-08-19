@@ -13,6 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+    @author: RaNaN
 """
 
 import os
@@ -28,11 +30,7 @@ from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPas
 
 class UnRar(AbtractExtractor):
     __name__ = "UnRar"
-    __version__ = "0.16"
-
-    __description__ = """Rar extractor plugin"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __version__ = "0.17"
 
     # there are some more uncovered rar formats
     re_version = re.compile(r"(UNRAR 5[\.\d]+(.*?)freeware)")
@@ -42,7 +40,6 @@ class UnRar(AbtractExtractor):
     re_filelist5 = re.compile(r"(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)")
     re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)", re.I)
     CMD = "unrar"
-
 
     @staticmethod
     def checkDeps():
@@ -165,7 +162,7 @@ class UnRar(AbtractExtractor):
             self.listContent()
 
     def getDeleteFiles(self):
-        if ".part" in self.file:
+        if ".part" in os.path.basename(self.file):
             return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
         # get files which matches .r* and filter unsuited files out
         parts = glob(re.sub(r"(?<=\.r)ar$", "*", self.file, re.IGNORECASE))
@@ -203,8 +200,8 @@ class UnRar(AbtractExtractor):
         args.append("-y")
 
         # set a password
-        if "password" in kwargs and kwargs['password']:
-            args.append("-p%s" % kwargs['password'])
+        if "password" in kwargs and kwargs["password"]:
+            args.append("-p%s" % kwargs["password"])
         else:
             args.append("-p-")
 
