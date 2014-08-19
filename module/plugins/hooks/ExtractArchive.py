@@ -228,17 +228,15 @@ class ExtractArchive(Hook):
                 self.logInfo(_("No files found to extract"))
 
     def movefiles(self, tmppath, targetpath, subfolder, filenames):
-        #~ print(tmppath)
-        #~ print(targetpath)
-        #~ print(subfolder)
-        #~ print(filenames)
-
         for filename in filenames:
-            if os.path.isdir(save_join(tmppath, filename)):
-                self.movefiles(save_join(tmppath, filename), save_join(targetpath, filename), subfolder, os.listdir(save_join(tmppath, filename)))
-                continue
             oldpath = save_join(tmppath, filename)
             newpath = save_join(targetpath, subfolder, filename)
+
+            if os.path.isdir(oldpath):
+                # if subfolder != "" and not os.path.exists(save_join(targetpath, subfolder)): os.makedirs(save_join(targetpath, subfolder))
+                self.movefiles(save_join(tmppath, filename), newpath, "", os.listdir(save_join(tmppath, filename)))
+                continue
+
             if os.path.exists(newpath):
                 if self.getConfig("overwrite"):
                     remove(newpath)
@@ -301,7 +299,7 @@ class ExtractArchive(Hook):
                     if exists(f):
                         if self.getConfig("trashpath") and self.getConfig("trashpath").strip().lower() != "none":
                             #create a tmp-lock file, because the rename-function delete the Downlaodfolder
-                            tmpfile=save_join(self.config['general']['download_folder'],"tmp.lock")
+                            tmpfile=save_join(self.config['general']['download_folder'],".tmp.lock")
                             open(tmpfile,"w").close()
                             t = save_join(self.getConfig("trashpath"),basename(f))
                             if os.path.exists(t):
