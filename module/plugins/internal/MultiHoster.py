@@ -11,7 +11,7 @@ class MultiHoster(Hook):
     Generic MultiHoster plugin
     """
 
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     replacements = [("2shared.com", "twoshared.com"), ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
                     ("ifile.it", "filecloud.io"), ("easy-share.com", "crocko.com"), ("freakshare.net", "freakshare.com"),
@@ -26,15 +26,15 @@ class MultiHoster(Hook):
         self.new_supported = []
 
     def getConfig(self, option, default=''):
-        """getConfig with default value - sublass may not implements all config options"""
+        """getConfig with default value - subclass may not implements all config options"""
         try:
-            return self.getConf(option)
+            # Fixed loop due to getConf deprecation in 0.4.10
+            return super(MultiHoster, self).getConfig(option)
         except KeyError:
             return default
 
     def getHosterCached(self):
         if not self.hosters:
-
             try:
                 hosterSet = self.toHosterSet(self.getHoster()) - set(self.ignored)
             except Exception, e:
