@@ -23,8 +23,8 @@ import os
 from os.path import join, abspath, dirname, exists
 from os import makedirs
 
-THEME_DIR = abspath(join(dirname(__file__), "themes"))
-PYLOAD_DIR = abspath(join(THEME_DIR, "..", "..", ".."))
+PROJECT_DIR = abspath(dirname(__file__))
+PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 
 sys.path.append(PYLOAD_DIR)
 
@@ -56,7 +56,7 @@ from module.common.JsEngine import JsEngine
 
 JS = JsEngine()
 
-THEME = config.get('webinterface', 'theme')
+TEMPLATE = config.get('webinterface', 'template')
 DL_ROOT = config.get('general', 'download_folder')
 LOG_ROOT = config.get('log', 'log_folder')
 PREFIX = config.get('webinterface', 'prefix')
@@ -74,11 +74,13 @@ if not exists(cache):
     makedirs(cache)
 
 bcc = FileSystemBytecodeCache(cache, '%s.cache')
-
-loader = FileSystemLoader(THEME_DIR)
+loader = PrefixLoader({
+    TEMPLATE: FileSystemLoader(join(PROJECT_DIR, "templates", TEMPLATE)),
+    'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))
+})
 
 env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=False,
-                  bytecode_cache=bcc)
+    bytecode_cache=bcc)
 
 from filters import quotepath, path_make_relative, path_make_absolute, truncate, date
 

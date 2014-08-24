@@ -24,8 +24,8 @@ class TBaseEncoder(json.JSONEncoder):
 
 # accepting positional arguments, as well as kwargs via post and get
 
-@route('/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{}]*>')
-@route('/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{}]*>', method='POST')
+@route("/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#")
+@route("/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#", method="POST")
 def call_api(func, args=""):
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
@@ -69,7 +69,7 @@ def callApi(func, *args, **kwargs):
 
 
 #post -> username, password
-@route('/api/login', method='POST')
+@route("/api/login", method="POST")
 def login():
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
@@ -92,7 +92,7 @@ def login():
         return json.dumps(True)
 
 
-@route('/api/logout')
+@route("/api/logout")
 def logout():
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
