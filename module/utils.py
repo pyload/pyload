@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Store all usefull functions here """
+""" Store all useful functions here """
 
 import os
 import sys

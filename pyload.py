@@ -156,7 +156,7 @@ class Core(object):
         #print "  -a, --add=<link/list>", " " * 2, "Add the specified links"
         print "  -u, --user", " " * 13, "Manages users"
         print "  -d, --debug", " " * 12, "Enable debug mode"
-        print "  -s, --setup", " " * 12, "Run Setup Assistent"
+        print "  -s, --setup", " " * 12, "Run Setup Assistant"
         print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
         print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"
         print "  --changedir", " " * 12, "Change config dir permanently"
@@ -347,12 +347,12 @@ class Core(object):
         self.log.debug("Remote activated: %s" % self.remote)
 
         self.check_install("Crypto", _("pycrypto to decode container files"))
-        #img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
+        #img = self.check_install("Image", _("Python Image Library (PIL) for captcha reading"))
         #self.check_install("pycurl", _("pycurl to download any files"), True, True)
         self.check_file("tmp", _("folder for temporary files"), True)
         #tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
-        self.captcha = True # checks seems to fail, althoug tesseract is available
+        self.captcha = True # checks seems to fail, although tesseract is available
 
         self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
 
