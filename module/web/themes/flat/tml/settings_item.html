@@ -1,0 +1,48 @@
+<table class="settable">
+    {% if section.outline %}
+    <tr><th colspan="2">{{ section.outline }}</th></tr>
+    {% endif %}
+    {% for okey, option in section.iteritems() %}
+        {% if okey not in ("desc","outline") %}
+            <tr>
+                <td><label for="{{skey}}|{{okey}}"
+                           style="color:#424242;">{{ option.desc }}:</label></td>
+                <td>
+                    {% if option.type == "bool" %}
+                        <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
+                            <option {% if option.value %} selected="selected"
+                                                          {% endif %}value="True">{{ _("on") }}</option>
+                            <option {% if not option.value %} selected="selected"
+                                                              {% endif %}value="False">{{ _("off") }}</option>
+                        </select>
+                        {% elif ";" in option.type %}
+                        <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
+                            {% for entry in option.list %}
+                                <option {% if option.value == entry %}
+                                        selected="selected" {% endif %}>{{ entry }}</option>
+                            {% endfor %}
+                        </select>
+                        {% elif option.type == "folder" %}
+                        <input name="{{skey}}|{{okey}}" type="text"
+                               id="{{skey}}|{{okey}}" value="{{option.value}}"/>
+                        <input name="browsebutton" type="button"
+                               onclick="ifield = document.getElementById('{{skey}}|{{okey}}'); pathchooser = window.open('{% if option.value %}{{ "/pathchooser/" + option.value|quotepath }}{% else %}{{ pathroot }}{% endif %}', 'pathchooser', 'scrollbars=yes,toolbar=no,menubar=no,statusbar=no,width=650,height=300'); pathchooser.ifield = ifield; window.ifield = ifield;"
+                               value="{{_("Browse")}}"/>
+                        {% elif option.type == "file" %}
+                        <input name="{{skey}}|{{okey}}" type="text"
+                               id="{{skey}}|{{okey}}" value="{{option.value}}"/>
+                        <input name="browsebutton" type="button"
+                               onclick="ifield = document.getElementById('{{skey}}|{{okey}}'); filechooser = window.open('{% if option.value %}{{ "/filechooser/" + option.value|quotepath }}{% else %}{{ fileroot }}{% endif %}', 'filechooser', 'scrollbars=yes,toolbar=no,menubar=no,statusbar=no,width=650,height=300'); filechooser.ifield = ifield; window.ifield = ifield;"
+                               value="{{_("Browse")}}"/>
+                        {% elif option.type == "password" %}
+                        <input id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}"
+                               type="password" value="{{option.value}}"/>
+                    {% else %}
+                        <input id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}"
+                               type="text" value="{{option.value}}"/>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+</table>

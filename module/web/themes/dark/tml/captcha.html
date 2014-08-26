@@ -1,0 +1,42 @@
+<!-- Captcha box -->
+<div id="cap_box" class="window_box">
+
+	<form id="cap_form" action="/json/set_captcha" method="POST" enctype="multipart/form-data" onsubmit="return false;">
+	
+		<h1>{{_("Captcha reading")}}</h1>
+		<p id="cap_title">{{_("Please read the text on the captcha.")}}</p>
+		
+		<div id="cap_textual">
+		
+			<input id="cap_id" name="cap_id" type="hidden" value="" />
+		
+			<label>{{_("Captcha")}}
+			<span class="small">{{_("The captcha.")}}</span>
+			</label>
+			<span class="cont">
+			    <img id="cap_textual_img" src="">
+			</span>
+			
+			<label>{{_("Text")}}
+			<span class="small">{{_("Input the text on the captcha.")}}</span>
+			</label>
+			<input id="cap_result" name="cap_result" type="text" size="20" />
+					
+		</div>
+		
+		<div id="cap_positional" style="text-align: center">
+		    <img id="cap_positional_img" src="" style="margin: 10px; cursor:pointer">
+		</div>
+
+		<div id="button_bar" style="text-align: center">
+			<span>
+				<button id="cap_submit" type="submit" style="margin-left: 0">{{_("Submit")}}</button>
+				<button id="cap_reset" type="reset" style="margin-left: 0">{{_("Close")}}</button>
+			</span>
+		</div>
+		
+		<div class="spacer"></div>
+	
+	</form>
+
+</div>
