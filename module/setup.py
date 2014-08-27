@@ -40,9 +40,9 @@ class Setup:
         #        viaweb = self.ask(_("Start initial webinterface for configuration?"), "y", bool=True)
         #        if viaweb:
         #            try:
-        #                from module.web import ServerThread
+        #                from module.webui import ServerThread
         #                ServerThread.setup = self
-        #                from module.web import webinterface
+        #                import module.webui as webinterface
         #                webinterface.run_simple()
         #                return False
         #            except Exception, e:
