@@ -3,7 +3,10 @@
 
 # Explicitly declare text files we want to always be normalized and converted
 # to native line endings on checkout.
+*.bat text
+*.c text
 *.cfg text
+*.cmd text
 *.coffee text
 *.conf text
 *.htm text
@@ -19,16 +22,17 @@
 *.sh text
 *.thrift text
 *.txt text
-*.yaml text
 *.xml text
+*.yaml text
 
 # Denote all files that are truly binary and should not be modified.
-*.ico binary
 *.gif binary
+*.ico binary
 *.jpg binary
 *.mo binary
 *.pyc binary
+*.pyx binary
 *.png binary
-*.svg binary
 *.rar binary
+*.svg binary
 *.zip binary

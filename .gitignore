@@ -1,34 +1,52 @@
-# Packages
-bin/*
-build/*
-dist/*
-env/*
-lib/*
-lib64/*
-parts/*
-var/*
-sdist/*
+# Common packaging directories
+/bin/
+/build/
+/dist/
+/env/
+/lib/
+/lib64/
+/parts/
+/sdist/
+/var/
+/temp/
 
-# Common pyLoad directories
-Downloads/*
-Logs/*
-docs/_build/*
-docs/module/*
-docs/pyload/*
-#module/*
-pyload/*
+# Common directories
+.*/
+__pycache__/
+Downloads/
+Logs/
+tmp/
+userplugins/
+
+# Common files
+*.backup
+*.db
+*.pid
+/*.conf
+/*.version
+/*.txt
+/*.xml
+/*.zip
+/module/config/core.xml
+/module/config/plugin.xml
 
 # Common MacOS & Windows files
 *.DS_Store
 Thumbs.db
 desktop.ini
 
-# Temp stuff
-__pycache__
-.tmp
-temp
+# Certificate files
+cert.pem
+ssl.crt
+ssl.key
 
-# Installers stuff
+# Common compiled files
+*.mo
+*.so
+*.py[cod]
+!/pyload/plugins/container/DLC_*.py[cod]
+
+# Installer files
 .installed.cfg
 pip-log.txt
 
@@ -37,11 +55,7 @@ pip-log.txt
 .tox
 nosetests.xml
 
-# Compiled files
-*.so
-#*.py[cod]
-
-# EGG
+# Python Eggs
 *.egg
 *.egg-info
 develop-eggs
@@ -55,7 +69,7 @@ eggs
 # PyCharm
 .idea
 
-# Other development files
+# Other development stuff
 .svn
 *~
 *.orig
@@ -64,20 +78,7 @@ eggs
 *.project
 *.pydevproject
 *.rej
+/docs/_build/
+/pyload/
 DLC_*.py
 paver-minilib.zip
-
-# Certificates
-cert.pem
-ssl.crt
-ssl.key
-
-# Common pyLoad files
-*_links.txt
-links.txt
-module/config/core.xml
-module/config/plugin.xml
-module/web/pyload.db
-#pyload/config/core.xml
-#pyload/config/plugin.xml
-#pyload/web/pyload.db
