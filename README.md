@@ -1,5 +1,5 @@
 [![pyLoad](/docs/resources/banner.png "pyLoad")](http://pyload.org/)
-=============================
+====================================================================
 
 [![Translation Status](http://translate.pyload.org/badges/pyload/localized.png "Translation Status")](http://translate.pyload.org/project/pyload/)
 
@@ -20,38 +20,65 @@ pyLoad has a fully featured and well documented API, it's easily extendable and 
 Dependencies
 ------------
 
- - **You need at least python 2.5 or at most python 2.7 to run pyLoad and its required software libraries**
+ - **You need at least Python 2.5 or at most Python 2.7 to run pyLoad and its required software libraries**
  - **Python 3 and PyPy are not yet supported**
 
 ### Required ###
 
- - **beaker**
+ - **Beaker**
+ - **bottle**
+ - **Getch**
  - **jinja2**
+ - **markupsafe**
+ - **MultipartPostHandler**
  - **pycurl** (python-curl)
- - **simplejson** (only for python 2.5)
+ - **rename_process**
+ - **SafeEval**
+ - **simplejson** *required for JSON speedup*
  - **thrift**
+ - **wsgiserver**
 
-Some plugins want additional packages, install them only when needed.
+Some addition features require additional packages.
+
 
 ### Optional ###
 
  - **BeautifulSoup**
- - **bjoern** (<https://github.com/jonashaag/bjoern>) for a better webapp experience
- - **feedparser**
- - **jsengine** (spidermonkey, ossp-js, pyv8, rhino, node.js) needed by several hosters (ex.: ClickNLoad)
- - **pycrypto** for RSDF/CCF/DLC support
- - **pyOpenSSL** for SSL connection support
- - **tesseract**, **python-pil** (python-imaging) for automatic captcha recognition support
+ - **bjoern** (<https://github.com/jonashaag/bjoern>) *required for a better webui experience*
+ - **feedparser** *required for RSS parsing support*
+ - **node.js** or **ossp-js** or **pyv8** or **rhino** or **spidermonkey** (JS Engines) *required by plugins like ClickNLoad to work correctly*
+ - **PIL** (python-imaging) *required for captcha recognition support*
+ - **pycrypto** *required for RSDF/CCF/DLC container decrypting*
+ - **pyOpenSSL** *required for SSL connection support*
+ - **tesseract** *required for captcha ocr support*
 
 You can install them using the Python Package Index:
 
     pip install <package-name>
 
-Indeed, pre-built pyLoad packages have all yet included, so manual install is required only when you get pyLoad source code.
+
+### Included ###
+
+ - **Beaker**
+ - **BeautifulSoup**
+ - **bottle**
+ - **feedparser**
+ - **Getch**
+ - **jinja2**
+ - **markupsafe**
+ - **MultipartPostHandler**
+ - **rename_process**
+ - **SafeEval**
+ - **simplejson**
+ - **thrift**
+ - **wsgiserver**
+
+> **Note:**
+Pre-build packages should yet include all.
 
 
 Usage
------------
+-----
 
 ### First start ###
 
