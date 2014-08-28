@@ -46,7 +46,7 @@ from module.ConfigParser import ConfigParser
 from module.plugins.PluginManager import PluginManager
 from module.PullEvents import PullManager
 from module.network.RequestFactory import RequestFactory
-from module.webui.ServerThread import WebServer
+from module.threads.ServerThread import WebServer
 from module.Scheduler import Scheduler
 from module.common.JsEngine import JsEngine
 from module import remote

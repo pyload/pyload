@@ -40,7 +40,7 @@ from middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
 SETUP = None
 PYLOAD = None
 
-from module.webui import ServerThread
+from module.threads import ServerThread
 
 if not ServerThread.core:
     if ServerThread.setup:
