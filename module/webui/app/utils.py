@@ -15,6 +15,9 @@
 
     @author: RaNaN
 """
+
+from os.path import join
+
 from bottle import request, HTTPError, redirect, ServerAdapter
 
 from module.webui import env, THEME
@@ -24,7 +27,7 @@ from module.Api import has_permission, PERMS, ROLE
 def render_to_response(file, args={}, proc=[]):
     for p in proc:
         args.update(p())
-    path = "%s/tml/%s" % (THEME, file)
+    path = join(THEME, "tml", file)
     return env.get_template(path).render(**args)
 
 

@@ -33,7 +33,7 @@ from module.webui import PYLOAD, PYLOAD_DIR, THEME, THEME_DIR, SETUP, env
 from utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
 
-from filters import relpath, unquotepath
+from module.webui.filters import relpath, unquotepath
 
 from module.utils import formatSize, safe_join, fs_encode, fs_decode
 
@@ -83,30 +83,33 @@ def error500(error):
     return base(["An Error occured, please enable debug mode to get more details.", error,
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
 
-# render js
-@route('/<tml>/js/<file:path>')
-def js_dynamic(tml, file):
-    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                                time.gmtime(time.time() + 60 * 60 * 24 * 2))
-    response.headers['Cache-control'] = "public"
-    response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
 
-    try:
-        # static files are not rendered
-        if ".static" not in file:
-            path = "%s/js/%s" % (THEME, file)
-            return env.get_template(path).render()
+@route('/<theme>/<path:path>')
+def serve(theme, path):
+    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                                time.gmtime(time.time() + 24 * 7 * 60 * 60))
+    response.headers['Cache-control'] = "public"
+
+    root = join(THEME_DIR, theme)
+    resp = lambda x: static_file(x, root=root)
+
+    if path.endswith(".js"):
+        response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
+        if not "static" in path:
+            resp = lambda x: env.get_template(join(theme, x)).render()
+
+    try:  #: okay, is slow... but works :S
+        if isfile(join(root, path)):
+            file = resp(path)
+        elif ".min." in path and isfile(join(root, path.replace(".min.", "."))):
+            file = resp(path.replace(".min.", "."))
         else:
-            return static_file(file, root=join(THEME_DIR, tml, "js"))
-    except:
-        return HTTPError(404, "Not Found")
+            raise Exception, "Not Found"
+    except Exception, e:
+        return HTTPError(404, e)
+    else:
+        return file
 
-@route('/<tml>/<type>/<file:path>')
-def server_static(tml, type, file):
-    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
-    response.headers['Cache-control'] = "public"
-    return static_file(file, root=join(THEME_DIR, tml, type))
 
 @route('/favicon.ico')
 def favicon():
@@ -232,10 +235,8 @@ def get_download(path):
     path = path.replace("..", "")
     try:
         return static_file(fs_encode(path), fs_encode(root))
-
     except Exception, e:
-        print e
-        return HTTPError(404, "File not Found.")
+        return HTTPError(404, e)
 
 
 
@@ -461,7 +462,7 @@ def logs(item=-1):
                                             'reversed': reversed, 'perpage': perpage, 'perpage_p': sorted(perpage_p),
                                             'iprev': 1 if item - perpage < 1 else item - perpage,
                                             'inext': (item + perpage) if item + perpage < len(log) else item},
-        [pre_processor])
+                              [pre_processor])
 
 
 @route('/admin')

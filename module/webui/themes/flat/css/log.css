@@ -26,7 +26,7 @@ html, body, #content
 }
 .logtable
 {
-    
+
     margin: 0px;
 }
 .logtable td
@@ -34,7 +34,7 @@ html, body, #content
     border: none;
     white-space: nowrap;
 
-    
+
     font-family: monospace;
     font-size: 16px;
     margin: 0px;
