@@ -12,673 +12,673 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: crowdin.net\n"
 
-#: module/web/translations.js:1
+#: module/webui/translations.js:1
 msgid "New Captcha Request"
 msgstr "Nowy obrazek (captcha)"
 
-#: module/web/translations.js:2 module/web/templates/default/captcha.html:7
+#: module/webui/translations.js:2 module/webui/themes/default/tml/captcha.html:7
 msgid "Please read the text on the captcha."
 msgstr "Proszę przeczytać tekst z obrazka."
 
-#: module/web/translations.js:3
+#: module/webui/translations.js:3
 msgid "pyLoad restarted"
 msgstr "pyLoad zrestartowano"
 
-#: module/web/translations.js:4
-#: module/web/templates/default/settings_item.html:16
-#: module/web/templates/default/base.html:123
-#: module/web/templates/default/base.html:124
+#: module/webui/translations.js:4
+#: module/webui/themes/default/tml/settings_item.html:16
+#: module/webui/themes/default/tml/base.html:123
+#: module/webui/themes/default/tml/base.html:124
 msgid "off"
 msgstr "Wył"
 
-#: module/web/translations.js:5
+#: module/webui/translations.js:5
 msgid "Success"
 msgstr "Powodzenie"
 
-#: module/web/translations.js:6
-#: module/web/templates/default/settings_item.html:14
-#: module/web/templates/default/base.html:123
-#: module/web/templates/default/base.html:124
+#: module/webui/translations.js:6
+#: module/webui/themes/default/tml/settings_item.html:14
+#: module/webui/themes/default/tml/base.html:123
+#: module/webui/themes/default/tml/base.html:124
 msgid "on"
 msgstr "Wł"
 
-#: module/web/translations.js:7
+#: module/webui/translations.js:7
 msgid "You are really sure you want to quit pyLoad?"
 msgstr "Na pewno chcesz zamknąć"
 
-#: module/web/translations.js:8
+#: module/webui/translations.js:8
 msgid "Restart Link"
 msgstr "Zrestartuj link"
 
-#: module/web/translations.js:9
+#: module/webui/translations.js:9
 msgid "Delete Link"
 msgstr "Usuń link"
 
-#: module/web/translations.js:10
+#: module/webui/translations.js:10
 msgid "Please Enter a packagename."
 msgstr "Podaj nazwę paczki"
 
-#: module/web/translations.js:11
+#: module/webui/translations.js:11
 msgid "Please click on the right captcha position."
 msgstr "Proszę kliknij na prawej stronie obrazka"
 
-#: module/web/translations.js:12
+#: module/webui/translations.js:12
 msgid "Error occured."
 msgstr "błąd"
 
-#: module/web/translations.js:13
-#: module/web/templates/default/filemanager.html:65
-#: module/web/templates/default/folder.html:14
+#: module/webui/translations.js:13
+#: module/webui/themes/default/tml/filemanager.html:65
+#: module/webui/themes/default/tml/folder.html:14
 msgid "Folder is empty"
 msgstr "Folder jest pusty"
 
-#: module/web/translations.js:14
+#: module/webui/translations.js:14
 msgid "Failed"
 msgstr "Niepowodzenie"
 
-#: module/web/translations.js:15
+#: module/webui/translations.js:15
 msgid "No Captchas to read."
 msgstr "Brak obrazków (captcha) do odczytania."
 
-#: module/web/translations.js:16
+#: module/webui/translations.js:16
 msgid "Passwords did not match."
 msgstr "Hasło nie pasuje"
 
-#: module/web/translations.js:17
+#: module/webui/translations.js:17
 msgid "Settings saved."
 msgstr "Ustawienia zapisano"
 
-#: module/web/translations.js:18
+#: module/webui/translations.js:18
 msgid "New folder"
 msgstr "Nowy folder"
 
-#: module/web/translations.js:19
+#: module/webui/translations.js:19
 msgid "Are you sure you want to restart pyLoad?"
 msgstr "Czy chcesz zrestartować pyLoad?"
 
-#: module/web/json_app.py:57
+#: module/webui/app/json.py:57
 #, python-format
 msgid "waiting %s"
 msgstr "czekaj %s"
 
-#: module/web/templates/default/home.html:206
+#: module/webui/themes/default/tml/home.html:206
 msgid "Active Downloads"
 msgstr "Obecnie pobierane"
 
-#: module/web/templates/default/home.html:211
-#: module/web/templates/default/base.html:84
+#: module/webui/themes/default/tml/home.html:211
+#: module/webui/themes/default/tml/base.html:84
 msgid "Home"
 msgstr ""
 
-#: module/web/templates/default/home.html:214
-#: module/web/templates/default/queue.html:15
-#: module/web/templates/default/window.html:34
-#: module/web/templates/default/base.html:87
+#: module/webui/themes/default/tml/home.html:214
+#: module/webui/themes/default/tml/queue.html:15
+#: module/webui/themes/default/tml/window.html:34
+#: module/webui/themes/default/tml/base.html:87
 msgid "Queue"
 msgstr ""
 
-#: module/web/templates/default/home.html:217
-#: module/web/templates/default/queue.html:17
-#: module/web/templates/default/window.html:36
-#: module/web/templates/default/base.html:90
+#: module/webui/themes/default/tml/home.html:217
+#: module/webui/themes/default/tml/queue.html:17
+#: module/webui/themes/default/tml/window.html:36
+#: module/webui/themes/default/tml/base.html:90
 msgid "Collector"
 msgstr ""
 
-#: module/web/templates/default/home.html:220
-#: module/web/templates/default/downloads.html:6
-#: module/web/templates/default/base.html:93
+#: module/webui/themes/default/tml/home.html:220
+#: module/webui/themes/default/tml/downloads.html:6
+#: module/webui/themes/default/tml/base.html:93
 msgid "Downloads"
 msgstr "Pobrane"
 
-#: module/web/templates/default/home.html:226
-#: module/web/templates/default/logs.html:3
-#: module/web/templates/default/logs.html:4
-#: module/web/templates/default/base.html:99
+#: module/webui/themes/default/tml/home.html:226
+#: module/webui/themes/default/tml/logs.html:3
+#: module/webui/themes/default/tml/logs.html:4
+#: module/webui/themes/default/tml/base.html:99
 msgid "Logs"
 msgstr "Logi"
 
-#: module/web/templates/default/home.html:229
-#: module/web/templates/default/settings.html:3
-#: module/web/templates/default/settings.html:4
-#: module/web/templates/default/base.html:102
+#: module/webui/themes/default/tml/home.html:229
+#: module/webui/themes/default/tml/settings.html:3
+#: module/webui/themes/default/tml/settings.html:4
+#: module/webui/themes/default/tml/base.html:102
 msgid "Config"
 msgstr "Konfiguracja"
 
-#: module/web/templates/default/home.html:237
-#: module/web/templates/default/queue.html:82
-#: module/web/templates/default/settings.html:91
-#: module/web/templates/default/window.html:7
-#: module/web/templates/default/admin.html:25
+#: module/webui/themes/default/tml/home.html:237
+#: module/webui/themes/default/tml/queue.html:82
+#: module/webui/themes/default/tml/settings.html:91
+#: module/webui/themes/default/tml/window.html:7
+#: module/webui/themes/default/tml/admin.html:25
 msgid "Name"
 msgstr "Nazwa"
 
-#: module/web/templates/default/home.html:238
-#: module/web/templates/default/settings.html:93
+#: module/webui/themes/default/tml/home.html:238
+#: module/webui/themes/default/tml/settings.html:93
 msgid "Status"
 msgstr "Status"
 
-#: module/web/templates/default/home.html:239
-#: module/web/templates/default/info.html:14
-#: module/web/templates/default/info.html:15
+#: module/webui/themes/default/tml/home.html:239
+#: module/webui/themes/default/tml/info.html:14
+#: module/webui/themes/default/tml/info.html:15
 msgid "Information"
 msgstr "Informacja"
 
-#: module/web/templates/default/home.html:240
+#: module/webui/themes/default/tml/home.html:240
 msgid "Size"
 msgstr "Rozmiar"
 
-#: module/web/templates/default/home.html:241
+#: module/webui/themes/default/tml/home.html:241
 msgid "Progress"
 msgstr "Postęp"
 
-#: module/web/templates/default/login.html:3
-#: module/web/templates/default/settings.html:178
+#: module/webui/themes/default/tml/login.html:3
+#: module/webui/themes/default/tml/settings.html:178
 msgid "Login"
 msgstr "Logowanie"
 
-#: module/web/templates/default/login.html:14
+#: module/webui/themes/default/tml/login.html:14
 msgid "Username"
 msgstr "Nazwa użytkownika"
 
-#: module/web/templates/default/login.html:19
-#: module/web/templates/default/queue.html:92
-#: module/web/templates/default/settings.html:92
-#: module/web/templates/default/settings.html:183
-#: module/web/templates/default/window.html:21
+#: module/webui/themes/default/tml/login.html:19
+#: module/webui/themes/default/tml/queue.html:92
+#: module/webui/themes/default/tml/settings.html:92
+#: module/webui/themes/default/tml/settings.html:183
+#: module/webui/themes/default/tml/window.html:21
 msgid "Password"
 msgstr "Hasło"
 
-#: module/web/templates/default/login.html:29
+#: module/webui/themes/default/tml/login.html:29
 msgid "Your username and password didn't match. Please try again."
 msgstr "Nieprawidłowa nazwa użytkownika lub hasło. Proszę spróbować ponownie."
 
-#: module/web/templates/default/login.html:30
+#: module/webui/themes/default/tml/login.html:30
 msgid "To reset your login data or add an user run:"
 msgstr "Aby zresetować dane logowania lub dodać użytkownika uruchom komendę:"
 
-#: module/web/templates/default/queue.html:25
+#: module/webui/themes/default/tml/queue.html:25
 msgid "Delete Finished"
 msgstr "Usuń zakończone"
 
-#: module/web/templates/default/queue.html:26
+#: module/webui/themes/default/tml/queue.html:26
 msgid "Restart Failed"
 msgstr "Nieudany restart"
 
-#: module/web/templates/default/queue.html:65
+#: module/webui/themes/default/tml/queue.html:65
 msgid "Folder:"
 msgstr "Katalog:"
 
-#: module/web/templates/default/queue.html:65
+#: module/webui/themes/default/tml/queue.html:65
 msgid "Password:"
 msgstr "Hasło:"
 
-#: module/web/templates/default/queue.html:79
+#: module/webui/themes/default/tml/queue.html:79
 msgid "Edit Package"
 msgstr "Edytuj paczkę"
 
-#: module/web/templates/default/queue.html:80
+#: module/webui/themes/default/tml/queue.html:80
 msgid "Edit the package detais below."
 msgstr "Tutaj edytuj szczegóły paczki."
 
-#: module/web/templates/default/queue.html:83
+#: module/webui/themes/default/tml/queue.html:83
 msgid "The name of the package."
 msgstr "Nazwa paczki."
 
-#: module/web/templates/default/queue.html:87
+#: module/webui/themes/default/tml/queue.html:87
 msgid "Folder"
 msgstr "Folder"
 
-#: module/web/templates/default/queue.html:88
+#: module/webui/themes/default/tml/queue.html:88
 msgid "Name of subfolder for these downloads."
 msgstr "Nazwa podfolderu dla wskazanych pobrań."
 
-#: module/web/templates/default/queue.html:93
+#: module/webui/themes/default/tml/queue.html:93
 msgid "List of passwords used for unrar."
 msgstr "Lista haseł używanych do rozpakowywania."
 
-#: module/web/templates/default/queue.html:97
-#: module/web/templates/default/settings.html:167
-#: module/web/templates/default/captcha.html:33
-#: module/web/templates/default/admin.html:61
-#: module/web/templates/default/admin.html:91
+#: module/webui/themes/default/tml/queue.html:97
+#: module/webui/themes/default/tml/settings.html:167
+#: module/webui/themes/default/tml/captcha.html:33
+#: module/webui/themes/default/tml/admin.html:61
+#: module/webui/themes/default/tml/admin.html:91
 msgid "Submit"
 msgstr "Wyślij"
 
-#: module/web/templates/default/queue.html:98
-#: module/web/templates/default/settings.html:198
-#: module/web/templates/default/window.html:41
-#: module/web/templates/default/admin.html:92
+#: module/webui/themes/default/tml/queue.html:98
+#: module/webui/themes/default/tml/settings.html:198
+#: module/webui/themes/default/tml/window.html:41
+#: module/webui/themes/default/tml/admin.html:92
 msgid "Reset"
 msgstr "Resetuj"
 
-#: module/web/templates/default/logout.html:8
+#: module/webui/themes/default/tml/logout.html:8
 msgid "You were successfully logged out."
 msgstr "Wylogowano pomyślnie."
 
-#: module/web/templates/default/pathchooser.html:39
-#: module/web/templates/default/pathchooser.html:41
+#: module/webui/themes/default/tml/pathchooser.html:39
+#: module/webui/themes/default/tml/pathchooser.html:41
 msgid "Path"
 msgstr "Ścieżka"
 
-#: module/web/templates/default/pathchooser.html:39
-#: module/web/templates/default/pathchooser.html:41
+#: module/webui/themes/default/tml/pathchooser.html:39
+#: module/webui/themes/default/tml/pathchooser.html:41
 msgid "absolute"
 msgstr "bezpośrednia"
 
-#: module/web/templates/default/pathchooser.html:39
-#: module/web/templates/default/pathchooser.html:41
+#: module/webui/themes/default/tml/pathchooser.html:39
+#: module/webui/themes/default/tml/pathchooser.html:41
 msgid "relative"
 msgstr "względna"
 
-#: module/web/templates/default/pathchooser.html:46
+#: module/webui/themes/default/tml/pathchooser.html:46
 msgid "name"
 msgstr "nazwa"
 
-#: module/web/templates/default/pathchooser.html:47
+#: module/webui/themes/default/tml/pathchooser.html:47
 msgid "size"
 msgstr "rozmiar"
 
-#: module/web/templates/default/pathchooser.html:48
+#: module/webui/themes/default/tml/pathchooser.html:48
 msgid "type"
 msgstr "rodzaj"
 
-#: module/web/templates/default/pathchooser.html:49
+#: module/webui/themes/default/tml/pathchooser.html:49
 msgid "last modified"
 msgstr "ostatnio zmodyfikowany"
 
-#: module/web/templates/default/pathchooser.html:54
+#: module/webui/themes/default/tml/pathchooser.html:54
 msgid "parent directory"
 msgstr "katalog główny"
 
-#: module/web/templates/default/pathchooser.html:70
+#: module/webui/themes/default/tml/pathchooser.html:70
 msgid "no content"
 msgstr "brak treści"
 
-#: module/web/templates/default/settings.html:16
+#: module/webui/themes/default/tml/settings.html:16
 msgid "General"
 msgstr "Ogólne"
 
-#: module/web/templates/default/settings.html:17
+#: module/webui/themes/default/tml/settings.html:17
 msgid "Plugins"
 msgstr "Wtyczki"
 
-#: module/web/templates/default/settings.html:18
+#: module/webui/themes/default/tml/settings.html:18
 msgid "Accounts"
 msgstr "Konta"
 
-#: module/web/templates/default/settings.html:45
-#: module/web/templates/default/settings.html:74
+#: module/webui/themes/default/tml/settings.html:45
+#: module/webui/themes/default/tml/settings.html:74
 msgid "Choose a section from the menu"
 msgstr "Wybierz sekcję z menu"
 
-#: module/web/templates/default/settings.html:90
+#: module/webui/themes/default/tml/settings.html:90
 msgid "Plugin"
 msgstr "Plugin"
 
-#: module/web/templates/default/settings.html:94
+#: module/webui/themes/default/tml/settings.html:94
 msgid "Premium"
 msgstr ""
 
-#: module/web/templates/default/settings.html:95
+#: module/webui/themes/default/tml/settings.html:95
 msgid "Valid until"
 msgstr "Ważne do"
 
-#: module/web/templates/default/settings.html:96
+#: module/webui/themes/default/tml/settings.html:96
 msgid "Traffic left"
 msgstr "Pozostały transfer"
 
-#: module/web/templates/default/settings.html:97
+#: module/webui/themes/default/tml/settings.html:97
 msgid "Time"
 msgstr "Czas"
 
-#: module/web/templates/default/settings.html:98
+#: module/webui/themes/default/tml/settings.html:98
 msgid "Max Parallel"
 msgstr "Maksymalnie jednoczesnych pobrań"
 
-#: module/web/templates/default/settings.html:99
+#: module/webui/themes/default/tml/settings.html:99
 msgid "Delete?"
 msgstr "Skasować?"
 
-#: module/web/templates/default/settings.html:121
+#: module/webui/themes/default/tml/settings.html:121
 msgid "valid"
 msgstr "Ważny"
 
-#: module/web/templates/default/settings.html:124
+#: module/webui/themes/default/tml/settings.html:124
 msgid "not valid"
 msgstr "nie ważny"
 
-#: module/web/templates/default/settings.html:131
+#: module/webui/themes/default/tml/settings.html:131
 msgid "yes"
 msgstr "tak"
 
-#: module/web/templates/default/settings.html:134
+#: module/webui/themes/default/tml/settings.html:134
 msgid "no"
 msgstr "nie"
 
-#: module/web/templates/default/settings.html:168
-#: module/web/templates/default/settings.html:197
-#: module/web/templates/default/base.html:117
+#: module/webui/themes/default/tml/settings.html:168
+#: module/webui/themes/default/tml/settings.html:197
+#: module/webui/themes/default/tml/base.html:117
 msgid "Add"
 msgstr "Dodaj"
 
-#: module/web/templates/default/settings.html:176
+#: module/webui/themes/default/tml/settings.html:176
 msgid "Add Account"
 msgstr "Dodaj konto"
 
-#: module/web/templates/default/settings.html:177
+#: module/webui/themes/default/tml/settings.html:177
 msgid "Enter your account data to use premium features."
 msgstr "Podaj swoje dane konta do korzystania z funkcji premium."
 
-#: module/web/templates/default/settings.html:179
-#: module/web/templates/default/admin.html:71
+#: module/webui/themes/default/tml/settings.html:179
+#: module/webui/themes/default/tml/admin.html:71
 msgid "Your username."
 msgstr "Nazwa użytkownika."
 
-#: module/web/templates/default/settings.html:184
-#: module/web/templates/default/admin.html:76
+#: module/webui/themes/default/tml/settings.html:184
+#: module/webui/themes/default/tml/admin.html:76
 msgid "The password for this account."
 msgstr "Hasło dla tego konta."
 
-#: module/web/templates/default/settings.html:188
+#: module/webui/themes/default/tml/settings.html:188
 msgid "Type"
 msgstr "Typ"
 
-#: module/web/templates/default/settings.html:189
+#: module/webui/themes/default/tml/settings.html:189
 msgid "Choose the hoster for your account."
 msgstr "Wybierz hosting dla Twojego konta."
 
-#: module/web/templates/default/logs.html:12
-#: module/web/templates/default/base.html:114
+#: module/webui/themes/default/tml/logs.html:12
+#: module/webui/themes/default/tml/base.html:114
 msgid "Start"
 msgstr "Uruchom"
 
-#: module/web/templates/default/logs.html:12
+#: module/webui/themes/default/tml/logs.html:12
 msgid "prev"
 msgstr "poprzedni"
 
-#: module/web/templates/default/logs.html:12
+#: module/webui/themes/default/tml/logs.html:12
 msgid "next"
 msgstr "następny"
 
-#: module/web/templates/default/logs.html:12
+#: module/webui/themes/default/tml/logs.html:12
 msgid "End"
 msgstr "Koniec"
 
-#: module/web/templates/default/info.html:18
+#: module/webui/themes/default/tml/info.html:18
 msgid "News"
 msgstr "Wiadomości"
 
-#: module/web/templates/default/info.html:21
+#: module/webui/themes/default/tml/info.html:21
 msgid "Support"
 msgstr "Wsparcie"
 
-#: module/web/templates/default/info.html:37
+#: module/webui/themes/default/tml/info.html:37
 msgid "System"
 msgstr ""
 
-#: module/web/templates/default/info.html:40
+#: module/webui/themes/default/tml/info.html:40
 msgid "Python:"
 msgstr ""
 
-#: module/web/templates/default/info.html:44
+#: module/webui/themes/default/tml/info.html:44
 msgid "OS:"
 msgstr "System operacyjny:"
 
-#: module/web/templates/default/info.html:48
+#: module/webui/themes/default/tml/info.html:48
 msgid "pyLoad version:"
 msgstr "Wersja pyLoad:"
 
-#: module/web/templates/default/info.html:52
+#: module/webui/themes/default/tml/info.html:52
 msgid "Installation Folder:"
 msgstr "Folder instalacji:"
 
-#: module/web/templates/default/info.html:56
+#: module/webui/themes/default/tml/info.html:56
 msgid "Config Folder:"
 msgstr "Folder konfiguracji:"
 
-#: module/web/templates/default/info.html:60
+#: module/webui/themes/default/tml/info.html:60
 msgid "Download Folder:"
 msgstr "Folder pobierania:"
 
-#: module/web/templates/default/info.html:64
+#: module/webui/themes/default/tml/info.html:64
 msgid "Free Space:"
 msgstr "Wolne Miejsce:"
 
-#: module/web/templates/default/info.html:68
+#: module/webui/themes/default/tml/info.html:68
 msgid "Language:"
 msgstr "Język:"
 
-#: module/web/templates/default/info.html:72
+#: module/webui/themes/default/tml/info.html:72
 msgid "Webinterface Port:"
 msgstr "Port interfejsu web:"
 
-#: module/web/templates/default/info.html:76
+#: module/webui/themes/default/tml/info.html:76
 msgid "Remote Interface Port:"
 msgstr "Port interfejsu zdalnego:"
 
-#: module/web/templates/default/setup.html:3
-#: module/web/templates/default/setup.html:4
+#: module/webui/themes/default/tml/setup.html:3
+#: module/webui/themes/default/tml/setup.html:4
 msgid "Setup"
 msgstr "Ustawienia"
 
-#: module/web/templates/default/filemanager.html:19
+#: module/webui/themes/default/tml/filemanager.html:19
 msgid "FileManager"
 msgstr "Menedżer plików"
 
-#: module/web/templates/default/window.html:5
-#: module/web/templates/default/window.html:40
+#: module/webui/themes/default/tml/window.html:5
+#: module/webui/themes/default/tml/window.html:40
 msgid "Add Package"
 msgstr "Dodaj paczkę"
 
-#: module/web/templates/default/window.html:6
+#: module/webui/themes/default/tml/window.html:6
 msgid "Paste your links or upload a container."
 msgstr "Wklej linki lub wczytaj kontener."
 
-#: module/web/templates/default/window.html:8
+#: module/webui/themes/default/tml/window.html:8
 msgid "The name of the new package."
 msgstr "Nazwa nowej paczki."
 
-#: module/web/templates/default/window.html:12
+#: module/webui/themes/default/tml/window.html:12
 msgid "Links"
 msgstr "Linki"
 
-#: module/web/templates/default/window.html:13
+#: module/webui/themes/default/tml/window.html:13
 msgid "Paste your links here or any text and press the filter button."
 msgstr "Tutaj wklej linki lub dowolny tekst i wciśnij przycisk filtra."
 
-#: module/web/templates/default/window.html:14
+#: module/webui/themes/default/tml/window.html:14
 msgid "Filter urls"
 msgstr "Filtruj adresy url"
 
-#: module/web/templates/default/window.html:22
+#: module/webui/themes/default/tml/window.html:22
 msgid "Password for RAR-Archive"
 msgstr "Hasło do archiwum RAR"
 
-#: module/web/templates/default/window.html:26
+#: module/webui/themes/default/tml/window.html:26
 msgid "File"
 msgstr "Plik"
 
-#: module/web/templates/default/window.html:27
+#: module/webui/themes/default/tml/window.html:27
 msgid "Upload a container."
 msgstr "Wczytaj kontener."
 
-#: module/web/templates/default/window.html:31
+#: module/webui/themes/default/tml/window.html:31
 msgid "Destination"
 msgstr "Miejsce docelowe"
 
-#: module/web/templates/default/captcha.html:6
+#: module/webui/themes/default/tml/captcha.html:6
 msgid "Captcha reading"
 msgstr "Odczyt captcha"
 
-#: module/web/templates/default/captcha.html:13
+#: module/webui/themes/default/tml/captcha.html:13
 msgid "Captcha"
 msgstr "Captcha (obrazek)"
 
-#: module/web/templates/default/captcha.html:14
+#: module/webui/themes/default/tml/captcha.html:14
 msgid "The captcha."
 msgstr "Captcha."
 
-#: module/web/templates/default/captcha.html:20
+#: module/webui/themes/default/tml/captcha.html:20
 msgid "Text"
 msgstr "Tekst"
 
-#: module/web/templates/default/captcha.html:21
+#: module/webui/themes/default/tml/captcha.html:21
 msgid "Input the text on the captcha."
 msgstr "Wprowadź tekst z obrazka (captcha)."
 
-#: module/web/templates/default/captcha.html:34
+#: module/webui/themes/default/tml/captcha.html:34
 msgid "Close"
 msgstr "Zamknij"
 
-#: module/web/templates/default/base.html:20
-#: module/web/templates/default/base.html:139
+#: module/webui/themes/default/tml/base.html:20
+#: module/webui/themes/default/tml/base.html:139
 msgid "Webinterface"
 msgstr "Interfejs Web"
 
-#: module/web/templates/default/base.html:39
+#: module/webui/themes/default/tml/base.html:39
 msgid "pyLoad Update available!"
 msgstr "Dostępna aktualizacja dla pyLoad'a!"
 
-#: module/web/templates/default/base.html:46
+#: module/webui/themes/default/tml/base.html:46
 msgid "Plugins updated, please restart!"
 msgstr "Wtyczki zaktualizowane, zrestartuj program!"
 
-#: module/web/templates/default/base.html:52
+#: module/webui/themes/default/tml/base.html:52
 msgid "Captcha waiting"
 msgstr "Oczekiwanie na captcha"
 
-#: module/web/templates/default/base.html:57
+#: module/webui/themes/default/tml/base.html:57
 msgid "Logout"
 msgstr "Wyloguj"
 
-#: module/web/templates/default/base.html:59
-#: module/web/templates/default/admin.html:8
-#: module/web/templates/default/admin.html:9
+#: module/webui/themes/default/tml/base.html:59
+#: module/webui/themes/default/tml/admin.html:8
+#: module/webui/themes/default/tml/admin.html:9
 msgid "Administrate"
 msgstr "Zarządzaj"
 
-#: module/web/templates/default/base.html:61
+#: module/webui/themes/default/tml/base.html:61
 msgid "Info"
 msgstr "Informacje"
 
-#: module/web/templates/default/base.html:65
+#: module/webui/themes/default/tml/base.html:65
 msgid "Please Login!"
 msgstr "Zaloguj się!"
 
-#: module/web/templates/default/base.html:115
+#: module/webui/themes/default/tml/base.html:115
 msgid "Stop"
 msgstr "Zatrzymaj"
 
-#: module/web/templates/default/base.html:116
+#: module/webui/themes/default/tml/base.html:116
 msgid "Cancel"
 msgstr "Anuluj"
 
-#: module/web/templates/default/base.html:123
+#: module/webui/themes/default/tml/base.html:123
 msgid "Download:"
 msgstr "Pobrane:"
 
-#: module/web/templates/default/base.html:124
+#: module/webui/themes/default/tml/base.html:124
 msgid "Reconnect:"
 msgstr "Połącz ponownie:"
 
-#: module/web/templates/default/base.html:125
+#: module/webui/themes/default/tml/base.html:125
 msgid "Speed:"
 msgstr "Prędkość:"
 
-#: module/web/templates/default/base.html:126
+#: module/webui/themes/default/tml/base.html:126
 msgid "Active:"
 msgstr "Aktywny:"
 
-#: module/web/templates/default/base.html:127
+#: module/webui/themes/default/tml/base.html:127
 msgid "Reload page"
 msgstr "Odśwież stronę"
 
-#: module/web/templates/default/base.html:157
+#: module/webui/themes/default/tml/base.html:157
 msgid "loading"
 msgstr "wczytywanie"
 
-#: module/web/templates/default/base.html:166
+#: module/webui/themes/default/tml/base.html:166
 msgid "Back to top"
 msgstr "Powrót na początek strony"
 
-#: module/web/templates/default/admin.html:13
+#: module/webui/themes/default/tml/admin.html:13
 msgid "Quit pyLoad"
 msgstr "Zamknij pyLoad"
 
-#: module/web/templates/default/admin.html:14
+#: module/webui/themes/default/tml/admin.html:14
 msgid "Restart pyLoad"
 msgstr "Zrestartuj pyLoad"
 
-#: module/web/templates/default/admin.html:18
+#: module/webui/themes/default/tml/admin.html:18
 msgid "To add user or change passwords use:"
 msgstr "Aby dodać użytkownika lub zmienić hasło użyj:"
 
-#: module/web/templates/default/admin.html:19
+#: module/webui/themes/default/tml/admin.html:19
 msgid "Important: Admin user have always all permissions!"
 msgstr "Uwaga: Administrator ma zawsze wszystkie prawa!"
 
-#: module/web/templates/default/admin.html:28
-#: module/web/templates/default/admin.html:67
+#: module/webui/themes/default/tml/admin.html:28
+#: module/webui/themes/default/tml/admin.html:67
 msgid "Change Password"
 msgstr "Zmiana Hasła"
 
-#: module/web/templates/default/admin.html:31
+#: module/webui/themes/default/tml/admin.html:31
 msgid "Admin"
 msgstr "Administrator"
 
-#: module/web/templates/default/admin.html:34
+#: module/webui/themes/default/tml/admin.html:34
 msgid "Permissions"
 msgstr "Uprawnienia"
 
-#: module/web/templates/default/admin.html:41
+#: module/webui/themes/default/tml/admin.html:41
 msgid "change"
 msgstr "zmień"
 
-#: module/web/templates/default/admin.html:69
+#: module/webui/themes/default/tml/admin.html:69
 msgid "Enter your current and desired Password."
 msgstr "Wprowadź swoje hasło"
 
-#: module/web/templates/default/admin.html:70
+#: module/webui/themes/default/tml/admin.html:70
 msgid "User"
 msgstr "Użytkownik"
 
-#: module/web/templates/default/admin.html:75
+#: module/webui/themes/default/tml/admin.html:75
 msgid "Current password"
 msgstr "Aktualne hasło"
 
-#: module/web/templates/default/admin.html:80
+#: module/webui/themes/default/tml/admin.html:80
 msgid "New password"
 msgstr "Nowe hasło"
 
-#: module/web/templates/default/admin.html:81
+#: module/webui/themes/default/tml/admin.html:81
 msgid "The new password."
 msgstr "Nowe hasło."
 
-#: module/web/templates/default/admin.html:85
+#: module/webui/themes/default/tml/admin.html:85
 msgid "New password (repeat)"
 msgstr "Nowe hasło (powtórz)"
 
-#: module/web/templates/default/admin.html:86
+#: module/webui/themes/default/tml/admin.html:86
 msgid "Please repeat the new password."
 msgstr "Proszę powtórzyć nowe hasło."
 
-#: module/web/pyload_app.py:125
+#: module/webui/app/pyload.py:125
 msgid "You dont have permission to access this page."
 msgstr "Nie posiadasz uprawnień dostępu do tej strony."
 
-#: module/web/pyload_app.py:193
+#: module/webui/app/pyload.py:193
 msgid "Download directory not found."
 msgstr "Nie znaleziono katalogu pobierania."
 
-#: module/web/pyload_app.py:260 module/web/pyload_app.py:267
+#: module/webui/app/pyload.py:260 module/webui/app/pyload.py:267
 msgid "unlimited"
 msgstr "Bez limitu"
 
-#: module/web/pyload_app.py:262 module/web/pyload_app.py:269
+#: module/webui/app/pyload.py:262 module/webui/app/pyload.py:269
 msgid "not available"
 msgstr "niedostępny"
 
-#: module/web/pyload_app.py:508
+#: module/webui/app/pyload.py:508
 msgid "Run pyload.py -s to access the setup."
 msgstr "Użyj polecenia pyload.py-s aby uzyskać dostęp do ustawień"
 

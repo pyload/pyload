@@ -12,120 +12,120 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
-#: pyload.py:182
+#: module/Core.py:182
 msgid "Received Quit signal"
 msgstr "Quit signaal ontvangen"
 
-#: pyload.py:303
+#: module/Core.py:303
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr "pyLoad is al actief met pid %s"
 
-#: pyload.py:317
+#: module/Core.py:317
 #, python-format
 msgid "Failed changing group: %s"
 msgstr "Veranderen van groep mislukt: %s"
 
-#: pyload.py:327
+#: module/Core.py:327
 #, python-format
 msgid "Failed changing user: %s"
 msgstr "Veranderen van gebruiker mislukt: %s"
 
-#: pyload.py:329
+#: module/Core.py:329
 msgid "folder for logs"
 msgstr "map voor logs"
 
-#: pyload.py:340
+#: module/Core.py:340
 msgid "Starting"
 msgstr "Startend"
 
-#: pyload.py:341
+#: module/Core.py:341
 #, python-format
 msgid "Using home directory: %s"
 msgstr "Gebruik hoofdmap: %s"
 
-#: pyload.py:350
+#: module/Core.py:350
 msgid "pycrypto to decode container files"
 msgstr "Container bestanden decoderen met pycrypto"
 
-#: pyload.py:353
+#: module/Core.py:353
 msgid "folder for temporary files"
 msgstr "map voor tijdelijke bestanden"
 
-#: pyload.py:358
+#: module/Core.py:358
 msgid "folder for downloads"
 msgstr "map voor downloads"
 
-#: pyload.py:361
+#: module/Core.py:361
 msgid "OpenSSL for secure connection"
 msgstr "OpenSSL voor beveiligde verbinding"
 
-#: pyload.py:365
+#: module/Core.py:365
 msgid "Moving old user config to DB"
 msgstr "Oude configuratie naar DB verplaatsen"
 
-#: pyload.py:368
+#: module/Core.py:368
 msgid "Please check your logindata with ./pyload.py -u"
 msgstr "Controleer je logingegevens met ./pyload.py -u"
 
-#: pyload.py:371
+#: module/Core.py:371
 msgid "All links removed"
 msgstr "Alle links verwijderd"
 
-#: pyload.py:402
+#: module/Core.py:402
 #, python-format
 msgid "Downloadtime: %s"
 msgstr "Downloadtijd: %s"
 
-#: pyload.py:412
+#: module/Core.py:412
 #, python-format
 msgid "Free space: %s"
 msgstr "Beschikbare ruimte: %s"
 
-#: pyload.py:432
+#: module/Core.py:432
 msgid "Activating Accounts..."
 msgstr "Accounts worden geactiveerd..."
 
-#: pyload.py:438
+#: module/Core.py:438
 msgid "Activating Plugins..."
 msgstr "Plugins aan het activeren..."
 
-#: pyload.py:441
+#: module/Core.py:441
 msgid "pyLoad is up and running"
 msgstr "pyLoad is lopende"
 
-#: pyload.py:460
+#: module/Core.py:460
 msgid "restarting pyLoad"
 msgstr "pyLoad wordt herstart"
 
-#: pyload.py:464
+#: module/Core.py:464
 msgid "pyLoad quits"
 msgstr "pyLoad wordt afgesloten"
 
-#: pyload.py:521
+#: module/Core.py:521
 #, python-format
 msgid "Install %s"
 msgstr "Installeren %s"
 
-#: pyload.py:557
+#: module/Core.py:557
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr "Niet te vinden %(desc)s: %(name)s"
 
-#: pyload.py:559
+#: module/Core.py:559
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr "Niet aan te maken %(desc)s : %(name)s"
 
-#: pyload.py:580
+#: module/Core.py:580
 msgid "shutting down..."
 msgstr "afsluiten..."
 
-#: pyload.py:597
+#: module/Core.py:597
 msgid "error while shutting down"
 msgstr "fout tijdens afsluiten"
 
-#: pyload.py:661
+#: module/Core.py:661
 msgid "killed pyLoad from Terminal"
 msgstr "pyLoad is afgesloten via Terminal"
 
@@ -234,105 +234,105 @@ msgstr "Opstarten %(name)s: %(addr)s:%(port)s"
 msgid "Failed loading backend %(name)s | %(error)s"
 msgstr "Laden van backend %(name)s | %(error)s mislukt"
 
-#: module/web/json_app.py:57
+#: module/webui/app/json.py:57
 #, python-format
 msgid "waiting %s"
 msgstr "wachtend %s"
 
-#: module/web/ServerThread.py:35
+#: module/threads/ServerThread.py:35
 msgid "SSL certificates not found."
 msgstr "SSL certificaten niet gevonden."
 
-#: module/web/ServerThread.py:39
+#: module/threads/ServerThread.py:39
 #, python-format
 msgid "Sorry, we dropped support for starting %s directly within pyLoad"
 msgstr "Sorry, we hebben ondersteuning voor starten van %s vanuit pyLoad verwijderd"
 
-#: module/web/ServerThread.py:40
+#: module/threads/ServerThread.py:40
 msgid "You can use the threaded server which offers good performance and ssl,"
 msgstr "Je kan de threaded server gebruiken welke goede prestaties en ssl biedt,"
 
-#: module/web/ServerThread.py:41
+#: module/threads/ServerThread.py:41
 #, python-format
 msgid "of course you can still use your existing %s with pyLoads fastcgi server"
 msgstr "ook kan je de pyLoads fastcgi server gebruiken met je bestaande %s"
 
-#: module/web/ServerThread.py:42
-msgid "sample configs are located in the module/web/servers directory"
-msgstr "voorbeeldconfiguratie is te vinden in module/web/servers map"
+#: module/threads/ServerThread.py:42
+msgid "sample configs are located in the module/webui/servers directory"
+msgstr "voorbeeldconfiguratie is te vinden in module/webui/servers map"
 
-#: module/web/ServerThread.py:49
+#: module/threads/ServerThread.py:49
 #, python-format
 msgid "Can't use %(server)s, python-flup is not installed!"
 msgstr "Kan %(server)s niet gebruiken, python-flup is niet geinstalleerd!"
 
-#: module/web/ServerThread.py:56
+#: module/threads/ServerThread.py:56
 #, python-format
 msgid "Error importing lightweight server: %s"
 msgstr "Fout bij importeren lichtgewicht server: %s"
 
-#: module/web/ServerThread.py:57
+#: module/threads/ServerThread.py:57
 msgid "You need to download and compile bjoern, https://github.com/jonashaag/bjoern"
 msgstr "Je moet bjoern downloaden en compileren, https://github.com/jonashaag/bjoern"
 
-#: module/web/ServerThread.py:58
+#: module/threads/ServerThread.py:58
 msgid "Copy the boern.so to module/lib folder or use setup.py install"
 msgstr "Kopieer de boern.so naar module/lib map en gebruik setup.py install"
 
-#: module/web/ServerThread.py:59
+#: module/threads/ServerThread.py:59
 msgid "Of course you need to be familiar with linux and know how to compile software"
 msgstr "Hiervoor is kennis van linux en compileren van software een vereiste"
 
-#: module/web/ServerThread.py:63
+#: module/threads/ServerThread.py:63
 msgid "Server set to threaded, due to known performance problems on windows."
 msgstr "Server op threated gezet, vanwege bekende prestatie problemen op windows."
 
-#: module/web/ServerThread.py:80 module/web/ServerThread.py:103
+#: module/threads/ServerThread.py:80 module/threads/ServerThread.py:103
 msgid "This server offers no SSL, please consider using threaded instead"
 msgstr "Deze server heeft geen SSL, overweeg de threaded server te gebruiken"
 
-#: module/web/ServerThread.py:82
+#: module/threads/ServerThread.py:82
 #, python-format
 msgid "Starting builtin webserver: %(host)s:%(port)d"
 msgstr "Opstarten van builltin webserver: %(host)s:%(port)d"
 
-#: module/web/ServerThread.py:87
+#: module/threads/ServerThread.py:87
 #, python-format
 msgid "Starting threaded SSL webserver: %(host)s:%(port)d"
 msgstr "Opstarten van threaded SSL webserver: %(host)s:%(port)d"
 
-#: module/web/ServerThread.py:91
+#: module/threads/ServerThread.py:91
 #, python-format
 msgid "Starting threaded webserver: %(host)s:%(port)d"
 msgstr "Opstarten van threaded webserver: %(host)s:%(port)d"
 
-#: module/web/ServerThread.py:97
+#: module/threads/ServerThread.py:97
 #, python-format
 msgid "Starting fastcgi server: %(host)s:%(port)d"
 msgstr "Opstarten van fastcgi server: %(host)s:%(port)d"
 
-#: module/web/ServerThread.py:105
+#: module/threads/ServerThread.py:105
 #, python-format
 msgid "Starting lightweight webserver (bjoern): %(host)s:%(port)d"
 msgstr "Opstarten van lichtgewicht webserver (bjoern): %(host)s:%(port)d"
 
-#: module/web/pyload_app.py:125
+#: module/webui/app/pyload.py:125
 msgid "You dont have permission to access this page."
 msgstr "Je hebt geen rechten deze pagina te bezoeken."
 
-#: module/web/pyload_app.py:193
+#: module/webui/app/pyload.py:193
 msgid "Download directory not found."
 msgstr "Downloadmap niet gevonden."
 
-#: module/web/pyload_app.py:260 module/web/pyload_app.py:267
+#: module/webui/app/pyload.py:260 module/webui/app/pyload.py:267
 msgid "unlimited"
 msgstr "onbeperkt"
 
-#: module/web/pyload_app.py:262 module/web/pyload_app.py:269
+#: module/webui/app/pyload.py:262 module/webui/app/pyload.py:269
 msgid "not available"
 msgstr "niet beschikbaar"
 
-#: module/web/pyload_app.py:508
+#: module/webui/app/pyload.py:508
 msgid "Run pyload.py -s to access the setup."
 msgstr "Start pyload.py -s om setup te starten."
 
@@ -341,72 +341,72 @@ msgstr "Start pyload.py -s om setup te starten."
 msgid "Download chunks failed, fallback to single connection | %s"
 msgstr "Downloaden in chunks is mislukt, val terug op één connectie | %s"
 
-#: module/PluginThread.py:183
+#: module/threads/PluginThread.py:183
 #, python-format
 msgid "Download starts: %s"
 msgstr "Download gestart: %s"
 
-#: module/PluginThread.py:189
+#: module/threads/PluginThread.py:189
 #, python-format
 msgid "Download finished: %s"
 msgstr "Download compleet: %s"
 
-#: module/PluginThread.py:194 module/PluginThread.py:365
+#: module/threads/PluginThread.py:194 module/threads/PluginThread.py:365
 #, python-format
 msgid "Plugin %s is missing a function."
 msgstr "Plugin %s mist een functie."
 
-#: module/PluginThread.py:202 module/PluginThread.py:265
-#: module/PluginThread.py:382
+#: module/threads/PluginThread.py:202 module/threads/PluginThread.py:265
+#: module/threads/PluginThread.py:382
 #, python-format
 msgid "Download aborted: %s"
 msgstr "Download afgebroken: %s"
 
-#: module/PluginThread.py:222
+#: module/threads/PluginThread.py:222
 #, python-format
 msgid "Download restarted: %(name)s | %(msg)s"
 msgstr "Download herstart: %(name)s | %(msg)s"
 
-#: module/PluginThread.py:231 module/PluginThread.py:373
+#: module/threads/PluginThread.py:231 module/threads/PluginThread.py:373
 #, python-format
 msgid "Download is offline: %s"
 msgstr "%s offline"
 
-#: module/PluginThread.py:234
+#: module/threads/PluginThread.py:234
 #, python-format
 msgid "Download is temporary offline: %s"
 msgstr "Download is tijdelijk offline: %s"
 
-#: module/PluginThread.py:237 module/PluginThread.py:304
+#: module/threads/PluginThread.py:237 module/threads/PluginThread.py:304
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
 msgstr "Download mislukt: %(name)s | %(msg)s"
 
-#: module/PluginThread.py:254
+#: module/threads/PluginThread.py:254
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
 msgstr "Kan geen verbinding maken met host, wacht 1 minuut en probeer opnieuw."
 
-#: module/PluginThread.py:290
+#: module/threads/PluginThread.py:290
 #, python-format
 msgid "Download skipped: %(name)s due to %(plugin)s"
 msgstr "Download overgeslagen: %(name)s vanwege %(plugin)s"
 
-#: module/PluginThread.py:361
+#: module/threads/PluginThread.py:361
 #, python-format
 msgid "Decrypting starts: %s"
 msgstr "Decrypten gestart: %s"
 
-#: module/PluginThread.py:376 module/PluginThread.py:394
+#: module/threads/PluginThread.py:376 module/threads/PluginThread.py:394
 #, python-format
 msgid "Decrypting failed: %(name)s | %(msg)s"
 msgstr "Decrypten mislukt: %(name)s | %(msg)s"
 
-#: module/PluginThread.py:388
+#: module/threads/PluginThread.py:388
 #, python-format
 msgid "Retrying %s"
 msgstr "Opnieuw proberen %s"
 
-#: module/PluginThread.py:635
+#: module/threads/PluginThread.py:635
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
 msgstr "Informatie verzamelen voor %(name)s mislukt | %(err)s"

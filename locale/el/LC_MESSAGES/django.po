@@ -12,673 +12,673 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
-#: module/web/translations.js:1
+#: module/webui/translations.js:1
 msgid "New Captcha Request"
 msgstr "Αίτηση για νέο Captcha"
 
-#: module/web/translations.js:2 module/web/templates/default/captcha.html:7
+#: module/webui/translations.js:2 module/webui/themes/default/tml/captcha.html:7
 msgid "Please read the text on the captcha."
 msgstr "Παρακαλώ διαβάστε το κείμενο στο captcha."
 
-#: module/web/translations.js:3
+#: module/webui/translations.js:3
 msgid "pyLoad restarted"
 msgstr "Έγινε επανεκκίνηση στο pyLoad "
 
-#: module/web/translations.js:4
-#: module/web/templates/default/settings_item.html:16
-#: module/web/templates/default/base.html:123
-#: module/web/templates/default/base.html:124
+#: module/webui/translations.js:4
+#: module/webui/themes/default/tml/settings_item.html:16
+#: module/webui/themes/default/tml/base.html:123
+#: module/webui/themes/default/tml/base.html:124
 msgid "off"
 msgstr "ανενεργό"
 
-#: module/web/translations.js:5
+#: module/webui/translations.js:5
 msgid "Success"
 msgstr "Επιτυχία"
 
-#: module/web/translations.js:6
-#: module/web/templates/default/settings_item.html:14
-#: module/web/templates/default/base.html:123
-#: module/web/templates/default/base.html:124
+#: module/webui/translations.js:6
+#: module/webui/themes/default/tml/settings_item.html:14
+#: module/webui/themes/default/tml/base.html:123
+#: module/webui/themes/default/tml/base.html:124
 msgid "on"
 msgstr "ενεργό"
 
-#: module/web/translations.js:7
+#: module/webui/translations.js:7
 msgid "You are really sure you want to quit pyLoad?"
 msgstr "Είστε σίγουροι ότι θέλετε να τερματίσετε το pyLoad ;"
 
-#: module/web/translations.js:8
+#: module/webui/translations.js:8
 msgid "Restart Link"
 msgstr "Επανεκκίνηση συνδέσμου"
 
-#: module/web/translations.js:9
+#: module/webui/translations.js:9
 msgid "Delete Link"
 msgstr "Διαγραφή συνδέσμου"
 
-#: module/web/translations.js:10
+#: module/webui/translations.js:10
 msgid "Please Enter a packagename."
 msgstr "Παρακαλώ εισάγετε ένα όνομα για το πακέτο"
 
-#: module/web/translations.js:11
+#: module/webui/translations.js:11
 msgid "Please click on the right captcha position."
 msgstr "Παρακαλώ πατήστε στη σωστή θέση captcha"
 
-#: module/web/translations.js:12
+#: module/webui/translations.js:12
 msgid "Error occured."
 msgstr "Παρουσιάστηκε ένα σφάλμα"
 
-#: module/web/translations.js:13
-#: module/web/templates/default/filemanager.html:65
-#: module/web/templates/default/folder.html:14
+#: module/webui/translations.js:13
+#: module/webui/themes/default/tml/filemanager.html:65
+#: module/webui/themes/default/tml/folder.html:14
 msgid "Folder is empty"
 msgstr "Ο φάκελος είναι άδειος"
 
-#: module/web/translations.js:14
+#: module/webui/translations.js:14
 msgid "Failed"
 msgstr "Απέτυχαν"
 
-#: module/web/translations.js:15
+#: module/webui/translations.js:15
 msgid "No Captchas to read."
 msgstr "Δεν υπάρχουν Captchas για ανάγνωση."
 
-#: module/web/translations.js:16
+#: module/webui/translations.js:16
 msgid "Passwords did not match."
 msgstr "Οι κωδικοί δεν ταιριάζουν"
 
-#: module/web/translations.js:17
+#: module/webui/translations.js:17
 msgid "Settings saved."
 msgstr "Οι ρυθμίσεις αποθηκεύτηκαν"
 
-#: module/web/translations.js:18
+#: module/webui/translations.js:18
 msgid "New folder"
 msgstr "Νέος φάκελος"
 
-#: module/web/translations.js:19
+#: module/webui/translations.js:19
 msgid "Are you sure you want to restart pyLoad?"
 msgstr "Είσαστε σίγουροι ότι θέλετε να κάνετε επανεκκίνηση στο pyLoad ;"
 
-#: module/web/json_app.py:57
+#: module/webui/app/json.py:57
 #, python-format
 msgid "waiting %s"
 msgstr "αναμονή %s"
 
-#: module/web/templates/default/home.html:206
+#: module/webui/themes/default/tml/home.html:206
 msgid "Active Downloads"
 msgstr "Ενεργές Μεταφορτώσεις "
 
-#: module/web/templates/default/home.html:211
-#: module/web/templates/default/base.html:84
+#: module/webui/themes/default/tml/home.html:211
+#: module/webui/themes/default/tml/base.html:84
 msgid "Home"
 msgstr "Αρχική"
 
-#: module/web/templates/default/home.html:214
-#: module/web/templates/default/queue.html:15
-#: module/web/templates/default/window.html:34
-#: module/web/templates/default/base.html:87
+#: module/webui/themes/default/tml/home.html:214
+#: module/webui/themes/default/tml/queue.html:15
+#: module/webui/themes/default/tml/window.html:34
+#: module/webui/themes/default/tml/base.html:87
 msgid "Queue"
 msgstr ""
 
-#: module/web/templates/default/home.html:217
-#: module/web/templates/default/queue.html:17
-#: module/web/templates/default/window.html:36
-#: module/web/templates/default/base.html:90
+#: module/webui/themes/default/tml/home.html:217
+#: module/webui/themes/default/tml/queue.html:17
+#: module/webui/themes/default/tml/window.html:36
+#: module/webui/themes/default/tml/base.html:90
 msgid "Collector"
 msgstr ""
 
-#: module/web/templates/default/home.html:220
-#: module/web/templates/default/downloads.html:6
-#: module/web/templates/default/base.html:93
+#: module/webui/themes/default/tml/home.html:220
+#: module/webui/themes/default/tml/downloads.html:6
+#: module/webui/themes/default/tml/base.html:93
 msgid "Downloads"
 msgstr "Λήψεις"
 
-#: module/web/templates/default/home.html:226
-#: module/web/templates/default/logs.html:3
-#: module/web/templates/default/logs.html:4
-#: module/web/templates/default/base.html:99
+#: module/webui/themes/default/tml/home.html:226
+#: module/webui/themes/default/tml/logs.html:3
+#: module/webui/themes/default/tml/logs.html:4
+#: module/webui/themes/default/tml/base.html:99
 msgid "Logs"
 msgstr "Αρχεία καταγραφής"
 
-#: module/web/templates/default/home.html:229
-#: module/web/templates/default/settings.html:3
-#: module/web/templates/default/settings.html:4
-#: module/web/templates/default/base.html:102
+#: module/webui/themes/default/tml/home.html:229
+#: module/webui/themes/default/tml/settings.html:3
+#: module/webui/themes/default/tml/settings.html:4
+#: module/webui/themes/default/tml/base.html:102
 msgid "Config"
 msgstr "Ρυθμίσεις"
 
-#: module/web/templates/default/home.html:237
-#: module/web/templates/default/queue.html:82
-#: module/web/templates/default/settings.html:91
-#: module/web/templates/default/window.html:7
-#: module/web/templates/default/admin.html:25
+#: module/webui/themes/default/tml/home.html:237
+#: module/webui/themes/default/tml/queue.html:82
+#: module/webui/themes/default/tml/settings.html:91
+#: module/webui/themes/default/tml/window.html:7
+#: module/webui/themes/default/tml/admin.html:25
 msgid "Name"
 msgstr "Όνομα"
 
-#: module/web/templates/default/home.html:238
-#: module/web/templates/default/settings.html:93
+#: module/webui/themes/default/tml/home.html:238
+#: module/webui/themes/default/tml/settings.html:93
 msgid "Status"
 msgstr "Κατάσταση"
 
-#: module/web/templates/default/home.html:239
-#: module/web/templates/default/info.html:14
-#: module/web/templates/default/info.html:15
+#: module/webui/themes/default/tml/home.html:239
+#: module/webui/themes/default/tml/info.html:14
+#: module/webui/themes/default/tml/info.html:15
 msgid "Information"
 msgstr "Πληροφορία"
 
-#: module/web/templates/default/home.html:240
+#: module/webui/themes/default/tml/home.html:240
 msgid "Size"
 msgstr "Μέγεθος"
 
-#: module/web/templates/default/home.html:241
+#: module/webui/themes/default/tml/home.html:241
 msgid "Progress"
 msgstr "Πρόοδος"
 
-#: module/web/templates/default/login.html:3
-#: module/web/templates/default/settings.html:178
+#: module/webui/themes/default/tml/login.html:3
+#: module/webui/themes/default/tml/settings.html:178
 msgid "Login"
 msgstr "Σύνδεση"
 
-#: module/web/templates/default/login.html:14
+#: module/webui/themes/default/tml/login.html:14
 msgid "Username"
 msgstr "Όνομα Χρήστη"
 
-#: module/web/templates/default/login.html:19
-#: module/web/templates/default/queue.html:92
-#: module/web/templates/default/settings.html:92
-#: module/web/templates/default/settings.html:183
-#: module/web/templates/default/window.html:21
+#: module/webui/themes/default/tml/login.html:19
+#: module/webui/themes/default/tml/queue.html:92
+#: module/webui/themes/default/tml/settings.html:92
+#: module/webui/themes/default/tml/settings.html:183
+#: module/webui/themes/default/tml/window.html:21
 msgid "Password"
 msgstr "Κωδικός πρόσβασης"
 
-#: module/web/templates/default/login.html:29
+#: module/webui/themes/default/tml/login.html:29
 msgid "Your username and password didn't match. Please try again."
 msgstr "Το όνομα χρήστη και ο κωδικός πρόσβασης δεν ταιριάζουν. Δοκιμάστε ξανά."
 
-#: module/web/templates/default/login.html:30
+#: module/webui/themes/default/tml/login.html:30
 msgid "To reset your login data or add an user run:"
 msgstr "Για να επαναφέρετε τα στοιχεία εισόδου ή για να προσθέστε χρήστη τρέξτε:  "
 
-#: module/web/templates/default/queue.html:25
+#: module/webui/themes/default/tml/queue.html:25
 msgid "Delete Finished"
 msgstr "Διαγραφή Τελείωσε"
 
-#: module/web/templates/default/queue.html:26
+#: module/webui/themes/default/tml/queue.html:26
 msgid "Restart Failed"
 msgstr "Επανεκκίνηση Απέτυχε"
 
-#: module/web/templates/default/queue.html:65
+#: module/webui/themes/default/tml/queue.html:65
 msgid "Folder:"
 msgstr "Φάκελος:"
 
-#: module/web/templates/default/queue.html:65
+#: module/webui/themes/default/tml/queue.html:65
 msgid "Password:"
 msgstr "Κωδικός Πρόσβασης:"
 
-#: module/web/templates/default/queue.html:79
+#: module/webui/themes/default/tml/queue.html:79
 msgid "Edit Package"
 msgstr "Επεξεργασία Πακέτου"
 
-#: module/web/templates/default/queue.html:80
+#: module/webui/themes/default/tml/queue.html:80
 msgid "Edit the package detais below."
 msgstr "Επεξεργαστείτε λεπτομέρειες του πακέτου παρακάτω. "
 
-#: module/web/templates/default/queue.html:83
+#: module/webui/themes/default/tml/queue.html:83
 msgid "The name of the package."
 msgstr "Το όνομα του πακέτου."
 
-#: module/web/templates/default/queue.html:87
+#: module/webui/themes/default/tml/queue.html:87
 msgid "Folder"
 msgstr "Φάκελος"
 
-#: module/web/templates/default/queue.html:88
+#: module/webui/themes/default/tml/queue.html:88
 msgid "Name of subfolder for these downloads."
 msgstr "Όνομα υποφακέλου για αυτές τις μεταφορτώσεις."
 
-#: module/web/templates/default/queue.html:93
+#: module/webui/themes/default/tml/queue.html:93
 msgid "List of passwords used for unrar."
 msgstr "Λίστα κωδικών που χρησιμοποιούνται για το unrar."
 
-#: module/web/templates/default/queue.html:97
-#: module/web/templates/default/settings.html:167
-#: module/web/templates/default/captcha.html:33
-#: module/web/templates/default/admin.html:61
-#: module/web/templates/default/admin.html:91
+#: module/webui/themes/default/tml/queue.html:97
+#: module/webui/themes/default/tml/settings.html:167
+#: module/webui/themes/default/tml/captcha.html:33
+#: module/webui/themes/default/tml/admin.html:61
+#: module/webui/themes/default/tml/admin.html:91
 msgid "Submit"
 msgstr "Υποβολή"
 
-#: module/web/templates/default/queue.html:98
-#: module/web/templates/default/settings.html:198
-#: module/web/templates/default/window.html:41
-#: module/web/templates/default/admin.html:92
+#: module/webui/themes/default/tml/queue.html:98
+#: module/webui/themes/default/tml/settings.html:198
+#: module/webui/themes/default/tml/window.html:41
+#: module/webui/themes/default/tml/admin.html:92
 msgid "Reset"
 msgstr "Επαναφορά"
 
-#: module/web/templates/default/logout.html:8
+#: module/webui/themes/default/tml/logout.html:8
 msgid "You were successfully logged out."
 msgstr "Αποσυνδεθήκατε επιτυχής."
 
-#: module/web/templates/default/pathchooser.html:39
-#: module/web/templates/default/pathchooser.html:41
+#: module/webui/themes/default/tml/pathchooser.html:39
+#: module/webui/themes/default/tml/pathchooser.html:41
 msgid "Path"
 msgstr "Διαδρομή"
 
-#: module/web/templates/default/pathchooser.html:39
-#: module/web/templates/default/pathchooser.html:41
+#: module/webui/themes/default/tml/pathchooser.html:39
+#: module/webui/themes/default/tml/pathchooser.html:41
 msgid "absolute"
 msgstr "απόλυτη"
 
-#: module/web/templates/default/pathchooser.html:39
-#: module/web/templates/default/pathchooser.html:41
+#: module/webui/themes/default/tml/pathchooser.html:39
+#: module/webui/themes/default/tml/pathchooser.html:41
 msgid "relative"
 msgstr "σχετική"
 
-#: module/web/templates/default/pathchooser.html:46
+#: module/webui/themes/default/tml/pathchooser.html:46
 msgid "name"
 msgstr "όνομα"
 
-#: module/web/templates/default/pathchooser.html:47
+#: module/webui/themes/default/tml/pathchooser.html:47
 msgid "size"
 msgstr "μέγεθος"
 
-#: module/web/templates/default/pathchooser.html:48
+#: module/webui/themes/default/tml/pathchooser.html:48
 msgid "type"
 msgstr "τύπος"
 
-#: module/web/templates/default/pathchooser.html:49
+#: module/webui/themes/default/tml/pathchooser.html:49
 msgid "last modified"
 msgstr "τελευταία αλλαγή"
 
-#: module/web/templates/default/pathchooser.html:54
+#: module/webui/themes/default/tml/pathchooser.html:54
 msgid "parent directory"
 msgstr "γονικός φάκελος"
 
-#: module/web/templates/default/pathchooser.html:70
+#: module/webui/themes/default/tml/pathchooser.html:70
 msgid "no content"
 msgstr "χωρίς περιεχόμενο"
 
-#: module/web/templates/default/settings.html:16
+#: module/webui/themes/default/tml/settings.html:16
 msgid "General"
 msgstr "Γενικά"
 
-#: module/web/templates/default/settings.html:17
+#: module/webui/themes/default/tml/settings.html:17
 msgid "Plugins"
 msgstr "Πρόσθετα"
 
-#: module/web/templates/default/settings.html:18
+#: module/webui/themes/default/tml/settings.html:18
 msgid "Accounts"
 msgstr "Λογαριασμοί"
 
-#: module/web/templates/default/settings.html:45
-#: module/web/templates/default/settings.html:74
+#: module/webui/themes/default/tml/settings.html:45
+#: module/webui/themes/default/tml/settings.html:74
 msgid "Choose a section from the menu"
 msgstr "Επιλέξτε από το menu"
 
-#: module/web/templates/default/settings.html:90
+#: module/webui/themes/default/tml/settings.html:90
 msgid "Plugin"
 msgstr "Πρόσθετα"
 
-#: module/web/templates/default/settings.html:94
+#: module/webui/themes/default/tml/settings.html:94
 msgid "Premium"
 msgstr ""
 
-#: module/web/templates/default/settings.html:95
+#: module/webui/themes/default/tml/settings.html:95
 msgid "Valid until"
 msgstr "Έγκυρο εως"
 
-#: module/web/templates/default/settings.html:96
+#: module/webui/themes/default/tml/settings.html:96
 msgid "Traffic left"
 msgstr "Εναπομείνουσα κίνηση"
 
-#: module/web/templates/default/settings.html:97
+#: module/webui/themes/default/tml/settings.html:97
 msgid "Time"
 msgstr "Χρόνος"
 
-#: module/web/templates/default/settings.html:98
+#: module/webui/themes/default/tml/settings.html:98
 msgid "Max Parallel"
 msgstr "Μέγιστος αριθμός ταυτόχρονων"
 
-#: module/web/templates/default/settings.html:99
+#: module/webui/themes/default/tml/settings.html:99
 msgid "Delete?"
 msgstr "Διαγραφή;"
 
-#: module/web/templates/default/settings.html:121
+#: module/webui/themes/default/tml/settings.html:121
 msgid "valid"
 msgstr "έγκυρο"
 
-#: module/web/templates/default/settings.html:124
+#: module/webui/themes/default/tml/settings.html:124
 msgid "not valid"
 msgstr "άκυρο"
 
-#: module/web/templates/default/settings.html:131
+#: module/webui/themes/default/tml/settings.html:131
 msgid "yes"
 msgstr "ναι"
 
-#: module/web/templates/default/settings.html:134
+#: module/webui/themes/default/tml/settings.html:134
 msgid "no"
 msgstr "όχι"
 
-#: module/web/templates/default/settings.html:168
-#: module/web/templates/default/settings.html:197
-#: module/web/templates/default/base.html:117
+#: module/webui/themes/default/tml/settings.html:168
+#: module/webui/themes/default/tml/settings.html:197
+#: module/webui/themes/default/tml/base.html:117
 msgid "Add"
 msgstr "Προσθήκη"
 
-#: module/web/templates/default/settings.html:176
+#: module/webui/themes/default/tml/settings.html:176
 msgid "Add Account"
 msgstr "Προσθήκη Λογαριασμού"
 
-#: module/web/templates/default/settings.html:177
+#: module/webui/themes/default/tml/settings.html:177
 msgid "Enter your account data to use premium features."
 msgstr "Εισάγετε τα στοιχεία του λογαριασμού σας για να χρησιμοποιήσετε τα επιπλέον χαρακτηριστικά."
 
-#: module/web/templates/default/settings.html:179
-#: module/web/templates/default/admin.html:71
+#: module/webui/themes/default/tml/settings.html:179
+#: module/webui/themes/default/tml/admin.html:71
 msgid "Your username."
 msgstr "Το όνομα χρήστη σας."
 
-#: module/web/templates/default/settings.html:184
-#: module/web/templates/default/admin.html:76
+#: module/webui/themes/default/tml/settings.html:184
+#: module/webui/themes/default/tml/admin.html:76
 msgid "The password for this account."
 msgstr "Ο κωδικός χρήστης για αυτόν το λογαριασμό."
 
-#: module/web/templates/default/settings.html:188
+#: module/webui/themes/default/tml/settings.html:188
 msgid "Type"
 msgstr "Τύπος"
 
-#: module/web/templates/default/settings.html:189
+#: module/webui/themes/default/tml/settings.html:189
 msgid "Choose the hoster for your account."
 msgstr "Χρησιμοποιήστε άλλο hoster για τον λογαριασμό σας. "
 
-#: module/web/templates/default/logs.html:12
-#: module/web/templates/default/base.html:114
+#: module/webui/themes/default/tml/logs.html:12
+#: module/webui/themes/default/tml/base.html:114
 msgid "Start"
 msgstr "Εκκίνηση"
 
-#: module/web/templates/default/logs.html:12
+#: module/webui/themes/default/tml/logs.html:12
 msgid "prev"
 msgstr "προηγ."
 
-#: module/web/templates/default/logs.html:12
+#: module/webui/themes/default/tml/logs.html:12
 msgid "next"
 msgstr "επόμ."
 
-#: module/web/templates/default/logs.html:12
+#: module/webui/themes/default/tml/logs.html:12
 msgid "End"
 msgstr "Τέλος"
 
-#: module/web/templates/default/info.html:18
+#: module/webui/themes/default/tml/info.html:18
 msgid "News"
 msgstr "Νέα"
 
-#: module/web/templates/default/info.html:21
+#: module/webui/themes/default/tml/info.html:21
 msgid "Support"
 msgstr "Υποστήριξη"
 
-#: module/web/templates/default/info.html:37
+#: module/webui/themes/default/tml/info.html:37
 msgid "System"
 msgstr "Σύστημα"
 
-#: module/web/templates/default/info.html:40
+#: module/webui/themes/default/tml/info.html:40
 msgid "Python:"
 msgstr ""
 
-#: module/web/templates/default/info.html:44
+#: module/webui/themes/default/tml/info.html:44
 msgid "OS:"
 msgstr ""
 
-#: module/web/templates/default/info.html:48
+#: module/webui/themes/default/tml/info.html:48
 msgid "pyLoad version:"
 msgstr "έκδοση pyLoad: "
 
-#: module/web/templates/default/info.html:52
+#: module/webui/themes/default/tml/info.html:52
 msgid "Installation Folder:"
 msgstr "Φάκελος Εγκατάστασης: "
 
-#: module/web/templates/default/info.html:56
+#: module/webui/themes/default/tml/info.html:56
 msgid "Config Folder:"
 msgstr "Φάκελος Ρυθμίσεων: "
 
-#: module/web/templates/default/info.html:60
+#: module/webui/themes/default/tml/info.html:60
 msgid "Download Folder:"
 msgstr "Φάκελος Λήψης: "
 
-#: module/web/templates/default/info.html:64
+#: module/webui/themes/default/tml/info.html:64
 msgid "Free Space:"
 msgstr "Ελεύθερος Χώρος: "
 
-#: module/web/templates/default/info.html:68
+#: module/webui/themes/default/tml/info.html:68
 msgid "Language:"
 msgstr "Γλώσσα: "
 
-#: module/web/templates/default/info.html:72
+#: module/webui/themes/default/tml/info.html:72
 msgid "Webinterface Port:"
 msgstr "Θύρα Webinterface: "
 
-#: module/web/templates/default/info.html:76
+#: module/webui/themes/default/tml/info.html:76
 msgid "Remote Interface Port:"
 msgstr "Θύρα Απομακρυσμένης Πρόσβασης: "
 
-#: module/web/templates/default/setup.html:3
-#: module/web/templates/default/setup.html:4
+#: module/webui/themes/default/tml/setup.html:3
+#: module/webui/themes/default/tml/setup.html:4
 msgid "Setup"
 msgstr "Εγκατάσταση"
 
-#: module/web/templates/default/filemanager.html:19
+#: module/webui/themes/default/tml/filemanager.html:19
 msgid "FileManager"
 msgstr "Διαχείριση Αρχείων"
 
-#: module/web/templates/default/window.html:5
-#: module/web/templates/default/window.html:40
+#: module/webui/themes/default/tml/window.html:5
+#: module/webui/themes/default/tml/window.html:40
 msgid "Add Package"
 msgstr "Προσθήκη Πακέτου "
 
-#: module/web/templates/default/window.html:6
+#: module/webui/themes/default/tml/window.html:6
 msgid "Paste your links or upload a container."
 msgstr "Επικολλήστε συνδέσμους η φορτώστε αρχείο container."
 
-#: module/web/templates/default/window.html:8
+#: module/webui/themes/default/tml/window.html:8
 msgid "The name of the new package."
 msgstr "Το όνομα του νέου πακέτου."
 
-#: module/web/templates/default/window.html:12
+#: module/webui/themes/default/tml/window.html:12
 msgid "Links"
 msgstr "Σύνδεσμοι"
 
-#: module/web/templates/default/window.html:13
+#: module/webui/themes/default/tml/window.html:13
 msgid "Paste your links here or any text and press the filter button."
 msgstr "Επικολλήστε τους συνδέσμους σας εδώ ή οποιοδήποτε κείμενο και πατήστε το πλήκτρο φίλτρου."
 
-#: module/web/templates/default/window.html:14
+#: module/webui/themes/default/tml/window.html:14
 msgid "Filter urls"
 msgstr "Φιλτράρισμα urls"
 
-#: module/web/templates/default/window.html:22
+#: module/webui/themes/default/tml/window.html:22
 msgid "Password for RAR-Archive"
 msgstr "Κωδικός για Aρχείο RAR"
 
-#: module/web/templates/default/window.html:26
+#: module/webui/themes/default/tml/window.html:26
 msgid "File"
 msgstr "Aρχείο"
 
-#: module/web/templates/default/window.html:27
+#: module/webui/themes/default/tml/window.html:27
 msgid "Upload a container."
 msgstr "Ανεβάστε αρχείο container."
 
-#: module/web/templates/default/window.html:31
+#: module/webui/themes/default/tml/window.html:31
 msgid "Destination"
 msgstr "Προορισμός"
 
-#: module/web/templates/default/captcha.html:6
+#: module/webui/themes/default/tml/captcha.html:6
 msgid "Captcha reading"
 msgstr "Ανάλυση Captcha"
 
-#: module/web/templates/default/captcha.html:13
+#: module/webui/themes/default/tml/captcha.html:13
 msgid "Captcha"
 msgstr ""
 
-#: module/web/templates/default/captcha.html:14
+#: module/webui/themes/default/tml/captcha.html:14
 msgid "The captcha."
 msgstr "Το captcha."
 
-#: module/web/templates/default/captcha.html:20
+#: module/webui/themes/default/tml/captcha.html:20
 msgid "Text"
 msgstr "Κείμενο"
 
-#: module/web/templates/default/captcha.html:21
+#: module/webui/themes/default/tml/captcha.html:21
 msgid "Input the text on the captcha."
 msgstr "Εισάγετε το κείμενο που φαίνεται στο captcha."
 
-#: module/web/templates/default/captcha.html:34
+#: module/webui/themes/default/tml/captcha.html:34
 msgid "Close"
 msgstr "Κλείσιμο"
 
-#: module/web/templates/default/base.html:20
-#: module/web/templates/default/base.html:139
+#: module/webui/themes/default/tml/base.html:20
+#: module/webui/themes/default/tml/base.html:139
 msgid "Webinterface"
 msgstr "Διεπαφή ιστού"
 
-#: module/web/templates/default/base.html:39
+#: module/webui/themes/default/tml/base.html:39
 msgid "pyLoad Update available!"
 msgstr "Υπάρχει διαθέσιμη αναβάθμιση για το pyLoad!"
 
-#: module/web/templates/default/base.html:46
+#: module/webui/themes/default/tml/base.html:46
 msgid "Plugins updated, please restart!"
 msgstr "Τα πρόσθετα αναβαθμίστηκαν, παρακαλούμε κάντε επανεκκίνηση!"
 
-#: module/web/templates/default/base.html:52
+#: module/webui/themes/default/tml/base.html:52
 msgid "Captcha waiting"
 msgstr "Περιμένει Captcha"
 
-#: module/web/templates/default/base.html:57
+#: module/webui/themes/default/tml/base.html:57
 msgid "Logout"
 msgstr "Αποσύνδεση"
 
-#: module/web/templates/default/base.html:59
-#: module/web/templates/default/admin.html:8
-#: module/web/templates/default/admin.html:9
+#: module/webui/themes/default/tml/base.html:59
+#: module/webui/themes/default/tml/admin.html:8
+#: module/webui/themes/default/tml/admin.html:9
 msgid "Administrate"
 msgstr "Διαχείριση"
 
-#: module/web/templates/default/base.html:61
+#: module/webui/themes/default/tml/base.html:61
 msgid "Info"
 msgstr "Πληροφορίες"
 
-#: module/web/templates/default/base.html:65
+#: module/webui/themes/default/tml/base.html:65
 msgid "Please Login!"
 msgstr "Παρακαλώ Συνδεθείτε!"
 
-#: module/web/templates/default/base.html:115
+#: module/webui/themes/default/tml/base.html:115
 msgid "Stop"
 msgstr "Διακοπή"
 
-#: module/web/templates/default/base.html:116
+#: module/webui/themes/default/tml/base.html:116
 msgid "Cancel"
 msgstr "Ακύρωση"
 
-#: module/web/templates/default/base.html:123
+#: module/webui/themes/default/tml/base.html:123
 msgid "Download:"
 msgstr "Λήψη:"
 
-#: module/web/templates/default/base.html:124
+#: module/webui/themes/default/tml/base.html:124
 msgid "Reconnect:"
 msgstr "Επανασύνδεση:"
 
-#: module/web/templates/default/base.html:125
+#: module/webui/themes/default/tml/base.html:125
 msgid "Speed:"
 msgstr "Ταχύτητα:"
 
-#: module/web/templates/default/base.html:126
+#: module/webui/themes/default/tml/base.html:126
 msgid "Active:"
 msgstr "Ενεργό:"
 
-#: module/web/templates/default/base.html:127
+#: module/webui/themes/default/tml/base.html:127
 msgid "Reload page"
 msgstr "Επαναφόρτιση σελίδας"
 
-#: module/web/templates/default/base.html:157
+#: module/webui/themes/default/tml/base.html:157
 msgid "loading"
 msgstr "φορτώνει "
 
-#: module/web/templates/default/base.html:166
+#: module/webui/themes/default/tml/base.html:166
 msgid "Back to top"
 msgstr "Επιστροφή στην κορυφή"
 
-#: module/web/templates/default/admin.html:13
+#: module/webui/themes/default/tml/admin.html:13
 msgid "Quit pyLoad"
 msgstr "Σταμάτημα του pyLoad"
 
-#: module/web/templates/default/admin.html:14
+#: module/webui/themes/default/tml/admin.html:14
 msgid "Restart pyLoad"
 msgstr "Επανεκκίνηση του pyLoad"
 
-#: module/web/templates/default/admin.html:18
+#: module/webui/themes/default/tml/admin.html:18
 msgid "To add user or change passwords use:"
 msgstr "Για να προσθέσετε χρήστες ή να αλλάξετε κωδικούς πρόσβασης χρησιμοποιήσετε: "
 
-#: module/web/templates/default/admin.html:19
+#: module/webui/themes/default/tml/admin.html:19
 msgid "Important: Admin user have always all permissions!"
 msgstr "Επισήμανση: Ο Διαχειριστής έχει πάντα όλα τα δικαιώματα!"
 
-#: module/web/templates/default/admin.html:28
-#: module/web/templates/default/admin.html:67
+#: module/webui/themes/default/tml/admin.html:28
+#: module/webui/themes/default/tml/admin.html:67
 msgid "Change Password"
 msgstr "Αλλαγή Κωδικού Πρόσβασης"
 
-#: module/web/templates/default/admin.html:31
+#: module/webui/themes/default/tml/admin.html:31
 msgid "Admin"
 msgstr "Διαχειριστής"
 
-#: module/web/templates/default/admin.html:34
+#: module/webui/themes/default/tml/admin.html:34
 msgid "Permissions"
 msgstr "Δικαιώματα"
 
-#: module/web/templates/default/admin.html:41
+#: module/webui/themes/default/tml/admin.html:41
 msgid "change"
 msgstr "αλλαγή"
 
-#: module/web/templates/default/admin.html:69
+#: module/webui/themes/default/tml/admin.html:69
 msgid "Enter your current and desired Password."
 msgstr "Εισάγετε το παρόν και το επιθυμητό κωδικό χρήστη."
 
-#: module/web/templates/default/admin.html:70
+#: module/webui/themes/default/tml/admin.html:70
 msgid "User"
 msgstr "Όνομα χρήστη"
 
-#: module/web/templates/default/admin.html:75
+#: module/webui/themes/default/tml/admin.html:75
 msgid "Current password"
 msgstr "Παρόν κωδικός χρήστη"
 
-#: module/web/templates/default/admin.html:80
+#: module/webui/themes/default/tml/admin.html:80
 msgid "New password"
 msgstr "Νέος κωδικός χρήστη"
 
-#: module/web/templates/default/admin.html:81
+#: module/webui/themes/default/tml/admin.html:81
 msgid "The new password."
 msgstr "Ο νέος κωδικός χρήστη."
 
-#: module/web/templates/default/admin.html:85
+#: module/webui/themes/default/tml/admin.html:85
 msgid "New password (repeat)"
 msgstr "Νέος κωδικός χρήστη (επανάληψη)"
 
-#: module/web/templates/default/admin.html:86
+#: module/webui/themes/default/tml/admin.html:86
 msgid "Please repeat the new password."
 msgstr "Παρακαλώ επαναλάβετε το νέο κωδικό χρήστη."
 
-#: module/web/pyload_app.py:125
+#: module/webui/app/pyload.py:125
 msgid "You dont have permission to access this page."
 msgstr "Δεν σας επιτρέπετε η πρόσβαση σε αυτή τη σελίδα"
 
-#: module/web/pyload_app.py:193
+#: module/webui/app/pyload.py:193
 msgid "Download directory not found."
 msgstr "Ο κατάλογος μεταφορτώσεων δεν βρέθηκε"
 
-#: module/web/pyload_app.py:260 module/web/pyload_app.py:267
+#: module/webui/app/pyload.py:260 module/webui/app/pyload.py:267
 msgid "unlimited"
 msgstr "απεριόριστο"
 
-#: module/web/pyload_app.py:262 module/web/pyload_app.py:269
+#: module/webui/app/pyload.py:262 module/webui/app/pyload.py:269
 msgid "not available"
 msgstr "μη διαθέσιμο"
 
-#: module/web/pyload_app.py:508
+#: module/webui/app/pyload.py:508
 msgid "Run pyload.py -s to access the setup."
 msgstr "Εκτελέστε την εντολή pyload.py -s για πρόσβαση στην εγκατάσταση."
 

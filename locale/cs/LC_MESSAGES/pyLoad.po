@@ -12,120 +12,120 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: crowdin.net\n"
 
-#: pyload.py:182
+#: module/Core.py:182
 msgid "Received Quit signal"
 msgstr "Prijat Quit signal"
 
-#: pyload.py:303
+#: module/Core.py:303
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr "pyLoad je jiz spusten pod pid %s"
 
-#: pyload.py:317
+#: module/Core.py:317
 #, python-format
 msgid "Failed changing group: %s"
 msgstr "Zmena skupiny selhala: %s"
 
-#: pyload.py:327
+#: module/Core.py:327
 #, python-format
 msgid "Failed changing user: %s"
 msgstr "Zmena uzivatele selhala: %s"
 
-#: pyload.py:329
+#: module/Core.py:329
 msgid "folder for logs"
 msgstr "slozka pro logy"
 
-#: pyload.py:340
+#: module/Core.py:340
 msgid "Starting"
 msgstr "Spoustim"
 
-#: pyload.py:341
+#: module/Core.py:341
 #, python-format
 msgid "Using home directory: %s"
 msgstr "Nastaven domovsky adresar: %s"
 
-#: pyload.py:350
+#: module/Core.py:350
 msgid "pycrypto to decode container files"
 msgstr "pycrypto pro dekodovani kontejnerovych souboru"
 
-#: pyload.py:353
+#: module/Core.py:353
 msgid "folder for temporary files"
 msgstr "slozka pro docasne soubory"
 
-#: pyload.py:358
+#: module/Core.py:358
 msgid "folder for downloads"
 msgstr "slozka pro stahovani"
 
-#: pyload.py:361
+#: module/Core.py:361
 msgid "OpenSSL for secure connection"
 msgstr "OpenSSL pro zabezpecene pripojeni"
 
-#: pyload.py:365
+#: module/Core.py:365
 msgid "Moving old user config to DB"
 msgstr "Presunuji stara nastaveni uzivatele do DB."
 
-#: pyload.py:368
+#: module/Core.py:368
 msgid "Please check your logindata with ./pyload.py -u"
 msgstr "Prosim zkontrolujte sve prihlasovaci udaje pres ./pyload.py -u"
 
-#: pyload.py:371
+#: module/Core.py:371
 msgid "All links removed"
 msgstr "Všechny odkazy odstraněny"
 
-#: pyload.py:402
+#: module/Core.py:402
 #, python-format
 msgid "Downloadtime: %s"
 msgstr "Cas stahovani: %s"
 
-#: pyload.py:412
+#: module/Core.py:412
 #, python-format
 msgid "Free space: %s"
 msgstr "Volne misto: %s"
 
-#: pyload.py:432
+#: module/Core.py:432
 msgid "Activating Accounts..."
 msgstr "Aktivuji Ucty..."
 
-#: pyload.py:438
+#: module/Core.py:438
 msgid "Activating Plugins..."
 msgstr "Aktivuji Pluginy..."
 
-#: pyload.py:441
+#: module/Core.py:441
 msgid "pyLoad is up and running"
 msgstr "pyLoad je spusten"
 
-#: pyload.py:460
+#: module/Core.py:460
 msgid "restarting pyLoad"
 msgstr "restartuji pyLoad"
 
-#: pyload.py:464
+#: module/Core.py:464
 msgid "pyLoad quits"
 msgstr "pyLoad se ukonci"
 
-#: pyload.py:521
+#: module/Core.py:521
 #, python-format
 msgid "Install %s"
 msgstr "Instalujte %s"
 
-#: pyload.py:557
+#: module/Core.py:557
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr "nelze najit %(desc)s: %(name)s"
 
-#: pyload.py:559
+#: module/Core.py:559
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr "nelze vytvorit %(desc)s: %(name)s"
 
-#: pyload.py:580
+#: module/Core.py:580
 msgid "shutting down..."
 msgstr "vypinani..."
 
-#: pyload.py:597
+#: module/Core.py:597
 msgid "error while shutting down"
 msgstr "chyba pri vypinani"
 
-#: pyload.py:661
+#: module/Core.py:661
 msgid "killed pyLoad from Terminal"
 msgstr "pyLoad zastaven z terminalu"
 
@@ -234,105 +234,105 @@ msgstr "Zahajuji %(name)s: %(addr)s:%(port)s"
 msgid "Failed loading backend %(name)s | %(error)s"
 msgstr "Spousteni backendu %(name)s selhalo | %(error)s"
 
-#: module/web/json_app.py:57
+#: module/webui/app/json.py:57
 #, python-format
 msgid "waiting %s"
 msgstr "cekam %s"
 
-#: module/web/ServerThread.py:35
+#: module/threads/ServerThread.py:35
 msgid "SSL certificates not found."
 msgstr "Certifikaty SSL nenalezeny."
 
-#: module/web/ServerThread.py:39
+#: module/threads/ServerThread.py:39
 #, python-format
 msgid "Sorry, we dropped support for starting %s directly within pyLoad"
 msgstr "Omlouvame se, ale spousteni %s v ramci pyLoad jiz neni podporovano"
 
-#: module/web/ServerThread.py:40
+#: module/threads/ServerThread.py:40
 msgid "You can use the threaded server which offers good performance and ssl,"
 msgstr "Je mozne pouzit server podporujici vlakna, ktery nabizi dobry vykon a ssl,"
 
-#: module/web/ServerThread.py:41
+#: module/threads/ServerThread.py:41
 #, python-format
 msgid "of course you can still use your existing %s with pyLoads fastcgi server"
 msgstr "a samozrejme je take mozne pouzit vas jiz existujici %s se serverem fastcgi pyLoadu"
 
-#: module/web/ServerThread.py:42
-msgid "sample configs are located in the module/web/servers directory"
-msgstr "vzorove konfiguracni soubory jsou umisteny v adresari module/web/servers"
+#: module/threads/ServerThread.py:42
+msgid "sample configs are located in the module/webui/servers directory"
+msgstr "vzorove konfiguracni soubory jsou umisteny v adresari module/webui/servers"
 
-#: module/web/ServerThread.py:49
+#: module/threads/ServerThread.py:49
 #, python-format
 msgid "Can't use %(server)s, python-flup is not installed!"
 msgstr "Nelze pouzit %(server)s, python-flup neni nainstalovan!"
 
-#: module/web/ServerThread.py:56
+#: module/threads/ServerThread.py:56
 #, python-format
 msgid "Error importing lightweight server: %s"
 msgstr "Chyba pri importu lightweight serveru: %s"
 
-#: module/web/ServerThread.py:57
+#: module/threads/ServerThread.py:57
 msgid "You need to download and compile bjoern, https://github.com/jonashaag/bjoern"
 msgstr "Musíte si stáhnout a zkompilovat bjoern, https://github.com/jonashaag/bjoern"
 
-#: module/web/ServerThread.py:58
+#: module/threads/ServerThread.py:58
 msgid "Copy the boern.so to module/lib folder or use setup.py install"
 msgstr "Zkopirujte soubor boern.so do adresare module/lib nebo pouzijte setup.py install"
 
-#: module/web/ServerThread.py:59
+#: module/threads/ServerThread.py:59
 msgid "Of course you need to be familiar with linux and know how to compile software"
 msgstr "Samozrejme budete potrebovat znalost linuxu a kompilace software"
 
-#: module/web/ServerThread.py:63
+#: module/threads/ServerThread.py:63
 msgid "Server set to threaded, due to known performance problems on windows."
 msgstr "Server nyni pracuje s vlakny i pres zname obtize s vykonem na Windows"
 
-#: module/web/ServerThread.py:80 module/web/ServerThread.py:103
+#: module/threads/ServerThread.py:80 module/threads/ServerThread.py:103
 msgid "This server offers no SSL, please consider using threaded instead"
 msgstr "Tento server nenabizi SSL, zvazte pouziti rezimu s vlakny"
 
-#: module/web/ServerThread.py:82
+#: module/threads/ServerThread.py:82
 #, python-format
 msgid "Starting builtin webserver: %(host)s:%(port)d"
 msgstr "Spoustim vestaveny Webserver: %(host)s:%(port)d"
 
-#: module/web/ServerThread.py:87
+#: module/threads/ServerThread.py:87
 #, python-format
 msgid "Starting threaded SSL webserver: %(host)s:%(port)d"
 msgstr "Spoustim SSL webserver: %(host)s:%(port)d"
 
-#: module/web/ServerThread.py:91
+#: module/threads/ServerThread.py:91
 #, python-format
 msgid "Starting threaded webserver: %(host)s:%(port)d"
 msgstr "Spoustim webserver: %(host)s:%(port)d"
 
-#: module/web/ServerThread.py:97
+#: module/threads/ServerThread.py:97
 #, python-format
 msgid "Starting fastcgi server: %(host)s:%(port)d"
 msgstr "Spoustim fastcgi server: %(host)s:%(port)d"
 
-#: module/web/ServerThread.py:105
+#: module/threads/ServerThread.py:105
 #, python-format
 msgid "Starting lightweight webserver (bjoern): %(host)s:%(port)d"
 msgstr "Startuji lightweight server (bjoern): %(host)s:%(port)d"
 
-#: module/web/pyload_app.py:125
+#: module/webui/app/pyload.py:125
 msgid "You dont have permission to access this page."
 msgstr "Pro zobrazeni teto stranky nemate opravneni."
 
-#: module/web/pyload_app.py:193
+#: module/webui/app/pyload.py:193
 msgid "Download directory not found."
 msgstr "Adresar pro stahovani nenalezen."
 
-#: module/web/pyload_app.py:260 module/web/pyload_app.py:267
+#: module/webui/app/pyload.py:260 module/webui/app/pyload.py:267
 msgid "unlimited"
 msgstr "neomezený"
 
-#: module/web/pyload_app.py:262 module/web/pyload_app.py:269
+#: module/webui/app/pyload.py:262 module/webui/app/pyload.py:269
 msgid "not available"
 msgstr "neni k dispozici"
 
-#: module/web/pyload_app.py:508
+#: module/webui/app/pyload.py:508
 msgid "Run pyload.py -s to access the setup."
 msgstr "Pro setup spustte pyload.py -s."
 
@@ -341,72 +341,72 @@ msgstr "Pro setup spustte pyload.py -s."
 msgid "Download chunks failed, fallback to single connection | %s"
 msgstr "Stahování částí selhalo, přecházím na jediné připojení | %s"
 
-#: module/PluginThread.py:183
+#: module/threads/PluginThread.py:183
 #, python-format
 msgid "Download starts: %s"
 msgstr "Zahajuji stahovani: %s"
 
-#: module/PluginThread.py:189
+#: module/threads/PluginThread.py:189
 #, python-format
 msgid "Download finished: %s"
 msgstr "Stahovani dokonceno: %s"
 
-#: module/PluginThread.py:194 module/PluginThread.py:365
+#: module/threads/PluginThread.py:194 module/threads/PluginThread.py:365
 #, python-format
 msgid "Plugin %s is missing a function."
 msgstr "V pluginu %s chybi funkce."
 
-#: module/PluginThread.py:202 module/PluginThread.py:265
-#: module/PluginThread.py:382
+#: module/threads/PluginThread.py:202 module/threads/PluginThread.py:265
+#: module/threads/PluginThread.py:382
 #, python-format
 msgid "Download aborted: %s"
 msgstr "Stahovani zruseno: %s"
 
-#: module/PluginThread.py:222
+#: module/threads/PluginThread.py:222
 #, python-format
 msgid "Download restarted: %(name)s | %(msg)s"
 msgstr "Stahovani obnoveno: %(name)s | %(msg)s"
 
-#: module/PluginThread.py:231 module/PluginThread.py:373
+#: module/threads/PluginThread.py:231 module/threads/PluginThread.py:373
 #, python-format
 msgid "Download is offline: %s"
 msgstr "Zdroj stahovani je offline: %s"
 
-#: module/PluginThread.py:234
+#: module/threads/PluginThread.py:234
 #, python-format
 msgid "Download is temporary offline: %s"
 msgstr "Zdroj stahovani je docasne nedostupny: %s"
 
-#: module/PluginThread.py:237 module/PluginThread.py:304
+#: module/threads/PluginThread.py:237 module/threads/PluginThread.py:304
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
 msgstr "Stahovani selhalo: %(name)s | %(msg)s"
 
-#: module/PluginThread.py:254
+#: module/threads/PluginThread.py:254
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
 msgstr "K hostiteli se nelze pripojit, nebo bylo pripojeni resetovano, cekam 1 minutu do dalsiho pokusu."
 
-#: module/PluginThread.py:290
+#: module/threads/PluginThread.py:290
 #, python-format
 msgid "Download skipped: %(name)s due to %(plugin)s"
 msgstr "Stahovani preskoceno: %(name)s v dusledku %(plugin)s"
 
-#: module/PluginThread.py:361
+#: module/threads/PluginThread.py:361
 #, python-format
 msgid "Decrypting starts: %s"
 msgstr "Zacina dekodovani: %s"
 
-#: module/PluginThread.py:376 module/PluginThread.py:394
+#: module/threads/PluginThread.py:376 module/threads/PluginThread.py:394
 #, python-format
 msgid "Decrypting failed: %(name)s | %(msg)s"
 msgstr "Dekodovani selhalo: %(name)s | %(msg)s"
 
-#: module/PluginThread.py:388
+#: module/threads/PluginThread.py:388
 #, python-format
 msgid "Retrying %s"
 msgstr "Zkousim znovu %s"
 
-#: module/PluginThread.py:635
+#: module/threads/PluginThread.py:635
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
 msgstr "Ziskavani informaci pro %(name)s selhalo | %(err)s"

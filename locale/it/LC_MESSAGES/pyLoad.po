@@ -12,120 +12,120 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
-#: pyload.py:182
+#: module/Core.py:182
 msgid "Received Quit signal"
 msgstr "Ricevuto segnale di uscita"
 
-#: pyload.py:303
+#: module/Core.py:303
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr "pyLoad già in esecuzione con pid %s"
 
-#: pyload.py:317
+#: module/Core.py:317
 #, python-format
 msgid "Failed changing group: %s"
 msgstr "Impossibile cambiare il gruppo: %s"
 
-#: pyload.py:327
+#: module/Core.py:327
 #, python-format
 msgid "Failed changing user: %s"
 msgstr "Impossibile cambiare utente: %s"
 
-#: pyload.py:329
+#: module/Core.py:329
 msgid "folder for logs"
 msgstr "cartella dei log"
 
-#: pyload.py:340
+#: module/Core.py:340
 msgid "Starting"
 msgstr "Avvio"
 
-#: pyload.py:341
+#: module/Core.py:341
 #, python-format
 msgid "Using home directory: %s"
 msgstr "Uso la cartella home: %s"
 
-#: pyload.py:350
+#: module/Core.py:350
 msgid "pycrypto to decode container files"
 msgstr "pycrypto per decodificare la libreria di file"
 
-#: pyload.py:353
+#: module/Core.py:353
 msgid "folder for temporary files"
 msgstr "cartella per i file temporanei"
 
-#: pyload.py:358
+#: module/Core.py:358
 msgid "folder for downloads"
 msgstr "cartella dei download"
 
-#: pyload.py:361
+#: module/Core.py:361
 msgid "OpenSSL for secure connection"
 msgstr "OpenSSL per la connessione sicura"
 
-#: pyload.py:365
+#: module/Core.py:365
 msgid "Moving old user config to DB"
 msgstr "Sposto la vecchia configurazione utente al DB"
 
-#: pyload.py:368
+#: module/Core.py:368
 msgid "Please check your logindata with ./pyload.py -u"
 msgstr "Per favore controlla i tuoi dati di accesso eseguendo ./pyload.py -u"
 
-#: pyload.py:371
+#: module/Core.py:371
 msgid "All links removed"
 msgstr "Tutti i link rimossi"
 
-#: pyload.py:402
+#: module/Core.py:402
 #, python-format
 msgid "Downloadtime: %s"
 msgstr "Tempo di download: %s"
 
-#: pyload.py:412
+#: module/Core.py:412
 #, python-format
 msgid "Free space: %s"
 msgstr "Spazio libero: %s"
 
-#: pyload.py:432
+#: module/Core.py:432
 msgid "Activating Accounts..."
 msgstr "Attivazione Account..."
 
-#: pyload.py:438
+#: module/Core.py:438
 msgid "Activating Plugins..."
 msgstr "Attivo i Plugins..."
 
-#: pyload.py:441
+#: module/Core.py:441
 msgid "pyLoad is up and running"
 msgstr "pyLoad è attivo e funzionante"
 
-#: pyload.py:460
+#: module/Core.py:460
 msgid "restarting pyLoad"
 msgstr "riavvio pyLoad"
 
-#: pyload.py:464
+#: module/Core.py:464
 msgid "pyLoad quits"
 msgstr "esco da pyLoad"
 
-#: pyload.py:521
+#: module/Core.py:521
 #, python-format
 msgid "Install %s"
 msgstr "Installazione %s"
 
-#: pyload.py:557
+#: module/Core.py:557
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr "%(desc)s: %(name)s non trovato"
 
-#: pyload.py:559
+#: module/Core.py:559
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr "non posso creare %(desc)s: %(name)s"
 
-#: pyload.py:580
+#: module/Core.py:580
 msgid "shutting down..."
 msgstr "spegnimento..."
 
-#: pyload.py:597
+#: module/Core.py:597
 msgid "error while shutting down"
 msgstr "errore durante lo spegnimento"
 
-#: pyload.py:661
+#: module/Core.py:661
 msgid "killed pyLoad from Terminal"
 msgstr "pyLoad chiuso da Terminale"
 
@@ -234,105 +234,105 @@ msgstr "Avvio %(name)s: %(addr)s:%(port)s"
 msgid "Failed loading backend %(name)s | %(error)s"
 msgstr "Impossibile avviare backend %(name)s | %(error)s"
 
-#: module/web/json_app.py:57
+#: module/webui/app/json.py:57
 #, python-format
 msgid "waiting %s"
 msgstr "attendo %s"
 
-#: module/web/ServerThread.py:35
+#: module/threads/ServerThread.py:35
 msgid "SSL certificates not found."
 msgstr "Certificati SSL non trovati."
 
-#: module/web/ServerThread.py:39
+#: module/threads/ServerThread.py:39
 #, python-format
 msgid "Sorry, we dropped support for starting %s directly within pyLoad"
 msgstr "Siamo spiacenti, abbiamo abbandonato il supporto per avviare %s direttamente all'interno di pyLoad"
 
-#: module/web/ServerThread.py:40
+#: module/threads/ServerThread.py:40
 msgid "You can use the threaded server which offers good performance and ssl,"
 msgstr "Puoi utilizzare il server threaded che offre buone prestazioni e l'SSL,"
 
-#: module/web/ServerThread.py:41
+#: module/threads/ServerThread.py:41
 #, python-format
 msgid "of course you can still use your existing %s with pyLoads fastcgi server"
 msgstr "naturalmente puoi continuare ad usare il tuo attuale %s con il server fastcgi di pyLoads"
 
-#: module/web/ServerThread.py:42
-msgid "sample configs are located in the module/web/servers directory"
-msgstr "si possono trovare configurazioni di esempio nella directory module/web/servers"
+#: module/threads/ServerThread.py:42
+msgid "sample configs are located in the module/webui/servers directory"
+msgstr "si possono trovare configurazioni di esempio nella directory module/webui/servers"
 
-#: module/web/ServerThread.py:49
+#: module/threads/ServerThread.py:49
 #, python-format
 msgid "Can't use %(server)s, python-flup is not installed!"
 msgstr "Non è possibile usare %(server)s, python-flup inon è installato!"
 
-#: module/web/ServerThread.py:56
+#: module/threads/ServerThread.py:56
 #, python-format
 msgid "Error importing lightweight server: %s"
 msgstr "Errore di importazione del server lightweight: %s"
 
-#: module/web/ServerThread.py:57
+#: module/threads/ServerThread.py:57
 msgid "You need to download and compile bjoern, https://github.com/jonashaag/bjoern"
 msgstr "E' necessario scaricare e compilare bjoern, https://github.com/jonashaag/bjoern"
 
-#: module/web/ServerThread.py:58
+#: module/threads/ServerThread.py:58
 msgid "Copy the boern.so to module/lib folder or use setup.py install"
 msgstr "Copia il file boern.so nella cartella module/lib oppure usa setup.py install"
 
-#: module/web/ServerThread.py:59
+#: module/threads/ServerThread.py:59
 msgid "Of course you need to be familiar with linux and know how to compile software"
 msgstr "Naturalmente è necessario avere familiarità con linux e saper compilare da codice sorgente"
 
-#: module/web/ServerThread.py:63
+#: module/threads/ServerThread.py:63
 msgid "Server set to threaded, due to known performance problems on windows."
 msgstr "Il server è stato impostato su threaded, a causa di problemi di prestazioni noti sotto Windows."
 
-#: module/web/ServerThread.py:80 module/web/ServerThread.py:103
+#: module/threads/ServerThread.py:80 module/threads/ServerThread.py:103
 msgid "This server offers no SSL, please consider using threaded instead"
 msgstr "Questo server non supporta SSL, si consiglia l'uso della versione threaded"
 
-#: module/web/ServerThread.py:82
+#: module/threads/ServerThread.py:82
 #, python-format
 msgid "Starting builtin webserver: %(host)s:%(port)d"
 msgstr "Avvio webserver integrato: %(host)s:%(port)d"
 
-#: module/web/ServerThread.py:87
+#: module/threads/ServerThread.py:87
 #, python-format
 msgid "Starting threaded SSL webserver: %(host)s:%(port)d"
 msgstr "Avvio webserver SSL threaded: %(host)s:%(port)d"
 
-#: module/web/ServerThread.py:91
+#: module/threads/ServerThread.py:91
 #, python-format
 msgid "Starting threaded webserver: %(host)s:%(port)d"
 msgstr "Avvio Webserver threaded: %(host)s:%(port)d"
 
-#: module/web/ServerThread.py:97
+#: module/threads/ServerThread.py:97
 #, python-format
 msgid "Starting fastcgi server: %(host)s:%(port)d"
 msgstr "Avvio server fastcgi: %(host)s:%(port)d"
 
-#: module/web/ServerThread.py:105
+#: module/threads/ServerThread.py:105
 #, python-format
 msgid "Starting lightweight webserver (bjoern): %(host)s:%(port)d"
 msgstr "Avvio il webserver lightweight (bjoern): %(host)s:%(port)d"
 
-#: module/web/pyload_app.py:125
+#: module/webui/app/pyload.py:125
 msgid "You dont have permission to access this page."
 msgstr "Non hai i permessi per accedere a questa pagina."
 
-#: module/web/pyload_app.py:193
+#: module/webui/app/pyload.py:193
 msgid "Download directory not found."
 msgstr "Cartella Download non trovata."
 
-#: module/web/pyload_app.py:260 module/web/pyload_app.py:267
+#: module/webui/app/pyload.py:260 module/webui/app/pyload.py:267
 msgid "unlimited"
 msgstr "illimitato"
 
-#: module/web/pyload_app.py:262 module/web/pyload_app.py:269
+#: module/webui/app/pyload.py:262 module/webui/app/pyload.py:269
 msgid "not available"
 msgstr "non disponibile"
 
-#: module/web/pyload_app.py:508
+#: module/webui/app/pyload.py:508
 msgid "Run pyload.py -s to access the setup."
 msgstr "Esegui pyload.py -s per accedere al setup."
 
@@ -341,72 +341,72 @@ msgstr "Esegui pyload.py -s per accedere al setup."
 msgid "Download chunks failed, fallback to single connection | %s"
 msgstr "Download accellerato fallito, ripiego su singola connessione | %s"
 
-#: module/PluginThread.py:183
+#: module/threads/PluginThread.py:183
 #, python-format
 msgid "Download starts: %s"
 msgstr "Avvio Download: %s"
 
-#: module/PluginThread.py:189
+#: module/threads/PluginThread.py:189
 #, python-format
 msgid "Download finished: %s"
 msgstr "Download terminato: %s"
 
-#: module/PluginThread.py:194 module/PluginThread.py:365
+#: module/threads/PluginThread.py:194 module/threads/PluginThread.py:365
 #, python-format
 msgid "Plugin %s is missing a function."
 msgstr "Il plugin %s ha fallito una funzione."
 
-#: module/PluginThread.py:202 module/PluginThread.py:265
-#: module/PluginThread.py:382
+#: module/threads/PluginThread.py:202 module/threads/PluginThread.py:265
+#: module/threads/PluginThread.py:382
 #, python-format
 msgid "Download aborted: %s"
 msgstr "Download annullato: %s"
 
-#: module/PluginThread.py:222
+#: module/threads/PluginThread.py:222
 #, python-format
 msgid "Download restarted: %(name)s | %(msg)s"
 msgstr "Download riavviato: %(name)s | %(msg)s"
 
-#: module/PluginThread.py:231 module/PluginThread.py:373
+#: module/threads/PluginThread.py:231 module/threads/PluginThread.py:373
 #, python-format
 msgid "Download is offline: %s"
 msgstr "Il download è offline: %s"
 
-#: module/PluginThread.py:234
+#: module/threads/PluginThread.py:234
 #, python-format
 msgid "Download is temporary offline: %s"
 msgstr "Il download è temporaneamente offline: %s"
 
-#: module/PluginThread.py:237 module/PluginThread.py:304
+#: module/threads/PluginThread.py:237 module/threads/PluginThread.py:304
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
 msgstr "Download fallito: %(name)s | %(msg)s"
 
-#: module/PluginThread.py:254
+#: module/threads/PluginThread.py:254
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
 msgstr "Impossibile collegarsi all'host o connessione resettata, aspetto 1 minuto e riprovo."
 
-#: module/PluginThread.py:290
+#: module/threads/PluginThread.py:290
 #, python-format
 msgid "Download skipped: %(name)s due to %(plugin)s"
 msgstr "Download saltato: %(name)s a causa di %(plugin)s"
 
-#: module/PluginThread.py:361
+#: module/threads/PluginThread.py:361
 #, python-format
 msgid "Decrypting starts: %s"
 msgstr "Decodifica avviata: %s"
 
-#: module/PluginThread.py:376 module/PluginThread.py:394
+#: module/threads/PluginThread.py:376 module/threads/PluginThread.py:394
 #, python-format
 msgid "Decrypting failed: %(name)s | %(msg)s"
 msgstr "Decodifica fallita: %(name)s | %(msg)s"
 
-#: module/PluginThread.py:388
+#: module/threads/PluginThread.py:388
 #, python-format
 msgid "Retrying %s"
 msgstr "Riprovo %s"
 
-#: module/PluginThread.py:635
+#: module/threads/PluginThread.py:635
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
 msgstr "Recupero informazioni per %(name)s fallito | %(err)s"
