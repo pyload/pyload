@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class UploadingCom(SimpleHoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)'
 
@@ -21,7 +21,7 @@ class UploadingCom(SimpleHoster):
 
     FILE_NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
     FILE_SIZE_PATTERN = r'size tip_container">(?P<S>[\d.]+) (?P<U>\w+)<'
-    OFFLINE_PATTERN = r'Page not found!'
+    OFFLINE_PATTERN = r'(Page|file) not found'
 
 
     def process(self, pyfile):
