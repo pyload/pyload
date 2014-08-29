@@ -21,7 +21,7 @@ class XFileSharingPro(SimpleHoster):
     """
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __pattern__ = r'^unmatchable$'
 
@@ -204,7 +204,7 @@ class XFileSharingPro(SimpleHoster):
 
             if 'wait' in self.errmsg:
                 wait_time = sum([int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in
-                                 re.findall(r'(\d+)\s*(hour|minute|second)?', self.errmsg)])
+                                 re.findall(r'(\d+)\s*(hour|minute|second)', self.errmsg)])
                 self.wait(wait_time, True)
             elif 'captcha' in self.errmsg:
                 self.invalidCaptcha()
