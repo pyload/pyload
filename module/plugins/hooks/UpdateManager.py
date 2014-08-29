@@ -4,9 +4,7 @@ import re
 import sys
 
 from operator import itemgetter
-from os import remove, stat
-from os.path import isfile, join
-from time import time
+from os import path, remove, stat
 
 from module.network.RequestFactory import getURL
 from module.plugins.Hook import Expose, Hook, threaded
@@ -16,7 +14,7 @@ from module.utils import save_join
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
     __type__ = "hook"
-    __version__ = "0.34"
+    __version__ = "0.35"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -24,9 +22,10 @@ class UpdateManager(Hook):
                   ("reloadplugins", "bool", "Monitor plugins for code changes (debug mode only)", True),
                   ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
 
-    __description__ = """Check for updates"""
+    __description__ = """ Check for updates """
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
+
 
     event_list = ["pluginConfigChanged"]
 
@@ -38,36 +37,36 @@ class UpdateManager(Hook):
         if name == "interval":
             interval = value * 60 * 60
             if self.MIN_INTERVAL <= interval != self.interval:
-                self.scheduler.removeJob(self.cb)
+                self.core.scheduler.removeJob(self.cb)
                 self.interval = interval
                 self.initPeriodical()
             else:
                 self.logDebug("Invalid interval value, kept current")
         elif name == "reloadplugins":
             if self.cb2:
-                self.scheduler.removeJob(self.cb2)
+                self.core.scheduler.removeJob(self.cb2)
             if value is True and self.core.debug:
                 self.periodical2()
 
     def coreReady(self):
         self.pluginConfigChanged(self.__name__, "interval", self.getConfig("interval"))
-        self.pluginConfigChanged(self.__name__, "reloadplugins", self.getConfig("reloadplugins"))
+        x = lambda: self.pluginConfigChanged(self.__name__, "reloadplugins", self.getConfig("reloadplugins"))
+        self.core.scheduler.addJob(10, x, threaded=False)
 
     def unload(self):
         self.pluginConfigChanged(self.__name__, "reloadplugins", False)
 
     def setup(self):
-        self.scheduler = self.core.scheduler
         self.cb2 = None
         self.interval = self.MIN_INTERVAL
         self.updating = False
-        self.info = {"pyload": False, "version": None, "plugins": False}
+        self.info = {'pyload': False, 'version': None, 'plugins': False}
         self.mtimes = {}  #: store modification time for each plugin
 
     def periodical2(self):
         if not self.updating:
             self.autoreloadPlugins()
-        self.cb2 = self.scheduler.addJob(10, self.periodical2, threaded=False)
+        self.cb2 = self.core.scheduler.addJob(4, self.periodical2, threaded=False)
 
     @Expose
     def autoreloadPlugins(self):
@@ -85,7 +84,7 @@ class UpdateManager(Hook):
             id = (type, name)
             if type in self.core.pluginManager.plugins:
                 f = m.__file__.replace(".pyc", ".py")
-                if not isfile(f):
+                if not path.isfile(f):
                     continue
 
                 mtime = stat(f).st_mtime
@@ -111,7 +110,7 @@ class UpdateManager(Hook):
     @threaded
     def updateThread(self):
         self.updating = True
-        status = self.update(onlyplugin=True if self.getConfig("mode") == "plugins only" else False)
+        status = self.update(onlyplugin=self.getConfig("mode") == "plugins only")
         if status == 2:
             self.core.api.restart()
         else:
@@ -172,7 +171,7 @@ class UpdateManager(Hook):
             else:
                 name = filename.replace(".py", "")
 
-            #TODO: obsolete in 0.5.0
+            #@TODO: obsolete after 0.4.10
             if prefix.endswith("s"):
                 type = prefix[:-1]
             else:
@@ -191,10 +190,10 @@ class UpdateManager(Hook):
                 continue
 
             self.logInfo(_(msg) % {
-                "type": type,
-                "name": name,
-                "oldver": oldver,
-                "newver": newver
+                'type': type,
+                'name': name,
+                'oldver': oldver,
+                'newver': newver,
             })
 
             try:
@@ -206,7 +205,7 @@ class UpdateManager(Hook):
                     f.close()
                     updated.append((prefix, name))
                 else:
-                    raise Exception(_("Version mismatch"))
+                    raise Exception, _("Version mismatch")
             except Exception, e:
                 self.logError(_("Error updating plugin %s") % filename, str(e))
 
@@ -222,8 +221,8 @@ class UpdateManager(Hook):
             removed = self.removePlugins(blacklisted)
             for t, n in removed:
                 self.logInfo(_("Removed blacklisted plugin [%(type)s] %(name)s") % {
-                    "type": t,
-                    "name": n
+                    'type': t,
+                    'name': n,
                 })
 
         if updated:
@@ -243,41 +242,39 @@ class UpdateManager(Hook):
 
     @Expose
     def removePlugins(self, type_plugins):
-        """ delete plugins from disk"""
+        """ delete plugins from disk """
 
         if not type_plugins:
-            return None
+            return
 
         self.logDebug("Request deletion of plugins: %s" % type_plugins)
 
         removed = []
 
         for type, name in type_plugins:
-            rflag = False
-            py_file = name + ".py"
-            pyc_file = name + ".pyc"
+            err = False
+            file = name + ".py"
 
-            for root in ("userplugins", join(pypath, "module", "plugins")):
-                py_filename = save_join(root, type, py_file)
-                pyc_filename = save_join(root, type, pyc_file)
+            for root in ("userplugins", path.join(pypath, "module", "plugins")):
 
-                if isfile(py_filename):
-                    try:
-                        remove(py_filename)
-                    except Exception, e:
-                        self.logError("Error deleting file %s" % py_filename, str(e))
-                        rflag = False
-                    else:
-                        rflag = True
+                filename = save_join(root, type, file)
+                try:
+                    remove(filename)
+                except Exception, e:
+                    self.logDebug("Error deleting \"%s\"" % path.basename(filename), str(e))
+                    err = True
 
-                if isfile(pyc_filename):
+                filename += "c"
+                if path.isfile(filename):
                     try:
                         if type == "hook":
                             self.manager.deactivateHook(name)
-                        remove(pyc_filename)
+                        remove(filename)
                     except Exception, e:
-                        self.logError("Error deleting file %s" % pyc_filename, str(e))
-            if rflag:
+                        self.logDebug("Error deleting \"%s\"" % path.basename(filename), str(e))
+                        err = True
+
+            if not err:
                 id = (type, name)
                 removed.append(id)
 
