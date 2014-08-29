@@ -7,15 +7,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" type="text/css" href="/flat/css/default.min.css"/>
 <link rel="stylesheet" type="text/css" href="/flat/css/window.min.css"/>
-<link rel="stylesheet" type="text/css" href="/flat/css/MooDialog/MooDialog.min.css"/>
+<link rel="stylesheet" type="text/css" href="/flat/css/MooDialog.min.css"/>
 
-<script type="text/javascript" src="/default/js/static/mootools-core.min.js"></script>
-<script type="text/javascript" src="/default/js/static/mootools-more.min.js"></script>
-<script type="text/javascript" src="/default/js/static/MooDialog.min.js"></script>
-<script type="text/javascript" src="/default/js/static/purr.min.js"></script>
+<script type="text/javascript" src="/flat/js/static/mootools-core.min.js"></script>
+<script type="text/javascript" src="/flat/js/static/mootools-more.min.js"></script>
+<script type="text/javascript" src="/flat/js/static/MooDialog.min.js"></script>
+<script type="text/javascript" src="/flat/js/static/purr.min.js"></script>
 
 
-<script type="text/javascript" src="/default/js/base.min.js"></script>
+<script type="text/javascript" src="/flat/js/render/base.min.js"></script>
 
 <title>{% block title %}pyLoad {{_("Webinterface")}}{% endblock %}</title>
 
@@ -48,7 +48,7 @@
 {% endif %}
 
 <span id="cap_info" style="display: {% if captcha %}inline{%else%}none{% endif %}">
-<img src="/flat/img/images.png" alt="Captcha:" style="vertical-align:middle; margin:2px" />
+<img src="/flat/img/default/images.png" alt="Captcha:" style="vertical-align:middle; margin:2px" />
 <span style="font-weight: 300; cursor: pointer; margin-right: 2px;">{{_("Captcha waiting")}}</span>
 </span>
 
@@ -68,7 +68,7 @@
     {% endblock %}
   </div>
 
-  <a href="/"><img id="head-logo" src="/flat/img/pyload-logo.png" alt="pyLoad" /></a>
+  <a href="/"><img id="head-logo" src="/flat/img/default/pyload-logo.png" alt="pyLoad" /></a>
 
   <div id="head-menu">
     <ul>
@@ -121,6 +121,7 @@
 {% if perms.LIST %}
 <ul id="page-actions">
     <li><span class="time">{{_("Download:")}}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
+    <li><span class="reconnect">{{_("Reconnect:")}}</span><a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm;color:black; "> {% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
     <li><a class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b></a></li>
     <li><a class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> / <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> / <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></a></li>
     <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{{_("Reload page")}}</a></li>
@@ -152,7 +153,7 @@
 {% endfor %}
 
 <div id="load-indicator" style="opacity: 0; float: right; margin-top: -10px;">
-    <img src="/flat/img/ajax-loader.gif" alt="" style="padding-right: 5px"/>
+    <img src="/flat/img/default/ajax-loader.gif" alt="" style="padding-right: 5px"/>
     {{_("loading")}}
 </div>
 
@@ -161,7 +162,7 @@
 
   <hr style="clear: both;" />
 
-<div id="foot">&copy; 2008-2011 pyLoad Team
+<div id="foot">&copy; 2008-2014 pyLoad Team
 <a href="#top" class="action top" accesskey="x"><span>{{_("Back to top")}}</span></a><br />
 <!--<div class="breadcrumbs"></div>-->
 

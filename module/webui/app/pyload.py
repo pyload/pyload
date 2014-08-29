@@ -26,9 +26,9 @@ from os.path import isdir, isfile, join, abspath
 from sys import getfilesystemencoding
 from urllib import unquote
 
-from bottle import route, static_file, request, response, redirect, HTTPError, error
+from bottle import route, static_file, request, response, redirect, error
 
-from module.webui import PYLOAD, PYLOAD_DIR, THEME, THEME_DIR, SETUP, env
+from module.webui import PYLOAD, PYLOAD_DIR, THEME_DIR, SETUP, env
 
 from utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
@@ -74,41 +74,58 @@ def base(messages):
 
 
 ## Views
+@error(403)
+def error403(code):
+    return "The parameter you passed has the wrong format"
+
+
+@error(404)
+def error404(code):
+    return "Sorry, this page does not exist"
+
+
 @error(500)
 def error500(error):
-    print "An error occured while processing the request."
-    if error.traceback:
-        print error.traceback
-
+    traceback = error.traceback
+    if traceback:
+        print traceback
     return base(["An Error occured, please enable debug mode to get more details.", error,
-                 error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
+                 traceback.replace("\n", "<br>") if traceback else "No Traceback"])
 
 
-@route('/<theme>/<path:path>')
-def serve(theme, path):
+@route('/<theme>/<file:re:(.+/)?[^/]+\.min\.[^/]+>')
+def server_min(theme, file):
+    filename = join(THEME_DIR, theme, file)
+    if not isfile(filename):
+        file = file.replace(".min.", ".")
+    if file.endswith(".js"):
+        return server_js(theme, file)
+    else:
+        return server_static(theme, file)
+
+
+@route('/<theme>/<file_static:re:.+\.js>')
+def server_js(theme, file):
+    response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
+
+    if "/render/" in file or ".render." in file:
+        response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                                    time.gmtime(time.time() + 24 * 7 * 60 * 60))
+        response.headers['Cache-control'] = "public"
+
+        path = join(theme, file)
+        return env.get_template(path).render()
+    else:
+        return server_static(theme, file)
+
+
+@route('/<theme>/<file:path>')
+def server_static(theme, file):
     response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 24 * 7 * 60 * 60))
     response.headers['Cache-control'] = "public"
 
-    root = join(THEME_DIR, theme)
-    resp = lambda x: static_file(x, root=root)
-
-    if path.endswith(".js"):
-        response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
-        if not "static" in path:
-            resp = lambda x: env.get_template(join(theme, x)).render()
-
-    try:  #: okay, is slow... but works :S
-        if isfile(join(root, path)):
-            file = resp(path)
-        elif ".min." in path and isfile(join(root, path.replace(".min.", "."))):
-            file = resp(path.replace(".min.", "."))
-        else:
-            raise Exception, "Not Found"
-    except Exception, e:
-        return HTTPError(404, e)
-    else:
-        return file
+    return static_file(file, root=join(THEME_DIR, theme))
 
 
 @route('/favicon.ico')
@@ -233,10 +250,7 @@ def get_download(path):
     root = PYLOAD.getConfigValue("general", "download_folder")
 
     path = path.replace("..", "")
-    try:
-        return static_file(fs_encode(path), fs_encode(root))
-    except Exception, e:
-        return HTTPError(404, e)
+    return static_file(fs_encode(path), fs_encode(root))
 
 
 

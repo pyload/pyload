@@ -242,86 +242,86 @@ ul#page-actions-more a:hover, ul#page-actions-more a:focus{
 }
 
 a.action.index {
-  background:transparent url(../img/wiki-tools-index.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/wiki-tools-index.png) 0px 1px no-repeat;
 }
 a.action.recent {
-  background:transparent url(../img/wiki-tools-recent.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/wiki-tools-recent.png) 0px 1px no-repeat;
 }
 a.logout {
-  background:transparent url(../img/user-actions-logout.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/user-actions-logout.png) 0px 1px no-repeat;
 }
 
 a.info {
-    background:transparent url(../img/user-info.png) 0px 1px no-repeat;
+    background:transparent url(../img/default/user-info.png) 0px 1px no-repeat;
 }
 
 a.admin {
-  background:transparent url(../img/user-actions-admin.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/user-actions-admin.png) 0px 1px no-repeat;
 }
 a.profile {
-  background:transparent url(../img/user-actions-profile.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/user-actions-profile.png) 0px 1px no-repeat;
 }
 a.create, a.edit {
-  background:transparent url(../img/page-tools-edit.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/page-tools-edit.png) 0px 1px no-repeat;
 }
 a.source, a.show {
-  background:transparent url(../img/page-tools-source.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/page-tools-source.png) 0px 1px no-repeat;
 }
 a.revisions {
-  background:transparent url(../img/page-tools-revisions.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/page-tools-revisions.png) 0px 1px no-repeat;
 }
 a.subscribe, a.unsubscribe {
-  background:transparent url(../img/page-tools-subscribe.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/page-tools-subscribe.png) 0px 1px no-repeat;
 }
 a.backlink {
-  background:transparent url(../img/page-tools-backlinks.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/page-tools-backlinks.png) 0px 1px no-repeat;
 }
 a.play {
-  background:transparent url(../img/control_play.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/control_play.png) 0px 1px no-repeat;
 }
 .time {
-  background:transparent url(../img/status_None.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/status_None.png) 0px 1px no-repeat;
         padding: 2px 0px 2px 18px;
         margin: 0px 3px;
 }
 .reconnect {
-  background:transparent url(../img/reconnect.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/reconnect.png) 0px 1px no-repeat;
         padding: 2px 0px 2px 18px;
         margin: 0px 3px;
 }
 a.play:hover {
-  background:transparent url(../img/control_play_blue.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/control_play_blue.png) 0px 1px no-repeat;
 }
 a.cancel {
-  background:transparent url(../img/control_cancel.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/control_cancel.png) 0px 1px no-repeat;
 }
 a.cancel:hover {
-  background:transparent url(../img/control_cancel_blue.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/control_cancel_blue.png) 0px 1px no-repeat;
 }
 a.pause {
-  background:transparent url(../img/control_pause.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/control_pause.png) 0px 1px no-repeat;
 }
 a.pause:hover {
-  background:transparent url(../img/control_pause_blue.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/control_pause_blue.png) 0px 1px no-repeat;
   font-weight: bold;
 }
 a.stop {
-  background:transparent url(../img/control_stop.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/control_stop.png) 0px 1px no-repeat;
 }
 a.stop:hover {
-  background:transparent url(../img/control_stop_blue.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/control_stop_blue.png) 0px 1px no-repeat;
 }
 a.add {
-  background:transparent url(../img/control_add.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/control_add.png) 0px 1px no-repeat;
 }
 a.add:hover {
-  background:transparent url(../img/control_add_blue.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/control_add_blue.png) 0px 1px no-repeat;
 }
 a.cog {
-  background:transparent url(../img/cog.png) 0px 1px no-repeat;
+  background:transparent url(../img/default/cog.png) 0px 1px no-repeat;
 }
 #head-panel {
-  background:#525252 url(../img/head_bg1.png) bottom left repeat-x;
+  background:#525252 url(../img/default/head_bg1.png) bottom left repeat-x;
 }
 #head-panel h1 {
   display:none;
@@ -339,7 +339,7 @@ a.cog {
   overflow:visible;
 }
 #head-menu {
-  background:transparent url(../img/tabs-border-bottom.png) 0 100% repeat-x;
+  background:transparent url(../img/default/tabs-border-bottom.png) 0 100% repeat-x;
   width:100%;
   float:left;
   margin:0;
@@ -893,19 +893,19 @@ ul.nav ul ul {
 .purr-alert.error{
   color:#F55;
   padding-left:30px;
-  background:url(../img/error.png) no-repeat #000 7px 10px;
+  background:url(../img/default/error.png) no-repeat #000 7px 10px;
   width:280px;
 }
 .purr-alert.success{
   color:#5F5;
   padding-left:30px;
-  background:url(../img/success.png) no-repeat #000 7px 10px;
+  background:url(../img/default/success.png) no-repeat #000 7px 10px;
   width:280px;
 }
 .purr-alert.notice{
   color:#99F;
   padding-left:30px;
-  background:url(../img/notice.png) no-repeat #000 7px 10px;
+  background:url(../img/default/notice.png) no-repeat #000 7px 10px;
   width:280px;
 }
 

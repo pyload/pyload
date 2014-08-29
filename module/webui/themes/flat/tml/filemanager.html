@@ -2,7 +2,7 @@
 
 {% block head %}
 
-<script type="text/javascript" src="/default/js/filemanager.min.js"></script>
+<script type="text/javascript" src="/flat/js/render/filemanager.min.js"></script>
 
 <script type="text/javascript">
 
@@ -45,7 +45,7 @@ document.addEvent("domready", function(){
         &nbsp;&nbsp;
         <img title="{{_("Delete Directory")}}" class="delete" style="margin-left: -10px; cursor: pointer" width="12px" height="12px" src="/flat/img/delete.png" />
         &nbsp;&nbsp;
-        <img title="{{_("Add subdirectory")}}" class="mkdir" style="margin-left: -10px; cursor: pointer" width="12px" height="12px" src="/flat/img/add_folder.png" />
+        <img title="{{_("Add subdirectory")}}" class="mkdir" style="margin-left: -10px; cursor: pointer" width="12px" height="12px" src="/flat/img/default/add_folder.png" />
   </span>
       </span>
       {% if (fld.folders|length + fld.files|length) > 0 %}
