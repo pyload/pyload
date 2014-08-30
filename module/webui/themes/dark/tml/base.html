@@ -5,7 +5,7 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<link rel="stylesheet" type="text/css" href="/dark/css/default.min.css"/>
+<link rel="stylesheet" type="text/css" href="/dark/css/dark.min.css"/>
 <link rel="stylesheet" type="text/css" href="/dark/css/window.min.css"/>
 <link rel="stylesheet" type="text/css" href="/dark/css/MooDialog.min.css"/>
 
@@ -92,14 +92,11 @@
     <li {{ selected('downloads') }}>
         <a href="/downloads/" title=""><img src="/dark/img/default/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
     </li>
-{#    <li {{ selected('filemanager') }}>#}
-{#        <a href="/filemanager/" title=""><img src="/dark/img/default/head-menu-download.png" alt="" /> {{_("FileManager")}}</a>#}
-{#    </li>#}
     <li {{ selected('logs', True) }}>
-        <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="/dark/img/default/head-menu-index.png" alt="" />{{_("Logs")}}</a>
+        <a href="/logs/"  title=""><img src="/dark/img/default/head-menu-index.png" alt="" />{{_("Logs")}}</a>
     </li>
     <li {{ selected('settings', True) }}>
-        <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><img src="/dark/img/default/head-menu-config.png" alt="" />{{_("Config")}}</a>
+        <a href="/settings/"  title=""><img src="/dark/img/default/head-menu-config.png" alt="" />{{_("Config")}}</a>
     </li>
     {% endblock %}
     

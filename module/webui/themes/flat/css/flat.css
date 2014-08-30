@@ -225,18 +225,6 @@ ul#page-actions2 a:hover, ul#page-actions2 a:focus, ul#user-actions2 a:hover, ul
 .hidden {
   display:none;
 }
-a.action.index {
-  background-color:transparent;
-  background-image:url(../img/wiki-tools-index.png);
-  background-position:0 1px;
-  background-repeat:no-repeat no-repeat;
-}
-a.action.recent {
-  background-color:transparent;
-  background-image:url(../img/wiki-tools-recent.png);
-  background-position:0 1px;
-  background-repeat:no-repeat no-repeat;
-}
 a.logout {
   background-color:transparent;
   background-image:url(../img/user-actions-logout.png);
