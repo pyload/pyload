@@ -12,7 +12,7 @@ from module.utils import html_unescape, remove_chars
 class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __pattern__ = r'^unmatchable$'
 
@@ -88,7 +88,7 @@ class BasePlugin(Hoster):
                 self.logDebug("Location: " + header['location'])
                 base = match(r'https?://[^/]+', url).group(0)
                 if header['location'].startswith("http"):
-                    url = unquote(header['location'])
+                    url = header['location']
                 elif header['location'].startswith("/"):
                     url = base + unquote(header['location'])
                 else:
