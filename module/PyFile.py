@@ -250,7 +250,7 @@ class PyFile(object):
     def getBytesLeft(self):
         """ gets bytes left """
         try:
-            return self.plugin.req.size - self.plugin.req.arrived
+            return self.getSize() - self.plugin.req.arrived
         except:
             return 0
 
