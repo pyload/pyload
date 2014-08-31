@@ -7,13 +7,15 @@ from module.plugins.Account import Account
 
 class UlozTo(Account):
     __name__ = "UlozTo"
-    __version__ = "0.06"
     __type__ = "account"
+    __version__ = "0.06"
+
     __description__ = """Uloz.to account plugin"""
     __author_name__ = ("zoidberg", "pulpe")
     __author_mail__ = "zoidberg@mujmail.cz"
 
     TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a href="/kredit" title="[^"]*?GB = ([0-9.]+) MB"'
+
 
     def loadAccountInfo(self, user, req):
         #this cookie gets lost somehow after each request
@@ -21,8 +23,8 @@ class UlozTo(Account):
         html = req.load("http://www.ulozto.net/", decode=True)
         req.cj.setCookie("www.ulozto.net", "ULOSESSID", self.phpsessid)
 
-        found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        trafficleft = int(float(found.group(1).replace(' ', '').replace(',', '.')) * 1000 * 1.048) if found else 0
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        trafficleft = int(float(m.group(1).replace(' ', '').replace(',', '.')) * 1000 * 1.048) if m else 0
         self.premium = True if trafficleft else False
 
         return {"validuntil": -1, "trafficleft": trafficleft}

@@ -10,10 +10,13 @@ from module.plugins.Container import Container
 class RSDF(Container):
     __name__ = "RSDF"
     __version__ = "0.22"
+
     __pattern__ = r'.+\.rsdf'
+
     __description__ = """RSDF container decrypter plugin"""
     __author_name__ = ("RaNaN", "spoob")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org")
+
 
     def decrypt(self, pyfile):
 
@@ -37,14 +40,12 @@ class RSDF(Container):
             data = binascii.unhexlify(''.join(data.split()))
             data = data.splitlines()
 
-            links = []
             for link in data:
                 if not link:
                     continue
                 link = base64.b64decode(link)
                 link = obj.decrypt(link)
                 decryptedUrl = link.replace('CCF: ', '')
-                links.append(decryptedUrl)
+                self.urls.append(decryptedUrl)
 
-            self.logDebug("%s: adding package %s with %d links" % (self.__name__, pyfile.package().name, len(links)))
-            self.packages.append((pyfile.package().name, links))
+            self.log.debug("%s: adding package %s with %d links" % (self.__name__,pyfile.package().name,len(links)))

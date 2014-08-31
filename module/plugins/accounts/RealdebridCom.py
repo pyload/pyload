@@ -7,11 +7,13 @@ from module.plugins.Account import Account
 
 class RealdebridCom(Account):
     __name__ = "RealdebridCom"
-    __version__ = "0.43"
     __type__ = "account"
+    __version__ = "0.43"
+
     __description__ = """Real-Debrid.com account plugin"""
     __author_name__ = "Devirex Hazzard"
     __author_mail__ = "naibaf_11@yahoo.de"
+
 
     def loadAccountInfo(self, user, req):
         if self.pin_code:
@@ -25,7 +27,7 @@ class RealdebridCom(Account):
 
     def login(self, user, data, req):
         self.pin_code = False
-        page = req.load("https://real-debrid.com/ajax/login.php", get={"user": user, "pass": data["password"]})
+        page = req.load("https://real-debrid.com/ajax/login.php", get={"user": user, "pass": data['password']})
         if "Your login informations are incorrect" in page:
             self.wrongPassword()
         elif "PIN Code required" in page:

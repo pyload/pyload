@@ -6,13 +6,15 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm
 
 class CyberlockerCh(XFSPAccount):
     __name__ = "CyberlockerCh"
-    __version__ = "0.01"
     __type__ = "account"
+    __version__ = "0.01"
+
     __description__ = """Cyberlocker.ch account plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
     MAIN_PAGE = "http://cyberlocker.ch/"
+
 
     def login(self, user, data, req):
         html = req.load(self.MAIN_PAGE + 'login.html', decode=True)

@@ -1,28 +1,31 @@
 # -*- coding: utf-8 -*-
-
-# Test link:
+#
+# Test links:
 # https://www.oboom.com/B7CYZIEB/10Mio.dat
 
 import re
 
+from module.common.json_layer import json_loads
 from module.plugins.Hoster import Hoster
 from module.plugins.internal.CaptchaService import ReCaptcha
-from module.common.json_layer import json_loads
 
 
 class OboomCom(Hoster):
     __name__ = "OboomCom"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>[A-Z0-9]{8})'
     __version__ = "0.1"
+
+    __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>[A-Z0-9]{8})'
+
     __description__ = """oboom.com hoster plugin"""
     __author_name__ = "stanley"
     __author_mail__ = "stanley.foerster@gmail.com"
 
     RECAPTCHA_KEY = "6LdqpO0SAAAAAJGHXo63HyalP7H4qlRs_vff0kJX"
 
+
     def loadUrl(self, url, get=None):
-        if not get:
+        if get is None:
             get = dict()
         return json_loads(self.load(url, get, decode=True))
 
@@ -33,7 +36,7 @@ class OboomCom(Hoster):
         if self.premium:
             accountInfo = self.account.getAccountInfo(self.user, True)
             if "session" in accountInfo:
-                self.sessionToken = accountInfo["session"]
+                self.sessionToken = accountInfo['session']
             else:
                 self.fail("Could not retrieve premium session")
         else:
@@ -87,9 +90,9 @@ class OboomCom(Hoster):
         result = self.loadUrl(apiUrl, params)
         if result[0] == 200:
             item = result[1][0]
-            if item["state"] == "online":
-                self.fileSize = item["size"]
-                self.fileName = item["name"]
+            if item['state'] == "online":
+                self.fileSize = item['size']
+                self.fileName = item['name']
             else:
                 self.offline()
         else:
@@ -99,10 +102,10 @@ class OboomCom(Hoster):
         apiUrl = "https://api.oboom.com/1.0/dl"
         params = {"item": self.fileId, "http_errors": 0}
         if self.premium:
-            params["token"] = self.sessionToken
+            params['token'] = self.sessionToken
         else:
-            params["token"] = self.downloadToken
-            params["auth"] = self.downloadAuth
+            params['token'] = self.downloadToken
+            params['auth'] = self.downloadAuth
 
         result = self.loadUrl(apiUrl, params)
         if result[0] == 200:

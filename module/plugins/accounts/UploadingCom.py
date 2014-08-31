@@ -1,22 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
-"""
-
 from time import time, strptime, mktime
 import re
 
@@ -25,11 +8,13 @@ from module.plugins.Account import Account
 
 class UploadingCom(Account):
     __name__ = "UploadingCom"
-    __version__ = "0.1"
     __type__ = "account"
+    __version__ = "0.1"
+
     __description__ = """Uploading.com account plugin"""
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"
+
 
     def loadAccountInfo(self, user, req):
         src = req.load("http://uploading.com/")
@@ -52,4 +37,4 @@ class UploadingCom(Account):
         req.cj.setCookie("uploading.com", "_lang", "en")
         req.load("http://uploading.com/")
         req.load("http://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time() * 1000),
-                 post={"email": user, "password": data["password"], "remember": "on"})
+                 post={"email": user, "password": data['password'], "remember": "on"})

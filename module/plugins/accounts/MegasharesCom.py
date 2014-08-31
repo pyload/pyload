@@ -8,13 +8,15 @@ from module.plugins.Account import Account
 
 class MegasharesCom(Account):
     __name__ = "MegasharesCom"
-    __version__ = "0.02"
     __type__ = "account"
+    __version__ = "0.02"
+
     __description__ = """Megashares.com account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
     VALID_UNTIL_PATTERN = r'<p class="premium_info_box">Period Ends: (\w{3} \d{1,2}, \d{4})</p>'
+
 
     def loadAccountInfo(self, user, req):
         #self.relogin(user)

@@ -1,22 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import re
-from urllib import unquote
+
 from random import randrange
-from module.plugins.Hoster import Hoster
+from urllib import unquote
+
 from module.common.json_layer import json_loads
+from module.plugins.Hoster import Hoster
 from module.utils import parseFileSize
 
 
 class AlldebridCom(Hoster):
     __name__ = "AlldebridCom"
-    __version__ = "0.34"
     __type__ = "hoster"
+    __version__ = "0.34"
 
     __pattern__ = r'https?://(?:[^/]*\.)?alldebrid\..*'
+
     __description__ = """Alldebrid.com hoster plugin"""
     __author_name__ = "Andy Voigt"
     __author_mail__ = "spamsales@online.de"
+
 
     def getFilename(self, url):
         try:
@@ -48,17 +52,17 @@ class AlldebridCom(Hoster):
 
             self.logDebug("Json data: %s" % str(data))
 
-            if data["error"]:
-                if data["error"] == "This link isn't available on the hoster website.":
+            if data['error']:
+                if data['error'] == "This link isn't available on the hoster website.":
                     self.offline()
                 else:
-                    self.logWarning(data["error"])
+                    self.logWarning(data['error'])
                     self.tempOffline()
             else:
                 if pyfile.name and not pyfile.name.endswith('.tmp'):
-                    pyfile.name = data["filename"]
-                pyfile.size = parseFileSize(data["filesize"])
-                new_url = data["link"]
+                    pyfile.name = data['filename']
+                pyfile.size = parseFileSize(data['filesize'])
+                new_url = data['link']
 
         if self.getConfig("https"):
             new_url = new_url.replace("http://", "https://")

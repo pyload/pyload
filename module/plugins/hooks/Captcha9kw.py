@@ -1,37 +1,22 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay, RaNaN, zoidberg
-"""
 from __future__ import with_statement
 
-from thread import start_new_thread
-from base64 import b64encode
 import time
 
-from module.network.RequestFactory import getURL
-from module.network.HTTPRequest import BadHeader
+from base64 import b64encode
+from thread import start_new_thread
 
+from module.network.HTTPRequest import BadHeader
+from module.network.RequestFactory import getURL
 from module.plugins.Hook import Hook
 
 
 class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
+    __type__ = "hook"
     __version__ = "0.09"
-    __description__ = """Send captchas to 9kw.eu"""
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", True),
                   ("https", "bool", "Enable HTTPS", False),
@@ -43,10 +28,13 @@ class Captcha9kw(Hook):
                    False),
                   ("timeout", "int", "Timeout (max. 300)", 300),
                   ("passkey", "password", "API key", "")]
+
+    __description__ = """Send captchas to 9kw.eu"""
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
 
     API_URL = "://www.9kw.eu/index.cgi"
+
 
     def setup(self):
         self.API_URL = "https" + self.API_URL if self.getConfig("https") else "http" + self.API_URL
@@ -58,7 +46,7 @@ class Captcha9kw(Hook):
 
         if response.isdigit():
             self.logInfo(_("%s credits left") % response)
-            self.info["credits"] = credits = int(response)
+            self.info['credits'] = credits = int(response)
             return credits
         else:
             self.logError(response)
@@ -104,7 +92,7 @@ class Captcha9kw(Hook):
                 time.sleep(3)
 
             result = response2
-            task.data["ticket"] = response
+            task.data['ticket'] = response
             self.logInfo("result %s : %s" % (response, result))
             task.setResult(result)
         else:
@@ -140,7 +128,7 @@ class Captcha9kw(Hook):
                                         "correct": "1",
                                         "pyload": "1",
                                         "source": "pyload",
-                                        "id": task.data["ticket"]})
+                                        "id": task.data['ticket']})
                 self.logInfo("Request correct: %s" % response)
 
             except BadHeader, e:
@@ -159,7 +147,7 @@ class Captcha9kw(Hook):
                                         "correct": "2",
                                         "pyload": "1",
                                         "source": "pyload",
-                                        "id": task.data["ticket"]})
+                                        "id": task.data['ticket']})
                 self.logInfo("Request refund: %s" % response)
 
             except BadHeader, e:

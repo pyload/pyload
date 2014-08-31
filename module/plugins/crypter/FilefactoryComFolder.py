@@ -6,8 +6,10 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FilefactoryComFolder(SimpleCrypter):
     __name__ = "FilefactoryComFolder"
     __type__ = "crypter"
-    __pattern__ = r'https?://(?:www\.)?filefactory\.com/(?:f|folder)/\w+'
     __version__ = "0.2"
+
+    __pattern__ = r'https?://(?:www\.)?filefactory\.com/(?:f|folder)/\w+'
+
     __description__ = """Filefactory.com folder decrypter plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
@@ -17,6 +19,7 @@ class FilefactoryComFolder(SimpleCrypter):
     PAGES_PATTERN = r'data-paginator-totalPages="(?P<pages>\d+)"'
 
     SH_COOKIES = [('.filefactory.com', 'locale', 'en_US.utf8')]
+
 
     def loadPage(self, page_n):
         return self.load(self.pyfile.url, get={'page': page_n})

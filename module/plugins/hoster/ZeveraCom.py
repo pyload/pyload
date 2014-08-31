@@ -5,12 +5,15 @@ from module.plugins.Hoster import Hoster
 
 class ZeveraCom(Hoster):
     __name__ = "ZeveraCom"
-    __version__ = "0.21"
     __type__ = "hoster"
+    __version__ = "0.21"
+
     __pattern__ = r'http://(?:www\.)?zevera.com/.*'
+
     __description__ = """Zevera.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True

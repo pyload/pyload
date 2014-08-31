@@ -11,11 +11,14 @@ from module.plugins.Crypter import Crypter
 class ShareLinksBiz(Crypter):
     __name__ = "ShareLinksBiz"
     __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
     __version__ = "1.13"
+
+    __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
+
     __description__ = """Share-Links.biz decrypter plugin"""
     __author_name__ = "fragonib"
     __author_mail__ = "fragonib[AT]yahoo[DOT]es"
+
 
     def setup(self):
         self.baseUrl = None
@@ -25,7 +28,6 @@ class ShareLinksBiz(Crypter):
         self.captcha = False
 
     def decrypt(self, pyfile):
-
         # Init
         self.initFile(pyfile)
 
@@ -223,7 +225,6 @@ class ShareLinksBiz(Crypter):
         return package_links
 
     def _getCipherParams(self):
-
         # Request CNL2
         code = re.search(r'ClicknLoad.swf\?code=(.*?)"', self.html).group(1)
         url = "%s/get/cnl2/%s" % (self.baseUrl, code)
@@ -244,7 +245,6 @@ class ShareLinksBiz(Crypter):
         return crypted, jk
 
     def _getLinks(self, crypted, jk):
-
         # Get key
         jreturn = self.js.eval("%s f()" % jk)
         self.logDebug("JsEngine returns value [%s]" % jreturn)

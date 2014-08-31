@@ -2,16 +2,17 @@
 
 import re
 
-from module.utils import remove_chars
 from module.plugins.Hook import Hook
+from module.utils import remove_chars
 
 
 class MultiHoster(Hook):
-    """
-    Generic MultiHoster plugin
-    """
-
+    __name__ = "AbtractExtractor"
     __version__ = "0.19"
+
+    __description__ = """Generic MultiHoster plugin"""
+    __author_name__ = "pyLoad Team"
+    __author_mail__ = "admin@pyload.org"
 
     replacements = [("2shared.com", "twoshared.com"), ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
                     ("ifile.it", "filecloud.io"), ("easy-share.com", "crocko.com"), ("freakshare.net", "freakshare.com"),
@@ -19,6 +20,7 @@ class MultiHoster(Hook):
                     ("ul.to", "uploaded.to"), ("uploaded.net", "uploaded.to"), ("1fichier.com", "onefichier.com")]
     ignored = []
     interval = 24 * 60 * 60  #: reload hosters daily
+
 
     def setup(self):
         self.hosters = []
@@ -139,8 +141,8 @@ class MultiHoster(Hook):
         self.logDebug("Overwritten Hosters: %s" % ", ".join(sorted(self.supported)))
         for hoster in self.supported:
             dict = self.core.pluginManager.hosterPlugins[hoster]
-            dict["new_module"] = module
-            dict["new_name"] = self.__name__
+            dict['new_module'] = module
+            dict['new_name'] = self.__name__
 
         if excludedList:
             self.logInfo("The following hosters were not overwritten - account exists: %s" % ", ".join(sorted(excludedList)))
@@ -156,17 +158,17 @@ class MultiHoster(Hook):
             self.logDebug("Regexp: %s" % regexp)
 
             dict = self.core.pluginManager.hosterPlugins[self.__name__]
-            dict["pattern"] = regexp
-            dict["re"] = re.compile(regexp)
+            dict['pattern'] = regexp
+            dict['re'] = re.compile(regexp)
 
     def unloadHoster(self, hoster):
         dict = self.core.pluginManager.hosterPlugins[hoster]
         if "module" in dict:
-            del dict["module"]
+            del dict['module']
 
         if "new_module" in dict:
-            del dict["new_module"]
-            del dict["new_name"]
+            del dict['new_module']
+            del dict['new_name']
 
     def unload(self):
         """Remove override for all hosters. Scheduler job is removed by hookmanager"""
@@ -176,8 +178,8 @@ class MultiHoster(Hook):
         # reset pattern
         klass = getattr(self.core.pluginManager.getPlugin(self.__name__), self.__name__)
         dict = self.core.pluginManager.hosterPlugins[self.__name__]
-        dict["pattern"] = getattr(klass, '__pattern__', r"^unmatchable$")
-        dict["re"] = re.compile(dict["pattern"])
+        dict['pattern'] = getattr(klass, "__pattern__", r'^unmatchable$')
+        dict['re'] = re.compile(dict['pattern'])
 
     def downloadFailed(self, pyfile):
         """remove plugin override if download fails but not if file is offline/temp.offline"""

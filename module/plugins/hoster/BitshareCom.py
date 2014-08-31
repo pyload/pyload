@@ -4,28 +4,31 @@ from __future__ import with_statement
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class BitshareCom(SimpleHoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))'
     __version__ = "0.50"
+
+    __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))'
+
     __description__ = """Bitshare.com hoster plugin"""
     __author_name__ = ("Paul King", "fragonib")
     __author_mail__ = ("", "fragonib[AT]yahoo[DOT]es")
 
-    HOSTER_DOMAIN = "bitshare.com"
-    OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
     FILE_INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)</h1>'
+    OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
+
     FILE_AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
-    CAPTCHA_KEY_PATTERN = r"http://api\.recaptcha\.net/challenge\?k=(.*?) "
-    TRAFFIC_USED_UP = r"Your Traffic is used up for today. Upgrade to premium to continue!"
+    CAPTCHA_KEY_PATTERN = r'http://api\.recaptcha\.net/challenge\?k=(.*?) '
+    TRAFFIC_USED_UP = r'Your Traffic is used up for today. Upgrade to premium to continue!'
+
 
     def setup(self):
-        self.req.cj.setCookie(self.HOSTER_DOMAIN, "language_selection", "EN")
+        self.req.cj.setCookie(".bitshare.com", "language_selection", "EN")
         self.multiDL = self.premium
         self.chunkLimit = 1
 

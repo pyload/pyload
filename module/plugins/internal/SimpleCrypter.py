@@ -1,37 +1,22 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 import re
 
 from module.plugins.Crypter import Crypter
+from module.plugins.internal.SimpleHoster import PluginParseError, replace_patterns, set_cookies
 from module.utils import html_unescape
-from module.plugins.internal.SimpleHoster import replace_patterns, set_cookies
 
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
-    __version__ = "0.09"
-    __pattern__ = None
     __type__ = "crypter"
+    __version__ = "0.10"
+
+    __pattern__ = None
+
     __description__ = """Simple decrypter plugin"""
-    __author_name__ = ("stickell", "zoidberg")
-    __author_mail__ = ("l.stickell@yahoo.it", "zoidberg@mujmail.cz")
+    __author_name__ = ("stickell", "zoidberg", "Walter Purcaro")
+    __author_mail__ = ("l.stickell@yahoo.it", "zoidberg@mujmail.cz", "vuolter@gmail.com")
 
     """
     Following patterns should be defined by each crypter:
@@ -64,8 +49,8 @@ class SimpleCrypter(Crypter):
 
     URL_REPLACEMENTS = []
 
-
     SH_COOKIES = True  # or False or list of tuples [(domain, name, value)]
+
 
     def setup(self):
         if isinstance(self.SH_COOKIES, list):
@@ -128,3 +113,6 @@ class SimpleCrypter(Crypter):
         for p in xrange(2, pages + 1):
             self.html = self.loadPage(p)
             self.package_links += self.getLinks()
+
+    def parseError(self, msg):
+        raise PluginParseError(msg)

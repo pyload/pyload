@@ -1,22 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from xml.etree.ElementTree import fromstring
 
 from module.plugins.Hoster import Hoster
 
-XML_API = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?id=%i"
 
-
+# Based on zdfm by Roland Beermann (http://github.com/enkore/zdfm/)
 class ZDF(Hoster):
-    # Based on zdfm by Roland Beermann
-    # http://github.com/enkore/zdfm/
     __name__ = "ZDF Mediathek"
+    __type__ = "hoster"
     __version__ = "0.8"
+
     __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/[^0-9]*([0-9]+)[^0-9]*'
+
     __description__ = """ZDF.de hoster plugin"""
-    __author_name__ = ""
-    __author_mail__ = ""
+    __author_name__ = None
+    __author_mail__ = None
+
+    XML_API = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?id=%i"
+
 
     @staticmethod
     def video_key(video):
@@ -35,7 +39,7 @@ class ZDF(Hoster):
         return int(re.search(r"[^0-9]*([0-9]{4,})[^0-9]*", url).group(1))
 
     def process(self, pyfile):
-        xml = fromstring(self.load(XML_API % self.get_id(pyfile.url)))
+        xml = fromstring(self.load(self.XML_API % self.get_id(pyfile.url)))
 
         status = xml.findtext("./status/statuscode")
         if status != "ok":

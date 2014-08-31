@@ -6,8 +6,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 class RehostTo(MultiHoster):
     __name__ = "RehostTo"
-    __version__ = "0.43"
     __type__ = "hook"
+    __version__ = "0.43"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
@@ -18,6 +18,7 @@ class RehostTo(MultiHoster):
     __description__ = """Rehost.to hook plugin"""
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
+
 
     def getHoster(self):
         page = getURL("http://rehost.to/api.php?cmd=get_supported_och_dl&long_ses=%s" % self.long_ses)
@@ -33,7 +34,7 @@ class RehostTo(MultiHoster):
             return
 
         data = self.account.getAccountInfo(user)
-        self.ses = data["ses"]
-        self.long_ses = data["long_ses"]
+        self.ses = data['ses']
+        self.long_ses = data['long_ses']
 
         return MultiHoster.coreReady(self)

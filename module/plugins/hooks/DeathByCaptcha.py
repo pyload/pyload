@@ -1,33 +1,18 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay, RaNaN, zoidberg
-"""
 from __future__ import with_statement
 
-from thread import start_new_thread
-from pycurl import FORM_FILE, HTTPHEADER
-from time import sleep
-from base64 import b64encode
 import re
 
-from module.network.RequestFactory import getRequest
-from module.network.HTTPRequest import BadHeader
-from module.plugins.Hook import Hook
+from base64 import b64encode
+from pycurl import FORM_FILE, HTTPHEADER
+from thread import start_new_thread
+from time import sleep
+
 from module.common.json_layer import json_loads
+from module.network.HTTPRequest import BadHeader
+from module.network.RequestFactory import getRequest
+from module.plugins.Hook import Hook
 
 
 class DeathByCaptchaException(Exception):
@@ -61,16 +46,20 @@ class DeathByCaptchaException(Exception):
 
 class DeathByCaptcha(Hook):
     __name__ = "DeathByCaptcha"
+    __type__ = "hook"
     __version__ = "0.03"
-    __description__ = """Send captchas to DeathByCaptcha.com"""
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
                   ("force", "bool", "Force DBC even if client is connected", False)]
+
+    __description__ = """Send captchas to DeathByCaptcha.com"""
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
 
     API_URL = "http://api.dbcapi.me/api/"
+
 
     def setup(self):
         self.info = {}
@@ -132,7 +121,7 @@ class DeathByCaptcha(Hook):
             raise DeathByCaptchaException('service-overload')
 
     def submit(self, captcha, captchaType="file", match=None):
-        #workaround multipart-post bug in HTTPRequest.py 
+        #workaround multipart-post bug in HTTPRequest.py
         if re.match("^[A-Za-z0-9]*$", self.getConfig("passkey")):
             multipart = True
             data = (FORM_FILE, captcha)
@@ -181,7 +170,7 @@ class DeathByCaptcha(Hook):
             self.logError(e.getDesc())
             return False
 
-        balance, rate = self.info["balance"], self.info["rate"]
+        balance, rate = self.info['balance'], self.info['rate']
         self.logInfo("Account balance: US$%.3f (%d captchas left at %.2f cents each)" % (balance / 100,
                                                                                          balance // rate, rate))
 
@@ -194,7 +183,7 @@ class DeathByCaptcha(Hook):
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             try:
-                response = self.call_api("captcha/%d/report" % task.data["ticket"], True)
+                response = self.call_api("captcha/%d/report" % task.data['ticket'], True)
             except DeathByCaptchaException, e:
                 self.logError(e.getDesc())
             except Exception, e:
@@ -209,5 +198,5 @@ class DeathByCaptcha(Hook):
             self.logError(e.getDesc())
             return
 
-        task.data["ticket"] = ticket
+        task.data['ticket'] = ticket
         task.setResult(result)

@@ -1,18 +1,4 @@
 # -*- coding: utf-8 -*-
-############################################################################
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as
-#  published by the Free Software Foundation, either version 3 of the
-#  License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Affero General Public License for more details.
-#
-#  You should have received a copy of the GNU Affero General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-############################################################################
 
 import re
 
@@ -22,10 +8,12 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class VimeoCom(SimpleHoster):
     __name__ = "VimeoCom"
     __type__ = "hoster"
+    __version__ = "0.02"
+
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
-    __version__ = "0.01"
     __config__ = [("quality", "Lowest;Mobile;SD;HD;Highest", "Quality", "Highest"),
                   ("original", "bool", "Try to download the original file first", True)]
+
     __description__ = """Vimeo.com hoster plugin"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
@@ -44,12 +32,14 @@ class VimeoCom(SimpleHoster):
         self.chunkLimit = -1
 
     def handleFree(self):
+        password = self.getPassword()
+
         if self.js and 'class="btn iconify_down_b"' in self.html:
-            html = self.js.eval(self.load(self.pyfile.url, get={'action': "download"}, decode=True))
+            html = self.js.eval(self.load(self.pyfile.url, get={'action': "download", 'password': password}, decode=True))
             pattern = r'href="(?P<URL>http://vimeo\.com.+?)".*?\>(?P<QL>.+?) '
         else:
             id = re.match(self.__pattern__, self.pyfile.url).group("ID")
-            html = self.load("https://player.vimeo.com/video/" + id)
+            html = self.load("https://player.vimeo.com/video/" + id, get={'password': password})
             pattern = r'"(?P<QL>\w+)":{"profile".*?"(?P<URL>http://pdl\.vimeocdn\.com.+?)"'
 
         link = dict([(l.group('QL').lower(), l.group('URL')) for l in re.finditer(pattern, html)])

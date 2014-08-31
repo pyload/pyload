@@ -1,43 +1,26 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-    @author: jeix
-    @interface-version: 0.2
-"""
-
-from select import select
+import re
 import socket
-from threading import Thread
 import time
+
+from pycurl import FORM_FILE
+from select import select
+from threading import Thread
 from time import sleep
 from traceback import print_exc
-import re
-from pycurl import FORM_FILE
 
-from module.plugins.Hook import Hook
-from module.network.RequestFactory import getURL
-from module.utils import formatSize
 from module.Api import PackageDoesNotExists, FileDoesNotExists
+from module.network.RequestFactory import getURL
+from module.plugins.Hook import Hook
+from module.utils import formatSize
 
 
 class IRCInterface(Thread, Hook):
     __name__ = "IRCInterface"
+    __type__ = "hook"
     __version__ = "0.11"
-    __description__ = """Connect to irc and let owner perform different tasks"""
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("host", "str", "IRC-Server Address", "Enter your server here!"),
                   ("port", "int", "IRC-Server Port", 6667),
@@ -48,8 +31,11 @@ class IRCInterface(Thread, Hook):
                   ("info_file", "bool", "Inform about every file finished", False),
                   ("info_pack", "bool", "Inform about every package finished", True),
                   ("captcha", "bool", "Send captcha requests", True)]
+
+    __description__ = """Connect to irc and let owner perform different tasks"""
     __author_name__ = "Jeix"
     __author_mail__ = "Jeix@hasnomail.com"
+
 
     def __init__(self, core, manager):
         Thread.__init__(self)
@@ -59,12 +45,9 @@ class IRCInterface(Thread, Hook):
         self.api = core.api  # todo, only use api
 
     def coreReady(self):
-        self.new_package = {}
-
         self.abort = False
-
-        self.links_added = 0
         self.more = []
+        self.new_package = {}
 
         self.start()
 
@@ -155,25 +138,25 @@ class IRCInterface(Thread, Hook):
                 self.handle_events(msg)
 
     def handle_events(self, msg):
-        if not msg["origin"].split("!", 1)[0] in self.getConfig("owner").split():
+        if not msg['origin'].split("!", 1)[0] in self.getConfig("owner").split():
             return
 
-        if msg["target"].split("!", 1)[0] != self.getConfig("nick"):
+        if msg['target'].split("!", 1)[0] != self.getConfig("nick"):
             return
 
-        if msg["action"] != "PRIVMSG":
+        if msg['action'] != "PRIVMSG":
             return
 
         # HANDLE CTCP ANTI FLOOD/BOT PROTECTION
-        if msg["text"] == "\x01VERSION\x01":
+        if msg['text'] == "\x01VERSION\x01":
             self.logDebug("Sending CTCP VERSION.")
             self.sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
             return
-        elif msg["text"] == "\x01TIME\x01":
+        elif msg['text'] == "\x01TIME\x01":
             self.logDebug("Sending CTCP TIME.")
             self.sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
             return
-        elif msg["text"] == "\x01LAG\x01":
+        elif msg['text'] == "\x01LAG\x01":
             self.logDebug("Received CTCP LAG.")  # don't know how to answer
             return
 
@@ -181,7 +164,7 @@ class IRCInterface(Thread, Hook):
         args = None
 
         try:
-            temp = msg["text"].split()
+            temp = msg['text'].split()
             trigger = temp[0]
             if len(temp) > 1:
                 args = temp[1:]
@@ -192,7 +175,7 @@ class IRCInterface(Thread, Hook):
         try:
             res = handler(args)
             for line in res:
-                self.response(line, msg["origin"])
+                self.response(line, msg['origin'])
         except Exception, e:
             self.logError("pyLoad IRC: " + repr(e))
 
@@ -258,7 +241,7 @@ class IRCInterface(Thread, Hook):
 
     def event_info(self, args):
         if not args:
-            return ['ERROR: Use info like this: info <id>']
+            return ["ERROR: Use info like this: info <id>"]
 
         info = None
         try:
@@ -271,7 +254,7 @@ class IRCInterface(Thread, Hook):
 
     def event_packinfo(self, args):
         if not args:
-            return ['ERROR: Use packinfo like this: packinfo <id>']
+            return ["ERROR: Use packinfo like this: packinfo <id>"]
 
         lines = []
         pack = None
@@ -311,19 +294,17 @@ class IRCInterface(Thread, Hook):
         return lines
 
     def event_start(self, args):
-
         self.api.unpauseServer()
         return ["INFO: Starting downloads."]
 
     def event_stop(self, args):
-
         self.api.pauseServer()
         return ["INFO: No new downloads will be started."]
 
     def event_add(self, args):
         if len(args) < 2:
             return ['ERROR: Add links like this: "add <packagename|id> links". ',
-                    'This will add the link <link> to to the package <package> / the package with id <id>!']
+                    "This will add the link <link> to to the package <package> / the package with id <id>!"]
 
         pack = args[0].strip()
         links = [x.strip() for x in args[1:]]
@@ -338,7 +319,7 @@ class IRCInterface(Thread, Hook):
 
             #TODO add links
 
-            return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack["name"], id)]
+            return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack['name'], id)]
 
         except:
             # create new package
@@ -415,6 +396,7 @@ class IRCInterface(Thread, Hook):
 
 
 class IRCError(Exception):
+
     def __init__(self, value):
         self.value = value
 

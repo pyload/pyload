@@ -1,36 +1,21 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay, RaNaN, zoidberg
-"""
 from __future__ import with_statement
 
-from thread import start_new_thread
-
-import pycurl
 import StringIO
-from urllib import urlencode
-from time import sleep
+import pycurl
+
 from PIL import Image
+from thread import start_new_thread
+from time import sleep
+from urllib import urlencode
 
 from module.network.RequestFactory import getURL, getRequest
 from module.plugins.Hook import Hook
 
 
 class CaptchaBrotherhoodException(Exception):
+
     def __init__(self, err):
         self.err = err
 
@@ -46,16 +31,20 @@ class CaptchaBrotherhoodException(Exception):
 
 class CaptchaBrotherhood(Hook):
     __name__ = "CaptchaBrotherhood"
+    __type__ = "hook"
     __version__ = "0.05"
-    __description__ = """Send captchas to CaptchaBrotherhood.com"""
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Password", "")]
+
+    __description__ = """Send captchas to CaptchaBrotherhood.com"""
     __author_name__ = ("RaNaN", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
 
     API_URL = "http://www.captchabrotherhood.com/"
+
 
     def setup(self):
         self.info = {}
@@ -68,7 +57,7 @@ class CaptchaBrotherhood(Hook):
         else:
             credits = int(response[3:])
             self.logInfo(_("%d credits left") % credits)
-            self.info["credits"] = credits
+            self.info['credits'] = credits
             return credits
 
     def submit(self, captcha, captchaType="file", match=None):
@@ -164,5 +153,5 @@ class CaptchaBrotherhood(Hook):
             task.error = e.getCode()
             return
 
-        task.data["ticket"] = ticket
+        task.data['ticket'] = ticket
         task.setResult(result)

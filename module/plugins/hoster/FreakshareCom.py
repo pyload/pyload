@@ -10,11 +10,14 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class FreakshareCom(Hoster):
     __name__ = "FreakshareCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
     __version__ = "0.39"
+
+    __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
+
     __description__ = """Freakshare.com hoster plugin"""
     __author_name__ = ("sitacuisses", "spoob", "mkaay", "Toilal")
     __author_mail__ = ("sitacuisses@yahoo.de", "spoob@pyload.org", "mkaay@mkaay.de", "toilal.dev@gmail.com")
+
 
     def setup(self):
         self.multiDL = False
@@ -82,7 +85,7 @@ class FreakshareCom(Hoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
         if not self.wantReconnect:
             self.req_opts = self.get_download_options()  # get the Post options for the Request
@@ -92,7 +95,7 @@ class FreakshareCom(Hoster):
             self.offline()
 
     def get_file_name(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
         if not self.wantReconnect:
             file_name = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)", self.html)
@@ -106,7 +109,7 @@ class FreakshareCom(Hoster):
 
     def get_file_size(self):
         size = 0
-        if self.html is None:
+        if not self.html:
             self.download_html()
         if not self.wantReconnect:
             file_size_check = re.search(
@@ -119,7 +122,7 @@ class FreakshareCom(Hoster):
         return size
 
     def get_waiting_time(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         if "Your Traffic is used up for today" in self.html:
@@ -135,7 +138,7 @@ class FreakshareCom(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
         if re.search(r"This file does not exist!", self.html) is not None:
             return False
@@ -164,7 +167,7 @@ class FreakshareCom(Hoster):
 
         if challenge:
             re_captcha = ReCaptcha(self)
-            (request_options["recaptcha_challenge_field"], 
-             request_options["recaptcha_response_field"]) = re_captcha.challenge(challenge.group(1))
+            (request_options['recaptcha_challenge_field'],
+             request_options['recaptcha_response_field']) = re_captcha.challenge(challenge.group(1))
 
         return request_options

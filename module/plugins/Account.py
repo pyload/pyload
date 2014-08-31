@@ -1,29 +1,13 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
-"""
-
 from random import choice
 from time import time
 from traceback import print_exc
 from threading import RLock
 
-from Plugin import Base
+from module.plugins.Plugin import Base
 from module.utils import compare_time, parseFileSize, lock
+
 
 class WrongPassword(Exception):
     pass
@@ -36,8 +20,9 @@ class Account(Base):
     associated hoster plugin. Plugin should also provide `loadAccountInfo`
     """
     __name__ = "Account"
-    __version__ = "0.3"
     __type__ = "account"
+    __version__ = "0.3"
+
     __description__ = """Base account plugin"""
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"
@@ -84,12 +69,12 @@ class Account(Base):
             self.logWarning(
                 _("Could not login with account %(user)s | %(msg)s") % {"user": user
                                                                         , "msg": _("Wrong Password")})
-            success = data["valid"] = False
+            success = data['valid'] = False
         except Exception, e:
             self.logWarning(
                 _("Could not login with account %(user)s | %(msg)s") % {"user": user
                                                                         , "msg": e})
-            success = data["valid"] = False
+            success = data['valid'] = False
             if self.core.debug:
                 print_exc()
         else:
@@ -119,15 +104,15 @@ class Account(Base):
         """ updates account and return true if anything changed """
 
         if user in self.accounts:
-            self.accounts[user]["valid"] = True #do not remove or accounts will not login
+            self.accounts[user]['valid'] = True #do not remove or accounts will not login
             if password:
-                self.accounts[user]["password"] = password
+                self.accounts[user]['password'] = password
                 self.relogin(user)
                 return True
             if options:
-                before = self.accounts[user]["options"]
-                self.accounts[user]["options"].update(options)
-                return self.accounts[user]["options"] != before
+                before = self.accounts[user]['options']
+                self.accounts[user]['options'].update(options)
+                return self.accounts[user]['options'] != before
         else:
             self.accounts[user] = {"password": password, "options": options, "valid": True}
             self._login(user, self.accounts[user])
@@ -167,7 +152,7 @@ class Account(Base):
 
             self.logDebug("Account Info: %s" % str(infos))
 
-            infos["timestamp"] = time()
+            infos['timestamp'] = time()
             self.infos[name] = infos
         elif "timestamp" in self.infos[name] and self.infos[name][
                                                        "timestamp"] + self.info_threshold * 60 < time():
@@ -179,7 +164,7 @@ class Account(Base):
 
     def isPremium(self, user):
         info = self.getAccountInfo(user)
-        return info["premium"]
+        return info['premium']
 
     def loadAccountInfo(self, name, req=None):
         """this should be overwritten in account plugin,\
@@ -192,9 +177,9 @@ class Account(Base):
         return {
             "validuntil": None, # -1 for unlimited
             "login": name,
-            #"password": self.accounts[name]["password"], #@XXX: security
-            "options": self.accounts[name]["options"],
-            "valid": self.accounts[name]["valid"],
+            #"password": self.accounts[name]['password'], #@XXX: security
+            "options": self.accounts[name]['options'],
+            "valid": self.accounts[name]['valid'],
             "trafficleft": None, # in kb, -1 for unlimited
             "maxtraffic": None,
             "premium": True, #useful for free accounts
@@ -230,12 +215,12 @@ class Account(Base):
         """ returns an valid account name and data"""
         usable = []
         for user, data in self.accounts.iteritems():
-            if not data["valid"]: continue
+            if not data['valid']: continue
 
-            if "time" in data["options"] and data["options"]["time"]:
+            if "time" in data['options'] and data['options']['time']:
                 time_data = ""
                 try:
-                    time_data = data["options"]["time"][0]
+                    time_data = data['options']['time'][0]
                     start, end = time_data.split("-")
                     if not compare_time(start.split(":"), end.split(":")):
                         continue
@@ -244,10 +229,10 @@ class Account(Base):
 
             if user in self.infos:
                 if "validuntil" in self.infos[user]:
-                    if self.infos[user]["validuntil"] > 0 and time() > self.infos[user]["validuntil"]:
+                    if self.infos[user]['validuntil'] > 0 and time() > self.infos[user]['validuntil']:
                         continue
                 if "trafficleft" in self.infos[user]:
-                    if self.infos[user]["trafficleft"] == 0:
+                    if self.infos[user]['trafficleft'] == 0:
                         continue
 
             usable.append((user, data))
@@ -287,7 +272,7 @@ class Account(Base):
     def checkLogin(self, user):
         """ checks if user is still logged in """
         if user in self.timestamps:
-            if self.login_timeout > 0 and self.timestamps[user] + self.login_timeout * 60 > time():
+            if self.login_timeout > 0 and self.timestamps[user] + self.login_timeout * 60 < time():
                 self.logDebug("Reached login timeout for %s" % user)
                 return self.relogin(user)
             else:

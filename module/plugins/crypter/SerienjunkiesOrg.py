@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
 
-import re
-from time import sleep
 import random
-from module.plugins.Crypter import Crypter
+import re
+
+from time import sleep
+
 from module.lib.BeautifulSoup import BeautifulSoup
+
+from module.plugins.Crypter import Crypter
 from module.unescape import unescape
 
 
 class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
     __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?(serienjunkies.org|dokujunkies.org)/.*?'
     __version__ = "0.39"
+
+    __pattern__ = r'http://(?:www\.)?(serienjunkies.org|dokujunkies.org)/.*?'
     __config__ = [("changeNameSJ", "Packagename;Show;Season;Format;Episode", "Take SJ.org name", "Show"),
                   ("changeNameDJ", "Packagename;Show;Format;Episode", "Take DJ.org name", "Show"),
                   ("randomPreferred", "bool", "Randomize Preferred-List", False),
@@ -21,9 +25,11 @@ class SerienjunkiesOrg(Crypter):
                   ("hosterList", "str", "Preferred Hoster list (comma separated)",
                    "RapidshareCom,UploadedTo,NetloadIn,FilefactoryCom,FreakshareNet,FilebaseTo,HotfileCom,DepositfilesCom,EasyshareCom,KickloadCom"),
                   ("ignoreList", "str", "Ignored Hoster list (comma separated)", "MegauploadCom")]
+
     __description__ = """Serienjunkies.org decrypter plugin"""
     __author_name__ = ("mkaay", "godofdream")
     __author_mail__ = ("mkaay@mkaay.de", "soilfiction@gmail.com")
+
 
     def setup(self):
         self.multiDL = False
@@ -51,9 +57,9 @@ class SerienjunkiesOrg(Crypter):
         package_links = []
         for a in nav.findAll("a"):
             if self.getConfig("changeNameSJ") == "Show":
-                package_links.append(a["href"])
+                package_links.append(a['href'])
             else:
-                package_links.append(a["href"] + "#hasName")
+                package_links.append(a['href'] + "#hasName")
         if self.getConfig("changeNameSJ") == "Show":
             self.packages.append((packageName, package_links, packageName))
         else:
@@ -85,32 +91,32 @@ class SerienjunkiesOrg(Crypter):
                     opts[n.strip()] = val.strip()
                 gid += 1
                 groups[gid] = {}
-                groups[gid]["ep"] = {}
-                groups[gid]["opts"] = opts
+                groups[gid]['ep'] = {}
+                groups[gid]['opts'] = opts
             elif re.search("<strong>Download:", str(p)):
                 parts = str(p).split("<br />")
                 if re.search("<strong>", parts[0]):
                     ename = re.search('<strong>(.*?)</strong>', parts[0]).group(1).strip().decode("utf-8").replace(
                         "&#8211;", "-")
-                    groups[gid]["ep"][ename] = {}
+                    groups[gid]['ep'][ename] = {}
                     parts.remove(parts[0])
                     for part in parts:
                         hostername = re.search(r" \| ([-a-zA-Z0-9]+\.\w+)", part)
                         if hostername:
                             hostername = hostername.group(1)
-                            groups[gid]["ep"][ename][hostername] = []
+                            groups[gid]['ep'][ename][hostername] = []
                             links = re.findall('href="(.*?)"', part)
                             for link in links:
-                                groups[gid]["ep"][ename][hostername].append(link + "#hasName")
+                                groups[gid]['ep'][ename][hostername].append(link + "#hasName")
 
         links = []
         for g in groups.values():
-            for ename in g["ep"]:
-                links.extend(self.getpreferred(g["ep"][ename]))
+            for ename in g['ep']:
+                links.extend(self.getpreferred(g['ep'][ename]))
                 if self.getConfig("changeNameSJ") == "Episode":
                     self.packages.append((ename, links, ename))
                     links = []
-            package = "%s (%s, %s)" % (seasonName, g["opts"]["Format"], g["opts"]["Sprache"])
+            package = "%s (%s, %s)" % (seasonName, g['opts']['Format'], g['opts']['Sprache'])
             if self.getConfig("changeNameSJ") == "Format":
                 self.packages.append((package, links, package))
                 links = []
@@ -135,12 +141,12 @@ class SerienjunkiesOrg(Crypter):
                     sleep(5)
                     self.retry()
 
-                captchaUrl = "http://download.serienjunkies.org" + captchaTag["src"]
+                captchaUrl = "http://download.serienjunkies.org" + captchaTag['src']
                 result = self.decryptCaptcha(str(captchaUrl), imgtype="png")
                 sinp = form.find(attrs={"name": "s"})
 
                 self.req.lastURL = str(url)
-                sj = self.load(str(url), post={'s': sinp["value"], 'c': result, 'action': "Download"})
+                sj = self.load(str(url), post={'s': sinp['value'], 'c': result, 'action': "Download"})
 
                 soup = BeautifulSoup(sj)
             rawLinks = soup.findAll(attrs={"action": re.compile("^http://download.serienjunkies.org/")})
@@ -154,7 +160,7 @@ class SerienjunkiesOrg(Crypter):
 
             links = []
             for link in rawLinks:
-                frameUrl = link["action"].replace("/go-", "/frame/go-")
+                frameUrl = link['action'].replace("/go-", "/frame/go-")
                 links.append(self.handleFrame(frameUrl))
             if re.search("#hasName", url) or ((self.getConfig("changeNameSJ") == "Packagename") and
                                               (self.getConfig("changeNameDJ") == "Packagename")):
@@ -171,12 +177,12 @@ class SerienjunkiesOrg(Crypter):
         soup = BeautifulSoup(sj)
         form = soup.find("form", attrs={"action": re.compile("^http://serienjunkies.org")})
         captchaTag = form.find(attrs={"src": re.compile("^/safe/secure/")})
-        captchaUrl = "http://serienjunkies.org" + captchaTag["src"]
+        captchaUrl = "http://serienjunkies.org" + captchaTag['src']
         result = self.decryptCaptcha(str(captchaUrl))
-        url = form["action"]
+        url = form['action']
         sinp = form.find(attrs={"name": "s"})
 
-        self.req.load(str(url), post={'s': sinp["value"], 'c': result, 'dl.start': "Download"}, cookies=False,
+        self.req.load(str(url), post={'s': sinp['value'], 'c': result, 'dl.start': "Download"}, cookies=False,
                       just_header=True)
         decrypted = self.req.lastEffectiveURL
         if decrypted == str(url):
@@ -215,32 +221,32 @@ class SerienjunkiesOrg(Crypter):
                     opts[n.strip()] = val.strip()
                 gid += 1
                 groups[gid] = {}
-                groups[gid]["ep"] = {}
-                groups[gid]["opts"] = opts
+                groups[gid]['ep'] = {}
+                groups[gid]['opts'] = opts
             elif re.search("<strong>Download:", str(p)):
                 parts = str(p).split("<br />")
                 if re.search("<strong>", parts[0]):
                     ename = re.search('<strong>(.*?)</strong>', parts[0]).group(1).strip().decode("utf-8").replace(
                         "&#8211;", "-")
-                    groups[gid]["ep"][ename] = {}
+                    groups[gid]['ep'][ename] = {}
                     parts.remove(parts[0])
                     for part in parts:
                         hostername = re.search(r" \| ([-a-zA-Z0-9]+\.\w+)", part)
                         if hostername:
                             hostername = hostername.group(1)
-                            groups[gid]["ep"][ename][hostername] = []
+                            groups[gid]['ep'][ename][hostername] = []
                             links = re.findall('href="(.*?)"', part)
                             for link in links:
-                                groups[gid]["ep"][ename][hostername].append(link + "#hasName")
+                                groups[gid]['ep'][ename][hostername].append(link + "#hasName")
 
         links = []
         for g in groups.values():
-            for ename in g["ep"]:
-                links.extend(self.getpreferred(g["ep"][ename]))
+            for ename in g['ep']:
+                links.extend(self.getpreferred(g['ep'][ename]))
                 if self.getConfig("changeNameDJ") == "Episode":
                     self.packages.append((ename, links, ename))
                     links = []
-            package = "%s (%s, %s)" % (seasonName, g["opts"]["Format"], g["opts"]["Sprache"])
+            package = "%s (%s, %s)" % (seasonName, g['opts']['Format'], g['opts']['Sprache'])
             if self.getConfig("changeNameDJ") == "Format":
                 self.packages.append((package, links, package))
                 links = []
@@ -255,7 +261,7 @@ class SerienjunkiesOrg(Crypter):
         soup = BeautifulSoup(src)
         content = soup.find("div", attrs={"id": "content"})
         for a in content.findAll("a", attrs={"rel": "bookmark"}):
-            package_links.append(a["href"])
+            package_links.append(a['href'])
         self.core.files.addLinks(package_links, self.pyfile.package().id)
 
     def decrypt(self, pyfile):

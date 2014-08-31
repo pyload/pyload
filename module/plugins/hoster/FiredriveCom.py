@@ -1,18 +1,4 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as
-#  published by the Free Software Foundation, either version 3 of the
-#  License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Affero General Public License for more details.
-#
-#  You should have received a copy of the GNU Affero General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-###############################################################################
 
 import re
 
@@ -22,8 +8,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FiredriveCom(SimpleHoster):
     __name__ = "FiredriveCom"
     __type__ = "hoster"
+    __version__ = "0.03"
+
     __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
-    __version__ = "0.02"
+
     __description__ = """Firedrive.com hoster plugin"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
@@ -35,6 +23,9 @@ class FiredriveCom(SimpleHoster):
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.firedrive.com/file/\g<ID>')]
 
+    LINK_PATTERN = r'<a href="(https?://dl\.firedrive\.com/\?key=.+?)"'
+
+
     def setup(self):
         self.multiDL = self.resumeDownload = True
         self.chunkLimit = -1
@@ -45,12 +36,16 @@ class FiredriveCom(SimpleHoster):
         self.download(link, disposition=True)
 
     def _getLink(self):
-        f = re.search(r'<a href="(https?://dl\.firedrive\.com/\?key=.+?)"', self.html)
+        f = re.search(self.LINK_PATTERN, self.html)
         if f:
             return f.group(1)
         else:
             self.html = self.load(self.pyfile.url, post={"confirm": re.search(r'name="confirm" value="(.+?)"', self.html).group(1)})
-            return self._getLink()
+            f = re.search(self.LINK_PATTERN, self.html)
+            if f:
+                return f.group(1)
+            else:
+                self.parseError("Direct download link not found")
 
 
 getInfo = create_getInfo(FiredriveCom)

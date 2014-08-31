@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from urlparse import urlparse
 from re import match, search
 from urllib import unquote
+from urlparse import urlparse
 
 from module.network.HTTPRequest import BadHeader
 from module.plugins.Hoster import Hoster
@@ -12,11 +12,14 @@ from module.utils import html_unescape, remove_chars
 class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"
+    __version__ = "0.20"
+
     __pattern__ = r'^unmatchable$'
-    __version__ = "0.19"
+
     __description__ = """Base Plugin when any other didnt fit"""
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
+
 
     def setup(self):
         self.chunkLimit = -1
@@ -55,7 +58,7 @@ class BasePlugin(Hoster):
 
                     if server in servers:
                         self.logDebug("Logging on to %s" % server)
-                        self.req.addAuth(account.accounts[server]["password"])
+                        self.req.addAuth(account.accounts[server]['password'])
                     else:
                         for pwd in pyfile.package().password.splitlines():
                             if ":" in pwd:
@@ -85,7 +88,7 @@ class BasePlugin(Hoster):
                 self.logDebug("Location: " + header['location'])
                 base = match(r'https?://[^/]+', url).group(0)
                 if header['location'].startswith("http"):
-                    url = unquote(header['location'])
+                    url = header['location']
                 elif header['location'].startswith("/"):
                     url = base + unquote(header['location'])
                 else:

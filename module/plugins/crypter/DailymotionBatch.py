@@ -1,24 +1,8 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: Walter Purcaro
-"""
+import re
 
 from urlparse import urljoin
-import re
 
 from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter
@@ -28,11 +12,14 @@ from module.utils import save_join
 class DailymotionBatch(Crypter):
     __name__ = "DailymotionBatch"
     __type__ = "crypter"
-    __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
     __version__ = "0.01"
+
+    __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
+
     __description__ = """Dailymotion.com channel & playlist decrypter"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
+
 
     def api_response(self, ref, req=None):
         url = urljoin("https://api.dailymotion.com/", ref)
@@ -47,8 +34,8 @@ class DailymotionBatch(Crypter):
         if "error" in playlist:
             return
 
-        name = playlist["name"]
-        owner = playlist["owner.screenname"]
+        name = playlist['name']
+        owner = playlist['owner.screenname']
         return name, owner
 
     def _getPlaylists(self, user_id, page=1):
@@ -59,10 +46,10 @@ class DailymotionBatch(Crypter):
         if "error" in user:
             return
 
-        for playlist in user["list"]:
-            yield playlist["id"]
+        for playlist in user['list']:
+            yield playlist['id']
 
-        if user["has_more"]:
+        if user['has_more']:
             for item in self._getPlaylists(user_id, page + 1):
                 yield item
 
@@ -77,10 +64,10 @@ class DailymotionBatch(Crypter):
         if "error" in playlist:
             return
 
-        for video in playlist["list"]:
-            yield video["url"]
+        for video in playlist['list']:
+            yield video['url']
 
-        if playlist["has_more"]:
+        if playlist['has_more']:
             for item in self._getVideos(id, page + 1):
                 yield item
 
