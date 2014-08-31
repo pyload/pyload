@@ -229,8 +229,8 @@ class Setup:
 
         print
 
-        pil = self.check_module("Image")
-        self.print_dep("py-imaging", pil)
+        pil = self.check_module("PIL.Image")
+        self.print_dep("PIL/Pillow", pil)
 
         if os.name == "nt":
             tesser = self.check_prog([join(pypath, "tesseract", "tesseract.exe"), "-v"])
