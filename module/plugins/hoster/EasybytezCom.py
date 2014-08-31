@@ -6,7 +6,7 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class EasybytezCom(XFileSharingPro):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __pattern__ = r'http://(?:www\.)?easybytez.com/(\w+).*'
 
