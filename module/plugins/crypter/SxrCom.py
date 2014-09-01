@@ -10,11 +10,9 @@
 #   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #   See the GNU General Public License for more details.
 
-#   You should have received a copy of the GNU General Public License
-#   along with this program; if not, see <http://www.gnu.org/licenses/>.
+#   For a copy of the GNU General Public License,
+#   see <http://www.gnu.org/licenses/>.
     
-#   @author: NETHead
-
 from module.plugins.Crypter import Crypter
 import re
 
@@ -25,7 +23,7 @@ class SxrCom(Crypter):
     __version__ = "0.5"
     __description__ = """Sexuria.com Crypter Plugin"""
     __author_name__ = ("NETHead")
-    __author_mail__ = ("NETHead[AT]gmx[DOT]net")
+    __author_mail__ = ("NETHead.AT.gmx.DOT.de")
 
     # Constants
     PATTERN_SUPPORTED_MAIN     = re.compile(r'http://(www\.)?sexuria\.com/(v1/)?Pornos_Kostenlos_.+?_(\d+)\.html', flags=re.IGNORECASE)
@@ -93,11 +91,11 @@ class SxrCom(Crypter):
                     else:
                         linklist.append(finallink)
 
-        # Notice the user if no link could be extracted 
+        # Inform the user if no link could been extracted
         if linklist == []:
             self.fail("Could not extract any links (out of date?)")
 
-        # Log and return
+        # Debug log
         self.logDebug("SxrCom result: %d supported links" % len(linklist))
         for i, link in enumerate(linklist):
             self.logDebug("Supported link %d, %s" % (i+1, link))
