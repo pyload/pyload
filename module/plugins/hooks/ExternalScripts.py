@@ -12,7 +12,7 @@ from module.utils import save_join
 class ExternalScripts(Hook):
     __name__ = "ExternalScripts"
     __type__ = "hook"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
@@ -91,9 +91,9 @@ class ExternalScripts(Hook):
         for script in self.scripts['after_reconnect']:
             self.callScript(script, ip)
 
-    def unrarFinished(self, folder, fname):
+    def unrarFinished(self, folder, fname, pyfile, extractedFiles):
         for script in self.scripts['unrar_finished']:
-            self.callScript(script, folder, fname)
+            self.callScript(script, folder, fname, pyfile.url, pyfile.id, *extractedFiles)
 
     def allDownloadsFinished(self):
         for script in self.scripts['all_dls_finished']:

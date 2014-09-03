@@ -58,7 +58,7 @@ class ExtractArchive(Hook):
     """
     __name__ = "ExtractArchive"
     __type__ = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
@@ -254,7 +254,7 @@ class ExtractArchive(Hook):
                         self.logDebug("%s does not exists" % f)
 
             self.logInfo(basename(plugin.file), _("Extracting finished"))
-            self.manager.dispatchEvent("unrarFinished", plugin.out, plugin.file)
+            self.manager.dispatchEvent("unrarFinished", plugin.out, plugin.file, pyfile, plugin.getExtractedFiles())
 
             return plugin.getExtractedFiles()
 
