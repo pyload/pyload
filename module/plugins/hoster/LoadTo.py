@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LoadTo(SimpleHoster):
     __name__ = "LoadTo"
     __type__ = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
 
@@ -21,8 +21,8 @@ class LoadTo(SimpleHoster):
     __author_name__ = ("halfman", "stickell")
     __author_mail__ = ("Pulpan3@gmail.com", "l.stickell@yahoo.it")
 
-    FILE_NAME_PATTERN = r'<head><title>(?P<N>.+) \/\/ Load.to</title>'
-    FILE_SIZE_PATTERN = r'<a [^>]+>(?P<Z>.+)</a></h3>\s*Size: (?P<S>.*) (?P<U>[kKmMgG]?i?[bB])'
+    FILE_NAME_PATTERN = r'<head><title>Load.to - (?P<N>.+)</title>'
+    FILE_SIZE_PATTERN = r'Size: (?P<S>.*) (?P<U>[kKmMgG]?i?[bB])'
     OFFLINE_PATTERN = r'Can\'t find file\. Please check URL'
 
     LINK_PATTERN = r'<form method="post" action="(.+?)"'
