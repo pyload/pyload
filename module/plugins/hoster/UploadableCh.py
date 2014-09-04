@@ -70,7 +70,7 @@ class UploadableCh(SimpleHoster):
         self.download(not_so_long_url, cookies=True, post=post_data, disposition=True)
         
         # Check the downloaded file
-        check = self.checkDownload({"wait_or_reconnect": re.compile("Please wait for"), "is_html": re.compile("<html>")})
+        check = self.checkDownload({"wait_or_reconnect": re.compile("Please wait for"), "is_html": re.compile("<head>")})
         if check == "wait_or_reconnect":
             self.logInfo("Downloadlimit reached, please wait or reconnect")
             self.setWait(60*60,True)
