@@ -8,7 +8,7 @@ from os import path, remove, stat
 
 from module.network.RequestFactory import getURL
 from module.plugins.Hook import Expose, Hook, threaded
-from module.utils import save_join
+from module.utils import safe_join
 
 
 class UpdateManager(Hook):
@@ -200,7 +200,7 @@ class UpdateManager(Hook):
                 content = getURL(url % plugin)
                 m = vre.search(content)
                 if m and m.group(2) == version:
-                    f = open(save_join("userplugins", prefix, filename), "wb")
+                    f = open(safe_join("userplugins", prefix, filename), "wb")
                     f.write(content)
                     f.close()
                     updated.append((prefix, name))
@@ -257,7 +257,7 @@ class UpdateManager(Hook):
 
             for root in ("userplugins", path.join(pypath, "module", "plugins")):
 
-                filename = save_join(root, type, file)
+                filename = safe_join(root, type, file)
                 try:
                     remove(filename)
                 except Exception, e:

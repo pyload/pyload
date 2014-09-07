@@ -5,7 +5,7 @@ import re
 import traceback
 
 from module.plugins.Hook import Hook, threaded
-from module.utils import save_join, fs_encode
+from module.utils import safe_join, fs_encode
 
 
 class MergeFiles(Hook):
@@ -41,11 +41,11 @@ class MergeFiles(Hook):
         download_folder = self.config['general']['download_folder']
 
         if self.config['general']['folder_per_package']:
-            download_folder = save_join(download_folder, pack.folder)
+            download_folder = safe_join(download_folder, pack.folder)
 
         for name, file_list in files.iteritems():
             self.logInfo("Starting merging of %s" % name)
-            final_file = open(save_join(download_folder, name), "wb")
+            final_file = open(safe_join(download_folder, name), "wb")
 
             for splitted_file in file_list:
                 self.logDebug("Merging part %s" % splitted_file)

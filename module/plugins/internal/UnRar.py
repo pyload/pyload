@@ -9,7 +9,7 @@ from string import digits
 from subprocess import Popen, PIPE
 
 from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError, CRCError
-from module.utils import save_join, decode
+from module.utils import safe_join, decode
 
 
 class UnRar(AbtractExtractor):
@@ -173,7 +173,7 @@ class UnRar(AbtractExtractor):
 
         for f in decode(out).splitlines():
             f = f.strip()
-            result.add(save_join(self.out, f))
+            result.add(safe_join(self.out, f))
 
         self.files = result
 

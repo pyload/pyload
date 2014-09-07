@@ -6,7 +6,7 @@ from urlparse import urljoin
 
 from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter
-from module.utils import save_join
+from module.utils import safe_join
 
 API_URL = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
 
@@ -122,7 +122,7 @@ class YoutubeBatch(Crypter):
         for p in playlists:
             p_name = p['title']
             p_videos = self.getVideosId(p['id'])
-            p_folder = save_join(self.config['general']['download_folder'], p['channelTitle'], p_name)
+            p_folder = safe_join(self.config['general']['download_folder'], p['channelTitle'], p_name)
             self.logDebug("%s video\s found on playlist \"%s\"" % (len(p_videos), p_name))
 
             if not p_videos:

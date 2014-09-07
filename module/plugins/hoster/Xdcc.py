@@ -11,7 +11,7 @@ from os.path import exists, join
 from select import select
 
 from module.plugins.Hoster import Hoster
-from module.utils import save_join
+from module.utils import safe_join
 
 
 class Xdcc(Hoster):
@@ -187,7 +187,7 @@ class Xdcc(Hoster):
         self.pyfile.name = packname
 
         download_folder = self.config['general']['download_folder']
-        filename = save_join(download_folder, packname)
+        filename = safe_join(download_folder, packname)
 
         self.logInfo("XDCC: Downloading %s from %s:%d" % (packname, ip, port))
 

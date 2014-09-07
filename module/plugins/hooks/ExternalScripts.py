@@ -6,7 +6,7 @@ from os import listdir, access, X_OK, makedirs
 from os.path import join, exists, basename, abspath
 
 from module.plugins.Hook import Hook
-from module.utils import save_join
+from module.utils import safe_join
 
 
 class ExternalScripts(Hook):
@@ -73,13 +73,13 @@ class ExternalScripts(Hook):
     def downloadFinished(self, pyfile):
         for script in self.scripts['download_finished']:
             self.callScript(script, pyfile.pluginname, pyfile.url, pyfile.name,
-                            save_join(self.config['general']['download_folder'],
+                            safe_join(self.config['general']['download_folder'],
                                       pyfile.package().folder, pyfile.name), pyfile.id)
 
     def packageFinished(self, pypack):
         for script in self.scripts['package_finished']:
             folder = self.config['general']['download_folder']
-            folder = save_join(folder, pypack.folder)
+            folder = safe_join(folder, pypack.folder)
 
             self.callScript(script, pypack.name, folder, pypack.password, pypack.id)
 

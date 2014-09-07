@@ -9,7 +9,7 @@ from urllib2 import build_opener
 from module.lib.MultipartPostHandler import MultipartPostHandler
 
 from module.plugins.Container import Container
-from module.utils import save_join
+from module.utils import safe_join
 
 
 class CCF(Container):
@@ -35,7 +35,7 @@ class CCF(Container):
 
         download_folder = self.config['general']['download_folder']
 
-        tempdlc_name = save_join(download_folder, "tmp_%s.dlc" % pyfile.name)
+        tempdlc_name = safe_join(download_folder, "tmp_%s.dlc" % pyfile.name)
         tempdlc = open(tempdlc_name, "w")
         tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.DOTALL).group(1))
         tempdlc.close()

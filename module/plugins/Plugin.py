@@ -14,7 +14,7 @@ if os.name != "nt":
 
 from itertools import islice
 
-from module.utils import safe_join, safe_path, fs_encode, fs_decode
+from module.utils import safe_join, safe_filename, fs_encode, fs_decode
 
 def chunks(iterable, size):
     it = iter(iterable)
@@ -503,7 +503,7 @@ class Plugin(Base):
 
         # convert back to unicode
         location = fs_decode(location)
-        name = safe_path(self.pyfile.name)
+        name = safe_filename(self.pyfile.name)
 
         filename = join(location, name)
 

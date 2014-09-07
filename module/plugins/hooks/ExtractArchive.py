@@ -49,7 +49,7 @@ if os.name != "nt":
 
 from module.plugins.Hook import Hook, threaded, Expose
 from module.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
-from module.utils import save_join, fs_encode
+from module.utils import safe_join, fs_encode
 
 
 class ExtractArchive(Hook):
@@ -148,21 +148,21 @@ class ExtractArchive(Hook):
                 continue
 
             # determine output folder
-            out = save_join(dl, p.folder, "")
+            out = safe_join(dl, p.folder, "")
             # force trailing slash
 
             if self.getConfig("destination") and self.getConfig("destination").lower() != "none":
 
-                out = save_join(dl, p.folder, self.getConfig("destination"), "")
+                out = safe_join(dl, p.folder, self.getConfig("destination"), "")
                 #relative to package folder if destination is relative, otherwise absolute path overwrites them
 
                 if self.getConfig("subfolder"):
-                    out = save_join(out, fs_encode(p.folder))
+                    out = safe_join(out, fs_encode(p.folder))
 
                 if not exists(out):
                     makedirs(out)
 
-            files_ids = [(save_join(dl, p.folder, x['name']), x['id']) for x in p.getChildren().itervalues()]
+            files_ids = [(safe_join(dl, p.folder, x['name']), x['id']) for x in p.getChildren().itervalues()]
             matched = False
 
             # check as long there are unseen files

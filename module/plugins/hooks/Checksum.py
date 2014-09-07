@@ -10,7 +10,7 @@ from os import remove
 from os.path import getsize, isfile, splitext
 
 from module.plugins.Hook import Hook
-from module.utils import save_join, fs_encode
+from module.utils import safe_join, fs_encode
 
 
 def computeChecksum(local_file, algorithm):
@@ -91,7 +91,7 @@ class Checksum(Hook):
 
         local_file = fs_encode(pyfile.plugin.lastDownload)
         #download_folder = self.config['general']['download_folder']
-        #local_file = fs_encode(save_join(download_folder, pyfile.package().folder, pyfile.name))
+        #local_file = fs_encode(safe_join(download_folder, pyfile.package().folder, pyfile.name))
 
         if not isfile(local_file):
             self.checkFailed(pyfile, None, "File does not exist")
@@ -143,7 +143,7 @@ class Checksum(Hook):
         pyfile.plugin.fail(reason=msg)
 
     def packageFinished(self, pypack):
-        download_folder = save_join(self.config['general']['download_folder'], pypack.folder, "")
+        download_folder = safe_join(self.config['general']['download_folder'], pypack.folder, "")
 
         for link in pypack.getChildren().itervalues():
             file_type = splitext(link['name'])[1][1:].lower()
@@ -152,7 +152,7 @@ class Checksum(Hook):
             if file_type not in self.formats:
                 continue
 
-            hash_file = fs_encode(save_join(download_folder, link['name']))
+            hash_file = fs_encode(safe_join(download_folder, link['name']))
             if not isfile(hash_file):
                 self.logWarning("File not found: %s" % link['name'])
                 continue
@@ -164,7 +164,7 @@ class Checksum(Hook):
                 data = m.groupdict()
                 self.logDebug(link['name'], data)
 
-                local_file = fs_encode(save_join(download_folder, data['name']))
+                local_file = fs_encode(safe_join(download_folder, data['name']))
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = computeChecksum(local_file, algorithm)
                 if checksum == data['hash']:

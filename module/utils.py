@@ -39,7 +39,7 @@ def remove_chars(string, repl):
             return string.translate(dict([(ord(s), None) for s in repl]))
 
 
-def safe_path(name):
+def safe_filename(name):
     """ remove bad chars """
     name = name.encode('ascii', 'replace')  # Non-ASCII chars usually breaks file saving. Replacing.
     if os.name == 'nt':
@@ -50,7 +50,7 @@ def safe_path(name):
 
 #: Deprecated method
 def save_path(name):
-    return safe_path(name)
+    return safe_filename(name)
 
 
 def safe_join(*args):
