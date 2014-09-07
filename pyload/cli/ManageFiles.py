@@ -20,8 +20,8 @@
 from itertools import islice
 from time import time
 
-from Handler import Handler
-from printer import *
+from pyload.cli.Handler import Handler
+from pyload.utils.printer import *
 
 from pyload.api import Destination, PackageData
 
