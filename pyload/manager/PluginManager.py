@@ -11,7 +11,7 @@ from traceback import print_exc
 
 from SafeEval import const_eval as literal_eval
 
-from pyload.ConfigParser import IGNORE
+from pyload.config.Parser import IGNORE
 
 
 class PluginManager:

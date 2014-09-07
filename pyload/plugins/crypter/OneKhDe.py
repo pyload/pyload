@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.unescape import unescape
+from pyload.utils import html_unescape
 from pyload.plugins.Crypter import Crypter
 
 
@@ -33,6 +33,6 @@ class OneKhDe(Crypter):
         self.html = self.req.load(url)
         link_ids = re.findall(r"<a id=\"DownloadLink_(\d*)\" href=\"http://1kh.de/", self.html)
         for id in link_ids:
-            new_link = unescape(
+            new_link = html_unescape(
                 re.search("width=\"100%\" src=\"(.*)\"></iframe>", self.req.load("http://1kh.de/l/" + id)).group(1))
             self.urls.append(new_link)

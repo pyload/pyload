@@ -17,7 +17,7 @@
 """
 
 import sys
-import pyload.common.pylgettext as gettext
+import pyload.utils.pylgettext as gettext
 
 import os
 from os.path import join, abspath, dirname, exists
@@ -40,7 +40,7 @@ from middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
 SETUP = None
 PYLOAD = None
 
-from pyload.threads import ServerThread
+from pyload.manager.thread import ServerThread
 
 if not ServerThread.core:
     if ServerThread.setup:
@@ -52,7 +52,7 @@ else:
     PYLOAD = ServerThread.core.api
     config = ServerThread.core.config
 
-from pyload.common.JsEngine import JsEngine
+from pyload.utils.JsEngine import JsEngine
 
 JS = JsEngine()
 

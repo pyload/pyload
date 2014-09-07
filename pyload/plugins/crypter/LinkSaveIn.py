@@ -9,7 +9,7 @@ import re
 
 from Crypto.Cipher import AES
 from pyload.plugins.Crypter import Crypter
-from pyload.unescape import unescape
+from pyload.utils import html_unescape
 
 
 class LinkSaveIn(Crypter):
@@ -153,7 +153,7 @@ class LinkSaveIn(Crypter):
                     dlLink = re.search(r'http://linksave\.in/dl-\w+', jseval).group(0)
                     self.logDebug("JsEngine returns value [%s] for redirection link" % dlLink)
                     response = self.load(dlLink)
-                    link = unescape(re.search(r'<iframe src="(.+?)"', response).group(1))
+                    link = html_unescape(re.search(r'<iframe src="(.+?)"', response).group(1))
                     package_links.append(link)
                 except Exception, detail:
                     self.logDebug("Error decrypting Web link %s, %s" % (webLink, detail))
@@ -169,7 +169,7 @@ class LinkSaveIn(Crypter):
         containersLinks = re.findall(pattern, self.html)
         self.logDebug("Found %d %s Container links" % (len(containersLinks), type_.upper()))
         for containerLink in containersLinks:
-            link = "http://linksave.in/%s" % unescape(containerLink)
+            link = "http://linksave.in/%s" % html_unescape(containerLink)
             package_links.append(link)
         return package_links
 

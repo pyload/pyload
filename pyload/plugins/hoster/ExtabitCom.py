@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.common.json_layer import json_loads
+from pyload.utils import json_loads
 
 from pyload.plugins.hoster.UnrestrictLi import secondsToMidnight
 from pyload.plugins.internal.CaptchaService import ReCaptcha

@@ -27,8 +27,8 @@ from random import choice
 
 import pycurl
 
-from pyload.threads import PluginThread
-from pyload.PyFile import PyFile
+from pyload.manager.thread import PluginThread
+from pyload.datatypes.PyFile import PyFile
 from pyload.network.RequestFactory import getURL
 from pyload.utils import freeSpace, lock
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyload.plugins.Account import Account
-# from pyload.common.json_layer import json_loads, json_dumps
+# from pyload.utils import json_loads, json_dumps
 
 
 class LetitbitNet(Account):

@@ -4,7 +4,7 @@ import time
 
 from beaker.crypto.pbkdf2 import PBKDF2
 
-from pyload.common.json_layer import json_loads
+from pyload.utils import json_loads
 from pyload.plugins.Account import Account
 
 

@@ -10,7 +10,7 @@ import re
 
 from urllib import urlencode, urlopen
 
-from pyload.common.json_layer import json_loads, json_dumps
+from pyload.utils import json_loads, json_dumps
 from pyload.plugins.hoster.UnrestrictLi import secondsToMidnight
 from pyload.plugins.internal.CaptchaService import ReCaptcha
 from pyload.plugins.internal.SimpleHoster import SimpleHoster

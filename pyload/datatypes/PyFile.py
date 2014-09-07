@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from pyload.PullEvents import UpdateEvent
+from pyload.manager.event.PullEvents import UpdateEvent
 from pyload.utils import formatSize, lock
 
 from time import sleep, time

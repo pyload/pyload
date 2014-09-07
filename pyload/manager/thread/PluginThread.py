@@ -30,11 +30,11 @@ from types import MethodType
 
 from pycurl import error
 
-from pyload.PyFile import PyFile
+from pyload.datatypes.PyFile import PyFile
 from pyload.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
-from pyload.common.packagetools import parseNames
+from pyload.utils.packagetools import parseNames
 from pyload.utils import safe_join
-from pyload.Api import OnlineStatus
+from pyload.api import OnlineStatus
 
 class PluginThread(Thread):
     """abstract base class for thread types"""

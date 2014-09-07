@@ -4,7 +4,7 @@ import re
 
 from urlparse import urlsplit
 
-from pyload.common.json_layer import json_loads, json_dumps
+from pyload.utils import json_loads, json_dumps
 from pyload.plugins.Hoster import Hoster
 
 

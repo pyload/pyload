@@ -3,7 +3,7 @@
 import os
 import sys
 
-import pyload.common.pylgettext as gettext
+import pyload.utils.pylgettext as gettext
 
 from getpass import getpass
 from os import makedirs
@@ -13,7 +13,7 @@ from subprocess import PIPE, call
 from pyload.utils import get_console_encoding, versiontuple
 
 
-class Setup:
+class SetupAssistant:
     """ pyLoads initial setup configuration assistant """
 
     def __init__(self, path, config):
@@ -40,7 +40,7 @@ class Setup:
         #        viaweb = self.ask(_("Start initial webinterface for configuration?"), "y", bool=True)
         #        if viaweb:
         #            try:
-        #                from pyload.threads import ServerThread
+        #                from pyload.manager.thread import ServerThread
         #                ServerThread.setup = self
         #                import pyload.webui as webinterface
         #                webinterface.run_simple()
@@ -264,7 +264,7 @@ class Setup:
 
         web = sqlite and beaker
 
-        from pyload.common import JsEngine
+        from pyload.utils import JsEngine
         js = True if JsEngine.ENGINE else False
         self.print_dep(_("JS engine"), js)
 

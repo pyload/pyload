@@ -9,7 +9,7 @@ from pycurl import FORM_FILE, HTTPHEADER
 from thread import start_new_thread
 from time import sleep
 
-from pyload.common.json_layer import json_loads
+from pyload.utils import json_loads
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getRequest
 from pyload.plugins.Hook import Hook

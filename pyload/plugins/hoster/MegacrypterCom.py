@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.common.json_layer import json_loads, json_dumps
+from pyload.utils import json_loads, json_dumps
 from pyload.plugins.hoster.MegaNz import MegaNz
 
 

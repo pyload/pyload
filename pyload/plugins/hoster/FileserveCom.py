@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.common.json_layer import json_loads
+from pyload.utils import json_loads
 from pyload.network.RequestFactory import getURL
 from pyload.plugins.Hoster import Hoster
 from pyload.plugins.Plugin import chunks

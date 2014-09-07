@@ -9,7 +9,7 @@ from array import array
 from base64 import standard_b64decode
 from os import remove
 
-from pyload.common.json_layer import json_loads, json_dumps
+from pyload.utils import json_loads, json_dumps
 from pyload.plugins.Hoster import Hoster
 
 

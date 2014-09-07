@@ -19,7 +19,7 @@
 from __future__ import with_statement
 from getopt import GetoptError, getopt
 
-import pyload.common.pylgettext as gettext
+import pyload.utils.pylgettext as gettext
 import os
 from os import _exit
 from os.path import join, exists, abspath, basename
@@ -29,7 +29,7 @@ from threading import Thread, Lock
 from time import sleep
 from traceback import print_exc
 
-import ConfigParser
+from pyload.config.Parser import ConfigParser
 
 from codecs import getwriter
 
@@ -44,7 +44,7 @@ from pyload import InitHomeDir
 from pyload.cli.printer import *
 from pyload.cli import AddPackage, ManageFiles
 
-from pyload.Api import Destination
+from pyload.api import Destination
 from pyload.utils import formatSize, decode
 from pyload.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection, NoSSL, WrongLogin, ConnectionClosed
 from Getch import Getch

@@ -9,9 +9,9 @@ from bottle import route, request, response, HTTPError
 from utils import toDict, set_session
 from pyload.webui import PYLOAD
 
-from pyload.common.json_layer import json
+from pyload.utils import json
 from SafeEval import const_eval as literal_eval
-from pyload.Api import BaseObject
+from pyload.api import BaseObject
 
 # json encoder that accepts TBase objects
 class TBaseEncoder(json.JSONEncoder):

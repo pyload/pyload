@@ -6,7 +6,7 @@ from random import randrange
 from urllib import quote, unquote
 from time import time
 
-from pyload.common.json_layer import json_loads
+from pyload.utils import json_loads
 from pyload.plugins.Hoster import Hoster
 from pyload.utils import parseFileSize
 

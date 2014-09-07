@@ -25,7 +25,7 @@ CURRENT_VERSION = '0.4.10'
 import __builtin__
 
 from getopt import getopt, GetoptError
-import pyload.common.pylgettext as gettext
+import pyload.utils.pylgettext as gettext
 from imp import find_module
 import logging
 import logging.handlers
@@ -40,17 +40,17 @@ from time import time, sleep
 from traceback import print_exc
 
 from pyload import InitHomeDir
-from pyload.plugins.AccountManager import AccountManager
-from pyload.CaptchaManager import CaptchaManager
-from pyload.ConfigParser import ConfigParser
-from pyload.plugins.PluginManager import PluginManager
-from pyload.PullEvents import PullManager
+from pyload.manager.AccountManager import AccountManager
+from pyload.manager.CaptchaManager import CaptchaManager
+from pyload.config.Parser import ConfigParser
+from pyload.manager.PluginManager import PluginManager
+from pyload.manager.event.PullEvents import PullManager
 from pyload.network.RequestFactory import RequestFactory
-from pyload.threads.ServerThread import WebServer
-from pyload.Scheduler import Scheduler
-from pyload.common.JsEngine import JsEngine
+from pyload.manager.thread.ServerThread import WebServer
+from pyload.manager.event.Scheduler import Scheduler
+from pyload.utils.JsEngine import JsEngine
 from pyload import remote
-from pyload.remote.RemoteManager import RemoteManager
+from pyload.manager.RemoteManager import RemoteManager
 from pyload.database import DatabaseBackend, FileHandler
 
 from pyload.utils import freeSpace, formatSize, get_console_encoding
@@ -99,21 +99,21 @@ class Core(object):
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
-                        from pyload.setup import Setup
+                        from pyload.config.Setup import SetupAssistant as Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
-                        from pyload.setup import Setup
+                        from pyload.config.Setup import SetupAssistant as Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.start()
                         exit()
                     elif option == "--changedir":
-                        from pyload.setup import Setup
+                        from pyload.config.Setup import SetupAssistant as Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
@@ -263,7 +263,7 @@ class Core(object):
         self.version = CURRENT_VERSION
 
         if not exists("pyload.conf"):
-            from pyload.setup import Setup
+            from pyload.config.Setup import SetupAssistant as Setup
 
             print "This is your first start, running configuration assistent now."
             self.config = ConfigParser()
@@ -376,14 +376,14 @@ class Core(object):
         self.lastClientConnected = 0
 
         # later imported because they would trigger api import, and remote value not set correctly
-        from pyload import Api
-        from pyload.HookManager import HookManager
-        from pyload.ThreadManager import ThreadManager
+        from pyload import api
+        from pyload.manager.HookManager import HookManager
+        from pyload.manager.ThreadManager import ThreadManager
 
-        if Api.activated != self.remote:
+        if api.activated != self.remote:
             self.log.warning("Import error: API remote status not correct.")
 
-        self.api = Api.Api(self)
+        self.api = api.Api(self)
 
         self.scheduler = Scheduler(self)
 
@@ -438,18 +438,6 @@ class Core(object):
         self.hookManager.coreReady()
 
         self.log.info(_("pyLoad is up and running"))
-
-        #test api
-#        from pyload.common.APIExerciser import startApiExerciser
-#        startApiExerciser(self, 3)
-
-        #some memory stats
-#        from guppy import hpy
-#        hp=hpy()
-#        import objgraph
-#        objgraph.show_most_common_types(limit=20)
-#        import memdebug
-#        memdebug.start(8002)
 
         locals().clear()
 

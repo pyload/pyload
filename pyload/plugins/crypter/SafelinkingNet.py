@@ -6,7 +6,7 @@ from pycurl import FOLLOWLOCATION
 
 from BeautifulSoup import BeautifulSoup
 
-from pyload.common.json_layer import json_loads
+from pyload.utils import json_loads
 from pyload.plugins.Crypter import Crypter
 from pyload.plugins.internal.CaptchaService import SolveMedia
 

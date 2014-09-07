@@ -8,7 +8,7 @@ from time import sleep
 from BeautifulSoup import BeautifulSoup
 
 from pyload.plugins.Crypter import Crypter
-from pyload.unescape import unescape
+from pyload.utils import html_unescape
 
 
 class SerienjunkiesOrg(Crypter):
@@ -48,7 +48,7 @@ class SerienjunkiesOrg(Crypter):
         soup = BeautifulSoup(src)
         packageName = self.pyfile.package().name
         if self.getConfig("changeNameSJ") == "Show":
-            found = unescape(soup.find("h2").find("a").string.split(' &#8211;')[0])
+            found = html_unescape(soup.find("h2").find("a").string.split(' &#8211;')[0])
             if found:
                 packageName = found
 
@@ -71,7 +71,7 @@ class SerienjunkiesOrg(Crypter):
         post = soup.find("div", attrs={"class": "post-content"})
         ps = post.findAll("p")
 
-        seasonName = unescape(soup.find("a", attrs={"rel": "bookmark"}).string).replace("&#8211;", "-")
+        seasonName = html_unescape(soup.find("a", attrs={"rel": "bookmark"}).string).replace("&#8211;", "-")
         groups = {}
         gid = -1
         for p in ps:
@@ -79,7 +79,7 @@ class SerienjunkiesOrg(Crypter):
                 var = p.findAll("strong")
                 opts = {"Sprache": "", "Format": ""}
                 for v in var:
-                    n = unescape(v.string).strip()
+                    n = html_unescape(v.string).strip()
                     n = re.sub(r"^([:]?)(.*?)([:]?)$", r'\2', n)
                     if n.strip() not in opts:
                         continue
@@ -198,7 +198,7 @@ class SerienjunkiesOrg(Crypter):
         soup = BeautifulSoup(src)
         post = soup.find("div", attrs={"id": "page_post"})
         ps = post.findAll("p")
-        found = unescape(soup.find("h2").find("a").string.split(' &#8211;')[0])
+        found = html_unescape(soup.find("h2").find("a").string.split(' &#8211;')[0])
         if found:
             seasonName = found
 
@@ -209,7 +209,7 @@ class SerienjunkiesOrg(Crypter):
                 var = p.findAll("strong")
                 opts = {"Sprache": "", "Format": ""}
                 for v in var:
-                    n = unescape(v.string).strip()
+                    n = html_unescape(v.string).strip()
                     n = re.sub(r"^([:]?)(.*?)([:]?)$", r'\2', n)
                     if n.strip() not in opts:
                         continue

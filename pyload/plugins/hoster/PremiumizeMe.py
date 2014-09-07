@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.common.json_layer import json_loads
+from pyload.utils import json_loads
 from pyload.plugins.Hoster import Hoster
 
 

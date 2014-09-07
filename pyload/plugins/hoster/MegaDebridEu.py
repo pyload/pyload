@@ -4,7 +4,7 @@ import re
 
 from urllib import unquote_plus
 
-from pyload.common.json_layer import json_loads
+from pyload.utils import json_loads
 from pyload.plugins.Hoster import Hoster
 
 

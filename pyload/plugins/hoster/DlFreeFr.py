@@ -3,7 +3,7 @@
 import pycurl
 import re
 
-from pyload.common.json_layer import json_loads
+from pyload.utils import json_loads
 from pyload.network.Browser import Browser
 from pyload.network.CookieJar import CookieJar
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns

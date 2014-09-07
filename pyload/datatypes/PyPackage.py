@@ -16,7 +16,7 @@
     @author: mkaay
 """
 
-from pyload.PullEvents import UpdateEvent
+from pyload.manager.event.PullEvents import UpdateEvent
 from pyload.utils import safe_filename
 
 class PyPackage:

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from pyload.common import APIExerciser
+import APIExerciser
+
 from nose.tools import nottest
 
 

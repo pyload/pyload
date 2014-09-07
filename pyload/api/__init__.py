@@ -21,9 +21,9 @@ from os.path import join
 from time import time
 import re
 
-from PyFile import PyFile
+from pyload.datatypes.PyFile import PyFile
 from utils import freeSpace, compare_time
-from common.packagetools import parseNames
+from pyload.utils.packagetools import parseNames
 from network.RequestFactory import getURL
 from remote import activated
 

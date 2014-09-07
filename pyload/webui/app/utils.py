@@ -22,7 +22,7 @@ from bottle import request, HTTPError, redirect, ServerAdapter
 
 from pyload.webui import env, THEME
 
-from pyload.Api import has_permission, PERMS, ROLE
+from pyload.api import has_permission, PERMS, ROLE
 
 def render_to_response(file, args={}, proc=[]):
     for p in proc:

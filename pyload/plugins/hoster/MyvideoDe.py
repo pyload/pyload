@@ -3,7 +3,7 @@
 import re
 
 from pyload.plugins.Hoster import Hoster
-from pyload.unescape import unescape
+from pyload.utils import html_unescape
 
 
 class MyvideoDe(Hoster):
@@ -35,7 +35,7 @@ class MyvideoDe(Hoster):
 
     def get_file_name(self):
         file_name_pattern = r"<h1 class='globalHd'>(.*)</h1>"
-        return unescape(re.search(file_name_pattern, self.html).group(1).replace("/", "") + '.flv')
+        return html_unescape(re.search(file_name_pattern, self.html).group(1).replace("/", "") + '.flv')
 
     def file_exists(self):
         self.download_html()

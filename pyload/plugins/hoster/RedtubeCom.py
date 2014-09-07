@@ -3,7 +3,7 @@
 import re
 
 from pyload.plugins.Hoster import Hoster
-from pyload.unescape import unescape
+from pyload.utils import html_unescape
 
 
 class RedtubeCom(Hoster):
@@ -36,7 +36,7 @@ class RedtubeCom(Hoster):
         if not self.html:
             self.download_html()
 
-        file_url = unescape(re.search(r'hashlink=(http.*?)"', self.html).group(1))
+        file_url = html_unescape(re.search(r'hashlink=(http.*?)"', self.html).group(1))
 
         return file_url
 

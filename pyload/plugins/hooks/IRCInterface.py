@@ -10,7 +10,7 @@ from threading import Thread
 from time import sleep
 from traceback import print_exc
 
-from pyload.Api import PackageDoesNotExists, FileDoesNotExists
+from pyload.api import PackageDoesNotExists, FileDoesNotExists
 from pyload.network.RequestFactory import getURL
 from pyload.plugins.Hook import Hook
 from pyload.utils import formatSize
