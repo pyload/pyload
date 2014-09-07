@@ -9,7 +9,7 @@ from os.path import isfile, join, exists, abspath
 from sys import version_info
 from traceback import print_exc
 
-from pyload.lib.SafeEval import const_eval as literal_eval
+from SafeEval import const_eval as literal_eval
 
 from pyload.ConfigParser import IGNORE
 

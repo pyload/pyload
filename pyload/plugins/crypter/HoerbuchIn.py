@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.lib.BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
+from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
 
 from pyload.plugins.Crypter import Crypter
 

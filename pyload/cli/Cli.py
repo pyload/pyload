@@ -47,8 +47,8 @@ from pyload.cli import AddPackage, ManageFiles
 from pyload.Api import Destination
 from pyload.utils import formatSize, decode
 from pyload.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection, NoSSL, WrongLogin, ConnectionClosed
-from pyload.lib.Getch import Getch
-from pyload.lib.rename_process import renameProcess
+from Getch import Getch
+from rename_process import renameProcess
 
 class Cli:
     def __init__(self, client, command):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from time import mktime, time
+import feedparser
 
-from pyload.lib import feedparser
+from time import mktime, time
 
 from pyload.plugins.Hook import Hook
 

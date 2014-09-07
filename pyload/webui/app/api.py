@@ -10,7 +10,7 @@ from utils import toDict, set_session
 from pyload.webui import PYLOAD
 
 from pyload.common.json_layer import json
-from pyload.lib.SafeEval import const_eval as literal_eval
+from SafeEval import const_eval as literal_eval
 from pyload.Api import BaseObject
 
 # json encoder that accepts TBase objects

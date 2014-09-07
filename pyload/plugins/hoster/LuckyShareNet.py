@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.lib.bottle import json_loads
+from bottle import json_loads
 
 from pyload.plugins.internal.CaptchaService import ReCaptcha
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo

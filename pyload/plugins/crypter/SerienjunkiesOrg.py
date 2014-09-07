@@ -5,7 +5,7 @@ import re
 
 from time import sleep
 
-from pyload.lib.BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup
 
 from pyload.plugins.Crypter import Crypter
 from pyload.unescape import unescape

@@ -390,4 +390,11 @@ class JSONDecoder(object):
             raise JSONDecodeError('Expecting value', s, idx)
         if _PY3 and not isinstance(s, text_type):
             raise TypeError("Input string must be text, not bytes")
+        # strip UTF-8 bom
+        if len(s) > idx:
+            ord0 = ord(s[idx])
+            if ord0 == 0xfeff:
+                idx += 1
+            elif ord0 == 0xef and s[idx:idx + 3] == '\xef\xbb\xbf':
+                idx += 3
         return self.scan_once(s, idx=_w(s, idx).end())
