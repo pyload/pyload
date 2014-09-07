@@ -19,7 +19,7 @@ Plugin header
 
 How basic hoster plugin header could look like: ::
 
-        from pyload.plugin.Hoster import Hoster
+        from pyload.plugins.Hoster import Hoster
 
         class MyFileHoster(Hoster):
                 __name__ = "MyFileHoster"
@@ -30,7 +30,7 @@ How basic hoster plugin header could look like: ::
 You have to define these meta-data, ``__pattern__`` has to be a regexp that sucessfully compiles with
 ``re.compile(__pattern__)``.
 
-Just like :ref:`write_hooks` you can add and use config values exatly the same way.
+Just like :ref:`write_addons` you can add and use config values exatly the same way.
 If you want a Crypter or Container plugin, just replace the word Hoster with your desired plugin type.
 
 
@@ -41,7 +41,7 @@ We head to the next important section, the ``process`` method of your plugin.
 In fact the ``process`` method is the only functionality your plugin has to provide, but its always a good idea to split up tasks to not produce spaghetti code.
 An example ``process`` function could look like this ::
 
-        from pyload.plugin.Hoster import Hoster
+        from pyload.plugins.Hoster import Hoster
 
         class MyFileHoster(Hoster):
             """
@@ -58,7 +58,7 @@ An example ``process`` function could look like this ::
                 # download the file, destination is determined by pyLoad
                 self.download(parsed_url)
 
-You need to know about the :class:`PyFile <pyload.PyFile.PyFile>` class, since an instance of it is given as parameter to every pyfile.
+You need to know about the :class:`PyFile <pyload.datatype.PyFile.PyFile>` class, since an instance of it is given as parameter to every pyfile.
 Some tasks your plugin should handle:  proof if file is online, get filename, wait if needed, download the file, etc..
 
 Wait times
@@ -71,7 +71,7 @@ Captcha decrypting
 __________________
 
 To handle captcha input just use ``self.decryptCaptcha(url, ...)``, it will be send to clients
-or handled by :class:`Hook <pyload.plugins.Hook.Hook>` plugins
+or handled by :class:`Addon <pyload.plugins.Addon.Addon>` plugins
 
 Crypter
 -------
@@ -81,7 +81,7 @@ Well, they work nearly the same, only that the function they have to provide is 
 
 Example: ::
 
-    from pyload.plugin.Crypter import Crypter
+    from pyload.plugins.Crypter import Crypter
 
     class MyFileCrypter(Crypter):
         """
