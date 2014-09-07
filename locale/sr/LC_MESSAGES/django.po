@@ -12,673 +12,673 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: crowdin.net\n"
 
-#: module/webui/translations.js:1
+#: pyload/webui/translations.js:1
 msgid "New Captcha Request"
 msgstr "Нови захтев за проверу"
 
-#: module/webui/translations.js:2 module/webui/themes/default/tml/captcha.html:7
+#: pyload/webui/translations.js:2 pyload/webui/themes/default/tml/captcha.html:7
 msgid "Please read the text on the captcha."
 msgstr "Молимо да прочитате текст са провере."
 
-#: module/webui/translations.js:3
+#: pyload/webui/translations.js:3
 msgid "pyLoad restarted"
 msgstr "pyLoad рестартован"
 
-#: module/webui/translations.js:4
-#: module/webui/themes/default/tml/settings_item.html:16
-#: module/webui/themes/default/tml/base.html:123
-#: module/webui/themes/default/tml/base.html:124
+#: pyload/webui/translations.js:4
+#: pyload/webui/themes/default/tml/settings_item.html:16
+#: pyload/webui/themes/default/tml/base.html:123
+#: pyload/webui/themes/default/tml/base.html:124
 msgid "off"
 msgstr "искључено"
 
-#: module/webui/translations.js:5
+#: pyload/webui/translations.js:5
 msgid "Success"
 msgstr "Успешно обављено"
 
-#: module/webui/translations.js:6
-#: module/webui/themes/default/tml/settings_item.html:14
-#: module/webui/themes/default/tml/base.html:123
-#: module/webui/themes/default/tml/base.html:124
+#: pyload/webui/translations.js:6
+#: pyload/webui/themes/default/tml/settings_item.html:14
+#: pyload/webui/themes/default/tml/base.html:123
+#: pyload/webui/themes/default/tml/base.html:124
 msgid "on"
 msgstr "укључено"
 
-#: module/webui/translations.js:7
+#: pyload/webui/translations.js:7
 msgid "You are really sure you want to quit pyLoad?"
 msgstr "Да ли сте сигурни да желите да искључите pyLoad?"
 
-#: module/webui/translations.js:8
+#: pyload/webui/translations.js:8
 msgid "Restart Link"
 msgstr "Рестартовати везу"
 
-#: module/webui/translations.js:9
+#: pyload/webui/translations.js:9
 msgid "Delete Link"
 msgstr "Обрисати везу"
 
-#: module/webui/translations.js:10
+#: pyload/webui/translations.js:10
 msgid "Please Enter a packagename."
 msgstr "Унесите име пакета."
 
-#: module/webui/translations.js:11
+#: pyload/webui/translations.js:11
 msgid "Please click on the right captcha position."
 msgstr "Кликните на десну страну провере."
 
-#: module/webui/translations.js:12
+#: pyload/webui/translations.js:12
 msgid "Error occured."
 msgstr "Десила се грешка."
 
-#: module/webui/translations.js:13
-#: module/webui/themes/default/tml/filemanager.html:65
-#: module/webui/themes/default/tml/folder.html:14
+#: pyload/webui/translations.js:13
+#: pyload/webui/themes/default/tml/filemanager.html:65
+#: pyload/webui/themes/default/tml/folder.html:14
 msgid "Folder is empty"
 msgstr "Фасцикла је празна"
 
-#: module/webui/translations.js:14
+#: pyload/webui/translations.js:14
 msgid "Failed"
 msgstr "Неуспело"
 
-#: module/webui/translations.js:15
+#: pyload/webui/translations.js:15
 msgid "No Captchas to read."
 msgstr "Нема захтева за проверу"
 
-#: module/webui/translations.js:16
+#: pyload/webui/translations.js:16
 msgid "Passwords did not match."
 msgstr "Лозинке се не поклапају"
 
-#: module/webui/translations.js:17
+#: pyload/webui/translations.js:17
 msgid "Settings saved."
 msgstr "Подешавања сачувана."
 
-#: module/webui/translations.js:18
+#: pyload/webui/translations.js:18
 msgid "New folder"
 msgstr "Нова фасцикла"
 
-#: module/webui/translations.js:19
+#: pyload/webui/translations.js:19
 msgid "Are you sure you want to restart pyLoad?"
 msgstr "Да ли сте сигурни да желите да рестатујете pyLoad?"
 
-#: module/webui/app/json.py:57
+#: pyload/webui/app/json.py:57
 #, python-format
 msgid "waiting %s"
 msgstr "чекам %s"
 
-#: module/webui/themes/default/tml/home.html:206
+#: pyload/webui/themes/default/tml/home.html:206
 msgid "Active Downloads"
 msgstr "Активна преузимања"
 
-#: module/webui/themes/default/tml/home.html:211
-#: module/webui/themes/default/tml/base.html:84
+#: pyload/webui/themes/default/tml/home.html:211
+#: pyload/webui/themes/default/tml/base.html:84
 msgid "Home"
 msgstr "Кућа"
 
-#: module/webui/themes/default/tml/home.html:214
-#: module/webui/themes/default/tml/queue.html:15
-#: module/webui/themes/default/tml/window.html:34
-#: module/webui/themes/default/tml/base.html:87
+#: pyload/webui/themes/default/tml/home.html:214
+#: pyload/webui/themes/default/tml/queue.html:15
+#: pyload/webui/themes/default/tml/window.html:34
+#: pyload/webui/themes/default/tml/base.html:87
 msgid "Queue"
 msgstr ""
 
-#: module/webui/themes/default/tml/home.html:217
-#: module/webui/themes/default/tml/queue.html:17
-#: module/webui/themes/default/tml/window.html:36
-#: module/webui/themes/default/tml/base.html:90
+#: pyload/webui/themes/default/tml/home.html:217
+#: pyload/webui/themes/default/tml/queue.html:17
+#: pyload/webui/themes/default/tml/window.html:36
+#: pyload/webui/themes/default/tml/base.html:90
 msgid "Collector"
 msgstr ""
 
-#: module/webui/themes/default/tml/home.html:220
-#: module/webui/themes/default/tml/downloads.html:6
-#: module/webui/themes/default/tml/base.html:93
+#: pyload/webui/themes/default/tml/home.html:220
+#: pyload/webui/themes/default/tml/downloads.html:6
+#: pyload/webui/themes/default/tml/base.html:93
 msgid "Downloads"
 msgstr "Преузимања"
 
-#: module/webui/themes/default/tml/home.html:226
-#: module/webui/themes/default/tml/logs.html:3
-#: module/webui/themes/default/tml/logs.html:4
-#: module/webui/themes/default/tml/base.html:99
+#: pyload/webui/themes/default/tml/home.html:226
+#: pyload/webui/themes/default/tml/logs.html:3
+#: pyload/webui/themes/default/tml/logs.html:4
+#: pyload/webui/themes/default/tml/base.html:99
 msgid "Logs"
 msgstr "Извештаји"
 
-#: module/webui/themes/default/tml/home.html:229
-#: module/webui/themes/default/tml/settings.html:3
-#: module/webui/themes/default/tml/settings.html:4
-#: module/webui/themes/default/tml/base.html:102
+#: pyload/webui/themes/default/tml/home.html:229
+#: pyload/webui/themes/default/tml/settings.html:3
+#: pyload/webui/themes/default/tml/settings.html:4
+#: pyload/webui/themes/default/tml/base.html:102
 msgid "Config"
 msgstr "Подешавање"
 
-#: module/webui/themes/default/tml/home.html:237
-#: module/webui/themes/default/tml/queue.html:82
-#: module/webui/themes/default/tml/settings.html:91
-#: module/webui/themes/default/tml/window.html:7
-#: module/webui/themes/default/tml/admin.html:25
+#: pyload/webui/themes/default/tml/home.html:237
+#: pyload/webui/themes/default/tml/queue.html:82
+#: pyload/webui/themes/default/tml/settings.html:91
+#: pyload/webui/themes/default/tml/window.html:7
+#: pyload/webui/themes/default/tml/admin.html:25
 msgid "Name"
 msgstr "Име"
 
-#: module/webui/themes/default/tml/home.html:238
-#: module/webui/themes/default/tml/settings.html:93
+#: pyload/webui/themes/default/tml/home.html:238
+#: pyload/webui/themes/default/tml/settings.html:93
 msgid "Status"
 msgstr "Статус"
 
-#: module/webui/themes/default/tml/home.html:239
-#: module/webui/themes/default/tml/info.html:14
-#: module/webui/themes/default/tml/info.html:15
+#: pyload/webui/themes/default/tml/home.html:239
+#: pyload/webui/themes/default/tml/info.html:14
+#: pyload/webui/themes/default/tml/info.html:15
 msgid "Information"
 msgstr "Информација"
 
-#: module/webui/themes/default/tml/home.html:240
+#: pyload/webui/themes/default/tml/home.html:240
 msgid "Size"
 msgstr "Величина"
 
-#: module/webui/themes/default/tml/home.html:241
+#: pyload/webui/themes/default/tml/home.html:241
 msgid "Progress"
 msgstr "Напредак"
 
-#: module/webui/themes/default/tml/login.html:3
-#: module/webui/themes/default/tml/settings.html:178
+#: pyload/webui/themes/default/tml/login.html:3
+#: pyload/webui/themes/default/tml/settings.html:178
 msgid "Login"
 msgstr "Пријава"
 
-#: module/webui/themes/default/tml/login.html:14
+#: pyload/webui/themes/default/tml/login.html:14
 msgid "Username"
 msgstr "Корисничко име"
 
-#: module/webui/themes/default/tml/login.html:19
-#: module/webui/themes/default/tml/queue.html:92
-#: module/webui/themes/default/tml/settings.html:92
-#: module/webui/themes/default/tml/settings.html:183
-#: module/webui/themes/default/tml/window.html:21
+#: pyload/webui/themes/default/tml/login.html:19
+#: pyload/webui/themes/default/tml/queue.html:92
+#: pyload/webui/themes/default/tml/settings.html:92
+#: pyload/webui/themes/default/tml/settings.html:183
+#: pyload/webui/themes/default/tml/window.html:21
 msgid "Password"
 msgstr "Лозинка"
 
-#: module/webui/themes/default/tml/login.html:29
+#: pyload/webui/themes/default/tml/login.html:29
 msgid "Your username and password didn't match. Please try again."
 msgstr "Име и лозинка не одговарају. Поновити."
 
-#: module/webui/themes/default/tml/login.html:30
+#: pyload/webui/themes/default/tml/login.html:30
 msgid "To reset your login data or add an user run:"
 msgstr "Да би ресетовали податке пријаве или за додавање корисника:"
 
-#: module/webui/themes/default/tml/queue.html:25
+#: pyload/webui/themes/default/tml/queue.html:25
 msgid "Delete Finished"
 msgstr "Обриши завршено"
 
-#: module/webui/themes/default/tml/queue.html:26
+#: pyload/webui/themes/default/tml/queue.html:26
 msgid "Restart Failed"
 msgstr "Рестартовање неуспешно"
 
-#: module/webui/themes/default/tml/queue.html:65
+#: pyload/webui/themes/default/tml/queue.html:65
 msgid "Folder:"
 msgstr "Фасцикла:"
 
-#: module/webui/themes/default/tml/queue.html:65
+#: pyload/webui/themes/default/tml/queue.html:65
 msgid "Password:"
 msgstr "Лозинка:"
 
-#: module/webui/themes/default/tml/queue.html:79
+#: pyload/webui/themes/default/tml/queue.html:79
 msgid "Edit Package"
 msgstr "Уреди пакет"
 
-#: module/webui/themes/default/tml/queue.html:80
+#: pyload/webui/themes/default/tml/queue.html:80
 msgid "Edit the package detais below."
 msgstr "Уреди детаље пљкета."
 
-#: module/webui/themes/default/tml/queue.html:83
+#: pyload/webui/themes/default/tml/queue.html:83
 msgid "The name of the package."
 msgstr "Име пакета."
 
-#: module/webui/themes/default/tml/queue.html:87
+#: pyload/webui/themes/default/tml/queue.html:87
 msgid "Folder"
 msgstr "Фасцикла"
 
-#: module/webui/themes/default/tml/queue.html:88
+#: pyload/webui/themes/default/tml/queue.html:88
 msgid "Name of subfolder for these downloads."
 msgstr "Име подфасцикле за ова преузимања."
 
-#: module/webui/themes/default/tml/queue.html:93
+#: pyload/webui/themes/default/tml/queue.html:93
 msgid "List of passwords used for unrar."
 msgstr "Списак лозинке за РАР."
 
-#: module/webui/themes/default/tml/queue.html:97
-#: module/webui/themes/default/tml/settings.html:167
-#: module/webui/themes/default/tml/captcha.html:33
-#: module/webui/themes/default/tml/admin.html:61
-#: module/webui/themes/default/tml/admin.html:91
+#: pyload/webui/themes/default/tml/queue.html:97
+#: pyload/webui/themes/default/tml/settings.html:167
+#: pyload/webui/themes/default/tml/captcha.html:33
+#: pyload/webui/themes/default/tml/admin.html:61
+#: pyload/webui/themes/default/tml/admin.html:91
 msgid "Submit"
 msgstr "Сачувај"
 
-#: module/webui/themes/default/tml/queue.html:98
-#: module/webui/themes/default/tml/settings.html:198
-#: module/webui/themes/default/tml/window.html:41
-#: module/webui/themes/default/tml/admin.html:92
+#: pyload/webui/themes/default/tml/queue.html:98
+#: pyload/webui/themes/default/tml/settings.html:198
+#: pyload/webui/themes/default/tml/window.html:41
+#: pyload/webui/themes/default/tml/admin.html:92
 msgid "Reset"
 msgstr "Ресет"
 
-#: module/webui/themes/default/tml/logout.html:8
+#: pyload/webui/themes/default/tml/logout.html:8
 msgid "You were successfully logged out."
 msgstr "Успешно сте се одјавили."
 
-#: module/webui/themes/default/tml/pathchooser.html:39
-#: module/webui/themes/default/tml/pathchooser.html:41
+#: pyload/webui/themes/default/tml/pathchooser.html:39
+#: pyload/webui/themes/default/tml/pathchooser.html:41
 msgid "Path"
 msgstr "Путања"
 
-#: module/webui/themes/default/tml/pathchooser.html:39
-#: module/webui/themes/default/tml/pathchooser.html:41
+#: pyload/webui/themes/default/tml/pathchooser.html:39
+#: pyload/webui/themes/default/tml/pathchooser.html:41
 msgid "absolute"
 msgstr "абсолутно"
 
-#: module/webui/themes/default/tml/pathchooser.html:39
-#: module/webui/themes/default/tml/pathchooser.html:41
+#: pyload/webui/themes/default/tml/pathchooser.html:39
+#: pyload/webui/themes/default/tml/pathchooser.html:41
 msgid "relative"
 msgstr "релативно"
 
-#: module/webui/themes/default/tml/pathchooser.html:46
+#: pyload/webui/themes/default/tml/pathchooser.html:46
 msgid "name"
 msgstr "име"
 
-#: module/webui/themes/default/tml/pathchooser.html:47
+#: pyload/webui/themes/default/tml/pathchooser.html:47
 msgid "size"
 msgstr "величина"
 
-#: module/webui/themes/default/tml/pathchooser.html:48
+#: pyload/webui/themes/default/tml/pathchooser.html:48
 msgid "type"
 msgstr "тип"
 
-#: module/webui/themes/default/tml/pathchooser.html:49
+#: pyload/webui/themes/default/tml/pathchooser.html:49
 msgid "last modified"
 msgstr "задња промена"
 
-#: module/webui/themes/default/tml/pathchooser.html:54
+#: pyload/webui/themes/default/tml/pathchooser.html:54
 msgid "parent directory"
 msgstr "родитељска фасцикла"
 
-#: module/webui/themes/default/tml/pathchooser.html:70
+#: pyload/webui/themes/default/tml/pathchooser.html:70
 msgid "no content"
 msgstr "нема садржаја"
 
-#: module/webui/themes/default/tml/settings.html:16
+#: pyload/webui/themes/default/tml/settings.html:16
 msgid "General"
 msgstr "Опште"
 
-#: module/webui/themes/default/tml/settings.html:17
+#: pyload/webui/themes/default/tml/settings.html:17
 msgid "Plugins"
 msgstr "Додатци"
 
-#: module/webui/themes/default/tml/settings.html:18
+#: pyload/webui/themes/default/tml/settings.html:18
 msgid "Accounts"
 msgstr "Налози"
 
-#: module/webui/themes/default/tml/settings.html:45
-#: module/webui/themes/default/tml/settings.html:74
+#: pyload/webui/themes/default/tml/settings.html:45
+#: pyload/webui/themes/default/tml/settings.html:74
 msgid "Choose a section from the menu"
 msgstr "Одабрати секцију из менија"
 
-#: module/webui/themes/default/tml/settings.html:90
+#: pyload/webui/themes/default/tml/settings.html:90
 msgid "Plugin"
 msgstr "Прикључак"
 
-#: module/webui/themes/default/tml/settings.html:94
+#: pyload/webui/themes/default/tml/settings.html:94
 msgid "Premium"
 msgstr "Премијум"
 
-#: module/webui/themes/default/tml/settings.html:95
+#: pyload/webui/themes/default/tml/settings.html:95
 msgid "Valid until"
 msgstr "Важи до"
 
-#: module/webui/themes/default/tml/settings.html:96
+#: pyload/webui/themes/default/tml/settings.html:96
 msgid "Traffic left"
 msgstr "Преостали проток"
 
-#: module/webui/themes/default/tml/settings.html:97
+#: pyload/webui/themes/default/tml/settings.html:97
 msgid "Time"
 msgstr "Време"
 
-#: module/webui/themes/default/tml/settings.html:98
+#: pyload/webui/themes/default/tml/settings.html:98
 msgid "Max Parallel"
 msgstr "Макс истовремено"
 
-#: module/webui/themes/default/tml/settings.html:99
+#: pyload/webui/themes/default/tml/settings.html:99
 msgid "Delete?"
 msgstr "Обриши?"
 
-#: module/webui/themes/default/tml/settings.html:121
+#: pyload/webui/themes/default/tml/settings.html:121
 msgid "valid"
 msgstr "исправно"
 
-#: module/webui/themes/default/tml/settings.html:124
+#: pyload/webui/themes/default/tml/settings.html:124
 msgid "not valid"
 msgstr "није важно"
 
-#: module/webui/themes/default/tml/settings.html:131
+#: pyload/webui/themes/default/tml/settings.html:131
 msgid "yes"
 msgstr "да"
 
-#: module/webui/themes/default/tml/settings.html:134
+#: pyload/webui/themes/default/tml/settings.html:134
 msgid "no"
 msgstr "не"
 
-#: module/webui/themes/default/tml/settings.html:168
-#: module/webui/themes/default/tml/settings.html:197
-#: module/webui/themes/default/tml/base.html:117
+#: pyload/webui/themes/default/tml/settings.html:168
+#: pyload/webui/themes/default/tml/settings.html:197
+#: pyload/webui/themes/default/tml/base.html:117
 msgid "Add"
 msgstr "Додај"
 
-#: module/webui/themes/default/tml/settings.html:176
+#: pyload/webui/themes/default/tml/settings.html:176
 msgid "Add Account"
 msgstr "Додај налог"
 
-#: module/webui/themes/default/tml/settings.html:177
+#: pyload/webui/themes/default/tml/settings.html:177
 msgid "Enter your account data to use premium features."
 msgstr "Унос података за употребу премијум могућности."
 
-#: module/webui/themes/default/tml/settings.html:179
-#: module/webui/themes/default/tml/admin.html:71
+#: pyload/webui/themes/default/tml/settings.html:179
+#: pyload/webui/themes/default/tml/admin.html:71
 msgid "Your username."
 msgstr "Ваше име:"
 
-#: module/webui/themes/default/tml/settings.html:184
-#: module/webui/themes/default/tml/admin.html:76
+#: pyload/webui/themes/default/tml/settings.html:184
+#: pyload/webui/themes/default/tml/admin.html:76
 msgid "The password for this account."
 msgstr "Лозинка за овај налог"
 
-#: module/webui/themes/default/tml/settings.html:188
+#: pyload/webui/themes/default/tml/settings.html:188
 msgid "Type"
 msgstr "Тип"
 
-#: module/webui/themes/default/tml/settings.html:189
+#: pyload/webui/themes/default/tml/settings.html:189
 msgid "Choose the hoster for your account."
 msgstr "Одабрати хост Вашег налога."
 
-#: module/webui/themes/default/tml/logs.html:12
-#: module/webui/themes/default/tml/base.html:114
+#: pyload/webui/themes/default/tml/logs.html:12
+#: pyload/webui/themes/default/tml/base.html:114
 msgid "Start"
 msgstr "Стартуј"
 
-#: module/webui/themes/default/tml/logs.html:12
+#: pyload/webui/themes/default/tml/logs.html:12
 msgid "prev"
 msgstr "назад"
 
-#: module/webui/themes/default/tml/logs.html:12
+#: pyload/webui/themes/default/tml/logs.html:12
 msgid "next"
 msgstr "даље"
 
-#: module/webui/themes/default/tml/logs.html:12
+#: pyload/webui/themes/default/tml/logs.html:12
 msgid "End"
 msgstr "Крај"
 
-#: module/webui/themes/default/tml/info.html:18
+#: pyload/webui/themes/default/tml/info.html:18
 msgid "News"
 msgstr "Вести"
 
-#: module/webui/themes/default/tml/info.html:21
+#: pyload/webui/themes/default/tml/info.html:21
 msgid "Support"
 msgstr "Подршка"
 
-#: module/webui/themes/default/tml/info.html:37
+#: pyload/webui/themes/default/tml/info.html:37
 msgid "System"
 msgstr "Систем"
 
-#: module/webui/themes/default/tml/info.html:40
+#: pyload/webui/themes/default/tml/info.html:40
 msgid "Python:"
 msgstr ""
 
-#: module/webui/themes/default/tml/info.html:44
+#: pyload/webui/themes/default/tml/info.html:44
 msgid "OS:"
 msgstr "ОС:"
 
-#: module/webui/themes/default/tml/info.html:48
+#: pyload/webui/themes/default/tml/info.html:48
 msgid "pyLoad version:"
 msgstr "Верзија pyLoad-а:"
 
-#: module/webui/themes/default/tml/info.html:52
+#: pyload/webui/themes/default/tml/info.html:52
 msgid "Installation Folder:"
 msgstr "Фасцикла инсталације:"
 
-#: module/webui/themes/default/tml/info.html:56
+#: pyload/webui/themes/default/tml/info.html:56
 msgid "Config Folder:"
 msgstr "Фасцикла подешавања:"
 
-#: module/webui/themes/default/tml/info.html:60
+#: pyload/webui/themes/default/tml/info.html:60
 msgid "Download Folder:"
 msgstr "Фасцикла преузимања:"
 
-#: module/webui/themes/default/tml/info.html:64
+#: pyload/webui/themes/default/tml/info.html:64
 msgid "Free Space:"
 msgstr "Простор:"
 
-#: module/webui/themes/default/tml/info.html:68
+#: pyload/webui/themes/default/tml/info.html:68
 msgid "Language:"
 msgstr "Језик:"
 
-#: module/webui/themes/default/tml/info.html:72
+#: pyload/webui/themes/default/tml/info.html:72
 msgid "Webinterface Port:"
 msgstr "Порт вебинтерфејса:"
 
-#: module/webui/themes/default/tml/info.html:76
+#: pyload/webui/themes/default/tml/info.html:76
 msgid "Remote Interface Port:"
 msgstr "Порт удаљеног интерфејса:"
 
-#: module/webui/themes/default/tml/setup.html:3
-#: module/webui/themes/default/tml/setup.html:4
+#: pyload/webui/themes/default/tml/setup.html:3
+#: pyload/webui/themes/default/tml/setup.html:4
 msgid "Setup"
 msgstr "Подешавање"
 
-#: module/webui/themes/default/tml/filemanager.html:19
+#: pyload/webui/themes/default/tml/filemanager.html:19
 msgid "FileManager"
 msgstr "Менаџер датотеке"
 
-#: module/webui/themes/default/tml/window.html:5
-#: module/webui/themes/default/tml/window.html:40
+#: pyload/webui/themes/default/tml/window.html:5
+#: pyload/webui/themes/default/tml/window.html:40
 msgid "Add Package"
 msgstr "Додај пакет"
 
-#: module/webui/themes/default/tml/window.html:6
+#: pyload/webui/themes/default/tml/window.html:6
 msgid "Paste your links or upload a container."
 msgstr "Прилепи линкове или послати контејнер."
 
-#: module/webui/themes/default/tml/window.html:8
+#: pyload/webui/themes/default/tml/window.html:8
 msgid "The name of the new package."
 msgstr "Име новог пакета."
 
-#: module/webui/themes/default/tml/window.html:12
+#: pyload/webui/themes/default/tml/window.html:12
 msgid "Links"
 msgstr "Везе"
 
-#: module/webui/themes/default/tml/window.html:13
+#: pyload/webui/themes/default/tml/window.html:13
 msgid "Paste your links here or any text and press the filter button."
 msgstr "Прилепите везе или текст и стисните дугме Филтер."
 
-#: module/webui/themes/default/tml/window.html:14
+#: pyload/webui/themes/default/tml/window.html:14
 msgid "Filter urls"
 msgstr "Филтрирај УРЛ"
 
-#: module/webui/themes/default/tml/window.html:22
+#: pyload/webui/themes/default/tml/window.html:22
 msgid "Password for RAR-Archive"
 msgstr "Лозинка за РАР архиве"
 
-#: module/webui/themes/default/tml/window.html:26
+#: pyload/webui/themes/default/tml/window.html:26
 msgid "File"
 msgstr "Датотека"
 
-#: module/webui/themes/default/tml/window.html:27
+#: pyload/webui/themes/default/tml/window.html:27
 msgid "Upload a container."
 msgstr "Пошаљи контејнер."
 
-#: module/webui/themes/default/tml/window.html:31
+#: pyload/webui/themes/default/tml/window.html:31
 msgid "Destination"
 msgstr "Одредиште"
 
-#: module/webui/themes/default/tml/captcha.html:6
+#: pyload/webui/themes/default/tml/captcha.html:6
 msgid "Captcha reading"
 msgstr "Читање провере"
 
-#: module/webui/themes/default/tml/captcha.html:13
+#: pyload/webui/themes/default/tml/captcha.html:13
 msgid "Captcha"
 msgstr "Провера"
 
-#: module/webui/themes/default/tml/captcha.html:14
+#: pyload/webui/themes/default/tml/captcha.html:14
 msgid "The captcha."
 msgstr "Провера."
 
-#: module/webui/themes/default/tml/captcha.html:20
+#: pyload/webui/themes/default/tml/captcha.html:20
 msgid "Text"
 msgstr "Текст"
 
-#: module/webui/themes/default/tml/captcha.html:21
+#: pyload/webui/themes/default/tml/captcha.html:21
 msgid "Input the text on the captcha."
 msgstr "Унети текст из провере."
 
-#: module/webui/themes/default/tml/captcha.html:34
+#: pyload/webui/themes/default/tml/captcha.html:34
 msgid "Close"
 msgstr "Затвори"
 
-#: module/webui/themes/default/tml/base.html:20
-#: module/webui/themes/default/tml/base.html:139
+#: pyload/webui/themes/default/tml/base.html:20
+#: pyload/webui/themes/default/tml/base.html:139
 msgid "Webinterface"
 msgstr "Вебинтерфејс"
 
-#: module/webui/themes/default/tml/base.html:39
+#: pyload/webui/themes/default/tml/base.html:39
 msgid "pyLoad Update available!"
 msgstr "Ажурирања су доступна!"
 
-#: module/webui/themes/default/tml/base.html:46
+#: pyload/webui/themes/default/tml/base.html:46
 msgid "Plugins updated, please restart!"
 msgstr "Додатци су ажурирани, рестартовати!"
 
-#: module/webui/themes/default/tml/base.html:52
+#: pyload/webui/themes/default/tml/base.html:52
 msgid "Captcha waiting"
 msgstr "Чекање провере"
 
-#: module/webui/themes/default/tml/base.html:57
+#: pyload/webui/themes/default/tml/base.html:57
 msgid "Logout"
 msgstr "Одјава"
 
-#: module/webui/themes/default/tml/base.html:59
-#: module/webui/themes/default/tml/admin.html:8
-#: module/webui/themes/default/tml/admin.html:9
+#: pyload/webui/themes/default/tml/base.html:59
+#: pyload/webui/themes/default/tml/admin.html:8
+#: pyload/webui/themes/default/tml/admin.html:9
 msgid "Administrate"
 msgstr "Администруј"
 
-#: module/webui/themes/default/tml/base.html:61
+#: pyload/webui/themes/default/tml/base.html:61
 msgid "Info"
 msgstr "Инфо"
 
-#: module/webui/themes/default/tml/base.html:65
+#: pyload/webui/themes/default/tml/base.html:65
 msgid "Please Login!"
 msgstr "Логујте се!"
 
-#: module/webui/themes/default/tml/base.html:115
+#: pyload/webui/themes/default/tml/base.html:115
 msgid "Stop"
 msgstr "Заустави"
 
-#: module/webui/themes/default/tml/base.html:116
+#: pyload/webui/themes/default/tml/base.html:116
 msgid "Cancel"
 msgstr "Откажи"
 
-#: module/webui/themes/default/tml/base.html:123
+#: pyload/webui/themes/default/tml/base.html:123
 msgid "Download:"
 msgstr "Преузми:"
 
-#: module/webui/themes/default/tml/base.html:124
+#: pyload/webui/themes/default/tml/base.html:124
 msgid "Reconnect:"
 msgstr "Поновна веза:"
 
-#: module/webui/themes/default/tml/base.html:125
+#: pyload/webui/themes/default/tml/base.html:125
 msgid "Speed:"
 msgstr "Брзина:"
 
-#: module/webui/themes/default/tml/base.html:126
+#: pyload/webui/themes/default/tml/base.html:126
 msgid "Active:"
 msgstr "Активно:"
 
-#: module/webui/themes/default/tml/base.html:127
+#: pyload/webui/themes/default/tml/base.html:127
 msgid "Reload page"
 msgstr "Поново учитај страну"
 
-#: module/webui/themes/default/tml/base.html:157
+#: pyload/webui/themes/default/tml/base.html:157
 msgid "loading"
 msgstr "учитавање"
 
-#: module/webui/themes/default/tml/base.html:166
+#: pyload/webui/themes/default/tml/base.html:166
 msgid "Back to top"
 msgstr "Назад на врх"
 
-#: module/webui/themes/default/tml/admin.html:13
+#: pyload/webui/themes/default/tml/admin.html:13
 msgid "Quit pyLoad"
 msgstr "Искључити pyLoad"
 
-#: module/webui/themes/default/tml/admin.html:14
+#: pyload/webui/themes/default/tml/admin.html:14
 msgid "Restart pyLoad"
 msgstr "Рестартовати pyLoad"
 
-#: module/webui/themes/default/tml/admin.html:18
+#: pyload/webui/themes/default/tml/admin.html:18
 msgid "To add user or change passwords use:"
 msgstr "За додавање/промене лозинку употребити:"
 
-#: module/webui/themes/default/tml/admin.html:19
+#: pyload/webui/themes/default/tml/admin.html:19
 msgid "Important: Admin user have always all permissions!"
 msgstr "Важно! Админ корисник увек има сва права!"
 
-#: module/webui/themes/default/tml/admin.html:28
-#: module/webui/themes/default/tml/admin.html:67
+#: pyload/webui/themes/default/tml/admin.html:28
+#: pyload/webui/themes/default/tml/admin.html:67
 msgid "Change Password"
 msgstr "Промени лозинку"
 
-#: module/webui/themes/default/tml/admin.html:31
+#: pyload/webui/themes/default/tml/admin.html:31
 msgid "Admin"
 msgstr "Администратор"
 
-#: module/webui/themes/default/tml/admin.html:34
+#: pyload/webui/themes/default/tml/admin.html:34
 msgid "Permissions"
 msgstr "Дозволе"
 
-#: module/webui/themes/default/tml/admin.html:41
+#: pyload/webui/themes/default/tml/admin.html:41
 msgid "change"
 msgstr "промени"
 
-#: module/webui/themes/default/tml/admin.html:69
+#: pyload/webui/themes/default/tml/admin.html:69
 msgid "Enter your current and desired Password."
 msgstr "Унети тренутну и жељену лозинку."
 
-#: module/webui/themes/default/tml/admin.html:70
+#: pyload/webui/themes/default/tml/admin.html:70
 msgid "User"
 msgstr "Корисник"
 
-#: module/webui/themes/default/tml/admin.html:75
+#: pyload/webui/themes/default/tml/admin.html:75
 msgid "Current password"
 msgstr "Тренутна лозинка"
 
-#: module/webui/themes/default/tml/admin.html:80
+#: pyload/webui/themes/default/tml/admin.html:80
 msgid "New password"
 msgstr "Нова лозинка"
 
-#: module/webui/themes/default/tml/admin.html:81
+#: pyload/webui/themes/default/tml/admin.html:81
 msgid "The new password."
 msgstr "Нова лозинка:"
 
-#: module/webui/themes/default/tml/admin.html:85
+#: pyload/webui/themes/default/tml/admin.html:85
 msgid "New password (repeat)"
 msgstr "Нова лозинка (понови)"
 
-#: module/webui/themes/default/tml/admin.html:86
+#: pyload/webui/themes/default/tml/admin.html:86
 msgid "Please repeat the new password."
 msgstr "Поновити нову лозинку."
 
-#: module/webui/app/pyload.py:125
+#: pyload/webui/app/pyload.py:125
 msgid "You dont have permission to access this page."
 msgstr "Немате право за приступ овој страни."
 
-#: module/webui/app/pyload.py:193
+#: pyload/webui/app/pyload.py:193
 msgid "Download directory not found."
 msgstr "Фасцикла преузимања није нађена."
 
-#: module/webui/app/pyload.py:260 module/webui/app/pyload.py:267
+#: pyload/webui/app/pyload.py:260 pyload/webui/app/pyload.py:267
 msgid "unlimited"
 msgstr "неограничено"
 
-#: module/webui/app/pyload.py:262 module/webui/app/pyload.py:269
+#: pyload/webui/app/pyload.py:262 pyload/webui/app/pyload.py:269
 msgid "not available"
 msgstr "није доступно"
 
-#: module/webui/app/pyload.py:508
+#: pyload/webui/app/pyload.py:508
 msgid "Run pyload.py -s to access the setup."
 msgstr "Покренути pyload.py -s за приступ подешавању."
 

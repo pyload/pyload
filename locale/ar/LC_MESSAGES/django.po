@@ -12,673 +12,673 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 "X-Generator: crowdin.net\n"
 
-#: module/webui/translations.js:1
+#: pyload/webui/translations.js:1
 msgid "New Captcha Request"
 msgstr "طُلِبت كابتشا جديدة"
 
-#: module/webui/translations.js:2 module/webui/themes/default/tml/captcha.html:7
+#: pyload/webui/translations.js:2 pyload/webui/themes/default/tml/captcha.html:7
 msgid "Please read the text on the captcha."
 msgstr "فضلاً اقرأ النصّ الموجود في الكابتشا."
 
-#: module/webui/translations.js:3
+#: pyload/webui/translations.js:3
 msgid "pyLoad restarted"
 msgstr "أعيد تشغيل pyLoad"
 
-#: module/webui/translations.js:4
-#: module/webui/themes/default/tml/settings_item.html:16
-#: module/webui/themes/default/tml/base.html:123
-#: module/webui/themes/default/tml/base.html:124
+#: pyload/webui/translations.js:4
+#: pyload/webui/themes/default/tml/settings_item.html:16
+#: pyload/webui/themes/default/tml/base.html:123
+#: pyload/webui/themes/default/tml/base.html:124
 msgid "off"
 msgstr "ايقاف"
 
-#: module/webui/translations.js:5
+#: pyload/webui/translations.js:5
 msgid "Success"
 msgstr "نجح"
 
-#: module/webui/translations.js:6
-#: module/webui/themes/default/tml/settings_item.html:14
-#: module/webui/themes/default/tml/base.html:123
-#: module/webui/themes/default/tml/base.html:124
+#: pyload/webui/translations.js:6
+#: pyload/webui/themes/default/tml/settings_item.html:14
+#: pyload/webui/themes/default/tml/base.html:123
+#: pyload/webui/themes/default/tml/base.html:124
 msgid "on"
 msgstr "تشغيل"
 
-#: module/webui/translations.js:7
+#: pyload/webui/translations.js:7
 msgid "You are really sure you want to quit pyLoad?"
 msgstr "أمتأكد من أنك تريد الخروج من pyLoad ؟"
 
-#: module/webui/translations.js:8
+#: pyload/webui/translations.js:8
 msgid "Restart Link"
 msgstr "أعد بدء الرابط"
 
-#: module/webui/translations.js:9
+#: pyload/webui/translations.js:9
 msgid "Delete Link"
 msgstr "احذف الرابط"
 
-#: module/webui/translations.js:10
+#: pyload/webui/translations.js:10
 msgid "Please Enter a packagename."
 msgstr "أدخل اسماً للحزمة."
 
-#: module/webui/translations.js:11
+#: pyload/webui/translations.js:11
 msgid "Please click on the right captcha position."
 msgstr "فضلاً اضغط على الموقع الصحيح للكابتشا."
 
-#: module/webui/translations.js:12
+#: pyload/webui/translations.js:12
 msgid "Error occured."
 msgstr "حدث خطأ."
 
-#: module/webui/translations.js:13
-#: module/webui/themes/default/tml/filemanager.html:65
-#: module/webui/themes/default/tml/folder.html:14
+#: pyload/webui/translations.js:13
+#: pyload/webui/themes/default/tml/filemanager.html:65
+#: pyload/webui/themes/default/tml/folder.html:14
 msgid "Folder is empty"
 msgstr "المجلد فارغ"
 
-#: module/webui/translations.js:14
+#: pyload/webui/translations.js:14
 msgid "Failed"
 msgstr "فشل"
 
-#: module/webui/translations.js:15
+#: pyload/webui/translations.js:15
 msgid "No Captchas to read."
 msgstr "لا تتوفر كابتشا لأقرأها."
 
-#: module/webui/translations.js:16
+#: pyload/webui/translations.js:16
 msgid "Passwords did not match."
 msgstr "لم تتطابق كلمتا المرور."
 
-#: module/webui/translations.js:17
+#: pyload/webui/translations.js:17
 msgid "Settings saved."
 msgstr "حُفِظَت الإعدادات"
 
-#: module/webui/translations.js:18
+#: pyload/webui/translations.js:18
 msgid "New folder"
 msgstr "مجلد جديد"
 
-#: module/webui/translations.js:19
+#: pyload/webui/translations.js:19
 msgid "Are you sure you want to restart pyLoad?"
 msgstr "أمتأكد من أنك تريد إعادة تشغيل pyLoad؟"
 
-#: module/webui/app/json.py:57
+#: pyload/webui/app/json.py:57
 #, python-format
 msgid "waiting %s"
 msgstr "انتظار %"
 
-#: module/webui/themes/default/tml/home.html:206
+#: pyload/webui/themes/default/tml/home.html:206
 msgid "Active Downloads"
 msgstr "التنزيلات النشطة"
 
-#: module/webui/themes/default/tml/home.html:211
-#: module/webui/themes/default/tml/base.html:84
+#: pyload/webui/themes/default/tml/home.html:211
+#: pyload/webui/themes/default/tml/base.html:84
 msgid "Home"
 msgstr "المنزل"
 
-#: module/webui/themes/default/tml/home.html:214
-#: module/webui/themes/default/tml/queue.html:15
-#: module/webui/themes/default/tml/window.html:34
-#: module/webui/themes/default/tml/base.html:87
+#: pyload/webui/themes/default/tml/home.html:214
+#: pyload/webui/themes/default/tml/queue.html:15
+#: pyload/webui/themes/default/tml/window.html:34
+#: pyload/webui/themes/default/tml/base.html:87
 msgid "Queue"
 msgstr "قائمة الإنتظار"
 
-#: module/webui/themes/default/tml/home.html:217
-#: module/webui/themes/default/tml/queue.html:17
-#: module/webui/themes/default/tml/window.html:36
-#: module/webui/themes/default/tml/base.html:90
+#: pyload/webui/themes/default/tml/home.html:217
+#: pyload/webui/themes/default/tml/queue.html:17
+#: pyload/webui/themes/default/tml/window.html:36
+#: pyload/webui/themes/default/tml/base.html:90
 msgid "Collector"
 msgstr "جامع الروابط"
 
-#: module/webui/themes/default/tml/home.html:220
-#: module/webui/themes/default/tml/downloads.html:6
-#: module/webui/themes/default/tml/base.html:93
+#: pyload/webui/themes/default/tml/home.html:220
+#: pyload/webui/themes/default/tml/downloads.html:6
+#: pyload/webui/themes/default/tml/base.html:93
 msgid "Downloads"
 msgstr "التنزيلات"
 
-#: module/webui/themes/default/tml/home.html:226
-#: module/webui/themes/default/tml/logs.html:3
-#: module/webui/themes/default/tml/logs.html:4
-#: module/webui/themes/default/tml/base.html:99
+#: pyload/webui/themes/default/tml/home.html:226
+#: pyload/webui/themes/default/tml/logs.html:3
+#: pyload/webui/themes/default/tml/logs.html:4
+#: pyload/webui/themes/default/tml/base.html:99
 msgid "Logs"
 msgstr "السجلات"
 
-#: module/webui/themes/default/tml/home.html:229
-#: module/webui/themes/default/tml/settings.html:3
-#: module/webui/themes/default/tml/settings.html:4
-#: module/webui/themes/default/tml/base.html:102
+#: pyload/webui/themes/default/tml/home.html:229
+#: pyload/webui/themes/default/tml/settings.html:3
+#: pyload/webui/themes/default/tml/settings.html:4
+#: pyload/webui/themes/default/tml/base.html:102
 msgid "Config"
 msgstr "الضبط"
 
-#: module/webui/themes/default/tml/home.html:237
-#: module/webui/themes/default/tml/queue.html:82
-#: module/webui/themes/default/tml/settings.html:91
-#: module/webui/themes/default/tml/window.html:7
-#: module/webui/themes/default/tml/admin.html:25
+#: pyload/webui/themes/default/tml/home.html:237
+#: pyload/webui/themes/default/tml/queue.html:82
+#: pyload/webui/themes/default/tml/settings.html:91
+#: pyload/webui/themes/default/tml/window.html:7
+#: pyload/webui/themes/default/tml/admin.html:25
 msgid "Name"
 msgstr "اسم"
 
-#: module/webui/themes/default/tml/home.html:238
-#: module/webui/themes/default/tml/settings.html:93
+#: pyload/webui/themes/default/tml/home.html:238
+#: pyload/webui/themes/default/tml/settings.html:93
 msgid "Status"
 msgstr "الحالة"
 
-#: module/webui/themes/default/tml/home.html:239
-#: module/webui/themes/default/tml/info.html:14
-#: module/webui/themes/default/tml/info.html:15
+#: pyload/webui/themes/default/tml/home.html:239
+#: pyload/webui/themes/default/tml/info.html:14
+#: pyload/webui/themes/default/tml/info.html:15
 msgid "Information"
 msgstr "معلومات"
 
-#: module/webui/themes/default/tml/home.html:240
+#: pyload/webui/themes/default/tml/home.html:240
 msgid "Size"
 msgstr "الحجم"
 
-#: module/webui/themes/default/tml/home.html:241
+#: pyload/webui/themes/default/tml/home.html:241
 msgid "Progress"
 msgstr "التقدم"
 
-#: module/webui/themes/default/tml/login.html:3
-#: module/webui/themes/default/tml/settings.html:178
+#: pyload/webui/themes/default/tml/login.html:3
+#: pyload/webui/themes/default/tml/settings.html:178
 msgid "Login"
 msgstr "تسجيل الدخول"
 
-#: module/webui/themes/default/tml/login.html:14
+#: pyload/webui/themes/default/tml/login.html:14
 msgid "Username"
 msgstr "اسم المستخدم"
 
-#: module/webui/themes/default/tml/login.html:19
-#: module/webui/themes/default/tml/queue.html:92
-#: module/webui/themes/default/tml/settings.html:92
-#: module/webui/themes/default/tml/settings.html:183
-#: module/webui/themes/default/tml/window.html:21
+#: pyload/webui/themes/default/tml/login.html:19
+#: pyload/webui/themes/default/tml/queue.html:92
+#: pyload/webui/themes/default/tml/settings.html:92
+#: pyload/webui/themes/default/tml/settings.html:183
+#: pyload/webui/themes/default/tml/window.html:21
 msgid "Password"
 msgstr "كلمة المرور"
 
-#: module/webui/themes/default/tml/login.html:29
+#: pyload/webui/themes/default/tml/login.html:29
 msgid "Your username and password didn't match. Please try again."
 msgstr "لم يتطابق اسم المستخدم وكلمة المرور الّذان أدخلتهما. رجاءً حاول مجدّداً."
 
-#: module/webui/themes/default/tml/login.html:30
+#: pyload/webui/themes/default/tml/login.html:30
 msgid "To reset your login data or add an user run:"
 msgstr "لإعادة ضبط بيانات الولوج أو إضافة مستخدم نفّذ:"
 
-#: module/webui/themes/default/tml/queue.html:25
+#: pyload/webui/themes/default/tml/queue.html:25
 msgid "Delete Finished"
 msgstr "تمّ الحذف"
 
-#: module/webui/themes/default/tml/queue.html:26
+#: pyload/webui/themes/default/tml/queue.html:26
 msgid "Restart Failed"
 msgstr "فشلت إعادة التشغيل"
 
-#: module/webui/themes/default/tml/queue.html:65
+#: pyload/webui/themes/default/tml/queue.html:65
 msgid "Folder:"
 msgstr "المجلد:"
 
-#: module/webui/themes/default/tml/queue.html:65
+#: pyload/webui/themes/default/tml/queue.html:65
 msgid "Password:"
 msgstr "كلمة السر:"
 
-#: module/webui/themes/default/tml/queue.html:79
+#: pyload/webui/themes/default/tml/queue.html:79
 msgid "Edit Package"
 msgstr "حرّر الحزمة"
 
-#: module/webui/themes/default/tml/queue.html:80
+#: pyload/webui/themes/default/tml/queue.html:80
 msgid "Edit the package detais below."
 msgstr "حرّر تفاصيل الحزمة أدناه."
 
-#: module/webui/themes/default/tml/queue.html:83
+#: pyload/webui/themes/default/tml/queue.html:83
 msgid "The name of the package."
 msgstr "اسم الحزمة."
 
-#: module/webui/themes/default/tml/queue.html:87
+#: pyload/webui/themes/default/tml/queue.html:87
 msgid "Folder"
 msgstr "مجلد"
 
-#: module/webui/themes/default/tml/queue.html:88
+#: pyload/webui/themes/default/tml/queue.html:88
 msgid "Name of subfolder for these downloads."
 msgstr "اسم المجلّد الفرعيّ لهذه التنزيلات."
 
-#: module/webui/themes/default/tml/queue.html:93
+#: pyload/webui/themes/default/tml/queue.html:93
 msgid "List of passwords used for unrar."
 msgstr "قائمة كلمات السر المستخدمة لفكّ ضغط rar"
 
-#: module/webui/themes/default/tml/queue.html:97
-#: module/webui/themes/default/tml/settings.html:167
-#: module/webui/themes/default/tml/captcha.html:33
-#: module/webui/themes/default/tml/admin.html:61
-#: module/webui/themes/default/tml/admin.html:91
+#: pyload/webui/themes/default/tml/queue.html:97
+#: pyload/webui/themes/default/tml/settings.html:167
+#: pyload/webui/themes/default/tml/captcha.html:33
+#: pyload/webui/themes/default/tml/admin.html:61
+#: pyload/webui/themes/default/tml/admin.html:91
 msgid "Submit"
 msgstr "اقترح"
 
-#: module/webui/themes/default/tml/queue.html:98
-#: module/webui/themes/default/tml/settings.html:198
-#: module/webui/themes/default/tml/window.html:41
-#: module/webui/themes/default/tml/admin.html:92
+#: pyload/webui/themes/default/tml/queue.html:98
+#: pyload/webui/themes/default/tml/settings.html:198
+#: pyload/webui/themes/default/tml/window.html:41
+#: pyload/webui/themes/default/tml/admin.html:92
 msgid "Reset"
 msgstr "امحُ"
 
-#: module/webui/themes/default/tml/logout.html:8
+#: pyload/webui/themes/default/tml/logout.html:8
 msgid "You were successfully logged out."
 msgstr "لقد خرجت بنجاح."
 
-#: module/webui/themes/default/tml/pathchooser.html:39
-#: module/webui/themes/default/tml/pathchooser.html:41
+#: pyload/webui/themes/default/tml/pathchooser.html:39
+#: pyload/webui/themes/default/tml/pathchooser.html:41
 msgid "Path"
 msgstr "المسار"
 
-#: module/webui/themes/default/tml/pathchooser.html:39
-#: module/webui/themes/default/tml/pathchooser.html:41
+#: pyload/webui/themes/default/tml/pathchooser.html:39
+#: pyload/webui/themes/default/tml/pathchooser.html:41
 msgid "absolute"
 msgstr "مُطلَق"
 
-#: module/webui/themes/default/tml/pathchooser.html:39
-#: module/webui/themes/default/tml/pathchooser.html:41
+#: pyload/webui/themes/default/tml/pathchooser.html:39
+#: pyload/webui/themes/default/tml/pathchooser.html:41
 msgid "relative"
 msgstr "نسبي"
 
-#: module/webui/themes/default/tml/pathchooser.html:46
+#: pyload/webui/themes/default/tml/pathchooser.html:46
 msgid "name"
 msgstr "الاسم"
 
-#: module/webui/themes/default/tml/pathchooser.html:47
+#: pyload/webui/themes/default/tml/pathchooser.html:47
 msgid "size"
 msgstr "الحجم"
 
-#: module/webui/themes/default/tml/pathchooser.html:48
+#: pyload/webui/themes/default/tml/pathchooser.html:48
 msgid "type"
 msgstr "النوع"
 
-#: module/webui/themes/default/tml/pathchooser.html:49
+#: pyload/webui/themes/default/tml/pathchooser.html:49
 msgid "last modified"
 msgstr "آخر تغيير"
 
-#: module/webui/themes/default/tml/pathchooser.html:54
+#: pyload/webui/themes/default/tml/pathchooser.html:54
 msgid "parent directory"
 msgstr "المجلد الأب"
 
-#: module/webui/themes/default/tml/pathchooser.html:70
+#: pyload/webui/themes/default/tml/pathchooser.html:70
 msgid "no content"
 msgstr "لا محتوى"
 
-#: module/webui/themes/default/tml/settings.html:16
+#: pyload/webui/themes/default/tml/settings.html:16
 msgid "General"
 msgstr "عام"
 
-#: module/webui/themes/default/tml/settings.html:17
+#: pyload/webui/themes/default/tml/settings.html:17
 msgid "Plugins"
 msgstr "الملحقات"
 
-#: module/webui/themes/default/tml/settings.html:18
+#: pyload/webui/themes/default/tml/settings.html:18
 msgid "Accounts"
 msgstr "الحسابات"
 
-#: module/webui/themes/default/tml/settings.html:45
-#: module/webui/themes/default/tml/settings.html:74
+#: pyload/webui/themes/default/tml/settings.html:45
+#: pyload/webui/themes/default/tml/settings.html:74
 msgid "Choose a section from the menu"
 msgstr "اختر قِسماً من القائمة"
 
-#: module/webui/themes/default/tml/settings.html:90
+#: pyload/webui/themes/default/tml/settings.html:90
 msgid "Plugin"
 msgstr "الاضافات"
 
-#: module/webui/themes/default/tml/settings.html:94
+#: pyload/webui/themes/default/tml/settings.html:94
 msgid "Premium"
 msgstr ""
 
-#: module/webui/themes/default/tml/settings.html:95
+#: pyload/webui/themes/default/tml/settings.html:95
 msgid "Valid until"
 msgstr "صالحة حتى"
 
-#: module/webui/themes/default/tml/settings.html:96
+#: pyload/webui/themes/default/tml/settings.html:96
 msgid "Traffic left"
 msgstr ""
 
-#: module/webui/themes/default/tml/settings.html:97
+#: pyload/webui/themes/default/tml/settings.html:97
 msgid "Time"
 msgstr "الوقت"
 
-#: module/webui/themes/default/tml/settings.html:98
+#: pyload/webui/themes/default/tml/settings.html:98
 msgid "Max Parallel"
 msgstr "أقصى عدد للتنزيلات المتزامنة"
 
-#: module/webui/themes/default/tml/settings.html:99
+#: pyload/webui/themes/default/tml/settings.html:99
 msgid "Delete?"
 msgstr "حذف؟"
 
-#: module/webui/themes/default/tml/settings.html:121
+#: pyload/webui/themes/default/tml/settings.html:121
 msgid "valid"
 msgstr "صالحة"
 
-#: module/webui/themes/default/tml/settings.html:124
+#: pyload/webui/themes/default/tml/settings.html:124
 msgid "not valid"
 msgstr "غير صالح"
 
-#: module/webui/themes/default/tml/settings.html:131
+#: pyload/webui/themes/default/tml/settings.html:131
 msgid "yes"
 msgstr "نعم"
 
-#: module/webui/themes/default/tml/settings.html:134
+#: pyload/webui/themes/default/tml/settings.html:134
 msgid "no"
 msgstr "لا"
 
-#: module/webui/themes/default/tml/settings.html:168
-#: module/webui/themes/default/tml/settings.html:197
-#: module/webui/themes/default/tml/base.html:117
+#: pyload/webui/themes/default/tml/settings.html:168
+#: pyload/webui/themes/default/tml/settings.html:197
+#: pyload/webui/themes/default/tml/base.html:117
 msgid "Add"
 msgstr "إضافة"
 
-#: module/webui/themes/default/tml/settings.html:176
+#: pyload/webui/themes/default/tml/settings.html:176
 msgid "Add Account"
 msgstr "إضافة حساب"
 
-#: module/webui/themes/default/tml/settings.html:177
+#: pyload/webui/themes/default/tml/settings.html:177
 msgid "Enter your account data to use premium features."
 msgstr "أضف معلومات حسابك لتستخدم مزايا الحساب المتقدّم"
 
-#: module/webui/themes/default/tml/settings.html:179
-#: module/webui/themes/default/tml/admin.html:71
+#: pyload/webui/themes/default/tml/settings.html:179
+#: pyload/webui/themes/default/tml/admin.html:71
 msgid "Your username."
 msgstr "اسم حسابك."
 
-#: module/webui/themes/default/tml/settings.html:184
-#: module/webui/themes/default/tml/admin.html:76
+#: pyload/webui/themes/default/tml/settings.html:184
+#: pyload/webui/themes/default/tml/admin.html:76
 msgid "The password for this account."
 msgstr "كلمة السرّ لهذا الحساب."
 
-#: module/webui/themes/default/tml/settings.html:188
+#: pyload/webui/themes/default/tml/settings.html:188
 msgid "Type"
 msgstr "نوع"
 
-#: module/webui/themes/default/tml/settings.html:189
+#: pyload/webui/themes/default/tml/settings.html:189
 msgid "Choose the hoster for your account."
 msgstr "اختر المضيف لحسابك."
 
-#: module/webui/themes/default/tml/logs.html:12
-#: module/webui/themes/default/tml/base.html:114
+#: pyload/webui/themes/default/tml/logs.html:12
+#: pyload/webui/themes/default/tml/base.html:114
 msgid "Start"
 msgstr "ابدأ"
 
-#: module/webui/themes/default/tml/logs.html:12
+#: pyload/webui/themes/default/tml/logs.html:12
 msgid "prev"
 msgstr "السابق"
 
-#: module/webui/themes/default/tml/logs.html:12
+#: pyload/webui/themes/default/tml/logs.html:12
 msgid "next"
 msgstr "التالي"
 
-#: module/webui/themes/default/tml/logs.html:12
+#: pyload/webui/themes/default/tml/logs.html:12
 msgid "End"
 msgstr "انتهى"
 
-#: module/webui/themes/default/tml/info.html:18
+#: pyload/webui/themes/default/tml/info.html:18
 msgid "News"
 msgstr "أخبار"
 
-#: module/webui/themes/default/tml/info.html:21
+#: pyload/webui/themes/default/tml/info.html:21
 msgid "Support"
 msgstr "الدعم"
 
-#: module/webui/themes/default/tml/info.html:37
+#: pyload/webui/themes/default/tml/info.html:37
 msgid "System"
 msgstr "النظام"
 
-#: module/webui/themes/default/tml/info.html:40
+#: pyload/webui/themes/default/tml/info.html:40
 msgid "Python:"
 msgstr "بايثون:"
 
-#: module/webui/themes/default/tml/info.html:44
+#: pyload/webui/themes/default/tml/info.html:44
 msgid "OS:"
 msgstr "نظام التشغيل:"
 
-#: module/webui/themes/default/tml/info.html:48
+#: pyload/webui/themes/default/tml/info.html:48
 msgid "pyLoad version:"
 msgstr "إصدار pyLoad:"
 
-#: module/webui/themes/default/tml/info.html:52
+#: pyload/webui/themes/default/tml/info.html:52
 msgid "Installation Folder:"
 msgstr "مجلد التثبيت:"
 
-#: module/webui/themes/default/tml/info.html:56
+#: pyload/webui/themes/default/tml/info.html:56
 msgid "Config Folder:"
 msgstr "مجلد الإعدادات:"
 
-#: module/webui/themes/default/tml/info.html:60
+#: pyload/webui/themes/default/tml/info.html:60
 msgid "Download Folder:"
 msgstr "مجلد التنزيلات:"
 
-#: module/webui/themes/default/tml/info.html:64
+#: pyload/webui/themes/default/tml/info.html:64
 msgid "Free Space:"
 msgstr "المساحة الحرّة:"
 
-#: module/webui/themes/default/tml/info.html:68
+#: pyload/webui/themes/default/tml/info.html:68
 msgid "Language:"
 msgstr "اللُّغة:"
 
-#: module/webui/themes/default/tml/info.html:72
+#: pyload/webui/themes/default/tml/info.html:72
 msgid "Webinterface Port:"
 msgstr "منفذ واجهة الشنكبوتية:"
 
-#: module/webui/themes/default/tml/info.html:76
+#: pyload/webui/themes/default/tml/info.html:76
 msgid "Remote Interface Port:"
 msgstr "منفذ الواجهة البعيدة:"
 
-#: module/webui/themes/default/tml/setup.html:3
-#: module/webui/themes/default/tml/setup.html:4
+#: pyload/webui/themes/default/tml/setup.html:3
+#: pyload/webui/themes/default/tml/setup.html:4
 msgid "Setup"
 msgstr "برنامج الإعداد"
 
-#: module/webui/themes/default/tml/filemanager.html:19
+#: pyload/webui/themes/default/tml/filemanager.html:19
 msgid "FileManager"
 msgstr "مدير الملفات"
 
-#: module/webui/themes/default/tml/window.html:5
-#: module/webui/themes/default/tml/window.html:40
+#: pyload/webui/themes/default/tml/window.html:5
+#: pyload/webui/themes/default/tml/window.html:40
 msgid "Add Package"
 msgstr "أضف حزمة"
 
-#: module/webui/themes/default/tml/window.html:6
+#: pyload/webui/themes/default/tml/window.html:6
 msgid "Paste your links or upload a container."
 msgstr "الصق رابطأ أو ارفع حاوياً. "
 
-#: module/webui/themes/default/tml/window.html:8
+#: pyload/webui/themes/default/tml/window.html:8
 msgid "The name of the new package."
 msgstr "اسم الحزمة الجديدة."
 
-#: module/webui/themes/default/tml/window.html:12
+#: pyload/webui/themes/default/tml/window.html:12
 msgid "Links"
 msgstr "روابط"
 
-#: module/webui/themes/default/tml/window.html:13
+#: pyload/webui/themes/default/tml/window.html:13
 msgid "Paste your links here or any text and press the filter button."
 msgstr "الصق الروابط أو أيّ نصّ هنا ثم اضغط زرّ استخراج الروابط."
 
-#: module/webui/themes/default/tml/window.html:14
+#: pyload/webui/themes/default/tml/window.html:14
 msgid "Filter urls"
 msgstr "رشّح الروابط"
 
-#: module/webui/themes/default/tml/window.html:22
+#: pyload/webui/themes/default/tml/window.html:22
 msgid "Password for RAR-Archive"
 msgstr "كلمة سر أرشيفات RAR"
 
-#: module/webui/themes/default/tml/window.html:26
+#: pyload/webui/themes/default/tml/window.html:26
 msgid "File"
 msgstr "ملف"
 
-#: module/webui/themes/default/tml/window.html:27
+#: pyload/webui/themes/default/tml/window.html:27
 msgid "Upload a container."
 msgstr "ارفع حاوياً."
 
-#: module/webui/themes/default/tml/window.html:31
+#: pyload/webui/themes/default/tml/window.html:31
 msgid "Destination"
 msgstr "الوجهة"
 
-#: module/webui/themes/default/tml/captcha.html:6
+#: pyload/webui/themes/default/tml/captcha.html:6
 msgid "Captcha reading"
 msgstr ""
 
-#: module/webui/themes/default/tml/captcha.html:13
+#: pyload/webui/themes/default/tml/captcha.html:13
 msgid "Captcha"
 msgstr ""
 
-#: module/webui/themes/default/tml/captcha.html:14
+#: pyload/webui/themes/default/tml/captcha.html:14
 msgid "The captcha."
 msgstr ""
 
-#: module/webui/themes/default/tml/captcha.html:20
+#: pyload/webui/themes/default/tml/captcha.html:20
 msgid "Text"
 msgstr "النص"
 
-#: module/webui/themes/default/tml/captcha.html:21
+#: pyload/webui/themes/default/tml/captcha.html:21
 msgid "Input the text on the captcha."
 msgstr ""
 
-#: module/webui/themes/default/tml/captcha.html:34
+#: pyload/webui/themes/default/tml/captcha.html:34
 msgid "Close"
 msgstr "إغلاق"
 
-#: module/webui/themes/default/tml/base.html:20
-#: module/webui/themes/default/tml/base.html:139
+#: pyload/webui/themes/default/tml/base.html:20
+#: pyload/webui/themes/default/tml/base.html:139
 msgid "Webinterface"
 msgstr "واجهة الشنكبوتية"
 
-#: module/webui/themes/default/tml/base.html:39
+#: pyload/webui/themes/default/tml/base.html:39
 msgid "pyLoad Update available!"
 msgstr "يتوفّر تحديث للبرنامج!"
 
-#: module/webui/themes/default/tml/base.html:46
+#: pyload/webui/themes/default/tml/base.html:46
 msgid "Plugins updated, please restart!"
 msgstr "تمّ تحديث الإضافة، يرجى إعادة تشغيل البرنامج!"
 
-#: module/webui/themes/default/tml/base.html:52
+#: pyload/webui/themes/default/tml/base.html:52
 msgid "Captcha waiting"
 msgstr "كابتشا تنتظر"
 
-#: module/webui/themes/default/tml/base.html:57
+#: pyload/webui/themes/default/tml/base.html:57
 msgid "Logout"
 msgstr "اخرج"
 
-#: module/webui/themes/default/tml/base.html:59
-#: module/webui/themes/default/tml/admin.html:8
-#: module/webui/themes/default/tml/admin.html:9
+#: pyload/webui/themes/default/tml/base.html:59
+#: pyload/webui/themes/default/tml/admin.html:8
+#: pyload/webui/themes/default/tml/admin.html:9
 msgid "Administrate"
 msgstr "أدِر"
 
-#: module/webui/themes/default/tml/base.html:61
+#: pyload/webui/themes/default/tml/base.html:61
 msgid "Info"
 msgstr "المعلومات"
 
-#: module/webui/themes/default/tml/base.html:65
+#: pyload/webui/themes/default/tml/base.html:65
 msgid "Please Login!"
 msgstr "يرجى الولوج!"
 
-#: module/webui/themes/default/tml/base.html:115
+#: pyload/webui/themes/default/tml/base.html:115
 msgid "Stop"
 msgstr "توقّف"
 
-#: module/webui/themes/default/tml/base.html:116
+#: pyload/webui/themes/default/tml/base.html:116
 msgid "Cancel"
 msgstr "الغاء"
 
-#: module/webui/themes/default/tml/base.html:123
+#: pyload/webui/themes/default/tml/base.html:123
 msgid "Download:"
 msgstr "التنزيل:"
 
-#: module/webui/themes/default/tml/base.html:124
+#: pyload/webui/themes/default/tml/base.html:124
 msgid "Reconnect:"
 msgstr "إعادة الاتصال:"
 
-#: module/webui/themes/default/tml/base.html:125
+#: pyload/webui/themes/default/tml/base.html:125
 msgid "Speed:"
 msgstr "السرعة:"
 
-#: module/webui/themes/default/tml/base.html:126
+#: pyload/webui/themes/default/tml/base.html:126
 msgid "Active:"
 msgstr "النشط:"
 
-#: module/webui/themes/default/tml/base.html:127
+#: pyload/webui/themes/default/tml/base.html:127
 msgid "Reload page"
 msgstr "أعد تحميل الصفحة"
 
-#: module/webui/themes/default/tml/base.html:157
+#: pyload/webui/themes/default/tml/base.html:157
 msgid "loading"
 msgstr "يحمّل"
 
-#: module/webui/themes/default/tml/base.html:166
+#: pyload/webui/themes/default/tml/base.html:166
 msgid "Back to top"
 msgstr "العودة لأعلى"
 
-#: module/webui/themes/default/tml/admin.html:13
+#: pyload/webui/themes/default/tml/admin.html:13
 msgid "Quit pyLoad"
 msgstr "اخرج من pyLoad"
 
-#: module/webui/themes/default/tml/admin.html:14
+#: pyload/webui/themes/default/tml/admin.html:14
 msgid "Restart pyLoad"
 msgstr "أعد تشغيل pyLoad"
 
-#: module/webui/themes/default/tml/admin.html:18
+#: pyload/webui/themes/default/tml/admin.html:18
 msgid "To add user or change passwords use:"
 msgstr "لإضافة مستخدم أو تغيير كلمات مرور استخدم:"
 
-#: module/webui/themes/default/tml/admin.html:19
+#: pyload/webui/themes/default/tml/admin.html:19
 msgid "Important: Admin user have always all permissions!"
 msgstr "هامّ: حساب المدير Admin له دائماً الصلاحيات الكاملة!"
 
-#: module/webui/themes/default/tml/admin.html:28
-#: module/webui/themes/default/tml/admin.html:67
+#: pyload/webui/themes/default/tml/admin.html:28
+#: pyload/webui/themes/default/tml/admin.html:67
 msgid "Change Password"
 msgstr "غيّر كلمة السرّ"
 
-#: module/webui/themes/default/tml/admin.html:31
+#: pyload/webui/themes/default/tml/admin.html:31
 msgid "Admin"
 msgstr "المشرف"
 
-#: module/webui/themes/default/tml/admin.html:34
+#: pyload/webui/themes/default/tml/admin.html:34
 msgid "Permissions"
 msgstr "الأذون"
 
-#: module/webui/themes/default/tml/admin.html:41
+#: pyload/webui/themes/default/tml/admin.html:41
 msgid "change"
 msgstr "غيّر"
 
-#: module/webui/themes/default/tml/admin.html:69
+#: pyload/webui/themes/default/tml/admin.html:69
 msgid "Enter your current and desired Password."
 msgstr "أدخل كلمة السرّ الحاليّة والجديدة."
 
-#: module/webui/themes/default/tml/admin.html:70
+#: pyload/webui/themes/default/tml/admin.html:70
 msgid "User"
 msgstr "المستخدم"
 
-#: module/webui/themes/default/tml/admin.html:75
+#: pyload/webui/themes/default/tml/admin.html:75
 msgid "Current password"
 msgstr "كلمة السرّ الحالية"
 
-#: module/webui/themes/default/tml/admin.html:80
+#: pyload/webui/themes/default/tml/admin.html:80
 msgid "New password"
 msgstr "كلمة سرّ جديدة"
 
-#: module/webui/themes/default/tml/admin.html:81
+#: pyload/webui/themes/default/tml/admin.html:81
 msgid "The new password."
 msgstr "كلمة السرّ الجديدة."
 
-#: module/webui/themes/default/tml/admin.html:85
+#: pyload/webui/themes/default/tml/admin.html:85
 msgid "New password (repeat)"
 msgstr "كلمة السرّ الجديدة (إعادة)"
 
-#: module/webui/themes/default/tml/admin.html:86
+#: pyload/webui/themes/default/tml/admin.html:86
 msgid "Please repeat the new password."
 msgstr "فضلاً أعد إدخال كلمة السرّ."
 
-#: module/webui/app/pyload.py:125
+#: pyload/webui/app/pyload.py:125
 msgid "You dont have permission to access this page."
 msgstr "لا يوجد لديك صلاحيات للوصول لهذه الصفحه"
 
-#: module/webui/app/pyload.py:193
+#: pyload/webui/app/pyload.py:193
 msgid "Download directory not found."
 msgstr "مجلد التحميلات غير موجود"
 
-#: module/webui/app/pyload.py:260 module/webui/app/pyload.py:267
+#: pyload/webui/app/pyload.py:260 pyload/webui/app/pyload.py:267
 msgid "unlimited"
 msgstr "غير محدود"
 
-#: module/webui/app/pyload.py:262 module/webui/app/pyload.py:269
+#: pyload/webui/app/pyload.py:262 pyload/webui/app/pyload.py:269
 msgid "not available"
 msgstr "غير متوفر"
 
-#: module/webui/app/pyload.py:508
+#: pyload/webui/app/pyload.py:508
 msgid "Run pyload.py -s to access the setup."
 msgstr "قم بتشغيل pyload.py -s لتبداء التثبيت"
 

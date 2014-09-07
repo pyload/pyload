@@ -1,14 +1,15 @@
 # Common packaging directories
-/bin/
-/build/
-/dist/
-/env/
-/lib/
-/lib64/
-/parts/
-/sdist/
-/var/
-/temp/
+bin/
+build/
+dist/
+env/
+lib/
+lib64/
+parts/
+sdist/
+var/
+temp/
+!/pyload/lib/
 
 # Common directories
 .*/
@@ -27,8 +28,8 @@ userplugins/
 /*.txt
 /*.xml
 /*.zip
-/module/config/core.xml
-/module/config/plugin.xml
+/pyload/config/core.xml
+/pyload/config/plugin.xml
 
 # Common MacOS & Windows files
 *.DS_Store
@@ -78,7 +79,7 @@ eggs
 *.project
 *.pydevproject
 *.rej
-/docs/_build/
-/pyload/
+_build/
+/module/
 DLC_*.py
 paver-minilib.zip

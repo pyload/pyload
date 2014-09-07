@@ -12,284 +12,284 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: crowdin.net\n"
 
-#: module/cli/Cli.py:75 module/cli/Cli.py:133
+#: pyload/cli/Cli.py:75 pyload/cli/Cli.py:133
 msgid " Command Line Interface"
 msgstr "命令列介面"
 
-#: module/cli/Cli.py:165
+#: pyload/cli/Cli.py:165
 #, python-format
 msgid "%s Downloads:"
 msgstr "已下載 %s:"
 
-#: module/cli/Cli.py:177
+#: pyload/cli/Cli.py:177
 msgid " Speed: "
 msgstr "速度:"
 
-#: module/cli/Cli.py:177
+#: pyload/cli/Cli.py:177
 msgid " Size: "
 msgstr "大小:"
 
-#: module/cli/Cli.py:178
+#: pyload/cli/Cli.py:178
 msgid " Finished in: "
 msgstr "距離完成:"
 
-#: module/cli/Cli.py:179
+#: pyload/cli/Cli.py:179
 msgid " ID: "
 msgstr "編號:"
 
-#: module/cli/Cli.py:184
+#: pyload/cli/Cli.py:184
 msgid "waiting: "
 msgstr "等待中:"
 
-#: module/cli/Cli.py:191 module/cli/Cli.py:193
+#: pyload/cli/Cli.py:191 pyload/cli/Cli.py:193
 msgid "Status:"
 msgstr "狀態:"
 
-#: module/cli/Cli.py:191
+#: pyload/cli/Cli.py:191
 msgid "paused"
 msgstr "已暫停"
 
-#: module/cli/Cli.py:193
+#: pyload/cli/Cli.py:193
 msgid "running"
 msgstr "執行中"
 
-#: module/cli/Cli.py:196
+#: pyload/cli/Cli.py:196
 msgid "total Speed"
 msgstr "總速度"
 
-#: module/cli/Cli.py:196
+#: pyload/cli/Cli.py:196
 msgid "Files in queue"
 msgstr "佇列中檔案"
 
-#: module/cli/Cli.py:197
+#: pyload/cli/Cli.py:197
 msgid "Total"
 msgstr "總計"
 
-#: module/cli/Cli.py:203
+#: pyload/cli/Cli.py:203
 msgid "Menu:"
 msgstr "表單:"
 
-#: module/cli/Cli.py:205
+#: pyload/cli/Cli.py:205
 msgid " Add Links"
 msgstr "加入連結"
 
-#: module/cli/Cli.py:206
+#: pyload/cli/Cli.py:206
 msgid " Manage Queue"
 msgstr "佇列管理"
 
-#: module/cli/Cli.py:207
+#: pyload/cli/Cli.py:207
 msgid " Manage Collector"
 msgstr "收集器管理"
 
-#: module/cli/Cli.py:208
+#: pyload/cli/Cli.py:208
 msgid " (Un)Pause Server"
 msgstr "暫停/啟動 伺服器"
 
-#: module/cli/Cli.py:209
+#: pyload/cli/Cli.py:209
 msgid " Kill Server"
 msgstr "終止伺服器"
 
-#: module/cli/Cli.py:210
+#: pyload/cli/Cli.py:210
 msgid " Quit"
 msgstr "離開"
 
-#: module/cli/Cli.py:289 module/cli/Cli.py:296
+#: pyload/cli/Cli.py:289 pyload/cli/Cli.py:296
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
 msgstr "請使用此語法: add 任務名稱> <連結> <連結2> ..."
 
-#: module/cli/Cli.py:315
+#: pyload/cli/Cli.py:315
 #, python-format
 msgid "Checking %d links:"
 msgstr "檢查 %d 連結:"
 
-#: module/cli/Cli.py:324
+#: pyload/cli/Cli.py:324
 msgid "File does not exists."
 msgstr "檔案不存在。"
 
-#: module/cli/Cli.py:385
+#: pyload/cli/Cli.py:385
 msgid "pyLoad was terminated"
 msgstr "pyLoad 已終止"
 
-#: module/cli/Cli.py:443
+#: pyload/cli/Cli.py:443
 msgid "Prints server status"
 msgstr "顯示伺服器狀態"
 
-#: module/cli/Cli.py:444
+#: pyload/cli/Cli.py:444
 msgid "Prints downloads in queue"
 msgstr "顯示佇列中下載項目"
 
-#: module/cli/Cli.py:445
+#: pyload/cli/Cli.py:445
 msgid "Prints downloads in collector"
 msgstr "顯示收集器中下載項目"
 
-#: module/cli/Cli.py:446
+#: pyload/cli/Cli.py:446
 msgid "Adds package to queue"
 msgstr "新增任務到佇列"
 
-#: module/cli/Cli.py:447
+#: pyload/cli/Cli.py:447
 msgid "Adds package to collector"
 msgstr "新增任務到收集器"
 
-#: module/cli/Cli.py:448
+#: pyload/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
 msgstr "從佇列/收集器中刪除檔案"
 
-#: module/cli/Cli.py:449
+#: pyload/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
 msgstr "從佇列/收集器中刪除任務"
 
-#: module/cli/Cli.py:450
+#: pyload/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
 msgstr "在佇列或收集器中移動任務"
 
-#: module/cli/Cli.py:451
+#: pyload/cli/Cli.py:451
 msgid "Restart files"
 msgstr "重新開始檔案"
 
-#: module/cli/Cli.py:452
+#: pyload/cli/Cli.py:452
 msgid "Restart packages"
 msgstr "重新開始任務"
 
-#: module/cli/Cli.py:453
+#: pyload/cli/Cli.py:453
 msgid "Check online status, works with local container"
 msgstr "查看線上狀態，工作與本機容器"
 
-#: module/cli/Cli.py:454
+#: pyload/cli/Cli.py:454
 msgid "Checks online status of a container file"
 msgstr "檢查容器內檔案上線狀態"
 
-#: module/cli/Cli.py:455
+#: pyload/cli/Cli.py:455
 msgid "Pause the server"
 msgstr "暫停伺服器"
 
-#: module/cli/Cli.py:456
+#: pyload/cli/Cli.py:456
 msgid "continue downloads"
 msgstr "繼續下載"
 
-#: module/cli/Cli.py:457
+#: pyload/cli/Cli.py:457
 msgid "Toggle pause/unpause"
 msgstr "暫停/繼續"
 
-#: module/cli/Cli.py:458
+#: pyload/cli/Cli.py:458
 msgid "kill server"
 msgstr "終止伺服器"
 
-#: module/cli/Cli.py:460
+#: pyload/cli/Cli.py:460
 msgid "List of commands:"
 msgstr "命令清單："
 
-#: module/cli/Cli.py:473
+#: pyload/cli/Cli.py:473
 msgid "Couldn't write user config file"
 msgstr "不能寫入使用者設定檔"
 
-#: module/cli/Cli.py:548
+#: pyload/cli/Cli.py:548
 msgid "You need py-openssl to connect to this pyLoad Core."
 msgstr "您需要安装py-openssl来连接这个pyLoad核心。"
 
-#: module/cli/Cli.py:555
+#: pyload/cli/Cli.py:555
 msgid "Address: "
 msgstr "位址:"
 
-#: module/cli/Cli.py:556
+#: pyload/cli/Cli.py:556
 msgid "Port: "
 msgstr "連接埠:"
 
-#: module/cli/Cli.py:557
+#: pyload/cli/Cli.py:557
 msgid "Username: "
 msgstr "使用者名稱:"
 
-#: module/cli/Cli.py:561
+#: pyload/cli/Cli.py:561
 msgid "Password: "
 msgstr "密碼:"
 
-#: module/cli/Cli.py:566 module/cli/Cli.py:575
+#: pyload/cli/Cli.py:566 pyload/cli/Cli.py:575
 msgid "Login data is wrong."
 msgstr "登入資訊錯誤。"
 
-#: module/cli/Cli.py:568 module/cli/Cli.py:577
+#: pyload/cli/Cli.py:568 pyload/cli/Cli.py:577
 #, python-format
 msgid "Could not establish connection to %(addr)s:%(port)s."
 msgstr "無法建立 %(addr)s:%(port)s 連線。"
 
-#: module/cli/Cli.py:580
+#: pyload/cli/Cli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."
 msgstr "您需要 py-openssl 來連接 pyLoad 核心。"
 
-#: module/cli/Cli.py:582
+#: pyload/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
 msgstr "執行命令中，忽略互動模式。"
 
-#: module/cli/AddPackage.py:48
+#: pyload/cli/AddPackage.py:48
 msgid "Add Package:"
 msgstr "新增下載任務："
 
-#: module/cli/AddPackage.py:53
+#: pyload/cli/AddPackage.py:53
 msgid "Enter a name for the new package"
 msgstr "輸入新任務名稱"
 
-#: module/cli/AddPackage.py:57
+#: pyload/cli/AddPackage.py:57
 #, python-format
 msgid "Package: %s"
 msgstr "任務：%s"
 
-#: module/cli/AddPackage.py:58
+#: pyload/cli/AddPackage.py:58
 msgid "Parse the links you want to add."
 msgstr "分析你想加入的連結。"
 
-#: module/cli/AddPackage.py:59
+#: pyload/cli/AddPackage.py:59
 #, python-format
 msgid "Type %s when done."
 msgstr "完成後請輸入 %s"
 
-#: module/cli/AddPackage.py:60
+#: pyload/cli/AddPackage.py:60
 msgid "Links added: "
 msgstr "加入的連結:"
 
-#: module/cli/AddPackage.py:64 module/cli/ManageFiles.py:149
+#: pyload/cli/AddPackage.py:64 pyload/cli/ManageFiles.py:149
 msgid " back to main menu"
 msgstr "回到主選單"
 
-#: module/cli/ManageFiles.py:97
+#: pyload/cli/ManageFiles.py:97
 msgid "Manage Packages:"
 msgstr "管理任務"
 
-#: module/cli/ManageFiles.py:99
+#: pyload/cli/ManageFiles.py:99
 msgid "Manage Links:"
 msgstr "管理連結："
 
-#: module/cli/ManageFiles.py:104
+#: pyload/cli/ManageFiles.py:104
 msgid "What do you want to move?"
 msgstr "你想要移動?"
 
-#: module/cli/ManageFiles.py:106
+#: pyload/cli/ManageFiles.py:106
 msgid "What do you want to delete?"
 msgstr "你想要刪除?"
 
-#: module/cli/ManageFiles.py:108
+#: pyload/cli/ManageFiles.py:108
 msgid "What do you want to restart?"
 msgstr "你想要重啟?"
 
-#: module/cli/ManageFiles.py:113
+#: pyload/cli/ManageFiles.py:113
 msgid "Choose what yout want to do or enter package number."
 msgstr ""
 
-#: module/cli/ManageFiles.py:115
+#: pyload/cli/ManageFiles.py:115
 msgid "delete"
 msgstr "刪除"
 
-#: module/cli/ManageFiles.py:115
+#: pyload/cli/ManageFiles.py:115
 msgid "move"
 msgstr "移動"
 
-#: module/cli/ManageFiles.py:115
+#: pyload/cli/ManageFiles.py:115
 msgid "restart"
 msgstr "重啟"
 
-#: module/cli/ManageFiles.py:148
+#: pyload/cli/ManageFiles.py:148
 msgid " - previous"
 msgstr " - 上一頁"
 
-#: module/cli/ManageFiles.py:148
+#: pyload/cli/ManageFiles.py:148
 msgid " - next"
 msgstr "- 下一頁"
 

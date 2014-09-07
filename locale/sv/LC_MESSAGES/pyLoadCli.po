@@ -12,284 +12,284 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.net\n"
 
-#: module/cli/Cli.py:75 module/cli/Cli.py:133
+#: pyload/cli/Cli.py:75 pyload/cli/Cli.py:133
 msgid " Command Line Interface"
 msgstr " Kommandoradsgränssnitt"
 
-#: module/cli/Cli.py:165
+#: pyload/cli/Cli.py:165
 #, python-format
 msgid "%s Downloads:"
 msgstr "%s hämtningar:"
 
-#: module/cli/Cli.py:177
+#: pyload/cli/Cli.py:177
 msgid " Speed: "
 msgstr " Hastighet: "
 
-#: module/cli/Cli.py:177
+#: pyload/cli/Cli.py:177
 msgid " Size: "
 msgstr " Storlek: "
 
-#: module/cli/Cli.py:178
+#: pyload/cli/Cli.py:178
 msgid " Finished in: "
 msgstr " Färdig om: "
 
-#: module/cli/Cli.py:179
+#: pyload/cli/Cli.py:179
 msgid " ID: "
 msgstr ""
 
-#: module/cli/Cli.py:184
+#: pyload/cli/Cli.py:184
 msgid "waiting: "
 msgstr "väntar: "
 
-#: module/cli/Cli.py:191 module/cli/Cli.py:193
+#: pyload/cli/Cli.py:191 pyload/cli/Cli.py:193
 msgid "Status:"
 msgstr ""
 
-#: module/cli/Cli.py:191
+#: pyload/cli/Cli.py:191
 msgid "paused"
 msgstr ""
 
-#: module/cli/Cli.py:193
+#: pyload/cli/Cli.py:193
 msgid "running"
 msgstr ""
 
-#: module/cli/Cli.py:196
+#: pyload/cli/Cli.py:196
 msgid "total Speed"
 msgstr ""
 
-#: module/cli/Cli.py:196
+#: pyload/cli/Cli.py:196
 msgid "Files in queue"
 msgstr ""
 
-#: module/cli/Cli.py:197
+#: pyload/cli/Cli.py:197
 msgid "Total"
 msgstr ""
 
-#: module/cli/Cli.py:203
+#: pyload/cli/Cli.py:203
 msgid "Menu:"
 msgstr "Meny:"
 
-#: module/cli/Cli.py:205
+#: pyload/cli/Cli.py:205
 msgid " Add Links"
 msgstr " Lägg till länkar"
 
-#: module/cli/Cli.py:206
+#: pyload/cli/Cli.py:206
 msgid " Manage Queue"
 msgstr " Hantera kö"
 
-#: module/cli/Cli.py:207
+#: pyload/cli/Cli.py:207
 msgid " Manage Collector"
 msgstr "Hantera länksamlaren"
 
-#: module/cli/Cli.py:208
+#: pyload/cli/Cli.py:208
 msgid " (Un)Pause Server"
 msgstr "Pausa/starta servern"
 
-#: module/cli/Cli.py:209
+#: pyload/cli/Cli.py:209
 msgid " Kill Server"
 msgstr " Döda server"
 
-#: module/cli/Cli.py:210
+#: pyload/cli/Cli.py:210
 msgid " Quit"
 msgstr " Avsluta"
 
-#: module/cli/Cli.py:289 module/cli/Cli.py:296
+#: pyload/cli/Cli.py:289 pyload/cli/Cli.py:296
 msgid "Please use this syntax: add <Package name> <link> <link2> ..."
 msgstr "Använd denna syntax: add <paketnamn> <länk> <länk2> ..."
 
-#: module/cli/Cli.py:315
+#: pyload/cli/Cli.py:315
 #, python-format
 msgid "Checking %d links:"
 msgstr "Kontrollerar %d länkar:"
 
-#: module/cli/Cli.py:324
+#: pyload/cli/Cli.py:324
 msgid "File does not exists."
 msgstr "Filen finns inte."
 
-#: module/cli/Cli.py:385
+#: pyload/cli/Cli.py:385
 msgid "pyLoad was terminated"
 msgstr "pyLoad avbröts"
 
-#: module/cli/Cli.py:443
+#: pyload/cli/Cli.py:443
 msgid "Prints server status"
 msgstr "Visar serverstatus"
 
-#: module/cli/Cli.py:444
+#: pyload/cli/Cli.py:444
 msgid "Prints downloads in queue"
 msgstr "Visar nedladdningar i kön"
 
-#: module/cli/Cli.py:445
+#: pyload/cli/Cli.py:445
 msgid "Prints downloads in collector"
 msgstr "Visar nedladdningar i länksamlaren"
 
-#: module/cli/Cli.py:446
+#: pyload/cli/Cli.py:446
 msgid "Adds package to queue"
 msgstr "Lägger till paketet i kön"
 
-#: module/cli/Cli.py:447
+#: pyload/cli/Cli.py:447
 msgid "Adds package to collector"
 msgstr "Lägger till paketet i länksamlaren"
 
-#: module/cli/Cli.py:448
+#: pyload/cli/Cli.py:448
 msgid "Delete Files from Queue/Collector"
 msgstr "Radera filer från kön/länksamlaren"
 
-#: module/cli/Cli.py:449
+#: pyload/cli/Cli.py:449
 msgid "Delete Packages from Queue/Collector"
 msgstr "Radera paket från kön/länksamlaren"
 
-#: module/cli/Cli.py:450
+#: pyload/cli/Cli.py:450
 msgid "Move Packages from Queue to Collector or vice versa"
 msgstr "Flytta paket från kön till länksamlaren och vice versa"
 
-#: module/cli/Cli.py:451
+#: pyload/cli/Cli.py:451
 msgid "Restart files"
 msgstr "Starta om filer"
 
-#: module/cli/Cli.py:452
+#: pyload/cli/Cli.py:452
 msgid "Restart packages"
 msgstr "Starta om paket"
 
-#: module/cli/Cli.py:453
+#: pyload/cli/Cli.py:453
 msgid "Check online status, works with local container"
 msgstr "Undersök onlinestatus, fungerar med lokal container"
 
-#: module/cli/Cli.py:454
+#: pyload/cli/Cli.py:454
 msgid "Checks online status of a container file"
 msgstr "Kontrollerar onlinestatusen för en containerfil"
 
-#: module/cli/Cli.py:455
+#: pyload/cli/Cli.py:455
 msgid "Pause the server"
 msgstr "Pausa servern"
 
-#: module/cli/Cli.py:456
+#: pyload/cli/Cli.py:456
 msgid "continue downloads"
 msgstr "återuppta hämtningar"
 
-#: module/cli/Cli.py:457
+#: pyload/cli/Cli.py:457
 msgid "Toggle pause/unpause"
 msgstr "Pausa/fortsätt"
 
-#: module/cli/Cli.py:458
+#: pyload/cli/Cli.py:458
 msgid "kill server"
 msgstr "döda server"
 
-#: module/cli/Cli.py:460
+#: pyload/cli/Cli.py:460
 msgid "List of commands:"
 msgstr "Lista över kommandon:"
 
-#: module/cli/Cli.py:473
+#: pyload/cli/Cli.py:473
 msgid "Couldn't write user config file"
 msgstr "Kunde inte skriva användarens inställningsfil"
 
-#: module/cli/Cli.py:548
+#: pyload/cli/Cli.py:548
 msgid "You need py-openssl to connect to this pyLoad Core."
 msgstr "Du behöver py-openssl för att ansluta till denna pyLoad Core."
 
-#: module/cli/Cli.py:555
+#: pyload/cli/Cli.py:555
 msgid "Address: "
 msgstr "Adress: "
 
-#: module/cli/Cli.py:556
+#: pyload/cli/Cli.py:556
 msgid "Port: "
 msgstr ""
 
-#: module/cli/Cli.py:557
+#: pyload/cli/Cli.py:557
 msgid "Username: "
 msgstr "Användarnamn: "
 
-#: module/cli/Cli.py:561
+#: pyload/cli/Cli.py:561
 msgid "Password: "
 msgstr "Lösenord: "
 
-#: module/cli/Cli.py:566 module/cli/Cli.py:575
+#: pyload/cli/Cli.py:566 pyload/cli/Cli.py:575
 msgid "Login data is wrong."
 msgstr "Inloggningsdata är felaktigt."
 
-#: module/cli/Cli.py:568 module/cli/Cli.py:577
+#: pyload/cli/Cli.py:568 pyload/cli/Cli.py:577
 #, python-format
 msgid "Could not establish connection to %(addr)s:%(port)s."
 msgstr "Kunde inte etablera anslutning till %(addr)s:%(port)s."
 
-#: module/cli/Cli.py:580
+#: pyload/cli/Cli.py:580
 msgid "You need py-openssl to connect to this pyLoad core."
 msgstr "Du behöver py-openssl för att ansluta till denna pyLoad core."
 
-#: module/cli/Cli.py:582
+#: pyload/cli/Cli.py:582
 msgid "Interactive mode ignored since you passed some commands."
 msgstr "Interaktivt läge ignorerat då vissa kommandon skickades."
 
-#: module/cli/AddPackage.py:48
+#: pyload/cli/AddPackage.py:48
 msgid "Add Package:"
 msgstr "Lägg till paket:"
 
-#: module/cli/AddPackage.py:53
+#: pyload/cli/AddPackage.py:53
 msgid "Enter a name for the new package"
 msgstr "Ange ett namn för nya paketet"
 
-#: module/cli/AddPackage.py:57
+#: pyload/cli/AddPackage.py:57
 #, python-format
 msgid "Package: %s"
 msgstr "Paket: %s"
 
-#: module/cli/AddPackage.py:58
+#: pyload/cli/AddPackage.py:58
 msgid "Parse the links you want to add."
 msgstr "Klistra in länkarna som du vill lägga till."
 
-#: module/cli/AddPackage.py:59
+#: pyload/cli/AddPackage.py:59
 #, python-format
 msgid "Type %s when done."
 msgstr "Skriv %s när du är färdig."
 
-#: module/cli/AddPackage.py:60
+#: pyload/cli/AddPackage.py:60
 msgid "Links added: "
 msgstr "Länkar lades till: "
 
-#: module/cli/AddPackage.py:64 module/cli/ManageFiles.py:149
+#: pyload/cli/AddPackage.py:64 pyload/cli/ManageFiles.py:149
 msgid " back to main menu"
 msgstr " tillbaka till huvudmenyn"
 
-#: module/cli/ManageFiles.py:97
+#: pyload/cli/ManageFiles.py:97
 msgid "Manage Packages:"
 msgstr "Hantera paket:"
 
-#: module/cli/ManageFiles.py:99
+#: pyload/cli/ManageFiles.py:99
 msgid "Manage Links:"
 msgstr "Hantera länkar:"
 
-#: module/cli/ManageFiles.py:104
+#: pyload/cli/ManageFiles.py:104
 msgid "What do you want to move?"
 msgstr "Vad vill du flytta?"
 
-#: module/cli/ManageFiles.py:106
+#: pyload/cli/ManageFiles.py:106
 msgid "What do you want to delete?"
 msgstr "Vad vill du ta bort?"
 
-#: module/cli/ManageFiles.py:108
+#: pyload/cli/ManageFiles.py:108
 msgid "What do you want to restart?"
 msgstr "Vad vill du starta om?"
 
-#: module/cli/ManageFiles.py:113
+#: pyload/cli/ManageFiles.py:113
 msgid "Choose what yout want to do or enter package number."
 msgstr "Välj vad du vill göra eller skriv in ett paketnummer."
 
-#: module/cli/ManageFiles.py:115
+#: pyload/cli/ManageFiles.py:115
 msgid "delete"
 msgstr "ta bort"
 
-#: module/cli/ManageFiles.py:115
+#: pyload/cli/ManageFiles.py:115
 msgid "move"
 msgstr "flytta"
 
-#: module/cli/ManageFiles.py:115
+#: pyload/cli/ManageFiles.py:115
 msgid "restart"
 msgstr "starta om"
 
-#: module/cli/ManageFiles.py:148
+#: pyload/cli/ManageFiles.py:148
 msgid " - previous"
 msgstr " - föregående"
 
-#: module/cli/ManageFiles.py:148
+#: pyload/cli/ManageFiles.py:148
 msgid " - next"
 msgstr " - nästa"
 

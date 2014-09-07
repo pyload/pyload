@@ -12,854 +12,854 @@ msgstr "Project-Id-Version: pyload\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: crowdin.net\n"
 
-#: module/Core.py:182
+#: pyload/Core.py:182
 msgid "Received Quit signal"
 msgstr "Prijat Quit signal"
 
-#: module/Core.py:303
+#: pyload/Core.py:303
 #, python-format
 msgid "pyLoad already running with pid %s"
 msgstr "pyLoad je jiz spusten pod pid %s"
 
-#: module/Core.py:317
+#: pyload/Core.py:317
 #, python-format
 msgid "Failed changing group: %s"
 msgstr "Zmena skupiny selhala: %s"
 
-#: module/Core.py:327
+#: pyload/Core.py:327
 #, python-format
 msgid "Failed changing user: %s"
 msgstr "Zmena uzivatele selhala: %s"
 
-#: module/Core.py:329
+#: pyload/Core.py:329
 msgid "folder for logs"
 msgstr "slozka pro logy"
 
-#: module/Core.py:340
+#: pyload/Core.py:340
 msgid "Starting"
 msgstr "Spoustim"
 
-#: module/Core.py:341
+#: pyload/Core.py:341
 #, python-format
 msgid "Using home directory: %s"
 msgstr "Nastaven domovsky adresar: %s"
 
-#: module/Core.py:350
+#: pyload/Core.py:350
 msgid "pycrypto to decode container files"
 msgstr "pycrypto pro dekodovani kontejnerovych souboru"
 
-#: module/Core.py:353
+#: pyload/Core.py:353
 msgid "folder for temporary files"
 msgstr "slozka pro docasne soubory"
 
-#: module/Core.py:358
+#: pyload/Core.py:358
 msgid "folder for downloads"
 msgstr "slozka pro stahovani"
 
-#: module/Core.py:361
+#: pyload/Core.py:361
 msgid "OpenSSL for secure connection"
 msgstr "OpenSSL pro zabezpecene pripojeni"
 
-#: module/Core.py:365
+#: pyload/Core.py:365
 msgid "Moving old user config to DB"
 msgstr "Presunuji stara nastaveni uzivatele do DB."
 
-#: module/Core.py:368
+#: pyload/Core.py:368
 msgid "Please check your logindata with ./pyload.py -u"
 msgstr "Prosim zkontrolujte sve prihlasovaci udaje pres ./pyload.py -u"
 
-#: module/Core.py:371
+#: pyload/Core.py:371
 msgid "All links removed"
 msgstr "Všechny odkazy odstraněny"
 
-#: module/Core.py:402
+#: pyload/Core.py:402
 #, python-format
 msgid "Downloadtime: %s"
 msgstr "Cas stahovani: %s"
 
-#: module/Core.py:412
+#: pyload/Core.py:412
 #, python-format
 msgid "Free space: %s"
 msgstr "Volne misto: %s"
 
-#: module/Core.py:432
+#: pyload/Core.py:432
 msgid "Activating Accounts..."
 msgstr "Aktivuji Ucty..."
 
-#: module/Core.py:438
+#: pyload/Core.py:438
 msgid "Activating Plugins..."
 msgstr "Aktivuji Pluginy..."
 
-#: module/Core.py:441
+#: pyload/Core.py:441
 msgid "pyLoad is up and running"
 msgstr "pyLoad je spusten"
 
-#: module/Core.py:460
+#: pyload/Core.py:460
 msgid "restarting pyLoad"
 msgstr "restartuji pyLoad"
 
-#: module/Core.py:464
+#: pyload/Core.py:464
 msgid "pyLoad quits"
 msgstr "pyLoad se ukonci"
 
-#: module/Core.py:521
+#: pyload/Core.py:521
 #, python-format
 msgid "Install %s"
 msgstr "Instalujte %s"
 
-#: module/Core.py:557
+#: pyload/Core.py:557
 #, python-format
 msgid "could not find %(desc)s: %(name)s"
 msgstr "nelze najit %(desc)s: %(name)s"
 
-#: module/Core.py:559
+#: pyload/Core.py:559
 #, python-format
 msgid "could not create %(desc)s: %(name)s"
 msgstr "nelze vytvorit %(desc)s: %(name)s"
 
-#: module/Core.py:580
+#: pyload/Core.py:580
 msgid "shutting down..."
 msgstr "vypinani..."
 
-#: module/Core.py:597
+#: pyload/Core.py:597
 msgid "error while shutting down"
 msgstr "chyba pri vypinani"
 
-#: module/Core.py:661
+#: pyload/Core.py:661
 msgid "killed pyLoad from Terminal"
 msgstr "pyLoad zastaven z terminalu"
 
-#: module/database/DatabaseBackend.py:174
+#: pyload/database/DatabaseBackend.py:174
 msgid "Filedatabase was deleted due to incompatible version."
 msgstr "Databaze souboru byla smazana pro nekompatibilni verzi."
 
-#: module/database/DatabaseBackend.py:189
+#: pyload/database/DatabaseBackend.py:189
 msgid "Filedatabase could NOT be converted."
 msgstr "Databáze nemůže být převedena"
 
-#: module/database/DatabaseBackend.py:198
+#: pyload/database/DatabaseBackend.py:198
 msgid "Database was converted from v2 to v3."
 msgstr "Databaze byla konvertovana z v2 na v3."
 
-#: module/database/DatabaseBackend.py:206
+#: pyload/database/DatabaseBackend.py:206
 msgid "Database was converted from v3 to v4."
 msgstr "Databaze byla konvertovana z v3 na v4."
 
-#: module/database/DatabaseBackend.py:252
+#: pyload/database/DatabaseBackend.py:252
 msgid "Converting old Django DB"
 msgstr "Konvertuji starou databazi Django"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "finished"
 msgstr "hotovo"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "offline"
 msgstr ""
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "online"
 msgstr ""
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "queued"
 msgstr "ve fronte"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "skipped"
 msgstr "preskoceno"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "waiting"
 msgstr "ceka"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "temp. offline"
 msgstr "doc. nedostupne"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "starting"
 msgstr "spoustim"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "failed"
 msgstr "selhalo"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "aborted"
 msgstr "zruseno"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "decrypting"
 msgstr "dekoduji"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "custom"
 msgstr "vlastni"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "downloading"
 msgstr "stahuji"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "processing"
 msgstr "zpracovavam"
 
-#: module/database/FileDatabase.py:45
+#: pyload/database/FileDatabase.py:45
 msgid "unknown"
 msgstr "neznamy"
 
-#: module/database/FileDatabase.py:531 module/plugins/hooks/IRCInterface.py:74
-#: module/plugins/hooks/XMPPInterface.py:83
+#: pyload/database/FileDatabase.py:531 pyload/plugins/hooks/IRCInterface.py:74
+#: pyload/plugins/hooks/XMPPInterface.py:83
 #, python-format
 msgid "Package finished: %s"
 msgstr "Balicek dokoncen: %s"
 
-#: module/remote/ThriftBackend.py:39
+#: pyload/remote/ThriftBackend.py:39
 msgid "Using SSL ThriftBackend"
 msgstr "Pouzivam SSL ThriftBackend"
 
-#: module/remote/RemoteManager.py:35
+#: pyload/remote/RemoteManager.py:35
 #, python-format
 msgid "Remote backend error: %s"
 msgstr "Vzdalena chyba systemu: %s"
 
-#: module/remote/RemoteManager.py:82
+#: pyload/remote/RemoteManager.py:82
 #, python-format
 msgid "Starting %(name)s: %(addr)s:%(port)s"
 msgstr "Zahajuji %(name)s: %(addr)s:%(port)s"
 
-#: module/remote/RemoteManager.py:84
+#: pyload/remote/RemoteManager.py:84
 #, python-format
 msgid "Failed loading backend %(name)s | %(error)s"
 msgstr "Spousteni backendu %(name)s selhalo | %(error)s"
 
-#: module/webui/app/json.py:57
+#: pyload/webui/app/json.py:57
 #, python-format
 msgid "waiting %s"
 msgstr "cekam %s"
 
-#: module/threads/ServerThread.py:35
+#: pyload/threads/ServerThread.py:35
 msgid "SSL certificates not found."
 msgstr "Certifikaty SSL nenalezeny."
 
-#: module/threads/ServerThread.py:39
+#: pyload/threads/ServerThread.py:39
 #, python-format
 msgid "Sorry, we dropped support for starting %s directly within pyLoad"
 msgstr "Omlouvame se, ale spousteni %s v ramci pyLoad jiz neni podporovano"
 
-#: module/threads/ServerThread.py:40
+#: pyload/threads/ServerThread.py:40
 msgid "You can use the threaded server which offers good performance and ssl,"
 msgstr "Je mozne pouzit server podporujici vlakna, ktery nabizi dobry vykon a ssl,"
 
-#: module/threads/ServerThread.py:41
+#: pyload/threads/ServerThread.py:41
 #, python-format
 msgid "of course you can still use your existing %s with pyLoads fastcgi server"
 msgstr "a samozrejme je take mozne pouzit vas jiz existujici %s se serverem fastcgi pyLoadu"
 
-#: module/threads/ServerThread.py:42
-msgid "sample configs are located in the module/webui/servers directory"
-msgstr "vzorove konfiguracni soubory jsou umisteny v adresari module/webui/servers"
+#: pyload/threads/ServerThread.py:42
+msgid "sample configs are located in the pyload/webui/servers directory"
+msgstr "vzorove konfiguracni soubory jsou umisteny v adresari pyload/webui/servers"
 
-#: module/threads/ServerThread.py:49
+#: pyload/threads/ServerThread.py:49
 #, python-format
 msgid "Can't use %(server)s, python-flup is not installed!"
 msgstr "Nelze pouzit %(server)s, python-flup neni nainstalovan!"
 
-#: module/threads/ServerThread.py:56
+#: pyload/threads/ServerThread.py:56
 #, python-format
 msgid "Error importing lightweight server: %s"
 msgstr "Chyba pri importu lightweight serveru: %s"
 
-#: module/threads/ServerThread.py:57
+#: pyload/threads/ServerThread.py:57
 msgid "You need to download and compile bjoern, https://github.com/jonashaag/bjoern"
 msgstr "Musíte si stáhnout a zkompilovat bjoern, https://github.com/jonashaag/bjoern"
 
-#: module/threads/ServerThread.py:58
-msgid "Copy the boern.so to module/lib folder or use setup.py install"
-msgstr "Zkopirujte soubor boern.so do adresare module/lib nebo pouzijte setup.py install"
+#: pyload/threads/ServerThread.py:58
+msgid "Copy the boern.so to pyload/lib folder or use setup.py install"
+msgstr "Zkopirujte soubor boern.so do adresare pyload/lib nebo pouzijte setup.py install"
 
-#: module/threads/ServerThread.py:59
+#: pyload/threads/ServerThread.py:59
 msgid "Of course you need to be familiar with linux and know how to compile software"
 msgstr "Samozrejme budete potrebovat znalost linuxu a kompilace software"
 
-#: module/threads/ServerThread.py:63
+#: pyload/threads/ServerThread.py:63
 msgid "Server set to threaded, due to known performance problems on windows."
 msgstr "Server nyni pracuje s vlakny i pres zname obtize s vykonem na Windows"
 
-#: module/threads/ServerThread.py:80 module/threads/ServerThread.py:103
+#: pyload/threads/ServerThread.py:80 pyload/threads/ServerThread.py:103
 msgid "This server offers no SSL, please consider using threaded instead"
 msgstr "Tento server nenabizi SSL, zvazte pouziti rezimu s vlakny"
 
-#: module/threads/ServerThread.py:82
+#: pyload/threads/ServerThread.py:82
 #, python-format
 msgid "Starting builtin webserver: %(host)s:%(port)d"
 msgstr "Spoustim vestaveny Webserver: %(host)s:%(port)d"
 
-#: module/threads/ServerThread.py:87
+#: pyload/threads/ServerThread.py:87
 #, python-format
 msgid "Starting threaded SSL webserver: %(host)s:%(port)d"
 msgstr "Spoustim SSL webserver: %(host)s:%(port)d"
 
-#: module/threads/ServerThread.py:91
+#: pyload/threads/ServerThread.py:91
 #, python-format
 msgid "Starting threaded webserver: %(host)s:%(port)d"
 msgstr "Spoustim webserver: %(host)s:%(port)d"
 
-#: module/threads/ServerThread.py:97
+#: pyload/threads/ServerThread.py:97
 #, python-format
 msgid "Starting fastcgi server: %(host)s:%(port)d"
 msgstr "Spoustim fastcgi server: %(host)s:%(port)d"
 
-#: module/threads/ServerThread.py:105
+#: pyload/threads/ServerThread.py:105
 #, python-format
 msgid "Starting lightweight webserver (bjoern): %(host)s:%(port)d"
 msgstr "Startuji lightweight server (bjoern): %(host)s:%(port)d"
 
-#: module/webui/app/pyload.py:125
+#: pyload/webui/app/pyload.py:125
 msgid "You dont have permission to access this page."
 msgstr "Pro zobrazeni teto stranky nemate opravneni."
 
-#: module/webui/app/pyload.py:193
+#: pyload/webui/app/pyload.py:193
 msgid "Download directory not found."
 msgstr "Adresar pro stahovani nenalezen."
 
-#: module/webui/app/pyload.py:260 module/webui/app/pyload.py:267
+#: pyload/webui/app/pyload.py:260 pyload/webui/app/pyload.py:267
 msgid "unlimited"
 msgstr "neomezený"
 
-#: module/webui/app/pyload.py:262 module/webui/app/pyload.py:269
+#: pyload/webui/app/pyload.py:262 pyload/webui/app/pyload.py:269
 msgid "not available"
 msgstr "neni k dispozici"
 
-#: module/webui/app/pyload.py:508
+#: pyload/webui/app/pyload.py:508
 msgid "Run pyload.py -s to access the setup."
 msgstr "Pro setup spustte pyload.py -s."
 
-#: module/network/HTTPDownload.py:245
+#: pyload/network/HTTPDownload.py:245
 #, python-format
 msgid "Download chunks failed, fallback to single connection | %s"
 msgstr "Stahování částí selhalo, přecházím na jediné připojení | %s"
 
-#: module/threads/PluginThread.py:183
+#: pyload/threads/PluginThread.py:183
 #, python-format
 msgid "Download starts: %s"
 msgstr "Zahajuji stahovani: %s"
 
-#: module/threads/PluginThread.py:189
+#: pyload/threads/PluginThread.py:189
 #, python-format
 msgid "Download finished: %s"
 msgstr "Stahovani dokonceno: %s"
 
-#: module/threads/PluginThread.py:194 module/threads/PluginThread.py:365
+#: pyload/threads/PluginThread.py:194 pyload/threads/PluginThread.py:365
 #, python-format
 msgid "Plugin %s is missing a function."
 msgstr "V pluginu %s chybi funkce."
 
-#: module/threads/PluginThread.py:202 module/threads/PluginThread.py:265
-#: module/threads/PluginThread.py:382
+#: pyload/threads/PluginThread.py:202 pyload/threads/PluginThread.py:265
+#: pyload/threads/PluginThread.py:382
 #, python-format
 msgid "Download aborted: %s"
 msgstr "Stahovani zruseno: %s"
 
-#: module/threads/PluginThread.py:222
+#: pyload/threads/PluginThread.py:222
 #, python-format
 msgid "Download restarted: %(name)s | %(msg)s"
 msgstr "Stahovani obnoveno: %(name)s | %(msg)s"
 
-#: module/threads/PluginThread.py:231 module/threads/PluginThread.py:373
+#: pyload/threads/PluginThread.py:231 pyload/threads/PluginThread.py:373
 #, python-format
 msgid "Download is offline: %s"
 msgstr "Zdroj stahovani je offline: %s"
 
-#: module/threads/PluginThread.py:234
+#: pyload/threads/PluginThread.py:234
 #, python-format
 msgid "Download is temporary offline: %s"
 msgstr "Zdroj stahovani je docasne nedostupny: %s"
 
-#: module/threads/PluginThread.py:237 module/threads/PluginThread.py:304
+#: pyload/threads/PluginThread.py:237 pyload/threads/PluginThread.py:304
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
 msgstr "Stahovani selhalo: %(name)s | %(msg)s"
 
-#: module/threads/PluginThread.py:254
+#: pyload/threads/PluginThread.py:254
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
 msgstr "K hostiteli se nelze pripojit, nebo bylo pripojeni resetovano, cekam 1 minutu do dalsiho pokusu."
 
-#: module/threads/PluginThread.py:290
+#: pyload/threads/PluginThread.py:290
 #, python-format
 msgid "Download skipped: %(name)s due to %(plugin)s"
 msgstr "Stahovani preskoceno: %(name)s v dusledku %(plugin)s"
 
-#: module/threads/PluginThread.py:361
+#: pyload/threads/PluginThread.py:361
 #, python-format
 msgid "Decrypting starts: %s"
 msgstr "Zacina dekodovani: %s"
 
-#: module/threads/PluginThread.py:376 module/threads/PluginThread.py:394
+#: pyload/threads/PluginThread.py:376 pyload/threads/PluginThread.py:394
 #, python-format
 msgid "Decrypting failed: %(name)s | %(msg)s"
 msgstr "Dekodovani selhalo: %(name)s | %(msg)s"
 
-#: module/threads/PluginThread.py:388
+#: pyload/threads/PluginThread.py:388
 #, python-format
 msgid "Retrying %s"
 msgstr "Zkousim znovu %s"
 
-#: module/threads/PluginThread.py:635
+#: pyload/threads/PluginThread.py:635
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
 msgstr "Ziskavani informaci pro %(name)s selhalo | %(err)s"
 
-#: module/HookManager.py:90 module/plugins/Hook.py:102
+#: pyload/HookManager.py:90 pyload/plugins/Hook.py:102
 #, python-format
 msgid "Error executing hooks: %s"
 msgstr "Chyba pri provadeni zaveseni: %s"
 
-#: module/HookManager.py:140
+#: pyload/HookManager.py:140
 #, python-format
 msgid "Failed activating %(name)s"
 msgstr "Aktivace %(name)s selhala"
 
-#: module/HookManager.py:144
+#: pyload/HookManager.py:144
 #, python-format
 msgid "Activated plugins: %s"
 msgstr "Aktivovane pluginy: %s"
 
-#: module/HookManager.py:145
+#: pyload/HookManager.py:145
 #, python-format
 msgid "Deactivate plugins: %s"
 msgstr "Deaktivovat pluginy: %s"
 
-#: module/ThreadManager.py:137
+#: pyload/ThreadManager.py:137
 #, python-format
 msgid "Reconnect Failed: %s"
 msgstr "Reconnect selhal: %s"
 
-#: module/ThreadManager.py:176
+#: pyload/ThreadManager.py:176
 msgid "Reconnect script not found!"
 msgstr "Skript pro reconnect nenalezen!"
 
-#: module/ThreadManager.py:182
+#: pyload/ThreadManager.py:182
 msgid "Starting reconnect"
 msgstr "Spoustim reconnect"
 
-#: module/ThreadManager.py:196
+#: pyload/ThreadManager.py:196
 msgid "Failed executing reconnect script!"
 msgstr "Provadeni skriptu pro Reconnect selhalo!"
 
-#: module/ThreadManager.py:208
+#: pyload/ThreadManager.py:208
 #, python-format
 msgid "Reconnected, new IP: %s"
 msgstr "Reconnectnuto, nova IP: %s"
 
-#: module/ThreadManager.py:288
+#: pyload/ThreadManager.py:288
 msgid "Not enough space left on device"
 msgstr "Není dostatek místa na zařízení"
 
-#: module/plugins/Account.py:85 module/plugins/Account.py:91
+#: pyload/plugins/Account.py:85 pyload/plugins/Account.py:91
 #, python-format
 msgid "Could not login with account %(user)s | %(msg)s"
 msgstr "Nezdařílo se přihlášení k účtu %(user)s | %(msg)s"
 
-#: module/plugins/Account.py:86
+#: pyload/plugins/Account.py:86
 msgid "Wrong Password"
 msgstr "Špatné heslo"
 
-#: module/plugins/Account.py:240
+#: pyload/plugins/Account.py:240
 #, python-format
 msgid "Your Time %s has wrong format, use: 1:22-3:44"
 msgstr "Vas cas %s ma nespravny format, pouzijte 1:22-3:44"
 
-#: module/plugins/Account.py:266
+#: pyload/plugins/Account.py:266
 #, python-format
 msgid "Account %s has not enough traffic, checking again in 30min"
 msgstr "Účet %s nemá nedostatek trafficu, další kontrola za 30min"
 
-#: module/plugins/Account.py:273
+#: pyload/plugins/Account.py:273
 #, python-format
 msgid "Account %s is expired, checking again in 1h"
 msgstr "Účet %s vypršel, další kontrola za 1h"
 
-#: module/plugins/crypter/SerienjunkiesOrg.py:128
+#: pyload/plugins/crypter/SerienjunkiesOrg.py:128
 msgid "Downloadlimit reached"
 msgstr "Dosažen limit pro stahování"
 
-#: module/plugins/PluginManager.py:153
+#: pyload/plugins/PluginManager.py:153
 #, python-format
 msgid "%s has a invalid pattern."
 msgstr "%s ma neplatny vzor."
 
-#: module/plugins/PluginManager.py:272
+#: pyload/plugins/PluginManager.py:272
 #, python-format
 msgid "Error importing %(name)s: %(msg)s"
 msgstr "Chyba pri importu %(name)s: %(msg)s"
 
-#: module/plugins/internal/MultiHoster.py:133
+#: pyload/plugins/internal/MultiHoster.py:133
 msgid "No Hoster loaded"
 msgstr "Nenačten žádný plugin Hoster"
 
-#: module/plugins/accounts/BitshareCom.py:37
+#: pyload/plugins/accounts/BitshareCom.py:37
 msgid "Activate direct Download in your Bitshare Account"
 msgstr "Aktivovat přímé stahování na vašem Bitshare accountu"
 
-#: module/plugins/container/LinkList.py:65
+#: pyload/plugins/container/LinkList.py:65
 msgid "LinkList could not be cleared."
 msgstr "LinkList nemohl byt vyprazdnen."
 
-#: module/plugins/AccountManager.py:88
+#: pyload/plugins/AccountManager.py:88
 msgid "Account settings deleted, due to new config format."
 msgstr "Pro novy format konfiguracniho souboru bylo nastaveni uctu smazano."
 
-#: module/plugins/hoster/BasePlugin.py:65
+#: pyload/plugins/hoster/BasePlugin.py:65
 msgid "Authorization required (username:password)"
 msgstr "Je vyžadována autorizace (username:password)"
 
-#: module/plugins/hoster/SimplydebridCom.py:25
-#: module/plugins/hoster/RealdebridCom.py:41
-#: module/plugins/hoster/FreeWayMe.py:38 module/plugins/hoster/ZeveraCom.py:22
-#: module/plugins/hoster/UnrestrictLi.py:53
-#: module/plugins/hoster/Premium4Me.py:28 module/plugins/hoster/FastixRu.py:36
-#: module/plugins/hoster/AlldebridCom.py:38
-#: module/plugins/hoster/DebridItaliaCom.py:40
-#: module/plugins/hoster/RPNetBiz.py:26
-#: module/plugins/hoster/MultiDebridCom.py:41
-#: module/plugins/hoster/ReloadCc.py:24 module/plugins/hoster/RehostTo.py:26
-#: module/plugins/hoster/PremiumizeMe.py:22
-#: module/plugins/hooks/RPNetBiz.py:43
+#: pyload/plugins/hoster/SimplydebridCom.py:25
+#: pyload/plugins/hoster/RealdebridCom.py:41
+#: pyload/plugins/hoster/FreeWayMe.py:38 pyload/plugins/hoster/ZeveraCom.py:22
+#: pyload/plugins/hoster/UnrestrictLi.py:53
+#: pyload/plugins/hoster/Premium4Me.py:28 pyload/plugins/hoster/FastixRu.py:36
+#: pyload/plugins/hoster/AlldebridCom.py:38
+#: pyload/plugins/hoster/DebridItaliaCom.py:40
+#: pyload/plugins/hoster/RPNetBiz.py:26
+#: pyload/plugins/hoster/MultiDebridCom.py:41
+#: pyload/plugins/hoster/ReloadCc.py:24 pyload/plugins/hoster/RehostTo.py:26
+#: pyload/plugins/hoster/PremiumizeMe.py:22
+#: pyload/plugins/hooks/RPNetBiz.py:43
 #, python-format
 msgid "Please enter your %s account or deactivate this plugin"
 msgstr "Prosím vložte svůj %s účet nebo tento plugin deaktivujte"
 
-#: module/plugins/hoster/FilesMailRu.py:99
+#: pyload/plugins/hoster/FilesMailRu.py:99
 #, python-format
 msgid "There was HTML Code in the Downloaded File (%s)...redirect error? The Download will be restarted."
 msgstr "Ve staženém souboru (%s) byl nalezen HTML kód... Chyba přesměrování? Stahování bude restartováno."
 
-#: module/plugins/hoster/NetloadIn.py:146
-#: module/plugins/hoster/NetloadIn.py:170
+#: pyload/plugins/hoster/NetloadIn.py:146
+#: pyload/plugins/hoster/NetloadIn.py:170
 msgid "File temporarily not available"
 msgstr "Soubor není dočasně k dispozici"
 
-#: module/plugins/hoster/NetloadIn.py:183
+#: pyload/plugins/hoster/NetloadIn.py:183
 #, python-format
 msgid "Netload: waiting between downloads %d s."
 msgstr "Netload: čekání mezi stahováním %d s."
 
-#: module/plugins/hoster/NetloadIn.py:214
+#: pyload/plugins/hoster/NetloadIn.py:214
 #, python-format
 msgid "Netload: waiting for captcha %d s."
 msgstr "Netload: čekám na captchu %d s."
 
-#: module/plugins/hoster/NetloadIn.py:252
+#: pyload/plugins/hoster/NetloadIn.py:252
 msgid "Downloaded File was empty"
 msgstr "Stažený soubor byl prázdný"
 
-#: module/plugins/hoster/UploadedTo.py:129
+#: pyload/plugins/hoster/UploadedTo.py:129
 msgid "API key invalid"
 msgstr "Neplatný API klíč"
 
-#: module/plugins/hoster/UploadedTo.py:153
+#: pyload/plugins/hoster/UploadedTo.py:153
 #, python-format
 msgid "%s: Not enough traffic left"
 msgstr "%s: Nezbývá dostatečný traffic"
 
-#: module/plugins/hoster/UploadedTo.py:156
+#: pyload/plugins/hoster/UploadedTo.py:156
 msgid "Traffic exceeded"
 msgstr "Překročen Traffic"
 
-#: module/plugins/hoster/RapidshareCom.py:100
+#: pyload/plugins/hoster/RapidshareCom.py:100
 msgid "Rapidshare: Traffic Share (direct download)"
 msgstr "RapidShare: Traffic Share (přímé stažení)"
 
-#: module/plugins/hoster/RapidshareCom.py:127
-#: module/plugins/hoster/RapidshareCom.py:194
+#: pyload/plugins/hoster/RapidshareCom.py:127
+#: pyload/plugins/hoster/RapidshareCom.py:194
 msgid "Already downloading from this ip address, waiting 60 seconds"
 msgstr "Z této ip adresy již stahování probíhá, čekám 60 sekund"
 
-#: module/plugins/hoster/RapidshareCom.py:131
+#: pyload/plugins/hoster/RapidshareCom.py:131
 msgid "Invalid Auth Code, download will be restarted"
 msgstr "Špatný autentizační kód, stahování bude restartováno"
 
-#: module/plugins/hoster/RapidshareCom.py:199
+#: pyload/plugins/hoster/RapidshareCom.py:199
 msgid "RapidShareCom: No free slots"
 msgstr "RapidShareCom: Žádné volné sloty"
 
-#: module/plugins/hoster/RapidshareCom.py:202
+#: pyload/plugins/hoster/RapidshareCom.py:202
 msgid "You need a premium account for this file"
 msgstr "Pro tento soubor potřebujete prémiový účet"
 
-#: module/plugins/hoster/RapidshareCom.py:204
+#: pyload/plugins/hoster/RapidshareCom.py:204
 msgid "Filename reported invalid"
 msgstr "Ohlášeno neplatné jméno souboru"
 
-#: module/plugins/hoster/FileserveCom.py:99
+#: pyload/plugins/hoster/FileserveCom.py:99
 msgid "Parallel download error, now waiting 60s."
 msgstr "Chyba souběžného stahování, čekám 60s."
 
-#: module/plugins/hoster/FileserveCom.py:215
+#: pyload/plugins/hoster/FileserveCom.py:215
 msgid "Not logged in."
 msgstr "Nejste přihlášeni."
 
-#: module/plugins/hoster/MegaNz.py:56
+#: pyload/plugins/hoster/MegaNz.py:56
 msgid "Decryption failed"
 msgstr "Dešifrování selhalo"
 
-#: module/plugins/hoster/MegaNz.py:106
+#: pyload/plugins/hoster/MegaNz.py:106
 msgid "No file key provided in the URL"
 msgstr "URL neobsahuje klíč souboru"
 
-#: module/plugins/hoster/MegaNz.py:118
+#: pyload/plugins/hoster/MegaNz.py:118
 msgid "Error code:"
 msgstr "Kód chyby:"
 
-#: module/plugins/Container.py:68
+#: pyload/plugins/Container.py:68
 msgid "File not exists."
 msgstr "Soubor neexistuje."
 
-#: module/plugins/hooks/UpdateManager.py:74
+#: pyload/plugins/hooks/UpdateManager.py:74
 msgid "*** Plugins have been updated, please restart pyLoad ***"
 msgstr "*** Pluginy byly aktualizovány, prosím restartujte pyLoad ***"
 
-#: module/plugins/hooks/UpdateManager.py:76
+#: pyload/plugins/hooks/UpdateManager.py:76
 msgid "Plugins updated and reloaded"
 msgstr "Pluginy aktualizovány a znovu načteny"
 
-#: module/plugins/hooks/UpdateManager.py:79
+#: pyload/plugins/hooks/UpdateManager.py:79
 msgid "No plugin updates available"
 msgstr "Žádné aktualizace rozšíření"
 
-#: module/plugins/hooks/UpdateManager.py:96
+#: pyload/plugins/hooks/UpdateManager.py:96
 msgid "No Updates for pyLoad"
 msgstr "Žádné aktualizace pro pyLoad"
 
-#: module/plugins/hooks/UpdateManager.py:100
+#: pyload/plugins/hooks/UpdateManager.py:100
 #, python-format
 msgid "***  New pyLoad Version %s available  ***"
 msgstr "***  Je dostupná nové verze pyLoad (%s)  ***"
 
-#: module/plugins/hooks/UpdateManager.py:101
+#: pyload/plugins/hooks/UpdateManager.py:101
 msgid "***  Get it here: http://pyload.org/download  ***"
 msgstr "***  Získejte ji zde: http://pyload.org/download  ***"
 
-#: module/plugins/hooks/UpdateManager.py:104
+#: pyload/plugins/hooks/UpdateManager.py:104
 msgid "Not able to connect server for updates"
 msgstr "Nelze se připojit k update serveru"
 
-#: module/plugins/hooks/UpdateManager.py:148
+#: pyload/plugins/hooks/UpdateManager.py:148
 #, python-format
 msgid "New version of %(type)s|%(name)s : %(version).2f"
 msgstr "Nová verze %(type)s|%(name)s : %(version).2f"
 
-#: module/plugins/hooks/UpdateManager.py:157
-#: module/plugins/hooks/UpdateManager.py:162
+#: pyload/plugins/hooks/UpdateManager.py:157
+#: pyload/plugins/hooks/UpdateManager.py:162
 #, python-format
 msgid "Error when updating %s"
 msgstr "Chyba při aktualizaci %s"
 
-#: module/plugins/hooks/UpdateManager.py:162
+#: pyload/plugins/hooks/UpdateManager.py:162
 msgid "Version mismatch"
 msgstr "Nesprávná verze"
 
-#: module/plugins/hooks/IRCInterface.py:82
+#: pyload/plugins/hooks/IRCInterface.py:82
 #, python-format
 msgid "Download finished: %(name)s @ %(plugin)s "
 msgstr "Stahování dokončeno: %(name)s @ %(plugin)s "
 
-#: module/plugins/hooks/IRCInterface.py:95
+#: pyload/plugins/hooks/IRCInterface.py:95
 #, python-format
 msgid "New Captcha Request: %s"
 msgstr "Nový požadavek na Captchu: %s"
 
-#: module/plugins/hooks/IRCInterface.py:96
+#: pyload/plugins/hooks/IRCInterface.py:96
 #, python-format
 msgid "Answer with 'c %s text on the captcha'"
 msgstr "Odpovězte \"c %s text z captchy\""
 
-#: module/plugins/hooks/Premium4Me.py:29
+#: pyload/plugins/hooks/Premium4Me.py:29
 msgid "Please add your premium.to account first and restart pyLoad"
 msgstr "Nejdříve prosím přidejte váš premium.to účet a restartujte pyLoad"
 
-#: module/plugins/hooks/HotFolder.py:82
+#: pyload/plugins/hooks/HotFolder.py:82
 #, python-format
 msgid "Added %s from HotFolder"
 msgstr "Přidán %s ze sledované složky"
 
-#: module/plugins/hooks/ExtractArchive.py:95
+#: pyload/plugins/hooks/ExtractArchive.py:95
 #, python-format
 msgid "No %s installed"
 msgstr "%s není nainstalován"
 
-#: module/plugins/hooks/ExtractArchive.py:97
-#: module/plugins/hooks/ExtractArchive.py:102
+#: pyload/plugins/hooks/ExtractArchive.py:97
+#: pyload/plugins/hooks/ExtractArchive.py:102
 #, python-format
 msgid "Could not activate %s"
 msgstr "Nelze aktivovat %s"
 
-#: module/plugins/hooks/ExtractArchive.py:107
+#: pyload/plugins/hooks/ExtractArchive.py:107
 msgid "Activated"
 msgstr "Aktivní"
 
-#: module/plugins/hooks/ExtractArchive.py:109
+#: pyload/plugins/hooks/ExtractArchive.py:109
 msgid "No Extract plugins activated"
 msgstr "Nejsou aktivovány žádné rozbalovací pluginy"
 
-#: module/plugins/hooks/ExtractArchive.py:121
+#: pyload/plugins/hooks/ExtractArchive.py:121
 #, python-format
 msgid "Package %s queued for later extracting"
 msgstr "Balíček %s zařazen do fronty pro pozdější rozbalení"
 
-#: module/plugins/hooks/ExtractArchive.py:144
+#: pyload/plugins/hooks/ExtractArchive.py:144
 #, python-format
 msgid "Check package %s"
 msgstr "Kontrola balíčku %s"
 
-#: module/plugins/hooks/ExtractArchive.py:185
+#: pyload/plugins/hooks/ExtractArchive.py:185
 #, python-format
 msgid "Extract to %s"
 msgstr "Rozbalit do %s"
 
-#: module/plugins/hooks/ExtractArchive.py:200
+#: pyload/plugins/hooks/ExtractArchive.py:200
 msgid "No files found to extract"
 msgstr "Nenalezeny žádné soubory k rozbalení"
 
-#: module/plugins/hooks/ExtractArchive.py:207
+#: pyload/plugins/hooks/ExtractArchive.py:207
 msgid "extracting"
 msgstr "rozbaluji"
 
-#: module/plugins/hooks/ExtractArchive.py:218
+#: pyload/plugins/hooks/ExtractArchive.py:218
 msgid "Password protected"
 msgstr "Chráněno heslem"
 
-#: module/plugins/hooks/ExtractArchive.py:239
+#: pyload/plugins/hooks/ExtractArchive.py:239
 msgid "Wrong password"
 msgstr "Chybné heslo"
 
-#: module/plugins/hooks/ExtractArchive.py:247
+#: pyload/plugins/hooks/ExtractArchive.py:247
 #, python-format
 msgid "Deleting %s files"
 msgstr "Mažu %s souborů"
 
-#: module/plugins/hooks/ExtractArchive.py:254
+#: pyload/plugins/hooks/ExtractArchive.py:254
 msgid "Extracting finished"
 msgstr "Rozbalení dokončeno"
 
-#: module/plugins/hooks/ExtractArchive.py:260
+#: pyload/plugins/hooks/ExtractArchive.py:260
 msgid "Archive Error"
 msgstr "Chyba archivu"
 
-#: module/plugins/hooks/ExtractArchive.py:262
+#: pyload/plugins/hooks/ExtractArchive.py:262
 msgid "CRC Mismatch"
 msgstr "CRC nesouhlasí"
 
-#: module/plugins/hooks/ExtractArchive.py:266
+#: pyload/plugins/hooks/ExtractArchive.py:266
 msgid "Unknown Error"
 msgstr "Neznámá chyba"
 
-#: module/plugins/hooks/ExtractArchive.py:318
+#: pyload/plugins/hooks/ExtractArchive.py:318
 msgid "Setting User and Group failed"
 msgstr "Nastavení Uživatele a Skupiny selhalo"
 
-#: module/plugins/hooks/ClickAndLoad.py:75
+#: pyload/plugins/hooks/ClickAndLoad.py:75
 msgid "Click'N'Load: Port 9666 already in use"
 msgstr "Click'N'Load: Port 9666 se již používá"
 
-#: module/plugins/hooks/CaptchaTrader.py:69
-#: module/plugins/hooks/Captcha9kw.py:59
-#: module/plugins/hooks/ExpertDecoders.py:50
+#: pyload/plugins/hooks/CaptchaTrader.py:69
+#: pyload/plugins/hooks/Captcha9kw.py:59
+#: pyload/plugins/hooks/ExpertDecoders.py:50
 #, python-format
 msgid "%s credits left"
 msgstr "%s kreditů zbývá"
 
-#: module/plugins/hooks/CaptchaTrader.py:117
+#: pyload/plugins/hooks/CaptchaTrader.py:117
 msgid "Could not send response."
 msgstr "Nelze odeslat odpověď."
 
-#: module/plugins/hooks/CaptchaTrader.py:135
+#: pyload/plugins/hooks/CaptchaTrader.py:135
 msgid "Your CaptchaTrader Account has not enough credits"
 msgstr "Na vašem CaptchaTrader účtu není dostatek kreditu"
 
-#: module/plugins/hooks/LinkdecrypterCom.py:43
+#: pyload/plugins/hooks/LinkdecrypterCom.py:43
 msgid "Crypter list not found"
 msgstr "Seznam pluginů Crypter nenalezen"
 
-#: module/plugins/hooks/LinkdecrypterCom.py:57
+#: pyload/plugins/hooks/LinkdecrypterCom.py:57
 msgid "Crypter list is empty"
 msgstr "Seznam pluginů Crypter je prázdný"
 
-#: module/plugins/hooks/XMPPInterface.py:91
+#: pyload/plugins/hooks/XMPPInterface.py:91
 #, python-format
 msgid "Download finished: %(name)s @ %(plugin)s"
 msgstr "Stahování dokončeno: %(name)s @ %(plugin)s"
 
-#: module/plugins/hooks/Captcha9kw.py:93
+#: pyload/plugins/hooks/Captcha9kw.py:93
 #, python-format
 msgid "New CaptchaID from upload: %s : %s"
 msgstr "Nové CaptchaID z uploadu: %s : %s"
 
-#: module/plugins/hooks/Captcha9kw.py:129
+#: pyload/plugins/hooks/Captcha9kw.py:129
 msgid "Your Captcha 9kw.eu Account has not enough credits"
 msgstr "Na vašem captcha účtu 9kw.eu není dostatek kreditu"
 
-#: module/plugins/hooks/ExternalScripts.py:54
+#: pyload/plugins/hooks/ExternalScripts.py:54
 #, python-format
 msgid "Installed scripts for %s: "
 msgstr "Nainstalované skripty pro %s: "
 
-#: module/plugins/hooks/ExternalScripts.py:69
+#: pyload/plugins/hooks/ExternalScripts.py:69
 msgid "Script not executable:"
 msgstr "Skript není spustitelný:"
 
-#: module/plugins/hooks/ExternalScripts.py:80
+#: pyload/plugins/hooks/ExternalScripts.py:80
 #, python-format
 msgid "Error in %(script)s: %(error)s"
 msgstr "Chyba v %(script)s: %(error)s"
 
-#: module/plugins/hooks/ExpertDecoders.py:95
+#: pyload/plugins/hooks/ExpertDecoders.py:95
 msgid "Your ExpertDecoders Account has not enough credits"
 msgstr "Na vašm ExpertDecoders účtu není dostatek kreditu"
 
-#: module/plugins/hooks/RehostTo.py:32
+#: pyload/plugins/hooks/RehostTo.py:32
 msgid "Please add your rehost.to account first and restart pyLoad"
 msgstr "Nejdříve prosím přidejte váš rehost.to účet a restartujte pyLoad"
 
-#: module/plugins/hooks/PremiumizeMe.py:48
+#: pyload/plugins/hooks/PremiumizeMe.py:48
 msgid "Please add a valid premiumize.me account first and restart pyLoad."
 msgstr "Nejdříve prosím přidejte váš premiumize.me účet a restartujte pyLoad."
 
-#: module/plugins/hooks/CaptchaBrotherhood.py:69
+#: pyload/plugins/hooks/CaptchaBrotherhood.py:69
 #, python-format
 msgid "%d credits left"
 msgstr "Zbývá %d kreditů"
 
-#: module/plugins/Plugin.py:389
+#: pyload/plugins/Plugin.py:389
 msgid "Pil and tesseract not installed and no Client connected for captcha decrypting"
 msgstr "Pil a tesseract nejsou nainstalovány a není připojen žádný klient pro rozpoznávání Captchy"
 
-#: module/plugins/Plugin.py:393
+#: pyload/plugins/Plugin.py:393
 msgid "No captcha result obtained in appropiate time by any of the plugins."
 msgstr "Zadny plugin nedodal vysledek Captchy v prijatelnem case."
 
-#: module/plugins/Plugin.py:498 module/plugins/Plugin.py:532
+#: pyload/plugins/Plugin.py:498 pyload/plugins/Plugin.py:532
 #, python-format
 msgid "Setting User and Group failed: %s"
 msgstr "Nastavení uživatele a skupiny se nezdařilo: %s"
 
-#: module/CaptchaManager.py:78
+#: pyload/CaptchaManager.py:78
 msgid "No Client connected for captcha decrypting"
 msgstr "Neni pripojen zadny klient pro dekodovani Captchy"
 
-#: module/Api.py:330
+#: pyload/Api.py:330
 #, python-format
 msgid "Added package %(name)s containing %(count)d links"
 msgstr "Pridan balicek %(name)s obsahujici %(count)d odkazu"
 
-#: module/Api.py:593
+#: pyload/Api.py:593
 #, python-format
 msgid "Added %(count)d links to package #%(package)d "
 msgstr "Do balicku #%(package)d pridano %(count)d odkazu "
 
-#: module/common/JsEngine.py:156
+#: pyload/common/JsEngine.py:156
 msgid "No js engine detected, please install either Spidermonkey, ossp-js, pyv8 or rhino"
 msgstr "Nenalezen zadny js engine, prosim naistalujte Spidermonkey, ossp-js, pyv8 nebo rhino"
 

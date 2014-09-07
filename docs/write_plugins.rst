@@ -3,11 +3,11 @@
 Plugins
 =======
 
-A Plugin is a python file located at one of the subfolders in :file:`module/plugins/`. Either :file:`hoster`, :file:`crypter`
+A Plugin is a python file located at one of the subfolders in :file:`pyload/plugins/`. Either :file:`hoster`, :file:`crypter`
 or :file:`container`, depending of it's type.
 
 There are three kinds of different plugins: **Hoster**, **Crypter**, **Container**.
-All kind of plugins inherit from the base :class:`Plugin <module.plugins.Plugin.Plugin>`. You should know its
+All kind of plugins inherit from the base :class:`Plugin <pyload.plugins.Plugin.Plugin>`. You should know its
 convenient methods, they make your work easier ;-)
 
 Every plugin defines a ``__pattern__`` and when the user adds urls, every url is matched against the pattern defined in
@@ -19,7 +19,7 @@ Plugin header
 
 How basic hoster plugin header could look like: ::
 
-        from module.plugin.Hoster import Hoster
+        from pyload.plugin.Hoster import Hoster
 
         class MyFileHoster(Hoster):
                 __name__ = "MyFileHoster"
@@ -41,7 +41,7 @@ We head to the next important section, the ``process`` method of your plugin.
 In fact the ``process`` method is the only functionality your plugin has to provide, but its always a good idea to split up tasks to not produce spaghetti code.
 An example ``process`` function could look like this ::
 
-        from module.plugin.Hoster import Hoster
+        from pyload.plugin.Hoster import Hoster
 
         class MyFileHoster(Hoster):
             """
@@ -58,7 +58,7 @@ An example ``process`` function could look like this ::
                 # download the file, destination is determined by pyLoad
                 self.download(parsed_url)
 
-You need to know about the :class:`PyFile <module.PyFile.PyFile>` class, since an instance of it is given as parameter to every pyfile.
+You need to know about the :class:`PyFile <pyload.PyFile.PyFile>` class, since an instance of it is given as parameter to every pyfile.
 Some tasks your plugin should handle:  proof if file is online, get filename, wait if needed, download the file, etc..
 
 Wait times
@@ -71,7 +71,7 @@ Captcha decrypting
 __________________
 
 To handle captcha input just use ``self.decryptCaptcha(url, ...)``, it will be send to clients
-or handled by :class:`Hook <module.plugins.Hook.Hook>` plugins
+or handled by :class:`Hook <pyload.plugins.Hook.Hook>` plugins
 
 Crypter
 -------
@@ -81,7 +81,7 @@ Well, they work nearly the same, only that the function they have to provide is 
 
 Example: ::
 
-    from module.plugin.Crypter import Crypter
+    from pyload.plugin.Crypter import Crypter
 
     class MyFileCrypter(Crypter):
         """
@@ -93,11 +93,11 @@ Example: ::
 
             self.packages.append(("pyLoad packages", urls, "pyLoad packages")) # urls list of urls
 
-They can access all the methods from :class:`Plugin <module.plugins.Plugin.Plugin>`, but the important thing is they
+They can access all the methods from :class:`Plugin <pyload.plugins.Plugin.Plugin>`, but the important thing is they
 have to append all packages they parsed to the `self.packages` list. Simply append tuples with `(name, urls, folder)`,
 where urls is the list of urls contained in the packages. Thats all of your work, pyLoad will know what to do with them.
 
 Examples
 --------
 
-Best examples are already existing plugins in :file:`module/plugins/`.
+Best examples are already existing plugins in :file:`pyload/plugins/`.

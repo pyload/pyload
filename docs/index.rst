@@ -20,7 +20,7 @@ Contents:
    extend_pyload.rst
    module_overview.rst
 
-.. currentmodule:: module
+.. currentmodule:: pyload
 
 ==================
 

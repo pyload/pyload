@@ -4,14 +4,14 @@ Module Overview
 You can find an overview of some important classes here:
 
 .. autosummary::
-   :toctree: module
+   :toctree: pyload
 
-   module.Api.Api
-   module.plugins.Plugin.Base
-   module.plugins.Plugin.Plugin
-   module.plugins.Crypter.Crypter
-   module.plugins.Account.Account
-   module.plugins.Hook.Hook
-   module.HookManager.HookManager
-   module.PyFile.PyFile
-   module.PyPackage.PyPackage
+   pyload.Api.Api
+   pyload.plugins.Plugin.Base
+   pyload.plugins.Plugin.Plugin
+   pyload.plugins.Crypter.Crypter
+   pyload.plugins.Account.Account
+   pyload.plugins.Hook.Hook
+   pyload.HookManager.HookManager
+   pyload.PyFile.PyFile
+   pyload.PyPackage.PyPackage
