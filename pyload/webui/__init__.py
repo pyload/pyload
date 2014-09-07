@@ -41,20 +41,19 @@ SETUP = None
 PYLOAD = None
 
 from pyload.manager.thread import ServerThread
+from pyload.utils.JsEngine import JsEngine
 
 if not ServerThread.core:
     if ServerThread.setup:
         SETUP = ServerThread.setup
         config = SETUP.config
+        JS = JsEngine(SETUP)
     else:
         raise Exception("Could not access pyLoad Core")
 else:
     PYLOAD = ServerThread.core.api
     config = ServerThread.core.config
-
-from pyload.utils.JsEngine import JsEngine
-
-JS = JsEngine()
+    JS = JsEngine(ServerThread.core)
 
 THEME = config.get('webinterface', 'theme')
 DL_ROOT = config.get('general', 'download_folder')

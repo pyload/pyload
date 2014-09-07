@@ -264,8 +264,8 @@ class SetupAssistant:
 
         web = sqlite and beaker
 
-        from pyload.utils import JsEngine
-        js = True if JsEngine.ENGINE else False
+        from pyload.utils.JsEngine import JsEngine
+        js = True if JsEngine.find() else False
         self.print_dep(_("JS engine"), js)
 
         if not jinja:

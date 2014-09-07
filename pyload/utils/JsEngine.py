@@ -1,155 +1,238 @@
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
+import subprocess
+import sys
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
-
-from imp import find_module
-from os.path import join, exists
+from os import path
 from urllib import quote
 
+from pyload.utils import encode, uniqify
 
-ENGINE = ""
-
-DEBUG = False
-JS = False
-PYV8 = False
-RHINO = False
-
-
-if not ENGINE:
-    try:
-        import subprocess
-
-        subprocess.Popen(["js", "-v"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-        p = subprocess.Popen(["js", "-e", "print(23+19)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = p.communicate()
-        #integrity check
-        if out.strip() == "42":
-            ENGINE = "js"
-        JS = True
-    except:
-        pass
-
-if not ENGINE or DEBUG:
-    try:
-        find_module("PyV8")
-        ENGINE = "pyv8"
-        PYV8 = True
-    except:
-        pass
-
-if not ENGINE or DEBUG:
-    try:
-        path = "" #path where to find rhino
-
-        if exists("/usr/share/java/js.jar"):
-            path = "/usr/share/java/js.jar"
-        elif exists("js.jar"):
-            path = "js.jar"
-        elif exists(join(pypath, "js.jar")): #may raises an exception, but js.jar wasnt found anyway
-            path = join(pypath, "js.jar")
-
-        if not path:
-            raise Exception
-
-        import subprocess
-
-        p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", "print(23+19)"],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = p.communicate()
-        #integrity check
-        if out.strip() == "42":
-            ENGINE = "rhino"
-        RHINO = True
-    except:
-        pass
 
 class JsEngine:
-    def __init__(self):
-        self.engine = ENGINE
-        self.init = False
+    """ JS Engine superclass """
 
-    def __nonzero__(self):
-        return False if not ENGINE else True
+    def __init__(self, core, engine=None):  #: engine can be a jse name """string""" or an AbstractEngine """class"""
+
+        self.core = core
+        self.engine = None  #: Default engine Instance
+
+        if not ENGINES:
+            self.core.log.critical("No JS Engine found!")
+            return
+
+        if not engine:
+            engine = self.core.config.get("general", "jsengine")
+
+        if engine != "auto" and self.set(engine) is False:
+            engine = "auto"
+            self.core.log.warning("JS Engine set to \"auto\" for safely")
+
+        if engine == "auto":
+            for E in self.find():
+                if self.set(E) is True:
+                    break
+            else:
+                self.core.log.error("No JS Engine available")
+
+
+    @classmethod
+    def find(cls):
+        """ Check if there is any engine available """
+        return [E for E in ENGINES if E.find()]
+
+
+    def get(self, engine):
+        """ Convert engine name (string) to relative JSE class (AbstractEngine extended) """
+        if isinstance(engine, basestring):
+            engine_name = engine.lower()
+            for E in ENGINES:
+                if E.NAME == engine_name:  #: doesn't check if E(NGINE) is available, just convert string to class
+                    JSE = E
+                    break
+            else:
+                JSE = None
+        elif issubclass(engine, AbstractEngine):
+            JSE = engine
+        else:
+            JSE = None
+        return JSE
+
+
+    def set(self, engine):
+        """ Set engine name (string) or JSE class (AbstractEngine extended) as default engine """
+        if isinstance(engine, basestring):
+            self.set(self.get(engine))
+        elif issubclass(engine, AbstractEngine) and engine.find():
+            self.engine = engine
+            return True
+        else:
+            return False
+
+
+    def eval(self, script, engine=None):  #: engine can be a jse name """string""" or an AbstractEngine """class"""
+        if not engine:
+            JSE = self.engine
+        else:
+            JSE = self.get(engine)
+
+        if not JSE:
+            return None
+
+        script = encode(script)
+
+        out, err = JSE.eval(script)
+
+        results = [out]
+
+        if self.core.config.get("general", "debug"):
+            if err:
+                self.core.log.debug(JSE.NAME + ":", err)
+
+            engines = self.find()
+            engines.remove(JSE)
+            for E in engines:
+                out, err = E.eval(script)
+                res = err or out
+                self.core.log.debug(E.NAME + ":", res)
+                results.append(res)
+
+            if len(results) > 1 and len(uniqify(results)) > 1:
+                self.core.log.warning("JS output of two or more engines mismatch")
+
+        return results[0]
+
+
+class AbstractEngine:
+    """ JSE base class """
+
+    NAME = ""
+
+    def __init__(self):
+        self.setup()
+        self.available = self.find()
+
+    def setup(self):
+        pass
+
+    @classmethod
+    def find(cls):
+        """ Check if the engine is available """
+        try:
+            __import__(cls.NAME)
+        except ImportError:
+            try:
+                out, err = cls().eval("print(23+19)")
+            except:
+                res = False
+            else:
+                res = out == "42"
+        else:
+            res = True
+        finally:
+            return res
+
+    def _eval(args):
+        if not self.available:
+            return None, "JS Engine \"%s\" not found" % self.NAME
+
+        try:
+            p = subprocess.Popen(args,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 bufsize=-1)
+            return map(lambda x: x.strip(), p.communicate())
+        except Exception, e:
+            return None, e
+
+
+    def eval(script):
+        raise NotImplementedError
+
+
+class Pyv8Engine(AbstractEngine):
+
+    NAME = "pyv8"
 
     def eval(self, script):
-        if not self.init:
-            if ENGINE == "pyv8" or (DEBUG and PYV8):
-                import PyV8
-                global PyV8
+        if not self.available:
+            return None, "JS Engine \"%s\" not found" % self.NAME
 
-            self.init = True
+        try:
+            rt = PyV8.JSContext()
+            rt.enter()
+            res = rt.eval(script), None  #@TODO: parse stderr
+        except Exception, e:
+            res = None, e
+        finally:
+            return res
 
-        if type(script) == unicode:
-            script = script.encode("utf8")
 
-        if not ENGINE:
-            raise Exception("No JS Engine")
+class CommonEngine(AbstractEngine):
 
-        if not DEBUG:
-            if ENGINE == "pyv8":
-                return self.eval_pyv8(script)
-            elif ENGINE == "js":
-                return self.eval_js(script)
-            elif ENGINE == "rhino":
-                return self.eval_rhino(script)
+    NAME = "js"
+
+    def setup(self):
+        subprocess.Popen(["js", "-v"], bufsize=-1).communicate()
+
+    def eval(self, script):
+        script = "print(eval(unescape('%s')))" % quote(script)
+        args = ["js", "-e", script]
+        return self._eval(args)
+
+
+class NodeEngine(AbstractEngine):
+
+    NAME = "nodejs"
+
+    def setup(self):
+        subprocess.Popen(["node", "-v"], bufsize=-1).communicate()
+
+    def eval(self, script):
+        script = "console.log(eval(unescape('%s')))" % quote(script)
+        args = ["node", "-e", script]
+        return self._eval(args)
+
+
+class RhinoEngine(AbstractEngine):
+
+    NAME = "rhino"
+
+    def setup(self):
+        jspath = [
+            "/usr/share/java*/js.jar",
+            "js.jar",
+            path.join(pypath, "js.jar")
+        ]
+        for p in jspath:
+            if path.exists(p):
+                self.path = p
+                break
         else:
-            results = []
-            if PYV8:
-                res = self.eval_pyv8(script)
-                print "PyV8:", res
-                results.append(res)
-            if JS:
-                res = self.eval_js(script)
-                print "JS:", res
-                results.append(res)
-            if RHINO:
-                res = self.eval_rhino(script)
-                print "Rhino:", res
-                results.append(res)
+            self.path = ""
 
-            warning = False
-            for x in results:
-                for y in results:
-                    if x != y:
-                        warning = True
-
-            if warning: print "### WARNING ###: Different results"
-
-            return results[0]
-
-    def eval_pyv8(self, script):
-        rt = PyV8.JSContext()
-        rt.enter()
-        return rt.eval(script)
-
-    def eval_js(self, script):
+    def eval(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
-        p = subprocess.Popen(["js", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
-        out, err = p.communicate()
-        res = out.strip()
-        return res
+        args = ["java", "-cp", self.path, "org.mozilla.javascript.tools.shell.Main", "-e", script]
+        return self._eval(args).decode("utf8").encode("ISO-8859-1")
 
-    def eval_rhino(self, script):
+
+class JscEngine(AbstractEngine):
+
+    NAME = "javascriptcore"
+
+    def setup(self):
+        jspath = "/System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc"
+        self.path = jspath if path.exists(jspath) else ""
+
+    def eval(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
-        p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", script],
-            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
-        out, err = p.communicate()
-        res = out.strip()
-        return res.decode("utf8").encode("ISO-8859-1")
+        args = [self.path, "-e", script]
+        return self._eval(args)
 
-    def error(self):
-        return _("No js engine detected, please install either Spidermonkey, ossp-js, pyv8 or rhino")
+
+#@NOTE: Priority ordered
+ENGINES = [CommonEngine, Pyv8Engine, NodeEngine, RhinoEngine]
+
+if sys.platform == "darwin":
+    ENGINES.insert(JscEngine)

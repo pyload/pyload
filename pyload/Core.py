@@ -396,7 +396,7 @@ class Core(object):
         self.hookManager = HookManager(self)
         self.remoteManager = RemoteManager(self)
 
-        self.js = JsEngine()
+        self.js = JsEngine(self)
 
         self.log.info(_("Downloadtime: %s") % self.api.isTimeDownload())
 

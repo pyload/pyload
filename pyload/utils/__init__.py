@@ -10,6 +10,15 @@ from os.path import join
 from string import maketrans
 from htmlentitydefs import name2codepoint
 
+# abstraction layer for json operations
+try:
+    import simplejson as json
+except ImportError:
+    import json
+
+json_loads = json.loads
+json_dumps = json.dumps
+
 
 def chmod(*args):
     try:
@@ -19,10 +28,18 @@ def chmod(*args):
 
 
 def decode(string):
-    """ decode string with utf if possible """
-    try:
+    """ Decode string to unicode with utf8 """
+    if type(string) == str:
         return string.decode("utf8", "replace")
-    except:
+    else:
+        return string
+
+
+def encode(string):
+    """ Decode string to utf8 """
+    if type(string) == unicode:
+        return string.encode("utf8", "replace")
+    else:
         return string
 
 
@@ -145,10 +162,10 @@ def fs_bsize(path):
 
 
 def uniqify(seq):  #: Originally by Dave Kirby
-	""" removes duplicates from list, preserve order """
-	seen = set()
-	seen_add = seen.add
-	return [x for x in seq if x not in seen and not seen_add(x)]
+    """ Remove duplicates from list preserving order """
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if x not in seen and not seen_add(x)]
 
 
 def parseFileSize(string, unit=None): #returns bytes
