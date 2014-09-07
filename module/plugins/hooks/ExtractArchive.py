@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import sys
 import os
-from os import remove, chmod, makedirs
-from os.path import exists, basename, isfile, isdir, join
-from traceback import print_exc
+import sys
+
 from copy import copy
+from os import remove, chmod, makedirs
+from os.path import exists, basename, isfile, isdir
+from traceback import print_exc
 
 # monkey patch bug in python 2.6 and lower
-# see http://bugs.python.org/issue6122
-# http://bugs.python.org/issue1236
-# http://bugs.python.org/issue1731717
+# http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
 if sys.version_info < (2, 7) and os.name != "nt":
-    from subprocess import Popen
     import errno
+    from subprocess import Popen
 
     def _eintr_retry_call(func, *args):
         while True:
@@ -44,13 +43,13 @@ if sys.version_info < (2, 7) and os.name != "nt":
     Popen.wait = wait
 
 if os.name != "nt":
+    from grp import getgrnam
     from os import chown
     from pwd import getpwnam
-    from grp import getgrnam
 
-from module.utils import save_join, fs_encode
 from module.plugins.Hook import Hook, threaded, Expose
 from module.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
+from module.utils import save_join, fs_encode
 
 
 class ExtractArchive(Hook):
@@ -58,8 +57,9 @@ class ExtractArchive(Hook):
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
+    __type__ = "hook"
     __version__ = "0.16"
-    __description__ = """Extract different kind of archives"""
+
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
                   ("overwrite", "bool", "Overwrite files", True),
@@ -71,10 +71,13 @@ class ExtractArchive(Hook):
                   ("recursive", "bool", "Extract archives in archvies", True),
                   ("queue", "bool", "Wait for all downloads to be finished", True),
                   ("renice", "int", "CPU Priority", 0)]
-    __author_name__ = ("pyload Team", "AndroKev")
-    __author_mail__ = ("admin<at>pyload.org", "@pyloadforum")
+
+    __description__ = """Extract different kind of archives"""
+    __author_name__ = ("pyLoad Team", "AndroKev")
+    __author_mail__ = ("admin@pyload.org", "@pyloadforum")
 
     event_list = ["allDownloadsProcessed"]
+
 
     def setup(self):
         self.plugins = []
@@ -154,12 +157,12 @@ class ExtractArchive(Hook):
                 #relative to package folder if destination is relative, otherwise absolute path overwrites them
 
                 if self.getConfig("subfolder"):
-                    out = join(out, fs_encode(p.folder))
+                    out = save_join(out, fs_encode(p.folder))
 
                 if not exists(out):
                     makedirs(out)
 
-            files_ids = [(save_join(dl, p.folder, x["name"]), x["id"]) for x in p.getChildren().itervalues()]
+            files_ids = [(save_join(dl, p.folder, x['name']), x['id']) for x in p.getChildren().itervalues()]
             matched = False
 
             # check as long there are unseen files
@@ -303,15 +306,15 @@ class ExtractArchive(Hook):
             if not exists(f):
                 continue
             try:
-                if self.config["permission"]["change_file"]:
+                if self.config['permission']['change_file']:
                     if isfile(f):
-                        chmod(f, int(self.config["permission"]["file"], 8))
+                        chmod(f, int(self.config['permission']['file'], 8))
                     elif isdir(f):
-                        chmod(f, int(self.config["permission"]["folder"], 8))
+                        chmod(f, int(self.config['permission']['folder'], 8))
 
-                if self.config["permission"]["change_dl"] and os.name != "nt":
-                    uid = getpwnam(self.config["permission"]["user"])[2]
-                    gid = getgrnam(self.config["permission"]["group"])[2]
+                if self.config['permission']['change_dl'] and os.name != "nt":
+                    uid = getpwnam(self.config['permission']['user'])[2]
+                    gid = getgrnam(self.config['permission']['group'])[2]
                     chown(f, uid, gid)
             except Exception, e:
                 self.logWarning(_("Setting User and Group failed"), e)

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from time import sleep
 
 from module.plugins.Crypter import Crypter
@@ -9,11 +10,14 @@ from module.plugins.Crypter import Crypter
 class DDLMusicOrg(Crypter):
     __name__ = "DDLMusicOrg"
     __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+'
     __version__ = "0.3"
+
+    __pattern__ = r'http://(?:www\.)?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+'
+
     __description__ = """Ddl-music.org decrypter plugin"""
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"
+
 
     def setup(self):
         self.multiDL = False
@@ -39,6 +43,6 @@ class DDLMusicOrg(Crypter):
                                            "linknr": linknr})
         m = re.search(r"<form id=\"ff\" action=\"(.*?)\" method=\"post\">", htmlwithlink)
         if m:
-            self.packages.append((pyfile.package().name, [m.group(1)], pyfile.package().folder))
+            self.urls = [m.group(1)]
         else:
             self.retry()

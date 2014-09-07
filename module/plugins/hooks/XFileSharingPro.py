@@ -7,15 +7,18 @@ from module.plugins.Hook import Hook
 
 class XFileSharingPro(Hook):
     __name__ = "XFileSharingPro"
-    __version__ = "0.11"
     __type__ = "hook"
+    __version__ = "0.11"
+
     __config__ = [("activated", "bool", "Activated", True),
                   ("loadDefault", "bool", "Include default (built-in) hoster list", True),
                   ("includeList", "str", "Include hosters (comma separated)", ""),
                   ("excludeList", "str", "Exclude hosters (comma separated)", "")]
+
     __description__ = """XFileSharingPro hook plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
+
 
     def coreReady(self):
         self.loadPattern()
@@ -61,8 +64,8 @@ class XFileSharingPro(Hook):
         #self.logDebug(regexp)
 
         dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
-        dict["pattern"] = regexp
-        dict["re"] = re.compile(regexp)
+        dict['pattern'] = regexp
+        dict['re'] = re.compile(regexp)
         self.logDebug("Pattern loaded - handling %d hosters" % len(hosterList))
 
     def getConfigSet(self, option):
@@ -71,5 +74,5 @@ class XFileSharingPro(Hook):
 
     def unload(self):
         dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
-        dict["pattern"] = r"^unmatchable$"
-        dict["re"] = re.compile(r"^unmatchable$")
+        dict['pattern'] = r'^unmatchable$'
+        dict['re'] = re.compile(r'^unmatchable$')

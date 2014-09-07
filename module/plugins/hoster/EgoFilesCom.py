@@ -1,42 +1,31 @@
 # -*- coding: utf-8 -*-
-############################################################################
-# This program is free software: you can redistribute it and/or modify     #
-# it under the terms of the GNU Affero General Public License as           #
-# published by the Free Software Foundation, either version 3 of the       #
-# License, or (at your option) any later version.                          #
-#                                                                          #
-# This program is distributed in the hope that it will be useful,          #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
-# GNU Affero General Public License for more details.                      #
-#                                                                          #
-# You should have received a copy of the GNU Affero General Public License #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
-############################################################################
-
-# Test link (random.bin):
+#
+# Test links:
 # http://egofiles.com/mOZfMI1WLZ6HBkGG/random.bin
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class EgoFilesCom(SimpleHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?egofiles.com/(\w+)'
     __version__ = "0.15"
+
+    __pattern__ = r'https?://(?:www\.)?egofiles.com/(\w+)'
+
     __description__ = """Egofiles.com hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r'<div class="down-file">\s+(?P<N>[^\t]+)\s+<div class="file-properties">\s+(File size|Rozmiar): (?P<S>[\w.]+) (?P<U>\w+) \|'
-    FILE_OFFLINE_PATTERN = r'(File size|Rozmiar): 0 KB'
+    OFFLINE_PATTERN = r'(File size|Rozmiar): 0 KB'
     WAIT_TIME_PATTERN = r'For next free download you have to wait <strong>((?P<m>\d*)m)? ?((?P<s>\d+)s)?</strong>'
-    DIRECT_LINK_PATTERN = r'<a href="(?P<link>[^"]+)">Download ></a>'
-    RECAPTCHA_KEY = '6LeXatQSAAAAAHezcjXyWAni-4t302TeYe7_gfvX'
+    LINK_PATTERN = r'<a href="(?P<link>[^"]+)">Download ></a>'
+    RECAPTCHA_KEY = "6LeXatQSAAAAAHezcjXyWAni-4t302TeYe7_gfvX"
+
 
     def setup(self):
         # Set English language
@@ -58,15 +47,15 @@ class EgoFilesCom(SimpleHoster):
             waittime = int(m['m']) * 60 + int(m['s'])
             self.wait(waittime, True)
 
-        downloadURL = ''
+        downloadURL = r''
         recaptcha = ReCaptcha(self)
         for _ in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response}
             self.html = self.load(self.pyfile.url, post=post_data, decode=True)
-            m = re.search(self.DIRECT_LINK_PATTERN, self.html)
-            if not m:
+            m = re.search(self.LINK_PATTERN, self.html)
+            if m is None:
                 self.logInfo('Wrong captcha')
                 self.invalidCaptcha()
             elif hasattr(m, 'group'):
@@ -90,7 +79,7 @@ class EgoFilesCom(SimpleHoster):
             self.html = self.load(self.pyfile.url, decode=True)
             self.getFileInfo()
             m = re.search(r'<a href="(?P<link>[^"]+)">Download ></a>', self.html)
-            if not m:
+            if m is None:
                 self.parseError('Unable to detect direct download url')
             else:
                 self.logDebug('DIRECT URL from html: ' + m.group('link'))

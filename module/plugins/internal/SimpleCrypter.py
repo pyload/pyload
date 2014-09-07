@@ -1,64 +1,67 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 import re
 
 from module.plugins.Crypter import Crypter
+from module.plugins.internal.SimpleHoster import PluginParseError, replace_patterns, set_cookies
 from module.utils import html_unescape
-from module.plugins.internal.SimpleHoster import replace_patterns
 
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
-    __version__ = "0.07"
-    __pattern__ = None
     __type__ = "crypter"
+    __version__ = "0.10"
+
+    __pattern__ = None
+
     __description__ = """Simple decrypter plugin"""
-    __author_name__ = ("stickell", "zoidberg")
-    __author_mail__ = ("l.stickell@yahoo.it", "zoidberg@mujmail.cz")
+    __author_name__ = ("stickell", "zoidberg", "Walter Purcaro")
+    __author_mail__ = ("l.stickell@yahoo.it", "zoidberg@mujmail.cz", "vuolter@gmail.com")
+
     """
-    These patterns should be defined by each crypter:
+    Following patterns should be defined by each crypter:
 
-    LINK_PATTERN: group(1) must be a download link
-    example: <div class="link"><a href="(http://speedload.org/\w+)
+      LINK_PATTERN: group(1) must be a download link or a regex to catch more links
+        example: LINK_PATTERN = r'<div class="link"><a href="(http://speedload.org/\w+)'
 
-    TITLE_PATTERN: (optional) the group defined by 'title' should be the title
-    example: <title>Files of: (?P<title>[^<]+) folder</title>
+      TITLE_PATTERN: (optional) The group defined by 'title' should be the title
+        example: TITLE_PATTERN = r'<title>Files of: (?P<title>[^<]+) folder</title>'
+
+      OFFLINE_PATTERN: (optional) Checks if the file is yet available online
+        example: OFFLINE_PATTERN = r'File (deleted|not found)'
+
+      TEMP_OFFLINE_PATTERN: (optional) Checks if the file is temporarily offline
+        example: TEMP_OFFLINE_PATTERN = r'Server maintainance'
+
 
     If it's impossible to extract the links using the LINK_PATTERN only you can override the getLinks method.
 
     If the links are disposed on multiple pages you need to define a pattern:
 
-    PAGES_PATTERN: the group defined by 'pages' must be the total number of pages
+      PAGES_PATTERN: The group defined by 'pages' must be the total number of pages
+        example: PAGES_PATTERN = r'Pages: (?P<pages>\d+)'
 
     and a function:
 
-    loadPage(self, page_n):
-    must return the html of the page number 'page_n'
+      loadPage(self, page_n):
+          return the html of the page number 'page_n'
     """
 
-    FILE_URL_REPLACEMENTS = []
+    URL_REPLACEMENTS = []
+
+    SH_COOKIES = True  # or False or list of tuples [(domain, name, value)]
+
+
+    def setup(self):
+        if isinstance(self.SH_COOKIES, list):
+            set_cookies(self.req.cj, self.SH_COOKIES)
 
     def decrypt(self, pyfile):
-        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
+        pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
 
         self.html = self.load(pyfile.url, decode=True)
+
+        self.checkOnline()
 
         package_name, folder_name = self.getPackageNameAndFolder()
 
@@ -80,6 +83,12 @@ class SimpleCrypter(Crypter):
         You should override this only if it's impossible to extract links using only the LINK_PATTERN.
         """
         return re.findall(self.LINK_PATTERN, self.html)
+
+    def checkOnline(self):
+        if hasattr(self, "OFFLINE_PATTERN") and re.search(self.OFFLINE_PATTERN, self.html):
+            self.offline()
+        elif hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, self.html):
+            self.tempOffline()
 
     def getPackageNameAndFolder(self):
         if hasattr(self, 'TITLE_PATTERN'):
@@ -104,3 +113,6 @@ class SimpleCrypter(Crypter):
         for p in xrange(2, pages + 1):
             self.html = self.loadPage(p)
             self.package_links += self.getLinks()
+
+    def parseError(self, msg):
+        raise PluginParseError(msg)

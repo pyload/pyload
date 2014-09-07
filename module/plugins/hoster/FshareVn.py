@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from time import strptime, mktime, gmtime
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 
 
 def getInfo(urls):
@@ -26,18 +27,22 @@ def doubleDecode(m):
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?fshare.vn/file/.*'
     __version__ = "0.16"
+
+    __pattern__ = r'http://(?:www\.)?fshare.vn/file/.*'
+
     __description__ = """FshareVn hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = r'<p>(?P<N>[^<]+)<\\/p>[\\trn\s]*<p>(?P<S>[0-9,.]+)\s*(?P<U>[kKMG])i?B<\\/p>'
-    FILE_OFFLINE_PATTERN = r'<div class=\\"f_left file_w\\"|<\\/p>\\t\\t\\t\\t\\r\\n\\t\\t<p><\\/p>\\t\\t\\r\\n\\t\\t<p>0 KB<\\/p>'
+    OFFLINE_PATTERN = r'<div class=\\"f_left file_w\\"|<\\/p>\\t\\t\\t\\t\\r\\n\\t\\t<p><\\/p>\\t\\t\\r\\n\\t\\t<p>0 KB<\\/p>'
+
     FILE_NAME_REPLACEMENTS = [("(.*)", doubleDecode)]
-    DOWNLOAD_URL_PATTERN = r'action="(http://download.*?)[#"]'
-    VIP_URL_PATTERN = r'<form action="([^>]+)" method="get" name="frm_download">'
+
+    LINK_PATTERN = r'action="(http://download.*?)[#"]'
     WAIT_PATTERN = ur'Lượt tải xuống kế tiếp là:\s*(.*?)\s*<'
+
 
     def process(self, pyfile):
         self.html = self.load('http://www.fshare.vn/check_link.php', post={
@@ -76,13 +81,13 @@ class FshareVn(SimpleHoster):
 
         self.checkErrors()
 
-        found = re.search(r'var count = (\d+)', self.html)
-        self.setWait(int(found.group(1)) if found else 30)
+        m = re.search(r'var count = (\d+)', self.html)
+        self.setWait(int(m.group(1)) if m else 30)
 
-        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
-        if not found:
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
             self.parseError('FREE DL URL')
-        self.url = found.group(1)
+        self.url = m.group(1)
         self.logDebug("FREE DL URL: %s" % self.url)
 
         self.wait()
@@ -95,10 +100,10 @@ class FshareVn(SimpleHoster):
         if '/error.php?' in self.req.lastEffectiveURL or u"Liên kết bạn chọn không tồn" in self.html:
             self.offline()
 
-        found = re.search(self.WAIT_PATTERN, self.html)
-        if found:
-            self.logInfo("Wait until %s ICT" % found.group(1))
-            wait_until = mktime(strptime(found.group(1), "%d/%m/%Y %H:%M"))
+        m = re.search(self.WAIT_PATTERN, self.html)
+        if m:
+            self.logInfo("Wait until %s ICT" % m.group(1))
+            wait_until = mktime(strptime(m.group(1), "%d/%m/%Y %H:%M"))
             self.wait(wait_until - mktime(gmtime()) - 7 * 60 * 60, True)
             self.retry()
         elif '<ul class="message-error">' in self.html:
@@ -112,4 +117,4 @@ class FshareVn(SimpleHoster):
         })
 
         if check == "not_found":
-            self.fail("File not found on server")
+            self.fail("File not m on server")

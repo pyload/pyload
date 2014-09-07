@@ -1,22 +1,7 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-    Original idea by new.cze
-"""
-
 import re
+
 from time import localtime
 
 from module.plugins.Hook import Hook
@@ -24,14 +9,18 @@ from module.plugins.Hook import Hook
 
 class DownloadScheduler(Hook):
     __name__ = "DownloadScheduler"
+    __type__ = "hook"
     __version__ = "0.21"
-    __description__ = """Download Scheduler"""
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("timetable", "str", "List time periods as hh:mm full or number(kB/s)",
                    "0:00 full, 7:00 250, 10:00 0, 17:00 150"),
                   ("abort", "bool", "Abort active downloads when start period with speed 0", False)]
+
+    __description__ = """Download Scheduler"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+
 
     def setup(self):
         self.cb = None  # callback to scheduler job; will be by removed hookmanager when hook unloaded

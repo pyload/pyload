@@ -1,22 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 import re
 from time import mktime, strptime
 
@@ -25,21 +8,21 @@ from module.plugins.Account import Account
 
 class TurbobitNet(Account):
     __name__ = "TurbobitNet"
-    __version__ = "0.01"
     __type__ = "account"
+    __version__ = "0.01"
+
     __description__ = """TurbobitNet account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    #login_timeout = 60
 
     def loadAccountInfo(self, user, req):
         html = req.load("http://turbobit.net")
 
-        found = re.search(r'<u>Turbo Access</u> to ([0-9.]+)', html)
-        if found:
+        m = re.search(r'<u>Turbo Access</u> to ([0-9.]+)', html)
+        if m:
             premium = True
-            validuntil = mktime(strptime(found.group(1), "%d.%m.%Y"))
+            validuntil = mktime(strptime(m.group(1), "%d.%m.%Y"))
         else:
             premium = False
             validuntil = -1
@@ -51,7 +34,7 @@ class TurbobitNet(Account):
 
         html = req.load("http://turbobit.net/user/login", post={
             "user[login]": user,
-            "user[pass]": data["password"],
+            "user[pass]": data['password'],
             "user[submit]": "Login"})
 
         if not '<div class="menu-item user-name">' in html:

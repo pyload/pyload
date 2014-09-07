@@ -1,27 +1,33 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class CatShareNet(SimpleHoster):
     __name__ = "CatShareNet"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?catshare.net/\w{16}.*'
     __version__ = "0.01"
+
+    __pattern__ = r'http://(?:www\.)?catshare.net/\w{16}.*'
+
     __description__ = """CatShare.net hoster plugin"""
     __author_name__ = "z00nx"
     __author_mail__ = "z00nx0@gmail.com"
 
     FILE_INFO_PATTERN = r'<h3 class="pull-left"[^>]+>(?P<N>.*)</h3>\s+<h3 class="pull-right"[^>]+>(?P<S>.*)</h3>'
-    FILE_OFFLINE_PATTERN = r'Podany plik zosta'
-    SECONDS_PATTERN = 'var\s+count\s+=\s+(\d+);'
+    OFFLINE_PATTERN = r'Podany plik zosta'
+
+    SECONDS_PATTERN = r'var\s+count\s+=\s+(\d+);'
+
     RECAPTCHA_KEY = "6Lfln9kSAAAAANZ9JtHSOgxUPB9qfDFeLUI_QMEy"
 
+
     def handleFree(self):
-        found = re.search(self.SECONDS_PATTERN, self.html)
-        seconds = int(found.group(1))
+        m = re.search(self.SECONDS_PATTERN, self.html)
+        seconds = int(m.group(1))
         self.logDebug("Seconds found", seconds)
         self.wait(seconds + 1)
         recaptcha = ReCaptcha(self)

@@ -1,40 +1,30 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as
-#  published by the Free Software Foundation, either version 3 of the
-#  License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Affero General Public License for more details.
-#
-#  You should have received a copy of the GNU Affero General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  @author: Walter Purcaro
-###############################################################################
 
 import re
+
 from os import rename
 
+from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class SockshareCom(SimpleHoster):
     __name__ = "SockshareCom"
     __type__ = "hoster"
+    __version__ = "0.04"
+
     __pattern__ = r'http://(?:www\.)?sockshare\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
-    __version__ = "0.02"
+
     __description__ = """Sockshare.com hoster plugin"""
     __author_name__ = ("jeix", "stickell", "Walter Purcaro")
     __author_mail__ = ("jeix@hasnomail.de", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
-    FILE_OFFLINE_PATTERN = r'>This file doesn\'t exist, or has been removed.<'
+    OFFLINE_PATTERN = r'>This file doesn\'t exist, or has been removed.<'
+    TEMP_OFFLINE_PATTERN = r'(>This content server has been temporarily disabled for upgrades|Try again soon\\. You can still download it below\\.<)'
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.sockshare.com/file/\g<ID>')]
+
 
     def setup(self):
         self.multiDL = self.resumeDownload = True
@@ -54,9 +44,11 @@ class SockshareCom(SimpleHoster):
 
         post_data = {"hash": hash_data.group(1), "confirm": "Continue+as+Free+User"}
         self.html = self.load(self.pyfile.url, post=post_data)
-        if (">You have exceeded the daily stream limit for your country\\. You can wait until tomorrow" in self.html or
-            "(>This content server has been temporarily disabled for upgrades|Try again soon\\. You can still download it below\\.<)" in self.html):
-            self.retry(wait_time=60 * 60 * 2, reason="Download limit exceeded or server disabled")  # 2 hours wait
+        if ">You have exceeded the daily stream limit for your country\\. You can wait until tomorrow" in self.html:
+            self.logWarning("You have exceeded your daily stream limit for today")
+            self.wait(secondsToMidnight(gmt=2), True)
+        elif re.search(self.TEMP_OFFLINE_PATTERN, self.html):
+            self.retry(wait_time=2 * 60 * 60, reason="Server temporarily offline")  # 2 hours wait
 
         patterns = (r'(/get_file\.php\?id=[A-Z0-9]+&key=[a-zA-Z0-9=]+&original=1)',
                     r'(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+)',
@@ -71,7 +63,7 @@ class SockshareCom(SimpleHoster):
             if link:
                 self.html = self.load("http://www.sockshare.com" + link.group(1))
                 link = re.search(r'media:content url="(http://.*?)"', self.html)
-                if not link:
+                if link is None:
                     link = re.search(r'\"(http://media\\-b\\d+\\.sockshare\\.com/download/\\d+/.*?)\"', self.html)
             else:
                 self.parseError('Unable to detect a download link')

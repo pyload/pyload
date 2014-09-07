@@ -1,25 +1,9 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
+
 from module.plugins.internal.CaptchaService import SolveMedia
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from module.network.RequestFactory import getURL
 
 
@@ -63,13 +47,15 @@ def getInfo(urls):
 class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download.php)?\?)(\w{11}|\w{15})($|/)'
     __version__ = "0.79"
+
+    __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download.php)?\?)(\w{11}|\w{15})($|/)'
+
     __description__ = """Mediafire.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
-    DOWNLOAD_LINK_PATTERN = r'<div class="download_link"[^>]*(?:z-index:(?P<zindex>\d+))?[^>]*>\s*<a href="(?P<href>http://[^"]+)"'
+    LINK_PATTERN = r'<div class="download_link"[^>]*(?:z-index:(?P<zindex>\d+))?[^>]*>\s*<a href="(?P<href>http://[^"]+)"'
     JS_KEY_PATTERN = r"DoShow\('mfpromo1'\);[^{]*{((\w+)='';.*?)eval\(\2\);"
     JS_ZMODULO_PATTERN = r"\('z-index'\)\) \% (\d+)\)\);"
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.noscript\?k=([^"]+)'
@@ -78,7 +64,8 @@ class MediafireCom(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>[^"]+)"/>'
     FILE_INFO_PATTERN = r"oFileSharePopup\.ald\('(?P<ID>[^']*)','(?P<N>[^']*)','(?P<S>[^']*)','','(?P<sha256>[^']*)'\)"
-    FILE_OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
+    OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
+
 
     def setup(self):
         self.multiDL = False
@@ -115,19 +102,19 @@ class MediafireCom(SimpleHoster):
             else:
                 self.fail("No or incorrect password")
 
-        found = re.search(r'kNO = "(http://.*?)";', self.html)
-        if not found:
+        m = re.search(r'kNO = r"(http://.*?)";', self.html)
+        if m is None:
             self.parseError("Download URL")
-        download_url = found.group(1)
+        download_url = m.group(1)
         self.logDebug("DOWNLOAD LINK:", download_url)
 
         self.download(download_url)
 
     def checkCaptcha(self):
         for _ in xrange(5):
-            found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-            if found:
-                captcha_key = found.group(1)
+            m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
+            if m:
+                captcha_key = m.group(1)
                 solvemedia = SolveMedia(self)
                 captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
                 self.html = self.load(self.url, post={"adcopy_challenge": captcha_challenge,

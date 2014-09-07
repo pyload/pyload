@@ -1,24 +1,7 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
-    @interface-version: 0.1
-"""
-
 import subprocess
+
 from os import listdir, access, X_OK, makedirs
 from os.path import join, exists, basename, abspath
 
@@ -28,20 +11,24 @@ from module.utils import save_join
 
 class ExternalScripts(Hook):
     __name__ = "ExternalScripts"
+    __type__ = "hook"
     __version__ = "0.23"
-    __description__ = """Run external scripts"""
+
     __config__ = [("activated", "bool", "Activated", True)]
+
+    __description__ = """Run external scripts"""
     __author_name__ = ("mkaay", "RaNaN", "spoob")
     __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org")
 
     event_list = ["unrarFinished", "allDownloadsFinished", "allDownloadsProcessed"]
 
+
     def setup(self):
         self.scripts = {}
 
-        folders = ['download_preparing', 'download_finished', 'package_finished',
-                   'before_reconnect', 'after_reconnect', 'unrar_finished',
-                   'all_dls_finished', 'all_dls_processed']
+        folders = ["download_preparing", "download_finished", "package_finished",
+                   "before_reconnect", "after_reconnect", "unrar_finished",
+                   "all_dls_finished", "all_dls_processed"]
 
         for folder in folders:
             self.scripts[folder] = []
@@ -105,13 +92,13 @@ class ExternalScripts(Hook):
             self.callScript(script, ip)
 
     def unrarFinished(self, folder, fname):
-        for script in self.scripts["unrar_finished"]:
+        for script in self.scripts['unrar_finished']:
             self.callScript(script, folder, fname)
 
     def allDownloadsFinished(self):
-        for script in self.scripts["all_dls_finished"]:
+        for script in self.scripts['all_dls_finished']:
             self.callScript(script)
 
     def allDownloadsProcessed(self):
-        for script in self.scripts["all_dls_processed"]:
+        for script in self.scripts['all_dls_processed']:
             self.callScript(script)

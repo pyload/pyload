@@ -1,22 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 from time import mktime, strptime
 from pycurl import REFERER
 import re
@@ -26,8 +9,9 @@ from module.plugins.Account import Account
 
 class FshareVn(Account):
     __name__ = "FshareVn"
-    __version__ = "0.07"
     __type__ = "account"
+    __version__ = "0.07"
+
     __description__ = """Fshare.vn account plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -37,18 +21,19 @@ class FshareVn(Account):
     TRAFFIC_LEFT_PATTERN = ur'<dt>Tổng Dung Lượng Tài Khoản</dt>\s*<dd[^>]*>([0-9.]+) ([kKMG])B</dd>'
     DIRECT_DOWNLOAD_PATTERN = ur'<input type="checkbox"\s*([^=>]*)[^>]*/>Kích hoạt download trực tiếp</dt>'
 
-    def loadAccountInfo(self, user, req):
-        self.html = req.load("http://www.fshare.vn/account_info.php", decode=True)
 
-        if re.search(self.LIFETIME_PATTERN, self.html):
+    def loadAccountInfo(self, user, req):
+        html = req.load("http://www.fshare.vn/account_info.php", decode=True)
+
+        if re.search(self.LIFETIME_PATTERN, html):
             self.logDebug("Lifetime membership detected")
             trafficleft = self.getTrafficLeft()
             return {"validuntil": -1, "trafficleft": trafficleft, "premium": True}
 
-        found = re.search(self.VALID_UNTIL_PATTERN, self.html)
-        if found:
+        m = re.search(self.VALID_UNTIL_PATTERN, html)
+        if m:
             premium = True
-            validuntil = mktime(strptime(found.group(1), '%I:%M:%S %p %d-%m-%Y'))
+            validuntil = mktime(strptime(m.group(1), '%I:%M:%S %p %d-%m-%Y'))
             trafficleft = self.getTrafficLeft()
         else:
             premium = False
@@ -60,15 +45,15 @@ class FshareVn(Account):
     def login(self, user, data, req):
         req.http.c.setopt(REFERER, "https://www.fshare.vn/login.php")
 
-        self.html = req.load('https://www.fshare.vn/login.php', post={
+        html = req.load('https://www.fshare.vn/login.php', post={
             "login_password": data['password'],
             "login_useremail": user,
             "url_refe": "http://www.fshare.vn/index.php"
         }, referer=True, decode=True)
 
-        if not re.search(r'<img\s+alt="VIP"', self.html):
+        if not re.search(r'<img\s+alt="VIP"', html):
             self.wrongPassword()
 
     def getTrafficLeft(self):
-        found = re.search(self.TRAFFIC_LEFT_PATTERN, self.html)
-        return float(found.group(1)) * 1024 ** {'k': 0, 'K': 0, 'M': 1, 'G': 2}[found.group(2)] if found else 0
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        return float(m.group(1)) * 1024 ** {'k': 0, 'K': 0, 'M': 1, 'G': 2}[m.group(2)] if m else 0

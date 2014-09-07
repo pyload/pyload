@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# should be working
-
 from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
-    __version__ = "0.13"
     __type__ = "hook"
+    __version__ = "0.13"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("https", "bool", "Enable HTTPS", False),
@@ -21,6 +19,7 @@ class AlldebridCom(MultiHoster):
     __description__ = """Alldebrid.com hook plugin"""
     __author_name__ = "Andy Voigt"
     __author_mail__ = "spamsales@online.de"
+
 
     def getHoster(self):
         https = "https" if self.getConfig("https") else "http"

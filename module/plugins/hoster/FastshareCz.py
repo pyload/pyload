@@ -1,25 +1,10 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as
-#  published by the Free Software Foundation, either version 3 of the
-#  License, or (at your option) any later version.
 #
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Affero General Public License for more details.
-#
-#  You should have received a copy of the GNU Affero General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  @author: zoidberg
-###############################################################################
-
-# Test links (random.bin):
+# Test links:
 # http://www.fastshare.cz/2141189/random.bin
 
 import re
+
 from urlparse import urljoin
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -28,29 +13,33 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
     __version__ = "0.22"
+
+    __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
+
     __description__ = """FastShare.cz hoster plugin"""
     __author_name__ = ("zoidberg", "stickell", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     FILE_INFO_PATTERN = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*Size\s*: (?P<S>\d+) (?P<U>\w+),'
-    FILE_OFFLINE_PATTERN = '>(The file has been deleted|Requested page not found)'
+    OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found)'
 
     FILE_URL_REPLACEMENTS = [("#.*", "")]
+
     SH_COOKIES = [(".fastshare.cz", "lang", "en")]
 
     FREE_URL_PATTERN = r'action=(/free/.*?)>\s*<img src="([^"]*)"><br'
     PREMIUM_URL_PATTERN = r'(http://data\d+\.fastshare\.cz/download\.php\?id=\d+&)'
-    CREDIT_PATTERN = " credit for "
+    CREDIT_PATTERN = r' credit for '
+
 
     def handleFree(self):
         if "> 100% of FREE slots are full" in self.html:
             self.retry(120, 60, "No free slots")
 
-        found = re.search(self.FREE_URL_PATTERN, self.html)
-        if found:
-            action, captcha_src = found.groups()
+        m = re.search(self.FREE_URL_PATTERN, self.html)
+        if m:
+            action, captcha_src = m.groups()
         else:
             self.parseError("Free URL")
 
@@ -72,7 +61,7 @@ class FastshareCz(SimpleHoster):
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)
         if "location" in header:
-            url = header["location"]
+            url = header['location']
         else:
             self.html = self.load(self.pyfile.url)
 
@@ -82,9 +71,9 @@ class FastshareCz(SimpleHoster):
                 self.logWarning("Not enough traffic left")
                 self.resetAccount()
             else:
-                found = re.search(self.PREMIUM_URL_PATTERN, self.html)
-                if found:
-                    url = found.group(1)
+                m = re.search(self.PREMIUM_URL_PATTERN, self.html)
+                if m:
+                    url = m.group(1)
                 else:
                     self.parseError("Premium URL")
 

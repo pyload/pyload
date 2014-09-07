@@ -1,29 +1,11 @@
 # -*- coding: utf-8 -*-
-#
-#Copyright (C) 2009 kingzero, RaNaN
-#
-#This program is free software; you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation; either version 3 of the License,
-#or (at your option) any later version.
-#
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#See the GNU General Public License for more details.
-#
-#You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
-###
 
 from __future__ import with_statement
 import os
-from os.path import join
-from os.path import abspath
 import logging
 import subprocess
 
+from os.path import abspath, join
 from PIL import Image
 from PIL import TiffImagePlugin
 from PIL import PngImagePlugin
@@ -33,6 +15,13 @@ from PIL import JpegImagePlugin
 
 class OCR(object):
     __name__ = "OCR"
+    __type__ = "ocr"
+    __version__ = "0.1"
+
+    __description__ = """OCR base plugin"""
+    __author_name__ = "pyLoad Team"
+    __author_mail__ = "admin@pyload.org"
+
 
     def __init__(self):
         self.logger = logging.getLogger("log")
@@ -142,7 +131,7 @@ class OCR(object):
             for y in xrange(h):
                 if pixels[x, y] == 255:
                     continue
-                # no point in processing white pixels since we only want to remove black pixel
+                # No point in processing white pixels since we only want to remove black pixel
                 count = 0
 
                 try:
@@ -173,7 +162,8 @@ class OCR(object):
         # second pass: this time set all 1's to 255 (white)
         for x in xrange(w):
             for y in xrange(h):
-                if pixels[x, y] == 1: pixels[x, y] = 255
+                if pixels[x, y] == 1:
+                    pixels[x, y] = 255
 
         self.pixels = pixels
 
@@ -267,13 +257,16 @@ class OCR(object):
                         firstX = x
                         lastX = x
 
-                    if y > bottomY: bottomY = y
-                    if y < topY: topY = y
-                    if x > lastX: lastX = x
+                    if y > bottomY:
+                        bottomY = y
+                    if y < topY:
+                        topY = y
+                    if x > lastX:
+                        lastX = x
 
                     black_pixel_in_col = True
 
-            if black_pixel_in_col == False and started == True:
+            if black_pixel_in_col is False and started is True:
                 rect = (firstX, topY, lastX, bottomY)
                 new_captcha = captcha.crop(rect)
 
@@ -287,7 +280,6 @@ class OCR(object):
         return letters
 
     def correct(self, values, var=None):
-
         if var:
             result = var
         else:

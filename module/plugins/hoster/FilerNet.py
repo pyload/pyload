@@ -1,44 +1,34 @@
 # -*- coding: utf-8 -*-
-############################################################################
-# This program is free software: you can redistribute it and/or modify     #
-# it under the terms of the GNU Affero General Public License as           #
-# published by the Free Software Foundation, either version 3 of the       #
-# License, or (at your option) any later version.                          #
-#                                                                          #
-# This program is distributed in the hope that it will be useful,          #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
-# GNU Affero General Public License for more details.                      #
-#                                                                          #
-# You should have received a copy of the GNU Affero General Public License #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
-############################################################################
-
-# Test links (random.bin):
+#
+# Test links:
 # http://filer.net/get/ivgf5ztw53et3ogd
 # http://filer.net/get/hgo14gzcng3scbvv
 
 import pycurl
 import re
+
 from urlparse import urljoin
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilerNet(SimpleHoster):
     __name__ = "FilerNet"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?filer\.net/get/(\w+)'
     __version__ = "0.03"
+
+    __pattern__ = r'https?://(?:www\.)?filer\.net/get/(\w+)'
+
     __description__ = """Filer.net hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>\w+)</small></h1>'
-    FILE_OFFLINE_PATTERN = r'Nicht gefunden'
-    RECAPTCHA_KEY = '6LcFctISAAAAAAgaeHgyqhNecGJJRnxV1m_vAz3V'
-    DIRECT_LINK_PATTERN = r'href="([^"]+)">Get download</a>'
+    OFFLINE_PATTERN = r'Nicht gefunden'
+    RECAPTCHA_KEY = "6LcFctISAAAAAAgaeHgyqhNecGJJRnxV1m_vAz3V"
+    LINK_PATTERN = r'href="([^"]+)">Get download</a>'
+
 
     def process(self, pyfile):
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
@@ -74,7 +64,7 @@ class FilerNet(SimpleHoster):
         hash_data = inputs['hash']
         self.logDebug('Hash: ' + hash_data)
 
-        downloadURL = ''
+        downloadURL = r''
         recaptcha = ReCaptcha(self)
         for _ in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
@@ -107,8 +97,8 @@ class FilerNet(SimpleHoster):
             dl = self.pyfile.url
         else:  # Direct Download OFF
             html = self.load(self.pyfile.url)
-            m = re.search(self.DIRECT_LINK_PATTERN, html)
-            if not m:
+            m = re.search(self.LINK_PATTERN, html)
+            if m is None:
                 self.parseError("Unable to detect direct link, try to enable 'Direct download' in your user settings")
             dl = 'http://filer.net' + m.group(1)
 

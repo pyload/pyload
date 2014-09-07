@@ -8,19 +8,21 @@ from module.common.json_layer import json_loads
 
 class RPNetBiz(Hoster):
     __name__ = "RPNetBiz"
-    __version__ = "0.1"
     __type__ = "hoster"
+    __version__ = "0.1"
+
     __description__ = """RPNet.biz hoster plugin"""
+
     __pattern__ = r'https?://.*rpnet\.biz'
     __author_name__ = "Dman"
     __author_mail__ = "dmanugm@gmail.com"
+
 
     def setup(self):
         self.chunkLimit = -1
         self.resumeDownload = True
 
     def process(self, pyfile):
-
         if re.match(self.__pattern__, pyfile.url):
             link_status = {'generated': pyfile.url}
         elif not self.account:
@@ -31,7 +33,7 @@ class RPNetBiz(Hoster):
             (user, data) = self.account.selectAccount()
 
             self.logDebug("Original URL: %s" % pyfile.url)
-            # Get the download link 
+            # Get the download link
             response = self.load("https://premium.rpnet.biz/client_api.php",
                                  get={"username": user, "password": data['password'],
                                       "action": "generate", "links": pyfile.url})

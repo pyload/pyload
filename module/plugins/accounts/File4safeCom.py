@@ -5,8 +5,9 @@ from module.plugins.internal.XFSPAccount import XFSPAccount
 
 class File4safeCom(XFSPAccount):
     __name__ = "File4safeCom"
-    __version__ = "0.01"
     __type__ = "account"
+    __version__ = "0.01"
+
     __description__ = """File4safe.com account plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"

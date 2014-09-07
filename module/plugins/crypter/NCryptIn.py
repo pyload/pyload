@@ -5,6 +5,7 @@ import binascii
 import re
 
 from Crypto.Cipher import AES
+
 from module.plugins.Crypter import Crypter
 from module.plugins.internal.CaptchaService import ReCaptcha
 
@@ -12,27 +13,28 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?ncrypt.in/(?P<type>folder|link|frame)-([^/\?]+)'
     __version__ = "1.32"
+
+    __pattern__ = r'http://(?:www\.)?ncrypt.in/(?P<type>folder|link|frame)-([^/\?]+)'
+
     __description__ = """NCrypt.in decrypter plugin"""
     __author_name__ = ("fragonib", "stickell")
     __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "l.stickell@yahoo.it")
 
-    # Constants
-    _JK_KEY_ = "jk"
-    _CRYPTED_KEY_ = "crypted"
+    JK_KEY = "jk"
+    CRYPTED_KEY = "crypted"
 
     NAME_PATTERN = r'<meta name="description" content="(?P<N>[^"]+)"'
+
 
     def setup(self):
         self.package = None
         self.html = None
         self.cleanedHtml = None
-        self.links_source_order = ['cnl2', 'rsdf', 'ccf', 'dlc', 'web']
+        self.links_source_order = ["cnl2", "rsdf", "ccf", "dlc", "web"]
         self.protection_type = None
 
     def decrypt(self, pyfile):
-
         # Init
         self.package = pyfile.package()
         package_links = []
@@ -52,7 +54,7 @@ class NCryptIn(Crypter):
             if not self.isOnline():
                 self.offline()
 
-            # Check for folder protection    
+            # Check for folder protection
             if self.isProtected():
                 self.html = self.unlockProtection()
                 self.cleanedHtml = self.removeHtmlCrap(self.html)
@@ -75,7 +77,7 @@ class NCryptIn(Crypter):
 
     def isSingleLink(self):
         link_type = re.match(self.__pattern__, self.pyfile.url).group('type')
-        return link_type in ('link', 'frame')
+        return link_type in ("link", "frame")
 
     def requestFolderHome(self):
         return self.load(self.pyfile.url, decode=True)
@@ -93,16 +95,16 @@ class NCryptIn(Crypter):
 
     def isOnline(self):
         if "Your folder does not exist" in self.cleanedHtml:
-            self.logDebug("File not found")
+            self.logDebug("File not m")
             return False
         return True
 
     def isProtected(self):
-        form_match = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.DOTALL)
-        if form_match:
-            form_content = form_match.group(1)
+        form = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.DOTALL)
+        if form is not None:
+            content = form.group(1)
             for keyword in ("password", "captcha"):
-                if keyword in form_content:
+                if keyword in content:
                     self.protection_type = keyword
                     self.logDebug("Links are %s protected" % self.protection_type)
                     return True
@@ -116,7 +118,7 @@ class NCryptIn(Crypter):
         else:
             name = self.package.name
             folder = self.package.folder
-            self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
+            self.logDebug("Package info not m, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
         return name, folder
 
     def unlockProtection(self):
@@ -139,7 +141,7 @@ class NCryptIn(Crypter):
             self.logDebug("Captcha resolved [%s]" % captcha)
             postData['captcha'] = captcha
 
-        # Resolve recaptcha           
+        # Resolve recaptcha
         if "recaptcha" in form:
             self.logDebug("ReCaptcha protected")
             captcha_key = re.search(r'\?k=(.*?)"', form).group(1)
@@ -163,7 +165,6 @@ class NCryptIn(Crypter):
         return self.load(self.pyfile.url, post=postData, decode=True)
 
     def handleErrors(self):
-
         if self.protection_type == "password":
             if "This password is invalid!" in self.cleanedHtml:
                 self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
@@ -178,9 +179,8 @@ class NCryptIn(Crypter):
                 self.correctCaptcha()
 
     def handleLinkSource(self, link_source_type):
-
         # Check for JS engine
-        require_js_engine = link_source_type in ('cnl2', 'rsdf', 'ccf', 'dlc')
+        require_js_engine = link_source_type in ("cnl2", "rsdf", "ccf", "dlc")
         if require_js_engine and not self.js:
             self.logDebug("No JS engine available, skip %s links" % link_source_type)
             return []
@@ -190,9 +190,9 @@ class NCryptIn(Crypter):
             return self.handleSingleLink()
         if link_source_type == 'cnl2':
             return self.handleCNL2()
-        elif link_source_type in ('rsdf', 'ccf', 'dlc'):
+        elif link_source_type in ("rsdf", "ccf", "dlc"):
             return self.handleContainer(link_source_type)
-        elif link_source_type == 'web':
+        elif link_source_type == "web":
             return self.handleWebLinks()
         else:
             self.fail('unknown source type "%s" (this is probably a bug)' % link_source_type)
@@ -267,11 +267,11 @@ class NCryptIn(Crypter):
         pattern = r'<input.*?name="%s".*?value="(.*?)"'
 
         # Get jk
-        jk_re = pattern % NCryptIn._JK_KEY_
+        jk_re = pattern % NCryptIn.JK_KEY
         vjk = re.findall(jk_re, self.html)
 
         # Get crypted
-        crypted_re = pattern % NCryptIn._CRYPTED_KEY_
+        crypted_re = pattern % NCryptIn.CRYPTED_KEY
         vcrypted = re.findall(crypted_re, self.html)
 
         # Log and return
@@ -279,7 +279,6 @@ class NCryptIn(Crypter):
         return vcrypted, vjk
 
     def _getLinks(self, crypted, jk):
-
         # Get key
         jreturn = self.js.eval("%s f()" % jk)
         self.logDebug("JsEngine returns value [%s]" % jreturn)

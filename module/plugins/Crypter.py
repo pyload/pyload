@@ -5,9 +5,11 @@ from module.plugins.Plugin import Plugin
 
 class Crypter(Plugin):
     __name__ = "Crypter"
-    __version__ = "0.1"
-    __pattern__ = None
     __type__ = "crypter"
+    __version__ = "0.1"
+
+    __pattern__ = None
+
     __description__ = """Base decrypter plugin"""
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"

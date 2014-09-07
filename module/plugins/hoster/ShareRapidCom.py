@@ -3,9 +3,9 @@
 import re
 
 from pycurl import HTTPHEADER
-from module.network.HTTPRequest import BadHeader
+
 from module.network.RequestFactory import getRequest
-from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo, replace_patterns
+from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 
 
 def getInfo(urls):
@@ -15,50 +15,46 @@ def getInfo(urls):
                 "User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0"])
     for url in urls:
         html = h.load(url, decode=True)
-        file_info = parseFileInfo(ShareRapidCom, replace_patterns(url, ShareRapidCom.FILE_URL_REPLACEMENTS), html)
+        file_info = parseFileInfo(ShareRapidCom, url, html)
         yield file_info
 
 
 class ShareRapidCom(SimpleHoster):
     __name__ = "ShareRapidCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?((share(-?rapid\.(biz|com|cz|info|eu|net|org|pl|sk)|-(central|credit|free|net)\.cz|-ms\.net)|(s-?rapid|rapids)\.(cz|sk))|(e-stahuj|mediatack|premium-rapidshare|rapidshare-premium|qiuck)\.cz|kadzet\.com|stahuj-zdarma\.eu|strelci\.net|universal-share\.com)/stahuj/(?P<id>\w+)'
-    __version__ = "0.53"
-    __description__ = """Share-rapid.com hoster plugin"""
-    __author_name__ = ("MikyWoW", "zoidberg", "stickell")
-    __author_mail__ = ("mikywow@seznam.cz", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __version__ = "0.54"
+
+    __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
+
+    __description__ = """MegaRapid.cz hoster plugin"""
+    __author_name__ = ("MikyWoW", "zoidberg", "stickell", "Walter Purcaro")
+    __author_mail__ = ("mikywow@seznam.cz", "zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     FILE_NAME_PATTERN = r'<h1[^>]*><span[^>]*>(?:<a[^>]*>)?(?P<N>[^<]+)'
     FILE_SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong></td>'
-    FILE_OFFLINE_PATTERN = ur'Nastala chyba 404|Soubor byl smazán'
+    OFFLINE_PATTERN = ur'Nastala chyba 404|Soubor byl smazán'
 
-    DOWNLOAD_URL_PATTERN = r'<a href="([^"]+)" title="Stahnout">([^<]+)</a>'
+    SH_CHECK_TRAFFIC = True
+
+    LINK_PATTERN = r'<a href="([^"]+)" title="Stahnout">([^<]+)</a>'
     ERR_LOGIN_PATTERN = ur'<div class="error_div"><strong>Stahování je přístupné pouze přihlášeným uživatelům'
     ERR_CREDIT_PATTERN = ur'<div class="error_div"><strong>Stahování zdarma je možné jen přes náš'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://share-rapid.com/stahuj/\g<id>')]
 
     def setup(self):
         self.chunkLimit = 1
-        self.resumeDownload = True
 
-    def process(self, pyfile):
-        if not self.account:
-            self.fail("User not logged in")
-
+    def handlePremium(self):
         try:
-            self.html = self.load(pyfile.url, decode=True)
+            self.html = self.load(self.pyfile.url, decode=True)
         except BadHeader, e:
             self.account.relogin(self.user)
             self.retry(max_tries=3, reason=str(e))
 
-        self.getFileInfo()
-
-        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
-        if found:
-            link = found.group(1)
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m:
+            link = m.group(1)
             self.logDebug("Premium link: %s" % link)
-
             self.download(link, disposition=True)
         else:
             if re.search(self.ERR_LOGIN_PATTERN, self.html):

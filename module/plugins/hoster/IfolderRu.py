@@ -1,31 +1,17 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 import re
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class IfolderRu(SimpleHoster):
     __name__ = "IfolderRu"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*'
     __version__ = "0.38"
+
+    __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*'
+
     __description__ = """Ifolder.ru hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -33,13 +19,14 @@ class IfolderRu(SimpleHoster):
     FILE_SIZE_REPLACEMENTS = [(u'Кб', 'KB'), (u'Мб', 'MB'), (u'Гб', 'GB')]
     FILE_NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
     FILE_SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[^<]+)</b><(?:/div|br)>'
-    FILE_OFFLINE_PATTERN = ur'<p>Файл номер <b>[^<]*</b> (не найден|удален) !!!</p>'
+    OFFLINE_PATTERN = ur'<p>Файл номер <b>[^<]*</b> (не найден|удален) !!!</p>'
 
     SESSION_ID_PATTERN = r'<a href=(http://ints.(?:rusfolder.com|ifolder.ru)/ints/sponsor/\?bi=\d*&session=([^&]+)&u=[^>]+)>'
     INTS_SESSION_PATTERN = r'\(\'ints_session\'\);\s*if\(tag\)\{tag.value = "([^"]+)";\}'
     HIDDEN_INPUT_PATTERN = r"var v = .*?name='([^']+)' value='1'"
-    DOWNLOAD_LINK_PATTERN = r'<a id="download_file_href" href="([^"]+)"'
+    LINK_PATTERN = r'<a id="download_file_href" href="([^"]+)"'
     WRONG_CAPTCHA_PATTERN = ur'<font color=Red>неверный код,<br>введите еще раз</font><br>'
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.account else False
@@ -79,7 +66,7 @@ class IfolderRu(SimpleHoster):
         else:
             self.fail("Invalid captcha")
 
-        download_url = re.search(self.DOWNLOAD_LINK_PATTERN, self.html).group(1)
+        download_url = re.search(self.LINK_PATTERN, self.html).group(1)
         self.correctCaptcha()
         self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)

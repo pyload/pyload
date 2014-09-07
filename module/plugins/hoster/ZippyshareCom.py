@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-
-# Test links (random.bin):
+#
+# Test links:
 # http://www13.zippyshare.com/v/18665333/file.html
 
 import re
@@ -11,8 +11,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
-    __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)'
     __version__ = "0.49"
+
+    __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare.com)/v(?:/|iew.jsp.*key=)(?P<KEY>\d+)'
+
     __description__ = """Zippyshare.com hoster plugin"""
     __author_name__ = ("spoob", "zoidberg", "stickell", "skylab")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it", "development@sky-lab.de")
@@ -20,9 +22,10 @@ class ZippyshareCom(SimpleHoster):
     FILE_NAME_PATTERN = r'<title>Zippyshare\.com - (?P<N>[^<]+)</title>'
     FILE_SIZE_PATTERN = r'>Size:</font>\s*<font [^>]*>(?P<S>[0-9.,]+) (?P<U>[kKMG]+)i?B</font><br />'
     FILE_INFO_PATTERN = r'document\.getElementById\(\'dlbutton\'\)\.href = "[^;]*/(?P<N>[^"]+)";'
-    FILE_OFFLINE_PATTERN = r'>File does not exist on this server</div>'
+    OFFLINE_PATTERN = r'>File does not exist on this server</div>'
 
-    SH_COOKIES = [('zippyshare.com', 'ziplocale', 'en')]
+    SH_COOKIES = [(".zippyshare.com", "ziplocale", "en")]
+
 
     def setup(self):
         self.multiDL = True
@@ -48,7 +51,7 @@ class ZippyshareCom(SimpleHoster):
             # checksum = eval(re.search("((\d*)\s\%\s(\d*)\s\+\s(\d*)\s\%\s(\d*))", self.html).group(0))
 
             m = re.search(r"((?P<a>\d*)\s%\s(?P<b>\d*)\s\+\s(?P<c>\d*)\s%\s(?P<k>\d*))", self.html)
-            if not m:
+            if m is None:
                 self.parseError("Unable to detect values to calculate direct link")
             a = int(m.group("a"))
             b = int(m.group("b"))

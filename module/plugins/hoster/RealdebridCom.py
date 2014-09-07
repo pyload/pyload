@@ -1,24 +1,27 @@
 # -*- coding: utf-8 -*-
 
 import re
-from time import time
-from urllib import quote, unquote
-from random import randrange
 
-from module.utils import parseFileSize
+from random import randrange
+from urllib import quote, unquote
+from time import time
+
 from module.common.json_layer import json_loads
 from module.plugins.Hoster import Hoster
+from module.utils import parseFileSize
 
 
 class RealdebridCom(Hoster):
     __name__ = "RealdebridCom"
-    __version__ = "0.53"
     __type__ = "hoster"
+    __version__ = "0.53"
 
     __pattern__ = r'https?://(?:[^/]*\.)?real-debrid\..*'
+
     __description__ = """Real-Debrid.com hoster plugin"""
     __author_name__ = "Devirex Hazzard"
     __author_mail__ = "naibaf_11@yahoo.de"
+
 
     def getFilename(self, url):
         try:
@@ -54,16 +57,16 @@ class RealdebridCom(Hoster):
 
             self.logDebug("Returned Data: %s" % data)
 
-            if data["error"] != 0:
-                if data["message"] == "Your file is unavailable on the hoster.":
+            if data['error'] != 0:
+                if data['message'] == "Your file is unavailable on the hoster.":
                     self.offline()
                 else:
-                    self.logWarning(data["message"])
+                    self.logWarning(data['message'])
                     self.tempOffline()
             else:
-                if pyfile.name is not None and pyfile.name.endswith('.tmp') and data["file_name"]:
-                    pyfile.name = data["file_name"]
-                pyfile.size = parseFileSize(data["file_size"])
+                if pyfile.name is not None and pyfile.name.endswith('.tmp') and data['file_name']:
+                    pyfile.name = data['file_name']
+                pyfile.size = parseFileSize(data['file_size'])
                 new_url = data['generated_links'][0][-1]
 
         if self.getConfig("https"):

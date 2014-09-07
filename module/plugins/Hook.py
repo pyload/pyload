@@ -1,26 +1,9 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
-    @interface-version: 0.2
-"""
-
 from traceback import print_exc
 
-from Plugin import Base
+from module.plugins.Plugin import Base
+
 
 class Expose(object):
     """ used for decoration to declare rpc services """
@@ -29,19 +12,24 @@ class Expose(object):
         hookManager.addRPC(f.__module__, f.func_name, f.func_doc)
         return f
 
+
 def threaded(f):
+
     def run(*args,**kwargs):
         hookManager.startThread(f, *args, **kwargs)
     return run
+
 
 class Hook(Base):
     """
     Base class for hook plugins.
     """
     __name__ = "Hook"
-    __version__ = "0.2"
     __type__ = "hook"
+    __version__ = "0.2"
+
     __config__ = [("name", "type", "desc", "default")]
+
     __description__ = """Interface for hook"""
     __author_name__ = ("mkaay", "RaNaN")
     __author_mail__ = ("mkaay@mkaay.de", "RaNaN@pyload.org")
@@ -53,9 +41,9 @@ class Hook(Base):
     #: List of events the plugin can handle, name the functions exactly like eventname.
     event_list = None  # dont make duplicate entries in event_map
 
-
-    #: periodic call interval in seconds
+    #: periodic call interval in secondc
     interval = 60
+
 
     def __init__(self, core, manager):
         Base.__init__(self, core)
@@ -122,7 +110,7 @@ class Hook(Base):
         return self.config.getPlugin(self.__name__, "activated")
 
 
-    #event methods - overwrite these if needed    
+    #event methods - overwrite these if needed
     def coreReady(self):
         pass
 

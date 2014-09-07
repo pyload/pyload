@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import os
 import re
 import subprocess
-import os
+
 from urllib import unquote
 
-from module.utils import html_unescape
 from module.plugins.Hoster import Hoster
 from module.plugins.internal.SimpleHoster import replace_patterns
+from module.utils import html_unescape
 
 
 def which(program):
@@ -23,7 +24,7 @@ def which(program):
         if is_exe(program):
             return program
     else:
-        for path in os.environ["PATH"].split(os.pathsep):
+        for path in os.environ['PATH'].split(os.pathsep):
             path = path.strip('"')
             exe_file = os.path.join(path, program)
             if is_exe(exe_file):
@@ -35,8 +36,9 @@ def which(program):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:[^/]*\.)?(?:youtube\.com|youtu\.be)/watch.*?[?&]v=.*'
     __version__ = "0.40"
+
+    __pattern__ = r'https?://(?:[^/]*\.)?(?:youtube\.com|youtu\.be)/watch.*?[?&]v=.*'
     __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
                   ("fmt", "int", "FMT/ITAG Number (5-102, 0 for auto)", 0),
                   (".mp4", "bool", "Allow .mp4", True),
@@ -44,6 +46,7 @@ class YoutubeCom(Hoster):
                   (".webm", "bool", "Allow .webm", False),
                   (".3gp", "bool", "Allow .3gp", False),
                   ("3d", "bool", "Prefer 3D", False)]
+
     __description__ = """Youtube.com hoster plugin"""
     __author_name__ = ("spoob", "zoidberg")
     __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
@@ -75,6 +78,7 @@ class YoutubeCom(Hoster):
                100: (".webm", 640, 360, 3, True),
                101: (".webm", 640, 360, 4, True),
                102: (".webm", 1280, 720, 8, True)}
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True
@@ -154,7 +158,7 @@ class YoutubeCom(Hoster):
         ffmpeg = which("ffmpeg")
         if ffmpeg and time:
             m, s = time.groups()[1:]
-            if not m:
+            if m is None:
                 m = "0"
 
             pyfile.name += " (starting at %s:%s)" % (m, s)

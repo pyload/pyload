@@ -9,8 +9,10 @@ from module.utils import html_unescape
 class RarefileNet(XFileSharingPro):
     __name__ = "RarefileNet"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?rarefile.net/\w{12}'
     __version__ = "0.03"
+
+    __pattern__ = r'http://(?:www\.)?rarefile.net/\w{12}'
+
     __description__ = """Rarefile.net hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -19,7 +21,8 @@ class RarefileNet(XFileSharingPro):
 
     FILE_NAME_PATTERN = r'<td><font color="red">(?P<N>.*?)</font></td>'
     FILE_SIZE_PATTERN = r'<td>Size : (?P<S>.+?)&nbsp;'
-    DIRECT_LINK_PATTERN = r'<a href="(?P<link>[^"]+)">(?P=link)</a>'
+    LINK_PATTERN = r'<a href="(?P<link>[^"]+)">(?P=link)</a>'
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium

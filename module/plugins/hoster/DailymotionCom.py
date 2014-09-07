@@ -1,28 +1,11 @@
 # -*- coding: utf-8 -*-
-############################################################################
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as
-#  published by the Free Software Foundation, either version 3 of the
-#  License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Affero General Public License for more details.
-#
-#  You should have received a copy of the GNU Affero General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  @author: Walter Purcaro
-############################################################################
-
 
 import re
 
+from module.PyFile import statusMap
 from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
-from module.PyFile import statusMap
 
 
 def getInfo(urls):
@@ -36,14 +19,14 @@ def getInfo(urls):
         info = json_loads(page)
 
         if "title" in info:
-            name = info["title"] + ".mp4"
+            name = info['title'] + ".mp4"
         else:
             name = url
 
-        if "error" in info or info["access_error"]:
+        if "error" in info or info['access_error']:
             status = "offline"
         else:
-            status = info["status"]
+            status = info['status']
             if status in ("ready", "published"):
                 status = "online"
             elif status in ("waiting", "processing"):
@@ -58,12 +41,15 @@ def getInfo(urls):
 class DailymotionCom(Hoster):
     __name__ = "DailymotionCom"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*?video/(?P<ID>[\w^_]+)'
     __version__ = "0.2"
-    __config__ = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "HD 720p")]
+
+    __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*?video/(?P<ID>[\w^_]+)'
+    __config__ = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]
+
     __description__ = """Dailymotion.com hoster plugin"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True

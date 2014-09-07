@@ -1,24 +1,28 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from module.lib.bottle import json_loads
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class LuckyShareNet(SimpleHoster):
     __name__ = "LuckyShareNet"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?luckyshare.net/(?P<ID>\d{10,})'
     __version__ = "0.02"
+
+    __pattern__ = r'https?://(?:www\.)?luckyshare.net/(?P<ID>\d{10,})'
+
     __description__ = """LuckyShare.net hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
     FILE_INFO_PATTERN = r"<h1 class='file_name'>(?P<N>\S+)</h1>\s*<span class='file_size'>Filesize: (?P<S>[\d.]+)(?P<U>\w+)</span>"
-    FILE_OFFLINE_PATTERN = 'There is no such file available'
-    RECAPTCHA_KEY = '6LdivsgSAAAAANWh-d7rPE1mus4yVWuSQIJKIYNw'
+    OFFLINE_PATTERN = r'There is no such file available'
+    RECAPTCHA_KEY = "6LdivsgSAAAAANWh-d7rPE1mus4yVWuSQIJKIYNw"
+
 
     def parseJson(self, rep):
         if 'AJAX Error' in rep:

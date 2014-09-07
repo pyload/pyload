@@ -1,51 +1,34 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-    @interface-version: 0.2
-"""
-
-from os import makedirs
-from os import listdir
-from os.path import exists
-from os.path import join
-from os.path import isfile
-from shutil import move
 import time
+
+from os import listdir, makedirs
+from os.path import exists, isfile, join
+from shutil import move
 
 from module.plugins.Hook import Hook
 
 
 class HotFolder(Hook):
     __name__ = "HotFolder"
+    __type__ = "hook"
     __version__ = "0.11"
-    __description__ = """Observe folder and file for changes and add container and links"""
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("folder", "str", "Folder to observe", "container"),
                   ("watch_file", "bool", "Observe link file", False),
                   ("keep", "bool", "Keep added containers", True),
                   ("file", "str", "Link file", "links.txt")]
+
+    __description__ = """Observe folder and file for changes and add container and links"""
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.de"
+
 
     def setup(self):
         self.interval = 10
 
     def periodical(self):
-
         if not exists(join(self.getConfig("folder"), "finished")):
             makedirs(join(self.getConfig("folder"), "finished"))
 

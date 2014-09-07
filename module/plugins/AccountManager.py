@@ -1,22 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
-
 from os.path import exists
 from shutil import copy
 
@@ -26,6 +9,7 @@ from module.PullEvents import AccountUpdateEvent
 from module.utils import chmod, lock
 
 ACC_VERSION = 1
+
 
 class AccountManager:
     """manages all accounts"""
@@ -46,7 +30,6 @@ class AccountManager:
 
         self.initAccountPlugins()
         self.loadAccounts()
-
 
     def getAccountPlugin(self, plugin):
         """get account instance for plugin or None if anonymous"""
@@ -109,7 +92,7 @@ class AccountManager:
             elif line.startswith("@"):
                 try:
                     option = line[1:].split()
-                    self.accounts[plugin][name]["options"][option[0]] = [] if len(option) < 2 else ([option[1]] if len(option) < 3 else option[1:])
+                    self.accounts[plugin][name]['options'][option[0]] = [] if len(option) < 2 else ([option[1]] if len(option) < 3 else option[1:])
                 except:
                     pass
 
@@ -129,9 +112,9 @@ class AccountManager:
             f.write(plugin+":\n")
 
             for name,data in accounts.iteritems():
-                f.write("\n\t%s:%s\n" % (name,data["password"]) )
-                if data["options"]:
-                    for option, values in data["options"].iteritems():
+                f.write("\n\t%s:%s\n" % (name,data['password']) )
+                if data['options']:
+                    for option, values in data['options'].iteritems():
                         f.write("\t@%s %s\n" % (option, " ".join(values)))
 
         f.close()

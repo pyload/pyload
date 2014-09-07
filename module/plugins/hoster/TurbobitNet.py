@@ -1,59 +1,43 @@
 # -*- coding: utf-8 -*-
 
-"""
-    Copyright (C) 2012  pyLoad team
-    Copyright (C) 2012  JD-Team support@jdownloader.org
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
-import re
 import random
-from urllib import quote
-from binascii import hexlify, unhexlify
+import re
 import time
-from pycurl import HTTPHEADER
 
 from Crypto.Cipher import ARC4
+from binascii import hexlify, unhexlify
+from pycurl import HTTPHEADER
+from urllib import quote
+
 from module.network.RequestFactory import getURL
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 
 
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?(turbobit.net|unextfiles.com)/(?!download/folder/)(?:download/free/)?(?P<ID>\w+).*'
     __version__ = "0.11"
+
+    __pattern__ = r'http://(?:www\.)?(turbobit.net|unextfiles.com)/(?!download/folder/)(?:download/free/)?(?P<ID>\w+).*'
+
     __description__ = """Turbobit.net plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    # long filenames are shortened
-    FILE_INFO_PATTERN = r"<span class='file-icon1[^>]*>(?P<N>[^<]+)</span>\s*\((?P<S>[^\)]+)\)\s*</h1>"
-    FILE_NAME_PATTERN = r'<meta name="keywords" content="\s+(?P<N>[^,]+)'  # full name but missing on page2
-    FILE_OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
+    FILE_INFO_PATTERN = r"<span class='file-icon1[^>]*>(?P<N>[^<]+)</span>\s*\((?P<S>[^\)]+)\)\s*</h1>"  #: long filenames are shortened
+    FILE_NAME_PATTERN = r'<meta name="keywords" content="\s+(?P<N>[^,]+)'  #: full name but missing on page2
+    OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
+
     FILE_URL_REPLACEMENTS = [(r"http://(?:www\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*",
                               "http://turbobit.net/\g<ID>.html")]
-    SH_COOKIES = [("turbobit.net", "user_lang", "en")]
+    SH_COOKIES = [(".turbobit.net", "user_lang", "en")]
 
-    CAPTCHA_KEY_PATTERN = r'src="http://api\.recaptcha\.net/challenge\?k=([^"]+)"'
-    DOWNLOAD_URL_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
+    LINK_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
     LIMIT_WAIT_PATTERN = r'<div id="time-limit-text">\s*.*?<span id=\'timeout\'>(\d+)</span>'
+    CAPTCHA_KEY_PATTERN = r'src="http://api\.recaptcha\.net/challenge\?k=([^"]+)"'
     CAPTCHA_SRC_PATTERN = r'<img alt="Captcha" src="(.*?)"'
+
 
     def handleFree(self):
         self.url = "http://turbobit.net/download/free/%s" % self.file_info['ID']
@@ -72,9 +56,9 @@ class TurbobitNet(SimpleHoster):
 
     def solveCaptcha(self):
         for _ in xrange(5):
-            found = re.search(self.LIMIT_WAIT_PATTERN, self.html)
-            if found:
-                wait_time = int(found.group(1))
+            m = re.search(self.LIMIT_WAIT_PATTERN, self.html)
+            if m:
+                wait_time = int(m.group(1))
                 self.wait(wait_time, wait_time > 60)
                 self.retry()
 
@@ -85,15 +69,15 @@ class TurbobitNet(SimpleHoster):
 
             if inputs['captcha_type'] == 'recaptcha':
                 recaptcha = ReCaptcha(self)
-                found = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
-                captcha_key = found.group(1) if found else '6LcTGLoSAAAAAHCWY9TTIrQfjUlxu6kZlTYP50_c'
+                m = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
+                captcha_key = m.group(1) if m else '6LcTGLoSAAAAAHCWY9TTIrQfjUlxu6kZlTYP50_c'
                 inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(
                     captcha_key)
             else:
-                found = re.search(self.CAPTCHA_SRC_PATTERN, self.html)
-                if not found:
+                m = re.search(self.CAPTCHA_SRC_PATTERN, self.html)
+                if m is None:
                     self.parseError('captcha')
-                captcha_url = found.group(1)
+                captcha_url = m.group(1)
                 inputs['captcha_response'] = self.decryptCaptcha(captcha_url)
 
             self.logDebug(inputs)
@@ -115,7 +99,7 @@ class TurbobitNet(SimpleHoster):
                 # that's right, we are even using jdownloader updates
                 rtUpdate = getURL("http://update0.jdownloader.org/pluginstuff/tbupdate.js")
                 rtUpdate = self.decrypt(rtUpdate.splitlines()[1])
-                # but we still need to fix the syntax to work with other engines than rhino                
+                # but we still need to fix the syntax to work with other engines than rhino
                 rtUpdate = re.sub(r'for each\(var (\w+) in(\[[^\]]+\])\)\{',
                                   r'zza=\2;for(var zzi=0;zzi<zza.length;zzi++){\1=zza[zzi];', rtUpdate)
                 rtUpdate = re.sub(r"for\((\w+)=", r"for(var \1=", rtUpdate)
@@ -133,8 +117,8 @@ class TurbobitNet(SimpleHoster):
     def getDownloadUrl(self, rtUpdate):
         self.req.http.lastURL = self.url
 
-        found = re.search("(/\w+/timeout\.js\?\w+=)([^\"\'<>]+)", self.html)
-        url = "http://turbobit.net%s%s" % (found.groups() if found else (
+        m = re.search("(/\w+/timeout\.js\?\w+=)([^\"\'<>]+)", self.html)
+        url = "http://turbobit.net%s%s" % (m.groups() if m else (
         '/files/timeout.js?ver=', ''.join(random.choice('0123456789ABCDEF') for _ in xrange(32))))
         fun = self.load(url)
 
@@ -172,10 +156,10 @@ class TurbobitNet(SimpleHoster):
         self.downloadFile()
 
     def downloadFile(self):
-        found = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
-        if not found:
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
             self.parseError("download link")
-        self.url = "http://turbobit.net" + found.group('url')
+        self.url = "http://turbobit.net" + m.group('url')
         self.logDebug(self.url)
         self.download(self.url)
 

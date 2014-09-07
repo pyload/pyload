@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
+
+from urllib import unquote
+
 from module.plugins.Hoster import Hoster
 
 
 class ShareplaceCom(Hoster):
     __name__ = "ShareplaceCom"
     __type__ = "hoster"
-    __pattern__ = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?[a-zA-Z0-9]+'
     __version__ = "0.11"
+
+    __pattern__ = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?[a-zA-Z0-9]+'
+
     __description__ = """Shareplace.com hoster plugin"""
     __author_name__ = "ACCakut"
-    __author_mail__ = ""
+    __author_mail__ = None
+
 
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -31,7 +36,7 @@ class ShareplaceCom(Hoster):
         self.wait()
 
     def get_waiting_time(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         #var zzipitime = 15;
@@ -53,7 +58,7 @@ class ShareplaceCom(Hoster):
         url = re.search(r"var beer = '(.*?)';", self.html)
         if url:
             url = url.group(1)
-            url = urllib.unquote(
+            url = unquote(
                 url.replace("http://http:/", "").replace("vvvvvvvvv", "").replace("lllllllll", "").replace(
                     "teletubbies", ""))
             self.logDebug("URL: %s" % url)
@@ -62,7 +67,7 @@ class ShareplaceCom(Hoster):
             self.fail("absolute filepath could not be found. offline? ")
 
     def get_file_name(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         return re.search("<title>\s*(.*?)\s*</title>", self.html).group(1)
@@ -70,7 +75,7 @@ class ShareplaceCom(Hoster):
     def file_exists(self):
         """ returns True or False
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         if re.search(r"HTTP Status 404", self.html) is not None:

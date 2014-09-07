@@ -1,45 +1,36 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 import re
+
 from random import random
 
 
-class CaptchaService():
-    __version__ = "0.04"
+class CaptchaService:
+    __name__ = "CaptchaService"
+    __version__ = "0.05"
+
+    __description__ = """Captcha service plugin"""
+    __author_name__ = "pyLoad Team"
+    __author_mail__ = "admin@pyload.org"
+
 
     def __init__(self, plugin):
         self.plugin = plugin
 
 
-class ReCaptcha():
+class ReCaptcha:
     RECAPTCHA_KEY_PATTERN = r"https?://(?:www\.)?google\.com/recaptcha/api/challenge\?k=(?P<key>\w+)"
     RECAPTCHA_KEY_AJAX_PATTERN = r"Recaptcha\.create\s*\(\s*[\"'](?P<key>\w+)[\"']\s*,"
 
     recaptcha_key = None
+
 
     def __init__(self, plugin):
         self.plugin = plugin
 
     def detect_key(self, html):
         m = re.search(self.RECAPTCHA_KEY_PATTERN, html)
-        if not m:
+        if m is None:
             m = re.search(self.RECAPTCHA_KEY_AJAX_PATTERN, html)
         if m:
             self.recaptcha_key = m.group('key')
@@ -48,9 +39,9 @@ class ReCaptcha():
             return None
 
     def challenge(self, key=None):
-        if not key and self.recaptcha_key:
+        if key is None and self.recaptcha_key:
             key = self.recaptcha_key
-        elif not (key or self.recaptcha_key):
+        else:
             raise TypeError("ReCaptcha key not found")
 
         js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={"k": key}, cookies=True)
@@ -70,6 +61,7 @@ class ReCaptcha():
 
 
 class AdsCaptcha(CaptchaService):
+
     def challenge(self, src):
         js = self.plugin.req.load(src, cookies=True)
 
@@ -88,8 +80,6 @@ class AdsCaptcha(CaptchaService):
 
 
 class SolveMedia(CaptchaService):
-    def __init__(self, plugin):
-        self.plugin = plugin
 
     def challenge(self, src):
         html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript?k=%s" % src, cookies=True)

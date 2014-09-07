@@ -1,29 +1,14 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-from urlparse import urlparse
 import re
-from time import time
 
-from module.plugins.Hoster import Hoster
-from module.utils import html_unescape, fixup, parseFileSize
-from module.network.RequestFactory import getURL
+from time import time
+from urlparse import urlparse
+
 from module.network.CookieJar import CookieJar
+from module.network.RequestFactory import getURL
+from module.plugins.Hoster import Hoster
+from module.utils import fixup, html_unescape, parseFileSize
 
 
 def replace_patterns(string, ruleslist):
@@ -55,7 +40,7 @@ def parseHtmlForm(attr_str, html, input_names=None):
             name = parseHtmlTagAttrValue("name", inputtag.group(1))
             if name:
                 value = parseHtmlTagAttrValue("value", inputtag.group(1))
-                if value is None:
+                if not value:
                     inputs[name] = inputtag.group(3) or ''
                 else:
                     inputs[name] = value
@@ -98,9 +83,12 @@ def parseFileInfo(self, url='', html=''):
             if hasattr(self, "html"):
                 self.html = html
 
-        if hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):
-            # File offline
+        if hasattr(self, "OFFLINE_PATTERN") and re.search(self.OFFLINE_PATTERN, html):
             info['status'] = 1
+        elif hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):  #@TODO: Remove in 0.4.10
+            info['status'] = 1
+        elif hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, html):
+            info['status'] = 6
         else:
             online = False
             try:
@@ -136,6 +124,7 @@ def parseFileInfo(self, url='', html=''):
 
 
 def create_getInfo(plugin):
+
     def getInfo(urls):
         for url in urls:
             cj = CookieJar(plugin.__name__)
@@ -153,6 +142,7 @@ def timestamp():
 
 
 class PluginParseError(Exception):
+
     def __init__(self, msg):
         Exception.__init__(self)
         self.value = 'Parse error (%s) - plugin may be out of date' % msg
@@ -163,30 +153,44 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.33"
-    __pattern__ = None
     __type__ = "hoster"
+    __version__ = "0.35"
+
+    __pattern__ = None
+
     __description__ = """Simple hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
-    """
-    These patterns should be defined by each hoster:
-    FILE_INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>units)'
-    or FILE_NAME_PATTERN = r'(?P<N>file_name)'
-    and FILE_SIZE_PATTERN = r'(?P<S>file_size) (?P<U>units)'
-    FILE_OFFLINE_PATTERN = r'File (deleted|not found)'
-    TEMP_OFFLINE_PATTERN = r'Server maintainance'
 
-    You can also define a PREMIUM_ONLY_PATTERN to detect links that can be downloaded only with a premium account.
+    """
+    Following patterns should be defined by each hoster:
+
+      FILE_INFO_PATTERN: Name and Size of the file
+        example: FILE_INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>size_unit)'
+      or
+        FILE_NAME_PATTERN: Name that will be set for the file
+          example: FILE_NAME_PATTERN = r'(?P<N>file_name)'
+        FILE_SIZE_PATTERN: Size that will be checked for the file
+          example: FILE_SIZE_PATTERN = r'(?P<S>file_size) (?P<U>size_unit)'
+
+      OFFLINE_PATTERN: Checks if the file is yet available online
+        example: OFFLINE_PATTERN = r'File (deleted|not found)'
+
+      TEMP_OFFLINE_PATTERN: Checks if the file is temporarily offline
+        example: TEMP_OFFLINE_PATTERN = r'Server maintainance'
+
+      PREMIUM_ONLY_PATTERN: (optional) Checks if the file can be downloaded only with a premium account
+        example: PREMIUM_ONLY_PATTERN = r'Premium account required'
     """
 
-    FILE_SIZE_REPLACEMENTS = []
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
+    FILE_SIZE_REPLACEMENTS = []
     FILE_URL_REPLACEMENTS = []
 
     SH_BROKEN_ENCODING = False  # Set to True or encoding name if encoding in http header is not correct
     SH_COOKIES = True  # or False or list of tuples [(domain, name, value)]
     SH_CHECK_TRAFFIC = False  # True = force check traffic left for a premium account
+
 
     def init(self):
         self.file_info = {}
@@ -223,13 +227,13 @@ class SimpleHoster(Hoster):
 
     def getFileInfo(self):
         self.logDebug("URL: %s" % self.pyfile.url)
-        if hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, self.html):
-            self.tempOffline()
 
         name, size, status = parseFileInfo(self)[:3]
 
         if status == 1:
             self.offline()
+        elif status == 6:
+            self.tempOffline()
         elif status != 2:
             self.logDebug(self.file_info)
             self.parseError('File info')
@@ -274,7 +278,7 @@ class SimpleHoster(Hoster):
         return parseHtmlForm(attr_str, self.html, input_names)
 
     def checkTrafficLeft(self):
-        traffic = self.account.getAccountInfo(self.user, True)["trafficleft"]
+        traffic = self.account.getAccountInfo(self.user, True)['trafficleft']
         if traffic == -1:
             return True
         size = self.pyfile.size / 1024

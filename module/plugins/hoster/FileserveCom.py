@@ -1,27 +1,14 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
-from module.plugins.Hoster import Hoster
-from module.network.RequestFactory import getURL
-from module.plugins.internal.CaptchaService import ReCaptcha
+
 from module.common.json_layer import json_loads
-from module.utils import parseFileSize
+from module.network.RequestFactory import getURL
+from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
+from module.plugins.hoster.UnrestrictLi import secondsToMidnight
+from module.plugins.internal.CaptchaService import ReCaptcha
+from module.utils import parseFileSize
 
 
 def checkFile(plugin, urls):
@@ -46,24 +33,25 @@ def checkFile(plugin, urls):
 class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
+    __version__ = "0.52"
+
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*'
-    __version__ = "0.51"
+
     __description__ = """Fileserve.com hoster plugin"""
     __author_name__ = ("jeix", "mkaay", "Paul King", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "", "zoidberg@mujmail.cz")
 
-    URLS = ['http://www.fileserve.com/file/', 'http://www.fileserve.com/link-checker.php',
-            'http://www.fileserve.com/checkReCaptcha.php']
+    URLS = ["http://www.fileserve.com/file/", "http://www.fileserve.com/link-checker.php",
+            "http://www.fileserve.com/checkReCaptcha.php"]
     LINKCHECK_TR = r'<tr>\s*(<td>http://www.fileserve\.com/file/.*?)</tr>'
     LINKCHECK_TD = r'<td>(?:<[^>]*>|&nbsp;)*([^<]*)'
 
     CAPTCHA_KEY_PATTERN = r"var reCAPTCHA_publickey='(?P<key>[^']+)'"
     LONG_WAIT_PATTERN = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'
-    LINK_EXPIRED_PATTERN = "Your download link has expired"
-    DAILY_LIMIT_PATTERN = "Your daily download limit has been reached"
-    NOT_LOGGED_IN_PATTERN = '<form (name="loginDialogBoxForm"|id="login_form")|<li><a href="/login.php">Login</a></li>'
+    LINK_EXPIRED_PATTERN = r'Your download link has expired'
+    DAILY_LIMIT_PATTERN = r'Your daily download limit has been reached'
+    NOT_LOGGED_IN_PATTERN = r'<form (name="loginDialogBoxForm"|id="login_form")|<li><a href="/login.php">Login</a></li>'
 
-    # shares code with FilejungleCom and UploadstationCom
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
@@ -90,24 +78,24 @@ class FileserveCom(Hoster):
         self.logDebug(action)
 
         if "fail" in action:
-            if action["fail"] == "timeLimit":
+            if action['fail'] == "timeLimit":
                 self.html = self.load(self.url, post={"checkDownload": "showError", "errorType": "timeLimit"},
                                       decode=True)
 
                 self.doLongWait(re.search(self.LONG_WAIT_PATTERN, self.html))
 
-            elif action["fail"] == "parallelDownload":
+            elif action['fail'] == "parallelDownload":
                 self.logWarning(_("Parallel download error, now waiting 60s."))
                 self.retry(wait_time=60, reason="parallelDownload")
 
             else:
-                self.fail("Download check returned %s" % action["fail"])
+                self.fail("Download check returned %s" % action['fail'])
 
         elif "success" in action:
-            if action["success"] == "showCaptcha":
+            if action['success'] == "showCaptcha":
                 self.doCaptcha()
                 self.doTimmer()
-            elif action["success"] == "showTimmer":
+            elif action['success'] == "showTimmer":
                 self.doTimmer()
 
         else:
@@ -133,8 +121,8 @@ class FileserveCom(Hoster):
         elif check == "wait":
             self.doLongWait(self.lastCheck)
         elif check == "limit":
-            #download limited reached for today (not a exact time known)
-            self.setWait(3 * 60 * 60, True)  # wait 3 hours #TO-DO: resolve waittime using UnrestrictLi's secondsToMidnight
+            self.logWarning("Download limited reached for today")
+            self.setWait(secondsToMidnight(gmt=2), True)
             self.wait()
             self.retry()
 
@@ -148,10 +136,10 @@ class FileserveCom(Hoster):
             self.fail("Failed getting wait time")
 
         if self.__name__ == "FilejungleCom":
-            found = re.search(r'"waitTime":(\d+)', response)
-            if not found:
+            m = re.search(r'"waitTime":(\d+)', response)
+            if m is None:
                 self.fail("Cannot get wait time")
-            wait_time = int(found.group(1))
+            wait_time = int(m.group(1))
         else:
             wait_time = int(response) + 3
 
@@ -170,7 +158,7 @@ class FileserveCom(Hoster):
                                                   'recaptcha_response_field': code,
                                                   'recaptcha_shortencode_field': self.file_id}))
             self.logDebug("reCaptcha response : %s" % response)
-            if not response["success"]:
+            if not response['success']:
                 self.invalidCaptcha()
             else:
                 self.correctCaptcha()
@@ -190,7 +178,7 @@ class FileserveCom(Hoster):
             #try api download
             response = self.load("http://app.fileserve.com/api/download/premium/",
                                  post={"username": self.user,
-                                       "password": self.account.getAccountData(self.user)["password"],
+                                       "password": self.account.getAccountData(self.user)['password'],
                                        "shorten": self.file_id},
                                  decode=True)
             if response:

@@ -1,22 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 import re
 from module.plugins.Crypter import Crypter
 
@@ -25,6 +8,9 @@ class LinkdecrypterCom(Crypter):
     __name__ = "LinkdecrypterCom"
     __type__ = "crypter"
     __version__ = "0.27"
+
+    __pattern__ = None
+
     __description__ = """Linkdecrypter.com"""
     __author_name__ = ("zoidberg", "flowlee")
     __author_mail__ = ("zoidberg@mujmail.cz", "")
@@ -34,15 +20,14 @@ class LinkdecrypterCom(Crypter):
     CAPTCHA_PATTERN = r'<img class="captcha" src="(.+?)"(.*?)>'
     REDIR_PATTERN = r'<i>(Click <a href="./">here</a> if your browser does not redirect you).</i>'
 
+
     def decrypt(self, pyfile):
 
         self.passwords = self.getPassword().splitlines()
 
         # API not working anymore
-        new_links = self.decryptHTML()
-        if new_links:
-            self.core.files.addLinks(new_links, pyfile.package().id)
-        else:
+        self.urls = self.decryptHTML()
+        if not self.urls:
             self.fail('Could not extract any links')
 
     def decryptAPI(self):
@@ -72,17 +57,17 @@ class LinkdecrypterCom(Crypter):
         self.html = self.load('http://linkdecrypter.com/', post=post_dict, cookies=True, decode=True)
 
         while self.passwords or retries:
-            found = re.search(self.TEXTAREA_PATTERN, self.html, flags=re.DOTALL)
-            if found:
-                return [x for x in found.group(1).splitlines() if '[LINK-ERROR]' not in x]
+            m = re.search(self.TEXTAREA_PATTERN, self.html, flags=re.DOTALL)
+            if m:
+                return [x for x in m.group(1).splitlines() if '[LINK-ERROR]' not in x]
 
-            found = re.search(self.CAPTCHA_PATTERN, self.html)
-            if found:
-                captcha_url = 'http://linkdecrypter.com/' + found.group(1)
-                result_type = "positional" if "getPos" in found.group(2) else "textual"
+            m = re.search(self.CAPTCHA_PATTERN, self.html)
+            if m:
+                captcha_url = 'http://linkdecrypter.com/' + m.group(1)
+                result_type = "positional" if "getPos" in m.group(2) else "textual"
 
-                found = re.search(r"<p><i><b>([^<]+)</b></i></p>", self.html)
-                msg = found.group(1) if found else ""
+                m = re.search(r"<p><i><b>([^<]+)</b></i></p>", self.html)
+                msg = m.group(1) if m else ""
                 self.logInfo("Captcha protected link", result_type, msg)
 
                 captcha = self.decryptCaptcha(captcha_url, result_type=result_type)
