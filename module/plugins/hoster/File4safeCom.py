@@ -10,7 +10,7 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class File4safeCom(XFileSharingPro):
     __name__ = "File4safeCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?file4safe\.com/\w+'
 
