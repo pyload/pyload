@@ -25,6 +25,8 @@ class FilepupNet(SimpleHoster):
         
     def process(self, pyfile):
         self.html = self.load(pyfile.url, cookies=True, decode=True)
+        if not '<input type="button" value="Premium Download" class="premium_btn"' in self.html:
+            self.offline()
         try:
             freeuser_link = re.search(self.LINK_PATTERN,self.html).group(1)
             self.logDebug("Final link: "+freeuser_link)
