@@ -15,7 +15,8 @@ class DropboxCom(SimpleHoster):
 
     FILE_NAME_PATTERN = r'<title>Dropbox - (?P<N>.+)</title>'
     FILE_SIZE_PATTERN = r'class="meta">.*&nbsp;&middot;&nbsp; (?P<S>.+) (?P<U>[kKmMgG]?i?[bB]?[yte]?)</div>'
-    OFFLINE_PATTERN = r'<title>Dropbox - 404</title>'
+    OFFLINE_PATTERN = r'(<title>Dropbox - 404</title>|<title>Dropbox - Shared link error</title>)'
+    SH_COOKIES = [ (".dropbox.com", "lang", "en") ]
 
     def setup(self):
         self.multiDL = True
@@ -23,7 +24,7 @@ class DropboxCom(SimpleHoster):
         
     def process(self,pyfile):
         self.download(pyfile.url, get={ "dl": "1"})
-        check = self.checkDownload({"is_html": re.compile("<html>")})
+        check = self.checkDownload({"is_html": re.compile("html")})
         if check == "is_html":
             self.fail("The downloaded file is html, something went wrong. Maybe the plugin is out of date")
         
