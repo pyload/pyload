@@ -6,8 +6,8 @@ from module.common.json_layer import json_loads
 from module.plugins.Hoster import Hoster
 
 
-class MultiDebridCom(Hoster):
-    __name__ = "MultiDebridCom"
+class MyfastfileCom(Hoster):
+    __name__ = "MyfastfileCom"
     __type__ = "hoster"
     __version__ = "0.04"
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'

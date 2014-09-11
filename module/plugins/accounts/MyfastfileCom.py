@@ -6,8 +6,8 @@ from module.plugins.Account import Account
 from module.common.json_layer import json_loads
 
 
-class MultiDebridCom(Account):
-    __name__ = "MultiDebridCom"
+class MyfastfileCom(Account):
+    __name__ = "MyfastfileCom"
     __type__ = "account"
     __version__ = "0.02"
     __description__ = """Myfastfile.com account plugin"""

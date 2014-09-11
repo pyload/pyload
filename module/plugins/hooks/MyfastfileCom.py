@@ -5,8 +5,8 @@ from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 
 
-class MultiDebridCom(MultiHoster):
-    __name__ = "MultiDebridCom"
+class MyfastfileCom(MultiHoster):
+    __name__ = "MyfastfileCom"
     __type__ = "hook"
     __version__ = "0.02"
     __config__ = [("activated", "bool", "Activated", False),
