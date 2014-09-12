@@ -1,55 +1,47 @@
 # -*- coding: utf-8 -*-
 
-from os import remove
-from os.path import exists
-from urllib import quote
+"""
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License,
+    or (at your option) any later version.
 
-from module.plugins.Hoster import Hoster
-from module.utils import fs_encode
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See the GNU General Public License for more details.
 
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-class UploadableCh(Hoster):
+    @author: sasch
+"""
+
+from module.plugins.Account import Account
+
+class UploadableCh(Account):
     __name__ = "UploadableCh"
-    __type__ = "hoster"
-    __version__ = "0.01"
-    __pattern__ = r'https?://(?:www\.)?uploadable.ch/.*'
-    __description__ = """Uploadable.ch hoster plugin"""
-    __author_name__ = ("sasch")
-    __author_mail__ = ("")
+    __version__ = "0.1"
+    __type__ = "account"
+    __description__ = """Uploadable.ch account plugin"""
+    __author_name__ = ("Sasch")
 
-    def setup(self):
-        self.resumeDownload = True
-        self.chunkLimit = 1
+    def loadAccountInfo(self, user, req):
+        page = req.load("http://www.uploadable.ch/login.php")
+    
+        if 'href="/premium.php">Upgrade to Premium' in page:
+            return {"validuntil": -1, "trafficleft":-1, "premium": False}
 
-    def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "Uploadable.ch")
-            self.fail("No Uplodable.ch account provided")
+      	if not '<a href="/logout.php"' in page:
+            return {"validuntil": -1, "trafficleft": -1, "premium": False}
+	
+	return {"validultil": -1, "trafficleft": -1, "premium": True}
 
-        self.logDebug("Old URL: %s" % pyfile.url)
 
-        #raise timeout to 2min
-        self.req.setOption("timeout", 120)
-
-        self.download(pyfile.url)
-
-        check = self.checkDownload({"nopremium": "No premium account available"})
-
-        if check == "nopremium":
-            self.retry(60, 5 * 60, "No premium account available")
-
-        err = ''
-        if self.req.http.code == '420':
-            # Custom error code send - fail
-            lastDownload = fs_encode(self.lastDownload)
-
-            if exists(lastDownload):
-                f = open(lastDownload, "rb")
-                err = f.read(256).strip()
-                f.close()
-                remove(lastDownload)
-            else:
-                err = 'File does not exist'
-
-        if err:
-            self.fail(err)
+    def login(self, user, data, req):
+        page = req.load('http://www.uploadable.ch/login.php', 
+		post={ "userName" : user, "userPassword" : data["password"]
+		, "autoLogin": "1", "action__login" :"normalLogin"}, cookies = True)
+	
+        if 'Login failed' in page:
+            self.wrongPassword()
