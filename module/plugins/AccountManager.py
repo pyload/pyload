@@ -52,7 +52,10 @@ class AccountManager:
         """get account instance for plugin or None if anonymous"""
         if plugin in self.accounts:
             if plugin not in self.plugins:
-                self.plugins[plugin] = self.core.pluginManager.loadClass("accounts", plugin)(self, self.accounts[plugin])
+                try:
+                    self.plugins[plugin] = self.core.pluginManager.loadClass("accounts", plugin)(self, self.accounts[plugin])
+                except TypeError:  # The account class no longer exists (blacklisted plugin). Skipping the account to avoid crash
+                    return None
 
             return self.plugins[plugin]
         else:
@@ -172,7 +175,10 @@ class AccountManager:
         for p in self.accounts.keys():
             if self.accounts[p]:
                 p = self.getAccountPlugin(p)
-                data[p.__name__] = p.getAllAccounts(force)
+                if p:
+                    data[p.__name__] = p.getAllAccounts(force)
+                else:  # When an account has been skipped, p is None
+                    data[p] = []
             else:
                 data[p] = []
         e = AccountUpdateEvent()
