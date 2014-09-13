@@ -24,7 +24,6 @@ userplugins/
 *.pid
 /*.conf
 /*.version
-/*.txt
 /*.xml
 /*.zip
 /module/config/core.xml

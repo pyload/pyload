@@ -1,0 +1,4 @@
+pycurl
+bjoern
+pillow
+pycrypto
