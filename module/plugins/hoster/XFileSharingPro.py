@@ -21,7 +21,7 @@ class XFileSharingPro(SimpleHoster):
     """
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __pattern__ = r'^unmatchable$'
 
@@ -57,7 +57,10 @@ class XFileSharingPro(SimpleHoster):
 
     def process(self, pyfile):
         self.prepare()
-
+        
+        # get original instead of embedded version
+        pyfile.url = re.sub(r'/embed-(\w{12}).*', r'/\1', pyfile.url)
+        
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
 
         if not re.match(self.__pattern__, pyfile.url):
