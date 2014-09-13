@@ -21,7 +21,7 @@ var EntryManager = new Class({
     delay: 2500,
     limit: 30000
   });
-  
+
         this.ids = [{% for link in content %}
         {% if forloop.last %}
             {{ link.id }}
@@ -208,25 +208,25 @@ var LinkEntry = new Class({
 
 {% block menu %}
 <li class="selected">
-    <a href="{{ pathprefix }}/" title=""><img src="/default/img/head-menu-home.png" alt="" /> {{_("Home")}}</a>
+    <a href="{{ pathprefix }}/" title=""><img src="{{ pathprefix }}/default/img/head-menu-home.png" alt="" /> {{_("Home")}}</a>
 </li>
 <li>
-    <a href="{{ pathprefix }}/queue/" title=""><img src="/default/img/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
+    <a href="{{ pathprefix }}/queue/" title=""><img src="{{ pathprefix }}/default/img/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
 </li>
 <li>
-    <a href="{{ pathprefix }}/collector/" title=""><img src="/default/img/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
+    <a href="{{ pathprefix }}/collector/" title=""><img src="{{ pathprefix }}/default/img/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
 </li>
 <li>
-    <a href="{{ pathprefix }}/downloads/" title=""><img src="/default/img/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
+    <a href="{{ pathprefix }}/downloads/" title=""><img src="{{ pathprefix }}/default/img/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
 </li>
 {#<li>#}
-{#    <a href="{{ pathprefix }}/filemanager/" title=""><img src="/default/img/head-menu-download.png" alt="" /> {{_("FileManager")}}</a>#}
+{#    <a href="{{ pathprefix }}/filemanager/" title=""><img src="{{ pathprefix }}/default/img/head-menu-download.png" alt="" /> {{_("FileManager")}}</a>#}
 {#</li>#}
 <li class="right">
-    <a href="{{ pathprefix }}/logs/"  title=""><img src="/default/img/head-menu-index.png" alt="" />{{_("Logs")}}</a>
+    <a href="{{ pathprefix }}/logs/"  title=""><img src="{{ pathprefix }}/default/img/head-menu-index.png" alt="" />{{_("Logs")}}</a>
 </li>
 <li class="right">
-    <a href="{{ pathprefix }}/settings/"  title=""><img src="/default/img/head-menu-config.png" alt="" />{{_("Config")}}</a>
+    <a href="{{ pathprefix }}/settings/"  title=""><img src="{{ pathprefix }}/default/img/head-menu-config.png" alt="" />{{_("Config")}}</a>
 </li>
 {% endblock %}
 
@@ -251,7 +251,7 @@ var LinkEntry = new Class({
     <td id="link_{{ link.id }}_bleft">{{ link.format_size }}</td>
     <td>
         <span id="link_{{ link.id }}_percent">{{ link.percent }}% /{{ link.bleft }}</span>
-        <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="/default/img/control_cancel.png"/>
+        <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="{{ pathprefix }}/default/img/control_cancel.png"/>
     </td>
   </tr>
   <tr id="link_{{ link.id }}_pgb_tr">
