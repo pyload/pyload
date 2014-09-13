@@ -61,7 +61,7 @@ class SockshareCom(SimpleHoster):
         patterns = (r'(/get_file\.php\?id=[A-Z0-9]+&key=[a-zA-Z0-9=]+&original=1)',
                     r'(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+)',
                     r'(/get_file\.php\?download=[A-Z0-9]+&key=[a-z0-9]+&original=1)',
-                    r'<a href="/gopro\.php">Tired of ads and waiting\? Go Pro!</a>[\t\n\rn ]+</div>[\t\n\rn ]+<a href="(/.*?)"')
+                    r'<a href="{{ pathprefix }}/gopro\.php">Tired of ads and waiting\? Go Pro!</a>[\t\n\rn ]+</div>[\t\n\rn ]+<a href="(/.*?)"')
         for pattern in patterns:
             link = re.search(pattern, self.html)
             if link:

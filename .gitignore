@@ -82,3 +82,4 @@ eggs
 /pyload/
 DLC_*.py
 paver-minilib.zip
+venv

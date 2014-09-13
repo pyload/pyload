@@ -61,7 +61,7 @@ class FileserveCom(Hoster):
     LONG_WAIT_PATTERN = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'
     LINK_EXPIRED_PATTERN = "Your download link has expired"
     DAILY_LIMIT_PATTERN = "Your daily download limit has been reached"
-    NOT_LOGGED_IN_PATTERN = '<form (name="loginDialogBoxForm"|id="login_form")|<li><a href="/login.php">Login</a></li>'
+    NOT_LOGGED_IN_PATTERN = '<form (name="loginDialogBoxForm"|id="login_form")|<li><a href="{{ pathprefix }}/login.php">Login</a></li>'
 
     # shares code with FilejungleCom and UploadstationCom
 

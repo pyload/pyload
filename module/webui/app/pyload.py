@@ -136,7 +136,7 @@ def favicon():
 @route('/login', method="GET")
 def login():
     if not PYLOAD and SETUP:
-        redirect("/setup")
+        redirect(PYLOAD.getConfigValue("webinterface", "prefix") + "/setup")
     else:
         return render_to_response("login.html", proc=[pre_processor])
 
@@ -157,7 +157,7 @@ def login_post():
         return render_to_response("login.html", {"errors": True}, [pre_processor])
 
     set_session(request, info)
-    return redirect("/")
+    return redirect(PYLOAD.getConfigValue("webinterface", "prefix") + "/")
 
 
 @route('/logout')
@@ -176,7 +176,7 @@ def home():
     except:
         s = request.environ.get('beaker.session')
         s.delete()
-        return redirect("/login")
+        return redirect(PYLOAD.getConfigValue("webinterface", "prefix") + "/login")
 
     for link in res:
         if link["status"] == 12:

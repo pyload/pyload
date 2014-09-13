@@ -106,7 +106,7 @@ class MarkupTestCase(unittest.TestCase):
                 self.username = username
             def __html_format__(self, format_spec):
                 if format_spec == 'link':
-                    return Markup('<a href="/user/{0}">{1}</a>').format(
+                    return Markup('<a href="{{ pathprefix }}/user/{0}">{1}</a>').format(
                         self.id,
                         self.__html__(),
                     )
@@ -118,7 +118,7 @@ class MarkupTestCase(unittest.TestCase):
 
         user = User(1, 'foo')
         assert Markup('<p>User: {0:link}').format(user) == \
-            Markup('<p>User: <a href="/user/1"><span class=user>foo</span></a>')
+            Markup('<p>User: <a href="{{ pathprefix }}/user/1"><span class=user>foo</span></a>')
 
     def test_all_set(self):
         import markupsafe as markup

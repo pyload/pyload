@@ -208,22 +208,22 @@ var LinkEntry = new Class({
 
 {% block menu %}
 <li class="selected">
-    <a href="/" title=""><img src="/dark/img/default/head-menu-home.png" alt="" /> {{_("Home")}}</a>
+    <a href="{{ pathprefix }}/" title=""><img src="/dark/img/default/head-menu-home.png" alt="" /> {{_("Home")}}</a>
 </li>
 <li>
-    <a href="/queue/" title=""><img src="/dark/img/default/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
+    <a href="{{ pathprefix }}/queue/" title=""><img src="/dark/img/default/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
 </li>
 <li>
-    <a href="/collector/" title=""><img src="/dark/img/default/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
+    <a href="{{ pathprefix }}/collector/" title=""><img src="/dark/img/default/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
 </li>
 <li>
-    <a href="/downloads/" title=""><img src="/dark/img/default/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
+    <a href="{{ pathprefix }}/downloads/" title=""><img src="/dark/img/default/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
 </li>
 <li class="right">
-    <a href="/logs/"  title=""><img src="/dark/img/default/head-menu-index.png" alt="" />{{_("Logs")}}</a>
+    <a href="{{ pathprefix }}/logs/"  title=""><img src="/dark/img/default/head-menu-index.png" alt="" />{{_("Logs")}}</a>
 </li>
 <li class="right">
-    <a href="/settings/"  title=""><img src="/dark/img/default/head-menu-config.png" alt="" />{{_("Config")}}</a>
+    <a href="{{ pathprefix }}/settings/"  title=""><img src="/dark/img/default/head-menu-config.png" alt="" />{{_("Config")}}</a>
 </li>
 {% endblock %}
 

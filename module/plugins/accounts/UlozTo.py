@@ -13,7 +13,7 @@ class UlozTo(Account):
     __author_name__ = ("zoidberg", "pulpe")
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a href="/kredit" title="[^"]*?GB = ([0-9.]+) MB"'
+    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a href="{{ pathprefix }}/kredit" title="[^"]*?GB = ([0-9.]+) MB"'
 
     def loadAccountInfo(self, user, req):
         #this cookie gets lost somehow after each request

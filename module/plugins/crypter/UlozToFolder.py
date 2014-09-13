@@ -14,7 +14,7 @@ class UlozToFolder(Crypter):
     __author_mail__ = "zoidberg@mujmail.cz"
 
     FOLDER_PATTERN = r'<ul class="profile_files">(.*?)</ul>'
-    LINK_PATTERN = r'<br /><a href="/([^"]+)">[^<]+</a>'
+    LINK_PATTERN = r'<br /><a href="{{ pathprefix }}/([^"]+)">[^<]+</a>'
     NEXT_PAGE_PATTERN = r'<a class="next " href="/([^"]+)">&nbsp;</a>'
 
     def decrypt(self, pyfile):

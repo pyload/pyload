@@ -30,7 +30,7 @@ class ConfigParser:
             type:
             desc:
       }
-      desc: 
+      desc:
 
     }
 
@@ -128,7 +128,7 @@ class ConfigParser:
         for line in config:
             comment = line.rfind("#")
             if line.find(":", comment) < 0 > line.find("=", comment) and comment > 0 and line[comment - 1].isspace():
-                line = line.rpartition("#") # removes comments            
+                line = line.rpartition("#") # removes comments
                 if line[1]:
                     line = line[0]
                 else:

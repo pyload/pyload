@@ -20,7 +20,7 @@ from os.path import join
 
 from bottle import request, HTTPError, redirect, ServerAdapter
 
-from module.webui import env, THEME
+from module.webui import env, THEME, PYLOAD
 
 from module.Api import has_permission, PERMS, ROLE
 
@@ -28,6 +28,7 @@ def render_to_response(file, args={}, proc=[]):
     for p in proc:
         args.update(p())
     path = join(THEME, "tml", file)
+    args["pathprefix"] = PYLOAD.getConfigValue("webinterface", "prefix")
     return env.get_template(path).render(**args)
 
 
@@ -109,14 +110,14 @@ def login_required(perm=None):
                         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                             return HTTPError(403, "Forbidden")
                         else:
-                            return redirect("/nopermission")
+                            return redirect(PYLOAD.getConfigValue("webinterface", "prefix") + "/nopermission")
 
                 return func(*args, **kwargs)
             else:
                 if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return HTTPError(403, "Forbidden")
                 else:
-                    return redirect("/login")
+                    return redirect(PYLOAD.getConfigValue("webinterface", "prefix") + "/login")
 
         return _view
 
