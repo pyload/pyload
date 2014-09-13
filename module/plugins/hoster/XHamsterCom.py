@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from urllib import unquote
 
-from module.plugins.Hoster import Hoster
 from module.common.json_layer import json_loads
+from module.plugins.Hoster import Hoster
 
 
 def clean_json(json_expr):
@@ -18,10 +19,15 @@ def clean_json(json_expr):
 class XHamsterCom(Hoster):
     __name__ = "XHamsterCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
     __version__ = "0.12"
+
+    __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
     __config__ = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
+
     __description__ = """XHamster.com hoster plugin"""
+    __author_name__ = None
+    __author_mail__ = None
+
 
     def process(self, pyfile):
         self.pyfile = pyfile

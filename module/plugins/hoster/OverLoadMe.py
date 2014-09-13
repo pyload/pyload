@@ -1,22 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import re
-from urllib import unquote
-from random import randrange
 
-from module.plugins.Hoster import Hoster
+from random import randrange
+from urllib import unquote
+
 from module.common.json_layer import json_loads
+from module.plugins.Hoster import Hoster
 from module.utils import parseFileSize
 
 
 class OverLoadMe(Hoster):
     __name__ = "OverLoadMe"
-    __version__ = "0.01"
     __type__ = "hoster"
+    __version__ = "0.01"
+
     __pattern__ = r'https?://.*overload\.me.*'
+
     __description__ = """Over-Load.me hoster plugin"""
     __author_name__ = "marley"
     __author_mail__ = "marley@over-load.me"
+
 
     def getFilename(self, url):
         try:

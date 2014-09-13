@@ -9,8 +9,8 @@ from module.utils import parseFileSize
 
 class EgoFilesCom(Account):
     __name__ = "EgoFilesCom"
-    __version__ = "0.2"
     __type__ = "account"
+    __version__ = "0.2"
 
     __description__ = """Egofiles.com account plugin"""
     __author_name__ = "stickell"

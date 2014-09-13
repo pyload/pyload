@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from module.lib.BeautifulSoup import BeautifulSoup
+
 from module.plugins.Crypter import Crypter
 
 
 class DuckCryptInfo(Crypter):
     __name__ = "DuckCryptInfo"
-    __version__ = "0.02"
     __type__ = "crypter"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?duckcrypt.info/(folder|wait|link)/(\w+)/?(\w*)'
 
@@ -52,6 +54,6 @@ class DuckCryptInfo(Crypter):
     def handleLink(self, url):
         src = self.load(url)
         soup = BeautifulSoup(src)
-        self.urls = [soup.find("iframe")["src"]]
+        self.urls = [soup.find("iframe")['src']]
         if not self.urls:
             self.logDebug('no links m - (Plugin out of date?)')

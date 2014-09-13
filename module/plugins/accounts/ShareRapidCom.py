@@ -8,8 +8,8 @@ from module.plugins.Account import Account
 
 class ShareRapidCom(Account):
     __name__ = "ShareRapidCom"
-    __version__ = "0.34"
     __type__ = "account"
+    __version__ = "0.34"
 
     __description__ = """MegaRapid.cz account plugin"""
     __author_name__ = ("MikyWoW", "zoidberg")

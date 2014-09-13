@@ -2,8 +2,8 @@
 
 import re
 
-from module.utils import remove_chars
 from module.plugins.Hook import Hook
+from module.utils import remove_chars
 
 
 class MultiHoster(Hook):

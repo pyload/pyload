@@ -1,41 +1,25 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import os
 import re
 import traceback
 
-from os.path import join
-from module.utils import save_join, fs_encode
 from module.plugins.Hook import Hook, threaded
-
-BUFFER_SIZE = 4096
+from module.utils import save_join, fs_encode
 
 
 class MergeFiles(Hook):
     __name__ = "MergeFiles"
-    __version__ = "0.12"
     __type__ = "hook"
+    __version__ = "0.12"
 
     __config__ = [("activated", "bool", "Activated", False)]
 
     __description__ = """Merges parts splitted with hjsplit"""
     __author_name__ = "and9000"
     __author_mail__ = "me@has-no-mail.com"
+
+    BUFFER_SIZE = 4096
 
 
     def setup(self):
@@ -61,7 +45,7 @@ class MergeFiles(Hook):
 
         for name, file_list in files.iteritems():
             self.logInfo("Starting merging of %s" % name)
-            final_file = open(join(download_folder, fs_encode(name)), "wb")
+            final_file = open(save_join(download_folder, name), "wb")
 
             for splitted_file in file_list:
                 self.logDebug("Merging part %s" % splitted_file)
@@ -72,10 +56,10 @@ class MergeFiles(Hook):
                     size_written = 0
                     s_file_size = int(os.path.getsize(os.path.join(download_folder, splitted_file)))
                     while True:
-                        f_buffer = s_file.read(BUFFER_SIZE)
+                        f_buffer = s_file.read(self.BUFFER_SIZE)
                         if f_buffer:
                             final_file.write(f_buffer)
-                            size_written += BUFFER_SIZE
+                            size_written += self.BUFFER_SIZE
                             pyfile.setProgress((size_written * 100) / s_file_size)
                         else:
                             break

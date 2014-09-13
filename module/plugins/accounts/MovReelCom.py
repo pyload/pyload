@@ -5,8 +5,8 @@ from module.plugins.internal.XFSPAccount import XFSPAccount
 
 class MovReelCom(XFSPAccount):
     __name__ = "MovReelCom"
-    __version__ = "0.01"
     __type__ = "account"
+    __version__ = "0.01"
 
     __description__ = """Movreel.com account plugin"""
     __author_name__ = "t4skforce"

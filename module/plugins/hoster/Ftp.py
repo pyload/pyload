@@ -1,35 +1,23 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-from urlparse import urlparse
-from urllib import quote, unquote
 import pycurl
 import re
+
+from urllib import quote, unquote
+from urlparse import urlparse
 
 from module.plugins.Hoster import Hoster
 
 
 class Ftp(Hoster):
     __name__ = "Ftp"
-    __version__ = "0.41"
-    __pattern__ = r'(ftps?|sftp)://(.*?:.*?@)?.*?/.*'  # ftp://user:password@ftp.server.org/path/to/file
     __type__ = "hoster"
+    __version__ = "0.42"
+    __pattern__ = r'(ftps?|sftp)://(.*?:.*?@)?.*?/.*' # ftp://user:password@ftp.server.org/path/to/file
     __description__ = """Download from ftp directory"""
     __author_name__ = ("jeix", "mkaay", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.com", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
+
 
     def setup(self):
         self.chunkLimit = -1
@@ -72,7 +60,7 @@ class Ftp(Hoster):
             pyfile.size = int(m.group(1))
             self.download(pyfile.url)
         else:
-            #Naive ftp directory listing          
+            #Naive ftp directory listing
             if re.search(r'^25\d.*?"', self.req.http.header, re.M):
                 pyfile.url = pyfile.url.rstrip('/')
                 pkgname = "/".join(pyfile.package().name, urlparse(pyfile.url).path.rpartition('/')[2])

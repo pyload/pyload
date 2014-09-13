@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from module.plugins.Hoster import Hoster
 
 
 class VeehdCom(Hoster):
     __name__ = "VeehdCom"
     __type__ = "hoster"
+    __version__ = "0.23"
+
     __pattern__ = r'http://veehd\.com/video/\d+_\S+'
     __config__ = [("filename_spaces", "bool", "Allow spaces in filename", False),
                   ("replacement_char", "str", "Filename replacement character", "_")]
-    __version__ = "0.23"
+
     __description__ = """Veehd.com hoster plugin"""
     __author_name__ = "cat"
     __author_mail__ = "cat@pyload"
+
 
     def _debug(self, msg):
         self.logDebug('[%s] %s' % (self.__name__, msg))

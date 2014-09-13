@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -6,15 +8,18 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LomafileCom(SimpleHoster):
     __name__ = "LomafileCom"
     __type__ = "hoster"
+    __version__ = "0.2"
+
     __pattern__ = r'https?://lomafile\.com/.+/[\w\.]+'
-    __version__ = "0.1"
-    __description__ = """Lomafile.com hoster plugin"""
+
+    __description__ = """ Lomafile.com hoster plugin """
     __author_name__ = "nath_schwarz"
     __author_mail__ = "nathan.notwhite@gmail.com"
 
     FILE_NAME_PATTERN = r'Filename:[^>]*>(?P<N>[\w\.]+)'
     FILE_SIZE_PATTERN = r'\((?P<S>\d+)\s(?P<U>\w+)\)'
-    FILE_OFFLINE_PATTERN = r'Software error'
+    OFFLINE_PATTERN = r'Software error'
+
 
     def handleFree(self):
         for _ in range(3):
@@ -51,5 +56,6 @@ class LomafileCom(SimpleHoster):
                 self.download(download_url)
         else:
             self.fail("Invalid captcha-code entered.")
+
 
 getInfo = create_getInfo(LomafileCom)

@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from pycurl import FOLLOWLOCATION
+
+from module.lib.BeautifulSoup import BeautifulSoup
 
 from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter
 from module.plugins.internal.CaptchaService import SolveMedia
-from module.lib.BeautifulSoup import BeautifulSoup
 
 
 class SafelinkingNet(Crypter):
     __name__ = "SafelinkingNet"
-    __version__ = "0.1"
     __type__ = "crypter"
+    __version__ = "0.1"
 
     __pattern__ = r'https?://(?:www\.)?safelinking.net/([pd])/\w+'
 

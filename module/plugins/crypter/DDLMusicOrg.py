@@ -9,8 +9,8 @@ from module.plugins.Crypter import Crypter
 
 class DDLMusicOrg(Crypter):
     __name__ = "DDLMusicOrg"
-    __version__ = "0.3"
     __type__ = "crypter"
+    __version__ = "0.3"
 
     __pattern__ = r'http://(?:www\.)?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+'
 

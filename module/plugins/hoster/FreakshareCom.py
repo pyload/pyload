@@ -10,11 +10,14 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class FreakshareCom(Hoster):
     __name__ = "FreakshareCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
     __version__ = "0.39"
+
+    __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
+
     __description__ = """Freakshare.com hoster plugin"""
     __author_name__ = ("sitacuisses", "spoob", "mkaay", "Toilal")
     __author_mail__ = ("sitacuisses@yahoo.de", "spoob@pyload.org", "mkaay@mkaay.de", "toilal.dev@gmail.com")
+
 
     def setup(self):
         self.multiDL = False
@@ -164,7 +167,7 @@ class FreakshareCom(Hoster):
 
         if challenge:
             re_captcha = ReCaptcha(self)
-            (request_options['recaptcha_challenge_field'], 
+            (request_options['recaptcha_challenge_field'],
              request_options['recaptcha_response_field']) = re_captcha.challenge(challenge.group(1))
 
         return request_options

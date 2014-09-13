@@ -10,8 +10,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 class SockshareCom(SimpleHoster):
     __name__ = "SockshareCom"
-    __version__ = "0.04"
     __type__ = "hoster"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?sockshare\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
 

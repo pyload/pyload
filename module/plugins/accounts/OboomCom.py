@@ -2,15 +2,16 @@
 
 import time
 
-from module.plugins.Account import Account
 from module.lib.beaker.crypto.pbkdf2 import PBKDF2
+
 from module.common.json_layer import json_loads
+from module.plugins.Account import Account
 
 
 class OboomCom(Account):
     __name__ = "OboomCom"
-    __version__ = "0.1"
     __type__ = "account"
+    __version__ = "0.1"
 
     __description__ = """Oboom.com account plugin"""
     __author_name__ = "stanley"

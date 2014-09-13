@@ -7,8 +7,8 @@ from module.network.HTTPRequest import BadHeader
 
 class EmbeduploadCom(Crypter):
     __name__ = "EmbeduploadCom"
-    __version__ = "0.02"
     __type__ = "crypter"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?embedupload.com/\?d=.*'
     __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "embedupload"),

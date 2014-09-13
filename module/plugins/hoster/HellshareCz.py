@@ -1,29 +1,17 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
-    __pattern__ = r'(http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*'
     __version__ = "0.82"
+
+    __pattern__ = r'(http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*'
+
     __description__ = """Hellshare.cz hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -32,6 +20,7 @@ class HellshareCz(SimpleHoster):
     FILE_SIZE_PATTERN = r'<strong id="FileSize_master">(?P<S>[0-9.]*)&nbsp;(?P<U>[kKMG])i?B</strong>'
     OFFLINE_PATTERN = r'<h1>File not found.</h1>'
     SHOW_WINDOW_PATTERN = r'<a href="([^?]+/(\d+)/\?do=(fileDownloadButton|relatedFileDownloadButton-\2)-showDownloadWindow)"'
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.account else False

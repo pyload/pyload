@@ -1,22 +1,9 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
+
 from time import mktime, strptime
+
 from module.plugins.Account import Account
 from module.plugins.internal.SimpleHoster import parseHtmlForm
 from module.utils import parseFileSize
@@ -24,8 +11,8 @@ from module.utils import parseFileSize
 
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
-    __version__ = "0.06"
     __type__ = "account"
+    __version__ = "0.06"
 
     __description__ = """XFileSharingPro base account plugin"""
     __author_name__ = "zoidberg"

@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
-
-# Test link:
+#
+# Test links:
 # https://www.oboom.com/B7CYZIEB/10Mio.dat
 
 import re
 
+from module.common.json_layer import json_loads
 from module.plugins.Hoster import Hoster
 from module.plugins.internal.CaptchaService import ReCaptcha
-from module.common.json_layer import json_loads
 
 
 class OboomCom(Hoster):
     __name__ = "OboomCom"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>[A-Z0-9]{8})'
     __version__ = "0.1"
+
+    __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>[A-Z0-9]{8})'
+
     __description__ = """oboom.com hoster plugin"""
     __author_name__ = "stanley"
     __author_mail__ = "stanley.foerster@gmail.com"

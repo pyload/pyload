@@ -21,8 +21,8 @@ def getInfo(urls):
 
 class ShareRapidCom(SimpleHoster):
     __name__ = "ShareRapidCom"
-    __version__ = "0.54"
     __type__ = "hoster"
+    __version__ = "0.54"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
 

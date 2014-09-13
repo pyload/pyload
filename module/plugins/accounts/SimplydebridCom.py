@@ -7,8 +7,8 @@ from module.plugins.Account import Account
 
 class SimplydebridCom(Account):
     __name__ = "SimplydebridCom"
-    __version__ = "0.1"
     __type__ = "account"
+    __version__ = "0.1"
 
     __description__ = """Simply-Debrid.com account plugin"""
     __author_name__ = "Kagenoshin"

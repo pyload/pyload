@@ -9,8 +9,8 @@ from module.plugins.Account import Account
 
 class UploadheroCom(Account):
     __name__ = "UploadheroCom"
-    __version__ = "0.2"
     __type__ = "account"
+    __version__ = "0.2"
 
     __description__ = """Uploadhero.co account plugin"""
     __author_name__ = "mcmyst"

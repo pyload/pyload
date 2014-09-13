@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Hoster import Hoster
+
 from module.network.RequestFactory import getURL
+from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
 
 
@@ -31,11 +32,14 @@ def getInfo(urls):
 class FilesMailRu(Hoster):
     __name__ = "FilesMailRu"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.*'
     __version__ = "0.31"
+
+    __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.*'
+
     __description__ = """Files.mail.ru hoster plugin"""
     __author_name__ = "oZiRiz"
     __author_mail__ = "ich@oziriz.de"
+
 
     def setup(self):
         if not self.account:
@@ -84,7 +88,7 @@ class FilesMailRu(Hoster):
         # HTML file and the Download is marked as "finished"
         # then the download will be restarted. It's only bad for these
         # who want download a HTML-File (it's one in a million ;-) )
-        # 
+        #
         # The maximum UploadSize allowed on files.mail.ru at the moment is 100MB
         # so i set it to check every download because sometimes there are downloads
         # that contain the HTML-Text and 60MB ZEROs after that in a xyzfile.part1.rar file

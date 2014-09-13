@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class CatShareNet(SimpleHoster):
     __name__ = "CatShareNet"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?catshare.net/\w{16}.*'
     __version__ = "0.01"
+
+    __pattern__ = r'http://(?:www\.)?catshare.net/\w{16}.*'
+
     __description__ = """CatShare.net hoster plugin"""
     __author_name__ = "z00nx"
     __author_mail__ = "z00nx0@gmail.com"

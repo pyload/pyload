@@ -6,8 +6,8 @@ from module.plugins.Crypter import Crypter
 
 class CzshareComFolder(Crypter):
     __name__ = "CzshareComFolder"
-    __version__ = "0.2"
     __type__ = "crypter"
+    __version__ = "0.2"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.*'
 

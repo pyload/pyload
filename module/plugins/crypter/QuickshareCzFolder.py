@@ -6,8 +6,8 @@ from module.plugins.Crypter import Crypter
 
 class QuickshareCzFolder(Crypter):
     __name__ = "QuickshareCzFolder"
-    __version__ = "0.1"
     __type__ = "crypter"
+    __version__ = "0.1"
 
     __pattern__ = r'http://(?:www\.)?quickshare.cz/slozka-\d+.*'
 

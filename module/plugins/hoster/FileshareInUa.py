@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Hoster import Hoster
+
 from module.network.RequestFactory import getURL
+from module.plugins.Hoster import Hoster
 from module.utils import parseFileSize
 
 
 class FileshareInUa(Hoster):
     __name__ = "FileshareInUa"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?fileshare.in.ua/[A-Za-z0-9]+'
     __version__ = "0.01"
+
+    __pattern__ = r'http://(?:www\.)?fileshare.in.ua/[A-Za-z0-9]+'
+
     __description__ = """Fileshare.in.ua hoster plugin"""
     __author_name__ = "fwannmacher"
     __author_mail__ = "felipe@warhammerproject.com"
@@ -18,6 +21,7 @@ class FileshareInUa(Hoster):
     PATTERN_FILENAME = r'<h3 class="b-filename">(.*?)</h3>'
     PATTERN_FILESIZE = r'<b class="b-filesize">(.*?)</b>'
     PATTERN_OFFLINE = r"This file doesn't exist, or has been removed."
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True

@@ -6,8 +6,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 class OverLoadMe(MultiHoster):
     __name__ = "OverLoadMe"
-    __version__ = "0.01"
     __type__ = "hook"
+    __version__ = "0.01"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("https", "bool", "Enable HTTPS", True),

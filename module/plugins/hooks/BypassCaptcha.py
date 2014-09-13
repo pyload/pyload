@@ -1,29 +1,11 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
-from thread import start_new_thread
 from pycurl import FORM_FILE, LOW_SPEED_TIME
+from thread import start_new_thread
 
-from module.network.RequestFactory import getURL, getRequest
 from module.network.HTTPRequest import BadHeader
-
+from module.network.RequestFactory import getURL, getRequest
 from module.plugins.Hook import Hook
-
-PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"
 
 
 class BypassCaptchaException(Exception):
@@ -43,8 +25,8 @@ class BypassCaptchaException(Exception):
 
 class BypassCaptcha(Hook):
     __name__ = "BypassCaptcha"
-    __version__ = "0.04"
     __type__ = "hook"
+    __version__ = "0.04"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force BC even if client is connected", False),
@@ -53,6 +35,8 @@ class BypassCaptcha(Hook):
     __description__ = """Send captchas to BypassCaptcha.com"""
     __author_name__ = ("RaNaN", "Godofdream", "zoidberg")
     __author_mail__ = ("RaNaN@pyload.org", "soilfcition@gmail.com", "zoidberg@mujmail.cz")
+
+    PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"
 
     SUBMIT_URL = "http://bypasscaptcha.com/upload.php"
     RESPOND_URL = "http://bypasscaptcha.com/check_value.php"
@@ -76,7 +60,7 @@ class BypassCaptcha(Hook):
 
         try:
             response = req.load(self.SUBMIT_URL,
-                                post={"vendor_key": PYLOAD_KEY,
+                                post={"vendor_key": self.PYLOAD_KEY,
                                       "key": self.getConfig("passkey"),
                                       "gen_task_id": "1",
                                       "file": (FORM_FILE, captcha)},

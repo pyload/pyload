@@ -8,8 +8,10 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class TwoSharedCom(SimpleHoster):
     __name__ = "TwoSharedCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?2shared.com/(account/)?(download|get|file|document|photo|video|audio)/.*'
     __version__ = "0.11"
+
+    __pattern__ = r'http://(?:www\.)?2shared.com/(account/)?(download|get|file|document|photo|video|audio)/.*'
+
     __description__ = """2Shared.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"

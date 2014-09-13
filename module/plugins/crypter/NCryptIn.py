@@ -12,8 +12,8 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 
 class NCryptIn(Crypter):
     __name__ = "NCryptIn"
-    __version__ = "1.32"
     __type__ = "crypter"
+    __version__ = "1.32"
 
     __pattern__ = r'http://(?:www\.)?ncrypt.in/(?P<type>folder|link|frame)-([^/\?]+)'
 
@@ -54,7 +54,7 @@ class NCryptIn(Crypter):
             if not self.isOnline():
                 self.offline()
 
-            # Check for folder protection    
+            # Check for folder protection
             if self.isProtected():
                 self.html = self.unlockProtection()
                 self.cleanedHtml = self.removeHtmlCrap(self.html)
@@ -141,7 +141,7 @@ class NCryptIn(Crypter):
             self.logDebug("Captcha resolved [%s]" % captcha)
             postData['captcha'] = captcha
 
-        # Resolve recaptcha           
+        # Resolve recaptcha
         if "recaptcha" in form:
             self.logDebug("ReCaptcha protected")
             captcha_key = re.search(r'\?k=(.*?)"', form).group(1)

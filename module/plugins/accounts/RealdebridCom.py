@@ -7,8 +7,8 @@ from module.plugins.Account import Account
 
 class RealdebridCom(Account):
     __name__ = "RealdebridCom"
-    __version__ = "0.43"
     __type__ = "account"
+    __version__ = "0.43"
 
     __description__ = """Real-Debrid.com account plugin"""
     __author_name__ = "Devirex Hazzard"

@@ -1,29 +1,17 @@
 ﻿# -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class BezvadataCz(SimpleHoster):
     __name__ = "BezvadataCz"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?bezvadata.cz/stahnout/.*'
     __version__ = "0.24"
+
+    __pattern__ = r'http://(?:www\.)?bezvadata.cz/stahnout/.*'
+
     __description__ = """BezvaData.cz hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -31,6 +19,7 @@ class BezvadataCz(SimpleHoster):
     FILE_NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'
     FILE_SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[^<]+)</li>'
     OFFLINE_PATTERN = r'<title>BezvaData \| Soubor nenalezen</title>'
+
 
     def setup(self):
         self.multiDL = self.resumeDownload = True

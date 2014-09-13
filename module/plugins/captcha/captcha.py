@@ -1,35 +1,18 @@
 # -*- coding: utf-8 -*-
 
-#
-#Copyright (C) 2009 kingzero, RaNaN
-#
-#This program is free software; you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation; either version 3 of the License,
-#or (at your option) any later version.
-#
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#See the GNU General Public License for more details.
-#
-#You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
-###
 from __future__ import with_statement
-import os
-from os.path import join
-from os.path import abspath
+
+import GifImagePlugin
+import Image
+import JpegImagePlugin
+import PngImagePlugin
+import TiffImagePlugin
 import logging
+import os
 import subprocess
 #import tempfile
 
-import Image
-import TiffImagePlugin
-import PngImagePlugin
-import GifImagePlugin
-import JpegImagePlugin
+from os.path import abspath, join
 
 
 class OCR(object):
@@ -82,7 +65,7 @@ class OCR(object):
         self.image.save(tmp.name, 'TIFF')
 
         if os.name == "nt":
-            tessparams = [join(pypath,"tesseract","tesseract.exe")]
+            tessparams = [join(pypath, "tesseract", "tesseract.exe")]
         else:
             tessparams = ["tesseract"]
 
@@ -318,14 +301,3 @@ class OCR(object):
             return result
         else:
             self.result_captcha = result
-
-
-if __name__ == '__main__':
-    ocr = OCR()
-    ocr.load_image("B.jpg")
-    ocr.to_greyscale()
-    ocr.eval_black_white(140)
-    ocr.derotate_by_average()
-    ocr.run_tesser()
-    print "Tesseract", ocr.result_captcha
-    ocr.image.save("derotated.jpg")

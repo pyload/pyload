@@ -1,30 +1,14 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
 
-from module.network.RequestFactory import getURL
 from module.common.json_layer import json_loads
-from module.plugins.internal.CaptchaService import ReCaptcha
-from module.utils import parseFileSize
-
+from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
 from module.plugins.hoster.UnrestrictLi import secondsToMidnight
+from module.plugins.internal.CaptchaService import ReCaptcha
+from module.utils import parseFileSize
 
 
 def checkFile(plugin, urls):
@@ -49,8 +33,10 @@ def checkFile(plugin, urls):
 class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*'
     __version__ = "0.52"
+
+    __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*'
+
     __description__ = """Fileserve.com hoster plugin"""
     __author_name__ = ("jeix", "mkaay", "Paul King", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "", "zoidberg@mujmail.cz")
@@ -66,7 +52,6 @@ class FileserveCom(Hoster):
     DAILY_LIMIT_PATTERN = r'Your daily download limit has been reached'
     NOT_LOGGED_IN_PATTERN = r'<form (name="loginDialogBoxForm"|id="login_form")|<li><a href="/login.php">Login</a></li>'
 
-    # shares code with FilejungleCom and UploadstationCom
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium

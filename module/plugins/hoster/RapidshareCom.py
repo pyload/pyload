@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# v1.36
-# * fixed call checkfiles subroutine
-# v1.35
-# * fixed rs-urls in handleFree(..) and freeWait(..)
-# * removed getInfo(..) function as it was not used anywhere (in this file)
-# * removed some (old?) comment blocks
-
 import re
 
 from module.network.RequestFactory import getURL
@@ -51,14 +44,17 @@ def getInfo(urls):
 class RapidshareCom(Hoster):
     __name__ = "RapidshareCom"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))'
     __version__ = "1.39"
-    __description__ = """Rapidshare.com hoster plugin"""
+
+    __pattern__ = r'https?://(?:www\.)?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))'
     __config__ = [("server",
                    "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera",
                    "Preferred Server", "None")]
+
+    __description__ = """Rapidshare.com hoster plugin"""
     __author_name__ = ("spoob", "RaNaN", "mkaay")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "mkaay@mkaay.de")
+
 
     def setup(self):
         self.no_download = True

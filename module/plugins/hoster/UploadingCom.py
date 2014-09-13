@@ -1,39 +1,28 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
+
 from pycurl import HTTPHEADER
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 from module.common.json_layer import json_loads
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 
 
 class UploadingCom(SimpleHoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
+    __version__ = "0.36"
+
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)'
-    __version__ = "0.35"
+
     __description__ = """Uploading.com hoster plugin"""
     __author_name__ = ("jeix", "mkaay", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
 
     FILE_NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
     FILE_SIZE_PATTERN = r'size tip_container">(?P<S>[\d.]+) (?P<U>\w+)<'
-    OFFLINE_PATTERN = r'Page not found!'
+    OFFLINE_PATTERN = r'(Page|file) not found'
+
 
     def process(self, pyfile):
         # set lang to english

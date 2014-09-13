@@ -1,29 +1,16 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 from __future__ import with_statement
+
 import hashlib
+import re
 import zlib
+
 from os import remove
 from os.path import getsize, isfile, splitext
-import re
 
-from module.utils import save_join, fs_encode
 from module.plugins.Hook import Hook
+from module.utils import save_join, fs_encode
 
 
 def computeChecksum(local_file, algorithm):
@@ -52,18 +39,19 @@ def computeChecksum(local_file, algorithm):
 
 class Checksum(Hook):
     __name__ = "Checksum"
-    __version__ = "0.12"
     __type__ = "hook"
+    __version__ = "0.13"
 
     __config__ = [("activated", "bool", "Activated", False),
+                  ("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
                   ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
                   ("max_tries", "int", "Number of retries", 2),
                   ("retry_action", "fail;nothing", "What to do if all retries fail?", "fail"),
                   ("wait_time", "int", "Time to wait before each retry (seconds)", 1)]
 
     __description__ = """Verify downloaded file size and checksum"""
-    __author_name__ = ("zoidberg", "Walter Purcaro")
-    __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com")
+    __author_name__ = ("zoidberg", "Walter Purcaro", "stickell")
+    __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com", "l.stickell@yahoo.it")
 
     methods = {'sfv': 'crc32', 'crc': 'crc32', 'hash': 'md5'}
     regexps = {'sfv': r'^(?P<name>[^;].+)\s+(?P<hash>[0-9A-Fa-f]{8})$',
@@ -73,8 +61,8 @@ class Checksum(Hook):
 
 
     def coreReady(self):
-        if not self.config['general']['checksum']:
-            self.logInfo("Checksum validation is disabled in general configuration")
+        if not self.getConfig("check_checksum"):
+            self.logInfo("Checksum validation is disabled in plugin configuration")
 
     def setup(self):
         self.algorithms = sorted(
@@ -118,7 +106,7 @@ class Checksum(Hook):
             del data['size']
 
         # validate checksum
-        if data and self.config['general']['checksum']:
+        if data and self.getConfig("check_checksum"):
             if "checksum" in data:
                 data['md5'] = data['checksum']
 

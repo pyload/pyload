@@ -6,14 +6,15 @@ import re
 from time import sleep
 
 from module.lib.BeautifulSoup import BeautifulSoup
+
 from module.plugins.Crypter import Crypter
 from module.unescape import unescape
 
 
 class SerienjunkiesOrg(Crypter):
     __name__ = "SerienjunkiesOrg"
-    __version__ = "0.39"
     __type__ = "crypter"
+    __version__ = "0.39"
 
     __pattern__ = r'http://(?:www\.)?(serienjunkies.org|dokujunkies.org)/.*?'
     __config__ = [("changeNameSJ", "Packagename;Show;Season;Format;Episode", "Take SJ.org name", "Show"),

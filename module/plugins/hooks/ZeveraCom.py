@@ -6,8 +6,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 class ZeveraCom(MultiHoster):
     __name__ = "ZeveraCom"
-    __version__ = "0.02"
     __type__ = "hook"
+    __version__ = "0.02"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),

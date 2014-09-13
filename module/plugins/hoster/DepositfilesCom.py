@@ -2,14 +2,16 @@
 
 import re
 
+from urllib import unquote
+
 from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
-    __version__ = "0.47"
     __type__ = "hoster"
+    __version__ = "0.48"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
 
@@ -122,5 +124,6 @@ class DepositfilesCom(SimpleHoster):
             else:
                 self.parseError("No direct download link or mirror found")
             self.download(dlink, disposition=True)
+
 
 getInfo = create_getInfo(DepositfilesCom)

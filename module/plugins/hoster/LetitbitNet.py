@@ -1,30 +1,16 @@
 # -*- coding: utf-8 -*-
-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
+#
 # API Documentation:
 # http://api.letitbit.net/reg/static/api.pdf
-# Test links (random.bin):
+#
+# Test links:
 # http://letitbit.net/download/07874.0b5709a7d3beee2408bb1f2eefce/random.bin.html
 
 import re
-import urllib
+
+from urllib import urlencode, urlopen
 
 from module.common.json_layer import json_loads, json_dumps
-
 from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster
@@ -32,8 +18,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 
 def api_download_info(url):
     json_data = ["yw7XQy2v9", ["download/info", {"link": url}]]
-    post_data = urllib.urlencode({'r': json_dumps(json_data)})
-    api_rep = urllib.urlopen("http://api.letitbit.net/json", data=post_data).read()
+    post_data = urlencode({'r': json_dumps(json_data)})
+    api_rep = urlopen("http://api.letitbit.net/json", data=post_data).read()
     return json_loads(api_rep)
 
 
@@ -50,8 +36,10 @@ def getInfo(urls):
 class LetitbitNet(SimpleHoster):
     __name__ = "LetitbitNet"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?(letitbit|shareflare).net/download/.*'
     __version__ = "0.24"
+
+    __pattern__ = r'http://(?:www\.)?(letitbit|shareflare).net/download/.*'
+
     __description__ = """Letitbit.net hoster plugin"""
     __author_name__ = ("zoidberg", "z00nx")
     __author_mail__ = ("zoidberg@mujmail.cz", "z00nx0@gmail.com")

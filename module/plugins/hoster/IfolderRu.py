@@ -1,29 +1,17 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class IfolderRu(SimpleHoster):
     __name__ = "IfolderRu"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*'
     __version__ = "0.38"
+
+    __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*'
+
     __description__ = """Ifolder.ru hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -38,6 +26,7 @@ class IfolderRu(SimpleHoster):
     HIDDEN_INPUT_PATTERN = r"var v = .*?name='([^']+)' value='1'"
     LINK_PATTERN = r'<a id="download_file_href" href="([^"]+)"'
     WRONG_CAPTCHA_PATTERN = ur'<font color=Red>неверный код,<br>введите еще раз</font><br>'
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True if self.account else False

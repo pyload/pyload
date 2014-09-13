@@ -1,24 +1,11 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
 import time
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+
 from module.common.json_layer import json_loads
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+
 
 def convertDecimalPrefix(m):
     # decimal prefixes used in filesize and traffic
@@ -28,8 +15,10 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
     __version__ = "0.98"
+
+    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
+
     __description__ = """Uloz.to hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"

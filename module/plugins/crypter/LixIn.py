@@ -7,8 +7,8 @@ from module.plugins.Crypter import Crypter
 
 class LixIn(Crypter):
     __name__ = "LixIn"
-    __version__ = "0.22"
     __type__ = "crypter"
+    __version__ = "0.22"
 
     __pattern__ = r'http://(www.)?lix.in/(?P<id>.*)'
 

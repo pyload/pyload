@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
-
-# Test links (random.bin):
+#
+# Test links:
 # http://ul.to/044yug9o
 # http://ul.to/gzfhd0xs
 
 import re
+
 from time import sleep
 
-from module.utils import html_unescape, parseFileSize
-
-from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
+from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.utils import html_unescape, parseFileSize
+
 
 key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
 
@@ -30,7 +31,7 @@ def getAPIData(urls):
 
     for i, url in enumerate(urls):
         id = getID(url)
-        post["id_%s" % i] = id
+        post['id_%s' % i] = id
         idMap[id] = url
 
     for _ in xrange(5):
@@ -93,8 +94,10 @@ def getInfo(urls):
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
     __version__ = "0.73"
+
+    __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
+
     __description__ = """Uploaded.net hoster plugin"""
     __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
     __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz",
@@ -103,6 +106,7 @@ class UploadedTo(Hoster):
     FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
     OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
     DL_LIMIT_PATTERN = r'You have reached the max. number of possible free downloads for this hour'
+
 
     def setup(self):
         self.multiDL = self.resumeDownload = self.premium

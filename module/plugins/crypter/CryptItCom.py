@@ -5,8 +5,8 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 class CryptItCom(DeadCrypter):
     __name__ = "CryptItCom"
-    __version__ = "0.11"
     __type__ = "crypter"
+    __version__ = "0.11"
 
     __pattern__ = r'http://(?:www\.)?crypt-it\.com/(s|e|d|c)/[\w]+'
 

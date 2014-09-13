@@ -6,8 +6,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 class RehostTo(MultiHoster):
     __name__ = "RehostTo"
-    __version__ = "0.43"
     __type__ = "hook"
+    __version__ = "0.43"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),

@@ -5,8 +5,8 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 class TrailerzoneInfo(DeadCrypter):
     __name__ = "TrailerzoneInfo"
-    __version__ = "0.03"
     __type__ = "crypter"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?trailerzone.info/.*?'
 

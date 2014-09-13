@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import sys
 import os
-from os import remove, chmod, makedirs
-from os.path import exists, basename, isfile, isdir, join
-from traceback import print_exc
+import sys
+
 from copy import copy
+from os import remove, chmod, makedirs
+from os.path import exists, basename, isfile, isdir
+from traceback import print_exc
 
 # monkey patch bug in python 2.6 and lower
-# see http://bugs.python.org/issue6122
-# http://bugs.python.org/issue1236
-# http://bugs.python.org/issue1731717
+# http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
 if sys.version_info < (2, 7) and os.name != "nt":
-    from subprocess import Popen
     import errno
+    from subprocess import Popen
 
     def _eintr_retry_call(func, *args):
         while True:
@@ -44,13 +43,13 @@ if sys.version_info < (2, 7) and os.name != "nt":
     Popen.wait = wait
 
 if os.name != "nt":
+    from grp import getgrnam
     from os import chown
     from pwd import getpwnam
-    from grp import getgrnam
 
-from module.utils import save_join, fs_encode
 from module.plugins.Hook import Hook, threaded, Expose
 from module.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
+from module.utils import save_join, fs_encode
 
 
 class ExtractArchive(Hook):
@@ -58,8 +57,8 @@ class ExtractArchive(Hook):
     Provides: unrarFinished (folder, filename)
     """
     __name__ = "ExtractArchive"
-    __version__ = "0.16"
     __type__ = "hook"
+    __version__ = "0.16"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
@@ -158,7 +157,7 @@ class ExtractArchive(Hook):
                 #relative to package folder if destination is relative, otherwise absolute path overwrites them
 
                 if self.getConfig("subfolder"):
-                    out = join(out, fs_encode(p.folder))
+                    out = save_join(out, fs_encode(p.folder))
 
                 if not exists(out):
                     makedirs(out)

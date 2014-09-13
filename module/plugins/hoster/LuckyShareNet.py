@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from module.lib.bottle import json_loads
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class LuckyShareNet(SimpleHoster):
     __name__ = "LuckyShareNet"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?luckyshare.net/(?P<ID>\d{10,})'
     __version__ = "0.02"
+
+    __pattern__ = r'https?://(?:www\.)?luckyshare.net/(?P<ID>\d{10,})'
+
     __description__ = """LuckyShare.net hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"

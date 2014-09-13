@@ -5,8 +5,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 class NosvideoCom(SimpleCrypter):
     __name__ = "NosvideoCom"
-    __version__ = "0.01"
     __type__ = "crypter"
+    __version__ = "0.01"
 
     __pattern__ = r'http://(?:www\.)?nosvideo\.com/\?v=\w+'
 

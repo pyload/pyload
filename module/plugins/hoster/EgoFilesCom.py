@@ -1,33 +1,21 @@
 # -*- coding: utf-8 -*-
-############################################################################
-# This program is free software: you can redistribute it and/or modify     #
-# it under the terms of the GNU Affero General Public License as           #
-# published by the Free Software Foundation, either version 3 of the       #
-# License, or (at your option) any later version.                          #
-#                                                                          #
-# This program is distributed in the hope that it will be useful,          #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
-# GNU Affero General Public License for more details.                      #
-#                                                                          #
-# You should have received a copy of the GNU Affero General Public License #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
-############################################################################
-
-# Test link (random.bin):
+#
+# Test links:
 # http://egofiles.com/mOZfMI1WLZ6HBkGG/random.bin
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class EgoFilesCom(SimpleHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?egofiles.com/(\w+)'
     __version__ = "0.15"
+
+    __pattern__ = r'https?://(?:www\.)?egofiles.com/(\w+)'
+
     __description__ = """Egofiles.com hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"

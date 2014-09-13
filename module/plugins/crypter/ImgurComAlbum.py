@@ -6,8 +6,8 @@ from module.utils import uniqify
 
 class ImgurComAlbum(SimpleCrypter):
     __name__ = "ImgurComAlbum"
-    __version__ = "0.4"
     __type__ = "crypter"
+    __version__ = "0.4"
 
     __pattern__ = r'https?://(?:www\.|m\.)?imgur\.com/(a|gallery|)/?\w{5,7}'
 

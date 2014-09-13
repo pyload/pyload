@@ -5,8 +5,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 class FilefactoryComFolder(SimpleCrypter):
     __name__ = "FilefactoryComFolder"
-    __version__ = "0.2"
     __type__ = "crypter"
+    __version__ = "0.2"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(?:f|folder)/\w+'
 

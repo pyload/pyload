@@ -5,8 +5,8 @@ from module.plugins.Crypter import Crypter as _Crypter
 
 class DeadCrypter(_Crypter):
     __name__ = "DeadCrypter"
-    __version__ = "0.01"
     __type__ = "crypter"
+    __version__ = "0.01"
 
     __pattern__ = None
 

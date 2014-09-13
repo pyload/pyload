@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Hoster import Hoster
+
 from module.network.RequestFactory import getURL
+from module.plugins.Hoster import Hoster
 from module.utils import parseFileSize
 
 
 class GamefrontCom(Hoster):
     __name__ = "GamefrontCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?gamefront.com/files/[A-Za-z0-9]+'
     __version__ = "0.04"
+
+    __pattern__ = r'http://(?:www\.)?gamefront.com/files/[A-Za-z0-9]+'
+
     __description__ = """Gamefront.com hoster plugin"""
     __author_name__ = "fwannmacher"
     __author_mail__ = "felipe@warhammerproject.com"
@@ -18,6 +21,7 @@ class GamefrontCom(Hoster):
     PATTERN_FILENAME = r'<title>(.*?) | Game Front'
     PATTERN_FILESIZE = r'<dt>File Size:</dt>[\n\s]*<dd>(.*?)</dd>'
     PATTERN_OFFLINE = r"This file doesn't exist, or has been removed."
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True

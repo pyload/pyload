@@ -1,30 +1,19 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
+
 from random import random
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MultishareCz(SimpleHoster):
     __name__ = "MultishareCz"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?multishare.cz/stahnout/(?P<ID>\d+).*'
     __version__ = "0.34"
+
+    __pattern__ = r'http://(?:www\.)?multishare.cz/stahnout/(?P<ID>\d+).*'
+
     __description__ = """MultiShare.cz hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -32,6 +21,7 @@ class MultishareCz(SimpleHoster):
     FILE_INFO_PATTERN = ur'(?:<li>Název|Soubor): <strong>(?P<N>[^<]+)</strong><(?:/li><li|br)>Velikost: <strong>(?P<S>[^<]+)</strong>'
     OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
     FILE_SIZE_REPLACEMENTS = [('&nbsp;', '')]
+
 
     def process(self, pyfile):
         msurl = re.match(self.__pattern__, pyfile.url)

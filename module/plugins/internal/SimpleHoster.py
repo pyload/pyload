@@ -1,27 +1,14 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-from urlparse import urlparse
 import re
-from time import time
 
-from module.plugins.Hoster import Hoster
-from module.utils import html_unescape, fixup, parseFileSize
-from module.network.RequestFactory import getURL
+from time import time
+from urlparse import urlparse
+
 from module.network.CookieJar import CookieJar
+from module.network.RequestFactory import getURL
+from module.plugins.Hoster import Hoster
+from module.utils import fixup, html_unescape, parseFileSize
 
 
 def replace_patterns(string, ruleslist):
@@ -96,10 +83,12 @@ def parseFileInfo(self, url='', html=''):
             if hasattr(self, "html"):
                 self.html = html
 
-        if (hasattr(self, "OFFLINE_PATTERN") and re.search(self.OFFLINE_PATTERN, html)) or \
-           (hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html)):
-            # File offline
+        if hasattr(self, "OFFLINE_PATTERN") and re.search(self.OFFLINE_PATTERN, html):
             info['status'] = 1
+        elif hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):  #@TODO: Remove in 0.4.10
+            info['status'] = 1
+        elif hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, html):
+            info['status'] = 6
         else:
             online = False
             try:
@@ -164,8 +153,8 @@ class PluginParseError(Exception):
 
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
-    __version__ = "0.34"
     __type__ = "hoster"
+    __version__ = "0.35"
 
     __pattern__ = None
 
@@ -186,8 +175,6 @@ class SimpleHoster(Hoster):
 
       OFFLINE_PATTERN: Checks if the file is yet available online
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
-      or:
-        FILE_OFFLINE_PATTERN: Deprecated
 
       TEMP_OFFLINE_PATTERN: Checks if the file is temporarily offline
         example: TEMP_OFFLINE_PATTERN = r'Server maintainance'
@@ -240,13 +227,13 @@ class SimpleHoster(Hoster):
 
     def getFileInfo(self):
         self.logDebug("URL: %s" % self.pyfile.url)
-        if hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, self.html):
-            self.tempOffline()
 
         name, size, status = parseFileInfo(self)[:3]
 
         if status == 1:
             self.offline()
+        elif status == 6:
+            self.tempOffline()
         elif status != 2:
             self.logDebug(self.file_info)
             self.parseError('File info')

@@ -1,34 +1,21 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
 
 from module.common.json_layer import json_loads
 
 from module.plugins.hoster.UnrestrictLi import secondsToMidnight
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class ExtabitCom(SimpleHoster):
     __name__ = "ExtabitCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
     __version__ = "0.6"
+
+    __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
+
     __description__ = """Extabit.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
@@ -39,6 +26,7 @@ class ExtabitCom(SimpleHoster):
     TEMP_OFFLINE_PATTERN = r'>(File is temporary unavailable|No download mirror)<'
 
     LINK_PATTERN = r'[\'"](http://guest\d+\.extabit\.com/[a-z0-9]+/.*?)[\'"]'
+
 
     def handleFree(self):
         if r">Only premium users can download this file" in self.html:

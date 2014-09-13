@@ -3,14 +3,14 @@
 import re
 
 from module.plugins.Crypter import Crypter
-from module.utils import html_unescape
 from module.plugins.internal.SimpleHoster import PluginParseError, replace_patterns, set_cookies
+from module.utils import html_unescape
 
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
-    __version__ = "0.10"
     __type__ = "crypter"
+    __version__ = "0.10"
 
     __pattern__ = None
 

@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 
-# should be working
-
+from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
-from module.common.json_layer import json_loads
 
 
 class FastixRu(MultiHoster):
     __name__ = "FastixRu"
-    __version__ = "0.02"
     __type__ = "hook"
+    __version__ = "0.02"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),

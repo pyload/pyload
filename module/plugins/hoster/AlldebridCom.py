@@ -1,22 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import re
-from urllib import unquote
+
 from random import randrange
-from module.plugins.Hoster import Hoster
+from urllib import unquote
+
 from module.common.json_layer import json_loads
+from module.plugins.Hoster import Hoster
 from module.utils import parseFileSize
 
 
 class AlldebridCom(Hoster):
     __name__ = "AlldebridCom"
-    __version__ = "0.34"
     __type__ = "hoster"
+    __version__ = "0.34"
 
     __pattern__ = r'https?://(?:[^/]*\.)?alldebrid\..*'
+
     __description__ = """Alldebrid.com hoster plugin"""
     __author_name__ = "Andy Voigt"
     __author_mail__ = "spamsales@online.de"
+
 
     def getFilename(self, url):
         try:

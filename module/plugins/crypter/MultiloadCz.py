@@ -6,8 +6,8 @@ from module.plugins.Crypter import Crypter
 
 class MultiloadCz(Crypter):
     __name__ = "MultiloadCz"
-    __version__ = "0.4"
     __type__ = "crypter"
+    __version__ = "0.4"
 
     __pattern__ = r'http://(?:[^/]*\.)?multiload.cz/(stahnout|slozka)/.*'
     __config__ = [("usedHoster", "str", "Prefered hoster list (bar-separated) ", ""),
