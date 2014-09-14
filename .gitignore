@@ -80,6 +80,6 @@ eggs
 *.pydevproject
 *.rej
 _build/
-/module/
+module/
 DLC_*.py
 paver-minilib.zip
