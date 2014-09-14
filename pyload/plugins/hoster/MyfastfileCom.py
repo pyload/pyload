@@ -2,18 +2,18 @@
 
 import re
 
-from pyload.utils import json_loads
 from pyload.plugins.Hoster import Hoster
+from pyload.utils import json_loads
 
 
-class MultiDebridCom(Hoster):
-    __name__ = "MultiDebridCom"
+class MyfastfileCom(Hoster):
+    __name__ = "MyfastfileCom"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
 
-    __description__ = """Multi-debrid.com hoster plugin"""
+    __description__ = """Myfastfile.com hoster plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
@@ -26,11 +26,11 @@ class MultiDebridCom(Hoster):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "Multi-debrid.com")
-            self.fail("No Multi-debrid.com account provided")
+            self.logError(_("Please enter your %s account or deactivate this plugin") % "Myfastfile.com")
+            self.fail("No Myfastfile.com account provided")
         else:
             self.logDebug("Original URL: %s" % pyfile.url)
-            page = self.req.load('http://multi-debrid.com/api.php',
+            page = self.req.load('http://myfastfile.com/api.php',
                                  get={'user': self.user, 'pass': self.account.getAccountData(self.user)['password'],
                                       'link': pyfile.url})
             self.logDebug("JSON data: " + page)

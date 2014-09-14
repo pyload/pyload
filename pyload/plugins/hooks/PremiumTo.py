@@ -4,10 +4,10 @@ from pyload.network.RequestFactory import getURL
 from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
-class Premium4Me(MultiHoster):
-    __name__ = "Premium4Me"
+class PremiumTo(MultiHoster):
+    __name__ = "PremiumTo"
     __type__ = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
@@ -19,11 +19,12 @@ class Premium4Me(MultiHoster):
 
 
     def getHoster(self):
-        page = getURL("http://premium.to/api/hosters.php?authcode=%s" % self.account.authcode)
+        page = getURL("http://premium.to/api/hosters.php",
+                      get={'username': self.account.username, 'password': self.account.password})
         return [x.strip() for x in page.replace("\"", "").split(";")]
 
     def coreReady(self):
-        self.account = self.core.accountManager.getAccountPlugin("Premium4Me")
+        self.account = self.core.accountManager.getAccountPlugin("PremiumTo")
 
         user = self.account.selectAccount()[0]
 

@@ -6,12 +6,12 @@ from pyload.plugins.Account import Account
 from pyload.utils import json_loads
 
 
-class MultiDebridCom(Account):
-    __name__ = "MultiDebridCom"
+class MyfastfileCom(Account):
+    __name__ = "MyfastfileCom"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
-    __description__ = """Multi-debrid.com account plugin"""
+    __description__ = """Myfastfile.com account plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
@@ -24,8 +24,8 @@ class MultiDebridCom(Account):
             self.logError('Unable to get account information')
 
     def login(self, user, data, req):
-        # Password to use is the API-Password written in http://multi-debrid.com/myaccount
-        html = req.load("http://multi-debrid.com/api.php",
+        # Password to use is the API-Password written in http://myfastfile.com/myaccount
+        html = req.load("http://myfastfile.com/api.php",
                              get={"user": user, "pass": data['password']})
         self.logDebug('JSON data: ' + html)
         self.json_data = json_loads(html)

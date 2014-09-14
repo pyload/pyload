@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from pyload.utils import json_loads
 from pyload.network.RequestFactory import getURL
 from pyload.plugins.internal.MultiHoster import MultiHoster
+from pyload.utils import json_loads
 
 
-class MultiDebridCom(MultiHoster):
-    __name__ = "MultiDebridCom"
+class MyfastfileCom(MultiHoster):
+    __name__ = "MyfastfileCom"
     __type__ = "hook"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
@@ -16,13 +16,13 @@ class MultiDebridCom(MultiHoster):
                   ("unloadFailing", "bool", "Revert to standard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """Multi-debrid.com hook plugin"""
+    __description__ = """Myfastfile.com hook plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
 
     def getHoster(self):
-        json_data = getURL('http://multi-debrid.com/api.php?hosts', decode=True)
+        json_data = getURL('http://myfastfile.com/api.php?hosts', decode=True)
         self.logDebug('JSON data: ' + json_data)
         json_data = json_loads(json_data)
 
