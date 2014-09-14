@@ -13,6 +13,7 @@ class FourSharedCom(Account):
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 
+
     def loadAccountInfo(self, user, req):
         # Free mode only for now
         return {"premium": False}
