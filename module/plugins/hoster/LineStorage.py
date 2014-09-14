@@ -13,8 +13,9 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LineStorage(SimpleHoster):
     __name__ = "LineStorage"
     __type__ = "hoster"
-    __version__ = "0.1"
+    __version__ = "0.2"
     __pattern__ = r'https?://(?:www\.)?linestorage.com/.*'
+    __FILENAMEpattern__ = r'h3> *Filename: *(?P<NAME>[^\<]*)'
     __description__ = """LineStorage.com hoster plugin"""
     __author_name__ = ("gsasch")
     __author_mail__ = ("")
@@ -27,6 +28,8 @@ class LineStorage(SimpleHoster):
         if not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Uploadable.ch")
             self.fail("No LineStorage account provided")
+	
+	self.pyfile = pyfile
 
         self.logDebug("Old URL: %s" % pyfile.url)
 
@@ -41,6 +44,9 @@ class LineStorage(SimpleHoster):
 	m = re.search(r'(?<=name="id" value=")[^"]*' , self.html, re.I)
 	id = m.group(0)
 			    
+	m = re.search(self.__FILENAMEpattern__, self.html, re.I)
+	pyfile.name = m.group('NAME')	
+
         self.download(self.pyfile.url, post={"op" : "download2", "id" : id, "rand" : rand, 
 		"referer" : "", "method_free" : "", "method_premium" : "1",
 		"down_direct" : "1", "btn_download": "Create Download Link"} )
