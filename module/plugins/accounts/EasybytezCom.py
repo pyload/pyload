@@ -11,11 +11,11 @@ from module.utils import parseFileSize
 class EasybytezCom(Account):
     __name__ = "EasybytezCom"
     __type__ = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """EasyBytez.com account plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __author_name__ = "zoidberg", "guidobelix"
+    __author_mail__ = "zoidberg@mujmail.cz", "guidobelix@hotmail.it"
 
     VALID_UNTIL_PATTERN = r'Premium account expire:</TD><TD><b>([^<]+)</b>'
     TRAFFIC_LEFT_PATTERN = r'<TR><TD>Traffic available today:</TD><TD><b>(?P<S>[^<]+)</b>'
@@ -37,14 +37,16 @@ class EasybytezCom(Account):
             if validuntil > mktime(gmtime()):
                 premium = True
                 trafficleft = -1
-        else:
-            m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-            if m:
-                trafficleft = m.group(1)
-                if "Unlimited" in trafficleft:
-                    trafficleft = -1
-                else:
-                    trafficleft = parseFileSize(trafficleft) / 1024
+            else:
+                premium = False
+                validuntil = -1
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        if m:
+            trafficleft = m.group(1)
+            if "Unlimited" in trafficleft:
+                trafficleft = -1
+            else:
+                trafficleft = parseFileSize(trafficleft) / 1024
 
         return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
 
