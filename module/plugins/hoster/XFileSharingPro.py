@@ -21,14 +21,16 @@ class XFileSharingPro(SimpleHoster):
     """
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __pattern__ = r'^unmatchable$'
 
     __description__ = """XFileSharingPro base hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
-
+    
+    # support embedded files
+    FILE_URL_REPLACEMENTS = [(r'/embed-(\w{12}).*', r'/\1')]
     FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     FILE_SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>\w+)?\)</font>'
@@ -57,7 +59,7 @@ class XFileSharingPro(SimpleHoster):
 
     def process(self, pyfile):
         self.prepare()
-
+        
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
 
         if not re.match(self.__pattern__, pyfile.url):
