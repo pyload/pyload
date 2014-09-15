@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from re import match, search
+import re
+
 from urllib import unquote
 from urlparse import urlparse
 
@@ -25,10 +26,11 @@ class BasePlugin(Hoster):
         self.chunkLimit = -1
         self.resumeDownload = True
 
+
     def process(self, pyfile):
         """main function"""
 
-        #debug part, for api exerciser
+        #: debug part, for api exerciser
         if pyfile.url.startswith("DEBUG_API"):
             self.multiDL = False
             return
@@ -74,6 +76,7 @@ class BasePlugin(Hoster):
         else:
             self.fail("No Plugin matched and not a downloadable url.")
 
+
     def downloadFile(self, pyfile):
         url = pyfile.url
 
@@ -86,7 +89,7 @@ class BasePlugin(Hoster):
 
             if 'location' in header:
                 self.logDebug("Location: " + header['location'])
-                base = match(r'https?://[^/]+', url).group(0)
+                base = re.match(r'https?://[^/]+', url).group(0)
                 if header['location'].startswith("http"):
                     url = header['location']
                 elif header['location'].startswith("/"):
@@ -100,7 +103,7 @@ class BasePlugin(Hoster):
 
         if 'content-disposition' in header:
             self.logDebug("Content-Disposition: " + header['content-disposition'])
-            m = search("filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", header['content-disposition'])
+            m = re.search("filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", header['content-disposition'])
             if m:
                 disp = m.groupdict()
                 self.logDebug(disp)
