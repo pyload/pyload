@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from time import time
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
@@ -9,7 +11,9 @@ class MegasharesCom(SimpleHoster):
     __name__ = "MegasharesCom"
     __type__ = "hoster"
     __version__ = "0.25"
+    
     __pattern__ = r'http://(?:www\.)?megashares.com/.*'
+    
     __description__ = """Megashares.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
