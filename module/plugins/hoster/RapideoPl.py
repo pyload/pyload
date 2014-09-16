@@ -61,14 +61,14 @@ class RapideoPl(SimpleHoster):
         self.get_username_password()
         try:
             data = self.runFileQuery(pyfile.url, 'fileinfo')
-        except Exception as e:
-            self.logDebug(str(e))
+        except Exception:
+            self.logDebug("RunFileQuery error")
             self.tempOffline()
 
         try:
             parsed = loads(data)
-        except Exception as e:
-            self.logDebug(str(e))
+        except Exception:
+            self.logDebug("Loads error")
             self.tempOffline()
 
         self.logDebug(parsed)
@@ -95,8 +95,8 @@ class RapideoPl(SimpleHoster):
 
         try:
             result_dl = self.runFileQuery(pyfile.url, 'filedownload')
-        except Exception as e:
-            self.logDebug(str(e))
+        except Exception:
+            self.logDebug("runFileQuery error #2")
             self.tempOffline()
 
         self.download(result_dl, disposition=True)
