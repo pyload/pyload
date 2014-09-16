@@ -6,7 +6,7 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class LomafileCom(XFileSharingPro):
     __name__ = "LomafileCom"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.3"
 
     __pattern__ = r'https?://lomafile\.com/.+/[\w\.]+'
 
