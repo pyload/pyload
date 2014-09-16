@@ -11,7 +11,7 @@ from module.utils import parseFileSize
 class EasybytezCom(Account):
     __name__ = "EasybytezCom"
     __type__ = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """EasyBytez.com account plugin"""
     __author_name__ = ("zoidberg", "guidobelix")
@@ -24,7 +24,6 @@ class EasybytezCom(Account):
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.easybytez.com/?op=my_account", decode=True)
 
-        validuntil = -1
         trafficleft = None
         premium = False
 
@@ -42,6 +41,7 @@ class EasybytezCom(Account):
                     trafficleft = -1
                 else:
                     premium = False
+                    validuntil = -1
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
