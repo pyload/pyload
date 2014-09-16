@@ -11,7 +11,7 @@ from module.utils import parseFileSize
 class EasybytezCom(Account):
     __name__ = "EasybytezCom"
     __type__ = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """EasyBytez.com account plugin"""
     __author_name__ = ("zoidberg", "guidobelix")
@@ -24,24 +24,26 @@ class EasybytezCom(Account):
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.easybytez.com/?op=my_account", decode=True)
 
-        validuntil = -1
+        validuntil = None
         trafficleft = None
         premium = False
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
+            expiredate = m.group(1)
+            self.logDebug("Expire date: " + expiredate)
+
             try:
-                expiredate = m.group(1)
-                self.logDebug("Expire date: " + expiredate)
                 validuntil = mktime(strptime(expiredate, "%d %B %Y"))
             except Exception, e:
                 self.logError(e)
+
+            if validuntil > mktime(gmtime()):
+                premium = True
+                trafficleft = -1
             else:
-                if validuntil > mktime(gmtime()):
-                    premium = True
-                    trafficleft = -1
-                else:
-                    premium = False
+                premium = False
+                validuntil = -1
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
