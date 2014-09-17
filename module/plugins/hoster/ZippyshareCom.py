@@ -41,11 +41,12 @@ class ZippyshareCom(SimpleHoster):
         """returns the absolute downloadable filepath"""
         url_parts = re.search(r'(addthis:url="(http://www(\d+).zippyshare.com/v/(\d*)/file.html))', self.html)
         number = url_parts.group(4)
-        check_a_value = re.search(r'<script type="text/javascript">[^<]*var a = (\d*)%(\d*);', self.html).groups()
-        if check_a_value:
+        check = re.search(r'<script type="text/javascript">[^<]*var a = (\d*)%(\d*);', self.html)
+        if check:
             # Checksum is calculated as (a*b+19), where a and b are the result of modulo calculations
+            a_value = check.groups()
             b_value = re.search(r'<script type="text/javascript">[^<]*var b = (\d*)%(\d*);', self.html).groups()
-            checksum = int(check_a_value[0]) % int(check_a_value[1]) * int(b_value[0]) % int(b_value[1]) + 19
+            checksum = int(a_value[0]) % int(a_value[1]) * int(b_value[0]) % int(b_value[1]) + 19
         else:
             # This might work but is insecure
             # checksum = eval(re.search("((\d*)\s\%\s(\d*)\s\+\s(\d*)\s\%\s(\d*))", self.html).group(0))
