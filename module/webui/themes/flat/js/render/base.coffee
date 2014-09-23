@@ -87,7 +87,7 @@ document.addEvent "domready", ->
   $('cap_positional').addEvent 'click', on_captcha_click
 
   new Request.JSON({
-    url: "/json/status"
+    url: "{{pathprefix}}/json/status"
     onSuccess: LoadJsonToContent
     secure: false
     async: true
@@ -148,7 +148,7 @@ set_captcha = (data) ->
 
 load_captcha = (method, post) ->
   new Request.JSON({
-    url: "/json/set_captcha"
+    url: "{{pathprefix}}/json/set_captcha"
     onSuccess: (data) -> set_captcha(data) if data.captcha else clear_captcha()
     secure: false
     async: true
