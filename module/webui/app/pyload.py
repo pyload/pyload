@@ -114,7 +114,7 @@ def server_js(theme, file):
         response.headers['Cache-control'] = "public"
 
         path = join(theme, file)
-        return env.get_template(path).render()
+        return env.get_template(path).render({"pathprefix": PYLOAD.getConfigValue("webinterface", "prefix")})
     else:
         return server_static(theme, file)
 
