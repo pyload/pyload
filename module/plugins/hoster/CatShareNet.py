@@ -23,9 +23,9 @@ class CatShareNet(SimpleHoster):
 
     def handleFree(self):
 	# check if file is offline
-	found = re.search(self.FILE_OFFLINE_PATTERN, self.html)
+        found = re.search(self.FILE_OFFLINE_PATTERN, self.html)
 	if found is not None:
-            self.logInfo("This file is offline")
+            self.logInfo("This file in offline")
 	    self.offline()
 	# file is online; check wait time
         found = re.search(self.SECONDS_PATTERN, self.html)
@@ -34,9 +34,11 @@ class CatShareNet(SimpleHoster):
         self.wait(seconds + 1)
 	# solve captcha and send solution
        	recaptcha = ReCaptcha(self)
-        challenge, code = recaptcha.challenge(self.RECAPTCHA_KEY)
+	recaptcha.recaptcha_key = self.RECAPTCHA_KEY
+        challenge, code = recaptcha.challenge()
+#        challenge, code = recaptcha.challenge(self.RECAPTCHA_KEY)
         post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": code}
-	self.html = self.load(self.pyfile.url, post=post_data, decode = True, ref = True)
+	self.html = self.load(self.pyfile.url, post=post_data, decode = True, cookies = True, ref = True)
 	# find download url
 	found = re.search(self.DOWNLOAD_LINK_PATTERN, self.html)
 	if found is None:
@@ -44,6 +46,7 @@ class CatShareNet(SimpleHoster):
             self.invalidCaptcha()
             self.retry()
 	download_url = unquote(found.group(1))
+	self.logDebug(_("download %s") % download_url)
 	self.download(download_url)
 
 getInfo = create_getInfo(CatShareNet)
