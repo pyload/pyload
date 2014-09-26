@@ -7,7 +7,7 @@ from random import random
 
 class CaptchaService:
     __name__ = "CaptchaService"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """Captcha service plugin"""
     __author_name__ = "pyLoad Team"
@@ -28,6 +28,7 @@ class ReCaptcha:
     def __init__(self, plugin):
         self.plugin = plugin
 
+
     def detect_key(self, html):
         m = re.search(self.RECAPTCHA_KEY_PATTERN, html)
         if m is None:
@@ -38,11 +39,13 @@ class ReCaptcha:
         else:
             return None
 
+
     def challenge(self, key=None):
-        if key is None and self.recaptcha_key:
-            key = self.recaptcha_key
-        else:
-            raise TypeError("ReCaptcha key not found")
+        if not key:
+            if self.recaptcha_key:
+                key = self.recaptcha_key
+            else:
+                raise TypeError("ReCaptcha key not found")
 
         js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={"k": key}, cookies=True)
 
@@ -54,6 +57,7 @@ class ReCaptcha:
         result = self.result(server, challenge)
 
         return challenge, result
+
 
     def result(self, server, challenge):
         return self.plugin.decryptCaptcha("%simage" % server, get={"c": challenge},
@@ -74,6 +78,7 @@ class AdsCaptcha(CaptchaService):
 
         return challenge, result
 
+
     def result(self, server, challenge):
         return self.plugin.decryptCaptcha("%sChallenge.aspx" % server, get={"cid": challenge, "dummy": random()},
                                           cookies=True, imgtype="jpg")
@@ -91,6 +96,7 @@ class SolveMedia(CaptchaService):
         result = self.result(challenge)
 
         return challenge, result
+
 
     def result(self, challenge):
         return self.plugin.decryptCaptcha("http://api.solvemedia.com/papi/media?c=%s" % challenge, imgtype="gif")
