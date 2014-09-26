@@ -109,7 +109,7 @@ class ShareLinksBiz(Crypter):
         captchaUrl = self.baseUrl + '/captcha.gif?d=%s&PHPSESSID=%s' % (m.group(1), m.group(2))
         self.logDebug("Waiting user for correct position")
         coords = self.decryptCaptcha(captchaUrl, forceUser=True, imgtype="gif", result_type='positional')
-        self.logDebug("Captcha resolved, coords [%s]" % str(coords))
+        self.logDebug("Captcha resolved, coords [%s]" % coords)
 
         # Resolve captcha
         href = self._resolveCoords(coords, captchaMap)

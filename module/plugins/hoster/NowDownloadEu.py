@@ -53,7 +53,7 @@ class NowDownloadEu(SimpleHoster):
         url = re.search(self.LINK_PATTERN, self.html)
         if url is None:
             self.fail('Download Link not Found (Plugin out of Date?)')
-        self.logDebug('Download link: ' + str(url.group(1)))
+        self.logDebug("Download link", url.group(1))
         self.download(str(url.group(1)))
 
 

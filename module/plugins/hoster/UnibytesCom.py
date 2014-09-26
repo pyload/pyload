@@ -63,7 +63,7 @@ class UnibytesCom(SimpleHoster):
         else:
             self.fail("No valid captcha code entered")
 
-        self.logDebug('Download link: ' + url)
+        self.logDebug("Download link: " + url)
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
         self.download(url)
 

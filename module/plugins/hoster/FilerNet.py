@@ -54,7 +54,7 @@ class FilerNet(SimpleHoster):
         if 'token' not in inputs:
             self.parseError('Unable to detect token')
         token = inputs['token']
-        self.logDebug('Token: ' + token)
+        self.logDebug("Token: " + token)
 
         self.html = self.load(self.pyfile.url, post={'token': token}, decode=True)
 
@@ -62,7 +62,7 @@ class FilerNet(SimpleHoster):
         if 'hash' not in inputs:
             self.parseError('Unable to detect hash')
         hash_data = inputs['hash']
-        self.logDebug('Hash: ' + hash_data)
+        self.logDebug("Hash: " + hash_data)
 
         downloadURL = r''
         recaptcha = ReCaptcha(self)
@@ -83,7 +83,7 @@ class FilerNet(SimpleHoster):
                 self.correctCaptcha()
                 break
             else:
-                self.logInfo('Wrong captcha')
+                self.logInfo("Wrong captcha")
                 self.invalidCaptcha()
 
         if not downloadURL:
@@ -102,7 +102,7 @@ class FilerNet(SimpleHoster):
                 self.parseError("Unable to detect direct link, try to enable 'Direct download' in your user settings")
             dl = 'http://filer.net' + m.group(1)
 
-        self.logDebug('Direct link: ' + dl)
+        self.logDebug("Direct link: " + dl)
         self.download(dl, disposition=True)
 
 

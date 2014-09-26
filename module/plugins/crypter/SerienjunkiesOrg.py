@@ -304,7 +304,7 @@ class SerienjunkiesOrg(Crypter):
             for Hoster in hosterlist:
                 if preferred == Hoster.lower().replace('.', ''):
                     for Part in hosterlist[Hoster]:
-                        self.logDebug("selected " + Part)
+                        self.logDebug("Selected " + Part)
                         result.append(str(Part))
                         del (hosterlist2[Hoster])
                     if self.getConfig("hosterListMode") in ["OnlyOne", "OnlyPreferred(One)"]:
@@ -316,7 +316,7 @@ class SerienjunkiesOrg(Crypter):
             for Hoster in hosterlist2:
                 if Hoster.strip().lower().replace('.', '') not in ignorelist:
                     for Part in hosterlist2[Hoster]:
-                        self.logDebug("selected2 " + Part)
+                        self.logDebug("Selected2 " + Part)
                         result.append(str(Part))
 
                     if self.getConfig('hosterListMode') == "OnlyOne":

@@ -85,14 +85,14 @@ class UlozTo(SimpleHoster):
         if not action or not inputs:
             self.parseError("free download form")
 
-        self.logDebug('inputs.keys() = ' + str(inputs.keys()))
+        self.logDebug("inputs.keys = " + str(inputs.keys()))
         # get and decrypt captcha
         if all(key in inputs for key in ("captcha_value", "captcha_id", "captcha_key")):
             # Old version - last seen 9.12.2013
             self.logDebug('Using "old" version')
 
             captcha_value = self.decryptCaptcha("http://img.uloz.to/captcha/%s.png" % inputs['captcha_id'])
-            self.logDebug('CAPTCHA ID: ' + inputs['captcha_id'] + ", CAPTCHA VALUE: " + captcha_value)
+            self.logDebug("CAPTCHA ID: " + inputs['captcha_id'] + ", CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'captcha_id': inputs['captcha_id'], 'captcha_key': inputs['captcha_key'], 'captcha_value': captcha_value})
 
@@ -101,11 +101,11 @@ class UlozTo(SimpleHoster):
             self.logDebug('Using "new" version')
 
             xapca = self.load("http://www.ulozto.net/reloadXapca.php", get={"rnd": str(int(time.time()))})
-            self.logDebug('xapca = ' + str(xapca))
+            self.logDebug("xapca = " + str(xapca))
 
             data = json_loads(xapca)
             captcha_value = self.decryptCaptcha(str(data['image']))
-            self.logDebug("CAPTCHA HASH: " + data['hash'] + ", CAPTCHA SALT: " + str(data['salt']) + ", CAPTCHA VALUE: " + captcha_value)
+            self.logDebug("CAPTCHA HASH: " + data['hash'], "CAPTCHA SALT: " + str(data['salt']), "CAPTCHA VALUE: " + captcha_value)
 
             inputs.update({'timestamp': data['timestamp'], 'salt': data['salt'], 'hash': data['hash'], 'captcha_value': captcha_value})
         else:

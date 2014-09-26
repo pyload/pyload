@@ -56,4 +56,4 @@ class DuckCryptInfo(Crypter):
         soup = BeautifulSoup(src)
         self.urls = [soup.find("iframe")['src']]
         if not self.urls:
-            self.logDebug('no links m - (Plugin out of date?)')
+            self.logDebug("No link found - (Plugin out of date?)")

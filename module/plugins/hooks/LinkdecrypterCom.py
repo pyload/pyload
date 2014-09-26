@@ -52,4 +52,4 @@ class LinkdecrypterCom(Hook):
         dict['pattern'] = regexp
         dict['re'] = re.compile(regexp)
 
-        self.logDebug("REGEXP: " + regexp)
+        self.logDebug("REGEXP", regexp)

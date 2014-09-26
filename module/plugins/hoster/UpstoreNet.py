@@ -31,7 +31,7 @@ class UpstoreNet(SimpleHoster):
         if m is None:
             self.parseError("could not detect hash")
         chash = m.group(1)
-        self.logDebug("read hash " + chash)
+        self.logDebug("Read hash " + chash)
         # continue to stage2
         post_data = {'hash': chash, 'free': 'Slow download'}
         self.html = self.load(self.pyfile.url, post=post_data, decode=True)
@@ -41,7 +41,7 @@ class UpstoreNet(SimpleHoster):
         recaptcha = ReCaptcha(self)
         if not recaptcha.detect_key(self.html):
             self.parseError("could not find recaptcha pattern")
-        self.logDebug("using captcha key " + recaptcha.recaptcha_key)
+        self.logDebug("Using captcha key " + recaptcha.recaptcha_key)
         # try the captcha 5 times
         for i in xrange(5):
             m = re.search(self.WAIT_PATTERN, self.html)
@@ -68,7 +68,7 @@ class UpstoreNet(SimpleHoster):
             self.parseError("could not detect direct link")
 
         direct = m.group(1)
-        self.logDebug('found direct link: ' + direct)
+        self.logDebug("Found direct link: " + direct)
         self.download(direct, disposition=True)
 
 

@@ -83,7 +83,7 @@ class SimpleCrypter(Crypter):
         if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
             self.handleMultiPages()
 
-        self.logDebug('Package has %d links' % len(self.package_links))
+        self.logDebug("Package has %d links" % len(self.package_links))
 
         if self.package_links:
             self.packages = [(package_name, self.package_links, folder_name)]

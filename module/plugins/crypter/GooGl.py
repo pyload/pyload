@@ -20,7 +20,7 @@ class GooGl(Crypter):
 
     def decrypt(self, pyfile):
         rep = self.load(self.API_URL, get={'shortUrl': pyfile.url})
-        self.logDebug('JSON data: ' + rep)
+        self.logDebug("JSON data: " + rep)
         rep = json_loads(rep)
 
         if 'longUrl' in rep:

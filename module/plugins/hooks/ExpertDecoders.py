@@ -49,7 +49,6 @@ class ExpertDecoders(Hook):
         with open(task.captchaFile, 'rb') as f:
             data = f.read()
         data = b64encode(data)
-        #self.logDebug("%s: %s : %s" % (ticket, task.captchaFile, data))
 
         req = getRequest()
         #raise timeout threshold
@@ -61,7 +60,7 @@ class ExpertDecoders(Hook):
         finally:
             req.close()
 
-        self.logDebug("result %s : %s" % (ticket, result))
+        self.logDebug("Result %s : %s" % (ticket, result))
         task.setResult(result)
 
     def newCaptchaTask(self, task):
@@ -88,7 +87,7 @@ class ExpertDecoders(Hook):
             try:
                 response = getURL(self.API_URL, post={"action": "refund", "key": self.getConfig("passkey"),
                                                       "gen_task_id": task.data['ticket']})
-                self.logInfo("Request refund: %s" % response)
+                self.logInfo(_("Request refund"), response)
 
             except BadHeader, e:
-                self.logError("Could not send refund request.", str(e))
+                self.logError(_("Could not send refund request."), e)

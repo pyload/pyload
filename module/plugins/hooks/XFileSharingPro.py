@@ -62,7 +62,6 @@ class XFileSharingPro(Hook):
             return
 
         regexp = r"http://(?:[^/]*\.)?(%s)/(?:embed-)?\w{12}" % ("|".join(sorted(hosterList)).replace('.', '\.'))
-        #self.logDebug(regexp)
 
         dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
         dict['pattern'] = regexp

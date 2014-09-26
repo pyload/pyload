@@ -62,7 +62,7 @@ class Checksum(Hook):
 
     def coreReady(self):
         if not self.getConfig("check_checksum"):
-            self.logInfo("Checksum validation is disabled in plugin configuration")
+            self.logInfo(_("Checksum validation is disabled in plugin configuration"))
 
     def setup(self):
         self.algorithms = sorted(
@@ -101,7 +101,7 @@ class Checksum(Hook):
             api_size = int(data['size'])
             file_size = getsize(local_file)
             if api_size != file_size:
-                self.logWarning("File %s has incorrect size: %d B (%d expected)" % (pyfile.name, file_size, api_size))
+                self.logWarning(_("File %s has incorrect size: %d B (%d expected)") % (pyfile.name, file_size, api_size))
                 self.checkFailed(pyfile, local_file, "Incorrect file size")
             del data['size']
 
@@ -115,17 +115,17 @@ class Checksum(Hook):
                     checksum = computeChecksum(local_file, key.replace("-", "").lower())
                     if checksum:
                         if checksum == data[key].lower():
-                            self.logInfo('File integrity of "%s" verified by %s checksum (%s).' %
+                            self.logInfo(_('File integrity of "%s" verified by %s checksum (%s).') %
                                         (pyfile.name, key.upper(), checksum))
                             break
                         else:
-                            self.logWarning("%s checksum for file %s does not match (%s != %s)" %
+                            self.logWarning(_("%s checksum for file %s does not match (%s != %s)") %
                                            (key.upper(), pyfile.name, checksum, data[key]))
                             self.checkFailed(pyfile, local_file, "Checksums do not match")
                     else:
-                        self.logWarning("Unsupported hashing algorithm: %s" % key.upper())
+                        self.logWarning(_("Unsupported hashing algorithm"), key.upper())
             else:
-                self.logWarning("Unable to validate checksum for file %s" % pyfile.name)
+                self.logWarning(_("Unable to validate checksum for file"), pyfile.name)
 
     def checkFailed(self, pyfile, local_file, msg):
         check_action = self.getConfig("check_action")
@@ -147,14 +147,13 @@ class Checksum(Hook):
 
         for link in pypack.getChildren().itervalues():
             file_type = splitext(link['name'])[1][1:].lower()
-            #self.logDebug(link, file_type)
 
             if file_type not in self.formats:
                 continue
 
             hash_file = fs_encode(save_join(download_folder, link['name']))
             if not isfile(hash_file):
-                self.logWarning("File not found: %s" % link['name'])
+                self.logWarning(_("File not found"), link['name'])
                 continue
 
             with open(hash_file) as f:
@@ -168,8 +167,8 @@ class Checksum(Hook):
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = computeChecksum(local_file, algorithm)
                 if checksum == data['hash']:
-                    self.logInfo('File integrity of "%s" verified by %s checksum (%s).' %
+                    self.logInfo(_('File integrity of "%s" verified by %s checksum (%s).') %
                                 (data['name'], algorithm, checksum))
                 else:
-                    self.logWarning("%s checksum for file %s does not match (%s != %s)" %
+                    self.logWarning(_("%s checksum for file %s does not match (%s != %s)") %
                                    (algorithm, data['name'], checksum, data['hash']))

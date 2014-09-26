@@ -36,11 +36,11 @@ class QuickshareCz(SimpleHoster):
         if self.premium:
             if 'UU_prihlasen' in self.jsvars:
                 if self.jsvars['UU_prihlasen'] == '0':
-                    self.logWarning('User not logged in')
+                    self.logWarning("User not logged in")
                     self.relogin(self.user)
                     self.retry()
                 elif float(self.jsvars['UU_kredit']) < float(self.jsvars['kredit_odecet']):
-                    self.logWarning('Not enough credit left')
+                    self.logWarning("Not enough credit left")
                     self.premium = False
 
         if self.premium:

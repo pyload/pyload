@@ -45,7 +45,7 @@ class FreeWayMe(Account):
     def getAccountStatus(self, user, req):
         answer = req.load("https://www.free-way.me/ajax/jd.php",
                           get={"id": 4, "user": user, "pass": self.accounts[user]['password']})
-        self.logDebug("login: %s" % answer)
+        self.logDebug("Login: %s" % answer)
         if answer == "Invalid login":
             self.wrongPassword()
             return False

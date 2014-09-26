@@ -15,7 +15,6 @@ def replace_patterns(string, ruleslist):
     for r in ruleslist:
         rf, rt = r
         string = re.sub(rf, rt, string)
-        #self.logDebug(rf, rt, string)
     return string
 
 
@@ -230,7 +229,7 @@ class SimpleHoster(Hoster):
 
 
     def getFileInfo(self):
-        self.logDebug("URL: %s" % self.pyfile.url)
+        self.logDebug("URL", self.pyfile.url)
 
         name, size, status = parseFileInfo(self)[:3]
 
@@ -250,7 +249,7 @@ class SimpleHoster(Hoster):
         if size:
             self.pyfile.size = size
         else:
-            self.logError("File size not parsed")
+            self.logError(_("File size not parsed"))
 
         self.logDebug("FILE NAME: %s FILE SIZE: %s" % (self.pyfile.name, self.pyfile.size))
         return self.file_info
@@ -276,7 +275,7 @@ class SimpleHoster(Hoster):
             time_str = "(unknown time)"
             max_tries = 100
 
-        self.logInfo("Download limit reached, reconnect or wait %s" % time_str)
+        self.logInfo(_("Download limit reached, reconnect or wait %s") % time_str)
 
         self.setWait(wait_time, True)
         self.wait()
@@ -292,7 +291,7 @@ class SimpleHoster(Hoster):
         if traffic == -1:
             return True
         size = self.pyfile.size / 1024
-        self.logInfo("Filesize: %i KiB, Traffic left for user %s: %i KiB" % (size, self.user, traffic))
+        self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size, self.user, traffic))
         return size <= traffic
 
 

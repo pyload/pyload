@@ -146,7 +146,7 @@ class DeathByCaptcha(Hook):
             raise DeathByCaptchaException('timed-out')
 
         result = response['text']
-        self.logDebug("result %s : %s" % (ticket, result))
+        self.logDebug("Result %s : %s" % (ticket, result))
 
         return ticket, result
 
@@ -171,8 +171,9 @@ class DeathByCaptcha(Hook):
             return False
 
         balance, rate = self.info['balance'], self.info['rate']
-        self.logInfo("Account balance: US$%.3f (%d captchas left at %.2f cents each)" % (balance / 100,
-                                                                                         balance // rate, rate))
+        self.logInfo(_("Account balance"),
+                     _("US$%.3f (%d captchas left at %.2f cents each)") % (balance / 100,
+                                                                           balance // rate, rate))
 
         if balance > rate:
             task.handler.append(self)

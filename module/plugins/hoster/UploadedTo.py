@@ -205,7 +205,7 @@ class UploadedTo(Hoster):
             self.wait()
 
             result = self.load(url, post=options)
-            self.logDebug("result: %s" % result)
+            self.logDebug("Result: %s" % result)
 
             if "limit-size" in result:
                 self.fail("File too big for free download")
@@ -220,7 +220,7 @@ class UploadedTo(Hoster):
                 self.wait()
                 self.retry()
             elif '"err":"captcha"' in result:
-                self.logError("ul.net captcha is disabled")
+                self.logError("captcha is disabled")
                 self.invalidCaptcha()
             elif "type:'download'" in result:
                 self.correctCaptcha()

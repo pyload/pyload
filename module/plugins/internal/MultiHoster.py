@@ -40,7 +40,7 @@ class MultiHoster(Hook):
             try:
                 hosterSet = self.toHosterSet(self.getHoster()) - set(self.ignored)
             except Exception, e:
-                self.logError("%s" % str(e))
+                self.logError(e)
                 return []
 
             try:
@@ -54,7 +54,7 @@ class MultiHoster(Hook):
                         hosterSet -= configSet
 
             except Exception, e:
-                self.logError("%s" % str(e))
+                self.logError(e)
 
             self.hosters = list(hosterSet)
 
@@ -98,7 +98,7 @@ class MultiHoster(Hook):
 
     def periodical(self):
         """reload hoster list periodically"""
-        self.logInfo("Reloading supported hoster list")
+        self.logInfo(_("Reloading supported hoster list"))
 
         old_supported = self.supported
         self.supported, self.new_supported, self.hosters = [], [], []
@@ -107,7 +107,7 @@ class MultiHoster(Hook):
 
         old_supported = [hoster for hoster in old_supported if hoster not in self.supported]
         if old_supported:
-            self.logDebug("UNLOAD: %s" % ", ".join(old_supported))
+            self.logDebug("UNLOAD", ", ".join(old_supported))
             for hoster in old_supported:
                 self.unloadHoster(hoster)
 
@@ -138,24 +138,24 @@ class MultiHoster(Hook):
         klass = getattr(module, self.__name__)
 
         # inject plugin plugin
-        self.logDebug("Overwritten Hosters: %s" % ", ".join(sorted(self.supported)))
+        self.logDebug("Overwritten Hosters", ", ".join(sorted(self.supported)))
         for hoster in self.supported:
             dict = self.core.pluginManager.hosterPlugins[hoster]
             dict['new_module'] = module
             dict['new_name'] = self.__name__
 
         if excludedList:
-            self.logInfo("The following hosters were not overwritten - account exists: %s" % ", ".join(sorted(excludedList)))
+            self.logInfo(_("The following hosters were not overwritten - account exists"), ", ".join(sorted(excludedList)))
 
         if self.new_supported:
-            self.logDebug("New Hosters: %s" % ", ".join(sorted(self.new_supported)))
+            self.logDebug("New Hosters", ", ".join(sorted(self.new_supported)))
 
             # create new regexp
             regexp = r".*(%s).*" % "|".join([x.replace(".", "\\.") for x in self.new_supported])
             if hasattr(klass, "__pattern__") and isinstance(klass.__pattern__, basestring) and '://' in klass.__pattern__:
                 regexp = r"%s|%s" % (klass.__pattern__, regexp)
 
-            self.logDebug("Regexp: %s" % regexp)
+            self.logDebug("Regexp", regexp)
 
             dict = self.core.pluginManager.hosterPlugins[self.__name__]
             dict['pattern'] = regexp

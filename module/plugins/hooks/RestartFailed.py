@@ -31,7 +31,7 @@ class RestartFailed(Hook):
                 self.logDebug("Invalid interval value, kept current")
 
     def periodical(self):
-        self.logInfo("Restart failed downloads")
+        self.logInfo(_("Restart failed downloads"))
         self.api.restartFailed()
 
     def setup(self):

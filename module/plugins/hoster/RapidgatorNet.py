@@ -59,12 +59,12 @@ class RapidgatorNet(SimpleHoster):
             json = self.load('%s/%s' % (self.API_URL, cmd),
                              get={'sid': self.sid,
                                   'url': self.pyfile.url}, decode=True)
-            self.logDebug('API:%s' % cmd, json, "SID: %s" % self.sid)
+            self.logDebug("API:%s" % cmd, json, "SID: %s" % self.sid)
             json = json_loads(json)
             status = json['response_status']
             msg = json['response_details']
         except BadHeader, e:
-            self.logError('API:%s' % cmd, e, "SID: %s" % self.sid)
+            self.logError("API:%s" % cmd, e, "SID: %s" % self.sid)
             status = e.code
             msg = e
 

@@ -44,11 +44,11 @@ class MergeFiles(Hook):
             download_folder = save_join(download_folder, pack.folder)
 
         for name, file_list in files.iteritems():
-            self.logInfo("Starting merging of %s" % name)
+            self.logInfo(_("Starting merging of"), name)
             final_file = open(save_join(download_folder, name), "wb")
 
             for splitted_file in file_list:
-                self.logDebug("Merging part %s" % splitted_file)
+                self.logDebug("Merging part", splitted_file)
                 pyfile = self.core.files.getFile(fid_dict[splitted_file])
                 pyfile.setStatus("processing")
                 try:
@@ -64,7 +64,7 @@ class MergeFiles(Hook):
                         else:
                             break
                     s_file.close()
-                    self.logDebug("Finished merging part %s" % splitted_file)
+                    self.logDebug("Finished merging part", splitted_file)
                 except Exception, e:
                     print traceback.print_exc()
                 finally:
@@ -73,4 +73,4 @@ class MergeFiles(Hook):
                     pyfile.release()
 
             final_file.close()
-            self.logInfo("Finished merging of %s" % name)
+            self.logInfo(_("Finished merging of"), name)

@@ -203,7 +203,7 @@ class XFileSharingPro(SimpleHoster):
         link = link.strip()
         if self.captcha:
             self.correctCaptcha()
-        self.logDebug('DIRECT LINK: %s' % link)
+        self.logDebug("DIRECT LINK: %s" % link)
         self.download(link, disposition=True)
 
 

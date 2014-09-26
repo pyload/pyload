@@ -103,7 +103,7 @@ class FileserveCom(Hoster):
 
         # show download link
         response = self.load(self.url, post={"downloadLink": "show"}, decode=True)
-        self.logDebug("show downloadLink response : %s" % response)
+        self.logDebug("Show downloadLink response : %s" % response)
         if "fail" in response:
             self.fail("Couldn't retrieve download url")
 
@@ -130,7 +130,7 @@ class FileserveCom(Hoster):
 
     def doTimmer(self):
         response = self.load(self.url, post={"downloadLink": "wait"}, decode=True)
-        self.logDebug("wait response : %s" % response[:80])
+        self.logDebug("Wait response : %s" % response[:80])
 
         if "fail" in response:
             self.fail("Failed getting wait time")

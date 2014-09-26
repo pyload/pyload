@@ -61,7 +61,7 @@ class ImageTyperz(Hook):
         except:
             raise ImageTyperzException("invalid response")
 
-        self.logInfo("Account balance: $%s left" % response)
+        self.logInfo(_("Account balance: $%s left") % response)
         return balance
 
     def submit(self, captcha, captchaType="file", match=None):
@@ -118,7 +118,7 @@ class ImageTyperz(Hook):
             start_new_thread(self.processCaptcha, (task,))
 
         else:
-            self.logInfo("Your %s account has not enough credits" % self.__name__)
+            self.logInfo(_("Your %s account has not enough credits") % self.__name__)
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
@@ -127,9 +127,9 @@ class ImageTyperz(Hook):
                                                       "imageid": task.data['ticket']})
 
             if response == "SUCCESS":
-                self.logInfo("Bad captcha solution received, requested refund")
+                self.logInfo(_("Bad captcha solution received, requested refund"))
             else:
-                self.logError("Bad captcha solution received, refund request failed", response)
+                self.logError(_("Bad captcha solution received, refund request failed"), response)
 
     def processCaptcha(self, task):
         c = task.captchaFile

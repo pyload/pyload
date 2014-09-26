@@ -114,7 +114,7 @@ class FilepostCom(SimpleHoster):
             elif 'CAPTCHA Code nicht korrekt' in json_response['js']['error']:
                 return None
             elif 'CAPTCHA' in json_response['js']['error']:
-                self.logDebug('error response is unknown, but mentions CAPTCHA -> return None')
+                self.logDebug("Error response is unknown, but mentions CAPTCHA")
                 return None
             else:
                 self.fail(json_response['js']['error'])

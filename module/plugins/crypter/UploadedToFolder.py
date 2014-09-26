@@ -33,6 +33,6 @@ class UploadedToFolder(SimpleCrypter):
 
         self.html = self.load(plain_link)
         package_links = self.html.split('\n')[:-1]
-        self.logDebug('Package has %d links' % len(package_links))
+        self.logDebug("Package has %d links" % len(package_links))
 
         self.packages = [(package_name, package_links, folder_name)]

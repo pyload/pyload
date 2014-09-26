@@ -35,7 +35,7 @@ class DownloadScheduler(Hook):
         schedule = re.findall("(\d{1,2}):(\d{2})[\s]*(-?\d+)",
                               schedule.lower().replace("full", "-1").replace("none", "0"))
         if not schedule:
-            self.logError("Invalid schedule")
+            self.logError(_("Invalid schedule"))
             return
 
         t0 = localtime()
@@ -58,7 +58,7 @@ class DownloadScheduler(Hook):
     def setDownloadSpeed(self, speed):
         if speed == 0:
             abort = self.getConfig("abort")
-            self.logInfo("Stopping download server. (Running downloads will %sbe aborted.)" % ('' if abort else 'not '))
+            self.logInfo(_("Stopping download server. (Running downloads will %sbe aborted.)") % '' if abort else _('not '))
             self.core.api.pauseServer()
             if abort:
                 self.core.api.stopAllDownloads()
@@ -66,10 +66,10 @@ class DownloadScheduler(Hook):
             self.core.api.unpauseServer()
 
             if speed > 0:
-                self.logInfo("Setting download speed to %d kB/s" % speed)
+                self.logInfo(_("Setting download speed to %d kB/s") % speed)
                 self.core.api.setConfigValue("download", "limit_speed", 1)
                 self.core.api.setConfigValue("download", "max_speed", speed)
             else:
-                self.logInfo("Setting download speed to FULL")
+                self.logInfo(_("Setting download speed to FULL"))
                 self.core.api.setConfigValue("download", "limit_speed", 0)
                 self.core.api.setConfigValue("download", "max_speed", -1)

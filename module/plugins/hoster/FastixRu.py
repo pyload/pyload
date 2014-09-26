@@ -47,7 +47,7 @@ class FastixRu(Hoster):
             url = "http://fastix.ru/api_v2/?apikey=%s&sub=getdirectlink&link=%s" % (api_key, pyfile.url)
             page = self.load(url)
             data = json_loads(page)
-            self.logDebug("Json data: %s" % str(data))
+            self.logDebug("Json data", data)
             if "error\":true" in page:
                 self.offline()
             else:

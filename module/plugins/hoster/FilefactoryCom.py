@@ -73,7 +73,7 @@ class FilefactoryCom(SimpleHoster):
                 self.parseError('Unable to detect free direct link')
             direct = direct.group(1)
 
-        self.logDebug('DIRECT LINK: ' + direct)
+        self.logDebug("DIRECT LINK: " + direct)
         self.download(direct, disposition=True)
 
         check = self.checkDownload({"multiple": "You are currently downloading too many files at once.",
@@ -102,5 +102,5 @@ class FilefactoryCom(SimpleHoster):
             else:
                 self.parseError('Unable to detect premium direct link')
 
-        self.logDebug('DIRECT PREMIUM LINK: ' + url)
+        self.logDebug("DIRECT PREMIUM LINK: " + url)
         self.download(url, disposition=True)

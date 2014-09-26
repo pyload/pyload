@@ -150,7 +150,7 @@ class Account(Base):
 
             if req: req.close()
 
-            self.logDebug("Account Info: %s" % str(infos))
+            self.logDebug("Account Info: %s" % infos)
 
             infos['timestamp'] = time()
             self.infos[name] = infos

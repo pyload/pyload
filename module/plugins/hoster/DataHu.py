@@ -31,7 +31,7 @@ class DataHu(SimpleHoster):
         m = re.search(self.LINK_PATTERN, self.html)
         if m:
             url = m.group(1)
-            self.logDebug('Direct link: ' + url)
+            self.logDebug("Direct link: " + url)
         else:
             self.parseError('Unable to get direct link')
 

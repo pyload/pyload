@@ -50,7 +50,7 @@ class AlldebridCom(Hoster):
             page = self.load(url)
             data = json_loads(page)
 
-            self.logDebug("Json data: %s" % str(data))
+            self.logDebug("Json data", data)
 
             if data['error']:
                 if data['error'] == "This link isn't available on the hoster website.":

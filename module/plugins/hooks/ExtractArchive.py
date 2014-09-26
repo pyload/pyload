@@ -93,12 +93,12 @@ class ExtractArchive(Hook):
                 if e.errno == 2:
                     self.logInfo(_("No %s installed") % p)
                 else:
-                    self.logWarning(_("Could not activate %s") % p, str(e))
+                    self.logWarning(_("Could not activate %s") % p, e)
                     if self.core.debug:
                         print_exc()
 
             except Exception, e:
-                self.logWarning(_("Could not activate %s") % p, str(e))
+                self.logWarning(_("Could not activate %s") % p, e)
                 if self.core.debug:
                     print_exc()
 
@@ -197,16 +197,16 @@ class ExtractArchive(Hook):
                             password = p.password.strip().splitlines()
                             new_files = self._extract(klass, fid, password, thread)
                         except Exception, e:
-                            self.logError(basename(target), str(e))
+                            self.logError(basename(target), e)
                             success = False
                             continue
 
-                        self.logDebug("Extracted: %s" % new_files)
+                        self.logDebug("Extracted", new_files)
                         self.setPermissions(new_files)
 
                         for file in new_files:
                             if not exists(file):
-                                self.logDebug("new file %s does not exists" % file)
+                                self.logDebug("New file %s does not exists" % file)
                                 continue
                             if recursive and isfile(file):
                                 new_files_ids.append((file, fid))  # append as new target
@@ -242,7 +242,7 @@ class ExtractArchive(Hook):
                 success = True
             else:
                 self.logInfo(basename(plugin.file), _("Password protected"))
-                self.logDebug("Passwords: %s" % str(passwords))
+                self.logDebug("Passwords", passwords)
 
                 pwlist = copy(self.getPasswords())
                 # remove already supplied pws from list (only local)
@@ -252,7 +252,7 @@ class ExtractArchive(Hook):
 
                 for pw in passwords + pwlist:
                     try:
-                        self.logDebug("Try password: %s" % pw)
+                        self.logDebug("Try password", pw)
                         if plugin.checkPassword(pw):
                             plugin.extract(progress, pw)
                             self.addPassword(pw)
@@ -265,7 +265,7 @@ class ExtractArchive(Hook):
                 raise Exception(_("Wrong password"))
 
             if self.core.debug:
-                self.logDebug("Would delete: %s" % ", ".join(plugin.getDeleteFiles()))
+                self.logDebug("Would delete", ", ".join(plugin.getDeleteFiles()))
 
             if deletearchive:
                 files = plugin.getDeleteFiles()
@@ -284,13 +284,13 @@ class ExtractArchive(Hook):
             return extracted_files
 
         except ArchiveError, e:
-            self.logError(basename(plugin.file), _("Archive Error"), str(e))
+            self.logError(basename(plugin.file), _("Archive Error"), e)
         except CRCError:
             self.logError(basename(plugin.file), _("CRC Mismatch"))
         except Exception, e:
             if self.core.debug:
                 print_exc()
-            self.logError(basename(plugin.file), _("Unknown Error"), str(e))
+            self.logError(basename(plugin.file), _("Unknown Error"), e)
 
         self.manager.dispatchEvent("archive_extract_failed", pyfile)
         raise Exception(_("Extract failed"))

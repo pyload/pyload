@@ -30,7 +30,7 @@ class EgoFilesCom(Account):
             trafficleft = parseFileSize(m.group('T'), m.group('U')) / 1024
             return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
         else:
-            self.logError('Unable to retrieve account information - Plugin may be out of date')
+            self.logError("Unable to retrieve account information - Plugin may be out of date")
 
     def login(self, user, data, req):
         # Set English language

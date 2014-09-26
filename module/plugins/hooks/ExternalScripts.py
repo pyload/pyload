@@ -43,7 +43,7 @@ class ExternalScripts(Hook):
 
         for script_type, names in self.scripts.iteritems():
             if names:
-                self.logInfo((_("Installed scripts for %s: ") % script_type) + ", ".join([basename(x) for x in names]))
+                self.logInfo(_("Installed scripts for"), script_type, ", ".join([basename(x) for x in names]))
 
 
     def initPluginType(self, folder, path):
@@ -67,11 +67,11 @@ class ExternalScripts(Hook):
     def callScript(self, script, *args):
         try:
             cmd = [script] + [str(x) if not isinstance(x, basestring) else x for x in args]
-            self.logDebug("Executing %(script)s: %(cmd)s" % {"script": abspath(script), "cmd": " ".join(cmd)})
+            self.logDebug("Executing", abspath(script), " ".join(cmd))
             #output goes to pyload
             subprocess.Popen(cmd, bufsize=-1)
         except Exception, e:
-            self.logError(_("Error in %(script)s: %(error)s") % {"script": basename(script), "error": str(e)})
+            self.logError(_("Error in %(script)s: %(error)s") % {"script": basename(script), "error": e})
 
 
     def downloadPreparing(self, pyfile):

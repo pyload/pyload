@@ -156,7 +156,7 @@ class NCryptIn(Crypter):
             self.logDebug("CircleCaptcha protected")
             captcha_img_url = "http://ncrypt.in/classes/captcha/circlecaptcha.php"
             coords = self.decryptCaptcha(captcha_img_url, forceUser=True, imgtype="png", result_type='positional')
-            self.logDebug("Captcha resolved, coords [%s]" % str(coords))
+            self.logDebug("Captcha resolved, coords [%s]" % coords)
             postData['circle.x'] = coords[0]
             postData['circle.y'] = coords[1]
 
