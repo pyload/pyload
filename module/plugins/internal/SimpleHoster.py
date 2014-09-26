@@ -78,8 +78,8 @@ def parseFileInfo(self, url='', html=''):
     else:
         if not html and hasattr(self, "html"):
             html = self.html
-        if isinstance(self.SH_BROKEN_ENCODING, (str, unicode)):
-            html = unicode(html, self.SH_BROKEN_ENCODING)
+        if isinstance(self.TEXT_ENCODING, basestring):
+            html = unicode(html, self.TEXT_ENCODING)
             if hasattr(self, "html"):
                 self.html = html
 
@@ -112,7 +112,7 @@ def parseFileInfo(self, url='', html=''):
                     size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
                                             self.FILE_SIZE_REPLACEMENTS)
                     info['size'] = parseFileSize(size)
-                elif isinstance(info['size'], (str, unicode)):
+                elif isinstance(info['size'], basestring):
                     if 'units' in info:
                         info['size'] += info['units']
                     info['size'] = parseFileSize(info['size'])
@@ -128,10 +128,10 @@ def create_getInfo(plugin):
     def getInfo(urls):
         for url in urls:
             cj = CookieJar(plugin.__name__)
-            if isinstance(plugin.SH_COOKIES, list):
-                set_cookies(cj, plugin.SH_COOKIES)
+            if isinstance(plugin.COOKIES, list):
+                set_cookies(cj, plugin.COOKIES)
             file_info = parseFileInfo(plugin, url, getURL(replace_patterns(url, plugin.FILE_URL_REPLACEMENTS),
-                                                          decode=not plugin.SH_BROKEN_ENCODING, cookies=cj))
+                                                          decode=not plugin.TEXT_ENCODING, cookies=cj))
             yield file_info
 
     return getInfo
@@ -187,9 +187,9 @@ class SimpleHoster(Hoster):
     FILE_SIZE_REPLACEMENTS = []
     FILE_URL_REPLACEMENTS = []
 
-    SH_BROKEN_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
-    SH_COOKIES = True  #: or False or list of tuples [(domain, name, value)]
-    SH_CHECK_TRAFFIC = False  #: True = force check traffic left for a premium account
+    TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
+    COOKIES = True  #: or False or list of tuples [(domain, name, value)]
+    FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
 
 
     def init(self):
@@ -198,8 +198,8 @@ class SimpleHoster(Hoster):
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
-        if isinstance(self.SH_COOKIES, list):
-            set_cookies(self.req.cj, self.SH_COOKIES)
+        if isinstance(self.COOKIES, list):
+            set_cookies(self.req.cj, self.COOKIES)
 
 
     def process(self, pyfile):
@@ -207,18 +207,18 @@ class SimpleHoster(Hoster):
         self.req.setOption("timeout", 120)
         # Due to a 0.4.9 core bug self.load would keep previous cookies even if overridden by cookies parameter.
         # Workaround using getURL. Can be reverted in 0.4.10 as the cookies bug has been fixed.
-        self.html = getURL(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+        self.html = getURL(pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
         premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
         if not premium_only:  # Usually premium only pages doesn't show the file information
             self.getFileInfo()
 
-        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
+        if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
         elif premium_only:
             self.fail("This link require a premium account")
         else:
             # This line is required due to the getURL workaround. Can be removed in 0.4.10
-            self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+            self.html = self.load(pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
             self.handleFree()
 
 

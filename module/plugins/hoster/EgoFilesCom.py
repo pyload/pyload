@@ -32,7 +32,7 @@ class EgoFilesCom(SimpleHoster):
         self.load("https://egofiles.com/ajax/lang.php?lang=en", just_header=True)
 
     def process(self, pyfile):
-        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
+        if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
         else:
             self.handleFree()

@@ -31,14 +31,14 @@ class FilerNet(SimpleHoster):
 
 
     def process(self, pyfile):
-        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
+        if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
         else:
             self.handleFree()
 
     def handleFree(self):
         self.req.setOption("timeout", 120)
-        self.html = self.load(self.pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+        self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
 
         # Wait between downloads
         m = re.search(r'musst du <span id="time">(\d+)</span> Sekunden warten', self.html)

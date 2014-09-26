@@ -23,7 +23,7 @@ class UploadheroCom(SimpleHoster):
     FILE_SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'
     OFFLINE_PATTERN = r'<p class="titre_dl_2">|<div class="raison"><strong>Le lien du fichier ci-dessus n\'existe plus.'
 
-    SH_COOKIES = [(".uploadhero.co", "lang", "en")]
+    COOKIES = [(".uploadhero.co", "lang", "en")]
 
     IP_BLOCKED_PATTERN = r'href="(/lightbox_block_download.php\?min=.*?)"'
     IP_WAIT_PATTERN = r'<span id="minutes">(\d+)</span>.*\s*<span id="seconds">(\d+)</span>'

@@ -25,7 +25,7 @@ class ZippyshareCom(SimpleHoster):
     FILE_INFO_PATTERN = r'document\.getElementById\(\'dlbutton\'\)\.href = "[^;]*/(?P<N>[^"]+)";'
     OFFLINE_PATTERN = r'>File does not exist on this server<'
 
-    SH_COOKIES = [(".zippyshare.com", "ziplocale", "en")]
+    COOKIES = [(".zippyshare.com", "ziplocale", "en")]
 
 
     def setup(self):

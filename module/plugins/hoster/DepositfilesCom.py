@@ -27,7 +27,7 @@ class DepositfilesCom(SimpleHoster):
                               (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
     FILE_URL_REPLACEMENTS = [(__pattern__, "https://dfiles.eu/files/\g<ID>")]
 
-    SH_COOKIES = [(".dfiles.eu", "lang_current", "en")]
+    COOKIES = [(".dfiles.eu", "lang_current", "en")]
 
     RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)'"
 
@@ -106,7 +106,7 @@ class DepositfilesCom(SimpleHoster):
             self.retry(wait_time=60)
 
     def handlePremium(self):
-        self.html = self.load(self.pyfile.url, cookies=self.SH_COOKIES)
+        self.html = self.load(self.pyfile.url, cookies=self.COOKIES)
 
         if '<span class="html_download_api-gold_traffic_limit">' in self.html:
             self.logWarning("Download limit reached")

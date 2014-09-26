@@ -51,16 +51,16 @@ class SimpleCrypter(Crypter):
 
     URL_REPLACEMENTS = []
 
-    SH_BROKEN_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
-    SH_COOKIES = True  #: or False or list of tuples [(domain, name, value)]
+    TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
+    COOKIES = True  #: or False or list of tuples [(domain, name, value)]
 
     LOGIN_ACCOUNT = False
     LOGIN_PREMIUM = False
 
 
     def setup(self):
-        if isinstance(self.SH_COOKIES, list):
-            set_cookies(self.req.cj, self.SH_COOKIES)
+        if isinstance(self.COOKIES, list):
+            set_cookies(self.req.cj, self.COOKIES)
 
 
     def decrypt(self, pyfile):
@@ -72,7 +72,7 @@ class SimpleCrypter(Crypter):
 
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
 
-        self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+        self.html = self.load(pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
 
         self.checkOnline()
 

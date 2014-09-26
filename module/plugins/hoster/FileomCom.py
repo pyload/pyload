@@ -20,7 +20,7 @@ class FileomCom(XFileSharingPro):
     HOSTER_NAME = "fileom.com"
 
     FILE_URL_REPLACEMENTS = [(r'/$', "")]
-    SH_COOKIES = [(".fileom.com", "lang", "english")]
+    COOKIES = [(".fileom.com", "lang", "english")]
 
     FILE_NAME_PATTERN = r'Filename: <span>(?P<N>.+?)<'
     FILE_SIZE_PATTERN = r'File Size: <span class="size">(?P<S>[\d\.]+) (?P<U>\w+)'

@@ -33,7 +33,7 @@ class FilefactoryCom(SimpleHoster):
     OFFLINE_PATTERN = r'<h2>File Removed</h2>|This file is no longer available'
     PREMIUM_ONLY_PATTERN = r'>Premium Account Required<'
 
-    SH_COOKIES = [(".filefactory.com", "locale", "en_US.utf8")]
+    COOKIES = [(".filefactory.com", "locale", "en_US.utf8")]
 
 
     def handleFree(self):

@@ -19,7 +19,7 @@ class TusfilesNet(XFileSharingPro):
     FILE_INFO_PATTERN = r'\](?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)\['
     OFFLINE_PATTERN = r'>File Not Found|<Title>TusFiles - Fast Sharing Files!'
 
-    SH_COOKIES = [(".tusfiles.net", "lang", "english")]
+    COOKIES = [(".tusfiles.net", "lang", "english")]
 
 
     def setup(self):
