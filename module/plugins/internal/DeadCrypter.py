@@ -6,14 +6,15 @@ from module.plugins.Crypter import Crypter as _Crypter
 class DeadCrypter(_Crypter):
     __name__ = "DeadCrypter"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = None
 
-    __description__ = """Crypter is no longer available"""
+    __description__ = """ Crypter is no longer available """
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
 
     def setup(self):
-        self.fail("Crypter is no longer available")
+        self.pyfile.error = "Crypter is no longer available"
+        self.offline()  #@TODO: self.offline("Crypter is no longer available")
