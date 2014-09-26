@@ -10,7 +10,7 @@ from module.utils import html_unescape
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = None
 
@@ -48,9 +48,14 @@ class SimpleCrypter(Crypter):
           return the html of the page number page_n
     """
 
+
     URL_REPLACEMENTS = []
 
-    SH_COOKIES = True  # or False or list of tuples [(domain, name, value)]
+    SH_BROKEN_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
+    SH_COOKIES = True  #: or False or list of tuples [(domain, name, value)]
+
+    LOGIN_ACCOUNT = False
+    LOGIN_PREMIUM = False
 
 
     def setup(self):
@@ -59,9 +64,15 @@ class SimpleCrypter(Crypter):
 
 
     def decrypt(self, pyfile):
+        if self.LOGIN_ACCOUNT and not self.account:
+            self.fail('Required account not found!')
+
+        if self.LOGIN_PREMIUM and not self.premium:
+            self.fail('Required premium account not found!')
+
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
 
-        self.html = self.load(pyfile.url, decode=True)
+        self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
 
         self.checkOnline()
 
