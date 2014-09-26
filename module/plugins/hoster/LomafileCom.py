@@ -22,7 +22,7 @@ class LomafileCom(SimpleHoster):
 
 
     def handleFree(self):
-        for _ in range(3):
+        for _ in xrange(3):
             captcha_id = re.search(r'src="http://lomafile\.com/captchas/(?P<id>\w+)\.jpg"', self.html)
             if not captcha_id:
                 self.parseError("Unable to parse captcha id.")
