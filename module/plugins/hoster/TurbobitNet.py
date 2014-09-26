@@ -17,16 +17,17 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'http://(?:www\.)?(turbobit.net|unextfiles.com)/(?!download/folder/)(?:download/free/)?(?P<ID>\w+).*'
 
     __description__ = """Turbobit.net plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __author_name__ = ("prOq","zoidberg")
+    __author_mail__ = (" ","zoidberg@mujmail.cz")
 
-    FILE_INFO_PATTERN = r"<span class='file-icon1[^>]*>(?P<N>[^<]+)</span>\s*\((?P<S>[^\)]+)\)\s*</h1>"  #: long filenames are shortened
+#    FILE_INFO_PATTERN = r"<span class='file-icon1[^>]*>(?P<N>[^<]+)</span>\s*\((?P<S>[^\)]+)\)\s*</h1>"  #: long filenames are shortened
     FILE_NAME_PATTERN = r'<meta name="keywords" content="\s+(?P<N>[^,]+)'  #: full name but missing on page2
+    FILE_SIZE_PATTERN = r'<span class="file-size">(?P<S>[\d,.]+) (?P<U>\w+)</span>'
     OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
 
     FILE_URL_REPLACEMENTS = [(r"http://(?:www\.)?(turbobit.net|unextfiles.com)/(?:download/free/)?(?P<ID>\w+).*",
@@ -34,14 +35,14 @@ class TurbobitNet(SimpleHoster):
     COOKIES = [(".turbobit.net", "user_lang", "en")]
 
     LINK_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
-    LIMIT_WAIT_PATTERN = r'<div id="time-limit-text">\s*.*?<span id=\'timeout\'>(\d+)</span>'
+    LIMIT_WAIT_PATTERN = r"<div id='timeout'>(\d+)</div>"
     CAPTCHA_KEY_PATTERN = r'src="http://api\.recaptcha\.net/challenge\?k=([^"]+)"'
     CAPTCHA_SRC_PATTERN = r'<img alt="Captcha" src="(.*?)"'
 
 
     def handleFree(self):
         self.url = "http://turbobit.net/download/free/%s" % self.file_info['ID']
-        self.html = self.load(self.url)
+        self.html = self.load(self.url, decode = True, ref = True)
 
         rtUpdate = self.getRtUpdate()
 
@@ -83,7 +84,8 @@ class TurbobitNet(SimpleHoster):
             self.logDebug(inputs)
             self.html = self.load(self.url, post=inputs)
 
-            if not "<div class='download-timer-header'>" in self.html:
+            if '<div class="captcha-error">Incorrect, try again!</div>' in self.html:
+		self.logInfo("Invalid captcha")
                 self.invalidCaptcha()
             else:
                 self.correctCaptcha()

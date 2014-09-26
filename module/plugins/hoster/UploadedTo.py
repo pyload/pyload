@@ -181,7 +181,6 @@ class UploadedTo(Hoster):
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
-
         if 'var free_enabled = false;' in self.html:
             self.logError("Free-download capacities exhausted.")
             self.retry(max_tries=24, wait_time=5 * 60)
@@ -200,7 +199,9 @@ class UploadedTo(Hoster):
 
         for _ in xrange(5):
             re_captcha = ReCaptcha(self)
-            challenge, result = re_captcha.challenge(challengeId.group(1))
+	    re_captcha.recaptcha_key = challengeId.group(1)
+#            challenge, result = re_captcha.challenge(challengeId.group(1))
+            challenge, result = re_captcha.challenge()
             options = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": result}
             self.wait()
 
