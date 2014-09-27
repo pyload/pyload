@@ -27,11 +27,11 @@ class CatShareNet(SimpleHoster):
     LINK_PATTERN = r'<form action="(.+?)" method="GET">'
 
 
-    def process(self, pyfile):
+    def getFileInfo(self):
         m = re.search(self.IP_BLOCKED_PATTERN, self.html)
         if m is None:
             self.fail("Only connections from Polish IP address are allowed")
-        super(CatShareNet, self).process(pyfile)
+        return super(CatShareNet, self).getFileInfo()
 
 
     def handleFree(self):
