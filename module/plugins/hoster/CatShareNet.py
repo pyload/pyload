@@ -11,7 +11,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class CatShareNet(SimpleHoster):
     __name__ = "CatShareNet"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w+'
 
@@ -36,6 +36,7 @@ class CatShareNet(SimpleHoster):
             self.wait(seconds + 1)
 
         # solve captcha and send solution
+        recaptcha = ReCaptcha(self)
         challenge, code = recaptcha.challenge(self.RECAPTCHA_KEY)
         self.html = self.load(self.pyfile.url,
                               post={'recaptcha_challenge_field': challenge, 'recaptcha_response_field': code},
