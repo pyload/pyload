@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FiredriveCom(SimpleHoster):
     __name__ = "FiredriveCom"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
 
@@ -19,7 +19,7 @@ class FiredriveCom(SimpleHoster):
     FILE_NAME_PATTERN = r'<b>Name:</b> (?P<N>.+) <br>'
     FILE_SIZE_PATTERN = r'<b>Size:</b> (?P<S>[\d.]+) (?P<U>[a-zA-Z]+) <br>'
     OFFLINE_PATTERN = r'class="sad_face_image"|>No such page here.<'
-    TEMP_OFFLINE_PATTERN = r'>(File Temporarily Unavailable|Server Error. Try again later)'
+    TEMP_OFFLINE_PATTERN = r'Please try again in a few minutes.<'
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.firedrive.com/file/\g<ID>')]
 

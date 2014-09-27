@@ -31,9 +31,11 @@ class XFileSharingPro(SimpleHoster):
 
 
     FILE_URL_REPLACEMENTS = [(r'/embed-(\w{12}).*', r'/\1')]  #: support embedded files
+
     FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     FILE_SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>\w+)?\)</font>'
+
     OFFLINE_PATTERN = r'>\w+ (Not Found|file (was|has been) removed)'
 
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
