@@ -13,7 +13,7 @@ class CatShareNet(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?catshare\.net/\w+'
+    __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
 
     __description__ = """CatShare.net hoster plugin"""
     __author_name__ = ("z00nx", "prOq")
