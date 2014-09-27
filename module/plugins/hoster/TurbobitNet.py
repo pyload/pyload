@@ -23,7 +23,7 @@ class TurbobitNet(SimpleHoster):
 
     __description__ = """ Turbobit.net hoster plugin """
     __author_name__ = ("zoidberg", "prOq")
-    __author_mail__ = ("zoidberg@mujmail.cz", "")
+    __author_mail__ = ("zoidberg@mujmail.cz", None)
 
 
     FILE_NAME_PATTERN = r'id="file-title">(?P<N>.+?)<'
