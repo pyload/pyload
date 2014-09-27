@@ -4,7 +4,7 @@ import os
 import re
 
 from glob import glob
-from os import basename, join
+from os.path import basename, join
 from string import digits
 from subprocess import Popen, PIPE
 
@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(AbtractExtractor):
     __name__ = "UnRar"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __description__ = """Rar extractor plugin"""
     __author_name__ = "RaNaN"
