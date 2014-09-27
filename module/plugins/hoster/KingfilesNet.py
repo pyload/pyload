@@ -24,10 +24,10 @@ class KingfilesNet(SimpleHoster):
     OFFLINE_PATTERN = r'>(File Not Found</b><br><br>|File Not Found</h2>)'
 
     FILE_ID_PATTERN = r'<input type=\"hidden\" name=\"id\" value=\"(.+)\">'
-    RANDOM_PATTERN = r'type=\"hidden\" name=\"rand\" value=\"(.+)\">'
+    RAND_ID_PATTERN = r'type=\"hidden\" name=\"rand\" value=\"(.+)\">'
 
     LINK_PATTERN = r'var download_url = \'(.+)\';'
-    SOLVEMEDIA_PATTERN = r'http://api.solvemedia.com/papi/challenge.script\?k=(.+)\">'
+    SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.+)\">'
 
 
     def setup(self):
@@ -61,7 +61,7 @@ class KingfilesNet(SimpleHoster):
         captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
 
         # Make the downloadlink appear and load the file
-        m = re.search(self.RANDOM_PATTERN, b)
+        m = re.search(self.RAND_ID_PATTERN, b)
         if m is None:
             self.parseError("Random key not found")
 
