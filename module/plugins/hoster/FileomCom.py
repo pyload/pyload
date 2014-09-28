@@ -11,7 +11,7 @@ class FileomCom(XFileSharingPro):
     __type__ = "hoster"
     __version__ = "0.01"
 
-    __pattern__ = r'https?://(?:www\.)?fileom\.com/\w+'
+    __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
 
     __description__ = """Fileom.com hoster plugin"""
     __author_name__ = "Walter Purcaro"
@@ -31,9 +31,9 @@ class FileomCom(XFileSharingPro):
 
 
     def setup(self):
-        self.resumeDownload = self.premium
         self.multiDL = True
         self.chunkLimit = 1
+        self.resumeDownload = self.premium
 
 
 getInfo = create_getInfo(FileomCom)

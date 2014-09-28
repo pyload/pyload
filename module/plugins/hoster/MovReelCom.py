@@ -8,11 +8,12 @@ class MovReelCom(XFileSharingPro):
     __type__ = "hoster"
     __version__ = "1.20"
 
-    __pattern__ = r'http://(?:www\.)?movreel.com/.*'
+    __pattern__ = r'http://(?:www\.)?movreel\.com/\w{12}'
 
     __description__ = """MovReel.com hoster plugin"""
     __author_name__ = "JorisV83"
     __author_mail__ = "jorisv83-pyload@yahoo.com"
+
 
     HOSTER_NAME = "movreel.com"
 

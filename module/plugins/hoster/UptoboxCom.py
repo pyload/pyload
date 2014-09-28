@@ -10,7 +10,7 @@ class UptoboxCom(XFileSharingPro):
     __type__ = "hoster"
     __version__ = "0.10"
 
-    __pattern__ = r'https?://(?:www\.)?uptobox\.com/\w+'
+    __pattern__ = r'https?://(?:www\.)?uptobox\.com/\w{12}'
 
     __description__ = """Uptobox.com hoster plugin"""
     __author_name__ = "Walter Purcaro"

@@ -11,21 +11,20 @@ class RarefileNet(XFileSharingPro):
     __type__ = "hoster"
     __version__ = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?rarefile.net/\w{12}'
+    __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'
 
     __description__ = """Rarefile.net hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
+
     HOSTER_NAME = "rarefile.net"
 
     FILE_NAME_PATTERN = r'<td><font color="red">(?P<N>.*?)</font></td>'
     FILE_SIZE_PATTERN = r'<td>Size : (?P<S>.+?)&nbsp;'
+
     LINK_PATTERN = r'<a href="(?P<link>[^"]+)">(?P=link)</a>'
 
-
-    def setup(self):
-        self.resumeDownload = self.multiDL = self.premium
 
     def handleCaptcha(self, inputs):
         captcha_div = re.search(r'<b>Enter code.*?<div.*?>(.*?)</div>', self.html, re.S).group(1)
