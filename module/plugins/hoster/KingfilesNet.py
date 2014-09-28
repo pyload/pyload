@@ -86,8 +86,9 @@ class KingfilesNet(SimpleHoster):
         dl_url = m.group(1)
         self.download(dl_url, cookies=True, disposition=True)
 
-        if self.checkDownload({'is_html': re.compile("<html>")}) == "is_html":
-            self.fail("The downloaded file is html, something went wrong.")
+        check = self.checkDownload({'is_html': re.compile("<html>")})
+        if check == "is_html":
+            self.parseError("Downloaded file is an html file")
 
 
 getInfo = create_getInfo(KingfilesNet)
