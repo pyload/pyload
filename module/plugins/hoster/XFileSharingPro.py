@@ -21,7 +21,7 @@ class XFileSharingPro(SimpleHoster):
     """
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __pattern__ = r'^unmatchable$'
 
@@ -72,7 +72,7 @@ class XFileSharingPro(SimpleHoster):
         if not self.HOSTER_NAME:
             self.fail("Missing HOSTER_NAME")
 
-        if not LINK_PATTERN:
+        if not self.LINK_PATTERN:
             pattr = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)'
             self.LINK_PATTERN = pattr % self.HOSTER_NAME
 
