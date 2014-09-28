@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class CatShareNet(SimpleHoster):
     __name__ = "CatShareNet"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
 
@@ -18,18 +18,25 @@ class CatShareNet(SimpleHoster):
     __author_mail__ = ("z00nx0@gmail.com", None, "vuolter@gmail.com")
 
 
+    TEXT_ENCODING = True
+
     FILE_INFO_PATTERN = r'<title>(?P<N>.+) \((?P<S>[\d.]+) (?P<U>\w+)\)<'
     OFFLINE_PATTERN = r'Podany plik został usunięty\s*</div>'
 
     IP_BLOCKED_PATTERN = r'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
-    SECONDS_PATTERN = 'var count = (\d+);'
+    SECONDS_PATTERN = 'var\scount\s=\s(\d+);'
     RECAPTCHA_KEY = "6Lfln9kSAAAAANZ9JtHSOgxUPB9qfDFeLUI_QMEy"
     LINK_PATTERN = r'<form action="(.+?)" method="GET">'
 
 
+    def setup(self):
+        self.multiDL = self.premium
+        self.resumeDownload = True
+
+
     def getFileInfo(self):
         m = re.search(self.IP_BLOCKED_PATTERN, self.html)
-        if m is None:
+        if m:
             self.fail("Only connections from Polish IP address are allowed")
         return super(CatShareNet, self).getFileInfo()
 
@@ -52,7 +59,7 @@ class CatShareNet(SimpleHoster):
             self.retry(reason="Wrong captcha entered")
 
         dl_link = m.group(1)
-        self.download(dl_link)
+        self.download(dl_link, disposition=True)
 
 
 getInfo = create_getInfo(CatShareNet)
