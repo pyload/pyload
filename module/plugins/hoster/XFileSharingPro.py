@@ -9,7 +9,7 @@ from urlparse import urlparse
 
 from module.network.RequestFactory import getURL
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
+from module.plugins.internal.SimpleHoster import create_getInfo, PluginParseError, replace_patterns, set_cookies, SimpleHoster
 from module.utils import html_unescape
 
 
@@ -21,24 +21,31 @@ class XFileSharingPro(SimpleHoster):
     """
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.36"
 
     __pattern__ = r'^unmatchable$'
 
     __description__ = """XFileSharingPro base hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __author_name__ = ("zoidberg", "stickell", "Walter Purcaro")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
+
+    HOSTER_NAME = None
 
     FILE_URL_REPLACEMENTS = [(r'/embed-(\w{12}).*', r'/\1')]  #: support embedded files
+
+    COOKIES = [(HOSTER_NAME, "lang", "english")]
+
     FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     FILE_SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>\w+)?\)</font>'
+
     OFFLINE_PATTERN = r'>\w+ (Not Found|file (was|has been) removed)'
 
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
 
     OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
+    LINK_PATTERN = None  #: final download url pattern
 
     CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
     RECAPTCHA_URL_PATTERN = r'http://[^"\']+?recaptcha[^"\']+?\?k=([^"\']+)"'
@@ -49,13 +56,32 @@ class XFileSharingPro(SimpleHoster):
 
 
     def setup(self):
+        self.chunkLimit = 1
+
         if self.__name__ == "XFileSharingPro":
-            self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
             self.multiDL = True
+            self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
+            self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
+            self.COOKIES = [(self.HOSTER_NAME, "lang", "english")]
         else:
             self.resumeDownload = self.multiDL = self.premium
 
-        self.chunkLimit = 1
+
+    def prepare(self):
+        """ Initialize important variables """
+        if not self.HOSTER_NAME:
+            self.fail("Missing HOSTER_NAME")
+
+        if not self.LINK_PATTERN:
+            pattr = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)'
+            self.LINK_PATTERN = pattr % self.HOSTER_NAME
+
+        if isinstance(self.COOKIES, list):
+            set_cookies(self.req.cj, self.COOKIES)
+
+        self.captcha = None
+        self.errmsg = None
+        self.passwords = self.getPassword().splitlines()
 
 
     def process(self, pyfile):
@@ -72,8 +98,8 @@ class XFileSharingPro(SimpleHoster):
             try:
                 # Due to a 0.4.9 core bug self.load would use cookies even if
                 # cookies=False. Workaround using getURL to avoid cookies.
-                # Can be reverted in 0.5 as the cookies bug has been fixed.
-                self.html = getURL(pyfile.url, decode=True)
+                # Can be reverted in 0.4.10 as the cookies bug has been fixed.
+                self.html = getURL(pyfile.url, decode=True, cookies=self.COOKIES)
                 self.file_info = self.getFileInfo()
             except PluginParseError:
                 self.file_info = None
@@ -92,23 +118,12 @@ class XFileSharingPro(SimpleHoster):
                 self.handleFree()
 
 
-    def prepare(self):
-        """ Initialize important variables """
-        if not hasattr(self, "HOSTER_NAME"):
-            self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1)
-        if not hasattr(self, "LINK_PATTERN"):
-            self.LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)' % self.HOSTER_NAME
-
-        self.captcha = self.errmsg = None
-        self.passwords = self.getPassword().splitlines()
-
-
     def getDirectDownloadLink(self):
         """ Get download link for premium users with direct download enabled """
         self.req.http.lastURL = self.pyfile.url
 
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
-        self.html = self.load(self.pyfile.url, cookies=True, decode=True)
+        self.html = self.load(self.pyfile.url, decode=True)
         self.header = self.req.http.header
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 

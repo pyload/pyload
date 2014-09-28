@@ -19,14 +19,22 @@ class CatShareNet(SimpleHoster):
 
 
     FILE_INFO_PATTERN = r'<title>(?P<N>.+) \((?P<S>[\d.]+) (?P<U>\w+)\)<'
+<<<<<<< HEAD
     OFFLINE_PATTERN = r'Podany plik zosta. usuni.ty\s*</div>'
 
     IP_BLOCKED_PATTERN = r'>Nasz serwis wykry. .e Tw.j adres IP nie pochodzi z Polski.<'
     SECONDS_PATTERN = 'var\scount\s=\s(\d+);'
+=======
+    OFFLINE_PATTERN = r'Podany plik został usunięty\s*</div>'
+
+    IP_BLOCKED_PATTERN = r'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
+    SECONDS_PATTERN = 'var count = (\d+);'
+>>>>>>> a59a0d1e2420419fed57ab281d30c6be8d3a9a1e
     RECAPTCHA_KEY = "6Lfln9kSAAAAANZ9JtHSOgxUPB9qfDFeLUI_QMEy"
     LINK_PATTERN = r'<form action="(.+?)" method="GET">'
 
 
+<<<<<<< HEAD
     def setup(self):
 	self.resumeDownload = True
 	self.multiDL = self.premium
@@ -34,6 +42,11 @@ class CatShareNet(SimpleHoster):
     def getFileInfo(self):
         m = re.search(self.IP_BLOCKED_PATTERN, self.html)
         if m is not None:
+=======
+    def getFileInfo(self):
+        m = re.search(self.IP_BLOCKED_PATTERN, self.html)
+        if m is None:
+>>>>>>> a59a0d1e2420419fed57ab281d30c6be8d3a9a1e
             self.fail("Only connections from Polish IP address are allowed")
         return super(CatShareNet, self).getFileInfo()
 

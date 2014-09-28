@@ -8,18 +8,17 @@ class TusfilesNet(XFileSharingPro):
     __type__ = "hoster"
     __version__ = "0.04"
 
-    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
 
-    __description__ = """ Tusfiles.net hoster plugin """
+    __description__ = """Tusfiles.net hoster plugin"""
     __author_name__ = ("Walter Purcaro", "guidobelix")
     __author_mail__ = ("vuolter@gmail.com", "guidobelix@hotmail.it")
+
 
     HOSTER_NAME = "tusfiles.net"
 
     FILE_INFO_PATTERN = r'\](?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)\['
     OFFLINE_PATTERN = r'>File Not Found|<Title>TusFiles - Fast Sharing Files!'
-
-    COOKIES = [(".tusfiles.net", "lang", "english")]
 
 
     def setup(self):
