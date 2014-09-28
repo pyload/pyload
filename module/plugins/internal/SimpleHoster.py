@@ -217,15 +217,8 @@ class SimpleHoster(Hoster):
             self.fail("This link require a premium account")
         else:
             # This line is required due to the getURL workaround. Can be removed in 0.4.10
-            self.html = self.load(pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
+            self.html = self.load(pyfile.url, decode=not self.TEXT_ENCODING)
             self.handleFree()
-
-
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
-        if type(url) == unicode:
-            url = url.encode('utf8')
-        return Hoster.load(self, url=url, get=get, post=post, ref=ref, cookies=cookies,
-                           just_header=just_header, decode=decode)
 
 
     def getFileInfo(self):

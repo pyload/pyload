@@ -72,7 +72,7 @@ class SimpleCrypter(Crypter):
 
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
 
-        self.html = self.load(pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
+        self.html = self.load(pyfile.url, decode=not self.TEXT_ENCODING)
 
         self.checkOnline()
 

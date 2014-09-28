@@ -14,12 +14,11 @@ class TusfilesNet(XFileSharingPro):
     __author_name__ = ("Walter Purcaro", "guidobelix")
     __author_mail__ = ("vuolter@gmail.com", "guidobelix@hotmail.it")
 
+
     HOSTER_NAME = "tusfiles.net"
 
     FILE_INFO_PATTERN = r'\](?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)\['
     OFFLINE_PATTERN = r'>File Not Found|<Title>TusFiles - Fast Sharing Files!'
-
-    COOKIES = [(".tusfiles.net", "lang", "english")]
 
 
     def setup(self):

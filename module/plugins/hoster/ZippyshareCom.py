@@ -55,7 +55,7 @@ class ZippyshareCom(SimpleHoster):
         a = map(lambda x: int(x), m[0])
         b = map(lambda x: int(x), m[1])
 
-        # Checksum is calculated as (a * b + 19) or (a + b), where a and b are the result of modulo calculations
+        # Checksum is calculated as (a*b+19) or (a+b), where a and b are the result of modulo calculations
         a = a[0] % a[1]
         b = b[0] % b[1]
 
