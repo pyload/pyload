@@ -67,15 +67,14 @@ class Ev0InFetcher(Hook):
                 if show.lower() in normalizefiletitle(item['title']) and lastfound < int(mktime(item.date_parsed)):
                     links = self.filterLinks(item['description'].split("<br />"))
                     packagename = item['title'].encode("utf-8")
-                    self.logInfo("Ev0InFetcher: new episode '%s' (matched '%s')" % (packagename, show))
+                    self.logInfo(_("New episode '%s' (matched '%s')") % (packagename, show))
                     self.core.api.addPackage(packagename, links, 1 if self.getConfig("queue") else 0)
                     self.setStorage("show_%s_lastfound" % show, int(mktime(item.date_parsed)))
                     found = True
         if not found:
-            #self.logDebug("Ev0InFetcher: no new episodes found")
             pass
 
         for show, lastfound in self.getStorage().iteritems():
             if int(lastfound) > 0 and int(lastfound) + (3600 * 24 * 30) < int(time()):
                 self.delStorage("show_%s_lastfound" % show)
-                self.logDebug("Ev0InFetcher: cleaned '%s' record" % show)
+                self.logDebug("Cleaned '%s' record" % show)

@@ -31,7 +31,7 @@ class NosuploadCom(XFileSharingPro):
         # stage2: wait some time and press the "Download File" button
         data = self.getPostParameters()
         wait_time = re.search(self.WAIT_PATTERN, self.html, re.MULTILINE | re.DOTALL).group(1)
-        self.logDebug("hoster told us to wait %s seconds" % wait_time)
+        self.logDebug("Hoster told us to wait %s seconds" % wait_time)
         self.wait(wait_time)
         self.html = self.load(self.pyfile.url, post=data, ref=True, decode=True)
 

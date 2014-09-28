@@ -15,7 +15,6 @@ def replace_patterns(string, ruleslist):
     for r in ruleslist:
         rf, rt = r
         string = re.sub(rf, rt, string)
-        #self.logDebug(rf, rt, string)
     return string
 
 
@@ -78,8 +77,8 @@ def parseFileInfo(self, url='', html=''):
     else:
         if not html and hasattr(self, "html"):
             html = self.html
-        if isinstance(self.SH_BROKEN_ENCODING, (str, unicode)):
-            html = unicode(html, self.SH_BROKEN_ENCODING)
+        if isinstance(self.TEXT_ENCODING, basestring):
+            html = unicode(html, self.TEXT_ENCODING)
             if hasattr(self, "html"):
                 self.html = html
 
@@ -112,7 +111,7 @@ def parseFileInfo(self, url='', html=''):
                     size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
                                             self.FILE_SIZE_REPLACEMENTS)
                     info['size'] = parseFileSize(size)
-                elif isinstance(info['size'], (str, unicode)):
+                elif isinstance(info['size'], basestring):
                     if 'units' in info:
                         info['size'] += info['units']
                     info['size'] = parseFileSize(info['size'])
@@ -128,10 +127,10 @@ def create_getInfo(plugin):
     def getInfo(urls):
         for url in urls:
             cj = CookieJar(plugin.__name__)
-            if isinstance(plugin.SH_COOKIES, list):
-                set_cookies(cj, plugin.SH_COOKIES)
+            if isinstance(plugin.COOKIES, list):
+                set_cookies(cj, plugin.COOKIES)
             file_info = parseFileInfo(plugin, url, getURL(replace_patterns(url, plugin.FILE_URL_REPLACEMENTS),
-                                                          decode=not plugin.SH_BROKEN_ENCODING, cookies=cj))
+                                                          decode=not plugin.TEXT_ENCODING, cookies=cj))
             yield file_info
 
     return getInfo
@@ -154,13 +153,13 @@ class PluginParseError(Exception):
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __pattern__ = None
 
     __description__ = """Simple hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __author_name__ = ("zoidberg", "stickell", "Walter Purcaro")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     """
     Following patterns should be defined by each hoster:
@@ -187,46 +186,49 @@ class SimpleHoster(Hoster):
     FILE_SIZE_REPLACEMENTS = []
     FILE_URL_REPLACEMENTS = []
 
-    SH_BROKEN_ENCODING = False  # Set to True or encoding name if encoding in http header is not correct
-    SH_COOKIES = True  # or False or list of tuples [(domain, name, value)]
-    SH_CHECK_TRAFFIC = False  # True = force check traffic left for a premium account
+    TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
+    COOKIES = True  #: or False or list of tuples [(domain, name, value)]
+    FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
 
 
     def init(self):
         self.file_info = {}
 
+
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
-        if isinstance(self.SH_COOKIES, list):
-            set_cookies(self.req.cj, self.SH_COOKIES)
+
+
+    def prepare(self):
+        if isinstance(self.COOKIES, list):
+            set_cookies(self.req.cj, self.COOKIES)
+        self.req.setOption("timeout", 120)
+
 
     def process(self, pyfile):
+        self.prepare()
+
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
-        self.req.setOption("timeout", 120)
+
         # Due to a 0.4.9 core bug self.load would keep previous cookies even if overridden by cookies parameter.
-        # Workaround using getURL. Can be reverted in 0.5 as the cookies bug has been fixed.
-        self.html = getURL(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+        # Workaround using getURL. Can be reverted in 0.4.10 as the cookies bug has been fixed.
+        self.html = getURL(pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
         premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
         if not premium_only:  # Usually premium only pages doesn't show the file information
             self.getFileInfo()
 
-        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
+        if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
         elif premium_only:
             self.fail("This link require a premium account")
         else:
-            # This line is required due to the getURL workaround. Can be removed in 0.5
-            self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+            # This line is required due to the getURL workaround. Can be removed in 0.4.10
+            self.html = self.load(pyfile.url, decode=not self.TEXT_ENCODING)
             self.handleFree()
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
-        if type(url) == unicode:
-            url = url.encode('utf8')
-        return Hoster.load(self, url=url, get=get, post=post, ref=ref, cookies=cookies,
-                           just_header=just_header, decode=decode)
 
     def getFileInfo(self):
-        self.logDebug("URL: %s" % self.pyfile.url)
+        self.logDebug("URL", self.pyfile.url)
 
         name, size, status = parseFileInfo(self)[:3]
 
@@ -246,19 +248,23 @@ class SimpleHoster(Hoster):
         if size:
             self.pyfile.size = size
         else:
-            self.logError("File size not parsed")
+            self.logError(_("File size not parsed"))
 
         self.logDebug("FILE NAME: %s FILE SIZE: %s" % (self.pyfile.name, self.pyfile.size))
         return self.file_info
 
+
     def handleFree(self):
         self.fail("Free download not implemented")
+
 
     def handlePremium(self):
         self.fail("Premium download not implemented")
 
+
     def parseError(self, msg):
         raise PluginParseError(msg)
+
 
     def longWait(self, wait_time=None, max_tries=3):
         if wait_time and isinstance(wait_time, (int, long, float)):
@@ -268,24 +274,27 @@ class SimpleHoster(Hoster):
             time_str = "(unknown time)"
             max_tries = 100
 
-        self.logInfo("Download limit reached, reconnect or wait %s" % time_str)
+        self.logInfo(_("Download limit reached, reconnect or wait %s") % time_str)
 
         self.setWait(wait_time, True)
         self.wait()
         self.retry(max_tries=max_tries, reason="Download limit reached")
 
+
     def parseHtmlForm(self, attr_str='', input_names=None):
         return parseHtmlForm(attr_str, self.html, input_names)
+
 
     def checkTrafficLeft(self):
         traffic = self.account.getAccountInfo(self.user, True)['trafficleft']
         if traffic == -1:
             return True
         size = self.pyfile.size / 1024
-        self.logInfo("Filesize: %i KiB, Traffic left for user %s: %i KiB" % (size, self.user, traffic))
+        self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size, self.user, traffic))
         return size <= traffic
 
-    # TODO: Remove in 0.5
+
+    #@TODO: Remove in 0.4.10
     def wait(self, seconds=False, reconnect=False):
         if seconds:
             self.setWait(seconds, reconnect)

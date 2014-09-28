@@ -136,7 +136,7 @@ class LinkSaveIn(Crypter):
         package_links = []
         self.logDebug("Search for Web links")
         if not self.js:
-            self.logDebug("no JS -> skip Web links")
+            self.logDebug("No JS -> skip Web links")
         else:
         #@TODO: Gather paginated web links
             pattern = r'<a href="http://linksave\.in/(\w{43})"'
@@ -162,7 +162,7 @@ class LinkSaveIn(Crypter):
     def handleContainer(self, type_):
         package_links = []
         type_ = type_.lower()
-        self.logDebug('Seach for %s Container links' % type_.upper())
+        self.logDebug("Seach for %s Container links" % type_.upper())
         if not type_.isalnum():  # check to prevent broken re-pattern (cnl2,rsdf,ccf,dlc,web are all alpha-numeric)
             self.fail('unknown container type "%s" (this is probably a bug)' % type_)
         pattern = r"\('%s_link'\).href=unescape\('(.*?\.%s)'\)" % (type_, type_)
@@ -177,7 +177,7 @@ class LinkSaveIn(Crypter):
         package_links = []
         self.logDebug("Search for CNL2 links")
         if not self.js:
-            self.logDebug("no JS -> skip CNL2 links")
+            self.logDebug("No JS -> skip CNL2 links")
         elif 'cnl2_load' in self.html:
             try:
                 (vcrypted, vjk) = self._getCipherParams()

@@ -19,7 +19,7 @@ class LetitbitNet(Account):
         # api_key = self.accounts[user]['password']
         # json_data = [api_key, ['key/info']]
         # api_rep = req.load('http://api.letitbit.net/json', post={'r': json_dumps(json_data)})
-        # self.logDebug('API Key Info: ' + api_rep)
+        # self.logDebug("API Key Info: " + api_rep)
         # api_rep = json_loads(api_rep)
         #
         # if api_rep['status'] == 'FAIL':
@@ -30,4 +30,4 @@ class LetitbitNet(Account):
 
     def login(self, user, data, req):
         # API_KEY is the username and the PREMIUM_KEY is the password
-        self.logInfo('You must use your API KEY as username and the PREMIUM KEY as password.')
+        self.logInfo("You must use your API KEY as username and the PREMIUM KEY as password.")

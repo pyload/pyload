@@ -422,7 +422,8 @@ class Plugin(Base):
         """
         if self.pyfile.abort: raise Abort
         #utf8 vs decode -> please use decode attribute in all future plugins
-        if type(url) == unicode: url = str(url)
+        if type(url) == unicode:
+            url = str(url)  # encode('utf8')
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 

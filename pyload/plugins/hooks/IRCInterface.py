@@ -89,8 +89,8 @@ class IRCInterface(Thread, Hook):
         for t in self.getConfig("owner").split():
             if t.strip().startswith("#"):
                 self.sock.send("JOIN %s\r\n" % t.strip())
-        self.logInfo("pyLoad IRC: Connected to %s!" % host)
-        self.logInfo("pyLoad IRC: Switching to listening mode!")
+        self.logInfo(_("Connected to"), host)
+        self.logInfo(_("Switching to listening mode!"))
         try:
             self.main_loop()
 
@@ -177,7 +177,7 @@ class IRCInterface(Thread, Hook):
             for line in res:
                 self.response(line, msg['origin'])
         except Exception, e:
-            self.logError("pyLoad IRC: " + repr(e))
+            self.logError(repr(e))
 
     def response(self, msg, origin=""):
         if origin == "":

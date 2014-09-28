@@ -74,7 +74,7 @@ class BypassCaptcha(Hook):
 
         result = data['Value']
         ticket = data['TaskId']
-        self.logDebug("result %s : %s" % (ticket, result))
+        self.logDebug("Result %s : %s" % (ticket, result))
 
         return ticket, result
 
@@ -83,7 +83,7 @@ class BypassCaptcha(Hook):
             response = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig("passkey"),
                                                       "cv": 1 if success else 0})
         except BadHeader, e:
-            self.logError("Could not send response.", str(e))
+            self.logError(_("Could not send response."), e
 
     def newCaptchaTask(self, task):
         if "service" in task.data:
@@ -105,7 +105,7 @@ class BypassCaptcha(Hook):
             start_new_thread(self.processCaptcha, (task,))
 
         else:
-            self.logInfo("Your %s account has not enough credits" % self.__name__)
+            self.logInfo(_("Your %s account has not enough credits") % self.__name__)
 
     def captchaCorrect(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:

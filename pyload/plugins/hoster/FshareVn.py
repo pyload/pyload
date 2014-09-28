@@ -69,7 +69,7 @@ class FshareVn(SimpleHoster):
             self.parseError('FORM')
         elif 'link_file_pwd_dl' in inputs:
             for password in self.getPassword().splitlines():
-                self.logInfo('Password protected link, trying "%s"' % password)
+                self.logInfo("Password protected link, trying", password)
                 inputs['link_file_pwd_dl'] = password
                 self.html = self.load(self.url, post=inputs, decode=True)
                 if not 'name="link_file_pwd_dl"' in self.html:

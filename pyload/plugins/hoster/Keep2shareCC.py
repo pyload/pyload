@@ -52,7 +52,7 @@ class Keep2shareCC(SimpleHoster):
 
             m = re.search(self.WAIT_PATTERN, self.html)
             if m:
-                self.logDebug('Hoster told us to wait for %s' % m.group(1))
+                self.logDebug("Hoster told us to wait for %s" % m.group(1))
                 # string to time convert courtesy of https://stackoverflow.com/questions/10663720
                 ftr = [3600, 60, 1]
                 wait_time = sum([a * b for a, b in zip(ftr, map(int, m.group(1).split(':')))])
@@ -62,7 +62,7 @@ class Keep2shareCC(SimpleHoster):
             m = re.search(self.ALREADY_DOWNLOADING_PATTERN, self.html)
             if m:
                 # if someone is already downloading on our line, wait 30min and retry
-                self.logDebug('Already downloading, waiting for 30 minutes')
+                self.logDebug("Already downloading, waiting for 30 minutes")
                 self.wait(30 * 60, reconnect=True)
                 self.retry()
 
@@ -89,14 +89,14 @@ class Keep2shareCC(SimpleHoster):
                 self.correctCaptcha()
                 break
             else:
-                self.logInfo('Wrong captcha')
+                self.logInfo("Wrong captcha")
                 self.invalidCaptcha()
         else:
             self.fail("All captcha attempts failed")
 
     def startDownload(self, url):
         d = urljoin(self.base_url, url)
-        self.logDebug('Direct Link: ' + d)
+        self.logDebug("Direct Link: " + d)
         self.download(d, disposition=True)
 
     def sanitize_url(self):

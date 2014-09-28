@@ -25,7 +25,7 @@ class MegaDebridEu(MultiHoster):
         if json_data['response_code'] == "ok":
             host_list = [element[0] for element in json_data['hosters']]
         else:
-            self.logError("Unable to retrieve hoster list")
+            self.logError(_("Unable to retrieve hoster list"))
             host_list = list()
 
         return host_list

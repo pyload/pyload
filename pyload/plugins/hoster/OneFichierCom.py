@@ -40,7 +40,7 @@ class OneFichierCom(SimpleHoster):
         self.html = self.load(self.pyfile.url, decode=True)
 
         if self.WAITING_PATTERN in self.html:
-            self.logInfo('You have to wait been each free download! Retrying in %d seconds.' % self.WAIT_TIME)
+            self.logInfo("You have to wait been each free download! Retrying in %d seconds." % self.WAIT_TIME)
             self.waitAndRetry(self.WAIT_TIME)
         else:  # detect parallel download
             m = re.search(self.NOT_PARALLEL, self.html)

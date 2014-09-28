@@ -48,7 +48,7 @@ class UloziskoSk(SimpleHoster):
             self.parseError('ID')
         id = m.group(1)
 
-        self.logDebug('URL:' + parsed_url + ' ID:' + id)
+        self.logDebug("URL:" + parsed_url + ' ID:' + id)
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
@@ -57,7 +57,7 @@ class UloziskoSk(SimpleHoster):
 
         captcha = self.decryptCaptcha(captcha_url, cookies=True)
 
-        self.logDebug('CAPTCHA_URL:' + captcha_url + ' CAPTCHA:' + captcha)
+        self.logDebug("CAPTCHA_URL:" + captcha_url + ' CAPTCHA:' + captcha)
 
         self.download(parsed_url, post={
             "antispam": captcha,

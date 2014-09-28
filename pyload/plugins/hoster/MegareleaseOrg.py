@@ -8,11 +8,12 @@ class MegareleaseOrg(XFileSharingPro):
     __type__ = "hoster"
     __version__ = "0.01"
 
-    __pattern__ = r'https?://(?:www\.)?megarelease.org/\w{12}'
+    __pattern__ = r'https?://(?:www\.)?megarelease\.org/\w{12}'
 
     __description__ = """Megarelease.org hoster plugin"""
     __author_name__ = ("derek3x", "stickell")
     __author_mail__ = ("derek3x@vmail.me", "l.stickell@yahoo.it")
+
 
     HOSTER_NAME = "megarelease.org"
 

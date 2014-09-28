@@ -30,7 +30,7 @@ class RehostTo(MultiHoster):
         user = self.account.selectAccount()[0]
 
         if not user:
-            self.logError("Rehost.to: " + _("Please add your rehost.to account first and restart pyLoad"))
+            self.logError(_("Please add your rehost.to account first and restart pyLoad"))
             return
 
         data = self.account.getAccountInfo(user)

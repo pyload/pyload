@@ -29,7 +29,7 @@ class EdiskCz(SimpleHoster):
     def process(self, pyfile):
         url = re.sub("/(stahni|sk/stahni)/", "/en/download/", pyfile.url)
 
-        self.logDebug('URL:' + url)
+        self.logDebug("URL:" + url)
 
         m = re.search(self.ACTION_PATTERN, url)
         if m is None:

@@ -74,7 +74,7 @@ class MediafireCom(SimpleHoster):
         pyfile.url = re.sub(r'/view/?\?', '/?', pyfile.url)
 
         self.url, result = checkHTMLHeader(pyfile.url)
-        self.logDebug('Location (%d): %s' % (result, self.url))
+        self.logDebug("Location (%d): %s" % (result, self.url))
 
         if result == 0:
             self.html = self.load(self.url, decode=True)

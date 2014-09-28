@@ -46,7 +46,7 @@ class LinksnappyCom(Hoster):
             j = json_loads(r)['links'][0]
 
             if j['error']:
-                self.logError('Error converting the link: %s' % j['error'])
+                self.logError("Error converting the link: %s" % j['error'])
                 self.fail('Error converting the link')
 
             pyfile.name = j['filename']

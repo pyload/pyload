@@ -32,7 +32,7 @@ class EgoFilesCom(SimpleHoster):
         self.load("https://egofiles.com/ajax/lang.php?lang=en", just_header=True)
 
     def process(self, pyfile):
-        if self.premium and (not self.SH_CHECK_TRAFFIC or self.checkTrafficLeft()):
+        if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
             self.handlePremium()
         else:
             self.handleFree()
@@ -56,7 +56,7 @@ class EgoFilesCom(SimpleHoster):
             self.html = self.load(self.pyfile.url, post=post_data, decode=True)
             m = re.search(self.LINK_PATTERN, self.html)
             if m is None:
-                self.logInfo('Wrong captcha')
+                self.logInfo("Wrong captcha")
                 self.invalidCaptcha()
             elif hasattr(m, 'group'):
                 downloadURL = m.group('link')
@@ -73,7 +73,7 @@ class EgoFilesCom(SimpleHoster):
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)
         if 'location' in header:
-            self.logDebug('DIRECT LINK from header: ' + header['location'])
+            self.logDebug("DIRECT LINK from header: " + header['location'])
             self.download(header['location'])
         else:
             self.html = self.load(self.pyfile.url, decode=True)
@@ -82,7 +82,7 @@ class EgoFilesCom(SimpleHoster):
             if m is None:
                 self.parseError('Unable to detect direct download url')
             else:
-                self.logDebug('DIRECT URL from html: ' + m.group('link'))
+                self.logDebug("DIRECT URL from html: " + m.group('link'))
                 self.download(m.group('link'), disposition=True)
 
 

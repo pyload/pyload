@@ -6,13 +6,14 @@ from pyload.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class SecureUploadEu(XFileSharingPro):
     __name__ = "SecureUploadEu"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?secureupload\.eu/(\w){12}(/\w+)'
+    __pattern__ = r'https?://(?:www\.)?secureupload\.eu/\w{12}'
 
     __description__ = """SecureUpload.eu hoster plugin"""
     __author_name__ = "z00nx"
     __author_mail__ = "z00nx0@gmail.com"
+
 
     HOSTER_NAME = "secureupload.eu"
 

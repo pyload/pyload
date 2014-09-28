@@ -13,11 +13,12 @@ class StreamcloudEu(XFileSharingPro):
     __type__ = "hoster"
     __version__ = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\S+'
+    __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\w{12}'
 
     __description__ = """Streamcloud.eu hoster plugin"""
     __author_name__ = "seoester"
     __author_mail__ = "seoester@googlemail.com"
+
 
     HOSTER_NAME = "streamcloud.eu"
 
@@ -25,8 +26,10 @@ class StreamcloudEu(XFileSharingPro):
 
 
     def setup(self):
-        super(StreamcloudEu, self).setup()
         self.multiDL = True
+        self.chunkLimit = 1
+        self.resumeDownload = self.premium
+
 
     def getDownloadLink(self):
         m = re.search(self.LINK_PATTERN, self.html, re.S)
@@ -57,6 +60,7 @@ class StreamcloudEu(XFileSharingPro):
                 self.fail("Download link not found")
 
         return m.group(1)
+
 
     def getPostParameters(self):
         for i in xrange(3):

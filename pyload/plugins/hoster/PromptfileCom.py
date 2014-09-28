@@ -29,7 +29,7 @@ class PromptfileCom(SimpleHoster):
         if m is None:
             self.parseError("Unable to detect chash")
         chash = m.group(1)
-        self.logDebug("read chash %s" % chash)
+        self.logDebug("Read chash %s" % chash)
         # continue to stage2
         self.html = self.load(self.pyfile.url, decode=True, post={'chash': chash})
 
@@ -38,7 +38,7 @@ class PromptfileCom(SimpleHoster):
         if m is None:
             self.parseError("Unable to detect direct link")
         direct = m.group(1)
-        self.logDebug("found direct link: " + direct)
+        self.logDebug("Found direct link: " + direct)
         self.download(direct, disposition=True)
 
 

@@ -8,11 +8,12 @@ class EasybytezCom(XFileSharingPro):
     __type__ = "hoster"
     __version__ = "0.18"
 
-    __pattern__ = r'http://(?:www\.)?easybytez.com/(\w+).*'
+    __pattern__ = r'http://(?:www\.)?easybytez\.com/\w{12}'
 
     __description__ = """Easybytez.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+
 
     HOSTER_NAME = "easybytez.com"
 
@@ -22,10 +23,6 @@ class EasybytezCom(XFileSharingPro):
     LINK_PATTERN = r'(http://(\w+\.(easyload|easybytez|zingload)\.(com|to)|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/[^"<]+)'
     OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<Center><b>)(.*?)</'
-
-
-    def setup(self):
-        self.resumeDownload = self.multiDL = self.premium
 
 
 getInfo = create_getInfo(EasybytezCom)

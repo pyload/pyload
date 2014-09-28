@@ -22,14 +22,14 @@ class UnSkipOnFail(Hook):
     def downloadFailed(self, pyfile):
         pyfile_name = basename(pyfile.name)
         pid = pyfile.package().id
-        msg = 'look for skipped duplicates for %s (pid:%s)...'
+        msg = _('look for skipped duplicates for %s (pid:%s)')
         self.logInfo(msg % (pyfile_name, pid))
         dups = self.findDuplicates(pyfile)
         for link in dups:
             # check if link is "skipped"(=4)
             if link.status == 4:
                 lpid = link.packageID
-                self.logInfo('restart "%s" (pid:%s)...' % (pyfile_name, lpid))
+                self.logInfo(_('restart "%s" (pid:%s)') % (pyfile_name, lpid))
                 self.setLinkStatus(link, "queued")
 
     def findDuplicates(self, pyfile):

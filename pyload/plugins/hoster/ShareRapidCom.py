@@ -34,7 +34,7 @@ class ShareRapidCom(SimpleHoster):
     FILE_SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong></td>'
     OFFLINE_PATTERN = ur'Nastala chyba 404|Soubor byl smazán'
 
-    SH_CHECK_TRAFFIC = True
+    FORCE_CHECK_TRAFFIC = True
 
     LINK_PATTERN = r'<a href="([^"]+)" title="Stahnout">([^<]+)</a>'
     ERR_LOGIN_PATTERN = ur'<div class="error_div"><strong>Stahování je přístupné pouze přihlášeným uživatelům'

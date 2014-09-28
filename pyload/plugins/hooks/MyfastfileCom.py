@@ -23,7 +23,7 @@ class MyfastfileCom(MultiHoster):
 
     def getHoster(self):
         json_data = getURL('http://myfastfile.com/api.php?hosts', decode=True)
-        self.logDebug('JSON data: ' + json_data)
+        self.logDebug("JSON data", json_data)
         json_data = json_loads(json_data)
 
         return json_data['hosts']

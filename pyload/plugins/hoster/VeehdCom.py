@@ -20,7 +20,7 @@ class VeehdCom(Hoster):
 
 
     def _debug(self, msg):
-        self.logDebug('[%s] %s' % (self.__name__, msg))
+        self.logDebug("[%s] %s" % (self.__name__, msg))
 
     def setup(self):
         self.multiDL = True

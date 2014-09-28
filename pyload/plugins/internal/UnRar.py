@@ -4,7 +4,7 @@ import os
 import re
 
 from glob import glob
-from os.path import join
+from os.path import basename, join
 from string import digits
 from subprocess import Popen, PIPE
 
@@ -12,13 +12,22 @@ from pyload.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPas
 from pyload.utils import safe_join, decode
 
 
+def renice(pid, value):
+    if os.name != "nt" and value:
+        try:
+            Popen(["renice", str(value), str(pid)], stdout=PIPE, stderr=PIPE, bufsize=-1)
+        except:
+            print "Renice failed"
+
+
 class UnRar(AbtractExtractor):
     __name__ = "UnRar"
-    __version__ = "0.16"
+    __version__ = "0.18"
 
     __description__ = """Rar extractor plugin"""
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
+
 
     CMD = "unrar"
 
@@ -50,6 +59,7 @@ class UnRar(AbtractExtractor):
 
         return True
 
+
     @staticmethod
     def getTargets(files_ids):
         result = []
@@ -68,11 +78,13 @@ class UnRar(AbtractExtractor):
 
         return result
 
+
     def init(self):
         self.passwordProtected = False
         self.headerProtected = False  #: list files will not work without password
         self.smallestFile = None  #: small file to test passwords
         self.password = ""  #: save the correct password
+
 
     def checkArchive(self):
         p = self.call_unrar("l", "-v", self.file)
@@ -100,6 +112,7 @@ class UnRar(AbtractExtractor):
 
         return False
 
+
     def checkPassword(self, password):
         # at this point we can only verify header protected files
         if self.headerProtected:
@@ -109,6 +122,7 @@ class UnRar(AbtractExtractor):
                 return False
 
         return True
+
 
     def extract(self, progress, password=None):
         command = "x" if self.fullpath else "e"
@@ -151,12 +165,14 @@ class UnRar(AbtractExtractor):
             self.password = password
             self.listContent()
 
+
     def getDeleteFiles(self):
-        if ".part" in self.file:
+        if ".part" in basename(self.file):
             return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
         # get files which matches .r* and filter unsuited files out
         parts = glob(re.sub(r"(?<=\.r)ar$", "*", self.file, re.IGNORECASE))
         return filter(lambda x: self.re_partfiles.match(x), parts)
+
 
     def listContent(self):
         command = "vb" if self.fullpath else "lb"
@@ -176,6 +192,7 @@ class UnRar(AbtractExtractor):
             result.add(safe_join(self.out, f))
 
         self.files = result
+
 
     def call_unrar(self, command, *xargs, **kwargs):
         args = []
@@ -202,11 +219,3 @@ class UnRar(AbtractExtractor):
         p = Popen(call, stdout=PIPE, stderr=PIPE)
 
         return p
-
-
-def renice(pid, value):
-    if os.name != "nt" and value:
-        try:
-            Popen(["renice", str(value), str(pid)], stdout=PIPE, stderr=PIPE, bufsize=-1)
-        except:
-            print "Renice failed"

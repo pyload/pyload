@@ -139,7 +139,7 @@ class CaptchaBrotherhood(Hook):
             task.setWaiting(100)
             start_new_thread(self.processCaptcha, (task,))
         else:
-            self.logInfo("Your CaptchaBrotherhood Account has not enough credits")
+            self.logInfo(_("Your CaptchaBrotherhood Account has not enough credits"))
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:

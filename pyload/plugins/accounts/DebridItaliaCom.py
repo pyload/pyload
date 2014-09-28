@@ -27,7 +27,7 @@ class DebridItaliaCom(Account):
             validuntil = int(time.mktime(time.strptime(m.group('D'), "%d/%m/%Y %H:%M")))
             return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
         else:
-            self.logError('Unable to retrieve account information - Plugin may be out of date')
+            self.logError("Unable to retrieve account information - Plugin may be out of date")
 
     def login(self, user, data, req):
         self.html = req.load("http://debriditalia.com/login.php",

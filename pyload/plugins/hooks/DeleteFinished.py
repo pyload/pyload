@@ -23,8 +23,8 @@ class DeleteFinished(Hook):
         if not self.info['sleep']:
             deloffline = self.getConfig('deloffline')
             mode = '0,1,4' if deloffline else '0,4'
-            msg = 'delete all finished packages in queue list (%s packages with offline links)'
-            self.logInfo(msg % ('including' if deloffline else 'excluding'))
+            msg = _('delete all finished packages in queue list (%s packages with offline links)')
+            self.logInfo(msg % (_('including') if deloffline else _('excluding')))
             self.deleteFinished(mode)
             self.info['sleep'] = True
             self.addEvent('packageFinished', self.wakeup)
@@ -58,7 +58,7 @@ class DeleteFinished(Hook):
         """Adds an event listener for event name"""
         if event in self.m.events:
             if func in self.m.events[event]:
-                self.logDebug('Function already registered %s' % func)
+                self.logDebug("Function already registered", func)
             else:
                 self.m.events[event].append(func)
         else:

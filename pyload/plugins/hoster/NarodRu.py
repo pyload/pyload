@@ -53,7 +53,7 @@ class NarodRu(SimpleHoster):
         else:
             self.fail("No valid captcha code entered")
 
-        self.logDebug('Download link: ' + url)
+        self.logDebug("Download link: " + url)
         self.download(url)
 
 

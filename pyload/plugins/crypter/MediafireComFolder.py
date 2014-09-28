@@ -23,7 +23,7 @@ class MediafireComFolder(Crypter):
 
     def decrypt(self, pyfile):
         url, result = checkHTMLHeader(pyfile.url)
-        self.logDebug('Location (%d): %s' % (result, url))
+        self.logDebug("Location (%d): %s" % (result, url))
 
         if result == 0:
             # load and parse html

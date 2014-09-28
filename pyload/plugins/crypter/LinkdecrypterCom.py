@@ -43,7 +43,7 @@ class LinkdecrypterCom(Crypter):
                 if self.html.startswith('http://'):
                     return self.html.splitlines()
 
-        self.logError('API', self.html)
+        self.logError("API", self.html)
         if self.html == 'INTERRUPTION(PASSWORD)':
             self.fail("No or incorrect password")
 

@@ -27,7 +27,7 @@ class DataHuFolder(SimpleCrypter):
             password = self.getPassword()
             if password is '':
                 self.fail("No password specified, please set right password on Add package form and retry")
-            self.logDebug('The folder is password protected', 'Using password: ' + password)
+            self.logDebug("The folder is password protected', 'Using password: " + password)
             self.html = self.load(pyfile.url, post={'mappa_pass': password}, decode=True)
             if u'Hib\xe1s jelsz\xf3' in self.html:  # Wrong password
                 self.fail("Incorrect password, please set right password on Add package form and retry")
@@ -35,7 +35,7 @@ class DataHuFolder(SimpleCrypter):
         package_name, folder_name = self.getPackageNameAndFolder()
 
         package_links = re.findall(self.LINK_PATTERN, self.html)
-        self.logDebug('Package has %d links' % len(package_links))
+        self.logDebug("Package has %d links" % len(package_links))
 
         if package_links:
             self.packages = [(package_name, package_links, folder_name)]

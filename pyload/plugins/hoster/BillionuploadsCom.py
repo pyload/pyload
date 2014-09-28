@@ -8,11 +8,12 @@ class BillionuploadsCom(XFileSharingPro):
     __type__ = "hoster"
     __version__ = "0.01"
 
-    __pattern__ = r'http://(?:www\.)?billionuploads.com/\w{12}'
+    __pattern__ = r'http://(?:www\.)?billionuploads\.com/\w{12}'
 
     __description__ = """Billionuploads.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
+
 
     HOSTER_NAME = "billionuploads.com"
 

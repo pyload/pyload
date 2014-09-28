@@ -30,7 +30,7 @@ class LuckyShareNet(SimpleHoster):
             m = re.search(r"waitingtime = (\d+);", html)
             if m:
                 waittime = int(m.group(1))
-                self.logDebug('You have to wait %d seconds between free downloads' % waittime)
+                self.logDebug("You have to wait %d seconds between free downloads" % waittime)
                 self.retry(wait_time=waittime)
             else:
                 self.parseError('Unable to detect wait time between free downloads')
@@ -42,9 +42,9 @@ class LuckyShareNet(SimpleHoster):
     # TODO: Some files could not be downloaded in free mode
     def handleFree(self):
         file_id = re.match(self.__pattern__, self.pyfile.url).group('ID')
-        self.logDebug('File ID: ' + file_id)
+        self.logDebug("File ID: " + file_id)
         rep = self.load(r"http://luckyshare.net/download/request/type/time/file/" + file_id, decode=True)
-        self.logDebug('JSON: ' + rep)
+        self.logDebug("JSON: " + rep)
         json = self.parseJson(rep)
 
         self.wait(int(json['time']))
@@ -54,13 +54,13 @@ class LuckyShareNet(SimpleHoster):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             rep = self.load(r"http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s" %
                             (challenge, response, json['hash']), decode=True)
-            self.logDebug('JSON: ' + rep)
+            self.logDebug("JSON: " + rep)
             if 'link' in rep:
                 json.update(self.parseJson(rep))
                 self.correctCaptcha()
                 break
             elif 'Verification failed' in rep:
-                self.logInfo('Wrong captcha')
+                self.logInfo("Wrong captcha")
                 self.invalidCaptcha()
             else:
                 self.parseError('Unable to get downlaod link')
@@ -68,7 +68,7 @@ class LuckyShareNet(SimpleHoster):
         if not json['link']:
             self.fail("No Download url retrieved/all captcha attempts failed")
 
-        self.logDebug('Direct URL: ' + json['link'])
+        self.logDebug("Direct URL: " + json['link'])
         self.download(json['link'])
 
 

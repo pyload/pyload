@@ -58,7 +58,7 @@ class Captcha9kw(Hook):
         with open(task.captchaFile, 'rb') as f:
             data = f.read()
         data = b64encode(data)
-        self.logDebug("%s : %s" % (task.captchaFile, data))
+        self.logDebug(task.captchaFile, data)
         if task.isPositional():
             mouse = 1
         else:
@@ -93,10 +93,10 @@ class Captcha9kw(Hook):
 
             result = response2
             task.data['ticket'] = response
-            self.logInfo("result %s : %s" % (response, result))
+            self.logInfo(_("Result %s : %s") % (response, result))
             task.setResult(result)
         else:
-            self.logError("Bad upload: %s" % response)
+            self.logError(_("Bad upload"), response)
             return False
 
     def newCaptchaTask(self, task):
@@ -129,12 +129,12 @@ class Captcha9kw(Hook):
                                         "pyload": "1",
                                         "source": "pyload",
                                         "id": task.data['ticket']})
-                self.logInfo("Request correct: %s" % response)
+                self.logInfo(_("Request correct", response)
 
             except BadHeader, e:
-                self.logError("Could not send correct request.", str(e))
+                self.logError(_("Could not send correct request."), e)
         else:
-            self.logError("No CaptchaID for correct request (task %s) found." % task)
+            self.logError(_("No CaptchaID for correct request (task %s) found.") % task)
 
     def captchaInvalid(self, task):
         if "ticket" in task.data:
@@ -148,9 +148,9 @@ class Captcha9kw(Hook):
                                         "pyload": "1",
                                         "source": "pyload",
                                         "id": task.data['ticket']})
-                self.logInfo("Request refund: %s" % response)
+                self.logInfo(_("Request refund", response)
 
             except BadHeader, e:
-                self.logError("Could not send refund request.", str(e))
+                self.logError(_("Could not send refund request."), e)
         else:
-            self.logError("No CaptchaID for not correct request (task %s) found." % task)
+            self.logError(_("No CaptchaID for not correct request (task %s) found.") % task)

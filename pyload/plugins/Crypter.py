@@ -28,18 +28,15 @@ class Crypter(Plugin):
         self.limitDL = 0
 
 
-    def preprocessing(self, thread):
-        """prepare"""
-        self.setup()
-        self.thread = thread
-
-        self.decrypt(self.pyfile)
-
+    def process(self, pyfile):
+        """ main method """
+        self.decrypt(pyfile)
         self.createPackages()
 
 
     def decrypt(self, pyfile):
         raise NotImplementedError
+
 
     def createPackages(self):
         """ create new packages from self.packages """

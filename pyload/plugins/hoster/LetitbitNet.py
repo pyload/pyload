@@ -148,13 +148,13 @@ class LetitbitNet(SimpleHoster):
 
         json_data = [api_key, ["download/direct_links", {"pass": premium_key, "link": self.pyfile.url}]]
         api_rep = self.load('http://api.letitbit.net/json', post={'r': json_dumps(json_data)})
-        self.logDebug('API Data: ' + api_rep)
+        self.logDebug("API Data: " + api_rep)
         api_rep = json_loads(api_rep)
 
         if api_rep['status'] == 'FAIL':
             self.fail(api_rep['data'])
 
         direct_link = api_rep['data'][0][0]
-        self.logDebug('Direct Link: ' + direct_link)
+        self.logDebug("Direct Link: " + direct_link)
 
         self.download(direct_link, disposition=True)

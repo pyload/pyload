@@ -11,9 +11,9 @@ from pyload.utils import fs_encode
 class PremiumTo(Hoster):
     __name__ = "PremiumTo"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
-    __pattern__ = r'https?://(?:www\.)?premium.to/.*'
+    __pattern__ = r'https?://(?:www\.)?premium\.to/.+'
 
     __description__ = """Premium.to hoster plugin"""
     __author_name__ = ("RaNaN", "zoidberg", "stickell")
@@ -23,6 +23,7 @@ class PremiumTo(Hoster):
     def setup(self):
         self.resumeDownload = True
         self.chunkLimit = 1
+
 
     def process(self, pyfile):
         if not self.account:
@@ -37,8 +38,7 @@ class PremiumTo(Hoster):
         self.req.setOption("timeout", 120)
 
         self.download(
-            "http://premium.to/api/getfile.php",
-            get={"username": self.account.username, "password": self.account.password, "link": quote(pyfile.url, "")},
+            "http://premium.to/api/getfile.php?username=%s&password=%s&link=%s" % (self.account.username, self.account.password, quote(pyfile.url, "")),
             disposition=True)
 
         check = self.checkDownload({"nopremium": "No premium account available"})
@@ -64,6 +64,7 @@ class PremiumTo(Hoster):
 
         if err:
             self.fail(err)
+
 
     def getTraffic(self):
         try:

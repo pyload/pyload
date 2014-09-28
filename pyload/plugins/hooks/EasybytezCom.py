@@ -31,7 +31,7 @@ class EasybytezCom(MultiHoster):
             return m.group(1).split(',')
         except Exception, e:
             self.logDebug(e)
-            self.logWarning("Unable to load supported hoster list, using last known")
+            self.logWarning(_("Unable to load supported hoster list, using last known"))
             return ["bitshare.com", "crocko.com", "ddlstorage.com", "depositfiles.com", "extabit.com", "hotfile.com",
                     "mediafire.com", "netload.in", "rapidgator.net", "rapidshare.com", "uploading.com", "uload.to",
                     "uploaded.to"]

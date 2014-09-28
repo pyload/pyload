@@ -125,7 +125,7 @@ class RelinkUs(Crypter):
         self.logDebug("Request user positional captcha resolving")
         captcha_img_url = self.CAPTCHA_IMG_URL + "?id=%s" % self.fileid
         coords = self.decryptCaptcha(captcha_img_url, forceUser=True, imgtype="png", result_type='positional')
-        self.logDebug("Captcha resolved, coords [%s]" % str(coords))
+        self.logDebug("Captcha resolved, coords [%s]" % coords)
         captcha_post_url = self.CAPTCHA_SUBMIT_URL + "?id=%s" % self.fileid
         captcha_post_data = {'button.x': coords[0], 'button.y': coords[1], 'captcha': 'submit'}
         self.html = self.load(captcha_post_url, post=captcha_post_data, decode=True)
@@ -189,7 +189,7 @@ class RelinkUs(Crypter):
         return package_links
 
     def handleDLCLinks(self):
-        self.logDebug('Search for DLC links')
+        self.logDebug("Search for DLC links")
         package_links = []
         m = re.search(self.DLC_LINK_REGEX, self.html)
         if m is not None:

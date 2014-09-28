@@ -27,7 +27,7 @@ class CzshareCom(SimpleHoster):
     FILE_SIZE_REPLACEMENTS = [(' ', '')]
     FILE_URL_REPLACEMENTS = [(r'http://[^/]*/download.php\?.*?id=(\w+).*', r'http://sdilej.cz/\1/x/')]
 
-    SH_CHECK_TRAFFIC = True
+    FORCE_CHECK_TRAFFIC = True
 
     FREE_URL_PATTERN = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
     FREE_FORM_PATTERN = r'<form action="download.php" method="post">\s*<img src="captcha.php" id="captcha" />(.*?)</form>'
@@ -57,7 +57,7 @@ class CzshareCom(SimpleHoster):
                 return False
         except Exception, e:
             # let's continue and see what happens...
-            self.logError('Parse error (CREDIT): %s' % e)
+            self.logError("Parse error (CREDIT): %s" % e)
 
         return True
 

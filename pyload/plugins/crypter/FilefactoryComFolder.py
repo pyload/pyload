@@ -18,7 +18,7 @@ class FilefactoryComFolder(SimpleCrypter):
     TITLE_PATTERN = r'<h1>Files in <span>(?P<title>.+)</span></h1>'
     PAGES_PATTERN = r'data-paginator-totalPages="(?P<pages>\d+)"'
 
-    SH_COOKIES = [('.filefactory.com', 'locale', 'en_US.utf8')]
+    COOKIES = [('.filefactory.com', 'locale', 'en_US.utf8')]
 
 
     def loadPage(self, page_n):
