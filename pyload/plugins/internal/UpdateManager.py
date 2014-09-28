@@ -214,7 +214,7 @@ class UpdateManager(Hook):
 
             # Always protect UpdateManager from self-removing
             try:
-                blacklisted.remove(("hook", "UpdateManager"))
+                blacklisted.remove(("internal", "UpdateManager"))
             except:
                 pass
 

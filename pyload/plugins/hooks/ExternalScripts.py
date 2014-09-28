@@ -113,7 +113,7 @@ class ExternalScripts(Hook):
     def package_extracted(self, pypack):
         download_folder = self.config['general']['download_folder']
         for script in self.scripts['package_extracted']:
-            folder = save_join(download_folder, pypack.folder)
+            folder = safe_join(download_folder, pypack.folder)
             self.callScript(script, pypack.name, folder, pypack.password, pypack.id)
 
 

@@ -3,7 +3,7 @@
 # Test links:
 # http://hugefiles.net/prthf9ya4w6s
 
-from pyload.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
 
 
 class HugefilesNet(XFileSharingPro):

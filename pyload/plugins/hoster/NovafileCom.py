@@ -4,7 +4,7 @@
 # http://novafile.com/vfun4z6o2cit
 # http://novafile.com/s6zrr5wemuz4
 
-from pyload.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
 
 
 class NovafileCom(XFileSharingPro):

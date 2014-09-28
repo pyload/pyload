@@ -3,7 +3,7 @@
 # Test links:
 # BigBuckBunny_320x180.mp4 - 61.7 Mb - http://vidplay.net/38lkev0h3jv0
 
-from pyload.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
 
 
 class VidPlayNet(XFileSharingPro):

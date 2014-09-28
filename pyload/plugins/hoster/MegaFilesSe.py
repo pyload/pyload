@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
 
 
 class MegaFilesSe(XFileSharingPro):

@@ -3,7 +3,7 @@
 # Test links:
 # http://180upload.com/js9qdm6kjnrs
 
-from pyload.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
 
 
 class HundredEightyUploadCom(XFileSharingPro):
