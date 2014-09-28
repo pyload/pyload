@@ -21,13 +21,13 @@ class XFileSharingPro(SimpleHoster):
     """
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
 
     __pattern__ = r'^unmatchable$'
 
     __description__ = """XFileSharingPro base hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __author_name__ = ("zoidberg", "stickell", "Walter Purcaro")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
 
     HOSTER_NAME = None
@@ -65,8 +65,12 @@ class XFileSharingPro(SimpleHoster):
             self.COOKIES = [(self.HOSTER_NAME, "lang", "english")]
         else:
             self.resumeDownload = self.multiDL = self.premium
-            if not self.HOSTER_NAME:
-                self.fail("Missing HOSTER_NAME")
+
+
+    def prepare(self):
+        """ Initialize important variables """
+        if not self.HOSTER_NAME:
+            self.fail("Missing HOSTER_NAME")
 
         if not LINK_PATTERN:
             pattr = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)'
@@ -74,6 +78,10 @@ class XFileSharingPro(SimpleHoster):
 
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
+
+        self.captcha = None
+        self.errmsg = None
+        self.passwords = self.getPassword().splitlines()
 
 
     def process(self, pyfile):
@@ -108,13 +116,6 @@ class XFileSharingPro(SimpleHoster):
                 self.handlePremium()
             else:
                 self.handleFree()
-
-
-    def prepare(self):
-        """ Initialize important variables """
-        self.captcha = None
-        self.errmsg = None
-        self.passwords = self.getPassword().splitlines()
 
 
     def getDirectDownloadLink(self):

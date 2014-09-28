@@ -153,13 +153,13 @@ class PluginParseError(Exception):
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __pattern__ = None
 
     __description__ = """Simple hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __author_name__ = ("zoidberg", "stickell", "Walter Purcaro")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
     """
     Following patterns should be defined by each hoster:
@@ -197,13 +197,19 @@ class SimpleHoster(Hoster):
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
+
+
+    def prepare(self):
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
+        self.req.setOption("timeout", 120)
 
 
     def process(self, pyfile):
+        self.prepare()
+
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
-        self.req.setOption("timeout", 120)
+
         # Due to a 0.4.9 core bug self.load would keep previous cookies even if overridden by cookies parameter.
         # Workaround using getURL. Can be reverted in 0.4.10 as the cookies bug has been fixed.
         self.html = getURL(pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)

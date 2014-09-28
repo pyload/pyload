@@ -10,7 +10,7 @@ from module.utils import html_unescape
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = None
 
@@ -58,17 +58,19 @@ class SimpleCrypter(Crypter):
     LOGIN_PREMIUM = False
 
 
-    def setup(self):
-        if isinstance(self.COOKIES, list):
-            set_cookies(self.req.cj, self.COOKIES)
-
-
-    def decrypt(self, pyfile):
+    def prepare(self):
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail('Required account not found!')
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail('Required premium account not found!')
+
+        if isinstance(self.COOKIES, list):
+            set_cookies(self.req.cj, self.COOKIES)
+
+
+    def decrypt(self, pyfile):
+        self.prepare()
 
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
 
