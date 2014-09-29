@@ -26,9 +26,9 @@ class OneFichierCom(SimpleHoster):
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://\g<id>.\g<host>/en/')]
 
-    WAITING_PATTERN = r'Warning ! Without premium status, you must wait between each downloads'
+    WAITING_PATTERN = r'Warning ! Without premium status, you must wait'
     NOT_PARALLEL = r'Warning ! Without premium status, you can download only one file at a time'
-    WAIT_TIME = 10 * 60  # Retry time between each free download
+    WAIT_TIME = 15 * 60  # Retry time between each free download (15 minutes between each download)
     RETRY_TIME = 15 * 60  # Default retry time in seconds (if detected parallel download)
 
 
