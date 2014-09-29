@@ -26,9 +26,8 @@ class OneFichierCom(SimpleHoster):
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://\g<id>.\g<host>/en/')]
 
-    WAITING_PATTERN = r'Warning ! Without premium status, you must wait between each downloads'
+    WAITING_PATTERN = r'You must wait (\d+) minutes to download again'
     NOT_PARALLEL = r'Warning ! Without premium status, you can download only one file at a time'
-    WAIT_TIME = 10 * 60  # Retry time between each free download
     RETRY_TIME = 15 * 60  # Default retry time in seconds (if detected parallel download)
 
 
@@ -38,10 +37,11 @@ class OneFichierCom(SimpleHoster):
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
-
-        if self.WAITING_PATTERN in self.html:
-            self.logInfo("You have to wait been each free download! Retrying in %d seconds." % self.WAIT_TIME)
-            self.waitAndRetry(self.WAIT_TIME)
+        found = re.search(self.WAITING_PATTERN, self.html)
+        if found:
+            wait_time_minutes = int(found.group(1)) + 1  # One minute more than what the page displays to be safe
+            self.logInfo("You have to wait been each free download! Retrying in %d minutes." % wait_time_minutes)
+            self.waitAndRetry(wait_time_minutes * 60)
         else:  # detect parallel download
             m = re.search(self.NOT_PARALLEL, self.html)
             if m:
