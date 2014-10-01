@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
 
     __pattern__ = r'https?://(?P<ID>\w+)\.(?P<HOST>(1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl\.fr)'
 
@@ -22,8 +22,7 @@ class OneFichierCom(SimpleHoster):
     FILE_SIZE_PATTERN = r'>Size :</th>\s*<td>(?P<S>[\d.,]+) (?P<U>\w+)'
     OFFLINE_PATTERN = r'>The (requested)? file (could not be found|has been deleted)'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://\g<ID>.\g<HOST>/')]
-    COOKIES = [(".1fichier.com", "LG", "en")]
+    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://\g<ID>.\g<HOST>/en/')]
 
     WAIT_PATTERN = r'>You must wait (\d+)'
 
