@@ -5,7 +5,7 @@ from glob import glob
 from os import sep
 from os.path import abspath, dirname
 
-from module.plugins.captcha import OCR
+from module.plugins.captcha.captcha import OCR
 
 
 class LinksaveIn(OCR):

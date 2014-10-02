@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.captcha import OCR
+from module.plugins.captcha.captcha import OCR
 
 
 class NetloadIn(OCR):
