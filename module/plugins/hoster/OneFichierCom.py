@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "0.63"
+    __version__ = "0.64"
 
     __pattern__ = r'https?://(?P<ID>\w+)\.(?P<HOST>(1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl\.fr)'
 
@@ -36,9 +36,9 @@ class OneFichierCom(SimpleHoster):
         self.html = self.load(self.pyfile.url, decode=True)
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            wait_time = int(m.group(1)) + 1 * 60  #: One minute more than what the page displays to be safe
+            wait_time = int(m.group(1)) + 1  #: One minute more than what the page displays to be safe
             self.logInfo("You have to wait been each free download", "Retrying in %d minutes." % wait_time)
-            self.wait(wait_time, True)
+            self.wait(wait_time * 60, True)
             self.retry()
 
         url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['ID'])
