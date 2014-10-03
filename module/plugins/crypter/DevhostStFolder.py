@@ -15,14 +15,14 @@ class DevhostStFolder(SimpleCrypter):
     __type__ = "crypter"
     __version__ = "0.01"
 
-    __pattern__ = r"http://(?:www\.)?d-h\.st/users/\w+/\?fld_id=\d+"
+    __pattern__ = r'http://(?:www\.)?d-h\.st/users/\w+/\?fld_id=\d+'
 
     __description__ = """d-h.st decrypter plugin"""
     __author_name_ = "zapp-brannigan"
     __author_mail_ = "fuerst.reinje@web.de"
 
 
-    LINK_PATTERN = r'width: 530px;"><a href="(.+?)"'
+    LINK_PATTERN = r';"><a href="/(\w+)'
 
 
     def getLinks(self):
