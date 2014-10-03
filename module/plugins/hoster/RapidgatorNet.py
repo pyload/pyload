@@ -34,8 +34,8 @@ class RapidgatorNet(SimpleHoster):
     WAIT_PATTERN = r'(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)'
     LINK_PATTERN = r"return '(http://\w+.rapidgator.net/.*)';"
 
-    RECAPTCHA_KEY_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
-    ADSCAPTCHA_SRC_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']*)'
+    RECAPTCHA_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
+    ADSCAPTCHA_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']*)'
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.*?)"'
 
 
@@ -138,12 +138,12 @@ class RapidgatorNet(SimpleHoster):
             self.parseError("Download link")
 
     def getCaptcha(self):
-        m = re.search(self.ADSCAPTCHA_SRC_PATTERN, self.html)
+        m = re.search(self.ADSCAPTCHA_PATTERN, self.html)
         if m:
             captcha_key = m.group(1)
             captcha = AdsCaptcha(self)
         else:
-            m = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
+            m = re.search(self.RECAPTCHA_PATTERN, self.html)
             if m:
                 captcha_key = m.group(1)
                 captcha = ReCaptcha(self)

@@ -21,8 +21,6 @@ class OboomCom(Hoster):
     __author_name__ = "stanley"
     __author_mail__ = "stanley.foerster@gmail.com"
 
-    RECAPTCHA_KEY = "6LdqpO0SAAAAAJGHXo63HyalP7H4qlRs_vff0kJX"
-
 
     def loadUrl(self, url, get=None):
         if get is None:
@@ -49,8 +47,13 @@ class OboomCom(Hoster):
 
     def solveCaptcha(self):
         recaptcha = ReCaptcha(self)
+
+        captcha_key = recaptcha.detect_key()
+        if captcha_key is None:
+            self.parseError("ReCaptcha key not found")
+
         for _ in xrange(5):
-            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+            challenge, response = recaptcha.challenge(captcha_key)
             apiUrl = "https://www.oboom.com/1.0/download/ticket"
             params = {"recaptcha_challenge_field": challenge,
                       "recaptcha_response_field": response,

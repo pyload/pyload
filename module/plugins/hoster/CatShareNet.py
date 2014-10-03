@@ -25,7 +25,6 @@ class CatShareNet(SimpleHoster):
 
     IP_BLOCKED_PATTERN = r'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
     SECONDS_PATTERN = 'var\scount\s=\s(\d+);'
-    RECAPTCHA_KEY = "6Lfln9kSAAAAANZ9JtHSOgxUPB9qfDFeLUI_QMEy"
     LINK_PATTERN = r'<form action="(.+?)" method="GET">'
 
 
@@ -48,7 +47,12 @@ class CatShareNet(SimpleHoster):
             self.wait(wait_time, True)
 
         recaptcha = ReCaptcha(self)
-        challenge, code = recaptcha.challenge(self.RECAPTCHA_KEY)
+
+        captcha_key = recaptcha.detect_key()
+        if captcha_key is None:
+            self.parseError("ReCaptcha key not found")
+
+        challenge, code = recaptcha.challenge(captcha_key)
         self.html = self.load(self.pyfile.url,
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field': code})

@@ -27,7 +27,6 @@ class KingfilesNet(SimpleHoster):
     RAND_ID_PATTERN = r'type=\"hidden\" name=\"rand\" value=\"(.+)\">'
 
     LINK_PATTERN = r'var download_url = \'(.+)\';'
-    SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.+)\">'
 
 
     def setup(self):
@@ -50,13 +49,12 @@ class KingfilesNet(SimpleHoster):
                      'method_free': "+"}
         b = self.load(self.pyfile.url, post=post_data, cookies=True, decode=True)
 
-        # Do the captcha stuff
-        m = re.search(self.SOLVEMEDIA_PATTERN, b)
-        if m is None:
-            self.parseError("Captcha key not found")
-
         solvemedia = SolveMedia(self)
-        captcha_key = m.group(1)
+
+        captcha_key = solvemedia.detect_key()
+        if captcha_key is None:
+            self.parseError("SolveMedia key not found")
+
         self.logDebug("captcha_key", captcha_key)
         captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
 

@@ -26,9 +26,9 @@ class FilecloudIo(SimpleHoster):
     UKEY_PATTERN = r"'ukey'\s*:'(\w+)',"
     AB1_PATTERN = r"if\( __ab1 == '(\w+)' \)"
     ERROR_MSG_PATTERN = r'var __error_msg\s*=\s*l10n\.(.*?);'
+    RECAPTCHA_PATTERN = r"var __recaptcha_public\s*=\s*'([^']+)';"
+
     LINK_PATTERN = r'"(http://s\d+.filecloud.io/%s/\d+/.*?)"'
-    RECAPTCHA_KEY_PATTERN = r"var __recaptcha_public\s*=\s*'([^']+)';"
-    RECAPTCHA_KEY = "6Lf5OdISAAAAAEZObLcx5Wlv4daMaASRov1ysDB1"
 
 
     def setup(self):
@@ -43,11 +43,18 @@ class FilecloudIo(SimpleHoster):
             self.parseError("__AB1")
         data['__ab1'] = m.group(1)
 
+        recaptcha = ReCaptcha(self)
+
+        m = re.search(self.RECAPTCHA_PATTERN, self.html)
+        captcha_key = m.group(1) if m else recaptcha.detect_key()
+
+        if captcha_key is None:
+            self.parseError("ReCaptcha key not found")
+
         if not self.account:
             self.fail("User not logged in")
         elif not self.account.logged_in:
-            recaptcha = ReCaptcha(self)
-            captcha_challenge, captcha_response = recaptcha.challenge(self.RECAPTCHA_KEY)
+            captcha_challenge, captcha_response = recaptcha.challenge(captcha_key)
             self.account.form_data = {"recaptcha_challenge_field": captcha_challenge,
                                       "recaptcha_response_field": captcha_response}
             self.account.relogin(self.user)
@@ -63,9 +70,6 @@ class FilecloudIo(SimpleHoster):
 
         self.logDebug(response)
         if response['captcha']:
-            recaptcha = ReCaptcha(self)
-            m = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
-            captcha_key = m.group(1) if m else self.RECAPTCHA_KEY
             data['ctype'] = "recaptcha"
 
             for _ in xrange(5):

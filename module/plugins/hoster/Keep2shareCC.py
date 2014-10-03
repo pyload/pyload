@@ -28,8 +28,6 @@ class Keep2shareCC(SimpleHoster):
     WAIT_PATTERN = r'Please wait ([\d:]+) to download this file'
     MULTIDL_ERROR = r'Free account does not allow to download more than one file at the same time'
 
-    RECAPTCHA_KEY = "6LcYcN0SAAAAABtMlxKj7X0hRxOY8_2U86kI1vbb"
-
 
     def handleFree(self):
         self.sanitize_url()
@@ -72,8 +70,13 @@ class Keep2shareCC(SimpleHoster):
 
     def handleCaptcha(self):
         recaptcha = ReCaptcha(self)
+
+        captcha_key = recaptcha.detect_key()
+        if captcha_key is None:
+            self.parseError("ReCaptcha key not found")
+
         for _ in xrange(5):
-            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+            challenge, response = recaptcha.challenge(captcha_key)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,
                          'CaptchaForm%5Bcode%5D': '',

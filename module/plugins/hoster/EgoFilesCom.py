@@ -24,7 +24,6 @@ class EgoFilesCom(SimpleHoster):
     OFFLINE_PATTERN = r'(File size|Rozmiar): 0 KB'
     WAIT_TIME_PATTERN = r'For next free download you have to wait <strong>((?P<m>\d*)m)? ?((?P<s>\d+)s)?</strong>'
     LINK_PATTERN = r'<a href="(?P<link>[^"]+)">Download ></a>'
-    RECAPTCHA_KEY = "6LeXatQSAAAAAHezcjXyWAni-4t302TeYe7_gfvX"
 
 
     def setup(self):
@@ -48,9 +47,15 @@ class EgoFilesCom(SimpleHoster):
             self.wait(waittime, True)
 
         downloadURL = r''
+
         recaptcha = ReCaptcha(self)
+
+        captcha_key = recaptcha.detect_key()
+        if captcha_key is None:
+            self.parseError("ReCaptcha key not found")
+
         for _ in xrange(5):
-            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+            challenge, response = recaptcha.challenge(captcha_key)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response}
             self.html = self.load(self.pyfile.url, post=post_data, decode=True)

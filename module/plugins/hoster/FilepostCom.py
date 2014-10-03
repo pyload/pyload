@@ -24,7 +24,7 @@ class FilepostCom(SimpleHoster):
     OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>|<div class="file_info file_info_deleted">'
 
     PREMIUM_ONLY_PATTERN = r'members only. Please upgrade to premium|a premium membership is required to download this file'
-    RECAPTCHA_KEY_PATTERN = r"Captcha.init\({\s*key:\s*'([^']+)'"
+    RECAPTCHA_PATTERN = r"Captcha.init\({\s*key:\s*'([^']+)'"
     FLP_TOKEN_PATTERN = r"set_store_options\({token: '([^']+)'"
 
 
@@ -37,7 +37,7 @@ class FilepostCom(SimpleHoster):
             self.parseError("Token")
         flp_token = m.group(1)
 
-        m = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
+        m = re.search(self.RECAPTCHA_PATTERN, self.html)
         if m is None:
             self.parseError("Captcha key")
         captcha_key = m.group(1)
