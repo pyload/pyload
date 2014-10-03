@@ -7,7 +7,7 @@ from random import random
 
 class CaptchaService:
     __name__ = "CaptchaService"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __description__ = """Base captcha service plugin"""
     __author_name__ = "pyLoad Team"
@@ -34,7 +34,7 @@ class CaptchaService:
         m = re.search(self.KEY_PATTERN, html)
         if m:
             self.key = m.group("KEY")
-            self.plugin.logDebug("%s key: %s" % (self.__name__, self.key)
+            self.plugin.logDebug("%s key: %s" % (self.__name__, self.key))
             return self.key
         else:
             self.plugin.logDebug("%s key not found" % self.__name__)
@@ -83,11 +83,14 @@ class ReCaptcha(CaptchaService):
             return None
 
 
-    def challenge(self, key=key):
+    def challenge(self, key):
         if not key:
-            errmsg = "ReCaptcha key missing"
-            self.plugin.fail(errmsg)
-            raise TypeError(errmsg)
+            if self.key:
+                key = self.key
+            else:
+                errmsg = "ReCaptcha key missing"
+                self.plugin.fail(errmsg)
+                raise TypeError(errmsg)
 
         js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key}, cookies=True)
 
@@ -140,13 +143,16 @@ class AdsCaptcha(CaptchaService):
             return None
 
 
-    def challenge(self, key=key):  #: key is tuple(CaptchaId, PublicKey)
-        CaptchaId, PublicKey = key
+    def challenge(self, key):  #: key is tuple(CaptchaId, PublicKey)
+        if not key:
+            if self.key:
+                key = self.key
+            else:
+                errmsg = "AdsCaptcha key missing"
+                self.plugin.fail(errmsg)
+                raise TypeError(errmsg)
 
-        if not CaptchaId or not PublicKey:
-            errmsg = "AdsCaptcha key missing"
-            self.plugin.fail(errmsg)
-            raise TypeError(errmsg)
+        CaptchaId, PublicKey = key
 
         js = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx", get={'CaptchaId': CaptchaId, 'PublicKey': PublicKey}, cookies=True)
 
@@ -178,11 +184,14 @@ class SolveMedia(CaptchaService):
     KEY_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.(no)?script\?k=(?P<KEY>.+?)"'
 
 
-    def challenge(self, key=key):
+    def challenge(self, key):
         if not key:
-            errmsg = "SolveMedia key missing"
-            self.plugin.fail(errmsg)
-            raise TypeError(errmsg)
+            if self.key:
+                key = self.key
+            else:
+                errmsg = "SolveMedia key missing"
+                self.plugin.fail(errmsg)
+                raise TypeError(errmsg)
 
         html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript", get={'k': key}, cookies=True)
         try:
