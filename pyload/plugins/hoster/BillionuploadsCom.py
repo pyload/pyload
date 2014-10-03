@@ -17,8 +17,8 @@ class BillionuploadsCom(XFileSharingPro):
 
     HOSTER_NAME = "billionuploads.com"
 
-    FILE_NAME_PATTERN = r'<b>Filename:</b>(?P<N>.*?)<br>'
-    FILE_SIZE_PATTERN = r'<b>Size:</b>(?P<S>.*?)<br>'
+    FILE_NAME_PATTERN = r'<td class="dofir" title="(?P<N>.+?)"'
+    FILE_SIZE_PATTERN = r'<td class="dofir">(?P<S>[\d.]+) (?P<U>\w+)'
 
 
 getInfo = create_getInfo(BillionuploadsCom)

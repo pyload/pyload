@@ -36,8 +36,8 @@ class TurbobitNet(SimpleHoster):
 
     LINK_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
     LIMIT_WAIT_PATTERN = r"<div id='timeout'>(\d+)<"
-    CAPTCHA_KEY_PATTERN = r'src="http://api\.recaptcha\.net/challenge\?k=([^"]+)"'
-    CAPTCHA_SRC_PATTERN = r'<img alt="Captcha" src="(.+?)"'
+
+    CAPTCHA_URL_PATTERN = r'<img alt="Captcha" src="(.+?)"'
 
 
     def handleFree(self):
@@ -71,12 +71,13 @@ class TurbobitNet(SimpleHoster):
 
             if inputs['captcha_type'] == 'recaptcha':
                 recaptcha = ReCaptcha(self)
-                m = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
-                captcha_key = m.group(1) if m else '6LcTGLoSAAAAAHCWY9TTIrQfjUlxu6kZlTYP50_c'
-                inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(
-                    captcha_key)
+                captcha_key = recaptcha.detect_key()
+                if captcha_key is None:
+                    self.parseError("ReCaptcha captcha key not found")
+
+                inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
             else:
-                m = re.search(self.CAPTCHA_SRC_PATTERN, self.html)
+                m = re.search(self.CAPTCHA_URL_PATTERN, self.html)
                 if m is None:
                     self.parseError('captcha')
                 captcha_url = m.group(1)

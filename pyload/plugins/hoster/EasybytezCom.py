@@ -18,7 +18,7 @@ class EasybytezCom(XFileSharingPro):
     HOSTER_NAME = "easybytez.com"
 
     FILE_INFO_PATTERN = r'<span class="name">(?P<N>.+)</span><br>\s*<span class="size">(?P<S>[^<]+)</span>'
-    OFFLINE_PATTERN = r'<h1>File not available</h1>'
+    OFFLINE_PATTERN = r'>File not available'
 
     LINK_PATTERN = r'(http://(\w+\.(easyload|easybytez|zingload)\.(com|to)|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/[^"<]+)'
     OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'

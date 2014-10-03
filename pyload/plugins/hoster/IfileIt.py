@@ -19,7 +19,7 @@ class IfileIt(SimpleHoster):
     __author_mail__ = "zoidberg@mujmail.cz"
 
     LINK_PATTERN = r'</span> If it doesn\'t, <a target="_blank" href="([^"]+)">'
-    RECAPTCHA_KEY_PATTERN = r"var __recaptcha_public\s*=\s*'([^']+)';"
+    RECAPTCHA_PATTERN = r"var __recaptcha_public\s*=\s*'([^']+)';"
     FILE_INFO_PATTERN = r'<span style="cursor: default;[^>]*>\s*(?P<N>.*?)\s*&nbsp;\s*<strong>\s*(?P<S>[0-9.]+)\s*(?P<U>[kKMG])i?B\s*</strong>\s*</span>'
     OFFLINE_PATTERN = r'<span style="cursor: default;[^>]*>\s*&nbsp;\s*<strong>\s*</strong>\s*</span>'
     TEMP_OFFLINE_PATTERN = r'<span class="msg_red">Downloading of this file is temporarily disabled</span>'
@@ -36,7 +36,8 @@ class IfileIt(SimpleHoster):
             self.offline()
 
         if json_response['captcha']:
-            captcha_key = re.search(self.RECAPTCHA_KEY_PATTERN, self.html).group(1)
+            captcha_key = re.search(self.RECAPTCHA_PATTERN, self.html).group(1)
+
             recaptcha = ReCaptcha(self)
             post_data['ctype'] = "recaptcha"
 

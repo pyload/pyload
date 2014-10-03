@@ -50,7 +50,6 @@ class LetitbitNet(SimpleHoster):
 
     SECONDS_PATTERN = r'seconds\s*=\s*(\d+);'
     CAPTCHA_CONTROL_FIELD = r"recaptcha_control_field\s=\s'(?P<value>[^']+)'"
-    RECAPTCHA_KEY = "6Lc9zdMSAAAAAF-7s2wuQ-036pLRbM0p8dDaQdAM"
 
 
     def setup(self):
@@ -108,7 +107,13 @@ class LetitbitNet(SimpleHoster):
         self.logDebug(response)
 
         recaptcha = ReCaptcha(self)
-        challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+
+        captcha_key = recaptcha.detect_key()
+        if captcha_key is None:
+            self.parseError("ReCaptcha key not found")
+
+        challenge, response = recaptcha.challenge(captcha_key)
+
         post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response,
                      "recaptcha_control_field": recaptcha_control_field}
         self.logDebug("Post data to send", post_data)

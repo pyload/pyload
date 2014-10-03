@@ -19,7 +19,6 @@ class EpicShareNet(XFileSharingPro):
 
     HOSTER_NAME = "epicshare.net"
 
-    OFFLINE_PATTERN = r'<b>File Not Found</b><br><br>'
     FILE_NAME_PATTERN = r'<b>Password:</b></div>\s*<h2>(?P<N>[^<]+)</h2>'
 
 

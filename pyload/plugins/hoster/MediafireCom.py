@@ -58,7 +58,6 @@ class MediafireCom(SimpleHoster):
     LINK_PATTERN = r'<div class="download_link"[^>]*(?:z-index:(?P<zindex>\d+))?[^>]*>\s*<a href="(?P<href>http://[^"]+)"'
     JS_KEY_PATTERN = r"DoShow\('mfpromo1'\);[^{]*{((\w+)='';.*?)eval\(\2\);"
     JS_ZMODULO_PATTERN = r"\('z-index'\)\) \% (\d+)\)\);"
-    SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.noscript\?k=([^"]+)'
     PAGE1_ACTION_PATTERN = r'<link rel="canonical" href="([^"]+)"/>'
     PASSWORD_PATTERN = r'<form name="form_password"'
 
@@ -111,15 +110,12 @@ class MediafireCom(SimpleHoster):
         self.download(download_url)
 
     def checkCaptcha(self):
-        for _ in xrange(5):
-            m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-            if m:
-                captcha_key = m.group(1)
-                solvemedia = SolveMedia(self)
-                captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
-                self.html = self.load(self.url, post={"adcopy_challenge": captcha_challenge,
-                                                      "adcopy_response": captcha_response}, decode=True)
-            else:
-                break
-        else:
-            self.fail("No valid recaptcha solution received")
+        solvemedia = SolveMedia(self)
+
+        captcha_key = solvemedia.detect_key()
+        if captcha_key is None:
+            self.parseError("SolveMedia key not found")
+
+        captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
+        self.html = self.load(self.url, post={"adcopy_challenge": captcha_challenge,
+                                              "adcopy_response": captcha_response}, decode=True)

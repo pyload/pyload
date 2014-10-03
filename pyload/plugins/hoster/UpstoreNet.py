@@ -39,9 +39,9 @@ class UpstoreNet(SimpleHoster):
         # STAGE 2: solv captcha and wait
         # first get the infos we need: recaptcha key and wait time
         recaptcha = ReCaptcha(self)
-        if not recaptcha.detect_key(self.html):
-            self.parseError("could not find recaptcha pattern")
-        self.logDebug("Using captcha key " + recaptcha.recaptcha_key)
+        if recaptcha.detect_key() is None:
+            self.parseError("ReCaptcha key not found")
+        self.logDebug("Using captcha key " + recaptcha.key)
         # try the captcha 5 times
         for i in xrange(5):
             m = re.search(self.WAIT_PATTERN, self.html)

@@ -176,7 +176,7 @@ class SimpleHoster(Hoster):
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
 
       TEMP_OFFLINE_PATTERN: Checks if the file is temporarily offline
-        example: TEMP_OFFLINE_PATTERN = r'Server maintainance'
+        example: TEMP_OFFLINE_PATTERN = r'Server (maintenance|maintainance)'
 
       PREMIUM_ONLY_PATTERN: (optional) Checks if the file can be downloaded only with a premium account
         example: PREMIUM_ONLY_PATTERN = r'Premium account required'

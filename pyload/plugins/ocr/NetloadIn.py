@@ -2,6 +2,7 @@
 
 from pyload.plugins.OCR import OCR
 
+
 class NetloadIn(OCR):
     __name__ = "NetloadIn"
     __type__ = "ocr"

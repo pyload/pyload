@@ -24,7 +24,6 @@ class DateiTo(SimpleHoster):
 
     WAIT_PATTERN = r'countdown\({seconds: (\d+)'
     DATA_PATTERN = r'url: "(.*?)", data: "(.*?)",'
-    RECAPTCHA_KEY_PATTERN = r'Recaptcha.create\("(.*?)"'
 
 
     def handleFree(self):
@@ -52,10 +51,11 @@ class DateiTo(SimpleHoster):
             data = dict(x.split('=') for x in m.group(2).split('&'))
 
             if url.endswith('recaptcha.php'):
-                m = re.search(self.RECAPTCHA_KEY_PATTERN, self.html)
-                recaptcha_key = m.group(1) if m else "6LdBbL8SAAAAAI0vKUo58XRwDd5Tu_Ze1DA7qTao"
+                captcha_key = recaptcha.detect_key()
+                if captcha_key is None:
+                    self.parseError("ReCaptcha key not found")
 
-                data['recaptcha_challenge_field'], data['recaptcha_response_field'] = recaptcha.challenge(recaptcha_key)
+                data['recaptcha_challenge_field'], data['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
 
         else:
             self.fail('Too bad...')

@@ -26,7 +26,6 @@ class RyushareCom(XFileSharingPro):
 
     WAIT_PATTERN = r'You have to wait ((?P<hour>\d+) hour[s]?, )?((?P<min>\d+) minute[s], )?(?P<sec>\d+) second[s]'
     LINK_PATTERN = r'<a href="([^"]+)">Click here to download<'
-    SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
 
 
     def getDownloadLink(self):
@@ -57,13 +56,13 @@ class RyushareCom(XFileSharingPro):
             self.retry()
 
         for _ in xrange(5):
-            m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-            if m is None:
-                self.parseError("Error parsing captcha")
-
-            captchaKey = m.group(1)
             captcha = SolveMedia(self)
-            challenge, response = captcha.challenge(captchaKey)
+
+            captcha_key = captcha.detect_key()
+            if captcha_key is None:
+                self.parseError("SolveMedia key not found")
+
+            challenge, response = captcha.challenge(captcha_key)
 
             inputs['adcopy_challenge'] = challenge
             inputs['adcopy_response'] = response

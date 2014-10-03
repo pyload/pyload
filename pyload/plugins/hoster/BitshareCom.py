@@ -23,7 +23,6 @@ class BitshareCom(SimpleHoster):
     OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
 
     FILE_AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
-    CAPTCHA_KEY_PATTERN = r'http://api\.recaptcha\.net/challenge\?k=(.*?) '
     TRAFFIC_USED_UP = r'Your Traffic is used up for today. Upgrade to premium to continue!'
 
 
@@ -108,12 +107,15 @@ class BitshareCom(SimpleHoster):
         # Resolve captcha
         if captcha == 1:
             self.logDebug("File is captcha protected")
-            id = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group(1)
+            recaptcha = ReCaptcha(self)
+            captcha_key = recaptcha.detect_key()
+            if captcha_key is None:
+                self.parseError("ReCaptcha captcha key not found")
+
             # Try up to 3 times
             for i in xrange(3):
-                self.logDebug("Resolving ReCaptcha with key [%s], round %d" % (id, i + 1))
-                recaptcha = ReCaptcha(self)
-                challenge, code = recaptcha.challenge(id)
+                self.logDebug("Resolving ReCaptcha with key [%s], round %d" % (captcha_key, i + 1))
+                challenge, code = recaptcha.challenge(captcha_key)
                 response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                                      post={"request": "validateCaptcha", "ajaxid": self.ajaxid,
                                            "recaptcha_challenge_field": challenge, "recaptcha_response_field": code})
