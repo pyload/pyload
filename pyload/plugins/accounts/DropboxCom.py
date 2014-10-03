@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DropboxCom(SimpleHoster):

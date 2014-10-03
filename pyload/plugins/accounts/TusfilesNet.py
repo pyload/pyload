@@ -4,9 +4,9 @@ import re
 
 from time import mktime, strptime, gmtime
 
-from module.plugins.Account import Account
-from module.plugins.internal.SimpleHoster import parseHtmlForm
-from module.utils import parseFileSize
+from pyload.plugins.Account import Account
+from pyload.plugins.internal.SimpleHoster import parseHtmlForm
+from pyload.utils import parseFileSize
 
 
 class TusfilesNet(Account):

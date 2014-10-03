@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.CaptchaService import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from pyload.plugins.internal.CaptchaService import SolveMedia
+from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class KingfilesNet(SimpleHoster):
