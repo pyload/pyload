@@ -8,12 +8,6 @@ from shutil import copy
 from traceback import print_exc
 from utils import chmod
 
-# ignore these plugin configs, mainly because plugins were wiped out
-IGNORE = (
-    "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('hooks', 'UnRar'),
-    'EasyShareCom', 'FlyshareCz'
-    )
-
 CONF_VERSION = 1
 
 class ConfigParser:
@@ -30,7 +24,7 @@ class ConfigParser:
             type:
             desc:
       }
-      desc: 
+      desc:
 
     }
 
@@ -48,8 +42,6 @@ class ConfigParser:
         self.checkVersion()
 
         self.readConfig()
-
-        self.deleteOldPlugins()
 
 
     def checkVersion(self, n=0):
@@ -128,7 +120,7 @@ class ConfigParser:
         for line in config:
             comment = line.rfind("#")
             if line.find(":", comment) < 0 > line.find("=", comment) and comment > 0 and line[comment - 1].isspace():
-                line = line.rpartition("#") # removes comments            
+                line = line.rpartition("#") # removes comments
                 if line[1]:
                     line = line[0]
                 else:
@@ -346,14 +338,6 @@ class ConfigParser:
         """Removes a plugin config"""
         if name in self.plugin:
             del self.plugin[name]
-
-
-    def deleteOldPlugins(self):
-        """ remove old plugins from config """
-
-        for name in IGNORE:
-            if name in self.plugin:
-                del self.plugin[name]
 
 
 class Section:
