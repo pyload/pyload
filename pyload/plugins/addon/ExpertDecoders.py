@@ -9,12 +9,12 @@ from uuid import uuid4
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL, getRequest
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 
 
-class ExpertDecoders(Hook):
+class ExpertDecoders(Addon):
     __name__ = "ExpertDecoders"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.01"
 
     __config__ = [("activated", "bool", "Activated", False),

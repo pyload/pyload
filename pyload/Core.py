@@ -377,7 +377,7 @@ class Core(object):
 
         # later imported because they would trigger api import, and remote value not set correctly
         from pyload import api
-        from pyload.manager.HookManager import HookManager
+        from pyload.manager.AddonManager import AddonManager
         from pyload.manager.ThreadManager import ThreadManager
 
         if api.activated != self.remote:
@@ -393,7 +393,7 @@ class Core(object):
         self.accountManager = AccountManager(self)
         self.threadManager = ThreadManager(self)
         self.captchaManager = CaptchaManager(self)
-        self.hookManager = HookManager(self)
+        self.addonManager = AddonManager(self)
         self.remoteManager = RemoteManager(self)
 
         self.js = JsEngine(self)
@@ -435,7 +435,7 @@ class Core(object):
         self.running = True
 
         self.log.info(_("Activating Plugins..."))
-        self.hookManager.coreReady()
+        self.addonManager.coreReady()
 
         self.log.info(_("pyLoad is up and running"))
 
@@ -576,7 +576,7 @@ class Core(object):
             for pyfile in pyfiles:
                 pyfile.abortDownload()
 
-            self.hookManager.coreExiting()
+            self.addonManager.coreExiting()
 
         except:
             if self.debug:

@@ -6,14 +6,14 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class ZeveraCom(MultiHoster):
     __name__ = "ZeveraCom"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.02"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
-    __description__ = """Real-Debrid.com hook plugin"""
+    __description__ = """Real-Debrid.com addon plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

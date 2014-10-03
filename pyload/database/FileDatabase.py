@@ -120,7 +120,7 @@ class FileHandler:
     def addLinks(self, urls, package):
         """adds links"""
 
-        self.core.hookManager.dispatchEvent("linksAdded", urls, package)
+        self.core.addonManager.dispatchEvent("linksAdded", urls, package)
 
         data = self.core.pluginManager.parseUrls(urls)
 
@@ -166,7 +166,7 @@ class FileHandler:
 
         self.db.deletePackage(p)
         self.core.pullManager.addEvent(e)
-        self.core.hookManager.dispatchEvent("packageDeleted", id)
+        self.core.addonManager.dispatchEvent("packageDeleted", id)
 
         if id in self.packageCache:
             del self.packageCache[id]
@@ -368,7 +368,7 @@ class FileHandler:
         """checks if all files are finished and dispatch event"""
 
         if not self.getQueueCount(True):
-            self.core.hookManager.dispatchEvent("allDownloadsFinished")
+            self.core.addonManager.dispatchEvent("allDownloadsFinished")
             self.core.log.debug("All downloads finished")
             return True
 
@@ -381,7 +381,7 @@ class FileHandler:
         self.resetCount()
 
         if not self.db.processcount(1, fid):
-            self.core.hookManager.dispatchEvent("allDownloadsProcessed")
+            self.core.addonManager.dispatchEvent("allDownloadsProcessed")
             self.core.log.debug("All downloads processed")
             return True
 
@@ -528,7 +528,7 @@ class FileHandler:
         if not ids or (pyfile.id in ids and len(ids) == 1):
             if not pyfile.package().setFinished:
                 self.core.log.info(_("Package finished: %s") % pyfile.package().name)
-                self.core.hookManager.packageFinished(pyfile.package())
+                self.core.addonManager.packageFinished(pyfile.package())
                 pyfile.package().setFinished = True
 
 

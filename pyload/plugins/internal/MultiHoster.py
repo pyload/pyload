@@ -2,13 +2,13 @@
 
 import re
 
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 from pyload.utils import remove_chars
 
 
-class MultiHoster(Hook):
+class MultiHoster(Addon):
     __name__ = "MultiHoster"
-    __type__ = "hook"
+    __type__ = "addon"
 	__version__ = "0.20"
 
     __description__ = """Generic MultiHoster plugin"""

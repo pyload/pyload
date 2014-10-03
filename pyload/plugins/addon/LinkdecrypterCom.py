@@ -3,18 +3,18 @@
 import re
 
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 from pyload.utils import remove_chars
 
 
-class LinkdecrypterCom(Hook):
+class LinkdecrypterCom(Addon):
     __name__ = "LinkdecrypterCom"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.19"
 
     __config__ = [("activated", "bool", "Activated", False)]
 
-    __description__ = """Linkdecrypter.com hook plugin"""
+    __description__ = """Linkdecrypter.com addon plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

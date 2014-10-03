@@ -36,7 +36,7 @@ class AccountManager:
         if plugin in self.accounts:
             if plugin not in self.plugins:
                 try:
-                    self.plugins[plugin] = self.core.pluginManager.loadClass("accounts", plugin)(self, self.accounts[plugin])
+                    self.plugins[plugin] = self.core.pluginManager.loadClass("account", plugin)(self, self.accounts[plugin])
                 except TypeError:  # The account class no longer exists (blacklisted plugin). Skipping the account to avoid crash
                     return None
 

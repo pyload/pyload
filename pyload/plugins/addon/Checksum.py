@@ -9,7 +9,7 @@ import zlib
 from os import remove
 from os.path import getsize, isfile, splitext
 
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 from pyload.utils import safe_join, fs_encode
 
 
@@ -37,9 +37,9 @@ def computeChecksum(local_file, algorithm):
         return None
 
 
-class Checksum(Hook):
+class Checksum(Addon):
     __name__ = "Checksum"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.13"
 
     __config__ = [("activated", "bool", "Activated", False),

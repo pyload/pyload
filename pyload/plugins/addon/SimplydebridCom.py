@@ -6,14 +6,14 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class SimplydebridCom(MultiHoster):
     __name__ = "SimplydebridCom"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.01"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
-    __description__ = """Simply-Debrid.com hook plugin"""
+    __description__ = """Simply-Debrid.com addon plugin"""
     __author_name__ = "Kagenoshin"
     __author_mail__ = "kagenoshin@gmx.ch"
 

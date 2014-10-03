@@ -7,7 +7,7 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class SimplyPremiumCom(MultiHoster):
     __name__ = "SimplyPremiumCom"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.02"
 
     __config__ = [("activated", "bool", "Activated", "False"),
@@ -16,7 +16,7 @@ class SimplyPremiumCom(MultiHoster):
                   ("unloadFailing", "bool", "Revert to standard download if download fails", "False"),
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
-    __description__ = """Simply-Premium.com hook plugin"""
+    __description__ = """Simply-Premium.com addon plugin"""
     __author_name__ = "EvolutionClip"
     __author_mail__ = "evolutionclip@live.de"
 

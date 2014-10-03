@@ -25,21 +25,21 @@ from threading import RLock
 
 from types import MethodType
 
-from pyload.manager.thread.PluginThread import HookThread
+from pyload.manager.thread.PluginThread import AddonThread
 from pyload.manager.PluginManager import literal_eval
 from utils import lock
 
-class HookManager:
-    """Manages hooks, delegates and handles Events.
+class AddonManager:
+    """Manages addons, delegates and handles Events.
 
         Every plugin can define events, \
         but some very usefull events are called by the Core.
-        Contrary to overwriting hook methods you can use event listener,
+        Contrary to overwriting addon methods you can use event listener,
         which provides additional entry point in the control flow.
         Only do very short tasks or use threads.
 
         **Known Events:**
-        Most hook methods exists as events. These are the additional known events.
+        Most addon methods exists as events. These are the additional known events.
 
         ===================== ============== ==================================
         Name                     Arguments      Description
@@ -65,7 +65,7 @@ class HookManager:
         self.core = core
         self.config = self.core.config
 
-        __builtin__.hookManager = self #needed to let hooks register themself
+        __builtin__.addonManager = self #needed to let addons register themself
 
         self.log = self.core.log
         self.plugins = []
@@ -77,7 +77,7 @@ class HookManager:
         #registering callback for config event
         self.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged", basestring)
 
-        self.addEvent("pluginConfigChanged", self.manageHooks)
+        self.addEvent("pluginConfigChanged", self.manageAddon)
 
         self.lock = RLock()
         self.createIndex()
@@ -87,7 +87,7 @@ class HookManager:
             try:
                 return func(*args)
             except Exception, e:
-                args[0].log.error(_("Error executing hooks: %s") % str(e))
+                args[0].log.error(_("Error executing addon: %s") % e)
                 if args[0].core.debug:
                     traceback.print_exc()
 
@@ -119,12 +119,12 @@ class HookManager:
         active = []
         deactive = []
 
-        for pluginname in self.core.pluginManager.hookPlugins:
+        for pluginname in self.core.pluginManager.addonPlugins:
             try:
-                #hookClass = getattr(plugin, plugin.__name__)
+                # hookClass = getattr(plugin, plugin.__name__)
 
                 if self.config.getPlugin(pluginname, "activated"):
-                    pluginClass = self.core.pluginManager.loadClass("hooks", pluginname)
+                    pluginClass = self.core.pluginManager.loadClass("addon", pluginname)
                     if not pluginClass: continue
 
                     plugin = pluginClass(self.core, self)
@@ -146,20 +146,20 @@ class HookManager:
 
         self.plugins = plugins
 
-    def manageHooks(self, plugin, name, value):
+    def manageAddon(self, plugin, name, value):
         if name == "activated" and value:
-            self.activateHook(plugin)
+            self.activateAddon(plugin)
         elif name == "activated" and not value:
-            self.deactivateHook(plugin)
+            self.deactivateAddon(plugin)
 
-    def activateHook(self, plugin):
+    def activateAddon(self, plugin):
 
         #check if already loaded
         for inst in self.plugins:
             if inst.__name__ == plugin:
                 return
 
-        pluginClass = self.core.pluginManager.loadClass("hooks", plugin)
+        pluginClass = self.core.pluginManager.loadClass("addon", plugin)
 
         if not pluginClass: return
 
@@ -172,23 +172,24 @@ class HookManager:
         # call core Ready
         start_new_thread(plugin.coreReady, tuple())
 
-    def deactivateHook(self, plugin):
+    def deactivateAddon(self, plugin):
 
-        hook = None
+        addon = None
         for inst in self.plugins:
             if inst.__name__ == plugin:
-                hook = inst
+                addon = inst
 
-        if not hook: return
+        if not addon:
+            return
 
         self.log.debug("Plugin unloaded: %s" % plugin)
 
-        hook.unload()
+        addon.unload()
 
         #remove periodic call
-        self.log.debug("Removed callback %s" % self.core.scheduler.removeJob(hook.cb))
-        self.plugins.remove(hook)
-        del self.pluginMap[hook.__name__]
+        self.log.debug("Removed callback %s" % self.core.scheduler.removeJob(addon.cb))
+        self.plugins.remove(addon)
+        del self.pluginMap[addon.__name__]
 
 
     @try_catch
@@ -256,7 +257,7 @@ class HookManager:
         self.dispatchEvent("afterReconnecting", ip)
 
     def startThread(self, function, *args, **kwargs):
-        t = HookThread(self.core.threadManager, function, args, kwargs)
+        t = AddonThread(self.core.threadManager, function, args, kwargs)
 
     def activePlugins(self):
         """ returns all active plugins """

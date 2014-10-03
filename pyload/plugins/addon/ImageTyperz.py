@@ -9,7 +9,7 @@ from pycurl import FORM_FILE, LOW_SPEED_TIME
 from thread import start_new_thread
 
 from pyload.network.RequestFactory import getURL, getRequest
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 
 
 class ImageTyperzException(Exception):
@@ -27,9 +27,9 @@ class ImageTyperzException(Exception):
         return "<ImageTyperzException %s>" % self.err
 
 
-class ImageTyperz(Hook):
+class ImageTyperz(Addon):
     __name__ = "ImageTyperz"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.04"
 
     __config__ = [("activated", "bool", "Activated", False),

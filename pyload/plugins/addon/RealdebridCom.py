@@ -6,7 +6,7 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.43"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -16,7 +16,7 @@ class RealdebridCom(MultiHoster):
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """Real-Debrid.com hook plugin"""
+    __description__ = """Real-Debrid.com addon plugin"""
     __author_name__ = "Devirex Hazzard"
     __author_mail__ = "naibaf_11@yahoo.de"
 

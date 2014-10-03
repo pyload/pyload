@@ -10,7 +10,7 @@ class DeadCrypter(_Crypter):
 
     __pattern__ = None
 
-    __description__ = """ Crypter is no longer available """
+    __description__ = """Crypter is no longer available"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

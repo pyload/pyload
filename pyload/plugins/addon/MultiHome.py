@@ -2,12 +2,12 @@
 
 from time import time
 
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 
 
-class MultiHome(Hook):
+class MultiHome(Addon):
     __name__ = "MultiHome"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.11"
 
     __config__ = [("activated", "bool", "Activated", False),

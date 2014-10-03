@@ -6,13 +6,13 @@ from itertools import chain
 from os import listdir, access, X_OK, makedirs
 from os.path import join, exists, basename, abspath
 
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 from pyload.utils import safe_join
 
 
-class ExternalScripts(Hook):
+class ExternalScripts(Addon):
     __name__ = "ExternalScripts"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.24"
 
     __config__ = [("activated", "bool", "Activated", True)]

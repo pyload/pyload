@@ -205,7 +205,7 @@ class Plugin(Base):
         self.html = None
 
         #: quick caller for API
-        self.api = self.core.api 
+        self.api = self.core.api
 
         self.init()
 
@@ -260,7 +260,7 @@ class Plugin(Base):
         10 - not implemented
         20 - unknown error
         """
-        #@TODO checksum check hook
+        #@TODO checksum check addon
 
         return True, 10
 
@@ -362,10 +362,10 @@ class Plugin(Base):
         temp_file.write(img)
         temp_file.close()
 
-        has_plugin = self.__name__ in self.core.pluginManager.captchaPlugins
+        has_plugin = self.__name__ in self.core.pluginManager.ocrPlugins
 
         if self.core.captcha:
-            Ocr = self.core.pluginManager.loadClass("captcha", self.__name__)
+            Ocr = self.core.pluginManager.loadClass("ocr", self.__name__)
         else:
             Ocr = None
 
@@ -508,7 +508,7 @@ class Plugin(Base):
 
         filename = join(location, name)
 
-        self.core.hookManager.dispatchEvent("downloadStarts", self.pyfile, url, filename)
+        self.core.addonManager.dispatchEvent("downloadStarts", self.pyfile, url, filename)
 
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,

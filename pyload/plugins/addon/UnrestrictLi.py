@@ -7,7 +7,7 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class UnrestrictLi(MultiHoster):
     __name__ = "UnrestrictLi"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.02"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -17,7 +17,7 @@ class UnrestrictLi(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24),
                   ("history", "bool", "Delete History", False)]
 
-    __description__ = """Unrestrict.li hook plugin"""
+    __description__ = """Unrestrict.li addon plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

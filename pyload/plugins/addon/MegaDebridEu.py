@@ -7,13 +7,13 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class MegaDebridEu(MultiHoster):
     __name__ = "MegaDebridEu"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.02"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("unloadFailing", "bool", "Revert to standard download if download fails", False)]
 
-    __description__ = """mega-debrid.eu hook plugin"""
+    __description__ = """mega-debrid.eu addon plugin"""
     __author_name__ = "D.Ducatel"
     __author_mail__ = "dducatel@je-geek.fr"
 

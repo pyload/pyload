@@ -64,7 +64,7 @@ class CaptchaManager:
         if cli: #client connected -> should solve the captcha
             task.setWaiting(50) #wait 50 sec for response
 
-        for plugin in self.core.hookManager.activePlugins():
+        for plugin in self.core.addonManager.activePlugins():
             try:
                 plugin.newCaptchaTask(task)
             except:
@@ -87,7 +87,7 @@ class CaptchaTask:
         self.captchaFormat = format
         self.captchaFile = file
         self.captchaResultType = result_type
-        self.handler = [] #the hook plugins that will take care of the solution
+        self.handler = []  #: the hook plugins that will take care of the solution
         self.result = None
         self.waitUntil = None
         self.error = None #error message

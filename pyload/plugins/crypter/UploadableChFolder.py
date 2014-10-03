@@ -10,7 +10,7 @@ class UploadableChFolder(SimpleCrypter):
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/list/\w+'
 
-    __description__ = """ Uploadable.ch folder decrypter plugin """
+    __description__ = """Uploadable.ch folder decrypter plugin"""
     __author_name__ = ("guidobelix", "Walter Purcaro")
     __author_mail__ = ("guidobelix@hotmail.it", "vuolter@gmail.com")
 

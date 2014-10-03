@@ -12,7 +12,7 @@ class LomafileCom(SimpleHoster):
 
     __pattern__ = r'https?://lomafile\.com/.+/[\w\.]+'
 
-    __description__ = """ Lomafile.com hoster plugin """
+    __description__ = """Lomafile.com hoster plugin"""
     __author_name__ = "nath_schwarz"
     __author_mail__ = "nathan.notwhite@gmail.com"
 

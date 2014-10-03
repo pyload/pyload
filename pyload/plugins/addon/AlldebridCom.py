@@ -6,7 +6,7 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.13"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -16,7 +16,7 @@ class AlldebridCom(MultiHoster):
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """Alldebrid.com hook plugin"""
+    __description__ = """Alldebrid.com addon plugin"""
     __author_name__ = "Andy Voigt"
     __author_mail__ = "spamsales@online.de"
 

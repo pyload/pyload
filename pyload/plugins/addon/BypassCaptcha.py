@@ -5,7 +5,7 @@ from thread import start_new_thread
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL, getRequest
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 
 
 class BypassCaptchaException(Exception):
@@ -23,9 +23,9 @@ class BypassCaptchaException(Exception):
         return "<BypassCaptchaException %s>" % self.err
 
 
-class BypassCaptcha(Hook):
+class BypassCaptcha(Addon):
     __name__ = "BypassCaptcha"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.04"
 
     __config__ = [("activated", "bool", "Activated", False),

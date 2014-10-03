@@ -2,12 +2,12 @@
 
 import re
 
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 
 
-class XFileSharingPro(Hook):
+class XFileSharingPro(Addon):
     __name__ = "XFileSharingPro"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.12"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -15,7 +15,7 @@ class XFileSharingPro(Hook):
                   ("includeList", "str", "Include hosters (comma separated)", ""),
                   ("excludeList", "str", "Exclude hosters (comma separated)", "")]
 
-    __description__ = """XFileSharingPro hook plugin"""
+    __description__ = """XFileSharingPro addon plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

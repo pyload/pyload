@@ -6,7 +6,7 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class RehostTo(MultiHoster):
     __name__ = "RehostTo"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.43"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -15,7 +15,7 @@ class RehostTo(MultiHoster):
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """Rehost.to hook plugin"""
+    __description__ = """Rehost.to addon plugin"""
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
 

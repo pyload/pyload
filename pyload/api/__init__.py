@@ -145,7 +145,7 @@ class Api(Iface):
         :param value: new config value
         :param section: 'plugin' or 'core
         """
-        self.core.hookManager.dispatchEvent("configChanged", category, option, value, section)
+        self.core.addonManager.dispatchEvent("configChanged", category, option, value, section)
 
         if section == "core":
             self.core.config[category][option] = value
@@ -960,12 +960,12 @@ class Api(Iface):
 
     @permission(PERMS.STATUS)
     def getServices(self):
-        """ A dict of available services, these can be defined by hook plugins.
+        """ A dict of available services, these can be defined by addon plugins.
 
         :return: dict with this style: {"plugin": {"method": "description"}}
         """
         data = {}
-        for plugin, funcs in self.core.hookManager.methods.iteritems():
+        for plugin, funcs in self.core.addonManager.methods.iteritems():
             data[plugin] = funcs
 
         return data
@@ -978,12 +978,12 @@ class Api(Iface):
         :param func:
         :return: bool
         """
-        cont = self.core.hookManager.methods
+        cont = self.core.addonManager.methods
         return plugin in cont and func in cont[plugin]
 
     @permission(PERMS.STATUS)
     def call(self, info):
-        """Calls a service (a method in hook plugin).
+        """Calls a service (a method in addon plugin).
 
         :param info: `ServiceCall`
         :return: result
@@ -999,18 +999,18 @@ class Api(Iface):
             raise ServiceDoesNotExists(plugin, func)
 
         try:
-            ret = self.core.hookManager.callRPC(plugin, func, args, parse)
+            ret = self.core.addonManager.callRPC(plugin, func, args, parse)
             return str(ret)
         except Exception, e:
             raise ServiceException(e.message)
 
     @permission(PERMS.STATUS)
     def getAllInfo(self):
-        """Returns all information stored by hook plugins. Values are always strings
+        """Returns all information stored by addon plugins. Values are always strings
 
         :return: {"plugin": {"name": value}}
         """
-        return self.core.hookManager.getAllInfo()
+        return self.core.addonManager.getAllInfo()
 
     @permission(PERMS.STATUS)
     def getInfoByPlugin(self, plugin):
@@ -1019,7 +1019,7 @@ class Api(Iface):
         :param plugin: pluginname
         :return: dict of attr names mapped to value {"name": value}
         """
-        return self.core.hookManager.getInfo(plugin)
+        return self.core.addonManager.getInfo(plugin)
 
     def changePassword(self, user, oldpw, newpw):
         """ changes password for specific user """

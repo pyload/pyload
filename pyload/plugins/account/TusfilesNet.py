@@ -14,7 +14,7 @@ class TusfilesNet(Account):
     __type__ = "account"
     __version__ = "0.01"
 
-    __description__ = """ Tusfile.net account plugin """
+    __description__ = """Tusfile.net account plugin"""
     __author_name__ = "guidobelix"
     __author_mail__ = "guidobelix@hotmail.it"
 

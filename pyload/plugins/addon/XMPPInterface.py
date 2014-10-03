@@ -6,12 +6,12 @@ from pyxmpp.interface import implements
 from pyxmpp.interfaces import *
 from pyxmpp.jabber.client import JabberClient
 
-from pyload.plugins.hooks.IRCInterface import IRCInterface
+from pyload.plugins.addon.IRCInterface import IRCInterface
 
 
 class XMPPInterface(IRCInterface, JabberClient):
     __name__ = "XMPPInterface"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.11"
 
     __config__ = [("activated", "bool", "Activated", False),

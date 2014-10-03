@@ -4,12 +4,12 @@ import re
 
 from time import localtime
 
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 
 
-class DownloadScheduler(Hook):
+class DownloadScheduler(Addon):
     __name__ = "DownloadScheduler"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.21"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -23,7 +23,7 @@ class DownloadScheduler(Hook):
 
 
     def setup(self):
-        self.cb = None  # callback to scheduler job; will be by removed hookmanager when hook unloaded
+        self.cb = None  # callback to scheduler job; will be by removed hookmanager when addon unloaded
 
     def coreReady(self):
         self.updateSchedule()

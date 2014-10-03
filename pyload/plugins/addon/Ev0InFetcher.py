@@ -4,12 +4,12 @@ import feedparser
 
 from time import mktime, time
 
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 
 
-class Ev0InFetcher(Hook):
+class Ev0InFetcher(Addon):
     __name__ = "Ev0InFetcher"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.21"
 
     __config__ = [("activated", "bool", "Activated", False),

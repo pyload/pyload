@@ -3,13 +3,13 @@
 from os.path import basename
 
 from pyload.datatypes.PyFile import PyFile
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 from pyload.utils import fs_encode
 
 
-class UnSkipOnFail(Hook):
+class UnSkipOnFail(Addon):
     __name__ = "UnSkipOnFail"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.01"
 
     __config__ = [("activated", "bool", "Activated", True)]

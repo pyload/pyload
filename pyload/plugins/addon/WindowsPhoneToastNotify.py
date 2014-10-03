@@ -3,12 +3,12 @@
 import httplib
 import time
 
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 
 
-class WindowsPhoneToastNotify(Hook):
+class WindowsPhoneToastNotify(Addon):
     __name__ = "WindowsPhoneToastNotify"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.02"
 
     __config__ = [("activated", "bool", "Activated", False),

@@ -6,12 +6,12 @@ from os import listdir, makedirs
 from os.path import exists, isfile, join
 from shutil import move
 
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 
 
-class HotFolder(Hook):
+class HotFolder(Addon):
     __name__ = "HotFolder"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.11"
 
     __config__ = [("activated", "bool", "Activated", False),

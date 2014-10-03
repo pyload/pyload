@@ -7,14 +7,14 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class EasybytezCom(MultiHoster):
     __name__ = "EasybytezCom"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.03"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
-    __description__ = """EasyBytez.com hook plugin"""
+    __description__ = """EasyBytez.com addon plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

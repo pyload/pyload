@@ -7,7 +7,7 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class FastixRu(MultiHoster):
     __name__ = "FastixRu"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.02"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -15,7 +15,7 @@ class FastixRu(MultiHoster):
                   ("unloadFailing", "bool", "Revert to standard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """Fastix.ru hook plugin"""
+    __description__ = """Fastix.ru addon plugin"""
     __author_name__ = "Massimo Rosamilia"
     __author_mail__ = "max@spiritix.eu"
 

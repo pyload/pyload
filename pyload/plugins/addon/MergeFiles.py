@@ -4,13 +4,13 @@ import os
 import re
 import traceback
 
-from pyload.plugins.base.Hook import Hook, threaded
+from pyload.plugins.base.Addon import Addon, threaded
 from pyload.utils import safe_join, fs_encode
 
 
-class MergeFiles(Hook):
+class MergeFiles(Addon):
     __name__ = "MergeFiles"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.12"
 
     __config__ = [("activated", "bool", "Activated", False)]

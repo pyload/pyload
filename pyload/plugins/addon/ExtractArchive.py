@@ -47,14 +47,14 @@ if os.name != "nt":
     from os import chown
     from pwd import getpwnam
 
-from pyload.plugins.base.Hook import Hook, threaded, Expose
+from pyload.plugins.base.Addon import Addon, threaded, Expose
 from pyload.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
 from pyload.utils import safe_join, fs_encode
 
 
-class ExtractArchive(Hook):
+class ExtractArchive(Addon):
     __name__ = "ExtractArchive"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.17"
 
     __config__ = [("activated", "bool", "Activated", True),

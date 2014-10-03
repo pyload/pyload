@@ -3,12 +3,12 @@
 import socket
 import thread
 
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 
 
-class ClickAndLoad(Hook):
+class ClickAndLoad(Addon):
     __name__ = "ClickAndLoad"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.22"
 
     __config__ = [("activated", "bool", "Activated", True),

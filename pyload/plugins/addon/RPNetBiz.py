@@ -7,7 +7,7 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class RPNetBiz(MultiHoster):
     __name__ = "RPNetBiz"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.1"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -16,7 +16,7 @@ class RPNetBiz(MultiHoster):
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """RPNet.biz hook plugin"""
+    __description__ = """RPNet.biz addon plugin"""
     __author_name__ = "Dman"
     __author_mail__ = "dmanugm@gmail.com"
 

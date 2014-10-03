@@ -17,7 +17,7 @@ from pyload.config.Parser import IGNORE
 class PluginManager:
     ROOT = "pyload.plugins."
     USERROOT = "userplugins."
-    TYPES = ("accounts", "container", "crypter", "hooks", "hoster", "internal",  "ocr")
+    TYPES = ("account", "addon", "base", "container", "crypter", "hook", "hoster", "internal", "ocr")
 
     PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
     VERSION = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
@@ -49,14 +49,15 @@ class PluginManager:
             f = open(join("userplugins", "__init__.py"), "wb")
             f.close()
 
-        self.plugins['crypter'] = self.crypterPlugins = self.parse("crypter", pattern=True)
+        self.plugins['account'] = self.accountPlugins = self.parse("account")
+        self.plugins['addon'] = self.addonPlugins = self.parse("addon")
+        self.plugins['base'] = self.basePlugins = self.parse("base")
         self.plugins['container'] = self.containerPlugins = self.parse("container", pattern=True)
+        self.plugins['crypter'] = self.crypterPlugins = self.parse("crypter", pattern=True)
+        # self.plugins['hook'] = self.hookPlugins = self.parse("hook")
         self.plugins['hoster'] = self.hosterPlugins = self.parse("hoster", pattern=True)
-
-        self.plugins['ocr'] = self.captchaPlugins = self.parse("ocr")
-        self.plugins['accounts'] = self.accountPlugins = self.parse("accounts")
-        self.plugins['hooks'] = self.hookPlugins = self.parse("hooks")
         self.plugins['internal'] = self.internalPlugins = self.parse("internal")
+        self.plugins['ocr'] = self.ocrPlugins = self.parse("ocr")
 
         self.log.debug("created index of plugins")
 
@@ -154,7 +155,7 @@ class PluginManager:
                     else:
                         config = [list(config)]
 
-                    if folder == "hooks":
+                    if folder == "addon":
                         append = True
                         for item in config:
                             if item[0] == "activated": append = False
@@ -167,7 +168,7 @@ class PluginManager:
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
 
-                elif folder == "hooks": #force config creation
+                elif folder == "addon": #force config creation
                     desc = self.DESC.findall(content)
                     desc = desc[0][1] if desc else ""
                     config = (["activated", "bool", "Activated", False],)
@@ -318,7 +319,7 @@ class PluginManager:
 
         as_dict = {}
         for t,n in type_plugins:
-            if t in ("hooks", "internal"):  #: do not reload hooks or internals, because would cause to much side effects
+            if t in ("base", "addon", "internal"):  #: do not reload them because would cause to much side effects
                 continue
             elif t in as_dict:
                 as_dict[t].append(n)
@@ -339,11 +340,13 @@ class PluginManager:
                         reloaded.append(id)
 
         #index creation
-        self.plugins['crypter'] = self.crypterPlugins = self.parse("crypter", pattern=True)
+        self.plugins['account'] = self.accountPlugins = self.parse("account")
         self.plugins['container'] = self.containerPlugins = self.parse("container", pattern=True)
+        self.plugins['crypter'] = self.crypterPlugins = self.parse("crypter", pattern=True)
+        # self.plugins['hook'] = self.hookPlugins = self.parse("hook")
         self.plugins['hoster'] = self.hosterPlugins = self.parse("hoster", pattern=True)
-        self.plugins['ocr'] = self.captchaPlugins = self.parse("ocr")
-        self.plugins['accounts'] = self.accountPlugins = self.parse("accounts")
+        self.plugins['ocr'] = self.ocrPlugins = self.parse("ocr")
+
 
         if "accounts" in as_dict:  #: accounts needs to be reloaded
             self.core.accountManager.initPlugins()

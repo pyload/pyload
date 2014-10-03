@@ -9,28 +9,28 @@ class Expose(object):
     """ used for decoration to declare rpc services """
 
     def __new__(cls, f, *args, **kwargs):
-        hookManager.addRPC(f.__module__, f.func_name, f.func_doc)
+        addonManager.addRPC(f.__module__, f.func_name, f.func_doc)
         return f
 
 
 def threaded(f):
 
     def run(*args,**kwargs):
-        hookManager.startThread(f, *args, **kwargs)
+        addonManager.startThread(f, *args, **kwargs)
     return run
 
 
-class Hook(Base):
+class Addon(Base):
     """
-    Base class for hook plugins.
+    Base class for addon plugins.
     """
-    __name__ = "Hook"
-    __type__ = "hook"
+    __name__ = "Addon"
+    __type__ = "addon"
     __version__ = "0.2"
 
     __config__ = [("name", "type", "desc", "default")]
 
-    __description__ = """Interface for hook"""
+    __description__ = """Interface for addon"""
     __author_name__ = ("mkaay", "RaNaN")
     __author_mail__ = ("mkaay@mkaay.de", "RaNaN@pyload.org")
 
@@ -54,7 +54,7 @@ class Hook(Base):
         #: Callback of periodical job task, used by hookmanager
         self.cb = None
 
-        #: `HookManager`
+        #: `AddonManager`
         self.manager = manager
 
         #register events
@@ -87,7 +87,7 @@ class Hook(Base):
         try:
             if self.isActivated(): self.periodical()
         except Exception, e:
-            self.logError(_("Error executing hooks: %s") % str(e))
+            self.logError(_("Error executing addon: %s") % e)
             if self.core.debug:
                 print_exc()
 
@@ -95,18 +95,18 @@ class Hook(Base):
 
 
     def __repr__(self):
-        return "<Hook %s>" % self.__name__
+        return "<Addon %s>" % self.__name__
 
     def setup(self):
         """ more init stuff if needed """
         pass
 
     def unload(self):
-        """ called when hook was deactivated """
+        """ called when addon was deactivated """
         pass
 
     def isActivated(self):
-        """ checks if hook is activated"""
+        """ checks if addon is activated"""
         return self.config.getPlugin(self.__name__, "activated")
 
 

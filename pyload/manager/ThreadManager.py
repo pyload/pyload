@@ -42,8 +42,8 @@ class ThreadManager:
         self.core = core
         self.log = core.log
 
-        self.threads = []  # thread list
-        self.localThreads = []  #hook+decrypter threads
+        self.threads = []  #: thread list
+        self.localThreads = []  #: addon+decrypter threads
 
         self.pause = True
 
@@ -185,7 +185,7 @@ class ThreadManager:
 
         ip = self.getIP()
 
-        self.core.hookManager.beforeReconnecting(ip)
+        self.core.addonManager.beforeReconnecting(ip)
 
         self.log.debug("Old IP: %s" % ip)
 
@@ -202,7 +202,7 @@ class ThreadManager:
         reconn.wait()
         sleep(1)
         ip = self.getIP()
-        self.core.hookManager.afterReconnecting(ip)
+        self.core.addonManager.afterReconnecting(ip)
 
         self.log.info(_("Reconnected, new IP: %s") % ip)
 

@@ -7,13 +7,13 @@ from operator import itemgetter
 from os import path, remove, stat
 
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.base.Hook import Expose, Hook, threaded
+from pyload.plugins.base.Addon import Expose, Addon, threaded
 from pyload.utils import safe_join
 
 
-class UpdateManager(Hook):
+class UpdateManager(Addon):
     __name__ = "UpdateManager"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.36"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -22,7 +22,7 @@ class UpdateManager(Hook):
                   ("reloadplugins", "bool", "Monitor plugins for code changes (debug mode only)", True),
                   ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
 
-    __description__ = """ Check for updates """
+    __description__ = """Check for updates"""
     __author_name__ = "Walter Purcaro"
     __author_mail__ = "vuolter@gmail.com"
 
@@ -287,7 +287,7 @@ class UpdateManager(Hook):
                 if path.isfile(filename):
                     try:
                         if type == "addon":
-                            self.manager.deactivateHook(name)
+                            self.manager.deactivateAddon(name)
                         remove(filename)
                     except Exception, e:
                         self.logDebug("Error deleting: %s" % path.basename(filename), e)

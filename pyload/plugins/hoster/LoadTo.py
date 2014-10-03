@@ -17,7 +17,7 @@ class LoadTo(SimpleHoster):
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
 
-    __description__ = """ Load.to hoster plugin """
+    __description__ = """Load.to hoster plugin"""
     __author_name__ = ("halfman", "stickell")
     __author_mail__ = ("Pulpan3@gmail.com", "l.stickell@yahoo.it")
 

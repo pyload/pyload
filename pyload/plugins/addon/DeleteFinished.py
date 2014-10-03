@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from pyload.database import style
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 
 
-class DeleteFinished(Hook):
+class DeleteFinished(Addon):
     __name__ = "DeleteFinished"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "1.09"
 
     __config__ = [('activated', 'bool', 'Activated', 'False'),

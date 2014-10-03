@@ -12,13 +12,13 @@ from traceback import print_exc
 
 from pyload.api import PackageDoesNotExists, FileDoesNotExists
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.base.Addon import Addon
 from pyload.utils import formatSize
 
 
-class IRCInterface(Thread, Hook):
+class IRCInterface(Thread, Addon):
     __name__ = "IRCInterface"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.11"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -39,7 +39,7 @@ class IRCInterface(Thread, Hook):
 
     def __init__(self, core, manager):
         Thread.__init__(self)
-        Hook.__init__(self, core, manager)
+        Addon.__init__(self, core, manager)
         self.setDaemon(True)
         #   self.sm = core.server_methods
         self.api = core.api  # todo, only use api
