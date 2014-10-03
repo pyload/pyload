@@ -41,6 +41,7 @@ class XFileSharingPro(SimpleHoster):
     FILE_SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>\w+)?\)</font>'
 
     OFFLINE_PATTERN = r'>\s*\w+ (Not Found|file (was|has been) removed)'
+    TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
 
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
 
