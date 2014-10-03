@@ -41,7 +41,7 @@ class CaptchaService:
             return None
 
 
-    def challenge(self, key):
+    def challenge(self, key=None):
         raise NotImplementedError
 
 
@@ -83,7 +83,7 @@ class ReCaptcha(CaptchaService):
             return None
 
 
-    def challenge(self, key):
+    def challenge(self, key=None):
         if not key:
             if self.key:
                 key = self.key
@@ -143,7 +143,7 @@ class AdsCaptcha(CaptchaService):
             return None
 
 
-    def challenge(self, key):  #: key is tuple(CaptchaId, PublicKey)
+    def challenge(self, key=None):  #: key is tuple(CaptchaId, PublicKey)
         if not key:
             if self.key:
                 key = self.key
@@ -184,7 +184,7 @@ class SolveMedia(CaptchaService):
     KEY_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.(no)?script\?k=(?P<KEY>.+?)"'
 
 
-    def challenge(self, key):
+    def challenge(self, key=None):
         if not key:
             if self.key:
                 key = self.key

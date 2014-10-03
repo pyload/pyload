@@ -173,7 +173,7 @@ class XFileSharingPro(SimpleHoster):
         self.html = self.load(self.pyfile.url, post=self.getPostParameters())
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.parseError('DIRECT LINK')
+            self.parseError('LINK_PATTERN not found')
         self.startDownload(m.group(1))
 
 
@@ -194,7 +194,7 @@ class XFileSharingPro(SimpleHoster):
 
         action, inputs = self.parseHtmlForm('F1')
         if not inputs:
-            self.parseError('TEXTAREA')
+            self.parseError('TEXTAREA not found')
         self.logDebug(self.HOSTER_NAME, inputs)
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
@@ -206,7 +206,7 @@ class XFileSharingPro(SimpleHoster):
         #get easybytez.com link for uploaded file
         m = re.search(self.OVR_LINK_PATTERN, self.html)
         if m is None:
-            self.parseError('DIRECT LINK (OVR)')
+            self.parseError('OVR_LINK_PATTERN not found')
         self.pyfile.url = m.group(1)
         header = self.load(self.pyfile.url, just_header=True)
         if 'location' in header:  # Direct link
