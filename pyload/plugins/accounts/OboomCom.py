@@ -5,7 +5,7 @@ import time
 from beaker.crypto.pbkdf2 import PBKDF2
 
 from pyload.utils import json_loads
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 
 
 class OboomCom(Account):

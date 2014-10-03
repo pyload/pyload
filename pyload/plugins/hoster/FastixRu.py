@@ -6,7 +6,7 @@ from random import randrange
 from urllib import unquote
 
 from pyload.utils import json_loads
-from pyload.plugins.Hoster import Hoster
+from pyload.plugins.base.Hoster import Hoster
 
 
 class FastixRu(Hoster):

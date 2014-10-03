@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.Hook import Hook
+from pyload.plugins.base.Hook import Hook
 
 
 class RestartFailed(Hook):

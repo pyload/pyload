@@ -8,7 +8,7 @@ from urllib import urlencode
 
 from BeautifulSoup import BeautifulSoup
 
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 
 
 class AlldebridCom(Account):

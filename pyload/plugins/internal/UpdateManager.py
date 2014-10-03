@@ -7,7 +7,7 @@ from operator import itemgetter
 from os import path, remove, stat
 
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.Hook import Expose, Hook, threaded
+from pyload.plugins.base.Hook import Expose, Hook, threaded
 from pyload.utils import safe_join
 
 

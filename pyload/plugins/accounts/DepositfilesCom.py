@@ -4,7 +4,7 @@ import re
 
 from time import strptime, mktime
 
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 
 
 class DepositfilesCom(Account):

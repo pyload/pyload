@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from pyload.plugins.Crypter import Crypter
+from pyload.plugins.base.Crypter import Crypter
 
 
 class MultiloadCz(Crypter):

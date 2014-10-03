@@ -4,7 +4,7 @@ import re
 
 from time import localtime
 
-from pyload.plugins.Hook import Hook
+from pyload.plugins.base.Hook import Hook
 
 
 class DownloadScheduler(Hook):

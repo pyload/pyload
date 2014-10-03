@@ -3,7 +3,7 @@
 from time import strptime, mktime
 import hashlib
 
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 
 
 class HotfileCom(Account):

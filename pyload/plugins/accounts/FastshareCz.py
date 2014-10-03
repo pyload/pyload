@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 from pyload.utils import parseFileSize
 
 

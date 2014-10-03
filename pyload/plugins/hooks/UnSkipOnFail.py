@@ -3,7 +3,7 @@
 from os.path import basename
 
 from pyload.datatypes.PyFile import PyFile
-from pyload.plugins.Hook import Hook
+from pyload.plugins.base.Hook import Hook
 from pyload.utils import fs_encode
 
 

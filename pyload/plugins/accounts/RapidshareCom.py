@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 
 
 class RapidshareCom(Account):

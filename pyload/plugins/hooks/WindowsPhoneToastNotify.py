@@ -3,7 +3,7 @@
 import httplib
 import time
 
-from pyload.plugins.Hook import Hook
+from pyload.plugins.base.Hook import Hook
 
 
 class WindowsPhoneToastNotify(Hook):

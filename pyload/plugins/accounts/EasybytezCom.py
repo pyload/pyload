@@ -3,7 +3,7 @@
 import re
 from time import mktime, strptime, gmtime
 
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 from pyload.plugins.internal.SimpleHoster import parseHtmlForm
 from pyload.utils import parseFileSize
 

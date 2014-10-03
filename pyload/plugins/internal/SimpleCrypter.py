@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.Crypter import Crypter
+from pyload.plugins.base.Crypter import Crypter
 from pyload.plugins.internal.SimpleHoster import PluginParseError, replace_patterns, set_cookies
 from pyload.utils import html_unescape
 

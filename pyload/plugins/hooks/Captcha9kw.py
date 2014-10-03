@@ -9,7 +9,7 @@ from thread import start_new_thread
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.Hook import Hook
+from pyload.plugins.base.Hook import Hook
 
 
 class Captcha9kw(Hook):

@@ -3,7 +3,7 @@
 import re
 from time import time
 
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 
 
 class UploadedTo(Account):

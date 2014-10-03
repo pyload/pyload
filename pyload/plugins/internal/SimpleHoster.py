@@ -7,7 +7,7 @@ from urlparse import urlparse
 
 from pyload.network.CookieJar import CookieJar
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.Hoster import Hoster
+from pyload.plugins.base.Hoster import Hoster
 from pyload.utils import fixup, html_unescape, parseFileSize
 
 

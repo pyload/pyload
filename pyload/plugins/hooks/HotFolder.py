@@ -6,7 +6,7 @@ from os import listdir, makedirs
 from os.path import exists, isfile, join
 from shutil import move
 
-from pyload.plugins.Hook import Hook
+from pyload.plugins.base.Hook import Hook
 
 
 class HotFolder(Hook):

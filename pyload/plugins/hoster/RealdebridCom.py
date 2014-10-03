@@ -7,7 +7,7 @@ from urllib import quote, unquote
 from time import time
 
 from pyload.utils import json_loads
-from pyload.plugins.Hoster import Hoster
+from pyload.plugins.base.Hoster import Hoster
 from pyload.utils import parseFileSize
 
 

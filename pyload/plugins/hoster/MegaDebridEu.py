@@ -5,7 +5,7 @@ import re
 from urllib import unquote_plus
 
 from pyload.utils import json_loads
-from pyload.plugins.Hoster import Hoster
+from pyload.plugins.base.Hoster import Hoster
 
 
 class MegaDebridEu(Hoster):

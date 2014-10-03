@@ -5,7 +5,7 @@ import re
 from urlparse import urljoin
 
 from pyload.utils import json_loads
-from pyload.plugins.Crypter import Crypter
+from pyload.plugins.base.Crypter import Crypter
 from pyload.utils import safe_join
 
 API_URL = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"

@@ -10,7 +10,7 @@ from base64 import standard_b64decode
 from os import remove
 
 from pyload.utils import json_loads, json_dumps
-from pyload.plugins.Hoster import Hoster
+from pyload.plugins.base.Hoster import Hoster
 
 
 class MegaNz(Hoster):

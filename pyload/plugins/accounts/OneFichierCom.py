@@ -4,7 +4,7 @@ import re
 from time import strptime, mktime
 from pycurl import REFERER
 
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 
 
 class OneFichierCom(Account):

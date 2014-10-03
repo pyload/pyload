@@ -4,7 +4,7 @@ from time import mktime, strptime
 from pycurl import REFERER
 import re
 
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 
 
 class FshareVn(Account):

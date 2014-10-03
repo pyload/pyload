@@ -5,7 +5,7 @@ import re
 from urlparse import urlsplit
 
 from pyload.utils import json_loads, json_dumps
-from pyload.plugins.Hoster import Hoster
+from pyload.plugins.base.Hoster import Hoster
 
 
 class LinksnappyCom(Hoster):

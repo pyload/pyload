@@ -3,7 +3,7 @@
 import socket
 import thread
 
-from pyload.plugins.Hook import Hook
+from pyload.plugins.base.Hook import Hook
 
 
 class ClickAndLoad(Hook):

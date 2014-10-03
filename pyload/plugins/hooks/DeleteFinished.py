@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyload.database import style
-from pyload.plugins.Hook import Hook
+from pyload.plugins.base.Hook import Hook
 
 
 class DeleteFinished(Hook):

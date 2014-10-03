@@ -8,7 +8,7 @@ from urllib2 import build_opener
 
 from MultipartPostHandler import MultipartPostHandler
 
-from pyload.plugins.Container import Container
+from pyload.plugins.base.Container import Container
 from pyload.utils import safe_join
 
 

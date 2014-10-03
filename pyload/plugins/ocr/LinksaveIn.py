@@ -5,7 +5,7 @@ from PIL import Image
 from os import sep
 from os.path import abspath, dirname
 
-from pyload.plugins.OCR import OCR
+from pyload.plugins.base.OCR import OCR
 
 
 class LinksaveIn(OCR):

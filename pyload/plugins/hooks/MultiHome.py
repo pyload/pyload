@@ -2,7 +2,7 @@
 
 from time import time
 
-from pyload.plugins.Hook import Hook
+from pyload.plugins.base.Hook import Hook
 
 
 class MultiHome(Hook):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 #from time import mktime, strptime
 #from pycurl import REFERER
 import re

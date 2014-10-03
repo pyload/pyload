@@ -4,7 +4,7 @@ import base64
 import binascii
 import re
 
-from pyload.plugins.Container import Container
+from pyload.plugins.base.Container import Container
 
 
 class RSDF(Container):

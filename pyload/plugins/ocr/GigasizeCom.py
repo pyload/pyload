@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.OCR import OCR
+from pyload.plugins.base.OCR import OCR
 
 
 class GigasizeCom(OCR):

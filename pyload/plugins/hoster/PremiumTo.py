@@ -4,7 +4,7 @@ from os import remove
 from os.path import exists
 from urllib import quote
 
-from pyload.plugins.Hoster import Hoster
+from pyload.plugins.base.Hoster import Hoster
 from pyload.utils import fs_encode
 
 

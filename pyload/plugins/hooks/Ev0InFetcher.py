@@ -4,7 +4,7 @@ import feedparser
 
 from time import mktime, time
 
-from pyload.plugins.Hook import Hook
+from pyload.plugins.base.Hook import Hook
 
 
 class Ev0InFetcher(Hook):

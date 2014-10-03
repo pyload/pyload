@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.Hoster import Hoster
+from pyload.plugins.base.Hoster import Hoster
 
 
 class DebridItaliaCom(Hoster):

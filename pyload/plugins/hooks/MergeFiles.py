@@ -4,7 +4,7 @@ import os
 import re
 import traceback
 
-from pyload.plugins.Hook import Hook, threaded
+from pyload.plugins.base.Hook import Hook, threaded
 from pyload.utils import safe_join, fs_encode
 
 

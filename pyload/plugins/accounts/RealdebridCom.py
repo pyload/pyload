@@ -2,7 +2,7 @@
 
 import xml.dom.minidom as dom
 
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 
 
 class RealdebridCom(Account):

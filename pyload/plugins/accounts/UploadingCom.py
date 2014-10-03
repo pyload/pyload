@@ -3,7 +3,7 @@
 from time import time, strptime, mktime
 import re
 
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 
 
 class UploadingCom(Account):

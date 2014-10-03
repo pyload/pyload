@@ -5,7 +5,7 @@ import re
 from urlparse import urljoin
 
 from pyload.utils import json_loads
-from pyload.plugins.Crypter import Crypter
+from pyload.plugins.base.Crypter import Crypter
 from pyload.utils import safe_join
 
 

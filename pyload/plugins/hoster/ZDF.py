@@ -4,7 +4,7 @@ import re
 
 from xml.etree.ElementTree import fromstring
 
-from pyload.plugins.Hoster import Hoster
+from pyload.plugins.base.Hoster import Hoster
 
 
 # Based on zdfm by Roland Beermann (http://github.com/enkore/zdfm/)

@@ -9,7 +9,7 @@ from uuid import uuid4
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL, getRequest
-from pyload.plugins.Hook import Hook
+from pyload.plugins.base.Hook import Hook
 
 
 class ExpertDecoders(Hook):

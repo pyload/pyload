@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyload.utils import json_loads
-from pyload.plugins.Hoster import Hoster
+from pyload.plugins.base.Hoster import Hoster
 
 
 class PremiumizeMe(Hoster):

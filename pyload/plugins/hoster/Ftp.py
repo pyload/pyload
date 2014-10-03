@@ -6,7 +6,7 @@ import re
 from urllib import quote, unquote
 from urlparse import urlparse
 
-from pyload.plugins.Hoster import Hoster
+from pyload.plugins.base.Hoster import Hoster
 
 
 class Ftp(Hoster):

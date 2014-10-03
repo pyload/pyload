@@ -2,7 +2,7 @@
 
 from hashlib import md5
 
-from pyload.plugins.Account import Account
+from pyload.plugins.base.Account import Account
 from pyload.utils import json_loads
 
 
