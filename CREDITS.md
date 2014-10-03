@@ -14,7 +14,7 @@ Credits
  - Walter Purcaro <vuolter@gmail.com>
  - zoidberg10 <zoidberg@mujmail.cz>
 
-A special thanks to spoob, sebnapi and RaNaN who created pyLoad! 
+A special thanks to spoob, sebnapi and RaNaN who created pyLoad!
 
 
 ### Contributors ###

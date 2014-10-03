@@ -705,7 +705,7 @@ class Api(Iface):
         """Gives a package a new position.
 
         :param pid: package id
-        :param position: 
+        :param position:
         """
         self.core.files.reorderPackage(pid, position)
 
@@ -917,7 +917,7 @@ class Api(Iface):
 
         :param username:
         :param password:
-        :param remoteip: 
+        :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
         if self.core.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":

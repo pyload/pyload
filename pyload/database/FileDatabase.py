@@ -769,7 +769,7 @@ class FileMethods:
     def updatePackage(self, p):
         self.c.execute('UPDATE packages SET name=?, folder=?, site=?, password=?, queue=? WHERE id=?', (p.name, p.folder, p.site, p.password, p.queue, str(p.id)))
 
-    @style.queue    
+    @style.queue
     def updateLinkInfo(self, data):
         """ data is list of tupels (name, size, status, url) """
         self.c.executemany('UPDATE links SET name=?, size=?, status=? WHERE url=? AND status IN (1, 2, 3, 14)', data)

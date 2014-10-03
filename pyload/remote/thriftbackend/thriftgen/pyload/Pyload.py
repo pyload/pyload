@@ -3307,7 +3307,7 @@ class getConfigValue_args(TBase):
    - section
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'category',
     'option',
     'section',
@@ -3332,7 +3332,7 @@ class getConfigValue_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3353,7 +3353,7 @@ class setConfigValue_args(TBase):
    - section
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'category',
     'option',
     'value',
@@ -3377,7 +3377,7 @@ class setConfigValue_args(TBase):
 
 class setConfigValue_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3386,7 +3386,7 @@ class setConfigValue_result(TBase):
 
 class getConfig_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3399,7 +3399,7 @@ class getConfig_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3413,7 +3413,7 @@ class getConfig_result(TBase):
 
 class getPluginConfig_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3426,7 +3426,7 @@ class getPluginConfig_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3440,7 +3440,7 @@ class getPluginConfig_result(TBase):
 
 class pauseServer_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3449,7 +3449,7 @@ class pauseServer_args(TBase):
 
 class pauseServer_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3458,7 +3458,7 @@ class pauseServer_result(TBase):
 
 class unpauseServer_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3467,7 +3467,7 @@ class unpauseServer_args(TBase):
 
 class unpauseServer_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3476,7 +3476,7 @@ class unpauseServer_result(TBase):
 
 class togglePause_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3489,7 +3489,7 @@ class togglePause_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3503,7 +3503,7 @@ class togglePause_result(TBase):
 
 class statusServer_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3516,7 +3516,7 @@ class statusServer_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3530,7 +3530,7 @@ class statusServer_result(TBase):
 
 class freeSpace_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3543,7 +3543,7 @@ class freeSpace_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3557,7 +3557,7 @@ class freeSpace_result(TBase):
 
 class getServerVersion_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3570,7 +3570,7 @@ class getServerVersion_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3584,7 +3584,7 @@ class getServerVersion_result(TBase):
 
 class kill_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3593,7 +3593,7 @@ class kill_args(TBase):
 
 class kill_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3602,7 +3602,7 @@ class kill_result(TBase):
 
 class restart_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3611,7 +3611,7 @@ class restart_args(TBase):
 
 class restart_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3624,7 +3624,7 @@ class getLog_args(TBase):
    - offset
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'offset',
    ]
 
@@ -3643,7 +3643,7 @@ class getLog_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3657,7 +3657,7 @@ class getLog_result(TBase):
 
 class isTimeDownload_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3670,7 +3670,7 @@ class isTimeDownload_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3684,7 +3684,7 @@ class isTimeDownload_result(TBase):
 
 class isTimeReconnect_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3697,7 +3697,7 @@ class isTimeReconnect_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3711,7 +3711,7 @@ class isTimeReconnect_result(TBase):
 
 class toggleReconnect_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3724,7 +3724,7 @@ class toggleReconnect_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3742,7 +3742,7 @@ class generatePackages_args(TBase):
    - links
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'links',
    ]
 
@@ -3761,7 +3761,7 @@ class generatePackages_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3779,7 +3779,7 @@ class checkURLs_args(TBase):
    - urls
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'urls',
    ]
 
@@ -3798,7 +3798,7 @@ class checkURLs_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3817,7 +3817,7 @@ class parseURLs_args(TBase):
    - url
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'html',
     'url',
    ]
@@ -3839,7 +3839,7 @@ class parseURLs_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3857,7 +3857,7 @@ class checkOnlineStatus_args(TBase):
    - urls
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'urls',
    ]
 
@@ -3876,7 +3876,7 @@ class checkOnlineStatus_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3896,7 +3896,7 @@ class checkOnlineStatusContainer_args(TBase):
    - data
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'urls',
     'filename',
     'data',
@@ -3921,7 +3921,7 @@ class checkOnlineStatusContainer_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3939,7 +3939,7 @@ class pollResults_args(TBase):
    - rid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'rid',
    ]
 
@@ -3958,7 +3958,7 @@ class pollResults_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -3972,7 +3972,7 @@ class pollResults_result(TBase):
 
 class statusDownloads_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -3985,7 +3985,7 @@ class statusDownloads_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -4003,7 +4003,7 @@ class getPackageData_args(TBase):
    - pid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
    ]
 
@@ -4023,7 +4023,7 @@ class getPackageData_result(TBase):
    - e
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
     'e',
    ]
@@ -4044,7 +4044,7 @@ class getPackageInfo_args(TBase):
    - pid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
    ]
 
@@ -4064,7 +4064,7 @@ class getPackageInfo_result(TBase):
    - e
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
     'e',
    ]
@@ -4085,7 +4085,7 @@ class getFileData_args(TBase):
    - fid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'fid',
    ]
 
@@ -4105,7 +4105,7 @@ class getFileData_result(TBase):
    - e
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
     'e',
    ]
@@ -4122,7 +4122,7 @@ class getFileData_result(TBase):
 
 class getQueue_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4135,7 +4135,7 @@ class getQueue_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -4149,7 +4149,7 @@ class getQueue_result(TBase):
 
 class getCollector_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4162,7 +4162,7 @@ class getCollector_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -4176,7 +4176,7 @@ class getCollector_result(TBase):
 
 class getQueueData_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4189,7 +4189,7 @@ class getQueueData_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -4203,7 +4203,7 @@ class getQueueData_result(TBase):
 
 class getCollectorData_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4216,7 +4216,7 @@ class getCollectorData_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -4234,7 +4234,7 @@ class getPackageOrder_args(TBase):
    - destination
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'destination',
    ]
 
@@ -4253,7 +4253,7 @@ class getPackageOrder_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -4271,7 +4271,7 @@ class getFileOrder_args(TBase):
    - pid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
    ]
 
@@ -4290,7 +4290,7 @@ class getFileOrder_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -4309,7 +4309,7 @@ class generateAndAddPackages_args(TBase):
    - dest
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'links',
     'dest',
    ]
@@ -4331,7 +4331,7 @@ class generateAndAddPackages_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -4351,7 +4351,7 @@ class addPackage_args(TBase):
    - dest
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'name',
     'links',
     'dest',
@@ -4376,7 +4376,7 @@ class addPackage_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -4395,7 +4395,7 @@ class addFiles_args(TBase):
    - links
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
     'links',
    ]
@@ -4413,7 +4413,7 @@ class addFiles_args(TBase):
 
 class addFiles_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4427,7 +4427,7 @@ class uploadContainer_args(TBase):
    - data
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'filename',
     'data',
    ]
@@ -4445,7 +4445,7 @@ class uploadContainer_args(TBase):
 
 class uploadContainer_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4458,7 +4458,7 @@ class deleteFiles_args(TBase):
    - fids
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'fids',
    ]
 
@@ -4473,7 +4473,7 @@ class deleteFiles_args(TBase):
 
 class deleteFiles_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4486,7 +4486,7 @@ class deletePackages_args(TBase):
    - pids
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pids',
    ]
 
@@ -4501,7 +4501,7 @@ class deletePackages_args(TBase):
 
 class deletePackages_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4514,7 +4514,7 @@ class pushToQueue_args(TBase):
    - pid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
    ]
 
@@ -4529,7 +4529,7 @@ class pushToQueue_args(TBase):
 
 class pushToQueue_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4542,7 +4542,7 @@ class pullFromQueue_args(TBase):
    - pid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
    ]
 
@@ -4557,7 +4557,7 @@ class pullFromQueue_args(TBase):
 
 class pullFromQueue_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4570,7 +4570,7 @@ class restartPackage_args(TBase):
    - pid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
    ]
 
@@ -4585,7 +4585,7 @@ class restartPackage_args(TBase):
 
 class restartPackage_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4598,7 +4598,7 @@ class restartFile_args(TBase):
    - fid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'fid',
    ]
 
@@ -4613,7 +4613,7 @@ class restartFile_args(TBase):
 
 class restartFile_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4626,7 +4626,7 @@ class recheckPackage_args(TBase):
    - pid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
    ]
 
@@ -4641,7 +4641,7 @@ class recheckPackage_args(TBase):
 
 class recheckPackage_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4650,7 +4650,7 @@ class recheckPackage_result(TBase):
 
 class stopAllDownloads_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4659,7 +4659,7 @@ class stopAllDownloads_args(TBase):
 
 class stopAllDownloads_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4672,7 +4672,7 @@ class stopDownloads_args(TBase):
    - fids
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'fids',
    ]
 
@@ -4687,7 +4687,7 @@ class stopDownloads_args(TBase):
 
 class stopDownloads_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4701,7 +4701,7 @@ class setPackageName_args(TBase):
    - name
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
     'name',
    ]
@@ -4719,7 +4719,7 @@ class setPackageName_args(TBase):
 
 class setPackageName_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4733,7 +4733,7 @@ class movePackage_args(TBase):
    - pid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'destination',
     'pid',
    ]
@@ -4751,7 +4751,7 @@ class movePackage_args(TBase):
 
 class movePackage_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4765,7 +4765,7 @@ class moveFiles_args(TBase):
    - pid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'fids',
     'pid',
    ]
@@ -4783,7 +4783,7 @@ class moveFiles_args(TBase):
 
 class moveFiles_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4797,7 +4797,7 @@ class orderPackage_args(TBase):
    - position
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
     'position',
    ]
@@ -4815,7 +4815,7 @@ class orderPackage_args(TBase):
 
 class orderPackage_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4829,7 +4829,7 @@ class orderFile_args(TBase):
    - position
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'fid',
     'position',
    ]
@@ -4847,7 +4847,7 @@ class orderFile_args(TBase):
 
 class orderFile_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4861,7 +4861,7 @@ class setPackageData_args(TBase):
    - data
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
     'data',
    ]
@@ -4883,7 +4883,7 @@ class setPackageData_result(TBase):
    - e
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'e',
    ]
 
@@ -4898,7 +4898,7 @@ class setPackageData_result(TBase):
 
 class deleteFinished_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4911,7 +4911,7 @@ class deleteFinished_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -4925,7 +4925,7 @@ class deleteFinished_result(TBase):
 
 class restartFailed_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4934,7 +4934,7 @@ class restartFailed_args(TBase):
 
 class restartFailed_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -4947,7 +4947,7 @@ class getEvents_args(TBase):
    - uuid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'uuid',
    ]
 
@@ -4966,7 +4966,7 @@ class getEvents_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -4984,7 +4984,7 @@ class getAccounts_args(TBase):
    - refresh
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'refresh',
    ]
 
@@ -5003,7 +5003,7 @@ class getAccounts_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -5017,7 +5017,7 @@ class getAccounts_result(TBase):
 
 class getAccountTypes_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -5030,7 +5030,7 @@ class getAccountTypes_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -5051,7 +5051,7 @@ class updateAccount_args(TBase):
    - options
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'plugin',
     'account',
     'password',
@@ -5075,7 +5075,7 @@ class updateAccount_args(TBase):
 
 class updateAccount_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -5089,7 +5089,7 @@ class removeAccount_args(TBase):
    - account
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'plugin',
     'account',
    ]
@@ -5107,7 +5107,7 @@ class removeAccount_args(TBase):
 
 class removeAccount_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -5121,7 +5121,7 @@ class login_args(TBase):
    - password
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'username',
     'password',
    ]
@@ -5143,7 +5143,7 @@ class login_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -5162,7 +5162,7 @@ class getUserData_args(TBase):
    - password
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'username',
     'password',
    ]
@@ -5184,7 +5184,7 @@ class getUserData_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -5198,7 +5198,7 @@ class getUserData_result(TBase):
 
 class getAllUserData_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -5211,7 +5211,7 @@ class getAllUserData_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -5225,7 +5225,7 @@ class getAllUserData_result(TBase):
 
 class getServices_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -5238,7 +5238,7 @@ class getServices_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -5257,7 +5257,7 @@ class hasService_args(TBase):
    - func
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'plugin',
     'func',
    ]
@@ -5279,7 +5279,7 @@ class hasService_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -5297,7 +5297,7 @@ class call_args(TBase):
    - info
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'info',
    ]
 
@@ -5318,7 +5318,7 @@ class call_result(TBase):
    - e
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
     'ex',
     'e',
@@ -5338,7 +5338,7 @@ class call_result(TBase):
 
 class getAllInfo_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -5351,7 +5351,7 @@ class getAllInfo_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -5369,7 +5369,7 @@ class getInfoByPlugin_args(TBase):
    - plugin
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'plugin',
    ]
 
@@ -5388,7 +5388,7 @@ class getInfoByPlugin_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -5402,7 +5402,7 @@ class getInfoByPlugin_result(TBase):
 
 class isCaptchaWaiting_args(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (
@@ -5415,7 +5415,7 @@ class isCaptchaWaiting_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -5433,7 +5433,7 @@ class getCaptchaTask_args(TBase):
    - exclusive
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'exclusive',
    ]
 
@@ -5452,7 +5452,7 @@ class getCaptchaTask_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -5470,7 +5470,7 @@ class getCaptchaTaskStatus_args(TBase):
    - tid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'tid',
    ]
 
@@ -5489,7 +5489,7 @@ class getCaptchaTaskStatus_result(TBase):
    - success
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'success',
    ]
 
@@ -5508,7 +5508,7 @@ class setCaptchaResult_args(TBase):
    - result
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'tid',
     'result',
    ]
@@ -5526,7 +5526,7 @@ class setCaptchaResult_args(TBase):
 
 class setCaptchaResult_result(TBase):
 
-  __slots__ = [ 
+  __slots__ = [
    ]
 
   thrift_spec = (

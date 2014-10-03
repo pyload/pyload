@@ -603,7 +603,7 @@ def deamon():
         print >> sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror)
         sys.exit(1)
 
-    # decouple from parent environment 
+    # decouple from parent environment
     os.setsid()
     os.umask(0)
 
@@ -646,6 +646,6 @@ def main():
             pyload_core.removeLogger()
             _exit(1)
 
-# And so it begins... 
+# And so it begins...
 if __name__ == "__main__":
     main()

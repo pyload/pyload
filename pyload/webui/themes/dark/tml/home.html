@@ -21,7 +21,7 @@ var EntryManager = new Class({
     delay: 2500,
     limit: 30000
   });
-  
+
         this.ids = [{% for link in content %}
         {% if forloop.last %}
             {{ link.id }}

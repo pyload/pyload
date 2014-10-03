@@ -103,7 +103,7 @@ class XDCCRequest:
 
             now = time()
             timespan = now - lastUpdate
-            if timespan > 1:            
+            if timespan > 1:
                 self.speed = cumRecvLen / timespan
                 cumRecvLen = 0
                 lastUpdate = now

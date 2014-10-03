@@ -283,7 +283,7 @@ class SetupAssistant:
 
         print
         print _("The following logindata is valid for CLI and webinterface.")
-        
+
         from pyload.database import DatabaseBackend
 
         db = DatabaseBackend(None)
