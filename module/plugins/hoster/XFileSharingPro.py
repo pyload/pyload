@@ -21,7 +21,7 @@ class XFileSharingPro(SimpleHoster):
     """
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
 
     __pattern__ = r'^unmatchable$'
 
@@ -40,7 +40,7 @@ class XFileSharingPro(SimpleHoster):
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     FILE_SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>\w+)?\)</font>'
 
-    OFFLINE_PATTERN = r'>\w+ (Not Found|file (was|has been) removed)'
+    OFFLINE_PATTERN = r'>\s*\w+ (Not Found|file (was|has been) removed)'
 
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
 
@@ -48,11 +48,11 @@ class XFileSharingPro(SimpleHoster):
     LINK_PATTERN = None  #: final download url pattern
 
     CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
-    RECAPTCHA_URL_PATTERN = r'http://[^"\']+?recaptcha[^"\']+?\?k=([^"\']+)"'
-    CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.*?)</div>'
-    SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
+    CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
+    RECAPTCHA_PATTERN = None
+    SOLVEMEDIA_PATTERN = None
 
-    ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'
+    ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.+?)</'
 
 
     def setup(self):
@@ -317,35 +317,42 @@ class XFileSharingPro(SimpleHoster):
 
 
     def handleCaptcha(self, inputs):
-        m = re.search(self.RECAPTCHA_URL_PATTERN, self.html)
+        m = re.search(self.CAPTCHA_URL_PATTERN, self.html)
         if m:
-            recaptcha_key = unquote(m.group(1))
-            self.logDebug("RECAPTCHA KEY: %s" % recaptcha_key)
-            recaptcha = ReCaptcha(self)
-            inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(recaptcha_key)
+            captcha_url = m.group(1)
+            inputs['code'] = self.decryptCaptcha(captcha_url)
             return 1
-        else:
-            m = re.search(self.CAPTCHA_URL_PATTERN, self.html)
-            if m:
-                captcha_url = m.group(1)
-                inputs['code'] = self.decryptCaptcha(captcha_url)
-                return 2
-            else:
-                m = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
-                if m:
-                    captcha_div = m.group(1)
-                    self.logDebug(captcha_div)
-                    numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
-                    inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
-                    self.logDebug("CAPTCHA", inputs['code'], numerals)
-                    return 3
-                else:
-                    m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-                    if m:
-                        captcha_key = m.group(1)
-                        captcha = SolveMedia(self)
-                        inputs['adcopy_challenge'], inputs['adcopy_response'] = captcha.challenge(captcha_key)
-                        return 4
+
+        m = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
+        if m:
+            captcha_div = m.group(1)
+            self.logDebug(captcha_div)
+            numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
+            inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
+            self.logDebug("CAPTCHA", inputs['code'], numerals)
+            return 2
+
+        recaptcha = ReCaptcha(self)
+        try:
+            captcha_key = re.search(self.RECAPTCHA_PATTERN, self.html).group(1)
+        except:
+            captcha_key = recaptcha.detect_key()
+
+        if captcha_key:
+            self.logDebug("RECAPTCHA KEY: %s" % captcha_key)
+            inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
+            return 3
+
+        solvemedia = SolveMedia(self)
+        try:
+            captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.html).group(1)
+        except:
+            captcha_key = solvemedia.detect_key()
+
+        if captcha_key:
+            inputs['adcopy_challenge'], inputs['adcopy_response'] = solvemedia.challenge(captcha_key)
+            return 4
+
         return 0
 
 
