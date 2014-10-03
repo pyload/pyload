@@ -7,7 +7,7 @@ from random import random
 
 class CaptchaService:
     __name__ = "CaptchaService"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """Base captcha service plugin"""
     __author_name__ = "pyLoad Team"
@@ -83,7 +83,7 @@ class ReCaptcha(CaptchaService):
             return None
 
 
-   def challenge(self, key=key):
+    def challenge(self, key=key):
         if not key:
             errmsg = "ReCaptcha key missing"
             self.plugin.fail(errmsg)
