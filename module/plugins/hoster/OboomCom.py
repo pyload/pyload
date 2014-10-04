@@ -13,9 +13,9 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class OboomCom(Hoster):
     __name__ = "OboomCom"
     __type__ = "hoster"
-    __version__ = "0.1"
+    __version__ = "0.2"
 
-    __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>[A-Z0-9]{8})'
+    __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>\w{8})'
 
     __description__ = """oboom.com hoster plugin"""
     __author_name__ = "stanley"
@@ -27,7 +27,7 @@ class OboomCom(Hoster):
 
     def setup(self):
         self.chunkLimit = 1
-        self.multiDL = self.premium
+        self.multiDL = self.resumeDownload = self.premium
 
 
     def process(self, pyfile):
