@@ -6,11 +6,13 @@ from module.common.json_layer import json_loads
 
 class RPNetBiz(Account):
     __name__ = "RPNetBiz"
-    __version__ = "0.1"
     __type__ = "account"
+    __version__ = "0.1"
+
     __description__ = """RPNet.biz account plugin"""
     __author_name__ = "Dman"
     __author_mail__ = "dmanugm@gmail.com"
+
 
     def loadAccountInfo(self, user, req):
         # Get account information from rpnet.biz

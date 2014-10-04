@@ -1,24 +1,29 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from pycurl import FOLLOWLOCATION
+
+from module.lib.BeautifulSoup import BeautifulSoup
 
 from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter
 from module.plugins.internal.CaptchaService import SolveMedia
-from module.lib.BeautifulSoup import BeautifulSoup
 
 
 class SafelinkingNet(Crypter):
-    __name__ = 'SafelinkingNet'
-    __type__ = 'crypter'
+    __name__ = "SafelinkingNet"
+    __type__ = "crypter"
+    __version__ = "0.1"
+
     __pattern__ = r'https?://(?:www\.)?safelinking.net/([pd])/\w+'
-    __version__ = '0.1'
+
     __description__ = """Safelinking.net decrypter plugin"""
     __author_name__ = "quareevo"
     __author_mail__ = "quareevo@arcor.de"
 
-    __Solvemedia_pattern__ = "solvemediaApiKey = '([\w\.\-_]+)';"
+    SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w\.\-_]+)';"
+
 
     def decrypt(self, pyfile):
         url = pyfile.url
@@ -27,24 +32,23 @@ class SafelinkingNet(Crypter):
             self.load(url)
             m = re.search("^Location: (.+)$", self.req.http.header, re.MULTILINE)
             if m:
-                self.core.files.addLinks([m.group(1)], pyfile.package().id)
+                self.urls = [m.group(1)]
             else:
                 self.fail("Couldn't find forwarded Link")
 
         else:
             password = ""
-            packageLinks = []
             postData = {"post-protect": "1"}
 
             self.html = self.load(url)
 
             if "link-password" in self.html:
                 password = pyfile.package().password
-                postData["link-password"] = password
+                postData['link-password'] = password
 
             if "altcaptcha" in self.html:
                 for _ in xrange(5):
-                    m = re.search(self.__Solvemedia_pattern__, self.html)
+                    m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
                     if m:
                         captchaKey = m.group(1)
                         captcha = SolveMedia(self)
@@ -53,8 +57,8 @@ class SafelinkingNet(Crypter):
                         self.fail("Error parsing captcha")
 
                     challenge, response = captcha.challenge(captchaKey)
-                    postData["adcopy_challenge"] = challenge
-                    postData["adcopy_response"] = response
+                    postData['adcopy_challenge'] = challenge
+                    postData['adcopy_response'] = response
 
                     self.html = self.load(url, post=postData)
                     if "The password you entered was incorrect" in self.html:
@@ -72,9 +76,7 @@ class SafelinkingNet(Crypter):
             if m:
                 linkDict = json_loads(m.group(1))
                 for link in linkDict:
-                    if not "http://" in link["full"]:
-                        packageLinks.append("https://safelinking.net/d/" + link["full"])
+                    if not "http://" in link['full']:
+                        self.urls.append("https://safelinking.net/d/" + link['full'])
                     else:
-                        packageLinks.append(link["full"])
-
-            self.core.files.addLinks(packageLinks, pyfile.package().id)
+                        self.urls.append(link['full'])

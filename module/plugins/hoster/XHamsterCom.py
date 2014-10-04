@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from urllib import unquote
 
-from module.plugins.Hoster import Hoster
 from module.common.json_layer import json_loads
+from module.plugins.Hoster import Hoster
 
 
 def clean_json(json_expr):
@@ -18,10 +19,15 @@ def clean_json(json_expr):
 class XHamsterCom(Hoster):
     __name__ = "XHamsterCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
     __version__ = "0.12"
+
+    __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
     __config__ = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
+
     __description__ = """XHamster.com hoster plugin"""
+    __author_name__ = None
+    __author_mail__ = None
+
 
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -42,25 +48,25 @@ class XHamsterCom(Hoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         flashvar_pattern = re.compile('flashvars = ({.*?});', re.DOTALL)
         json_flashvar = flashvar_pattern.search(self.html)
 
-        if json_flashvar is None:
+        if not json_flashvar:
             self.fail("Parse error (flashvars)")
 
         j = clean_json(json_flashvar.group(1))
         flashvars = json_loads(j)
 
-        if flashvars["srv"]:
-            srv_url = flashvars["srv"] + '/'
+        if flashvars['srv']:
+            srv_url = flashvars['srv'] + '/'
         else:
             self.fail("Parse error (srv_url)")
 
-        if flashvars["url_mode"]:
-            url_mode = flashvars["url_mode"]
+        if flashvars['url_mode']:
+            url_mode = flashvars['url_mode']
         else:
             self.fail("Parse error (url_mode)")
 
@@ -72,8 +78,8 @@ class XHamsterCom(Hoster):
             long_url = srv_url + file_url
             self.logDebug("long_url: %s" % long_url)
         else:
-            if flashvars["file"]:
-                file_url = unquote(flashvars["file"])
+            if flashvars['file']:
+                file_url = unquote(flashvars['file'])
             else:
                 self.fail("Parse error (file_url)")
 
@@ -87,29 +93,29 @@ class XHamsterCom(Hoster):
         return long_url
 
     def get_file_name(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
-        file_name_pattern = r"<title>(.*?) - xHamster\.com</title>"
-        file_name = re.search(file_name_pattern, self.html)
-        if file_name is None:
-            file_name_pattern = r"<h1 >(.*)</h1>"
-            file_name = re.search(file_name_pattern, self.html)
-            if file_name is None:
-                file_name_pattern = r"http://[www.]+xhamster\.com/movies/.*/(.*?)\.html?"
-                file_name = re.match(file_name_pattern, self.pyfile.url)
-                if file_name is None:
-                    file_name_pattern = r"<div id=\"element_str_id\" style=\"display:none;\">(.*)</div>"
-                    file_name = re.search(file_name_pattern, self.html)
-                    if file_name is None:
+        pattern = r"<title>(.*?) - xHamster\.com</title>"
+        name = re.search(pattern, self.html)
+        if name is None:
+            pattern = r"<h1 >(.*)</h1>"
+            name = re.search(pattern, self.html)
+            if name is None:
+                pattern = r"http://[www.]+xhamster\.com/movies/.*/(.*?)\.html?"
+                name = re.match(file_name_pattern, self.pyfile.url)
+                if name is None:
+                    pattern = r"<div id=\"element_str_id\" style=\"display:none;\">(.*)</div>"
+                    name = re.search(pattern, self.html)
+                    if name is None:
                         return "Unknown"
 
-        return file_name.group(1)
+        return name.group(1)
 
     def file_exists(self):
         """ returns True or False
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
         if re.search(r"(.*Video not found.*)", self.html) is not None:
             return False

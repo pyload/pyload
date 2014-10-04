@@ -7,18 +7,22 @@ from module.plugins.Hook import Hook
 
 class XFileSharingPro(Hook):
     __name__ = "XFileSharingPro"
-    __version__ = "0.11"
     __type__ = "hook"
+    __version__ = "0.12"
+
     __config__ = [("activated", "bool", "Activated", True),
                   ("loadDefault", "bool", "Include default (built-in) hoster list", True),
                   ("includeList", "str", "Include hosters (comma separated)", ""),
                   ("excludeList", "str", "Exclude hosters (comma separated)", "")]
+
     __description__ = """XFileSharingPro hook plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
+
     def coreReady(self):
         self.loadPattern()
+
 
     def loadPattern(self):
         hosterList = self.getConfigSet('includeList')
@@ -57,19 +61,20 @@ class XFileSharingPro(Hook):
             self.unload()
             return
 
-        regexp = r"http://(?:[^/]*\.)?(%s)/\w{12}" % ("|".join(sorted(hosterList)).replace('.', '\.'))
-        #self.logDebug(regexp)
+        regexp = r"http://(?:[^/]*\.)?(%s)/(?:embed-)?\w{12}" % ("|".join(sorted(hosterList)).replace('.', '\.'))
 
         dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
-        dict["pattern"] = regexp
-        dict["re"] = re.compile(regexp)
+        dict['pattern'] = regexp
+        dict['re'] = re.compile(regexp)
         self.logDebug("Pattern loaded - handling %d hosters" % len(hosterList))
+
 
     def getConfigSet(self, option):
         s = self.getConfig(option).lower().replace('|', ',').replace(';', ',')
         return set([x.strip() for x in s.split(',')])
 
+
     def unload(self):
         dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
-        dict["pattern"] = r"^unmatchable$"
-        dict["re"] = re.compile(r"^unmatchable$")
+        dict['pattern'] = r'^unmatchable$'
+        dict['re'] = re.compile(r'^unmatchable$')

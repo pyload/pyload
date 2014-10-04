@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from time import sleep, time
 
-from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
+from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
 
 
@@ -51,11 +52,14 @@ def getInfo(urls):
 class NetloadIn(Hoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
-    __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)'
     __version__ = "0.45"
+
+    __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)'
+
     __description__ = """Netload.in hoster plugin"""
     __author_name__ = ("spoob", "RaNaN", "Gregy")
     __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
+
 
     def setup(self):
         self.multiDL = self.resumeDownload = self.premium
@@ -69,8 +73,8 @@ class NetloadIn(Hoster):
     def prepare(self):
         self.download_api_data()
 
-        if self.api_data and self.api_data["filename"]:
-            self.pyfile.name = self.api_data["filename"]
+        if self.api_data and self.api_data['filename']:
+            self.pyfile.name = self.api_data['filename']
 
         if self.premium:
             self.logDebug("Netload: Use Premium Account")
@@ -113,13 +117,13 @@ class NetloadIn(Hoster):
         self.api_data = {}
         if src and ";" in src and src not in ("unknown file_data", "unknown_server_data", "No input file specified."):
             lines = src.split(";")
-            self.api_data["exists"] = True
-            self.api_data["fileid"] = lines[0]
-            self.api_data["filename"] = lines[1]
-            self.api_data["size"] = lines[2]
-            self.api_data["status"] = lines[3]
-            if self.api_data["status"] == "online":
-                self.api_data["checksum"] = lines[4].strip()
+            self.api_data['exists'] = True
+            self.api_data['fileid'] = lines[0]
+            self.api_data['filename'] = lines[1]
+            self.api_data['size'] = lines[2]
+            self.api_data['status'] = lines[3]
+            if self.api_data['status'] == "online":
+                self.api_data['checksum'] = lines[4].strip()
             else:
                 self.api_data = False  # check manually since api data is useless sometimes
 
@@ -151,7 +155,7 @@ class NetloadIn(Hoster):
                 self.offline()
 
             name = re.search(r'class="dl_first_filename">([^<]+)', page, re.MULTILINE)
-            # the found filename is not truncated 
+            # the found filename is not truncated
             if name:
                 name = name.group(1).strip()
                 if not name.endswith(".."):
@@ -176,9 +180,9 @@ class NetloadIn(Hoster):
                 return True
             if ">An access request has been made from IP address <" in page:
                 wait = self.get_wait_time(page)
-                if wait == 0:
+                if not wait:
                     self.logDebug("Netload: Wait was 0 setting 30")
-                    wait = 30
+                    wait = 30 * 60
                 self.logInfo(_("Netload: waiting between downloads %d s." % wait))
                 self.wantReconnect = True
                 self.setWait(wait)

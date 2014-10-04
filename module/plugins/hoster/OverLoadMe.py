@@ -1,22 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import re
-from urllib import unquote
-from random import randrange
 
-from module.plugins.Hoster import Hoster
+from random import randrange
+from urllib import unquote
+
 from module.common.json_layer import json_loads
+from module.plugins.Hoster import Hoster
 from module.utils import parseFileSize
 
 
 class OverLoadMe(Hoster):
     __name__ = "OverLoadMe"
-    __version__ = "0.01"
     __type__ = "hoster"
+    __version__ = "0.01"
+
     __pattern__ = r'https?://.*overload\.me.*'
+
     __description__ = """Over-Load.me hoster plugin"""
     __author_name__ = "marley"
     __author_mail__ = "marley@over-load.me"
+
 
     def getFilename(self, url):
         try:
@@ -42,19 +46,19 @@ class OverLoadMe(Hoster):
             data = self.account.getAccountData(self.user)
 
             page = self.load("https://api.over-load.me/getdownload.php",
-                             get={"auth": data["password"], "link": pyfile.url})
+                             get={"auth": data['password'], "link": pyfile.url})
             data = json_loads(page)
 
             self.logDebug("Returned Data: %s" % data)
 
-            if data["err"] == 1:
-                self.logWarning(data["msg"])
+            if data['err'] == 1:
+                self.logWarning(data['msg'])
                 self.tempOffline()
             else:
-                if pyfile.name is not None and pyfile.name.endswith('.tmp') and data["filename"]:
-                    pyfile.name = data["filename"]
-                    pyfile.size = parseFileSize(data["filesize"])
-                new_url = data["downloadlink"]
+                if pyfile.name is not None and pyfile.name.endswith('.tmp') and data['filename']:
+                    pyfile.name = data['filename']
+                    pyfile.size = parseFileSize(data['filesize'])
+                new_url = data['downloadlink']
 
         if self.getConfig("https"):
             new_url = new_url.replace("http://", "https://")

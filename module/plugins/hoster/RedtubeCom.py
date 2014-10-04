@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from module.plugins.Hoster import Hoster
 from module.unescape import unescape
 
@@ -8,11 +9,14 @@ from module.unescape import unescape
 class RedtubeCom(Hoster):
     __name__ = "RedtubeCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'
     __version__ = "0.2"
+
+    __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'
+
     __description__ = """Redtube.com hoster plugin"""
     __author_name__ = "jeix"
     __author_mail__ = "jeix@hasnomail.de"
+
 
     def process(self, pyfile):
         self.download_html()
@@ -29,7 +33,7 @@ class RedtubeCom(Hoster):
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         file_url = unescape(re.search(r'hashlink=(http.*?)"', self.html).group(1))
@@ -37,16 +41,15 @@ class RedtubeCom(Hoster):
         return file_url
 
     def get_file_name(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
-        name = re.search('<title>(.*?)- RedTube - Free Porn Videos</title>', self.html).group(1).strip() + ".flv"
-        return name
+        return re.search('<title>(.*?)- RedTube - Free Porn Videos</title>', self.html).group(1).strip() + ".flv"
 
     def file_exists(self):
         """ returns True or False
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         if re.search(r'This video has been removed.', self.html) is not None:

@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import codecs
-from module.utils import fs_encode
+
 from module.plugins.Container import Container
+from module.utils import fs_encode
+
 
 class LinkList(Container):
     __name__ = "LinkList"
     __version__ = "0.12"
+
     __pattern__ = r'.+\.txt'
-    __description__ = """Read link lists in txt format"""
     __config__ = [("clear", "bool", "Clear Linklist after adding", False),
                   ("encoding", "string", "File encoding (default utf-8)", "")]
+
+    __description__ = """Read link lists in txt format"""
     __author_name__ = ("spoob", "jeix")
     __author_mail__ = ("spoob@pyload.org", "jeix@hasnomail.com")
+
 
     def decrypt(self, pyfile):
         try:
@@ -33,7 +38,8 @@ class LinkList(Container):
 
         for link in links:
             link = link.strip()
-            if not link: continue
+            if not link:
+                continue
 
             if link.startswith(";"):
                 continue
@@ -61,7 +67,7 @@ class LinkList(Container):
                 txt = open(file_name, 'wb')
                 txt.close()
             except:
-                self.log.warning(_("LinkList could not be cleared."))
+                self.logWarning(_("LinkList could not be cleared."))
 
         for name, links in packages.iteritems():
             self.packages.append((name, links, name))

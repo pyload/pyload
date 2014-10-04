@@ -6,11 +6,14 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class SendmywayCom(XFileSharingPro):
     __name__ = "SendmywayCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?sendmyway.com/\w{12}'
     __version__ = "0.01"
+
+    __pattern__ = r'http://(?:www\.)?sendmyway\.com/\w{12}'
+
     __description__ = """SendMyWay hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
+
 
     HOSTER_NAME = "sendmyway.com"
 

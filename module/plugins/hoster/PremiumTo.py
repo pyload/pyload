@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from urllib import quote
-from os.path import exists
 from os import remove
+from os.path import exists
+from urllib import quote
 
 from module.plugins.Hoster import Hoster
 from module.utils import fs_encode
 
 
-class Premium4Me(Hoster):
-    __name__ = "Premium4Me"
-    __version__ = "0.08"
+class PremiumTo(Hoster):
+    __name__ = "PremiumTo"
     __type__ = "hoster"
-
-    __pattern__ = r'http://(?:www\.)?premium.to/.*'
+    __version__ = "0.10"
+    __pattern__ = r'https?://(?:www\.)?premium.to/.*'
     __description__ = """Premium.to hoster plugin"""
     __author_name__ = ("RaNaN", "zoidberg", "stickell")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
@@ -27,7 +26,7 @@ class Premium4Me(Hoster):
             self.logError(_("Please enter your %s account or deactivate this plugin") % "premium.to")
             self.fail("No premium.to account provided")
 
-        self.logDebug("premium.to: Old URL: %s" % pyfile.url)
+        self.logDebug("Old URL: %s" % pyfile.url)
 
         tra = self.getTraffic()
 
@@ -35,7 +34,7 @@ class Premium4Me(Hoster):
         self.req.setOption("timeout", 120)
 
         self.download(
-            "http://premium.to/api/getfile.php?authcode=%s&link=%s" % (self.account.authcode, quote(pyfile.url, "")),
+            "http://premium.to/api/getfile.php?username=%s&password=%s&link=%s" % (self.account.username, self.account.password, quote(pyfile.url, "")),
             disposition=True)
 
         check = self.checkDownload({"nopremium": "No premium account available"})
@@ -64,7 +63,9 @@ class Premium4Me(Hoster):
 
     def getTraffic(self):
         try:
-            traffic = int(self.load("http://premium.to/api/traffic.php?authcode=%s" % self.account.authcode))
+            api_r = self.load("http://premium.to/api/straffic.php",
+                              get={'username': self.account.username, 'password': self.account.password})
+            traffic = sum(map(int, api_r.split(';')))
         except:
             traffic = 0
         return traffic

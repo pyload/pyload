@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-
 #
-# v2.01 - hagg
 # * cnl2 and web links are skipped if JS is not available (instead of failing the package)
 # * only best available link source is used (priority: cnl2>rsdf>ccf>dlc>web
-#
 
 import base64
 import binascii
@@ -18,8 +15,10 @@ from module.unescape import unescape
 class LinkSaveIn(Crypter):
     __name__ = "LinkSaveIn"
     __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?linksave.in/(?P<id>\w+)$'
     __version__ = "2.01"
+
+    __pattern__ = r'http://(?:www\.)?linksave.in/(?P<id>\w+)$'
+
     __description__ = """LinkSave.in decrypter plugin"""
     __author_name__ = "fragonib"
     __author_mail__ = "fragonib[AT]yahoo[DOT]es"
@@ -27,21 +26,21 @@ class LinkSaveIn(Crypter):
     # Constants
     _JK_KEY_ = "jk"
     _CRYPTED_KEY_ = "crypted"
-    HOSTER_DOMAIN = "linksave.in"
+    HOSTER_NAME = "linksave.in"
+
 
     def setup(self):
         self.html = None
         self.fileid = None
         self.captcha = False
         self.package = None
-        self.preferred_sources = ['cnl2', 'rsdf', 'ccf', 'dlc', 'web']
+        self.preferred_sources = ["cnl2", "rsdf", "ccf", "dlc", "web"]
 
     def decrypt(self, pyfile):
-
         # Init
         self.package = pyfile.package()
         self.fileid = re.match(self.__pattern__, pyfile.url).group('id')
-        self.req.cj.setCookie(self.HOSTER_DOMAIN, "Linksave_Language", "english")
+        self.req.cj.setCookie(self.HOSTER_NAME, "Linksave_Language", "english")
 
         # Request package
         self.html = self.load(pyfile.url)
@@ -124,11 +123,11 @@ class LinkSaveIn(Crypter):
                 self.correctCaptcha()
 
     def handleLinkSource(self, type_):
-        if type_ == 'cnl2':
+        if type_ == "cnl2":
             return self.handleCNL2()
-        elif type_ in ('rsdf', 'ccf', 'dlc'):
+        elif type_ in ("rsdf", "ccf", "dlc"):
             return self.handleContainer(type_)
-        elif type_ == 'web':
+        elif type_ == "web":
             return self.handleWebLinks()
         else:
             self.fail('unknown source type "%s" (this is probably a bug)' % type_)
@@ -137,7 +136,7 @@ class LinkSaveIn(Crypter):
         package_links = []
         self.logDebug("Search for Web links")
         if not self.js:
-            self.logDebug("no JS -> skip Web links")
+            self.logDebug("No JS -> skip Web links")
         else:
         #@TODO: Gather paginated web links
             pattern = r'<a href="http://linksave\.in/(\w{43})"'
@@ -163,7 +162,7 @@ class LinkSaveIn(Crypter):
     def handleContainer(self, type_):
         package_links = []
         type_ = type_.lower()
-        self.logDebug('Seach for %s Container links' % type_.upper())
+        self.logDebug("Seach for %s Container links" % type_.upper())
         if not type_.isalnum():  # check to prevent broken re-pattern (cnl2,rsdf,ccf,dlc,web are all alpha-numeric)
             self.fail('unknown container type "%s" (this is probably a bug)' % type_)
         pattern = r"\('%s_link'\).href=unescape\('(.*?\.%s)'\)" % (type_, type_)
@@ -178,7 +177,7 @@ class LinkSaveIn(Crypter):
         package_links = []
         self.logDebug("Search for CNL2 links")
         if not self.js:
-            self.logDebug("no JS -> skip CNL2 links")
+            self.logDebug("No JS -> skip CNL2 links")
         elif 'cnl2_load' in self.html:
             try:
                 (vcrypted, vjk) = self._getCipherParams()
@@ -189,7 +188,6 @@ class LinkSaveIn(Crypter):
         return package_links
 
     def _getCipherParams(self):
-
         # Get jk
         jk_re = r'<INPUT.*?NAME="%s".*?VALUE="(.*?)"' % LinkSaveIn._JK_KEY_
         vjk = re.findall(jk_re, self.html)
@@ -203,7 +201,6 @@ class LinkSaveIn(Crypter):
         return vcrypted, vjk
 
     def _getLinks(self, crypted, jk):
-
         # Get key
         jreturn = self.js.eval("%s f()" % jk)
         self.logDebug("JsEngine returns value [%s]" % jreturn)

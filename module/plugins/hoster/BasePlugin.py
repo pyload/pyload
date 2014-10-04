@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from urlparse import urlparse
-from re import match, search
+import re
+
 from urllib import unquote
+from urlparse import urlparse
 
 from module.network.HTTPRequest import BadHeader
 from module.plugins.Hoster import Hoster
@@ -12,20 +13,24 @@ from module.utils import html_unescape, remove_chars
 class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"
+    __version__ = "0.20"
+
     __pattern__ = r'^unmatchable$'
-    __version__ = "0.19"
+
     __description__ = """Base Plugin when any other didnt fit"""
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
+
 
     def setup(self):
         self.chunkLimit = -1
         self.resumeDownload = True
 
+
     def process(self, pyfile):
         """main function"""
 
-        #debug part, for api exerciser
+        #: debug part, for api exerciser
         if pyfile.url.startswith("DEBUG_API"):
             self.multiDL = False
             return
@@ -55,7 +60,7 @@ class BasePlugin(Hoster):
 
                     if server in servers:
                         self.logDebug("Logging on to %s" % server)
-                        self.req.addAuth(account.accounts[server]["password"])
+                        self.req.addAuth(account.accounts[server]['password'])
                     else:
                         for pwd in pyfile.package().password.splitlines():
                             if ":" in pwd:
@@ -71,6 +76,7 @@ class BasePlugin(Hoster):
         else:
             self.fail("No Plugin matched and not a downloadable url.")
 
+
     def downloadFile(self, pyfile):
         url = pyfile.url
 
@@ -83,9 +89,9 @@ class BasePlugin(Hoster):
 
             if 'location' in header:
                 self.logDebug("Location: " + header['location'])
-                base = match(r'https?://[^/]+', url).group(0)
+                base = re.match(r'https?://[^/]+', url).group(0)
                 if header['location'].startswith("http"):
-                    url = unquote(header['location'])
+                    url = header['location']
                 elif header['location'].startswith("/"):
                     url = base + unquote(header['location'])
                 else:
@@ -97,7 +103,7 @@ class BasePlugin(Hoster):
 
         if 'content-disposition' in header:
             self.logDebug("Content-Disposition: " + header['content-disposition'])
-            m = search("filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", header['content-disposition'])
+            m = re.search("filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", header['content-disposition'])
             if m:
                 disp = m.groupdict()
                 self.logDebug(disp)

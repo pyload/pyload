@@ -5,14 +5,15 @@ from module.plugins.internal.XFSPAccount import XFSPAccount
 
 class MovReelCom(XFSPAccount):
     __name__ = "MovReelCom"
-    __version__ = "0.01"
     __type__ = "account"
+    __version__ = "0.01"
+
     __description__ = """Movreel.com account plugin"""
     __author_name__ = "t4skforce"
     __author_mail__ = "t4skforce1337[AT]gmail[DOT]com"
 
-    login_timeout = 60  #: after that time [in minutes] pyload will relogin the account
-    info_threshold = 30  #: account data will be reloaded after this time
+    login_timeout = 60
+    info_threshold = 30
 
     MAIN_PAGE = "http://movreel.com/"
 

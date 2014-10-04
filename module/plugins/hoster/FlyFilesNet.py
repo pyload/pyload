@@ -1,24 +1,31 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from urllib import unquote
+
 from module.network.RequestFactory import getURL
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FlyFilesNet(SimpleHoster):
     __name__ = "FlyFilesNet"
-    __version__ = "0.1"
     __type__ = "hoster"
+    __version__ = "0.1"
+
     __pattern__ = r'http://(?:www\.)?flyfiles\.net/.*'
+
+    __description__ = """FlyFiles.net hoster plugin"""
+    __author_name__ = None
+    __author_mail__ = None
 
     SESSION_PATTERN = r'flyfiles\.net/(.*)/.*'
     FILE_NAME_PATTERN = r'flyfiles\.net/.*/(.*)'
 
+
     def process(self, pyfile):
-        pyfile.name = re.search(self.FILE_NAME_PATTERN, pyfile.url).group(1)
-        pyfile.name = urllib.unquote_plus(pyfile.name)
+        name = re.search(self.FILE_NAME_PATTERN, pyfile.url).group(1)
+        pyfile.name = unquote_plus(name)
 
         session = re.search(self.SESSION_PATTERN, pyfile.url).group(1)
 

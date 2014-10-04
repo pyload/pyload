@@ -1,22 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN, spoob, mkaay
-"""
-
 from time import time, sleep
 from random import randint
 
@@ -32,6 +15,7 @@ if os.name != "nt":
 from itertools import islice
 
 from module.utils import save_join, save_path, fs_encode, fs_decode
+
 
 def chunks(iterable, size):
     it = iter(iterable)
@@ -142,13 +126,16 @@ class Plugin(Base):
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
     __name__ = "Plugin"
-    __version__ = "0.4"
-    __pattern__ = None
     __type__ = "hoster"
+    __version__ = "0.4"
+
+    __pattern__ = None
     __config__ = [("name", "type", "desc", "default")]
+
     __description__ = """Base plugin"""
     __author_name__ = ("RaNaN", "spoob", "mkaay")
     __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
+
 
     def __init__(self, pyfile):
         Base.__init__(self, pyfile.m.core)
@@ -207,8 +194,8 @@ class Plugin(Base):
 
     def getChunkCount(self):
         if self.chunkLimit <= 0:
-            return self.config["download"]["chunks"]
-        return min(self.config["download"]["chunks"], self.chunkLimit)
+            return self.config['download']['chunks']
+        return min(self.config['download']['chunks'], self.chunkLimit)
 
     def __call__(self):
         return self.__name__
@@ -410,7 +397,8 @@ class Plugin(Base):
         """
         if self.pyfile.abort: raise Abort
         #utf8 vs decode -> please use decode attribute in all future plugins
-        if type(url) == unicode: url = str(url)
+        if type(url) == unicode:
+            url = str(url)  # encode('utf8')
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
@@ -478,12 +466,12 @@ class Plugin(Base):
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
-            makedirs(location, int(self.core.config["permission"]["folder"], 8))
+            makedirs(location, int(self.core.config['permission']['folder'], 8))
 
-            if self.core.config["permission"]["change_dl"] and os.name != "nt":
+            if self.core.config['permission']['change_dl'] and os.name != "nt":
                 try:
-                    uid = getpwnam(self.config["permission"]["user"])[2]
-                    gid = getgrnam(self.config["permission"]["group"])[2]
+                    uid = getpwnam(self.config['permission']['user'])[2]
+                    gid = getgrnam(self.config['permission']['group'])[2]
 
                     chown(location, uid, gid)
                 except Exception, e:
@@ -511,13 +499,13 @@ class Plugin(Base):
 
         fs_filename = fs_encode(filename)
 
-        if self.core.config["permission"]["change_file"]:
-            chmod(fs_filename, int(self.core.config["permission"]["file"], 8))
+        if self.core.config['permission']['change_file']:
+            chmod(fs_filename, int(self.core.config['permission']['file'], 8))
 
-        if self.core.config["permission"]["change_dl"] and os.name != "nt":
+        if self.core.config['permission']['change_dl'] and os.name != "nt":
             try:
-                uid = getpwnam(self.config["permission"]["user"])[2]
-                gid = getgrnam(self.config["permission"]["group"])[2]
+                uid = getpwnam(self.config['permission']['user'])[2]
+                gid = getgrnam(self.config['permission']['group'])[2]
 
                 chown(fs_filename, uid, gid)
             except Exception, e:

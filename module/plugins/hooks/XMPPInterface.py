@@ -1,36 +1,19 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-    @interface-version: 0.2
-"""
-
 from pyxmpp import streamtls
 from pyxmpp.all import JID, Message
-from pyxmpp.jabber.client import JabberClient
 from pyxmpp.interface import implements
 from pyxmpp.interfaces import *
+from pyxmpp.jabber.client import JabberClient
 
 from module.plugins.hooks.IRCInterface import IRCInterface
 
 
 class XMPPInterface(IRCInterface, JabberClient):
     __name__ = "XMPPInterface"
+    __type__ = "hook"
     __version__ = "0.11"
-    __description__ = """Connect to jabber and let owner perform different tasks"""
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),
                   ("pw", "str", "Password", ""),
@@ -39,8 +22,11 @@ class XMPPInterface(IRCInterface, JabberClient):
                   ("info_file", "bool", "Inform about every file finished", False),
                   ("info_pack", "bool", "Inform about every package finished", True),
                   ("captcha", "bool", "Send captcha requests", True)]
+
+    __description__ = """Connect to jabber and let owner perform different tasks"""
     __author_name__ = "RaNaN"
     __author_mail__ = "RaNaN@pyload.org"
+
 
     implements(IMessageHandlersProvider)
 
@@ -98,39 +84,37 @@ class XMPPInterface(IRCInterface, JabberClient):
         try:
             self.loop()
         except Exception, ex:
-            self.logError("pyLoad XMPP: %s" % str(ex))
+            self.logError(ex)
 
     def stream_state_changed(self, state, arg):
         """This one is called when the state of stream connecting the component
         to a server changes. This will usually be used to let the user
         know what is going on."""
-        self.logDebug("pyLoad XMPP: *** State changed: %s %r ***" % (state, arg))
+        self.logDebug("*** State changed: %s %r ***" % (state, arg))
 
     def disconnected(self):
-        self.logDebug("pyLoad XMPP: Client was disconnected")
+        self.logDebug("Client was disconnected")
 
     def stream_closed(self, stream):
-        self.logDebug("pyLoad XMPP: Stream was closed | %s" % stream)
+        self.logDebug("Stream was closed", stream)
 
     def stream_error(self, err):
-        self.logDebug("pyLoad XMPP: Stream Error: %s" % err)
+        self.logDebug("Stream Error", err)
 
     def get_message_handlers(self):
         """Return list of (message_type, message_handler) tuples.
 
         The handlers returned will be called when matching message is received
         in a client session."""
-        return [
-            ("normal", self.message),
-        ]
+        return [("normal", self.message)]
 
     def message(self, stanza):
         """Message handler for the component."""
         subject = stanza.get_subject()
         body = stanza.get_body()
         t = stanza.get_type()
-        self.logDebug(u'pyLoad XMPP: Message from %s received.' % (unicode(stanza.get_from(), )))
-        self.logDebug(u'pyLoad XMPP: Body: %s Subject: %s Type: %s' % (body, subject, t))
+        self.logDebug("Message from %s received." % unicode(stanza.get_from()))
+        self.logDebug("Body: %s Subject: %s Type: %s" % (body, subject, t))
 
         if t == "headline":
             # 'headline' messages should never be replied to
@@ -174,7 +158,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
                     messages.append(m)
             except Exception, e:
-                self.logError("pyLoad XMPP: " + repr(e))
+                self.logError(repr(e))
 
             return messages
 
@@ -187,7 +171,7 @@ class XMPPInterface(IRCInterface, JabberClient):
     def announce(self, message):
         """ send message to all owners"""
         for user in self.getConfig("owners").split(";"):
-            self.logDebug("pyLoad XMPP: Send message to %s" % user)
+            self.logDebug("Send message to", user)
 
             to_jid = JID(user)
 
@@ -230,9 +214,7 @@ class VersionHandler(object):
     def get_iq_get_handlers(self):
         """Return list of tuples (element_name, namespace, handler) describing
         handlers of <iq type='get'/> stanzas"""
-        return [
-            ("query", "jabber:iq:version", self.get_version),
-        ]
+        return [("query", "jabber:iq:version", self.get_version)]
 
     def get_iq_set_handlers(self):
         """Return empty list, as this class provides no <iq type='set'/> stanza handler."""

@@ -1,48 +1,35 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: jeix
-"""
-
 import re
+
 from pycurl import HTTPHEADER
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 from module.common.json_layer import json_loads
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, timestamp
 
 
 class UploadingCom(SimpleHoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
+    __version__ = "0.36"
+
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)'
-    __version__ = "0.34"
+
     __description__ = """Uploading.com hoster plugin"""
     __author_name__ = ("jeix", "mkaay", "zoidberg")
     __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
 
     FILE_NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
     FILE_SIZE_PATTERN = r'size tip_container">(?P<S>[\d.]+) (?P<U>\w+)<'
-    FILE_OFFLINE_PATTERN = r'Page not found!'
+    OFFLINE_PATTERN = r'(Page|file) not found'
+
 
     def process(self, pyfile):
         # set lang to english
-        self.req.cj.setCookie("uploading.com", "lang", "1")
-        self.req.cj.setCookie("uploading.com", "language", "1")
-        self.req.cj.setCookie("uploading.com", "setlang", "en")
-        self.req.cj.setCookie("uploading.com", "_lang", "en")
+        self.req.cj.setCookie(".uploading.com", "lang", "1")
+        self.req.cj.setCookie(".uploading.com", "language", "1")
+        self.req.cj.setCookie(".uploading.com", "setlang", "en")
+        self.req.cj.setCookie(".uploading.com", "_lang", "en")
 
         if not "/get/" in pyfile.url:
             pyfile.url = pyfile.url.replace("/files", "/files/get")
@@ -69,11 +56,11 @@ class UploadingCom(SimpleHoster):
         raise Exception("Plugin defect.")
 
     def handleFree(self):
-        found = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
-        if found:
-            self.pyfile.error = found.group(1)
+        m = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
+        if m:
+            self.pyfile.error = m.group(1)
             self.logWarning(self.pyfile.error)
-            self.retry(max_tries=6, wait_time=6 * 60 * 60 if found.group(2) else 15 * 60, reason=self.pyfile.error)
+            self.retry(max_tries=6, wait_time=6 * 60 * 60 if m.group(2) else 15 * 60, reason=self.pyfile.error)
 
         ajax_url = "http://uploading.com/files/get/?ajax"
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
@@ -85,21 +72,21 @@ class UploadingCom(SimpleHoster):
             self.logInfo("%s: Waiting %d seconds." % (self.__name__, wait_time))
             self.wait(wait_time)
         else:
-            self.pluginParseError("AJAX/WAIT")
+            self.parseError("AJAX/WAIT")
 
         response = json_loads(
             self.load(ajax_url, post={'action': 'get_link', 'code': self.file_info['ID'], 'pass': 'false'}))
         if 'answer' in response and 'link' in response['answer']:
             url = response['answer']['link']
         else:
-            self.pluginParseError("AJAX/URL")
+            self.parseError("AJAX/URL")
 
         self.html = self.load(url)
-        found = re.search(r'<form id="file_form" action="(.*?)"', self.html)
-        if found:
-            url = found.group(1)
+        m = re.search(r'<form id="file_form" action="(.*?)"', self.html)
+        if m:
+            url = m.group(1)
         else:
-            self.pluginParseError("URL")
+            self.parseError("URL")
 
         self.download(url)
 

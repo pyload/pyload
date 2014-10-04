@@ -1,18 +1,4 @@
 # -*- coding: utf-8 -*-
-############################################################################
-# This program is free software: you can redistribute it and/or modify     #
-# it under the terms of the GNU Affero General Public License as           #
-# published by the Free Software Foundation, either version 3 of the       #
-# License, or (at your option) any later version.                          #
-#                                                                          #
-# This program is distributed in the hope that it will be useful,          #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
-# GNU Affero General Public License for more details.                      #
-#                                                                          #
-# You should have received a copy of the GNU Affero General Public License #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
-############################################################################
 
 import re
 
@@ -22,8 +8,10 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FreakhareComFolder(SimpleCrypter):
     __name__ = "FreakhareComFolder"
     __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'
     __version__ = "0.01"
+
+    __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'
+
     __description__ = """Freakhare.com folder decrypter plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
@@ -31,6 +19,7 @@ class FreakhareComFolder(SimpleCrypter):
     LINK_PATTERN = r'<a href="(http://freakshare.com/files/[^"]+)" target="_blank">'
     TITLE_PATTERN = r'Folder:</b> (?P<title>.+)'
     PAGES_PATTERN = r'Pages: +(?P<pages>\d+)'
+
 
     def loadPage(self, page_n):
         if not hasattr(self, 'f_id') and not hasattr(self, 'f_md5'):

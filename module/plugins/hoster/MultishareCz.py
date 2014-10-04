@@ -1,39 +1,27 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 import re
+
 from random import random
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MultishareCz(SimpleHoster):
     __name__ = "MultishareCz"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?multishare.cz/stahnout/(?P<ID>\d+).*'
     __version__ = "0.34"
+
+    __pattern__ = r'http://(?:www\.)?multishare.cz/stahnout/(?P<ID>\d+).*'
+
     __description__ = """MultiShare.cz hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_INFO_PATTERN = ur'(?:<li>Název|Soubor): <strong>(?P<N>[^<]+)</strong><(?:/li><li|br)>Velikost: <strong>(?P<S>[^<]+)</strong>'
-    FILE_OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
+    OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
     FILE_SIZE_REPLACEMENTS = [('&nbsp;', '')]
+
 
     def process(self, pyfile):
         msurl = re.match(self.__pattern__, pyfile.url)
@@ -70,15 +58,15 @@ class MultishareCz(SimpleHoster):
             self.fail("Not enough credit left to download file")
 
         url = "http://dl%d.mms.multishare.cz/html/mms_process.php" % round(random() * 10000 * random())
-        params = {"u_ID": self.acc_info["u_ID"], "u_hash": self.acc_info["u_hash"], "link": self.pyfile.url}
+        params = {"u_ID": self.acc_info['u_ID'], "u_hash": self.acc_info['u_hash'], "link": self.pyfile.url}
         self.logDebug(url, params)
         self.download(url, get=params)
 
     def checkCredit(self):
         self.acc_info = self.account.getAccountInfo(self.user, True)
-        self.logInfo("User %s has %i MB left" % (self.user, self.acc_info["trafficleft"] / 1024))
+        self.logInfo("User %s has %i MB left" % (self.user, self.acc_info['trafficleft'] / 1024))
 
-        return self.pyfile.size / 1024 <= self.acc_info["trafficleft"]
+        return self.pyfile.size / 1024 <= self.acc_info['trafficleft']
 
 
 getInfo = create_getInfo(MultishareCz)

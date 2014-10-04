@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-
-# Test links (random.bin):
+#
+# Test links:
 # http://ryushare.com/cl0jy8ric2js/random.bin
 
 import re
@@ -12,8 +12,10 @@ from module.plugins.internal.CaptchaService import SolveMedia
 class RyushareCom(XFileSharingPro):
     __name__ = "RyushareCom"
     __type__ = "hoster"
+    __version__ = "0.16"
+
     __pattern__ = r'http://(?:www\.)?ryushare\.com/\w+'
-    __version__ = "0.15"
+
     __description__ = """Ryushare.com hoster plugin"""
     __author_name__ = ("zoidberg", "stickell", "quareevo")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "quareevo@arcor.de")
@@ -23,15 +25,15 @@ class RyushareCom(XFileSharingPro):
     FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[\d\.]+) (?P<U>\w+)'
 
     WAIT_PATTERN = r'You have to wait ((?P<hour>\d+) hour[s]?, )?((?P<min>\d+) minute[s], )?(?P<sec>\d+) second[s]'
-    DIRECT_LINK_PATTERN = r'(http://([^/]*?ryushare.com|\d+\.\d+\.\d+\.\d+)(:\d+/d/|/files/\w+/\w+/)[^"\'<]+)'
-    SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
+    LINK_PATTERN = r'<a href="([^"]+)">Click here to download<'
+
 
     def getDownloadLink(self):
         retry = False
         self.html = self.load(self.pyfile.url)
         action, inputs = self.parseHtmlForm(input_names={"op": re.compile("^download")})
         if "method_premium" in inputs:
-            del inputs["method_premium"]
+            del inputs['method_premium']
 
         self.html = self.load(self.pyfile.url, post=inputs)
         action, inputs = self.parseHtmlForm('F1')
@@ -42,10 +44,10 @@ class RyushareCom(XFileSharingPro):
             self.setWait(1 * 60 * 60, True)
             retry = True
 
-        match = re.search(self.WAIT_PATTERN, self.html)
-        if match:
-            m = match.groupdict(0)
-            waittime = int(m["hour"]) * 60 * 60 + int(m["min"]) * 60 + int(m["sec"])
+        m = re.search(self.WAIT_PATTERN, self.html)
+        if m:
+            wait = m.groupdict(0)
+            waittime = int(wait['hour']) * 60 * 60 + int(wait['min']) * 60 + int(wait['sec'])
             self.setWait(waittime, True)
             retry = True
 
@@ -54,16 +56,16 @@ class RyushareCom(XFileSharingPro):
             self.retry()
 
         for _ in xrange(5):
-            m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-            if not m:
-                self.parseError("Error parsing captcha")
-
-            captchaKey = m.group(1)
             captcha = SolveMedia(self)
-            challenge, response = captcha.challenge(captchaKey)
 
-            inputs["adcopy_challenge"] = challenge
-            inputs["adcopy_response"] = response
+            captcha_key = captcha.detect_key()
+            if captcha_key is None:
+                self.parseError("SolveMedia key not found")
+
+            challenge, response = captcha.challenge(captcha_key)
+
+            inputs['adcopy_challenge'] = challenge
+            inputs['adcopy_response'] = response
 
             self.html = self.load(self.pyfile.url, post=inputs)
             if "WRONG CAPTCHA" in self.html:
@@ -76,8 +78,7 @@ class RyushareCom(XFileSharingPro):
             self.fail("You have entered 5 invalid captcha codes")
 
         if "Click here to download" in self.html:
-            m = re.search(r'<a href="([^"]+)">Click here to download</a>', self.html)
-            return m.group(1)
+            return re.search(r'<a href="([^"]+)">Click here to download</a>', self.html).group(1)
 
 
 getInfo = create_getInfo(RyushareCom)

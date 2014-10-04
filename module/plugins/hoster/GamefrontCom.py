@@ -1,23 +1,27 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Hoster import Hoster
+
 from module.network.RequestFactory import getURL
+from module.plugins.Hoster import Hoster
 from module.utils import parseFileSize
 
 
 class GamefrontCom(Hoster):
     __name__ = "GamefrontCom"
     __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?gamefront.com/files/[A-Za-z0-9]+'
     __version__ = "0.04"
+
+    __pattern__ = r'http://(?:www\.)?gamefront.com/files/[A-Za-z0-9]+'
+
     __description__ = """Gamefront.com hoster plugin"""
     __author_name__ = "fwannmacher"
     __author_mail__ = "felipe@warhammerproject.com"
 
     PATTERN_FILENAME = r'<title>(.*?) | Game Front'
     PATTERN_FILESIZE = r'<dt>File Size:</dt>[\n\s]*<dd>(.*?)</dd>'
-    PATTERN_OFFLINE = "This file doesn't exist, or has been removed."
+    PATTERN_OFFLINE = r"This file doesn't exist, or has been removed."
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True
@@ -32,12 +36,12 @@ class GamefrontCom(Hoster):
 
         pyfile.name = self._getName()
 
-        self.link = self._getLink()
+        link = self._getLink()
 
-        if not self.link.startswith('http://'):
-            self.link = "http://www.gamefront.com/" + self.link
+        if not link.startswith('http://'):
+            link = "http://www.gamefront.com/" + link
 
-        self.download(self.link)
+        self.download(link)
 
     def _checkOnline(self):
         if re.search(self.PATTERN_OFFLINE, self.html):
@@ -55,9 +59,7 @@ class GamefrontCom(Hoster):
     def _getLink(self):
         self.html2 = self.load("http://www.gamefront.com/" + re.search("(files/service/thankyou\\?id=[A-Za-z0-9]+)",
                                                                        self.html).group(1))
-        self.link = re.search("<a href=\"(http://media[0-9]+\.gamefront.com/.*)\">click here</a>", self.html2)
-
-        return self.link.group(1).replace("&amp;", "&")
+        return re.search("<a href=\"(http://media[0-9]+\.gamefront.com/.*)\">click here</a>", self.html2).group(1).replace("&amp;", "&")
 
 
 def getInfo(urls):
@@ -70,15 +72,13 @@ def getInfo(urls):
             result.append((url, 0, 1, url))
         else:
             name = re.search(GamefrontCom.PATTERN_FILENAME, html)
-
             if name is None:
                 result.append((url, 0, 1, url))
-                continue
+            else:
+                name = name.group(1)
+                size = re.search(GamefrontCom.PATTERN_FILESIZE, html)
+                size = parseFileSize(size.group(1))
 
-            name = name.group(1)
-            size = re.search(GamefrontCom.PATTERN_FILESIZE, html)
-            size = parseFileSize(size.group(1))
-
-            result.append((name, size, 3, url))
+                result.append((name, size, 3, url))
 
     yield result

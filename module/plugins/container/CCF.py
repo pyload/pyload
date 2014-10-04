@@ -1,21 +1,27 @@
 # -*- coding: utf-8 -*-
 
 import re
-from urllib2 import build_opener
-
-from module.plugins.Container import Container
-from module.lib.MultipartPostHandler import MultipartPostHandler
 
 from os import makedirs
-from os.path import exists, join
+from os.path import exists
+from urllib2 import build_opener
+
+from module.lib.MultipartPostHandler import MultipartPostHandler
+
+from module.plugins.Container import Container
+from module.utils import save_join
+
 
 class CCF(Container):
     __name__ = "CCF"
     __version__ = "0.2"
+
     __pattern__ = r'.+\.ccf'
+
     __description__ = """CCF container decrypter plugin"""
     __author_name__ = "Willnix"
     __author_mail__ = "Willnix@pyload.org"
+
 
     def decrypt(self, pyfile):
 
@@ -28,13 +34,10 @@ class CCF(Container):
         tempdlc_content = opener.open('http://service.jdownloader.net/dlcrypt/getDLC.php', params).read()
 
         download_folder = self.config['general']['download_folder']
-        location = download_folder #join(download_folder, pyfile.package().folder.decode(sys.getfilesystemencoding()))
-        if not exists(location): 
-            makedirs(location)
 
-        tempdlc_name = join(location, "tmp_%s.dlc" % pyfile.name)
+        tempdlc_name = save_join(download_folder, "tmp_%s.dlc" % pyfile.name)
         tempdlc = open(tempdlc_name, "w")
         tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.DOTALL).group(1))
         tempdlc.close()
 
-        self.packages.append((tempdlc_name, [tempdlc_name], tempdlc_name))
+        self.urls = [tempdlc_name]

@@ -1,22 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 import re
 import time
 
@@ -25,25 +8,27 @@ from module.plugins.Account import Account
 
 class HellshareCz(Account):
     __name__ = "HellshareCz"
-    __version__ = "0.14"
     __type__ = "account"
+    __version__ = "0.14"
+
     __description__ = """Hellshare.cz account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
     CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+|\d\d\.\d\d\.)</th>'
 
+
     def loadAccountInfo(self, user, req):
         self.relogin(user)
         html = req.load("http://www.hellshare.com/")
 
-        found = re.search(self.CREDIT_LEFT_PATTERN, html)
-        if found is None:
+        m = re.search(self.CREDIT_LEFT_PATTERN, html)
+        if m is None:
             trafficleft = None
             validuntil = None
             premium = False
         else:
-            credit = found.group(1)
+            credit = m.group(1)
             premium = True
             try:
                 if "." in credit:
@@ -58,7 +43,7 @@ class HellshareCz(Account):
                     trafficleft = int(credit) * 1024
                     validuntil = -1
             except Exception, e:
-                self.logError('Unable to parse credit info', e)
+                self.logError("Unable to parse credit info", e)
                 validuntil = -1
                 trafficleft = -1
 
@@ -68,19 +53,19 @@ class HellshareCz(Account):
         html = req.load('http://www.hellshare.com/')
         if req.lastEffectiveURL != 'http://www.hellshare.com/':
             #Switch to English
-            self.logDebug('Switch lang - URL: %s' % req.lastEffectiveURL)
+            self.logDebug("Switch lang - URL: %s" % req.lastEffectiveURL)
             json = req.load("%s?do=locRouter-show" % req.lastEffectiveURL)
             hash = re.search(r"(--[0-9a-f]+-)", json).group(1)
-            self.logDebug('Switch lang - HASH: %s' % hash)
+            self.logDebug("Switch lang - HASH: %s" % hash)
             html = req.load('http://www.hellshare.com/%s/' % hash)
 
         if re.search(self.CREDIT_LEFT_PATTERN, html):
-            self.logDebug('Already logged in')
+            self.logDebug("Already logged in")
             return
 
         html = req.load('http://www.hellshare.com/login?do=loginForm-submit', post={
             "login": "Log in",
-            "password": data["password"],
+            "password": data['password'],
             "username": user,
             "perm_login": "on"
         })

@@ -1,31 +1,17 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
-"""
 from time import mktime, time
 
 from module.lib import feedparser
+
 from module.plugins.Hook import Hook
 
 
 class Ev0InFetcher(Hook):
     __name__ = "Ev0InFetcher"
+    __type__ = "hook"
     __version__ = "0.21"
-    __description__ = """Checks rss feeds for Ev0.in"""
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("interval", "int", "Check interval in minutes", 10),
                   ("queue", "bool", "Move new shows directly to Queue", False),
@@ -33,8 +19,11 @@ class Ev0InFetcher(Hook):
                   ("quality", "xvid;x264;rmvb", "Video Format", "xvid"),
                   ("hoster", "str", "Hoster to use (comma seperated)",
                    "NetloadIn,RapidshareCom,MegauploadCom,HotfileCom")]
+
+    __description__ = """Checks rss feeds for Ev0.in"""
     __author_name__ = "mkaay"
     __author_mail__ = "mkaay@mkaay.de"
+
 
     def setup(self):
         self.interval = self.getConfig("interval") * 60
@@ -55,7 +44,9 @@ class Ev0InFetcher(Hook):
                 continue
         return []
 
+
     def periodical(self):
+
         def normalizefiletitle(filename):
             filename = filename.replace('.', ' ')
             filename = filename.replace('_', ' ')
@@ -76,15 +67,14 @@ class Ev0InFetcher(Hook):
                 if show.lower() in normalizefiletitle(item['title']) and lastfound < int(mktime(item.date_parsed)):
                     links = self.filterLinks(item['description'].split("<br />"))
                     packagename = item['title'].encode("utf-8")
-                    self.logInfo("Ev0InFetcher: new episode '%s' (matched '%s')" % (packagename, show))
+                    self.logInfo(_("New episode '%s' (matched '%s')") % (packagename, show))
                     self.core.api.addPackage(packagename, links, 1 if self.getConfig("queue") else 0)
                     self.setStorage("show_%s_lastfound" % show, int(mktime(item.date_parsed)))
                     found = True
         if not found:
-            #self.logDebug("Ev0InFetcher: no new episodes found")
             pass
 
         for show, lastfound in self.getStorage().iteritems():
             if int(lastfound) > 0 and int(lastfound) + (3600 * 24 * 30) < int(time()):
                 self.delStorage("show_%s_lastfound" % show)
-                self.logDebug("Ev0InFetcher: cleaned '%s' record" % show)
+                self.logDebug("Cleaned '%s' record" % show)

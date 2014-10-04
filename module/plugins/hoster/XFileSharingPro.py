@@ -1,31 +1,16 @@
 # -*- coding: utf-8 -*-
 
-###############################################################################
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License,
-#  or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#  See the GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
-#  @author: zoidberg
-###############################################################################
-
 import re
+
+from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from random import random
 from urllib import unquote
 from urlparse import urlparse
-from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, PluginParseError, replace_patterns
-from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
-from module.utils import html_unescape
+
 from module.network.RequestFactory import getURL
+from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
+from module.plugins.internal.SimpleHoster import create_getInfo, PluginParseError, replace_patterns, set_cookies, SimpleHoster
+from module.utils import html_unescape
 
 
 class XFileSharingPro(SimpleHoster):
@@ -36,35 +21,69 @@ class XFileSharingPro(SimpleHoster):
     """
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __pattern__ = r'^unmatchable$'
-    __version__ = "0.30"
-    __description__ = """XFileSharingPro base hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __version__ = "0.37"
 
+    __pattern__ = r'^unmatchable$'
+
+    __description__ = """XFileSharingPro base hoster plugin"""
+    __author_name__ = ("zoidberg", "stickell", "Walter Purcaro")
+    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
+
+
+    HOSTER_NAME = None
+
+    FILE_URL_REPLACEMENTS = [(r'/embed-(\w{12}).*', r'/\1')]  #: support embedded files
+
+    COOKIES = [(HOSTER_NAME, "lang", "english")]
+
+    FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
     FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     FILE_SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>\w+)?\)</font>'
-    FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
-    FILE_OFFLINE_PATTERN = r'>\w+ (Not Found|file (was|has been) removed)'
+
+    OFFLINE_PATTERN = r'>\s*\w+ (Not Found|file (was|has been) removed)'
+    TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
 
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
-    #LONG_WAIT_PATTERN = r'(?P<H>\d+(?=\s*hour))?.*?(?P<M>\d+(?=\s*minute))?.*?(?P<S>\d+(?=\s*second))?'
-    OVR_DOWNLOAD_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
-    OVR_KILL_LINK_PATTERN = r'<h2>Delete Link</h2>\s*<textarea[^>]*>([^<]+)'
+
+    OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
+    LINK_PATTERN = None  #: final download url pattern
+
     CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
-    RECAPTCHA_URL_PATTERN = r'http://[^"\']+?recaptcha[^"\']+?\?k=([^"\']+)"'
-    CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.*?)</div>'
-    SOLVEMEDIA_PATTERN = r'http:\/\/api\.solvemedia\.com\/papi\/challenge\.script\?k=(.*?)"'
-    ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)</'
+    CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
+    RECAPTCHA_PATTERN = None
+    SOLVEMEDIA_PATTERN = None
+
+    ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.+?)</'
+
 
     def setup(self):
+        self.chunkLimit = 1
+
         if self.__name__ == "XFileSharingPro":
-            self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
             self.multiDL = True
+            self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
+            self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
+            self.COOKIES = [(self.HOSTER_NAME, "lang", "english")]
         else:
             self.resumeDownload = self.multiDL = self.premium
 
-        self.chunkLimit = 1
+
+    def prepare(self):
+        """ Initialize important variables """
+        if not self.HOSTER_NAME:
+            self.fail("Missing HOSTER_NAME")
+
+        if not self.LINK_PATTERN:
+            pattr = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)'
+            self.LINK_PATTERN = pattr % self.HOSTER_NAME
+
+        if isinstance(self.COOKIES, list):
+            set_cookies(self.req.cj, self.COOKIES)
+
+        self.captcha = None
+        self.errmsg = None
+        self.passwords = self.getPassword().splitlines()
+
 
     def process(self, pyfile):
         self.prepare()
@@ -80,8 +99,8 @@ class XFileSharingPro(SimpleHoster):
             try:
                 # Due to a 0.4.9 core bug self.load would use cookies even if
                 # cookies=False. Workaround using getURL to avoid cookies.
-                # Can be reverted in 0.5 as the cookies bug has been fixed.
-                self.html = getURL(pyfile.url, decode=True)
+                # Can be reverted in 0.4.10 as the cookies bug has been fixed.
+                self.html = getURL(pyfile.url, decode=True, cookies=self.COOKIES)
                 self.file_info = self.getFileInfo()
             except PluginParseError:
                 self.file_info = None
@@ -99,36 +118,29 @@ class XFileSharingPro(SimpleHoster):
             else:
                 self.handleFree()
 
-    def prepare(self):
-        """ Initialize important variables """
-        if not hasattr(self, "HOSTER_NAME"):
-            self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1)
-        if not hasattr(self, "DIRECT_LINK_PATTERN"):
-            self.DIRECT_LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)' % self.HOSTER_NAME
-
-        self.captcha = self.errmsg = None
-        self.passwords = self.getPassword().splitlines()
 
     def getDirectDownloadLink(self):
         """ Get download link for premium users with direct download enabled """
         self.req.http.lastURL = self.pyfile.url
 
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
-        self.html = self.load(self.pyfile.url, cookies=True, decode=True)
+        self.html = self.load(self.pyfile.url, decode=True)
         self.header = self.req.http.header
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
         location = None
-        found = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
-        if found and re.match(self.DIRECT_LINK_PATTERN, found.group(1)):
-            location = found.group(1).strip()
+        m = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
+        if m and re.match(self.LINK_PATTERN, m.group(1)):
+            location = m.group(1).strip()
 
         return location
+
 
     def handleFree(self):
         url = self.getDownloadLink()
         self.logDebug("Download URL: %s" % url)
         self.startDownload(url)
+
 
     def getDownloadLink(self):
         for i in xrange(5):
@@ -140,12 +152,12 @@ class XFileSharingPro(SimpleHoster):
             self.header = self.req.http.header
             self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
-            found = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
-            if found:
+            m = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
+            if m:
                 break
 
-            found = re.search(self.DIRECT_LINK_PATTERN, self.html, re.S)
-            if found:
+            m = re.search(self.LINK_PATTERN, self.html, re.S)
+            if m:
                 break
 
         else:
@@ -154,15 +166,16 @@ class XFileSharingPro(SimpleHoster):
             else:
                 self.fail("Download link not found")
 
-        return found.group(1)
+        return m.group(1)
+
 
     def handlePremium(self):
-        self.html = self.load(self.pyfile.url)
         self.html = self.load(self.pyfile.url, post=self.getPostParameters())
-        found = re.search(self.DIRECT_LINK_PATTERN, self.html)
-        if not found:
-            self.parseError('DIRECT LINK')
-        self.startDownload(found.group(1))
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
+            self.parseError('LINK_PATTERN not found')
+        self.startDownload(m.group(1))
+
 
     def handleOverriden(self):
         #only tested with easybytez.com
@@ -181,7 +194,7 @@ class XFileSharingPro(SimpleHoster):
 
         action, inputs = self.parseHtmlForm('F1')
         if not inputs:
-            self.parseError('TEXTAREA')
+            self.parseError('TEXTAREA not found')
         self.logDebug(self.HOSTER_NAME, inputs)
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
@@ -191,32 +204,34 @@ class XFileSharingPro(SimpleHoster):
             self.fail(inputs['st'])
 
         #get easybytez.com link for uploaded file
-        found = re.search(self.OVR_DOWNLOAD_LINK_PATTERN, self.html)
-        if not found:
-            self.parseError('DIRECT LINK (OVR)')
-        self.pyfile.url = found.group(1)
+        m = re.search(self.OVR_LINK_PATTERN, self.html)
+        if m is None:
+            self.parseError('OVR_LINK_PATTERN not found')
+        self.pyfile.url = m.group(1)
         header = self.load(self.pyfile.url, just_header=True)
         if 'location' in header:  # Direct link
             self.startDownload(self.pyfile.url)
         else:
             self.retry()
 
+
     def startDownload(self, link):
         link = link.strip()
         if self.captcha:
             self.correctCaptcha()
-        self.logDebug('DIRECT LINK: %s' % link)
+        self.logDebug("DIRECT LINK: %s" % link)
         self.download(link, disposition=True)
 
+
     def checkErrors(self):
-        found = re.search(self.ERROR_PATTERN, self.html)
-        if found:
-            self.errmsg = found.group(1)
+        m = re.search(self.ERROR_PATTERN, self.html)
+        if m:
+            self.errmsg = m.group(1)
             self.logWarning(re.sub(r"<.*?>", " ", self.errmsg))
 
             if 'wait' in self.errmsg:
                 wait_time = sum([int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in
-                                 re.findall(r'(\d+)\s*(hour|minute|second)?', self.errmsg)])
+                                 re.findall(r'(\d+)\s*(hour|minute|second)', self.errmsg)])
                 self.wait(wait_time, True)
             elif 'captcha' in self.errmsg:
                 self.invalidCaptcha()
@@ -239,6 +254,7 @@ class XFileSharingPro(SimpleHoster):
 
         return self.errmsg
 
+
     def getPostParameters(self):
         for _ in xrange(3):
             if not self.errmsg:
@@ -259,7 +275,7 @@ class XFileSharingPro(SimpleHoster):
 
             self.logDebug(self.HOSTER_NAME, inputs)
 
-            if 'op' in inputs and inputs['op'] in ('download2', 'download3'):
+            if 'op' in inputs and inputs['op'] in ("download2", "download3"):
                 if "password" in inputs:
                     if self.passwords:
                         inputs['password'] = self.passwords.pop(0)
@@ -267,9 +283,9 @@ class XFileSharingPro(SimpleHoster):
                         self.fail("No or invalid passport")
 
                 if not self.premium:
-                    found = re.search(self.WAIT_PATTERN, self.html)
-                    if found:
-                        wait_time = int(found.group(1)) + 1
+                    m = re.search(self.WAIT_PATTERN, self.html)
+                    if m:
+                        wait_time = int(m.group(1)) + 1
                         self.setWait(wait_time, False)
                     else:
                         wait_time = 0
@@ -300,36 +316,44 @@ class XFileSharingPro(SimpleHoster):
         else:
             self.parseError('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
 
+
     def handleCaptcha(self, inputs):
-        found = re.search(self.RECAPTCHA_URL_PATTERN, self.html)
-        if found:
-            recaptcha_key = unquote(found.group(1))
-            self.logDebug("RECAPTCHA KEY: %s" % recaptcha_key)
-            recaptcha = ReCaptcha(self)
-            inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(recaptcha_key)
+        m = re.search(self.CAPTCHA_URL_PATTERN, self.html)
+        if m:
+            captcha_url = m.group(1)
+            inputs['code'] = self.decryptCaptcha(captcha_url)
             return 1
-        else:
-            found = re.search(self.CAPTCHA_URL_PATTERN, self.html)
-            if found:
-                captcha_url = found.group(1)
-                inputs['code'] = self.decryptCaptcha(captcha_url)
-                return 2
-            else:
-                found = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
-                if found:
-                    captcha_div = found.group(1)
-                    self.logDebug(captcha_div)
-                    numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
-                    inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
-                    self.logDebug("CAPTCHA", inputs['code'], numerals)
-                    return 3
-                else:
-                    found = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-                    if found:
-                        captcha_key = found.group(1)
-                        captcha = SolveMedia(self)
-                        inputs['adcopy_challenge'], inputs['adcopy_response'] = captcha.challenge(captcha_key)
-                        return 4
+
+        m = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
+        if m:
+            captcha_div = m.group(1)
+            self.logDebug(captcha_div)
+            numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
+            inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
+            self.logDebug("CAPTCHA", inputs['code'], numerals)
+            return 2
+
+        recaptcha = ReCaptcha(self)
+        try:
+            captcha_key = re.search(self.RECAPTCHA_PATTERN, self.html).group(1)
+        except:
+            captcha_key = recaptcha.detect_key()
+
+        if captcha_key:
+            self.logDebug("RECAPTCHA KEY: %s" % captcha_key)
+            inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
+            return 3
+
+        solvemedia = SolveMedia(self)
+        try:
+            captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.html).group(1)
+        except:
+            captcha_key = solvemedia.detect_key()
+
+        if captcha_key:
+            inputs['adcopy_challenge'], inputs['adcopy_response'] = solvemedia.challenge(captcha_key)
+            return 4
+
         return 0
 
 
