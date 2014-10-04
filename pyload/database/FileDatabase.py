@@ -522,7 +522,7 @@ class FileHandler:
         self.core.pullManager.addEvent(e)
 
     def checkPackageFinished(self, pyfile):
-        """ checks if package is finished and calls hookmanager """
+        """ checks if package is finished and calls AddonManager """
 
         ids = self.db.getUnfinished(pyfile.packageid)
         if not ids or (pyfile.id in ids and len(ids) == 1):

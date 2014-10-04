@@ -51,7 +51,7 @@ class Addon(Base):
         #: Provide information in dict here, usable by API `getInfo`
         self.info = None
 
-        #: Callback of periodical job task, used by hookmanager
+        #: Callback of periodical job task, used by AddonManager
         self.cb = None
 
         #: `AddonManager`

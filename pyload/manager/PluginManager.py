@@ -34,7 +34,7 @@ class PluginManager:
         self.plugins = {}
         self.createIndex()
 
-        #register for import hook
+        #register for import addon
         sys.meta_path.append(self)
 
 

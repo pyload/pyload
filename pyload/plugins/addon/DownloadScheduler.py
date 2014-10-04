@@ -23,7 +23,7 @@ class DownloadScheduler(Addon):
 
 
     def setup(self):
-        self.cb = None  # callback to scheduler job; will be by removed hookmanager when addon unloaded
+        self.cb = None  # callback to scheduler job; will be by removed AddonManager when addon unloaded
 
     def coreReady(self):
         self.updateSchedule()
