@@ -8,14 +8,15 @@ import binascii
 import re
 
 from Crypto.Cipher import AES
-from module.plugins.Crypter import Crypter
+
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 from module.unescape import unescape
 
 
-class LinkSaveIn(Crypter):
+class LinkSaveIn(SimpleCrypter):
     __name__ = "LinkSaveIn"
     __type__ = "crypter"
-    __version__ = "2.01"
+    __version__ = "2.02"
 
     __pattern__ = r'http://(?:www\.)?linksave.in/(?P<id>\w+)$'
 
@@ -23,10 +24,12 @@ class LinkSaveIn(Crypter):
     __author_name__ = "fragonib"
     __author_mail__ = "fragonib[AT]yahoo[DOT]es"
 
+
+    COOKIES = [(".linksave.in", "Linksave_Language", "english")]
+
     # Constants
     _JK_KEY_ = "jk"
     _CRYPTED_KEY_ = "crypted"
-    HOSTER_NAME = "linksave.in"
 
 
     def setup(self):
@@ -36,11 +39,11 @@ class LinkSaveIn(Crypter):
         self.package = None
         self.preferred_sources = ["cnl2", "rsdf", "ccf", "dlc", "web"]
 
+
     def decrypt(self, pyfile):
         # Init
         self.package = pyfile.package()
         self.fileid = re.match(self.__pattern__, pyfile.url).group('id')
-        self.req.cj.setCookie(self.HOSTER_NAME, "Linksave_Language", "english")
 
         # Request package
         self.html = self.load(pyfile.url)
@@ -74,16 +77,19 @@ class LinkSaveIn(Crypter):
         else:
             self.fail('Could not extract any links')
 
+
     def isOnline(self):
         if "<big>Error 404 - Folder not found!</big>" in self.html:
             self.logDebug("File not found")
             return False
         return True
 
+
     def isPasswordProtected(self):
         if re.search(r'''<input.*?type="password"''', self.html):
             self.logDebug("Links are password protected")
             return True
+
 
     def isCaptchaProtected(self):
         if "<b>Captcha:</b>" in self.html:
@@ -91,11 +97,13 @@ class LinkSaveIn(Crypter):
             return True
         return False
 
+
     def unlockPasswordProtection(self):
         password = self.getPassword()
         self.logDebug("Submitting password [%s] for protected links" % password)
         post = {"id": self.fileid, "besucherpasswort": password, 'login': 'submit'}
         self.html = self.load(self.pyfile.url, post=post)
+
 
     def unlockCaptchaProtection(self):
         captcha_hash = re.search(r'name="hash" value="([^"]+)', self.html).group(1)
@@ -103,11 +111,13 @@ class LinkSaveIn(Crypter):
         captcha_code = self.decryptCaptcha("http://linksave.in" + captcha_url, forceUser=True)
         self.html = self.load(self.pyfile.url, post={"id": self.fileid, "hash": captcha_hash, "code": captcha_code})
 
+
     def getPackageInfo(self):
         name = self.pyfile.package().name
         folder = self.pyfile.package().folder
         self.logDebug("Defaulting to pyfile name [%s] and folder [%s] for package" % (name, folder))
         return name, folder
+
 
     def handleErrors(self):
         if "The visitorpassword you have entered is wrong" in self.html:
@@ -122,6 +132,7 @@ class LinkSaveIn(Crypter):
             else:
                 self.correctCaptcha()
 
+
     def handleLinkSource(self, type_):
         if type_ == "cnl2":
             return self.handleCNL2()
@@ -131,6 +142,7 @@ class LinkSaveIn(Crypter):
             return self.handleWebLinks()
         else:
             self.fail('unknown source type "%s" (this is probably a bug)' % type_)
+
 
     def handleWebLinks(self):
         package_links = []
@@ -159,6 +171,7 @@ class LinkSaveIn(Crypter):
                     self.logDebug("Error decrypting Web link %s, %s" % (webLink, detail))
         return package_links
 
+
     def handleContainer(self, type_):
         package_links = []
         type_ = type_.lower()
@@ -172,6 +185,7 @@ class LinkSaveIn(Crypter):
             link = "http://linksave.in/%s" % unescape(containerLink)
             package_links.append(link)
         return package_links
+
 
     def handleCNL2(self):
         package_links = []
@@ -187,6 +201,7 @@ class LinkSaveIn(Crypter):
                 self.fail("Unable to decrypt CNL2 links")
         return package_links
 
+
     def _getCipherParams(self):
         # Get jk
         jk_re = r'<INPUT.*?NAME="%s".*?VALUE="(.*?)"' % LinkSaveIn._JK_KEY_
@@ -199,6 +214,7 @@ class LinkSaveIn(Crypter):
         # Log and return
         self.logDebug("Detected %d crypted blocks" % len(vcrypted))
         return vcrypted, vjk
+
 
     def _getLinks(self, crypted, jk):
         # Get key
