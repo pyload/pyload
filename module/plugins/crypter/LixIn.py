@@ -10,7 +10,7 @@ class LixIn(Crypter):
     __type__ = "crypter"
     __version__ = "0.22"
 
-    __pattern__ = r'http://(www.)?lix.in/(?P<id>.*)'
+    __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
 
     __description__ = """Lix.in decrypter plugin"""
     __author_name__ = "spoob"
@@ -28,7 +28,7 @@ class LixIn(Crypter):
         if m is None:
             self.fail("couldn't identify file id")
 
-        id = m.group("id")
+        id = m.group("ID")
         self.logDebug("File id is %s" % id)
 
         self.html = self.req.load(url, decode=True)

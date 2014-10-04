@@ -15,7 +15,7 @@ class SpeedyshareCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.02"
 
-    __pattern__ = r"https?://(www\.)?(speedyshare\.com|speedy\.sh)/\w+"
+    __pattern__ = r"https?://(?:www\.)?(speedyshare\.com|speedy\.sh)/\w+"
 
     __description__ = """Speedyshare.com hoster plugin"""
     __author_name__ = "zapp-brannigan"

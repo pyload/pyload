@@ -8,7 +8,7 @@ class HotfileCom(DeadHoster):
     __type__ = "hoster"
     __version__ = "0.37"
 
-    __pattern__ = r'https?://(www.)?hotfile\.com/dl/\d+/[0-9a-zA-Z]+/'
+    __pattern__ = r'https?://(?:www\.)?hotfile\.com/dl/\d+/\w+'
 
     __description__ = """Hotfile.com hoster plugin"""
     __author_name__ = ("sitacuisses", "spoob", "mkaay", "JoKoT3")
