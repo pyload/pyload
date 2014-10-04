@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DropboxCom(SimpleHoster):
     __name__ = "DropboxCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?dropbox\.com/.+'
 
@@ -22,7 +22,7 @@ class DropboxCom(SimpleHoster):
 
     OFFLINE_PATTERN = r'<title>Dropbox - (404|Shared link error)<'
 
-    SH_COOKIES = [(".dropbox.com", "lang", "en")]
+    COOKIES = [(".dropbox.com", "lang", "en")]
 
 
     def setup(self):
