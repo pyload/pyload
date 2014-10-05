@@ -5,20 +5,23 @@ import re
 from time import mktime, strptime
 
 from module.plugins.Account import Account
-from module.plugins.internal.SimpleHoster import parseHtmlForm
+from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 from module.utils import parseFileSize
 
 
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
     __type__ = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """XFileSharingPro base account plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    MAIN_PAGE = None
+
+    HOSTER_URL = None
+
+    COOKIES = None  #: or list of tuples [(domain, name, value)]
 
     VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:</TD><TD><b>([^<]+)</b>'
     TRAFFIC_LEFT_PATTERN = r'>Traffic available today:</TD><TD><b>([^<]+)</b>'
@@ -27,7 +30,7 @@ class XFSPAccount(Account):
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load(self.MAIN_PAGE + "?op=my_account", decode=True)
+        html = req.load(self.HOSTER_URL + "?op=my_account", decode=True)
 
         validuntil = trafficleft = None
         premium = True if re.search(self.PREMIUM_PATTERN, html) else False
@@ -52,18 +55,21 @@ class XFSPAccount(Account):
 
         return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
 
+
     def login(self, user, data, req):
-        html = req.load('%slogin.html' % self.MAIN_PAGE, decode=True)
+        set_cookies(req.cj, self.COOKIES)
+
+        html = req.load('%slogin.html' % self.HOSTER_URL, decode=True)
 
         action, inputs = parseHtmlForm('name="FL"', html)
         if not inputs:
             inputs = {"op": "login",
-                      "redirect": self.MAIN_PAGE}
+                      "redirect": self.HOSTER_URL}
 
         inputs.update({"login": user,
                        "password": data['password']})
 
-        html = req.load(self.MAIN_PAGE, post=inputs, decode=True)
+        html = req.load(self.HOSTER_URL, post=inputs, decode=True)
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrongPassword()
