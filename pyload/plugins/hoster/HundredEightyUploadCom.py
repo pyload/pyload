@@ -3,10 +3,10 @@
 # Test links:
 # http://180upload.com/js9qdm6kjnrs
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class HundredEightyUploadCom(XFileSharingPro):
+class HundredEightyUploadCom(XFSPHoster):
     __name__ = "HundredEightyUploadCom"
     __type__ = "hoster"
     __version__ = "0.01"

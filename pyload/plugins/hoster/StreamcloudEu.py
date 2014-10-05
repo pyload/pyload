@@ -5,10 +5,10 @@ import re
 from time import sleep
 
 from pyload.network.HTTPRequest import HTTPRequest
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class StreamcloudEu(XFileSharingPro):
+class StreamcloudEu(XFSPHoster):
     __name__ = "StreamcloudEu"
     __type__ = "hoster"
     __version__ = "0.04"

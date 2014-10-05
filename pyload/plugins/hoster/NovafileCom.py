@@ -4,10 +4,10 @@
 # http://novafile.com/vfun4z6o2cit
 # http://novafile.com/s6zrr5wemuz4
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class NovafileCom(XFileSharingPro):
+class NovafileCom(XFSPHoster):
     __name__ = "NovafileCom"
     __type__ = "hoster"
     __version__ = "0.02"

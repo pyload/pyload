@@ -4,10 +4,10 @@
 # test.bin - 214 B - http://pandapla.net/pew1cz3ot586
 # BigBuckBunny_320x180.mp4 - 61.7 Mb - http://pandapla.net/tz0rgjfyyoh7
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class PandaPlanet(XFileSharingPro):
+class PandaPlanet(XFSPHoster):
     __name__ = "PandaPlanet"
     __type__ = "hoster"
     __version__ = "0.01"

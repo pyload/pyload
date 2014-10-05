@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class TusfilesNet(XFileSharingPro):
+class TusfilesNet(XFSPHoster):
     __name__ = "TusfilesNet"
     __type__ = "hoster"
     __version__ = "0.04"

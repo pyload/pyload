@@ -2,10 +2,10 @@
 
 import re
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class NosuploadCom(XFileSharingPro):
+class NosuploadCom(XFSPHoster):
     __name__ = "NosuploadCom"
     __type__ = "hoster"
     __version__ = "0.1"

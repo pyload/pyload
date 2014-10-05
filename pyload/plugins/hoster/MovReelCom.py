@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class MovReelCom(XFileSharingPro):
+class MovReelCom(XFSPHoster):
     __name__ = "MovReelCom"
     __type__ = "hoster"
     __version__ = "1.21"

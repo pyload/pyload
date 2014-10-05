@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class MegareleaseOrg(XFileSharingPro):
+class MegareleaseOrg(XFSPHoster):
     __name__ = "MegareleaseOrg"
     __type__ = "hoster"
     __version__ = "0.01"

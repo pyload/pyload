@@ -4,10 +4,10 @@ import re
 
 from pycurl import FOLLOWLOCATION
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class File4safeCom(XFileSharingPro):
+class File4safeCom(XFSPHoster):
     __name__ = "File4safeCom"
     __type__ = "hoster"
     __version__ = "0.02"

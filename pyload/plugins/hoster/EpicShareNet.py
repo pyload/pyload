@@ -3,10 +3,10 @@
 # Test links:
 # BigBuckBunny_320x180.mp4 - 61.7 Mb - http://epicshare.net/fch3m2bk6ihp/BigBuckBunny_320x180.mp4.html
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class EpicShareNet(XFileSharingPro):
+class EpicShareNet(XFSPHoster):
     __name__ = "EpicShareNet"
     __type__ = "hoster"
     __version__ = "0.01"

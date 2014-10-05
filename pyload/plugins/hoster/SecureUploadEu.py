@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class SecureUploadEu(XFileSharingPro):
+class SecureUploadEu(XFSPHoster):
     __name__ = "SecureUploadEu"
     __type__ = "hoster"
     __version__ = "0.02"

@@ -3,10 +3,10 @@
 # Test links:
 # http://fileom.com/gycaytyzdw3g/random.bin.html
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class FileomCom(XFileSharingPro):
+class FileomCom(XFSPHoster):
     __name__ = "FileomCom"
     __type__ = "hoster"
     __version__ = "0.01"

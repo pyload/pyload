@@ -3,10 +3,10 @@
 # Test links:
 # http://hugefiles.net/prthf9ya4w6s
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class HugefilesNet(XFileSharingPro):
+class HugefilesNet(XFSPHoster):
     __name__ = "HugefilesNet"
     __type__ = "hoster"
     __version__ = "0.01"

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class SendmywayCom(XFileSharingPro):
+class SendmywayCom(XFSPHoster):
     __name__ = "SendmywayCom"
     __type__ = "hoster"
     __version__ = "0.01"
