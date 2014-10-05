@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from PIL import Image
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
 from glob import glob
 from os import sep
 from os.path import abspath, dirname

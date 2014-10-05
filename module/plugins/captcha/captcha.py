@@ -2,11 +2,11 @@
 
 from __future__ import with_statement
 
-import GifImagePlugin
-import Image
-import JpegImagePlugin
-import PngImagePlugin
-import TiffImagePlugin
+try:
+    from PIL import Image, GifImagePlugin, JpegImagePlugin, PngImagePlugin, TiffImagePlugin
+except ImportError:
+    import Image, GifImagePlugin, JpegImagePlugin, PngImagePlugin, TiffImagePlugin
+
 import logging
 import os
 import subprocess

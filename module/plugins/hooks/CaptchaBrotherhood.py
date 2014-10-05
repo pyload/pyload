@@ -5,7 +5,11 @@ from __future__ import with_statement
 import StringIO
 import pycurl
 
-from PIL import Image
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
 from thread import start_new_thread
 from time import sleep
 from urllib import urlencode
