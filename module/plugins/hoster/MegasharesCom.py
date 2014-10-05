@@ -10,21 +10,21 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MegasharesCom(SimpleHoster):
     __name__ = "MegasharesCom"
     __type__ = "hoster"
-    __version__ = "0.24"
-
+    __version__ = "0.25"
+    
     __pattern__ = r'http://(?:www\.)?megashares.com/.*'
-
+    
     __description__ = """Megashares.com hoster plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
     FILE_NAME_PATTERN = r'<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'
-    FILE_SIZE_PATTERN = r'<strong><span class="black">Filesize:</span></strong> (?P<S>[0-9.]+) (?P<U>[kKMG])i?B<br />'
-    OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted)'
+    FILE_SIZE_PATTERN = r'<strong><span class="black">Filesize:</span></strong> (?P<S>[0-9.]+) (?P<U>[kKMGB])'
+    OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted|Invalid link)'
 
     LINK_PATTERN = r'<div id="show_download_button_%d"[^>]*>\s*<a href="([^"]+)">'
-    PASSPORT_LEFT_PATTERN = r'Your Download Passport is: <[^>]*>(\w+).*\s*You have\s*<[^>]*>\s*([0-9.]+) ([kKMG]i?B)'
-    PASSPORT_RENEW_PATTERN = r'Your download passport will renew in\s*<strong>(\d+)</strong>:<strong>(\d+)</strong>:<strong>(\d+)</strong>'
+    PASSPORT_LEFT_PATTERN = r'Your Download Passport is: <[^>]*>(\w+).*?You have.*?<[^>]*>.*?([0-9.]+) ([kKMGB])'
+    PASSPORT_RENEW_PATTERN = r'Your download passport will renew(?:.|\n)*?(\d+).*?(\d+).*?(\d+)'
     REACTIVATE_NUM_PATTERN = r'<input[^>]*id="random_num" value="(\d+)" />'
     REACTIVATE_PASSPORT_PATTERN = r'<input[^>]*id="passport_num" value="(\w+)" />'
     REQUEST_URI_PATTERN = r'var request_uri = "([^"]+)";'
@@ -76,17 +76,18 @@ class MegasharesCom(SimpleHoster):
                 self.fail("Failed to reactivate passport")
 
         # Check traffic left on passport
-        m = re.search(self.PASSPORT_LEFT_PATTERN, self.html)
-        if m is None:
+        m = re.search(self.PASSPORT_LEFT_PATTERN, self.html, re.MULTILINE | re.DOTALL)
+        if not m:
             self.fail('Passport not found')
         self.logInfo("Download passport: %s" % m.group(1))
-        data_left = float(m.group(2)) * 1024 ** {'KB': 1, 'MB': 2, 'GB': 3}[m.group(3)]
+        data_left = float(m.group(2)) * 1024 ** {'B': 0, 'KB': 1, 'MB': 2, 'GB': 3}[m.group(3)]
         self.logInfo("Data left: %s %s (%d MB needed)" % (m.group(2), m.group(3), self.pyfile.size / 1048576))
 
         if not data_left:
             m = re.search(self.PASSPORT_RENEW_PATTERN, self.html)
-            renew = m.group(1) + m.group(2) + m.group(3) * 60 * 60 if m else 10 * 60
-            self.retry(max_tries=15, wait_time=renew, reason="Unable to get passport")
+            renew = int(m.group(1) + 60 * (m.group(2) + 60 * m.group(3))) if found else 600
+            self.logDebug('waiting ~%d seconds for a new passport' % renew)
+            self.retry(wait_time = renew, reason = "Passport renewal")
 
         self.handleDownload(False)
 
