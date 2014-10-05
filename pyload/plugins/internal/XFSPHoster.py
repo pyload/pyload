@@ -13,13 +13,13 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, P
 from pyload.utils import html_unescape
 
 
-class XFileSharingPro(SimpleHoster):
+class XFSPHoster(SimpleHoster):
     """
     Common base for XFileSharingPro hosters like EasybytezCom, CramitIn, FiledinoCom...
     Some hosters may work straight away when added to __pattern__
     However, most of them will NOT work because they are either down or running a customized version
     """
-    __name__ = "XFileSharingPro"
+    __name__ = "XFSPHoster"
     __type__ = "hoster"
     __version__ = "0.37"
 
@@ -59,7 +59,7 @@ class XFileSharingPro(SimpleHoster):
     def setup(self):
         self.chunkLimit = 1
 
-        if self.__name__ == "XFileSharingPro":
+        if self.__name__ == "XFSPHoster":
             self.multiDL = True
             self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
             self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
@@ -357,4 +357,4 @@ class XFileSharingPro(SimpleHoster):
         return 0
 
 
-getInfo = create_getInfo(XFileSharingPro)
+getInfo = create_getInfo(XFSPHoster)
