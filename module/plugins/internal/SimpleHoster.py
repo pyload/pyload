@@ -153,7 +153,7 @@ class PluginParseError(Exception):
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
 
     __pattern__ = None
 
@@ -255,11 +255,35 @@ class SimpleHoster(Hoster):
 
 
     def handleFree(self):
-        self.fail("Free download not implemented")
+        if not hasattr(self, 'LINK_FREE_PATTERN'):
+            self.fail("Free download not implemented")
+
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        if m is None:
+            self.parseError("Free download link not found")
+
+        try:
+            link = m.group(1)
+        except Exception, e:
+            self.logError(str(e))
+        else:
+            self.download(link, ref=True, cookies=True, disposition=True)
 
 
     def handlePremium(self):
-        self.fail("Premium download not implemented")
+        if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
+            self.fail("Premium download not implemented")
+
+        m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
+        if m is None:
+            self.parseError("Premium download link not found")
+
+        try:
+            link = m.group(1)
+        except Exception, e:
+            self.logError(str(e))
+        else:
+            self.download(link, ref=True, cookies=True, disposition=True)
 
 
     def parseError(self, msg):
