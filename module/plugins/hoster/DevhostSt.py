@@ -41,8 +41,8 @@ class DevhostSt(SimpleHoster):
         self.logDebug("Download URL = " + dl_url)
         self.download(dl_url, disposition=True)
 
-        check = self.checkDownload({'is_html': re.compile("html")})
-        if check == "is_html":
+        check = self.checkDownload({'html': re.compile("html")})
+        if check == "html":
             self.parseError("Downloaded file is an html file")
 
 

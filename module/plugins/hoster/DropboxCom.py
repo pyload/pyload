@@ -34,8 +34,8 @@ class DropboxCom(SimpleHoster):
     def handleFree(self):
         self.download(self.pyfile.url, get={'dl': "1"})
 
-        check = self.checkDownload({'is_html': re.compile("html")})
-        if check == "is_html":
+        check = self.checkDownload({'html': re.compile("html")})
+        if check == "html":
             self.parseError("Downloaded file is an html file")
 
 

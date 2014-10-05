@@ -43,8 +43,8 @@ class SpeedyshareCom(SimpleHoster):
         dl_link = urljoin("http://www.speedyshare.com", m.group(1))
         self.download(dl_link, disposition=True)
 
-        check = self.checkDownload({'is_html': re.compile("html")})
-        if check == "is_html":
+        check = self.checkDownload({'html': re.compile("html")})
+        if check == "html":
             self.parseError("Downloaded file is an html file")
 
 
