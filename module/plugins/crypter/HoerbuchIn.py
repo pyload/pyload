@@ -2,7 +2,7 @@
 
 import re
 
-from module.lib.BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
+from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
 
 from module.plugins.Crypter import Crypter
 
@@ -45,7 +45,7 @@ class HoerbuchIn(Crypter):
         url = m.group(0)
 
         self.pyfile.url = url
-        src = self.req.load(url, post={"viewed": "adpg"})
+        src = self.load(url, post={"viewed": "adpg"})
 
         links = []
         pattern = re.compile("http://www\.hoerbuch\.in/protection/(\w+)/(.*?)\"")

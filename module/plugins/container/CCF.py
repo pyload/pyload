@@ -6,7 +6,7 @@ from os import makedirs
 from os.path import exists
 from urllib2 import build_opener
 
-from module.lib.MultipartPostHandler import MultipartPostHandler
+from MultipartPostHandler import MultipartPostHandler
 
 from module.plugins.Container import Container
 from module.utils import save_join
