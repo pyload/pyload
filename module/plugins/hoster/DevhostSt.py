@@ -9,11 +9,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DevhostSt(SimpleHoster):
-    __name__ = "Devhost"
+    __name__ = "DevhostSt"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?d-h\.st/\w+'
+    __pattern__ = r'http://(?:www\.)?d-h\.st/(?!users/)\w{3}'
 
     __description__ = """d-h.st hoster plugin"""
     __author_name__ = "zapp-brannigan"
