@@ -200,8 +200,14 @@ class PluginManager:
                 continue
 
             for name, value in chain(self.crypterPlugins.iteritems(), self.hosterPlugins.iteritems(),
-                self.containerPlugins.iteritems()):
-                if value['re'].match(url):
+                                     self.containerPlugins.iteritems()):
+                try:
+                    m = value['re'].match(url)
+                except KeyError:
+                    self.log.error("Plugin %s skipped due broken pattern" % name)
+                    m = None
+
+                if m:
                     res.append((url, name))
                     last = (name, value)
                     found = True
