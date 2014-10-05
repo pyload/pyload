@@ -9,12 +9,12 @@ from thread import start_new_thread
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.base.Addon import Addon
+from pyload.plugins.base.Hook import Hook
 
 
-class Captcha9kw(Addon):
+class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
-    __type__ = "addon"
+    __type__ = "hook"
     __version__ = "0.09"
 
     __config__ = [("activated", "bool", "Activated", False),

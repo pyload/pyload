@@ -6,7 +6,7 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class OverLoadMe(MultiHoster):
     __name__ = "OverLoadMe"
-    __type__ = "addon"
+    __type__ = "hook"
     __version__ = "0.01"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -16,7 +16,7 @@ class OverLoadMe(MultiHoster):
                   ("unloadFailing", "bool", "Revert to standard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 12)]
 
-    __description__ = """Over-Load.me addon plugin"""
+    __description__ = """Over-Load.me hook plugin"""
     __author_name__ = "marley"
     __author_mail__ = "marley@over-load.me"
 

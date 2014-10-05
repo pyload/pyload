@@ -6,14 +6,14 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class PremiumTo(MultiHoster):
     __name__ = "PremiumTo"
-    __type__ = "addon"
+    __type__ = "hook"
     __version__ = "0.04"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
-    __description__ = """Premium.to addon plugin"""
+    __description__ = """Premium.to hook plugin"""
     __author_name__ = ("RaNaN", "zoidberg", "stickell")
     __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
 

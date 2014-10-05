@@ -8,14 +8,14 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class MultishareCz(MultiHoster):
     __name__ = "MultishareCz"
-    __type__ = "addon"
+    __type__ = "hook"
     __version__ = "0.04"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "uloz.to")]
 
-    __description__ = """MultiShare.cz addon plugin"""
+    __description__ = """MultiShare.cz hook plugin"""
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 

@@ -7,7 +7,7 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class LinksnappyCom(MultiHoster):
     __name__ = "LinksnappyCom"
-    __type__ = "addon"
+    __type__ = "hook"
     __version__ = "0.01"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -16,7 +16,7 @@ class LinksnappyCom(MultiHoster):
                   ("unloadFailing", "bool", "Revert to standard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """Linksnappy.com addon plugin"""
+    __description__ = """Linksnappy.com hook plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

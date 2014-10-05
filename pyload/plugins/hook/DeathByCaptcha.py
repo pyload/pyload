@@ -12,7 +12,7 @@ from time import sleep
 from pyload.utils import json_loads
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getRequest
-from pyload.plugins.base.Addon import Addon
+from pyload.plugins.base.Hook import Hook
 
 
 class DeathByCaptchaException(Exception):
@@ -44,9 +44,9 @@ class DeathByCaptchaException(Exception):
         return "<DeathByCaptchaException %s>" % self.err
 
 
-class DeathByCaptcha(Addon):
+class DeathByCaptcha(Hook):
     __name__ = "DeathByCaptcha"
-    __type__ = "addon"
+    __type__ = "hook"
     __version__ = "0.03"
 
     __config__ = [("activated", "bool", "Activated", False),

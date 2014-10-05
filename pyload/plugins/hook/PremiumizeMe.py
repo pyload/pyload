@@ -7,7 +7,7 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class PremiumizeMe(MultiHoster):
     __name__ = "PremiumizeMe"
-    __type__ = "addon"
+    __type__ = "hook"
     __version__ = "0.12"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -16,7 +16,7 @@ class PremiumizeMe(MultiHoster):
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """Premiumize.me addon plugin"""
+    __description__ = """Premiumize.me hook plugin"""
     __author_name__ = "Florian Franzen"
     __author_mail__ = "FlorianFranzen@gmail.com"
 

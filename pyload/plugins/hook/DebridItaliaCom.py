@@ -5,7 +5,7 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class DebridItaliaCom(MultiHoster):
     __name__ = "DebridItaliaCom"
-    __type__ = "addon"
+    __type__ = "hook"
     __version__ = "0.07"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -14,7 +14,7 @@ class DebridItaliaCom(MultiHoster):
                   ("unloadFailing", "bool", "Revert to standard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """Debriditalia.com addon plugin"""
+    __description__ = """Debriditalia.com hook plugin"""
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 

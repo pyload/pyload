@@ -6,7 +6,7 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 class FreeWayMe(MultiHoster):
     __name__ = "FreeWayMe"
-    __type__ = "addon"
+    __type__ = "hook"
     __version__ = "0.11"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -15,7 +15,7 @@ class FreeWayMe(MultiHoster):
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """FreeWay.me addon plugin"""
+    __description__ = """FreeWay.me hook plugin"""
     __author_name__ = "Nicolas Giese"
     __author_mail__ = "james@free-way.me"
 

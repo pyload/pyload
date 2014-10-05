@@ -11,7 +11,7 @@ from time import sleep
 from urllib import urlencode
 
 from pyload.network.RequestFactory import getURL, getRequest
-from pyload.plugins.base.Addon import Addon
+from pyload.plugins.base.Hook import Hook
 
 
 class CaptchaBrotherhoodException(Exception):
@@ -29,9 +29,9 @@ class CaptchaBrotherhoodException(Exception):
         return "<CaptchaBrotherhoodException %s>" % self.err
 
 
-class CaptchaBrotherhood(Addon):
+class CaptchaBrotherhood(Hook):
     __name__ = "CaptchaBrotherhood"
-    __type__ = "addon"
+    __type__ = "hook"
     __version__ = "0.05"
 
     __config__ = [("activated", "bool", "Activated", False),
