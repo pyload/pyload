@@ -23,12 +23,7 @@ class DuckCryptInfo(Crypter):
 
     def decrypt(self, pyfile):
         url = pyfile.url
-        # seems we don't need to wait
-        #src = self.req.load(str(url))
-        #m = re.search(self.TIMER_PATTERN, src)
-        #if m:
-        #    self.logDebug("Sleeping for" % m.group(1))
-        #    self.setWait(int(m.group(1)) ,False)
+
         m = re.match(self.__pattern__, url)
         if m is None:
             self.fail('Weird error in link')
