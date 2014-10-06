@@ -13,7 +13,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class OboomCom(Hoster):
     __name__ = "OboomCom"
     __type__ = "hoster"
-    __version__ = "0.2"
+    __version__ = "0.3"
 
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>\w{8})'
 
@@ -89,6 +89,7 @@ class OboomCom(Hoster):
                 self.setWait(30)
                 self.wait()
                 break
+
             elif result[0] == 400:
                 if result[1] == "incorrect-captcha-sol":
                     self.invalidCaptcha()
@@ -96,6 +97,7 @@ class OboomCom(Hoster):
                     self.invalidCaptcha()
                 elif result[1] == "forbidden":
                     self.retry(5, 15 * 60, "Service unavailable")
+
             elif result[0] == 403:
                 if result[1] == -1:  # another download is running
                     self.setWait(15 * 60)
@@ -125,7 +127,7 @@ class OboomCom(Hoster):
 
 
     def getDownloadTicket(self):
-        apiUrl = "https://api.oboom.com/1.0/dl"
+        apiUrl = "https://api.oboom.com/1/dl"
         params = {"item": self.fileId, "http_errors": 0}
         if self.premium:
             params['token'] = self.sessionToken
@@ -137,5 +139,7 @@ class OboomCom(Hoster):
         if result[0] == 200:
             self.downloadDomain = result[1]
             self.downloadTicket = result[2]
+        elif result[0] == 421:
+            self.retry(wait_time=result[2] + 60, reason="Connection limit exceeded")
         else:
             self.fail("Could not retrieve download ticket. Error code %s" % result[0])
