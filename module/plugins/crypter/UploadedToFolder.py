@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class UploadedToFolder(SimpleCrypter):
     __name__ = "UploadedToFolder"
     __type__ = "crypter"
-    __version__ = "0.3"
+    __version__ = "0.4"
 
     __pattern__ = r'http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/(?P<id>\w+)'
 
@@ -17,7 +17,7 @@ class UploadedToFolder(SimpleCrypter):
     __author_mail__ = "l.stickell@yahoo.it"
 
     PLAIN_PATTERN = r'<small class="date"><a href="(?P<plain>[\w/]+)" onclick='
-    TITLE_PATTERN = r'<title>(?P<title>[^<]+)</title>'
+    TITLE_PATTERN = r'<title>(.+?)<'
 
 
     def decrypt(self, pyfile):

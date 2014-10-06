@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class TurbobitNetFolder(SimpleCrypter):
     __name__ = "TurbobitNetFolder"
     __type__ = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
 
@@ -17,7 +17,7 @@ class TurbobitNetFolder(SimpleCrypter):
     __author_name__ = ("stickell", "Walter Purcaro")
     __author_mail__ = ("l.stickell@yahoo.it", "vuolter@gmail.com")
 
-    TITLE_PATTERN = r"src='/js/lib/grid/icon/folder.png'> <span>(?P<title>.+?)</span>"
+    TITLE_PATTERN = r"src='/js/lib/grid/icon/folder.png'> <span>(.+?)</span>"
 
 
     def _getLinks(self, id, page=1):

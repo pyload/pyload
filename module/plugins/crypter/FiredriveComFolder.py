@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FiredriveComFolder(SimpleCrypter):
     __name__ = "FiredriveComFolder"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/share/.+'
 
@@ -17,7 +17,7 @@ class FiredriveComFolder(SimpleCrypter):
     __author_mail__ = "vuolter@gmail.com"
 
     LINK_PATTERN = r'<div class="pf_item pf_(file|folder).+?public=\'(.+?)\''
-    TITLE_PATTERN = r'>Shared Folder "(?P<title>.+)" | Firedrive<'
+    TITLE_PATTERN = r'>Shared Folder "(.+)" | Firedrive<'
     OFFLINE_PATTERN = r'class="sad_face_image"|>No such page here.<'
     TEMP_OFFLINE_PATTERN = r'>(File Temporarily Unavailable|Server Error. Try again later)'
 

@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FiletramCom(SimpleCrypter):
     __name__ = "FiletramCom"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?filetram.com/[^/]+/.+'
 
@@ -15,4 +15,4 @@ class FiletramCom(SimpleCrypter):
     __author_mail__ = ("igelkun@myopera.com", "l.stickell@yahoo.it")
 
     LINK_PATTERN = r'\s+(http://.+)'
-    TITLE_PATTERN = r'<title>(?P<title>[^<]+) - Free Download[^<]*</title>'
+    TITLE_PATTERN = r'<title>(.+?) - Free Download'
