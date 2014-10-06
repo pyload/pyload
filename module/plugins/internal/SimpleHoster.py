@@ -106,7 +106,7 @@ def parseFileInfo(self, url='', html=''):
                 # File online, return name and size
                 info['status'] = 2
                 if 'N' in info:
-                    info['name'] = replace_patterns(info['N'], self.FILE_NAME_REPLACEMENTS)
+                    info['name'] = replace_patterns(info['N'].strip(), self.FILE_NAME_REPLACEMENTS)
                 if 'S' in info:
                     size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
                                             self.FILE_SIZE_REPLACEMENTS)
@@ -153,7 +153,7 @@ class PluginParseError(Exception):
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
 
     __pattern__ = None
 
@@ -180,6 +180,12 @@ class SimpleHoster(Hoster):
 
       PREMIUM_ONLY_PATTERN: (optional) Checks if the file can be downloaded only with a premium account
         example: PREMIUM_ONLY_PATTERN = r'Premium account required'
+
+
+    Instead overriding handleFree and handlePremium methods now you can define patterns for direct download:
+
+      LINK_FREE_PATTERN: (optional) Get direct link for free download
+      LINK_PREMIUM_PATTERN: (optional) Get direct link for premium download
     """
 
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
