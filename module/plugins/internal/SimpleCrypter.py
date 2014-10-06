@@ -4,13 +4,13 @@ import re
 
 from module.plugins.Crypter import Crypter
 from module.plugins.internal.SimpleHoster import PluginParseError, replace_patterns, set_cookies
-from module.utils import html_unescape
+from module.utils import fixup, html_unescape
 
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = None
 
@@ -24,8 +24,8 @@ class SimpleCrypter(Crypter):
       LINK_PATTERN: group(1) must be a download link or a regex to catch more links
         example: LINK_PATTERN = r'<div class="link"><a href="(http://speedload.org/\w+)'
 
-      TITLE_PATTERN: (optional) The group defined by 'title' should be the folder name or the webpage title
-        example: TITLE_PATTERN = r'<title>Files of: (?P<title>[^<]+) folder</title>'
+      TITLE_PATTERN: (optional) group(1) should be the folder name or the webpage title
+        example: TITLE_PATTERN = r'<title>Files of: ([^<]+) folder</title>'
 
       OFFLINE_PATTERN: (optional) Checks if the file is yet available online
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
@@ -39,8 +39,8 @@ class SimpleCrypter(Crypter):
 
     If the links are splitted on multiple pages you can define the PAGES_PATTERN regex:
 
-      PAGES_PATTERN: (optional) The group defined by 'pages' should be the number of overall pages containing the links
-        example: PAGES_PATTERN = r'Pages: (?P<pages>\d+)'
+      PAGES_PATTERN: (optional) group(1) should be the number of overall pages containing the links
+        example: PAGES_PATTERN = r'Pages: (\d+)'
 
     and its loadPage method:
 
@@ -49,6 +49,7 @@ class SimpleCrypter(Crypter):
     """
 
 
+    TITLE_REPLACEMENTS = [("&#?\w+;", fixup)]
     URL_REPLACEMENTS = []
 
     TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
@@ -112,7 +113,8 @@ class SimpleCrypter(Crypter):
         if hasattr(self, 'TITLE_PATTERN'):
             m = re.search(self.TITLE_PATTERN, self.html)
             if m:
-                name = folder = html_unescape(m.group('title').strip())
+                name = replace_patterns(m.group(1).strip(), self.TITLE_REPLACEMENTS)
+                folder = html_unescape(name)
                 self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
                 return name, folder
 
@@ -125,7 +127,7 @@ class SimpleCrypter(Crypter):
     def handleMultiPages(self):
         pages = re.search(self.PAGES_PATTERN, self.html)
         if pages:
-            pages = int(pages.group('pages'))
+            pages = int(pages.group(1))
         else:
             pages = 1
 
