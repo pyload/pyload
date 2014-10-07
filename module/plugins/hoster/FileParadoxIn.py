@@ -13,8 +13,7 @@ class FileParadoxIn(XFileSharingPro):
     __pattern__ = r'https?://(?:www\.)?fileparadox\.in/\w{12}'
 
     __description__ = """FileParadox.in hoster plugin"""
-    __author_name__ = "RazorWing"
-    __author_mail__ = "muppetuk1@hotmail.com"
+    __authors__ = [("RazorWing", "muppetuk1@hotmail.com")]
 
 
     HOSTER_NAME = "fileparadox.in"

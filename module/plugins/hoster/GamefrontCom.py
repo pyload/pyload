@@ -15,8 +15,8 @@ class GamefrontCom(Hoster):
     __pattern__ = r'http://(?:www\.)?gamefront.com/files/[A-Za-z0-9]+'
 
     __description__ = """Gamefront.com hoster plugin"""
-    __author_name__ = "fwannmacher"
-    __author_mail__ = "felipe@warhammerproject.com"
+    __authors__ = [("fwannmacher", "felipe@warhammerproject.com")]
+
 
     PATTERN_FILENAME = r'<title>(.*?) | Game Front'
     PATTERN_FILESIZE = r'<dt>File Size:</dt>[\n\s]*<dd>(.*?)</dd>'

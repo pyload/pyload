@@ -14,8 +14,8 @@ class VidPlayNet(XFileSharingPro):
     __pattern__ = r'https?://(?:www\.)?vidplay\.net/\w{12}'
 
     __description__ = """VidPlay.net hoster plugin"""
-    __author_name__ = "t4skforce"
-    __author_mail__ = "t4skforce1337[AT]gmail[DOT]com"
+    __authors__ = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
+
 
     HOSTER_NAME = "vidplay.net"
 

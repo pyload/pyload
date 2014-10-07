@@ -11,8 +11,7 @@ class SecureUploadEu(XFileSharingPro):
     __pattern__ = r'https?://(?:www\.)?secureupload\.eu/\w{12}'
 
     __description__ = """SecureUpload.eu hoster plugin"""
-    __author_name__ = "z00nx"
-    __author_mail__ = "z00nx0@gmail.com"
+    __authors__ = [("z00nx", "z00nx0@gmail.com")]
 
 
     HOSTER_NAME = "secureupload.eu"

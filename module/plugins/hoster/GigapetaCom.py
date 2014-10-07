@@ -16,8 +16,8 @@ class GigapetaCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?gigapeta\.com/dl/\w+'
 
     __description__ = """GigaPeta.com hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r'<img src=".*" alt="file" />-->\s*(?P<N>.*?)\s*</td>'
     FILE_SIZE_PATTERN = r'<th>\s*Size\s*</th>\s*<td>\s*(?P<S>.*?)\s*</td>'

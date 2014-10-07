@@ -9,8 +9,7 @@ class File4safeCom(XFSPAccount):
     __version__ = "0.02"
 
     __description__ = """File4safe.com account plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_URL = "http://www.file4safe.com/"

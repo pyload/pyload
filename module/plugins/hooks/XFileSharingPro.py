@@ -16,8 +16,7 @@ class XFileSharingPro(Hook):
                   ("exclude_hosters", "str", "Exclude hosters (comma separated)", "")]
 
     __description__ = """XFileSharingPro hook plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def coreReady(self):

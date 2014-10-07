@@ -57,8 +57,9 @@ class NetloadIn(Hoster):
     __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)'
 
     __description__ = """Netload.in hoster plugin"""
-    __author_name__ = ("spoob", "RaNaN", "Gregy")
-    __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "gregy@gregy.cz")
+    __authors__ = [("spoob", "spoob@pyload.org"),
+                   ("RaNaN", "ranan@pyload.org"),
+                   ("Gregy", "gregy@gregy.cz")]
 
 
     def setup(self):

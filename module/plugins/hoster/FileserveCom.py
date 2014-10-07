@@ -38,8 +38,11 @@ class FileserveCom(Hoster):
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*'
 
     __description__ = """Fileserve.com hoster plugin"""
-    __author_name__ = ("jeix", "mkaay", "Paul King", "zoidberg")
-    __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "", "zoidberg@mujmail.cz")
+    __authors__ = [("jeix", "jeix@hasnomail.de"),
+                   ("mkaay", "mkaay@mkaay.de"),
+                   ("Paul King", None),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
+
 
     URLS = ["http://www.fileserve.com/file/", "http://www.fileserve.com/link-checker.php",
             "http://www.fileserve.com/checkReCaptcha.php"]

@@ -15,8 +15,9 @@ class TusfilesNetFolder(SimpleCrypter):
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)/?'
 
     __description__ = """Tusfiles.net folder decrypter plugin"""
-    __author_name__ = ("Walter Purcaro", "stickell")
-    __author_mail__ = ("vuolter@gmail.com", "l.stickell@yahoo.it")
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
     LINK_PATTERN = r'<TD align=left><a href="(.*?)">'
     TITLE_PATTERN = r'<Title>.*?\: (.+) folder</Title>'

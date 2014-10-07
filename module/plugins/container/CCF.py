@@ -19,8 +19,7 @@ class CCF(Container):
     __pattern__ = r'.+\.ccf'
 
     __description__ = """CCF container decrypter plugin"""
-    __author_name__ = "Willnix"
-    __author_mail__ = "Willnix@pyload.org"
+    __authors__ = [("Willnix", "Willnix@pyload.org")]
 
 
     def decrypt(self, pyfile):

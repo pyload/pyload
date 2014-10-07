@@ -16,8 +16,8 @@ class LinksnappyCom(Hoster):
     __pattern__ = r'https?://(?:[^/]*\.)?linksnappy\.com'
 
     __description__ = """Linksnappy.com hoster plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+
 
     SINGLE_CHUNK_HOSTERS = ('easybytez.com')
 

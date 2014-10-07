@@ -11,8 +11,8 @@ class DdlstorageCom(DeadHoster):
     __pattern__ = r'https?://(?:www\.)?ddlstorage\.com/\w+'
 
     __description__ = """DDLStorage.com hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it")]
 
 
 getInfo = create_getInfo(DdlstorageCom)

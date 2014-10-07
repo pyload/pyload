@@ -18,8 +18,8 @@ class DownloadScheduler(Hook):
                   ("abort", "bool", "Abort active downloads when start period with speed 0", False)]
 
     __description__ = """Download Scheduler"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it")]
 
 
     def setup(self):

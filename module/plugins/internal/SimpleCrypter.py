@@ -15,8 +15,9 @@ class SimpleCrypter(Crypter):
     __pattern__ = None
 
     __description__ = """Simple decrypter plugin"""
-    __author_name__ = ("stickell", "zoidberg", "Walter Purcaro")
-    __author_mail__ = ("l.stickell@yahoo.it", "zoidberg@mujmail.cz", "vuolter@gmail.com")
+    __authors__ = [("stickell", "l.stickell@yahoo.it"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     """

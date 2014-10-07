@@ -16,8 +16,7 @@ class DevhostSt(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?d-h\.st/(?!users/)\w{3}'
 
     __description__ = """d-h.st hoster plugin"""
-    __author_name__ = "zapp-brannigan"
-    __author_mail__ = "fuerst.reinje@web.de"
+    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     FILE_NAME_PATTERN = r'>Filename:</span> <div title="(?P<N>.+?)"'

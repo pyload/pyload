@@ -15,8 +15,10 @@ class FreakshareCom(Hoster):
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
 
     __description__ = """Freakshare.com hoster plugin"""
-    __author_name__ = ("sitacuisses", "spoob", "mkaay", "Toilal")
-    __author_mail__ = ("sitacuisses@yahoo.de", "spoob@pyload.org", "mkaay@mkaay.de", "toilal.dev@gmail.com")
+    __authors__ = [("sitacuisses", "sitacuisses@yahoo.de"),
+                   ("spoob", "spoob@pyload.org"),
+                   ("mkaay", "mkaay@mkaay.de"),
+                   ("Toilal", "toilal.dev@gmail.com")]
 
 
     def setup(self):

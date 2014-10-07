@@ -11,8 +11,8 @@ class TusfilesNet(XFileSharingPro):
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
 
     __description__ = """Tusfiles.net hoster plugin"""
-    __author_name__ = ("Walter Purcaro", "guidobelix")
-    __author_mail__ = ("vuolter@gmail.com", "guidobelix@hotmail.it")
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
+                   ("guidobelix", "guidobelix@hotmail.it")]
 
 
     HOSTER_NAME = "tusfiles.net"

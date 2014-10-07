@@ -10,8 +10,7 @@ class FreeWayMe(Account):
     __version__ = "0.11"
 
     __description__ = """FreeWayMe account plugin"""
-    __author_name__ = "Nicolas Giese"
-    __author_mail__ = "james@free-way.me"
+    __authors__ = [("Nicolas Giese", "james@free-way.me")]
 
 
     def loadAccountInfo(self, user, req):

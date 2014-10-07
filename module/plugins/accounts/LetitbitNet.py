@@ -10,8 +10,7 @@ class LetitbitNet(Account):
     __version__ = "0.01"
 
     __description__ = """Letitbit.net account plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
     def loadAccountInfo(self, user, req):

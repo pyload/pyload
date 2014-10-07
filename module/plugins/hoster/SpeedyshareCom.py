@@ -18,8 +18,7 @@ class SpeedyshareCom(SimpleHoster):
     __pattern__ = r"https?://(?:www\.)?(speedyshare\.com|speedy\.sh)/\w+"
 
     __description__ = """Speedyshare.com hoster plugin"""
-    __author_name__ = "zapp-brannigan"
-    __author_mail__ = "fuerst.reinje@web.de"
+    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     FILE_NAME_PATTERN = r'class=downloadfilename>(?P<N>.*)</span></td>'

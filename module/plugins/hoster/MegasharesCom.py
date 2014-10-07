@@ -15,8 +15,7 @@ class MegasharesCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index.php)?\?d\d{2}=|dl/)\w+'
 
     __description__ = """Megashares.com hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'

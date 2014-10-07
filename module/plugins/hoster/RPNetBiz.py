@@ -14,8 +14,7 @@ class RPNetBiz(Hoster):
     __description__ = """RPNet.biz hoster plugin"""
 
     __pattern__ = r'https?://.*rpnet\.biz'
-    __author_name__ = "Dman"
-    __author_mail__ = "dmanugm@gmail.com"
+    __authors__ = [("Dman", "dmanugm@gmail.com")]
 
 
     def setup(self):

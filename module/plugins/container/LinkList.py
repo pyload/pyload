@@ -15,8 +15,8 @@ class LinkList(Container):
                   ("encoding", "string", "File encoding (default utf-8)", "")]
 
     __description__ = """Read link lists in txt format"""
-    __author_name__ = ("spoob", "jeix")
-    __author_mail__ = ("spoob@pyload.org", "jeix@hasnomail.com")
+    __authors__ = [("spoob", "spoob@pyload.org"),
+                   ("jeix", "jeix@hasnomail.com")]
 
 
     def decrypt(self, pyfile):

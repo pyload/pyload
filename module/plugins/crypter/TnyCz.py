@@ -13,8 +13,8 @@ class TnyCz(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?tny\.cz/\w+'
 
     __description__ = """Tny.cz decrypter plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+
 
     TITLE_PATTERN = r'<title>(.+) - .+</title>'
 

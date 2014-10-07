@@ -19,8 +19,7 @@ class DeadHoster(_Hoster):
     __pattern__ = None
 
     __description__ = """ Hoster is no longer available """
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def setup(self):

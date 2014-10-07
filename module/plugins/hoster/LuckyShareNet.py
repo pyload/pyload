@@ -16,8 +16,8 @@ class LuckyShareNet(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?luckyshare.net/(?P<ID>\d{10,})'
 
     __description__ = """LuckyShare.net hoster plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+
 
     FILE_INFO_PATTERN = r"<h1 class='file_name'>(?P<N>\S+)</h1>\s*<span class='file_size'>Filesize: (?P<S>[\d.]+)(?P<U>\w+)</span>"
     OFFLINE_PATTERN = r'There is no such file available'

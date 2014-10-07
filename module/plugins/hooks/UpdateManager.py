@@ -23,8 +23,7 @@ class UpdateManager(Hook):
                   ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
 
     __description__ = """ Check for updates """
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     event_list = ["pluginConfigChanged"]

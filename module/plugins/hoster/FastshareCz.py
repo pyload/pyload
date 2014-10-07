@@ -18,8 +18,10 @@ class FastshareCz(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
 
     __description__ = """FastShare.cz hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell", "Walter Purcaro")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
+
 
     FILE_INFO_PATTERN = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*Size\s*: (?P<S>\d+) (?P<U>\w+),'
     OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found)'

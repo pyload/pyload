@@ -15,8 +15,7 @@ class File4safeCom(XFileSharingPro):
     __pattern__ = r'https?://(?:www\.)?file4safe\.com/\w{12}'
 
     __description__ = """File4safe.com hoster plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_NAME = "file4safe.com"

@@ -11,7 +11,7 @@ class FshareVnFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?fshare.vn/folder/.*'
 
     __description__ = """Fshare.vn folder decrypter plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     LINK_PATTERN = r'<li class="w_80pc"><a href="([^"]+)" target="_blank">'

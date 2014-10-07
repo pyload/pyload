@@ -11,8 +11,7 @@ class FilebeerInfo(DeadHoster):
     __pattern__ = r'http://(?:www\.)?filebeer\.info/(?!\d*~f)(?P<ID>\w+).*'
 
     __description__ = """Filebeer.info plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
 getInfo = create_getInfo(FilebeerInfo)

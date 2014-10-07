@@ -14,8 +14,7 @@ class HundredEightyUploadCom(XFileSharingPro):
     __pattern__ = r'http://(?:www\.)?180upload\.com/\w{12}'
 
     __description__ = """180upload.com hoster plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_NAME = "180upload.com"

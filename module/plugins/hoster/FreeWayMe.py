@@ -11,8 +11,7 @@ class FreeWayMe(Hoster):
     __pattern__ = r'https://(?:www\.)?free-way.me/.*'
 
     __description__ = """FreeWayMe hoster plugin"""
-    __author_name__ = "Nicolas Giese"
-    __author_mail__ = "james@free-way.me"
+    __authors__ = [("Nicolas Giese", "james@free-way.me")]
 
 
     def setup(self):

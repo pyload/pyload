@@ -14,8 +14,7 @@ class FileomCom(XFileSharingPro):
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
 
     __description__ = """Fileom.com hoster plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_NAME = "fileom.com"

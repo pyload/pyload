@@ -15,8 +15,8 @@ class NovafileCom(XFileSharingPro):
     __pattern__ = r'http://(?:www\.)?novafile\.com/\w{12}'
 
     __description__ = """Novafile.com hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_NAME = "novafile.com"

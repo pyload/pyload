@@ -17,8 +17,7 @@ class AbtractExtractor:
     __version__ = "0.1"
 
     __description__ = """Abtract extractor plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
     @staticmethod

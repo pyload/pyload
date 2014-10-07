@@ -13,8 +13,9 @@ class NetfolderIn(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?netfolder.in/((?P<id1>\w+)/\w+|folder.php\?folder_id=(?P<id2>\w+))'
 
     __description__ = """NetFolder.in decrypter plugin"""
-    __author_name__ = ("RaNaN", "fragonib")
-    __author_mail__ = ("RaNaN@pyload.org", "fragonib[AT]yahoo[DOT]es")
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("fragonib", "fragonib[AT]yahoo[DOT]es")]
+
 
     TITLE_PATTERN = r'<div class="Text">Inhalt des Ordners <span.*>(.+)</span></div>'
 

@@ -15,8 +15,8 @@ class ClickAndLoad(Hook):
                   ("extern", "bool", "Allow external link adding", False)]
 
     __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""
-    __author_name__ = ("RaNaN", "mkaay")
-    __author_mail__ = ("RaNaN@pyload.de", "mkaay@mkaay.de")
+    __authors__ = [("RaNaN", "RaNaN@pyload.de"),
+                   ("mkaay", "mkaay@mkaay.de")]
 
 
     def coreReady(self):

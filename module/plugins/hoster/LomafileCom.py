@@ -11,8 +11,8 @@ class LomafileCom(XFileSharingPro):
     __pattern__ = r'http://lomafile\.com/\w{12}'
 
     __description__ = """Lomafile.com hoster plugin"""
-    __author_name__ = ("nath_schwarz", "guidobelix")
-    __author_mail__ = ("nathan.notwhite@gmail.com", "guidobelix@hotmail.it")
+    __authors__ = [("nath_schwarz", "nathan.notwhite@gmail.com"),
+                   ("guidobelix", "guidobelix@hotmail.it")]
 
 
     HOSTER_NAME = "lomafile.com"

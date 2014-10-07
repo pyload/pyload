@@ -37,8 +37,7 @@ class FilesMailRu(Hoster):
     __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.*'
 
     __description__ = """Files.mail.ru hoster plugin"""
-    __author_name__ = "oZiRiz"
-    __author_mail__ = "ich@oziriz.de"
+    __authors__ = [("oZiRiz", "ich@oziriz.de")]
 
 
     def setup(self):
