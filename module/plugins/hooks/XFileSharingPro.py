@@ -11,9 +11,9 @@ class XFileSharingPro(Hook):
     __version__ = "0.12"
 
     __config__ = [("activated", "bool", "Activated", True),
-                  ("loadDefault", "bool", "Include default (built-in) hoster list", True),
-                  ("includeList", "str", "Include hosters (comma separated)", ""),
-                  ("excludeList", "str", "Exclude hosters (comma separated)", "")]
+                  ("load_default", "bool", "Include default (built-in) hoster list", True),
+                  ("include_hosters", "str", "Include hosters (comma separated)", ""),
+                  ("exclude_hosters", "str", "Exclude hosters (comma separated)", "")]
 
     __description__ = """XFileSharingPro hook plugin"""
     __author_name__ = "zoidberg"
@@ -25,11 +25,11 @@ class XFileSharingPro(Hook):
 
 
     def loadPattern(self):
-        hosterList = self.getConfigSet('includeList')
-        excludeList = self.getConfigSet('excludeList')
+        hoster_list = self.getConfigSet('include_hosters')
+        exclude_list = self.getConfigSet('exclude_hosters')
 
-        if self.getConfig('loadDefault'):
-            hosterList |= set((
+        if self.getConfig('load_default'):
+            hoster_list |= set((
                 #WORKING HOSTERS:
                 "aieshare.com", "asixfiles.com", "banashare.com", "cyberlocker.ch", "eyesfile.co", "eyesfile.com",
                 "fileband.com", "filedwon.com", "filedownloads.org", "hipfile.com", "kingsupload.com", "mlfat4arab.com",
@@ -54,19 +54,19 @@ class XFileSharingPro(Hook):
                 "ddlanime.com", "fileforth.com", "loombo.com", "goldfile.eu", "putshare.com"
             ))
 
-        hosterList -= (excludeList)
-        hosterList -= set(('', u''))
+        hoster_list -= (exclude_list)
+        hoster_list -= set(('', u''))
 
-        if not hosterList:
+        if not hoster_list:
             self.unload()
             return
 
-        regexp = r"http://(?:[^/]*\.)?(%s)/(?:embed-)?\w{12}" % ("|".join(sorted(hosterList)).replace('.', '\.'))
+        regexp = r"http://(?:[^/]*\.)?(%s)/(?:embed-)?\w{12}" % ("|".join(sorted(hoster_list)).replace('.', '\.'))
 
         dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
         dict['pattern'] = regexp
         dict['re'] = re.compile(regexp)
-        self.logDebug("Pattern loaded - handling %d hosters" % len(hosterList))
+        self.logDebug("Pattern loaded - handling %d hosters" % len(hoster_list))
 
 
     def getConfigSet(self, option):

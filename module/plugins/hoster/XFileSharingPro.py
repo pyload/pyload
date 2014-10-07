@@ -242,7 +242,7 @@ class XFileSharingPro(SimpleHoster):
                 self.retry(25)
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
                 self.retry()
-            elif 'maintenance' in self.errmsg:
+            elif 'maintenance' in self.errmsg or 'maintainance' in self.errmsg:
                 self.tempOffline()
             elif 'download files up to' in self.errmsg:
                 self.fail("File too large for free download")
