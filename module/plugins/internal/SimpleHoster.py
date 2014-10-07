@@ -112,9 +112,8 @@ def parseFileInfo(self, url='', html=''):
                                             self.FILE_SIZE_REPLACEMENTS)
                     info['size'] = parseFileSize(size)
                 elif isinstance(info['size'], basestring):
-                    if 'units' in info:
-                        info['size'] += info['units']
-                    info['size'] = parseFileSize(info['size'])
+                    unit = info['units'] if 'units' in info else None
+                    info['size'] = parseFileSize(info['size'], unit)
 
     if hasattr(self, "file_info"):
         self.file_info = info
@@ -161,6 +160,7 @@ class SimpleHoster(Hoster):
     __author_name__ = ("zoidberg", "stickell", "Walter Purcaro")
     __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
 
+
     """
     Following patterns should be defined by each hoster:
 
@@ -184,8 +184,11 @@ class SimpleHoster(Hoster):
 
     Instead overriding handleFree and handlePremium methods now you can define patterns for direct download:
 
-      LINK_FREE_PATTERN: (optional) Get direct link for free download
-      LINK_PREMIUM_PATTERN: (optional) Get direct link for premium download
+      LINK_FREE_PATTERN: (optional) group(1) should be the direct link for free download
+        example: LINK_FREE_PATTERN = r'<div class="link"><a href="(.+?)"'
+
+      LINK_PREMIUM_PATTERN: (optional) group(1) should be the direct link for premium download
+        example: LINK_PREMIUM_PATTERN = r'<div class="link"><a href="(.+?)"'
     """
 
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
@@ -264,11 +267,11 @@ class SimpleHoster(Hoster):
         if not hasattr(self, 'LINK_FREE_PATTERN'):
             self.fail("Free download not implemented")
 
-        m = re.search(self.LINK_FREE_PATTERN, self.html)
-        if m is None:
-            self.parseError("Free download link not found")
-
         try:
+            m = re.search(self.LINK_FREE_PATTERN, self.html)
+            if m is None:
+                self.parseError("Free download link not found")
+
             link = m.group(1)
         except Exception, e:
             self.logError(str(e))
@@ -280,11 +283,11 @@ class SimpleHoster(Hoster):
         if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
             self.fail("Premium download not implemented")
 
-        m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
-        if m is None:
-            self.parseError("Premium download link not found")
-
         try:
+            m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
+            if m is None:
+                self.parseError("Premium download link not found")
+
             link = m.group(1)
         except Exception, e:
             self.logError(str(e))
