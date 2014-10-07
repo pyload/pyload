@@ -10,8 +10,7 @@ class SolveMedia(Captcha):
     __version__ = "0.02"
 
     __description__ = """SolveMedia captcha service plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.(no)?script\?k=(?P<KEY>.+?)"'

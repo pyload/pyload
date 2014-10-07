@@ -10,8 +10,7 @@ class ReCaptcha(Captcha):
     __version__ = "0.02"
 
     __description__ = """ReCaptcha captcha service plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN = r"https?://(?:www\.)?google\.com/recaptcha/api/challenge\?k=(?P<KEY>\w+?)"

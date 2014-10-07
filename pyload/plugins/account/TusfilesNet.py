@@ -4,7 +4,7 @@ import re
 
 from time import mktime, strptime, gmtime
 
-from module.plugins.internal.XFSPAccount import XFSPAccount
+from pyload.plugins.internal.XFSPAccount import XFSPAccount
 from pyload.utils import parseFileSize
 
 

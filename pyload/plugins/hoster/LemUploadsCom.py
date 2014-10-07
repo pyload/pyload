@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
+from pyload.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class LemUploadsCom(DeadHoster):

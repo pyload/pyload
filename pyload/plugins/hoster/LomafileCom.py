@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from pyload.plugins.internal.XFileSharingPro import XFSPHoster, create_getInfo
 
 
-class LomafileCom(XFileSharingPro):
+class LomafileCom(XFSPHoster):
     __name__ = "LomafileCom"
     __type__ = "hoster"
     __version__ = "0.3"

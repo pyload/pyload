@@ -31,8 +31,9 @@ class Addon(Base):
     __config__ = [("name", "type", "desc", "default")]
 
     __description__ = """Interface for addon"""
-    __author_name__ = ("mkaay", "RaNaN")
-    __author_mail__ = ("mkaay@mkaay.de", "RaNaN@pyload.org")
+    __authors__ = [("mkaay", "mkaay@mkaay.de"),
+                   ("RaNaN", "RaNaN@pyload.org")]
+
 
     #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
     event_map = None

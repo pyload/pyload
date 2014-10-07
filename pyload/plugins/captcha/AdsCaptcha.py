@@ -12,8 +12,7 @@ class AdsCaptcha(Captcha):
     __version__ = "0.02"
 
     __description__ = """AdsCaptcha captcha service plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
     ID_PATTERN = r'http://api\.adscaptcha\.com/Get\.aspx\?[^"\']*CaptchaId=(?P<ID>\d+)'
