@@ -15,8 +15,8 @@ class DontKnowMe(Crypter):
     __pattern__ = r'http://(?:www\.)?dontknow.me/at/\?.+$'
 
     __description__ = """DontKnow.me decrypter plugin"""
-    __author_name__ = "selaux"
-    __author_mail__ = None
+    __authors__ = [("selaux", None)]
+
 
     LINK_PATTERN = r'http://dontknow.me/at/\?(.+)$'
 

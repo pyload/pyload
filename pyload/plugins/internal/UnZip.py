@@ -11,8 +11,7 @@ class UnZip(AbtractExtractor):
     __version__ = "0.1"
 
     __description__ = """Zip extractor plugin"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 
     @staticmethod

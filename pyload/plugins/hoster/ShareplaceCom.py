@@ -15,8 +15,7 @@ class ShareplaceCom(Hoster):
     __pattern__ = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?[a-zA-Z0-9]+'
 
     __description__ = """Shareplace.com hoster plugin"""
-    __author_name__ = "ACCakut"
-    __author_mail__ = None
+    __authors__ = [("ACCakut", None)]
 
 
     def process(self, pyfile):

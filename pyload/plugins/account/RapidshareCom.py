@@ -9,8 +9,7 @@ class RapidshareCom(Account):
     __version__ = "0.22"
 
     __description__ = """Rapidshare.com account plugin"""
-    __author_name__ = "mkaay"
-    __author_mail__ = "mkaay@mkaay.de"
+    __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 
     def loadAccountInfo(self, user, req):

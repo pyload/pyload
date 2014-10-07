@@ -17,8 +17,7 @@ class SimplyPremiumCom(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
     __description__ = """Simply-Premium.com hook plugin"""
-    __author_name__ = "EvolutionClip"
-    __author_mail__ = "evolutionclip@live.de"
+    __authors__ = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def getHoster(self):

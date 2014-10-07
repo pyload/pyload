@@ -15,8 +15,8 @@ class WrzucTo(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?wrzuc\.to/([a-zA-Z0-9]+(\.wt|\.html)|(\w+/?linki/[a-zA-Z0-9]+))'
 
     __description__ = """Wrzuc.to hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r'id="file_info">\s*<strong>(?P<N>.*?)</strong>'
     FILE_SIZE_PATTERN = r'class="info">\s*<tr>\s*<td>(?P<S>.*?)</td>'

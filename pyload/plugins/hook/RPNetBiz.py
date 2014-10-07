@@ -17,8 +17,7 @@ class RPNetBiz(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """RPNet.biz hook plugin"""
-    __author_name__ = "Dman"
-    __author_mail__ = "dmanugm@gmail.com"
+    __authors__ = [("Dman", "dmanugm@gmail.com")]
 
 
     def getHoster(self):

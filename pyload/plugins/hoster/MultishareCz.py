@@ -15,8 +15,8 @@ class MultishareCz(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?multishare.cz/stahnout/(?P<ID>\d+).*'
 
     __description__ = """MultiShare.cz hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_INFO_PATTERN = ur'(?:<li>Název|Soubor): <strong>(?P<N>[^<]+)</strong><(?:/li><li|br)>Velikost: <strong>(?P<S>[^<]+)</strong>'
     OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'

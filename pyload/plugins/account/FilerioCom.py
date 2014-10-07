@@ -9,7 +9,7 @@ class FilerioCom(XFSPAccount):
     __version__ = "0.02"
 
     __description__ = """FileRio.in account plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    HOSTER_URL = "http://filerio.in/"
+
+    HOSTER_URL = "http://www.filerio.in/"

@@ -9,8 +9,8 @@ class ShareonlineBiz(Account):
     __version__ = "0.24"
 
     __description__ = """Share-online.biz account plugin"""
-    __author_name__ = ("mkaay", "zoidberg")
-    __author_mail__ = ("mkaay@mkaay.de", "zoidberg@mujmail.cz")
+    __authors__ = [("mkaay", "mkaay@mkaay.de"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def getUserAPI(self, user, req):

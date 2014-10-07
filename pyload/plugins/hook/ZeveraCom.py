@@ -14,8 +14,7 @@ class ZeveraCom(MultiHoster):
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """Real-Debrid.com hook plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def getHoster(self):

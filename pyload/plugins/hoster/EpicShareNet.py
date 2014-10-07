@@ -1,25 +1,17 @@
 # -*- coding: utf-8 -*-
-#
-# Test links:
-# BigBuckBunny_320x180.mp4 - 61.7 Mb - http://epicshare.net/fch3m2bk6ihp/BigBuckBunny_320x180.mp4.html
 
-from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
-class EpicShareNet(XFSPHoster):
+class EpicShareNet(DeadHoster):
     __name__ = "EpicShareNet"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?epicshare\.net/\w{12}'
 
     __description__ = """EpicShare.net hoster plugin"""
-    __author_name__ = "t4skforce"
-    __author_mail__ = "t4skforce1337[AT]gmail[DOT]com"
-
-    HOSTER_NAME = "epicshare.net"
-
-    FILE_NAME_PATTERN = r'<b>Password:</b></div>\s*<h2>(?P<N>[^<]+)</h2>'
+    __authors__ = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
 
 
 getInfo = create_getInfo(EpicShareNet)

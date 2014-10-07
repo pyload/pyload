@@ -18,8 +18,7 @@ class WindowsPhoneToastNotify(Addon):
                   ("pushTimeout", "int", "Timeout between notifications in seconds", 0)]
 
     __description__ = """Send push notifications to Windows Phone"""
-    __author_name__ = "Andy Voigt"
-    __author_mail__ = "phone-support@hotmail.de"
+    __authors__ = [("Andy Voigt", "phone-support@hotmail.de")]
 
 
     def setup(self):

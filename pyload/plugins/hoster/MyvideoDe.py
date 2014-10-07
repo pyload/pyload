@@ -14,8 +14,7 @@ class MyvideoDe(Hoster):
     __pattern__ = r'http://(?:www\.)?myvideo.de/watch/'
 
     __description__ = """Myvideo.de hoster plugin"""
-    __author_name__ = "spoob"
-    __author_mail__ = "spoob@pyload.org"
+    __authors__ = [("spoob", "spoob@pyload.org")]
 
 
     def process(self, pyfile):

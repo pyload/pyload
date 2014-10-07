@@ -16,8 +16,10 @@ class SockshareCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?sockshare\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
 
     __description__ = """Sockshare.com hoster plugin"""
-    __author_name__ = ("jeix", "stickell", "Walter Purcaro")
-    __author_mail__ = ("jeix@hasnomail.de", "l.stickell@yahoo.it", "vuolter@gmail.com")
+    __authors__ = [("jeix", "jeix@hasnomail.de"),
+                   ("stickell", "l.stickell@yahoo.it"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
+
 
     FILE_INFO_PATTERN = r'site-content">\s*<h1>(?P<N>.+)<strong>\( (?P<S>[^)]+) \)</strong></h1>'
     OFFLINE_PATTERN = r'>This file doesn\'t exist, or has been removed.<'

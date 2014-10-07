@@ -70,8 +70,10 @@ class ExtractArchive(Addon):
                   ("renice", "int", "CPU Priority", 0)]
 
     __description__ = """Extract different kind of archives"""
-    __author_name__ = ("RaNaN", "AndroKev", "Walter Purcaro")
-    __author_mail__ = ("ranan@pyload.org", "@pyloadforum", "vuolter@gmail.com")
+    __authors__ = [("RaNaN", "ranan@pyload.org"),
+                   ("AndroKev", None),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
+
 
     event_list = ["allDownloadsProcessed"]
 

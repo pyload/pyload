@@ -12,12 +12,12 @@ class RestartFailed(Addon):
                   ("interval", "int", "Check interval in minutes", 90)]
 
     __description__ = """Periodically restart all failed downloads in queue"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    MIN_INTERVAL = 15 * 60  #: 15m minimum check interval (value is in seconds)
 
     event_list = ["pluginConfigChanged"]
+
+    MIN_INTERVAL = 15 * 60  #: 15m minimum check interval (value is in seconds)
 
 
     def pluginConfigChanged(self, plugin, name, value):

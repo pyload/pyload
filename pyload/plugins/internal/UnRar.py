@@ -25,8 +25,7 @@ class UnRar(AbtractExtractor):
     __version__ = "0.18"
 
     __description__ = """Rar extractor plugin"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 
     CMD = "unrar"

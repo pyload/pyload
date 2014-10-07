@@ -16,8 +16,8 @@ class DlProtectCom(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?dl-protect\.com/((en|fr)/)?(?P<ID>\w+)'
 
     __description__ = """Dl-protect.com decrypter plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+
 
     OFFLINE_PATTERN = r'>Unfortunately, the link you are looking for is not found'
 

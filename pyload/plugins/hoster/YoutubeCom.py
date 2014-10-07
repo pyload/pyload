@@ -48,8 +48,9 @@ class YoutubeCom(Hoster):
                   ("3d", "bool", "Prefer 3D", False)]
 
     __description__ = """Youtube.com hoster plugin"""
-    __author_name__ = ("spoob", "zoidberg")
-    __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
+    __authors__ = [("spoob", "spoob@pyload.org"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]
 

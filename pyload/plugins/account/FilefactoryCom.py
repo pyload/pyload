@@ -14,8 +14,9 @@ class FilefactoryCom(Account):
     __version__ = "0.14"
 
     __description__ = """Filefactory.com account plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
     VALID_UNTIL_PATTERN = r'Premium valid until: <strong>(?P<d>\d{1,2})\w{1,2} (?P<m>\w{3}), (?P<y>\d{4})</strong>'
 

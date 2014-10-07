@@ -18,8 +18,7 @@ class BasePlugin(Hoster):
     __pattern__ = r'^unmatchable$'
 
     __description__ = """Base Plugin when any other didnt fit"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def setup(self):

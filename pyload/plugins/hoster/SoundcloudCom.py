@@ -14,8 +14,7 @@ class SoundcloudCom(Hoster):
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/(?P<UID>.*?)/(?P<SID>.*)'
 
     __description__ = """SoundCloud.com hoster plugin"""
-    __author_name__ = "Peekayy"
-    __author_mail__ = "peekayy.dev@gmail.com"
+    __authors__ = [("Peekayy", "peekayy.dev@gmail.com")]
 
 
     def process(self, pyfile):

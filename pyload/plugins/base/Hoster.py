@@ -16,5 +16,4 @@ class Hoster(Plugin):
     __pattern__ = None
 
     __description__ = """Base hoster plugin"""
-    __author_name__ = "mkaay"
-    __author_mail__ = "mkaay@mkaay.de"
+    __authors__ = [("mkaay", "mkaay@mkaay.de")]

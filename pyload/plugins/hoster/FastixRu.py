@@ -17,8 +17,7 @@ class FastixRu(Hoster):
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>[a-zA-Z0-9]{24})'
 
     __description__ = """Fastix hoster plugin"""
-    __author_name__ = "Massimo Rosamilia"
-    __author_mail__ = "max@spiritix.eu"
+    __authors__ = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
     def getFilename(self, url):

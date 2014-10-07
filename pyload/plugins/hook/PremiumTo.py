@@ -14,8 +14,10 @@ class PremiumTo(MultiHoster):
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """Premium.to hook plugin"""
-    __author_name__ = ("RaNaN", "zoidberg", "stickell")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
 
     def getHoster(self):

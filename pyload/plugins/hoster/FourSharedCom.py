@@ -13,8 +13,9 @@ class FourSharedCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?4shared(\-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+?/.*'
 
     __description__ = """4Shared.com hoster plugin"""
-    __author_name__ = ("jeix", "zoidberg")
-    __author_mail__ = ("jeix@hasnomail.de", "zoidberg@mujmail.cz")
+    __authors__ = [("jeix", "jeix@hasnomail.de"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r'<meta name="title" content="(?P<N>.+?)"'
     FILE_SIZE_PATTERN = r'<span title="Size: (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B">'

@@ -27,8 +27,11 @@ class ShareRapidCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
 
     __description__ = """MegaRapid.cz hoster plugin"""
-    __author_name__ = ("MikyWoW", "zoidberg", "stickell", "Walter Purcaro")
-    __author_mail__ = ("mikywow@seznam.cz", "zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
+    __authors__ = [("MikyWoW", "mikywow@seznam.cz"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
+
 
     FILE_NAME_PATTERN = r'<h1[^>]*><span[^>]*>(?:<a[^>]*>)?(?P<N>[^<]+)'
     FILE_SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong></td>'

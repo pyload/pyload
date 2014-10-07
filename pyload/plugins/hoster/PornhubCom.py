@@ -13,8 +13,7 @@ class PornhubCom(Hoster):
     __pattern__ = r'http://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=[\w\d]+'
 
     __description__ = """Pornhub.com hoster plugin"""
-    __author_name__ = "jeix"
-    __author_mail__ = "jeix@hasnomail.de"
+    __authors__ = [("jeix", "jeix@hasnomail.de")]
 
 
     def process(self, pyfile):

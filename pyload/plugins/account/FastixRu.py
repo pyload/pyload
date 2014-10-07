@@ -10,8 +10,7 @@ class FastixRu(Account):
     __version__ = "0.02"
 
     __description__ = """Fastix account plugin"""
-    __author_name__ = "Massimo Rosamilia"
-    __author_mail__ = "max@spiritix.eu"
+    __authors__ = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
     def loadAccountInfo(self, user, req):

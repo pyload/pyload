@@ -16,8 +16,7 @@ class RehostTo(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Rehost.to hook plugin"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def getHoster(self):

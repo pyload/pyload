@@ -13,8 +13,8 @@ class BezvadataCz(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?bezvadata.cz/stahnout/.*'
 
     __description__ = """BezvaData.cz hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'
     FILE_SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>[^<]+)</li>'

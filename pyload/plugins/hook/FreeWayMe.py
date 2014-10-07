@@ -16,8 +16,7 @@ class FreeWayMe(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """FreeWay.me hook plugin"""
-    __author_name__ = "Nicolas Giese"
-    __author_mail__ = "james@free-way.me"
+    __authors__ = [("Nicolas Giese", "james@free-way.me")]
 
 
     def getHoster(self):

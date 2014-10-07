@@ -12,8 +12,8 @@ class DebridItaliaCom(Account):
     __version__ = "0.1"
 
     __description__ = """Debriditalia.com account plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+
 
     WALID_UNTIL_PATTERN = r"Premium valid till: (?P<D>[^|]+) \|"
 

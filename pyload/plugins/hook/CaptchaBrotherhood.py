@@ -5,7 +5,11 @@ from __future__ import with_statement
 import StringIO
 import pycurl
 
-from PIL import Image
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
 from thread import start_new_thread
 from time import sleep
 from urllib import urlencode
@@ -40,8 +44,9 @@ class CaptchaBrotherhood(Hook):
                   ("passkey", "password", "Password", "")]
 
     __description__ = """Send captchas to CaptchaBrotherhood.com"""
-    __author_name__ = ("RaNaN", "zoidberg")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
+
 
     API_URL = "http://www.captchabrotherhood.com/"
 

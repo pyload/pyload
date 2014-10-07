@@ -21,8 +21,8 @@ class MegaNz(Hoster):
     __pattern__ = r'https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)'
 
     __description__ = """Mega.co.nz hoster plugin"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "ranan@pyload.org"
+    __authors__ = [("RaNaN", "ranan@pyload.org")]
+
 
     API_URL = "https://g.api.mega.co.nz/cs?id=%d"
     FILE_SUFFIX = ".crypted"

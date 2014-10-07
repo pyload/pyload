@@ -11,8 +11,8 @@ class WuploadCom(DeadHoster):
     __pattern__ = r'http://(?:www\.)?wupload\..*?/file/(([a-z][0-9]+/)?[0-9]+)(/.*)?'
 
     __description__ = """Wupload.com hoster plugin"""
-    __author_name__ = ("jeix", "Paul King")
-    __author_mail__ = ("jeix@hasnomail.de", "")
+    __authors__ = [("jeix", "jeix@hasnomail.de"),
+                   ("Paul King", None)]
 
 
 getInfo = create_getInfo(WuploadCom)

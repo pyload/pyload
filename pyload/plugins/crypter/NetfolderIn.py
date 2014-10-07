@@ -8,15 +8,16 @@ from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
 class NetfolderIn(SimpleCrypter):
     __name__ = "NetfolderIn"
     __type__ = "crypter"
-    __version__ = "0.6"
+    __version__ = "0.7"
 
     __pattern__ = r'http://(?:www\.)?netfolder.in/((?P<id1>\w+)/\w+|folder.php\?folder_id=(?P<id2>\w+))'
 
     __description__ = """NetFolder.in decrypter plugin"""
-    __author_name__ = ("RaNaN", "fragonib")
-    __author_mail__ = ("RaNaN@pyload.org", "fragonib[AT]yahoo[DOT]es")
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
-    TITLE_PATTERN = r'<div class="Text">Inhalt des Ordners <span(.*)>(?P<title>.+)</span></div>'
+
+    TITLE_PATTERN = r'<div class="Text">Inhalt des Ordners <span.*>(.+)</span></div>'
 
 
     def decrypt(self, pyfile):

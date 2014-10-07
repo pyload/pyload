@@ -106,15 +106,14 @@ def parseFileInfo(self, url='', html=''):
                 # File online, return name and size
                 info['status'] = 2
                 if 'N' in info:
-                    info['name'] = replace_patterns(info['N'], self.FILE_NAME_REPLACEMENTS)
+                    info['name'] = replace_patterns(info['N'].strip(), self.FILE_NAME_REPLACEMENTS)
                 if 'S' in info:
                     size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
                                             self.FILE_SIZE_REPLACEMENTS)
                     info['size'] = parseFileSize(size)
                 elif isinstance(info['size'], basestring):
-                    if 'units' in info:
-                        info['size'] += info['units']
-                    info['size'] = parseFileSize(info['size'])
+                    unit = info['units'] if 'units' in info else None
+                    info['size'] = parseFileSize(info['size'], unit)
 
     if hasattr(self, "file_info"):
         self.file_info = info
@@ -153,13 +152,15 @@ class PluginParseError(Exception):
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.38"
 
     __pattern__ = None
 
     __description__ = """Simple hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell", "Walter Purcaro")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
+
 
     """
     Following patterns should be defined by each hoster:
@@ -180,6 +181,15 @@ class SimpleHoster(Hoster):
 
       PREMIUM_ONLY_PATTERN: (optional) Checks if the file can be downloaded only with a premium account
         example: PREMIUM_ONLY_PATTERN = r'Premium account required'
+
+
+    Instead overriding handleFree and handlePremium methods now you can define patterns for direct download:
+
+      LINK_FREE_PATTERN: (optional) group(1) should be the direct link for free download
+        example: LINK_FREE_PATTERN = r'<div class="link"><a href="(.+?)"'
+
+      LINK_PREMIUM_PATTERN: (optional) group(1) should be the direct link for premium download
+        example: LINK_PREMIUM_PATTERN = r'<div class="link"><a href="(.+?)"'
     """
 
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
@@ -255,11 +265,35 @@ class SimpleHoster(Hoster):
 
 
     def handleFree(self):
-        self.fail("Free download not implemented")
+        if not hasattr(self, 'LINK_FREE_PATTERN'):
+            self.fail("Free download not implemented")
+
+        try:
+            m = re.search(self.LINK_FREE_PATTERN, self.html)
+            if m is None:
+                self.parseError("Free download link not found")
+
+            link = m.group(1)
+        except Exception, e:
+            self.logError(str(e))
+        else:
+            self.download(link, ref=True, cookies=True, disposition=True)
 
 
     def handlePremium(self):
-        self.fail("Premium download not implemented")
+        if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
+            self.fail("Premium download not implemented")
+
+        try:
+            m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
+            if m is None:
+                self.parseError("Premium download link not found")
+
+            link = m.group(1)
+        except Exception, e:
+            self.logError(str(e))
+        else:
+            self.download(link, ref=True, cookies=True, disposition=True)
 
 
     def parseError(self, msg):

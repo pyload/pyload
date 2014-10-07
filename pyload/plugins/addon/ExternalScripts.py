@@ -18,8 +18,11 @@ class ExternalScripts(Addon):
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Run external scripts"""
-    __author_name__ = ("mkaay", "RaNaN", "spoob", "Walter Purcaro")
-    __author_mail__ = ("mkaay@mkaay.de", "ranan@pyload.org", "spoob@pyload.org", "vuolter@gmail.com")
+    __authors__ = [("mkaay", "mkaay@mkaay.de"),
+                   ("RaNaN", "ranan@pyload.org"),
+                   ("spoob", "spoob@pyload.org"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
+
 
     event_list = ["archive_extracted", "package_extracted", "all_archives_extracted", "all_archives_processed",
                   "allDownloadsFinished", "allDownloadsProcessed"]

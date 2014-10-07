@@ -22,8 +22,8 @@ class TurbobitNet(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
 
     __description__ = """Turbobit.net hoster plugin"""
-    __author_name__ = ("zoidberg", "prOq")
-    __author_mail__ = ("zoidberg@mujmail.cz", None)
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("prOq", None)]
 
 
     FILE_NAME_PATTERN = r'id="file-title">(?P<N>.+?)<'

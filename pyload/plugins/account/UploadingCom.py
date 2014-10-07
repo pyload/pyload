@@ -12,8 +12,7 @@ class UploadingCom(Account):
     __version__ = "0.1"
 
     __description__ = """Uploading.com account plugin"""
-    __author_name__ = "mkaay"
-    __author_mail__ = "mkaay@mkaay.de"
+    __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 
     def loadAccountInfo(self, user, req):

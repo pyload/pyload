@@ -12,8 +12,8 @@ class MultiHoster(Addon):
 	__version__ = "0.20"
 
     __description__ = """Generic MultiHoster plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+
 
     replacements = [("2shared.com", "twoshared.com"), ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
                     ("ifile.it", "filecloud.io"), ("easy-share.com", "crocko.com"), ("freakshare.net", "freakshare.com"),

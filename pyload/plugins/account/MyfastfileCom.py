@@ -12,8 +12,8 @@ class MyfastfileCom(Account):
     __version__ = "0.02"
 
     __description__ = """Myfastfile.com account plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+
 
 
     def loadAccountInfo(self, user, req):

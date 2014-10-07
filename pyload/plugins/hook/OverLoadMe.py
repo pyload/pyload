@@ -17,8 +17,7 @@ class OverLoadMe(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 12)]
 
     __description__ = """Over-Load.me hook plugin"""
-    __author_name__ = "marley"
-    __author_mail__ = "marley@over-load.me"
+    __authors__ = [("marley", "marley@over-load.me")]
 
 
     def getHoster(self):

@@ -14,8 +14,7 @@ class DeleteFinished(Addon):
                   ('deloffline', 'bool', 'Delete packages with offline links', 'False')]
 
     __description__ = """Automatically delete all finished packages from queue"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     ## overwritten methods ##

@@ -16,8 +16,9 @@ class BitshareCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))'
 
     __description__ = """Bitshare.com hoster plugin"""
-    __author_name__ = ("Paul King", "fragonib")
-    __author_mail__ = ("", "fragonib[AT]yahoo[DOT]es")
+    __authors__ = [("Paul King", None),
+                   ("fragonib", "fragonib[AT]yahoo[DOT]es")]
+
 
     FILE_INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)</h1>'
     OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'

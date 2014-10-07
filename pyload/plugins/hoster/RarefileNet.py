@@ -14,8 +14,7 @@ class RarefileNet(XFSPHoster):
     __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'
 
     __description__ = """Rarefile.net hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_NAME = "rarefile.net"

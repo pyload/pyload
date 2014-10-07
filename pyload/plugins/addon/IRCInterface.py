@@ -33,8 +33,7 @@ class IRCInterface(Thread, Addon):
                   ("captcha", "bool", "Send captcha requests", True)]
 
     __description__ = """Connect to irc and let owner perform different tasks"""
-    __author_name__ = "Jeix"
-    __author_mail__ = "Jeix@hasnomail.com"
+    __authors__ = [("Jeix", "Jeix@hasnomail.com")]
 
 
     def __init__(self, core, manager):

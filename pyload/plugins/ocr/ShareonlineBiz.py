@@ -9,8 +9,7 @@ class ShareonlineBiz(OCR):
     __version__ = "0.1"
 
     __description__ = """Shareonline.biz ocr plugin"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def __init__(self):

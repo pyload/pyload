@@ -15,8 +15,7 @@ class Dereferer(Crypter):
     __pattern__ = r'https?://([^/]+)/.*?(?P<url>(ht|f)tps?(://|%3A%2F%2F).*)'
 
     __description__ = """Crypter for dereferers"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def decrypt(self, pyfile):

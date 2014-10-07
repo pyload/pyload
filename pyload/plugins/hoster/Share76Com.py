@@ -11,8 +11,7 @@ class Share76Com(DeadHoster):
     __pattern__ = r'http://(?:www\.)?share76.com/\w{12}'
 
     __description__ = """Share76.com hoster plugin"""
-    __author_name__ = "me"
-    __author_mail__ = None
+    __authors__ = []
 
 
 getInfo = create_getInfo(Share76Com)

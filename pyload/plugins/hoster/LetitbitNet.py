@@ -41,8 +41,9 @@ class LetitbitNet(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(letitbit|shareflare).net/download/.*'
 
     __description__ = """Letitbit.net hoster plugin"""
-    __author_name__ = ("zoidberg", "z00nx")
-    __author_mail__ = ("zoidberg@mujmail.cz", "z00nx0@gmail.com")
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("z00nx", "z00nx0@gmail.com")]
+
 
     FILE_URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "letitbit.net")]
 

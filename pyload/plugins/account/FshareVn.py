@@ -13,8 +13,9 @@ class FshareVn(Account):
     __version__ = "0.07"
 
     __description__ = """Fshare.vn account plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
     VALID_UNTIL_PATTERN = ur'<dt>Thời hạn dùng:</dt>\s*<dd>([^<]+)</dd>'
     LIFETIME_PATTERN = ur'<dt>Lần đăng nhập trước:</dt>\s*<dd>[^<]+</dd>'

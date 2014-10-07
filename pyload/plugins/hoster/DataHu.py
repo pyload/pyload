@@ -16,8 +16,9 @@ class DataHu(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?data.hu/get/\w+'
 
     __description__ = """Data.hu hoster plugin"""
-    __author_name__ = ("crash", "stickell")
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("crash", None),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
     FILE_INFO_PATTERN = ur'<title>(?P<N>.*) \((?P<S>[^)]+)\) let\xf6lt\xe9se</title>'
     OFFLINE_PATTERN = ur'Az adott f\xe1jl nem l\xe9tezik'

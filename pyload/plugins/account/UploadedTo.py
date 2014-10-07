@@ -12,8 +12,7 @@ class UploadedTo(Account):
     __version__ = "0.26"
 
     __description__ = """Uploaded.to account plugin"""
-    __author_name__ = "mkaay"
-    __author_mail__ = "mkaay@mkaay.de"
+    __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 
     def loadAccountInfo(self, user, req):

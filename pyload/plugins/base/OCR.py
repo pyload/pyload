@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import with_statement
-import os
+
+try:
+    from PIL import Image, GifImagePlugin, JpegImagePlugin, PngImagePlugin, TiffImagePlugin
+except ImportError:
+    import Image, GifImagePlugin, JpegImagePlugin, PngImagePlugin, TiffImagePlugin
+
 import logging
 import subprocess
 
 from os.path import abspath, join
-from PIL import Image
-from PIL import TiffImagePlugin
-from PIL import PngImagePlugin
-from PIL import GifImagePlugin
-from PIL import JpegImagePlugin
 
 
 class OCR(object):
@@ -19,8 +19,7 @@ class OCR(object):
     __version__ = "0.1"
 
     __description__ = """OCR base plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):

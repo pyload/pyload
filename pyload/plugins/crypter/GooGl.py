@@ -12,8 +12,8 @@ class GooGl(Crypter):
     __pattern__ = r'https?://(?:www\.)?goo\.gl/\w+'
 
     __description__ = """Goo.gl decrypter plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+
 
     API_URL = "https://www.googleapis.com/urlshortener/v1/url"
 

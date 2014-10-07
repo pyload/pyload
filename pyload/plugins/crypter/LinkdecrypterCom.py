@@ -12,8 +12,9 @@ class LinkdecrypterCom(Crypter):
     __pattern__ = None
 
     __description__ = """Linkdecrypter.com"""
-    __author_name__ = ("zoidberg", "flowlee")
-    __author_mail__ = ("zoidberg@mujmail.cz", "")
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("flowlee", None)]
+
 
     TEXTAREA_PATTERN = r'<textarea name="links" wrap="off" readonly="1" class="caja_des">(.+)</textarea>'
     PASSWORD_PATTERN = r'<input type="text" name="password"'

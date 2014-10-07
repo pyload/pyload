@@ -16,8 +16,10 @@ class DepositfilesCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
 
     __description__ = """Depositfiles.com hoster plugin"""
-    __author_name__ = ("spoob", "zoidberg", "Walter Purcaro")
-    __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz", "vuolter@gmail.com")
+    __authors__ = [("spoob", "spoob@pyload.org"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
+
 
     FILE_NAME_PATTERN = r'<script type="text/javascript">eval\( unescape\(\'(?P<N>.*?)\''
     FILE_SIZE_PATTERN = r': <b>(?P<S>[0-9.]+)&nbsp;(?P<U>[kKMG])i?B</b>'

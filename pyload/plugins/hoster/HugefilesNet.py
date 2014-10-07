@@ -14,8 +14,8 @@ class HugefilesNet(XFSPHoster):
     __pattern__ = r'http://(?:www\.)?hugefiles\.net/\w{12}'
 
     __description__ = """Hugefiles.net hoster plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+
 
     HOSTER_NAME = "hugefiles.net"
 

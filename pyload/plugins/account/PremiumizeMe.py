@@ -11,8 +11,7 @@ class PremiumizeMe(Account):
     __version__ = "0.11"
 
     __description__ = """Premiumize.me account plugin"""
-    __author_name__ = "Florian Franzen"
-    __author_mail__ = "FlorianFranzen@gmail.com"
+    __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def loadAccountInfo(self, user, req):

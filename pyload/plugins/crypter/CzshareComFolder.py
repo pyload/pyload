@@ -12,8 +12,8 @@ class CzshareComFolder(Crypter):
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.*'
 
     __description__ = """Czshare.com folder decrypter plugin, now Sdilej.cz"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FOLDER_PATTERN = r'<tr class="subdirectory">\s*<td>\s*<table>(.*?)</table>'
     LINK_PATTERN = r'<td class="col2"><a href="([^"]+)">info</a></td>'

@@ -13,8 +13,7 @@ class DropboxCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?dropbox\.com/.+'
 
     __description__ = """Dropbox.com hoster plugin"""
-    __author_name__ = "zapp-brannigan"
-    __author_mail__ = "fuerst.reinje@web.de"
+    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     FILE_NAME_PATTERN = r'<title>Dropbox - (?P<N>.+?)<'
@@ -34,8 +33,8 @@ class DropboxCom(SimpleHoster):
     def handleFree(self):
         self.download(self.pyfile.url, get={'dl': "1"})
 
-        check = self.checkDownload({'is_html': re.compile("html")})
-        if check == "is_html":
+        check = self.checkDownload({'html': re.compile("html")})
+        if check == "html":
             self.parseError("Downloaded file is an html file")
 
 

@@ -14,8 +14,8 @@ class CrockoCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(crocko|easy-share).com/\w+'
 
     __description__ = """Crocko hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r'<span class="fz24">Download:\s*<strong>(?P<N>.*)'
     FILE_SIZE_PATTERN = r'<span class="tip1"><span class="inner">(?P<S>[^<]+)</span></span>'

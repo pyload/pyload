@@ -14,8 +14,7 @@ class OboomCom(Account):
     __version__ = "0.2"
 
     __description__ = """Oboom.com account plugin"""
-    __author_name__ = "stanley"
-    __author_mail__ = "stanley.foerster@gmail.com"
+    __authors__ = [("stanley", "stanley.foerster@gmail.com")]
 
 
     def loadAccountData(self, user, req):

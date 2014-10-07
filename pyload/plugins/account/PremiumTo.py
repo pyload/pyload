@@ -9,8 +9,10 @@ class PremiumTo(Account):
     __version__ = "0.04"
 
     __description__ = """Premium.to account plugin"""
-    __author_name__ = ("RaNaN", "zoidberg", "stickell")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
 
     def loadAccountInfo(self, user, req):

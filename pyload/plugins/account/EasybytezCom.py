@@ -1,28 +1,28 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from time import mktime, strptime, gmtime
 
-from pyload.plugins.base.Account import Account
-from pyload.plugins.internal.SimpleHoster import parseHtmlForm
+from module.plugins.internal.XFSPAccount import XFSPAccount
 from pyload.utils import parseFileSize
 
 
-class EasybytezCom(Account):
+class EasybytezCom(XFSPAccount):
     __name__ = "EasybytezCom"
     __type__ = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """EasyBytez.com account plugin"""
-    __author_name__ = ("zoidberg", "guidobelix")
-    __author_mail__ = ("zoidberg@mujmail.cz", "guidobelix@hotmail.it")
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("guidobelix", "guidobelix@hotmail.it")]
 
-    VALID_UNTIL_PATTERN = r'Premium account expire:</TD><TD><b>([^<]+)</b>'
-    TRAFFIC_LEFT_PATTERN = r'<TR><TD>Traffic available today:</TD><TD><b>(?P<S>[^<]+)</b>'
+
+    HOSTER_URL = "http://www.easybytez.com/"
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load("http://www.easybytez.com/?op=my_account", decode=True)
+        html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
 
         validuntil = None
         trafficleft = None
@@ -54,16 +54,3 @@ class EasybytezCom(Account):
                 trafficleft = parseFileSize(trafficleft) / 1024
 
         return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
-
-
-    def login(self, user, data, req):
-        html = req.load('http://www.easybytez.com/login.html', decode=True)
-        action, inputs = parseHtmlForm('name="FL"', html)
-        inputs.update({"login": user,
-                       "password": data['password'],
-                       "redirect": "http://www.easybytez.com/"})
-
-        html = req.load(action, post=inputs, decode=True)
-
-        if 'Incorrect Login or Password' in html or '>Error<' in html:
-            self.wrongPassword()

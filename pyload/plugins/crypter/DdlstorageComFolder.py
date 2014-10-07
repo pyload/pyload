@@ -11,8 +11,8 @@ class DdlstorageComFolder(DeadCrypter):
     __pattern__ = r'https?://(?:www\.)?ddlstorage\.com/folder/\w+'
 
     __description__ = """DDLStorage.com folder decrypter plugin"""
-    __author_name__ = ("godofdream", "stickell")
-    __author_mail__ = ("soilfiction@gmail.com", "l.stickell@yahoo.it")
+    __authors__ = [("godofdream", "soilfiction@gmail.com"),
+                   ("stickell", "l.stickell@yahoo.it")]
 
 
 getInfo = create_getInfo(SpeedLoadOrg)

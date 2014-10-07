@@ -15,8 +15,7 @@ class LinkdecrypterCom(Hook):
     __config__ = [("activated", "bool", "Activated", False)]
 
     __description__ = """Linkdecrypter.com hook plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def coreReady(self):

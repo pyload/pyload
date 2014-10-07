@@ -9,8 +9,7 @@ class Http(Account):
     __version__ = "0.01"
 
     __description__ = """Http dummy account plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     login_timeout = info_threshold = -1  #: Unlimited
