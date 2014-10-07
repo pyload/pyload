@@ -12,7 +12,8 @@ class RyushareCom(XFSPAccount):
     __author_name__ = ("zoidberg", "trance4us")
     __author_mail__ = ("zoidberg@mujmail.cz", "")
 
-    HOSTER_URL = "http://ryushare.com/"
+
+    HOSTER_URL = "http://www.ryushare.com/"
 
 
     def login(self, user, data, req):

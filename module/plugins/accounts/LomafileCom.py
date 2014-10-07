@@ -14,6 +14,3 @@ class LomafileCom(XFSPAccount):
 
 
     HOSTER_URL = "http://www.lomafile.com/"
-
-    VALID_UNTIL_PATTERN = r'<b>Premium account expire:([^<]+)</b>'
-    TRAFFIC_LEFT_PATTERN = r'<TR><TD>Traffic available today:</TD><TD><b>(?P<S>[^<]+)</b>'

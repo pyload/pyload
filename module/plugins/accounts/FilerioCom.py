@@ -12,4 +12,5 @@ class FilerioCom(XFSPAccount):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    HOSTER_URL = "http://filerio.in/"
+
+    HOSTER_URL = "http://www.filerio.in/"
