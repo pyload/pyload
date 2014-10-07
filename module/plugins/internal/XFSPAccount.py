@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
     __type__ = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __description__ = """XFileSharingPro base account plugin"""
     __author_name__ = ("zoidberg", "Walter Purcaro")
@@ -25,34 +25,53 @@ class XFSPAccount(Account):
     COOKIES = None  #: or list of tuples [(domain, name, value)]
 
     VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:.*?<b>(.+?)</b>'
-    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:.*?<b>(.+?)</b>'
+    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:.*?<b>(?P<S>.+?)</b>'
     LOGIN_FAIL_PATTERN = r'>(Incorrect Login or Password|Error<)'
-    PREMIUM_PATTERN = r'>Renew premium<'
+    # PREMIUM_PATTERN = r'>Renew premium<'
 
 
     def loadAccountInfo(self, user, req):
         html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
 
-        validuntil = trafficleft = None
-        premium = True if re.search(self.PREMIUM_PATTERN, html) else False
+        validuntil = None
+        trafficleft = None
+        premium = None
+
+        if hasattr(self, "PREMIUM_PATTERN"):
+            premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
-            premium = True
-            trafficleft = -1
+            expiredate = m.group(1)
+            self.logDebug("Expire date: " + expiredate)
+
             try:
-                self.logDebug(m.group(1))
-                validuntil = mktime(strptime(m.group(1), "%d %B %Y"))
+                validuntil = mktime(strptime(expiredate, "%d %B %Y"))
             except Exception, e:
                 self.logError(e)
-        else:
-            m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-            if m:
-                trafficleft = m.group(1)
-                if "Unlimited" in trafficleft:
+            else:
+                if validuntil > mktime(gmtime()):
                     premium = True
+                    trafficleft = -1
                 else:
-                    trafficleft = parseFileSize(trafficleft) / 1024
+                    if premium is False:  #: registered account type (not premium)
+                        validuntil = -1
+                    premium = False
+
+        try:
+            traffic = re.search(self.TRAFFIC_LEFT_PATTERN, html).groupdict()
+            trafficsize = traffic['S'] + traffic['U'] if 'U' in traffic else traffic['S']
+            if "Unlimited" in trafficsize:
+                trafficleft = -1
+                if premium is None:
+                    premium = True
+            else:
+                trafficleft = parseFileSize(trafficsize)
+        except:
+            pass
+
+        if premium is None:
+            premium = False
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
