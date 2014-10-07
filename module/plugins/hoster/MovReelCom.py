@@ -6,7 +6,7 @@ from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInf
 class MovReelCom(XFileSharingPro):
     __name__ = "MovReelCom"
     __type__ = "hoster"
-    __version__ = "1.20"
+    __version__ = "1.21"
 
     __pattern__ = r'http://(?:www\.)?movreel\.com/\w{12}'
 
@@ -17,9 +17,10 @@ class MovReelCom(XFileSharingPro):
 
     HOSTER_NAME = "movreel.com"
 
-    FILE_INFO_PATTERN = r'<h3>(?P<N>.+?) <small><sup>(?P<S>[\d.]+) (?P<U>..)</sup> </small></h3>'
-    OFFLINE_PATTERN = r'<b>File Not Found</b><br><br>'
-    LINK_PATTERN = r'<a href="(http://[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/.*)">Download Link</a>'
+    FILE_NAME_PATTERN = r'Filename: <b>(?P<N>.+?)<'
+    FILE_SIZE_PATTERN = r'Size: (?P<S>[\d.]+) (?P<U>\w+)'
+
+    LINK_PATTERN = r'<a href="([^"]+)">Download Link'
 
 
 getInfo = create_getInfo(MovReelCom)

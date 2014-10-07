@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
 
@@ -28,8 +28,6 @@ class DepositfilesCom(SimpleHoster):
     FILE_URL_REPLACEMENTS = [(__pattern__, "https://dfiles.eu/files/\g<ID>")]
 
     COOKIES = [(".dfiles.eu", "lang_current", "en")]
-
-    RECAPTCHA_PATTERN = r"Recaptcha.create\('([^']+)'"
 
     FREE_LINK_PATTERN = r'<form id="downloader_file_form" action="(http://.+?\.(dfiles\.eu|depositfiles\.com)/.+?)" method="post"'
     PREMIUM_LINK_PATTERN = r'class="repeat"><a href="(.+?)"'
@@ -67,21 +65,16 @@ class DepositfilesCom(SimpleHoster):
         params = {'fid': m.group(1)}
         self.logDebug("FID: %s" % params['fid'])
 
-        captcha_key = '6LdRTL8SAAAAAE9UOdWZ4d0Ky-aeA7XfSqyWDM2m'
-        m = re.search(self.RECAPTCHA_PATTERN, self.html)
-        if m:
-            captcha_key = m.group(1)
-        self.logDebug("CAPTCHA_KEY: %s" % captcha_key)
-
         self.wait()
         recaptcha = ReCaptcha(self)
+        captcha_key = recaptcha.detect_key()
+        if captcha_key is None:
+            self.parseError("ReCaptcha key not found")
 
         for _ in xrange(5):
             self.html = self.load("https://dfiles.eu/get_file.php", get=params)
 
             if '<input type=button value="Continue" onclick="check_recaptcha' in self.html:
-                if not captcha_key:
-                    self.parseError('Captcha key')
                 if 'response' in params:
                     self.invalidCaptcha()
                 params['challenge'], params['response'] = recaptcha.challenge(captcha_key)

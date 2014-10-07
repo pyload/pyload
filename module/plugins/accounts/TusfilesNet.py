@@ -4,26 +4,28 @@ import re
 
 from time import mktime, strptime, gmtime
 
-from module.plugins.Account import Account
-from module.plugins.internal.SimpleHoster import parseHtmlForm
+from module.plugins.internal.XFSPAccount import XFSPAccount
 from module.utils import parseFileSize
 
 
-class TusfilesNet(Account):
+class TusfilesNet(XFSPAccount):
     __name__ = "TusfilesNet"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """ Tusfile.net account plugin """
     __author_name__ = "guidobelix"
     __author_mail__ = "guidobelix@hotmail.it"
+
+
+    HOSTER_URL = "http://www.tusfiles.net/"
 
     VALID_UNTIL_PATTERN = r'<span class="label label-default">([^<]+)</span>'
     TRAFFIC_LEFT_PATTERN = r'<td><img src="//www.tusfiles.net/i/icon/meter.png" alt=""/></td>\n<td>&nbsp;(?P<S>[^<]+)</td>'
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load("http://www.tusfiles.net/?op=my_account", decode=True)
+        html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
 
         validuntil = None
         trafficleft = None
@@ -54,16 +56,3 @@ class TusfilesNet(Account):
                 trafficleft = parseFileSize(trafficleft) * 1024
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
-
-
-    def login(self, user, data, req):
-        html = req.load("http://www.tusfiles.net/login.html", decode=True)
-        action, inputs = parseHtmlForm('name="FL"', html)
-        inputs.update({'login': user,
-                       'password': data['password'],
-                       'redirect': "http://www.tusfiles.net/"})
-
-        html = req.load("http://www.tusfiles.net/", post=inputs, decode=True)
-
-        if 'Incorrect Login or Password' in html or '>Error<' in html:
-            self.wrongPassword()

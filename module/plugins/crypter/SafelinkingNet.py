@@ -4,7 +4,7 @@ import re
 
 from pycurl import FOLLOWLOCATION
 
-from module.lib.BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup
 
 from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter

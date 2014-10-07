@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FilestubeCom(SimpleCrypter):
     __name__ = "FilestubeCom"
     __type__ = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?filestube\.(?:com|to)/\w+'
 
@@ -15,4 +15,4 @@ class FilestubeCom(SimpleCrypter):
     __author_mail__ = "l.stickell@yahoo.it"
 
     LINK_PATTERN = r'<a class=\"file-link-main(?: noref)?\" [^>]* href=\"(http://[^\"]+)'
-    TITLE_PATTERN = r'<h1\s*> (?P<title>.+)  download\s*</h1>'
+    TITLE_PATTERN = r'<h1\s*> (.+)  download\s*</h1>'

@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-#
-# Test links:
-# http://k2s.cc/file/55fb73e1c00c5/random.bin
 
 import re
 
@@ -22,15 +19,14 @@ class Keep2shareCC(SimpleHoster):
     __author_name__ = "stickell"
     __author_mail__ = "l.stickell@yahoo.it"
 
+
     FILE_NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
     FILE_SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
     OFFLINE_PATTERN = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
 
     LINK_PATTERN = r'To download this file with slow speed, use <a href="([^"]+)">this link</a>'
     WAIT_PATTERN = r'Please wait ([\d:]+) to download this file'
-    ALREADY_DOWNLOADING_PATTERN = r'Free account does not allow to download more than one file at the same time'
-
-    RECAPTCHA_KEY = "6LcYcN0SAAAAABtMlxKj7X0hRxOY8_2U86kI1vbb"
+    MULTIDL_ERROR = r'Free account does not allow to download more than one file at the same time'
 
 
     def handleFree(self):
@@ -59,7 +55,7 @@ class Keep2shareCC(SimpleHoster):
                 self.wait(wait_time, reconnect=True)
                 self.retry()
 
-            m = re.search(self.ALREADY_DOWNLOADING_PATTERN, self.html)
+            m = re.search(self.MULTIDL_ERROR, self.html)
             if m:
                 # if someone is already downloading on our line, wait 30min and retry
                 self.logDebug("Already downloading, waiting for 30 minutes")
@@ -71,10 +67,16 @@ class Keep2shareCC(SimpleHoster):
                 self.parseError("Unable to detect direct link")
             self.startDownload(m.group(1))
 
+
     def handleCaptcha(self):
         recaptcha = ReCaptcha(self)
+
+        captcha_key = recaptcha.detect_key()
+        if captcha_key is None:
+            self.parseError("ReCaptcha key not found")
+
         for _ in xrange(5):
-            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+            challenge, response = recaptcha.challenge(captcha_key)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,
                          'CaptchaForm%5Bcode%5D': '',
@@ -94,10 +96,12 @@ class Keep2shareCC(SimpleHoster):
         else:
             self.fail("All captcha attempts failed")
 
+
     def startDownload(self, url):
         d = urljoin(self.base_url, url)
         self.logDebug("Direct Link: " + d)
         self.download(d, disposition=True)
+
 
     def sanitize_url(self):
         header = self.load(self.pyfile.url, just_header=True)

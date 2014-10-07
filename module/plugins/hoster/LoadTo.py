@@ -27,7 +27,6 @@ class LoadTo(SimpleHoster):
 
     LINK_PATTERN = r'<form method="post" action="(.+?)"'
     WAIT_PATTERN = r'type="submit" value="Download \((\d+)\)"'
-    SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.noscript\?k=([^"]+)'
 
     FILE_URL_REPLACEMENTS = [(r'(\w)$', r'\1/')]
 
@@ -51,12 +50,12 @@ class LoadTo(SimpleHoster):
             self.wait(m.group(1))
 
         # Load.to is using solvemedia captchas since ~july 2014:
-        m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-        if m is None:
+        solvemedia = SolveMedia(self)
+        captcha_key = solvemedia.detect_key()
+
+        if captcha_key is None:
             self.download(download_url)
         else:
-            captcha_key = m.group(1)
-            solvemedia = SolveMedia(self)
             captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
             self.download(download_url, post={"adcopy_challenge": captcha_challenge, "adcopy_response": captcha_response})
             check = self.checkDownload({"404": re.compile("\A<h1>404 Not Found</h1>")})

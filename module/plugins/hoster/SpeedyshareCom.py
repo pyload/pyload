@@ -15,7 +15,7 @@ class SpeedyshareCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.02"
 
-    __pattern__ = r"https?://(www\.)?(speedyshare\.com|speedy\.sh)/\w+"
+    __pattern__ = r"https?://(?:www\.)?(speedyshare\.com|speedy\.sh)/\w+"
 
     __description__ = """Speedyshare.com hoster plugin"""
     __author_name__ = "zapp-brannigan"
@@ -43,8 +43,8 @@ class SpeedyshareCom(SimpleHoster):
         dl_link = urljoin("http://www.speedyshare.com", m.group(1))
         self.download(dl_link, disposition=True)
 
-        check = self.checkDownload({'is_html': re.compile("html")})
-        if check == "is_html":
+        check = self.checkDownload({'html': re.compile("html")})
+        if check == "html":
             self.parseError("Downloaded file is an html file")
 
 

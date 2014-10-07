@@ -48,9 +48,8 @@ class FastshareCz(SimpleHoster):
         self.download(urljoin(baseurl, action), post={"code": captcha, "btn.x": 77, "btn.y": 18})
 
         check = self.checkDownload({
-            "paralell_dl":
-            "<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)",
-            "wrong_captcha": "Download for FREE"
+            'paralell_dl': "<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)",
+            'wrong_captcha': "Download for FREE"
         })
 
         if check == "paralell_dl":

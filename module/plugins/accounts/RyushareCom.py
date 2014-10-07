@@ -6,13 +6,14 @@ from module.plugins.internal.XFSPAccount import XFSPAccount
 class RyushareCom(XFSPAccount):
     __name__ = "RyushareCom"
     __type__ = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Ryushare.com account plugin"""
     __author_name__ = ("zoidberg", "trance4us")
     __author_mail__ = ("zoidberg@mujmail.cz", "")
 
-    MAIN_PAGE = "http://ryushare.com/"
+
+    HOSTER_URL = "http://www.ryushare.com/"
 
 
     def login(self, user, data, req):

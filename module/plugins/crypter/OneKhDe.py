@@ -30,9 +30,9 @@ class OneKhDe(Crypter):
 
     def proceed(self, url, location):
         url = self.parent.url
-        self.html = self.req.load(url)
+        self.html = self.load(url)
         link_ids = re.findall(r"<a id=\"DownloadLink_(\d*)\" href=\"http://1kh.de/", self.html)
         for id in link_ids:
             new_link = unescape(
-                re.search("width=\"100%\" src=\"(.*)\"></iframe>", self.req.load("http://1kh.de/l/" + id)).group(1))
+                re.search("width=\"100%\" src=\"(.*)\"></iframe>", self.load("http://1kh.de/l/" + id)).group(1))
             self.urls.append(new_link)

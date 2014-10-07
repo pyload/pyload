@@ -17,7 +17,7 @@ class FilerioCom(XFileSharingPro):
 
     HOSTER_NAME = "filerio.in"
 
-    OFFLINE_PATTERN = r'<b>&quot;File Not Found&quot;</b>|File has been removed due to Copyright Claim'
+    OFFLINE_PATTERN = r'>&quot;File Not Found|File has been removed'
     FILE_URL_REPLACEMENTS = [(r'http://.*?/', 'http://filerio.in/')]
 
 

@@ -22,7 +22,6 @@ class CrockoCom(SimpleHoster):
     OFFLINE_PATTERN = r"<h1>Sorry,<br />the page you're looking for <br />isn't here.</h1>|File not found"
 
     CAPTCHA_URL_PATTERN = re.compile(r"u='(/file_contents/captcha/\w+)';\s*w='(\d+)';")
-    CAPTCHA_KEY_PATTERN = re.compile(r'Recaptcha.create\("([^"]+)"')
 
     FORM_PATTERN = r'<form  method="post" action="([^"]+)">(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="?([^" ]+)"? value="?([^" ]+)"?[^>]*>'
@@ -43,10 +42,10 @@ class CrockoCom(SimpleHoster):
             else:
                 break
 
-        m = re.search(self.CAPTCHA_KEY_PATTERN, self.html)
-        if m is None:
-            self.parseError('Captcha KEY')
-        captcha_key = m.group(1)
+        recaptcha = ReCaptcha(self)
+        captcha_key = recaptcha.detect_key()
+        if captcha_key is None:
+            self.parseError("ReCaptcha captcha key not found")
 
         m = re.search(self.FORM_PATTERN, self.html, re.DOTALL)
         if m is None:
@@ -54,14 +53,12 @@ class CrockoCom(SimpleHoster):
         action, form = m.groups()
         inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
 
-        recaptcha = ReCaptcha(self)
-
         for _ in xrange(5):
             inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
             self.download(action, post=inputs)
 
             check = self.checkDownload({
-                "captcha_err": self.CAPTCHA_KEY_PATTERN
+                "captcha_err": recaptcha.KEY_AJAX_PATTERN
             })
 
             if check == "captcha_err":

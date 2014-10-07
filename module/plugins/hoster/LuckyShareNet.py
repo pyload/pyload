@@ -2,7 +2,7 @@
 
 import re
 
-from module.lib.bottle import json_loads
+from bottle import json_loads
 
 from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -21,7 +21,6 @@ class LuckyShareNet(SimpleHoster):
 
     FILE_INFO_PATTERN = r"<h1 class='file_name'>(?P<N>\S+)</h1>\s*<span class='file_size'>Filesize: (?P<S>[\d.]+)(?P<U>\w+)</span>"
     OFFLINE_PATTERN = r'There is no such file available'
-    RECAPTCHA_KEY = "6LdivsgSAAAAANWh-d7rPE1mus4yVWuSQIJKIYNw"
 
 
     def parseJson(self, rep):
@@ -50,8 +49,13 @@ class LuckyShareNet(SimpleHoster):
         self.wait(int(json['time']))
 
         recaptcha = ReCaptcha(self)
+
+        captcha_key = recaptcha.detect_key()
+        if captcha_key is None:
+            self.parseError("ReCaptcha key not found")
+
         for _ in xrange(5):
-            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+            challenge, response = recaptcha.challenge(captcha_key)
             rep = self.load(r"http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s" %
                             (challenge, response, json['hash']), decode=True)
             self.logDebug("JSON: " + rep)
