@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class EasybytezCom(XFileSharingPro):
+class EasybytezCom(XFSPHoster):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?easybytez\.com/\w{12}'
 
     __description__ = """Easybytez.com hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_NAME = "easybytez.com"

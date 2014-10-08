@@ -16,8 +16,7 @@ class FastixRu(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Fastix.ru hook plugin"""
-    __author_name__ = "Massimo Rosamilia"
-    __author_mail__ = "max@spiritix.eu"
+    __authors__ = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
     def getHoster(self):

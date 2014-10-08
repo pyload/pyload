@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class TusfilesNet(XFileSharingPro):
+class TusfilesNet(XFSPHoster):
     __name__ = "TusfilesNet"
     __type__ = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.06"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
 
     __description__ = """Tusfiles.net hoster plugin"""
-    __author_name__ = ("Walter Purcaro", "guidobelix")
-    __author_mail__ = ("vuolter@gmail.com", "guidobelix@hotmail.it")
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
+                   ("guidobelix", "guidobelix@hotmail.it")]
 
 
     HOSTER_NAME = "tusfiles.net"

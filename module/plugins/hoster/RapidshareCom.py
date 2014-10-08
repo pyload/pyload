@@ -52,8 +52,9 @@ class RapidshareCom(Hoster):
                    "Preferred Server", "None")]
 
     __description__ = """Rapidshare.com hoster plugin"""
-    __author_name__ = ("spoob", "RaNaN", "mkaay")
-    __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "mkaay@mkaay.de")
+    __authors__ = [("spoob", "spoob@pyload.org"),
+                   ("RaNaN", "ranan@pyload.org"),
+                   ("mkaay", "mkaay@mkaay.de")]
 
 
     def setup(self):

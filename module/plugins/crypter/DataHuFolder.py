@@ -8,16 +8,17 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class DataHuFolder(SimpleCrypter):
     __name__ = "DataHuFolder"
     __type__ = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?data.hu/dir/\w+'
 
     __description__ = """Data.hu folder decrypter plugin"""
-    __author_name__ = ("crash", "stickell")
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("crash", None),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
     LINK_PATTERN = r"<a href='(http://data\.hu/get/.+)' target='_blank'>\1</a>"
-    TITLE_PATTERN = ur'<title>(?P<title>.+) Let\xf6lt\xe9se</title>'
+    TITLE_PATTERN = ur'<title>(.+) Let\xf6lt\xe9se</title>'
 
 
     def decrypt(self, pyfile):

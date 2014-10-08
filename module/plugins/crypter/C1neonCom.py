@@ -11,5 +11,4 @@ class C1neonCom(DeadCrypter):
     __pattern__ = r'http://(?:www\.)?c1neon.com/.*?'
 
     __description__ = """C1neon.com decrypter plugin"""
-    __author_name__ = "godofdream"
-    __author_mail__ = "soilfiction@gmail.com"
+    __authors__ = [("godofdream", "soilfiction@gmail.com")]

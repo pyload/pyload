@@ -99,9 +99,12 @@ class UploadedTo(Hoster):
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
     __description__ = """Uploaded.net hoster plugin"""
-    __author_name__ = ("spoob", "mkaay", "zoidberg", "netpok", "stickell")
-    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz",
-                       "netpok@gmail.com", "l.stickell@yahoo.it")
+    __authors__ = [("spoob", "spoob@pyload.org"),
+                   ("mkaay", "mkaay@mkaay.de"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("netpok", "netpok@gmail.com"),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
     FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
     OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'

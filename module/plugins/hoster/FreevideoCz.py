@@ -11,8 +11,7 @@ class FreevideoCz(DeadHoster):
     __pattern__ = r'http://(?:www\.)?freevideo\.cz/vase-videa/.+'
 
     __description__ = """Freevideo.cz hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
 getInfo = create_getInfo(FreevideoCz)

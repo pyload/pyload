@@ -12,8 +12,8 @@ class FilejungleCom(FileserveCom):
     __pattern__ = r'http://(?:www\.)?filejungle\.com/f/(?P<id>[^/]+).*'
 
     __description__ = """Filejungle.com hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     URLS = ["http://www.filejungle.com/f/", "http://www.filejungle.com/check_links.php",
             "http://www.filejungle.com/checkReCaptcha.php"]

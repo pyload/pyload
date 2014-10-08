@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class CramitIn(XFileSharingPro):
+class CramitIn(XFSPHoster):
     __name__ = "CramitIn"
     __type__ = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?cramit\.in/\w{12}'
 
     __description__ = """Cramit.in hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_NAME = "cramit.in"

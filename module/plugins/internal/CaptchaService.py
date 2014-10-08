@@ -10,8 +10,8 @@ class CaptchaService:
     __version__ = "0.09"
 
     __description__ = """Base captcha service plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+
 
     KEY_PATTERN = None
 
@@ -54,8 +54,7 @@ class ReCaptcha(CaptchaService):
     __version__ = "0.02"
 
     __description__ = """ReCaptcha captcha service plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN = r"https?://(?:www\.)?google\.com/recaptcha/api/challenge\?k=(?P<KEY>\w+?)"
@@ -115,8 +114,7 @@ class AdsCaptcha(CaptchaService):
     __version__ = "0.02"
 
     __description__ = """AdsCaptcha captcha service plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
     ID_PATTERN = r'http://api\.adscaptcha\.com/Get\.aspx\?[^"\']*CaptchaId=(?P<ID>\d+)'
@@ -177,8 +175,7 @@ class SolveMedia(CaptchaService):
     __version__ = "0.02"
 
     __description__ = """SolveMedia captcha service plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.(no)?script\?k=(?P<KEY>.+?)"'

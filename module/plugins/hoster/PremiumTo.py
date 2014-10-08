@@ -12,10 +12,14 @@ class PremiumTo(Hoster):
     __name__ = "PremiumTo"
     __type__ = "hoster"
     __version__ = "0.10"
+
     __pattern__ = r'https?://(?:www\.)?premium.to/.*'
+
     __description__ = """Premium.to hoster plugin"""
-    __author_name__ = ("RaNaN", "zoidberg", "stickell")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
     def setup(self):
         self.resumeDownload = True

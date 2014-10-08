@@ -5,20 +5,22 @@
 
 import re
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 from module.plugins.internal.CaptchaService import SolveMedia
 
 
-class RyushareCom(XFileSharingPro):
+class RyushareCom(XFSPHoster):
     __name__ = "RyushareCom"
     __type__ = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.18"
 
     __pattern__ = r'http://(?:www\.)?ryushare\.com/\w+'
 
     __description__ = """Ryushare.com hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell", "quareevo")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "quareevo@arcor.de")
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it"),
+                   ("quareevo", "quareevo@arcor.de")]
+
 
     HOSTER_NAME = "ryushare.com"
 

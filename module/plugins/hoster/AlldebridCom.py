@@ -18,8 +18,7 @@ class AlldebridCom(Hoster):
     __pattern__ = r'https?://(?:[^/]*\.)?alldebrid\..*'
 
     __description__ = """Alldebrid.com hoster plugin"""
-    __author_name__ = "Andy Voigt"
-    __author_mail__ = "spamsales@online.de"
+    __authors__ = [("Andy Voigt", "spamsales@online.de")]
 
 
     def getFilename(self, url):
@@ -78,8 +77,8 @@ class AlldebridCom(Hoster):
 
         self.download(new_url, disposition=True)
 
-        check = self.checkDownload({"error": "<title>An error occured while processing your request</title>",
-                                    "empty": re.compile(r"^$")})
+        check = self.checkDownload({'error': "<title>An error occured while processing your request</title>",
+                                    'empty': re.compile(r"^$")})
 
         if check == "error":
             self.retry(wait_time=60, reason="An error occured while generating link.")

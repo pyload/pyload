@@ -15,15 +15,14 @@ class DDLMusicOrg(Crypter):
     __pattern__ = r'http://(?:www\.)?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+'
 
     __description__ = """Ddl-music.org decrypter plugin"""
-    __author_name__ = "mkaay"
-    __author_mail__ = "mkaay@mkaay.de"
+    __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 
     def setup(self):
         self.multiDL = False
 
     def decrypt(self, pyfile):
-        html = self.req.load(pyfile.url, cookies=True)
+        html = self.load(pyfile.url, cookies=True)
 
         if re.search(r"Wer dies nicht rechnen kann", html) is not None:
             self.offline()
@@ -38,7 +37,7 @@ class DDLMusicOrg(Crypter):
         else:
             solve = int(math.group(1)) - int(math.group(3))
         sleep(3)
-        htmlwithlink = self.req.load(pyfile.url, cookies=True,
+        htmlwithlink = self.load(pyfile.url, cookies=True,
                                      post={"calc%s" % linknr: solve, "send%s" % linknr: "Send", "id": id,
                                            "linknr": linknr})
         m = re.search(r"<form id=\"ff\" action=\"(.*?)\" method=\"post\">", htmlwithlink)

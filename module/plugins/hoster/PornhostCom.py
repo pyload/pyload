@@ -13,8 +13,7 @@ class PornhostCom(Hoster):
     __pattern__ = r'http://(?:www\.)?pornhost\.com/([0-9]+/[0-9]+\.html|[0-9]+)'
 
     __description__ = """Pornhost.com hoster plugin"""
-    __author_name__ = "jeix"
-    __author_mail__ = "jeix@hasnomail.de"
+    __authors__ = [("jeix", "jeix@hasnomail.de")]
 
 
     def process(self, pyfile):

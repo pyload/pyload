@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class SendmywayCom(XFileSharingPro):
+class SendmywayCom(XFSPHoster):
     __name__ = "SendmywayCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?sendmyway\.com/\w{12}'
 
     __description__ = """SendMyWay hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_NAME = "sendmyway.com"

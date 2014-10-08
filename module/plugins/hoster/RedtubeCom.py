@@ -14,8 +14,7 @@ class RedtubeCom(Hoster):
     __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'
 
     __description__ = """Redtube.com hoster plugin"""
-    __author_name__ = "jeix"
-    __author_mail__ = "jeix@hasnomail.de"
+    __authors__ = [("jeix", "jeix@hasnomail.de")]
 
 
     def process(self, pyfile):

@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class MovReelCom(XFileSharingPro):
+class MovReelCom(XFSPHoster):
     __name__ = "MovReelCom"
     __type__ = "hoster"
-    __version__ = "1.21"
+    __version__ = "1.23"
 
     __pattern__ = r'http://(?:www\.)?movreel\.com/\w{12}'
 
     __description__ = """MovReel.com hoster plugin"""
-    __author_name__ = "JorisV83"
-    __author_mail__ = "jorisv83-pyload@yahoo.com"
+    __authors__ = [("JorisV83", "jorisv83-pyload@yahoo.com")]
 
 
     HOSTER_NAME = "movreel.com"

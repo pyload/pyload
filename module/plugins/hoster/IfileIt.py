@@ -15,8 +15,8 @@ class IfileIt(SimpleHoster):
     __pattern__ = r'^unmatchable$'
 
     __description__ = """Ifile.it"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     LINK_PATTERN = r'</span> If it doesn\'t, <a target="_blank" href="([^"]+)">'
     RECAPTCHA_PATTERN = r"var __recaptcha_public\s*=\s*'([^']+)';"

@@ -13,8 +13,8 @@ class TwoSharedCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?2shared.com/(account/)?(download|get|file|document|photo|video|audio)/.*'
 
     __description__ = """2Shared.com hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r'<h1>(?P<N>.*)</h1>'
     FILE_SIZE_PATTERN = r'<span class="dtitle">File size:</span>\s*(?P<S>[0-9,.]+) (?P<U>[kKMG])i?B'

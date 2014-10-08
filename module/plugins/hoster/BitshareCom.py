@@ -16,20 +16,23 @@ class BitshareCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))'
 
     __description__ = """Bitshare.com hoster plugin"""
-    __author_name__ = ("Paul King", "fragonib")
-    __author_mail__ = ("", "fragonib[AT]yahoo[DOT]es")
+    __authors__ = [("Paul King", None),
+                   ("fragonib", "fragonib[AT]yahoo[DOT]es")]
+
 
     FILE_INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)</h1>'
     OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
+
+    COOKIES = [(".bitshare.com", "language_selection", "EN")]
 
     FILE_AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
     TRAFFIC_USED_UP = r'Your Traffic is used up for today. Upgrade to premium to continue!'
 
 
     def setup(self):
-        self.req.cj.setCookie(".bitshare.com", "language_selection", "EN")
         self.multiDL = self.premium
         self.chunkLimit = 1
+
 
     def process(self, pyfile):
         if self.premium:
@@ -76,6 +79,7 @@ class BitshareCom(SimpleHoster):
             self.retry(3, 60, 'Error 404')
         elif check == "error":
             self.retry(5, 5 * 60, "Bitshare host : Error occured")
+
 
     def getDownloadUrl(self):
         # Return location if direct download is active
@@ -131,6 +135,7 @@ class BitshareCom(SimpleHoster):
 
         return url
 
+
     def handleErrors(self, response, separator):
         self.logDebug("Checking response [%s]" % response)
         if "ERROR:Session timed out" in response:
@@ -138,6 +143,7 @@ class BitshareCom(SimpleHoster):
         elif "ERROR" in response:
             msg = response.split(separator)[-1]
             self.fail(msg)
+
 
     def handleCaptchaErrors(self, response):
         self.logDebug("Result of captcha resolving [%s]" % response)

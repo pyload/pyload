@@ -13,8 +13,8 @@ class OneFichierCom(Account):
     __version__ = "0.1"
 
     __description__ = """1fichier.com account plugin"""
-    __author_name__ = "Elrick69"
-    __author_mail__ = "elrick69[AT]rocketmail[DOT]com"
+    __authors__ = [("Elrick69", "elrick69[AT]rocketmail[DOT]com")]
+
 
     VALID_UNTIL_PATTERN = r'You are a premium user until (?P<d>\d{2})/(?P<m>\d{2})/(?P<y>\d{4})'
 

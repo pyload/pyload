@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from PIL import Image
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
 from glob import glob
 from os import sep
 from os.path import abspath, dirname
@@ -14,8 +18,7 @@ class LinksaveIn(OCR):
     __version__ = "0.1"
 
     __description__ = """Linksave.in ocr plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):

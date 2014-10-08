@@ -15,8 +15,7 @@ class VeehdCom(Hoster):
                   ("replacement_char", "str", "Filename replacement character", "_")]
 
     __description__ = """Veehd.com hoster plugin"""
-    __author_name__ = "cat"
-    __author_mail__ = "cat@pyload"
+    __authors__ = [("cat", "cat@pyload")]
 
 
     def _debug(self, msg):

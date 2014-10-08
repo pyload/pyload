@@ -16,21 +16,22 @@ class UploadingCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)'
 
     __description__ = """Uploading.com hoster plugin"""
-    __author_name__ = ("jeix", "mkaay", "zoidberg")
-    __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
+    __authors__ = [("jeix", "jeix@hasnomail.de"),
+                   ("mkaay", "mkaay@mkaay.de"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
     FILE_SIZE_PATTERN = r'size tip_container">(?P<S>[\d.]+) (?P<U>\w+)<'
     OFFLINE_PATTERN = r'(Page|file) not found'
 
+    COOKIES = [(".uploading.com", "lang", "1"),
+               (".uploading.com", "language", "1"),
+               (".uploading.com", "setlang", "en"),
+               (".uploading.com", "_lang", "en")]
+
 
     def process(self, pyfile):
-        # set lang to english
-        self.req.cj.setCookie(".uploading.com", "lang", "1")
-        self.req.cj.setCookie(".uploading.com", "language", "1")
-        self.req.cj.setCookie(".uploading.com", "setlang", "en")
-        self.req.cj.setCookie(".uploading.com", "_lang", "en")
-
         if not "/get/" in pyfile.url:
             pyfile.url = pyfile.url.replace("/files", "/files/get")
 
@@ -41,6 +42,7 @@ class UploadingCom(SimpleHoster):
             self.handlePremium()
         else:
             self.handleFree()
+
 
     def handlePremium(self):
         postData = {'action': 'get_link',
@@ -54,6 +56,7 @@ class UploadingCom(SimpleHoster):
             self.download(url)
 
         raise Exception("Plugin defect.")
+
 
     def handleFree(self):
         m = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)

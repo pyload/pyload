@@ -15,8 +15,7 @@ class UnSkipOnFail(Hook):
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """When a download fails, restart skipped duplicates"""
-    __author_name__ = "hagg"
-    __author_mail__ = None
+    __authors__ = [("hagg", None)]
 
 
     def downloadFailed(self, pyfile):

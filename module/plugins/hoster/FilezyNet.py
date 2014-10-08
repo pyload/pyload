@@ -11,8 +11,7 @@ class FilezyNet(DeadHoster):
     __pattern__ = r'http://(?:www\.)?filezy\.net/\w{12}'
 
     __description__ = """Filezy.net hoster plugin"""
-    __author_name__ = None
-    __author_mail__ = None
+    __authors__ = []
 
 
 getInfo = create_getInfo(FilezyNet)

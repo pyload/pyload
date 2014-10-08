@@ -40,9 +40,11 @@ class AdYouLike:
     ADYOULIKE_CALLBACK = r'Adyoulike.g._jsonp_5579316662423138'
     ADYOULIKE_CHALLENGE_PATTERN = ADYOULIKE_CALLBACK + r'\((.*?)\)'
 
+
     def __init__(self, plugin, engine="adyoulike"):
         self.plugin = plugin
         self.engine = engine
+
 
     def challenge(self, html):
         adyoulike_data_string = None
@@ -70,6 +72,7 @@ class AdYouLike:
         challenge_data = json_loads(challenge_string)
 
         return ayl_data, challenge_data
+
 
     def result(self, ayl, challenge):
         """
@@ -114,8 +117,10 @@ class DlFreeFr(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/([a-zA-Z0-9]+|getfile\.pl\?file=/[a-zA-Z0-9]+)'
 
     __description__ = """Dl.free.fr hoster plugin"""
-    __author_name__ = ("the-razer", "zoidberg", "Toilal")
-    __author_mail__ = ("daniel_ AT gmx DOT net", "zoidberg@mujmail.cz", "toilal.dev@gmail.com")
+    __authors__ = [("the-razer", "daniel_ AT gmx DOT net"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("Toilal", "toilal.dev@gmail.com")]
+
 
     FILE_NAME_PATTERN = r'Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>'
     FILE_SIZE_PATTERN = r'Taille:</td>\s*<td[^>]*>(?P<S>[\d.]+[KMG])o'
@@ -127,13 +132,13 @@ class DlFreeFr(SimpleHoster):
         self.limitDL = 5
         self.chunkLimit = 1
 
+
     def init(self):
         factory = self.core.requestFactory
         self.req = CustomBrowser(factory.bucket, factory.getOptions())
 
-    def process(self, pyfile):
-        self.req.setCookieJar(None)
 
+    def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
         valid_url = pyfile.url
         headers = self.load(valid_url, just_header=True)
@@ -157,6 +162,7 @@ class DlFreeFr(SimpleHoster):
         else:
             self.fail("Invalid return code: " + str(headers.get('code')))
 
+
     def handleFree(self):
         action, inputs = self.parseHtmlForm('action="getfile.pl"')
 
@@ -179,6 +185,7 @@ class DlFreeFr(SimpleHoster):
             self.download(location, disposition=True)
         else:
             self.fail("Invalid response")
+
 
     def getLastHeaders(self):
         #parse header

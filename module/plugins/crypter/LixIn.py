@@ -10,11 +10,11 @@ class LixIn(Crypter):
     __type__ = "crypter"
     __version__ = "0.22"
 
-    __pattern__ = r'http://(www.)?lix.in/(?P<id>.*)'
+    __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
 
     __description__ = """Lix.in decrypter plugin"""
-    __author_name__ = "spoob"
-    __author_mail__ = "spoob@pyload.org"
+    __authors__ = [("spoob", "spoob@pyload.org")]
+
 
     CAPTCHA_PATTERN = r'<img src="(?P<image>captcha_img.php\?.*?)"'
     SUBMIT_PATTERN = r"value='continue.*?'"
@@ -28,10 +28,10 @@ class LixIn(Crypter):
         if m is None:
             self.fail("couldn't identify file id")
 
-        id = m.group("id")
+        id = m.group("ID")
         self.logDebug("File id is %s" % id)
 
-        self.html = self.req.load(url, decode=True)
+        self.html = self.load(url, decode=True)
 
         m = re.search(self.SUBMIT_PATTERN, self.html)
         if m is None:
@@ -44,12 +44,12 @@ class LixIn(Crypter):
                 if m:
                     self.logDebug("Trying captcha")
                     captcharesult = self.decryptCaptcha("http://lix.in/" + m.group("image"))
-                self.html = self.req.load(url, decode=True,
+                self.html = self.load(url, decode=True,
                                           post={"capt": captcharesult, "submit": "submit", "tiny": id})
             else:
                 self.logDebug("No captcha/captcha solved")
         else:
-            self.html = self.req.load(url, decode=True, post={"submit": "submit", "tiny": id})
+            self.html = self.load(url, decode=True, post={"submit": "submit", "tiny": id})
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:

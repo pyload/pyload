@@ -2,7 +2,7 @@
 
 import re
 
-from module.lib.BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
+from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
 
 from module.plugins.Crypter import Crypter
 
@@ -15,8 +15,9 @@ class HoerbuchIn(Crypter):
     __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out.php\?.+|protection/folder_\d+\.html)'
 
     __description__ = """Hoerbuch.in decrypter plugin"""
-    __author_name__ = ("spoob", "mkaay")
-    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
+    __authors__ = [("spoob", "spoob@pyload.org"),
+                   ("mkaay", "mkaay@mkaay.de")]
+
 
     article = re.compile("http://(?:www\.)?hoerbuch\.in/wp/horbucher/\d+/.+/")
     protection = re.compile("http://(?:www\.)?hoerbuch\.in/protection/folder_\d+.html")
@@ -45,7 +46,7 @@ class HoerbuchIn(Crypter):
         url = m.group(0)
 
         self.pyfile.url = url
-        src = self.req.load(url, post={"viewed": "adpg"})
+        src = self.load(url, post={"viewed": "adpg"})
 
         links = []
         pattern = re.compile("http://www\.hoerbuch\.in/protection/(\w+)/(.*?)\"")

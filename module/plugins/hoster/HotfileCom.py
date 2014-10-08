@@ -8,11 +8,13 @@ class HotfileCom(DeadHoster):
     __type__ = "hoster"
     __version__ = "0.37"
 
-    __pattern__ = r'https?://(www.)?hotfile\.com/dl/\d+/[0-9a-zA-Z]+/'
+    __pattern__ = r'https?://(?:www\.)?hotfile\.com/dl/\d+/\w+'
 
     __description__ = """Hotfile.com hoster plugin"""
-    __author_name__ = ("sitacuisses", "spoob", "mkaay", "JoKoT3")
-    __author_mail__ = ("sitacuisses@yhoo.de", "spoob@pyload.org", "mkaay@mkaay.de", "jokot3@gmail.com")
+    __authors__ = [("sitacuisses", "sitacuisses@yhoo.de"),
+                   ("spoob", "spoob@pyload.org"),
+                   ("mkaay", "mkaay@mkaay.de"),
+                   ("JoKoT3", "jokot3@gmail.com")]
 
 
 getInfo = create_getInfo(HotfileCom)

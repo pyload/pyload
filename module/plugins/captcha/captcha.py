@@ -2,11 +2,11 @@
 
 from __future__ import with_statement
 
-import GifImagePlugin
-import Image
-import JpegImagePlugin
-import PngImagePlugin
-import TiffImagePlugin
+try:
+    from PIL import Image, GifImagePlugin, JpegImagePlugin, PngImagePlugin, TiffImagePlugin
+except ImportError:
+    import Image, GifImagePlugin, JpegImagePlugin, PngImagePlugin, TiffImagePlugin
+
 import logging
 import os
 import subprocess
@@ -21,8 +21,7 @@ class OCR(object):
     __version__ = "0.1"
 
     __description__ = """OCR base plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):

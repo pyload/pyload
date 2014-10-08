@@ -2,7 +2,7 @@
 
 import re
 
-from module.lib.BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup
 
 from module.plugins.Crypter import Crypter
 
@@ -15,20 +15,15 @@ class DuckCryptInfo(Crypter):
     __pattern__ = r'http://(?:www\.)?duckcrypt.info/(folder|wait|link)/(\w+)/?(\w*)'
 
     __description__ = """DuckCrypt.info decrypter plugin"""
-    __author_name__ = "godofdream"
-    __author_mail__ = "soilfiction@gmail.com"
+    __authors__ = [("godofdream", "soilfiction@gmail.com")]
+
 
     TIMER_PATTERN = r'<span id="timer">(.*)</span>'
 
 
     def decrypt(self, pyfile):
         url = pyfile.url
-        # seems we don't need to wait
-        #src = self.req.load(str(url))
-        #m = re.search(self.TIMER_PATTERN, src)
-        #if m:
-        #    self.logDebug("Sleeping for" % m.group(1))
-        #    self.setWait(int(m.group(1)) ,False)
+
         m = re.match(self.__pattern__, url)
         if m is None:
             self.fail('Weird error in link')

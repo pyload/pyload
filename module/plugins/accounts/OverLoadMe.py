@@ -10,8 +10,7 @@ class OverLoadMe(Account):
     __version__ = "0.01"
 
     __description__ = """Over-Load.me account plugin"""
-    __author_name__ = "marley"
-    __author_mail__ = "marley@over-load.me"
+    __authors__ = [("marley", "marley@over-load.me")]
 
 
     def loadAccountInfo(self, user, req):

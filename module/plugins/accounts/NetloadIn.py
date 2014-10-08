@@ -12,8 +12,8 @@ class NetloadIn(Account):
     __version__ = "0.22"
 
     __description__ = """Netload.in account plugin"""
-    __author_name__ = ("RaNaN", "CryNickSystems")
-    __author_mail__ = ("RaNaN@pyload.org", "webmaster@pcProfil.de")
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("CryNickSystems", "webmaster@pcProfil.de")]
 
 
     def loadAccountInfo(self, user, req):

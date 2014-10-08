@@ -8,17 +8,17 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FreakhareComFolder(SimpleCrypter):
     __name__ = "FreakhareComFolder"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'
 
     __description__ = """Freakhare.com folder decrypter plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+
 
     LINK_PATTERN = r'<a href="(http://freakshare.com/files/[^"]+)" target="_blank">'
-    TITLE_PATTERN = r'Folder:</b> (?P<title>.+)'
-    PAGES_PATTERN = r'Pages: +(?P<pages>\d+)'
+    TITLE_PATTERN = r'Folder:</b> (.+)'
+    PAGES_PATTERN = r'Pages: +(\d+)'
 
 
     def loadPage(self, page_n):

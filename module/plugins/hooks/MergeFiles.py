@@ -16,8 +16,8 @@ class MergeFiles(Hook):
     __config__ = [("activated", "bool", "Activated", False)]
 
     __description__ = """Merges parts splitted with hjsplit"""
-    __author_name__ = "and9000"
-    __author_mail__ = "me@has-no-mail.com"
+    __authors__ = [("and9000", "me@has-no-mail.com")]
+
 
     BUFFER_SIZE = 4096
 

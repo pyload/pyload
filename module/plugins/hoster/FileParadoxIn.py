@@ -2,19 +2,18 @@
 
 import re
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class FileParadoxIn(XFileSharingPro):
+class FileParadoxIn(XFSPHoster):
     __name__ = "FileParadoxIn"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?fileparadox\.in/\w{12}'
 
     __description__ = """FileParadox.in hoster plugin"""
-    __author_name__ = "RazorWing"
-    __author_mail__ = "muppetuk1@hotmail.com"
+    __authors__ = [("RazorWing", "muppetuk1@hotmail.com")]
 
 
     HOSTER_NAME = "fileparadox.in"

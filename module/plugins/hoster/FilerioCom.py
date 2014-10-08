@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class FilerioCom(XFileSharingPro):
+class FilerioCom(XFSPHoster):
     __name__ = "FilerioCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?(filerio\.(in|com)|filekeen\.com)/\w{12}'
 
     __description__ = """FileRio.in hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_NAME = "filerio.in"

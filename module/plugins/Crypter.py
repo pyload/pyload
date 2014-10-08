@@ -11,8 +11,7 @@ class Crypter(Plugin):
     __pattern__ = None
 
     __description__ = """Base decrypter plugin"""
-    __author_name__ = "mkaay"
-    __author_mail__ = "mkaay@mkaay.de"
+    __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 
     def __init__(self, pyfile):

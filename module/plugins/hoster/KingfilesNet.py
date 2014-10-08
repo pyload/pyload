@@ -14,8 +14,8 @@ class KingfilesNet(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
 
     __description__ = """Kingfiles.net hoster plugin"""
-    __author_name__ = ("zapp-brannigan", "Walter Purcaro")
-    __author_mail__ = ("fuerst.reinje@web.de", "vuolter@gmail.com")
+    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'name="fname" value="(?P<N>.+?)">'
@@ -78,8 +78,8 @@ class KingfilesNet(SimpleHoster):
         dl_url = m.group(1)
         self.download(dl_url, cookies=True, disposition=True)
 
-        check = self.checkDownload({'is_html': re.compile("<html>")})
-        if check == "is_html":
+        check = self.checkDownload({'html': re.compile("<html>")})
+        if check == "html":
             self.parseError("Downloaded file is an html file")
 
 

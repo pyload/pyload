@@ -3,19 +3,18 @@
 # Test links:
 # http://180upload.com/js9qdm6kjnrs
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class HundredEightyUploadCom(XFileSharingPro):
+class HundredEightyUploadCom(XFSPHoster):
     __name__ = "HundredEightyUploadCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?180upload\.com/\w{12}'
 
     __description__ = """180upload.com hoster plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_NAME = "180upload.com"

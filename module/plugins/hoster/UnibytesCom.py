@@ -15,8 +15,8 @@ class UnibytesCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?unibytes\.com/[a-zA-Z0-9-._ ]{11}B'
 
     __description__ = """UniBytes.com hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_INFO_PATTERN = r'<span[^>]*?id="fileName"[^>]*>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
 

@@ -22,8 +22,7 @@ class YoutubeBatch(Crypter):
                   ("uploads", "bool", "Grab channel unplaylisted videos", True)]
 
     __description__ = """Youtube.com channel & playlist decrypter plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def api_response(self, ref, req):
