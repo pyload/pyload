@@ -3,13 +3,13 @@
 # Test links:
 # http://hugefiles.net/prthf9ya4w6s
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class HugefilesNet(XFileSharingPro):
+class HugefilesNet(XFSPHoster):
     __name__ = "HugefilesNet"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?hugefiles\.net/\w{12}'
 

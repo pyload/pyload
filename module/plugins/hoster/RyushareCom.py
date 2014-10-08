@@ -5,14 +5,14 @@
 
 import re
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
 from module.plugins.internal.CaptchaService import SolveMedia
 
 
-class RyushareCom(XFileSharingPro):
+class RyushareCom(XFSPHoster):
     __name__ = "RyushareCom"
     __type__ = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'http://(?:www\.)?ryushare\.com/\w+'
 

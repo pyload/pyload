@@ -4,13 +4,13 @@ import re
 
 from pycurl import FOLLOWLOCATION
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class File4safeCom(XFileSharingPro):
+class File4safeCom(XFSPHoster):
     __name__ = "File4safeCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?file4safe\.com/\w{12}'
 

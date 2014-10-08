@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class BillionuploadsCom(XFileSharingPro):
+class BillionuploadsCom(XFSPHoster):
     __name__ = "BillionuploadsCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?billionuploads\.com/\w{12}'
 

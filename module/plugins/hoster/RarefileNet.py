@@ -2,14 +2,14 @@
 
 import re
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
 from module.utils import html_unescape
 
 
-class RarefileNet(XFileSharingPro):
+class RarefileNet(XFSPHoster):
     __name__ = "RarefileNet"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'
 

@@ -4,13 +4,13 @@
 # http://novafile.com/vfun4z6o2cit
 # http://novafile.com/s6zrr5wemuz4
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class NovafileCom(XFileSharingPro):
+class NovafileCom(XFSPHoster):
     __name__ = "NovafileCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?novafile\.com/\w{12}'
 

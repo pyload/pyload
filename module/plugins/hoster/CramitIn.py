@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class CramitIn(XFileSharingPro):
+class CramitIn(XFSPHoster):
     __name__ = "CramitIn"
     __type__ = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?cramit\.in/\w{12}'
 

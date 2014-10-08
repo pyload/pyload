@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class SecureUploadEu(XFileSharingPro):
+class SecureUploadEu(XFSPHoster):
     __name__ = "SecureUploadEu"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?secureupload\.eu/\w{12}'
 
