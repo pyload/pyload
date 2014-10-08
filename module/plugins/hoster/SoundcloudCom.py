@@ -14,6 +14,7 @@ class SoundcloudCom(Hoster):
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/(?P<UID>.*?)/(?P<SID>.*)'
 
     __description__ = """SoundCloud.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Peekayy", "peekayy.dev@gmail.com")]
 
 

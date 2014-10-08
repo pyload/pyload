@@ -15,6 +15,7 @@ class IfileIt(SimpleHoster):
     __pattern__ = r'^unmatchable$'
 
     __description__ = """Ifile.it"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

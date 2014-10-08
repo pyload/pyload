@@ -11,6 +11,7 @@ class Share76Com(DeadHoster):
     __pattern__ = r'http://(?:www\.)?share76.com/\w{12}'
 
     __description__ = """Share76.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = []
 
 

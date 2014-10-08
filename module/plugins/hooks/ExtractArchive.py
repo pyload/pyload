@@ -70,6 +70,7 @@ class ExtractArchive(Hook):
                   ("renice", "int", "CPU Priority", 0)]
 
     __description__ = """Extract different kind of archives"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "ranan@pyload.org"),
                    ("AndroKev", None),
                    ("Walter Purcaro", "vuolter@gmail.com")]

@@ -11,6 +11,7 @@ class TurbouploadCom(DeadHoster):
     __pattern__ = r'http://(?:www\.)?turboupload.com/(\w+).*'
 
     __description__ = """Turboupload.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

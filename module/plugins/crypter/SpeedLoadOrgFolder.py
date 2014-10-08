@@ -11,4 +11,5 @@ class SpeedLoadOrgFolder(DeadCrypter):
     __pattern__ = r'http://(?:www\.)?speedload\.org/(\d+~f$|folder/\d+/)'
 
     __description__ = """Speedload decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]

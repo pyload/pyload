@@ -13,6 +13,7 @@ class UloziskoSk(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?ulozisko.sk/.*'
 
     __description__ = """Ulozisko.sk hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

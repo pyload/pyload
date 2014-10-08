@@ -14,6 +14,7 @@ class VidPlayNet(XFSPHoster):
     __pattern__ = r'https?://(?:www\.)?vidplay\.net/\w{12}'
 
     __description__ = """VidPlay.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
 
 

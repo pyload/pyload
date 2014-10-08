@@ -16,6 +16,7 @@ class MultishareCz(MultiHoster):
                   ("hosterList", "str", "Hoster list (comma separated)", "uloz.to")]
 
     __description__ = """MultiShare.cz hook plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

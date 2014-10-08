@@ -16,6 +16,7 @@ class SimplyPremiumCom(Hoster):
     __pattern__ = r'https?://.*(simply-premium)\.com'
 
     __description__ = """Simply-Premium.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("EvolutionClip", "evolutionclip@live.de")]
 
 

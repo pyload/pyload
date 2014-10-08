@@ -11,6 +11,7 @@ class CrockoComFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?crocko.com/f/.*'
 
     __description__ = """Crocko.com folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

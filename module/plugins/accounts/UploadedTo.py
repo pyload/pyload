@@ -12,6 +12,7 @@ class UploadedTo(Account):
     __version__ = "0.26"
 
     __description__ = """Uploaded.to account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 

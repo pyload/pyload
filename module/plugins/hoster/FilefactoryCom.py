@@ -25,6 +25,7 @@ class FilefactoryCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)'
 
     __description__ = """Filefactory.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

@@ -13,6 +13,7 @@ class SendspaceCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?sendspace.com/file/.*'
 
     __description__ = """Sendspace.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

@@ -13,6 +13,7 @@ class XFileSharingPro(XFSPHoster):
     __pattern__ = r'^unmatchable$'
 
     __description__ = """XFileSharingPro dummy hoster plugin for hook"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

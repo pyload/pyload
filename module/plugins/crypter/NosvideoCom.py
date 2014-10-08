@@ -11,6 +11,7 @@ class NosvideoCom(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?nosvideo\.com/\?v=\w+'
 
     __description__ = """Nosvideo.com decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("igel", "igelkun@myopera.com")]
 
 

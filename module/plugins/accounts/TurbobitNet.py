@@ -12,6 +12,7 @@ class TurbobitNet(Account):
     __version__ = "0.01"
 
     __description__ = """TurbobitNet account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

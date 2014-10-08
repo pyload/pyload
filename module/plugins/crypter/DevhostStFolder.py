@@ -18,6 +18,7 @@ class DevhostStFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
 
     __description__ = """d-h.st folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 

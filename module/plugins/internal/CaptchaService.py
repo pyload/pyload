@@ -10,6 +10,7 @@ class CaptchaService:
     __version__ = "0.09"
 
     __description__ = """Base captcha service plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
@@ -54,6 +55,7 @@ class ReCaptcha(CaptchaService):
     __version__ = "0.02"
 
     __description__ = """ReCaptcha captcha service plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
@@ -114,6 +116,7 @@ class AdsCaptcha(CaptchaService):
     __version__ = "0.02"
 
     __description__ = """AdsCaptcha captcha service plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
@@ -175,6 +178,7 @@ class SolveMedia(CaptchaService):
     __version__ = "0.02"
 
     __description__ = """SolveMedia captcha service plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 

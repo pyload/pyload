@@ -13,6 +13,7 @@ class FiredriveComFolder(SimpleCrypter):
     __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/share/.+'
 
     __description__ = """Firedrive.com folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

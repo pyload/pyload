@@ -11,6 +11,7 @@ class DepositfilesComFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?depositfiles.com/folders/\w+'
 
     __description__ = """Depositfiles.com folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

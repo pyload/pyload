@@ -16,6 +16,7 @@ class LuckyShareNet(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?luckyshare.net/(?P<ID>\d{10,})'
 
     __description__ = """LuckyShare.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

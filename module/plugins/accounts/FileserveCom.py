@@ -12,6 +12,7 @@ class FileserveCom(Account):
     __version__ = "0.2"
 
     __description__ = """Fileserve.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 

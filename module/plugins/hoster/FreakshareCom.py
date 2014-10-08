@@ -15,6 +15,7 @@ class FreakshareCom(Hoster):
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
 
     __description__ = """Freakshare.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("sitacuisses", "sitacuisses@yahoo.de"),
                    ("spoob", "spoob@pyload.org"),
                    ("mkaay", "mkaay@mkaay.de"),

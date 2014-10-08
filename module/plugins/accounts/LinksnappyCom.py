@@ -12,6 +12,7 @@ class LinksnappyCom(Account):
     __version__ = "0.02"
 
     __description__ = """Linksnappy.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

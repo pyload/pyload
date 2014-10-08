@@ -11,4 +11,5 @@ class ILoadTo(DeadCrypter):
     __pattern__ = r'http://(?:www\.)?iload\.to/go/\d+-[\w\.-]+/'
 
     __description__ = """Iload.to decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("hzpz", None)]

@@ -12,6 +12,7 @@ class ChipDe(Crypter):
     __pattern__ = r'http://(?:www\.)?chip.de/video/.*\.html'
 
     __description__ = """Chip.de decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("4Christopher", "4Christopher@gmx.de")]
 
 

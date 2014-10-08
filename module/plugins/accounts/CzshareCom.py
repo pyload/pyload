@@ -12,6 +12,7 @@ class CzshareCom(Account):
     __version__ = "0.14"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 

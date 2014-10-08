@@ -13,6 +13,7 @@ class FreakhareComFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'
 
     __description__ = """Freakhare.com folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

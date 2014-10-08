@@ -17,6 +17,7 @@ class AbtractExtractor:
     __version__ = "0.1"
 
     __description__ = """Abtract extractor plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 

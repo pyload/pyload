@@ -14,6 +14,7 @@ class HundredEightyUploadCom(XFSPHoster):
     __pattern__ = r'http://(?:www\.)?180upload\.com/\w{12}'
 
     __description__ = """180upload.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

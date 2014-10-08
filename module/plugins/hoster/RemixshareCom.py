@@ -21,6 +21,7 @@ class RemixshareCom(SimpleHoster):
     __pattern__ = r'https?://remixshare\.com/(download|dl)/\w+'
 
     __description__ = """Remixshare.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 

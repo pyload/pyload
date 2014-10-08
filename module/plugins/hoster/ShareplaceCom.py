@@ -15,6 +15,7 @@ class ShareplaceCom(Hoster):
     __pattern__ = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?[a-zA-Z0-9]+'
 
     __description__ = """Shareplace.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("ACCakut", None)]
 
 

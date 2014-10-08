@@ -14,6 +14,7 @@ class PremiumTo(MultiHoster):
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """Premium.to hook plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]

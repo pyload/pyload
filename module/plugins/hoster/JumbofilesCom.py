@@ -13,6 +13,7 @@ class JumbofilesCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?jumbofiles.com/(\w{12}).*'
 
     __description__ = """JumboFiles.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("godofdream", "soilfiction@gmail.com")]
 
 

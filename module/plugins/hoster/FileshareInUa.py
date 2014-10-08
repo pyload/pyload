@@ -15,6 +15,7 @@ class FileshareInUa(Hoster):
     __pattern__ = r'http://(?:www\.)?fileshare.in.ua/[A-Za-z0-9]+'
 
     __description__ = """Fileshare.in.ua hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("fwannmacher", "felipe@warhammerproject.com")]
 
 

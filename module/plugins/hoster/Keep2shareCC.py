@@ -16,6 +16,7 @@ class Keep2shareCC(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
     __description__ = """Keep2share.cc hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

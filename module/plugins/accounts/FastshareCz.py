@@ -11,6 +11,7 @@ class FastshareCz(Account):
     __version__ = "0.03"
 
     __description__ = """Fastshare.cz account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 

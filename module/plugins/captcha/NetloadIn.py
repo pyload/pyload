@@ -9,6 +9,7 @@ class NetloadIn(OCR):
     __version__ = "0.1"
 
     __description__ = """Netload.in ocr plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 

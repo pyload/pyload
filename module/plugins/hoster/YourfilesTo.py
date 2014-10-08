@@ -15,6 +15,7 @@ class YourfilesTo(Hoster):
     __pattern__ = r'(http://)?(?:www\.)?yourfiles\.(to|biz)/\?d=[a-zA-Z0-9]+'
 
     __description__ = """Youfiles.to hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("jeix", "jeix@hasnomail.de"),
                    ("skydancer", "skydancer@hasnomail.de")]
 

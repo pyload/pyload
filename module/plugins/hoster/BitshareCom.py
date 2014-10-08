@@ -16,6 +16,7 @@ class BitshareCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>[a-zA-Z0-9]+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>[a-zA-Z0-9]+))'
 
     __description__ = """Bitshare.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Paul King", None),
                    ("fragonib", "fragonib[AT]yahoo[DOT]es")]
 

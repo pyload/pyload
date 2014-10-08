@@ -13,6 +13,7 @@ class RehostTo(Hoster):
     __pattern__ = r'https?://.*rehost.to\..*'
 
     __description__ = """Rehost.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 

@@ -10,6 +10,7 @@ class RapidgatorNet(Account):
     __version__ = "0.04"
 
     __description__ = """Rapidgator.net account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

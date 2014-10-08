@@ -10,6 +10,7 @@ class FastixRu(Account):
     __version__ = "0.02"
 
     __description__ = """Fastix account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 

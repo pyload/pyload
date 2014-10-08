@@ -11,6 +11,7 @@ class X7To(DeadHoster):
     __pattern__ = r'http://(?:www\.)?x7.to/'
 
     __description__ = """X7.to hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("ernieb", "ernieb")]
 
 

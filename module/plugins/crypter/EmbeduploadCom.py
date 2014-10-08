@@ -15,6 +15,7 @@ class EmbeduploadCom(Crypter):
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
 
     __description__ = """EmbedUpload.com decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

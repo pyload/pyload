@@ -18,6 +18,7 @@ class LinksaveIn(OCR):
     __version__ = "0.1"
 
     __description__ = """Linksave.in ocr plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 

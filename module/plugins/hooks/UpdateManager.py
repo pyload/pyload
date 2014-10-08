@@ -23,6 +23,7 @@ class UpdateManager(Hook):
                   ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
 
     __description__ = """ Check for updates """
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

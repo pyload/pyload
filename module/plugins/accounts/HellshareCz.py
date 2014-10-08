@@ -12,6 +12,7 @@ class HellshareCz(Account):
     __version__ = "0.14"
 
     __description__ = """Hellshare.cz account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

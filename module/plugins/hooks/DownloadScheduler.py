@@ -18,6 +18,7 @@ class DownloadScheduler(Hook):
                   ("abort", "bool", "Abort active downloads when start period with speed 0", False)]
 
     __description__ = """Download Scheduler"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 

@@ -18,6 +18,7 @@ class OboomCom(Hoster):
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>\w{8})'
 
     __description__ = """oboom.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stanley", "stanley.foerster@gmail.com")]
 
 

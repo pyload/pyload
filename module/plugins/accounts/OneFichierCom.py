@@ -13,6 +13,7 @@ class OneFichierCom(Account):
     __version__ = "0.1"
 
     __description__ = """1fichier.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Elrick69", "elrick69[AT]rocketmail[DOT]com")]
 
 

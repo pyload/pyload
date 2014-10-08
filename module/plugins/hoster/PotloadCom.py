@@ -11,6 +11,7 @@ class PotloadCom(DeadHoster):
     __pattern__ = r'http://(?:www\.)?potload\.com/\w{12}'
 
     __description__ = """Potload.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

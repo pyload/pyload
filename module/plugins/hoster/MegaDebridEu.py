@@ -16,6 +16,7 @@ class MegaDebridEu(Hoster):
     __pattern__ = r'^https?://(?:w{3}\d+\.mega-debrid.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[^/]+/.+$'
 
     __description__ = """mega-debrid.eu hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("D.Ducatel", "dducatel@je-geek.fr")]
 
 

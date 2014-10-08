@@ -18,6 +18,7 @@ class OverLoadMe(Hoster):
     __pattern__ = r'https?://.*overload\.me.*'
 
     __description__ = """Over-Load.me hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("marley", "marley@over-load.me")]
 
 

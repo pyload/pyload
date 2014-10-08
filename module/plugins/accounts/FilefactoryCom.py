@@ -14,6 +14,7 @@ class FilefactoryCom(Account):
     __version__ = "0.14"
 
     __description__ = """Filefactory.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 

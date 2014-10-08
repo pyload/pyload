@@ -16,6 +16,7 @@ class DlProtectCom(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?dl-protect\.com/((en|fr)/)?(?P<ID>\w+)'
 
     __description__ = """Dl-protect.com decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

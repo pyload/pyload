@@ -13,6 +13,7 @@ class UptoboxCom(XFSPHoster):
     __pattern__ = r'https?://(?:www\.)?uptobox\.com/\w{12}'
 
     __description__ = """Uptobox.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

@@ -13,6 +13,7 @@ class TwoSharedCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?2shared.com/(account/)?(download|get|file|document|photo|video|audio)/.*'
 
     __description__ = """2Shared.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

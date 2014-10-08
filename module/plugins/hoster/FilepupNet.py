@@ -17,6 +17,7 @@ class FilepupNet(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?filepup\.net/files/\w+'
 
     __description__ = """Filepup.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 

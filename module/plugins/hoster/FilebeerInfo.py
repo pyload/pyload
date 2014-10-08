@@ -11,6 +11,7 @@ class FilebeerInfo(DeadHoster):
     __pattern__ = r'http://(?:www\.)?filebeer\.info/(?!\d*~f)(?P<ID>\w+).*'
 
     __description__ = """Filebeer.info plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

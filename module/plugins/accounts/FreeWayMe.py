@@ -10,6 +10,7 @@ class FreeWayMe(Account):
     __version__ = "0.11"
 
     __description__ = """FreeWayMe account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Nicolas Giese", "james@free-way.me")]
 
 

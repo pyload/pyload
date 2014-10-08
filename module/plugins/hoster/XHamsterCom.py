@@ -25,6 +25,7 @@ class XHamsterCom(Hoster):
     __config__ = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
 
     __description__ = """XHamster.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = []
 
 

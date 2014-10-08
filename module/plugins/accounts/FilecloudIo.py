@@ -10,6 +10,7 @@ class FilecloudIo(Account):
     __version__ = "0.02"
 
     __description__ = """FilecloudIo account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 

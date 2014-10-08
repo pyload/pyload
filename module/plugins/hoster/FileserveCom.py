@@ -38,6 +38,7 @@ class FileserveCom(Hoster):
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*'
 
     __description__ = """Fileserve.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("jeix", "jeix@hasnomail.de"),
                    ("mkaay", "mkaay@mkaay.de"),
                    ("Paul King", None),

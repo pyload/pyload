@@ -13,6 +13,7 @@ class PornhostCom(Hoster):
     __pattern__ = r'http://(?:www\.)?pornhost\.com/([0-9]+/[0-9]+\.html|[0-9]+)'
 
     __description__ = """Pornhost.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("jeix", "jeix@hasnomail.de")]
 
 

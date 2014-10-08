@@ -9,6 +9,7 @@ class FilesMailRu(Account):
     __version__ = "0.1"
 
     __description__ = """Filesmail.ru account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 

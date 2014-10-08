@@ -14,6 +14,7 @@ class TurbobitNetFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
 
     __description__ = """Turbobit.net folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 

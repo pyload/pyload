@@ -18,6 +18,7 @@ class FastshareCz(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
 
     __description__ = """FastShare.cz hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it"),
                    ("Walter Purcaro", "vuolter@gmail.com")]

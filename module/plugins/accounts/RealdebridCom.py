@@ -11,6 +11,7 @@ class RealdebridCom(Account):
     __version__ = "0.43"
 
     __description__ = """Real-Debrid.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 

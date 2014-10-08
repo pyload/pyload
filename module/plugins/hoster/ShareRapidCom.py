@@ -27,6 +27,7 @@ class ShareRapidCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
 
     __description__ = """MegaRapid.cz hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("MikyWoW", "mikywow@seznam.cz"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it"),

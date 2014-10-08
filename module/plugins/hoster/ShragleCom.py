@@ -11,6 +11,7 @@ class ShragleCom(DeadHoster):
     __pattern__ = r'http://(?:www\.)?(cloudnator|shragle).com/files/(?P<ID>.*?)/'
 
     __description__ = """Cloudnator.com (Shragle.com) hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 

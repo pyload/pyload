@@ -25,6 +25,7 @@ class UnRar(AbtractExtractor):
     __version__ = "0.18"
 
     __description__ = """Rar extractor plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 

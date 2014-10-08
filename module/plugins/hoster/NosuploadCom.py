@@ -13,6 +13,7 @@ class NosuploadCom(XFSPHoster):
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
 
     __description__ = """Nosupload.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("igel", "igelkun@myopera.com")]
 
 

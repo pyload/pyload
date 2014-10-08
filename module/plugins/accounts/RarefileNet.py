@@ -9,6 +9,7 @@ class RarefileNet(XFSPAccount):
     __version__ = "0.03"
 
     __description__ = """RareFile.net account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

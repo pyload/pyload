@@ -16,6 +16,7 @@ class DepositfilesCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
 
     __description__ = """Depositfiles.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("spoob", "spoob@pyload.org"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
                    ("Walter Purcaro", "vuolter@gmail.com")]

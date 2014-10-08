@@ -13,6 +13,7 @@ class PornhubCom(Hoster):
     __pattern__ = r'http://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=[\w\d]+'
 
     __description__ = """Pornhub.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("jeix", "jeix@hasnomail.de")]
 
 

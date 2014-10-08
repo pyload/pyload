@@ -16,6 +16,7 @@ class DataHu(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?data.hu/get/\w+'
 
     __description__ = """Data.hu hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("crash", None),
                    ("stickell", "l.stickell@yahoo.it")]
 

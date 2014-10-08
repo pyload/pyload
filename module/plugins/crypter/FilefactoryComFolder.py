@@ -11,6 +11,7 @@ class FilefactoryComFolder(SimpleCrypter):
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(?:f|folder)/\w+'
 
     __description__ = """Filefactory.com folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

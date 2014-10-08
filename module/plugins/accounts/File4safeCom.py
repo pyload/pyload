@@ -9,6 +9,7 @@ class File4safeCom(XFSPAccount):
     __version__ = "0.02"
 
     __description__ = """File4safe.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

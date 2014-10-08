@@ -14,6 +14,7 @@ class FileomCom(XFSPHoster):
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
 
     __description__ = """Fileom.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

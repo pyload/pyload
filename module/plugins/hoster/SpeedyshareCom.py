@@ -18,6 +18,7 @@ class SpeedyshareCom(SimpleHoster):
     __pattern__ = r"https?://(?:www\.)?(speedyshare\.com|speedy\.sh)/\w+"
 
     __description__ = """Speedyshare.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 

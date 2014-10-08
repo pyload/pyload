@@ -16,6 +16,7 @@ class FlyFilesNet(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?flyfiles\.net/.*'
 
     __description__ = """FlyFiles.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = []
 
     SESSION_PATTERN = r'flyfiles\.net/(.*)/.*'

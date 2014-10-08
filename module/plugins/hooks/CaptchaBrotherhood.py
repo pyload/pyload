@@ -44,6 +44,7 @@ class CaptchaBrotherhood(Hook):
                   ("passkey", "password", "Password", "")]
 
     __description__ = """Send captchas to CaptchaBrotherhood.com"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 

@@ -21,6 +21,7 @@ class FilerNet(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/(\w+)'
 
     __description__ = """Filer.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

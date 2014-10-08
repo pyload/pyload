@@ -14,6 +14,7 @@ class SimplydebridCom(MultiHoster):
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """Simply-Debrid.com hook plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 

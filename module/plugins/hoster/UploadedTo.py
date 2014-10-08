@@ -99,6 +99,7 @@ class UploadedTo(Hoster):
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
     __description__ = """Uploaded.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("spoob", "spoob@pyload.org"),
                    ("mkaay", "mkaay@mkaay.de"),
                    ("zoidberg", "zoidberg@mujmail.cz"),

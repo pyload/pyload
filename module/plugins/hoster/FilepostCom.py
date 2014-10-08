@@ -17,6 +17,7 @@ class FilepostCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp.io)/([^/]+).*'
 
     __description__ = """Filepost.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

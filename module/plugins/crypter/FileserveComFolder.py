@@ -13,6 +13,7 @@ class FileserveComFolder(Crypter):
     __pattern__ = r'http://(?:www\.)?fileserve.com/list/\w+'
 
     __description__ = """FileServe.com folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("fionnc", "fionnc@gmail.com")]
 
 

@@ -14,6 +14,7 @@ class UpstoreNet(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?upstore\.net/'
 
     __description__ = """Upstore.Net File Download Hoster"""
+    __license__ = "GPLv3"
     __authors__ = [("igel", "igelkun@myopera.com")]
 
 

@@ -55,6 +55,7 @@ class DeathByCaptcha(Hook):
                   ("force", "bool", "Force DBC even if client is connected", False)]
 
     __description__ = """Send captchas to DeathByCaptcha.com"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 

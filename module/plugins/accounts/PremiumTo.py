@@ -9,6 +9,7 @@ class PremiumTo(Account):
     __version__ = "0.04"
 
     __description__ = """Premium.to account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]

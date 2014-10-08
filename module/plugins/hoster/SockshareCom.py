@@ -16,6 +16,7 @@ class SockshareCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?sockshare\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'
 
     __description__ = """Sockshare.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("jeix", "jeix@hasnomail.de"),
                    ("stickell", "l.stickell@yahoo.it"),
                    ("Walter Purcaro", "vuolter@gmail.com")]

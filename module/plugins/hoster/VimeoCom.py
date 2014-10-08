@@ -15,6 +15,7 @@ class VimeoCom(SimpleHoster):
                   ("original", "bool", "Try to download the original file first", True)]
 
     __description__ = """Vimeo.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

@@ -15,6 +15,7 @@ class GamefrontCom(Hoster):
     __pattern__ = r'http://(?:www\.)?gamefront.com/files/[A-Za-z0-9]+'
 
     __description__ = """Gamefront.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("fwannmacher", "felipe@warhammerproject.com")]
 
 

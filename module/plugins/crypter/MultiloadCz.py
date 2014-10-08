@@ -14,6 +14,7 @@ class MultiloadCz(Crypter):
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
 
     __description__ = """Multiload.cz decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

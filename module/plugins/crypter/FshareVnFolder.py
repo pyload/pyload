@@ -11,6 +11,7 @@ class FshareVnFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?fshare.vn/folder/.*'
 
     __description__ = """Fshare.vn folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

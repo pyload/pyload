@@ -15,6 +15,7 @@ class DuckCryptInfo(Crypter):
     __pattern__ = r'http://(?:www\.)?duckcrypt.info/(folder|wait|link)/(\w+)/?(\w*)'
 
     __description__ = """DuckCrypt.info decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("godofdream", "soilfiction@gmail.com")]
 
 

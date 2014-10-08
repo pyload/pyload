@@ -12,6 +12,7 @@ class EuroshareEu(Account):
     __version__ = "0.01"
 
     __description__ = """Euroshare.eu account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

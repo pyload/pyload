@@ -16,6 +16,7 @@ class MergeFiles(Hook):
     __config__ = [("activated", "bool", "Activated", False)]
 
     __description__ = """Merges parts splitted with hjsplit"""
+    __license__ = "GPLv3"
     __authors__ = [("and9000", "me@has-no-mail.com")]
 
 

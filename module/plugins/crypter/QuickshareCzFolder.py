@@ -12,6 +12,7 @@ class QuickshareCzFolder(Crypter):
     __pattern__ = r'http://(?:www\.)?quickshare.cz/slozka-\d+.*'
 
     __description__ = """Quickshare.cz folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

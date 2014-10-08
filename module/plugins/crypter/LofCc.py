@@ -11,4 +11,5 @@ class LofCc(DeadCrypter):
     __pattern__ = r'http://(?:www\.)?lof.cc/(.*)'
 
     __description__ = """Lof.cc decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de")]

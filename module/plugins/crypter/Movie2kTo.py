@@ -11,4 +11,5 @@ class Movie2kTo(DeadCrypter):
     __pattern__ = r'http://(?:www\.)?movie2k\.to/(.*)\.html'
 
     __description__ = """Movie2k.to decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("4Christopher", "4Christopher@gmx.de")]

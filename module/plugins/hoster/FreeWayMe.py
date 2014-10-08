@@ -11,6 +11,7 @@ class FreeWayMe(Hoster):
     __pattern__ = r'https://(?:www\.)?free-way.me/.*'
 
     __description__ = """FreeWayMe hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Nicolas Giese", "james@free-way.me")]
 
 

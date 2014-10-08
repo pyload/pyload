@@ -11,6 +11,7 @@ class LomafileCom(XFSPHoster):
     __pattern__ = r'http://lomafile\.com/\w{12}'
 
     __description__ = """Lomafile.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("nath_schwarz", "nathan.notwhite@gmail.com"),
                    ("guidobelix", "guidobelix@hotmail.it")]
 

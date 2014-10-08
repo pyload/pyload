@@ -13,6 +13,7 @@ class UploadheroCom(Account):
     __version__ = "0.2"
 
     __description__ = """Uploadhero.co account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mcmyst", "mcmyst@hotmail.fr")]
 
 

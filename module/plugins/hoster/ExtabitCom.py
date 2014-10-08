@@ -17,6 +17,7 @@ class ExtabitCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
 
     __description__ = """Extabit.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

@@ -41,6 +41,7 @@ class LetitbitNet(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(letitbit|shareflare).net/download/.*'
 
     __description__ = """Letitbit.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("z00nx", "z00nx0@gmail.com")]
 

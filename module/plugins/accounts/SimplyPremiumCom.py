@@ -10,6 +10,7 @@ class SimplyPremiumCom(Account):
     __version__ = "0.01"
 
     __description__ = """Simply-Premium.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("EvolutionClip", "evolutionclip@live.de")]
 
 

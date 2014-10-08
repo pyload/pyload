@@ -13,6 +13,7 @@ class DepositfilesCom(Account):
     __version__ = "0.3"
 
     __description__ = """Depositfiles.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de"),
                    ("stickell", "l.stickell@yahoo.it"),
                    ("Walter Purcaro", "vuolter@gmail.com")]

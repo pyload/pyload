@@ -9,6 +9,7 @@ class CramitIn(XFSPAccount):
     __version__ = "0.02"
 
     __description__ = """Cramit.in account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

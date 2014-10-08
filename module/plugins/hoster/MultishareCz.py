@@ -15,6 +15,7 @@ class MultishareCz(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?multishare.cz/stahnout/(?P<ID>\d+).*'
 
     __description__ = """MultiShare.cz hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

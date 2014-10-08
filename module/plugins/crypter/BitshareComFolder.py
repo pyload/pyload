@@ -11,6 +11,7 @@ class BitshareComFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?bitshare\.com/\?d=\w+'
 
     __description__ = """Bitshare.com folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

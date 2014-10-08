@@ -32,6 +32,7 @@ class Hook(Base):
     __config__ = [("name", "type", "desc", "default")]
 
     __description__ = """Interface for hook"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de"),
                    ("RaNaN", "RaNaN@pyload.org")]
 

@@ -14,6 +14,7 @@ class OboomCom(Account):
     __version__ = "0.2"
 
     __description__ = """Oboom.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stanley", "stanley.foerster@gmail.com")]
 
 

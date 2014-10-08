@@ -37,6 +37,7 @@ class FilesMailRu(Hoster):
     __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.*'
 
     __description__ = """Files.mail.ru hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("oZiRiz", "ich@oziriz.de")]
 
 

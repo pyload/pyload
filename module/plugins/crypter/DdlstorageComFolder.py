@@ -11,6 +11,7 @@ class DdlstorageComFolder(DeadCrypter):
     __pattern__ = r'https?://(?:www\.)?ddlstorage\.com/folder/\w+'
 
     __description__ = """DDLStorage.com folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("godofdream", "soilfiction@gmail.com"),
                    ("stickell", "l.stickell@yahoo.it")]
 

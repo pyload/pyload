@@ -12,6 +12,7 @@ class NetloadIn(Account):
     __version__ = "0.22"
 
     __description__ = """Netload.in account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org"),
                    ("CryNickSystems", "webmaster@pcProfil.de")]
 

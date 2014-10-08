@@ -15,6 +15,7 @@ class VeehdCom(Hoster):
                   ("replacement_char", "str", "Filename replacement character", "_")]
 
     __description__ = """Veehd.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("cat", "cat@pyload")]
 
 

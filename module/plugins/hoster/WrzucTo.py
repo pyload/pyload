@@ -15,6 +15,7 @@ class WrzucTo(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?wrzuc\.to/([a-zA-Z0-9]+(\.wt|\.html)|(\w+/?linki/[a-zA-Z0-9]+))'
 
     __description__ = """Wrzuc.to hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

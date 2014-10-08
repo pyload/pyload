@@ -13,6 +13,7 @@ class LixIn(Crypter):
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
 
     __description__ = """Lix.in decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("spoob", "spoob@pyload.org")]
 
 

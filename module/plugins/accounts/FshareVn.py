@@ -13,6 +13,7 @@ class FshareVn(Account):
     __version__ = "0.07"
 
     __description__ = """Fshare.vn account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 

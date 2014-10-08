@@ -24,6 +24,7 @@ class Account(Base):
     __version__ = "0.3"
 
     __description__ = """Base account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 

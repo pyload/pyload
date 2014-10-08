@@ -11,6 +11,7 @@ class CramitIn(XFSPHoster):
     __pattern__ = r'http://(?:www\.)?cramit\.in/\w{12}'
 
     __description__ = """Cramit.in hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

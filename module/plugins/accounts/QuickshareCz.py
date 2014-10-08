@@ -11,6 +11,7 @@ class QuickshareCz(Account):
     __version__ = "0.01"
 
     __description__ = """Quickshare.cz account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

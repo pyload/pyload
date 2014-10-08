@@ -13,6 +13,7 @@ class DebridItaliaCom(Hoster):
     __pattern__ = r'https?://(?:[^/]*\.)?debriditalia\.com'
 
     __description__ = """Debriditalia.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

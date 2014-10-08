@@ -13,6 +13,7 @@ class FourSharedCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?4shared(\-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+?/.*'
 
     __description__ = """4Shared.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("jeix", "jeix@hasnomail.de"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 

@@ -12,6 +12,7 @@ class DebridItaliaCom(Account):
     __version__ = "0.1"
 
     __description__ = """Debriditalia.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

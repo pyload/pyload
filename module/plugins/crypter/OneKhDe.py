@@ -14,6 +14,7 @@ class OneKhDe(Crypter):
     __pattern__ = r'http://(?:www\.)?1kh.de/f/'
 
     __description__ = """1kh.de decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("spoob", "spoob@pyload.org")]
 
 

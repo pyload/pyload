@@ -15,6 +15,7 @@ class NovafileCom(XFSPHoster):
     __pattern__ = r'http://(?:www\.)?novafile\.com/\w{12}'
 
     __description__ = """Novafile.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 

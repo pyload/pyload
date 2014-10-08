@@ -26,6 +26,7 @@ class UnrestrictLi(Hoster):
     __pattern__ = r'https?://(?:[^/]*\.)?(unrestrict|unr)\.li'
 
     __description__ = """Unrestrict.li hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

@@ -13,6 +13,7 @@ class EdiskCz(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?edisk.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*'
 
     __description__ = """Edisk.cz hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

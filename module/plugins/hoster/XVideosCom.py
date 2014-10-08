@@ -15,6 +15,7 @@ class XVideosCom(Hoster):
     __pattern__ = r'http://(?:www\.)?xvideos\.com/video([0-9]+)/.*'
 
     __description__ = """XVideos.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = []
 
 

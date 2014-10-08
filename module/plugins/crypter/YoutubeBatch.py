@@ -22,6 +22,7 @@ class YoutubeBatch(Crypter):
                   ("uploads", "bool", "Grab channel unplaylisted videos", True)]
 
     __description__ = """Youtube.com channel & playlist decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

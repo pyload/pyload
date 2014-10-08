@@ -15,6 +15,7 @@ class MegasharesCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index.php)?\?d\d{2}=|dl/)\w+'
 
     __description__ = """Megashares.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

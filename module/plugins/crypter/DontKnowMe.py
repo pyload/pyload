@@ -15,6 +15,7 @@ class DontKnowMe(Crypter):
     __pattern__ = r'http://(?:www\.)?dontknow.me/at/\?.+$'
 
     __description__ = """DontKnow.me decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("selaux", None)]
 
 

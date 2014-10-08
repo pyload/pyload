@@ -18,6 +18,7 @@ class NCryptIn(Crypter):
     __pattern__ = r'http://(?:www\.)?ncrypt.in/(?P<type>folder|link|frame)-([^/\?]+)'
 
     __description__ = """NCrypt.in decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
                    ("stickell", "l.stickell@yahoo.it")]
 

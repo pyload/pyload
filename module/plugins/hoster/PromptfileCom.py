@@ -13,6 +13,7 @@ class PromptfileCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?promptfile\.com/'
 
     __description__ = """Promptfile.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("igel", "igelkun@myopera.com")]
 
 

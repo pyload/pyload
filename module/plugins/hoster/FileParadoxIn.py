@@ -13,6 +13,7 @@ class FileParadoxIn(XFSPHoster):
     __pattern__ = r'https?://(?:www\.)?fileparadox\.in/\w{12}'
 
     __description__ = """FileParadox.in hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("RazorWing", "muppetuk1@hotmail.com")]
 
 

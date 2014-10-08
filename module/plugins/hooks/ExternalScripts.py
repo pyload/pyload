@@ -18,6 +18,7 @@ class ExternalScripts(Hook):
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Run external scripts"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de"),
                    ("RaNaN", "ranan@pyload.org"),
                    ("spoob", "spoob@pyload.org"),

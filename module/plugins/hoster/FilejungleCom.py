@@ -12,6 +12,7 @@ class FilejungleCom(FileserveCom):
     __pattern__ = r'http://(?:www\.)?filejungle\.com/f/(?P<id>[^/]+).*'
 
     __description__ = """Filejungle.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

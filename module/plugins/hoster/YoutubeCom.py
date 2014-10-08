@@ -48,6 +48,7 @@ class YoutubeCom(Hoster):
                   ("3d", "bool", "Prefer 3D", False)]
 
     __description__ = """Youtube.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("spoob", "spoob@pyload.org"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 

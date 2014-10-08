@@ -11,6 +11,7 @@ class SimplydebridCom(Account):
     __version__ = "0.1"
 
     __description__ = """Simply-Debrid.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 

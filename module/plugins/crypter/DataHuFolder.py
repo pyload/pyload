@@ -13,6 +13,7 @@ class DataHuFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?data.hu/dir/\w+'
 
     __description__ = """Data.hu folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("crash", None),
                    ("stickell", "l.stickell@yahoo.it")]
 

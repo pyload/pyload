@@ -30,6 +30,7 @@ class Captcha9kw(Hook):
                   ("passkey", "password", "API key", "")]
 
     __description__ = """Send captchas to 9kw.eu"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 

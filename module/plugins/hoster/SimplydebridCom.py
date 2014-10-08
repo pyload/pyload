@@ -13,6 +13,7 @@ class SimplydebridCom(Hoster):
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd.php/*'
 
     __description__ = """Simply-debrid.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 

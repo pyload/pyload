@@ -16,6 +16,7 @@ class UploadheroCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
 
     __description__ = """UploadHero.co plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mcmyst", "mcmyst@hotmail.fr"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 

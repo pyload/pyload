@@ -14,6 +14,7 @@ class MyvideoDe(Hoster):
     __pattern__ = r'http://(?:www\.)?myvideo.de/watch/'
 
     __description__ = """Myvideo.de hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("spoob", "spoob@pyload.org")]
 
 

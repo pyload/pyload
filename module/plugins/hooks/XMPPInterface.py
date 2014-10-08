@@ -24,6 +24,7 @@ class XMPPInterface(IRCInterface, JabberClient):
                   ("captcha", "bool", "Send captcha requests", True)]
 
     __description__ = """Connect to jabber and let owner perform different tasks"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 

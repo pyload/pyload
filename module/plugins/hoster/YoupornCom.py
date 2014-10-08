@@ -13,6 +13,7 @@ class YoupornCom(Hoster):
     __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
 
     __description__ = """Youporn.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("willnix", "willnix@pyload.org")]
 
 

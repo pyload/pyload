@@ -9,6 +9,7 @@ class RapidshareCom(Account):
     __version__ = "0.22"
 
     __description__ = """Rapidshare.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 

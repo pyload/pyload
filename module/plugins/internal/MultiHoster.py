@@ -11,6 +11,7 @@ class MultiHoster(Hook):
     __version__ = "0.19"
 
     __description__ = """Generic MultiHoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 

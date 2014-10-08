@@ -9,6 +9,7 @@ class ShareonlineBiz(Account):
     __version__ = "0.24"
 
     __description__ = """Share-online.biz account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 

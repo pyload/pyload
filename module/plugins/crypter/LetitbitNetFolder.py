@@ -12,6 +12,7 @@ class LetitbitNetFolder(Crypter):
     __pattern__ = r'http://(?:www\.)?letitbit.net/folder/\w+'
 
     __description__ = """Letitbit.net folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("DHMH", "webmaster@pcProfil.de"),
                    ("z00nx", "z00nx0@gmail.com")]
 

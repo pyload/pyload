@@ -11,6 +11,7 @@ class DataportCz(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?dataport.cz/file/(.*)'
 
     __description__ = """Dataport.cz hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

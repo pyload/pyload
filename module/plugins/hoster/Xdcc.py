@@ -24,6 +24,7 @@ class Xdcc(Hoster):
                   ("realname", "str", "Realname", "pyloadreal")]
 
     __description__ = """Download from IRC XDCC bot"""
+    __license__ = "GPLv3"
     __authors__ = [("jeix", "jeix@hasnomail.com")]
 
 

@@ -50,6 +50,7 @@ class Checksum(Hook):
                   ("wait_time", "int", "Time to wait before each retry (seconds)", 1)]
 
     __description__ = """Verify downloaded file size and checksum"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("stickell", "l.stickell@yahoo.it")]

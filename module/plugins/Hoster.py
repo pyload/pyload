@@ -16,4 +16,5 @@ class Hoster(Plugin):
     __pattern__ = None
 
     __description__ = """Base hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de")]

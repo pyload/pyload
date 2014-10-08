@@ -16,6 +16,7 @@ class ShareLinksBiz(Crypter):
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
 
     __description__ = """Share-Links.biz decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 

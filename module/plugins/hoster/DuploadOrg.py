@@ -11,6 +11,7 @@ class DuploadOrg(DeadHoster):
     __pattern__ = r'http://(?:www\.)?dupload\.org/\w{12}'
 
     __description__ = """Dupload.grg hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

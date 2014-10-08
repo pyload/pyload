@@ -14,6 +14,7 @@ class CatShareNet(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
 
     __description__ = """CatShare.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("z00nx", "z00nx0@gmail.com"),
                    ("prOq", None),
                    ("Walter Purcaro", "vuolter@gmail.com")]
