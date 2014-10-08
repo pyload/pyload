@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class FileParadoxIn(XFSPHoster):
     __name__ = "FileParadoxIn"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?fileparadox\.in/\w{12}'
 

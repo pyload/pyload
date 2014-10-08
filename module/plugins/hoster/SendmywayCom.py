@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class SendmywayCom(XFSPHoster):
     __name__ = "SendmywayCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?sendmyway\.com/\w{12}'
 

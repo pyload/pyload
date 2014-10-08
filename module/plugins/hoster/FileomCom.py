@@ -3,13 +3,13 @@
 # Test links:
 # http://fileom.com/gycaytyzdw3g/random.bin.html
 
-from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class FileomCom(XFSPHoster):
     __name__ = "FileomCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
 

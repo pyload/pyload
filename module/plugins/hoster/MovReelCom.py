@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class MovReelCom(XFSPHoster):
     __name__ = "MovReelCom"
     __type__ = "hoster"
-    __version__ = "1.22"
+    __version__ = "1.23"
 
     __pattern__ = r'http://(?:www\.)?movreel\.com/\w{12}'
 

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class CramitIn(XFSPHoster):
     __name__ = "CramitIn"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?cramit\.in/\w{12}'
 

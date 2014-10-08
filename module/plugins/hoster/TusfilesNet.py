@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class TusfilesNet(XFSPHoster):
     __name__ = "TusfilesNet"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
 

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class EasybytezCom(XFSPHoster):
     __name__ = "EasybytezCom"
     __type__ = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?easybytez\.com/\w{12}'
 

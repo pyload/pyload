@@ -3,13 +3,13 @@
 # Test links:
 # http://180upload.com/js9qdm6kjnrs
 
-from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class HundredEightyUploadCom(XFSPHoster):
     __name__ = "HundredEightyUploadCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?180upload\.com/\w{12}'
 

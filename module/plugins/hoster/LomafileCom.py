@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class LomafileCom(XFSPHoster):
     __name__ = "LomafileCom"
     __type__ = "hoster"
-    __version__ = "0.4"
+    __version__ = "0.5"
 
     __pattern__ = r'http://lomafile\.com/\w{12}'
 

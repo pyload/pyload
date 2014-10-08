@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class NosuploadCom(XFSPHoster):
     __name__ = "NosuploadCom"
     __type__ = "hoster"
-    __version__ = "0.2"
+    __version__ = "0.3"
 
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
 

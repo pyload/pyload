@@ -5,13 +5,13 @@ import re
 from time import sleep
 
 from module.network.HTTPRequest import HTTPRequest
-from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class StreamcloudEu(XFSPHoster):
     __name__ = "StreamcloudEu"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\w{12}'
 

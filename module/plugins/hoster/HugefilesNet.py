@@ -3,13 +3,13 @@
 # Test links:
 # http://hugefiles.net/prthf9ya4w6s
 
-from module.plugins.hoster.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class HugefilesNet(XFSPHoster):
     __name__ = "HugefilesNet"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?hugefiles\.net/\w{12}'
 
