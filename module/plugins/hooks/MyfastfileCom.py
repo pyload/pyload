@@ -9,11 +9,13 @@ class MyfastfileCom(MultiHoster):
     __name__ = "MyfastfileCom"
     __type__ = "hook"
     __version__ = "0.02"
+
     __config__ = [("activated", "bool", "Activated", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
                   ("unloadFailing", "bool", "Revert to standard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
+
     __description__ = """Myfastfile.com hook plugin"""
     __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]

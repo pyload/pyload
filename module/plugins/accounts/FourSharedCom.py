@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Account import Account
 from module.common.json_layer import json_loads
+from module.plugins.Account import Account
 
 
 class FourSharedCom(Account):
     __name__ = "FourSharedCom"
     __type__ = "account"
     __version__ = "0.03"
+
     __description__ = """FourShared.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
