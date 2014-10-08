@@ -179,7 +179,7 @@
 
   load_captcha = function(method, post) {
     return new Request.JSON({
-      url: "json/set_captcha",
+      url: "{{ '/json/set_captcha'|url }}",
       onSuccess: function(data) {
         if (data.captcha) {
           return set_captcha(data);

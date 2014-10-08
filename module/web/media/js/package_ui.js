@@ -254,7 +254,7 @@ var Package = new Class({
                     onSuccess: function() {
                         var ele = $('file_' + this);
                         var imgs = ele.getElements("img");
-                        imgs[0].set("src", "/media/default/img/status_queue.png");
+                        imgs[0].set("src", "{{ '/media/default/img/status_queue.png'|url }}");
                         var spans = ele.getElements(".child_status");
                         spans[1].set("html", "queued");
                         indicateSuccess();
