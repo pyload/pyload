@@ -15,7 +15,7 @@ class XFSPAccount(Account):
     __type__ = "account"
     __version__ = "0.10"
 
-    __description__ = """XFileSharingPro base account plugin"""
+    __description__ = """XFileSharingPro account plugin"""
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 

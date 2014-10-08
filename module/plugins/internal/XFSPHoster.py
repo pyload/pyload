@@ -21,11 +21,11 @@ class XFSPHoster(SimpleHoster):
     """
     __name__ = "XFSPHoster"
     __type__ = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.01"
 
-    __pattern__ = r'^unmatchable$'
+    __pattern__ = None
 
-    __description__ = """XFileSharingPro base hoster plugin"""
+    __description__ = """XFileSharingPro hoster plugin"""
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
@@ -33,7 +33,7 @@ class XFSPHoster(SimpleHoster):
 
     HOSTER_NAME = None
 
-    FILE_URL_REPLACEMENTS = [(r'/embed-(\w{12}).*', r'/\1')]  #: support embedded files
+    FILE_URL_REPLACEMENTS = []
 
     COOKIES = [(HOSTER_NAME, "lang", "english")]
 
@@ -59,14 +59,7 @@ class XFSPHoster(SimpleHoster):
 
     def setup(self):
         self.chunkLimit = 1
-
-        if self.__name__ == "XFSPHoster":
-            self.multiDL = True
-            self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
-            self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
-            self.COOKIES = [(self.HOSTER_NAME, "lang", "english")]
-        else:
-            self.resumeDownload = self.multiDL = self.premium
+        self.resumeDownload = self.multiDL = self.premium
 
 
     def prepare(self):
@@ -356,6 +349,3 @@ class XFSPHoster(SimpleHoster):
             return 4
 
         return 0
-
-
-getInfo = create_getInfo(XFSPHoster)
