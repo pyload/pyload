@@ -13,8 +13,9 @@ class PromptfileCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?promptfile\.com/'
 
     __description__ = """Promptfile.com hoster plugin"""
-    __author_name__ = "igel"
-    __author_mail__ = "igelkun@myopera.com"
+    __license__ = "GPLv3"
+    __authors__ = [("igel", "igelkun@myopera.com")]
+
 
     FILE_INFO_PATTERN = r'<span style="[^"]*" title="[^"]*">(?P<N>.*?) \((?P<S>[\d.]+) (?P<U>\w+)\)</span>'
     OFFLINE_PATTERN = r'<span style="[^"]*" title="File Not Found">File Not Found</span>'

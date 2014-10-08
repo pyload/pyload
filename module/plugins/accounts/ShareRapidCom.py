@@ -12,8 +12,10 @@ class ShareRapidCom(Account):
     __version__ = "0.34"
 
     __description__ = """MegaRapid.cz account plugin"""
-    __author_name__ = ("MikyWoW", "zoidberg")
-    __author_mail__ = ("mikywow@seznam.cz", "zoidberg@mujmail.cz")
+    __license__ = "GPLv3"
+    __authors__ = [("MikyWoW", "mikywow@seznam.cz"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
+
 
     login_timeout = 60
 

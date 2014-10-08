@@ -11,8 +11,8 @@ class ZeveraCom(Hoster):
     __pattern__ = r'http://(?:www\.)?zevera\.com/.*'
 
     __description__ = """Zevera.com hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def setup(self):

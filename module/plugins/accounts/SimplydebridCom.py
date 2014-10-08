@@ -11,8 +11,8 @@ class SimplydebridCom(Account):
     __version__ = "0.1"
 
     __description__ = """Simply-Debrid.com account plugin"""
-    __author_name__ = "Kagenoshin"
-    __author_mail__ = "kagenoshin@gmx.ch"
+    __license__ = "GPLv3"
+    __authors__ = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
     def loadAccountInfo(self, user, req):

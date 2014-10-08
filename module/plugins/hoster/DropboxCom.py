@@ -13,8 +13,8 @@ class DropboxCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?dropbox\.com/.+'
 
     __description__ = """Dropbox.com hoster plugin"""
-    __author_name__ = "zapp-brannigan"
-    __author_mail__ = "fuerst.reinje@web.de"
+    __license__ = "GPLv3"
+    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     FILE_NAME_PATTERN = r'<title>Dropbox - (?P<N>.+?)<'

@@ -13,8 +13,9 @@ class SendspaceCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?sendspace.com/file/.*'
 
     __description__ = """Sendspace.com hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r'<h2 class="bgray">\s*<(?:b|strong)>(?P<N>[^<]+)</'
     FILE_SIZE_PATTERN = r'<div class="file_description reverse margin_center">\s*<b>File Size:</b>\s*(?P<S>[0-9.]+)(?P<U>[kKMG])i?B\s*</div>'

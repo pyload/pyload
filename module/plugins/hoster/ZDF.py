@@ -16,8 +16,8 @@ class ZDF(Hoster):
     __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/[^0-9]*([0-9]+)[^0-9]*'
 
     __description__ = """ZDF.de hoster plugin"""
-    __author_name__ = None
-    __author_mail__ = None
+    __license__ = "GPLv3"
+    __authors__ = []
 
     XML_API = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?id=%i"
 

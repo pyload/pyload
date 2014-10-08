@@ -20,8 +20,9 @@ class UlozTo(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
 
     __description__ = """Uloz.to hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_INFO_PATTERN = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'
     FILE_NAME_PATTERN = r'<title>(?P<N>[^<]+) \| Uloz.to</title>'

@@ -16,8 +16,10 @@ class BayfilesCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>[a-zA-Z0-9]+/[a-zA-Z0-9]+/[^/]+)'
 
     __description__ = """Bayfiles.com hoster plugin"""
-    __author_name__ = ("zoidberg", "Walter Purcaro")
-    __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com")
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
+
 
     FILE_INFO_PATTERN = r'<p title="(?P<N>[^"]+)">[^<]*<strong>(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B</strong></p>'
     OFFLINE_PATTERN = r'(<p>The requested file could not be found.</p>|<title>404 Not Found</title>)'

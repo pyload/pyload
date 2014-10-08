@@ -11,8 +11,9 @@ class UploadableChFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/list/\w+'
 
     __description__ = """ Uploadable.ch folder decrypter plugin """
-    __author_name__ = ("guidobelix", "Walter Purcaro")
-    __author_mail__ = ("guidobelix@hotmail.it", "vuolter@gmail.com")
+    __license__ = "GPLv3"
+    __authors__ = [("guidobelix", "guidobelix@hotmail.it"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     LINK_PATTERN = r'"(.+?)" class="icon_zipfile">'

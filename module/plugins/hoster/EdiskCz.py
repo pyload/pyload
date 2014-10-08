@@ -13,8 +13,9 @@ class EdiskCz(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?edisk.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*'
 
     __description__ = """Edisk.cz hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_INFO_PATTERN = r'<span class="fl" title="(?P<N>[^"]+)">\s*.*?\((?P<S>[0-9.]*) (?P<U>[kKMG])i?B\)</h1></span>'
     OFFLINE_PATTERN = r'<h3>This file does not exist due to one of the following:</h3><ul><li>'

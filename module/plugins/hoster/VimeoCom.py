@@ -15,8 +15,9 @@ class VimeoCom(SimpleHoster):
                   ("original", "bool", "Try to download the original file first", True)]
 
     __description__ = """Vimeo.com hoster plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+
 
     FILE_NAME_PATTERN = r'<title>(?P<N>.+) on Vimeo<'
     OFFLINE_PATTERN = r'class="exception_header"'

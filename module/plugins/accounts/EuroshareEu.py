@@ -12,8 +12,8 @@ class EuroshareEu(Account):
     __version__ = "0.01"
 
     __description__ = """Euroshare.eu account plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def loadAccountInfo(self, user, req):

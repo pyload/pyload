@@ -12,8 +12,9 @@ class Share4webCom(UnibytesCom):
     __pattern__ = r'http://(?:www\.)?share4web\.com/get/\w+'
 
     __description__ = """Share4web.com hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     HOSTER_NAME = "share4web.com"
 

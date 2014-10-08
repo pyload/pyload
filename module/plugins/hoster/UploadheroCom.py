@@ -16,8 +16,10 @@ class UploadheroCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
 
     __description__ = """UploadHero.co plugin"""
-    __author_name__ = ("mcmyst", "zoidberg")
-    __author_mail__ = ("mcmyst@hotmail.fr", "zoidberg@mujmail.cz")
+    __license__ = "GPLv3"
+    __authors__ = [("mcmyst", "mcmyst@hotmail.fr"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r'<div class="nom_de_fichier">(?P<N>.*?)</div>'
     FILE_SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'

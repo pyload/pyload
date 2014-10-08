@@ -11,5 +11,5 @@ class HotfileFolderCom(DeadCrypter):
     __pattern__ = r'https?://(?:www\.)?hotfile\.com/list/\w+/\w+'
 
     __description__ = """Hotfile.com folder decrypter plugin"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org")]

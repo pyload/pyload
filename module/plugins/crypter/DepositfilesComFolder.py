@@ -11,7 +11,8 @@ class DepositfilesComFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?depositfiles.com/folders/\w+'
 
     __description__ = """Depositfiles.com folder decrypter plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     LINK_PATTERN = r'<div class="progressName"[^>]*>\s*<a href="([^"]+)" title="[^"]*" target="_blank">'

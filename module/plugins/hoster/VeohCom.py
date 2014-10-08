@@ -14,8 +14,9 @@ class VeohCom(SimpleHoster):
     __config__ = [("quality", "Low;High;Auto", "Quality", "Auto")]
 
     __description__ = """Veoh.com hoster plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+
 
     FILE_NAME_PATTERN = r'<meta name="title" content="(?P<N>.*?)"'
     OFFLINE_PATTERN = r'>Sorry, we couldn\'t find the video you were looking for'

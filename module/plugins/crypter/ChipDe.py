@@ -12,8 +12,8 @@ class ChipDe(Crypter):
     __pattern__ = r'http://(?:www\.)?chip.de/video/.*\.html'
 
     __description__ = """Chip.de decrypter plugin"""
-    __author_name__ = "4Christopher"
-    __author_mail__ = "4Christopher@gmx.de"
+    __license__ = "GPLv3"
+    __authors__ = [("4Christopher", "4Christopher@gmx.de")]
 
 
     def decrypt(self, pyfile):

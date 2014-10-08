@@ -16,8 +16,10 @@ class UploadingCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)'
 
     __description__ = """Uploading.com hoster plugin"""
-    __author_name__ = ("jeix", "mkaay", "zoidberg")
-    __author_mail__ = ("jeix@hasnomail.de", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
+    __license__ = "GPLv3"
+    __authors__ = [("jeix", "jeix@hasnomail.de"),
+                   ("mkaay", "mkaay@mkaay.de"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'id="file_title">(?P<N>.+)</'

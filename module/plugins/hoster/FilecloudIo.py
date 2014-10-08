@@ -15,8 +15,10 @@ class FilecloudIo(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*'
 
     __description__ = """Filecloud.io hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
     FILE_SIZE_PATTERN = r'{var __ab1 = (?P<S>\d+);}'
     FILE_NAME_PATTERN = r'id="aliasSpan">(?P<N>.*?)&nbsp;&nbsp;<'

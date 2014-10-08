@@ -17,8 +17,8 @@ class AlldebridCom(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Alldebrid.com hook plugin"""
-    __author_name__ = "Andy Voigt"
-    __author_mail__ = "spamsales@online.de"
+    __license__ = "GPLv3"
+    __authors__ = [("Andy Voigt", "spamsales@online.de")]
 
 
     def getHoster(self):

@@ -17,8 +17,9 @@ class RelinkUs(Crypter):
     __pattern__ = r'http://(?:www\.)?relink.us/(f/|((view|go).php\?id=))(?P<id>.+)'
 
     __description__ = """Relink.us decrypter plugin"""
-    __author_name__ = "fragonib"
-    __author_mail__ = "fragonib[AT]yahoo[DOT]es"
+    __license__ = "GPLv3"
+    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
+
 
     # Constants
     PREFERRED_LINK_SOURCES = ["cnl2", "dlc", "web"]

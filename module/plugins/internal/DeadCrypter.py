@@ -11,8 +11,8 @@ class DeadCrypter(_Crypter):
     __pattern__ = None
 
     __description__ = """ Crypter is no longer available """
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__ = "GPLv3"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
     def setup(self):

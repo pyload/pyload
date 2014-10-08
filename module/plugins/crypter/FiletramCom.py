@@ -11,8 +11,10 @@ class FiletramCom(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?filetram.com/[^/]+/.+'
 
     __description__ = """Filetram.com decrypter plugin"""
-    __author_name__ = ("igel", "stickell")
-    __author_mail__ = ("igelkun@myopera.com", "l.stickell@yahoo.it")
+    __license__ = "GPLv3"
+    __authors__ = [("igel", "igelkun@myopera.com"),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
     LINK_PATTERN = r'\s+(http://.+)'
     TITLE_PATTERN = r'<title>(.+?) - Free Download'

@@ -11,8 +11,8 @@ class ZeveraCom(Account):
     __version__ = "0.21"
 
     __description__ = """Zevera.com account plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def loadAccountInfo(self, user, req):

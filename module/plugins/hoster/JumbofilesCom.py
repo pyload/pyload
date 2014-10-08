@@ -13,8 +13,9 @@ class JumbofilesCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?jumbofiles.com/(\w{12}).*'
 
     __description__ = """JumboFiles.com hoster plugin"""
-    __author_name__ = "godofdream"
-    __author_mail__ = "soilfiction@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("godofdream", "soilfiction@gmail.com")]
+
 
     FILE_INFO_PATTERN = r'<TR><TD>(?P<N>[^<]+?)\s*<small>\((?P<S>[\d.]+)\s*(?P<U>[KMG][bB])\)</small></TD></TR>'
     OFFLINE_PATTERN = r'Not Found or Deleted / Disabled due to inactivity or DMCA'

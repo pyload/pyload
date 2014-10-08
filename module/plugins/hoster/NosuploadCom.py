@@ -2,19 +2,20 @@
 
 import re
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class NosuploadCom(XFileSharingPro):
+class NosuploadCom(XFSPHoster):
     __name__ = "NosuploadCom"
     __type__ = "hoster"
-    __version__ = "0.1"
+    __version__ = "0.3"
 
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
 
     __description__ = """Nosupload.com hoster plugin"""
-    __author_name__ = "igel"
-    __author_mail__ = "igelkun@myopera.com"
+    __license__ = "GPLv3"
+    __authors__ = [("igel", "igelkun@myopera.com")]
+
 
     HOSTER_NAME = "nosupload.com"
 

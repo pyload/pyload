@@ -11,8 +11,10 @@ class FastshareCz(Account):
     __version__ = "0.03"
 
     __description__ = """Fastshare.cz account plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
     CREDIT_PATTERN = r'(?:Kredit|Credit)\s*</td>\s*<td[^>]*>([\d. \w]+)&nbsp;'
 

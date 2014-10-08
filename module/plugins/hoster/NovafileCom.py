@@ -4,19 +4,20 @@
 # http://novafile.com/vfun4z6o2cit
 # http://novafile.com/s6zrr5wemuz4
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class NovafileCom(XFileSharingPro):
+class NovafileCom(XFSPHoster):
     __name__ = "NovafileCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?novafile\.com/\w{12}'
 
     __description__ = """Novafile.com hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it")
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_NAME = "novafile.com"

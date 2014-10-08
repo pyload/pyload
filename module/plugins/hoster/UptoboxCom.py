@@ -2,19 +2,19 @@
 
 import re
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class UptoboxCom(XFileSharingPro):
+class UptoboxCom(XFSPHoster):
     __name__ = "UptoboxCom"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.12"
 
     __pattern__ = r'https?://(?:www\.)?uptobox\.com/\w{12}'
 
     __description__ = """Uptobox.com hoster plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_NAME = "uptobox.com"

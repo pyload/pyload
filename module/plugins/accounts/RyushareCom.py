@@ -9,8 +9,9 @@ class RyushareCom(XFSPAccount):
     __version__ = "0.04"
 
     __description__ = """Ryushare.com account plugin"""
-    __author_name__ = ("zoidberg", "trance4us")
-    __author_mail__ = ("zoidberg@mujmail.cz", "")
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("trance4us", None)]
 
 
     HOSTER_URL = "http://www.ryushare.com/"

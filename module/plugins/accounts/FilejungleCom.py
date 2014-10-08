@@ -12,8 +12,9 @@ class FilejungleCom(Account):
     __version__ = "0.11"
 
     __description__ = """Filejungle.com account plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     login_timeout = 60
 

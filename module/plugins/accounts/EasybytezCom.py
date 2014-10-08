@@ -14,8 +14,9 @@ class EasybytezCom(XFSPAccount):
     __version__ = "0.07"
 
     __description__ = """EasyBytez.com account plugin"""
-    __author_name__ = ("zoidberg", "guidobelix")
-    __author_mail__ = ("zoidberg@mujmail.cz", "guidobelix@hotmail.it")
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("guidobelix", "guidobelix@hotmail.it")]
 
 
     HOSTER_URL = "http://www.easybytez.com/"

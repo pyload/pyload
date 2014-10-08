@@ -11,8 +11,8 @@ class FileApeCom(DeadHoster):
     __pattern__ = r'http://(?:www\.)?fileape\.com/(index\.php\?act=download\&id=|dl/)\w+'
 
     __description__ = """FileApe.com hoster plugin"""
-    __author_name__ = "espes"
-    __author_mail__ = None
+    __license__ = "GPLv3"
+    __authors__ = [("espes", None)]
 
 
 getInfo = create_getInfo(FileApeCom)

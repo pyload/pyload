@@ -44,8 +44,12 @@ class ShareonlineBiz(Hoster):
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download.php\?id=|dl/)(?P<ID>\w+)'
 
     __description__ = """Shareonline.biz hoster plugin"""
-    __author_name__ = ("spoob", "mkaay", "zoidberg", "Walter Purcaro")
-    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "vuolter@gmail.com")
+    __license__ = "GPLv3"
+    __authors__ = [("spoob", "spoob@pyload.org"),
+                   ("mkaay", "mkaay@mkaay.de"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
+
 
     ERROR_INFO_PATTERN = r'<p class="b">Information:</p>\s*<div>\s*<strong>(.*?)</strong>'
 

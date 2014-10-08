@@ -5,19 +5,19 @@ import re
 from time import sleep
 
 from module.network.HTTPRequest import HTTPRequest
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class StreamcloudEu(XFileSharingPro):
+class StreamcloudEu(XFSPHoster):
     __name__ = "StreamcloudEu"
     __type__ = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\w{12}'
 
     __description__ = """Streamcloud.eu hoster plugin"""
-    __author_name__ = "seoester"
-    __author_mail__ = "seoester@googlemail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("seoester", "seoester@googlemail.com")]
 
 
     HOSTER_NAME = "streamcloud.eu"

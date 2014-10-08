@@ -13,8 +13,8 @@ class UploadheroCom(Account):
     __version__ = "0.2"
 
     __description__ = """Uploadhero.co account plugin"""
-    __author_name__ = "mcmyst"
-    __author_mail__ = "mcmyst@hotmail.fr"
+    __license__ = "GPLv3"
+    __authors__ = [("mcmyst", "mcmyst@hotmail.fr")]
 
 
     def loadAccountInfo(self, user, req):

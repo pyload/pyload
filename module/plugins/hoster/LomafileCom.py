@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
-class LomafileCom(XFileSharingPro):
+class LomafileCom(XFSPHoster):
     __name__ = "LomafileCom"
     __type__ = "hoster"
-    __version__ = "0.3"
+    __version__ = "0.5"
 
     __pattern__ = r'http://lomafile\.com/\w{12}'
 
     __description__ = """Lomafile.com hoster plugin"""
-    __author_name__ = ("nath_schwarz", "guidobelix")
-    __author_mail__ = ("nathan.notwhite@gmail.com", "guidobelix@hotmail.it")
+    __license__ = "GPLv3"
+    __authors__ = [("nath_schwarz", "nathan.notwhite@gmail.com"),
+                   ("guidobelix", "guidobelix@hotmail.it")]
 
 
     HOSTER_NAME = "lomafile.com"

@@ -133,8 +133,10 @@ class Plugin(Base):
     __config__ = [("name", "type", "desc", "default")]
 
     __description__ = """Base plugin"""
-    __author_name__ = ("RaNaN", "spoob", "mkaay")
-    __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("spoob", "spoob@pyload.org"),
+                   ("mkaay", "mkaay@mkaay.de")]
 
 
     def __init__(self, pyfile):

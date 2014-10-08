@@ -21,8 +21,10 @@ class RemixshareCom(SimpleHoster):
     __pattern__ = r'https?://remixshare\.com/(download|dl)/\w+'
 
     __description__ = """Remixshare.com hoster plugin"""
-    __author_name__ = ("zapp-brannigan", "Walter Purcaro")
-    __author_mail__ = ("fuerst.reinje@web.de", "vuolter@gmail.com")
+    __license__ = "GPLv3"
+    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
+
 
     FILE_INFO_PATTERN = r'title=\'.+?\'>(?P<N>.+?)</span><span class=\'light2\'>&nbsp;\((?P<S>\d+)&nbsp;(?P<U>\w+)\)<'
     OFFLINE_PATTERN = r'<h1>Ooops!<'

@@ -11,8 +11,9 @@ class FilecloudIoFolder(SimpleCrypter):
     __pattern__ = r'https?://(?:www\.)?(filecloud\.io|ifile\.it)/_\w+'
 
     __description__ = """Filecloud.io folder decrypter plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+
 
     LINK_PATTERN = r'href="(http://filecloud.io/\w+)" title'
     TITLE_PATTERN = r'>(.+?) - filecloud.io<'

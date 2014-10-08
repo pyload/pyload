@@ -17,8 +17,8 @@ class AlldebridCom(Account):
     __version__ = "0.22"
 
     __description__ = """AllDebrid.com account plugin"""
-    __author_name__ = "Andy Voigt"
-    __author_mail__ = "spamsales@online.de"
+    __license__ = "GPLv3"
+    __authors__ = [("Andy Voigt", "spamsales@online.de")]
 
 
     def loadAccountInfo(self, user, req):

@@ -21,8 +21,8 @@ class HotFolder(Hook):
                   ("file", "str", "Link file", "links.txt")]
 
     __description__ = """Observe folder and file for changes and add container and links"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.de"
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.de")]
 
 
     def setup(self):

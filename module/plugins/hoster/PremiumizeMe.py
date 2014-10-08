@@ -12,8 +12,8 @@ class PremiumizeMe(Hoster):
     __pattern__ = None  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
 
     __description__ = """Premiumize.me hoster plugin"""
-    __author_name__ = "Florian Franzen"
-    __author_mail__ = "FlorianFranzen@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def process(self, pyfile):

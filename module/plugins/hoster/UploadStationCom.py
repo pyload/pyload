@@ -11,8 +11,9 @@ class UploadStationCom(DeadHoster):
     __pattern__ = r'http://(?:www\.)?uploadstation\.com/file/(?P<id>[A-Za-z0-9]+)'
 
     __description__ = """UploadStation.com hoster plugin"""
-    __author_name__ = ("fragonib", "zoidberg")
-    __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "zoidberg@mujmail.cz")
+    __license__ = "GPLv3"
+    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
 
 
 getInfo = create_getInfo(UploadStationCom)

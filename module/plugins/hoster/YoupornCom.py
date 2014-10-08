@@ -13,8 +13,8 @@ class YoupornCom(Hoster):
     __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
 
     __description__ = """Youporn.com hoster plugin"""
-    __author_name__ = "willnix"
-    __author_mail__ = "willnix@pyload.org"
+    __license__ = "GPLv3"
+    __authors__ = [("willnix", "willnix@pyload.org")]
 
 
     def process(self, pyfile):

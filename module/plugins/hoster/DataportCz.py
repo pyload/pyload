@@ -11,8 +11,9 @@ class DataportCz(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?dataport.cz/file/(.*)'
 
     __description__ = """Dataport.cz hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r'<span itemprop="name">(?P<N>[^<]+)</span>'
     FILE_SIZE_PATTERN = r'<td class="fil">Velikost</td>\s*<td>(?P<S>[^<]+)</td>'

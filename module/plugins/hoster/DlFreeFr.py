@@ -117,8 +117,10 @@ class DlFreeFr(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/([a-zA-Z0-9]+|getfile\.pl\?file=/[a-zA-Z0-9]+)'
 
     __description__ = """Dl.free.fr hoster plugin"""
-    __author_name__ = ("the-razer", "zoidberg", "Toilal")
-    __author_mail__ = ("daniel_ AT gmx DOT net", "zoidberg@mujmail.cz", "toilal.dev@gmail.com")
+    __license__ = "GPLv3"
+    __authors__ = [("the-razer", "daniel_ AT gmx DOT net"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("Toilal", "toilal.dev@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>'

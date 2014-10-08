@@ -15,8 +15,8 @@ class XVideosCom(Hoster):
     __pattern__ = r'http://(?:www\.)?xvideos\.com/video([0-9]+)/.*'
 
     __description__ = """XVideos.com hoster plugin"""
-    __author_name__ = None
-    __author_mail__ = None
+    __license__ = "GPLv3"
+    __authors__ = []
 
 
     def process(self, pyfile):

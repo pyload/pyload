@@ -18,8 +18,8 @@ class UnrestrictLi(MultiHoster):
                   ("history", "bool", "Delete History", False)]
 
     __description__ = """Unrestrict.li hook plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__ = "GPLv3"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
     def getHoster(self):

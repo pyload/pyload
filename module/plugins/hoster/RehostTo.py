@@ -13,8 +13,8 @@ class RehostTo(Hoster):
     __pattern__ = r'https?://.*rehost.to\..*'
 
     __description__ = """Rehost.com hoster plugin"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def getFilename(self, url):

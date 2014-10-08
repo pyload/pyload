@@ -15,8 +15,8 @@ class EasybytezCom(MultiHoster):
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """EasyBytez.com hook plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def getHoster(self):

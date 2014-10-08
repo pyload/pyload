@@ -30,8 +30,9 @@ class Captcha9kw(Hook):
                   ("passkey", "password", "API key", "")]
 
     __description__ = """Send captchas to 9kw.eu"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+
 
     API_URL = "://www.9kw.eu/index.cgi"
 

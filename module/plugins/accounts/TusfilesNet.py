@@ -14,8 +14,8 @@ class TusfilesNet(XFSPAccount):
     __version__ = "0.02"
 
     __description__ = """ Tusfile.net account plugin """
-    __author_name__ = "guidobelix"
-    __author_mail__ = "guidobelix@hotmail.it"
+    __license__ = "GPLv3"
+    __authors__ = [("guidobelix", "guidobelix@hotmail.it")]
 
 
     HOSTER_URL = "http://www.tusfiles.net/"

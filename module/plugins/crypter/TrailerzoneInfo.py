@@ -11,5 +11,5 @@ class TrailerzoneInfo(DeadCrypter):
     __pattern__ = r'http://(?:www\.)?trailerzone.info/.*?'
 
     __description__ = """TrailerZone.info decrypter plugin"""
-    __author_name__ = "godofdream"
-    __author_mail__ = "soilfiction@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("godofdream", "soilfiction@gmail.com")]

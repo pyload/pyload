@@ -13,8 +13,9 @@ class RgHostNet(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?rghost\.net/\d+(?:r=\d+)?'
 
     __description__ = """RgHost.net hoster plugin"""
-    __author_name__ = "z00nx"
-    __author_mail__ = "z00nx0@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("z00nx", "z00nx0@gmail.com")]
+
 
     FILE_INFO_PATTERN = r'<h1>\s+(<a[^>]+>)?(?P<N>[^<]+)(</a>)?\s+<small[^>]+>\s+\((?P<S>[^)]+)\)\s+</small>\s+</h1>'
     OFFLINE_PATTERN = r'File is deleted|this page is not found'

@@ -17,8 +17,8 @@ class PremiumizeMe(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Premiumize.me hook plugin"""
-    __author_name__ = "Florian Franzen"
-    __author_mail__ = "FlorianFranzen@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def getHoster(self):

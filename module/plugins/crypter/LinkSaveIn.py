@@ -21,8 +21,8 @@ class LinkSaveIn(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?linksave.in/(?P<id>\w+)$'
 
     __description__ = """LinkSave.in decrypter plugin"""
-    __author_name__ = "fragonib"
-    __author_mail__ = "fragonib[AT]yahoo[DOT]es"
+    __license__ = "GPLv3"
+    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
     COOKIES = [(".linksave.in", "Linksave_Language", "english")]

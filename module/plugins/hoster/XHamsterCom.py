@@ -25,8 +25,8 @@ class XHamsterCom(Hoster):
     __config__ = [("type", ".mp4;.flv", "Preferred type", ".mp4")]
 
     __description__ = """XHamster.com hoster plugin"""
-    __author_name__ = None
-    __author_mail__ = None
+    __license__ = "GPLv3"
+    __authors__ = []
 
 
     def process(self, pyfile):
@@ -67,6 +67,8 @@ class XHamsterCom(Hoster):
 
         if flashvars['url_mode']:
             url_mode = flashvars['url_mode']
+
+
         else:
             self.fail("Parse error (url_mode)")
 

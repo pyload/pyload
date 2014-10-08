@@ -15,8 +15,10 @@ class HoerbuchIn(Crypter):
     __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out.php\?.+|protection/folder_\d+\.html)'
 
     __description__ = """Hoerbuch.in decrypter plugin"""
-    __author_name__ = ("spoob", "mkaay")
-    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de")
+    __license__ = "GPLv3"
+    __authors__ = [("spoob", "spoob@pyload.org"),
+                   ("mkaay", "mkaay@mkaay.de")]
+
 
     article = re.compile("http://(?:www\.)?hoerbuch\.in/wp/horbucher/\d+/.+/")
     protection = re.compile("http://(?:www\.)?hoerbuch\.in/protection/folder_\d+.html")

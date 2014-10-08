@@ -11,5 +11,5 @@ class FilebeerInfoFolder(DeadCrypter):
     __pattern__ = r'http://(?:www\.)?filebeer\.info/(\d+~f).*'
 
     __description__ = """Filebeer.info folder decrypter plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]

@@ -11,8 +11,8 @@ class BoltsharingCom(DeadHoster):
     __pattern__ = r'http://(?:www\.)?boltsharing.com/\w{12}'
 
     __description__ = """Boltsharing.com hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
 getInfo = create_getInfo(BoltsharingCom)

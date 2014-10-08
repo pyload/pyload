@@ -2,20 +2,20 @@
 
 import re
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 from module.utils import html_unescape
 
 
-class RarefileNet(XFileSharingPro):
+class RarefileNet(XFSPHoster):
     __name__ = "RarefileNet"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'
 
     __description__ = """Rarefile.net hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_NAME = "rarefile.net"

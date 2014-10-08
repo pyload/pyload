@@ -13,10 +13,14 @@ class Ftp(Hoster):
     __name__ = "Ftp"
     __type__ = "hoster"
     __version__ = "0.42"
+
     __pattern__ = r'(ftps?|sftp)://(.*?:.*?@)?.*?/.*' # ftp://user:password@ftp.server.org/path/to/file
+
     __description__ = """Download from ftp directory"""
-    __author_name__ = ("jeix", "mkaay", "zoidberg")
-    __author_mail__ = ("jeix@hasnomail.com", "mkaay@mkaay.de", "zoidberg@mujmail.cz")
+    __license__ = "GPLv3"
+    __authors__ = [("jeix", "jeix@hasnomail.com"),
+                   ("mkaay", "mkaay@mkaay.de"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def setup(self):

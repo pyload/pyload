@@ -11,8 +11,9 @@ class MegareleaseOrg(DeadHoster):
     __pattern__ = r'https?://(?:www\.)?megarelease\.org/\w{12}'
 
     __description__ = """Megarelease.org hoster plugin"""
-    __author_name__ = ("derek3x", "stickell")
-    __author_mail__ = ("derek3x@vmail.me", "l.stickell@yahoo.it")
+    __license__ = "GPLv3"
+    __authors__ = [("derek3x", "derek3x@vmail.me"),
+                   ("stickell", "l.stickell@yahoo.it")]
 
 
 getInfo = create_getInfo(MegareleaseOrg)

@@ -9,8 +9,8 @@ class FileParadoxIn(XFSPAccount):
     __version__ = "0.01"
 
     __description__ = """FileParadox.in account plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_URL = "http://www.fileparadox.in/"

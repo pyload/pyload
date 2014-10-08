@@ -13,9 +13,13 @@ class OneFichierCom(SimpleHoster):
     __pattern__ = r'https?://(?P<ID>\w+)\.(?P<HOST>(1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl\.fr)'
 
     __description__ = """1fichier.com hoster plugin"""
-    __author_name__ = ("fragonib", "the-razer", "zoidberg", "imclem", "stickell", "Elrick69")
-    __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "daniel_ AT gmx DOT net", "zoidberg@mujmail.cz",
-                       "imclem on github", "l.stickell@yahoo.it", "elrick69[AT]rocketmail[DOT]com")
+    __license__ = "GPLv3"
+    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+                   ("the-razer", "daniel_ AT gmx DOT net"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("imclem", None),
+                   ("stickell", "l.stickell@yahoo.it"),
+                   ("Elrick69", "elrick69[AT]rocketmail[DOT]com")]
 
 
     FILE_NAME_PATTERN = r'>Filename :</th>\s*<td>(?P<N>.+?)<'

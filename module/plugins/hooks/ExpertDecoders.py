@@ -22,8 +22,10 @@ class ExpertDecoders(Hook):
                   ("passkey", "password", "Access key", "")]
 
     __description__ = """Send captchas to expertdecoders.com"""
-    __author_name__ = ("RaNaN", "zoidberg")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
+
 
     API_URL = "http://www.fasttypers.org/imagepost.ashx"
 
@@ -55,7 +57,7 @@ class ExpertDecoders(Hook):
         req.c.setopt(LOW_SPEED_TIME, 80)
 
         try:
-            result = req.load(self.API_URL,  post={"action": "upload", "key": self.getConfig("passkey"),
+            result = req.load(self.API_URL, post={"action": "upload", "key": self.getConfig("passkey"),
                                                    "file": data, "gen_task_id": ticket})
         finally:
             req.close()

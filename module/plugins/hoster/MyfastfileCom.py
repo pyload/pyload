@@ -10,10 +10,13 @@ class MyfastfileCom(Hoster):
     __name__ = "MyfastfileCom"
     __type__ = "hoster"
     __version__ = "0.04"
+
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
+
     __description__ = """Myfastfile.com hoster plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__ = "GPLv3"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+
 
     def setup(self):
         self.chunkLimit = -1

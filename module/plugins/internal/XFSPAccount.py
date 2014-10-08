@@ -13,11 +13,12 @@ from module.utils import parseFileSize
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
     __type__ = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
-    __description__ = """XFileSharingPro base account plugin"""
-    __author_name__ = ("zoidberg", "Walter Purcaro")
-    __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com")
+    __description__ = """XFileSharingPro account plugin"""
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_URL = None
@@ -77,7 +78,8 @@ class XFSPAccount(Account):
 
 
     def login(self, user, data, req):
-        set_cookies(req.cj, self.COOKIES)
+        if isinstance(self.COOKIES, list):
+            set_cookies(req.cj, self.COOKIES)
 
         url = urljoin(self.HOSTER_URL, "login.html")
         html = req.load(url, decode=True)

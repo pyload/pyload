@@ -13,8 +13,9 @@ class EuroshareEu(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?euroshare.(eu|sk|cz|hu|pl)/file/.*'
 
     __description__ = """Euroshare.eu hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_INFO_PATTERN = r'<span style="float: left;"><strong>(?P<N>.+?)</strong> \((?P<S>.+?)\)</span>'
     OFFLINE_PATTERN = ur'<h2>S.bor sa nena.iel</h2>|Požadovaná stránka neexistuje!'

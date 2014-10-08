@@ -19,8 +19,8 @@ class RealdebridCom(Hoster):
     __pattern__ = r'https?://(?:[^/]*\.)?real-debrid\..*'
 
     __description__ = """Real-Debrid.com hoster plugin"""
-    __author_name__ = "Devirex Hazzard"
-    __author_mail__ = "naibaf_11@yahoo.de"
+    __license__ = "GPLv3"
+    __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
     def getFilename(self, url):

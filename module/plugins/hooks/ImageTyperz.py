@@ -38,8 +38,10 @@ class ImageTyperz(Hook):
                   ("force", "bool", "Force IT even if client is connected", False)]
 
     __description__ = """Send captchas to ImageTyperz.com"""
-    __author_name__ = ("RaNaN", "zoidberg")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
+
 
     SUBMIT_URL = "http://captchatypers.com/Forms/UploadFileAndGetTextNEW.ashx"
     RESPOND_URL = "http://captchatypers.com/Forms/SetBadImage.ashx"

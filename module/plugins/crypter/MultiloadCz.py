@@ -14,8 +14,9 @@ class MultiloadCz(Crypter):
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
 
     __description__ = """Multiload.cz decrypter plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FOLDER_PATTERN = r'<form action="" method="get"><textarea[^>]*>([^>]*)</textarea></form>'
     LINK_PATTERN = r'<p class="manager-server"><strong>([^<]+)</strong></p><p class="manager-linky"><a href="([^"]+)">'

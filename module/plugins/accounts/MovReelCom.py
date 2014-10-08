@@ -9,8 +9,8 @@ class MovReelCom(XFSPAccount):
     __version__ = "0.02"
 
     __description__ = """Movreel.com account plugin"""
-    __author_name__ = "t4skforce"
-    __author_mail__ = "t4skforce1337[AT]gmail[DOT]com"
+    __license__ = "GPLv3"
+    __authors__ = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
 
 
     login_timeout = 60

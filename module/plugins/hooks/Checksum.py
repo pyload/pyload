@@ -50,8 +50,11 @@ class Checksum(Hook):
                   ("wait_time", "int", "Time to wait before each retry (seconds)", 1)]
 
     __description__ = """Verify downloaded file size and checksum"""
-    __author_name__ = ("zoidberg", "Walter Purcaro", "stickell")
-    __author_mail__ = ("zoidberg@mujmail.cz", "vuolter@gmail.com", "l.stickell@yahoo.it")
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("stickell", "l.stickell@yahoo.it")]
+
 
     methods = {'sfv': 'crc32', 'crc': 'crc32', 'hash': 'md5'}
     regexps = {'sfv': r'^(?P<name>[^;].+)\s+(?P<hash>[0-9A-Fa-f]{8})$',

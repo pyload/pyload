@@ -14,8 +14,9 @@ class YibaishiwuCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(?:u\.)?115.com/file/(?P<ID>\w+)'
 
     __description__ = """115.com hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r"file_name: '(?P<N>[^']+)'"
     FILE_SIZE_PATTERN = r"file_size: '(?P<S>[^']+)'"

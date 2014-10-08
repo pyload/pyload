@@ -18,8 +18,8 @@ class OboomCom(Hoster):
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>\w{8})'
 
     __description__ = """oboom.com hoster plugin"""
-    __author_name__ = "stanley"
-    __author_mail__ = "stanley.foerster@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("stanley", "stanley.foerster@gmail.com")]
 
 
     RECAPTCHA_KEY = "6LdqpO0SAAAAAJGHXo63HyalP7H4qlRs_vff0kJX"

@@ -14,8 +14,8 @@ class MultiHome(Hook):
                   ("interfaces", "str", "Interfaces", "None")]
 
     __description__ = """Ip address changer"""
-    __author_name__ = "mkaay"
-    __author_mail__ = "mkaay@mkaay.de"
+    __license__ = "GPLv3"
+    __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 
     def setup(self):

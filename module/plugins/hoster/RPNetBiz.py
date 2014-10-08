@@ -12,10 +12,10 @@ class RPNetBiz(Hoster):
     __version__ = "0.1"
 
     __description__ = """RPNet.biz hoster plugin"""
+    __license__ = "GPLv3"
 
     __pattern__ = r'https?://.*rpnet\.biz'
-    __author_name__ = "Dman"
-    __author_mail__ = "dmanugm@gmail.com"
+    __authors__ = [("Dman", "dmanugm@gmail.com")]
 
 
     def setup(self):

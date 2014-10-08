@@ -11,5 +11,5 @@ class SecuredIn(DeadCrypter):
     __pattern__ = r'http://(?:www\.)?secured\.in/download-[\d]+-[\w]{8}\.html'
 
     __description__ = """Secured.in decrypter plugin"""
-    __author_name__ = "mkaay"
-    __author_mail__ = "mkaay@mkaay.de"
+    __license__ = "GPLv3"
+    __authors__ = [("mkaay", "mkaay@mkaay.de")]

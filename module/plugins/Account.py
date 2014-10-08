@@ -24,8 +24,9 @@ class Account(Base):
     __version__ = "0.3"
 
     __description__ = """Base account plugin"""
-    __author_name__ = "mkaay"
-    __author_mail__ = "mkaay@mkaay.de"
+    __license__ = "GPLv3"
+    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+
 
     #: after that time (in minutes) pyload will relogin the account
     login_timeout = 10 * 60
@@ -67,13 +68,13 @@ class Account(Base):
             self.login(user, data, req)
         except WrongPassword:
             self.logWarning(
-                _("Could not login with account %(user)s | %(msg)s") % {"user": user
-                                                                        , "msg": _("Wrong Password")})
+                _("Could not login with account %(user)s | %(msg)s") % {"user": user,
+                                                                        "msg": _("Wrong Password")})
             success = data['valid'] = False
         except Exception, e:
             self.logWarning(
-                _("Could not login with account %(user)s | %(msg)s") % {"user": user
-                                                                        , "msg": e})
+                _("Could not login with account %(user)s | %(msg)s") % {"user": user,
+                                                                        "msg": e})
             success = data['valid'] = False
             if self.core.debug:
                 print_exc()

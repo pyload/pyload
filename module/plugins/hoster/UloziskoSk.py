@@ -13,8 +13,9 @@ class UloziskoSk(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?ulozisko.sk/.*'
 
     __description__ = """Ulozisko.sk hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r'<div class="down1">(?P<N>[^<]+)</div>'
     FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong><br />'

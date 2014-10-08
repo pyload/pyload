@@ -11,8 +11,8 @@ class WarserverCz(DeadHoster):
     __pattern__ = r'http://(?:www\.)?warserver\.cz/stahnout/\d+'
 
     __description__ = """Warserver.cz hoster plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
 getInfo = create_getInfo(WarserverCz)

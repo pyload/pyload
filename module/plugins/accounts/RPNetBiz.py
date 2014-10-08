@@ -10,8 +10,8 @@ class RPNetBiz(Account):
     __version__ = "0.1"
 
     __description__ = """RPNet.biz account plugin"""
-    __author_name__ = "Dman"
-    __author_mail__ = "dmanugm@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("Dman", "dmanugm@gmail.com")]
 
 
     def loadAccountInfo(self, user, req):

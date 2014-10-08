@@ -14,8 +14,9 @@ class MultiUpOrg(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?multiup\.org/(en|fr)/(?P<TYPE>project|download|miror)/\w+(/\w+)?'
 
     __description__ = """MultiUp.org crypter plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+
 
     TITLE_PATTERN = r'<title>.*(?:Project|Projet|ownload|élécharger) (.+?) (?:\(|- )'
 

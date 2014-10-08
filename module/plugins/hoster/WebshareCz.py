@@ -29,8 +29,8 @@ class WebshareCz(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?webshare.cz/(?:#/)?file/(?P<ID>\w+)'
 
     __description__ = """WebShare.cz hoster plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__ = "GPLv3"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
     def handleFree(self):

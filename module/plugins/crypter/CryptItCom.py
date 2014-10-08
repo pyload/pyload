@@ -11,5 +11,5 @@ class CryptItCom(DeadCrypter):
     __pattern__ = r'http://(?:www\.)?crypt-it\.com/(s|e|d|c)/[\w]+'
 
     __description__ = """Crypt-it.com decrypter plugin"""
-    __author_name__ = "jeix"
-    __author_mail__ = "jeix@hasnomail.de"
+    __license__ = "GPLv3"
+    __authors__ = [("jeix", "jeix@hasnomail.de")]

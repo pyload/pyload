@@ -11,8 +11,8 @@ class XupPl(Crypter):
     __pattern__ = r'https?://(?:[^/]*\.)?xup\.pl/.*'
 
     __description__ = """Xup.pl decrypter plugin"""
-    __author_name__ = "z00nx"
-    __author_mail__ = "z00nx0@gmail.com"
+    __license__ = "GPLv3"
+    __authors__ = [("z00nx", "z00nx0@gmail.com")]
 
 
     def decrypt(self, pyfile):

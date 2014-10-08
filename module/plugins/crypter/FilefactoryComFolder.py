@@ -11,8 +11,9 @@ class FilefactoryComFolder(SimpleCrypter):
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(?:f|folder)/\w+'
 
     __description__ = """Filefactory.com folder decrypter plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__ = "GPLv3"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+
 
     LINK_PATTERN = r'<td><a href="([^"]+)">'
     TITLE_PATTERN = r'<h1>Files in <span>(.+)</span></h1>'

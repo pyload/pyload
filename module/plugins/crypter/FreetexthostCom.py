@@ -13,8 +13,8 @@ class FreetexthostCom(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?freetexthost\.com/\w+'
 
     __description__ = """Freetexthost.com decrypter plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__ = "GPLv3"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
     def getLinks(self):

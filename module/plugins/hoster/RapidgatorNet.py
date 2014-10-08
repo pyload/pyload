@@ -19,8 +19,12 @@ class RapidgatorNet(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
     __description__ = """Rapidgator.net hoster plugin"""
-    __author_name__ = ("zoidberg", "chrox", "stickell", "Walter Purcaro")
-    __author_mail__ = ("zoidberg@mujmail.cz", "", "l.stickell@yahoo.it", "vuolter@gmail.com")
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("chrox", None),
+                   ("stickell", "l.stickell@yahoo.it"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
+
 
     API_URL = "http://rapidgator.net/api/file"
 

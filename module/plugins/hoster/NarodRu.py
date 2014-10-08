@@ -15,8 +15,9 @@ class NarodRu(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/[0-9]+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
 
     __description__ = """Narod.ru hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     FILE_NAME_PATTERN = r'<dt class="name">(?:<[^<]*>)*(?P<N>[^<]+)</dt>'
     FILE_SIZE_PATTERN = r'<dd class="size">(?P<S>\d[^<]*)</dd>'
