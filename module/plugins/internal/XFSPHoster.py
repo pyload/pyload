@@ -21,7 +21,7 @@ class XFSPHoster(SimpleHoster):
     """
     __name__ = "XFSPHoster"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = None
 
@@ -69,8 +69,8 @@ class XFSPHoster(SimpleHoster):
             self.fail("Missing HOSTER_NAME")
 
         if not self.LINK_PATTERN:
-            pattr = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)'
-            self.LINK_PATTERN = pattr % self.HOSTER_NAME
+            pattern = r'(https?://(www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'
+            self.LINK_PATTERN = pattern % self.HOSTER_NAME
 
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
