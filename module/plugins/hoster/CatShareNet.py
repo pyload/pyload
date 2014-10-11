@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class CatShareNet(SimpleHoster):
     __name__ = "CatShareNet"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
 
@@ -23,9 +23,9 @@ class CatShareNet(SimpleHoster):
     TEXT_ENCODING = True
 
     FILE_INFO_PATTERN = r'<title>(?P<N>.+) \((?P<S>[\d.]+) (?P<U>\w+)\)<'
-    OFFLINE_PATTERN = r'Podany plik został usunięty\s*</div>'
+    OFFLINE_PATTERN = ur'Podany plik został usunięty\s*</div>'
 
-    IP_BLOCKED_PATTERN = r'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
+    IP_BLOCKED_PATTERN = ur'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
     SECONDS_PATTERN = 'var\scount\s=\s(\d+);'
     LINK_PATTERN = r'<form action="(.+?)" method="GET">'
 
