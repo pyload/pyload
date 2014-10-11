@@ -20,7 +20,7 @@ class QuickshareCz(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>[^<]+)</td>'
-    FILE_SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</td>'
+    FILE_SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[\d.]+) (?P<U>\w+)</td>'
     OFFLINE_PATTERN = r'<script type="text/javascript">location.href=\'/chyba\';</script>'
 
 
@@ -29,7 +29,7 @@ class QuickshareCz(SimpleHoster):
         self.getFileInfo()
 
         # parse js variables
-        self.jsvars = dict((x, y.strip("'")) for x, y in re.findall(r"var (\w+) = ([0-9.]+|'[^']*')", self.html))
+        self.jsvars = dict((x, y.strip("'")) for x, y in re.findall(r"var (\w+) = ([\d.]+|'[^']*')", self.html))
         self.logDebug(self.jsvars)
         pyfile.name = self.jsvars['ID3']
 

@@ -150,7 +150,7 @@ class UpdateManager(Hook):
 
         updated = []
 
-        vre = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
+        vre = re.compile(r'__version__.*=.*("|\')([\d.]+)')
         url = updates[0]
         schema = updates[1].split('|')
         if "BLACKLIST" in updates:

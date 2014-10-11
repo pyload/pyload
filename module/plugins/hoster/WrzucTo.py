@@ -12,7 +12,7 @@ class WrzucTo(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.01"
 
-    __pattern__ = r'http://(?:www\.)?wrzuc\.to/([a-zA-Z0-9]+(\.wt|\.html)|(\w+/?linki/[a-zA-Z0-9]+))'
+    __pattern__ = r'http://(?:www\.)?wrzuc\.to/(\w+(\.wt|\.html)|(\w+/?linki/\w+))'
 
     __description__ = """Wrzuc.to hoster plugin"""
     __license__ = "GPLv3"

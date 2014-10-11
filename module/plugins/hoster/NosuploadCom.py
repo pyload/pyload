@@ -19,7 +19,7 @@ class NosuploadCom(XFSPHoster):
 
     HOSTER_NAME = "nosupload.com"
 
-    FILE_SIZE_PATTERN = r'<p><strong>Size:</strong> (?P<S>[0-9\.]+) (?P<U>[kKMG]?B)</p>'
+    FILE_SIZE_PATTERN = r'<p><strong>Size:</strong> (?P<S>[\d.]+) (?P<U>\w+)</p>'
     LINK_PATTERN = r'<a class="select" href="(http://.+?)">Download</a>'
     WAIT_PATTERN = r'Please wait.*?>(\d+)</span>'
 

@@ -19,7 +19,7 @@ class FreakshareCom(Account):
     def loadAccountInfo(self, user, req):
         page = req.load("http://freakshare.com/")
 
-        validuntil = r"ltig bis:</td>\s*<td><b>([0-9 \-:.]+)</b></td>"
+        validuntil = r"ltig bis:</td>\s*<td><b>([\d.:-]+)</b></td>"
         validuntil = re.search(validuntil, page, re.MULTILINE)
         validuntil = validuntil.group(1).strip()
         validuntil = mktime(strptime(validuntil, "%d.%m.%Y - %H:%M"))

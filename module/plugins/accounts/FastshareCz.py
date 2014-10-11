@@ -16,7 +16,7 @@ class FastshareCz(Account):
                    ("stickell", "l.stickell@yahoo.it")]
 
 
-    CREDIT_PATTERN = r'(?:Kredit|Credit)\s*</td>\s*<td[^>]*>([\d. \w]+)&nbsp;'
+    CREDIT_PATTERN = r'(?:Kredit|Credit)\s*</td>\s*<td[^>]*>([\w.]+)&nbsp;'
 
 
     def loadAccountInfo(self, user, req):

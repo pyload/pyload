@@ -46,7 +46,7 @@ class RapidshareCom(Hoster):
     __type__ = "hoster"
     __version__ = "1.39"
 
-    __pattern__ = r'https?://(?:www\.)?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))'
+    __pattern__ = r'https?://(?:www\.)?rapidshare.com/(?:files/(?P<id>\d+)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))'
     __config__ = [("server",
                    "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera",
                    "Preferred Server", "None")]

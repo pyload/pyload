@@ -14,7 +14,7 @@ class FastixRu(Hoster):
     __type__ = "hoster"
     __version__ = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>[a-zA-Z0-9]{24})'
+    __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>\w{24})'
 
     __description__ = """Fastix hoster plugin"""
     __license__ = "GPLv3"

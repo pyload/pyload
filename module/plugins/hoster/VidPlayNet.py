@@ -21,7 +21,6 @@ class VidPlayNet(XFSPHoster):
     HOSTER_NAME = "vidplay.net"
 
     FILE_NAME_PATTERN = r'<b>Password:</b></div>\s*<h[1-6]>(?P<N>[^<]+)</h[1-6]>'
-    LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<&]+)' % HOSTER_NAME
 
 
 getInfo = create_getInfo(VidPlayNet)

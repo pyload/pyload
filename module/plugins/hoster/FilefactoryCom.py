@@ -22,7 +22,7 @@ class FilefactoryCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.50"
 
-    __pattern__ = r'https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)'
+    __pattern__ = r'https?://(?:www\.)?filefactory\.com/file/(?P<id>\w+)'
 
     __description__ = """Filefactory.com hoster plugin"""
     __license__ = "GPLv3"

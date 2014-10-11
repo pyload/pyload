@@ -13,7 +13,7 @@ class ZDF(Hoster):
     __type__ = "hoster"
     __version__ = "0.8"
 
-    __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/[^0-9]*([0-9]+)[^0-9]*'
+    __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/\D*(\d+)\D*'
 
     __description__ = """ZDF.de hoster plugin"""
     __license__ = "GPLv3"
@@ -36,7 +36,7 @@ class ZDF(Hoster):
 
     @staticmethod
     def get_id(url):
-        return int(re.search(r"[^0-9]*([0-9]{4,})[^0-9]*", url).group(1))
+        return int(re.search(r"\D*(\d{4,})\D*", url).group(1))
 
     def process(self, pyfile):
         xml = fromstring(self.load(self.XML_API % self.get_id(pyfile.url)))

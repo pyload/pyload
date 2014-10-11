@@ -20,7 +20,7 @@ class PluginManager:
     TYPES = ("crypter", "container", "hoster", "captcha", "accounts", "hooks", "internal")
 
     PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
-    VERSION = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
+    VERSION = re.compile(r'__version__.*=.*("|\')([\d.]+)')
     CONFIG = re.compile(r'__config__.*=.*\[([^\]]+)', re.MULTILINE)
     DESC = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
 

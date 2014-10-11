@@ -19,13 +19,13 @@ class NowDownloadEu(SimpleHoster):
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[0-9,.]+) (?P<U>[kKMG])i?B </h4>'
+    FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[\d.,]+) (?P<U>\w+) </h4>'
     OFFLINE_PATTERN = r'(This file does not exist!)'
 
-    TOKEN_PATTERN = r'"(/api/token\.php\?token=[a-z0-9]+)"'
-    CONTINUE_PATTERN = r'"(/dl2/[a-z0-9]+/[a-z0-9]+)"'
+    TOKEN_PATTERN = r'"(/api/token\.php\?token=\w+)"'
+    CONTINUE_PATTERN = r'"(/dl2/\w+/\w+)"'
     WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
-    LINK_PATTERN = r'"(http://f\d+\.nowdownload\.ch/dl/[a-z0-9]+/[a-z0-9]+/[^<>"]*?)"'
+    LINK_PATTERN = r'"(http://f\d+\.nowdownload\.ch/dl/\w+/\w+)'
 
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<[^>]*>', '')]
 

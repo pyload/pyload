@@ -26,7 +26,7 @@ class MegasharesCom(SimpleHoster):
     LINK_PATTERN = r'<div id="show_download_button_%d"[^>]*>\s*<a href="([^"]+)">'
 
     PASSPORT_LEFT_PATTERN = r'Your Download Passport is: <[^>]*>(\w+).*?You have.*?<[^>]*>.*?([\d.]+) (\w+)'
-    PASSPORT_RENEW_PATTERN = r'Your download passport will renew(?:.|\n)*?(\d+).*?(\d+).*?(\d+)'
+    PASSPORT_RENEW_PATTERN = r'Your download passport will renew(?:.|\n)*(\d+).*?(\d+).*?(\d+)'
     REACTIVATE_NUM_PATTERN = r'<input[^>]*id="random_num" value="(\d+)" />'
     REACTIVATE_PASSPORT_PATTERN = r'<input[^>]*id="passport_num" value="(\w+)" />'
     REQUEST_URI_PATTERN = r'var request_uri = "([^"]+)";'

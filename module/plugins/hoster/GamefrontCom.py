@@ -12,7 +12,7 @@ class GamefrontCom(Hoster):
     __type__ = "hoster"
     __version__ = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?gamefront.com/files/[A-Za-z0-9]+'
+    __pattern__ = r'http://(?:www\.)?gamefront.com/files/\w+'
 
     __description__ = """Gamefront.com hoster plugin"""
     __license__ = "GPLv3"
@@ -58,9 +58,9 @@ class GamefrontCom(Hoster):
         return name.group(1)
 
     def _getLink(self):
-        self.html2 = self.load("http://www.gamefront.com/" + re.search("(files/service/thankyou\\?id=[A-Za-z0-9]+)",
+        self.html2 = self.load("http://www.gamefront.com/" + re.search("(files/service/thankyou\\?id=\w+)",
                                                                        self.html).group(1))
-        return re.search("<a href=\"(http://media[0-9]+\.gamefront.com/.*)\">click here</a>", self.html2).group(1).replace("&amp;", "&")
+        return re.search("<a href=\"(http://media\d+\.gamefront.com/.*)\">click here</a>", self.html2).group(1).replace("&amp;", "&")
 
 
 def getInfo(urls):

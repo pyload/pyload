@@ -20,7 +20,6 @@ class FileParadoxIn(XFSPHoster):
     HOSTER_NAME = "fileparadox.in"
 
     FILE_SIZE_PATTERN = r'</font>\s*\(\s*(?P<S>[^)]+)\s*\)</font>'
-    LINK_PATTERN = r'(http://([^/]*?fileparadox.in|\d+\.\d+\.\d+\.\d+)(:\d+/d/|/files/\w+/\w+/)[^"\'<]+)'
 
 
 getInfo = create_getInfo(FileParadoxIn)

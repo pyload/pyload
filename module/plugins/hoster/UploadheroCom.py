@@ -30,8 +30,8 @@ class UploadheroCom(SimpleHoster):
     IP_BLOCKED_PATTERN = r'href="(/lightbox_block_download.php\?min=.*?)"'
     IP_WAIT_PATTERN = r'<span id="minutes">(\d+)</span>.*\s*<span id="seconds">(\d+)</span>'
 
-    CAPTCHA_PATTERN = r'"(/captchadl\.php\?[a-z0-9]+)"'
-    FREE_URL_PATTERN = r'var magicomfg = \'<a href="(http://[^<>"]*?)"|"(http://storage\d+\.uploadhero\.co/\?d=[A-Za-z0-9]+/[^<>"/]+)"'
+    CAPTCHA_PATTERN = r'"(/captchadl\.php\?\w+)"'
+    FREE_URL_PATTERN = r'var magicomfg = \'<a href="(http://[^<>"]*?)"|"(http://storage\d+\.uploadhero\.co/\?d=\w+/[^<>"/]+)"'
     PREMIUM_URL_PATTERN = r'<a href="([^"]+)" id="downloadnow"'
 
 

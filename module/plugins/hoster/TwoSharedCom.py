@@ -18,7 +18,7 @@ class TwoSharedCom(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'<h1>(?P<N>.*)</h1>'
-    FILE_SIZE_PATTERN = r'<span class="dtitle">File size:</span>\s*(?P<S>[0-9,.]+) (?P<U>[kKMG])i?B'
+    FILE_SIZE_PATTERN = r'<span class="dtitle">File size:</span>\s*(?P<S>[\d.,]+) (?P<U>\w+)'
     OFFLINE_PATTERN = r'The file link that you requested is not valid\.|This file was deleted\.'
 
     LINK_PATTERN = r"window.location ='([^']+)';"

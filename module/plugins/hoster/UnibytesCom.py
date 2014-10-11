@@ -12,7 +12,7 @@ class UnibytesCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.1"
 
-    __pattern__ = r'http://(?:www\.)?unibytes\.com/[a-zA-Z0-9-._ ]{11}B'
+    __pattern__ = r'http://(?:www\.)?unibytes\.com/[\w .-]{11}B'
 
     __description__ = """UniBytes.com hoster plugin"""
     __license__ = "GPLv3"

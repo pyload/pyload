@@ -18,7 +18,7 @@ class SendspaceCom(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'<h2 class="bgray">\s*<(?:b|strong)>(?P<N>[^<]+)</'
-    FILE_SIZE_PATTERN = r'<div class="file_description reverse margin_center">\s*<b>File Size:</b>\s*(?P<S>[0-9.]+)(?P<U>[kKMG])i?B\s*</div>'
+    FILE_SIZE_PATTERN = r'<div class="file_description reverse margin_center">\s*<b>File Size:</b>\s*(?P<S>[\d.]+)(?P<U>\w+)\s*</div>'
     OFFLINE_PATTERN = r'<div class="msg error" style="cursor: default">Sorry, the file you requested is not available.</div>'
 
     LINK_PATTERN = r'<a id="download_button" href="([^"]+)"'

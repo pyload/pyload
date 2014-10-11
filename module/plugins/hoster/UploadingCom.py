@@ -13,7 +13,7 @@ class UploadingCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.36"
 
-    __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>[\w\d]+)'
+    __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
 
     __description__ = """Uploading.com hoster plugin"""
     __license__ = "GPLv3"

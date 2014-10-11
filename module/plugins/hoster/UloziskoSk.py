@@ -18,7 +18,7 @@ class UloziskoSk(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'<div class="down1">(?P<N>[^<]+)</div>'
-    FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong><br />'
+    FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[\d.]+) (?P<U>\w+)</strong><br />'
     OFFLINE_PATTERN = ur'<span class = "red">Zadaný súbor neexistuje z jedného z nasledujúcich dôvodov:</span>'
 
     LINK_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'

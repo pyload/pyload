@@ -59,9 +59,9 @@ class VeehdCom(Hoster):
 
         # replace unwanted characters in filename
         if self.getConfig('filename_spaces'):
-            pattern = '[^0-9A-Za-z\.\ ]+'
+            pattern = '[^\w ]+'
         else:
-            pattern = '[^0-9A-Za-z\.]+'
+            pattern = '[^\w.]+'
 
         return re.sub(pattern, self.getConfig('replacement_char'), name) + '.avi'
 

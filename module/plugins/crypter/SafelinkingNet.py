@@ -23,7 +23,7 @@ class SafelinkingNet(Crypter):
     __authors__ = [("quareevo", "quareevo@arcor.de")]
 
 
-    SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w\.\-_]+)';"
+    SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w.-]+)';"
 
 
     def decrypt(self, pyfile):

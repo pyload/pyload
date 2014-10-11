@@ -32,9 +32,9 @@ class UnRar(AbtractExtractor):
     CMD = "unrar"
 
     # there are some more uncovered rar formats
-    re_version = re.compile(r"(UNRAR 5[\.\d]+(.*?)freeware)")
+    re_version = re.compile(r"(UNRAR 5[\d.]+(.*?)freeware)")
     re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
-    re_partfiles = re.compile(r".*\.(rar|r[0-9]+)", re.I)
+    re_partfiles = re.compile(r".*\.(rar|r\d+)", re.I)
     re_filelist = re.compile(r"(.+)\s+(\d+)\s+(\d+)\s+")
     re_filelist5 = re.compile(r"(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)")
     re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)", re.I)

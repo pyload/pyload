@@ -12,7 +12,7 @@ class YourfilesTo(Hoster):
     __type__ = "hoster"
     __version__ = "0.21"
 
-    __pattern__ = r'(http://)?(?:www\.)?yourfiles\.(to|biz)/\?d=[a-zA-Z0-9]+'
+    __pattern__ = r'(http://)?(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
 
     __description__ = """Youfiles.to hoster plugin"""
     __license__ = "GPLv3"

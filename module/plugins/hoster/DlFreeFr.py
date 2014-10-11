@@ -114,7 +114,7 @@ class DlFreeFr(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.25"
 
-    __pattern__ = r'http://(?:www\.)?dl\.free\.fr/([a-zA-Z0-9]+|getfile\.pl\?file=/[a-zA-Z0-9]+)'
+    __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
 
     __description__ = """Dl.free.fr hoster plugin"""
     __license__ = "GPLv3"
@@ -124,7 +124,7 @@ class DlFreeFr(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>'
-    FILE_SIZE_PATTERN = r'Taille:</td>\s*<td[^>]*>(?P<S>[\d.]+[KMG])o'
+    FILE_SIZE_PATTERN = r'Taille:</td>\s*<td[^>]*>(?P<S>[\d.]+\w)o'
     OFFLINE_PATTERN = r"Erreur 404 - Document non trouv|Fichier inexistant|Le fichier demand&eacute; n'a pas &eacute;t&eacute; trouv&eacute;"
 
 

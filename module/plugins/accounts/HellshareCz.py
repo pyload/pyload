@@ -56,7 +56,7 @@ class HellshareCz(Account):
             #Switch to English
             self.logDebug("Switch lang - URL: %s" % req.lastEffectiveURL)
             json = req.load("%s?do=locRouter-show" % req.lastEffectiveURL)
-            hash = re.search(r"(--[0-9a-f]+-)", json).group(1)
+            hash = re.search(r"(\-\-[0-9a-f]+\-)", json).group(1)
             self.logDebug("Switch lang - HASH: %s" % hash)
             html = req.load('http://www.hellshare.com/%s/' % hash)
 

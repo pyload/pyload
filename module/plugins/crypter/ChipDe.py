@@ -19,7 +19,7 @@ class ChipDe(Crypter):
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url)
         try:
-            f = re.search(r'"(http://video.chip.de/\d+?/.*)"', self.html)
+            f = re.search(r'"(http://video\.chip\.de/.+)"', self.html)
         except:
             self.fail('Failed to find the URL')
         else:

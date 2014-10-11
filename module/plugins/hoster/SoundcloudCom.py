@@ -22,7 +22,7 @@ class SoundcloudCom(Hoster):
         # default UserAgent of HTTPRequest fails for this hoster so we use this one
         self.req.http.c.setopt(pycurl.USERAGENT, 'Mozilla/5.0')
         page = self.load(pyfile.url)
-        m = re.search(r'<div class="haudio.*?large.*?" data-sc-track="(?P<ID>[0-9]*)"', page)
+        m = re.search(r'<div class="haudio.*?large.*?" data-sc-track="(?P<ID>\d*)"', page)
         songId = clientId = ""
         if m:
             songId = m.group("ID")

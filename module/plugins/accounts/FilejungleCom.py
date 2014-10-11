@@ -19,7 +19,7 @@ class FilejungleCom(Account):
     login_timeout = 60
 
     URL = "http://filejungle.com/"
-    TRAFFIC_LEFT_PATTERN = r'"/extend_premium\.php">Until (\d+ [A-Za-z]+ \d+)<br'
+    TRAFFIC_LEFT_PATTERN = r'"/extend_premium\.php">Until (\d+ \w+ \d+)<br'
     LOGIN_FAILED_PATTERN = r'<span htmlfor="loginUser(Name|Password)" generated="true" class="fail_info">'
 
 
