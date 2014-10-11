@@ -19,7 +19,7 @@ class NetloadIn(Account):
 
     def loadAccountInfo(self, user, req):
         page = req.load("http://netload.in/index.php?id=2&lang=de")
-        left = r">(\d+) (Tag|Tage), (\d+) Stunden<"
+        left = r'>(\d+) (Tag|Tage), (\d+) Stunden<'
         left = re.search(left, page)
         if left:
             validuntil = time() + int(left.group(1)) * 24 * 60 * 60 + int(left.group(3)) * 60 * 60

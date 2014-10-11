@@ -59,8 +59,8 @@ class ReCaptcha(CaptchaService):
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
-    KEY_PATTERN = r"https?://(?:www\.)?google\.com/recaptcha/api/challenge\?k=(?P<KEY>\w+)"
-    KEY_AJAX_PATTERN = r"Recaptcha\.create\s*\(\s*[\"'](?P<KEY>\w+)"
+    KEY_PATTERN = r'https?://(?:www\.)?google\.com/recaptcha/api/challenge\?k=(?P<KEY>\w+)'
+    KEY_AJAX_PATTERN = r'Recaptcha\.create\s*\(\s*["\'](?P<KEY>\w+)'
 
 
     def detect_key(self, html=None):

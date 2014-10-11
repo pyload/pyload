@@ -18,8 +18,8 @@ class YibaishiwuCom(SimpleHoster):
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r"file_name: '(?P<N>[^']+)'"
-    FILE_SIZE_PATTERN = r"file_size: '(?P<S>[^']+)'"
+    FILE_NAME_PATTERN = r'file_name: \'(?P<N>.+?)\''
+    FILE_SIZE_PATTERN = r'file_size: \'(?P<S>.+?)\''
     OFFLINE_PATTERN = ur'<h3><i style="color:red;">哎呀！提取码不存在！不妨搜搜看吧！</i></h3>'
 
     LINK_PATTERN = r'(/\?ct=(pickcode|download)[^"\']+)'

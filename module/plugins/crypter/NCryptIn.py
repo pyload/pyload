@@ -231,7 +231,7 @@ class NCryptIn(Crypter):
         self.logDebug("Handling Container links")
         package_links = []
 
-        pattern = r"/container/(rsdf|dlc|ccf)/(\w+)"
+        pattern = r'/container/(rsdf|dlc|ccf)/(\w+)'
         containersLinks = re.findall(pattern, self.html)
         self.logDebug("Decrypting %d Container links" % len(containersLinks))
         for containerLink in containersLinks:
@@ -243,7 +243,7 @@ class NCryptIn(Crypter):
     def handleWebLinks(self):
 
         self.logDebug("Handling Web links")
-        pattern = r"(http://ncrypt\.in/link-.*?=)"
+        pattern = r'(http://ncrypt\.in/link-.*?=)'
         links = re.findall(pattern, self.html)
 
         package_links = []

@@ -20,7 +20,7 @@ class IfileIt(SimpleHoster):
 
 
     LINK_PATTERN = r'</span> If it doesn\'t, <a target="_blank" href="([^"]+)">'
-    RECAPTCHA_PATTERN = r"var __recaptcha_public\s*=\s*'([^']+)';"
+    RECAPTCHA_PATTERN = r'var __recaptcha_public\s*=\s*\'(.+?)\''
     FILE_INFO_PATTERN = r'<span style="cursor: default;[^>]*>\s*(?P<N>.*?)\s*&nbsp;\s*<strong>\s*(?P<S>[\d.,]+)\s*(?P<U>\w+)\s*</strong>\s*</span>'
     OFFLINE_PATTERN = r'<span style="cursor: default;[^>]*>\s*&nbsp;\s*<strong>\s*</strong>\s*</span>'
     TEMP_OFFLINE_PATTERN = r'<span class="msg_red">Downloading of this file is temporarily disabled</span>'

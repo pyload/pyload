@@ -178,7 +178,7 @@ class LinkSaveIn(SimpleCrypter):
         self.logDebug("Seach for %s Container links" % type_.upper())
         if not type_.isalnum():  # check to prevent broken re-pattern (cnl2,rsdf,ccf,dlc,web are all alpha-numeric)
             self.fail('unknown container type "%s" (this is probably a bug)' % type_)
-        pattern = r"\('%s_link'\).href=unescape\('(.*?\.%s)'\)" % (type_, type_)
+        pattern = r'\(\'%s_link\'\).href=unescape\(\'(.*?\.%s)\'\)' % (type_, type_)
         containersLinks = re.findall(pattern, self.html)
         self.logDebug("Found %d %s Container links" % (len(containersLinks), type_.upper()))
         for containerLink in containersLinks:

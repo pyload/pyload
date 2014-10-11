@@ -36,7 +36,7 @@ class TurbobitNet(SimpleHoster):
     COOKIES = [(".turbobit.net", "user_lang", "en")]
 
     LINK_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
-    LIMIT_WAIT_PATTERN = r"<div id='timeout'>(\d+)<"
+    LIMIT_WAIT_PATTERN = r'<div id=\'timeout\'>(\d+)<'
 
     CAPTCHA_URL_PATTERN = r'<img alt="Captcha" src="(.+?)"'
 

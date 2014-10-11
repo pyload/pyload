@@ -98,16 +98,16 @@ class XHamsterCom(Hoster):
         if not self.html:
             self.download_html()
 
-        pattern = r"<title>(.*?) - xHamster\.com</title>"
+        pattern = r'<title>(.*?) - xHamster\.com</title>'
         name = re.search(pattern, self.html)
         if name is None:
-            pattern = r"<h1 >(.*)</h1>"
+            pattern = r'<h1 >(.*)</h1>'
             name = re.search(pattern, self.html)
             if name is None:
-                pattern = r"http://[www.]+xhamster\.com/movies/.*/(.*?)\.html?"
+                pattern = r'http://[www.]+xhamster\.com/movies/.*/(.*?)\.html?'
                 name = re.match(file_name_pattern, self.pyfile.url)
                 if name is None:
-                    pattern = r"<div id=\"element_str_id\" style=\"display:none;\">(.*)</div>"
+                    pattern = r'<div id="element_str_id" style="display:none;">(.*)</div>'
                     name = re.search(pattern, self.html)
                     if name is None:
                         return "Unknown"

@@ -21,7 +21,7 @@ class TwoSharedCom(SimpleHoster):
     FILE_SIZE_PATTERN = r'<span class="dtitle">File size:</span>\s*(?P<S>[\d.,]+) (?P<U>\w+)'
     OFFLINE_PATTERN = r'The file link that you requested is not valid\.|This file was deleted\.'
 
-    LINK_PATTERN = r"window.location ='([^']+)';"
+    LINK_PATTERN = r'window.location =\'(.+?)\';'
 
 
     def setup(self):

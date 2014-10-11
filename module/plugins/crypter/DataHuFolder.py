@@ -18,7 +18,7 @@ class DataHuFolder(SimpleCrypter):
                    ("stickell", "l.stickell@yahoo.it")]
 
 
-    LINK_PATTERN = r"<a href='(http://data\.hu/get/.+)' target='_blank'>\1</a>"
+    LINK_PATTERN = r'<a href=\'(http://data\.hu/get/.+)\' target=\'_blank\'>\1</a>'
     TITLE_PATTERN = ur'<title>(.+) Let\xf6lt\xe9se</title>'
 
 

@@ -19,7 +19,7 @@ class TurbobitNetFolder(SimpleCrypter):
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    TITLE_PATTERN = r"src='/js/lib/grid/icon/folder.png'> <span>(.+?)</span>"
+    TITLE_PATTERN = r'src=\'/js/lib/grid/icon/folder.png\'> <span>(.+?)</span>'
 
 
     def _getLinks(self, id, page=1):

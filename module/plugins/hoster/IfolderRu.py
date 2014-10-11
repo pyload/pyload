@@ -24,7 +24,7 @@ class IfolderRu(SimpleHoster):
 
     SESSION_ID_PATTERN = r'<a href=(http://ints\.(?:rusfolder\.com|ifolder\.ru)/ints/sponsor/\?bi=\d*&session=([^&]+)&u=[^>]+)>'
     INTS_SESSION_PATTERN = r'\(\'ints_session\'\);\s*if\(tag\)\{tag\.value = "([^"]+)";\}'
-    HIDDEN_INPUT_PATTERN = r"var v = .*?name='([^']+)' value='1'"
+    HIDDEN_INPUT_PATTERN = r'var v = .*?name=\'(.+?)\' value=\'1\''
     LINK_PATTERN = r'<a id="download_file_href" href="([^"]+)"'
     WRONG_CAPTCHA_PATTERN = ur'<font color=Red>неверный код,<br>введите еще раз</font><br>'
 

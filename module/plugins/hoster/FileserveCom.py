@@ -50,7 +50,7 @@ class FileserveCom(Hoster):
     LINKCHECK_TR = r'<tr>\s*(<td>http://www\.fileserve\.com/file/.*?)</tr>'
     LINKCHECK_TD = r'<td>(?:<[^>]*>|&nbsp;)*([^<]*)'
 
-    CAPTCHA_KEY_PATTERN = r"var reCAPTCHA_publickey='(?P<key>[^']+)'"
+    CAPTCHA_KEY_PATTERN = r'var reCAPTCHA_publickey=\'(?P<key>.+?)\''
     LONG_WAIT_PATTERN = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'
     LINK_EXPIRED_PATTERN = r'Your download link has expired'
     DAILY_LIMIT_PATTERN = r'Your daily download limit has been reached'

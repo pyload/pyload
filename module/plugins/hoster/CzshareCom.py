@@ -34,7 +34,7 @@ class CzshareCom(SimpleHoster):
     FREE_FORM_PATTERN = r'<form action="download\.php" method="post">\s*<img src="captcha\.php" id="captcha" />(.*?)</form>'
     PREMIUM_FORM_PATTERN = r'<form action="/profi_down\.php" method="post">(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)"[^>]*/>'
-    MULTIDL_PATTERN = r"<p><font color='red'>Z[^<]*PROFI.</font></p>"
+    MULTIDL_PATTERN = r'<p><font color=\'red\'>Z[^<]*PROFI.</font></p>'
     USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([\d .,]+)(\w+)</strong>\s*</div><!-- .credit -->'
 
 

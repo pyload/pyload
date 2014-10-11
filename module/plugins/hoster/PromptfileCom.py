@@ -21,7 +21,7 @@ class PromptfileCom(SimpleHoster):
     OFFLINE_PATTERN = r'<span style="[^"]*" title="File Not Found">File Not Found</span>'
 
     CHASH_PATTERN = r'<input type="hidden" name="chash" value="([^"]*)" />'
-    LINK_PATTERN = r"clip: {\s*url: '(https?://(?:www\.)promptfile[^']*)',"
+    LINK_PATTERN = r'clip: {\s*url: \'(https?://(?:www\.)promptfile[^\']*)\','
 
 
     def handleFree(self):

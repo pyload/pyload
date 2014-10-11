@@ -18,7 +18,7 @@ class MediafireComFolder(Crypter):
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FOLDER_KEY_PATTERN = r"var afI= '(\w+)';"
+    FOLDER_KEY_PATTERN = r'var afI= \'(\w+)'
     FILE_URL_PATTERN = r'<meta property="og:url" content="http://www\.mediafire\.com/\?(\w+)"/>'
 
 

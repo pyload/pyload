@@ -27,7 +27,7 @@ class FileomCom(XFSPHoster):
 
     ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)(?:\'|</)'
 
-    LINK_PATTERN = r"var url2 = '(.+?)';"
+    LINK_PATTERN = r'var url2 = \'(.+?)\';'
 
 
     def setup(self):

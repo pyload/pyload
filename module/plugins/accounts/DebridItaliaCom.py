@@ -16,7 +16,7 @@ class DebridItaliaCom(Account):
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
-    WALID_UNTIL_PATTERN = r"Premium valid till: (?P<D>[^|]+) \|"
+    WALID_UNTIL_PATTERN = r'Premium valid till: (?P<D>[^|]+) \|'
 
 
     def loadAccountInfo(self, user, req):

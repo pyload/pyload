@@ -18,7 +18,7 @@ class LixIn(Crypter):
 
 
     CAPTCHA_PATTERN = r'<img src="(?P<image>captcha_img\.php\?.*?)"'
-    SUBMIT_PATTERN = r"value='continue.*?'"
+    SUBMIT_PATTERN = r'value=\'continue.*?\''
     LINK_PATTERN = r'name="ifram" src="(?P<link>.*?)"'
 
 

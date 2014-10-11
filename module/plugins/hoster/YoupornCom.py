@@ -42,7 +42,7 @@ class YoupornCom(Hoster):
         if not self.html:
             self.download_html()
 
-        file_name_pattern = r"<title>(.*) - Free Porn Videos - YouPorn</title>"
+        file_name_pattern = r'<title>(.+) - '
         return re.search(file_name_pattern, self.html).group(1).replace("&amp;", "&").replace("/", "") + '.flv'
 
     def file_exists(self):

@@ -26,7 +26,7 @@ class BayfilesCom(SimpleHoster):
 
     WAIT_PATTERN = r'>Your IP [\d.]* has recently downloaded a file\. Upgrade to premium or wait (\d+) minutes\.<'
     VARS_PATTERN = r'var vfid = (\d+);\s*var delay = (\d+);'
-    FREE_LINK_PATTERN = r"javascript:window.location.href = '([^']+)';"
+    FREE_LINK_PATTERN = r'javascript:window\.location\.href = \'(.+?)\';'
     PREMIUM_LINK_PATTERN = r'(?:<a class="highlighted-btn" href="|(?=http://s\d+\.baycdn\.com/dl/))(.*?)"'
 
 

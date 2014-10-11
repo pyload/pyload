@@ -18,7 +18,7 @@ class FilerNet(Account):
 
 
     TOKEN_PATTERN = r'_csrf_token" value="([^"]+)" />'
-    WALID_UNTIL_PATTERN = r"Der Premium-Zugang ist gültig bis (.+)\.\s*</td>"
+    WALID_UNTIL_PATTERN = r'Der Premium-Zugang ist gültig bis (.+)\.\s*</td>'
     TRAFFIC_PATTERN = r'Traffic</th>\s*<td>([^<]+)</td>'
     FREE_PATTERN = r'Account Status</th>\s*<td>\s*Free'
 

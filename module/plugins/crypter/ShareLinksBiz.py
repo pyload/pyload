@@ -178,7 +178,7 @@ class ShareLinksBiz(Crypter):
         self.logDebug("Handling Web links")
 
         #@TODO: Gather paginated web links
-        pattern = r"javascript:_get\('(.*?)', \d+, ''\)"
+        pattern = r'javascript:_get\(\'(.*?)\', \d+, \'\'\)'
         ids = re.findall(pattern, self.html)
         self.logDebug("Decrypting %d Web links" % len(ids))
         for i, ID in enumerate(ids):
@@ -204,7 +204,7 @@ class ShareLinksBiz(Crypter):
         package_links = []
         self.logDebug("Handling Container links")
 
-        pattern = r"javascript:_get\('(.*?)', 0, '(rsdf|ccf|dlc)'\)"
+        pattern = r'javascript:_get\(\'(.*?)\', 0, \'(rsdf|ccf|dlc)\'\)'
         containersLinks = re.findall(pattern, self.html)
         self.logDebug("Decrypting %d Container links" % len(containersLinks))
         for containerLink in containersLinks:
