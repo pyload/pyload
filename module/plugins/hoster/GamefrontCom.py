@@ -12,7 +12,7 @@ class GamefrontCom(Hoster):
     __type__ = "hoster"
     __version__ = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?gamefront.com/files/\w+'
+    __pattern__ = r'http://(?:www\.)?gamefront\.com/files/\w+'
 
     __description__ = """Gamefront.com hoster plugin"""
     __license__ = "GPLv3"

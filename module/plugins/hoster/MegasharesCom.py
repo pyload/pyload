@@ -12,7 +12,7 @@ class MegasharesCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.25"
 
-    __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index.php)?\?d\d{2}=|dl/)\w+'
+    __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
 
     __description__ = """Megashares.com hoster plugin"""
     __license__ = "GPLv3"
@@ -20,7 +20,7 @@ class MegasharesCom(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'
-    FILE_SIZE_PATTERN = r'<strong><span class="black">Filesize:</span></strong> (?P<S>[\d.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'<strong><span class="black">Filesize:</span></strong> (?P<S>[\d.,]+) (?P<U>\w+)'
     OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted|Invalid link)'
 
     LINK_PATTERN = r'<div id="show_download_button_%d"[^>]*>\s*<a href="([^"]+)">'

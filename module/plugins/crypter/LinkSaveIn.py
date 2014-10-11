@@ -18,7 +18,7 @@ class LinkSaveIn(SimpleCrypter):
     __type__ = "crypter"
     __version__ = "2.02"
 
-    __pattern__ = r'http://(?:www\.)?linksave.in/(?P<id>\w+)$'
+    __pattern__ = r'http://(?:www\.)?linksave\.in/(?P<id>\w+)$'
 
     __description__ = """LinkSave.in decrypter plugin"""
     __license__ = "GPLv3"

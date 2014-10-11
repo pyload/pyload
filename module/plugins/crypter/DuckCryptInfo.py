@@ -12,7 +12,7 @@ class DuckCryptInfo(Crypter):
     __type__ = "crypter"
     __version__ = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?duckcrypt.info/(folder|wait|link)/(\w+)/?(\w*)'
+    __pattern__ = r'http://(?:www\.)?duckcrypt\.info/(folder|wait|link)/(\w+)/?(\w*)'
 
     __description__ = """DuckCrypt.info decrypter plugin"""
     __license__ = "GPLv3"

@@ -25,7 +25,7 @@ class RyushareCom(XFSPHoster):
 
     HOSTER_NAME = "ryushare.com"
 
-    FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[\d.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[\d.,]+) (?P<U>\w+)'
 
     WAIT_PATTERN = r'You have to wait ((?P<hour>\d+) hour[s]?, )?((?P<min>\d+) minute[s], )?(?P<sec>\d+) second[s]'
     LINK_PATTERN = r'<a href="([^"]+)">Click here to download<'

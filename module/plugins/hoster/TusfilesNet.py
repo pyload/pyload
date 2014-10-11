@@ -18,7 +18,7 @@ class TusfilesNet(XFSPHoster):
 
     HOSTER_NAME = "tusfiles.net"
 
-    FILE_INFO_PATTERN = r'\](?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)\['
+    FILE_INFO_PATTERN = r'\](?P<N>.+) - (?P<S>[\d.,]+) (?P<U>\w+)\['
     OFFLINE_PATTERN = r'>File Not Found|<Title>TusFiles - Fast Sharing Files!'
 
 

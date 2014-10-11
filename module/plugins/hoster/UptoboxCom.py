@@ -19,7 +19,7 @@ class UptoboxCom(XFSPHoster):
 
     HOSTER_NAME = "uptobox.com"
 
-    FILE_INFO_PATTERN = r'"para_title">(?P<N>.+) \((?P<S>[\d.]+) (?P<U>\w+)\)'
+    FILE_INFO_PATTERN = r'"para_title">(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>\w+)\)'
     OFFLINE_PATTERN = r'>(File not found|Access Denied|404 Not Found)'
 
     WAIT_PATTERN = r'>(\d+)</span> seconds<'

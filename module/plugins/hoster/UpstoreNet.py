@@ -18,7 +18,7 @@ class UpstoreNet(SimpleHoster):
     __authors__ = [("igel", "igelkun@myopera.com")]
 
 
-    FILE_INFO_PATTERN = r'<div class="comment">.*?</div>\s*\n<h2 style="margin:0">(?P<N>.*?)</h2>\s*\n<div class="comment">\s*\n\s*(?P<S>[\d.]+) (?P<U>\w+)'
+    FILE_INFO_PATTERN = r'<div class="comment">.*?</div>\s*\n<h2 style="margin:0">(?P<N>.*?)</h2>\s*\n<div class="comment">\s*\n\s*(?P<S>[\d.,]+) (?P<U>\w+)'
     OFFLINE_PATTERN = r'<span class="error">File not found</span>'
 
     WAIT_PATTERN = r'var sec = (\d+)'

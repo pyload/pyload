@@ -19,7 +19,7 @@ class LomafileCom(XFSPHoster):
     HOSTER_NAME = "lomafile.com"
 
     FILE_NAME_PATTERN = r'<a href="http://lomafile\.com/w{12}/(?P<N>.+?)">'
-    FILE_SIZE_PATTERN = r'Size:</b></td><td>(?P<S>[\d.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'Size:</b></td><td>(?P<S>[\d.,]+) (?P<U>\w+)'
 
     OFFLINE_PATTERN = r'>(No such file|Software error:<)'
     TEMP_OFFLINE_PATTERN = r'The page may have been renamed, removed or be temporarily unavailable.<'

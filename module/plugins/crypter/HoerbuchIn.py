@@ -12,7 +12,7 @@ class HoerbuchIn(Crypter):
     __type__ = "crypter"
     __version__ = "0.6"
 
-    __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out.php\?.+|protection/folder_\d+\.html)'
+    __pattern__ = r'http://(?:www\.)?hoerbuch\.in/(wp/horbucher/\d+/.+/|tp/out\.php\?.+|protection/folder_\d+\.html)'
 
     __description__ = """Hoerbuch.in decrypter plugin"""
     __license__ = "GPLv3"

@@ -11,7 +11,7 @@ class OneKhDe(Crypter):
     __type__ = "crypter"
     __version__ = "0.1"
 
-    __pattern__ = r'http://(?:www\.)?1kh.de/f/'
+    __pattern__ = r'http://(?:www\.)?1kh\.de/f/'
 
     __description__ = """1kh.de decrypter plugin"""
     __license__ = "GPLv3"

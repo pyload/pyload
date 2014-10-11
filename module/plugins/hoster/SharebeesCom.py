@@ -8,7 +8,7 @@ class SharebeesCom(DeadHoster):
     __type__ = "hoster"
     __version__ = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?sharebees.com/\w{12}'
+    __pattern__ = r'http://(?:www\.)?sharebees\.com/\w{12}'
 
     __description__ = """ShareBees hoster plugin"""
     __license__ = "GPLv3"

@@ -21,7 +21,7 @@ class BitshareCom(SimpleHoster):
                    ("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
-    FILE_INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.]+) (?P<U>\w+)</h1>'
+    FILE_INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.,]+) (?P<U>\w+)</h1>'
     OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
 
     COOKIES = [(".bitshare.com", "language_selection", "EN")]

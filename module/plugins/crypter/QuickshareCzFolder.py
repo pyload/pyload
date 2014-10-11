@@ -9,7 +9,7 @@ class QuickshareCzFolder(Crypter):
     __type__ = "crypter"
     __version__ = "0.1"
 
-    __pattern__ = r'http://(?:www\.)?quickshare.cz/slozka-\d+.*'
+    __pattern__ = r'http://(?:www\.)?quickshare\.cz/slozka-\d+.*'
 
     __description__ = """Quickshare.cz folder decrypter plugin"""
     __license__ = "GPLv3"
@@ -17,7 +17,7 @@ class QuickshareCzFolder(Crypter):
 
 
     FOLDER_PATTERN = r'<textarea[^>]*>(.*?)</textarea>'
-    LINK_PATTERN = r'(http://www.quickshare.cz/\S+)'
+    LINK_PATTERN = r'(http://www\.quickshare\.cz/\S+)'
 
 
     def decrypt(self, pyfile):

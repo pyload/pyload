@@ -14,7 +14,7 @@ class RelinkUs(Crypter):
     __type__ = "crypter"
     __version__ = "3.0"
 
-    __pattern__ = r'http://(?:www\.)?relink.us/(f/|((view|go).php\?id=))(?P<id>.+)'
+    __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<id>.+)'
 
     __description__ = """Relink.us decrypter plugin"""
     __license__ = "GPLv3"

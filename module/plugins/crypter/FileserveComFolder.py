@@ -10,7 +10,7 @@ class FileserveComFolder(Crypter):
     __type__ = "crypter"
     __version__ = "0.11"
 
-    __pattern__ = r'http://(?:www\.)?fileserve.com/list/\w+'
+    __pattern__ = r'http://(?:www\.)?fileserve\.com/list/\w+'
 
     __description__ = """FileServe.com folder decrypter plugin"""
     __license__ = "GPLv3"

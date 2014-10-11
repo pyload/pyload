@@ -23,7 +23,7 @@ class FilepupNet(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'>(?P<N>.+?)</h1>'
-    FILE_SIZE_PATTERN = r'class="fa fa-archive"></i> \((?P<S>[\d.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'class="fa fa-archive"></i> \((?P<S>[\d.,]+) (?P<U>\w+)'
 
     OFFLINE_PATTERN = r'>This file has been deleted'
 

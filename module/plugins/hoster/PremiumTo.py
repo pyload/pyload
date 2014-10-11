@@ -13,7 +13,7 @@ class PremiumTo(Hoster):
     __type__ = "hoster"
     __version__ = "0.10"
 
-    __pattern__ = r'https?://(?:www\.)?premium.to/.*'
+    __pattern__ = r'https?://(?:www\.)?premium\.to/.*'
 
     __description__ = """Premium.to hoster plugin"""
     __license__ = "GPLv3"

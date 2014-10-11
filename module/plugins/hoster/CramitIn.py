@@ -18,7 +18,7 @@ class CramitIn(XFSPHoster):
     HOSTER_NAME = "cramit.in"
 
     FILE_INFO_PATTERN = r'<span class=t2>\s*(?P<N>.*?)</span>.*?<small>\s*\((?P<S>.*?)\)'
-    LINK_PATTERN = r'href="(http://cramit.in/file_download/.*?)"'
+    LINK_PATTERN = r'href="(http://cramit\.in/file_download/.*?)"'
 
 
 getInfo = create_getInfo(CramitIn)

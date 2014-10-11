@@ -18,7 +18,7 @@ class HellshareCz(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'<h1 id="filename"[^>]*>(?P<N>[^<]+)</h1>'
-    FILE_SIZE_PATTERN = r'<strong id="FileSize_master">(?P<S>[\d.]*)&nbsp;(?P<U>\w+)</strong>'
+    FILE_SIZE_PATTERN = r'<strong id="FileSize_master">(?P<S>[\d.,]+)&nbsp;(?P<U>\w+)</strong>'
     OFFLINE_PATTERN = r'<h1>File not found.</h1>'
     SHOW_WINDOW_PATTERN = r'<a href="([^?]+/(\d+)/\?do=(fileDownloadButton|relatedFileDownloadButton-\2)-showDownloadWindow)"'
 

@@ -21,7 +21,7 @@ class DevhostSt(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'>Filename:</span> <div title="(?P<N>.+?)"'
-    FILE_SIZE_PATTERN = r'>Size:</span> (?P<S>[\d.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'>Size:</span> (?P<S>[\d.,]+) (?P<U>\w+)'
 
     OFFLINE_PATTERN = r'>File Not Found<'
     LINK_PATTERN = r'id="downloadfile" href="(.+?)"'

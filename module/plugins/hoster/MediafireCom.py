@@ -49,7 +49,7 @@ class MediafireCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.79"
 
-    __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download.php)?\?)(\w{11}|\w{15})($|/)'
+    __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download\.php)?\?)(\w{11}|\w{15})($|/)'
 
     __description__ = """Mediafire.com hoster plugin"""
     __license__ = "GPLv3"

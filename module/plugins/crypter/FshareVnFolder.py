@@ -8,7 +8,7 @@ class FshareVnFolder(SimpleCrypter):
     __type__ = "crypter"
     __version__ = "0.01"
 
-    __pattern__ = r'http://(?:www\.)?fshare.vn/folder/.*'
+    __pattern__ = r'http://(?:www\.)?fshare\.vn/folder/.*'
 
     __description__ = """Fshare.vn folder decrypter plugin"""
     __license__ = "GPLv3"

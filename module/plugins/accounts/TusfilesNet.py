@@ -21,7 +21,7 @@ class TusfilesNet(XFSPAccount):
     HOSTER_URL = "http://www.tusfiles.net/"
 
     VALID_UNTIL_PATTERN = r'<span class="label label-default">([^<]+)</span>'
-    TRAFFIC_LEFT_PATTERN = r'<td><img src="//www.tusfiles.net/i/icon/meter.png" alt=""/></td>\n<td>&nbsp;(?P<S>[^<]+)</td>'
+    TRAFFIC_LEFT_PATTERN = r'<td><img src="//www\.tusfiles\.net/i/icon/meter\.png" alt=""/></td>\n<td>&nbsp;(?P<S>[^<]+)</td>'
 
 
     def loadAccountInfo(self, user, req):

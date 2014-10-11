@@ -27,7 +27,7 @@ class UploadheroCom(SimpleHoster):
 
     COOKIES = [(".uploadhero.co", "lang", "en")]
 
-    IP_BLOCKED_PATTERN = r'href="(/lightbox_block_download.php\?min=.*?)"'
+    IP_BLOCKED_PATTERN = r'href="(/lightbox_block_download\.php\?min=.*?)"'
     IP_WAIT_PATTERN = r'<span id="minutes">(\d+)</span>.*\s*<span id="seconds">(\d+)</span>'
 
     CAPTCHA_PATTERN = r'"(/captchadl\.php\?\w+)"'

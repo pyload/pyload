@@ -38,7 +38,7 @@ class LetitbitNet(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.24"
 
-    __pattern__ = r'http://(?:www\.)?(letitbit|shareflare).net/download/.*'
+    __pattern__ = r'http://(?:www\.)?(letitbit|shareflare)\.net/download/.*'
 
     __description__ = """Letitbit.net hoster plugin"""
     __license__ = "GPLv3"

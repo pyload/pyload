@@ -54,7 +54,7 @@ class NetloadIn(Hoster):
     __type__ = "hoster"
     __version__ = "0.45"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)'
+    __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index\.php?id=10&file_id=)'
 
     __description__ = """Netload.in hoster plugin"""
     __license__ = "GPLv3"

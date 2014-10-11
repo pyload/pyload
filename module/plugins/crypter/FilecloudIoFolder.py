@@ -15,5 +15,5 @@ class FilecloudIoFolder(SimpleCrypter):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    LINK_PATTERN = r'href="(http://filecloud.io/\w+)" title'
-    TITLE_PATTERN = r'>(.+?) - filecloud.io<'
+    LINK_PATTERN = r'href="(http://filecloud\.io/\w+)" title'
+    TITLE_PATTERN = r'>(.+?) - filecloud\.io<'

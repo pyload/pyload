@@ -17,7 +17,7 @@ class LixIn(Crypter):
     __authors__ = [("spoob", "spoob@pyload.org")]
 
 
-    CAPTCHA_PATTERN = r'<img src="(?P<image>captcha_img.php\?.*?)"'
+    CAPTCHA_PATTERN = r'<img src="(?P<image>captcha_img\.php\?.*?)"'
     SUBMIT_PATTERN = r"value='continue.*?'"
     LINK_PATTERN = r'name="ifram" src="(?P<link>.*?)"'
 

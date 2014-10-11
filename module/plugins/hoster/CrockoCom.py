@@ -11,7 +11,7 @@ class CrockoCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.16"
 
-    __pattern__ = r'http://(?:www\.)?(crocko|easy-share).com/\w+'
+    __pattern__ = r'http://(?:www\.)?(crocko|easy-share)\.com/\w+'
 
     __description__ = """Crocko hoster plugin"""
     __license__ = "GPLv3"

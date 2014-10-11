@@ -15,5 +15,5 @@ class BitshareComFolder(SimpleCrypter):
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
-    LINK_PATTERN = r'<a href="(http://bitshare.com/files/.+)">.+</a></td>'
+    LINK_PATTERN = r'<a href="(http://bitshare\.com/files/.+)">.+</a></td>'
     TITLE_PATTERN = r'View public folder "(.+)"</h1>'

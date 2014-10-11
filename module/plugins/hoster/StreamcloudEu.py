@@ -22,7 +22,7 @@ class StreamcloudEu(XFSPHoster):
 
     HOSTER_NAME = "streamcloud.eu"
 
-    LINK_PATTERN = r'file: "(http://(stor|cdn)\d+\.streamcloud.eu:?\d*/.*/video\.(mp4|flv))",'
+    LINK_PATTERN = r'file: "(http://(stor|cdn)\d+\.streamcloud\.eu:?\d*/.*/video\.(mp4|flv))",'
 
 
     def setup(self):

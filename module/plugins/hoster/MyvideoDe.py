@@ -11,7 +11,7 @@ class MyvideoDe(Hoster):
     __type__ = "hoster"
     __version__ = "0.9"
 
-    __pattern__ = r'http://(?:www\.)?myvideo.de/watch/'
+    __pattern__ = r'http://(?:www\.)?myvideo\.de/watch/'
 
     __description__ = """Myvideo.de hoster plugin"""
     __license__ = "GPLv3"

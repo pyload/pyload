@@ -27,7 +27,7 @@ class SpeedyshareCom(SimpleHoster):
 
     FILE_OFFLINE_PATTERN = r'class=downloadfilenamenotfound>.*</span>'
 
-    LINK_PATTERN = r'<a href=\'(.*)\'><img src=/gf/slowdownload.png alt=\'Slow Download\' border=0'
+    LINK_PATTERN = r'<a href=\'(.*)\'><img src=/gf/slowdownload\.png alt=\'Slow Download\' border=0'
 
 
     def setup(self):

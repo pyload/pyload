@@ -36,8 +36,8 @@ class AdYouLike:
     """
     Class to support adyoulike captcha service
     """
-    ADYOULIKE_INPUT_PATTERN = r'Adyoulike.create\((.*?)\);'
-    ADYOULIKE_CALLBACK = r'Adyoulike.g._jsonp_5579316662423138'
+    ADYOULIKE_INPUT_PATTERN = r'Adyoulike\.create\((.*?)\);'
+    ADYOULIKE_CALLBACK = r'Adyoulike\.g\._jsonp_5579316662423138'
     ADYOULIKE_CHALLENGE_PATTERN = ADYOULIKE_CALLBACK + r'\((.*?)\)'
 
 
@@ -124,7 +124,7 @@ class DlFreeFr(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>'
-    FILE_SIZE_PATTERN = r'Taille:</td>\s*<td[^>]*>(?P<S>[\d.]+\w)o'
+    FILE_SIZE_PATTERN = r'Taille:</td>\s*<td[^>]*>(?P<S>[\d.,]+\w)o'
     OFFLINE_PATTERN = r"Erreur 404 - Document non trouv|Fichier inexistant|Le fichier demand&eacute; n'a pas &eacute;t&eacute; trouv&eacute;"
 
 

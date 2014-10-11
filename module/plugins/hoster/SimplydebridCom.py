@@ -10,7 +10,7 @@ class SimplydebridCom(Hoster):
     __type__ = "hoster"
     __version__ = "0.1"
 
-    __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd.php/*'
+    __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php/*'
 
     __description__ = """Simply-debrid.com hoster plugin"""
     __license__ = "GPLv3"

@@ -10,7 +10,7 @@ class RehostTo(Hoster):
     __type__ = "hoster"
     __version__ = "0.13"
 
-    __pattern__ = r'https?://.*rehost.to\..*'
+    __pattern__ = r'https?://.*rehost\.to\..*'
 
     __description__ = """Rehost.com hoster plugin"""
     __license__ = "GPLv3"

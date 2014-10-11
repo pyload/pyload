@@ -8,7 +8,7 @@ class FiletramCom(SimpleCrypter):
     __type__ = "crypter"
     __version__ = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?filetram.com/[^/]+/.+'
+    __pattern__ = r'http://(?:www\.)?filetram\.com/[^/]+/.+'
 
     __description__ = """Filetram.com decrypter plugin"""
     __license__ = "GPLv3"

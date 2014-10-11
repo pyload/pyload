@@ -10,18 +10,18 @@ class EdiskCz(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.21"
 
-    __pattern__ = r'http://(?:www\.)?edisk.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*'
+    __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*'
 
     __description__ = """Edisk.cz hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_INFO_PATTERN = r'<span class="fl" title="(?P<N>[^"]+)">\s*.*?\((?P<S>[\d.]*) (?P<U>\w+)\)</h1></span>'
+    FILE_INFO_PATTERN = r'<span class="fl" title="(?P<N>[^"]+)">\s*.*?\((?P<S>[\d.,]+) (?P<U>\w+)\)</h1></span>'
     OFFLINE_PATTERN = r'<h3>This file does not exist due to one of the following:</h3><ul><li>'
 
     ACTION_PATTERN = r'/en/download/(\d+/.*\.html)'
-    LINK_PATTERN = r'http://.*edisk.cz.*\.html'
+    LINK_PATTERN = r'http://.*edisk\.cz.*\.html'
 
 
     def setup(self):

@@ -11,7 +11,7 @@ class YibaishiwuCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.12"
 
-    __pattern__ = r'http://(?:www\.)?(?:u\.)?115.com/file/(?P<ID>\w+)'
+    __pattern__ = r'http://(?:www\.)?(?:u\.)?115\.com/file/(?P<ID>\w+)'
 
     __description__ = """115.com hoster plugin"""
     __license__ = "GPLv3"

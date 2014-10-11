@@ -18,7 +18,7 @@ class DropboxCom(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'<title>Dropbox - (?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'&nbsp;&middot;&nbsp; (?P<S>[\d,]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'&nbsp;&middot;&nbsp; (?P<S>[\d.,]+) (?P<U>\w+)'
 
     OFFLINE_PATTERN = r'<title>Dropbox - (404|Shared link error)<'
 

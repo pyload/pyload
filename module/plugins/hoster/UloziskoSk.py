@@ -10,7 +10,7 @@ class UloziskoSk(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.23"
 
-    __pattern__ = r'http://(?:www\.)?ulozisko.sk/.*'
+    __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.*'
 
     __description__ = """Ulozisko.sk hoster plugin"""
     __license__ = "GPLv3"
@@ -18,12 +18,12 @@ class UloziskoSk(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'<div class="down1">(?P<N>[^<]+)</div>'
-    FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[\d.]+) (?P<U>\w+)</strong><br />'
+    FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[\d.,]+) (?P<U>\w+)</strong><br />'
     OFFLINE_PATTERN = ur'<span class = "red">Zadaný súbor neexistuje z jedného z nasledujúcich dôvodov:</span>'
 
     LINK_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'
     ID_PATTERN = r'<input type = "hidden" name = "id" value = "([^"]+)" />'
-    CAPTCHA_PATTERN = r'<img src="(/obrazky/obrazky.php\?fid=[^"]+)" alt="" />'
+    CAPTCHA_PATTERN = r'<img src="(/obrazky/obrazky\.php\?fid=[^"]+)" alt="" />'
     IMG_PATTERN = ur'<strong>PRE ZVÄČŠENIE KLIKNITE NA OBRÁZOK</strong><br /><a href = "([^"]+)">'
 
 

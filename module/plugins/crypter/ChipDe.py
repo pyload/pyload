@@ -9,7 +9,7 @@ class ChipDe(Crypter):
     __type__ = "crypter"
     __version__ = "0.1"
 
-    __pattern__ = r'http://(?:www\.)?chip.de/video/.*\.html'
+    __pattern__ = r'http://(?:www\.)?chip\.de/video/.*\.html'
 
     __description__ = """Chip.de decrypter plugin"""
     __license__ = "GPLv3"

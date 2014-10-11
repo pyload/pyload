@@ -12,7 +12,7 @@ class QuickshareCz(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.54"
 
-    __pattern__ = r'http://(?:[^/]*\.)?quickshare.cz/stahnout-soubor/.*'
+    __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.*'
 
     __description__ = """Quickshare.cz hoster plugin"""
     __license__ = "GPLv3"
@@ -20,8 +20,8 @@ class QuickshareCz(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>[^<]+)</td>'
-    FILE_SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[\d.]+) (?P<U>\w+)</td>'
-    OFFLINE_PATTERN = r'<script type="text/javascript">location.href=\'/chyba\';</script>'
+    FILE_SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[\d.,]+) (?P<U>\w+)</td>'
+    OFFLINE_PATTERN = r'<script type="text/javascript">location\.href=\'/chyba\';</script>'
 
 
     def process(self, pyfile):

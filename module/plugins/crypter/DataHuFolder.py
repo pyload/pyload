@@ -10,7 +10,7 @@ class DataHuFolder(SimpleCrypter):
     __type__ = "crypter"
     __version__ = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?data.hu/dir/\w+'
+    __pattern__ = r'http://(?:www\.)?data\.hu/dir/\w+'
 
     __description__ = """Data.hu folder decrypter plugin"""
     __license__ = "GPLv3"

@@ -18,7 +18,7 @@ class MovReelCom(XFSPHoster):
     HOSTER_NAME = "movreel.com"
 
     FILE_NAME_PATTERN = r'Filename: <b>(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'Size: (?P<S>[\d.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>\w+)'
 
     LINK_PATTERN = r'<a href="([^"]+)">Download Link'
 

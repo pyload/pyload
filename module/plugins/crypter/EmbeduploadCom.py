@@ -10,7 +10,7 @@ class EmbeduploadCom(Crypter):
     __type__ = "crypter"
     __version__ = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?embedupload.com/\?d=.*'
+    __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.*'
     __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "embedupload"),
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
 
