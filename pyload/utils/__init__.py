@@ -143,7 +143,7 @@ def freeSpace(folder):
         return free_bytes.value
     else:
         s = os.statvfs(folder)
-        return s.f_bsize * s.f_bavail
+        return s.f_frsize * s.f_bavail
 
 
 def fs_bsize(path):
@@ -158,7 +158,7 @@ def fs_bsize(path):
         ctypes.windll.kernel32.GetDiskFreeSpaceW(ctypes.c_wchar_p(drive), ctypes.pointer(cluster_sectors), ctypes.pointer(sector_size), None, None)
         return cluster_sectors * sector_size
     else:
-        return os.statvfs(path).f_bsize
+        return os.statvfs(path).f_frsize
 
 
 def uniqify(seq):  #: Originally by Dave Kirby
