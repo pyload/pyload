@@ -8,13 +8,11 @@ from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter
 from module.utils import save_join
 
-API_URL = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
-
 
 class YoutubeBatch(Crypter):
     __name__ = "YoutubeBatch"
     __type__ = "crypter"
-    __version__ = "1.00"
+    __version__ = "1.01"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)'
     __config__ = [("likes", "bool", "Grab user (channel) liked videos", False),
@@ -26,8 +24,11 @@ class YoutubeBatch(Crypter):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
+    API_KEY = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"
+
+
     def api_response(self, ref, req):
-        req.update({"key": API_KEY})
+        req.update({"key": self.API_KEY})
         url = urljoin("https://www.googleapis.com/youtube/v3/", ref)
         page = self.load(url, get=req)
         return json_loads(page)
