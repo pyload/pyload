@@ -28,6 +28,7 @@ class QuickshareCz(Account):
 
         return {"validuntil": -1, "trafficleft": trafficleft, "premium": premium}
 
+
     def login(self, user, data, req):
         html = req.load('http://www.quickshare.cz/html/prihlaseni_process.php', post={
             "akce": u'Přihlásit',

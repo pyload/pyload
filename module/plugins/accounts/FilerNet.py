@@ -40,6 +40,7 @@ class FilerNet(Account):
             self.logError("Unable to retrieve account information - Plugin may be out of date")
             return {"premium": False, "validuntil": None, "trafficleft": None}
 
+
     def login(self, user, data, req):
         html = req.load("https://filer.net/login")
         token = re.search(self.TOKEN_PATTERN, html).group(1)

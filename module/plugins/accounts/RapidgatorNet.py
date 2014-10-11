@@ -40,6 +40,7 @@ class RapidgatorNet(Account):
 
         return {"validuntil": None, "trafficleft": None, "premium": False}
 
+
     def login(self, user, data, req):
         try:
             json = req.load('%s/login' % self.API_URL, post={"username": user, "password": data['password']})

@@ -22,6 +22,7 @@ class PremiumTo(Account):
 
         return {"trafficleft": int(traffic) / 1024, "validuntil": -1}
 
+
     def login(self, user, data, req):
         self.username = user
         self.password = data['password']

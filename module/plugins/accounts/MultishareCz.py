@@ -34,6 +34,7 @@ class MultishareCz(Account):
 
         return dict(mms_info, **{"validuntil": -1, "trafficleft": trafficleft})
 
+
     def login(self, user, data, req):
         html = req.load('http://www.multishare.cz/html/prihlaseni_process.php', post={
             "akce": "Přihlásit",

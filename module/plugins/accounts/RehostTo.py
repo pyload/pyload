@@ -30,6 +30,7 @@ class RehostTo(Account):
 
         return account_info
 
+
     def login(self, user, data, req):
         page = req.load("http://rehost.to/api.php?cmd=login&user=%s&pass=%s" % (user, data['password']))
 

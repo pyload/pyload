@@ -16,6 +16,7 @@ class FilesMailRu(Account):
     def loadAccountInfo(self, user, req):
         return {"validuntil": None, "trafficleft": None}
 
+
     def login(self, user, data, req):
         user, domain = user.split("@")
 

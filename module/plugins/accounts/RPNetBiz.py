@@ -31,6 +31,7 @@ class RPNetBiz(Account):
 
         return account_info
 
+
     def login(self, user, data, req):
         # Get account information from rpnet.biz
         response = self.getAccountStatus(user, req)

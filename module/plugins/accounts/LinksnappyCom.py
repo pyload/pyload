@@ -41,6 +41,7 @@ class LinksnappyCom(Account):
 
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
 
+
     def login(self, user, data, req):
         r = req.load('http://gen.linksnappy.com/lseAPI.php',
                      get={'act': 'USERDETAILS', 'username': user, 'password': md5(data['password']).hexdigest()})

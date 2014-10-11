@@ -23,6 +23,7 @@ class MyfastfileCom(Account):
         else:
             self.logError("Unable to get account information")
 
+
     def login(self, user, data, req):
         # Password to use is the API-Password written in http://myfastfile.com/myaccount
         html = req.load("http://myfastfile.com/api.php",

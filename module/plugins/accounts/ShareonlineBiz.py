@@ -37,6 +37,7 @@ class ShareonlineBiz(Account):
                 "trafficleft": -1,
                 "premium": True if ("dl" in info or "a" in info) and (info['group'] != "Sammler") else False}
 
+
     def login(self, user, data, req):
         src = self.getUserAPI(user, req)
         if "EXCEPTION" in src:

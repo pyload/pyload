@@ -32,6 +32,7 @@ class CzshareCom(Account):
             validuntil = mktime(strptime(m.group(3), '%d.%m.%y %H:%M'))
             return {"validuntil": validuntil, "trafficleft": credits}
 
+
     def login(self, user, data, req):
         html = req.load('https://sdilej.cz/index.php', post={
             "Prihlasit": "Prihlasit",

@@ -27,6 +27,7 @@ class ZeveraCom(Account):
             }
         return account_info
 
+
     def login(self, user, data, req):
         self.loginname = user
         self.password = data['password']

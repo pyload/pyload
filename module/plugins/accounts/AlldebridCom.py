@@ -44,6 +44,7 @@ class AlldebridCom(Account):
         account_info = {"validuntil": exp_time, "trafficleft": -1}
         return account_info
 
+
     def login(self, user, data, req):
         urlparams = urlencode({'action': 'login', 'login_login': user, 'login_password': data['password']})
         page = req.load("http://www.alldebrid.com/register/?%s" % urlparams)

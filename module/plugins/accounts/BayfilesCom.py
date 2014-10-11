@@ -28,6 +28,7 @@ class BayfilesCom(Account):
         return {"premium": bool(response['premium']), "trafficleft": -1,
                 "validuntil": response['expires'] if response['expires'] >= int(time()) else -1}
 
+
     def login(self, user, data, req):
         response = json_loads(req.load("http://api.bayfiles.com/v1/account/login/%s/%s" % (user, data['password'])))
         self.logDebug(response)

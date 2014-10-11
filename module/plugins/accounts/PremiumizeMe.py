@@ -29,6 +29,7 @@ class PremiumizeMe(Account):
 
         return account_info
 
+
     def login(self, user, data, req):
         # Get user data from premiumize.me
         status = self.getAccountStatus(user, req)

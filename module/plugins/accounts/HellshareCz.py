@@ -50,6 +50,7 @@ class HellshareCz(Account):
 
         return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
 
+
     def login(self, user, data, req):
         html = req.load('http://www.hellshare.com/')
         if req.lastEffectiveURL != 'http://www.hellshare.com/':

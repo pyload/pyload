@@ -30,6 +30,7 @@ class MegaDebridEu(Account):
             self.logError(response)
             return {"status": False, "premium": False}
 
+
     def login(self, user, data, req):
         jsonResponse = req.load(self.API_URL,
                                 get={'action': 'connectUser', 'login': user, 'password': data['password']})

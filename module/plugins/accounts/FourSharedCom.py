@@ -19,6 +19,7 @@ class FourSharedCom(Account):
         # Free mode only for now
         return {"premium": False}
 
+
     def login(self, user, data, req):
         req.cj.setCookie("4shared.com", "4langcookie", "en")
         response = req.load('http://www.4shared.com/web/login',

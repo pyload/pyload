@@ -40,6 +40,7 @@ class MegaRapidCz(Account):
 
         return {"premium": False, "trafficleft": None, "validuntil": None}
 
+
     def login(self, user, data, req):
         htm = req.load("http://megarapid.cz/prihlaseni/", cookies=True)
         if "Heslo:" in htm:

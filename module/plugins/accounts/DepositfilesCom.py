@@ -27,6 +27,7 @@ class DepositfilesCom(Account):
 
         return {"validuntil": validuntil, "trafficleft": -1}
 
+
     def login(self, user, data, req):
         src = req.load("https://dfiles.eu/de/login.php", get={"return": "/de/gold/payment.php"},
                        post={"login": user, "password": data['password']})

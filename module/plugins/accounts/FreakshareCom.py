@@ -31,6 +31,7 @@ class FreakshareCom(Account):
 
         return {"validuntil": validuntil, "trafficleft": traffic}
 
+
     def login(self, user, data, req):
         page = req.load("http://freakshare.com/login.html", None,
                         {"submit": "Login", "user": user, "pass": data['password']}, cookies=True)

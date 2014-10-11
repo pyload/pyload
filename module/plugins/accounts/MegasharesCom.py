@@ -35,6 +35,7 @@ class MegasharesCom(Account):
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
+
     def login(self, user, data, req):
         html = req.load('http://d01.megashares.com/myms_login.php', post={
             "httpref": "",

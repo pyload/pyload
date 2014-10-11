@@ -29,6 +29,7 @@ class EuroshareEu(Account):
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
+
     def login(self, user, data, req):
 
         html = req.load('http://euroshare.eu/customer-zone/login/', post={

@@ -24,6 +24,7 @@ class StahnuTo(Account):
 
         return {"premium": trafficleft > (512 * 1024), "trafficleft": trafficleft, "validuntil": -1}
 
+
     def login(self, user, data, req):
         html = req.load("http://www.stahnu.to/login.php", post={
             "username": user,

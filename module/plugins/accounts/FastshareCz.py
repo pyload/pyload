@@ -32,6 +32,7 @@ class FastshareCz(Account):
 
         return {"validuntil": -1, "trafficleft": trafficleft, "premium": premium}
 
+
     def login(self, user, data, req):
         req.load('http://www.fastshare.cz/login')  # Do not remove or it will not login
         html = req.load('http://www.fastshare.cz/sql.php', post={

@@ -36,6 +36,7 @@ class OneFichierCom(Account):
 
         return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
 
+
     def login(self, user, data, req):
 
         req.http.c.setopt(REFERER, "http://1fichier.com/login.pl?lg=en")

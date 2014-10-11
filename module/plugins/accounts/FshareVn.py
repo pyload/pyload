@@ -44,6 +44,7 @@ class FshareVn(Account):
 
         return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
 
+
     def login(self, user, data, req):
         req.http.c.setopt(REFERER, "https://www.fshare.vn/login.php")
 

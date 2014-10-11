@@ -25,6 +25,7 @@ class RealdebridCom(Account):
 
         return account_info
 
+
     def login(self, user, data, req):
         self.pin_code = False
         page = req.load("https://real-debrid.com/ajax/login.php", get={"user": user, "pass": data['password']})

@@ -36,6 +36,7 @@ class RapidshareCom(Account):
 
         return tmp
 
+
     def login(self, user, data, req):
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_prem = {"sub": "getaccountdetails", "type": "prem", "login": user,

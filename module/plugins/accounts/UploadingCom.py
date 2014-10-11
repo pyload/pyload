@@ -30,6 +30,7 @@ class UploadingCom(Account):
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": True}
 
+
     def login(self, user, data, req):
         req.cj.setCookie("uploading.com", "lang", "1")
         req.cj.setCookie("uploading.com", "language", "1")

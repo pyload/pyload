@@ -32,6 +32,7 @@ class UploadheroCom(Account):
 
         return account_info
 
+
     def login(self, user, data, req):
         page = req.load("http://uploadhero.co/lib/connexion.php",
                         post={"pseudo_login": user, "password_login": data['password']})

@@ -28,6 +28,7 @@ class LetitbitNet(Account):
 
         return {"premium": True}
 
+
     def login(self, user, data, req):
         # API_KEY is the username and the PREMIUM_KEY is the password
         self.logInfo("You must use your API KEY as username and the PREMIUM KEY as password.")

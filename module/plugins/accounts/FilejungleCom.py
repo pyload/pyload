@@ -35,6 +35,7 @@ class FilejungleCom(Account):
 
         return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
 
+
     def login(self, user, data, req):
         html = req.load(self.URL + "login.php", post={
             "loginUserName": user,

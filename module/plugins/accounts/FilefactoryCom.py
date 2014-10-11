@@ -36,6 +36,7 @@ class FilefactoryCom(Account):
 
         return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
 
+
     def login(self, user, data, req):
         req.http.c.setopt(REFERER, "http://www.filefactory.com/member/login.php")
 

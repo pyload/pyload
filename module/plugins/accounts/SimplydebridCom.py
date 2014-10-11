@@ -24,6 +24,7 @@ class SimplydebridCom(Account):
         else:
             return {"trafficleft": -1, "validuntil": mktime(strptime(str(data[2]), "%d/%m/%Y"))}
 
+
     def login(self, user, data, req):
         self.loginname = user
         self.password = data['password']

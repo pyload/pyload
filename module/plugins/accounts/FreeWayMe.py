@@ -35,6 +35,7 @@ class FreeWayMe(Account):
     def getpw(self, user):
         return self.accounts[user]['password']
 
+
     def login(self, user, data, req):
         status = self.getAccountStatus(user, req)
 

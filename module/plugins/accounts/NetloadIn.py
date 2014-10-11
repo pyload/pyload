@@ -31,6 +31,7 @@ class NetloadIn(Account):
             trafficleft = None
         return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
 
+
     def login(self, user, data, req):
         page = req.load("http://netload.in/index.php", None,
                         {"txtuser": user, "txtpass": data['password'], "txtcheck": "login", "txtlogin": "Login"},

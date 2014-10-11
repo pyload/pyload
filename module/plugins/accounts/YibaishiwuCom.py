@@ -27,6 +27,7 @@ class YibaishiwuCom(Account):
         validuntil = trafficleft = (-1 if m else 0)
         return dict({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
 
+
     def login(self, user, data, req):
         html = req.load('http://passport.115.com/?ac=login', post={
             "back": "http://www.115.com/",

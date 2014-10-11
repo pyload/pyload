@@ -31,6 +31,7 @@ class SimplyPremiumCom(Account):
         #return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
         return {"premium": True, "validuntil": validuntil}
 
+
     def login(self, user, data, req):
         req.cj.setCookie("simply-premium.com", "lang", "EN")
 

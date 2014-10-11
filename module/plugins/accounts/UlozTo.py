@@ -31,6 +31,7 @@ class UlozTo(Account):
 
         return {"validuntil": -1, "trafficleft": trafficleft}
 
+
     def login(self, user, data, req):
         login_page = req.load('http://www.ulozto.net/?do=web-login', decode=True)
         action = re.findall('<form action="(.+?)"', login_page)[1].replace('&amp;', '&')
