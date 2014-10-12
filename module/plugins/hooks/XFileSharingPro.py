@@ -24,6 +24,16 @@ class XFileSharingPro(Hook):
 
     event_list = ["pluginConfigChanged"]
 
+    HOSTER_LIST = [#WORKING HOSTERS:
+                   "eyesfile.co", "eyesfile.com", "fileband.com", "filedwon.com", "hostingbulk.com", "linestorage.com",
+                   "ravishare.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
+                   #NOT TESTED:
+                   "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
+                   "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
+                   "vidbull.com", "zalaa.com", "zomgupload.com",
+                   #NOT WORKING:
+                   "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com", "laoupload.com", "rd-fs.com"]
+
 
     def pluginConfigChanged(self, plugin, name, value):
         if name != "activated":
@@ -49,17 +59,7 @@ class XFileSharingPro(Hook):
 
         else:
             if self.getConfig('load_default'):
-                hoster_list |= set((
-                    #WORKING HOSTERS:
-                    "eyesfile.co", "eyesfile.com", "fileband.com", "filedwon.com", "hostingbulk.com", "linestorage.com",
-                    "ravishare.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
-                    #NOT TESTED:
-                    "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
-                    "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
-                    "vidbull.com", "zalaa.com", "zomgupload.com",
-                    #NOT WORKING:
-                    "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com", "laoupload.com", "rd-fs.com"
-                ))
+                hoster_list |= set(self.HOSTER_LIST)
 
             hoster_list -= (exclude_list)
             hoster_list -= set(('', u''))
