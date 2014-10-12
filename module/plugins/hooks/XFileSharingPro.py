@@ -8,7 +8,7 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__ = "XFileSharingPro"
     __type__ = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("match", "Always;Always except excluded;Listed only", "Match", "Always except excluded"),
@@ -45,23 +45,26 @@ class XFileSharingPro(Hook):
 
 
     def loadPattern(self):
-        hoster_list = self.getConfigSet('include_hosters')
-        exclude_list = self.getConfigSet('exclude_hosters')
+        include_hosters = self.getConfigSet('include_hosters')
+        exclude_hosters = self.getConfigSet('exclude_hosters')
 
         if self.getConfig("match") != "Listed only":
             if self.getConfig("match") == "Always":
                 match_list = ""
             else:
-                match_list = '|'.join(sorted(exclude_list))
-                self.logDebug("Excluding %d hosters" % len(exclude_list), match_list.replace('|', ', '))
+                hoster_list = exclude_hosters - set(('', u''))
+                match_list = '|'.join(sorted(hoster_list))
+                self.logDebug("Excluding %d hosters" % len(hoster_list), match_list.replace('|', ', '))
 
-            regexp = r'https?://(?!(?:www\.)?(?:%s))(?:www\.)?([\w^_]+(?:\.[a-zA-Z])+(?:\:\d+)?)/(?:embed-)?\w{12}' % match_list.replace('.', '\.')
+            regexp = r'https?://(?!(?:www\.)?(?:%s))(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}' % match_list.replace('.', '\.')
 
         else:
+            hoster_list = include_hosters
+
             if self.getConfig('load_default'):
                 hoster_list |= set(self.HOSTER_LIST)
 
-            hoster_list -= (exclude_list)
+            hoster_list -= exclude_hosters
             hoster_list -= set(('', u''))
 
             if not hoster_list:
@@ -69,8 +72,9 @@ class XFileSharingPro(Hook):
                 return
 
             match_list = '|'.join(sorted(hoster_list))
-            regexp = r'https?://(?:[^/]*\.)?(%s)/(?:embed-)?\w{12}' % match_list.replace('.', '\.')
             self.logDebug("Handling %d hosters" % len(hoster_list), match_list.replace('|', ', '))
+
+            regexp = r'https?://(?:[^/]*\.)?(%s)/(?:embed-)?\w{12}' % match_list.replace('.', '\.')
 
         dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
         dict['pattern'] = regexp
