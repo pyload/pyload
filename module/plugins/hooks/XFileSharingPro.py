@@ -31,7 +31,7 @@ class XFileSharingPro(Hook):
 
 
     def coreReady(self):
-        self.pluginConfigChanged(self.__name__, "coreReady", None)
+        self.loadPattern()
 
 
     def loadPattern(self):
