@@ -18,12 +18,13 @@ class LoadTo(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
 
     __description__ = """ Load.to hoster plugin """
+    __license__ = "GPLv3"
     __authors__ = [("halfman", "Pulpan3@gmail.com"),
                    ("stickell", "l.stickell@yahoo.it")]
 
 
     FILE_NAME_PATTERN = r'<h1>(?P<N>.+)</h1>'
-    FILE_SIZE_PATTERN = r'Size: (?P<S>[\d.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>\w+)'
     OFFLINE_PATTERN = r'>Can\'t find file'
 
     LINK_PATTERN = r'<form method="post" action="(.+?)"'

@@ -15,18 +15,19 @@ def getInfo(urls):
                 "User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0"])
     for url in urls:
         html = h.load(url, decode=True)
-        file_info = parseFileInfo(ShareRapidCom, url, html)
+        file_info = parseFileInfo(MegaRapidCz, url, html)
         yield file_info
 
 
-class ShareRapidCom(SimpleHoster):
-    __name__ = "ShareRapidCom"
+class MegaRapidCz(SimpleHoster):
+    __name__ = "MegaRapidCz"
     __type__ = "hoster"
     __version__ = "0.54"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
 
     __description__ = """MegaRapid.cz hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("MikyWoW", "mikywow@seznam.cz"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it"),
@@ -34,7 +35,7 @@ class ShareRapidCom(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'<h1[^>]*><span[^>]*>(?:<a[^>]*>)?(?P<N>[^<]+)'
-    FILE_SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong></td>'
+    FILE_SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[\d.,]+) (?P<U>\w+)</strong></td>'
     OFFLINE_PATTERN = ur'Nastala chyba 404|Soubor byl smazán'
 
     FORCE_CHECK_TRAFFIC = True

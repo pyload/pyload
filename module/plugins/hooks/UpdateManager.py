@@ -23,6 +23,7 @@ class UpdateManager(Hook):
                   ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
 
     __description__ = """ Check for updates """
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -149,7 +150,7 @@ class UpdateManager(Hook):
 
         updated = []
 
-        vre = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
+        vre = re.compile(r'__version__.*=.*("|\')([\d.]+)')
         url = updates[0]
         schema = updates[1].split('|')
         if "BLACKLIST" in updates:

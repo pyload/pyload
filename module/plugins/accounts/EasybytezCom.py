@@ -14,6 +14,7 @@ class EasybytezCom(XFSPAccount):
     __version__ = "0.07"
 
     __description__ = """EasyBytez.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("guidobelix", "guidobelix@hotmail.it")]
 

@@ -14,6 +14,7 @@ class DeleteFinished(Hook):
                   ('deloffline', 'bool', 'Delete packages with offline links', 'False')]
 
     __description__ = """Automatically delete all finished packages from queue"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

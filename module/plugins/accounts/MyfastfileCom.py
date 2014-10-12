@@ -2,15 +2,17 @@
 
 from time import time
 
-from module.plugins.Account import Account
 from module.common.json_layer import json_loads
+from module.plugins.Account import Account
 
 
 class MyfastfileCom(Account):
     __name__ = "MyfastfileCom"
     __type__ = "account"
     __version__ = "0.02"
+
     __description__ = """Myfastfile.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
@@ -20,6 +22,7 @@ class MyfastfileCom(Account):
             return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
         else:
             self.logError("Unable to get account information")
+
 
     def login(self, user, data, req):
         # Password to use is the API-Password written in http://myfastfile.com/myaccount

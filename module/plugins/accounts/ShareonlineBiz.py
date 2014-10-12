@@ -9,6 +9,7 @@ class ShareonlineBiz(Account):
     __version__ = "0.24"
 
     __description__ = """Share-online.biz account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 
@@ -35,6 +36,7 @@ class ShareonlineBiz(Account):
         return {"validuntil": int(info['expire_date']) if "expire_date" in info else -1,
                 "trafficleft": -1,
                 "premium": True if ("dl" in info or "a" in info) and (info['group'] != "Sammler") else False}
+
 
     def login(self, user, data, req):
         src = self.getUserAPI(user, req)

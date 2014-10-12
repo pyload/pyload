@@ -10,6 +10,7 @@ class RPNetBiz(Account):
     __version__ = "0.1"
 
     __description__ = """RPNet.biz account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Dman", "dmanugm@gmail.com")]
 
 
@@ -29,6 +30,7 @@ class RPNetBiz(Account):
             account_info = {"validuntil": None, "trafficleft": None, "premium": False}
 
         return account_info
+
 
     def login(self, user, data, req):
         # Get account information from rpnet.biz

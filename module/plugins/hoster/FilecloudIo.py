@@ -15,21 +15,22 @@ class FilecloudIo(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*'
 
     __description__ = """Filecloud.io hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 
 
     FILE_SIZE_PATTERN = r'{var __ab1 = (?P<S>\d+);}'
     FILE_NAME_PATTERN = r'id="aliasSpan">(?P<N>.*?)&nbsp;&nbsp;<'
-    OFFLINE_PATTERN = r'l10n.(FILES__DOESNT_EXIST|REMOVED)'
-    TEMP_OFFLINE_PATTERN = r'l10n.FILES__WARNING'
+    OFFLINE_PATTERN = r'l10n\.(FILES__DOESNT_EXIST|REMOVED)'
+    TEMP_OFFLINE_PATTERN = r'l10n\.FILES__WARNING'
 
-    UKEY_PATTERN = r"'ukey'\s*:'(\w+)',"
-    AB1_PATTERN = r"if\( __ab1 == '(\w+)' \)"
+    UKEY_PATTERN = r'\'ukey\'\s*:\'(\w+)'
+    AB1_PATTERN = r'if\( __ab1 == \'(\w+)\' \)'
     ERROR_MSG_PATTERN = r'var __error_msg\s*=\s*l10n\.(.*?);'
-    RECAPTCHA_PATTERN = r"var __recaptcha_public\s*=\s*'([^']+)';"
+    RECAPTCHA_PATTERN = r'var __recaptcha_public\s*=\s*\'(.+?)\';'
 
-    LINK_PATTERN = r'"(http://s\d+.filecloud.io/%s/\d+/.*?)"'
+    LINK_PATTERN = r'"(http://s\d+\.filecloud\.io/%s/\d+/.*?)"'
 
 
     def setup(self):

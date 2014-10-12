@@ -11,11 +11,12 @@ class FastshareCz(Account):
     __version__ = "0.03"
 
     __description__ = """Fastshare.cz account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 
 
-    CREDIT_PATTERN = r'(?:Kredit|Credit)\s*</td>\s*<td[^>]*>([\d. \w]+)&nbsp;'
+    CREDIT_PATTERN = r'(?:Kredit|Credit)\s*</td>\s*<td[^>]*>([\w.]+)&nbsp;'
 
 
     def loadAccountInfo(self, user, req):
@@ -30,6 +31,7 @@ class FastshareCz(Account):
             premium = False
 
         return {"validuntil": -1, "trafficleft": trafficleft, "premium": premium}
+
 
     def login(self, user, data, req):
         req.load('http://www.fastshare.cz/login')  # Do not remove or it will not login

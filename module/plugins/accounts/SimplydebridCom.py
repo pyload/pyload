@@ -11,6 +11,7 @@ class SimplydebridCom(Account):
     __version__ = "0.1"
 
     __description__ = """Simply-Debrid.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
@@ -22,6 +23,7 @@ class SimplydebridCom(Account):
             return {"premium": False}
         else:
             return {"trafficleft": -1, "validuntil": mktime(strptime(str(data[2]), "%d/%m/%Y"))}
+
 
     def login(self, user, data, req):
         self.loginname = user

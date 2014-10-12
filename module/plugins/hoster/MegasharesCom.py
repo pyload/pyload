@@ -12,20 +12,21 @@ class MegasharesCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.25"
 
-    __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index.php)?\?d\d{2}=|dl/)\w+'
+    __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
 
     __description__ = """Megashares.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'
-    FILE_SIZE_PATTERN = r'<strong><span class="black">Filesize:</span></strong> (?P<S>[\d.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'<strong><span class="black">Filesize:</span></strong> (?P<S>[\d.,]+) (?P<U>\w+)'
     OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted|Invalid link)'
 
     LINK_PATTERN = r'<div id="show_download_button_%d"[^>]*>\s*<a href="([^"]+)">'
 
     PASSPORT_LEFT_PATTERN = r'Your Download Passport is: <[^>]*>(\w+).*?You have.*?<[^>]*>.*?([\d.]+) (\w+)'
-    PASSPORT_RENEW_PATTERN = r'Your download passport will renew(?:.|\n)*?(\d+).*?(\d+).*?(\d+)'
+    PASSPORT_RENEW_PATTERN = r'Your download passport will renew(?:.|\n)*(\d+).*?(\d+).*?(\d+)'
     REACTIVATE_NUM_PATTERN = r'<input[^>]*id="random_num" value="(\d+)" />'
     REACTIVATE_PASSPORT_PATTERN = r'<input[^>]*id="passport_num" value="(\w+)" />'
     REQUEST_URI_PATTERN = r'var request_uri = "([^"]+)";'

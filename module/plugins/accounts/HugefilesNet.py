@@ -9,6 +9,7 @@ class HugefilesNet(XFSPAccount):
     __version__ = "0.01"
 
     __description__ = """Hugefiles.net account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

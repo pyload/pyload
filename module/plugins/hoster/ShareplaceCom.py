@@ -12,9 +12,10 @@ class ShareplaceCom(Hoster):
     __type__ = "hoster"
     __version__ = "0.11"
 
-    __pattern__ = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?[a-zA-Z0-9]+'
+    __pattern__ = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?\w+'
 
     __description__ = """Shareplace.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("ACCakut", None)]
 
 

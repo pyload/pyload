@@ -11,6 +11,7 @@ class PastebinCom(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?pastebin\.com/\w+'
 
     __description__ = """Pastebin.com decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

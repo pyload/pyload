@@ -10,11 +10,12 @@ class EmbeduploadCom(Crypter):
     __type__ = "crypter"
     __version__ = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?embedupload.com/\?d=.*'
+    __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.*'
     __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "embedupload"),
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
 
     __description__ = """EmbedUpload.com decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

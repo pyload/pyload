@@ -12,15 +12,16 @@ class QuickshareCz(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.54"
 
-    __pattern__ = r'http://(?:[^/]*\.)?quickshare.cz/stahnout-soubor/.*'
+    __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.*'
 
     __description__ = """Quickshare.cz hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>[^<]+)</td>'
-    FILE_SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</td>'
-    OFFLINE_PATTERN = r'<script type="text/javascript">location.href=\'/chyba\';</script>'
+    FILE_SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[\d.,]+) (?P<U>\w+)</td>'
+    OFFLINE_PATTERN = r'<script type="text/javascript">location\.href=\'/chyba\';</script>'
 
 
     def process(self, pyfile):
@@ -28,7 +29,7 @@ class QuickshareCz(SimpleHoster):
         self.getFileInfo()
 
         # parse js variables
-        self.jsvars = dict((x, y.strip("'")) for x, y in re.findall(r"var (\w+) = ([0-9.]+|'[^']*')", self.html))
+        self.jsvars = dict((x, y.strip("'")) for x, y in re.findall(r"var (\w+) = ([\d.]+|'[^']*')", self.html))
         self.logDebug(self.jsvars)
         pyfile.name = self.jsvars['ID3']
 

@@ -18,6 +18,7 @@ class AlldebridCom(Hoster):
     __pattern__ = r'https?://(?:[^/]*\.)?alldebrid\..*'
 
     __description__ = """Alldebrid.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Andy Voigt", "spamsales@online.de")]
 
 

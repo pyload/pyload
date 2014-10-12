@@ -9,6 +9,7 @@ class BillionuploadsCom(XFSPAccount):
     __version__ = "0.01"
 
     __description__ = """Billionuploads.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

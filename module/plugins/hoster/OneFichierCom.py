@@ -13,6 +13,7 @@ class OneFichierCom(SimpleHoster):
     __pattern__ = r'https?://(?P<ID>\w+)\.(?P<HOST>(1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl\.fr)'
 
     __description__ = """1fichier.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
                    ("the-razer", "daniel_ AT gmx DOT net"),
                    ("zoidberg", "zoidberg@mujmail.cz"),

@@ -16,6 +16,7 @@ class GigapetaCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?gigapeta\.com/dl/\w+'
 
     __description__ = """GigaPeta.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

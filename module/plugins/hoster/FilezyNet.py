@@ -11,6 +11,7 @@ class FilezyNet(DeadHoster):
     __pattern__ = r'http://(?:www\.)?filezy\.net/\w{12}'
 
     __description__ = """Filezy.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = []
 
 

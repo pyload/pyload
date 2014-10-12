@@ -12,6 +12,7 @@ class UploadingCom(Account):
     __version__ = "0.1"
 
     __description__ = """Uploading.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 
@@ -28,6 +29,7 @@ class UploadingCom(Account):
             validuntil = -1
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": True}
+
 
     def login(self, user, data, req):
         req.cj.setCookie("uploading.com", "lang", "1")

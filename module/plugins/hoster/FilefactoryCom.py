@@ -22,13 +22,14 @@ class FilefactoryCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.50"
 
-    __pattern__ = r'https?://(?:www\.)?filefactory\.com/file/(?P<id>[a-zA-Z0-9]+)'
+    __pattern__ = r'https?://(?:www\.)?filefactory\.com/file/(?P<id>\w+)'
 
     __description__ = """Filefactory.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
-    FILE_INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.]+) (?P<U>\w+) uploaded'
+    FILE_INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.,]+) (?P<U>\w+) uploaded'
     LINK_PATTERN = r'<a href="(https?://[^"]+)"[^>]*><i[^>]*></i> Download with FileFactory Premium</a>'
     OFFLINE_PATTERN = r'<h2>File Removed</h2>|This file is no longer available'
     PREMIUM_ONLY_PATTERN = r'>Premium Account Required<'

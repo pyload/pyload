@@ -133,6 +133,7 @@ class Plugin(Base):
     __config__ = [("name", "type", "desc", "default")]
 
     __description__ = """Base plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org"),
                    ("spoob", "spoob@pyload.org"),
                    ("mkaay", "mkaay@mkaay.de")]

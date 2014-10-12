@@ -8,9 +8,10 @@ class WuploadCom(DeadHoster):
     __type__ = "hoster"
     __version__ = "0.23"
 
-    __pattern__ = r'http://(?:www\.)?wupload\..*?/file/(([a-z][0-9]+/)?[0-9]+)(/.*)?'
+    __pattern__ = r'http://(?:www\.)?wupload\..*?/file/((\w+/)?\d+)(/.*)?'
 
     __description__ = """Wupload.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("jeix", "jeix@hasnomail.de"),
                    ("Paul King", None)]
 

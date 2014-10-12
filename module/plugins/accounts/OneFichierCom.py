@@ -13,6 +13,7 @@ class OneFichierCom(Account):
     __version__ = "0.1"
 
     __description__ = """1fichier.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Elrick69", "elrick69[AT]rocketmail[DOT]com")]
 
 
@@ -34,6 +35,7 @@ class OneFichierCom(Account):
             validuntil = -1
 
         return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
+
 
     def login(self, user, data, req):
 

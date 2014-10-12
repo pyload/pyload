@@ -10,6 +10,7 @@ class SimplyPremiumCom(Account):
     __version__ = "0.01"
 
     __description__ = """Simply-Premium.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("EvolutionClip", "evolutionclip@live.de")]
 
 
@@ -29,6 +30,7 @@ class SimplyPremiumCom(Account):
 
         #return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
         return {"premium": True, "validuntil": validuntil}
+
 
     def login(self, user, data, req):
         req.cj.setCookie("simply-premium.com", "lang", "EN")

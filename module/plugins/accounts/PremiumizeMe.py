@@ -11,6 +11,7 @@ class PremiumizeMe(Account):
     __version__ = "0.11"
 
     __description__ = """Premiumize.me account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
@@ -27,6 +28,7 @@ class PremiumizeMe(Account):
             account_info['premium'] = False
 
         return account_info
+
 
     def login(self, user, data, req):
         # Get user data from premiumize.me

@@ -17,6 +17,7 @@ class LinksnappyCom(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Linksnappy.com hook plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

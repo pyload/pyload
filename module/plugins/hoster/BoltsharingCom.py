@@ -8,9 +8,10 @@ class BoltsharingCom(DeadHoster):
     __type__ = "hoster"
     __version__ = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?boltsharing.com/\w{12}'
+    __pattern__ = r'http://(?:www\.)?boltsharing\.com/\w{12}'
 
     __description__ = """Boltsharing.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

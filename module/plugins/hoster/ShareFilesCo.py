@@ -11,6 +11,7 @@ class ShareFilesCo(DeadHoster):
     __pattern__ = r'http://(?:www\.)?sharefiles\.co/\w{12}'
 
     __description__ = """Sharefiles.co hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

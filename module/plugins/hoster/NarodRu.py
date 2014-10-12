@@ -12,9 +12,10 @@ class NarodRu(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.1"
 
-    __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/[0-9]+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
+    __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/\d+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
 
     __description__ = """Narod.ru hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -24,7 +25,7 @@ class NarodRu(SimpleHoster):
 
     FILE_SIZE_REPLACEMENTS = [(u'КБ', 'KB'), (u'МБ', 'MB'), (u'ГБ', 'GB')]
     FILE_URL_REPLACEMENTS = [("narod.yandex.ru/", "narod.ru/"),
-                             (r"/start/[0-9]+\.\w+-narod\.yandex\.ru/([0-9]{6,15})/\w+/(\w+)", r"/disk/\1/\2")]
+                             (r"/start/\d+\.\w+-narod\.yandex\.ru/(\d{6,15})/\w+/(\w+)", r"/disk/\1/\2")]
 
     CAPTCHA_PATTERN = r'<number url="(.*?)">(\w+)</number>'
     LINK_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'

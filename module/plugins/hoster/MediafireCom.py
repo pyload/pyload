@@ -49,21 +49,22 @@ class MediafireCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.79"
 
-    __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download.php)?\?)(\w{11}|\w{15})($|/)'
+    __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download\.php)?\?)(\w{11}|\w{15})($|/)'
 
     __description__ = """Mediafire.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 
 
     LINK_PATTERN = r'<div class="download_link"[^>]*(?:z-index:(?P<zindex>\d+))?[^>]*>\s*<a href="(?P<href>http://[^"]+)"'
-    JS_KEY_PATTERN = r"DoShow\('mfpromo1'\);[^{]*{((\w+)='';.*?)eval\(\2\);"
-    JS_ZMODULO_PATTERN = r"\('z-index'\)\) \% (\d+)\)\);"
+    JS_KEY_PATTERN = r'DoShow\(\'mfpromo1\'\);[^{]*{((\w+)=\'\';.*?)eval\(\2\);'
+    JS_ZMODULO_PATTERN = r'\(\'z-index\'\)\) \% (\d+)\)\);'
     PAGE1_ACTION_PATTERN = r'<link rel="canonical" href="([^"]+)"/>'
     PASSWORD_PATTERN = r'<form name="form_password"'
 
     FILE_NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>[^"]+)"/>'
-    FILE_INFO_PATTERN = r"oFileSharePopup\.ald\('(?P<ID>[^']*)','(?P<N>[^']*)','(?P<S>[^']*)','','(?P<sha256>[^']*)'\)"
+    FILE_INFO_PATTERN = r'oFileSharePopup\.ald\(\'(?P<ID>[^\']*)\',\'(?P<N>[^\']*)\',\'(?P<S>[^\']*)\',\'\',\'(?P<sha256>[^\']*)\'\)'
     OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
 
 

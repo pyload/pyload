@@ -12,6 +12,7 @@ class MegasharesCom(Account):
     __version__ = "0.02"
 
     __description__ = """Megashares.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -33,6 +34,7 @@ class MegasharesCom(Account):
             self.logError(e)
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
+
 
     def login(self, user, data, req):
         html = req.load('http://d01.megashares.com/myms_login.php', post={

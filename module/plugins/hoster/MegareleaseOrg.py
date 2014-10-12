@@ -11,6 +11,7 @@ class MegareleaseOrg(DeadHoster):
     __pattern__ = r'https?://(?:www\.)?megarelease\.org/\w{12}'
 
     __description__ = """Megarelease.org hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("derek3x", "derek3x@vmail.me"),
                    ("stickell", "l.stickell@yahoo.it")]
 

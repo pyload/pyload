@@ -12,6 +12,7 @@ class FileserveCom(Account):
     __version__ = "0.2"
 
     __description__ = """Fileserve.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 
@@ -27,6 +28,7 @@ class FileserveCom(Account):
             return {"trafficleft": res['traffic'], "validuntil": validuntil}
         else:
             return {"premium": False, "trafficleft": None, "validuntil": None}
+
 
     def login(self, user, data, req):
         page = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],

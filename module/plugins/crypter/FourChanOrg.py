@@ -12,9 +12,10 @@ class FourChanOrg(Crypter):
     __type__ = "crypter"
     __version__ = "0.3"
 
-    __pattern__ = r'http://(?:www\.)?boards\.4chan.org/\w+/res/(\d+)'
+    __pattern__ = r'http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)'
 
     __description__ = """4chan.org folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = []
 
 

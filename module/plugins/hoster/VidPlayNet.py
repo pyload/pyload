@@ -14,13 +14,13 @@ class VidPlayNet(XFSPHoster):
     __pattern__ = r'https?://(?:www\.)?vidplay\.net/\w{12}'
 
     __description__ = """VidPlay.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
 
 
     HOSTER_NAME = "vidplay.net"
 
     FILE_NAME_PATTERN = r'<b>Password:</b></div>\s*<h[1-6]>(?P<N>[^<]+)</h[1-6]>'
-    LINK_PATTERN = r'(http://([^/]*?%s|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<&]+)' % HOSTER_NAME
 
 
 getInfo = create_getInfo(VidPlayNet)

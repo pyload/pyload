@@ -11,4 +11,5 @@ class WiiReloadedOrg(DeadCrypter):
     __pattern__ = r'http://(?:www\.)?wii-reloaded\.org/protect/get\.php\?i=.+'
 
     __description__ = """Wii-Reloaded.org decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("hzpz", None)]

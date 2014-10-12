@@ -14,6 +14,7 @@ class MegaDebridEu(MultiHoster):
                   ("unloadFailing", "bool", "Revert to standard download if download fails", False)]
 
     __description__ = """mega-debrid.eu hook plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("D.Ducatel", "dducatel@je-geek.fr")]
 
 

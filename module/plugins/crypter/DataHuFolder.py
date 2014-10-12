@@ -10,14 +10,15 @@ class DataHuFolder(SimpleCrypter):
     __type__ = "crypter"
     __version__ = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?data.hu/dir/\w+'
+    __pattern__ = r'http://(?:www\.)?data\.hu/dir/\w+'
 
     __description__ = """Data.hu folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("crash", None),
                    ("stickell", "l.stickell@yahoo.it")]
 
 
-    LINK_PATTERN = r"<a href='(http://data\.hu/get/.+)' target='_blank'>\1</a>"
+    LINK_PATTERN = r'<a href=\'(http://data\.hu/get/.+)\' target=\'_blank\'>\1</a>'
     TITLE_PATTERN = ur'<title>(.+) Let\xf6lt\xe9se</title>'
 
 

@@ -12,6 +12,7 @@ class LinksnappyCom(Account):
     __version__ = "0.02"
 
     __description__ = """Linksnappy.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
@@ -39,6 +40,7 @@ class LinksnappyCom(Account):
             trafficleft = int(j['return']['trafficleft']) * 1024
 
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
+
 
     def login(self, user, data, req):
         r = req.load('http://gen.linksnappy.com/lseAPI.php',

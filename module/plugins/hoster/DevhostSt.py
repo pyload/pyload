@@ -16,11 +16,12 @@ class DevhostSt(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?d-h\.st/(?!users/)\w{3}'
 
     __description__ = """d-h.st hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     FILE_NAME_PATTERN = r'>Filename:</span> <div title="(?P<N>.+?)"'
-    FILE_SIZE_PATTERN = r'>Size:</span> (?P<S>[\d.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'>Size:</span> (?P<S>[\d.,]+) (?P<U>\w+)'
 
     OFFLINE_PATTERN = r'>File Not Found<'
     LINK_PATTERN = r'id="downloadfile" href="(.+?)"'

@@ -13,6 +13,7 @@ class YoupornCom(Hoster):
     __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
 
     __description__ = """Youporn.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("willnix", "willnix@pyload.org")]
 
 
@@ -41,7 +42,7 @@ class YoupornCom(Hoster):
         if not self.html:
             self.download_html()
 
-        file_name_pattern = r"<title>(.*) - Free Porn Videos - YouPorn</title>"
+        file_name_pattern = r'<title>(.+) - '
         return re.search(file_name_pattern, self.html).group(1).replace("&amp;", "&").replace("/", "") + '.flv'
 
     def file_exists(self):

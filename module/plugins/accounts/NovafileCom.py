@@ -9,6 +9,7 @@ class NovafileCom(XFSPAccount):
     __version__ = "0.01"
 
     __description__ = """Novafile.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

@@ -9,6 +9,7 @@ class RapidshareCom(Account):
     __version__ = "0.22"
 
     __description__ = """Rapidshare.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 
@@ -34,6 +35,7 @@ class RapidshareCom(Account):
         tmp = {"premium": premium, "validuntil": validuntil, "trafficleft": -1, "maxtraffic": -1}
 
         return tmp
+
 
     def login(self, user, data, req):
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"

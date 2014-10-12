@@ -14,14 +14,15 @@ class CzshareCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.94"
 
-    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download.php\?).*'
+    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).*'
 
     __description__ = """CZshare.com hoster plugin, now Sdilej.cz"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
-    FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B\s*</div>'
+    FILE_SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[\d .,]+)(?P<U>\w+)\s*</div>'
     OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
 
     FILE_SIZE_REPLACEMENTS = [(' ', '')]
@@ -30,11 +31,11 @@ class CzshareCom(SimpleHoster):
     FORCE_CHECK_TRAFFIC = True
 
     FREE_URL_PATTERN = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
-    FREE_FORM_PATTERN = r'<form action="download.php" method="post">\s*<img src="captcha.php" id="captcha" />(.*?)</form>'
-    PREMIUM_FORM_PATTERN = r'<form action="/profi_down.php" method="post">(.*?)</form>'
+    FREE_FORM_PATTERN = r'<form action="download\.php" method="post">\s*<img src="captcha\.php" id="captcha" />(.*?)</form>'
+    PREMIUM_FORM_PATTERN = r'<form action="/profi_down\.php" method="post">(.*?)</form>'
     FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)"[^>]*/>'
-    MULTIDL_PATTERN = r"<p><font color='red'>Z[^<]*PROFI.</font></p>"
-    USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([0-9., ]+)([kKMG]i?B)</strong>\s*</div><!-- .credit -->'
+    MULTIDL_PATTERN = r'<p><font color=\'red\'>Z[^<]*PROFI.</font></p>'
+    USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([\d .,]+)(\w+)</strong>\s*</div><!-- .credit -->'
 
 
     def checkTrafficLeft(self):

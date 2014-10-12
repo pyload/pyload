@@ -10,17 +10,18 @@ class TwoSharedCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.11"
 
-    __pattern__ = r'http://(?:www\.)?2shared.com/(account/)?(download|get|file|document|photo|video|audio)/.*'
+    __pattern__ = r'http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.*'
 
     __description__ = """2Shared.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'<h1>(?P<N>.*)</h1>'
-    FILE_SIZE_PATTERN = r'<span class="dtitle">File size:</span>\s*(?P<S>[0-9,.]+) (?P<U>[kKMG])i?B'
+    FILE_SIZE_PATTERN = r'<span class="dtitle">File size:</span>\s*(?P<S>[\d.,]+) (?P<U>\w+)'
     OFFLINE_PATTERN = r'The file link that you requested is not valid\.|This file was deleted\.'
 
-    LINK_PATTERN = r"window.location ='([^']+)';"
+    LINK_PATTERN = r'window.location =\'(.+?)\';'
 
 
     def setup(self):

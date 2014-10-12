@@ -10,6 +10,7 @@ class UnrestrictLi(Account):
     __version__ = "0.03"
 
     __description__ = """Unrestrict.li account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
@@ -25,6 +26,7 @@ class UnrestrictLi(Account):
         trafficleft = int(json_data['result']['traffic'] / 1024)
 
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
+
 
     def login(self, user, data, req):
         req.cj.setCookie("unrestrict.li", "lang", "EN")

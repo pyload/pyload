@@ -14,9 +14,10 @@ class RelinkUs(Crypter):
     __type__ = "crypter"
     __version__ = "3.0"
 
-    __pattern__ = r'http://(?:www\.)?relink.us/(f/|((view|go).php\?id=))(?P<id>.+)'
+    __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<id>.+)'
 
     __description__ = """Relink.us decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
@@ -40,7 +41,7 @@ class RelinkUs(Crypter):
     CNL2_CRYPTED_KEY = "crypted"
     DLC_LINK_REGEX = r'<a href=".*?" class="dlc_button" target="_blank">'
     DLC_DOWNLOAD_URL = r'http://www\.relink\.us/download\.php'
-    WEB_FORWARD_REGEX = r"getFile\('(?P<link>.+)'\)"
+    WEB_FORWARD_REGEX = r'getFile\(\'(?P<link>.+)\'\)'
     WEB_FORWARD_URL = r'http://www\.relink\.us/frame\.php'
     WEB_LINK_REGEX = r'<iframe name="Container" height="100%" frameborder="no" width="100%" src="(?P<link>.+)"></iframe>'
 

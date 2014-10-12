@@ -12,6 +12,7 @@ class HellshareCz(Account):
     __version__ = "0.14"
 
     __description__ = """Hellshare.cz account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -49,13 +50,14 @@ class HellshareCz(Account):
 
         return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
 
+
     def login(self, user, data, req):
         html = req.load('http://www.hellshare.com/')
         if req.lastEffectiveURL != 'http://www.hellshare.com/':
             #Switch to English
             self.logDebug("Switch lang - URL: %s" % req.lastEffectiveURL)
             json = req.load("%s?do=locRouter-show" % req.lastEffectiveURL)
-            hash = re.search(r"(--[0-9a-f]+-)", json).group(1)
+            hash = re.search(r"(\-\-[0-9a-f]+\-)", json).group(1)
             self.logDebug("Switch lang - HASH: %s" % hash)
             html = req.load('http://www.hellshare.com/%s/' % hash)
 

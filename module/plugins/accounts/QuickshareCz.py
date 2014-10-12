@@ -11,6 +11,7 @@ class QuickshareCz(Account):
     __version__ = "0.01"
 
     __description__ = """Quickshare.cz account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -26,6 +27,7 @@ class QuickshareCz(Account):
             premium = False
 
         return {"validuntil": -1, "trafficleft": trafficleft, "premium": premium}
+
 
     def login(self, user, data, req):
         html = req.load('http://www.quickshare.cz/html/prihlaseni_process.php', post={

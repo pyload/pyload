@@ -18,6 +18,7 @@ class WindowsPhoneToastNotify(Hook):
                   ("pushTimeout", "int", "Timeout between notifications in seconds", 0)]
 
     __description__ = """Send push notifications to Windows Phone"""
+    __license__ = "GPLv3"
     __authors__ = [("Andy Voigt", "phone-support@hotmail.de")]
 
 

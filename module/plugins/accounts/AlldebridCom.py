@@ -17,6 +17,7 @@ class AlldebridCom(Account):
     __version__ = "0.22"
 
     __description__ = """AllDebrid.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Andy Voigt", "spamsales@online.de")]
 
 
@@ -42,6 +43,7 @@ class AlldebridCom(Account):
             exp_time = time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 24 * 60 * 60
         account_info = {"validuntil": exp_time, "trafficleft": -1}
         return account_info
+
 
     def login(self, user, data, req):
         urlparams = urlencode({'action': 'login', 'login_login': user, 'login_password': data['password']})

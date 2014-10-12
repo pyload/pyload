@@ -11,13 +11,14 @@ class MovReelCom(XFSPHoster):
     __pattern__ = r'http://(?:www\.)?movreel\.com/\w{12}'
 
     __description__ = """MovReel.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("JorisV83", "jorisv83-pyload@yahoo.com")]
 
 
     HOSTER_NAME = "movreel.com"
 
     FILE_NAME_PATTERN = r'Filename: <b>(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'Size: (?P<S>[\d.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>\w+)'
 
     LINK_PATTERN = r'<a href="([^"]+)">Download Link'
 

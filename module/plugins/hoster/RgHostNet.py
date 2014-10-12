@@ -13,6 +13,7 @@ class RgHostNet(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?rghost\.net/\d+(?:r=\d+)?'
 
     __description__ = """RgHost.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("z00nx", "z00nx0@gmail.com")]
 
 

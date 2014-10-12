@@ -19,6 +19,7 @@ class CCF(Container):
     __pattern__ = r'.+\.ccf'
 
     __description__ = """CCF container decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Willnix", "Willnix@pyload.org")]
 
 

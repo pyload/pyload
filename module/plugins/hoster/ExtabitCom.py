@@ -17,6 +17,7 @@ class ExtabitCom(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
 
     __description__ = """Extabit.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -25,7 +26,7 @@ class ExtabitCom(SimpleHoster):
     OFFLINE_PATTERN = r'>File not found<'
     TEMP_OFFLINE_PATTERN = r'>(File is temporary unavailable|No download mirror)<'
 
-    LINK_PATTERN = r'[\'"](http://guest\d+\.extabit\.com/[a-z0-9]+/.*?)[\'"]'
+    LINK_PATTERN = r'[\'"](http://guest\d+\.extabit\.com/\w+/.*?)[\'"]'
 
 
     def handleFree(self):

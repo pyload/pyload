@@ -11,6 +11,7 @@ class LemUploadsCom(DeadHoster):
     __pattern__ = r'https?://(?:www\.)?lemuploads\.com/\w{12}'
 
     __description__ = """LemUploads.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
 
 

@@ -11,15 +11,16 @@ class CrockoCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.16"
 
-    __pattern__ = r'http://(?:www\.)?(crocko|easy-share).com/\w+'
+    __pattern__ = r'http://(?:www\.)?(crocko|easy-share)\.com/\w+'
 
     __description__ = """Crocko hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'<span class="fz24">Download:\s*<strong>(?P<N>.*)'
     FILE_SIZE_PATTERN = r'<span class="tip1"><span class="inner">(?P<S>[^<]+)</span></span>'
-    OFFLINE_PATTERN = r"<h1>Sorry,<br />the page you're looking for <br />isn't here.</h1>|File not found"
+    OFFLINE_PATTERN = r'<h1>Sorry,<br />the page you\'re looking for <br />isn\'t here.</h1>|File not found'
 
     CAPTCHA_URL_PATTERN = re.compile(r"u='(/file_contents/captcha/\w+)';\s*w='(\d+)';")
 

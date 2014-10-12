@@ -11,6 +11,7 @@ class CyberlockerCh(DeadHoster):
     __pattern__ = r'http://(?:www\.)?cyberlocker\.ch/\w+'
 
     __description__ = """Cyberlocker.ch hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

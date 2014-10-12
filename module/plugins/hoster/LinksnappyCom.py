@@ -16,6 +16,7 @@ class LinksnappyCom(Hoster):
     __pattern__ = r'https?://(?:[^/]*\.)?linksnappy\.com'
 
     __description__ = """Linksnappy.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

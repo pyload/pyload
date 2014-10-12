@@ -11,6 +11,7 @@ class Crypter(Plugin):
     __pattern__ = None
 
     __description__ = """Base decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de")]
 
 

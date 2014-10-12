@@ -18,6 +18,7 @@ class BasePlugin(Hoster):
     __pattern__ = r'^unmatchable$'
 
     __description__ = """Base Plugin when any other didnt fit"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 

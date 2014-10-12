@@ -12,11 +12,12 @@ class CzshareCom(Account):
     __version__ = "0.14"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 
 
-    CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([0-9 ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'
+    CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([\d ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'
 
 
     def loadAccountInfo(self, user, req):
@@ -30,6 +31,7 @@ class CzshareCom(Account):
             credits = credits * 1024 ** {'KiB': 0, 'MiB': 1, 'GiB': 2}[m.group(2)]
             validuntil = mktime(strptime(m.group(3), '%d.%m.%y %H:%M'))
             return {"validuntil": validuntil, "trafficleft": credits}
+
 
     def login(self, user, data, req):
         html = req.load('https://sdilej.cz/index.php', post={

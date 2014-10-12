@@ -12,6 +12,7 @@ class BayfilesCom(Account):
     __version__ = "0.03"
 
     __description__ = """Bayfiles.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -26,6 +27,7 @@ class BayfilesCom(Account):
 
         return {"premium": bool(response['premium']), "trafficleft": -1,
                 "validuntil": response['expires'] if response['expires'] >= int(time()) else -1}
+
 
     def login(self, user, data, req):
         response = json_loads(req.load("http://api.bayfiles.com/v1/account/login/%s/%s" % (user, data['password'])))

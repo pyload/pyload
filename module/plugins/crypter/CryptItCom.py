@@ -8,7 +8,8 @@ class CryptItCom(DeadCrypter):
     __type__ = "crypter"
     __version__ = "0.11"
 
-    __pattern__ = r'http://(?:www\.)?crypt-it\.com/(s|e|d|c)/[\w]+'
+    __pattern__ = r'http://(?:www\.)?crypt-it\.com/(s|e|d|c)/\w+'
 
     __description__ = """Crypt-it.com decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("jeix", "jeix@hasnomail.de")]

@@ -11,6 +11,7 @@ class FilerNetFolder(SimpleCrypter):
     __pattern__ = r'https?://filer\.net/folder/\w{16}'
 
     __description__ = """Filer.net decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("nath_schwarz", "nathan.notwhite@gmail.com"),
                    ("stickell", "l.stickell@yahoo.it")]
 

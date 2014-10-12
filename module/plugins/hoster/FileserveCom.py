@@ -38,6 +38,7 @@ class FileserveCom(Hoster):
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*'
 
     __description__ = """Fileserve.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("jeix", "jeix@hasnomail.de"),
                    ("mkaay", "mkaay@mkaay.de"),
                    ("Paul King", None),
@@ -46,14 +47,14 @@ class FileserveCom(Hoster):
 
     URLS = ["http://www.fileserve.com/file/", "http://www.fileserve.com/link-checker.php",
             "http://www.fileserve.com/checkReCaptcha.php"]
-    LINKCHECK_TR = r'<tr>\s*(<td>http://www.fileserve\.com/file/.*?)</tr>'
+    LINKCHECK_TR = r'<tr>\s*(<td>http://www\.fileserve\.com/file/.*?)</tr>'
     LINKCHECK_TD = r'<td>(?:<[^>]*>|&nbsp;)*([^<]*)'
 
-    CAPTCHA_KEY_PATTERN = r"var reCAPTCHA_publickey='(?P<key>[^']+)'"
+    CAPTCHA_KEY_PATTERN = r'var reCAPTCHA_publickey=\'(?P<key>.+?)\''
     LONG_WAIT_PATTERN = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'
     LINK_EXPIRED_PATTERN = r'Your download link has expired'
     DAILY_LIMIT_PATTERN = r'Your daily download limit has been reached'
-    NOT_LOGGED_IN_PATTERN = r'<form (name="loginDialogBoxForm"|id="login_form")|<li><a href="/login.php">Login</a></li>'
+    NOT_LOGGED_IN_PATTERN = r'<form (name="loginDialogBoxForm"|id="login_form")|<li><a href="/login\.php">Login</a></li>'
 
 
     def setup(self):

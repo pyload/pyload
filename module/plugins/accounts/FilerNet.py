@@ -13,11 +13,12 @@ class FilerNet(Account):
     __version__ = "0.01"
 
     __description__ = """Filer.net account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
     TOKEN_PATTERN = r'_csrf_token" value="([^"]+)" />'
-    WALID_UNTIL_PATTERN = r"Der Premium-Zugang ist gültig bis (.+)\.\s*</td>"
+    WALID_UNTIL_PATTERN = r'Der Premium-Zugang ist gültig bis (.+)\.\s*</td>'
     TRAFFIC_PATTERN = r'Traffic</th>\s*<td>([^<]+)</td>'
     FREE_PATTERN = r'Account Status</th>\s*<td>\s*Free'
 
@@ -38,6 +39,7 @@ class FilerNet(Account):
         else:
             self.logError("Unable to retrieve account information - Plugin may be out of date")
             return {"premium": False, "validuntil": None, "trafficleft": None}
+
 
     def login(self, user, data, req):
         html = req.load("https://filer.net/login")

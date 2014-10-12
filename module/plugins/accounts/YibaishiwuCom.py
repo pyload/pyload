@@ -11,6 +11,7 @@ class YibaishiwuCom(Account):
     __version__ = "0.01"
 
     __description__ = """115.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -25,6 +26,7 @@ class YibaishiwuCom(Account):
         premium = True if (m and 'is_vip: 1' in m.group(1)) else False
         validuntil = trafficleft = (-1 if m else 0)
         return dict({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
+
 
     def login(self, user, data, req):
         html = req.load('http://passport.115.com/?ac=login', post={

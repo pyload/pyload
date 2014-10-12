@@ -11,9 +11,10 @@ class MegacrypterCom(MegaNz):
     __type__ = "hoster"
     __version__ = "0.2"
 
-    __pattern__ = r'(https?://[a-z0-9]{0,10}\.?megacrypter\.com/[a-zA-Z0-9!_\-]+)'
+    __pattern__ = r'(https?://\w{0,10}\.?megacrypter\.com/[\w!-]+)'
 
     __description__ = """Megacrypter.com decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("GonzaloSR", "gonzalo@gonzalosr.com")]
 
 

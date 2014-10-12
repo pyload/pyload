@@ -12,6 +12,7 @@ class LinkdecrypterCom(Crypter):
     __pattern__ = None
 
     __description__ = """Linkdecrypter.com"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("flowlee", None)]
 

@@ -17,6 +17,7 @@ class RPNetBiz(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """RPNet.biz hook plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Dman", "dmanugm@gmail.com")]
 
 

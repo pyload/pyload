@@ -11,6 +11,7 @@ class ZeveraCom(Account):
     __version__ = "0.21"
 
     __description__ = """Zevera.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -25,6 +26,7 @@ class ZeveraCom(Account):
                 "premium": True
             }
         return account_info
+
 
     def login(self, user, data, req):
         self.loginname = user

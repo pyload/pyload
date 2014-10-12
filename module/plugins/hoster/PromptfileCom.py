@@ -13,14 +13,15 @@ class PromptfileCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?promptfile\.com/'
 
     __description__ = """Promptfile.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("igel", "igelkun@myopera.com")]
 
 
-    FILE_INFO_PATTERN = r'<span style="[^"]*" title="[^"]*">(?P<N>.*?) \((?P<S>[\d.]+) (?P<U>\w+)\)</span>'
+    FILE_INFO_PATTERN = r'<span style="[^"]*" title="[^"]*">(?P<N>.*?) \((?P<S>[\d.,]+) (?P<U>\w+)\)</span>'
     OFFLINE_PATTERN = r'<span style="[^"]*" title="File Not Found">File Not Found</span>'
 
     CHASH_PATTERN = r'<input type="hidden" name="chash" value="([^"]*)" />'
-    LINK_PATTERN = r"clip: {\s*url: '(https?://(?:www\.)promptfile[^']*)',"
+    LINK_PATTERN = r'clip: {\s*url: \'(https?://(?:www\.)promptfile[^\']*)\','
 
 
     def handleFree(self):

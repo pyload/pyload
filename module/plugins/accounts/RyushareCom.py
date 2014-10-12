@@ -9,6 +9,7 @@ class RyushareCom(XFSPAccount):
     __version__ = "0.04"
 
     __description__ = """Ryushare.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("trance4us", None)]
 

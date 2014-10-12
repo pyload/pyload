@@ -13,11 +13,12 @@ from module.utils import parseFileSize
 class OverLoadMe(Hoster):
     __name__ = "OverLoadMe"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://.*overload\.me.*'
 
     __description__ = """Over-Load.me hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("marley", "marley@over-load.me")]
 
 
@@ -50,7 +51,7 @@ class OverLoadMe(Hoster):
 
             self.logDebug("Returned Data: %s" % data)
 
-            if data['err'] == 1:
+            if data['error'] == 1:
                 self.logWarning(data['msg'])
                 self.tempOffline()
             else:

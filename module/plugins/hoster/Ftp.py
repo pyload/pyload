@@ -13,8 +13,11 @@ class Ftp(Hoster):
     __name__ = "Ftp"
     __type__ = "hoster"
     __version__ = "0.42"
-    __pattern__ = r'(ftps?|sftp)://(.*?:.*?@)?.*?/.*' # ftp://user:password@ftp.server.org/path/to/file
+
+    __pattern__ = r'(ftps?|sftp)://(.*?:.*?@)?.*?/.*' # ftp://user:password@ftp\.server\.org/path/to/file
+
     __description__ = """Download from ftp directory"""
+    __license__ = "GPLv3"
     __authors__ = [("jeix", "jeix@hasnomail.com"),
                    ("mkaay", "mkaay@mkaay.de"),
                    ("zoidberg", "zoidberg@mujmail.cz")]

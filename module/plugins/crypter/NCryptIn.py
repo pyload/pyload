@@ -15,9 +15,10 @@ class NCryptIn(Crypter):
     __type__ = "crypter"
     __version__ = "1.32"
 
-    __pattern__ = r'http://(?:www\.)?ncrypt.in/(?P<type>folder|link|frame)-([^/\?]+)'
+    __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<type>folder|link|frame)-([^/\?]+)'
 
     __description__ = """NCrypt.in decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
                    ("stickell", "l.stickell@yahoo.it")]
 
@@ -230,7 +231,7 @@ class NCryptIn(Crypter):
         self.logDebug("Handling Container links")
         package_links = []
 
-        pattern = r"/container/(rsdf|dlc|ccf)/([a-z0-9]+)"
+        pattern = r'/container/(rsdf|dlc|ccf)/(\w+)'
         containersLinks = re.findall(pattern, self.html)
         self.logDebug("Decrypting %d Container links" % len(containersLinks))
         for containerLink in containersLinks:
@@ -242,7 +243,7 @@ class NCryptIn(Crypter):
     def handleWebLinks(self):
 
         self.logDebug("Handling Web links")
-        pattern = r"(http://ncrypt\.in/link-.*?=)"
+        pattern = r'(http://ncrypt\.in/link-.*?=)'
         links = re.findall(pattern, self.html)
 
         package_links = []

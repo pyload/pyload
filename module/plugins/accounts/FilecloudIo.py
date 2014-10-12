@@ -10,6 +10,7 @@ class FilecloudIo(Account):
     __version__ = "0.02"
 
     __description__ = """FilecloudIo account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 
@@ -38,6 +39,7 @@ class FilecloudIo(Account):
             return {"validuntil": int(rep['premium_until']), "trafficleft": -1}
         else:
             return {"premium": False}
+
 
     def login(self, user, data, req):
         req.cj.setCookie("secure.filecloud.io", "lang", "en")

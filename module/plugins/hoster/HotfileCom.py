@@ -11,6 +11,7 @@ class HotfileCom(DeadHoster):
     __pattern__ = r'https?://(?:www\.)?hotfile\.com/dl/\d+/\w+'
 
     __description__ = """Hotfile.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("sitacuisses", "sitacuisses@yhoo.de"),
                    ("spoob", "spoob@pyload.org"),
                    ("mkaay", "mkaay@mkaay.de"),

@@ -11,11 +11,12 @@ class UlozTo(Account):
     __version__ = "0.06"
 
     __description__ = """Uloz.to account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("pulpe", None)]
 
 
-    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a href="/kredit" title="[^"]*?GB = ([0-9.]+) MB"'
+    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a href="/kredit" title="[^"]*?GB = ([\d.]+) MB"'
 
 
     def loadAccountInfo(self, user, req):
@@ -29,6 +30,7 @@ class UlozTo(Account):
         self.premium = True if trafficleft else False
 
         return {"validuntil": -1, "trafficleft": trafficleft}
+
 
     def login(self, user, data, req):
         login_page = req.load('http://www.ulozto.net/?do=web-login', decode=True)

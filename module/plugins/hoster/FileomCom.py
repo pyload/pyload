@@ -14,6 +14,7 @@ class FileomCom(XFSPHoster):
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
 
     __description__ = """Fileom.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -22,11 +23,11 @@ class FileomCom(XFSPHoster):
     FILE_URL_REPLACEMENTS = [(r'/$', "")]
 
     FILE_NAME_PATTERN = r'Filename: <span>(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'File Size: <span class="size">(?P<S>[\d\.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'File Size: <span class="size">(?P<S>[\d.,]+) (?P<U>\w+)'
 
     ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)(?:\'|</)'
 
-    LINK_PATTERN = r"var url2 = '(.+?)';"
+    LINK_PATTERN = r'var url2 = \'(.+?)\';'
 
 
     def setup(self):

@@ -15,6 +15,7 @@ class FreakshareCom(Hoster):
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
 
     __description__ = """Freakshare.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("sitacuisses", "sitacuisses@yahoo.de"),
                    ("spoob", "spoob@pyload.org"),
                    ("mkaay", "mkaay@mkaay.de"),
@@ -131,7 +132,7 @@ class FreakshareCom(Hoster):
             self.wantReconnect = True
             return secondsToMidnight(gmt=2)
 
-        timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[.\d]*;', self.html)
+        timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;', self.html)
         if timestring:
             return int(timestring.group(1)) + 1  # add 1 sec as tenths of seconds are cut off
         else:
@@ -165,7 +166,7 @@ class FreakshareCom(Hoster):
         # comment this in, when it doesnt work as well
         #print "\n\n%s\n\n" % ";".join(["%s=%s" % x for x in to_sort])
 
-        challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=([0-9A-Za-z]+)", herewego)
+        challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=(\w+)", herewego)
 
         if challenge:
             re_captcha = ReCaptcha(self)

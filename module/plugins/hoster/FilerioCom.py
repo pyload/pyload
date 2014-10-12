@@ -11,6 +11,7 @@ class FilerioCom(XFSPHoster):
     __pattern__ = r'http://(?:www\.)?(filerio\.(in|com)|filekeen\.com)/\w{12}'
 
     __description__ = """FileRio.in hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

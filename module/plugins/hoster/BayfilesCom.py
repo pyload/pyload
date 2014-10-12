@@ -13,19 +13,20 @@ class BayfilesCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.07"
 
-    __pattern__ = r'https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>[a-zA-Z0-9]+/[a-zA-Z0-9]+/[^/]+)'
+    __pattern__ = r'https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>\w+/\w+/[^/]+)'
 
     __description__ = """Bayfiles.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_INFO_PATTERN = r'<p title="(?P<N>[^"]+)">[^<]*<strong>(?P<S>[0-9., ]+)(?P<U>[kKMG])i?B</strong></p>'
+    FILE_INFO_PATTERN = r'<p title="(?P<N>[^"]+)">[^<]*<strong>(?P<S>[\d .,]+)(?P<U>\w+)</strong></p>'
     OFFLINE_PATTERN = r'(<p>The requested file could not be found.</p>|<title>404 Not Found</title>)'
 
-    WAIT_PATTERN = r'>Your IP [0-9.]* has recently downloaded a file\. Upgrade to premium or wait (\d+) minutes\.<'
+    WAIT_PATTERN = r'>Your IP [\d.]* has recently downloaded a file\. Upgrade to premium or wait (\d+) minutes\.<'
     VARS_PATTERN = r'var vfid = (\d+);\s*var delay = (\d+);'
-    FREE_LINK_PATTERN = r"javascript:window.location.href = '([^']+)';"
+    FREE_LINK_PATTERN = r'javascript:window\.location\.href = \'(.+?)\';'
     PREMIUM_LINK_PATTERN = r'(?:<a class="highlighted-btn" href="|(?=http://s\d+\.baycdn\.com/dl/))(.*?)"'
 
 

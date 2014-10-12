@@ -54,9 +54,10 @@ class NetloadIn(Hoster):
     __type__ = "hoster"
     __version__ = "0.45"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index.php?id=10&file_id=)'
+    __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index\.php?id=10&file_id=)'
 
     __description__ = """Netload.in hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("spoob", "spoob@pyload.org"),
                    ("RaNaN", "ranan@pyload.org"),
                    ("Gregy", "gregy@gregy.cz")]
@@ -228,13 +229,13 @@ class NetloadIn(Hoster):
 
     def get_file_url(self, page):
         try:
-            file_url_pattern = r"<a class=\"Orange_Link\" href=\"(http://.+)\".?>Or click here"
+            file_url_pattern = r'<a class="Orange_Link" href="(http://.+)".?>Or click here'
             attempt = re.search(file_url_pattern, page)
             if attempt is not None:
                 return attempt.group(1)
             else:
                 self.logDebug("Netload: Backup try for final link")
-                file_url_pattern = r"<a href=\"(.+)\" class=\"Orange_Link\">Click here"
+                file_url_pattern = r'<a href="(.+)" class="Orange_Link">Click here'
                 attempt = re.search(file_url_pattern, page)
                 return "http://netload.in/" + attempt.group(1)
         except:

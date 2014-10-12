@@ -16,13 +16,14 @@ class SafelinkingNet(Crypter):
     __type__ = "crypter"
     __version__ = "0.1"
 
-    __pattern__ = r'https?://(?:www\.)?safelinking.net/([pd])/\w+'
+    __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'
 
     __description__ = """Safelinking.net decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("quareevo", "quareevo@arcor.de")]
 
 
-    SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w\.\-_]+)';"
+    SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w.-]+)';"
 
 
     def decrypt(self, pyfile):

@@ -16,11 +16,12 @@ class ZippyshareCom(SimpleHoster):
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/v(?:/|iew\.jsp.*key=)(?P<KEY>\d+)'
 
     __description__ = """Zippyshare.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'>Name:.+?">(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'>Size:.+?">(?P<S>[\d.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>\w+)'
 
     OFFLINE_PATTERN = r'>File does not exist on this server<'
 

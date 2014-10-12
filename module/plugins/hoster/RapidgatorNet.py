@@ -19,6 +19,7 @@ class RapidgatorNet(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
     __description__ = """Rapidgator.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("chrox", None),
                    ("stickell", "l.stickell@yahoo.it"),
@@ -28,14 +29,14 @@ class RapidgatorNet(SimpleHoster):
     API_URL = "http://rapidgator.net/api/file"
 
     FILE_NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
-    FILE_SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d\.]+) (?P<U>\w+)</strong>'
+    FILE_SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d.,]+) (?P<U>\w+)</strong>'
     OFFLINE_PATTERN = r'>(File not found|Error 404)'
 
-    JSVARS_PATTERN = r"\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*'?(.*?)'?;"
+    JSVARS_PATTERN = r'\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*\'?(.*?)\'?;'
     PREMIUM_ONLY_ERROR_PATTERN = r'You can download files up to|This file can be downloaded by premium only<'
     DOWNLOAD_LIMIT_ERROR_PATTERN = r'You have reached your (daily|hourly) downloads limit'
     WAIT_PATTERN = r'(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)'
-    LINK_PATTERN = r"return '(http://\w+.rapidgator.net/.*)';"
+    LINK_PATTERN = r'return \'(http://\w+.rapidgator.net/.*)\';'
 
     RECAPTCHA_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
     ADSCAPTCHA_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']*)'

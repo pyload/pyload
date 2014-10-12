@@ -11,6 +11,7 @@ class DdlstorageCom(DeadHoster):
     __pattern__ = r'https?://(?:www\.)?ddlstorage\.com/\w+'
 
     __description__ = """DDLStorage.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it")]
 

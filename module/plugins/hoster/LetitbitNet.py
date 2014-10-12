@@ -38,9 +38,10 @@ class LetitbitNet(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.24"
 
-    __pattern__ = r'http://(?:www\.)?(letitbit|shareflare).net/download/.*'
+    __pattern__ = r'http://(?:www\.)?(letitbit|shareflare)\.net/download/.*'
 
     __description__ = """Letitbit.net hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("z00nx", "z00nx0@gmail.com")]
 
@@ -50,7 +51,7 @@ class LetitbitNet(SimpleHoster):
     HOSTER_NAME = "letitbit.net"
 
     SECONDS_PATTERN = r'seconds\s*=\s*(\d+);'
-    CAPTCHA_CONTROL_FIELD = r"recaptcha_control_field\s=\s'(?P<value>[^']+)'"
+    CAPTCHA_CONTROL_FIELD = r'recaptcha_control_field\s=\s\'(?P<value>.+?)\''
 
 
     def setup(self):

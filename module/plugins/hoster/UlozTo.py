@@ -17,18 +17,19 @@ class UlozTo(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.98"
 
-    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
+    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
 
     __description__ = """Uloz.to hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_INFO_PATTERN = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'
-    FILE_NAME_PATTERN = r'<title>(?P<N>[^<]+) \| Uloz.to</title>'
-    FILE_SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[0-9.]+\s[kMG]?B)</span>'
+    FILE_NAME_PATTERN = r'<title>(?P<N>[^<]+) \| Uloz\.to</title>'
+    FILE_SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
-    FILE_SIZE_REPLACEMENTS = [('([0-9.]+)\s([kMG])B', convertDecimalPrefix)]
+    FILE_SIZE_REPLACEMENTS = [('([\d.]+)\s([kMG])B', convertDecimalPrefix)]
     FILE_URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "www.ulozto.net")]
 
     ADULT_PATTERN = r'<form action="(?P<link>[^\"]*)" method="post" id="frm-askAgeForm">'

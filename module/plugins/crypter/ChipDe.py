@@ -9,16 +9,17 @@ class ChipDe(Crypter):
     __type__ = "crypter"
     __version__ = "0.1"
 
-    __pattern__ = r'http://(?:www\.)?chip.de/video/.*\.html'
+    __pattern__ = r'http://(?:www\.)?chip\.de/video/.*\.html'
 
     __description__ = """Chip.de decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("4Christopher", "4Christopher@gmx.de")]
 
 
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url)
         try:
-            f = re.search(r'"(http://video.chip.de/\d+?/.*)"', self.html)
+            f = re.search(r'"(http://video\.chip\.de/.+)"', self.html)
         except:
             self.fail('Failed to find the URL')
         else:

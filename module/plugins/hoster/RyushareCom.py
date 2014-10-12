@@ -17,6 +17,7 @@ class RyushareCom(XFSPHoster):
     __pattern__ = r'http://(?:www\.)?ryushare\.com/\w+'
 
     __description__ = """Ryushare.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it"),
                    ("quareevo", "quareevo@arcor.de")]
@@ -24,7 +25,7 @@ class RyushareCom(XFSPHoster):
 
     HOSTER_NAME = "ryushare.com"
 
-    FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[\d\.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[\d.,]+) (?P<U>\w+)'
 
     WAIT_PATTERN = r'You have to wait ((?P<hour>\d+) hour[s]?, )?((?P<min>\d+) minute[s], )?(?P<sec>\d+) second[s]'
     LINK_PATTERN = r'<a href="([^"]+)">Click here to download<'

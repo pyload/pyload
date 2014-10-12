@@ -16,13 +16,14 @@ class DepositfilesCom(SimpleHoster):
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
 
     __description__ = """Depositfiles.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("spoob", "spoob@pyload.org"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'<script type="text/javascript">eval\( unescape\(\'(?P<N>.*?)\''
-    FILE_SIZE_PATTERN = r': <b>(?P<S>[0-9.]+)&nbsp;(?P<U>[kKMG])i?B</b>'
+    FILE_SIZE_PATTERN = r': <b>(?P<S>[\d.,]+)&nbsp;(?P<U>\w+)</b>'
     OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
 
     FILE_NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),

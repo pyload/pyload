@@ -15,9 +15,10 @@ class SpeedyshareCom(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.02"
 
-    __pattern__ = r"https?://(?:www\.)?(speedyshare\.com|speedy\.sh)/\w+"
+    __pattern__ = r'https?://(?:www\.)?(speedyshare\.com|speedy\.sh)/\w+'
 
     __description__ = """Speedyshare.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
@@ -26,7 +27,7 @@ class SpeedyshareCom(SimpleHoster):
 
     FILE_OFFLINE_PATTERN = r'class=downloadfilenamenotfound>.*</span>'
 
-    LINK_PATTERN = r'<a href=\'(.*)\'><img src=/gf/slowdownload.png alt=\'Slow Download\' border=0'
+    LINK_PATTERN = r'<a href=\'(.*)\'><img src=/gf/slowdownload\.png alt=\'Slow Download\' border=0'
 
 
     def setup(self):

@@ -55,6 +55,7 @@ class DeathByCaptcha(Hook):
                   ("force", "bool", "Force DBC even if client is connected", False)]
 
     __description__ = """Send captchas to DeathByCaptcha.com"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 
@@ -123,7 +124,7 @@ class DeathByCaptcha(Hook):
 
     def submit(self, captcha, captchaType="file", match=None):
         #workaround multipart-post bug in HTTPRequest.py
-        if re.match("^[A-Za-z0-9]*$", self.getConfig("passkey")):
+        if re.match("^\w*$", self.getConfig("passkey")):
             multipart = True
             data = (FORM_FILE, captcha)
         else:

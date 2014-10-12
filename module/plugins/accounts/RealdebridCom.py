@@ -11,6 +11,7 @@ class RealdebridCom(Account):
     __version__ = "0.43"
 
     __description__ = """Real-Debrid.com account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
@@ -23,6 +24,7 @@ class RealdebridCom(Account):
                         "trafficleft": -1}
 
         return account_info
+
 
     def login(self, user, data, req):
         self.pin_code = False

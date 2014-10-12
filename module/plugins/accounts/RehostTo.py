@@ -9,6 +9,7 @@ class RehostTo(Account):
     __version__ = "0.1"
 
     __description__ = """Rehost.to account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 
@@ -28,6 +29,7 @@ class RehostTo(Account):
                         "ses": ses}
 
         return account_info
+
 
     def login(self, user, data, req):
         page = req.load("http://rehost.to/api.php?cmd=login&user=%s&pass=%s" % (user, data['password']))

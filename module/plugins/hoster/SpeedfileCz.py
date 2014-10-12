@@ -8,9 +8,10 @@ class SpeedfileCz(DeadHoster):
     __type__ = "hoster"
     __version__ = "0.32"
 
-    __pattern__ = r'http://(?:www\.)?speedfile.cz/.*'
+    __pattern__ = r'http://(?:www\.)?speedfile\.cz/.*'
 
     __description__ = """Speedfile.cz hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

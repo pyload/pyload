@@ -11,6 +11,7 @@ class XupPl(Crypter):
     __pattern__ = r'https?://(?:[^/]*\.)?xup\.pl/.*'
 
     __description__ = """Xup.pl decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("z00nx", "z00nx0@gmail.com")]
 
 

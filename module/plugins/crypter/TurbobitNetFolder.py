@@ -14,11 +14,12 @@ class TurbobitNetFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
 
     __description__ = """Turbobit.net folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    TITLE_PATTERN = r"src='/js/lib/grid/icon/folder.png'> <span>(.+?)</span>"
+    TITLE_PATTERN = r'src=\'/js/lib/grid/icon/folder.png\'> <span>(.+?)</span>'
 
 
     def _getLinks(self, id, page=1):

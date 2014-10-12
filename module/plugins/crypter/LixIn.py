@@ -13,11 +13,12 @@ class LixIn(Crypter):
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
 
     __description__ = """Lix.in decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("spoob", "spoob@pyload.org")]
 
 
-    CAPTCHA_PATTERN = r'<img src="(?P<image>captcha_img.php\?.*?)"'
-    SUBMIT_PATTERN = r"value='continue.*?'"
+    CAPTCHA_PATTERN = r'<img src="(?P<image>captcha_img\.php\?.*?)"'
+    SUBMIT_PATTERN = r'value=\'continue.*?\''
     LINK_PATTERN = r'name="ifram" src="(?P<link>.*?)"'
 
 

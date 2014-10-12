@@ -15,6 +15,7 @@ class Dereferer(Crypter):
     __pattern__ = r'https?://([^/]+)/.*?(?P<url>(ht|f)tps?(://|%3A%2F%2F).*)'
 
     __description__ = """Crypter for dereferers"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

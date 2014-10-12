@@ -12,6 +12,7 @@ class ImgurComAlbum(SimpleCrypter):
     __pattern__ = r'https?://(?:www\.|m\.)?imgur\.com/(a|gallery|)/?\w{5,7}'
 
     __description__ = """Imgur.com decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("nath_schwarz", "nathan.notwhite@gmail.com")]
 
 

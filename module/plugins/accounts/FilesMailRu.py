@@ -9,11 +9,13 @@ class FilesMailRu(Account):
     __version__ = "0.1"
 
     __description__ = """Filesmail.ru account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def loadAccountInfo(self, user, req):
         return {"validuntil": None, "trafficleft": None}
+
 
     def login(self, user, data, req):
         user, domain = user.split("@")

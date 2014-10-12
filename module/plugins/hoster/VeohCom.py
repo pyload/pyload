@@ -14,6 +14,7 @@ class VeohCom(SimpleHoster):
     __config__ = [("quality", "Low;High;Auto", "Quality", "Auto")]
 
     __description__ = """Veoh.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

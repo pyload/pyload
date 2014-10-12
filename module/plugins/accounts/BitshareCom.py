@@ -9,6 +9,7 @@ class BitshareCom(Account):
     __version__ = "0.12"
 
     __description__ = """Bitshare account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Paul King", None)]
 
 
@@ -22,6 +23,7 @@ class BitshareCom(Account):
             self.logWarning(_("Activate direct Download in your Bitshare Account"))
 
         return {"validuntil": -1, "trafficleft": -1, "premium": True}
+
 
     def login(self, user, data, req):
         page = req.load("http://bitshare.com/login.html",

@@ -9,9 +9,10 @@ class UlozToFolder(Crypter):
     __type__ = "crypter"
     __version__ = "0.2"
 
-    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(m|soubory)/.*'
+    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(m|soubory)/.*'
 
     __description__ = """Uloz.to folder decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

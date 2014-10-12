@@ -11,4 +11,5 @@ class StealthTo(DeadCrypter):
     __pattern__ = r'http://(?:www\.)?stealth\.to/folder/.+'
 
     __description__ = """Stealth.to decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("spoob", "spoob@pyload.org")]

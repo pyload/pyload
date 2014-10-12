@@ -13,10 +13,11 @@ class MultishareCz(Account):
     __version__ = "0.02"
 
     __description__ = """Multishare.cz account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    TRAFFIC_LEFT_PATTERN = r'<span class="profil-zvyrazneni">Kredit:</span>\s*<strong>(?P<S>[0-9,]+)&nbsp;(?P<U>\w+)</strong>'
+    TRAFFIC_LEFT_PATTERN = r'<span class="profil-zvyrazneni">Kredit:</span>\s*<strong>(?P<S>[\d.,]+)&nbsp;(?P<U>\w+)</strong>'
     ACCOUNT_INFO_PATTERN = r'<input type="hidden" id="(u_ID|u_hash)" name="[^"]*" value="([^"]+)">'
 
 
@@ -32,6 +33,7 @@ class MultishareCz(Account):
         mms_info = dict(re.findall(self.ACCOUNT_INFO_PATTERN, html))
 
         return dict(mms_info, **{"validuntil": -1, "trafficleft": trafficleft})
+
 
     def login(self, user, data, req):
         html = req.load('http://www.multishare.cz/html/prihlaseni_process.php', post={

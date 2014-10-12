@@ -47,6 +47,7 @@ class DailymotionCom(Hoster):
     __config__ = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]
 
     __description__ = """Dailymotion.com hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

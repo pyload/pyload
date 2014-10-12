@@ -8,7 +8,8 @@ class SecuredIn(DeadCrypter):
     __type__ = "crypter"
     __version__ = "0.21"
 
-    __pattern__ = r'http://(?:www\.)?secured\.in/download-[\d]+-[\w]{8}\.html'
+    __pattern__ = r'http://(?:www\.)?secured\.in/download-[\d]+-\w{8}\.html'
 
     __description__ = """Secured.in decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("mkaay", "mkaay@mkaay.de")]

@@ -22,12 +22,13 @@ class TurbobitNet(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
 
     __description__ = """ Turbobit.net hoster plugin """
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("prOq", None)]
 
 
     FILE_NAME_PATTERN = r'id="file-title">(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'class="file-size">(?P<S>[\d,.]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'class="file-size">(?P<S>[\d.,]+) (?P<U>\w+)'
     OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
 
     FILE_URL_REPLACEMENTS = [(__pattern__, "http://turbobit.net/\g<ID>.html")]
@@ -35,7 +36,7 @@ class TurbobitNet(SimpleHoster):
     COOKIES = [(".turbobit.net", "user_lang", "en")]
 
     LINK_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
-    LIMIT_WAIT_PATTERN = r"<div id='timeout'>(\d+)<"
+    LIMIT_WAIT_PATTERN = r'<div id=\'timeout\'>(\d+)<'
 
     CAPTCHA_URL_PATTERN = r'<img alt="Captcha" src="(.+?)"'
 

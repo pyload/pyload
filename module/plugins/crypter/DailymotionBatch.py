@@ -17,6 +17,7 @@ class DailymotionBatch(Crypter):
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
 
     __description__ = """Dailymotion.com channel & playlist decrypter"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 

@@ -6,12 +6,13 @@ from time import mktime, strptime
 from module.plugins.Account import Account
 
 
-class ShareRapidCom(Account):
-    __name__ = "ShareRapidCom"
+class MegaRapidCz(Account):
+    __name__ = "MegaRapidCz"
     __type__ = "account"
     __version__ = "0.34"
 
     __description__ = """MegaRapid.cz account plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("MikyWoW", "mikywow@seznam.cz"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 
@@ -38,6 +39,7 @@ class ShareRapidCom(Account):
             return {"premium": True, "trafficleft": trafficleft, "validuntil": -1}
 
         return {"premium": False, "trafficleft": None, "validuntil": None}
+
 
     def login(self, user, data, req):
         htm = req.load("http://megarapid.cz/prihlaseni/", cookies=True)

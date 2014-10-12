@@ -13,11 +13,12 @@ class FileStoreTo(SimpleHoster):
     __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
 
     __description__ = """FileStore.to hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
                    ("stickell", "l.stickell@yahoo.it")]
 
 
-    FILE_INFO_PATTERN = r'File: <span[^>]*>(?P<N>.+)</span><br />Size: (?P<S>[\d,.]+) (?P<U>\w+)'
+    FILE_INFO_PATTERN = r'File: <span[^>]*>(?P<N>.+)</span><br />Size: (?P<S>[\d.,]+) (?P<U>\w+)'
     OFFLINE_PATTERN = r'>Download-Datei wurde nicht gefunden<'
 
 

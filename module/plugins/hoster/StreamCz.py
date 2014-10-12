@@ -28,10 +28,11 @@ class StreamCz(Hoster):
     __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+.*'
 
     __description__ = """Stream.cz hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'<link rel="video_src" href="http://www.stream.cz/\w+/(\d+)-([^"]+)" />'
+    FILE_NAME_PATTERN = r'<link rel="video_src" href="http://www\.stream\.cz/\w+/(\d+)-([^"]+)" />'
     OFFLINE_PATTERN = r'<h1 class="commonTitle">Str.nku nebylo mo.n. nal.zt \(404\)</h1>'
 
     CDN_PATTERN = r'<param name="flashvars" value="[^"]*&id=(?P<ID>\d+)(?:&cdnLQ=(?P<cdnLQ>\d*))?(?:&cdnHQ=(?P<cdnHQ>\d*))?(?:&cdnHD=(?P<cdnHD>\d*))?&'

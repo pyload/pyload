@@ -12,6 +12,7 @@ class CzshareComFolder(Crypter):
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.*'
 
     __description__ = """Czshare.com folder decrypter plugin, now Sdilej.cz"""
+    __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 

@@ -17,6 +17,7 @@ class OverLoadMe(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 12)]
 
     __description__ = """Over-Load.me hook plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("marley", "marley@over-load.me")]
 
 

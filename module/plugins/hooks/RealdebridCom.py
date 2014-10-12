@@ -17,6 +17,7 @@ class RealdebridCom(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Real-Debrid.com hook plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 

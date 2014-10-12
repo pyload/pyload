@@ -33,6 +33,7 @@ class IRCInterface(Thread, Hook):
                   ("captcha", "bool", "Send captcha requests", True)]
 
     __description__ = """Connect to irc and let owner perform different tasks"""
+    __license__ = "GPLv3"
     __authors__ = [("Jeix", "Jeix@hasnomail.com")]
 
 

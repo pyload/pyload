@@ -14,6 +14,7 @@ class RSDF(Container):
     __pattern__ = r'.+\.rsdf'
 
     __description__ = """RSDF container decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("RaNaN", "RaNaN@pyload.org"),
                    ("spoob", "spoob@pyload.org")]
 

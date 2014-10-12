@@ -11,6 +11,7 @@ class SecureUploadEu(XFSPHoster):
     __pattern__ = r'https?://(?:www\.)?secureupload\.eu/\w{12}'
 
     __description__ = """SecureUpload.eu hoster plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("z00nx", "z00nx0@gmail.com")]
 
 

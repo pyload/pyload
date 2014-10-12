@@ -13,6 +13,7 @@ class UploadedToFolder(SimpleCrypter):
     __pattern__ = r'http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/(?P<id>\w+)'
 
     __description__ = """UploadedTo decrypter plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 

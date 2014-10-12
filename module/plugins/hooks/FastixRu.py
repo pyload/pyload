@@ -16,6 +16,7 @@ class FastixRu(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Fastix.ru hook plugin"""
+    __license__ = "GPLv3"
     __authors__ = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
