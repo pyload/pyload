@@ -14,11 +14,6 @@ from module.utils import html_unescape
 
 
 class XFSPHoster(SimpleHoster):
-    """
-    Common base for XFileSharingPro hosters like EasybytezCom, CramitIn, FiledinoCom...
-    Some hosters may work straight away when added to __pattern__
-    However, most of them will NOT work because they are either down or running a customized version
-    """
     __name__ = "XFSPHoster"
     __type__ = "hoster"
     __version__ = "0.02"
