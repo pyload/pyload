@@ -3,7 +3,7 @@
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
-class JunocloudMeFolder(SimpleCrypter):
+class RapidfileshareNetFolder(SimpleCrypter):
     __name__ = "RapidfileshareNetFolder"
     __type__ = "crypter"
     __version__ = "0.01"
@@ -16,4 +16,4 @@ class JunocloudMeFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'<a href="(.+?)" target="_blank">.+?</a>'
-
+    TITLE_PATTERN = r'<Title>Files of \w+: ([^<]+) folder</Title>'

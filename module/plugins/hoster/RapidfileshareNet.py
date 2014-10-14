@@ -17,11 +17,15 @@ class RapidfileshareNet(XFSPHoster):
 
     HOSTER_NAME = "rapidfileshare.net"
 
-    FILE_NAME_PATTERN = r'<p class="request_file">http://rapidfileshare.net/w{12}/(?P<N>.+?)</p>'
-    FILE_SIZE_PATTERN = r'<p class="request_filesize">Size: (?P<S>[\d.]+) (?P<U>\w+)</p>'
+    FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>.+?)">'
+    FILE_SIZE_PATTERN = r'>http://www.rapidfileshare.net/\w+?</font> \((?P<S>[\d\.\,]+) (?P<U>\w+)\)</font>'
 
-    OFFLINE_PATTERN = r'>(No such file|Software error:<)'
+    OFFLINE_PATTERN = r'>No such file with this filename<'
     TEMP_OFFLINE_PATTERN = r'The page may have been renamed, removed or be temporarily unavailable.<'
 
 
-getInfo = create_getInfo(JunocloudMe)
+    def handlePremium(self):
+        self.fail("Premium download not implemented")
+
+
+getInfo = create_getInfo(RapidfileshareNet)
