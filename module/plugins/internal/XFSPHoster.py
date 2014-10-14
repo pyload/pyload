@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSPHoster(SimpleHoster):
     __name__ = "XFSPHoster"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = None
 
@@ -90,7 +90,7 @@ class XFSPHoster(SimpleHoster):
                 # Due to a 0.4.9 core bug self.load would use cookies even if
                 # cookies=False. Workaround using getURL to avoid cookies.
                 # Can be reverted in 0.4.10 as the cookies bug has been fixed.
-                self.html = getURL(pyfile.url, decode=True, cookies=self.COOKIES)
+                self.html = getURL(pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
                 self.file_info = self.getFileInfo()
             except PluginParseError:
                 self.file_info = None

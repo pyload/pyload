@@ -11,12 +11,12 @@ class XFileSharingPro(Hook):
     __version__ = "0.15"
 
     __config__ = [("activated", "bool", "Activated", True),
-                  ("match", "Always;Always except excluded;Listed only", "Match", "Always except excluded"),
+                  ("match", "Always;Always except excluded;Listed only", "Hoster match", "Always except excluded"),
                   ("load_default", "bool", "Include built-in hoster list", True),
                   ("include_hosters", "str", "Include hosters (comma separated)", ""),
                   ("exclude_hosters", "str", "Exclude hosters (comma separated)", "")]
 
-    __description__ = """XFileSharingPro hook plugin"""
+    __description__ = """Load XFileSharingPro based hosters which don't need a own plugin to work fine"""
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
