@@ -6,34 +6,6 @@ import thread
 from module.plugins.Hook import Hook
 
 
-class ClickAndLoad(Hook):
-    __name__ = "ClickAndLoad"
-    __type__ = "hook"
-    __version__ = "0.22"
-
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("extern", "bool", "Allow external link adding", False)]
-
-    __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.de"),
-                   ("mkaay", "mkaay@mkaay.de")]
-
-
-    def coreReady(self):
-        self.port = int(self.config['webinterface']['port'])
-        if self.config['webinterface']['activated']:
-            try:
-                if self.getConfig("extern"):
-                    ip = "0.0.0.0"
-                else:
-                    ip = "127.0.0.1"
-
-                thread.start_new_thread(proxy, (self, ip, self.port, 9666))
-            except:
-                self.logError(_("ClickAndLoad port already in use"))
-
-
 def proxy(self, *settings):
     thread.start_new_thread(server, (self,) + settings)
     lock = thread.allocate_lock()
@@ -75,3 +47,31 @@ def forward(source, destination):
         else:
             #source.shutdown(socket.SHUT_RD)
             destination.shutdown(socket.SHUT_WR)
+
+
+class ClickAndLoad(Hook):
+    __name__ = "ClickAndLoad"
+    __type__ = "hook"
+    __version__ = "0.22"
+
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("extern", "bool", "Allow external link adding", False)]
+
+    __description__ = """Click'N'Load hook plugin"""
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.de"),
+                   ("mkaay", "mkaay@mkaay.de")]
+
+
+    def coreReady(self):
+        self.port = int(self.config['webinterface']['port'])
+        if self.config['webinterface']['activated']:
+            try:
+                if self.getConfig("extern"):
+                    ip = "0.0.0.0"
+                else:
+                    ip = "127.0.0.1"
+
+                thread.start_new_thread(proxy, (self, ip, self.port, 9666))
+            except:
+                self.logError(_("ClickAndLoad port already in use"))
