@@ -20,7 +20,7 @@ class KingfilesNet(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'name="fname" value="(?P<N>.+?)">'
-    FILE_SIZE_PATTERN = r'>Size: .+?">(?P<S>[\d.,]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'>Size: .+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN = r'>(File Not Found</b><br><br>|File Not Found</h2>)'
 

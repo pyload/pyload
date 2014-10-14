@@ -24,7 +24,7 @@ class FastshareCz(SimpleHoster):
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_INFO_PATTERN = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*Size\s*: (?P<S>\d+) (?P<U>\w+),'
+    FILE_INFO_PATTERN = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*Size\s*: (?P<S>\d+) (?P<U>[\w^_]+),'
     OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found)'
 
     FILE_URL_REPLACEMENTS = [("#.*", "")]

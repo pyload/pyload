@@ -21,7 +21,7 @@ class ZippyshareCom(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'>Name:.+?">(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN = r'>File does not exist on this server<'
 

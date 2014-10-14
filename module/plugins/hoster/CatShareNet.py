@@ -22,7 +22,7 @@ class CatShareNet(SimpleHoster):
 
     TEXT_ENCODING = True
 
-    FILE_INFO_PATTERN = r'<title>(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>\w+)\)<'
+    FILE_INFO_PATTERN = r'<title>(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)<'
     OFFLINE_PATTERN = ur'Podany plik został usunięty\s*</div>'
 
     IP_BLOCKED_PATTERN = ur'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'

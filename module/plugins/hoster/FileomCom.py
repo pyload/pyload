@@ -23,7 +23,7 @@ class FileomCom(XFSPHoster):
     FILE_URL_REPLACEMENTS = [(r'/$', "")]
 
     FILE_NAME_PATTERN = r'Filename: <span>(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'File Size: <span class="size">(?P<S>[\d.,]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'File Size: <span class="size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.*?)(?:\'|</)'
 

@@ -24,7 +24,7 @@ class LoadTo(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'<h1>(?P<N>.+)</h1>'
-    FILE_SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'>Can\'t find file'
 
     LINK_PATTERN = r'<form method="post" action="(.+?)"'

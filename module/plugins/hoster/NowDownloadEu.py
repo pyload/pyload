@@ -19,7 +19,7 @@ class NowDownloadEu(SimpleHoster):
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[\d.,]+) (?P<U>\w+) </h4>'
+    FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[\d.,]+) (?P<U>[\w^_]+) </h4>'
     OFFLINE_PATTERN = r'(This file does not exist!)'
 
     TOKEN_PATTERN = r'"(/api/token\.php\?token=\w+)"'

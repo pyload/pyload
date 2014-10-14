@@ -28,7 +28,7 @@ class TurbobitNet(SimpleHoster):
 
 
     FILE_NAME_PATTERN = r'id="file-title">(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'class="file-size">(?P<S>[\d.,]+) (?P<U>\w+)'
+    FILE_SIZE_PATTERN = r'class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
 
     FILE_URL_REPLACEMENTS = [(__pattern__, "http://turbobit.net/\g<ID>.html")]

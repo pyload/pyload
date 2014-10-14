@@ -18,7 +18,7 @@ class FileStoreTo(SimpleHoster):
                    ("stickell", "l.stickell@yahoo.it")]
 
 
-    FILE_INFO_PATTERN = r'File: <span[^>]*>(?P<N>.+)</span><br />Size: (?P<S>[\d.,]+) (?P<U>\w+)'
+    FILE_INFO_PATTERN = r'File: <span[^>]*>(?P<N>.+)</span><br />Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'>Download-Datei wurde nicht gefunden<'
 
 
