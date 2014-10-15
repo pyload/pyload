@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
     __type__ = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __description__ = """XFileSharingPro account plugin"""
     __license__ = "GPLv3"
@@ -26,8 +26,12 @@ class XFSPAccount(Account):
     COOKIES = None  #: or list of tuples [(domain, name, value)]
 
     VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:.*?<b>(.+?)</b>'
-    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:.*?<b>(?P<S>.+?)</b>'
+
+    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:.*?<b>\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)\s*</b>'
+    TRAFFIC_LEFT_UNIT = "MB"  #: used only if no group <U> was found
+
     LOGIN_FAIL_PATTERN = r'>(Incorrect Login or Password|Error<)'
+
     # PREMIUM_PATTERN = r'>Renew premium<'
 
 
@@ -61,13 +65,18 @@ class XFSPAccount(Account):
 
         try:
             traffic = re.search(self.TRAFFIC_LEFT_PATTERN, html).groupdict()
-            trafficsize = traffic['S'] + traffic['U'] if 'U' in traffic else traffic['S']
-            if "Unlimited" in trafficsize:
+            if "Unlimited" in traffic['S']:
                 trafficleft = -1
                 if premium is None:
                     premium = True
             else:
-                trafficleft = parseFileSize(trafficsize)
+                if 'U' in traffic:
+                    unit = traffic['U']
+                elif isinstance(self.TRAFFIC_LEFT_UNIT, basestring):
+                    unit = self.TRAFFIC_LEFT_UNIT
+                else:
+                    unit = None
+                trafficleft = parseFileSize(traffic['S'], unit)
         except:
             pass
 
