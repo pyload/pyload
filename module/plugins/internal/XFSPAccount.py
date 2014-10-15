@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
     __type__ = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """XFileSharingPro account plugin"""
     __license__ = "GPLv3"
@@ -27,7 +27,7 @@ class XFSPAccount(Account):
 
     VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:.*?<b>(.+?)</b>'
 
-    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:.*?<b>\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)\s*</b>'
+    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:.*?<b>\s*(?P<S>[\d.,]+)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
     TRAFFIC_LEFT_UNIT = "MB"  #: used only if no group <U> was found
 
     LOGIN_FAIL_PATTERN = r'>(Incorrect Login or Password|Error<)'
