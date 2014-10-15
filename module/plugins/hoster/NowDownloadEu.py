@@ -11,21 +11,21 @@ class NowDownloadEu(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.05"
 
-    __pattern__ = r'http://(?:www\.)?nowdownload\.(ch|co|eu|sx)/(dl/|download\.php\?id=)(?P<ID>\w+)'
+    __pattern__ = r'http://(?:www\.)?nowdownload\.(at|ch|co|eu|sx)/(dl/|download\.php\?id=)\w+'
 
-    __description__ = """NowDownload.ch hoster plugin"""
+    __description__ = """NowDownload.at hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("godofdream", "soilfiction@gmail.com"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[\d.,]+) (?P<U>[\w^_]+) </h4>'
-    OFFLINE_PATTERN = r'(This file does not exist!)'
+    OFFLINE_PATTERN = r'>This file does not exist'
 
     TOKEN_PATTERN = r'"(/api/token\.php\?token=\w+)"'
     CONTINUE_PATTERN = r'"(/dl2/\w+/\w+)"'
     WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
-    LINK_PATTERN = r'"(http://f\d+\.nowdownload\.ch/dl/\w+/\w+)'
+    LINK_PATTERN = r'"(http://f\d+\.nowdownload\.at/dl/\w+/\w+)'
 
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<[^>]*>', '')]
 
@@ -46,7 +46,7 @@ class NowDownloadEu(SimpleHoster):
         else:
             wait = 60
 
-        baseurl = "http://www.nowdownload.ch"
+        baseurl = "http://www.nowdownload.at"
         self.html = self.load(baseurl + str(tokenlink.group(1)))
         self.wait(wait)
 
