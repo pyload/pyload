@@ -52,6 +52,6 @@ class EasybytezCom(XFSPAccount):
             if "Unlimited" in trafficleft:
                 trafficleft = -1
             else:
-                trafficleft = parseFileSize(trafficleft) / 1024
+                trafficleft = parseFileSize(trafficleft)
 
         return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}

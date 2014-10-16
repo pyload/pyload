@@ -23,7 +23,7 @@ class UnrestrictLi(Account):
             return {"premium": False}
 
         validuntil = json_data['result']['expires']
-        trafficleft = int(json_data['result']['traffic'] / 1024)
+        trafficleft = int(json_data['result']['traffic'])
 
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
 

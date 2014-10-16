@@ -26,7 +26,7 @@ class MultishareCz(Account):
         html = req.load("http://www.multishare.cz/profil/", decode=True)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        trafficleft = parseFileSize(m.group('S'), m.group('U')) / 1024 if m else 0
+        trafficleft = parseFileSize(m.group('S'), m.group('U')) if m else 0
         self.premium = True if trafficleft else False
 
         html = req.load("http://www.multishare.cz/", decode=True)
