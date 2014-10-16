@@ -27,7 +27,9 @@ if sys.version_info < (2, 7) and os.name != "nt":
     def wait(self, timeout=0):
         """Wait for child process to terminate.  Returns returncode
         attribute."""
-        if self.returncode is None:
+        if self.returncode i[samsung@arch pyload_new]$ git checkout extractarchive 
+M	module/plugins/hooks/ExtractArchive.py
+Zu Branch 'extractarchive' gewechselts None:
             try:
                 pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
             except OSError, e:
@@ -55,13 +57,16 @@ from module.utils import save_join, fs_encode
 class ExtractArchive(Hook):
     __name__ = "ExtractArchive"
     __type__ = "hook"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
                   ("overwrite", "bool", "Overwrite files", True),
                   ("passwordfile", "file", "password file", "archive_password.txt"),
                   ("deletearchive", "bool", "Delete archives when done", False),
+                  ("trashpath", "folder", "Delete archives to", ""),
+                  ("subfolder", "int", "Create subfolder, if number of files&folders> (-1..never;0..always)", -1),
+                  ("subfoldername", "%ARCHIVENAME%;%PACKAGENAME%;%HOSTER%", "Subfoldername", "%PACKAGENAME%"),
                   ("subfolder", "bool", "Create subfolder for each package", False),
                   ("destination", "folder", "Extract files to", ""),
                   ("excludefiles", "str", "Exclude files from unpacking (seperated by ;)", ""),
