@@ -27,9 +27,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
     def wait(self, timeout=0):
         """Wait for child process to terminate.  Returns returncode
         attribute."""
-        if self.returncode i[samsung@arch pyload_new]$ git checkout extractarchive 
-M	module/plugins/hooks/ExtractArchive.py
-Zu Branch 'extractarchive' gewechselts None:
+        if self.returncode is None:
             try:
                 pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
             except OSError, e:
