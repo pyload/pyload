@@ -2491,7 +2491,7 @@ var Sortables = new Class({
 			return list;
 		}, this));
 	},
-    
+
 	getDroppableCoordinates: function (element){
 		var offsetParent = element.getOffsetParent();
 		var position = element.getPosition(offsetParent);
