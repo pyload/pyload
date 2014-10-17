@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
-    __version__ = "0.51"
+    __version__ = "0.52"
 
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/v(?:/|iew\.jsp.*key=)(?P<KEY>\d+)'
 
@@ -20,7 +20,7 @@ class ZippyshareCom(SimpleHoster):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'>Name:.+?">(?P<N>.+?)<'
+    FILE_NAME_PATTERN = r'var exam1x = .+ \+ "/(?P<N>.+)";'
     FILE_SIZE_PATTERN = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN = r'>File does not exist on this server<'
