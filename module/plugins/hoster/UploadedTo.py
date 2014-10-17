@@ -94,7 +94,7 @@ def getInfo(urls):
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __version__ = "0.73"
+    __version__ = "0.74"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
@@ -219,7 +219,7 @@ class UploadedTo(Hoster):
                 self.retry()
             elif "limit-parallel" in result:
                 self.fail("Cannot download in parallel")
-            elif self.DL_LIMIT_PATTERN in result:  # limit-dl
+            elif "limit-dl" in result or self.DL_LIMIT_PATTERN in result:  # limit-dl
                 self.setWait(3 * 60 * 60, True)
                 self.wait()
                 self.retry()
