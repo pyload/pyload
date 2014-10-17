@@ -51,6 +51,8 @@ class SimpleCrypter(Crypter):
           return the html of the page number page_n
     """
 
+    LINK_PATTERN = None
+
     TITLE_REPLACEMENTS = [("&#?\w+;", fixup)]
     URL_REPLACEMENTS = []
 
