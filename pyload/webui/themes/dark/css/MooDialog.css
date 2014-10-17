@@ -2,12 +2,12 @@
 
 .MooDialog {
 /*  position: fixed;*/
-    margin: 0 auto 0 -350px;
-    width:600px;
-    padding:14px;
-    left:50%;
-    top: 100px;
-    color:white;
+  margin: 0 auto 0 -350px;
+  width:600px;
+  padding:14px;
+  left:50%;
+  top: 100px;
+  color:white;
 
   position: absolute;
   left: 50%;

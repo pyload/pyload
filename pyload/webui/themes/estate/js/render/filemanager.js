@@ -17,7 +17,7 @@ document.addEvent("domready", function() {
       var action_name = action.className;
       if(functions[action.className] != undefined)
       {
-	action.addEvent('click', functions[action.className]);
+    action.addEvent('click', functions[action.className]);
       }
     });*/
 });
@@ -76,7 +76,7 @@ var FilemanagerUI = new Class({
         this.url = url;
         this.type = type;
         this.directories = [];
-	this.files = [];
+    this.files = [];
         this.parseChildren();
     },
 
@@ -86,8 +86,8 @@ var FilemanagerUI = new Class({
             var name = ele.getElements("input.name")[0].get("value");
             this.directories.push(new Item(this, path, name, ele))
         }.bind(this));
-	
-	$("directories-list").getChildren("li.file").each(function(ele) {
+    
+    $("directories-list").getChildren("li.file").each(function(ele) {
             var path = ele.getElements("input.path")[0].get("value");
             var name = ele.getElements("input.name")[0].get("value");
             this.files.push(new Item(this, path, name, ele))
@@ -98,15 +98,15 @@ var FilemanagerUI = new Class({
 var Item = new Class({
     initialize: function(ui, path, name, ele) {
         this.ui = ui;
-	this.path = path;
-	this.name = name;
+    this.path = path;
+    this.name = name;
         this.ele = ele;
-	this.directories = [];
-	this.files = [];
-	this.actions = new Array();
-	this.actions["delete"] = this.del;
-	this.actions["rename"] = this.rename;
-	this.actions["mkdir"] = this.mkdir;
+    this.directories = [];
+    this.files = [];
+    this.actions = new Array();
+    this.actions["delete"] = this.del;
+    this.actions["rename"] = this.rename;
+    this.actions["mkdir"] = this.mkdir;
         this.parseElement();
 
         var pname = this.ele.getElements("span")[0];
@@ -125,27 +125,27 @@ var Item = new Class({
 
     parseElement: function() {
         this.ele.getChildren('span span.buttons img').each(function(img) {
-	  img.addEvent('click', this.actions[img.className].bind(this));
-	}, this);
+      img.addEvent('click', this.actions[img.className].bind(this));
+    }, this);
 
-	//click on the directory name must open the directory itself
-	this.ele.getElements('b')[0].addEvent('click', this.toggle.bind(this));
-	
-	//iterate over child directories
-	var uls = this.ele.getElements('ul');
-	if(uls.length > 0)
-	{
-	  uls[0].getChildren("li.folder").each(function(fld) {
-	    var path = fld.getElements("input.path")[0].get("value");
-	    var name = fld.getElements("input.name")[0].get("value");
-	    this.directories.push(new Item(this, path, name, fld));
-	  }.bind(this));
-	  uls[0].getChildren("li.file").each(function(fld) {
-	    var path = fld.getElements("input.path")[0].get("value");
-	    var name = fld.getElements("input.name")[0].get("value");
-	    this.files.push(new Item(this, path, name, fld));
-	  }.bind(this));
-	}
+    //click on the directory name must open the directory itself
+    this.ele.getElements('b')[0].addEvent('click', this.toggle.bind(this));
+    
+    //iterate over child directories
+    var uls = this.ele.getElements('ul');
+    if(uls.length > 0)
+    {
+      uls[0].getChildren("li.folder").each(function(fld) {
+        var path = fld.getElements("input.path")[0].get("value");
+        var name = fld.getElements("input.name")[0].get("value");
+        this.directories.push(new Item(this, path, name, fld));
+      }.bind(this));
+      uls[0].getChildren("li.file").each(function(fld) {
+        var path = fld.getElements("input.path")[0].get("value");
+        var name = fld.getElements("input.name")[0].get("value");
+        this.files.push(new Item(this, path, name, fld));
+      }.bind(this));
+    }
     },
 
     reorderElements: function() {
@@ -156,41 +156,41 @@ var Item = new Class({
         $("confirm_form").removeEvents("submit");
         $("confirm_form").addEvent("submit", this.deleteDirectory.bind(this));
 
-	$$("#confirm_form p").set('html', '{{_(("Are you sure you want to delete the selected item?"))}}');
-	
+    $$("#confirm_form p").set('html', '{{_(("Are you sure you want to delete the selected item?"))}}');
+    
         show_confirm_box();
         event.stop();
     },
 
     deleteDirectory: function(event) {
         hide_confirm_box();
-	new Request.JSON({
+    new Request.JSON({
             method: 'POST',
             url: "/json/filemanager/delete",
-	    data: {'path': this.path, 'name': this.name},
+        data: {'path': this.path, 'name': this.name},
             onSuccess: function(data) {
-		if(data.response == "success")
-		{
-		  new Fx.Tween(this.ele).start('opacity', 0);
-		  var ul = this.ele.parentNode;
-		  this.ele.dispose();
-		  //if this was the only child, add a "empty folder" div
-		  if(!ul.getChildren('li')[0])
-		  {
-		    var div = new Element("div", { 'html': '{{ _("Folder is empty") }}' });
-		    div.replaces(ul);
-		  }
+        if(data.response == "success")
+        {
+          new Fx.Tween(this.ele).start('opacity', 0);
+          var ul = this.ele.parentNode;
+          this.ele.dispose();
+          //if this was the only child, add a "empty folder" div
+          if(!ul.getChildren('li')[0])
+          {
+            var div = new Element("div", { 'html': '{{ _("Folder is empty") }}' });
+            div.replaces(ul);
+          }
 
-		  indicateSuccess();
-		} else
-		{
-		  //error from json code...
-		  indicateFail();
-		}
+          indicateSuccess();
+        } else
+        {
+          //error from json code...
+          indicateFail();
+        }
             }.bind(this),
             onFailure: indicateFail
         }).send();
-	
+    
         event.stop();
     },
 
@@ -198,7 +198,7 @@ var Item = new Class({
         $("rename_form").removeEvents("submit");
         $("rename_form").addEvent("submit", this.renameDirectory.bind(this));
 
-	$("path").set("value", this.path);
+    $("path").set("value", this.path);
         $("old_name").set("value", this.name);
         $("new_name").set("value", this.name);
 
@@ -208,67 +208,67 @@ var Item = new Class({
 
     renameDirectory: function(event) {
         hide_rename_box();
-	new Request.JSON({
+    new Request.JSON({
             method: 'POST',
             url: "/json/filemanager/rename",
             onSuccess: function(data) {
-		if(data.response == "success")
-		{
-		  this.name = $("new_name").get("value");
-		  this.ele.getElements("b")[0].set('html', $("new_name").get("value"));
-		  this.reorderElements();
-		  indicateSuccess();
-		} else
-		{
-		  //error from json code...
-		  indicateFail();
-		}
+        if(data.response == "success")
+        {
+          this.name = $("new_name").get("value");
+          this.ele.getElements("b")[0].set('html', $("new_name").get("value"));
+          this.reorderElements();
+          indicateSuccess();
+        } else
+        {
+          //error from json code...
+          indicateFail();
+        }
             }.bind(this),
             onFailure: indicateFail
         }).send($("rename_form").toQueryString());
-	
+    
         event.stop();
     },
 
     mkdir: function(event) {
       new Request.JSON({
-	  method: 'POST',
-	  url: "/json/filemanager/mkdir",
-	  data: {'path': this.path + "/" + this.name, 'name': '{{_("New folder")}}'},
-	  onSuccess: function(data) {
-	      if(data.response == "success")
-	      {
-		new Request.HTML({
-		    method: 'POST',
-		    url: "/filemanager/get_dir",
-		    data: {'path': data.path, 'name': data.name},
-		    onSuccess: function(li) {
-			//add node as first child of ul
-			var ul = this.ele.getChildren('ul')[0];
-			if(!ul)
-			{
-			  //remove the "Folder Empty" div
-			  this.ele.getChildren('div').dispose();
+      method: 'POST',
+      url: "/json/filemanager/mkdir",
+      data: {'path': this.path + "/" + this.name, 'name': '{{_("New folder")}}'},
+      onSuccess: function(data) {
+          if(data.response == "success")
+          {
+        new Request.HTML({
+            method: 'POST',
+            url: "/filemanager/get_dir",
+            data: {'path': data.path, 'name': data.name},
+            onSuccess: function(li) {
+            //add node as first child of ul
+            var ul = this.ele.getChildren('ul')[0];
+            if(!ul)
+            {
+              //remove the "Folder Empty" div
+              this.ele.getChildren('div').dispose();
 
-			  //create new ul to contain subfolder
-			  ul = new Element("ul");
-			  ul.inject(this.ele, 'bottom');
-			}
-			li[0].inject(ul, 'top');
-			
-			//add directory as a subdirectory of the current item
-			this.directories.push(new Item(this.ui, data.path, data.name, ul.firstChild));
-		    }.bind(this),
-		    onFailure: indicateFail
-		}).send();
-		indicateSuccess();
-	      } else
-	      {
-		//error from json code...
-		indicateFail();
-	      }
-	  }.bind(this),
-	  onFailure: indicateFail
+              //create new ul to contain subfolder
+              ul = new Element("ul");
+              ul.inject(this.ele, 'bottom');
+            }
+            li[0].inject(ul, 'top');
+            
+            //add directory as a subdirectory of the current item
+            this.directories.push(new Item(this.ui, data.path, data.name, ul.firstChild));
+            }.bind(this),
+            onFailure: indicateFail
+        }).send();
+        indicateSuccess();
+          } else
+          {
+        //error from json code...
+        indicateFail();
+          }
+      }.bind(this),
+      onFailure: indicateFail
       }).send();
 
       event.stop();
@@ -276,16 +276,16 @@ var Item = new Class({
 
     toggle: function() {
         var child = this.ele.getElement('ul');
-	if(child == null)
-	  child = this.ele.getElement('div');
-	
-	if(child != null)
-	{
-	  if (child.getStyle('display') == "block") {
-	      child.dissolve();
-	  } else {
-	      child.reveal();
-	  }
-	}
+    if(child == null)
+      child = this.ele.getElement('div');
+    
+    if(child != null)
+    {
+      if (child.getStyle('display') == "block") {
+          child.dissolve();
+      } else {
+          child.reveal();
+      }
+    }
     }
 });

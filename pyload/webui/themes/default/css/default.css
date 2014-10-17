@@ -244,7 +244,7 @@ a.logout {
 }
 
 a.info {
-    background:transparent url(../img/user-info.png) 0px 1px no-repeat;
+  background:transparent url(../img/user-info.png) 0px 1px no-repeat;
 }
 
 a.admin {
@@ -640,68 +640,68 @@ td p {
 
 .setfield
 {
-    display: table-cell;
+  display: table-cell;
 }
 
 ul.tabs li a
 {
-   padding: 5px 16px 4px 15px;
-   border: none;
-   font-weight: bold;
+  padding: 5px 16px 4px 15px;
+  border: none;
+  font-weight: bold;
 
-    border-radius: 5px 5px 0 0;
-    -moz-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
 
 }
 
 
 #tabs span
 {
-    display: none;
+  display: none;
 }
 
 #tabs span.selected
 {
-    display: inline;
+  display: inline;
 }
 
 #tabsback
 {
-    background-color: #525252;
-    margin: 2px 0 0;
-    padding: 6px 4px 1px 4px;
+  background-color: #525252;
+  margin: 2px 0 0;
+  padding: 6px 4px 1px 4px;
 
-    border-top-right-radius: 30px;
-    border-top-left-radius: 3px;
-    -moz-border-radius-topright: 30px;
-    -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 30px;
+  border-top-left-radius: 3px;
+  -moz-border-radius-topright: 30px;
+  -moz-border-radius-topleft: 3px;
 }
 ul.tabs
 {
-    list-style-type: none;
-    margin:0;
-    padding: 0 40px 0 0;
+  list-style-type: none;
+  margin:0;
+  padding: 0 40px 0 0;
 }
 
 ul.tabs li
 {
-    display: inline;
-    margin-left: 8px;
+  display: inline;
+  margin-left: 8px;
 }
 
 
 ul.tabs li a
 {
-    color: #42454a;
-    background-color: #eaeaea;
-    border: 1px none #c9c3ba;
-    margin: 0;
-    text-decoration: none;
+  color: #42454a;
+  background-color: #eaeaea;
+  border: 1px none #c9c3ba;
+  margin: 0;
+  text-decoration: none;
 
-    outline: 0;
+  outline: 0;
 
-    padding: 5px 16px 4px 15px;
-    font-weight: bold;
+  padding: 5px 16px 4px 15px;
+  font-weight: bold;
 
      border-radius: 5px 5px 0 0;
      -moz-border-radius: 5px 5px 0 0;
@@ -710,84 +710,84 @@ ul.tabs li a
 
 ul.tabs li a.selected, ul.tabs li a:hover
 {
-    color: #000;
-    background-color: white;
+  color: #000;
+  background-color: white;
 
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-    -moz-border-radius-bottomright: 0;
-    -moz-border-radius-bottomleft: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  -moz-border-radius-bottomright: 0;
+  -moz-border-radius-bottomleft: 0;
 }
 
 ul.tabs li a:hover
 {
-    background-color: #f1f4ee;
+  background-color: #f1f4ee;
 }
 
 ul.tabs li a.selected
 {
-    font-weight: bold;
-    background-color: #525252;
-    padding-bottom: 5px;
-    color: white;
+  font-weight: bold;
+  background-color: #525252;
+  padding-bottom: 5px;
+  color: white;
 }
 
 
 #tabs-body {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 
 span.tabContent
 {
-    border: 2px solid #525252;
-    margin: 0;
-    padding: 0;
-    padding-bottom: 10px;
+  border: 2px solid #525252;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 10px;
 }
 
 #tabs-body > span {
-    display: none;
+  display: none;
 }
 
 #tabs-body > span.active {
-    display: block;
+  display: block;
 }
 
 .hide
 {
-    display: none;
+  display: none;
 }
 
 .settable
 {
-    margin: 20px;
-    border: none;
+  margin: 20px;
+  border: none;
 }
 .settable td
 {
-    border: none;
-    margin: 0;
-    padding: 5px;
+  border: none;
+  margin: 0;
+  padding: 5px;
 }
 
 .settable th{
-    padding-bottom: 8px;
+  padding-bottom: 8px;
 }
 
 .settable.wide td , .settable.wide th {
-    padding-left: 15px;
-    padding-right: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 
 /*settings navbar*/
 ul.nav {
-    margin: -30px 0 0;
-    padding: 0;
+  margin: -30px 0 0;
+  padding: 0;
   list-style: none;
-    position: absolute;
+  position: absolute;
 }
 
 
@@ -798,11 +798,11 @@ ul.nav li {
 }
 
 ul.nav > li a {
-    background: white;
-    -moz-border-radius: 4px 4px 4px 4px;
-    border: 1px solid #C9C3BA;
-    border-bottom: medium none;
-    color: black;
+  background: white;
+  -moz-border-radius: 4px 4px 4px 4px;
+  border: 1px solid #C9C3BA;
+  border-bottom: medium none;
+  color: black;
 }
 
 ul.nav ul {
@@ -817,7 +817,7 @@ ul.nav ul {
   -webkit-box-shadow: 1px 1px 5px #AAA;
   -moz-box-shadow: 1px 1px 5px #AAA;
   box-shadow: 1px 1px 5px #AAA;
-    cursor: pointer;
+  cursor: pointer;
 }
 
 ul.nav .open {
@@ -888,15 +888,15 @@ ul.nav ul ul {
 }
 
 table.system {
-    border: none;
-    margin-left: 10px;
+  border: none;
+  margin-left: 10px;
 }
 
 table.system td {
-    border: none
+  border: none
 }
 
 table.system tr > td:first-child {
-    font-weight: bold;
-    padding-right: 10px;
+  font-weight: bold;
+  padding-right: 10px;
 }
