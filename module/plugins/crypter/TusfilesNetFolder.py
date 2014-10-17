@@ -12,7 +12,7 @@ class TusfilesNetFolder(SimpleCrypter):
     __type__ = "crypter"
     __version__ = "0.03"
 
-    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)/?'
+    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
 
     __description__ = """Tusfiles.net folder decrypter plugin"""
     __license__ = "GPLv3"

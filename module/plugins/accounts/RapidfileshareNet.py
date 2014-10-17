@@ -16,4 +16,4 @@ class RapidfileshareNet(XFSPAccount):
     HOSTER_URL = "http://www.rapidfileshare.net/"
 
     TRAFFIC_LEFT_PATTERN = r'>Traffic available today:</TD><TD><label for="name">\s*(?P<S>[\d.,]+)\s*(?:(?P<U>[\w^_]+)\s*)?</label></TD></TR>'
-    
+

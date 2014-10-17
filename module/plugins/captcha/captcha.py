@@ -51,28 +51,25 @@ class OCR(object):
         self.logger.debug("Tesseract ReturnCode %s Output: %s" % (popen.returncode, output))
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
-        #self.logger.debug("create tmp tif")
+        #tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
+        tmpTif = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
+        tmpTif.close()
 
-        #tmp = tempfile.NamedTemporaryFile(suffix=".tif")
-        tmp = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
-        tmp.close()
-        #self.logger.debug("create tmp txt")
         #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
         tmpTxt = open(join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
         tmpTxt.close()
 
         self.logger.debug("save tiff")
-        self.image.save(tmp.name, 'TIFF')
+        self.image.save(tmpTif.name, 'TIFF')
 
         if os.name == "nt":
             tessparams = [join(pypath, "tesseract", "tesseract.exe")]
         else:
             tessparams = ["tesseract"]
 
-        tessparams.extend( [abspath(tmp.name), abspath(tmpTxt.name).replace(".txt", "")] )
+        tessparams.extend( [abspath(tmpTif.name), abspath(tmpTxt.name).replace(".txt", "")] )
 
         if subset and (digits or lowercase or uppercase):
-            #self.logger.debug("create temp subset config")
             #tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
             tmpSub = open(join("tmp", "tmpSub_%s.subset" % self.__name__), "wb")
             tmpSub.write("tessedit_char_whitelist ")
@@ -99,7 +96,7 @@ class OCR(object):
 
         self.logger.debug(self.result_captcha)
         try:
-            os.remove(tmp.name)
+            os.remove(tmpTif.name)
             os.remove(tmpTxt.name)
             if subset and (digits or lowercase or uppercase):
                 os.remove(tmpSub.name)

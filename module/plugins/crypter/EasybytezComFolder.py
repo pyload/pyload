@@ -15,7 +15,7 @@ class EasybytezComFolder(SimpleCrypter):
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
-    URL_REPLACEMENTS = [(__pattern__, r"http://www.easybytez.com/users/\g<ID>?per_page=10000")]
+    URL_REPLACEMENTS = [(__pattern__, r'http://www.easybytez.com/users/\g<ID>?per_page=10000')]
 
     LINK_PATTERN = r'<td><a href="(http://www\.easybytez\.com/\w+)" target="_blank">.+(?:</a>)?</td>'
     TITLE_PATTERN = r'<Title>Files of \d+: (.+) folder</Title>'

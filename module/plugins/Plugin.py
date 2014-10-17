@@ -335,9 +335,9 @@ class Plugin(Base):
         img = self.load(url, get=get, post=post, cookies=cookies)
 
         id = ("%.2f" % time())[-6:].replace(".", "")
-        temp_file = open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb")
-        temp_file.write(img)
-        temp_file.close()
+        tmpCaptcha = open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb")
+        tmpCaptcha.write(img)
+        tmpCaptcha.close()
 
         has_plugin = self.__name__ in self.core.pluginManager.captchaPlugins
 
@@ -351,10 +351,10 @@ class Plugin(Base):
             if self.pyfile.abort: raise Abort
 
             ocr = Ocr()
-            result = ocr.get_captcha(temp_file.name)
+            result = ocr.get_captcha(tmpCaptcha.name)
         else:
             captchaManager = self.core.captchaManager
-            task = captchaManager.newTask(img, imgtype, temp_file.name, result_type)
+            task = captchaManager.newTask(img, imgtype, tmpCaptcha.name, result_type)
             self.cTask = task
             captchaManager.handleCaptcha(task)
 
@@ -378,7 +378,7 @@ class Plugin(Base):
 
         if not self.core.debug:
             try:
-                remove(temp_file.name)
+                remove(tmpCaptcha.name)
             except:
                 pass
 
