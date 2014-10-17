@@ -86,7 +86,7 @@ var FilemanagerUI = new Class({
             var name = ele.getElements("input.name")[0].get("value");
             this.directories.push(new Item(this, path, name, ele))
         }.bind(this));
-    
+
     $("directories-list").getChildren("li.file").each(function(ele) {
             var path = ele.getElements("input.path")[0].get("value");
             var name = ele.getElements("input.name")[0].get("value");
@@ -130,7 +130,7 @@ var Item = new Class({
 
     //click on the directory name must open the directory itself
     this.ele.getElements('b')[0].addEvent('click', this.toggle.bind(this));
-    
+
     //iterate over child directories
     var uls = this.ele.getElements('ul');
     if(uls.length > 0)
@@ -157,7 +157,7 @@ var Item = new Class({
         $("confirm_form").addEvent("submit", this.deleteDirectory.bind(this));
 
     $$("#confirm_form p").set('html', '{{_(("Are you sure you want to delete the selected item?"))}}');
-    
+
         show_confirm_box();
         event.stop();
     },
@@ -190,7 +190,7 @@ var Item = new Class({
             }.bind(this),
             onFailure: indicateFail
         }).send();
-    
+
         event.stop();
     },
 
@@ -226,7 +226,7 @@ var Item = new Class({
             }.bind(this),
             onFailure: indicateFail
         }).send($("rename_form").toQueryString());
-    
+
         event.stop();
     },
 
@@ -255,7 +255,7 @@ var Item = new Class({
               ul.inject(this.ele, 'bottom');
             }
             li[0].inject(ul, 'top');
-            
+
             //add directory as a subdirectory of the current item
             this.directories.push(new Item(this.ui, data.path, data.name, ul.firstChild));
             }.bind(this),
@@ -278,7 +278,7 @@ var Item = new Class({
         var child = this.ele.getElement('ul');
     if(child == null)
       child = this.ele.getElement('div');
-    
+
     if(child != null)
     {
       if (child.getStyle('display') == "block") {
