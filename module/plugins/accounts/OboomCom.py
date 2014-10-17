@@ -53,8 +53,8 @@ class OboomCom(Account):
 
         return {'premium': premium,
                 'validuntil': validUntil,
-                'trafficleft': trafficLeft / 1024,
-                'maxtraffic': maxTraffic / 1024,
+                'trafficleft': trafficLeft,
+                'maxtraffic': maxTraffic,
                 'session': session}
 
 

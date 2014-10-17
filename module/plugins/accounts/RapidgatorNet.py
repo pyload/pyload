@@ -31,7 +31,7 @@ class RapidgatorNet(Account):
                     self.scheduleRefresh(user, json['response']['reset_in'])
 
                 return {"validuntil": json['response']['expire_date'],
-                        "trafficleft": int(json['response']['traffic_left']) / 1024,
+                        "trafficleft": int(json['response']['traffic_left']),
                         "premium": True}
             else:
                 self.logError(json['response_details'])

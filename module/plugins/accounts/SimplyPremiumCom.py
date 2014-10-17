@@ -25,8 +25,8 @@ class SimplyPremiumCom(Account):
         #Time package
         validuntil = float(json_data['result']['timeend'])
         #Traffic package
-        # {"trafficleft": int(traffic) / 1024, "validuntil": -1}
-        #trafficleft = int(json_data['result']['traffic'] / 1024)
+        # {"trafficleft": int(traffic), "validuntil": -1}
+        #trafficleft = int(json_data['result']['traffic'])
 
         #return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
         return {"premium": True, "validuntil": validuntil}

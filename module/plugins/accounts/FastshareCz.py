@@ -24,7 +24,7 @@ class FastshareCz(Account):
 
         m = re.search(self.CREDIT_PATTERN, html)
         if m:
-            trafficleft = parseFileSize(m.group(1)) / 1024
+            trafficleft = parseFileSize(m.group(1))
             premium = True if trafficleft else False
         else:
             trafficleft = None

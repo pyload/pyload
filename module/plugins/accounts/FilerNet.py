@@ -34,7 +34,7 @@ class FilerNet(Account):
         traffic = re.search(self.TRAFFIC_PATTERN, html)
         if until and traffic:
             validuntil = int(time.mktime(time.strptime(until.group(1), "%d.%m.%Y %H:%M:%S")))
-            trafficleft = parseFileSize(traffic.group(1)) / 1024
+            trafficleft = parseFileSize(traffic.group(1))
             return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
         else:
             self.logError("Unable to retrieve account information - Plugin may be out of date")

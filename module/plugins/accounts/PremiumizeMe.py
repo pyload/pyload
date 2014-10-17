@@ -22,7 +22,7 @@ class PremiumizeMe(Account):
 
         # Parse account info
         account_info = {"validuntil": float(status['result']['expires']),
-                        "trafficleft": max(0, status['result']['trafficleft_bytes'] / 1024)}
+                        "trafficleft": max(0, status['result']['trafficleft_bytes'])}
 
         if status['result']['type'] == 'free':
             account_info['premium'] = False

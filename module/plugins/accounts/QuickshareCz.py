@@ -20,7 +20,7 @@ class QuickshareCz(Account):
 
         m = re.search(r'Stav kreditu: <strong>(.+?)</strong>', html)
         if m:
-            trafficleft = parseFileSize(m.group(1)) / 1024
+            trafficleft = parseFileSize(m.group(1))
             premium = True if trafficleft else False
         else:
             trafficleft = None
