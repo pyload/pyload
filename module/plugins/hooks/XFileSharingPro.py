@@ -28,7 +28,7 @@ class XFileSharingPro(Hook):
     event_list = ["pluginConfigChanged"]
 
     HOSTER_LIST = [#WORKING HOSTERS:
-                   "eyesfile.co", "eyesfile.com", "fileband.com", "filedwon.com", "hostingbulk.com", "linestorage.com",
+                   "eyesfile.ca", "fileband.com", "filedwon.com", "hostingbulk.com", "linestorage.com",
                    "ravishare.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
                    #NOT TESTED:
                    "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
