@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
     __type__ = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """XFileSharingPro account plugin"""
     __license__ = "GPLv3"
@@ -21,9 +21,19 @@ class XFSPAccount(Account):
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = None
+    """
+    Following patterns should be defined by each hoster:
 
-    COOKIES = None  #: or list of tuples [(domain, name, value)]
+      HOSTER_URL: (optional)
+        example: HOSTER_URL = r'linestorage.com'
+
+      PREMIUM_PATTERN: (optional) Checks if the account is premium
+        example: PREMIUM_PATTERN = r'>Renew premium<'
+    """
+
+    HOSTER_NAME = None
+
+    COOKIES = [(HOSTER_NAME, "lang", "english")]  #: or list of tuples [(domain, name, value)]
 
     VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:.*?<b>(.+?)</b>'
 
@@ -32,7 +42,10 @@ class XFSPAccount(Account):
 
     LOGIN_FAIL_PATTERN = r'>(Incorrect Login or Password|Error<)'
 
-    # PREMIUM_PATTERN = r'>Renew premium<'
+
+    def init(self):
+        if not hasattr(self, "HOSTER_URL"):
+            self.HOSTER_URL = "http://%s/" % self.HOSTER_NAME
 
 
     def loadAccountInfo(self, user, req):
