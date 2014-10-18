@@ -3,8 +3,8 @@
 from module.plugins.internal.DeadCrypter import DeadCrypter
 
 
-class HotfileFolderCom(DeadCrypter):
-    __name__ = "HotfileFolderCom"
+class HotfileComFolder(DeadCrypter):
+    __name__ = "HotfileComFolder"
     __type__ = "crypter"
     __version__ = "0.3"
 
