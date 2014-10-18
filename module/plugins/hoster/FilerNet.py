@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__ = "FilerNet"
     __type__ = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/(\w+)'
 
@@ -27,7 +27,10 @@ class FilerNet(SimpleHoster):
 
     FILE_INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>[\w^_]+)</small></h1>'
     OFFLINE_PATTERN = r'Nicht gefunden'
+
     LINK_PATTERN = r'href="([^"]+)">Get download</a>'
+
+    RECAPTCHA_KEY = "6LcFctISAAAAAAgaeHgyqhNecGJJRnxV1m_vAz3V"
 
 
     def process(self, pyfile):
@@ -35,6 +38,7 @@ class FilerNet(SimpleHoster):
             self.handlePremium()
         else:
             self.handleFree()
+
 
     def handleFree(self):
         self.req.setOption("timeout", 120)
@@ -68,12 +72,8 @@ class FilerNet(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        captcha_key = recaptcha.detect_key()
-        if captcha_key is None:
-            self.parseError("ReCaptcha key not found")
-
         for _ in xrange(5):
-            challenge, response = recaptcha.challenge(captcha_key)
+            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,
                          'hash': hash_data}
@@ -96,6 +96,7 @@ class FilerNet(SimpleHoster):
             self.fail("No Download url retrieved/all captcha attempts failed")
 
         self.download(downloadURL, disposition=True)
+
 
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)
