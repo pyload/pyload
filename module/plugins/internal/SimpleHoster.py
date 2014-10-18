@@ -166,18 +166,18 @@ class SimpleHoster(Hoster):
     """
     Following patterns should be defined by each hoster:
 
-      FILE_INFO_PATTERN: Name and Size of the file
+      FILE_INFO_PATTERN: (optional) Name and Size of the file
         example: FILE_INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>size_unit)'
       or
-        FILE_NAME_PATTERN: Name that will be set for the file
+        FILE_NAME_PATTERN: (optional) Name that will be set for the file
           example: FILE_NAME_PATTERN = r'(?P<N>file_name)'
-        FILE_SIZE_PATTERN: Size that will be checked for the file
+        FILE_SIZE_PATTERN: (optional) Size that will be checked for the file
           example: FILE_SIZE_PATTERN = r'(?P<S>file_size) (?P<U>size_unit)'
 
-      OFFLINE_PATTERN: Checks if the file is yet available online
+      OFFLINE_PATTERN: (optional) Checks if the file is yet available online
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
 
-      TEMP_OFFLINE_PATTERN: Checks if the file is temporarily offline
+      TEMP_OFFLINE_PATTERN: (optional) Checks if the file is temporarily offline
         example: TEMP_OFFLINE_PATTERN = r'Server (maintenance|maintainance)'
 
       PREMIUM_ONLY_PATTERN: (optional) Checks if the file can be downloaded only with a premium account

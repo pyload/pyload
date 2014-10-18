@@ -330,7 +330,7 @@ class XFSPHoster(SimpleHoster):
             captcha_key = recaptcha.detect_key()
 
         if captcha_key:
-            self.logDebug("RECAPTCHA KEY: %s" % captcha_key)
+            self.logDebug("ReCaptcha key: %s" % captcha_key)
             inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
             return 3
 
@@ -341,6 +341,7 @@ class XFSPHoster(SimpleHoster):
             captcha_key = solvemedia.detect_key()
 
         if captcha_key:
+            self.logDebug("SolveMedia key: %s" % captcha_key)
             inputs['adcopy_challenge'], inputs['adcopy_response'] = solvemedia.challenge(captcha_key)
             return 4
 
