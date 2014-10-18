@@ -7,10 +7,10 @@ from module.plugins.internal.XFSPAccount import XFSPAccount
 
 class XFileSharingPro(XFSPAccount):
     __name__ = "XFileSharingPro"
-    __type__ = "crypter"
-    __version__ = "0.01"
+    __type__ = "account"
+    __version__ = "0.02"
 
-    __description__ = """XFileSharingPro dummy account plugin for hook"""
+    __description__ = """XFileSharingPro multi-purpose account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
