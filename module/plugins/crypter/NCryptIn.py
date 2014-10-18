@@ -13,7 +13,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
-    __version__ = "1.32"
+    __version__ = "1.33"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<type>folder|link|frame)-([^/\?]+)'
 
@@ -35,6 +35,7 @@ class NCryptIn(Crypter):
         self.cleanedHtml = None
         self.links_source_order = ["cnl2", "rsdf", "ccf", "dlc", "web"]
         self.protection_type = None
+
 
     def decrypt(self, pyfile):
         # Init
@@ -77,12 +78,15 @@ class NCryptIn(Crypter):
             self.fail('Could not extract any links')
         self.packages = [(package_name, package_links, folder_name)]
 
+
     def isSingleLink(self):
         link_type = re.match(self.__pattern__, self.pyfile.url).group('type')
         return link_type in ("link", "frame")
 
+
     def requestFolderHome(self):
         return self.load(self.pyfile.url, decode=True)
+
 
     def removeHtmlCrap(self, content):
         patterns = (r'(type="hidden".*?(name=".*?")?.*?value=".*?")',
@@ -95,11 +99,13 @@ class NCryptIn(Crypter):
             content = re.sub(rexpr, "", content)
         return content
 
+
     def isOnline(self):
         if "Your folder does not exist" in self.cleanedHtml:
             self.logDebug("File not m")
             return False
         return True
+
 
     def isProtected(self):
         form = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.DOTALL)
@@ -112,6 +118,7 @@ class NCryptIn(Crypter):
                     return True
         return False
 
+
     def getPackageInfo(self):
         m = re.search(self.NAME_PATTERN, self.html)
         if m:
@@ -122,6 +129,7 @@ class NCryptIn(Crypter):
             folder = self.package.folder
             self.logDebug("Package info not m, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
         return name, folder
+
 
     def unlockProtection(self):
 
@@ -158,13 +166,14 @@ class NCryptIn(Crypter):
             self.logDebug("CircleCaptcha protected")
             captcha_img_url = "http://ncrypt.in/classes/captcha/circlecaptcha.php"
             coords = self.decryptCaptcha(captcha_img_url, forceUser=True, imgtype="png", result_type='positional')
-            self.logDebug("Captcha resolved, coords [%s]" % coords)
+            self.logDebug("Captcha resolved, coords [%s]" % str(coords))
             postData['circle.x'] = coords[0]
             postData['circle.y'] = coords[1]
 
         # Unlock protection
         postData['submit_protected'] = 'Continue to folder'
         return self.load(self.pyfile.url, post=postData, decode=True)
+
 
     def handleErrors(self):
         if self.protection_type == "password":
@@ -179,6 +188,7 @@ class NCryptIn(Crypter):
                 self.retry()
             else:
                 self.correctCaptcha()
+
 
     def handleLinkSource(self, link_source_type):
         # Check for JS engine
@@ -199,6 +209,7 @@ class NCryptIn(Crypter):
         else:
             self.fail('unknown source type "%s" (this is probably a bug)' % link_source_type)
 
+
     def handleSingleLink(self):
 
         self.logDebug("Handling Single link")
@@ -210,6 +221,7 @@ class NCryptIn(Crypter):
             package_links.append(decrypted_link)
 
         return package_links
+
 
     def handleCNL2(self):
 
@@ -226,6 +238,7 @@ class NCryptIn(Crypter):
 
         return package_links
 
+
     def handleContainers(self):
 
         self.logDebug("Handling Container links")
@@ -239,6 +252,7 @@ class NCryptIn(Crypter):
             package_links.append(link)
 
         return package_links
+
 
     def handleWebLinks(self):
 
@@ -256,6 +270,7 @@ class NCryptIn(Crypter):
 
         return package_links
 
+
     def decryptLink(self, link):
         try:
             url = link.replace("link-", "frame-")
@@ -263,6 +278,7 @@ class NCryptIn(Crypter):
             return link
         except Exception, detail:
             self.logDebug("Error decrypting link %s, %s" % (link, detail))
+
 
     def _getCipherParams(self):
 
@@ -279,6 +295,7 @@ class NCryptIn(Crypter):
         # Log and return
         self.logDebug("Detected %d crypted blocks" % len(vcrypted))
         return vcrypted, vjk
+
 
     def _getLinks(self, crypted, jk):
         # Get key

@@ -10,7 +10,7 @@ class XFileSharingPro(XFSPAccount):
     __type__ = "account"
     __version__ = "0.02"
 
-    __description__ = """XFileSharingPro dummy account plugin"""
+    __description__ = """XFileSharingPro multi-purpose account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
