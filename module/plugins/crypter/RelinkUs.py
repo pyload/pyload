@@ -12,27 +12,27 @@ from module.plugins.Crypter import Crypter
 class RelinkUs(Crypter):
     __name__ = "RelinkUs"
     __type__ = "crypter"
-    __version__ = "3.0"
+    __version__ = "3.1"
 
     __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<id>.+)'
 
     __description__ = """Relink.us decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
+    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"), "AndroKev"]
 
 
     # Constants
     PREFERRED_LINK_SOURCES = ["cnl2", "dlc", "web"]
 
     OFFLINE_TOKEN = r'<title>Tattooside'
-    PASSWORD_TOKEN = r'container_password\.php'
+    PASSWORD_TOKEN = r'container_password.php'
     PASSWORD_ERROR_ROKEN = r'You have entered an incorrect password'
-    PASSWORD_SUBMIT_URL = r'http://www\.relink\.us/container_password\.php'
-    CAPTCHA_TOKEN = r'container_captcha\.php'
+    PASSWORD_SUBMIT_URL = r'http://www.relink.us/container_password.php'
+    CAPTCHA_TOKEN = r'container_captcha.php'
     CAPTCHA_ERROR_ROKEN = r'You have solved the captcha wrong'
-    CAPTCHA_IMG_URL = r'http://www\.relink\.us/core/captcha/circlecaptcha\.php'
-    CAPTCHA_SUBMIT_URL = r'http://www\.relink\.us/container_captcha\.php'
-    FILE_TITLE_REGEX = r'<th>Title</th><td><i>(.*)</i></td></tr>'
+    CAPTCHA_IMG_URL = r'http://www.relink.us/core/captcha/circlecaptcha.php'
+    CAPTCHA_SUBMIT_URL = r'http://www.relink.us/container_captcha.php'
+    FILE_TITLE_REGEX = r'<th>Title</th><td>(.*)</td></tr>'
     FILE_NOTITLE = r'No title'
 
     CNL2_FORM_REGEX = r'<form id="cnl_form-(.*?)</form>'
@@ -40,9 +40,9 @@ class RelinkUs(Crypter):
     CNL2_JK_KEY = "jk"
     CNL2_CRYPTED_KEY = "crypted"
     DLC_LINK_REGEX = r'<a href=".*?" class="dlc_button" target="_blank">'
-    DLC_DOWNLOAD_URL = r'http://www\.relink\.us/download\.php'
+    DLC_DOWNLOAD_URL = r'http://www.relink.us/download.php'
     WEB_FORWARD_REGEX = r'getFile\(\'(?P<link>.+)\'\)'
-    WEB_FORWARD_URL = r'http://www\.relink\.us/frame\.php'
+    WEB_FORWARD_URL = r'http://www.relink.us/frame.php'
     WEB_LINK_REGEX = r'<iframe name="Container" height="100%" frameborder="no" width="100%" src="(?P<link>.+)"></iframe>'
 
 
@@ -126,7 +126,7 @@ class RelinkUs(Crypter):
         self.logDebug("Request user positional captcha resolving")
         captcha_img_url = self.CAPTCHA_IMG_URL + "?id=%s" % self.fileid
         coords = self.decryptCaptcha(captcha_img_url, forceUser=True, imgtype="png", result_type='positional')
-        self.logDebug("Captcha resolved, coords [%s]" % coords)
+        self.logDebug("Captcha resolved, coords [%s]" % str(coords))
         captcha_post_url = self.CAPTCHA_SUBMIT_URL + "?id=%s" % self.fileid
         captcha_post_data = {'button.x': coords[0], 'button.y': coords[1], 'captcha': 'submit'}
         self.html = self.load(captcha_post_url, post=captcha_post_data, decode=True)
