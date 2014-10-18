@@ -13,4 +13,4 @@ class LinestorageCom(XFSPAccount):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = "http://www.linestorage.com/"
+    HOSTER_NAME = "linestorage.com"

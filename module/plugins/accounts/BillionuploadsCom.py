@@ -13,4 +13,4 @@ class BillionuploadsCom(XFSPAccount):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = "http://www.billionuploads.com/"
+    HOSTER_NAME = "billionuploads.com"

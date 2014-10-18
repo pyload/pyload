@@ -18,7 +18,7 @@ class TusfilesNet(XFSPAccount):
     __authors__ = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_URL = "http://www.tusfiles.net/"
+    HOSTER_NAME = "tusfiles.net"
 
     VALID_UNTIL_PATTERN = r'<span class="label label-default">([^<]+)</span>'
     TRAFFIC_LEFT_PATTERN = r'<td><img src="//www\.tusfiles\.net/i/icon/meter\.png" alt=""/></td>\n<td>&nbsp;(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)\s*</td>'

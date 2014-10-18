@@ -13,4 +13,4 @@ class HundredEightyUploadCom(XFSPAccount):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = "http://www.180upload.com/"
+    HOSTER_NAME = "180upload.com"

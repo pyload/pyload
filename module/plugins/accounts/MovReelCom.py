@@ -16,4 +16,4 @@ class MovReelCom(XFSPAccount):
     login_timeout = 60
     info_threshold = 30
 
-    HOSTER_URL = "http://www.movreel.com/"
+    HOSTER_NAME = "movreel.com"

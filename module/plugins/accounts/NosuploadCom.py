@@ -13,4 +13,4 @@ class NosuploadCom(XFSPAccount):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = "http://www.nosupload.com/"
+    HOSTER_NAME = "nosupload.com"

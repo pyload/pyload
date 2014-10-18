@@ -13,4 +13,4 @@ class NovafileCom(XFSPAccount):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = "http://www.novafile.com/"
+    HOSTER_NAME = "novafile.com"

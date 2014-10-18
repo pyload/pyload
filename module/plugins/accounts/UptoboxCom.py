@@ -13,6 +13,6 @@ class UptoboxCom(XFSPAccount):
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_URL = "http://www.uptobox.com/"
+    HOSTER_NAME = "uptobox.com"
 
     VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire: ([^<]+)</strong>'

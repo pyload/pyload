@@ -13,4 +13,4 @@ class SendmywayCom(XFSPAccount):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = "http://www.sendmyway.com/"
+    HOSTER_NAME = "sendmyway.com"

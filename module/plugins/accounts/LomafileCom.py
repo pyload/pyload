@@ -13,4 +13,4 @@ class LomafileCom(XFSPAccount):
     __authors__ = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_URL = "http://www.lomafile.com/"
+    HOSTER_NAME = "lomafile.com"

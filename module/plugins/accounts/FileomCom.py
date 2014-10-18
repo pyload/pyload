@@ -13,4 +13,4 @@ class FileomCom(XFSPAccount):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = "http://www.fileom.com/"
+    HOSTER_NAME = "fileom.com"

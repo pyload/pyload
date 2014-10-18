@@ -13,7 +13,7 @@ class File4safeCom(XFSPAccount):
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
-    HOSTER_URL = "http://www.file4safe.com/"
+    HOSTER_NAME = "file4safe.com"
 
     LOGIN_FAIL_PATTERN = r'input_login'
     PREMIUM_PATTERN = r'Extend Premium'

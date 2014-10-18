@@ -19,7 +19,7 @@ class EasybytezCom(XFSPAccount):
                    ("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_URL = "http://www.easybytez.com/"
+    HOSTER_NAME = "easybytez.com"
 
 
     def loadAccountInfo(self, user, req):

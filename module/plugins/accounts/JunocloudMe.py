@@ -13,4 +13,4 @@ class JunocloudMe(XFSPAccount):
     __authors__ = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_URL = "http://www.junocloud.me/"
+    HOSTER_NAME = "junocloud.me"

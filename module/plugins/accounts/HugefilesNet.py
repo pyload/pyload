@@ -13,4 +13,4 @@ class HugefilesNet(XFSPAccount):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = "http://www.hugefiles.net/"
+    HOSTER_NAME = "hugefiles.net"

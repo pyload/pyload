@@ -14,7 +14,7 @@ class RyushareCom(XFSPAccount):
                    ("trance4us", None)]
 
 
-    HOSTER_URL = "http://www.ryushare.com/"
+    HOSTER_NAME = "ryushare.com"
 
 
     def login(self, user, data, req):

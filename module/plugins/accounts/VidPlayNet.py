@@ -13,4 +13,4 @@ class VidPlayNet(XFSPAccount):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = "http://www.vidplay.net/"
+    HOSTER_NAME = "vidplay.net"

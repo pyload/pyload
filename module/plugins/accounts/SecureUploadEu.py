@@ -13,4 +13,4 @@ class SecureUploadEu(XFSPAccount):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = "http://www.secureupload.eu/"
+    HOSTER_NAME = "secureupload.eu"

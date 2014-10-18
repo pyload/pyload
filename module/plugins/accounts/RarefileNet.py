@@ -13,4 +13,4 @@ class RarefileNet(XFSPAccount):
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_URL = "http://www.rarefile.net/"
+    HOSTER_NAME = "rarefile.net"
