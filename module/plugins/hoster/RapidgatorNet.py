@@ -14,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
@@ -47,16 +47,15 @@ class RapidgatorNet(SimpleHoster):
         self.resumeDownload = self.multiDL = self.premium
         self.sid = None
         self.chunkLimit = 1
-        self.req.setOption("timeout", 120)
 
-    def process(self, pyfile):
+
+    def prepare(self):
         if self.account:
             self.sid = self.account.getAccountData(self.user).get('SID', None)
 
         if self.sid:
-            self.handlePremium()
-        else:
-            self.handleFree()
+            self.premium = True
+
 
     def api_response(self, cmd):
         try:
@@ -81,6 +80,7 @@ class RapidgatorNet(SimpleHoster):
             self.account.relogin(self.user)
             self.retry(wait_time=60)
 
+
     def handlePremium(self):
         #self.logDebug("ACCOUNT_DATA", self.account.getAccountData(self.user))
         self.api_data = self.api_response('info')
@@ -90,9 +90,8 @@ class RapidgatorNet(SimpleHoster):
         url = self.api_response('download')['url']
         self.download(url)
 
-    def handleFree(self):
-        self.html = self.load(self.pyfile.url, decode=True)
 
+    def handleFree(self):
         self.checkFree()
 
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.html))
@@ -141,6 +140,7 @@ class RapidgatorNet(SimpleHoster):
         else:
             self.parseError("Download link")
 
+
     def getCaptcha(self):
         m = re.search(self.ADSCAPTCHA_PATTERN, self.html)
         if m:
@@ -160,6 +160,7 @@ class RapidgatorNet(SimpleHoster):
                     self.parseError("Captcha")
 
         return captcha, captcha_key
+
 
     def checkFree(self):
         m = re.search(self.PREMIUM_ONLY_ERROR_PATTERN, self.html)
@@ -183,6 +184,7 @@ class RapidgatorNet(SimpleHoster):
         self.logDebug("Waiting %d minutes" % wait_time / 60)
         self.wait(wait_time, True)
         self.retry()
+
 
     def getJsonResponse(self, url):
         response = self.load(url, decode=True)
