@@ -10,7 +10,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = None
 
@@ -61,6 +61,15 @@ class SimpleCrypter(Crypter):
 
     LOGIN_ACCOUNT = False
     LOGIN_PREMIUM = False
+
+
+    def init(self):
+        self.account = self.core.accountManager.getAccountPlugin((self.__name__ + ".py").replace("Folder.py", ""))
+
+        if self.account and self.account.canUse():
+            self.user, data = self.account.selectAccount()
+            self.req = self.account.getAccountRequest(self.user)
+            self.premium = self.account.isPremium(self.user)
 
 
     def prepare(self):
