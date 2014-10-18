@@ -8,7 +8,7 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 class XFileSharingPro(XFSPHoster):
     __name__ = "XFileSharingPro"
     __type__ = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __pattern__ = r'^unmatchable$'
 
@@ -20,12 +20,23 @@ class XFileSharingPro(XFSPHoster):
     FILE_URL_REPLACEMENTS = [(r'/embed-(\w{12}).*', r'/\1')]  #: support embedded files
 
 
-    def setup(self):
-        self.chunkLimit = 1
-        self.multiDL = True
-
+    def init(self):
         self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
         self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
+
+        account_name = "".join([str.capitalize() for str in self.HOSTER_NAME.split('.')])
+        self.account = self.core.accountManager.getAccountPlugin(account_name)
+
+        if self.account and self.account.canUse():
+            self.user, data = self.account.selectAccount()
+            self.req = self.account.getAccountRequest(self.user)
+            self.premium = self.account.isPremium(self.user)
+
+
+    def setup(self):
+        self.chunkLimit = 1
+        self.resumeDownload = self.premium
+        self.multiDL = True
 
 
 getInfo = create_getInfo(XFileSharingPro)
