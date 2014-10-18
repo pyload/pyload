@@ -22,9 +22,13 @@ class XFileSharingProFolder(XFSPCrypter):
         self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
 
         account_name = "".join([str.capitalize() for str in self.HOSTER_NAME.split('.')])
-        self.account = self.core.accountManager.getAccountPlugin(account_name)
+        account = self.core.accountManager.getAccountPlugin(account_name)
 
-        if self.account and self.account.canUse():
-            self.user, data = self.account.selectAccount()
-            self.req = self.account.getAccountRequest(self.user)
-            self.premium = self.account.isPremium(self.user)
+        if account and account.canUse():
+            self.user, data = account.selectAccount()
+            self.req = account.getAccountRequest(self.user)
+            self.premium = account.isPremium(self.user)
+
+            self.account = account
+        else:
+            self.account.HOSTER_NAME = self.HOSTER_NAME
