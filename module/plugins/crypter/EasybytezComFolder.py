@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.XFSPCrypter import XFSPCrypter
 
 
-class EasybytezComFolder(SimpleCrypter):
+class EasybytezComFolder(XFSPCrypter):
     __name__ = "EasybytezComFolder"
     __type__ = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'http://(?:www\.)?easybytez\.com/users/(?P<ID>\d+/\d+)'
 
@@ -15,9 +15,6 @@ class EasybytezComFolder(SimpleCrypter):
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
 
-    URL_REPLACEMENTS = [(__pattern__, r'http://www.easybytez.com/users/\g<ID>?per_page=10000')]
-
-    LINK_PATTERN = r'<td><a href="(http://www\.easybytez\.com/\w+)" target="_blank">.+(?:</a>)?</td>'
-    TITLE_PATTERN = r'<Title>Files of \d+: (.+) folder</Title>'
+    HOSTER_NAME = "easybytez.com"
 
     LOGIN_ACCOUNT = True

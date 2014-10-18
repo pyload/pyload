@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.XFSPCrypter import XFSPCrypter
 
 
-class JunocloudMeFolder(SimpleCrypter):
+class JunocloudMeFolder(XFSPCrypter):
     __name__ = "JunocloudMeFolder"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?junocloud\.me/folders/(?P<ID>\d+/\w+)'
 
@@ -15,6 +15,4 @@ class JunocloudMeFolder(SimpleCrypter):
     __authors__ = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    URL_REPLACEMENTS = [(__pattern__, r'http://www.junocloud.me/folders/\g<ID>?per_page=10000')]
-
-    LINK_PATTERN = r'<a href="(.+?)" target="_blank">.+?</a>'
+    HOSTER_NAME = "junocloud.me"

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.XFSPCrypter import XFSPCrypter
 
 
-class RapidfileshareNetFolder(SimpleCrypter):
+class RapidfileshareNetFolder(XFSPCrypter):
     __name__ = "RapidfileshareNetFolder"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?rapidfileshare\.net/users/\w+/\d+/\w+'
 
@@ -15,5 +15,4 @@ class RapidfileshareNetFolder(SimpleCrypter):
     __authors__ = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    LINK_PATTERN = r'<a href="(.+?)" target="_blank">.+?</a>'
-    TITLE_PATTERN = r'<Title>Files of \w+: ([^<]+) folder<'
+    HOSTER_NAME = "rapidfileshare.net"

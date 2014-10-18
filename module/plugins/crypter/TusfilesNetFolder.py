@@ -4,13 +4,13 @@ import math
 import re
 from urlparse import urljoin
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.XFSPCrypter import XFSPCrypter
 
 
-class TusfilesNetFolder(SimpleCrypter):
+class TusfilesNetFolder(XFSPCrypter):
     __name__ = "TusfilesNetFolder"
     __type__ = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
 
@@ -20,8 +20,8 @@ class TusfilesNetFolder(SimpleCrypter):
                    ("stickell", "l.stickell@yahoo.it")]
 
 
-    LINK_PATTERN = r'<TD align=left><a href="(.*?)">'
-    TITLE_PATTERN = r'<Title>.*?\: (.+) folder</Title>'
+    HOSTER_NAME = "tusfiles.net"
+
     PAGES_PATTERN = r'>\((\d+) \w+\)<'
 
     URL_REPLACEMENTS = [(__pattern__, r'https://www.tusfiles.net/go/\g<ID>/')]
@@ -29,6 +29,7 @@ class TusfilesNetFolder(SimpleCrypter):
 
     def loadPage(self, page_n):
         return self.load(urljoin(self.pyfile.url, str(page_n)), decode=True)
+
 
     def handleMultiPages(self):
         pages = re.search(self.PAGES_PATTERN, self.html)
