@@ -38,7 +38,7 @@ class NowDownloadEu(SimpleHoster):
         tokenlink = re.search(self.TOKEN_PATTERN, self.html)
         continuelink = re.search(self.CONTINUE_PATTERN, self.html)
         if tokenlink is None or continuelink is None:
-            self.fail('Plugin out of Date')
+            self.error()
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
@@ -54,7 +54,7 @@ class NowDownloadEu(SimpleHoster):
 
         url = re.search(self.LINK_PATTERN, self.html)
         if url is None:
-            self.fail('Download Link not Found (Plugin out of Date?)')
+            self.error("Download link not found")
         self.logDebug("Download link", url.group(1))
         self.download(str(url.group(1)))
 

@@ -37,7 +37,7 @@ class FilerNet(Account):
             trafficleft = parseFileSize(traffic.group(1))
             return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
         else:
-            self.logError("Unable to retrieve account information - Plugin may be out of date")
+            self.logError("Unable to retrieve account information")
             return {"premium": False, "validuntil": None, "trafficleft": None}
 
 

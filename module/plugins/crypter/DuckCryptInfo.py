@@ -42,7 +42,7 @@ class DuckCryptInfo(Crypter):
         cryptlinks = soup.findAll("div", attrs={"class": "folderbox"})
         self.logDebug("Redirectet to " + str(cryptlinks))
         if not cryptlinks:
-            self.fail('no links m - (Plugin out of date?)')
+            self.error("no links m")
         for clink in cryptlinks:
             if clink.find("a"):
                 self.handleLink(clink.find("a")['href'])
@@ -52,4 +52,4 @@ class DuckCryptInfo(Crypter):
         soup = BeautifulSoup(src)
         self.urls = [soup.find("iframe")['src']]
         if not self.urls:
-            self.logDebug("No link found - (Plugin out of date?)")
+            self.logInfo("No link found")

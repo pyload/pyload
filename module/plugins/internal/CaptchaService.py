@@ -7,7 +7,7 @@ from random import random
 
 class CaptchaService:
     __name__ = "CaptchaService"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """Base captcha service plugin"""
     __license__ = "GPLv3"
@@ -52,7 +52,7 @@ class CaptchaService:
 
 class ReCaptcha(CaptchaService):
     __name__ = "ReCaptcha"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__ = "GPLv3"
@@ -99,7 +99,7 @@ class ReCaptcha(CaptchaService):
             challenge = re.search("challenge : '(.+?)',", js).group(1)
             server = re.search("server : '(.+?)',", js).group(1)
         except:
-            self.plugin.parseError("ReCaptcha challenge pattern not found")
+            self.plugin.error("ReCaptcha challenge pattern not found")
 
         result = self.result(server, challenge)
 
@@ -113,7 +113,7 @@ class ReCaptcha(CaptchaService):
 
 class AdsCaptcha(CaptchaService):
     __name__ = "AdsCaptcha"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """AdsCaptcha captcha service plugin"""
     __license__ = "GPLv3"
@@ -161,7 +161,7 @@ class AdsCaptcha(CaptchaService):
             challenge = re.search("challenge: '(.+?)',", js).group(1)
             server = re.search("server: '(.+?)',", js).group(1)
         except:
-            self.plugin.parseError("AdsCaptcha challenge pattern not found")
+            self.plugin.error("AdsCaptcha challenge pattern not found")
 
         result = self.result(server, challenge)
 
@@ -175,7 +175,7 @@ class AdsCaptcha(CaptchaService):
 
 class SolveMedia(CaptchaService):
     __name__ = "SolveMedia"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__ = "GPLv3"
@@ -200,7 +200,7 @@ class SolveMedia(CaptchaService):
                                   html).group(1)
             server = "http://api.solvemedia.com/papi/media"
         except:
-            self.plugin.parseError("SolveMedia challenge pattern not found")
+            self.plugin.error("SolveMedia challenge pattern not found")
 
         result = self.result(server, challenge)
 
