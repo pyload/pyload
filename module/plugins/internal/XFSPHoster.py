@@ -9,14 +9,15 @@ from urlparse import urlparse
 
 from module.network.RequestFactory import getURL
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
-from module.plugins.internal.SimpleHoster import create_getInfo, PluginParseError, replace_patterns, set_cookies, SimpleHoster
+from module.plugins.internal.SimpleHoster import create_getInfo, replace_patterns, set_cookies, SimpleHoster
+from module.plugins.Plugin import Fail
 from module.utils import html_unescape
 
 
 class XFSPHoster(SimpleHoster):
     __name__ = "XFSPHoster"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = None
 
@@ -92,7 +93,7 @@ class XFSPHoster(SimpleHoster):
                 # Can be reverted in 0.4.10 as the cookies bug has been fixed.
                 self.html = getURL(pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
                 self.file_info = self.getFileInfo()
-            except PluginParseError:
+            except Fail:
                 self.file_info = None
 
             self.location = self.getDirectDownloadLink()
@@ -163,7 +164,7 @@ class XFSPHoster(SimpleHoster):
         self.html = self.load(self.pyfile.url, post=self.getPostParameters())
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.parseError('LINK_PATTERN not found')
+            self.error('LINK_PATTERN not found')
         self.startDownload(m.group(1))
 
 
@@ -184,7 +185,7 @@ class XFSPHoster(SimpleHoster):
 
         action, inputs = self.parseHtmlForm('F1')
         if not inputs:
-            self.parseError('TEXTAREA not found')
+            self.error('TEXTAREA not found')
         self.logDebug(self.HOSTER_NAME, inputs)
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
@@ -196,7 +197,7 @@ class XFSPHoster(SimpleHoster):
         #get easybytez.com link for uploaded file
         m = re.search(self.OVR_LINK_PATTERN, self.html)
         if m is None:
-            self.parseError('OVR_LINK_PATTERN not found')
+            self.error('OVR_LINK_PATTERN not found')
         self.pyfile.url = m.group(1)
         header = self.load(self.pyfile.url, just_header=True)
         if 'location' in header:  # Direct link
@@ -261,7 +262,7 @@ class XFSPHoster(SimpleHoster):
                     if self.errmsg:
                         self.retry()
                     else:
-                        self.parseError("Form not found")
+                        self.error("Form not found")
 
             self.logDebug(self.HOSTER_NAME, inputs)
 
@@ -304,7 +305,7 @@ class XFSPHoster(SimpleHoster):
                 self.errmsg = None
 
         else:
-            self.parseError('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
+            self.error('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
 
 
     def handleCaptcha(self, inputs):

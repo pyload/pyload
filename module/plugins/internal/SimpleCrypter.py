@@ -3,14 +3,15 @@
 import re
 
 from module.plugins.Crypter import Crypter
-from module.plugins.internal.SimpleHoster import PluginParseError, replace_patterns, set_cookies
+from module.plugins.Plugin import Fail
+from module.plugins.internal.SimpleHoster import replace_patterns, set_cookies
 from module.utils import fixup, html_unescape
 
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = None
 
@@ -156,5 +157,5 @@ class SimpleCrypter(Crypter):
             self.package_links += self.getLinks()
 
 
-    def parseError(self, msg):
-        raise PluginParseError(msg)
+    def error(self, reason):
+        raise Fail("Parse error (%s) - crypter plugin may be out of date" % reason)

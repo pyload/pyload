@@ -8,7 +8,8 @@ from urlparse import urlparse
 from module.network.CookieJar import CookieJar
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
-from module.utils import fixup, html_unescape, parseFileSize
+from module.plugins.Plugin import Fail
+reasonfrom module.utils import fixup, html_unescape, parseFileSize
 
 
 def replace_patterns(string, ruleslist):
@@ -139,20 +140,10 @@ def timestamp():
     return int(time() * 1000)
 
 
-class PluginParseError(Exception):
-
-    def __init__(self, msg):
-        Exception.__init__(self)
-        self.value = 'Parse error (%s) - plugin may be out of date' % msg
-
-    def __str__(self):
-        return repr(self.value)
-
-
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __pattern__ = None
 
@@ -249,7 +240,7 @@ class SimpleHoster(Hoster):
             self.tempOffline()
         elif status != 2:
             self.logDebug(self.file_info)
-            self.parseError('File info')
+            self.error('File info')
 
         if name:
             self.pyfile.name = name
@@ -272,7 +263,7 @@ class SimpleHoster(Hoster):
         try:
             m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m is None:
-                self.parseError("Free download link not found")
+                self.error("Free download link not found")
 
             link = m.group(1)
         except Exception, e:
@@ -288,17 +279,13 @@ class SimpleHoster(Hoster):
         try:
             m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
             if m is None:
-                self.parseError("Premium download link not found")
+                self.error("Premium download link not found")
 
             link = m.group(1)
         except Exception, e:
             self.logError(str(e))
         else:
             self.download(link, ref=True, cookies=True, disposition=True)
-
-
-    def parseError(self, msg):
-        raise PluginParseError(msg)
 
 
     def longWait(self, wait_time=None, max_tries=3):
@@ -334,3 +321,7 @@ class SimpleHoster(Hoster):
         if seconds:
             self.setWait(seconds, reconnect)
         super(SimpleHoster, self).wait()
+
+
+    def error(self, reason):
+        raise Fail("Parse error (%s) - hoster plugin may be out of date" % reason)
