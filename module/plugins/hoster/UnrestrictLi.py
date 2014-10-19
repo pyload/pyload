@@ -43,8 +43,8 @@ class UnrestrictLi(Hoster):
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             for _ in xrange(5):
-                page = self.req.load('https://unrestrict.li/unrestrict.php',
-                                     post={'link': pyfile.url, 'domain': 'long'})
+                page = self.load('https://unrestrict.li/unrestrict.php',
+                                 post={'link': pyfile.url, 'domain': 'long'})
                 self.logDebug("JSON data: " + page)
                 if page != '':
                     break

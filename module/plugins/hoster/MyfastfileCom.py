@@ -30,9 +30,9 @@ class MyfastfileCom(Hoster):
             self.fail("No Myfastfile.com account provided")
         else:
             self.logDebug("Original URL: %s" % pyfile.url)
-            page = self.req.load('http://myfastfile.com/api.php',
-                                 get={'user': self.user, 'pass': self.account.getAccountData(self.user)['password'],
-                                      'link': pyfile.url})
+            page = self.load('http://myfastfile.com/api.php',
+                             get={'user': self.user, 'pass': self.account.getAccountData(self.user)['password'],
+                                  'link': pyfile.url})
             self.logDebug("JSON data: " + page)
             page = json_loads(page)
             if page['status'] != 'ok':
