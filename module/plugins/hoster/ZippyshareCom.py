@@ -20,7 +20,7 @@ class ZippyshareCom(SimpleHoster):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'var exam1x = .+ \+ "/(?P<N>.+)";'
+    FILE_NAME_PATTERN = r'var \w+ = .+ \+ "/(?P<N>.+)";'
     FILE_SIZE_PATTERN = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN = r'>File does not exist on this server<'
