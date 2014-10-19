@@ -157,5 +157,8 @@ class SimpleCrypter(Crypter):
             self.package_links += self.getLinks()
 
 
-    def error(self, reason):
-        raise Fail("Parse error (%s) - crypter plugin may be out of date" % reason)
+    def error(self, reason=None, type="parse"):
+        if reason:
+            raise Fail("%s error: %s | Plugin may be out of date" % (type.capitalize(), reason))
+        else:
+            raise Fail("%s error | Plugin out of date" % type.capitalize())
