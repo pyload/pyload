@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilepupNet(SimpleHoster):
     __name__ = "FilepupNet"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?filepup\.net/files/\w+'
 
@@ -38,14 +38,14 @@ class FilepupNet(SimpleHoster):
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.parseError("Download link not found")
+            self.error("Download link not found")
 
         dl_link = m.group(1)
         self.download(dl_link, post={'task': "download"})
 
         check = self.checkDownload({'html': re.compile("html")})
         if check == "html":
-            self.parseError("Downloaded file is an html file")
+            self.error("Downloaded file is an html file")
 
 
 getInfo = create_getInfo(FilepupNet)

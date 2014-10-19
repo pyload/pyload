@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FourSharedCom(SimpleHoster):
     __name__ = "FourSharedCom"
     __type__ = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __pattern__ = r'https?://(?:www\.)?4shared(\-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+?/.*'
 
@@ -44,7 +44,7 @@ class FourSharedCom(SimpleHoster):
 
         m = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
         if m is None:
-            self.parseError('Download link')
+            self.error('Download link')
         link = m.group(1)
 
         try:

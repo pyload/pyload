@@ -15,7 +15,7 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __version__ = "0.98"
+    __version__ = "0.99"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
 
@@ -53,7 +53,7 @@ class UlozTo(SimpleHoster):
 
             m = re.search(self.TOKEN_PATTERN, self.html)
             if m is None:
-                self.parseError('TOKEN')
+                self.error('TOKEN')
             token = m.group(1)
 
             self.html = self.load(pyfile.url, get={"do": "askAgeForm-submit"},
@@ -84,7 +84,7 @@ class UlozTo(SimpleHoster):
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="frm-downloadDialog-freeDownloadForm"')
         if not action or not inputs:
-            self.parseError("free download form")
+            self.error("free download form")
 
         self.logDebug("inputs.keys = " + str(inputs.keys()))
         # get and decrypt captcha
@@ -110,7 +110,7 @@ class UlozTo(SimpleHoster):
 
             inputs.update({'timestamp': data['timestamp'], 'salt': data['salt'], 'hash': data['hash'], 'captcha_value': captcha_value})
         else:
-            self.parseError("CAPTCHA form changed")
+            self.error("CAPTCHA form changed")
 
         self.multiDL = True
         self.download("http://www.ulozto.net" + action, post=inputs, cookies=True, disposition=True)
@@ -124,7 +124,7 @@ class UlozTo(SimpleHoster):
         msg = "%s link" % ("Premium" if premium else "Free")
         m = re.search(self.PREMIUM_URL_PATTERN if premium else self.FREE_URL_PATTERN, self.html)
         if m is None:
-            self.parseError(msg)
+            self.error(msg)
         parsed_url = "http://www.ulozto.net" + m.group(1)
         self.logDebug("%s: %s" % (msg, parsed_url))
         return parsed_url

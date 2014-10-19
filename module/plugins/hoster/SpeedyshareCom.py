@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class SpeedyshareCom(SimpleHoster):
     __name__ = "SpeedyshareCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?(speedyshare\.com|speedy\.sh)/\w+'
 
@@ -38,14 +38,14 @@ class SpeedyshareCom(SimpleHoster):
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.parseError("Download link not found")
+            self.error("Download link not found")
 
         dl_link = urljoin("http://www.speedyshare.com", m.group(1))
         self.download(dl_link, disposition=True)
 
         check = self.checkDownload({'html': re.compile("html")})
         if check == "html":
-            self.parseError("Downloaded file is an html file")
+            self.error("Downloaded file is an html file")
 
 
 getInfo = create_getInfo(SpeedyshareCom)

@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LoadTo(SimpleHoster):
     __name__ = "LoadTo"
     __type__ = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
 
@@ -42,7 +42,7 @@ class LoadTo(SimpleHoster):
         # Search for Download URL
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.parseError("Unable to detect download URL")
+            self.error("Unable to detect download URL")
 
         download_url = m.group(1)
 

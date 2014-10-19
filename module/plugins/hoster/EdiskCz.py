@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EdiskCz(SimpleHoster):
     __name__ = "EdiskCz"
     __type__ = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*'
 
@@ -34,7 +34,7 @@ class EdiskCz(SimpleHoster):
 
         m = re.search(self.ACTION_PATTERN, url)
         if m is None:
-            self.parseError("ACTION")
+            self.error("ACTION")
         action = m.group(1)
 
         self.html = self.load(url, decode=True)

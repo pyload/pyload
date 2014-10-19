@@ -20,7 +20,7 @@ def getInfo(urls):
 class FilefactoryCom(SimpleHoster):
     __name__ = "FilefactoryCom"
     __type__ = "hoster"
-    __version__ = "0.50"
+    __version__ = "0.51"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/file/(?P<id>\w+)'
 
@@ -58,20 +58,20 @@ class FilefactoryCom(SimpleHoster):
             # Load the page that contains the direct link
             url = re.search(r"document\.location\.host \+\s*'(.+)';", self.html)
             if url is None:
-                self.parseError('Unable to detect free link')
+                self.error('Unable to detect free link')
             url = 'http://www.filefactory.com' + url.group(1)
             self.html = self.load(url, decode=True)
 
             # Free downloads wait time
             waittime = re.search(r'id="startWait" value="(\d+)"', self.html)
             if not waittime:
-                self.parseError('Unable to detect wait time')
+                self.error('Unable to detect wait time')
             self.wait(int(waittime.group(1)))
 
             # Parse the direct link and download it
             direct = re.search(r'data-href(?:-direct)?="(.*)" class="button', self.html)
             if not direct:
-                self.parseError('Unable to detect free direct link')
+                self.error('Unable to detect free direct link')
             direct = direct.group(1)
 
         self.logDebug("DIRECT LINK: " + direct)
@@ -101,7 +101,7 @@ class FilefactoryCom(SimpleHoster):
             if m:
                 url = m.group(1)
             else:
-                self.parseError('Unable to detect premium direct link')
+                self.error('Unable to detect premium direct link')
 
         self.logDebug("DIRECT PREMIUM LINK: " + url)
         self.download(url, disposition=True)

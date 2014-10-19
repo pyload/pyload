@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.53"
 
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/v(?:/|iew\.jsp.*key=)(?P<KEY>\d+)'
 
@@ -50,7 +50,7 @@ class ZippyshareCom(SimpleHoster):
             c = lambda a,b: a + b
 
         if not m:
-            self.parseError("Unable to calculate checksum")
+            self.error("Unable to calculate checksum")
 
         a = map(lambda x: int(x), m[0])
         b = map(lambda x: int(x), m[1])

@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LuckyShareNet(SimpleHoster):
     __name__ = "LuckyShareNet"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})'
 
@@ -33,7 +33,7 @@ class LuckyShareNet(SimpleHoster):
                 self.logDebug("You have to wait %d seconds between free downloads" % waittime)
                 self.retry(wait_time=waittime)
             else:
-                self.parseError('Unable to detect wait time between free downloads')
+                self.error('Unable to detect wait time between free downloads')
         elif 'Hash expired' in rep:
             self.retry(reason="Hash expired")
         return json_loads(rep)
@@ -53,7 +53,7 @@ class LuckyShareNet(SimpleHoster):
 
         captcha_key = recaptcha.detect_key()
         if captcha_key is None:
-            self.parseError("ReCaptcha key not found")
+            self.error("ReCaptcha key not found")
 
         for _ in xrange(5):
             challenge, response = recaptcha.challenge(captcha_key)
@@ -68,7 +68,7 @@ class LuckyShareNet(SimpleHoster):
                 self.logInfo("Wrong captcha")
                 self.invalidCaptcha()
             else:
-                self.parseError('Unable to get downlaod link')
+                self.error('Unable to get downlaod link')
 
         if not json['link']:
             self.fail("No Download url retrieved/all captcha attempts failed")

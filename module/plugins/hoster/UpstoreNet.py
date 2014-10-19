@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UpstoreNet(SimpleHoster):
     __name__ = "UpstoreNet"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?upstore\.net/'
 
@@ -30,7 +30,7 @@ class UpstoreNet(SimpleHoster):
         # STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.html)
         if m is None:
-            self.parseError("could not detect hash")
+            self.error("could not detect hash")
         chash = m.group(1)
         self.logDebug("Read hash " + chash)
         # continue to stage2
@@ -41,13 +41,13 @@ class UpstoreNet(SimpleHoster):
         # first get the infos we need: recaptcha key and wait time
         recaptcha = ReCaptcha(self)
         if recaptcha.detect_key() is None:
-            self.parseError("ReCaptcha key not found")
+            self.error("ReCaptcha key not found")
         self.logDebug("Using captcha key " + recaptcha.key)
         # try the captcha 5 times
         for i in xrange(5):
             m = re.search(self.WAIT_PATTERN, self.html)
             if m is None:
-                self.parseError("could not find wait pattern")
+                self.error("could not find wait pattern")
             wait_time = m.group(1)
 
             # then, do the waiting
@@ -66,7 +66,7 @@ class UpstoreNet(SimpleHoster):
                 break
 
         if m is None:
-            self.parseError("could not detect direct link")
+            self.error("could not detect direct link")
 
         direct = m.group(1)
         self.logDebug("Found direct link: " + direct)

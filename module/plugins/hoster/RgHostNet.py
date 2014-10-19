@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RgHostNet(SimpleHoster):
     __name__ = "RgHostNet"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?rghost\.net/\d+(?:r=\d+)?'
 
@@ -25,7 +25,7 @@ class RgHostNet(SimpleHoster):
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.parseError("Unable to detect the direct link")
+            self.error("Unable to detect the direct link")
         download_link = m.group(1)
         self.download(download_link, disposition=True)
 

@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class UploadingCom(SimpleHoster):
     __name__ = "UploadingCom"
     __type__ = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
 
@@ -76,21 +76,21 @@ class UploadingCom(SimpleHoster):
             self.logInfo("%s: Waiting %d seconds." % (self.__name__, wait_time))
             self.wait(wait_time)
         else:
-            self.parseError("AJAX/WAIT")
+            self.error("AJAX/WAIT")
 
         response = json_loads(
             self.load(ajax_url, post={'action': 'get_link', 'code': self.file_info['ID'], 'pass': 'false'}))
         if 'answer' in response and 'link' in response['answer']:
             url = response['answer']['link']
         else:
-            self.parseError("AJAX/URL")
+            self.error("AJAX/URL")
 
         self.html = self.load(url)
         m = re.search(r'<form id="file_form" action="(.*?)"', self.html)
         if m:
             url = m.group(1)
         else:
-            self.parseError("URL")
+            self.error("URL")
 
         self.download(url)
 

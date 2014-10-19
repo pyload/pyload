@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UloziskoSk(SimpleHoster):
     __name__ = "UloziskoSk"
     __type__ = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.*'
 
@@ -41,19 +41,19 @@ class UloziskoSk(SimpleHoster):
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.parseError('URL')
+            self.error('URL')
         parsed_url = 'http://www.ulozisko.sk' + m.group(1)
 
         m = re.search(self.ID_PATTERN, self.html)
         if m is None:
-            self.parseError('ID')
+            self.error('ID')
         id = m.group(1)
 
         self.logDebug("URL:" + parsed_url + ' ID:' + id)
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
-            self.parseError('CAPTCHA')
+            self.error('CAPTCHA')
         captcha_url = 'http://www.ulozisko.sk' + m.group(1)
 
         captcha = self.decryptCaptcha(captcha_url, cookies=True)

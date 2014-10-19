@@ -47,7 +47,7 @@ def getInfo(urls):
 class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
-    __version__ = "0.79"
+    __version__ = "0.80"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download\.php)?\?)(\w{11}|\w{15})($|/)'
 
@@ -105,7 +105,7 @@ class MediafireCom(SimpleHoster):
 
         m = re.search(r'kNO = r"(http://.*?)";', self.html)
         if m is None:
-            self.parseError("Download URL")
+            self.error("Download URL")
         download_url = m.group(1)
         self.logDebug("DOWNLOAD LINK:", download_url)
 
@@ -116,7 +116,7 @@ class MediafireCom(SimpleHoster):
 
         captcha_key = solvemedia.detect_key()
         if captcha_key is None:
-            self.parseError("SolveMedia key not found")
+            self.error("SolveMedia key not found")
 
         captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
         self.html = self.load(self.url, post={"adcopy_challenge": captcha_challenge,

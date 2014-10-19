@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__ = "FilerNet"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/(\w+)'
 
@@ -56,7 +56,7 @@ class FilerNet(SimpleHoster):
 
         inputs = self.parseHtmlForm(input_names='token')[1]
         if 'token' not in inputs:
-            self.parseError('Unable to detect token')
+            self.error('Unable to detect token')
         token = inputs['token']
         self.logDebug("Token: " + token)
 
@@ -64,7 +64,7 @@ class FilerNet(SimpleHoster):
 
         inputs = self.parseHtmlForm(input_names='hash')[1]
         if 'hash' not in inputs:
-            self.parseError('Unable to detect hash')
+            self.error('Unable to detect hash')
         hash_data = inputs['hash']
         self.logDebug("Hash: " + hash_data)
 
@@ -106,7 +106,7 @@ class FilerNet(SimpleHoster):
             html = self.load(self.pyfile.url)
             m = re.search(self.LINK_PATTERN, html)
             if m is None:
-                self.parseError("Unable to detect direct link, try to enable 'Direct download' in your user settings")
+                self.error("Unable to detect direct link, try to enable 'Direct download' in your user settings")
             dl = 'http://filer.net' + m.group(1)
 
         self.logDebug("Direct link: " + dl)

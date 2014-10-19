@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
-    __version__ = "0.82"
+    __version__ = "0.83"
 
     __pattern__ = r'(http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*'
 
@@ -38,7 +38,7 @@ class HellshareCz(SimpleHoster):
 
         m = re.search(self.SHOW_WINDOW_PATTERN, self.html)
         if m is None:
-            self.parseError('SHOW WINDOW')
+            self.error('SHOW WINDOW')
         self.url = "http://www.hellshare.com" + m.group(1)
         self.logDebug("DOWNLOAD URL: " + self.url)
 

@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BitshareCom(SimpleHoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
-    __version__ = "0.50"
+    __version__ = "0.51"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>\w+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>\w+))'
 
@@ -115,7 +115,7 @@ class BitshareCom(SimpleHoster):
             recaptcha = ReCaptcha(self)
             captcha_key = recaptcha.detect_key()
             if captcha_key is None:
-                self.parseError("ReCaptcha captcha key not found")
+                self.error("ReCaptcha captcha key not found")
 
             # Try up to 3 times
             for i in xrange(3):

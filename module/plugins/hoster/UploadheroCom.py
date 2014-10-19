@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadheroCom(SimpleHoster):
     __name__ = "UploadheroCom"
     __type__ = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
 
@@ -40,7 +40,7 @@ class UploadheroCom(SimpleHoster):
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
-            self.parseError("Captcha URL")
+            self.error("Captcha URL")
         captcha_url = "http://uploadhero.co" + m.group(1)
 
         for _ in xrange(5):

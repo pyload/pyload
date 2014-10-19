@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EuroshareEu(SimpleHoster):
     __name__ = "EuroshareEu"
     __type__ = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __pattern__ = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.*'
 
@@ -52,7 +52,7 @@ class EuroshareEu(SimpleHoster):
 
         m = re.search(self.FREE_URL_PATTERN, self.html)
         if m is None:
-            self.parseError("Parse error (URL)")
+            self.error("Parse error (URL)")
         parsed_url = "http://euroshare.eu%s" % m.group(1)
         self.logDebug("URL", parsed_url)
         self.download(parsed_url, disposition=True)

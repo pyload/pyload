@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DateiTo(SimpleHoster):
     __name__ = "DateiTo"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
 
@@ -47,14 +47,14 @@ class DateiTo(SimpleHoster):
 
             m = re.search(self.DATA_PATTERN, self.html)
             if m is None:
-                self.parseError('data')
+                self.error('data')
             url = 'http://datei.to/' + m.group(1)
             data = dict(x.split('=') for x in m.group(2).split('&'))
 
             if url.endswith('recaptcha.php'):
                 captcha_key = recaptcha.detect_key()
                 if captcha_key is None:
-                    self.parseError("ReCaptcha key not found")
+                    self.error("ReCaptcha key not found")
 
                 data['recaptcha_challenge_field'], data['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
 

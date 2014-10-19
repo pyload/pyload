@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "0.64"
+    __version__ = "0.65"
 
     __pattern__ = r'https?://(?P<ID>\w+)\.(?P<HOST>(1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl\.fr)'
 
@@ -47,7 +47,7 @@ class OneFichierCom(SimpleHoster):
 
         url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['ID'])
         if not url:
-            self.parseError("Download link not found")
+            self.error("Download link not found")
 
         # Check for protection
         if "pass" in inputs:
@@ -63,7 +63,7 @@ class OneFichierCom(SimpleHoster):
     def handlePremium(self):
         url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['ID'])
         if not url:
-            self.parseError("Download link not found")
+            self.error("Download link not found")
 
         # Check for protection
         if "pass" in inputs:

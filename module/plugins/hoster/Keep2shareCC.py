@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class Keep2shareCC(SimpleHoster):
     __name__ = "Keep2shareCC"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
@@ -64,7 +64,7 @@ class Keep2shareCC(SimpleHoster):
 
             m = re.search(self.LINK_PATTERN, self.html)
             if m is None:
-                self.parseError("Unable to detect direct link")
+                self.error("Unable to detect direct link")
             self.startDownload(m.group(1))
 
 
@@ -73,7 +73,7 @@ class Keep2shareCC(SimpleHoster):
 
         captcha_key = recaptcha.detect_key()
         if captcha_key is None:
-            self.parseError("ReCaptcha key not found")
+            self.error("ReCaptcha key not found")
 
         for _ in xrange(5):
             challenge, response = recaptcha.challenge(captcha_key)

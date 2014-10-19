@@ -17,7 +17,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
 
@@ -67,20 +67,20 @@ class TurbobitNet(SimpleHoster):
 
             action, inputs = self.parseHtmlForm("action='#'")
             if not inputs:
-                self.parseError("captcha form")
+                self.error("captcha form")
             self.logDebug(inputs)
 
             if inputs['captcha_type'] == 'recaptcha':
                 recaptcha = ReCaptcha(self)
                 captcha_key = recaptcha.detect_key()
                 if captcha_key is None:
-                    self.parseError("ReCaptcha captcha key not found")
+                    self.error("ReCaptcha captcha key not found")
 
                 inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
             else:
                 m = re.search(self.CAPTCHA_URL_PATTERN, self.html)
                 if m is None:
-                    self.parseError('captcha')
+                    self.error('captcha')
                 captcha_url = m.group(1)
                 inputs['captcha_response'] = self.decryptCaptcha(captcha_url)
 
@@ -172,7 +172,7 @@ class TurbobitNet(SimpleHoster):
     def downloadFile(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.parseError("Download link not found")
+            self.error("Download link not found")
         self.url = "http://turbobit.net" + m.group('url')
         self.download(self.url)
 

@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DataportCz(SimpleHoster):
     __name__ = "DataportCz"
     __type__ = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
 
     __pattern__ = r'http://(?:www\.)?dataport\.cz/file/(.*)'
 
@@ -32,19 +32,19 @@ class DataportCz(SimpleHoster):
             action, inputs = self.parseHtmlForm('free_download_form')
             self.logDebug(action, inputs)
             if not action or not inputs:
-                self.parseError('free_download_form')
+                self.error('free_download_form')
 
             if "captchaId" in inputs and inputs['captchaId'] in captchas:
                 inputs['captchaCode'] = captchas[inputs['captchaId']]
             else:
-                self.parseError('captcha')
+                self.error('captcha')
 
             self.html = self.download("http://www.dataport.cz%s" % action, post=inputs)
 
             check = self.checkDownload({"captcha": 'alert("\u0160patn\u011b opsan\u00fd k\u00f3d z obr\u00e1zu");',
                                         "slot": 'alert("Je n\u00e1m l\u00edto, ale moment\u00e1ln\u011b nejsou'})
             if check == "captcha":
-                self.parseError('invalid captcha')
+                self.error('invalid captcha')
             elif check == "slot":
                 self.logDebug("No free slots - wait 60s and retry")
                 self.wait(60, False)

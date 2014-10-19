@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DropboxCom(SimpleHoster):
     __name__ = "DropboxCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?dropbox\.com/.+'
 
@@ -36,7 +36,7 @@ class DropboxCom(SimpleHoster):
 
         check = self.checkDownload({'html': re.compile("html")})
         if check == "html":
-            self.parseError("Downloaded file is an html file")
+            self.error("Downloaded file is an html file")
 
 
 getInfo = create_getInfo(DropboxCom)

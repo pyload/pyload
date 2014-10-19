@@ -24,7 +24,7 @@ def getInfo(urls):
 class WebshareCz(SimpleHoster):
     __name__ = "WebshareCz"
     __type__ = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'https?://(?:www\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
 
@@ -38,7 +38,7 @@ class WebshareCz(SimpleHoster):
         self.logDebug("API data: " + api_data)
         m = re.search('<link>(.+)</link>', api_data)
         if m is None:
-            self.parseError('Unable to detect direct link')
+            self.error('Unable to detect direct link')
         direct = m.group(1)
         self.logDebug("Direct link: " + direct)
         self.download(direct, disposition=True)

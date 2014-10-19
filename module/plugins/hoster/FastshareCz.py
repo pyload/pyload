@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
 
@@ -44,7 +44,7 @@ class FastshareCz(SimpleHoster):
         if m:
             action, captcha_src = m.groups()
         else:
-            self.parseError("Free URL")
+            self.error("Free URL")
 
         baseurl = "http://www.fastshare.cz"
         captcha = self.decryptCaptcha(urljoin(baseurl, captcha_src))
@@ -77,7 +77,7 @@ class FastshareCz(SimpleHoster):
                 if m:
                     url = m.group(1)
                 else:
-                    self.parseError("Premium URL")
+                    self.error("Premium URL")
 
         self.logDebug("PREMIUM URL: " + url)
         self.download(url, disposition=True)

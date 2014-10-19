@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BezvadataCz(SimpleHoster):
     __name__ = "BezvadataCz"
     __type__ = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.*'
 
@@ -29,7 +29,7 @@ class BezvadataCz(SimpleHoster):
         #download button
         m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
         if m is None:
-            self.parseError("page1 URL")
+            self.error("page1 URL")
         url = "http://bezvadata.cz%s" % m.group(1)
 
         #captcha form
@@ -38,11 +38,11 @@ class BezvadataCz(SimpleHoster):
         for _ in xrange(5):
             action, inputs = self.parseHtmlForm('frm-stahnoutFreeForm')
             if not inputs:
-                self.parseError("FreeForm")
+                self.error("FreeForm")
 
             m = re.search(r'<img src="data:image/png;base64,(.*?)"', self.html)
             if m is None:
-                self.parseError("captcha img")
+                self.error("captcha img")
 
             #captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
             self.load, proper_load = self.loadcaptcha, self.load
@@ -64,7 +64,7 @@ class BezvadataCz(SimpleHoster):
         self.checkErrors()
         m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
         if m is None:
-            self.parseError("page2 URL")
+            self.error("page2 URL")
         url = "http://bezvadata.cz%s" % m.group(1)
         self.logDebug("DL URL %s" % url)
 

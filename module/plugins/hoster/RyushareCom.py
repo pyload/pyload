@@ -12,7 +12,7 @@ from module.plugins.internal.CaptchaService import SolveMedia
 class RyushareCom(XFSPHoster):
     __name__ = "RyushareCom"
     __type__ = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __pattern__ = r'http://(?:www\.)?ryushare\.com/\w+'
 
@@ -63,7 +63,7 @@ class RyushareCom(XFSPHoster):
 
             captcha_key = captcha.detect_key()
             if captcha_key is None:
-                self.parseError("SolveMedia key not found")
+                self.error("SolveMedia key not found")
 
             challenge, response = captcha.challenge(captcha_key)
 

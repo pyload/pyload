@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class CrockoCom(SimpleHoster):
     __name__ = "CrockoCom"
     __type__ = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'http://(?:www\.)?(crocko|easy-share)\.com/\w+'
 
@@ -46,11 +46,11 @@ class CrockoCom(SimpleHoster):
         recaptcha = ReCaptcha(self)
         captcha_key = recaptcha.detect_key()
         if captcha_key is None:
-            self.parseError("ReCaptcha captcha key not found")
+            self.error("ReCaptcha captcha key not found")
 
         m = re.search(self.FORM_PATTERN, self.html, re.DOTALL)
         if m is None:
-            self.parseError('ACTION')
+            self.error('ACTION')
         action, form = m.groups()
         inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
 

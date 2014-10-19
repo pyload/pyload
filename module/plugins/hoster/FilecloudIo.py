@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilecloudIo(SimpleHoster):
     __name__ = "FilecloudIo"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*'
 
@@ -42,7 +42,7 @@ class FilecloudIo(SimpleHoster):
 
         m = re.search(self.AB1_PATTERN, self.html)
         if m is None:
-            self.parseError("__AB1")
+            self.error("__AB1")
         data['__ab1'] = m.group(1)
 
         recaptcha = ReCaptcha(self)
@@ -51,7 +51,7 @@ class FilecloudIo(SimpleHoster):
         captcha_key = m.group(1) if m else recaptcha.detect_key()
 
         if captcha_key is None:
-            self.parseError("ReCaptcha key not found")
+            self.error("ReCaptcha key not found")
 
         if not self.account:
             self.fail("User not logged in")
@@ -94,7 +94,7 @@ class FilecloudIo(SimpleHoster):
             self.html = self.load('http://filecloud.io/download.html')
             m = re.search(self.LINK_PATTERN % self.file_info['ID'], self.html)
             if m is None:
-                self.parseError("Download URL")
+                self.error("Download URL")
             download_url = m.group(1)
             self.logDebug("Download URL: %s" % download_url)
 

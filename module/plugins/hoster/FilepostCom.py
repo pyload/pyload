@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilepostCom(SimpleHoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/([^/]+).*'
 
@@ -35,12 +35,12 @@ class FilepostCom(SimpleHoster):
 
         m = re.search(self.FLP_TOKEN_PATTERN, self.html)
         if m is None:
-            self.parseError("Token")
+            self.error("Token")
         flp_token = m.group(1)
 
         m = re.search(self.RECAPTCHA_PATTERN, self.html)
         if m is None:
-            self.parseError("Captcha key")
+            self.error("Captcha key")
         captcha_key = m.group(1)
 
         # Get wait time
@@ -98,7 +98,7 @@ class FilepostCom(SimpleHoster):
         self.logDebug(json_response)
 
         if not 'js' in json_response:
-            self.parseError('JSON %s 1' % field)
+            self.error('JSON %s 1' % field)
 
         # i changed js_answer to json_response['js'] since js_answer is nowhere set.
         # i don't know the JSON-HTTP specs in detail, but the previous author
@@ -122,7 +122,7 @@ class FilepostCom(SimpleHoster):
                 # ~? self.fail(js_answer['error'])
 
         if not 'answer' in json_response['js'] or not field in json_response['js']['answer']:
-            self.parseError('JSON %s 2' % field)
+            self.error('JSON %s 2' % field)
 
         return json_response['js']['answer'][field]
 

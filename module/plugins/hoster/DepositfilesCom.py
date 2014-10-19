@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
-    __version__ = "0.49"
+    __version__ = "0.50"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
 
@@ -72,7 +72,7 @@ class DepositfilesCom(SimpleHoster):
         recaptcha = ReCaptcha(self)
         captcha_key = recaptcha.detect_key()
         if captcha_key is None:
-            self.parseError("ReCaptcha key not found")
+            self.error("ReCaptcha key not found")
 
         for _ in xrange(5):
             self.html = self.load("https://dfiles.eu/get_file.php", get=params)
@@ -92,7 +92,7 @@ class DepositfilesCom(SimpleHoster):
                 self.logDebug("LINK: %s" % link)
                 break
             else:
-                self.parseError('Download link')
+                self.error('Download link')
         else:
             self.fail('No valid captcha response received')
 
@@ -118,7 +118,7 @@ class DepositfilesCom(SimpleHoster):
             elif mirror:
                 dlink = mirror.group(1)
             else:
-                self.parseError("No direct download link or mirror found")
+                self.error("No direct download link or mirror found")
             self.download(dlink, disposition=True)
 
 

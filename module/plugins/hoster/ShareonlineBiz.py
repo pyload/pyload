@@ -39,7 +39,7 @@ def getInfo(urls):
 class ShareonlineBiz(Hoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
 
@@ -134,7 +134,7 @@ class ShareonlineBiz(Hoster):
         download_url = response.decode("base64")
         self.logDebug(download_url)
         if not download_url.startswith("http://"):
-            self.parseError("download url")
+            self.error("download url")
 
         self.wait()
         self.download(download_url)

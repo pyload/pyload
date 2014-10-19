@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class CatShareNet(SimpleHoster):
     __name__ = "CatShareNet"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
 
@@ -52,7 +52,7 @@ class CatShareNet(SimpleHoster):
 
         captcha_key = recaptcha.detect_key()
         if captcha_key is None:
-            self.parseError("ReCaptcha key not found")
+            self.error("ReCaptcha key not found")
 
         challenge, code = recaptcha.challenge(captcha_key)
         self.html = self.load(self.pyfile.url,

@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class KingfilesNet(SimpleHoster):
     __name__ = "KingfilesNet"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
 
@@ -48,7 +48,7 @@ class KingfilesNet(SimpleHoster):
 
         captcha_key = solvemedia.detect_key()
         if captcha_key is None:
-            self.parseError("SolveMedia key not found")
+            self.error("SolveMedia key not found")
 
         self.logDebug("captcha_key", captcha_key)
         captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
@@ -56,7 +56,7 @@ class KingfilesNet(SimpleHoster):
         # Make the downloadlink appear and load the file
         m = re.search(self.RAND_ID_PATTERN, b)
         if m is None:
-            self.parseError("Random key not found")
+            self.error("Random key not found")
 
         rand = m.group(1)
         self.logDebug("rand", rand)
@@ -74,14 +74,14 @@ class KingfilesNet(SimpleHoster):
 
         m = re.search(self.LINK_PATTERN, c)
         if m is None:
-            self.parseError("Download url not found")
+            self.error("Download url not found")
 
         dl_url = m.group(1)
         self.download(dl_url, cookies=True, disposition=True)
 
         check = self.checkDownload({'html': re.compile("<html>")})
         if check == "html":
-            self.parseError("Downloaded file is an html file")
+            self.error("Downloaded file is an html file")
 
 
 getInfo = create_getInfo(KingfilesNet)

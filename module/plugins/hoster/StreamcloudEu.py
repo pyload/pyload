@@ -11,7 +11,7 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 class StreamcloudEu(XFSPHoster):
     __name__ = "StreamcloudEu"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\w{12}'
 
@@ -78,7 +78,7 @@ class StreamcloudEu(XFSPHoster):
                     if self.errmsg:
                         self.retry()
                     else:
-                        self.parseError("Form not found")
+                        self.error("Form not found")
 
             self.logDebug(self.HOSTER_NAME, inputs)
 
@@ -122,7 +122,7 @@ class StreamcloudEu(XFSPHoster):
                 self.errmsg = None
 
         else:
-            self.parseError('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
+            self.error('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
 
 
 getInfo = create_getInfo(StreamcloudEu)

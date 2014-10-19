@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DataHu(SimpleHoster):
     __name__ = "DataHu"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/get/\w+'
 
@@ -35,7 +35,7 @@ class DataHu(SimpleHoster):
             url = m.group(1)
             self.logDebug("Direct link: " + url)
         else:
-            self.parseError('Unable to get direct link')
+            self.error('Unable to get direct link')
 
         self.download(url, disposition=True)
 

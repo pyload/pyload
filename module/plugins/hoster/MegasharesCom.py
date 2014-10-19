@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MegasharesCom(SimpleHoster):
     __name__ = "MegasharesCom"
     __type__ = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
 
@@ -98,7 +98,7 @@ class MegasharesCom(SimpleHoster):
         m = re.search(self.LINK_PATTERN % (1 if premium else 2), self.html)
         msg = '%s download URL' % ('Premium' if premium else 'Free')
         if m is None:
-            self.parseError(msg)
+            self.error(msg)
 
         download_url = m.group(1)
         self.logDebug("%s: %s" % (msg, download_url))

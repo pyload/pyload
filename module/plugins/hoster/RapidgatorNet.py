@@ -14,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
@@ -138,7 +138,7 @@ class RapidgatorNet(SimpleHoster):
                 else:
                     self.correctCaptcha()
         else:
-            self.parseError("Download link")
+            self.error("Download link")
 
 
     def getCaptcha(self):
@@ -157,7 +157,7 @@ class RapidgatorNet(SimpleHoster):
                     captcha_key = m.group(1)
                     captcha = SolveMedia(self)
                 else:
-                    self.parseError("Captcha")
+                    self.error("Captcha")
 
         return captcha, captcha_key
 

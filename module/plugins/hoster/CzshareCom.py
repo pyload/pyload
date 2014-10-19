@@ -12,7 +12,7 @@ from module.utils import parseFileSize
 class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
-    __version__ = "0.94"
+    __version__ = "0.95"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).*'
 
@@ -79,7 +79,7 @@ class CzshareCom(SimpleHoster):
         # get free url
         m = re.search(self.FREE_URL_PATTERN, self.html)
         if m is None:
-            self.parseError('Free URL')
+            self.error('Free URL')
         parsed_url = "http://sdilej.cz" + m.group(1)
         self.logDebug("PARSED_URL:" + parsed_url)
 
@@ -94,7 +94,7 @@ class CzshareCom(SimpleHoster):
             self.pyfile.size = int(inputs['size'])
         except Exception, e:
             self.logError(e)
-            self.parseError('Form')
+            self.error('Form')
 
         # get and decrypt captcha
         captcha_url = 'http://sdilej.cz/captcha.php'
@@ -118,7 +118,7 @@ class CzshareCom(SimpleHoster):
         self.logDebug("WAIT URL", self.req.lastEffectiveURL)
         m = re.search("free_wait.php\?server=(.*?)&(.*)", self.req.lastEffectiveURL)
         if m is None:
-            self.parseError('Download URL')
+            self.error('Download URL')
 
         url = "http://%s/download.php?%s" % (m.group(1), m.group(2))
 

@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BayfilesCom(SimpleHoster):
     __name__ = "BayfilesCom"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>\w+/\w+/[^/]+)'
 
@@ -39,7 +39,7 @@ class BayfilesCom(SimpleHoster):
         # Get download token
         m = re.search(self.VARS_PATTERN, self.html)
         if m is None:
-            self.parseError('VARS')
+            self.error('VARS')
         vfid, delay = m.groups()
 
         response = json_loads(self.load('http://bayfiles.com/ajax_download', get={
@@ -60,13 +60,13 @@ class BayfilesCom(SimpleHoster):
         # Get final link and download
         m = re.search(self.FREE_LINK_PATTERN, self.html)
         if m is None:
-            self.parseError("Free link")
+            self.error("Free link")
         self.startDownload(m.group(1))
 
     def handlePremium(self):
         m = re.search(self.PREMIUM_LINK_PATTERN, self.html)
         if m is None:
-            self.parseError("Premium link")
+            self.error("Premium link")
         self.startDownload(m.group(1))
 
     def startDownload(self, url):

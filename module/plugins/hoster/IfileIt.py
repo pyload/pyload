@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class IfileIt(SimpleHoster):
     __name__ = "IfileIt"
     __type__ = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'^unmatchable$'
 
@@ -56,7 +56,7 @@ class IfileIt(SimpleHoster):
                 self.fail("Incorrect captcha")
 
         if not "ticket_url" in json_response:
-            self.parseError("Download URL")
+            self.error("Download URL")
 
         self.download(json_response['ticket_url'])
 

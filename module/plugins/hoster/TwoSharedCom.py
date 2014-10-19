@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class TwoSharedCom(SimpleHoster):
     __name__ = "TwoSharedCom"
     __type__ = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.*'
 
@@ -30,7 +30,7 @@ class TwoSharedCom(SimpleHoster):
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.parseError('Download link')
+            self.error('Download link')
         link = m.group(1)
         self.logDebug("Download URL %s" % link)
 
