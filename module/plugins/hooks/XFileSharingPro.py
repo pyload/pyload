@@ -8,7 +8,7 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__ = "XFileSharingPro"
     __type__ = "hook"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("match_hoster", "Always;Always except excluded;Listed only", "Hoster match", "Always except excluded"),
@@ -49,13 +49,13 @@ class XFileSharingPro(Hook):
 
 
     def loadPattern(self):
-        regex = {'hoster'  = (r'https?://(?!(?:www\.)?(?:%s))(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}',
-                              r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w{12}\W?'),
-                 'crypter' = (r'https?://(?!(?:www\.)?(?:%s))(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:user|folder)s?/\w+',
-                              r'https?://(?:[^/]+\.)?(%s)/(?:user|folder)s?/\w+')}
+        regex = {'hoster' : (r'https?://(?!(?:www\.)?(?:%s))(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}',
+                             r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w{12}\W?'),
+                 'crypter': (r'https?://(?!(?:www\.)?(?:%s))(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:user|folder)s?/\w+',
+                             r'https?://(?:[^/]+\.)?(%s)/(?:user|folder)s?/\w+')}
 
         for type, plugin in (("hoster", "XFileSharingPro"), ("crypter", "XFileSharingProFolder")):
-            match = self.getConfig('match_%ss' % type)
+            match = self.getConfig('match_%s' % type)
             include_set = self.getConfigSet('include_%ss' % type)
             exclude_set = self.getConfigSet('exclude_%ss' % type)
 

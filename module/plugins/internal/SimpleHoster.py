@@ -9,7 +9,7 @@ from module.network.CookieJar import CookieJar
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import Fail
-reasonfrom module.utils import fixup, html_unescape, parseFileSize
+from module.utils import fixup, html_unescape, parseFileSize
 
 
 def replace_patterns(string, ruleslist):
@@ -143,7 +143,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
     __pattern__ = None
 
