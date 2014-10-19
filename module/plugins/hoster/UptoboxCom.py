@@ -8,7 +8,7 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 class UptoboxCom(XFSPHoster):
     __name__ = "UptoboxCom"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?uptobox\.com/\w{12}'
 
@@ -27,7 +27,7 @@ class UptoboxCom(XFSPHoster):
 
 
     def setup(self):
-        self.multiDL = True
+        self.multiDL = self.premium  #: multiDL doesn't work for free downloads due missing race condition control (ex.: when dl is waiting)
         self.chunkLimit = 1
         self.resumeDownload = True
 
