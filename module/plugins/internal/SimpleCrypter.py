@@ -2,6 +2,7 @@
 
 import re
 
+from module.network.RequestFactory import getURL
 from module.plugins.Crypter import Crypter
 from module.plugins.Plugin import Fail
 from module.plugins.internal.SimpleHoster import replace_patterns, set_cookies
@@ -11,7 +12,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = None
 
@@ -86,13 +87,12 @@ class SimpleCrypter(Crypter):
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
 
+        url = self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
+        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
+
 
     def decrypt(self, pyfile):
         self.prepare()
-
-        pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
-
-        self.html = self.load(pyfile.url, decode=not self.TEXT_ENCODING)
 
         self.checkOnline()
 

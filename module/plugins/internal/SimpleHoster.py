@@ -204,17 +204,16 @@ class SimpleHoster(Hoster):
     def prepare(self):
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
+
         self.req.setOption("timeout", 120)
+
+        url = self.pyfile.url = replace_patterns(self.pyfile.url, self.FILE_URL_REPLACEMENTS)
+        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
 
 
     def process(self, pyfile):
         self.prepare()
 
-        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
-
-        # Due to a 0.4.9 core bug self.load would keep previous cookies even if overridden by cookies parameter.
-        # Workaround using getURL. Can be reverted in 0.4.10 as the cookies bug has been fixed.
-        self.html = getURL(pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
         premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
         if not premium_only:  # Usually premium only pages doesn't show the file information
             self.getFileInfo()
@@ -224,8 +223,6 @@ class SimpleHoster(Hoster):
         elif premium_only:
             self.fail("This link require a premium account")
         else:
-            # This line is required due to the getURL workaround. Can be removed in 0.4.10
-            self.html = self.load(pyfile.url, decode=not self.TEXT_ENCODING)
             self.handleFree()
 
 

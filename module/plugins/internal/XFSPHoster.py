@@ -75,11 +75,12 @@ class XFSPHoster(SimpleHoster):
         self.errmsg = None
         self.passwords = self.getPassword().splitlines()
 
+        url = self.pyfile.url = replace_patterns(self.pyfile.url, self.FILE_URL_REPLACEMENTS)
+        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
+
 
     def process(self, pyfile):
         self.prepare()
-
-        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
 
         if not re.match(self.__pattern__, pyfile.url):
             if self.premium:
@@ -88,10 +89,6 @@ class XFSPHoster(SimpleHoster):
                 self.fail("Only premium users can download from other hosters with %s" % self.HOSTER_NAME)
         else:
             try:
-                # Due to a 0.4.9 core bug self.load would use cookies even if
-                # cookies=False. Workaround using getURL to avoid cookies.
-                # Can be reverted in 0.4.10 as the cookies bug has been fixed.
-                self.html = getURL(pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
                 self.file_info = self.getFileInfo()
             except Fail:
                 self.file_info = None
