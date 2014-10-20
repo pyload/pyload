@@ -12,9 +12,9 @@ from module.plugins.Hoster import Hoster
 class Ftp(Hoster):
     __name__ = "Ftp"
     __type__ = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
 
-    __pattern__ = r'(ftps?|sftp)://(.*?:.*?@)?.*?/.*' # ftp://user:password@ftp\.server\.org/path/to/file
+    __pattern__ = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 
     __description__ = """Download from ftp directory"""
     __license__ = "GPLv3"
@@ -26,6 +26,7 @@ class Ftp(Hoster):
     def setup(self):
         self.chunkLimit = -1
         self.resumeDownload = True
+
 
     def process(self, pyfile):
         parsed_url = urlparse(pyfile.url)
@@ -44,7 +45,7 @@ class Ftp(Hoster):
                 self.logDebug("Logging on to %s" % netloc)
                 self.req.addAuth(self.account.accounts[netloc]['password'])
             else:
-                for pwd in pyfile.package().password.splitlines():
+                for pwd in self.getPassword().splitlines():
                     if ":" in pwd:
                         self.req.addAuth(pwd.strip())
                         break
