@@ -38,14 +38,12 @@ class SafelinkingNet(Crypter):
                 self.fail("Couldn't find forwarded Link")
 
         else:
-            password = ""
             postData = {"post-protect": "1"}
 
             self.html = self.load(url)
 
             if "link-password" in self.html:
-                password = pyfile.package().password
-                postData['link-password'] = password
+                postData['link-password'] = self.getPassword()
 
             if "altcaptcha" in self.html:
                 for _ in xrange(5):
