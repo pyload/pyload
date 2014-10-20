@@ -14,7 +14,7 @@ from module.utils import save_join
 class UpdateManager(Hook):
     __name__ = "UpdateManager"
     __type__ = "hook"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -30,7 +30,7 @@ class UpdateManager(Hook):
     event_list = ["pluginConfigChanged"]
 
     SERVER_URL = "http://updatemanager.pyload.org"
-    MIN_INTERVAL = 3 * 60 * 60  #: 3h minimum check interval (value is in seconds)
+    MIN_INTERVAL = 6 * 60 * 60  #: 6h minimum check interval (value is in seconds)
 
 
     def pluginConfigChanged(self, plugin, name, value):
