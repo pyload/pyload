@@ -41,9 +41,6 @@ class FilerNet(SimpleHoster):
 
 
     def handleFree(self):
-        self.req.setOption("timeout", 120)
-        self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
-
         # Wait between downloads
         m = re.search(r'musst du <span id="time">(\d+)</span> Sekunden warten', self.html)
         if m:

@@ -31,7 +31,6 @@ class NCryptIn(Crypter):
 
     def setup(self):
         self.package = None
-        self.html = None
         self.cleanedHtml = None
         self.links_source_order = ["cnl2", "rsdf", "ccf", "dlc", "web"]
         self.protection_type = None

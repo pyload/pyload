@@ -144,7 +144,6 @@ class DlFreeFr(SimpleHoster):
         valid_url = pyfile.url
         headers = self.load(valid_url, just_header=True)
 
-        self.html = None
         if headers.get('code') == 302:
             valid_url = headers.get('location')
             headers = self.load(valid_url, just_header=True)

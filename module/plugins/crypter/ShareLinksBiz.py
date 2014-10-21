@@ -24,7 +24,6 @@ class ShareLinksBiz(Crypter):
         self.baseUrl = None
         self.fileId = None
         self.package = None
-        self.html = None
         self.captcha = False
 
 

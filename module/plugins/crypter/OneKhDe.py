@@ -21,7 +21,6 @@ class OneKhDe(Crypter):
     def __init__(self, parent):
         Crypter.__init__(self, parent)
         self.parent = parent
-        self.html = None
 
     def file_exists(self):
         """ returns True or False

@@ -47,8 +47,6 @@ class MegasharesCom(SimpleHoster):
         if self.NO_SLOTS_PATTERN in self.html:
             self.retry(wait_time=5 * 60)
 
-        self.getFileInfo()
-
         m = re.search(self.REACTIVATE_PASSPORT_PATTERN, self.html)
         if m:
             passport_num = m.group(1)

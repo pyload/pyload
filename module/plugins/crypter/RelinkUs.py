@@ -55,7 +55,6 @@ class RelinkUs(Crypter):
         self.fileid = None
         self.package = None
         self.password = None
-        self.html = None
         self.captcha = False
 
 

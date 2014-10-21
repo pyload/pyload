@@ -33,7 +33,6 @@ class LinkSaveIn(SimpleCrypter):
 
 
     def setup(self):
-        self.html = None
         self.fileid = None
         self.captcha = False
         self.package = None

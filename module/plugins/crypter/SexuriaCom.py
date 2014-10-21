@@ -26,10 +26,6 @@ class SexuriaCom(Crypter):
     PATTERN_REDIRECT_LINKS     = re.compile(r'value="(http://sexuria\.com/out\.php\?id=\d+\&part=\d+\&link=\d+)" readonly', flags=re.I)
 
 
-    def setup(self):
-        self.html = None
-
-
     def decrypt(self, pyfile):
         # Init
         self.pyfile = pyfile
