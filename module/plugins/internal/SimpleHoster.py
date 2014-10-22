@@ -67,7 +67,7 @@ def parseHtmlForm(attr_str, html, input_names=None):
     return {}, None  # no matching form found
 
 
-def parseFileInfo(self, url='', html=''):
+def parseFileInfo(self, url="", html=""):
     info = {"name": url, "size": 0, "status": 3}
 
     if hasattr(self, "pyfile"):
@@ -129,6 +129,7 @@ def create_getInfo(plugin):
             cj = CookieJar(plugin.__name__)
             if isinstance(plugin.COOKIES, list):
                 set_cookies(cj, plugin.COOKIES)
+
             file_info = parseFileInfo(plugin, url, getURL(replace_patterns(url, plugin.FILE_URL_REPLACEMENTS),
                                                           decode=not plugin.TEXT_ENCODING, cookies=cj))
             yield file_info
@@ -208,7 +209,7 @@ class SimpleHoster(Hoster):
         self.req.setOption("timeout", 120)
 
         url = self.pyfile.url = replace_patterns(self.pyfile.url, self.FILE_URL_REPLACEMENTS)
-        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
+        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
 
 
     def process(self, pyfile):

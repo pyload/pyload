@@ -76,7 +76,7 @@ class XFSPHoster(SimpleHoster):
         self.passwords = self.getPassword().splitlines()
 
         url = self.pyfile.url = replace_patterns(self.pyfile.url, self.FILE_URL_REPLACEMENTS)
-        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
+        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
 
 
     def process(self, pyfile):
