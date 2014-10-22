@@ -12,7 +12,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __pattern__ = None
 
@@ -88,7 +88,7 @@ class SimpleCrypter(Crypter):
             set_cookies(self.req.cj, self.COOKIES)
 
         url = self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
-        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
+        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
 
 
     def decrypt(self, pyfile):
@@ -127,6 +127,9 @@ class SimpleCrypter(Crypter):
 
 
     def getPackageNameAndFolder(self):
+        if isinstance(self.TEXT_ENCODING, basestring):
+            self.html = unicode(html, self.TEXT_ENCODING)
+
         if hasattr(self, 'TITLE_PATTERN'):
             try:
                 m = re.search(self.TITLE_PATTERN, self.html)
