@@ -13,6 +13,7 @@ class RapidfileshareNet(XFSPAccount):
     __authors__ = [("guidobelix", "guidobelix@hotmail.it")]
 
 
+    HOSTER_NAME = "rapidfileshare.net"
     HOSTER_URL = "http://www.rapidfileshare.net/"
 
     TRAFFIC_LEFT_PATTERN = r'>Traffic available today:</TD><TD><label for="name">\s*(?P<S>[\d.,]+)\s*(?:(?P<U>[\w^_]+)\s*)?</label></TD></TR>'
