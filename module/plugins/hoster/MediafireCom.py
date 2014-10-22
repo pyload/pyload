@@ -116,11 +116,6 @@ class MediafireCom(SimpleHoster):
 
     def checkCaptcha(self):
         solvemedia = SolveMedia(self)
-
-        captcha_key = solvemedia.detect_key()
-        if captcha_key is None:
-            self.error("SolveMedia key not found")
-
-        captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
+        captcha_challenge, captcha_response = solvemedia.challenge()
         self.html = self.load(self.url, post={"adcopy_challenge": captcha_challenge,
                                               "adcopy_response": captcha_response}, decode=True)

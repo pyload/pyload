@@ -72,11 +72,7 @@ class TurbobitNet(SimpleHoster):
 
             if inputs['captcha_type'] == 'recaptcha':
                 recaptcha = ReCaptcha(self)
-                captcha_key = recaptcha.detect_key()
-                if captcha_key is None:
-                    self.error("ReCaptcha captcha key not found")
-
-                inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
+                inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge()
             else:
                 m = re.search(self.CAPTCHA_PATTERN, self.html)
                 if m is None:

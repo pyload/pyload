@@ -43,19 +43,16 @@ class CrockoCom(SimpleHoster):
             else:
                 break
 
-        recaptcha = ReCaptcha(self)
-        captcha_key = recaptcha.detect_key()
-        if captcha_key is None:
-            self.error("ReCaptcha captcha key not found")
-
         m = re.search(self.FORM_PATTERN, self.html, re.DOTALL)
         if m is None:
             self.error('ACTION')
+
         action, form = m.groups()
         inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
+        recaptcha = ReCaptcha(self)
 
         for _ in xrange(5):
-            inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
+            inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge()
             self.download(action, post=inputs)
 
             check = self.checkDownload({

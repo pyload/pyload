@@ -54,15 +54,10 @@ class FilerNet(SimpleHoster):
         self.logDebug("Hash: " + hash_data)
 
         downloadURL = r''
-
         recaptcha = ReCaptcha(self)
 
-        captcha_key = recaptcha.detect_key()
-        if captcha_key is None:
-            self.parseError("ReCaptcha key not found")
-
         for _ in xrange(5):
-            challenge, response = recaptcha.challenge(captcha_key)
+            challenge, response = recaptcha.challenge()
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,
                          'hash': hash_data}

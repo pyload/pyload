@@ -110,12 +110,7 @@ class LetitbitNet(SimpleHoster):
         self.logDebug(response)
 
         recaptcha = ReCaptcha(self)
-
-        captcha_key = recaptcha.detect_key()
-        if captcha_key is None:
-            self.error("ReCaptcha key not found")
-
-        challenge, response = recaptcha.challenge(captcha_key)
+        challenge, response = recaptcha.challenge()
 
         post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response,
                      "recaptcha_control_field": recaptcha_control_field}

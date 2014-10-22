@@ -29,7 +29,7 @@ class CaptchaService:
                 html = self.plugin.html
             else:
                 errmsg = "%s html not found" % self.__name__
-                self.plugin.fail(errmsg)
+                self.plugin.fail(errmsg)  #@TODO: replace all plugin.fail(errmsg) with plugin.error(errmsg) in 0.4.10
                 raise TypeError(errmsg)
 
         m = re.search(self.KEY_PATTERN, html)
@@ -72,9 +72,7 @@ class ReCaptcha(CaptchaService):
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        m = re.search(self.KEY_PATTERN, html)
-        if m is None:
-            m = re.search(self.KEY_AJAX_PATTERN, html)
+        m = re.search(self.KEY_PATTERN, html) or re.search(self.KEY_AJAX_PATTERN, html)
         if m:
             self.key = m.group("KEY")
             self.plugin.logDebug("ReCaptcha key: %s" % self.key)
