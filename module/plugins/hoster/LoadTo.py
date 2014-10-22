@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LoadTo(SimpleHoster):
     __name__ = "LoadTo"
     __type__ = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
 
@@ -60,10 +60,13 @@ class LoadTo(SimpleHoster):
         else:
             captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
             self.download(download_url, post={"adcopy_challenge": captcha_challenge, "adcopy_response": captcha_response})
-            check = self.checkDownload({"404": re.compile("\A<h1>404 Not Found</h1>")})
+            check = self.checkDownload({'404': re.compile("\A<h1>404 Not Found</h1>"), 'html': re.compile("html")})
             if check == "404":
                 self.logWarning("The captcha you entered was incorrect. Please try again.")
                 self.invalidCaptcha()
+                self.retry()
+            elif check == "html":
+                self.logWarning("Downloaded file is an html page, will retry")
                 self.retry()
 
 
