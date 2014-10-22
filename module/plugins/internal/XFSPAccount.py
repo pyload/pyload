@@ -98,10 +98,7 @@ class XFSPAccount(Account):
         except:
             pass
 
-        if premium is None:
-            premium = False
-
-        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
+        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium or False}
 
 
     def login(self, user, data, req):

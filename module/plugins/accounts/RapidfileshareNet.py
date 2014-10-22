@@ -6,7 +6,7 @@ from module.plugins.internal.XFSPAccount import XFSPAccount
 class RapidfileshareNet(XFSPAccount):
     __name__ = "RapidfileshareNet"
     __type__ = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Rapidfileshare.net account plugin"""
     __license__ = "GPLv3"
@@ -15,4 +15,4 @@ class RapidfileshareNet(XFSPAccount):
 
     HOSTER_NAME = "rapidfileshare.net"
 
-    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:</TD><TD><label for="name">\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)\s*</label></TD></TR>'
+    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:</TD><TD><label for="name">\s*(?P<S>[\d.,]+)\s*(?:(?P<U>[\w^_]+))?'
