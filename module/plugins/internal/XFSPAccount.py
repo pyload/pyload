@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
     __type__ = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __description__ = """XFileSharingPro account plugin"""
     __license__ = "GPLv3"
@@ -50,7 +50,7 @@ class XFSPAccount(Account):
 
     def init(self):
         if not hasattr(self, "HOSTER_URL"):
-            self.HOSTER_URL = "http://%s/" % self.HOSTER_NAME
+            self.HOSTER_URL = "http://www.%s/" % self.HOSTER_NAME.replace("www.", "", 1)
 
 
     def loadAccountInfo(self, user, req):
