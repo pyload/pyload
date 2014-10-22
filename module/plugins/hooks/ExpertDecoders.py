@@ -33,6 +33,7 @@ class ExpertDecoders(Hook):
     def setup(self):
         self.info = {}
 
+
     def getCredits(self):
         response = getURL(self.API_URL, post={"key": self.getConfig("passkey"), "action": "balance"})
 
@@ -43,6 +44,7 @@ class ExpertDecoders(Hook):
         else:
             self.logError(response)
             return 0
+
 
     def processCaptcha(self, task):
         task.data['ticket'] = ticket = uuid4()
@@ -65,6 +67,7 @@ class ExpertDecoders(Hook):
         self.logDebug("Result %s : %s" % (ticket, result))
         task.setResult(result)
 
+
     def newCaptchaTask(self, task):
         if not task.isTextual():
             return False
@@ -82,6 +85,7 @@ class ExpertDecoders(Hook):
 
         else:
             self.logInfo(_("Your ExpertDecoders Account has not enough credits"))
+
 
     def captchaInvalid(self, task):
         if "ticket" in task.data:

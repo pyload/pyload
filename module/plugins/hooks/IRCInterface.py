@@ -44,12 +44,14 @@ class IRCInterface(Thread, Hook):
         #   self.sm = core.server_methods
         self.api = core.api  # todo, only use api
 
+
     def coreReady(self):
         self.abort = False
         self.more = []
         self.new_package = {}
 
         self.start()
+
 
     def packageFinished(self, pypack):
         try:
@@ -58,6 +60,7 @@ class IRCInterface(Thread, Hook):
         except:
             pass
 
+
     def downloadFinished(self, pyfile):
         try:
             if self.getConfig("info_file"):
@@ -65,6 +68,7 @@ class IRCInterface(Thread, Hook):
                     _("Download finished: %(name)s @ %(plugin)s ") % {"name": pyfile.name, "plugin": pyfile.pluginname})
         except:
             pass
+
 
     def newCaptchaTask(self, task):
         if self.getConfig("captcha") and task.isTextual():
@@ -77,6 +81,7 @@ class IRCInterface(Thread, Hook):
             url = re.search(r"\[img\]([^\[]+)\[/img\]\[/url\]", page).group(1)
             self.response(_("New Captcha Request: %s") % url)
             self.response(_("Answer with 'c %s text on the captcha'") % task.id)
+
 
     def run(self):
         # connect to IRC etc.
@@ -98,6 +103,7 @@ class IRCInterface(Thread, Hook):
             self.sock.send("QUIT :byebye\r\n")
             print_exc()
             self.sock.close()
+
 
     def main_loop(self):
         readbuffer = ""
@@ -136,6 +142,7 @@ class IRCInterface(Thread, Hook):
                 }
 
                 self.handle_events(msg)
+
 
     def handle_events(self, msg):
         if not msg['origin'].split("!", 1)[0] in self.getConfig("owner").split():
@@ -179,6 +186,7 @@ class IRCInterface(Thread, Hook):
         except Exception, e:
             self.logError(repr(e))
 
+
     def response(self, msg, origin=""):
         if origin == "":
             for t in self.getConfig("owner").split():
@@ -186,10 +194,12 @@ class IRCInterface(Thread, Hook):
         else:
             self.sock.send("PRIVMSG %s :%s\r\n" % (origin.split("!", 1)[0], msg))
 
+
         #### Events
 
     def event_pass(self, args):
         return []
+
 
     def event_status(self, args):
         downloads = self.api.statusDownloads()
@@ -216,6 +226,7 @@ class IRCInterface(Thread, Hook):
                          ))
         return lines
 
+
     def event_queue(self, args):
         ps = self.api.getQueueData()
 
@@ -228,6 +239,7 @@ class IRCInterface(Thread, Hook):
 
         return lines
 
+
     def event_collector(self, args):
         ps = self.api.getCollectorData()
         if not ps:
@@ -238,6 +250,7 @@ class IRCInterface(Thread, Hook):
             lines.append('PACKAGE #%s: "%s" with %d links.' % (pack.pid, pack.name, len(pack.links)))
 
         return lines
+
 
     def event_info(self, args):
         if not args:
@@ -251,6 +264,7 @@ class IRCInterface(Thread, Hook):
             return ["ERROR: Link doesn't exists."]
 
         return ['LINK #%s: %s (%s) [%s][%s]' % (info.fid, info.name, info.format_size, info.statusmsg, info.plugin)]
+
 
     def event_packinfo(self, args):
         if not args:
@@ -283,6 +297,7 @@ class IRCInterface(Thread, Hook):
 
         return lines
 
+
     def event_more(self, args):
         if not self.more:
             return ["No more information to display."]
@@ -293,13 +308,16 @@ class IRCInterface(Thread, Hook):
 
         return lines
 
+
     def event_start(self, args):
         self.api.unpauseServer()
         return ["INFO: Starting downloads."]
 
+
     def event_stop(self, args):
         self.api.pauseServer()
         return ["INFO: No new downloads will be started."]
+
 
     def event_add(self, args):
         if len(args) < 2:
@@ -326,6 +344,7 @@ class IRCInterface(Thread, Hook):
             id = self.api.addPackage(pack, links, 1)
             return ["INFO: Created new Package %s [#%d] with %d links." % (pack, id, len(links))]
 
+
     def event_del(self, args):
         if len(args) < 2:
             return ["ERROR: Use del command like this: del -p|-l <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
@@ -341,6 +360,7 @@ class IRCInterface(Thread, Hook):
         else:
             return ["ERROR: Use del command like this: del <-p|-l> <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
 
+
     def event_push(self, args):
         if not args:
             return ["ERROR: Push package to queue like this: push <package id>"]
@@ -354,6 +374,7 @@ class IRCInterface(Thread, Hook):
         self.api.pushToQueue(id)
         return ["INFO: Pushed package #%d to queue." % id]
 
+
     def event_pull(self, args):
         if not args:
             return ["ERROR: Pull package from queue like this: pull <package id>."]
@@ -364,6 +385,7 @@ class IRCInterface(Thread, Hook):
 
         self.api.pullFromQueue(id)
         return ["INFO: Pulled package #%d from queue to collector." % id]
+
 
     def event_c(self, args):
         """ captcha answer """
@@ -376,6 +398,7 @@ class IRCInterface(Thread, Hook):
 
         task.setResult(" ".join(args[1:]))
         return ["INFO: Result %s saved." % " ".join(args[1:])]
+
 
     def event_help(self, args):
         lines = ["The following commands are available:",
@@ -399,6 +422,7 @@ class IRCError(Exception):
 
     def __init__(self, value):
         self.value = value
+
 
     def __str__(self):
         return repr(self.value)

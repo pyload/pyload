@@ -26,6 +26,7 @@ class DailymotionBatch(Crypter):
         page = self.load(url, get=req)
         return json_loads(page)
 
+
     def getPlaylistInfo(self, id):
         ref = "playlist/" + id
         req = {"fields": "name,owner.screenname"}
@@ -37,6 +38,7 @@ class DailymotionBatch(Crypter):
         name = playlist['name']
         owner = playlist['owner.screenname']
         return name, owner
+
 
     def _getPlaylists(self, user_id, page=1):
         ref = "user/%s/playlists" % user_id
@@ -53,8 +55,10 @@ class DailymotionBatch(Crypter):
             for item in self._getPlaylists(user_id, page + 1):
                 yield item
 
+
     def getPlaylists(self, user_id):
         return [(id,) + self.getPlaylistInfo(id) for id in self._getPlaylists(user_id)]
+
 
     def _getVideos(self, id, page=1):
         ref = "playlist/%s/videos" % id
@@ -71,8 +75,10 @@ class DailymotionBatch(Crypter):
             for item in self._getVideos(id, page + 1):
                 yield item
 
+
     def getVideos(self, playlist_id):
         return list(self._getVideos(playlist_id))[::-1]
+
 
     def decrypt(self, pyfile):
         m = re.match(self.__pattern__, pyfile.url)

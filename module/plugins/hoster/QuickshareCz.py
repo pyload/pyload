@@ -53,6 +53,7 @@ class QuickshareCz(SimpleHoster):
         if check == "err":
             self.fail("File not m or plugin defect")
 
+
     def handleFree(self):
         # get download url
         download_url = '%s/download.php' % self.jsvars['server']
@@ -82,6 +83,7 @@ class QuickshareCz(SimpleHoster):
 
         # download file
         self.download(download_url)
+
 
     def handlePremium(self):
         download_url = '%s/download_premium.php' % self.jsvars['server']

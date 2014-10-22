@@ -57,6 +57,7 @@ class FshareVn(Account):
         if not re.search(r'<img\s+alt="VIP"', html):
             self.wrongPassword()
 
+
     def getTrafficLeft(self):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         return float(m.group(1)) * 1024 ** {'k': 0, 'K': 0, 'M': 1, 'G': 2}[m.group(2)] if m else 0

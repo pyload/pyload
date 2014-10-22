@@ -22,6 +22,7 @@ class DDLMusicOrg(Crypter):
     def setup(self):
         self.multiDL = False
 
+
     def decrypt(self, pyfile):
         html = self.load(pyfile.url, cookies=True)
 

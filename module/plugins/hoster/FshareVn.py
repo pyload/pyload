@@ -58,6 +58,7 @@ class FshareVn(SimpleHoster):
             self.handleFree()
         self.checkDownloadedFile()
 
+
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)
 
@@ -94,8 +95,10 @@ class FshareVn(SimpleHoster):
         self.wait()
         self.download(self.url)
 
+
     def handlePremium(self):
         self.download(self.pyfile.url)
+
 
     def checkErrors(self):
         if '/error.php?' in self.req.lastEffectiveURL or u"Liên kết bạn chọn không tồn" in self.html:
@@ -110,6 +113,7 @@ class FshareVn(SimpleHoster):
         elif '<ul class="message-error">' in self.html:
             self.logError("Unknown error occured or wait time not parsed")
             self.retry(30, 2 * 60, "Unknown error")
+
 
     def checkDownloadedFile(self):
         # check download

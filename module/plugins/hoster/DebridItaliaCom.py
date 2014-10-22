@@ -21,6 +21,7 @@ class DebridItaliaCom(Hoster):
         self.chunkLimit = -1
         self.resumeDownload = True
 
+
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url

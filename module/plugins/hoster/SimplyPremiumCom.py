@@ -24,6 +24,7 @@ class SimplyPremiumCom(Hoster):
         self.chunkLimit = 16
         self.resumeDownload = False
 
+
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url

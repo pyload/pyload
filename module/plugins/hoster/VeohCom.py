@@ -30,6 +30,7 @@ class VeohCom(SimpleHoster):
         self.resumeDownload = self.multiDL = True
         self.chunkLimit = -1
 
+
     def handleFree(self):
         quality = self.getConfig("quality")
         if quality == "Auto":

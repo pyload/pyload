@@ -29,6 +29,7 @@ class MegaDebridEu(Hoster):
         except IndexError:
             return ""
 
+
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
@@ -47,6 +48,7 @@ class MegaDebridEu(Hoster):
             pyfile.name = filename
         self.download(new_url, disposition=True)
 
+
     def connectToApi(self):
         """
         Connexion to the mega-debrid API
@@ -63,6 +65,7 @@ class MegaDebridEu(Hoster):
         else:
             return False
 
+
     def debridLink(self, linkToDebrid):
         """
         Debrid a link
@@ -77,6 +80,7 @@ class MegaDebridEu(Hoster):
             return debridedLink
         else:
             self.exitOnFail("Unable to debrid %s" % linkToDebrid)
+
 
     def exitOnFail(self, msg):
         """

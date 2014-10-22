@@ -32,6 +32,7 @@ class VimeoCom(SimpleHoster):
         self.resumeDownload = self.multiDL = True
         self.chunkLimit = -1
 
+
     def handleFree(self):
         password = self.getPassword()
 

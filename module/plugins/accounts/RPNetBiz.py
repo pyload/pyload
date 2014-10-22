@@ -40,6 +40,7 @@ class RPNetBiz(Account):
         if 'error' in response:
             self.wrongPassword()
 
+
     def getAccountStatus(self, user, req):
         # Using the rpnet API, check if valid premium account
         response = req.load("https://premium.rpnet.biz/client_api.php",

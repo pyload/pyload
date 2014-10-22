@@ -38,6 +38,7 @@ class PremiumizeMe(Account):
         if status['status'] != 200:
             self.wrongPassword()
 
+
     def getAccountStatus(self, user, req):
         # Use premiumize.me API v1 (see https://secure.premiumize.me/?show=api)
         # to retrieve account info and return the parsed json answer

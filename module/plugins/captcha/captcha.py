@@ -28,17 +28,21 @@ class OCR(object):
     def __init__(self):
         self.logger = logging.getLogger("log")
 
+
     def load_image(self, image):
         self.image = Image.open(image)
         self.pixels = self.image.load()
         self.result_captcha = ''
 
+
     def unload(self):
         """delete all tmp images"""
         pass
 
+
     def threshold(self, value):
         self.image = self.image.point(lambda a: a * value + 10)
+
 
     def run(self, command):
         """Run a command"""
@@ -49,6 +53,7 @@ class OCR(object):
         popen.stdout.close()
         popen.stderr.close()
         self.logger.debug("Tesseract ReturnCode %s Output: %s" % (popen.returncode, output))
+
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         #tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
@@ -103,14 +108,17 @@ class OCR(object):
         except:
             pass
 
+
     def get_captcha(self, name):
         raise NotImplementedError
+
 
     def to_greyscale(self):
         if self.image.mode != 'L':
             self.image = self.image.convert('L')
 
         self.pixels = self.image.load()
+
 
     def eval_black_white(self, limit):
         self.pixels = self.image.load()
@@ -121,6 +129,7 @@ class OCR(object):
                     self.pixels[x, y] = 255
                 else:
                     self.pixels[x, y] = 0
+
 
     def clean(self, allowed):
         pixels = self.pixels
@@ -166,6 +175,7 @@ class OCR(object):
                     pixels[x, y] = 255
 
         self.pixels = pixels
+
 
     def derotate_by_average(self):
         """rotate by checking each angle and guess most suitable"""
@@ -241,6 +251,7 @@ class OCR(object):
 
         self.pixels = pixels
 
+
     def split_captcha_letters(self):
         captcha = self.image
         started = False
@@ -279,6 +290,7 @@ class OCR(object):
                 bottomY, topY = 0, height
 
         return letters
+
 
     def correct(self, values, var=None):
         if var:

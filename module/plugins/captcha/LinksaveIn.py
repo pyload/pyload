@@ -26,6 +26,7 @@ class LinksaveIn(OCR):
         OCR.__init__(self)
         self.data_dir = dirname(abspath(__file__)) + sep + "LinksaveIn" + sep
 
+
     def load_image(self, image):
         im = Image.open(image)
         frame_nr = 0
@@ -52,6 +53,7 @@ class LinksaveIn(OCR):
         self.image = new.copy()
         self.pixels = self.image.load()
         self.result_captcha = ''
+
 
     def get_bg(self):
         stat = {}
@@ -89,6 +91,7 @@ class LinksaveIn(OCR):
                 max_p = value
         return bg
 
+
     def substract_bg(self, bgpath):
         bg = Image.open(bgpath)
         img = self.image.convert("P")
@@ -111,6 +114,7 @@ class LinksaveIn(OCR):
                 if rgb_c == rgb_bg:
                     orgpix[x, y] = (255,255,255)
 
+
     def eval_black_white(self):
         new = Image.new("RGB", (140, 75))
         pix = new.load()
@@ -131,6 +135,7 @@ class LinksaveIn(OCR):
                     pix[x, y] = (0,0,0)
         self.image = new
         self.pixels = self.image.load()
+
 
     def get_captcha(self, image):
         self.load_image(image)

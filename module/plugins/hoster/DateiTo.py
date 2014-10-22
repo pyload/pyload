@@ -65,6 +65,7 @@ class DateiTo(SimpleHoster):
         self.logDebug("Download URL", download_url)
         self.download(download_url)
 
+
     def checkErrors(self):
         m = re.search(self.PARALELL_PATTERN, self.html)
         if m:
@@ -72,6 +73,7 @@ class DateiTo(SimpleHoster):
             wait_time = int(m.group(1)) if m else 30
             self.wait(wait_time + 1, False)
             self.retry()
+
 
     def doWait(self):
         m = re.search(self.WAIT_PATTERN, self.html)

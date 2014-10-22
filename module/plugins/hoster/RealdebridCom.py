@@ -32,9 +32,11 @@ class RealdebridCom(Hoster):
             name += "%s.tmp" % randrange(100, 999)
         return name
 
+
     def setup(self):
         self.chunkLimit = 3
         self.resumeDownload = True
+
 
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):

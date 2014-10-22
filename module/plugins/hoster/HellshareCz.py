@@ -27,6 +27,7 @@ class HellshareCz(SimpleHoster):
         self.resumeDownload = self.multiDL = True if self.account else False
         self.chunkLimit = 1
 
+
     def process(self, pyfile):
         if not self.account:
             self.fail("User not logged in")

@@ -32,6 +32,7 @@ class UnSkipOnFail(Hook):
                 self.logInfo(_('restart "%s" (pid:%s)') % (pyfile_name, lpid))
                 self.setLinkStatus(link, "queued")
 
+
     def findDuplicates(self, pyfile):
         """ Search all packages for duplicate links to "pyfile".
             Duplicates are links that would overwrite "pyfile".
@@ -60,6 +61,7 @@ class UnSkipOnFail(Hook):
                             if link.fid != pyfile.id:
                                 dups.append(link)
         return dups
+
 
     def setLinkStatus(self, link, new_status):
         """ Change status of "link" to "new_status".

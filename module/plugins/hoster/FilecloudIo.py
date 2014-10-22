@@ -37,6 +37,7 @@ class FilecloudIo(SimpleHoster):
         self.resumeDownload = self.multiDL = True
         self.chunkLimit = 1
 
+
     def handleFree(self):
         data = {"ukey": self.file_info['ID']}
 
@@ -103,6 +104,7 @@ class FilecloudIo(SimpleHoster):
             self.download(download_url)
         else:
             self.fail("Unexpected server response")
+
 
     def handlePremium(self):
         akey = self.account.getAccountData(self.user)['akey']

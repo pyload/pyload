@@ -64,6 +64,7 @@ class FileserveCom(Hoster):
         self.url = "%s%s" % (self.URLS[0], self.file_id)
         self.logDebug("File ID: %s URL: %s" % (self.file_id, self.url))
 
+
     def process(self, pyfile):
         pyfile.name, pyfile.size, status, self.url = checkFile(self, [self.url])[0]
         if status != 2:
@@ -74,6 +75,7 @@ class FileserveCom(Hoster):
             self.handlePremium()
         else:
             self.handleFree()
+
 
     def handleFree(self):
         self.html = self.load(self.url)
@@ -132,6 +134,7 @@ class FileserveCom(Hoster):
 
         self.thread.m.reconnecting.wait(3)  # Ease issue with later downloads appearing to be in parallel
 
+
     def doTimmer(self):
         response = self.load(self.url, post={"downloadLink": "wait"}, decode=True)
         self.logDebug("Wait response : %s" % response[:80])
@@ -149,6 +152,7 @@ class FileserveCom(Hoster):
 
         self.setWait(wait_time)
         self.wait()
+
 
     def doCaptcha(self):
         captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group("key")
@@ -170,11 +174,13 @@ class FileserveCom(Hoster):
         else:
             self.fail("Invalid captcha")
 
+
     def doLongWait(self, m):
         wait_time = (int(m.group(1)) * {'seconds': 1, 'minutes': 60, 'hours': 3600}[m.group(2)]) if m else 12 * 60
         self.setWait(wait_time, True)
         self.wait()
         self.retry()
+
 
     def handlePremium(self):
         premium_url = None

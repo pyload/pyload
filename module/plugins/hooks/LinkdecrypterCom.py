@@ -25,6 +25,7 @@ class LinkdecrypterCom(Hook):
         except Exception, e:
             self.logError(e)
 
+
     def loadPatterns(self):
         page = getURL("http://linkdecrypter.com/")
         m = re.search(r'<b>Supported\(\d+\)</b>: <i>([^+<]*)', page)

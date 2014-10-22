@@ -85,6 +85,7 @@ class FilefactoryCom(SimpleHoster):
         elif check == "error":
             self.fail("Unknown error")
 
+
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)
         if 'location' in header:

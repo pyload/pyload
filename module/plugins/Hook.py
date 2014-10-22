@@ -81,9 +81,11 @@ class Hook(Base):
         self.initPeriodical()
         self.setup()
 
+
     def initPeriodical(self):
         if self.interval >=1:
             self.cb = self.core.scheduler.addJob(0, self._periodical, threaded=False)
+
 
     def _periodical(self):
         try:
@@ -99,13 +101,16 @@ class Hook(Base):
     def __repr__(self):
         return "<Hook %s>" % self.__name__
 
+
     def setup(self):
         """ more init stuff if needed """
         pass
 
+
     def unload(self):
         """ called when hook was deactivated """
         pass
+
 
     def isActivated(self):
         """ checks if hook is activated"""
@@ -116,36 +121,47 @@ class Hook(Base):
     def coreReady(self):
         pass
 
+
     def coreExiting(self):
         pass
+
 
     def downloadPreparing(self, pyfile):
         pass
 
+
     def downloadFinished(self, pyfile):
         pass
+
 
     def downloadFailed(self, pyfile):
         pass
 
+
     def packageFinished(self, pypack):
         pass
+
 
     def beforeReconnecting(self, ip):
         pass
 
+
     def afterReconnecting(self, ip):
         pass
 
+
     def periodical(self):
         pass
+
 
     def newCaptchaTask(self, task):
         """ new captcha task for the plugin, it MUST set the handler and timeout or will be ignored """
         pass
 
+
     def captchaCorrect(self, task):
         pass
+
 
     def captchaInvalid(self, task):
         pass

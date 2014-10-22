@@ -25,11 +25,13 @@ class WindowsPhoneToastNotify(Hook):
     def setup(self):
         self.info = {}
 
+
     def getXmlData(self):
         myxml = ("<?xml version='1.0' encoding='utf-8'?> <wp:Notification xmlns:wp='WPNotification'> "
                  "<wp:Toast> <wp:Text1>Pyload Mobile</wp:Text1> <wp:Text2>Captcha waiting!</wp:Text2> "
                  "</wp:Toast> </wp:Notification>")
         return myxml
+
 
     def doRequest(self):
         URL = self.getConfig("pushUrl")
@@ -45,6 +47,7 @@ class WindowsPhoneToastNotify(Hook):
         webservice.send(request)
         webservice.close()
         self.setStorage("LAST_NOTIFY", time.time())
+
 
     def newCaptchaTask(self, task):
         if not self.getConfig("pushId") or not self.getConfig("pushUrl"):

@@ -62,6 +62,7 @@ class CzshareCom(SimpleHoster):
 
         return True
 
+
     def handlePremium(self):
     # parse download link
         try:
@@ -74,6 +75,7 @@ class CzshareCom(SimpleHoster):
         # download the file, destination is determined by pyLoad
         self.download("http://sdilej.cz/profi_down.php", post=inputs, disposition=True)
         self.checkDownloadedFile()
+
 
     def handleFree(self):
         # get free url
@@ -125,6 +127,7 @@ class CzshareCom(SimpleHoster):
         self.wait()
         self.download(url)
         self.checkDownloadedFile()
+
 
     def checkDownloadedFile(self):
         # check download

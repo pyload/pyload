@@ -41,6 +41,7 @@ class Captcha9kw(Hook):
         self.API_URL = "https" + self.API_URL if self.getConfig("https") else "http" + self.API_URL
         self.info = {}
 
+
     def getCredits(self):
         response = getURL(self.API_URL, get={"apikey": self.getConfig("passkey"), "pyload": "1", "source": "pyload",
                                              "action": "usercaptchaguthaben"})
@@ -52,6 +53,7 @@ class Captcha9kw(Hook):
         else:
             self.logError(response)
             return 0
+
 
     def processCaptcha(self, task):
         result = None
@@ -100,6 +102,7 @@ class Captcha9kw(Hook):
             self.logError(_("Bad upload"), response)
             return False
 
+
     def newCaptchaTask(self, task):
         if not task.isTextual() and not task.isPositional():
             return False
@@ -117,6 +120,7 @@ class Captcha9kw(Hook):
 
         else:
             self.logError(_("Your Captcha 9kw.eu Account has not enough credits"))
+
 
     def captchaCorrect(self, task):
         if "ticket" in task.data:
@@ -136,6 +140,7 @@ class Captcha9kw(Hook):
                 self.logError(_("Could not send correct request."), e)
         else:
             self.logError(_("No CaptchaID for correct request (task %s) found.") % task)
+
 
     def captchaInvalid(self, task):
         if "ticket" in task.data:

@@ -25,11 +25,14 @@ class DeathByCaptchaException(Exception):
                   'invalid-request': 'Invalid request',
                   'timed-out': 'No CAPTCHA solution received in time'}
 
+
     def __init__(self, err):
         self.err = err
 
+
     def getCode(self):
         return self.err
+
 
     def getDesc(self):
         if self.err in self.DBC_ERRORS.keys():
@@ -37,8 +40,10 @@ class DeathByCaptchaException(Exception):
         else:
             return self.err
 
+
     def __str__(self):
         return "<DeathByCaptchaException %s>" % self.err
+
 
     def __repr__(self):
         return "<DeathByCaptchaException %s>" % self.err
@@ -65,6 +70,7 @@ class DeathByCaptcha(Hook):
 
     def setup(self):
         self.info = {}
+
 
     def call_api(self, api="captcha", post=False, multipart=False):
         req = getRequest()
@@ -106,6 +112,7 @@ class DeathByCaptcha(Hook):
 
         return response
 
+
     def getCredits(self):
         response = self.call_api("user", True)
 
@@ -116,11 +123,13 @@ class DeathByCaptcha(Hook):
         else:
             raise DeathByCaptchaException(response)
 
+
     def getStatus(self):
         response = self.call_api("status", False)
 
         if 'is_service_overloaded' in response and response['is_service_overloaded']:
             raise DeathByCaptchaException('service-overload')
+
 
     def submit(self, captcha, captchaType="file", match=None):
         #workaround multipart-post bug in HTTPRequest.py
@@ -151,6 +160,7 @@ class DeathByCaptcha(Hook):
         self.logDebug("Result %s : %s" % (ticket, result))
 
         return ticket, result
+
 
     def newCaptchaTask(self, task):
         if "service" in task.data:
@@ -183,6 +193,7 @@ class DeathByCaptcha(Hook):
             task.setWaiting(180)
             start_new_thread(self.processCaptcha, (task,))
 
+
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             try:
@@ -191,6 +202,7 @@ class DeathByCaptcha(Hook):
                 self.logError(e.getDesc())
             except Exception, e:
                 self.logError(e)
+
 
     def processCaptcha(self, task):
         c = task.captchaFile

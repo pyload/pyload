@@ -60,6 +60,7 @@ class PluginManager:
 
         self.log.debug("created index of plugins")
 
+
     def parse(self, folder, pattern=False, home={}):
         """
         returns dict with information
@@ -211,11 +212,13 @@ class PluginManager:
 
         return res
 
+
     def findPlugin(self, name, pluginlist=("hoster", "crypter", "container")):
         for ptype in pluginlist:
             if name in self.plugins[ptype]:
                 return self.plugins[ptype][name], ptype
         return None, None
+
 
     def getPlugin(self, name, original=False):
         """return plugin module from hoster|decrypter|container"""
@@ -230,6 +233,7 @@ class PluginManager:
 
         return self.loadModule(type, name)
 
+
     def getPluginName(self, name):
         """ used to obtain new name if other plugin was injected"""
         plugin, type = self.findPlugin(name)
@@ -238,6 +242,7 @@ class PluginManager:
             return plugin['new_name']
 
         return name
+
 
     def loadModule(self, type, name):
         """ Returns loaded module for plugin
@@ -258,14 +263,17 @@ class PluginManager:
                 if self.core.debug:
                     print_exc()
 
+
     def loadClass(self, type, name):
         """Returns the class of a plugin with the same name"""
         module = self.loadModule(type, name)
         if module: return getattr(module, name)
 
+
     def getAccountPlugins(self):
         """return list of account plugin names"""
         return self.accountPlugins.keys()
+
 
     def find_module(self, fullname, path=None):
         #redirecting imports if necesarry

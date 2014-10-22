@@ -42,8 +42,8 @@ class StreamCz(Hoster):
         self.multiDL = True
         self.resumeDownload = True
 
-    def process(self, pyfile):
 
+    def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
 
         if re.search(self.OFFLINE_PATTERN, self.html):

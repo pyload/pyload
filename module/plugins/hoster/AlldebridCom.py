@@ -31,9 +31,11 @@ class AlldebridCom(Hoster):
             name += "%s.tmp" % randrange(100, 999)
         return name
 
+
     def setup(self):
         self.chunkLimit = 16
         self.resumeDownload = True
+
 
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):

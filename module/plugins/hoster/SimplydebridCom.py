@@ -21,6 +21,7 @@ class SimplydebridCom(Hoster):
         self.resumeDownload = self.multiDL = True
         self.chunkLimit = 1
 
+
     def process(self, pyfile):
         if not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "simply-debrid.com")

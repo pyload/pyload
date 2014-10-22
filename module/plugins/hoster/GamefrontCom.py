@@ -28,6 +28,7 @@ class GamefrontCom(Hoster):
         self.resumeDownload = self.multiDL = True
         self.chunkLimit = -1
 
+
     def process(self, pyfile):
         self.pyfile = pyfile
         self.html = self.load(pyfile.url, decode=True)
@@ -44,11 +45,13 @@ class GamefrontCom(Hoster):
 
         self.download(link)
 
+
     def _checkOnline(self):
         if re.search(self.PATTERN_OFFLINE, self.html):
             return False
         else:
             return True
+
 
     def _getName(self):
         name = re.search(self.PATTERN_FILENAME, self.html)
@@ -56,6 +59,7 @@ class GamefrontCom(Hoster):
             self.fail("%s: Plugin broken." % self.__name__)
 
         return name.group(1)
+
 
     def _getLink(self):
         self.html2 = self.load("http://www.gamefront.com/" + re.search("(files/service/thankyou\\?id=\w+)",

@@ -24,7 +24,6 @@ class LinkdecrypterCom(Crypter):
 
 
     def decrypt(self, pyfile):
-
         self.passwords = self.getPassword().splitlines()
 
         # API not working anymore
@@ -32,8 +31,8 @@ class LinkdecrypterCom(Crypter):
         if not self.urls:
             self.fail('Could not extract any links')
 
-    def decryptAPI(self):
 
+    def decryptAPI(self):
         get_dict = {"t": "link", "url": self.pyfile.url, "lcache": "1"}
         self.html = self.load('http://linkdecrypter.com/api', get=get_dict)
         if self.html.startswith('http://'):
@@ -51,8 +50,8 @@ class LinkdecrypterCom(Crypter):
 
         return None
 
-    def decryptHTML(self):
 
+    def decryptHTML(self):
         retries = 5
 
         post_dict = {"link_cache": "on", "pro_links": self.pyfile.url, "modo_links": "text"}

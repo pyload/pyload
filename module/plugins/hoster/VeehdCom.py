@@ -22,9 +22,11 @@ class VeehdCom(Hoster):
     def _debug(self, msg):
         self.logDebug("[%s] %s" % (self.__name__, msg))
 
+
     def setup(self):
         self.multiDL = True
         self.req.canContinue = True
+
 
     def process(self, pyfile):
         self.download_html()
@@ -34,10 +36,12 @@ class VeehdCom(Hoster):
         pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
+
     def download_html(self):
         url = self.pyfile.url
         self._debug("Requesting page: %s" % (repr(url),))
         self.html = self.load(url)
+
 
     def file_exists(self):
         if not self.html:
@@ -46,6 +50,7 @@ class VeehdCom(Hoster):
         if '<title>Veehd</title>' in self.html:
             return False
         return True
+
 
     def get_file_name(self):
         if not self.html:
@@ -64,6 +69,7 @@ class VeehdCom(Hoster):
             pattern = '[^\w.]+'
 
         return re.sub(pattern, self.getConfig('replacement_char'), name) + '.avi'
+
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath

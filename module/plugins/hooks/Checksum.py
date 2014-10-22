@@ -67,11 +67,13 @@ class Checksum(Hook):
         if not self.getConfig("check_checksum"):
             self.logInfo(_("Checksum validation is disabled in plugin configuration"))
 
+
     def setup(self):
         self.algorithms = sorted(
             getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")), reverse=True)
         self.algorithms.extend(["crc32", "adler32"])
         self.formats = self.algorithms + ["sfv", "crc", "hash"]
+
 
     def downloadFinished(self, pyfile):
         """
@@ -130,6 +132,7 @@ class Checksum(Hook):
             else:
                 self.logWarning(_("Unable to validate checksum for file"), pyfile.name)
 
+
     def checkFailed(self, pyfile, local_file, msg):
         check_action = self.getConfig("check_action")
         if check_action == "retry":
@@ -144,6 +147,7 @@ class Checksum(Hook):
         elif check_action == "nothing":
             return
         pyfile.plugin.fail(reason=msg)
+
 
     def packageFinished(self, pypack):
         download_folder = save_join(self.config['general']['download_folder'], pypack.folder, "")

@@ -19,6 +19,7 @@ class UnZip(AbtractExtractor):
     def checkDeps():
         return sys.version_info[:2] >= (2, 6)
 
+
     @staticmethod
     def getTargets(files_ids):
         result = []
@@ -29,10 +30,12 @@ class UnZip(AbtractExtractor):
 
         return result
 
+
     def extract(self, progress, password=None):
         z = zipfile.ZipFile(self.file)
         self.files = z.namelist()
         z.extractall(self.out)
+
 
     def getDeleteFiles(self):
         return [self.file]

@@ -48,6 +48,7 @@ class MegaRapidCz(SimpleHoster):
     def setup(self):
         self.chunkLimit = 1
 
+
     def handlePremium(self):
         try:
             self.html = self.load(self.pyfile.url, decode=True)

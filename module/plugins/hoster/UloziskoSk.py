@@ -38,6 +38,7 @@ class UloziskoSk(SimpleHoster):
         else:
             self.handleFree()
 
+
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:

@@ -27,6 +27,7 @@ class TwoSharedCom(SimpleHoster):
     def setup(self):
         self.resumeDownload = self.multiDL = True
 
+
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:

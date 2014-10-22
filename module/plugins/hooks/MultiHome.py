@@ -26,8 +26,10 @@ class MultiHome(Hook):
             self.parseInterfaces([self.config['download']['interface']])
             self.setConfig("interfaces", self.toConfig())
 
+
     def toConfig(self):
         return ";".join([i.adress for i in self.interfaces])
+
 
     def parseInterfaces(self, interfaces):
         for interface in interfaces:
@@ -35,9 +37,11 @@ class MultiHome(Hook):
                 continue
             self.interfaces.append(Interface(interface))
 
+
     def coreReady(self):
         requestFactory = self.core.requestFactory
         oldGetRequest = requestFactory.getRequest
+
 
         def getRequest(pluginName, account=None):
             iface = self.bestInterface(pluginName, account)
@@ -48,6 +52,7 @@ class MultiHome(Hook):
             return oldGetRequest(pluginName, account)
 
         requestFactory.getRequest = getRequest
+
 
     def bestInterface(self, pluginName, account):
         best = None
@@ -63,13 +68,16 @@ class Interface(object):
         self.adress = adress
         self.history = {}
 
+
     def lastPluginAccess(self, pluginName, account):
         if (pluginName, account) in self.history:
             return self.history[(pluginName, account)]
         return 0
 
+
     def useFor(self, pluginName, account):
         self.history[(pluginName, account)] = time()
+
 
     def __repr__(self):
         return "<Interface - %s>" % self.adress

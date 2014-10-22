@@ -41,9 +41,11 @@ class XHamsterCom(Hoster):
         pyfile.name = self.get_file_name() + self.desired_fmt
         self.download(self.get_file_url())
 
+
     def download_html(self):
         url = self.pyfile.url
         self.html = self.load(url)
+
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -94,6 +96,7 @@ class XHamsterCom(Hoster):
 
         return long_url
 
+
     def get_file_name(self):
         if not self.html:
             self.download_html()
@@ -113,6 +116,7 @@ class XHamsterCom(Hoster):
                         return "Unknown"
 
         return name.group(1)
+
 
     def file_exists(self):
         """ returns True or False

@@ -34,6 +34,7 @@ class ZeveraCom(Account):
         if self.getAPIData(req) == "No traffic":
             self.wrongPassword()
 
+
     def getAPIData(self, req, just_header=False, **kwargs):
         get_data = {
             'cmd': 'accountinfo',

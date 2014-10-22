@@ -71,6 +71,7 @@ class MediafireCom(SimpleHoster):
     def setup(self):
         self.multiDL = False
 
+
     def process(self, pyfile):
         pyfile.url = re.sub(r'/view/?\?', '/?', pyfile.url)
 
@@ -93,6 +94,7 @@ class MediafireCom(SimpleHoster):
             self.multiDL = True
             self.download(self.url, disposition=True)
 
+
     def handleFree(self):
         passwords = self.getPassword().splitlines()
         while self.PASSWORD_PATTERN in self.html:
@@ -110,6 +112,7 @@ class MediafireCom(SimpleHoster):
         self.logDebug("DOWNLOAD LINK:", download_url)
 
         self.download(download_url)
+
 
     def checkCaptcha(self):
         solvemedia = SolveMedia(self)

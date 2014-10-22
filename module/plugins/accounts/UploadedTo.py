@@ -17,7 +17,6 @@ class UploadedTo(Account):
 
 
     def loadAccountInfo(self, user, req):
-
         req.load("http://uploaded.net/language/en")
         html = req.load("http://uploaded.net/me")
 
@@ -44,7 +43,6 @@ class UploadedTo(Account):
 
 
     def login(self, user, data, req):
-
         req.load("http://uploaded.net/language/en")
         req.cj.setCookie("uploaded.net", "lang", "en")
 

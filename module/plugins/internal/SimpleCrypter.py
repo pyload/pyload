@@ -51,6 +51,7 @@ class SimpleCrypter(Crypter):
 
     and its loadPage method:
 
+
       def loadPage(self, page_n):
           return the html of the page number page_n
     """

@@ -24,7 +24,6 @@ class CCF(Container):
 
 
     def decrypt(self, pyfile):
-
         infile = pyfile.url.replace("\n", "")
 
         opener = build_opener(MultipartPostHandler)

@@ -33,6 +33,7 @@ class YoutubeBatch(Crypter):
         page = self.load(url, get=req)
         return json_loads(page)
 
+
     def getChannel(self, user):
         channels = self.api_response("channels", {"part": "id,snippet,contentDetails", "forUsername": user, "maxResults": "50"})
         if channels['items']:
@@ -42,6 +43,7 @@ class YoutubeBatch(Crypter):
                     "relatedPlaylists": channel['contentDetails']['relatedPlaylists'],
                     "user": user}  # One lone channel for user?
 
+
     def getPlaylist(self, p_id):
         playlists = self.api_response("playlists", {"part": "snippet", "id": p_id})
         if playlists['items']:
@@ -50,6 +52,7 @@ class YoutubeBatch(Crypter):
                     "title": playlist['snippet']['title'],
                     "channelId": playlist['snippet']['channelId'],
                     "channelTitle": playlist['snippet']['channelTitle']}
+
 
     def _getPlaylists(self, id, token=None):
         req = {"part": "id", "maxResults": "50", "channelId": id}
@@ -65,8 +68,10 @@ class YoutubeBatch(Crypter):
             for item in self._getPlaylists(id, playlists['nextPageToken']):
                 yield item
 
+
     def getPlaylists(self, ch_id):
         return map(self.getPlaylist, self._getPlaylists(ch_id))
+
 
     def _getVideosId(self, id, token=None):
         req = {"part": "contentDetails", "maxResults": "50", "playlistId": id}
@@ -82,8 +87,10 @@ class YoutubeBatch(Crypter):
             for item in self._getVideosId(id, playlist['nextPageToken']):
                 yield item
 
+
     def getVideosId(self, p_id):
         return list(self._getVideosId(p_id))
+
 
     def decrypt(self, pyfile):
         m = re.match(self.__pattern__, pyfile.url)

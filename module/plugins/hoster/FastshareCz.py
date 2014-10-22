@@ -60,6 +60,7 @@ class FastshareCz(SimpleHoster):
         elif check == "wrong_captcha":
             self.retry(max_tries=5, reason="Wrong captcha")
 
+
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)
         if "location" in header:

@@ -56,7 +56,7 @@ class LetitbitNet(SimpleHoster):
 
     def setup(self):
         self.resumeDownload = True
-        #TODO confirm that resume works
+
 
     def getFileInfo(self):
         api_rep = api_download_info(self.pyfile.url)
@@ -66,6 +66,7 @@ class LetitbitNet(SimpleHoster):
             self.pyfile.size = self.api_data['size']
         else:
             self.offline()
+
 
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="ifree_form"')
@@ -148,6 +149,7 @@ class LetitbitNet(SimpleHoster):
                 self.logError(e)
         else:
             self.fail("Download did not finish correctly")
+
 
     def handlePremium(self):
         api_key = self.user

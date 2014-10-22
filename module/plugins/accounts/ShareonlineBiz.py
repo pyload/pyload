@@ -18,6 +18,7 @@ class ShareonlineBiz(Account):
         return req.load("http://api.share-online.biz/account.php",
                         {"username": user, "password": self.accounts[user]['password'], "act": "userDetails"})
 
+
     def loadAccountInfo(self, user, req):
         src = self.getUserAPI(user, req)
 

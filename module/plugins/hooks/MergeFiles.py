@@ -27,6 +27,7 @@ class MergeFiles(Hook):
         # nothing to do
         pass
 
+
     @threaded
     def packageFinished(self, pack):
         files = {}

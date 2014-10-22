@@ -33,6 +33,7 @@ class DuckCryptInfo(Crypter):
         else:
             self.handleFolder(m)
 
+
     def handleFolder(self, m):
         src = self.load("http://duckcrypt.info/ajax/auth.php?hash=" + str(m.group(2)))
         m = re.match(self.__pattern__, src)
@@ -46,6 +47,7 @@ class DuckCryptInfo(Crypter):
         for clink in cryptlinks:
             if clink.find("a"):
                 self.handleLink(clink.find("a")['href'])
+
 
     def handleLink(self, url):
         src = self.load(url)

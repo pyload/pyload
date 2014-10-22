@@ -27,6 +27,7 @@ class LinksnappyCom(Hoster):
         self.chunkLimit = -1
         self.resumeDownload = True
 
+
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
@@ -66,6 +67,7 @@ class LinksnappyCom(Hoster):
         check = self.checkDownload({"html302": "<title>302 Found</title>"})
         if check == "html302":
             self.retry(wait_time=5, reason="Linksnappy returns only HTML data.")
+
 
     @staticmethod
     def _get_host(url):

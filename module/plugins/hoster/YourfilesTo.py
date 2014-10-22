@@ -25,6 +25,7 @@ class YourfilesTo(Hoster):
         self.prepare()
         self.download(self.get_file_url())
 
+
     def prepare(self):
         if not self.file_exists():
             self.offline()
@@ -35,6 +36,7 @@ class YourfilesTo(Hoster):
         self.setWait(wait_time)
         self.logDebug("%s: Waiting %d seconds." % (self.__name__, wait_time))
         self.wait()
+
 
     def get_waiting_time(self):
         if not self.html:
@@ -49,9 +51,11 @@ class YourfilesTo(Hoster):
 
         return sec
 
+
     def download_html(self):
         url = self.pyfile.url
         self.html = self.load(url)
+
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -64,11 +68,13 @@ class YourfilesTo(Hoster):
         else:
             self.fail("absolute filepath could not be found. offline? ")
 
+
     def get_file_name(self):
         if not self.html:
             self.download_html()
 
         return re.search("<title>(.*)</title>", self.html).group(1)
+
 
     def file_exists(self):
         """ returns True or False

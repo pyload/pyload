@@ -26,6 +26,7 @@ class PremiumTo(Hoster):
         self.resumeDownload = True
         self.chunkLimit = 1
 
+
     def process(self, pyfile):
         if not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "premium.to")
@@ -65,6 +66,7 @@ class PremiumTo(Hoster):
 
         if err:
             self.fail(err)
+
 
     def getTraffic(self):
         try:
