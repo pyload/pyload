@@ -13,6 +13,7 @@ if os.name != "nt":
     from grp import getgrnam
 
 from itertools import islice
+from traceback import print_exc
 
 from module.utils import save_join, save_path, fs_encode, fs_decode
 
@@ -283,6 +284,11 @@ class Plugin(Base):
     def fail(self, reason):
         """ fail and give reason """
         raise Fail(reason)
+
+    def error(self, reason=None, type="parse"):
+        raise Fail("%s error%s | Plugin out of date" % (type.capitalize(), ':' + str(reason) if reason else ""))
+        if self.core.debug:
+            print_exc()
 
     def offline(self):
         """ fail and indicate file is offline """
