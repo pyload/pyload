@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__ = "FilerNet"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/(\w+)'
 
@@ -30,15 +30,6 @@ class FilerNet(SimpleHoster):
 
     LINK_PATTERN = r'href="([^"]+)">Get download</a>'
 
-    RECAPTCHA_KEY = "6LcFctISAAAAAAgaeHgyqhNecGJJRnxV1m_vAz3V"
-
-
-    def process(self, pyfile):
-        if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
-            self.handlePremium()
-        else:
-            self.handleFree()
-
 
     def handleFree(self):
         # Wait between downloads
@@ -46,8 +37,6 @@ class FilerNet(SimpleHoster):
         if m:
             waittime = int(m.group(1))
             self.retry(3, waittime, "Wait between free downloads")
-
-        self.getFileInfo()
 
         self.html = self.load(self.pyfile.url, decode=True)
 
@@ -69,8 +58,12 @@ class FilerNet(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
+        captcha_key = recaptcha.detect_key()
+        if captcha_key is None:
+            self.parseError("ReCaptcha key not found")
+
         for _ in xrange(5):
-            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+            challenge, response = recaptcha.challenge(captcha_key)
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,
                          'hash': hash_data}
