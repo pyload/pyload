@@ -45,7 +45,7 @@ class FilepupNet(SimpleHoster):
 
         check = self.checkDownload({'html': re.compile("html")})
         if check == "html":
-            self.error("Downloaded file is an html file")
+            self.error("Downloaded file is an html page")
 
 
 getInfo = create_getInfo(FilepupNet)

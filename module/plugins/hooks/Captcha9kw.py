@@ -15,7 +15,7 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
     __type__ = "hook"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", True),
