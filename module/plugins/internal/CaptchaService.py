@@ -16,7 +16,7 @@ class CaptchaService:
 
     KEY_PATTERN = None
 
-    key = None
+    key = None  #: last key detected
 
 
     def __init__(self, plugin):
@@ -28,7 +28,7 @@ class CaptchaService:
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = "%s html missing" % self.__name__
+                errmsg = "%s html not found" % self.__name__
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
@@ -68,7 +68,7 @@ class ReCaptcha(CaptchaService):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = "ReCaptcha html missing"
+                errmsg = "ReCaptcha not found"
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
@@ -86,10 +86,10 @@ class ReCaptcha(CaptchaService):
 
     def challenge(self, key=None):
         if not key:
-            if self.key:
+            if self.detect_key():
                 key = self.key
             else:
-                errmsg = "ReCaptcha key missing"
+                errmsg = "ReCaptcha key not found"
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
@@ -129,7 +129,7 @@ class AdsCaptcha(CaptchaService):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = "AdsCaptcha html missing"
+                errmsg = "AdsCaptcha html not found"
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
@@ -144,12 +144,12 @@ class AdsCaptcha(CaptchaService):
             return None
 
 
-    def challenge(self, key=None):  #: key is tuple(CaptchaId, PublicKey)
+    def challenge(self, key=None):  #: key is a tuple(CaptchaId, PublicKey)
         if not key:
-            if self.key:
+            if self.detect_key():
                 key = self.key
             else:
-                errmsg = "AdsCaptcha key missing"
+                errmsg = "AdsCaptcha key not found"
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
@@ -187,10 +187,10 @@ class SolveMedia(CaptchaService):
 
     def challenge(self, key=None):
         if not key:
-            if self.key:
+            if self.detect_key():
                 key = self.key
             else:
-                errmsg = "SolveMedia key missing"
+                errmsg = "SolveMedia key not found"
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 

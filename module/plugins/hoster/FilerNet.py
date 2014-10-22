@@ -18,7 +18,7 @@ class FilerNet(SimpleHoster):
     __type__ = "hoster"
     __version__ = "0.07"
 
-    __pattern__ = r'https?://(?:www\.)?filer\.net/get/(\w+)'
+    __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
 
     __description__ = """Filer.net hoster plugin"""
     __license__ = "GPLv3"
@@ -35,8 +35,7 @@ class FilerNet(SimpleHoster):
         # Wait between downloads
         m = re.search(r'musst du <span id="time">(\d+)</span> Sekunden warten', self.html)
         if m:
-            waittime = int(m.group(1))
-            self.retry(3, waittime, "Wait between free downloads")
+            self.retry(wait_time=int(m.group(1)), reason="Wait between free downloads")
 
         self.html = self.load(self.pyfile.url, decode=True)
 

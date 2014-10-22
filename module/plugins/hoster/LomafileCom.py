@@ -24,7 +24,7 @@ class LomafileCom(XFSPHoster):
     OFFLINE_PATTERN = r'>(No such file|Software error:<)'
     TEMP_OFFLINE_PATTERN = r'The page may have been renamed, removed or be temporarily unavailable.<'
 
-    CAPTCHA_URL_PATTERN = r'(http://lomafile\.com/captchas/[^"\']+)'
+    CAPTCHA_PATTERN = r'(http://lomafile\.com/captchas/[^"\']+)'
 
 
 getInfo = create_getInfo(LomafileCom)

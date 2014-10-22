@@ -102,8 +102,6 @@ class DepositfilesCom(SimpleHoster):
             self.retry(wait_time=60)
 
     def handlePremium(self):
-        self.html = self.load(self.pyfile.url, cookies=self.COOKIES)
-
         if '<span class="html_download_api-gold_traffic_limit">' in self.html:
             self.logWarning("Download limit reached")
             self.retry(25, 60 * 60, "Download limit reached")

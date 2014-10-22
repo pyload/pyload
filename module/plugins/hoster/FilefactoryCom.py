@@ -38,7 +38,6 @@ class FilefactoryCom(SimpleHoster):
 
 
     def handleFree(self):
-        self.html = self.load(self.pyfile.url, decode=True)
         if "Currently only Premium Members can download files larger than" in self.html:
             self.fail("File too large for free download")
         elif "All free download slots on this server are currently in use" in self.html:

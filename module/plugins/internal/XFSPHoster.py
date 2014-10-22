@@ -46,7 +46,7 @@ class XFSPHoster(SimpleHoster):
     OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     LINK_PATTERN = None  #: final download url pattern
 
-    CAPTCHA_URL_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
+    CAPTCHA_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
     CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
     RECAPTCHA_PATTERN = None
     SOLVEMEDIA_PATTERN = None
@@ -306,7 +306,7 @@ class XFSPHoster(SimpleHoster):
 
 
     def handleCaptcha(self, inputs):
-        m = re.search(self.CAPTCHA_URL_PATTERN, self.html)
+        m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m:
             captcha_url = m.group(1)
             inputs['code'] = self.decryptCaptcha(captcha_url)

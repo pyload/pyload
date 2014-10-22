@@ -77,7 +77,7 @@ class BezvadataCz(SimpleHoster):
 
     def checkErrors(self):
         if 'images/button-download-disable.png' in self.html:
-            self.longWait(5 * 60, 24)  # parallel dl limit
+            self.longWait(5 * 60, 24)  #: parallel dl limit
         elif '<div class="infobox' in self.html:
             self.tempOffline()
 

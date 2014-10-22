@@ -53,7 +53,7 @@ class MegaRapidCz(SimpleHoster):
             self.html = self.load(self.pyfile.url, decode=True)
         except BadHeader, e:
             self.account.relogin(self.user)
-            self.retry(max_tries=3, reason=str(e))
+            self.retry(wait_time=60, reason=str(e))
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m:
@@ -63,7 +63,7 @@ class MegaRapidCz(SimpleHoster):
         else:
             if re.search(self.ERR_LOGIN_PATTERN, self.html):
                 self.relogin(self.user)
-                self.retry(max_tries=3, reason="User login failed")
+                self.retry(wait_time=60, reason="User login failed")
             elif re.search(self.ERR_CREDIT_PATTERN, self.html):
                 self.fail("Not enough credit left")
             else:

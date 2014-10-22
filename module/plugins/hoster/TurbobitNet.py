@@ -38,7 +38,7 @@ class TurbobitNet(SimpleHoster):
     LINK_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
     LIMIT_WAIT_PATTERN = r'<div id=\'timeout\'>(\d+)<'
 
-    CAPTCHA_URL_PATTERN = r'<img alt="Captcha" src="(.+?)"'
+    CAPTCHA_PATTERN = r'<img alt="Captcha" src="(.+?)"'
 
 
     def handleFree(self):
@@ -78,7 +78,7 @@ class TurbobitNet(SimpleHoster):
 
                 inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
             else:
-                m = re.search(self.CAPTCHA_URL_PATTERN, self.html)
+                m = re.search(self.CAPTCHA_PATTERN, self.html)
                 if m is None:
                     self.error('captcha')
                 captcha_url = m.group(1)
@@ -165,7 +165,6 @@ class TurbobitNet(SimpleHoster):
 
     def handlePremium(self):
         self.logDebug("Premium download as user %s" % self.user)
-        self.html = self.load(self.pyfile.url)  # Useless in 0.5
         self.downloadFile()
 
 
