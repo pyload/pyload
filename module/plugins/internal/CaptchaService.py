@@ -7,7 +7,7 @@ from random import random
 
 class CaptchaService:
     __name__ = "CaptchaService"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """Base captcha service plugin"""
     __license__ = "GPLv3"
@@ -52,14 +52,14 @@ class CaptchaService:
 
 class ReCaptcha(CaptchaService):
     __name__ = "ReCaptcha"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
-    KEY_PATTERN = r'https?://(?:www\.)?google\.com/recaptcha/api/challenge\?k=(?P<KEY>[\w-]+)'
+    KEY_PATTERN = r'recaptcha/api/challenge\?k=(?P<KEY>[\w-]+)'
     KEY_AJAX_PATTERN = r'Recaptcha\.create\s*\(\s*["\'](?P<KEY>[\w-]+)'
 
 
@@ -113,15 +113,15 @@ class ReCaptcha(CaptchaService):
 
 class AdsCaptcha(CaptchaService):
     __name__ = "AdsCaptcha"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """AdsCaptcha captcha service plugin"""
     __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
-    ID_PATTERN = r'http://api\.adscaptcha\.com/Get\.aspx\?[^"\']*CaptchaId=(?P<ID>\d+)'
-    KEY_PATTERN = r'http://api\.adscaptcha\.com/Get\.aspx\?[^"\']*PublicKey=(?P<KEY>[\w-]+)'
+    ID_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*CaptchaId=(?P<ID>\d+)'
+    KEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*PublicKey=(?P<KEY>[\w-]+)'
 
 
     def detect_key(self, html=None):
@@ -175,14 +175,14 @@ class AdsCaptcha(CaptchaService):
 
 class SolveMedia(CaptchaService):
     __name__ = "SolveMedia"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
-    KEY_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.(no)?script\?k=(?P<KEY>.+?)["\']'
+    KEY_PATTERN = r'api\.solvemedia\.com/papi/challenge\.(no)?script\?k=(?P<KEY>.+?)["\']'
 
 
     def challenge(self, key=None):
