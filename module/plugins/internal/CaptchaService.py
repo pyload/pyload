@@ -7,7 +7,7 @@ from random import random
 
 class CaptchaService:
     __name__ = "CaptchaService"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __description__ = """Base captcha service plugin"""
     __license__ = "GPLv3"
@@ -52,14 +52,14 @@ class CaptchaService:
 
 class ReCaptcha(CaptchaService):
     __name__ = "ReCaptcha"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
 
-    KEY_PATTERN = r'recaptcha/api/challenge\?k=(?P<KEY>[\w-]+)'
+    KEY_PATTERN = r'recaptcha(/api|\.net)/(challenge|noscript)\?k=(?P<KEY>[\w-]+)'
     KEY_AJAX_PATTERN = r'Recaptcha\.create\s*\(\s*["\'](?P<KEY>[\w-]+)'
 
 
