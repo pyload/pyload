@@ -130,7 +130,7 @@ class Captcha9kw(Hook):
                                         "pyload": "1",
                                         "source": "pyload",
                                         "id": task.data['ticket']})
-                self.logInfo(_("Request correct", response)
+                self.logInfo(_("Request correct"), response)
 
             except BadHeader, e:
                 self.logError(_("Could not send correct request."), e)
@@ -149,7 +149,7 @@ class Captcha9kw(Hook):
                                         "pyload": "1",
                                         "source": "pyload",
                                         "id": task.data['ticket']})
-                self.logInfo(_("Request refund", response)
+                self.logInfo(_("Request refund"), response)
 
             except BadHeader, e:
                 self.logError(_("Could not send refund request."), e)
