@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class SafesharingEu(XFSPHoster):
+class SafesharingEu(XFSHoster):
     __name__ = "SafesharingEu"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:\w+\.)?safesharing.eu/\w+'
 
@@ -14,7 +14,7 @@ class SafesharingEu(XFSPHoster):
     __license__ = "GPLv3"
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
-    HOSTER_NAME = "safesharing.eu"
+    HOSTER_DOMAIN = "safesharing.eu"
 
     FILE_NAME_PATTERN = r'Filename:</b></td><td nowrap>(?P<N>.*)</td></tr>'
     FILE_SIZE_PATTERN = r'Size:</b></td><td>(?P<S>.*) (?P<U>[kKmMbB]*) <small>'
