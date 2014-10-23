@@ -309,10 +309,17 @@ class Plugin(Base):
         raise Fail(reason)
 
 
-    def error(self, reason=None, type="parse"):
-        raise Fail("%s error%s | Plugin out of date" % (type.capitalize(), ': ' + str(reason) if reason else ""))
+    def error(self, reason="", type=""):
+        if not reason and not type:
+            type = "unknown"
+
+        msg  = "%s error" % type.strip().capitalize() if type else "Error"
+        msg += ": " + reason.strip() if reason else ""
+        msg += " | Plugin may be out of date"
+
         if self.core.debug:
             print_exc()
+        raise Fail(msg)
 
 
     def offline(self):
@@ -333,8 +340,7 @@ class Plugin(Base):
         :param reason: reason for retrying, will be passed to fail if max_tries reached
         """
         if 0 < max_tries <= self.retries:
-            if not reason: reason = "Max retries reached"
-            raise Fail(reason)
+            self.error(reason or "Max retries reached", "retry")
 
         self.wantReconnect = False
         self.setWait(wait_time)

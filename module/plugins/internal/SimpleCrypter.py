@@ -165,7 +165,7 @@ class SimpleCrypter(Crypter):
 
 
     #@TODO: remove in 0.4.10
-    def error(self, reason=None, type="parse"):
-        raise Fail("%s error%s | Plugin out of date" % (type.capitalize(), ': ' + str(reason) if reason else ""))
+    def error(self, reason="", type="parse"):
         if self.core.debug:
             print_exc()
+        raise Fail("%s error%s | Plugin may be out of date" % (type.strip().capitalize(), ': ' + reason.strip() if reason else ""))
