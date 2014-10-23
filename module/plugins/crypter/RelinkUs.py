@@ -188,7 +188,7 @@ class RelinkUs(Crypter):
         elif source == 'web':
             return self.handleWEBLinks()
         else:
-            self.fail('Unknown source [%s] (this is probably a bug)' % source)
+            self.error('Unknown source [%s] (this is probably a bug)' % source)
 
 
     def handleCNL2Links(self):

@@ -94,7 +94,7 @@ def getInfo(urls):
 class UploadedTo(Hoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __version__ = "0.74"
+    __version__ = "0.75"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
@@ -198,16 +198,15 @@ class UploadedTo(Hoster):
             self.fail("File not downloadable for free users")
         self.setWait(int(m.group(1)))
 
-        js = self.load("http://uploaded.net/js/download.js", decode=True)
-
-        challengeId = re.search(r'Recaptcha\.create\("([^"]+)', js)
+        self.html = self.load("http://uploaded.net/js/download.js", decode=True)
 
         url = "http://uploaded.net/io/ticket/captcha/%s" % self.fileID
         downloadURL = ""
 
+        recaptcha = ReCaptcha(self)
+
         for _ in xrange(5):
-            re_captcha = ReCaptcha(self)
-            challenge, result = re_captcha.challenge(challengeId.group(1))
+            challenge, result = recaptcha.challenge()
             options = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": result}
             self.wait()
 
@@ -234,7 +233,7 @@ class UploadedTo(Hoster):
                 downloadURL = re.search("url:'([^']+)", result).group(1)
                 break
             else:
-                self.fail("Unknown error '%s'" % result)
+                self.error("Unknown error '%s'" % result)
 
         if not downloadURL:
             self.fail("No Download url retrieved/all captcha attempts failed")

@@ -111,8 +111,9 @@ class FshareVn(SimpleHoster):
             self.wait(wait_until - mktime(gmtime()) - 7 * 60 * 60, True)
             self.retry()
         elif '<ul class="message-error">' in self.html:
-            self.logError("Unknown error occured or wait time not parsed")
-            self.retry(30, 2 * 60, "Unknown error")
+            msg = "Unknown error occured or wait time not parsed"
+            self.logError(msg)
+            self.retry(30, 2 * 60, msg)
 
 
     def checkDownloadedFile(self):

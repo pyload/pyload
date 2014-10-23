@@ -106,7 +106,7 @@ class RapidshareCom(Hoster):
         elif self.api_data['status'] == "3":
             self.tempOffline()
         else:
-            self.fail("Unknown response code.")
+            self.error("Unknown response code.")
 
 
     def handleFree(self):

@@ -105,13 +105,13 @@ class FileserveCom(Hoster):
                 self.doTimmer()
 
         else:
-            self.fail("Unknown server response")
+            self.error("Unknown server response")
 
         # show download link
         response = self.load(self.url, post={"downloadLink": "show"}, decode=True)
         self.logDebug("Show downloadLink response : %s" % response)
         if "fail" in response:
-            self.fail("Couldn't retrieve download url")
+            self.error("Couldn't retrieve download url")
 
         # this may either download our file or forward us to an error page
         self.download(self.url, post={"download": "normal"})

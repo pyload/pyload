@@ -176,9 +176,10 @@ class ShareonlineBiz(Hoster):
             return
 
         err = m.group(1)
-        m = re.search(self.ERROR_INFO_PATTERN, self.html)
-        msg = m.group(1) if m else ""
-        self.logError(err, msg or "Unknown error occurred")
+        try:
+            self.logError(err, re.search(self.ERROR_INFO_PATTERN, self.html).group(1))
+        except:
+            self.logError(err, "Unknown error occurred")
 
         if err == "invalid":
             self.fail(msg or "File not available")

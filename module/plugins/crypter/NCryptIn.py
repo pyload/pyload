@@ -205,7 +205,7 @@ class NCryptIn(Crypter):
         elif link_source_type == "web":
             return self.handleWebLinks()
         else:
-            self.fail('unknown source type "%s" (this is probably a bug)' % link_source_type)
+            self.error('unknown source type "%s" (this is probably a bug)' % link_source_type)
 
 
     def handleSingleLink(self):
