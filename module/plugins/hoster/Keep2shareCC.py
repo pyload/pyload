@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class Keep2shareCC(SimpleHoster):
     __name__ = "Keep2shareCC"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
@@ -71,18 +71,22 @@ class Keep2shareCC(SimpleHoster):
 
 
     def handleCaptcha(self):
-        m = re.search(self.CAPTCHA_PATTERN, self.html)
-        if m is None:
-            self.error("Captcha key not found")
-
-        captcha_url = urljoin(self.base_url, m.group(1))
+        recaptcha = ReCaptcha(self)
 
         for _ in xrange(5):
-            post_data = {'CaptchaForm[code]': self.decryptCaptcha(captcha_url),
-                         'free': 1,
+            post_data = {'free': 1,
                          'freeDownloadRequest': 1,
                          'uniqueId': self.fid,
                          'yt0': ''}
+
+            m = re.search(self.CAPTCHA_PATTERN, self.html)
+            if m:
+                captcha_url = urljoin(self.base_url, m.group(1))
+                post_data['CaptchaForm[code]'] = self.decryptCaptcha(captcha_url)
+            else:
+                challenge, response = recaptcha.challenge()
+                post_data.update({'recaptcha_challenge_field': challenge,
+                                  'recaptcha_response_field': response})
 
             self.html = self.load(self.pyfile.url, post=post_data)
 
