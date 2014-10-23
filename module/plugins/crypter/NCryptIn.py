@@ -13,9 +13,10 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
-    __version__ = "1.33"
+    __version__ = "1.34"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<type>folder|link|frame)-([^/\?]+)'
+    __config__ = [("readPackageName", "bool", "Search package/folder name on the website", "True")]
 
     __description__ = """NCrypt.in decrypter plugin"""
     __license__ = "GPLv3"
@@ -120,13 +121,13 @@ class NCryptIn(Crypter):
 
     def getPackageInfo(self):
         m = re.search(self.NAME_PATTERN, self.html)
-        if m:
+        if m and self.getConfig("readPackageName"):
             name = folder = m.group('N').strip()
             self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
         else:
             name = self.package.name
             folder = self.package.folder
-            self.logDebug("Package info not m, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
+            self.logDebug("Package info not found or unwanted, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
         return name, folder
 
 
