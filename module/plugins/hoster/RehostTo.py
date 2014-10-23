@@ -20,9 +20,11 @@ class RehostTo(Hoster):
     def getFilename(self, url):
         return unquote(url.rsplit("/", 1)[1])
 
+
     def setup(self):
         self.chunkLimit = 1
         self.resumeDownload = True
+
 
     def process(self, pyfile):
         if not self.account:

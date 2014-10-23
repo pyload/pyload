@@ -50,11 +50,7 @@ class CatShareNet(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        captcha_key = recaptcha.detect_key()
-        if captcha_key is None:
-            self.error("ReCaptcha key not found")
-
-        challenge, code = recaptcha.challenge(captcha_key)
+        challenge, code = recaptcha.challenge()
         self.html = self.load(self.pyfile.url,
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field': code})

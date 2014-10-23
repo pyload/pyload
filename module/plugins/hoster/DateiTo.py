@@ -30,7 +30,6 @@ class DateiTo(SimpleHoster):
     def handleFree(self):
         url = 'http://datei.to/ajax/download.php'
         data = {'P': 'I', 'ID': self.file_info['ID']}
-
         recaptcha = ReCaptcha(self)
 
         for _ in xrange(10):
@@ -52,18 +51,14 @@ class DateiTo(SimpleHoster):
             data = dict(x.split('=') for x in m.group(2).split('&'))
 
             if url.endswith('recaptcha.php'):
-                captcha_key = recaptcha.detect_key()
-                if captcha_key is None:
-                    self.error("ReCaptcha key not found")
-
-                data['recaptcha_challenge_field'], data['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
-
+                data['recaptcha_challenge_field'], data['recaptcha_response_field'] = recaptcha.challenge()
         else:
             self.fail('Too bad...')
 
         download_url = self.html
         self.logDebug("Download URL", download_url)
         self.download(download_url)
+
 
     def checkErrors(self):
         m = re.search(self.PARALELL_PATTERN, self.html)
@@ -72,6 +67,7 @@ class DateiTo(SimpleHoster):
             wait_time = int(m.group(1)) if m else 30
             self.wait(wait_time + 1, False)
             self.retry()
+
 
     def doWait(self):
         m = re.search(self.WAIT_PATTERN, self.html)

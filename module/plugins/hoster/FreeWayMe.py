@@ -20,6 +20,7 @@ class FreeWayMe(Hoster):
         self.chunkLimit = 1
         self.multiDL = self.premium
 
+
     def process(self, pyfile):
         if not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "FreeWayMe")

@@ -54,6 +54,7 @@ class DailymotionCom(Hoster):
     def setup(self):
         self.resumeDownload = self.multiDL = True
 
+
     def getStreams(self):
         streams = []
         for result in re.finditer(r"\"(?P<URL>http:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF>.*?)\\.*?)\"",
@@ -65,6 +66,7 @@ class DailymotionCom(Hoster):
             streams.append((quality, link))
         return sorted(streams, key=lambda x: x[0][::-1])
 
+
     def getQuality(self):
         q = self.getConfig("quality")
         if q == "Lowest":
@@ -74,6 +76,7 @@ class DailymotionCom(Hoster):
         else:
             quality = int(q.rsplit(" ")[1][:-1])
         return quality
+
 
     def getLink(self, streams, quality):
         if quality > 0:
@@ -91,12 +94,14 @@ class DailymotionCom(Hoster):
         self.logInfo("Download video quality %sx%s" % s[0])
         return s[1]
 
+
     def checkInfo(self, pyfile):
         pyfile.name, pyfile.size, pyfile.status, pyfile.url = getInfo([pyfile.url])[0]
         if pyfile.status == 1:
             self.offline()
         elif pyfile.status == 6:
             self.tempOffline()
+
 
     def process(self, pyfile):
         self.checkInfo(pyfile)

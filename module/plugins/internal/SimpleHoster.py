@@ -3,6 +3,7 @@
 import re
 
 from time import time
+from traceback import print_exc
 from urlparse import urlparse
 
 from module.network.CookieJar import CookieJar
@@ -321,8 +322,8 @@ class SimpleHoster(Hoster):
         super(SimpleHoster, self).wait()
 
 
+    #@TODO: remove in 0.4.10
     def error(self, reason=None, type="parse"):
-        if reason:
-            raise Fail("%s error: %s | Plugin may be out of date" % (type.capitalize(), reason))
-        else:
-            raise Fail("%s error | Plugin out of date" % type.capitalize())
+        raise Fail("%s error%s | Plugin out of date" % (type.capitalize(), ': ' + str(reason) if reason else ""))
+        if self.core.debug:
+            print_exc()

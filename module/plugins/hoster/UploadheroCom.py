@@ -58,12 +58,13 @@ class UploadheroCom(SimpleHoster):
 
         self.download(download_url)
 
+
     def handlePremium(self):
         self.logDebug("%s: Use Premium Account" % self.__name__)
-        self.html = self.load(self.pyfile.url)
         link = re.search(self.PREMIUM_URL_PATTERN, self.html).group(1)
         self.logDebug("Downloading link : '%s'" % link)
         self.download(link)
+
 
     def checkErrors(self):
         m = re.search(self.IP_BLOCKED_PATTERN, self.html)

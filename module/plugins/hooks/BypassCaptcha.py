@@ -13,11 +13,14 @@ class BypassCaptchaException(Exception):
     def __init__(self, err):
         self.err = err
 
+
     def getCode(self):
         return self.err
 
+
     def __str__(self):
         return "<BypassCaptchaException %s>" % self.err
+
 
     def __repr__(self):
         return "<BypassCaptchaException %s>" % self.err
@@ -49,11 +52,13 @@ class BypassCaptcha(Hook):
     def setup(self):
         self.info = {}
 
+
     def getCredits(self):
         response = getURL(self.GETCREDITS_URL, post={"key": self.getConfig("passkey")})
 
         data = dict([x.split(' ', 1) for x in response.splitlines()])
         return int(data['Left'])
+
 
     def submit(self, captcha, captchaType="file", match=None):
         req = getRequest()
@@ -81,12 +86,14 @@ class BypassCaptcha(Hook):
 
         return ticket, result
 
+
     def respond(self, ticket, success):
         try:
             response = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig("passkey"),
                                                       "cv": 1 if success else 0})
         except BadHeader, e:
             self.logError(_("Could not send response."), e
+
 
     def newCaptchaTask(self, task):
         if "service" in task.data:
@@ -110,13 +117,16 @@ class BypassCaptcha(Hook):
         else:
             self.logInfo(_("Your %s account has not enough credits") % self.__name__)
 
+
     def captchaCorrect(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             self.respond(task.data['ticket'], True)
 
+
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             self.respond(task.data['ticket'], False)
+
 
     def processCaptcha(self, task):
         c = task.captchaFile

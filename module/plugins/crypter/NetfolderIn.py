@@ -40,11 +40,13 @@ class NetfolderIn(SimpleCrypter):
         # Set package
         self.packages = [(package_name, package_links, folder_name)]
 
+
     def isPasswordProtected(self):
         if '<input type="password" name="password"' in self.html:
             self.logDebug("Links are password protected")
             return True
         return False
+
 
     def submitPassword(self):
         # Gather data
@@ -68,6 +70,7 @@ class NetfolderIn(SimpleCrypter):
             return None
 
         return html
+
 
     def getLinks(self):
         links = re.search(r'name="list" value="(.*?)"', self.html).group(1).split(",")

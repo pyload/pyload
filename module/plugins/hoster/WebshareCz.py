@@ -43,6 +43,7 @@ class WebshareCz(SimpleHoster):
         self.logDebug("Direct link: " + direct)
         self.download(direct, disposition=True)
 
+
     def getFileInfo(self):
         self.logDebug("URL: %s" % self.pyfile.url)
 

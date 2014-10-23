@@ -38,8 +38,10 @@ class MultishareCz(SimpleHoster):
         else:
             self.handleOverriden()
 
+
     def handleFree(self):
         self.download("http://www.multishare.cz/html/download_free.php?ID=%s" % self.fileID)
+
 
     def handlePremium(self):
         if not self.checkCredit():
@@ -47,6 +49,7 @@ class MultishareCz(SimpleHoster):
             self.resetAccount()
 
         self.download("http://www.multishare.cz/html/download_premium.php?ID=%s" % self.fileID)
+
 
     def handleOverriden(self):
         if not self.premium:
@@ -62,6 +65,7 @@ class MultishareCz(SimpleHoster):
         params = {"u_ID": self.acc_info['u_ID'], "u_hash": self.acc_info['u_hash'], "link": self.pyfile.url}
         self.logDebug(url, params)
         self.download(url, get=params)
+
 
     def checkCredit(self):
         self.acc_info = self.account.getAccountInfo(self.user, True)

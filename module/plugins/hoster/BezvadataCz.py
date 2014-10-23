@@ -25,6 +25,7 @@ class BezvadataCz(SimpleHoster):
     def setup(self):
         self.multiDL = self.resumeDownload = True
 
+
     def handleFree(self):
         #download button
         m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
@@ -75,11 +76,13 @@ class BezvadataCz(SimpleHoster):
 
         self.download(url)
 
+
     def checkErrors(self):
         if 'images/button-download-disable.png' in self.html:
-            self.longWait(5 * 60, 24)  # parallel dl limit
+            self.longWait(5 * 60, 24)  #: parallel dl limit
         elif '<div class="infobox' in self.html:
             self.tempOffline()
+
 
     def loadcaptcha(self, data, *args, **kwargs):
         return data.decode("base64")

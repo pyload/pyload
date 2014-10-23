@@ -16,6 +16,7 @@ def which(program):
 
     Courtesy of http://stackoverflow.com/a/377028/675646"""
 
+
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
@@ -84,6 +85,7 @@ class YoutubeCom(Hoster):
 
     def setup(self):
         self.resumeDownload = self.multiDL = True
+
 
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)

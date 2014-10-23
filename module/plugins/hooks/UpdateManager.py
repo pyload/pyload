@@ -48,13 +48,16 @@ class UpdateManager(Hook):
             if value is True and self.core.debug:
                 self.periodical2()
 
+
     def coreReady(self):
         self.pluginConfigChanged(self.__name__, "interval", self.getConfig("interval"))
         x = lambda: self.pluginConfigChanged(self.__name__, "reloadplugins", self.getConfig("reloadplugins"))
         self.core.scheduler.addJob(10, x, threaded=False)
 
+
     def unload(self):
         self.pluginConfigChanged(self.__name__, "reloadplugins", False)
+
 
     def setup(self):
         self.cb2 = None
@@ -63,10 +66,12 @@ class UpdateManager(Hook):
         self.info = {'pyload': False, 'version': None, 'plugins': False}
         self.mtimes = {}  #: store modification time for each plugin
 
+
     def periodical2(self):
         if not self.updating:
             self.autoreloadPlugins()
         self.cb2 = self.core.scheduler.addJob(4, self.periodical2, threaded=False)
+
 
     @Expose
     def autoreloadPlugins(self):
@@ -97,15 +102,18 @@ class UpdateManager(Hook):
 
         return True if self.core.pluginManager.reloadPlugins(reloads) else False
 
+
     def periodical(self):
         if not self.info['pyload'] and not (self.getConfig("nodebugupdate") and self.core.debug):
             self.updateThread()
+
 
     def server_request(self):
         try:
             return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
         except:
             self.logWarning(_("Unable to contact server to get updates"))
+
 
     @threaded
     def updateThread(self):
@@ -116,10 +124,12 @@ class UpdateManager(Hook):
         else:
             self.updating = False
 
+
     @Expose
     def updatePlugins(self):
         """ simple wrapper for calling plugin update quickly """
         return self.update(onlyplugin=True)
+
 
     @Expose
     def update(self, onlyplugin=False):
@@ -141,6 +151,7 @@ class UpdateManager(Hook):
             self.info['pyload'] = True
             self.info['version'] = newversion
         return exitcode  #: 0 = No plugins updated; 1 = Plugins updated; 2 = Plugins updated, but restart required; 3 = No plugins updated, new pyLoad version available
+
 
     def _updatePlugins(self, updates):
         """ check for plugin updates """
@@ -239,6 +250,7 @@ class UpdateManager(Hook):
             exitcode = 0
 
         return exitcode  #: 0 = No plugins updated; 1 = Plugins updated; 2 = Plugins updated, but restart required
+
 
     @Expose
     def removePlugins(self, type_plugins):

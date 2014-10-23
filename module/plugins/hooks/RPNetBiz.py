@@ -40,6 +40,7 @@ class RPNetBiz(MultiHoster):
         # Extract hosters from json file
         return hoster_list['hosters']
 
+
     def coreReady(self):
         # Get account plugin and check if there is a valid account available
         self.account = self.core.accountManager.getAccountPlugin("RPNetBiz")

@@ -28,6 +28,7 @@ class HotFolder(Hook):
     def setup(self):
         self.interval = 10
 
+
     def periodical(self):
         if not exists(join(self.getConfig("folder"), "finished")):
             makedirs(join(self.getConfig("folder"), "finished"))

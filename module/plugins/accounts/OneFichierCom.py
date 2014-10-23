@@ -21,7 +21,6 @@ class OneFichierCom(Account):
 
 
     def loadAccountInfo(self, user, req):
-
         html = req.load("http://1fichier.com/console/abo.pl")
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
@@ -38,7 +37,6 @@ class OneFichierCom(Account):
 
 
     def login(self, user, data, req):
-
         req.http.c.setopt(REFERER, "http://1fichier.com/login.pl?lg=en")
 
         html = req.load("http://1fichier.com/login.pl?lg=en", post={

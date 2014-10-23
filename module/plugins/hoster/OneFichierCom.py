@@ -37,7 +37,6 @@ class OneFichierCom(SimpleHoster):
 
 
     def handleFree(self):
-        self.html = self.load(self.pyfile.url, decode=True)
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
             wait_time = int(m.group(1)) + 1  #: One minute more than what the page displays to be safe

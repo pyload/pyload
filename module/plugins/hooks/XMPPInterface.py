@@ -30,6 +30,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
     implements(IMessageHandlersProvider)
 
+
     def __init__(self, core, manager):
         IRCInterface.__init__(self, core, manager)
 
@@ -58,10 +59,12 @@ class XMPPInterface(IRCInterface, JabberClient):
             self,
         ]
 
+
     def coreReady(self):
         self.new_package = {}
 
         self.start()
+
 
     def packageFinished(self, pypack):
         try:
@@ -69,6 +72,7 @@ class XMPPInterface(IRCInterface, JabberClient):
                 self.announce(_("Package finished: %s") % pypack.name)
         except:
             pass
+
 
     def downloadFinished(self, pyfile):
         try:
@@ -78,6 +82,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         except:
             pass
 
+
     def run(self):
         # connect to IRC etc.
         self.connect()
@@ -86,20 +91,25 @@ class XMPPInterface(IRCInterface, JabberClient):
         except Exception, ex:
             self.logError(ex)
 
+
     def stream_state_changed(self, state, arg):
         """This one is called when the state of stream connecting the component
         to a server changes. This will usually be used to let the user
         know what is going on."""
         self.logDebug("*** State changed: %s %r ***" % (state, arg))
 
+
     def disconnected(self):
         self.logDebug("Client was disconnected")
+
 
     def stream_closed(self, stream):
         self.logDebug("Stream was closed", stream)
 
+
     def stream_error(self, err):
         self.logDebug("Stream Error", err)
+
 
     def get_message_handlers(self):
         """Return list of (message_type, message_handler) tuples.
@@ -107,6 +117,7 @@ class XMPPInterface(IRCInterface, JabberClient):
         The handlers returned will be called when matching message is received
         in a client session."""
         return [("normal", self.message)]
+
 
     def message(self, stanza):
         """Message handler for the component."""
@@ -165,8 +176,10 @@ class XMPPInterface(IRCInterface, JabberClient):
         else:
             return True
 
+
     def response(self, msg, origin=""):
         return self.announce(msg)
+
 
     def announce(self, message):
         """ send message to all owners"""
@@ -187,8 +200,10 @@ class XMPPInterface(IRCInterface, JabberClient):
 
             stream.send(m)
 
+
     def beforeReconnecting(self, ip):
         self.disconnect()
+
 
     def afterReconnecting(self, ip):
         self.connect()
@@ -202,23 +217,28 @@ class VersionHandler(object):
 
     implements(IIqHandlersProvider, IFeaturesProvider)
 
+
     def __init__(self, client):
         """Just remember who created this."""
         self.client = client
+
 
     def get_features(self):
         """Return namespace which should the client include in its reply to a
         disco#info query."""
         return ["jabber:iq:version"]
 
+
     def get_iq_get_handlers(self):
         """Return list of tuples (element_name, namespace, handler) describing
         handlers of <iq type='get'/> stanzas"""
         return [("query", "jabber:iq:version", self.get_version)]
 
+
     def get_iq_set_handlers(self):
         """Return empty list, as this class provides no <iq type='set'/> stanza handler."""
         return []
+
 
     def get_version(self, iq):
         """Handler for jabber:iq:version queries.

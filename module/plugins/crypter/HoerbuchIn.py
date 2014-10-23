@@ -40,6 +40,7 @@ class HoerbuchIn(Crypter):
         else:
             self.urls = self.decryptFolder(pyfile.url)
 
+
     def decryptFolder(self, url):
         m = self.protection.search(url)
         if m is None:

@@ -21,7 +21,7 @@ class DataportCz(SimpleHoster):
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.dataport.cz/file/\1')]
 
-    CAPTCHA_URL_PATTERN = r'<section id="captcha_bg">\s*<img src="(.*?)"'
+    CAPTCHA_PATTERN = r'<section id="captcha_bg">\s*<img src="(.*?)"'
     FREE_SLOTS_PATTERN = ur'Počet volných slotů: <span class="darkblue">(\d+)</span><br />'
 
 

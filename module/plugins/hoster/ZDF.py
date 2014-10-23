@@ -29,14 +29,17 @@ class ZDF(Hoster):
             any(f.text == "progressive" for f in video.iter("facet")),
         )
 
+
     @staticmethod
     def video_valid(video):
         return video.findtext("url").startswith("http") and video.findtext("url").endswith(".mp4") and \
                video.findtext("facets/facet").startswith("progressive")
 
+
     @staticmethod
     def get_id(url):
         return int(re.search(r"\D*(\d{4,})\D*", url).group(1))
+
 
     def process(self, pyfile):
         xml = fromstring(self.load(self.XML_API % self.get_id(pyfile.url)))

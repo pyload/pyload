@@ -25,10 +25,12 @@ class PornhostCom(Hoster):
         pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
+
     # Old interface
     def download_html(self):
         url = self.pyfile.url
         self.html = self.load(url)
+
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -47,6 +49,7 @@ class PornhostCom(Hoster):
 
         return url.group(1).strip()
 
+
     def get_file_name(self):
         if not self.html:
             self.download_html()
@@ -62,6 +65,7 @@ class PornhostCom(Hoster):
         name = name.group(1).strip() + ".flv"
 
         return name
+
 
     def file_exists(self):
         """ returns True or False

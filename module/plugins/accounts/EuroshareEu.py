@@ -31,7 +31,6 @@ class EuroshareEu(Account):
 
 
     def login(self, user, data, req):
-
         html = req.load('http://euroshare.eu/customer-zone/login/', post={
             "trvale": "1",
             "login": user,

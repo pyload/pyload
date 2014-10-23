@@ -25,6 +25,7 @@ class FileStoreTo(SimpleHoster):
     def setup(self):
         self.resumeDownload = self.multiDL = True
 
+
     def handleFree(self):
         self.wait(10)
         ldc = re.search(r'wert="(\w+)"', self.html).group(1)

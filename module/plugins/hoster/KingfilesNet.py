@@ -45,13 +45,7 @@ class KingfilesNet(SimpleHoster):
         b = self.load(self.pyfile.url, post=post_data, cookies=True, decode=True)
 
         solvemedia = SolveMedia(self)
-
-        captcha_key = solvemedia.detect_key()
-        if captcha_key is None:
-            self.error("SolveMedia key not found")
-
-        self.logDebug("captcha_key", captcha_key)
-        captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
+        captcha_challenge, captcha_response = solvemedia.challenge()
 
         # Make the downloadlink appear and load the file
         m = re.search(self.RAND_ID_PATTERN, b)
@@ -81,7 +75,7 @@ class KingfilesNet(SimpleHoster):
 
         check = self.checkDownload({'html': re.compile("<html>")})
         if check == "html":
-            self.error("Downloaded file is an html file")
+            self.error("Downloaded file is an html page")
 
 
 getInfo = create_getInfo(KingfilesNet)

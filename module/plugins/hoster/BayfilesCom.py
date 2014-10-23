@@ -63,11 +63,13 @@ class BayfilesCom(SimpleHoster):
             self.error("Free link")
         self.startDownload(m.group(1))
 
+
     def handlePremium(self):
         m = re.search(self.PREMIUM_LINK_PATTERN, self.html)
         if m is None:
             self.error("Premium link")
         self.startDownload(m.group(1))
+
 
     def startDownload(self, url):
         self.logDebug("%s URL: %s" % ("Premium" if self.premium else "Free", url))

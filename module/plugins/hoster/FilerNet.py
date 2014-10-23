@@ -16,9 +16,9 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__ = "FilerNet"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
-    __pattern__ = r'https?://(?:www\.)?filer\.net/get/(\w+)'
+    __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
 
     __description__ = """Filer.net hoster plugin"""
     __license__ = "GPLv3"
@@ -30,24 +30,12 @@ class FilerNet(SimpleHoster):
 
     LINK_PATTERN = r'href="([^"]+)">Get download</a>'
 
-    RECAPTCHA_KEY = "6LcFctISAAAAAAgaeHgyqhNecGJJRnxV1m_vAz3V"
-
-
-    def process(self, pyfile):
-        if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
-            self.handlePremium()
-        else:
-            self.handleFree()
-
 
     def handleFree(self):
         # Wait between downloads
         m = re.search(r'musst du <span id="time">(\d+)</span> Sekunden warten', self.html)
         if m:
-            waittime = int(m.group(1))
-            self.retry(3, waittime, "Wait between free downloads")
-
-        self.getFileInfo()
+            self.retry(wait_time=int(m.group(1)), reason="Wait between free downloads")
 
         self.html = self.load(self.pyfile.url, decode=True)
 
@@ -66,11 +54,10 @@ class FilerNet(SimpleHoster):
         self.logDebug("Hash: " + hash_data)
 
         downloadURL = r''
-
         recaptcha = ReCaptcha(self)
 
         for _ in xrange(5):
-            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+            challenge, response = recaptcha.challenge()
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,
                          'hash': hash_data}

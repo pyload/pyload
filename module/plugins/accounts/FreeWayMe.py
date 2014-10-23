@@ -32,6 +32,7 @@ class FreeWayMe(Account):
 
         return account_info
 
+
     def getpw(self, user):
         return self.accounts[user]['password']
 
@@ -42,6 +43,7 @@ class FreeWayMe(Account):
         # Check if user and password are valid
         if not status:
             self.wrongPassword()
+
 
     def getAccountStatus(self, user, req):
         answer = req.load("https://www.free-way.me/ajax/jd.php",

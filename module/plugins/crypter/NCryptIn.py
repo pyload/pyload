@@ -131,7 +131,6 @@ class NCryptIn(Crypter):
 
 
     def unlockProtection(self):
-
         postData = {}
 
         form = re.search(r'<form name="protected"(.*?)</form>', self.cleanedHtml, re.DOTALL).group(1)
@@ -210,7 +209,6 @@ class NCryptIn(Crypter):
 
 
     def handleSingleLink(self):
-
         self.logDebug("Handling Single link")
         package_links = []
 
@@ -223,7 +221,6 @@ class NCryptIn(Crypter):
 
 
     def handleCNL2(self):
-
         self.logDebug("Handling CNL2 links")
         package_links = []
 
@@ -239,7 +236,6 @@ class NCryptIn(Crypter):
 
 
     def handleContainers(self):
-
         self.logDebug("Handling Container links")
         package_links = []
 
@@ -254,7 +250,6 @@ class NCryptIn(Crypter):
 
 
     def handleWebLinks(self):
-
         self.logDebug("Handling Web links")
         pattern = r'(http://ncrypt\.in/link-.*?=)'
         links = re.findall(pattern, self.html)
@@ -280,7 +275,6 @@ class NCryptIn(Crypter):
 
 
     def _getCipherParams(self):
-
         pattern = r'<input.*?name="%s".*?value="(.*?)"'
 
         # Get jk

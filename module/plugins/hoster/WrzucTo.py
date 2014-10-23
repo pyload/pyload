@@ -28,6 +28,7 @@ class WrzucTo(SimpleHoster):
     def setup(self):
         self.multiDL = True
 
+
     def handleFree(self):
         data = dict(re.findall(r'(md5|file): "(.*?)"', self.html))
         if len(data) != 2:

@@ -26,10 +26,12 @@ class DataHu(SimpleHoster):
     LINK_PATTERN = r'<div class="download_box_button"><a href="([^"]+)">'
 
 
-    def handleFree(self):
+    def setup(self):
         self.resumeDownload = True
-        self.html = self.load(self.pyfile.url, decode=True)
+        self.multiDL = self.premium
 
+
+    def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m:
             url = m.group(1)

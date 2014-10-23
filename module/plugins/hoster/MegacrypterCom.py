@@ -29,6 +29,7 @@ class MegacrypterCom(MegaNz):
         self.logDebug("API Response: " + resp)
         return json_loads(resp)
 
+
     def process(self, pyfile):
         # match is guaranteed because plugin was chosen to handle url
         node = re.match(self.__pattern__, pyfile.url).group(1)

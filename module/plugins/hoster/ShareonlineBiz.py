@@ -55,38 +55,28 @@ class ShareonlineBiz(Hoster):
 
 
     def setup(self):
-        # range request not working?
-        #  api supports resume, only one chunk
-        #  website isn't supporting resuming in first place
         self.file_id = re.match(self.__pattern__, self.pyfile.url).group("ID")
         self.pyfile.url = "http://www.share-online.biz/dl/" + self.file_id
 
         self.resumeDownload = self.premium
         self.multiDL = False
-        #self.chunkLimit = 1
 
         self.check_data = None
+
 
     def process(self, pyfile):
         if self.premium:
             self.handlePremium()
-            #web-download fallback removed - didn't work anyway
         else:
             self.handleFree()
-
-        # check = self.checkDownload({"failure": re.compile(self.ERROR_INFO_PATTERN)})
-        # if check == "failure":
-        #     try:
-        #         self.retry(reason=self.lastCheck.group(1).decode("utf8"))
-        #     except:
-        #         self.retry(reason="Unknown error")
 
         if self.api_data:
             self.check_data = {"size": int(self.api_data['size']), "md5": self.api_data['md5']}
 
+
     def loadAPIData(self):
         api_url_base = "http://api.share-online.biz/linkcheck.php?md5=1"
-        api_param_file = {"links": self.file_id}  # api only supports old style links
+        api_param_file = {"links": self.file_id}  #: api only supports old style links
         src = self.load(api_url_base, cookies=False, post=api_param_file, decode=True)
 
         fields = src.split(";")
@@ -96,15 +86,16 @@ class ShareonlineBiz(Hoster):
             self.offline()
         else:
             self.api_data['filename'] = fields[2]
-            self.api_data['size'] = fields[3]  # in bytes
-            self.api_data['md5'] = fields[4].strip().lower().replace("\n\n", "")  # md5
+            self.api_data['size'] = fields[3]  #: in bytes
+            self.api_data['md5'] = fields[4].strip().lower().replace("\n\n", "")  #: md5
+
 
     def handleFree(self):
         self.loadAPIData()
         self.pyfile.name = self.api_data['filename']
         self.pyfile.size = int(self.api_data['size'])
 
-        self.html = self.load(self.pyfile.url, cookies=True)  # refer, stuff
+        self.html = self.load(self.pyfile.url, cookies=True)  #: refer, stuff
         self.setWait(3)
         self.wait()
 
@@ -152,6 +143,7 @@ class ShareonlineBiz(Hoster):
         else:
             self.correctCaptcha()
 
+
     def handlePremium(self):  #: should be working better loading (account) api internally
         self.account.getAccountInfo(self.user, True)
         src = self.load("http://api.share-online.biz/account.php",
@@ -176,6 +168,7 @@ class ShareonlineBiz(Hoster):
             else:
                 self.multiDL = True
                 self.download(dlLink)
+
 
     def checkErrors(self):
         m = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)

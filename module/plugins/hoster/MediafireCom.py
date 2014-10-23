@@ -71,6 +71,7 @@ class MediafireCom(SimpleHoster):
     def setup(self):
         self.multiDL = False
 
+
     def process(self, pyfile):
         pyfile.url = re.sub(r'/view/?\?', '/?', pyfile.url)
 
@@ -93,6 +94,7 @@ class MediafireCom(SimpleHoster):
             self.multiDL = True
             self.download(self.url, disposition=True)
 
+
     def handleFree(self):
         passwords = self.getPassword().splitlines()
         while self.PASSWORD_PATTERN in self.html:
@@ -111,13 +113,9 @@ class MediafireCom(SimpleHoster):
 
         self.download(download_url)
 
+
     def checkCaptcha(self):
         solvemedia = SolveMedia(self)
-
-        captcha_key = solvemedia.detect_key()
-        if captcha_key is None:
-            self.error("SolveMedia key not found")
-
-        captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
+        captcha_challenge, captcha_response = solvemedia.challenge()
         self.html = self.load(self.url, post={"adcopy_challenge": captcha_challenge,
                                               "adcopy_response": captcha_response}, decode=True)

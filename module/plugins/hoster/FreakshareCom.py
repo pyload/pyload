@@ -26,6 +26,7 @@ class FreakshareCom(Hoster):
         self.multiDL = False
         self.req_opts = []
 
+
     def process(self, pyfile):
         self.pyfile = pyfile
 
@@ -62,6 +63,7 @@ class FreakshareCom(Hoster):
             elif check == "downloadserver":
                 self.retry(5, 15 * 60, "No Download server")
 
+
     def prepare(self):
         pyfile = self.pyfile
 
@@ -81,9 +83,11 @@ class FreakshareCom(Hoster):
 
         return True
 
+
     def download_html(self):
         self.load("http://freakshare.com/index.php", {"language": "EN"})  # Set english language in server session
         self.html = self.load(self.pyfile.url)
+
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -97,6 +101,7 @@ class FreakshareCom(Hoster):
         else:
             self.offline()
 
+
     def get_file_name(self):
         if not self.html:
             self.download_html()
@@ -109,6 +114,7 @@ class FreakshareCom(Hoster):
             return file_name
         else:
             return self.pyfile.url
+
 
     def get_file_size(self):
         size = 0
@@ -124,6 +130,7 @@ class FreakshareCom(Hoster):
 
         return size
 
+
     def get_waiting_time(self):
         if not self.html:
             self.download_html()
@@ -138,6 +145,7 @@ class FreakshareCom(Hoster):
         else:
             return 60
 
+
     def file_exists(self):
         """ returns True or False
         """
@@ -147,6 +155,7 @@ class FreakshareCom(Hoster):
             return False
         else:
             return True
+
 
     def get_download_options(self):
         re_envelope = re.search(r".*?value=\"Free\sDownload\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>",

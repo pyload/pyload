@@ -70,9 +70,11 @@ class RapidshareCom(Hoster):
         self.chunkLimit = -1 if self.premium else 1
         self.multiDL = self.resumeDownload = self.premium
 
+
     def process(self, pyfile):
         self.url = pyfile.url
         self.prepare()
+
 
     def prepare(self):
         m = re.match(self.__pattern__, self.url)
@@ -106,6 +108,7 @@ class RapidshareCom(Hoster):
         else:
             self.fail("Unknown response code.")
 
+
     def handleFree(self):
         while self.no_download:
             self.dl_dict = self.freeWait()
@@ -128,11 +131,13 @@ class RapidshareCom(Hoster):
             self.offset += 5
             self.handleFree()
 
+
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
         self.logDebug("%s: Use Premium Account" % self.__name__)
         url = self.api_data['mirror']
         self.download(url, get={"directstart": 1})
+
 
     def download_api_data(self, force=False):
         """
@@ -167,6 +172,7 @@ class RapidshareCom(Hoster):
             self.api_data['status'] = str(int(self.api_data['status']) - 50)
 
         self.api_data['mirror'] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
+
 
     def freeWait(self):
         """downloads html with the important information
@@ -218,6 +224,7 @@ class RapidshareCom(Hoster):
             self.wait()
 
             return dl_dict
+
 
     def get_file_name(self):
         if self.api_data['filename']:

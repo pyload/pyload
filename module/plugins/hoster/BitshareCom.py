@@ -113,14 +113,10 @@ class BitshareCom(SimpleHoster):
         if captcha == 1:
             self.logDebug("File is captcha protected")
             recaptcha = ReCaptcha(self)
-            captcha_key = recaptcha.detect_key()
-            if captcha_key is None:
-                self.error("ReCaptcha captcha key not found")
 
             # Try up to 3 times
             for i in xrange(3):
-                self.logDebug("Resolving ReCaptcha with key [%s], round %d" % (captcha_key, i + 1))
-                challenge, code = recaptcha.challenge(captcha_key)
+                challenge, code = recaptcha.challenge()
                 response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                                      post={"request": "validateCaptcha", "ajaxid": self.ajaxid,
                                            "recaptcha_challenge_field": challenge, "recaptcha_response_field": code})

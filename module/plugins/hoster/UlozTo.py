@@ -44,6 +44,7 @@ class UlozTo(SimpleHoster):
         self.multiDL = self.premium
         self.resumeDownload = True
 
+
     def process(self, pyfile):
         pyfile.url = re.sub(r"(?<=http://)([^/]+)", "www.ulozto.net", pyfile.url)
         self.html = self.load(pyfile.url, decode=True, cookies=True)
@@ -81,6 +82,7 @@ class UlozTo(SimpleHoster):
 
         self.doCheckDownload()
 
+
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="frm-downloadDialog-freeDownloadForm"')
         if not action or not inputs:
@@ -115,10 +117,12 @@ class UlozTo(SimpleHoster):
         self.multiDL = True
         self.download("http://www.ulozto.net" + action, post=inputs, cookies=True, disposition=True)
 
+
     def handlePremium(self):
         self.download(self.pyfile.url + "?do=directDownload", disposition=True)
         #parsed_url = self.findDownloadURL(premium=True)
         #self.download(parsed_url, post={"download": "Download"})
+
 
     def findDownloadURL(self, premium=False):
         msg = "%s link" % ("Premium" if premium else "Free")
@@ -128,6 +132,7 @@ class UlozTo(SimpleHoster):
         parsed_url = "http://www.ulozto.net" + m.group(1)
         self.logDebug("%s: %s" % (msg, parsed_url))
         return parsed_url
+
 
     def doCheckDownload(self):
         check = self.checkDownload({

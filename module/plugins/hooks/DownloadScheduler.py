@@ -26,8 +26,10 @@ class DownloadScheduler(Hook):
     def setup(self):
         self.cb = None  # callback to scheduler job; will be by removed hookmanager when hook unloaded
 
+
     def coreReady(self):
         self.updateSchedule()
+
 
     def updateSchedule(self, schedule=None):
         if schedule is None:
@@ -55,6 +57,7 @@ class DownloadScheduler(Hook):
                 next_time = (((24 + next[0] - now[0]) * 60 + next[1] - now[1]) * 60 + next[2] - now[2]) % 86400
                 self.core.scheduler.removeJob(self.cb)
                 self.cb = self.core.scheduler.addJob(next_time, self.updateSchedule, threaded=False)
+
 
     def setDownloadSpeed(self, speed):
         if speed == 0:

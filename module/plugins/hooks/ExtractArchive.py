@@ -14,6 +14,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
     import errno
     from subprocess import Popen
 
+
     def _eintr_retry_call(func, *args):
         while True:
             try:
@@ -22,6 +23,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
                 if e.errno == errno.EINTR:
                     continue
                 raise
+
 
     # unsued timeout option for older python version
     def wait(self, timeout=0):

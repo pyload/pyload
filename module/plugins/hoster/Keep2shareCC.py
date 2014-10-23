@@ -11,13 +11,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class Keep2shareCC(SimpleHoster):
     __name__ = "Keep2shareCC"
     __type__ = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
     __description__ = """Keep2share.cc hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __authors__ = [("stickell", "l.stickell@yahoo.it"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
@@ -25,6 +26,7 @@ class Keep2shareCC(SimpleHoster):
     OFFLINE_PATTERN = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
 
     LINK_PATTERN = r'To download this file with slow speed, use <a href="([^"]+)">this link</a>'
+    CAPTCHA_PATTERN = r'src="(/file/captcha\.html.+?)"'
     WAIT_PATTERN = r'Please wait ([\d:]+) to download this file'
     MULTIDL_ERROR = r'Free account does not allow to download more than one file at the same time'
 
@@ -71,19 +73,20 @@ class Keep2shareCC(SimpleHoster):
     def handleCaptcha(self):
         recaptcha = ReCaptcha(self)
 
-        captcha_key = recaptcha.detect_key()
-        if captcha_key is None:
-            self.error("ReCaptcha key not found")
-
         for _ in xrange(5):
-            challenge, response = recaptcha.challenge(captcha_key)
-            post_data = {'recaptcha_challenge_field': challenge,
-                         'recaptcha_response_field': response,
-                         'CaptchaForm%5Bcode%5D': '',
-                         'free': 1,
+            post_data = {'free': 1,
                          'freeDownloadRequest': 1,
                          'uniqueId': self.fid,
                          'yt0': ''}
+
+            m = re.search(self.CAPTCHA_PATTERN, self.html)
+            if m:
+                captcha_url = urljoin(self.base_url, m.group(1))
+                post_data['CaptchaForm[code]'] = self.decryptCaptcha(captcha_url)
+            else:
+                challenge, response = recaptcha.challenge()
+                post_data.update({'recaptcha_challenge_field': challenge,
+                                  'recaptcha_response_field': response})
 
             self.html = self.load(self.pyfile.url, post=post_data)
 

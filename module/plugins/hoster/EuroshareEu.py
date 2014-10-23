@@ -31,6 +31,7 @@ class EuroshareEu(SimpleHoster):
         self.multiDL = self.resumeDownload = self.premium
         self.req.setOption("timeout", 120)
 
+
     def handlePremium(self):
         if self.ERR_NOT_LOGGED_IN_PATTERN in self.html:
             self.account.relogin(self.user)
@@ -45,6 +46,7 @@ class EuroshareEu(SimpleHoster):
             self.retry(reason="Access token expired")
         elif check == "json":
             self.fail(self.lastCheck.group(1))
+
 
     def handleFree(self):
         if re.search(self.ERR_PARDL_PATTERN, self.html) is not None:

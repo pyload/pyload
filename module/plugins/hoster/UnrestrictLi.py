@@ -34,6 +34,7 @@ class UnrestrictLi(Hoster):
         self.chunkLimit = 16
         self.resumeDownload = True
 
+
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
@@ -81,6 +82,7 @@ class UnrestrictLi(Hoster):
         if self.getConfig("history"):
             self.load("https://unrestrict.li/history/&delete=all")
             self.logInfo("Download history deleted")
+
 
     def setNameSize(self):
         if 'name' in self.api_data:

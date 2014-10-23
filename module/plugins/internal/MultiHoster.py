@@ -28,12 +28,14 @@ class MultiHoster(Hook):
         self.supported = []
         self.new_supported = []
 
+
     def getConfig(self, option, default=''):
         """getConfig with default value - sublass may not implements all config options"""
         try:
             return self.getConf(option)
         except KeyError:
             return default
+
 
     def getHosterCached(self):
         if not self.hosters:
@@ -61,6 +63,7 @@ class MultiHoster(Hook):
 
         return self.hosters
 
+
     def toHosterSet(self, hosters):
         hosters = set((str(x).strip().lower() for x in hosters))
 
@@ -72,12 +75,14 @@ class MultiHoster(Hook):
         hosters.discard('')
         return hosters
 
+
     def getHoster(self):
         """Load list of supported hoster
 
         :return: List of domain names
         """
         raise NotImplementedError
+
 
     def coreReady(self):
         if self.cb:
@@ -94,8 +99,10 @@ class MultiHoster(Hook):
         else:
             self.periodical()
 
+
     def initPeriodical(self):
         pass
+
 
     def periodical(self):
         """reload hoster list periodically"""
@@ -111,6 +118,7 @@ class MultiHoster(Hook):
             self.logDebug("UNLOAD", ", ".join(old_supported))
             for hoster in old_supported:
                 self.unloadHoster(hoster)
+
 
     def overridePlugins(self):
         pluginMap = {}
@@ -162,6 +170,7 @@ class MultiHoster(Hook):
             dict['pattern'] = regexp
             dict['re'] = re.compile(regexp)
 
+
     def unloadHoster(self, hoster):
         dict = self.core.pluginManager.hosterPlugins[hoster]
         if "module" in dict:
@@ -170,6 +179,7 @@ class MultiHoster(Hook):
         if "new_module" in dict:
             del dict['new_module']
             del dict['new_name']
+
 
     def unload(self):
         """Remove override for all hosters. Scheduler job is removed by hookmanager"""
@@ -181,6 +191,7 @@ class MultiHoster(Hook):
         dict = self.core.pluginManager.hosterPlugins[self.__name__]
         dict['pattern'] = getattr(klass, "__pattern__", r'^unmatchable$')
         dict['re'] = re.compile(dict['pattern'])
+
 
     def downloadFailed(self, pyfile):
         """remove plugin override if download fails but not if file is offline/temp.offline"""

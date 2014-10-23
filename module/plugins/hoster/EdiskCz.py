@@ -27,6 +27,7 @@ class EdiskCz(SimpleHoster):
     def setup(self):
         self.multiDL = False
 
+
     def process(self, pyfile):
         url = re.sub("/(stahni|sk/stahni)/", "/en/download/", pyfile.url)
 

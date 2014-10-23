@@ -56,7 +56,7 @@ class LetitbitNet(SimpleHoster):
 
     def setup(self):
         self.resumeDownload = True
-        #TODO confirm that resume works
+
 
     def getFileInfo(self):
         api_rep = api_download_info(self.pyfile.url)
@@ -66,6 +66,7 @@ class LetitbitNet(SimpleHoster):
             self.pyfile.size = self.api_data['size']
         else:
             self.offline()
+
 
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="ifree_form"')
@@ -109,12 +110,7 @@ class LetitbitNet(SimpleHoster):
         self.logDebug(response)
 
         recaptcha = ReCaptcha(self)
-
-        captcha_key = recaptcha.detect_key()
-        if captcha_key is None:
-            self.error("ReCaptcha key not found")
-
-        challenge, response = recaptcha.challenge(captcha_key)
+        challenge, response = recaptcha.challenge()
 
         post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response,
                      "recaptcha_control_field": recaptcha_control_field}
@@ -148,6 +144,7 @@ class LetitbitNet(SimpleHoster):
                 self.logError(e)
         else:
             self.fail("Download did not finish correctly")
+
 
     def handlePremium(self):
         api_key = self.user

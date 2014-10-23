@@ -66,11 +66,13 @@ class NetloadIn(Hoster):
     def setup(self):
         self.multiDL = self.resumeDownload = self.premium
 
+
     def process(self, pyfile):
         self.url = pyfile.url
         self.prepare()
         pyfile.setStatus("downloading")
         self.proceed(self.url)
+
 
     def prepare(self):
         self.download_api_data()
@@ -92,6 +94,7 @@ class NetloadIn(Hoster):
         else:
             self.fail("Failed")
             return False
+
 
     def download_api_data(self, n=0):
         url = self.url
@@ -134,12 +137,14 @@ class NetloadIn(Hoster):
         else:
             self.api_data = False
 
+
     def final_wait(self, page):
         wait_time = self.get_wait_time(page)
         self.setWait(wait_time)
         self.logDebug("Netload: final wait %d seconds" % wait_time)
         self.wait()
         self.url = self.get_file_url(page)
+
 
     def download_html(self):
         self.logDebug("Netload: Entering download_html")
@@ -227,6 +232,7 @@ class NetloadIn(Hoster):
 
         return False
 
+
     def get_file_url(self, page):
         try:
             file_url_pattern = r'<a class="Orange_Link" href="(http://.+)".?>Or click here'
@@ -242,9 +248,11 @@ class NetloadIn(Hoster):
             self.logDebug("Netload: Getting final link failed")
             return None
 
+
     def get_wait_time(self, page):
         wait_seconds = int(re.search(r"countdown\((.+),'change\(\)'\)", page).group(1)) / 100
         return wait_seconds
+
 
     def proceed(self, url):
         self.logDebug("Netload: Downloading..")

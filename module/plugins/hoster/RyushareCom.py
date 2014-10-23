@@ -59,13 +59,8 @@ class RyushareCom(XFSPHoster):
             self.retry()
 
         for _ in xrange(5):
-            captcha = SolveMedia(self)
-
-            captcha_key = captcha.detect_key()
-            if captcha_key is None:
-                self.error("SolveMedia key not found")
-
-            challenge, response = captcha.challenge(captcha_key)
+            solvemedia = SolveMedia(self)
+            challenge, response = solvemedia.challenge()
 
             inputs['adcopy_challenge'] = challenge
             inputs['adcopy_response'] = response

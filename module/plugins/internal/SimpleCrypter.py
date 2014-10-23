@@ -2,6 +2,8 @@
 
 import re
 
+from traceback import print_exc
+
 from module.network.RequestFactory import getURL
 from module.plugins.Crypter import Crypter
 from module.plugins.Plugin import Fail
@@ -12,7 +14,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __pattern__ = None
 
@@ -49,6 +51,7 @@ class SimpleCrypter(Crypter):
 
     and its loadPage method:
 
+
       def loadPage(self, page_n):
           return the html of the page number page_n
     """
@@ -65,6 +68,7 @@ class SimpleCrypter(Crypter):
     LOGIN_PREMIUM = False
 
 
+    #@TODO: remove in 0.4.10
     def init(self):
         account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
         account = self.core.accountManager.getAccountPlugin(account_name)
@@ -128,7 +132,7 @@ class SimpleCrypter(Crypter):
 
     def getPackageNameAndFolder(self):
         if isinstance(self.TEXT_ENCODING, basestring):
-            self.html = unicode(html, self.TEXT_ENCODING)
+            self.html = unicode(self.html, self.TEXT_ENCODING)
 
         if hasattr(self, 'TITLE_PATTERN'):
             try:
@@ -160,8 +164,8 @@ class SimpleCrypter(Crypter):
             self.package_links += self.getLinks()
 
 
+    #@TODO: remove in 0.4.10
     def error(self, reason=None, type="parse"):
-        if reason:
-            raise Fail("%s error: %s | Plugin may be out of date" % (type.capitalize(), reason))
-        else:
-            raise Fail("%s error | Plugin out of date" % type.capitalize())
+        raise Fail("%s error%s | Plugin out of date" % (type.capitalize(), ': ' + str(reason) if reason else ""))
+        if self.core.debug:
+            print_exc()

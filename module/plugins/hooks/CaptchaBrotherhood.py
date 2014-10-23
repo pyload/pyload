@@ -23,11 +23,14 @@ class CaptchaBrotherhoodException(Exception):
     def __init__(self, err):
         self.err = err
 
+
     def getCode(self):
         return self.err
 
+
     def __str__(self):
         return "<CaptchaBrotherhoodException %s>" % self.err
+
 
     def __repr__(self):
         return "<CaptchaBrotherhoodException %s>" % self.err
@@ -55,6 +58,7 @@ class CaptchaBrotherhood(Hook):
     def setup(self):
         self.info = {}
 
+
     def getCredits(self):
         response = getURL(self.API_URL + "askCredits.aspx",
                           get={"username": self.getConfig("username"), "password": self.getConfig("passkey")})
@@ -65,6 +69,7 @@ class CaptchaBrotherhood(Hook):
             self.logInfo(_("%d credits left") % credits)
             self.info['credits'] = credits
             return credits
+
 
     def submit(self, captcha, captchaType="file", match=None):
         try:
@@ -116,6 +121,7 @@ class CaptchaBrotherhood(Hook):
 
         raise CaptchaBrotherhoodException("No solution received in time")
 
+
     def get_api(self, api, ticket):
         response = getURL("%s%s.aspx" % (self.API_URL, api),
                           get={"username": self.getConfig("username"),
@@ -125,6 +131,7 @@ class CaptchaBrotherhood(Hook):
             raise CaptchaBrotherhoodException("Unknown response: %s" % response)
 
         return response
+
 
     def newCaptchaTask(self, task):
         if "service" in task.data:
@@ -147,9 +154,11 @@ class CaptchaBrotherhood(Hook):
         else:
             self.logInfo(_("Your CaptchaBrotherhood Account has not enough credits"))
 
+
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             response = self.get_api("complainCaptcha", task.data['ticket'])
+
 
     def processCaptcha(self, task):
         c = task.captchaFile

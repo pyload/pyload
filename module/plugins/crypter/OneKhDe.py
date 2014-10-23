@@ -22,10 +22,12 @@ class OneKhDe(Crypter):
         Crypter.__init__(self, parent)
         self.parent = parent
 
+
     def file_exists(self):
         """ returns True or False
         """
         return True
+
 
     def proceed(self, url, location):
         url = self.parent.url

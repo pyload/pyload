@@ -14,6 +14,7 @@ class CustomBrowser(Browser):
     def __init__(self, bucket=None, options={}):
         Browser.__init__(self, bucket, options)
 
+
     def load(self, *args, **kwargs):
         post = kwargs.get("post")
 

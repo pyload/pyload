@@ -119,6 +119,7 @@ class UploadedTo(Hoster):
         self.fileID = getID(self.pyfile.url)
         self.pyfile.url = "http://uploaded.net/file/%s" % self.fileID
 
+
     def process(self, pyfile):
         self.load("http://uploaded.net/language/en", just_header=True)
 
@@ -158,6 +159,7 @@ class UploadedTo(Hoster):
         else:
             self.handleFree()
 
+
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
         self.logDebug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name": self.__name__,
@@ -182,6 +184,7 @@ class UploadedTo(Hoster):
             url = m.group(1)
             print "Premium URL: " + url
             self.download(url, post={})
+
 
     def handleFree(self):
         self.html = self.load(self.pyfile.url, decode=True)

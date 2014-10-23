@@ -44,6 +44,7 @@ class EmbeduploadCom(Crypter):
         if not self.urls:
             self.fail('Could not extract any links')
 
+
     def getLocation(self, tmp_links):
         new_links = []
         for link in tmp_links:

@@ -38,6 +38,7 @@ class LuckyShareNet(SimpleHoster):
             self.retry(reason="Hash expired")
         return json_loads(rep)
 
+
     # TODO: There should be a filesize limit for free downloads
     # TODO: Some files could not be downloaded in free mode
     def handleFree(self):
@@ -51,12 +52,8 @@ class LuckyShareNet(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        captcha_key = recaptcha.detect_key()
-        if captcha_key is None:
-            self.error("ReCaptcha key not found")
-
         for _ in xrange(5):
-            challenge, response = recaptcha.challenge(captcha_key)
+            challenge, response = recaptcha.challenge()
             rep = self.load(r"http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s" %
                             (challenge, response, json['hash']), decode=True)
             self.logDebug("JSON: " + rep)

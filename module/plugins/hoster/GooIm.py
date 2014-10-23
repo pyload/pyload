@@ -27,6 +27,7 @@ class GooIm(SimpleHoster):
     def setup(self):
         self.multiDL = self.resumeDownload = True
 
+
     def handleFree(self):
         url = self.pyfile.url
         self.html = self.load(url, cookies=True)

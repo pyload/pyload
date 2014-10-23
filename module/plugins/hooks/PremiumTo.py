@@ -25,6 +25,7 @@ class PremiumTo(MultiHoster):
                       get={'username': self.account.username, 'password': self.account.password})
         return [x.strip() for x in page.replace("\"", "").split(";")]
 
+
     def coreReady(self):
         self.account = self.core.accountManager.getAccountPlugin("PremiumTo")
 

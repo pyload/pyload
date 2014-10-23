@@ -16,6 +16,7 @@ class GigasizeCom(OCR):
     def __init__(self):
         OCR.__init__(self)
 
+
     def get_captcha(self, image):
         self.load_image(image)
         self.threshold(2.8)

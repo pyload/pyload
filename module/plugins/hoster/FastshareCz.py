@@ -60,24 +60,20 @@ class FastshareCz(SimpleHoster):
         elif check == "wrong_captcha":
             self.retry(max_tries=5, reason="Wrong captcha")
 
+
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)
         if "location" in header:
             url = header['location']
+        elif self.CREDIT_PATTERN in self.html:
+            self.logWarning("Not enough traffic left")
+            self.resetAccount()
         else:
-            self.html = self.load(self.pyfile.url)
-
-            self.getFileInfo()  #
-
-            if self.CREDIT_PATTERN in self.html:
-                self.logWarning("Not enough traffic left")
-                self.resetAccount()
+            m = re.search(self.PREMIUM_URL_PATTERN, self.html)
+            if m:
+                url = m.group(1)
             else:
-                m = re.search(self.PREMIUM_URL_PATTERN, self.html)
-                if m:
-                    url = m.group(1)
-                else:
-                    self.error("Premium URL")
+                self.error("Premium URL")
 
         self.logDebug("PREMIUM URL: " + url)
         self.download(url, disposition=True)

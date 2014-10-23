@@ -13,6 +13,7 @@ if os.name != "nt":
     from grp import getgrnam
 
 from itertools import islice
+from traceback import print_exc
 
 from module.utils import save_join, save_path, fs_encode, fs_decode
 
@@ -50,6 +51,7 @@ class Base(object):
     A Base class with log/config/db methods *all* plugin types can use
     """
 
+
     def __init__(self, core):
         #: Core instance
         self.core = core
@@ -58,18 +60,23 @@ class Base(object):
         #: core config
         self.config = core.config
 
+
     #log functions
     def logDebug(self, *args):
         self.log.debug("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args if a])))
 
+
     def logInfo(self, *args):
         self.log.info("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args if a])))
+
 
     def logWarning(self, *args):
         self.log.warning("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args if a])))
 
+
     def logError(self, *args):
         self.log.error("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args if a])))
+
 
     def logCritical(self, *args):
         self.log.critical("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args if a])))
@@ -78,6 +85,7 @@ class Base(object):
     def setConf(self, option, value):
         """ see `setConfig` """
         self.core.config.setPlugin(self.__name__, option, value)
+
 
     def setConfig(self, option, value):
         """ Set config value for current plugin
@@ -88,9 +96,11 @@ class Base(object):
         """
         self.setConf(option, value)
 
+
     def getConf(self, option):
         """ see `getConfig` """
         return self.core.config.getPlugin(self.__name__, option)
+
 
     def getConfig(self, option):
         """ Returns config value for current plugin
@@ -100,13 +110,16 @@ class Base(object):
         """
         return self.getConf(option)
 
+
     def setStorage(self, key, value):
         """ Saves a value persistently to the database """
         self.core.db.setStorage(self.__name__, key, value)
 
+
     def store(self, key, value):
         """ same as `setStorage` """
         self.core.db.setStorage(self.__name__, key, value)
+
 
     def getStorage(self, key=None, default=None):
         """ Retrieves saved value or dict of all saved entries if key is None """
@@ -114,9 +127,11 @@ class Base(object):
             return self.core.db.getStorage(self.__name__, key) or default
         return self.core.db.getStorage(self.__name__, key)
 
+
     def retrieve(self, *args, **kwargs):
         """ same as `getStorage` """
         return self.getStorage(*args, **kwargs)
+
 
     def delStorage(self, key):
         """ Delete entry in db """
@@ -197,21 +212,26 @@ class Plugin(Base):
 
         self.init()
 
+
     def getChunkCount(self):
         if self.chunkLimit <= 0:
             return self.config['download']['chunks']
         return min(self.config['download']['chunks'], self.chunkLimit)
 
+
     def __call__(self):
         return self.__name__
+
 
     def init(self):
         """initialize the plugin (in addition to `__init__`)"""
         pass
 
+
     def setup(self):
         """ setup for enviroment and other things, called before downloading (possibly more than one time)"""
         pass
+
 
     def preprocessing(self, thread):
         """ handles important things to do before starting """
@@ -233,11 +253,13 @@ class Plugin(Base):
         """the 'main' method of every plugin, you **have to** overwrite it"""
         raise NotImplementedError
 
+
     def resetAccount(self):
         """ dont use account and retry download """
         self.account = None
         self.req = self.core.requestFactory.getRequest(self.__name__)
         self.retry()
+
 
     def checksum(self, local_file=None):
         """
@@ -263,6 +285,7 @@ class Plugin(Base):
             self.wantReconnect = True
         self.pyfile.waitUntil = time() + int(seconds)
 
+
     def wait(self):
         """ waits the time previously set """
         self.waiting = True
@@ -280,17 +303,27 @@ class Plugin(Base):
         self.waiting = False
         self.pyfile.setStatus("starting")
 
+
     def fail(self, reason):
         """ fail and give reason """
         raise Fail(reason)
+
+
+    def error(self, reason=None, type="parse"):
+        raise Fail("%s error%s | Plugin out of date" % (type.capitalize(), ': ' + str(reason) if reason else ""))
+        if self.core.debug:
+            print_exc()
+
 
     def offline(self):
         """ fail and indicate file is offline """
         raise Fail("offline")
 
+
     def tempOffline(self):
         """ fail and indicates file ist temporary offline, the core may take consequences """
         raise Fail("temp. offline")
+
 
     def retry(self, max_tries=3, wait_time=1, reason=""):
         """Retries and begin again from the beginning
@@ -310,13 +343,16 @@ class Plugin(Base):
         self.retries += 1
         raise Retry(reason)
 
+
     def invalidCaptcha(self):
         if self.cTask:
             self.cTask.invalid()
 
+
     def correctCaptcha(self):
         if self.cTask:
             self.cTask.correct()
+
 
     def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg',
                        result_type='textual'):
@@ -449,6 +485,7 @@ class Plugin(Base):
 
         return res
 
+
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
         """Downloads the content at url to download folder
 
@@ -518,6 +555,7 @@ class Plugin(Base):
 
         self.lastDownload = filename
         return self.lastDownload
+
 
     def checkDownload(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
         """ checks the content of the last downloaded file, re match is saved to `lastCheck`
@@ -596,6 +634,7 @@ class Plugin(Base):
                 raise SkipDownload(pyfile[0])
 
             self.log.debug("File %s not skipped, because it does not exists." % self.pyfile.name)
+
 
     def clean(self):
         """ clean everything and remove references """

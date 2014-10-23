@@ -15,7 +15,7 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__ = "Captcha9kw"
     __type__ = "hook"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __config__ = [("activated", "bool", "Activated", False),
                   ("force", "bool", "Force CT even if client is connected", True),
@@ -41,6 +41,7 @@ class Captcha9kw(Hook):
         self.API_URL = "https" + self.API_URL if self.getConfig("https") else "http" + self.API_URL
         self.info = {}
 
+
     def getCredits(self):
         response = getURL(self.API_URL, get={"apikey": self.getConfig("passkey"), "pyload": "1", "source": "pyload",
                                              "action": "usercaptchaguthaben"})
@@ -52,6 +53,7 @@ class Captcha9kw(Hook):
         else:
             self.logError(response)
             return 0
+
 
     def processCaptcha(self, task):
         result = None
@@ -100,6 +102,7 @@ class Captcha9kw(Hook):
             self.logError(_("Bad upload"), response)
             return False
 
+
     def newCaptchaTask(self, task):
         if not task.isTextual() and not task.isPositional():
             return False
@@ -118,6 +121,7 @@ class Captcha9kw(Hook):
         else:
             self.logError(_("Your Captcha 9kw.eu Account has not enough credits"))
 
+
     def captchaCorrect(self, task):
         if "ticket" in task.data:
 
@@ -130,12 +134,13 @@ class Captcha9kw(Hook):
                                         "pyload": "1",
                                         "source": "pyload",
                                         "id": task.data['ticket']})
-                self.logInfo(_("Request correct", response)
+                self.logInfo(_("Request correct"), response)
 
             except BadHeader, e:
                 self.logError(_("Could not send correct request."), e)
         else:
             self.logError(_("No CaptchaID for correct request (task %s) found.") % task)
+
 
     def captchaInvalid(self, task):
         if "ticket" in task.data:
@@ -149,7 +154,7 @@ class Captcha9kw(Hook):
                                         "pyload": "1",
                                         "source": "pyload",
                                         "id": task.data['ticket']})
-                self.logInfo(_("Request refund", response)
+                self.logInfo(_("Request refund"), response)
 
             except BadHeader, e:
                 self.logError(_("Could not send refund request."), e)

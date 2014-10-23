@@ -33,6 +33,7 @@ class Xdcc(Hoster):
         self.timeout = 30
         self.multiDL = False
 
+
     def process(self, pyfile):
         # change request type
         self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="XDCC")
@@ -58,6 +59,7 @@ class Xdcc(Hoster):
                 self.fail("Failed due to socket errors. Code: %d" % errno)
 
         self.fail("Server blocked our ip, retry again later manually")
+
 
     def doDownload(self, url):
         self.pyfile.setStatus("waiting")  # real link

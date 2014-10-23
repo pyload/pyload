@@ -93,6 +93,7 @@ class FilepostCom(SimpleHoster):
         # Download
         self.download(download_url)
 
+
     def getJsonResponse(self, get_dict, post_dict, field):
         json_response = json_loads(self.load('https://filepost.com/files/get/', get=get_dict, post=post_dict))
         self.logDebug(json_response)
