@@ -11,9 +11,10 @@ from module.plugins.Crypter import Crypter
 class ShareLinksBiz(Crypter):
     __name__ = "ShareLinksBiz"
     __type__ = "crypter"
-    __version__ = "1.14"
+    __version__ = "1.15"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
+    __config__ = [("readPackageName", "bool", "Search package/folder name on the website", "True")]
 
     __description__ = """Share-Links.biz decrypter plugin"""
     __license__ = "GPLv3"
@@ -165,21 +166,22 @@ class ShareLinksBiz(Crypter):
 
     def getPackageInfo(self):
         name = folder = None
-
-        # Extract from web package header
-        title_re = r'<h2><img.*?/>(.*)</h2>'
-        m = re.search(title_re, self.html, re.DOTALL)
-        if m is not None:
-            title = m.group(1).strip()
-            if 'unnamed' not in title:
-                name = folder = title
-                self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
+        
+        if self.getConfig("readPackageName") == True:
+            # Extract from web package header
+            title_re = r'<h2><img.*?/>(.*)</h2>'
+            m = re.search(title_re, self.html, re.DOTALL)
+            if m is not None:
+                title = m.group(1).strip()
+                if 'unnamed' not in title:
+                    name = folder = title
+                    self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
 
         # Fallback to defaults
         if not name or not folder:
             name = self.package.name
             folder = self.package.folder
-            self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
+            self.logDebug("Package info not found or unwanted, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
 
         # Return package info
         return name, folder
