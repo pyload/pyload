@@ -13,4 +13,7 @@ class SafesharingEu(XFSPAccount):
     __authors__ = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_URL = "http://www.safesharing.eu/"
+    HOSTER_NAME = "safesharing.eu"
+
+    VALID_UNTIL_PATTERN = r'> Premium.[Aa]ccount expire:(.+?)</div>'
+    TRAFFIC_LEFT_PATTERN = r'> Traffic available today:\s*?(?P<S>[\d.,]+)\s*?(?:(?P<U>[\w^_]+)\s*)?</div>'

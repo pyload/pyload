@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-#
-# Test link:
-# http://safesharing.eu/h1ijvcrpl9ys
-
-# Test link (offline):
-# http://safesharing.eu/h1ijvcrpl9ysgggggg
 
 from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
@@ -26,7 +20,9 @@ class SafesharingEu(XFSPHoster):
     FILE_SIZE_PATTERN = r'Size:</b></td><td>(?P<S>.*) (?P<U>[kKmMbB]*) <small>'
 
     FILE_ID_PATTERN = r'<input type="hidden" name="id" value="(.*)">'
-    FILE_OFFLINE_PATTERN = r'<Title>File Not Found</Title>'
+    OFFLINE_PATTERN = r'<b>File Not Found</b>'
+    TEMP_OFFLINE_PATTERN = r'This server is in maintenance mode'
+
 
     WAIT_PATTERN = r'You have to wait (\d+) minutes'
     COUNTDOWN_PATTERN = r'<br><span id="countdown_str">Wait <span id=".*">(\d+)</span> seconds</span>'
