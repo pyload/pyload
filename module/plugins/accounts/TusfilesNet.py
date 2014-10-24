@@ -5,7 +5,6 @@ import re
 from time import mktime, strptime, gmtime
 
 from module.plugins.internal.XFSPAccount import XFSPAccount
-from module.utils import parseFileSize
 
 
 class TusfilesNet(XFSPAccount):

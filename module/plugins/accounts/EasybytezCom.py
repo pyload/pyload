@@ -5,13 +5,12 @@ import re
 from time import mktime, strptime, gmtime
 
 from module.plugins.internal.XFSPAccount import XFSPAccount
-from module.utils import parseFileSize
 
 
 class EasybytezCom(XFSPAccount):
     __name__ = "EasybytezCom"
     __type__ = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """EasyBytez.com account plugin"""
     __license__ = "GPLv3"
@@ -52,6 +51,6 @@ class EasybytezCom(XFSPAccount):
             if "Unlimited" in trafficleft:
                 trafficleft = -1
             else:
-                trafficleft = parseFileSize(trafficleft)
+                trafficleft = self.parseTraffic(trafficleft)
 
         return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}

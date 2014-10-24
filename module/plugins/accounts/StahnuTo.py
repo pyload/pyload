@@ -3,13 +3,12 @@
 import re
 
 from module.plugins.Account import Account
-from module.utils import parseFileSize
 
 
 class StahnuTo(Account):
     __name__ = "StahnuTo"
     __type__ = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """StahnuTo account plugin"""
     __license__ = "GPLv3"
@@ -20,7 +19,7 @@ class StahnuTo(Account):
         html = req.load("http://www.stahnu.to/")
 
         m = re.search(r'>VIP: (\d+.*)<', html)
-        trafficleft = parseFileSize(m.group(1)) * 1024 if m else 0
+        trafficleft = self.parseTraffic(m.group(1)) * 1024 if m else 0
 
         return {"premium": trafficleft > (512 * 1024), "trafficleft": trafficleft, "validuntil": -1}
 

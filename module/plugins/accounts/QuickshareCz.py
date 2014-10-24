@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from module.plugins.Account import Account
-from module.utils import parseFileSize
 
 
 class QuickshareCz(Account):
     __name__ = "QuickshareCz"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Quickshare.cz account plugin"""
     __license__ = "GPLv3"
@@ -20,7 +20,7 @@ class QuickshareCz(Account):
 
         m = re.search(r'Stav kreditu: <strong>(.+?)</strong>', html)
         if m:
-            trafficleft = parseFileSize(m.group(1))
+            trafficleft = self.parseTraffic(m.group(1))
             premium = True if trafficleft else False
         else:
             trafficleft = None
