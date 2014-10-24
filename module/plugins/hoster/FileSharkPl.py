@@ -50,20 +50,32 @@ class FileSharkPl(SimpleHoster):
     def prepare(self):
         super(FileSharkPl, self).prepare()
 
+        # check if file is now available for download (-> file name can be found in html body)
+        try:
+            m = re.search(self.FILE_NAME_PATTERN, self.html)
+            pyfile.name = m.group('N')
+        except:
+            try:
+                m = re.match(self.__pattern__, pyfile.url)
+                pyfile.name = m.group(1)
+            except:
+                pyfile.name = "NoName"
+
+            sec = re.search(self.SECONDS_PATTERN, self.html)
+            if sec:
+                self.retry(15,int(sec.group(1)),"Another download already run")
+
         m = re.search(self.DOWNLOAD_ALERT, self.html):
         if m:
-            return
-
-        alert = m.group(1)
-
-        if re.match(self.IP_BLOCKED_PATTERN, alert):
-            self.fail("Only connections from Polish IP are allowed")
-        elif re.match(self.DOWNLOAD_SLOTS_ERROR_PATTERN, alert):
-            self.logInfo("No free download slots available")
-            self.retry(10, 30 * 60, "Still no free download slots available")
-        else:
-            self.logInfo(alert)
-            self.retry(10, 10 * 60, "Try again later")
+            alert = m.group(1)
+            if re.match(self.IP_BLOCKED_PATTERN, alert):
+                self.fail("Only connections from Polish IP are allowed")
+            elif re.match(self.DOWNLOAD_SLOTS_ERROR_PATTERN, alert):
+                self.logInfo("No free download slots available")
+                self.retry(10, 30 * 60, "Still no free download slots available")
+            else:
+                self.logInfo(alert)
+                self.retry(10, 10 * 60, "Try again later")
 
 
     #@NOTE: handlePremium method was never been tested
