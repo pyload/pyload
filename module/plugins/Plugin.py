@@ -63,23 +63,23 @@ class Base(object):
 
     #log functions
     def logDebug(self, *args):
-        self.log.debug("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args if a])))
+        self.log.debug("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
 
 
     def logInfo(self, *args):
-        self.log.info("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args if a])))
+        self.log.info("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
 
 
     def logWarning(self, *args):
-        self.log.warning("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args if a])))
+        self.log.warning("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
 
 
     def logError(self, *args):
-        self.log.error("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args if a])))
+        self.log.error("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
 
 
     def logCritical(self, *args):
-        self.log.critical("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args if a])))
+        self.log.critical("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
 
 
     def setConf(self, option, value):
@@ -351,11 +351,13 @@ class Plugin(Base):
 
 
     def invalidCaptcha(self):
+        self.logError("Invalid captcha")
         if self.cTask:
             self.cTask.invalid()
 
 
     def correctCaptcha(self):
+        self.logInfo("Correct captcha")
         if self.cTask:
             self.cTask.correct()
 
@@ -393,7 +395,8 @@ class Plugin(Base):
 
         if Ocr and not forceUser:
             sleep(randint(3000, 5000) / 1000.0)
-            if self.pyfile.abort: raise Abort
+            if self.pyfile.abort:
+                raise Abort
 
             ocr = Ocr()
             result = ocr.get_captcha(tmpCaptcha.name)
@@ -419,7 +422,7 @@ class Plugin(Base):
                 self.fail(_("No captcha result obtained in appropiate time by any of the plugins."))
 
             result = task.result
-            self.log.debug("Received captcha result: %s" % str(result))
+            self.logDebug("Received captcha result: %s" % str(result))
 
         if not self.core.debug:
             try:
@@ -446,6 +449,8 @@ class Plugin(Base):
         #utf8 vs decode -> please use decode attribute in all future plugins
         if type(url) == unicode:
             url = str(url)  # encode('utf8')
+
+        self.logDebug("Load url", *["%s: %s" % (key, val) for key, val in locals().items()])
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
@@ -505,6 +510,8 @@ class Plugin(Base):
         :return: The location where the file was saved
         """
 
+        self.logDebug("Download url", *["%s: %s" % (key, val) for key, val in locals().items()])
+
         self.checkForSameFiles()
 
         self.pyfile.setStatus("downloading")
@@ -523,7 +530,7 @@ class Plugin(Base):
 
                     chown(location, uid, gid)
                 except Exception, e:
-                    self.log.warning(_("Setting User and Group failed: %s") % str(e))
+                    self.logWarning(_("Setting User and Group failed: %s") % str(e))
 
         # convert back to unicode
         location = fs_decode(location)
@@ -541,7 +548,7 @@ class Plugin(Base):
             self.pyfile.size = self.req.size
 
         if disposition and newname and newname != name: #triple check, just to be sure
-            self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
+            self.logInfo("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
             self.pyfile.name = newname
             filename = join(location, newname)
 
@@ -557,7 +564,7 @@ class Plugin(Base):
 
                 chown(fs_filename, uid, gid)
             except Exception, e:
-                self.log.warning(_("Setting User and Group failed: %s") % str(e))
+                self.logWarning(_("Setting User and Group failed: %s") % str(e))
 
         self.lastDownload = filename
         return self.lastDownload
@@ -581,12 +588,12 @@ class Plugin(Base):
 
         if api_size and api_size <= size: return None
         elif size > max_size and not read_size: return None
-        self.log.debug("Download Check triggered")
+        self.logDebug("Download Check triggered")
         f = open(lastDownload, "rb")
         content = f.read(read_size if read_size else -1)
         f.close()
         #produces encoding errors, better log to other file in the future?
-        #self.log.debug("Content: %s" % content)
+        #self.logDebug("Content: %s" % content)
         for name, rule in rules.iteritems():
             if type(rule) in (str, unicode):
                 if rule in content:
@@ -639,7 +646,7 @@ class Plugin(Base):
             if exists(location):
                 raise SkipDownload(pyfile[0])
 
-            self.log.debug("File %s not skipped, because it does not exists." % self.pyfile.name)
+            self.logDebug("File %s not skipped, because it does not exists." % self.pyfile.name)
 
 
     def clean(self):

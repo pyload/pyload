@@ -221,10 +221,12 @@ class SimpleHoster(Hoster):
             self.getFileInfo()
 
         if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
+            self.logDebug("Handle as premium download")
             self.handlePremium()
         elif premium_only:
             self.fail("This link require a premium account")
         else:
+            self.logDebug("Handle as free download")
             self.handleFree()
 
 

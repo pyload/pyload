@@ -102,8 +102,10 @@ class XFSPHoster(SimpleHoster):
             if self.location:
                 self.startDownload(self.location)
             elif self.premium:
+                self.logDebug("Handle as premium download")
                 self.handlePremium()
             else:
+                self.logDebug("Handle as free download")
                 self.handleFree()
 
 
@@ -126,7 +128,6 @@ class XFSPHoster(SimpleHoster):
 
     def handleFree(self):
         url = self.getDownloadLink()
-        self.logDebug("Download URL: %s" % url)
         self.startDownload(url)
 
 
@@ -312,7 +313,7 @@ class XFSPHoster(SimpleHoster):
             inputs['code'] = self.decryptCaptcha(captcha_url)
             return 1
 
-        m = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
+        m = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.S)
         if m:
             captcha_div = m.group(1)
             self.logDebug(captcha_div)
