@@ -61,9 +61,5 @@ class Go4Up(SimpleCrypter):
         soup = BeautifulSoup(html)
         container = soup.find('div', {'id': 'linklist'})
         links = container.find('a')
-        package_links = []
-        for link in links:
-            hostname = urlparse(link).hostname
-            if hostname not in self.ignored_hosters:
-                package_links.append(link)
+        package_links = [link for link in links if urlparse(link).hostname not in self.ignored_hosters]
         return package_links
