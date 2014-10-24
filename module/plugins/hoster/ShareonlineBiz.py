@@ -123,9 +123,8 @@ class ShareonlineBiz(Hoster):
             self.fail("No valid captcha solution received")
 
         download_url = response.decode("base64")
-        self.logDebug(download_url)
         if not download_url.startswith("http://"):
-            self.error("download url")
+            self.error("Wrong download url")
 
         self.wait()
         self.download(download_url)

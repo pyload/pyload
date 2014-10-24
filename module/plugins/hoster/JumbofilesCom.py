@@ -31,7 +31,6 @@ class JumbofilesCom(SimpleHoster):
         post_data = {"id": ukey, "op": "download3", "rand": ""}
         html = self.load(self.pyfile.url, post=post_data, decode=True)
         url = re.search(self.LINK_PATTERN, html).group(1)
-        self.logDebug("Download " + url)
         self.download(url)
 
 

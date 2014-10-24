@@ -43,7 +43,7 @@ class DuckCryptInfo(Crypter):
         cryptlinks = soup.findAll("div", attrs={"class": "folderbox"})
         self.logDebug("Redirectet to " + str(cryptlinks))
         if not cryptlinks:
-            self.error("no links m")
+            self.error("No link found")
         for clink in cryptlinks:
             if clink.find("a"):
                 self.handleLink(clink.find("a")['href'])

@@ -27,7 +27,7 @@ class UlozToFolder(Crypter):
         new_links = []
         for i in xrange(1, 100):
             self.logInfo("Fetching links from page %i" % i)
-            m = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
+            m = re.search(self.FOLDER_PATTERN, html, re.S)
             if m is None:
                 self.fail("Parse error (FOLDER)")
 

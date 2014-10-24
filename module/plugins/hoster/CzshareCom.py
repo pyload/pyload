@@ -66,7 +66,7 @@ class CzshareCom(SimpleHoster):
     def handlePremium(self):
     # parse download link
         try:
-            form = re.search(self.PREMIUM_FORM_PATTERN, self.html, re.DOTALL).group(1)
+            form = re.search(self.PREMIUM_FORM_PATTERN, self.html, re.S).group(1)
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
         except Exception, e:
             self.logError("Parse error (FORM): %s" % e)
@@ -91,7 +91,7 @@ class CzshareCom(SimpleHoster):
             self.longWait(5 * 60, 12)
 
         try:
-            form = re.search(self.FREE_FORM_PATTERN, self.html, re.DOTALL).group(1)
+            form = re.search(self.FREE_FORM_PATTERN, self.html, re.S).group(1)
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
             self.pyfile.size = int(inputs['size'])
         except Exception, e:

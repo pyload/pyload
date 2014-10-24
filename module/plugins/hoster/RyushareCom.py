@@ -68,7 +68,6 @@ class RyushareCom(XFSPHoster):
             self.html = self.load(self.pyfile.url, post=inputs)
             if "WRONG CAPTCHA" in self.html:
                 self.invalidCaptcha()
-                self.logInfo("Invalid Captcha")
             else:
                 self.correctCaptcha()
                 break

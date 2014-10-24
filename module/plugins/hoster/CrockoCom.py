@@ -43,7 +43,7 @@ class CrockoCom(SimpleHoster):
             else:
                 break
 
-        m = re.search(self.FORM_PATTERN, self.html, re.DOTALL)
+        m = re.search(self.FORM_PATTERN, self.html, re.S)
         if m is None:
             self.error('ACTION')
 

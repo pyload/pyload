@@ -62,7 +62,6 @@ class LoadTo(SimpleHoster):
             self.download(download_url, post={"adcopy_challenge": captcha_challenge, "adcopy_response": captcha_response})
             check = self.checkDownload({'404': re.compile("\A<h1>404 Not Found</h1>"), 'html': re.compile("html")})
             if check == "404":
-                self.logWarning("The captcha you entered was incorrect. Please try again.")
                 self.invalidCaptcha()
                 self.retry()
             elif check == "html":

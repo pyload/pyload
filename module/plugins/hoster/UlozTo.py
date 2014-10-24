@@ -86,7 +86,7 @@ class UlozTo(SimpleHoster):
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="frm-downloadDialog-freeDownloadForm"')
         if not action or not inputs:
-            self.error("free download form")
+            self.error("Free download form not found")
 
         self.logDebug("inputs.keys = " + str(inputs.keys()))
         # get and decrypt captcha

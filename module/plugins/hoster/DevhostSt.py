@@ -38,7 +38,6 @@ class DevhostSt(SimpleHoster):
             self.error("Download link not found")
 
         dl_url = m.group(1)
-        self.logDebug("Download URL = " + dl_url)
         self.download(dl_url, disposition=True)
 
         check = self.checkDownload({'html': re.compile("html")})

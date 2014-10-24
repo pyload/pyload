@@ -67,7 +67,7 @@ class TurbobitNet(SimpleHoster):
 
             action, inputs = self.parseHtmlForm("action='#'")
             if not inputs:
-                self.error("captcha form")
+                self.error("Captcha form not found")
             self.logDebug(inputs)
 
             if inputs['captcha_type'] == 'recaptcha':
@@ -84,7 +84,6 @@ class TurbobitNet(SimpleHoster):
             self.html = self.load(self.url, post=inputs)
 
             if '<div class="captcha-error">Incorrect, try again!<' in self.html:
-                self.logInfo("Invalid captcha")
                 self.invalidCaptcha()
             else:
                 self.correctCaptcha()
@@ -106,7 +105,6 @@ class TurbobitNet(SimpleHoster):
                                   r'zza=\2;for(var zzi=0;zzi<zza.length;zzi++){\1=zza[zzi];', rtUpdate)
                 rtUpdate = re.sub(r"for\((\w+)=", r"for(var \1=", rtUpdate)
 
-                self.logDebug("rtUpdate")
                 self.setStorage("rtUpdate", rtUpdate)
                 self.setStorage("timestamp", timestamp())
                 self.setStorage("version", self.__version__)

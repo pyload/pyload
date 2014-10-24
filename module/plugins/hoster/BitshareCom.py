@@ -72,7 +72,6 @@ class BitshareCom(SimpleHoster):
 
         # This may either download our file or forward us to an error page
         url = self.getDownloadUrl()
-        self.logDebug("Downloading file with url [%s]" % url)
         self.download(url)
 
         check = self.checkDownload({"404": ">404 Not Found<", "Error": ">Error occured<"})
@@ -149,7 +148,7 @@ class BitshareCom(SimpleHoster):
             return True
         elif "ERROR:SESSION ERROR" in response:
             self.retry()
-        self.logDebug("Wrong captcha")
+
         self.invalidCaptcha()
 
 

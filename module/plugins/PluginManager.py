@@ -21,7 +21,7 @@ class PluginManager:
 
     PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
     VERSION = re.compile(r'__version__.*=.*("|\')([\d.]+)')
-    CONFIG = re.compile(r'__config__.*=.*\[([^\]]+)', re.MULTILINE)
+    CONFIG = re.compile(r'__config__.*=.*\[([^\]]+)', re.M)
     DESC = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
 
 

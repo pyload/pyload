@@ -94,7 +94,7 @@ class NCryptIn(Crypter):
                     r'<table class="global">(.*?)</table>',
                     r'<iframe\s+style="display:none(.*?)</iframe>')
         for pattern in patterns:
-            rexpr = re.compile(pattern, re.DOTALL)
+            rexpr = re.compile(pattern, re.S)
             content = re.sub(rexpr, "", content)
         return content
 
@@ -107,7 +107,7 @@ class NCryptIn(Crypter):
 
 
     def isProtected(self):
-        form = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.DOTALL)
+        form = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.S)
         if form is not None:
             content = form.group(1)
             for keyword in ("password", "captcha"):
@@ -133,7 +133,7 @@ class NCryptIn(Crypter):
     def unlockProtection(self):
         postData = {}
 
-        form = re.search(r'<form name="protected"(.*?)</form>', self.cleanedHtml, re.DOTALL).group(1)
+        form = re.search(r'<form name="protected"(.*?)</form>', self.cleanedHtml, re.S).group(1)
 
         # Submit package password
         if "password" in form:
@@ -181,7 +181,6 @@ class NCryptIn(Crypter):
 
         if self.protection_type == "captcha":
             if "The securitycheck was wrong!" in self.cleanedHtml:
-                self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
                 self.retry()
             else:
@@ -205,7 +204,7 @@ class NCryptIn(Crypter):
         elif link_source_type == "web":
             return self.handleWebLinks()
         else:
-            self.error('unknown source type "%s" (this is probably a bug)' % link_source_type)
+            self.error('Unknown source type "%s" (this is probably a bug)' % link_source_type)
 
 
     def handleSingleLink(self):

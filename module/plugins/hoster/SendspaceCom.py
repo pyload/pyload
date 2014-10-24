@@ -54,7 +54,6 @@ class SendspaceCom(SimpleHoster):
         else:
             self.fail("Download link not found")
 
-        self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
 
 

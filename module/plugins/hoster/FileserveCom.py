@@ -15,7 +15,7 @@ def checkFile(plugin, urls):
     html = getURL(plugin.URLS[1], post={"urls": "\n".join(urls)}, decode=True)
 
     file_info = []
-    for li in re.finditer(plugin.LINKCHECK_TR, html, re.DOTALL):
+    for li in re.finditer(plugin.LINKCHECK_TR, html, re.S):
         try:
             cols = re.findall(plugin.LINKCHECK_TD, li.group(1))
             if cols:
@@ -160,12 +160,10 @@ class FileserveCom(Hoster):
 
         for _ in xrange(5):
             challenge, code = recaptcha.challenge(captcha_key)
-
             response = json_loads(self.load(self.URLS[2],
                                             post={'recaptcha_challenge_field': challenge,
                                                   'recaptcha_response_field': code,
                                                   'recaptcha_shortencode_field': self.file_id}))
-            self.logDebug("reCaptcha response : %s" % response)
             if not response['success']:
                 self.invalidCaptcha()
             else:

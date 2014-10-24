@@ -46,7 +46,6 @@ class WrzucTo(SimpleHoster):
             self.error('Download URL')
 
         download_url = "http://%s.wrzuc.to/pobierz/%s" % (data['server_id'], data['download_link'])
-        self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
 
 

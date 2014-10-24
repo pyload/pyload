@@ -52,7 +52,6 @@ class GigapetaCom(SimpleHoster):
             self.fail("No valid captcha code entered")
 
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
-        self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
 
 

@@ -62,7 +62,6 @@ class UploadheroCom(SimpleHoster):
     def handlePremium(self):
         self.logDebug("%s: Use Premium Account" % self.__name__)
         link = re.search(self.PREMIUM_URL_PATTERN, self.html).group(1)
-        self.logDebug("Downloading link : '%s'" % link)
         self.download(link)
 
 

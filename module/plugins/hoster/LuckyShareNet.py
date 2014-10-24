@@ -62,7 +62,6 @@ class LuckyShareNet(SimpleHoster):
                 self.correctCaptcha()
                 break
             elif 'Verification failed' in rep:
-                self.logInfo("Wrong captcha")
                 self.invalidCaptcha()
             else:
                 self.error('Unable to get downlaod link')

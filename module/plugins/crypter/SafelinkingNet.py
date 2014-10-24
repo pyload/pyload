@@ -31,7 +31,7 @@ class SafelinkingNet(Crypter):
         if re.match(self.__pattern__, url).group(1) == "d":
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
             self.load(url)
-            m = re.search("^Location: (.+)$", self.req.http.header, re.MULTILINE)
+            m = re.search("^Location: (.+)$", self.req.http.header, re.M)
             if m:
                 self.urls = [m.group(1)]
             else:

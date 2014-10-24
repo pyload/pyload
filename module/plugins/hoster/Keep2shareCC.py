@@ -38,7 +38,7 @@ class Keep2shareCC(SimpleHoster):
         self.fid = re.search(r'<input type="hidden" name="slow_id" value="([^"]+)">', self.html).group(1)
         self.html = self.load(self.pyfile.url, post={'yt0': '', 'slow_id': self.fid})
 
-        m = re.search(r"function download\(\){.*window\.location\.href = '([^']+)';", self.html, re.DOTALL)
+        m = re.search(r"function download\(\){.*window\.location\.href = '([^']+)';", self.html, re.S)
         if m:  # Direct mode
             self.startDownload(m.group(1))
         else:
@@ -94,7 +94,6 @@ class Keep2shareCC(SimpleHoster):
                 self.correctCaptcha()
                 break
             else:
-                self.logInfo("Wrong captcha")
                 self.invalidCaptcha()
         else:
             self.fail("All captcha attempts failed")

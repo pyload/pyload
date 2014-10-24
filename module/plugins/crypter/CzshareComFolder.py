@@ -23,7 +23,7 @@ class CzshareComFolder(Crypter):
     def decrypt(self, pyfile):
         html = self.load(pyfile.url)
 
-        m = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
+        m = re.search(self.FOLDER_PATTERN, html, re.S)
         if m is None:
             self.fail("Parse error (FOLDER)")
 

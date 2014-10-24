@@ -67,11 +67,12 @@ class ExtabitCom(SimpleHoster):
             self.error('JSON')
 
         self.html = self.load("http://extabit.com/file/%s%s" % (fileID, response['href']))
+
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
             self.error('Download URL')
+
         url = m.group(1)
-        self.logDebug("Download URL: " + url)
         self.download(url)
 
 

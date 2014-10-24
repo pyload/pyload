@@ -161,7 +161,7 @@ class NetloadIn(Hoster):
             if "* The file was deleted" in page:
                 self.offline()
 
-            name = re.search(r'class="dl_first_filename">([^<]+)', page, re.MULTILINE)
+            name = re.search(r'class="dl_first_filename">([^<]+)', page, re.M)
             # the found filename is not truncated
             if name:
                 name = name.group(1).strip()

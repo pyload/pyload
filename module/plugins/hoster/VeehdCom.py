@@ -58,7 +58,7 @@ class VeehdCom(Hoster):
 
         m = re.search(r'<title[^>]*>([^<]+) on Veehd</title>', self.html)
         if m is None:
-            self.fail("video title not found")
+            self.error("Video title not found")
 
         name = m.group(1)
 
@@ -80,6 +80,6 @@ class VeehdCom(Hoster):
         m = re.search(r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/[^"]+)"',
                           self.html)
         if m is None:
-            self.fail("embedded video url not found")
+            self.error("Embedded video url not found")
 
         return m.group(1)

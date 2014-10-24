@@ -58,7 +58,7 @@ class LinkdecrypterCom(Crypter):
         self.html = self.load('http://linkdecrypter.com/', post=post_dict, cookies=True, decode=True)
 
         while self.passwords or retries:
-            m = re.search(self.TEXTAREA_PATTERN, self.html, flags=re.DOTALL)
+            m = re.search(self.TEXTAREA_PATTERN, self.html, flags=re.S)
             if m:
                 return [x for x in m.group(1).splitlines() if '[LINK-ERROR]' not in x]
 

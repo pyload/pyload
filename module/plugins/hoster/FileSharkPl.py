@@ -121,7 +121,6 @@ class FileSharkPl(SimpleHoster):
 
         if check == "DL-found":
             self.correctCaptcha()
-            self.logDebug("Captcha solved correct")
 
         elif check == "wrong_captcha":
             self.invalidCaptcha()

@@ -36,7 +36,6 @@ class ZippyshareCom(SimpleHoster):
 
     def handleFree(self):
         url = self.get_link()
-        self.logDebug("Download URL: %s" % url)
         self.download(url)
 
 

@@ -173,7 +173,6 @@ class RelinkUs(Crypter):
 
         if self.captcha:
             if self.CAPTCHA_ERROR_ROKEN in self.html:
-                self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
                 self.retry()
             else:
@@ -194,7 +193,7 @@ class RelinkUs(Crypter):
     def handleCNL2Links(self):
         self.logDebug("Search for CNL2 links")
         package_links = []
-        m = re.search(self.CNL2_FORM_REGEX, self.html, re.DOTALL)
+        m = re.search(self.CNL2_FORM_REGEX, self.html, re.S)
         if m is not None:
             cnl2_form = m.group(1)
             try:
@@ -248,11 +247,11 @@ class RelinkUs(Crypter):
     def _getCipherParams(self, cnl2_form):
         # Get jk
         jk_re = self.CNL2_FORMINPUT_REGEX % self.CNL2_JK_KEY
-        vjk = re.findall(jk_re, cnl2_form, re.IGNORECASE)
+        vjk = re.findall(jk_re, cnl2_form, re.I)
 
         # Get crypted
         crypted_re = self.CNL2_FORMINPUT_REGEX % RelinkUs.CNL2_CRYPTED_KEY
-        vcrypted = re.findall(crypted_re, cnl2_form, re.IGNORECASE)
+        vcrypted = re.findall(crypted_re, cnl2_form, re.I)
 
         # Log and return
         self.logDebug("Detected %d crypted blocks" % len(vcrypted))

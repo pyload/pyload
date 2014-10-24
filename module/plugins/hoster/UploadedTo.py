@@ -226,7 +226,6 @@ class UploadedTo(Hoster):
                 self.wait()
                 self.retry()
             elif '"err":"captcha"' in result:
-                self.logError("captcha is disabled")
                 self.invalidCaptcha()
             elif "type:'download'" in result:
                 self.correctCaptcha()

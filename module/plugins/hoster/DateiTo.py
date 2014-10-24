@@ -56,7 +56,6 @@ class DateiTo(SimpleHoster):
             self.fail('Too bad...')
 
         download_url = self.html
-        self.logDebug("Download URL", download_url)
         self.download(download_url)
 
 

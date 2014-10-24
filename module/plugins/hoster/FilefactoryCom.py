@@ -81,7 +81,6 @@ class FilefactoryCom(SimpleHoster):
         elif 'content-disposition' in header:
             url = self.pyfile.url
         else:
-            self.logInfo('You could enable "Direct Downloads" on http://filefactory.com/account/')
             html = self.load(self.pyfile.url)
             m = re.search(self.LINK_PATTERN, html)
             if m:

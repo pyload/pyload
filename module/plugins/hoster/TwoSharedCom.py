@@ -32,9 +32,8 @@ class TwoSharedCom(SimpleHoster):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
             self.error('Download link')
-        link = m.group(1)
-        self.logDebug("Download URL %s" % link)
 
+        link = m.group(1)
         self.download(link)
 
 

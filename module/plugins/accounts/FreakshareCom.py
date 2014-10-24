@@ -20,12 +20,12 @@ class FreakshareCom(Account):
         page = req.load("http://freakshare.com/")
 
         validuntil = r'ltig bis:</td>\s*<td><b>([\d.:-]+)</b></td>'
-        validuntil = re.search(validuntil, page, re.MULTILINE)
+        validuntil = re.search(validuntil, page, re.M)
         validuntil = validuntil.group(1).strip()
         validuntil = mktime(strptime(validuntil, "%d.%m.%Y - %H:%M"))
 
         traffic = r'Traffic verbleibend:</td>\s*<td>([^<]+)'
-        traffic = re.search(traffic, page, re.MULTILINE)
+        traffic = re.search(traffic, page, re.M)
         traffic = traffic.group(1).strip()
         traffic = self.parseTraffic(traffic)
 

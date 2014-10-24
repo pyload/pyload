@@ -125,7 +125,6 @@ class LinkSaveIn(SimpleCrypter):
 
         if self.captcha:
             if "Wrong code. Please retry" in self.html:
-                self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
                 self.retry()
             else:
@@ -140,7 +139,7 @@ class LinkSaveIn(SimpleCrypter):
         elif type_ == "web":
             return self.handleWebLinks()
         else:
-            self.error('unknown source type "%s" (this is probably a bug)' % type_)
+            self.error('Unknown source type "%s" (this is probably a bug)' % type_)
 
 
     def handleWebLinks(self):
@@ -176,7 +175,7 @@ class LinkSaveIn(SimpleCrypter):
         type_ = type_.lower()
         self.logDebug("Seach for %s Container links" % type_.upper())
         if not type_.isalnum():  # check to prevent broken re-pattern (cnl2,rsdf,ccf,dlc,web are all alpha-numeric)
-            self.error('unknown container type "%s" (this is probably a bug)' % type_)
+            self.error('Unknown container type "%s" (this is probably a bug)' % type_)
         pattern = r'\(\'%s_link\'\).href=unescape\(\'(.*?\.%s)\'\)' % (type_, type_)
         containersLinks = re.findall(pattern, self.html)
         self.logDebug("Found %d %s Container links" % (len(containersLinks), type_.upper()))

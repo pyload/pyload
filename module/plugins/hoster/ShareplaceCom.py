@@ -68,7 +68,7 @@ class ShareplaceCom(Hoster):
             self.logDebug("URL: %s" % url)
             return url
         else:
-            self.fail("absolute filepath could not be found. offline? ")
+            self.error("Absolute filepath not found")
 
 
     def get_file_name(self):

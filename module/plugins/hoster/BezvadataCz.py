@@ -30,7 +30,7 @@ class BezvadataCz(SimpleHoster):
         #download button
         m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.html)
         if m is None:
-            self.error("page1 URL")
+            self.error("Page 1 URL")
         url = "http://bezvadata.cz%s" % m.group(1)
 
         #captcha form
@@ -43,7 +43,7 @@ class BezvadataCz(SimpleHoster):
 
             m = re.search(r'<img src="data:image/png;base64,(.*?)"', self.html)
             if m is None:
-                self.error("captcha img")
+                self.error("Wrong captcha image")
 
             #captcha image is contained in html page as base64encoded data but decryptCaptcha() expects image url
             self.load, proper_load = self.loadcaptcha, self.load
@@ -65,7 +65,7 @@ class BezvadataCz(SimpleHoster):
         self.checkErrors()
         m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.html)
         if m is None:
-            self.error("page2 URL")
+            self.error("Page 2 URL")
         url = "http://bezvadata.cz%s" % m.group(1)
         self.logDebug("DL URL %s" % url)
 

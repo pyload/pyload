@@ -108,9 +108,8 @@ class MediafireCom(SimpleHoster):
         m = re.search(r'kNO = r"(http://.*?)";', self.html)
         if m is None:
             self.error("Download URL")
-        download_url = m.group(1)
-        self.logDebug("DOWNLOAD LINK:", download_url)
 
+        download_url = m.group(1)
         self.download(download_url)
 
 

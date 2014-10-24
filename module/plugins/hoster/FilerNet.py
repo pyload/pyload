@@ -73,7 +73,6 @@ class FilerNet(SimpleHoster):
                 self.correctCaptcha()
                 break
             else:
-                self.logInfo("Wrong captcha")
                 self.invalidCaptcha()
 
         if not downloadURL:

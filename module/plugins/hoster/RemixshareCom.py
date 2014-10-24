@@ -55,7 +55,6 @@ class RemixshareCom(SimpleHoster):
             self.wait(seconds.group(1))
 
         # Finally start downloading...
-        self.logDebug("Download URL = r" + dl_url)
         self.download(dl_url, disposition=True)
 
 

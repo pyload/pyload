@@ -121,7 +121,6 @@ class ShareLinksBiz(Crypter):
         # Resolve captcha
         href = self._resolveCoords(coords, captchaMap)
         if href is None:
-            self.logDebug("Invalid captcha resolving, retrying")
             self.invalidCaptcha()
             self.setWait(5, False)
             self.wait()
@@ -154,7 +153,6 @@ class ShareLinksBiz(Crypter):
 
         if self.captcha:
             if "Your choice was wrong" in self.html:
-                self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
                 self.setWait(5)
                 self.wait()
@@ -168,7 +166,7 @@ class ShareLinksBiz(Crypter):
 
         # Extract from web package header
         title_re = r'<h2><img.*?/>(.*)</h2>'
-        m = re.search(title_re, self.html, re.DOTALL)
+        m = re.search(title_re, self.html, re.S)
         if m is not None:
             title = m.group(1).strip()
             if 'unnamed' not in title:
@@ -202,7 +200,7 @@ class ShareLinksBiz(Crypter):
                 fwLink = self.baseUrl + "/get/frm/" + code
                 response = self.load(fwLink)
                 jscode = re.search(r'<script language="javascript">\s*eval\((.*)\)\s*</script>', response,
-                                   re.DOTALL).group(1)
+                                   re.S).group(1)
                 jscode = self.js.eval("f = %s" % jscode)
                 jslauncher = "window=''; parent={frames:{Main:{location:{href:''}}},location:''}; %s; parent.frames.Main.location.href"
                 dlLink = self.js.eval(jslauncher % jscode)

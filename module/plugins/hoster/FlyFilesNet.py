@@ -42,5 +42,4 @@ class FlyFilesNet(SimpleHoster):
 
         download_url = parsed_url.replace('#downlink|', '')
 
-        self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)

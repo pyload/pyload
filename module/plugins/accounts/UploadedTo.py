@@ -24,7 +24,7 @@ class UploadedTo(Account):
 
         if premium:
             raw_traffic = re.search(r'<th colspan="2"><b class="cB">([^<]+)', html).group(1).replace('.', '')
-            raw_valid = re.search(r"<td>Duration:</td>\s*<th>([^<]+)", html, re.MULTILINE).group(1).strip()
+            raw_valid = re.search(r"<td>Duration:</td>\s*<th>([^<]+)", html, re.M).group(1).strip()
 
             traffic = int(self.parseTraffic(raw_traffic))
 

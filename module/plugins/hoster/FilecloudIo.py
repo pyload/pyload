@@ -93,14 +93,15 @@ class FilecloudIo(SimpleHoster):
 
         if response['dl']:
             self.html = self.load('http://filecloud.io/download.html')
+
             m = re.search(self.LINK_PATTERN % self.file_info['ID'], self.html)
             if m is None:
                 self.error("Download URL")
-            download_url = m.group(1)
-            self.logDebug("Download URL: %s" % download_url)
 
             if "size" in self.file_info and self.file_info['size']:
                 self.check_data = {"size": int(self.file_info['size'])}
+
+            download_url = m.group(1)
             self.download(download_url)
         else:
             self.fail("Unexpected server response")

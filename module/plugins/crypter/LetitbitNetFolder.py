@@ -24,7 +24,7 @@ class LetitbitNetFolder(Crypter):
     def decrypt(self, pyfile):
         html = self.load(pyfile.url)
 
-        folder = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
+        folder = re.search(self.FOLDER_PATTERN, html, re.S)
         if folder is None:
             self.fail("Parse error (FOLDER)")
 

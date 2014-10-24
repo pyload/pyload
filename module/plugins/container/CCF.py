@@ -36,7 +36,7 @@ class CCF(Container):
 
         tempdlc_name = save_join(download_folder, "tmp_%s.dlc" % pyfile.name)
         tempdlc = open(tempdlc_name, "w")
-        tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.DOTALL).group(1))
+        tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.S).group(1))
         tempdlc.close()
 
         self.urls = [tempdlc_name]

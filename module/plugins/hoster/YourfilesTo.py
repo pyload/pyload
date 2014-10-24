@@ -66,7 +66,7 @@ class YourfilesTo(Hoster):
             url = unquote(url.replace("http://http:/http://", "http://").replace("dumdidum", ""))
             return url
         else:
-            self.fail("absolute filepath could not be found. offline? ")
+            self.error("Absolute filepath not found")
 
 
     def get_file_name(self):

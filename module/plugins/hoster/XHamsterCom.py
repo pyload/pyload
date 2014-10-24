@@ -53,7 +53,7 @@ class XHamsterCom(Hoster):
         if not self.html:
             self.download_html()
 
-        flashvar_pattern = re.compile('flashvars = ({.*?});', re.DOTALL)
+        flashvar_pattern = re.compile('flashvars = ({.*?});', re.S)
         json_flashvar = flashvar_pattern.search(self.html)
 
         if not json_flashvar:
@@ -80,7 +80,7 @@ class XHamsterCom(Hoster):
                 self.fail("Parse error (file_url)")
             file_url = file_url.group(1)
             long_url = srv_url + file_url
-            self.logDebug("long_url: %s" % long_url)
+            self.logDebug("long_url = " + long_url)
         else:
             if flashvars['file']:
                 file_url = unquote(flashvars['file'])
@@ -89,10 +89,10 @@ class XHamsterCom(Hoster):
 
             if url_mode == '3':
                 long_url = file_url
-                self.logDebug("long_url: %s" % long_url)
+                self.logDebug("long_url = " + long_url)
             else:
                 long_url = srv_url + "key=" + file_url
-                self.logDebug("long_url: %s" % long_url)
+                self.logDebug("long_url = " + long_url)
 
         return long_url
 

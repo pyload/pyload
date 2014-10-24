@@ -53,7 +53,7 @@ class KingfilesNet(SimpleHoster):
             self.error("Random key not found")
 
         rand = m.group(1)
-        self.logDebug("rand", rand)
+        self.logDebug("rand = ", rand)
 
         post_data = {'op': "download2",
                      'id': file_id,

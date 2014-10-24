@@ -70,7 +70,6 @@ class IfolderRu(SimpleHoster):
 
         download_url = re.search(self.LINK_PATTERN, self.html).group(1)
         self.correctCaptcha()
-        self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
 
 
