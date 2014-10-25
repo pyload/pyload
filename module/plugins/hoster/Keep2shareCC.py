@@ -73,7 +73,7 @@ class Keep2shareCC(SimpleHoster):
     def handleCaptcha(self):
         recaptcha = ReCaptcha(self)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             post_data = {'free': 1,
                          'freeDownloadRequest': 1,
                          'uniqueId': self.fid,

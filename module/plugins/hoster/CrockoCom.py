@@ -34,7 +34,7 @@ class CrockoCom(SimpleHoster):
         if "You need Premium membership to download this file." in self.html:
             self.fail("You need Premium membership to download this file.")
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             m = re.search(self.CAPTCHA_PATTERN, self.html)
             if m:
                 url, wait_time = 'http://crocko.com' + m.group(1), m.group(2)
@@ -51,7 +51,7 @@ class CrockoCom(SimpleHoster):
         inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
         recaptcha = ReCaptcha(self)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge()
             self.download(action, post=inputs)
 

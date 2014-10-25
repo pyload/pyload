@@ -245,7 +245,7 @@ class XFSPHoster(SimpleHoster):
 
 
     def getPostParameters(self):
-        for _ in xrange(3):
+        for _i in xrange(3):
             if not self.errmsg:
                 self.checkErrors()
 

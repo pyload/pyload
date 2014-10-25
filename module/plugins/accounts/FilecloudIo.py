@@ -17,7 +17,7 @@ class FilecloudIo(Account):
 
     def loadAccountInfo(self, user, req):
         # It looks like the first API request always fails, so we retry 5 times, it should work on the second try
-        for _ in xrange(5):
+        for _i in xrange(5):
             rep = req.load("https://secure.filecloud.io/api-fetch_apikey.api",
                            post={"username": user, "password": self.accounts[user]['password']})
             rep = json_loads(rep)

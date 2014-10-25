@@ -36,7 +36,7 @@ class BezvadataCz(SimpleHoster):
         #captcha form
         self.html = self.load(url)
         self.checkErrors()
-        for _ in xrange(5):
+        for _i in xrange(5):
             action, inputs = self.parseHtmlForm('frm-stahnoutFreeForm')
             if not inputs:
                 self.error("FreeForm")

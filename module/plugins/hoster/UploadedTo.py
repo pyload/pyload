@@ -34,7 +34,7 @@ def getAPIData(urls):
         post['id_%s' % i] = id
         idMap[id] = url
 
-    for _ in xrange(5):
+    for _i in xrange(5):
         api = unicode(getURL("http://uploaded.net/api/filemultiple", post=post, decode=False), 'iso-8859-1')
         if api != "can't find request":
             break
@@ -205,7 +205,7 @@ class UploadedTo(Hoster):
 
         recaptcha = ReCaptcha(self)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             challenge, result = recaptcha.challenge()
             options = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": result}
             self.wait()

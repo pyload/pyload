@@ -43,7 +43,7 @@ class UnrestrictLi(Hoster):
             self.fail("No Unrestrict.li account provided")
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
-            for _ in xrange(5):
+            for _i in xrange(5):
                 page = self.load('https://unrestrict.li/unrestrict.php',
                                  post={'link': pyfile.url, 'domain': 'long'})
                 self.logDebug("JSON data: " + page)

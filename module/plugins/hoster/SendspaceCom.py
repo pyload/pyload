@@ -28,7 +28,7 @@ class SendspaceCom(SimpleHoster):
 
     def handleFree(self):
         params = {}
-        for _ in xrange(3):
+        for _i in xrange(3):
             m = re.search(self.LINK_PATTERN, self.html)
             if m:
                 if 'captcha_hash' in params:

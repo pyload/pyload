@@ -73,7 +73,7 @@ class OboomCom(Hoster):
     def solveCaptcha(self):
         recaptcha = ReCaptcha(self)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             apiUrl = "https://www.oboom.com/1.0/download/ticket"
             params = {"recaptcha_challenge_field": challenge,

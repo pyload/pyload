@@ -32,7 +32,7 @@ class NarodRu(SimpleHoster):
 
 
     def handleFree(self):
-        for _ in xrange(5):
+        for _i in xrange(5):
             self.html = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random() * 777))
             m = re.search(self.CAPTCHA_PATTERN, self.html)
             if m is None:

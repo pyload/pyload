@@ -28,7 +28,7 @@ class DataportCz(SimpleHoster):
     def handleFree(self):
         captchas = {"1": "jkeG", "2": "hMJQ", "3": "vmEK", "4": "ePQM", "5": "blBd"}
 
-        for _ in xrange(60):
+        for _i in xrange(60):
             action, inputs = self.parseHtmlForm('free_download_form')
             self.logDebug(action, inputs)
             if not action or not inputs:

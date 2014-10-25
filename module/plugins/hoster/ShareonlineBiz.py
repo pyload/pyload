@@ -105,7 +105,7 @@ class ShareonlineBiz(Hoster):
         m = re.search(r'var wait=(\d+);', self.html)
 
         recaptcha = ReCaptcha(self)
-        for _ in xrange(5):
+        for _i in xrange(5):
             challenge, response = recaptcha.challenge("6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX")
             self.setWait(int(m.group(1)) if m else 30)
             response = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time() * 1000)), post={

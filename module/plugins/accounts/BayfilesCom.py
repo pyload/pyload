@@ -17,7 +17,7 @@ class BayfilesCom(Account):
 
 
     def loadAccountInfo(self, user, req):
-        for _ in xrange(2):
+        for _i in xrange(2):
             response = json_loads(req.load("http://api.bayfiles.com/v1/account/info"))
             self.logDebug(response)
             if not response['error']:

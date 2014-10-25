@@ -46,7 +46,7 @@ class SafelinkingNet(Crypter):
                 postData['link-password'] = self.getPassword()
 
             if "altcaptcha" in self.html:
-                for _ in xrange(5):
+                for _i in xrange(5):
                     m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
                     if m:
                         captchaKey = m.group(1)

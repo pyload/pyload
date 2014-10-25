@@ -58,7 +58,7 @@ class RyushareCom(XFSPHoster):
         if retry:
             self.retry()
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             solvemedia = SolveMedia(self)
             challenge, response = solvemedia.challenge()
 

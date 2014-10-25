@@ -58,7 +58,7 @@ class TurbobitNet(SimpleHoster):
 
 
     def solveCaptcha(self):
-        for _ in xrange(5):
+        for _i in xrange(5):
             m = re.search(self.LIMIT_WAIT_PATTERN, self.html)
             if m:
                 wait_time = int(m.group(1))
@@ -122,7 +122,7 @@ class TurbobitNet(SimpleHoster):
         if m:
             url = "http://turbobit.net%s%s" % m.groups()
         else:
-            url = "http://turbobit.net/files/timeout.js?ver=%s" % "".join(random.choice('0123456789ABCDEF') for _ in xrange(32))
+            url = "http://turbobit.net/files/timeout.js?ver=%s" % "".join(random.choice('0123456789ABCDEF') for _i in xrange(32))
 
         fun = self.load(url)
 

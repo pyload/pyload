@@ -74,7 +74,7 @@ class DepositfilesCom(SimpleHoster):
         if captcha_key is None:
             self.error("ReCaptcha key not found")
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             self.html = self.load("https://dfiles.eu/get_file.php", get=params)
 
             if '<input type=button value="Continue" onclick="check_recaptcha' in self.html:

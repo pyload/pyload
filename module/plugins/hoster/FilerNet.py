@@ -56,7 +56,7 @@ class FilerNet(SimpleHoster):
         downloadURL = r''
         recaptcha = ReCaptcha(self)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             challenge, response = recaptcha.challenge()
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,

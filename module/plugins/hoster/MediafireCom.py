@@ -13,7 +13,7 @@ def replace_eval(js_expr):
 
 def checkHTMLHeader(url):
     try:
-        for _ in xrange(3):
+        for _i in xrange(3):
             header = getURL(url, just_header=True)
             for line in header.splitlines():
                 line = line.lower()
