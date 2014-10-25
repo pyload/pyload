@@ -31,4 +31,4 @@ class LetitbitNetFolder(Crypter):
         self.urls.extend(re.findall(self.LINK_PATTERN, folder.group(0)))
 
         if not self.urls:
-            self.fail('Could not extract any links')
+            self.fail("Could not extract any links")

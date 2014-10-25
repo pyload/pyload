@@ -67,7 +67,7 @@ class QuickshareCz(SimpleHoster):
 
         m = re.search("Location\s*:\s*(.*)", self.header, re.I)
         if m is None:
-            self.fail('File not found')
+            self.fail("File not found")
         download_url = m.group(1)
         self.logDebug("FREE URL2:" + download_url)
 
@@ -79,7 +79,7 @@ class QuickshareCz(SimpleHoster):
             elif m.group(1) == '2':
                 self.retry(60, 60, "No free slots available")
             else:
-                self.fail('Error %d' % m.group(1))
+                self.fail("Error %d" % m.group(1))
 
         # download file
         self.download(download_url)

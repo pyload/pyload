@@ -49,7 +49,7 @@ class LinksnappyCom(Hoster):
 
             if j['error']:
                 self.logError("Error converting the link: %s" % j['error'])
-                self.fail('Error converting the link')
+                self.fail("Error converting the link")
 
             pyfile.name = j['filename']
             new_url = j['generated']

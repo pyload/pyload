@@ -39,7 +39,7 @@ class BayfilesCom(SimpleHoster):
         # Get download token
         m = re.search(self.VARS_PATTERN, self.html)
         if m is None:
-            self.error('VARS')
+            self.error("VARS")
         vfid, delay = m.groups()
 
         response = json_loads(self.load('http://bayfiles.com/ajax_download', get={
@@ -48,7 +48,7 @@ class BayfilesCom(SimpleHoster):
             "vfid": vfid}, decode=True))
 
         if not "token" in response or not response['token']:
-            self.fail('No token')
+            self.fail("No token")
 
         self.wait(int(delay))
 

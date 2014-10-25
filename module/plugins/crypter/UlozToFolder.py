@@ -43,4 +43,4 @@ class UlozToFolder(Crypter):
         if new_links:
             self.urls = [map(lambda s: "http://ulozto.net/%s" % s, new_links)]
         else:
-            self.fail('Could not extract any links')
+            self.fail("Could not extract any links")

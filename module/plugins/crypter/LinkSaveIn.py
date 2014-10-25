@@ -74,7 +74,7 @@ class LinkSaveIn(SimpleCrypter):
         if package_links:
             self.packages = [(package_name, package_links, folder_name)]
         else:
-            self.fail('Could not extract any links')
+            self.fail("Could not extract any links")
 
 
     def isOnline(self):

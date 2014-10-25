@@ -241,7 +241,7 @@ class SimpleHoster(Hoster):
             self.tempOffline()
         elif status != 2:
             self.logDebug(self.file_info)
-            self.error('File info')
+            self.error("File info")
 
         if name:
             self.pyfile.name = name

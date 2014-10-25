@@ -29,4 +29,4 @@ class QuickshareCzFolder(Crypter):
         self.urls.extend(re.findall(self.LINK_PATTERN, m.group(1)))
 
         if not self.urls:
-            self.fail('Could not extract any links')
+            self.fail("Could not extract any links")

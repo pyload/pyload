@@ -35,4 +35,4 @@ class FileserveComFolder(Crypter):
         if new_links:
             self.urls = [map(lambda s: "http://fileserve.com%s" % s, new_links)]
         else:
-            self.fail('Could not extract any links')
+            self.fail("Could not extract any links")

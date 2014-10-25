@@ -92,9 +92,9 @@ class DepositfilesCom(SimpleHoster):
                 self.logDebug("LINK: %s" % link)
                 break
             else:
-                self.error('Download link')
+                self.error("Download link")
         else:
-            self.fail('No valid captcha response received')
+            self.fail("No valid captcha response received")
 
         try:
             self.download(link, disposition=True)

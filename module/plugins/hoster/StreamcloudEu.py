@@ -122,7 +122,7 @@ class StreamcloudEu(XFSPHoster):
                 self.errmsg = None
 
         else:
-            self.error('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
+            self.error("FORM: %s" % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
 
 
 getInfo = create_getInfo(StreamcloudEu)

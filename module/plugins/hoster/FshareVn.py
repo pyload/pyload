@@ -68,7 +68,7 @@ class FshareVn(SimpleHoster):
         self.url = self.pyfile.url + action
 
         if not inputs:
-            self.error('FORM')
+            self.error("FORM")
         elif 'link_file_pwd_dl' in inputs:
             for password in self.getPassword().splitlines():
                 self.logInfo("Password protected link, trying", password)
@@ -88,7 +88,7 @@ class FshareVn(SimpleHoster):
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error('FREE DL URL')
+            self.error("FREE DL URL")
         self.url = m.group(1)
         self.logDebug("FREE DL URL: %s" % self.url)
 

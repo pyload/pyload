@@ -138,7 +138,7 @@ class UploadedTo(Hoster):
             elif status == 2:
                 pyfile.name, pyfile.size = name, size
             else:
-                self.fail('Parse error - file info')
+                self.fail("Parse error - file info")
         elif api == 'Access denied':
             self.fail(_("API key invalid"))
 

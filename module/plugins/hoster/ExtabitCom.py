@@ -61,16 +61,16 @@ class ExtabitCom(SimpleHoster):
             else:
                 self.fail("Invalid captcha")
         else:
-            self.error('Captcha')
+            self.error("Captcha")
 
         if not "href" in response:
-            self.error('JSON')
+            self.error("JSON")
 
         self.html = self.load("http://extabit.com/file/%s%s" % (fileID, response['href']))
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error('Download URL')
+            self.error("Download URL")
 
         url = m.group(1)
         self.download(url)

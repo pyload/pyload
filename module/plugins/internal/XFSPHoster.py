@@ -162,7 +162,7 @@ class XFSPHoster(SimpleHoster):
         self.html = self.load(self.pyfile.url, post=self.getPostParameters())
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error('LINK_PATTERN not found')
+            self.error("LINK_PATTERN not found")
         self.startDownload(m.group(1))
 
 
@@ -183,7 +183,7 @@ class XFSPHoster(SimpleHoster):
 
         action, inputs = self.parseHtmlForm('F1')
         if not inputs:
-            self.error('TEXTAREA not found')
+            self.error("TEXTAREA not found")
         self.logDebug(self.HOSTER_NAME, inputs)
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
@@ -195,7 +195,7 @@ class XFSPHoster(SimpleHoster):
         #get easybytez.com link for uploaded file
         m = re.search(self.OVR_LINK_PATTERN, self.html)
         if m is None:
-            self.error('OVR_LINK_PATTERN not found')
+            self.error("OVR_LINK_PATTERN not found")
         self.pyfile.url = m.group(1)
         header = self.load(self.pyfile.url, just_header=True)
         if 'location' in header:  # Direct link
@@ -303,7 +303,7 @@ class XFSPHoster(SimpleHoster):
                 self.errmsg = None
 
         else:
-            self.error('FORM: %s' % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
+            self.error("FORM: %s" % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
 
 
     def handleCaptcha(self, inputs):

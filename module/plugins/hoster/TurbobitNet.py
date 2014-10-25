@@ -76,7 +76,7 @@ class TurbobitNet(SimpleHoster):
             else:
                 m = re.search(self.CAPTCHA_PATTERN, self.html)
                 if m is None:
-                    self.error('captcha')
+                    self.error("captcha")
                 captcha_url = m.group(1)
                 inputs['captcha_response'] = self.decryptCaptcha(captcha_url)
 

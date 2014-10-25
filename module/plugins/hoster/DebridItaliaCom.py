@@ -35,7 +35,7 @@ class DebridItaliaCom(Hoster):
             self.logDebug("XML data: %s" % page)
 
             if 'File not available' in page:
-                self.fail('File not available')
+                self.fail("File not available")
             else:
                 new_url = re.search(r'<a href="(?:[^"]+)">(?P<direct>[^<]+)</a>', page).group('direct')
 

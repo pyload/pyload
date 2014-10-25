@@ -54,7 +54,7 @@ class UlozTo(SimpleHoster):
 
             m = re.search(self.TOKEN_PATTERN, self.html)
             if m is None:
-                self.error('TOKEN')
+                self.error("TOKEN")
             token = m.group(1)
 
             self.html = self.load(pyfile.url, get={"do": "askAgeForm-submit"},

@@ -37,7 +37,7 @@ class DataHu(SimpleHoster):
             url = m.group(1)
             self.logDebug("Direct link: " + url)
         else:
-            self.error('Unable to get direct link')
+            self.error("Unable to get direct link")
 
         self.download(url, disposition=True)
 

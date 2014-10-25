@@ -20,4 +20,4 @@ class XupPl(Crypter):
         if 'location' in header:
             self.urls = [header['location']]
         else:
-            self.fail('Unable to find link')
+            self.fail("Unable to find link")

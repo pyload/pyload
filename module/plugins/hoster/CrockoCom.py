@@ -45,7 +45,7 @@ class CrockoCom(SimpleHoster):
 
         m = re.search(self.FORM_PATTERN, self.html, re.S)
         if m is None:
-            self.error('ACTION')
+            self.error("ACTION")
 
         action, form = m.groups()
         inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
@@ -64,7 +64,7 @@ class CrockoCom(SimpleHoster):
             else:
                 break
         else:
-            self.fail('No valid captcha solution received')
+            self.fail("No valid captcha solution received")
 
 
 getInfo = create_getInfo(CrockoCom)

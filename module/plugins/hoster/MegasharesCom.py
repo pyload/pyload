@@ -83,7 +83,7 @@ class MegasharesCom(SimpleHoster):
         # Check traffic left on passport
         m = re.search(self.PASSPORT_LEFT_PATTERN, self.html, re.M | re.S)
         if m is None:
-            self.fail('Passport not found')
+            self.fail("Passport not found")
 
         self.logInfo("Download passport: %s" % m.group(1))
         data_left = float(m.group(2)) * 1024 ** {'B': 0, 'KB': 1, 'MB': 2, 'GB': 3}[m.group(3)]

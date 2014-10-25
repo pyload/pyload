@@ -94,7 +94,7 @@ class RelinkUs(Crypter):
         if package_links:
             self.packages = [(package_name, package_links, folder_name)]
         else:
-            self.fail('Could not extract any links')
+            self.fail("Could not extract any links")
 
 
     def initPackage(self, pyfile):
@@ -187,7 +187,7 @@ class RelinkUs(Crypter):
         elif source == 'web':
             return self.handleWEBLinks()
         else:
-            self.error('Unknown source [%s] (this is probably a bug)' % source)
+            self.error('Unknown source type "%s" (this is probably a bug)' % source)
 
 
     def handleCNL2Links(self):

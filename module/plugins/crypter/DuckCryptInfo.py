@@ -27,7 +27,7 @@ class DuckCryptInfo(Crypter):
 
         m = re.match(self.__pattern__, url)
         if m is None:
-            self.fail('Weird error in link')
+            self.fail("Weird error in link")
         if str(m.group(1)) == "link":
             self.handleLink(url)
         else:

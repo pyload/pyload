@@ -39,7 +39,7 @@ class HellshareCz(SimpleHoster):
 
         m = re.search(self.SHOW_WINDOW_PATTERN, self.html)
         if m is None:
-            self.error('SHOW WINDOW')
+            self.error("SHOW WINDOW")
 
         self.url = "http://www.hellshare.com" + m.group(1)
         self.download(self.url)

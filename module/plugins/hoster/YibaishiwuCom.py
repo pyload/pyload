@@ -49,7 +49,7 @@ class YibaishiwuCom(SimpleHoster):
             except:
                 continue
         else:
-            self.fail('No working link found')
+            self.fail("No working link found")
 
 
 getInfo = create_getInfo(YibaishiwuCom)

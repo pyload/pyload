@@ -37,7 +37,7 @@ class MyfastfileCom(Hoster):
             self.logDebug("JSON data: " + page)
             page = json_loads(page)
             if page['status'] != 'ok':
-                self.fail('Unable to unrestrict link')
+                self.fail("Unable to unrestrict link")
             new_url = page['link']
 
         if new_url != pyfile.url:

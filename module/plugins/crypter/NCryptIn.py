@@ -74,7 +74,7 @@ class NCryptIn(Crypter):
 
         # Pack and return links
         if not package_links:
-            self.fail('Could not extract any links')
+            self.fail("Could not extract any links")
         self.packages = [(package_name, package_links, folder_name)]
 
 

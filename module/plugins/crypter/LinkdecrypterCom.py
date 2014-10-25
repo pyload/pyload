@@ -29,7 +29,7 @@ class LinkdecrypterCom(Crypter):
         # API not working anymore
         self.urls = self.decryptHTML()
         if not self.urls:
-            self.fail('Could not extract any links')
+            self.fail("Could not extract any links")
 
 
     def decryptAPI(self):

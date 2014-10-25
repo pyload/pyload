@@ -44,7 +44,7 @@ class FourSharedCom(SimpleHoster):
 
         m = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
         if m is None:
-            self.error('Download link')
+            self.error("Download link")
         link = m.group(1)
 
         try:

@@ -99,7 +99,7 @@ class FilepostCom(SimpleHoster):
         self.logDebug(json_response)
 
         if not 'js' in json_response:
-            self.error('JSON %s 1' % field)
+            self.error("JSON %s 1" % field)
 
         # i changed js_answer to json_response['js'] since js_answer is nowhere set.
         # i don't know the JSON-HTTP specs in detail, but the previous author
@@ -123,7 +123,7 @@ class FilepostCom(SimpleHoster):
                 # ~? self.fail(js_answer['error'])
 
         if not 'answer' in json_response['js'] or not field in json_response['js']['answer']:
-            self.error('JSON %s 2' % field)
+            self.error("JSON %s 2" % field)
 
         return json_response['js']['answer'][field]
 

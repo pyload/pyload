@@ -41,7 +41,7 @@ class FilerNet(SimpleHoster):
 
         inputs = self.parseHtmlForm(input_names='token')[1]
         if 'token' not in inputs:
-            self.error('Unable to detect token')
+            self.error("Unable to detect token")
         token = inputs['token']
         self.logDebug("Token: " + token)
 
@@ -49,7 +49,7 @@ class FilerNet(SimpleHoster):
 
         inputs = self.parseHtmlForm(input_names='hash')[1]
         if 'hash' not in inputs:
-            self.error('Unable to detect hash')
+            self.error("Unable to detect hash")
         hash_data = inputs['hash']
         self.logDebug("Hash: " + hash_data)
 
