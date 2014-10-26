@@ -18,22 +18,26 @@ class MegaRapidCz(Account):
 
 
     login_timeout = 60
+    
+    LIMITDL_PATTERN = ur'<td>Max. počet paralelních stahování: </td><td>(\d+)'
+    VALID_UNTIL_PATTERN = ur'<td>Paušální stahování aktivní. Vyprší </td><td><strong>(.*?)</strong>'
+    TRAFFIC_LEFT_PATTERN = r'<tr><td>Kredit</td><td>(.*?) GiB'
 
 
     def loadAccountInfo(self, user, req):
         src = req.load("http://megarapid.cz/mujucet/", decode=True)
 
-        m = re.search(ur'<td>Max. počet paralelních stahování: </td><td>(\d+)', src)
+        m = re.search(self.LIMITDL_PATTERN, src)
         if m:
             data = self.getAccountData(user)
             data['options']['limitDL'] = [int(m.group(1))]
 
-        m = re.search(ur'<td>Paušální stahování aktivní. Vyprší </td><td><strong>(.*?)</strong>', src)
+        m = re.search(self.VALID_UNTIL_PATTERN, src)
         if m:
             validuntil = mktime(strptime(m.group(1), "%d.%m.%Y - %H:%M"))
             return {"premium": True, "trafficleft": -1, "validuntil": validuntil}
 
-        m = re.search(r'<tr><td>Kredit</td><td>(.*?) GiB', src)
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, src)
         if m:
             trafficleft = float(m.group(1)) * (1 << 20)
             return {"premium": True, "trafficleft": trafficleft, "validuntil": -1}

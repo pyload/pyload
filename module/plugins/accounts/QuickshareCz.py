@@ -15,10 +15,13 @@ class QuickshareCz(Account):
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
+    TRAFFIC_LEFT_PATTERN = r'Stav kreditu: <strong>(.+?)</strong>'
+    
+    
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.quickshare.cz/premium", decode=True)
 
-        m = re.search(r'Stav kreditu: <strong>(.+?)</strong>', html)
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
             trafficleft = self.parseTraffic(m.group(1))
             premium = True if trafficleft else False
