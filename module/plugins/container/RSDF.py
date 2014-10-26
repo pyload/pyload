@@ -9,7 +9,7 @@ from module.plugins.Container import Container
 
 class RSDF(Container):
     __name__ = "RSDF"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'.+\.rsdf'
 
@@ -49,4 +49,4 @@ class RSDF(Container):
                 decryptedUrl = link.replace('CCF: ', '')
                 self.urls.append(decryptedUrl)
 
-            self.logDebug("Adding package %s with %d links" % (pyfile.package().name, len(links)))
+            self.logDebug("Adding package %s with %d links" % (pyfile.package().name, len(self.urls)))
