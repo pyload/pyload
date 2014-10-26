@@ -313,9 +313,9 @@ class Plugin(Base):
         if not reason and not type:
             type = "unknown"
 
-        msg  = "%s error" % type.strip().capitalize() if type else "Error"
+        msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
         msg += ": " + reason.strip() if reason else ""
-        msg += " | Plugin may be out of date"
+        msg += _(" | Plugin may be out of date")
 
         if self.core.debug:
             print_exc()
