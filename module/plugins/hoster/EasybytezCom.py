@@ -22,8 +22,6 @@ class EasybytezCom(XFSPHoster):
     OFFLINE_PATTERN = r'>File not available'
 
     LINK_PATTERN = r'(http://(\w+\.(easybytez|easyload|ezbytez|zingload)\.(com|to)|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/.+?)["\'<]'
-    OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
-    ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<Center><b>)(.*?)</'
 
 
 getInfo = create_getInfo(EasybytezCom)

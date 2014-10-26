@@ -17,7 +17,7 @@ from module.utils import html_unescape
 class XFSPHoster(SimpleHoster):
     __name__ = "XFSPHoster"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = None
 
@@ -51,7 +51,7 @@ class XFSPHoster(SimpleHoster):
     RECAPTCHA_PATTERN = None
     SOLVEMEDIA_PATTERN = None
 
-    ERROR_PATTERN = r'class=["\']err["\'][^>]*>(.+?)</'
+    ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<[Cc]enter><b>)(.+?)(?:["\']|</)'
 
 
     def setup(self):
