@@ -8,7 +8,7 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__ = "XFileSharingPro"
     __type__ = "hook"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("match_hoster", "Always;Always except excluded;Listed only", "Hoster match", "Always except excluded"),
@@ -28,7 +28,7 @@ class XFileSharingPro(Hook):
     event_list = ["pluginConfigChanged"]
 
     HOSTER_LIST = [#WORKING HOSTERS:
-                   "eyesfile.ca", "fileband.com", "filedwon.com", "hostingbulk.com", "linestorage.com",
+                   "eyesfile.ca", "fileband.com", "filedwon.com", "filevice.com", "hostingbulk.com", "linestorage.com",
                    "ravishare.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
                    #NOT TESTED:
                    "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
