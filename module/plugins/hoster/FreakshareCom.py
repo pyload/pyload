@@ -50,13 +50,13 @@ class FreakshareCom(Hoster):
                                         "downloadserver": "No Downloadserver. Please try again later!"})
 
             if check == "bad":
-                self.fail("Bad Try.")
+                self.fail(_("Bad Try"))
             elif check == "paralell":
                 self.setWait(300, True)
                 self.wait()
                 self.retry()
             elif check == "empty":
-                self.fail("File not downloadable")
+                self.fail(_("File not downloadable"))
             elif check == "wrong_captcha":
                 self.invalidCaptcha()
                 self.retry()

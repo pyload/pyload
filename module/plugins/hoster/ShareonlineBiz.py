@@ -120,11 +120,11 @@ class ShareonlineBiz(Hoster):
                 self.invalidCaptcha()
         else:
             self.invalidCaptcha()
-            self.fail("No valid captcha solution received")
+            self.fail(_("No valid captcha solution received"))
 
         download_url = response.decode("base64")
         if not download_url.startswith("http://"):
-            self.error("Wrong download url")
+            self.error(_("Wrong download url"))
 
         self.wait()
         self.download(download_url)
@@ -181,9 +181,9 @@ class ShareonlineBiz(Hoster):
             self.logError(err, "Unknown error occurred")
 
         if err == "invalid":
-            self.fail(msg or "File not available")
+            self.fail(_("File not available"))
         elif err in ("freelimit", "size", "proxy"):
-            self.fail(msg or "Premium account needed")
+            self.fail(_("Premium account needed"))
         else:
             if err in 'server':
                 self.setWait(600, False)
@@ -193,4 +193,4 @@ class ShareonlineBiz(Hoster):
                 self.setWait(300, True)
 
             self.wait()
-            self.retry(max_tries=25, reason=msg)
+            self.retry(max_tries=25, reason=err)

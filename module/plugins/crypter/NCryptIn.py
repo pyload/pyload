@@ -74,7 +74,7 @@ class NCryptIn(Crypter):
 
         # Pack and return links
         if not package_links:
-            self.fail("Could not extract any links")
+            self.fail(_("Could not extract any links"))
         self.packages = [(package_name, package_links, folder_name)]
 
 
@@ -177,7 +177,7 @@ class NCryptIn(Crypter):
         if self.protection_type == "password":
             if "This password is invalid!" in self.cleanedHtml:
                 self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
-                self.fail("Incorrect password, please set right password on 'Edit package' form and retry")
+                self.fail(_("Incorrect password, please set right password on 'Edit package' form and retry"))
 
         if self.protection_type == "captcha":
             if "The securitycheck was wrong!" in self.cleanedHtml:
@@ -229,7 +229,7 @@ class NCryptIn(Crypter):
                 for (crypted, jk) in zip(vcrypted, vjk):
                     package_links.extend(self._getLinks(crypted, jk))
             except:
-                self.fail("Unable to decrypt CNL2 links")
+                self.fail(_("Unable to decrypt CNL2 links"))
 
         return package_links
 

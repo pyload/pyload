@@ -57,7 +57,7 @@ class DlProtectCom(SimpleCrypter):
 
         for errmsg in (">The password is incorrect", ">The security code is incorrect"):
             if errmsg in self.html:
-                self.fail(errmsg[1:])
+                self.fail(_(errmsg[1:]))
 
         pattern = r'<a href="([^/].+?)" target="_blank">'
         return re.findall(pattern, self.html)

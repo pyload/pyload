@@ -91,11 +91,11 @@ class FileserveCom(Hoster):
                 self.doLongWait(re.search(self.LONG_WAIT_PATTERN, self.html))
 
             elif action['fail'] == "parallelDownload":
-                self.logWarning(_("Parallel download error, now waiting 60s."))
+                self.logWarning(_("Parallel download error, now waiting 60s"))
                 self.retry(wait_time=60, reason="parallelDownload")
 
             else:
-                self.fail("Download check returned %s" % action['fail'])
+                self.fail(_("Download check returned: %s") % action['fail'])
 
         elif "success" in action:
             if action['success'] == "showCaptcha":
@@ -105,13 +105,13 @@ class FileserveCom(Hoster):
                 self.doTimmer()
 
         else:
-            self.error("Unknown server response")
+            self.error(_("Unknown server response"))
 
         # show download link
         response = self.load(self.url, post={"downloadLink": "show"}, decode=True)
         self.logDebug("Show downloadLink response : %s" % response)
         if "fail" in response:
-            self.error("Couldn't retrieve download url")
+            self.error(_("Couldn't retrieve download url"))
 
         # this may either download our file or forward us to an error page
         self.download(self.url, post={"download": "normal"})
@@ -127,7 +127,7 @@ class FileserveCom(Hoster):
         elif check == "wait":
             self.doLongWait(self.lastCheck)
         elif check == "limit":
-            self.logWarning("Download limited reached for today")
+            self.logWarning(_("Download limited reached for today"))
             self.setWait(secondsToMidnight(gmt=2), True)
             self.wait()
             self.retry()
@@ -140,12 +140,12 @@ class FileserveCom(Hoster):
         self.logDebug("Wait response : %s" % response[:80])
 
         if "fail" in response:
-            self.fail("Failed getting wait time")
+            self.fail(_("Failed getting wait time"))
 
         if self.__name__ == "FilejungleCom":
             m = re.search(r'"waitTime":(\d+)', response)
             if m is None:
-                self.fail("Cannot get wait time")
+                self.fail(_("Cannot get wait time"))
             wait_time = int(m.group(1))
         else:
             wait_time = int(response) + 3
@@ -170,7 +170,7 @@ class FileserveCom(Hoster):
                 self.correctCaptcha()
                 break
         else:
-            self.fail("Invalid captcha")
+            self.fail(_("Invalid captcha"))
 
 
     def doLongWait(self, m):
@@ -209,7 +209,7 @@ class FileserveCom(Hoster):
 
             if check == "login":
                 self.account.relogin(self.user)
-                self.retry(reason=_("Not logged in."))
+                self.retry(reason=_("Not logged in"))
 
 
 def getInfo(urls):

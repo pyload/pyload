@@ -68,7 +68,7 @@ class LinkList(Container):
                 txt = open(file_name, 'wb')
                 txt.close()
             except:
-                self.logWarning(_("LinkList could not be cleared."))
+                self.logWarning(_("LinkList could not be cleared"))
 
         for name, links in packages.iteritems():
             self.packages.append((name, links, name))

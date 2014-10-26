@@ -43,7 +43,7 @@ class FilecloudIo(SimpleHoster):
 
         m = re.search(self.AB1_PATTERN, self.html)
         if m is None:
-            self.error("__AB1")
+            self.error(_("__AB1"))
         data['__ab1'] = m.group(1)
 
         recaptcha = ReCaptcha(self)
@@ -52,10 +52,10 @@ class FilecloudIo(SimpleHoster):
         captcha_key = m.group(1) if m else recaptcha.detect_key()
 
         if captcha_key is None:
-            self.error("ReCaptcha key not found")
+            self.error(_("ReCaptcha key not found"))
 
         if not self.account:
-            self.fail("User not logged in")
+            self.fail(_("User not logged in"))
         elif not self.account.logged_in:
             captcha_challenge, captcha_response = recaptcha.challenge(captcha_key)
             self.account.form_data = {"recaptcha_challenge_field": captcha_challenge,
@@ -89,14 +89,14 @@ class FilecloudIo(SimpleHoster):
                     self.correctCaptcha()
                     break
             else:
-                self.fail("Incorrect captcha")
+                self.fail(_("Incorrect captcha"))
 
         if response['dl']:
             self.html = self.load('http://filecloud.io/download.html')
 
             m = re.search(self.LINK_PATTERN % self.file_info['ID'], self.html)
             if m is None:
-                self.error("Download URL")
+                self.error(_("LINK_PATTERN not found"))
 
             if "size" in self.file_info and self.file_info['size']:
                 self.check_data = {"size": int(self.file_info['size'])}
@@ -104,7 +104,7 @@ class FilecloudIo(SimpleHoster):
             download_url = m.group(1)
             self.download(download_url)
         else:
-            self.fail("Unexpected server response")
+            self.fail(_("Unexpected server response"))
 
 
     def handlePremium(self):

@@ -55,9 +55,9 @@ class StreamcloudEu(XFSPHoster):
 
         else:
             if self.errmsg and 'captcha' in self.errmsg:
-                self.fail("No valid captcha code entered")
+                self.fail(_("No valid captcha code entered"))
             else:
-                self.fail("Download link not found")
+                self.fail(_("Download link not found"))
 
         return m.group(1)
 
@@ -78,7 +78,7 @@ class StreamcloudEu(XFSPHoster):
                     if self.errmsg:
                         self.retry()
                     else:
-                        self.error("Form not found")
+                        self.error(_("Form not found"))
 
             self.logDebug(self.HOSTER_NAME, inputs)
 
@@ -87,7 +87,7 @@ class StreamcloudEu(XFSPHoster):
                     if self.passwords:
                         inputs['password'] = self.passwords.pop(0)
                     else:
-                        self.fail("No or invalid passport")
+                        self.fail(_("No or invalid passport"))
 
                 if not self.premium:
                     m = re.search(self.WAIT_PATTERN, self.html)
@@ -122,7 +122,7 @@ class StreamcloudEu(XFSPHoster):
                 self.errmsg = None
 
         else:
-            self.error("FORM: %s" % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
+            self.error(_("FORM: %s") % (inputs['op'] if 'op' in inputs else _("UNKNOWN")))
 
 
 getInfo = create_getInfo(StreamcloudEu)

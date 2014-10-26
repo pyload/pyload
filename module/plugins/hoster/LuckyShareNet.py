@@ -33,7 +33,7 @@ class LuckyShareNet(SimpleHoster):
                 self.logDebug("You have to wait %d seconds between free downloads" % waittime)
                 self.retry(wait_time=waittime)
             else:
-                self.error("Unable to detect wait time between free downloads")
+                self.error(_("Unable to detect wait time between free downloads"))
         elif 'Hash expired' in rep:
             self.retry(reason="Hash expired")
         return json_loads(rep)
@@ -64,10 +64,10 @@ class LuckyShareNet(SimpleHoster):
             elif 'Verification failed' in rep:
                 self.invalidCaptcha()
             else:
-                self.error("Unable to get downlaod link")
+                self.error(_("Unable to get downlaod link"))
 
         if not json['link']:
-            self.fail("No Download url retrieved/all captcha attempts failed")
+            self.fail(_("No Download url retrieved/all captcha attempts failed"))
 
         self.logDebug("Direct URL: " + json['link'])
         self.download(json['link'])

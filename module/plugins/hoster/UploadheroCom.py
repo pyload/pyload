@@ -40,7 +40,7 @@ class UploadheroCom(SimpleHoster):
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
-            self.error("Captcha URL")
+            self.error(_("CAPTCHA_PATTERN not found"))
         captcha_url = "http://uploadhero.co" + m.group(1)
 
         for _i in xrange(5):
@@ -54,7 +54,7 @@ class UploadheroCom(SimpleHoster):
             else:
                 self.invalidCaptcha()
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
         self.download(download_url)
 

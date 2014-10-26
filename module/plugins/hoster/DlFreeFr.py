@@ -161,7 +161,7 @@ class DlFreeFr(SimpleHoster):
         elif headers.get('code') == 404:
             self.offline()
         else:
-            self.fail("Invalid return code: " + str(headers.get('code')))
+            self.fail(_("Invalid return code: ") + str(headers.get('code')))
 
 
     def handleFree(self):
@@ -180,12 +180,12 @@ class DlFreeFr(SimpleHoster):
             if m:
                 cj.setCookie(m.group(4), m.group(1), m.group(2), m.group(3))
             else:
-                self.fail("Cookie error")
+                self.fail(_("Cookie error"))
             location = headers.get("location")
             self.req.setCookieJar(cj)
             self.download(location, disposition=True)
         else:
-            self.fail("Invalid response")
+            self.fail(_("Invalid response"))
 
 
     def getLastHeaders(self):

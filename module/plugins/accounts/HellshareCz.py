@@ -44,7 +44,7 @@ class HellshareCz(Account):
                     trafficleft = int(credit) * 1024
                     validuntil = -1
             except Exception, e:
-                self.logError("Unable to parse credit info", e)
+                self.logError(_("Unable to parse credit info"), repr(e))
                 validuntil = -1
                 trafficleft = -1
 

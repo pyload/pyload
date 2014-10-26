@@ -72,7 +72,7 @@ class RyushareCom(XFSPHoster):
                 self.correctCaptcha()
                 break
         else:
-            self.fail("You have entered 5 invalid captcha codes")
+            self.fail(_("You have entered 5 invalid captcha codes"))
 
         if "Click here to download" in self.html:
             return re.search(r'<a href="([^"]+)">Click here to download</a>', self.html).group(1)

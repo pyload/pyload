@@ -62,7 +62,7 @@ class XFSPHoster(SimpleHoster):
     def prepare(self):
         """ Initialize important variables """
         if not self.HOSTER_NAME:
-            self.fail("Missing HOSTER_NAME")
+            self.fail(_("Missing HOSTER_NAME"))
 
         if not self.LINK_PATTERN:
             pattern = r'(https?://(www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'
@@ -86,7 +86,7 @@ class XFSPHoster(SimpleHoster):
             if self.premium:
                 self.handleOverriden()
             else:
-                self.fail("Only premium users can download from other hosters with %s" % self.HOSTER_NAME)
+                self.fail(_("Only premium users can download from other hosters with %s") % self.HOSTER_NAME)
         else:
             try:
                 self.file_info = self.getFileInfo()
@@ -151,9 +151,9 @@ class XFSPHoster(SimpleHoster):
 
         else:
             if self.errmsg and 'captcha' in self.errmsg:
-                self.fail("No valid captcha code entered")
+                self.fail(_("No valid captcha code entered"))
             else:
-                self.fail("Download link not found")
+                self.fail(_("Download link not found"))
 
         return m.group(1)
 
@@ -162,7 +162,7 @@ class XFSPHoster(SimpleHoster):
         self.html = self.load(self.pyfile.url, post=self.getPostParameters())
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("LINK_PATTERN not found")
+            self.error(_("LINK_PATTERN not found"))
         self.startDownload(m.group(1))
 
 
@@ -183,19 +183,19 @@ class XFSPHoster(SimpleHoster):
 
         action, inputs = self.parseHtmlForm('F1')
         if not inputs:
-            self.error("TEXTAREA not found")
+            self.error(_("TEXTAREA not found"))
         self.logDebug(self.HOSTER_NAME, inputs)
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
         elif inputs['st'] == 'Can not leech file':
             self.retry(max_tries=20, wait_time=3 * 60, reason=inputs['st'])
         else:
-            self.fail(inputs['st'])
+            self.fail(_(inputs['st']))
 
         #get easybytez.com link for uploaded file
         m = re.search(self.OVR_LINK_PATTERN, self.html)
         if m is None:
-            self.error("OVR_LINK_PATTERN not found")
+            self.error(_("OVR_LINK_PATTERN not found"))
         self.pyfile.url = m.group(1)
         header = self.load(self.pyfile.url, just_header=True)
         if 'location' in header:  # Direct link
@@ -225,7 +225,7 @@ class XFSPHoster(SimpleHoster):
             elif 'captcha' in self.errmsg:
                 self.invalidCaptcha()
             elif 'premium' in self.errmsg and 'require' in self.errmsg:
-                self.fail("File can be downloaded by premium users only")
+                self.fail(_("File can be downloaded by premium users only"))
             elif 'limit' in self.errmsg:
                 self.wait(1 * 60 * 60, True)
                 self.retry(25)
@@ -234,7 +234,7 @@ class XFSPHoster(SimpleHoster):
             elif 'maintenance' in self.errmsg or 'maintainance' in self.errmsg:
                 self.tempOffline()
             elif 'download files up to' in self.errmsg:
-                self.fail("File too large for free download")
+                self.fail(_("File too large for free download"))
             else:
                 self.fail(self.errmsg)
 
@@ -260,7 +260,7 @@ class XFSPHoster(SimpleHoster):
                     if self.errmsg:
                         self.retry()
                     else:
-                        self.error("Form not found")
+                        self.error(_("Form not found"))
 
             self.logDebug(self.HOSTER_NAME, inputs)
 
@@ -269,7 +269,7 @@ class XFSPHoster(SimpleHoster):
                     if self.passwords:
                         inputs['password'] = self.passwords.pop(0)
                     else:
-                        self.fail("No or invalid passport")
+                        self.fail(_("No or invalid passport"))
 
                 if not self.premium:
                     m = re.search(self.WAIT_PATTERN, self.html)
@@ -303,7 +303,7 @@ class XFSPHoster(SimpleHoster):
                 self.errmsg = None
 
         else:
-            self.error("FORM: %s" % (inputs['op'] if 'op' in inputs else 'UNKNOWN'))
+            self.error(_("FORM: %s") % (inputs['op'] if 'op' in inputs else _("UNKNOWN")))
 
 
     def handleCaptcha(self, inputs):

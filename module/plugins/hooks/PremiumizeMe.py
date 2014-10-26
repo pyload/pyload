@@ -48,7 +48,7 @@ class PremiumizeMe(MultiHoster):
         self.account = self.core.accountManager.getAccountPlugin("PremiumizeMe")
         if not self.account.canUse():
             self.account = None
-            self.logError(_("Please add a valid premiumize.me account first and restart pyLoad."))
+            self.logError(_("Please add a valid premiumize.me account first and restart pyLoad"))
             return
 
         # Run the overwriten core ready which actually enables the multihoster hook

@@ -18,7 +18,7 @@ class UploadheroCom(Account):
 
 
     def loadAccountInfo(self, user, req):
-        premium_pattern = re.compile('Il vous reste <span class="bleu">(\d+)</span> jours premium.')
+        premium_pattern = re.compile('Il vous reste <span class="bleu">(\d+)</span> jours premium')
 
         data = self.getAccountData(user)
         page = req.load("http://uploadhero.co/my-account")

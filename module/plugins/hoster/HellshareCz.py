@@ -30,16 +30,16 @@ class HellshareCz(SimpleHoster):
 
     def process(self, pyfile):
         if not self.account:
-            self.fail("User not logged in")
+            self.fail(_("User not logged in"))
         pyfile.url = re.match(self.__pattern__, pyfile.url).group(1)
         self.html = self.load(pyfile.url, decode=True)
         self.getFileInfo()
         if not self.checkTrafficLeft():
-            self.fail("Not enough traffic left for user %s." % self.user)
+            self.fail(_("Not enough traffic left for user ") + self.user)
 
         m = re.search(self.SHOW_WINDOW_PATTERN, self.html)
         if m is None:
-            self.error("SHOW WINDOW")
+            self.error(_("SHOW_WINDOW_PATTERN not found"))
 
         self.url = "http://www.hellshare.com" + m.group(1)
         self.download(self.url)

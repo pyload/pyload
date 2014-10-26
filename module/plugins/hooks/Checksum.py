@@ -120,7 +120,7 @@ class Checksum(Hook):
                     checksum = computeChecksum(local_file, key.replace("-", "").lower())
                     if checksum:
                         if checksum == data[key].lower():
-                            self.logInfo(_('File integrity of "%s" verified by %s checksum (%s).') %
+                            self.logInfo(_('File integrity of "%s" verified by %s checksum (%s)') %
                                         (pyfile.name, key.upper(), checksum))
                             break
                         else:
@@ -130,7 +130,7 @@ class Checksum(Hook):
                     else:
                         self.logWarning(_("Unsupported hashing algorithm"), key.upper())
             else:
-                self.logWarning(_("Unable to validate checksum for file"), pyfile.name)
+                self.logWarning(_("Unable to validate checksum for file: ") + pyfile.name)
 
 
     def checkFailed(self, pyfile, local_file, msg):
@@ -174,7 +174,7 @@ class Checksum(Hook):
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = computeChecksum(local_file, algorithm)
                 if checksum == data['hash']:
-                    self.logInfo(_('File integrity of "%s" verified by %s checksum (%s).') %
+                    self.logInfo(_('File integrity of "%s" verified by %s checksum (%s)') %
                                 (data['name'], algorithm, checksum))
                 else:
                     self.logWarning(_("%s checksum for file %s does not match (%s != %s)") %

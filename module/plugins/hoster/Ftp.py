@@ -55,7 +55,7 @@ class Ftp(Hoster):
         try:
             response = self.load(pyfile.url)
         except pycurl.error, e:
-            self.fail("Error %d: %s" % e.args)
+            self.fail(_("Error %d: %s") % e.args)
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.logDebug(self.req.http.header)
@@ -76,4 +76,4 @@ class Ftp(Hoster):
                 self.logDebug("LINKS", links)
                 self.core.api.addPackage(pkgname, links)
             else:
-                self.fail("Unexpected server response")
+                self.fail(_("Unexpected server response"))

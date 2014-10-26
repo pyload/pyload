@@ -67,7 +67,7 @@ class TurbobitNet(SimpleHoster):
 
             action, inputs = self.parseHtmlForm("action='#'")
             if not inputs:
-                self.error("Captcha form not found")
+                self.error(_("Captcha form not found"))
             self.logDebug(inputs)
 
             if inputs['captcha_type'] == 'recaptcha':
@@ -76,7 +76,7 @@ class TurbobitNet(SimpleHoster):
             else:
                 m = re.search(self.CAPTCHA_PATTERN, self.html)
                 if m is None:
-                    self.error("captcha")
+                    self.error(_("captcha"))
                 captcha_url = m.group(1)
                 inputs['captcha_response'] = self.decryptCaptcha(captcha_url)
 
@@ -89,7 +89,7 @@ class TurbobitNet(SimpleHoster):
                 self.correctCaptcha()
                 break
         else:
-            self.fail("Invalid captcha")
+            self.fail(_("Invalid captcha"))
 
 
     def getRtUpdate(self):
@@ -109,7 +109,7 @@ class TurbobitNet(SimpleHoster):
                 self.setStorage("timestamp", timestamp())
                 self.setStorage("version", self.__version__)
             else:
-                self.logError("Unable to download, wait for update...")
+                self.logError(_("Unable to download, wait for update..."))
                 self.tempOffline()
 
         return rtUpdate
@@ -165,7 +165,7 @@ class TurbobitNet(SimpleHoster):
     def downloadFile(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("Download link not found")
+            self.error(_("Download link not found"))
         self.url = "http://turbobit.net" + m.group('url')
         self.download(self.url)
 

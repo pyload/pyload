@@ -49,7 +49,7 @@ class GigapetaCom(SimpleHoster):
             elif "Entered figures don&#96;t coincide with the picture" in self.html:
                 self.invalidCaptcha()
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
         self.download(download_url)

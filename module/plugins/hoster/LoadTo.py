@@ -42,7 +42,7 @@ class LoadTo(SimpleHoster):
         # Search for Download URL
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("Unable to detect download URL")
+            self.error(_("LINK_PATTERN not found"))
 
         download_url = m.group(1)
 
@@ -65,7 +65,7 @@ class LoadTo(SimpleHoster):
                 self.invalidCaptcha()
                 self.retry()
             elif check == "html":
-                self.logWarning("Downloaded file is an html page, will retry")
+                self.logWarning(_("Downloaded file is an html page, will retry"))
                 self.retry()
 
 

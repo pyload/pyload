@@ -149,7 +149,7 @@ class ShareLinksBiz(Crypter):
     def handleErrors(self):
         if "The inserted password was wrong" in self.html:
             self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
-            self.fail("Incorrect password, please set right password on 'Edit package' form and retry")
+            self.fail(_("Incorrect password, please set right password on 'Edit package' form and retry"))
 
         if self.captcha:
             if "Your choice was wrong" in self.html:
@@ -233,7 +233,7 @@ class ShareLinksBiz(Crypter):
                 (crypted, jk) = self._getCipherParams()
                 package_links.extend(self._getLinks(crypted, jk))
             except:
-                self.fail("Unable to decrypt CNL2 links")
+                self.fail(_("Unable to decrypt CNL2 links"))
         return package_links
 
 

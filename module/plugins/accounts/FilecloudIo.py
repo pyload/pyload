@@ -24,7 +24,7 @@ class FilecloudIo(Account):
             if rep['status'] == 'ok':
                 break
             elif rep['status'] == 'error' and rep['message'] == 'no such user or wrong password':
-                self.logError("Wrong username or password")
+                self.logError(_("Wrong username or password"))
                 return {"valid": False, "premium": False}
         else:
             return {"premium": False}

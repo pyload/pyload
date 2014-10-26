@@ -49,7 +49,7 @@ class ZippyshareCom(SimpleHoster):
             c = lambda a,b: a + b
 
         if not m:
-            self.error("Unable to calculate checksum")
+            self.error(_("Unable to calculate checksum"))
 
         a = map(lambda x: int(x), m[0])
         b = map(lambda x: int(x), m[1])

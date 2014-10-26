@@ -32,7 +32,7 @@ class WrzucTo(SimpleHoster):
     def handleFree(self):
         data = dict(re.findall(r'(md5|file): "(.*?)"', self.html))
         if len(data) != 2:
-            self.error("File ID")
+            self.error(_("No file ID"))
 
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = self.pyfile.url
@@ -43,7 +43,7 @@ class WrzucTo(SimpleHoster):
 
         data.update(re.findall(r'"(download_link|server_id)":"(.*?)"', self.html))
         if len(data) != 4:
-            self.error("Download URL")
+            self.error(_("No download URL"))
 
         download_url = "http://%s.wrzuc.to/pobierz/%s" % (data['server_id'], data['download_link'])
         self.download(download_url)

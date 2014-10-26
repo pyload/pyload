@@ -94,7 +94,7 @@ class RelinkUs(Crypter):
         if package_links:
             self.packages = [(package_name, package_links, folder_name)]
         else:
-            self.fail("Could not extract any links")
+            self.fail(_("Could not extract any links"))
 
 
     def initPackage(self, pyfile):
@@ -169,7 +169,7 @@ class RelinkUs(Crypter):
         if self.PASSWORD_ERROR_ROKEN in self.html:
             msg = "Incorrect password, please set right password on 'Edit package' form and retry"
             self.logDebug(msg)
-            self.fail(msg)
+            self.fail(_(msg))
 
         if self.captcha:
             if self.CAPTCHA_ERROR_ROKEN in self.html:

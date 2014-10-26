@@ -340,7 +340,7 @@ class Plugin(Base):
         :param reason: reason for retrying, will be passed to fail if max_tries reached
         """
         if 0 < max_tries <= self.retries:
-            self.error(reason or "Max retries reached", "retry")
+            self.error(reason or _("Max retries reached"), "retry")
 
         self.wantReconnect = False
         self.setWait(wait_time)
@@ -351,13 +351,13 @@ class Plugin(Base):
 
 
     def invalidCaptcha(self):
-        self.logError("Invalid captcha")
+        self.logError(_("Invalid captcha"))
         if self.cTask:
             self.cTask.invalid()
 
 
     def correctCaptcha(self):
-        self.logInfo("Correct captcha")
+        self.logInfo(_("Correct captcha"))
         if self.cTask:
             self.cTask.correct()
 
@@ -419,7 +419,7 @@ class Plugin(Base):
             elif task.error:
                 self.fail(task.error)
             elif not task.result:
-                self.fail(_("No captcha result obtained in appropiate time by any of the plugins."))
+                self.fail(_("No captcha result obtained in appropiate time by any of the plugins"))
 
             result = task.result
             self.logDebug("Received captcha result: %s" % str(result))
@@ -548,7 +548,7 @@ class Plugin(Base):
             self.pyfile.size = self.req.size
 
         if disposition and newname and newname != name: #triple check, just to be sure
-            self.logInfo("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
+            self.logInfo(_("%(name)s saved as %(newname)s") % {"name": name, "newname": newname})
             self.pyfile.name = newname
             filename = join(location, newname)
 
@@ -639,7 +639,7 @@ class Plugin(Base):
         if starting and self.core.config['download']['skip_existing'] and exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
-                raise SkipDownload("File exists.")
+                raise SkipDownload("File exists")
 
         pyfile = self.core.db.findDuplicates(self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:

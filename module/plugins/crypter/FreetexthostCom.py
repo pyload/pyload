@@ -20,6 +20,6 @@ class FreetexthostCom(SimpleCrypter):
     def getLinks(self):
         m = re.search(r'<div id="contentsinner">\s*(.+)<div class="viewcount">', self.html, re.S)
         if m is None:
-            self.fail("Unable to extract links | Plugin may be out-of-date")
+            self.error(_("Unable to extract links"))
         links = m.group(1)
         return links.strip().split("<br />\r\n")

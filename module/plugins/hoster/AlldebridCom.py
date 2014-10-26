@@ -42,7 +42,7 @@ class AlldebridCom(Hoster):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "AllDebrid")
-            self.fail("No AllDebrid account provided")
+            self.fail(_("No AllDebrid account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             password = self.getPassword().splitlines()
@@ -84,6 +84,6 @@ class AlldebridCom(Hoster):
                                     'empty': re.compile(r"^$")})
 
         if check == "error":
-            self.retry(wait_time=60, reason="An error occured while generating link.")
+            self.retry(wait_time=60, reason="An error occured while generating link")
         elif check == "empty":
-            self.retry(wait_time=60, reason="Downloaded File was empty.")
+            self.retry(wait_time=60, reason="Downloaded File was empty")

@@ -25,7 +25,7 @@ class RapidfileshareNet(XFSPHoster):
 
 
     def handlePremium(self):
-        self.fail("Premium download not implemented")
+        self.fail(_("Premium download not implemented"))
 
 
 getInfo = create_getInfo(RapidfileshareNet)

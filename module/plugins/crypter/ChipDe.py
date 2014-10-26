@@ -21,7 +21,7 @@ class ChipDe(Crypter):
         try:
             f = re.search(r'"(http://video\.chip\.de/.+)"', self.html)
         except:
-            self.fail("Failed to find the URL")
+            self.fail(_("Failed to find the URL"))
         else:
             self.urls = [f.group(1)]
             self.logDebug("The file URL is %s" % self.urls[0])

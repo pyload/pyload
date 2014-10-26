@@ -137,9 +137,9 @@ class Captcha9kw(Hook):
                 self.logInfo(_("Request correct"), response)
 
             except BadHeader, e:
-                self.logError(_("Could not send correct request."), e)
+                self.logError(_("Could not send correct request"), repr(e))
         else:
-            self.logError(_("No CaptchaID for correct request (task %s) found.") % task)
+            self.logError(_("No CaptchaID for correct request (task %s) found") % task)
 
 
     def captchaInvalid(self, task):
@@ -157,6 +157,6 @@ class Captcha9kw(Hook):
                 self.logInfo(_("Request refund"), response)
 
             except BadHeader, e:
-                self.logError(_("Could not send refund request."), e)
+                self.logError(_("Could not send refund request"), repr(e))
         else:
-            self.logError(_("No CaptchaID for not correct request (task %s) found.") % task)
+            self.logError(_("No CaptchaID for not correct request (task %s) found") % task)

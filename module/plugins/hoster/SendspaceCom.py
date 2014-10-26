@@ -52,7 +52,7 @@ class SendspaceCom(SimpleHoster):
             self.logDebug(params)
             self.html = self.load(self.pyfile.url, post=params)
         else:
-            self.fail("Download link not found")
+            self.fail(_("Download link not found"))
 
         self.download(download_url)
 

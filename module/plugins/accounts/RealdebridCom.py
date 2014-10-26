@@ -32,5 +32,5 @@ class RealdebridCom(Account):
         if "Your login informations are incorrect" in page:
             self.wrongPassword()
         elif "PIN Code required" in page:
-            self.logWarning("PIN code required. Please login to https://real-debrid.com using the PIN or disable the double authentication in your control panel on https://real-debrid.com.")
+            self.logWarning(_("PIN code required. Please login to https://real-debrid.com using the PIN or disable the double authentication in your control panel on https://real-debrid.com"))
             self.pin_code = True

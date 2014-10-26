@@ -36,7 +36,7 @@ class FilerNet(Account):
             trafficleft = self.parseTraffic(traffic.group(1))
             return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
         else:
-            self.logError("Unable to retrieve account information")
+            self.logError(_("Unable to retrieve account information"))
             return {"premium": False, "validuntil": None, "trafficleft": None}
 
 

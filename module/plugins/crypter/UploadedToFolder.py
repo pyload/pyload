@@ -30,7 +30,7 @@ class UploadedToFolder(SimpleCrypter):
         if m:
             plain_link = 'http://uploaded.net/' + m.group('plain')
         else:
-            self.fail("Parse error - Unable to find plain url list")
+            self.error(_("Unable to find plain url list"))
 
         self.html = self.load(plain_link)
         package_links = self.html.split('\n')[:-1]

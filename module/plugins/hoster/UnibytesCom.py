@@ -62,7 +62,7 @@ class UnibytesCom(SimpleHoster):
             elif last_step in ("captcha", "last"):
                 post_data['captcha'] = self.decryptCaptcha(domain + '/captcha.jpg')
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
         self.download(url)

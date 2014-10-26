@@ -39,7 +39,7 @@ class BayfilesCom(SimpleHoster):
         # Get download token
         m = re.search(self.VARS_PATTERN, self.html)
         if m is None:
-            self.error("VARS")
+            self.error(_("VARS_PATTERN not found"))
         vfid, delay = m.groups()
 
         response = json_loads(self.load('http://bayfiles.com/ajax_download', get={
@@ -48,7 +48,7 @@ class BayfilesCom(SimpleHoster):
             "vfid": vfid}, decode=True))
 
         if not "token" in response or not response['token']:
-            self.fail("No token")
+            self.fail(_("No token"))
 
         self.wait(int(delay))
 
@@ -60,14 +60,14 @@ class BayfilesCom(SimpleHoster):
         # Get final link and download
         m = re.search(self.FREE_LINK_PATTERN, self.html)
         if m is None:
-            self.error("Free link")
+            self.error(_("Free link"))
         self.startDownload(m.group(1))
 
 
     def handlePremium(self):
         m = re.search(self.PREMIUM_LINK_PATTERN, self.html)
         if m is None:
-            self.error("Premium link")
+            self.error(_("Premium link"))
         self.startDownload(m.group(1))
 
 

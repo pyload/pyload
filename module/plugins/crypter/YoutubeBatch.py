@@ -123,7 +123,7 @@ class YoutubeBatch(Crypter):
             playlists = [self.getPlaylist(m_id)]
 
         if not playlists:
-            self.fail("No playlist available")
+            self.fail(_("No playlist available"))
 
         addedvideos = []
         urlize = lambda x: "https://www.youtube.com/watch?v=" + x

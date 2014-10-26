@@ -34,10 +34,10 @@ class MegaDebridEu(Hoster):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
-            self.exitOnFail(_("Please enter your %s account or deactivate this plugin") % "Mega-debrid.eu")
+            self.exitOnFail("Please enter your %s account or deactivate this plugin" % "Mega-debrid.eu")
         else:
             if not self.connectToApi():
-                self.exitOnFail(_("Unable to connect to %s") % "Mega-debrid.eu")
+                self.exitOnFail("Unable to connect to Mega-debrid.eu")
 
             self.logDebug("Old URL: %s" % pyfile.url)
             new_url = self.debridLink(pyfile.url)
@@ -88,7 +88,7 @@ class MegaDebridEu(Hoster):
         And display the reason of this failure
         """
         if self.getConfig("unloadFailing"):
-            self.logError(msg)
+            self.logError(_(msg))
             self.resetAccount()
         else:
-            self.fail(msg)
+            self.fail(_(msg))

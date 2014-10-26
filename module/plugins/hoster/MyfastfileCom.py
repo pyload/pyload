@@ -28,7 +28,7 @@ class MyfastfileCom(Hoster):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Myfastfile.com")
-            self.fail("No Myfastfile.com account provided")
+            self.fail(_("No Myfastfile.com account provided"))
         else:
             self.logDebug("Original URL: %s" % pyfile.url)
             page = self.load('http://myfastfile.com/api.php',
@@ -37,7 +37,7 @@ class MyfastfileCom(Hoster):
             self.logDebug("JSON data: " + page)
             page = json_loads(page)
             if page['status'] != 'ok':
-                self.fail("Unable to unrestrict link")
+                self.fail(_("Unable to unrestrict link"))
             new_url = page['link']
 
         if new_url != pyfile.url:

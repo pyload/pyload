@@ -107,7 +107,7 @@ class YoutubeCom(Hoster):
                        "480p": 35, "720p": 22, "1080p": 37, "3072p": 38}
         desired_fmt = self.getConfig("fmt")
         if desired_fmt and desired_fmt not in self.formats:
-            self.logWarning("FMT %d unknown - using default." % desired_fmt)
+            self.logWarning(_("FMT %d unknown, using default") % desired_fmt)
             desired_fmt = 0
         if not desired_fmt:
             desired_fmt = quality.get(self.getConfig("quality"), 18)
@@ -124,7 +124,7 @@ class YoutubeCom(Hoster):
         allowed = lambda x: self.getConfig(self.formats[x][0])
         streams = [x for x in streams if x[0] in self.formats and allowed(x[0])]
         if not streams:
-            self.fail("No available stream meets your preferences")
+            self.fail(_("No available stream meets your preferences"))
         fmt_dict = dict([x for x in streams if self.formats[x[0]][4] == use3d] or streams)
 
         self.logDebug("DESIRED STREAM: ITAG:%d (%s) %sfound, %sallowed" %

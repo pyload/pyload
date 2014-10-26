@@ -66,6 +66,6 @@ class MegaRapidCz(SimpleHoster):
                 self.relogin(self.user)
                 self.retry(wait_time=60, reason="User login failed")
             elif re.search(self.ERR_CREDIT_PATTERN, self.html):
-                self.fail("Not enough credit left")
+                self.fail(_("Not enough credit left"))
             else:
-                self.fail("Download link not found")
+                self.fail(_("Download link not found"))

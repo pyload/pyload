@@ -96,4 +96,4 @@ class ExpertDecoders(Hook):
                 self.logInfo(_("Request refund"), response)
 
             except BadHeader, e:
-                self.logError(_("Could not send refund request."), e)
+                self.logError(_("Could not send refund request"), repr(e))

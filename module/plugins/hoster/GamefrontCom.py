@@ -56,7 +56,7 @@ class GamefrontCom(Hoster):
     def _getName(self):
         name = re.search(self.PATTERN_FILENAME, self.html)
         if name is None:
-            self.fail("%s: Plugin broken." % self.__name__)
+            self.fail(_("Plugin broken")
 
         return name.group(1)
 

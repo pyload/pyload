@@ -66,7 +66,7 @@ class IfolderRu(SimpleHoster):
             else:
                 break
         else:
-            self.fail("Invalid captcha")
+            self.fail(_("Invalid captcha"))
 
         download_url = re.search(self.LINK_PATTERN, self.html).group(1)
         self.correctCaptcha()

@@ -100,14 +100,14 @@ class MediafireCom(SimpleHoster):
         while self.PASSWORD_PATTERN in self.html:
             if len(passwords):
                 password = passwords.pop(0)
-                self.logInfo("Password protected link, trying " + password)
+                self.logInfo(_("Password protected link, trying ") + password)
                 self.html = self.load(self.url, post={"downloadp": password})
             else:
-                self.fail("No or incorrect password")
+                self.fail(_("No or incorrect password"))
 
         m = re.search(r'kNO = r"(http://.*?)";', self.html)
         if m is None:
-            self.error("Download URL")
+            self.error(_("No download URL"))
 
         download_url = m.group(1)
         self.download(download_url)

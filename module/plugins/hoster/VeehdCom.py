@@ -19,10 +19,6 @@ class VeehdCom(Hoster):
     __authors__ = [("cat", "cat@pyload")]
 
 
-    def _debug(self, msg):
-        self.logDebug("[%s] %s" % (self.__name__, msg))
-
-
     def setup(self):
         self.multiDL = True
         self.req.canContinue = True
@@ -39,7 +35,7 @@ class VeehdCom(Hoster):
 
     def download_html(self):
         url = self.pyfile.url
-        self._debug("Requesting page: %s" % (repr(url),))
+        self.logDebug("Requesting page: %s" % repr(url))
         self.html = self.load(url)
 
 
@@ -58,7 +54,7 @@ class VeehdCom(Hoster):
 
         m = re.search(r'<title[^>]*>([^<]+) on Veehd</title>', self.html)
         if m is None:
-            self.error("Video title not found")
+            self.error(_("Video title not found"))
 
         name = m.group(1)
 
@@ -80,6 +76,6 @@ class VeehdCom(Hoster):
         m = re.search(r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/[^"]+)"',
                           self.html)
         if m is None:
-            self.error("Embedded video url not found")
+            self.error(_("Embedded video url not found"))
 
         return m.group(1)

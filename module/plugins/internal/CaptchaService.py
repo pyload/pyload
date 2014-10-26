@@ -28,7 +28,7 @@ class CaptchaService:
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = "%s html not found" % self.__name__
+                errmsg = _("%s html not found") % self.__name__
                 self.plugin.fail(errmsg)  #@TODO: replace all plugin.fail(errmsg) with plugin.error(errmsg) in 0.4.10
                 raise TypeError(errmsg)
 
@@ -68,7 +68,7 @@ class ReCaptcha(CaptchaService):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = "ReCaptcha not found"
+                errmsg = _("ReCaptcha html not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
@@ -87,7 +87,7 @@ class ReCaptcha(CaptchaService):
             if self.detect_key():
                 key = self.key
             else:
-                errmsg = "ReCaptcha key not found"
+                errmsg = _("ReCaptcha key not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
@@ -127,7 +127,7 @@ class AdsCaptcha(CaptchaService):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = "AdsCaptcha html not found"
+                errmsg = _("AdsCaptcha html not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
@@ -147,7 +147,7 @@ class AdsCaptcha(CaptchaService):
             if self.detect_key():
                 key = self.key
             else:
-                errmsg = "AdsCaptcha key not found"
+                errmsg = _("AdsCaptcha key not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
@@ -188,7 +188,7 @@ class SolveMedia(CaptchaService):
             if self.detect_key():
                 key = self.key
             else:
-                errmsg = "SolveMedia key not found"
+                errmsg = _("SolveMedia key not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 

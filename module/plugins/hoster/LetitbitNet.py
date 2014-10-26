@@ -71,7 +71,7 @@ class LetitbitNet(SimpleHoster):
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="ifree_form"')
         if not action:
-            self.error("ifree_form")
+            self.error(_("ifree_form"))
 
         domain = "http://www." + self.HOSTER_NAME
         self.pyfile.size = float(inputs['sssize'])
@@ -90,7 +90,7 @@ class LetitbitNet(SimpleHoster):
 
         response = self.load("%s/ajax/download3.php" % domain, post=" ", cookies=True)
         if response != '1':
-            self.error("Unknown response - ajax_check_url")
+            self.error(_("Unknown response - ajax_check_url"))
         self.logDebug(response)
 
         recaptcha = ReCaptcha(self)
@@ -104,7 +104,7 @@ class LetitbitNet(SimpleHoster):
         if not response:
             self.invalidCaptcha()
         if response == "error_free_download_blocked":
-            self.logWarning("Daily limit reached")
+            self.logWarning(_("Daily limit reached"))
             self.wait(secondsToMidnight(gmt=2), True)
         if response == "error_wrong_captcha":
             self.invalidCaptcha()
@@ -114,7 +114,7 @@ class LetitbitNet(SimpleHoster):
         elif response.startswith('http://'):
             urls = [response]
         else:
-            self.error("Unknown response - captcha check")
+            self.error(_("Unknown response - captcha check"))
 
         self.correctCaptcha()
 
@@ -125,7 +125,7 @@ class LetitbitNet(SimpleHoster):
             except Exception, e:
                 self.logError(e)
         else:
-            self.fail("Download did not finish correctly")
+            self.fail(_("Download did not finish correctly"))
 
 
     def handlePremium(self):

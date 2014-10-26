@@ -53,10 +53,10 @@ class IfileIt(SimpleHoster):
                     self.correctCaptcha()
                     break
             else:
-                self.fail("Incorrect captcha")
+                self.fail(_("Incorrect captcha"))
 
         if not "ticket_url" in json_response:
-            self.error("Download URL")
+            self.error(_("No download URL"))
 
         self.download(json_response['ticket_url'])
 

@@ -28,7 +28,7 @@ class RealdebridCom(Hoster):
             name = unquote(url.rsplit("/", 1)[1])
         except IndexError:
             name = "Unknown_Filename..."
-        if not name or name.endswith(".."):  # incomplete filename, append random stuff
+        if not name or name.endswith(".."):  #: incomplete filename, append random stuff
             name += "%s.tmp" % randrange(100, 999)
         return name
 
@@ -43,7 +43,7 @@ class RealdebridCom(Hoster):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Real-debrid")
-            self.fail("No Real-debrid account provided")
+            self.fail(_("No Real-debrid account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             password = self.getPassword().splitlines()
@@ -90,4 +90,4 @@ class RealdebridCom(Hoster):
 
         if check == "error":
             #usual this download can safely be retried
-            self.retry(wait_time=60, reason="An error occured while generating link.")
+            self.retry(wait_time=60, reason="An error occured while generating link")

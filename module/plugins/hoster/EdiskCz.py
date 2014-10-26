@@ -35,7 +35,7 @@ class EdiskCz(SimpleHoster):
 
         m = re.search(self.ACTION_PATTERN, url)
         if m is None:
-            self.error("ACTION")
+            self.error(_("ACTION_PATTERN not found"))
         action = m.group(1)
 
         self.html = self.load(url, decode=True)
@@ -48,7 +48,7 @@ class EdiskCz(SimpleHoster):
         })
 
         if not re.match(self.LINK_PATTERN, url):
-            self.fail("Unexpected server response")
+            self.fail(_("Unexpected server response"))
 
         self.download(url)
 

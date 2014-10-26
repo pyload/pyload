@@ -28,11 +28,11 @@ class FileserveComFolder(Crypter):
 
         folder = re.search(self.FOLDER_PATTERN, html, re.S)
         if folder is None:
-            self.fail("Parse error (FOLDER)")
+            self.error(_("FOLDER_PATTERN not found"))
 
         new_links.extend(re.findall(self.LINK_PATTERN, folder.group(1)))
 
         if new_links:
             self.urls = [map(lambda s: "http://fileserve.com%s" % s, new_links)]
         else:
-            self.fail("Could not extract any links")
+            self.fail(_("Could not extract any links"))

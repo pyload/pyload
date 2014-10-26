@@ -74,7 +74,7 @@ class LinkSaveIn(SimpleCrypter):
         if package_links:
             self.packages = [(package_name, package_links, folder_name)]
         else:
-            self.fail("Could not extract any links")
+            self.fail(_("Could not extract any links"))
 
 
     def isOnline(self):
@@ -121,7 +121,7 @@ class LinkSaveIn(SimpleCrypter):
     def handleErrors(self):
         if "The visitorpassword you have entered is wrong" in self.html:
             self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
-            self.fail("Incorrect password, please set right password on 'Edit package' form and retry")
+            self.fail(_("Incorrect password, please set right password on 'Edit package' form and retry"))
 
         if self.captcha:
             if "Wrong code. Please retry" in self.html:
@@ -196,7 +196,7 @@ class LinkSaveIn(SimpleCrypter):
                 for (crypted, jk) in zip(vcrypted, vjk):
                     package_links.extend(self._getLinks(crypted, jk))
             except:
-                self.fail("Unable to decrypt CNL2 links")
+                self.fail(_("Unable to decrypt CNL2 links"))
         return package_links
 
 

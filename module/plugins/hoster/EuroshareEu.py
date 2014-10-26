@@ -54,7 +54,7 @@ class EuroshareEu(SimpleHoster):
 
         m = re.search(self.FREE_URL_PATTERN, self.html)
         if m is None:
-            self.error("Parse error (URL)")
+            self.error(_("FREE_URL_PATTERN not found"))
         parsed_url = "http://euroshare.eu%s" % m.group(1)
         self.logDebug("URL", parsed_url)
         self.download(parsed_url, disposition=True)

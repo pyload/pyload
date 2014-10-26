@@ -44,9 +44,9 @@ class VeohCom(SimpleHoster):
                 self.download(link)
                 return
             else:
-                self.logInfo("No %s quality video found" % q.upper())
+                self.logInfo(_("No %s quality video found") % q.upper())
         else:
-            self.fail("No video found!")
+            self.fail(_("No video found!"))
 
 
 getInfo = create_getInfo(VeohCom)

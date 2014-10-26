@@ -45,7 +45,7 @@ class MultishareCz(SimpleHoster):
 
     def handlePremium(self):
         if not self.checkCredit():
-            self.logWarning("Not enough credit left to download file")
+            self.logWarning(_("Not enough credit left to download file"))
             self.resetAccount()
 
         self.download("http://www.multishare.cz/html/download_premium.php?ID=%s" % self.fileID)
@@ -53,13 +53,13 @@ class MultishareCz(SimpleHoster):
 
     def handleOverriden(self):
         if not self.premium:
-            self.fail("Only premium users can download from other hosters")
+            self.fail(_("Only premium users can download from other hosters"))
 
         self.html = self.load('http://www.multishare.cz/html/mms_ajax.php', post={"link": self.pyfile.url}, decode=True)
         self.getFileInfo()
 
         if not self.checkCredit():
-            self.fail("Not enough credit left to download file")
+            self.fail(_("Not enough credit left to download file"))
 
         url = "http://dl%d.mms.multishare.cz/html/mms_process.php" % round(random() * 10000 * random())
         params = {"u_ID": self.acc_info['u_ID'], "u_hash": self.acc_info['u_hash'], "link": self.pyfile.url}
@@ -69,7 +69,7 @@ class MultishareCz(SimpleHoster):
 
     def checkCredit(self):
         self.acc_info = self.account.getAccountInfo(self.user, True)
-        self.logInfo("User %s has %i MB left" % (self.user, self.acc_info['trafficleft'] / 1024))
+        self.logInfo(_("User %s has %i MB left") % (self.user, self.acc_info['trafficleft'] / 1024))
 
         return self.pyfile.size / 1024 <= self.acc_info['trafficleft']
 

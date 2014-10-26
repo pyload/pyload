@@ -40,4 +40,4 @@ class MultiloadCz(Crypter):
                     self.urls.extend([x[1] for x in m if x[0] not in ignored_set])
 
         if not self.urls:
-            self.fail("Could not extract any links")
+            self.fail(_("Could not extract any links"))

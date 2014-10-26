@@ -83,10 +83,10 @@ class SimpleCrypter(Crypter):
 
     def prepare(self):
         if self.LOGIN_ACCOUNT and not self.account:
-            self.fail("Required account not found!")
+            self.fail(_("Required account not found!"))
 
         if self.LOGIN_PREMIUM and not self.premium:
-            self.fail("Required premium account not found!")
+            self.fail(_("Required premium account not found!"))
 
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
@@ -112,7 +112,7 @@ class SimpleCrypter(Crypter):
         if self.package_links:
             self.packages = [(package_name, self.package_links, folder_name)]
         else:
-            self.fail("Could not extract any links")
+            self.fail(_("Could not extract any links"))
 
 
     def getLinks(self):

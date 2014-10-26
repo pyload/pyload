@@ -51,7 +51,7 @@ class VimeoCom(SimpleHoster):
                 self.download(link[q])
                 return
             else:
-                self.logInfo("Original file not downloadable")
+                self.logInfo(_("Original file not downloadable"))
 
         quality = self.getConfig("quality")
         if quality == "Highest":
@@ -66,9 +66,9 @@ class VimeoCom(SimpleHoster):
                 self.download(link[q])
                 return
             else:
-                self.logInfo("No %s quality video found" % q.upper())
+                self.logInfo(_("No %s quality video found") % q.upper())
         else:
-            self.fail("No video found!")
+            self.fail(_("No video found!"))
 
 
 getInfo = create_getInfo(VimeoCom)

@@ -46,14 +46,14 @@ class DateiTo(SimpleHoster):
 
             m = re.search(self.DATA_PATTERN, self.html)
             if m is None:
-                self.error("data")
+                self.error(_("data"))
             url = 'http://datei.to/' + m.group(1)
             data = dict(x.split('=') for x in m.group(2).split('&'))
 
             if url.endswith('recaptcha.php'):
                 data['recaptcha_challenge_field'], data['recaptcha_response_field'] = recaptcha.challenge()
         else:
-            self.fail("Too bad...")
+            self.fail(_("Too bad..."))
 
         download_url = self.html
         self.download(download_url)

@@ -57,9 +57,9 @@ class FileSharkPl(SimpleHoster):
         alert = m.group(1)
 
         if re.match(self.IP_BLOCKED_PATTERN, alert):
-            self.fail("Only connections from Polish IP are allowed")
+            self.fail(_("Only connections from Polish IP are allowed"))
         elif re.match(self.DOWNLOAD_SLOTS_ERROR_PATTERN, alert):
-            self.logInfo("No free download slots available")
+            self.logInfo(_("No free download slots available"))
             self.retry(10, 30 * 60, "Still no free download slots available")
         else:
             self.logInfo(alert)
@@ -79,7 +79,7 @@ class FileSharkPl(SimpleHoster):
     def handleFree(self):
         m = re.search(self.DOWNLOAD_URL_FREE, self.html)
         if m is None:
-            self.error("Download url not found")
+            self.error(_("Download url not found"))
 
         file_url = urljoin("http://fileshark.pl", m.group(1))
 

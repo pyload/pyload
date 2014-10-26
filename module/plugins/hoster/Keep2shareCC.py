@@ -66,7 +66,7 @@ class Keep2shareCC(SimpleHoster):
 
             m = re.search(self.LINK_PATTERN, self.html)
             if m is None:
-                self.error("Unable to detect direct link")
+                self.error(_("LINK_PATTERN not found"))
             self.startDownload(m.group(1))
 
 
@@ -96,7 +96,7 @@ class Keep2shareCC(SimpleHoster):
             else:
                 self.invalidCaptcha()
         else:
-            self.fail("All captcha attempts failed")
+            self.fail(_("All captcha attempts failed"))
 
 
     def startDownload(self, url):
