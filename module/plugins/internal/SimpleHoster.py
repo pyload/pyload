@@ -159,7 +159,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
 
     __pattern__ = None
 

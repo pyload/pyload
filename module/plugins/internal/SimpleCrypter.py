@@ -14,7 +14,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __pattern__ = None
 
