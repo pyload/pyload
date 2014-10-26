@@ -7,7 +7,7 @@ from traceback import print_exc
 from module.network.RequestFactory import getURL
 from module.plugins.Crypter import Crypter
 from module.plugins.Plugin import Fail
-from module.plugins.internal.SimpleHoster import replace_patterns, set_cookies
+from module.plugins.internal.SimpleHoster import _error, replace_patterns, set_cookies
 from module.utils import fixup, html_unescape
 
 
@@ -164,8 +164,5 @@ class SimpleCrypter(Crypter):
             self.package_links += self.getLinks()
 
 
-    #@TODO: remove in 0.4.10
     def error(self, reason="", type="parse"):
-        if self.core.debug:
-            print_exc()
-        raise Fail("%s error%s | Plugin may be out of date" % (type.strip().capitalize(), ': ' + reason.strip() if reason else ""))
+        return _error(reason, type)

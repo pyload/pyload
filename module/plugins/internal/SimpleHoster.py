@@ -13,6 +13,20 @@ from module.plugins.Plugin import Fail
 from module.utils import fixup, html_unescape, parseFileSize
 
 
+#@TODO: Remove in 0.4.10 and redirect to self.error instead
+def _error(self, reason="", type=""):
+        if not reason and not type:
+            type = "unknown"
+
+        msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
+        msg += ": " + reason.strip() if reason else ""
+        msg += _(" | Plugin may be out of date")
+
+        if self.core.debug:
+            print_exc()
+        raise Fail(msg)
+
+
 def replace_patterns(string, ruleslist):
     for r in ruleslist:
         rf, rt = r
@@ -324,8 +338,5 @@ class SimpleHoster(Hoster):
         super(SimpleHoster, self).wait()
 
 
-    #@TODO: remove in 0.4.10
     def error(self, reason="", type="parse"):
-        if self.core.debug:
-            print_exc()
-        raise Fail("%s error%s | Plugin may be out of date" % (type.strip().capitalize(), ': ' + reason.strip() if reason else ""))
+        return _error(reason, type)
