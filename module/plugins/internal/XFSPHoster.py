@@ -17,7 +17,7 @@ from module.utils import html_unescape
 class XFSPHoster(SimpleHoster):
     __name__ = "XFSPHoster"
     __type__ = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = None
 
@@ -188,7 +188,7 @@ class XFSPHoster(SimpleHoster):
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
         elif inputs['st'] == 'Can not leech file':
-            self.retry(max_tries=20, wait_time=3 * 60, reason=inputs['st'])
+            self.retry(20, 3 * 60, inputs['st'])
         else:
             self.fail(_(inputs['st']))
 
@@ -196,12 +196,14 @@ class XFSPHoster(SimpleHoster):
         m = re.search(self.OVR_LINK_PATTERN, self.html)
         if m is None:
             self.error(_("OVR_LINK_PATTERN not found"))
+
         self.pyfile.url = m.group(1)
+
         header = self.load(self.pyfile.url, just_header=True)
         if 'location' in header:  # Direct link
             self.startDownload(self.pyfile.url)
         else:
-            self.retry()
+            self.retry(reason="OVR link location not found")
 
 
     def startDownload(self, link):
@@ -227,10 +229,10 @@ class XFSPHoster(SimpleHoster):
             elif 'premium' in self.errmsg and 'require' in self.errmsg:
                 self.fail(_("File can be downloaded by premium users only"))
             elif 'limit' in self.errmsg:
-                self.wait(1 * 60 * 60, True)
-                self.retry(25)
+                self.wantReconnect = True
+                self.retry(25, 1 * 60 * 60, "Download limit exceeded")
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
-                self.retry()
+                self.retry(reason="Link expired")
             elif 'maintenance' in self.errmsg or 'maintainance' in self.errmsg:
                 self.tempOffline()
             elif 'download files up to' in self.errmsg:
@@ -246,8 +248,7 @@ class XFSPHoster(SimpleHoster):
 
     def getPostParameters(self):
         for _i in xrange(3):
-            if not self.errmsg:
-                self.checkErrors()
+            self.checkErrors()
 
             if hasattr(self, "FORM_PATTERN"):
                 action, inputs = self.parseHtmlForm(self.FORM_PATTERN)
@@ -258,7 +259,7 @@ class XFSPHoster(SimpleHoster):
                 action, inputs = self.parseHtmlForm('F1')
                 if not inputs:
                     if self.errmsg:
-                        self.retry()
+                        self.retry(reason=self.errmsg)
                     else:
                         self.error(_("Form not found"))
 
