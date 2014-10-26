@@ -43,7 +43,7 @@ class RapidshareCom(Account):
                           "password": data['password'], "withcookie": 1}
         src = req.load(api_url_base, cookies=False, get=api_param_prem)
         if src.startswith("ERROR"):
-            raise Exception(src + "### Note you have to use your account number for login, instead of name.")
+            raise Exception(src + "### Note you have to use your account number for login, instead of name")
         fields = src.split("\n")
         info = {}
         for t in fields:

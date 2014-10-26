@@ -156,15 +156,15 @@ class IRCInterface(Thread, Hook):
 
         # HANDLE CTCP ANTI FLOOD/BOT PROTECTION
         if msg['text'] == "\x01VERSION\x01":
-            self.logDebug("Sending CTCP VERSION.")
+            self.logDebug("Sending CTCP VERSION")
             self.sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
             return
         elif msg['text'] == "\x01TIME\x01":
-            self.logDebug("Sending CTCP TIME.")
+            self.logDebug("Sending CTCP TIME")
             self.sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
             return
         elif msg['text'] == "\x01LAG\x01":
-            self.logDebug("Received CTCP LAG.")  # don't know how to answer
+            self.logDebug("Received CTCP LAG")  #: don't know how to answer
             return
 
         trigger = "pass"

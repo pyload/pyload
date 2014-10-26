@@ -221,10 +221,12 @@ class SimpleHoster(Hoster):
             self.getFileInfo()
 
         if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
+            self.logDebug("Handle as premium download")
             self.handlePremium()
         elif premium_only:
-            self.fail("This link require a premium account")
+            self.fail(_("This link require a premium account"))
         else:
+            self.logDebug("Handle as free download")
             self.handleFree()
 
 
@@ -239,7 +241,7 @@ class SimpleHoster(Hoster):
             self.tempOffline()
         elif status != 2:
             self.logDebug(self.file_info)
-            self.error('File info')
+            self.error(_("File info"))
 
         if name:
             self.pyfile.name = name
@@ -257,12 +259,12 @@ class SimpleHoster(Hoster):
 
     def handleFree(self):
         if not hasattr(self, 'LINK_FREE_PATTERN'):
-            self.fail("Free download not implemented")
+            self.fail(_("Free download not implemented"))
 
         try:
             m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m is None:
-                self.error("Free download link not found")
+                self.error(_("Free download link not found"))
 
             link = m.group(1)
         except Exception, e:
@@ -273,12 +275,12 @@ class SimpleHoster(Hoster):
 
     def handlePremium(self):
         if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
-            self.fail("Premium download not implemented")
+            self.fail(_("Premium download not implemented"))
 
         try:
             m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
             if m is None:
-                self.error("Premium download link not found")
+                self.error(_("Premium download link not found"))
 
             link = m.group(1)
         except Exception, e:
@@ -323,7 +325,7 @@ class SimpleHoster(Hoster):
 
 
     #@TODO: remove in 0.4.10
-    def error(self, reason=None, type="parse"):
-        raise Fail("%s error%s | Plugin out of date" % (type.capitalize(), ': ' + str(reason) if reason else ""))
+    def error(self, reason="", type="parse"):
         if self.core.debug:
             print_exc()
+        raise Fail("%s error%s | Plugin may be out of date" % (type.strip().capitalize(), ': ' + reason.strip() if reason else ""))

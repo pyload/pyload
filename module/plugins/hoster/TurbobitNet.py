@@ -58,7 +58,7 @@ class TurbobitNet(SimpleHoster):
 
 
     def solveCaptcha(self):
-        for _ in xrange(5):
+        for _i in xrange(5):
             m = re.search(self.LIMIT_WAIT_PATTERN, self.html)
             if m:
                 wait_time = int(m.group(1))
@@ -67,7 +67,7 @@ class TurbobitNet(SimpleHoster):
 
             action, inputs = self.parseHtmlForm("action='#'")
             if not inputs:
-                self.error("captcha form")
+                self.error(_("Captcha form not found"))
             self.logDebug(inputs)
 
             if inputs['captcha_type'] == 'recaptcha':
@@ -76,7 +76,7 @@ class TurbobitNet(SimpleHoster):
             else:
                 m = re.search(self.CAPTCHA_PATTERN, self.html)
                 if m is None:
-                    self.error('captcha')
+                    self.error(_("captcha"))
                 captcha_url = m.group(1)
                 inputs['captcha_response'] = self.decryptCaptcha(captcha_url)
 
@@ -84,13 +84,12 @@ class TurbobitNet(SimpleHoster):
             self.html = self.load(self.url, post=inputs)
 
             if '<div class="captcha-error">Incorrect, try again!<' in self.html:
-                self.logInfo("Invalid captcha")
                 self.invalidCaptcha()
             else:
                 self.correctCaptcha()
                 break
         else:
-            self.fail("Invalid captcha")
+            self.fail(_("Invalid captcha"))
 
 
     def getRtUpdate(self):
@@ -106,12 +105,11 @@ class TurbobitNet(SimpleHoster):
                                   r'zza=\2;for(var zzi=0;zzi<zza.length;zzi++){\1=zza[zzi];', rtUpdate)
                 rtUpdate = re.sub(r"for\((\w+)=", r"for(var \1=", rtUpdate)
 
-                self.logDebug("rtUpdate")
                 self.setStorage("rtUpdate", rtUpdate)
                 self.setStorage("timestamp", timestamp())
                 self.setStorage("version", self.__version__)
             else:
-                self.logError("Unable to download, wait for update...")
+                self.logError(_("Unable to download, wait for update..."))
                 self.tempOffline()
 
         return rtUpdate
@@ -124,7 +122,7 @@ class TurbobitNet(SimpleHoster):
         if m:
             url = "http://turbobit.net%s%s" % m.groups()
         else:
-            url = "http://turbobit.net/files/timeout.js?ver=%s" % "".join(random.choice('0123456789ABCDEF') for _ in xrange(32))
+            url = "http://turbobit.net/files/timeout.js?ver=%s" % "".join(random.choice('0123456789ABCDEF') for _i in xrange(32))
 
         fun = self.load(url)
 
@@ -167,7 +165,7 @@ class TurbobitNet(SimpleHoster):
     def downloadFile(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("Download link not found")
+            self.error(_("Download link not found"))
         self.url = "http://turbobit.net" + m.group('url')
         self.download(self.url)
 

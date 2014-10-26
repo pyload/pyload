@@ -32,11 +32,11 @@ class NarodRu(SimpleHoster):
 
 
     def handleFree(self):
-        for _ in xrange(5):
+        for _i in xrange(5):
             self.html = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random() * 777))
             m = re.search(self.CAPTCHA_PATTERN, self.html)
             if m is None:
-                self.error('Captcha')
+                self.error(_("Captcha"))
             post_data = {"action": "sendcapcha"}
             captcha_url, post_data['key'] = m.groups()
             post_data['rep'] = self.decryptCaptcha(captcha_url)
@@ -50,11 +50,10 @@ class NarodRu(SimpleHoster):
             elif u'<b class="error-msg"><strong>Ошиблись?</strong>' in self.html:
                 self.invalidCaptcha()
             else:
-                self.error('Download link')
+                self.error(_("Download link"))
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
-        self.logDebug("Download link: " + url)
         self.download(url)
 
 

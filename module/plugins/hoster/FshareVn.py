@@ -68,16 +68,16 @@ class FshareVn(SimpleHoster):
         self.url = self.pyfile.url + action
 
         if not inputs:
-            self.error('FORM')
+            self.error(_("No FORM"))
         elif 'link_file_pwd_dl' in inputs:
             for password in self.getPassword().splitlines():
-                self.logInfo("Password protected link, trying", password)
+                self.logInfo(_("Password protected link, trying ") + password)
                 inputs['link_file_pwd_dl'] = password
                 self.html = self.load(self.url, post=inputs, decode=True)
                 if not 'name="link_file_pwd_dl"' in self.html:
                     break
             else:
-                self.fail("No or incorrect password")
+                self.fail(_("No or incorrect password"))
         else:
             self.html = self.load(self.url, post=inputs, decode=True)
 
@@ -88,7 +88,7 @@ class FshareVn(SimpleHoster):
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error('FREE DL URL')
+            self.error(_("LINK_PATTERN not found"))
         self.url = m.group(1)
         self.logDebug("FREE DL URL: %s" % self.url)
 
@@ -106,13 +106,14 @@ class FshareVn(SimpleHoster):
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            self.logInfo("Wait until %s ICT" % m.group(1))
+            self.logInfo(_("Wait until %s ICT") % m.group(1))
             wait_until = mktime(strptime(m.group(1), "%d/%m/%Y %H:%M"))
             self.wait(wait_until - mktime(gmtime()) - 7 * 60 * 60, True)
             self.retry()
         elif '<ul class="message-error">' in self.html:
-            self.logError("Unknown error occured or wait time not parsed")
-            self.retry(30, 2 * 60, "Unknown error")
+            msg = "Unknown error occured or wait time not parsed"
+            self.logError(msg)
+            self.retry(30, 2 * 60, msg)
 
 
     def checkDownloadedFile(self):
@@ -122,4 +123,4 @@ class FshareVn(SimpleHoster):
         })
 
         if check == "not_found":
-            self.fail("File not m on server")
+            self.fail(_("File not m on server"))

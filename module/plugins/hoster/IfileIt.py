@@ -42,7 +42,7 @@ class IfileIt(SimpleHoster):
             recaptcha = ReCaptcha(self)
             post_data['ctype'] = "recaptcha"
 
-            for _ in xrange(5):
+            for _i in xrange(5):
                 post_data['recaptcha_challenge'], post_data['recaptcha_response'] = recaptcha.challenge(captcha_key)
                 json_response = json_loads(self.load(json_url, post=post_data))
                 self.logDebug(json_response)
@@ -53,10 +53,10 @@ class IfileIt(SimpleHoster):
                     self.correctCaptcha()
                     break
             else:
-                self.fail("Incorrect captcha")
+                self.fail(_("Incorrect captcha"))
 
         if not "ticket_url" in json_response:
-            self.error("Download URL")
+            self.error(_("No download URL"))
 
         self.download(json_response['ticket_url'])
 

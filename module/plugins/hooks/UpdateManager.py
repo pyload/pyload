@@ -218,7 +218,7 @@ class UpdateManager(Hook):
                 else:
                     raise Exception, _("Version mismatch")
             except Exception, e:
-                self.logError(_("Error updating plugin %s") % filename, e)
+                self.logError(_("Error updating plugin %s") % filename, repr(e))
 
         if blacklist:
             blacklisted = sorted(map(lambda x: (x.split('|')[0], x.split('|')[1].rsplit('.', 1)[0]), blacklist))
@@ -273,7 +273,7 @@ class UpdateManager(Hook):
                 try:
                     remove(filename)
                 except Exception, e:
-                    self.logDebug("Error deleting", path.basename(filename), e)
+                    self.logDebug("Error deleting", path.basename(filename), repr(e))
                     err = True
 
                 filename += "c"
@@ -283,7 +283,7 @@ class UpdateManager(Hook):
                             self.manager.deactivateHook(name)
                         remove(filename)
                     except Exception, e:
-                        self.logDebug("Error deleting", path.basename(filename), e)
+                        self.logDebug("Error deleting", path.basename(filename), repr(e))
                         err = True
 
             if not err:

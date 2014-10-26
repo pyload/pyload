@@ -36,11 +36,10 @@ class FlyFilesNet(SimpleHoster):
         self.logDebug("Parsed URL: %s" % parsed_url)
 
         if parsed_url == '#downlink|' or parsed_url == "#downlink|#":
-            self.logWarning("Could not get the download URL. Please wait 10 minutes.")
+            self.logWarning(_("Could not get the download URL. Please wait 10 minutes"))
             self.wait(10 * 60, True)
             self.retry()
 
         download_url = parsed_url.replace('#downlink|', '')
 
-        self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)

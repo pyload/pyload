@@ -38,14 +38,14 @@ class FilepupNet(SimpleHoster):
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("Download link not found")
+            self.error(_("Download link not found"))
 
         dl_link = m.group(1)
         self.download(dl_link, post={'task': "download"})
 
         check = self.checkDownload({'html': re.compile("html")})
         if check == "html":
-            self.error("Downloaded file is an html page")
+            self.error(_("Downloaded file is an html page"))
 
 
 getInfo = create_getInfo(FilepupNet)

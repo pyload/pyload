@@ -31,11 +31,11 @@ class SafelinkingNet(Crypter):
         if re.match(self.__pattern__, url).group(1) == "d":
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
             self.load(url)
-            m = re.search("^Location: (.+)$", self.req.http.header, re.MULTILINE)
+            m = re.search("^Location: (.+)$", self.req.http.header, re.M)
             if m:
                 self.urls = [m.group(1)]
             else:
-                self.fail("Couldn't find forwarded Link")
+                self.fail(_("Couldn't find forwarded Link"))
 
         else:
             postData = {"post-protect": "1"}
@@ -46,14 +46,14 @@ class SafelinkingNet(Crypter):
                 postData['link-password'] = self.getPassword()
 
             if "altcaptcha" in self.html:
-                for _ in xrange(5):
+                for _i in xrange(5):
                     m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
                     if m:
                         captchaKey = m.group(1)
                         captcha = SolveMedia(self)
                         captchaProvider = "Solvemedia"
                     else:
-                        self.fail("Error parsing captcha")
+                        self.fail(_("Error parsing captcha"))
 
                     challenge, response = captcha.challenge(captchaKey)
                     postData['adcopy_challenge'] = challenge
@@ -61,7 +61,7 @@ class SafelinkingNet(Crypter):
 
                     self.html = self.load(url, post=postData)
                     if "The password you entered was incorrect" in self.html:
-                        self.fail("Incorrect Password")
+                        self.fail(_("Incorrect Password"))
                     if not "The CAPTCHA code you entered was wrong" in self.html:
                         break
 

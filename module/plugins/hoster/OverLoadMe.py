@@ -27,7 +27,7 @@ class OverLoadMe(Hoster):
             name = unquote(url.rsplit("/", 1)[1])
         except IndexError:
             name = "Unknown_Filename..."
-        if name.endswith("..."):  # incomplete filename, append random stuff
+        if name.endswith("..."):  #: incomplete filename, append random stuff
             name += "%s.tmp" % randrange(100, 999)
         return name
 
@@ -42,7 +42,7 @@ class OverLoadMe(Hoster):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Over-Load")
-            self.fail("No Over-Load account provided")
+            self.fail(_("No Over-Load account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             data = self.account.getAccountData(self.user)

@@ -41,13 +41,12 @@ class VeohCom(SimpleHoster):
             if m:
                 self.pyfile.name += ".mp4"
                 link = m.group(1).replace("\\", "")
-                self.logDebug("Download link: " + link)
                 self.download(link)
                 return
             else:
-                self.logInfo("No %s quality video found" % q.upper())
+                self.logInfo(_("No %s quality video found") % q.upper())
         else:
-            self.fail("No video found!")
+            self.fail(_("No video found!"))
 
 
 getInfo = create_getInfo(VeohCom)

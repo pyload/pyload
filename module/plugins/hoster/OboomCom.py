@@ -60,20 +60,20 @@ class OboomCom(Hoster):
             if "session" in accountInfo:
                 self.sessionToken = accountInfo['session']
             else:
-                self.fail("Could not retrieve premium session")
+                self.fail(_("Could not retrieve premium session"))
         else:
             apiUrl = "https://www.oboom.com/1.0/guestsession"
             result = self.loadUrl(apiUrl)
             if result[0] == 200:
                 self.sessionToken = result[1]
             else:
-                self.fail("Could not retrieve token for guest session. Error code %s" % result[0])
+                self.fail(_("Could not retrieve token for guest session. Error code: %s") % result[0])
 
 
     def solveCaptcha(self):
         recaptcha = ReCaptcha(self)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
             apiUrl = "https://www.oboom.com/1.0/download/ticket"
             params = {"recaptcha_challenge_field": challenge,
@@ -107,7 +107,7 @@ class OboomCom(Hoster):
                 self.retry(5)
         else:
             self.invalidCaptcha()
-            self.fail("Received invalid captcha 5 times")
+            self.fail(_("Received invalid captcha 5 times"))
 
 
     def getFileInfo(self, token, fileId):
@@ -123,7 +123,7 @@ class OboomCom(Hoster):
             else:
                 self.offline()
         else:
-            self.fail("Could not retrieve file info. Error code %s: %s" % (result[0], result[1]))
+            self.fail(_("Could not retrieve file info. Error code %s: %s") % (result[0], result[1]))
 
 
     def getDownloadTicket(self):
@@ -142,4 +142,4 @@ class OboomCom(Hoster):
         elif result[0] == 421:
             self.retry(wait_time=result[2] + 60, reason="Connection limit exceeded")
         else:
-            self.fail("Could not retrieve download ticket. Error code %s" % result[0])
+            self.fail(_("Could not retrieve download ticket. Error code: %s") % result[0])

@@ -4,13 +4,12 @@ import re
 import time
 
 from module.plugins.Account import Account
-from module.utils import parseFileSize
 
 
 class FilerNet(Account):
     __name__ = "FilerNet"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Filer.net account plugin"""
     __license__ = "GPLv3"
@@ -34,10 +33,10 @@ class FilerNet(Account):
         traffic = re.search(self.TRAFFIC_PATTERN, html)
         if until and traffic:
             validuntil = int(time.mktime(time.strptime(until.group(1), "%d.%m.%Y %H:%M:%S")))
-            trafficleft = parseFileSize(traffic.group(1))
+            trafficleft = self.parseTraffic(traffic.group(1))
             return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
         else:
-            self.logError("Unable to retrieve account information")
+            self.logError(_("Unable to retrieve account information"))
             return {"premium": False, "validuntil": None, "trafficleft": None}
 
 

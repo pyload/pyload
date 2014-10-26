@@ -106,7 +106,7 @@ class RapidshareCom(Hoster):
         elif self.api_data['status'] == "3":
             self.tempOffline()
         else:
-            self.fail("Unknown response code.")
+            self.error(_("Unknown response code"))
 
 
     def handleFree(self):
@@ -134,7 +134,7 @@ class RapidshareCom(Hoster):
 
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
-        self.logDebug("%s: Use Premium Account" % self.__name__)
+        self.logDebug("Use Premium Account")
         url = self.api_data['mirror']
         self.download(url, get={"directstart": 1})
 

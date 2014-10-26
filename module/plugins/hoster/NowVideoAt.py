@@ -30,7 +30,7 @@ class NowVideoAt(SimpleHoster):
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("Download link not found")
+            self.error(_("Download link not found"))
 
         self.download(m.group(1), disposition=True)
 

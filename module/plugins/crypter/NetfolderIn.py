@@ -29,7 +29,7 @@ class NetfolderIn(SimpleCrypter):
         if self.isPasswordProtected():
             self.html = self.submitPassword()
             if not self.html:
-                self.fail("Incorrect password, please set right password on Add package form and retry")
+                self.fail(_("Incorrect password, please set right password on Add package form and retry"))
 
         # Get package name and folder
         (package_name, folder_name) = self.getPackageNameAndFolder()

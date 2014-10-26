@@ -35,12 +35,12 @@ class FilepostCom(SimpleHoster):
 
         m = re.search(self.FLP_TOKEN_PATTERN, self.html)
         if m is None:
-            self.error("Token")
+            self.error(_("Token"))
         flp_token = m.group(1)
 
         m = re.search(self.RECAPTCHA_PATTERN, self.html)
         if m is None:
-            self.error("Captcha key")
+            self.error(_("Captcha key"))
         captcha_key = m.group(1)
 
         # Get wait time
@@ -58,14 +58,14 @@ class FilepostCom(SimpleHoster):
             for file_pass in self.getPassword().splitlines():
                 get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
                 post_dict['file_pass'] = file_pass
-                self.logInfo("Password protected link, trying " + file_pass)
+                self.logInfo(_("Password protected link, trying ") + file_pass)
 
                 download_url = self.getJsonResponse(get_dict, post_dict, 'link')
                 if download_url:
                     break
 
             else:
-                self.fail("No or incorrect password")
+                self.fail(_("No or incorrect password"))
 
         else:
             # Solve recaptcha
@@ -88,7 +88,7 @@ class FilepostCom(SimpleHoster):
                     self.invalidCaptcha()
 
             else:
-                self.fail("Invalid captcha")
+                self.fail(_("Invalid captcha"))
 
         # Download
         self.download(download_url)
@@ -99,7 +99,7 @@ class FilepostCom(SimpleHoster):
         self.logDebug(json_response)
 
         if not 'js' in json_response:
-            self.error('JSON %s 1' % field)
+            self.error(_("JSON %s 1") % field)
 
         # i changed js_answer to json_response['js'] since js_answer is nowhere set.
         # i don't know the JSON-HTTP specs in detail, but the previous author
@@ -120,10 +120,9 @@ class FilepostCom(SimpleHoster):
                 return None
             else:
                 self.fail(json_response['js']['error'])
-                # ~? self.fail(js_answer['error'])
 
         if not 'answer' in json_response['js'] or not field in json_response['js']['answer']:
-            self.error('JSON %s 2' % field)
+            self.error(_("JSON %s 2") % field)
 
         return json_response['js']['answer'][field]
 

@@ -42,7 +42,7 @@ class Crypter(Plugin):
         """ create new packages from self.packages """
         for pack in self.packages:
 
-            self.log.debug("Parsed package %(name)s with %(len)d links" % { "name" : pack[0], "len" : len(pack[1]) } )
+            self.logDebug("Parsed package %(name)s with %(len)d links" % { "name" : pack[0], "len" : len(pack[1]) } )
 
             links = [x.decode("utf-8") for x in pack[1]]
 

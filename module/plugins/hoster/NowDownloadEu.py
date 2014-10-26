@@ -55,8 +55,8 @@ class NowDownloadEu(SimpleHoster):
 
         url = re.search(self.LINK_PATTERN, self.html)
         if url is None:
-            self.error("Download link not found")
-        self.logDebug("Download link", url.group(1))
+            self.error(_("Download link not found"))
+
         self.download(str(url.group(1)))
 
 

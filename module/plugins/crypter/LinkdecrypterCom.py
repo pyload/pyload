@@ -29,7 +29,7 @@ class LinkdecrypterCom(Crypter):
         # API not working anymore
         self.urls = self.decryptHTML()
         if not self.urls:
-            self.fail('Could not extract any links')
+            self.fail(_("Could not extract any links"))
 
 
     def decryptAPI(self):
@@ -46,7 +46,7 @@ class LinkdecrypterCom(Crypter):
 
         self.logError("API", self.html)
         if self.html == 'INTERRUPTION(PASSWORD)':
-            self.fail("No or incorrect password")
+            self.fail(_("No or incorrect password"))
 
         return None
 
@@ -58,7 +58,7 @@ class LinkdecrypterCom(Crypter):
         self.html = self.load('http://linkdecrypter.com/', post=post_dict, cookies=True, decode=True)
 
         while self.passwords or retries:
-            m = re.search(self.TEXTAREA_PATTERN, self.html, flags=re.DOTALL)
+            m = re.search(self.TEXTAREA_PATTERN, self.html, flags=re.S)
             if m:
                 return [x for x in m.group(1).splitlines() if '[LINK-ERROR]' not in x]
 
@@ -69,7 +69,7 @@ class LinkdecrypterCom(Crypter):
 
                 m = re.search(r"<p><i><b>([^<]+)</b></i></p>", self.html)
                 msg = m.group(1) if m else ""
-                self.logInfo("Captcha protected link", result_type, msg)
+                self.logInfo(_("Captcha protected link"), result_type, msg)
 
                 captcha = self.decryptCaptcha(captcha_url, result_type=result_type)
                 if result_type == "positional":
@@ -80,10 +80,10 @@ class LinkdecrypterCom(Crypter):
             elif self.PASSWORD_PATTERN in self.html:
                 if self.passwords:
                     password = self.passwords.pop(0)
-                    self.logInfo("Password protected link, trying " + password)
+                    self.logInfo(_("Password protected link, trying ") + password)
                     self.html = self.load('http://linkdecrypter.com/', post={'password': password}, decode=True)
                 else:
-                    self.fail("No or incorrect password")
+                    self.fail(_("No or incorrect password"))
 
             else:
                 retries -= 1

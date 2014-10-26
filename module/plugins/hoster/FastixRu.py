@@ -41,7 +41,7 @@ class FastixRu(Hoster):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Fastix")
-            self.fail("No Fastix account provided")
+            self.fail(_("No Fastix account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             api_key = self.account.getAccountData(self.user)
@@ -68,6 +68,6 @@ class FastixRu(Hoster):
                                     "empty": re.compile(r"^$")})
 
         if check == "error":
-            self.retry(wait_time=60, reason="An error occurred while generating link.")
+            self.retry(wait_time=60, reason="An error occurred while generating link")
         elif check == "empty":
-            self.retry(wait_time=60, reason="Downloaded File was empty.")
+            self.retry(wait_time=60, reason="Downloaded File was empty")

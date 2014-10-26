@@ -30,7 +30,7 @@ class UpstoreNet(SimpleHoster):
         # STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.html)
         if m is None:
-            self.error("could not detect hash")
+            self.error(_("CHASH_PATTERN not found"))
         chash = m.group(1)
         self.logDebug("Read hash " + chash)
         # continue to stage2
@@ -45,7 +45,7 @@ class UpstoreNet(SimpleHoster):
         for i in xrange(5):
             m = re.search(self.WAIT_PATTERN, self.html)
             if m is None:
-                self.error("could not find wait pattern")
+                self.error(_("Wait pattern not found"))
             wait_time = m.group(1)
 
             # then, do the waiting
@@ -59,15 +59,14 @@ class UpstoreNet(SimpleHoster):
             self.html = self.load(self.pyfile.url, post=post_data, decode=True)
 
             # STAGE 3: get direct link
-            m = re.search(self.LINK_PATTERN, self.html, re.DOTALL)
+            m = re.search(self.LINK_PATTERN, self.html, re.S)
             if m:
                 break
 
         if m is None:
-            self.error("could not detect direct link")
+            self.error(_("Download link not found"))
 
         direct = m.group(1)
-        self.logDebug("Found direct link: " + direct)
         self.download(direct, disposition=True)
 
 

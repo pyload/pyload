@@ -40,10 +40,10 @@ class UploadheroCom(SimpleHoster):
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
-            self.error("Captcha URL")
+            self.error(_("CAPTCHA_PATTERN not found"))
         captcha_url = "http://uploadhero.co" + m.group(1)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             captcha = self.decryptCaptcha(captcha_url)
             self.html = self.load(self.pyfile.url, get={"code": captcha})
             m = re.search(self.FREE_URL_PATTERN, self.html)
@@ -54,7 +54,7 @@ class UploadheroCom(SimpleHoster):
             else:
                 self.invalidCaptcha()
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
         self.download(download_url)
 
@@ -62,7 +62,6 @@ class UploadheroCom(SimpleHoster):
     def handlePremium(self):
         self.logDebug("%s: Use Premium Account" % self.__name__)
         link = re.search(self.PREMIUM_URL_PATTERN, self.html).group(1)
-        self.logDebug("Downloading link : '%s'" % link)
         self.download(link)
 
 

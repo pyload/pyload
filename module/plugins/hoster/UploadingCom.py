@@ -56,7 +56,7 @@ class UploadingCom(SimpleHoster):
             url = url.group(1).replace("\\/", "/")
             self.download(url)
 
-        raise Exception("Plugin defect.")
+        raise Exception("Plugin defect")
 
 
     def handleFree(self):
@@ -73,30 +73,30 @@ class UploadingCom(SimpleHoster):
         response = json_loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.file_info['ID']}))
         if 'answer' in response and 'wait_time' in response['answer']:
             wait_time = int(response['answer']['wait_time'])
-            self.logInfo("%s: Waiting %d seconds." % (self.__name__, wait_time))
+            self.logInfo(_("Waiting %d seconds") % wait_time)
             self.wait(wait_time)
         else:
-            self.error("AJAX/WAIT")
+            self.error(_("No AJAX/WAIT"))
 
         response = json_loads(
             self.load(ajax_url, post={'action': 'get_link', 'code': self.file_info['ID'], 'pass': 'false'}))
         if 'answer' in response and 'link' in response['answer']:
             url = response['answer']['link']
         else:
-            self.error("AJAX/URL")
+            self.error(_("No AJAX/URL"))
 
         self.html = self.load(url)
         m = re.search(r'<form id="file_form" action="(.*?)"', self.html)
         if m:
             url = m.group(1)
         else:
-            self.error("URL")
+            self.error(_("No URL"))
 
         self.download(url)
 
         check = self.checkDownload({"html": re.compile("\A<!DOCTYPE html PUBLIC")})
         if check == "html":
-            self.logWarning("Redirected to a HTML page, wait 10 minutes and retry")
+            self.logWarning(_("Redirected to a HTML page, wait 10 minutes and retry"))
             self.wait(10 * 60, True)
 
 

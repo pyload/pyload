@@ -71,7 +71,7 @@ class LetitbitNet(SimpleHoster):
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="ifree_form"')
         if not action:
-            self.error("page 1 / ifree_form")
+            self.error(_("ifree_form"))
 
         domain = "http://www." + self.HOSTER_NAME
         self.pyfile.size = float(inputs['sssize'])
@@ -79,22 +79,6 @@ class LetitbitNet(SimpleHoster):
         inputs['desc'] = ""
 
         self.html = self.load(domain + action, post=inputs, cookies=True)
-
-        # action, inputs = self.parseHtmlForm('id="d3_form"')
-        # if not action:
-        #     self.error("page 2 / d3_form")
-        # self.logDebug(action, inputs)
-        #
-        # self.html = self.load(action, post = inputs, cookies = True)
-        #
-        # try:
-        #     ajax_check_url, captcha_url = re.search(self.CHECK_URL_PATTERN, self.html).groups()
-        #     m = re.search(self.SECONDS_PATTERN, self.html)
-        #     seconds = int(m.group(1)) if m else 60
-        #     self.wait(seconds+1)
-        # except Exception, e:
-        #     self.logError(e)
-        #     self.error("page 3 / js")
 
         m = re.search(self.SECONDS_PATTERN, self.html)
         seconds = int(m.group(1)) if m else 60
@@ -106,7 +90,7 @@ class LetitbitNet(SimpleHoster):
 
         response = self.load("%s/ajax/download3.php" % domain, post=" ", cookies=True)
         if response != '1':
-            self.error('Unknown response - ajax_check_url')
+            self.error(_("Unknown response - ajax_check_url"))
         self.logDebug(response)
 
         recaptcha = ReCaptcha(self)
@@ -120,10 +104,9 @@ class LetitbitNet(SimpleHoster):
         if not response:
             self.invalidCaptcha()
         if response == "error_free_download_blocked":
-            self.logWarning("Daily limit reached")
+            self.logWarning(_("Daily limit reached"))
             self.wait(secondsToMidnight(gmt=2), True)
         if response == "error_wrong_captcha":
-            self.logError("Wrong Captcha")
             self.invalidCaptcha()
             self.retry()
         elif response.startswith('['):
@@ -131,19 +114,18 @@ class LetitbitNet(SimpleHoster):
         elif response.startswith('http://'):
             urls = [response]
         else:
-            self.error("Unknown response - captcha check")
+            self.error(_("Unknown response - captcha check"))
 
         self.correctCaptcha()
 
         for download_url in urls:
             try:
-                self.logDebug("Download URL", download_url)
                 self.download(download_url)
                 break
             except Exception, e:
                 self.logError(e)
         else:
-            self.fail("Download did not finish correctly")
+            self.fail(_("Download did not finish correctly"))
 
 
     def handlePremium(self):

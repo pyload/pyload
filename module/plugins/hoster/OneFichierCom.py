@@ -40,13 +40,13 @@ class OneFichierCom(SimpleHoster):
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
             wait_time = int(m.group(1)) + 1  #: One minute more than what the page displays to be safe
-            self.logInfo("You have to wait been each free download", "Retrying in %d minutes." % wait_time)
+            self.logInfo(_("You have to wait been each free download"), _("Retrying in %d minutes") % wait_time)
             self.wait(wait_time * 60, True)
             self.retry()
 
         url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['ID'])
         if not url:
-            self.error("Download link not found")
+            self.error(_("Download link not found"))
 
         # Check for protection
         if "pass" in inputs:
@@ -62,7 +62,7 @@ class OneFichierCom(SimpleHoster):
     def handlePremium(self):
         url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['ID'])
         if not url:
-            self.error("Download link not found")
+            self.error(_("Download link not found"))
 
         # Check for protection
         if "pass" in inputs:

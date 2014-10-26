@@ -91,7 +91,7 @@ class DailymotionCom(Hoster):
             idx = quality
 
         s = streams[idx]
-        self.logInfo("Download video quality %sx%s" % s[0])
+        self.logInfo(_("Download video quality %sx%s") % s[0])
         return s[1]
 
 

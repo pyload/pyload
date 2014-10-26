@@ -28,7 +28,7 @@ class PromptfileCom(SimpleHoster):
         # STAGE 1: get link to continue
         m = re.search(self.CHASH_PATTERN, self.html)
         if m is None:
-            self.error("Unable to detect chash")
+            self.error(_("CHASH_PATTERN not found"))
         chash = m.group(1)
         self.logDebug("Read chash %s" % chash)
         # continue to stage2
@@ -37,7 +37,7 @@ class PromptfileCom(SimpleHoster):
         # STAGE 2: get the direct link
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("Unable to detect direct link")
+            self.error(_("LINK_PATTERN not found"))
         direct = m.group(1)
         self.logDebug("Found direct link: " + direct)
         self.download(direct, disposition=True)

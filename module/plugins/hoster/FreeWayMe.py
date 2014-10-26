@@ -24,7 +24,7 @@ class FreeWayMe(Hoster):
     def process(self, pyfile):
         if not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "FreeWayMe")
-            self.fail("No FreeWay account provided")
+            self.fail(_("No FreeWay account provided"))
 
         self.logDebug("Old URL: %s" % pyfile.url)
 

@@ -32,9 +32,9 @@ class CrockoCom(SimpleHoster):
 
     def handleFree(self):
         if "You need Premium membership to download this file." in self.html:
-            self.fail("You need Premium membership to download this file.")
+            self.fail(_("You need Premium membership to download this file"))
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             m = re.search(self.CAPTCHA_PATTERN, self.html)
             if m:
                 url, wait_time = 'http://crocko.com' + m.group(1), m.group(2)
@@ -43,15 +43,15 @@ class CrockoCom(SimpleHoster):
             else:
                 break
 
-        m = re.search(self.FORM_PATTERN, self.html, re.DOTALL)
+        m = re.search(self.FORM_PATTERN, self.html, re.S)
         if m is None:
-            self.error('ACTION')
+            self.error(_("FORM_PATTERN not found"))
 
         action, form = m.groups()
         inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
         recaptcha = ReCaptcha(self)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge()
             self.download(action, post=inputs)
 
@@ -64,7 +64,7 @@ class CrockoCom(SimpleHoster):
             else:
                 break
         else:
-            self.fail('No valid captcha solution received')
+            self.fail(_("No valid captcha solution received"))
 
 
 getInfo = create_getInfo(CrockoCom)

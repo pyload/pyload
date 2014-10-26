@@ -265,7 +265,7 @@ class Account(Base):
 
 
     def parseTraffic(self, string): #returns kbyte
-        return parseFileSize(string) / 1024
+        return parseFileSize(string, unit="kb")
 
 
     def wrongPassword(self):

@@ -2,13 +2,12 @@
 
 import re
 from module.plugins.Account import Account
-from module.utils import parseFileSize
 
 
 class FastshareCz(Account):
     __name__ = "FastshareCz"
     __type__ = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Fastshare.cz account plugin"""
     __license__ = "GPLv3"
@@ -24,7 +23,7 @@ class FastshareCz(Account):
 
         m = re.search(self.CREDIT_PATTERN, html)
         if m:
-            trafficleft = parseFileSize(m.group(1))
+            trafficleft = self.parseTraffic(m.group(1))
             premium = True if trafficleft else False
         else:
             trafficleft = None

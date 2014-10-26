@@ -45,13 +45,13 @@ class FilefactoryCom(SimpleHoster):
 
     def handleFree(self):
         if "Currently only Premium Members can download files larger than" in self.html:
-            self.fail("File too large for free download")
+            self.fail(_("File too large for free download"))
         elif "All free download slots on this server are currently in use" in self.html:
             self.retry(50, 15 * 60, "All free slots are busy")
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("Free download link not found")
+            self.error(_("Free download link not found"))
 
         dl_link = m.group(1)
 
@@ -68,7 +68,7 @@ class FilefactoryCom(SimpleHoster):
             self.logDebug("Parallel downloads detected; waiting 15 minutes")
             self.retry(wait_time=15 * 60, reason="Parallel downloads")
         elif check == "error":
-            self.error("Unknown error")
+            self.error(_("Unknown error"))
 
 
     def handlePremium(self):
@@ -81,12 +81,11 @@ class FilefactoryCom(SimpleHoster):
         elif 'content-disposition' in header:
             url = self.pyfile.url
         else:
-            self.logInfo('You could enable "Direct Downloads" on http://filefactory.com/account/')
             html = self.load(self.pyfile.url)
             m = re.search(self.LINK_PATTERN, html)
             if m:
                 url = m.group(1)
             else:
-                self.error("Premium download link not found")
+                self.error(_("Premium download link not found"))
 
         self.download(url, disposition=True)

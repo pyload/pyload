@@ -67,7 +67,7 @@ class RapidgatorNet(SimpleHoster):
             status = json['response_status']
             msg = json['response_details']
         except BadHeader, e:
-            self.logError("API:%s" % cmd, e, "SID: %s" % self.sid)
+            self.logError("API: %s" % cmd, repr(e), "SID: %s" % self.sid)
             status = e.code
             msg = e
 
@@ -116,7 +116,7 @@ class RapidgatorNet(SimpleHoster):
         url = "http://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
         self.html = self.load(url)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             m = re.search(self.LINK_PATTERN, self.html)
             if m:
                 link = m.group(1)
@@ -138,7 +138,7 @@ class RapidgatorNet(SimpleHoster):
                 else:
                     self.correctCaptcha()
         else:
-            self.error("Download link")
+            self.error(_("Download link"))
 
 
     def getCaptcha(self):
@@ -157,7 +157,7 @@ class RapidgatorNet(SimpleHoster):
                     captcha_key = m.group(1)
                     captcha = SolveMedia(self)
                 else:
-                    self.error("Captcha")
+                    self.error(_("Captcha"))
 
         return captcha, captcha_key
 
@@ -165,7 +165,7 @@ class RapidgatorNet(SimpleHoster):
     def checkFree(self):
         m = re.search(self.PREMIUM_ONLY_ERROR_PATTERN, self.html)
         if m:
-            self.fail("Premium account needed for download")
+            self.fail(_("Premium account needed for download"))
         else:
             m = re.search(self.WAIT_PATTERN, self.html)
 
@@ -176,7 +176,7 @@ class RapidgatorNet(SimpleHoster):
             if m is None:
                 return
             elif m.group(1) == "daily":
-                self.logWarning("You have reached your daily downloads limit for today")
+                self.logWarning(_("You have reached your daily downloads limit for today"))
                 wait_time = secondsToMidnight(gmt=2)
             else:
                 wait_time = 1 * 60 * 60

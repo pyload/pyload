@@ -38,7 +38,7 @@ class CatShareNet(SimpleHoster):
     def getFileInfo(self):
         m = re.search(self.IP_BLOCKED_PATTERN, self.html)
         if m:
-            self.fail("Only connections from Polish IP address are allowed")
+            self.fail(_("Only connections from Polish IP address are allowed"))
         return super(CatShareNet, self).getFileInfo()
 
 

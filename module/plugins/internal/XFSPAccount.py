@@ -7,13 +7,12 @@ from time import mktime, strptime
 
 from module.plugins.Account import Account
 from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
-from module.utils import parseFileSize
 
 
 class XFSPAccount(Account):
     __name__ = "XFSPAccount"
     __type__ = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __description__ = """XFileSharingPro account plugin"""
     __license__ = "GPLv3"
@@ -94,7 +93,7 @@ class XFSPAccount(Account):
                     unit = self.TRAFFIC_LEFT_UNIT
                 else:
                     unit = None
-                trafficleft = parseFileSize(traffic['S'], unit)
+                trafficleft = self.parseTraffic(traffic['S'], unit)
         except:
             pass
 

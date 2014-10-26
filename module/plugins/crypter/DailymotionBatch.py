@@ -95,7 +95,7 @@ class DailymotionBatch(Crypter):
             self.logDebug("%s playlist\s found on channel \"%s\"" % (len(playlists), m_id))
 
         if not playlists:
-            self.fail("No playlist available")
+            self.fail(_("No playlist available"))
 
         for p_id, p_name, p_owner in playlists:
             p_videos = self.getVideos(p_id)

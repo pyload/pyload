@@ -74,7 +74,7 @@ class LinkSaveIn(SimpleCrypter):
         if package_links:
             self.packages = [(package_name, package_links, folder_name)]
         else:
-            self.fail('Could not extract any links')
+            self.fail(_("Could not extract any links"))
 
 
     def isOnline(self):
@@ -121,11 +121,10 @@ class LinkSaveIn(SimpleCrypter):
     def handleErrors(self):
         if "The visitorpassword you have entered is wrong" in self.html:
             self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
-            self.fail("Incorrect password, please set right password on 'Edit package' form and retry")
+            self.fail(_("Incorrect password, please set right password on 'Edit package' form and retry"))
 
         if self.captcha:
             if "Wrong code. Please retry" in self.html:
-                self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
                 self.retry()
             else:
@@ -140,7 +139,7 @@ class LinkSaveIn(SimpleCrypter):
         elif type_ == "web":
             return self.handleWebLinks()
         else:
-            self.fail('unknown source type "%s" (this is probably a bug)' % type_)
+            self.error('Unknown source type "%s" (this is probably a bug)' % type_)
 
 
     def handleWebLinks(self):
@@ -176,7 +175,7 @@ class LinkSaveIn(SimpleCrypter):
         type_ = type_.lower()
         self.logDebug("Seach for %s Container links" % type_.upper())
         if not type_.isalnum():  # check to prevent broken re-pattern (cnl2,rsdf,ccf,dlc,web are all alpha-numeric)
-            self.fail('unknown container type "%s" (this is probably a bug)' % type_)
+            self.error('Unknown container type "%s" (this is probably a bug)' % type_)
         pattern = r'\(\'%s_link\'\).href=unescape\(\'(.*?\.%s)\'\)' % (type_, type_)
         containersLinks = re.findall(pattern, self.html)
         self.logDebug("Found %d %s Container links" % (len(containersLinks), type_.upper()))
@@ -197,7 +196,7 @@ class LinkSaveIn(SimpleCrypter):
                 for (crypted, jk) in zip(vcrypted, vjk):
                     package_links.extend(self._getLinks(crypted, jk))
             except:
-                self.fail("Unable to decrypt CNL2 links")
+                self.fail(_("Unable to decrypt CNL2 links"))
         return package_links
 
 

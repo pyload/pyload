@@ -21,7 +21,7 @@ class PluginManager:
 
     PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
     VERSION = re.compile(r'__version__.*=.*("|\')([\d.]+)')
-    CONFIG = re.compile(r'__config__.*=.*\[([^\]]+)', re.MULTILINE)
+    CONFIG = re.compile(r'__config__.*=.*\[([^\]]+)', re.M)
     DESC = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
 
 
@@ -136,7 +136,7 @@ class PluginManager:
                     try:
                         plugins[name]['re'] = re.compile(pattern)
                     except:
-                        self.log.error(_("%s has a invalid pattern.") % name)
+                        self.log.error(_("%s has a invalid pattern") % name)
 
 
                 # internals have no config

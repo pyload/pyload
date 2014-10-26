@@ -84,7 +84,7 @@ class Captcha9kw(Hook):
         if response.isdigit():
             self.logInfo(_("New CaptchaID from upload: %s : %s") % (response, task.captchaFile))
 
-            for _ in xrange(1, 100, 1):
+            for _i in xrange(1, 100, 1):
                 response2 = getURL(self.API_URL, get={"apikey": self.getConfig("passkey"), "id": response,
                                                       "pyload": "1", "source": "pyload",
                                                       "action": "usercaptchacorrectdata"})
@@ -137,9 +137,9 @@ class Captcha9kw(Hook):
                 self.logInfo(_("Request correct"), response)
 
             except BadHeader, e:
-                self.logError(_("Could not send correct request."), e)
+                self.logError(_("Could not send correct request"), repr(e))
         else:
-            self.logError(_("No CaptchaID for correct request (task %s) found.") % task)
+            self.logError(_("No CaptchaID for correct request (task %s) found") % task)
 
 
     def captchaInvalid(self, task):
@@ -157,6 +157,6 @@ class Captcha9kw(Hook):
                 self.logInfo(_("Request refund"), response)
 
             except BadHeader, e:
-                self.logError(_("Could not send refund request."), e)
+                self.logError(_("Could not send refund request"), repr(e))
         else:
-            self.logError(_("No CaptchaID for not correct request (task %s) found.") % task)
+            self.logError(_("No CaptchaID for not correct request (task %s) found") % task)

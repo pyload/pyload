@@ -35,7 +35,7 @@ class File4safeCom(XFSPHoster):
             location = m.group(1).strip()
             self.startDownload(location)
         else:
-            self.error("Unable to detect premium download link")
+            self.error(_("LINK_PATTERN not found"))
 
 
 getInfo = create_getInfo(File4safeCom)

@@ -28,7 +28,7 @@ class SendspaceCom(SimpleHoster):
 
     def handleFree(self):
         params = {}
-        for _ in xrange(3):
+        for _i in xrange(3):
             m = re.search(self.LINK_PATTERN, self.html)
             if m:
                 if 'captcha_hash' in params:
@@ -52,9 +52,8 @@ class SendspaceCom(SimpleHoster):
             self.logDebug(params)
             self.html = self.load(self.pyfile.url, post=params)
         else:
-            self.fail("Download link not found")
+            self.fail(_("Download link not found"))
 
-        self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
 
 

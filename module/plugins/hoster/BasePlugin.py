@@ -74,13 +74,13 @@ class BasePlugin(Hoster):
                     raise
 
         else:
-            self.fail("No Plugin matched and not a downloadable url.")
+            self.fail(_("No Plugin matched and not a downloadable url"))
 
 
     def downloadFile(self, pyfile):
         url = pyfile.url
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             header = self.load(url, just_header=True)
 
             # self.load does not raise a BadHeader on 404 responses, do it here

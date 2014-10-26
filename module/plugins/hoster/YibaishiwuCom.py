@@ -28,7 +28,7 @@ class YibaishiwuCom(SimpleHoster):
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("AJAX URL")
+            self.error(_("LINK_PATTERN not found"))
         url = m.group(1)
         self.logDebug(('FREEUSER' if m.group(2) == 'download' else 'GUEST') + ' URL', url)
 
@@ -49,7 +49,7 @@ class YibaishiwuCom(SimpleHoster):
             except:
                 continue
         else:
-            self.fail('No working link found')
+            self.fail(_("No working link found"))
 
 
 getInfo = create_getInfo(YibaishiwuCom)

@@ -27,7 +27,7 @@ class SoundcloudCom(Hoster):
         if m:
             songId = m.group("ID")
         if len(songId) <= 0:
-            self.logError("Could not find song id")
+            self.logError(_("Could not find song id"))
             self.offline()
         else:
             m = re.search(r'"clientID":"(?P<CID>.*?)"', page)

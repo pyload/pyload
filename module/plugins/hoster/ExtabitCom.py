@@ -31,13 +31,13 @@ class ExtabitCom(SimpleHoster):
 
     def handleFree(self):
         if r">Only premium users can download this file" in self.html:
-            self.fail("Only premium users can download this file")
+            self.fail(_("Only premium users can download this file"))
 
         m = re.search(r"Next free download from your ip will be available in <b>(\d+)\s*minutes", self.html)
         if m:
             self.wait(int(m.group(1)) * 60, True)
         elif "The daily downloads limit from your IP is exceeded" in self.html:
-            self.logWarning("You have reached your daily downloads limit for today")
+            self.logWarning(_("You have reached your daily downloads limit for today"))
             self.wait(secondsToMidnight(gmt=2), True)
 
         self.logDebug("URL: " + self.req.http.lastEffectiveURL)
@@ -49,7 +49,7 @@ class ExtabitCom(SimpleHoster):
             recaptcha = ReCaptcha(self)
             captcha_key = m.group(1)
 
-            for _ in xrange(5):
+            for _i in xrange(5):
                 get_data = {"type": "recaptcha"}
                 get_data['challenge'], get_data['capture'] = recaptcha.challenge(captcha_key)
                 response = json_loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
@@ -59,19 +59,20 @@ class ExtabitCom(SimpleHoster):
                 else:
                     self.invalidCaptcha()
             else:
-                self.fail("Invalid captcha")
+                self.fail(_("Invalid captcha"))
         else:
-            self.error('Captcha')
+            self.error(_("Captcha"))
 
         if not "href" in response:
-            self.error('JSON')
+            self.error(_("Bad JSON response"))
 
         self.html = self.load("http://extabit.com/file/%s%s" % (fileID, response['href']))
+
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error('Download URL')
+            self.error(_("LINK_PATTERN not found"))
+
         url = m.group(1)
-        self.logDebug("Download URL: " + url)
         self.download(url)
 
 

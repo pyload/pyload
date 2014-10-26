@@ -74,7 +74,7 @@ class AccountManager():
             f = open("accounts.conf", "wb")
             f.write("version: " + str(ACC_VERSION))
             f.close()
-            self.core.log.warning(_("Account settings deleted, due to new config format."))
+            self.core.log.warning(_("Account settings deleted, due to new config format"))
             return
 
         plugin = ""

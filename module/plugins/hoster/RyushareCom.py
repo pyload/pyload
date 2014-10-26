@@ -58,7 +58,7 @@ class RyushareCom(XFSPHoster):
         if retry:
             self.retry()
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             solvemedia = SolveMedia(self)
             challenge, response = solvemedia.challenge()
 
@@ -68,12 +68,11 @@ class RyushareCom(XFSPHoster):
             self.html = self.load(self.pyfile.url, post=inputs)
             if "WRONG CAPTCHA" in self.html:
                 self.invalidCaptcha()
-                self.logInfo("Invalid Captcha")
             else:
                 self.correctCaptcha()
                 break
         else:
-            self.fail("You have entered 5 invalid captcha codes")
+            self.fail(_("You have entered 5 invalid captcha codes"))
 
         if "Click here to download" in self.html:
             return re.search(r'<a href="([^"]+)">Click here to download</a>', self.html).group(1)

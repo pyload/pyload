@@ -37,11 +37,11 @@ class QuickshareCz(SimpleHoster):
         if self.premium:
             if 'UU_prihlasen' in self.jsvars:
                 if self.jsvars['UU_prihlasen'] == '0':
-                    self.logWarning("User not logged in")
+                    self.logWarning(_("User not logged in"))
                     self.relogin(self.user)
                     self.retry()
                 elif float(self.jsvars['UU_kredit']) < float(self.jsvars['kredit_odecet']):
-                    self.logWarning("Not enough credit left")
+                    self.logWarning(_("Not enough credit left"))
                     self.premium = False
 
         if self.premium:
@@ -51,7 +51,7 @@ class QuickshareCz(SimpleHoster):
 
         check = self.checkDownload({"err": re.compile(r"\AChyba!")}, max_size=100)
         if check == "err":
-            self.fail("File not m or plugin defect")
+            self.fail(_("File not m or plugin defect"))
 
 
     def handleFree(self):
@@ -67,7 +67,7 @@ class QuickshareCz(SimpleHoster):
 
         m = re.search("Location\s*:\s*(.*)", self.header, re.I)
         if m is None:
-            self.fail('File not found')
+            self.fail(_("File not found"))
         download_url = m.group(1)
         self.logDebug("FREE URL2:" + download_url)
 
@@ -79,7 +79,7 @@ class QuickshareCz(SimpleHoster):
             elif m.group(1) == '2':
                 self.retry(60, 60, "No free slots available")
             else:
-                self.fail('Error %d' % m.group(1))
+                self.fail(_("Error %d") % m.group(1))
 
         # download file
         self.download(download_url)

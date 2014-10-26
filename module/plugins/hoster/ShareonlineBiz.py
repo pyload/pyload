@@ -105,7 +105,7 @@ class ShareonlineBiz(Hoster):
         m = re.search(r'var wait=(\d+);', self.html)
 
         recaptcha = ReCaptcha(self)
-        for _ in xrange(5):
+        for _i in xrange(5):
             challenge, response = recaptcha.challenge("6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX")
             self.setWait(int(m.group(1)) if m else 30)
             response = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time() * 1000)), post={
@@ -120,12 +120,11 @@ class ShareonlineBiz(Hoster):
                 self.invalidCaptcha()
         else:
             self.invalidCaptcha()
-            self.fail("No valid captcha solution received")
+            self.fail(_("No valid captcha solution received"))
 
         download_url = response.decode("base64")
-        self.logDebug(download_url)
         if not download_url.startswith("http://"):
-            self.error("download url")
+            self.error(_("Wrong download url"))
 
         self.wait()
         self.download(download_url)
@@ -176,14 +175,15 @@ class ShareonlineBiz(Hoster):
             return
 
         err = m.group(1)
-        m = re.search(self.ERROR_INFO_PATTERN, self.html)
-        msg = m.group(1) if m else ""
-        self.logError(err, msg or "Unknown error occurred")
+        try:
+            self.logError(err, re.search(self.ERROR_INFO_PATTERN, self.html).group(1))
+        except:
+            self.logError(err, "Unknown error occurred")
 
         if err == "invalid":
-            self.fail(msg or "File not available")
+            self.fail(_("File not available"))
         elif err in ("freelimit", "size", "proxy"):
-            self.fail(msg or "Premium account needed")
+            self.fail(_("Premium account needed"))
         else:
             if err in 'server':
                 self.setWait(600, False)
@@ -193,4 +193,4 @@ class ShareonlineBiz(Hoster):
                 self.setWait(300, True)
 
             self.wait()
-            self.retry(max_tries=25, reason=msg)
+            self.retry(max_tries=25, reason=err)

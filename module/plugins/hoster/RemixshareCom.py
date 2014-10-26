@@ -42,10 +42,10 @@ class RemixshareCom(SimpleHoster):
     def handleFree(self):
         b = re.search(self.LINK_PATTERN, self.html)
         if not b:
-            self.error("Cannot parse download url")
+            self.error(_("Cannot parse download url"))
         c = re.search(self.TOKEN_PATTERN, self.html)
         if not c:
-            self.error("Cannot parse file token")
+            self.error(_("Cannot parse file token"))
         dl_url = b.group(1) + c.group(1)
 
         #Check if we have to wait
@@ -55,7 +55,6 @@ class RemixshareCom(SimpleHoster):
             self.wait(seconds.group(1))
 
         # Finally start downloading...
-        self.logDebug("Download URL = r" + dl_url)
         self.download(dl_url, disposition=True)
 
 

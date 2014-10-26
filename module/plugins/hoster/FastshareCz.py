@@ -44,7 +44,7 @@ class FastshareCz(SimpleHoster):
         if m:
             action, captcha_src = m.groups()
         else:
-            self.error("Free URL")
+            self.error(_("FREE_URL_PATTERN not found"))
 
         baseurl = "http://www.fastshare.cz"
         captcha = self.decryptCaptcha(urljoin(baseurl, captcha_src))
@@ -66,14 +66,14 @@ class FastshareCz(SimpleHoster):
         if "location" in header:
             url = header['location']
         elif self.CREDIT_PATTERN in self.html:
-            self.logWarning("Not enough traffic left")
+            self.logWarning(_("Not enough traffic left"))
             self.resetAccount()
         else:
             m = re.search(self.PREMIUM_URL_PATTERN, self.html)
             if m:
                 url = m.group(1)
             else:
-                self.error("Premium URL")
+                self.error(_("PREMIUM_URL_PATTERN not found"))
 
         self.logDebug("PREMIUM URL: " + url)
         self.download(url, disposition=True)

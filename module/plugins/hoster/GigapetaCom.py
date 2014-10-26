@@ -33,7 +33,7 @@ class GigapetaCom(SimpleHoster):
 
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             self.checkErrors()
 
             captcha = self.decryptCaptcha(captcha_url)
@@ -49,10 +49,9 @@ class GigapetaCom(SimpleHoster):
             elif "Entered figures don&#96;t coincide with the picture" in self.html:
                 self.invalidCaptcha()
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
-        self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
 
 

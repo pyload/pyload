@@ -30,7 +30,7 @@ class PremiumTo(Hoster):
     def process(self, pyfile):
         if not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "premium.to")
-            self.fail("No premium.to account provided")
+            self.fail(_("No premium.to account provided"))
 
         self.logDebug("Old URL: %s" % pyfile.url)
 
@@ -59,10 +59,10 @@ class PremiumTo(Hoster):
                 f.close()
                 remove(lastDownload)
             else:
-                err = 'File does not exist'
+                err = _('File does not exist')
 
         trb = self.getTraffic()
-        self.logInfo("Filesize: %d, Traffic used %d, traffic left %d" % (pyfile.size, tra - trb, trb))
+        self.logInfo(_("Filesize: %d, Traffic used %d, traffic left %d") % (pyfile.size, tra - trb, trb))
 
         if err:
             self.fail(err)

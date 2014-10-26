@@ -41,7 +41,7 @@ class FilerNet(SimpleHoster):
 
         inputs = self.parseHtmlForm(input_names='token')[1]
         if 'token' not in inputs:
-            self.error('Unable to detect token')
+            self.error(_("Unable to detect token"))
         token = inputs['token']
         self.logDebug("Token: " + token)
 
@@ -49,14 +49,14 @@ class FilerNet(SimpleHoster):
 
         inputs = self.parseHtmlForm(input_names='hash')[1]
         if 'hash' not in inputs:
-            self.error('Unable to detect hash')
+            self.error(_("Unable to detect hash"))
         hash_data = inputs['hash']
         self.logDebug("Hash: " + hash_data)
 
         downloadURL = r''
         recaptcha = ReCaptcha(self)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             challenge, response = recaptcha.challenge()
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,
@@ -73,11 +73,10 @@ class FilerNet(SimpleHoster):
                 self.correctCaptcha()
                 break
             else:
-                self.logInfo("Wrong captcha")
                 self.invalidCaptcha()
 
         if not downloadURL:
-            self.fail("No Download url retrieved/all captcha attempts failed")
+            self.fail(_("No Download url retrieved/all captcha attempts failed"))
 
         self.download(downloadURL, disposition=True)
 
@@ -90,7 +89,7 @@ class FilerNet(SimpleHoster):
             html = self.load(self.pyfile.url)
             m = re.search(self.LINK_PATTERN, html)
             if m is None:
-                self.error("Unable to detect direct link, try to enable 'Direct download' in your user settings")
+                self.error(_("LINK_PATTERN not found"))
             dl = 'http://filer.net' + m.group(1)
 
         self.logDebug("Direct link: " + dl)

@@ -30,7 +30,6 @@ class FileStoreTo(SimpleHoster):
         self.wait(10)
         ldc = re.search(r'wert="(\w+)"', self.html).group(1)
         link = self.load("http://filestore.to/ajax/download.php", get={"LDC": ldc})
-        self.logDebug("Download link = " + link)
         self.download(link)
 
 

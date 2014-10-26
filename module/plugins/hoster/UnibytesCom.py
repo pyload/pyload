@@ -31,7 +31,7 @@ class UnibytesCom(SimpleHoster):
         action, post_data = self.parseHtmlForm('id="startForm"')
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
-        for _ in xrange(8):
+        for _i in xrange(8):
             self.logDebug(action, post_data)
             self.html = self.load(domain + action, post=post_data)
 
@@ -62,9 +62,8 @@ class UnibytesCom(SimpleHoster):
             elif last_step in ("captcha", "last"):
                 post_data['captcha'] = self.decryptCaptcha(domain + '/captcha.jpg')
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
-        self.logDebug("Download link: " + url)
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
         self.download(url)
 

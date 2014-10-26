@@ -53,7 +53,7 @@ class Container(Crypter):
                 if exists(save_join(pypath, self.pyfile.url)):
                     self.pyfile.url = save_join(pypath, self.pyfile.url)
                 else:
-                    self.fail(_("File not exists."))
+                    self.fail(_("File not exists"))
 
 
     def deleteTmp(self):

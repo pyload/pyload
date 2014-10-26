@@ -94,7 +94,7 @@ class RelinkUs(Crypter):
         if package_links:
             self.packages = [(package_name, package_links, folder_name)]
         else:
-            self.fail('Could not extract any links')
+            self.fail(_("Could not extract any links"))
 
 
     def initPackage(self, pyfile):
@@ -169,11 +169,10 @@ class RelinkUs(Crypter):
         if self.PASSWORD_ERROR_ROKEN in self.html:
             msg = "Incorrect password, please set right password on 'Edit package' form and retry"
             self.logDebug(msg)
-            self.fail(msg)
+            self.fail(_(msg))
 
         if self.captcha:
             if self.CAPTCHA_ERROR_ROKEN in self.html:
-                self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
                 self.retry()
             else:
@@ -188,13 +187,13 @@ class RelinkUs(Crypter):
         elif source == 'web':
             return self.handleWEBLinks()
         else:
-            self.fail('Unknown source [%s] (this is probably a bug)' % source)
+            self.error('Unknown source type "%s" (this is probably a bug)' % source)
 
 
     def handleCNL2Links(self):
         self.logDebug("Search for CNL2 links")
         package_links = []
-        m = re.search(self.CNL2_FORM_REGEX, self.html, re.DOTALL)
+        m = re.search(self.CNL2_FORM_REGEX, self.html, re.S)
         if m is not None:
             cnl2_form = m.group(1)
             try:
@@ -248,11 +247,11 @@ class RelinkUs(Crypter):
     def _getCipherParams(self, cnl2_form):
         # Get jk
         jk_re = self.CNL2_FORMINPUT_REGEX % self.CNL2_JK_KEY
-        vjk = re.findall(jk_re, cnl2_form, re.IGNORECASE)
+        vjk = re.findall(jk_re, cnl2_form, re.I)
 
         # Get crypted
         crypted_re = self.CNL2_FORMINPUT_REGEX % RelinkUs.CNL2_CRYPTED_KEY
-        vcrypted = re.findall(crypted_re, cnl2_form, re.IGNORECASE)
+        vcrypted = re.findall(crypted_re, cnl2_form, re.I)
 
         # Log and return
         self.logDebug("Detected %d crypted blocks" % len(vcrypted))

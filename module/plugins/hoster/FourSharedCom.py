@@ -32,7 +32,7 @@ class FourSharedCom(SimpleHoster):
 
     def handleFree(self):
         if not self.account:
-            self.fail("User not logged in")
+            self.fail(_("User not logged in"))
 
         m = re.search(self.DOWNLOAD_BUTTON_PATTERN, self.html)
         if m:
@@ -44,7 +44,7 @@ class FourSharedCom(SimpleHoster):
 
         m = re.search(self.DOWNLOAD_URL_PATTERN, self.html)
         if m is None:
-            self.error('Download link')
+            self.error(_("Download link"))
         link = m.group(1)
 
         try:
