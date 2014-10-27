@@ -10,15 +10,16 @@ from module.utils import save_join
 
 
 class Container(Crypter):
-    __name__ = "Container"
-    __type__ = "container"
+    __name__    = "Container"
+    __type__    = "container"
     __version__ = "0.1"
 
     __pattern__ = None
+    __config__  = []  #: [("name", "type", "desc", "default")]
 
     __description__ = """Base container decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def preprocessing(self, thread):

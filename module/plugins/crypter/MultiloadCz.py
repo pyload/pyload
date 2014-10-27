@@ -38,6 +38,3 @@ class MultiloadCz(Crypter):
                 if not self.urls:
                     ignored_set = set(self.getConfig("ignoredHoster").split('|'))
                     self.urls.extend([x[1] for x in m if x[0] not in ignored_set])
-
-        if not self.urls:
-            self.fail(_("Could not extract any links"))

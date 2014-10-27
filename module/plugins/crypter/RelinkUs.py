@@ -93,8 +93,6 @@ class RelinkUs(Crypter):
         # Pack
         if package_links:
             self.packages = [(package_name, package_links, folder_name)]
-        else:
-            self.fail(_("Could not extract any links"))
 
 
     def initPackage(self, pyfile):

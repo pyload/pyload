@@ -52,6 +52,3 @@ class MediafireComFolder(Crypter):
             self.offline()
         else:
             self.urls.append(url)
-
-        if not self.urls:
-            self.fail(_("Could not extract any links"))

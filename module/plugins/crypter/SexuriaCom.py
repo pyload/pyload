@@ -86,10 +86,6 @@ class SexuriaCom(Crypter):
                     else:
                         linklist.append(finallink)
 
-        # Inform the user if no link could been extracted
-        if linklist == []:
-            self.error(_("Could not extract any links"))
-
         # Debug log
         self.logDebug("%d supported links" % len(linklist))
         for i, link in enumerate(linklist):

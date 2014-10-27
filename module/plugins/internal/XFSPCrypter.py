@@ -4,15 +4,16 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class XFSPCrypter(SimpleCrypter):
-    __name__ = "XFSPCrypter"
-    __type__ = "crypter"
+    __name__    = "XFSPCrypter"
+    __type__    = "crypter"
     __version__ = "0.02"
 
     __pattern__ = None
+    __config__  = []
 
     __description__ = """XFileSharingPro decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_NAME = None

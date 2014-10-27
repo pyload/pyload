@@ -24,17 +24,16 @@ class Hook(Base):
     """
     Base class for hook plugins.
     """
-    __name__ = "Hook"
-    __type__ = "hook"
+    __name__    = "Hook"
+    __type__    = "hook"
     __version__ = "0.2"
 
-    __threaded__ = []
-    __config__ = [("name", "type", "desc", "default")]
+    __config__ = []  #: [("name", "type", "desc", "default")]
 
     __description__ = """Interface for hook"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de"),
-                   ("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de"),
+                       ("RaNaN", "RaNaN@pyload.org")]
 
 
     #: automatically register event listeners for functions, attribute will be deleted dont use it yourself

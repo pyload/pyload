@@ -27,6 +27,3 @@ class QuickshareCzFolder(Crypter):
         if m is None:
             self.error(_("FOLDER_PATTERN not found"))
         self.urls.extend(re.findall(self.LINK_PATTERN, m.group(1)))
-
-        if not self.urls:
-            self.fail(_("Could not extract any links"))

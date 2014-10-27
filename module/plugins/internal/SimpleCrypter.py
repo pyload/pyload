@@ -12,17 +12,18 @@ from module.utils import fixup, html_unescape
 
 
 class SimpleCrypter(Crypter):
-    __name__ = "SimpleCrypter"
-    __type__ = "crypter"
+    __name__    = "SimpleCrypter"
+    __type__    = "crypter"
     __version__ = "0.20"
 
     __pattern__ = None
+    __config__  = []
 
     __description__ = """Simple decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     """
@@ -111,8 +112,6 @@ class SimpleCrypter(Crypter):
 
         if self.package_links:
             self.packages = [(package_name, self.package_links, folder_name)]
-        else:
-            self.fail(_("Could not extract any links"))
 
 
     def getLinks(self):

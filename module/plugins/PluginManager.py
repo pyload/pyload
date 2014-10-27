@@ -15,14 +15,14 @@ from module.ConfigParser import IGNORE
 
 
 class PluginManager:
-    ROOT = "module.plugins."
+    ROOT     = "module.plugins."
     USERROOT = "userplugins."
-    TYPES = ("crypter", "container", "hoster", "captcha", "accounts", "hooks", "internal")
+    TYPES    = ("crypter", "container", "hoster", "captcha", "accounts", "hooks", "internal")
 
-    PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
-    VERSION = re.compile(r'__version__.*=.*("|\')([\d.]+)')
-    CONFIG = re.compile(r'__config__.*=.*\[([^\]]+)', re.M)
-    DESC = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
+    PATTERN = re.compile(r'__pattern__\s*=\s*[a-z]*("|\')([^"\']+)')
+    VERSION = re.compile(r'__version__\s*=\s*("|\')([\d.]+)')
+    CONFIG  = re.compile(r'__config__\s*=\s*\[([^\]]+)', re.M)
+    DESC    = re.compile(r'__description__\s*=\s*("|"""|\')([^"\']+)')
 
 
     def __init__(self, core):

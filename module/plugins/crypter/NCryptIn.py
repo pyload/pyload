@@ -73,9 +73,8 @@ class NCryptIn(Crypter):
             package_links = set(package_links)
 
         # Pack and return links
-        if not package_links:
-            self.fail(_("Could not extract any links"))
-        self.packages = [(package_name, package_links, folder_name)]
+        if package_links:
+            self.packages = [(package_name, package_links, folder_name)]
 
 
     def isSingleLink(self):

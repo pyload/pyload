@@ -157,17 +157,18 @@ def timestamp():
 
 
 class SimpleHoster(Hoster):
-    __name__ = "SimpleHoster"
-    __type__ = "hoster"
+    __name__    = "SimpleHoster"
+    __type__    = "hoster"
     __version__ = "0.42"
 
     __pattern__ = None
+    __config__  = []
 
     __description__ = """Simple hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     """

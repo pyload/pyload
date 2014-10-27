@@ -10,14 +10,14 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 
 
 class XFSPAccount(Account):
-    __name__ = "XFSPAccount"
-    __type__ = "account"
+    __name__    = "XFSPAccount"
+    __type__    = "account"
     __version__ = "0.17"
 
     __description__ = """XFileSharingPro account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     """

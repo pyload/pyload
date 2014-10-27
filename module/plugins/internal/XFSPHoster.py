@@ -15,17 +15,18 @@ from module.utils import html_unescape
 
 
 class XFSPHoster(SimpleHoster):
-    __name__ = "XFSPHoster"
-    __type__ = "hoster"
+    __name__    = "XFSPHoster"
+    __type__    = "hoster"
     __version__ = "0.06"
 
     __pattern__ = None
+    __config__  = []
 
     __description__ = """XFileSharingPro hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_NAME = None
