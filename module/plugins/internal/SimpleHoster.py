@@ -159,7 +159,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.42"
 
     __pattern__ = None
 
@@ -208,6 +208,8 @@ class SimpleHoster(Hoster):
     COOKIES = True  #: or False or list of tuples [(domain, name, value)]
     FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
 
+    CHECK_DIRECT_DOWNLOAD = True  #: Search for a direct download link in the page header (premium only)
+
 
     def init(self):
         self.file_info = {}
@@ -223,15 +225,22 @@ class SimpleHoster(Hoster):
 
         self.req.setOption("timeout", 120)
 
-        url = self.pyfile.url = replace_patterns(self.pyfile.url, self.FILE_URL_REPLACEMENTS)
-        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
+        self.pyfile.url = replace_patterns(self.pyfile.url, self.FILE_URL_REPLACEMENTS)
+        self.html = getURL(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
 
 
     def process(self, pyfile):
         self.prepare()
 
+        if self.CHECK_DIRECT_DOWNLOAD and self.premium:
+            header = self.load(self.pyfile.url, just_header=True)
+            if 'location' in header:
+                self.logDebug("Direct download link detected")
+                self.download(header['location'], ref=True, cookies=True, disposition=True)
+                return
+
         premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
-        if not premium_only:  # Usually premium only pages doesn't show the file information
+        if not premium_only:  #: Usually premium only pages doesn't show the file information
             self.getFileInfo()
 
         if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
@@ -282,7 +291,7 @@ class SimpleHoster(Hoster):
 
             link = m.group(1)
         except Exception, e:
-            self.logError(str(e))
+            self.fail(str(e))
         else:
             self.download(link, ref=True, cookies=True, disposition=True)
 
@@ -298,7 +307,7 @@ class SimpleHoster(Hoster):
 
             link = m.group(1)
         except Exception, e:
-            self.logError(str(e))
+            self.fail(str(e))
         else:
             self.download(link, ref=True, cookies=True, disposition=True)
 
@@ -308,14 +317,14 @@ class SimpleHoster(Hoster):
             time_str = "%dh %dm" % divmod(wait_time / 60, 60)
         else:
             wait_time = 900
-            time_str = "(unknown time)"
+            time_str = _("(unknown time)")
             max_tries = 100
 
         self.logInfo(_("Download limit reached, reconnect or wait %s") % time_str)
 
         self.setWait(wait_time, True)
         self.wait()
-        self.retry(max_tries=max_tries, reason="Download limit reached")
+        self.retry(max_tries=max_tries, reason=_("Download limit reached"))
 
 
     def parseHtmlForm(self, attr_str='', input_names=None):
