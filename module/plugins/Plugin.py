@@ -51,7 +51,6 @@ class Base(object):
     A Base class with log/config/db methods *all* plugin types can use
     """
 
-
     def __init__(self, core):
         #: Core instance
         self.core = core
@@ -143,22 +142,24 @@ class Plugin(Base):
     Base plugin for hoster/crypter.
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
-    __name__ = "Plugin"
-    __type__ = "hoster"
+    __name__    = "Plugin"
+    __type__    = "hoster"
     __version__ = "0.4"
 
     __pattern__ = None
-    __config__ = [("name", "type", "desc", "default")]
+    __config__  = []  #: [("name", "type", "desc", "default")]
 
     __description__ = """Base plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("spoob", "spoob@pyload.org"),
-                   ("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("spoob", "spoob@pyload.org"),
+                       ("mkaay", "mkaay@mkaay.de")]
 
 
     def __init__(self, pyfile):
         Base.__init__(self, pyfile.m.core)
+
+        self.__config__.insert(("activated", "bool", "Activated", True))
 
         self.wantReconnect = False
         #: enables simultaneous processing of multiple downloads
@@ -313,7 +314,7 @@ class Plugin(Base):
         if not reason and not type:
             type = "unknown"
 
-        msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
+        msg  = _("%s error") % _(type.strip().capitalize()) if type else _("Error")
         msg += ": " + reason.strip() if reason else ""
         msg += _(" | Plugin may be out of date")
 
