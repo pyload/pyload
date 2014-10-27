@@ -3,7 +3,7 @@
 import re
 
 from urlparse import urljoin
-from time import mktime, strptime
+from time import gmtime, mktime, strptime
 
 from module.plugins.Account import Account
 from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSPAccount(Account):
     __name__    = "XFSPAccount"
     __type__    = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __description__ = """XFileSharingPro account plugin"""
     __license__     = "GPLv3"
