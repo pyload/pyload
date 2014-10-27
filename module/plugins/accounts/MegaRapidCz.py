@@ -18,7 +18,7 @@ class MegaRapidCz(Account):
 
 
     login_timeout = 60
-    
+
     LIMITDL_PATTERN = ur'<td>Max. počet paralelních stahování: </td><td>(\d+)'
     VALID_UNTIL_PATTERN = ur'<td>Paušální stahování aktivní. Vyprší </td><td><strong>(.*?)</strong>'
     TRAFFIC_LEFT_PATTERN = r'<tr><td>Kredit</td><td>(.*?) GiB'

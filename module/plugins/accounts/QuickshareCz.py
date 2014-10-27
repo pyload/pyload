@@ -16,8 +16,8 @@ class QuickshareCz(Account):
 
 
     TRAFFIC_LEFT_PATTERN = r'Stav kreditu: <strong>(.+?)</strong>'
-    
-    
+
+
     def loadAccountInfo(self, user, req):
         html = req.load("http://www.quickshare.cz/premium", decode=True)
 

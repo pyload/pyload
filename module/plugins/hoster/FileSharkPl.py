@@ -92,13 +92,13 @@ class FileSharkPl(SimpleHoster):
         action, inputs = self.parseHtmlForm('action=""')
         m = re.search(self.CAPTCHA_TOKEN_PATTERN, self.html)
         if m is None:
-            self.retry(reason="Captcha form not found")
+            self.retry(reason=_("Captcha form not found"))
 
         inputs['form[_token]'] = m.group(1)
 
         m = re.search(self.CAPTCHA_IMG_PATTERN, self.html)
         if m is None:
-            self.retry(reason="Captcha image not found")
+            self.retry(reason=_("Captcha image not found"))
 
         tmp_load = self.load
         self.load = self.decode64  #: injects decode64 inside decryptCaptcha
@@ -124,7 +124,7 @@ class FileSharkPl(SimpleHoster):
 
         elif check == "wrong_captcha":
             self.invalidCaptcha()
-            self.retry(10, 1, reason="Wrong captcha solution")
+            self.retry(10, 1, reason=_("Wrong captcha solution"))
 
         elif check == "wait_pattern":
             self.retry()

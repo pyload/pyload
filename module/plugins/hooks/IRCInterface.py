@@ -184,7 +184,7 @@ class IRCInterface(Thread, Hook):
             for line in res:
                 self.response(line, msg['origin'])
         except Exception, e:
-            self.logError(repr(e))
+            self.logError(str(e))
 
 
     def response(self, msg, origin=""):

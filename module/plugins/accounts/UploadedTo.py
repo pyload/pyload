@@ -31,11 +31,10 @@ class UploadedTo(Account):
             if raw_valid == "unlimited":
                 validuntil = -1
             else:
-                raw_valid = re.findall(r"(\d+) (Week|weeks|days|day|hours|hour)", raw_valid)
+                raw_valid = re.findall(r"(\d+) (Week|weeks|day|hour)", raw_valid)
                 validuntil = time()
                 for n, u in raw_valid:
-                    validuntil += int(n) * 60 * 60 * {"Week": 168, "weeks": 168, "days": 24,
-                                                      "day": 24, "hours": 1, "hour": 1}[u]
+                    validuntil += int(n) * 60 * 60 * {"Week": 168, "weeks": 168, "day": 24, "hour": 1}[u]
 
             return {"validuntil": validuntil, "trafficleft": traffic, "maxtraffic": 50 * 1024 * 1024}
         else:

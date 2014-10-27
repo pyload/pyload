@@ -66,7 +66,7 @@ class FilefactoryCom(SimpleHoster):
 
         if check == "multiple":
             self.logDebug("Parallel downloads detected; waiting 15 minutes")
-            self.retry(wait_time=15 * 60, reason="Parallel downloads")
+            self.retry(wait_time=15 * 60, reason=_("Parallel downloads"))
         elif check == "error":
             self.error(_("Unknown error"))
 

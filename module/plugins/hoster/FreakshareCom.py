@@ -172,9 +172,6 @@ class FreakshareCom(Hoster):
         to_sort = re.findall(r"<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>", herewego)
         request_options = dict((n, v) for (v, n) in to_sort)
 
-        # comment this in, when it doesnt work as well
-        #print "\n\n%s\n\n" % ";".join(["%s=%s" % x for x in to_sort])
-
         challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=(\w+)", herewego)
 
         if challenge:

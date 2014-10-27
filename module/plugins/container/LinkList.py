@@ -26,9 +26,6 @@ class LinkList(Container):
         except:
             file_enc = "utf-8"
 
-        print repr(pyfile.url)
-        print pyfile.url
-
         file_name = fs_encode(pyfile.url)
 
         txt = codecs.open(file_name, 'r', file_enc)

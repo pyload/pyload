@@ -140,6 +140,6 @@ class OboomCom(Hoster):
             self.downloadDomain = result[1]
             self.downloadTicket = result[2]
         elif result[0] == 421:
-            self.retry(wait_time=result[2] + 60, reason="Connection limit exceeded")
+            self.retry(wait_time=result[2] + 60, reason=_("Connection limit exceeded"))
         else:
             self.fail(_("Could not retrieve download ticket. Error code: %s") % result[0])

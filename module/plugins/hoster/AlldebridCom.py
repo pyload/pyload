@@ -84,6 +84,6 @@ class AlldebridCom(Hoster):
                                     'empty': re.compile(r"^$")})
 
         if check == "error":
-            self.retry(wait_time=60, reason="An error occured while generating link")
+            self.retry(wait_time=60, reason=_("An error occured while generating link"))
         elif check == "empty":
-            self.retry(wait_time=60, reason="Downloaded File was empty")
+            self.retry(wait_time=60, reason=_("Downloaded File was empty"))

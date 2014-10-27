@@ -91,7 +91,7 @@ class Hook(Base):
         try:
             if self.isActivated(): self.periodical()
         except Exception, e:
-            self.core.log.error(_("Error executing hooks: %s") % str(e))
+            self.core.log.error(_("Error executing hooks: ") + str(e))
             if self.core.debug:
                 print_exc()
 

@@ -35,7 +35,7 @@ class LuckyShareNet(SimpleHoster):
             else:
                 self.error(_("Unable to detect wait time between free downloads"))
         elif 'Hash expired' in rep:
-            self.retry(reason="Hash expired")
+            self.retry(reason=_("Hash expired"))
         return json_loads(rep)
 
 

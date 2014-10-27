@@ -201,9 +201,9 @@ class XFSPHoster(SimpleHoster):
 
         header = self.load(self.pyfile.url, just_header=True)
         if 'location' in header:  # Direct link
-            self.startDownload(self.pyfile.url)
+            self.startDownload(header['location'])
         else:
-            self.retry(reason="OVR link location not found")
+            self.retry(reason=_("OVR link location not found"))
 
 
     def startDownload(self, link):
@@ -232,7 +232,7 @@ class XFSPHoster(SimpleHoster):
                 self.wantReconnect = True
                 self.retry(25, 1 * 60 * 60, "Download limit exceeded")
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
-                self.retry(reason="Link expired")
+                self.retry(reason=_("Link expired"))
             elif 'maintenance' in self.errmsg or 'maintainance' in self.errmsg:
                 self.tempOffline()
             elif 'download files up to' in self.errmsg:

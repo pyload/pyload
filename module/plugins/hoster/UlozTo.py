@@ -147,7 +147,7 @@ class UlozTo(SimpleHoster):
             #self.delStorage("captcha_id")
             #self.delStorage("captcha_text")
             self.invalidCaptcha()
-            self.retry(reason="Wrong captcha code")
+            self.retry(reason=_("Wrong captcha code"))
         elif check == "offline":
             self.offline()
         elif check == "passwd":

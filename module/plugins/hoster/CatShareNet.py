@@ -58,7 +58,7 @@ class CatShareNet(SimpleHoster):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
             self.invalidCaptcha()
-            self.retry(reason="Wrong captcha entered")
+            self.retry(reason=_("Wrong captcha entered"))
 
         dl_link = m.group(1)
         self.download(dl_link, disposition=True)

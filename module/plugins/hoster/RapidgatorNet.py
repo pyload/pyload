@@ -67,7 +67,7 @@ class RapidgatorNet(SimpleHoster):
             status = json['response_status']
             msg = json['response_details']
         except BadHeader, e:
-            self.logError("API: %s" % cmd, repr(e), "SID: %s" % self.sid)
+            self.logError("API: %s" % cmd, str(e), "SID: %s" % self.sid)
             status = e.code
             msg = e
 

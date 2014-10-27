@@ -35,7 +35,7 @@ class EuroshareEu(SimpleHoster):
     def handlePremium(self):
         if self.ERR_NOT_LOGGED_IN_PATTERN in self.html:
             self.account.relogin(self.user)
-            self.retry(reason="User not logged in")
+            self.retry(reason=_("User not logged in"))
 
         self.download(self.pyfile.url.rstrip('/') + "/download/")
 
@@ -43,7 +43,7 @@ class EuroshareEu(SimpleHoster):
                                     "json": re.compile(r'\{"status":"error".*?"message":"(.*?)"')})
         if check == "login" or (check == "json" and self.lastCheck.group(1) == "Access token expired"):
             self.account.relogin(self.user)
-            self.retry(reason="Access token expired")
+            self.retry(reason=_("Access token expired"))
         elif check == "json":
             self.fail(self.lastCheck.group(1))
 

@@ -91,8 +91,8 @@ class SimpleCrypter(Crypter):
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
 
-        url = self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
-        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
+        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
+        self.html = getURL(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
 
 
     def decrypt(self, pyfile):

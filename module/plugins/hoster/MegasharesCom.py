@@ -78,7 +78,7 @@ class MegasharesCom(SimpleHoster):
             time = [int(x) for x in m.groups()]
             renew = time[0] + (time[1] * 60) + (time[2] * 60)
             self.logDebug("Waiting %d seconds for a new passport" % renew)
-            self.retry(wait_time=renew, reason="Passport renewal")
+            self.retry(wait_time=renew, reason=_("Passport renewal"))
 
         # Check traffic left on passport
         m = re.search(self.PASSPORT_LEFT_PATTERN, self.html, re.M | re.S)
@@ -90,7 +90,7 @@ class MegasharesCom(SimpleHoster):
         self.logInfo(_("Data left: %s %s (%d MB needed)") % (m.group(2), m.group(3), self.pyfile.size / 1048576))
 
         if not data_left:
-            self.retry(wait_time=600, reason="Passport renewal")
+            self.retry(wait_time=600, reason=_("Passport renewal"))
 
         self.handleDownload(False)
 

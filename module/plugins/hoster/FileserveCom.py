@@ -92,7 +92,7 @@ class FileserveCom(Hoster):
 
             elif action['fail'] == "parallelDownload":
                 self.logWarning(_("Parallel download error, now waiting 60s"))
-                self.retry(wait_time=60, reason="parallelDownload")
+                self.retry(wait_time=60, reason=_("parallelDownload"))
 
             else:
                 self.fail(_("Download check returned: %s") % action['fail'])

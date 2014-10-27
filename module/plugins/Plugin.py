@@ -422,7 +422,7 @@ class Plugin(Base):
                 self.fail(_("No captcha result obtained in appropiate time by any of the plugins"))
 
             result = task.result
-            self.logDebug("Received captcha result: %s" % str(result))
+            self.logDebug("Received captcha result: " + str(result))
 
         if not self.core.debug:
             try:
@@ -530,7 +530,7 @@ class Plugin(Base):
 
                     chown(location, uid, gid)
                 except Exception, e:
-                    self.logWarning(_("Setting User and Group failed: %s") % str(e))
+                    self.logWarning(_("Setting User and Group failed: ") + str(e))
 
         # convert back to unicode
         location = fs_decode(location)
@@ -564,7 +564,7 @@ class Plugin(Base):
 
                 chown(fs_filename, uid, gid)
             except Exception, e:
-                self.logWarning(_("Setting User and Group failed: %s") % str(e))
+                self.logWarning(_("Setting User and Group failed: ") + str(e))
 
         self.lastDownload = filename
         return self.lastDownload

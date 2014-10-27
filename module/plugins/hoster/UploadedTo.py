@@ -139,6 +139,7 @@ class UploadedTo(Hoster):
                 pyfile.name, pyfile.size = name, size
             else:
                 self.error(_("file info"))
+
         elif api == 'Access denied':
             self.fail(_("API key invalid"))
 
@@ -171,9 +172,9 @@ class UploadedTo(Hoster):
             self.fail(_("Traffic exceeded"))
 
         header = self.load("http://uploaded.net/file/%s" % self.fileID, just_header=True)
-        if "location" in header:
+        if 'location' in header:
             #Direct download
-            print "Direct Download: " + header['location']
+            self.logDebug("Direct download link detected")
             self.download(header['location'])
         else:
             #Indirect download
@@ -182,7 +183,6 @@ class UploadedTo(Hoster):
             if m is None:
                 self.fail(_("Download URL not m. Try to enable direct downloads"))
             url = m.group(1)
-            print "Premium URL: " + url
             self.download(url, post={})
 
 
