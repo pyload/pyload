@@ -188,18 +188,16 @@ class Account(Base):
         :param req: `Request` instance
         :return:
         """
-        return {
-            "validuntil": None, # -1 for unlimited
-            "login": name,
-            #"password": self.accounts[name]['password'], #@XXX: security
-            "options": self.accounts[name]['options'],
-            "valid": self.accounts[name]['valid'],
-            "trafficleft": None, # in kb, -1 for unlimited
-            "maxtraffic": None,
-            "premium": True, #useful for free accounts
-            "timestamp": 0, #time this info was retrieved
-            "type": self.__name__,
-            }
+        return {"validuntil": None,  #: -1 for unlimited
+                "login": name,
+                # "password": self.accounts[name]['password'],  #: commented due security reason
+                "options": self.accounts[name]['options'],
+                "valid": self.accounts[name]['valid'],
+                "trafficleft": None,  #: in kb, -1 for unlimited
+                "maxtraffic": None,
+                "premium": False,
+                "timestamp": 0,  #: time this info was retrieved
+                "type": self.__name__}
 
 
     def getAllAccounts(self, force=False):

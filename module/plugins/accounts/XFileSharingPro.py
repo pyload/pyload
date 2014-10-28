@@ -8,7 +8,7 @@ from module.plugins.internal.XFSPAccount import XFSPAccount
 class XFileSharingPro(XFSPAccount):
     __name__    = "XFileSharingPro"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """XFileSharingPro multi-purpose account plugin"""
     __license__     = "GPLv3"
@@ -19,10 +19,7 @@ class XFileSharingPro(XFSPAccount):
 
 
     def loadAccountInfo(self, user, req):
-        if self.HOSTER_NAME:
-            return super(XFileSharingPro, self).loadAccountInfo(user, req)
-        else:
-            return {'validuntil': None, 'trafficleft': None, 'premium': None}
+        return super(XFileSharingPro if self.HOSTER_NAME else XFSPAccount, self).loadAccountInfo(user, req)
 
 
     def login(self, user, data, req):

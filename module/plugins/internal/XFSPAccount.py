@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSPAccount(Account):
     __name__    = "XFSPAccount"
     __type__    = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __description__ = """XFileSharingPro account plugin"""
     __license__     = "GPLv3"
@@ -27,7 +27,7 @@ class XFSPAccount(Account):
         example: HOSTER_URL = r'linestorage.com'
 
       PREMIUM_PATTERN: (optional) Checks if the account is premium
-        example: PREMIUM_PATTERN = r'>Renew premium<'
+        example: PREMIUM_PATTERN = r'>Renew premium'
     """
 
     HOSTER_NAME = None
@@ -74,7 +74,6 @@ class XFSPAccount(Account):
             else:
                 if validuntil > mktime(gmtime()):
                     premium = True
-                    trafficleft = -1
                 else:
                     if premium is False:  #: registered account type (not premium)
                         validuntil = -1
