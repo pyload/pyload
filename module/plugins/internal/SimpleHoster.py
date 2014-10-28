@@ -62,7 +62,7 @@ def parseHtmlForm(attr_str, html, input_names=None):
 
         if isinstance(input_names, dict):
             # check input attributes
-            for key, val in input_names.items():
+            for key, val in input_names.iteritems():
                 if key in inputs:
                     if isinstance(val, basestring) and inputs[key] == val:
                         continue

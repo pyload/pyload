@@ -126,7 +126,7 @@ class MultiHoster(Hook):
         for name in self.core.pluginManager.hosterPlugins.keys():
             pluginMap[name.lower()] = name
 
-        accountList = [name.lower() for name, data in self.core.accountManager.accounts.items() if data]
+        accountList = [name.lower() for name, data in self.core.accountManager.accounts.iteritems() if data]
         excludedList = []
 
         for hoster in self.getHosterCached():
