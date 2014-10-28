@@ -7,14 +7,14 @@ from traceback import print_exc
 from module.network.RequestFactory import getURL
 from module.plugins.Crypter import Crypter
 from module.plugins.Plugin import Fail
-from module.plugins.internal.SimpleHoster import _error, replace_patterns, set_cookies
+from module.plugins.internal.SimpleHoster import _error, _wait, replace_patterns, set_cookies
 from module.utils import fixup, html_unescape
 
 
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = None
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -162,6 +162,11 @@ class SimpleCrypter(Crypter):
         for p in xrange(2, pages + 1):
             self.html = self.loadPage(p)
             self.package_links += self.getLinks()
+
+
+    #@TODO: Remove in 0.4.10
+    def wait(self, seconds=0, reconnect=None):
+        return _wait(self, seconds, reconnect)
 
 
     def error(self, reason="", type="parse"):
