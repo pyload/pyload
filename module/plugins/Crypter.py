@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.Plugin import Plugin
-from utils import save_path
+from module.utils import save_path
 
 
 class Crypter(Plugin):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.2"
+    __version__ = "0.3"
 
     __pattern__ = None
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -48,7 +48,7 @@ class Crypter(Plugin):
     def generatePackages(self):
         """ generate new packages from self.urls """
 
-        packages = map(lambda name, links: (name, links, None), self.api.generatePackages(self.urls).iteritems())
+        packages = map(lambda name, links: (name, links, None), self.core.api.generatePackages(self.urls).iteritems())
         self.packages.extend(packages)
 
 
@@ -73,12 +73,12 @@ class Crypter(Plugin):
 
             links = map(lambda x: x.decode("utf-8"), links)
 
-            pid = self.api.addPackage(name, links, package_queue)
+            pid = self.core.api.addPackage(name, links, package_queue)
 
             if package_password:
-                self.api.setPackageData(pid, {"password": package_password})
+                self.core.api.setPackageData(pid, {"password": package_password})
 
-            setFolder = lambda x: self.api.setPackageData(pid, {"folder": x or ""})  #: Workaround to not break API addPackage method
+            setFolder = lambda x: self.core.api.setPackageData(pid, {"folder": x or ""})  #: Workaround to not break API addPackage method
 
             if use_subfolder:
                 if not subfolder_per_package:
