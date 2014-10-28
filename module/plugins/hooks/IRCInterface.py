@@ -21,8 +21,7 @@ class IRCInterface(Thread, Hook):
     __type__ = "hook"
     __version__ = "0.11"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("host", "str", "IRC-Server Address", "Enter your server here!"),
+    __config__ = [("host", "str", "IRC-Server Address", "Enter your server here!"),
                   ("port", "int", "IRC-Server Port", 6667),
                   ("ident", "str", "Clients ident", "pyload-irc"),
                   ("realname", "str", "Realname", "pyload-irc"),

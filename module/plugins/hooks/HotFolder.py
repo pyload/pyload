@@ -14,8 +14,7 @@ class HotFolder(Hook):
     __type__ = "hook"
     __version__ = "0.11"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("folder", "str", "Folder to observe", "container"),
+    __config__ = [("folder", "str", "Folder to observe", "container"),
                   ("watch_file", "bool", "Observe link file", False),
                   ("keep", "bool", "Keep added containers", True),
                   ("file", "str", "Link file", "links.txt")]

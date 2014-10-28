@@ -20,7 +20,6 @@ class XFSPHoster(SimpleHoster):
     __version__ = "0.06"
 
     __pattern__ = None
-    __config__  = []
 
     __description__ = """XFileSharingPro hoster plugin"""
     __license__     = "GPLv3"

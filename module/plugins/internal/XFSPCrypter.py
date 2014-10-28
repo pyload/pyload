@@ -9,7 +9,6 @@ class XFSPCrypter(SimpleCrypter):
     __version__ = "0.02"
 
     __pattern__ = None
-    __config__  = []
 
     __description__ = """XFileSharingPro decrypter plugin"""
     __license__     = "GPLv3"

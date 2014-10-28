@@ -9,6 +9,7 @@ class FilebeerInfoFolder(DeadCrypter):
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?filebeer\.info/(\d+~f).*'
+    __config__  = []
 
     __description__ = """Filebeer.info folder decrypter plugin"""
     __license__ = "GPLv3"

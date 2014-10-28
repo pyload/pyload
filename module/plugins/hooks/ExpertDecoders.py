@@ -17,8 +17,7 @@ class ExpertDecoders(Hook):
     __type__ = "hook"
     __version__ = "0.01"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("force", "bool", "Force CT even if client is connected", False),
+    __config__ = [("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Access key", "")]
 
     __description__ = """Send captchas to expertdecoders.com"""

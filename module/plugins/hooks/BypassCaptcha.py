@@ -31,8 +31,7 @@ class BypassCaptcha(Hook):
     __type__ = "hook"
     __version__ = "0.04"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("force", "bool", "Force BC even if client is connected", False),
+    __config__ = [("force", "bool", "Force BC even if client is connected", False),
                   ("passkey", "password", "Passkey", "")]
 
     __description__ = """Send captchas to BypassCaptcha.com"""

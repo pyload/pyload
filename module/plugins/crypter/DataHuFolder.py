@@ -11,6 +11,8 @@ class DataHuFolder(SimpleCrypter):
     __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/dir/\w+'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Data.hu folder decrypter plugin"""
     __license__ = "GPLv3"

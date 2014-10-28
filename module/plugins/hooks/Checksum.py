@@ -42,8 +42,7 @@ class Checksum(Hook):
     __type__ = "hook"
     __version__ = "0.13"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
+    __config__ = [("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
                   ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
                   ("max_tries", "int", "Number of retries", 2),
                   ("retry_action", "fail;nothing", "What to do if all retries fail?", "fail"),

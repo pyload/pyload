@@ -9,8 +9,7 @@ class OverLoadMe(MultiHoster):
     __type__ = "hook"
     __version__ = "0.01"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("https", "bool", "Enable HTTPS", True),
+    __config__ = [("https", "bool", "Enable HTTPS", True),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
                   ("unloadFailing", "bool", "Revert to standard download if download fails", False),

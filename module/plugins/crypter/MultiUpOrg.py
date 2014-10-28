@@ -12,6 +12,8 @@ class MultiUpOrg(SimpleCrypter):
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?multiup\.org/(en|fr)/(?P<TYPE>project|download|miror)/\w+(/\w+)?'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """MultiUp.org crypter plugin"""
     __license__ = "GPLv3"

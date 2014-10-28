@@ -11,8 +11,7 @@ class MultishareCz(MultiHoster):
     __type__ = "hook"
     __version__ = "0.04"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "uloz.to")]
 
     __description__ = """MultiShare.cz hook plugin"""

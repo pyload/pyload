@@ -13,6 +13,8 @@ class TusfilesNetFolder(XFSPCrypter):
     __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Tusfiles.net folder decrypter plugin"""
     __license__ = "GPLv3"

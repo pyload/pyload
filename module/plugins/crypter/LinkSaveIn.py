@@ -19,6 +19,8 @@ class LinkSaveIn(SimpleCrypter):
     __version__ = "2.02"
 
     __pattern__ = r'http://(?:www\.)?linksave\.in/(?P<id>\w+)$'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """LinkSave.in decrypter plugin"""
     __license__ = "GPLv3"

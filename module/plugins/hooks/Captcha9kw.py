@@ -17,8 +17,7 @@ class Captcha9kw(Hook):
     __type__ = "hook"
     __version__ = "0.10"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("force", "bool", "Force CT even if client is connected", True),
+    __config__ = [("force", "bool", "Force CT even if client is connected", True),
                   ("https", "bool", "Enable HTTPS", False),
                   ("confirm", "bool", "Confirm Captcha (Cost +6)", False),
                   ("captchaperhour", "int", "Captcha per hour (max. 9999)", 9999),

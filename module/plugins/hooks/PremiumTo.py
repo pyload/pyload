@@ -9,8 +9,7 @@ class PremiumTo(MultiHoster):
     __type__ = "hook"
     __version__ = "0.04"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """Premium.to hook plugin"""

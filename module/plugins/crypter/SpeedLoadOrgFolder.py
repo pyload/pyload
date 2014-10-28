@@ -9,6 +9,7 @@ class SpeedLoadOrgFolder(DeadCrypter):
     __version__ = "0.3"
 
     __pattern__ = r'http://(?:www\.)?speedload\.org/(\d+~f$|folder/\d+/)'
+    __config__  = []
 
     __description__ = """Speedload decrypter plugin"""
     __license__ = "GPLv3"

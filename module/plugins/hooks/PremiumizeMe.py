@@ -10,8 +10,7 @@ class PremiumizeMe(MultiHoster):
     __type__ = "hook"
     __version__ = "0.12"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]

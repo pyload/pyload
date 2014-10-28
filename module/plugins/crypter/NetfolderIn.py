@@ -11,6 +11,8 @@ class NetfolderIn(SimpleCrypter):
     __version__ = "0.7"
 
     __pattern__ = r'http://(?:www\.)?netfolder\.in/((?P<id1>\w+)/\w+|folder\.php\?folder_id=(?P<id2>\w+))'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """NetFolder.in decrypter plugin"""
     __license__ = "GPLv3"

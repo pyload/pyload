@@ -17,7 +17,8 @@ class SimpleCrypter(Crypter):
     __version__ = "0.20"
 
     __pattern__ = None
-    __config__  = []
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Simple decrypter plugin"""
     __license__     = "GPLv3"

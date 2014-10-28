@@ -10,7 +10,8 @@ class Crypter(Plugin):
     __version__ = "0.2"
 
     __pattern__ = None
-    __config__  = []  #: [("name", "type", "desc", "default")]
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Base decrypter plugin"""
     __license__     = "GPLv3"
@@ -23,9 +24,6 @@ class Crypter(Plugin):
 
         #: List of urls, pyLoad will generate packagenames
         self.urls = []
-
-        self.__config__.extend([("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
-                                ("subfolder_per_package", "bool", "Create a subfolder for each package", True)])
 
         Plugin.__init__(self, pyfile)
 

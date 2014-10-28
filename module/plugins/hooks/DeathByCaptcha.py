@@ -54,8 +54,7 @@ class DeathByCaptcha(Hook):
     __type__ = "hook"
     __version__ = "0.03"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("username", "str", "Username", ""),
+    __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
                   ("force", "bool", "Force DBC even if client is connected", False)]
 

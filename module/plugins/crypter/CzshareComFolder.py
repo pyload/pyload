@@ -10,6 +10,8 @@ class CzshareComFolder(Crypter):
     __version__ = "0.2"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.*'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Czshare.com folder decrypter plugin, now Sdilej.cz"""
     __license__ = "GPLv3"

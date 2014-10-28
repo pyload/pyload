@@ -41,8 +41,7 @@ class CaptchaBrotherhood(Hook):
     __type__ = "hook"
     __version__ = "0.05"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("username", "str", "Username", ""),
+    __config__ = [("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Password", "")]
 

@@ -14,6 +14,8 @@ class DlProtectCom(SimpleCrypter):
     __version__ = "0.01"
 
     __pattern__ = r'http://(?:www\.)?dl-protect\.com/((en|fr)/)?(?P<ID>\w+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Dl-protect.com decrypter plugin"""
     __license__ = "GPLv3"

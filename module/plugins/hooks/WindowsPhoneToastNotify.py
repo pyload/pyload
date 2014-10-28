@@ -11,8 +11,7 @@ class WindowsPhoneToastNotify(Hook):
     __type__ = "hook"
     __version__ = "0.02"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("force", "bool", "Force even if client is connected", False),
+    __config__ = [("force", "bool", "Force even if client is connected", False),
                   ("pushId", "str", "pushId", ""),
                   ("pushUrl", "str", "pushUrl", ""),
                   ("pushTimeout", "int", "Timeout between notifications in seconds", 0)]

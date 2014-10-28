@@ -11,6 +11,8 @@ class SexuriaCom(Crypter):
     __version__ = "0.01"
 
     __pattern__ = r'http://(?:www\.)?sexuria\.com/(v1/)?(Pornos_Kostenlos_.+?_(\d+)\.html|dl_links_\d+_\d+\.html|id=\d+\&part=\d+\&link=\d+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Sexuria.com decrypter plugin"""
     __license__ = "GPLv3"

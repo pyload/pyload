@@ -11,6 +11,8 @@ class FreetexthostCom(SimpleCrypter):
     __version__ = "0.01"
 
     __pattern__ = r'http://(?:www\.)?freetexthost\.com/\w+'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Freetexthost.com decrypter plugin"""
     __license__ = "GPLv3"

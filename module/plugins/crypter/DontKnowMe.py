@@ -13,6 +13,8 @@ class DontKnowMe(Crypter):
     __version__ = "0.1"
 
     __pattern__ = r'http://(?:www\.)?dontknow\.me/at/\?.+$'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """DontKnow.me decrypter plugin"""
     __license__ = "GPLv3"

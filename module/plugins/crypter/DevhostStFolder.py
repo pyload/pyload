@@ -16,6 +16,8 @@ class DevhostStFolder(SimpleCrypter):
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """d-h.st folder decrypter plugin"""
     __license__ = "GPLv3"

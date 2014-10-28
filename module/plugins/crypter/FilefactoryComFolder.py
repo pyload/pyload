@@ -9,6 +9,8 @@ class FilefactoryComFolder(SimpleCrypter):
     __version__ = "0.3"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(?:f|folder)/\w+'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Filefactory.com folder decrypter plugin"""
     __license__ = "GPLv3"

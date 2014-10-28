@@ -15,7 +15,9 @@ class YoutubeBatch(Crypter):
     __version__ = "1.01"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)'
-    __config__ = [("likes", "bool", "Grab user (channel) liked videos", False),
+    __config__ = [("use_subfolder", "bool", "Save package to subfolder", True),
+                  ("subfolder_per_package", "bool", "Create a subfolder for each package", True),
+                  ("likes", "bool", "Grab user (channel) liked videos", False),
                   ("favorites", "bool", "Grab user (channel) favorite videos", False),
                   ("uploads", "bool", "Grab channel unplaylisted videos", True)]
 

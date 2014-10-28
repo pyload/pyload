@@ -11,8 +11,10 @@ class EmbeduploadCom(Crypter):
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.*'
-    __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "embedupload"),
-                  ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
+    __config__ = [("use_subfolder", "bool", "Save package to subfolder", True),
+                  ("subfolder_per_package", "bool", "Create a subfolder for each package", True),
+                  ("preferedHoster", "str", "Prefered hoster list (bar-separated)", "embedupload"),
+                  ("ignoredHoster", "str", "Ignored hoster list (bar-separated)", "")]
 
     __description__ = """EmbedUpload.com decrypter plugin"""
     __license__ = "GPLv3"

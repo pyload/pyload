@@ -35,8 +35,7 @@ class ImageTyperz(Hook):
     __type__ = "hook"
     __version__ = "0.04"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("username", "str", "Username", ""),
+    __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
                   ("force", "bool", "Force IT even if client is connected", False)]
 

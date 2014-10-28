@@ -9,7 +9,6 @@ class DeadCrypter(_Crypter):
     __version__ = "0.02"
 
     __pattern__ = None
-    __config__  = []
 
     __description__ = """ Crypter is no longer available """
     __license__     = "GPLv3"

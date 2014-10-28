@@ -159,8 +159,6 @@ class Plugin(Base):
     def __init__(self, pyfile):
         Base.__init__(self, pyfile.m.core)
 
-        self.__config__.insert(("activated", "bool", "Activated", True))
-
         self.wantReconnect = False
         #: enables simultaneous processing of multiple downloads
         self.multiDL = True

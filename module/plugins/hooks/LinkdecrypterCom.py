@@ -12,8 +12,6 @@ class LinkdecrypterCom(Hook):
     __type__ = "hook"
     __version__ = "0.19"
 
-    __config__ = [("activated", "bool", "Activated", False)]
-
     __description__ = """Linkdecrypter.com hook plugin"""
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]

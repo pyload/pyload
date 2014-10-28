@@ -16,6 +16,8 @@ class NCryptIn(Crypter):
     __version__ = "1.33"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<type>folder|link|frame)-([^/\?]+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """NCrypt.in decrypter plugin"""
     __license__ = "GPLv3"

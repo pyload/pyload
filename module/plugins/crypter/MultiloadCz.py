@@ -10,8 +10,10 @@ class MultiloadCz(Crypter):
     __version__ = "0.4"
 
     __pattern__ = r'http://(?:[^/]*\.)?multiload\.cz/(stahnout|slozka)/.*'
-    __config__ = [("usedHoster", "str", "Prefered hoster list (bar-separated) ", ""),
-                  ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
+    __config__ = [("use_subfolder", "bool", "Save package to subfolder", True),
+                  ("subfolder_per_package", "bool", "Create a subfolder for each package", True),
+                  ("usedHoster", "str", "Prefered hoster list (bar-separated)", ""),
+                  ("ignoredHoster", "str", "Ignored hoster list (bar-separated)", "")]
 
     __description__ = """Multiload.cz decrypter plugin"""
     __license__ = "GPLv3"
