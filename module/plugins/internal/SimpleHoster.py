@@ -14,7 +14,7 @@ from module.utils import fixup, html_unescape, parseFileSize
 
 
 #@TODO: Remove in 0.4.10 and redirect to self.error instead
-def _error(self, reason="", type=""):
+def _error(self, reason, type):
         if not reason and not type:
             type = "unknown"
 
@@ -25,6 +25,13 @@ def _error(self, reason="", type=""):
         if self.core.debug:
             print_exc()
         raise Fail(msg)
+
+
+#@TODO: Remove in 0.4.10
+def _wait(self, seconds, reconnect):
+    if seconds:
+        self.setWait(seconds, reconnect)
+    super(SimpleHoster, self).wait()
 
 
 def replace_patterns(string, ruleslist):
@@ -159,7 +166,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
 
     __pattern__ = None
 
@@ -341,10 +348,8 @@ class SimpleHoster(Hoster):
 
 
     #@TODO: Remove in 0.4.10
-    def wait(self, seconds=False, reconnect=False):
-        if seconds:
-            self.setWait(seconds, reconnect)
-        super(SimpleHoster, self).wait()
+    def wait(self, seconds=0, reconnect=None):
+        return _wait(self, seconds, reconnect)
 
 
     def error(self, reason="", type="parse"):
