@@ -274,19 +274,23 @@ class Plugin(Base):
         return True, 10
 
 
-    def setWait(self, seconds, reconnect=False):
+    def setWait(self, seconds, reconnect=None):
         """Set a specific wait time later used with `wait`
 
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
-        if reconnect:
-            self.wantReconnect = True
-        self.pyfile.waitUntil = time() + int(seconds)
+        if reconnect is not None:
+            self.wantReconnect = bool(reconnect)
+        self.pyfile.waitUntil = time() + int(seconds) + 1
 
 
-    def wait(self):
+    def wait(self, seconds=0, reconnect=None):
         """ waits the time previously set """
+
+        if seconds:
+            self.setWait(seconds, reconnect)
+
         self.waiting = True
         self.pyfile.setStatus("waiting")
 
@@ -331,7 +335,7 @@ class Plugin(Base):
         raise Fail("temp. offline")
 
 
-    def retry(self, max_tries=3, wait_time=1, reason=""):
+    def retry(self, max_tries=5, wait_time=1, reason=""):
         """Retries and begin again from the beginning
 
         :param max_tries: number of maximum retries
@@ -341,9 +345,7 @@ class Plugin(Base):
         if 0 < max_tries <= self.retries:
             self.error(reason or _("Max retries reached"), "retry")
 
-        self.wantReconnect = False
-        self.setWait(wait_time)
-        self.wait()
+        self.wait(wait_time, False)
 
         self.retries += 1
         raise Retry(reason)
