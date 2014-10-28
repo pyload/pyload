@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSPAccount(Account):
     __name__    = "XFSPAccount"
     __type__    = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __description__ = """XFileSharingPro account plugin"""
     __license__     = "GPLv3"
@@ -34,7 +34,7 @@ class XFSPAccount(Account):
 
     COOKIES = [(HOSTER_NAME, "lang", "english")]  #: or list of tuples [(domain, name, value)]
 
-    VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:.*?([^><]+)</(b|div|strong)>'
+    VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:.*?(\d{2} [\w^_]+ \d{4})'
 
     TRAFFIC_LEFT_PATTERN = r'>Traffic available today:.*?<b>\s*(?P<S>[\d.,]+)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
     TRAFFIC_LEFT_UNIT = "MB"  #: used only if no group <U> was found
@@ -70,7 +70,7 @@ class XFSPAccount(Account):
             try:
                 validuntil = mktime(strptime(expiredate, "%d %B %Y"))
             except Exception, e:
-                self.logError(e)
+                self.logError(str(e))
             else:
                 if validuntil > mktime(gmtime()):
                     premium = True
