@@ -159,7 +159,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
 
     __pattern__ = None
 
@@ -348,4 +348,4 @@ class SimpleHoster(Hoster):
 
 
     def error(self, reason="", type="parse"):
-        return _error(reason, type)
+        return _error(self, reason, type)
