@@ -449,7 +449,9 @@ class Plugin(Base):
         if type(url) == unicode:
             url = str(url)  # encode('utf8')
 
-        self.logDebug("Load url", *["%s: %s" % (key, val) for key, val in locals().items()])
+        if self.core.debug:
+            kwargs = locals()
+            self.logDebug("Load url: " + kwargs['url'], *["%s=%s" % (key, val) for key, val in kwargs.iteritems() if key not in ("self", "url")])
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
@@ -509,7 +511,9 @@ class Plugin(Base):
         :return: The location where the file was saved
         """
 
-        self.logDebug("Download url", *["%s: %s" % (key, val) for key, val in locals().items()])
+        if self.core.debug:
+            kwargs = locals()
+            self.logDebug("Download url: " + kwargs['url'], *["%s=%s" % (key, val) for key, val in kwargs.iteritems() if key not in ("self", "url")])
 
         self.checkForSameFiles()
 
