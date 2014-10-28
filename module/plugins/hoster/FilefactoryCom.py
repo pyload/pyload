@@ -47,7 +47,7 @@ class FilefactoryCom(SimpleHoster):
         if "Currently only Premium Members can download files larger than" in self.html:
             self.fail(_("File too large for free download"))
         elif "All free download slots on this server are currently in use" in self.html:
-            self.retry(50, 15 * 60, "All free slots are busy")
+            self.retry(50, 15 * 60, _("All free slots are busy"))
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:

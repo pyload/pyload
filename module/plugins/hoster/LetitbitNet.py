@@ -86,7 +86,7 @@ class LetitbitNet(SimpleHoster):
         m = re.search(self.CAPTCHA_CONTROL_FIELD, self.html)
         recaptcha_control_field = m.group(1)
         self.logDebug("ReCaptcha control field found", recaptcha_control_field)
-        self.wait(seconds + 1)
+        self.wait(seconds)
 
         response = self.load("%s/ajax/download3.php" % domain, post=" ", cookies=True)
         if response != '1':

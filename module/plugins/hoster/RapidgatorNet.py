@@ -104,7 +104,7 @@ class RapidgatorNet(SimpleHoster):
             jsvars.get('startTimerUrl', '/download/AjaxStartTimer'), jsvars['fid'])
         jsvars.update(self.getJsonResponse(url))
 
-        self.wait(int(jsvars.get('secs', 45)) + 1, False)
+        self.wait(int(jsvars.get('secs', 45)), False)
 
         url = "http://rapidgator.net%s?sid=%s" % (
             jsvars.get('getDownloadUrl', '/download/AjaxGetDownload'), jsvars['sid'])

@@ -191,7 +191,7 @@ class UploadedTo(Hoster):
 
         if 'var free_enabled = false;' in self.html:
             self.logError(_("Free-download capacities exhausted"))
-            self.retry(max_tries=24, wait_time=5 * 60)
+            self.retry(24, 5 * 60)
 
         m = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
         if m is None:

@@ -39,7 +39,7 @@ class OneFichierCom(SimpleHoster):
     def handleFree(self):
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            wait_time = int(m.group(1)) + 1  #: One minute more than what the page displays to be safe
+            wait_time = int(m.group(1))
             self.logInfo(_("You have to wait been each free download"), _("Retrying in %d minutes") % wait_time)
             self.wait(wait_time * 60, True)
             self.retry()

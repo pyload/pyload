@@ -60,10 +60,10 @@ class FileSharkPl(SimpleHoster):
             self.fail(_("Only connections from Polish IP are allowed"))
         elif re.match(self.DOWNLOAD_SLOTS_ERROR_PATTERN, alert):
             self.logInfo(_("No free download slots available"))
-            self.retry(10, 30 * 60, "Still no free download slots available")
+            self.retry(10, 30 * 60, _("Still no free download slots available"))
         else:
             self.logInfo(alert)
-            self.retry(10, 10 * 60, "Try again later")
+            self.retry(10, 10 * 60, _("Try again later"))
 
 
     #@NOTE: handlePremium method was never been tested
@@ -124,7 +124,7 @@ class FileSharkPl(SimpleHoster):
 
         elif check == "wrong_captcha":
             self.invalidCaptcha()
-            self.retry(10, 1, reason=_("Wrong captcha solution"))
+            self.retry(10, 1, _("Wrong captcha solution"))
 
         elif check == "wait_pattern":
             self.retry()

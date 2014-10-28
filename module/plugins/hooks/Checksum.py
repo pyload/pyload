@@ -140,7 +140,7 @@ class Checksum(Hook):
             if pyfile.plugin.retries < max_tries:
                 if local_file:
                     remove(local_file)
-                pyfile.plugin.retry(max_tries=max_tries, wait_time=self.getConfig("wait_time"), reason=msg)
+                pyfile.plugin.retry(max_tries, self.getConfig("wait_time"), msg)
             elif retry_action == "nothing":
                 return
         elif check_action == "nothing":

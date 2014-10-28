@@ -191,8 +191,7 @@ class NetloadIn(Hoster):
                     self.logDebug("Wait was 0 setting 30")
                     wait = 30 * 60
                 self.logInfo(_("Waiting between downloads %d seconds") % wait)
-                self.wantReconnect = True
-                self.setWait(wait)
+                self.setWait(wait, True)
                 self.wait()
 
                 return self.download_html()

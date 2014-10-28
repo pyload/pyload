@@ -92,7 +92,7 @@ class StreamcloudEu(XFSPHoster):
                 if not self.premium:
                     m = re.search(self.WAIT_PATTERN, self.html)
                     if m:
-                        wait_time = int(m.group(1)) + 1
+                        wait_time = int(m.group(1))
                         self.setWait(wait_time, False)
                     else:
                         wait_time = 0

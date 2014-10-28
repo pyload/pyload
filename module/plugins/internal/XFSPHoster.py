@@ -229,8 +229,8 @@ class XFSPHoster(SimpleHoster):
             elif 'premium' in self.errmsg and 'require' in self.errmsg:
                 self.fail(_("File can be downloaded by premium users only"))
             elif 'limit' in self.errmsg:
-                self.wantReconnect = True
-                self.retry(25, 1 * 60 * 60, "Download limit exceeded")
+                self.wait(1 * 60 * 60, True)
+                self.retry(25, reason="Download limit exceeded")
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
                 self.retry(reason=_("Link expired"))
             elif 'maintenance' in self.errmsg or 'maintainance' in self.errmsg:
@@ -275,7 +275,7 @@ class XFSPHoster(SimpleHoster):
                 if not self.premium:
                     m = re.search(self.WAIT_PATTERN, self.html)
                     if m:
-                        wait_time = int(m.group(1)) + 1
+                        wait_time = int(m.group(1))
                         self.setWait(wait_time, False)
                     else:
                         wait_time = 0

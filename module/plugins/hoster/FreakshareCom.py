@@ -61,7 +61,7 @@ class FreakshareCom(Hoster):
                 self.invalidCaptcha()
                 self.retry()
             elif check == "downloadserver":
-                self.retry(5, 15 * 60, "No Download server")
+                self.retry(5, 15 * 60, _("No Download server"))
 
 
     def prepare(self):
@@ -141,7 +141,7 @@ class FreakshareCom(Hoster):
 
         timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;', self.html)
         if timestring:
-            return int(timestring.group(1)) + 1  # add 1 sec as tenths of seconds are cut off
+            return int(timestring.group(1))
         else:
             return 60
 

@@ -96,13 +96,13 @@ class OboomCom(Hoster):
                 elif result[1] == "captcha-timeout":
                     self.invalidCaptcha()
                 elif result[1] == "forbidden":
-                    self.retry(5, 15 * 60, "Service unavailable")
+                    self.retry(5, 15 * 60, _("Service unavailable"))
 
             elif result[0] == 403:
                 if result[1] == -1:  # another download is running
                     self.setWait(15 * 60)
                 else:
-                    self.setWait(result[1], reconnect=True)
+                    self.setWait(result[1], True)
                 self.wait()
                 self.retry(5)
         else:

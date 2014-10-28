@@ -42,8 +42,7 @@ class DepositfilesCom(SimpleHoster):
 
         if re.search(r'File is checked, please try again in a minute.', self.html) is not None:
             self.logInfo(_("The file is being checked. Waiting 1 minute"))
-            self.wait(61)
-            self.retry()
+            self.retry(wait_time=60)
 
         wait = re.search(r'html_download_api-limit_interval\">(\d+)</span>', self.html)
         if wait:

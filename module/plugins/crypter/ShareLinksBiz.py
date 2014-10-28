@@ -124,9 +124,7 @@ class ShareLinksBiz(Crypter):
         href = self._resolveCoords(coords, captchaMap)
         if href is None:
             self.invalidCaptcha()
-            self.setWait(5, False)
-            self.wait()
-            self.retry()
+            self.retry(wait_time=5)
         url = self.baseUrl + href
         self.html = self.load(url, decode=True)
 
@@ -156,9 +154,7 @@ class ShareLinksBiz(Crypter):
         if self.captcha:
             if "Your choice was wrong" in self.html:
                 self.invalidCaptcha()
-                self.setWait(5)
-                self.wait()
-                self.retry()
+                self.retry(wait_time=5)
             else:
                 self.correctCaptcha()
 

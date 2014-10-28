@@ -53,7 +53,7 @@ class SimplyPremiumCom(Hoster):
                 self.retry(5, 60, "Reached maximum connctions")
             elif "trafficlimit" in page:
                 self.logWarning(_("Reached daily limit for this host"))
-                self.retry(1, secondsToMidnight(gmt=2), "Daily limit for this host reached")
+                self.retry(wait_time=secondsToMidnight(gmt=2), "Daily limit for this host reached")
             elif "hostererror" in page:
                 self.logWarning(_("Hoster temporarily unavailable, waiting 1 minute and retry"))
                 self.retry(5, 60, "Hoster is temporarily unavailable")

@@ -81,4 +81,4 @@ class OverLoadMe(Hoster):
 
         if check == "error":
             # usual this download can safely be retried
-            self.retry(reason=_("An error occured while generating link."), wait_time=60)
+            self.retry(wait_time=60, reason=_("An error occured while generating link."))

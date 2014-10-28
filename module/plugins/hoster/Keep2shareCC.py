@@ -54,14 +54,14 @@ class Keep2shareCC(SimpleHoster):
                 # string to time convert courtesy of https://stackoverflow.com/questions/10663720
                 ftr = [3600, 60, 1]
                 wait_time = sum([a * b for a, b in zip(ftr, map(int, m.group(1).split(':')))])
-                self.wait(wait_time, reconnect=True)
+                self.wait(wait_time, True)
                 self.retry()
 
             m = re.search(self.MULTIDL_ERROR, self.html)
             if m:
                 # if someone is already downloading on our line, wait 30min and retry
                 self.logDebug("Already downloading, waiting for 30 minutes")
-                self.wait(30 * 60, reconnect=True)
+                self.wait(30 * 60, True)
                 self.retry()
 
             m = re.search(self.LINK_PATTERN, self.html)

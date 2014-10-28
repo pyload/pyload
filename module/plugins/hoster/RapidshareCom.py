@@ -205,8 +205,7 @@ class RapidshareCom(Hoster):
         elif "Filename invalid." in result:
             self.fail(_("Filename reported invalid"))
         elif between_wait:
-            self.setWait(int(between_wait.group(1)))
-            self.wantReconnect = True
+            self.setWait(int(between_wait.group(1)), True)
             self.wait()
         else:
             self.no_download = False

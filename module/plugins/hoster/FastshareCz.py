@@ -38,7 +38,7 @@ class FastshareCz(SimpleHoster):
 
     def handleFree(self):
         if "> 100% of FREE slots are full" in self.html:
-            self.retry(120, 60, "No free slots")
+            self.retry(12, 60, _("No free slots"))
 
         m = re.search(self.FREE_URL_PATTERN, self.html)
         if m:
@@ -56,7 +56,7 @@ class FastshareCz(SimpleHoster):
         })
 
         if check == "paralell_dl":
-            self.retry(6, 10 * 60, "Paralell download")
+            self.retry(6, 10 * 60, _("Paralell download"))
         elif check == "wrong_captcha":
             self.retry(max_tries=5, reason=_("Wrong captcha"))
 

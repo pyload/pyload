@@ -71,7 +71,7 @@ class BezvadataCz(SimpleHoster):
 
         #countdown
         m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.html)
-        wait_time = (int(m.group(1)) * 60 + int(m.group(2)) + 1) if m else 120
+        wait_time = (int(m.group(1)) * 60 + int(m.group(2))) if m else 120
         self.wait(wait_time, False)
 
         self.download(url)

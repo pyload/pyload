@@ -33,8 +33,7 @@ class BayfilesCom(SimpleHoster):
     def handleFree(self):
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            self.wait(int(m.group(1)) * 60)
-            self.retry()
+            self.retry(wait_time=int(m.group(1)) * 60)
 
         # Get download token
         m = re.search(self.VARS_PATTERN, self.html)

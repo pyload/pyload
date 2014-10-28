@@ -29,9 +29,9 @@ class LuckyShareNet(SimpleHoster):
             html = self.load(self.pyfile.url, decode=True)
             m = re.search(r"waitingtime = (\d+);", html)
             if m:
-                waittime = int(m.group(1))
-                self.logDebug("You have to wait %d seconds between free downloads" % waittime)
-                self.retry(wait_time=waittime)
+                seconds = int(m.group(1))
+                self.logDebug("You have to wait %d seconds between free downloads" % seconds)
+                self.retry(wait_time=seconds)
             else:
                 self.error(_("Unable to detect wait time between free downloads"))
         elif 'Hash expired' in rep:
