@@ -9,8 +9,8 @@ from module.plugins.Crypter import Crypter
 
 
 class ShareLinksBiz(Crypter):
-    __name__ = "ShareLinksBiz"
-    __type__ = "crypter"
+    __name__    = "ShareLinksBiz"
+    __type__    = "crypter"
     __version__ = "1.14"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
@@ -18,8 +18,8 @@ class ShareLinksBiz(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Share-Links.biz decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
     def setup(self):

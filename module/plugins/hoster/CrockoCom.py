@@ -7,15 +7,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class CrockoCom(SimpleHoster):
-    __name__ = "CrockoCom"
-    __type__ = "hoster"
+    __name__    = "CrockoCom"
+    __type__    = "hoster"
     __version__ = "0.17"
 
     __pattern__ = r'http://(?:www\.)?(crocko|easy-share)\.com/\w+'
 
     __description__ = """Crocko hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'<span class="fz24">Download:\s*<strong>(?P<N>.*)'

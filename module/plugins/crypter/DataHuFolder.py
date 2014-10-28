@@ -6,8 +6,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class DataHuFolder(SimpleCrypter):
-    __name__ = "DataHuFolder"
-    __type__ = "crypter"
+    __name__    = "DataHuFolder"
+    __type__    = "crypter"
     __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/dir/\w+'
@@ -15,9 +15,9 @@ class DataHuFolder(SimpleCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Data.hu folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("crash", None),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("crash", None),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     LINK_PATTERN = r'<a href=\'(http://data\.hu/get/.+)\' target=\'_blank\'>\1</a>'

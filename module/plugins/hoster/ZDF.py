@@ -9,15 +9,15 @@ from module.plugins.Hoster import Hoster
 
 # Based on zdfm by Roland Beermann (http://github.com/enkore/zdfm/)
 class ZDF(Hoster):
-    __name__ = "ZDF Mediathek"
-    __type__ = "hoster"
+    __name__    = "ZDF Mediathek"
+    __type__    = "hoster"
     __version__ = "0.8"
 
     __pattern__ = r'http://(?:www\.)?zdf\.de/ZDFmediathek/\D*(\d+)\D*'
 
     __description__ = """ZDF.de hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = []
+    __license__     = "GPLv3"
+    __authors__     = []
 
     XML_API = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?id=%i"
 

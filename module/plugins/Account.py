@@ -19,13 +19,13 @@ class Account(Base):
     Just overwrite `login` and cookies will be stored and account becomes accessible in\
     associated hoster plugin. Plugin should also provide `loadAccountInfo`
     """
-    __name__ = "Account"
-    __type__ = "account"
+    __name__    = "Account"
+    __type__    = "account"
     __version__ = "0.3"
 
     __description__ = """Base account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     #: after that time (in minutes) pyload will relogin the account

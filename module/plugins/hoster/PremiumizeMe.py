@@ -5,15 +5,15 @@ from module.plugins.Hoster import Hoster
 
 
 class PremiumizeMe(Hoster):
-    __name__ = "PremiumizeMe"
-    __type__ = "hoster"
+    __name__    = "PremiumizeMe"
+    __type__    = "hoster"
     __version__ = "0.12"
 
     __pattern__ = None  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
 
     __description__ = """Premiumize.me hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def process(self, pyfile):

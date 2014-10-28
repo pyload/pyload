@@ -4,14 +4,14 @@ from module.plugins.Account import Account
 
 
 class ShareonlineBiz(Account):
-    __name__ = "ShareonlineBiz"
-    __type__ = "account"
+    __name__    = "ShareonlineBiz"
+    __type__    = "account"
     __version__ = "0.24"
 
     __description__ = """Share-online.biz account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def getUserAPI(self, user, req):

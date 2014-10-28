@@ -8,15 +8,15 @@ from module.plugins.Hoster import Hoster
 
 
 class XVideosCom(Hoster):
-    __name__ = "XVideos.com"
-    __type__ = "hoster"
+    __name__    = "XVideos.com"
+    __type__    = "hoster"
     __version__ = "0.1"
 
     __pattern__ = r'http://(?:www\.)?xvideos\.com/video(\d+)/.*'
 
     __description__ = """XVideos.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = []
+    __license__     = "GPLv3"
+    __authors__     = []
 
 
     def process(self, pyfile):

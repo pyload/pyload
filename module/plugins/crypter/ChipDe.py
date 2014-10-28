@@ -5,8 +5,8 @@ from module.plugins.Crypter import Crypter
 
 
 class ChipDe(Crypter):
-    __name__ = "ChipDe"
-    __type__ = "crypter"
+    __name__    = "ChipDe"
+    __type__    = "crypter"
     __version__ = "0.1"
 
     __pattern__ = r'http://(?:www\.)?chip\.de/video/.*\.html'
@@ -14,8 +14,8 @@ class ChipDe(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Chip.de decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("4Christopher", "4Christopher@gmx.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("4Christopher", "4Christopher@gmx.de")]
 
 
     def decrypt(self, pyfile):

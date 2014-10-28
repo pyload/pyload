@@ -4,8 +4,8 @@ from module.plugins.internal.XFSPCrypter import XFSPCrypter
 
 
 class RapidfileshareNetFolder(XFSPCrypter):
-    __name__ = "RapidfileshareNetFolder"
-    __type__ = "crypter"
+    __name__    = "RapidfileshareNetFolder"
+    __type__    = "crypter"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?rapidfileshare\.net/users/\w+/\d+/\w+'
@@ -13,8 +13,8 @@ class RapidfileshareNetFolder(XFSPCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Rapidfileshare.net folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("guidobelix", "guidobelix@hotmail.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
     HOSTER_NAME = "rapidfileshare.net"

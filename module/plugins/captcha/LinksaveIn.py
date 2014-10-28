@@ -13,13 +13,13 @@ from module.plugins.captcha.captcha import OCR
 
 
 class LinksaveIn(OCR):
-    __name__ = "LinksaveIn"
-    __type__ = "ocr"
+    __name__    = "LinksaveIn"
+    __type__    = "ocr"
     __version__ = "0.1"
 
     __description__ = """Linksave.in ocr plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):

@@ -4,13 +4,13 @@ from module.plugins.captcha.captcha import OCR
 
 
 class ShareonlineBiz(OCR):
-    __name__ = "ShareonlineBiz"
-    __type__ = "ocr"
+    __name__    = "ShareonlineBiz"
+    __type__    = "ocr"
     __version__ = "0.1"
 
     __description__ = """Shareonline.biz ocr plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def __init__(self):

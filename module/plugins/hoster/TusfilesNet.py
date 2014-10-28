@@ -4,16 +4,16 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class TusfilesNet(XFSPHoster):
-    __name__ = "TusfilesNet"
-    __type__ = "hoster"
+    __name__    = "TusfilesNet"
+    __type__    = "hoster"
     __version__ = "0.06"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
 
     __description__ = """Tusfiles.net hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("guidobelix", "guidobelix@hotmail.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+                       ("guidobelix", "guidobelix@hotmail.it")]
 
 
     HOSTER_NAME = "tusfiles.net"

@@ -5,8 +5,8 @@ from module.utils import uniqify
 
 
 class ImgurComAlbum(SimpleCrypter):
-    __name__ = "ImgurComAlbum"
-    __type__ = "crypter"
+    __name__    = "ImgurComAlbum"
+    __type__    = "crypter"
     __version__ = "0.5"
 
     __pattern__ = r'https?://(?:www\.|m\.)?imgur\.com/(a|gallery|)/?\w{5,7}'
@@ -14,8 +14,8 @@ class ImgurComAlbum(SimpleCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Imgur.com decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("nath_schwarz", "nathan.notwhite@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("nath_schwarz", "nathan.notwhite@gmail.com")]
 
 
     TITLE_PATTERN = r'(.+?) - Imgur'

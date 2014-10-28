@@ -6,15 +6,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class PromptfileCom(SimpleHoster):
-    __name__ = "PromptfileCom"
-    __type__ = "hoster"
+    __name__    = "PromptfileCom"
+    __type__    = "hoster"
     __version__ = "0.12"
 
     __pattern__ = r'https?://(?:www\.)?promptfile\.com/'
 
     __description__ = """Promptfile.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("igel", "igelkun@myopera.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("igel", "igelkun@myopera.com")]
 
 
     FILE_INFO_PATTERN = r'<span style="[^"]*" title="[^"]*">(?P<N>.*?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</span>'

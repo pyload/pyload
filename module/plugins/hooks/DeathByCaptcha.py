@@ -50,8 +50,8 @@ class DeathByCaptchaException(Exception):
 
 
 class DeathByCaptcha(Hook):
-    __name__ = "DeathByCaptcha"
-    __type__ = "hook"
+    __name__    = "DeathByCaptcha"
+    __type__    = "hook"
     __version__ = "0.03"
 
     __config__ = [("username", "str", "Username", ""),
@@ -59,9 +59,9 @@ class DeathByCaptcha(Hook):
                   ("force", "bool", "Force DBC even if client is connected", False)]
 
     __description__ = """Send captchas to DeathByCaptcha.com"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     API_URL = "http://api.dbcapi.me/api/"

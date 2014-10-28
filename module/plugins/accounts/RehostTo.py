@@ -4,13 +4,13 @@ from module.plugins.Account import Account
 
 
 class RehostTo(Account):
-    __name__ = "RehostTo"
-    __type__ = "account"
+    __name__    = "RehostTo"
+    __type__    = "account"
     __version__ = "0.1"
 
     __description__ = """Rehost.to account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def loadAccountInfo(self, user, req):

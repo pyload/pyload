@@ -9,17 +9,17 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DepositfilesCom(SimpleHoster):
-    __name__ = "DepositfilesCom"
-    __type__ = "hoster"
+    __name__    = "DepositfilesCom"
+    __type__    = "hoster"
     __version__ = "0.50"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
 
     __description__ = """Depositfiles.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'<script type="text/javascript">eval\( unescape\(\'(?P<N>.*?)\''

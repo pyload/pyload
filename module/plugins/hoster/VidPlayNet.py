@@ -7,15 +7,15 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class VidPlayNet(XFSPHoster):
-    __name__ = "VidPlayNet"
-    __type__ = "hoster"
+    __name__    = "VidPlayNet"
+    __type__    = "hoster"
     __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?vidplay\.net/\w{12}'
 
     __description__ = """VidPlay.net hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
+    __license__     = "GPLv3"
+    __authors__     = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
 
 
     HOSTER_NAME = "vidplay.net"

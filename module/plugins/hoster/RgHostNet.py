@@ -6,15 +6,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RgHostNet(SimpleHoster):
-    __name__ = "RgHostNet"
-    __type__ = "hoster"
+    __name__    = "RgHostNet"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?rghost\.net/\d+(?:r=\d+)?'
 
     __description__ = """RgHost.net hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("z00nx", "z00nx0@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("z00nx", "z00nx0@gmail.com")]
 
 
     FILE_INFO_PATTERN = r'<h1>\s+(<a[^>]+>)?(?P<N>[^<]+)(</a>)?\s+<small[^>]+>\s+\((?P<S>[^)]+)\)\s+</small>\s+</h1>'

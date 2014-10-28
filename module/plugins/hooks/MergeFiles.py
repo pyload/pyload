@@ -10,15 +10,15 @@ from module.utils import save_join, fs_encode
 
 
 class MergeFiles(Hook):
-    __name__ = "MergeFiles"
-    __type__ = "hook"
+    __name__    = "MergeFiles"
+    __type__    = "hook"
     __version__ = "0.12"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Merges parts splitted with hjsplit"""
-    __license__ = "GPLv3"
-    __authors__ = [("and9000", "me@has-no-mail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("and9000", "me@has-no-mail.com")]
 
 
     BUFFER_SIZE = 4096

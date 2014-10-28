@@ -92,19 +92,19 @@ def getInfo(urls):
 
 
 class UploadedTo(Hoster):
-    __name__ = "UploadedTo"
-    __type__ = "hoster"
+    __name__    = "UploadedTo"
+    __type__    = "hoster"
     __version__ = "0.75"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
     __description__ = """Uploaded.net hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
-                   ("mkaay", "mkaay@mkaay.de"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("netpok", "netpok@gmail.com"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("mkaay", "mkaay@mkaay.de"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("netpok", "netpok@gmail.com"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'

@@ -6,16 +6,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FileStoreTo(SimpleHoster):
-    __name__ = "FileStoreTo"
-    __type__ = "hoster"
+    __name__    = "FileStoreTo"
+    __type__    = "hoster"
     __version__ = "0.01"
 
     __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
 
     __description__ = """FileStore.to hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     FILE_INFO_PATTERN = r'File: <span[^>]*>(?P<N>.+)</span><br />Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'

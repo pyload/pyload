@@ -10,15 +10,15 @@ from module.plugins.Hoster import Hoster
 
 
 class FastixRu(Hoster):
-    __name__ = "FastixRu"
-    __type__ = "hoster"
+    __name__    = "FastixRu"
+    __type__    = "hoster"
     __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>\w{24})'
 
     __description__ = """Fastix hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Massimo Rosamilia", "max@spiritix.eu")]
+    __license__     = "GPLv3"
+    __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
     def getFilename(self, url):

@@ -8,15 +8,15 @@ from module.utils import parseFileSize
 
 
 class GamefrontCom(Hoster):
-    __name__ = "GamefrontCom"
-    __type__ = "hoster"
+    __name__    = "GamefrontCom"
+    __type__    = "hoster"
     __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/\w+'
 
     __description__ = """Gamefront.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("fwannmacher", "felipe@warhammerproject.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("fwannmacher", "felipe@warhammerproject.com")]
 
 
     PATTERN_FILENAME = r'<title>(.*?) | Game Front'

@@ -6,8 +6,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class LinksnappyCom(MultiHoster):
-    __name__ = "LinksnappyCom"
-    __type__ = "hook"
+    __name__    = "LinksnappyCom"
+    __type__    = "hook"
     __version__ = "0.01"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
@@ -16,8 +16,8 @@ class LinksnappyCom(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Linksnappy.com hook plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def getHoster(self):

@@ -4,15 +4,15 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class UptoboxCom(XFSPHoster):
-    __name__ = "UptoboxCom"
-    __type__ = "hoster"
+    __name__    = "UptoboxCom"
+    __type__    = "hoster"
     __version__ = "0.14"
 
     __pattern__ = r'https?://(?:www\.)?uptobox\.com/\w{12}'
 
     __description__ = """Uptobox.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_NAME = "uptobox.com"

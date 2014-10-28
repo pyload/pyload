@@ -11,15 +11,15 @@ from module.utils import parseFileSize
 
 
 class OverLoadMe(Hoster):
-    __name__ = "OverLoadMe"
-    __type__ = "hoster"
+    __name__    = "OverLoadMe"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'https?://.*overload\.me.*'
 
     __description__ = """Over-Load.me hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("marley", "marley@over-load.me")]
+    __license__     = "GPLv3"
+    __authors__     = [("marley", "marley@over-load.me")]
 
 
     def getFilename(self, url):

@@ -42,8 +42,8 @@ def getInfo(urls):
 
 
 class RapidshareCom(Hoster):
-    __name__ = "RapidshareCom"
-    __type__ = "hoster"
+    __name__    = "RapidshareCom"
+    __type__    = "hoster"
     __version__ = "1.39"
 
     __pattern__ = r'https?://(?:www\.)?rapidshare\.com/(?:files/(?P<id>\d+)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))'
@@ -52,10 +52,10 @@ class RapidshareCom(Hoster):
                    "Preferred Server", "None")]
 
     __description__ = """Rapidshare.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
-                   ("RaNaN", "ranan@pyload.org"),
-                   ("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("RaNaN", "ranan@pyload.org"),
+                       ("mkaay", "mkaay@mkaay.de")]
 
 
     def setup(self):

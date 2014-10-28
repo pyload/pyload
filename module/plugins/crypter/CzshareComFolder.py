@@ -5,8 +5,8 @@ from module.plugins.Crypter import Crypter
 
 
 class CzshareComFolder(Crypter):
-    __name__ = "CzshareComFolder"
-    __type__ = "crypter"
+    __name__    = "CzshareComFolder"
+    __type__    = "crypter"
     __version__ = "0.2"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.*'
@@ -14,8 +14,8 @@ class CzshareComFolder(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Czshare.com folder decrypter plugin, now Sdilej.cz"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FOLDER_PATTERN = r'<tr class="subdirectory">\s*<td>\s*<table>(.*?)</table>'

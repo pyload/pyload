@@ -4,13 +4,13 @@ from module.plugins.Account import Account
 
 
 class RapidshareCom(Account):
-    __name__ = "RapidshareCom"
-    __type__ = "account"
+    __name__    = "RapidshareCom"
+    __type__    = "account"
     __version__ = "0.22"
 
     __description__ = """Rapidshare.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def loadAccountInfo(self, user, req):

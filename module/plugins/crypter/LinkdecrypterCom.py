@@ -5,8 +5,8 @@ from module.plugins.Crypter import Crypter
 
 
 class LinkdecrypterCom(Crypter):
-    __name__ = "LinkdecrypterCom"
-    __type__ = "crypter"
+    __name__    = "LinkdecrypterCom"
+    __type__    = "crypter"
     __version__ = "0.27"
 
     __pattern__ = None
@@ -14,9 +14,9 @@ class LinkdecrypterCom(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Linkdecrypter.com"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("flowlee", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("flowlee", None)]
 
 
     TEXTAREA_PATTERN = r'<textarea name="links" wrap="off" readonly="1" class="caja_des">(.+)</textarea>'

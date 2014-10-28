@@ -4,8 +4,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class UploadableChFolder(SimpleCrypter):
-    __name__ = "UploadableChFolder"
-    __type__ = "crypter"
+    __name__    = "UploadableChFolder"
+    __type__    = "crypter"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/list/\w+'
@@ -13,9 +13,9 @@ class UploadableChFolder(SimpleCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """ Uploadable.ch folder decrypter plugin """
-    __license__ = "GPLv3"
-    __authors__ = [("guidobelix", "guidobelix@hotmail.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("guidobelix", "guidobelix@hotmail.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     LINK_PATTERN = r'"(.+?)" class="icon_zipfile">'

@@ -11,18 +11,18 @@ from module.utils import save_join
 
 
 class ExternalScripts(Hook):
-    __name__ = "ExternalScripts"
-    __type__ = "hook"
+    __name__    = "ExternalScripts"
+    __type__    = "hook"
     __version__ = "0.24"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Run external scripts"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de"),
-                   ("RaNaN", "ranan@pyload.org"),
-                   ("spoob", "spoob@pyload.org"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de"),
+                       ("RaNaN", "ranan@pyload.org"),
+                       ("spoob", "spoob@pyload.org"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     event_list = ["archive_extracted", "package_extracted", "all_archives_extracted", "all_archives_processed",

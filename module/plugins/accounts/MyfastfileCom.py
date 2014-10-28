@@ -7,13 +7,13 @@ from module.plugins.Account import Account
 
 
 class MyfastfileCom(Account):
-    __name__ = "MyfastfileCom"
-    __type__ = "account"
+    __name__    = "MyfastfileCom"
+    __type__    = "account"
     __version__ = "0.02"
 
     __description__ = """Myfastfile.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def loadAccountInfo(self, user, req):

@@ -4,15 +4,15 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class BillionuploadsCom(XFSPHoster):
-    __name__ = "BillionuploadsCom"
-    __type__ = "hoster"
+    __name__    = "BillionuploadsCom"
+    __type__    = "hoster"
     __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?billionuploads\.com/\w{12}'
 
     __description__ = """Billionuploads.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_NAME = "billionuploads.com"

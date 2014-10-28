@@ -4,13 +4,13 @@ from module.plugins.internal.XFSPAccount import XFSPAccount
 
 
 class File4safeCom(XFSPAccount):
-    __name__ = "File4safeCom"
-    __type__ = "account"
+    __name__    = "File4safeCom"
+    __type__    = "account"
     __version__ = "0.02"
 
     __description__ = """File4safe.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_NAME = "file4safe.com"

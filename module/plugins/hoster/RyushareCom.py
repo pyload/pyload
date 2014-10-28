@@ -10,17 +10,17 @@ from module.plugins.internal.CaptchaService import SolveMedia
 
 
 class RyushareCom(XFSPHoster):
-    __name__ = "RyushareCom"
-    __type__ = "hoster"
+    __name__    = "RyushareCom"
+    __type__    = "hoster"
     __version__ = "0.19"
 
     __pattern__ = r'http://(?:www\.)?ryushare\.com/\w+'
 
     __description__ = """Ryushare.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it"),
-                   ("quareevo", "quareevo@arcor.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it"),
+                       ("quareevo", "quareevo@arcor.de")]
 
 
     HOSTER_NAME = "ryushare.com"

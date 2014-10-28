@@ -5,8 +5,8 @@ from module.common.json_layer import json_loads
 
 
 class GooGl(Crypter):
-    __name__ = "GooGl"
-    __type__ = "crypter"
+    __name__    = "GooGl"
+    __type__    = "crypter"
     __version__ = "0.01"
 
     __pattern__ = r'https?://(?:www\.)?goo\.gl/\w+'
@@ -14,8 +14,8 @@ class GooGl(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Goo.gl decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     API_URL = "https://www.googleapis.com/urlshortener/v1/url"

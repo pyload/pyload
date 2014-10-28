@@ -20,18 +20,18 @@ def getInfo(urls):
 
 
 class MegaRapidCz(SimpleHoster):
-    __name__ = "MegaRapidCz"
-    __type__ = "hoster"
+    __name__    = "MegaRapidCz"
+    __type__    = "hoster"
     __version__ = "0.54"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
 
     __description__ = """MegaRapid.cz hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("MikyWoW", "mikywow@seznam.cz"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("MikyWoW", "mikywow@seznam.cz"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'<h1[^>]*><span[^>]*>(?:<a[^>]*>)?(?P<N>[^<]+)'

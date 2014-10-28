@@ -4,15 +4,15 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class MovReelCom(XFSPHoster):
-    __name__ = "MovReelCom"
-    __type__ = "hoster"
+    __name__    = "MovReelCom"
+    __type__    = "hoster"
     __version__ = "1.23"
 
     __pattern__ = r'http://(?:www\.)?movreel\.com/\w{12}'
 
     __description__ = """MovReel.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("JorisV83", "jorisv83-pyload@yahoo.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("JorisV83", "jorisv83-pyload@yahoo.com")]
 
 
     HOSTER_NAME = "movreel.com"

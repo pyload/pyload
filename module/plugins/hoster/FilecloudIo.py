@@ -8,16 +8,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilecloudIo(SimpleHoster):
-    __name__ = "FilecloudIo"
-    __type__ = "hoster"
+    __name__    = "FilecloudIo"
+    __type__    = "hoster"
     __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*'
 
     __description__ = """Filecloud.io hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     FILE_SIZE_PATTERN = r'{var __ab1 = (?P<S>\d+);}'

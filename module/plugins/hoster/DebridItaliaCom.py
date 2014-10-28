@@ -6,15 +6,15 @@ from module.plugins.Hoster import Hoster
 
 
 class DebridItaliaCom(Hoster):
-    __name__ = "DebridItaliaCom"
-    __type__ = "hoster"
+    __name__    = "DebridItaliaCom"
+    __type__    = "hoster"
     __version__ = "0.05"
 
     __pattern__ = r'https?://(?:[^/]*\.)?debriditalia\.com'
 
     __description__ = """Debriditalia.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def setup(self):

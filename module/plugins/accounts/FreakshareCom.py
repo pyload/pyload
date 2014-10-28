@@ -7,13 +7,13 @@ from module.plugins.Account import Account
 
 
 class FreakshareCom(Account):
-    __name__ = "FreakshareCom"
-    __type__ = "account"
+    __name__    = "FreakshareCom"
+    __type__    = "account"
     __version__ = "0.1"
 
     __description__ = """Freakshare.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def loadAccountInfo(self, user, req):

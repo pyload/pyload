@@ -6,8 +6,8 @@ from module.plugins.Hook import Hook
 
 
 class XFileSharingPro(Hook):
-    __name__ = "XFileSharingPro"
-    __type__ = "hook"
+    __name__    = "XFileSharingPro"
+    __type__    = "hook"
     __version__ = "0.19"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -20,9 +20,9 @@ class XFileSharingPro(Hook):
                   ("exclude_crypters", "str", "Exclude crypters (comma separated)", "")]
 
     __description__ = """Load hosters and crypter, based upon XFileSharingPro, which don't need a own plugin to work fine"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     event_list = ["pluginConfigChanged"]

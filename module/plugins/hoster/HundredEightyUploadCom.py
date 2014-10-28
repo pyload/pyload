@@ -7,15 +7,15 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class HundredEightyUploadCom(XFSPHoster):
-    __name__ = "HundredEightyUploadCom"
-    __type__ = "hoster"
+    __name__    = "HundredEightyUploadCom"
+    __type__    = "hoster"
     __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?180upload\.com/\w{12}'
 
     __description__ = """180upload.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_NAME = "180upload.com"

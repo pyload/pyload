@@ -16,13 +16,13 @@ from os.path import abspath, join
 
 
 class OCR(object):
-    __name__ = "OCR"
-    __type__ = "ocr"
+    __name__    = "OCR"
+    __type__    = "ocr"
     __version__ = "0.1"
 
     __description__ = """OCR base plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):

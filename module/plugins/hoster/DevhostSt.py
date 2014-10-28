@@ -9,15 +9,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DevhostSt(SimpleHoster):
-    __name__ = "DevhostSt"
-    __type__ = "hoster"
+    __name__    = "DevhostSt"
+    __type__    = "hoster"
     __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/(?!users/)\w{3}'
 
     __description__ = """d-h.st hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     FILE_NAME_PATTERN = r'>Filename:</span> <div title="(?P<N>.+?)"'

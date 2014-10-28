@@ -7,15 +7,15 @@ from module.utils import html_unescape
 
 
 class RarefileNet(XFSPHoster):
-    __name__ = "RarefileNet"
-    __type__ = "hoster"
+    __name__    = "RarefileNet"
+    __type__    = "hoster"
     __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'
 
     __description__ = """Rarefile.net hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_NAME = "rarefile.net"

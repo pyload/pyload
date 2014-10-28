@@ -55,8 +55,8 @@ from module.utils import save_join, fs_encode
 
 
 class ExtractArchive(Hook):
-    __name__ = "ExtractArchive"
-    __type__ = "hook"
+    __name__    = "ExtractArchive"
+    __type__    = "hook"
     __version__ = "0.17"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -72,10 +72,10 @@ class ExtractArchive(Hook):
                   ("renice", "int", "CPU Priority", 0)]
 
     __description__ = """Extract different kind of archives"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "ranan@pyload.org"),
-                   ("AndroKev", None),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "ranan@pyload.org"),
+                       ("AndroKev", None),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     event_list = ["allDownloadsProcessed"]

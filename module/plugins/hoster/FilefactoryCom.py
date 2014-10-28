@@ -20,16 +20,16 @@ def getInfo(urls):
 
 
 class FilefactoryCom(SimpleHoster):
-    __name__ = "FilefactoryCom"
-    __type__ = "hoster"
+    __name__    = "FilefactoryCom"
+    __type__    = "hoster"
     __version__ = "0.52"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
 
     __description__ = """Filefactory.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+) uploaded'

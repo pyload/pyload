@@ -8,8 +8,8 @@ from module.plugins.Crypter import Crypter
 
 
 class FourChanOrg(Crypter):
-    __name__ = "FourChanOrg"
-    __type__ = "crypter"
+    __name__    = "FourChanOrg"
+    __type__    = "crypter"
     __version__ = "0.3"
 
     __pattern__ = r'http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)'
@@ -17,8 +17,8 @@ class FourChanOrg(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """4chan.org folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = []
+    __license__     = "GPLv3"
+    __authors__     = []
 
 
     def decrypt(self, pyfile):

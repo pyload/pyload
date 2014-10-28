@@ -6,8 +6,8 @@ from module.plugins.Crypter import Crypter
 
 
 class LixIn(Crypter):
-    __name__ = "LixIn"
-    __type__ = "crypter"
+    __name__    = "LixIn"
+    __type__    = "crypter"
     __version__ = "0.22"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
@@ -15,8 +15,8 @@ class LixIn(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Lix.in decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org")]
 
 
     CAPTCHA_PATTERN = r'<img src="(?P<image>captcha_img\.php\?.*?)"'

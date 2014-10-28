@@ -13,12 +13,12 @@ class WrongPassword(Exception):
 
 
 class AbtractExtractor:
-    __name__ = "AbtractExtractor"
+    __name__    = "AbtractExtractor"
     __version__ = "0.1"
 
     __description__ = """Abtract extractor plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     @staticmethod

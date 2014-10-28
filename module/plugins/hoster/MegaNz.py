@@ -14,15 +14,15 @@ from module.plugins.Hoster import Hoster
 
 
 class MegaNz(Hoster):
-    __name__ = "MegaNz"
-    __type__ = "hoster"
+    __name__    = "MegaNz"
+    __type__    = "hoster"
     __version__ = "0.15"
 
     __pattern__ = r'https?://(\w+\.)?mega\.co\.nz/#!([\w!-]+)'
 
     __description__ = """Mega.co.nz hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "ranan@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "ranan@pyload.org")]
 
 
     API_URL = "https://g.api.mega.co.nz/cs?id=%d"

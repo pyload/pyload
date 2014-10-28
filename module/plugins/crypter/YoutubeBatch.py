@@ -10,8 +10,8 @@ from module.utils import save_join
 
 
 class YoutubeBatch(Crypter):
-    __name__ = "YoutubeBatch"
-    __type__ = "crypter"
+    __name__    = "YoutubeBatch"
+    __type__    = "crypter"
     __version__ = "1.01"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w-]+)'
@@ -22,8 +22,8 @@ class YoutubeBatch(Crypter):
                   ("uploads", "bool", "Grab channel unplaylisted videos", True)]
 
     __description__ = """Youtube.com channel & playlist decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     API_KEY = "AIzaSyCKnWLNlkX-L4oD1aEzqqhRw1zczeD6_k0"

@@ -5,8 +5,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class RehostTo(MultiHoster):
-    __name__ = "RehostTo"
-    __type__ = "hook"
+    __name__    = "RehostTo"
+    __type__    = "hook"
     __version__ = "0.43"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
@@ -15,8 +15,8 @@ class RehostTo(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Rehost.to hook plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def getHoster(self):

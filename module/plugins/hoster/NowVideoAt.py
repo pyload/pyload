@@ -6,15 +6,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class NowVideoAt(SimpleHoster):
-    __name__ = "NowVideoAt"
-    __type__ = "hoster"
+    __name__    = "NowVideoAt"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?nowvideo\.(at|ch|co|eu|sx)/(video|mobile/#/videos)/(?P<ID>\w+)'
 
     __description__ = """NowVideo.at hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.nowvideo.at/video/\g<ID>')]

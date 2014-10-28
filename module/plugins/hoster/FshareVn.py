@@ -25,15 +25,15 @@ def doubleDecode(m):
 
 
 class FshareVn(SimpleHoster):
-    __name__ = "FshareVn"
-    __type__ = "hoster"
+    __name__    = "FshareVn"
+    __type__    = "hoster"
     __version__ = "0.17"
 
     __pattern__ = r'http://(?:www\.)?fshare\.vn/file/.*'
 
     __description__ = """FshareVn hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_INFO_PATTERN = r'<p>(?P<N>[^<]+)<\\/p>[\\trn\s]*<p>(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)<\\/p>'

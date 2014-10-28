@@ -9,13 +9,13 @@ from module.plugins.Account import Account
 
 
 class OboomCom(Account):
-    __name__ = "OboomCom"
-    __type__ = "account"
+    __name__    = "OboomCom"
+    __type__    = "account"
     __version__ = "0.2"
 
     __description__ = """Oboom.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stanley", "stanley.foerster@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("stanley", "stanley.foerster@gmail.com")]
 
 
     def loadAccountData(self, user, req):

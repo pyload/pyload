@@ -11,15 +11,15 @@ from module.utils import html_unescape, remove_chars
 
 
 class BasePlugin(Hoster):
-    __name__ = "BasePlugin"
-    __type__ = "hoster"
+    __name__    = "BasePlugin"
+    __type__    = "hoster"
     __version__ = "0.20"
 
     __pattern__ = r'^unmatchable$'
 
     __description__ = """Base Plugin when any other didnt fit"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def setup(self):
@@ -35,7 +35,7 @@ class BasePlugin(Hoster):
             self.multiDL = False
             return
 
-        # self.__name__ = "NetloadIn"
+        # self.__name__    = "NetloadIn"
         # pyfile.name = "test"
         # self.html = self.load("http://localhost:9000/short")
         # self.download("http://localhost:9000/short")

@@ -6,8 +6,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class RPNetBiz(MultiHoster):
-    __name__ = "RPNetBiz"
-    __type__ = "hook"
+    __name__    = "RPNetBiz"
+    __type__    = "hook"
     __version__ = "0.1"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
@@ -16,8 +16,8 @@ class RPNetBiz(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """RPNet.biz hook plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Dman", "dmanugm@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 
     def getHoster(self):

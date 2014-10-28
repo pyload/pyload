@@ -35,8 +35,8 @@ def which(program):
 
 
 class YoutubeCom(Hoster):
-    __name__ = "YoutubeCom"
-    __type__ = "hoster"
+    __name__    = "YoutubeCom"
+    __type__    = "hoster"
     __version__ = "0.40"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtube\.com|youtu\.be)/watch.*?[?&]v=.*'
@@ -49,9 +49,9 @@ class YoutubeCom(Hoster):
                   ("3d", "bool", "Prefer 3D", False)]
 
     __description__ = """Youtube.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]

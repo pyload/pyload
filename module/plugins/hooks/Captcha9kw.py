@@ -13,8 +13,8 @@ from module.plugins.Hook import Hook
 
 
 class Captcha9kw(Hook):
-    __name__ = "Captcha9kw"
-    __type__ = "hook"
+    __name__    = "Captcha9kw"
+    __type__    = "hook"
     __version__ = "0.10"
 
     __config__ = [("force", "bool", "Force CT even if client is connected", True),
@@ -29,8 +29,8 @@ class Captcha9kw(Hook):
                   ("passkey", "password", "API key", "")]
 
     __description__ = """Send captchas to 9kw.eu"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     API_URL = "://www.9kw.eu/index.cgi"

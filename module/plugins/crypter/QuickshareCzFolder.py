@@ -5,8 +5,8 @@ from module.plugins.Crypter import Crypter
 
 
 class QuickshareCzFolder(Crypter):
-    __name__ = "QuickshareCzFolder"
-    __type__ = "crypter"
+    __name__    = "QuickshareCzFolder"
+    __type__    = "crypter"
     __version__ = "0.1"
 
     __pattern__ = r'http://(?:www\.)?quickshare\.cz/slozka-\d+.*'
@@ -14,8 +14,8 @@ class QuickshareCzFolder(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Quickshare.cz folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FOLDER_PATTERN = r'<textarea[^>]*>(.*?)</textarea>'

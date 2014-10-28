@@ -10,8 +10,8 @@ from module.plugins.Hook import Hook
 
 
 class HotFolder(Hook):
-    __name__ = "HotFolder"
-    __type__ = "hook"
+    __name__    = "HotFolder"
+    __type__    = "hook"
     __version__ = "0.11"
 
     __config__ = [("folder", "str", "Folder to observe", "container"),
@@ -20,8 +20,8 @@ class HotFolder(Hook):
                   ("file", "str", "Link file", "links.txt")]
 
     __description__ = """Observe folder and file for changes and add container and links"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.de")]
 
 
     def setup(self):

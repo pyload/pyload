@@ -5,8 +5,8 @@ from module.plugins.Hook import Hook
 
 
 class DeleteFinished(Hook):
-    __name__ = "DeleteFinished"
-    __type__ = "hook"
+    __name__    = "DeleteFinished"
+    __type__    = "hook"
     __version__ = "1.10"
 
     __config__ = [('activated', 'bool', 'Activated', 'False'),
@@ -14,8 +14,8 @@ class DeleteFinished(Hook):
                   ('deloffline', 'bool', 'Delete packages with offline links', 'False')]
 
     __description__ = """Automatically delete all finished packages from queue"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     event_list = ["pluginConfigChanged"]

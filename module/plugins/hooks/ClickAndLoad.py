@@ -50,17 +50,17 @@ def forward(source, destination):
 
 
 class ClickAndLoad(Hook):
-    __name__ = "ClickAndLoad"
-    __type__ = "hook"
+    __name__    = "ClickAndLoad"
+    __type__    = "hook"
     __version__ = "0.22"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("extern", "bool", "Allow external link adding", False)]
 
     __description__ = """Click'N'Load hook plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.de"),
-                   ("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.de"),
+                       ("mkaay", "mkaay@mkaay.de")]
 
 
     def coreReady(self):

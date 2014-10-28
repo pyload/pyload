@@ -8,8 +8,8 @@ from module.plugins.Crypter import Crypter
 
 
 class DDLMusicOrg(Crypter):
-    __name__ = "DDLMusicOrg"
-    __type__ = "crypter"
+    __name__    = "DDLMusicOrg"
+    __type__    = "crypter"
     __version__ = "0.3"
 
     __pattern__ = r'http://(?:www\.)?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+'
@@ -17,8 +17,8 @@ class DDLMusicOrg(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Ddl-music.org decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def setup(self):

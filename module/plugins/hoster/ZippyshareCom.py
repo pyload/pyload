@@ -9,15 +9,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class ZippyshareCom(SimpleHoster):
-    __name__ = "ZippyshareCom"
-    __type__ = "hoster"
+    __name__    = "ZippyshareCom"
+    __type__    = "hoster"
     __version__ = "0.53"
 
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/v(?:/|iew\.jsp.*key=)(?P<KEY>\d+)'
 
     __description__ = """Zippyshare.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'var \w+ = .+ \+ "/(?P<N>.+)";'

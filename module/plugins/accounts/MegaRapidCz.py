@@ -7,14 +7,14 @@ from module.plugins.Account import Account
 
 
 class MegaRapidCz(Account):
-    __name__ = "MegaRapidCz"
-    __type__ = "account"
+    __name__    = "MegaRapidCz"
+    __type__    = "account"
     __version__ = "0.34"
 
     __description__ = """MegaRapid.cz account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("MikyWoW", "mikywow@seznam.cz"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("MikyWoW", "mikywow@seznam.cz"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     login_timeout = 60

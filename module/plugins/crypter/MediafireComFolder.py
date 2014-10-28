@@ -7,8 +7,8 @@ from module.common.json_layer import json_loads
 
 
 class MediafireComFolder(Crypter):
-    __name__ = "MediafireComFolder"
-    __type__ = "crypter"
+    __name__    = "MediafireComFolder"
+    __type__    = "crypter"
     __version__ = "0.14"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
@@ -16,8 +16,8 @@ class MediafireComFolder(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Mediafire.com folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FOLDER_KEY_PATTERN = r'var afI= \'(\w+)'

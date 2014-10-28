@@ -111,17 +111,17 @@ class AdYouLike:
 
 
 class DlFreeFr(SimpleHoster):
-    __name__ = "DlFreeFr"
-    __type__ = "hoster"
+    __name__    = "DlFreeFr"
+    __type__    = "hoster"
     __version__ = "0.25"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
 
     __description__ = """Dl.free.fr hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("the-razer", "daniel_ AT gmx DOT net"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Toilal", "toilal.dev@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("the-razer", "daniel_ AT gmx DOT net"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Toilal", "toilal.dev@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>'

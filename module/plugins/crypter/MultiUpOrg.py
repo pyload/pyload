@@ -7,8 +7,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class MultiUpOrg(SimpleCrypter):
-    __name__ = "MultiUpOrg"
-    __type__ = "crypter"
+    __name__    = "MultiUpOrg"
+    __type__    = "crypter"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?multiup\.org/(en|fr)/(?P<TYPE>project|download|miror)/\w+(/\w+)?'
@@ -16,8 +16,8 @@ class MultiUpOrg(SimpleCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """MultiUp.org crypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     TITLE_PATTERN = r'<title>.*(?:Project|Projet|ownload|élécharger) (.+?) (?:\(|- )'

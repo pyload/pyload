@@ -6,8 +6,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class PremiumizeMe(MultiHoster):
-    __name__ = "PremiumizeMe"
-    __type__ = "hook"
+    __name__    = "PremiumizeMe"
+    __type__    = "hook"
     __version__ = "0.12"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
@@ -16,8 +16,8 @@ class PremiumizeMe(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Premiumize.me hook plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def getHoster(self):

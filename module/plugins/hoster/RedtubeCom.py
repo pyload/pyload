@@ -7,15 +7,15 @@ from module.unescape import unescape
 
 
 class RedtubeCom(Hoster):
-    __name__ = "RedtubeCom"
-    __type__ = "hoster"
+    __name__    = "RedtubeCom"
+    __type__    = "hoster"
     __version__ = "0.2"
 
     __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'
 
     __description__ = """Redtube.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de")]
 
 
     def process(self, pyfile):

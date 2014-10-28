@@ -4,16 +4,16 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class EasybytezCom(XFSPHoster):
-    __name__ = "EasybytezCom"
-    __type__ = "hoster"
+    __name__    = "EasybytezCom"
+    __type__    = "hoster"
     __version__ = "0.21"
 
     __pattern__ = r'http://(?:www\.)?easybytez\.com/\w{12}'
 
     __description__ = """Easybytez.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_NAME = "easybytez.com"

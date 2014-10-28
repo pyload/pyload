@@ -10,15 +10,15 @@ from module.utils import parseFileSize
 
 
 class CzshareCom(SimpleHoster):
-    __name__ = "CzshareCom"
-    __type__ = "hoster"
+    __name__    = "CzshareCom"
+    __type__    = "hoster"
     __version__ = "0.95"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).*'
 
     __description__ = """CZshare.com hoster plugin, now Sdilej.cz"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'

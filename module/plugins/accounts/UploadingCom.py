@@ -7,13 +7,13 @@ from module.plugins.Account import Account
 
 
 class UploadingCom(Account):
-    __name__ = "UploadingCom"
-    __type__ = "account"
+    __name__    = "UploadingCom"
+    __type__    = "account"
     __version__ = "0.1"
 
     __description__ = """Uploading.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def loadAccountInfo(self, user, req):

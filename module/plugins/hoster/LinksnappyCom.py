@@ -9,15 +9,15 @@ from module.plugins.Hoster import Hoster
 
 
 class LinksnappyCom(Hoster):
-    __name__ = "LinksnappyCom"
-    __type__ = "hoster"
+    __name__    = "LinksnappyCom"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'https?://(?:[^/]*\.)?linksnappy\.com'
 
     __description__ = """Linksnappy.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     SINGLE_CHUNK_HOSTERS = ('easybytez.com')

@@ -7,15 +7,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class YibaishiwuCom(SimpleHoster):
-    __name__ = "YibaishiwuCom"
-    __type__ = "hoster"
+    __name__    = "YibaishiwuCom"
+    __type__    = "hoster"
     __version__ = "0.13"
 
     __pattern__ = r'http://(?:www\.)?(?:u\.)?115\.com/file/(?P<ID>\w+)'
 
     __description__ = """115.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'file_name: \'(?P<N>.+?)\''

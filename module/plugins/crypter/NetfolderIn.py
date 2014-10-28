@@ -6,8 +6,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class NetfolderIn(SimpleCrypter):
-    __name__ = "NetfolderIn"
-    __type__ = "crypter"
+    __name__    = "NetfolderIn"
+    __type__    = "crypter"
     __version__ = "0.7"
 
     __pattern__ = r'http://(?:www\.)?netfolder\.in/((?P<id1>\w+)/\w+|folder\.php\?folder_id=(?P<id2>\w+))'
@@ -15,9 +15,9 @@ class NetfolderIn(SimpleCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """NetFolder.in decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("fragonib", "fragonib[AT]yahoo[DOT]es")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
     TITLE_PATTERN = r'<div class="Text">Inhalt des Ordners <span.*>(.+)</span></div>'

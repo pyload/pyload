@@ -4,8 +4,8 @@ from module.plugins.Crypter import Crypter
 
 
 class XupPl(Crypter):
-    __name__ = "XupPl"
-    __type__ = "crypter"
+    __name__    = "XupPl"
+    __type__    = "crypter"
     __version__ = "0.1"
 
     __pattern__ = r'https?://(?:[^/]*\.)?xup\.pl/.*'
@@ -13,8 +13,8 @@ class XupPl(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Xup.pl decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("z00nx", "z00nx0@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("z00nx", "z00nx0@gmail.com")]
 
 
     def decrypt(self, pyfile):

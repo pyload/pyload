@@ -5,8 +5,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class RealdebridCom(MultiHoster):
-    __name__ = "RealdebridCom"
-    __type__ = "hook"
+    __name__    = "RealdebridCom"
+    __type__    = "hook"
     __version__ = "0.43"
 
     __config__ = [("https", "bool", "Enable HTTPS", False),
@@ -16,8 +16,8 @@ class RealdebridCom(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Real-Debrid.com hook plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
     def getHoster(self):

@@ -4,8 +4,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class FilefactoryComFolder(SimpleCrypter):
-    __name__ = "FilefactoryComFolder"
-    __type__ = "crypter"
+    __name__    = "FilefactoryComFolder"
+    __type__    = "crypter"
     __version__ = "0.3"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(?:f|folder)/\w+'
@@ -13,8 +13,8 @@ class FilefactoryComFolder(SimpleCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Filefactory.com folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     LINK_PATTERN = r'<td><a href="([^"]+)">'

@@ -7,13 +7,13 @@ from module.common.json_layer import json_loads
 
 
 class BayfilesCom(Account):
-    __name__ = "BayfilesCom"
-    __type__ = "account"
+    __name__    = "BayfilesCom"
+    __type__    = "account"
     __version__ = "0.03"
 
     __description__ = """Bayfiles.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def loadAccountInfo(self, user, req):

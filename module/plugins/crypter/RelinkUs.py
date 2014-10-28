@@ -10,8 +10,8 @@ from module.plugins.Crypter import Crypter
 
 
 class RelinkUs(Crypter):
-    __name__ = "RelinkUs"
-    __type__ = "crypter"
+    __name__    = "RelinkUs"
+    __type__    = "crypter"
     __version__ = "3.1"
 
     __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<id>.+)'
@@ -19,9 +19,9 @@ class RelinkUs(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Relink.us decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
-                   ("AndroKev", "neureither.kevin@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+                       ("AndroKev", "neureither.kevin@gmail.com")]
 
 
     PREFERRED_LINK_SOURCES = ["cnl2", "dlc", "web"]

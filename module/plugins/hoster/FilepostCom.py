@@ -10,15 +10,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilepostCom(SimpleHoster):
-    __name__ = "FilepostCom"
-    __type__ = "hoster"
+    __name__    = "FilepostCom"
+    __type__    = "hoster"
     __version__ = "0.29"
 
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/([^/]+).*'
 
     __description__ = """Filepost.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_INFO_PATTERN = r'<input type="text" id="url" value=\'<a href[^>]*>(?P<N>[^>]+?) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)</a>\' class="inp_text"/>'

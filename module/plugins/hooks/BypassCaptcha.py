@@ -27,18 +27,18 @@ class BypassCaptchaException(Exception):
 
 
 class BypassCaptcha(Hook):
-    __name__ = "BypassCaptcha"
-    __type__ = "hook"
+    __name__    = "BypassCaptcha"
+    __type__    = "hook"
     __version__ = "0.04"
 
     __config__ = [("force", "bool", "Force BC even if client is connected", False),
                   ("passkey", "password", "Passkey", "")]
 
     __description__ = """Send captchas to BypassCaptcha.com"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("Godofdream", "soilfcition@gmail.com"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("Godofdream", "soilfcition@gmail.com"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"

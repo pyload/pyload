@@ -5,14 +5,14 @@ from module.common.json_layer import json_loads
 
 
 class FilecloudIo(Account):
-    __name__ = "FilecloudIo"
-    __type__ = "account"
+    __name__    = "FilecloudIo"
+    __type__    = "account"
     __version__ = "0.02"
 
     __description__ = """FilecloudIo account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     def loadAccountInfo(self, user, req):

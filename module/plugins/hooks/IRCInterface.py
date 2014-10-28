@@ -17,8 +17,8 @@ from module.utils import formatSize
 
 
 class IRCInterface(Thread, Hook):
-    __name__ = "IRCInterface"
-    __type__ = "hook"
+    __name__    = "IRCInterface"
+    __type__    = "hook"
     __version__ = "0.11"
 
     __config__ = [("host", "str", "IRC-Server Address", "Enter your server here!"),
@@ -32,8 +32,8 @@ class IRCInterface(Thread, Hook):
                   ("captcha", "bool", "Send captcha requests", True)]
 
     __description__ = """Connect to irc and let owner perform different tasks"""
-    __license__ = "GPLv3"
-    __authors__ = [("Jeix", "Jeix@hasnomail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Jeix", "Jeix@hasnomail.com")]
 
 
     def __init__(self, core, manager):

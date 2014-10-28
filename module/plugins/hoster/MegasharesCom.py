@@ -8,16 +8,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MegasharesCom(SimpleHoster):
-    __name__ = "MegasharesCom"
-    __type__ = "hoster"
+    __name__    = "MegasharesCom"
+    __type__    = "hoster"
     __version__ = "0.27"
 
     __pattern__ = r'http://(?:www\.)?(d\d{2}\.)?megashares\.com/((index\.php)?\?d\d{2}=|dl/)\w+'
 
     __description__ = """Megashares.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'<h1 class="black xxl"[^>]*title="(?P<N>[^"]+)">'

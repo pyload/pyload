@@ -6,15 +6,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UloziskoSk(SimpleHoster):
-    __name__ = "UloziskoSk"
-    __type__ = "hoster"
+    __name__    = "UloziskoSk"
+    __type__    = "hoster"
     __version__ = "0.24"
 
     __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.*'
 
     __description__ = """Ulozisko.sk hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'<div class="down1">(?P<N>[^<]+)</div>'

@@ -9,17 +9,17 @@ from module.utils import fs_encode
 
 
 class PremiumTo(Hoster):
-    __name__ = "PremiumTo"
-    __type__ = "hoster"
+    __name__    = "PremiumTo"
+    __type__    = "hoster"
     __version__ = "0.10"
 
     __pattern__ = r'https?://(?:www\.)?premium\.to/.*'
 
     __description__ = """Premium.to hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     def setup(self):

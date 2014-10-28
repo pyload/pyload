@@ -5,8 +5,8 @@ from module.plugins.Crypter import Crypter
 
 
 class MultiloadCz(Crypter):
-    __name__ = "MultiloadCz"
-    __type__ = "crypter"
+    __name__    = "MultiloadCz"
+    __type__    = "crypter"
     __version__ = "0.4"
 
     __pattern__ = r'http://(?:[^/]*\.)?multiload\.cz/(stahnout|slozka)/.*'
@@ -16,8 +16,8 @@ class MultiloadCz(Crypter):
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated)", "")]
 
     __description__ = """Multiload.cz decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FOLDER_PATTERN = r'<form action="" method="get"><textarea[^>]*>([^>]*)</textarea></form>'

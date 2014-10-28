@@ -7,16 +7,16 @@ from module.utils import fixup
 
 
 class NowDownloadEu(SimpleHoster):
-    __name__ = "NowDownloadEu"
-    __type__ = "hoster"
+    __name__    = "NowDownloadEu"
+    __type__    = "hoster"
     __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?nowdownload\.(at|ch|co|eu|sx)/(dl/|download\.php\?id=)\w+'
 
     __description__ = """NowDownload.at hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("godofdream", "soilfiction@gmail.com"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("godofdream", "soilfiction@gmail.com"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[\d.,]+) (?P<U>[\w^_]+) </h4>'

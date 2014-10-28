@@ -6,16 +6,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class VeohCom(SimpleHoster):
-    __name__ = "VeohCom"
-    __type__ = "hoster"
+    __name__    = "VeohCom"
+    __type__    = "hoster"
     __version__ = "0.2"
 
     __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
     __config__ = [("quality", "Low;High;Auto", "Quality", "Auto")]
 
     __description__ = """Veoh.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'<meta name="title" content="(?P<N>.*?)"'

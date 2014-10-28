@@ -6,13 +6,13 @@ from module.plugins.internal.XFSPAccount import XFSPAccount
 
 
 class XFileSharingPro(XFSPAccount):
-    __name__ = "XFileSharingPro"
-    __type__ = "account"
+    __name__    = "XFileSharingPro"
+    __type__    = "account"
     __version__ = "0.02"
 
     __description__ = """XFileSharingPro multi-purpose account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_NAME = None

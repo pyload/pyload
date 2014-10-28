@@ -10,8 +10,8 @@ from module.plugins.hooks.IRCInterface import IRCInterface
 
 
 class XMPPInterface(IRCInterface, JabberClient):
-    __name__ = "XMPPInterface"
-    __type__ = "hook"
+    __name__    = "XMPPInterface"
+    __type__    = "hook"
     __version__ = "0.11"
 
     __config__ = [("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),
@@ -23,8 +23,8 @@ class XMPPInterface(IRCInterface, JabberClient):
                   ("captcha", "bool", "Send captcha requests", True)]
 
     __description__ = """Connect to jabber and let owner perform different tasks"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     implements(IMessageHandlersProvider)

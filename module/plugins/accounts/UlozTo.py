@@ -6,14 +6,14 @@ from module.plugins.Account import Account
 
 
 class UlozTo(Account):
-    __name__ = "UlozTo"
-    __type__ = "account"
+    __name__    = "UlozTo"
+    __type__    = "account"
     __version__ = "0.06"
 
     __description__ = """Uloz.to account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("pulpe", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("pulpe", None)]
 
 
     TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a href="/kredit" title="[^"]*?GB = ([\d.]+) MB"'

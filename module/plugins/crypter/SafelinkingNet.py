@@ -12,8 +12,8 @@ from module.plugins.internal.CaptchaService import SolveMedia
 
 
 class SafelinkingNet(Crypter):
-    __name__ = "SafelinkingNet"
-    __type__ = "crypter"
+    __name__    = "SafelinkingNet"
+    __type__    = "crypter"
     __version__ = "0.1"
 
     __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'
@@ -21,8 +21,8 @@ class SafelinkingNet(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Safelinking.net decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("quareevo", "quareevo@arcor.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("quareevo", "quareevo@arcor.de")]
 
 
     SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w.-]+)';"

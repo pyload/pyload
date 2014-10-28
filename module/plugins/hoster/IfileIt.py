@@ -8,15 +8,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class IfileIt(SimpleHoster):
-    __name__ = "IfileIt"
-    __type__ = "hoster"
+    __name__    = "IfileIt"
+    __type__    = "hoster"
     __version__ = "0.28"
 
     __pattern__ = r'^unmatchable$'
 
     __description__ = """Ifile.it"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     LINK_PATTERN = r'</span> If it doesn\'t, <a target="_blank" href="([^"]+)">'

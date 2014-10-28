@@ -6,15 +6,15 @@ from module.plugins.Hook import Hook
 
 
 class MultiHome(Hook):
-    __name__ = "MultiHome"
-    __type__ = "hook"
+    __name__    = "MultiHome"
+    __type__    = "hook"
     __version__ = "0.11"
 
     __config__ = [("interfaces", "str", "Interfaces", "None")]
 
     __description__ = """Ip address changer"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def setup(self):

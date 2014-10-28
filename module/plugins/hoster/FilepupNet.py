@@ -10,16 +10,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilepupNet(SimpleHoster):
-    __name__ = "FilepupNet"
-    __type__ = "hoster"
+    __name__    = "FilepupNet"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?filepup\.net/files/\w+'
 
     __description__ = """Filepup.net hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'>(?P<N>.+?)</h1>'

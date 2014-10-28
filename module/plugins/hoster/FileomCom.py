@@ -7,15 +7,15 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class FileomCom(XFSPHoster):
-    __name__ = "FileomCom"
-    __type__ = "hoster"
+    __name__    = "FileomCom"
+    __type__    = "hoster"
     __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
 
     __description__ = """Fileom.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_NAME = "fileom.com"

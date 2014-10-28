@@ -50,17 +50,17 @@ def getInfo(urls):
 
 
 class NetloadIn(Hoster):
-    __name__ = "NetloadIn"
-    __type__ = "hoster"
+    __name__    = "NetloadIn"
+    __type__    = "hoster"
     __version__ = "0.45"
 
     __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index\.php?id=10&file_id=)'
 
     __description__ = """Netload.in hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
-                   ("RaNaN", "ranan@pyload.org"),
-                   ("Gregy", "gregy@gregy.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("RaNaN", "ranan@pyload.org"),
+                       ("Gregy", "gregy@gregy.cz")]
 
 
     def setup(self):

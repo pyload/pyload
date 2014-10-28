@@ -11,16 +11,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class LoadTo(SimpleHoster):
-    __name__ = "LoadTo"
-    __type__ = "hoster"
+    __name__    = "LoadTo"
+    __type__    = "hoster"
     __version__ = "0.18"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
 
     __description__ = """ Load.to hoster plugin """
-    __license__ = "GPLv3"
-    __authors__ = [("halfman", "Pulpan3@gmail.com"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("halfman", "Pulpan3@gmail.com"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     FILE_NAME_PATTERN = r'<h1>(?P<N>.+)</h1>'

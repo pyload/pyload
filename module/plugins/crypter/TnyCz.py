@@ -6,8 +6,8 @@ import re
 
 
 class TnyCz(SimpleCrypter):
-    __name__ = "TnyCz"
-    __type__ = "crypter"
+    __name__    = "TnyCz"
+    __type__    = "crypter"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?tny\.cz/\w+'
@@ -15,8 +15,8 @@ class TnyCz(SimpleCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Tny.cz decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     TITLE_PATTERN = r'<title>(.+) - .+</title>'

@@ -8,16 +8,16 @@ from module.plugins.Hoster import Hoster
 
 
 class YourfilesTo(Hoster):
-    __name__ = "YourfilesTo"
-    __type__ = "hoster"
+    __name__    = "YourfilesTo"
+    __type__    = "hoster"
     __version__ = "0.21"
 
     __pattern__ = r'(http://)?(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
 
     __description__ = """Youfiles.to hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.de"),
-                   ("skydancer", "skydancer@hasnomail.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de"),
+                       ("skydancer", "skydancer@hasnomail.de")]
 
 
     def process(self, pyfile):

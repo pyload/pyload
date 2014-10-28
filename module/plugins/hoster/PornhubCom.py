@@ -6,15 +6,15 @@ from module.plugins.Hoster import Hoster
 
 
 class PornhubCom(Hoster):
-    __name__ = "PornhubCom"
-    __type__ = "hoster"
+    __name__    = "PornhubCom"
+    __type__    = "hoster"
     __version__ = "0.5"
 
     __pattern__ = r'http://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+'
 
     __description__ = """Pornhub.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de")]
 
 
     def process(self, pyfile):

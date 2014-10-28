@@ -6,8 +6,8 @@ from module.plugins.internal.XFSPCrypter import XFSPCrypter
 
 
 class XFileSharingProFolder(XFSPCrypter):
-    __name__ = "XFileSharingProFolder"
-    __type__ = "crypter"
+    __name__    = "XFileSharingProFolder"
+    __type__    = "crypter"
     __version__ = "0.02"
 
     __pattern__ = r'^unmatchable$'
@@ -15,8 +15,8 @@ class XFileSharingProFolder(XFSPCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """XFileSharingPro dummy folder decrypter plugin for hook"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def init(self):

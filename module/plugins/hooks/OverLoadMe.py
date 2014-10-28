@@ -5,8 +5,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class OverLoadMe(MultiHoster):
-    __name__ = "OverLoadMe"
-    __type__ = "hook"
+    __name__    = "OverLoadMe"
+    __type__    = "hook"
     __version__ = "0.01"
 
     __config__ = [("https", "bool", "Enable HTTPS", True),
@@ -16,8 +16,8 @@ class OverLoadMe(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", 12)]
 
     __description__ = """Over-Load.me hook plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("marley", "marley@over-load.me")]
+    __license__     = "GPLv3"
+    __authors__     = [("marley", "marley@over-load.me")]
 
 
     def getHoster(self):

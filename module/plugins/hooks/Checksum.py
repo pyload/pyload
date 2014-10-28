@@ -38,8 +38,8 @@ def computeChecksum(local_file, algorithm):
 
 
 class Checksum(Hook):
-    __name__ = "Checksum"
-    __type__ = "hook"
+    __name__    = "Checksum"
+    __type__    = "hook"
     __version__ = "0.13"
 
     __config__ = [("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
@@ -49,10 +49,10 @@ class Checksum(Hook):
                   ("wait_time", "int", "Time to wait before each retry (seconds)", 1)]
 
     __description__ = """Verify downloaded file size and checksum"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     methods = {'sfv': 'crc32', 'crc': 'crc32', 'hash': 'md5'}

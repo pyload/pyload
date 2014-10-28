@@ -8,15 +8,15 @@ from module.utils import fs_encode
 
 
 class UnSkipOnFail(Hook):
-    __name__ = "UnSkipOnFail"
-    __type__ = "hook"
+    __name__    = "UnSkipOnFail"
+    __type__    = "hook"
     __version__ = "0.01"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """When a download fails, restart skipped duplicates"""
-    __license__ = "GPLv3"
-    __authors__ = [("hagg", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("hagg", None)]
 
 
     def downloadFailed(self, pyfile):

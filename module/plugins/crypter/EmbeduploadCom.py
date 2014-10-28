@@ -6,8 +6,8 @@ from module.network.HTTPRequest import BadHeader
 
 
 class EmbeduploadCom(Crypter):
-    __name__ = "EmbeduploadCom"
-    __type__ = "crypter"
+    __name__    = "EmbeduploadCom"
+    __type__    = "crypter"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.*'
@@ -17,8 +17,8 @@ class EmbeduploadCom(Crypter):
                   ("ignoredHoster", "str", "Ignored hoster list (bar-separated)", "")]
 
     __description__ = """EmbedUpload.com decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     LINK_PATTERN = r'<div id="([^"]+)"[^>]*>\s*<a href="([^"]+)" target="_blank" (?:class="DownloadNow"|style="color:red")>'

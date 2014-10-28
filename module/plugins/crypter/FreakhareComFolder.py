@@ -6,8 +6,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class FreakhareComFolder(SimpleCrypter):
-    __name__ = "FreakhareComFolder"
-    __type__ = "crypter"
+    __name__    = "FreakhareComFolder"
+    __type__    = "crypter"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'
@@ -15,8 +15,8 @@ class FreakhareComFolder(SimpleCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Freakhare.com folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     LINK_PATTERN = r'<a href="(http://freakshare\.com/files/[^"]+)" target="_blank">'

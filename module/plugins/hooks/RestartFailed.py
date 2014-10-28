@@ -4,15 +4,15 @@ from module.plugins.Hook import Hook
 
 
 class RestartFailed(Hook):
-    __name__ = "RestartFailed"
-    __type__ = "hook"
+    __name__    = "RestartFailed"
+    __type__    = "hook"
     __version__ = "1.55"
 
     __config__ = [("interval", "int", "Check interval in minutes", 90)]
 
     __description__ = """Periodically restart all failed downloads in queue"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     event_list = ["pluginConfigChanged"]

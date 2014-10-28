@@ -6,8 +6,8 @@ from module.plugins.Hoster import Hoster
 
 
 class VeehdCom(Hoster):
-    __name__ = "VeehdCom"
-    __type__ = "hoster"
+    __name__    = "VeehdCom"
+    __type__    = "hoster"
     __version__ = "0.23"
 
     __pattern__ = r'http://veehd\.com/video/\d+_\S+'
@@ -15,8 +15,8 @@ class VeehdCom(Hoster):
                   ("replacement_char", "str", "Filename replacement character", "_")]
 
     __description__ = """Veehd.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("cat", "cat@pyload")]
+    __license__     = "GPLv3"
+    __authors__     = [("cat", "cat@pyload")]
 
 
     def setup(self):

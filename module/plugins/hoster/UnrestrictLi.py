@@ -19,15 +19,15 @@ def secondsToMidnight(gmt=0):
 
 
 class UnrestrictLi(Hoster):
-    __name__ = "UnrestrictLi"
-    __type__ = "hoster"
+    __name__    = "UnrestrictLi"
+    __type__    = "hoster"
     __version__ = "0.12"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(unrestrict|unr)\.li'
 
     __description__ = """Unrestrict.li hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def setup(self):

@@ -7,17 +7,17 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class CatShareNet(SimpleHoster):
-    __name__ = "CatShareNet"
-    __type__ = "hoster"
+    __name__    = "CatShareNet"
+    __type__    = "hoster"
     __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
 
     __description__ = """CatShare.net hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("z00nx", "z00nx0@gmail.com"),
-                   ("prOq", None),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("z00nx", "z00nx0@gmail.com"),
+                       ("prOq", None),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     TEXT_ENCODING = True

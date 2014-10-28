@@ -9,16 +9,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DataHu(SimpleHoster):
-    __name__ = "DataHu"
-    __type__ = "hoster"
+    __name__    = "DataHu"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/get/\w+'
 
     __description__ = """Data.hu hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("crash", None),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("crash", None),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     FILE_INFO_PATTERN = ur'<title>(?P<N>.*) \((?P<S>[^)]+)\) let\xf6lt\xe9se</title>'

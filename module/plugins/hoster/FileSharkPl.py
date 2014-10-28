@@ -8,16 +8,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FileSharkPl(SimpleHoster):
-    __name__ = "FileSharkPl"
-    __type__ = "hoster"
+    __name__    = "FileSharkPl"
+    __type__    = "hoster"
     __version__ = "0.01"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d{6}/\w{5}'
 
     __description__ = """FileShark.pl hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("prOq", None),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("prOq", None),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'<h2 class="name-file">(?P<N>.+)</h2>'

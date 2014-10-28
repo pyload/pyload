@@ -6,15 +6,15 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class XFileSharingPro(XFSPHoster):
-    __name__ = "XFileSharingPro"
-    __type__ = "hoster"
+    __name__    = "XFileSharingPro"
+    __type__    = "hoster"
     __version__ = "0.39"
 
     __pattern__ = r'^unmatchable$'
 
     __description__ = """XFileSharingPro dummy hoster plugin for hook"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_URL_REPLACEMENTS = [(r'/embed-(\w{12}).*', r'/\1')]  #: support embedded files

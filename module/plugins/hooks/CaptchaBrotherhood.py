@@ -37,8 +37,8 @@ class CaptchaBrotherhoodException(Exception):
 
 
 class CaptchaBrotherhood(Hook):
-    __name__ = "CaptchaBrotherhood"
-    __type__ = "hook"
+    __name__    = "CaptchaBrotherhood"
+    __type__    = "hook"
     __version__ = "0.05"
 
     __config__ = [("username", "str", "Username", ""),
@@ -46,9 +46,9 @@ class CaptchaBrotherhood(Hook):
                   ("passkey", "password", "Password", "")]
 
     __description__ = """Send captchas to CaptchaBrotherhood.com"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     API_URL = "http://www.captchabrotherhood.com/"

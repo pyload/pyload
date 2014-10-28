@@ -8,15 +8,15 @@ from module.plugins.Container import Container
 
 
 class RSDF(Container):
-    __name__ = "RSDF"
+    __name__    = "RSDF"
     __version__ = "0.23"
 
     __pattern__ = r'.+\.rsdf'
 
     __description__ = """RSDF container decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("spoob", "spoob@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("spoob", "spoob@pyload.org")]
 
 
     def decrypt(self, pyfile):

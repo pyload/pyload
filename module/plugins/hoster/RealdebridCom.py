@@ -12,15 +12,15 @@ from module.utils import parseFileSize
 
 
 class RealdebridCom(Hoster):
-    __name__ = "RealdebridCom"
-    __type__ = "hoster"
+    __name__    = "RealdebridCom"
+    __type__    = "hoster"
     __version__ = "0.53"
 
     __pattern__ = r'https?://(?:[^/]*\.)?real-debrid\..*'
 
     __description__ = """Real-Debrid.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
     def getFilename(self, url):

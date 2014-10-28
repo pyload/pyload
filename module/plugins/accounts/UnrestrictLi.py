@@ -5,13 +5,13 @@ from module.common.json_layer import json_loads
 
 
 class UnrestrictLi(Account):
-    __name__ = "UnrestrictLi"
-    __type__ = "account"
+    __name__    = "UnrestrictLi"
+    __type__    = "account"
     __version__ = "0.03"
 
     __description__ = """Unrestrict.li account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def loadAccountInfo(self, user, req):

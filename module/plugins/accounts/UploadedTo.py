@@ -7,13 +7,13 @@ from module.plugins.Account import Account
 
 
 class UploadedTo(Account):
-    __name__ = "UploadedTo"
-    __type__ = "account"
+    __name__    = "UploadedTo"
+    __type__    = "account"
     __version__ = "0.26"
 
     __description__ = """Uploaded.to account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def loadAccountInfo(self, user, req):

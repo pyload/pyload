@@ -6,13 +6,13 @@ from module.plugins.Account import Account
 
 
 class MultishareCz(Account):
-    __name__ = "MultishareCz"
-    __type__ = "account"
+    __name__    = "MultishareCz"
+    __type__    = "account"
     __version__ = "0.03"
 
     __description__ = """Multishare.cz account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     TRAFFIC_LEFT_PATTERN = r'<span class="profil-zvyrazneni">Kredit:</span>\s*<strong>(?P<S>[\d.,]+)&nbsp;(?P<U>[\w^_]+)</strong>'

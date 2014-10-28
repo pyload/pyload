@@ -5,14 +5,14 @@ from module.plugins.Account import Account
 
 
 class FastshareCz(Account):
-    __name__ = "FastshareCz"
-    __type__ = "account"
+    __name__    = "FastshareCz"
+    __type__    = "account"
     __version__ = "0.04"
 
     __description__ = """Fastshare.cz account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     CREDIT_PATTERN = r'(?:Kredit|Credit)\s*</td>\s*<td[^>]*>([\w.]+)&nbsp;'

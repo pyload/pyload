@@ -6,12 +6,12 @@ from random import random
 
 
 class CaptchaService:
-    __name__ = "CaptchaService"
+    __name__    = "CaptchaService"
     __version__ = "0.14"
 
     __description__ = """Base captcha service plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN = None
@@ -51,12 +51,12 @@ class CaptchaService:
 
 
 class ReCaptcha(CaptchaService):
-    __name__ = "ReCaptcha"
+    __name__    = "ReCaptcha"
     __version__ = "0.07"
 
     __description__ = """ReCaptcha captcha service plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN = r'recaptcha(/api|\.net)/(challenge|noscript)\?k=(?P<KEY>[\w-]+)'
@@ -110,12 +110,12 @@ class ReCaptcha(CaptchaService):
 
 
 class AdsCaptcha(CaptchaService):
-    __name__ = "AdsCaptcha"
+    __name__    = "AdsCaptcha"
     __version__ = "0.04"
 
     __description__ = """AdsCaptcha captcha service plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     ID_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*CaptchaId=(?P<ID>\d+)'
@@ -172,12 +172,12 @@ class AdsCaptcha(CaptchaService):
 
 
 class SolveMedia(CaptchaService):
-    __name__ = "SolveMedia"
+    __name__    = "SolveMedia"
     __version__ = "0.05"
 
     __description__ = """SolveMedia captcha service plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN = r'api\.solvemedia\.com/papi/challenge\.(no)?script\?k=(?P<KEY>.+?)["\']'

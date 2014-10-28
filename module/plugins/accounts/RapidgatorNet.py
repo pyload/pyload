@@ -5,13 +5,13 @@ from module.common.json_layer import json_loads
 
 
 class RapidgatorNet(Account):
-    __name__ = "RapidgatorNet"
-    __type__ = "account"
+    __name__    = "RapidgatorNet"
+    __type__    = "account"
     __version__ = "0.04"
 
     __description__ = """Rapidgator.net account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     API_URL = 'http://rapidgator.net/api/user'

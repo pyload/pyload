@@ -7,7 +7,7 @@ from module.utils import fs_encode
 
 
 class LinkList(Container):
-    __name__ = "LinkList"
+    __name__    = "LinkList"
     __version__ = "0.12"
 
     __pattern__ = r'.+\.txt'
@@ -15,9 +15,9 @@ class LinkList(Container):
                   ("encoding", "string", "File encoding (default utf-8)", "")]
 
     __description__ = """Read link lists in txt format"""
-    __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
-                   ("jeix", "jeix@hasnomail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("jeix", "jeix@hasnomail.com")]
 
 
     def decrypt(self, pyfile):

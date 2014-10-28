@@ -8,8 +8,8 @@ from module.plugins.internal.XFSPCrypter import XFSPCrypter
 
 
 class TusfilesNetFolder(XFSPCrypter):
-    __name__ = "TusfilesNetFolder"
-    __type__ = "crypter"
+    __name__    = "TusfilesNetFolder"
+    __type__    = "crypter"
     __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
@@ -17,9 +17,9 @@ class TusfilesNetFolder(XFSPCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Tusfiles.net folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_NAME = "tusfiles.net"

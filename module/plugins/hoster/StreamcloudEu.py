@@ -9,15 +9,15 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class StreamcloudEu(XFSPHoster):
-    __name__ = "StreamcloudEu"
-    __type__ = "hoster"
+    __name__    = "StreamcloudEu"
+    __type__    = "hoster"
     __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\w{12}'
 
     __description__ = """Streamcloud.eu hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("seoester", "seoester@googlemail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("seoester", "seoester@googlemail.com")]
 
 
     HOSTER_NAME = "streamcloud.eu"

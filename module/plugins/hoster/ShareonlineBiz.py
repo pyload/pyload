@@ -37,18 +37,18 @@ def getInfo(urls):
 
 
 class ShareonlineBiz(Hoster):
-    __name__ = "ShareonlineBiz"
-    __type__ = "hoster"
+    __name__    = "ShareonlineBiz"
+    __type__    = "hoster"
     __version__ = "0.41"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
 
     __description__ = """Shareonline.biz hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
-                   ("mkaay", "mkaay@mkaay.de"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("mkaay", "mkaay@mkaay.de"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     ERROR_INFO_PATTERN = r'<p class="b">Information:</p>\s*<div>\s*<strong>(.*?)</strong>'

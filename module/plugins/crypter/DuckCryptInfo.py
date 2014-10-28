@@ -8,8 +8,8 @@ from module.plugins.Crypter import Crypter
 
 
 class DuckCryptInfo(Crypter):
-    __name__ = "DuckCryptInfo"
-    __type__ = "crypter"
+    __name__    = "DuckCryptInfo"
+    __type__    = "crypter"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?duckcrypt\.info/(folder|wait|link)/(\w+)/?(\w*)'
@@ -17,8 +17,8 @@ class DuckCryptInfo(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """DuckCrypt.info decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("godofdream", "soilfiction@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("godofdream", "soilfiction@gmail.com")]
 
 
     TIMER_PATTERN = r'<span id="timer">(.*)</span>'

@@ -9,16 +9,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class Keep2shareCC(SimpleHoster):
-    __name__ = "Keep2shareCC"
-    __type__ = "hoster"
+    __name__    = "Keep2shareCC"
+    __type__    = "hoster"
     __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
     __description__ = """Keep2share.cc hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'

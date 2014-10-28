@@ -11,8 +11,8 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class NCryptIn(Crypter):
-    __name__ = "NCryptIn"
-    __type__ = "crypter"
+    __name__    = "NCryptIn"
+    __type__    = "crypter"
     __version__ = "1.33"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<type>folder|link|frame)-([^/\?]+)'
@@ -20,9 +20,9 @@ class NCryptIn(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """NCrypt.in decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     JK_KEY = "jk"

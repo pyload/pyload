@@ -4,14 +4,14 @@ from module.plugins.internal.XFSPAccount import XFSPAccount
 
 
 class RyushareCom(XFSPAccount):
-    __name__ = "RyushareCom"
-    __type__ = "account"
+    __name__    = "RyushareCom"
+    __type__    = "account"
     __version__ = "0.04"
 
     __description__ = """Ryushare.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("trance4us", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("trance4us", None)]
 
 
     HOSTER_NAME = "ryushare.com"

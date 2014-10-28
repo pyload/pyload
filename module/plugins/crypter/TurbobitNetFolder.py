@@ -7,8 +7,8 @@ from module.common.json_layer import json_loads
 
 
 class TurbobitNetFolder(SimpleCrypter):
-    __name__ = "TurbobitNetFolder"
-    __type__ = "crypter"
+    __name__    = "TurbobitNetFolder"
+    __type__    = "crypter"
     __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
@@ -16,9 +16,9 @@ class TurbobitNetFolder(SimpleCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Turbobit.net folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     TITLE_PATTERN = r'src=\'/js/lib/grid/icon/folder.png\'> <span>(.+?)</span>'

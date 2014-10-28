@@ -8,15 +8,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UnibytesCom(SimpleHoster):
-    __name__ = "UnibytesCom"
-    __type__ = "hoster"
+    __name__    = "UnibytesCom"
+    __type__    = "hoster"
     __version__ = "0.1"
 
     __pattern__ = r'http://(?:www\.)?unibytes\.com/[\w .-]{11}B'
 
     __description__ = """UniBytes.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_INFO_PATTERN = r'<span[^>]*?id="fileName"[^>]*>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'

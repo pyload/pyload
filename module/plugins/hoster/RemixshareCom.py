@@ -14,16 +14,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RemixshareCom(SimpleHoster):
-    __name__ = "RemixshareCom"
-    __type__ = "hoster"
+    __name__    = "RemixshareCom"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'https?://remixshare\.com/(download|dl)/\w+'
 
     __description__ = """Remixshare.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_INFO_PATTERN = r'title=\'.+?\'>(?P<N>.+?)</span><span class=\'light2\'>&nbsp;\((?P<S>\d+)&nbsp;(?P<U>[\w^_]+)\)<'

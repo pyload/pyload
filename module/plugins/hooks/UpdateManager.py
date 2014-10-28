@@ -12,8 +12,8 @@ from module.utils import save_join
 
 
 class UpdateManager(Hook):
-    __name__ = "UpdateManager"
-    __type__ = "hook"
+    __name__    = "UpdateManager"
+    __type__    = "hook"
     __version__ = "0.36"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -23,8 +23,8 @@ class UpdateManager(Hook):
                   ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
 
     __description__ = """ Check for updates """
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     event_list = ["pluginConfigChanged"]

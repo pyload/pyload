@@ -7,13 +7,13 @@ from module.plugins.Account import Account
 
 
 class FilerNet(Account):
-    __name__ = "FilerNet"
-    __type__ = "account"
+    __name__    = "FilerNet"
+    __type__    = "account"
     __version__ = "0.02"
 
     __description__ = """Filer.net account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     TOKEN_PATTERN = r'_csrf_token" value="([^"]+)" />'

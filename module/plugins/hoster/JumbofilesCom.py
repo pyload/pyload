@@ -6,15 +6,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class JumbofilesCom(SimpleHoster):
-    __name__ = "JumbofilesCom"
-    __type__ = "hoster"
+    __name__    = "JumbofilesCom"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?jumbofiles\.com/(\w{12}).*'
 
     __description__ = """JumboFiles.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("godofdream", "soilfiction@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("godofdream", "soilfiction@gmail.com")]
 
 
     FILE_INFO_PATTERN = r'<TR><TD>(?P<N>[^<]+?)\s*<small>\((?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'

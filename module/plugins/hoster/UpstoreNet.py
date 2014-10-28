@@ -7,15 +7,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UpstoreNet(SimpleHoster):
-    __name__ = "UpstoreNet"
-    __type__ = "hoster"
+    __name__    = "UpstoreNet"
+    __type__    = "hoster"
     __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?upstore\.net/'
 
     __description__ = """Upstore.Net File Download Hoster"""
-    __license__ = "GPLv3"
-    __authors__ = [("igel", "igelkun@myopera.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("igel", "igelkun@myopera.com")]
 
 
     FILE_INFO_PATTERN = r'<div class="comment">.*?</div>\s*\n<h2 style="margin:0">(?P<N>.*?)</h2>\s*\n<div class="comment">\s*\n\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)'

@@ -11,8 +11,8 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class DevhostStFolder(SimpleCrypter):
-    __name__ = "DevhostStFolder"
-    __type__ = "crypter"
+    __name__    = "DevhostStFolder"
+    __type__    = "crypter"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
@@ -20,9 +20,9 @@ class DevhostStFolder(SimpleCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """d-h.st folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     LINK_PATTERN = r'(?:/> |;">)<a href="(.+?)"(?!>Back to \w+<)'

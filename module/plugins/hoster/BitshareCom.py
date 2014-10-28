@@ -9,16 +9,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class BitshareCom(SimpleHoster):
-    __name__ = "BitshareCom"
-    __type__ = "hoster"
+    __name__    = "BitshareCom"
+    __type__    = "hoster"
     __version__ = "0.51"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>\w+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>\w+))'
 
     __description__ = """Bitshare.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Paul King", None),
-                   ("fragonib", "fragonib[AT]yahoo[DOT]es")]
+    __license__     = "GPLv3"
+    __authors__     = [("Paul King", None),
+                       ("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
     FILE_INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)</h1>'

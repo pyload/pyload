@@ -31,18 +31,18 @@ def checkFile(plugin, urls):
 
 
 class FileserveCom(Hoster):
-    __name__ = "FileserveCom"
-    __type__ = "hoster"
+    __name__    = "FileserveCom"
+    __type__    = "hoster"
     __version__ = "0.52"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*'
 
     __description__ = """Fileserve.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.de"),
-                   ("mkaay", "mkaay@mkaay.de"),
-                   ("Paul King", None),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de"),
+                       ("mkaay", "mkaay@mkaay.de"),
+                       ("Paul King", None),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     URLS = ["http://www.fileserve.com/file/", "http://www.fileserve.com/link-checker.php",

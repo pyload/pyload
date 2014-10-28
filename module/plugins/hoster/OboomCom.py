@@ -11,15 +11,15 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class OboomCom(Hoster):
-    __name__ = "OboomCom"
-    __type__ = "hoster"
+    __name__    = "OboomCom"
+    __type__    = "hoster"
     __version__ = "0.3"
 
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>\w{8})'
 
     __description__ = """oboom.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stanley", "stanley.foerster@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("stanley", "stanley.foerster@gmail.com")]
 
 
     RECAPTCHA_KEY = "6LdqpO0SAAAAAJGHXo63HyalP7H4qlRs_vff0kJX"

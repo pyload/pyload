@@ -8,13 +8,13 @@ from module.plugins.Account import Account
 
 
 class OneFichierCom(Account):
-    __name__ = "OneFichierCom"
-    __type__ = "account"
+    __name__    = "OneFichierCom"
+    __type__    = "account"
     __version__ = "0.1"
 
     __description__ = """1fichier.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Elrick69", "elrick69[AT]rocketmail[DOT]com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Elrick69", "elrick69[AT]rocketmail[DOT]com")]
 
 
     VALID_UNTIL_PATTERN = r'You are a premium user until (?P<d>\d{2})/(?P<m>\d{2})/(?P<y>\d{4})'

@@ -6,13 +6,13 @@ from module.plugins.Account import Account
 
 
 class QuickshareCz(Account):
-    __name__ = "QuickshareCz"
-    __type__ = "account"
+    __name__    = "QuickshareCz"
+    __type__    = "account"
     __version__ = "0.02"
 
     __description__ = """Quickshare.cz account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     TRAFFIC_LEFT_PATTERN = r'Stav kreditu: <strong>(.+?)</strong>'

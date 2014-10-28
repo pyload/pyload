@@ -7,14 +7,14 @@ from module.plugins.Account import Account
 
 
 class NetloadIn(Account):
-    __name__ = "NetloadIn"
-    __type__ = "account"
+    __name__    = "NetloadIn"
+    __type__    = "account"
     __version__ = "0.22"
 
     __description__ = """Netload.in account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("CryNickSystems", "webmaster@pcProfil.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("CryNickSystems", "webmaster@pcProfil.de")]
 
 
     def loadAccountInfo(self, user, req):

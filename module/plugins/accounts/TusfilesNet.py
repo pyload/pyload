@@ -8,13 +8,13 @@ from module.plugins.internal.XFSPAccount import XFSPAccount
 
 
 class TusfilesNet(XFSPAccount):
-    __name__ = "TusfilesNet"
-    __type__ = "account"
+    __name__    = "TusfilesNet"
+    __type__    = "account"
     __version__ = "0.05"
 
     __description__ = """ Tusfile.net account plugin """
-    __license__ = "GPLv3"
-    __authors__ = [("guidobelix", "guidobelix@hotmail.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
     HOSTER_NAME = "tusfiles.net"

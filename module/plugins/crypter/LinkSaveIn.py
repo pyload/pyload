@@ -14,8 +14,8 @@ from module.unescape import unescape
 
 
 class LinkSaveIn(SimpleCrypter):
-    __name__ = "LinkSaveIn"
-    __type__ = "crypter"
+    __name__    = "LinkSaveIn"
+    __type__    = "crypter"
     __version__ = "2.02"
 
     __pattern__ = r'http://(?:www\.)?linksave\.in/(?P<id>\w+)$'
@@ -23,8 +23,8 @@ class LinkSaveIn(SimpleCrypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """LinkSave.in decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
     COOKIES = [(".linksave.in", "Linksave_Language", "english")]

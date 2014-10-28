@@ -6,15 +6,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class SendspaceCom(SimpleHoster):
-    __name__ = "SendspaceCom"
-    __type__ = "hoster"
+    __name__    = "SendspaceCom"
+    __type__    = "hoster"
     __version__ = "0.13"
 
     __pattern__ = r'http://(?:www\.)?sendspace\.com/file/.*'
 
     __description__ = """Sendspace.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'<h2 class="bgray">\s*<(?:b|strong)>(?P<N>[^<]+)</'

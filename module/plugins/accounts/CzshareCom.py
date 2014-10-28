@@ -7,14 +7,14 @@ from module.plugins.Account import Account
 
 
 class CzshareCom(Account):
-    __name__ = "CzshareCom"
-    __type__ = "account"
+    __name__    = "CzshareCom"
+    __type__    = "account"
     __version__ = "0.14"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     CREDIT_LEFT_PATTERN = r'<tr class="active">\s*<td>([\d ,]+) (KiB|MiB|GiB)</td>\s*<td>([^<]*)</td>\s*</tr>'

@@ -7,8 +7,8 @@ from module.plugins.Crypter import Crypter
 
 
 class OneKhDe(Crypter):
-    __name__ = "OneKhDe"
-    __type__ = "crypter"
+    __name__    = "OneKhDe"
+    __type__    = "crypter"
     __version__ = "0.1"
 
     __pattern__ = r'http://(?:www\.)?1kh\.de/f/'
@@ -16,8 +16,8 @@ class OneKhDe(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """1kh.de decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org")]
 
 
     def __init__(self, parent):

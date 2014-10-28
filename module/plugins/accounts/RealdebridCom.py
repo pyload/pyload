@@ -6,13 +6,13 @@ from module.plugins.Account import Account
 
 
 class RealdebridCom(Account):
-    __name__ = "RealdebridCom"
-    __type__ = "account"
+    __name__    = "RealdebridCom"
+    __type__    = "account"
     __version__ = "0.43"
 
     __description__ = """Real-Debrid.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
     def loadAccountInfo(self, user, req):

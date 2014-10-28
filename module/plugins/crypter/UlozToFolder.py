@@ -5,8 +5,8 @@ from module.plugins.Crypter import Crypter
 
 
 class UlozToFolder(Crypter):
-    __name__ = "UlozToFolder"
-    __type__ = "crypter"
+    __name__    = "UlozToFolder"
+    __type__    = "crypter"
     __version__ = "0.2"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(m|soubory)/.*'
@@ -14,8 +14,8 @@ class UlozToFolder(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Uloz.to folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FOLDER_PATTERN = r'<ul class="profile_files">(.*?)</ul>'

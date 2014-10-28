@@ -8,8 +8,8 @@ from module.plugins.Crypter import Crypter
 
 
 class DontKnowMe(Crypter):
-    __name__ = "DontKnowMe"
-    __type__ = "crypter"
+    __name__    = "DontKnowMe"
+    __type__    = "crypter"
     __version__ = "0.1"
 
     __pattern__ = r'http://(?:www\.)?dontknow\.me/at/\?.+$'
@@ -17,8 +17,8 @@ class DontKnowMe(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """DontKnow.me decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("selaux", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("selaux", None)]
 
 
     LINK_PATTERN = r'http://dontknow\.me/at/\?(.+)$'

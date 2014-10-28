@@ -6,8 +6,8 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class VimeoCom(SimpleHoster):
-    __name__ = "VimeoCom"
-    __type__ = "hoster"
+    __name__    = "VimeoCom"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
@@ -15,8 +15,8 @@ class VimeoCom(SimpleHoster):
                   ("original", "bool", "Try to download the original file first", True)]
 
     __description__ = """Vimeo.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     FILE_NAME_PATTERN = r'<title>(?P<N>.+) on Vimeo<'

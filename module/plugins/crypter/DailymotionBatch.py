@@ -10,8 +10,8 @@ from module.utils import save_join
 
 
 class DailymotionBatch(Crypter):
-    __name__ = "DailymotionBatch"
-    __type__ = "crypter"
+    __name__    = "DailymotionBatch"
+    __type__    = "crypter"
     __version__ = "0.01"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
@@ -19,8 +19,8 @@ class DailymotionBatch(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Dailymotion.com channel & playlist decrypter"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def api_response(self, ref, req=None):

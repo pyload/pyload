@@ -15,8 +15,8 @@ from module.utils import save_join
 
 
 class Xdcc(Hoster):
-    __name__ = "Xdcc"
-    __type__ = "hoster"
+    __name__    = "Xdcc"
+    __type__    = "hoster"
     __version__ = "0.32"
 
     __config__ = [("nick", "str", "Nickname", "pyload"),
@@ -24,8 +24,8 @@ class Xdcc(Hoster):
                   ("realname", "str", "Realname", "pyloadreal")]
 
     __description__ = """Download from IRC XDCC bot"""
-    __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.com")]
 
 
     def setup(self):

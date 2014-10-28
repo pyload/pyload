@@ -10,17 +10,17 @@ from module.plugins.Hoster import Hoster
 
 
 class Ftp(Hoster):
-    __name__ = "Ftp"
-    __type__ = "hoster"
+    __name__    = "Ftp"
+    __type__    = "hoster"
     __version__ = "0.43"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 
     __description__ = """Download from ftp directory"""
-    __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.com"),
-                   ("mkaay", "mkaay@mkaay.de"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.com"),
+                       ("mkaay", "mkaay@mkaay.de"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def setup(self):

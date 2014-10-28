@@ -13,14 +13,14 @@ from module.utils import save_join
 
 
 class CCF(Container):
-    __name__ = "CCF"
+    __name__    = "CCF"
     __version__ = "0.2"
 
     __pattern__ = r'.+\.ccf'
 
     __description__ = """CCF container decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Willnix", "Willnix@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("Willnix", "Willnix@pyload.org")]
 
 
     def decrypt(self, pyfile):

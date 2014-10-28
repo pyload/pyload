@@ -6,20 +6,20 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class OneFichierCom(SimpleHoster):
-    __name__ = "OneFichierCom"
-    __type__ = "hoster"
+    __name__    = "OneFichierCom"
+    __type__    = "hoster"
     __version__ = "0.65"
 
     __pattern__ = r'https?://(?P<ID>\w+)\.(?P<HOST>(1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl\.fr)'
 
     __description__ = """1fichier.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
-                   ("the-razer", "daniel_ AT gmx DOT net"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("imclem", None),
-                   ("stickell", "l.stickell@yahoo.it"),
-                   ("Elrick69", "elrick69[AT]rocketmail[DOT]com")]
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+                       ("the-razer", "daniel_ AT gmx DOT net"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("imclem", None),
+                       ("stickell", "l.stickell@yahoo.it"),
+                       ("Elrick69", "elrick69[AT]rocketmail[DOT]com")]
 
 
     FILE_NAME_PATTERN = r'>Filename :</th>\s*<td>(?P<N>.+?)<'

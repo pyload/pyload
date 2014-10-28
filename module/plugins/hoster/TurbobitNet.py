@@ -15,16 +15,16 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 
 
 class TurbobitNet(SimpleHoster):
-    __name__ = "TurbobitNet"
-    __type__ = "hoster"
+    __name__    = "TurbobitNet"
+    __type__    = "hoster"
     __version__ = "0.13"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
 
     __description__ = """ Turbobit.net hoster plugin """
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("prOq", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("prOq", None)]
 
 
     FILE_NAME_PATTERN = r'id="file-title">(?P<N>.+?)<'

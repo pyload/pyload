@@ -4,15 +4,15 @@ from module.plugins.Hoster import Hoster
 
 
 class ZeveraCom(Hoster):
-    __name__ = "ZeveraCom"
-    __type__ = "hoster"
+    __name__    = "ZeveraCom"
+    __type__    = "hoster"
     __version__ = "0.21"
 
     __pattern__ = r'http://(?:www\.)?zevera\.com/.*'
 
     __description__ = """Zevera.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def setup(self):

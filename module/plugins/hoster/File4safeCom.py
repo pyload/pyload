@@ -8,15 +8,15 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 
 
 class File4safeCom(XFSPHoster):
-    __name__ = "File4safeCom"
-    __type__ = "hoster"
+    __name__    = "File4safeCom"
+    __type__    = "hoster"
     __version__ = "0.05"
 
     __pattern__ = r'https?://(?:www\.)?file4safe\.com/\w{12}'
 
     __description__ = """File4safe.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_NAME = "file4safe.com"

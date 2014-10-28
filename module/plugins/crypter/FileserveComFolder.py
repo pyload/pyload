@@ -6,8 +6,8 @@ from module.plugins.Crypter import Crypter
 
 
 class FileserveComFolder(Crypter):
-    __name__ = "FileserveComFolder"
-    __type__ = "crypter"
+    __name__    = "FileserveComFolder"
+    __type__    = "crypter"
     __version__ = "0.11"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/list/\w+'
@@ -15,8 +15,8 @@ class FileserveComFolder(Crypter):
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """FileServe.com folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("fionnc", "fionnc@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("fionnc", "fionnc@gmail.com")]
 
 
     FOLDER_PATTERN = r'<table class="file_list">(.*?)</table>'

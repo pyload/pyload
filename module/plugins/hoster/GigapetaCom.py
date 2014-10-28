@@ -9,15 +9,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class GigapetaCom(SimpleHoster):
-    __name__ = "GigapetaCom"
-    __type__ = "hoster"
+    __name__    = "GigapetaCom"
+    __type__    = "hoster"
     __version__ = "0.01"
 
     __pattern__ = r'http://(?:www\.)?gigapeta\.com/dl/\w+'
 
     __description__ = """GigaPeta.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FILE_NAME_PATTERN = r'<img src=".*" alt="file" />-->\s*(?P<N>.*?)\s*</td>'
