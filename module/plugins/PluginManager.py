@@ -129,7 +129,7 @@ class PluginManager:
                     if pattern:
                         pattern = pattern[0][1]
                     else:
-                        pattern = "^unmachtable$"
+                        pattern = "^unmatchable$"
 
                     plugins[name]['pattern'] = pattern
 
@@ -155,13 +155,8 @@ class PluginManager:
                     else:
                         config = [list(config)]
 
-                    if folder == "hooks":
-                        append = True
-                        for item in config:
-                            if item[0] == "activated": append = False
-
-                        # activated flag missing
-                        if append: config.append(["activated", "bool", "Activated", False])
+                    if folder not in ("accounts", "internal") and not [True for item in config if item[0] == "activated"]:
+                        config.insert(0, ["activated", "bool", "Activated", False if folder == "hooks" else True])
 
                     try:
                         self.core.config.addPluginConfig(name, config, desc)
