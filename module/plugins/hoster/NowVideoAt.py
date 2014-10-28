@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class NowVideoAt(SimpleHoster):
     __name__    = "NowVideoAt"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?nowvideo\.(at|ch|co|eu|sx)/(video|mobile/#/videos)/(?P<ID>\w+)'
 
@@ -23,6 +23,11 @@ class NowVideoAt(SimpleHoster):
     OFFLINE_PATTERN = r'>This file no longer exists'
 
     LINK_PATTERN = r'<source src="(.+?)"'
+
+
+    def setup(self):
+        self.multiDL = True
+        self.resumeDownload = True
 
 
     def handleFree(self):
