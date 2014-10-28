@@ -40,8 +40,6 @@ class IRCInterface(Thread, Hook):
         Thread.__init__(self)
         Hook.__init__(self, core, manager)
         self.setDaemon(True)
-        #   self.sm = core.server_methods
-        self.api = core.api  # todo, only use api
 
 
     def coreReady(self):
@@ -201,7 +199,7 @@ class IRCInterface(Thread, Hook):
 
 
     def event_status(self, args):
-        downloads = self.api.statusDownloads()
+        downloads = self.core.api.statusDownloads()
         if not downloads:
             return ["INFO: There are no active downloads currently."]
 
@@ -227,7 +225,7 @@ class IRCInterface(Thread, Hook):
 
 
     def event_queue(self, args):
-        ps = self.api.getQueueData()
+        ps = self.core.api.getQueueData()
 
         if not ps:
             return ["INFO: There are no packages in queue."]
@@ -240,7 +238,7 @@ class IRCInterface(Thread, Hook):
 
 
     def event_collector(self, args):
-        ps = self.api.getCollectorData()
+        ps = self.core.api.getCollectorData()
         if not ps:
             return ["INFO: No packages in collector!"]
 
@@ -257,7 +255,7 @@ class IRCInterface(Thread, Hook):
 
         info = None
         try:
-            info = self.api.getFileData(int(args[0]))
+            info = self.core.api.getFileData(int(args[0]))
 
         except FileDoesNotExists:
             return ["ERROR: Link doesn't exists."]
@@ -272,7 +270,7 @@ class IRCInterface(Thread, Hook):
         lines = []
         pack = None
         try:
-            pack = self.api.getPackageData(int(args[0]))
+            pack = self.core.api.getPackageData(int(args[0]))
 
         except PackageDoesNotExists:
             return ["ERROR: Package doesn't exists."]
@@ -309,12 +307,12 @@ class IRCInterface(Thread, Hook):
 
 
     def event_start(self, args):
-        self.api.unpauseServer()
+        self.core.api.unpauseServer()
         return ["INFO: Starting downloads."]
 
 
     def event_stop(self, args):
-        self.api.pauseServer()
+        self.core.api.pauseServer()
         return ["INFO: No new downloads will be started."]
 
 
@@ -330,7 +328,7 @@ class IRCInterface(Thread, Hook):
         count_failed = 0
         try:
             id = int(pack)
-            pack = self.api.getPackageData(id)
+            pack = self.core.api.getPackageData(id)
             if not pack:
                 return ["ERROR: Package doesn't exists."]
 
@@ -340,7 +338,7 @@ class IRCInterface(Thread, Hook):
 
         except:
             # create new package
-            id = self.api.addPackage(pack, links, 1)
+            id = self.core.api.addPackage(pack, links, 1)
             return ["INFO: Created new Package %s [#%d] with %d links." % (pack, id, len(links))]
 
 
@@ -349,11 +347,11 @@ class IRCInterface(Thread, Hook):
             return ["ERROR: Use del command like this: del -p|-l <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
 
         if args[0] == "-p":
-            ret = self.api.deletePackages(map(int, args[1:]))
+            ret = self.core.api.deletePackages(map(int, args[1:]))
             return ["INFO: Deleted %d packages!" % len(args[1:])]
 
         elif args[0] == "-l":
-            ret = self.api.delLinks(map(int, args[1:]))
+            ret = self.core.api.delLinks(map(int, args[1:]))
             return ["INFO: Deleted %d links!" % len(args[1:])]
 
         else:
@@ -366,11 +364,11 @@ class IRCInterface(Thread, Hook):
 
         id = int(args[0])
         try:
-            info = self.api.getPackageInfo(id)
+            info = self.core.api.getPackageInfo(id)
         except PackageDoesNotExists:
             return ["ERROR: Package #%d does not exist." % id]
 
-        self.api.pushToQueue(id)
+        self.core.api.pushToQueue(id)
         return ["INFO: Pushed package #%d to queue." % id]
 
 
@@ -379,10 +377,10 @@ class IRCInterface(Thread, Hook):
             return ["ERROR: Pull package from queue like this: pull <package id>."]
 
         id = int(args[0])
-        if not self.api.getPackageData(id):
+        if not self.core.api.getPackageData(id):
             return ["ERROR: Package #%d does not exist." % id]
 
-        self.api.pullFromQueue(id)
+        self.core.api.pullFromQueue(id)
         return ["INFO: Pulled package #%d from queue to collector." % id]
 
 

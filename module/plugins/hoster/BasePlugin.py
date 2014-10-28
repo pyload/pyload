@@ -35,17 +35,6 @@ class BasePlugin(Hoster):
             self.multiDL = False
             return
 
-        # self.__name__    = "NetloadIn"
-        # pyfile.name = "test"
-        # self.html = self.load("http://localhost:9000/short")
-        # self.download("http://localhost:9000/short")
-        # self.api = self.load("http://localhost:9000/short")
-        # self.decryptCaptcha("http://localhost:9000/captcha")
-        #
-        # if pyfile.url == "79":
-        #     self.core.api.addPackage("test", [str(i) for i in xrange(80)], 1)
-        #
-        # return
         if pyfile.url.startswith("http"):
 
             try:

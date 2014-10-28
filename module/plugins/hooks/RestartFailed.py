@@ -33,11 +33,10 @@ class RestartFailed(Hook):
 
     def periodical(self):
         self.logInfo(_("Restart failed downloads"))
-        self.api.restartFailed()
+        self.core.api.restartFailed()
 
 
     def setup(self):
-        self.api = self.core.api
         self.interval = self.MIN_INTERVAL
 
 
