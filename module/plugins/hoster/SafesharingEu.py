@@ -6,7 +6,7 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 class SafesharingEu(XFSPHoster):
     __name__ = "SafesharingEu"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:\w+\.)?safesharing.eu/\w+'
 
@@ -29,6 +29,8 @@ class SafesharingEu(XFSPHoster):
 
     RECAPTCHA_KEY_PATTERN = r'<script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge\?k=(.*)"></script>'
     RANDOM_STRING_PATTERN = r'<input type="hidden" name="rand" value="(.*)">'
+
+    ERROR_PATTERN = r'(?:<div class="alert alert-danger">)(.+?)(?:</div>)'
 
 
 getInfo = create_getInfo(SafesharingEu)
