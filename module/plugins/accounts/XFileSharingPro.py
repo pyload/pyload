@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import re
-
 from module.plugins.internal.XFSPAccount import XFSPAccount
 
 
 class XFileSharingPro(XFSPAccount):
     __name__    = "XFileSharingPro"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """XFileSharingPro multi-purpose account plugin"""
     __license__     = "GPLv3"
@@ -16,6 +14,11 @@ class XFileSharingPro(XFSPAccount):
 
 
     HOSTER_NAME = None
+
+
+    def init(self):
+        if self.HOSTER_NAME:
+            return super(XFileSharingPro, self).init()
 
 
     def loadAccountInfo(self, user, req):
