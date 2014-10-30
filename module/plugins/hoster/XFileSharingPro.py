@@ -8,7 +8,7 @@ from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 class XFileSharingPro(XFSPHoster):
     __name__    = "XFileSharingPro"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
     __pattern__ = r'^unmatchable$'
 
@@ -21,6 +21,8 @@ class XFileSharingPro(XFSPHoster):
 
 
     def init(self):
+        self.file_info = {}
+
         self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
         self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
 
@@ -28,13 +30,15 @@ class XFileSharingPro(XFSPHoster):
         account = self.core.accountManager.getAccountPlugin(account_name)
 
         if account and account.canUse():
-            self.user, data = account.selectAccount()
-            self.req = account.getAccountRequest(self.user)
-            self.premium = account.isPremium(self.user)
-
             self.account = account
-        else:
+        elif self.account:
             self.account.HOSTER_NAME = self.HOSTER_NAME
+        else:
+            return
+
+        self.user, data = self.account.selectAccount()
+        self.req = self.account.getAccountRequest(self.user)
+        self.premium = self.account.isPremium(self.user)
 
 
     def setup(self):
