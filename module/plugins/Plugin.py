@@ -180,7 +180,9 @@ class Plugin(Base):
         #: username/login
         self.user = None
 
-        if self.account and not self.account.canUse(): self.account = None
+        if self.account and not self.account.canUse():
+            self.account = None
+
         if self.account:
             self.user, data = self.account.selectAccount()
             #: Browser instance, see `network.Browser`
@@ -446,14 +448,16 @@ class Plugin(Base):
         :param decode: Wether to decode the output according to http header, should be True in most cases
         :return: Loaded content
         """
-        if self.pyfile.abort: raise Abort
+        if self.pyfile.abort:
+            raise Abort
+
+        url = url.strip()
         #utf8 vs decode -> please use decode attribute in all future plugins
         if type(url) == unicode:
             url = str(url)  # encode('utf8')
 
         if self.core.debug:
-            kwargs = locals()
-            self.logDebug("Load url: " + kwargs['url'], *["%s=%s" % (key, val) for key, val in kwargs.iteritems() if key not in ("self", "url")])
+            self.logDebug("Load url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
@@ -512,10 +516,13 @@ class Plugin(Base):
         the filename will be changed if needed
         :return: The location where the file was saved
         """
+        if self.pyfile.abort:
+            raise Abort
+
+        url = url.strip()
 
         if self.core.debug:
-            kwargs = locals()
-            self.logDebug("Download url: " + kwargs['url'], *["%s=%s" % (key, val) for key, val in kwargs.iteritems() if key not in ("self", "url")])
+            self.logDebug("Download url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
 
         self.checkForSameFiles()
 
