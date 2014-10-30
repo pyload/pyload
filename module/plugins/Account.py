@@ -195,7 +195,7 @@ class Account(Base):
                 "valid": self.accounts[name]['valid'],
                 "trafficleft": None,  #: in kb, -1 for unlimited
                 "maxtraffic": None,
-                "premium": False,
+                "premium": None,
                 "timestamp": 0,  #: time this info was retrieved
                 "type": self.__name__}
 
@@ -263,7 +263,7 @@ class Account(Base):
 
 
     def parseTraffic(self, string): #returns kbyte
-        return parseFileSize(string, unit="kb")
+        return parseFileSize(string)
 
 
     def wrongPassword(self):
