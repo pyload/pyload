@@ -166,7 +166,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.45"
 
     __pattern__ = None
 
@@ -233,18 +233,19 @@ class SimpleHoster(Hoster):
         self.req.setOption("timeout", 120)
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.FILE_URL_REPLACEMENTS)
-        self.html = getURL(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
-
-
-    def process(self, pyfile):
-        self.prepare()
 
         if self.CHECK_DIRECT_DOWNLOAD and self.premium:
-            header = self.load(self.pyfile.url, just_header=True)
+            header = self.load(self.pyfile.url, just_header=True, decode=True)
             if 'location' in header:
                 self.logDebug("Direct download link detected")
                 self.download(header['location'], ref=True, cookies=True, disposition=True)
                 return
+
+        self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
+
+
+    def process(self, pyfile):
+        self.prepare()
 
         premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
         if not premium_only:  #: Usually premium only pages doesn't show the file information
@@ -340,11 +341,15 @@ class SimpleHoster(Hoster):
 
     def checkTrafficLeft(self):
         traffic = self.account.getAccountInfo(self.user, True)['trafficleft']
-        if traffic == -1:
+
+        if traffic is None:
+            return False
+        elif traffic == -1:
             return True
-        size = self.pyfile.size / 1024
-        self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size, self.user, traffic))
-        return size <= traffic
+        else:
+            size = self.pyfile.size / 1024
+            self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size, self.user, traffic))
+            return size <= traffic
 
 
     #@TODO: Remove in 0.4.10
