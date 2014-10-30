@@ -4,7 +4,6 @@ import re
 
 from traceback import print_exc
 
-from module.network.RequestFactory import getURL
 from module.plugins.Crypter import Crypter
 from module.plugins.Plugin import Fail
 from module.plugins.internal.SimpleHoster import _error, _wait, replace_patterns, set_cookies
@@ -14,7 +13,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = None
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -94,7 +93,7 @@ class SimpleCrypter(Crypter):
             set_cookies(self.req.cj, self.COOKIES)
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
-        self.html = getURL(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
+        self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
 
 
     def decrypt(self, pyfile):
