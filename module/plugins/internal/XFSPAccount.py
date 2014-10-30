@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSPAccount(Account):
     __name__    = "XFSPAccount"
     __type__    = "account"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __description__ = """XFileSharingPro account plugin"""
     __license__     = "GPLv3"
@@ -34,9 +34,9 @@ class XFSPAccount(Account):
 
     COOKIES = [(HOSTER_NAME, "lang", "english")]  #: or list of tuples [(domain, name, value)]
 
-    VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:.*?(\d{2} [\w^_]+ \d{4})'
+    VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:.*?(\d{1,2} [\w^_]+ \d{4})'
 
-    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:.*?<b>\s*(?P<S>[\d.,]+)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
+    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
     TRAFFIC_LEFT_UNIT = "MB"  #: used only if no group <U> was found
 
     LOGIN_FAIL_PATTERN = r'>(Incorrect Login or Password|Error<)'
@@ -48,6 +48,9 @@ class XFSPAccount(Account):
 
 
     def init(self):
+        # if not self.HOSTER_NAME:
+            # self.fail(_("Missing HOSTER_NAME"))
+
         if not hasattr(self, "HOSTER_URL"):
             self.HOSTER_URL = "http://www.%s/" % self.HOSTER_NAME.replace("www.", "", 1)
 
@@ -79,22 +82,26 @@ class XFSPAccount(Account):
                         validuntil = -1
                     premium = False
 
-        try:
-            traffic = re.search(self.TRAFFIC_LEFT_PATTERN, html).groupdict()
-            if "Unlimited" in traffic['S']:
-                trafficleft = -1
-                if premium is None:
-                    premium = True
-            else:
-                if 'U' in traffic:
-                    unit = traffic['U']
-                elif isinstance(self.TRAFFIC_LEFT_UNIT, basestring):
-                    unit = self.TRAFFIC_LEFT_UNIT
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        if m:
+            try:
+                traffic = m.groupdict()
+                if "nlimited" in traffic['S']:
+                    trafficleft = -1
+                    if premium is None:
+                        premium = True
                 else:
-                    unit = None
-                trafficleft = self.parseTraffic(traffic['S'], unit)
-        except:
-            pass
+                    if 'U' in traffic:
+                        unit = traffic['U']
+                    elif isinstance(self.TRAFFIC_LEFT_UNIT, basestring):
+                        unit = self.TRAFFIC_LEFT_UNIT
+                    else:
+                        unit = ""
+
+                    trafficleft = self.parseTraffic(traffic['S'] + unit)
+
+            except Exception, e:
+                self.logDebug(str(e))
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium or False}
 
