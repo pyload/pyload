@@ -4,10 +4,7 @@ import re
 
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from random import random
-from urllib import unquote
-from urlparse import urlparse
 
-from module.network.RequestFactory import getURL
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
 from module.plugins.internal.SimpleHoster import create_getInfo, replace_patterns, set_cookies, SimpleHoster
 from module.plugins.Plugin import Fail
@@ -17,7 +14,7 @@ from module.utils import html_unescape
 class XFSPHoster(SimpleHoster):
     __name__    = "XFSPHoster"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = None
 
@@ -68,80 +65,47 @@ class XFSPHoster(SimpleHoster):
             pattern = r'(https?://(www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'
             self.LINK_PATTERN = pattern % self.HOSTER_NAME
 
-        if isinstance(self.COOKIES, list):
-            set_cookies(self.req.cj, self.COOKIES)
-
         self.captcha = None
         self.errmsg = None
         self.passwords = self.getPassword().splitlines()
 
-        url = self.pyfile.url = replace_patterns(self.pyfile.url, self.FILE_URL_REPLACEMENTS)
-        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
-
-
-    def process(self, pyfile):
-        self.prepare()
-
-        if not re.match(self.__pattern__, pyfile.url):
-            if self.premium:
-                self.handleOverriden()
-            else:
-                self.fail(_("Only premium users can download from other hosters with %s") % self.HOSTER_NAME)
-        else:
-            try:
-                self.file_info = self.getFileInfo()
-            except Fail:
-                self.file_info = None
-
-            self.location = self.getDirectDownloadLink()
-
-            if not self.file_info:
-                pyfile.name = html_unescape(unquote(urlparse(
-                    self.location if self.location else pyfile.url).path.split("/")[-1]))
-
-            if self.location:
-                self.startDownload(self.location)
-            elif self.premium:
-                self.logDebug("Handle as premium download")
-                self.handlePremium()
-            else:
-                self.logDebug("Handle as free download")
-                self.handleFree()
-
-
-    def getDirectDownloadLink(self):
-        """ Get download link for premium users with direct download enabled """
-        self.req.http.lastURL = self.pyfile.url
-
-        self.req.http.c.setopt(FOLLOWLOCATION, 0)
-        self.html = self.load(self.pyfile.url, decode=True)
-        self.header = self.req.http.header
-        self.req.http.c.setopt(FOLLOWLOCATION, 1)
-
-        location = None
-        m = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
-        if m and re.match(self.LINK_PATTERN, m.group(1)):
-            location = m.group(1).strip()
-
-        return location
+        return super(XFSPHoster, self).prepare()
 
 
     def handleFree(self):
-        url = self.getDownloadLink()
-        self.startDownload(url)
+        link = self.getDownloadLink()
+
+        if link:
+            if self.captcha:
+                self.correctCaptcha()
+
+            self.download(link, ref=True, cookies=True, disposition=True)
+
+        elif self.errmsg and "captcha" in self.errmsg:
+            self.error(_("No valid captcha code entered"))
+
+        else:
+            self.error(_("Download link not found"))
+
+
+    def handlePremium(self):
+        return self.handleFree()
 
 
     def getDownloadLink(self):
         for i in xrange(5):
             self.logDebug("Getting download link: #%d" % i)
+
             data = self.getPostParameters()
 
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
+
             self.html = self.load(self.pyfile.url, post=data, ref=True, decode=True)
             self.header = self.req.http.header
+
             self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
-            m = re.search(r"Location\s*:\s*(.*)", self.header, re.I)
+            m = re.search(r"Location\s*:\s*(.+)", self.header, re.I)
             if m:
                 break
 
@@ -149,23 +113,10 @@ class XFSPHoster(SimpleHoster):
             if m:
                 break
 
-        else:
-            if self.errmsg and 'captcha' in self.errmsg:
-                self.fail(_("No valid captcha code entered"))
-            else:
-                self.fail(_("Download link not found"))
-
         return m.group(1)
 
 
-    def handlePremium(self):
-        self.html = self.load(self.pyfile.url, post=self.getPostParameters())
-        m = re.search(self.LINK_PATTERN, self.html)
-        if m is None:
-            self.error(_("LINK_PATTERN not found"))
-        self.startDownload(m.group(1))
-
-
+    #@TODO: Re-enable
     def handleOverriden(self):
         #only tested with easybytez.com
         self.html = self.load("http://www.%s/" % self.HOSTER_NAME)
@@ -199,19 +150,11 @@ class XFSPHoster(SimpleHoster):
 
         self.pyfile.url = m.group(1)
 
-        header = self.load(self.pyfile.url, just_header=True)
+        header = self.load(self.pyfile.url, just_header=True, decode=True)
         if 'location' in header:  # Direct link
-            self.startDownload(header['location'])
+            self.download(header['location'], ref=True, cookies=True, disposition=True)
         else:
             self.retry(reason=_("OVR link location not found"))
-
-
-    def startDownload(self, link):
-        link = link.strip()
-        if self.captcha:
-            self.correctCaptcha()
-        self.logDebug("DIRECT LINK: %s" % link)
-        self.download(link, disposition=True)
 
 
     def checkErrors(self):
@@ -224,22 +167,28 @@ class XFSPHoster(SimpleHoster):
                 wait_time = sum([int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in
                                  re.findall(r'(\d+)\s*(hour|minute|second)', self.errmsg)])
                 self.wait(wait_time, True)
+
             elif 'captcha' in self.errmsg:
                 self.invalidCaptcha()
+
             elif 'premium' in self.errmsg and 'require' in self.errmsg:
                 self.fail(_("File can be downloaded by premium users only"))
+
             elif 'limit' in self.errmsg:
                 self.wait(1 * 60 * 60, True)
                 self.retry(25, reason="Download limit exceeded")
+
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
                 self.retry(reason=_("Link expired"))
+
             elif 'maintenance' in self.errmsg or 'maintainance' in self.errmsg:
                 self.tempOffline()
+
             elif 'download files up to' in self.errmsg:
                 self.fail(_("File too large for free download"))
+
             else:
                 self.fail(self.errmsg)
-
         else:
             self.errmsg = None
 
