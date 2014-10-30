@@ -8,28 +8,29 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __config__ = [("activated", "bool", "Activated", True),
-                  ("match_hoster", "Always;Always except excluded;Listed only", "Hoster match", "Always except excluded"),
-                  ("match_crypter", "Always;Always except excluded;Listed only", "Crypter match", "Always except excluded"),
-                  ("load_default", "bool", "Include built-in lists", True),
-                  ("include_hosters", "str", "Include hosters (comma separated)", ""),
-                  ("exclude_hosters", "str", "Exclude hosters (comma separated)", ""),
-                  ("include_crypters", "str", "Include crypters (comma separated)", ""),
-                  ("exclude_crypters", "str", "Exclude crypters (comma separated)", "")]
+                  ("every_hoster", "bool", "Try to hook any hoster", True),
+                  ("every_crypter", "bool", "Try to hook any crypter", True),
+                  ("load_default", "bool", "Load built-in plugins", True),
+                  ("hoster_list", "str", "Load hosters (comma separated)", ""),
+                  ("crypter_list", "str", "Load crypters (comma separated)", "")]
 
-    __description__ = """Load hosters and crypter, based upon XFileSharingPro, which don't need a own plugin to work fine"""
+    __description__ = """Load XFileSharingPro based hosters and crypter which don't need a own plugin to run"""
     __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_list = ["pluginConfigChanged"]
+    # event_list = ["pluginConfigChanged"]
+    regex = {'hoster' : (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}',
+                         r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w{12}\W?'),
+             'crypter': (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:user|folder)s?/\w+',
+                         r'https?://(?:[^/]+\.)?(%s)/(?:user|folder)s?/\w+')}
 
     HOSTER_LIST = [#WORKING HOSTERS:
-                   "eyesfile.ca", "fileband.com", "filedwon.com", "filevice.com", "hostingbulk.com", "linestorage.com",
-                   "ravishare.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
+                   "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com", "filevice.com", "hostingbulk.com",
+                   "linestorage.com", "ravishare.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
                    #NOT TESTED:
                    "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
                    "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
@@ -39,9 +40,8 @@ class XFileSharingPro(Hook):
     CRYPTER_LIST = []
 
 
-    def pluginConfigChanged(self, plugin, name, value):
-        if name != "activated":
-            self.loadPattern()
+    # def pluginConfigChanged(self, plugin, name, value):
+        # self.loadPattern()
 
 
     def coreReady(self):
@@ -49,53 +49,34 @@ class XFileSharingPro(Hook):
 
 
     def loadPattern(self):
-        regex = {'hoster' : (r'https?://(?!(?:www\.)?(?:%s))(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}',
-                             r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w{12}\W?'),
-                 'crypter': (r'https?://(?!(?:www\.)?(?:%s))(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:user|folder)s?/\w+',
-                             r'https?://(?:[^/]+\.)?(%s)/(?:user|folder)s?/\w+')}
-
         for type, plugin in (("hoster", "XFileSharingPro"), ("crypter", "XFileSharingProFolder")):
-            match = self.getConfig('match_%s' % type)
-            include_set = self.getConfigSet('include_%ss' % type)
-            exclude_set = self.getConfigSet('exclude_%ss' % type)
+            every_plugin = self.getConfig('every_%s' % type)
 
-            if match != "Listed only":
-                if match == "Always":
-                    match_list = ""
-                else:
-                    hoster_list = exclude_set - set(('', u''))
-                    match_list = '|'.join(sorted(hoster_list))
-                    self.logDebug("Excluding %d %ss" % (len(hoster_list), type), match_list.replace('|', ', '))
-
-                regexp = regex[type][0] % match_list.replace('.', '\.')
-
+            if every_plugin:
+                regexp = self.regex[type][0]
             else:
-                hoster_list = include_set
+                s = self.getConfig('%s_list' % type).replace('\\', '').replace('|', ',').replace(';', ',').lower()
+                plugin_list = set([x.strip() for x in s.split(',')])
 
                 if self.getConfig('load_default'):
-                    hoster_list |= set(getattr(self, "%s_LIST" % type.upper()))
+                    plugin_list |= set([x.lower() for x in getattr(self, "%s_LIST" % type.upper())])
 
-                hoster_list -= exclude_set
-                hoster_list -= set(('', u''))
+                plugin_list -= set(('', u''))
 
-                if not hoster_list:
+                if not plugin_list:
                     self.unload()
                     return
 
-                match_list = '|'.join(sorted(hoster_list))
-                self.logDebug("Handling %d %ss" % (len(hoster_list), type), match_list.replace('|', ', '))
+                match_list = '|'.join(sorted(plugin_list))
+                self.logInfo("Handling %d %ss: %s" % (len(plugin_list), type, match_list.replace('|', ', ')))
 
-                regexp = regex[type][1] % match_list.replace('.', '\.')
+                regexp = self.regex[type][1] % match_list  #.replace('.', '\.')
 
             dict = self.core.pluginManager.plugins[type][plugin]
             dict['pattern'] = regexp
             dict['re'] = re.compile(regexp)
-            self.logDebug("Pattern loaded for %ss" % type)
 
-
-    def getConfigSet(self, option):
-        s = self.getConfig(option).lower().replace('|', ',').replace(';', ',')
-        return set([x.strip() for x in s.split(',')])
+            self.logDebug("Loaded %s regex: `%s`" % (type, regexp))
 
 
     def unload(self):
