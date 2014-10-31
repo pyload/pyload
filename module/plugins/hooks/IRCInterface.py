@@ -3,6 +3,7 @@
 import re
 import socket
 import time
+import ssl
 
 from pycurl import FORM_FILE
 from select import select
@@ -25,6 +26,7 @@ class IRCInterface(Thread, Hook):
                   ("port", "int", "IRC-Server Port", 6667),
                   ("ident", "str", "Clients ident", "pyload-irc"),
                   ("realname", "str", "Realname", "pyload-irc"),
+                  ("ssl", "bool", "Activate SSL", False),
                   ("nick", "str", "Nickname the Client will take", "pyLoad-IRC"),
                   ("owner", "str", "Nickname the Client will accept commands from", "Enter your nick here!"),
                   ("info_file", "bool", "Inform about every file finished", False),
@@ -85,6 +87,8 @@ class IRCInterface(Thread, Hook):
         self.sock = socket.socket()
         host = self.getConfig("host")
         self.sock.connect((host, self.getConfig("port")))
+        if self.getConfig("ssl"):
+            self.sock = ssl.wrap_socket(self.sock ,cert_reqs=ssl.CERT_NONE)
         nick = self.getConfig("nick")
         self.sock.send("NICK %s\r\n" % nick)
         self.sock.send("USER %s %s bla :%s\r\n" % (nick, host, nick))
@@ -423,3 +427,4 @@ class IRCError(Exception):
 
     def __str__(self):
         return repr(self.value)
+
