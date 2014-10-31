@@ -2,6 +2,7 @@
 
 import re
 import socket
+import ssl
 import time
 
 from pycurl import FORM_FILE
@@ -19,12 +20,13 @@ from module.utils import formatSize
 class IRCInterface(Thread, Hook):
     __name__    = "IRCInterface"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __config__ = [("host", "str", "IRC-Server Address", "Enter your server here!"),
                   ("port", "int", "IRC-Server Port", 6667),
                   ("ident", "str", "Clients ident", "pyload-irc"),
                   ("realname", "str", "Realname", "pyload-irc"),
+                  ("ssl", "bool", "Use SSL", False),
                   ("nick", "str", "Nickname the Client will take", "pyLoad-IRC"),
                   ("owner", "str", "Nickname the Client will accept commands from", "Enter your nick here!"),
                   ("info_file", "bool", "Inform about every file finished", False),
@@ -85,6 +87,10 @@ class IRCInterface(Thread, Hook):
         self.sock = socket.socket()
         host = self.getConfig("host")
         self.sock.connect((host, self.getConfig("port")))
+
+        if self.getConfig("ssl"):
+            self.sock = ssl.wrap_socket(self.sock, cert_reqs=ssl.CERT_NONE)  #@TODO: support certificate
+
         nick = self.getConfig("nick")
         self.sock.send("NICK %s\r\n" % nick)
         self.sock.send("USER %s %s bla :%s\r\n" % (nick, host, nick))
