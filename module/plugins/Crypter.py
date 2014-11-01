@@ -7,7 +7,7 @@ from module.utils import save_path
 class Crypter(Plugin):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.3"
+    __version__ = "0.4"
 
     __pattern__ = None
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -59,10 +59,15 @@ class Crypter(Plugin):
         package_password = self.pyfile.package().password
         package_queue = self.pyfile.package().queue
 
-        use_subfolder = self.getConfig('use_subfolder')
-        subfolder_per_package = self.getConfig('subfolder_per_package')
-
         folder_per_package = self.config['general']['folder_per_package']
+        try:
+            use_subfolder = self.getConfig('use_subfolder')
+        except:
+            use_subfolder = folder_per_package
+        try:
+            subfolder_per_package = self.getConfig('subfolder_per_package')
+        except:
+            subfolder_per_package = True
 
         for pack in self.packages:
             name, links, folder = pack
