@@ -53,6 +53,7 @@ class XFileSharingPro(Hook):
             every_plugin = self.getConfig('every_%s' % type)
 
             if every_plugin:
+                self.logInfo("Handling all %ss: %s" % (len(plugin_list), type, match_list.replace('|', ', ')))
                 regexp = self.regex[type][0]
             else:
                 s = self.getConfig('%s_list' % type).replace('\\', '').replace('|', ',').replace(';', ',').lower()
@@ -68,9 +69,9 @@ class XFileSharingPro(Hook):
                     return
 
                 match_list = '|'.join(sorted(plugin_list))
-                self.logInfo("Handling %d %ss: %s" % (len(plugin_list), type, match_list.replace('|', ', ')))
+                self.logInfo("Handling %s %ss" % (u'\u221E', type))
 
-                regexp = self.regex[type][1] % match_list  #.replace('.', '\.')
+                regexp = self.regex[type][1] % match_list.replace('.', '\.')
 
             dict = self.core.pluginManager.plugins[type][plugin]
             dict['pattern'] = regexp
