@@ -209,7 +209,7 @@ class Plugin(Base):
         self.cTask = None #captcha task
 
         self.retries = 0 # amount of retries already made
-        self.html = None # some plugins store html code here
+        self.html = "" # some plugins store html code here
 
         self.init()
 
