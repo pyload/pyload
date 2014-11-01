@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
 
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/v(?:/|iew\.jsp.*key=)(?P<KEY>\d+)'
 
@@ -40,25 +40,11 @@ class ZippyshareCom(SimpleHoster):
 
 
     def get_checksum(self):
-        m = re.search(r'\(a\*b\+19\)', self.html)
+        m = re.search(r'var ab? = (\d+)\%(\d+)', self.html)
         if m:
-            m = re.findall(r'var \w = (\d+)\%(\d+);', self.html)
-            c = lambda a,b: a * b + 19
+            return int(m.group(1)) % int(m.group(2))
         else:
-            m = re.findall(r'(\d+) \% (\d+)', self.html)
-            c = lambda a,b: a + b
-
-        if not m:
             self.error(_("Unable to calculate checksum"))
-
-        a = map(lambda x: int(x), m[0])
-        b = map(lambda x: int(x), m[1])
-
-        # Checksum is calculated as (a*b+19) or (a+b), where a and b are the result of modulo calculations
-        a = a[0] % a[1]
-        b = b[0] % b[1]
-
-        return c(a, b)
 
 
     def get_link(self):
