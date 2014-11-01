@@ -90,27 +90,30 @@ def parseHtmlForm(attr_str, html, input_names=None):
 
 
 def parseFileInfo(self, url="", html=""):
-    info = {"name": url, "size": 0, "status": 3}
-
-    if hasattr(self, "pyfile"):
+    if not url and hasattr(self, "pyfile"):
         url = self.pyfile.url
 
-    if hasattr(self, "req") and self.req.http.code == '404':
-        info['status'] = 1
-    else:
-        if not html and hasattr(self, "html"):
-            html = self.html
-        if isinstance(self.TEXT_ENCODING, basestring):
-            html = unicode(html, self.TEXT_ENCODING)
-            if hasattr(self, "html"):
-                self.html = html
+    info = {"name": url, "size": 0, "status": 3}
 
+    if not html:
+        if url:
+            return tuple(create_getInfo(self)([url]))
+        elif hasattr(self, "html"):
+            if hasattr(self, "req") and self.req.http.code == '404':
+                info['status'] = 1
+            else:
+                html = self.html
+
+    if html:
         if hasattr(self, "OFFLINE_PATTERN") and re.search(self.OFFLINE_PATTERN, html):
             info['status'] = 1
+
         elif hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):  #@TODO: Remove in 0.4.10
             info['status'] = 1
+
         elif hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, html):
             info['status'] = 6
+
         else:
             online = False
             try:
@@ -128,18 +131,23 @@ def parseFileInfo(self, url="", html=""):
             if online:
                 # File online, return name and size
                 info['status'] = 2
+
                 if 'N' in info:
                     info['name'] = replace_patterns(info['N'].strip(), self.FILE_NAME_REPLACEMENTS)
+
                 if 'S' in info:
                     size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
                                             self.FILE_SIZE_REPLACEMENTS)
                     info['size'] = parseFileSize(size)
+
                 elif isinstance(info['size'], basestring):
                     unit = info['units'] if 'units' in info else None
                     info['size'] = parseFileSize(info['size'], unit)
 
-    if hasattr(self, "file_info"):
-        self.file_info = info
+    if not hasattr(self, "file_info"):
+        self.file_info = {}
+
+    self.file_info.update(info)
 
     return info['name'], info['size'], info['status'], url
 
@@ -148,13 +156,23 @@ def create_getInfo(plugin):
 
     def getInfo(urls):
         for url in urls:
-            cj = CookieJar(plugin.__name__)
-            if isinstance(plugin.COOKIES, list):
+            if hasattr(plugin, "COOKIES") and isinstance(plugin.COOKIES, list):
+                cj = CookieJar(plugin.__name__)
                 set_cookies(cj, plugin.COOKIES)
+            else:
+                cj = None
 
-            file_info = parseFileInfo(plugin, url, getURL(replace_patterns(url, plugin.FILE_URL_REPLACEMENTS),
-                                                          decode=not plugin.TEXT_ENCODING, cookies=cj))
-            yield file_info
+            if hasattr(plugin, "FILE_URL_REPLACEMENTS"):
+                url = replace_patterns(url, plugin.FILE_URL_REPLACEMENTS)
+
+            if hasattr(plugin, "TEXT_ENCODING"):
+                html = getURL(url, cookies=bool(cj), decode=not plugin.TEXT_ENCODING)
+                if isinstance(plugin.TEXT_ENCODING, basestring):
+                    html = unicode(html, plugin.TEXT_ENCODING)
+            else:
+                html = getURL(url, cookies=bool(cj), decode=True)
+
+            yield parseFileInfo(plugin, url, html)
 
     return getInfo
 
@@ -166,7 +184,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
     __pattern__ = None
 
@@ -215,11 +233,10 @@ class SimpleHoster(Hoster):
     COOKIES = True  #: or False or list of tuples [(domain, name, value)]
     FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
 
-    CHECK_DIRECT_DOWNLOAD = True  #: Search for a direct download link in the page header (premium only)
-
 
     def init(self):
         self.file_info = {}
+        self.html = ""  #@TODO: Remove in 0.4.10
 
 
     def setup(self):
@@ -234,31 +251,53 @@ class SimpleHoster(Hoster):
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.FILE_URL_REPLACEMENTS)
 
-        if self.CHECK_DIRECT_DOWNLOAD and self.premium:
-            header = self.load(self.pyfile.url, just_header=True, decode=True)
-            if 'location' in header:
-                self.logDebug("Direct download link detected")
-                self.download(header['location'], ref=True, cookies=True, disposition=True)
-                return
+        if self.premium:
+            direct_link = self.getDirectLink(self.pyfile.url)
+            if direct_link:
+                return direct_link
 
         self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
 
+        if isinstance(self.TEXT_ENCODING, basestring):
+            self.html = unicode(self.html, self.TEXT_ENCODING)
+
 
     def process(self, pyfile):
-        self.prepare()
+        direct_link = self.prepare()
 
-        premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
-        if not premium_only:  #: Usually premium only pages doesn't show the file information
-            self.getFileInfo()
+        if isinstance(direct_link, basestring):
+            self.download(direct_link, ref=True, cookies=True, disposition=True)
 
-        if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
-            self.logDebug("Handle as premium download")
-            self.handlePremium()
-        elif premium_only:
-            self.fail(_("This link require a premium account"))
+        elif self.html is None:
+            self.fail(_("Attribute html should never be set to None"))
+
         else:
-            self.logDebug("Handle as free download")
-            self.handleFree()
+            premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
+            if not premium_only and 'status' not in self.file_info:  #: Usually premium only pages doesn't show the file information
+                self.getFileInfo()
+
+            if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
+                self.logDebug("Handled as premium download")
+                self.handlePremium()
+            elif premium_only:
+                self.fail(_("Link require a premium account to be handled"))
+            else:
+                self.logDebug("Handled as free download")
+                self.handleFree()
+
+
+    def getDirectLink(self, url):
+        self.req.http.c.setopt(FOLLOWLOCATION, 0)
+
+        html = self.load(url, ref=True, decode=True)
+
+        self.req.http.c.setopt(FOLLOWLOCATION, 1)
+
+        if parseFileInfo(self, url, html)[2] != 2:
+            try
+                return re.search(r"Location\s*:\s*(.+)", self.req.http.header, re.I).group(1)
+            except:
+                pass
 
 
     def getFileInfo(self):
@@ -271,8 +310,7 @@ class SimpleHoster(Hoster):
         elif status == 6:
             self.tempOffline()
         elif status != 2:
-            self.logDebug(self.file_info)
-            self.error(_("File info"))
+            self.error(_("File info: %s") % self.file_info)
 
         if name:
             self.pyfile.name = name
@@ -284,7 +322,7 @@ class SimpleHoster(Hoster):
         else:
             self.logError(_("File size not parsed"))
 
-        self.logDebug("FILE NAME: %s FILE SIZE: %s" % (self.pyfile.name, self.pyfile.size))
+        self.logDebug("FILE NAME: %s" % self.pyfile.name, "FILE SIZE: %d" % self.pyfile.size)
         return self.file_info
 
 
