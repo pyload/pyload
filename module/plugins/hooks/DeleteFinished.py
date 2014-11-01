@@ -7,7 +7,7 @@ from module.plugins.Hook import Hook
 class DeleteFinished(Hook):
     __name__    = "DeleteFinished"
     __type__    = "hook"
-    __version__ = "1.10"
+    __version__ = "1.11"
 
     __config__ = [('activated', 'bool', 'Activated', 'False'),
                   ('interval', 'int', 'Delete every (hours)', '72'),
@@ -18,7 +18,7 @@ class DeleteFinished(Hook):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_list = ["pluginConfigChanged"]
+    # event_list = ["pluginConfigChanged"]
 
 
     ## overwritten methods ##
@@ -46,7 +46,7 @@ class DeleteFinished(Hook):
     def coreReady(self):
         self.info = {'sleep': True}
         interval = self.getConfig('interval')
-        self.pluginConfigChanged('DeleteFinished', 'interval', interval)
+        self.pluginConfigChanged(self.__name__, 'interval', interval)
         self.addEvent('packageFinished', self.wakeup)
 
 
