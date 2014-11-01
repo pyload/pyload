@@ -294,7 +294,7 @@ class SimpleHoster(Hoster):
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
         if parseFileInfo(self, url, html)[2] != 2:
-            try
+            try:
                 return re.search(r"Location\s*:\s*(.+)", self.req.http.header, re.I).group(1)
             except:
                 pass
