@@ -13,7 +13,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __pattern__ = None
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -93,7 +93,11 @@ class SimpleCrypter(Crypter):
             set_cookies(self.req.cj, self.COOKIES)
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
+
         self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
+
+        if isinstance(self.TEXT_ENCODING, basestring):
+            self.html = unicode(self.html, self.TEXT_ENCODING)
 
 
     def decrypt(self, pyfile):
@@ -130,9 +134,6 @@ class SimpleCrypter(Crypter):
 
 
     def getPackageNameAndFolder(self):
-        if isinstance(self.TEXT_ENCODING, basestring):
-            self.html = unicode(self.html, self.TEXT_ENCODING)
-
         if hasattr(self, 'TITLE_PATTERN'):
             try:
                 m = re.search(self.TITLE_PATTERN, self.html)
