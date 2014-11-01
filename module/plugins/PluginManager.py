@@ -19,7 +19,7 @@ class PluginManager:
     USERROOT = "userplugins."
     TYPES    = ("crypter", "container", "hoster", "captcha", "accounts", "hooks", "internal")
 
-    PATTERN = re.compile(r'__pattern__\s*=\s*[a-z]*("|\')([^"\']+)')
+    PATTERN = re.compile(r'__pattern__\s*=\s*u?r("|\')([^"\']+)')
     VERSION = re.compile(r'__version__\s*=\s*("|\')([\d.]+)')
     CONFIG  = re.compile(r'__config__\s*=\s*\[([^\]]+)', re.M)
     DESC    = re.compile(r'__description__\s*=\s*("|"""|\')([^"\']+)')
