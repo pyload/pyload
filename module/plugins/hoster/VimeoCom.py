@@ -19,11 +19,11 @@ class VimeoCom(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'<title>(?P<N>.+) on Vimeo<'
+    NAME_PATTERN = r'<title>(?P<N>.+) on Vimeo<'
     OFFLINE_PATTERN = r'class="exception_header"'
     TEMP_OFFLINE_PATTERN = r'Please try again in a few minutes.<'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'https://www.vimeo.com/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__, r'https://www.vimeo.com/\g<ID>')]
 
     COOKIES = [(".vimeo.com", "language", "en")]
 

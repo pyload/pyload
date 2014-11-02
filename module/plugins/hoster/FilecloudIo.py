@@ -20,8 +20,8 @@ class FilecloudIo(SimpleHoster):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    FILE_SIZE_PATTERN = r'{var __ab1 = (?P<S>\d+);}'
-    FILE_NAME_PATTERN = r'id="aliasSpan">(?P<N>.*?)&nbsp;&nbsp;<'
+    SIZE_PATTERN = r'{var __ab1 = (?P<S>\d+);}'
+    NAME_PATTERN = r'id="aliasSpan">(?P<N>.*?)&nbsp;&nbsp;<'
     OFFLINE_PATTERN = r'l10n\.(FILES__DOESNT_EXIST|REMOVED)'
     TEMP_OFFLINE_PATTERN = r'l10n\.FILES__WARNING'
 

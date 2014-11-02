@@ -17,9 +17,9 @@ class NowVideoAt(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.nowvideo.at/video/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__, r'http://www.nowvideo.at/video/\g<ID>')]
 
-    FILE_NAME_PATTERN = r'<h4>(?P<N>.+?)<'
+    NAME_PATTERN = r'<h4>(?P<N>.+?)<'
     OFFLINE_PATTERN = r'>This file no longer exists'
 
     LINK_PATTERN = r'<source src="(.+?)"'

@@ -25,7 +25,7 @@ class FilerNet(SimpleHoster):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    FILE_INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>[\w^_]+)</small></h1>'
+    INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>[\w^_]+)</small></h1>'
     OFFLINE_PATTERN = r'Nicht gefunden'
 
     LINK_PATTERN = r'href="([^"]+)">Get download</a>'

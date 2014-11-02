@@ -15,11 +15,11 @@ class DataportCz(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'<span itemprop="name">(?P<N>[^<]+)</span>'
-    FILE_SIZE_PATTERN = r'<td class="fil">Velikost</td>\s*<td>(?P<S>[^<]+)</td>'
+    NAME_PATTERN = r'<span itemprop="name">(?P<N>[^<]+)</span>'
+    SIZE_PATTERN = r'<td class="fil">Velikost</td>\s*<td>(?P<S>[^<]+)</td>'
     OFFLINE_PATTERN = r'<h2>Soubor nebyl nalezen</h2>'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.dataport.cz/file/\1')]
+    URL_REPLACEMENTS = [(__pattern__, r'http://www.dataport.cz/file/\1')]
 
     CAPTCHA_PATTERN = r'<section id="captcha_bg">\s*<img src="(.*?)"'
     FREE_SLOTS_PATTERN = ur'Počet volných slotů: <span class="darkblue">(\d+)</span><br />'

@@ -21,8 +21,8 @@ class UploadheroCom(SimpleHoster):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'<div class="nom_de_fichier">(?P<N>.*?)</div>'
-    FILE_SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'
+    NAME_PATTERN = r'<div class="nom_de_fichier">(?P<N>.*?)</div>'
+    SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'
     OFFLINE_PATTERN = r'<p class="titre_dl_2">|<div class="raison"><strong>Le lien du fichier ci-dessus n\'existe plus.'
 
     COOKIES = [(".uploadhero.co", "lang", "en")]

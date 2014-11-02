@@ -4,13 +4,13 @@ import re
 
 from time import mktime, strptime, gmtime
 
-from module.plugins.internal.XFSPAccount import XFSPAccount
+from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class EasybytezCom(XFSPAccount):
+class EasybytezCom(XFSAccount):
     __name__    = "EasybytezCom"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __description__ = """EasyBytez.com account plugin"""
     __license__     = "GPLv3"
@@ -18,4 +18,4 @@ class EasybytezCom(XFSPAccount):
                        ("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_NAME = "easybytez.com"
+    HOSTER_DOMAIN = "easybytez.com"

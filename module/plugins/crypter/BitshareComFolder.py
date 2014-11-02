@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class BitshareComFolder(SimpleCrypter):
     __name__    = "BitshareComFolder"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/\?d=\w+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -18,4 +18,4 @@ class BitshareComFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'<a href="(http://bitshare\.com/files/.+)">.+</a></td>'
-    TITLE_PATTERN = r'View public folder "(.+)"</h1>'
+    NAME_PATTERN = r'View public folder "(.+)"</h1>'

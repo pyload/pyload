@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FilecloudIoFolder(SimpleCrypter):
     __name__    = "FilecloudIoFolder"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?(filecloud\.io|ifile\.it)/_\w+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -18,4 +18,4 @@ class FilecloudIoFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'href="(http://filecloud\.io/\w+)" title'
-    TITLE_PATTERN = r'>(.+?) - filecloud\.io<'
+    NAME_PATTERN = r'>(.+?) - filecloud\.io<'

@@ -17,8 +17,8 @@ class TwoSharedCom(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'<h1>(?P<N>.*)</h1>'
-    FILE_SIZE_PATTERN = r'<span class="dtitle">File size:</span>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    NAME_PATTERN = r'<h1>(?P<N>.*)</h1>'
+    SIZE_PATTERN = r'<span class="dtitle">File size:</span>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'The file link that you requested is not valid\.|This file was deleted\.'
 
     LINK_PATTERN = r'window.location =\'(.+?)\';'

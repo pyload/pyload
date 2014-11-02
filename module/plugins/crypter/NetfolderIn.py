@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class NetfolderIn(SimpleCrypter):
     __name__    = "NetfolderIn"
     __type__    = "crypter"
-    __version__ = "0.7"
+    __version__ = "0.71"
 
     __pattern__ = r'http://(?:www\.)?netfolder\.in/((?P<id1>\w+)/\w+|folder\.php\?folder_id=(?P<id2>\w+))'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -20,7 +20,7 @@ class NetfolderIn(SimpleCrypter):
                        ("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
-    TITLE_PATTERN = r'<div class="Text">Inhalt des Ordners <span.*>(.+)</span></div>'
+    NAME_PATTERN = r'<div class="Text">Inhalt des Ordners <span.*>(.+)</span></div>'
 
 
     def decrypt(self, pyfile):

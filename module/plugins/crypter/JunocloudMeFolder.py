@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSPCrypter import XFSPCrypter
+from module.plugins.internal.XFSCrypter import XFSCrypter
 
 
-class JunocloudMeFolder(XFSPCrypter):
+class JunocloudMeFolder(XFSCrypter):
     __name__    = "JunocloudMeFolder"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?junocloud\.me/folders/(?P<ID>\d+/\w+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -17,4 +17,4 @@ class JunocloudMeFolder(XFSPCrypter):
     __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_NAME = "junocloud.me"
+    HOSTER_DOMAIN = "junocloud.me"

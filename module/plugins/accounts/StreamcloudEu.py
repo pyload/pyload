@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSPAccount import XFSPAccount
+from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class StreamcloudEu(XFSPAccount):
+class StreamcloudEu(XFSAccount):
     __name__    = "StreamcloudEu"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Streamcloud.eu account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_NAME = "streamcloud.eu"
+    HOSTER_DOMAIN = "streamcloud.eu"

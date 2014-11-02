@@ -5,13 +5,13 @@ import re
 from time import sleep
 
 from module.network.HTTPRequest import HTTPRequest
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class StreamcloudEu(XFSPHoster):
+class StreamcloudEu(XFSHoster):
     __name__    = "StreamcloudEu"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\w{12}'
 
@@ -20,7 +20,7 @@ class StreamcloudEu(XFSPHoster):
     __authors__     = [("seoester", "seoester@googlemail.com")]
 
 
-    HOSTER_NAME = "streamcloud.eu"
+    HOSTER_DOMAIN = "streamcloud.eu"
 
     LINK_PATTERN = r'file: "(http://(stor|cdn)\d+\.streamcloud\.eu:?\d*/.*/video\.(mp4|flv))",'
 
@@ -80,7 +80,7 @@ class StreamcloudEu(XFSPHoster):
                     else:
                         self.error(_("Form not found"))
 
-            self.logDebug(self.HOSTER_NAME, inputs)
+            self.logDebug(inputs)
 
             if 'op' in inputs and inputs['op'] in ("download1", "download2", "download3"):
                 if "password" in inputs:

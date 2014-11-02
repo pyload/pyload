@@ -5,14 +5,14 @@
 
 import re
 
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 from module.plugins.internal.CaptchaService import SolveMedia
 
 
-class RyushareCom(XFSPHoster):
+class RyushareCom(XFSHoster):
     __name__    = "RyushareCom"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?ryushare\.com/\w+'
 
@@ -23,9 +23,9 @@ class RyushareCom(XFSPHoster):
                        ("quareevo", "quareevo@arcor.de")]
 
 
-    HOSTER_NAME = "ryushare.com"
+    HOSTER_DOMAIN = "ryushare.com"
 
-    FILE_SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    SIZE_PATTERN = r'You have requested <font color="red">[^<]+</font> \((?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     WAIT_PATTERN = r'You have to wait ((?P<hour>\d+) hour[s]?, )?((?P<min>\d+) minute[s], )?(?P<sec>\d+) second[s]'
     LINK_PATTERN = r'<a href="([^"]+)">Click here to download<'

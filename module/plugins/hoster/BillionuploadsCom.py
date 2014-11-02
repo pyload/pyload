@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class BillionuploadsCom(XFSPHoster):
+class BillionuploadsCom(XFSHoster):
     __name__    = "BillionuploadsCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?billionuploads\.com/\w{12}'
 
@@ -15,10 +15,10 @@ class BillionuploadsCom(XFSPHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_NAME = "billionuploads.com"
+    HOSTER_DOMAIN = "billionuploads.com"
 
-    FILE_NAME_PATTERN = r'<td class="dofir" title="(?P<N>.+?)"'
-    FILE_SIZE_PATTERN = r'<td class="dofir">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    NAME_PATTERN = r'<td class="dofir" title="(?P<N>.+?)"'
+    SIZE_PATTERN = r'<td class="dofir">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
 
 getInfo = create_getInfo(BillionuploadsCom)

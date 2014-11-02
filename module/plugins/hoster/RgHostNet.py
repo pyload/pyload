@@ -17,7 +17,7 @@ class RgHostNet(SimpleHoster):
     __authors__     = [("z00nx", "z00nx0@gmail.com")]
 
 
-    FILE_INFO_PATTERN = r'<h1>\s+(<a[^>]+>)?(?P<N>[^<]+)(</a>)?\s+<small[^>]+>\s+\((?P<S>[^)]+)\)\s+</small>\s+</h1>'
+    INFO_PATTERN = r'<h1>\s+(<a[^>]+>)?(?P<N>[^<]+)(</a>)?\s+<small[^>]+>\s+\((?P<S>[^)]+)\)\s+</small>\s+</h1>'
     OFFLINE_PATTERN = r'File is deleted|this page is not found'
     LINK_PATTERN = r'''<a\s+href="([^"]+)"\s+class="btn\s+large\s+download"[^>]+>Download</a>'''
 

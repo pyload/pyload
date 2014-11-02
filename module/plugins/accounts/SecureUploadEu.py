@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSPAccount import XFSPAccount
+from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class SecureUploadEu(XFSPAccount):
+class SecureUploadEu(XFSAccount):
     __name__    = "SecureUploadEu"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """SecureUpload.eu account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_NAME = "secureupload.eu"
+    HOSTER_DOMAIN = "secureupload.eu"

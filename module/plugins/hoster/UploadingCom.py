@@ -22,8 +22,8 @@ class UploadingCom(SimpleHoster):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
-    FILE_SIZE_PATTERN = r'size tip_container">(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
+    NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
+    SIZE_PATTERN = r'size tip_container">(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
     OFFLINE_PATTERN = r'(Page|file) not found'
 
     COOKIES = [(".uploading.com", "lang", "1"),

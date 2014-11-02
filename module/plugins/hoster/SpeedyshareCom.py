@@ -22,10 +22,10 @@ class SpeedyshareCom(SimpleHoster):
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
-    FILE_NAME_PATTERN = r'class=downloadfilename>(?P<N>.*)</span></td>'
-    FILE_SIZE_PATTERN = r'class=sizetagtext>(?P<S>.*) (?P<U>[kKmM]?[iI]?[bB]?)</div>'
+    NAME_PATTERN = r'class=downloadfilename>(?P<N>.*)</span></td>'
+    SIZE_PATTERN = r'class=sizetagtext>(?P<S>.*) (?P<U>[kKmM]?[iI]?[bB]?)</div>'
 
-    FILE_OFFLINE_PATTERN = r'class=downloadfilenamenotfound>.*</span>'
+    OFFLINE_PATTERN = r'class=downloadfilenamenotfound>.*</span>'
 
     LINK_PATTERN = r'<a href=\'(.*)\'><img src=/gf/slowdownload\.png alt=\'Slow Download\' border=0'
 

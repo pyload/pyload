@@ -54,7 +54,7 @@ class YoutubeCom(Hoster):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]
+    URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]
 
     # Invalid characters that must be removed from the file name
     invalidChars = u'\u2605:?><"|\\'
@@ -88,7 +88,7 @@ class YoutubeCom(Hoster):
 
 
     def process(self, pyfile):
-        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
+        pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
         html = self.load(pyfile.url, decode=True)
 
         if re.search(r'<div id="player-unavailable" class="\s*player-width player-height\s*">', html):

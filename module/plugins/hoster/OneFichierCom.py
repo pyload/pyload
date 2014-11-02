@@ -22,11 +22,11 @@ class OneFichierCom(SimpleHoster):
                        ("Elrick69", "elrick69[AT]rocketmail[DOT]com")]
 
 
-    FILE_NAME_PATTERN = r'>Filename :</th>\s*<td>(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'>Size :</th>\s*<td>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    NAME_PATTERN = r'>Filename :</th>\s*<td>(?P<N>.+?)<'
+    SIZE_PATTERN = r'>Size :</th>\s*<td>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'>The (requested)? file (could not be found|has been deleted)'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://\g<ID>.\g<HOST>/en/')]
+    URL_REPLACEMENTS = [(__pattern__, r'http://\g<ID>.\g<HOST>/en/')]
 
     WAIT_PATTERN = r'>You must wait (\d+)'
 

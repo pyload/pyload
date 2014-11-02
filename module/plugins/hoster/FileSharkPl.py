@@ -20,8 +20,8 @@ class FileSharkPl(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'<h2 class="name-file">(?P<N>.+)</h2>'
-    FILE_SIZE_PATTERN = r'<p class="size-file">(.*?)<strong>(?P<S>\d+\.?\d*)\s(?P<U>\w+)</strong></p>'
+    NAME_PATTERN = r'<h2 class="name-file">(?P<N>.+)</h2>'
+    SIZE_PATTERN = r'<p class="size-file">(.*?)<strong>(?P<S>\d+\.?\d*)\s(?P<U>\w+)</strong></p>'
 
     OFFLINE_PATTERN = '(P|p)lik zosta. (usuni.ty|przeniesiony)'
 

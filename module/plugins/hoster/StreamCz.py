@@ -32,7 +32,7 @@ class StreamCz(Hoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'<link rel="video_src" href="http://www\.stream\.cz/\w+/(\d+)-([^"]+)" />'
+    NAME_PATTERN = r'<link rel="video_src" href="http://www\.stream\.cz/\w+/(\d+)-([^"]+)" />'
     OFFLINE_PATTERN = r'<h1 class="commonTitle">Str.nku nebylo mo.n. nal.zt \(404\)</h1>'
 
     CDN_PATTERN = r'<param name="flashvars" value="[^"]*&id=(?P<ID>\d+)(?:&cdnLQ=(?P<cdnLQ>\d*))?(?:&cdnHQ=(?P<cdnHQ>\d*))?(?:&cdnHD=(?P<cdnHD>\d*))?&'
@@ -61,9 +61,9 @@ class StreamCz(Hoster):
         else:
             self.fail(_("Stream URL not found"))
 
-        m = re.search(self.FILE_NAME_PATTERN, self.html)
+        m = re.search(self.NAME_PATTERN, self.html)
         if m is None:
-            self.error(_("FILE_NAME_PATTERN not found"))
+            self.error(_("NAME_PATTERN not found"))
         pyfile.name = "%s-%s.%s.mp4" % (m.group(2), m.group(1), cdnkey[-2:])
 
         download_url = "http://cdn-dispatcher.stream.cz/?id=" + cdnid

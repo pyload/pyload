@@ -28,8 +28,8 @@ class RapidgatorNet(SimpleHoster):
 
     API_URL = "http://rapidgator.net/api/file"
 
-    FILE_NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
-    FILE_SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong>'
+    NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
+    SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong>'
     OFFLINE_PATTERN = r'>(File not found|Error 404)'
 
     JSVARS_PATTERN = r'\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*\'?(.*?)\'?;'

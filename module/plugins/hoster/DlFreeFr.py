@@ -124,8 +124,8 @@ class DlFreeFr(SimpleHoster):
                        ("Toilal", "toilal.dev@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>'
-    FILE_SIZE_PATTERN = r'Taille:</td>\s*<td[^>]*>(?P<S>[\d.,]+\w)o'
+    NAME_PATTERN = r'Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>'
+    SIZE_PATTERN = r'Taille:</td>\s*<td[^>]*>(?P<S>[\d.,]+\w)o'
     OFFLINE_PATTERN = r'Erreur 404 - Document non trouv|Fichier inexistant|Le fichier demand&eacute; n\'a pas &eacute;t&eacute; trouv&eacute;'
 
 
@@ -141,7 +141,7 @@ class DlFreeFr(SimpleHoster):
 
 
     def process(self, pyfile):
-        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
+        pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
         valid_url = pyfile.url
         headers = self.load(valid_url, just_header=True)
 

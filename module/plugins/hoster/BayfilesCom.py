@@ -21,7 +21,7 @@ class BayfilesCom(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_INFO_PATTERN = r'<p title="(?P<N>[^"]+)">[^<]*<strong>(?P<S>[\d .,]+)(?P<U>[\w^_]+)</strong></p>'
+    INFO_PATTERN = r'<p title="(?P<N>[^"]+)">[^<]*<strong>(?P<S>[\d .,]+)(?P<U>[\w^_]+)</strong></p>'
     OFFLINE_PATTERN = r'(<p>The requested file could not be found.</p>|<title>404 Not Found</title>)'
 
     WAIT_PATTERN = r'>Your IP [\d.]* has recently downloaded a file\. Upgrade to premium or wait (\d+) minutes\.<'

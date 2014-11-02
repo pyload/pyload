@@ -19,12 +19,12 @@ class NarodRu(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'<dt class="name">(?:<[^<]*>)*(?P<N>[^<]+)</dt>'
-    FILE_SIZE_PATTERN = r'<dd class="size">(?P<S>\d[^<]*)</dd>'
+    NAME_PATTERN = r'<dt class="name">(?:<[^<]*>)*(?P<N>[^<]+)</dt>'
+    SIZE_PATTERN = r'<dd class="size">(?P<S>\d[^<]*)</dd>'
     OFFLINE_PATTERN = r'<title>404</title>|Файл удален с сервиса|Закончился срок хранения файла\.'
 
-    FILE_SIZE_REPLACEMENTS = [(u'КБ', 'KB'), (u'МБ', 'MB'), (u'ГБ', 'GB')]
-    FILE_URL_REPLACEMENTS = [("narod.yandex.ru/", "narod.ru/"),
+    SIZE_REPLACEMENTS = [(u'КБ', 'KB'), (u'МБ', 'MB'), (u'ГБ', 'GB')]
+    URL_REPLACEMENTS = [("narod.yandex.ru/", "narod.ru/"),
                              (r"/start/\d+\.\w+-narod\.yandex\.ru/(\d{6,15})/\w+/(\w+)", r"/disk/\1/\2")]
 
     CAPTCHA_PATTERN = r'<number url="(.*?)">(\w+)</number>'
