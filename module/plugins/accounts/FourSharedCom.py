@@ -1,49 +1,33 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: zoidberg
-"""
-
-from module.plugins.Account import Account
 from module.common.json_layer import json_loads
+from module.plugins.Account import Account
 
 
 class FourSharedCom(Account):
-    __name__ = "FourSharedCom"
-    __version__ = "0.01"
-    __type__ = "account"
-    __description__ = """FourSharedCom account plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __name__    = "FourSharedCom"
+    __type__    = "account"
+    __version__ = "0.03"
+
+    __description__ = """FourShared.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
+
 
     def loadAccountInfo(self, user, req):
-        #fixme
-        return {"validuntil": -1, "trafficleft": -1, "premium": False}
+        # Free mode only for now
+        return {"premium": False}
+
 
     def login(self, user, data, req):
-        req.cj.setCookie("www.4shared.com", "4langcookie", "en")
-        response = req.load('http://www.4shared.com/login',
+        req.cj.setCookie("4shared.com", "4langcookie", "en")
+        response = req.load('http://www.4shared.com/web/login',
                             post={"login": user,
                                   "password": data['password'],
-                                  "remember": "false",
-                                  "doNotRedirect": "true"})
-        self.logDebug(response)
-        response = json_loads(response)
+                                  "remember": "on",
+                                  "_remember": "on",
+                                  "returnTo": "http://www.4shared.com/account/home.jsp"})
 
-        if not "ok" in response or response['ok'] != True:
-            if "rejectReason" in response and response['rejectReason'] != True:
-                self.logError(response['rejectReason'])
+        if 'Please log in to access your 4shared account' in response:
             self.wrongPassword()

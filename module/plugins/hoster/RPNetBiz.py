@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import re
 
 from module.plugins.Hoster import Hoster
@@ -5,34 +7,37 @@ from module.common.json_layer import json_loads
 
 
 class RPNetBiz(Hoster):
-    __name__ = "RPNetBiz"
+    __name__    = "RPNetBiz"
+    __type__    = "hoster"
     __version__ = "0.1"
-    __type__ = "hoster"
-    __description__ = """RPNet.Biz hoster plugin"""
-    __pattern__ = r"https?://.*rpnet\.biz"
-    __author_name__ = ("Dman")
-    __author_mail__ = ("dmanugm@gmail.com")
+
+    __description__ = """RPNet.biz hoster plugin"""
+    __license__     = "GPLv3"
+
+    __pattern__ = r'https?://.*rpnet\.biz'
+    __authors__     = [("Dman", "dmanugm@gmail.com")]
+
 
     def setup(self):
         self.chunkLimit = -1
         self.resumeDownload = True
 
-    def process(self, pyfile):
 
+    def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             link_status = {'generated': pyfile.url}
         elif not self.account:
             # Check account
             self.logError(_("Please enter your %s account or deactivate this plugin") % "rpnet")
-            self.fail("No rpnet account provided")
+            self.fail(_("No rpnet account provided"))
         else:
             (user, data) = self.account.selectAccount()
 
             self.logDebug("Original URL: %s" % pyfile.url)
-            # Get the download link 
+            # Get the download link
             response = self.load("https://premium.rpnet.biz/client_api.php",
                                  get={"username": user, "password": data['password'],
-                                      "action": "generate", "links": self.pyfile.url})
+                                      "action": "generate", "links": pyfile.url})
 
             self.logDebug("JSON data: %s" % response)
             link_status = json_loads(response)['links'][0]  # get the first link... since we only queried one
@@ -66,11 +71,11 @@ class RPNetBiz(Hoster):
                     my_try += 1
 
                 if my_try > max_tries:  # We went over the limit!
-                    self.fail("Waited for about 15 minutes for download to finish but failed")
+                    self.fail(_("Waited for about 15 minutes for download to finish but failed"))
 
         if 'generated' in link_status:
             self.download(link_status['generated'], disposition=True)
         elif 'error' in link_status:
             self.fail(link_status['error'])
         else:
-            self.fail("Something went wrong, not supposed to enter here")
+            self.fail(_("Something went wrong, not supposed to enter here"))

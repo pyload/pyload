@@ -2,26 +2,29 @@
 
 import re
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
 from module.utils import html_unescape
 
 
-class RarefileNet(XFileSharingPro):
-    __name__ = "RarefileNet"
-    __type__ = "hoster"
-    __pattern__ = r"http://(?:\w*\.)*rarefile.net/\w{12}"
-    __version__ = "0.03"
+class RarefileNet(XFSPHoster):
+    __name__    = "RarefileNet"
+    __type__    = "hoster"
+    __version__ = "0.05"
+
+    __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'
+
     __description__ = """Rarefile.net hoster plugin"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+
+
+    HOSTER_NAME = "rarefile.net"
 
     FILE_NAME_PATTERN = r'<td><font color="red">(?P<N>.*?)</font></td>'
     FILE_SIZE_PATTERN = r'<td>Size : (?P<S>.+?)&nbsp;'
-    DIRECT_LINK_PATTERN = r'<a href="(?P<link>[^"]+)">(?P=link)</a>'
-    HOSTER_NAME = "rarefile.net"
 
-    def setup(self):
-        self.resumeDownload = self.multiDL = self.premium
+    LINK_PATTERN = r'<a href="(?P<link>[^"]+)">(?P=link)</a>'
+
 
     def handleCaptcha(self, inputs):
         captcha_div = re.search(r'<b>Enter code.*?<div.*?>(.*?)</div>', self.html, re.S).group(1)

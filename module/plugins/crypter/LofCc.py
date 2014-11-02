@@ -4,10 +4,13 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 
 class LofCc(DeadCrypter):
-    __name__ = "LofCc"
-    __type__ = "container"
-    __pattern__ = r"http://lof.cc/(.*)"
+    __name__    = "LofCc"
+    __type__    = "crypter"
     __version__ = "0.21"
-    __description__ = """lof.cc Plugin"""
-    __author_name__ = ("mkaay")
-    __author_mail__ = ("mkaay@mkaay.de")
+
+    __pattern__ = r'http://(?:www\.)?lof\.cc/(.*)'
+    __config__  = []
+
+    __description__ = """Lof.cc decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]

@@ -1,24 +1,26 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import re
 import pycurl
+import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns
 from module.common.json_layer import json_loads
 from module.network.Browser import Browser
 from module.network.CookieJar import CookieJar
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns
 
 
 class CustomBrowser(Browser):
+
     def __init__(self, bucket=None, options={}):
         Browser.__init__(self, bucket, options)
 
+
     def load(self, *args, **kwargs):
         post = kwargs.get("post")
-        if post is None:
-            if len(args) > 2:
-                post = args[2]
+
+        if post is None and len(args) > 2:
+            post = args[2]
+
         if post:
             self.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
             self.http.c.setopt(pycurl.POST, 1)
@@ -27,26 +29,29 @@ class CustomBrowser(Browser):
             self.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
             self.http.c.setopt(pycurl.POST, 0)
             self.http.c.setopt(pycurl.CUSTOMREQUEST, "GET")
+
         return Browser.load(self, *args, **kwargs)
 
 
-class AdYouLike():
+class AdYouLike:
     """
     Class to support adyoulike captcha service
     """
-    ADYOULIKE_INPUT_PATTERN = r'Adyoulike.create\((.*?)\);'
-    ADYOULIKE_CALLBACK = r'Adyoulike.g._jsonp_5579316662423138'
+    ADYOULIKE_INPUT_PATTERN = r'Adyoulike\.create\((.*?)\);'
+    ADYOULIKE_CALLBACK = r'Adyoulike\.g\._jsonp_5579316662423138'
     ADYOULIKE_CHALLENGE_PATTERN = ADYOULIKE_CALLBACK + r'\((.*?)\)'
+
 
     def __init__(self, plugin, engine="adyoulike"):
         self.plugin = plugin
         self.engine = engine
 
+
     def challenge(self, html):
         adyoulike_data_string = None
-        found = re.search(self.ADYOULIKE_INPUT_PATTERN, html)
-        if found:
-            adyoulike_data_string = found.group(1)
+        m = re.search(self.ADYOULIKE_INPUT_PATTERN, html)
+        if m:
+            adyoulike_data_string = m.group(1)
         else:
             self.plugin.fail("Can't read AdYouLike input data")
 
@@ -56,18 +61,19 @@ class AdYouLike():
 
         res = self.plugin.load(
             r'http://api-ayl.appspot.com/challenge?key=%(ayl_key)s&env=%(ayl_env)s&callback=%(callback)s' % {
-            "ayl_key": ayl_data[self.engine]["key"], "ayl_env": ayl_data["all"]["env"],
+            "ayl_key": ayl_data[self.engine]['key'], "ayl_env": ayl_data['all']['env'],
             "callback": self.ADYOULIKE_CALLBACK})
 
-        found = re.search(self.ADYOULIKE_CHALLENGE_PATTERN, res)
+        m = re.search(self.ADYOULIKE_CHALLENGE_PATTERN, res)
         challenge_string = None
-        if found:
-            challenge_string = found.group(1)
+        if m:
+            challenge_string = m.group(1)
         else:
             self.plugin.fail("Invalid AdYouLike challenge")
         challenge_data = json_loads(challenge_string)
 
         return ayl_data, challenge_data
+
 
     def result(self, ayl, challenge):
         """
@@ -83,10 +89,10 @@ class AdYouLike():
         """
         response = None
         try:
-            instructions_visual = challenge["translations"][ayl["all"]["lang"]]["instructions_visual"]
-            found = re.search(u".*«(.*)».*", instructions_visual)
-            if found:
-                response = found.group(1).strip()
+            instructions_visual = challenge['translations'][ayl['all']['lang']]['instructions_visual']
+            m = re.search(u".*«(.*)».*", instructions_visual)
+            if m:
+                response = m.group(1).strip()
             else:
                 self.plugin.fail("Can't parse instructions visual")
         except KeyError:
@@ -98,43 +104,47 @@ class AdYouLike():
             self.plugin.fail("AdYouLike result failed")
 
         return {"_ayl_captcha_engine": self.engine,
-                "_ayl_env": ayl["all"]["env"],
-                "_ayl_tid": challenge["tid"],
-                "_ayl_token_challenge": challenge["token"],
+                "_ayl_env": ayl['all']['env'],
+                "_ayl_tid": challenge['tid'],
+                "_ayl_token_challenge": challenge['token'],
                 "_ayl_response": response}
 
 
 class DlFreeFr(SimpleHoster):
-    __name__ = "DlFreeFr"
-    __type__ = "hoster"
-    __pattern__ = r"http://dl\.free\.fr/([a-zA-Z0-9]+|getfile\.pl\?file=/[a-zA-Z0-9]+)"
+    __name__    = "DlFreeFr"
+    __type__    = "hoster"
     __version__ = "0.25"
-    __description__ = """dl.free.fr download hoster"""
-    __author_name__ = ("the-razer", "zoidberg", "Toilal")
-    __author_mail__ = ("daniel_ AT gmx DOT net", "zoidberg@mujmail.cz", "toilal.dev@gmail.com")
 
-    FILE_NAME_PATTERN = r"Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>"
-    FILE_SIZE_PATTERN = r"Taille:</td>\s*<td[^>]*>(?P<S>[\d.]+[KMG])o"
-    FILE_OFFLINE_PATTERN = r"Erreur 404 - Document non trouv|Fichier inexistant|Le fichier demand&eacute; n'a pas &eacute;t&eacute; trouv&eacute;"
-    #FILE_URL_PATTERN = r'href="(?P<url>http://.*?)">T&eacute;l&eacute;charger ce fichier'   
+    __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
+
+    __description__ = """Dl.free.fr hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("the-razer", "daniel_ AT gmx DOT net"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Toilal", "toilal.dev@gmail.com")]
+
+
+    FILE_NAME_PATTERN = r'Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>'
+    FILE_SIZE_PATTERN = r'Taille:</td>\s*<td[^>]*>(?P<S>[\d.,]+\w)o'
+    OFFLINE_PATTERN = r'Erreur 404 - Document non trouv|Fichier inexistant|Le fichier demand&eacute; n\'a pas &eacute;t&eacute; trouv&eacute;'
+
 
     def setup(self):
         self.multiDL = self.resumeDownload = True
         self.limitDL = 5
         self.chunkLimit = 1
 
+
     def init(self):
         factory = self.core.requestFactory
         self.req = CustomBrowser(factory.bucket, factory.getOptions())
 
-    def process(self, pyfile):
-        self.req.setCookieJar(None)
 
+    def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
         valid_url = pyfile.url
         headers = self.load(valid_url, just_header=True)
 
-        self.html = None
         if headers.get('code') == 302:
             valid_url = headers.get('location')
             headers = self.load(valid_url, just_header=True)
@@ -146,12 +156,13 @@ class DlFreeFr(SimpleHoster):
                 self.html = self.load(valid_url)
                 self.handleFree()
             else:
-                # Direct access to requested file for users using free.fr as Internet Service Provider. 
+                # Direct access to requested file for users using free.fr as Internet Service Provider.
                 self.download(valid_url, disposition=True)
         elif headers.get('code') == 404:
             self.offline()
         else:
-            self.fail("Invalid return code: " + str(headers.get('code')))
+            self.fail(_("Invalid return code: ") + str(headers.get('code')))
+
 
     def handleFree(self):
         action, inputs = self.parseHtmlForm('action="getfile.pl"')
@@ -164,17 +175,18 @@ class DlFreeFr(SimpleHoster):
         self.load("http://dl.free.fr/getfile.pl", post=inputs)
         headers = self.getLastHeaders()
         if headers.get("code") == 302 and "set-cookie" in headers and "location" in headers:
-            found = re.search("(.*?)=(.*?); path=(.*?); domain=(.*?)", headers.get("set-cookie"))
+            m = re.search("(.*?)=(.*?); path=(.*?); domain=(.*?)", headers.get("set-cookie"))
             cj = CookieJar(__name__)
-            if found:
-                cj.setCookie(found.group(4), found.group(1), found.group(2), found.group(3))
+            if m:
+                cj.setCookie(m.group(4), m.group(1), m.group(2), m.group(3))
             else:
-                self.fail("Cookie error")
+                self.fail(_("Cookie error"))
             location = headers.get("location")
             self.req.setCookieJar(cj)
             self.download(location, disposition=True)
         else:
-            self.fail("Invalid response")
+            self.fail(_("Invalid response"))
+
 
     def getLastHeaders(self):
         #parse header

@@ -1,80 +1,127 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 import re
-from time import mktime, strptime
+
+from urlparse import urljoin
+from time import gmtime, mktime, strptime
+
 from module.plugins.Account import Account
-from module.plugins.internal.SimpleHoster import parseHtmlForm
-from module.utils import parseFileSize
+from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 
 
 class XFSPAccount(Account):
-    __name__ = "XFSPAccount"
-    __version__ = "0.05"
-    __type__ = "account"
-    __description__ = """XFileSharingPro account base"""
-    __author_name__ = ("zoidberg")
-    __author_mail__ = ("zoidberg@mujmail.cz")
+    __name__    = "XFSPAccount"
+    __type__    = "account"
+    __version__ = "0.22"
 
-    MAIN_PAGE = None
+    __description__ = """XFileSharingPro account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
-    VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:</TD><TD><b>([^<]+)</b>'
-    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:</TD><TD><b>([^<]+)</b>'
+
+    """
+    Following patterns should be defined by each hoster:
+
+      HOSTER_URL: (optional)
+        example: HOSTER_URL = r'linestorage.com'
+
+      PREMIUM_PATTERN: (optional) Checks if the account is premium
+        example: PREMIUM_PATTERN = r'>Renew premium'
+    """
+
+    HOSTER_NAME = None
+
+    COOKIES = [(HOSTER_NAME, "lang", "english")]  #: or list of tuples [(domain, name, value)]
+
+    VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:.*?(\d{1,2} [\w^_]+ \d{4})'
+
+    TRAFFIC_LEFT_PATTERN = r'>Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
+    TRAFFIC_LEFT_UNIT = "MB"  #: used only if no group <U> was found
+
+    LOGIN_FAIL_PATTERN = r'>(Incorrect Login or Password|Error<)'
+
+
+    def __init__(self, manager, accounts):  #@TODO: remove in 0.4.10
+        self.init()
+        return super(XFSPAccount, self).__init__(manager, accounts)
+
+
+    def init(self):
+        # if not self.HOSTER_NAME:
+            # self.fail(_("Missing HOSTER_NAME"))
+
+        if not hasattr(self, "HOSTER_URL"):
+            self.HOSTER_URL = "http://www.%s/" % self.HOSTER_NAME.replace("www.", "", 1)
+
 
     def loadAccountInfo(self, user, req):
-        html = req.load(self.MAIN_PAGE + "?op=my_account", decode=True)
+        html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
 
-        validuntil = trafficleft = None
-        premium = True if '>Renew premium<' in html else False
+        validuntil = None
+        trafficleft = None
+        premium = None
 
-        found = re.search(self.VALID_UNTIL_PATTERN, html)
-        if found:
-            premium = True
-            trafficleft = -1
+        if hasattr(self, "PREMIUM_PATTERN"):
+            premium = True if re.search(self.PREMIUM_PATTERN, html) else False
+
+        m = re.search(self.VALID_UNTIL_PATTERN, html)
+        if m:
+            expiredate = m.group(1).strip()
+            self.logDebug("Expire date: " + expiredate)
+
             try:
-                self.logDebug(found.group(1))
-                validuntil = mktime(strptime(found.group(1), "%d %B %Y"))
+                validuntil = mktime(strptime(expiredate, "%d %B %Y"))
             except Exception, e:
-                self.logError(e)
-        else:
-            found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-            if found:
-                trafficleft = found.group(1)
-                if "Unlimited" in trafficleft:
+                self.logError(str(e))
+            else:
+                if validuntil > mktime(gmtime()):
                     premium = True
                 else:
-                    trafficleft = parseFileSize(trafficleft) / 1024
+                    if premium is False:  #: registered account type (not premium)
+                        validuntil = -1
+                    premium = False
 
-        return ({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        if m:
+            try:
+                traffic = m.groupdict()
+                if "nlimited" in traffic['S']:
+                    trafficleft = -1
+                    if premium is None:
+                        premium = True
+                else:
+                    if 'U' in traffic:
+                        unit = traffic['U']
+                    elif isinstance(self.TRAFFIC_LEFT_UNIT, basestring):
+                        unit = self.TRAFFIC_LEFT_UNIT
+                    else:
+                        unit = ""
+
+                    trafficleft = self.parseTraffic(traffic['S'] + unit)
+
+            except Exception, e:
+                self.logDebug(str(e))
+
+        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium or False}
+
 
     def login(self, user, data, req):
-        html = req.load('%slogin.html' % self.MAIN_PAGE, decode=True)
+        if isinstance(self.COOKIES, list):
+            set_cookies(req.cj, self.COOKIES)
+
+        url = urljoin(self.HOSTER_URL, "login.html")
+        html = req.load(url, decode=True)
 
         action, inputs = parseHtmlForm('name="FL"', html)
         if not inputs:
-            inputs = {"op": "login",
-                      "redirect": self.MAIN_PAGE}
+            inputs = {'op': "login",
+                      'redirect': self.HOSTER_URL}
 
-        inputs.update({"login": user,
-                       "password": data['password']})
+        inputs.update({'login': user,
+                       'password': data['password']})
 
-        html = req.load(self.MAIN_PAGE, post=inputs, decode=True)
+        html = req.load(self.HOSTER_URL, post=inputs, decode=True)
 
-        if 'Incorrect Login or Password' in html or '>Error<' in html:
+        if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrongPassword()

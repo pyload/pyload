@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 
 class ArchiveError(Exception):
     pass
@@ -15,8 +13,13 @@ class WrongPassword(Exception):
 
 
 class AbtractExtractor:
-
+    __name__    = "AbtractExtractor"
     __version__ = "0.1"
+
+    __description__ = """Abtract extractor plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+
 
     @staticmethod
     def checkDeps():
@@ -25,6 +28,7 @@ class AbtractExtractor:
         """
         return True
 
+
     @staticmethod
     def getTargets(files_ids):
         """ Filter suited targets from list of filename id tuple list
@@ -32,6 +36,7 @@ class AbtractExtractor:
         :return: List of targets, id tuple list
         """
         raise NotImplementedError
+
 
     def __init__(self, m, file, out, fullpath, overwrite, excludefiles, renice):
         """Initialize extractor for specific file
@@ -52,9 +57,11 @@ class AbtractExtractor:
         self.renice = renice
         self.files = []  #: Store extracted files here
 
+
     def init(self):
         """ Initialize additional data structures """
         pass
+
 
     def checkArchive(self):
         """Check if password if needed. Raise ArchiveError if integrity is
@@ -65,6 +72,7 @@ class AbtractExtractor:
         """
         return False
 
+
     def checkPassword(self, password):
         """ Check if the given password is/might be correct.
         If it can not be decided at this point return true.
@@ -73,6 +81,7 @@ class AbtractExtractor:
         :return: boolean
         """
         return True
+
 
     def extract(self, progress, password=None):
         """Extract the archive. Raise specific errors in case of failure.
@@ -86,12 +95,14 @@ class AbtractExtractor:
         """
         raise NotImplementedError
 
+
     def getDeleteFiles(self):
         """Return list of files to delete, do *not* delete them here.
 
         :return: List with paths of files to delete
         """
         raise NotImplementedError
+
 
     def getExtractedFiles(self):
         """Populate self.files at some point while extracting"""

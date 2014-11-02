@@ -10,47 +10,57 @@ from module.plugins.Crypter import Crypter
 
 
 class RelinkUs(Crypter):
-    __name__ = "RelinkUs"
-    __type__ = "crypter"
-    __pattern__ = r"http://(www\.)?relink.us/(f/|((view|go).php\?id=))(?P<id>.+)"
-    __version__ = "3.0"
-    __description__ = """Relink.us Crypter Plugin"""
-    __author_name__ = ("fragonib")
-    __author_mail__ = ("fragonib[AT]yahoo[DOT]es")
+    __name__    = "RelinkUs"
+    __type__    = "crypter"
+    __version__ = "3.1"
 
-    # Constants
-    PREFERRED_LINK_SOURCES = ['cnl2', 'dlc', 'web']
+    __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<id>.+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    OFFLINE_TOKEN = "<title>Tattooside"
-    PASSWORD_TOKEN = "container_password.php"
-    PASSWORD_ERROR_ROKEN = "You have entered an incorrect password"
-    PASSWORD_SUBMIT_URL = "http://www.relink.us/container_password.php"
-    CAPTCHA_TOKEN = "container_captcha.php"
-    CAPTCHA_ERROR_ROKEN = "You have solved the captcha wrong"
-    CAPTCHA_IMG_URL = "http://www.relink.us/core/captcha/circlecaptcha.php"
-    CAPTCHA_SUBMIT_URL = "http://www.relink.us/container_captcha.php"
-    FILE_TITLE_REGEX = r"<th>Title</th><td><i>(.*)</i></td></tr>"
-    FILE_NOTITLE = 'No title'
+    __description__ = """Relink.us decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+                       ("AndroKev", "neureither.kevin@gmail.com")]
+
+
+    PREFERRED_LINK_SOURCES = ["cnl2", "dlc", "web"]
+
+    OFFLINE_TOKEN = r'<title>Tattooside'
+
+    PASSWORD_TOKEN = r'container_password.php'
+    PASSWORD_ERROR_ROKEN = r'You have entered an incorrect password'
+    PASSWORD_SUBMIT_URL = r'http://www.relink.us/container_password.php'
+
+    CAPTCHA_TOKEN = r'container_captcha.php'
+    CAPTCHA_ERROR_ROKEN = r'You have solved the captcha wrong'
+    CAPTCHA_IMG_URL = r'http://www.relink.us/core/captcha/circlecaptcha.php'
+    CAPTCHA_SUBMIT_URL = r'http://www.relink.us/container_captcha.php'
+
+    FILE_TITLE_REGEX = r'<th>Title</th><td>(.*)</td></tr>'
+    FILE_NOTITLE = r'No title'
 
     CNL2_FORM_REGEX = r'<form id="cnl_form-(.*?)</form>'
     CNL2_FORMINPUT_REGEX = r'<input.*?name="%s".*?value="(.*?)"'
     CNL2_JK_KEY = "jk"
     CNL2_CRYPTED_KEY = "crypted"
+
     DLC_LINK_REGEX = r'<a href=".*?" class="dlc_button" target="_blank">'
-    DLC_DOWNLOAD_URL = "http://www.relink.us/download.php"
-    WEB_FORWARD_REGEX = r"getFile\('(?P<link>.+)'\)"
-    WEB_FORWARD_URL = "http://www.relink.us/frame.php"
+    DLC_DOWNLOAD_URL = r'http://www.relink.us/download.php'
+
+    WEB_FORWARD_REGEX = r'getFile\(\'(?P<link>.+)\'\)'
+    WEB_FORWARD_URL = r'http://www.relink.us/frame.php'
     WEB_LINK_REGEX = r'<iframe name="Container" height="100%" frameborder="no" width="100%" src="(?P<link>.+)"></iframe>'
+
 
     def setup(self):
         self.fileid = None
         self.package = None
         self.password = None
-        self.html = None
         self.captcha = False
 
-    def decrypt(self, pyfile):
 
+    def decrypt(self, pyfile):
         # Init
         self.initPackage(pyfile)
 
@@ -61,7 +71,7 @@ class RelinkUs(Crypter):
         if not self.isOnline():
             self.offline()
 
-        # Check for protection    
+        # Check for protection
         if self.isPasswordProtected():
             self.unlockPasswordProtection()
             self.handleErrors()
@@ -85,17 +95,17 @@ class RelinkUs(Crypter):
         # Pack
         if package_links:
             self.packages = [(package_name, package_links, folder_name)]
-        else:
-            self.fail('Could not extract any links')
+
 
     def initPackage(self, pyfile):
         self.fileid = re.match(self.__pattern__, pyfile.url).group('id')
         self.package = pyfile.package()
         self.password = self.getPassword()
-        self.url = pyfile.url
+
 
     def requestPackage(self):
-        self.html = self.load(self.url, decode=True)
+        self.html = self.load(self.pyfile.url, decode=True)
+
 
     def isOnline(self):
         if self.OFFLINE_TOKEN in self.html:
@@ -103,10 +113,12 @@ class RelinkUs(Crypter):
             return False
         return True
 
+
     def isPasswordProtected(self):
         if self.PASSWORD_TOKEN in self.html:
             self.logDebug("Links are password protected")
             return True
+
 
     def isCaptchaProtected(self):
         if self.CAPTCHA_TOKEN in self.html:
@@ -114,11 +126,13 @@ class RelinkUs(Crypter):
             return True
         return False
 
+
     def unlockPasswordProtection(self):
         self.logDebug("Submitting password [%s] for protected links" % self.password)
         passwd_url = self.PASSWORD_SUBMIT_URL + "?id=%s" % self.fileid
         passwd_data = {'id': self.fileid, 'password': self.password, 'pw': 'submit'}
         self.html = self.load(passwd_url, post=passwd_data, decode=True)
+
 
     def unlockCaptchaProtection(self):
         self.logDebug("Request user positional captcha resolving")
@@ -129,10 +143,11 @@ class RelinkUs(Crypter):
         captcha_post_data = {'button.x': coords[0], 'button.y': coords[1], 'captcha': 'submit'}
         self.html = self.load(captcha_post_url, post=captcha_post_data, decode=True)
 
+
     def getPackageInfo(self):
         name = folder = None
 
-        # Try to get info from web        
+        # Try to get info from web
         m = re.search(self.FILE_TITLE_REGEX, self.html)
         if m is not None:
             title = m.group(1).strip()
@@ -146,22 +161,23 @@ class RelinkUs(Crypter):
             folder = self.package.folder
             self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
 
-        # Return package info 
+        # Return package info
         return name, folder
+
 
     def handleErrors(self):
         if self.PASSWORD_ERROR_ROKEN in self.html:
             msg = "Incorrect password, please set right password on 'Edit package' form and retry"
             self.logDebug(msg)
-            self.fail(msg)
+            self.fail(_(msg))
 
         if self.captcha:
             if self.CAPTCHA_ERROR_ROKEN in self.html:
-                self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
                 self.retry()
             else:
                 self.correctCaptcha()
+
 
     def handleLinkSource(self, source):
         if source == 'cnl2':
@@ -171,12 +187,13 @@ class RelinkUs(Crypter):
         elif source == 'web':
             return self.handleWEBLinks()
         else:
-            self.fail('Unknown source [%s] (this is probably a bug)' % source)
+            self.error('Unknown source type "%s" (this is probably a bug)' % source)
+
 
     def handleCNL2Links(self):
         self.logDebug("Search for CNL2 links")
         package_links = []
-        m = re.search(self.CNL2_FORM_REGEX, self.html, re.DOTALL)
+        m = re.search(self.CNL2_FORM_REGEX, self.html, re.S)
         if m is not None:
             cnl2_form = m.group(1)
             try:
@@ -187,8 +204,9 @@ class RelinkUs(Crypter):
                 self.logDebug("Unable to decrypt CNL2 links")
         return package_links
 
+
     def handleDLCLinks(self):
-        self.logDebug('Search for DLC links')
+        self.logDebug("Search for DLC links")
         package_links = []
         m = re.search(self.DLC_LINK_REGEX, self.html)
         if m is not None:
@@ -197,7 +215,7 @@ class RelinkUs(Crypter):
             try:
                 dlc = self.load(container_url)
                 dlc_filename = self.fileid + ".dlc"
-                dlc_filepath = os.path.join(self.config["general"]["download_folder"], dlc_filename)
+                dlc_filepath = os.path.join(self.config['general']['download_folder'], dlc_filename)
                 f = open(dlc_filepath, "wb")
                 f.write(dlc)
                 f.close()
@@ -205,6 +223,7 @@ class RelinkUs(Crypter):
             except:
                 self.logDebug("Unable to download DLC container")
         return package_links
+
 
     def handleWEBLinks(self):
         self.logDebug("Search for WEB links")
@@ -224,22 +243,22 @@ class RelinkUs(Crypter):
             self.wait()
         return package_links
 
-    def _getCipherParams(self, cnl2_form):
 
+    def _getCipherParams(self, cnl2_form):
         # Get jk
         jk_re = self.CNL2_FORMINPUT_REGEX % self.CNL2_JK_KEY
-        vjk = re.findall(jk_re, cnl2_form, re.IGNORECASE)
+        vjk = re.findall(jk_re, cnl2_form, re.I)
 
         # Get crypted
         crypted_re = self.CNL2_FORMINPUT_REGEX % RelinkUs.CNL2_CRYPTED_KEY
-        vcrypted = re.findall(crypted_re, cnl2_form, re.IGNORECASE)
+        vcrypted = re.findall(crypted_re, cnl2_form, re.I)
 
         # Log and return
         self.logDebug("Detected %d crypted blocks" % len(vcrypted))
         return vcrypted, vjk
 
-    def _getLinks(self, crypted, jk):
 
+    def _getLinks(self, crypted, jk):
         # Get key
         jreturn = self.js.eval("%s f()" % jk)
         self.logDebug("JsEngine returns value [%s]" % jreturn)

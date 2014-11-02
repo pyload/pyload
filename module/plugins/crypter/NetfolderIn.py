@@ -6,25 +6,32 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class NetfolderIn(SimpleCrypter):
-    __name__ = "NetfolderIn"
-    __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?netfolder.in/((?P<id1>\w+)/\w+|folder.php\?folder_id=(?P<id2>\w+))"
-    __version__ = "0.6"
-    __description__ = """NetFolder Crypter Plugin"""
-    __author_name__ = ("RaNaN", "fragonib")
-    __author_mail__ = ("RaNaN@pyload.org", "fragonib[AT]yahoo[DOT]es")
+    __name__    = "NetfolderIn"
+    __type__    = "crypter"
+    __version__ = "0.7"
 
-    TITLE_PATTERN = r'<div class="Text">Inhalt des Ordners <span(.*)>(?P<title>.+)</span></div>'
+    __pattern__ = r'http://(?:www\.)?netfolder\.in/((?P<id1>\w+)/\w+|folder\.php\?folder_id=(?P<id2>\w+))'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+
+    __description__ = """NetFolder.in decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("fragonib", "fragonib[AT]yahoo[DOT]es")]
+
+
+    TITLE_PATTERN = r'<div class="Text">Inhalt des Ordners <span.*>(.+)</span></div>'
+
 
     def decrypt(self, pyfile):
         # Request package
         self.html = self.load(pyfile.url)
 
-        # Check for password protection    
+        # Check for password protection
         if self.isPasswordProtected():
             self.html = self.submitPassword()
-            if self.html is None:
-                self.fail("Incorrect password, please set right password on Add package form and retry")
+            if not self.html:
+                self.fail(_("Incorrect password, please set right password on Add package form and retry"))
 
         # Get package name and folder
         (package_name, folder_name) = self.getPackageNameAndFolder()
@@ -35,12 +42,13 @@ class NetfolderIn(SimpleCrypter):
         # Set package
         self.packages = [(package_name, package_links, folder_name)]
 
-    def isPasswordProtected(self):
 
+    def isPasswordProtected(self):
         if '<input type="password" name="password"' in self.html:
             self.logDebug("Links are password protected")
             return True
         return False
+
 
     def submitPassword(self):
         # Gather data
@@ -53,7 +61,7 @@ class NetfolderIn(SimpleCrypter):
         url = "http://netfolder.in/folder.php?folder_id=" + id
         password = self.getPassword()
 
-        # Submit package password     
+        # Submit package password
         post = {'password': password, 'save': 'Absenden'}
         self.logDebug("Submitting password [%s] for protected links with id [%s]" % (password, id))
         html = self.load(url, {}, post)
@@ -64,6 +72,7 @@ class NetfolderIn(SimpleCrypter):
             return None
 
         return html
+
 
     def getLinks(self):
         links = re.search(r'name="list" value="(.*?)"', self.html).group(1).split(",")

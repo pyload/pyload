@@ -1,82 +1,209 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 import re
 
+from random import random
 
-class CaptchaService():
-    __version__ = "0.02"
+
+class CaptchaService:
+    __name__    = "CaptchaService"
+    __version__ = "0.14"
+
+    __description__ = """Base captcha service plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+
+
+    KEY_PATTERN = None
+
+    key = None  #: last key detected
+
 
     def __init__(self, plugin):
         self.plugin = plugin
 
 
-class ReCaptcha():
-    def __init__(self, plugin):
-        self.plugin = plugin
+    def detect_key(self, html=None):
+        if not html:
+            if hasattr(self.plugin, "html") and self.plugin.html:
+                html = self.plugin.html
+            else:
+                errmsg = _("%s html not found") % self.__name__
+                self.plugin.fail(errmsg)  #@TODO: replace all plugin.fail(errmsg) with plugin.error(errmsg) in 0.4.10
+                raise TypeError(errmsg)
 
-    def challenge(self, id):
-        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={"k": id}, cookies=True)
+        m = re.search(self.KEY_PATTERN, html)
+        if m:
+            self.key = m.group("KEY")
+            self.plugin.logDebug("%s key: %s" % (self.__name__, self.key))
+            return self.key
+        else:
+            self.plugin.logDebug("%s key not found" % self.__name__)
+            return None
+
+
+    def challenge(self, key=None):
+        raise NotImplementedError
+
+
+    def result(self, server, challenge):
+        raise NotImplementedError
+
+
+class ReCaptcha(CaptchaService):
+    __name__    = "ReCaptcha"
+    __version__ = "0.07"
+
+    __description__ = """ReCaptcha captcha service plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+
+
+    KEY_PATTERN = r'recaptcha(/api|\.net)/(challenge|noscript)\?k=(?P<KEY>[\w-]+)'
+    KEY_AJAX_PATTERN = r'Recaptcha\.create\s*\(\s*["\'](?P<KEY>[\w-]+)'
+
+
+    def detect_key(self, html=None):
+        if not html:
+            if hasattr(self.plugin, "html") and self.plugin.html:
+                html = self.plugin.html
+            else:
+                errmsg = _("ReCaptcha html not found")
+                self.plugin.fail(errmsg)
+                raise TypeError(errmsg)
+
+        m = re.search(self.KEY_PATTERN, html) or re.search(self.KEY_AJAX_PATTERN, html)
+        if m:
+            self.key = m.group("KEY")
+            self.plugin.logDebug("ReCaptcha key: %s" % self.key)
+            return self.key
+        else:
+            self.plugin.logDebug("ReCaptcha key not found")
+            return None
+
+
+    def challenge(self, key=None):
+        if not key:
+            if self.detect_key():
+                key = self.key
+            else:
+                errmsg = _("ReCaptcha key not found")
+                self.plugin.fail(errmsg)
+                raise TypeError(errmsg)
+
+        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key}, cookies=True)
 
         try:
-            challenge = re.search("challenge : '(.*?)',", js).group(1)
-            server = re.search("server : '(.*?)',", js).group(1)
+            challenge = re.search("challenge : '(.+?)',", js).group(1)
+            server = re.search("server : '(.+?)',", js).group(1)
         except:
-            self.plugin.fail("recaptcha error")
+            self.plugin.error("ReCaptcha challenge pattern not found")
+
         result = self.result(server, challenge)
 
         return challenge, result
 
+
     def result(self, server, challenge):
-        return self.plugin.decryptCaptcha("%simage" % server, get={"c": challenge}, cookies=True, forceUser=True, imgtype="jpg")
+        return self.plugin.decryptCaptcha("%simage" % server, get={'c': challenge},
+                                          cookies=True, forceUser=True, imgtype="jpg")
 
 
 class AdsCaptcha(CaptchaService):
-    def challenge(self, src):
-        js = self.plugin.req.load(src, cookies=True)
+    __name__    = "AdsCaptcha"
+    __version__ = "0.04"
+
+    __description__ = """AdsCaptcha captcha service plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+
+
+    ID_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*CaptchaId=(?P<ID>\d+)'
+    KEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*PublicKey=(?P<KEY>[\w-]+)'
+
+
+    def detect_key(self, html=None):
+        if not html:
+            if hasattr(self.plugin, "html") and self.plugin.html:
+                html = self.plugin.html
+            else:
+                errmsg = _("AdsCaptcha html not found")
+                self.plugin.fail(errmsg)
+                raise TypeError(errmsg)
+
+        m = re.search(self.ID_PATTERN, html)
+        n = re.search(self.KEY_PATTERN, html)
+        if m and n:
+            self.key = (m.group("ID"), m.group("KEY"))
+            self.plugin.logDebug("AdsCaptcha id|key: %s | %s" % self.key)
+            return self.key
+        else:
+            self.plugin.logDebug("AdsCaptcha id or key not found")
+            return None
+
+
+    def challenge(self, key=None):  #: key is a tuple(CaptchaId, PublicKey)
+        if not key:
+            if self.detect_key():
+                key = self.key
+            else:
+                errmsg = _("AdsCaptcha key not found")
+                self.plugin.fail(errmsg)
+                raise TypeError(errmsg)
+
+        CaptchaId, PublicKey = key
+
+        js = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx", get={'CaptchaId': CaptchaId, 'PublicKey': PublicKey}, cookies=True)
 
         try:
-            challenge = re.search("challenge: '(.*?)',", js).group(1)
-            server = re.search("server: '(.*?)',", js).group(1)
+            challenge = re.search("challenge: '(.+?)',", js).group(1)
+            server = re.search("server: '(.+?)',", js).group(1)
         except:
-            self.plugin.fail("adscaptcha error")
+            self.plugin.error("AdsCaptcha challenge pattern not found")
+
         result = self.result(server, challenge)
 
         return challenge, result
 
+
     def result(self, server, challenge):
-        return self.plugin.decryptCaptcha("%sChallenge.aspx" % server, get={"cid": challenge, "dummy": random()}, cookies=True, imgtype="jpg")
+        return self.plugin.decryptCaptcha("%sChallenge.aspx" % server, get={'cid': challenge, 'dummy': random()},
+                                          cookies=True, imgtype="jpg")
 
 
 class SolveMedia(CaptchaService):
-    def __init__(self, plugin):
-        self.plugin = plugin
+    __name__    = "SolveMedia"
+    __version__ = "0.05"
 
-    def challenge(self, src):
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript?k=%s" % src, cookies=True)
+    __description__ = """SolveMedia captcha service plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+
+
+    KEY_PATTERN = r'api\.solvemedia\.com/papi/challenge\.(no)?script\?k=(?P<KEY>.+?)["\']'
+
+
+    def challenge(self, key=None):
+        if not key:
+            if self.detect_key():
+                key = self.key
+            else:
+                errmsg = _("SolveMedia key not found")
+                self.plugin.fail(errmsg)
+                raise TypeError(errmsg)
+
+        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript", get={'k': key}, cookies=True)
         try:
-            challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">', html).group(1)
+            challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
+                                  html).group(1)
+            server = "http://api.solvemedia.com/papi/media"
         except:
-            self.plugin.fail("solvmedia error")
-        result = self.result(challenge)
+            self.plugin.error("SolveMedia challenge pattern not found")
+
+        result = self.result(server, challenge)
 
         return challenge, result
 
-    def result(self, challenge):
-        return self.plugin.decryptCaptcha("http://api.solvemedia.com/papi/media?c=%s" % challenge, imgtype="gif")
+
+    def result(self, server, challenge):
+        return self.plugin.decryptCaptcha(server, get={'c': challenge}, imgtype="gif")

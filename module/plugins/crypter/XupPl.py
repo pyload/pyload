@@ -1,18 +1,25 @@
+# -*- coding: utf-8 -*-
+
 from module.plugins.Crypter import Crypter
 
 
 class XupPl(Crypter):
-    __name__ = "XupPl"
-    __type__ = "crypter"
-    __pattern__ = r"https?://.*\.xup\.pl/.*"
+    __name__    = "XupPl"
+    __type__    = "crypter"
     __version__ = "0.1"
-    __description__ = """Xup.pl Crypter Plugin"""
-    __author_name__ = ("z00nx")
-    __author_mail__ = ("z00nx0@gmail.com")
+
+    __pattern__ = r'https?://(?:[^/]*\.)?xup\.pl/.*'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+
+    __description__ = """Xup.pl decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("z00nx", "z00nx0@gmail.com")]
+
 
     def decrypt(self, pyfile):
-        header = self.load(self.pyfile.url, just_header=True)
+        header = self.load(pyfile.url, just_header=True)
         if 'location' in header:
-            self.core.files.addLinks([header['location']], self.pyfile.package().id)
+            self.urls = [header['location']]
         else:
-            self.fail('Unable to find link')
+            self.fail(_("Unable to find link"))

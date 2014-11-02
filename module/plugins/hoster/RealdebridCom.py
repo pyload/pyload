@@ -1,45 +1,49 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
-from time import time
-from urllib import quote, unquote
-from random import randrange
 
-from module.utils import parseFileSize
+from random import randrange
+from urllib import quote, unquote
+from time import time
+
 from module.common.json_layer import json_loads
 from module.plugins.Hoster import Hoster
+from module.utils import parseFileSize
 
 
 class RealdebridCom(Hoster):
-    __name__ = "RealdebridCom"
+    __name__    = "RealdebridCom"
+    __type__    = "hoster"
     __version__ = "0.53"
-    __type__ = "hoster"
 
-    __pattern__ = r"https?://.*real-debrid\..*"
+    __pattern__ = r'https?://(?:[^/]*\.)?real-debrid\..*'
+
     __description__ = """Real-Debrid.com hoster plugin"""
-    __author_name__ = ("Devirex, Hazzard")
-    __author_mail__ = ("naibaf_11@yahoo.de")
+    __license__     = "GPLv3"
+    __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
+
 
     def getFilename(self, url):
         try:
             name = unquote(url.rsplit("/", 1)[1])
         except IndexError:
             name = "Unknown_Filename..."
-        if not name or name.endswith(".."):  # incomplete filename, append random stuff
+        if not name or name.endswith(".."):  #: incomplete filename, append random stuff
             name += "%s.tmp" % randrange(100, 999)
         return name
+
 
     def setup(self):
         self.chunkLimit = 3
         self.resumeDownload = True
+
 
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Real-debrid")
-            self.fail("No Real-debrid account provided")
+            self.fail(_("No Real-debrid account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             password = self.getPassword().splitlines()
@@ -55,16 +59,16 @@ class RealdebridCom(Hoster):
 
             self.logDebug("Returned Data: %s" % data)
 
-            if data["error"] != 0:
-                if data["message"] == "Your file is unavailable on the hoster.":
+            if data['error'] != 0:
+                if data['message'] == "Your file is unavailable on the hoster.":
                     self.offline()
                 else:
-                    self.logWarning(data["message"])
+                    self.logWarning(data['message'])
                     self.tempOffline()
             else:
-                if self.pyfile.name is not None and self.pyfile.name.endswith('.tmp') and data["file_name"]:
-                    self.pyfile.name = data["file_name"]
-                self.pyfile.size = parseFileSize(data["file_size"])
+                if pyfile.name is not None and pyfile.name.endswith('.tmp') and data['file_name']:
+                    pyfile.name = data['file_name']
+                pyfile.size = parseFileSize(data['file_size'])
                 new_url = data['generated_links'][0][-1]
 
         if self.getConfig("https"):
@@ -86,4 +90,4 @@ class RealdebridCom(Hoster):
 
         if check == "error":
             #usual this download can safely be retried
-            self.retry(reason="An error occured while generating link.", wait_time=60)
+            self.retry(wait_time=60, reason=_("An error occured while generating link"))

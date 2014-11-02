@@ -1,61 +1,58 @@
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay, RaNaN, zoidberg
-"""
 from __future__ import with_statement
-from thread import start_new_thread
-from pycurl import FORM_FILE, LOW_SPEED_TIME
+
 import re
+
 from base64 import b64encode
+from pycurl import FORM_FILE, LOW_SPEED_TIME
+from thread import start_new_thread
 
 from module.network.RequestFactory import getURL, getRequest
 from module.plugins.Hook import Hook
 
 
 class ImageTyperzException(Exception):
+
     def __init__(self, err):
         self.err = err
+
 
     def getCode(self):
         return self.err
 
+
     def __str__(self):
         return "<ImageTyperzException %s>" % self.err
+
 
     def __repr__(self):
         return "<ImageTyperzException %s>" % self.err
 
 
 class ImageTyperz(Hook):
-    __name__ = "ImageTyperz"
+    __name__    = "ImageTyperz"
+    __type__    = "hook"
     __version__ = "0.04"
-    __description__ = """send captchas to ImageTyperz.com"""
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("username", "str", "Username", ""),
+
+    __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
                   ("force", "bool", "Force IT even if client is connected", False)]
-    __author_name__ = ("RaNaN", "zoidberg")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
+
+    __description__ = """Send captchas to ImageTyperz.com"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
+
 
     SUBMIT_URL = "http://captchatypers.com/Forms/UploadFileAndGetTextNEW.ashx"
     RESPOND_URL = "http://captchatypers.com/Forms/SetBadImage.ashx"
     GETCREDITS_URL = "http://captchatypers.com/Forms/RequestBalance.ashx"
 
+
     def setup(self):
         self.info = {}
+
 
     def getCredits(self):
         response = getURL(self.GETCREDITS_URL, post={"action": "REQUESTBALANCE", "username": self.getConfig("username"),
@@ -69,8 +66,9 @@ class ImageTyperz(Hook):
         except:
             raise ImageTyperzException("invalid response")
 
-        self.logInfo("Account balance: $%s left" % response)
+        self.logInfo(_("Account balance: $%s left") % response)
         return balance
+
 
     def submit(self, captcha, captchaType="file", match=None):
         req = getRequest()
@@ -78,8 +76,8 @@ class ImageTyperz(Hook):
         req.c.setopt(LOW_SPEED_TIME, 80)
 
         try:
-            #workaround multipart-post bug in HTTPRequest.py 
-            if re.match("^[A-Za-z0-9]*$", self.getConfig("passkey")):
+            #workaround multipart-post bug in HTTPRequest.py
+            if re.match("^\w*$", self.getConfig("passkey")):
                 multipart = True
                 data = (FORM_FILE, captcha)
             else:
@@ -106,6 +104,7 @@ class ImageTyperz(Hook):
 
         return ticket, result
 
+
     def newCaptchaTask(self, task):
         if "service" in task.data:
             return False
@@ -126,18 +125,20 @@ class ImageTyperz(Hook):
             start_new_thread(self.processCaptcha, (task,))
 
         else:
-            self.logInfo("Your %s account has not enough credits" % self.__name__)
+            self.logInfo(_("Your %s account has not enough credits") % self.__name__)
+
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             response = getURL(self.RESPOND_URL, post={"action": "SETBADIMAGE", "username": self.getConfig("username"),
                                                       "password": self.getConfig("passkey"),
-                                                      "imageid": task.data["ticket"]})
+                                                      "imageid": task.data['ticket']})
 
             if response == "SUCCESS":
-                self.logInfo("Bad captcha solution received, requested refund")
+                self.logInfo(_("Bad captcha solution received, requested refund"))
             else:
-                self.logError("Bad captcha solution received, refund request failed", response)
+                self.logError(_("Bad captcha solution received, refund request failed"), response)
+
 
     def processCaptcha(self, task):
         c = task.captchaFile
@@ -147,5 +148,5 @@ class ImageTyperz(Hook):
             task.error = e.getCode()
             return
 
-        task.data["ticket"] = ticket
+        task.data['ticket'] = ticket
         task.setResult(result)

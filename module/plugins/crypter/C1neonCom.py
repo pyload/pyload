@@ -4,10 +4,13 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 
 class C1neonCom(DeadCrypter):
-    __name__ = "C1neonCom"
-    __type__ = "container"
-    __pattern__ = r"http://(www\.)?c1neon.com/.*?"
+    __name__    = "C1neonCom"
+    __type__    = "crypter"
     __version__ = "0.05"
-    __description__ = """C1neon.Com Container Plugin"""
-    __author_name__ = ("godofdream")
-    __author_mail__ = ("soilfiction@gmail.com")
+
+    __pattern__ = r'http://(?:www\.)?c1neon\.com/.*?'
+    __config__  = []
+
+    __description__ = """C1neon.com decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("godofdream", "soilfiction@gmail.com")]

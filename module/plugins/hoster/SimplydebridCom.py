@@ -1,29 +1,31 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from urllib import quote, unquote
 import re
 
 from module.plugins.Hoster import Hoster
 
 
 class SimplydebridCom(Hoster):
-    __name__ = "SimplydebridCom"
+    __name__    = "SimplydebridCom"
+    __type__    = "hoster"
     __version__ = "0.1"
-    __type__ = "hoster"
-    __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd.php/*"
-    __description__ = """simply-debrid.com hoster plugin"""
-    __author_name__ = ("Kagenoshin")
-    __author_mail__ = ("kagenoshin@gmx.ch")
+
+    __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php/*'
+
+    __description__ = """Simply-debrid.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
+
 
     def setup(self):
         self.resumeDownload = self.multiDL = True
         self.chunkLimit = 1
 
+
     def process(self, pyfile):
         if not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "simply-debrid.com")
-            self.fail("No simply-debrid.com account provided")
+            self.fail(_("No simply-debrid.com account provided"))
 
         self.logDebug("Old URL: %s" % pyfile.url)
 
@@ -44,9 +46,9 @@ class SimplydebridCom(Hoster):
         self.logDebug("New URL: %s" % new_url)
 
         if not re.match(self.__pattern__, new_url):
-            page = self.load('http://simply-debrid.com/api.php', get={'dl': new_url}) #+'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
+            page = self.load('http://simply-debrid.com/api.php', get={'dl': new_url})  # +'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
             if 'tiger Link' in page or 'Invalid Link' in page or ('API' in page and 'ERROR' in page):
-                self.fail('Unable to unrestrict link')
+                self.fail(_("Unable to unrestrict link"))
             new_url = page
 
         self.setWait(5)
@@ -58,4 +60,4 @@ class SimplydebridCom(Hoster):
         check = self.checkDownload({"bad1": "No address associated with hostname", "bad2": "<html"})
 
         if check == "bad1" or check == "bad2":
-            self.retry(24, 150, 'Bad file downloaded')
+            self.retry(24, 3 * 60, "Bad file downloaded")

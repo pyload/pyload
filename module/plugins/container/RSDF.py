@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import base64
@@ -7,17 +6,21 @@ import re
 
 from module.plugins.Container import Container
 
-class RSDF(Container):
-    __name__ = "RSDF"
-    __version__ = "0.21"
-    __pattern__ = r".*\.rsdf"
-    __description__ = """RSDF Container Decode Plugin"""
-    __author_name__ = ("RaNaN", "spoob")
-    __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org")
 
-    
+class RSDF(Container):
+    __name__    = "RSDF"
+    __version__ = "0.23"
+
+    __pattern__ = r'.+\.rsdf'
+
+    __description__ = """RSDF container decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("spoob", "spoob@pyload.org")]
+
+
     def decrypt(self, pyfile):
-    
+
         from Crypto.Cipher import AES
 
         infile = pyfile.url.replace("\n", "")
@@ -38,12 +41,12 @@ class RSDF(Container):
             data = binascii.unhexlify(''.join(data.split()))
             data = data.splitlines()
 
-            links = []
             for link in data:
+                if not link:
+                    continue
                 link = base64.b64decode(link)
                 link = obj.decrypt(link)
                 decryptedUrl = link.replace('CCF: ', '')
-                links.append(decryptedUrl)
+                self.urls.append(decryptedUrl)
 
-            self.log.debug("%s: adding package %s with %d links" % (self.__name__,pyfile.package().name,len(links)))
-            self.packages.append((pyfile.package().name, links))        
+            self.logDebug("Adding package %s with %d links" % (pyfile.package().name, len(self.urls)))
