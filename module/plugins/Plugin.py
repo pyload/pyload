@@ -60,25 +60,30 @@ class Base(object):
         self.config = core.config
 
 
-    #log functions
+    def _log(self, type, args):
+        msg = " | ".join([str(a).strip() for a in args if a])
+        logger = getattr(self.log, type)
+        logger("%s: %s" % (self.__name__, msg or _("%s MARK" % type.upper())))
+
+
     def logDebug(self, *args):
-        self.log.debug("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
+        return self._log("debug", args)
 
 
     def logInfo(self, *args):
-        self.log.info("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
+        return self._log("info", args)
 
 
     def logWarning(self, *args):
-        self.log.warning("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
+        return self._log("warning", args)
 
 
     def logError(self, *args):
-        self.log.error("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
+        return self._log("error", args)
 
 
     def logCritical(self, *args):
-        self.log.critical("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
+        return self._log("critical", args)
 
 
     def setConf(self, option, value):
@@ -209,7 +214,7 @@ class Plugin(Base):
         self.cTask = None #captcha task
 
         self.retries = 0 # amount of retries already made
-        self.html = "" # some plugins store html code here
+        self.html = None # some plugins store html code here
 
         self.init()
 
