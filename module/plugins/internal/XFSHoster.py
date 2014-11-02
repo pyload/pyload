@@ -11,29 +11,28 @@ from module.plugins.Plugin import Fail
 from module.utils import html_unescape
 
 
-class XFSPHoster(SimpleHoster):
-    __name__    = "XFSPHoster"
+class XFSHoster(SimpleHoster):
+    __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = None
 
-    __description__ = """XFileSharingPro hoster plugin"""
+    __description__ = """XFileSharing hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
+    HOSTER_DOMAIN = None
     HOSTER_NAME = None
 
-    FILE_URL_REPLACEMENTS = []
+    COOKIES = [(HOSTER_DOMAIN, "lang", "english")]
 
-    COOKIES = [(HOSTER_NAME, "lang", "english")]
-
-    FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
-    FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
-    FILE_SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>[\w^_]+)?\)</font>'
+    INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
+    NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
+    SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>[\w^_]+)?\)</font>'
 
     OFFLINE_PATTERN = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
@@ -58,18 +57,21 @@ class XFSPHoster(SimpleHoster):
 
     def prepare(self):
         """ Initialize important variables """
+        if not self.HOSTER_DOMAIN:
+            self.fail(_("Missing HOSTER_DOMAIN"))
+
         if not self.HOSTER_NAME:
-            self.fail(_("Missing HOSTER_NAME"))
+            self.HOSTER_NAME = "".join([str.capitalize() for str in self.HOSTER_DOMAIN.split('.')])
 
         if not self.LINK_PATTERN:
             pattern = r'(https?://(www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'
-            self.LINK_PATTERN = pattern % self.HOSTER_NAME
+            self.LINK_PATTERN = pattern % self.HOSTER_DOMAIN.replace('.', '\.')
 
         self.captcha = None
         self.errmsg = None
         self.passwords = self.getPassword().splitlines()
 
-        return super(XFSPHoster, self).prepare()
+        return super(XFSHoster, self).prepare()
 
 
     def handleFree(self):
@@ -127,7 +129,7 @@ class XFSPHoster(SimpleHoster):
         inputs['url_mass'] = self.pyfile.url
         inputs['up1oad_type'] = 'url'
 
-        self.logDebug(self.HOSTER_NAME, action, inputs)
+        self.logDebug(action, inputs)
         #wait for file to upload to easybytez.com
         self.req.http.c.setopt(LOW_SPEED_TIME, 600)
         self.html = self.load(action, post=inputs)
@@ -135,7 +137,7 @@ class XFSPHoster(SimpleHoster):
         action, inputs = self.parseHtmlForm('F1')
         if not inputs:
             self.error(_("TEXTAREA not found"))
-        self.logDebug(self.HOSTER_NAME, inputs)
+        self.logDebug(inputs)
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
         elif inputs['st'] == 'Can not leech file':
@@ -212,7 +214,7 @@ class XFSPHoster(SimpleHoster):
                     else:
                         self.error(_("Form not found"))
 
-            self.logDebug(self.HOSTER_NAME, inputs)
+            self.logDebug(inputs)
 
             if 'op' in inputs and inputs['op'] in ("download2", "download3"):
                 if "password" in inputs:
@@ -269,7 +271,7 @@ class XFSPHoster(SimpleHoster):
             self.logDebug(captcha_div)
             numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
             inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
-            self.logDebug("CAPTCHA", inputs['code'], numerals)
+            self.logDebug("Captcha code: %s" % inputs['code'], numerals)
             return 2
 
         recaptcha = ReCaptcha(self)

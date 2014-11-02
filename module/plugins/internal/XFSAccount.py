@@ -9,12 +9,12 @@ from module.plugins.Account import Account
 from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 
 
-class XFSPAccount(Account):
-    __name__    = "XFSPAccount"
+class XFSAccount(Account):
+    __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
-    __description__ = """XFileSharingPro account plugin"""
+    __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
@@ -30,9 +30,9 @@ class XFSPAccount(Account):
         example: PREMIUM_PATTERN = r'>Renew premium'
     """
 
-    HOSTER_NAME = None
+    HOSTER_DOMAIN = None
 
-    COOKIES = [(HOSTER_NAME, "lang", "english")]  #: or list of tuples [(domain, name, value)]
+    COOKIES = [(HOSTER_DOMAIN, "lang", "english")]  #: or list of tuples [(domain, name, value)]
 
     VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:.*?(\d{1,2} [\w^_]+ \d{4})'
 
@@ -44,15 +44,15 @@ class XFSPAccount(Account):
 
     def __init__(self, manager, accounts):  #@TODO: remove in 0.4.10
         self.init()
-        return super(XFSPAccount, self).__init__(manager, accounts)
+        return super(XFSAccount, self).__init__(manager, accounts)
 
 
     def init(self):
-        # if not self.HOSTER_NAME:
-            # self.fail(_("Missing HOSTER_NAME"))
+        # if not self.HOSTER_DOMAIN:
+            # self.fail(_("Missing HOSTER_DOMAIN"))
 
         if not hasattr(self, "HOSTER_URL"):
-            self.HOSTER_URL = "http://www.%s/" % self.HOSTER_NAME.replace("www.", "", 1)
+            self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN.replace("www.", "", 1)
 
 
     def loadAccountInfo(self, user, req):
