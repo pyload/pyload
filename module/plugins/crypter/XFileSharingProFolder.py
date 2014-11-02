@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.XFSPCrypter import XFSPCrypter
+from module.plugins.internal.XFSCrypter import XFSCrypter
 
 
-class XFileSharingProFolder(XFSPCrypter):
+class XFileSharingProFolder(XFSCrypter):
     __name__    = "XFileSharingProFolder"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -19,18 +19,29 @@ class XFileSharingProFolder(XFSPCrypter):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def init(self):
-        self.__pattern__ = self.core.pluginManager.crypterPlugins[self.__name__]['pattern']
-        self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
+    def _log(self, type, args):
+        msg = " | ".join([str(a).strip() for a in args if a])
+        logger = getattr(self.log, type)
+        logger("%s: %s: %s" % (self.__name__, self.HOSTER_NAME, msg or _("%s MARK" % type.upper())))
 
-        account_name = "".join([str.capitalize() for str in self.HOSTER_NAME.split('.')])
-        account = self.core.accountManager.getAccountPlugin(account_name)
+
+    def init(self):
+        super(XFileSharingProFolder, self).init()
+
+        self.__pattern__ = self.core.pluginManager.crypterPlugins[self.__name__]['pattern']
+
+        self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
+        self.HOSTER_NAME = "".join([str.capitalize() for str in self.HOSTER_DOMAIN.split('.')])
+
+        account = self.core.accountManager.getAccountPlugin(self.HOSTER_NAME)
 
         if account and account.canUse():
-            self.user, data = account.selectAccount()
-            self.req = account.getAccountRequest(self.user)
-            self.premium = account.isPremium(self.user)
-
             self.account = account
+        elif self.account:
+            self.account.HOSTER_DOMAIN = self.HOSTER_DOMAIN
         else:
-            self.account.HOSTER_NAME = self.HOSTER_NAME
+            return
+
+        self.user, data = self.account.selectAccount()
+        self.req = self.account.getAccountRequest(self.user)
+        self.premium = self.account.isPremium(self.user)

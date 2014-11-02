@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class XFileSharingPro(XFSPHoster):
+class XFileSharingPro(XFSHoster):
     __name__    = "XFileSharingPro"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
 
     __pattern__ = r'^unmatchable$'
 
@@ -17,22 +17,29 @@ class XFileSharingPro(XFSPHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_URL_REPLACEMENTS = [(r'/embed-(\w{12}).*', r'/\1')]  #: support embedded files
+    URL_REPLACEMENTS = [(r'/embed-(\w{12}).*', r'/\1')]  #: support embedded files
+
+
+    def _log(self, type, args):
+        msg = " | ".join([str(a).strip() for a in args if a])
+        logger = getattr(self.log, type)
+        logger("%s: %s: %s" % (self.__name__, self.HOSTER_NAME, msg or _("%s MARK" % type.upper())))
 
 
     def init(self):
-        self.file_info = {}
+        super(XFileSharingPro, self).init()
 
         self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
-        self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
 
-        account_name = "".join([str.capitalize() for str in self.HOSTER_NAME.split('.')])
-        account = self.core.accountManager.getAccountPlugin(account_name)
+        self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
+        self.HOSTER_NAME = "".join([str.capitalize() for str in self.HOSTER_DOMAIN.split('.')])
+
+        account = self.core.accountManager.getAccountPlugin(self.HOSTER_NAME)
 
         if account and account.canUse():
             self.account = account
         elif self.account:
-            self.account.HOSTER_NAME = self.HOSTER_NAME
+            self.account.HOSTER_DOMAIN = self.HOSTER_DOMAIN
         else:
             return
 
