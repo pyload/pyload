@@ -69,7 +69,6 @@ class OneFichierCom(SimpleHoster):
             inputs['pass'] = self.getPassword()
         inputs['submit'] = "Download"
 
->>>>>>> upstream/stable
         self.download(url, post=inputs)
 
         # Check download
