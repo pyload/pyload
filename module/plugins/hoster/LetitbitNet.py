@@ -9,6 +9,7 @@
 import re
 
 from urllib import urlencode, urlopen
+from urlparse import urljoin
 
 from module.common.json_layer import json_loads, json_dumps
 from module.plugins.hoster.UnrestrictLi import secondsToMidnight
@@ -36,9 +37,9 @@ def getInfo(urls):
 class LetitbitNet(SimpleHoster):
     __name__    = "LetitbitNet"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
-    __pattern__ = r'http://(?:www\.)?(letitbit|shareflare)\.net/download/.*'
+    __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.*'
 
     __description__ = """Letitbit.net hoster plugin"""
     __license__     = "GPLv3"
@@ -46,9 +47,7 @@ class LetitbitNet(SimpleHoster):
                        ("z00nx", "z00nx0@gmail.com")]
 
 
-    FILE_URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "letitbit.net")]
-
-    HOSTER_NAME = "letitbit.net"
+    URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "letitbit.net")]
 
     SECONDS_PATTERN = r'seconds\s*=\s*(\d+);'
     CAPTCHA_CONTROL_FIELD = r'recaptcha_control_field\s=\s\'(?P<value>.+?)\''
@@ -73,12 +72,11 @@ class LetitbitNet(SimpleHoster):
         if not action:
             self.error(_("ifree_form"))
 
-        domain = "http://www." + self.HOSTER_NAME
         self.pyfile.size = float(inputs['sssize'])
         self.logDebug(action, inputs)
         inputs['desc'] = ""
 
-        self.html = self.load(domain + action, post=inputs, cookies=True)
+        self.html = self.load(urljoin("http://letitbit.net/", action), post=inputs, cookies=True)
 
         m = re.search(self.SECONDS_PATTERN, self.html)
         seconds = int(m.group(1)) if m else 60
@@ -88,7 +86,7 @@ class LetitbitNet(SimpleHoster):
         self.logDebug("ReCaptcha control field found", recaptcha_control_field)
         self.wait(seconds)
 
-        response = self.load("%s/ajax/download3.php" % domain, post=" ", cookies=True)
+        response = self.load("http://letitbit.net/ajax/download3.php", post=" ", cookies=True)
         if response != '1':
             self.error(_("Unknown response - ajax_check_url"))
         self.logDebug(response)
@@ -99,7 +97,7 @@ class LetitbitNet(SimpleHoster):
         post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response,
                      "recaptcha_control_field": recaptcha_control_field}
         self.logDebug("Post data to send", post_data)
-        response = self.load('%s/ajax/check_recaptcha.php' % domain, post=post_data, cookies=True)
+        response = self.load("http://letitbit.net/ajax/check_recaptcha.php", post=post_data, cookies=True)
         self.logDebug(response)
         if not response:
             self.invalidCaptcha()
