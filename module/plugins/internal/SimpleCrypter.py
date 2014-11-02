@@ -32,8 +32,8 @@ class SimpleCrypter(Crypter):
       LINK_PATTERN: group(1) must be a download link or a regex to catch more links
         example: LINK_PATTERN = r'<div class="link"><a href="(.+?)"'
 
-      TITLE_PATTERN: (optional) group(1) should be the folder name or the webpage title
-        example: TITLE_PATTERN = r'<title>Files of: ([^<]+) folder</title>'
+      NAME_PATTERN: (optional) group(1) should be the folder name or the webpage title
+        example: NAME_PATTERN = r'<title>Files of: ([^<]+) folder</title>'
 
       OFFLINE_PATTERN: (optional) Checks if the file is yet available online
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
@@ -59,7 +59,7 @@ class SimpleCrypter(Crypter):
 
     LINK_PATTERN = None
 
-    TITLE_REPLACEMENTS = [("&#?\w+;", fixup)]
+    NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
     URL_REPLACEMENTS = []
 
     TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
@@ -94,7 +94,8 @@ class SimpleCrypter(Crypter):
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
-        self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
+        if not self.html:
+            self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
 
         if isinstance(self.TEXT_ENCODING, basestring):
             self.html = unicode(self.html, self.TEXT_ENCODING)
@@ -102,6 +103,9 @@ class SimpleCrypter(Crypter):
 
     def decrypt(self, pyfile):
         self.prepare()
+
+        if self.html is None:
+            self.fail(_("No html retrieved"))
 
         self.checkOnline()
 
@@ -134,10 +138,10 @@ class SimpleCrypter(Crypter):
 
 
     def getPackageNameAndFolder(self):
-        if hasattr(self, 'TITLE_PATTERN'):
+        if hasattr(self, 'NAME_PATTERN'):
             try:
-                m = re.search(self.TITLE_PATTERN, self.html)
-                name = replace_patterns(m.group(1).strip(), self.TITLE_REPLACEMENTS)
+                m = re.search(self.NAME_PATTERN, self.html)
+                name = replace_patterns(m.group(1).strip(), self.NAME_REPLACEMENTS)
                 folder = html_unescape(name)
             except:
                 pass

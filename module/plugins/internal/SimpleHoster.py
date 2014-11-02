@@ -90,19 +90,20 @@ def parseHtmlForm(attr_str, html, input_names=None):
 
 
 def parseFileInfo(self, url="", html=""):
+    info = {'name': url, 'size': 0, 'status': 3}
+
     if not url and hasattr(self, "pyfile"):
         url = self.pyfile.url
 
-    info = {"name": url, "size": 0, "status": 3}
-
     if not html:
         if url:
-            return tuple(create_getInfo(self)([url]))
+            return next(create_getInfo(self)([url]))
+
+        elif hasattr(self, "req") and self.req.http.code == '404':
+            info['status'] = 1
+
         elif hasattr(self, "html"):
-            if hasattr(self, "req") and self.req.http.code == '404':
-                info['status'] = 1
-            else:
-                html = self.html
+            html = self.html
 
     if html:
         if hasattr(self, "OFFLINE_PATTERN") and re.search(self.OFFLINE_PATTERN, html):
@@ -121,7 +122,8 @@ def parseFileInfo(self, url="", html=""):
             except:
                 pass
 
-            for pattern in ("FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):
+            for pattern in ("INFO_PATTERN", "NAME_PATTERN", "SIZE_PATTERN",
+                            "FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):  #@TODO: Remove in 0.4.10
                 try:
                     info.update(re.search(getattr(self, pattern), html).groupdict())
                     online = True
@@ -133,16 +135,20 @@ def parseFileInfo(self, url="", html=""):
                 info['status'] = 2
 
                 if 'N' in info:
-                    info['name'] = replace_patterns(info['N'].strip(), self.FILE_NAME_REPLACEMENTS)
+                    info['name'] = replace_patterns(info['N'].strip(),
+                                                    self.FILE_NAME_REPLACEMENTS if hasattr(self, "FILE_NAME_REPLACEMENTS") else self.NAME_REPLACEMENTS)  #@TODO: Remove FILE_NAME_REPLACEMENTS check in 0.4.10
 
                 if 'S' in info:
                     size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
-                                            self.FILE_SIZE_REPLACEMENTS)
+                                            self.FILE_SIZE_REPLACEMENTS if hasattr(self, "FILE_SIZE_REPLACEMENTS") else self.SIZE_REPLACEMENTS)  #@TODO: Remove FILE_SIZE_REPLACEMENTS check in 0.4.10
                     info['size'] = parseFileSize(size)
 
                 elif isinstance(info['size'], basestring):
                     unit = info['units'] if 'units' in info else None
                     info['size'] = parseFileSize(info['size'], unit)
+
+    if not hasattr(self, "html") or self.html is None:
+        self.html = html
 
     if not hasattr(self, "file_info"):
         self.file_info = {}
@@ -162,7 +168,10 @@ def create_getInfo(plugin):
             else:
                 cj = None
 
-            if hasattr(plugin, "FILE_URL_REPLACEMENTS"):
+            if hasattr(plugin, "URL_REPLACEMENTS"):
+                url = replace_patterns(url, plugin.URL_REPLACEMENTS)
+
+            elif hasattr(plugin, "FILE_URL_REPLACEMENTS"):  #@TODO: Remove in 0.4.10
                 url = replace_patterns(url, plugin.FILE_URL_REPLACEMENTS)
 
             if hasattr(plugin, "TEXT_ENCODING"):
@@ -198,13 +207,13 @@ class SimpleHoster(Hoster):
     """
     Following patterns should be defined by each hoster:
 
-      FILE_INFO_PATTERN: (optional) Name and Size of the file
-        example: FILE_INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>size_unit)'
+      INFO_PATTERN: (optional) Name and Size of the file
+        example: INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>size_unit)'
       or
-        FILE_NAME_PATTERN: (optional) Name that will be set for the file
-          example: FILE_NAME_PATTERN = r'(?P<N>file_name)'
-        FILE_SIZE_PATTERN: (optional) Size that will be checked for the file
-          example: FILE_SIZE_PATTERN = r'(?P<S>file_size) (?P<U>size_unit)'
+        NAME_PATTERN: (optional) Name that will be set for the file
+          example: NAME_PATTERN = r'(?P<N>file_name)'
+        SIZE_PATTERN: (optional) Size that will be checked for the file
+          example: SIZE_PATTERN = r'(?P<S>file_size) (?P<U>size_unit)'
 
       OFFLINE_PATTERN: (optional) Checks if the file is yet available online
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
@@ -225,9 +234,9 @@ class SimpleHoster(Hoster):
         example: LINK_PREMIUM_PATTERN = r'<div class="link"><a href="(.+?)"'
     """
 
-    FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
-    FILE_SIZE_REPLACEMENTS = []
-    FILE_URL_REPLACEMENTS = []
+    NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
+    SIZE_REPLACEMENTS = []
+    URL_REPLACEMENTS = []
 
     TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
     COOKIES = True  #: or False or list of tuples [(domain, name, value)]
@@ -236,7 +245,6 @@ class SimpleHoster(Hoster):
 
     def init(self):
         self.file_info = {}
-        self.html = ""  #@TODO: Remove in 0.4.10
 
 
     def setup(self):
@@ -249,14 +257,16 @@ class SimpleHoster(Hoster):
 
         self.req.setOption("timeout", 120)
 
-        self.pyfile.url = replace_patterns(self.pyfile.url, self.FILE_URL_REPLACEMENTS)
+        self.pyfile.url = replace_patterns(self.pyfile.url,
+                                           self.FILE_URL_REPLACEMENTS if hasattr(self, "FILE_URL_REPLACEMENTS") else self.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
 
         if self.premium:
             direct_link = self.getDirectLink(self.pyfile.url)
             if direct_link:
                 return direct_link
 
-        self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
+        if not self.html:
+            self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
 
         if isinstance(self.TEXT_ENCODING, basestring):
             self.html = unicode(self.html, self.TEXT_ENCODING)
@@ -269,11 +279,11 @@ class SimpleHoster(Hoster):
             self.download(direct_link, ref=True, cookies=True, disposition=True)
 
         elif self.html is None:
-            self.fail(_("Attribute html should never be set to None"))
+            self.fail(_("No html retrieved"))
 
         else:
             premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
-            if not premium_only and 'status' not in self.file_info:  #: Usually premium only pages doesn't show the file information
+            if not premium_only and 'status' not in self.file_info:  #: Usually premium only pages doesn't show any file information
                 self.getFileInfo()
 
             if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
@@ -301,16 +311,17 @@ class SimpleHoster(Hoster):
 
 
     def getFileInfo(self):
-        self.logDebug("URL", self.pyfile.url)
-
         name, size, status = parseFileInfo(self)[:3]
+
+        msg = _("File info: %s") % self.file_info
+        self.logDebug(msg)
 
         if status == 1:
             self.offline()
         elif status == 6:
             self.tempOffline()
         elif status != 2:
-            self.error(_("File info: %s") % self.file_info)
+            self.error(msg)
 
         if name:
             self.pyfile.name = name
