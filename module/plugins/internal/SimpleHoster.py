@@ -152,14 +152,20 @@ def parseFileInfo(self, url="", html=""):
     if not hasattr(self, "html") or self.html is None:
         self.html = html
 
-    if not hasattr(self, "file_info"):
-        self.file_info = {}
+    if not hasattr(self, "info"):
+        self.info = {}
 
-    self.logDebug(_("File info (before update): %s") % self.file_info)
+    try:  #: Remove try-except statement in 0.4.10
+        self.logDebug(_("File info (before update): %s") % self.info)
+    except:
+        pass
 
-    self.file_info.update(info)
+    self.info.update(info)
 
-    self.logDebug(_("File info (after update): %s") % self.file_info)
+    try:  #: Remove try-except statement in 0.4.10
+        self.logDebug(_("File info (after update): %s") % self.info)
+    except:
+        pass
 
     return info['name'], info['size'], info['status'], url
 
@@ -199,9 +205,9 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
 
-    __pattern__ = None
+    __pattern__ = r'^unmatchable$'
 
     __description__ = """Simple hoster plugin"""
     __license__     = "GPLv3"
@@ -249,6 +255,10 @@ class SimpleHoster(Hoster):
     FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
 
 
+    def init():
+        self.info = {}
+
+
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
 
@@ -285,7 +295,7 @@ class SimpleHoster(Hoster):
 
         else:
             premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
-            if not premium_only and 'status' not in self.file_info:  #: Usually premium only pages doesn't show any file information
+            if not premium_only and 'status' not in self.info:  #: Usually premium only pages doesn't show any file information
                 self.getFileInfo()
 
             if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
@@ -318,14 +328,14 @@ class SimpleHoster(Hoster):
         if name and name != url:
             self.pyfile.name = name
         else:
-            self.pyfile.name = self.file_info['name'] = html_unescape(urlparse(url).path.split("/")[-1])
+            self.pyfile.name = self.info['name'] = html_unescape(urlparse(url).path.split("/")[-1])
 
         if status == 1:
             self.offline()
         elif status == 6:
             self.tempOffline()
         elif status != 2:
-            self.error(_("File info: %s") % self.file_info)
+            self.error(_("File info: %s") % self.info)
 
         if size:
             self.pyfile.size = size
@@ -333,7 +343,7 @@ class SimpleHoster(Hoster):
             self.logError(_("File size not parsed"))
 
         self.logDebug("FILE NAME: %s" % self.pyfile.name, "FILE SIZE: %d" % self.pyfile.size or _("Unknown"))
-        return self.file_info
+        return self.info
 
 
     def handleFree(self):
