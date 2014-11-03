@@ -149,7 +149,7 @@ class Plugin(Base):
     """
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.4"
+    __version__ = "0.05"
 
     __pattern__ = None
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -214,7 +214,6 @@ class Plugin(Base):
         self.cTask = None #captcha task
 
         self.retries = 0 # amount of retries already made
-        self.html = None # some plugins store html code here
 
         self.init()
 
@@ -371,7 +370,7 @@ class Plugin(Base):
 
 
     def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg',
-                       result_type='textual'):
+                       result_type='textual', timeout=290):
         """ Loads a captcha and decrypts it with ocr, plugin, user input
 
         :param url: url of captcha image
@@ -412,7 +411,7 @@ class Plugin(Base):
             captchaManager = self.core.captchaManager
             task = captchaManager.newTask(img, imgtype, tmpCaptcha.name, result_type)
             self.cTask = task
-            captchaManager.handleCaptcha(task)
+            captchaManager.handleCaptcha(task, timeout)
 
             while task.isWaiting():
                 if self.pyfile.abort:
@@ -675,5 +674,5 @@ class Plugin(Base):
             del self.req
         if hasattr(self, "thread"):
             del self.thread
-        if hasattr(self, "html"):
-            del self.html
+        # if hasattr(self, "html"):
+            # del self.html
