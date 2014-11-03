@@ -13,8 +13,8 @@ class NoPremiumPl(Account):
     __version__ = "0.01"
     __type__ = "account"
     __description__ = "NoPremium.pl account plugin"
-    __author_name__ = ("goddie")
-    __author_mail__ = ("dev@nopremium.pl")
+    __license__ = "GPLv3"
+    __authors__ = [("goddie", "dev@nopremium.pl")]
 
     _api_url = "http://crypt.nopremium.pl"
 

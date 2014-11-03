@@ -11,8 +11,8 @@ class NoPremiumPl(SimpleHoster):
 
     __pattern__ = r"https?://direct\.nopremium\.pl.*"
     __description__ = "NoPremium.pl hoster plugin"
-    __author_name__ = ("goddie")
-    __author_mail__ = ("dev@nopremium.pl")
+    __license__ = "GPLv3"
+    __authors__ = [("goddie", "dev@nopremium.pl")]
 
     _api_url = "http://crypt.nopremium.pl"
 

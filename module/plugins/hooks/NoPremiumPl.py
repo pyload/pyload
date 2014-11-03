@@ -17,8 +17,8 @@ class NoPremiumPl(MultiHoster):
                   ("interval", "int", "Reload supported hosts interval in hours (0 to disable)", "24")]
 
     __description__ = "NoPremium.pl hook"
-    __author_name__ = ("goddie")
-    __author_mail__ = ("dev@nopremium.pl")
+    __license__ = "GPLv3"
+    __authors__ = [("goddie", "dev@nopremium.pl")]
 
     def getHoster(self):
         hostings = loads(getURL("https://www.nopremium.pl/clipboard.php?json=3").strip())
