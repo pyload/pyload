@@ -21,7 +21,7 @@ class Account(Base):
     """
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.3"
+    __version__ = "0.03"
 
     __description__ = """Base account plugin"""
     __license__     = "GPLv3"

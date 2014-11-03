@@ -26,7 +26,7 @@ class Hook(Base):
     """
     __name__    = "Hook"
     __type__    = "hook"
-    __version__ = "0.2"
+    __version__ = "0.02"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
 

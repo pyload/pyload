@@ -7,7 +7,7 @@ from module.utils import save_path
 class Crypter(Plugin):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.4"
+    __version__ = "0.05"
 
     __pattern__ = None
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -16,6 +16,9 @@ class Crypter(Plugin):
     __description__ = """Base decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    html = None
 
 
     def __init__(self, pyfile):
@@ -35,6 +38,7 @@ class Crypter(Plugin):
 
         if self.urls:
             self.generatePackages()
+
         elif not self.packages:
             self.error(_("No link extracted"), "decrypt")
 
@@ -72,7 +76,7 @@ class Crypter(Plugin):
         for pack in self.packages:
             name, links, folder = pack
 
-            self.logDebug("Parsed package: " + name,
+            self.logDebug("Parsed package: %s" % name,
                           "%d links" % len(links),
                           "Saved to folder: %s" % folder if folder else "Saved to download folder")
 
@@ -83,7 +87,7 @@ class Crypter(Plugin):
             if package_password:
                 self.core.api.setPackageData(pid, {"password": package_password})
 
-            setFolder = lambda x: self.core.api.setPackageData(pid, {"folder": x or ""})  #: Workaround to not break API addPackage method
+            setFolder = lambda x: self.core.api.setPackageData(pid, {"folder": x or ""})  #: Workaround to do not break API addPackage method
 
             if use_subfolder:
                 if not subfolder_per_package:
@@ -94,7 +98,7 @@ class Crypter(Plugin):
                     if not folder:
                         folder = name.replace("http://", "").replace(":", "").replace("/", "_").replace("\\", "_")
 
-                    folder = save_path(folder)  #@TODO: move to deep code checks
+                    folder = save_path(folder)  #@TODO: move to core code
 
                     setFolder(folder)
                     self.logDebug("Set package %(name)s folder to: %(folder)s" % {"name": name, "folder": folder})
