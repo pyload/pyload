@@ -2,8 +2,9 @@
 
 import re
 
-from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from random import random
+
+from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
 from module.plugins.internal.SimpleHoster import create_getInfo, replace_patterns, set_cookies, SimpleHoster
@@ -14,7 +15,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = None
 
@@ -71,6 +72,12 @@ class XFSHoster(SimpleHoster):
         self.errmsg = None
         self.passwords = self.getPassword().splitlines()
 
+        if re.match(self.__pattern__, self.pyfile.url) is None:
+            if self.premium:
+                self.handleOverriden()
+            else:
+                self.fail(_("Only premium users can download from other hosters"))
+
         return super(XFSHoster, self).prepare()
 
 
@@ -118,26 +125,31 @@ class XFSHoster(SimpleHoster):
         return m.group(1)
 
 
-    #@TODO: Re-enable
     def handleOverriden(self):
         #only tested with easybytez.com
-        self.html = self.load("http://www.%s/" % self.HOSTER_NAME)
+        self.html = self.load("http://www.%s/" % self.HOSTER_DOMAIN)
+
         action, inputs = self.parseHtmlForm('')
+
         upload_id = "%012d" % int(random() * 10 ** 12)
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
+
         inputs['tos'] = '1'
         inputs['url_mass'] = self.pyfile.url
         inputs['up1oad_type'] = 'url'
 
         self.logDebug(action, inputs)
-        #wait for file to upload to easybytez.com
-        self.req.http.c.setopt(LOW_SPEED_TIME, 600)
+
+        self.req.http.c.setopt(LOW_SPEED_TIME, 600)  #: wait for file to upload to easybytez.com
+
         self.html = self.load(action, post=inputs)
 
         action, inputs = self.parseHtmlForm('F1')
         if not inputs:
-            self.error(_("TEXTAREA not found"))
+            self.error(_("TEXTAREA F1 not found"))
+
         self.logDebug(inputs)
+
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
         elif inputs['st'] == 'Can not leech file':
@@ -212,7 +224,7 @@ class XFSHoster(SimpleHoster):
                     if self.errmsg:
                         self.retry(reason=self.errmsg)
                     else:
-                        self.error(_("Form not found"))
+                        self.error(_("TEXTAREA F1 not found"))
 
             self.logDebug(inputs)
 
