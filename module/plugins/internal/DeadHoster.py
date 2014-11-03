@@ -16,7 +16,7 @@ class DeadHoster(_Hoster):
     __type__    = "hoster"
     __version__ = "0.12"
 
-    __pattern__ = None
+    __pattern__ = r'^unmatchable$'
 
     __description__ = """ Hoster is no longer available """
     __license__     = "GPLv3"

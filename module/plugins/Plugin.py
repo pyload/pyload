@@ -161,6 +161,9 @@ class Plugin(Base):
                        ("mkaay", "mkaay@mkaay.de")]
 
 
+    info = {}  #: file info dict
+
+
     def __init__(self, pyfile):
         Base.__init__(self, pyfile.m.core)
 

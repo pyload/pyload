@@ -21,4 +21,4 @@ class Hoster(Plugin):
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
-    html = None
+    html = None  #: last html loaded

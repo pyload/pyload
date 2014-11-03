@@ -8,7 +8,7 @@ class XFSCrypter(SimpleCrypter):
     __type__    = "crypter"
     __version__ = "0.03"
 
-    __pattern__ = None
+    __pattern__ = r'^unmatchable$'
 
     __description__ = """XFileSharing decrypter plugin"""
     __license__     = "GPLv3"

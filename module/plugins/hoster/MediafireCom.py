@@ -37,10 +37,12 @@ def checkHTMLHeader(url):
 def getInfo(urls):
     for url in urls:
         location, status = checkHTMLHeader(url)
+
         if status:
             file_info = (url, 0, status, url)
         else:
             file_info = parseFileInfo(MediafireCom, url, getURL(url, decode=True))
+
         yield file_info
 
 

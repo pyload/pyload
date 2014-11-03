@@ -155,14 +155,14 @@ def parseFileInfo(self, url="", html=""):
     if not hasattr(self, "info"):
         self.info = {}
 
-    try:  #: Remove try-except statement in 0.4.10
+    try:
         self.logDebug(_("File info (before update): %s") % self.info)
     except:
         pass
 
     self.info.update(info)
 
-    try:  #: Remove try-except statement in 0.4.10
+    try:
         self.logDebug(_("File info (after update): %s") % self.info)
     except:
         pass
@@ -255,7 +255,7 @@ class SimpleHoster(Hoster):
     FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
 
 
-    def init():
+    def init(self):
         self.info = {}
 
 
@@ -330,11 +330,11 @@ class SimpleHoster(Hoster):
         else:
             self.pyfile.name = self.info['name'] = html_unescape(urlparse(url).path.split("/")[-1])
 
-        if status == 1:
+        if status is 1:
             self.offline()
-        elif status == 6:
+        elif status is 6:
             self.tempOffline()
-        elif status != 2:
+        elif status is not 2:
             self.error(_("File info: %s") % self.info)
 
         if size:

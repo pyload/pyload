@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DateiTo(SimpleHoster):
     __name__    = "DateiTo"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
 
@@ -29,7 +29,7 @@ class DateiTo(SimpleHoster):
 
     def handleFree(self):
         url = 'http://datei.to/ajax/download.php'
-        data = {'P': 'I', 'ID': self.file_info['ID']}
+        data = {'P': 'I', 'ID': self.info['ID']}
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(10):

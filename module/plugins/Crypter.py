@@ -18,7 +18,7 @@ class Crypter(Plugin):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    html = None
+    html = None  #: last html loaded
 
 
     def __init__(self, pyfile):

@@ -2,22 +2,22 @@
 
 import re
 
-from module.network.RequestFactory import getRequest
+from module.network.RequestFactory import getURL
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 def getInfo(urls):
-    h = getRequest()
     for url in urls:
-        h.load(url)
         fid = re.search(WebshareCz.__pattern__, url).group('ID')
-        api_data = h.load('https://webshare.cz/api/file_info/', post={'ident': fid})
+        api_data = getURL("https://webshare.cz/api/file_info/", post={'ident': fid})
+
         if 'File not found' in api_data:
             file_info = (url, 0, 1, url)
         else:
             name = re.search('<name>(.+)</name>', api_data).group(1)
             size = re.search('<size>(.+)</size>', api_data).group(1)
             file_info = (name, size, 2, url)
+
         yield file_info
 
 

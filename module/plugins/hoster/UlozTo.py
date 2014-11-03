@@ -73,7 +73,7 @@ class UlozTo(SimpleHoster):
         if re.search(self.VIPLINK_PATTERN, self.html):
             self.html = self.load(pyfile.url, get={"disclaimer": "1"})
 
-        self.file_info = self.getFileInfo()
+        self.getFileInfo()
 
         if self.premium and self.checkTrafficLeft():
             self.handlePremium()

@@ -10,14 +10,11 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 
 def getInfo(urls):
     for url in urls:
-        html = getURL('http://www.fshare.vn/check_link.php', post={
-            "action": "check_link",
-            "arrlinks": url
-        }, decode=True)
+        html = getURL("http://www.fshare.vn/check_link.php",
+                      post={'action': "check_link", 'arrlinks': url},
+                      decode=True)
 
-        file_info = parseFileInfo(FshareVn, url, html)
-
-        yield file_info
+        yield parseFileInfo(FshareVn, url, html)
 
 
 def doubleDecode(m):

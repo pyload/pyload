@@ -15,8 +15,7 @@ def getInfo(urls):
         if m and not re.match(m.group(1), FilefactoryCom.__pattern__):  #: It's a direct link! Skipping
             yield (url, 0, 3, url)
         else:  #: It's a standard html page
-            file_info = parseFileInfo(FilefactoryCom, url, getURL(url))
-            yield file_info
+            yield parseFileInfo(FilefactoryCom, url, getURL(url))
 
 
 class FilefactoryCom(SimpleHoster):

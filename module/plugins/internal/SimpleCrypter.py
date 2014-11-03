@@ -13,9 +13,9 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
-    __pattern__ = None
+    __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
@@ -71,6 +71,8 @@ class SimpleCrypter(Crypter):
 
     #@TODO: remove in 0.4.10
     def init(self):
+        self.info = {}
+
         account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
         account = self.core.accountManager.getAccountPlugin(account_name)
 
@@ -126,17 +128,17 @@ class SimpleCrypter(Crypter):
         if name and name != url:
             self.pyfile.name = name
         else:
-            self.pyfile.name = self.file_info['name'] = html_unescape(urlparse(url).path.split("/")[-1])
+            self.pyfile.name = self.info['name'] = html_unescape(urlparse(url).path.split("/")[-1])
 
-        if status == 1:
+        if status is 1:
             self.offline()
-        elif status == 6:
+        elif status is 6:
             self.tempOffline()
 
-        self.file_info['folder'] = self.pyfile.name
+        self.info['folder'] = self.pyfile.name
 
         self.logDebug("FILE NAME: %s" % self.pyfile.name)
-        return self.file_info
+        return self.info
 
 
     def getLinks(self):

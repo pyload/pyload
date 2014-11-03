@@ -9,7 +9,7 @@ class LinkdecrypterCom(Crypter):
     __type__    = "crypter"
     __version__ = "0.27"
 
-    __pattern__ = None
+    __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
