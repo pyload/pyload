@@ -6,6 +6,8 @@ from time import time
 from traceback import print_exc
 from urlparse import urlparse
 
+from pycurl import FOLLOWLOCATION
+
 from module.network.CookieJar import CookieJar
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
@@ -193,7 +195,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
 
     __pattern__ = None
 
