@@ -17,8 +17,8 @@ class RapideoPl(MultiHoster):
                   ("interval", "int", "Reload supported hosts interval in hours (0 to disable)", "24")]
 
     __description__ = "Rapideo.pl hook"
-    __author_name__ = ("goddie")
-    __author_mail__ = ("dev@rapideo.pl")
+    __license__ = "GPLv3"
+    __authors__ = [("goddie", "dev@rapideo.pl")]
 
     def getHoster(self):
         hostings = loads(getURL("https://www.rapideo.pl/clipboard.php?json=3").strip())

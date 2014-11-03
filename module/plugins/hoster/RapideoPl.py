@@ -9,8 +9,8 @@ class RapideoPl(SimpleHoster):
     __version__ = "0.01"
     __type__ = "hoster"
     __description__ = "Rapideo.pl hoster plugin"
-    __author_name__ = ("goddie")
-    __author_mail__ = ("dev@rapideo.pl")
+    __license__ = "GPLv3"
+    __authors__ = [("goddie", "dev@rapideo.pl")]
 
     _api_url = "http://enc.rapideo.pl"
 
