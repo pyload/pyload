@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.65"
+    __version__ = "0.66"
 
     __pattern__ = r'https?://(?P<ID>\w+)\.(?P<HOST>(1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl\.fr)'
 
@@ -22,9 +22,9 @@ class OneFichierCom(SimpleHoster):
                        ("Elrick69", "elrick69[AT]rocketmail[DOT]com")]
 
 
-    NAME_PATTERN = r'>Filename :</th>\s*<td>(?P<N>.+?)<'
-    SIZE_PATTERN = r'>Size :</th>\s*<td>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    OFFLINE_PATTERN = r'>The (requested)? file (could not be found|has been deleted)'
+    NAME_PATTERN = r'>FileName :</td>\s*<td.*>(?P<N>.+?)<'
+    SIZE_PATTERN = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    OFFLINE_PATTERN = r'File not found !\s*<'
 
     URL_REPLACEMENTS = [(__pattern__, r'http://\g<ID>.\g<HOST>/en/')]
 
@@ -44,7 +44,7 @@ class OneFichierCom(SimpleHoster):
             self.wait(wait_time * 60, True)
             self.retry()
 
-        url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['ID'])
+        url, inputs = self.parseHtmlForm('action="http://1fichier.com/\?%s' % self.info['ID'])
         if not url:
             self.error(_("Download link not found"))
 
@@ -60,7 +60,7 @@ class OneFichierCom(SimpleHoster):
 
 
     def handlePremium(self):
-        url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['ID'])
+        url, inputs = self.parseHtmlForm('action="http://1fichier.com/\?%s' % self.info['ID'])
         if not url:
             self.error(_("Download link not found"))
 
