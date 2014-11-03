@@ -20,7 +20,7 @@ class MultiUpOrg(SimpleCrypter):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN = r'<title>.*(?:Project|Projet|ownload|élécharger) (.+?) (?:\(|- )'
+    NAME_PATTERN = r'<title>.*(?:Project|Projet|ownload|élécharger) (?P<N>.+?) (\(|- )'
 
 
     def getLinks(self):

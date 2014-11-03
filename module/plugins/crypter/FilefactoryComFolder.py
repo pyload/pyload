@@ -18,7 +18,7 @@ class FilefactoryComFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'<td><a href="([^"]+)">'
-    NAME_PATTERN = r'<h1>Files in <span>(.+)</span></h1>'
+    NAME_PATTERN = r'<h1>Files in <span>(?P<N>.+)</span></h1>'
     PAGES_PATTERN = r'data-paginator-totalPages="(\d+)"'
 
     COOKIES = [('.filefactory.com', 'locale', 'en_US.utf8')]

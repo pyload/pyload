@@ -19,7 +19,7 @@ class FilerNetFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'href="(/get/\w{16})">(?!<)'
-    NAME_PATTERN = r'<h3>(.+?) - <small'
+    NAME_PATTERN = r'<h3>(?P<N>.+?) - <small'
 
 
     def getLinks(self):

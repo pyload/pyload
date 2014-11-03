@@ -18,4 +18,4 @@ class BitshareComFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'<a href="(http://bitshare\.com/files/.+)">.+</a></td>'
-    NAME_PATTERN = r'View public folder "(.+)"</h1>'
+    NAME_PATTERN = r'View public folder "(?P<N>.+)"</h1>'

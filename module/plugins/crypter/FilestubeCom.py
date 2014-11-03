@@ -18,4 +18,4 @@ class FilestubeCom(SimpleCrypter):
 
 
     LINK_PATTERN = r'<a class=\"file-link-main(?: noref)?\" [^>]* href=\"(http://[^\"]+)'
-    NAME_PATTERN = r'<h1\s*> (.+)  download\s*</h1>'
+    NAME_PATTERN = r'<h1\s*> (?P<N>.+)  download\s*</h1>'

@@ -19,7 +19,7 @@ class TnyCz(SimpleCrypter):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN = r'<title>(.+) - .+</title>'
+    NAME_PATTERN = r'<title>(?P<N>.+) - .+</title>'
 
 
     def getLinks(self):

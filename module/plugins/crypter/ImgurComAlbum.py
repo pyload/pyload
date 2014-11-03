@@ -18,7 +18,7 @@ class ImgurComAlbum(SimpleCrypter):
     __authors__     = [("nath_schwarz", "nathan.notwhite@gmail.com")]
 
 
-    NAME_PATTERN = r'(.+?) - Imgur'
+    NAME_PATTERN = r'(?P<N>.+?) - Imgur'
     LINK_PATTERN = r'i\.imgur\.com/\w{7}s?\.(?:jpeg|jpg|png|gif|apng)'
 
 

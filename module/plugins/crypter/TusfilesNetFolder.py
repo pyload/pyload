@@ -10,7 +10,7 @@ from module.plugins.internal.XFSCrypter import XFSCrypter
 class TusfilesNetFolder(XFSCrypter):
     __name__    = "TusfilesNetFolder"
     __type__    = "crypter"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -42,4 +42,4 @@ class TusfilesNetFolder(XFSCrypter):
 
         for p in xrange(2, pages + 1):
             self.html = self.loadPage(p)
-            self.package_links += self.getLinks()
+            self.links += self.getLinks()

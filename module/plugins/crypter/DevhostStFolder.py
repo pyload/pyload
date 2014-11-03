@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class DevhostStFolder(SimpleCrypter):
     __name__    = "DevhostStFolder"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -29,7 +29,10 @@ class DevhostStFolder(SimpleCrypter):
     OFFLINE_PATTERN = r'"/cHP">test\.png<'
 
 
-    def getPackageNameAndFolder(self):
+    def getFileInfo(self):
+        if re.search(self.OFFLINE_PATTERN, self.html):
+            self.offline()
+
         try:
             id = re.match(self.__pattern__, self.pyfile.url).group('ID')
             if id == "0":
@@ -48,7 +51,7 @@ class DevhostStFolder(SimpleCrypter):
             self.logDebug(str(e))
             name = folder = re.match(self.__pattern__, self.pyfile.url).group('USER')
 
-        return name, folder
+        return {'name': name, 'folder': folder}
 
 
     def getLinks(self):

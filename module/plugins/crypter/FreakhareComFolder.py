@@ -20,7 +20,7 @@ class FreakhareComFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'<a href="(http://freakshare\.com/files/[^"]+)" target="_blank">'
-    NAME_PATTERN = r'Folder:</b> (.+)'
+    NAME_PATTERN = r'Folder:</b> (?P<N>.+)'
     PAGES_PATTERN = r'Pages: +(\d+)'
 
 

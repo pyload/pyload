@@ -19,4 +19,4 @@ class FiletramCom(SimpleCrypter):
 
 
     LINK_PATTERN = r'\s+(http://.+)'
-    NAME_PATTERN = r'<title>(.+?) - Free Download'
+    NAME_PATTERN = r'<title>(?P<N>.+?) - Free Download'

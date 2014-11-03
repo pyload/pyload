@@ -18,4 +18,4 @@ class FilecloudIoFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'href="(http://filecloud\.io/\w+)" title'
-    NAME_PATTERN = r'>(.+?) - filecloud\.io<'
+    NAME_PATTERN = r'>(?P<N>.+?) - filecloud\.io<'

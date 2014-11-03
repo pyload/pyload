@@ -19,6 +19,6 @@ class UploadableChFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'"(.+?)" class="icon_zipfile">'
-    NAME_PATTERN = r'<div class="folder"><span>&nbsp;</span>(.+?)</div>'
+    NAME_PATTERN = r'<div class="folder"><span>&nbsp;</span>(?P<N>.+?)</div>'
     OFFLINE_PATTERN = r'We are sorry... The URL you entered cannot be found on the server.'
     TEMP_OFFLINE_PATTERN = r'<div class="icon_err">'
