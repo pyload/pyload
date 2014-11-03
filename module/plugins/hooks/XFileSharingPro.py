@@ -8,7 +8,7 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_hoster_list", "bool", "Load listed hosters only", False),
@@ -65,7 +65,7 @@ class XFileSharingPro(Hook):
                 if use_builtin_list:
                     plugin_list |= set([x.lower() for x in getattr(self, "%s_LIST" % type.upper())])
 
-                plugin_list -= set(('', u'')
+                plugin_list -= set(('', u''))
 
                 if not plugin_list:
                     self.logInfo(_("No %s to handle") % type)
