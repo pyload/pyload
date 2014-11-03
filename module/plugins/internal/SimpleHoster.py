@@ -92,14 +92,14 @@ def parseHtmlForm(attr_str, html, input_names=None):
 
 
 def parseFileInfo(self, url="", html=""):
-    info = {'name': url, 'size': 0, 'status': 3}
-
     if not url and hasattr(self, "pyfile"):
         url = self.pyfile.url
 
+    info = {'name': url, 'size': 0, 'status': 3}
+
     if not html:
         if url:
-            return next(create_getInfo(self)([url]))
+            return create_getInfo(self)([url]).next()
 
         elif hasattr(self, "req") and self.req.http.code == '404':
             info['status'] = 1
@@ -155,7 +155,11 @@ def parseFileInfo(self, url="", html=""):
     if not hasattr(self, "file_info"):
         self.file_info = {}
 
+    self.logDebug(_("File info (before update): %s") % self.file_info)
+
     self.file_info.update(info)
+
+    self.logDebug(_("File info (after update): %s") % self.file_info)
 
     return info['name'], info['size'], info['status'], url
 
@@ -195,7 +199,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.48"
 
     __pattern__ = None
 
@@ -243,10 +247,6 @@ class SimpleHoster(Hoster):
     TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
     COOKIES = True  #: or False or list of tuples [(domain, name, value)]
     FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
-
-
-    def init(self):
-        self.file_info = {}
 
 
     def setup(self):
@@ -313,29 +313,26 @@ class SimpleHoster(Hoster):
 
 
     def getFileInfo(self):
-        name, size, status = parseFileInfo(self)[:3]
+        name, size, status, url = parseFileInfo(self)
 
-        msg = _("File info: %s") % self.file_info
-        self.logDebug(msg)
+        if name and name != url:
+            self.pyfile.name = name
+        else:
+            self.pyfile.name = self.file_info['name'] = html_unescape(urlparse(url).path.split("/")[-1])
 
         if status == 1:
             self.offline()
         elif status == 6:
             self.tempOffline()
         elif status != 2:
-            self.error(msg)
-
-        if name:
-            self.pyfile.name = name
-        else:
-            self.pyfile.name = html_unescape(urlparse(self.pyfile.url).path.split("/")[-1])
+            self.error(_("File info: %s") % self.file_info)
 
         if size:
             self.pyfile.size = size
         else:
             self.logError(_("File size not parsed"))
 
-        self.logDebug("FILE NAME: %s" % self.pyfile.name, "FILE SIZE: %d" % self.pyfile.size)
+        self.logDebug("FILE NAME: %s" % self.pyfile.name, "FILE SIZE: %d" % self.pyfile.size or _("Unknown"))
         return self.file_info
 
 
