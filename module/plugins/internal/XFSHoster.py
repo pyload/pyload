@@ -6,6 +6,7 @@ from random import random
 
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 
+from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
 from module.plugins.internal.SimpleHoster import create_getInfo, replace_patterns, set_cookies, SimpleHoster
 from module.plugins.Plugin import Fail
@@ -15,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'^unmatchable$'
 
@@ -35,18 +36,18 @@ class XFSHoster(SimpleHoster):
     NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
     SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>[\w^_]+)?\)</font>'
 
-    OFFLINE_PATTERN = r'>\s*\w+ (Not Found|file (was|has been) removed)'
+    OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
 
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
 
     OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
-    LINK_PATTERN = None  #: final download url pattern
+    LINK_PATTERN     = None  #: final download url pattern
 
-    CAPTCHA_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
+    CAPTCHA_PATTERN     = r'(http://[^"\']+?/captchas?/[^"\']+)'
     CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
-    RECAPTCHA_PATTERN = None
-    SOLVEMEDIA_PATTERN = None
+    RECAPTCHA_PATTERN   = None
+    SOLVEMEDIA_PATTERN  = None
 
     ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<[Cc]enter><b>)(.+?)(?:["\']|</)'
 
@@ -72,7 +73,8 @@ class XFSHoster(SimpleHoster):
         self.errmsg = None
         self.passwords = self.getPassword().splitlines()
 
-        if re.match(self.__pattern__, self.pyfile.url) is None:
+        # MultiHoster check
+        if self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']:
             if self.premium:
                 self.handleOverriden()
             else:
@@ -189,8 +191,15 @@ class XFSHoster(SimpleHoster):
                 self.fail(_("File can be downloaded by premium users only"))
 
             elif 'limit' in self.errmsg:
-                self.wait(1 * 60 * 60, True)
-                self.retry(25, reason="Download limit exceeded")
+                if 'days' in self.errmsg:
+                    delay = secondsToMidnight(gmt=2)
+                    retries = 2
+                else:
+                    delay = 1 * 60 * 60
+                    retries = 25
+
+                self.wait(delay, True)
+                self.retry(retries, reason="Download limit exceeded")
 
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
                 self.retry(reason=_("Link expired"))
