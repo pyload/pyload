@@ -147,23 +147,21 @@ def parseFileInfo(self, url="", html=""):
                     unit = info['units'] if 'units' in info else None
                     info['size'] = parseFileSize(info['size'], unit)
 
-    if not hasattr(self, "html") or self.html is None:
+    if hasattr(self, "html") and self.html is None:
         self.html = html
 
-    if not hasattr(self, "info"):
-        self.info = {}
+    if hasattr(self, "info"):
+        try:
+            self.logDebug(_("File info (before update): %s") % self.info)
+        except:
+            pass
 
-    try:
-        self.logDebug(_("File info (before update): %s") % self.info)
-    except:
-        pass
+        self.info.update(info)
 
-    self.info.update(info)
-
-    try:
-        self.logDebug(_("File info (after update): %s") % self.info)
-    except:
-        pass
+        try:
+            self.logDebug(_("File info (after update): %s") % self.info)
+        except:
+            pass
 
     return info['name'], info['size'], info['status'], url
 
@@ -203,7 +201,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.49"
+    __version__ = "0.50"
 
     __pattern__ = r'^unmatchable$'
 
@@ -246,10 +244,10 @@ class SimpleHoster(Hoster):
 
     NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
     SIZE_REPLACEMENTS = []
-    URL_REPLACEMENTS = []
+    URL_REPLACEMENTS  = []
 
-    TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
-    COOKIES = True  #: or False or list of tuples [(domain, name, value)]
+    TEXT_ENCODING       = False  #: Set to True or encoding name if encoding in http header is not correct
+    COOKIES             = True  #: or False or list of tuples [(domain, name, value)]
     FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
 
 
@@ -274,8 +272,11 @@ class SimpleHoster(Hoster):
             direct_link = self.getDirectLink(self.pyfile.url)
             if direct_link:
                 return direct_link
+            else:
+                self.html = None
+                self.info = {}
 
-        if not self.html:
+        if self.html is None:
             self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
 
         if isinstance(self.TEXT_ENCODING, basestring):
@@ -286,6 +287,7 @@ class SimpleHoster(Hoster):
         direct_link = self.prepare()
 
         if isinstance(direct_link, basestring):
+            self.logInfo(_("Direct download link detected"))
             self.download(direct_link, ref=True, cookies=True, disposition=True)
 
         elif self.html is None:
@@ -293,7 +295,7 @@ class SimpleHoster(Hoster):
 
         else:
             premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
-            if not premium_only and 'status' not in self.info:  #: Usually premium only pages doesn't show any file information
+            if not premium_only and not self.info:  #: Usually premium only pages doesn't show any file information
                 self.getFileInfo()
 
             if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
@@ -330,8 +332,10 @@ class SimpleHoster(Hoster):
 
         if status is 1:
             self.offline()
+
         elif status is 6:
             self.tempOffline()
+
         elif status is not 2:
             self.error(_("File info: %s") % self.info)
 

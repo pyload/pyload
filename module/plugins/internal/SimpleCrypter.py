@@ -13,7 +13,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -60,10 +60,10 @@ class SimpleCrypter(Crypter):
     LINK_PATTERN = None
 
     NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
-    URL_REPLACEMENTS = []
+    URL_REPLACEMENTS  = []
 
     TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
-    COOKIES = True  #: or False or list of tuples [(domain, name, value)]
+    COOKIES       = True  #: or False or list of tuples [(domain, name, value)]
 
     LOGIN_ACCOUNT = False
     LOGIN_PREMIUM = False
@@ -96,7 +96,7 @@ class SimpleCrypter(Crypter):
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
-        if not self.html:
+        if self.html is None:
             self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
 
         if isinstance(self.TEXT_ENCODING, basestring):
@@ -109,7 +109,8 @@ class SimpleCrypter(Crypter):
         if self.html is None:
             self.fail(_("No html retrieved"))
 
-        info = self.getFileInfo()
+        if not self.info:
+            self.getFileInfo()
 
         self.links = self.getLinks()
 
@@ -119,7 +120,7 @@ class SimpleCrypter(Crypter):
         self.logDebug("Package has %d links" % len(self.links))
 
         if self.links:
-            self.packages = [(info['name'], self.links, info['folder'])]
+            self.packages = [(self.info['name'], self.links, self.info['folder'])]
 
 
     def getFileInfo(self):
@@ -132,6 +133,7 @@ class SimpleCrypter(Crypter):
 
         if status is 1:
             self.offline()
+
         elif status is 6:
             self.tempOffline()
 
