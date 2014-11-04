@@ -75,6 +75,7 @@ class XFSHoster(SimpleHoster):
 
         # MultiHoster check
         if self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']:
+            self.logInfo(_("Multi hoster detected"))
             if self.premium:
                 self.handleOverriden()
             else:

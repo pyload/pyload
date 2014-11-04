@@ -269,10 +269,12 @@ class SimpleHoster(Hoster):
                                            self.FILE_URL_REPLACEMENTS if hasattr(self, "FILE_URL_REPLACEMENTS") else self.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
 
         if self.premium:
+            self.logDebug(_("Checking for direct download link..."))
             direct_link = self.getDirectLink(self.pyfile.url)
             if direct_link:
                 return direct_link
             else:
+                self.logDebug(_("No direct download link found"))
                 self.html = None
                 self.info = {}
 
