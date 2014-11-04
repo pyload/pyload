@@ -32,7 +32,7 @@ class RestartFailed(Hook):
 
 
     def periodical(self):
-        self.logInfo(_("Restart failed downloads"))
+        self.logDebug(_("Restart failed downloads"))
         self.core.api.restartFailed()
 
 
