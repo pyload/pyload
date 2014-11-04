@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
@@ -32,12 +32,12 @@ class XFSAccount(Account):
 
     HOSTER_DOMAIN = None
 
-    COOKIES = [(HOSTER_DOMAIN, "lang", "english")]  #: or list of tuples [(domain, name, value)]
+    COOKIES = [(HOSTER_DOMAIN, "lang", "english")]
 
     VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:.*?(\d{1,2} [\w^_]+ \d{4})'
 
     TRAFFIC_LEFT_PATTERN = r'>Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
-    TRAFFIC_LEFT_UNIT = "MB"  #: used only if no group <U> was found
+    TRAFFIC_LEFT_UNIT    = "MB"  #: used only if no group <U> was found
 
     LOGIN_FAIL_PATTERN = r'>(Incorrect Login or Password|Error<)'
 
@@ -86,7 +86,9 @@ class XFSAccount(Account):
         if m:
             try:
                 traffic = m.groupdict()
-                if "nlimited" in traffic['S']:
+                size = traffic['S']
+
+                if "nlimited" in size:
                     trafficleft = -1
                     if premium is None:
                         premium = True
@@ -98,10 +100,10 @@ class XFSAccount(Account):
                     else:
                         unit = ""
 
-                    trafficleft = self.parseTraffic(traffic['S'] + unit)
+                    trafficleft = self.parseTraffic(size + unit)
 
             except Exception, e:
-                self.logDebug(str(e))
+                self.logError(str(e))
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium or False}
 
