@@ -42,13 +42,13 @@ class KingfilesNet(SimpleHoster):
                      'fname': self.pyfile.name,
                      'referer': "",
                      'method_free': "+"}
-        b = self.load(self.pyfile.url, post=post_data, cookies=True, decode=True)
+        self.html = self.load(self.pyfile.url, post=post_data, cookies=True, decode=True)
 
         solvemedia = SolveMedia(self)
         captcha_challenge, captcha_response = solvemedia.challenge()
 
         # Make the downloadlink appear and load the file
-        m = re.search(self.RAND_ID_PATTERN, b)
+        m = re.search(self.RAND_ID_PATTERN, self.html)
         if m is None:
             self.error(_("Random key not found"))
 
@@ -56,7 +56,7 @@ class KingfilesNet(SimpleHoster):
         self.logDebug("rand = ", rand)
 
         post_data = {'op': "download2",
-                     'id': file_id,
+                     'id': self.info['ID'],
                      'rand': rand,
                      'referer': self.pyfile.url,
                      'method_free': "+",
