@@ -24,8 +24,6 @@ def _error(self, reason, type):
         msg += ": " + reason.strip() if reason else ""
         msg += _(" | Plugin may be out of date")
 
-        if self.core.debug:
-            print_exc()
         raise Fail(msg)
 
 
@@ -315,7 +313,7 @@ class SimpleHoster(Hoster):
 
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
-        if parseFileInfo(self, url, html)[2] != 2:
+        if parseFileInfo(self, url, html)[2] is not 2:
             try:
                 return re.search(r"Location\s*:\s*(.+)", self.req.http.header, re.I).group(1)
             except:

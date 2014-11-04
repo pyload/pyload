@@ -102,7 +102,7 @@ class XFSHoster(SimpleHoster):
 
 
     def getDownloadLink(self):
-        for i in xrange(5):
+        for i in xrange(1, 5):
             self.logDebug("Getting download link: #%d" % i)
 
             data = self.getPostParameters()

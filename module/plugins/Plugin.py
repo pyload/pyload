@@ -306,7 +306,8 @@ class Plugin(Base):
         while self.pyfile.waitUntil > time():
             self.thread.m.reconnecting.wait(2)
 
-            if self.pyfile.abort: raise Abort
+            if self.pyfile.abort:
+                raise Abort
             if self.thread.m.reconnecting.isSet():
                 self.waiting = False
                 self.wantReconnect = False
@@ -329,8 +330,6 @@ class Plugin(Base):
         msg += ": " + reason.strip() if reason else ""
         msg += _(" | Plugin may be out of date")
 
-        if self.core.debug:
-            print_exc()
         raise Fail(msg)
 
 

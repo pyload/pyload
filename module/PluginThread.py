@@ -207,6 +207,9 @@ class DownloadThread(PluginThread):
 
                 pyfile.setStatus("aborted")
 
+                if self.m.core.debug:
+                    print_exc()
+                        
                 self.clean(pyfile)
                 continue
 
@@ -239,6 +242,9 @@ class DownloadThread(PluginThread):
                     self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
                     pyfile.error = msg
 
+                if self.m.core.debug:
+                    print_exc()
+                        
                 self.m.core.hookManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
@@ -380,11 +386,16 @@ class DecrypterThread(PluginThread):
                 self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
                 pyfile.error = msg
 
+            if self.m.core.debug:
+                print_exc()
             return
 
         except Abort:
             self.m.log.info(_("Download aborted: %s") % pyfile.name)
             pyfile.setStatus("aborted")
+            
+            if self.m.core.debug:
+                print_exc()
             return
 
         except Retry:
