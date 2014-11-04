@@ -3,7 +3,6 @@
 import re
 
 from time import time
-from traceback import print_exc
 from urlparse import urlparse
 
 from pycurl import FOLLOWLOCATION

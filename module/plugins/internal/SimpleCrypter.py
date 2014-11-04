@@ -2,7 +2,7 @@
 
 import re
 
-from traceback import print_exc
+from urlparse import urlparse
 
 from module.plugins.Crypter import Crypter
 from module.plugins.Plugin import Fail
@@ -13,7 +13,7 @@ from module.utils import fixup, html_unescape
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
