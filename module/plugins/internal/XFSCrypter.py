@@ -25,5 +25,5 @@ class XFSCrypter(SimpleCrypter):
     LINK_PATTERN = r'<(?:td|TD) [^>]*>\s*<a href="(.+?)"[^>]*>.+?(?:</a>)?\s*</(?:td|TD)>'
     NAME_PATTERN = r'<[tT]itle>.*?\: (.+) folder</[tT]itle>'
 
-    OFFLINE_PATTERN = r'>\s*\w+ (Not Found|file (was|has been) removed)'
+    OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'

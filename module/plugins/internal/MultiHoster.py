@@ -22,7 +22,7 @@ class MultiHoster(Hook):
                            ("ifile.it", "filecloud.io"), ("easy-share.com", "crocko.com"), ("freakshare.net", "freakshare.com"),
                            ("hellshare.com", "hellshare.cz"), ("share-rapid.cz", "sharerapid.com"), ("sharerapid.cz", "sharerapid.com"),
                            ("ul.to", "uploaded.to"), ("uploaded.net", "uploaded.to"), ("1fichier.com", "onefichier.com")]
-    HOSTER_EXCLUDED = []
+    HOSTER_EXCLUDED     = []
 
 
     def setup(self):
