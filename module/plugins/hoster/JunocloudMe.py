@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class JunocloudMe(XFSHoster):
     __name__    = "JunocloudMe"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:\w+\.)?junocloud\.me/\w{12}'
 
@@ -17,7 +17,7 @@ class JunocloudMe(XFSHoster):
 
     HOSTER_DOMAIN = "junocloud.me"
 
-    URL_REPLACEMENTS = [(r'//(junocloud)', r'//dl3.\1')]
+    URL_REPLACEMENTS = [(r'/(?:embed-)?(\w{12}).*', r'/\1'), (r'//www\.', "//dl3.")]
 
     NAME_PATTERN = r'<p class="request_file">http://junocloud.me/w{12}/(?P<N>.+?)</p>'
     SIZE_PATTERN = r'<p class="request_filesize">Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)</p>'

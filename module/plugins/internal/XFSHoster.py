@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'^unmatchable$'
 
@@ -28,7 +28,9 @@ class XFSHoster(SimpleHoster):
 
 
     HOSTER_DOMAIN = None
-    HOSTER_NAME = None
+    HOSTER_NAME   = None
+
+    URL_REPLACEMENTS = [(r'/(?:embed-)?(\w{12}).*', r'/\1')]  #: plus support embedded files
 
     COOKIES = [(HOSTER_DOMAIN, "lang", "english")]
 

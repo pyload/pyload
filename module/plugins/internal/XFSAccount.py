@@ -2,8 +2,8 @@
 
 import re
 
-from urlparse import urljoin
 from time import gmtime, mktime, strptime
+from urlparse import urljoin
 
 from module.plugins.Account import Account
 from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
@@ -23,14 +23,12 @@ class XFSAccount(Account):
     """
     Following patterns should be defined by each hoster:
 
-      HOSTER_URL: (optional)
-        example: HOSTER_URL = r'linestorage.com'
-
       PREMIUM_PATTERN: (optional) Checks if the account is premium
         example: PREMIUM_PATTERN = r'>Renew premium'
     """
 
     HOSTER_DOMAIN = None
+    HOSTER_URL    = None
 
     COOKIES = [(HOSTER_DOMAIN, "lang", "english")]
 
@@ -51,8 +49,8 @@ class XFSAccount(Account):
         # if not self.HOSTER_DOMAIN:
             # self.fail(_("Missing HOSTER_DOMAIN"))
 
-        if not hasattr(self, "HOSTER_URL"):
-            self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN.replace("www.", "", 1)
+        if not self.HOSTER_URL:
+            self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN
 
 
     def loadAccountInfo(self, user, req):

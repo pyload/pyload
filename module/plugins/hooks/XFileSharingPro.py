@@ -24,9 +24,9 @@ class XFileSharingPro(Hook):
 
     # event_list = ["pluginConfigChanged"]
     regexp = {'hoster' : (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}',
-                         r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w{12}\W?'),
-             'crypter': (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:user|folder)s?/\w+',
-                         r'https?://(?:[^/]+\.)?(%s)/(?:user|folder)s?/\w+')}
+                          r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w{12}\W?'),
+              'crypter': (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:user|folder)s?/\w+',
+                          r'https?://(?:[^/]+\.)?(%s)/(?:user|folder)s?/\w+')}
 
     HOSTER_LIST  = [#WORKING HOSTERS:
                     "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com", "filevice.com", "hostingbulk.com",
