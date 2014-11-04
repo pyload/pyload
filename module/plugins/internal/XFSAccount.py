@@ -56,11 +56,11 @@ class XFSAccount(Account):
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
-
         validuntil = None
         trafficleft = None
         premium = None
+
+        html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
 
         if hasattr(self, "PREMIUM_PATTERN"):
             premium = True if re.search(self.PREMIUM_PATTERN, html) else False

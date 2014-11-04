@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from time import strptime, mktime
+
 from pycurl import REFERER
 
 from module.plugins.Account import Account
@@ -10,39 +12,44 @@ from module.plugins.Account import Account
 class OneFichierCom(Account):
     __name__    = "OneFichierCom"
     __type__    = "account"
-    __version__ = "0.1"
+    __version__ = "0.11"
 
     __description__ = """1fichier.com account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Elrick69", "elrick69[AT]rocketmail[DOT]com")]
+    __authors__     = [("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    VALID_UNTIL_PATTERN = r'You are a premium user until (?P<d>\d{2})/(?P<m>\d{2})/(?P<y>\d{4})'
+    VALID_UNTIL_PATTERN = r'Your Premium Status will end the (\d+/\d+/\d+)'
 
 
     def loadAccountInfo(self, user, req):
-        html = req.load("http://1fichier.com/console/abo.pl")
+        validuntil = None
+        trafficleft = -1
+        premium = None
+
+        html = req.load("https://1fichier.com/console/abo.pl")
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-
         if m:
-            premium = True
-            validuntil = re.sub(self.VALID_UNTIL_PATTERN, '\g<d>/\g<m>/\g<y>', m.group(0))
-            validuntil = int(mktime(strptime(validuntil, "%d/%m/%Y")))
-        else:
-            premium = False
-            validuntil = -1
+            expiredate = m.group(1)
+            self.logDebug("Expire date: " + expiredate)
 
-        return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
+            try:
+                validuntil = mktime(strptime(expiredate, "%d/%m/%Y"))
+            except Exception, e:
+                self.logError(str(e))
+            else:
+                premium = True
+
+        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium or False}
 
 
     def login(self, user, data, req):
-        req.http.c.setopt(REFERER, "http://1fichier.com/login.pl?lg=en")
+        req.http.c.setopt(REFERER, "https://1fichier.com/login.pl?lg=en")
 
-        html = req.load("http://1fichier.com/login.pl?lg=en", post={
-            "mail": user,
-            "pass": data['password'],
-            "Login": "Login"})
+        html = req.load("https://1fichier.com/login.pl?lg=en",
+                        post={'mail': user, 'pass': data['password'], 'It': "on", 'purge': "off", 'valider': "Send"})
 
-        if r'<div class="error_message">Invalid username or password.</div>' in html:
+        if '>Invalid email address' in html or '>Invalid password' in html:
             self.wrongPassword()
