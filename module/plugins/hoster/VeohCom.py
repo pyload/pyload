@@ -18,10 +18,10 @@ class VeohCom(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'<meta name="title" content="(?P<N>.*?)"'
+    NAME_PATTERN = r'<meta name="title" content="(?P<N>.*?)"'
     OFFLINE_PATTERN = r'>Sorry, we couldn\'t find the video you were looking for'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.veoh.com/watch/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__, r'http://www.veoh.com/watch/\g<ID>')]
 
     COOKIES = [(".veoh.com", "lassieLocale", "en")]
 

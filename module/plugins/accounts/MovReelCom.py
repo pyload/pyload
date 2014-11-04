@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSPAccount import XFSPAccount
+from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class MovReelCom(XFSPAccount):
+class MovReelCom(XFSAccount):
     __name__    = "MovReelCom"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Movreel.com account plugin"""
     __license__     = "GPLv3"
@@ -16,4 +16,4 @@ class MovReelCom(XFSPAccount):
     login_timeout = 60
     info_threshold = 30
 
-    HOSTER_NAME = "movreel.com"
+    HOSTER_DOMAIN = "movreel.com"

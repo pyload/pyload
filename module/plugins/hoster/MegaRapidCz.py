@@ -13,10 +13,10 @@ def getInfo(urls):
     h.c.setopt(HTTPHEADER,
                ["Accept: text/html",
                 "User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0"])
+
     for url in urls:
         html = h.load(url, decode=True)
-        file_info = parseFileInfo(MegaRapidCz, url, html)
-        yield file_info
+        yield parseFileInfo(MegaRapidCz, url, html)
 
 
 class MegaRapidCz(SimpleHoster):
@@ -34,8 +34,8 @@ class MegaRapidCz(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'<h1[^>]*><span[^>]*>(?:<a[^>]*>)?(?P<N>[^<]+)'
-    FILE_SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong></td>'
+    NAME_PATTERN = r'<h1[^>]*><span[^>]*>(?:<a[^>]*>)?(?P<N>[^<]+)'
+    SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong></td>'
     OFFLINE_PATTERN = ur'Nastala chyba 404|Soubor byl smazán'
 
     FORCE_CHECK_TRAFFIC = True

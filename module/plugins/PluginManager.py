@@ -19,7 +19,7 @@ class PluginManager:
     USERROOT = "userplugins."
     TYPES    = ("crypter", "container", "hoster", "captcha", "accounts", "hooks", "internal")
 
-    PATTERN = re.compile(r'__pattern__\s*=\s*[a-z]*("|\')([^"\']+)')
+    PATTERN = re.compile(r'__pattern__\s*=\s*u?r("|\')([^"\']+)')
     VERSION = re.compile(r'__version__\s*=\s*("|\')([\d.]+)')
     CONFIG  = re.compile(r'__config__\s*=\s*\[([^\]]+)', re.M)
     DESC    = re.compile(r'__description__\s*=\s*("|"""|\')([^"\']+)')
@@ -61,7 +61,7 @@ class PluginManager:
         self.log.debug("created index of plugins")
 
 
-    def parse(self, folder, pattern=False, home={}):
+    def parse(self, folder, pattern=False, home=None):
         """
         returns dict with information
         home contains parsed plugins from module.
@@ -173,7 +173,7 @@ class PluginManager:
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
 
-        if not home:
+        if home is None:
             temp = self.parse(folder, pattern, plugins)
             plugins.update(temp)
 

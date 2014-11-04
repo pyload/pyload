@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DateiTo(SimpleHoster):
     __name__    = "DateiTo"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
 
@@ -18,8 +18,8 @@ class DateiTo(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'Dateiname:</td>\s*<td colspan="2"><strong>(?P<N>.*?)</'
-    FILE_SIZE_PATTERN = r'Dateigr&ouml;&szlig;e:</td>\s*<td colspan="2">(?P<S>.*?)</'
+    NAME_PATTERN = r'Dateiname:</td>\s*<td colspan="2"><strong>(?P<N>.*?)</'
+    SIZE_PATTERN = r'Dateigr&ouml;&szlig;e:</td>\s*<td colspan="2">(?P<S>.*?)</'
     OFFLINE_PATTERN = r'>Datei wurde nicht gefunden<|>Bitte wähle deine Datei aus... <'
     PARALELL_PATTERN = r'>Du lädst bereits eine Datei herunter<'
 
@@ -29,7 +29,7 @@ class DateiTo(SimpleHoster):
 
     def handleFree(self):
         url = 'http://datei.to/ajax/download.php'
-        data = {'P': 'I', 'ID': self.file_info['ID']}
+        data = {'P': 'I', 'ID': self.info['ID']}
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(10):

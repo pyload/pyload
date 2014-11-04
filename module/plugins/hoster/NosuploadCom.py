@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class NosuploadCom(XFSPHoster):
+class NosuploadCom(XFSHoster):
     __name__    = "NosuploadCom"
     __type__    = "hoster"
-    __version__ = "0.3"
+    __version__ = "0.31"
 
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
 
@@ -17,9 +17,9 @@ class NosuploadCom(XFSPHoster):
     __authors__     = [("igel", "igelkun@myopera.com")]
 
 
-    HOSTER_NAME = "nosupload.com"
+    HOSTER_DOMAIN = "nosupload.com"
 
-    FILE_SIZE_PATTERN = r'<p><strong>Size:</strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)</p>'
+    SIZE_PATTERN = r'<p><strong>Size:</strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)</p>'
     LINK_PATTERN = r'<a class="select" href="(http://.+?)">Download</a>'
     WAIT_PATTERN = r'Please wait.*?>(\d+)</span>'
 

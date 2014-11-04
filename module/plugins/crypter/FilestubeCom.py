@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FilestubeCom(SimpleCrypter):
     __name__    = "FilestubeCom"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?filestube\.(?:com|to)/\w+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -18,4 +18,4 @@ class FilestubeCom(SimpleCrypter):
 
 
     LINK_PATTERN = r'<a class=\"file-link-main(?: noref)?\" [^>]* href=\"(http://[^\"]+)'
-    TITLE_PATTERN = r'<h1\s*> (.+)  download\s*</h1>'
+    NAME_PATTERN = r'<h1\s*> (?P<N>.+)  download\s*</h1>'

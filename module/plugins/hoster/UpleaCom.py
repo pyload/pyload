@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class UpleaCom(XFSPHoster):
+class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
 
@@ -17,9 +17,9 @@ class UpleaCom(XFSPHoster):
     __authors__     = [("Redleon", None)]
 
 
-    HOSTER_NAME = "uplea.com"
+    HOSTER_DOMAIN = "uplea.com"
 
-    FILE_INFO_PATTERN = r'class="l download-filename">\s<span.*?>(?P<N>.+)</span>\s<span.*?>(?P<S>[\d.]+) (?P<U>[\w]).*?</span>'
+    INFO_PATTERN = r'class="l download-filename">\s<span.*?>(?P<N>.+)</span>\s<span.*?>(?P<S>[\d.]+) (?P<U>[\w]).*?</span>'
     OFFLINE_PATTERN = r'You followed an invalid or expired link'
 
     LINK_PATTERN = r'"(http?://\w+\.uplea\.com/anonym/.*?)"'

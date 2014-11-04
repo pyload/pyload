@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class PastebinCom(SimpleCrypter):
     __name__    = "PastebinCom"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?pastebin\.com/\w+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -18,4 +18,4 @@ class PastebinCom(SimpleCrypter):
 
 
     LINK_PATTERN = r'<div class="de\d+">(https?://[^ <]+)(?:[^<]*)</div>'
-    TITLE_PATTERN = r'<div class="paste_box_line1" title="([^"]+)">'
+    NAME_PATTERN = r'<div class="paste_box_line1" title="(?P<N>[^"]+)">'

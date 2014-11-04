@@ -20,8 +20,8 @@ class DevhostSt(SimpleHoster):
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
-    FILE_NAME_PATTERN = r'>Filename:</span> <div title="(?P<N>.+?)"'
-    FILE_SIZE_PATTERN = r'>Size:</span> (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    NAME_PATTERN = r'>Filename:</span> <div title="(?P<N>.+?)"'
+    SIZE_PATTERN = r'>Size:</span> (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN = r'>File Not Found<'
     LINK_PATTERN = r'id="downloadfile" href="(.+?)"'

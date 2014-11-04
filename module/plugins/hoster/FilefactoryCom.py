@@ -15,8 +15,7 @@ def getInfo(urls):
         if m and not re.match(m.group(1), FilefactoryCom.__pattern__):  #: It's a direct link! Skipping
             yield (url, 0, 3, url)
         else:  #: It's a standard html page
-            file_info = parseFileInfo(FilefactoryCom, url, getURL(url))
-            yield file_info
+            yield parseFileInfo(FilefactoryCom, url, getURL(url))
 
 
 class FilefactoryCom(SimpleHoster):
@@ -32,7 +31,7 @@ class FilefactoryCom(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+) uploaded'
+    INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+) uploaded'
     OFFLINE_PATTERN = r'<h2>File Removed</h2>|This file is no longer available'
 
     LINK_PATTERN = r'"([^"]+filefactory\.com/get.+?)"'

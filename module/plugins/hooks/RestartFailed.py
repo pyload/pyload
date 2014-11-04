@@ -6,7 +6,7 @@ from module.plugins.Hook import Hook
 class RestartFailed(Hook):
     __name__    = "RestartFailed"
     __type__    = "hook"
-    __version__ = "1.55"
+    __version__ = "1.57"
 
     __config__ = [("interval", "int", "Check interval in minutes", 90)]
 
@@ -15,7 +15,7 @@ class RestartFailed(Hook):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_list = ["pluginConfigChanged"]
+    # event_list = ["pluginConfigChanged"]
 
     MIN_INTERVAL = 15 * 60  #: 15m minimum check interval (value is in seconds)
 
@@ -32,7 +32,7 @@ class RestartFailed(Hook):
 
 
     def periodical(self):
-        self.logInfo(_("Restart failed downloads"))
+        self.logDebug(_("Restart failed downloads"))
         self.core.api.restartFailed()
 
 

@@ -17,8 +17,8 @@ class DropboxCom(SimpleHoster):
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
-    FILE_NAME_PATTERN = r'<title>Dropbox - (?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'&nbsp;&middot;&nbsp; (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    NAME_PATTERN = r'<title>Dropbox - (?P<N>.+?)<'
+    SIZE_PATTERN = r'&nbsp;&middot;&nbsp; (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN = r'<title>Dropbox - (404|Shared link error)<'
 

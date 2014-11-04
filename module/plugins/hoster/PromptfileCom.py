@@ -17,7 +17,7 @@ class PromptfileCom(SimpleHoster):
     __authors__     = [("igel", "igelkun@myopera.com")]
 
 
-    FILE_INFO_PATTERN = r'<span style="[^"]*" title="[^"]*">(?P<N>.*?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</span>'
+    INFO_PATTERN = r'<span style="[^"]*" title="[^"]*">(?P<N>.*?) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</span>'
     OFFLINE_PATTERN = r'<span style="[^"]*" title="File Not Found">File Not Found</span>'
 
     CHASH_PATTERN = r'<input type="hidden" name="chash" value="([^"]*)" />'

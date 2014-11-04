@@ -20,7 +20,7 @@ class GooIm(SimpleHoster):
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
-    FILE_NAME_PATTERN = r'You will be redirected to .*(?P<N>[^/ ]+)  in'
+    NAME_PATTERN = r'You will be redirected to .*(?P<N>[^/ ]+)  in'
     OFFLINE_PATTERN = r'The file you requested was not found'
 
 

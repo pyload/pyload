@@ -17,8 +17,8 @@ class UloziskoSk(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'<div class="down1">(?P<N>[^<]+)</div>'
-    FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong><br />'
+    NAME_PATTERN = r'<div class="down1">(?P<N>[^<]+)</div>'
+    SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong><br />'
     OFFLINE_PATTERN = ur'<span class = "red">Zadaný súbor neexistuje z jedného z nasledujúcich dôvodov:</span>'
 
     LINK_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'

@@ -12,7 +12,7 @@ from module.utils import save_join
 class Container(Crypter):
     __name__    = "Container"
     __type__    = "container"
-    __version__ = "0.1"
+    __version__ = "0.01"
 
     __pattern__ = None
     __config__  = []  #: [("name", "type", "desc", "default")]

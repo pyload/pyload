@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class FreakhareComFolder(SimpleCrypter):
     __name__    = "FreakhareComFolder"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.com/folder/.+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -20,7 +20,7 @@ class FreakhareComFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'<a href="(http://freakshare\.com/files/[^"]+)" target="_blank">'
-    TITLE_PATTERN = r'Folder:</b> (.+)'
+    NAME_PATTERN = r'Folder:</b> (?P<N>.+)'
     PAGES_PATTERN = r'Pages: +(\d+)'
 
 

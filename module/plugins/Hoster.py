@@ -11,7 +11,7 @@ def getInfo(self):
 class Hoster(Plugin):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.1"
+    __version__ = "0.02"
 
     __pattern__ = None
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -19,3 +19,6 @@ class Hoster(Plugin):
     __description__ = """Base hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
+
+
+    html = None  #: last html loaded

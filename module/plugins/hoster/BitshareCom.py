@@ -21,12 +21,12 @@ class BitshareCom(SimpleHoster):
                        ("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
-    FILE_INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)</h1>'
+    INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)</h1>'
     OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
 
     COOKIES = [(".bitshare.com", "language_selection", "EN")]
 
-    FILE_AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
+    AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
     TRAFFIC_USED_UP = r'Your Traffic is used up for today. Upgrade to premium to continue!'
 
 
@@ -62,12 +62,12 @@ class BitshareCom(SimpleHoster):
         # File name
         m = re.match(self.__pattern__, pyfile.url)
         name1 = m.group('name') if m else None
-        m = re.search(self.FILE_INFO_PATTERN, self.html)
+        m = re.search(self.INFO_PATTERN, self.html)
         name2 = m.group('N') if m else None
         pyfile.name = max(name1, name2)
 
         # Ajax file id
-        self.ajaxid = re.search(self.FILE_AJAXID_PATTERN, self.html).group(1)
+        self.ajaxid = re.search(self.AJAXID_PATTERN, self.html).group(1)
         self.logDebug("File ajax id is [%s]" % self.ajaxid)
 
         # This may either download our file or forward us to an error page

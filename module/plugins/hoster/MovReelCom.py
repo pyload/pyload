@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class MovReelCom(XFSPHoster):
+class MovReelCom(XFSHoster):
     __name__    = "MovReelCom"
     __type__    = "hoster"
-    __version__ = "1.23"
+    __version__ = "1.24"
 
     __pattern__ = r'http://(?:www\.)?movreel\.com/\w{12}'
 
@@ -15,10 +15,10 @@ class MovReelCom(XFSPHoster):
     __authors__     = [("JorisV83", "jorisv83-pyload@yahoo.com")]
 
 
-    HOSTER_NAME = "movreel.com"
+    HOSTER_DOMAIN = "movreel.com"
 
-    FILE_NAME_PATTERN = r'Filename: <b>(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    NAME_PATTERN = r'Filename: <b>(?P<N>.+?)<'
+    SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     LINK_PATTERN = r'<a href="([^"]+)">Download Link'
 

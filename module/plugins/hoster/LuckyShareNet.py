@@ -20,7 +20,7 @@ class LuckyShareNet(SimpleHoster):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    FILE_INFO_PATTERN = r'<h1 class=\'file_name\'>(?P<N>\S+)</h1>\s*<span class=\'file_size\'>Filesize: (?P<S>[\d.,]+)(?P<U>[\w^_]+)</span>'
+    INFO_PATTERN = r'<h1 class=\'file_name\'>(?P<N>\S+)</h1>\s*<span class=\'file_size\'>Filesize: (?P<S>[\d.,]+)(?P<U>[\w^_]+)</span>'
     OFFLINE_PATTERN = r'There is no such file available'
 
 

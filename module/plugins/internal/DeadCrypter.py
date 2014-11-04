@@ -8,7 +8,7 @@ class DeadCrypter(_Crypter):
     __type__    = "crypter"
     __version__ = "0.02"
 
-    __pattern__ = None
+    __pattern__ = r'^unmatchable$'
 
     __description__ = """ Crypter is no longer available """
     __license__     = "GPLv3"

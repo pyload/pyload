@@ -21,8 +21,8 @@ class Keep2shareCC(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
-    FILE_SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
+    NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
+    SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
     OFFLINE_PATTERN = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
 
     LINK_PATTERN = r'To download this file with slow speed, use <a href="([^"]+)">this link</a>'

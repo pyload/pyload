@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class UploadableChFolder(SimpleCrypter):
     __name__    = "UploadableChFolder"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/list/\w+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -19,6 +19,6 @@ class UploadableChFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'"(.+?)" class="icon_zipfile">'
-    TITLE_PATTERN = r'<div class="folder"><span>&nbsp;</span>(.+?)</div>'
+    NAME_PATTERN = r'<div class="folder"><span>&nbsp;</span>(?P<N>.+?)</div>'
     OFFLINE_PATTERN = r'We are sorry... The URL you entered cannot be found on the server.'
     TEMP_OFFLINE_PATTERN = r'<div class="icon_err">'

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class SendmywayCom(XFSPHoster):
+class SendmywayCom(XFSHoster):
     __name__    = "SendmywayCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?sendmyway\.com/\w{12}'
 
@@ -15,10 +15,10 @@ class SendmywayCom(XFSPHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_NAME = "sendmyway.com"
+    HOSTER_DOMAIN = "sendmyway.com"
 
-    FILE_NAME_PATTERN = r'<p class="file-name" ><.*?>\s*(?P<N>.+)'
-    FILE_SIZE_PATTERN = r'<small>\((?P<S>\d+) bytes\)</small>'
+    NAME_PATTERN = r'<p class="file-name" ><.*?>\s*(?P<N>.+)'
+    SIZE_PATTERN = r'<small>\((?P<S>\d+) bytes\)</small>'
 
 
 getInfo = create_getInfo(SendmywayCom)

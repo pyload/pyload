@@ -2,51 +2,52 @@
 
 import re
 
-from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from random import random
 
+from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
+
+from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
 from module.plugins.internal.SimpleHoster import create_getInfo, replace_patterns, set_cookies, SimpleHoster
 from module.plugins.Plugin import Fail
 from module.utils import html_unescape
 
 
-class XFSPHoster(SimpleHoster):
-    __name__    = "XFSPHoster"
+class XFSHoster(SimpleHoster):
+    __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.10"
 
-    __pattern__ = None
+    __pattern__ = r'^unmatchable$'
 
-    __description__ = """XFileSharingPro hoster plugin"""
+    __description__ = """XFileSharing hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
+    HOSTER_DOMAIN = None
     HOSTER_NAME = None
 
-    FILE_URL_REPLACEMENTS = []
+    COOKIES = [(HOSTER_DOMAIN, "lang", "english")]
 
-    COOKIES = [(HOSTER_NAME, "lang", "english")]
+    INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
+    NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
+    SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>[\w^_]+)?\)</font>'
 
-    FILE_INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
-    FILE_NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
-    FILE_SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>[\w^_]+)?\)</font>'
-
-    OFFLINE_PATTERN = r'>\s*\w+ (Not Found|file (was|has been) removed)'
+    OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
 
     WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
 
     OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
-    LINK_PATTERN = None  #: final download url pattern
+    LINK_PATTERN     = None  #: final download url pattern
 
-    CAPTCHA_PATTERN = r'(http://[^"\']+?/captchas?/[^"\']+)'
+    CAPTCHA_PATTERN     = r'(http://[^"\']+?/captchas?/[^"\']+)'
     CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
-    RECAPTCHA_PATTERN = None
-    SOLVEMEDIA_PATTERN = None
+    RECAPTCHA_PATTERN   = None
+    SOLVEMEDIA_PATTERN  = None
 
     ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<[Cc]enter><b>)(.+?)(?:["\']|</)'
 
@@ -58,18 +59,29 @@ class XFSPHoster(SimpleHoster):
 
     def prepare(self):
         """ Initialize important variables """
+        if not self.HOSTER_DOMAIN:
+            self.fail(_("Missing HOSTER_DOMAIN"))
+
         if not self.HOSTER_NAME:
-            self.fail(_("Missing HOSTER_NAME"))
+            self.HOSTER_NAME = "".join([str.capitalize() for str in self.HOSTER_DOMAIN.split('.')])
 
         if not self.LINK_PATTERN:
             pattern = r'(https?://(www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'
-            self.LINK_PATTERN = pattern % self.HOSTER_NAME
+            self.LINK_PATTERN = pattern % self.HOSTER_DOMAIN.replace('.', '\.')
 
         self.captcha = None
         self.errmsg = None
         self.passwords = self.getPassword().splitlines()
 
-        return super(XFSPHoster, self).prepare()
+        # MultiHoster check
+        if self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']:
+            self.logInfo(_("Multi hoster detected"))
+            if self.premium:
+                self.handleOverriden()
+            else:
+                self.fail(_("Only premium users can download from other hosters"))
+
+        return super(XFSHoster, self).prepare()
 
 
     def handleFree(self):
@@ -93,7 +105,7 @@ class XFSPHoster(SimpleHoster):
 
 
     def getDownloadLink(self):
-        for i in xrange(5):
+        for i in xrange(1, 5):
             self.logDebug("Getting download link: #%d" % i)
 
             data = self.getPostParameters()
@@ -116,26 +128,31 @@ class XFSPHoster(SimpleHoster):
         return m.group(1)
 
 
-    #@TODO: Re-enable
     def handleOverriden(self):
         #only tested with easybytez.com
-        self.html = self.load("http://www.%s/" % self.HOSTER_NAME)
+        self.html = self.load("http://www.%s/" % self.HOSTER_DOMAIN)
+
         action, inputs = self.parseHtmlForm('')
+
         upload_id = "%012d" % int(random() * 10 ** 12)
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
+
         inputs['tos'] = '1'
         inputs['url_mass'] = self.pyfile.url
         inputs['up1oad_type'] = 'url'
 
-        self.logDebug(self.HOSTER_NAME, action, inputs)
-        #wait for file to upload to easybytez.com
-        self.req.http.c.setopt(LOW_SPEED_TIME, 600)
+        self.logDebug(action, inputs)
+
+        self.req.http.c.setopt(LOW_SPEED_TIME, 600)  #: wait for file to upload to easybytez.com
+
         self.html = self.load(action, post=inputs)
 
         action, inputs = self.parseHtmlForm('F1')
         if not inputs:
-            self.error(_("TEXTAREA not found"))
-        self.logDebug(self.HOSTER_NAME, inputs)
+            self.error(_("TEXTAREA F1 not found"))
+
+        self.logDebug(inputs)
+
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
         elif inputs['st'] == 'Can not leech file':
@@ -175,8 +192,15 @@ class XFSPHoster(SimpleHoster):
                 self.fail(_("File can be downloaded by premium users only"))
 
             elif 'limit' in self.errmsg:
-                self.wait(1 * 60 * 60, True)
-                self.retry(25, reason="Download limit exceeded")
+                if 'days' in self.errmsg:
+                    delay = secondsToMidnight(gmt=2)
+                    retries = 2
+                else:
+                    delay = 1 * 60 * 60
+                    retries = 25
+
+                self.wait(delay, True)
+                self.retry(retries, reason="Download limit exceeded")
 
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
                 self.retry(reason=_("Link expired"))
@@ -210,9 +234,9 @@ class XFSPHoster(SimpleHoster):
                     if self.errmsg:
                         self.retry(reason=self.errmsg)
                     else:
-                        self.error(_("Form not found"))
+                        self.error(_("TEXTAREA F1 not found"))
 
-            self.logDebug(self.HOSTER_NAME, inputs)
+            self.logDebug(inputs)
 
             if 'op' in inputs and inputs['op'] in ("download2", "download3"):
                 if "password" in inputs:
@@ -269,7 +293,7 @@ class XFSPHoster(SimpleHoster):
             self.logDebug(captcha_div)
             numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
             inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
-            self.logDebug("CAPTCHA", inputs['code'], numerals)
+            self.logDebug("Captcha code: %s" % inputs['code'], numerals)
             return 2
 
         recaptcha = ReCaptcha(self)

@@ -19,7 +19,7 @@ class NowDownloadEu(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[\d.,]+) (?P<U>[\w^_]+) </h4>'
+    INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[\d.,]+) (?P<U>[\w^_]+) </h4>'
     OFFLINE_PATTERN = r'>This file does not exist'
 
     TOKEN_PATTERN = r'"(/api/token\.php\?token=\w+)"'
@@ -27,7 +27,7 @@ class NowDownloadEu(SimpleHoster):
     WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
     LINK_PATTERN = r'"(http://f\d+\.nowdownload\.at/dl/\w+/\w+)'
 
-    FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<[^>]*>', '')]
+    NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<[^>]*>', '')]
 
 
     def setup(self):

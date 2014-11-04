@@ -64,7 +64,7 @@ def parseFileInfo(self, url='', html=''):
         # File offline
         status = 1
     else:
-        m = re.search(self.FILE_INFO_PATTERN, html)
+        m = re.search(self.INFO_PATTERN, html)
         if m:
             name, fileid = html_unescape(m.group('N')), m.group('ID')
             size = parseFileSize(m.group('S'))
@@ -107,7 +107,7 @@ class UploadedTo(Hoster):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    FILE_INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
+    INFO_PATTERN = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
     OFFLINE_PATTERN = r'<small class="cL">Error: 404</small>'
     DL_LIMIT_PATTERN = r'You have reached the max. number of possible free downloads for this hour'
 

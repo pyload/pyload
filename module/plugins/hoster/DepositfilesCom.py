@@ -22,13 +22,13 @@ class DepositfilesCom(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'<script type="text/javascript">eval\( unescape\(\'(?P<N>.*?)\''
-    FILE_SIZE_PATTERN = r': <b>(?P<S>[\d.,]+)&nbsp;(?P<U>[\w^_]+)</b>'
+    NAME_PATTERN = r'<script type="text/javascript">eval\( unescape\(\'(?P<N>.*?)\''
+    SIZE_PATTERN = r': <b>(?P<S>[\d.,]+)&nbsp;(?P<U>[\w^_]+)</b>'
     OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
 
-    FILE_NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
+    NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
                               (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
-    FILE_URL_REPLACEMENTS = [(__pattern__, "https://dfiles.eu/files/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__, "https://dfiles.eu/files/\g<ID>")]
 
     COOKIES = [(".dfiles.eu", "lang_current", "en")]
 

@@ -3,13 +3,13 @@
 # Test links:
 # http://hugefiles.net/prthf9ya4w6s
 
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class HugefilesNet(XFSPHoster):
+class HugefilesNet(XFSHoster):
     __name__    = "HugefilesNet"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?hugefiles\.net/\w{12}'
 
@@ -18,9 +18,9 @@ class HugefilesNet(XFSPHoster):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    HOSTER_NAME = "hugefiles.net"
+    HOSTER_DOMAIN = "hugefiles.net"
 
-    FILE_SIZE_PATTERN = r'File Size:</span>\s*<span[^>]*>(?P<S>[^<]+)</span></div>'
+    SIZE_PATTERN = r'File Size:</span>\s*<span[^>]*>(?P<S>[^<]+)</span></div>'
 
 
 getInfo = create_getInfo(HugefilesNet)

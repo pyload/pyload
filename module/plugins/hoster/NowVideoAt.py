@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class NowVideoAt(SimpleHoster):
     __name__    = "NowVideoAt"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?nowvideo\.(at|ch|co|eu|sx)/(video|mobile/#/videos)/(?P<ID>\w+)'
 
@@ -17,9 +17,9 @@ class NowVideoAt(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.nowvideo.at/video/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__, r'http://www.nowvideo.at/video/\g<ID>')]
 
-    FILE_NAME_PATTERN = r'<h4>(?P<N>.+?)<'
+    NAME_PATTERN = r'<h4>(?P<N>.+?)<'
     OFFLINE_PATTERN = r'>This file no longer exists'
 
     LINK_PATTERN = r'<source src="(.+?)"'
@@ -31,7 +31,7 @@ class NowVideoAt(SimpleHoster):
 
 
     def handleFree(self):
-        self.html = self.load("http://www.nowvideo.at/mobile/video.php", get={'id': self.file_info['ID']})
+        self.html = self.load("http://www.nowvideo.at/mobile/video.php", get={'id': self.info['ID']})
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:

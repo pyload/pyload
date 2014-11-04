@@ -4,13 +4,13 @@ import math
 import re
 from urlparse import urljoin
 
-from module.plugins.internal.XFSPCrypter import XFSPCrypter
+from module.plugins.internal.XFSCrypter import XFSCrypter
 
 
-class TusfilesNetFolder(XFSPCrypter):
+class TusfilesNetFolder(XFSCrypter):
     __name__    = "TusfilesNetFolder"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.06"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -22,7 +22,7 @@ class TusfilesNetFolder(XFSPCrypter):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    HOSTER_NAME = "tusfiles.net"
+    HOSTER_DOMAIN = "tusfiles.net"
 
     PAGES_PATTERN = r'>\((\d+) \w+\)<'
 
@@ -42,4 +42,4 @@ class TusfilesNetFolder(XFSPCrypter):
 
         for p in xrange(2, pages + 1):
             self.html = self.loadPage(p)
-            self.package_links += self.getLinks()
+            self.links += self.getLinks()

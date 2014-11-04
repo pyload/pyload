@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class KingfilesNet(SimpleHoster):
     __name__    = "KingfilesNet"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
 
@@ -19,8 +19,8 @@ class KingfilesNet(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'name="fname" value="(?P<N>.+?)">'
-    FILE_SIZE_PATTERN = r'>Size: .+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    NAME_PATTERN = r'name="fname" value="(?P<N>.+?)">'
+    SIZE_PATTERN = r'>Size: .+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN = r'>(File Not Found</b><br><br>|File Not Found</h2>)'
 
@@ -38,7 +38,7 @@ class KingfilesNet(SimpleHoster):
         # Click the free user button
         post_data = {'op': "download1",
                      'usr_login': "",
-                     'id': file_info['ID'],
+                     'id': self.info['ID'],
                      'fname': self.pyfile.name,
                      'referer': "",
                      'method_free': "+"}

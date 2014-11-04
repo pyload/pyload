@@ -3,13 +3,13 @@
 # Test links:
 # http://fileom.com/gycaytyzdw3g/random.bin.html
 
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class FileomCom(XFSPHoster):
+class FileomCom(XFSHoster):
     __name__    = "FileomCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'
 
@@ -18,12 +18,12 @@ class FileomCom(XFSPHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_NAME = "fileom.com"
+    HOSTER_DOMAIN = "fileom.com"
 
-    FILE_URL_REPLACEMENTS = [(r'/$', "")]
+    URL_REPLACEMENTS = [(r'/$', "")]
 
-    FILE_NAME_PATTERN = r'Filename: <span>(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'File Size: <span class="size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    NAME_PATTERN = r'Filename: <span>(?P<N>.+?)<'
+    SIZE_PATTERN = r'File Size: <span class="size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     LINK_PATTERN = r'var url2 = \'(.+?)\';'
 

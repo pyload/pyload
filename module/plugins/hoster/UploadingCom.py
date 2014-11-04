@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
 
@@ -22,8 +22,8 @@ class UploadingCom(SimpleHoster):
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
-    FILE_SIZE_PATTERN = r'size tip_container">(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
+    NAME_PATTERN = r'id="file_title">(?P<N>.+)</'
+    SIZE_PATTERN = r'size tip_container">(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
     OFFLINE_PATTERN = r'(Page|file) not found'
 
     COOKIES = [(".uploading.com", "lang", "1"),
@@ -37,7 +37,7 @@ class UploadingCom(SimpleHoster):
             pyfile.url = pyfile.url.replace("/files", "/files/get")
 
         self.html = self.load(pyfile.url, decode=True)
-        self.file_info = self.getFileInfo()
+        self.getFileInfo()
 
         if self.premium:
             self.handlePremium()
@@ -47,7 +47,7 @@ class UploadingCom(SimpleHoster):
 
     def handlePremium(self):
         postData = {'action': 'get_link',
-                    'code': self.file_info['ID'],
+                    'code': self.info['ID'],
                     'pass': 'undefined'}
 
         self.html = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
@@ -70,7 +70,7 @@ class UploadingCom(SimpleHoster):
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = self.pyfile.url
 
-        response = json_loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.file_info['ID']}))
+        response = json_loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.info['ID']}))
         if 'answer' in response and 'wait_time' in response['answer']:
             wait_time = int(response['answer']['wait_time'])
             self.logInfo(_("Waiting %d seconds") % wait_time)
@@ -79,7 +79,7 @@ class UploadingCom(SimpleHoster):
             self.error(_("No AJAX/WAIT"))
 
         response = json_loads(
-            self.load(ajax_url, post={'action': 'get_link', 'code': self.file_info['ID'], 'pass': 'false'}))
+            self.load(ajax_url, post={'action': 'get_link', 'code': self.info['ID'], 'pass': 'false'}))
         if 'answer' in response and 'link' in response['answer']:
             url = response['answer']['link']
         else:

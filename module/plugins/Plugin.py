@@ -60,25 +60,30 @@ class Base(object):
         self.config = core.config
 
 
-    #log functions
+    def _log(self, type, args):
+        msg = " | ".join([str(a).strip() for a in args if a])
+        logger = getattr(self.log, type)
+        logger("%s: %s" % (self.__name__, msg or _("%s MARK" % type.upper())))
+
+
     def logDebug(self, *args):
-        self.log.debug("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
+        return self._log("debug", args)
 
 
     def logInfo(self, *args):
-        self.log.info("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
+        return self._log("info", args)
 
 
     def logWarning(self, *args):
-        self.log.warning("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
+        return self._log("warning", args)
 
 
     def logError(self, *args):
-        self.log.error("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
+        return self._log("error", args)
 
 
     def logCritical(self, *args):
-        self.log.critical("%s: %s" % (self.__name__, " | ".join([str(a).strip() for a in args if a])))
+        return self._log("critical", args)
 
 
     def setConf(self, option, value):
@@ -144,7 +149,7 @@ class Plugin(Base):
     """
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.4"
+    __version__ = "0.05"
 
     __pattern__ = None
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -154,6 +159,9 @@ class Plugin(Base):
     __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("spoob", "spoob@pyload.org"),
                        ("mkaay", "mkaay@mkaay.de")]
+
+
+    info = {}  #: file info dict
 
 
     def __init__(self, pyfile):
@@ -209,7 +217,6 @@ class Plugin(Base):
         self.cTask = None #captcha task
 
         self.retries = 0 # amount of retries already made
-        self.html = None # some plugins store html code here
 
         self.init()
 
@@ -299,7 +306,8 @@ class Plugin(Base):
         while self.pyfile.waitUntil > time():
             self.thread.m.reconnecting.wait(2)
 
-            if self.pyfile.abort: raise Abort
+            if self.pyfile.abort:
+                raise Abort
             if self.thread.m.reconnecting.isSet():
                 self.waiting = False
                 self.wantReconnect = False
@@ -322,8 +330,6 @@ class Plugin(Base):
         msg += ": " + reason.strip() if reason else ""
         msg += _(" | Plugin may be out of date")
 
-        if self.core.debug:
-            print_exc()
         raise Fail(msg)
 
 
@@ -366,7 +372,7 @@ class Plugin(Base):
 
 
     def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg',
-                       result_type='textual'):
+                       result_type='textual', timeout=290):
         """ Loads a captcha and decrypts it with ocr, plugin, user input
 
         :param url: url of captcha image
@@ -407,7 +413,7 @@ class Plugin(Base):
             captchaManager = self.core.captchaManager
             task = captchaManager.newTask(img, imgtype, tmpCaptcha.name, result_type)
             self.cTask = task
-            captchaManager.handleCaptcha(task)
+            captchaManager.handleCaptcha(task, timeout)
 
             while task.isWaiting():
                 if self.pyfile.abort:
@@ -670,5 +676,5 @@ class Plugin(Base):
             del self.req
         if hasattr(self, "thread"):
             del self.thread
-        if hasattr(self, "html"):
-            del self.html
+        # if hasattr(self, "html"):
+            # del self.html

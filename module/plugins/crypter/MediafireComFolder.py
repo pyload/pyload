@@ -21,7 +21,7 @@ class MediafireComFolder(Crypter):
 
 
     FOLDER_KEY_PATTERN = r'var afI= \'(\w+)'
-    FILE_URL_PATTERN = r'<meta property="og:url" content="http://www\.mediafire\.com/\?(\w+)"/>'
+    LINK_PATTERN = r'<meta property="og:url" content="http://www\.mediafire\.com/\?(\w+)"/>'
 
 
     def decrypt(self, pyfile):
@@ -31,7 +31,7 @@ class MediafireComFolder(Crypter):
         if result == 0:
             # load and parse html
             html = self.load(pyfile.url)
-            m = re.search(self.FILE_URL_PATTERN, html)
+            m = re.search(self.LINK_PATTERN, html)
             if m:
                 # file page
                 self.urls.append("http://www.mediafire.com/file/%s" % m.group(1))

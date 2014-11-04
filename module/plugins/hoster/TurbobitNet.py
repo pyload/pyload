@@ -17,7 +17,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class TurbobitNet(SimpleHoster):
     __name__    = "TurbobitNet"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
 
@@ -27,11 +27,11 @@ class TurbobitNet(SimpleHoster):
                        ("prOq", None)]
 
 
-    FILE_NAME_PATTERN = r'id="file-title">(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    NAME_PATTERN = r'id="file-title">(?P<N>.+?)<'
+    SIZE_PATTERN = r'class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, "http://turbobit.net/\g<ID>.html")]
+    URL_REPLACEMENTS = [(__pattern__, "http://turbobit.net/\g<ID>.html")]
 
     COOKIES = [(".turbobit.net", "user_lang", "en")]
 
@@ -42,7 +42,7 @@ class TurbobitNet(SimpleHoster):
 
 
     def handleFree(self):
-        self.url = "http://turbobit.net/download/free/%s" % self.file_info['ID']
+        self.url = "http://turbobit.net/download/free/%s" % self.info['ID']
         self.html = self.load(self.url, ref=True, decode=True)
 
         rtUpdate = self.getRtUpdate()
@@ -130,7 +130,7 @@ class TurbobitNet(SimpleHoster):
 
         for b in [1, 3]:
             self.jscode = "var id = \'%s\';var b = %d;var inn = \'%s\';%sout" % (
-                          self.file_info['ID'], b, quote(fun), rtUpdate)
+                          self.info['ID'], b, quote(fun), rtUpdate)
 
             try:
                 out = self.js.eval(self.jscode)

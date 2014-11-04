@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilecloudIo(SimpleHoster):
     __name__    = "FilecloudIo"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*'
 
@@ -20,8 +20,8 @@ class FilecloudIo(SimpleHoster):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    FILE_SIZE_PATTERN = r'{var __ab1 = (?P<S>\d+);}'
-    FILE_NAME_PATTERN = r'id="aliasSpan">(?P<N>.*?)&nbsp;&nbsp;<'
+    SIZE_PATTERN = r'{var __ab1 = (?P<S>\d+);}'
+    NAME_PATTERN = r'id="aliasSpan">(?P<N>.*?)&nbsp;&nbsp;<'
     OFFLINE_PATTERN = r'l10n\.(FILES__DOESNT_EXIST|REMOVED)'
     TEMP_OFFLINE_PATTERN = r'l10n\.FILES__WARNING'
 
@@ -39,7 +39,7 @@ class FilecloudIo(SimpleHoster):
 
 
     def handleFree(self):
-        data = {"ukey": self.file_info['ID']}
+        data = {"ukey": self.info['ID']}
 
         m = re.search(self.AB1_PATTERN, self.html)
         if m is None:
@@ -94,12 +94,12 @@ class FilecloudIo(SimpleHoster):
         if response['dl']:
             self.html = self.load('http://filecloud.io/download.html')
 
-            m = re.search(self.LINK_PATTERN % self.file_info['ID'], self.html)
+            m = re.search(self.LINK_PATTERN % self.info['ID'], self.html)
             if m is None:
                 self.error(_("LINK_PATTERN not found"))
 
-            if "size" in self.file_info and self.file_info['size']:
-                self.check_data = {"size": int(self.file_info['size'])}
+            if "size" in self.info and self.info['size']:
+                self.check_data = {"size": int(self.info['size'])}
 
             download_url = m.group(1)
             self.download(download_url)
@@ -109,7 +109,7 @@ class FilecloudIo(SimpleHoster):
 
     def handlePremium(self):
         akey = self.account.getAccountData(self.user)['akey']
-        ukey = self.file_info['ID']
+        ukey = self.info['ID']
         self.logDebug("Akey: %s | Ukey: %s" % (akey, ukey))
         rep = self.load("http://api.filecloud.io/api-fetch_download_url.api",
                         post={"akey": akey, "ukey": ukey})
