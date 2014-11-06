@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class XFSCrypter(SimpleCrypter):
     __name__    = "XFSCrypter"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'^unmatchable$'
 
@@ -18,12 +18,12 @@ class XFSCrypter(SimpleCrypter):
     HOSTER_DOMAIN = None
     HOSTER_NAME = None
 
-    URL_REPLACEMENTS = [(r'[?/&]+$', r''), (r'(.+/[^?]*)$', r'\1?'), (r'$', r'&per_page=10000')]
+    URL_REPLACEMENTS = [(r'[?/&]+$', ""), (r'&?per_page=\d+', ""), (r'(.+/[^?]+)', r'\1\?'), (r'$', r'&per_page=10000')]
 
     COOKIES = [(HOSTER_DOMAIN, "lang", "english")]
 
-    LINK_PATTERN = r'<(?:td|TD) [^>]*>\s*<a href="(.+?)"[^>]*>.+?(?:</a>)?\s*</(?:td|TD)>'
-    NAME_PATTERN = r'<[tT]itle>.*?\: (.+) folder</[tT]itle>'
+    LINK_PATTERN = r'<(?:td|TD).*?>\s*<a href="(.+?)".*?>.+?(?:</a>)?\s*</(?:td|TD)>'
+    NAME_PATTERN = r'<[tT]itle>.*?\: (?P<N>.+) folder</[tT]itle>'
 
     OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
