@@ -127,7 +127,7 @@ class Base(object):
 
     def getStorage(self, key=None, default=None):
         """ Retrieves saved value or dict of all saved entries if key is None """
-        if key is not None:
+        if key:
             return self.core.db.getStorage(self.__name__, key) or default
         return self.core.db.getStorage(self.__name__, key)
 
@@ -289,7 +289,7 @@ class Plugin(Base):
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
-        if reconnect is not None:
+        if reconnect and not self.account:
             self.wantReconnect = bool(reconnect)
         self.pyfile.waitUntil = time() + int(seconds) + 1
 
@@ -308,6 +308,7 @@ class Plugin(Base):
 
             if self.pyfile.abort:
                 raise Abort
+
             if self.thread.m.reconnecting.isSet():
                 self.waiting = False
                 self.wantReconnect = False
