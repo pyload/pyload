@@ -289,8 +289,8 @@ class Plugin(Base):
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
-        if reconnect and not self.account:
-            self.wantReconnect = bool(reconnect)
+        if reconnect is not None:
+            self.wantReconnect = reconnect and not self.account
         self.pyfile.waitUntil = time() + int(seconds) + 1
 
 
