@@ -8,7 +8,7 @@ class EasybytezComFolder(XFSCrypter):
     __type__    = "crypter"
     __version__ = "0.10"
 
-    __pattern__ = r'http://(?:www\.)?easybytez\.com/users/(?P<ID>\d+/\d+)'
+    __pattern__ = r'http://(?:www\.)?easybytez\.com/users/\d+/\d+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 

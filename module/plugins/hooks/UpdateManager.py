@@ -259,7 +259,7 @@ class UpdateManager(Hook):
         if not type_plugins:
             return
 
-        self.logDebug("Requested deletion of plugins", type_plugins)
+        self.logDebug("Requested deletion of plugins", ", ".join(type_plugins))
 
         removed = []
 
@@ -273,7 +273,7 @@ class UpdateManager(Hook):
                 try:
                     remove(filename)
                 except Exception, e:
-                    self.logDebug("Error deleting", path.basename(filename), str(e))
+                    self.logDebug("Error removing: %s" % path.basename(filename), str(e))
                     err = True
 
                 filename += "c"
@@ -283,7 +283,7 @@ class UpdateManager(Hook):
                             self.manager.deactivateHook(name)
                         remove(filename)
                     except Exception, e:
-                        self.logDebug("Error deleting", path.basename(filename), str(e))
+                        self.logDebug("Error removing: %s" % path.basename(filename), str(e))
                         err = True
 
             if not err:
