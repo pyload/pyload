@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
@@ -20,17 +20,12 @@ class XFSAccount(Account):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    """
-    Following patterns should be defined by each hoster:
-
-      PREMIUM_PATTERN: (optional) Checks if the account is premium
-        example: PREMIUM_PATTERN = r'>Renew premium'
-    """
-
     HOSTER_DOMAIN = None
     HOSTER_URL    = None
 
     COOKIES = [(HOSTER_DOMAIN, "lang", "english")]
+
+    PREMIUM_PATTERN = r'\(Premium only\)'
 
     VALID_UNTIL_PATTERN = r'>Premium.[Aa]ccount expire:.*?(\d{1,2} [\w^_]+ \d{4})'
 
@@ -60,8 +55,7 @@ class XFSAccount(Account):
 
         html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
 
-        if hasattr(self, "PREMIUM_PATTERN"):
-            premium = True if re.search(self.PREMIUM_PATTERN, html) else False
+        premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
@@ -76,9 +70,8 @@ class XFSAccount(Account):
                 if validuntil > mktime(gmtime()):
                     premium = True
                 else:
-                    if premium is False:  #: registered account type (not premium)
-                        validuntil = -1
                     premium = False
+                    validuntil = None  #: registered account type (not premium)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
@@ -88,8 +81,8 @@ class XFSAccount(Account):
 
                 if "nlimited" in size:
                     trafficleft = -1
-                    if premium is None:
-                        premium = True
+                    if validuntil is None:
+                        validuntil = -1
                 else:
                     if 'U' in traffic:
                         unit = traffic['U']
@@ -103,7 +96,7 @@ class XFSAccount(Account):
             except Exception, e:
                 self.logError(str(e))
 
-        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium or False}
+        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
     def login(self, user, data, req):
