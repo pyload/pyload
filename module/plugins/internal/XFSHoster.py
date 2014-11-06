@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'^unmatchable$'
 
@@ -76,12 +76,14 @@ class XFSHoster(SimpleHoster):
         self.passwords = self.getPassword().splitlines()
 
         # MultiHoster check
-        if self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']:
+        if self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
+           and re.match(self.__pattern__, self.pyfile.url) is None:
             self.logInfo(_("Multi hoster detected"))
             if self.premium:
+                self.logDebug(_("Looking for leech download link..."))
                 self.handleOverriden()
             else:
-                self.fail(_("Only premium users can download from other hosters"))
+                self.fail(_("Only premium users can use url leech feature"))
 
         return super(XFSHoster, self).prepare()
 
@@ -155,12 +157,19 @@ class XFSHoster(SimpleHoster):
 
         self.logDebug(inputs)
 
-        if inputs['st'] == 'OK':
+        stmsg = inputs['st']
+
+        if stmsg == "OK":
             self.html = self.load(action, post=inputs)
-        elif inputs['st'] == 'Can not leech file':
-            self.retry(20, 3 * 60, inputs['st'])
+
+        elif "Can not leech file" in stmsg:
+            self.retry(20, 3 * 60, _("Can not leech file"))
+
+        elif "all Leech traffic today" in stmsg:
+            self.retry(wait_time=secondsToMidnight(gmt=2), reason=_("You've used all Leech traffic today"))
+
         else:
-            self.fail(_(inputs['st']))
+            self.fail(stmsg)
 
         #get easybytez.com link for uploaded file
         m = re.search(self.OVR_LINK_PATTERN, self.html)
@@ -170,10 +179,10 @@ class XFSHoster(SimpleHoster):
         self.pyfile.url = m.group(1)
 
         header = self.load(self.pyfile.url, just_header=True, decode=True)
-        if 'location' in header:  # Direct link
+        if 'location' in header:  #: Direct download link
             self.download(header['location'], ref=True, cookies=True, disposition=True)
         else:
-            self.retry(reason=_("OVR link location not found"))
+            self.error(_("No leech download link found"))
 
 
     def checkErrors(self):
@@ -196,13 +205,13 @@ class XFSHoster(SimpleHoster):
             elif 'limit' in self.errmsg:
                 if 'days' in self.errmsg:
                     delay = secondsToMidnight(gmt=2)
-                    retries = 2
+                    retries = 3
                 else:
                     delay = 1 * 60 * 60
                     retries = 25
 
                 self.wait(delay, True)
-                self.retry(retries, reason="Download limit exceeded")
+                self.retry(retries, reason=_("Download limit exceeded"))
 
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
                 self.retry(reason=_("Link expired"))
