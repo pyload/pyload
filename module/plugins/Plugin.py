@@ -458,10 +458,10 @@ class Plugin(Base):
         if self.pyfile.abort:
             raise Abort
 
-        url = url.strip()
-        #utf8 vs decode -> please use decode attribute in all future plugins
-        if type(url) == unicode:
-            url = str(url)  # encode('utf8')
+        url = url.strip().lower()
+
+        if type(url) == unicode:  # utf8 vs decode -> please use decode attribute in all future plugins
+            url = str(url)  #: encode('utf8')
 
         if self.core.debug:
             self.logDebug("Load url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
@@ -496,7 +496,7 @@ class Plugin(Base):
                 if not line or ":" not in line: continue
 
                 key, none, value = line.partition(":")
-                key = key.lower().strip()
+                key = key.strip().lower()
                 value = value.strip()
 
                 if key in header:
@@ -526,7 +526,7 @@ class Plugin(Base):
         if self.pyfile.abort:
             raise Abort
 
-        url = url.strip()
+        url = url.strip().lower()
 
         if self.core.debug:
             self.logDebug("Download url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])

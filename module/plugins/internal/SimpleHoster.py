@@ -200,7 +200,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.51"
+    __version__ = "0.52"
 
     __pattern__ = r'^unmatchable$'
 
@@ -268,7 +268,7 @@ class SimpleHoster(Hoster):
                                            self.FILE_URL_REPLACEMENTS if hasattr(self, "FILE_URL_REPLACEMENTS") else self.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
 
         if self.premium:
-            self.logDebug(_("Checking for direct download link..."))
+            self.logDebug(_("Looking for direct download link..."))
             direct_link = self.getDirectLink(self.pyfile.url)
             if direct_link:
                 return direct_link
@@ -300,12 +300,12 @@ class SimpleHoster(Hoster):
                 self.getFileInfo()
 
             if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
-                self.logDebug("Handled as premium download")
+                self.logDebug("Handle as premium download")
                 self.handlePremium()
             elif premium_only:
                 self.fail(_("Link require a premium account to be handled"))
             else:
-                self.logDebug("Handled as free download")
+                self.logDebug("Handle as free download")
                 self.handleFree()
 
 
@@ -318,7 +318,7 @@ class SimpleHoster(Hoster):
 
         if parseFileInfo(self, url, html)[2] is not 2:
             try:
-                return re.search(r"Location\s*:\s*(.+)", self.req.http.header, re.I).group(1).strip()  #@TODO: Remove .strip() in 0.4.10
+                return re.search(r"Location\s*:\s*(.+)", self.req.http.header, re.I).group(1).strip().lower()  #@TODO: Remove .strip().lower() in 0.4.10
             except:
                 pass
 
