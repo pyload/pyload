@@ -67,8 +67,6 @@ class FreakshareCom(Hoster):
     def prepare(self):
         pyfile = self.pyfile
 
-        self.wantReconnect = False
-
         self.download_html()
 
         if not self.file_exists():

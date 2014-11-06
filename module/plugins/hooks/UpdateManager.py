@@ -14,7 +14,7 @@ from module.utils import save_join
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.37"
+    __version__ = "0.38"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -196,7 +196,7 @@ class UpdateManager(Hook):
             if not oldver:
                 msg = "New [%(type)s] %(name)s (v%(newver)s)"
             elif newver > oldver:
-                msg = "New version of [%(type)s] %(name)s (v%(oldver)s -> v%(newver)s)"
+                msg = "New version of [%(type)s] %(name)s (v%(oldver)f -> v%(newver)f)"
             else:
                 continue
 
