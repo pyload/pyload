@@ -259,7 +259,7 @@ class UpdateManager(Hook):
         if not type_plugins:
             return
 
-        self.logDebug("Requested deletion of plugins", ", ".join(type_plugins))
+        self.logDebug("Requested deletion of plugins: %s" % type_plugins)
 
         removed = []
 
