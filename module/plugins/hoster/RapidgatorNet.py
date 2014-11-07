@@ -14,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
@@ -44,17 +44,16 @@ class RapidgatorNet(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = self.multiDL = self.premium
-        self.sid = None
-        self.chunkLimit = 1
-
-
-    def prepare(self):
         if self.account:
             self.sid = self.account.getAccountData(self.user).get('SID', None)
+        else:
+            self.sid = None
 
         if self.sid:
             self.premium = True
+
+        self.resumeDownload = self.multiDL = self.premium
+        self.chunkLimit = 1
 
 
     def api_response(self, cmd):
@@ -66,6 +65,7 @@ class RapidgatorNet(SimpleHoster):
             json = json_loads(json)
             status = json['response_status']
             msg = json['response_details']
+
         except BadHeader, e:
             self.logError("API: %s" % cmd, str(e), "SID: %s" % self.sid)
             status = e.code
@@ -73,9 +73,11 @@ class RapidgatorNet(SimpleHoster):
 
         if status == 200:
             return json['response']
+
         elif status == 423:
             self.account.empty(self.user)
             self.retry()
+
         else:
             self.account.relogin(self.user)
             self.retry(wait_time=60)
