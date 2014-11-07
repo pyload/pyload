@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.69"
+    __version__ = "0.70"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
 
@@ -37,23 +37,21 @@ class OneFichierCom(SimpleHoster):
         self.resumeDownload = True
 
 
-    def handleFree(self):
+    def handle(self, reconnect):
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
             wait_time = int(m.group(1))
-            self.logInfo(_("You have to wait been each free download"), _("Retrying in %d minutes") % wait_time)
-            self.wait(wait_time * 60, True)
-            self.retry()
 
-        return self.handlePremium()
+            self.logDebug(_("Wait %d minutes") % wait_time)
 
+            self.wait(wait_time * 60, reconnect)
+            self.retry(reason="You have to wait been each free download")
 
-    def handlePremium(self):
         id = self.info['ID1'] or self.info['ID2']
         url, inputs = self.parseHtmlForm('action="https://1fichier.com/\?%s' % id)
 
         if not url:
-            self.error(_("Download link not found"))
+            self.fail(_("Download link not found"))
 
         if "pass" in inputs:
             inputs['pass'] = self.getPassword()
@@ -62,11 +60,13 @@ class OneFichierCom(SimpleHoster):
 
         self.download(url, post=inputs)
 
-        check = self.checkDownload({'wait': self.WAIT_PATTERN})
-        if check == "wait":
-            wait_time = int(self.lastcheck.group(1)) * 60
-            self.wait(wait_time, False)  #@TODO: Change to self.wait(wait_time, True) i 0.4.10
-            self.retry()
+
+    def handleFree(self):
+        return self.handle(True)
+
+
+    def handlePremium(self):
+        return self.handle(False)
 
 
 getInfo = create_getInfo(OneFichierCom)
