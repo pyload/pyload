@@ -15,8 +15,8 @@ from module.common.json_layer import json_loads, json_dumps
 from module.plugins.Hoster import Hoster
 
 
-class MegaNz(Hoster):
-    __name__    = "MegaNz"
+class MegaCoNz(Hoster):
+    __name__    = "MegaCoNz"
     __type__    = "hoster"
     __version__ = "0.16"
 
