@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.68"
+    __version__ = "0.69"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
 
@@ -65,7 +65,7 @@ class OneFichierCom(SimpleHoster):
         check = self.checkDownload({'wait': self.WAIT_PATTERN})
         if check == "wait":
             wait_time = int(self.lastcheck.group(1)) * 60
-            self.wait(wait_time, True)
+            self.wait(wait_time, False)  #@TODO: Change to self.wait(wait_time, True) i 0.4.10
             self.retry()
 
 
