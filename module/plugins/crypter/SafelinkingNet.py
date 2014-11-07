@@ -14,7 +14,7 @@ from module.plugins.internal.CaptchaService import SolveMedia
 class SafelinkingNet(Crypter):
     __name__    = "SafelinkingNet"
     __type__    = "crypter"
-    __version__ = "0.1"
+    __version__ = "0.11"
 
     __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -30,19 +30,17 @@ class SafelinkingNet(Crypter):
 
     def decrypt(self, pyfile):
         url = pyfile.url
+
         if re.match(self.__pattern__, url).group(1) == "d":
-            self.req.http.c.setopt(FOLLOWLOCATION, 0)
-            self.load(url)
-            m = re.search("^Location: (.+)$", self.req.http.header, re.M)
-            if m:
-                self.urls = [m.group(1)]
+
+            header = self.load(url, just_header=True)
+            if 'location' in header:
+                self.urls = [header['location']]
             else:
-                self.fail(_("Couldn't find forwarded Link"))
+                self.error(_("Couldn't find forwarded Link"))
 
         else:
             postData = {"post-protect": "1"}
-
-            self.html = self.load(url)
 
             if "link-password" in self.html:
                 postData['link-password'] = self.getPassword()

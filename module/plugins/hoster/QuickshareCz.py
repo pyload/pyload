@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class QuickshareCz(SimpleHoster):
     __name__    = "QuickshareCz"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
 
     __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.*'
 
@@ -65,10 +65,10 @@ class QuickshareCz(SimpleHoster):
         self.header = self.req.http.header
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
-        m = re.search("Location\s*:\s*(.*)", self.header, re.I)
+        m = re.search(r'Location\s*:\s*(.+)', self.header, re.I)
         if m is None:
             self.fail(_("File not found"))
-        download_url = m.group(1)
+        download_url = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
         self.logDebug("FREE URL2:" + download_url)
 
         # check errors
