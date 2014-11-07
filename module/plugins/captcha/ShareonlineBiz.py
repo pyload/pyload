@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from captcha import OCR
+from module.plugins.captcha.captcha import OCR
 
 
 class ShareonlineBiz(OCR):
-    __name__ = "ShareonlineBiz"
+    __name__    = "ShareonlineBiz"
+    __type__    = "ocr"
     __version__ = "0.1"
-    __type__ = "ocr"
 
     __description__ = """Shareonline.biz ocr plugin"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "RaNaN@pyload.org"
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def __init__(self):
         OCR.__init__(self)
+
 
     def get_captcha(self, image):
         self.load_image(image)

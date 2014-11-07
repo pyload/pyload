@@ -1,31 +1,17 @@
 # -*- coding: utf-8 -*-
-############################################################################
-# This program is free software: you can redistribute it and/or modify     #
-# it under the terms of the GNU Affero General Public License as           #
-# published by the Free Software Foundation, either version 3 of the       #
-# License, or (at your option) any later version.                          #
-#                                                                          #
-# This program is distributed in the hope that it will be useful,          #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
-# GNU Affero General Public License for more details.                      #
-#                                                                          #
-# You should have received a copy of the GNU Affero General Public License #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
-############################################################################
 
 from module.common.json_layer import json_loads
 from module.plugins.Account import Account
 
 
 class SimplyPremiumCom(Account):
-    __name__ = "SimplyPremiumCom"
+    __name__    = "SimplyPremiumCom"
+    __type__    = "account"
     __version__ = "0.01"
-    __type__ = "account"
 
     __description__ = """Simply-Premium.com account plugin"""
-    __author_name__ = "EvolutionClip"
-    __author_mail__ = "evolutionclip@live.de"
+    __license__     = "GPLv3"
+    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def loadAccountInfo(self, user, req):
@@ -39,11 +25,12 @@ class SimplyPremiumCom(Account):
         #Time package
         validuntil = float(json_data['result']['timeend'])
         #Traffic package
-        # {"trafficleft": int(traffic) / 1024, "validuntil": -1}
-        #trafficleft = int(json_data['result']['traffic'] / 1024)
+        # {"trafficleft": int(traffic), "validuntil": -1}
+        #trafficleft = int(json_data['result']['traffic'])
 
         #return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
         return {"premium": True, "validuntil": validuntil}
+
 
     def login(self, user, data, req):
         req.cj.setCookie("simply-premium.com", "lang", "EN")

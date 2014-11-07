@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from captcha import OCR
+from module.plugins.captcha.captcha import OCR
 
 
 class NetloadIn(OCR):
-    __name__ = "NetloadIn"
+    __name__    = "NetloadIn"
+    __type__    = "ocr"
     __version__ = "0.1"
-    __type__ = "ocr"
 
     __description__ = """Netload.in ocr plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):
         OCR.__init__(self)
+
 
     def get_captcha(self, image):
         self.load_image(image)

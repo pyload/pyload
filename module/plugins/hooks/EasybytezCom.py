@@ -6,17 +6,16 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class EasybytezCom(MultiHoster):
-    __name__ = "EasybytezCom"
+    __name__    = "EasybytezCom"
+    __type__    = "hook"
     __version__ = "0.03"
-    __type__ = "hook"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """EasyBytez.com hook plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def getHoster(self):
@@ -31,7 +30,7 @@ class EasybytezCom(MultiHoster):
             return m.group(1).split(',')
         except Exception, e:
             self.logDebug(e)
-            self.logWarning("Unable to load supported hoster list, using last known")
+            self.logWarning(_("Unable to load supported hoster list, using last known"))
             return ["bitshare.com", "crocko.com", "ddlstorage.com", "depositfiles.com", "extabit.com", "hotfile.com",
                     "mediafire.com", "netload.in", "rapidgator.net", "rapidshare.com", "uploading.com", "uload.to",
                     "uploaded.to"]

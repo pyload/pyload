@@ -1,51 +1,42 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
+
 from random import random
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class NarodRu(SimpleHoster):
-    __name__ = "NarodRu"
-    __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/[0-9]+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
-    __version__ = "0.1"
-    __description__ = """Narod.ru hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __name__    = "NarodRu"
+    __type__    = "hoster"
+    __version__ = "0.11"
 
-    FILE_NAME_PATTERN = r'<dt class="name">(?:<[^<]*>)*(?P<N>[^<]+)</dt>'
-    FILE_SIZE_PATTERN = r'<dd class="size">(?P<S>\d[^<]*)</dd>'
+    __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/\d+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
+
+    __description__ = """Narod.ru hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+
+
+    NAME_PATTERN = r'<dt class="name">(?:<[^<]*>)*(?P<N>[^<]+)</dt>'
+    SIZE_PATTERN = r'<dd class="size">(?P<S>\d[^<]*)</dd>'
     OFFLINE_PATTERN = r'<title>404</title>|Файл удален с сервиса|Закончился срок хранения файла\.'
 
-    FILE_SIZE_REPLACEMENTS = [(u'КБ', 'KB'), (u'МБ', 'MB'), (u'ГБ', 'GB')]
-    FILE_URL_REPLACEMENTS = [("narod.yandex.ru/", "narod.ru/"),
-                             (r"/start/[0-9]+\.\w+-narod\.yandex\.ru/([0-9]{6,15})/\w+/(\w+)", r"/disk/\1/\2")]
+    SIZE_REPLACEMENTS = [(u'КБ', 'KB'), (u'МБ', 'MB'), (u'ГБ', 'GB')]
+    URL_REPLACEMENTS = [("narod.yandex.ru/", "narod.ru/"),
+                             (r"/start/\d+\.\w+-narod\.yandex\.ru/(\d{6,15})/\w+/(\w+)", r"/disk/\1/\2")]
 
     CAPTCHA_PATTERN = r'<number url="(.*?)">(\w+)</number>'
     LINK_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'
 
+
     def handleFree(self):
-        for _ in xrange(5):
+        for _i in xrange(5):
             self.html = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random() * 777))
             m = re.search(self.CAPTCHA_PATTERN, self.html)
             if m is None:
-                self.parseError('Captcha')
+                self.error(_("Captcha"))
             post_data = {"action": "sendcapcha"}
             captcha_url, post_data['key'] = m.groups()
             post_data['rep'] = self.decryptCaptcha(captcha_url)
@@ -59,11 +50,10 @@ class NarodRu(SimpleHoster):
             elif u'<b class="error-msg"><strong>Ошиблись?</strong>' in self.html:
                 self.invalidCaptcha()
             else:
-                self.parseError('Download link')
+                self.error(_("Download link"))
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
-        self.logDebug('Download link: ' + url)
         self.download(url)
 
 

@@ -6,15 +6,17 @@ from module.plugins.Account import Account
 
 
 class UlozTo(Account):
-    __name__ = "UlozTo"
+    __name__    = "UlozTo"
+    __type__    = "account"
     __version__ = "0.06"
-    __type__ = "account"
 
     __description__ = """Uloz.to account plugin"""
-    __author_name__ = ("zoidberg", "pulpe")
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("pulpe", None)]
 
-    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a href="/kredit" title="[^"]*?GB = ([0-9.]+) MB"'
+
+    TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a href="/kredit" title="[^"]*?GB = ([\d.]+) MB"'
 
 
     def loadAccountInfo(self, user, req):
@@ -28,6 +30,7 @@ class UlozTo(Account):
         self.premium = True if trafficleft else False
 
         return {"validuntil": -1, "trafficleft": trafficleft}
+
 
     def login(self, user, data, req):
         login_page = req.load('http://www.ulozto.net/?do=web-login', decode=True)

@@ -1,47 +1,37 @@
 # -*- coding: utf-8 -*-
-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
-# Test link (random.bin):
+#
+# Test links:
 # http://uploadhero.co/dl/wQBRAVSM
 
 import re
+
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UploadheroCom(SimpleHoster):
-    __name__ = "UploadheroCom"
-    __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
-    __version__ = "0.15"
-    __description__ = """UploadHero.co plugin"""
-    __author_name__ = ("mcmyst", "zoidberg")
-    __author_mail__ = ("mcmyst@hotmail.fr", "zoidberg@mujmail.cz")
+    __name__    = "UploadheroCom"
+    __type__    = "hoster"
+    __version__ = "0.16"
 
-    FILE_NAME_PATTERN = r'<div class="nom_de_fichier">(?P<N>.*?)</div>'
-    FILE_SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'
+    __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
+
+    __description__ = """UploadHero.co plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("mcmyst", "mcmyst@hotmail.fr"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
+
+
+    NAME_PATTERN = r'<div class="nom_de_fichier">(?P<N>.*?)</div>'
+    SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'
     OFFLINE_PATTERN = r'<p class="titre_dl_2">|<div class="raison"><strong>Le lien du fichier ci-dessus n\'existe plus.'
 
-    SH_COOKIES = [(".uploadhero.co", "lang", "en")]
+    COOKIES = [(".uploadhero.co", "lang", "en")]
 
-    IP_BLOCKED_PATTERN = r'href="(/lightbox_block_download.php\?min=.*?)"'
+    IP_BLOCKED_PATTERN = r'href="(/lightbox_block_download\.php\?min=.*?)"'
     IP_WAIT_PATTERN = r'<span id="minutes">(\d+)</span>.*\s*<span id="seconds">(\d+)</span>'
 
-    CAPTCHA_PATTERN = r'"(/captchadl\.php\?[a-z0-9]+)"'
-    FREE_URL_PATTERN = r'var magicomfg = \'<a href="(http://[^<>"]*?)"|"(http://storage\d+\.uploadhero\.co/\?d=[A-Za-z0-9]+/[^<>"/]+)"'
+    CAPTCHA_PATTERN = r'"(/captchadl\.php\?\w+)"'
+    FREE_URL_PATTERN = r'var magicomfg = \'<a href="(http://[^<>"]*?)"|"(http://storage\d+\.uploadhero\.co/\?d=\w+/[^<>"/]+)"'
     PREMIUM_URL_PATTERN = r'<a href="([^"]+)" id="downloadnow"'
 
 
@@ -50,10 +40,10 @@ class UploadheroCom(SimpleHoster):
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
-            self.parseError("Captcha URL")
+            self.error(_("CAPTCHA_PATTERN not found"))
         captcha_url = "http://uploadhero.co" + m.group(1)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             captcha = self.decryptCaptcha(captcha_url)
             self.html = self.load(self.pyfile.url, get={"code": captcha})
             m = re.search(self.FREE_URL_PATTERN, self.html)
@@ -64,16 +54,16 @@ class UploadheroCom(SimpleHoster):
             else:
                 self.invalidCaptcha()
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
         self.download(download_url)
 
+
     def handlePremium(self):
         self.logDebug("%s: Use Premium Account" % self.__name__)
-        self.html = self.load(self.pyfile.url)
         link = re.search(self.PREMIUM_URL_PATTERN, self.html).group(1)
-        self.logDebug("Downloading link : '%s'" % link)
         self.download(link)
+
 
     def checkErrors(self):
         m = re.search(self.IP_BLOCKED_PATTERN, self.html)

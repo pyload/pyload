@@ -1,61 +1,48 @@
 # -*- coding: utf-8 -*-
 
-#
-#Copyright (C) 2009 kingzero, RaNaN
-#
-#This program is free software; you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation; either version 3 of the License,
-#or (at your option) any later version.
-#
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#See the GNU General Public License for more details.
-#
-#You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
-###
 from __future__ import with_statement
-import os
-from os.path import join
-from os.path import abspath
+
+try:
+    from PIL import Image, GifImagePlugin, JpegImagePlugin, PngImagePlugin, TiffImagePlugin
+except ImportError:
+    import Image, GifImagePlugin, JpegImagePlugin, PngImagePlugin, TiffImagePlugin
+
 import logging
+import os
 import subprocess
 #import tempfile
 
-import Image
-import TiffImagePlugin
-import PngImagePlugin
-import GifImagePlugin
-import JpegImagePlugin
+from os.path import abspath, join
 
 
 class OCR(object):
-    __name__ = "OCR"
-    __type__ = "ocr"
+    __name__    = "OCR"
+    __type__    = "ocr"
     __version__ = "0.1"
 
     __description__ = """OCR base plugin"""
-    __author_name__ = "pyLoad Team"
-    __author_mail__ = "admin@pyload.org"
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):
         self.logger = logging.getLogger("log")
+
 
     def load_image(self, image):
         self.image = Image.open(image)
         self.pixels = self.image.load()
         self.result_captcha = ''
 
+
     def unload(self):
         """delete all tmp images"""
         pass
 
+
     def threshold(self, value):
         self.image = self.image.point(lambda a: a * value + 10)
+
 
     def run(self, command):
         """Run a command"""
@@ -67,29 +54,27 @@ class OCR(object):
         popen.stderr.close()
         self.logger.debug("Tesseract ReturnCode %s Output: %s" % (popen.returncode, output))
 
-    def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
-        #self.logger.debug("create tmp tif")
 
-        #tmp = tempfile.NamedTemporaryFile(suffix=".tif")
-        tmp = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
-        tmp.close()
-        #self.logger.debug("create tmp txt")
+    def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
+        #tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
+        tmpTif = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
+        tmpTif.close()
+
         #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
         tmpTxt = open(join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
         tmpTxt.close()
 
         self.logger.debug("save tiff")
-        self.image.save(tmp.name, 'TIFF')
+        self.image.save(tmpTif.name, 'TIFF')
 
         if os.name == "nt":
-            tessparams = [join(pypath,"tesseract","tesseract.exe")]
+            tessparams = [join(pypath, "tesseract", "tesseract.exe")]
         else:
             tessparams = ["tesseract"]
 
-        tessparams.extend( [abspath(tmp.name), abspath(tmpTxt.name).replace(".txt", "")] )
+        tessparams.extend( [abspath(tmpTif.name), abspath(tmpTxt.name).replace(".txt", "")] )
 
         if subset and (digits or lowercase or uppercase):
-            #self.logger.debug("create temp subset config")
             #tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
             tmpSub = open(join("tmp", "tmpSub_%s.subset" % self.__name__), "wb")
             tmpSub.write("tessedit_char_whitelist ")
@@ -116,21 +101,24 @@ class OCR(object):
 
         self.logger.debug(self.result_captcha)
         try:
-            os.remove(tmp.name)
+            os.remove(tmpTif.name)
             os.remove(tmpTxt.name)
             if subset and (digits or lowercase or uppercase):
                 os.remove(tmpSub.name)
         except:
             pass
 
+
     def get_captcha(self, name):
         raise NotImplementedError
+
 
     def to_greyscale(self):
         if self.image.mode != 'L':
             self.image = self.image.convert('L')
 
         self.pixels = self.image.load()
+
 
     def eval_black_white(self, limit):
         self.pixels = self.image.load()
@@ -141,6 +129,7 @@ class OCR(object):
                     self.pixels[x, y] = 255
                 else:
                     self.pixels[x, y] = 0
+
 
     def clean(self, allowed):
         pixels = self.pixels
@@ -186,6 +175,7 @@ class OCR(object):
                     pixels[x, y] = 255
 
         self.pixels = pixels
+
 
     def derotate_by_average(self):
         """rotate by checking each angle and guess most suitable"""
@@ -261,6 +251,7 @@ class OCR(object):
 
         self.pixels = pixels
 
+
     def split_captcha_letters(self):
         captcha = self.image
         started = False
@@ -300,6 +291,7 @@ class OCR(object):
 
         return letters
 
+
     def correct(self, values, var=None):
         if var:
             result = var
@@ -318,14 +310,3 @@ class OCR(object):
             return result
         else:
             self.result_captcha = result
-
-
-if __name__ == '__main__':
-    ocr = OCR()
-    ocr.load_image("B.jpg")
-    ocr.to_greyscale()
-    ocr.eval_black_white(140)
-    ocr.derotate_by_average()
-    ocr.run_tesser()
-    print "Tesseract", ocr.result_captcha
-    ocr.image.save("derotated.jpg")

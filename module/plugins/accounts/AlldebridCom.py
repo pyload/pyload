@@ -1,29 +1,31 @@
 # -*- coding: utf-8 -*-
 
-import xml.dom.minidom as dom
-from time import time
 import re
-import urllib
+import xml.dom.minidom as dom
+
+from time import time
+from urllib import urlencode
+
+from BeautifulSoup import BeautifulSoup
 
 from module.plugins.Account import Account
-from BeautifulSoup import BeautifulSoup
 
 
 class AlldebridCom(Account):
-    __name__ = "AlldebridCom"
+    __name__    = "AlldebridCom"
+    __type__    = "account"
     __version__ = "0.22"
-    __type__ = "account"
 
     __description__ = """AllDebrid.com account plugin"""
-    __author_name__ = "Andy Voigt"
-    __author_mail__ = "spamsales@online.de"
+    __license__     = "GPLv3"
+    __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
         page = req.load("http://www.alldebrid.com/account/")
         soup = BeautifulSoup(page)
-        #Try to parse expiration date directly from the control panel page (better accuracy)        
+        #Try to parse expiration date directly from the control panel page (better accuracy)
         try:
             time_text = soup.find('div', attrs={'class': 'remaining_time_text'}).strong.string
             self.logDebug("Account expires in: %s" % time_text)
@@ -42,8 +44,9 @@ class AlldebridCom(Account):
         account_info = {"validuntil": exp_time, "trafficleft": -1}
         return account_info
 
+
     def login(self, user, data, req):
-        urlparams = urllib.urlencode({'action': 'login', 'login_login': user, 'login_password': data['password']})
+        urlparams = urlencode({'action': 'login', 'login_login': user, 'login_password': data['password']})
         page = req.load("http://www.alldebrid.com/register/?%s" % urlparams)
 
         if "This login doesn't exist" in page:

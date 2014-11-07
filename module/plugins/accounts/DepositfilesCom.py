@@ -8,13 +8,15 @@ from module.plugins.Account import Account
 
 
 class DepositfilesCom(Account):
-    __name__ = "DepositfilesCom"
+    __name__    = "DepositfilesCom"
+    __type__    = "account"
     __version__ = "0.3"
-    __type__ = "account"
 
     __description__ = """Depositfiles.com account plugin"""
-    __author_name__ = ("mkaay", "stickell", "Walter Purcaro")
-    __author_mail__ = ("mkaay@mkaay.de", "l.stickell@yahoo.it", "vuolter@gmail.com")
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de"),
+                       ("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def loadAccountInfo(self, user, req):
@@ -24,6 +26,7 @@ class DepositfilesCom(Account):
         validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
 
         return {"validuntil": validuntil, "trafficleft": -1}
+
 
     def login(self, user, data, req):
         src = req.load("https://dfiles.eu/de/login.php", get={"return": "/de/gold/payment.php"},

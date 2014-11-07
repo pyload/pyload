@@ -1,50 +1,37 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
 from os.path import basename
 
-from module.utils import fs_encode
-from module.plugins.Hook import Hook
 from module.PyFile import PyFile
+from module.plugins.Hook import Hook
+from module.utils import fs_encode
 
 
 class UnSkipOnFail(Hook):
-    __name__ = "UnSkipOnFail"
+    __name__    = "UnSkipOnFail"
+    __type__    = "hook"
     __version__ = "0.01"
-    __type__ = "hook"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """When a download fails, restart skipped duplicates"""
-    __author_name__ = "hagg"
-    __author_mail__ = None
+    __license__     = "GPLv3"
+    __authors__     = [("hagg", None)]
 
 
     def downloadFailed(self, pyfile):
         pyfile_name = basename(pyfile.name)
         pid = pyfile.package().id
-        msg = 'look for skipped duplicates for %s (pid:%s)...'
+        msg = _('look for skipped duplicates for %s (pid:%s)')
         self.logInfo(msg % (pyfile_name, pid))
         dups = self.findDuplicates(pyfile)
         for link in dups:
             # check if link is "skipped"(=4)
             if link.status == 4:
                 lpid = link.packageID
-                self.logInfo('restart "%s" (pid:%s)...' % (pyfile_name, lpid))
+                self.logInfo(_('restart "%s" (pid:%s)') % (pyfile_name, lpid))
                 self.setLinkStatus(link, "queued")
+
 
     def findDuplicates(self, pyfile):
         """ Search all packages for duplicate links to "pyfile".
@@ -74,6 +61,7 @@ class UnSkipOnFail(Hook):
                             if link.fid != pyfile.id:
                                 dups.append(link)
         return dups
+
 
     def setLinkStatus(self, link, new_status):
         """ Change status of "link" to "new_status".

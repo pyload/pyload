@@ -1,42 +1,47 @@
 # -*- coding: utf-8 -*-
 
-import re
 import random
+import re
+
 from array import array
-from os import remove
 from base64 import standard_b64decode
+from os import remove
 
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
+from pycurl import SSL_CIPHER_LIST
 
 from module.common.json_layer import json_loads, json_dumps
 from module.plugins.Hoster import Hoster
 
-#def getInfo(urls):
-#    pass
-
 
 class MegaNz(Hoster):
-    __name__ = "MegaNz"
-    __type__ = "hoster"
-    __pattern__ = r'https?://([a-z0-9]+\.)?mega\.co\.nz/#!([a-zA-Z0-9!_\-]+)'
-    __version__ = "0.14"
+    __name__    = "MegaNz"
+    __type__    = "hoster"
+    __version__ = "0.16"
+
+    __pattern__ = r'https?://(\w+\.)?mega\.co\.nz/#!([\w!-]+)'
+
     __description__ = """Mega.co.nz hoster plugin"""
-    __author_name__ = "RaNaN"
-    __author_mail__ = "ranan@pyload.org"
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "ranan@pyload.org")]
+
 
     API_URL = "https://g.api.mega.co.nz/cs?id=%d"
     FILE_SUFFIX = ".crypted"
 
+
     def b64_decode(self, data):
         data = data.replace("-", "+").replace("_", "/")
         return standard_b64decode(data + '=' * (-len(data) % 4))
+
 
     def getCipherKey(self, key):
         """ Construct the cipher key from the given data """
         a = array("I", key)
         key_array = array("I", [a[0] ^ a[4], a[1] ^ a[5], a[2] ^ a[6], a[3] ^ a[7]])
         return key_array
+
 
     def callApi(self, **kwargs):
         """ Dispatch a call to the api, see https://mega.co.nz/#developers """
@@ -47,8 +52,8 @@ class MegaNz(Hoster):
         self.logDebug("Api Response: " + resp)
         return json_loads(resp)
 
-    def decryptAttr(self, data, key):
 
+    def decryptAttr(self, data, key):
         cbc = AES.new(self.getCipherKey(key), AES.MODE_CBC, "\0" * 16)
         attr = cbc.decrypt(self.b64_decode(data))
         self.logDebug("Decrypted Attr: " + attr)
@@ -56,7 +61,8 @@ class MegaNz(Hoster):
             self.fail(_("Decryption failed"))
 
         # Data is padded, 0-bytes must be stripped
-        return json_loads(attr.replace("MEGA", "").rstrip("\0").strip())
+        return json_loads(re.search(r'{.+?}', attr).group(0))
+
 
     def decryptFile(self, key):
         """  Decrypts the file at lastDownload` """
@@ -91,8 +97,8 @@ class MegaNz(Hoster):
 
         self.lastDownload = file_decrypted
 
-    def process(self, pyfile):
 
+    def process(self, pyfile):
         key = None
 
         # match is guaranteed because plugin was chosen to handle url
@@ -124,6 +130,8 @@ class MegaNz(Hoster):
         attr = self.decryptAttr(dl['at'], key)
 
         pyfile.name = attr['n'] + self.FILE_SUFFIX
+
+        self.req.http.c.setopt(SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
 
         self.download(dl['g'])
         self.decryptFile(key)

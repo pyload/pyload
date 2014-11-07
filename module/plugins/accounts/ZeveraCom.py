@@ -6,13 +6,13 @@ from module.plugins.Account import Account
 
 
 class ZeveraCom(Account):
-    __name__ = "ZeveraCom"
+    __name__    = "ZeveraCom"
+    __type__    = "account"
     __version__ = "0.21"
-    __type__ = "account"
 
     __description__ = """Zevera.com account plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def loadAccountInfo(self, user, req):
@@ -27,11 +27,13 @@ class ZeveraCom(Account):
             }
         return account_info
 
+
     def login(self, user, data, req):
         self.loginname = user
         self.password = data['password']
         if self.getAPIData(req) == "No traffic":
             self.wrongPassword()
+
 
     def getAPIData(self, req, just_header=False, **kwargs):
         get_data = {

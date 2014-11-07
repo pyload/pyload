@@ -1,22 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import re
-from urllib import unquote
+
 from random import randrange
-from module.plugins.Hoster import Hoster
+from urllib import unquote
+
 from module.common.json_layer import json_loads
+from module.plugins.Hoster import Hoster
 from module.utils import parseFileSize
 
 
 class AlldebridCom(Hoster):
-    __name__ = "AlldebridCom"
+    __name__    = "AlldebridCom"
+    __type__    = "hoster"
     __version__ = "0.34"
-    __type__ = "hoster"
 
     __pattern__ = r'https?://(?:[^/]*\.)?alldebrid\..*'
+
     __description__ = """Alldebrid.com hoster plugin"""
-    __author_name__ = "Andy Voigt"
-    __author_mail__ = "spamsales@online.de"
+    __license__     = "GPLv3"
+    __authors__     = [("Andy Voigt", "spamsales@online.de")]
+
 
     def getFilename(self, url):
         try:
@@ -27,16 +31,18 @@ class AlldebridCom(Hoster):
             name += "%s.tmp" % randrange(100, 999)
         return name
 
+
     def setup(self):
         self.chunkLimit = 16
         self.resumeDownload = True
+
 
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "AllDebrid")
-            self.fail("No AllDebrid account provided")
+            self.fail(_("No AllDebrid account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             password = self.getPassword().splitlines()
@@ -46,7 +52,7 @@ class AlldebridCom(Hoster):
             page = self.load(url)
             data = json_loads(page)
 
-            self.logDebug("Json data: %s" % str(data))
+            self.logDebug("Json data", data)
 
             if data['error']:
                 if data['error'] == "This link isn't available on the hoster website.":
@@ -74,10 +80,10 @@ class AlldebridCom(Hoster):
 
         self.download(new_url, disposition=True)
 
-        check = self.checkDownload({"error": "<title>An error occured while processing your request</title>",
-                                    "empty": re.compile(r"^$")})
+        check = self.checkDownload({'error': "<title>An error occured while processing your request</title>",
+                                    'empty': re.compile(r"^$")})
 
         if check == "error":
-            self.retry(wait_time=60, reason="An error occured while generating link.")
+            self.retry(wait_time=60, reason=_("An error occured while generating link"))
         elif check == "empty":
-            self.retry(wait_time=60, reason="Downloaded File was empty.")
+            self.retry(wait_time=60, reason=_("Downloaded File was empty"))

@@ -1,26 +1,23 @@
 # -*- coding: utf-8 -*-
 
-# should be working
-
 from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class AlldebridCom(MultiHoster):
-    __name__ = "AlldebridCom"
+    __name__    = "AlldebridCom"
+    __type__    = "hook"
     __version__ = "0.13"
-    __type__ = "hook"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("https", "bool", "Enable HTTPS", False),
+    __config__ = [("https", "bool", "Enable HTTPS", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Alldebrid.com hook plugin"""
-    __author_name__ = "Andy Voigt"
-    __author_mail__ = "spamsales@online.de"
+    __license__     = "GPLv3"
+    __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
 
     def getHoster(self):

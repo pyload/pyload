@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from time import time
 
-from module.plugins.Hoster import Hoster
 from module.network.RequestFactory import getURL
+from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
 from module.plugins.internal.CaptchaService import ReCaptcha
 
@@ -36,49 +37,46 @@ def getInfo(urls):
 
 
 class ShareonlineBiz(Hoster):
-    __name__ = "ShareonlineBiz"
-    __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download.php\?id=|dl/)(?P<ID>\w+)'
-    __version__ = "0.40"
+    __name__    = "ShareonlineBiz"
+    __type__    = "hoster"
+    __version__ = "0.41"
+
+    __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
+
     __description__ = """Shareonline.biz hoster plugin"""
-    __author_name__ = ("spoob", "mkaay", "zoidberg", "Walter Purcaro")
-    __author_mail__ = ("spoob@pyload.org", "mkaay@mkaay.de", "zoidberg@mujmail.cz", "vuolter@gmail.com")
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("mkaay", "mkaay@mkaay.de"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
+
 
     ERROR_INFO_PATTERN = r'<p class="b">Information:</p>\s*<div>\s*<strong>(.*?)</strong>'
 
+
     def setup(self):
-        # range request not working?
-        #  api supports resume, only one chunk
-        #  website isn't supporting resuming in first place
         self.file_id = re.match(self.__pattern__, self.pyfile.url).group("ID")
         self.pyfile.url = "http://www.share-online.biz/dl/" + self.file_id
 
         self.resumeDownload = self.premium
         self.multiDL = False
-        #self.chunkLimit = 1
 
         self.check_data = None
+
 
     def process(self, pyfile):
         if self.premium:
             self.handlePremium()
-            #web-download fallback removed - didn't work anyway
         else:
             self.handleFree()
-
-        # check = self.checkDownload({"failure": re.compile(self.ERROR_INFO_PATTERN)})
-        # if check == "failure":
-        #     try:
-        #         self.retry(reason=self.lastCheck.group(1).decode("utf8"))
-        #     except:
-        #         self.retry(reason="Unknown error")
 
         if self.api_data:
             self.check_data = {"size": int(self.api_data['size']), "md5": self.api_data['md5']}
 
+
     def loadAPIData(self):
         api_url_base = "http://api.share-online.biz/linkcheck.php?md5=1"
-        api_param_file = {"links": self.file_id}  # api only supports old style links
+        api_param_file = {"links": self.file_id}  #: api only supports old style links
         src = self.load(api_url_base, cookies=False, post=api_param_file, decode=True)
 
         fields = src.split(";")
@@ -88,15 +86,16 @@ class ShareonlineBiz(Hoster):
             self.offline()
         else:
             self.api_data['filename'] = fields[2]
-            self.api_data['size'] = fields[3]  # in bytes
-            self.api_data['md5'] = fields[4].strip().lower().replace("\n\n", "")  # md5
+            self.api_data['size'] = fields[3]  #: in bytes
+            self.api_data['md5'] = fields[4].strip().lower().replace("\n\n", "")  #: md5
+
 
     def handleFree(self):
         self.loadAPIData()
         self.pyfile.name = self.api_data['filename']
         self.pyfile.size = int(self.api_data['size'])
 
-        self.html = self.load(self.pyfile.url, cookies=True)  # refer, stuff
+        self.html = self.load(self.pyfile.url, cookies=True)  #: refer, stuff
         self.setWait(3)
         self.wait()
 
@@ -106,7 +105,7 @@ class ShareonlineBiz(Hoster):
         m = re.search(r'var wait=(\d+);', self.html)
 
         recaptcha = ReCaptcha(self)
-        for _ in xrange(5):
+        for _i in xrange(5):
             challenge, response = recaptcha.challenge("6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX")
             self.setWait(int(m.group(1)) if m else 30)
             response = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time() * 1000)), post={
@@ -121,12 +120,11 @@ class ShareonlineBiz(Hoster):
                 self.invalidCaptcha()
         else:
             self.invalidCaptcha()
-            self.fail("No valid captcha solution received")
+            self.fail(_("No valid captcha solution received"))
 
         download_url = response.decode("base64")
-        self.logDebug(download_url)
         if not download_url.startswith("http://"):
-            self.parseError("download url")
+            self.error(_("Wrong download url"))
 
         self.wait()
         self.download(download_url)
@@ -143,6 +141,7 @@ class ShareonlineBiz(Hoster):
             self.retry(5, 5 * 60, "Download failed")
         else:
             self.correctCaptcha()
+
 
     def handlePremium(self):  #: should be working better loading (account) api internally
         self.account.getAccountInfo(self.user, True)
@@ -169,20 +168,22 @@ class ShareonlineBiz(Hoster):
                 self.multiDL = True
                 self.download(dlLink)
 
+
     def checkErrors(self):
         m = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
         if m is None:
             return
 
         err = m.group(1)
-        m = re.search(self.ERROR_INFO_PATTERN, self.html)
-        msg = m.group(1) if m else ""
-        self.logError(err, msg or "Unknown error occurred")
+        try:
+            self.logError(err, re.search(self.ERROR_INFO_PATTERN, self.html).group(1))
+        except:
+            self.logError(err, "Unknown error occurred")
 
         if err == "invalid":
-            self.fail(msg or "File not available")
+            self.fail(_("File not available"))
         elif err in ("freelimit", "size", "proxy"):
-            self.fail(msg or "Premium account needed")
+            self.fail(_("Premium account needed"))
         else:
             if err in 'server':
                 self.setWait(600, False)
@@ -192,4 +193,4 @@ class ShareonlineBiz(Hoster):
                 self.setWait(300, True)
 
             self.wait()
-            self.retry(max_tries=25, reason=msg)
+            self.retry(max_tries=25, reason=err)

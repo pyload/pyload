@@ -1,20 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
 import time
 
@@ -22,13 +7,14 @@ from module.plugins.Account import Account
 
 
 class HellshareCz(Account):
-    __name__ = "HellshareCz"
+    __name__    = "HellshareCz"
+    __type__    = "account"
     __version__ = "0.14"
-    __type__ = "account"
 
     __description__ = """Hellshare.cz account plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+|\d\d\.\d\d\.)</th>'
 
@@ -58,24 +44,25 @@ class HellshareCz(Account):
                     trafficleft = int(credit) * 1024
                     validuntil = -1
             except Exception, e:
-                self.logError('Unable to parse credit info', e)
+                self.logError(_("Unable to parse credit info"), str(e))
                 validuntil = -1
                 trafficleft = -1
 
         return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
 
+
     def login(self, user, data, req):
         html = req.load('http://www.hellshare.com/')
         if req.lastEffectiveURL != 'http://www.hellshare.com/':
             #Switch to English
-            self.logDebug('Switch lang - URL: %s' % req.lastEffectiveURL)
+            self.logDebug("Switch lang - URL: %s" % req.lastEffectiveURL)
             json = req.load("%s?do=locRouter-show" % req.lastEffectiveURL)
-            hash = re.search(r"(--[0-9a-f]+-)", json).group(1)
-            self.logDebug('Switch lang - HASH: %s' % hash)
+            hash = re.search(r"(\-\-[0-9a-f]+\-)", json).group(1)
+            self.logDebug("Switch lang - HASH: %s" % hash)
             html = req.load('http://www.hellshare.com/%s/' % hash)
 
         if re.search(self.CREDIT_LEFT_PATTERN, html):
-            self.logDebug('Already logged in')
+            self.logDebug("Already logged in")
             return
 
         html = req.load('http://www.hellshare.com/login?do=loginForm-submit', post={

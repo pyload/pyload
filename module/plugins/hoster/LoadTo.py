@@ -1,20 +1,6 @@
 # -*- coding: utf-8 -*-
-############################################################################
-# This program is free software: you can redistribute it and/or modify     #
-# it under the terms of the GNU Affero General Public License as           #
-# published by the Free Software Foundation, either version 3 of the       #
-# License, or (at your option) any later version.                          #
-#                                                                          #
-# This program is distributed in the hope that it will be useful,          #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
-# GNU Affero General Public License for more details.                      #
-#                                                                          #
-# You should have received a copy of the GNU Affero General Public License #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
-############################################################################
-
-# Test links (random.bin):
+#
+# Test links:
 # http://www.load.to/JWydcofUY6/random.bin
 # http://www.load.to/oeSmrfkXE/random100.bin
 
@@ -25,34 +11,38 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class LoadTo(SimpleHoster):
-    __name__ = "LoadTo"
-    __version__ = "0.15"
-    __type__ = "hoster"
+    __name__    = "LoadTo"
+    __type__    = "hoster"
+    __version__ = "0.18"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
 
-    __description__ = """Load.to hoster plugin"""
-    __author_name__ = ("halfman", "stickell")
-    __author_mail__ = ("Pulpan3@gmail.com", "l.stickell@yahoo.it")
+    __description__ = """ Load.to hoster plugin """
+    __license__     = "GPLv3"
+    __authors__     = [("halfman", "Pulpan3@gmail.com"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
-    FILE_NAME_PATTERN = r'<head><title>(?P<N>.+) \/\/ Load.to</title>'
-    FILE_SIZE_PATTERN = r'<a [^>]+>(?P<Z>.+)</a></h3>\s*Size: (?P<S>.*) (?P<U>[kKmMgG]?i?[bB])'
-    OFFLINE_PATTERN = r'Can\'t find file\. Please check URL'
+
+    NAME_PATTERN = r'<h1>(?P<N>.+)</h1>'
+    SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    OFFLINE_PATTERN = r'>Can\'t find file'
 
     LINK_PATTERN = r'<form method="post" action="(.+?)"'
     WAIT_PATTERN = r'type="submit" value="Download \((\d+)\)"'
-    SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.noscript\?k=([^"]+)'
+
+    URL_REPLACEMENTS = [(r'(\w)$', r'\1/')]
 
 
     def setup(self):
         self.multiDL = True
         self.chunkLimit = 1
 
+
     def handleFree(self):
         # Search for Download URL
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.parseError("Unable to detect download URL")
+            self.error(_("LINK_PATTERN not found"))
 
         download_url = m.group(1)
 
@@ -62,18 +52,20 @@ class LoadTo(SimpleHoster):
             self.wait(m.group(1))
 
         # Load.to is using solvemedia captchas since ~july 2014:
-        m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
-        if m is None:
+        solvemedia = SolveMedia(self)
+        captcha_key = solvemedia.detect_key()
+
+        if captcha_key is None:
             self.download(download_url)
         else:
-            captcha_key = m.group(1)
-            solvemedia = SolveMedia(self)
             captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
             self.download(download_url, post={"adcopy_challenge": captcha_challenge, "adcopy_response": captcha_response})
-            check = self.checkDownload({"404": re.compile("\A<h1>404 Not Found</h1>")})
+            check = self.checkDownload({'404': re.compile("\A<h1>404 Not Found</h1>"), 'html': re.compile("html")})
             if check == "404":
-                self.logWarning("The captcha you entered was incorrect. Please try again.")
                 self.invalidCaptcha()
+                self.retry()
+            elif check == "html":
+                self.logWarning(_("Downloaded file is an html page, will retry"))
                 self.retry()
 
 

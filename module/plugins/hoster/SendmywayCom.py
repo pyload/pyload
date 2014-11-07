@@ -1,21 +1,24 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class SendmywayCom(XFileSharingPro):
-    __name__ = "SendmywayCom"
-    __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?sendmyway.com/\w{12}'
-    __version__ = "0.01"
+class SendmywayCom(XFSHoster):
+    __name__    = "SendmywayCom"
+    __type__    = "hoster"
+    __version__ = "0.04"
+
+    __pattern__ = r'http://(?:www\.)?sendmyway\.com/\w{12}'
+
     __description__ = """SendMyWay hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    HOSTER_NAME = "sendmyway.com"
 
-    FILE_NAME_PATTERN = r'<p class="file-name" ><.*?>\s*(?P<N>.+)'
-    FILE_SIZE_PATTERN = r'<small>\((?P<S>\d+) bytes\)</small>'
+    HOSTER_DOMAIN = "sendmyway.com"
+
+    NAME_PATTERN = r'<p class="file-name" ><.*?>\s*(?P<N>.+)'
+    SIZE_PATTERN = r'<small>\((?P<S>\d+) bytes\)</small>'
 
 
 getInfo = create_getInfo(SendmywayCom)

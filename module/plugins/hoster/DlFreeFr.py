@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import re
 import pycurl
+import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns
 from module.common.json_layer import json_loads
 from module.network.Browser import Browser
 from module.network.CookieJar import CookieJar
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns
 
 
 class CustomBrowser(Browser):
 
     def __init__(self, bucket=None, options={}):
         Browser.__init__(self, bucket, options)
+
 
     def load(self, *args, **kwargs):
         post = kwargs.get("post")
@@ -36,13 +37,15 @@ class AdYouLike:
     """
     Class to support adyoulike captcha service
     """
-    ADYOULIKE_INPUT_PATTERN = r'Adyoulike.create\((.*?)\);'
-    ADYOULIKE_CALLBACK = r'Adyoulike.g._jsonp_5579316662423138'
+    ADYOULIKE_INPUT_PATTERN = r'Adyoulike\.create\((.*?)\);'
+    ADYOULIKE_CALLBACK = r'Adyoulike\.g\._jsonp_5579316662423138'
     ADYOULIKE_CHALLENGE_PATTERN = ADYOULIKE_CALLBACK + r'\((.*?)\)'
+
 
     def __init__(self, plugin, engine="adyoulike"):
         self.plugin = plugin
         self.engine = engine
+
 
     def challenge(self, html):
         adyoulike_data_string = None
@@ -70,6 +73,7 @@ class AdYouLike:
         challenge_data = json_loads(challenge_string)
 
         return ayl_data, challenge_data
+
 
     def result(self, ayl, challenge):
         """
@@ -107,17 +111,22 @@ class AdYouLike:
 
 
 class DlFreeFr(SimpleHoster):
-    __name__ = "DlFreeFr"
-    __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?dl\.free\.fr/([a-zA-Z0-9]+|getfile\.pl\?file=/[a-zA-Z0-9]+)'
+    __name__    = "DlFreeFr"
+    __type__    = "hoster"
     __version__ = "0.25"
-    __description__ = """Dl.free.fr hoster plugin"""
-    __author_name__ = ("the-razer", "zoidberg", "Toilal")
-    __author_mail__ = ("daniel_ AT gmx DOT net", "zoidberg@mujmail.cz", "toilal.dev@gmail.com")
 
-    FILE_NAME_PATTERN = r'Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>'
-    FILE_SIZE_PATTERN = r'Taille:</td>\s*<td[^>]*>(?P<S>[\d.]+[KMG])o'
-    OFFLINE_PATTERN = r"Erreur 404 - Document non trouv|Fichier inexistant|Le fichier demand&eacute; n'a pas &eacute;t&eacute; trouv&eacute;"
+    __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
+
+    __description__ = """Dl.free.fr hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("the-razer", "daniel_ AT gmx DOT net"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Toilal", "toilal.dev@gmail.com")]
+
+
+    NAME_PATTERN = r'Fichier:</td>\s*<td[^>]*>(?P<N>[^>]*)</td>'
+    SIZE_PATTERN = r'Taille:</td>\s*<td[^>]*>(?P<S>[\d.,]+\w)o'
+    OFFLINE_PATTERN = r'Erreur 404 - Document non trouv|Fichier inexistant|Le fichier demand&eacute; n\'a pas &eacute;t&eacute; trouv&eacute;'
 
 
     def setup(self):
@@ -125,18 +134,17 @@ class DlFreeFr(SimpleHoster):
         self.limitDL = 5
         self.chunkLimit = 1
 
+
     def init(self):
         factory = self.core.requestFactory
         self.req = CustomBrowser(factory.bucket, factory.getOptions())
 
-    def process(self, pyfile):
-        self.req.setCookieJar(None)
 
-        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
+    def process(self, pyfile):
+        pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
         valid_url = pyfile.url
         headers = self.load(valid_url, just_header=True)
 
-        self.html = None
         if headers.get('code') == 302:
             valid_url = headers.get('location')
             headers = self.load(valid_url, just_header=True)
@@ -148,12 +156,13 @@ class DlFreeFr(SimpleHoster):
                 self.html = self.load(valid_url)
                 self.handleFree()
             else:
-                # Direct access to requested file for users using free.fr as Internet Service Provider. 
+                # Direct access to requested file for users using free.fr as Internet Service Provider.
                 self.download(valid_url, disposition=True)
         elif headers.get('code') == 404:
             self.offline()
         else:
-            self.fail("Invalid return code: " + str(headers.get('code')))
+            self.fail(_("Invalid return code: ") + str(headers.get('code')))
+
 
     def handleFree(self):
         action, inputs = self.parseHtmlForm('action="getfile.pl"')
@@ -171,12 +180,13 @@ class DlFreeFr(SimpleHoster):
             if m:
                 cj.setCookie(m.group(4), m.group(1), m.group(2), m.group(3))
             else:
-                self.fail("Cookie error")
+                self.fail(_("Cookie error"))
             location = headers.get("location")
             self.req.setCookieJar(cj)
             self.download(location, disposition=True)
         else:
-            self.fail("Invalid response")
+            self.fail(_("Invalid response"))
+
 
     def getLastHeaders(self):
         #parse header

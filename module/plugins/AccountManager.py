@@ -1,22 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
-
 from os.path import exists
 from shutil import copy
 
@@ -31,6 +14,7 @@ ACC_VERSION = 1
 class AccountManager():
     """manages all accounts"""
 
+
     #----------------------------------------------------------------------
     def __init__(self, core):
         """Constructor"""
@@ -41,12 +25,14 @@ class AccountManager():
         self.initPlugins()
         self.saveAccounts() # save to add categories to conf
 
+
     def initPlugins(self):
         self.accounts = {} # key = ( plugin )
         self.plugins = {}
 
         self.initAccountPlugins()
         self.loadAccounts()
+
 
     def getAccountPlugin(self, plugin):
         """get account instance for plugin or None if anonymous"""
@@ -58,6 +44,7 @@ class AccountManager():
         else:
             return None
 
+
     def getAccountPlugins(self):
         """ get all account instances"""
 
@@ -66,6 +53,7 @@ class AccountManager():
             plugins.append(self.getAccountPlugin(plugin))
 
         return plugins
+
 
     #----------------------------------------------------------------------
     def loadAccounts(self):
@@ -86,7 +74,7 @@ class AccountManager():
             f = open("accounts.conf", "wb")
             f.write("version: " + str(ACC_VERSION))
             f.close()
-            self.core.log.warning(_("Account settings deleted, due to new config format."))
+            self.core.log.warning(_("Account settings deleted, due to new config format"))
             return
 
         plugin = ""
@@ -114,6 +102,7 @@ class AccountManager():
                 name, sep, pw = line.partition(":")
                 self.accounts[plugin][name] = {"password": pw, "options": {}, "valid": True}
 
+
     #----------------------------------------------------------------------
     def saveAccounts(self):
         """save all account information"""
@@ -134,11 +123,13 @@ class AccountManager():
         f.close()
         chmod(f.name, 0600)
 
+
     #----------------------------------------------------------------------
     def initAccountPlugins(self):
         """init names"""
         for name in self.core.pluginManager.getAccountPlugins():
             self.accounts[name] = {}
+
 
     @lock
     def updateAccount(self, plugin , user, password=None, options={}):
@@ -151,6 +142,7 @@ class AccountManager():
             self.saveAccounts()
             if updated: p.scheduleRefresh(user, force=False)
 
+
     @lock
     def removeAccount(self, plugin, user):
         """remove account"""
@@ -160,6 +152,7 @@ class AccountManager():
             p.removeAccount(user)
 
             self.saveAccounts()
+
 
     @lock
     def getAccountInfos(self, force=True, refresh=False):
@@ -178,6 +171,7 @@ class AccountManager():
         e = AccountUpdateEvent()
         self.core.pullManager.addEvent(e)
         return data
+
 
     def sendChange(self):
         e = AccountUpdateEvent()

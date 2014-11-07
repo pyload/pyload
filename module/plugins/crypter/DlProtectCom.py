@@ -1,18 +1,4 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as
-#  published by the Free Software Foundation, either version 3 of the
-#  License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Affero General Public License for more details.
-#
-#  You should have received a copy of the GNU Affero General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-###############################################################################
 
 import re
 
@@ -23,15 +9,18 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class DlProtectCom(SimpleCrypter):
-    __name__ = "DlProtectCom"
+    __name__    = "DlProtectCom"
+    __type__    = "crypter"
     __version__ = "0.01"
-    __type__ = "crypter"
 
     __pattern__ = r'http://(?:www\.)?dl-protect\.com/((en|fr)/)?(?P<ID>\w+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Dl-protect.com decrypter plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
 
     OFFLINE_PATTERN = r'>Unfortunately, the link you are looking for is not found'
 
@@ -70,7 +59,7 @@ class DlProtectCom(SimpleCrypter):
 
         for errmsg in (">The password is incorrect", ">The security code is incorrect"):
             if errmsg in self.html:
-                self.fail(errmsg[1:])
+                self.fail(_(errmsg[1:]))
 
         pattern = r'<a href="([^/].+?)" target="_blank">'
         return re.findall(pattern, self.html)

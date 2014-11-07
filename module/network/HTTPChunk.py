@@ -208,7 +208,7 @@ class HTTPChunk(HTTPRequest):
         # as first chunk, we will parse the headers
         if not self.range and self.header.endswith("\r\n\r\n"):
             self.parseHeader()
-        elif not self.range and buf.startswith("150") and "data connection" in buf: #ftp file size parsing
+        elif not self.range and buf.startswith("150") and "data connection" in buf.lower():  #: ftp file size parsing
             size = search(r"(\d+) bytes", buf)
             if size:
                 self.p.size = int(size.group(1))

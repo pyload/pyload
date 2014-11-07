@@ -7,16 +7,20 @@ from module.plugins.hoster.MegaNz import MegaNz
 
 
 class MegacrypterCom(MegaNz):
-    __name__ = "MegacrypterCom"
-    __type__ = "hoster"
-    __pattern__ = r'(https?://[a-z0-9]{0,10}\.?megacrypter\.com/[a-zA-Z0-9!_\-]+)'
+    __name__    = "MegacrypterCom"
+    __type__    = "hoster"
     __version__ = "0.2"
+
+    __pattern__ = r'(https?://\w{0,10}\.?megacrypter\.com/[\w!-]+)'
+
     __description__ = """Megacrypter.com decrypter plugin"""
-    __author_name__ = "GonzaloSR"
-    __author_mail__ = "gonzalo@gonzalosr.com"
+    __license__     = "GPLv3"
+    __authors__     = [("GonzaloSR", "gonzalo@gonzalosr.com")]
+
 
     API_URL = "http://megacrypter.com/api"
     FILE_SUFFIX = ".crypted"
+
 
     def callApi(self, **kwargs):
         """ Dispatch a call to the api, see megacrypter.com/api_doc """
@@ -24,6 +28,7 @@ class MegacrypterCom(MegaNz):
         resp = self.load(self.API_URL, post=json_dumps(kwargs))
         self.logDebug("API Response: " + resp)
         return json_loads(resp)
+
 
     def process(self, pyfile):
         # match is guaranteed because plugin was chosen to handle url

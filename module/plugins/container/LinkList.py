@@ -7,7 +7,7 @@ from module.utils import fs_encode
 
 
 class LinkList(Container):
-    __name__ = "LinkList"
+    __name__    = "LinkList"
     __version__ = "0.12"
 
     __pattern__ = r'.+\.txt'
@@ -15,8 +15,9 @@ class LinkList(Container):
                   ("encoding", "string", "File encoding (default utf-8)", "")]
 
     __description__ = """Read link lists in txt format"""
-    __author_name__ = ("spoob", "jeix")
-    __author_mail__ = ("spoob@pyload.org", "jeix@hasnomail.com")
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("jeix", "jeix@hasnomail.com")]
 
 
     def decrypt(self, pyfile):
@@ -24,9 +25,6 @@ class LinkList(Container):
             file_enc = codecs.lookup(self.getConfig("encoding")).name
         except:
             file_enc = "utf-8"
-
-        print repr(pyfile.url)
-        print pyfile.url
 
         file_name = fs_encode(pyfile.url)
 
@@ -67,7 +65,7 @@ class LinkList(Container):
                 txt = open(file_name, 'wb')
                 txt.close()
             except:
-                self.logWarning(_("LinkList could not be cleared."))
+                self.logWarning(_("LinkList could not be cleared"))
 
         for name, links in packages.iteritems():
             self.packages.append((name, links, name))

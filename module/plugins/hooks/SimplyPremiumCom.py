@@ -1,18 +1,4 @@
 # -*- coding: utf-8 -*-
-############################################################################
-# This program is free software: you can redistribute it and/or modify     #
-# it under the terms of the GNU Affero General Public License as           #
-# published by the Free Software Foundation, either version 3 of the       #
-# License, or (at your option) any later version.                          #
-#                                                                          #
-# This program is distributed in the hope that it will be useful,          #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
-# GNU Affero General Public License for more details.                      #
-#                                                                          #
-# You should have received a copy of the GNU Affero General Public License #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
-############################################################################
 
 from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
@@ -20,9 +6,9 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class SimplyPremiumCom(MultiHoster):
-    __name__ = "SimplyPremiumCom"
+    __name__    = "SimplyPremiumCom"
+    __type__    = "hook"
     __version__ = "0.02"
-    __type__ = "hook"
 
     __config__ = [("activated", "bool", "Activated", "False"),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
@@ -31,8 +17,8 @@ class SimplyPremiumCom(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
     __description__ = """Simply-Premium.com hook plugin"""
-    __author_name__ = "EvolutionClip"
-    __author_mail__ = "evolutionclip@live.de"
+    __license__     = "GPLv3"
+    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def getHoster(self):

@@ -1,45 +1,35 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import re
+
 from pycurl import FOLLOWLOCATION
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class QuickshareCz(SimpleHoster):
-    __name__ = "QuickshareCz"
-    __type__ = "hoster"
-    __pattern__ = r'http://(?:[^/]*\.)?quickshare.cz/stahnout-soubor/.*'
+    __name__    = "QuickshareCz"
+    __type__    = "hoster"
     __version__ = "0.54"
-    __description__ = """Quickshare.cz hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
 
-    FILE_NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>[^<]+)</td>'
-    FILE_SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</td>'
-    OFFLINE_PATTERN = r'<script type="text/javascript">location.href=\'/chyba\';</script>'
+    __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.*'
+
+    __description__ = """Quickshare.cz hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+
+
+    NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>[^<]+)</td>'
+    SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</td>'
+    OFFLINE_PATTERN = r'<script type="text/javascript">location\.href=\'/chyba\';</script>'
+
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
         self.getFileInfo()
 
         # parse js variables
-        self.jsvars = dict((x, y.strip("'")) for x, y in re.findall(r"var (\w+) = ([0-9.]+|'[^']*')", self.html))
+        self.jsvars = dict((x, y.strip("'")) for x, y in re.findall(r"var (\w+) = ([\d.]+|'[^']*')", self.html))
         self.logDebug(self.jsvars)
         pyfile.name = self.jsvars['ID3']
 
@@ -47,11 +37,11 @@ class QuickshareCz(SimpleHoster):
         if self.premium:
             if 'UU_prihlasen' in self.jsvars:
                 if self.jsvars['UU_prihlasen'] == '0':
-                    self.logWarning('User not logged in')
+                    self.logWarning(_("User not logged in"))
                     self.relogin(self.user)
                     self.retry()
                 elif float(self.jsvars['UU_kredit']) < float(self.jsvars['kredit_odecet']):
-                    self.logWarning('Not enough credit left')
+                    self.logWarning(_("Not enough credit left"))
                     self.premium = False
 
         if self.premium:
@@ -61,7 +51,8 @@ class QuickshareCz(SimpleHoster):
 
         check = self.checkDownload({"err": re.compile(r"\AChyba!")}, max_size=100)
         if check == "err":
-            self.fail("File not m or plugin defect")
+            self.fail(_("File not m or plugin defect"))
+
 
     def handleFree(self):
         # get download url
@@ -76,7 +67,7 @@ class QuickshareCz(SimpleHoster):
 
         m = re.search("Location\s*:\s*(.*)", self.header, re.I)
         if m is None:
-            self.fail('File not found')
+            self.fail(_("File not found"))
         download_url = m.group(1)
         self.logDebug("FREE URL2:" + download_url)
 
@@ -88,10 +79,11 @@ class QuickshareCz(SimpleHoster):
             elif m.group(1) == '2':
                 self.retry(60, 60, "No free slots available")
             else:
-                self.fail('Error %d' % m.group(1))
+                self.fail(_("Error %d") % m.group(1))
 
         # download file
         self.download(download_url)
+
 
     def handlePremium(self):
         download_url = '%s/download_premium.php' % self.jsvars['server']

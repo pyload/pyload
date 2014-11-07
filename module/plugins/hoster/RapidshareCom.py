@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# v1.36
-# * fixed call checkfiles subroutine
-# v1.35
-# * fixed rs-urls in handleFree(..) and freeWait(..)
-# * removed getInfo(..) function as it was not used anywhere (in this file)
-# * removed some (old?) comment blocks
-
 import re
 
 from module.network.RequestFactory import getURL
@@ -49,16 +42,21 @@ def getInfo(urls):
 
 
 class RapidshareCom(Hoster):
-    __name__ = "RapidshareCom"
-    __type__ = "hoster"
-    __pattern__ = r'https?://(?:www\.)?rapidshare.com/(?:files/(?P<id>\d*?)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))'
+    __name__    = "RapidshareCom"
+    __type__    = "hoster"
     __version__ = "1.39"
-    __description__ = """Rapidshare.com hoster plugin"""
+
+    __pattern__ = r'https?://(?:www\.)?rapidshare\.com/(?:files/(?P<id>\d+)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))'
     __config__ = [("server",
                    "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera",
                    "Preferred Server", "None")]
-    __author_name__ = ("spoob", "RaNaN", "mkaay")
-    __author_mail__ = ("spoob@pyload.org", "ranan@pyload.org", "mkaay@mkaay.de")
+
+    __description__ = """Rapidshare.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("RaNaN", "ranan@pyload.org"),
+                       ("mkaay", "mkaay@mkaay.de")]
+
 
     def setup(self):
         self.no_download = True
@@ -72,9 +70,11 @@ class RapidshareCom(Hoster):
         self.chunkLimit = -1 if self.premium else 1
         self.multiDL = self.resumeDownload = self.premium
 
+
     def process(self, pyfile):
         self.url = pyfile.url
         self.prepare()
+
 
     def prepare(self):
         m = re.match(self.__pattern__, self.url)
@@ -106,7 +106,8 @@ class RapidshareCom(Hoster):
         elif self.api_data['status'] == "3":
             self.tempOffline()
         else:
-            self.fail("Unknown response code.")
+            self.error(_("Unknown response code"))
+
 
     def handleFree(self):
         while self.no_download:
@@ -130,11 +131,13 @@ class RapidshareCom(Hoster):
             self.offset += 5
             self.handleFree()
 
+
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
-        self.logDebug("%s: Use Premium Account" % self.__name__)
+        self.logDebug("Use Premium Account")
         url = self.api_data['mirror']
         self.download(url, get={"directstart": 1})
+
 
     def download_api_data(self, force=False):
         """
@@ -170,6 +173,7 @@ class RapidshareCom(Hoster):
 
         self.api_data['mirror'] = "http://rs%(serverid)s%(shorthost)s.rapidshare.com/files/%(fileid)s/%(filename)s" % self.api_data
 
+
     def freeWait(self):
         """downloads html with the important information
         """
@@ -201,8 +205,7 @@ class RapidshareCom(Hoster):
         elif "Filename invalid." in result:
             self.fail(_("Filename reported invalid"))
         elif between_wait:
-            self.setWait(int(between_wait.group(1)))
-            self.wantReconnect = True
+            self.setWait(int(between_wait.group(1)), True)
             self.wait()
         else:
             self.no_download = False
@@ -220,6 +223,7 @@ class RapidshareCom(Hoster):
             self.wait()
 
             return dl_dict
+
 
     def get_file_name(self):
         if self.api_data['filename']:

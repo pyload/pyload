@@ -4,12 +4,13 @@ from module.plugins.internal.DeadCrypter import DeadCrypter
 
 
 class RSLayerCom(DeadCrypter):
-    __name__ = "RSLayerCom"
+    __name__    = "RSLayerCom"
+    __type__    = "crypter"
     __version__ = "0.21"
-    __type__ = "crypter"
 
-    __pattern__ = r'http://(?:www\.)?rs-layer.com/directory-'
+    __pattern__ = r'http://(?:www\.)?rs-layer\.com/directory-'
+    __config__  = []
 
     __description__ = """RS-Layer.com decrypter plugin"""
-    __author_name__ = "hzpz"
-    __author_mail__ = None
+    __license__     = "GPLv3"
+    __authors__     = [("hzpz", None)]

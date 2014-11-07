@@ -5,17 +5,16 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class SimplydebridCom(MultiHoster):
-    __name__ = "SimplydebridCom"
+    __name__    = "SimplydebridCom"
+    __type__    = "hook"
     __version__ = "0.01"
-    __type__ = "hook"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """Simply-Debrid.com hook plugin"""
-    __author_name__ = "Kagenoshin"
-    __author_mail__ = "kagenoshin@gmx.ch"
+    __license__     = "GPLv3"
+    __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
     def getHoster(self):

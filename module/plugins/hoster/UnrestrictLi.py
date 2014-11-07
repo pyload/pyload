@@ -1,24 +1,11 @@
 # -*- coding: utf-8 -*-
-############################################################################
-# This program is free software: you can redistribute it and/or modify     #
-# it under the terms of the GNU Affero General Public License as           #
-# published by the Free Software Foundation, either version 3 of the       #
-# License, or (at your option) any later version.                          #
-#                                                                          #
-# This program is distributed in the hope that it will be useful,          #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
-# GNU Affero General Public License for more details.                      #
-#                                                                          #
-# You should have received a copy of the GNU Affero General Public License #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
-############################################################################
 
 import re
+
 from datetime import datetime, timedelta
 
-from module.plugins.Hoster import Hoster
 from module.common.json_layer import json_loads
+from module.plugins.Hoster import Hoster
 
 
 def secondsToMidnight(gmt=0):
@@ -32,34 +19,38 @@ def secondsToMidnight(gmt=0):
 
 
 class UnrestrictLi(Hoster):
-    __name__ = "UnrestrictLi"
+    __name__    = "UnrestrictLi"
+    __type__    = "hoster"
     __version__ = "0.12"
-    __type__ = "hoster"
+
     __pattern__ = r'https?://(?:[^/]*\.)?(unrestrict|unr)\.li'
+
     __description__ = """Unrestrict.li hoster plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+
 
     def setup(self):
         self.chunkLimit = 16
         self.resumeDownload = True
+
 
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Unrestrict.li")
-            self.fail("No Unrestrict.li account provided")
+            self.fail(_("No Unrestrict.li account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
-            for _ in xrange(5):
-                page = self.req.load('https://unrestrict.li/unrestrict.php',
-                                     post={'link': pyfile.url, 'domain': 'long'})
+            for _i in xrange(5):
+                page = self.load('https://unrestrict.li/unrestrict.php',
+                                 post={'link': pyfile.url, 'domain': 'long'})
                 self.logDebug("JSON data: " + page)
                 if page != '':
                     break
             else:
-                self.logInfo("Unable to get API data, waiting 1 minute and retry")
+                self.logInfo(_("Unable to get API data, waiting 1 minute and retry"))
                 self.retry(5, 60, "Unable to get API data")
 
             if 'Expired session' in page or ("You are not allowed to "
@@ -69,12 +60,12 @@ class UnrestrictLi(Hoster):
             elif "File offline" in page:
                 self.offline()
             elif "You are not allowed to download from this host" in page:
-                self.fail("You are not allowed to download from this host")
+                self.fail(_("You are not allowed to download from this host"))
             elif "You have reached your daily limit for this host" in page:
-                self.logWarning("Reached daily limit for this host")
+                self.logWarning(_("Reached daily limit for this host"))
                 self.retry(5, secondsToMidnight(gmt=2), "Daily limit for this host reached")
             elif "ERROR_HOSTER_TEMPORARILY_UNAVAILABLE" in page:
-                self.logInfo("Hoster temporarily unavailable, waiting 1 minute and retry")
+                self.logInfo(_("Hoster temporarily unavailable, waiting 1 minute and retry"))
                 self.retry(5, 60, "Hoster is temporarily unavailable")
             page = json_loads(page)
             new_url = page.keys()[0]
@@ -90,7 +81,8 @@ class UnrestrictLi(Hoster):
 
         if self.getConfig("history"):
             self.load("https://unrestrict.li/history/&delete=all")
-            self.logInfo("Download history deleted")
+            self.logInfo(_("Download history deleted"))
+
 
     def setNameSize(self):
         if 'name' in self.api_data:

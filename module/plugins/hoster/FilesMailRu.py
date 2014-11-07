@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Hoster import Hoster
+
 from module.network.RequestFactory import getURL
+from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
 
 
@@ -29,17 +30,21 @@ def getInfo(urls):
 
 
 class FilesMailRu(Hoster):
-    __name__ = "FilesMailRu"
-    __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.*'
+    __name__    = "FilesMailRu"
+    __type__    = "hoster"
     __version__ = "0.31"
+
+    __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.*'
+
     __description__ = """Files.mail.ru hoster plugin"""
-    __author_name__ = "oZiRiz"
-    __author_mail__ = "ich@oziriz.de"
+    __license__     = "GPLv3"
+    __authors__     = [("oZiRiz", "ich@oziriz.de")]
+
 
     def setup(self):
         if not self.account:
             self.multiDL = False
+
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url)
@@ -64,19 +69,23 @@ class FilesMailRu(Hoster):
             self.download(self.getFileUrl())
             self.myPostProcess()
 
+
     def prepare(self):
         """You have to wait some seconds. Otherwise you will get a 40Byte HTML Page instead of the file you expected"""
         self.setWait(10)
         self.wait()
         return True
 
+
     def getFileUrl(self):
         """gives you the URL to the file. Extracted from the Files.mail.ru HTML-page stored in self.html"""
         return re.search(self.url_pattern, self.html).group(0).split('<a href="')[1].split('" onclick="return Act')[0]
 
+
     def getFileName(self):
         """gives you the Name for each file. Also extracted from the HTML-Page"""
         return re.search(self.url_pattern, self.html).group(0).split(', event)">')[1].split('</a>')[0]
+
 
     def myPostProcess(self):
         # searches the file for HTMl-Code. Sometimes the Redirect
@@ -84,7 +93,7 @@ class FilesMailRu(Hoster):
         # HTML file and the Download is marked as "finished"
         # then the download will be restarted. It's only bad for these
         # who want download a HTML-File (it's one in a million ;-) )
-        # 
+        #
         # The maximum UploadSize allowed on files.mail.ru at the moment is 100MB
         # so i set it to check every download because sometimes there are downloads
         # that contain the HTML-Text and 60MB ZEROs after that in a xyzfile.part1.rar file

@@ -1,51 +1,9 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 import socket
 import thread
 
 from module.plugins.Hook import Hook
-
-
-class ClickAndLoad(Hook):
-    __name__ = "ClickAndLoad"
-    __version__ = "0.22"
-    __type__ = "hook"
-
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("extern", "bool", "Allow external link adding", False)]
-
-    __description__ = """Gives abillity to use jd's click and load. depends on webinterface"""
-    __author_name__ = ("RaNaN", "mkaay")
-    __author_mail__ = ("RaNaN@pyload.de", "mkaay@mkaay.de")
-
-
-    def coreReady(self):
-        self.port = int(self.config['webinterface']['port'])
-        if self.config['webinterface']['activated']:
-            try:
-                if self.getConfig("extern"):
-                    ip = "0.0.0.0"
-                else:
-                    ip = "127.0.0.1"
-
-                thread.start_new_thread(proxy, (self, ip, self.port, 9666))
-            except:
-                self.logError("ClickAndLoad port already in use.")
 
 
 def proxy(self, *settings):
@@ -89,3 +47,31 @@ def forward(source, destination):
         else:
             #source.shutdown(socket.SHUT_RD)
             destination.shutdown(socket.SHUT_WR)
+
+
+class ClickAndLoad(Hook):
+    __name__    = "ClickAndLoad"
+    __type__    = "hook"
+    __version__ = "0.22"
+
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("extern", "bool", "Allow external link adding", False)]
+
+    __description__ = """Click'N'Load hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.de"),
+                       ("mkaay", "mkaay@mkaay.de")]
+
+
+    def coreReady(self):
+        self.port = int(self.config['webinterface']['port'])
+        if self.config['webinterface']['activated']:
+            try:
+                if self.getConfig("extern"):
+                    ip = "0.0.0.0"
+                else:
+                    ip = "127.0.0.1"
+
+                thread.start_new_thread(proxy, (self, ip, self.port, 9666))
+            except:
+                self.logError(_("ClickAndLoad port already in use"))

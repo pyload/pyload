@@ -1,28 +1,18 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
 from __future__ import with_statement
 
-from thread import start_new_thread
-
-import pycurl
 import StringIO
-from urllib import urlencode
+import pycurl
+
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
+from thread import start_new_thread
 from time import sleep
-from PIL import Image
+from urllib import urlencode
 
 from module.network.RequestFactory import getURL, getRequest
 from module.plugins.Hook import Hook
@@ -33,35 +23,40 @@ class CaptchaBrotherhoodException(Exception):
     def __init__(self, err):
         self.err = err
 
+
     def getCode(self):
         return self.err
 
+
     def __str__(self):
         return "<CaptchaBrotherhoodException %s>" % self.err
+
 
     def __repr__(self):
         return "<CaptchaBrotherhoodException %s>" % self.err
 
 
 class CaptchaBrotherhood(Hook):
-    __name__ = "CaptchaBrotherhood"
+    __name__    = "CaptchaBrotherhood"
+    __type__    = "hook"
     __version__ = "0.05"
-    __type__ = "hook"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("username", "str", "Username", ""),
+    __config__ = [("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Password", "")]
 
     __description__ = """Send captchas to CaptchaBrotherhood.com"""
-    __author_name__ = ("RaNaN", "zoidberg")
-    __author_mail__ = ("RaNaN@pyload.org", "zoidberg@mujmail.cz")
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
+
 
     API_URL = "http://www.captchabrotherhood.com/"
 
 
     def setup(self):
         self.info = {}
+
 
     def getCredits(self):
         response = getURL(self.API_URL + "askCredits.aspx",
@@ -73,6 +68,7 @@ class CaptchaBrotherhood(Hook):
             self.logInfo(_("%d credits left") % credits)
             self.info['credits'] = credits
             return credits
+
 
     def submit(self, captcha, captchaType="file", match=None):
         try:
@@ -116,13 +112,14 @@ class CaptchaBrotherhood(Hook):
 
         ticket = response[3:]
 
-        for _ in xrange(15):
+        for _i in xrange(15):
             sleep(5)
             response = self.get_api("askCaptchaResult", ticket)
             if response.startswith("OK-answered"):
                 return ticket, response[12:]
 
         raise CaptchaBrotherhoodException("No solution received in time")
+
 
     def get_api(self, api, ticket):
         response = getURL("%s%s.aspx" % (self.API_URL, api),
@@ -133,6 +130,7 @@ class CaptchaBrotherhood(Hook):
             raise CaptchaBrotherhoodException("Unknown response: %s" % response)
 
         return response
+
 
     def newCaptchaTask(self, task):
         if "service" in task.data:
@@ -153,11 +151,13 @@ class CaptchaBrotherhood(Hook):
             task.setWaiting(100)
             start_new_thread(self.processCaptcha, (task,))
         else:
-            self.logInfo("Your CaptchaBrotherhood Account has not enough credits")
+            self.logInfo(_("Your CaptchaBrotherhood Account has not enough credits"))
+
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             response = self.get_api("complainCaptcha", task.data['ticket'])
+
 
     def processCaptcha(self, task):
         c = task.captchaFile

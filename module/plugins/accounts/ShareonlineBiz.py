@@ -1,36 +1,23 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""
-
 from module.plugins.Account import Account
 
 
 class ShareonlineBiz(Account):
-    __name__ = "ShareonlineBiz"
+    __name__    = "ShareonlineBiz"
+    __type__    = "account"
     __version__ = "0.24"
-    __type__ = "account"
 
     __description__ = """Share-online.biz account plugin"""
-    __author_name__ = ("mkaay", "zoidberg")
-    __author_mail__ = ("mkaay@mkaay.de", "zoidberg@mujmail.cz")
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def getUserAPI(self, user, req):
         return req.load("http://api.share-online.biz/account.php",
                         {"username": user, "password": self.accounts[user]['password'], "act": "userDetails"})
+
 
     def loadAccountInfo(self, user, req):
         src = self.getUserAPI(user, req)
@@ -50,6 +37,7 @@ class ShareonlineBiz(Account):
         return {"validuntil": int(info['expire_date']) if "expire_date" in info else -1,
                 "trafficleft": -1,
                 "premium": True if ("dl" in info or "a" in info) and (info['group'] != "Sammler") else False}
+
 
     def login(self, user, data, req):
         src = self.getUserAPI(user, req)
