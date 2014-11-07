@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'^unmatchable$'
 
@@ -75,12 +75,11 @@ class XFSHoster(SimpleHoster):
         self.errmsg = None
         self.passwords = self.getPassword().splitlines()
 
-        # MultiHoster check
-        if self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
-           and re.match(self.__pattern__, self.pyfile.url) is None:
+        if (self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
+            and re.match(self.__pattern__, self.pyfile.url) is None):
             self.logInfo(_("Multi hoster detected"))
             if self.premium:
-                self.logDebug(_("Looking for leech download link..."))
+                self.logDebug(_("Looking for download link..."))
                 self.handleOverriden()
             else:
                 self.fail(_("Only premium users can use url leech feature"))
@@ -182,7 +181,7 @@ class XFSHoster(SimpleHoster):
         if 'location' in header:  #: Direct download link
             self.download(header['location'], ref=True, cookies=True, disposition=True)
         else:
-            self.error(_("No leech download link found"))
+            self.fail(_("No download link found"))
 
 
     def checkErrors(self):
