@@ -13,18 +13,17 @@ from module.utils import save_join
 
 
 class CCF(Container):
-    __name__ = "CCF"
+    __name__    = "CCF"
     __version__ = "0.2"
 
     __pattern__ = r'.+\.ccf'
 
     __description__ = """CCF container decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Willnix", "Willnix@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("Willnix", "Willnix@pyload.org")]
 
 
     def decrypt(self, pyfile):
-
         infile = pyfile.url.replace("\n", "")
 
         opener = build_opener(MultipartPostHandler)
@@ -37,7 +36,7 @@ class CCF(Container):
 
         tempdlc_name = save_join(download_folder, "tmp_%s.dlc" % pyfile.name)
         tempdlc = open(tempdlc_name, "w")
-        tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.DOTALL).group(1))
+        tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.S).group(1))
         tempdlc.close()
 
         self.urls = [tempdlc_name]

@@ -6,13 +6,13 @@ from module.common.json_layer import json_loads
 
 
 class PremiumizeMe(Account):
-    __name__ = "PremiumizeMe"
-    __type__ = "account"
+    __name__    = "PremiumizeMe"
+    __type__    = "account"
     __version__ = "0.11"
 
     __description__ = """Premiumize.me account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def loadAccountInfo(self, user, req):
@@ -22,7 +22,7 @@ class PremiumizeMe(Account):
 
         # Parse account info
         account_info = {"validuntil": float(status['result']['expires']),
-                        "trafficleft": max(0, status['result']['trafficleft_bytes'] / 1024)}
+                        "trafficleft": max(0, status['result']['trafficleft_bytes'])}
 
         if status['result']['type'] == 'free':
             account_info['premium'] = False
@@ -37,6 +37,7 @@ class PremiumizeMe(Account):
         # Check if user and password are valid
         if status['status'] != 200:
             self.wrongPassword()
+
 
     def getAccountStatus(self, user, req):
         # Use premiumize.me API v1 (see https://secure.premiumize.me/?show=api)

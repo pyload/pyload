@@ -3,26 +3,28 @@
 import random
 import re
 
-from Crypto.Cipher import AES
-from Crypto.Util import Counter
 from array import array
 from base64 import standard_b64decode
 from os import remove
+
+from Crypto.Cipher import AES
+from Crypto.Util import Counter
+from pycurl import SSL_CIPHER_LIST
 
 from module.common.json_layer import json_loads, json_dumps
 from module.plugins.Hoster import Hoster
 
 
 class MegaNz(Hoster):
-    __name__ = "MegaNz"
-    __type__ = "hoster"
-    __version__ = "0.15"
+    __name__    = "MegaNz"
+    __type__    = "hoster"
+    __version__ = "0.16"
 
     __pattern__ = r'https?://(\w+\.)?mega\.co\.nz/#!([\w!-]+)'
 
     __description__ = """Mega.co.nz hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "ranan@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "ranan@pyload.org")]
 
 
     API_URL = "https://g.api.mega.co.nz/cs?id=%d"
@@ -128,6 +130,8 @@ class MegaNz(Hoster):
         attr = self.decryptAttr(dl['at'], key)
 
         pyfile.name = attr['n'] + self.FILE_SUFFIX
+
+        self.req.http.c.setopt(SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
 
         self.download(dl['g'])
         self.decryptFile(key)

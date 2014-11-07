@@ -7,15 +7,15 @@ from module.unescape import unescape
 
 
 class RedtubeCom(Hoster):
-    __name__ = "RedtubeCom"
-    __type__ = "hoster"
+    __name__    = "RedtubeCom"
+    __type__    = "hoster"
     __version__ = "0.2"
 
     __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'
 
     __description__ = """Redtube.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de")]
 
 
     def process(self, pyfile):
@@ -26,9 +26,11 @@ class RedtubeCom(Hoster):
         pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
+
     def download_html(self):
         url = self.pyfile.url
         self.html = self.load(url)
+
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -40,11 +42,13 @@ class RedtubeCom(Hoster):
 
         return file_url
 
+
     def get_file_name(self):
         if not self.html:
             self.download_html()
 
         return re.search('<title>(.*?)- RedTube - Free Porn Videos</title>', self.html).group(1).strip() + ".flv"
+
 
     def file_exists(self):
         """ returns True or False

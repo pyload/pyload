@@ -8,15 +8,15 @@ from module.utils import parseFileSize
 
 
 class GamefrontCom(Hoster):
-    __name__ = "GamefrontCom"
-    __type__ = "hoster"
+    __name__    = "GamefrontCom"
+    __type__    = "hoster"
     __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/\w+'
 
     __description__ = """Gamefront.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("fwannmacher", "felipe@warhammerproject.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("fwannmacher", "felipe@warhammerproject.com")]
 
 
     PATTERN_FILENAME = r'<title>(.*?) | Game Front'
@@ -27,6 +27,7 @@ class GamefrontCom(Hoster):
     def setup(self):
         self.resumeDownload = self.multiDL = True
         self.chunkLimit = -1
+
 
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -44,18 +45,21 @@ class GamefrontCom(Hoster):
 
         self.download(link)
 
+
     def _checkOnline(self):
         if re.search(self.PATTERN_OFFLINE, self.html):
             return False
         else:
             return True
 
+
     def _getName(self):
         name = re.search(self.PATTERN_FILENAME, self.html)
         if name is None:
-            self.fail("%s: Plugin broken." % self.__name__)
+            self.fail(_("Plugin broken")
 
         return name.group(1)
+
 
     def _getLink(self):
         self.html2 = self.load("http://www.gamefront.com/" + re.search("(files/service/thankyou\\?id=\w+)",

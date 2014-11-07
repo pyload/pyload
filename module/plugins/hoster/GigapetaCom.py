@@ -9,19 +9,19 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class GigapetaCom(SimpleHoster):
-    __name__ = "GigapetaCom"
-    __type__ = "hoster"
-    __version__ = "0.01"
+    __name__    = "GigapetaCom"
+    __type__    = "hoster"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?gigapeta\.com/dl/\w+'
 
     __description__ = """GigaPeta.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'<img src=".*" alt="file" />-->\s*(?P<N>.*?)\s*</td>'
-    FILE_SIZE_PATTERN = r'<th>\s*Size\s*</th>\s*<td>\s*(?P<S>.*?)\s*</td>'
+    NAME_PATTERN = r'<img src=".*" alt="file" />-->\s*(?P<N>.*?)\s*</td>'
+    SIZE_PATTERN = r'<th>\s*Size\s*</th>\s*<td>\s*(?P<S>.*?)\s*</td>'
     OFFLINE_PATTERN = r'<div id="page_error">'
 
     COOKIES = [(".gigapeta.com", "lang", "us")]
@@ -33,7 +33,7 @@ class GigapetaCom(SimpleHoster):
 
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             self.checkErrors()
 
             captcha = self.decryptCaptcha(captcha_url)
@@ -42,22 +42,22 @@ class GigapetaCom(SimpleHoster):
                 "captcha": captcha,
                 "download": "Download"})
 
-            m = re.search(r"Location\s*:\s*(.*)", self.req.http.header, re.I)
+            m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
             if m:
-                download_url = m.group(1)
+                download_url = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
                 break
             elif "Entered figures don&#96;t coincide with the picture" in self.html:
                 self.invalidCaptcha()
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
-        self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
+
 
     def checkErrors(self):
         if "All threads for IP" in self.html:
-            self.logDebug("Your IP is already downloading a file - wait and retry")
+            self.logDebug("Your IP is already downloading a file")
             self.wait(5 * 60, True)
             self.retry()
 

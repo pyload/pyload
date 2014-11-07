@@ -6,45 +6,39 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class NetfolderIn(SimpleCrypter):
-    __name__ = "NetfolderIn"
-    __type__ = "crypter"
-    __version__ = "0.7"
+    __name__    = "NetfolderIn"
+    __type__    = "crypter"
+    __version__ = "0.72"
 
     __pattern__ = r'http://(?:www\.)?netfolder\.in/((?P<id1>\w+)/\w+|folder\.php\?folder_id=(?P<id2>\w+))'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """NetFolder.in decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("fragonib", "fragonib[AT]yahoo[DOT]es")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
-    TITLE_PATTERN = r'<div class="Text">Inhalt des Ordners <span.*>(.+)</span></div>'
+    NAME_PATTERN = r'<div class="Text">Inhalt des Ordners <span.*>(?P<N>.+)</span></div>'
 
 
-    def decrypt(self, pyfile):
-        # Request package
-        self.html = self.load(pyfile.url)
+    def prepare(self):
+        super(NetfolderIn, self).prepare()
 
         # Check for password protection
         if self.isPasswordProtected():
             self.html = self.submitPassword()
             if not self.html:
-                self.fail("Incorrect password, please set right password on Add package form and retry")
+                self.fail(_("Incorrect password, please set right password on Add package form and retry"))
 
-        # Get package name and folder
-        (package_name, folder_name) = self.getPackageNameAndFolder()
-
-        # Get package links
-        package_links = self.getLinks()
-
-        # Set package
-        self.packages = [(package_name, package_links, folder_name)]
 
     def isPasswordProtected(self):
         if '<input type="password" name="password"' in self.html:
             self.logDebug("Links are password protected")
             return True
         return False
+
 
     def submitPassword(self):
         # Gather data
@@ -68,6 +62,7 @@ class NetfolderIn(SimpleCrypter):
             return None
 
         return html
+
 
     def getLinks(self):
         links = re.search(r'name="list" value="(.*?)"', self.html).group(1).split(",")

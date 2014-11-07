@@ -7,19 +7,21 @@ from module.common.json_layer import json_loads
 
 
 class TurbobitNetFolder(SimpleCrypter):
-    __name__ = "TurbobitNetFolder"
-    __type__ = "crypter"
-    __version__ = "0.04"
+    __name__    = "TurbobitNetFolder"
+    __type__    = "crypter"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Turbobit.net folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    TITLE_PATTERN = r'src=\'/js/lib/grid/icon/folder.png\'> <span>(.+?)</span>'
+    NAME_PATTERN = r'src=\'/js/lib/grid/icon/folder.png\'> <span>(?P<N>.+?)</span>'
 
 
     def _getLinks(self, id, page=1):
@@ -34,6 +36,7 @@ class TurbobitNetFolder(SimpleCrypter):
                 yield id
         else:
             return
+
 
     def getLinks(self):
         id = re.match(self.__pattern__, self.pyfile.url).group("ID")

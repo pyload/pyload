@@ -15,7 +15,7 @@ def checkFile(plugin, urls):
     html = getURL(plugin.URLS[1], post={"urls": "\n".join(urls)}, decode=True)
 
     file_info = []
-    for li in re.finditer(plugin.LINKCHECK_TR, html, re.DOTALL):
+    for li in re.finditer(plugin.LINKCHECK_TR, html, re.S):
         try:
             cols = re.findall(plugin.LINKCHECK_TD, li.group(1))
             if cols:
@@ -31,18 +31,18 @@ def checkFile(plugin, urls):
 
 
 class FileserveCom(Hoster):
-    __name__ = "FileserveCom"
-    __type__ = "hoster"
+    __name__    = "FileserveCom"
+    __type__    = "hoster"
     __version__ = "0.52"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*'
 
     __description__ = """Fileserve.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.de"),
-                   ("mkaay", "mkaay@mkaay.de"),
-                   ("Paul King", None),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de"),
+                       ("mkaay", "mkaay@mkaay.de"),
+                       ("Paul King", None),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     URLS = ["http://www.fileserve.com/file/", "http://www.fileserve.com/link-checker.php",
@@ -64,6 +64,7 @@ class FileserveCom(Hoster):
         self.url = "%s%s" % (self.URLS[0], self.file_id)
         self.logDebug("File ID: %s URL: %s" % (self.file_id, self.url))
 
+
     def process(self, pyfile):
         pyfile.name, pyfile.size, status, self.url = checkFile(self, [self.url])[0]
         if status != 2:
@@ -74,6 +75,7 @@ class FileserveCom(Hoster):
             self.handlePremium()
         else:
             self.handleFree()
+
 
     def handleFree(self):
         self.html = self.load(self.url)
@@ -89,11 +91,11 @@ class FileserveCom(Hoster):
                 self.doLongWait(re.search(self.LONG_WAIT_PATTERN, self.html))
 
             elif action['fail'] == "parallelDownload":
-                self.logWarning(_("Parallel download error, now waiting 60s."))
-                self.retry(wait_time=60, reason="parallelDownload")
+                self.logWarning(_("Parallel download error, now waiting 60s"))
+                self.retry(wait_time=60, reason=_("parallelDownload"))
 
             else:
-                self.fail("Download check returned %s" % action['fail'])
+                self.fail(_("Download check returned: %s") % action['fail'])
 
         elif "success" in action:
             if action['success'] == "showCaptcha":
@@ -103,13 +105,13 @@ class FileserveCom(Hoster):
                 self.doTimmer()
 
         else:
-            self.fail("Unknown server response")
+            self.error(_("Unknown server response"))
 
         # show download link
         response = self.load(self.url, post={"downloadLink": "show"}, decode=True)
         self.logDebug("Show downloadLink response : %s" % response)
         if "fail" in response:
-            self.fail("Couldn't retrieve download url")
+            self.error(_("Couldn't retrieve download url"))
 
         # this may either download our file or forward us to an error page
         self.download(self.url, post={"download": "normal"})
@@ -125,24 +127,25 @@ class FileserveCom(Hoster):
         elif check == "wait":
             self.doLongWait(self.lastCheck)
         elif check == "limit":
-            self.logWarning("Download limited reached for today")
+            self.logWarning(_("Download limited reached for today"))
             self.setWait(secondsToMidnight(gmt=2), True)
             self.wait()
             self.retry()
 
         self.thread.m.reconnecting.wait(3)  # Ease issue with later downloads appearing to be in parallel
 
+
     def doTimmer(self):
         response = self.load(self.url, post={"downloadLink": "wait"}, decode=True)
         self.logDebug("Wait response : %s" % response[:80])
 
         if "fail" in response:
-            self.fail("Failed getting wait time")
+            self.fail(_("Failed getting wait time"))
 
         if self.__name__ == "FilejungleCom":
             m = re.search(r'"waitTime":(\d+)', response)
             if m is None:
-                self.fail("Cannot get wait time")
+                self.fail(_("Cannot get wait time"))
             wait_time = int(m.group(1))
         else:
             wait_time = int(response) + 3
@@ -150,31 +153,32 @@ class FileserveCom(Hoster):
         self.setWait(wait_time)
         self.wait()
 
+
     def doCaptcha(self):
         captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group("key")
         recaptcha = ReCaptcha(self)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             challenge, code = recaptcha.challenge(captcha_key)
-
             response = json_loads(self.load(self.URLS[2],
                                             post={'recaptcha_challenge_field': challenge,
                                                   'recaptcha_response_field': code,
                                                   'recaptcha_shortencode_field': self.file_id}))
-            self.logDebug("reCaptcha response : %s" % response)
             if not response['success']:
                 self.invalidCaptcha()
             else:
                 self.correctCaptcha()
                 break
         else:
-            self.fail("Invalid captcha")
+            self.fail(_("Invalid captcha"))
+
 
     def doLongWait(self, m):
         wait_time = (int(m.group(1)) * {'seconds': 1, 'minutes': 60, 'hours': 3600}[m.group(2)]) if m else 12 * 60
         self.setWait(wait_time, True)
         self.wait()
         self.retry()
+
 
     def handlePremium(self):
         premium_url = None
@@ -205,7 +209,7 @@ class FileserveCom(Hoster):
 
             if check == "login":
                 self.account.relogin(self.user)
-                self.retry(reason=_("Not logged in."))
+                self.retry(reason=_("Not logged in"))
 
 
 def getInfo(urls):

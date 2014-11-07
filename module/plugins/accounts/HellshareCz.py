@@ -7,13 +7,13 @@ from module.plugins.Account import Account
 
 
 class HellshareCz(Account):
-    __name__ = "HellshareCz"
-    __type__ = "account"
+    __name__    = "HellshareCz"
+    __type__    = "account"
     __version__ = "0.14"
 
     __description__ = """Hellshare.cz account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     CREDIT_LEFT_PATTERN = r'<div class="credit-link">\s*<table>\s*<tr>\s*<th>(\d+|\d\d\.\d\d\.)</th>'
@@ -44,7 +44,7 @@ class HellshareCz(Account):
                     trafficleft = int(credit) * 1024
                     validuntil = -1
             except Exception, e:
-                self.logError("Unable to parse credit info", e)
+                self.logError(_("Unable to parse credit info"), str(e))
                 validuntil = -1
                 trafficleft = -1
 

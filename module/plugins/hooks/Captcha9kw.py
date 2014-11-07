@@ -13,12 +13,11 @@ from module.plugins.Hook import Hook
 
 
 class Captcha9kw(Hook):
-    __name__ = "Captcha9kw"
-    __type__ = "hook"
-    __version__ = "0.09"
+    __name__    = "Captcha9kw"
+    __type__    = "hook"
+    __version__ = "0.10"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("force", "bool", "Force CT even if client is connected", True),
+    __config__ = [("force", "bool", "Force CT even if client is connected", True),
                   ("https", "bool", "Enable HTTPS", False),
                   ("confirm", "bool", "Confirm Captcha (Cost +6)", False),
                   ("captchaperhour", "int", "Captcha per hour (max. 9999)", 9999),
@@ -30,8 +29,8 @@ class Captcha9kw(Hook):
                   ("passkey", "password", "API key", "")]
 
     __description__ = """Send captchas to 9kw.eu"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     API_URL = "://www.9kw.eu/index.cgi"
@@ -40,6 +39,7 @@ class Captcha9kw(Hook):
     def setup(self):
         self.API_URL = "https" + self.API_URL if self.getConfig("https") else "http" + self.API_URL
         self.info = {}
+
 
     def getCredits(self):
         response = getURL(self.API_URL, get={"apikey": self.getConfig("passkey"), "pyload": "1", "source": "pyload",
@@ -52,6 +52,7 @@ class Captcha9kw(Hook):
         else:
             self.logError(response)
             return 0
+
 
     def processCaptcha(self, task):
         result = None
@@ -82,7 +83,7 @@ class Captcha9kw(Hook):
         if response.isdigit():
             self.logInfo(_("New CaptchaID from upload: %s : %s") % (response, task.captchaFile))
 
-            for _ in xrange(1, 100, 1):
+            for _i in xrange(1, 100, 1):
                 response2 = getURL(self.API_URL, get={"apikey": self.getConfig("passkey"), "id": response,
                                                       "pyload": "1", "source": "pyload",
                                                       "action": "usercaptchacorrectdata"})
@@ -99,6 +100,7 @@ class Captcha9kw(Hook):
         else:
             self.logError(_("Bad upload"), response)
             return False
+
 
     def newCaptchaTask(self, task):
         if not task.isTextual() and not task.isPositional():
@@ -118,6 +120,7 @@ class Captcha9kw(Hook):
         else:
             self.logError(_("Your Captcha 9kw.eu Account has not enough credits"))
 
+
     def captchaCorrect(self, task):
         if "ticket" in task.data:
 
@@ -130,12 +133,13 @@ class Captcha9kw(Hook):
                                         "pyload": "1",
                                         "source": "pyload",
                                         "id": task.data['ticket']})
-                self.logInfo(_("Request correct", response)
+                self.logInfo(_("Request correct"), response)
 
             except BadHeader, e:
-                self.logError(_("Could not send correct request."), e)
+                self.logError(_("Could not send correct request"), str(e))
         else:
-            self.logError(_("No CaptchaID for correct request (task %s) found.") % task)
+            self.logError(_("No CaptchaID for correct request (task %s) found") % task)
+
 
     def captchaInvalid(self, task):
         if "ticket" in task.data:
@@ -149,9 +153,9 @@ class Captcha9kw(Hook):
                                         "pyload": "1",
                                         "source": "pyload",
                                         "id": task.data['ticket']})
-                self.logInfo(_("Request refund", response)
+                self.logInfo(_("Request refund"), response)
 
             except BadHeader, e:
-                self.logError(_("Could not send refund request."), e)
+                self.logError(_("Could not send refund request"), str(e))
         else:
-            self.logError(_("No CaptchaID for not correct request (task %s) found.") % task)
+            self.logError(_("No CaptchaID for not correct request (task %s) found") % task)

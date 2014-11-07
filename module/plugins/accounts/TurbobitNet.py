@@ -7,13 +7,13 @@ from module.plugins.Account import Account
 
 
 class TurbobitNet(Account):
-    __name__ = "TurbobitNet"
-    __type__ = "account"
+    __name__    = "TurbobitNet"
+    __type__    = "account"
     __version__ = "0.01"
 
     __description__ = """TurbobitNet account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def loadAccountInfo(self, user, req):

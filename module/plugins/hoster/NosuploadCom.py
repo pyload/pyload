@@ -2,24 +2,24 @@
 
 import re
 
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class NosuploadCom(XFSPHoster):
-    __name__ = "NosuploadCom"
-    __type__ = "hoster"
-    __version__ = "0.3"
+class NosuploadCom(XFSHoster):
+    __name__    = "NosuploadCom"
+    __type__    = "hoster"
+    __version__ = "0.31"
 
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
 
     __description__ = """Nosupload.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("igel", "igelkun@myopera.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("igel", "igelkun@myopera.com")]
 
 
-    HOSTER_NAME = "nosupload.com"
+    HOSTER_DOMAIN = "nosupload.com"
 
-    FILE_SIZE_PATTERN = r'<p><strong>Size:</strong> (?P<S>[\d.,]+) (?P<U>\w+)</p>'
+    SIZE_PATTERN = r'<p><strong>Size:</strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)</p>'
     LINK_PATTERN = r'<a class="select" href="(http://.+?)">Download</a>'
     WAIT_PATTERN = r'Please wait.*?>(\d+)</span>'
 
@@ -31,7 +31,7 @@ class NosuploadCom(XFSPHoster):
 
         # stage2: wait some time and press the "Download File" button
         data = self.getPostParameters()
-        wait_time = re.search(self.WAIT_PATTERN, self.html, re.MULTILINE | re.DOTALL).group(1)
+        wait_time = re.search(self.WAIT_PATTERN, self.html, re.M | re.S).group(1)
         self.logDebug("Hoster told us to wait %s seconds" % wait_time)
         self.wait(wait_time)
         self.html = self.load(self.pyfile.url, post=data, ref=True, decode=True)

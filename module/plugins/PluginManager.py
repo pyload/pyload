@@ -15,14 +15,14 @@ from module.ConfigParser import IGNORE
 
 
 class PluginManager:
-    ROOT = "module.plugins."
+    ROOT     = "module.plugins."
     USERROOT = "userplugins."
-    TYPES = ("crypter", "container", "hoster", "captcha", "accounts", "hooks", "internal")
+    TYPES    = ("crypter", "container", "hoster", "captcha", "accounts", "hooks", "internal")
 
-    PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
-    VERSION = re.compile(r'__version__.*=.*("|\')([\d.]+)')
-    CONFIG = re.compile(r'__config__.*=.*\[([^\]]+)', re.MULTILINE)
-    DESC = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
+    PATTERN = re.compile(r'__pattern__\s*=\s*u?r("|\')([^"\']+)')
+    VERSION = re.compile(r'__version__\s*=\s*("|\')([\d.]+)')
+    CONFIG  = re.compile(r'__config__\s*=\s*\[([^\]]+)', re.M)
+    DESC    = re.compile(r'__description__\s*=\s*("|"""|\')([^"\']+)')
 
 
     def __init__(self, core):
@@ -60,7 +60,8 @@ class PluginManager:
 
         self.log.debug("created index of plugins")
 
-    def parse(self, folder, pattern=False, home={}):
+
+    def parse(self, folder, pattern=False, home=None):
         """
         returns dict with information
         home contains parsed plugins from module.
@@ -128,14 +129,14 @@ class PluginManager:
                     if pattern:
                         pattern = pattern[0][1]
                     else:
-                        pattern = "^unmachtable$"
+                        pattern = "^unmatchable$"
 
                     plugins[name]['pattern'] = pattern
 
                     try:
                         plugins[name]['re'] = re.compile(pattern)
                     except:
-                        self.log.error(_("%s has a invalid pattern.") % name)
+                        self.log.error(_("%s has a invalid pattern") % name)
 
 
                 # internals have no config
@@ -154,13 +155,8 @@ class PluginManager:
                     else:
                         config = [list(config)]
 
-                    if folder == "hooks":
-                        append = True
-                        for item in config:
-                            if item[0] == "activated": append = False
-
-                        # activated flag missing
-                        if append: config.append(["activated", "bool", "Activated", False])
+                    if folder not in ("accounts", "internal") and not [True for item in config if item[0] == "activated"]:
+                        config.insert(0, ["activated", "bool", "Activated", False if folder == "hooks" else True])
 
                     try:
                         self.core.config.addPluginConfig(name, config, desc)
@@ -177,7 +173,7 @@ class PluginManager:
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
 
-        if not home:
+        if home is None:
             temp = self.parse(folder, pattern, plugins)
             plugins.update(temp)
 
@@ -211,11 +207,13 @@ class PluginManager:
 
         return res
 
+
     def findPlugin(self, name, pluginlist=("hoster", "crypter", "container")):
         for ptype in pluginlist:
             if name in self.plugins[ptype]:
                 return self.plugins[ptype][name], ptype
         return None, None
+
 
     def getPlugin(self, name, original=False):
         """return plugin module from hoster|decrypter|container"""
@@ -230,6 +228,7 @@ class PluginManager:
 
         return self.loadModule(type, name)
 
+
     def getPluginName(self, name):
         """ used to obtain new name if other plugin was injected"""
         plugin, type = self.findPlugin(name)
@@ -238,6 +237,7 @@ class PluginManager:
             return plugin['new_name']
 
         return name
+
 
     def loadModule(self, type, name):
         """ Returns loaded module for plugin
@@ -258,14 +258,17 @@ class PluginManager:
                 if self.core.debug:
                     print_exc()
 
+
     def loadClass(self, type, name):
         """Returns the class of a plugin with the same name"""
         module = self.loadModule(type, name)
         if module: return getattr(module, name)
 
+
     def getAccountPlugins(self):
         """return list of account plugin names"""
         return self.accountPlugins.keys()
+
 
     def find_module(self, fullname, path=None):
         #redirecting imports if necesarry

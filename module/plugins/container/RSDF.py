@@ -8,15 +8,15 @@ from module.plugins.Container import Container
 
 
 class RSDF(Container):
-    __name__ = "RSDF"
-    __version__ = "0.22"
+    __name__    = "RSDF"
+    __version__ = "0.23"
 
     __pattern__ = r'.+\.rsdf'
 
     __description__ = """RSDF container decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("spoob", "spoob@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("spoob", "spoob@pyload.org")]
 
 
     def decrypt(self, pyfile):
@@ -49,4 +49,4 @@ class RSDF(Container):
                 decryptedUrl = link.replace('CCF: ', '')
                 self.urls.append(decryptedUrl)
 
-            self.log.debug("%s: adding package %s with %d links" % (self.__name__,pyfile.package().name,len(links)))
+            self.logDebug("Adding package %s with %d links" % (pyfile.package().name, len(self.urls)))

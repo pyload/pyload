@@ -13,30 +13,32 @@ class BypassCaptchaException(Exception):
     def __init__(self, err):
         self.err = err
 
+
     def getCode(self):
         return self.err
 
+
     def __str__(self):
         return "<BypassCaptchaException %s>" % self.err
+
 
     def __repr__(self):
         return "<BypassCaptchaException %s>" % self.err
 
 
 class BypassCaptcha(Hook):
-    __name__ = "BypassCaptcha"
-    __type__ = "hook"
+    __name__    = "BypassCaptcha"
+    __type__    = "hook"
     __version__ = "0.04"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("force", "bool", "Force BC even if client is connected", False),
+    __config__ = [("force", "bool", "Force BC even if client is connected", False),
                   ("passkey", "password", "Passkey", "")]
 
     __description__ = """Send captchas to BypassCaptcha.com"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("Godofdream", "soilfcition@gmail.com"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("Godofdream", "soilfcition@gmail.com"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"
@@ -49,11 +51,13 @@ class BypassCaptcha(Hook):
     def setup(self):
         self.info = {}
 
+
     def getCredits(self):
         response = getURL(self.GETCREDITS_URL, post={"key": self.getConfig("passkey")})
 
         data = dict([x.split(' ', 1) for x in response.splitlines()])
         return int(data['Left'])
+
 
     def submit(self, captcha, captchaType="file", match=None):
         req = getRequest()
@@ -81,12 +85,14 @@ class BypassCaptcha(Hook):
 
         return ticket, result
 
+
     def respond(self, ticket, success):
         try:
             response = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig("passkey"),
                                                       "cv": 1 if success else 0})
         except BadHeader, e:
-            self.logError(_("Could not send response."), e
+            self.logError(_("Could not send response"), str(e))
+
 
     def newCaptchaTask(self, task):
         if "service" in task.data:
@@ -110,13 +116,16 @@ class BypassCaptcha(Hook):
         else:
             self.logInfo(_("Your %s account has not enough credits") % self.__name__)
 
+
     def captchaCorrect(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             self.respond(task.data['ticket'], True)
 
+
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             self.respond(task.data['ticket'], False)
+
 
     def processCaptcha(self, task):
         c = task.captchaFile

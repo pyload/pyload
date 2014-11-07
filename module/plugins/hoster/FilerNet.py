@@ -14,45 +14,34 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilerNet(SimpleHoster):
-    __name__ = "FilerNet"
-    __type__ = "hoster"
-    __version__ = "0.04"
+    __name__    = "FilerNet"
+    __type__    = "hoster"
+    __version__ = "0.07"
 
-    __pattern__ = r'https?://(?:www\.)?filer\.net/get/(\w+)'
+    __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
 
     __description__ = """Filer.net hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    FILE_INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>\w+)</small></h1>'
+    INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>[\w^_]+)</small></h1>'
     OFFLINE_PATTERN = r'Nicht gefunden'
+
     LINK_PATTERN = r'href="([^"]+)">Get download</a>'
 
 
-    def process(self, pyfile):
-        if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
-            self.handlePremium()
-        else:
-            self.handleFree()
-
     def handleFree(self):
-        self.req.setOption("timeout", 120)
-        self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=self.COOKIES)
-
         # Wait between downloads
         m = re.search(r'musst du <span id="time">(\d+)</span> Sekunden warten', self.html)
         if m:
-            waittime = int(m.group(1))
-            self.retry(3, waittime, "Wait between free downloads")
-
-        self.getFileInfo()
+            self.retry(wait_time=int(m.group(1)), reason=_("Wait between free downloads"))
 
         self.html = self.load(self.pyfile.url, decode=True)
 
         inputs = self.parseHtmlForm(input_names='token')[1]
         if 'token' not in inputs:
-            self.parseError('Unable to detect token')
+            self.error(_("Unable to detect token"))
         token = inputs['token']
         self.logDebug("Token: " + token)
 
@@ -60,20 +49,15 @@ class FilerNet(SimpleHoster):
 
         inputs = self.parseHtmlForm(input_names='hash')[1]
         if 'hash' not in inputs:
-            self.parseError('Unable to detect hash')
+            self.error(_("Unable to detect hash"))
         hash_data = inputs['hash']
         self.logDebug("Hash: " + hash_data)
 
         downloadURL = r''
-
         recaptcha = ReCaptcha(self)
 
-        captcha_key = recaptcha.detect_key()
-        if captcha_key is None:
-            self.parseError("ReCaptcha key not found")
-
-        for _ in xrange(5):
-            challenge, response = recaptcha.challenge(captcha_key)
+        for _i in xrange(5):
+            challenge, response = recaptcha.challenge()
             post_data = {'recaptcha_challenge_field': challenge,
                          'recaptcha_response_field': response,
                          'hash': hash_data}
@@ -89,13 +73,13 @@ class FilerNet(SimpleHoster):
                 self.correctCaptcha()
                 break
             else:
-                self.logInfo("Wrong captcha")
                 self.invalidCaptcha()
 
         if not downloadURL:
-            self.fail("No Download url retrieved/all captcha attempts failed")
+            self.fail(_("No Download url retrieved/all captcha attempts failed"))
 
         self.download(downloadURL, disposition=True)
+
 
     def handlePremium(self):
         header = self.load(self.pyfile.url, just_header=True)
@@ -105,7 +89,7 @@ class FilerNet(SimpleHoster):
             html = self.load(self.pyfile.url)
             m = re.search(self.LINK_PATTERN, html)
             if m is None:
-                self.parseError("Unable to detect direct link, try to enable 'Direct download' in your user settings")
+                self.error(_("LINK_PATTERN not found"))
             dl = 'http://filer.net' + m.group(1)
 
         self.logDebug("Direct link: " + dl)

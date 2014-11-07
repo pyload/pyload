@@ -10,21 +10,24 @@ from module.utils import save_join
 
 
 class DailymotionBatch(Crypter):
-    __name__ = "DailymotionBatch"
-    __type__ = "crypter"
+    __name__    = "DailymotionBatch"
+    __type__    = "crypter"
     __version__ = "0.01"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Dailymotion.com channel & playlist decrypter"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def api_response(self, ref, req=None):
         url = urljoin("https://api.dailymotion.com/", ref)
         page = self.load(url, get=req)
         return json_loads(page)
+
 
     def getPlaylistInfo(self, id):
         ref = "playlist/" + id
@@ -37,6 +40,7 @@ class DailymotionBatch(Crypter):
         name = playlist['name']
         owner = playlist['owner.screenname']
         return name, owner
+
 
     def _getPlaylists(self, user_id, page=1):
         ref = "user/%s/playlists" % user_id
@@ -53,8 +57,10 @@ class DailymotionBatch(Crypter):
             for item in self._getPlaylists(user_id, page + 1):
                 yield item
 
+
     def getPlaylists(self, user_id):
         return [(id,) + self.getPlaylistInfo(id) for id in self._getPlaylists(user_id)]
+
 
     def _getVideos(self, id, page=1):
         ref = "playlist/%s/videos" % id
@@ -71,8 +77,10 @@ class DailymotionBatch(Crypter):
             for item in self._getVideos(id, page + 1):
                 yield item
 
+
     def getVideos(self, playlist_id):
         return list(self._getVideos(playlist_id))[::-1]
+
 
     def decrypt(self, pyfile):
         m = re.match(self.__pattern__, pyfile.url)
@@ -89,7 +97,7 @@ class DailymotionBatch(Crypter):
             self.logDebug("%s playlist\s found on channel \"%s\"" % (len(playlists), m_id))
 
         if not playlists:
-            self.fail("No playlist available")
+            self.fail(_("No playlist available"))
 
         for p_id, p_name, p_owner in playlists:
             p_videos = self.getVideos(p_id)

@@ -6,13 +6,13 @@ from module.plugins.Account import Account
 
 
 class SimplydebridCom(Account):
-    __name__ = "SimplydebridCom"
-    __type__ = "account"
+    __name__    = "SimplydebridCom"
+    __type__    = "account"
     __version__ = "0.1"
 
     __description__ = """Simply-Debrid.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Kagenoshin", "kagenoshin@gmx.ch")]
+    __license__     = "GPLv3"
+    __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
     def loadAccountInfo(self, user, req):

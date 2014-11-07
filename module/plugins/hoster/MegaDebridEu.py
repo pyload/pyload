@@ -9,15 +9,15 @@ from module.plugins.Hoster import Hoster
 
 
 class MegaDebridEu(Hoster):
-    __name__ = "MegaDebridEu"
-    __type__ = "hoster"
+    __name__    = "MegaDebridEu"
+    __type__    = "hoster"
     __version__ = "0.4"
 
     __pattern__ = r'^https?://(?:w{3}\d+\.mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[^/]+/.+$'
 
     __description__ = """mega-debrid.eu hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("D.Ducatel", "dducatel@je-geek.fr")]
+    __license__     = "GPLv3"
+    __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 
 
     API_URL = "https://www.mega-debrid.eu/api.php"
@@ -29,14 +29,15 @@ class MegaDebridEu(Hoster):
         except IndexError:
             return ""
 
+
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
-            self.exitOnFail(_("Please enter your %s account or deactivate this plugin") % "Mega-debrid.eu")
+            self.exitOnFail("Please enter your %s account or deactivate this plugin" % "Mega-debrid.eu")
         else:
             if not self.connectToApi():
-                self.exitOnFail(_("Unable to connect to %s") % "Mega-debrid.eu")
+                self.exitOnFail("Unable to connect to Mega-debrid.eu")
 
             self.logDebug("Old URL: %s" % pyfile.url)
             new_url = self.debridLink(pyfile.url)
@@ -46,6 +47,7 @@ class MegaDebridEu(Hoster):
         if filename != "":
             pyfile.name = filename
         self.download(new_url, disposition=True)
+
 
     def connectToApi(self):
         """
@@ -63,6 +65,7 @@ class MegaDebridEu(Hoster):
         else:
             return False
 
+
     def debridLink(self, linkToDebrid):
         """
         Debrid a link
@@ -78,13 +81,14 @@ class MegaDebridEu(Hoster):
         else:
             self.exitOnFail("Unable to debrid %s" % linkToDebrid)
 
+
     def exitOnFail(self, msg):
         """
         exit the plugin on fail case
         And display the reason of this failure
         """
         if self.getConfig("unloadFailing"):
-            self.logError(msg)
+            self.logError(_(msg))
             self.resetAccount()
         else:
-            self.fail(msg)
+            self.fail(_(msg))

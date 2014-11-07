@@ -6,15 +6,17 @@ from module.plugins.Crypter import Crypter
 
 
 class SexuriaCom(Crypter):
-    __name__ = "SexuriaCom"
-    __type__ = "crypter"
+    __name__    = "SexuriaCom"
+    __type__    = "crypter"
     __version__ = "0.01"
 
     __pattern__ = r'http://(?:www\.)?sexuria\.com/(v1/)?(Pornos_Kostenlos_.+?_(\d+)\.html|dl_links_\d+_\d+\.html|id=\d+\&part=\d+\&link=\d+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Sexuria.com decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("NETHead", "NETHead.AT.gmx.DOT.net")]
+    __license__     = "GPLv3"
+    __authors__     = [("NETHead", "NETHead.AT.gmx.DOT.net")]
 
 
     PATTERN_SUPPORTED_MAIN     = re.compile(r'http://(www\.)?sexuria\.com/(v1/)?Pornos_Kostenlos_.+?_(\d+)\.html', flags=re.I)
@@ -26,20 +28,14 @@ class SexuriaCom(Crypter):
     PATTERN_REDIRECT_LINKS     = re.compile(r'value="(http://sexuria\.com/out\.php\?id=\d+\&part=\d+\&link=\d+)" readonly', flags=re.I)
 
 
-    def setup(self):
-        self.html = None
-
-
     def decrypt(self, pyfile):
         # Init
         self.pyfile = pyfile
         self.package = pyfile.package()
 
         # Get package links
-        (package_name, package_links, folder_name, package_pwd) = self.decryptLinks(self.pyfile.url)
-        if package_pwd:
-            self.pyfile.package().password = package_pwd
-        self.packages.append((package_name, package_links, folder_name))
+        package_name, self.links, folder_name, package_pwd = self.decryptLinks(self.pyfile.url)
+        self.packages = [(package_name, self.links, folder_name)]
 
 
     def decryptLinks(self, url):
@@ -89,10 +85,6 @@ class SexuriaCom(Crypter):
                         self.LogError("Broken for link %s" % link)
                     else:
                         linklist.append(finallink)
-
-        # Inform the user if no link could been extracted
-        if linklist == []:
-            self.fail("Could not extract any links (out of date?)")
 
         # Debug log
         self.logDebug("%d supported links" % len(linklist))

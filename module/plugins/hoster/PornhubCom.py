@@ -6,15 +6,15 @@ from module.plugins.Hoster import Hoster
 
 
 class PornhubCom(Hoster):
-    __name__ = "PornhubCom"
-    __type__ = "hoster"
+    __name__    = "PornhubCom"
+    __type__    = "hoster"
     __version__ = "0.5"
 
     __pattern__ = r'http://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+'
 
     __description__ = """Pornhub.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de")]
 
 
     def process(self, pyfile):
@@ -25,9 +25,11 @@ class PornhubCom(Hoster):
         pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
+
     def download_html(self):
         url = self.pyfile.url
         self.html = self.load(url)
+
 
     def get_file_url(self):
         """ returns the absolute downloadable filepath
@@ -44,7 +46,7 @@ class PornhubCom(Hoster):
         post_data += "\x02\x00\x02\x2d\x31\x02\x00\x20"
         post_data += "add299463d4410c6d1b1c418868225f7"
 
-        content = self.req.load(url, post=str(post_data))
+        content = self.load(url, post=str(post_data))
 
         new_content = ""
         for x in content:
@@ -56,6 +58,7 @@ class PornhubCom(Hoster):
         content = new_content
 
         return re.search(r'flv_url.*(http.*?)##post_roll', content).group(1)
+
 
     def get_file_name(self):
         if not self.html:
@@ -72,6 +75,7 @@ class PornhubCom(Hoster):
                 name = matches[0]
 
         return name + '.flv'
+
 
     def file_exists(self):
         """ returns True or False

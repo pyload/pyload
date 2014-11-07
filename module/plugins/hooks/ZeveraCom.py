@@ -5,17 +5,16 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class ZeveraCom(MultiHoster):
-    __name__ = "ZeveraCom"
-    __type__ = "hook"
+    __name__    = "ZeveraCom"
+    __type__    = "hook"
     __version__ = "0.02"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """Real-Debrid.com hook plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def getHoster(self):

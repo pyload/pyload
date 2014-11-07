@@ -5,13 +5,13 @@ from module.common.json_layer import json_loads
 
 
 class MegaDebridEu(Account):
-    __name__ = "MegaDebridEu"
-    __type__ = "account"
+    __name__    = "MegaDebridEu"
+    __type__    = "account"
     __version__ = "0.2"
 
     __description__ = """mega-debrid.eu account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("D.Ducatel", "dducatel@je-geek.fr")]
+    __license__     = "GPLv3"
+    __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 
 
     # Define the base URL of MegaDebrid api

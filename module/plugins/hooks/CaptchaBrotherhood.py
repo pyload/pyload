@@ -23,30 +23,32 @@ class CaptchaBrotherhoodException(Exception):
     def __init__(self, err):
         self.err = err
 
+
     def getCode(self):
         return self.err
 
+
     def __str__(self):
         return "<CaptchaBrotherhoodException %s>" % self.err
+
 
     def __repr__(self):
         return "<CaptchaBrotherhoodException %s>" % self.err
 
 
 class CaptchaBrotherhood(Hook):
-    __name__ = "CaptchaBrotherhood"
-    __type__ = "hook"
+    __name__    = "CaptchaBrotherhood"
+    __type__    = "hook"
     __version__ = "0.05"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("username", "str", "Username", ""),
+    __config__ = [("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Password", "")]
 
     __description__ = """Send captchas to CaptchaBrotherhood.com"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     API_URL = "http://www.captchabrotherhood.com/"
@@ -54,6 +56,7 @@ class CaptchaBrotherhood(Hook):
 
     def setup(self):
         self.info = {}
+
 
     def getCredits(self):
         response = getURL(self.API_URL + "askCredits.aspx",
@@ -65,6 +68,7 @@ class CaptchaBrotherhood(Hook):
             self.logInfo(_("%d credits left") % credits)
             self.info['credits'] = credits
             return credits
+
 
     def submit(self, captcha, captchaType="file", match=None):
         try:
@@ -108,13 +112,14 @@ class CaptchaBrotherhood(Hook):
 
         ticket = response[3:]
 
-        for _ in xrange(15):
+        for _i in xrange(15):
             sleep(5)
             response = self.get_api("askCaptchaResult", ticket)
             if response.startswith("OK-answered"):
                 return ticket, response[12:]
 
         raise CaptchaBrotherhoodException("No solution received in time")
+
 
     def get_api(self, api, ticket):
         response = getURL("%s%s.aspx" % (self.API_URL, api),
@@ -125,6 +130,7 @@ class CaptchaBrotherhood(Hook):
             raise CaptchaBrotherhoodException("Unknown response: %s" % response)
 
         return response
+
 
     def newCaptchaTask(self, task):
         if "service" in task.data:
@@ -147,9 +153,11 @@ class CaptchaBrotherhood(Hook):
         else:
             self.logInfo(_("Your CaptchaBrotherhood Account has not enough credits"))
 
+
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             response = self.get_api("complainCaptcha", task.data['ticket'])
+
 
     def processCaptcha(self, task):
         c = task.captchaFile

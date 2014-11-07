@@ -10,22 +10,23 @@ from module.plugins.Hoster import Hoster
 
 
 class Ftp(Hoster):
-    __name__ = "Ftp"
-    __type__ = "hoster"
-    __version__ = "0.42"
+    __name__    = "Ftp"
+    __type__    = "hoster"
+    __version__ = "0.43"
 
-    __pattern__ = r'(ftps?|sftp)://(.*?:.*?@)?.*?/.*' # ftp://user:password@ftp\.server\.org/path/to/file
+    __pattern__ = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 
     __description__ = """Download from ftp directory"""
-    __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.com"),
-                   ("mkaay", "mkaay@mkaay.de"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.com"),
+                       ("mkaay", "mkaay@mkaay.de"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def setup(self):
         self.chunkLimit = -1
         self.resumeDownload = True
+
 
     def process(self, pyfile):
         parsed_url = urlparse(pyfile.url)
@@ -44,7 +45,7 @@ class Ftp(Hoster):
                 self.logDebug("Logging on to %s" % netloc)
                 self.req.addAuth(self.account.accounts[netloc]['password'])
             else:
-                for pwd in pyfile.package().password.splitlines():
+                for pwd in self.getPassword().splitlines():
                     if ":" in pwd:
                         self.req.addAuth(pwd.strip())
                         break
@@ -54,7 +55,7 @@ class Ftp(Hoster):
         try:
             response = self.load(pyfile.url)
         except pycurl.error, e:
-            self.fail("Error %d: %s" % e.args)
+            self.fail(_("Error %d: %s") % e.args)
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.logDebug(self.req.http.header)
@@ -75,4 +76,4 @@ class Ftp(Hoster):
                 self.logDebug("LINKS", links)
                 self.core.api.addPackage(pkgname, links)
             else:
-                self.fail("Unexpected server response")
+                self.fail(_("Unexpected server response"))

@@ -12,9 +12,9 @@ from module.utils import save_join
 
 
 class UpdateManager(Hook):
-    __name__ = "UpdateManager"
-    __type__ = "hook"
-    __version__ = "0.35"
+    __name__    = "UpdateManager"
+    __type__    = "hook"
+    __version__ = "0.38"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -23,14 +23,14 @@ class UpdateManager(Hook):
                   ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
 
     __description__ = """ Check for updates """
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_list = ["pluginConfigChanged"]
+    # event_list = ["pluginConfigChanged"]
 
     SERVER_URL = "http://updatemanager.pyload.org"
-    MIN_INTERVAL = 3 * 60 * 60  #: 3h minimum check interval (value is in seconds)
+    MIN_INTERVAL = 6 * 60 * 60  #: 6h minimum check interval (value is in seconds)
 
 
     def pluginConfigChanged(self, plugin, name, value):
@@ -48,13 +48,16 @@ class UpdateManager(Hook):
             if value is True and self.core.debug:
                 self.periodical2()
 
+
     def coreReady(self):
         self.pluginConfigChanged(self.__name__, "interval", self.getConfig("interval"))
         x = lambda: self.pluginConfigChanged(self.__name__, "reloadplugins", self.getConfig("reloadplugins"))
         self.core.scheduler.addJob(10, x, threaded=False)
 
+
     def unload(self):
         self.pluginConfigChanged(self.__name__, "reloadplugins", False)
+
 
     def setup(self):
         self.cb2 = None
@@ -63,10 +66,12 @@ class UpdateManager(Hook):
         self.info = {'pyload': False, 'version': None, 'plugins': False}
         self.mtimes = {}  #: store modification time for each plugin
 
+
     def periodical2(self):
         if not self.updating:
             self.autoreloadPlugins()
         self.cb2 = self.core.scheduler.addJob(4, self.periodical2, threaded=False)
+
 
     @Expose
     def autoreloadPlugins(self):
@@ -97,15 +102,18 @@ class UpdateManager(Hook):
 
         return True if self.core.pluginManager.reloadPlugins(reloads) else False
 
+
     def periodical(self):
         if not self.info['pyload'] and not (self.getConfig("nodebugupdate") and self.core.debug):
             self.updateThread()
+
 
     def server_request(self):
         try:
             return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
         except:
             self.logWarning(_("Unable to contact server to get updates"))
+
 
     @threaded
     def updateThread(self):
@@ -116,10 +124,12 @@ class UpdateManager(Hook):
         else:
             self.updating = False
 
+
     @Expose
     def updatePlugins(self):
         """ simple wrapper for calling plugin update quickly """
         return self.update(onlyplugin=True)
+
 
     @Expose
     def update(self, onlyplugin=False):
@@ -141,6 +151,7 @@ class UpdateManager(Hook):
             self.info['pyload'] = True
             self.info['version'] = newversion
         return exitcode  #: 0 = No plugins updated; 1 = Plugins updated; 2 = Plugins updated, but restart required; 3 = No plugins updated, new pyLoad version available
+
 
     def _updatePlugins(self, updates):
         """ check for plugin updates """
@@ -185,7 +196,7 @@ class UpdateManager(Hook):
             if not oldver:
                 msg = "New [%(type)s] %(name)s (v%(newver)s)"
             elif newver > oldver:
-                msg = "New version of [%(type)s] %(name)s (v%(oldver)s -> v%(newver)s)"
+                msg = "New version of [%(type)s] %(name)s (v%(oldver)f -> v%(newver)f)"
             else:
                 continue
 
@@ -207,7 +218,7 @@ class UpdateManager(Hook):
                 else:
                     raise Exception, _("Version mismatch")
             except Exception, e:
-                self.logError(_("Error updating plugin %s") % filename, e)
+                self.logError(_("Error updating plugin %s") % filename, str(e))
 
         if blacklist:
             blacklisted = sorted(map(lambda x: (x.split('|')[0], x.split('|')[1].rsplit('.', 1)[0]), blacklist))
@@ -240,6 +251,7 @@ class UpdateManager(Hook):
 
         return exitcode  #: 0 = No plugins updated; 1 = Plugins updated; 2 = Plugins updated, but restart required
 
+
     @Expose
     def removePlugins(self, type_plugins):
         """ delete plugins from disk """
@@ -247,7 +259,7 @@ class UpdateManager(Hook):
         if not type_plugins:
             return
 
-        self.logDebug("Requested deletion of plugins", type_plugins)
+        self.logDebug("Requested deletion of plugins: %s" % type_plugins)
 
         removed = []
 
@@ -261,7 +273,7 @@ class UpdateManager(Hook):
                 try:
                     remove(filename)
                 except Exception, e:
-                    self.logDebug("Error deleting", path.basename(filename), e)
+                    self.logDebug("Error removing: %s" % path.basename(filename), str(e))
                     err = True
 
                 filename += "c"
@@ -271,7 +283,7 @@ class UpdateManager(Hook):
                             self.manager.deactivateHook(name)
                         remove(filename)
                     except Exception, e:
-                        self.logDebug("Error deleting", path.basename(filename), e)
+                        self.logDebug("Error removing: %s" % path.basename(filename), str(e))
                         err = True
 
             if not err:

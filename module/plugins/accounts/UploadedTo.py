@@ -7,17 +7,16 @@ from module.plugins.Account import Account
 
 
 class UploadedTo(Account):
-    __name__ = "UploadedTo"
-    __type__ = "account"
+    __name__    = "UploadedTo"
+    __type__    = "account"
     __version__ = "0.26"
 
     __description__ = """Uploaded.to account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def loadAccountInfo(self, user, req):
-
         req.load("http://uploaded.net/language/en")
         html = req.load("http://uploaded.net/me")
 
@@ -25,18 +24,17 @@ class UploadedTo(Account):
 
         if premium:
             raw_traffic = re.search(r'<th colspan="2"><b class="cB">([^<]+)', html).group(1).replace('.', '')
-            raw_valid = re.search(r"<td>Duration:</td>\s*<th>([^<]+)", html, re.MULTILINE).group(1).strip()
+            raw_valid = re.search(r"<td>Duration:</td>\s*<th>([^<]+)", html, re.M).group(1).strip()
 
             traffic = int(self.parseTraffic(raw_traffic))
 
             if raw_valid == "unlimited":
                 validuntil = -1
             else:
-                raw_valid = re.findall(r"(\d+) (Week|weeks|days|day|hours|hour)", raw_valid)
+                raw_valid = re.findall(r"(\d+) (Week|weeks|day|hour)", raw_valid)
                 validuntil = time()
                 for n, u in raw_valid:
-                    validuntil += int(n) * 60 * 60 * {"Week": 168, "weeks": 168, "days": 24,
-                                                      "day": 24, "hours": 1, "hour": 1}[u]
+                    validuntil += int(n) * 60 * 60 * {"Week": 168, "weeks": 168, "day": 24, "hour": 1}[u]
 
             return {"validuntil": validuntil, "trafficleft": traffic, "maxtraffic": 50 * 1024 * 1024}
         else:
@@ -44,7 +42,6 @@ class UploadedTo(Account):
 
 
     def login(self, user, data, req):
-
         req.load("http://uploaded.net/language/en")
         req.cj.setCookie("uploaded.net", "lang", "en")
 

@@ -16,6 +16,7 @@ def which(program):
 
     Courtesy of http://stackoverflow.com/a/377028/675646"""
 
+
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
@@ -34,8 +35,8 @@ def which(program):
 
 
 class YoutubeCom(Hoster):
-    __name__ = "YoutubeCom"
-    __type__ = "hoster"
+    __name__    = "YoutubeCom"
+    __type__    = "hoster"
     __version__ = "0.40"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtube\.com|youtu\.be)/watch.*?[?&]v=.*'
@@ -48,12 +49,12 @@ class YoutubeCom(Hoster):
                   ("3d", "bool", "Prefer 3D", False)]
 
     __description__ = """Youtube.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]
+    URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]
 
     # Invalid characters that must be removed from the file name
     invalidChars = u'\u2605:?><"|\\'
@@ -85,8 +86,9 @@ class YoutubeCom(Hoster):
     def setup(self):
         self.resumeDownload = self.multiDL = True
 
+
     def process(self, pyfile):
-        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
+        pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
         html = self.load(pyfile.url, decode=True)
 
         if re.search(r'<div id="player-unavailable" class="\s*player-width player-height\s*">', html):
@@ -105,7 +107,7 @@ class YoutubeCom(Hoster):
                        "480p": 35, "720p": 22, "1080p": 37, "3072p": 38}
         desired_fmt = self.getConfig("fmt")
         if desired_fmt and desired_fmt not in self.formats:
-            self.logWarning("FMT %d unknown - using default." % desired_fmt)
+            self.logWarning(_("FMT %d unknown, using default") % desired_fmt)
             desired_fmt = 0
         if not desired_fmt:
             desired_fmt = quality.get(self.getConfig("quality"), 18)
@@ -122,7 +124,7 @@ class YoutubeCom(Hoster):
         allowed = lambda x: self.getConfig(self.formats[x][0])
         streams = [x for x in streams if x[0] in self.formats and allowed(x[0])]
         if not streams:
-            self.fail("No available stream meets your preferences")
+            self.fail(_("No available stream meets your preferences"))
         fmt_dict = dict([x for x in streams if self.formats[x[0]][4] == use3d] or streams)
 
         self.logDebug("DESIRED STREAM: ITAG:%d (%s) %sfound, %sallowed" %

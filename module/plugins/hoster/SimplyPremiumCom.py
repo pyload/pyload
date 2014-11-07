@@ -9,27 +9,28 @@ from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 
 
 class SimplyPremiumCom(Hoster):
-    __name__ = "SimplyPremiumCom"
-    __type__ = "hoster"
+    __name__    = "SimplyPremiumCom"
+    __type__    = "hoster"
     __version__ = "0.03"
 
     __pattern__ = r'https?://.*(simply-premium)\.com'
 
     __description__ = """Simply-Premium.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("EvolutionClip", "evolutionclip@live.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def setup(self):
         self.chunkLimit = 16
         self.resumeDownload = False
 
+
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Simply-Premium.com")
-            self.fail("No Simply-Premium.com account provided")
+            self.fail(_("No Simply-Premium.com account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             for i in xrange(5):
@@ -38,7 +39,7 @@ class SimplyPremiumCom(Hoster):
                 if page != '':
                     break
             else:
-                self.logInfo("Unable to get API data, waiting 1 minute and retry")
+                self.logInfo(_("Unable to get API data, waiting 1 minute and retry"))
                 self.retry(5, 60, "Unable to get API data")
 
             if '<valid>0</valid>' in page or (
@@ -48,13 +49,13 @@ class SimplyPremiumCom(Hoster):
             elif "NOTFOUND" in page:
                 self.offline()
             elif "downloadlimit" in page:
-                self.logWarning("Reached maximum connctions")
+                self.logWarning(_("Reached maximum connctions"))
                 self.retry(5, 60, "Reached maximum connctions")
             elif "trafficlimit" in page:
-                self.logWarning("Reached daily limit for this host")
-                self.retry(1, secondsToMidnight(gmt=2), "Daily limit for this host reached")
+                self.logWarning(_("Reached daily limit for this host"))
+                self.retry(wait_time=secondsToMidnight(gmt=2), "Daily limit for this host reached")
             elif "hostererror" in page:
-                self.logWarning("Hoster temporarily unavailable, waiting 1 minute and retry")
+                self.logWarning(_("Hoster temporarily unavailable, waiting 1 minute and retry"))
                 self.retry(5, 60, "Hoster is temporarily unavailable")
             #page = json_loads(page)
             #new_url = page.keys()[0]

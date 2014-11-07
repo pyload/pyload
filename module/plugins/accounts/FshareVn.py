@@ -8,14 +8,14 @@ from module.plugins.Account import Account
 
 
 class FshareVn(Account):
-    __name__ = "FshareVn"
-    __type__ = "account"
+    __name__    = "FshareVn"
+    __type__    = "account"
     __version__ = "0.07"
 
     __description__ = """Fshare.vn account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     VALID_UNTIL_PATTERN = ur'<dt>Thời hạn dùng:</dt>\s*<dd>([^<]+)</dd>'
@@ -56,6 +56,7 @@ class FshareVn(Account):
 
         if not re.search(r'<img\s+alt="VIP"', html):
             self.wrongPassword()
+
 
     def getTrafficLeft(self):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)

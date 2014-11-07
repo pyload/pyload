@@ -6,18 +6,18 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class EdiskCz(SimpleHoster):
-    __name__ = "EdiskCz"
-    __type__ = "hoster"
-    __version__ = "0.21"
+    __name__    = "EdiskCz"
+    __type__    = "hoster"
+    __version__ = "0.22"
 
     __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.*'
 
     __description__ = """Edisk.cz hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_INFO_PATTERN = r'<span class="fl" title="(?P<N>[^"]+)">\s*.*?\((?P<S>[\d.,]+) (?P<U>\w+)\)</h1></span>'
+    INFO_PATTERN = r'<span class="fl" title="(?P<N>[^"]+)">\s*.*?\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</h1></span>'
     OFFLINE_PATTERN = r'<h3>This file does not exist due to one of the following:</h3><ul><li>'
 
     ACTION_PATTERN = r'/en/download/(\d+/.*\.html)'
@@ -27,6 +27,7 @@ class EdiskCz(SimpleHoster):
     def setup(self):
         self.multiDL = False
 
+
     def process(self, pyfile):
         url = re.sub("/(stahni|sk/stahni)/", "/en/download/", pyfile.url)
 
@@ -34,7 +35,7 @@ class EdiskCz(SimpleHoster):
 
         m = re.search(self.ACTION_PATTERN, url)
         if m is None:
-            self.parseError("ACTION")
+            self.error(_("ACTION_PATTERN not found"))
         action = m.group(1)
 
         self.html = self.load(url, decode=True)
@@ -47,7 +48,7 @@ class EdiskCz(SimpleHoster):
         })
 
         if not re.match(self.LINK_PATTERN, url):
-            self.fail("Unexpected server response")
+            self.fail(_("Unexpected server response"))
 
         self.download(url)
 

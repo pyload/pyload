@@ -24,17 +24,16 @@ class Hook(Base):
     """
     Base class for hook plugins.
     """
-    __name__ = "Hook"
-    __type__ = "hook"
-    __version__ = "0.2"
+    __name__    = "Hook"
+    __type__    = "hook"
+    __version__ = "0.02"
 
-    __threaded__ = []
-    __config__ = [("name", "type", "desc", "default")]
+    __config__ = []  #: [("name", "type", "desc", "default")]
 
     __description__ = """Interface for hook"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de"),
-                   ("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de"),
+                       ("RaNaN", "RaNaN@pyload.org")]
 
 
     #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
@@ -81,15 +80,17 @@ class Hook(Base):
         self.initPeriodical()
         self.setup()
 
+
     def initPeriodical(self):
         if self.interval >=1:
             self.cb = self.core.scheduler.addJob(0, self._periodical, threaded=False)
+
 
     def _periodical(self):
         try:
             if self.isActivated(): self.periodical()
         except Exception, e:
-            self.core.log.error(_("Error executing hooks: %s") % str(e))
+            self.core.log.error(_("Error executing hooks: ") + str(e))
             if self.core.debug:
                 print_exc()
 
@@ -99,13 +100,16 @@ class Hook(Base):
     def __repr__(self):
         return "<Hook %s>" % self.__name__
 
+
     def setup(self):
         """ more init stuff if needed """
         pass
 
+
     def unload(self):
         """ called when hook was deactivated """
         pass
+
 
     def isActivated(self):
         """ checks if hook is activated"""
@@ -116,36 +120,47 @@ class Hook(Base):
     def coreReady(self):
         pass
 
+
     def coreExiting(self):
         pass
+
 
     def downloadPreparing(self, pyfile):
         pass
 
+
     def downloadFinished(self, pyfile):
         pass
+
 
     def downloadFailed(self, pyfile):
         pass
 
+
     def packageFinished(self, pypack):
         pass
+
 
     def beforeReconnecting(self, ip):
         pass
 
+
     def afterReconnecting(self, ip):
         pass
 
+
     def periodical(self):
         pass
+
 
     def newCaptchaTask(self, task):
         """ new captcha task for the plugin, it MUST set the handler and timeout or will be ignored """
         pass
 
+
     def captchaCorrect(self, task):
         pass
+
 
     def captchaInvalid(self, task):
         pass

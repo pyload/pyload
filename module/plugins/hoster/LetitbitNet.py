@@ -9,6 +9,7 @@
 import re
 
 from urllib import urlencode, urlopen
+from urlparse import urljoin
 
 from module.common.json_layer import json_loads, json_dumps
 from module.plugins.hoster.UnrestrictLi import secondsToMidnight
@@ -34,21 +35,19 @@ def getInfo(urls):
 
 
 class LetitbitNet(SimpleHoster):
-    __name__ = "LetitbitNet"
-    __type__ = "hoster"
-    __version__ = "0.24"
+    __name__    = "LetitbitNet"
+    __type__    = "hoster"
+    __version__ = "0.26"
 
-    __pattern__ = r'http://(?:www\.)?(letitbit|shareflare)\.net/download/.*'
+    __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.*'
 
     __description__ = """Letitbit.net hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("z00nx", "z00nx0@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("z00nx", "z00nx0@gmail.com")]
 
 
-    FILE_URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "letitbit.net")]
-
-    HOSTER_NAME = "letitbit.net"
+    URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "letitbit.net")]
 
     SECONDS_PATTERN = r'seconds\s*=\s*(\d+);'
     CAPTCHA_CONTROL_FIELD = r'recaptcha_control_field\s=\s\'(?P<value>.+?)\''
@@ -56,7 +55,7 @@ class LetitbitNet(SimpleHoster):
 
     def setup(self):
         self.resumeDownload = True
-        #TODO confirm that resume works
+
 
     def getFileInfo(self):
         api_rep = api_download_info(self.pyfile.url)
@@ -67,33 +66,17 @@ class LetitbitNet(SimpleHoster):
         else:
             self.offline()
 
+
     def handleFree(self):
         action, inputs = self.parseHtmlForm('id="ifree_form"')
         if not action:
-            self.parseError("page 1 / ifree_form")
+            self.error(_("ifree_form"))
 
-        domain = "http://www." + self.HOSTER_NAME
         self.pyfile.size = float(inputs['sssize'])
         self.logDebug(action, inputs)
         inputs['desc'] = ""
 
-        self.html = self.load(domain + action, post=inputs, cookies=True)
-
-        # action, inputs = self.parseHtmlForm('id="d3_form"')
-        # if not action:
-        #     self.parseError("page 2 / d3_form")
-        # self.logDebug(action, inputs)
-        #
-        # self.html = self.load(action, post = inputs, cookies = True)
-        #
-        # try:
-        #     ajax_check_url, captcha_url = re.search(self.CHECK_URL_PATTERN, self.html).groups()
-        #     m = re.search(self.SECONDS_PATTERN, self.html)
-        #     seconds = int(m.group(1)) if m else 60
-        #     self.wait(seconds+1)
-        # except Exception, e:
-        #     self.logError(e)
-        #     self.parseError("page 3 / js")
+        self.html = self.load(urljoin("http://letitbit.net/", action), post=inputs, cookies=True)
 
         m = re.search(self.SECONDS_PATTERN, self.html)
         seconds = int(m.group(1)) if m else 60
@@ -101,33 +84,27 @@ class LetitbitNet(SimpleHoster):
         m = re.search(self.CAPTCHA_CONTROL_FIELD, self.html)
         recaptcha_control_field = m.group(1)
         self.logDebug("ReCaptcha control field found", recaptcha_control_field)
-        self.wait(seconds + 1)
+        self.wait(seconds)
 
-        response = self.load("%s/ajax/download3.php" % domain, post=" ", cookies=True)
+        response = self.load("http://letitbit.net/ajax/download3.php", post=" ", cookies=True)
         if response != '1':
-            self.parseError('Unknown response - ajax_check_url')
+            self.error(_("Unknown response - ajax_check_url"))
         self.logDebug(response)
 
         recaptcha = ReCaptcha(self)
-
-        captcha_key = recaptcha.detect_key()
-        if captcha_key is None:
-            self.parseError("ReCaptcha key not found")
-
-        challenge, response = recaptcha.challenge(captcha_key)
+        challenge, response = recaptcha.challenge()
 
         post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response,
                      "recaptcha_control_field": recaptcha_control_field}
         self.logDebug("Post data to send", post_data)
-        response = self.load('%s/ajax/check_recaptcha.php' % domain, post=post_data, cookies=True)
+        response = self.load("http://letitbit.net/ajax/check_recaptcha.php", post=post_data, cookies=True)
         self.logDebug(response)
         if not response:
             self.invalidCaptcha()
         if response == "error_free_download_blocked":
-            self.logWarning("Daily limit reached")
+            self.logWarning(_("Daily limit reached"))
             self.wait(secondsToMidnight(gmt=2), True)
         if response == "error_wrong_captcha":
-            self.logError("Wrong Captcha")
             self.invalidCaptcha()
             self.retry()
         elif response.startswith('['):
@@ -135,19 +112,19 @@ class LetitbitNet(SimpleHoster):
         elif response.startswith('http://'):
             urls = [response]
         else:
-            self.parseError("Unknown response - captcha check")
+            self.error(_("Unknown response - captcha check"))
 
         self.correctCaptcha()
 
         for download_url in urls:
             try:
-                self.logDebug("Download URL", download_url)
                 self.download(download_url)
                 break
             except Exception, e:
                 self.logError(e)
         else:
-            self.fail("Download did not finish correctly")
+            self.fail(_("Download did not finish correctly"))
+
 
     def handlePremium(self):
         api_key = self.user

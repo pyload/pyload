@@ -5,24 +5,24 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class RehostTo(MultiHoster):
-    __name__ = "RehostTo"
-    __type__ = "hook"
+    __name__    = "RehostTo"
+    __type__    = "hook"
     __version__ = "0.43"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Rehost.to hook plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def getHoster(self):
         page = getURL("http://rehost.to/api.php?cmd=get_supported_och_dl&long_ses=%s" % self.long_ses)
         return [x.strip() for x in page.replace("\"", "").split(",")]
+
 
     def coreReady(self):
         self.account = self.core.accountManager.getAccountPlugin("RehostTo")

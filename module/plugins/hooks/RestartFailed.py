@@ -4,19 +4,18 @@ from module.plugins.Hook import Hook
 
 
 class RestartFailed(Hook):
-    __name__ = "RestartFailed"
-    __type__ = "hook"
-    __version__ = "1.55"
+    __name__    = "RestartFailed"
+    __type__    = "hook"
+    __version__ = "1.57"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("interval", "int", "Check interval in minutes", 90)]
+    __config__ = [("interval", "int", "Check interval in minutes", 90)]
 
     __description__ = """Periodically restart all failed downloads in queue"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_list = ["pluginConfigChanged"]
+    # event_list = ["pluginConfigChanged"]
 
     MIN_INTERVAL = 15 * 60  #: 15m minimum check interval (value is in seconds)
 
@@ -31,13 +30,15 @@ class RestartFailed(Hook):
             else:
                 self.logDebug("Invalid interval value, kept current")
 
+
     def periodical(self):
-        self.logInfo(_("Restart failed downloads"))
-        self.api.restartFailed()
+        self.logDebug(_("Restart failed downloads"))
+        self.core.api.restartFailed()
+
 
     def setup(self):
-        self.api = self.core.api
         self.interval = self.MIN_INTERVAL
+
 
     def coreReady(self):
         self.pluginConfigChanged(self.__name__, "interval", self.getConfig("interval"))

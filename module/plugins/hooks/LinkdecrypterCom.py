@@ -8,15 +8,13 @@ from module.utils import remove_chars
 
 
 class LinkdecrypterCom(Hook):
-    __name__ = "LinkdecrypterCom"
-    __type__ = "hook"
+    __name__    = "LinkdecrypterCom"
+    __type__    = "hook"
     __version__ = "0.19"
 
-    __config__ = [("activated", "bool", "Activated", False)]
-
     __description__ = """Linkdecrypter.com hook plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def coreReady(self):
@@ -24,6 +22,7 @@ class LinkdecrypterCom(Hook):
             self.loadPatterns()
         except Exception, e:
             self.logError(e)
+
 
     def loadPatterns(self):
         page = getURL("http://linkdecrypter.com/")

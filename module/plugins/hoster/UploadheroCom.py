@@ -9,20 +9,20 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UploadheroCom(SimpleHoster):
-    __name__ = "UploadheroCom"
-    __type__ = "hoster"
-    __version__ = "0.15"
+    __name__    = "UploadheroCom"
+    __type__    = "hoster"
+    __version__ = "0.16"
 
     __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
 
     __description__ = """UploadHero.co plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("mcmyst", "mcmyst@hotmail.fr"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("mcmyst", "mcmyst@hotmail.fr"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'<div class="nom_de_fichier">(?P<N>.*?)</div>'
-    FILE_SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'
+    NAME_PATTERN = r'<div class="nom_de_fichier">(?P<N>.*?)</div>'
+    SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'
     OFFLINE_PATTERN = r'<p class="titre_dl_2">|<div class="raison"><strong>Le lien du fichier ci-dessus n\'existe plus.'
 
     COOKIES = [(".uploadhero.co", "lang", "en")]
@@ -40,10 +40,10 @@ class UploadheroCom(SimpleHoster):
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
-            self.parseError("Captcha URL")
+            self.error(_("CAPTCHA_PATTERN not found"))
         captcha_url = "http://uploadhero.co" + m.group(1)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             captcha = self.decryptCaptcha(captcha_url)
             self.html = self.load(self.pyfile.url, get={"code": captcha})
             m = re.search(self.FREE_URL_PATTERN, self.html)
@@ -54,16 +54,16 @@ class UploadheroCom(SimpleHoster):
             else:
                 self.invalidCaptcha()
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
         self.download(download_url)
 
+
     def handlePremium(self):
         self.logDebug("%s: Use Premium Account" % self.__name__)
-        self.html = self.load(self.pyfile.url)
         link = re.search(self.PREMIUM_URL_PATTERN, self.html).group(1)
-        self.logDebug("Downloading link : '%s'" % link)
         self.download(link)
+
 
     def checkErrors(self):
         m = re.search(self.IP_BLOCKED_PATTERN, self.html)

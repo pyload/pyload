@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSPAccount import XFSPAccount
+from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class CramitIn(XFSPAccount):
-    __name__ = "CramitIn"
-    __type__ = "account"
-    __version__ = "0.02"
+class CramitIn(XFSAccount):
+    __name__    = "CramitIn"
+    __type__    = "account"
+    __version__ = "0.03"
 
     __description__ = """Cramit.in account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_URL = "http://www.cramit.in/"
+    HOSTER_DOMAIN = "cramit.in"

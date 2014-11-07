@@ -7,15 +7,15 @@ from module.plugins.Hoster import Hoster
 
 
 class SoundcloudCom(Hoster):
-    __name__ = "SoundcloudCom"
-    __type__ = "hoster"
+    __name__    = "SoundcloudCom"
+    __type__    = "hoster"
     __version__ = "0.1"
 
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/(?P<UID>.*?)/(?P<SID>.*)'
 
     __description__ = """SoundCloud.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Peekayy", "peekayy.dev@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Peekayy", "peekayy.dev@gmail.com")]
 
 
     def process(self, pyfile):
@@ -27,7 +27,7 @@ class SoundcloudCom(Hoster):
         if m:
             songId = m.group("ID")
         if len(songId) <= 0:
-            self.logError("Could not find song id")
+            self.logError(_("Could not find song id"))
             self.offline()
         else:
             m = re.search(r'"clientID":"(?P<CID>.*?)"', page)
