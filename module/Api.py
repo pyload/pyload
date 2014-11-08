@@ -321,8 +321,6 @@ class Api(Iface):
             if not folder: # modification - only generate folder if parameter is empty
                 folder = name
                 folder = folder.replace("http://", "").replace(":", "").replace("/", "_").replace("\\", "_")
-        else:
-            folder = ""
 
         pid = self.core.files.addPackage(name, folder, dest)
 
