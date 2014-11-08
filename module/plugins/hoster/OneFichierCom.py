@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.70"
+    __version__ = "0.71"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
 
@@ -26,6 +26,8 @@ class OneFichierCom(SimpleHoster):
     NAME_PATTERN = r'>FileName :</td>\s*<td.*>(?P<N>.+?)<'
     SIZE_PATTERN = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'File not found !\s*<'
+
+    URL_REPLACEMENTS = [(r'(.+/[^?]+)$', "\1\?"), (r'$', "&lg=en")]  #@TODO: Remove in 0.4.10
 
     COOKIES = [(".1fichier.com", "LG", "en")]
 
