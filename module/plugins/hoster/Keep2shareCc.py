@@ -8,10 +8,10 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class Keep2shareCC(SimpleHoster):
-    __name__    = "Keep2shareCC"
+class Keep2shareCc(SimpleHoster):
+    __name__    = "Keep2shareCc"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
@@ -113,4 +113,4 @@ class Keep2shareCC(SimpleHoster):
         self.base_url = "%s://%s" % (p.scheme, p.hostname)
 
 
-getInfo = create_getInfo(Keep2shareCC)
+getInfo = create_getInfo(Keep2shareCc)
