@@ -36,12 +36,20 @@ class AccountManager():
 
     def getAccountPlugin(self, plugin):
         """get account instance for plugin or None if anonymous"""
-        if plugin in self.accounts:
-            if plugin not in self.plugins:
-                self.plugins[plugin] = self.core.pluginManager.loadClass("accounts", plugin)(self, self.accounts[plugin])
+        try:
+            if plugin in self.accounts:
+                if plugin not in self.plugins:
+                    klass = self.core.pluginManager.loadClass("accounts", plugin)
+                    if klass:
+                        self.plugins[plugin] = klass(self, self.accounts[plugin])
+                    else:
+                        self.logCritical(_("Account plugin %s not loaded") % plugin)
+                        raise
 
-            return self.plugins[plugin]
-        else:
+                return self.plugins[plugin]
+            else:
+                raise
+        except:
             return None
 
 
