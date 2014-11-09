@@ -78,7 +78,7 @@ class MegaCoNz(Hoster):
 
         file_crypted = self.lastDownload
         file_decrypted = file_crypted.rsplit(self.FILE_SUFFIX)[0]
-        
+
         try:
             f = open(file_crypted, "rb")
             df = open(file_decrypted, "wb")

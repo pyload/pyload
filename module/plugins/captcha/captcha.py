@@ -64,7 +64,7 @@ class OCR(object):
             #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
             tmpTxt = open(join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
             tmpTxt.close()
-            
+
         except IOError, e:
             self.logError(str(e))
             return

@@ -26,7 +26,7 @@ class Hook(Base):
     """
     __name__    = "Hook"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
 
@@ -51,7 +51,7 @@ class Hook(Base):
         Base.__init__(self, core)
 
         #: Provide information in dict here, usable by API `getInfo`
-        self.info = None
+        self.info = {}
 
         #: Callback of periodical job task, used by hookmanager
         self.cb = None

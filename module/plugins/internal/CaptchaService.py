@@ -91,7 +91,7 @@ class ReCaptcha(CaptchaService):
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key}, cookies=True)
+        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key})
 
         try:
             challenge = re.search("challenge : '(.+?)',", js).group(1)
@@ -153,7 +153,7 @@ class AdsCaptcha(CaptchaService):
 
         CaptchaId, PublicKey = key
 
-        js = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx", get={'CaptchaId': CaptchaId, 'PublicKey': PublicKey}, cookies=True)
+        js = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx", get={'CaptchaId': CaptchaId, 'PublicKey': PublicKey})
 
         try:
             challenge = re.search("challenge: '(.+?)',", js).group(1)
@@ -192,7 +192,7 @@ class SolveMedia(CaptchaService):
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript", get={'k': key}, cookies=True)
+        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript", get={'k': key})
         try:
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
                                   html).group(1)

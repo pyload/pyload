@@ -67,29 +67,29 @@ class PluginManager:
 
         """
         plugins = {}
-        
+
         try:
             try:
                 pfolder = save_join("userplugins", folder)
                 if not exists(pfolder):
                     makedirs(pfolder)
-                    
+
                 ifile = join(pfolder, "__init__.py")
                 if not exists(ifile):
                     f = open(ifile, "a")
                     f.close()
-                    
+
             except IOError, e:
                 pfolder = join(pypath, "module", "plugins", folder)
-                
+
         except Exception, e:
             self.logCritical(str(e))
             return plugins
-        
+
         for f in listdir(pfolder):
             if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith(
                 "_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
-                
+
                 with open(join(pfolder, f)) as data:
                     content = data.read()
 

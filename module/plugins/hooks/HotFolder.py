@@ -31,7 +31,7 @@ class HotFolder(Hook):
 
     def periodical(self):
         folder = fs_encode(self.getConfig("folder"))
-        
+
         try:
             if not exists(join(folder, "finished")):
                 makedirs(join(folder, "finished"))
@@ -39,7 +39,7 @@ class HotFolder(Hook):
             if self.getConfig("watch_file"):
                 with open(fs_encode(self.getConfig("file")), "a+") as f:
                     content = f.read().strip()
-                    
+
                 if content:
                     name = "%s_%s.txt" % (self.getConfig("file"), time.strftime("%H-%M-%S_%d%b%Y"))
 
@@ -59,6 +59,6 @@ class HotFolder(Hook):
 
                 self.logInfo(_("Added %s from HotFolder") % f)
                 self.core.api.addPackage(f, [newpath], 1)
-                
+
         except IOError, e:
             self.logError(str(e))

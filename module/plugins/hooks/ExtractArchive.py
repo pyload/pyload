@@ -309,16 +309,16 @@ class ExtractArchive(Hook):
 
     def reloadPasswords(self):
         passwordfile = self.getConfig("passwordfile")
-        
+
         try:
             passwords = []
             with open(passwordfile, "a+") as f:
                 for pw in f.read().splitlines():
                     passwords.append(pw)
-                    
+
         except IOError, e:
             self.logError(str(e))
-            
+
         else:
             self.passwords = passwords
 
@@ -330,7 +330,7 @@ class ExtractArchive(Hook):
 
         if pw in self.passwords:
             self.passwords.remove(pw)
-            
+
         self.passwords.insert(0, pw)
 
         try:
