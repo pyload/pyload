@@ -59,22 +59,21 @@ class AccountManager():
     def loadAccounts(self):
         """loads all accounts available"""
 
-        if not exists("accounts.conf"):
-            f = open("accounts.conf", "wb")
-            f.write("version: " + str(ACC_VERSION))
-            f.close()
+        try:
+            with open("accounts.conf", "a+") as f:
+                content = f.readlines()
+                version = content[0].split(":")[1].strip() if content else ""
 
-        f = open("accounts.conf", "rb")
-        content = f.readlines()
-        version = content[0].split(":")[1].strip() if content else ""
-        f.close()
+                if not version or int(version) < ACC_VERSION:
+                    copy("accounts.conf", "accounts.backup")
+                    f.seek(0)
+                    f.write("version: " + str(ACC_VERSION))
 
-        if not version or int(version) < ACC_VERSION:
-            copy("accounts.conf", "accounts.backup")
-            f = open("accounts.conf", "wb")
-            f.write("version: " + str(ACC_VERSION))
-            f.close()
-            self.core.log.warning(_("Account settings deleted, due to new config format"))
+                    self.core.log.warning(_("Account settings deleted, due to new config format"))
+                    return
+
+        except IOError, e:
+            self.logError(str(e))
             return
 
         plugin = ""
@@ -107,21 +106,24 @@ class AccountManager():
     def saveAccounts(self):
         """save all account information"""
 
-        f = open("accounts.conf", "wb")
-        f.write("version: " + str(ACC_VERSION) + "\n")
+        try:
+            with open("accounts.conf", "wb") as f:
+                f.write("version: " + str(ACC_VERSION) + "\n")
 
-        for plugin, accounts in self.accounts.iteritems():
-            f.write("\n")
-            f.write(plugin+":\n")
+                for plugin, accounts in self.accounts.iteritems():
+                    f.write("\n")
+                    f.write(plugin+":\n")
 
-            for name,data in accounts.iteritems():
-                f.write("\n\t%s:%s\n" % (name,data['password']) )
-                if data['options']:
-                    for option, values in data['options'].iteritems():
-                        f.write("\t@%s %s\n" % (option, " ".join(values)))
+                    for name,data in accounts.iteritems():
+                        f.write("\n\t%s:%s\n" % (name,data['password']) )
+                        if data['options']:
+                            for option, values in data['options'].iteritems():
+                                f.write("\t@%s %s\n" % (option, " ".join(values)))
 
-        f.close()
-        chmod(f.name, 0600)
+            chmod(f.name, 0600)
+
+        except Exception, e:
+            self.logError(str(e))
 
 
     #----------------------------------------------------------------------
