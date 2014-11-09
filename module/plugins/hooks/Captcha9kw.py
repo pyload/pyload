@@ -17,7 +17,7 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__    = "Captcha9kw"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("force", "bool", "Force captcha resolving even if client is connected", True),
@@ -176,12 +176,12 @@ class Captcha9kw(Hook):
         hoster_options = self.getConfig("hoster_options").split(";")
         pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
 
-	    if 1000 > queue > 10:
-	 	    servercheck = getURL("http://www.9kw.eu/grafik/servercheck.txt")
+        if 1000 > queue > 10:
+            servercheck = getURL("http://www.9kw.eu/grafik/servercheck.txt")
             regex = re.compile("queue=(\d+)")
 
-		    for _ in xrange(3):
-		        if queue < regex.search(servercheck).group(1):
+            for _ in xrange(3):
+                if queue < regex.search(servercheck).group(1):
                     break
 
                 sleep(10)
@@ -201,9 +201,9 @@ class Captcha9kw(Hook):
                     timeout = int(hosteroption[1])
 
         task.handler.append(self)
-	
+
         task.setWaiting(timeout)
-	
+
         start_new_thread(self._processCaptcha, (task,))
 
 
