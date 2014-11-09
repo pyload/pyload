@@ -68,7 +68,7 @@ class DeathByCaptcha(Hook):
 
 
     def setup(self):
-        self.info = {}
+        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def call_api(self, api="captcha", post=False, multipart=False):

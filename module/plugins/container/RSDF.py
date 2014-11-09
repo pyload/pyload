@@ -5,6 +5,7 @@ import binascii
 import re
 
 from module.plugins.Container import Container
+from module.utils import fs_encode
 
 
 class RSDF(Container):
@@ -23,7 +24,7 @@ class RSDF(Container):
 
         from Crypto.Cipher import AES
 
-        infile = pyfile.url.replace("\n", "")
+        infile = fs_encode(pyfile.url.replace("\n", ""))
         Key = binascii.unhexlify('8C35192D964DC3182C6F84F3252239EB4A320D2500000000')
 
         IV = binascii.unhexlify('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
@@ -32,10 +33,11 @@ class RSDF(Container):
 
         obj = AES.new(Key, AES.MODE_CFB, IV)
 
-        rsdf = open(infile, 'r')
-
-        data = rsdf.read()
-        rsdf.close()
+        try:
+            with open(infile, 'r') as rsdf:
+                data = rsdf.read()
+        except IOError, e:
+            self.fail(str(e))
 
         if re.search(r"<title>404 - Not Found</title>", data) is None:
             data = binascii.unhexlify(''.join(data.split()))

@@ -1,41 +1,63 @@
 # -*- coding: utf-8 -*-
 
-from time import time, strptime, mktime
 import re
 
+from time import time, strptime, mktime
+
 from module.plugins.Account import Account
+from module.plugins.internal.SimpleHoster import set_cookies
 
 
 class UploadingCom(Account):
     __name__    = "UploadingCom"
     __type__    = "account"
-    __version__ = "0.1"
+    __version__ = "0.11"
 
     __description__ = """Uploading.com account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
+    PREMIUM_PATTERN = r'UPGRADE TO PREMIUM'
+    VALID_UNTIL_PATTERN = r'Valid Until:(.+?)<'
+
+
     def loadAccountInfo(self, user, req):
-        src = req.load("http://uploading.com/")
-        premium = True
-        if "UPGRADE TO PREMIUM" in src:
-            return {"validuntil": -1, "trafficleft": -1, "premium": False}
+        validuntil  = None
+        trafficleft = None
+        premium     = None
 
-        m = re.search("Valid Until:(.*?)<", src)
+        html = req.load("http://uploading.com/")
+
+        premium = False if re.search(self.PREMIUM_PATTERN, html) else True
+
+        m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
-            validuntil = int(mktime(strptime(m.group(1).strip(), "%b %d, %Y")))
-        else:
-            validuntil = -1
+            expiredate = m.group(1).strip()
+            self.logDebug("Expire date: " + expiredate)
 
-        return {"validuntil": validuntil, "trafficleft": -1, "premium": True}
+            try:
+                validuntil = mktime(strptime(expiredate, "%b %d, %Y"))
+
+            except Exception, e:
+                self.logError(str(e))
+
+            else:
+                if validuntil > mktime(gmtime()):
+                    premium = True
+                else:
+                    premium = False
+                    validuntil = None
+
+        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
     def login(self, user, data, req):
-        req.cj.setCookie("uploading.com", "lang", "1")
-        req.cj.setCookie("uploading.com", "language", "1")
-        req.cj.setCookie("uploading.com", "setlang", "en")
-        req.cj.setCookie("uploading.com", "_lang", "en")
+        set_cookies([("uploading.com", "lang", "1"),
+                     ("uploading.com", "language", "1"),
+                     ("uploading.com", "setlang", "en"),
+                     ("uploading.com", "_lang", "en")]
+
         req.load("http://uploading.com/")
         req.load("http://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time() * 1000),
-                 post={"email": user, "password": data['password'], "remember": "on"})
+                 post={'email': user, 'password': data['password'], 'remember': "on"})

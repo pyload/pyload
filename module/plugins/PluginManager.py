@@ -12,6 +12,7 @@ from traceback import print_exc
 from module.lib.SafeEval import const_eval as literal_eval
 
 from module.ConfigParser import IGNORE
+from module.utils import save_join
 
 
 class PluginManager:
@@ -43,12 +44,6 @@ class PluginManager:
 
         sys.path.append(abspath(""))
 
-        if not exists("userplugins"):
-            makedirs("userplugins")
-        if not exists(join("userplugins", "__init__.py")):
-            f = open(join("userplugins", "__init__.py"), "wb")
-            f.close()
-
         self.plugins['crypter'] = self.crypterPlugins = self.parse("crypter", pattern=True)
         self.plugins['container'] = self.containerPlugins = self.parse("container", pattern=True)
         self.plugins['hoster'] = self.hosterPlugins = self.parse("hoster", pattern=True)
@@ -72,23 +67,31 @@ class PluginManager:
 
         """
         plugins = {}
-        if home:
-            pfolder = join("userplugins", folder)
-            if not exists(pfolder):
-                makedirs(pfolder)
-            if not exists(join(pfolder, "__init__.py")):
-                f = open(join(pfolder, "__init__.py"), "wb")
-                f.close()
 
-        else:
-            pfolder = join(pypath, "module", "plugins", folder)
+        try:
+            try:
+                pfolder = save_join("userplugins", folder)
+                if not exists(pfolder):
+                    makedirs(pfolder)
+
+                ifile = join(pfolder, "__init__.py")
+                if not exists(ifile):
+                    f = open(ifile, "a")
+                    f.close()
+
+            except IOError, e:
+                pfolder = join(pypath, "module", "plugins", folder)
+
+        except Exception, e:
+            self.logCritical(str(e))
+            return plugins
 
         for f in listdir(pfolder):
             if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith(
                 "_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
-                data = open(join(pfolder, f))
-                content = data.read()
-                data.close()
+
+                with open(join(pfolder, f)) as data:
+                    content = data.read()
 
                 if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):
                     continue
@@ -107,7 +110,7 @@ class PluginManager:
                     version = 0
 
                 # home contains plugins from pyload root
-                if home and name in home:
+                if isinstance(home, dict) and name in home:
                     if home[name]['v'] >= version:
                         continue
 
@@ -174,8 +177,7 @@ class PluginManager:
                         self.log.error("Invalid config in %s: %s" % (name, config))
 
         if home is None:
-            temp = self.parse(folder, pattern, plugins)
-            plugins.update(temp)
+            plugins.update(self.parse(folder, pattern, plugins))
 
         return plugins
 

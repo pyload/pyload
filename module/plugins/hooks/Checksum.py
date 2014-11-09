@@ -18,7 +18,7 @@ def computeChecksum(local_file, algorithm):
         h = getattr(hashlib, algorithm)()
 
         with open(local_file, 'rb') as f:
-            for chunk in iter(lambda: f.read(128 * h.block_size), b''):
+            for chunk in iter(lambda: f.read(128 * h.block_size), ''):
                 h.update(chunk)
 
         return h.hexdigest()
@@ -28,7 +28,7 @@ def computeChecksum(local_file, algorithm):
         last = 0
 
         with open(local_file, 'rb') as f:
-            for chunk in iter(lambda: f.read(8192), b''):
+            for chunk in iter(lambda: f.read(8192), ''):
                 last = hf(chunk, last)
 
         return "%x" % last
@@ -40,7 +40,7 @@ def computeChecksum(local_file, algorithm):
 class Checksum(Hook):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __config__ = [("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
                   ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),

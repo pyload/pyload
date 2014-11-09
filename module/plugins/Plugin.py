@@ -458,7 +458,7 @@ class Plugin(Base):
         if self.pyfile.abort:
             raise Abort
 
-        url = url.strip().lower()
+        url = url.strip()
 
         if type(url) == unicode:  # utf8 vs decode -> please use decode attribute in all future plugins
             url = str(url)  #: encode('utf8')
@@ -526,7 +526,7 @@ class Plugin(Base):
         if self.pyfile.abort:
             raise Abort
 
-        url = url.strip().lower()
+        url = url.strip()
 
         if self.core.debug:
             self.logDebug("Download url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])

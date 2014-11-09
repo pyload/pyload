@@ -200,7 +200,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.53"
 
     __pattern__ = r'^unmatchable$'
 
@@ -318,7 +318,7 @@ class SimpleHoster(Hoster):
 
         if parseFileInfo(self, url, html)[2] is not 2:
             try:
-                return re.search(r"Location\s*:\s*(.+)", self.req.http.header, re.I).group(1).strip().lower()  #@TODO: Remove .strip().lower() in 0.4.10
+                return re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I).group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
             except:
                 pass
 

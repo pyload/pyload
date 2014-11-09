@@ -216,12 +216,11 @@ class RelinkUs(Crypter):
                 dlc = self.load(container_url)
                 dlc_filename = self.fileid + ".dlc"
                 dlc_filepath = os.path.join(self.config['general']['download_folder'], dlc_filename)
-                f = open(dlc_filepath, "wb")
-                f.write(dlc)
-                f.close()
+                with open(dlc_filepath, "wb") as f:
+                    f.write(dlc)
                 package_links.append(dlc_filepath)
             except:
-                self.logDebug("Unable to download DLC container")
+                self.fail("Unable to download DLC container")
         return package_links
 
 

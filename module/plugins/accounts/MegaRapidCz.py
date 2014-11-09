@@ -46,7 +46,7 @@ class MegaRapidCz(Account):
 
 
     def login(self, user, data, req):
-        htm = req.load("http://megarapid.cz/prihlaseni/", cookies=True)
+        htm = req.load("http://megarapid.cz/prihlaseni/")
         if "Heslo:" in htm:
             start = htm.index('id="inp_hash" name="hash" value="')
             htm = htm[start + 33:]
@@ -56,4 +56,4 @@ class MegaRapidCz(Account):
                                  "login": user,
                                  "pass1": data['password'],
                                  "remember": 0,
-                                 "sbmt": u"Přihlásit"}, cookies=True)
+                                 "sbmt": u"Přihlásit"})
