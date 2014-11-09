@@ -11,15 +11,15 @@ from module.utils import parseFileSize
 
 
 class OverLoadMe(Hoster):
-    __name__ = "OverLoadMe"
-    __type__ = "hoster"
+    __name__    = "OverLoadMe"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'https?://.*overload\.me.*'
 
     __description__ = """Over-Load.me hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("marley", "marley@over-load.me")]
+    __license__     = "GPLv3"
+    __authors__     = [("marley", "marley@over-load.me")]
 
 
     def getFilename(self, url):
@@ -27,7 +27,7 @@ class OverLoadMe(Hoster):
             name = unquote(url.rsplit("/", 1)[1])
         except IndexError:
             name = "Unknown_Filename..."
-        if name.endswith("..."):  # incomplete filename, append random stuff
+        if name.endswith("..."):  #: incomplete filename, append random stuff
             name += "%s.tmp" % randrange(100, 999)
         return name
 
@@ -42,7 +42,7 @@ class OverLoadMe(Hoster):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Over-Load")
-            self.fail("No Over-Load account provided")
+            self.fail(_("No Over-Load account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             data = self.account.getAccountData(self.user)
@@ -81,4 +81,4 @@ class OverLoadMe(Hoster):
 
         if check == "error":
             # usual this download can safely be retried
-            self.retry(reason="An error occured while generating link.", wait_time=60)
+            self.retry(wait_time=60, reason=_("An error occured while generating link."))

@@ -9,13 +9,13 @@ from module.plugins.Account import Account
 
 
 class OboomCom(Account):
-    __name__ = "OboomCom"
-    __type__ = "account"
+    __name__    = "OboomCom"
+    __type__    = "account"
     __version__ = "0.2"
 
     __description__ = """Oboom.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stanley", "stanley.foerster@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("stanley", "stanley.foerster@gmail.com")]
 
 
     def loadAccountData(self, user, req):
@@ -24,7 +24,7 @@ class OboomCom(Account):
         pbkdf2 = PBKDF2(passwd, salt, 1000).hexread(16)
         result = json_loads(req.load("https://www.oboom.com/1/login", get={"auth": user, "pass": pbkdf2}))
         if not result[0] == 200:
-            self.logWarning("Failed to log in: %s" % result[1])
+            self.logWarning(_("Failed to log in: %s") % result[1])
             self.wrongPassword()
         return result[1]
 

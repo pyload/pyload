@@ -7,13 +7,13 @@ from module.plugins.Account import Account
 
 
 class MegasharesCom(Account):
-    __name__ = "MegasharesCom"
-    __type__ = "account"
+    __name__    = "MegasharesCom"
+    __type__    = "account"
     __version__ = "0.02"
 
     __description__ = """Megashares.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     VALID_UNTIL_PATTERN = r'<p class="premium_info_box">Period Ends: (\w{3} \d{1,2}, \d{4})</p>'

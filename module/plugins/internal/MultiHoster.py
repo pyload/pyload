@@ -7,20 +7,22 @@ from module.utils import remove_chars
 
 
 class MultiHoster(Hook):
-    __name__ = "AbtractExtractor"
+    __name__    = "AbtractExtractor"
+    __type__    = "hook"
     __version__ = "0.19"
 
     __description__ = """Generic MultiHoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    replacements = [("2shared.com", "twoshared.com"), ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
-                    ("ifile.it", "filecloud.io"), ("easy-share.com", "crocko.com"), ("freakshare.net", "freakshare.com"),
-                    ("hellshare.com", "hellshare.cz"), ("share-rapid.cz", "sharerapid.com"), ("sharerapid.cz", "sharerapid.com"),
-                    ("ul.to", "uploaded.to"), ("uploaded.net", "uploaded.to"), ("1fichier.com", "onefichier.com")]
-    ignored = []
     interval = 24 * 60 * 60  #: reload hosters daily
+
+    HOSTER_REPLACEMENTS = [("2shared.com", "twoshared.com"), ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
+                           ("ifile.it", "filecloud.io"), ("easy-share.com", "crocko.com"), ("freakshare.net", "freakshare.com"),
+                           ("hellshare.com", "hellshare.cz"), ("share-rapid.cz", "sharerapid.com"), ("sharerapid.cz", "sharerapid.com"),
+                           ("ul.to", "uploaded.to"), ("uploaded.net", "uploaded.to"), ("1fichier.com", "onefichier.com")]
+    HOSTER_EXCLUDED     = []
 
 
     def setup(self):
@@ -41,7 +43,7 @@ class MultiHoster(Hook):
         if not self.hosters:
 
             try:
-                hosterSet = self.toHosterSet(self.getHoster()) - set(self.ignored)
+                hosterSet = self.toHosterSet(self.getHoster()) - set(self.HOSTER_EXCLUDED)
             except Exception, e:
                 self.logError(e)
                 return []
@@ -67,7 +69,7 @@ class MultiHoster(Hook):
     def toHosterSet(self, hosters):
         hosters = set((str(x).strip().lower() for x in hosters))
 
-        for rep in self.replacements:
+        for rep in self.HOSTER_REPLACEMENTS:
             if rep[0] in hosters:
                 hosters.remove(rep[0])
                 hosters.add(rep[1])
@@ -125,7 +127,7 @@ class MultiHoster(Hook):
         for name in self.core.pluginManager.hosterPlugins.keys():
             pluginMap[name.lower()] = name
 
-        accountList = [name.lower() for name, data in self.core.accountManager.accounts.items() if data]
+        accountList = [name.lower() for name, data in self.core.accountManager.accounts.iteritems() if data]
         excludedList = []
 
         for hoster in self.getHosterCached():

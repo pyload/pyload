@@ -7,19 +7,19 @@ from module.utils import fixup
 
 
 class NowDownloadEu(SimpleHoster):
-    __name__ = "NowDownloadEu"
-    __type__ = "hoster"
+    __name__    = "NowDownloadEu"
+    __type__    = "hoster"
     __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?nowdownload\.(at|ch|co|eu|sx)/(dl/|download\.php\?id=)\w+'
 
     __description__ = """NowDownload.at hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("godofdream", "soilfiction@gmail.com"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("godofdream", "soilfiction@gmail.com"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[\d.,]+) (?P<U>[\w^_]+) </h4>'
+    INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[\d.,]+) (?P<U>[\w^_]+) </h4>'
     OFFLINE_PATTERN = r'>This file does not exist'
 
     TOKEN_PATTERN = r'"(/api/token\.php\?token=\w+)"'
@@ -27,7 +27,7 @@ class NowDownloadEu(SimpleHoster):
     WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
     LINK_PATTERN = r'"(http://f\d+\.nowdownload\.at/dl/\w+/\w+)'
 
-    FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<[^>]*>', '')]
+    NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<[^>]*>', '')]
 
 
     def setup(self):
@@ -55,8 +55,8 @@ class NowDownloadEu(SimpleHoster):
 
         url = re.search(self.LINK_PATTERN, self.html)
         if url is None:
-            self.error("Download link not found")
-        self.logDebug("Download link", url.group(1))
+            self.error(_("Download link not found"))
+
         self.download(str(url.group(1)))
 
 

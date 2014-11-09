@@ -11,15 +11,15 @@ from module.utils import html_unescape, remove_chars
 
 
 class BasePlugin(Hoster):
-    __name__ = "BasePlugin"
-    __type__ = "hoster"
+    __name__    = "BasePlugin"
+    __type__    = "hoster"
     __version__ = "0.20"
 
     __pattern__ = r'^unmatchable$'
 
     __description__ = """Base Plugin when any other didnt fit"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def setup(self):
@@ -35,17 +35,6 @@ class BasePlugin(Hoster):
             self.multiDL = False
             return
 
-        # self.__name__ = "NetloadIn"
-        # pyfile.name = "test"
-        # self.html = self.load("http://localhost:9000/short")
-        # self.download("http://localhost:9000/short")
-        # self.api = self.load("http://localhost:9000/short")
-        # self.decryptCaptcha("http://localhost:9000/captcha")
-        #
-        # if pyfile.url == "79":
-        #     self.core.api.addPackage("test", [str(i) for i in xrange(80)], 1)
-        #
-        # return
         if pyfile.url.startswith("http"):
 
             try:
@@ -74,13 +63,13 @@ class BasePlugin(Hoster):
                     raise
 
         else:
-            self.fail("No Plugin matched and not a downloadable url.")
+            self.fail(_("No Plugin matched and not a downloadable url"))
 
 
     def downloadFile(self, pyfile):
         url = pyfile.url
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             header = self.load(url, just_header=True)
 
             # self.load does not raise a BadHeader on 404 responses, do it here

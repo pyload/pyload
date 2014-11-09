@@ -5,13 +5,13 @@ from module.common.json_layer import json_loads
 
 
 class FastixRu(Account):
-    __name__ = "FastixRu"
-    __type__ = "account"
+    __name__    = "FastixRu"
+    __type__    = "account"
     __version__ = "0.02"
 
     __description__ = """Fastix account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Massimo Rosamilia", "max@spiritix.eu")]
+    __license__     = "GPLv3"
+    __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
     def loadAccountInfo(self, user, req):

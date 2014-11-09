@@ -27,19 +27,18 @@ class BypassCaptchaException(Exception):
 
 
 class BypassCaptcha(Hook):
-    __name__ = "BypassCaptcha"
-    __type__ = "hook"
+    __name__    = "BypassCaptcha"
+    __type__    = "hook"
     __version__ = "0.04"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("force", "bool", "Force BC even if client is connected", False),
+    __config__ = [("force", "bool", "Force BC even if client is connected", False),
                   ("passkey", "password", "Passkey", "")]
 
     __description__ = """Send captchas to BypassCaptcha.com"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("Godofdream", "soilfcition@gmail.com"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("Godofdream", "soilfcition@gmail.com"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     PYLOAD_KEY = "4f771155b640970d5607f919a615bdefc67e7d32"
@@ -50,7 +49,7 @@ class BypassCaptcha(Hook):
 
 
     def setup(self):
-        self.info = {}
+        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def getCredits(self):
@@ -92,7 +91,7 @@ class BypassCaptcha(Hook):
             response = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig("passkey"),
                                                       "cv": 1 if success else 0})
         except BadHeader, e:
-            self.logError(_("Could not send response."), e
+            self.logError(_("Could not send response"), str(e))
 
 
     def newCaptchaTask(self, task):

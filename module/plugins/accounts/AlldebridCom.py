@@ -12,13 +12,13 @@ from module.plugins.Account import Account
 
 
 class AlldebridCom(Account):
-    __name__ = "AlldebridCom"
-    __type__ = "account"
+    __name__    = "AlldebridCom"
+    __type__    = "account"
     __version__ = "0.22"
 
     __description__ = """AllDebrid.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Andy Voigt", "spamsales@online.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
 
     def loadAccountInfo(self, user, req):

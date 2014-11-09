@@ -50,26 +50,25 @@ class DeathByCaptchaException(Exception):
 
 
 class DeathByCaptcha(Hook):
-    __name__ = "DeathByCaptcha"
-    __type__ = "hook"
+    __name__    = "DeathByCaptcha"
+    __type__    = "hook"
     __version__ = "0.03"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("username", "str", "Username", ""),
+    __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
                   ("force", "bool", "Force DBC even if client is connected", False)]
 
     __description__ = """Send captchas to DeathByCaptcha.com"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     API_URL = "http://api.dbcapi.me/api/"
 
 
     def setup(self):
-        self.info = {}
+        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def call_api(self, api="captcha", post=False, multipart=False):
@@ -148,7 +147,7 @@ class DeathByCaptcha(Hook):
             raise DeathByCaptchaException(response)
         ticket = response['captcha']
 
-        for _ in xrange(24):
+        for _i in xrange(24):
             sleep(5)
             response = self.call_api("captcha/%d" % ticket, False)
             if response['text'] and response['is_correct']:

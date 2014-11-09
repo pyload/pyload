@@ -6,8 +6,8 @@ from module.plugins.Hoster import Hoster
 
 
 class VeehdCom(Hoster):
-    __name__ = "VeehdCom"
-    __type__ = "hoster"
+    __name__    = "VeehdCom"
+    __type__    = "hoster"
     __version__ = "0.23"
 
     __pattern__ = r'http://veehd\.com/video/\d+_\S+'
@@ -15,12 +15,8 @@ class VeehdCom(Hoster):
                   ("replacement_char", "str", "Filename replacement character", "_")]
 
     __description__ = """Veehd.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("cat", "cat@pyload")]
-
-
-    def _debug(self, msg):
-        self.logDebug("[%s] %s" % (self.__name__, msg))
+    __license__     = "GPLv3"
+    __authors__     = [("cat", "cat@pyload")]
 
 
     def setup(self):
@@ -39,7 +35,7 @@ class VeehdCom(Hoster):
 
     def download_html(self):
         url = self.pyfile.url
-        self._debug("Requesting page: %s" % (repr(url),))
+        self.logDebug("Requesting page: %s" % url)
         self.html = self.load(url)
 
 
@@ -58,7 +54,7 @@ class VeehdCom(Hoster):
 
         m = re.search(r'<title[^>]*>([^<]+) on Veehd</title>', self.html)
         if m is None:
-            self.fail("video title not found")
+            self.error(_("Video title not found"))
 
         name = m.group(1)
 
@@ -80,6 +76,6 @@ class VeehdCom(Hoster):
         m = re.search(r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/[^"]+)"',
                           self.html)
         if m is None:
-            self.fail("embedded video url not found")
+            self.error(_("Embedded video url not found"))
 
         return m.group(1)

@@ -6,22 +6,22 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class VeohCom(SimpleHoster):
-    __name__ = "VeohCom"
-    __type__ = "hoster"
+    __name__    = "VeohCom"
+    __type__    = "hoster"
     __version__ = "0.2"
 
     __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
     __config__ = [("quality", "Low;High;Auto", "Quality", "Auto")]
 
     __description__ = """Veoh.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'<meta name="title" content="(?P<N>.*?)"'
+    NAME_PATTERN = r'<meta name="title" content="(?P<N>.*?)"'
     OFFLINE_PATTERN = r'>Sorry, we couldn\'t find the video you were looking for'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://www.veoh.com/watch/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__, r'http://www.veoh.com/watch/\g<ID>')]
 
     COOKIES = [(".veoh.com", "lassieLocale", "en")]
 
@@ -41,13 +41,12 @@ class VeohCom(SimpleHoster):
             if m:
                 self.pyfile.name += ".mp4"
                 link = m.group(1).replace("\\", "")
-                self.logDebug("Download link: " + link)
                 self.download(link)
                 return
             else:
-                self.logInfo("No %s quality video found" % q.upper())
+                self.logInfo(_("No %s quality video found") % q.upper())
         else:
-            self.fail("No video found!")
+            self.fail(_("No video found!"))
 
 
 getInfo = create_getInfo(VeohCom)

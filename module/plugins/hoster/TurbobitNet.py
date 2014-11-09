@@ -15,23 +15,23 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 
 
 class TurbobitNet(SimpleHoster):
-    __name__ = "TurbobitNet"
-    __type__ = "hoster"
-    __version__ = "0.13"
+    __name__    = "TurbobitNet"
+    __type__    = "hoster"
+    __version__ = "0.14"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
 
     __description__ = """ Turbobit.net hoster plugin """
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("prOq", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("prOq", None)]
 
 
-    FILE_NAME_PATTERN = r'id="file-title">(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    NAME_PATTERN = r'id="file-title">(?P<N>.+?)<'
+    SIZE_PATTERN = r'class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, "http://turbobit.net/\g<ID>.html")]
+    URL_REPLACEMENTS = [(__pattern__, "http://turbobit.net/\g<ID>.html")]
 
     COOKIES = [(".turbobit.net", "user_lang", "en")]
 
@@ -42,7 +42,7 @@ class TurbobitNet(SimpleHoster):
 
 
     def handleFree(self):
-        self.url = "http://turbobit.net/download/free/%s" % self.file_info['ID']
+        self.url = "http://turbobit.net/download/free/%s" % self.info['ID']
         self.html = self.load(self.url, ref=True, decode=True)
 
         rtUpdate = self.getRtUpdate()
@@ -58,7 +58,7 @@ class TurbobitNet(SimpleHoster):
 
 
     def solveCaptcha(self):
-        for _ in xrange(5):
+        for _i in xrange(5):
             m = re.search(self.LIMIT_WAIT_PATTERN, self.html)
             if m:
                 wait_time = int(m.group(1))
@@ -67,7 +67,7 @@ class TurbobitNet(SimpleHoster):
 
             action, inputs = self.parseHtmlForm("action='#'")
             if not inputs:
-                self.error("captcha form")
+                self.error(_("Captcha form not found"))
             self.logDebug(inputs)
 
             if inputs['captcha_type'] == 'recaptcha':
@@ -76,7 +76,7 @@ class TurbobitNet(SimpleHoster):
             else:
                 m = re.search(self.CAPTCHA_PATTERN, self.html)
                 if m is None:
-                    self.error('captcha')
+                    self.error(_("captcha"))
                 captcha_url = m.group(1)
                 inputs['captcha_response'] = self.decryptCaptcha(captcha_url)
 
@@ -84,13 +84,12 @@ class TurbobitNet(SimpleHoster):
             self.html = self.load(self.url, post=inputs)
 
             if '<div class="captcha-error">Incorrect, try again!<' in self.html:
-                self.logInfo("Invalid captcha")
                 self.invalidCaptcha()
             else:
                 self.correctCaptcha()
                 break
         else:
-            self.fail("Invalid captcha")
+            self.fail(_("Invalid captcha"))
 
 
     def getRtUpdate(self):
@@ -106,12 +105,11 @@ class TurbobitNet(SimpleHoster):
                                   r'zza=\2;for(var zzi=0;zzi<zza.length;zzi++){\1=zza[zzi];', rtUpdate)
                 rtUpdate = re.sub(r"for\((\w+)=", r"for(var \1=", rtUpdate)
 
-                self.logDebug("rtUpdate")
                 self.setStorage("rtUpdate", rtUpdate)
                 self.setStorage("timestamp", timestamp())
                 self.setStorage("version", self.__version__)
             else:
-                self.logError("Unable to download, wait for update...")
+                self.logError(_("Unable to download, wait for update..."))
                 self.tempOffline()
 
         return rtUpdate
@@ -124,7 +122,7 @@ class TurbobitNet(SimpleHoster):
         if m:
             url = "http://turbobit.net%s%s" % m.groups()
         else:
-            url = "http://turbobit.net/files/timeout.js?ver=%s" % "".join(random.choice('0123456789ABCDEF') for _ in xrange(32))
+            url = "http://turbobit.net/files/timeout.js?ver=%s" % "".join(random.choice('0123456789ABCDEF') for _i in xrange(32))
 
         fun = self.load(url)
 
@@ -132,7 +130,7 @@ class TurbobitNet(SimpleHoster):
 
         for b in [1, 3]:
             self.jscode = "var id = \'%s\';var b = %d;var inn = \'%s\';%sout" % (
-                          self.file_info['ID'], b, quote(fun), rtUpdate)
+                          self.info['ID'], b, quote(fun), rtUpdate)
 
             try:
                 out = self.js.eval(self.jscode)
@@ -167,7 +165,7 @@ class TurbobitNet(SimpleHoster):
     def downloadFile(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("Download link not found")
+            self.error(_("Download link not found"))
         self.url = "http://turbobit.net" + m.group('url')
         self.download(self.url)
 

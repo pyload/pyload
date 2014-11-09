@@ -8,16 +8,16 @@ from module.plugins.Hoster import Hoster
 
 
 class YourfilesTo(Hoster):
-    __name__ = "YourfilesTo"
-    __type__ = "hoster"
+    __name__    = "YourfilesTo"
+    __type__    = "hoster"
     __version__ = "0.21"
 
     __pattern__ = r'(http://)?(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
 
     __description__ = """Youfiles.to hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.de"),
-                   ("skydancer", "skydancer@hasnomail.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de"),
+                       ("skydancer", "skydancer@hasnomail.de")]
 
 
     def process(self, pyfile):
@@ -34,7 +34,7 @@ class YourfilesTo(Hoster):
 
         wait_time = self.get_waiting_time()
         self.setWait(wait_time)
-        self.logDebug("%s: Waiting %d seconds." % (self.__name__, wait_time))
+        self.logDebug("Waiting %d seconds." % wait_time)
         self.wait()
 
 
@@ -66,7 +66,7 @@ class YourfilesTo(Hoster):
             url = unquote(url.replace("http://http:/http://", "http://").replace("dumdidum", ""))
             return url
         else:
-            self.fail("absolute filepath could not be found. offline? ")
+            self.error(_("Absolute filepath not found"))
 
 
     def get_file_name(self):

@@ -9,20 +9,20 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class Keep2shareCC(SimpleHoster):
-    __name__ = "Keep2shareCC"
-    __type__ = "hoster"
+    __name__    = "Keep2shareCC"
+    __type__    = "hoster"
     __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
     __description__ = """Keep2share.cc hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
-    FILE_SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
+    NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
+    SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
     OFFLINE_PATTERN = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
 
     LINK_PATTERN = r'To download this file with slow speed, use <a href="([^"]+)">this link</a>'
@@ -38,7 +38,7 @@ class Keep2shareCC(SimpleHoster):
         self.fid = re.search(r'<input type="hidden" name="slow_id" value="([^"]+)">', self.html).group(1)
         self.html = self.load(self.pyfile.url, post={'yt0': '', 'slow_id': self.fid})
 
-        m = re.search(r"function download\(\){.*window\.location\.href = '([^']+)';", self.html, re.DOTALL)
+        m = re.search(r"function download\(\){.*window\.location\.href = '([^']+)';", self.html, re.S)
         if m:  # Direct mode
             self.startDownload(m.group(1))
         else:
@@ -54,26 +54,26 @@ class Keep2shareCC(SimpleHoster):
                 # string to time convert courtesy of https://stackoverflow.com/questions/10663720
                 ftr = [3600, 60, 1]
                 wait_time = sum([a * b for a, b in zip(ftr, map(int, m.group(1).split(':')))])
-                self.wait(wait_time, reconnect=True)
+                self.wait(wait_time, True)
                 self.retry()
 
             m = re.search(self.MULTIDL_ERROR, self.html)
             if m:
                 # if someone is already downloading on our line, wait 30min and retry
                 self.logDebug("Already downloading, waiting for 30 minutes")
-                self.wait(30 * 60, reconnect=True)
+                self.wait(30 * 60, True)
                 self.retry()
 
             m = re.search(self.LINK_PATTERN, self.html)
             if m is None:
-                self.error("Unable to detect direct link")
+                self.error(_("LINK_PATTERN not found"))
             self.startDownload(m.group(1))
 
 
     def handleCaptcha(self):
         recaptcha = ReCaptcha(self)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             post_data = {'free': 1,
                          'freeDownloadRequest': 1,
                          'uniqueId': self.fid,
@@ -94,10 +94,9 @@ class Keep2shareCC(SimpleHoster):
                 self.correctCaptcha()
                 break
             else:
-                self.logInfo("Wrong captcha")
                 self.invalidCaptcha()
         else:
-            self.fail("All captcha attempts failed")
+            self.fail(_("All captcha attempts failed"))
 
 
     def startDownload(self, url):

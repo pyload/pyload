@@ -6,12 +6,12 @@ from random import random
 
 
 class CaptchaService:
-    __name__ = "CaptchaService"
+    __name__    = "CaptchaService"
     __version__ = "0.14"
 
     __description__ = """Base captcha service plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN = None
@@ -28,7 +28,7 @@ class CaptchaService:
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = "%s html not found" % self.__name__
+                errmsg = _("%s html not found") % self.__name__
                 self.plugin.fail(errmsg)  #@TODO: replace all plugin.fail(errmsg) with plugin.error(errmsg) in 0.4.10
                 raise TypeError(errmsg)
 
@@ -51,12 +51,12 @@ class CaptchaService:
 
 
 class ReCaptcha(CaptchaService):
-    __name__ = "ReCaptcha"
+    __name__    = "ReCaptcha"
     __version__ = "0.07"
 
     __description__ = """ReCaptcha captcha service plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN = r'recaptcha(/api|\.net)/(challenge|noscript)\?k=(?P<KEY>[\w-]+)'
@@ -68,7 +68,7 @@ class ReCaptcha(CaptchaService):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = "ReCaptcha not found"
+                errmsg = _("ReCaptcha html not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
@@ -87,11 +87,11 @@ class ReCaptcha(CaptchaService):
             if self.detect_key():
                 key = self.key
             else:
-                errmsg = "ReCaptcha key not found"
+                errmsg = _("ReCaptcha key not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key}, cookies=True)
+        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key})
 
         try:
             challenge = re.search("challenge : '(.+?)',", js).group(1)
@@ -110,12 +110,12 @@ class ReCaptcha(CaptchaService):
 
 
 class AdsCaptcha(CaptchaService):
-    __name__ = "AdsCaptcha"
+    __name__    = "AdsCaptcha"
     __version__ = "0.04"
 
     __description__ = """AdsCaptcha captcha service plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     ID_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*CaptchaId=(?P<ID>\d+)'
@@ -127,7 +127,7 @@ class AdsCaptcha(CaptchaService):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = "AdsCaptcha html not found"
+                errmsg = _("AdsCaptcha html not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
@@ -147,13 +147,13 @@ class AdsCaptcha(CaptchaService):
             if self.detect_key():
                 key = self.key
             else:
-                errmsg = "AdsCaptcha key not found"
+                errmsg = _("AdsCaptcha key not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
         CaptchaId, PublicKey = key
 
-        js = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx", get={'CaptchaId': CaptchaId, 'PublicKey': PublicKey}, cookies=True)
+        js = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx", get={'CaptchaId': CaptchaId, 'PublicKey': PublicKey})
 
         try:
             challenge = re.search("challenge: '(.+?)',", js).group(1)
@@ -172,12 +172,12 @@ class AdsCaptcha(CaptchaService):
 
 
 class SolveMedia(CaptchaService):
-    __name__ = "SolveMedia"
+    __name__    = "SolveMedia"
     __version__ = "0.05"
 
     __description__ = """SolveMedia captcha service plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN = r'api\.solvemedia\.com/papi/challenge\.(no)?script\?k=(?P<KEY>.+?)["\']'
@@ -188,11 +188,11 @@ class SolveMedia(CaptchaService):
             if self.detect_key():
                 key = self.key
             else:
-                errmsg = "SolveMedia key not found"
+                errmsg = _("SolveMedia key not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript", get={'k': key}, cookies=True)
+        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript", get={'k': key})
         try:
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
                                   html).group(1)

@@ -2,27 +2,28 @@
 
 import re
 
-from traceback import print_exc
+from urlparse import urlparse
 
-from module.network.RequestFactory import getURL
 from module.plugins.Crypter import Crypter
 from module.plugins.Plugin import Fail
-from module.plugins.internal.SimpleHoster import replace_patterns, set_cookies
+from module.plugins.internal.SimpleHoster import _error, _wait, parseFileInfo, replace_patterns, set_cookies
 from module.utils import fixup, html_unescape
 
 
 class SimpleCrypter(Crypter):
-    __name__ = "SimpleCrypter"
-    __type__ = "crypter"
-    __version__ = "0.19"
+    __name__    = "SimpleCrypter"
+    __type__    = "crypter"
+    __version__ = "0.28"
 
-    __pattern__ = None
+    __pattern__ = r'^unmatchable$'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Simple decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     """
@@ -31,8 +32,8 @@ class SimpleCrypter(Crypter):
       LINK_PATTERN: group(1) must be a download link or a regex to catch more links
         example: LINK_PATTERN = r'<div class="link"><a href="(.+?)"'
 
-      TITLE_PATTERN: (optional) group(1) should be the folder name or the webpage title
-        example: TITLE_PATTERN = r'<title>Files of: ([^<]+) folder</title>'
+      NAME_PATTERN: (optional) folder name or webpage title
+        example: NAME_PATTERN = r'<title>Files of: (?P<N>[^<]+) folder</title>'
 
       OFFLINE_PATTERN: (optional) Checks if the file is yet available online
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
@@ -58,11 +59,11 @@ class SimpleCrypter(Crypter):
 
     LINK_PATTERN = None
 
-    TITLE_REPLACEMENTS = [("&#?\w+;", fixup)]
-    URL_REPLACEMENTS = []
+    NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
+    URL_REPLACEMENTS  = []
 
     TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
-    COOKIES = True  #: or False or list of tuples [(domain, name, value)]
+    COOKIES       = True  #: or False or list of tuples [(domain, name, value)]
 
     LOGIN_ACCOUNT = False
     LOGIN_PREMIUM = False
@@ -70,6 +71,8 @@ class SimpleCrypter(Crypter):
 
     #@TODO: remove in 0.4.10
     def init(self):
+        self.info = {}
+
         account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
         account = self.core.accountManager.getAccountPlugin(account_name)
 
@@ -83,36 +86,61 @@ class SimpleCrypter(Crypter):
 
     def prepare(self):
         if self.LOGIN_ACCOUNT and not self.account:
-            self.fail('Required account not found!')
+            self.fail(_("Required account not found"))
 
         if self.LOGIN_PREMIUM and not self.premium:
-            self.fail('Required premium account not found!')
+            self.fail(_("Required premium account not found"))
 
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
 
-        url = self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
-        self.html = getURL(url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
+        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
+
+        if self.html is None:
+            self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
+
+        if isinstance(self.TEXT_ENCODING, basestring):
+            self.html = unicode(self.html, self.TEXT_ENCODING)
 
 
     def decrypt(self, pyfile):
         self.prepare()
 
-        self.checkOnline()
+        if self.html is None:
+            self.fail(_("No html retrieved"))
 
-        package_name, folder_name = self.getPackageNameAndFolder()
+        if not self.info:
+            self.getFileInfo()
 
-        self.package_links = self.getLinks()
+        self.links = self.getLinks()
 
         if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
             self.handleMultiPages()
 
-        self.logDebug("Package has %d links" % len(self.package_links))
+        self.logDebug("Package has %d links" % len(self.links))
 
-        if self.package_links:
-            self.packages = [(package_name, self.package_links, folder_name)]
+        if self.links:
+            self.packages = [(self.info['name'], self.links, self.info['folder'])]
+
+
+    def getFileInfo(self):
+        name, size, status, url = parseFileInfo(self)
+
+        if name and name != url:
+            self.pyfile.name = name
         else:
-            self.fail('Could not extract any links')
+            self.pyfile.name = self.info['name'] = html_unescape(urlparse(url).path.split("/")[-1])
+
+        if status is 1:
+            self.offline()
+
+        elif status is 6:
+            self.tempOffline()
+
+        self.info['folder'] = self.pyfile.name
+
+        self.logDebug("FILE NAME: %s" % self.pyfile.name)
+        return self.info
 
 
     def getLinks(self):
@@ -121,35 +149,6 @@ class SimpleCrypter(Crypter):
         You should override this only if it's impossible to extract links using only the LINK_PATTERN.
         """
         return re.findall(self.LINK_PATTERN, self.html)
-
-
-    def checkOnline(self):
-        if hasattr(self, "OFFLINE_PATTERN") and re.search(self.OFFLINE_PATTERN, self.html):
-            self.offline()
-        elif hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, self.html):
-            self.tempOffline()
-
-
-    def getPackageNameAndFolder(self):
-        if isinstance(self.TEXT_ENCODING, basestring):
-            self.html = unicode(self.html, self.TEXT_ENCODING)
-
-        if hasattr(self, 'TITLE_PATTERN'):
-            try:
-                m = re.search(self.TITLE_PATTERN, self.html)
-                name = replace_patterns(m.group(1).strip(), self.TITLE_REPLACEMENTS)
-                folder = html_unescape(name)
-            except:
-                pass
-            else:
-                self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
-                return name, folder
-
-        name = self.pyfile.package().name
-        folder = self.pyfile.package().folder
-        self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
-
-        return name, folder
 
 
     def handleMultiPages(self):
@@ -161,11 +160,13 @@ class SimpleCrypter(Crypter):
 
         for p in xrange(2, pages + 1):
             self.html = self.loadPage(p)
-            self.package_links += self.getLinks()
+            self.links += self.getLinks()
 
 
-    #@TODO: remove in 0.4.10
-    def error(self, reason=None, type="parse"):
-        raise Fail("%s error%s | Plugin out of date" % (type.capitalize(), ': ' + str(reason) if reason else ""))
-        if self.core.debug:
-            print_exc()
+    #@TODO: Remove in 0.4.10
+    def wait(self, seconds=0, reconnect=None):
+        return _wait(self, seconds, reconnect)
+
+
+    def error(self, reason="", type="parse"):
+        return _error(self, reason, type)

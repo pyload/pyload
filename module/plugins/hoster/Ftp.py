@@ -10,17 +10,17 @@ from module.plugins.Hoster import Hoster
 
 
 class Ftp(Hoster):
-    __name__ = "Ftp"
-    __type__ = "hoster"
+    __name__    = "Ftp"
+    __type__    = "hoster"
     __version__ = "0.43"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 
     __description__ = """Download from ftp directory"""
-    __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.com"),
-                   ("mkaay", "mkaay@mkaay.de"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.com"),
+                       ("mkaay", "mkaay@mkaay.de"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def setup(self):
@@ -55,7 +55,7 @@ class Ftp(Hoster):
         try:
             response = self.load(pyfile.url)
         except pycurl.error, e:
-            self.fail("Error %d: %s" % e.args)
+            self.fail(_("Error %d: %s") % e.args)
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.logDebug(self.req.http.header)
@@ -76,4 +76,4 @@ class Ftp(Hoster):
                 self.logDebug("LINKS", links)
                 self.core.api.addPackage(pkgname, links)
             else:
-                self.fail("Unexpected server response")
+                self.fail(_("Unexpected server response"))

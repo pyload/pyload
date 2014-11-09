@@ -2,35 +2,35 @@
 
 import re
 
-from module.network.RequestFactory import getRequest
+from module.network.RequestFactory import getURL
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 def getInfo(urls):
-    h = getRequest()
     for url in urls:
-        h.load(url)
         fid = re.search(WebshareCz.__pattern__, url).group('ID')
-        api_data = h.load('https://webshare.cz/api/file_info/', post={'ident': fid})
+        api_data = getURL("https://webshare.cz/api/file_info/", post={'ident': fid})
+
         if 'File not found' in api_data:
             file_info = (url, 0, 1, url)
         else:
             name = re.search('<name>(.+)</name>', api_data).group(1)
             size = re.search('<size>(.+)</size>', api_data).group(1)
             file_info = (name, size, 2, url)
+
         yield file_info
 
 
 class WebshareCz(SimpleHoster):
-    __name__ = "WebshareCz"
-    __type__ = "hoster"
+    __name__    = "WebshareCz"
+    __type__    = "hoster"
     __version__ = "0.14"
 
     __pattern__ = r'https?://(?:www\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
 
     __description__ = """WebShare.cz hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def handleFree(self):
@@ -38,7 +38,7 @@ class WebshareCz(SimpleHoster):
         self.logDebug("API data: " + api_data)
         m = re.search('<link>(.+)</link>', api_data)
         if m is None:
-            self.error('Unable to detect direct link')
+            self.error(_("Unable to detect direct link"))
         direct = m.group(1)
         self.logDebug("Direct link: " + direct)
         self.download(direct, disposition=True)

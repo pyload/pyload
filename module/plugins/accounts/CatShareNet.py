@@ -8,13 +8,13 @@ from module.plugins.Account import Account
 
 
 class CatShareNet(Account):
-    __name__ = "CatShareNet"
-    __type__ = "account"
+    __name__    = "CatShareNet"
+    __type__    = "account"
     __version__ = "0.01"
 
     __description__ = """CatShareNet account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("prOq", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("prOq", None)]
 
 
     PREMIUM_PATTERN = r'class="nav-collapse collapse pull-right">[\s\w<>=-."/:]*\sz.</a></li>\s*<li><a href="/premium">.*\s*<span style="color: red">(.*?)</span>[\s\w<>/]*href="/logout"'

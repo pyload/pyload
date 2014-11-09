@@ -4,15 +4,15 @@ from module.plugins.Hoster import Hoster
 
 
 class FreeWayMe(Hoster):
-    __name__ = "FreeWayMe"
-    __type__ = "hoster"
+    __name__    = "FreeWayMe"
+    __type__    = "hoster"
     __version__ = "0.11"
 
     __pattern__ = r'https://(?:www\.)?free-way\.me/.*'
 
     __description__ = """FreeWayMe hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Nicolas Giese", "james@free-way.me")]
+    __license__     = "GPLv3"
+    __authors__     = [("Nicolas Giese", "james@free-way.me")]
 
 
     def setup(self):
@@ -24,7 +24,7 @@ class FreeWayMe(Hoster):
     def process(self, pyfile):
         if not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "FreeWayMe")
-            self.fail("No FreeWay account provided")
+            self.fail(_("No FreeWay account provided"))
 
         self.logDebug("Old URL: %s" % pyfile.url)
 

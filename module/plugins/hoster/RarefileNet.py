@@ -2,26 +2,26 @@
 
 import re
 
-from module.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 from module.utils import html_unescape
 
 
-class RarefileNet(XFSPHoster):
-    __name__ = "RarefileNet"
-    __type__ = "hoster"
-    __version__ = "0.05"
+class RarefileNet(XFSHoster):
+    __name__    = "RarefileNet"
+    __type__    = "hoster"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'
 
     __description__ = """Rarefile.net hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_NAME = "rarefile.net"
+    HOSTER_DOMAIN = "rarefile.net"
 
-    FILE_NAME_PATTERN = r'<td><font color="red">(?P<N>.*?)</font></td>'
-    FILE_SIZE_PATTERN = r'<td>Size : (?P<S>.+?)&nbsp;'
+    NAME_PATTERN = r'<td><font color="red">(?P<N>.*?)</font></td>'
+    SIZE_PATTERN = r'<td>Size : (?P<S>.+?)&nbsp;'
 
     LINK_PATTERN = r'<a href="(?P<link>[^"]+)">(?P=link)</a>'
 

@@ -18,7 +18,7 @@ def computeChecksum(local_file, algorithm):
         h = getattr(hashlib, algorithm)()
 
         with open(local_file, 'rb') as f:
-            for chunk in iter(lambda: f.read(128 * h.block_size), b''):
+            for chunk in iter(lambda: f.read(128 * h.block_size), ''):
                 h.update(chunk)
 
         return h.hexdigest()
@@ -28,7 +28,7 @@ def computeChecksum(local_file, algorithm):
         last = 0
 
         with open(local_file, 'rb') as f:
-            for chunk in iter(lambda: f.read(8192), b''):
+            for chunk in iter(lambda: f.read(8192), ''):
                 last = hf(chunk, last)
 
         return "%x" % last
@@ -38,22 +38,21 @@ def computeChecksum(local_file, algorithm):
 
 
 class Checksum(Hook):
-    __name__ = "Checksum"
-    __type__ = "hook"
-    __version__ = "0.13"
+    __name__    = "Checksum"
+    __type__    = "hook"
+    __version__ = "0.14"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
+    __config__ = [("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
                   ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
                   ("max_tries", "int", "Number of retries", 2),
                   ("retry_action", "fail;nothing", "What to do if all retries fail?", "fail"),
                   ("wait_time", "int", "Time to wait before each retry (seconds)", 1)]
 
     __description__ = """Verify downloaded file size and checksum"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     methods = {'sfv': 'crc32', 'crc': 'crc32', 'hash': 'md5'}
@@ -120,7 +119,7 @@ class Checksum(Hook):
                     checksum = computeChecksum(local_file, key.replace("-", "").lower())
                     if checksum:
                         if checksum == data[key].lower():
-                            self.logInfo(_('File integrity of "%s" verified by %s checksum (%s).') %
+                            self.logInfo(_('File integrity of "%s" verified by %s checksum (%s)') %
                                         (pyfile.name, key.upper(), checksum))
                             break
                         else:
@@ -130,7 +129,7 @@ class Checksum(Hook):
                     else:
                         self.logWarning(_("Unsupported hashing algorithm"), key.upper())
             else:
-                self.logWarning(_("Unable to validate checksum for file"), pyfile.name)
+                self.logWarning(_("Unable to validate checksum for file: ") + pyfile.name)
 
 
     def checkFailed(self, pyfile, local_file, msg):
@@ -141,7 +140,7 @@ class Checksum(Hook):
             if pyfile.plugin.retries < max_tries:
                 if local_file:
                     remove(local_file)
-                pyfile.plugin.retry(max_tries=max_tries, wait_time=self.getConfig("wait_time"), reason=msg)
+                pyfile.plugin.retry(max_tries, self.getConfig("wait_time"), msg)
             elif retry_action == "nothing":
                 return
         elif check_action == "nothing":
@@ -174,7 +173,7 @@ class Checksum(Hook):
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = computeChecksum(local_file, algorithm)
                 if checksum == data['hash']:
-                    self.logInfo(_('File integrity of "%s" verified by %s checksum (%s).') %
+                    self.logInfo(_('File integrity of "%s" verified by %s checksum (%s)') %
                                 (data['name'], algorithm, checksum))
                 else:
                     self.logWarning(_("%s checksum for file %s does not match (%s != %s)") %

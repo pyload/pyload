@@ -9,15 +9,17 @@ from module.plugins.Crypter import Crypter
 
 
 class ShareLinksBiz(Crypter):
-    __name__ = "ShareLinksBiz"
-    __type__ = "crypter"
+    __name__    = "ShareLinksBiz"
+    __type__    = "crypter"
     __version__ = "1.14"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Share-Links.biz decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
     def setup(self):
@@ -121,11 +123,8 @@ class ShareLinksBiz(Crypter):
         # Resolve captcha
         href = self._resolveCoords(coords, captchaMap)
         if href is None:
-            self.logDebug("Invalid captcha resolving, retrying")
             self.invalidCaptcha()
-            self.setWait(5, False)
-            self.wait()
-            self.retry()
+            self.retry(wait_time=5)
         url = self.baseUrl + href
         self.html = self.load(url, decode=True)
 
@@ -141,7 +140,7 @@ class ShareLinksBiz(Crypter):
 
     def _resolveCoords(self, coords, captchaMap):
         x, y = coords
-        for rect, href in captchaMap.items():
+        for rect, href in captchaMap.iteritems():
             x1, y1, x2, y2 = rect
             if (x >= x1 and x <= x2) and (y >= y1 and y <= y2):
                 return href
@@ -150,15 +149,12 @@ class ShareLinksBiz(Crypter):
     def handleErrors(self):
         if "The inserted password was wrong" in self.html:
             self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
-            self.fail("Incorrect password, please set right password on 'Edit package' form and retry")
+            self.fail(_("Incorrect password, please set right password on 'Edit package' form and retry"))
 
         if self.captcha:
             if "Your choice was wrong" in self.html:
-                self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
-                self.setWait(5)
-                self.wait()
-                self.retry()
+                self.retry(wait_time=5)
             else:
                 self.correctCaptcha()
 
@@ -168,7 +164,7 @@ class ShareLinksBiz(Crypter):
 
         # Extract from web package header
         title_re = r'<h2><img.*?/>(.*)</h2>'
-        m = re.search(title_re, self.html, re.DOTALL)
+        m = re.search(title_re, self.html, re.S)
         if m is not None:
             title = m.group(1).strip()
             if 'unnamed' not in title:
@@ -202,7 +198,7 @@ class ShareLinksBiz(Crypter):
                 fwLink = self.baseUrl + "/get/frm/" + code
                 response = self.load(fwLink)
                 jscode = re.search(r'<script language="javascript">\s*eval\((.*)\)\s*</script>', response,
-                                   re.DOTALL).group(1)
+                                   re.S).group(1)
                 jscode = self.js.eval("f = %s" % jscode)
                 jslauncher = "window=''; parent={frames:{Main:{location:{href:''}}},location:''}; %s; parent.frames.Main.location.href"
                 dlLink = self.js.eval(jslauncher % jscode)
@@ -235,7 +231,7 @@ class ShareLinksBiz(Crypter):
                 (crypted, jk) = self._getCipherParams()
                 package_links.extend(self._getLinks(crypted, jk))
             except:
-                self.fail("Unable to decrypt CNL2 links")
+                self.fail(_("Unable to decrypt CNL2 links"))
         return package_links
 
 

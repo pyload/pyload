@@ -9,17 +9,17 @@ from module.utils import fs_encode
 
 
 class PremiumTo(Hoster):
-    __name__ = "PremiumTo"
-    __type__ = "hoster"
+    __name__    = "PremiumTo"
+    __type__    = "hoster"
     __version__ = "0.10"
 
     __pattern__ = r'https?://(?:www\.)?premium\.to/.*'
 
     __description__ = """Premium.to hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     def setup(self):
@@ -30,7 +30,7 @@ class PremiumTo(Hoster):
     def process(self, pyfile):
         if not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "premium.to")
-            self.fail("No premium.to account provided")
+            self.fail(_("No premium.to account provided"))
 
         self.logDebug("Old URL: %s" % pyfile.url)
 
@@ -54,15 +54,14 @@ class PremiumTo(Hoster):
             lastDownload = fs_encode(self.lastDownload)
 
             if exists(lastDownload):
-                f = open(lastDownload, "rb")
-                err = f.read(256).strip()
-                f.close()
+                with open(lastDownload, "rb") as f:
+                    err = f.read(256).strip()
                 remove(lastDownload)
             else:
-                err = 'File does not exist'
+                err = _('File does not exist')
 
         trb = self.getTraffic()
-        self.logInfo("Filesize: %d, Traffic used %d, traffic left %d" % (pyfile.size, tra - trb, trb))
+        self.logInfo(_("Filesize: %d, Traffic used %d, traffic left %d") % (pyfile.size, tra - trb, trb))
 
         if err:
             self.fail(err)

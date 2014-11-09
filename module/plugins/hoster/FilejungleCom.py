@@ -5,15 +5,15 @@ from module.plugins.Plugin import chunks
 
 
 class FilejungleCom(FileserveCom):
-    __name__ = "FilejungleCom"
-    __type__ = "hoster"
+    __name__    = "FilejungleCom"
+    __type__    = "hoster"
     __version__ = "0.51"
 
     __pattern__ = r'http://(?:www\.)?filejungle\.com/f/(?P<id>[^/]+).*'
 
     __description__ = """Filejungle.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     URLS = ["http://www.filejungle.com/f/", "http://www.filejungle.com/check_links.php",

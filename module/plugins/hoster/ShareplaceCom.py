@@ -8,15 +8,15 @@ from module.plugins.Hoster import Hoster
 
 
 class ShareplaceCom(Hoster):
-    __name__ = "ShareplaceCom"
-    __type__ = "hoster"
+    __name__    = "ShareplaceCom"
+    __type__    = "hoster"
     __version__ = "0.11"
 
     __pattern__ = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?\w+'
 
     __description__ = """Shareplace.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("ACCakut", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("ACCakut", None)]
 
 
     def process(self, pyfile):
@@ -33,7 +33,7 @@ class ShareplaceCom(Hoster):
 
         wait_time = self.get_waiting_time()
         self.setWait(wait_time)
-        self.logDebug("%s: Waiting %d seconds." % (self.__name__, wait_time))
+        self.logDebug("Waiting %d seconds." % wait_time)
         self.wait()
 
 
@@ -68,7 +68,7 @@ class ShareplaceCom(Hoster):
             self.logDebug("URL: %s" % url)
             return url
         else:
-            self.fail("absolute filepath could not be found. offline? ")
+            self.error(_("Absolute filepath not found"))
 
 
     def get_file_name(self):

@@ -37,26 +37,25 @@ class CaptchaBrotherhoodException(Exception):
 
 
 class CaptchaBrotherhood(Hook):
-    __name__ = "CaptchaBrotherhood"
-    __type__ = "hook"
+    __name__    = "CaptchaBrotherhood"
+    __type__    = "hook"
     __version__ = "0.05"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("username", "str", "Username", ""),
+    __config__ = [("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Password", "")]
 
     __description__ = """Send captchas to CaptchaBrotherhood.com"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     API_URL = "http://www.captchabrotherhood.com/"
 
 
     def setup(self):
-        self.info = {}
+        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def getCredits(self):
@@ -113,7 +112,7 @@ class CaptchaBrotherhood(Hook):
 
         ticket = response[3:]
 
-        for _ in xrange(15):
+        for _i in xrange(15):
             sleep(5)
             response = self.get_api("askCaptchaResult", ticket)
             if response.startswith("OK-answered"):

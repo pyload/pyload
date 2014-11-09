@@ -31,19 +31,18 @@ class ImageTyperzException(Exception):
 
 
 class ImageTyperz(Hook):
-    __name__ = "ImageTyperz"
-    __type__ = "hook"
+    __name__    = "ImageTyperz"
+    __type__    = "hook"
     __version__ = "0.04"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("username", "str", "Username", ""),
+    __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
                   ("force", "bool", "Force IT even if client is connected", False)]
 
     __description__ = """Send captchas to ImageTyperz.com"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     SUBMIT_URL = "http://captchatypers.com/Forms/UploadFileAndGetTextNEW.ashx"
@@ -52,7 +51,7 @@ class ImageTyperz(Hook):
 
 
     def setup(self):
-        self.info = {}
+        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def getCredits(self):

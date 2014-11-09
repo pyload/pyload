@@ -11,16 +11,18 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class NCryptIn(Crypter):
-    __name__ = "NCryptIn"
-    __type__ = "crypter"
+    __name__    = "NCryptIn"
+    __type__    = "crypter"
     __version__ = "1.33"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<type>folder|link|frame)-([^/\?]+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """NCrypt.in decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     JK_KEY = "jk"
@@ -73,9 +75,8 @@ class NCryptIn(Crypter):
             package_links = set(package_links)
 
         # Pack and return links
-        if not package_links:
-            self.fail('Could not extract any links')
-        self.packages = [(package_name, package_links, folder_name)]
+        if package_links:
+            self.packages = [(package_name, package_links, folder_name)]
 
 
     def isSingleLink(self):
@@ -94,7 +95,7 @@ class NCryptIn(Crypter):
                     r'<table class="global">(.*?)</table>',
                     r'<iframe\s+style="display:none(.*?)</iframe>')
         for pattern in patterns:
-            rexpr = re.compile(pattern, re.DOTALL)
+            rexpr = re.compile(pattern, re.S)
             content = re.sub(rexpr, "", content)
         return content
 
@@ -107,7 +108,7 @@ class NCryptIn(Crypter):
 
 
     def isProtected(self):
-        form = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.DOTALL)
+        form = re.search(r'<form.*?name.*?protected.*?>(.*?)</form>', self.cleanedHtml, re.S)
         if form is not None:
             content = form.group(1)
             for keyword in ("password", "captcha"):
@@ -133,7 +134,7 @@ class NCryptIn(Crypter):
     def unlockProtection(self):
         postData = {}
 
-        form = re.search(r'<form name="protected"(.*?)</form>', self.cleanedHtml, re.DOTALL).group(1)
+        form = re.search(r'<form name="protected"(.*?)</form>', self.cleanedHtml, re.S).group(1)
 
         # Submit package password
         if "password" in form:
@@ -177,11 +178,10 @@ class NCryptIn(Crypter):
         if self.protection_type == "password":
             if "This password is invalid!" in self.cleanedHtml:
                 self.logDebug("Incorrect password, please set right password on 'Edit package' form and retry")
-                self.fail("Incorrect password, please set right password on 'Edit package' form and retry")
+                self.fail(_("Incorrect password, please set right password on 'Edit package' form and retry"))
 
         if self.protection_type == "captcha":
             if "The securitycheck was wrong!" in self.cleanedHtml:
-                self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
                 self.retry()
             else:
@@ -205,7 +205,7 @@ class NCryptIn(Crypter):
         elif link_source_type == "web":
             return self.handleWebLinks()
         else:
-            self.fail('unknown source type "%s" (this is probably a bug)' % link_source_type)
+            self.error('Unknown source type "%s" (this is probably a bug)' % link_source_type)
 
 
     def handleSingleLink(self):
@@ -230,7 +230,7 @@ class NCryptIn(Crypter):
                 for (crypted, jk) in zip(vcrypted, vjk):
                     package_links.extend(self._getLinks(crypted, jk))
             except:
-                self.fail("Unable to decrypt CNL2 links")
+                self.fail(_("Unable to decrypt CNL2 links"))
 
         return package_links
 

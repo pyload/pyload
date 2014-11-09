@@ -8,20 +8,20 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class IfileIt(SimpleHoster):
-    __name__ = "IfileIt"
-    __type__ = "hoster"
+    __name__    = "IfileIt"
+    __type__    = "hoster"
     __version__ = "0.28"
 
     __pattern__ = r'^unmatchable$'
 
     __description__ = """Ifile.it"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     LINK_PATTERN = r'</span> If it doesn\'t, <a target="_blank" href="([^"]+)">'
     RECAPTCHA_PATTERN = r'var __recaptcha_public\s*=\s*\'(.+?)\''
-    FILE_INFO_PATTERN = r'<span style="cursor: default;[^>]*>\s*(?P<N>.*?)\s*&nbsp;\s*<strong>\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)\s*</strong>\s*</span>'
+    INFO_PATTERN = r'<span style="cursor: default;[^>]*>\s*(?P<N>.*?)\s*&nbsp;\s*<strong>\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)\s*</strong>\s*</span>'
     OFFLINE_PATTERN = r'<span style="cursor: default;[^>]*>\s*&nbsp;\s*<strong>\s*</strong>\s*</span>'
     TEMP_OFFLINE_PATTERN = r'<span class="msg_red">Downloading of this file is temporarily disabled</span>'
 
@@ -42,7 +42,7 @@ class IfileIt(SimpleHoster):
             recaptcha = ReCaptcha(self)
             post_data['ctype'] = "recaptcha"
 
-            for _ in xrange(5):
+            for _i in xrange(5):
                 post_data['recaptcha_challenge'], post_data['recaptcha_response'] = recaptcha.challenge(captcha_key)
                 json_response = json_loads(self.load(json_url, post=post_data))
                 self.logDebug(json_response)
@@ -53,10 +53,10 @@ class IfileIt(SimpleHoster):
                     self.correctCaptcha()
                     break
             else:
-                self.fail("Incorrect captcha")
+                self.fail(_("Incorrect captcha"))
 
         if not "ticket_url" in json_response:
-            self.error("Download URL")
+            self.error(_("No download URL"))
 
         self.download(json_response['ticket_url'])
 

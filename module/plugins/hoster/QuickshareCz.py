@@ -8,19 +8,19 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class QuickshareCz(SimpleHoster):
-    __name__ = "QuickshareCz"
-    __type__ = "hoster"
-    __version__ = "0.54"
+    __name__    = "QuickshareCz"
+    __type__    = "hoster"
+    __version__ = "0.55"
 
     __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.*'
 
     __description__ = """Quickshare.cz hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>[^<]+)</td>'
-    FILE_SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</td>'
+    NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>[^<]+)</td>'
+    SIZE_PATTERN = r'<th>Velikost:</th>\s*<td>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</td>'
     OFFLINE_PATTERN = r'<script type="text/javascript">location\.href=\'/chyba\';</script>'
 
 
@@ -37,11 +37,11 @@ class QuickshareCz(SimpleHoster):
         if self.premium:
             if 'UU_prihlasen' in self.jsvars:
                 if self.jsvars['UU_prihlasen'] == '0':
-                    self.logWarning("User not logged in")
+                    self.logWarning(_("User not logged in"))
                     self.relogin(self.user)
                     self.retry()
                 elif float(self.jsvars['UU_kredit']) < float(self.jsvars['kredit_odecet']):
-                    self.logWarning("Not enough credit left")
+                    self.logWarning(_("Not enough credit left"))
                     self.premium = False
 
         if self.premium:
@@ -51,7 +51,7 @@ class QuickshareCz(SimpleHoster):
 
         check = self.checkDownload({"err": re.compile(r"\AChyba!")}, max_size=100)
         if check == "err":
-            self.fail("File not m or plugin defect")
+            self.fail(_("File not m or plugin defect"))
 
 
     def handleFree(self):
@@ -65,10 +65,10 @@ class QuickshareCz(SimpleHoster):
         self.header = self.req.http.header
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
-        m = re.search("Location\s*:\s*(.*)", self.header, re.I)
+        m = re.search(r'Location\s*:\s*(.+)', self.header, re.I)
         if m is None:
-            self.fail('File not found')
-        download_url = m.group(1)
+            self.fail(_("File not found"))
+        download_url = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
         self.logDebug("FREE URL2:" + download_url)
 
         # check errors
@@ -79,7 +79,7 @@ class QuickshareCz(SimpleHoster):
             elif m.group(1) == '2':
                 self.retry(60, 60, "No free slots available")
             else:
-                self.fail('Error %d' % m.group(1))
+                self.fail(_("Error %d") % m.group(1))
 
         # download file
         self.download(download_url)

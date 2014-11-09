@@ -4,20 +4,22 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class FilerNetFolder(SimpleCrypter):
-    __name__ = "FilerNetFolder"
-    __type__ = "crypter"
-    __version__ = "0.4"
+    __name__    = "FilerNetFolder"
+    __type__    = "crypter"
+    __version__ = "0.41"
 
     __pattern__ = r'https?://filer\.net/folder/\w{16}'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Filer.net decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("nath_schwarz", "nathan.notwhite@gmail.com"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("nath_schwarz", "nathan.notwhite@gmail.com"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     LINK_PATTERN = r'href="(/get/\w{16})">(?!<)'
-    TITLE_PATTERN = r'<h3>(.+?) - <small'
+    NAME_PATTERN = r'<h3>(?P<N>.+?) - <small'
 
 
     def getLinks(self):

@@ -5,13 +5,13 @@ from module.plugins.Account import Account
 
 
 class SimplyPremiumCom(Account):
-    __name__ = "SimplyPremiumCom"
-    __type__ = "account"
+    __name__    = "SimplyPremiumCom"
+    __type__    = "account"
     __version__ = "0.01"
 
     __description__ = """Simply-Premium.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("EvolutionClip", "evolutionclip@live.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def loadAccountInfo(self, user, req):

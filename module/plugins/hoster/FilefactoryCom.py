@@ -15,24 +15,23 @@ def getInfo(urls):
         if m and not re.match(m.group(1), FilefactoryCom.__pattern__):  #: It's a direct link! Skipping
             yield (url, 0, 3, url)
         else:  #: It's a standard html page
-            file_info = parseFileInfo(FilefactoryCom, url, getURL(url))
-            yield file_info
+            yield parseFileInfo(FilefactoryCom, url, getURL(url))
 
 
 class FilefactoryCom(SimpleHoster):
-    __name__ = "FilefactoryCom"
-    __type__ = "hoster"
+    __name__    = "FilefactoryCom"
+    __type__    = "hoster"
     __version__ = "0.52"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
 
     __description__ = """Filefactory.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+) uploaded'
+    INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+) uploaded'
     OFFLINE_PATTERN = r'<h2>File Removed</h2>|This file is no longer available'
 
     LINK_PATTERN = r'"([^"]+filefactory\.com/get.+?)"'
@@ -45,13 +44,13 @@ class FilefactoryCom(SimpleHoster):
 
     def handleFree(self):
         if "Currently only Premium Members can download files larger than" in self.html:
-            self.fail("File too large for free download")
+            self.fail(_("File too large for free download"))
         elif "All free download slots on this server are currently in use" in self.html:
-            self.retry(50, 15 * 60, "All free slots are busy")
+            self.retry(50, 15 * 60, _("All free slots are busy"))
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("Free download link not found")
+            self.error(_("Free download link not found"))
 
         dl_link = m.group(1)
 
@@ -66,9 +65,9 @@ class FilefactoryCom(SimpleHoster):
 
         if check == "multiple":
             self.logDebug("Parallel downloads detected; waiting 15 minutes")
-            self.retry(wait_time=15 * 60, reason="Parallel downloads")
+            self.retry(wait_time=15 * 60, reason=_("Parallel downloads"))
         elif check == "error":
-            self.error("Unknown error")
+            self.error(_("Unknown error"))
 
 
     def handlePremium(self):
@@ -81,12 +80,11 @@ class FilefactoryCom(SimpleHoster):
         elif 'content-disposition' in header:
             url = self.pyfile.url
         else:
-            self.logInfo('You could enable "Direct Downloads" on http://filefactory.com/account/')
             html = self.load(self.pyfile.url)
             m = re.search(self.LINK_PATTERN, html)
             if m:
                 url = m.group(1)
             else:
-                self.error("Premium download link not found")
+                self.error(_("Premium download link not found"))
 
         self.download(url, disposition=True)

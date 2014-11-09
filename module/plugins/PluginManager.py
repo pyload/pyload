@@ -12,17 +12,18 @@ from traceback import print_exc
 from module.lib.SafeEval import const_eval as literal_eval
 
 from module.ConfigParser import IGNORE
+from module.utils import save_join
 
 
 class PluginManager:
-    ROOT = "module.plugins."
+    ROOT     = "module.plugins."
     USERROOT = "userplugins."
-    TYPES = ("crypter", "container", "hoster", "captcha", "accounts", "hooks", "internal")
+    TYPES    = ("crypter", "container", "hoster", "captcha", "accounts", "hooks", "internal")
 
-    PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
-    VERSION = re.compile(r'__version__.*=.*("|\')([\d.]+)')
-    CONFIG = re.compile(r'__config__.*=.*\[([^\]]+)', re.MULTILINE)
-    DESC = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
+    PATTERN = re.compile(r'__pattern__\s*=\s*u?r("|\')([^"\']+)')
+    VERSION = re.compile(r'__version__\s*=\s*("|\')([\d.]+)')
+    CONFIG  = re.compile(r'__config__\s*=\s*\[([^\]]+)', re.M)
+    DESC    = re.compile(r'__description__\s*=\s*("|"""|\')([^"\']+)')
 
 
     def __init__(self, core):
@@ -43,12 +44,6 @@ class PluginManager:
 
         sys.path.append(abspath(""))
 
-        if not exists("userplugins"):
-            makedirs("userplugins")
-        if not exists(join("userplugins", "__init__.py")):
-            f = open(join("userplugins", "__init__.py"), "wb")
-            f.close()
-
         self.plugins['crypter'] = self.crypterPlugins = self.parse("crypter", pattern=True)
         self.plugins['container'] = self.containerPlugins = self.parse("container", pattern=True)
         self.plugins['hoster'] = self.hosterPlugins = self.parse("hoster", pattern=True)
@@ -61,7 +56,7 @@ class PluginManager:
         self.log.debug("created index of plugins")
 
 
-    def parse(self, folder, pattern=False, home={}):
+    def parse(self, folder, pattern=False, home=None):
         """
         returns dict with information
         home contains parsed plugins from module.
@@ -72,23 +67,31 @@ class PluginManager:
 
         """
         plugins = {}
-        if home:
-            pfolder = join("userplugins", folder)
-            if not exists(pfolder):
-                makedirs(pfolder)
-            if not exists(join(pfolder, "__init__.py")):
-                f = open(join(pfolder, "__init__.py"), "wb")
-                f.close()
 
-        else:
-            pfolder = join(pypath, "module", "plugins", folder)
+        try:
+            try:
+                pfolder = save_join("userplugins", folder)
+                if not exists(pfolder):
+                    makedirs(pfolder)
+
+                ifile = join(pfolder, "__init__.py")
+                if not exists(ifile):
+                    f = open(ifile, "a")
+                    f.close()
+
+            except IOError, e:
+                pfolder = join(pypath, "module", "plugins", folder)
+
+        except Exception, e:
+            self.logCritical(str(e))
+            return plugins
 
         for f in listdir(pfolder):
             if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith(
                 "_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
-                data = open(join(pfolder, f))
-                content = data.read()
-                data.close()
+
+                with open(join(pfolder, f)) as data:
+                    content = data.read()
 
                 if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):
                     continue
@@ -107,7 +110,7 @@ class PluginManager:
                     version = 0
 
                 # home contains plugins from pyload root
-                if home and name in home:
+                if isinstance(home, dict) and name in home:
                     if home[name]['v'] >= version:
                         continue
 
@@ -129,14 +132,14 @@ class PluginManager:
                     if pattern:
                         pattern = pattern[0][1]
                     else:
-                        pattern = "^unmachtable$"
+                        pattern = "^unmatchable$"
 
                     plugins[name]['pattern'] = pattern
 
                     try:
                         plugins[name]['re'] = re.compile(pattern)
                     except:
-                        self.log.error(_("%s has a invalid pattern.") % name)
+                        self.log.error(_("%s has a invalid pattern") % name)
 
 
                 # internals have no config
@@ -155,13 +158,8 @@ class PluginManager:
                     else:
                         config = [list(config)]
 
-                    if folder == "hooks":
-                        append = True
-                        for item in config:
-                            if item[0] == "activated": append = False
-
-                        # activated flag missing
-                        if append: config.append(["activated", "bool", "Activated", False])
+                    if folder not in ("accounts", "internal") and not [True for item in config if item[0] == "activated"]:
+                        config.insert(0, ["activated", "bool", "Activated", False if folder == "hooks" else True])
 
                     try:
                         self.core.config.addPluginConfig(name, config, desc)
@@ -178,9 +176,8 @@ class PluginManager:
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
 
-        if not home:
-            temp = self.parse(folder, pattern, plugins)
-            plugins.update(temp)
+        if home is None:
+            plugins.update(self.parse(folder, pattern, plugins))
 
         return plugins
 

@@ -7,33 +7,37 @@ from module.plugins.Account import Account
 
 
 class MegaRapidCz(Account):
-    __name__ = "MegaRapidCz"
-    __type__ = "account"
+    __name__    = "MegaRapidCz"
+    __type__    = "account"
     __version__ = "0.34"
 
     __description__ = """MegaRapid.cz account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("MikyWoW", "mikywow@seznam.cz"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("MikyWoW", "mikywow@seznam.cz"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     login_timeout = 60
+
+    LIMITDL_PATTERN = ur'<td>Max. počet paralelních stahování: </td><td>(\d+)'
+    VALID_UNTIL_PATTERN = ur'<td>Paušální stahování aktivní. Vyprší </td><td><strong>(.*?)</strong>'
+    TRAFFIC_LEFT_PATTERN = r'<tr><td>Kredit</td><td>(.*?) GiB'
 
 
     def loadAccountInfo(self, user, req):
         src = req.load("http://megarapid.cz/mujucet/", decode=True)
 
-        m = re.search(ur'<td>Max. počet paralelních stahování: </td><td>(\d+)', src)
+        m = re.search(self.LIMITDL_PATTERN, src)
         if m:
             data = self.getAccountData(user)
             data['options']['limitDL'] = [int(m.group(1))]
 
-        m = re.search(ur'<td>Paušální stahování aktivní. Vyprší </td><td><strong>(.*?)</strong>', src)
+        m = re.search(self.VALID_UNTIL_PATTERN, src)
         if m:
             validuntil = mktime(strptime(m.group(1), "%d.%m.%Y - %H:%M"))
             return {"premium": True, "trafficleft": -1, "validuntil": validuntil}
 
-        m = re.search(r'<tr><td>Kredit</td><td>(.*?) GiB', src)
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, src)
         if m:
             trafficleft = float(m.group(1)) * (1 << 20)
             return {"premium": True, "trafficleft": trafficleft, "validuntil": -1}
@@ -42,7 +46,7 @@ class MegaRapidCz(Account):
 
 
     def login(self, user, data, req):
-        htm = req.load("http://megarapid.cz/prihlaseni/", cookies=True)
+        htm = req.load("http://megarapid.cz/prihlaseni/")
         if "Heslo:" in htm:
             start = htm.index('id="inp_hash" name="hash" value="')
             htm = htm[start + 33:]
@@ -52,4 +56,4 @@ class MegaRapidCz(Account):
                                  "login": user,
                                  "pass1": data['password'],
                                  "remember": 0,
-                                 "sbmt": u"Přihlásit"}, cookies=True)
+                                 "sbmt": u"Přihlásit"})

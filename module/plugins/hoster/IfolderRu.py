@@ -6,20 +6,20 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class IfolderRu(SimpleHoster):
-    __name__ = "IfolderRu"
-    __type__ = "hoster"
+    __name__    = "IfolderRu"
+    __type__    = "hoster"
     __version__ = "0.38"
 
     __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*'
 
     __description__ = """Ifolder.ru hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_SIZE_REPLACEMENTS = [(u'Кб', 'KB'), (u'Мб', 'MB'), (u'Гб', 'GB')]
-    FILE_NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
-    FILE_SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[^<]+)</b><(?:/div|br)>'
+    SIZE_REPLACEMENTS = [(u'Кб', 'KB'), (u'Мб', 'MB'), (u'Гб', 'GB')]
+    NAME_PATTERN = ur'(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>[^<]+)</b><(?:/div|br)>'
+    SIZE_PATTERN = ur'(?:<div><span>)?Размер:(?:</span>)? <b>(?P<S>[^<]+)</b><(?:/div|br)>'
     OFFLINE_PATTERN = ur'<p>Файл номер <b>[^<]*</b> (не найден|удален) !!!</p>'
 
     SESSION_ID_PATTERN = r'<a href=(http://ints\.(?:rusfolder\.com|ifolder\.ru)/ints/sponsor/\?bi=\d*&session=([^&]+)&u=[^>]+)>'
@@ -51,7 +51,7 @@ class IfolderRu(SimpleHoster):
         self.wait(31, False)
 
         captcha_url = "http://ints.rusfolder.com/random/images/?session=%s" % session_id
-        for _ in xrange(5):
+        for _i in xrange(5):
             self.html = self.load(url, cookies=True)
             action, inputs = self.parseHtmlForm('ID="Form1"')
             inputs['ints_session'] = re.search(self.INTS_SESSION_PATTERN, self.html).group(1)
@@ -66,11 +66,10 @@ class IfolderRu(SimpleHoster):
             else:
                 break
         else:
-            self.fail("Invalid captcha")
+            self.fail(_("Invalid captcha"))
 
         download_url = re.search(self.LINK_PATTERN, self.html).group(1)
         self.correctCaptcha()
-        self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
 
 

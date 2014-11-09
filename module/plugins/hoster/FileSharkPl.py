@@ -8,20 +8,20 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FileSharkPl(SimpleHoster):
-    __name__ = "FileSharkPl"
-    __type__ = "hoster"
+    __name__    = "FileSharkPl"
+    __type__    = "hoster"
     __version__ = "0.01"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d{6}/\w{5}'
 
     __description__ = """FileShark.pl hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("prOq", None),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("prOq", None),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'<h2 class="name-file">(?P<N>.+)</h2>'
-    FILE_SIZE_PATTERN = r'<p class="size-file">(.*?)<strong>(?P<S>\d+\.?\d*)\s(?P<U>\w+)</strong></p>'
+    NAME_PATTERN = r'<h2 class="name-file">(?P<N>.+)</h2>'
+    SIZE_PATTERN = r'<p class="size-file">(.*?)<strong>(?P<S>\d+\.?\d*)\s(?P<U>\w+)</strong></p>'
 
     OFFLINE_PATTERN = '(P|p)lik zosta. (usuni.ty|przeniesiony)'
 
@@ -57,13 +57,13 @@ class FileSharkPl(SimpleHoster):
         alert = m.group(1)
 
         if re.match(self.IP_BLOCKED_PATTERN, alert):
-            self.fail("Only connections from Polish IP are allowed")
+            self.fail(_("Only connections from Polish IP are allowed"))
         elif re.match(self.DOWNLOAD_SLOTS_ERROR_PATTERN, alert):
-            self.logInfo("No free download slots available")
-            self.retry(10, 30 * 60, "Still no free download slots available")
+            self.logInfo(_("No free download slots available"))
+            self.retry(10, 30 * 60, _("Still no free download slots available"))
         else:
             self.logInfo(alert)
-            self.retry(10, 10 * 60, "Try again later")
+            self.retry(10, 10 * 60, _("Try again later"))
 
 
     #@NOTE: handlePremium method was never been tested
@@ -79,7 +79,7 @@ class FileSharkPl(SimpleHoster):
     def handleFree(self):
         m = re.search(self.DOWNLOAD_URL_FREE, self.html)
         if m is None:
-            self.error("Download url not found")
+            self.error(_("Download url not found"))
 
         file_url = urljoin("http://fileshark.pl", m.group(1))
 
@@ -92,13 +92,13 @@ class FileSharkPl(SimpleHoster):
         action, inputs = self.parseHtmlForm('action=""')
         m = re.search(self.CAPTCHA_TOKEN_PATTERN, self.html)
         if m is None:
-            self.retry(reason="Captcha form not found")
+            self.retry(reason=_("Captcha form not found"))
 
         inputs['form[_token]'] = m.group(1)
 
         m = re.search(self.CAPTCHA_IMG_PATTERN, self.html)
         if m is None:
-            self.retry(reason="Captcha image not found")
+            self.retry(reason=_("Captcha image not found"))
 
         tmp_load = self.load
         self.load = self.decode64  #: injects decode64 inside decryptCaptcha
@@ -121,11 +121,10 @@ class FileSharkPl(SimpleHoster):
 
         if check == "DL-found":
             self.correctCaptcha()
-            self.logDebug("Captcha solved correct")
 
         elif check == "wrong_captcha":
             self.invalidCaptcha()
-            self.retry(10, 1, reason="Wrong captcha solution")
+            self.retry(10, 1, _("Wrong captcha solution"))
 
         elif check == "wait_pattern":
             self.retry()

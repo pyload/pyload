@@ -6,8 +6,8 @@ from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class SimplyPremiumCom(MultiHoster):
-    __name__ = "SimplyPremiumCom"
-    __type__ = "hook"
+    __name__    = "SimplyPremiumCom"
+    __type__    = "hook"
     __version__ = "0.02"
 
     __config__ = [("activated", "bool", "Activated", "False"),
@@ -17,8 +17,8 @@ class SimplyPremiumCom(MultiHoster):
                   ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
     __description__ = """Simply-Premium.com hook plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("EvolutionClip", "evolutionclip@live.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def getHoster(self):

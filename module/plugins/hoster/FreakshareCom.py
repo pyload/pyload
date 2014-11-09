@@ -8,18 +8,18 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class FreakshareCom(Hoster):
-    __name__ = "FreakshareCom"
-    __type__ = "hoster"
+    __name__    = "FreakshareCom"
+    __type__    = "hoster"
     __version__ = "0.39"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
 
     __description__ = """Freakshare.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("sitacuisses", "sitacuisses@yahoo.de"),
-                   ("spoob", "spoob@pyload.org"),
-                   ("mkaay", "mkaay@mkaay.de"),
-                   ("Toilal", "toilal.dev@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("sitacuisses", "sitacuisses@yahoo.de"),
+                       ("spoob", "spoob@pyload.org"),
+                       ("mkaay", "mkaay@mkaay.de"),
+                       ("Toilal", "toilal.dev@gmail.com")]
 
 
     def setup(self):
@@ -50,24 +50,22 @@ class FreakshareCom(Hoster):
                                         "downloadserver": "No Downloadserver. Please try again later!"})
 
             if check == "bad":
-                self.fail("Bad Try.")
+                self.fail(_("Bad Try"))
             elif check == "paralell":
                 self.setWait(300, True)
                 self.wait()
                 self.retry()
             elif check == "empty":
-                self.fail("File not downloadable")
+                self.fail(_("File not downloadable"))
             elif check == "wrong_captcha":
                 self.invalidCaptcha()
                 self.retry()
             elif check == "downloadserver":
-                self.retry(5, 15 * 60, "No Download server")
+                self.retry(5, 15 * 60, _("No Download server"))
 
 
     def prepare(self):
         pyfile = self.pyfile
-
-        self.wantReconnect = False
 
         self.download_html()
 
@@ -141,7 +139,7 @@ class FreakshareCom(Hoster):
 
         timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;', self.html)
         if timestring:
-            return int(timestring.group(1)) + 1  # add 1 sec as tenths of seconds are cut off
+            return int(timestring.group(1))
         else:
             return 60
 
@@ -171,9 +169,6 @@ class FreakshareCom(Hoster):
 
         to_sort = re.findall(r"<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>", herewego)
         request_options = dict((n, v) for (v, n) in to_sort)
-
-        # comment this in, when it doesnt work as well
-        #print "\n\n%s\n\n" % ";".join(["%s=%s" % x for x in to_sort])
 
         challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=(\w+)", herewego)
 

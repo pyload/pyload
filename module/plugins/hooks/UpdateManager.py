@@ -12,9 +12,9 @@ from module.utils import save_join
 
 
 class UpdateManager(Hook):
-    __name__ = "UpdateManager"
-    __type__ = "hook"
-    __version__ = "0.36"
+    __name__    = "UpdateManager"
+    __type__    = "hook"
+    __version__ = "0.38"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -23,11 +23,11 @@ class UpdateManager(Hook):
                   ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
 
     __description__ = """ Check for updates """
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_list = ["pluginConfigChanged"]
+    # event_list = ["pluginConfigChanged"]
 
     SERVER_URL = "http://updatemanager.pyload.org"
     MIN_INTERVAL = 6 * 60 * 60  #: 6h minimum check interval (value is in seconds)
@@ -196,7 +196,7 @@ class UpdateManager(Hook):
             if not oldver:
                 msg = "New [%(type)s] %(name)s (v%(newver)s)"
             elif newver > oldver:
-                msg = "New version of [%(type)s] %(name)s (v%(oldver)s -> v%(newver)s)"
+                msg = "New version of [%(type)s] %(name)s (v%(oldver)f -> v%(newver)f)"
             else:
                 continue
 
@@ -218,7 +218,7 @@ class UpdateManager(Hook):
                 else:
                     raise Exception, _("Version mismatch")
             except Exception, e:
-                self.logError(_("Error updating plugin %s") % filename, e)
+                self.logError(_("Error updating plugin %s") % filename, str(e))
 
         if blacklist:
             blacklisted = sorted(map(lambda x: (x.split('|')[0], x.split('|')[1].rsplit('.', 1)[0]), blacklist))
@@ -259,7 +259,7 @@ class UpdateManager(Hook):
         if not type_plugins:
             return
 
-        self.logDebug("Requested deletion of plugins", type_plugins)
+        self.logDebug("Requested deletion of plugins: %s" % type_plugins)
 
         removed = []
 
@@ -273,7 +273,7 @@ class UpdateManager(Hook):
                 try:
                     remove(filename)
                 except Exception, e:
-                    self.logDebug("Error deleting", path.basename(filename), e)
+                    self.logDebug("Error removing: %s" % path.basename(filename), str(e))
                     err = True
 
                 filename += "c"
@@ -283,7 +283,7 @@ class UpdateManager(Hook):
                             self.manager.deactivateHook(name)
                         remove(filename)
                     except Exception, e:
-                        self.logDebug("Error deleting", path.basename(filename), e)
+                        self.logDebug("Error removing: %s" % path.basename(filename), str(e))
                         err = True
 
             if not err:

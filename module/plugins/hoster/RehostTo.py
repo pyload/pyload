@@ -6,15 +6,15 @@ from module.plugins.Hoster import Hoster
 
 
 class RehostTo(Hoster):
-    __name__ = "RehostTo"
-    __type__ = "hoster"
+    __name__    = "RehostTo"
+    __type__    = "hoster"
     __version__ = "0.13"
 
     __pattern__ = r'https?://.*rehost\.to\..*'
 
     __description__ = """Rehost.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def getFilename(self, url):
@@ -29,7 +29,7 @@ class RehostTo(Hoster):
     def process(self, pyfile):
         if not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "rehost.to")
-            self.fail("No rehost.to account provided")
+            self.fail(_("No rehost.to account provided"))
 
         data = self.account.getAccountInfo(self.user)
         long_ses = data['long_ses']

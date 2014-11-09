@@ -6,15 +6,15 @@ from module.plugins.Hoster import Hoster
 
 
 class DebridItaliaCom(Hoster):
-    __name__ = "DebridItaliaCom"
-    __type__ = "hoster"
+    __name__    = "DebridItaliaCom"
+    __type__    = "hoster"
     __version__ = "0.05"
 
     __pattern__ = r'https?://(?:[^/]*\.)?debriditalia\.com'
 
     __description__ = """Debriditalia.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def setup(self):
@@ -27,7 +27,7 @@ class DebridItaliaCom(Hoster):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "DebridItalia")
-            self.fail("No DebridItalia account provided")
+            self.fail(_("No DebridItalia account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             url = "http://debriditalia.com/linkgen2.php?xjxfun=convertiLink&xjxargs[]=S<![CDATA[%s]]>" % pyfile.url
@@ -35,7 +35,7 @@ class DebridItaliaCom(Hoster):
             self.logDebug("XML data: %s" % page)
 
             if 'File not available' in page:
-                self.fail('File not available')
+                self.fail(_("File not available"))
             else:
                 new_url = re.search(r'<a href="(?:[^"]+)">(?P<direct>[^<]+)</a>', page).group('direct')
 

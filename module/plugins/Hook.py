@@ -24,17 +24,16 @@ class Hook(Base):
     """
     Base class for hook plugins.
     """
-    __name__ = "Hook"
-    __type__ = "hook"
-    __version__ = "0.2"
+    __name__    = "Hook"
+    __type__    = "hook"
+    __version__ = "0.03"
 
-    __threaded__ = []
-    __config__ = [("name", "type", "desc", "default")]
+    __config__ = []  #: [("name", "type", "desc", "default")]
 
     __description__ = """Interface for hook"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de"),
-                   ("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de"),
+                       ("RaNaN", "RaNaN@pyload.org")]
 
 
     #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
@@ -52,7 +51,7 @@ class Hook(Base):
         Base.__init__(self, core)
 
         #: Provide information in dict here, usable by API `getInfo`
-        self.info = None
+        self.info = {}
 
         #: Callback of periodical job task, used by hookmanager
         self.cb = None
@@ -91,7 +90,7 @@ class Hook(Base):
         try:
             if self.isActivated(): self.periodical()
         except Exception, e:
-            self.core.log.error(_("Error executing hooks: %s") % str(e))
+            self.core.log.error(_("Error executing hooks: ") + str(e))
             if self.core.debug:
                 print_exc()
 

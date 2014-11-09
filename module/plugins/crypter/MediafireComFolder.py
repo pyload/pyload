@@ -7,19 +7,21 @@ from module.common.json_layer import json_loads
 
 
 class MediafireComFolder(Crypter):
-    __name__ = "MediafireComFolder"
-    __type__ = "crypter"
+    __name__    = "MediafireComFolder"
+    __type__    = "crypter"
     __version__ = "0.14"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Mediafire.com folder decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FOLDER_KEY_PATTERN = r'var afI= \'(\w+)'
-    FILE_URL_PATTERN = r'<meta property="og:url" content="http://www\.mediafire\.com/\?(\w+)"/>'
+    LINK_PATTERN = r'<meta property="og:url" content="http://www\.mediafire\.com/\?(\w+)"/>'
 
 
     def decrypt(self, pyfile):
@@ -29,7 +31,7 @@ class MediafireComFolder(Crypter):
         if result == 0:
             # load and parse html
             html = self.load(pyfile.url)
-            m = re.search(self.FILE_URL_PATTERN, html)
+            m = re.search(self.LINK_PATTERN, html)
             if m:
                 # file page
                 self.urls.append("http://www.mediafire.com/file/%s" % m.group(1))
@@ -52,6 +54,3 @@ class MediafireComFolder(Crypter):
             self.offline()
         else:
             self.urls.append(url)
-
-        if not self.urls:
-            self.fail('Could not extract any links')

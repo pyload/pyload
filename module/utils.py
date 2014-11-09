@@ -54,7 +54,7 @@ if sys.getfilesystemencoding().startswith('ANSI'):
         try:
             string = string.encode('utf-8')
         finally:
-            return string
+            return save_path(string)
 
     fs_decode = decode #decode utf8
 

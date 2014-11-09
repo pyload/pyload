@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSPAccount import XFSPAccount
+from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class RyushareCom(XFSPAccount):
-    __name__ = "RyushareCom"
-    __type__ = "account"
-    __version__ = "0.04"
+class RyushareCom(XFSAccount):
+    __name__    = "RyushareCom"
+    __type__    = "account"
+    __version__ = "0.05"
 
     __description__ = """Ryushare.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("trance4us", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("trance4us", None)]
 
 
-    HOSTER_NAME = "ryushare.com"
+    HOSTER_DOMAIN = "ryushare.com"
 
 
     def login(self, user, data, req):

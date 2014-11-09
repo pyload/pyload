@@ -10,16 +10,18 @@ from module.plugins.Crypter import Crypter
 
 
 class RelinkUs(Crypter):
-    __name__ = "RelinkUs"
-    __type__ = "crypter"
+    __name__    = "RelinkUs"
+    __type__    = "crypter"
     __version__ = "3.1"
 
     __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<id>.+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Relink.us decrypter plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
-                   ("AndroKev", "neureither.kevin@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+                       ("AndroKev", "neureither.kevin@gmail.com")]
 
 
     PREFERRED_LINK_SOURCES = ["cnl2", "dlc", "web"]
@@ -93,8 +95,6 @@ class RelinkUs(Crypter):
         # Pack
         if package_links:
             self.packages = [(package_name, package_links, folder_name)]
-        else:
-            self.fail('Could not extract any links')
 
 
     def initPackage(self, pyfile):
@@ -169,11 +169,10 @@ class RelinkUs(Crypter):
         if self.PASSWORD_ERROR_ROKEN in self.html:
             msg = "Incorrect password, please set right password on 'Edit package' form and retry"
             self.logDebug(msg)
-            self.fail(msg)
+            self.fail(_(msg))
 
         if self.captcha:
             if self.CAPTCHA_ERROR_ROKEN in self.html:
-                self.logDebug("Invalid captcha, retrying")
                 self.invalidCaptcha()
                 self.retry()
             else:
@@ -188,13 +187,13 @@ class RelinkUs(Crypter):
         elif source == 'web':
             return self.handleWEBLinks()
         else:
-            self.fail('Unknown source [%s] (this is probably a bug)' % source)
+            self.error('Unknown source type "%s" (this is probably a bug)' % source)
 
 
     def handleCNL2Links(self):
         self.logDebug("Search for CNL2 links")
         package_links = []
-        m = re.search(self.CNL2_FORM_REGEX, self.html, re.DOTALL)
+        m = re.search(self.CNL2_FORM_REGEX, self.html, re.S)
         if m is not None:
             cnl2_form = m.group(1)
             try:
@@ -217,12 +216,11 @@ class RelinkUs(Crypter):
                 dlc = self.load(container_url)
                 dlc_filename = self.fileid + ".dlc"
                 dlc_filepath = os.path.join(self.config['general']['download_folder'], dlc_filename)
-                f = open(dlc_filepath, "wb")
-                f.write(dlc)
-                f.close()
+                with open(dlc_filepath, "wb") as f:
+                    f.write(dlc)
                 package_links.append(dlc_filepath)
             except:
-                self.logDebug("Unable to download DLC container")
+                self.fail("Unable to download DLC container")
         return package_links
 
 
@@ -248,11 +246,11 @@ class RelinkUs(Crypter):
     def _getCipherParams(self, cnl2_form):
         # Get jk
         jk_re = self.CNL2_FORMINPUT_REGEX % self.CNL2_JK_KEY
-        vjk = re.findall(jk_re, cnl2_form, re.IGNORECASE)
+        vjk = re.findall(jk_re, cnl2_form, re.I)
 
         # Get crypted
         crypted_re = self.CNL2_FORMINPUT_REGEX % RelinkUs.CNL2_CRYPTED_KEY
-        vcrypted = re.findall(crypted_re, cnl2_form, re.IGNORECASE)
+        vcrypted = re.findall(crypted_re, cnl2_form, re.I)
 
         # Log and return
         self.logDebug("Detected %d crypted blocks" % len(vcrypted))

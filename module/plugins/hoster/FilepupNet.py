@@ -10,20 +10,20 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilepupNet(SimpleHoster):
-    __name__ = "FilepupNet"
-    __type__ = "hoster"
+    __name__    = "FilepupNet"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?filepup\.net/files/\w+'
 
     __description__ = """Filepup.net hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'>(?P<N>.+?)</h1>'
-    FILE_SIZE_PATTERN = r'class="fa fa-archive"></i> \((?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    NAME_PATTERN = r'>(?P<N>.+?)</h1>'
+    SIZE_PATTERN = r'class="fa fa-archive"></i> \((?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN = r'>This file has been deleted'
 
@@ -38,14 +38,14 @@ class FilepupNet(SimpleHoster):
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("Download link not found")
+            self.error(_("Download link not found"))
 
         dl_link = m.group(1)
         self.download(dl_link, post={'task': "download"})
 
         check = self.checkDownload({'html': re.compile("html")})
         if check == "html":
-            self.error("Downloaded file is an html page")
+            self.error(_("Downloaded file is an html page"))
 
 
 getInfo = create_getInfo(FilepupNet)

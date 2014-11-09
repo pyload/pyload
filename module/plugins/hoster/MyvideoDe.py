@@ -7,15 +7,15 @@ from module.unescape import unescape
 
 
 class MyvideoDe(Hoster):
-    __name__ = "MyvideoDe"
-    __type__ = "hoster"
+    __name__    = "MyvideoDe"
+    __type__    = "hoster"
     __version__ = "0.9"
 
     __pattern__ = r'http://(?:www\.)?myvideo\.de/watch/'
 
     __description__ = """Myvideo.de hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org")]
 
 
     def process(self, pyfile):

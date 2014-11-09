@@ -7,19 +7,19 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class YibaishiwuCom(SimpleHoster):
-    __name__ = "YibaishiwuCom"
-    __type__ = "hoster"
+    __name__    = "YibaishiwuCom"
+    __type__    = "hoster"
     __version__ = "0.13"
 
     __pattern__ = r'http://(?:www\.)?(?:u\.)?115\.com/file/(?P<ID>\w+)'
 
     __description__ = """115.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'file_name: \'(?P<N>.+?)\''
-    FILE_SIZE_PATTERN = r'file_size: \'(?P<S>.+?)\''
+    NAME_PATTERN = r'file_name: \'(?P<N>.+?)\''
+    SIZE_PATTERN = r'file_size: \'(?P<S>.+?)\''
     OFFLINE_PATTERN = ur'<h3><i style="color:red;">哎呀！提取码不存在！不妨搜搜看吧！</i></h3>'
 
     LINK_PATTERN = r'(/\?ct=(pickcode|download)[^"\']+)'
@@ -28,7 +28,7 @@ class YibaishiwuCom(SimpleHoster):
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.error("AJAX URL")
+            self.error(_("LINK_PATTERN not found"))
         url = m.group(1)
         self.logDebug(('FREEUSER' if m.group(2) == 'download' else 'GUEST') + ' URL', url)
 
@@ -49,7 +49,7 @@ class YibaishiwuCom(SimpleHoster):
             except:
                 continue
         else:
-            self.fail('No working link found')
+            self.fail(_("No working link found"))
 
 
 getInfo = create_getInfo(YibaishiwuCom)

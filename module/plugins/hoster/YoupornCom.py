@@ -6,15 +6,15 @@ from module.plugins.Hoster import Hoster
 
 
 class YoupornCom(Hoster):
-    __name__ = "YoupornCom"
-    __type__ = "hoster"
+    __name__    = "YoupornCom"
+    __type__    = "hoster"
     __version__ = "0.2"
 
     __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
 
     __description__ = """Youporn.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("willnix", "willnix@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("willnix", "willnix@pyload.org")]
 
 
     def process(self, pyfile):

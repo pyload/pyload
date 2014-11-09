@@ -42,8 +42,8 @@ def getInfo(urls):
 
 
 class RapidshareCom(Hoster):
-    __name__ = "RapidshareCom"
-    __type__ = "hoster"
+    __name__    = "RapidshareCom"
+    __type__    = "hoster"
     __version__ = "1.39"
 
     __pattern__ = r'https?://(?:www\.)?rapidshare\.com/(?:files/(?P<id>\d+)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))'
@@ -52,10 +52,10 @@ class RapidshareCom(Hoster):
                    "Preferred Server", "None")]
 
     __description__ = """Rapidshare.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
-                   ("RaNaN", "ranan@pyload.org"),
-                   ("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("RaNaN", "ranan@pyload.org"),
+                       ("mkaay", "mkaay@mkaay.de")]
 
 
     def setup(self):
@@ -106,7 +106,7 @@ class RapidshareCom(Hoster):
         elif self.api_data['status'] == "3":
             self.tempOffline()
         else:
-            self.fail("Unknown response code.")
+            self.error(_("Unknown response code"))
 
 
     def handleFree(self):
@@ -134,7 +134,7 @@ class RapidshareCom(Hoster):
 
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
-        self.logDebug("%s: Use Premium Account" % self.__name__)
+        self.logDebug("Use Premium Account")
         url = self.api_data['mirror']
         self.download(url, get={"directstart": 1})
 
@@ -205,8 +205,7 @@ class RapidshareCom(Hoster):
         elif "Filename invalid." in result:
             self.fail(_("Filename reported invalid"))
         elif between_wait:
-            self.setWait(int(between_wait.group(1)))
-            self.wantReconnect = True
+            self.setWait(int(between_wait.group(1)), True)
             self.wait()
         else:
             self.no_download = False

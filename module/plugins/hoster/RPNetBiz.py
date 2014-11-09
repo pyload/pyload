@@ -7,15 +7,15 @@ from module.common.json_layer import json_loads
 
 
 class RPNetBiz(Hoster):
-    __name__ = "RPNetBiz"
-    __type__ = "hoster"
+    __name__    = "RPNetBiz"
+    __type__    = "hoster"
     __version__ = "0.1"
 
     __description__ = """RPNet.biz hoster plugin"""
-    __license__ = "GPLv3"
+    __license__     = "GPLv3"
 
     __pattern__ = r'https?://.*rpnet\.biz'
-    __authors__ = [("Dman", "dmanugm@gmail.com")]
+    __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 
     def setup(self):
@@ -29,7 +29,7 @@ class RPNetBiz(Hoster):
         elif not self.account:
             # Check account
             self.logError(_("Please enter your %s account or deactivate this plugin") % "rpnet")
-            self.fail("No rpnet account provided")
+            self.fail(_("No rpnet account provided"))
         else:
             (user, data) = self.account.selectAccount()
 
@@ -71,11 +71,11 @@ class RPNetBiz(Hoster):
                     my_try += 1
 
                 if my_try > max_tries:  # We went over the limit!
-                    self.fail("Waited for about 15 minutes for download to finish but failed")
+                    self.fail(_("Waited for about 15 minutes for download to finish but failed"))
 
         if 'generated' in link_status:
             self.download(link_status['generated'], disposition=True)
         elif 'error' in link_status:
             self.fail(link_status['error'])
         else:
-            self.fail("Something went wrong, not supposed to enter here")
+            self.fail(_("Something went wrong, not supposed to enter here"))

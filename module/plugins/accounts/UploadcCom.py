@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSPAccount import XFSPAccount
+from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class UploadcCom(XFSPAccount):
-    __name__ = "UploadcCom"
-    __type__ = "account"
-    __version__ = "0.01"
+class UploadcCom(XFSAccount):
+    __name__    = "UploadcCom"
+    __type__    = "account"
+    __version__ = "0.02"
 
     __description__ = """Uploadc.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_NAME = "uploadc.com"
+    HOSTER_DOMAIN = "uploadc.com"

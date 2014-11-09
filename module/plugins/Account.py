@@ -19,13 +19,13 @@ class Account(Base):
     Just overwrite `login` and cookies will be stored and account becomes accessible in\
     associated hoster plugin. Plugin should also provide `loadAccountInfo`
     """
-    __name__ = "Account"
-    __type__ = "account"
-    __version__ = "0.3"
+    __name__    = "Account"
+    __type__    = "account"
+    __version__ = "0.03"
 
     __description__ = """Base account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     #: after that time (in minutes) pyload will relogin the account
@@ -188,18 +188,16 @@ class Account(Base):
         :param req: `Request` instance
         :return:
         """
-        return {
-            "validuntil": None, # -1 for unlimited
-            "login": name,
-            #"password": self.accounts[name]['password'], #@XXX: security
-            "options": self.accounts[name]['options'],
-            "valid": self.accounts[name]['valid'],
-            "trafficleft": None, # in kb, -1 for unlimited
-            "maxtraffic": None,
-            "premium": True, #useful for free accounts
-            "timestamp": 0, #time this info was retrieved
-            "type": self.__name__,
-            }
+        return {"validuntil": None,  #: -1 for unlimited
+                "login": name,
+                # "password": self.accounts[name]['password'],  #: commented due security reason
+                "options": self.accounts[name]['options'],
+                "valid": self.accounts[name]['valid'],
+                "trafficleft": None,  #: in kb, -1 for unlimited
+                "maxtraffic": None,
+                "premium": None,
+                "timestamp": 0,  #: time this info was retrieved
+                "type": self.__name__}
 
 
     def getAllAccounts(self, force=False):
@@ -265,7 +263,7 @@ class Account(Base):
 
 
     def parseTraffic(self, string): #returns kbyte
-        return parseFileSize(string) / 1024
+        return parseFileSize(string)
 
 
     def wrongPassword(self):

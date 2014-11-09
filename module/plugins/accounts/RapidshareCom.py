@@ -4,13 +4,13 @@ from module.plugins.Account import Account
 
 
 class RapidshareCom(Account):
-    __name__ = "RapidshareCom"
-    __type__ = "account"
+    __name__    = "RapidshareCom"
+    __type__    = "account"
     __version__ = "0.22"
 
     __description__ = """Rapidshare.com account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def loadAccountInfo(self, user, req):
@@ -43,7 +43,7 @@ class RapidshareCom(Account):
                           "password": data['password'], "withcookie": 1}
         src = req.load(api_url_base, cookies=False, get=api_param_prem)
         if src.startswith("ERROR"):
-            raise Exception(src + "### Note you have to use your account number for login, instead of name.")
+            raise Exception(src + "### Note you have to use your account number for login, instead of name")
         fields = src.split("\n")
         info = {}
         for t in fields:

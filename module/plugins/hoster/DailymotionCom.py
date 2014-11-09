@@ -39,16 +39,16 @@ def getInfo(urls):
 
 
 class DailymotionCom(Hoster):
-    __name__ = "DailymotionCom"
-    __type__ = "hoster"
+    __name__    = "DailymotionCom"
+    __type__    = "hoster"
     __version__ = "0.2"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*?video/(?P<ID>[\w^_]+)'
     __config__ = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]
 
     __description__ = """Dailymotion.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def setup(self):
@@ -91,7 +91,7 @@ class DailymotionCom(Hoster):
             idx = quality
 
         s = streams[idx]
-        self.logInfo("Download video quality %sx%s" % s[0])
+        self.logInfo(_("Download video quality %sx%s") % s[0])
         return s[1]
 
 

@@ -6,13 +6,13 @@ from module.common.json_layer import json_loads
 
 
 class PremiumizeMe(Account):
-    __name__ = "PremiumizeMe"
-    __type__ = "account"
+    __name__    = "PremiumizeMe"
+    __type__    = "account"
     __version__ = "0.11"
 
     __description__ = """Premiumize.me account plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def loadAccountInfo(self, user, req):
