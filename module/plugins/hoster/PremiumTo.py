@@ -54,9 +54,8 @@ class PremiumTo(Hoster):
             lastDownload = fs_encode(self.lastDownload)
 
             if exists(lastDownload):
-                f = open(lastDownload, "rb")
-                err = f.read(256).strip()
-                f.close()
+                with open(lastDownload, "rb") as f:
+                    err = f.read(256).strip()
                 remove(lastDownload)
             else:
                 err = _('File does not exist')
