@@ -41,11 +41,9 @@ class OneFichierCom(SimpleHoster):
     def handle(self, reconnect):
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            wait_time = int(m.group(1))
+            wait_time = int(m.group(1)) * 60
 
-            self.logDebug(_("Wait %d minutes") % wait_time)
-
-            self.wait(wait_time * 60, reconnect)
+            self.wait(wait_time, reconnect)
             self.retry(reason="You have to wait been each free download")
 
         id = self.info['ID1'] or self.info['ID2']
