@@ -17,7 +17,7 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__    = "Captcha9kw"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("force", "bool", "Force captcha resolving even if client is connected", True),
@@ -73,17 +73,17 @@ class Captcha9kw(Hook):
 
         self.logDebug("%s: %s" % (task.captchaFile, data))
 
-        option = {'min'            : 2
-                  'max'            : 50
-                  'phrase'         : 0
-                  'numeric'        : 0
-                  'case_sensitive' : 0
-                  'math'           : 0
-                  'prio'           : self.getConfig("prio")
-                  'confirm'        : self.getConfig("confirm")
-                  'timeout'        : min(max(self.getConfig("timeout") * 60, 300), 3999)
-                  'selfsolve'      : self.getConfig("selfsolve")
-                  'cph'            : self.getConfig("captchaperhour")
+        option = {'min'            : 2,
+                  'max'            : 50,
+                  'phrase'         : 0,
+                  'numeric'        : 0,
+                  'case_sensitive' : 0,
+                  'math'           : 0,
+                  'prio'           : self.getConfig("prio"),
+                  'confirm'        : self.getConfig("confirm"),
+                  'timeout'        : min(max(self.getConfig("timeout") * 60, 300), 3999),
+                  'selfsolve'      : self.getConfig("selfsolve"),
+                  'cph'            : self.getConfig("captchaperhour"),
                   'hoster_options' : self.getConfig("hoster_options").split(";")}
 
         for opt in hoster_options:
@@ -209,6 +209,7 @@ class Captcha9kw(Hook):
 
     def _captchaResponse(self, task, correct):
         if "ticket" not in task.data:
+            self.logDebug(_("No CaptchaID for %s request (task: %s)" % type) % task)
             return
 
         type = "correct" if correct else "refund"
@@ -230,8 +231,6 @@ class Captcha9kw(Hook):
             else:
                 self.logDebug(_("Could not send %s request: %s" % type) % res)
                 sleep(1)
-            else:
-                self.logDebug(_("No CaptchaID for %s request (task: %s)" % type) % task)
 
 
     def captchaCorrect(self, task):
