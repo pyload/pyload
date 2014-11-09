@@ -40,7 +40,7 @@ class UploadingCom(Account):
                 validuntil = mktime(strptime(expiredate, "%b %d, %Y"))
 
             except Exception, e:
-                self.logError(str(e))
+                self.logError(e)
 
             else:
                 if validuntil > mktime(gmtime()):
@@ -53,10 +53,10 @@ class UploadingCom(Account):
 
 
     def login(self, user, data, req):
-        set_cookies([("uploading.com", "lang", "1"),
-                     ("uploading.com", "language", "1"),
-                     ("uploading.com", "setlang", "en"),
-                     ("uploading.com", "_lang", "en")]
+        set_cookies([(".uploading.com", "lang", "1"),
+                     (".uploading.com", "language", "1"),
+                     (".uploading.com", "setlang", "en"),
+                     (".uploading.com", "_lang", "en")]
 
         req.load("http://uploading.com/")
         req.load("http://uploading.com/general/login_form/?JsHttpRequest=%s-xml" % long(time() * 1000),

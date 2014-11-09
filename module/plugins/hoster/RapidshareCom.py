@@ -144,11 +144,11 @@ class RapidshareCom(Hoster):
             return
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_file = {"sub": "checkfiles", "incmd5": "1", "files": self.id, "filenames": self.name}
-        src = self.load(api_url_base, cookies=False, get=api_param_file).strip()
-        self.logDebug("RS INFO API: %s" % src)
-        if src.startswith("ERROR"):
+        html = self.load(api_url_base, cookies=False, get=api_param_file).strip()
+        self.logDebug("RS INFO API: %s" % html)
+        if html.startswith("ERROR"):
             return
-        fields = src.split(",")
+        fields = html.split(",")
 
         # status codes:
         #   0=File not found

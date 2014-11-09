@@ -49,9 +49,9 @@ class XFSAccount(Account):
 
 
     def loadAccountInfo(self, user, req):
-        validuntil = None
+        validuntil  = None
         trafficleft = None
-        premium = None
+        premium     = None
 
         html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
 
@@ -64,8 +64,10 @@ class XFSAccount(Account):
 
             try:
                 validuntil = mktime(strptime(expiredate, "%d %B %Y"))
+
             except Exception, e:
-                self.logError(str(e))
+                self.logError(e)
+
             else:
                 if validuntil > mktime(gmtime()):
                     premium = True
@@ -94,7 +96,7 @@ class XFSAccount(Account):
                     trafficleft = self.parseTraffic(size + unit)
 
             except Exception, e:
-                self.logError(str(e))
+                self.logError(e)
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 

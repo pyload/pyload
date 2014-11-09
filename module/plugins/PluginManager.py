@@ -83,7 +83,7 @@ class PluginManager:
                 pfolder = join(pypath, "module", "plugins", folder)
 
         except Exception, e:
-            self.logCritical(str(e))
+            self.logCritical(e)
             return plugins
 
         for f in listdir(pfolder):

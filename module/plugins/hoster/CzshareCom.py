@@ -58,7 +58,7 @@ class CzshareCom(SimpleHoster):
                 return False
         except Exception, e:
             # let's continue and see what happens...
-            self.logError(str(e))
+            self.logError(e)
 
         return True
 
@@ -69,7 +69,7 @@ class CzshareCom(SimpleHoster):
             form = re.search(self.PREMIUM_FORM_PATTERN, self.html, re.S).group(1)
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
         except Exception, e:
-            self.logError(str(e))
+            self.logError(e)
             self.resetAccount()
 
         # download the file, destination is determined by pyLoad

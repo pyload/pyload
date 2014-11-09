@@ -49,8 +49,8 @@ class FourSharedCom(SimpleHoster):
 
         try:
             m = re.search(self.FID_PATTERN, self.html)
-            response = self.load('http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId=%s' % m.group(1))
-            self.logDebug(response)
+            res = self.load('http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId=%s' % m.group(1))
+            self.logDebug(res)
         except:
             pass
 

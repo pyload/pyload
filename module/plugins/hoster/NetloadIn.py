@@ -110,18 +110,18 @@ class NetloadIn(Hoster):
             return
 
         apiurl = "http://api.netload.in/info.php"
-        src = self.load(apiurl, cookies=False,
+        html = self.load(apiurl, cookies=False,
                         get={"file_id": match.group(1), "auth": "Zf9SnQh9WiReEsb18akjvQGqT0I830e8", "bz": "1",
                              "md5": "1"}, decode=True).strip()
-        if not src and n <= 3:
+        if not html and n <= 3:
             sleep(0.2)
             self.download_api_data(n + 1)
             return
 
-        self.logDebug("APIDATA: " + src)
+        self.logDebug("APIDATA: " + html)
         self.api_data = {}
-        if src and ";" in src and src not in ("unknown file_data", "unknown_server_data", "No input file specified."):
-            lines = src.split(";")
+        if html and ";" in html and html not in ("unknown file_data", "unknown_server_data", "No input file specified."):
+            lines = html.split(";")
             self.api_data['exists'] = True
             self.api_data['fileid'] = lines[0]
             self.api_data['filename'] = lines[1]

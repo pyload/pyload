@@ -155,18 +155,25 @@ class LinkSaveIn(SimpleCrypter):
             for i, weblink_id in enumerate(ids):
                 try:
                     webLink = "http://linksave.in/%s" % weblink_id
+
                     self.logDebug("Decrypting Web link %d, %s" % (i + 1, webLink))
+
                     fwLink = "http://linksave.in/fw-%s" % weblink_id
-                    response = self.load(fwLink)
-                    jscode = re.findall(r'<script type="text/javascript">(.*)</script>', response)[-1]
+                    res = self.load(fwLink)
+
+                    jscode = re.findall(r'<script type="text/javascript">(.*)</script>', res)[-1]
                     jseval = self.js.eval("document = { write: function(e) { return e; } }; %s" % jscode)
                     dlLink = re.search(r'http://linksave\.in/dl-\w+', jseval).group(0)
                     self.logDebug("JsEngine returns value [%s] for redirection link" % dlLink)
-                    response = self.load(dlLink)
-                    link = unescape(re.search(r'<iframe src="(.+?)"', response).group(1))
+
+                    res = self.load(dlLink)
+                    link = unescape(re.search(r'<iframe src="(.+?)"', res).group(1))
+
                     package_links.append(link)
+
                 except Exception, detail:
                     self.logDebug("Error decrypting Web link %s, %s" % (webLink, detail))
+
         return package_links
 
 

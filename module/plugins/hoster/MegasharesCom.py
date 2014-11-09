@@ -63,9 +63,9 @@ class MegasharesCom(SimpleHoster):
                        "&rsargs[]=%s&rsargs[]=%s&rsargs[]=%s" % (verifyinput, random_num, passport_num) +
                        "&rsargs[]=replace_sec_pprenewal&rsrnd=%s" % str(int(time() * 1000)))
                 self.logDebug(url)
-                response = self.load(url)
+                res = self.load(url)
 
-                if 'Thank you for reactivating your passport.' in response:
+                if 'Thank you for reactivating your passport.' in res:
                     self.correctCaptcha()
                     self.retry()
                 else:

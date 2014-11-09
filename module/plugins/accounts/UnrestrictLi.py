@@ -29,7 +29,7 @@ class UnrestrictLi(Account):
 
 
     def login(self, user, data, req):
-        req.cj.setCookie("unrestrict.li", "lang", "EN")
+        req.cj.setCookie(".unrestrict.li", "lang", "EN")
         html = req.load("https://unrestrict.li/sign_in")
 
         if 'solvemedia' in html:

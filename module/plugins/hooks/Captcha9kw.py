@@ -64,7 +64,7 @@ class Captcha9kw(Hook):
             with open(task.captchaFile, 'rb') as f:
                 data = f.read()
         except IOError, e:
-            self.logError(str(e))
+            self.logError(e)
             return
 
         data = b64encode(data)

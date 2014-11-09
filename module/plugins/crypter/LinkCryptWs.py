@@ -216,12 +216,12 @@ class LinkCryptWs(Crypter):
             try:
                 self.logDebug("Decrypting Web link %d, %s" % (idx + 1, weblink_id))
 
-                response = self.load("http://linkcrypt.ws/out.html", post = {'file':weblink_id})
+                res = self.load("http://linkcrypt.ws/out.html", post = {'file':weblink_id})
 
-                indexs = response.find("window.location =") + 19
-                indexe = response.find('"', indexs)
+                indexs = res.find("window.location =") + 19
+                indexe = res.find('"', indexs)
 
-                link2= response[indexs:indexe]
+                link2 = res[indexs:indexe]
 
                 self.logDebug(link2)
 

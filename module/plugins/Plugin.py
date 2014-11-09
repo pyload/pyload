@@ -517,7 +517,7 @@ class Plugin(Base):
                     del frame  #: delete the frame or it wont be cleaned
                     f.write(fs_encode(res))
             except IOError, e:
-                self.logError(str(e))
+                self.logError(e)
 
         if just_header:
             #parse header

@@ -35,12 +35,14 @@ class RPNetBiz(Hoster):
 
             self.logDebug("Original URL: %s" % pyfile.url)
             # Get the download link
-            response = self.load("https://premium.rpnet.biz/client_api.php",
-                                 get={"username": user, "password": data['password'],
-                                      "action": "generate", "links": pyfile.url})
+            res = self.load("https://premium.rpnet.biz/client_api.php",
+                            get={"username": user,
+                                 "password": data['password'],
+                                 "action": "generate",
+                                 "links": pyfile.url})
 
-            self.logDebug("JSON data: %s" % response)
-            link_status = json_loads(response)['links'][0]  # get the first link... since we only queried one
+            self.logDebug("JSON data: %s" % res)
+            link_status = json_loads(res)['links'][0]  # get the first link... since we only queried one
 
             # Check if we only have an id as a HDD link
             if 'id' in link_status:
@@ -53,11 +55,13 @@ class RPNetBiz(Hoster):
                 my_try = 0
                 while (my_try <= max_tries):
                     self.logDebug("Try: %d ; Max Tries: %d" % (my_try, max_tries))
-                    response = self.load("https://premium.rpnet.biz/client_api.php",
-                                         get={"username": user, "password": data['password'],
-                                              "action": "downloadInformation", "id": link_status['id']})
-                    self.logDebug("JSON data hdd query: %s" % response)
-                    download_status = json_loads(response)['download']
+                    res = self.load("https://premium.rpnet.biz/client_api.php",
+                                    get={"username": user,
+                                         "password": data['password'],
+                                         "action": "downloadInformation",
+                                         "id": link_status['id']})
+                    self.logDebug("JSON data hdd query: %s" % res)
+                    download_status = json_loads(res)['download']
 
                     if download_status['status'] == '100':
                         link_status['generated'] = download_status['rpnet_link']

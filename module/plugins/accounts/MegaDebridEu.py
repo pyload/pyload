@@ -22,18 +22,18 @@ class MegaDebridEu(Account):
         data = self.getAccountData(user)
         jsonResponse = req.load(self.API_URL,
                                 get={'action': 'connectUser', 'login': user, 'password': data['password']})
-        response = json_loads(jsonResponse)
+        res = json_loads(jsonResponse)
 
-        if response['response_code'] == "ok":
-            return {"premium": True, "validuntil": float(response['vip_end']), "status": True}
+        if res['response_code'] == "ok":
+            return {"premium": True, "validuntil": float(res['vip_end']), "status": True}
         else:
-            self.logError(response)
+            self.logError(res)
             return {"status": False, "premium": False}
 
 
     def login(self, user, data, req):
         jsonResponse = req.load(self.API_URL,
                                 get={'action': 'connectUser', 'login': user, 'password': data['password']})
-        response = json_loads(jsonResponse)
-        if response['response_code'] != "ok":
+        res = json_loads(jsonResponse)
+        if res['response_code'] != "ok":
             self.wrongPassword()

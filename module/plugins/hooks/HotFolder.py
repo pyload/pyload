@@ -61,4 +61,4 @@ class HotFolder(Hook):
                 self.core.api.addPackage(f, [newpath], 1)
 
         except IOError, e:
-            self.logError(str(e))
+            self.logError(e)

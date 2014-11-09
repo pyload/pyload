@@ -42,7 +42,7 @@ class FilecloudIo(Account):
 
 
     def login(self, user, data, req):
-        req.cj.setCookie("secure.filecloud.io", "lang", "en")
+        req.cj.setCookie(".secure.filecloud.io", "lang", "en")
         html = req.load('https://secure.filecloud.io/user-login.html')
 
         if not hasattr(self, "form_data"):
