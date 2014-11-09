@@ -8,9 +8,9 @@ from module.plugins.Account import Account
 
 
 class Keep2shareCc(Account):
-    __name__    = "Keep2shareCC"
+    __name__    = "Keep2shareCc"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Keep2share.cc account plugin"""
     __license__     = "GPLv3"
@@ -63,7 +63,7 @@ class Keep2shareCc(Account):
         req.cj.setCookie(".keep2share.cc", "lang", "en")
 
         html = req.load("http://keep2share.cc/login.html",
-                        post={'LoginForm[username]': user, 'LoginForm[password]': data["password"]})
+                        post={'LoginForm[username]': user, 'LoginForm[password]': data['password']})
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrongPassword()
