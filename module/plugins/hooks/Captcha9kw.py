@@ -176,12 +176,12 @@ class Captcha9kw(Hook):
         hoster_options = self.getConfig("hoster_options").split(";")
         pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
 
-	    if 1000 > queue > 10:
-	 	    servercheck = getURL("http://www.9kw.eu/grafik/servercheck.txt")
+        if 1000 > queue > 10:
+            servercheck = getURL("http://www.9kw.eu/grafik/servercheck.txt")
             regex = re.compile("queue=(\d+)")
 
-		    for _ in xrange(3):
-		        if queue < regex.search(servercheck).group(1):
+            for _ in xrange(3):
+     .          if queue < regex.search(servercheck).group(1):
                     break
 
                 sleep(10)
