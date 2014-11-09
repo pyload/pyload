@@ -149,19 +149,19 @@ class PluginManager:
 
                 config = self.CONFIG.findall(content)
                 if config:
-                    config = literal_eval(config[0].strip().replace("\n", "").replace("\r", ""))
-                    desc = self.DESC.findall(content)
-                    desc = desc[0][1] if desc else ""
-
-                    if type(config[0]) == tuple:
-                        config = [list(x) for x in config]
-                    else:
-                        config = [list(config)]
-
-                    if folder not in ("accounts", "internal") and not [True for item in config if item[0] == "activated"]:
-                        config.insert(0, ["activated", "bool", "Activated", False if folder == "hooks" else True])
-
                     try:
+                        config = literal_eval(config[0].strip().replace("\n", "").replace("\r", ""))
+                        desc = self.DESC.findall(content)
+                        desc = desc[0][1] if desc else ""
+
+                        if type(config[0]) == tuple:
+                            config = [list(x) for x in config]
+                        else:
+                            config = [list(config)]
+
+                        if folder not in ("accounts", "internal") and not [True for item in config if item[0] == "activated"]:
+                            config.insert(0, ["activated", "bool", "Activated", False if folder == "hooks" else True])
+
                         self.core.config.addPluginConfig(name, config, desc)
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
