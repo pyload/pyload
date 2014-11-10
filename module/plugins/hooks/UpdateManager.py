@@ -14,7 +14,7 @@ from module.utils import save_join
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -42,6 +42,7 @@ class UpdateManager(Hook):
                 self.initPeriodical()
             else:
                 self.logDebug("Invalid interval value, kept current")
+
         elif name == "reloadplugins":
             if self.cb2:
                 self.core.scheduler.removeJob(self.cb2)
@@ -60,16 +61,17 @@ class UpdateManager(Hook):
 
 
     def setup(self):
-        self.cb2 = None
+        self.cb2      = None
         self.interval = self.MIN_INTERVAL
         self.updating = False
-        self.info = {'pyload': False, 'version': None, 'plugins': False}
-        self.mtimes = {}  #: store modification time for each plugin
+        self.info     = {'pyload': False, 'version': None, 'plugins': False}
+        self.mtimes   = {}  #: store modification time for each plugin
 
 
     def periodical2(self):
         if not self.updating:
             self.autoreloadPlugins()
+
         self.cb2 = self.core.scheduler.addJob(4, self.periodical2, threaded=False)
 
 
@@ -118,7 +120,9 @@ class UpdateManager(Hook):
     @threaded
     def updateThread(self):
         self.updating = True
+
         status = self.update(onlyplugin=self.getConfig("mode") == "plugins only")
+
         if status == 2:
             self.core.api.restart()
         else:
@@ -135,14 +139,18 @@ class UpdateManager(Hook):
     def update(self, onlyplugin=False):
         """ check for updates """
         data = self.server_request()
+
         if not data:
             exitcode = 0
+
         elif data[0] == "None":
             self.logInfo(_("No new pyLoad version available"))
             updates = data[1:]
             exitcode = self._updatePlugins(updates)
+
         elif onlyplugin:
             exitcode = 0
+
         else:
             newversion = data[0]
             self.logInfo(_("***  New pyLoad Version %s available  ***") % newversion)
@@ -150,6 +158,7 @@ class UpdateManager(Hook):
             exitcode = 3
             self.info['pyload'] = True
             self.info['version'] = newversion
+
         return exitcode  #: 0 = No plugins updated; 1 = Plugins updated; 2 = Plugins updated, but restart required; 3 = No plugins updated, new pyLoad version available
 
 
@@ -159,11 +168,13 @@ class UpdateManager(Hook):
         if self.info['plugins']:
             return False  #: plugins were already updated
 
-        updated = []
+        exitcode = 0
+        updated  = []
 
         vre = re.compile(r'__version__.*=.*("|\')([\d.]+)')
         url = updates[0]
         schema = updates[1].split('|')
+
         if "BLACKLIST" in updates:
             blacklist = updates[updates.index('BLACKLIST') + 1:]
             updates = updates[2:updates.index('BLACKLIST')]
@@ -171,11 +182,13 @@ class UpdateManager(Hook):
             blacklist = None
             updates = updates[2:]
 
-        upgradable = sorted(map(lambda x: dict(zip(schema, x.split('|'))), updates), key=itemgetter("type", "name"))
+        upgradable = sorted(map(lambda x: dict(zip(schema, x.split('|'))), updates),
+                            key=itemgetter("type", "name"))
+
         for plugin in upgradable:
             filename = plugin['name']
-            prefix = plugin['type']
-            version = plugin['version']
+            prefix   = plugin['type']
+            version  = plugin['version']
 
             if filename.endswith(".pyc"):
                 name = filename[:filename.find("_")]
@@ -194,22 +207,20 @@ class UpdateManager(Hook):
             newver = float(version)
 
             if not oldver:
-                msg = "New [%(type)s] %(name)s (v%(newver)s)"
+                msg = "New [%(type)s] %(name)s (v%(newver).2f)"
             elif newver > oldver:
-                msg = "New version of [%(type)s] %(name)s (v%(oldver)f -> v%(newver)f)"
+                msg = "New version of [%(type)s] %(name)s (v%(oldver).2f -> v%(newver).2f)"
             else:
                 continue
 
-            self.logInfo(_(msg) % {
-                'type': type,
-                'name': name,
-                'oldver': oldver,
-                'newver': newver,
-            })
-
+            self.logInfo(_(msg) % {'type'  : type,
+                                   'name'  : name,
+                                   'oldver': oldver,
+                                   'newver': newver})
             try:
                 content = getURL(url % plugin)
                 m = vre.search(content)
+
                 if m and m.group(2) == version:
                     f = open(save_join("userplugins", prefix, filename), "wb")
                     f.write(content)
@@ -217,6 +228,7 @@ class UpdateManager(Hook):
                     updated.append((prefix, name))
                 else:
                     raise Exception, _("Version mismatch")
+
             except Exception, e:
                 self.logError(_("Error updating plugin %s") % filename, str(e))
 
@@ -247,7 +259,6 @@ class UpdateManager(Hook):
                 exitcode = 2
         else:
             self.logInfo(_("No plugin updates available"))
-            exitcode = 0
 
         return exitcode  #: 0 = No plugins updated; 1 = Plugins updated; 2 = Plugins updated, but restart required
 
