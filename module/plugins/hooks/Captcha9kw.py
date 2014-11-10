@@ -17,18 +17,18 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__    = "Captcha9kw"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("force", "bool", "Force captcha resolving even if client is connected", True),
-                  ("confirm", "bool", "Confirm Captcha (Cost +6)", False),
+                  ("confirm", "bool", "Confirm Captcha (cost +6 credits)", False),
                   ("captchaperhour", "int", "Captcha per hour", "9999"),
-                  ("prio", "int", "Priority (max. 20)(Cost +0 -> +20)", "0"),
-                  ("queue", "int", "Max. Queue (max. 999)", "0"),
-                  ("hoster_options", "string", "Hoster options (Format: pluginname:prio=1:selfsolfe=1:confirm=1:timeout=900;)", "ShareonlineBiz:prio=0:timeout=999;UploadedTo:prio=0:timeout=999;SerienjunkiesOrg:prio=1:min=3:max=3:timeout=90;"),
-                  ("selfsolve", "bool", "If enabled and you have a 9kw client active only you will get your captcha to solve it (Selfsolve)", "0"),
+                  ("prio", "int", "Priority (max 20)(cost +0 -> +20 credits)", "0"),
+                  ("queue", "int", "Max. Queue (max 999)", "0"),
+                  ("hoster_options", "string", "Hoster options (format: pluginname:prio=1:selfsolfe=1:confirm=1:timeout=900|...)", "ShareonlineBiz:prio=0:timeout=999 | UploadedTo:prio=0:timeout=999"),
+                  ("selfsolve", "bool", "Selfsolve (manually solve your captcha in your 9kw client if active)", "0"),
                   ("passkey", "password", "API key", ""),
-                  ("timeout", "int", "Timeout (min. 60s, max. 3999s)", "900")]
+                  ("timeout", "int", "Timeout in seconds (min 60, max 3999)", "900")]
 
     __description__ = """Send captchas to 9kw.eu"""
     __license__     = "GPLv3"
@@ -84,10 +84,10 @@ class Captcha9kw(Hook):
                   'timeout'        : min(max(self.getConfig("timeout") * 60, 300), 3999),
                   'selfsolve'      : self.getConfig("selfsolve"),
                   'cph'            : self.getConfig("captchaperhour"),
-                  'hoster_options' : self.getConfig("hoster_options").split(";")}
+                  'hoster_options' : self.getConfig("hoster_options").split('|')}
 
         for opt in hoster_options:
-            details = opt.split(":")
+            details = map(strip(), opt.split(':'))
 
             if not details or details[0].lower() != pluginname.lower():
                 continue
@@ -173,7 +173,7 @@ class Captcha9kw(Hook):
 
         queue = self.getConfig("queue")
         timeout = min(max(self.getConfig("timeout") * 60, 300), 3999)
-        hoster_options = self.getConfig("hoster_options").split(";")
+        hoster_options = self.getConfig("hoster_options").split('|')
         pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
 
         if 1000 > queue > 10:
@@ -187,7 +187,7 @@ class Captcha9kw(Hook):
                 sleep(10)
 
         for opt in hoster_options:
-            details = opt.split(":")
+            details = map(strip(), opt.split(':'))
 
             if not details or details[0].lower() != pluginname.lower():
                 continue
