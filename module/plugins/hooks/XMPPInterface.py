@@ -168,7 +168,7 @@ class XMPPInterface(IRCInterface, JabberClient):
 
                     messages.append(m)
             except Exception, e:
-                self.logError(str(e))
+                self.logError(e)
 
             return messages
 

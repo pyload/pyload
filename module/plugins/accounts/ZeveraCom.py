@@ -43,14 +43,14 @@ class ZeveraCom(Account):
         }
         get_data.update(kwargs)
 
-        response = req.load("http://www.zevera.com/jDownloader.ashx", get=get_data,
+        res = req.load("http://www.zevera.com/jDownloader.ashx", get=get_data,
                             decode=True, just_header=just_header)
-        self.logDebug(response)
+        self.logDebug(res)
 
-        if ':' in response:
+        if ':' in res:
             if not just_header:
-                response = response.replace(',', '\n')
+                res = res.replace(',', '\n')
             return dict((y.strip().lower(), z.strip()) for (y, z) in
-                        [x.split(':', 1) for x in response.splitlines() if ':' in x])
+                        [x.split(':', 1) for x in res.splitlines() if ':' in x])
         else:
-            return response
+            return res

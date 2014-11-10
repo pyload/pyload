@@ -10,7 +10,7 @@ from module.utils import remove_chars
 class LinkdecrypterCom(Hook):
     __name__    = "LinkdecrypterCom"
     __type__    = "hook"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __description__ = """Linkdecrypter.com hook plugin"""
     __license__     = "GPLv3"
@@ -25,8 +25,14 @@ class LinkdecrypterCom(Hook):
 
 
     def loadPatterns(self):
-        page = getURL("http://linkdecrypter.com/")
-        m = re.search(r'<b>Supported\(\d+\)</b>: <i>([^+<]*)', page)
+        html = getURL("http://linkdecrypter.com/")
+
+        m = re.search(r'<title>', html)
+        if m is None:
+            self.logError(_("Linkdecrypter site is down"))
+            return
+
+        m = re.search(r'<b>Supported\(\d+\)</b>: <i>([^+<]*)', html)
         if m is None:
             self.logError(_("Crypter list not found"))
             return
@@ -51,4 +57,4 @@ class LinkdecrypterCom(Hook):
         dict['pattern'] = regexp
         dict['re'] = re.compile(regexp)
 
-        self.logDebug("REGEXP", regexp)
+        self.logDebug("Loaded pattern: %s" % regexp)

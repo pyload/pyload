@@ -20,8 +20,8 @@ class DepositfilesCom(Account):
 
 
     def loadAccountInfo(self, user, req):
-        src = req.load("https://dfiles.eu/de/gold/")
-        validuntil = re.search(r"Sie haben Gold Zugang bis: <b>(.*?)</b></div>", src).group(1)
+        html = req.load("https://dfiles.eu/de/gold/")
+        validuntil = re.search(r"Sie haben Gold Zugang bis: <b>(.*?)</b></div>", html).group(1)
 
         validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
 
@@ -29,7 +29,7 @@ class DepositfilesCom(Account):
 
 
     def login(self, user, data, req):
-        src = req.load("https://dfiles.eu/de/login.php", get={"return": "/de/gold/payment.php"},
-                       post={"login": user, "password": data['password']})
-        if r'<div class="error_message">Sie haben eine falsche Benutzername-Passwort-Kombination verwendet.</div>' in src:
+        html = req.load("https://dfiles.eu/de/login.php", get={"return": "/de/gold/payment.php"},
+                        post={"login": user, "password": data['password']})
+        if r'<div class="error_message">Sie haben eine falsche Benutzername-Passwort-Kombination verwendet.</div>' in html:
             self.wrongPassword()

@@ -86,31 +86,32 @@ class LetitbitNet(SimpleHoster):
         self.logDebug("ReCaptcha control field found", recaptcha_control_field)
         self.wait(seconds)
 
-        response = self.load("http://letitbit.net/ajax/download3.php", post=" ", cookies=True)
-        if response != '1':
+        res = self.load("http://letitbit.net/ajax/download3.php", post=" ", cookies=True)
+        if res != '1':
             self.error(_("Unknown response - ajax_check_url"))
-        self.logDebug(response)
+        self.logDebug(res)
 
         recaptcha = ReCaptcha(self)
         challenge, response = recaptcha.challenge()
 
-        post_data = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response,
+        post_data = {"recaptcha_challenge_field": challenge,
+                     "recaptcha_response_field": response,
                      "recaptcha_control_field": recaptcha_control_field}
         self.logDebug("Post data to send", post_data)
-        response = self.load("http://letitbit.net/ajax/check_recaptcha.php", post=post_data, cookies=True)
-        self.logDebug(response)
-        if not response:
+        res = self.load("http://letitbit.net/ajax/check_recaptcha.php", post=post_data, cookies=True)
+        self.logDebug(res)
+        if not res:
             self.invalidCaptcha()
-        if response == "error_free_download_blocked":
+        if res == "error_free_download_blocked":
             self.logWarning(_("Daily limit reached"))
             self.wait(secondsToMidnight(gmt=2), True)
-        if response == "error_wrong_captcha":
+        if res == "error_wrong_captcha":
             self.invalidCaptcha()
             self.retry()
-        elif response.startswith('['):
-            urls = json_loads(response)
-        elif response.startswith('http://'):
-            urls = [response]
+        elif res.startswith('['):
+            urls = json_loads(res)
+        elif res.startswith('http://'):
+            urls = [res]
         else:
             self.error(_("Unknown response - captcha check"))
 

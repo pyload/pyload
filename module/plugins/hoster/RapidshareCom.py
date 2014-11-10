@@ -44,12 +44,9 @@ def getInfo(urls):
 class RapidshareCom(Hoster):
     __name__    = "RapidshareCom"
     __type__    = "hoster"
-    __version__ = "1.39"
+    __version__ = "1.40"
 
     __pattern__ = r'https?://(?:www\.)?rapidshare\.com/(?:files/(?P<id>\d+)/(?P<name>[^?]+)|#!download\|(?:\w+)\|(?P<id_new>\d+)\|(?P<name_new>[^|]+))'
-    __config__ = [("server",
-                   "Cogent;Deutsche Telekom;Level(3);Level(3) #2;GlobalCrossing;Level(3) #3;Teleglobe;GlobalCrossing #2;TeliaSonera #2;Teleglobe #2;TeliaSonera #3;TeliaSonera",
-                   "Preferred Server", "None")]
 
     __description__ = """Rapidshare.com hoster plugin"""
     __license__     = "GPLv3"
@@ -147,11 +144,11 @@ class RapidshareCom(Hoster):
             return
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_file = {"sub": "checkfiles", "incmd5": "1", "files": self.id, "filenames": self.name}
-        src = self.load(api_url_base, cookies=False, get=api_param_file).strip()
-        self.logDebug("RS INFO API: %s" % src)
-        if src.startswith("ERROR"):
+        html = self.load(api_url_base, cookies=False, get=api_param_file).strip()
+        self.logDebug("RS INFO API: %s" % html)
+        if html.startswith("ERROR"):
             return
-        fields = src.split(",")
+        fields = html.split(",")
 
         # status codes:
         #   0=File not found

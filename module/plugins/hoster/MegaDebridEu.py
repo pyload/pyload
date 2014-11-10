@@ -57,10 +57,10 @@ class MegaDebridEu(Hoster):
         user, data = self.account.selectAccount()
         jsonResponse = self.load(self.API_URL,
                                  get={'action': 'connectUser', 'login': user, 'password': data['password']})
-        response = json_loads(jsonResponse)
+        res = json_loads(jsonResponse)
 
-        if response['response_code'] == "ok":
-            self.token = response['token']
+        if res['response_code'] == "ok":
+            self.token = res['token']
             return True
         else:
             return False
@@ -73,10 +73,10 @@ class MegaDebridEu(Hoster):
         """
         jsonResponse = self.load(self.API_URL, get={'action': 'getLink', 'token': self.token},
                                  post={"link": linkToDebrid})
-        response = json_loads(jsonResponse)
+        res = json_loads(jsonResponse)
 
-        if response['response_code'] == "ok":
-            debridedLink = response['debridLink'][1:-1]
+        if res['response_code'] == "ok":
+            debridedLink = res['debridLink'][1:-1]
             return debridedLink
         else:
             self.exitOnFail("Unable to debrid %s" % linkToDebrid)

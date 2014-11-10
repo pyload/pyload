@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'^unmatchable$'
 
@@ -36,7 +36,7 @@ class XFSHoster(SimpleHoster):
 
     INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
     NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
-    SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>[\w^_]+)?\)</font>'
+    SIZE_PATTERN = r'You have requested .*\((?P<S>[\d.,]+) ?(?P<U>[\w^_]+)?\)</font>'
 
     OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
@@ -51,7 +51,7 @@ class XFSHoster(SimpleHoster):
     RECAPTCHA_PATTERN   = None
     SOLVEMEDIA_PATTERN  = None
 
-    ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<[Cc]enter><b>)(.+?)(?:["\']|</)'
+    ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<[Cc]enter><b>)(.+?)(?:["\']|</)|>\(ERROR:(.+?)\)'
 
 
     def setup(self):
@@ -165,9 +165,14 @@ class XFSHoster(SimpleHoster):
 
         self.html = self.load(action, post=inputs)
 
+        self.checkErrors()
+
         action, inputs = self.parseHtmlForm('F1')
         if not inputs:
-            self.error(_("TEXTAREA F1 not found"))
+            if self.errmsg:
+                self.retry(reason=self.errmsg)
+            else:
+                self.error(_("TEXTAREA F1 not found"))
 
         self.logDebug(inputs)
 
@@ -239,7 +244,7 @@ class XFSHoster(SimpleHoster):
                 self.fail(_("File too large for free download"))
 
             else:
-                self.fail(self.errmsg)
+                self.retry(wait_time=60, reason=self.errmsg)
 
         return self.errmsg
 

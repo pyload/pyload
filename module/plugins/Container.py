@@ -44,9 +44,11 @@ class Container(Crypter):
             self.pyfile.name = re.findall("([^\/=]+)", self.pyfile.url)[-1]
             content = self.load(self.pyfile.url)
             self.pyfile.url = save_join(self.config['general']['download_folder'], self.pyfile.name)
-            f = open(self.pyfile.url, "wb" )
-            f.write(content)
-            f.close()
+            try:
+                with open(self.pyfile.url, "wb") as f:
+                    f.write(content)
+            except IOError, e:
+                self.fail(str(e))
 
         else:
             self.pyfile.name = basename(self.pyfile.url)

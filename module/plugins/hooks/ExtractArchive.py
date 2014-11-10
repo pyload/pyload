@@ -98,12 +98,12 @@ class ExtractArchive(Hook):
                 if e.errno == 2:
                     self.logInfo(_("No %s installed") % p)
                 else:
-                    self.logWarning(_("Could not activate %s") % p, str(e))
+                    self.logWarning(_("Could not activate %s") % p, e)
                     if self.core.debug:
                         print_exc()
 
             except Exception, e:
-                self.logWarning(_("Could not activate %s") % p, str(e))
+                self.logWarning(_("Could not activate %s") % p, e)
                 if self.core.debug:
                     print_exc()
 
@@ -202,7 +202,7 @@ class ExtractArchive(Hook):
                             password = p.password.strip().splitlines()
                             new_files = self._extract(klass, fid, password, thread)
                         except Exception, e:
-                            self.logError(basename(target), str(e))
+                            self.logError(basename(target), e)
                             success = False
                             continue
 
@@ -289,13 +289,13 @@ class ExtractArchive(Hook):
             return extracted_files
 
         except ArchiveError, e:
-            self.logError(basename(plugin.file), _("Archive Error"), str(e))
+            self.logError(basename(plugin.file), _("Archive Error"), e)
         except CRCError:
             self.logError(basename(plugin.file), _("CRC Mismatch"))
         except Exception, e:
             if self.core.debug:
                 print_exc()
-            self.logError(basename(plugin.file), _("Unknown Error"), str(e))
+            self.logError(basename(plugin.file), _("Unknown Error"), e)
 
         self.manager.dispatchEvent("archive_extract_failed", pyfile)
         raise Exception(_("Extract failed"))
@@ -309,16 +309,18 @@ class ExtractArchive(Hook):
 
     def reloadPasswords(self):
         passwordfile = self.getConfig("passwordfile")
-        if not exists(passwordfile):
-            open(passwordfile, "wb").close()
 
-        passwords = []
-        f = open(passwordfile, "rb")
-        for pw in f.read().splitlines():
-            passwords.append(pw)
-        f.close()
+        try:
+            passwords = []
+            with open(passwordfile, "a+") as f:
+                for pw in f.read().splitlines():
+                    passwords.append(pw)
 
-        self.passwords = passwords
+        except IOError, e:
+            self.logError(e)
+
+        else:
+            self.passwords = passwords
 
 
     @Expose
@@ -328,12 +330,15 @@ class ExtractArchive(Hook):
 
         if pw in self.passwords:
             self.passwords.remove(pw)
+
         self.passwords.insert(0, pw)
 
-        f = open(passwordfile, "wb")
-        for pw in self.passwords:
-            f.write(pw + "\n")
-        f.close()
+        try:
+            with open(passwordfile, "wb") as f:
+                for pw in self.passwords:
+                    f.write(pw + "\n")
+        except IOError, e:
+            self.logError(e)
 
 
     def setPermissions(self, files):
@@ -352,4 +357,4 @@ class ExtractArchive(Hook):
                     gid = getgrnam(self.config['permission']['group'])[2]
                     chown(f, uid, gid)
             except Exception, e:
-                self.logWarning(_("Setting User and Group failed"), str(e))
+                self.logWarning(_("Setting User and Group failed"), e)

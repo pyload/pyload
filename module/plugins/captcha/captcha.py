@@ -57,12 +57,17 @@ class OCR(object):
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         #tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
-        tmpTif = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
-        tmpTif.close()
+        try:
+            tmpTif = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
+            tmpTif.close()
 
-        #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-        tmpTxt = open(join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
-        tmpTxt.close()
+            #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
+            tmpTxt = open(join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
+            tmpTxt.close()
+
+        except IOError, e:
+            self.logError(e)
+            return
 
         self.logger.debug("save tiff")
         self.image.save(tmpTif.name, 'TIFF')

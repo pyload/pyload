@@ -12,6 +12,7 @@ from traceback import print_exc
 from module.lib.SafeEval import const_eval as literal_eval
 
 from module.ConfigParser import IGNORE
+from module.utils import save_join
 
 
 class PluginManager:
@@ -43,25 +44,14 @@ class PluginManager:
 
         sys.path.append(abspath(""))
 
-        if not exists("userplugins"):
-            makedirs("userplugins")
-        if not exists(join("userplugins", "__init__.py")):
-            f = open(join("userplugins", "__init__.py"), "wb")
-            f.close()
+        for type in ('accounts', 'captcha', 'container', 'crypter', 'hooks', 'hoster', 'internal')
+            self.plugins[type] = self.parse(type)
+            setattr(self, "%sPlugins" % type, self.plugins[type])
 
-        self.plugins['crypter'] = self.crypterPlugins = self.parse("crypter", pattern=True)
-        self.plugins['container'] = self.containerPlugins = self.parse("container", pattern=True)
-        self.plugins['hoster'] = self.hosterPlugins = self.parse("hoster", pattern=True)
-
-        self.plugins['captcha'] = self.captchaPlugins = self.parse("captcha")
-        self.plugins['accounts'] = self.accountPlugins = self.parse("accounts")
-        self.plugins['hooks'] = self.hookPlugins = self.parse("hooks")
-        self.plugins['internal'] = self.internalPlugins = self.parse("internal")
-
-        self.log.debug("created index of plugins")
+        self.log.debug("Created index of plugins")
 
 
-    def parse(self, folder, pattern=False, home=None):
+    def parse(self, folder, rootplugins={}):
         """
         returns dict with information
         home contains parsed plugins from module.
@@ -72,28 +62,43 @@ class PluginManager:
 
         """
         plugins = {}
-        if home:
-            pfolder = join("userplugins", folder)
-            if not exists(pfolder):
-                makedirs(pfolder)
-            if not exists(join(pfolder, "__init__.py")):
-                f = open(join(pfolder, "__init__.py"), "wb")
-                f.close()
 
-        else:
-            pfolder = join(pypath, "module", "plugins", folder)
+        try:
+            try:
+                pfolder = join("userplugins", folder)
+                if not exists(pfolder):
+                    makedirs(pfolder)
+
+                ifile = join(pfolder, "__init__.py")
+                if not exists(ifile):
+                    f = open(ifile, "a")
+                    f.close()
+
+            except IOError, e:
+                pfolder = join(pypath, "module", "plugins", folder)
+
+        except Exception, e:
+            self.logCritical(e)
+            return plugins
 
         for f in listdir(pfolder):
             if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith(
                 "_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
-                data = open(join(pfolder, f))
-                content = data.read()
-                data.close()
+
+                try:
+                    with open(join(pfolder, f)) as data:
+                        content = data.read()
+
+                except IOError, e:
+                    self.logError(e)
+                    continue
 
                 if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):
                     continue
+
                 elif f.endswith("_26.pyc") and version_info[0:2] != (2, 6):
                     continue
+
                 elif f.endswith("_27.pyc") and version_info[0:2] != (2, 7):
                     continue
 
@@ -106,9 +111,8 @@ class PluginManager:
                 else:
                     version = 0
 
-                # home contains plugins from pyload root
-                if home and name in home:
-                    if home[name]['v'] >= version:
+                if rootplugins and name in rootplugins:
+                    if rootplugins[name]['v'] >= version:
                         continue
 
                 if name in IGNORE or (folder, name) in IGNORE:
@@ -120,16 +124,13 @@ class PluginManager:
                 module = f.replace(".pyc", "").replace(".py", "")
 
                 # the plugin is loaded from user directory
-                plugins[name]['user'] = True if home else False
+                plugins[name]['user'] = True if rootplugins else False
                 plugins[name]['name'] = module
 
-                if pattern:
-                    pattern = self.PATTERN.findall(content)
+                pattern = self.PATTERN.findall(content)
 
-                    if pattern:
-                        pattern = pattern[0][1]
-                    else:
-                        pattern = "^unmatchable$"
+                if pattern:
+                    pattern = pattern[0][1]
 
                     plugins[name]['pattern'] = pattern
 
@@ -146,19 +147,19 @@ class PluginManager:
 
                 config = self.CONFIG.findall(content)
                 if config:
-                    config = literal_eval(config[0].strip().replace("\n", "").replace("\r", ""))
-                    desc = self.DESC.findall(content)
-                    desc = desc[0][1] if desc else ""
-
-                    if type(config[0]) == tuple:
-                        config = [list(x) for x in config]
-                    else:
-                        config = [list(config)]
-
-                    if folder not in ("accounts", "internal") and not [True for item in config if item[0] == "activated"]:
-                        config.insert(0, ["activated", "bool", "Activated", False if folder == "hooks" else True])
-
                     try:
+                        config = literal_eval(config[0].strip().replace("\n", "").replace("\r", ""))
+                        desc = self.DESC.findall(content)
+                        desc = desc[0][1] if desc else ""
+
+                        if type(config[0]) == tuple:
+                            config = [list(x) for x in config]
+                        else:
+                            config = [list(config)]
+
+                        if folder not in ("accounts", "internal") and not [True for item in config if item[0] == "activated"]:
+                            config.insert(0, ["activated", "bool", "Activated", False if folder == "hooks" else True])
+
                         self.core.config.addPluginConfig(name, config, desc)
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
@@ -173,9 +174,8 @@ class PluginManager:
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
 
-        if home is None:
-            temp = self.parse(folder, pattern, plugins)
-            plugins.update(temp)
+        if not rootplugins:
+            plugins.update(self.parse(folder, plugins))
 
         return plugins
 
@@ -220,7 +220,7 @@ class PluginManager:
         plugin, type = self.findPlugin(name)
 
         if not plugin:
-            self.log.warning("Plugin %s not found." % name)
+            self.log.warning("Plugin %s not found" % name)
             plugin = self.hosterPlugins['BasePlugin']
 
         if "new_module" in plugin and not original:
@@ -247,22 +247,32 @@ class PluginManager:
         """
         plugins = self.plugins[type]
         if name in plugins:
-            if "module" in plugins[name]: return plugins[name]['module']
+            if "module" in plugins[name]:
+                return plugins[name]['module']
+
             try:
                 module = __import__(self.ROOT + "%s.%s" % (type, plugins[name]['name']), globals(), locals(),
-                    plugins[name]['name'])
+                                    plugins[name]['name'])
                 plugins[name]['module'] = module  #cache import, maybe unneeded
-                return module
+
             except Exception, e:
                 self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
                 if self.core.debug:
                     print_exc()
 
+            else:
+                self.log.debug(_("Loaded module %(name)s (v%(version).2f)") % {'name': name, 'version': plugins[name]['version']})
+                return module
+
 
     def loadClass(self, type, name):
         """Returns the class of a plugin with the same name"""
         module = self.loadModule(type, name)
-        if module: return getattr(module, name)
+        if module:
+            return getattr(module, name)
+        else:
+            self.log.error(_("%s class %s not loaded") % (type.capitalize(), name))
+            return None
 
 
     def getAccountPlugins(self):
@@ -296,7 +306,8 @@ class PluginManager:
                     newname = name.replace(self.ROOT, self.USERROOT)
                 else:
                     newname = name.replace(self.USERROOT, self.ROOT)
-            else: newname = name
+            else:
+                newname = name
 
             base, plugin = newname.rsplit(".", 1)
 
@@ -312,40 +323,41 @@ class PluginManager:
 
     def reloadPlugins(self, type_plugins):
         """ reloads and reindexes plugins """
-        if not type_plugins: return False
+        if not type_plugins:
+            return None
 
         self.log.debug("Request reload of plugins: %s" % type_plugins)
 
+        flag = True
         as_dict = {}
+
         for t,n in type_plugins:
             if t in as_dict:
                 as_dict[t].append(n)
             else:
                 as_dict[t] = [n]
 
-        # we do not reload hooks or internals, would cause to much side effects
-        if "hooks" in as_dict or "internal" in as_dict:
-            return False
-
         for type in as_dict.iterkeys():
+            # we do not reload hooks or internals, would cause to much side effects
+            if type in ("hooks", "internal"):
+                flag = False
+                continue
+
             for plugin in as_dict[type]:
                 if plugin in self.plugins[type]:
                     if "module" in self.plugins[type][plugin]:
-                        self.log.debug("Reloading %s" % plugin)
+                        self.log.debug("Reloading module %s" % plugin)
                         reload(self.plugins[type][plugin]['module'])
 
-        #index creation
-        self.plugins['crypter'] = self.crypterPlugins = self.parse("crypter", pattern=True)
-        self.plugins['container'] = self.containerPlugins = self.parse("container", pattern=True)
-        self.plugins['hoster'] = self.hosterPlugins = self.parse("hoster", pattern=True)
-        self.plugins['captcha'] = self.captchaPlugins = self.parse("captcha")
-        self.plugins['accounts'] = self.accountPlugins = self.parse("accounts")
+            #index creation
+            self.plugins[type] = self.parse(type)
+            setattr(self, "%sPlugins" % type, self.plugins[type])
 
-        if "accounts" in as_dict: #accounts needs to be reloaded
+        if "accounts" in as_dict:  #: accounts needs to be reloaded
             self.core.accountManager.initPlugins()
             self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
 
-        return True
+        return flag
 
 
 

@@ -36,7 +36,7 @@ def remove_chars(string, repl):
 def save_path(name):
     #remove some chars
     if os.name == 'nt':
-        return remove_chars(name, '/\\?%*:|"<>')
+        return remove_chars(name, '/?%*|"<>')
     else:
         return remove_chars(name, '/\\"')
 
@@ -54,7 +54,7 @@ if sys.getfilesystemencoding().startswith('ANSI'):
         try:
             string = string.encode('utf-8')
         finally:
-            return string
+            return save_path(string)
 
     fs_decode = decode #decode utf8
 
