@@ -51,7 +51,7 @@ class Captcha9kw(Hook):
                           'action': "usercaptchaguthaben"})
 
         if res.isdigit():
-            self.logInfo(_("%d credits left") % res)
+            self.logInfo(_("%d credits left") % int(res))
             credits = self.info["credits"] = int(res)
             return credits
         else:
@@ -86,7 +86,7 @@ class Captcha9kw(Hook):
                   'cph'            : self.getConfig("captchaperhour"),
                   'hoster_options' : self.getConfig("hoster_options").split('|')}
 
-        for opt in hoster_options:
+        for opt in option['hoster_options']:
             details = map(strip(), opt.split(':'))
 
             if not details or details[0].lower() != pluginname.lower():
@@ -104,17 +104,17 @@ class Captcha9kw(Hook):
 
         for _ in xrange(5):
             post_data = {'apikey'        : self.getConfig("passkey"),
-                         'prio'          : prio_option,
-                         'confirm'       : confirm_option,
-                         'maxtimeout'    : timeout_option,
-                         'selfsolve'     : selfsolve_option,
-                         'captchaperhour': cph_option,
-                         'case-sensitive': case_sensitive_option,
-                         'min_len'       : min_option,
-                         'max_len'       : max_option,
-                         'phrase'        : phrase_option,
-                         'numeric'       : numeric_option,
-                         'math'          : math_option,
+                         'prio'          : option['prio'],
+                         'confirm'       : option['confirm'],
+                         'maxtimeout'    : option['timeout'],
+                         'selfsolve'     : option['selfsolve'],
+                         'captchaperhour': option['cph'],
+                         'case-sensitive': option['case_sensitive'],
+                         'min_len'       : option['min'],
+                         'max_len'       : option['max'],
+                         'phrase'        : option['phrase'],
+                         'numeric'       : option['numeric'],
+                         'math'          : option['math'],
                          'oldsource'     : pluginname,
                          'pyload'        : "1",
                          'source'        : "pyload",
@@ -130,7 +130,7 @@ class Captcha9kw(Hook):
                 sleep(3)
 
         if not res.isdigit():
-            self.logError(_("Bad upload: %s") % res)
+            self.logError(_("Bad upload: %s") % int(res))
             return
 
         self.logInfo(_("NewCaptchaID from upload: %s : %s") % (res, task.captchaFile))
@@ -234,8 +234,8 @@ class Captcha9kw(Hook):
 
 
     def captchaCorrect(self, task):
-        self._captchaResponse(self, task, True)
+        self._captchaResponse(task, True)
 
 
     def captchaInvalid(self, task):
-        self._captchaResponse(self, task, False)
+        self._captchaResponse(task, False)
