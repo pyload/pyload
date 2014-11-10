@@ -151,7 +151,7 @@ class Plugin(Base):
     """
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = None
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -492,7 +492,7 @@ class Plugin(Base):
             self.abort()
 
         if not url:
-            self.fail(_"No url given"))
+            self.fail(_("No url given"))
 
         if type(url) == unicode:  # utf8 vs decode -> please use decode attribute in all future plugins
             url = str(url)  #: encode('utf8')
@@ -558,7 +558,7 @@ class Plugin(Base):
             self.abort()
 
         if not url:
-            self.fail(_"No url given"))
+            self.fail(_("No url given"))
 
         if type(url) == unicode:
             url = str(url)
