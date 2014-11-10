@@ -43,7 +43,6 @@ class AccountManager():
                     if klass:
                         self.plugins[plugin] = klass(self, self.accounts[plugin])
                     else:
-                        self.logCritical(_("Account plugin %s not loaded") % plugin)
                         raise
 
                 return self.plugins[plugin]
