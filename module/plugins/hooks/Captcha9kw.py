@@ -17,7 +17,7 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__    = "Captcha9kw"
     __type__    = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("force", "bool", "Force captcha resolving even if client is connected", True),
@@ -25,7 +25,7 @@ class Captcha9kw(Hook):
                   ("captchaperhour", "int", "Captcha per hour", "9999"),
                   ("prio", "int", "Priority (max. 20)(Cost +0 -> +20)", "0"),
                   ("queue", "int", "Max. Queue (max. 999)", "0"),
-                  ("hoster_options", "string", "Hoster options (Format: pluginname:prio=1:selfsolfe=1:confirm=1:timeout=900;)", "ShareonlineBiz:prio=0:timeout=999;UploadedTo:prio=0:timeout=999;SerienjunkiesOrg:prio=1:min=3;max=3;timeout=90"),
+                  ("hoster_options", "string", "Hoster options (Format: pluginname:prio=1:selfsolfe=1:confirm=1:timeout=900;)", "ShareonlineBiz:prio=0:timeout=999;UploadedTo:prio=0:timeout=999;SerienjunkiesOrg:prio=1:min=3:max=3:timeout=90;"),
                   ("selfsolve", "bool", "If enabled and you have a 9kw client active only you will get your captcha to solve it (Selfsolve)", "0"),
                   ("passkey", "password", "API key", ""),
                   ("timeout", "int", "Timeout (min. 60s, max. 3999s)", "900")]

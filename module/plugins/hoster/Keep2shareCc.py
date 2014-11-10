@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class Keep2shareCc(SimpleHoster):
     __name__    = "Keep2shareCc"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
@@ -37,6 +37,9 @@ class Keep2shareCc(SimpleHoster):
 
         self.fid = re.search(r'<input type="hidden" name="slow_id" value="([^"]+)">', self.html).group(1)
         self.html = self.load(self.pyfile.url, post={'yt0': '', 'slow_id': self.fid})
+
+        if ">Downloading is not possible" in self.html:
+            self.fail("Free user can't download large files")
 
         m = re.search(r"function download\(\){.*window\.location\.href = '([^']+)';", self.html, re.S)
         if m:  # Direct mode
@@ -101,7 +104,6 @@ class Keep2shareCc(SimpleHoster):
 
     def startDownload(self, url):
         d = urljoin(self.base_url, url)
-        self.logDebug("Direct Link: " + d)
         self.download(d, disposition=True)
 
 
