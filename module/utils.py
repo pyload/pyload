@@ -36,7 +36,7 @@ def remove_chars(string, repl):
 def save_path(name):
     #remove some chars
     if os.name == 'nt':
-        return remove_chars(name, '/\\?%*:|"<>')
+        return remove_chars(name, '/?%*|"<>')
     else:
         return remove_chars(name, '/\\"')
 
