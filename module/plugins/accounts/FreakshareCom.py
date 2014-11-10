@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class FreakshareCom(Account):
     __name__    = "FreakshareCom"
     __type__    = "account"
-    __version__ = "0.1"
+    __version__ = "0.11"
 
     __description__ = """Freakshare.com account plugin"""
     __license__     = "GPLv3"
@@ -33,8 +33,10 @@ class FreakshareCom(Account):
 
 
     def login(self, user, data, req):
+        req.load("http://freakshare.com/index.php?language=EN")
+
         page = req.load("http://freakshare.com/login.html", None,
                         {"submit": "Login", "user": user, "pass": data['password']}, cookies=True)
 
-        if "Falsche Logindaten!" in page or "Wrong Username or Password!" in page:
+        if ">Wrong Username or Password" in page:
             self.wrongPassword()
