@@ -73,7 +73,7 @@ class PluginManager:
                 if not exists(pfolder):
                     makedirs(pfolder)
 
-                for ifile in (join(join("userplugins", "__init__.py")),
+                for ifile in (join("userplugins", "__init__.py"),
                               join(pfolder, "__init__.py")):
                     if not exists(ifile):
                         f = open(ifile, "wb")
