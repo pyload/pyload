@@ -44,7 +44,10 @@ class PluginManager:
 
         sys.path.append(abspath(""))
 
-        for type in ('accounts', 'captcha', 'container', 'crypter', 'hooks', 'hoster', 'internal')
+        #@NOTE: In 0.4.10 directory "accounts" changes to "account"
+        self.plugins['accounts'] = self.accountPlugins = self.parse("accounts")
+
+        for type in ('captcha', 'container', 'crypter', 'hooks', 'hoster', 'internal'):
             self.plugins[type] = self.parse(type)
             setattr(self, "%sPlugins" % type, self.plugins[type])
 
@@ -351,7 +354,11 @@ class PluginManager:
 
             #index creation
             self.plugins[type] = self.parse(type)
-            setattr(self, "%sPlugins" % type, self.plugins[type])
+
+            if type is "accounts":
+                self.accountPlugins = self.plugins[type]  #@TODO: Remove in 0.4.10
+            else:
+                setattr(self, "%sPlugins" % type, self.plugins[type])
 
         if "accounts" in as_dict:  #: accounts needs to be reloaded
             self.core.accountManager.initPlugins()
