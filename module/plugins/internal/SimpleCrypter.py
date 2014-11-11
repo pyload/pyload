@@ -129,7 +129,7 @@ class SimpleCrypter(Crypter):
         if name and name != url:
             self.pyfile.name = name
         else:
-            self.pyfile.name = self.info['name'] = html_unescape(urlparse(url).path.split("/")[-1])
+            self.pyfile.name = self.info['name'] = urlparse(html_unescape(name)).path.split("/")[-1]
 
         if status is 1:
             self.offline()
