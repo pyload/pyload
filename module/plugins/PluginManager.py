@@ -12,7 +12,6 @@ from traceback import print_exc
 from module.lib.SafeEval import const_eval as literal_eval
 
 from module.ConfigParser import IGNORE
-from module.utils import save_join
 
 
 class PluginManager:
@@ -44,10 +43,11 @@ class PluginManager:
 
         sys.path.append(abspath(""))
 
-        #@NOTE: In 0.4.10 directory "accounts" changes to "account"
+        #@NOTE: In 0.4.10 directory "accounts" changes to "account" and "hooks" changes to "hook"
         self.plugins['accounts'] = self.accountPlugins = self.parse("accounts")
+        self.plugins['hooks']    = self.hookPlugins    = self.parse("hooks")
 
-        for type in ('captcha', 'container', 'crypter', 'hooks', 'hoster', 'internal'):
+        for type in ('captcha', 'container', 'crypter', 'hoster', 'internal'):
             self.plugins[type] = self.parse(type)
             setattr(self, "%sPlugins" % type, self.plugins[type])
 
@@ -64,25 +64,27 @@ class PluginManager:
         }
 
         """
+
         plugins = {}
 
-        try:
+        if rootplugins:
             try:
                 pfolder = join("userplugins", folder)
                 if not exists(pfolder):
                     makedirs(pfolder)
 
-                ifile = join(pfolder, "__init__.py")
-                if not exists(ifile):
-                    f = open(ifile, "a")
-                    f.close()
+                for ifile in (join(join("userplugins", "__init__.py")),
+                              join(pfolder, "__init__.py")):
+                    if not exists(ifile):
+                        f = open(ifile, "wb")
+                        f.close()
 
             except IOError, e:
-                pfolder = join(pypath, "module", "plugins", folder)
+                self.logCritical(e)
+                return rootplugins
 
-        except Exception, e:
-            self.logCritical(e)
-            return plugins
+        else:
+            pfolder = join(pypath, "module", "plugins", folder)
 
         for f in listdir(pfolder):
             if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith(
@@ -142,7 +144,6 @@ class PluginManager:
                     except:
                         self.log.error(_("%s has a invalid pattern") % name)
 
-
                 # internals have no config
                 if folder == "internal":
                     self.core.config.deleteConfig(name)
@@ -177,7 +178,7 @@ class PluginManager:
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
 
-        if not rootplugins:
+        if not rootplugins and plugins:  #: Double check
             plugins.update(self.parse(folder, plugins))
 
         return plugins
