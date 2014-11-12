@@ -17,7 +17,7 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__    = "Captcha9kw"
     __type__    = "hook"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("force", "bool", "Force captcha resolving even if client is connected", True),
@@ -125,7 +125,7 @@ class Captcha9kw(Hook):
                      'file-upload-01': data,
                      'action'        : "usercaptchaupload"}
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             try:
                 res = getURL(self.API_URL, post=post_data)
             except BadHeader, e:
@@ -141,7 +141,7 @@ class Captcha9kw(Hook):
 
         task.data["ticket"] = res
 
-        for _ in xrange(int(self.getConfig("timeout") / 5)):
+        for _i in xrange(int(self.getConfig("timeout") / 5)):
             result = getURL(self.API_URL,
                             get={'apikey': self.getConfig("passkey"),
                                  'id'    : res,
@@ -183,7 +183,7 @@ class Captcha9kw(Hook):
         timeout = min(max(self.getConfig("timeout"), 300), 3999)
         pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             servercheck = getURL("http://www.9kw.eu/grafik/servercheck.txt")
             if queue < re.search(r'queue=(\d+)', servercheck).group(1):
                 break
@@ -224,7 +224,7 @@ class Captcha9kw(Hook):
 
         passkey = self.getConfig("passkey")
 
-        for _ in xrange(3):
+        for _i in xrange(3):
             res = getURL(self.API_URL,
                          get={'action' : "usercaptchacorrectback",
                               'apikey' : passkey,
