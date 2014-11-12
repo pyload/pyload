@@ -514,11 +514,11 @@ class Plugin(Base):
             from inspect import currentframe
 
             frame = currentframe()
-            if not exists(join("tmp", self.__name__)):
-                makedirs(join("tmp", self.__name__))
-
             framefile = save_join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             try:
+                if not exists(join("tmp", self.__name__)):
+                    makedirs(join("tmp", self.__name__))
+
                 with open(framefile, "wb") as f:
                     del frame  #: delete the frame or it wont be cleaned
                     f.write(fs_encode(res))
@@ -583,16 +583,16 @@ class Plugin(Base):
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
-            makedirs(location, int(self.core.config['permission']['folder'], 8))
+            try:
+                makedirs(location, int(self.core.config['permission']['folder'], 8))
 
-            if self.core.config['permission']['change_dl'] and os.name != "nt":
-                try:
+                if self.core.config['permission']['change_dl'] and os.name != "nt":
                     uid = getpwnam(self.config['permission']['user'])[2]
                     gid = getgrnam(self.config['permission']['group'])[2]
-
                     chown(location, uid, gid)
-                except Exception, e:
-                    self.logWarning(_("Setting User and Group failed: ") + str(e))
+
+            except Exception, e:
+                self.fail(e)
 
         # convert back to unicode
         location = fs_decode(location)
@@ -606,28 +606,33 @@ class Plugin(Base):
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
                                             chunks=self.getChunkCount(), resume=self.resumeDownload,
                                             progressNotify=self.pyfile.setProgress, disposition=disposition)
-            newname = urlparse(newname).path.split("/")[-1]
         finally:
             self.pyfile.size = self.req.size
 
-        if disposition and newname and newname != name: #triple check, just to be sure
-            self.logInfo(_("%(name)s saved as %(newname)s") % {"name": name, "newname": newname})
-            self.pyfile.name = newname
-            filename = join(location, newname)
+        if newname:
+            newname = urlparse(newname).path.split("/")[-1]
+
+            if disposition and newname != name:
+                self.logInfo(_("%(name)s saved as %(newname)s") % {"name": name, "newname": newname})
+                self.pyfile.name = newname
+                filename = join(location, newname)
 
         fs_filename = fs_encode(filename)
 
         if self.core.config['permission']['change_file']:
-            chmod(fs_filename, int(self.core.config['permission']['file'], 8))
+            try:
+                chmod(fs_filename, int(self.core.config['permission']['file'], 8))
+            except Exception, e:
+                self.logWarning(_("Setting file mode failed"), e)
 
         if self.core.config['permission']['change_dl'] and os.name != "nt":
             try:
                 uid = getpwnam(self.config['permission']['user'])[2]
                 gid = getgrnam(self.config['permission']['group'])[2]
-
                 chown(fs_filename, uid, gid)
+
             except Exception, e:
-                self.logWarning(_("Setting User and Group failed: ") + str(e))
+                self.logWarning(_("Setting User and Group failed"), e)
 
         self.lastDownload = filename
         return self.lastDownload
