@@ -606,7 +606,7 @@ class Plugin(Base):
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
                                             chunks=self.getChunkCount(), resume=self.resumeDownload,
                                             progressNotify=self.pyfile.setProgress, disposition=disposition)
-            newname = urlparse(html_unescape(newname)).path.split("/")[-1]
+            newname = urlparse(newname).path.split("/")[-1]
         finally:
             self.pyfile.size = self.req.size
 
