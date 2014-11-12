@@ -27,6 +27,7 @@ from utils import freeSpace, compare_time
 from common.packagetools import parseNames
 from network.RequestFactory import getURL
 from remote import activated
+from utils import save_path
 
 if activated:
     try:
@@ -49,7 +50,7 @@ def permission(bits):
         def __new__(cls, func, *args, **kwargs):
             permMap[func.__name__] = bits
             return func
-        
+
     return _Dec
 
 
@@ -160,7 +161,7 @@ class Api(Iface):
     @permission(PERMS.SETTINGS)
     def getConfig(self):
         """Retrieves complete config of core.
-        
+
         :return: list of `ConfigSection`
         """
         return self._convertConfigFormat(self.core.config.config)
@@ -219,7 +220,7 @@ class Api(Iface):
     @permission(PERMS.LIST)
     def statusServer(self):
         """Some general information about the current status of pyLoad.
-        
+
         :return: `ServerStatus`
         """
         serverStatus = ServerStatus(self.core.threadManager.pause, len(self.core.threadManager.processingIds()),
@@ -314,13 +315,11 @@ class Api(Iface):
         :param name: name of the new package
         :param links: list of urls
         :param dest: `Destination`
-        :modification - new param folder: download folder, if specified 
+        :param folder: download folder, if specified 
         :return: package id of the new package
         """
-        if self.core.config['general']['folder_per_package']:
-            if not folder: # modification - only generate folder if parameter is empty
-                folder = name
-                folder = folder.replace("http://", "").replace(":", "").replace("/", "_").replace("\\", "_")
+        if self.core.config['general']['folder_per_package'] and not folder:
+            folder = save_path(name.replace("http://", "").replace(":", "").replace("/", "_").replace("\\", "_"))
 
         pid = self.core.files.addPackage(name, folder, dest)
 
@@ -483,7 +482,7 @@ class Api(Iface):
         :return: `PackageData` with .fid attribute
         """
         data = self.core.files.getPackageData(int(pid))
-        
+
         if not data:
             raise PackageDoesNotExists(pid)
 
@@ -510,7 +509,7 @@ class Api(Iface):
     @permission(PERMS.DELETE)
     def deleteFiles(self, fids):
         """Deletes several file entries from pyload.
-        
+
         :param fids: list of file ids
         """
         for id in fids:
@@ -583,7 +582,7 @@ class Api(Iface):
     @permission(PERMS.ADD)
     def addFiles(self, pid, links):
         """Adds files to specific package.
-        
+
         :param pid: package id
         :param links: list of urls
         """
