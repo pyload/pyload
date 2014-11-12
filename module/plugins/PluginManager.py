@@ -43,7 +43,7 @@ class PluginManager:
 
         sys.path.append(abspath(""))
 
-        #@NOTE: In 0.4.10 directory "accounts" changes to "account" and "hooks" changes to "hook"
+        #@NOTE: In 0.4.10 directory "accounts" changes to "account" and "hooks" changes to "addon"
         self.plugins['accounts'] = self.accountPlugins = self.parse("accounts")
         self.plugins['hooks']    = self.hookPlugins    = self.parse("hooks")
 
