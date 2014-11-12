@@ -17,7 +17,7 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__    = "Captcha9kw"
     __type__    = "hook"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("force", "bool", "Force captcha resolving even if client is connected", True),
@@ -82,7 +82,7 @@ class Captcha9kw(Hook):
                   'math'          : 0,
                   'prio'          : min(max(self.getConfig("prio"), 0), 10),
                   'confirm'       : self.getConfig("confirm"),
-                  'timeout'       : min(max(self.getConfig("timeout") * 60, 300), 3999),
+                  'timeout'       : min(max(self.getConfig("timeout"), 300), 3999),
                   'selfsolve'     : self.getConfig("selfsolve"),
                   'cph'           : self.getConfig("captchaperhour")}
 
@@ -140,9 +140,27 @@ class Captcha9kw(Hook):
         self.logInfo(_("NewCaptchaID from upload: %s : %s") % (res, task.captchaFile))
 
         task.data["ticket"] = res
-        self.logInfo("result %s : %s" % (res, result))
 
-        task.setResult(self._captchaResponse(task))
+        for _ in xrange(int(self.getConfig("timeout") / 5)):
+            result = getURL(self.API_URL,
+                            get={'apikey': self.getConfig("passkey"),
+                                 'id'    : res,
+                                 'pyload': "1",
+                                 'info'  : "1",
+                                 'source': "pyload",
+                                 'action': "usercaptchacorrectdata"})
+
+            if not result or result == "NO DATA":
+                sleep(5)
+            else:
+                break
+        else:
+            self.logDebug("Could not send request: %s" % res)
+            result = None
+
+        self.logInfo(_("Result: %s : %s") % (res, result))
+
+        task.setResult(result)
 
 
     def newCaptchaTask(self, task):
@@ -162,7 +180,7 @@ class Captcha9kw(Hook):
             return
 
         queue = min(self.getConfig("queue"), 999)
-        timeout = min(max(self.getConfig("timeout") * 60, 300), 3999)
+        timeout = min(max(self.getConfig("timeout"), 300), 3999)
         pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
 
         for _ in xrange(5):
@@ -197,12 +215,13 @@ class Captcha9kw(Hook):
         self._processCaptcha(task)
 
 
-    def _captchaResponse(self, task, correct=True):
-        if "ticket" not in task.data:
-            self.logDebug("No CaptchaID for %s request (task: %s)" % type % task)
+    def _captchaResponse(self, task, correct):
+        type = "correct" if correct else "refund"
+
+        if 'ticket' not in task.data:
+            self.logDebug("No CaptchaID for %s request (task: %s)" % (type, task))
             return
 
-        type = "correct" if correct else "refund"
         passkey = self.getConfig("passkey")
 
         for _ in xrange(3):
@@ -215,13 +234,14 @@ class Captcha9kw(Hook):
                               'source' : "pyload",
                               'id'     : task.data["ticket"]})
 
-            self.logDebug("Request %s: %s" % type % res)
+            self.logDebug("Request %s: %s" % (type, res))
 
-            if not res or res is "NO DATA":
-                self.logDebug("Could not send %s request: %s" % type % res)
-                sleep(5)
+            if res is "OK":
+                self.logInfo(_("Request %s: %s" % type) % res)
+                return
             else:
-                return res
+                self.logDebug("Could not send %s request: %s" % (type, res))
+                sleep(5)
         else:
             return None
 
