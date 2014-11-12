@@ -17,7 +17,7 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__    = "Captcha9kw"
     __type__    = "hook"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("force", "bool", "Force captcha resolving even if client is connected", True),
@@ -88,7 +88,7 @@ class Captcha9kw(Hook):
 
         for opt in self.getConfig("hoster_options").split('|'):
 
-            details = map(strip(), opt.split(':'))
+            details = map(str.strip, opt.split(':'))
 
             if not details or details[0].lower() != pluginname.lower():
                 continue
@@ -175,7 +175,7 @@ class Captcha9kw(Hook):
             self.fail(_("Too many captchas in queue"))
 
         for opt in self.getConfig("hoster_options").split('|'):
-            details = map(strip(), opt.split(':'))
+            details = map(str.strip, opt.split(':'))
 
             if not details or details[0].lower() != pluginname.lower():
                 continue
