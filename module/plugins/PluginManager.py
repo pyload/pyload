@@ -117,14 +117,14 @@ class PluginManager:
                     version = 0
 
                 if rootplugins and name in rootplugins:
-                    if rootplugins[name]['v'] >= version:
+                    if rootplugins[name]['version'] >= version:
                         continue
 
                 if name in IGNORE or (folder, name) in IGNORE:
                      continue
 
                 plugins[name] = {}
-                plugins[name]['v'] = version
+                plugins[name]['version'] = version
 
                 module = f.replace(".pyc", "").replace(".py", "")
 
