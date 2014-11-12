@@ -17,9 +17,10 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__    = "Captcha9kw"
     __type__    = "hook"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __config__ = [("activated", "bool", "Activated", True),
+                  ("ssl", "bool", "Use HTTPS", True),
                   ("force", "bool", "Force captcha resolving even if client is connected", True),
                   ("confirm", "bool", "Confirm Captcha (cost +6 credits)", False),
                   ("captchaperhour", "int", "Captcha per hour", "9999"),
@@ -41,6 +42,8 @@ class Captcha9kw(Hook):
 
     def setup(self):
         self.info = {}  #@TODO: Remove in 0.4.10
+        if self.getConfig("ssl"):
+            self.API_URL = self.API_URL.replace("http://", "https://")
 
 
     def getCredits(self):
@@ -71,8 +74,6 @@ class Captcha9kw(Hook):
         data = b64encode(data)
         mouse = 1 if task.isPositional() else 0
         pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
-
-        self.logDebug("%s: %s" % (task.captchaFile, data))
 
         option = {'min'           : 2,
                   'max'           : 50,
@@ -137,7 +138,7 @@ class Captcha9kw(Hook):
             self.logError(_("Bad upload: %s") % res)
             return
 
-        self.logInfo(_("NewCaptchaID from upload: %s : %s") % (res, task.captchaFile))
+        self.logDebug(_("NewCaptchaID ticket: %s") % res, task.captchaFile)
 
         task.data["ticket"] = res
 
@@ -158,7 +159,7 @@ class Captcha9kw(Hook):
             self.logDebug("Could not send request: %s" % res)
             result = None
 
-        self.logInfo(_("Result: %s : %s") % (res, result))
+        self.logInfo(_("Captcha result for ticket %s: %s") % (res, result))
 
         task.setResult(result)
 
@@ -236,14 +237,12 @@ class Captcha9kw(Hook):
 
             self.logDebug("Request %s: %s" % (type, res))
 
-            if res is "OK":
-                self.logInfo(_("Request %s: %s" % type) % res)
-                return
-            else:
-                self.logDebug("Could not send %s request: %s" % (type, res))
-                sleep(5)
+            if res == "OK":
+                break
+
+            sleep(5)
         else:
-            return None
+            self.logDebug("Could not send %s request: %s" % (type, res))
 
 
     def captchaCorrect(self, task):
