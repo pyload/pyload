@@ -137,12 +137,15 @@ class PluginManager:
                 if pattern:
                     pattern = pattern[0][1]
 
-                    plugins[name]['pattern'] = pattern
-
                     try:
-                        plugins[name]['re'] = re.compile(pattern)
+                        regexp = re.compile(pattern)
                     except:
                         self.log.error(_("%s has a invalid pattern") % name)
+                        pattern = r'^unmatchable$'
+                        regexp = re.compile(pattern)
+
+                    plugins[name]['pattern'] = pattern
+                    plugins[name]['re'] = regexp
 
                 # internals have no config
                 if folder == "internal":
