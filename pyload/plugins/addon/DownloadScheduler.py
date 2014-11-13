@@ -8,25 +8,27 @@ from pyload.plugins.base.Addon import Addon
 
 
 class DownloadScheduler(Addon):
-    __name__ = "DownloadScheduler"
-    __type__ = "addon"
+    __name__    = "DownloadScheduler"
+    __type__    = "addon"
     __version__ = "0.21"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("timetable", "str", "List time periods as hh:mm full or number(kB/s)",
+    __config__ = [("timetable", "str", "List time periods as hh:mm full or number(kB/s)",
                    "0:00 full, 7:00 250, 10:00 0, 17:00 150"),
                   ("abort", "bool", "Abort active downloads when start period with speed 0", False)]
 
     __description__ = """Download Scheduler"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     def setup(self):
-        self.cb = None  # callback to scheduler job; will be by removed AddonManager when addon unloaded
+        self.cb = None  #: callback to scheduler job; will be by removed AddonManager when addon unloaded
+
 
     def coreReady(self):
         self.updateSchedule()
+
 
     def updateSchedule(self, schedule=None):
         if schedule is None:
@@ -54,6 +56,7 @@ class DownloadScheduler(Addon):
                 next_time = (((24 + next[0] - now[0]) * 60 + next[1] - now[1]) * 60 + next[2] - now[2]) % 86400
                 self.core.scheduler.removeJob(self.cb)
                 self.cb = self.core.scheduler.addJob(next_time, self.updateSchedule, threaded=False)
+
 
     def setDownloadSpeed(self, speed):
         if speed == 0:

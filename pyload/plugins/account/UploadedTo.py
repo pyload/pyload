@@ -7,46 +7,54 @@ from pyload.plugins.base.Account import Account
 
 
 class UploadedTo(Account):
-    __name__ = "UploadedTo"
-    __type__ = "account"
-    __version__ = "0.26"
+    __name__    = "UploadedTo"
+    __type__    = "account"
+    __version__ = "0.27"
 
     __description__ = """Uploaded.to account plugin"""
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
+
+
+    PREMIUM_PATTERN = r'<em>Premium</em>'
+    VALID_UNTIL_PATTERN = r'<td>Duration:</td>\s*<th>([^<]+)'
+    TRAFFIC_LEFT_PATTERN = r'<th colspan="2"><b class="cB">([^<]+)'
 
 
     def loadAccountInfo(self, user, req):
+        validuntil  = None
+        trafficleft = None
+        premium     = None
 
-        req.load("http://uploaded.net/language/en")
         html = req.load("http://uploaded.net/me")
 
-        premium = '<a href="register"><em>Premium</em>' in html or '<em>Premium</em></th>' in html
+        premium = True if re.search(self.PREMIUM_PATTERN, html) else False
 
-        if premium:
-            raw_traffic = re.search(r'<th colspan="2"><b class="cB">([^<]+)', html).group(1).replace('.', '')
-            raw_valid = re.search(r"<td>Duration:</td>\s*<th>([^<]+)", html, re.MULTILINE).group(1).strip()
+        m = re.search(self.VALID_UNTIL_PATTERN, html, re.M)
+        if m:
+            expiredate = m.group(1).strip()
 
-            traffic = int(self.parseTraffic(raw_traffic))
-
-            if raw_valid == "unlimited":
+            if expiredate == "unlimited":
                 validuntil = -1
             else:
-                raw_valid = re.findall(r"(\d+) (Week|weeks|days|day|hours|hour)", raw_valid)
-                validuntil = time()
-                for n, u in raw_valid:
-                    validuntil += int(n) * 60 * 60 * {"Week": 168, "weeks": 168, "days": 24,
-                                                      "day": 24, "hours": 1, "hour": 1}[u]
+                m = re.findall(r'(\d+) (Week|weeks|day|hour)', expiredate)
+                if m:
+                    validuntil = time()
+                    for n, u in m:
+                        validuntil += int(n) * 60 * 60 * {'Week': 168, 'weeks': 168, 'day': 24, 'hour': 1}[u]
 
-            return {"validuntil": validuntil, "trafficleft": traffic, "maxtraffic": 50 * 1024 * 1024}
-        else:
-            return {"premium": False, "validuntil": -1}
+        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+        if m:
+            trafficleft = self.parseTraffic(m.group(1).replace('.', ''))
+
+        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
+
 
     def login(self, user, data, req):
+        req.cj.setCookie(".uploaded.net", "lang", "en")
 
-        req.load("http://uploaded.net/language/en")
-        req.cj.setCookie("uploaded.net", "lang", "en")
+        page = req.load("http://uploaded.net/io/login",
+                        post={'id': user, 'pw': data['password'], '_': ""})
 
-        page = req.load("http://uploaded.net/io/login", post={"id": user, "pw": data['password'], "_": ""})
-
-        if "User and password do not match!" in page:
+        if "User and password do not match" in page:
             self.wrongPassword()

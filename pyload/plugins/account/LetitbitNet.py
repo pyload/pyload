@@ -5,12 +5,13 @@ from pyload.plugins.base.Account import Account
 
 
 class LetitbitNet(Account):
-    __name__ = "LetitbitNet"
-    __type__ = "account"
+    __name__    = "LetitbitNet"
+    __type__    = "account"
     __version__ = "0.01"
 
     __description__ = """Letitbit.net account plugin"""
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def loadAccountInfo(self, user, req):
@@ -27,6 +28,7 @@ class LetitbitNet(Account):
 
         return {"premium": True}
 
+
     def login(self, user, data, req):
         # API_KEY is the username and the PREMIUM_KEY is the password
-        self.logInfo("You must use your API KEY as username and the PREMIUM KEY as password.")
+        self.logInfo(_("You must use your API KEY as username and the PREMIUM KEY as password"))

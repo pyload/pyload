@@ -11,15 +11,15 @@ def getInfo(urls):
     result = []
     for chunk in chunks(urls, 10):
         for url in chunk:
-            src = getURL(url)
-            if r'<div class="errorMessage mb10">' in src:
+            html = getURL(url)
+            if r'<div class="errorMessage mb10">' in html:
                 result.append((url, 0, 1, url))
-            elif r'Page cannot be displayed' in src:
+            elif r'Page cannot be displayed' in html:
                 result.append((url, 0, 1, url))
             else:
                 try:
                     url_pattern = '<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
-                    file_name = re.search(url_pattern, src).group(0).split(', event)">')[1].split('</a>')[0]
+                    file_name = re.search(url_pattern, html).group(0).split(', event)">')[1].split('</a>')[0]
                     result.append((file_name, 0, 2, url))
                 except:
                     pass
@@ -30,19 +30,21 @@ def getInfo(urls):
 
 
 class FilesMailRu(Hoster):
-    __name__ = "FilesMailRu"
-    __type__ = "hoster"
+    __name__    = "FilesMailRu"
+    __type__    = "hoster"
     __version__ = "0.31"
 
     __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.*'
 
     __description__ = """Files.mail.ru hoster plugin"""
-    __authors__ = [("oZiRiz", "ich@oziriz.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("oZiRiz", "ich@oziriz.de")]
 
 
     def setup(self):
         if not self.account:
             self.multiDL = False
+
 
     def process(self, pyfile):
         self.html = self.load(pyfile.url)
@@ -67,19 +69,23 @@ class FilesMailRu(Hoster):
             self.download(self.getFileUrl())
             self.myPostProcess()
 
+
     def prepare(self):
         """You have to wait some seconds. Otherwise you will get a 40Byte HTML Page instead of the file you expected"""
         self.setWait(10)
         self.wait()
         return True
 
+
     def getFileUrl(self):
         """gives you the URL to the file. Extracted from the Files.mail.ru HTML-page stored in self.html"""
         return re.search(self.url_pattern, self.html).group(0).split('<a href="')[1].split('" onclick="return Act')[0]
 
+
     def getFileName(self):
         """gives you the Name for each file. Also extracted from the HTML-Page"""
         return re.search(self.url_pattern, self.html).group(0).split(', event)">')[1].split('</a>')[0]
+
 
     def myPostProcess(self):
         # searches the file for HTMl-Code. Sometimes the Redirect

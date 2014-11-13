@@ -13,17 +13,19 @@ from pyload.plugins.base.OCR import OCR
 
 
 class LinksaveIn(OCR):
-    __name__ = "LinksaveIn"
-    __type__ = "ocr"
+    __name__    = "LinksaveIn"
+    __type__    = "ocr"
     __version__ = "0.1"
 
     __description__ = """Linksave.in ocr plugin"""
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):
         OCR.__init__(self)
         self.data_dir = dirname(abspath(__file__)) + sep + "LinksaveIn" + sep
+
 
     def load_image(self, image):
         im = Image.open(image)
@@ -51,6 +53,7 @@ class LinksaveIn(OCR):
         self.image = new.copy()
         self.pixels = self.image.load()
         self.result_captcha = ''
+
 
     def get_bg(self):
         stat = {}
@@ -82,11 +85,12 @@ class LinksaveIn(OCR):
                         stat[bgpath] += 1
         max_p = 0
         bg = ""
-        for bgpath, value in stat.items():
+        for bgpath, value in stat.iteritems():
             if max_p < value:
                 bg = bgpath
                 max_p = value
         return bg
+
 
     def substract_bg(self, bgpath):
         bg = Image.open(bgpath)
@@ -110,6 +114,7 @@ class LinksaveIn(OCR):
                 if rgb_c == rgb_bg:
                     orgpix[x, y] = (255,255,255)
 
+
     def eval_black_white(self):
         new = Image.new("RGB", (140, 75))
         pix = new.load()
@@ -130,6 +135,7 @@ class LinksaveIn(OCR):
                     pix[x, y] = (0,0,0)
         self.image = new
         self.pixels = self.image.load()
+
 
     def get_captcha(self, image):
         self.load_image(image)

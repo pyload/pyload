@@ -7,18 +7,19 @@ from pyload.plugins.base.Account import Account
 
 
 class NetloadIn(Account):
-    __name__ = "NetloadIn"
-    __type__ = "account"
+    __name__    = "NetloadIn"
+    __type__    = "account"
     __version__ = "0.22"
 
     __description__ = """Netload.in account plugin"""
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("CryNickSystems", "webmaster@pcProfil.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("CryNickSystems", "webmaster@pcProfil.de")]
 
 
     def loadAccountInfo(self, user, req):
         page = req.load("http://netload.in/index.php?id=2&lang=de")
-        left = r">(\d+) (Tag|Tage), (\d+) Stunden<"
+        left = r'>(\d+) (Tag|Tage), (\d+) Stunden<'
         left = re.search(left, page)
         if left:
             validuntil = time() + int(left.group(1)) * 24 * 60 * 60 + int(left.group(3)) * 60 * 60
@@ -29,6 +30,7 @@ class NetloadIn(Account):
             premium = False
             trafficleft = None
         return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
+
 
     def login(self, user, data, req):
         page = req.load("http://netload.in/index.php", None,

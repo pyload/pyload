@@ -4,12 +4,13 @@ from pyload.plugins.base.Account import Account
 
 
 class RapidshareCom(Account):
-    __name__ = "RapidshareCom"
-    __type__ = "account"
+    __name__    = "RapidshareCom"
+    __type__    = "account"
     __version__ = "0.22"
 
     __description__ = """Rapidshare.com account plugin"""
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def loadAccountInfo(self, user, req):
@@ -17,10 +18,10 @@ class RapidshareCom(Account):
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_prem = {"sub": "getaccountdetails", "type": "prem", "login": user,
                           "password": data['password'], "withcookie": 1}
-        src = req.load(api_url_base, cookies=False, get=api_param_prem)
-        if src.startswith("ERROR"):
-            raise Exception(src)
-        fields = src.split("\n")
+        html = req.load(api_url_base, cookies=False, get=api_param_prem)
+        if html.startswith("ERROR"):
+            raise Exception(html)
+        fields = html.split("\n")
         info = {}
         for t in fields:
             if not t.strip():
@@ -35,14 +36,15 @@ class RapidshareCom(Account):
 
         return tmp
 
+
     def login(self, user, data, req):
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_prem = {"sub": "getaccountdetails", "type": "prem", "login": user,
                           "password": data['password'], "withcookie": 1}
-        src = req.load(api_url_base, cookies=False, get=api_param_prem)
-        if src.startswith("ERROR"):
-            raise Exception(src + "### Note you have to use your account number for login, instead of name.")
-        fields = src.split("\n")
+        html = req.load(api_url_base, cookies=False, get=api_param_prem)
+        if html.startswith("ERROR"):
+            raise Exception(html + "### Note you have to use your account number for login, instead of name")
+        fields = html.split("\n")
         info = {}
         for t in fields:
             if not t.strip():
@@ -50,4 +52,4 @@ class RapidshareCom(Account):
             k, v = t.split("=")
             info[k] = v
         cj = self.getAccountCookies(user)
-        cj.setCookie("rapidshare.com", "enc", info['cookie'])
+        cj.setCookie(".rapidshare.com", "enc", info['cookie'])

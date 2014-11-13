@@ -6,18 +6,21 @@ from pyload.plugins.base.Crypter import Crypter
 
 
 class LixIn(Crypter):
-    __name__ = "LixIn"
-    __type__ = "crypter"
+    __name__    = "LixIn"
+    __type__    = "crypter"
     __version__ = "0.22"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Lix.in decrypter plugin"""
-    __authors__ = [("spoob", "spoob@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org")]
 
 
-    CAPTCHA_PATTERN = r'<img src="(?P<image>captcha_img.php\?.*?)"'
-    SUBMIT_PATTERN = r"value='continue.*?'"
+    CAPTCHA_PATTERN = r'<img src="(?P<image>captcha_img\.php\?.*?)"'
+    SUBMIT_PATTERN = r'value=\'continue.*?\''
     LINK_PATTERN = r'name="ifram" src="(?P<link>.*?)"'
 
 
@@ -26,7 +29,7 @@ class LixIn(Crypter):
 
         m = re.match(self.__pattern__, url)
         if m is None:
-            self.fail("couldn't identify file id")
+            self.error(_("Unable to identify file ID"))
 
         id = m.group("ID")
         self.logDebug("File id is %s" % id)
@@ -35,11 +38,11 @@ class LixIn(Crypter):
 
         m = re.search(self.SUBMIT_PATTERN, self.html)
         if m is None:
-            self.fail("link doesn't seem valid")
+            self.error(_("Link doesn't seem valid"))
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m:
-            for _ in xrange(5):
+            for _i in xrange(5):
                 m = re.search(self.CAPTCHA_PATTERN, self.html)
                 if m:
                     self.logDebug("Trying captcha")
@@ -53,7 +56,7 @@ class LixIn(Crypter):
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.fail("can't find destination url")
+            self.error(_("Unable to find destination url"))
         else:
             self.urls = [m.group("link")]
             self.logDebug("Found link %s, adding to package" % self.urls[0])

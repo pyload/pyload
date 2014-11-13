@@ -5,12 +5,13 @@ from pyload.utils import json_loads
 
 
 class UnrestrictLi(Account):
-    __name__ = "UnrestrictLi"
-    __type__ = "account"
+    __name__    = "UnrestrictLi"
+    __type__    = "account"
     __version__ = "0.03"
 
     __description__ = """Unrestrict.li account plugin"""
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def loadAccountInfo(self, user, req):
@@ -22,16 +23,17 @@ class UnrestrictLi(Account):
             return {"premium": False}
 
         validuntil = json_data['result']['expires']
-        trafficleft = int(json_data['result']['traffic'] / 1024)
+        trafficleft = int(json_data['result']['traffic'])
 
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
 
+
     def login(self, user, data, req):
-        req.cj.setCookie("unrestrict.li", "lang", "EN")
+        req.cj.setCookie(".unrestrict.li", "lang", "EN")
         html = req.load("https://unrestrict.li/sign_in")
 
         if 'solvemedia' in html:
-            self.logError("A Captcha is required. Go to http://unrestrict.li/sign_in and login, then retry")
+            self.logError(_("A Captcha is required. Go to http://unrestrict.li/sign_in and login, then retry"))
             return
 
         post_data = {"username": user, "password": data['password'],

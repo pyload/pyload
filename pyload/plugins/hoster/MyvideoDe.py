@@ -7,14 +7,15 @@ from pyload.utils import html_unescape
 
 
 class MyvideoDe(Hoster):
-    __name__ = "MyvideoDe"
-    __type__ = "hoster"
+    __name__    = "MyvideoDe"
+    __type__    = "hoster"
     __version__ = "0.9"
 
-    __pattern__ = r'http://(?:www\.)?myvideo.de/watch/'
+    __pattern__ = r'http://(?:www\.)?myvideo\.de/watch/'
 
     __description__ = """Myvideo.de hoster plugin"""
-    __authors__ = [("spoob", "spoob@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org")]
 
 
     def process(self, pyfile):
@@ -23,8 +24,10 @@ class MyvideoDe(Hoster):
         pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
+
     def download_html(self):
         self.html = self.load(self.pyfile.url)
+
 
     def get_file_url(self):
         videoId = re.search(r"addVariable\('_videoid','(.*)'\);p.addParam\('quality'", self.html).group(1)
@@ -32,9 +35,11 @@ class MyvideoDe(Hoster):
         file_url = videoServer + videoId + ".flv"
         return file_url
 
+
     def get_file_name(self):
         file_name_pattern = r"<h1 class='globalHd'>(.*)</h1>"
         return html_unescape(re.search(file_name_pattern, self.html).group(1).replace("/", "") + '.flv')
+
 
     def file_exists(self):
         self.download_html()

@@ -8,18 +8,19 @@ from pyload.plugins.base.Account import Account
 
 
 class FshareVn(Account):
-    __name__ = "FshareVn"
-    __type__ = "account"
+    __name__    = "FshareVn"
+    __type__    = "account"
     __version__ = "0.07"
 
     __description__ = """Fshare.vn account plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     VALID_UNTIL_PATTERN = ur'<dt>Thời hạn dùng:</dt>\s*<dd>([^<]+)</dd>'
     LIFETIME_PATTERN = ur'<dt>Lần đăng nhập trước:</dt>\s*<dd>[^<]+</dd>'
-    TRAFFIC_LEFT_PATTERN = ur'<dt>Tổng Dung Lượng Tài Khoản</dt>\s*<dd[^>]*>([0-9.]+) ([kKMG])B</dd>'
+    TRAFFIC_LEFT_PATTERN = ur'<dt>Tổng Dung Lượng Tài Khoản</dt>\s*<dd[^>]*>([\d.]+) ([kKMG])B</dd>'
     DIRECT_DOWNLOAD_PATTERN = ur'<input type="checkbox"\s*([^=>]*)[^>]*/>Kích hoạt download trực tiếp</dt>'
 
 
@@ -43,6 +44,7 @@ class FshareVn(Account):
 
         return {"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium}
 
+
     def login(self, user, data, req):
         req.http.c.setopt(REFERER, "https://www.fshare.vn/login.php")
 
@@ -54,6 +56,7 @@ class FshareVn(Account):
 
         if not re.search(r'<img\s+alt="VIP"', html):
             self.wrongPassword()
+
 
     def getTrafficLeft(self):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)

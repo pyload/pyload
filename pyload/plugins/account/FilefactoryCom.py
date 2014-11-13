@@ -9,13 +9,14 @@ from pyload.plugins.base.Account import Account
 
 
 class FilefactoryCom(Account):
-    __name__ = "FilefactoryCom"
-    __type__ = "account"
+    __name__    = "FilefactoryCom"
+    __type__    = "account"
     __version__ = "0.14"
 
     __description__ = """Filefactory.com account plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
     VALID_UNTIL_PATTERN = r'Premium valid until: <strong>(?P<d>\d{1,2})\w{1,2} (?P<m>\w{3}), (?P<y>\d{4})</strong>'
@@ -34,6 +35,7 @@ class FilefactoryCom(Account):
             validuntil = -1
 
         return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
+
 
     def login(self, user, data, req):
         req.http.c.setopt(REFERER, "http://www.filefactory.com/member/login.php")

@@ -7,29 +7,31 @@ from pyload.utils import json_loads
 
 
 class BayfilesCom(Account):
-    __name__ = "BayfilesCom"
-    __type__ = "account"
+    __name__    = "BayfilesCom"
+    __type__    = "account"
     __version__ = "0.03"
 
     __description__ = """Bayfiles.com account plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def loadAccountInfo(self, user, req):
-        for _ in xrange(2):
-            response = json_loads(req.load("http://api.bayfiles.com/v1/account/info"))
-            self.logDebug(response)
-            if not response['error']:
+        for _i in xrange(2):
+            res = json_loads(req.load("http://api.bayfiles.com/v1/account/info"))
+            self.logDebug(res)
+            if not res['error']:
                 break
-            self.logWarning(response['error'])
+            self.logWarning(res['error'])
             self.relogin(user)
 
-        return {"premium": bool(response['premium']), "trafficleft": -1,
-                "validuntil": response['expires'] if response['expires'] >= int(time()) else -1}
+        return {"premium": bool(res['premium']), "trafficleft": -1,
+                "validuntil": res['expires'] if res['expires'] >= int(time()) else -1}
+
 
     def login(self, user, data, req):
-        response = json_loads(req.load("http://api.bayfiles.com/v1/account/login/%s/%s" % (user, data['password'])))
-        self.logDebug(response)
-        if response['error']:
-            self.logError(response['error'])
+        res = json_loads(req.load("http://api.bayfiles.com/v1/account/login/%s/%s" % (user, data['password'])))
+        self.logDebug(res)
+        if res['error']:
+            self.logError(res['error'])
             self.wrongPassword()

@@ -14,28 +14,33 @@ from os.path import abspath, join
 
 
 class OCR(object):
-    __name__ = "OCR"
-    __type__ = "ocr"
+    __name__    = "OCR"
+    __type__    = "ocr"
     __version__ = "0.1"
 
     __description__ = """OCR base plugin"""
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):
         self.logger = logging.getLogger("log")
+
 
     def load_image(self, image):
         self.image = Image.open(image)
         self.pixels = self.image.load()
         self.result_captcha = ''
 
+
     def unload(self):
         """delete all tmp images"""
         pass
 
+
     def threshold(self, value):
         self.image = self.image.point(lambda a: a * value + 10)
+
 
     def run(self, command):
         """Run a command"""
@@ -47,28 +52,32 @@ class OCR(object):
         popen.stderr.close()
         self.logger.debug("Tesseract ReturnCode %s Output: %s" % (popen.returncode, output))
 
+
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
-        #self.logger.debug("create tmp tif")
-        #tmp = tempfile.NamedTemporaryFile(suffix=".tif")
-        tmp = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
-        tmp.close()
-        #self.logger.debug("create tmp txt")
-        #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-        tmpTxt = open(join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
-        tmpTxt.close()
+        #tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
+        try:
+            tmpTif = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
+            tmpTif.close()
+
+            #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
+            tmpTxt = open(join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
+            tmpTxt.close()
+
+        except IOError, e:
+            self.logError(e)
+            return
 
         self.logger.debug("save tiff")
-        self.image.save(tmp.name, 'TIFF')
+        self.image.save(tmpTif.name, 'TIFF')
 
         if os.name == "nt":
             tessparams = [join(pypath, "tesseract", "tesseract.exe")]
         else:
             tessparams = ['tesseract']
 
-        tessparams.extend([abspath(tmp.name), abspath(tmpTxt.name).replace(".txt", "")])
+        tessparams.extend([abspath(tmpTif.name), abspath(tmpTxt.name).replace(".txt", "")] )
 
         if subset and (digits or lowercase or uppercase):
-            #self.logger.debug("create temp subset config")
             #tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
             tmpSub = open(join("tmp", "tmpSub_%s.subset" % self.__name__), "wb")
             tmpSub.write("tessedit_char_whitelist ")
@@ -95,21 +104,24 @@ class OCR(object):
 
         self.logger.debug(self.result_captcha)
         try:
-            os.remove(tmp.name)
+            os.remove(tmpTif.name)
             os.remove(tmpTxt.name)
             if subset and (digits or lowercase or uppercase):
                 os.remove(tmpSub.name)
         except:
             pass
 
+
     def get_captcha(self, name):
         raise NotImplementedError
+
 
     def to_greyscale(self):
         if self.image.mode != 'L':
             self.image = self.image.convert('L')
 
         self.pixels = self.image.load()
+
 
     def eval_black_white(self, limit):
         self.pixels = self.image.load()
@@ -120,6 +132,7 @@ class OCR(object):
                     self.pixels[x, y] = 255
                 else:
                     self.pixels[x, y] = 0
+
 
     def clean(self, allowed):
         pixels = self.pixels
@@ -165,6 +178,7 @@ class OCR(object):
                     pixels[x, y] = 255
 
         self.pixels = pixels
+
 
     def derotate_by_average(self):
         """rotate by checking each angle and guess most suitable"""
@@ -239,6 +253,7 @@ class OCR(object):
 
         self.pixels = pixels
 
+
     def split_captcha_letters(self):
         captcha = self.image
         started = False
@@ -277,6 +292,7 @@ class OCR(object):
                 bottomY, topY = 0, height
 
         return letters
+
 
     def correct(self, values, var=None):
         if var:

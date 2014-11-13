@@ -7,12 +7,13 @@ from pyload.utils import json_loads
 
 
 class FileserveCom(Account):
-    __name__ = "FileserveCom"
-    __type__ = "account"
+    __name__    = "FileserveCom"
+    __type__    = "account"
     __version__ = "0.2"
 
     __description__ = """Fileserve.com account plugin"""
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def loadAccountInfo(self, user, req):
@@ -27,6 +28,7 @@ class FileserveCom(Account):
             return {"trafficleft": res['traffic'], "validuntil": validuntil}
         else:
             return {"premium": False, "trafficleft": None, "validuntil": None}
+
 
     def login(self, user, data, req):
         page = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],

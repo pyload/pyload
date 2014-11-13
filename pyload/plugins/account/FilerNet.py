@@ -4,20 +4,20 @@ import re
 import time
 
 from pyload.plugins.base.Account import Account
-from pyload.utils import parseFileSize
 
 
 class FilerNet(Account):
-    __name__ = "FilerNet"
-    __type__ = "account"
-    __version__ = "0.01"
+    __name__    = "FilerNet"
+    __type__    = "account"
+    __version__ = "0.02"
 
     __description__ = """Filer.net account plugin"""
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     TOKEN_PATTERN = r'_csrf_token" value="([^"]+)" />'
-    WALID_UNTIL_PATTERN = r"Der Premium-Zugang ist gültig bis (.+)\.\s*</td>"
+    WALID_UNTIL_PATTERN = r'Der Premium-Zugang ist gültig bis (.+)\.\s*</td>'
     TRAFFIC_PATTERN = r'Traffic</th>\s*<td>([^<]+)</td>'
     FREE_PATTERN = r'Account Status</th>\s*<td>\s*Free'
 
@@ -33,11 +33,12 @@ class FilerNet(Account):
         traffic = re.search(self.TRAFFIC_PATTERN, html)
         if until and traffic:
             validuntil = int(time.mktime(time.strptime(until.group(1), "%d.%m.%Y %H:%M:%S")))
-            trafficleft = parseFileSize(traffic.group(1)) / 1024
+            trafficleft = self.parseTraffic(traffic.group(1))
             return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
         else:
-            self.logError("Unable to retrieve account information - Plugin may be out of date")
+            self.logError(_("Unable to retrieve account information"))
             return {"premium": False, "validuntil": None, "trafficleft": None}
+
 
     def login(self, user, data, req):
         html = req.load("https://filer.net/login")

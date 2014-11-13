@@ -8,14 +8,15 @@ from pyload.utils import fs_encode
 
 
 class UnSkipOnFail(Addon):
-    __name__ = "UnSkipOnFail"
-    __type__ = "addon"
+    __name__    = "UnSkipOnFail"
+    __type__    = "addon"
     __version__ = "0.01"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """When a download fails, restart skipped duplicates"""
-    __authors__ = [("hagg", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("hagg", None)]
 
 
     def downloadFailed(self, pyfile):
@@ -30,6 +31,7 @@ class UnSkipOnFail(Addon):
                 lpid = link.packageID
                 self.logInfo(_('restart "%s" (pid:%s)') % (pyfile_name, lpid))
                 self.setLinkStatus(link, "queued")
+
 
     def findDuplicates(self, pyfile):
         """ Search all packages for duplicate links to "pyfile".
@@ -59,6 +61,7 @@ class UnSkipOnFail(Addon):
                             if link.fid != pyfile.id:
                                 dups.append(link)
         return dups
+
 
     def setLinkStatus(self, link, new_status):
         """ Change status of "link" to "new_status".

@@ -1,23 +1,24 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.XFSPHoster import XFSPHoster, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class CramitIn(XFSPHoster):
-    __name__ = "CramitIn"
-    __type__ = "hoster"
-    __version__ = "0.04"
+class CramitIn(XFSHoster):
+    __name__    = "CramitIn"
+    __type__    = "hoster"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?cramit\.in/\w{12}'
 
     __description__ = """Cramit.in hoster plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_NAME = "cramit.in"
+    HOSTER_DOMAIN = "cramit.in"
 
-    FILE_INFO_PATTERN = r'<span class=t2>\s*(?P<N>.*?)</span>.*?<small>\s*\((?P<S>.*?)\)'
-    LINK_PATTERN = r'href="(http://cramit.in/file_download/.*?)"'
+    INFO_PATTERN = r'<span class=t2>\s*(?P<N>.*?)</span>.*?<small>\s*\((?P<S>.*?)\)'
+    LINK_PATTERN = r'href="(http://cramit\.in/file_download/.*?)"'
 
 
 getInfo = create_getInfo(CramitIn)

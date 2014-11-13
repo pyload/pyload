@@ -2,21 +2,23 @@
 
 import os
 import re
-import traceback
+
+from traceback import print_exc
 
 from pyload.plugins.base.Addon import Addon, threaded
 from pyload.utils import safe_join, fs_encode
 
 
 class MergeFiles(Addon):
-    __name__ = "MergeFiles"
-    __type__ = "addon"
+    __name__    = "MergeFiles"
+    __type__    = "addon"
     __version__ = "0.12"
 
-    __config__ = [("activated", "bool", "Activated", False)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Merges parts splitted with hjsplit"""
-    __authors__ = [("and9000", "me@has-no-mail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("and9000", "me@has-no-mail.com")]
 
 
     BUFFER_SIZE = 4096
@@ -26,12 +28,13 @@ class MergeFiles(Addon):
         # nothing to do
         pass
 
+
     @threaded
     def packageFinished(self, pack):
         files = {}
         fid_dict = {}
         for fid, data in pack.getChildren().iteritems():
-            if re.search("\.[0-9]{3}$", data['name']):
+            if re.search("\.\d{3}$", data['name']):
                 if data['name'][:-4] not in files:
                     files[data['name'][:-4]] = []
                 files[data['name'][:-4]].append(data['name'])
@@ -55,6 +58,7 @@ class MergeFiles(Addon):
                     s_file = open(os.path.join(download_folder, splitted_file), "rb")
                     size_written = 0
                     s_file_size = int(os.path.getsize(os.path.join(download_folder, splitted_file)))
+
                     while True:
                         f_buffer = s_file.read(self.BUFFER_SIZE)
                         if f_buffer:
@@ -63,10 +67,13 @@ class MergeFiles(Addon):
                             pyfile.setProgress((size_written * 100) / s_file_size)
                         else:
                             break
+
                     s_file.close()
                     self.logDebug("Finished merging part", splitted_file)
+
                 except Exception, e:
-                    print traceback.print_exc()
+                    print_exc()
+
                 finally:
                     pyfile.setProgress(100)
                     pyfile.setStatus("finished")

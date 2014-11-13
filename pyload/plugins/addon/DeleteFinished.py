@@ -5,16 +5,20 @@ from pyload.plugins.base.Addon import Addon
 
 
 class DeleteFinished(Addon):
-    __name__ = "DeleteFinished"
-    __type__ = "addon"
-    __version__ = "1.09"
+    __name__    = "DeleteFinished"
+    __type__    = "addon"
+    __version__ = "1.11"
 
     __config__ = [('activated', 'bool', 'Activated', 'False'),
                   ('interval', 'int', 'Delete every (hours)', '72'),
                   ('deloffline', 'bool', 'Delete packages with offline links', 'False')]
 
     __description__ = """Automatically delete all finished packages from queue"""
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    # event_list = ["pluginConfigChanged"]
 
 
     ## overwritten methods ##
@@ -28,19 +32,23 @@ class DeleteFinished(Addon):
             self.info['sleep'] = True
             self.addEvent('packageFinished', self.wakeup)
 
+
     def pluginConfigChanged(self, plugin, name, value):
-        if name == 'interval' and value != self.interval:
+        if name == "interval" and value != self.interval:
             self.interval = value * 3600
             self.initPeriodical()
+
 
     def unload(self):
         self.removeEvent('packageFinished', self.wakeup)
 
+
     def coreReady(self):
         self.info = {'sleep': True}
         interval = self.getConfig('interval')
-        self.pluginConfigChanged('DeleteFinished', 'interval', interval)
+        self.pluginConfigChanged(self.__name__, 'interval', interval)
         self.addEvent('packageFinished', self.wakeup)
+
 
     ## own methods ##
     @style.queue
@@ -48,9 +56,11 @@ class DeleteFinished(Addon):
         self.c.execute('DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (%s))' % mode)
         self.c.execute('DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id=links.package)')
 
+
     def wakeup(self, pypack):
         self.removeEvent('packageFinished', self.wakeup)
         self.info['sleep'] = False
+
 
     ## event managing ##
     def addEvent(self, event, func):
@@ -62,6 +72,7 @@ class DeleteFinished(Addon):
                 self.m.events[event].append(func)
         else:
             self.m.events[event] = [func]
+
 
     def setup(self):
         self.m = self.manager

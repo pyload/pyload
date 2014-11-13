@@ -39,19 +39,21 @@ def getInfo(urls):
 
 
 class DailymotionCom(Hoster):
-    __name__ = "DailymotionCom"
-    __type__ = "hoster"
+    __name__    = "DailymotionCom"
+    __type__    = "hoster"
     __version__ = "0.2"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*?video/(?P<ID>[\w^_]+)'
     __config__ = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]
 
     __description__ = """Dailymotion.com hoster plugin"""
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def setup(self):
         self.resumeDownload = self.multiDL = True
+
 
     def getStreams(self):
         streams = []
@@ -64,6 +66,7 @@ class DailymotionCom(Hoster):
             streams.append((quality, link))
         return sorted(streams, key=lambda x: x[0][::-1])
 
+
     def getQuality(self):
         q = self.getConfig("quality")
         if q == "Lowest":
@@ -73,6 +76,7 @@ class DailymotionCom(Hoster):
         else:
             quality = int(q.rsplit(" ")[1][:-1])
         return quality
+
 
     def getLink(self, streams, quality):
         if quality > 0:
@@ -87,8 +91,9 @@ class DailymotionCom(Hoster):
             idx = quality
 
         s = streams[idx]
-        self.logInfo("Download video quality %sx%s" % s[0])
+        self.logInfo(_("Download video quality %sx%s") % s[0])
         return s[1]
+
 
     def checkInfo(self, pyfile):
         pyfile.name, pyfile.size, pyfile.status, pyfile.url = getInfo([pyfile.url])[0]
@@ -96,6 +101,7 @@ class DailymotionCom(Hoster):
             self.offline()
         elif pyfile.status == 6:
             self.tempOffline()
+
 
     def process(self, pyfile):
         self.checkInfo(pyfile)

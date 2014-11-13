@@ -2,37 +2,41 @@
 
 import re
 
+from urlparse import urljoin
+
 from pycurl import FOLLOWLOCATION
 
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UnibytesCom(SimpleHoster):
-    __name__ = "UnibytesCom"
-    __type__ = "hoster"
-    __version__ = "0.1"
+    __name__    = "UnibytesCom"
+    __type__    = "hoster"
+    __version__ = "0.11"
 
-    __pattern__ = r'http://(?:www\.)?unibytes\.com/[a-zA-Z0-9-._ ]{11}B'
+    __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w .-]{11}B'
 
     __description__ = """UniBytes.com hoster plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_INFO_PATTERN = r'<span[^>]*?id="fileName"[^>]*>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
+    HOSTER_DOMAIN = "unibytes.com"
 
-    HOSTER_NAME = "unibytes.com"
+    INFO_PATTERN = r'<span[^>]*?id="fileName"[^>]*>(?P<N>[^>]+)</span>\s*\((?P<S>\d.*?)\)'
+
     WAIT_PATTERN = r'Wait for <span id="slowRest">(\d+)</span> sec'
     LINK_PATTERN = r'<a href="([^"]+)">Download</a>'
 
 
     def handleFree(self):
-        domain = "http://www." + self.HOSTER_NAME
+        domain = "http://www.%s/" % self.HOSTER_DOMAIN
         action, post_data = self.parseHtmlForm('id="startForm"')
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
-        for _ in xrange(8):
+        for _i in xrange(8):
             self.logDebug(action, post_data)
-            self.html = self.load(domain + action, post=post_data)
+            self.html = self.load(urljoin(domain, action), post=post_data)
 
             m = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
             if m:
@@ -59,11 +63,10 @@ class UnibytesCom(SimpleHoster):
                 m = re.search(self.WAIT_PATTERN, self.html)
                 self.wait(int(m.group(1)) if m else 60, False)
             elif last_step in ("captcha", "last"):
-                post_data['captcha'] = self.decryptCaptcha(domain + '/captcha.jpg')
+                post_data['captcha'] = self.decryptCaptcha(urljoin(domain, "/captcha.jpg"))
         else:
-            self.fail("No valid captcha code entered")
+            self.fail(_("No valid captcha code entered"))
 
-        self.logDebug("Download link: " + url)
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
         self.download(url)
 

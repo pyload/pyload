@@ -6,15 +6,15 @@ from pyload.plugins.base.Addon import Addon
 
 
 class MultiHome(Addon):
-    __name__ = "MultiHome"
-    __type__ = "addon"
+    __name__    = "MultiHome"
+    __type__    = "addon"
     __version__ = "0.11"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("interfaces", "str", "Interfaces", "None")]
+    __config__ = [("interfaces", "str", "Interfaces", "None")]
 
     __description__ = """Ip address changer"""
-    __authors__ = [("mkaay", "mkaay@mkaay.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def setup(self):
@@ -25,14 +25,17 @@ class MultiHome(Addon):
             self.parseInterfaces([self.config['download']['interface']])
             self.setConfig("interfaces", self.toConfig())
 
+
     def toConfig(self):
         return ";".join([i.adress for i in self.interfaces])
+
 
     def parseInterfaces(self, interfaces):
         for interface in interfaces:
             if not interface or str(interface).lower() == "none":
                 continue
             self.interfaces.append(Interface(interface))
+
 
     def coreReady(self):
         requestFactory = self.core.requestFactory
@@ -48,6 +51,7 @@ class MultiHome(Addon):
 
         requestFactory.getRequest = getRequest
 
+
     def bestInterface(self, pluginName, account):
         best = None
         for interface in self.interfaces:
@@ -62,13 +66,16 @@ class Interface(object):
         self.adress = adress
         self.history = {}
 
+
     def lastPluginAccess(self, pluginName, account):
         if (pluginName, account) in self.history:
             return self.history[(pluginName, account)]
         return 0
 
+
     def useFor(self, pluginName, account):
         self.history[(pluginName, account)] = time()
+
 
     def __repr__(self):
         return "<Interface - %s>" % self.adress

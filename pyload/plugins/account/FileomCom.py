@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.XFSPAccount import XFSPAccount
+from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class FileomCom(XFSPAccount):
-    __name__ = "FileomCom"
-    __type__ = "account"
-    __version__ = "0.01"
+class FileomCom(XFSAccount):
+    __name__    = "FileomCom"
+    __type__    = "account"
+    __version__ = "0.02"
 
     __description__ = """Fileom.com account plugin"""
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = "http://www.fileom.com/"
+    HOSTER_DOMAIN = "fileom.com"

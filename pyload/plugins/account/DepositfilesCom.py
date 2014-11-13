@@ -8,26 +8,28 @@ from pyload.plugins.base.Account import Account
 
 
 class DepositfilesCom(Account):
-    __name__ = "DepositfilesCom"
-    __type__ = "account"
+    __name__    = "DepositfilesCom"
+    __type__    = "account"
     __version__ = "0.3"
 
     __description__ = """Depositfiles.com account plugin"""
-    __authors__ = [("mkaay", "mkaay@mkaay.de"),
-                   ("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de"),
+                       ("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def loadAccountInfo(self, user, req):
-        src = req.load("https://dfiles.eu/de/gold/")
-        validuntil = re.search(r"Sie haben Gold Zugang bis: <b>(.*?)</b></div>", src).group(1)
+        html = req.load("https://dfiles.eu/de/gold/")
+        validuntil = re.search(r"Sie haben Gold Zugang bis: <b>(.*?)</b></div>", html).group(1)
 
         validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
 
         return {"validuntil": validuntil, "trafficleft": -1}
 
+
     def login(self, user, data, req):
-        src = req.load("https://dfiles.eu/de/login.php", get={"return": "/de/gold/payment.php"},
-                       post={"login": user, "password": data['password']})
-        if r'<div class="error_message">Sie haben eine falsche Benutzername-Passwort-Kombination verwendet.</div>' in src:
+        html = req.load("https://dfiles.eu/de/login.php", get={"return": "/de/gold/payment.php"},
+                        post={"login": user, "password": data['password']})
+        if r'<div class="error_message">Sie haben eine falsche Benutzername-Passwort-Kombination verwendet.</div>' in html:
             self.wrongPassword()

@@ -5,21 +5,22 @@ from pyload.plugins.base.Hoster import Hoster
 
 
 class PremiumizeMe(Hoster):
-    __name__ = "PremiumizeMe"
-    __type__ = "hoster"
+    __name__    = "PremiumizeMe"
+    __type__    = "hoster"
     __version__ = "0.12"
 
-    __pattern__ = None  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
+    __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
 
     __description__ = """Premiumize.me hoster plugin"""
-    __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def process(self, pyfile):
         # Check account
         if not self.account or not self.account.canUse():
             self.logError(_("Please enter your %s account or deactivate this plugin") % "premiumize.me")
-            self.fail("No valid premiumize.me account provided")
+            self.fail(_("No valid premiumize.me account provided"))
 
         # In some cases hostsers do not supply us with a filename at download, so we
         # are going to set a fall back filename (e.g. for freakshare or xfileshare)
@@ -45,7 +46,7 @@ class PremiumizeMe(Hoster):
         if status == 200:
             self.download(data['result']['location'], disposition=True)
         elif status == 400:
-            self.fail("Invalid link")
+            self.fail(_("Invalid link"))
         elif status == 404:
             self.offline()
         elif status >= 500:

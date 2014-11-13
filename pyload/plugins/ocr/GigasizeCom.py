@@ -4,16 +4,18 @@ from pyload.plugins.base.OCR import OCR
 
 
 class GigasizeCom(OCR):
-    __name__ = "GigasizeCom"
-    __type__ = "ocr"
+    __name__    = "GigasizeCom"
+    __type__    = "ocr"
     __version__ = "0.1"
 
     __description__ = """Gigasize.com ocr plugin"""
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):
         OCR.__init__(self)
+
 
     def get_captcha(self, image):
         self.load_image(image)

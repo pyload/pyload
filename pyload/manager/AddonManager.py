@@ -141,8 +141,8 @@ class AddonManager:
                 if self.core.debug:
                     traceback.print_exc()
 
-        self.log.info(_("Activated plugins: %s") % ", ".join(sorted(active)))
-        self.log.info(_("Deactivate plugins: %s") % ", ".join(sorted(deactive)))
+        self.log.info(_("Activated addons: %s") % ", ".join(sorted(active)))
+        self.log.info(_("Deactivated addons: %s") % ", ".join(sorted(deactive)))
 
         self.plugins = plugins
 

@@ -21,19 +21,20 @@ def renice(pid, value):
 
 
 class UnRar(AbtractExtractor):
-    __name__ = "UnRar"
+    __name__    = "UnRar"
     __version__ = "0.18"
 
     __description__ = """Rar extractor plugin"""
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     CMD = "unrar"
 
     # there are some more uncovered rar formats
-    re_version = re.compile(r"(UNRAR 5[\.\d]+(.*?)freeware)")
+    re_version = re.compile(r"(UNRAR 5[\d.]+(.*?)freeware)")
     re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
-    re_partfiles = re.compile(r".*\.(rar|r[0-9]+)", re.I)
+    re_partfiles = re.compile(r".*\.(rar|r\d+)", re.I)
     re_filelist = re.compile(r"(.+)\s+(\d+)\s+(\d+)\s+")
     re_filelist5 = re.compile(r"(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)")
     re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)", re.I)
@@ -167,9 +168,9 @@ class UnRar(AbtractExtractor):
 
     def getDeleteFiles(self):
         if ".part" in basename(self.file):
-            return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.IGNORECASE))
+            return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.I))
         # get files which matches .r* and filter unsuited files out
-        parts = glob(re.sub(r"(?<=\.r)ar$", "*", self.file, re.IGNORECASE))
+        parts = glob(re.sub(r"(?<=\.r)ar$", "*", self.file, re.I))
         return filter(lambda x: self.re_partfiles.match(x), parts)
 
 

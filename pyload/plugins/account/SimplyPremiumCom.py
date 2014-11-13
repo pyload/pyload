@@ -5,12 +5,13 @@ from pyload.plugins.base.Account import Account
 
 
 class SimplyPremiumCom(Account):
-    __name__ = "SimplyPremiumCom"
-    __type__ = "account"
+    __name__    = "SimplyPremiumCom"
+    __type__    = "account"
     __version__ = "0.01"
 
     __description__ = """Simply-Premium.com account plugin"""
-    __authors__ = [("EvolutionClip", "evolutionclip@live.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def loadAccountInfo(self, user, req):
@@ -24,14 +25,15 @@ class SimplyPremiumCom(Account):
         #Time package
         validuntil = float(json_data['result']['timeend'])
         #Traffic package
-        # {"trafficleft": int(traffic) / 1024, "validuntil": -1}
-        #trafficleft = int(json_data['result']['traffic'] / 1024)
+        # {"trafficleft": int(traffic), "validuntil": -1}
+        #trafficleft = int(json_data['result']['traffic'])
 
         #return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
         return {"premium": True, "validuntil": validuntil}
 
+
     def login(self, user, data, req):
-        req.cj.setCookie("simply-premium.com", "lang", "EN")
+        req.cj.setCookie(".simply-premium.com", "lang", "EN")
 
         if data['password'] == '' or data['password'] == '0':
             post_data = {"key": user}

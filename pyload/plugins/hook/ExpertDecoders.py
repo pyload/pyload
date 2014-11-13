@@ -13,35 +13,37 @@ from pyload.plugins.base.Hook import Hook
 
 
 class ExpertDecoders(Hook):
-    __name__ = "ExpertDecoders"
-    __type__ = "hook"
+    __name__    = "ExpertDecoders"
+    __type__    = "hook"
     __version__ = "0.01"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("force", "bool", "Force CT even if client is connected", False),
+    __config__ = [("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Access key", "")]
 
     __description__ = """Send captchas to expertdecoders.com"""
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
 
 
     API_URL = "http://www.fasttypers.org/imagepost.ashx"
 
 
     def setup(self):
-        self.info = {}
+        self.info = {}  #@TODO: Remove in 0.4.10
+
 
     def getCredits(self):
-        response = getURL(self.API_URL, post={"key": self.getConfig("passkey"), "action": "balance"})
+        res = getURL(self.API_URL, post={"key": self.getConfig("passkey"), "action": "balance"})
 
-        if response.isdigit():
-            self.logInfo(_("%s credits left") % response)
-            self.info['credits'] = credits = int(response)
+        if res.isdigit():
+            self.logInfo(_("%s credits left") % res)
+            self.info['credits'] = credits = int(res)
             return credits
         else:
-            self.logError(response)
+            self.logError(res)
             return 0
+
 
     def processCaptcha(self, task):
         task.data['ticket'] = ticket = uuid4()
@@ -64,6 +66,7 @@ class ExpertDecoders(Hook):
         self.logDebug("Result %s : %s" % (ticket, result))
         task.setResult(result)
 
+
     def newCaptchaTask(self, task):
         if not task.isTextual():
             return False
@@ -82,13 +85,14 @@ class ExpertDecoders(Hook):
         else:
             self.logInfo(_("Your ExpertDecoders Account has not enough credits"))
 
+
     def captchaInvalid(self, task):
         if "ticket" in task.data:
 
             try:
-                response = getURL(self.API_URL, post={"action": "refund", "key": self.getConfig("passkey"),
-                                                      "gen_task_id": task.data['ticket']})
-                self.logInfo(_("Request refund"), response)
+                res = getURL(self.API_URL,
+                             post={'action': "refund", 'key': self.getConfig("passkey"), 'gen_task_id': task.data['ticket']})
+                self.logInfo(_("Request refund", res)
 
             except BadHeader, e:
-                self.logError(_("Could not send refund request."), e)
+                self.logError(_("Could not send refund request"), e)

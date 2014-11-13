@@ -3,24 +3,26 @@
 import re
 
 from os import path
+from urllib import unquote
 from urlparse import urljoin
 
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class ZippyshareCom(SimpleHoster):
-    __name__ = "ZippyshareCom"
-    __type__ = "hoster"
-    __version__ = "0.51"
+    __name__    = "ZippyshareCom"
+    __type__    = "hoster"
+    __version__ = "0.60"
 
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/v(?:/|iew\.jsp.*key=)(?P<KEY>\d+)'
 
     __description__ = """Zippyshare.com hoster plugin"""
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'>Name:.+?">(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'>Size:.+?">(?P<S>[\d.]+) (?P<U>\w+)'
+    NAME_PATTERN = r'("\d{6,}/"[ ]*\+.+?"/|<title>Zippyshare.com - )(?P<N>.+?)("|</title>)'
+    SIZE_PATTERN = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN = r'>File does not exist on this server<'
 
@@ -35,36 +37,35 @@ class ZippyshareCom(SimpleHoster):
 
     def handleFree(self):
         url = self.get_link()
-        self.logDebug("Download URL: %s" % url)
         self.download(url)
 
 
+    def getFileInfo(self):
+        info = super(ZippyshareCom, self).getFileInfo()
+        self.pyfile.name = info['name'] = unquote(info['name'])
+        return info
+
+
     def get_checksum(self):
-        m = re.search(r'\(a\*b\+19\)', self.html)
-        if m:
-            m = re.findall(r'var \w = (\d+)\%(\d+);', self.html)
-            c = lambda a,b: a * b + 19
+        try:
+            m = re.search(r'\+[ ]*\((\d+)[ ]*\%[ ]*(\d+)[ ]*\+[ ]*(\d+)[ ]*\%[ ]*(\d+)\)[ ]*\+', self.html)
+            if m:
+                a1, a2, c1, c2 = map(int, m.groups())
+            else:
+                a1, a2 = map(int, re.search(r'\(\'downloadB\'\).omg = (\d+)%(\d+)', self.html).groups())
+                c1, c2 = map(int, re.search(r'\(\'downloadB\'\).omg\) \* \((\d+)%(\d+)', self.html).groups())
+
+            b = (a1 % a2) * (c1 % c2)
+        except:
+            self.error(_("Unable to calculate checksum"))
         else:
-            m = re.findall(r'(\d+) \% (\d+)', self.html)
-            c = lambda a,b: a + b
-
-        if not m:
-            self.parseError("Unable to calculate checksum")
-
-        a = map(lambda x: int(x), m[0])
-        b = map(lambda x: int(x), m[1])
-
-        # Checksum is calculated as (a*b+19) or (a+b), where a and b are the result of modulo calculations
-        a = a[0] % a[1]
-        b = b[0] % b[1]
-
-        return c(a, b)
+            return b + 18
 
 
     def get_link(self):
         checksum = self.get_checksum()
-        p_url = path.join("d", self.file_info['KEY'], str(checksum), self.pyfile.name)
-        dl_link = urljoin(self.file_info['HOST'], p_url)
+        p_url = path.join("d", self.info['KEY'], str(checksum), self.pyfile.name)
+        dl_link = urljoin(self.info['HOST'], p_url)
         return dl_link
 
 

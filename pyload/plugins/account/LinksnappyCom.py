@@ -7,12 +7,13 @@ from pyload.utils import json_loads
 
 
 class LinksnappyCom(Account):
-    __name__ = "LinksnappyCom"
-    __type__ = "account"
+    __name__    = "LinksnappyCom"
+    __type__    = "account"
     __version__ = "0.02"
 
     __description__ = """Linksnappy.com account plugin"""
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def loadAccountInfo(self, user, req):
@@ -39,6 +40,7 @@ class LinksnappyCom(Account):
             trafficleft = int(j['return']['trafficleft']) * 1024
 
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
+
 
     def login(self, user, data, req):
         r = req.load('http://gen.linksnappy.com/lseAPI.php',

@@ -5,14 +5,17 @@ from pyload.plugins.base.Crypter import Crypter
 
 
 class UlozToFolder(Crypter):
-    __name__ = "UlozToFolder"
-    __type__ = "crypter"
+    __name__    = "UlozToFolder"
+    __type__    = "crypter"
     __version__ = "0.2"
 
-    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj.cz|zachowajto.pl)/(m|soubory)/.*'
+    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(m|soubory)/.*'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Uloz.to folder decrypter plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FOLDER_PATTERN = r'<ul class="profile_files">(.*?)</ul>'
@@ -25,10 +28,10 @@ class UlozToFolder(Crypter):
 
         new_links = []
         for i in xrange(1, 100):
-            self.logInfo("Fetching links from page %i" % i)
-            m = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
+            self.logInfo(_("Fetching links from page %i") % i)
+            m = re.search(self.FOLDER_PATTERN, html, re.S)
             if m is None:
-                self.fail("Parse error (FOLDER)")
+                self.error(_("FOLDER_PATTERN not found"))
 
             new_links.extend(re.findall(self.LINK_PATTERN, m.group(1)))
             m = re.search(self.NEXT_PAGE_PATTERN, html)
@@ -37,9 +40,7 @@ class UlozToFolder(Crypter):
             else:
                 break
         else:
-            self.logInfo("Limit of 99 pages reached, aborting")
+            self.logInfo(_("Limit of 99 pages reached, aborting"))
 
         if new_links:
             self.urls = [map(lambda s: "http://ulozto.net/%s" % s, new_links)]
-        else:
-            self.fail('Could not extract any links')

@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.XFSPAccount import XFSPAccount
+from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class NosuploadCom(XFSPAccount):
-    __name__ = "NosuploadCom"
-    __type__ = "account"
-    __version__ = "0.01"
+class NosuploadCom(XFSAccount):
+    __name__    = "NosuploadCom"
+    __type__    = "account"
+    __version__ = "0.02"
 
     __description__ = """Nosupload.com account plugin"""
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_URL = "http://www.nosupload.com/"
+    HOSTER_DOMAIN = "nosupload.com"

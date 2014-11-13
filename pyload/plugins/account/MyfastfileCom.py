@@ -7,13 +7,13 @@ from pyload.utils import json_loads
 
 
 class MyfastfileCom(Account):
-    __name__ = "MyfastfileCom"
-    __type__ = "account"
+    __name__    = "MyfastfileCom"
+    __type__    = "account"
     __version__ = "0.02"
 
     __description__ = """Myfastfile.com account plugin"""
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
-
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def loadAccountInfo(self, user, req):
@@ -21,7 +21,8 @@ class MyfastfileCom(Account):
             validuntil = int(time() + self.json_data['days_left'] * 24 * 60 * 60)
             return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
         else:
-            self.logError("Unable to get account information")
+            self.logError(_("Unable to get account information"))
+
 
     def login(self, user, data, req):
         # Password to use is the API-Password written in http://myfastfile.com/myaccount
@@ -30,5 +31,5 @@ class MyfastfileCom(Account):
         self.logDebug("JSON data: " + html)
         self.json_data = json_loads(html)
         if self.json_data['status'] != 'ok':
-            self.logError('Invalid login. The password to use is the API-Password you find in your "My Account" page')
+            self.logError(_('Invalid login. The password to use is the API-Password you find in your "My Account" page'))
             self.wrongPassword()

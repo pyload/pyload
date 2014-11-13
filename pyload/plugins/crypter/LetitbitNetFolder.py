@@ -5,15 +5,18 @@ from pyload.plugins.base.Crypter import Crypter
 
 
 class LetitbitNetFolder(Crypter):
-    __name__ = "LetitbitNetFolder"
-    __type__ = "crypter"
+    __name__    = "LetitbitNetFolder"
+    __type__    = "crypter"
     __version__ = "0.1"
 
-    __pattern__ = r'http://(?:www\.)?letitbit.net/folder/\w+'
+    __pattern__ = r'http://(?:www\.)?letitbit\.net/folder/\w+'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Letitbit.net folder decrypter plugin"""
-    __authors__ = [("DHMH", "webmaster@pcProfil.de"),
-                   ("z00nx", "z00nx0@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("DHMH", "webmaster@pcProfil.de"),
+                       ("z00nx", "z00nx0@gmail.com")]
 
 
     FOLDER_PATTERN = r'<table>(.*)</table>'
@@ -23,11 +26,8 @@ class LetitbitNetFolder(Crypter):
     def decrypt(self, pyfile):
         html = self.load(pyfile.url)
 
-        folder = re.search(self.FOLDER_PATTERN, html, re.DOTALL)
+        folder = re.search(self.FOLDER_PATTERN, html, re.S)
         if folder is None:
-            self.fail("Parse error (FOLDER)")
+            self.error(_("FOLDER_PATTERN not found"))
 
         self.urls.extend(re.findall(self.LINK_PATTERN, folder.group(0)))
-
-        if not self.urls:
-            self.fail('Could not extract any links')

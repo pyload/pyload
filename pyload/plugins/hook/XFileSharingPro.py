@@ -6,17 +6,42 @@ from pyload.plugins.base.Hook import Hook
 
 
 class XFileSharingPro(Hook):
-    __name__ = "XFileSharingPro"
-    __type__ = "hook"
-    __version__ = "0.12"
+    __name__    = "XFileSharingPro"
+    __type__    = "hook"
+    __version__ = "0.22"
 
     __config__ = [("activated", "bool", "Activated", True),
-                  ("load_default", "bool", "Include default (built-in) hoster list", True),
-                  ("include_hosters", "str", "Include hosters (comma separated)", ""),
-                  ("exclude_hosters", "str", "Exclude hosters (comma separated)", "")]
+                  ("use_hoster_list", "bool", "Load listed hosters only", False),
+                  ("use_crypter_list", "bool", "Load listed crypters only", False),
+                  ("use_builtin_list", "bool", "Load built-in plugin list", True),
+                  ("hoster_list", "str", "Hoster list (comma separated)", ""),
+                  ("crypter_list", "str", "Crypter list (comma separated)", "")]
 
-    __description__ = """XFileSharingPro hook plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Load XFileSharingPro based hosters and crypter which don't need a own plugin to run"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    # event_list = ["pluginConfigChanged"]
+    regexp = {'hoster' : (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}',
+                          r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w{12}\W?'),
+              'crypter': (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:user|folder)s?/\w+',
+                          r'https?://(?:[^/]+\.)?(%s)/(?:user|folder)s?/\w+')}
+
+    HOSTER_LIST  = [#WORKING HOSTERS:
+                    "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com", "filevice.com", "hostingbulk.com",
+                    "linestorage.com", "ravishare.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
+                    #NOT TESTED:
+                    "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
+                    "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
+                    "vidbull.com", "zalaa.com", "zomgupload.com",
+                    #NOT WORKING:
+                    "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com", "laoupload.com", "rd-fs.com"]
+    CRYPTER_LIST = []
+
+
+    # def pluginConfigChanged(self.__name__, plugin, name, value):
+        # self.loadPattern()
 
 
     def coreReady(self):
@@ -24,56 +49,50 @@ class XFileSharingPro(Hook):
 
 
     def loadPattern(self):
-        hoster_list = self.getConfigSet('include_hosters')
-        exclude_list = self.getConfigSet('exclude_hosters')
+        use_builtin_list = self.getConfig('use_builtin_list')
 
-        if self.getConfig('load_default'):
-            hoster_list |= set((
-                #WORKING HOSTERS:
-                "aieshare.com", "asixfiles.com", "banashare.com", "cyberlocker.ch", "eyesfile.co", "eyesfile.com",
-                "fileband.com", "filedwon.com", "filedownloads.org", "hipfile.com", "kingsupload.com", "mlfat4arab.com",
-                "netuploaded.com", "odsiebie.pl", "q4share.com", "ravishare.com", "uptobox.com", "verzend.be",
-                "xvidstage.com", "thefile.me", "sharesix.com", "hostingbulk.com",
-                #NOT TESTED:
-                "bebasupload.com", "boosterking.com", "divxme.com", "filevelocity.com", "glumbouploads.com",
-                "grupload.com", "heftyfile.com", "host4desi.com", "laoupload.com", "linkzhost.com", "movreel.com",
-                "rockdizfile.com", "limfile.com", "share76.com", "sharebeast.com", "sharehut.com", "sharerun.com",
-                "shareswift.com", "sharingonline.com", "6ybh-upload.com", "skipfile.com", "spaadyshare.com",
-                "space4file.com", "uploadbaz.com", "uploadc.com", "uploaddot.com", "uploadfloor.com", "uploadic.com",
-                "uploadville.com", "vidbull.com", "zalaa.com", "zomgupload.com", "kupload.org", "movbay.org",
-                "multishare.org", "omegave.org", "toucansharing.org", "uflinq.org", "banicrazy.info", "flowhot.info",
-                "upbrasil.info", "shareyourfilez.biz", "bzlink.us", "cloudcache.cc", "fileserver.cc", "farshare.to",
-                "filemaze.ws", "filehost.ws", "filestock.ru", "moidisk.ru", "4up.im", "100shared.com", "sharesix.com",
-                "thefile.me", "filenuke.com", "sharerepo.com", "mightyupload.com",
-                #WRONG FILE NAME:
-                "sendmyway.com", "upchi.co.il",
-                #NOT WORKING:
-                "amonshare.com", "imageporter.com", "file4safe.com",
-                #DOWN OR BROKEN:
-                "ddlanime.com", "fileforth.com", "loombo.com", "goldfile.eu", "putshare.com"
-            ))
+        for type, plugin in (("hoster",  "XFileSharingPro"),
+                             ("crypter", "XFileSharingProFolder")):
+            every_plugin = not self.getConfig("use_%s_list" % type)
 
-        hoster_list -= (exclude_list)
-        hoster_list -= set(('', u''))
+            if every_plugin:
+                self.logInfo(_("Handling any %s I can!") % type)
+                pattern = self.regexp[type][0]
+            else:
+                s = self.getConfig('%s_list' % type).replace('\\', '').replace('|', ',').replace(';', ',').lower()
+                plugin_list = set([x.strip() for x in s.split(',')])
 
-        if not hoster_list:
-            self.unload()
-            return
+                if use_builtin_list:
+                    plugin_list |= set([x.lower() for x in getattr(self, "%s_LIST" % type.upper())])
 
-        regexp = r"http://(?:[^/]*\.)?(%s)/(?:embed-)?\w{12}" % ("|".join(sorted(hoster_list)).replace('.', '\.'))
+                plugin_list -= set(('', u''))
 
-        dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
-        dict['pattern'] = regexp
-        dict['re'] = re.compile(regexp)
-        self.logDebug("Pattern loaded - handling %d hosters" % len(hoster_list))
+                if not plugin_list:
+                    self.logInfo(_("No %s to handle") % type)
+                    self._unload(type, plugin)
+                    return
+
+                match_list = '|'.join(sorted(plugin_list))
+
+                len_match_list = len(plugin_list)
+                self.logInfo(_("Handling %d %s%s: %s") % (len_match_list,  type, "" if len_match_list is 1 else "s", match_list.replace('|', ', ')))
+
+                pattern = self.regexp[type][1] % match_list.replace('.', '\.')
+
+            dict = self.core.pluginManager.plugins[type][plugin]
+            dict['pattern'] = pattern
+            dict['re'] = re.compile(pattern)
+
+            self.logDebug("Loaded %s pattern: %s" % (type, pattern))
 
 
-    def getConfigSet(self, option):
-        s = self.getConfig(option).lower().replace('|', ',').replace(';', ',')
-        return set([x.strip() for x in s.split(',')])
+    def _unload(self, type, plugin):
+        dict = self.core.pluginManager.plugins[type][plugin]
+        dict['pattern'] = r'^unmatchable$'
+        dict['re'] = re.compile(dict['pattern'])
 
 
     def unload(self):
-        dict = self.core.pluginManager.hosterPlugins['XFileSharingPro']
-        dict['pattern'] = r'^unmatchable$'
-        dict['re'] = re.compile(r'^unmatchable$')
+        for type, plugin in (("hoster",  "XFileSharingPro"),
+                             ("crypter", "XFileSharingProFolder")):
+            self._unload(type, plugin)

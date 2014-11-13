@@ -7,25 +7,29 @@ from pyload.plugins.base.Crypter import Crypter
 
 
 class OneKhDe(Crypter):
-    __name__ = "OneKhDe"
-    __type__ = "crypter"
+    __name__    = "OneKhDe"
+    __type__    = "crypter"
     __version__ = "0.1"
 
-    __pattern__ = r'http://(?:www\.)?1kh.de/f/'
+    __pattern__ = r'http://(?:www\.)?1kh\.de/f/'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """1kh.de decrypter plugin"""
-    __authors__ = [("spoob", "spoob@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org")]
 
 
     def __init__(self, parent):
         Crypter.__init__(self, parent)
         self.parent = parent
-        self.html = None
+
 
     def file_exists(self):
         """ returns True or False
         """
         return True
+
 
     def proceed(self, url, location):
         url = self.parent.url

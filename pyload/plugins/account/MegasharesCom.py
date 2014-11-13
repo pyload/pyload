@@ -7,12 +7,13 @@ from pyload.plugins.base.Account import Account
 
 
 class MegasharesCom(Account):
-    __name__ = "MegasharesCom"
-    __type__ = "account"
+    __name__    = "MegasharesCom"
+    __type__    = "account"
     __version__ = "0.02"
 
     __description__ = """Megashares.com account plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     VALID_UNTIL_PATTERN = r'<p class="premium_info_box">Period Ends: (\w{3} \d{1,2}, \d{4})</p>'
@@ -33,6 +34,7 @@ class MegasharesCom(Account):
             self.logError(e)
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
+
 
     def login(self, user, data, req):
         html = req.load('http://d01.megashares.com/myms_login.php', post={

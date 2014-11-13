@@ -9,14 +9,15 @@ from pyload.plugins.base.Hoster import Hoster
 
 
 class LinksnappyCom(Hoster):
-    __name__ = "LinksnappyCom"
-    __type__ = "hoster"
+    __name__    = "LinksnappyCom"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'https?://(?:[^/]*\.)?linksnappy\.com'
 
     __description__ = """Linksnappy.com hoster plugin"""
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     SINGLE_CHUNK_HOSTERS = ('easybytez.com')
@@ -26,12 +27,13 @@ class LinksnappyCom(Hoster):
         self.chunkLimit = -1
         self.resumeDownload = True
 
+
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Linksnappy.com")
-            self.fail("No Linksnappy.com account provided")
+            self.fail(_("No Linksnappy.com account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             host = self._get_host(pyfile.url)
@@ -46,8 +48,9 @@ class LinksnappyCom(Hoster):
             j = json_loads(r)['links'][0]
 
             if j['error']:
-                self.logError("Error converting the link: %s" % j['error'])
-                self.fail('Error converting the link')
+                msg = _("Error converting the link")
+                self.logError(msg, j['error'])
+                self.fail(msg)
 
             pyfile.name = j['filename']
             new_url = j['generated']
@@ -64,7 +67,8 @@ class LinksnappyCom(Hoster):
 
         check = self.checkDownload({"html302": "<title>302 Found</title>"})
         if check == "html302":
-            self.retry(wait_time=5, reason="Linksnappy returns only HTML data.")
+            self.retry(wait_time=5, reason=_("Linksnappy returns only HTML data"))
+
 
     @staticmethod
     def _get_host(url):

@@ -154,7 +154,7 @@ class DownloadThread(PluginThread):
         """Constructor"""
         PluginThread.__init__(self, manager)
 
-        self.queue = Queue() # job queue
+        self.queue = Queue()  #: job queue
         self.active = False
 
         self.start()
@@ -175,7 +175,8 @@ class DownloadThread(PluginThread):
                 return True
 
             try:
-                if not pyfile.hasPlugin(): continue
+                if not pyfile.hasPlugin():
+                    continue
                 #this pyfile was deleted while queueing
 
                 pyfile.plugin.checkForSameFiles(starting=True)
@@ -183,6 +184,7 @@ class DownloadThread(PluginThread):
 
                 # start download
                 self.m.core.addonManager.downloadPreparing(pyfile)
+                pyfile.error = ""
                 pyfile.plugin.preprocessing(self)
 
                 self.m.log.info(_("Download finished: %s") % pyfile.name)
@@ -204,6 +206,9 @@ class DownloadThread(PluginThread):
 
                 pyfile.setStatus("aborted")
 
+                if self.m.core.debug:
+                    print_exc()
+                        
                 self.clean(pyfile)
                 continue
 
@@ -236,6 +241,9 @@ class DownloadThread(PluginThread):
                     self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
                     pyfile.error = msg
 
+                if self.m.core.debug:
+                    print_exc()
+                        
                 self.m.core.addonManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
@@ -357,41 +365,46 @@ class DecrypterThread(PluginThread):
         retry = False
 
         try:
-            self.m.log.info(_("Decrypting starts: %s") % self.active.name)
-            self.active.plugin.preprocessing(self)
+            self.m.log.info(_("Decrypting starts: %s") % pyfile.name)
+            pyfile.error = ""
+            pyfile.plugin.preprocessing(self)
 
         except NotImplementedError:
-            self.m.log.error(_("Plugin %s is missing a function.") % self.active.pluginname)
+            self.m.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
             return
 
         except Fail, e:
             msg = e.args[0]
 
             if msg == "offline":
-                self.active.setStatus("offline")
-                self.m.log.warning(_("Download is offline: %s") % self.active.name)
+                pyfile.setStatus("offline")
+                self.m.log.warning(_("Download is offline: %s") % pyfile.name)
             else:
-                self.active.setStatus("failed")
-                self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": self.active.name, "msg": msg})
-                self.active.error = msg
+                pyfile.setStatus("failed")
+                self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
+                pyfile.error = msg
 
+            if self.m.core.debug:
+                print_exc()
             return
 
         except Abort:
             self.m.log.info(_("Download aborted: %s") % pyfile.name)
             pyfile.setStatus("aborted")
-
+            
+            if self.m.core.debug:
+                print_exc()
             return
 
         except Retry:
-            self.m.log.info(_("Retrying %s") % self.active.name)
+            self.m.log.info(_("Retrying %s") % pyfile.name)
             retry = True
             return self.run()
 
         except Exception, e:
-            self.active.setStatus("failed")
-            self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": self.active.name, "msg": str(e)})
-            self.active.error = str(e)
+            pyfile.setStatus("failed")
+            self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
+            pyfile.error = str(e)
 
             if self.m.core.debug:
                 print_exc()
@@ -399,21 +412,14 @@ class DecrypterThread(PluginThread):
 
             return
 
-
         finally:
             if not retry:
-                self.active.release()
+                pyfile.release()
                 self.active = False
                 self.m.core.files.save()
                 self.m.localThreads.remove(self)
                 exc_clear()
 
-
-        #self.m.core.addonManager.downloadFinished(pyfile)
-
-
-        #self.m.localThreads.remove(self)
-        #self.active.finishIfDone()
         if not retry:
             pyfile.delete()
 

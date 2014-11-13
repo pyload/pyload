@@ -11,14 +11,15 @@ from pyload.utils import parseFileSize
 
 
 class AlldebridCom(Hoster):
-    __name__ = "AlldebridCom"
-    __type__ = "hoster"
+    __name__    = "AlldebridCom"
+    __type__    = "hoster"
     __version__ = "0.34"
 
     __pattern__ = r'https?://(?:[^/]*\.)?alldebrid\..*'
 
     __description__ = """Alldebrid.com hoster plugin"""
-    __authors__ = [("Andy Voigt", "spamsales@online.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
 
     def getFilename(self, url):
@@ -30,16 +31,18 @@ class AlldebridCom(Hoster):
             name += "%s.tmp" % randrange(100, 999)
         return name
 
+
     def setup(self):
         self.chunkLimit = 16
         self.resumeDownload = True
+
 
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "AllDebrid")
-            self.fail("No AllDebrid account provided")
+            self.fail(_("No AllDebrid account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             password = self.getPassword().splitlines()
@@ -81,6 +84,6 @@ class AlldebridCom(Hoster):
                                     'empty': re.compile(r"^$")})
 
         if check == "error":
-            self.retry(wait_time=60, reason="An error occured while generating link.")
+            self.retry(wait_time=60, reason=_("An error occured while generating link"))
         elif check == "empty":
-            self.retry(wait_time=60, reason="Downloaded File was empty.")
+            self.retry(wait_time=60, reason=_("Downloaded File was empty"))

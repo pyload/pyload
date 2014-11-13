@@ -4,14 +4,17 @@ from pyload.plugins.base.Crypter import Crypter
 
 
 class XupPl(Crypter):
-    __name__ = "XupPl"
-    __type__ = "crypter"
+    __name__    = "XupPl"
+    __type__    = "crypter"
     __version__ = "0.1"
 
     __pattern__ = r'https?://(?:[^/]*\.)?xup\.pl/.*'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Xup.pl decrypter plugin"""
-    __authors__ = [("z00nx", "z00nx0@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("z00nx", "z00nx0@gmail.com")]
 
 
     def decrypt(self, pyfile):
@@ -19,4 +22,4 @@ class XupPl(Crypter):
         if 'location' in header:
             self.urls = [header['location']]
         else:
-            self.fail('Unable to find link')
+            self.fail(_("Unable to find link"))

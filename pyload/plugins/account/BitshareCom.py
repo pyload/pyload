@@ -4,12 +4,13 @@ from pyload.plugins.base.Account import Account
 
 
 class BitshareCom(Account):
-    __name__ = "BitshareCom"
-    __type__ = "account"
+    __name__    = "BitshareCom"
+    __type__    = "account"
     __version__ = "0.12"
 
     __description__ = """Bitshare account plugin"""
-    __authors__ = [("Paul King", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("Paul King", None)]
 
 
     def loadAccountInfo(self, user, req):
@@ -22,6 +23,7 @@ class BitshareCom(Account):
             self.logWarning(_("Activate direct Download in your Bitshare Account"))
 
         return {"validuntil": -1, "trafficleft": -1, "premium": True}
+
 
     def login(self, user, data, req):
         page = req.load("http://bitshare.com/login.html",

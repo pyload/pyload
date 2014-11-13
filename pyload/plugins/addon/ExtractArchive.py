@@ -14,6 +14,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
     import errno
     from subprocess import Popen
 
+
     def _eintr_retry_call(func, *args):
         while True:
             try:
@@ -22,6 +23,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
                 if e.errno == errno.EINTR:
                     continue
                 raise
+
 
     # unsued timeout option for older python version
     def wait(self, timeout=0):
@@ -53,8 +55,8 @@ from pyload.utils import safe_join, fs_encode
 
 
 class ExtractArchive(Addon):
-    __name__ = "ExtractArchive"
-    __type__ = "addon"
+    __name__    = "ExtractArchive"
+    __type__    = "addon"
     __version__ = "0.17"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -70,9 +72,10 @@ class ExtractArchive(Addon):
                   ("renice", "int", "CPU Priority", 0)]
 
     __description__ = """Extract different kind of archives"""
-    __authors__ = [("RaNaN", "ranan@pyload.org"),
-                   ("AndroKev", None),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "ranan@pyload.org"),
+                       ("AndroKev", None),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     event_list = ["allDownloadsProcessed"]
@@ -307,16 +310,18 @@ class ExtractArchive(Addon):
 
     def reloadPasswords(self):
         passwordfile = self.getConfig("passwordfile")
-        if not exists(passwordfile):
-            open(passwordfile, "wb").close()
 
-        passwords = []
-        f = open(passwordfile, "rb")
-        for pw in f.read().splitlines():
-            passwords.append(pw)
-        f.close()
+        try:
+            passwords = []
+            with open(passwordfile, "a+") as f:
+                for pw in f.read().splitlines():
+                    passwords.append(pw)
 
-        self.passwords = passwords
+        except IOError, e:
+            self.logError(e)
+
+        else:
+            self.passwords = passwords
 
 
     @Expose
@@ -326,12 +331,15 @@ class ExtractArchive(Addon):
 
         if pw in self.passwords:
             self.passwords.remove(pw)
+
         self.passwords.insert(0, pw)
 
-        f = open(passwordfile, "wb")
-        for pw in self.passwords:
-            f.write(pw + "\n")
-        f.close()
+        try:
+            with open(passwordfile, "wb") as f:
+                for pw in self.passwords:
+                    f.write(pw + "\n")
+        except IOError, e:
+            self.logError(e)
 
 
     def setPermissions(self, files):

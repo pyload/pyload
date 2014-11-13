@@ -7,12 +7,13 @@ from pyload.plugins.base.Account import Account
 
 
 class EuroshareEu(Account):
-    __name__ = "EuroshareEu"
-    __type__ = "account"
+    __name__    = "EuroshareEu"
+    __type__    = "account"
     __version__ = "0.01"
 
     __description__ = """Euroshare.eu account plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def loadAccountInfo(self, user, req):
@@ -28,8 +29,8 @@ class EuroshareEu(Account):
 
         return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
-    def login(self, user, data, req):
 
+    def login(self, user, data, req):
         html = req.load('http://euroshare.eu/customer-zone/login/', post={
             "trvale": "1",
             "login": user,

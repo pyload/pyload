@@ -6,18 +6,18 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class PremiumizeMe(MultiHoster):
-    __name__ = "PremiumizeMe"
-    __type__ = "hook"
+    __name__    = "PremiumizeMe"
+    __type__    = "hook"
     __version__ = "0.12"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
                   ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Premiumize.me hook plugin"""
-    __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def getHoster(self):
@@ -41,12 +41,13 @@ class PremiumizeMe(MultiHoster):
         # Extract hosters from json file
         return data['result']['hosterlist']
 
+
     def coreReady(self):
         # Get account plugin and check if there is a valid account available
         self.account = self.core.accountManager.getAccountPlugin("PremiumizeMe")
         if not self.account.canUse():
             self.account = None
-            self.logError(_("Please add a valid premiumize.me account first and restart pyLoad."))
+            self.logError(_("Please add a valid premiumize.me account first and restart pyLoad"))
             return
 
         # Run the overwriten core ready which actually enables the multihoster hook

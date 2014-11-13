@@ -6,12 +6,13 @@ from pyload.plugins.base.Account import Account
 
 
 class ZeveraCom(Account):
-    __name__ = "ZeveraCom"
-    __type__ = "account"
+    __name__    = "ZeveraCom"
+    __type__    = "account"
     __version__ = "0.21"
 
     __description__ = """Zevera.com account plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def loadAccountInfo(self, user, req):
@@ -26,11 +27,13 @@ class ZeveraCom(Account):
             }
         return account_info
 
+
     def login(self, user, data, req):
         self.loginname = user
         self.password = data['password']
         if self.getAPIData(req) == "No traffic":
             self.wrongPassword()
+
 
     def getAPIData(self, req, just_header=False, **kwargs):
         get_data = {
@@ -40,14 +43,14 @@ class ZeveraCom(Account):
         }
         get_data.update(kwargs)
 
-        response = req.load("http://www.zevera.com/jDownloader.ashx", get=get_data,
+        res = req.load("http://www.zevera.com/jDownloader.ashx", get=get_data,
                             decode=True, just_header=just_header)
-        self.logDebug(response)
+        self.logDebug(res)
 
-        if ':' in response:
+        if ':' in res:
             if not just_header:
-                response = response.replace(',', '\n')
+                res = res.replace(',', '\n')
             return dict((y.strip().lower(), z.strip()) for (y, z) in
-                        [x.split(':', 1) for x in response.splitlines() if ':' in x])
+                        [x.split(':', 1) for x in res.splitlines() if ':' in x])
         else:
-            return response
+            return res

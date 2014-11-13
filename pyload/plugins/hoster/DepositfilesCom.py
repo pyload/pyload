@@ -9,25 +9,26 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DepositfilesCom(SimpleHoster):
-    __name__ = "DepositfilesCom"
-    __type__ = "hoster"
-    __version__ = "0.49"
+    __name__    = "DepositfilesCom"
+    __type__    = "hoster"
+    __version__ = "0.50"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
 
     __description__ = """Depositfiles.com hoster plugin"""
-    __authors__ = [("spoob", "spoob@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'<script type="text/javascript">eval\( unescape\(\'(?P<N>.*?)\''
-    FILE_SIZE_PATTERN = r': <b>(?P<S>[0-9.]+)&nbsp;(?P<U>[kKMG])i?B</b>'
+    NAME_PATTERN = r'<script type="text/javascript">eval\( unescape\(\'(?P<N>.*?)\''
+    SIZE_PATTERN = r': <b>(?P<S>[\d.,]+)&nbsp;(?P<U>[\w^_]+)</b>'
     OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
 
-    FILE_NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
+    NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
                               (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
-    FILE_URL_REPLACEMENTS = [(__pattern__, "https://dfiles.eu/files/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__, "https://dfiles.eu/files/\g<ID>")]
 
     COOKIES = [(".dfiles.eu", "lang_current", "en")]
 
@@ -40,21 +41,20 @@ class DepositfilesCom(SimpleHoster):
         self.html = self.load(self.pyfile.url, post={"gateway_result": "1"}, cookies=True)
 
         if re.search(r'File is checked, please try again in a minute.', self.html) is not None:
-            self.logInfo("DepositFiles.com: The file is being checked. Waiting 1 minute.")
-            self.wait(61)
-            self.retry()
+            self.logInfo(_("The file is being checked. Waiting 1 minute"))
+            self.retry(wait_time=60)
 
         wait = re.search(r'html_download_api-limit_interval\">(\d+)</span>', self.html)
         if wait:
             wait_time = int(wait.group(1))
-            self.logInfo("%s: Traffic used up. Waiting %d seconds." % (self.__name__, wait_time))
+            self.logInfo(_("Traffic used up. Waiting %d seconds") % wait_time)
             self.wait(wait_time, True)
             self.retry()
 
         wait = re.search(r'>Try in (\d+) minutes or use GOLD account', self.html)
         if wait:
             wait_time = int(wait.group(1))
-            self.logInfo("%s: All free slots occupied. Waiting %d minutes." % (self.__name__, wait_time))
+            self.logInfo(_("All free slots occupied. Waiting %d minutes") % wait_time)
             self.setWait(wait_time * 60, False)
 
         wait = re.search(r'Please wait (\d+) sec', self.html)
@@ -71,9 +71,9 @@ class DepositfilesCom(SimpleHoster):
         recaptcha = ReCaptcha(self)
         captcha_key = recaptcha.detect_key()
         if captcha_key is None:
-            self.parseError("ReCaptcha key not found")
+            self.error(_("ReCaptcha key not found"))
 
-        for _ in xrange(5):
+        for _i in xrange(5):
             self.html = self.load("https://dfiles.eu/get_file.php", get=params)
 
             if '<input type=button value="Continue" onclick="check_recaptcha' in self.html:
@@ -91,20 +91,19 @@ class DepositfilesCom(SimpleHoster):
                 self.logDebug("LINK: %s" % link)
                 break
             else:
-                self.parseError('Download link')
+                self.error(_("Download link"))
         else:
-            self.fail('No valid captcha response received')
+            self.fail(_("No valid captcha response received"))
 
         try:
             self.download(link, disposition=True)
         except:
             self.retry(wait_time=60)
 
-    def handlePremium(self):
-        self.html = self.load(self.pyfile.url, cookies=self.COOKIES)
 
+    def handlePremium(self):
         if '<span class="html_download_api-gold_traffic_limit">' in self.html:
-            self.logWarning("Download limit reached")
+            self.logWarning(_("Download limit reached"))
             self.retry(25, 60 * 60, "Download limit reached")
         elif 'onClick="show_gold_offer' in self.html:
             self.account.relogin(self.user)
@@ -117,7 +116,7 @@ class DepositfilesCom(SimpleHoster):
             elif mirror:
                 dlink = mirror.group(1)
             else:
-                self.parseError("No direct download link or mirror found")
+                self.error(_("No direct download link or mirror found"))
             self.download(dlink, disposition=True)
 
 

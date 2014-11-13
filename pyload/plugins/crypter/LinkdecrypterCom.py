@@ -5,15 +5,18 @@ from pyload.plugins.base.Crypter import Crypter
 
 
 class LinkdecrypterCom(Crypter):
-    __name__ = "LinkdecrypterCom"
-    __type__ = "crypter"
+    __name__    = "LinkdecrypterCom"
+    __type__    = "crypter"
     __version__ = "0.27"
 
-    __pattern__ = None
+    __pattern__ = r'^unmatchable$'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Linkdecrypter.com"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("flowlee", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("flowlee", None)]
 
 
     TEXTAREA_PATTERN = r'<textarea name="links" wrap="off" readonly="1" class="caja_des">(.+)</textarea>'
@@ -23,16 +26,13 @@ class LinkdecrypterCom(Crypter):
 
 
     def decrypt(self, pyfile):
-
         self.passwords = self.getPassword().splitlines()
 
         # API not working anymore
         self.urls = self.decryptHTML()
-        if not self.urls:
-            self.fail('Could not extract any links')
+
 
     def decryptAPI(self):
-
         get_dict = {"t": "link", "url": self.pyfile.url, "lcache": "1"}
         self.html = self.load('http://linkdecrypter.com/api', get=get_dict)
         if self.html.startswith('http://'):
@@ -46,19 +46,19 @@ class LinkdecrypterCom(Crypter):
 
         self.logError("API", self.html)
         if self.html == 'INTERRUPTION(PASSWORD)':
-            self.fail("No or incorrect password")
+            self.fail(_("No or incorrect password"))
 
         return None
 
-    def decryptHTML(self):
 
+    def decryptHTML(self):
         retries = 5
 
         post_dict = {"link_cache": "on", "pro_links": self.pyfile.url, "modo_links": "text"}
         self.html = self.load('http://linkdecrypter.com/', post=post_dict, cookies=True, decode=True)
 
         while self.passwords or retries:
-            m = re.search(self.TEXTAREA_PATTERN, self.html, flags=re.DOTALL)
+            m = re.search(self.TEXTAREA_PATTERN, self.html, flags=re.S)
             if m:
                 return [x for x in m.group(1).splitlines() if '[LINK-ERROR]' not in x]
 
@@ -69,7 +69,7 @@ class LinkdecrypterCom(Crypter):
 
                 m = re.search(r"<p><i><b>([^<]+)</b></i></p>", self.html)
                 msg = m.group(1) if m else ""
-                self.logInfo("Captcha protected link", result_type, msg)
+                self.logInfo(_("Captcha protected link"), result_type, msg)
 
                 captcha = self.decryptCaptcha(captcha_url, result_type=result_type)
                 if result_type == "positional":
@@ -80,10 +80,10 @@ class LinkdecrypterCom(Crypter):
             elif self.PASSWORD_PATTERN in self.html:
                 if self.passwords:
                     password = self.passwords.pop(0)
-                    self.logInfo("Password protected link, trying " + password)
+                    self.logInfo(_("Password protected link, trying ") + password)
                     self.html = self.load('http://linkdecrypter.com/', post={'password': password}, decode=True)
                 else:
-                    self.fail("No or incorrect password")
+                    self.fail(_("No or incorrect password"))
 
             else:
                 retries -= 1

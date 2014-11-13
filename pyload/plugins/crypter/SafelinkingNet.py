@@ -12,49 +12,48 @@ from pyload.plugins.internal.CaptchaService import SolveMedia
 
 
 class SafelinkingNet(Crypter):
-    __name__ = "SafelinkingNet"
-    __type__ = "crypter"
-    __version__ = "0.1"
+    __name__    = "SafelinkingNet"
+    __type__    = "crypter"
+    __version__ = "0.11"
 
-    __pattern__ = r'https?://(?:www\.)?safelinking.net/([pd])/\w+'
+    __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
     __description__ = """Safelinking.net decrypter plugin"""
-    __authors__ = [("quareevo", "quareevo@arcor.de")]
+    __license__     = "GPLv3"
+    __authors__     = [("quareevo", "quareevo@arcor.de")]
 
 
-    SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w\.\-_]+)';"
+    SOLVEMEDIA_PATTERN = "solvemediaApiKey = '([\w.-]+)';"
 
 
     def decrypt(self, pyfile):
         url = pyfile.url
+
         if re.match(self.__pattern__, url).group(1) == "d":
-            self.req.http.c.setopt(FOLLOWLOCATION, 0)
-            self.load(url)
-            m = re.search("^Location: (.+)$", self.req.http.header, re.MULTILINE)
-            if m:
-                self.urls = [m.group(1)]
+
+            header = self.load(url, just_header=True)
+            if 'location' in header:
+                self.urls = [header['location']]
             else:
-                self.fail("Couldn't find forwarded Link")
+                self.error(_("Couldn't find forwarded Link"))
 
         else:
-            password = ""
             postData = {"post-protect": "1"}
 
-            self.html = self.load(url)
-
             if "link-password" in self.html:
-                password = pyfile.package().password
-                postData['link-password'] = password
+                postData['link-password'] = self.getPassword()
 
             if "altcaptcha" in self.html:
-                for _ in xrange(5):
+                for _i in xrange(5):
                     m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
                     if m:
                         captchaKey = m.group(1)
                         captcha = SolveMedia(self)
                         captchaProvider = "Solvemedia"
                     else:
-                        self.fail("Error parsing captcha")
+                        self.fail(_("Error parsing captcha"))
 
                     challenge, response = captcha.challenge(captchaKey)
                     postData['adcopy_challenge'] = challenge
@@ -62,7 +61,7 @@ class SafelinkingNet(Crypter):
 
                     self.html = self.load(url, post=postData)
                     if "The password you entered was incorrect" in self.html:
-                        self.fail("Incorrect Password")
+                        self.fail(_("Incorrect Password"))
                     if not "The CAPTCHA code you entered was wrong" in self.html:
                         break
 

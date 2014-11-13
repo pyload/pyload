@@ -6,23 +6,24 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UloziskoSk(SimpleHoster):
-    __name__ = "UloziskoSk"
-    __type__ = "hoster"
-    __version__ = "0.23"
+    __name__    = "UloziskoSk"
+    __type__    = "hoster"
+    __version__ = "0.24"
 
-    __pattern__ = r'http://(?:www\.)?ulozisko.sk/.*'
+    __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.*'
 
     __description__ = """Ulozisko.sk hoster plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'<div class="down1">(?P<N>[^<]+)</div>'
-    FILE_SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[0-9.]+) (?P<U>[kKMG])i?B</strong><br />'
+    NAME_PATTERN = r'<div class="down1">(?P<N>[^<]+)</div>'
+    SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong><br />'
     OFFLINE_PATTERN = ur'<span class = "red">Zadaný súbor neexistuje z jedného z nasledujúcich dôvodov:</span>'
 
     LINK_PATTERN = r'<form name = "formular" action = "([^"]+)" method = "post">'
     ID_PATTERN = r'<input type = "hidden" name = "id" value = "([^"]+)" />'
-    CAPTCHA_PATTERN = r'<img src="(/obrazky/obrazky.php\?fid=[^"]+)" alt="" />'
+    CAPTCHA_PATTERN = r'<img src="(/obrazky/obrazky\.php\?fid=[^"]+)" alt="" />'
     IMG_PATTERN = ur'<strong>PRE ZVÄČŠENIE KLIKNITE NA OBRÁZOK</strong><br /><a href = "([^"]+)">'
 
 
@@ -37,22 +38,23 @@ class UloziskoSk(SimpleHoster):
         else:
             self.handleFree()
 
+
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
-            self.parseError('URL')
+            self.error(_("LINK_PATTERN not found"))
         parsed_url = 'http://www.ulozisko.sk' + m.group(1)
 
         m = re.search(self.ID_PATTERN, self.html)
         if m is None:
-            self.parseError('ID')
+            self.error(_("ID_PATTERN not found"))
         id = m.group(1)
 
         self.logDebug("URL:" + parsed_url + ' ID:' + id)
 
         m = re.search(self.CAPTCHA_PATTERN, self.html)
         if m is None:
-            self.parseError('CAPTCHA')
+            self.error(_("CAPTCHA_PATTERN not found"))
         captcha_url = 'http://www.ulozisko.sk' + m.group(1)
 
         captcha = self.decryptCaptcha(captcha_url, cookies=True)

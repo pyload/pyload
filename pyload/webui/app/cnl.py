@@ -122,8 +122,7 @@ def addcrypted2():
 @route('/flashgot', method='POST')
 @local_check
 def flashgot():
-    if request.environ['HTTP_REFERER'] != "http://localhost:9666/flashgot" and \
-            request.environ['HTTP_REFERER'] != "http://127.0.0.1:9666/flashgot":
+    if request.environ['HTTP_REFERER'] not in ("http://localhost:9666/flashgot", "http://127.0.0.1:9666/flashgot"):
         return HTTPError()
 
     autostart = int(request.forms.get('autostart', 0))

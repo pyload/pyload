@@ -6,16 +6,16 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class EasybytezCom(MultiHoster):
-    __name__ = "EasybytezCom"
-    __type__ = "hook"
+    __name__    = "EasybytezCom"
+    __type__    = "hook"
     __version__ = "0.03"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """EasyBytez.com hook plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def getHoster(self):

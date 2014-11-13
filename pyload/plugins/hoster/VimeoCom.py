@@ -6,8 +6,8 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class VimeoCom(SimpleHoster):
-    __name__ = "VimeoCom"
-    __type__ = "hoster"
+    __name__    = "VimeoCom"
+    __type__    = "hoster"
     __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
@@ -15,14 +15,15 @@ class VimeoCom(SimpleHoster):
                   ("original", "bool", "Try to download the original file first", True)]
 
     __description__ = """Vimeo.com hoster plugin"""
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'<title>(?P<N>.+) on Vimeo<'
+    NAME_PATTERN = r'<title>(?P<N>.+) on Vimeo<'
     OFFLINE_PATTERN = r'class="exception_header"'
     TEMP_OFFLINE_PATTERN = r'Please try again in a few minutes.<'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'https://www.vimeo.com/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__, r'https://www.vimeo.com/\g<ID>')]
 
     COOKIES = [(".vimeo.com", "language", "en")]
 
@@ -30,6 +31,7 @@ class VimeoCom(SimpleHoster):
     def setup(self):
         self.resumeDownload = self.multiDL = True
         self.chunkLimit = -1
+
 
     def handleFree(self):
         password = self.getPassword()
@@ -49,7 +51,7 @@ class VimeoCom(SimpleHoster):
                 self.download(link[q])
                 return
             else:
-                self.logInfo("Original file not downloadable")
+                self.logInfo(_("Original file not downloadable"))
 
         quality = self.getConfig("quality")
         if quality == "Highest":
@@ -64,9 +66,9 @@ class VimeoCom(SimpleHoster):
                 self.download(link[q])
                 return
             else:
-                self.logInfo("No %s quality video found" % q.upper())
+                self.logInfo(_("No %s quality video found") % q.upper())
         else:
-            self.fail("No video found!")
+            self.fail(_("No video found!"))
 
 
 getInfo = create_getInfo(VimeoCom)

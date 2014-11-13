@@ -5,12 +5,13 @@ from pyload.utils import json_loads
 
 
 class FastixRu(Account):
-    __name__ = "FastixRu"
-    __type__ = "account"
+    __name__    = "FastixRu"
+    __type__    = "account"
     __version__ = "0.02"
 
     __description__ = """Fastix account plugin"""
-    __authors__ = [("Massimo Rosamilia", "max@spiritix.eu")]
+    __license__     = "GPLv3"
+    __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
     def loadAccountInfo(self, user, req):
@@ -25,6 +26,7 @@ class FastixRu(Account):
         else:
             account_info = {"validuntil": None, "trafficleft": None, "premium": False}
         return account_info
+
 
     def login(self, user, data, req):
         page = req.load("http://fastix.ru/api_v2/?sub=get_apikey&email=%s&password=%s" % (user, data['password']))

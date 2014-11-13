@@ -8,18 +8,19 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class WrzucTo(SimpleHoster):
-    __name__ = "WrzucTo"
-    __type__ = "hoster"
-    __version__ = "0.01"
+    __name__    = "WrzucTo"
+    __type__    = "hoster"
+    __version__ = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?wrzuc\.to/([a-zA-Z0-9]+(\.wt|\.html)|(\w+/?linki/[a-zA-Z0-9]+))'
+    __pattern__ = r'http://(?:www\.)?wrzuc\.to/(\w+(\.wt|\.html)|(\w+/?linki/\w+))'
 
     __description__ = """Wrzuc.to hoster plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    FILE_NAME_PATTERN = r'id="file_info">\s*<strong>(?P<N>.*?)</strong>'
-    FILE_SIZE_PATTERN = r'class="info">\s*<tr>\s*<td>(?P<S>.*?)</td>'
+    NAME_PATTERN = r'id="file_info">\s*<strong>(?P<N>.*?)</strong>'
+    SIZE_PATTERN = r'class="info">\s*<tr>\s*<td>(?P<S>.*?)</td>'
 
     COOKIES = [(".wrzuc.to", "language", "en")]
 
@@ -27,10 +28,11 @@ class WrzucTo(SimpleHoster):
     def setup(self):
         self.multiDL = True
 
+
     def handleFree(self):
         data = dict(re.findall(r'(md5|file): "(.*?)"', self.html))
         if len(data) != 2:
-            self.parseError('File ID')
+            self.error(_("No file ID"))
 
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = self.pyfile.url
@@ -41,10 +43,9 @@ class WrzucTo(SimpleHoster):
 
         data.update(re.findall(r'"(download_link|server_id)":"(.*?)"', self.html))
         if len(data) != 4:
-            self.parseError('Download URL')
+            self.error(_("No download URL"))
 
         download_url = "http://%s.wrzuc.to/pobierz/%s" % (data['server_id'], data['download_link'])
-        self.logDebug("Download URL: %s" % download_url)
         self.download(download_url)
 
 

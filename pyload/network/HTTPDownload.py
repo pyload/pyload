@@ -62,7 +62,7 @@ class HTTPDownload:
         except IOError:
             self.info = ChunkInfo(filename)
 
-        self.chunkSupport = None
+        self.chunkSupport = True
         self.m = pycurl.CurlMulti()
 
         #needed for speed calculation
@@ -129,7 +129,7 @@ class HTTPDownload:
         except pycurl.error, e:
             #code 33 - no resume
             code = e.args[0]
-            if code == 33:
+            if resume is True and code == 33:
                 # try again without resume
                 self.log.debug("Errno 33 -> Restart without resume")
 
@@ -150,6 +150,7 @@ class HTTPDownload:
         if not resume:
             self.info.clear()
             self.info.addChunk("%s.chunk0" % self.filename, (0, 0)) #create an initial entry
+            self.info.save()
 
         self.chunks = []
 
@@ -163,8 +164,8 @@ class HTTPDownload:
         chunksDone = set()  # list of curl handles that are finished
         chunksCreated = False
         done = False
-        if self.info.getCount() > 1: # This is a resume, if we were chunked originally assume still can
-            self.chunkSupport = True
+        if self.info.getCount() is 0: # This is a resume, if we were chunked originally assume still can
+            self.chunkSupport = False
 
         while 1:
             #need to create chunks

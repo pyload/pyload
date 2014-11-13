@@ -6,26 +6,29 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class OneFichierCom(SimpleHoster):
-    __name__ = "OneFichierCom"
-    __type__ = "hoster"
-    __version__ = "0.64"
+    __name__    = "OneFichierCom"
+    __type__    = "hoster"
+    __version__ = "0.72"
 
-    __pattern__ = r'https?://(?P<ID>\w+)\.(?P<HOST>(1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl\.fr)'
+    __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
 
     __description__ = """1fichier.com hoster plugin"""
-    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
-                   ("the-razer", "daniel_ AT gmx DOT net"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("imclem", None),
-                   ("stickell", "l.stickell@yahoo.it"),
-                   ("Elrick69", "elrick69[AT]rocketmail[DOT]com")]
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+                       ("the-razer", "daniel_ AT gmx DOT net"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("imclem", None),
+                       ("stickell", "l.stickell@yahoo.it"),
+                       ("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    FILE_NAME_PATTERN = r'>Filename :</th>\s*<td>(?P<N>.+?)<'
-    FILE_SIZE_PATTERN = r'>Size :</th>\s*<td>(?P<S>[\d.,]+) (?P<U>\w+)'
-    OFFLINE_PATTERN = r'>The (requested)? file (could not be found|has been deleted)'
+    NAME_PATTERN = r'>FileName :</td>\s*<td.*>(?P<N>.+?)<'
+    SIZE_PATTERN = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://\g<ID>.\g<HOST>/en/')]
+    OFFLINE_PATTERN = r'File not found !\s*<'
+
+    COOKIES = [(".1fichier.com", "LG", "en")]
 
     WAIT_PATTERN = r'>You must wait (\d+)'
 
@@ -35,52 +38,34 @@ class OneFichierCom(SimpleHoster):
         self.resumeDownload = True
 
 
-    def handleFree(self):
-        self.html = self.load(self.pyfile.url, decode=True)
+    def handle(self, reconnect):
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            wait_time = int(m.group(1)) + 1  #: One minute more than what the page displays to be safe
-            self.logInfo("You have to wait been each free download", "Retrying in %d minutes." % wait_time)
-            self.wait(wait_time * 60, True)
-            self.retry()
+            wait_time = int(m.group(1)) * 60
 
-        url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['ID'])
+            self.wait(wait_time, reconnect)
+            self.retry(reason="You have to wait been each free download")
+
+        id = self.info['ID1'] or self.info['ID2']
+        url, inputs = self.parseHtmlForm('action="https://1fichier.com/\?%s' % id)
+
         if not url:
-            self.parseError("Download link not found")
+            self.fail(_("Download link not found"))
 
-        # Check for protection
         if "pass" in inputs:
             inputs['pass'] = self.getPassword()
+
         inputs['submit'] = "Download"
 
         self.download(url, post=inputs)
 
-        # Check download
-        self.checkDownloadedFile()
+
+    def handleFree(self):
+        return self.handle(True)
 
 
     def handlePremium(self):
-        url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['ID'])
-        if not url:
-            self.parseError("Download link not found")
-
-        # Check for protection
-        if "pass" in inputs:
-            inputs['pass'] = self.getPassword()
-        inputs['submit'] = "Download"
-
-        self.download(url, post=inputs)
-
-        # Check download
-        self.checkDownloadedFile()
-
-
-    def checkDownloadedFile(self):
-        check = self.checkDownload({'wait': self.WAIT_PATTERN})
-        if check == "wait":
-            wait_time = int(self.lastcheck.group(1)) * 60
-            self.wait(wait_time, True)
-            self.retry()
+        return self.handle(False)
 
 
 getInfo = create_getInfo(OneFichierCom)

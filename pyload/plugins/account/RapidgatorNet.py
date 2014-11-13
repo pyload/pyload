@@ -5,12 +5,13 @@ from pyload.utils import json_loads
 
 
 class RapidgatorNet(Account):
-    __name__ = "RapidgatorNet"
-    __type__ = "account"
+    __name__    = "RapidgatorNet"
+    __type__    = "account"
     __version__ = "0.04"
 
     __description__ = """Rapidgator.net account plugin"""
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     API_URL = 'http://rapidgator.net/api/user'
@@ -30,7 +31,7 @@ class RapidgatorNet(Account):
                     self.scheduleRefresh(user, json['response']['reset_in'])
 
                 return {"validuntil": json['response']['expire_date'],
-                        "trafficleft": int(json['response']['traffic_left']) / 1024,
+                        "trafficleft": int(json['response']['traffic_left']),
                         "premium": True}
             else:
                 self.logError(json['response_details'])
@@ -38,6 +39,7 @@ class RapidgatorNet(Account):
             self.logError(e)
 
         return {"validuntil": None, "trafficleft": None, "premium": False}
+
 
     def login(self, user, data, req):
         try:

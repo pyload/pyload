@@ -3,18 +3,20 @@
 import re
 
 from pyload.utils import json_loads, json_dumps
-from pyload.plugins.hoster.MegaNz import MegaNz
+
+from module.plugins.hoster.MegaCoNz import MegaCoNz
 
 
-class MegacrypterCom(MegaNz):
-    __name__ = "MegacrypterCom"
-    __type__ = "hoster"
-    __version__ = "0.2"
+class MegacrypterCom(MegaCoNz):
+    __name__    = "MegacrypterCom"
+    __type__    = "hoster"
+    __version__ = "0.21"
 
-    __pattern__ = r'(https?://[a-z0-9]{0,10}\.?megacrypter\.com/[a-zA-Z0-9!_\-]+)'
+    __pattern__ = r'(https?://\w{0,10}\.?megacrypter\.com/[\w!-]+)'
 
     __description__ = """Megacrypter.com decrypter plugin"""
-    __authors__ = [("GonzaloSR", "gonzalo@gonzalosr.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("GonzaloSR", "gonzalo@gonzalosr.com")]
 
 
     API_URL = "http://megacrypter.com/api"
@@ -24,9 +26,10 @@ class MegacrypterCom(MegaNz):
     def callApi(self, **kwargs):
         """ Dispatch a call to the api, see megacrypter.com/api_doc """
         self.logDebug("JSON request: " + json_dumps(kwargs))
-        resp = self.load(self.API_URL, post=json_dumps(kwargs))
-        self.logDebug("API Response: " + resp)
-        return json_loads(resp)
+        res = self.load(self.API_URL, post=json_dumps(kwargs))
+        self.logDebug("API Response: " + res)
+        return json_loads(res)
+
 
     def process(self, pyfile):
         # match is guaranteed because plugin was chosen to handle url

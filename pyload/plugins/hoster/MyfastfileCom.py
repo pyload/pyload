@@ -7,14 +7,15 @@ from pyload.utils import json_loads
 
 
 class MyfastfileCom(Hoster):
-    __name__ = "MyfastfileCom"
-    __type__ = "hoster"
+    __name__    = "MyfastfileCom"
+    __type__    = "hoster"
     __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
 
     __description__ = """Myfastfile.com hoster plugin"""
-    __authors__ = [("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
 
@@ -22,21 +23,22 @@ class MyfastfileCom(Hoster):
         self.chunkLimit = -1
         self.resumeDownload = True
 
+
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Myfastfile.com")
-            self.fail("No Myfastfile.com account provided")
+            self.fail(_("No Myfastfile.com account provided"))
         else:
             self.logDebug("Original URL: %s" % pyfile.url)
-            page = self.req.load('http://myfastfile.com/api.php',
-                                 get={'user': self.user, 'pass': self.account.getAccountData(self.user)['password'],
-                                      'link': pyfile.url})
+            page = self.load('http://myfastfile.com/api.php',
+                             get={'user': self.user, 'pass': self.account.getAccountData(self.user)['password'],
+                                  'link': pyfile.url})
             self.logDebug("JSON data: " + page)
             page = json_loads(page)
             if page['status'] != 'ok':
-                self.fail('Unable to unrestrict link')
+                self.fail(_("Unable to unrestrict link"))
             new_url = page['link']
 
         if new_url != pyfile.url:

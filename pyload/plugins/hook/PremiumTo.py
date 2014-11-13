@@ -5,18 +5,18 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class PremiumTo(MultiHoster):
-    __name__ = "PremiumTo"
-    __type__ = "hook"
+    __name__    = "PremiumTo"
+    __type__    = "hook"
     __version__ = "0.04"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """Premium.to hook plugin"""
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
 
 
 
@@ -24,6 +24,7 @@ class PremiumTo(MultiHoster):
         page = getURL("http://premium.to/api/hosters.php",
                       get={'username': self.account.username, 'password': self.account.password})
         return [x.strip() for x in page.replace("\"", "").split(";")]
+
 
     def coreReady(self):
         self.account = self.core.accountManager.getAccountPlugin("PremiumTo")

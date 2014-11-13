@@ -8,16 +8,17 @@ from pyload.plugins.base.Account import Account
 
 
 class UploadheroCom(Account):
-    __name__ = "UploadheroCom"
-    __type__ = "account"
+    __name__    = "UploadheroCom"
+    __type__    = "account"
     __version__ = "0.2"
 
     __description__ = """Uploadhero.co account plugin"""
-    __authors__ = [("mcmyst", "mcmyst@hotmail.fr")]
+    __license__     = "GPLv3"
+    __authors__     = [("mcmyst", "mcmyst@hotmail.fr")]
 
 
     def loadAccountInfo(self, user, req):
-        premium_pattern = re.compile('Il vous reste <span class="bleu">([0-9]+)</span> jours premium.')
+        premium_pattern = re.compile('Il vous reste <span class="bleu">(\d+)</span> jours premium')
 
         data = self.getAccountData(user)
         page = req.load("http://uploadhero.co/my-account")
@@ -30,6 +31,7 @@ class UploadheroCom(Account):
             account_info = {"validuntil": -1, "trafficleft": -1, "premium": False}
 
         return account_info
+
 
     def login(self, user, data, req):
         page = req.load("http://uploadhero.co/lib/connexion.php",

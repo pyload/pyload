@@ -10,14 +10,15 @@ from pyload.plugins.base.Hoster import Hoster
 
 
 class FastixRu(Hoster):
-    __name__ = "FastixRu"
-    __type__ = "hoster"
+    __name__    = "FastixRu"
+    __type__    = "hoster"
     __version__ = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>[a-zA-Z0-9]{24})'
+    __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>\w{24})'
 
     __description__ = """Fastix hoster plugin"""
-    __authors__ = [("Massimo Rosamilia", "max@spiritix.eu")]
+    __license__     = "GPLv3"
+    __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
     def getFilename(self, url):
@@ -29,16 +30,18 @@ class FastixRu(Hoster):
             name += "%s.tmp" % randrange(100, 999)
         return name
 
+
     def setup(self):
         self.chunkLimit = 3
         self.resumeDownload = True
+
 
     def process(self, pyfile):
         if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Fastix")
-            self.fail("No Fastix account provided")
+            self.fail(_("No Fastix account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
             api_key = self.account.getAccountData(self.user)
@@ -65,6 +68,6 @@ class FastixRu(Hoster):
                                     "empty": re.compile(r"^$")})
 
         if check == "error":
-            self.retry(wait_time=60, reason="An error occurred while generating link.")
+            self.retry(wait_time=60, reason=_("An error occurred while generating link"))
         elif check == "empty":
-            self.retry(wait_time=60, reason="Downloaded File was empty.")
+            self.retry(wait_time=60, reason=_("Downloaded File was empty"))

@@ -12,9 +12,9 @@ from pyload.utils import safe_join
 
 
 class UpdateManager(Addon):
-    __name__ = "UpdateManager"
-    __type__ = "addon"
-    __version__ = "0.36"
+    __name__    = "UpdateManager"
+    __type__    = "addon"
+    __version__ = "0.39"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -23,15 +23,14 @@ class UpdateManager(Addon):
                   ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
 
     __description__ = """Check for updates"""
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_list = ["pluginConfigChanged"]
+    # event_list = ["pluginConfigChanged"]
 
     SERVER_URL = "http://updatemanager.pyload.org"
-    MIRROR_URL = ""  #: empty actually
-
-    MIN_INTERVAL = 3 * 60 * 60  #: 3h minimum check interval (value is in seconds)
+    MIN_INTERVAL = 6 * 60 * 60  #: 6h minimum check interval (value is in seconds)
 
 
     def pluginConfigChanged(self, plugin, name, value):
@@ -43,6 +42,7 @@ class UpdateManager(Addon):
                 self.initPeriodical()
             else:
                 self.logDebug("Invalid interval value, kept current")
+
         elif name == "reloadplugins":
             if self.cb2:
                 self.core.scheduler.removeJob(self.cb2)
@@ -61,16 +61,17 @@ class UpdateManager(Addon):
 
 
     def setup(self):
-        self.cb2 = None
+        self.cb2      = None
         self.interval = self.MIN_INTERVAL
         self.updating = False
-        self.info = {'pyload': False, 'version': None, 'plugins': False}
-        self.mtimes = {}  #: store modification time for each plugin
+        self.info     = {'pyload': False, 'version': None, 'plugins': False}
+        self.mtimes   = {}  #: store modification time for each plugin
 
 
     def periodical2(self):
         if not self.updating:
             self.autoreloadPlugins()
+
         self.cb2 = self.core.scheduler.addJob(4, self.periodical2, threaded=False)
 
 
@@ -110,21 +111,18 @@ class UpdateManager(Addon):
 
 
     def server_request(self):
-        request = lambda x: getURL(x, get={'v': self.core.api.getServerVersion()}).splitlines()
         try:
-            return request(self.SERVER_URL)
+            return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
         except:
-            try:
-                return request(self.MIRROR_URL)
-            except:
-                pass
-        self.logWarning(_("Unable to contact server to get updates"))
+            self.logWarning(_("Unable to contact server to get updates"))
 
 
     @threaded
     def updateThread(self):
         self.updating = True
+
         status = self.update(onlyplugin=self.getConfig("mode") == "plugins only")
+
         if status == 2:
             self.core.api.restart()
         else:
@@ -141,14 +139,18 @@ class UpdateManager(Addon):
     def update(self, onlyplugin=False):
         """ check for updates """
         data = self.server_request()
+
         if not data:
             exitcode = 0
+
         elif data[0] == "None":
             self.logInfo(_("No new pyLoad version available"))
             updates = data[1:]
             exitcode = self._updatePlugins(updates)
+
         elif onlyplugin:
             exitcode = 0
+
         else:
             newversion = data[0]
             self.logInfo(_("***  New pyLoad Version %s available  ***") % newversion)
@@ -156,6 +158,7 @@ class UpdateManager(Addon):
             exitcode = 3
             self.info['pyload'] = True
             self.info['version'] = newversion
+
         return exitcode  #: 0 = No plugins updated; 1 = Plugins updated; 2 = Plugins updated, but restart required; 3 = No plugins updated, new pyLoad version available
 
 
@@ -165,11 +168,13 @@ class UpdateManager(Addon):
         if self.info['plugins']:
             return False  #: plugins were already updated
 
-        updated = []
+        exitcode = 0
+        updated  = []
 
-        vre = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
+        vre = re.compile(r'__version__.*=.*("|\')([\d.]+)')
         url = updates[0]
         schema = updates[1].split('|')
+
         if "BLACKLIST" in updates:
             blacklist = updates[updates.index('BLACKLIST') + 1:]
             updates = updates[2:updates.index('BLACKLIST')]
@@ -177,11 +182,13 @@ class UpdateManager(Addon):
             blacklist = None
             updates = updates[2:]
 
-        upgradable = sorted(map(lambda x: dict(zip(schema, x.split('|'))), updates), key=itemgetter("type", "name"))
+        upgradable = sorted(map(lambda x: dict(zip(schema, x.split('|'))), updates),
+                            key=itemgetter("type", "name"))
+
         for plugin in upgradable:
             filename = plugin['name']
-            prefix = plugin['type']
-            version = plugin['version']
+            prefix   = plugin['type']
+            version  = plugin['version']
 
             if filename.endswith(".pyc"):
                 name = filename[:filename.find("_")]
@@ -200,22 +207,20 @@ class UpdateManager(Addon):
             newver = float(version)
 
             if not oldver:
-                msg = "New [%(type)s] %(name)s (v%(newver)s)"
+                msg = "New plugin: [%(type)s] %(name)s (v%(newver).2f)"
             elif newver > oldver:
-                msg = "New version of [%(type)s] %(name)s (v%(oldver)s -> v%(newver)s)"
+                msg = "New version of plugin: [%(type)s] %(name)s (v%(oldver).2f -> v%(newver).2f)"
             else:
                 continue
 
-            self.logInfo(_(msg) % {
-                'type': type,
-                'name': name,
-                'oldver': oldver,
-                'newver': newver,
-            })
-
+            self.logInfo(_(msg) % {'type'  : type,
+                                   'name'  : name,
+                                   'oldver': oldver,
+                                   'newver': newver})
             try:
                 content = getURL(url % plugin)
                 m = vre.search(content)
+
                 if m and m.group(2) == version:
                     f = open(safe_join("userplugins", prefix, filename), "wb")
                     f.write(content)
@@ -223,8 +228,9 @@ class UpdateManager(Addon):
                     updated.append((prefix, name))
                 else:
                     raise Exception, _("Version mismatch")
+
             except Exception, e:
-                self.logError(_("Error updating plugin: %s") % filename, e)
+                self.logError(_("Error updating plugin %s") % filename, e)
 
         if blacklist:
             blacklisted = map(lambda x: (x.split('|')[0], x.split('|')[1].rsplit('.', 1)[0]), blacklist)
@@ -253,7 +259,6 @@ class UpdateManager(Addon):
                 exitcode = 2
         else:
             self.logInfo(_("No plugin updates available"))
-            exitcode = 0
 
         return exitcode  #: 0 = No plugins updated; 1 = Plugins updated; 2 = Plugins updated, but restart required
 

@@ -5,12 +5,13 @@ from pyload.utils import json_loads
 
 
 class FreeWayMe(Account):
-    __name__ = "FreeWayMe"
-    __type__ = "account"
+    __name__    = "FreeWayMe"
+    __type__    = "account"
     __version__ = "0.11"
 
     __description__ = """FreeWayMe account plugin"""
-    __authors__ = [("Nicolas Giese", "james@free-way.me")]
+    __license__     = "GPLv3"
+    __authors__     = [("Nicolas Giese", "james@free-way.me")]
 
 
     def loadAccountInfo(self, user, req):
@@ -31,8 +32,10 @@ class FreeWayMe(Account):
 
         return account_info
 
+
     def getpw(self, user):
         return self.accounts[user]['password']
+
 
     def login(self, user, data, req):
         status = self.getAccountStatus(user, req)
@@ -40,6 +43,7 @@ class FreeWayMe(Account):
         # Check if user and password are valid
         if not status:
             self.wrongPassword()
+
 
     def getAccountStatus(self, user, req):
         answer = req.load("https://www.free-way.me/ajax/jd.php",
