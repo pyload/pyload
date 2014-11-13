@@ -1,9 +1,21 @@
-from captcha import OCR
+# -*- coding: utf-8 -*-
+
+from module.plugins.captcha.captcha import OCR
+
 
 class NetloadIn(OCR):
-    __name__ = "NetloadIn"
+    __name__    = "NetloadIn"
+    __type__    = "ocr"
+    __version__ = "0.1"
+
+    __description__ = """Netload.in ocr plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+
+
     def __init__(self):
         OCR.__init__(self)
+
 
     def get_captcha(self, image):
         self.load_image(image)
@@ -11,14 +23,7 @@ class NetloadIn(OCR):
         self.clean(3)
         self.clean(3)
         self.run_tesser(True, True, False, False)
-        
+
         self.result_captcha = self.result_captcha.replace(" ", "")[:4] # cut to 4 numbers
-        
+
         return self.result_captcha
-
-if __name__ == '__main__':
-    import urllib
-    ocr = NetloadIn()
-    urllib.urlretrieve("http://netload.in/share/includes/captcha.php", "captcha.png")
-
-    print  ocr.get_captcha('captcha.png')

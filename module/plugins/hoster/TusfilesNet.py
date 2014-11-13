@@ -1,29 +1,35 @@
 # -*- coding: utf-8 -*-
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class TusfilesNet(XFileSharingPro):
-    __name__ = "TusfilesNet"
-    __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?tusfiles\.net/(?P<ID>[a-zA-Z0-9]{12})"
-    __version__ = "0.02"
+class TusfilesNet(XFSHoster):
+    __name__    = "TusfilesNet"
+    __type__    = "hoster"
+    __version__ = "0.07"
+
+    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
+
     __description__ = """Tusfiles.net hoster plugin"""
-    __author_name__ = ("stickell", "Walter Purcaro")
-    __author_mail__ = ("l.stickell@yahoo.it", "vuolter@gmail.com")
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+                       ("guidobelix", "guidobelix@hotmail.it")]
 
-    FILE_INFO_PATTERN = r'<li>(?P<N>[^<]+)</li>\s+<li><b>Size:</b> <small>(?P<S>[\d.]+) (?P<U>\w+)</small></li>'
-    FILE_OFFLINE_PATTERN = r'The file you were looking for could not be found'
-    HOSTER_NAME = "tusfiles.net"
+
+    HOSTER_DOMAIN = "tusfiles.net"
+
+    INFO_PATTERN = r'\](?P<N>.+) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)\['
+    OFFLINE_PATTERN = r'>File Not Found|<Title>TusFiles - Fast Sharing Files!'
+
 
     def setup(self):
-        self.chunkLimit = 1
-        self.resumeDownload = self.multiDL = True
-        if self.premium:
-            self.limitDL = 5
-        elif self.account:
-            self.limitDL = 3
-        else:
-            self.limitDL = 2
+        self.multiDL = False
+        self.chunkLimit = -1
+        self.resumeDownload = True
+
+
+    def handlePremium(self):
+        return self.handleFree()
 
 
 getInfo = create_getInfo(TusfilesNet)

@@ -1,31 +1,21 @@
 # -*- coding: utf-8 -*-
 
-############################################################################
-# This program is free software: you can redistribute it and/or modify     #
-# it under the terms of the GNU Affero General Public License as           #
-# published by the Free Software Foundation, either version 3 of the       #
-# License, or (at your option) any later version.                          #
-#                                                                          #
-# This program is distributed in the hope that it will be useful,          #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
-# GNU Affero General Public License for more details.                      #
-#                                                                          #
-# You should have received a copy of the GNU Affero General Public License #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
-############################################################################
-
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class BitshareComFolder(SimpleCrypter):
-    __name__ = "BitshareComFolder"
-    __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?bitshare\.com/\?d=\w+"
-    __version__ = "0.01"
-    __description__ = """Bitshare.com Folder Plugin"""
-    __author_name__ = ("stickell")
-    __author_mail__ = ("l.stickell@yahoo.it")
+    __name__    = "BitshareComFolder"
+    __type__    = "crypter"
+    __version__ = "0.03"
 
-    LINK_PATTERN = r'<a href="(http://bitshare.com/files/.+)">.+</a></td>'
-    TITLE_PATTERN = r'View public folder "(?P<title>.+)"</h1>'
+    __pattern__ = r'http://(?:www\.)?bitshare\.com/\?d=\w+'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+
+    __description__ = """Bitshare.com folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+
+
+    LINK_PATTERN = r'<a href="(http://bitshare\.com/files/.+)">.+</a></td>'
+    NAME_PATTERN = r'View public folder "(?P<N>.+)"</h1>'

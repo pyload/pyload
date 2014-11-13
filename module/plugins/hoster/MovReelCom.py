@@ -1,23 +1,26 @@
 # -*- coding: utf-8 -*-
-#import re
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
-#from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 
-class MovReelCom(XFileSharingPro):
-    __name__ = "MovReelCom"
-    __type__ = "hoster"
-    __pattern__ = r"http://movreel.com/.*"
-    __version__ = "1.20"
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+
+
+class MovReelCom(XFSHoster):
+    __name__    = "MovReelCom"
+    __type__    = "hoster"
+    __version__ = "1.24"
+
+    __pattern__ = r'http://(?:www\.)?movreel\.com/\w{12}'
+
     __description__ = """MovReel.com hoster plugin"""
-    __author_name__ = ("JorisV83")
-    __author_mail__ = ("jorisv83-pyload@yahoo.com")
+    __license__     = "GPLv3"
+    __authors__     = [("JorisV83", "jorisv83-pyload@yahoo.com")]
 
-    #FILE_NAME_PATTERN = r'<b>Filename:</b>(?P<N>.*?)<br>'
-    #FILE_SIZE_PATTERN = r'<b>Size:</b>(?P<S>.*?)<br>'
-    FILE_INFO_PATTERN = r'<h3>(?P<N>.+?) <small><sup>(?P<S>[\d.]+) (?P<U>..)</sup> </small></h3>'
-    FILE_OFFLINE_PATTERN = r'<b>File Not Found</b><br><br>'
-    DIRECT_LINK_PATTERN = r'<a href="(http://[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/.*)">Download Link</a>'
-    #OVR_DOWNLOAD_LINK_PATTERN = "var file_link = '(.*)';"
-    HOSTER_NAME = "movreel.com"
-    
+
+    HOSTER_DOMAIN = "movreel.com"
+
+    NAME_PATTERN = r'Filename: <b>(?P<N>.+?)<'
+    SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+
+    LINK_PATTERN = r'<a href="([^"]+)">Download Link'
+
+
 getInfo = create_getInfo(MovReelCom)

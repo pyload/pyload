@@ -1,23 +1,31 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
+
 from module.plugins.Hoster import Hoster
+from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class FreakshareCom(Hoster):
-    __name__ = "FreakshareCom"
-    __type__ = "hoster"
-    __pattern__ = r"http://(?:www\.)?freakshare\.(net|com)/files/\S*?/"
-    __version__ = "0.38"
-    __description__ = """Freakshare.com Download Hoster"""
-    __author_name__ = ("sitacuisses", "spoob", "mkaay", "Toilal")
-    __author_mail__ = ("sitacuisses@yahoo.de", "spoob@pyload.org", "mkaay@mkaay.de", "toilal.dev@gmail.com")
+    __name__    = "FreakshareCom"
+    __type__    = "hoster"
+    __version__ = "0.39"
+
+    __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
+
+    __description__ = """Freakshare.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("sitacuisses", "sitacuisses@yahoo.de"),
+                       ("spoob", "spoob@pyload.org"),
+                       ("mkaay", "mkaay@mkaay.de"),
+                       ("Toilal", "toilal.dev@gmail.com")]
+
 
     def setup(self):
         self.multiDL = False
         self.req_opts = []
+
 
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -33,7 +41,7 @@ class FreakshareCom(Hoster):
             self.prepare()
             self.get_file_url()
 
-            self.download(self.pyfile.url, post=self.req_opts)
+            self.download(pyfile.url, post=self.req_opts)
 
             check = self.checkDownload({"bad": "bad try",
                                         "paralell": "> Sorry, you cant download more then 1 files at time. <",
@@ -42,23 +50,22 @@ class FreakshareCom(Hoster):
                                         "downloadserver": "No Downloadserver. Please try again later!"})
 
             if check == "bad":
-                self.fail("Bad Try.")
+                self.fail(_("Bad Try"))
             elif check == "paralell":
                 self.setWait(300, True)
                 self.wait()
                 self.retry()
             elif check == "empty":
-                self.fail("File not downloadable")
+                self.fail(_("File not downloadable"))
             elif check == "wrong_captcha":
                 self.invalidCaptcha()
                 self.retry()
             elif check == "downloadserver":
-                self.retry(5, 900, 'No Download server')
+                self.retry(5, 15 * 60, _("No Download server"))
+
 
     def prepare(self):
         pyfile = self.pyfile
-
-        self.wantReconnect = False
 
         self.download_html()
 
@@ -74,14 +81,16 @@ class FreakshareCom(Hoster):
 
         return True
 
+
     def download_html(self):
         self.load("http://freakshare.com/index.php", {"language": "EN"})  # Set english language in server session
         self.html = self.load(self.pyfile.url)
 
+
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
         if not self.wantReconnect:
             self.req_opts = self.get_download_options()  # get the Post options for the Request
@@ -90,8 +99,9 @@ class FreakshareCom(Hoster):
         else:
             self.offline()
 
+
     def get_file_name(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
         if not self.wantReconnect:
             file_name = re.search(r"<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)", self.html)
@@ -103,9 +113,10 @@ class FreakshareCom(Hoster):
         else:
             return self.pyfile.url
 
+
     def get_file_size(self):
         size = 0
-        if self.html is None:
+        if not self.html:
             self.download_html()
         if not self.wantReconnect:
             file_size_check = re.search(
@@ -117,29 +128,32 @@ class FreakshareCom(Hoster):
 
         return size
 
+
     def get_waiting_time(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         if "Your Traffic is used up for today" in self.html:
             self.wantReconnect = True
-            return 24 * 3600
+            return secondsToMidnight(gmt=2)
 
-        timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[.\d]*;', self.html)
+        timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;', self.html)
         if timestring:
-            return int(timestring.group(1)) + 1  # add 1 sec as tenths of seconds are cut off
+            return int(timestring.group(1))
         else:
             return 60
+
 
     def file_exists(self):
         """ returns True or False
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
         if re.search(r"This file does not exist!", self.html) is not None:
             return False
         else:
             return True
+
 
     def get_download_options(self):
         re_envelope = re.search(r".*?value=\"Free\sDownload\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>",
@@ -156,14 +170,11 @@ class FreakshareCom(Hoster):
         to_sort = re.findall(r"<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>", herewego)
         request_options = dict((n, v) for (v, n) in to_sort)
 
-        # comment this in, when it doesnt work as well
-        #print "\n\n%s\n\n" % ";".join(["%s=%s" % x for x in to_sort])
-
-        challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=([0-9A-Za-z]+)", herewego)
+        challenge = re.search(r"http://api\.recaptcha\.net/challenge\?k=(\w+)", herewego)
 
         if challenge:
             re_captcha = ReCaptcha(self)
-            (request_options["recaptcha_challenge_field"], 
-             request_options["recaptcha_response_field"]) = re_captcha.challenge(challenge.group(1))
+            (request_options['recaptcha_challenge_field'],
+             request_options['recaptcha_response_field']) = re_captcha.challenge(challenge.group(1))
 
         return request_options

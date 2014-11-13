@@ -1,23 +1,24 @@
-from module.plugins.internal.MultiHoster import MultiHoster
+# -*- coding: utf-8 -*-
 
 from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class PremiumizeMe(MultiHoster):
-    __name__ = "PremiumizeMe"
+    __name__    = "PremiumizeMe"
+    __type__    = "hook"
     __version__ = "0.12"
-    __type__ = "hook"
-    __description__ = """Premiumize.Me hook plugin"""
 
-    __config__ = [("activated", "bool", "Activated", "False"),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
-                  ("unloadFailing", "bool", "Revert to stanard download if download fails", "False"),
-                  ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
+                  ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
+                  ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __author_name__ = ("Florian Franzen")
-    __author_mail__ = ("FlorianFranzen@gmail.com")
+    __description__ = """Premiumize.me hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+
 
     def getHoster(self):
         # If no accounts are available there will be no hosters available
@@ -37,16 +38,17 @@ class PremiumizeMe(MultiHoster):
         if data['status'] != 200:
             return []
 
-        # Extract hosters from json file 
+        # Extract hosters from json file
         return data['result']['hosterlist']
+
 
     def coreReady(self):
         # Get account plugin and check if there is a valid account available
         self.account = self.core.accountManager.getAccountPlugin("PremiumizeMe")
         if not self.account.canUse():
             self.account = None
-            self.logError(_("Please add a valid premiumize.me account first and restart pyLoad."))
+            self.logError(_("Please add a valid premiumize.me account first and restart pyLoad"))
             return
 
-        # Run the overwriten core ready which actually enables the multihoster hook 
+        # Run the overwriten core ready which actually enables the multihoster hook
         return MultiHoster.coreReady(self)

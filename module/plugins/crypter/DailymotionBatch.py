@@ -1,24 +1,8 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: Walter Purcaro
-"""
+import re
 
 from urlparse import urljoin
-import re
 
 from module.common.json_layer import json_loads
 from module.plugins.Crypter import Crypter
@@ -26,18 +10,24 @@ from module.utils import save_join
 
 
 class DailymotionBatch(Crypter):
-    __name__ = "DailymotionBatch"
-    __type__ = "crypter"
-    __pattern__ = r"https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)"
+    __name__    = "DailymotionBatch"
+    __type__    = "crypter"
     __version__ = "0.01"
-    __description__ = """Dailymotion channel & playlist decrypter"""
-    __author_name__ = ("Walter Purcaro")
-    __author_mail__ = ("vuolter@gmail.com")
+
+    __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+
+    __description__ = """Dailymotion.com channel & playlist decrypter"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
 
     def api_response(self, ref, req=None):
         url = urljoin("https://api.dailymotion.com/", ref)
         page = self.load(url, get=req)
         return json_loads(page)
+
 
     def getPlaylistInfo(self, id):
         ref = "playlist/" + id
@@ -47,9 +37,10 @@ class DailymotionBatch(Crypter):
         if "error" in playlist:
             return
 
-        name = playlist["name"]
-        owner = playlist["owner.screenname"]
+        name = playlist['name']
+        owner = playlist['owner.screenname']
         return name, owner
+
 
     def _getPlaylists(self, user_id, page=1):
         ref = "user/%s/playlists" % user_id
@@ -59,15 +50,17 @@ class DailymotionBatch(Crypter):
         if "error" in user:
             return
 
-        for playlist in user["list"]:
-            yield playlist["id"]
+        for playlist in user['list']:
+            yield playlist['id']
 
-        if user["has_more"]:
+        if user['has_more']:
             for item in self._getPlaylists(user_id, page + 1):
                 yield item
 
+
     def getPlaylists(self, user_id):
         return [(id,) + self.getPlaylistInfo(id) for id in self._getPlaylists(user_id)]
+
 
     def _getVideos(self, id, page=1):
         ref = "playlist/%s/videos" % id
@@ -77,15 +70,17 @@ class DailymotionBatch(Crypter):
         if "error" in playlist:
             return
 
-        for video in playlist["list"]:
-            yield video["url"]
+        for video in playlist['list']:
+            yield video['url']
 
-        if playlist["has_more"]:
+        if playlist['has_more']:
             for item in self._getVideos(id, page + 1):
                 yield item
 
+
     def getVideos(self, playlist_id):
         return list(self._getVideos(playlist_id))[::-1]
+
 
     def decrypt(self, pyfile):
         m = re.match(self.__pattern__, pyfile.url)
@@ -102,7 +97,7 @@ class DailymotionBatch(Crypter):
             self.logDebug("%s playlist\s found on channel \"%s\"" % (len(playlists), m_id))
 
         if not playlists:
-            self.fail("No playlist available")
+            self.fail(_("No playlist available"))
 
         for p_id, p_name, p_owner in playlists:
             p_videos = self.getVideos(p_id)
