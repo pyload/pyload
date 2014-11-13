@@ -14,8 +14,9 @@ if os.name != "nt":
 
 from itertools import islice
 from traceback import print_exc
+from urlparse import urlparse
 
-from module.utils import save_join, save_path, fs_encode, fs_decode
+from module.utils import fs_decode, fs_encode, html_unescape, save_join, save_path
 
 
 def chunks(iterable, size):
@@ -67,7 +68,8 @@ class Base(object):
 
 
     def logDebug(self, *args):
-        return self._log("debug", args)
+        if self.core.debug:
+            return self._log("debug", args)
 
 
     def logInfo(self, *args):
@@ -127,7 +129,7 @@ class Base(object):
 
     def getStorage(self, key=None, default=None):
         """ Retrieves saved value or dict of all saved entries if key is None """
-        if key is not None:
+        if key:
             return self.core.db.getStorage(self.__name__, key) or default
         return self.core.db.getStorage(self.__name__, key)
 
@@ -149,7 +151,7 @@ class Plugin(Base):
     """
     __name__    = "Plugin"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.07"
 
     __pattern__ = None
     __config__  = []  #: [("name", "type", "desc", "default")]
@@ -216,6 +218,7 @@ class Plugin(Base):
         self.js = self.core.js
         self.cTask = None #captcha task
 
+        self.html = None  #@TODO: Move to hoster class
         self.retries = 0 # amount of retries already made
 
         self.init()
@@ -289,37 +292,68 @@ class Plugin(Base):
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
+        wait_time  = int(seconds) + 1
+        wait_until = time() + wait_time
+
+        self.logDebug("Set waitUntil to: %f (previous: %f)" % (wait_until, self.pyfile.waitUntil),
+                      "Wait: %d seconds" % wait_time)
+
+        self.pyfile.waitUntil = wait_until
+
         if reconnect is not None:
-            self.wantReconnect = bool(reconnect)
-        self.pyfile.waitUntil = time() + int(seconds) + 1
+            self.logDebug("Set wantReconnect to: %s (previous: %s)" % (reconnect, self.wantReconnect))
+            self.wantReconnect = reconnect
 
 
     def wait(self, seconds=0, reconnect=None):
         """ waits the time previously set """
 
-        if seconds:
-            self.setWait(seconds, reconnect)
+        pyfile = self.pyfile
+
+        self.setWait(seconds, reconnect)
 
         self.waiting = True
-        self.pyfile.setStatus("waiting")
 
-        while self.pyfile.waitUntil > time():
-            self.thread.m.reconnecting.wait(2)
+        status = pyfile.status
+        pyfile.setStatus("waiting")
 
-            if self.pyfile.abort:
-                raise Abort
-            if self.thread.m.reconnecting.isSet():
-                self.waiting = False
-                self.wantReconnect = False
-                raise Reconnect
+        self.logDebug("WAIT: %d seconds" % seconds,
+                      "WAITUNTIL: %f"    % pyfile.waitUntil,
+                      "RECONNECT: %s"    % self.wantReconnect)
+
+        if not account:
+            self.logDebug("Ignore reconnection due account logged")
+
+            while pyfile.waitUntil > time():
+                self.thread.m.reconnecting.wait(2)
+
+                if pyfile.abort:
+                    self.abort()
+
+                if self.thread.m.reconnecting.isSet():
+                    self.waiting = False
+                    self.wantReconnect = False
+                    raise Reconnect
+        else:
+            while pyfile.waitUntil > time():
+                if pyfile.abort:
+                    self.abort()
 
         self.waiting = False
-        self.pyfile.setStatus("starting")
+
+        pyfile.status = status
 
 
     def fail(self, reason):
         """ fail and give reason """
         raise Fail(reason)
+
+
+    def abort(self, reason=""):
+        """ abort and give reason """
+        if reason:
+            self.pyfile.error = str(reason)
+        raise Abort  #@TODO: Use raise Abort(reason) in 0.4.10
 
 
     def error(self, reason="", type=""):
@@ -333,14 +367,18 @@ class Plugin(Base):
         raise Fail(msg)
 
 
-    def offline(self):
+    def offline(self, reason=""):
         """ fail and indicate file is offline """
-        raise Fail("offline")
+        if reason:
+            self.pyfile.error = str(reason)
+        raise Fail("offline")  #@TODO: Use raise Fail("offline", reason) in 0.4.10
 
 
-    def tempOffline(self):
+    def tempOffline(self, reason=""):
         """ fail and indicates file ist temporary offline, the core may take consequences """
-        raise Fail("temp. offline")
+        if reason:
+            self.pyfile.error = str(reason)
+        raise Fail("temp. offline")  #@TODO: Use raise Fail("temp. offline", reason) in 0.4.10
 
 
     def retry(self, max_tries=5, wait_time=1, reason=""):
@@ -391,9 +429,9 @@ class Plugin(Base):
         img = self.load(url, get=get, post=post, cookies=cookies)
 
         id = ("%.2f" % time())[-6:].replace(".", "")
-        tmpCaptcha = open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb")
-        tmpCaptcha.write(img)
-        tmpCaptcha.close()
+
+        with open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb") as tmpCaptcha:
+            tmpCaptcha.write(img)
 
         has_plugin = self.__name__ in self.core.pluginManager.captchaPlugins
 
@@ -405,7 +443,7 @@ class Plugin(Base):
         if Ocr and not forceUser:
             sleep(randint(3000, 5000) / 1000.0)
             if self.pyfile.abort:
-                raise Abort
+                self.abort()
 
             ocr = Ocr()
             result = ocr.get_captcha(tmpCaptcha.name)
@@ -418,7 +456,7 @@ class Plugin(Base):
             while task.isWaiting():
                 if self.pyfile.abort:
                     captchaManager.removeTask(task)
-                    raise Abort
+                    self.abort()
                 sleep(1)
 
             captchaManager.removeTask(task)
@@ -442,7 +480,7 @@ class Plugin(Base):
         return result
 
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
+    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False, follow_location=True, save_cookies=True):
         """Load content at url and returns it
 
         :param url:
@@ -450,42 +488,44 @@ class Plugin(Base):
         :param post:
         :param ref:
         :param cookies:
-        :param just_header: if True only the header will be retrieved and returned as dict
+        :param just_header: If True only the header will be retrieved and returned as dict
         :param decode: Wether to decode the output according to http header, should be True in most cases
+        :param follow_location: If True follow location else not
+        :param save_cookies: If True saves received cookies else discard them
         :return: Loaded content
         """
         if self.pyfile.abort:
-            raise Abort
+            self.abort()
+
+        if not url:
+            self.fail(_("No url given"))
+
+        if type(url) == unicode:  # utf8 vs decode -> please use decode attribute in all future plugins
+            url = str(url)  #: encode('utf8')
 
         url = url.strip()
-        #utf8 vs decode -> please use decode attribute in all future plugins
-        if type(url) == unicode:
-            url = str(url)  # encode('utf8')
 
         if self.core.debug:
             self.logDebug("Load url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
 
-        res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
+        res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode, follow_location=follow_location, save_cookies=save_cookies)
 
         if self.core.debug:
             from inspect import currentframe
 
             frame = currentframe()
-            if not exists(join("tmp", self.__name__)):
-                makedirs(join("tmp", self.__name__))
-
-            f = open(
-                join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
-                , "wb")
-            del frame # delete the frame or it wont be cleaned
-
+            framefile = save_join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             try:
-                tmp = res.encode("utf8")
-            except:
-                tmp = res
+                if not exists(join("tmp", self.__name__)):
+                    makedirs(join("tmp", self.__name__))
 
-            f.write(tmp)
-            f.close()
+                with open(framefile, "wb") as f:
+                    del frame  #: delete the frame or it wont be cleaned
+                    if decode:
+                        res = res.encode('utf-8')
+                    f.write(res)
+            except IOError, e:
+                self.logError(e)
 
         if just_header:
             #parse header
@@ -495,7 +535,7 @@ class Plugin(Base):
                 if not line or ":" not in line: continue
 
                 key, none, value = line.partition(":")
-                key = key.lower().strip()
+                key = key.strip().lower()
                 value = value.strip()
 
                 if key in header:
@@ -523,7 +563,13 @@ class Plugin(Base):
         :return: The location where the file was saved
         """
         if self.pyfile.abort:
-            raise Abort
+            self.abort()
+
+        if not url:
+            self.fail(_("No url given"))
+
+        if type(url) == unicode:
+            url = str(url)
 
         url = url.strip()
 
@@ -539,16 +585,16 @@ class Plugin(Base):
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
-            makedirs(location, int(self.core.config['permission']['folder'], 8))
+            try:
+                makedirs(location, int(self.core.config['permission']['folder'], 8))
 
-            if self.core.config['permission']['change_dl'] and os.name != "nt":
-                try:
+                if self.core.config['permission']['change_dl'] and os.name != "nt":
                     uid = getpwnam(self.config['permission']['user'])[2]
                     gid = getgrnam(self.config['permission']['group'])[2]
-
                     chown(location, uid, gid)
-                except Exception, e:
-                    self.logWarning(_("Setting User and Group failed: ") + str(e))
+
+            except Exception, e:
+                self.fail(e)
 
         # convert back to unicode
         location = fs_decode(location)
@@ -565,24 +611,30 @@ class Plugin(Base):
         finally:
             self.pyfile.size = self.req.size
 
-        if disposition and newname and newname != name: #triple check, just to be sure
-            self.logInfo(_("%(name)s saved as %(newname)s") % {"name": name, "newname": newname})
-            self.pyfile.name = newname
-            filename = join(location, newname)
+        if newname:
+            newname = urlparse(newname).path.split("/")[-1]
+
+            if disposition and newname != name:
+                self.logInfo(_("%(name)s saved as %(newname)s") % {"name": name, "newname": newname})
+                self.pyfile.name = newname
+                filename = join(location, newname)
 
         fs_filename = fs_encode(filename)
 
         if self.core.config['permission']['change_file']:
-            chmod(fs_filename, int(self.core.config['permission']['file'], 8))
+            try:
+                chmod(fs_filename, int(self.core.config['permission']['file'], 8))
+            except Exception, e:
+                self.logWarning(_("Setting file mode failed"), e)
 
         if self.core.config['permission']['change_dl'] and os.name != "nt":
             try:
                 uid = getpwnam(self.config['permission']['user'])[2]
                 gid = getgrnam(self.config['permission']['group'])[2]
-
                 chown(fs_filename, uid, gid)
+
             except Exception, e:
-                self.logWarning(_("Setting User and Group failed: ") + str(e))
+                self.logWarning(_("Setting User and Group failed"), e)
 
         self.lastDownload = filename
         return self.lastDownload
@@ -599,7 +651,8 @@ class Plugin(Base):
         :return: dictionary key of the first rule that matched
         """
         lastDownload = fs_encode(self.lastDownload)
-        if not exists(lastDownload): return None
+        if not exists(lastDownload):
+            return None
 
         size = stat(lastDownload)
         size = size.st_size
@@ -607,9 +660,10 @@ class Plugin(Base):
         if api_size and api_size <= size: return None
         elif size > max_size and not read_size: return None
         self.logDebug("Download Check triggered")
-        f = open(lastDownload, "rb")
-        content = f.read(read_size if read_size else -1)
-        f.close()
+
+        with open(lastDownload, "rb") as f:
+            content = f.read(read_size if read_size else -1)
+
         #produces encoding errors, better log to other file in the future?
         #self.logDebug("Content: %s" % content)
         for name, rule in rules.iteritems():
@@ -671,10 +725,13 @@ class Plugin(Base):
         """ clean everything and remove references """
         if hasattr(self, "pyfile"):
             del self.pyfile
+
         if hasattr(self, "req"):
             self.req.close()
             del self.req
+
         if hasattr(self, "thread"):
             del self.thread
-        # if hasattr(self, "html"):
-            # del self.html
+
+        if hasattr(self, "html"):
+            del self.html

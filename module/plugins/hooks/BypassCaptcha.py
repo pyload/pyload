@@ -49,13 +49,13 @@ class BypassCaptcha(Hook):
 
 
     def setup(self):
-        self.info = {}
+        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def getCredits(self):
-        response = getURL(self.GETCREDITS_URL, post={"key": self.getConfig("passkey")})
+        res = getURL(self.GETCREDITS_URL, post={"key": self.getConfig("passkey")})
 
-        data = dict([x.split(' ', 1) for x in response.splitlines()])
+        data = dict([x.split(' ', 1) for x in res.splitlines()])
         return int(data['Left'])
 
 
@@ -66,18 +66,18 @@ class BypassCaptcha(Hook):
         req.c.setopt(LOW_SPEED_TIME, 80)
 
         try:
-            response = req.load(self.SUBMIT_URL,
-                                post={"vendor_key": self.PYLOAD_KEY,
-                                      "key": self.getConfig("passkey"),
-                                      "gen_task_id": "1",
-                                      "file": (FORM_FILE, captcha)},
-                                multipart=True)
+            res = req.load(self.SUBMIT_URL,
+                           post={'vendor_key': self.PYLOAD_KEY,
+                                 'key': self.getConfig("passkey"),
+                                 'gen_task_id': "1",
+                                 'file': (FORM_FILE, captcha)},
+                           multipart=True)
         finally:
             req.close()
 
-        data = dict([x.split(' ', 1) for x in response.splitlines()])
+        data = dict([x.split(' ', 1) for x in res.splitlines()])
         if not data or "Value" not in data:
-            raise BypassCaptchaException(response)
+            raise BypassCaptchaException(res)
 
         result = data['Value']
         ticket = data['TaskId']
@@ -88,10 +88,10 @@ class BypassCaptcha(Hook):
 
     def respond(self, ticket, success):
         try:
-            response = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig("passkey"),
+            res = getURL(self.RESPOND_URL, post={"task_id": ticket, "key": self.getConfig("passkey"),
                                                       "cv": 1 if success else 0})
         except BadHeader, e:
-            self.logError(_("Could not send response"), str(e))
+            self.logError(_("Could not send response"), e)
 
 
     def newCaptchaTask(self, task):

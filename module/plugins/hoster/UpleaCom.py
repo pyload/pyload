@@ -2,13 +2,15 @@
 
 import re
 
+from urlparse import urljoin
+
 from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
 
@@ -19,8 +21,10 @@ class UpleaCom(XFSHoster):
 
     HOSTER_DOMAIN = "uplea.com"
 
-    INFO_PATTERN = r'class="l download-filename">\s<span.*?>(?P<N>.+)</span>\s<span.*?>(?P<S>[\d.]+) (?P<U>[\w]).*?</span>'
-    OFFLINE_PATTERN = r'You followed an invalid or expired link'
+    NAME_PATTERN = r'class="agmd size18">(?P<N>.+?)<'
+    SIZE_PATTERN = r'size14">(?P<S>[\d.,]+) (?P<U>[\w^_])</span>'
+
+    OFFLINE_PATTERN = r'>You followed an invalid or expired link'
 
     LINK_PATTERN = r'"(http?://\w+\.uplea\.com/anonym/.*?)"'
     WAIT_PATTERN = r'timeText:([\d.]+),'
@@ -38,7 +42,7 @@ class UpleaCom(XFSHoster):
         if m is None:
             self.error("VARS_PATTERN not found")
 
-        self.html = self.load('http://uplea.com%s' % m.groups(1))
+        self.html = self.load(urljoin("http://uplea.com/", m.groups(1)))
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:

@@ -7,6 +7,7 @@ from os.path import exists, isfile, join
 from shutil import move
 
 from module.plugins.Hook import Hook
+from module.utils import fs_encode, save_join
 
 
 class HotFolder(Hook):
@@ -29,37 +30,35 @@ class HotFolder(Hook):
 
 
     def periodical(self):
-        if not exists(join(self.getConfig("folder"), "finished")):
-            makedirs(join(self.getConfig("folder"), "finished"))
+        folder = fs_encode(self.getConfig("folder"))
 
-        if self.getConfig("watch_file"):
+        try:
+            if not exists(join(folder, "finished")):
+                makedirs(join(folder, "finished"))
 
-            if not exists(self.getConfig("file")):
-                f = open(self.getConfig("file"), "wb")
-                f.close()
+            if self.getConfig("watch_file"):
+                with open(fs_encode(self.getConfig("file")), "a+") as f:
+                    content = f.read().strip()
 
-            f = open(self.getConfig("file"), "rb")
-            content = f.read().strip()
-            f.close()
-            f = open(self.getConfig("file"), "wb")
-            f.close()
-            if content:
-                name = "%s_%s.txt" % (self.getConfig("file"), time.strftime("%H-%M-%S_%d%b%Y"))
+                if content:
+                    name = "%s_%s.txt" % (self.getConfig("file"), time.strftime("%H-%M-%S_%d%b%Y"))
 
-                f = open(join(self.getConfig("folder"), "finished", name), "wb")
-                f.write(content)
-                f.close()
+                    with open(save_join(folder, "finished", name), "wb") as f:
+                        f.write(content)
 
-                self.core.api.addPackage(f.name, [f.name], 1)
+                    self.core.api.addPackage(f.name, [f.name], 1)
 
-        for f in listdir(self.getConfig("folder")):
-            path = join(self.getConfig("folder"), f)
+            for f in listdir(folder):
+                path = join(folder, f)
 
-            if not isfile(path) or f.endswith("~") or f.startswith("#") or f.startswith("."):
-                continue
+                if not isfile(path) or f.endswith("~") or f.startswith("#") or f.startswith("."):
+                    continue
 
-            newpath = join(self.getConfig("folder"), "finished", f if self.getConfig("keep") else "tmp_" + f)
-            move(path, newpath)
+                newpath = join(folder, "finished", f if self.getConfig("keep") else "tmp_" + f)
+                move(path, newpath)
 
-            self.logInfo(_("Added %s from HotFolder") % f)
-            self.core.api.addPackage(f, [newpath], 1)
+                self.logInfo(_("Added %s from HotFolder") % f)
+                self.core.api.addPackage(f, [newpath], 1)
+
+        except IOError, e:
+            self.logError(e)

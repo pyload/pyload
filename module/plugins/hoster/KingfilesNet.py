@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class KingfilesNet(SimpleHoster):
     __name__    = "KingfilesNet"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
 
@@ -42,13 +42,14 @@ class KingfilesNet(SimpleHoster):
                      'fname': self.pyfile.name,
                      'referer': "",
                      'method_free': "+"}
-        b = self.load(self.pyfile.url, post=post_data, cookies=True, decode=True)
+
+        self.html = self.load(self.pyfile.url, post=post_data, cookies=True, decode=True)
 
         solvemedia = SolveMedia(self)
         captcha_challenge, captcha_response = solvemedia.challenge()
 
         # Make the downloadlink appear and load the file
-        m = re.search(self.RAND_ID_PATTERN, b)
+        m = re.search(self.RAND_ID_PATTERN, self.html)
         if m is None:
             self.error(_("Random key not found"))
 
@@ -56,7 +57,7 @@ class KingfilesNet(SimpleHoster):
         self.logDebug("rand = ", rand)
 
         post_data = {'op': "download2",
-                     'id': file_id,
+                     'id': self.info['ID'],
                      'rand': rand,
                      'referer': self.pyfile.url,
                      'method_free': "+",
@@ -64,14 +65,14 @@ class KingfilesNet(SimpleHoster):
                      'adcopy_response': captcha_response,
                      'adcopy_challenge': captcha_challenge,
                      'down_direct': "1"}
-        c = self.load(self.pyfile.url, post=post_data, cookies=True, decode=True)
 
-        m = re.search(self.LINK_PATTERN, c)
+        self.html = self.load(self.pyfile.url, post=post_data, cookies=True, decode=True)
+
+        m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
             self.error(_("Download url not found"))
 
-        dl_url = m.group(1)
-        self.download(dl_url, cookies=True, disposition=True)
+        self.download(m.group(1), cookies=True, disposition=True)
 
         check = self.checkDownload({'html': re.compile("<html>")})
         if check == "html":

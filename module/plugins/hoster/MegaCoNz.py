@@ -15,8 +15,8 @@ from module.common.json_layer import json_loads, json_dumps
 from module.plugins.Hoster import Hoster
 
 
-class MegaNz(Hoster):
-    __name__    = "MegaNz"
+class MegaCoNz(Hoster):
+    __name__    = "MegaCoNz"
     __type__    = "hoster"
     __version__ = "0.16"
 
@@ -48,9 +48,9 @@ class MegaNz(Hoster):
         # generate a session id, no idea where to obtain elsewhere
         uid = random.randint(10 << 9, 10 ** 10)
 
-        resp = self.load(self.API_URL % uid, post=json_dumps([kwargs]))
-        self.logDebug("Api Response: " + resp)
-        return json_loads(resp)
+        res = self.load(self.API_URL % uid, post=json_dumps([kwargs]))
+        self.logDebug("Api Response: " + res)
+        return json_loads(res)
 
 
     def decryptAttr(self, data, key):
@@ -78,8 +78,12 @@ class MegaNz(Hoster):
 
         file_crypted = self.lastDownload
         file_decrypted = file_crypted.rsplit(self.FILE_SUFFIX)[0]
-        f = open(file_crypted, "rb")
-        df = open(file_decrypted, "wb")
+
+        try:
+            f = open(file_crypted, "rb")
+            df = open(file_decrypted, "wb")
+        except IOError, e:
+            self.fail(str(e))
 
         # TODO: calculate CBC-MAC for checksum
 

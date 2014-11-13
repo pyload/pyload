@@ -32,11 +32,11 @@ class YibaishiwuCom(SimpleHoster):
         url = m.group(1)
         self.logDebug(('FREEUSER' if m.group(2) == 'download' else 'GUEST') + ' URL', url)
 
-        response = json_loads(self.load("http://115.com" + url, decode=False))
-        if "urls" in response:
-            mirrors = response['urls']
-        elif "data" in response:
-            mirrors = response['data']
+        res = json_loads(self.load("http://115.com" + url, decode=False))
+        if "urls" in res:
+            mirrors = res['urls']
+        elif "data" in res:
+            mirrors = res['data']
         else:
             mirrors = None
 

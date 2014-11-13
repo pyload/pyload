@@ -23,7 +23,7 @@ class UlozTo(Account):
         #this cookie gets lost somehow after each request
         self.phpsessid = req.cj.getCookie("ULOSESSID")
         html = req.load("http://www.ulozto.net/", decode=True)
-        req.cj.setCookie("www.ulozto.net", "ULOSESSID", self.phpsessid)
+        req.cj.setCookie(".ulozto.net", "ULOSESSID", self.phpsessid)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         trafficleft = int(float(m.group(1).replace(' ', '').replace(',', '.')) * 1000 * 1.048) if m else 0

@@ -8,16 +8,13 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class XFileSharingPro(XFSHoster):
     __name__    = "XFileSharingPro"
     __type__    = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.42"
 
     __pattern__ = r'^unmatchable$'
 
     __description__ = """XFileSharingPro dummy hoster plugin for hook"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
-
-    URL_REPLACEMENTS = [(r'/embed-(\w{12}).*', r'/\1')]  #: support embedded files
 
 
     def _log(self, type, args):

@@ -52,8 +52,8 @@ class ExtabitCom(SimpleHoster):
             for _i in xrange(5):
                 get_data = {"type": "recaptcha"}
                 get_data['challenge'], get_data['capture'] = recaptcha.challenge(captcha_key)
-                response = json_loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
-                if "ok" in response:
+                res = json_loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
+                if "ok" in res:
                     self.correctCaptcha()
                     break
                 else:
@@ -63,10 +63,10 @@ class ExtabitCom(SimpleHoster):
         else:
             self.error(_("Captcha"))
 
-        if not "href" in response:
+        if not "href" in res:
             self.error(_("Bad JSON response"))
 
-        self.html = self.load("http://extabit.com/file/%s%s" % (fileID, response['href']))
+        self.html = self.load("http://extabit.com/file/%s%s" % (fileID, res['href']))
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:

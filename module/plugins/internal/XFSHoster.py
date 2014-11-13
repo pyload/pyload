@@ -3,20 +3,20 @@
 import re
 
 from random import random
+from time import sleep
 
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 
 from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
-from module.plugins.internal.SimpleHoster import create_getInfo, replace_patterns, set_cookies, SimpleHoster
-from module.plugins.Plugin import Fail
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.utils import html_unescape
 
 
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.15"
 
     __pattern__ = r'^unmatchable$'
 
@@ -28,13 +28,15 @@ class XFSHoster(SimpleHoster):
 
 
     HOSTER_DOMAIN = None
-    HOSTER_NAME = None
+    HOSTER_NAME   = None
+
+    URL_REPLACEMENTS = [(r'/(?:embed-)?(\w{12}).*', r'/\1')]  #: plus support embedded files
 
     COOKIES = [(HOSTER_DOMAIN, "lang", "english")]
 
     INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
     NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
-    SIZE_PATTERN = r'You have requested .*\((?P<S>[\d\.\,]+) ?(?P<U>[\w^_]+)?\)</font>'
+    SIZE_PATTERN = r'You have requested .*\((?P<S>[\d.,]+) ?(?P<U>[\w^_]+)?\)</font>'
 
     OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
@@ -49,7 +51,7 @@ class XFSHoster(SimpleHoster):
     RECAPTCHA_PATTERN   = None
     SOLVEMEDIA_PATTERN  = None
 
-    ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<[Cc]enter><b>)(.+?)(?:["\']|</)'
+    ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<[Cc]enter><b>)(.+?)(?:["\']|</)|>\(ERROR:(.+?)\)'
 
 
     def setup(self):
@@ -73,13 +75,14 @@ class XFSHoster(SimpleHoster):
         self.errmsg = None
         self.passwords = self.getPassword().splitlines()
 
-        # MultiHoster check
-        if self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']:
+        if (self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
+            and re.match(self.__pattern__, self.pyfile.url) is None):
             self.logInfo(_("Multi hoster detected"))
             if self.premium:
+                self.logDebug(_("Looking for download link..."))
                 self.handleOverriden()
             else:
-                self.fail(_("Only premium users can download from other hosters"))
+                self.fail(_("Only premium users can use url leech feature"))
 
         return super(XFSHoster, self).prepare()
 
@@ -93,11 +96,14 @@ class XFSHoster(SimpleHoster):
 
             self.download(link, ref=True, cookies=True, disposition=True)
 
-        elif self.errmsg and "captcha" in self.errmsg:
-            self.error(_("No valid captcha code entered"))
+        elif self.errmsg:
+            if 'captcha' in self.errmsg:
+                self.fail(_("No valid captcha code entered"))
+            else:
+                self.fail(self.errmsg)
 
         else:
-            self.error(_("Download link not found"))
+            self.fail(_("Download link not found"))
 
 
     def handlePremium(self):
@@ -108,7 +114,15 @@ class XFSHoster(SimpleHoster):
         for i in xrange(1, 5):
             self.logDebug("Getting download link: #%d" % i)
 
+            self.checkErrors()
+
+            m = re.search(self.LINK_PATTERN, self.html, re.S)
+            if m:
+                break
+
             data = self.getPostParameters()
+
+            # sleep(10)
 
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
@@ -117,15 +131,19 @@ class XFSHoster(SimpleHoster):
 
             self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
-            m = re.search(r"Location\s*:\s*(.+)", self.header, re.I)
+            m = re.search(r'Location\s*:\s*(.+)', self.header, re.I)
             if m:
                 break
 
             m = re.search(self.LINK_PATTERN, self.html, re.S)
             if m:
                 break
+        else:
+            return
 
-        return m.group(1)
+        self.errmsg = None
+
+        return m.group(1).strip()  #@TODO: Remove .strip() in 0.4.10
 
 
     def handleOverriden(self):
@@ -143,41 +161,55 @@ class XFSHoster(SimpleHoster):
 
         self.logDebug(action, inputs)
 
-        self.req.http.c.setopt(LOW_SPEED_TIME, 600)  #: wait for file to upload to easybytez.com
+        self.req.setOption("timeout", 600)  #: wait for file to upload to easybytez.com
 
         self.html = self.load(action, post=inputs)
 
+        self.checkErrors()
+
         action, inputs = self.parseHtmlForm('F1')
         if not inputs:
-            self.error(_("TEXTAREA F1 not found"))
+            if self.errmsg:
+                self.retry(reason=self.errmsg)
+            else:
+                self.error(_("TEXTAREA F1 not found"))
 
         self.logDebug(inputs)
 
-        if inputs['st'] == 'OK':
+        stmsg = inputs['st']
+
+        if stmsg == 'OK':
             self.html = self.load(action, post=inputs)
-        elif inputs['st'] == 'Can not leech file':
-            self.retry(20, 3 * 60, inputs['st'])
+
+        elif 'Can not leech file' in stmsg:
+            self.retry(20, 3 * 60, _("Can not leech file"))
+
+        elif 'today' in stmsg:
+            self.retry(wait_time=secondsToMidnight(gmt=2), reason=_("You've used all Leech traffic today"))
+
         else:
-            self.fail(_(inputs['st']))
+            self.fail(stmsg)
 
         #get easybytez.com link for uploaded file
         m = re.search(self.OVR_LINK_PATTERN, self.html)
         if m is None:
             self.error(_("OVR_LINK_PATTERN not found"))
 
-        self.pyfile.url = m.group(1)
-
-        header = self.load(self.pyfile.url, just_header=True, decode=True)
-        if 'location' in header:  # Direct link
+        header = self.load(m.group(1).strip(), just_header=True, decode=True)  #@TODO: Remove .strip() in 0.4.10
+        if 'location' in header:  #: Direct download link
             self.download(header['location'], ref=True, cookies=True, disposition=True)
         else:
-            self.retry(reason=_("OVR link location not found"))
+            self.fail(_("Download link not found"))
 
 
     def checkErrors(self):
         m = re.search(self.ERROR_PATTERN, self.html)
-        if m:
+
+        if m is None:
+            self.errmsg = None
+        else:
             self.errmsg = m.group(1)
+
             self.logWarning(re.sub(r"<.*?>", " ", self.errmsg))
 
             if 'wait' in self.errmsg:
@@ -194,13 +226,13 @@ class XFSHoster(SimpleHoster):
             elif 'limit' in self.errmsg:
                 if 'days' in self.errmsg:
                     delay = secondsToMidnight(gmt=2)
-                    retries = 2
+                    retries = 3
                 else:
                     delay = 1 * 60 * 60
                     retries = 25
 
                 self.wait(delay, True)
-                self.retry(retries, reason="Download limit exceeded")
+                self.retry(retries, reason=_("Download limit exceeded"))
 
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
                 self.retry(reason=_("Link expired"))
@@ -212,17 +244,13 @@ class XFSHoster(SimpleHoster):
                 self.fail(_("File too large for free download"))
 
             else:
-                self.fail(self.errmsg)
-        else:
-            self.errmsg = None
+                self.retry(wait_time=60, reason=self.errmsg)
 
         return self.errmsg
 
 
     def getPostParameters(self):
         for _i in xrange(3):
-            self.checkErrors()
-
             if hasattr(self, "FORM_PATTERN"):
                 action, inputs = self.parseHtmlForm(self.FORM_PATTERN)
             else:
@@ -258,9 +286,7 @@ class XFSHoster(SimpleHoster):
                     if wait_time:
                         self.wait()
 
-                self.errmsg = None
                 return inputs
-
             else:
                 inputs['referer'] = self.pyfile.url
 
@@ -274,8 +300,6 @@ class XFSHoster(SimpleHoster):
                         del inputs['method_premium']
 
                 self.html = self.load(self.pyfile.url, post=inputs, ref=True)
-                self.errmsg = None
-
         else:
             self.error(_("FORM: %s") % (inputs['op'] if 'op' in inputs else _("UNKNOWN")))
 

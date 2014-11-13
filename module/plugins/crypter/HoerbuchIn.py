@@ -30,8 +30,8 @@ class HoerbuchIn(Crypter):
         self.pyfile = pyfile
 
         if self.article.match(pyfile.url):
-            src = self.load(pyfile.url)
-            soup = BeautifulSoup(src, convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
+            html = self.load(pyfile.url)
+            soup = BeautifulSoup(html, convertEntities=BeautifulStoneSoup.HTML_ENTITIES)
 
             abookname = soup.find("a", attrs={"rel": "bookmark"}).text
             for a in soup.findAll("a", attrs={"href": self.protection}):
@@ -50,11 +50,11 @@ class HoerbuchIn(Crypter):
         url = m.group(0)
 
         self.pyfile.url = url
-        src = self.load(url, post={"viewed": "adpg"})
+        html = self.load(url, post={"viewed": "adpg"})
 
         links = []
         pattern = re.compile("http://www\.hoerbuch\.in/protection/(\w+)/(.*?)\"")
-        for hoster, lid in pattern.findall(src):
+        for hoster, lid in pattern.findall(html):
             self.req.lastURL = url
             self.load("http://www.hoerbuch.in/protection/%s/%s" % (hoster, lid))
             links.append(self.req.lastEffectiveURL)

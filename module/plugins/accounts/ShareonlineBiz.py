@@ -20,19 +20,19 @@ class ShareonlineBiz(Account):
 
 
     def loadAccountInfo(self, user, req):
-        src = self.getUserAPI(user, req)
+        html = self.getUserAPI(user, req)
 
         info = {}
-        for line in src.splitlines():
+        for line in html.splitlines():
             if "=" in line:
                 key, value = line.split("=")
                 info[key] = value
         self.logDebug(info)
 
         if "dl" in info and info['dl'].lower() != "not_available":
-            req.cj.setCookie("share-online.biz", "dl", info['dl'])
+            req.cj.setCookie(".share-online.biz", "dl", info['dl'])
         if "a" in info and info['a'].lower() != "not_available":
-            req.cj.setCookie("share-online.biz", "a", info['a'])
+            req.cj.setCookie(".share-online.biz", "a", info['a'])
 
         return {"validuntil": int(info['expire_date']) if "expire_date" in info else -1,
                 "trafficleft": -1,
@@ -40,6 +40,6 @@ class ShareonlineBiz(Account):
 
 
     def login(self, user, data, req):
-        src = self.getUserAPI(user, req)
-        if "EXCEPTION" in src:
+        html = self.getUserAPI(user, req)
+        if "EXCEPTION" in html:
             self.wrongPassword()

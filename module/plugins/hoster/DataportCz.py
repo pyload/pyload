@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DataportCz(SimpleHoster):
     __name__    = "DataportCz"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __pattern__ = r'http://(?:www\.)?dataport\.cz/file/(.*)'
 
@@ -54,4 +54,4 @@ class DataportCz(SimpleHoster):
                 break
 
 
-create_getInfo(DataportCz)
+getInfo = create_getInfo(DataportCz)

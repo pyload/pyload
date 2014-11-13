@@ -53,14 +53,14 @@ class Ftp(Hoster):
         self.req.http.c.setopt(pycurl.NOBODY, 1)
 
         try:
-            response = self.load(pyfile.url)
+            res = self.load(pyfile.url)
         except pycurl.error, e:
             self.fail(_("Error %d: %s") % e.args)
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.logDebug(self.req.http.header)
 
-        m = re.search(r"Content-Length:\s*(\d+)", response)
+        m = re.search(r"Content-Length:\s*(\d+)", res)
         if m:
             pyfile.size = int(m.group(1))
             self.download(pyfile.url)
@@ -71,8 +71,8 @@ class Ftp(Hoster):
                 pkgname = "/".join(pyfile.package().name, urlparse(pyfile.url).path.rpartition('/')[2])
                 pyfile.url += '/'
                 self.req.http.c.setopt(48, 1)  # CURLOPT_DIRLISTONLY
-                response = self.load(pyfile.url, decode=False)
-                links = [pyfile.url + quote(x) for x in response.splitlines()]
+                res = self.load(pyfile.url, decode=False)
+                links = [pyfile.url + quote(x) for x in res.splitlines()]
                 self.logDebug("LINKS", links)
                 self.core.api.addPackage(pkgname, links)
             else:

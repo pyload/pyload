@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class SendspaceCom(SimpleHoster):
     __name__    = "SendspaceCom"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'http://(?:www\.)?sendspace\.com/file/.*'
 
@@ -57,4 +57,4 @@ class SendspaceCom(SimpleHoster):
         self.download(download_url)
 
 
-create_getInfo(SendspaceCom)
+getInfo = create_getInfo(SendspaceCom)

@@ -55,16 +55,16 @@ class CaptchaBrotherhood(Hook):
 
 
     def setup(self):
-        self.info = {}
+        self.info = {}  #@TODO: Remove in 0.4.10
 
 
     def getCredits(self):
-        response = getURL(self.API_URL + "askCredits.aspx",
-                          get={"username": self.getConfig("username"), "password": self.getConfig("passkey")})
-        if not response.startswith("OK"):
-            raise CaptchaBrotherhoodException(response)
+        res = getURL(self.API_URL + "askCredits.aspx",
+                     get={"username": self.getConfig("username"), "password": self.getConfig("passkey")})
+        if not res.startswith("OK"):
+            raise CaptchaBrotherhoodException(res)
         else:
-            credits = int(response[3:])
+            credits = int(res[3:])
             self.logInfo(_("%d credits left") % credits)
             self.info['credits'] = credits
             return credits
@@ -101,35 +101,35 @@ class CaptchaBrotherhood(Hook):
 
         try:
             req.c.perform()
-            response = req.getResponse()
+            res = req.getResponse()
         except Exception, e:
             raise CaptchaBrotherhoodException("Submit captcha image failed")
 
         req.close()
 
-        if not response.startswith("OK"):
-            raise CaptchaBrotherhoodException(response[1])
+        if not res.startswith("OK"):
+            raise CaptchaBrotherhoodException(res[1])
 
-        ticket = response[3:]
+        ticket = res[3:]
 
         for _i in xrange(15):
             sleep(5)
-            response = self.get_api("askCaptchaResult", ticket)
-            if response.startswith("OK-answered"):
-                return ticket, response[12:]
+            res = self.get_api("askCaptchaResult", ticket)
+            if res.startswith("OK-answered"):
+                return ticket, res[12:]
 
         raise CaptchaBrotherhoodException("No solution received in time")
 
 
     def get_api(self, api, ticket):
-        response = getURL("%s%s.aspx" % (self.API_URL, api),
+        res = getURL("%s%s.aspx" % (self.API_URL, api),
                           get={"username": self.getConfig("username"),
                                "password": self.getConfig("passkey"),
                                "captchaID": ticket})
-        if not response.startswith("OK"):
-            raise CaptchaBrotherhoodException("Unknown response: %s" % response)
+        if not res.startswith("OK"):
+            raise CaptchaBrotherhoodException("Unknown response: %s" % res)
 
-        return response
+        return res
 
 
     def newCaptchaTask(self, task):
@@ -156,7 +156,7 @@ class CaptchaBrotherhood(Hook):
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            response = self.get_api("complainCaptcha", task.data['ticket'])
+            res = self.get_api("complainCaptcha", task.data['ticket'])
 
 
     def processCaptcha(self, task):

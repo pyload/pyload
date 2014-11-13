@@ -11,15 +11,15 @@ def getInfo(urls):
     result = []
     for chunk in chunks(urls, 10):
         for url in chunk:
-            src = getURL(url)
-            if r'<div class="errorMessage mb10">' in src:
+            html = getURL(url)
+            if r'<div class="errorMessage mb10">' in html:
                 result.append((url, 0, 1, url))
-            elif r'Page cannot be displayed' in src:
+            elif r'Page cannot be displayed' in html:
                 result.append((url, 0, 1, url))
             else:
                 try:
                     url_pattern = '<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
-                    file_name = re.search(url_pattern, src).group(0).split(', event)">')[1].split('</a>')[0]
+                    file_name = re.search(url_pattern, html).group(0).split(', event)">')[1].split('</a>')[0]
                     result.append((file_name, 0, 2, url))
                 except:
                     pass
