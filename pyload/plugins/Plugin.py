@@ -301,6 +301,12 @@ class Plugin(Base):
         return True, 10
 
 
+    def setReconnect(self, reconnect):
+        reconnect = bool(reconnect)
+        self.logDebug("Set wantReconnect to: %s (previous: %s)" % (reconnect, self.wantReconnect))
+        self.wantReconnect = reconnect
+
+
     def setWait(self, seconds, reconnect=None):
         """Set a specific wait time later used with `wait`
 
@@ -316,16 +322,19 @@ class Plugin(Base):
         self.pyfile.waitUntil = wait_until
 
         if reconnect is not None:
-            self.logDebug("Set wantReconnect to: %s (previous: %s)" % (reconnect, self.wantReconnect))
-            self.wantReconnect = reconnect
+            self.setReconnect(reconnect)
 
 
-    def wait(self, seconds=0, reconnect=None):
+    def wait(self, seconds=None, reconnect=None):
         """ waits the time previously set """
 
         pyfile = self.pyfile
 
-        self.setWait(seconds, reconnect)
+        if seconds is not None:
+            self.setWait(seconds)
+
+        if reconnect is not None:
+            self.setReconnect(reconnect)
 
         self.waiting = True
 
@@ -336,9 +345,13 @@ class Plugin(Base):
                       "WAITUNTIL: %f"    % pyfile.waitUntil,
                       "RECONNECT: %s"    % self.wantReconnect)
 
-        if not account:
+        if self.account:
             self.logDebug("Ignore reconnection due account logged")
 
+            while pyfile.waitUntil > time():
+                if pyfile.abort:
+                    self.abort()
+        else:
             while pyfile.waitUntil > time():
                 self.thread.m.reconnecting.wait(2)
 
@@ -349,10 +362,6 @@ class Plugin(Base):
                     self.waiting = False
                     self.wantReconnect = False
                     raise Reconnect
-        else:
-            while pyfile.waitUntil > time():
-                if pyfile.abort:
-                    self.abort()
 
         self.waiting = False
 
