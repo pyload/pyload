@@ -324,7 +324,7 @@ class SimpleHoster(Hoster):
 
 
     def getFileInfo(self):
-        name, size, status, url = parseFileInfo(self)
+        name, size, status, url = parseFileInfo(self, html=self.html)
 
         if name and name != url:
             self.pyfile.name = name

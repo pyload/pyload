@@ -39,7 +39,8 @@ class UlozTo(Account):
 
         html = req.load('http://www.ulozto.net'+action, post={
             "_token_": token,
-            "login": "Submit",
+            "do": "loginForm-submit",
+            "login": u"Přihlásit",
             "password": data['password'],
             "username": user
         }, decode=True)
