@@ -22,8 +22,6 @@ from os.path import join
 from time import time
 import re
 
-from urlparse import urlparse
-
 from PyFile import PyFile
 from common.packagetools import parseNames
 from network.RequestFactory import getURL
@@ -320,7 +318,7 @@ class Api(Iface):
         :return: package id of the new package
         """
         if self.core.config['general']['folder_per_package'] and not folder:
-            folder = urlparse(html_unescape(name)).path.split("/")[-1]
+            folder = save_path(name.replace("http://", "").replace(":", "").replace("/", "_").replace("\\", "_"))
 
         pid = self.core.files.addPackage(name, folder, dest)
 
