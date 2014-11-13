@@ -11,8 +11,6 @@ from traceback import print_exc
 
 from module.lib.SafeEval import const_eval as literal_eval
 
-from module.ConfigParser import IGNORE
-
 
 class PluginManager:
     ROOT     = "module.plugins."
@@ -47,7 +45,7 @@ class PluginManager:
         self.plugins['accounts'] = self.accountPlugins = self.parse("accounts")
         self.plugins['hooks']    = self.hookPlugins    = self.parse("hooks")
 
-        for type in ('captcha', 'container', 'crypter', 'hoster', 'internal'):
+        for type in set(self.TYPES) - set(('accounts', 'hooks')):
             self.plugins[type] = self.parse(type)
             setattr(self, "%sPlugins" % type, self.plugins[type])
 
@@ -58,11 +56,6 @@ class PluginManager:
         """
         returns dict with information
         home contains parsed plugins from module.
-
-        {
-        name : {path, version, config, (pattern, re), (plugin, class)}
-        }
-
         """
 
         plugins = {}
@@ -98,17 +91,18 @@ class PluginManager:
                     self.logError(e)
                     continue
 
-                if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):
+                if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):  #@TODO: Remove in 0.4.10
                     continue
 
-                elif f.endswith("_26.pyc") and version_info[0:2] != (2, 6):
+                elif f.endswith("_26.pyc") and version_info[0:2] != (2, 6):  #@TODO: Remove in 0.4.10
                     continue
 
-                elif f.endswith("_27.pyc") and version_info[0:2] != (2, 7):
+                elif f.endswith("_27.pyc") and version_info[0:2] != (2, 7):  #@TODO: Remove in 0.4.10
                     continue
 
                 name = f[:-3]
-                if name[-1] == ".": name = name[:-4]
+                if name[-1] == ".":
+                    name = name[:-4]
 
                 version = self.VERSION.findall(content)
                 if version:
@@ -119,9 +113,6 @@ class PluginManager:
                 if rootplugins and name in rootplugins:
                     if rootplugins[name]['version'] >= version:
                         continue
-
-                if name in IGNORE or (folder, name) in IGNORE:
-                     continue
 
                 plugins[name] = {}
                 plugins[name]['version'] = version
@@ -202,8 +193,8 @@ class PluginManager:
                 continue
 
             for name, value in chain(self.crypterPlugins.iteritems(), self.hosterPlugins.iteritems(),
-                self.containerPlugins.iteritems()):
-                if value['re'].match(url):
+                                     self.containerPlugins.iteritems()):
+                if 're' in value and value['re'].match(url):  #@TODO: Rewrite this check to report missing __pattern__ attribute alert
                     res.append((url, name))
                     last = (name, value)
                     found = True
@@ -260,15 +251,18 @@ class PluginManager:
             try:
                 module = __import__(self.ROOT + "%s.%s" % (type, plugins[name]['name']), globals(), locals(),
                                     plugins[name]['name'])
-                plugins[name]['module'] = module  #cache import, maybe unneeded
 
             except Exception, e:
-                self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
+                self.log.error(_("Error importing plugin: [%(type)s] %(name)s (v%(version).2f) | %(errmsg)s")
+                               % {'name': name, 'type': type, 'version': plugins[name]['version'], "errmsg": str(e)})
                 if self.core.debug:
                     print_exc()
 
             else:
-                self.log.debug(_("Loaded module %(name)s (v%(version).2f)") % {'name': name, 'version': plugins[name]['version']})
+                plugins[name]['module'] = module  #: cache import, maybe unneeded
+
+                self.log.debug(_("Loaded plugin: [%(type)s] %(name)s (v%(version).2f)")
+                               % {'name': name, 'type': type, 'version': plugins[name]['version']})
                 return module
 
 
@@ -278,7 +272,6 @@ class PluginManager:
         if module:
             return getattr(module, name)
         else:
-            self.log.error(_("%s class %s not loaded") % (type.capitalize(), name))
             return None
 
 
@@ -359,8 +352,8 @@ class PluginManager:
             #index creation
             self.plugins[type] = self.parse(type)
 
-            if type is "accounts":
-                self.accountPlugins = self.plugins[type]  #@TODO: Remove in 0.4.10
+            if type is "accounts":  #@TODO: Remove this check in 0.4.10
+                self.accountPlugins = self.plugins[type]
             else:
                 setattr(self, "%sPlugins" % type, self.plugins[type])
 
