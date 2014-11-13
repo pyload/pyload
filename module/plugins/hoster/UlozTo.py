@@ -37,7 +37,7 @@ class UlozTo(SimpleHoster):
     VIPLINK_PATTERN = r'<a href="[^"]*\?disclaimer=1" class="linkVip">'
     FREE_URL_PATTERN = r'<div class="freeDownloadForm"><form action="([^"]+)"'
     PREMIUM_URL_PATTERN = r'<div class="downloadForm"><form action="([^"]+)"'
-    TOKEN_PATTERN = r'<input type="hidden" name="_token_" id="[^\"]*" value="(?P<token>[^\"]*)" />'
+    TOKEN_PATTERN = r'<input type="hidden" name="_token_" id="[^\"]*" value="(?P<token>[^\"]*)">'
 
 
     def setup(self):
