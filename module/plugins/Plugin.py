@@ -295,7 +295,7 @@ class Plugin(Base):
         wait_time  = int(seconds) + 1
         wait_until = time() + wait_time
 
-        self.logDebug("Set waitUntil to: %f (previous: %f)" % (wait_until, self.self.pyfile.waitUntil),
+        self.logDebug("Set waitUntil to: %f (previous: %f)" % (wait_until, self.pyfile.waitUntil),
                       "Wait: %d seconds" % wait_time)
 
         self.pyfile.waitUntil = wait_until
@@ -317,9 +317,9 @@ class Plugin(Base):
         status = pyfile.status
         pyfile.setStatus("waiting")
 
-        self.logDebug("WAIT: %d seconds" % wait_time,
-                      "WAITUNTIL: %f" % pyfile.waitUntil,
-                      "RECONNECT: %s" % self.wantReconnect)
+        self.logDebug("WAIT: %d seconds" % seconds,
+                      "WAITUNTIL: %f"    % pyfile.waitUntil,
+                      "RECONNECT: %s"    % self.wantReconnect)
 
         if not account:
             self.logDebug("Ignore reconnection due account logged")
@@ -521,7 +521,9 @@ class Plugin(Base):
 
                 with open(framefile, "wb") as f:
                     del frame  #: delete the frame or it wont be cleaned
-                    f.write(fs_encode(res))
+                    if decode:
+                        res = res.encode('utf-8')
+                    f.write(res)
             except IOError, e:
                 self.logError(e)
 
