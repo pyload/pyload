@@ -57,7 +57,7 @@ class FilecryptCc(Crypter):
         found = re.search(self.CAPTCHA_PATTERN,self.html)
         if found:
             self.logDebug("Captcha-URL: "+found.group(1))
-            captcha_code = self.decryptCaptcha(found.group(1), forceUser=True, imgtype="gif")
+            captcha_code = self.decryptCaptcha("http://filecrypt.cc"+found.group(1), forceUser=True, imgtype="gif")
             self.siteWithLinks = self.load(self.pyfile.url, post={"recaptcha_response_field":captcha_code}, decode=True)
         else:
             self.logDebug("No captcha found")
