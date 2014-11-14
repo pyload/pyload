@@ -28,6 +28,8 @@ class RapidgatorNet(SimpleHoster):
 
     API_URL = "http://rapidgator.net/api/file"
 
+    COOKIES = [(".rapidgator.net", "lang", "en")]
+
     NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
     SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong>'
     OFFLINE_PATTERN = r'>(File not found|Error 404)'
