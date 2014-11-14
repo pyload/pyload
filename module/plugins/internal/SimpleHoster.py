@@ -200,7 +200,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
 
     __pattern__ = r'^unmatchable$'
 
@@ -274,11 +274,8 @@ class SimpleHoster(Hoster):
                 return direct_link
             else:
                 self.logDebug(_("No direct download link found"))
-                self.html = None
-                self.info = {}
 
-        if self.html is None:
-            self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
+        self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
 
         if isinstance(self.TEXT_ENCODING, basestring):
             self.html = unicode(self.html, self.TEXT_ENCODING)
@@ -296,7 +293,7 @@ class SimpleHoster(Hoster):
 
         else:
             premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
-            if not premium_only and not self.info:  #: Usually premium only pages doesn't show any file information
+            if not premium_only:  #: Usually premium only pages doesn't show any file information
                 self.getFileInfo()
 
             if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
