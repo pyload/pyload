@@ -15,7 +15,7 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "0.99"
+    __version__ = "1.00"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
 
@@ -37,7 +37,7 @@ class UlozTo(SimpleHoster):
     VIPLINK_PATTERN = r'<a href="[^"]*\?disclaimer=1" class="linkVip">'
     FREE_URL_PATTERN = r'<div class="freeDownloadForm"><form action="([^"]+)"'
     PREMIUM_URL_PATTERN = r'<div class="downloadForm"><form action="([^"]+)"'
-    TOKEN_PATTERN = r'<input type="hidden" name="_token_" id="[^\"]*" value="(?P<token>[^\"]*)" />'
+    TOKEN_PATTERN = r'<input type="hidden" name="_token_" id="[^\"]*" value="(?P<token>.+?)"'
 
 
     def setup(self):
