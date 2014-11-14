@@ -80,6 +80,7 @@ class HTTPRequest:
         self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
         self.c.setopt(pycurl.LOW_SPEED_TIME, 60)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
+        self.c.setopt(pycurl.USE_SSL, pycurl.CURLUSESSL_TRY)
 
         #self.c.setopt(pycurl.VERBOSE, 1)
 
