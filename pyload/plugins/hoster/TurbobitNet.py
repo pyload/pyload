@@ -27,13 +27,13 @@ class TurbobitNet(SimpleHoster):
                        ("prOq", None)]
 
 
-    NAME_PATTERN = r'id="file-title">(?P<N>.+?)<'
-    SIZE_PATTERN = r'class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
-
     URL_REPLACEMENTS = [(__pattern__, "http://turbobit.net/\g<ID>.html")]
 
     COOKIES = [(".turbobit.net", "user_lang", "en")]
+
+    NAME_PATTERN = r'id="file-title">(?P<N>.+?)<'
+    SIZE_PATTERN = r'class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
 
     LINK_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
     LIMIT_WAIT_PATTERN = r'<div id=\'timeout\'>(\d+)<'

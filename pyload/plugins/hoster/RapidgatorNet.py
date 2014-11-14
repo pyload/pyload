@@ -14,7 +14,7 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
@@ -27,6 +27,8 @@ class RapidgatorNet(SimpleHoster):
 
 
     API_URL = "http://rapidgator.net/api/file"
+
+    COOKIES = [(".rapidgator.net", "lang", "en")]
 
     NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
     SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong>'
