@@ -43,7 +43,6 @@ class RapidgatorNet(SimpleHoster):
     RECAPTCHA_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
     ADSCAPTCHA_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']*)'
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.*?)"'
-    COOKIES = [("rapidgator.net", "lang", "en")]
 
 
     def setup(self):
