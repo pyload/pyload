@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: RaNaN
 """
 
@@ -25,11 +25,11 @@ from httplib import responses
 from logging import getLogger
 from cStringIO import StringIO
 
-from module.plugins.Plugin import Abort
+from module.plugins.Plugin import Abort, Fail
 
 def myquote(url):
     return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
-    
+
 def myurlencode(data):
     data = dict(data)
     return urlencode(dict((x.encode('utf_8') if isinstance(x, unicode) else x, \
@@ -231,11 +231,13 @@ class HTTPRequest():
 
     def getResponse(self):
         """ retrieve response from string io """
-        if self.rep is None: return ""
-        value = self.rep.getvalue()
-        self.rep.close()
-        self.rep = StringIO()
-        return value
+        if self.rep is None:
+            return ""
+        else:
+            value = self.rep.getvalue()
+            self.rep.close()
+            self.rep = StringIO()
+            return value
 
     def decodeResponse(self, rep):
         """ decode with correct encoding, relies on header """
@@ -258,7 +260,7 @@ class HTTPRequest():
             #self.log.debug("Decoded %s" % encoding )
             if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
-            
+
             decoder = getincrementaldecoder(encoding)("replace")
             rep = decoder.decode(rep, True)
 
@@ -266,6 +268,7 @@ class HTTPRequest():
 
         except LookupError:
             self.log.debug("No Decoder foung for %s" % encoding)
+
         except Exception:
             self.log.debug("Error when decoding string from %s." % encoding)
 
@@ -275,13 +278,15 @@ class HTTPRequest():
         """ writes response """
         if self.rep.tell() > 1000000 or self.abort:
             rep = self.getResponse()
-            if self.abort: raise Abort()
-            f = open("response.dump", "wb")
-            f.write(rep)
-            f.close()
-            raise Exception("Loaded Url exceeded limit")
 
-        self.rep.write(buf)
+            if self.abort:
+                raise Abort()
+
+            with open("response.dump", "wb") as f:
+                f.write(rep)
+            raise Fail("Loaded url exceeded size limit")
+        else:
+            self.rep.write(buf)
 
     def writeHeader(self, buf):
         """ writes header """
@@ -306,4 +311,4 @@ if __name__ == "__main__":
     url = "http://pyload.org"
     c = HTTPRequest()
     print c.load(url)
-    
+
