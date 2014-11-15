@@ -33,7 +33,6 @@ class ShareplaceCom(Hoster):
 
         wait_time = self.get_waiting_time()
         self.setWait(wait_time)
-        self.logDebug("Waiting %d seconds." % wait_time)
         self.wait()
 
 

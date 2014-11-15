@@ -326,9 +326,8 @@ class Plugin(Base):
         status = pyfile.status
         pyfile.setStatus("waiting")
 
-        self.logDebug("WAIT: %d seconds" % seconds,
-                      "WAITUNTIL: %f"    % pyfile.waitUntil,
-                      "RECONNECT: %s"    % self.wantReconnect)
+        self.logInfo(_("Wait: %d seconds") % pyfile.waitUntil - time(),
+                     _("Reconnect: %s")    % self.wantReconnect)
 
         if self.account:
             self.logDebug("Ignore reconnection due account logged")
@@ -336,6 +335,8 @@ class Plugin(Base):
             while pyfile.waitUntil > time():
                 if pyfile.abort:
                     self.abort()
+
+                sleep(1)
         else:
             while pyfile.waitUntil > time():
                 self.thread.m.reconnecting.wait(2)
@@ -347,6 +348,8 @@ class Plugin(Base):
                     self.waiting = False
                     self.wantReconnect = False
                     raise Reconnect
+
+                sleep(1)
 
         self.waiting = False
 
