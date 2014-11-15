@@ -69,21 +69,6 @@ class SimpleCrypter(Crypter):
     LOGIN_PREMIUM = False
 
 
-    #@TODO: remove in 0.4.10
-    def init(self):
-        self.info = {}
-
-        account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
-        account = self.core.accountManager.getAccountPlugin(account_name)
-
-        if account and account.canUse():
-            self.user, data = account.selectAccount()
-            self.req = account.getAccountRequest(self.user)
-            self.premium = account.isPremium(self.user)
-
-            self.account = account
-
-
     def prepare(self):
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(_("Required account not found"))
@@ -162,10 +147,5 @@ class SimpleCrypter(Crypter):
             self.links += self.getLinks()
 
 
-    #@TODO: Remove in 0.4.10
-    def wait(self, seconds=0, reconnect=None):
-        return _wait(self, seconds, reconnect)
-
-
     def error(self, reason="", type="parse"):
-        return _error(self, reason, type)
+        return super(SimpleCrypter, self).error(self, reason, type)

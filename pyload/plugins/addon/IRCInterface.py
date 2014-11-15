@@ -89,7 +89,7 @@ class IRCInterface(Thread, Addon):
         self.sock.connect((host, self.getConfig("port")))
 
         if self.getConfig("ssl"):
-            self.sock = ssl.wrap_socket(self.sock, cert_reqs=ssl.CERT_NONE)  #@TODO: support certificate
+            self.sock = ssl.wrap_socket(self.sock, cert_reqs=ssl.CERT_NONE)  #@TODO: support custom certificate
 
         nick = self.getConfig("nick")
         self.sock.send("NICK %s\r\n" % nick)

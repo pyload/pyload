@@ -143,7 +143,7 @@ class XFSHoster(SimpleHoster):
 
         self.errmsg = None
 
-        return m.group(1).strip()  #@TODO: Remove .strip() in 0.4.10
+        return m.group(1)
 
 
     def handleOverriden(self):
@@ -195,7 +195,7 @@ class XFSHoster(SimpleHoster):
         if m is None:
             self.error(_("OVR_LINK_PATTERN not found"))
 
-        header = self.load(m.group(1).strip(), just_header=True, decode=True)  #@TODO: Remove .strip() in 0.4.10
+        header = self.load(m.group(1), just_header=True, decode=True)
         if 'location' in header:  #: Direct download link
             self.download(header['location'], ref=True, cookies=True, disposition=True)
         else:

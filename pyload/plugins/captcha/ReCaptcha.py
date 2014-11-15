@@ -25,7 +25,7 @@ class ReCaptcha(Captcha):
                 html = self.plugin.html
             else:
                 errmsg = _("ReCaptcha html not found")
-                self.plugin.fail(errmsg)
+                self.plugin.error(errmsg)
                 raise TypeError(errmsg)
 
         m = re.search(self.KEY_PATTERN, html) or re.search(self.KEY_AJAX_PATTERN, html)
@@ -44,7 +44,7 @@ class ReCaptcha(Captcha):
                 key = self.key
             else:
                 errmsg = _("ReCaptcha key not found")
-                self.plugin.fail(errmsg)
+                self.plugin.error(errmsg)
                 raise TypeError(errmsg)
 
         js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key})

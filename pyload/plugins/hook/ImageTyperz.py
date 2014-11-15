@@ -50,10 +50,6 @@ class ImageTyperz(Hook):
     GETCREDITS_URL = "http://captchatypers.com/Forms/RequestBalance.ashx"
 
 
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
-
     def getCredits(self):
         res = getURL(self.GETCREDITS_URL,
                      post={'action': "REQUESTBALANCE",

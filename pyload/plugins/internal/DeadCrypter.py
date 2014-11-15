@@ -16,5 +16,4 @@ class DeadCrypter(_Crypter):
 
 
     def setup(self):
-        self.pyfile.error = "Crypter is no longer available"
-        self.offline()  #@TODO: self.offline("Crypter is no longer available")
+        self.offline("Crypter is no longer available")

@@ -14,25 +14,6 @@ from pyload.plugins.Plugin import Fail
 from pyload.utils import fixup, html_unescape, parseFileSize
 
 
-#@TODO: Remove in 0.4.10 and redirect to self.error instead
-def _error(self, reason, type):
-        if not reason and not type:
-            type = "unknown"
-
-        msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
-        msg += ": " + reason.strip() if reason else ""
-        msg += _(" | Plugin may be out of date")
-
-        raise Fail(msg)
-
-
-#@TODO: Remove in 0.4.10
-def _wait(self, seconds, reconnect):
-    if seconds:
-        self.setWait(seconds, reconnect)
-    super(SimpleHoster, self).wait()
-
-
 def replace_patterns(string, ruleslist):
     for r in ruleslist:
         rf, rt = r
@@ -108,9 +89,6 @@ def parseFileInfo(self, url="", html=""):
         if hasattr(self, "OFFLINE_PATTERN") and re.search(self.OFFLINE_PATTERN, html):
             info['status'] = 1
 
-        elif hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):  #@TODO: Remove in 0.4.10
-            info['status'] = 1
-
         elif hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, html):
             info['status'] = 6
 
@@ -121,8 +99,7 @@ def parseFileInfo(self, url="", html=""):
             except:
                 pass
 
-            for pattern in ("INFO_PATTERN", "NAME_PATTERN", "SIZE_PATTERN",
-                            "FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):  #@TODO: Remove in 0.4.10
+            for pattern in ("INFO_PATTERN", "NAME_PATTERN", "SIZE_PATTERN"):
                 try:
                     info.update(re.search(getattr(self, pattern), html).groupdict())
                     online = True
@@ -134,12 +111,10 @@ def parseFileInfo(self, url="", html=""):
                 info['status'] = 2
 
                 if 'N' in info:
-                    info['name'] = replace_patterns(info['N'].strip(),
-                                                    self.FILE_NAME_REPLACEMENTS if hasattr(self, "FILE_NAME_REPLACEMENTS") else self.NAME_REPLACEMENTS)  #@TODO: Remove FILE_NAME_REPLACEMENTS check in 0.4.10
+                    info['name'] = replace_patterns(info['N'].strip(), self.NAME_REPLACEMENTS)
 
                 if 'S' in info:
-                    size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
-                                            self.FILE_SIZE_REPLACEMENTS if hasattr(self, "FILE_SIZE_REPLACEMENTS") else self.SIZE_REPLACEMENTS)  #@TODO: Remove FILE_SIZE_REPLACEMENTS check in 0.4.10
+                    size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'], self.SIZE_REPLACEMENTS)
                     info['size'] = parseFileSize(size)
 
                 elif isinstance(info['size'], basestring):
@@ -177,9 +152,6 @@ def create_getInfo(plugin):
 
             if hasattr(plugin, "URL_REPLACEMENTS"):
                 url = replace_patterns(url, plugin.URL_REPLACEMENTS)
-
-            elif hasattr(plugin, "FILE_URL_REPLACEMENTS"):  #@TODO: Remove in 0.4.10
-                url = replace_patterns(url, plugin.FILE_URL_REPLACEMENTS)
 
             if hasattr(plugin, "TEXT_ENCODING"):
                 html = getURL(url, cookies=bool(cj), decode=not plugin.TEXT_ENCODING)
@@ -264,8 +236,7 @@ class SimpleHoster(Hoster):
 
         self.req.setOption("timeout", 120)
 
-        self.pyfile.url = replace_patterns(self.pyfile.url,
-                                           self.FILE_URL_REPLACEMENTS if hasattr(self, "FILE_URL_REPLACEMENTS") else self.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
+        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
         if self.premium:
             self.logDebug(_("Looking for direct download link..."))
@@ -315,7 +286,7 @@ class SimpleHoster(Hoster):
 
         if parseFileInfo(self, url, html)[2] is not 2:
             try:
-                return re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I).group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
+                return re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I).group(1)
             except:
                 pass
 
@@ -410,10 +381,5 @@ class SimpleHoster(Hoster):
             return size <= traffic
 
 
-    #@TODO: Remove in 0.4.10
-    def wait(self, seconds=0, reconnect=None):
-        return _wait(self, seconds, reconnect)
-
-
     def error(self, reason="", type="parse"):
-        return _error(self, reason, type)
+        return super(SimpleHoster, self).error(self, reason, type)

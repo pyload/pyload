@@ -371,7 +371,7 @@ class Plugin(Base):
         """ abort and give reason """
         if reason:
             self.pyfile.error = str(reason)
-        raise Abort  #@TODO: Use raise Abort(reason) in 0.4.10
+        raise Abort
 
 
     def error(self, reason="", type=""):
@@ -389,14 +389,14 @@ class Plugin(Base):
         """ fail and indicate file is offline """
         if reason:
             self.pyfile.error = str(reason)
-        raise Fail("offline")  #@TODO: Use raise Fail("offline", reason) in 0.4.10
+        raise Fail("offline")
 
 
     def tempOffline(self, reason=""):
         """ fail and indicates file ist temporary offline, the core may take consequences """
         if reason:
             self.pyfile.error = str(reason)
-        raise Fail("temp. offline")  #@TODO: Use raise Fail("temp. offline", reason) in 0.4.10
+        raise Fail("temp. offline")
 
 
     def retry(self, max_tries=5, wait_time=1, reason=""):

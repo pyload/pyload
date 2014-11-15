@@ -148,7 +148,7 @@ class LinkSaveIn(SimpleCrypter):
         if not self.js:
             self.logDebug("No JS -> skip Web links")
         else:
-        #@TODO: Gather paginated web links
+            #@TODO: Gather paginated web links
             pattern = r'<a href="http://linksave\.in/(\w{43})"'
             ids = re.findall(pattern, self.html)
             self.logDebug("Decrypting %d Web links" % len(ids))

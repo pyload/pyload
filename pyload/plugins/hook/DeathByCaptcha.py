@@ -67,10 +67,6 @@ class DeathByCaptcha(Hook):
     API_URL = "http://api.dbcapi.me/api/"
 
 
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
-
     def call_api(self, api="captcha", post=False, multipart=False):
         req = getRequest()
         req.c.setopt(HTTPHEADER, ["Accept: application/json", "User-Agent: pyLoad %s" % self.core.version])

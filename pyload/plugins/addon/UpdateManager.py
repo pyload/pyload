@@ -187,19 +187,13 @@ class UpdateManager(Addon):
 
         for plugin in upgradable:
             filename = plugin['name']
-            prefix   = plugin['type']
+            type     = plugin['type']
             version  = plugin['version']
 
             if filename.endswith(".pyc"):
                 name = filename[:filename.find("_")]
             else:
                 name = filename.replace(".py", "")
-
-            #@TODO: obsolete after 0.4.10
-            if prefix.endswith("s"):
-                type = prefix[:-1]
-            else:
-                type = prefix
 
             plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
 

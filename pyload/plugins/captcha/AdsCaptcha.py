@@ -27,7 +27,7 @@ class AdsCaptcha(Captcha):
                 html = self.plugin.html
             else:
                 errmsg = _("AdsCaptcha html not found")
-                self.plugin.fail(errmsg)
+                self.plugin.error(errmsg)
                 raise TypeError(errmsg)
 
         m = re.search(self.ID_PATTERN, html)
@@ -47,7 +47,7 @@ class AdsCaptcha(Captcha):
                 key = self.key
             else:
                 errmsg = _("AdsCaptcha key not found")
-                self.plugin.fail(errmsg)
+                self.plugin.error(errmsg)
                 raise TypeError(errmsg)
 
         CaptchaId, PublicKey = key

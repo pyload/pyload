@@ -187,8 +187,9 @@ class PluginManager:
                 res.append((url, last[0]))
                 continue
 
-            for name, value in chain(self.crypterPlugins.iteritems(), self.hosterPlugins.iteritems(),
-                                     self.containerPlugins.iteritems()):
+            for name, value in (self.crypterPlugins.iteritems(),
+                                self.hosterPlugins.iteritems(),
+                                self.containerPlugins.iteritems()):
                 try:
                     m = value['re'].match(url)
                 except KeyError:
@@ -220,7 +221,7 @@ class PluginManager:
 
         if not plugin:
             self.core.log.warning("Plugin %s not found" % name)
-            plugin = self.hosterPlugins['BasePlugin']
+            plugin = self.internalPlugins['BasePlugin']
 
         if "new_module" in plugin and not original:
             return plugin['new_module']

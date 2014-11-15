@@ -68,7 +68,7 @@ class QuickshareCz(SimpleHoster):
         m = re.search(r'Location\s*:\s*(.+)', self.header, re.I)
         if m is None:
             self.fail(_("File not found"))
-        download_url = m.group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
+        download_url = m.group(1)
         self.logDebug("FREE URL2:" + download_url)
 
         # check errors

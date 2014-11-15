@@ -24,5 +24,4 @@ class DeadHoster(_Hoster):
 
 
     def setup(self):
-        self.pyfile.error = "Hoster is no longer available"
-        self.offline()  #@TODO: self.offline("Hoster is no longer available")
+        self.offline("Hoster is no longer available")

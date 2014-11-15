@@ -15,7 +15,7 @@ class MultiUpOrg(SimpleCrypter):
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """MultiUp.org crypter plugin"""
+    __description__ = """MultiUp.org decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 

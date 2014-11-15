@@ -29,10 +29,6 @@ class ExpertDecoders(Hook):
     API_URL = "http://www.fasttypers.org/imagepost.ashx"
 
 
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
-
     def getCredits(self):
         res = getURL(self.API_URL, post={"key": self.getConfig("passkey"), "action": "balance"})
 

@@ -30,7 +30,7 @@ class Captcha(Plugin):
                 html = self.plugin.html
             else:
                 errmsg = _("%s html not found") % self.__name__
-                self.plugin.fail(errmsg)  #@TODO: replace all plugin.fail(errmsg) with plugin.error(errmsg) in 0.4.10
+                self.plugin.error(errmsg)
                 raise TypeError(errmsg)
 
         m = re.search(self.KEY_PATTERN, html)

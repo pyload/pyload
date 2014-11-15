@@ -24,7 +24,7 @@ class SolveMedia(Captcha):
                 key = self.key
             else:
                 errmsg = _("SolveMedia key not found")
-                self.plugin.fail(errmsg)
+                self.plugin.error(errmsg)
                 raise TypeError(errmsg)
 
         html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript", get={'k': key})

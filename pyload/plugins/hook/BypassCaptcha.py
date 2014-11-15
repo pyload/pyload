@@ -48,10 +48,6 @@ class BypassCaptcha(Hook):
     GETCREDITS_URL = "http://bypasscaptcha.com/ex_left.php"
 
 
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
-
     def getCredits(self):
         res = getURL(self.GETCREDITS_URL, post={"key": self.getConfig("passkey")})
 

@@ -35,11 +35,6 @@ class XFSAccount(Account):
     LOGIN_FAIL_PATTERN = r'>(Incorrect Login or Password|Error<)'
 
 
-    def __init__(self, manager, accounts):  #@TODO: remove in 0.4.10
-        self.init()
-        return super(XFSAccount, self).__init__(manager, accounts)
-
-
     def init(self):
         # if not self.HOSTER_DOMAIN:
             # self.fail(_("Missing HOSTER_DOMAIN"))

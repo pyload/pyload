@@ -51,8 +51,7 @@ class XFileSharingPro(Hook):
     def loadPattern(self):
         use_builtin_list = self.getConfig('use_builtin_list')
 
-        for type, plugin in (("hoster",  "XFileSharingPro"),
-                             ("crypter", "XFileSharingProFolder")):
+        for type in ("hoster", "crypter"):
             every_plugin = not self.getConfig("use_%s_list" % type)
 
             if every_plugin:
@@ -69,7 +68,7 @@ class XFileSharingPro(Hook):
 
                 if not plugin_list:
                     self.logInfo(_("No %s to handle") % type)
-                    self._unload(type, plugin)
+                    self._unload(type)
                     return
 
                 match_list = '|'.join(sorted(plugin_list))
@@ -79,20 +78,19 @@ class XFileSharingPro(Hook):
 
                 pattern = self.regexp[type][1] % match_list.replace('.', '\.')
 
-            dict = self.core.pluginManager.plugins[type][plugin]
+            dict = self.core.pluginManager.plugins[type]["XFileSharingPro"]
             dict['pattern'] = pattern
             dict['re'] = re.compile(pattern)
 
             self.logDebug("Loaded %s pattern: %s" % (type, pattern))
 
 
-    def _unload(self, type, plugin):
-        dict = self.core.pluginManager.plugins[type][plugin]
+    def _unload(self, type):
+        dict = self.core.pluginManager.plugins[type]["XFileSharingPro"]
         dict['pattern'] = r'^unmatchable$'
         dict['re'] = re.compile(dict['pattern'])
 
 
     def unload(self):
-        for type, plugin in (("hoster",  "XFileSharingPro"),
-                             ("crypter", "XFileSharingProFolder")):
-            self._unload(type, plugin)
+        for type in ("hoster", "crypter"):
+            self._unload(type, "XFileSharingPro")

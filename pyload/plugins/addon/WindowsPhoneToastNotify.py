@@ -21,10 +21,6 @@ class WindowsPhoneToastNotify(Addon):
     __authors__     = [("Andy Voigt", "phone-support@hotmail.de")]
 
 
-    def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-
-
     def getXmlData(self):
         myxml = ("<?xml version='1.0' encoding='utf-8'?> <wp:Notification xmlns:wp='WPNotification'> "
                  "<wp:Toast> <wp:Text1>Pyload Mobile</wp:Text1> <wp:Text2>Captcha waiting!</wp:Text2> "
