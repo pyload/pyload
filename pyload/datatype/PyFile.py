@@ -49,11 +49,12 @@ class PyFile(object):
     """
     Represents a file object at runtime
     """
-    __slots__ = ("m", "id", "url", "name", "size", "_size", "status", "pluginname", "packageid",
-                 "error", "order", "lock", "plugin", "waitUntil", "active", "abort", "statusname",
-                 "reconnected", "progress", "maxprogress", "pluginmodule", "pluginclass")
+    __slots__ = ("m", "id", "url", "name", "size", "_size", "status", "plugin",
+                 "packageid", "error", "order", "lock", "plugin", "waitUntil",
+                 "active", "abort", "statusname", "reconnected", "progress",
+                 "maxprogress", "pluginmodule", "pluginclass")
 
-    def __init__(self, manager, id, url, name, size, status, error, pluginname, package, order):
+    def __init__(self, manager, id, url, name, size, status, error, plugin, package, order):
         self.m = manager
 
         self.id = int(id)
@@ -61,7 +62,7 @@ class PyFile(object):
         self.name = name
         self.size = size
         self.status = status
-        self.pluginname = pluginname
+        self.plugin = self.plugintype, self.pluginname = plugin
         self.packageid = package #should not be used, use package() instead
         self.error = error
         self.order = order
@@ -97,9 +98,9 @@ class PyFile(object):
     def initPlugin(self):
         """ inits plugin instance """
         if not self.plugin:
-            self.pluginmodule = self.m.core.pluginManager.getPlugin(self.pluginname)
-            self.pluginclass = getattr(self.pluginmodule, self.m.core.pluginManager.getPluginName(self.pluginname))
-            self.plugin = self.pluginclass(self)
+            self.pluginmodule = self.m.core.pluginManager.getPlugin(self.plugintype, self.pluginname)
+            self.pluginclass  = getattr(self.pluginmodule, self.m.core.pluginManager.getPluginName(self.plugintype, self.pluginname))
+            self.plugin       = self.pluginclass(self)
 
     @lock
     def hasPlugin(self):

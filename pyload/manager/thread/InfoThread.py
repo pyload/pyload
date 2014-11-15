@@ -61,12 +61,11 @@ class InfoThread(PluginThread):
         plugins = {}
         container = []
 
-        for url, plugin in self.data:
-            if plugin in plugins:
-                plugins[plugin].append(url)
-            else:
-                plugins[plugin] = [url]
-
+        for url, plugintype, pluginname in data:
+            try:
+                plugins[plugintype][pluginname].append(url)
+            except:
+                plugins[plugintype][pluginname] = [url]
 
         # filter out container plugins
         for name in self.m.core.pluginManager.containerPlugins:
@@ -77,15 +76,15 @@ class InfoThread(PluginThread):
 
         #directly write to database
         if self.pid > -1:
-            for pluginname, urls in plugins.iteritems():
-                plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
+            for plugintype, pluginname, urls in plugins.iteritems():
+                plugin = self.m.core.pluginManager.getPlugin(plugintype, pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateDB)
                     self.m.core.files.save()
 
         elif self.add:
-            for pluginname, urls in plugins.iteritems():
-                plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
+            for plugintype, pluginname, urls in plugins.iteritems():
+                plugin = self.m.core.pluginManager.getPlugin(plugintype, pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateCache, True)
 
@@ -117,16 +116,16 @@ class InfoThread(PluginThread):
                     self.m.log.error("Could not decrypt container.")
                     data = []
 
-                for url, plugin in data:
-                    if plugin in plugins:
-                        plugins[plugin].append(url)
-                    else:
-                        plugins[plugin] = [url]
+                for url, plugintype, pluginname in data:
+                    try:
+                        plugins[plugintype][pluginname].append(url)
+                    except:
+                        plugins[plugintype][pluginname] = [url]
 
             self.m.infoResults[self.rid] = {}
 
-            for pluginname, urls in plugins.iteritems():
-                plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
+            for plugintype, pluginname, urls in plugins.iteritems():
+                plugin = self.m.core.pluginManager.getPlugin(plugintype, pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateResult, True)
 

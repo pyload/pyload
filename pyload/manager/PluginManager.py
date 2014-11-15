@@ -5,7 +5,7 @@ import sys
 
 from itertools import chain
 from os import listdir, makedirs
-from os.path import isfile, join, exists, abspath
+from os.path import isdir, isfile, join, exists, abspath
 from sys import version_info
 from traceback import print_exc
 
@@ -15,7 +15,7 @@ from SafeEval import const_eval as literal_eval
 class PluginManager:
     ROOT = "pyload.plugins."
     USERROOT = "userplugins."
-    TYPES = ("account", "addon", "container", "crypter", "hook", "hoster", "internal", "ocr")
+    TYPES = []
 
     PATTERN = re.compile(r'__pattern__\s*=\s*u?r("|\')([^"\']+)')
     VERSION = re.compile(r'__version__\s*=\s*("|\')([\d.]+)')
@@ -33,10 +33,26 @@ class PluginManager:
         sys.meta_path.append(self)
 
 
+    def initTYPES(self):
+        rootdir = join(pypath, "pyload", "plugins")
+        userdir = "userplugins"
+
+        tmpset = set()
+        for p in (rootdir, userdir):
+            tmpset += set([d for d in listdir(p) if isdir(join(p, d))])
+
+        self.TYPES = list(tmpset)
+
+
     def createIndex(self):
         """create information for all plugins available"""
 
         sys.path.append(abspath(""))
+
+        self.initTYPES()
+
+        if not self.TYPES:
+            self.log.critical(_("No TYPES, no fun!"))
 
         for type in set(self.TYPES):
             self.plugins[type] = self.parse(type)
@@ -177,61 +193,70 @@ class PluginManager:
         """parse plugins for given list of urls"""
 
         last = None
-        res = [] # tupels of (url, plugin)
+        res  = []  #: tupels of (url, plugintype, pluginname)
 
         for url in urls:
-            if type(url) not in (str, unicode, buffer): continue
-            found = False
-
-            if last and last[1]['re'].match(url):
-                res.append((url, last[0]))
+            if type(url) not in (str, unicode, buffer):
                 continue
 
-            for name, value in (self.crypterPlugins.iteritems(),
-                                self.hosterPlugins.iteritems(),
-                                self.containerPlugins.iteritems()):
-                try:
-                    m = value['re'].match(url)
-                except KeyError:
-                    self.core.log.error("Plugin %s skipped due broken pattern" % name)
+            if last and last[2]['re'].match(url):
+                res.append((url, last[0], last[1]))
+                continue
+
+            for type in self.TYPES:
+                for name, plugin in self.plugins[type]:
+
                     m = None
+                    try:
+                        if 'pattern' in plugin:
+                            m = plugin['re'].match(url)
 
-                if m:
-                    res.append((url, name))
-                    last = (name, value)
-                    found = True
-                    break
+                    except KeyError:
+                        self.core.log.error(_("Plugin [%(type)s] %(name)s skipped due broken pattern")
+                                            % {'name': name, 'type': type})
 
-            if not found:
-                res.append((url, "BasePlugin"))
+                    if m:
+                        res.append((url, type, name))
+                        last = (type, name, plugin)
+                        break
+                else:
+                    res.append((url, "internal", "BasePlugin"))
 
         return res
 
 
-    def findPlugin(self, name, pluginlist=("hoster", "crypter", "container")):
-        for ptype in pluginlist:
-            if name in self.plugins[ptype]:
-                return self.plugins[ptype][name], ptype
-        return None, None
+    def findPlugin(self, type, name):
+        if type not in self.plugins:
+            return None
+
+        elif name not in self.plugins[type]:
+            self.core.log.warning(_("Plugin [%(type)s] %(name)s not found | Using plugin: [internal] BasePlugin")
+                                  % {'name': name, 'type': type})
+            return self.internalPlugins["BasePlugin"]
+
+        else:
+            return self.plugins[type][name]
 
 
-    def getPlugin(self, name, original=False):
+    def getPlugin(self, type, name, original=False):
         """return plugin module from hoster|decrypter|container"""
-        plugin, type = self.findPlugin(name)
+        plugin = self.findPlugin(type, name)
 
-        if not plugin:
-            self.core.log.warning("Plugin %s not found" % name)
-            plugin = self.internalPlugins['BasePlugin']
+        if plugin is None:
+            return {}
 
         if "new_module" in plugin and not original:
             return plugin['new_module']
+        else:
+            return self.loadModule(type, name)
 
-        return self.loadModule(type, name)
 
-
-    def getPluginName(self, name):
+    def getPluginName(self, type, name):
         """ used to obtain new name if other plugin was injected"""
-        plugin, type = self.findPlugin(name)
+        plugin = self.findPlugin(type, name)
+
+        if plugin is None:
+            return ""
 
         if "new_name" in plugin:
             return plugin['new_name']
@@ -246,6 +271,7 @@ class PluginManager:
         :param name:
         """
         plugins = self.plugins[type]
+
         if name in plugins:
             if "module" in plugins[name]:
                 return plugins[name]['module']
@@ -256,7 +282,7 @@ class PluginManager:
 
             except Exception, e:
                 self.core.log.error(_("Error importing plugin: [%(type)s] %(name)s (v%(version).2f) | %(errmsg)s")
-                               % {'name': name, 'type': type, 'version': plugins[name]['version'], "errmsg": str(e)})
+                                    % {'name': name, 'type': type, 'version': plugins[name]['version'], "errmsg": str(e)})
                 if self.core.debug:
                     print_exc()
 
@@ -264,7 +290,7 @@ class PluginManager:
                 plugins[name]['module'] = module  #: cache import, maybe unneeded
 
                 self.core.log.debug(_("Loaded plugin: [%(type)s] %(name)s (v%(version).2f)")
-                               % {'name': name, 'type': type, 'version': plugins[name]['version']})
+                                    % {'name': name, 'type': type, 'version': plugins[name]['version']})
                 return module
 
 

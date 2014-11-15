@@ -612,7 +612,7 @@ class FileMethods:
     @style.queue
     def addLink(self, url, name, plugin, package):
         order = self._nextFileOrder(package)
-        self.c.execute('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', (url, name, plugin, package, order))
+        self.c.execute('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', (url, name, (plugintype, pluginname), package, order))
         return self.c.lastrowid
 
     @style.queue
@@ -620,7 +620,7 @@ class FileMethods:
         """ links is a list of tupels (url, plugin)"""
         order = self._nextFileOrder(package)
         orders = [order + x for x in range(len(links))]
-        links = [(x[0], x[0], x[1], package, o) for x, o in zip(links, orders)]
+        links = [(x[0], x[0], (x[1], x[2]), package, o) for x, o in zip(links, orders)]
         self.c.executemany('INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)', links)
 
     @style.queue

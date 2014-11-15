@@ -27,7 +27,7 @@ from pyload.datatype.PyFile import PyFile
 from pyload.utils.packagetools import parseNames
 from network.RequestFactory import getURL
 from remote import activated
-from utils import compare_time, freeSpace, html_unescape, save_path
+from utils import compare_time, freeSpace, html_unescape, save_filename
 
 if activated:
     try:
@@ -322,7 +322,7 @@ class Api(Iface):
         else:
             folder = ""
 
-        folder = save_path(folder)
+        folder = save_filename(folder)
 
         pid = self.core.files.addPackage(name, folder, dest)
 
@@ -364,11 +364,11 @@ class Api(Iface):
         data = self.core.pluginManager.parseUrls(urls)
         plugins = {}
 
-        for url, plugin in data:
-            if plugin in plugins:
-                plugins[plugin].append(url)
-            else:
-                plugins[plugin] = [url]
+        for url, plugintype, pluginname in data:
+            try:
+                plugins[plugintype][pluginname].append(url)
+            except:
+                plugins[plugintype][pluginname] = [url]
 
         return plugins
 
@@ -383,7 +383,7 @@ class Api(Iface):
 
         rid = self.core.threadManager.createResultThread(data, False)
 
-        tmp = [(url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0))) for url, pluginname in data]
+        tmp = [(url, (url, OnlineStatus(url, (plugintype, pluginname), "unknown", 3, 0))) for url, plugintype, pluginname in data]
         data = parseNames(tmp)
         result = {}
 

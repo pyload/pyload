@@ -145,7 +145,7 @@ class MultiHoster(Addon):
             self.logError(_("No Hoster loaded"))
             return
 
-        module = self.core.pluginManager.getPlugin(self.__name__)
+        module = self.core.pluginManager.getPlugin(self.__type__, self.__name__)
         klass = getattr(module, self.__name__)
 
         # inject plugin plugin
@@ -189,7 +189,7 @@ class MultiHoster(Addon):
             self.unloadHoster(hoster)
 
         # reset pattern
-        klass = getattr(self.core.pluginManager.getPlugin(self.__name__), self.__name__)
+        klass = getattr(self.core.pluginManager.getPlugin(self.__type__, self.__name__), self.__name__)
         dict = self.core.pluginManager.hosterPlugins[self.__name__]
         dict['pattern'] = getattr(klass, "__pattern__", r'^unmatchable$')
         dict['re'] = re.compile(dict['pattern'])
