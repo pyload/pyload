@@ -6,8 +6,8 @@ from os import listdir, makedirs
 from os.path import exists, isfile, join
 from shutil import move
 
-from pyload.plugins.base.Addon import Addon
-from module.utils import fs_encode, save_join
+from pyload.plugins.internal.Addon import Addon
+from pyload.utils import fs_encode, safe_join
 
 
 class HotFolder(Addon):
@@ -43,7 +43,7 @@ class HotFolder(Addon):
                 if content:
                     name = "%s_%s.txt" % (self.getConfig("file"), time.strftime("%H-%M-%S_%d%b%Y"))
 
-                    with open(save_join(folder, "finished", name), "wb") as f:
+                    with open(safe_join(folder, "finished", name), "wb") as f:
                         f.write(content)
 
                     self.core.api.addPackage(f.name, [f.name], 1)

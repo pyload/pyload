@@ -16,7 +16,7 @@ from itertools import islice
 from traceback import print_exc
 from urlparse import urlparse
 
-from module.utils import fs_decode, fs_encode, html_unescape, save_join, save_path
+from pyload.utils import fs_decode, fs_encode, html_unescape, safe_join
 
 def chunks(iterable, size):
     it = iter(iterable)
@@ -100,7 +100,7 @@ class Base(object):
         :param value:
         :return:
         """
-		self.core.config.setPlugin(self.__name__, option, value)
+        self.core.config.setPlugin(self.__name__, option, value)
 
 
     #: Deprecated method
@@ -154,7 +154,7 @@ class Plugin(Base):
     __type__    = "hoster"
     __version__ = "0.07"
 
-    __pattern__ = None
+    __pattern__ = r'^unmatchable$'
     __config__  = []  #: [("name", "type", "desc", "default")]
 
     __description__ = """Base plugin"""
@@ -541,7 +541,7 @@ class Plugin(Base):
             from inspect import currentframe
 
             frame = currentframe()
-            framefile = save_join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+            framefile = safe_join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             try:
                 if not exists(join("tmp", self.__name__)):
                     makedirs(join("tmp", self.__name__))

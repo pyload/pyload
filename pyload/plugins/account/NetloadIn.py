@@ -3,7 +3,7 @@
 import re
 from time import time
 
-from pyload.plugins.base.Account import Account
+from pyload.plugins.internal.Account import Account
 
 
 class NetloadIn(Account):

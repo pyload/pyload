@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.Account import Account
+from pyload.plugins.internal.Account import Account
 
 
 class MultishareCz(Account):

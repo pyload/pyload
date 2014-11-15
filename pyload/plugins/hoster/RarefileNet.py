@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 from pyload.utils import html_unescape
 
 

@@ -4,8 +4,8 @@ import re
 
 from time import time, strptime, mktime
 
-from pyload.plugins.base.Account import Account
-from module.plugins.internal.SimpleHoster import set_cookies
+from pyload.plugins.internal.Account import Account
+from pyload.plugins.internal.SimpleHoster import set_cookies
 
 
 class UploadingCom(Account):

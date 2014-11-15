@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.base.Crypter import Crypter
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class LixIn(Crypter):

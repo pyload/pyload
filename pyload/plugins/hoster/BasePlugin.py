@@ -6,7 +6,7 @@ from urllib import unquote
 from urlparse import urlparse
 
 from pyload.network.HTTPRequest import BadHeader
-from pyload.plugins.base.Hoster import Hoster
+from pyload.plugins.internal.Hoster import Hoster
 from pyload.utils import html_unescape, remove_chars
 
 

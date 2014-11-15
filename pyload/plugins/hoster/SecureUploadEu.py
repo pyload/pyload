@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class SecureUploadEu(XFSHoster):

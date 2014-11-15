@@ -4,7 +4,7 @@ import re
 
 from urlparse import urljoin
 
-from pyload.plugins.base.Account import Account
+from pyload.plugins.internal.Account import Account
 
 
 class UlozTo(Account):

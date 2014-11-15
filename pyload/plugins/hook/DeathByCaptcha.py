@@ -12,7 +12,7 @@ from time import sleep
 from pyload.utils import json_loads
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getRequest
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.internal.Addon import Hook
 
 
 class DeathByCaptchaException(Exception):

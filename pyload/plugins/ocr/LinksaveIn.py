@@ -9,7 +9,7 @@ from glob import glob
 from os import sep
 from os.path import abspath, dirname
 
-from pyload.plugins.base.OCR import OCR
+from pyload.plugins.internal.OCR import OCR
 
 
 class LinksaveIn(OCR):

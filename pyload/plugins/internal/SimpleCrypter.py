@@ -4,9 +4,9 @@ import re
 
 from urlparse import urlparse
 
-from pyload.plugins.Crypter import Crypter
-from module.plugins.Plugin import Fail
-from module.plugins.internal.SimpleHoster import _error, _wait, parseFileInfo, replace_patterns, set_cookies
+from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.Plugin import Fail
+from pyload.plugins.internal.SimpleHoster import _error, _wait, parseFileInfo, replace_patterns, set_cookies
 from pyload.utils import fixup, html_unescape
 
 

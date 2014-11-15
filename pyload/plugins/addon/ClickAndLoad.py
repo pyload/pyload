@@ -3,7 +3,7 @@
 import socket
 import thread
 
-from pyload.plugins.base.Addon import Addon
+from pyload.plugins.internal.Addon import Addon
 
 
 def proxy(self, *settings):

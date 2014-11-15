@@ -9,7 +9,7 @@ from pycurl import FORM_FILE, LOW_SPEED_TIME
 from thread import start_new_thread
 
 from pyload.network.RequestFactory import getURL, getRequest
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.internal.Addon import Hook
 
 
 class ImageTyperzException(Exception):

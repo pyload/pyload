@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.base.Crypter import Crypter
+from pyload.plugins.internal.Crypter import Crypter
 from pyload.utils import json_loads
 
 

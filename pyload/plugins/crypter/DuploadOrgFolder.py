@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadCrypter import DeadCrypter
+from pyload.plugins.internal.DeadCrypter import DeadCrypter
 
 
 class DuploadOrgFolder(DeadCrypter):

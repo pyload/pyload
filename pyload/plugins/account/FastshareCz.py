@@ -2,8 +2,8 @@
 
 import re
 
-from pyload.plugins.base.Account import Account
-from module.utils import parseFileSize
+from pyload.plugins.internal.Account import Account
+from pyload.utils import parseFileSize
 
 
 class FastshareCz(Account):

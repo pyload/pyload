@@ -5,7 +5,7 @@ import re
 from time import sleep, time
 
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.base.Hoster import Hoster
+from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.Plugin import chunks
 
 

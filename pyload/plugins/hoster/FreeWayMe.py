@@ -1,6 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 
-from pyload.plugins.base.Hoster import Hoster
+from pyload.plugins.internal.Hoster import Hoster
 
 
 class FreeWayMe(Hoster):

@@ -3,7 +3,7 @@
 from time import mktime, strptime
 import re
 
-from pyload.plugins.base.Account import Account
+from pyload.plugins.internal.Account import Account
 
 
 class CzshareCom(Account):

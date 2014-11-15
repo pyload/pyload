@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.base.Account import Account
+from pyload.plugins.internal.Account import Account
 
 
 class Http(Account):
@@ -13,4 +13,5 @@ class Http(Account):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    login_timeout = info_threshold = -1  #: Unlimited
+    login_timeout  = -1  #: Unlimited
+    info_threshold = -1  #: Unlimited

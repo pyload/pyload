@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.base.Hoster import Hoster as _Hoster
+from pyload.plugins.internal.Hoster import Hoster as _Hoster
 
 
 def create_getInfo(plugin):

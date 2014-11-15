@@ -9,8 +9,8 @@ from pycurl import FOLLOWLOCATION
 
 from pyload.network.CookieJar import CookieJar
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.base.Hoster import Hoster
-from module.plugins.Plugin import Fail
+from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Plugin import Fail
 from pyload.utils import fixup, html_unescape, parseFileSize
 
 

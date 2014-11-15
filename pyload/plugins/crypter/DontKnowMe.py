@@ -4,7 +4,7 @@ import re
 
 from urllib import unquote
 
-from pyload.plugins.base.Crypter import Crypter
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class DontKnowMe(Crypter):

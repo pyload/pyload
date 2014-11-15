@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.base.Account import Account
+from pyload.plugins.internal.Account import Account
 
 
 class YibaishiwuCom(Account):

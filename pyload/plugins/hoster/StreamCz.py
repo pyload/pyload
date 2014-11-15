@@ -3,7 +3,7 @@
 import re
 
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.base.Hoster import Hoster
+from pyload.plugins.internal.Hoster import Hoster
 
 
 def getInfo(urls):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyload.utils import json_loads
-from pyload.plugins.base.Account import Account
+from pyload.plugins.internal.Account import Account
 
 
 class SimplyPremiumCom(Account):

@@ -6,7 +6,7 @@
 import re
 
 from pyload.utils import json_loads
-from pyload.plugins.base.Hoster import Hoster
+from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.internal.CaptchaService import ReCaptcha
 
 

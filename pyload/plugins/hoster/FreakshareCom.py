@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.base.Hoster import Hoster
+from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.hoster.UnrestrictLi import secondsToMidnight
 from pyload.plugins.internal.CaptchaService import ReCaptcha
 

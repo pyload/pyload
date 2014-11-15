@@ -5,7 +5,7 @@ import re
 from datetime import datetime, timedelta
 
 from pyload.utils import json_loads
-from pyload.plugins.base.Hoster import Hoster
+from pyload.plugins.internal.Hoster import Hoster
 
 
 def secondsToMidnight(gmt=0):

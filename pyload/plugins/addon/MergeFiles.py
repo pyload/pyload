@@ -5,7 +5,7 @@ import re
 
 from traceback import print_exc
 
-from pyload.plugins.base.Addon import Addon, threaded
+from pyload.plugins.internal.Addon import Addon, threaded
 from pyload.utils import safe_join, fs_encode
 
 

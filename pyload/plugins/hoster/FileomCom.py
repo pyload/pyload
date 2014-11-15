@@ -3,7 +3,7 @@
 # Test links:
 # http://fileom.com/gycaytyzdw3g/random.bin.html
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class FileomCom(XFSHoster):

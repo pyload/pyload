@@ -4,7 +4,7 @@ import re
 
 from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
 
-from pyload.plugins.base.Crypter import Crypter
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class HoerbuchIn(Crypter):

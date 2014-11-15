@@ -4,8 +4,8 @@ import base64
 import binascii
 import re
 
-from pyload.plugins.base.Container import Container
-from module.utils import fs_encode
+from pyload.plugins.internal.Container import Container
+from pyload.utils import fs_encode
 
 
 class RSDF(Container):

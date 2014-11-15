@@ -2,14 +2,14 @@
 
 import re
 
-from pyload.plugins.base.Addon import Addon
+from pyload.plugins.internal.Addon import Addon
 from pyload.utils import remove_chars
 
 
 class MultiHoster(Addon):
     __name__    = "MultiHoster"
     __type__    = "addon"
-	__version__ = "0.20"
+    __version__ = "0.20"
 
     __description__ = """Generic MultiHoster plugin"""
     __license__     = "GPLv3"

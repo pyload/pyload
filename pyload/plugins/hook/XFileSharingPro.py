@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.internal.Addon import Hook
 
 
 class XFileSharingPro(Hook):

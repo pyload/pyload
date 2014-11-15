@@ -2,7 +2,7 @@
 
 import codecs
 
-from pyload.plugins.base.Container import Container
+from pyload.plugins.internal.Container import Container
 from pyload.utils import fs_encode
 
 

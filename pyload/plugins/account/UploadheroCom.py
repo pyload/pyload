@@ -4,7 +4,7 @@ import re
 import datetime
 import time
 
-from pyload.plugins.base.Account import Account
+from pyload.plugins.internal.Account import Account
 
 
 class UploadheroCom(Account):

@@ -6,7 +6,7 @@ import re
 import os
 
 from Crypto.Cipher import AES
-from pyload.plugins.base.Crypter import Crypter
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class RelinkUs(Crypter):

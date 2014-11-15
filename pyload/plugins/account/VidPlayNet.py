@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSAccount import XFSAccount
+from pyload.plugins.internal.XFSAccount import XFSAccount
 
 
 class VidPlayNet(XFSAccount):

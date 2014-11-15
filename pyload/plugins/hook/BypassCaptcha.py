@@ -5,7 +5,7 @@ from thread import start_new_thread
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL, getRequest
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.internal.Addon import Hook
 
 
 class BypassCaptchaException(Exception):

@@ -4,7 +4,7 @@
 # http://novafile.com/vfun4z6o2cit
 # http://novafile.com/s6zrr5wemuz4
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class NovafileCom(XFSHoster):

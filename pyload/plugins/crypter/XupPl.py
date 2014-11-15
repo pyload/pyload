@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.base.Crypter import Crypter
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class XupPl(Crypter):

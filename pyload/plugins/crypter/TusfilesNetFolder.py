@@ -4,7 +4,7 @@ import math
 import re
 from urlparse import urljoin
 
-from module.plugins.internal.XFSCrypter import XFSCrypter
+from pyload.plugins.internal.XFSCrypter import XFSCrypter
 
 
 class TusfilesNetFolder(XFSCrypter):

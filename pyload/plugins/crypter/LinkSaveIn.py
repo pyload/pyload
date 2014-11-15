@@ -9,7 +9,7 @@ import re
 
 from Crypto.Cipher import AES
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
 from pyload.utils import html_unescape
 
 

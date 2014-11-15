@@ -3,7 +3,7 @@
 import re
 
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.base.Hook import Hook
+from pyload.plugins.internal.Addon import Hook
 from pyload.utils import remove_chars
 
 

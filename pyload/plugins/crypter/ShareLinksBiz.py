@@ -5,7 +5,7 @@ import binascii
 import re
 
 from Crypto.Cipher import AES
-from pyload.plugins.base.Crypter import Crypter
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class ShareLinksBiz(Crypter):

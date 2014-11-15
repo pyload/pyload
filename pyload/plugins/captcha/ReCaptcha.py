@@ -2,19 +2,21 @@
 
 import re
 
-from pyload.plugins.base.Captcha import Captcha
+from pyload.plugins.internal.Captcha import Captcha
 
 
 class ReCaptcha(Captcha):
-    __name__ = "ReCaptcha"
-    __version__ = "0.02"
+    __name__    = "ReCaptcha"
+    __type__    = "captcha"
+    __version__ = "0.07"
 
     __description__ = """ReCaptcha captcha service plugin"""
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    KEY_PATTERN = r"https?://(?:www\.)?google\.com/recaptcha/api/challenge\?k=(?P<KEY>\w+?)"
-    KEY_AJAX_PATTERN = r"Recaptcha\.create\s*\(\s*[\"'](?P<KEY>\w+)[\"']\s*,"
+    KEY_PATTERN = r'recaptcha(/api|\.net)/(challenge|noscript)\?k=(?P<KEY>[\w-]+)'
+    KEY_AJAX_PATTERN = r'Recaptcha\.create\s*\(\s*["\'](?P<KEY>[\w-]+)'
 
 
     def detect_key(self, html=None):
@@ -22,13 +24,11 @@ class ReCaptcha(Captcha):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = "ReCaptcha html missing"
+                errmsg = _("ReCaptcha html not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        m = re.search(self.KEY_PATTERN, html)
-        if m is None:
-            m = re.search(self.KEY_AJAX_PATTERN, html)
+        m = re.search(self.KEY_PATTERN, html) or re.search(self.KEY_AJAX_PATTERN, html)
         if m:
             self.key = m.group("KEY")
             self.plugin.logDebug("ReCaptcha key: %s" % self.key)
@@ -40,20 +40,20 @@ class ReCaptcha(Captcha):
 
     def challenge(self, key=None):
         if not key:
-            if self.key:
+            if self.detect_key():
                 key = self.key
             else:
-                errmsg = "ReCaptcha key missing"
+                errmsg = _("ReCaptcha key not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key}, cookies=True)
+        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key})
 
         try:
             challenge = re.search("challenge : '(.+?)',", js).group(1)
             server = re.search("server : '(.+?)',", js).group(1)
         except:
-            self.plugin.parseError("ReCaptcha challenge pattern not found")
+            self.plugin.error("ReCaptcha challenge pattern not found")
 
         result = self.result(server, challenge)
 

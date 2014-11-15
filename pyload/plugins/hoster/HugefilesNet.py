@@ -3,7 +3,7 @@
 # Test links:
 # http://hugefiles.net/prthf9ya4w6s
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class HugefilesNet(XFSHoster):

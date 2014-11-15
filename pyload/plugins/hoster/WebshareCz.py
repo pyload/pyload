@@ -2,7 +2,7 @@
 
 import re
 
-from module.network.RequestFactory import getURL
+from pyload.network.RequestFactory import getURL
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

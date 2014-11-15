@@ -4,19 +4,21 @@ import re
 
 from random import random
 
-from pyload.plugins.base.Captcha import Captcha
+from pyload.plugins.internal.Captcha import Captcha
 
 
 class AdsCaptcha(Captcha):
-    __name__ = "AdsCaptcha"
-    __version__ = "0.02"
+    __name__    = "AdsCaptcha"
+    __type__    = "captcha"
+    __version__ = "0.04"
 
     __description__ = """AdsCaptcha captcha service plugin"""
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    ID_PATTERN = r'http://api\.adscaptcha\.com/Get\.aspx\?[^"\']*CaptchaId=(?P<ID>\d+)'
-    KEY_PATTERN = r'http://api\.adscaptcha\.com/Get\.aspx\?[^"\']*PublicKey=(?P<KEY>[\w-]+)'
+    ID_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*CaptchaId=(?P<ID>\d+)'
+    KEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*PublicKey=(?P<KEY>[\w-]+)'
 
 
     def detect_key(self, html=None):
@@ -24,7 +26,7 @@ class AdsCaptcha(Captcha):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = "AdsCaptcha html missing"
+                errmsg = _("AdsCaptcha html not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
@@ -39,24 +41,24 @@ class AdsCaptcha(Captcha):
             return None
 
 
-    def challenge(self, key=None):  #: key is tuple(CaptchaId, PublicKey)
+    def challenge(self, key=None):  #: key is a tuple(CaptchaId, PublicKey)
         if not key:
-            if self.key:
+            if self.detect_key():
                 key = self.key
             else:
-                errmsg = "AdsCaptcha key missing"
+                errmsg = _("AdsCaptcha key not found")
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
         CaptchaId, PublicKey = key
 
-        js = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx", get={'CaptchaId': CaptchaId, 'PublicKey': PublicKey}, cookies=True)
+        js = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx", get={'CaptchaId': CaptchaId, 'PublicKey': PublicKey})
 
         try:
             challenge = re.search("challenge: '(.+?)',", js).group(1)
             server = re.search("server: '(.+?)',", js).group(1)
         except:
-            self.plugin.parseError("AdsCaptcha challenge pattern not found")
+            self.plugin.error("AdsCaptcha challenge pattern not found")
 
         result = self.result(server, challenge)
 
