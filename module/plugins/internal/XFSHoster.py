@@ -161,7 +161,7 @@ class XFSHoster(SimpleHoster):
 
         self.logDebug(action, inputs)
 
-        self.req.http.c.setopt(LOW_SPEED_TIME, 600)  #: wait for file to upload to easybytez.com
+        self.req.setOption("timeout", 600)  #: wait for file to upload to easybytez.com
 
         self.html = self.load(action, post=inputs)
 

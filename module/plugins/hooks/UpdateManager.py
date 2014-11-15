@@ -207,9 +207,9 @@ class UpdateManager(Hook):
             newver = float(version)
 
             if not oldver:
-                msg = "New [%(type)s] %(name)s (v%(newver).2f)"
+                msg = "New plugin: [%(type)s] %(name)s (v%(newver).2f)"
             elif newver > oldver:
-                msg = "New version of [%(type)s] %(name)s (v%(oldver).2f -> v%(newver).2f)"
+                msg = "New version of plugin: [%(type)s] %(name)s (v%(oldver).2f -> v%(newver).2f)"
             else:
                 continue
 

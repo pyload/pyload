@@ -11,9 +11,6 @@ from traceback import print_exc
 
 from module.lib.SafeEval import const_eval as literal_eval
 
-from module.ConfigParser import IGNORE
-from module.utils import save_join
-
 
 class PluginManager:
     ROOT     = "module.plugins."
@@ -44,7 +41,11 @@ class PluginManager:
 
         sys.path.append(abspath(""))
 
-        for type in ('accounts', 'captcha', 'container', 'crypter', 'hooks', 'hoster', 'internal')
+        #@NOTE: In 0.4.10 directory "accounts" changes to "account" and "hooks" changes to "addon"
+        self.plugins['accounts'] = self.accountPlugins = self.parse("accounts")
+        self.plugins['hooks']    = self.hookPlugins    = self.parse("hooks")
+
+        for type in set(self.TYPES) - set(('accounts', 'hooks')):
             self.plugins[type] = self.parse(type)
             setattr(self, "%sPlugins" % type, self.plugins[type])
 
@@ -55,31 +56,28 @@ class PluginManager:
         """
         returns dict with information
         home contains parsed plugins from module.
-
-        {
-        name : {path, version, config, (pattern, re), (plugin, class)}
-        }
-
         """
+
         plugins = {}
 
-        try:
+        if rootplugins:
             try:
                 pfolder = join("userplugins", folder)
                 if not exists(pfolder):
                     makedirs(pfolder)
 
-                ifile = join(pfolder, "__init__.py")
-                if not exists(ifile):
-                    f = open(ifile, "a")
-                    f.close()
+                for ifile in (join("userplugins", "__init__.py"),
+                              join(pfolder, "__init__.py")):
+                    if not exists(ifile):
+                        f = open(ifile, "wb")
+                        f.close()
 
             except IOError, e:
-                pfolder = join(pypath, "module", "plugins", folder)
+                self.logCritical(e)
+                return rootplugins
 
-        except Exception, e:
-            self.logCritical(e)
-            return plugins
+        else:
+            pfolder = join(pypath, "module", "plugins", folder)
 
         for f in listdir(pfolder):
             if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith(
@@ -93,17 +91,18 @@ class PluginManager:
                     self.logError(e)
                     continue
 
-                if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):
+                if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):  #@TODO: Remove in 0.4.10
                     continue
 
-                elif f.endswith("_26.pyc") and version_info[0:2] != (2, 6):
+                elif f.endswith("_26.pyc") and version_info[0:2] != (2, 6):  #@TODO: Remove in 0.4.10
                     continue
 
-                elif f.endswith("_27.pyc") and version_info[0:2] != (2, 7):
+                elif f.endswith("_27.pyc") and version_info[0:2] != (2, 7):  #@TODO: Remove in 0.4.10
                     continue
 
                 name = f[:-3]
-                if name[-1] == ".": name = name[:-4]
+                if name[-1] == ".":
+                    name = name[:-4]
 
                 version = self.VERSION.findall(content)
                 if version:
@@ -112,14 +111,11 @@ class PluginManager:
                     version = 0
 
                 if rootplugins and name in rootplugins:
-                    if rootplugins[name]['v'] >= version:
+                    if rootplugins[name]['version'] >= version:
                         continue
 
-                if name in IGNORE or (folder, name) in IGNORE:
-                     continue
-
                 plugins[name] = {}
-                plugins[name]['v'] = version
+                plugins[name]['version'] = version
 
                 module = f.replace(".pyc", "").replace(".py", "")
 
@@ -132,13 +128,15 @@ class PluginManager:
                 if pattern:
                     pattern = pattern[0][1]
 
-                    plugins[name]['pattern'] = pattern
-
                     try:
-                        plugins[name]['re'] = re.compile(pattern)
+                        regexp = re.compile(pattern)
                     except:
                         self.log.error(_("%s has a invalid pattern") % name)
+                        pattern = r'^unmatchable$'
+                        regexp = re.compile(pattern)
 
+                    plugins[name]['pattern'] = pattern
+                    plugins[name]['re'] = regexp
 
                 # internals have no config
                 if folder == "internal":
@@ -174,7 +172,7 @@ class PluginManager:
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
 
-        if not rootplugins:
+        if not rootplugins and plugins:  #: Double check
             plugins.update(self.parse(folder, plugins))
 
         return plugins
@@ -195,8 +193,8 @@ class PluginManager:
                 continue
 
             for name, value in chain(self.crypterPlugins.iteritems(), self.hosterPlugins.iteritems(),
-                self.containerPlugins.iteritems()):
-                if value['re'].match(url):
+                                     self.containerPlugins.iteritems()):
+                if 're' in value and value['re'].match(url):  #@TODO: Rewrite this check to report missing __pattern__ attribute alert
                     res.append((url, name))
                     last = (name, value)
                     found = True
@@ -253,15 +251,18 @@ class PluginManager:
             try:
                 module = __import__(self.ROOT + "%s.%s" % (type, plugins[name]['name']), globals(), locals(),
                                     plugins[name]['name'])
-                plugins[name]['module'] = module  #cache import, maybe unneeded
 
             except Exception, e:
-                self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
+                self.log.error(_("Error importing plugin: [%(type)s] %(name)s (v%(version).2f) | %(errmsg)s")
+                               % {'name': name, 'type': type, 'version': plugins[name]['version'], "errmsg": str(e)})
                 if self.core.debug:
                     print_exc()
 
             else:
-                self.log.debug(_("Loaded module %(name)s (v%(version).2f)") % {'name': name, 'version': plugins[name]['version']})
+                plugins[name]['module'] = module  #: cache import, maybe unneeded
+
+                self.log.debug(_("Loaded plugin: [%(type)s] %(name)s (v%(version).2f)")
+                               % {'name': name, 'type': type, 'version': plugins[name]['version']})
                 return module
 
 
@@ -271,7 +272,6 @@ class PluginManager:
         if module:
             return getattr(module, name)
         else:
-            self.log.error(_("%s class %s not loaded") % (type.capitalize(), name))
             return None
 
 
@@ -351,7 +351,11 @@ class PluginManager:
 
             #index creation
             self.plugins[type] = self.parse(type)
-            setattr(self, "%sPlugins" % type, self.plugins[type])
+
+            if type is "accounts":  #@TODO: Remove this check in 0.4.10
+                self.accountPlugins = self.plugins[type]
+            else:
+                setattr(self, "%sPlugins" % type, self.plugins[type])
 
         if "accounts" in as_dict:  #: accounts needs to be reloaded
             self.core.accountManager.initPlugins()

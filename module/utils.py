@@ -38,7 +38,7 @@ def save_path(name):
     if os.name == 'nt':
         return remove_chars(name, '/?%*|"<>')
     else:
-        return remove_chars(name, '/\\"')
+        return remove_chars(name, '\\"')
 
 
 def save_join(*args):

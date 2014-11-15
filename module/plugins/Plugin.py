@@ -286,6 +286,12 @@ class Plugin(Base):
         return True, 10
 
 
+    def setReconnect(self, reconnect):
+        reconnect = bool(reconnect)
+        self.logDebug("Set wantReconnect to: %s (previous: %s)" % (reconnect, self.wantReconnect))
+        self.wantReconnect = reconnect
+
+
     def setWait(self, seconds, reconnect=None):
         """Set a specific wait time later used with `wait`
 
@@ -295,35 +301,43 @@ class Plugin(Base):
         wait_time  = int(seconds) + 1
         wait_until = time() + wait_time
 
-        self.logDebug("Set waitUntil to: %f (previous: %f)" % (wait_until, self.self.pyfile.waitUntil),
+        self.logDebug("Set waitUntil to: %f (previous: %f)" % (wait_until, self.pyfile.waitUntil),
                       "Wait: %d seconds" % wait_time)
 
         self.pyfile.waitUntil = wait_until
 
         if reconnect is not None:
-            self.logDebug("Set wantReconnect to: %s (previous: %s)" % (reconnect, self.wantReconnect))
-            self.wantReconnect = reconnect
+            self.setReconnect(reconnect)
 
 
-    def wait(self, seconds=0, reconnect=None):
+    def wait(self, seconds=None, reconnect=None):
         """ waits the time previously set """
 
         pyfile = self.pyfile
 
-        self.setWait(seconds, reconnect)
+        if seconds is not None:
+            self.setWait(seconds)
+
+        if reconnect is not None:
+            self.setReconnect(reconnect)
 
         self.waiting = True
 
         status = pyfile.status
         pyfile.setStatus("waiting")
 
-        self.logDebug("WAIT: %d seconds" % wait_time,
-                      "WAITUNTIL: %f" % pyfile.waitUntil,
-                      "RECONNECT: %s" % self.wantReconnect)
+        self.logInfo(_("Wait: %d seconds") % pyfile.waitUntil - time(),
+                     _("Reconnect: %s")    % self.wantReconnect)
 
-        if not account:
+        if self.account:
             self.logDebug("Ignore reconnection due account logged")
 
+            while pyfile.waitUntil > time():
+                if pyfile.abort:
+                    self.abort()
+
+                sleep(1)
+        else:
             while pyfile.waitUntil > time():
                 self.thread.m.reconnecting.wait(2)
 
@@ -334,10 +348,8 @@ class Plugin(Base):
                     self.waiting = False
                     self.wantReconnect = False
                     raise Reconnect
-        else:
-            while pyfile.waitUntil > time():
-                if pyfile.abort:
-                    self.abort()
+
+                sleep(1)
 
         self.waiting = False
 
@@ -351,7 +363,9 @@ class Plugin(Base):
 
     def abort(self, reason=""):
         """ abort and give reason """
-        raise Abort
+        if reason:
+            self.pyfile.error = str(reason)
+        raise Abort  #@TODO: Use raise Abort(reason) in 0.4.10
 
 
     def error(self, reason="", type=""):
@@ -365,14 +379,18 @@ class Plugin(Base):
         raise Fail(msg)
 
 
-    def offline(self):
+    def offline(self, reason=""):
         """ fail and indicate file is offline """
-        raise Fail("offline")
+        if reason:
+            self.pyfile.error = str(reason)
+        raise Fail("offline")  #@TODO: Use raise Fail("offline", reason) in 0.4.10
 
 
-    def tempOffline(self):
+    def tempOffline(self, reason=""):
         """ fail and indicates file ist temporary offline, the core may take consequences """
-        raise Fail("temp. offline")
+        if reason:
+            self.pyfile.error = str(reason)
+        raise Fail("temp. offline")  #@TODO: Use raise Fail("temp. offline", reason) in 0.4.10
 
 
     def retry(self, max_tries=5, wait_time=1, reason=""):
@@ -508,14 +526,16 @@ class Plugin(Base):
             from inspect import currentframe
 
             frame = currentframe()
-            if not exists(join("tmp", self.__name__)):
-                makedirs(join("tmp", self.__name__))
-
             framefile = save_join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             try:
+                if not exists(join("tmp", self.__name__)):
+                    makedirs(join("tmp", self.__name__))
+
                 with open(framefile, "wb") as f:
                     del frame  #: delete the frame or it wont be cleaned
-                    f.write(fs_encode(res))
+                    if decode:
+                        res = res.encode('utf-8')
+                    f.write(res)
             except IOError, e:
                 self.logError(e)
 
@@ -577,16 +597,16 @@ class Plugin(Base):
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
-            makedirs(location, int(self.core.config['permission']['folder'], 8))
+            try:
+                makedirs(location, int(self.core.config['permission']['folder'], 8))
 
-            if self.core.config['permission']['change_dl'] and os.name != "nt":
-                try:
+                if self.core.config['permission']['change_dl'] and os.name != "nt":
                     uid = getpwnam(self.config['permission']['user'])[2]
                     gid = getgrnam(self.config['permission']['group'])[2]
-
                     chown(location, uid, gid)
-                except Exception, e:
-                    self.logWarning(_("Setting User and Group failed: ") + str(e))
+
+            except Exception, e:
+                self.fail(e)
 
         # convert back to unicode
         location = fs_decode(location)
@@ -600,28 +620,33 @@ class Plugin(Base):
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,
                                             chunks=self.getChunkCount(), resume=self.resumeDownload,
                                             progressNotify=self.pyfile.setProgress, disposition=disposition)
-            newname = urlparse(html_unescape(newname)).path.split("/")[-1]
         finally:
             self.pyfile.size = self.req.size
 
-        if disposition and newname and newname != name: #triple check, just to be sure
-            self.logInfo(_("%(name)s saved as %(newname)s") % {"name": name, "newname": newname})
-            self.pyfile.name = newname
-            filename = join(location, newname)
+        if newname:
+            newname = urlparse(newname).path.split("/")[-1]
+
+            if disposition and newname != name:
+                self.logInfo(_("%(name)s saved as %(newname)s") % {"name": name, "newname": newname})
+                self.pyfile.name = newname
+                filename = join(location, newname)
 
         fs_filename = fs_encode(filename)
 
         if self.core.config['permission']['change_file']:
-            chmod(fs_filename, int(self.core.config['permission']['file'], 8))
+            try:
+                chmod(fs_filename, int(self.core.config['permission']['file'], 8))
+            except Exception, e:
+                self.logWarning(_("Setting file mode failed"), e)
 
         if self.core.config['permission']['change_dl'] and os.name != "nt":
             try:
                 uid = getpwnam(self.config['permission']['user'])[2]
                 gid = getgrnam(self.config['permission']['group'])[2]
-
                 chown(fs_filename, uid, gid)
+
             except Exception, e:
-                self.logWarning(_("Setting User and Group failed: ") + str(e))
+                self.logWarning(_("Setting User and Group failed"), e)
 
         self.lastDownload = filename
         return self.lastDownload
