@@ -45,7 +45,6 @@ ssl.key
 *.mo
 *.so
 *.py[cod]
-!/pyload/plugins/container/DLC_*.py[cod]
 
 # Installer files
 .installed.cfg
@@ -81,5 +80,4 @@ eggs
 *.rej
 _build/
 module/
-DLC_*.py
 paver-minilib.zip
