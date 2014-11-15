@@ -170,10 +170,9 @@ def create_getInfo(plugin):
     def getInfo(urls):
         for url in urls:
             if hasattr(plugin, "COOKIES") and isinstance(plugin.COOKIES, list):
-                cj = CookieJar(plugin.__name__)
-                set_cookies(cj, plugin.COOKIES)
+                set_cookies(plugin.req.cj, plugin.COOKIES)
             else:
-                cj = None
+                plugin.req.cj = None
 
             if hasattr(plugin, "URL_REPLACEMENTS"):
                 url = replace_patterns(url, plugin.URL_REPLACEMENTS)
@@ -182,11 +181,11 @@ def create_getInfo(plugin):
                 url = replace_patterns(url, plugin.FILE_URL_REPLACEMENTS)
 
             if hasattr(plugin, "TEXT_ENCODING"):
-                html = getURL(url, cookies=bool(cj), decode=not plugin.TEXT_ENCODING)
+                html = plugin.load(url, decode=not plugin.TEXT_ENCODING, cookies=bool(plugin.COOKIES))
                 if isinstance(plugin.TEXT_ENCODING, basestring):
                     html = unicode(html, plugin.TEXT_ENCODING)
             else:
-                html = getURL(url, cookies=bool(cj), decode=True)
+                html = plugin.load(url, decode=True, cookies=bool(plugin.COOKIES))
 
             yield parseFileInfo(plugin, url, html)
 
@@ -200,7 +199,7 @@ def timestamp():
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
 
     __pattern__ = r'^unmatchable$'
 
