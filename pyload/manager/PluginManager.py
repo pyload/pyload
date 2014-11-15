@@ -15,7 +15,7 @@ from SafeEval import const_eval as literal_eval
 class PluginManager:
     ROOT = "pyload.plugins."
     USERROOT = "userplugins."
-    TYPES = ("account", "addon", "base", "container", "crypter", "hook", "hoster", "internal", "ocr")
+    TYPES = ("account", "addon", "container", "crypter", "hook", "hoster", "internal", "ocr")
 
     PATTERN = re.compile(r'__pattern__\s*=\s*u?r("|\')([^"\']+)')
     VERSION = re.compile(r'__version__\s*=\s*("|\')([\d.]+)')
@@ -41,13 +41,11 @@ class PluginManager:
 
         sys.path.append(abspath(""))
 
-        #@NOTE: In 0.4.10 directory "accounts" changes to "account" and "hooks" changes to "addon"
-        self.plugins['accounts'] = self.accountPlugins = self.parse("accounts")
-        self.plugins['hooks']    = self.hookPlugins    = self.parse("hooks")
-
-        for type in set(self.TYPES) - set(('accounts', 'hooks')):
+        for type in set(self.TYPES):
             self.plugins[type] = self.parse(type)
             setattr(self, "%sPlugins" % type, self.plugins[type])
+
+        self.plugins['addon'] = self.addonPlugins.extend(self.hookPlugins)
 
         self.log.debug("Created index of plugins")
 
@@ -155,14 +153,14 @@ class PluginManager:
                         else:
                             config = [list(config)]
 
-                        if folder not in ("accounts", "internal") and not [True for item in config if item[0] == "activated"]:
-                            config.insert(0, ["activated", "bool", "Activated", False if folder == "addon" else True])
+                        if folder not in ("account", "internal") and not [True for item in config if item[0] == "activated"]:
+                            config.insert(0, ["activated", "bool", "Activated", False if folder in ("addon", "hook") else True])
 
                         self.config.addPluginConfig(name, config, desc)
                     except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
 
-                elif folder == "addon": #force config creation
+                elif folder in ("addon", "hook"): #force config creation
                     desc = self.DESC.findall(content)
                     desc = desc[0][1] if desc else ""
                     config = (["activated", "bool", "Activated", False],)
@@ -338,28 +336,25 @@ class PluginManager:
 
         as_dict = {}
         for t,n in type_plugins:
-            if t in ("base", "addon", "internal"):  #: do not reload them because would cause to much side effects
-                continue
-            elif t in as_dict:
+            if t in as_dict:
                 as_dict[t].append(n)
             else:
                 as_dict[t] = [n]
 
         for type in as_dict.iterkeys():
-            # we do not reload hooks or internals, would cause to much side effects
-            if type in ("addon", "internal"):
-                flag = False
+            if type in ("addon", "internal"):   #: do not reload them because would cause to much side effects
+                self.log.debug("Skipping reload for plugin: [%(type)s] %(name)s" % {'name': plugin, 'type': type})
                 continue
 
             for plugin in as_dict[type]:
                 if plugin in self.plugins[type] and "module" in self.plugins[type][plugin]:
-                    self.log.debug("Reloading plugin: [%(type)s] %(name)s" % {'name': plugin, 'type': type})
+                    self.log.debug(_("Reloading plugin: [%(type)s] %(name)s") % {'name': plugin, 'type': type})
 
                     try:
                         reload(self.plugins[type][plugin]['module'])
 
                     except Exception, e:
-                        self.log.error("Error when reloading plugin: [%(type)s] %(name)s" % {'name': plugin, 'type': type}, e)
+                        self.log.error(_("Error when reloading plugin: [%(type)s] %(name)s") % {'name': plugin, 'type': type}, e)
                         continue
 
                     else:
@@ -367,18 +362,14 @@ class PluginManager:
 
             #index creation
             self.plugins[type] = self.parse(type)
+            setattr(self, "%sPlugins" % type, self.plugins[type])
 
-            if type is "accounts":  #@TODO: Remove this check in 0.4.10
-                self.accountPlugins = self.plugins[type]
-            else:
-                setattr(self, "%sPlugins" % type, self.plugins[type])
-
-
-        if "accounts" in as_dict:  #: accounts needs to be reloaded
+        if "account" in as_dict:  #: accounts needs to be reloaded
             self.core.accountManager.initPlugins()
             self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
 
         return reloaded  #: return a list of the plugins successfully reloaded
+
 
     def reloadPlugin(self, type_plugin):
         """ reload and reindex ONE plugin """
