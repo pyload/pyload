@@ -22,11 +22,13 @@ from os.path import join
 from time import time
 import re
 
+from urlparse import urlparse
+
 from PyFile import PyFile
 from common.packagetools import parseNames
 from network.RequestFactory import getURL
 from remote import activated
-from utils import compare_time, freeSpace, html_unescape, save_path
+from utils import freeSpace, compare_time, html_unescape, save_path
 
 if activated:
     try:
@@ -318,8 +320,8 @@ class Api(Iface):
         :return: package id of the new package
         """
         if self.core.config['general']['folder_per_package'] and not folder:
-            folder = save_path(name.replace("http://", "").replace(":", "").replace("/", "_").replace("\\", "_"))
-
+            folder = save_path(urlparse(html_unescape(name)).path.split("/")[-1])
+        
         pid = self.core.files.addPackage(name, folder, dest)
 
         self.core.files.addLinks(links, pid)
