@@ -19,7 +19,7 @@ class TurbobitNet(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.15"
 
-    __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)(?:\.html)?'
+    __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
 
     __description__ = """ Turbobit.net hoster plugin """
     __license__     = "GPLv3"
