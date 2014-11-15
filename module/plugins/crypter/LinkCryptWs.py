@@ -15,7 +15,7 @@ from module.utils import html_unescape
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
 
@@ -38,7 +38,7 @@ class LinkCryptWs(Crypter):
         self.preferred_sources = ['cnl', 'web', 'dlc', 'rsdf', 'ccf', ] #['cnl', 'rsdf', 'ccf', 'dlc', 'web']
 
 
-    def prepare():
+    def prepare(self):
         # Init
         self.package = pyfile.package()
         self.fileid = re.match(self.__pattern__, pyfile.url).group('ID')
@@ -46,7 +46,7 @@ class LinkCryptWs(Crypter):
         self.req.cj.setCookie(".linkcrypt.ws", "language", "en")
 
         # Request package
-        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko") #better chance to not get those key-captchas
+        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")  #: better chance to not get those key-captchas
         self.html = self.load(self.pyfile.url)
 
 
@@ -95,8 +95,6 @@ class LinkCryptWs(Crypter):
                 else:
                     package_found = True
                 break
-
-        package_links = set(package_links)
 
         # Pack
         if package_links:
