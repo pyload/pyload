@@ -17,9 +17,9 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class TurbobitNet(SimpleHoster):
     __name__    = "TurbobitNet"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.14"
 
-    __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)(?:\.html)?'
+    __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
 
     __description__ = """ Turbobit.net hoster plugin """
     __license__     = "GPLv3"
