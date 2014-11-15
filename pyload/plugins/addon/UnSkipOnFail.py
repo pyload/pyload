@@ -2,7 +2,7 @@
 
 from os.path import basename
 
-from pyload.datatypes.PyFile import PyFile
+from pyload.datatype.PyFile import PyFile
 from pyload.plugins.internal.Addon import Addon
 from pyload.utils import fs_encode
 

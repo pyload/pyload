@@ -22,8 +22,8 @@ from time import time
 
 from pyload.utils import formatSize, lock
 from pyload.manager.event.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
-from pyload.datatypes.PyPackage import PyPackage
-from pyload.datatypes.PyFile import PyFile
+from pyload.datatype.PyPackage import PyPackage
+from pyload.datatype.PyFile import PyFile
 from pyload.database import style, DatabaseBackend
 
 try:

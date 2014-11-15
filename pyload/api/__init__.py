@@ -23,7 +23,7 @@ import re
 
 from urlparse import urlparse
 
-from pyload.datatypes.PyFile import PyFile
+from pyload.datatype.PyFile import PyFile
 from pyload.utils.packagetools import parseNames
 from network.RequestFactory import getURL
 from remote import activated
