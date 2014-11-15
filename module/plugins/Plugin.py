@@ -326,7 +326,7 @@ class Plugin(Base):
         status = pyfile.status
         pyfile.setStatus("waiting")
 
-        self.logInfo(_("Wait: %d seconds") % pyfile.waitUntil - time(),
+        self.logInfo(_("Wait: %d seconds") % (pyfile.waitUntil - time()),
                      _("Reconnect: %s")    % self.wantReconnect)
 
         if self.account:
