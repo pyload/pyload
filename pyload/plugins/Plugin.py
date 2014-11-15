@@ -685,7 +685,7 @@ class Plugin(Base):
         #produces encoding errors, better log to other file in the future?
         #self.logDebug("Content: %s" % content)
         for name, rule in rules.iteritems():
-            if type(rule) in (str, unicode):
+            if isinstance(rule, basestring):
                 if rule in content:
                     if delete:
                         remove(lastDownload)

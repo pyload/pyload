@@ -284,7 +284,7 @@ class HTTPDownload:
                 self.updateProgress()
 
             if self.abort:
-                raise Abort()
+                raise Abort
 
             #sleep(0.003) #supress busy waiting - limits dl speed to (1 / x) * buffersize
             self.m.select(1)

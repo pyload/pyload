@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from urlparse import urlparse
+
 from pyload.plugins.Plugin import Plugin
-from pyload.utils import save_filename
+from pyload.utils import html_unescape, save_filename
 
 
 class Crypter(Plugin):
@@ -96,9 +98,7 @@ class Crypter(Plugin):
 
                 elif not folder_per_package or name != folder:
                     if not folder:
-                        folder = name.replace("http://", "").replace(":", "").replace("/", "_").replace("\\", "_")
-
-                    folder = save_filename(folder)  #@TODO: move to core code
+                        folder = urlparse(html_unescape(name)).path.split("/")[-1]
 
                     setFolder(folder)
                     self.logDebug("Set package %(name)s folder to: %(folder)s" % {"name": name, "folder": folder})

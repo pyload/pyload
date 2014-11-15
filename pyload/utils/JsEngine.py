@@ -214,7 +214,7 @@ class RhinoEngine(AbstractEngine):
     def eval(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
         args = ["java", "-cp", self.path, "org.mozilla.javascript.tools.shell.Main", "-e", script]
-        return self._eval(args).decode("utf8").encode("ISO-8859-1")
+        return self._eval(args).decode("utf-8").encode("ISO-8859-1")
 
 
 class JscEngine(AbstractEngine):

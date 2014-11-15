@@ -91,7 +91,7 @@ class XDCCRequest:
                 dccsock.close()
                 fh.close()
                 remove(filename)
-                raise Abort()
+                raise Abort
 
             self._keepAlive(irc, ircbuffer)
 
