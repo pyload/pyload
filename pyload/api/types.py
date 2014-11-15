@@ -163,7 +163,7 @@ class OnlineCheck(BaseObject):
 class OnlineStatus(BaseObject):
 	__slots__ = ['name', 'plugin', 'packagename', 'status', 'size']
 
-	def __init__(self, name=None, plugin=None, packagename=None, status=None, size=None):
+	def __init__(self, name=None, plugin=(None, None), packagename=None, status=None, size=None):
 		self.name = name
 		self.plugin = plugin
 		self.packagename = packagename

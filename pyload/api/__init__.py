@@ -36,9 +36,9 @@ if activated:
         BaseObject = TBase
     except ImportError:
         print "Thrift not imported"
-        from remote.socketbackend.ttypes import *
+        from pyload.api.types import *
 else:
-    from remote.socketbackend.ttypes import *
+    from pyload.api.types import *
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
