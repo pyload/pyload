@@ -25,7 +25,7 @@ class VimeoCom(SimpleHoster):
 
     URL_REPLACEMENTS = [(__pattern__, r'https://www.vimeo.com/\g<ID>')]
 
-    COOKIES = [(".vimeo.com", "language", "en")]
+    COOKIES = [("vimeo.com", "language", "en")]
 
 
     def setup(self):

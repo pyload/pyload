@@ -52,4 +52,4 @@ class RapidshareCom(Account):
             k, v = t.split("=")
             info[k] = v
         cj = self.getAccountCookies(user)
-        cj.setCookie(".rapidshare.com", "enc", info['cookie'])
+        cj.setCookie("rapidshare.com", "enc", info['cookie'])

@@ -29,7 +29,7 @@ class FastshareCz(SimpleHoster):
 
     URL_REPLACEMENTS = [("#.*", "")]
 
-    COOKIES = [(".fastshare.cz", "lang", "en")]
+    COOKIES = [("fastshare.cz", "lang", "en")]
 
     FREE_URL_PATTERN = r'action=(/free/.*?)>\s*<img src="([^"]*)"><br'
     PREMIUM_URL_PATTERN = r'(http://data\d+\.fastshare\.cz/download\.php\?id=\d+&)'

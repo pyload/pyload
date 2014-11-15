@@ -26,7 +26,7 @@ class UploadingCom(SimpleHoster):
     SIZE_PATTERN = r'size tip_container">(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
     OFFLINE_PATTERN = r'(Page|file) not found'
 
-    COOKIES = [(".uploading.com", "lang", "1"),
+    COOKIES = [("uploading.com", "lang", "1"),
                (".uploading.com", "language", "1"),
                (".uploading.com", "setlang", "en"),
                (".uploading.com", "_lang", "en")]

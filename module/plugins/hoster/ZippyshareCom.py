@@ -26,7 +26,7 @@ class ZippyshareCom(SimpleHoster):
 
     OFFLINE_PATTERN = r'>File does not exist on this server<'
 
-    COOKIES = [(".zippyshare.com", "ziplocale", "en")]
+    COOKIES = [("zippyshare.com", "ziplocale", "en")]
 
 
     def setup(self):

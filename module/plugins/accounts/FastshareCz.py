@@ -40,7 +40,7 @@ class FastshareCz(Account):
 
 
     def login(self, user, data, req):
-        req.cj.setCookie(".fastshare.cz", "lang", "en")
+        req.cj.setCookie("fastshare.cz", "lang", "en")
 
         req.load('http://www.fastshare.cz/login')  # Do not remove or it will not login
 

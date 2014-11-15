@@ -33,7 +33,7 @@ class SimplyPremiumCom(Account):
 
 
     def login(self, user, data, req):
-        req.cj.setCookie(".simply-premium.com", "lang", "EN")
+        req.cj.setCookie("simply-premium.com", "lang", "EN")
 
         if data['password'] == '' or data['password'] == '0':
             post_data = {"key": user}

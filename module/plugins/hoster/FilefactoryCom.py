@@ -39,7 +39,7 @@ class FilefactoryCom(SimpleHoster):
     WAIT_PATTERN = r'<div id="countdown_clock" data-delay="(\d+)">'
     PREMIUM_ONLY_PATTERN = r'>Premium Account Required'
 
-    COOKIES = [(".filefactory.com", "locale", "en_US.utf8")]
+    COOKIES = [("filefactory.com", "locale", "en_US.utf8")]
 
 
     def handleFree(self):
