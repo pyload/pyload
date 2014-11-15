@@ -26,9 +26,6 @@ class PluginManager:
     def __init__(self, core):
         self.core = core
 
-        self.config = core.config
-        self.log = core.log
-
         self.plugins = {}
         self.createIndex()
 
@@ -47,7 +44,7 @@ class PluginManager:
 
         self.plugins['addon'] = self.addonPlugins.extend(self.hookPlugins)
 
-        self.log.debug("Created index of plugins")
+        self.core.log.debug("Created index of plugins")
 
 
     def parse(self, folder, rootplugins={}):
@@ -71,7 +68,7 @@ class PluginManager:
                         f.close()
 
             except IOError, e:
-                self.logCritical(e)
+                self.core.log.critical(str(e))
                 return rootplugins
 
         else:
@@ -86,7 +83,7 @@ class PluginManager:
                         content = data.read()
 
                 except IOError, e:
-                    self.logError(e)
+                    self.core.log.error(str(e))
                     continue
 
                 if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):  #@TODO: Remove in 0.4.10
@@ -129,7 +126,7 @@ class PluginManager:
                     try:
                         regexp = re.compile(pattern)
                     except:
-                        self.log.error(_("%s has a invalid pattern") % name)
+                        self.core.log.error(_("%s has a invalid pattern") % name)
                         pattern = r'^unmatchable$'
                         regexp = re.compile(pattern)
 
@@ -156,9 +153,9 @@ class PluginManager:
                         if folder not in ("account", "internal") and not [True for item in config if item[0] == "activated"]:
                             config.insert(0, ["activated", "bool", "Activated", False if folder in ("addon", "hook") else True])
 
-                        self.config.addPluginConfig(name, config, desc)
+                        self.core.config.addPluginConfig(name, config, desc)
                     except:
-                        self.log.error("Invalid config in %s: %s" % (name, config))
+                        self.core.log.error("Invalid config in %s: %s" % (name, config))
 
                 elif folder in ("addon", "hook"): #force config creation
                     desc = self.DESC.findall(content)
@@ -166,9 +163,9 @@ class PluginManager:
                     config = (["activated", "bool", "Activated", False],)
 
                     try:
-                        self.config.addPluginConfig(name, config, desc)
+                        self.core.config.addPluginConfig(name, config, desc)
                     except:
-                        self.log.error("Invalid config in %s: %s" % (name, config))
+                        self.core.log.error("Invalid config in %s: %s" % (name, config))
 
         if not rootplugins and plugins:  #: Double check
             plugins.update(self.parse(folder, plugins))
@@ -195,7 +192,7 @@ class PluginManager:
                 try:
                     m = value['re'].match(url)
                 except KeyError:
-                    self.log.error("Plugin %s skipped due broken pattern" % name)
+                    self.core.log.error("Plugin %s skipped due broken pattern" % name)
                     m = None
 
                 if m:
@@ -222,7 +219,7 @@ class PluginManager:
         plugin, type = self.findPlugin(name)
 
         if not plugin:
-            self.log.warning("Plugin %s not found" % name)
+            self.core.log.warning("Plugin %s not found" % name)
             plugin = self.hosterPlugins['BasePlugin']
 
         if "new_module" in plugin and not original:
@@ -257,7 +254,7 @@ class PluginManager:
                                     plugins[name]['name'])
 
             except Exception, e:
-                self.log.error(_("Error importing plugin: [%(type)s] %(name)s (v%(version).2f) | %(errmsg)s")
+                self.core.log.error(_("Error importing plugin: [%(type)s] %(name)s (v%(version).2f) | %(errmsg)s")
                                % {'name': name, 'type': type, 'version': plugins[name]['version'], "errmsg": str(e)})
                 if self.core.debug:
                     print_exc()
@@ -265,7 +262,7 @@ class PluginManager:
             else:
                 plugins[name]['module'] = module  #: cache import, maybe unneeded
 
-                self.log.debug(_("Loaded plugin: [%(type)s] %(name)s (v%(version).2f)")
+                self.core.log.debug(_("Loaded plugin: [%(type)s] %(name)s (v%(version).2f)")
                                % {'name': name, 'type': type, 'version': plugins[name]['version']})
                 return module
 
@@ -315,7 +312,7 @@ class PluginManager:
 
             base, plugin = newname.rsplit(".", 1)
 
-            self.log.debug("Redirected import %s -> %s" % (name, newname))
+            self.core.log.debug("Redirected import %s -> %s" % (name, newname))
 
             module = __import__(newname, globals(), locals(), [plugin])
             #inject under new an old name
@@ -330,7 +327,7 @@ class PluginManager:
         if not type_plugins:
             return None
 
-        self.log.debug("Request reload of plugins: %s" % type_plugins)
+        self.core.log.debug("Request reload of plugins: %s" % type_plugins)
 
         reloaded = []
 
@@ -343,18 +340,18 @@ class PluginManager:
 
         for type in as_dict.iterkeys():
             if type in ("addon", "internal"):   #: do not reload them because would cause to much side effects
-                self.log.debug("Skipping reload for plugin: [%(type)s] %(name)s" % {'name': plugin, 'type': type})
+                self.core.log.debug("Skipping reload for plugin: [%(type)s] %(name)s" % {'name': plugin, 'type': type})
                 continue
 
             for plugin in as_dict[type]:
                 if plugin in self.plugins[type] and "module" in self.plugins[type][plugin]:
-                    self.log.debug(_("Reloading plugin: [%(type)s] %(name)s") % {'name': plugin, 'type': type})
+                    self.core.log.debug(_("Reloading plugin: [%(type)s] %(name)s") % {'name': plugin, 'type': type})
 
                     try:
                         reload(self.plugins[type][plugin]['module'])
 
                     except Exception, e:
-                        self.log.error(_("Error when reloading plugin: [%(type)s] %(name)s") % {'name': plugin, 'type': type}, e)
+                        self.core.log.error(_("Error when reloading plugin: [%(type)s] %(name)s") % {'name': plugin, 'type': type}, e)
                         continue
 
                     else:

@@ -43,7 +43,7 @@ class Container(Crypter):
         if self.pyfile.url.startswith("http"):
             self.pyfile.name = re.findall("([^\/=]+)", self.pyfile.url)[-1]
             content = self.load(self.pyfile.url)
-            self.pyfile.url = safe_join(self.config['general']['download_folder'], self.pyfile.name)
+            self.pyfile.url = safe_join(self.core.config['general']['download_folder'], self.pyfile.name)
             try:
                 with open(self.pyfile.url, "wb") as f:
                     f.write(content)

@@ -30,7 +30,7 @@ class Addon(Base):
 
     __config__ = []  #: [("name", "type", "desc", "default")]
 
-    __description__ = """Interface for addon"""
+    __description__ = """Base addon/hook plugin"""
     __license__     = "GPLv3"
     __authors__     = [("mkaay", "mkaay@mkaay.de"),
                        ("RaNaN", "RaNaN@pyload.org")]
@@ -113,7 +113,7 @@ class Addon(Base):
 
     def isActivated(self):
         """ checks if addon is activated"""
-        return self.config.getPlugin(self.__name__, "activated")
+        return self.core.config.getPlugin(self.__name__, "activated")
 
 
     #event methods - overwrite these if needed

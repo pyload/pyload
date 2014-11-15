@@ -62,12 +62,8 @@ class AddonManager:
     """
 
     def __init__(self, core):
-        self.core = core
-        self.config = self.core.config
-
         __builtin__.addonManager = self #needed to let addons register themself
 
-        self.log = self.core.log
         self.plugins = []
         self.pluginMap = {}
         self.methods = {} #dict of names and list of methods usable by rpc
@@ -75,7 +71,7 @@ class AddonManager:
         self.events = {} # contains events
 
         #registering callback for config event
-        self.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged", basestring)
+        self.core.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged", basestring)
 
         self.addEvent("pluginConfigChanged", self.manageAddon)
 
@@ -123,7 +119,7 @@ class AddonManager:
             try:
                 # hookClass = getattr(plugin, plugin.__name__)
 
-                if self.config.getPlugin(pluginname, "activated"):
+                if self.core.config.getPlugin(pluginname, "activated"):
                     pluginClass = self.core.pluginManager.loadClass("addon", pluginname)
                     if not pluginClass: continue
 
@@ -137,12 +133,12 @@ class AddonManager:
 
 
             except:
-                self.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
+                self.core.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
                 if self.core.debug:
                     traceback.print_exc()
 
-        self.log.info(_("Activated addons: %s") % ", ".join(sorted(active)))
-        self.log.info(_("Deactivated addons: %s") % ", ".join(sorted(deactive)))
+        self.core.log.info(_("Activated addons: %s") % ", ".join(sorted(active)))
+        self.core.log.info(_("Deactivated addons: %s") % ", ".join(sorted(deactive)))
 
         self.plugins = plugins
 
@@ -163,7 +159,7 @@ class AddonManager:
 
         if not pluginClass: return
 
-        self.log.debug("Plugin loaded: %s" % plugin)
+        self.core.log.debug("Plugin loaded: %s" % plugin)
 
         plugin = pluginClass(self.core, self)
         self.plugins.append(plugin)
@@ -182,12 +178,12 @@ class AddonManager:
         if not addon:
             return
 
-        self.log.debug("Plugin unloaded: %s" % plugin)
+        self.core.log.debug("Plugin unloaded: %s" % plugin)
 
         addon.unload()
 
         #remove periodic call
-        self.log.debug("Removed callback %s" % self.core.scheduler.removeJob(addon.cb))
+        self.core.log.debug("Removed callback %s" % self.core.scheduler.removeJob(addon.cb))
         self.plugins.remove(addon)
         del self.pluginMap[addon.__name__]
 
@@ -300,7 +296,7 @@ class AddonManager:
                 try:
                     f(*args)
                 except Exception, e:
-                    self.log.warning("Error calling event handler %s: %s, %s, %s"
+                    self.core.log.warning("Error calling event handler %s: %s, %s, %s"
                     % (event, f, args, str(e)))
                     if self.core.debug:
                         traceback.print_exc()

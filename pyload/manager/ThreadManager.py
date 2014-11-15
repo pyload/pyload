@@ -40,7 +40,6 @@ class ThreadManager:
     def __init__(self, core):
         """Constructor"""
         self.core = core
-        self.log = core.log
 
         self.threads = []  #: thread list
         self.localThreads = []  #: addon+decrypter threads
@@ -133,7 +132,7 @@ class ThreadManager:
         try:
             self.tryReconnect()
         except Exception, e:
-            self.log.error(_("Reconnect Failed: %s") % str(e) )
+            self.core.log.error(_("Reconnect Failed: %s") % str(e) )
             self.reconnecting.clear()
             if self.core.debug:
                 print_exc()
@@ -142,7 +141,7 @@ class ThreadManager:
         try:
             self.assignJob()
         except Exception, e:
-            self.log.warning("Assign job error", e)
+            self.core.log.warning("Assign job error", e)
             if self.core.debug:
                 print_exc()
 
@@ -153,7 +152,7 @@ class ThreadManager:
         if (self.infoCache or self.infoResults) and self.timestamp < time():
             self.infoCache.clear()
             self.infoResults.clear()
-            self.log.debug("Cleared Result cache")
+            self.core.log.debug("Cleared Result cache")
 
     #--------------------------------------------------------------------------
     def tryReconnect(self):
@@ -172,13 +171,13 @@ class ThreadManager:
                 self.core.config['reconnect']['method'] = join(pypath, self.core.config['reconnect']['method'])
             else:
                 self.core.config["reconnect"]["activated"] = False
-                self.log.warning(_("Reconnect script not found!"))
+                self.core.log.warning(_("Reconnect script not found!"))
                 return
 
         self.reconnecting.set()
 
         #Do reconnect
-        self.log.info(_("Starting reconnect"))
+        self.core.log.info(_("Starting reconnect"))
 
         while [x.active.plugin.waiting for x in self.threads if x.active].count(True) != 0:
             sleep(0.25)
@@ -187,12 +186,12 @@ class ThreadManager:
 
         self.core.addonManager.beforeReconnecting(ip)
 
-        self.log.debug("Old IP: %s" % ip)
+        self.core.log.debug("Old IP: %s" % ip)
 
         try:
             reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
         except:
-            self.log.warning(_("Failed executing reconnect script!"))
+            self.core.log.warning(_("Failed executing reconnect script!"))
             self.core.config["reconnect"]["activated"] = False
             self.reconnecting.clear()
             if self.core.debug:
@@ -204,7 +203,7 @@ class ThreadManager:
         ip = self.getIP()
         self.core.addonManager.afterReconnecting(ip)
 
-        self.log.info(_("Reconnected, new IP: %s") % ip)
+        self.core.log.info(_("Reconnected, new IP: %s") % ip)
 
         self.reconnecting.clear()
 
@@ -247,7 +246,7 @@ class ThreadManager:
         pycurl.global_cleanup()
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
         self.downloaded = 0
-        self.log.debug("Cleaned up pycurl")
+        self.core.log.debug("Cleaned up pycurl")
         return True
 
     #--------------------------------------------------------------------------
@@ -274,7 +273,7 @@ class ThreadManager:
             try:
                 job.initPlugin()
             except Exception, e:
-                self.log.critical(str(e))
+                self.core.log.critical(str(e))
                 print_exc()
                 job.setStatus("failed")
                 job.error = str(e)
@@ -284,7 +283,7 @@ class ThreadManager:
             if job.plugin.__type__ == "hoster":
                 spaceLeft = freeSpace(self.core.config["general"]["download_folder"]) / 1024 / 1024
                 if spaceLeft < self.core.config["general"]["min_free_space"]:
-                    self.log.warning(_("Not enough space left on device"))
+                    self.core.log.warning(_("Not enough space left on device"))
                     self.pause = True
 
                 if free and not self.pause:

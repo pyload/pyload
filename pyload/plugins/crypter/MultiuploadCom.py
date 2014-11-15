@@ -10,6 +10,6 @@ class MultiuploadCom(DeadCrypter):
 
     __pattern__ = r'http://(?:www\.)?multiupload\.(com|nl)/\w+'
 
-    __description__ = """ MultiUpload.com decrypter plugin """
+    __description__ = """MultiUpload.com decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]

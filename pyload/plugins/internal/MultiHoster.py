@@ -11,7 +11,7 @@ class MultiHoster(Addon):
     __type__    = "addon"
     __version__ = "0.20"
 
-    __description__ = """Generic MultiHoster plugin"""
+    __description__ = """Base multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 

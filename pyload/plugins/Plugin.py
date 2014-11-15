@@ -54,15 +54,11 @@ class Base(object):
     def __init__(self, core):
         #: Core instance
         self.core = core
-        #: logging instance
-        self.log = core.log
-        #: core config
-        self.config = core.config
 
 
     def _log(self, type, args):
         msg = " | ".join([str(a).strip() for a in args if a])
-        logger = getattr(self.log, type)
+        logger = getattr(self.core.log, type)
         logger("%s: %s" % (self.__name__, msg or _("%s MARK" % type.upper())))
 
 
@@ -228,21 +224,16 @@ class Plugin(Base):
         #: captcha task
         self.cTask = None
 
-        self.html = None  #@TODO: Move to hoster class
+        self.html = None  #@TODO: Move to hoster class in 0.4.10
         self.retries = 0
-
-        #: some plugins store html code here
-
-        #: quick caller for API
-        # self.api = self.core.api
 
         self.init()
 
 
     def getChunkCount(self):
         if self.chunkLimit <= 0:
-            return self.config['download']['chunks']
-        return min(self.config['download']['chunks'], self.chunkLimit)
+            return self.core.config['download']['chunks']
+        return min(self.core.config['download']['chunks'], self.chunkLimit)
 
 
     def __call__(self):
@@ -607,7 +598,7 @@ class Plugin(Base):
 
         self.pyfile.setStatus("downloading")
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.core.config['general']['download_folder']
 
         location = safe_join(download_folder, self.pyfile.package().folder)
 
@@ -616,8 +607,8 @@ class Plugin(Base):
                 makedirs(location, int(self.core.config['permission']['folder'], 8))
 
                 if self.core.config['permission']['change_dl'] and os.name != "nt":
-                    uid = getpwnam(self.config['permission']['user'])[2]
-                    gid = getgrnam(self.config['permission']['group'])[2]
+                    uid = getpwnam(self.core.config['permission']['user'])[2]
+                    gid = getgrnam(self.core.config['permission']['group'])[2]
                     chown(location, uid, gid)
 
             except Exception, e:
@@ -656,8 +647,8 @@ class Plugin(Base):
 
         if self.core.config['permission']['change_dl'] and os.name != "nt":
             try:
-                uid = getpwnam(self.config['permission']['user'])[2]
-                gid = getgrnam(self.config['permission']['group'])[2]
+                uid = getpwnam(self.core.config['permission']['user'])[2]
+                gid = getgrnam(self.core.config['permission']['group'])[2]
                 chown(fs_filename, uid, gid)
 
             except Exception, e:
@@ -732,10 +723,10 @@ class Plugin(Base):
                 5, 7) and starting: #a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.core.config['general']['download_folder']
         location = safe_join(download_folder, pack.folder, self.pyfile.name)
 
-        if starting and self.config['download']['skip_existing'] and exists(location):
+        if starting and self.core.config['download']['skip_existing'] and exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
                 raise SkipDownload("File exists")

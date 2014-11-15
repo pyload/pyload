@@ -79,7 +79,7 @@ class AccountManager:
                     return
 
         except IOError, e:
-            self.logError(e)
+            self.core.log.error(str(e))
             return
 
         plugin = ""
@@ -129,7 +129,7 @@ class AccountManager:
             chmod(f.name, 0600)
 
         except Exception, e:
-            self.logError(e)
+            self.core.log.error(str(e))
 
 
     #----------------------------------------------------------------------

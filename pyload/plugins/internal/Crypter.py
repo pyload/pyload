@@ -63,7 +63,7 @@ class Crypter(Plugin):
         package_password = self.pyfile.package().password
         package_queue = self.pyfile.package().queue
 
-        folder_per_package = self.config['general']['folder_per_package']
+        folder_per_package = self.core.config['general']['folder_per_package']
         try:
             use_subfolder = self.getConfig('use_subfolder')
         except:

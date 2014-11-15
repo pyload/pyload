@@ -18,7 +18,7 @@ class OCR(object):
     __type__    = "ocr"
     __version__ = "0.01"
 
-    __description__ = """OCR base plugin"""
+    __description__ = """Base OCR plugin"""
     __license__     = "GPLv3"
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
