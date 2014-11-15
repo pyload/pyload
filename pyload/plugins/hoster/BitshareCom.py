@@ -24,7 +24,7 @@ class BitshareCom(SimpleHoster):
     INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)</h1>'
     OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
 
-    COOKIES = [(".bitshare.com", "language_selection", "EN")]
+    COOKIES = [("bitshare.com", "language_selection", "EN")]
 
     AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
     TRAFFIC_USED_UP = r'Your Traffic is used up for today. Upgrade to premium to continue!'

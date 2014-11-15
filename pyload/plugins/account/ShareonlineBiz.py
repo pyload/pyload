@@ -30,9 +30,9 @@ class ShareonlineBiz(Account):
         self.logDebug(info)
 
         if "dl" in info and info['dl'].lower() != "not_available":
-            req.cj.setCookie(".share-online.biz", "dl", info['dl'])
+            req.cj.setCookie("share-online.biz", "dl", info['dl'])
         if "a" in info and info['a'].lower() != "not_available":
-            req.cj.setCookie(".share-online.biz", "a", info['a'])
+            req.cj.setCookie("share-online.biz", "a", info['a'])
 
         return {"validuntil": int(info['expire_date']) if "expire_date" in info else -1,
                 "trafficleft": -1,

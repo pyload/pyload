@@ -28,7 +28,7 @@ class OneFichierCom(SimpleHoster):
 
     OFFLINE_PATTERN = r'File not found !\s*<'
 
-    COOKIES = [(".1fichier.com", "LG", "en")]
+    COOKIES = [("1fichier.com", "LG", "en")]
 
     WAIT_PATTERN = r'>You must wait (\d+)'
 

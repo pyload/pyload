@@ -23,7 +23,7 @@ class VeohCom(SimpleHoster):
 
     URL_REPLACEMENTS = [(__pattern__, r'http://www.veoh.com/watch/\g<ID>')]
 
-    COOKIES = [(".veoh.com", "lassieLocale", "en")]
+    COOKIES = [("veoh.com", "lassieLocale", "en")]
 
 
     def setup(self):

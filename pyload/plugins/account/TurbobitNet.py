@@ -31,7 +31,7 @@ class TurbobitNet(Account):
 
 
     def login(self, user, data, req):
-        req.cj.setCookie(".turbobit.net", "user_lang", "en")
+        req.cj.setCookie("turbobit.net", "user_lang", "en")
 
         html = req.load("http://turbobit.net/user/login", post={
             "user[login]": user,

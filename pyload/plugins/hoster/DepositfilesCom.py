@@ -30,7 +30,7 @@ class DepositfilesCom(SimpleHoster):
                               (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
     URL_REPLACEMENTS = [(__pattern__, "https://dfiles.eu/files/\g<ID>")]
 
-    COOKIES = [(".dfiles.eu", "lang_current", "en")]
+    COOKIES = [("dfiles.eu", "lang_current", "en")]
 
     FREE_LINK_PATTERN = r'<form id="downloader_file_form" action="(http://.+?\.(dfiles\.eu|depositfiles\.com)/.+?)" method="post"'
     PREMIUM_LINK_PATTERN = r'class="repeat"><a href="(.+?)"'

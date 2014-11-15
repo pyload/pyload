@@ -27,7 +27,7 @@ class LinkSaveIn(SimpleCrypter):
     __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
-    COOKIES = [(".linksave.in", "Linksave_Language", "english")]
+    COOKIES = [("linksave.in", "Linksave_Language", "english")]
 
     # Constants
     _JK_KEY_ = "jk"

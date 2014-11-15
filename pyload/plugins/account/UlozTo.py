@@ -26,7 +26,7 @@ class UlozTo(Account):
 
         html = req.load("http://www.ulozto.net/", decode=True)
 
-        req.cj.setCookie(".ulozto.net", "ULOSESSID", self.phpsessid)
+        req.cj.setCookie("ulozto.net", "ULOSESSID", self.phpsessid)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         trafficleft = int(float(m.group(1).replace(' ', '').replace(',', '.')) * 1000 * 1.048) if m else 0

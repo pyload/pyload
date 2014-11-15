@@ -29,7 +29,7 @@ class TurbobitNet(SimpleHoster):
 
     URL_REPLACEMENTS = [(__pattern__, "http://turbobit.net/\g<ID>.html")]
 
-    COOKIES = [(".turbobit.net", "user_lang", "en")]
+    COOKIES = [("turbobit.net", "user_lang", "en")]
 
     NAME_PATTERN = r'id="file-title">(?P<N>.+?)<'
     SIZE_PATTERN = r'class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'

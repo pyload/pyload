@@ -22,7 +22,7 @@ class WrzucTo(SimpleHoster):
     NAME_PATTERN = r'id="file_info">\s*<strong>(?P<N>.*?)</strong>'
     SIZE_PATTERN = r'class="info">\s*<tr>\s*<td>(?P<S>.*?)</td>'
 
-    COOKIES = [(".wrzuc.to", "language", "en")]
+    COOKIES = [("wrzuc.to", "language", "en")]
 
 
     def setup(self):

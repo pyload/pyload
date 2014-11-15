@@ -43,7 +43,7 @@ class LinkCryptWs(Crypter):
         self.package = pyfile.package()
         self.fileid = re.match(self.__pattern__, pyfile.url).group('ID')
 
-        self.req.cj.setCookie(".linkcrypt.ws", "language", "en")
+        self.req.cj.setCookie("linkcrypt.ws", "language", "en")
 
         # Request package
         self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")  #: better chance to not get those key-captchas
