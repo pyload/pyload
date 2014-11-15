@@ -22,6 +22,7 @@ class UptoboxCom(XFSHoster):
 
     LINK_PATTERN = r'"(https?://\w+\.uptobox\.com/d/.*?)"'
 
+    ERROR_PATTERN = r'>(You have to wait.+till next download.)<'
 
     def setup(self):
         self.multiDL = True
