@@ -25,7 +25,7 @@ from threading import RLock
 
 from types import MethodType
 
-from pyload.manager.thread.PluginThread import AddonThread
+from pyload.manager.thread.AddonThread import AddonThread
 from pyload.manager.PluginManager import literal_eval
 from utils import lock
 

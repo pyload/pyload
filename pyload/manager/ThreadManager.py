@@ -27,7 +27,7 @@ from random import choice
 
 import pycurl
 
-from pyload.manager.thread import PluginThread
+from pyload.manager.thread import DecrypterThread, DownloadThread, InfoThread
 from pyload.datatype.PyFile import PyFile
 from pyload.network.RequestFactory import getURL
 from pyload.utils import freeSpace, lock
@@ -74,7 +74,7 @@ class ThreadManager:
     def createThread(self):
         """create a download thread"""
 
-        thread = PluginThread.DownloadThread(self)
+        thread = DownloadThread(self)
         self.threads.append(thread)
 
     def createInfoThread(self, data, pid):
@@ -84,7 +84,7 @@ class ThreadManager:
         """
         self.timestamp = time() + 5 * 60
 
-        PluginThread.InfoThread(self, data, pid)
+        InfoThread(self, data, pid)
 
     @lock
     def createResultThread(self, data, add=False):
@@ -94,7 +94,7 @@ class ThreadManager:
         rid = self.resultIDs
         self.resultIDs += 1
 
-        PluginThread.InfoThread(self, data, rid=rid, add=add)
+        InfoThread(self, data, rid=rid, add=add)
 
         return rid
 
@@ -302,11 +302,11 @@ class ThreadManager:
                     job = self.core.files.getDecryptJob()
                     if job:
                         job.initPlugin()
-                        thread = PluginThread.DecrypterThread(self, job)
+                        thread = DecrypterThread(self, job)
 
 
             else:
-                thread = PluginThread.DecrypterThread(self, job)
+                thread = DecrypterThread(self, job)
 
     def getLimit(self, thread):
         limit = thread.active.plugin.account.getAccountData(thread.active.plugin.user)["options"].get("limitDL", ["0"])[0]
