@@ -39,8 +39,8 @@ class PyPackage():
 
     @property
     def folder(self):
-        return self._folder # Modification returns self._folder without stripping characters via save_path
-        
+        return self._folder
+
     def toDict(self):
         """ Returns a dictionary representation of the data.
 
