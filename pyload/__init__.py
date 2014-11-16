@@ -12,7 +12,7 @@ __status__ = {1: "Planning",
               7: "Inactive"}[__status_code__]  #: PyPI Development Status Classifiers
 
 __version_info__ = (0, 4, 10)
-__version__ = '.'.join(map(str(v), __version_info__))
+__version__ = '.'.join(map(str, __version_info__))
 
 __author_name__ = "pyLoad Team"
 __author_mail__ = "admin@pyload.org"
