@@ -14,7 +14,7 @@ from pyload.utils import safe_join
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "addon"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
@@ -197,7 +197,7 @@ class UpdateManager(Addon):
 
             plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
 
-            oldver = float(plugins[name]['v']) if name in plugins else None
+            oldver = float(plugins[name]['version']) if name in plugins else None
             newver = float(version)
 
             if not oldver:
