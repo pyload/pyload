@@ -112,7 +112,7 @@ class UpdateManager(Hook):
 
     def server_request(self):
         try:
-            return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
+            return getURL(self.SERVER_URL, get={'version': self.core.api.getServerVersion()}).splitlines()
         except:
             self.logWarning(_("Unable to contact server to get updates"))
 
@@ -203,7 +203,7 @@ class UpdateManager(Hook):
 
             plugins = getattr(self.core.pluginManager, "%sPlugins" % type)
 
-            oldver = float(plugins[name]['v']) if name in plugins else None
+            oldver = float(plugins[name]['version']) if name in plugins else None
             newver = float(version)
 
             if not oldver:
