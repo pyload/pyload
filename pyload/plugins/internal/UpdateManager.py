@@ -106,8 +106,10 @@ class UpdateManager(Addon):
 
 
     def periodical(self):
-        if not self.info['pyload'] and not (self.getConfig("nodebugupdate") and self.core.debug):
-            self.updateThread()
+        if self.info['pyload'] or self.getConfig("nodebugupdate") and self.core.debug:
+            return
+
+        self.updateThread()
 
 
     def server_request(self):
