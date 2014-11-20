@@ -1,41 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import socket
-import thread
+from socket import socket, error
+from threading import Thread
 
 from pyload.plugins.internal.Addon import Addon
-
-
-def proxy(self, *settings):
-    thread.start_new_thread(server, (self,) + settings)
-    lock = thread.allocate_lock()
-    lock.acquire()
-    lock.acquire()
-
-
-def server(self, *settings):
-    try:
-        dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        dock_socket.bind((settings[0], settings[2]))
-        dock_socket.listen(5)
-        while True:
-            client_socket = dock_socket.accept()[0]
-            server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            server_socket.connect(("127.0.0.1", settings[1]))
-            thread.start_new_thread(forward, (client_socket, server_socket))
-            thread.start_new_thread(forward, (server_socket, client_socket))
-    except socket.error, e:
-        if hasattr(e, "errno"):
-            errno = e.errno
-        else:
-            errno = e.args[0]
-
-        if errno == 98:
-            self.logWarning(_("Click'N'Load: Port 9666 already in use"))
-            return
-        thread.start_new_thread(server, (self,) + settings)
-    except:
-        thread.start_new_thread(server, (self,) + settings)
 
 
 def forward(source, destination):
@@ -52,26 +20,52 @@ def forward(source, destination):
 class ClickAndLoad(Addon):
     __name__    = "ClickAndLoad"
     __type__    = "addon"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("extern", "bool", "Allow external link adding", False)]
+    __config__ = [("activated", "bool", "Activated"                 , True ),
+                  ("port"     , "int" , "Port"                      , 9666 ),
+                  ("extern"   , "bool", "Allow external link adding", False)]
 
     __description__ = """Click'N'Load hook plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.de"),
-                       ("mkaay", "mkaay@mkaay.de")]
+                       ("mkaay", "mkaay@mkaay.de"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def coreReady(self):
-        self.port = int(self.config['webinterface']['port'])
-        if self.config['webinterface']['activated']:
-            try:
-                if self.getConfig("extern"):
-                    ip = "0.0.0.0"
-                else:
-                    ip = "127.0.0.1"
+        self.interval = 300
 
-                thread.start_new_thread(proxy, (self, ip, self.port, 9666))
-            except:
-                self.logError(_("ClickAndLoad port already in use"))
+
+    def periodical(self):
+        webip   = "0.0.0.0" if self.getConfig("extern") else "127.0.0.1"
+        webport = self.config['webinterface']['port']
+        cnlport = self.getConfig("port"))
+
+        try:
+            s = socket()
+            s.bind((webip, cnlport))
+            s.listen(5)
+
+            client = s.accept()[0]
+            server = socket()
+
+            server.connect(("127.0.0.1", webport))
+
+        except error, e:
+            if hasattr(e, "errno"):
+                errno = e.errno
+            else:
+                errno = e.args[0]
+
+            if errno == 98:
+                self.logWarning(_("Port %d already in use") % cnlport)
+            else:
+                self.logDebug(e)
+
+        else:
+            t = Thread(target=forward, args=[client, server])
+            t.setDaemon(True)
+            t.start()
+            self.interval = -1
+
