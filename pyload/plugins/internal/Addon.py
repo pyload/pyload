@@ -37,14 +37,11 @@ class Addon(Base):
 
 
     #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
-    event_map = None
+    event_map = {}
 
     # Alternative to event_map
     #: List of events the plugin can handle, name the functions exactly like eventname.
-    event_list = None  # dont make duplicate entries in event_map
-
-    #: periodic call interval in secondc
-    interval = 60
+    event_list = []  #@NOTE: dont make duplicate entries in event_map
 
 
     def __init__(self, core, manager):
@@ -55,6 +52,7 @@ class Addon(Base):
 
         #: Callback of periodical job task, used by AddonManager
         self.cb = None
+        self.interval = -1  #: disabled
 
         #: `AddonManager`
         self.manager = manager
@@ -78,23 +76,28 @@ class Addon(Base):
             self.event_list = None
 
         self.setup()
+
         self.initPeriodical()
 
 
-    def initPeriodical(self):
-        if self.interval >=1:
-            self.cb = self.core.scheduler.addJob(0, self._periodical, threaded=False)
+    def initPeriodical(self, delay=0, threaded=False):
+        self.cb = self.core.scheduler.addJob(delay, self._periodical, args=[threaded], threaded=threaded)
 
-    def _periodical(self):
+
+    def _periodical(self, threaded):
+        if self.interval < 0:
+            self.cb = None
+            return
+
         try:
-            if self.isActivated():
-                self.periodical()
+            self.periodical()
+
         except Exception, e:
             self.logError(_("Error executing addon: %s") % e)
             if self.core.debug:
                 print_exc()
 
-        self.cb = self.core.scheduler.addJob(self.interval, self._periodical, threaded=False)
+        self.cb = self.core.scheduler.addJob(self.interval, self._periodical, threaded=threaded)
 
 
     def __repr__(self):
