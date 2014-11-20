@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = r'^unmatchable$'
 
@@ -41,7 +41,7 @@ class XFSHoster(SimpleHoster):
     OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
 
-    WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>'
+    WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>|id="countdown" value=".*?(\d+).*?"'
 
     OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     LINK_PATTERN     = None  #: final download url pattern
@@ -121,8 +121,6 @@ class XFSHoster(SimpleHoster):
                 break
 
             data = self.getPostParameters()
-
-            # sleep(10)
 
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
@@ -266,7 +264,7 @@ class XFSHoster(SimpleHoster):
 
             self.logDebug(inputs)
 
-            if 'op' in inputs and inputs['op'] in ("download2", "download3"):
+            if 'op' in inputs and inputs['op'] in ("download1", "download2", "download3"):
                 if "password" in inputs:
                     if self.passwords:
                         inputs['password'] = self.passwords.pop(0)
