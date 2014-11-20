@@ -5,7 +5,6 @@ from __future__ import with_statement
 import re
 
 from base64 import b64encode
-from thread import start_new_thread
 from time import sleep
 
 from pyload.network.HTTPRequest import BadHeader
@@ -19,8 +18,7 @@ class Captcha9kw(Hook):
     __type__    = "hook"
     __version__ = "0.24"
 
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("ssl", "bool", "Use HTTPS", True),
+    __config__ = [("ssl", "bool", "Use HTTPS", True),
                   ("force", "bool", "Force captcha resolving even if client is connected", True),
                   ("confirm", "bool", "Confirm Captcha (cost +6 credits)", False),
                   ("captchaperhour", "int", "Captcha per hour", "9999"),

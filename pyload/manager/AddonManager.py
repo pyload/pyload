@@ -20,8 +20,7 @@
 import __builtin__
 
 import traceback
-from thread import start_new_thread
-from threading import RLock
+from threading import RLock, Thread
 
 from types import MethodType
 
@@ -149,7 +148,6 @@ class AddonManager:
             self.deactivateAddon(plugin)
 
     def activateAddon(self, plugin):
-
         #check if already loaded
         for inst in self.plugins:
             if inst.__name__ == plugin:
@@ -166,10 +164,12 @@ class AddonManager:
         self.pluginMap[pluginClass.__name__] = plugin
 
         # call core Ready
-        start_new_thread(plugin.coreReady, tuple())
+        t = Thread(target=plugin.coreReady)
+        t.setDaemon(True)
+        t.start()
+
 
     def deactivateAddon(self, plugin):
-
         addon = None
         for inst in self.plugins:
             if inst.__name__ == plugin:
@@ -253,7 +253,7 @@ class AddonManager:
         self.dispatchEvent("afterReconnecting", ip)
 
     def startThread(self, function, *args, **kwargs):
-        t = AddonThread(self.core.threadManager, function, args, kwargs)
+        return AddonThread(self.core.threadManager, function, args, kwargs)
 
     def activePlugins(self):
         """ returns all active plugins """

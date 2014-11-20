@@ -6,7 +6,6 @@ import re
 
 from base64 import b64encode
 from pycurl import FORM_FILE, HTTPHEADER
-from thread import start_new_thread
 from time import sleep
 
 from pyload.utils import json_loads
@@ -186,7 +185,7 @@ class DeathByCaptcha(Hook):
             task.handler.append(self)
             task.data['service'] = self.__name__
             task.setWaiting(180)
-            start_new_thread(self.processCaptcha, (task,))
+            self.processCaptcha(task)
 
 
     def captchaInvalid(self, task):

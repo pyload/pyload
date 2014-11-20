@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from pycurl import FORM_FILE, LOW_SPEED_TIME
-from thread import start_new_thread
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL, getRequest
@@ -107,8 +106,7 @@ class BypassCaptcha(Hook):
             task.handler.append(self)
             task.data['service'] = self.__name__
             task.setWaiting(100)
-            start_new_thread(self.processCaptcha, (task,))
-
+            self.processCaptcha(task)
         else:
             self.logInfo(_("Your %s account has not enough credits") % self.__name__)
 

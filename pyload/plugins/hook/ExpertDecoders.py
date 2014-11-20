@@ -4,7 +4,6 @@ from __future__ import with_statement
 
 from base64 import b64encode
 from pycurl import LOW_SPEED_TIME
-from thread import start_new_thread
 from uuid import uuid4
 
 from pyload.network.HTTPRequest import BadHeader
@@ -76,8 +75,7 @@ class ExpertDecoders(Hook):
         if self.getCredits() > 0:
             task.handler.append(self)
             task.setWaiting(100)
-            start_new_thread(self.processCaptcha, (task,))
-
+            self.processCaptcha(task)
         else:
             self.logInfo(_("Your ExpertDecoders Account has not enough credits"))
 

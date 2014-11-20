@@ -10,7 +10,6 @@ try:
 except ImportError:
     import Image
 
-from thread import start_new_thread
 from time import sleep
 from urllib import urlencode
 
@@ -145,7 +144,7 @@ class CaptchaBrotherhood(Hook):
             task.handler.append(self)
             task.data['service'] = self.__name__
             task.setWaiting(100)
-            start_new_thread(self.processCaptcha, (task,))
+            self.processCaptcha(task)
         else:
             self.logInfo(_("Your CaptchaBrotherhood Account has not enough credits"))
 

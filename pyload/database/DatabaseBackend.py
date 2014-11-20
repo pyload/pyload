@@ -15,8 +15,7 @@
     @author: RaNaN
     @author: mkaay
 """
-from threading import Thread
-from threading import Event
+from threading import Event, Thread
 from os import remove
 from os.path import exists
 from shutil import move
