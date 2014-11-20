@@ -8,7 +8,8 @@ class RestartFailed(Addon):
     __type__    = "addon"
     __version__ = "1.57"
 
-    __config__ = [("interval", "int", "Check interval in minutes", 90)]
+    __config__ = [("activated", "bool", "Activated"                , True),
+                  ("interval" , "int" , "Check interval in minutes", 90  )]
 
     __description__ = """Periodically restart all failed downloads in queue"""
     __license__     = "GPLv3"

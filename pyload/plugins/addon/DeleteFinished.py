@@ -9,8 +9,8 @@ class DeleteFinished(Addon):
     __type__    = "addon"
     __version__ = "1.11"
 
-    __config__ = [('activated', 'bool', 'Activated', 'False'),
-                  ('interval', 'int', 'Delete every (hours)', '72'),
+    __config__ = [("activated" , "bool", "Activated"                         , False  ),
+                  ('interval'  , 'int' , 'Delete every (hours)'              , '72'   ),
                   ('deloffline', 'bool', 'Delete packages with offline links', 'False')]
 
     __description__ = """Automatically delete all finished packages from queue"""

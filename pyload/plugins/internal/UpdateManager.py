@@ -16,11 +16,11 @@ class UpdateManager(Addon):
     __type__    = "addon"
     __version__ = "0.40"
 
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
-                  ("interval", "int", "Check interval in hours", 8),
-                  ("reloadplugins", "bool", "Monitor plugins for code changes (debug mode only)", True),
-                  ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
+    __config__ = [("activated"    , "bool"                         , "Activated"                                         , True              ),
+                  ("mode"         , "pyLoad + plugins;plugins only", "Check updates for"                                 , "pyLoad + plugins"),
+                  ("interval"     , "int"                          , "Check interval in hours"                           , 8                 ),
+                  ("reloadplugins", "bool"                         , "Monitor plugins for code changes (debug mode only)", True              ),
+                  ("nodebugupdate", "bool"                         , "Don't check for updates in debug mode"             , True              )]
 
     __description__ = """Check for updates"""
     __license__     = "GPLv3"

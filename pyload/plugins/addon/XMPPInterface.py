@@ -14,13 +14,14 @@ class XMPPInterface(IRCInterface, JabberClient):
     __type__    = "addon"
     __version__ = "0.11"
 
-    __config__ = [("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),
-                  ("pw", "str", "Password", ""),
-                  ("tls", "bool", "Use TLS", False),
-                  ("owners", "str", "List of JIDs accepting commands from", "me@icq-gateway.org;some@msn-gateway.org"),
-                  ("info_file", "bool", "Inform about every file finished", False),
-                  ("info_pack", "bool", "Inform about every package finished", True),
-                  ("captcha", "bool", "Send captcha requests", True)]
+    __config__ = [("activated", "bool", "Activated"                           , False                                    ),
+                  ("jid"      , "str" , "Jabber ID"                           , "user@exmaple-jabber-server.org"         ),
+                  ("pw"       , "str" , "Password"                            , ""                                       ),
+                  ("tls"      , "bool", "Use TLS"                             , False                                    ),
+                  ("owners"   , "str" , "List of JIDs accepting commands from", "me@icq-gateway.org;some@msn-gateway.org"),
+                  ("info_file", "bool", "Inform about every file finished"    , False                                    ),
+                  ("info_pack", "bool", "Inform about every package finished" , True                                     ),
+                  ("captcha"  , "bool", "Send captcha requests"               , True                                     )]
 
     __description__ = """Connect to jabber and let owner perform different tasks"""
     __license__     = "GPLv3"

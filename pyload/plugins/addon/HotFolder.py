@@ -15,10 +15,11 @@ class HotFolder(Addon):
     __type__    = "addon"
     __version__ = "0.11"
 
-    __config__ = [("folder", "str", "Folder to observe", "container"),
-                  ("watch_file", "bool", "Observe link file", False),
-                  ("keep", "bool", "Keep added containers", True),
-                  ("file", "str", "Link file", "links.txt")]
+    __config__ = [("activated" , "bool", "Activated"            , False      ),
+                  ("folder"    , "str" , "Folder to observe"    , "container"),
+                  ("watch_file", "bool", "Observe link file"    , False      ),
+                  ("keep"      , "bool", "Keep added containers", True       ),
+                  ("file"      , "str" , "Link file"            , "links.txt")]
 
     __description__ = """Observe folder and file for changes and add container and links"""
     __license__     = "GPLv3"
