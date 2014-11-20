@@ -3,7 +3,7 @@
 from urlparse import urlparse
 
 from pyload.plugins.Plugin import Plugin
-from pyload.utils import html_unescape, save_filename
+from pyload.utils import decode, html_unescape, save_filename
 
 
 class Crypter(Plugin):
@@ -82,7 +82,7 @@ class Crypter(Plugin):
                           "%d links" % len(links),
                           "Saved to folder: %s" % folder if folder else "Saved to download folder")
 
-            links = map(lambda x: x.decode("utf-8"), links)
+            links = map(decode, links)
 
             pid = self.core.api.addPackage(name, links, package_queue)
 

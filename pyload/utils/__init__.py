@@ -84,10 +84,7 @@ def save_join(*args):
 
 if sys.getfilesystemencoding().startswith('ANSI'):
     def fs_encode(string):
-        try:
-            string = string.encode('utf-8')
-        finally:
-            return save_path(string)
+        return save_path(encode(string))
 
     fs_decode = decode #decode utf8
 

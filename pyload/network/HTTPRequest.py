@@ -26,13 +26,15 @@ from cStringIO import StringIO
 
 from pyload.plugins.Plugin import Abort, Fail
 
+from pyload.utils import encode
+
+
 def myquote(url):
-    return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
+    return quote(encode(url), safe="%/:=&?~#+!$,;'@()*[]")
 
 def myurlencode(data):
     data = dict(data)
-    return urlencode(dict((x.encode('utf_8') if isinstance(x, unicode) else x, \
-        y.encode('utf_8') if isinstance(y, unicode) else y ) for x, y in data.iteritems()))
+    return urlencode(dict(encode(x), encode(y) for x, y in data.iteritems()))
 
 bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
 
@@ -167,7 +169,7 @@ class HTTPRequest:
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, y.encode('utf8') if type(y) == unicode else y) for x, y in post.iteritems()]
+                post = [(x, encode(y) for x, y in post.iteritems()]
                 self.c.setopt(pycurl.HTTPPOST, post)
         else:
             self.c.setopt(pycurl.POST, 0)

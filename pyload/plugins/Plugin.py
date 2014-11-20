@@ -16,7 +16,7 @@ from itertools import islice
 from traceback import print_exc
 from urlparse import urlparse
 
-from pyload.utils import fs_decode, fs_encode, html_unescape, safe_join
+from pyload.utils import encode, fs_decode, fs_encode, html_unescape, safe_join
 
 def chunks(iterable, size):
     it = iter(iterable)
@@ -57,7 +57,7 @@ class Base(object):
 
 
     def _log(self, type, args):
-        msg = " | ".join([str(a).strip() for a in args if a])
+        msg = " | ".join([encode(a).strip() for a in args if a])
         logger = getattr(self.core.log, type)
         logger("%s: %s" % (self.__name__, msg or _("%s MARK" % type.upper())))
 
@@ -518,10 +518,7 @@ class Plugin(Base):
         if not url:
             self.fail(_("No url given"))
 
-        if type(url) == unicode:  # utf8 vs decode -> please use decode attribute in all future plugins
-            url = str(url)  #: encode('utf8')
-
-        url = url.strip()
+        url = encode(url).strip()  #@NOTE: utf8 vs decode -> please use decode attribute in all future plugins
 
         if self.core.debug:
             self.logDebug("Load url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])
@@ -539,9 +536,7 @@ class Plugin(Base):
 
                 with open(framefile, "wb") as f:
                     del frame  #: delete the frame or it wont be cleaned
-                    if decode:
-                        res = res.encode('utf-8')
-                    f.write(res)
+                    f.write(encode(res))
             except IOError, e:
                 self.logError(e)
 
@@ -586,10 +581,7 @@ class Plugin(Base):
         if not url:
             self.fail(_("No url given"))
 
-        if type(url) == unicode:
-            url = str(url)
-
-        url = url.strip()
+        url = encode(url).strip()
 
         if self.core.debug:
             self.logDebug("Download url: " + url, *["%s=%s" % (key, val) for key, val in locals().iteritems() if key not in ("self", "url")])

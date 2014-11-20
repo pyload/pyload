@@ -6,7 +6,7 @@ import sys
 from os import path
 from urllib import quote
 
-from pyload.utils import encode, uniqify
+from pyload.utils import encode, decode, uniqify
 
 
 class JsEngine:
@@ -214,7 +214,11 @@ class RhinoEngine(AbstractEngine):
     def eval(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
         args = ["java", "-cp", self.path, "org.mozilla.javascript.tools.shell.Main", "-e", script]
-        return self._eval(args).decode("utf-8").encode("ISO-8859-1")
+        res = decode(self._eval(args))
+        try:
+            return res.encode("ISO-8859-1")
+        finally:
+            return res
 
 
 class JscEngine(AbstractEngine):

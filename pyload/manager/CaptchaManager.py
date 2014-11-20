@@ -21,6 +21,9 @@ from time import time
 from traceback import print_exc
 from threading import Lock
 
+from pyload.utils import encode
+
+
 class CaptchaManager:
     def __init__(self, core):
         self.lock = Lock()
@@ -109,12 +112,7 @@ class CaptchaTask:
                 self.result = None
 
     def getResult(self):
-        try:
-            res = self.result.encode("utf8", "replace")
-        except:
-            res = self.result
-
-        return res
+        return encode(self.result)
 
     def getStatus(self):
         return self.status

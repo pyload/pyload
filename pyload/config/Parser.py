@@ -6,7 +6,7 @@ from os.path import exists, join
 from shutil import copy
 
 from traceback import print_exc
-from utils import chmod
+from utils import chmod, encode, decode
 
 CONF_VERSION = 1
 
@@ -227,7 +227,7 @@ class ConfigParser:
                     try:
                         f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value))
                     except UnicodeEncodeError:
-                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value.encode("utf8")))
+                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], encode(value))
 
     def cast(self, typ, value):
         """cast value to given format"""
@@ -243,10 +243,7 @@ class ConfigParser:
             if not ":" in value: value += ":00"
             return value
         elif typ in ("str", "file", "folder"):
-            try:
-                return value.encode("utf8")
-            except:
-                return value
+            return encode(value)
         else:
             return value
 
@@ -266,10 +263,7 @@ class ConfigParser:
     def get(self, section, option):
         """get value"""
         value = self.config[section][option]["value"]
-        try:
-            value = value.decode("utf-8")
-        finally:
-            return value
+        return decode(value)
 
     def set(self, section, option, value):
         """set value"""
@@ -282,10 +276,7 @@ class ConfigParser:
     def getPlugin(self, plugin, option):
         """gets a value for a plugin"""
         value = self.plugin[plugin][option]["value"]
-        try:
-            value = value.decode("utf-8")
-        finally:
-            return str(value)
+        return encode(value)
 
     def setPlugin(self, plugin, option, value):
         """sets a value for a plugin"""
