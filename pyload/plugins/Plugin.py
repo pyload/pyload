@@ -525,6 +525,9 @@ class Plugin(Base):
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode, follow_location=follow_location, save_cookies=save_cookies)
 
+        if decode:
+            res = encode(res)
+
         if self.core.debug:
             from inspect import currentframe
 
@@ -536,7 +539,7 @@ class Plugin(Base):
 
                 with open(framefile, "wb") as f:
                     del frame  #: delete the frame or it wont be cleaned
-                    f.write(encode(res))
+                    f.write(res)
             except IOError, e:
                 self.logError(e)
 
