@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'^unmatchable$'
 
@@ -70,6 +70,9 @@ class XFSHoster(SimpleHoster):
         if not self.LINK_PATTERN:
             pattern = r'(https?://(www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'
             self.LINK_PATTERN = pattern % self.HOSTER_DOMAIN.replace('.', '\.')
+
+        if self.CHECK_DIRECT_LINK is None:
+            self.CHECK_DIRECT_LINK = bool(self.premium)
 
         self.captcha = None
         self.errmsg = None
