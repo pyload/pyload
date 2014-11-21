@@ -7,12 +7,16 @@ from urlparse import urlparse
 
 from pycurl import FOLLOWLOCATION
 
-from module.PyFile import statusMap
+from module.PyFile import statusMap as _statusMap
 from module.network.CookieJar import CookieJar
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import Fail
-from module.utils import fixup, html_unescape, parseFileSize
+from module.utils import fixup, parseFileSize
+
+
+#@TODO: Adapt and move to PyFile in 0.4.10
+statusMap = {v: k for k, v in _statusMap.iteritems()}
 
 
 #@TODO: Remove in 0.4.10 and redirect to self.error instead
@@ -21,7 +25,7 @@ def _error(self, reason, type):
             type = "unknown"
 
         msg  = _("%s error") % type.strip().capitalize() if type else _("Error")
-        msg += ": " + reason.strip() if reason else ""
+        msg += ": %s" % reason.strip() if reason else ""
         msg += _(" | Plugin may be out of date")
 
         raise Fail(msg)
@@ -89,11 +93,13 @@ def parseHtmlForm(attr_str, html, input_names=None):
     return {}, None  #: no matching form found
 
 
+#: Deprecated
 def parseFileInfo(plugin, url="", html=""):
     info = plugin.getInfo(url, html)
     return info['name'], info['size'], info['status'], info['url']
 
 
+#@TODO: Remove in 0.4.10
 def create_getInfo(plugin):
     return lambda urls: list(plugin.parseInfo(urls))
 
@@ -120,7 +126,7 @@ def _getDirectLink(self, url):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.57"
 
     __pattern__ = r'^unmatchable$'
 
@@ -279,12 +285,13 @@ class SimpleHoster(Hoster):
                 self.fail(_("No html retrieved"))
 
             info = self.getInfo(pyfile.url, self.html)
-            self._updateInfo(info)
+            premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
 
+            self._updateInfo(info)
             self.checkNameSize()
 
-            premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
-            if not premium_only:  #: Usually premium only pages doesn't show any file information
+            #: Usually premium only pages doesn't show any file information
+            if not premium_only:
                 self.checkStatus()
 
             if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
@@ -312,8 +319,9 @@ class SimpleHoster(Hoster):
             self.tempOffline()
 
         elif status is not 2:
-            self.error(_("File status: %s") % filter(lambda key, val: val == status, statusMap.iteritems())[0],
-                       _("File info: %s")   % self.info)
+            self.logDebug("File status: %s" % statusMap[status],
+                          "File info: %s"   % self.info)
+            self.error(_("No file info"))
 
 
     def checkNameSize(self):
@@ -324,14 +332,15 @@ class SimpleHoster(Hoster):
         if name and name != url:
             self.pyfile.name = name
         else:
-            self.pyfile.name = self.info['name'] = urlparse(html_unescape(name)).path.split('/')[-1]
+            self.pyfile.name = name = self.info['name'] = urlparse(name).path.split('/')[-1]
 
         if size > 0:
             self.pyfile.size = size
         else:
-            self.logError(_("File size not found"))
+            size = "Unknown"
 
-        self.logDebug("File name: %s" % self.pyfile.name, "File size: %s" % self.pyfile.size or _("Unknown"))
+        self.logDebug("File name: %s" % name,
+                      "File size: %s" % size)
 
 
     def checkInfo(self):
@@ -340,10 +349,10 @@ class SimpleHoster(Hoster):
         self.checkStatus()
 
 
-    def _updateInfo(self, info)
-        self.logDebug(_("File info (previous): %s") % self.info)
+    def _updateInfo(self, info):
+        self.logDebug(_("File info (before update): %s") % self.info)
         self.info.update(info)
-        self.logDebug(_("File info (current): %s")  % self.info)
+        self.logDebug(_("File info (after update): %s")  % self.info)
 
 
     def handleDirect(self):

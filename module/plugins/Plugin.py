@@ -16,7 +16,7 @@ from itertools import islice
 from traceback import print_exc
 from urlparse import urlparse
 
-from module.utils import fs_decode, fs_encode, html_unescape, save_join, save_path
+from module.utils import fs_decode, fs_encode, save_join, save_path
 
 
 def chunks(iterable, size):
