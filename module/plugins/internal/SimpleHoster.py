@@ -101,7 +101,7 @@ def parseFileInfo(plugin, url="", html=""):
 
 #@TODO: Remove in 0.4.10
 def create_getInfo(plugin):
-    return lambda urls: list(plugin.parseInfo(urls))
+    return lambda urls: [info['name'], info['size'], info['status'], info['url'] for info in plugin.parseInfo(urls)]
 
 
 def timestamp():

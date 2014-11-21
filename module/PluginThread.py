@@ -209,7 +209,7 @@ class DownloadThread(PluginThread):
 
                 if self.m.core.debug:
                     print_exc()
-                        
+
                 self.clean(pyfile)
                 continue
 
@@ -244,7 +244,7 @@ class DownloadThread(PluginThread):
 
                 if self.m.core.debug:
                     print_exc()
-                        
+
                 self.m.core.hookManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
@@ -393,7 +393,7 @@ class DecrypterThread(PluginThread):
         except Abort:
             self.m.log.info(_("Download aborted: %s") % pyfile.name)
             pyfile.setStatus("aborted")
-            
+
             if self.m.core.debug:
                 print_exc()
             return
@@ -630,9 +630,10 @@ class InfoThread(PluginThread):
                 self.m.log.debug("Run Info Fetching for %s" % pluginname)
                 for result in plugin.getInfo(process):
                     #result = [ .. (name, size, status, url) .. ]
-                    if not type(result) == list: result = [result]
+                    if not type(result) == list:
+                        result = [result]
 
-                    for res in result:
+                    for res in result:  #: why don't assign res dict directly?
                         self.m.infoCache[res[3]] = res
 
                     cb(pluginname, result)
