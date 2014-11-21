@@ -165,10 +165,11 @@ class SimpleHoster(Hoster):
     SIZE_REPLACEMENTS = []
     URL_REPLACEMENTS  = []
 
-    TEXT_ENCODING       = False  #: Set to True or encoding name if encoding in http header is not correct
+    TEXT_ENCODING       = False  #: Set to True or encoding name if encoding value in http header is not correct
     COOKIES             = True   #: or False or list of tuples [(domain, name, value)]
     FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
-    CHECK_DIRECT_LINK   = None   #: Set to None to set True if self.account else False
+    CHECK_DIRECT_LINK   = None   #: Set to None self-set to True if self.account else to False
+    CONTENT_DISPOSITION = False  #: Set to True to replace file name with content-disposition value in http header
 
 
     @classmethod
@@ -237,8 +238,8 @@ class SimpleHoster(Hoster):
 
 
     def init(self):
-        self.info = {}    #@TODO: Remove in 0.4.10
-        self.link = None  #@TODO: Move to hoster class in 0.4.10
+        self.info = {}  #@TODO: Remove in 0.4.10
+        self.link = ""  #@TODO: Move to hoster class in 0.4.10
 
 
     def setup(self):
@@ -300,7 +301,7 @@ class SimpleHoster(Hoster):
                 self.handleFree()
 
         if self.link:
-            self.download(self.link)
+            self.download(self.link, disposition=self.CONTENT_DISPOSITION)
 
 
     def checkStatus(self):
