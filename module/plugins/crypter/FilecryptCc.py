@@ -12,14 +12,16 @@ from module.plugins.Crypter import Crypter
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
-    __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/.+'
+    __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
     __description__ = """Filecrypt.cc decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zapp-brannigan", "")]
 
+
+    # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  #@TODO: Extend SimpleCrypter
 
     DLC_LINK_PATTERN = r'<button class="dlcdownload" type="button" title="Download \*.dlc" onclick="DownloadDLC\(\'(.+)\'\);"><i></i><span>dlc<'
     WEBLINK_PATTERN = r"openLink.?'([\w_-]*)',"
@@ -30,14 +32,11 @@ class FilecryptCc(Crypter):
 
 
     def setup(self):
-        self.package_name  = self.package_folder = self.pyfile.package().name
-        self.destination   = self.pyfile.package().queue
-        self.password      = self.pyfile.package().password
-        self.package_links = []
+        self.links = []
 
 
     def decrypt(self, pyfile):
-        self.html = self.load(self.pyfile.url, cookies=True)
+        self.html = self.load(pyfile.url, cookies=True)
 
         if "content not found" in self.html:
             self.offline()
@@ -45,32 +44,23 @@ class FilecryptCc(Crypter):
         self.handlePasswordProtection()
         self.handleCaptcha()
         self.handleMirrorPages()
-        self.handleCNL()
 
-        if len(self.package_links) > 0:
-            self.logDebug("Found %d CNL-Links" % len(self.package_links))
-            self.packages = [(self.package_name, self.package_links, self.package_folder)]
-            return
-
-        self.handleWeblinks()
-
-        if len(self.package_links) > 0:
-            self.logDebug("Found %d Web-Links" % len(self.package_links))
-            self.packages = [(self.package_name, self.package_links, self.package_folder)]
-            return
-
-        self.handleDlcContainer()
+        for handle in (self.handleCNL, self.handleWeblinks, self.handleDlcContainer):
+            handle()
+            if self.links:
+                self.packages = [(pyfile.package().name, self.links, pyfile.package().name)]
+                return
 
 
     def handleMirrorPages(self):
         if "mirror=" not in self.siteWithLinks:
             return
 
-        m = re.findall(self.MIRROR_PAGE_PATTERN, self.siteWithLinks)
+        mirror = re.findall(self.MIRROR_PAGE_PATTERN, self.siteWithLinks)
 
-        self.logInfo(_("Found %d mirrors, will try to catch all links") % len(m))
+        self.logInfo(_("Found %d mirrors") % len(m))
 
-        for i in m[1:]:
+        for i in mirror[1:]:
             self.siteWithLinks = self.siteWithLinks + self.load(i, cookies=True).decode("utf-8", "replace")
 
 
@@ -80,7 +70,7 @@ class FilecryptCc(Crypter):
 
         self.logInfo(_("Folder is password protected"))
 
-        if not self.password:
+        if not self.pyfile.package().password:
             self.fail(_("Please enter the password in package section and try again"))
 
         self.html = self.load(self.pyfile.url, post={"password": self.password}, cookies=True)
@@ -90,7 +80,7 @@ class FilecryptCc(Crypter):
         m = re.search(self.CAPTCHA_PATTERN, self.html)
 
         if m:
-            self.logDebug("Captcha-URL: " + m.group(1))
+            self.logDebug("Captcha-URL: %s" % m.group(1))
             captcha_code = self.decryptCaptcha("http://filecrypt.cc" + m.group(1), forceUser=True, imgtype="gif")
             self.siteWithLinks = self.load(self.pyfile.url, post={"recaptcha_response_field":captcha_code}, decode=True, cookies=True)
         else:
@@ -103,31 +93,24 @@ class FilecryptCc(Crypter):
 
 
     def handleDlcContainer(self):
-        m = re.findall(self.DLC_LINK_PATTERN, self.siteWithLinks)
+        dlc = re.findall(self.DLC_LINK_PATTERN, self.siteWithLinks)
 
-        if m:
-            self.logDebug("Found DLC-Container")
-            urls = []
-            for i in m:
-                urls.append("http://filecrypt.cc/DLC/%s.dlc" % i)
-            pid = self.core.api.addPackage(self.package_name, urls, 1)
-        else:
-            self.fail(_("Unable to find any links"))
+        if not dlc:
+            return
+
+        for i in dlc:
+            self.links.append("http://filecrypt.cc/DLC/%s.dlc" % i)
 
 
     def handleWeblinks(self):
         try:
             weblinks = re.findall(self.WEBLINK_PATTERN, self.siteWithLinks)
 
-            if not weblinks:
-                self.logDebug("No weblink found")
-                return
-
             for link in weblinks:
                 response = self.load("http://filecrypt.cc/Link/%s.html" % link, cookies=True)
                 link2 = re.search('<iframe noresize src="(.*)"></iframe>', response)
                 response2 = self.load(link2.group(1), just_header=True, cookies=True)
-                self.package_links.append(response2['location'])
+                self.links.append(response2['location'])
 
         except Exception, e:
             self.logDebug("Error decrypting weblinks: %s" % e)
@@ -139,7 +122,7 @@ class FilecryptCc(Crypter):
             vcrypted = re.findall('<input type="hidden" name="crypted" value="(.*)">', self.siteWithLinks)
 
             for i in range(0, len(vcrypted)):
-                self.package_links.extend(self._getLinks(vcrypted[i], vjk[i]))
+                self.links.extend(self._getLinks(vcrypted[i], vjk[i]))
 
         except Exception, e:
             self.logDebug("Error decrypting CNL: %s" % e)
