@@ -237,16 +237,14 @@ class SimpleHoster(Hoster):
         return info
 
 
-    def init(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
-        self.link = ""  #@TODO: Move to hoster class in 0.4.10
-
-
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
 
 
     def prepare(self):
+        self.info = {}
+        self.link = ""  #@TODO: Move to hoster class in 0.4.10
+
         if self.CHECK_DIRECT_LINK is None:
             self.CHECK_DIRECT_LINK = bool(self.account)
 

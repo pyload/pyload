@@ -71,9 +71,6 @@ class SimpleCrypter(Crypter):
 
     #@TODO: remove in 0.4.10
     def init(self):
-        self.info  = {}  #@TODO: Remove in 0.4.10
-        self.links = []
-
         account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
         account = self.core.accountManager.getAccountPlugin(account_name)
 
@@ -91,6 +88,9 @@ class SimpleCrypter(Crypter):
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
+
+        self.info  = {}
+        self.links = []
 
         self.req.setOption("timeout", 120)
 
