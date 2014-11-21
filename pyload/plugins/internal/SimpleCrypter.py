@@ -76,6 +76,9 @@ class SimpleCrypter(Crypter):
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
 
+        self.info  = {}
+        self.links = []
+
         self.req.setOption("timeout", 120)
 
         if isinstance(self.COOKIES, list):
