@@ -7,6 +7,7 @@ from urlparse import urlparse
 
 from pycurl import FOLLOWLOCATION
 
+from module.PyFile import statusMap
 from module.network.CookieJar import CookieJar
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
@@ -76,130 +77,50 @@ def parseHtmlForm(attr_str, html, input_names=None):
                         continue
                     elif hasattr(val, "search") and re.match(val, inputs[key]):
                         continue
-                    break  # attibute value does not match
+                    break  #: attibute value does not match
                 else:
-                    break  # attibute name does not match
+                    break  #: attibute name does not match
             else:
-                return action, inputs  # passed attribute check
+                return action, inputs  #: passed attribute check
         else:
             # no attribute check
             return action, inputs
 
-    return {}, None  # no matching form found
+    return {}, None  #: no matching form found
 
 
-def parseFileInfo(self, url="", html=""):
-    if not url and hasattr(self, "pyfile"):
-        url = self.pyfile.url
-
-    info = {'name': url, 'size': 0, 'status': 3}
-
-    if not html:
-        if url:
-            return create_getInfo(self)([url]).next()
-
-        elif hasattr(self, "req") and self.req.http.code == '404':
-            info['status'] = 1
-
-        elif hasattr(self, "html"):
-            html = self.html
-
-    if html:
-        if hasattr(self, "OFFLINE_PATTERN") and re.search(self.OFFLINE_PATTERN, html):
-            info['status'] = 1
-
-        elif hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):  #@TODO: Remove in 0.4.10
-            info['status'] = 1
-
-        elif hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, html):
-            info['status'] = 6
-
-        else:
-            online = False
-            try:
-                info.update(re.match(self.__pattern__, url).groupdict())
-            except:
-                pass
-
-            for pattern in ("INFO_PATTERN", "NAME_PATTERN", "SIZE_PATTERN",
-                            "FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):  #@TODO: Remove in 0.4.10
-                try:
-                    info.update(re.search(getattr(self, pattern), html).groupdict())
-                    online = True
-                except AttributeError:
-                    continue
-
-            if online:
-                # File online, return name and size
-                info['status'] = 2
-
-                if 'N' in info:
-                    info['name'] = replace_patterns(info['N'].strip(),
-                                                    self.FILE_NAME_REPLACEMENTS if hasattr(self, "FILE_NAME_REPLACEMENTS") else self.NAME_REPLACEMENTS)  #@TODO: Remove FILE_NAME_REPLACEMENTS check in 0.4.10
-
-                if 'S' in info:
-                    size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
-                                            self.FILE_SIZE_REPLACEMENTS if hasattr(self, "FILE_SIZE_REPLACEMENTS") else self.SIZE_REPLACEMENTS)  #@TODO: Remove FILE_SIZE_REPLACEMENTS check in 0.4.10
-                    info['size'] = parseFileSize(size)
-
-                elif isinstance(info['size'], basestring):
-                    unit = info['units'] if 'units' in info else None
-                    info['size'] = parseFileSize(info['size'], unit)
-
-    if hasattr(self, "html") and self.html is None:
-        self.html = html
-
-    if hasattr(self, "info"):
-        try:
-            self.logDebug(_("File info (before update): %s") % self.info)
-        except:
-            pass
-
-        self.info.update(info)
-
-        try:
-            self.logDebug(_("File info (after update): %s") % self.info)
-        except:
-            pass
-
-    return info['name'], info['size'], info['status'], url
+def parseFileInfo(plugin, url="", html=""):
+    info = plugin.getInfo(url, html)
+    return info['name'], info['size'], info['status'], info['url']
 
 
 def create_getInfo(plugin):
-
-    def getInfo(urls):
-        for url in urls:
-            if hasattr(plugin, "COOKIES") and isinstance(plugin.COOKIES, list):
-                set_cookies(plugin.req.cj, plugin.COOKIES)
-            else:
-                plugin.req.cj = None
-
-            if hasattr(plugin, "URL_REPLACEMENTS"):
-                url = replace_patterns(url, plugin.URL_REPLACEMENTS)
-
-            elif hasattr(plugin, "FILE_URL_REPLACEMENTS"):  #@TODO: Remove in 0.4.10
-                url = replace_patterns(url, plugin.FILE_URL_REPLACEMENTS)
-
-            if hasattr(plugin, "TEXT_ENCODING"):
-                html = plugin.load(url, decode=not plugin.TEXT_ENCODING, cookies=bool(plugin.COOKIES))
-                if isinstance(plugin.TEXT_ENCODING, basestring):
-                    html = unicode(html, plugin.TEXT_ENCODING)
-            else:
-                html = plugin.load(url, decode=True, cookies=bool(plugin.COOKIES))
-
-            yield parseFileInfo(plugin, url, html)
-
-    return getInfo
+    return lambda urls: list(plugin.parseInfo(urls))
 
 
 def timestamp():
     return int(time() * 1000)
 
 
+#@TODO: Move to hoster class in 0.4.10
+def _getDirectLink(self, url):
+    self.req.http.c.setopt(FOLLOWLOCATION, 0)
+
+    html = self.load(url, ref=True, decode=True)
+
+    self.req.http.c.setopt(FOLLOWLOCATION, 1)
+
+    if self.getInfo(url, html)['status'] is not 2:
+        try:
+            return re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I).group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
+        except:
+            pass
+
+
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.56"
 
     __pattern__ = r'^unmatchable$'
 
@@ -245,12 +166,79 @@ class SimpleHoster(Hoster):
     URL_REPLACEMENTS  = []
 
     TEXT_ENCODING       = False  #: Set to True or encoding name if encoding in http header is not correct
-    COOKIES             = True  #: or False or list of tuples [(domain, name, value)]
+    COOKIES             = True   #: or False or list of tuples [(domain, name, value)]
     FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
+    CHECK_DIRECT_LINK   = None   #: Set to None to set True if self.account else False
+
+
+    @classmethod
+    def parseInfo(cls, urls):
+        for url in urls:
+            url = replace_patterns(url, cls.FILE_URL_REPLACEMENTS if hasattr(cls, "FILE_URL_REPLACEMENTS") else cls.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
+            yield cls.getInfo(cls, url)
+
+
+    @classmethod
+    def getInfo(cls, url="", html=""):
+        info = {'name': url or _("Unknown"), 'size': 0, 'status': 3, 'url': url}
+
+        if not html:
+            if url:
+                html = getURL(url, cookies=cls.COOKIES, decode=not cls.TEXT_ENCODING)
+                if isinstance(cls.TEXT_ENCODING, basestring):
+                    html = unicode(html, cls.TEXT_ENCODING)
+            else:
+                return info
+
+        online = False
+
+        if hasattr(cls, "OFFLINE_PATTERN") and re.search(cls.OFFLINE_PATTERN, html):
+            info['status'] = 1
+
+        elif hasattr(cls, "FILE_OFFLINE_PATTERN") and re.search(cls.FILE_OFFLINE_PATTERN, html):  #@TODO: Remove in 0.4.10
+            info['status'] = 1
+
+        elif hasattr(cls, "TEMP_OFFLINE_PATTERN") and re.search(cls.TEMP_OFFLINE_PATTERN, html):
+            info['status'] = 6
+
+        else:
+            try:
+                info.update(re.match(cls.__pattern__, url).groupdict())
+            except:
+                pass
+
+            for pattern in ("INFO_PATTERN", "NAME_PATTERN", "SIZE_PATTERN",
+                            "FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):  #@TODO: Remove in 0.4.10
+                try:
+                    attr = getattr(cls, pattern)
+                    info.update(re.search(attr, html).groupdict())
+                except AttributeError:
+                    continue
+                else:
+                    online = True
+
+        if online:
+            info['status'] = 2
+
+            if 'N' in info:
+                info['name'] = replace_patterns(info['N'].strip(),
+                                                cls.FILE_NAME_REPLACEMENTS if hasattr(cls, "FILE_NAME_REPLACEMENTS") else cls.NAME_REPLACEMENTS)  #@TODO: Remove FILE_NAME_REPLACEMENTS check in 0.4.10
+
+            if 'S' in info:
+                size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
+                                        cls.FILE_SIZE_REPLACEMENTS if hasattr(cls, "FILE_SIZE_REPLACEMENTS") else cls.SIZE_REPLACEMENTS)  #@TODO: Remove FILE_SIZE_REPLACEMENTS check in 0.4.10
+                info['size'] = parseFileSize(size)
+
+            elif isinstance(info['size'], basestring):
+                unit = info['units'] if 'units' in info else None
+                info['size'] = parseFileSize(info['size'], unit)
+
+        return info
 
 
     def init(self):
-        self.info = {}
+        self.info = {}    #@TODO: Remove in 0.4.10
+        self.link = None  #@TODO: Move to hoster class in 0.4.10
 
 
     def setup(self):
@@ -258,74 +246,65 @@ class SimpleHoster(Hoster):
 
 
     def prepare(self):
-        if isinstance(self.COOKIES, list):
-            set_cookies(self.req.cj, self.COOKIES)
+        if self.CHECK_DIRECT_LINK is None:
+            self.CHECK_DIRECT_LINK = bool(self.account)
 
         self.req.setOption("timeout", 120)
+
+        if isinstance(self.COOKIES, list):
+            set_cookies(self.req.cj, self.COOKIES)
 
         self.pyfile.url = replace_patterns(self.pyfile.url,
                                            self.FILE_URL_REPLACEMENTS if hasattr(self, "FILE_URL_REPLACEMENTS") else self.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
 
-        if self.premium:
-            self.logDebug(_("Looking for direct download link..."))
-            direct_link = self.getDirectLink(self.pyfile.url)
-            if direct_link:
-                return direct_link
-            else:
-                self.logDebug(_("No direct download link found"))
 
-        self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
+    def preload(self):
+        self.html = self.load(self.pyfile.url, cookies=bool(self.COOKIES), decode=not self.TEXT_ENCODING)
 
         if isinstance(self.TEXT_ENCODING, basestring):
             self.html = unicode(self.html, self.TEXT_ENCODING)
 
 
     def process(self, pyfile):
-        direct_link = self.prepare()
+        self.prepare()
 
-        if isinstance(direct_link, basestring):
-            self.logInfo(_("Direct download link detected"))
-            self.download(direct_link, ref=True, cookies=True, disposition=True)
+        if self.CHECK_DIRECT_LINK:
+            self.logDebug("Looking for direct download link...")
+            self.handleDirect()
 
-        elif self.html is None:
-            self.fail(_("No html retrieved"))
+        if not self.link:
+            self.preload()
 
-        else:
+            #@TODO: Remove in 0.4.10
+            if self.html is None:
+                self.fail(_("No html retrieved"))
+
+            info = self.getInfo(pyfile.url, self.html)
+            self._updateInfo(info)
+
+            self.checkNameSize()
+
             premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
             if not premium_only:  #: Usually premium only pages doesn't show any file information
-                self.getFileInfo()
+                self.checkStatus()
 
             if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
-                self.logDebug("Handle as premium download")
+                self.logDebug("Handled as premium download")
                 self.handlePremium()
+
             elif premium_only:
                 self.fail(_("Link require a premium account to be handled"))
+
             else:
-                self.logDebug("Handle as free download")
+                self.logDebug("Handled as free download")
                 self.handleFree()
 
-
-    def getDirectLink(self, url):
-        self.req.http.c.setopt(FOLLOWLOCATION, 0)
-
-        html = self.load(url, ref=True, decode=True)
-
-        self.req.http.c.setopt(FOLLOWLOCATION, 1)
-
-        if parseFileInfo(self, url, html)[2] is not 2:
-            try:
-                return re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I).group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
-            except:
-                pass
+        if self.link:
+            self.download(self.link)
 
 
-    def getFileInfo(self):
-        name, size, status, url = parseFileInfo(self, html=self.html)
-
-        if name and name != url:
-            self.pyfile.name = name
-        else:
-            self.pyfile.name = self.info['name'] = urlparse(html_unescape(name)).path.split("/")[-1]
+    def checkStatus(self):
+        status = self.info['status']
 
         if status is 1:
             self.offline()
@@ -334,15 +313,51 @@ class SimpleHoster(Hoster):
             self.tempOffline()
 
         elif status is not 2:
-            self.error(_("File info: %s") % self.info)
+            self.error(_("File status: %s") % filter(lambda key, val: val == status, statusMap.iteritems())[0],
+                       _("File info: %s")   % self.info)
 
-        if size:
+
+    def checkNameSize(self):
+        name = self.info['name']
+        size = self.info['size']
+        url  = self.info['url']
+
+        if name and name != url:
+            self.pyfile.name = name
+        else:
+            self.pyfile.name = self.info['name'] = urlparse(html_unescape(name)).path.split('/')[-1]
+
+        if size > 0:
             self.pyfile.size = size
         else:
-            self.logError(_("File size not parsed"))
+            self.logError(_("File size not found"))
 
-        self.logDebug("FILE NAME: %s" % self.pyfile.name, "FILE SIZE: %d" % self.pyfile.size or _("Unknown"))
-        return self.info
+        self.logDebug("File name: %s" % self.pyfile.name, "File size: %s" % self.pyfile.size or _("Unknown"))
+
+
+    def checkInfo(self):
+        self._updateInfo(self.getInfo(self.pyfile.url, self.html or ""))
+        self.checkNameSize()
+        self.checkStatus()
+
+
+    def _updateInfo(self, info)
+        self.logDebug(_("File info (previous): %s") % self.info)
+        self.info.update(info)
+        self.logDebug(_("File info (current): %s")  % self.info)
+
+
+    def handleDirect(self):
+        self.link = _getDirectLink(self, self.pyfile.url)
+
+        if self.link:
+            self.logInfo(_("Direct download link detected"))
+
+            self._updateInfo(self.getInfo(self.pyfile.url))
+            self.checkNameSize()
+
+        else:
+            self.logDebug(_("Direct download link not found"))
 
 
     def handleFree(self):
@@ -354,11 +369,10 @@ class SimpleHoster(Hoster):
             if m is None:
                 self.error(_("Free download link not found"))
 
-            link = m.group(1)
+            self.link = m.group(1)
+
         except Exception, e:
             self.fail(str(e))
-        else:
-            self.download(link, ref=True, cookies=True, disposition=True)
 
 
     def handlePremium(self):
@@ -370,19 +384,18 @@ class SimpleHoster(Hoster):
             if m is None:
                 self.error(_("Premium download link not found"))
 
-            link = m.group(1)
+            self.link = m.group(1)
+
         except Exception, e:
             self.fail(str(e))
-        else:
-            self.download(link, ref=True, cookies=True, disposition=True)
 
 
     def longWait(self, wait_time=None, max_tries=3):
         if wait_time and isinstance(wait_time, (int, long, float)):
-            time_str = "%dh %dm" % divmod(wait_time / 60, 60)
+            time_str  = "%dh %dm" % divmod(wait_time / 60, 60)
         else:
             wait_time = 900
-            time_str = _("(unknown time)")
+            time_str  = _("(unknown time)")
             max_tries = 100
 
         self.logInfo(_("Download limit reached, reconnect or wait %s") % time_str)
