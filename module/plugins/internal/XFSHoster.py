@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __pattern__ = r'^unmatchable$'
 
@@ -35,8 +35,8 @@ class XFSHoster(SimpleHoster):
     COOKIES = [(HOSTER_DOMAIN, "lang", "english")]
 
     INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
-    NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
-    SIZE_PATTERN = r'You have requested .*\((?P<S>[\d.,]+) ?(?P<U>[\w^_]+)?\)</font>'
+    NAME_PATTERN = r'(>Filename:</b></td><td nowrap>|name="fname" value="|<span class="name">)(?P<N>.+?)(\s*<|")'
+    SIZE_PATTERN = r'(>Size:</b></td><td>|>File:.*>|<span class="size">)(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
