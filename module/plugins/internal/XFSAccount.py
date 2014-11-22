@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
@@ -71,6 +71,7 @@ class XFSAccount(Account):
             else:
                 if validuntil > mktime(gmtime()):
                     premium = True
+                    trafficleft = -1
                 else:
                     premium = False
                     validuntil = None  #: registered account type (not premium)
@@ -97,9 +98,6 @@ class XFSAccount(Account):
 
             except Exception, e:
                 self.logError(e)
-        else:
-            if premium:
-                trafficleft = -1
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
