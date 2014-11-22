@@ -12,7 +12,7 @@ from pyload.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
@@ -92,6 +92,9 @@ class XFSAccount(Account):
 
             except Exception, e:
                 self.logError(e)
+        else:
+            if premium:
+                trafficleft = -1
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 

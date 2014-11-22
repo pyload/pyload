@@ -5,15 +5,14 @@ import re
 from urlparse import urlparse
 
 from pyload.plugins.internal.Crypter import Crypter
-from pyload.plugins.Plugin import Fail
-from pyload.plugins.internal.SimpleHoster import _error, _wait, parseFileInfo, replace_patterns, set_cookies
-from pyload.utils import fixup, html_unescape
+from pyload.plugins.internal.SimpleHoster import SimpleHoster, replace_patterns, set_cookies
+from pyload.utils import fixup
 
 
-class SimpleCrypter(Crypter):
+class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -70,14 +69,14 @@ class SimpleCrypter(Crypter):
 
 
     def prepare(self):
+        self.info  = {}
+        self.links = []
+
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(_("Required account not found"))
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
-
-        self.info  = {}
-        self.links = []
 
         self.req.setOption("timeout", 120)
 
@@ -85,13 +84,6 @@ class SimpleCrypter(Crypter):
             set_cookies(self.req.cj, self.COOKIES)
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
-
-
-    def preload(self):
-        self.html = self.load(self.pyfile.url, cookies=bool(self.COOKIES), decode=not self.TEXT_ENCODING)
-
-        if isinstance(self.TEXT_ENCODING, basestring):
-            self.html = unicode(self.html, self.TEXT_ENCODING)
 
 
     def decrypt(self, pyfile):
@@ -125,30 +117,19 @@ class SimpleCrypter(Crypter):
             self.tempOffline()
 
 
-    def checkName(self):
+    def checkNameSize(self):
         name = self.info['name']
         url  = self.info['url']
 
         if name and name != url:
             self.pyfile.name = name
         else:
-            self.pyfile.name = self.info['name'] = urlparse(html_unescape(name)).path.split('/')[-1]
+            self.pyfile.name = name = self.info['name'] = urlparse(name).path.split('/')[-1]
 
-        self.info['folder'] = self.pyfile.name
+        folder = self.info['folder'] = name
 
-        self.logDebug("File name: %s" % self.pyfile.name)
-
-
-    def checkInfo(self):
-        self.logDebug(_("File info (previous): %s") % self.info)
-
-        info = parseFileInfo(self.pyfile.url, self.html or "")
-        self.info.update(info)
-
-        self.logDebug(_("File info (current): %s")  % self.info)
-
-        self.checkName()
-        self.checkStatus()
+        self.logDebug("File name: %s"   % name,
+                      "File folder: %s" % folder)
 
 
     def getLinks(self):
@@ -169,7 +150,3 @@ class SimpleCrypter(Crypter):
         for p in xrange(2, pages + 1):
             self.html = self.loadPage(p)
             self.links += self.getLinks()
-
-
-    def error(self, reason="", type="parse"):
-        return super(SimpleCrypter, self).error(self, reason, type)

@@ -16,7 +16,8 @@ from itertools import islice
 from traceback import print_exc
 from urlparse import urlparse
 
-from pyload.utils import encode, fs_decode, fs_encode, html_unescape, safe_join
+from pyload.utils import fs_decode, fs_encode, safe_join, safe_path
+
 
 def chunks(iterable, size):
     it = iter(iterable)

@@ -16,7 +16,7 @@ from pyload.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.22"
 
     __pattern__ = r'^unmatchable$'
 
@@ -32,26 +32,29 @@ class XFSHoster(SimpleHoster):
 
     URL_REPLACEMENTS = [(r'/(?:embed-)?(\w{12}).*', r'/\1')]  #: plus support embedded files
 
-    COOKIES = [(HOSTER_DOMAIN, "lang", "english")]
+    TEXT_ENCODING     = False
+    COOKIES           = [(HOSTER_DOMAIN, "lang", "english")]
+    CHECK_DIRECT_LINK = None
+    MULTI_HOSTER      = False
 
     INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
-    NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>[^"]+)"'
-    SIZE_PATTERN = r'You have requested .*\((?P<S>[\d.,]+) ?(?P<U>[\w^_]+)?\)</font>'
+    NAME_PATTERN = r'(>Filename:</b></td><td nowrap>|name="fname" value="|<span class="name">|<[Tt]itle>.*?Download )(?P<N>.+?)(\s*<|")'
+    SIZE_PATTERN = r'(>Size:</b></td><td>|>File:.*>|<span class="size">)(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
 
-    WAIT_PATTERN = r'<span id="countdown_str">.*?>(\d+)</span>|id="countdown" value=".*?(\d+).*?"'
+    WAIT_PATTERN         = r'<span id="countdown_str">.*?>(\d+)</span>|id="countdown" value=".*?(\d+).*?"'
+    PREMIUM_ONLY_PATTERN = r'>This file is available for Premium Users only'
+    ERROR_PATTERN        = r'(?:class=["\']err["\'].*?>|<[Cc]enter><b>|>Error</td>|>\(ERROR:)(?:\s*<.+?>\s*)*(.+?)(?:["\']|<|\))'
 
     OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     LINK_PATTERN     = None  #: final download url pattern
 
-    CAPTCHA_PATTERN     = r'(http://[^"\']+?/captchas?/[^"\']+)'
+    CAPTCHA_PATTERN     = r'(https?://[^"\']+?/captchas?/[^"\']+)'
     CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
     RECAPTCHA_PATTERN   = None
     SOLVEMEDIA_PATTERN  = None
-
-    ERROR_PATTERN = r'(?:class=["\']err["\'][^>]*>|<[Cc]enter><b>)(.+?)(?:["\']|</)|>\(ERROR:(.+?)\)'
 
 
     def setup(self):
@@ -71,23 +74,14 @@ class XFSHoster(SimpleHoster):
             pattern = r'(https?://(www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'
             self.LINK_PATTERN = pattern % self.HOSTER_DOMAIN.replace('.', '\.')
 
-        if self.CHECK_DIRECT_LINK is None:
-            self.CHECK_DIRECT_LINK = bool(self.premium)
-
-        self.captcha = None
-        self.errmsg = None
+        self.captcha   = None
+        self.errmsg    = None
         self.passwords = self.getPassword().splitlines()
 
-        if (self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
-            and re.match(self.__pattern__, self.pyfile.url) is None):
-            self.logInfo(_("Multi hoster detected"))
-            if self.premium:
-                self.logDebug(_("Looking for download link..."))
-                self.handleOverriden()
-            else:
-                self.fail(_("Only premium users can use url leech feature"))
+        super(XFSHoster, self).prepare()
 
-        return super(XFSHoster, self).prepare()
+        if self.CHECK_DIRECT_LINK is None:
+            self.directDL = bool(self.premium)
 
 
     def handleFree(self):
@@ -128,26 +122,26 @@ class XFSHoster(SimpleHoster):
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
             self.html = self.load(self.pyfile.url, post=data, ref=True, decode=True)
-            self.header = self.req.http.header
 
             self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
-            m = re.search(r'Location\s*:\s*(.+)', self.header, re.I)
-            if m:
+            m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
+            if m and not "op=" in m.group(1):
                 break
 
             m = re.search(self.LINK_PATTERN, self.html, re.S)
             if m:
                 break
         else:
-            return
+            self.logError(data['op'] if 'op' in data else _("UNKNOWN"))
+            return ""
 
         self.errmsg = None
 
         return m.group(1)
 
 
-    def handleOverriden(self):
+    def handleMulti(self):
         #only tested with easybytez.com
         self.html = self.load("http://www.%s/" % self.HOSTER_DOMAIN)
 
@@ -197,26 +191,35 @@ class XFSHoster(SimpleHoster):
             self.error(_("OVR_LINK_PATTERN not found"))
 
         header = self.load(m.group(1), just_header=True, decode=True)
+
         if 'location' in header:  #: Direct download link
-            self.download(header['location'], ref=True, cookies=True, disposition=True)
+            self.link = header['location']
         else:
             self.fail(_("Download link not found"))
 
 
     def checkErrors(self):
+        m = re.search(self.PREMIUM_ONLY_PATTERN, self.html)
+        if m:
+            self.info['error'] = "premium-only"
+            return
+
         m = re.search(self.ERROR_PATTERN, self.html)
 
         if m is None:
             self.errmsg = None
         else:
-            self.errmsg = m.group(1)
+            self.errmsg = m.group(1).strip()
 
             self.logWarning(re.sub(r"<.*?>", " ", self.errmsg))
 
             if 'wait' in self.errmsg:
-                wait_time = sum([int(v) * {"hour": 3600, "minute": 60, "second": 1}[u] for v, u in
-                                 re.findall(r'(\d+)\s*(hour|minute|second)', self.errmsg)])
+                wait_time = sum([int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
+                                 re.findall(r'(\d+)\s*(hr|hour|min|sec)', self.errmsg, re.I)])
                 self.wait(wait_time, True)
+
+            elif 'country' in self.errmsg:
+                self.fail(_("Downloads are disabled for your country"))
 
             elif 'captcha' in self.errmsg:
                 self.invalidCaptcha()
@@ -247,62 +250,57 @@ class XFSHoster(SimpleHoster):
             else:
                 self.retry(wait_time=60, reason=self.errmsg)
 
+        if self.errmsg:
+            self.info['error'] = self.errmsg
+        else:
+            self.info.pop('error', None)
+
         return self.errmsg
 
 
     def getPostParameters(self):
-        for _i in xrange(3):
-            if hasattr(self, "FORM_PATTERN"):
-                action, inputs = self.parseHtmlForm(self.FORM_PATTERN)
-            else:
-                action, inputs = self.parseHtmlForm(input_names={"op": re.compile("^download")})
-
-            if not inputs:
-                action, inputs = self.parseHtmlForm('F1')
-                if not inputs:
-                    if self.errmsg:
-                        self.retry(reason=self.errmsg)
-                    else:
-                        self.error(_("TEXTAREA F1 not found"))
-
-            self.logDebug(inputs)
-
-            if 'op' in inputs and inputs['op'] in ("download1", "download2", "download3"):
-                if "password" in inputs:
-                    if self.passwords:
-                        inputs['password'] = self.passwords.pop(0)
-                    else:
-                        self.fail(_("No or invalid passport"))
-
-                if not self.premium:
-                    m = re.search(self.WAIT_PATTERN, self.html)
-                    if m:
-                        wait_time = int(m.group(1))
-                        self.setWait(wait_time, False)
-                    else:
-                        wait_time = 0
-
-                    self.captcha = self.handleCaptcha(inputs)
-
-                    if wait_time:
-                        self.wait()
-
-                return inputs
-            else:
-                inputs['referer'] = self.pyfile.url
-
-                if self.premium:
-                    inputs['method_premium'] = "Premium Download"
-                    if 'method_free' in inputs:
-                        del inputs['method_free']
-                else:
-                    inputs['method_free'] = "Free Download"
-                    if 'method_premium' in inputs:
-                        del inputs['method_premium']
-
-                self.html = self.load(self.pyfile.url, post=inputs, ref=True)
+        if hasattr(self, "FORM_PATTERN"):
+            action, inputs = self.parseHtmlForm(self.FORM_PATTERN)
         else:
-            self.error(_("FORM: %s") % (inputs['op'] if 'op' in inputs else _("UNKNOWN")))
+            action, inputs = self.parseHtmlForm(input_names={"op": re.compile("^download")})
+
+        if not inputs:
+            action, inputs = self.parseHtmlForm('F1')
+            if not inputs:
+                if self.errmsg:
+                    self.retry(reason=self.errmsg)
+                else:
+                    self.error(_("TEXTAREA F1 not found"))
+
+        self.logDebug(inputs)
+
+        if 'op' in inputs:
+            if "password" in inputs:
+                if self.passwords:
+                    inputs['password'] = self.passwords.pop(0)
+                else:
+                    self.fail(_("Missing password"))
+
+            if not self.premium:
+                m = re.search(self.WAIT_PATTERN, self.html)
+                if m:
+                    wait_time = int(m.group(1))
+                    self.setWait(wait_time, False)
+
+                self.captcha = self.handleCaptcha(inputs)
+
+                self.wait()
+        else:
+            inputs['referer'] = self.pyfile.url
+
+        if self.premium:
+            inputs['method_premium'] = "Premium Download"
+            inputs.pop('method_free', None)
+        else:
+            inputs['method_free'] = "Free Download"
+            inputs.pop('method_premium', None)
+
+        return inputs
 
 
     def handleCaptcha(self, inputs):

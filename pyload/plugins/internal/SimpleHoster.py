@@ -7,12 +7,14 @@ from urlparse import urlparse
 
 from pycurl import FOLLOWLOCATION
 
-from pyload.datatype.PyFile import statusMap
+from pyload.datatype.PyFile import statusMap as _statusMap
 from pyload.network.CookieJar import CookieJar
 from pyload.network.RequestFactory import getURL
 from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.Plugin import Fail
-from pyload.utils import fixup, html_unescape, parseFileSize
+from pyload.utils import fixup, parseFileSize
+#@TODO: Adapt and move to PyFile in 0.4.10
+statusMap = {v: k for k, v in _statusMap.iteritems()}
 
 
 def replace_patterns(string, ruleslist):
@@ -70,13 +72,15 @@ def parseHtmlForm(attr_str, html, input_names=None):
     return {}, None  #: no matching form found
 
 
+#: Deprecated
 def parseFileInfo(plugin, url="", html=""):
     info = plugin.getInfo(url, html)
     return info['name'], info['size'], info['status'], info['url']
 
 
+#@TODO: Remove in 0.4.10
 def create_getInfo(plugin):
-    return lambda urls: list(plugin.parseInfo(urls))
+    return lambda urls: [(info['name'], info['size'], info['status'], info['url']) for info in plugin.parseInfo(urls)]
 
 
 def timestamp():
@@ -101,7 +105,7 @@ def _getDirectLink(self, url):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.59"
 
     __pattern__ = r'^unmatchable$'
 
@@ -113,7 +117,7 @@ class SimpleHoster(Hoster):
 
 
     """
-    Following patterns should be defined by each hoster:
+    Info patterns should be defined by each hoster:
 
       INFO_PATTERN: (optional) Name and Size of the file
         example: INFO_PATTERN = r'(?P<N>file_name) (?P<S>file_size) (?P<U>size_unit)'
@@ -123,17 +127,26 @@ class SimpleHoster(Hoster):
         SIZE_PATTERN: (optional) Size that will be checked for the file
           example: SIZE_PATTERN = r'(?P<S>file_size) (?P<U>size_unit)'
 
-      OFFLINE_PATTERN: (optional) Checks if the file is yet available online
+      OFFLINE_PATTERN: (optional) Check if the file is yet available online
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
 
-      TEMP_OFFLINE_PATTERN: (optional) Checks if the file is temporarily offline
+      TEMP_OFFLINE_PATTERN: (optional) Check if the file is temporarily offline
         example: TEMP_OFFLINE_PATTERN = r'Server (maintenance|maintainance)'
 
-      PREMIUM_ONLY_PATTERN: (optional) Checks if the file can be downloaded only with a premium account
+
+    Error handling patterns are all optional:
+
+      WAIT_PATTERN: (optional) Detect waiting time
+        example: WAIT_PATTERN = r''
+
+      PREMIUM_ONLY_PATTERN: (optional) Check if the file can be downloaded only with a premium account
         example: PREMIUM_ONLY_PATTERN = r'Premium account required'
 
+      ERROR_PATTERN: (optional) Detect any error preventing download
+        example: ERROR_PATTERN = r''
 
-    Instead overriding handleFree and handlePremium methods now you can define patterns for direct download:
+
+    Instead overriding handleFree and handlePremium methods you can define the following patterns for direct download:
 
       LINK_FREE_PATTERN: (optional) group(1) should be the direct link for free download
         example: LINK_FREE_PATTERN = r'<div class="link"><a href="(.+?)"'
@@ -149,7 +162,8 @@ class SimpleHoster(Hoster):
     TEXT_ENCODING       = False  #: Set to True or encoding name if encoding value in http header is not correct
     COOKIES             = True   #: or False or list of tuples [(domain, name, value)]
     FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
-    CHECK_DIRECT_LINK   = None   #: Set to None self-set to True if self.account else to False
+    CHECK_DIRECT_LINK   = None   #: when None self-set to True if self.account else False
+    MULTI_HOSTER        = False  #: Set to True to leech other hoster link
     CONTENT_DISPOSITION = False  #: Set to True to replace file name with content-disposition value in http header
 
 
@@ -157,7 +171,7 @@ class SimpleHoster(Hoster):
     def parseInfo(cls, urls):
         for url in urls:
             url = replace_patterns(url, cls.URL_REPLACEMENTS)
-            yield cls.getInfo(cls, url)
+            yield cls.getInfo(url)
 
 
     @classmethod
@@ -217,16 +231,30 @@ class SimpleHoster(Hoster):
 
 
     def prepare(self):
-        self.info = {}
-        self.link = ""  #@TODO: Move to hoster class in 0.4.10
-
-        if self.CHECK_DIRECT_LINK is None:
-            self.CHECK_DIRECT_LINK = bool(self.account)
+        self.info      = {}
+        self.link      = ""     #@TODO: Move to hoster class in 0.4.10
+        self.directDL  = False  #@TODO: Move to hoster class in 0.4.10
+        self.multihost = False  #@TODO: Move to hoster class in 0.4.10
 
         self.req.setOption("timeout", 120)
 
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
+
+        if (self.MULTI_HOSTER
+            and self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
+            and re.match(self.__pattern__, self.pyfile.url) is None):
+
+            self.logInfo("Multi hoster detected")
+
+            if self.account:
+                self.multihost = True
+                return
+            else:
+                self.fail(_("Only registered or premium users can use url leech feature"))
+
+        if self.CHECK_DIRECT_LINK is None:
+            self.directDL = bool(self.account)
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
@@ -241,24 +269,31 @@ class SimpleHoster(Hoster):
     def process(self, pyfile):
         self.prepare()
 
-        if self.CHECK_DIRECT_LINK:
+        if self.multihost:
+            self.logDebug("Looking for leeched download link...")
+            self.handleMulti()
+
+        elif self.directDL:
             self.logDebug("Looking for direct download link...")
             self.handleDirect()
 
         if not self.link:
             self.preload()
 
-            #@TODO: Remove in 0.4.10
             if self.html is None:
                 self.fail(_("No html retrieved"))
+
+            self.checkErrors()
+
+            premium_only = 'error' in self.info and self.info['error'] == "premium-only"
 
             info = self.getInfo(pyfile.url, self.html)
             self._updateInfo(info)
 
             self.checkNameSize()
 
-            premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
-            if not premium_only:  #: Usually premium only pages doesn't show any file information
+            #: Usually premium only pages doesn't show any file information
+            if not premium_only:
                 self.checkStatus()
 
             if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
@@ -276,6 +311,30 @@ class SimpleHoster(Hoster):
             self.download(self.link, disposition=self.CONTENT_DISPOSITION)
 
 
+    def checkErrors(self):
+        if hasattr(self, 'WAIT_PATTERN'):
+            m = re.search(self.WAIT_PATTERN, self.html)
+            if m:
+                wait_time = sum([int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
+                                 re.findall(r'(\d+)\s*(hr|hour|min|sec)', m, re.I)])
+                self.wait(wait_time, False)
+                return
+
+        if hasattr(self, 'PREMIUM_ONLY_PATTERN'):
+            m = re.search(self.PREMIUM_ONLY_PATTERN, self.html)
+            if m:
+                self.info['error'] = "premium-only"
+                return
+
+        if hasattr(self, 'ERROR_PATTERN'):
+            m = re.search(self.ERROR_PATTERN, self.html)
+            if m:
+                e = self.info['error'] = m.group(1)
+                self.error(e)
+
+        self.info.pop('error', None)
+
+
     def checkStatus(self):
         status = self.info['status']
 
@@ -286,8 +345,9 @@ class SimpleHoster(Hoster):
             self.tempOffline()
 
         elif status is not 2:
-            self.error(_("File status: %s") % filter(lambda key, val: val == status, statusMap.iteritems())[0],
-                       _("File info: %s")   % self.info)
+            self.logInfo(_("File status: %s") % statusMap[status],
+                         _("File info: %s")   % self.info)
+            self.error(_("No file info retrieved"))
 
 
     def checkNameSize(self):
@@ -298,26 +358,35 @@ class SimpleHoster(Hoster):
         if name and name != url:
             self.pyfile.name = name
         else:
-            self.pyfile.name = self.info['name'] = urlparse(html_unescape(name)).path.split('/')[-1]
+            self.pyfile.name = name = self.info['name'] = urlparse(name).path.split('/')[-1]
 
         if size > 0:
             self.pyfile.size = size
         else:
-            self.logError(_("File size not found"))
+            size = "Unknown"
 
-        self.logDebug("File name: %s" % self.pyfile.name, "File size: %s" % self.pyfile.size or _("Unknown"))
+        self.logDebug("File name: %s" % name,
+                      "File size: %s" % size)
 
 
     def checkInfo(self):
+        self.checkErrors()
+
         self._updateInfo(self.getInfo(self.pyfile.url, self.html or ""))
+
         self.checkNameSize()
         self.checkStatus()
 
 
-    def _updateInfo(self, info)
-        self.logDebug(_("File info (previous): %s") % self.info)
+    #: Deprecated
+    def getFileInfo(self):
+        return self.checkInfo()
+
+
+    def _updateInfo(self, info):
+        self.logDebug(_("File info (before update): %s") % self.info)
         self.info.update(info)
-        self.logDebug(_("File info (current): %s")  % self.info)
+        self.logDebug(_("File info (after update): %s")  % self.info)
 
 
     def handleDirect(self):
@@ -331,6 +400,10 @@ class SimpleHoster(Hoster):
 
         else:
             self.logDebug(_("Direct download link not found"))
+
+
+    def handleMulti(self):  #: Multi-hoster handler
+        pass
 
 
     def handleFree(self):
