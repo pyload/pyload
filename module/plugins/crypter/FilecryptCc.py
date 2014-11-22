@@ -58,7 +58,7 @@ class FilecryptCc(Crypter):
 
         mirror = re.findall(self.MIRROR_PAGE_PATTERN, self.siteWithLinks)
 
-        self.logInfo(_("Found %d mirrors") % len(m))
+        self.logInfo(_("Found %d mirrors") % len(mirror))
 
         for i in mirror[1:]:
             self.siteWithLinks = self.siteWithLinks + self.load(i, cookies=True).decode("utf-8", "replace")
