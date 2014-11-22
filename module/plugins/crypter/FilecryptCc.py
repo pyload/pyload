@@ -12,7 +12,7 @@ from module.plugins.Crypter import Crypter
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
@@ -58,7 +58,7 @@ class FilecryptCc(Crypter):
 
         mirror = re.findall(self.MIRROR_PAGE_PATTERN, self.siteWithLinks)
 
-        self.logInfo(_("Found %d mirrors") % len(m))
+        self.logInfo(_("Found %d mirrors") % len(mirror))
 
         for i in mirror[1:]:
             self.siteWithLinks = self.siteWithLinks + self.load(i, cookies=True).decode("utf-8", "replace")
