@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = r'^unmatchable$'
 
@@ -46,7 +46,7 @@ class XFSHoster(SimpleHoster):
 
     WAIT_PATTERN         = r'<span id="countdown_str">.*?>(\d+)</span>|id="countdown" value=".*?(\d+).*?"'
     PREMIUM_ONLY_PATTERN = r'>This file is available for Premium Users only'
-    ERROR_PATTERN        = r'(?:class=["\']err["\'].*?>|<[Cc]enter><b>|>Error</td></tr>\s*<tr><td align=center>\s*(?:<.+?>)?)(.+?)(?:["\']|</)|>\(ERROR:(.+?)\)'
+    ERROR_PATTERN        = r'(?:class=["\']err["\'].*?>|<[Cc]enter><b>|>Error</td>|>\(ERROR:)(?:\s*<.+?>\s*)*(.+?)(?:["\']|<|\))'
 
     OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     LINK_PATTERN     = None  #: final download url pattern
@@ -126,11 +126,8 @@ class XFSHoster(SimpleHoster):
             self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
             m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
-            if m:
-                if 'down_direct' in data and data['down_direct']:
-                    break
-                else:
-                    self.error(_("Direct download link detected but not found"))
+            if m and not "op=" in m.group(1):
+                break
 
             m = re.search(self.LINK_PATTERN, self.html, re.S)
             if m:
@@ -212,7 +209,7 @@ class XFSHoster(SimpleHoster):
         if m is None:
             self.errmsg = None
         else:
-            self.errmsg = m.group(1)
+            self.errmsg = m.group(1).strip()
 
             self.logWarning(re.sub(r"<.*?>", " ", self.errmsg))
 
