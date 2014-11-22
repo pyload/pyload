@@ -5,8 +5,7 @@ import re
 from urlparse import urlparse
 
 from module.plugins.Crypter import Crypter
-from module.plugins.Plugin import Fail
-from module.plugins.internal.SimpleHoster import SimpleHoster, _error, _wait, replace_patterns, set_cookies
+from module.plugins.internal.SimpleHoster import SimpleHoster, replace_patterns, set_cookies
 from module.utils import fixup
 
 
