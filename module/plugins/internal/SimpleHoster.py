@@ -126,7 +126,7 @@ def _getDirectLink(self, url):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
 
     __pattern__ = r'^unmatchable$'
 
@@ -192,7 +192,7 @@ class SimpleHoster(Hoster):
     def parseInfo(cls, urls):
         for url in urls:
             url = replace_patterns(url, cls.FILE_URL_REPLACEMENTS if hasattr(cls, "FILE_URL_REPLACEMENTS") else cls.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
-            yield cls.getInfo(cls, url)
+            yield cls.getInfo(url)
 
 
     @classmethod
@@ -272,7 +272,7 @@ class SimpleHoster(Hoster):
             and self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
             and re.match(self.__pattern__, self.pyfile.url) is None):
 
-            self.logDebug("Multi hoster detected")
+            self.logInfo("Multi hoster detected")
 
             if self.account:
                 self.multihost = True
@@ -373,9 +373,9 @@ class SimpleHoster(Hoster):
             self.tempOffline()
 
         elif status is not 2:
-            self.logDebug("File status: %s" % statusMap[status],
-                          "File info: %s"   % self.info)
-            self.error(_("No file info"))
+            self.logInfo(_("File status: %s") % statusMap[status],
+                         _("File info: %s")   % self.info)
+            self.error(_("No file info retrieved"))
 
 
     def checkNameSize(self):
@@ -404,6 +404,11 @@ class SimpleHoster(Hoster):
 
         self.checkNameSize()
         self.checkStatus()
+
+
+    #: Deprecated
+    def getFileInfo(self):
+        return self.checkInfo()
 
 
     def _updateInfo(self, info):
