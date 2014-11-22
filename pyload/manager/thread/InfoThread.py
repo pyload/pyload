@@ -190,10 +190,11 @@ class InfoThread(PluginThread):
                 self.m.log.debug("Run Info Fetching for %s" % pluginname)
                 for result in plugin.getInfo(process):
                     #result = [ .. (name, size, status, url) .. ]
-                    if not type(result) == list: result = [result]
+                    if not type(result) == list:
+                        result = [result]
 
                     for res in result:
-                        self.m.infoCache[res[3]] = res
+                        self.m.infoCache[res[3]] = res  #: why don't assign res dict directly?
 
                     cb(pluginname, result)
 

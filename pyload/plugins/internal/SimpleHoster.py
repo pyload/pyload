@@ -11,8 +11,9 @@ from pyload.datatype.PyFile import statusMap as _statusMap
 from pyload.network.CookieJar import CookieJar
 from pyload.network.RequestFactory import getURL
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.Plugin import Fail
 from pyload.utils import fixup, parseFileSize
+
+
 #@TODO: Adapt and move to PyFile in 0.4.10
 statusMap = {v: k for k, v in _statusMap.iteritems()}
 
