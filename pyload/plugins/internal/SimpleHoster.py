@@ -15,7 +15,7 @@ from pyload.utils import fixup, parseFileSize
 
 
 #@TODO: Adapt and move to PyFile in 0.4.10
-statusMap = {v: k for k, v in _statusMap.iteritems()}
+statusMap = dict((v, k) for k, v in _statusMap.iteritems())
 
 
 def replace_patterns(string, ruleslist):
@@ -106,7 +106,7 @@ def _getDirectLink(self, url):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.60"
 
     __pattern__ = r'^unmatchable$'
 
