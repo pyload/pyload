@@ -62,23 +62,12 @@ class RequestFactory():
 
     def getURL(self, *args, **kwargs):
         """ see HTTPRequest for argument list """
-        cj = None
-
-        if 'cookies' in kwargs:
-            if isinstance(kwargs['cookies'], CookieJar):
-                cj = kwargs['cookies']
-            elif isinstance(kwargs['cookies'], list):
-                cj = CookieJar(None)
-                for cookie in kwargs['cookies']:
-                    if isinstance(cookie, tuple) and len(cookie) == 3:
-                        cj.setCookie(*cookie)
-
-        h = HTTPRequest(cj, self.getOptions())
+        h = HTTPRequest(None, self.getOptions())
         try:
             rep = h.load(*args, **kwargs)
         finally:
             h.close()
-
+            
         return rep
 
     def getCookieJar(self, pluginName, account=None):

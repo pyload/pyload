@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
+    
     @author: RaNaN
 """
 
@@ -25,11 +25,11 @@ from httplib import responses
 from logging import getLogger
 from cStringIO import StringIO
 
-from module.plugins.Plugin import Abort, Fail
+from module.plugins.Plugin import Abort
 
 def myquote(url):
     return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
-
+    
 def myurlencode(data):
     data = dict(data)
     return urlencode(dict((x.encode('utf_8') if isinstance(x, unicode) else x, \
@@ -79,7 +79,7 @@ class HTTPRequest():
         if hasattr(pycurl, "AUTOREFERER"):
             self.c.setopt(pycurl.AUTOREFERER, 1)
         self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
-        self.c.setopt(pycurl.LOW_SPEED_TIME, 60)
+        self.c.setopt(pycurl.LOW_SPEED_TIME, 30)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
 
         #self.c.setopt(pycurl.VERBOSE, 1)
@@ -181,7 +181,7 @@ class HTTPRequest():
             self.getCookies()
 
 
-    def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False, follow_location=True, save_cookies=True):
+    def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False):
         """ load and returns a given page """
 
         self.setRequestContext(url, get, post, referer, cookies, multipart)
@@ -190,27 +190,24 @@ class HTTPRequest():
 
         self.c.setopt(pycurl.HTTPHEADER, self.headers)
 
-        if not follow_location:
+        if just_header:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)
-
-        if just_header:
             self.c.setopt(pycurl.NOBODY, 1)
+            self.c.perform()
+            rep = self.header
 
-        self.c.perform()
-        rep = self.header if just_header else self.getResponse()
-
-        if not follow_location:
             self.c.setopt(pycurl.FOLLOWLOCATION, 1)
-
-        if just_header:
             self.c.setopt(pycurl.NOBODY, 0)
+
+        else:
+            self.c.perform()
+            rep = self.getResponse()
 
         self.c.setopt(pycurl.POSTFIELDS, "")
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.code = self.verifyHeader()
 
-        if save_cookies:
-            self.addCookies()
+        self.addCookies()
 
         if decode:
             rep = self.decodeResponse(rep)
@@ -231,13 +228,11 @@ class HTTPRequest():
 
     def getResponse(self):
         """ retrieve response from string io """
-        if self.rep is None:
-            return ""
-        else:
-            value = self.rep.getvalue()
-            self.rep.close()
-            self.rep = StringIO()
-            return value
+        if self.rep is None: return ""
+        value = self.rep.getvalue()
+        self.rep.close()
+        self.rep = StringIO()
+        return value
 
     def decodeResponse(self, rep):
         """ decode with correct encoding, relies on header """
@@ -260,7 +255,7 @@ class HTTPRequest():
             #self.log.debug("Decoded %s" % encoding )
             if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
-
+            
             decoder = getincrementaldecoder(encoding)("replace")
             rep = decoder.decode(rep, True)
 
@@ -268,7 +263,6 @@ class HTTPRequest():
 
         except LookupError:
             self.log.debug("No Decoder foung for %s" % encoding)
-
         except Exception:
             self.log.debug("Error when decoding string from %s." % encoding)
 
@@ -278,15 +272,13 @@ class HTTPRequest():
         """ writes response """
         if self.rep.tell() > 1000000 or self.abort:
             rep = self.getResponse()
+            if self.abort: raise Abort()
+            f = open("response.dump", "wb")
+            f.write(rep)
+            f.close()
+            raise Exception("Loaded Url exceeded limit")
 
-            if self.abort:
-                raise Abort()
-
-            with open("response.dump", "wb") as f:
-                f.write(rep)
-            raise Fail("Loaded url exceeded size limit")
-        else:
-            self.rep.write(buf)
+        self.rep.write(buf)
 
     def writeHeader(self, buf):
         """ writes header """
@@ -311,4 +303,4 @@ if __name__ == "__main__":
     url = "http://pyload.org"
     c = HTTPRequest()
     print c.load(url)
-
+    
