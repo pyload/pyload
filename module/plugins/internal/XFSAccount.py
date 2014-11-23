@@ -2,7 +2,7 @@
 
 import re
 
-from time import localtime, mktime, strptime
+from time import gmtime, mktime, strptime
 from urlparse import urljoin
 
 from module.plugins.Account import Account
@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
@@ -67,7 +67,7 @@ class XFSAccount(Account):
             self.logDebug("Expire date: " + expiredate)
 
             try:
-                validuntil = mktime(strptime(expiredate, "%d %B %Y")) + 86400
+                validuntil = mktime(strptime(expiredate, "%d %B %Y"))
 
             except Exception, e:
                 self.logError(e)
@@ -75,7 +75,7 @@ class XFSAccount(Account):
             else:
                 self.logDebug("Valid until: %s" % validuntil)
 
-                if validuntil > mktime(localtime()):
+                if validuntil > mktime(gmtime()):
                     premium = True
                     trafficleft = -1
                 else:
