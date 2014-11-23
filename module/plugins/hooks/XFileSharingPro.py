@@ -8,7 +8,7 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_hoster_list", "bool", "Load listed hosters only", False),
@@ -23,8 +23,8 @@ class XFileSharingPro(Hook):
 
 
     # event_list = ["pluginConfigChanged"]
-    regexp = {'hoster' : (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}',
-                          r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w{12}\W?'),
+    regexp = {'hoster' : (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}(?:[\W_ ]|$)',
+                          r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w+'),
               'crypter': (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:user|folder)s?/\w+',
                           r'https?://(?:[^/]+\.)?(%s)/(?:user|folder)s?/\w+')}
 
