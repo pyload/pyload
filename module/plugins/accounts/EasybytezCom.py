@@ -2,8 +2,6 @@
 
 import re
 
-from time import mktime, strptime, gmtime
-
 from module.plugins.internal.XFSAccount import XFSAccount
 
 

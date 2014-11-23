@@ -19,7 +19,6 @@ from module.utils import fixup, parseFileSize
 statusMap = dict((v, k) for k, v in _statusMap.iteritems())
 
 
-#@TODO: Remove in 0.4.10 and redirect to self.error instead
 def _error(self, reason, type):
         if not reason and not type:
             type = "unknown"
@@ -57,12 +56,13 @@ def parseHtmlTagAttrValue(attr_name, tag):
     return m.group(2) if m else None
 
 
-def parseHtmlForm(attr_str, html, input_names=None):
-    for form in re.finditer(r"(?P<tag><form[^>]*%s[^>]*>)(?P<content>.*?)</?(form|body|html)[^>]*>" % attr_str,
+def parseHtmlForm(attr_str, html, input_names={}):
+    for form in re.finditer(r"(?P<TAG><form[^>]*%s[^>]*>)(?P<CONTENT>.*?)</?(form|body|html)[^>]*>" % attr_str,
                             html, re.S | re.I):
         inputs = {}
-        action = parseHtmlTagAttrValue("action", form.group('tag'))
-        for inputtag in re.finditer(r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('content'), re.S | re.I):
+        action = parseHtmlTagAttrValue("action", form.group('TAG'))
+
+        for inputtag in re.finditer(r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('CONTENT'), re.S | re.I):
             name = parseHtmlTagAttrValue("name", inputtag.group(1))
             if name:
                 value = parseHtmlTagAttrValue("value", inputtag.group(1))
@@ -71,7 +71,7 @@ def parseHtmlForm(attr_str, html, input_names=None):
                 else:
                     inputs[name] = value
 
-        if isinstance(input_names, dict):
+        if input_names:
             # check input attributes
             for key, val in input_names.iteritems():
                 if key in inputs:
@@ -111,23 +111,21 @@ def timestamp():
 
 #@TODO: Move to hoster class in 0.4.10
 def _getDirectLink(self, url):
-    self.req.http.c.setopt(FOLLOWLOCATION, 0)
+    header = self.load(url, ref=True, just_header=True, decode=True)
 
-    html = self.load(url, ref=True, decode=True)
+    if not 'location' in header or not header['location']:
+        return ""
 
-    self.req.http.c.setopt(FOLLOWLOCATION, 1)
+    if header['code'] != 302 or 'content-type' not in header or header['content-type'] != "text/plain":
+        return ""
 
-    if self.getInfo(url, html)['status'] is not 2:
-        try:
-            return re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I).group(1).rstrip()  #@TODO: Remove .rstrip() in 0.4.10
-        except:
-            pass
+    return header['location']
 
 
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
 
     __pattern__ = r'^unmatchable$'
 
@@ -419,14 +417,15 @@ class SimpleHoster(Hoster):
 
 
     def handleDirect(self):
-        self.link = _getDirectLink(self, self.pyfile.url)
+        link = _getDirectLink(self, self.pyfile.url)
 
-        if self.link:
+        if link:
             self.logInfo(_("Direct download link detected"))
+
+            self.link = link
 
             self._updateInfo(self.getInfo(self.pyfile.url))
             self.checkNameSize()
-
         else:
             self.logDebug(_("Direct download link not found"))
 
@@ -480,7 +479,7 @@ class SimpleHoster(Hoster):
         self.retry(max_tries=max_tries, reason=_("Download limit reached"))
 
 
-    def parseHtmlForm(self, attr_str='', input_names=None):
+    def parseHtmlForm(self, attr_str='', input_names={}):
         return parseHtmlForm(attr_str, self.html, input_names)
 
 
