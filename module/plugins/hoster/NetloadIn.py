@@ -223,17 +223,18 @@ class NetloadIn(Hoster):
 		  break
 
 	    if self.check_free_wait(response_page):
-	      self.logDebug("Had to wait for next free slot:")
+	      self.logDebug("Had to wait for next free slot, trying again")
+	      return self.download_html()
 	    else:
 	      download_url = self.get_file_url(response_page)
 	      self.logDebug("Download URL after get_file: " + download_url)
-	    if not download_url.startswith("http://"):
+	      if not download_url.startswith("http://"):
 	    	self.error("download url: %s" % download_url)
-	    self.wait()
+	      self.wait()
 
-	    self.url = download_url
-	    #self.logDebug("download_url: " + download_url)
-	    break
+	      self.url = download_url
+	      #self.logDebug("download_url: " + download_url)
+	      break
         return True
 
     def get_file_url(self, page):
