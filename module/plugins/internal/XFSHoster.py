@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'^unmatchable$'
 
@@ -108,7 +108,7 @@ class XFSHoster(SimpleHoster):
 
 
     def getDownloadLink(self):
-        for i in xrange(1, 5):
+        for i in xrange(1, 6):
             self.logDebug("Getting download link: #%d" % i)
 
             self.checkErrors()

@@ -100,6 +100,7 @@ def parseFileInfo(plugin, url="", html=""):
 
 
 #@TODO: Remove in 0.4.10
+#@NOTE: Every plugin must have own parseInfo classmethod to work with 0.4.10
 def create_getInfo(plugin):
     return lambda urls: [(info['name'], info['size'], info['status'], info['url']) for info in plugin.parseInfo(urls)]
 
@@ -126,7 +127,7 @@ def _getDirectLink(self, url):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.61"
 
     __pattern__ = r'^unmatchable$'
 
@@ -197,7 +198,7 @@ class SimpleHoster(Hoster):
 
     @classmethod
     def getInfo(cls, url="", html=""):
-        info = {'name': url or _("Unknown"), 'size': 0, 'status': 3, 'url': url}
+        info = {'name': urlparse(url).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3, 'url': url or ""}
 
         if not html:
             if url:
