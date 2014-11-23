@@ -158,7 +158,7 @@ class NetloadIn(Hoster):
 
 
     def download_html(self):
-        self.logDebug("Netload: Entering download_html (%s)" % self.url)
+        #self.logDebug("Netload: Entering download_html (%s)" % self.url)
         page = self.load(self.url, decode=True)
         t = time() + 30
 
@@ -180,7 +180,7 @@ class NetloadIn(Hoster):
                     self.pyfile.name = name
 
         captchawaited = False
-        for i in range(2):
+        for i in range(5):
 
             if not page:
                 page = self.load(self.url)
@@ -258,11 +258,9 @@ class NetloadIn(Hoster):
 
     def proceed(self, url):
         self.logDebug("Netload: Downloading.." + url)
-
         self.download(url, disposition=True)
 
         check = self.checkDownload({"empty": re.compile(r"^$"), "offline": re.compile("The file was deleted")})
-
         if check == "empty":
             self.logInfo(_("Downloaded File was empty"))
             self.retry()
