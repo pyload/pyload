@@ -2,7 +2,7 @@
 
 import re
 
-from time import gmtime, mktime, strptime
+from time import localtime, mktime, strptime
 from urlparse import urljoin
 
 from module.plugins.Account import Account
@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
@@ -63,18 +63,22 @@ class XFSAccount(Account):
             self.logDebug("Expire date: " + expiredate)
 
             try:
-                validuntil = mktime(strptime(expiredate, "%d %B %Y"))
+                validuntil = mktime(strptime(expiredate, "%d %B %Y")) + 86400
 
             except Exception, e:
                 self.logError(e)
 
             else:
-                if validuntil > mktime(gmtime()):
+                self.logDebug("Valid until: %s" % validuntil)
+
+                if validuntil > mktime(localtime()):
                     premium = True
                     trafficleft = -1
                 else:
                     premium = False
                     validuntil = None  #: registered account type (not premium)
+        else:
+            self.logDebug("VALID_UNTIL_PATTERN not found")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
@@ -98,6 +102,8 @@ class XFSAccount(Account):
 
             except Exception, e:
                 self.logError(e)
+        else:
+            self.logDebug("TRAFFIC_LEFT_PATTERN not found")
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
