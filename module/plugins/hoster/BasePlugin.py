@@ -14,14 +14,14 @@ from module.utils import remove_chars
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = r'^unmatchable$'
 
     __description__ = """Base Plugin when any other didnt fit"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]]
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     @classmethod

@@ -23,7 +23,7 @@ class XFileSharingPro(Hook):
 
 
     # event_list = ["pluginConfigChanged"]
-    regexp = {'hoster' : (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}(?:[\W_ ]|$)',
+    regexp = {'hoster' : (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
                           r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w+'),
               'crypter': (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:user|folder)s?/\w+',
                           r'https?://(?:[^/]+\.)?(%s)/(?:user|folder)s?/\w+')}
