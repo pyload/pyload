@@ -7,7 +7,7 @@ from random import random
 
 class CaptchaService:
     __name__    = "CaptchaService"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"
@@ -52,7 +52,7 @@ class CaptchaService:
 
 class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__     = "GPLv3"
@@ -92,7 +92,6 @@ class ReCaptcha(CaptchaService):
                 raise TypeError(errmsg)
 
         js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key})
-
         try:
             challenge = re.search("challenge : '(.+?)',", js).group(1)
             server = re.search("server : '(.+?)',", js).group(1)
@@ -100,6 +99,8 @@ class ReCaptcha(CaptchaService):
             self.plugin.error("ReCaptcha challenge pattern not found")
 
         result = self.result(server, challenge)
+
+        self.plugin.logDebug("ReCaptcha result: %s" % result, "challenge: %s" % challenge)
 
         return challenge, result
 
@@ -111,7 +112,7 @@ class ReCaptcha(CaptchaService):
 
 class AdsCaptcha(CaptchaService):
     __name__    = "AdsCaptcha"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """AdsCaptcha captcha service plugin"""
     __license__     = "GPLv3"
@@ -154,7 +155,6 @@ class AdsCaptcha(CaptchaService):
         CaptchaId, PublicKey = key
 
         js = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx", get={'CaptchaId': CaptchaId, 'PublicKey': PublicKey})
-
         try:
             challenge = re.search("challenge: '(.+?)',", js).group(1)
             server = re.search("server: '(.+?)',", js).group(1)
@@ -162,6 +162,8 @@ class AdsCaptcha(CaptchaService):
             self.plugin.error("AdsCaptcha challenge pattern not found")
 
         result = self.result(server, challenge)
+
+        self.plugin.logDebug("AdsCaptcha result: %s" % result, "challenge: %s" % challenge)
 
         return challenge, result
 
@@ -173,7 +175,7 @@ class AdsCaptcha(CaptchaService):
 
 class SolveMedia(CaptchaService):
     __name__    = "SolveMedia"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__     = "GPLv3"
@@ -201,6 +203,8 @@ class SolveMedia(CaptchaService):
             self.plugin.error("SolveMedia challenge pattern not found")
 
         result = self.result(server, challenge)
+
+        self.plugin.logDebug("SolveMedia result: %s" % result, "challenge: %s" % challenge)
 
         return challenge, result
 
