@@ -17,4 +17,4 @@ class DdlstorageComFolder(DeadCrypter):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-getInfo = create_getInfo(SpeedLoadOrg)
+getInfo = create_getInfo(DdlstorageComFolder)
