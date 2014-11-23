@@ -8,13 +8,12 @@ from urlparse import urlparse
 from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.SimpleHoster import create_getInfo
 from module.plugins.Hoster import Hoster
-from module.utils import remove_chars
 
 
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'^unmatchable$'
 
@@ -37,7 +36,7 @@ class BasePlugin(Hoster):
     def process(self, pyfile):
         """main function"""
 
-        self.getInfo(pyfile.url)
+        pyfile.name = self.getInfo(pyfile.url)['name']
 
         if pyfile.url.startswith("http"):
             for _i in xrange(2):
@@ -74,6 +73,9 @@ class BasePlugin(Hoster):
         else:
             self.fail(_("No plugin matched"))
 
+        # if self.checkDownload({'empty': re.compile(r"^$")}) is "empty":
+            # self.fail(_("Empty file"))
+
 
     def downloadFile(self, pyfile):
         url = pyfile.url
@@ -100,24 +102,5 @@ class BasePlugin(Hoster):
                     url = '%s/%s' % (base, unquote(header['location']))
             else:
                 break
-
-        if 'content-disposition' in header:
-            self.logDebug("Content-Disposition: " + header['content-disposition'])
-
-            m = re.search("filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", header['content-disposition'])
-            if m:
-                disp = m.groupdict()
-
-                self.logDebug(disp)
-
-                if not disp['enc']:
-                    disp['enc'] = 'utf-8'
-
-                name = remove_chars(disp['name'], "\"';").strip()
-                name = unicode(unquote(name), disp['enc'])
-
-                pyfile.name = name
-
-                self.logDebug("Filename changed to: " + name)
 
         self.download(url, disposition=True)
