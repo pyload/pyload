@@ -19,6 +19,7 @@ from module.utils import fixup, parseFileSize
 statusMap = dict((v, k) for k, v in _statusMap.iteritems())
 
 
+#@TODO: Remove in 0.4.10 and redirect to self.error instead
 def _error(self, reason, type):
         if not reason and not type:
             type = "unknown"
@@ -479,7 +480,7 @@ class SimpleHoster(Hoster):
         self.retry(max_tries=max_tries, reason=_("Download limit reached"))
 
 
-    def parseHtmlForm(self, attr_str='', input_names={}):
+    def parseHtmlForm(self, attr_str="", input_names={}):
         return parseHtmlForm(attr_str, self.html, input_names)
 
 
