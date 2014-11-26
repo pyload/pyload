@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.DeadCrypter import DeadCrypter
+from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class HotfileCom(DeadCrypter):
@@ -14,3 +14,6 @@ class HotfileCom(DeadCrypter):
     __description__ = """Hotfile.com folder decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
+
+
+getInfo = create_getInfo(HotfileCom)

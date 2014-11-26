@@ -16,7 +16,7 @@ from pyload.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.26"
 
     __pattern__ = r'^unmatchable$'
 
@@ -30,15 +30,13 @@ class XFSHoster(SimpleHoster):
     HOSTER_DOMAIN = None
     HOSTER_NAME   = None
 
-    URL_REPLACEMENTS = [(r'/(?:embed-)?(\w{12}).*', r'/\1')]  #: plus support embedded files
-
     TEXT_ENCODING     = False
     COOKIES           = [(HOSTER_DOMAIN, "lang", "english")]
     CHECK_DIRECT_LINK = None
-    MULTI_HOSTER      = False
+    MULTI_HOSTER      = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
     INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
-    NAME_PATTERN = r'(>Filename:</b></td><td nowrap>|name="fname" value="|<span class="name">|<[Tt]itle>.*?Download )(?P<N>.+?)(\s*<|")'
+    NAME_PATTERN = r'(>Filename:</b></td><td nowrap>|name="fname" value="|<span class="name">)(?P<N>.+?)(\s*<|")'
     SIZE_PATTERN = r'(>Size:</b></td><td>|>File:.*>|<span class="size">)(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
@@ -48,13 +46,16 @@ class XFSHoster(SimpleHoster):
     PREMIUM_ONLY_PATTERN = r'>This file is available for Premium Users only'
     ERROR_PATTERN        = r'(?:class=["\']err["\'].*?>|<[Cc]enter><b>|>Error</td>|>\(ERROR:)(?:\s*<.+?>\s*)*(.+?)(?:["\']|<|\))'
 
-    OVR_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
-    LINK_PATTERN     = None  #: final download url pattern
+    LEECH_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
+    LINK_PATTERN       = None  #: final download url pattern
 
     CAPTCHA_PATTERN     = r'(https?://[^"\']+?/captchas?/[^"\']+)'
     CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
     RECAPTCHA_PATTERN   = None
     SOLVEMEDIA_PATTERN  = None
+
+    FORM_PATTERN    = None
+    FORM_INPUTS_MAP = None  #: dict passed as input_names to parseHtmlForm
 
 
     def setup(self):
@@ -108,7 +109,7 @@ class XFSHoster(SimpleHoster):
 
 
     def getDownloadLink(self):
-        for i in xrange(1, 5):
+        for i in xrange(1, 6):
             self.logDebug("Getting download link: #%d" % i)
 
             self.checkErrors()
@@ -145,7 +146,7 @@ class XFSHoster(SimpleHoster):
         #only tested with easybytez.com
         self.html = self.load("http://www.%s/" % self.HOSTER_DOMAIN)
 
-        action, inputs = self.parseHtmlForm('')
+        action, inputs = self.parseHtmlForm()
 
         upload_id = "%012d" % int(random() * 10 ** 12)
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
@@ -186,9 +187,9 @@ class XFSHoster(SimpleHoster):
             self.fail(stmsg)
 
         #get easybytez.com link for uploaded file
-        m = re.search(self.OVR_LINK_PATTERN, self.html)
+        m = re.search(self.LEECH_LINK_PATTERN, self.html)
         if m is None:
-            self.error(_("OVR_LINK_PATTERN not found"))
+            self.error(_("LEECH_LINK_PATTERN not found"))
 
         header = self.load(m.group(1), just_header=True, decode=True)
 
@@ -259,10 +260,10 @@ class XFSHoster(SimpleHoster):
 
 
     def getPostParameters(self):
-        if hasattr(self, "FORM_PATTERN"):
-            action, inputs = self.parseHtmlForm(self.FORM_PATTERN)
+        if self.FORM_PATTERN or self.FORM_INPUTS_MAP:
+            action, inputs = self.parseHtmlForm(self.FORM_PATTERN or "", self.FORM_INPUTS_MAP or {})
         else:
-            action, inputs = self.parseHtmlForm(input_names={"op": re.compile("^download")})
+            action, inputs = self.parseHtmlForm(input_names={'op': re.compile(r'^download')})
 
         if not inputs:
             action, inputs = self.parseHtmlForm('F1')
@@ -313,8 +314,8 @@ class XFSHoster(SimpleHoster):
         m = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.S)
         if m:
             captcha_div = m.group(1)
+            numerals    = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
             self.logDebug(captcha_div)
-            numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
             inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
             self.logDebug("Captcha code: %s" % inputs['code'], numerals)
             return 2
@@ -324,9 +325,10 @@ class XFSHoster(SimpleHoster):
             captcha_key = re.search(self.RECAPTCHA_PATTERN, self.html).group(1)
         except:
             captcha_key = recaptcha.detect_key()
+        else:
+            self.logDebug("ReCaptcha key: %s" % captcha_key)
 
         if captcha_key:
-            self.logDebug("ReCaptcha key: %s" % captcha_key)
             inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
             return 3
 
@@ -335,9 +337,10 @@ class XFSHoster(SimpleHoster):
             captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.html).group(1)
         except:
             captcha_key = solvemedia.detect_key()
+        else:
+            self.logDebug("SolveMedia key: %s" % captcha_key)
 
         if captcha_key:
-            self.logDebug("SolveMedia key: %s" % captcha_key)
             inputs['adcopy_challenge'], inputs['adcopy_response'] = solvemedia.challenge(captcha_key)
             return 4
 

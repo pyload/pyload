@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.DeadCrypter import DeadCrypter
+from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class FilesonicCom(DeadCrypter):
@@ -13,3 +13,6 @@ class FilesonicCom(DeadCrypter):
     __description__ = """Filesonic.com folder decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+
+
+getInfo = create_getInfo(FilesonicCom)

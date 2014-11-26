@@ -1,20 +1,15 @@
 # -*- coding: utf-8 -*-
 
+from urlparse import urlparse
+
 from pyload.plugins.internal.Hoster import Hoster as _Hoster
-
-
-def create_getInfo(plugin):
-
-    def getInfo(urls):
-        yield map(lambda url: ('#N/A: ' + url, 0, 1, url), urls)
-
-    return getInfo
+from pyload.plugins.internal.SimpleHoster import create_getInfo
 
 
 class DeadHoster(_Hoster):
     __name__    = "DeadHoster"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'^unmatchable$'
 
@@ -23,5 +18,14 @@ class DeadHoster(_Hoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
+    @classmethod
+    def getInfo(cls, url="", html=""):
+        return {'name': urlparse(url).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 1, 'url': url or ""}
+
+
     def setup(self):
-        self.offline("Hoster is no longer available")
+        self.pyfile.error = "Hoster is no longer available"
+        self.offline()  #@TODO: self.offline("Hoster is no longer available")
+
+
+getInfo = create_getInfo(DeadHoster)

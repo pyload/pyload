@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.DeadCrypter import DeadCrypter
+from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class WiiReloadedOrg(DeadCrypter):
@@ -14,3 +14,6 @@ class WiiReloadedOrg(DeadCrypter):
     __description__ = """Wii-Reloaded.org decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("hzpz", None)]
+
+
+getInfo = create_getInfo(WiiReloadedOrg)

@@ -5,14 +5,14 @@ import re
 from urlparse import urlparse
 
 from pyload.plugins.internal.Crypter import Crypter
-from pyload.plugins.internal.SimpleHoster import SimpleHoster, replace_patterns, set_cookies
+from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
 from pyload.utils import fixup
 
 
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']

@@ -2,10 +2,7 @@
 
 import re
 
-from time import mktime, strptime, gmtime
-
 from pyload.plugins.internal.XFSAccount import XFSAccount
-from pyload.utils import parseFileSize
 
 
 class EasybytezCom(XFSAccount):

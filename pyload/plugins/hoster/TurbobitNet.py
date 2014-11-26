@@ -17,7 +17,7 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class TurbobitNet(SimpleHoster):
     __name__    = "TurbobitNet"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
 
@@ -27,7 +27,7 @@ class TurbobitNet(SimpleHoster):
                        ("prOq", None)]
 
 
-    URL_REPLACEMENTS = [(__pattern__, "http://turbobit.net/\g<ID>.html")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://turbobit.net/\g<ID>.html")]
 
     COOKIES = [("turbobit.net", "user_lang", "en")]
 

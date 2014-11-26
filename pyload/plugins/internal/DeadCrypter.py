@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
+from urlparse import urlparse
+
 from pyload.plugins.internal.Crypter import Crypter as _Crypter
+from pyload.plugins.internal.SimpleCrypter import create_getInfo
 
 
 class DeadCrypter(_Crypter):
     __name__    = "DeadCrypter"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'^unmatchable$'
 
@@ -15,5 +18,14 @@ class DeadCrypter(_Crypter):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
+    @classmethod
+    def getInfo(cls, url="", html=""):
+        return {'name': urlparse(url).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 1, 'url': url or ""}
+
+
     def setup(self):
-        self.offline("Crypter is no longer available")
+        self.pyfile.error = "Crypter is no longer available"
+        self.offline()  #@TODO: self.offline("Crypter is no longer available")
+
+
+getInfo = create_getInfo(DeadCrypter)

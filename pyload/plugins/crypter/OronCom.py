@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.DeadCrypter import DeadCrypter
+from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class OronCom(DeadCrypter):
@@ -14,3 +14,6 @@ class OronCom(DeadCrypter):
     __description__ = """Oron.com folder decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("DHMH", "webmaster@pcProfil.de")]
+
+
+getInfo = create_getInfo(OronCom)

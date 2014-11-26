@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.DeadCrypter import DeadCrypter
+from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class StealthTo(DeadCrypter):
@@ -14,3 +14,6 @@ class StealthTo(DeadCrypter):
     __description__ = """Stealth.to decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("spoob", "spoob@pyload.org")]
+
+
+getInfo = create_getInfo(StealthTo)

@@ -8,11 +8,11 @@ from pyload.plugins.internal.Addon import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.22"
+    __version__ = "0.24"
 
     __config__ = [("activated", "bool", "Activated", True),
-                  ("use_hoster_list", "bool", "Load listed hosters only", False),
-                  ("use_crypter_list", "bool", "Load listed crypters only", False),
+                  ("use_hoster_list", "bool", "Load listed hosters only", True),
+                  ("use_crypter_list", "bool", "Load listed crypters only", True),
                   ("use_builtin_list", "bool", "Load built-in plugin list", True),
                   ("hoster_list", "str", "Hoster list (comma separated)", ""),
                   ("crypter_list", "str", "Crypter list (comma separated)", "")]
@@ -23,8 +23,8 @@ class XFileSharingPro(Hook):
 
 
     # event_list = ["pluginConfigChanged"]
-    regexp = {'hoster' : (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}',
-                          r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w{12}\W?'),
+    regexp = {'hoster' : (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
+                          r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w+'),
               'crypter': (r'https?://(?:www\.)?([\w^_]+(?:\.[a-zA-Z]{2,})+(?:\:\d+)?)/(?:user|folder)s?/\w+',
                           r'https?://(?:[^/]+\.)?(%s)/(?:user|folder)s?/\w+')}
 

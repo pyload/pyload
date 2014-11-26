@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.DeadCrypter import DeadCrypter
+from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class SpeedLoadOrg(DeadCrypter):
@@ -14,3 +14,6 @@ class SpeedLoadOrg(DeadCrypter):
     __description__ = """Speedload decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
+
+
+getInfo = create_getInfo(SpeedLoadOrg)

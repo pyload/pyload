@@ -6,7 +6,7 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DataportCz(SimpleHoster):
     __name__    = "DataportCz"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
     __pattern__ = r'http://(?:www\.)?dataport\.cz/file/(.*)'
 
@@ -18,8 +18,6 @@ class DataportCz(SimpleHoster):
     NAME_PATTERN = r'<span itemprop="name">(?P<N>[^<]+)</span>'
     SIZE_PATTERN = r'<td class="fil">Velikost</td>\s*<td>(?P<S>[^<]+)</td>'
     OFFLINE_PATTERN = r'<h2>Soubor nebyl nalezen</h2>'
-
-    URL_REPLACEMENTS = [(__pattern__, r'http://www.dataport.cz/file/\1')]
 
     CAPTCHA_PATTERN = r'<section id="captcha_bg">\s*<img src="(.*?)"'
     FREE_SLOTS_PATTERN = ur'Počet volných slotů: <span class="darkblue">(\d+)</span><br />'

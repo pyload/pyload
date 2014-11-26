@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.DeadCrypter import DeadCrypter
+from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class ILoadTo(DeadCrypter):
@@ -14,3 +14,6 @@ class ILoadTo(DeadCrypter):
     __description__ = """Iload.to decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("hzpz", None)]
+
+
+getInfo = create_getInfo(ILoadTo)

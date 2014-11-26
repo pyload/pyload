@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-#
-# Test links:
-# http://hugefiles.net/prthf9ya4w6s
+
+import re
 
 from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
@@ -9,7 +8,7 @@ from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class HugefilesNet(XFSHoster):
     __name__    = "HugefilesNet"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?hugefiles\.net/\w{12}'
 
@@ -21,6 +20,8 @@ class HugefilesNet(XFSHoster):
     HOSTER_DOMAIN = "hugefiles.net"
 
     SIZE_PATTERN = r'File Size:</span>\s*<span[^>]*>(?P<S>[^<]+)</span></div>'
+
+    FORM_INPUTS_MAP = {'ctype': re.compile(r'\d+')}
 
 
 getInfo = create_getInfo(HugefilesNet)
