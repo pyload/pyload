@@ -8,7 +8,7 @@ from pyload.plugins.internal.Captcha import Captcha
 class SolveMedia(Captcha):
     __name__    = "SolveMedia"
     __type__    = "captcha"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__     = "GPLv3"
@@ -33,9 +33,11 @@ class SolveMedia(Captcha):
                                   html).group(1)
             server = "http://api.solvemedia.com/papi/media"
         except:
-            self.plugin.error("SolveMedia challenge pattern not found")
+            self.plugin.error(_("SolveMedia challenge pattern not found"))
 
         result = self.result(server, challenge)
+
+        self.plugin.logDebug("SolveMedia result: %s" % result, "challenge: %s" % challenge)
 
         return challenge, result
 

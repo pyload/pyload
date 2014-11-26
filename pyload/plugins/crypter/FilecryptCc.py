@@ -6,7 +6,7 @@ import re
 
 from Crypto.Cipher import AES
 
-from module.plugins.Crypter import Crypter
+from pyload.plugins.Crypter import Crypter
 
 
 class FilecryptCc(Crypter):
@@ -18,7 +18,7 @@ class FilecryptCc(Crypter):
 
     __description__ = """Filecrypt.cc decrypter plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "")]
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  #@TODO: Extend SimpleCrypter

@@ -8,7 +8,7 @@ from pyload.plugins.internal.Captcha import Captcha
 class ReCaptcha(Captcha):
     __name__    = "ReCaptcha"
     __type__    = "captcha"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__     = "GPLv3"
@@ -48,14 +48,15 @@ class ReCaptcha(Captcha):
                 raise TypeError(errmsg)
 
         js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key})
-
         try:
             challenge = re.search("challenge : '(.+?)',", js).group(1)
             server = re.search("server : '(.+?)',", js).group(1)
         except:
-            self.plugin.error("ReCaptcha challenge pattern not found")
+            self.plugin.error(_("ReCaptcha challenge pattern not found"))
 
         result = self.result(server, challenge)
+
+        self.plugin.logDebug("ReCaptcha result: %s" % result, "challenge: %s" % challenge)
 
         return challenge, result
 

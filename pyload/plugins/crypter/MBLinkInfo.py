@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
+from pyload.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class MBLinkInfo(DeadCrypter):

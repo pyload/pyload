@@ -10,7 +10,7 @@ from pyload.plugins.internal.Captcha import Captcha
 class AdsCaptcha(Captcha):
     __name__    = "AdsCaptcha"
     __type__    = "captcha"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """AdsCaptcha captcha service plugin"""
     __license__     = "GPLv3"
@@ -53,14 +53,15 @@ class AdsCaptcha(Captcha):
         CaptchaId, PublicKey = key
 
         js = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx", get={'CaptchaId': CaptchaId, 'PublicKey': PublicKey})
-
         try:
             challenge = re.search("challenge: '(.+?)',", js).group(1)
             server = re.search("server: '(.+?)',", js).group(1)
         except:
-            self.plugin.error("AdsCaptcha challenge pattern not found")
+            self.plugin.error(_("AdsCaptcha challenge pattern not found"))
 
         result = self.result(server, challenge)
+
+        self.plugin.logDebug("AdsCaptcha result: %s" % result, "challenge: %s" % challenge)
 
         return challenge, result
 

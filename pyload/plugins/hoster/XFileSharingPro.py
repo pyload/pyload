@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
+from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class XFileSharingPro(XFSHoster):
@@ -32,7 +32,7 @@ class XFileSharingPro(XFSHoster):
         self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
 
         self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
-        self.HOSTER_NAME = "".join([str.capitalize() for str in self.HOSTER_DOMAIN.split('.')])
+        self.HOSTER_NAME   = "".join([str.capitalize() for str in self.HOSTER_DOMAIN.split('.')])
 
         account = self.core.accountManager.getAccountPlugin(self.HOSTER_NAME)
 

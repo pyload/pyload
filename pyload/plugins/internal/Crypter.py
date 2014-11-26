@@ -3,7 +3,7 @@
 from urlparse import urlparse
 
 from pyload.plugins.Plugin import Plugin
-from pyload.utils import decode, html_unescape, save_filename
+from pyload.utils import decode, html_unescape, safe_filename
 
 
 class Crypter(Plugin):
