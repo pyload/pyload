@@ -21,13 +21,13 @@ from time import time
 from traceback import print_exc
 from threading import Lock
 
-class CaptchaManager():
+
+class CaptchaManager(object):
     def __init__(self, core):
         self.lock = Lock()
         self.core = core
-        self.tasks = [] #task store, for outgoing tasks only
-
-        self.ids = 0 #only for internal purpose
+        self.tasks = []  # task store, for outgoing tasks only
+        self.ids = 0  # only for internal purpose
 
     def newTask(self, img, format, file, result_type):
         task = CaptchaTask(self.ids, img, format, file, result_type)
@@ -52,7 +52,7 @@ class CaptchaManager():
     def getTaskByID(self, tid):
         self.lock.acquire()
         for task in self.tasks:
-            if task.id == str(tid): #task ids are strings
+            if task.id == str(tid):  # task ids are strings
                 self.lock.release()
                 return task
         self.lock.release()
@@ -60,40 +60,34 @@ class CaptchaManager():
 
     def handleCaptcha(self, task):
         cli = self.core.isClientConnected()
-
-        if cli: #client connected -> should solve the captcha
-            task.setWaiting(50) #wait 50 sec for response
-
+        if cli:  # client connected -> should solve the captcha
+            task.setWaiting(50)  #wait 50 sec for response
         for plugin in self.core.hookManager.activePlugins():
             try:
                 plugin.newCaptchaTask(task)
-            except:
+            except Exception:
                 if self.core.debug:
                     print_exc()
-            
-        if task.handler or cli: #the captcha was handled
+        if task.handler or cli:  # the captcha was handled
             self.tasks.append(task)
             return True
-
         task.error = _("No Client connected for captcha decrypting")
-
         return False
 
 
-class CaptchaTask():
+class CaptchaTask(object):
     def __init__(self, id, img, format, file, result_type='textual'):
         self.id = str(id)
         self.captchaImg = img
         self.captchaFormat = format
         self.captchaFile = file
         self.captchaResultType = result_type
-        self.handler = [] #the hook plugins that will take care of the solution
+        self.handler = []  # the hook plugins that will take care of the solution
         self.result = None
         self.waitUntil = None
-        self.error = None #error message
-
+        self.error = None  # error message
         self.status = "init"
-        self.data = {} #handler can store data here
+        self.data = {}  # handler can store data here
 
     def getCaptcha(self):
         return self.captchaImg, self.captchaFormat, self.captchaResultType
@@ -105,15 +99,14 @@ class CaptchaTask():
             try:
                 parts = text.split(',')
                 self.result = (int(parts[0]), int(parts[1]))
-            except:
+            except Exception:
                 self.result = None
 
     def getResult(self):
         try:
             res = self.result.encode("utf8", "replace")
-        except:
+        except Exception:
             res = self.result
-
         return res
 
     def getStatus(self):
@@ -127,7 +120,6 @@ class CaptchaTask():
     def isWaiting(self):
         if self.result or self.error or time() > self.waitUntil:
             return False
-
         return True
 
     def isTextual(self):

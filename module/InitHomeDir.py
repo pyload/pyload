@@ -25,7 +25,8 @@ import sys
 from sys import argv, platform
 
 import __builtin__
-__builtin__.owd = path.abspath("") #original working directory
+
+__builtin__.owd = path.abspath("")  # original working directory
 __builtin__.pypath = path.abspath(path.join(__file__, "..", ".."))
 
 sys.path.append(join(pypath, "module", "lib"))
@@ -80,4 +81,4 @@ if not path.exists(configdir):
 __builtin__.configdir = configdir
 chdir(configdir)
 
-#print "Using %s as working directory." % configdir
+# print "Using %s as working directory." % configdir

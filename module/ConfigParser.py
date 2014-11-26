@@ -12,9 +12,10 @@ from utils import chmod
 IGNORE = (
     "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('hooks', 'UnRar'),
     'EasyShareCom', 'FlyshareCz'
-    )
+)
 
 CONF_VERSION = 1
+
 
 class ConfigParser:
     """
@@ -37,21 +38,15 @@ class ConfigParser:
     
     """
 
-
     def __init__(self):
         """Constructor"""
-        self.config = {} # the config values
-        self.plugin = {} # the config for plugins
+        self.config = {}  # the config values
+        self.plugin = {}  # the config for plugins
         self.oldRemoteData = {}
-
-        self.pluginCB = None # callback when plugin config value is changed
-
+        self.pluginCB = None  # callback when plugin config value is changed
         self.checkVersion()
-
         self.readConfig()
-
         self.deleteOldPlugins()
-
 
     def checkVersion(self, n=0):
         """determines if config need to be copied"""
@@ -83,19 +78,16 @@ class ConfigParser:
                 f.write("version: " + str(CONF_VERSION))
                 f.close()
                 print "Old version of plugin-config replaced"
-        except:
-            if n < 3:
-                sleep(0.3)
-                self.checkVersion(n + 1)
-            else:
+        except Exception:
+            if n >= 3:
                 raise
+            sleep(0.3)
+            self.checkVersion(n + 1)
 
     def readConfig(self):
         """reads the config file"""
-
         self.config = self.parseConfig(join(pypath, "module", "config", "default.conf"))
         self.plugin = self.parseConfig("plugin.conf")
-
         try:
             homeconf = self.parseConfig("pyload.conf")
             if "username" in homeconf["remote"]:
@@ -105,11 +97,9 @@ class ConfigParser:
                     del homeconf["remote"]["password"]
                 del homeconf["remote"]["username"]
             self.updateValues(homeconf, self.config)
-
-        except Exception, e:
+        except Exception:
             print "Config Warning"
             print_exc()
-
 
     def parseConfig(self, config):
         """parses a given configfile"""
@@ -129,7 +119,7 @@ class ConfigParser:
         for line in config:
             comment = line.rfind("#")
             if line.find(":", comment) < 0 > line.find("=", comment) and comment > 0 and line[comment - 1].isspace():
-                line = line.rpartition("#") # removes comments            
+                line = line.rpartition("#")  # removes comments
                 if line[1]:
                     line = line[0]
                 else:
@@ -193,7 +183,6 @@ class ConfigParser:
         f.close()
         return conf
 
-
     def updateValues(self, config, dest):
         """sets the config values from a parsed config file to values in destination"""
 
@@ -205,7 +194,7 @@ class ConfigParser:
                     if option in dest[section]:
                         dest[section][option]["value"] = config[section][option]["value"]
 
-                        #else:
+                        # else:
                         #    dest[section][option] = config[section][option]
 
 
@@ -242,35 +231,32 @@ class ConfigParser:
         """cast value to given format"""
         if type(value) not in (str, unicode):
             return value
-
         elif typ == "int":
             return int(value)
         elif typ == "bool":
-            return True if value.lower() in ("1", "true", "on", "an", "yes") else False
+            return value.lower() in ("1", "true", "on", "an", "yes")
         elif typ == "time":
-            if not value: value = "0:00"
-            if not ":" in value: value += ":00"
+            if not value:
+                value = "0:00"
+            if not ":" in value:
+                value += ":00"
             return value
         elif typ in ("str", "file", "folder"):
             try:
                 return value.encode("utf8")
-            except:
+            except Exception:
                 return value
         else:
             return value
 
-
     def save(self):
         """saves the configs to disk"""
-
         self.saveConfig(self.config, "pyload.conf")
         self.saveConfig(self.plugin, "plugin.conf")
-
 
     def __getitem__(self, section):
         """provides dictonary like access: c['section']['option']"""
         return Section(self, section)
-
 
     def get(self, section, option):
         """get value"""
@@ -280,7 +266,7 @@ class ConfigParser:
                 return val.decode("utf8")
             else:
                 return val
-        except:
+        except Exception:
             return val
 
     def set(self, section, option, value):
@@ -299,7 +285,7 @@ class ConfigParser:
                 return val.decode("utf8")
             else:
                 return val
-        except:
+        except Exception:
             return val
 
     def setPlugin(self, plugin, option, value):
@@ -338,7 +324,7 @@ class ConfigParser:
                 }
 
         values = [x[0] for x in config] + ["desc", "outline"]
-        #delete old values
+        # delete old values
         for item in conf.keys():
             if item not in values:
                 del conf[item]
@@ -348,10 +334,8 @@ class ConfigParser:
         if name in self.plugin:
             del self.plugin[name]
 
-
     def deleteOldPlugins(self):
         """ remove old plugins from config """
-
         for name in IGNORE:
             if name in self.plugin:
                 del self.plugin[name]
@@ -376,17 +360,10 @@ class Section:
 
 if __name__ == "__main__":
     pypath = ""
-
     from time import time
-
     a = time()
-
     c = ConfigParser()
-
     b = time()
-
     print "sec", b - a
-
     print c.config
-
     c.saveConfig(c.config, "user.conf")
