@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2011 RaNaN
+# Copyright (C) 2011 RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
+
+
 class Handler:
     def __init__(self, cli):
         self.cli = cli
