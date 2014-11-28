@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
@@ -109,12 +109,12 @@ class XFSAccount(Account):
         else:
             self.logDebug("TRAFFIC_LEFT_PATTERN not found")
 
-        m = re.finditer(self.LEECH_TRAFFIC_PATTERN, html)
-        if m:
+        leech = [m.groupdict() for m in re.finditer(self.LEECH_TRAFFIC_PATTERN, html)]
+        if leech:
             leechtraffic = 0
             try:
-                for leech in m:
-                    size = leech['S']
+                for traffic in leech:
+                    size = traffic['S']
 
                     if "nlimited" in size:
                         leechtraffic = -1
@@ -122,8 +122,8 @@ class XFSAccount(Account):
                             validuntil = -1
                         break
                     else:
-                        if 'U' in leech:
-                            unit = leech['U']
+                        if 'U' in traffic:
+                            unit = traffic['U']
                         elif isinstance(self.LEECH_TRAFFIC_UNIT, basestring):
                             unit = self.LEECH_TRAFFIC_UNIT
                         else:
