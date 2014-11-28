@@ -117,7 +117,7 @@ def _getDirectLink(self, url):
     if not 'location' in header or not header['location']:
         return ""
 
-    if header['code'] != 302 or 'content-type' in header and header['content-type'] != "text/plain":
+    if header['code'] != 302 or 'content-type' in header and "text/plain" not in header['content-type']:
         return ""
 
     return header['location']
@@ -126,7 +126,7 @@ def _getDirectLink(self, url):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.65"
+    __version__ = "0.66"
 
     __pattern__ = r'^unmatchable$'
 
