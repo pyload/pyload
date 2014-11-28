@@ -126,7 +126,7 @@ def _getDirectLink(self, url):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.62"
+    __version__ = "0.63"
 
     __pattern__ = r'^unmatchable$'
 
@@ -315,8 +315,7 @@ class SimpleHoster(Hoster):
 
             premium_only = 'error' in self.info and self.info['error'] == "premium-only"
 
-            info = self.getInfo(pyfile.url, self.html)
-            self._updateInfo(info)
+            self._updateInfo(self.getInfo(pyfile.url, self.html))
 
             self.checkNameSize()
 
@@ -408,7 +407,9 @@ class SimpleHoster(Hoster):
 
     #: Deprecated
     def getFileInfo(self):
-        return self.checkInfo()
+        self.info = {}
+        self.checkInfo()
+        return self.info
 
 
     def _updateInfo(self, info):
