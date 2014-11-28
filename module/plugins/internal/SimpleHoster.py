@@ -126,7 +126,7 @@ def _getDirectLink(self, url):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.63"
+    __version__ = "0.64"
 
     __pattern__ = r'^unmatchable$'
 
@@ -224,13 +224,19 @@ class SimpleHoster(Hoster):
             except:
                 pass
 
-            for pattern in ("INFO_PATTERN", "NAME_PATTERN", "SIZE_PATTERN",
-                            "FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):  #@TODO: Remove in 0.4.10
+            for pattern in ("FILE_INFO_PATTERN", "INFO_PATTERN",
+                            "FILE_NAME_PATTERN", "NAME_PATTERN",
+                            "FILE_SIZE_PATTERN", "SIZE_PATTERN"):  #@TODO: Remove old patterns starting with "FILE_" in 0.4.10
                 try:
                     attr = getattr(cls, pattern)
-                    info.update(re.search(attr, html).groupdict())
+                    dict = re.search(attr, html).groupdict()
+
+                    if all(True for k in dict if k not in info):
+                        info.update(dict)
+
                 except AttributeError:
                     continue
+
                 else:
                     online = True
 
