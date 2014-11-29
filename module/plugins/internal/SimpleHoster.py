@@ -5,8 +5,6 @@ import re
 from time import time
 from urlparse import urlparse
 
-from pycurl import FOLLOWLOCATION
-
 from module.PyFile import statusMap as _statusMap
 from module.network.CookieJar import CookieJar
 from module.network.RequestFactory import getURL
@@ -34,7 +32,11 @@ def _error(self, reason, type):
 #@TODO: Remove in 0.4.10
 def _wait(self, seconds, reconnect):
     if seconds:
-        self.setWait(seconds, reconnect)
+        self.setWait(seconds)
+
+    if reconnect is not None:
+        self.wantReconnect = reconnect
+
     super(SimpleHoster, self).wait()
 
 
@@ -114,11 +116,14 @@ def timestamp():
 def _getDirectLink(self, url):
     header = self.load(url, ref=True, just_header=True, decode=True)
 
+    if not 'code' in header or header['code'] != 302:
+        return ""
+
     if not 'location' in header or not header['location']:
         return ""
 
-    if header['code'] != 302 or 'content-type' in header and "text/plain" not in header['content-type']:
-        return ""
+    # if 'content-type' in header and "text/plain" not in header['content-type']:
+        # return ""
 
     return header['location']
 
@@ -126,7 +131,7 @@ def _getDirectLink(self, url):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.66"
+    __version__ = "0.67"
 
     __pattern__ = r'^unmatchable$'
 
@@ -197,7 +202,7 @@ class SimpleHoster(Hoster):
 
     @classmethod
     def getInfo(cls, url="", html=""):
-        info = {'name': urlparse(url).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3, 'url': url or ""}
+        info = {'name': urlparse(url).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3 if url else 1, 'url': url or ""}
 
         if not html:
             if url:
