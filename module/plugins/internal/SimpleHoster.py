@@ -3,6 +3,7 @@
 import re
 
 from time import time
+from urllib import unquote
 from urlparse import urlparse
 
 from module.PyFile import statusMap as _statusMap
@@ -131,7 +132,7 @@ def _getDirectLink(self, url):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.67"
+    __version__ = "0.68"
 
     __pattern__ = r'^unmatchable$'
 
@@ -249,7 +250,7 @@ class SimpleHoster(Hoster):
             info['status'] = 2
 
             if 'N' in info:
-                info['name'] = replace_patterns(info['N'].strip(),
+                info['name'] = replace_patterns(unquote(info['N'].strip()),
                                                 cls.FILE_NAME_REPLACEMENTS if hasattr(cls, "FILE_NAME_REPLACEMENTS") else cls.NAME_REPLACEMENTS)  #@TODO: Remove FILE_NAME_REPLACEMENTS check in 0.4.10
 
             if 'S' in info:

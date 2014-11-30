@@ -75,7 +75,6 @@ class FastshareCz(SimpleHoster):
             else:
                 self.error(_("PREMIUM_URL_PATTERN not found"))
 
-        self.logDebug("PREMIUM URL: " + url)
         self.download(url, disposition=True)
 
         check = self.checkDownload({"credit": re.compile(self.CREDIT_PATTERN)})
