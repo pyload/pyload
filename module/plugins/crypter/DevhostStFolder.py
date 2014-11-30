@@ -48,7 +48,7 @@ class DevhostStFolder(SimpleCrypter):
             name = folder = m.group(1)
 
         except Exception, e:
-            self.logDebug(str(e))
+            self.logDebug(e)
             name = folder = re.match(self.__pattern__, self.pyfile.url).group('USER')
 
         return {'name': name, 'folder': folder}

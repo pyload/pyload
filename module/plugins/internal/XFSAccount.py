@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.25"
+    __version__ = "0.31"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
@@ -32,6 +32,9 @@ class XFSAccount(Account):
     TRAFFIC_LEFT_PATTERN = r'>Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
     TRAFFIC_LEFT_UNIT    = "MB"  #: used only if no group <U> was found
 
+    LEECH_TRAFFIC_PATTERN = r'Leech Traffic left:<b>.*?(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
+    LEECH_TRAFFIC_UNIT    = "MB"  #: used only if no group <U> was found
+
     LOGIN_FAIL_PATTERN = r'>(Incorrect Login or Password|Error<)'
 
 
@@ -49,9 +52,10 @@ class XFSAccount(Account):
 
 
     def loadAccountInfo(self, user, req):
-        validuntil = None
-        trafficleft = None
-        premium = None
+        validuntil   = None
+        trafficleft  = None
+        leechtraffic = None
+        premium      = None
 
         html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
 
@@ -64,20 +68,27 @@ class XFSAccount(Account):
 
             try:
                 validuntil = mktime(strptime(expiredate, "%d %B %Y"))
+
             except Exception, e:
-                self.logError(str(e))
+                self.logError(e)
+
             else:
+                self.logDebug("Valid until: %s" % validuntil)
+
                 if validuntil > mktime(gmtime()):
                     premium = True
+                    trafficleft = -1
                 else:
                     premium = False
                     validuntil = None  #: registered account type (not premium)
+        else:
+            self.logDebug("VALID_UNTIL_PATTERN not found")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
             try:
                 traffic = m.groupdict()
-                size = traffic['S']
+                size    = traffic['S']
 
                 if "nlimited" in size:
                     trafficleft = -1
@@ -94,9 +105,38 @@ class XFSAccount(Account):
                     trafficleft = self.parseTraffic(size + unit)
 
             except Exception, e:
-                self.logError(str(e))
+                self.logError(e)
+        else:
+            self.logDebug("TRAFFIC_LEFT_PATTERN not found")
 
-        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
+        leech = [m.groupdict() for m in re.finditer(self.LEECH_TRAFFIC_PATTERN, html)]
+        if leech:
+            leechtraffic = 0
+            try:
+                for traffic in leech:
+                    size = traffic['S']
+
+                    if "nlimited" in size:
+                        leechtraffic = -1
+                        if validuntil is None:
+                            validuntil = -1
+                        break
+                    else:
+                        if 'U' in traffic:
+                            unit = traffic['U']
+                        elif isinstance(self.LEECH_TRAFFIC_UNIT, basestring):
+                            unit = self.LEECH_TRAFFIC_UNIT
+                        else:
+                            unit = ""
+
+                        leechtraffic += self.parseTraffic(size + unit)
+
+            except Exception, e:
+                self.logError(e)
+        else:
+            self.logDebug("LEECH_TRAFFIC_PATTERN not found")
+
+        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'leechtraffic': leechtraffic, 'premium': premium}
 
 
     def login(self, user, data, req):

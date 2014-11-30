@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class VimeoCom(SimpleHoster):
     __name__    = "VimeoCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
     __config__ = [("quality", "Lowest;Mobile;SD;HD;Highest", "Quality", "Highest"),
@@ -19,13 +19,13 @@ class VimeoCom(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN = r'<title>(?P<N>.+) on Vimeo<'
-    OFFLINE_PATTERN = r'class="exception_header"'
+    NAME_PATTERN         = r'<title>(?P<N>.+) on Vimeo<'
+    OFFLINE_PATTERN      = r'class="exception_header"'
     TEMP_OFFLINE_PATTERN = r'Please try again in a few minutes.<'
 
-    URL_REPLACEMENTS = [(__pattern__, r'https://www.vimeo.com/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://www.vimeo.com/\g<ID>')]
 
-    COOKIES = [(".vimeo.com", "language", "en")]
+    COOKIES = [("vimeo.com", "language", "en")]
 
 
     def setup(self):

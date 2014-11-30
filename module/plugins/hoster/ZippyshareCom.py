@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.60"
 
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/v(?:/|iew\.jsp.*key=)(?P<KEY>\d+)'
 
@@ -21,12 +21,12 @@ class ZippyshareCom(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN = r'var linkz =.*/(?P<N>.+)";'
+    NAME_PATTERN = r'("\d{6,}/"[ ]*\+.+?"/|<title>Zippyshare.com - )(?P<N>.+?)("|</title>)'
     SIZE_PATTERN = r'>Size:.+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN = r'>File does not exist on this server<'
 
-    COOKIES = [(".zippyshare.com", "ziplocale", "en")]
+    COOKIES = [("zippyshare.com", "ziplocale", "en")]
 
 
     def setup(self):
@@ -48,8 +48,13 @@ class ZippyshareCom(SimpleHoster):
 
     def get_checksum(self):
         try:
-            a1, a2 = map(int, re.search(r'\(\'downloadB\'\).omg = (\d+)%(\d+)', self.html).groups())
-            c1, c2 = map(int, re.search(r'\(\'downloadB\'\).omg\) \* \((\d+)%(\d+)', self.html).groups())
+            m = re.search(r'\+[ ]*\((\d+)[ ]*\%[ ]*(\d+)[ ]*\+[ ]*(\d+)[ ]*\%[ ]*(\d+)\)[ ]*\+', self.html)
+            if m:
+                a1, a2, c1, c2 = map(int, m.groups())
+            else:
+                a1, a2 = map(int, re.search(r'\(\'downloadB\'\).omg = (\d+)%(\d+)', self.html).groups())
+                c1, c2 = map(int, re.search(r'\(\'downloadB\'\).omg\) \* \((\d+)%(\d+)', self.html).groups())
+
             b = (a1 % a2) * (c1 % c2)
         except:
             self.error(_("Unable to calculate checksum"))

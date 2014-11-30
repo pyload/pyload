@@ -26,7 +26,7 @@ class UploadingCom(SimpleHoster):
     SIZE_PATTERN = r'size tip_container">(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
     OFFLINE_PATTERN = r'(Page|file) not found'
 
-    COOKIES = [(".uploading.com", "lang", "1"),
+    COOKIES = [("uploading.com", "lang", "1"),
                (".uploading.com", "language", "1"),
                (".uploading.com", "setlang", "en"),
                (".uploading.com", "_lang", "en")]
@@ -70,18 +70,19 @@ class UploadingCom(SimpleHoster):
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = self.pyfile.url
 
-        response = json_loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.info['ID']}))
-        if 'answer' in response and 'wait_time' in response['answer']:
-            wait_time = int(response['answer']['wait_time'])
+        res = json_loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.info['ID']}))
+
+        if 'answer' in res and 'wait_time' in res['answer']:
+            wait_time = int(res['answer']['wait_time'])
             self.logInfo(_("Waiting %d seconds") % wait_time)
             self.wait(wait_time)
         else:
             self.error(_("No AJAX/WAIT"))
 
-        response = json_loads(
-            self.load(ajax_url, post={'action': 'get_link', 'code': self.info['ID'], 'pass': 'false'}))
-        if 'answer' in response and 'link' in response['answer']:
-            url = response['answer']['link']
+        res = json_loads(self.load(ajax_url, post={'action': 'get_link', 'code': self.info['ID'], 'pass': 'false'}))
+
+        if 'answer' in res and 'link' in res['answer']:
+            url = res['answer']['link']
         else:
             self.error(_("No AJAX/URL"))
 

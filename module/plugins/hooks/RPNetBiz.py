@@ -28,9 +28,9 @@ class RPNetBiz(MultiHoster):
         # Get account data
         (user, data) = self.account.selectAccount()
 
-        response = getURL("https://premium.rpnet.biz/client_api.php",
-                          get={"username": user, "password": data['password'], "action": "showHosterList"})
-        hoster_list = json_loads(response)
+        res = getURL("https://premium.rpnet.biz/client_api.php",
+                     get={"username": user, "password": data['password'], "action": "showHosterList"})
+        hoster_list = json_loads(res)
 
         # If account is not valid thera are no hosters available
         if 'error' in hoster_list:

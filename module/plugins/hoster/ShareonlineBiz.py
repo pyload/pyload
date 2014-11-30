@@ -18,9 +18,9 @@ def getInfo(urls):
     for chunk in chunks(urls, 90):
         api_param_file = {"links": "\n".join(x.replace("http://www.share-online.biz/dl/", "").rstrip("/") for x in
                                              chunk)}  # api only supports old style links
-        src = getURL(api_url_base, post=api_param_file, decode=True)
+        html = getURL(api_url_base, post=api_param_file, decode=True)
         result = []
-        for i, res in enumerate(src.split("\n")):
+        for i, res in enumerate(html.split("\n")):
             if not res:
                 continue
             fields = res.split(";")
@@ -77,9 +77,9 @@ class ShareonlineBiz(Hoster):
     def loadAPIData(self):
         api_url_base = "http://api.share-online.biz/linkcheck.php?md5=1"
         api_param_file = {"links": self.file_id}  #: api only supports old style links
-        src = self.load(api_url_base, cookies=False, post=api_param_file, decode=True)
+        html = self.load(api_url_base, cookies=False, post=api_param_file, decode=True)
 
-        fields = src.split(";")
+        fields = html.split(";")
         self.api_data = {"fileid": fields[0],
                          "status": fields[1]}
         if not self.api_data['status'] == "OK":
@@ -108,12 +108,12 @@ class ShareonlineBiz(Hoster):
         for _i in xrange(5):
             challenge, response = recaptcha.challenge("6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX")
             self.setWait(int(m.group(1)) if m else 30)
-            response = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time() * 1000)), post={
-                'dl_free': '1',
-                'recaptcha_challenge_field': challenge,
-                'recaptcha_response_field': response})
+            res = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time() * 1000)),
+                            post={'dl_free': '1',
+                                  'recaptcha_challenge_field': challenge,
+                                  'recaptcha_response_field': response})
 
-            if not response == '0':
+            if not res == '0':
                 self.correctCaptcha()
                 break
             else:
@@ -122,7 +122,7 @@ class ShareonlineBiz(Hoster):
             self.invalidCaptcha()
             self.fail(_("No valid captcha solution received"))
 
-        download_url = response.decode("base64")
+        download_url = res.decode("base64")
         if not download_url.startswith("http://"):
             self.error(_("Wrong download url"))
 
@@ -145,12 +145,12 @@ class ShareonlineBiz(Hoster):
 
     def handlePremium(self):  #: should be working better loading (account) api internally
         self.account.getAccountInfo(self.user, True)
-        src = self.load("http://api.share-online.biz/account.php",
+        html = self.load("http://api.share-online.biz/account.php",
                         {"username": self.user, "password": self.account.accounts[self.user]['password'],
                          "act": "download", "lid": self.file_id})
 
         self.api_data = dlinfo = {}
-        for line in src.splitlines():
+        for line in html.splitlines():
             key, value = line.split(": ")
             dlinfo[key.lower()] = value
 

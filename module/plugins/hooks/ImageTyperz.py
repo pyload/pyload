@@ -55,18 +55,20 @@ class ImageTyperz(Hook):
 
 
     def getCredits(self):
-        response = getURL(self.GETCREDITS_URL, post={"action": "REQUESTBALANCE", "username": self.getConfig("username"),
-                                                     "password": self.getConfig("passkey")})
+        res = getURL(self.GETCREDITS_URL,
+                     post={'action': "REQUESTBALANCE",
+                           'username': self.getConfig("username"),
+                           'password': self.getConfig("passkey")})
 
-        if response.startswith('ERROR'):
-            raise ImageTyperzException(response)
+        if res.startswith('ERROR'):
+            raise ImageTyperzException(res)
 
         try:
-            balance = float(response)
+            balance = float(res)
         except:
-            raise ImageTyperzException("invalid response")
+            raise ImageTyperzException("Invalid response")
 
-        self.logInfo(_("Account balance: $%s left") % response)
+        self.logInfo(_("Account balance: $%s left") % res)
         return balance
 
 
@@ -86,21 +88,22 @@ class ImageTyperz(Hook):
                     data = f.read()
                 data = b64encode(data)
 
-            response = req.load(self.SUBMIT_URL, post={"action": "UPLOADCAPTCHA",
-                                                       "username": self.getConfig("username"),
-                                                       "password": self.getConfig("passkey"), "file": data},
-                                                       multipart=multipart)
+            res = req.load(self.SUBMIT_URL,
+                           post={'action': "UPLOADCAPTCHA",
+                                 'username': self.getConfig("username"),
+                                 'password': self.getConfig("passkey"), "file": data},
+                           multipart=multipart)
         finally:
             req.close()
 
-        if response.startswith("ERROR"):
-            raise ImageTyperzException(response)
+        if res.startswith("ERROR"):
+            raise ImageTyperzException(res)
         else:
-            data = response.split('|')
+            data = res.split('|')
             if len(data) == 2:
                 ticket, result = data
             else:
-                raise ImageTyperzException("Unknown response %s" % response)
+                raise ImageTyperzException("Unknown response: %s" % res)
 
         return ticket, result
 
@@ -130,14 +133,16 @@ class ImageTyperz(Hook):
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            response = getURL(self.RESPOND_URL, post={"action": "SETBADIMAGE", "username": self.getConfig("username"),
-                                                      "password": self.getConfig("passkey"),
-                                                      "imageid": task.data['ticket']})
+            res = getURL(self.RESPOND_URL,
+                         post={'action': "SETBADIMAGE",
+                               'username': self.getConfig("username"),
+                               'password': self.getConfig("passkey"),
+                               'imageid': task.data['ticket']})
 
-            if response == "SUCCESS":
+            if res == "SUCCESS":
                 self.logInfo(_("Bad captcha solution received, requested refund"))
             else:
-                self.logError(_("Bad captcha solution received, refund request failed"), response)
+                self.logError(_("Bad captcha solution received, refund request failed"), res)
 
 
     def processCaptcha(self, task):

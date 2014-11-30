@@ -79,7 +79,7 @@ class HTTPRequest():
         if hasattr(pycurl, "AUTOREFERER"):
             self.c.setopt(pycurl.AUTOREFERER, 1)
         self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
-        self.c.setopt(pycurl.LOW_SPEED_TIME, 60)
+        self.c.setopt(pycurl.LOW_SPEED_TIME, 30)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
 
         #self.c.setopt(pycurl.VERBOSE, 1)
@@ -181,7 +181,7 @@ class HTTPRequest():
             self.getCookies()
 
 
-    def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False, follow_location=True, save_cookies=True):
+    def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False):
         """ load and returns a given page """
 
         self.setRequestContext(url, get, post, referer, cookies, multipart)
@@ -190,27 +190,24 @@ class HTTPRequest():
 
         self.c.setopt(pycurl.HTTPHEADER, self.headers)
 
-        if not follow_location:
+        if just_header:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)
-
-        if just_header:
             self.c.setopt(pycurl.NOBODY, 1)
+            self.c.perform()
+            rep = self.header
 
-        self.c.perform()
-        rep = self.header if just_header else self.getResponse()
-
-        if not follow_location:
             self.c.setopt(pycurl.FOLLOWLOCATION, 1)
-
-        if just_header:
             self.c.setopt(pycurl.NOBODY, 0)
+
+        else:
+            self.c.perform()
+            rep = self.getResponse()
 
         self.c.setopt(pycurl.POSTFIELDS, "")
         self.lastEffectiveURL = self.c.getinfo(pycurl.EFFECTIVE_URL)
         self.code = self.verifyHeader()
 
-        if save_cookies:
-            self.addCookies()
+        self.addCookies()
 
         if decode:
             rep = self.decodeResponse(rep)

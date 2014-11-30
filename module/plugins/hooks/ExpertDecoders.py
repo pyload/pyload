@@ -34,14 +34,14 @@ class ExpertDecoders(Hook):
 
 
     def getCredits(self):
-        response = getURL(self.API_URL, post={"key": self.getConfig("passkey"), "action": "balance"})
+        res = getURL(self.API_URL, post={"key": self.getConfig("passkey"), "action": "balance"})
 
-        if response.isdigit():
-            self.logInfo(_("%s credits left") % response)
-            self.info['credits'] = credits = int(response)
+        if res.isdigit():
+            self.logInfo(_("%s credits left") % res)
+            self.info['credits'] = credits = int(res)
             return credits
         else:
-            self.logError(response)
+            self.logError(res)
             return 0
 
 
@@ -90,9 +90,9 @@ class ExpertDecoders(Hook):
         if "ticket" in task.data:
 
             try:
-                response = getURL(self.API_URL, post={"action": "refund", "key": self.getConfig("passkey"),
-                                                      "gen_task_id": task.data['ticket']})
-                self.logInfo(_("Request refund"), response)
+                res = getURL(self.API_URL,
+                             post={'action': "refund", 'key': self.getConfig("passkey"), 'gen_task_id': task.data['ticket']})
+                self.logInfo(_("Request refund", res)
 
             except BadHeader, e:
-                self.logError(_("Could not send refund request"), str(e))
+                self.logError(_("Could not send refund request"), e)

@@ -40,7 +40,7 @@ class UploadingCom(Account):
                 validuntil = mktime(strptime(expiredate, "%b %d, %Y"))
 
             except Exception, e:
-                self.logError(str(e))
+                self.logError(e)
 
             else:
                 if validuntil > mktime(gmtime()):

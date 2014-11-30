@@ -18,10 +18,10 @@ class RapidshareCom(Account):
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_prem = {"sub": "getaccountdetails", "type": "prem", "login": user,
                           "password": data['password'], "withcookie": 1}
-        src = req.load(api_url_base, cookies=False, get=api_param_prem)
-        if src.startswith("ERROR"):
-            raise Exception(src)
-        fields = src.split("\n")
+        html = req.load(api_url_base, cookies=False, get=api_param_prem)
+        if html.startswith("ERROR"):
+            raise Exception(html)
+        fields = html.split("\n")
         info = {}
         for t in fields:
             if not t.strip():
@@ -41,10 +41,10 @@ class RapidshareCom(Account):
         api_url_base = "http://api.rapidshare.com/cgi-bin/rsapi.cgi"
         api_param_prem = {"sub": "getaccountdetails", "type": "prem", "login": user,
                           "password": data['password'], "withcookie": 1}
-        src = req.load(api_url_base, cookies=False, get=api_param_prem)
-        if src.startswith("ERROR"):
-            raise Exception(src + "### Note you have to use your account number for login, instead of name")
-        fields = src.split("\n")
+        html = req.load(api_url_base, cookies=False, get=api_param_prem)
+        if html.startswith("ERROR"):
+            raise Exception(html + "### Note you have to use your account number for login, instead of name")
+        fields = html.split("\n")
         info = {}
         for t in fields:
             if not t.strip():

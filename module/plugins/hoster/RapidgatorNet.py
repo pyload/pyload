@@ -14,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
@@ -27,6 +27,8 @@ class RapidgatorNet(SimpleHoster):
 
 
     API_URL = "http://rapidgator.net/api/file"
+
+    COOKIES = [("rapidgator.net", "lang", "en")]
 
     NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
     SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong>'
@@ -67,7 +69,7 @@ class RapidgatorNet(SimpleHoster):
             msg = json['response_details']
 
         except BadHeader, e:
-            self.logError("API: %s" % cmd, str(e), "SID: %s" % self.sid)
+            self.logError("API: %s" % cmd, e, "SID: %s" % self.sid)
             status = e.code
             msg = e
 
@@ -189,11 +191,11 @@ class RapidgatorNet(SimpleHoster):
 
 
     def getJsonResponse(self, url):
-        response = self.load(url, decode=True)
-        if not response.startswith('{'):
+        res = self.load(url, decode=True)
+        if not res.startswith('{'):
             self.retry()
-        self.logDebug(url, response)
-        return json_loads(response)
+        self.logDebug(url, res)
+        return json_loads(res)
 
 
 getInfo = create_getInfo(RapidgatorNet)

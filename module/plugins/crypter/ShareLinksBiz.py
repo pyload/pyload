@@ -192,17 +192,22 @@ class ShareLinksBiz(Crypter):
         for i, ID in enumerate(ids):
             try:
                 self.logDebug("Decrypting Web link %d, [%s]" % (i + 1, ID))
+
                 dwLink = self.baseUrl + "/get/lnk/" + ID
-                response = self.load(dwLink)
-                code = re.search(r'frm/(\d+)', response).group(1)
+                res = self.load(dwLink)
+
+                code = re.search(r'frm/(\d+)', res).group(1)
                 fwLink = self.baseUrl + "/get/frm/" + code
-                response = self.load(fwLink)
-                jscode = re.search(r'<script language="javascript">\s*eval\((.*)\)\s*</script>', response,
-                                   re.S).group(1)
+                res = self.load(fwLink)
+
+                jscode = re.search(r'<script language="javascript">\s*eval\((.*)\)\s*</script>', res, re.S).group(1)
                 jscode = self.js.eval("f = %s" % jscode)
                 jslauncher = "window=''; parent={frames:{Main:{location:{href:''}}},location:''}; %s; parent.frames.Main.location.href"
+
                 dlLink = self.js.eval(jslauncher % jscode)
+
                 self.logDebug("JsEngine returns value [%s] for redirection link" % dlLink)
+
                 package_links.append(dlLink)
             except Exception, detail:
                 self.logDebug("Error decrypting Web link [%s], %s" % (ID, detail))
@@ -237,10 +242,10 @@ class ShareLinksBiz(Crypter):
 
     def _getCipherParams(self):
         # Request CNL2
-        code = re.search(r'ClicknLoad.swf\?code=(.*?)"', self.html).group(1)
-        url = "%s/get/cnl2/%s" % (self.baseUrl, code)
-        response = self.load(url)
-        params = response.split(";;")
+        code   = re.search(r'ClicknLoad.swf\?code=(.*?)"', self.html).group(1)
+        url    = "%s/get/cnl2/%s" % (self.baseUrl, code)
+        res    = self.load(url)
+        params = res.split(";;")
 
         # Get jk
         strlist = list(base64.standard_b64decode(params[1]))

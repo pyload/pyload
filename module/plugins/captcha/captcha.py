@@ -66,7 +66,7 @@ class OCR(object):
             tmpTxt.close()
 
         except IOError, e:
-            self.logError(str(e))
+            self.logError(e)
             return
 
         self.logger.debug("save tiff")

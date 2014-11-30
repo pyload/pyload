@@ -20,10 +20,10 @@ class ShareonlineBiz(Account):
 
 
     def loadAccountInfo(self, user, req):
-        src = self.getUserAPI(user, req)
+        html = self.getUserAPI(user, req)
 
         info = {}
-        for line in src.splitlines():
+        for line in html.splitlines():
             if "=" in line:
                 key, value = line.split("=")
                 info[key] = value
@@ -40,6 +40,6 @@ class ShareonlineBiz(Account):
 
 
     def login(self, user, data, req):
-        src = self.getUserAPI(user, req)
-        if "EXCEPTION" in src:
+        html = self.getUserAPI(user, req)
+        if "EXCEPTION" in html:
             self.wrongPassword()

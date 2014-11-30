@@ -108,9 +108,9 @@ class FileserveCom(Hoster):
             self.error(_("Unknown server response"))
 
         # show download link
-        response = self.load(self.url, post={"downloadLink": "show"}, decode=True)
-        self.logDebug("Show downloadLink response : %s" % response)
-        if "fail" in response:
+        res = self.load(self.url, post={"downloadLink": "show"}, decode=True)
+        self.logDebug("Show downloadLink response: %s" % res)
+        if "fail" in res:
             self.error(_("Couldn't retrieve download url"))
 
         # this may either download our file or forward us to an error page
@@ -136,19 +136,19 @@ class FileserveCom(Hoster):
 
 
     def doTimmer(self):
-        response = self.load(self.url, post={"downloadLink": "wait"}, decode=True)
-        self.logDebug("Wait response : %s" % response[:80])
+        res = self.load(self.url, post={"downloadLink": "wait"}, decode=True)
+        self.logDebug("Wait response: %s" % res[:80])
 
-        if "fail" in response:
+        if "fail" in res:
             self.fail(_("Failed getting wait time"))
 
         if self.__name__ == "FilejungleCom":
-            m = re.search(r'"waitTime":(\d+)', response)
+            m = re.search(r'"waitTime":(\d+)', res)
             if m is None:
                 self.fail(_("Cannot get wait time"))
             wait_time = int(m.group(1))
         else:
-            wait_time = int(response) + 3
+            wait_time = int(res) + 3
 
         self.setWait(wait_time)
         self.wait()
@@ -160,11 +160,11 @@ class FileserveCom(Hoster):
 
         for _i in xrange(5):
             challenge, code = recaptcha.challenge(captcha_key)
-            response = json_loads(self.load(self.URLS[2],
-                                            post={'recaptcha_challenge_field': challenge,
-                                                  'recaptcha_response_field': code,
-                                                  'recaptcha_shortencode_field': self.file_id}))
-            if not response['success']:
+            res = json_loads(self.load(self.URLS[2],
+                                       post={'recaptcha_challenge_field': challenge,
+                                             'recaptcha_response_field': code,
+                                             'recaptcha_shortencode_field': self.file_id}))
+            if not res['success']:
                 self.invalidCaptcha()
             else:
                 self.correctCaptcha()
@@ -184,23 +184,23 @@ class FileserveCom(Hoster):
         premium_url = None
         if self.__name__ == "FileserveCom":
             #try api download
-            response = self.load("http://app.fileserve.com/api/download/premium/",
-                                 post={"username": self.user,
-                                       "password": self.account.getAccountData(self.user)['password'],
-                                       "shorten": self.file_id},
-                                 decode=True)
-            if response:
-                response = json_loads(response)
-                if response['error_code'] == "302":
-                    premium_url = response['next']
-                elif response['error_code'] in ["305", "500"]:
+            res = self.load("http://app.fileserve.com/api/download/premium/",
+                            post={"username": self.user,
+                                  "password": self.account.getAccountData(self.user)['password'],
+                                  "shorten": self.file_id},
+                            decode=True)
+            if res:
+                res = json_loads(res)
+                if res['error_code'] == "302":
+                    premium_url = res['next']
+                elif res['error_code'] in ["305", "500"]:
                     self.tempOffline()
-                elif response['error_code'] in ["403", "605"]:
+                elif res['error_code'] in ["403", "605"]:
                     self.resetAccount()
-                elif response['error_code'] in ["606", "607", "608"]:
+                elif res['error_code'] in ["606", "607", "608"]:
                     self.offline()
                 else:
-                    self.logError(response['error_code'], response['error_message'])
+                    self.logError(res['error_code'], res['error_message'])
 
         self.download(premium_url or self.pyfile.url)
 

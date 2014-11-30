@@ -24,7 +24,7 @@ class BitshareCom(SimpleHoster):
     INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)</h1>'
     OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
 
-    COOKIES = [(".bitshare.com", "language_selection", "EN")]
+    COOKIES = [("bitshare.com", "language_selection", "EN")]
 
     AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
     TRAFFIC_USED_UP = r'Your Traffic is used up for today. Upgrade to premium to continue!'
@@ -90,10 +90,10 @@ class BitshareCom(SimpleHoster):
 
         # Get download info
         self.logDebug("Getting download info")
-        response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
-                             post={"request": "generateID", "ajaxid": self.ajaxid})
-        self.handleErrors(response, ':')
-        parts = response.split(":")
+        res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
+                        post={"request": "generateID", "ajaxid": self.ajaxid})
+        self.handleErrors(res, ':')
+        parts = res.split(":")
         filetype = parts[0]
         wait = int(parts[1])
         captcha = int(parts[2])
@@ -116,37 +116,37 @@ class BitshareCom(SimpleHoster):
             # Try up to 3 times
             for i in xrange(3):
                 challenge, code = recaptcha.challenge()
-                response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
+                res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                                      post={"request": "validateCaptcha", "ajaxid": self.ajaxid,
                                            "recaptcha_challenge_field": challenge, "recaptcha_response_field": code})
-                if self.handleCaptchaErrors(response):
+                if self.handleCaptchaErrors(res):
                     break
 
         # Get download URL
         self.logDebug("Getting download url")
-        response = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
-                             post={"request": "getDownloadURL", "ajaxid": self.ajaxid})
-        self.handleErrors(response, '#')
-        url = response.split("#")[-1]
+        res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
+                        post={"request": "getDownloadURL", "ajaxid": self.ajaxid})
+        self.handleErrors(res, '#')
+        url = res.split("#")[-1]
 
         return url
 
 
-    def handleErrors(self, response, separator):
-        self.logDebug("Checking response [%s]" % response)
-        if "ERROR:Session timed out" in response:
+    def handleErrors(self, res, separator):
+        self.logDebug("Checking response [%s]" % res)
+        if "ERROR:Session timed out" in res:
             self.retry()
-        elif "ERROR" in response:
-            msg = response.split(separator)[-1]
+        elif "ERROR" in res:
+            msg = res.split(separator)[-1]
             self.fail(msg)
 
 
-    def handleCaptchaErrors(self, response):
-        self.logDebug("Result of captcha resolving [%s]" % response)
-        if "SUCCESS" in response:
+    def handleCaptchaErrors(self, res):
+        self.logDebug("Result of captcha resolving [%s]" % res)
+        if "SUCCESS" in res:
             self.correctCaptcha()
             return True
-        elif "ERROR:SESSION ERROR" in response:
+        elif "ERROR:SESSION ERROR" in res:
             self.retry()
 
         self.invalidCaptcha()

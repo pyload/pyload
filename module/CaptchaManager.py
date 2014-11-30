@@ -58,11 +58,11 @@ class CaptchaManager():
         self.lock.release()
         return None
 
-    def handleCaptcha(self, task, timeout=50):
+    def handleCaptcha(self, task):
         cli = self.core.isClientConnected()
 
         if cli: #client connected -> should solve the captcha
-            task.setWaiting(timeout) #wait 50 sec for response
+            task.setWaiting(50) #wait 50 sec for response
 
         for plugin in self.core.hookManager.activePlugins():
             try:
@@ -125,10 +125,10 @@ class CaptchaTask():
         self.status = "waiting"
 
     def isWaiting(self):
-        if self.result or self.error or self.timedOut():
+        if self.result or self.error or time() > self.waitUntil:
             return False
-        else:
-            return True
+
+        return True
 
     def isTextual(self):
         """ returns if text is written on the captcha """
@@ -149,12 +149,10 @@ class CaptchaTask():
 
     def invalid(self):
         """ indicates the captcha was not correct """
-        for x in self.handler:
-            x.captchaInvalid(self) 
+        [x.captchaInvalid(self) for x in self.handler]
 
     def correct(self):
-        for x in self.handler:
-            x.captchaCorrect(self)
+        [x.captchaCorrect(self) for x in self.handler]
 
     def __str__(self):
         return "<CaptchaTask '%s'>" % self.id

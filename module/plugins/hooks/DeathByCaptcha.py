@@ -81,18 +81,18 @@ class DeathByCaptcha(Hook):
             post.update({"username": self.getConfig("username"),
                          "password": self.getConfig("passkey")})
 
-        response = None
+        res = None
         try:
             json = req.load("%s%s" % (self.API_URL, api),
                             post=post,
                             multipart=multipart)
             self.logDebug(json)
-            response = json_loads(json)
+            res = json_loads(json)
 
-            if "error" in response:
-                raise DeathByCaptchaException(response['error'])
-            elif "status" not in response:
-                raise DeathByCaptchaException(str(response))
+            if "error" in res:
+                raise DeathByCaptchaException(res['error'])
+            elif "status" not in res:
+                raise DeathByCaptchaException(str(res))
 
         except BadHeader, e:
             if 403 == e.code:
@@ -109,24 +109,24 @@ class DeathByCaptcha(Hook):
         finally:
             req.close()
 
-        return response
+        return res
 
 
     def getCredits(self):
-        response = self.call_api("user", True)
+        res = self.call_api("user", True)
 
-        if 'is_banned' in response and response['is_banned']:
+        if 'is_banned' in res and res['is_banned']:
             raise DeathByCaptchaException('banned')
-        elif 'balance' in response and 'rate' in response:
-            self.info.update(response)
+        elif 'balance' in res and 'rate' in res:
+            self.info.update(res)
         else:
-            raise DeathByCaptchaException(response)
+            raise DeathByCaptchaException(res)
 
 
     def getStatus(self):
-        response = self.call_api("status", False)
+        res = self.call_api("status", False)
 
-        if 'is_service_overloaded' in response and response['is_service_overloaded']:
+        if 'is_service_overloaded' in res and res['is_service_overloaded']:
             raise DeathByCaptchaException('service-overload')
 
 
@@ -141,21 +141,21 @@ class DeathByCaptcha(Hook):
                 data = f.read()
             data = "base64:" + b64encode(data)
 
-        response = self.call_api("captcha", {"captchafile": data}, multipart)
+        res = self.call_api("captcha", {"captchafile": data}, multipart)
 
-        if "captcha" not in response:
-            raise DeathByCaptchaException(response)
-        ticket = response['captcha']
+        if "captcha" not in res:
+            raise DeathByCaptchaException(res)
+        ticket = res['captcha']
 
         for _i in xrange(24):
             sleep(5)
-            response = self.call_api("captcha/%d" % ticket, False)
-            if response['text'] and response['is_correct']:
+            res = self.call_api("captcha/%d" % ticket, False)
+            if res['text'] and res['is_correct']:
                 break
         else:
             raise DeathByCaptchaException('timed-out')
 
-        result = response['text']
+        result = res['text']
         self.logDebug("Result %s : %s" % (ticket, result))
 
         return ticket, result
@@ -196,9 +196,11 @@ class DeathByCaptcha(Hook):
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             try:
-                response = self.call_api("captcha/%d/report" % task.data['ticket'], True)
+                res = self.call_api("captcha/%d/report" % task.data['ticket'], True)
+
             except DeathByCaptchaException, e:
                 self.logError(e.getDesc())
+
             except Exception, e:
                 self.logError(e)
 

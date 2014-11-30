@@ -41,18 +41,18 @@ class BayfilesCom(SimpleHoster):
             self.error(_("VARS_PATTERN not found"))
         vfid, delay = m.groups()
 
-        response = json_loads(self.load('http://bayfiles.com/ajax_download', get={
-            "_": time() * 1000,
-            "action": "startTimer",
-            "vfid": vfid}, decode=True))
+        res = json_loads(self.load('http://bayfiles.com/ajax_download',
+                         get={"_": time() * 1000,
+                              "action": "startTimer",
+                              "vfid": vfid}, decode=True))
 
-        if not "token" in response or not response['token']:
+        if not "token" in res or not res['token']:
             self.fail(_("No token"))
 
         self.wait(int(delay))
 
         self.html = self.load('http://bayfiles.com/ajax_download', get={
-            "token": response['token'],
+            "token": res['token'],
             "action": "getLink",
             "vfid": vfid})
 

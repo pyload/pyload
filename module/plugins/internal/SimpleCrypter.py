@@ -5,15 +5,14 @@ import re
 from urlparse import urlparse
 
 from module.plugins.Crypter import Crypter
-from module.plugins.Plugin import Fail
-from module.plugins.internal.SimpleHoster import _error, _wait, parseFileInfo, replace_patterns, set_cookies
-from module.utils import fixup, html_unescape
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
+from module.utils import fixup
 
 
-class SimpleCrypter(Crypter):
+class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.28"
+    __version__ = "0.32"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -69,10 +68,8 @@ class SimpleCrypter(Crypter):
     LOGIN_PREMIUM = False
 
 
-    #@TODO: remove in 0.4.10
+    #@TODO: Remove in 0.4.10
     def init(self):
-        self.info = {}
-
         account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
         account = self.core.accountManager.getAccountPlugin(account_name)
 
@@ -91,26 +88,26 @@ class SimpleCrypter(Crypter):
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
 
+        self.info  = {}
+        self.links = []
+
+        self.req.setOption("timeout", 120)
+
         if isinstance(self.COOKIES, list):
             set_cookies(self.req.cj, self.COOKIES)
 
         self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
-        if self.html is None:
-            self.html = self.load(self.pyfile.url, decode=not self.TEXT_ENCODING, cookies=bool(self.COOKIES))
-
-        if isinstance(self.TEXT_ENCODING, basestring):
-            self.html = unicode(self.html, self.TEXT_ENCODING)
-
 
     def decrypt(self, pyfile):
         self.prepare()
 
+        self.preload()
+
         if self.html is None:
             self.fail(_("No html retrieved"))
 
-        if not self.info:
-            self.getFileInfo()
+        self.checkInfo()
 
         self.links = self.getLinks()
 
@@ -123,13 +120,8 @@ class SimpleCrypter(Crypter):
             self.packages = [(self.info['name'], self.links, self.info['folder'])]
 
 
-    def getFileInfo(self):
-        name, size, status, url = parseFileInfo(self)
-
-        if name and name != url:
-            self.pyfile.name = name
-        else:
-            self.pyfile.name = self.info['name'] = html_unescape(urlparse(url).path.split("/")[-1])
+    def checkStatus(self):
+        status = self.info['status']
 
         if status is 1:
             self.offline()
@@ -137,10 +129,20 @@ class SimpleCrypter(Crypter):
         elif status is 6:
             self.tempOffline()
 
-        self.info['folder'] = self.pyfile.name
 
-        self.logDebug("FILE NAME: %s" % self.pyfile.name)
-        return self.info
+    def checkNameSize(self):
+        name = self.info['name']
+        url  = self.info['url']
+
+        if name and name != url:
+            self.pyfile.name = name
+        else:
+            self.pyfile.name = self.info['name'] = urlparse(name).path.split('/')[-1]
+
+        folder = self.info['folder'] = self.pyfile.name
+
+        self.logDebug("File name: %s" % self.pyfile.name,
+                      "File folder: %s" % folder)
 
 
     def getLinks(self):
@@ -161,12 +163,3 @@ class SimpleCrypter(Crypter):
         for p in xrange(2, pages + 1):
             self.html = self.loadPage(p)
             self.links += self.getLinks()
-
-
-    #@TODO: Remove in 0.4.10
-    def wait(self, seconds=0, reconnect=None):
-        return _wait(self, seconds, reconnect)
-
-
-    def error(self, reason="", type="parse"):
-        return _error(self, reason, type)

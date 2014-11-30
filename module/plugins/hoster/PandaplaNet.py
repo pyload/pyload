@@ -3,10 +3,10 @@
 from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
-class PandaPlaNet(DeadHoster):
-    __name__    = "PandaPlaNet"
+class PandaplaNet(DeadHoster):
+    __name__    = "PandaplaNet"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?pandapla\.net/\w{12}'
 
@@ -15,4 +15,4 @@ class PandaPlaNet(DeadHoster):
     __authors__     = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
 
 
-getInfo = create_getInfo(PandaPlaNet)
+getInfo = create_getInfo(PandaplaNet)

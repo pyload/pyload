@@ -7,7 +7,7 @@ from module.utils import remove_chars
 
 
 class MultiHoster(Hook):
-    __name__    = "AbtractExtractor"
+    __name__    = "MultiHoster"
     __type__    = "hook"
     __version__ = "0.19"
 
