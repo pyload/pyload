@@ -1,65 +1,59 @@
-# -*- coding: utf-8 -*-
 import re
+from module.plugins.Crypter import Crypter
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
-from module.lib.BeautifulSoup import BeautifulSoup
-from urlparse import urlparse
+class Go4Up(Crypter):
+    __name__ = 'Go4Up'
+    __type__ = 'crypter'
+    __version__ = '0.1'
+    __pattern__ = r'^http://go4up.com/dl/[0-9a-f]{12}$'
+    __config__ = [('preference_order', 'str',
+                   'preference order (comma-seperated) names from http://go4up.com/misc/mirrorlist',
+                   '1fichier, filecould')]
+    __description__ = '''Go4Up decrypter'''
+    __license__ = 'GPLv3'
+    __authors__ = [('rlindner81', 'rlindner81@gmail.com')]
 
-
-class Go4Up(SimpleCrypter):
-    """Go4up - Multiupload Service"""
-
-    __name__ = "Go4Up"
-    __type__ = "crypter"
-    __version__ = "0.1"
-    __pattern__ = r"http://(www\.)?go4up.com/dl/\w+.*"
-    __config__ = [("preferedHoster", "str", "Prefered hoster list (pipe-separated) ", ""),
-                  ("ignoredHoster", "str", "Ignored hoster list (pipe-separated) ", "")]
-    __description__ = """Go4Up plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("reissdorf", "reissdorf@domain.invalid")]
-
-    prefered_hosters = None
-    ignored_hosters = None
-
-    HOSTS_LOOKUP_PATTERN = r'\/download\/gethosts\/[a-z0-9]+\/[A-Za-z0-9._-]+'
-    LINK_PATTERN = r'>(http://go4up.com/rd/[a-z0-9]+/\d+)<'
-    BASE_URL = 'http://go4up.com'
+    # names from http://go4up.com/misc/mirrorlist
+    HOSTERS = {
+        'filecloud':    {'suffix': '/20', 're': r'(http://filecloud\.io/........)'},
+        'zippyshare':   {'suffix': '/42', 're': r'(http://www..\.zippyshare\.com/v/......../file\.html)'},
+        '1fichier':     {'suffix': '/43', 're': r'(http://..........\.1fichier\.com)'},
+        '180upload':    {'suffix': '/45', 're': r'(http://180upload\.com/............)'},
+        'billionuploads': {'suffix': '/47', 're': r'(http://billionuploads\.com/............)'},
+        'hugefiles':    {'suffix': '/56', 're': r'(http://hugefiles\.net/............)'},
+        'solidfiles':   {'suffix': '/61', 're': r'(http://www\.solidfiles\.com/d/........../)'},
+    }
+    DEADLINK = 'Error link not available'
 
     def decrypt(self, pyfile):
-        """Extract hoster links"""
+        # iterate over hosters in preference order
+        preference_order = map(lambda x: x.strip(), self.getConfig("preference_order").split(','))
+        for i in range(len(preference_order)):
+            name = preference_order[i]
+            if not name in self.HOSTERS:
+                self.logWarning('Hoster %s is unknown' % name)
+                continue
 
-        self.html = self.load(pyfile.url, decode=True)
-        self.prefered_hosters = self.getConfig("preferedHoster").split('|')
-        self.ignored_hosters = self.getConfig("ignoredHoster").split('|')
+            # get the html page where the target url is
+            hoster = self.HOSTERS[name]
+            source_url = pyfile.url.replace('/dl/', '/rd/') + hoster['suffix']
+            source_html = self.load(source_url, decode=True)
 
-        package_links = []
-        package_name, folder_name = self.getPackageNameAndFolder()
+            # match the hoster's re
+            match = re.search(hoster['re'], source_html)
+            if match:
+                target_url = match.group(1)
+                pypackage = self.pyfile.package()
+                self.packages.append((pypackage.name, (target_url, ), pypackage.folder))
+                return
 
-        # Find hosters links (loaded with Ajax on the webpage)
-        hosts_url = re.search(self.HOSTS_LOOKUP_PATTERN, self.html)
-        self.html = self.load(self.BASE_URL + hosts_url.group(0), decode=True)
-        hosts_links = re.findall(self.LINK_PATTERN, self.html)
+            # if match failed, check that it was a normal deadlink
+            if re.search(self.DEADLINK, source_html):
+                self.logDebug('Hoster %s does not host this file' % name)
+                continue
 
-        # Iterate over the found links (if any) and add them to the package links list
-        for link in hosts_links:
-            found_package_links = self.find_package_links(link)
-            if len(found_package_links) > 0:
-                package_links = package_links + found_package_links
+            # if match failed and it was not a deadlink, the re is probably wrong
+            self.logError('Deadlink or Hoster %s regular expression is probably wrong' % name)
 
-        if len(package_links) > 0:
-            package_links.sort(key=lambda x: urlparse(x).hostname in self.prefered_hosters, reverse=True)
-            self.packages = [(package_name, package_links, folder_name)]
-        else:
-            self.fail('Could not extract any links')
-
-
-    def find_package_links(self, url):
-        """Find hoster links from Go4Up internal URL"""
-
-        html = self.load(url, decode=True)
-        soup = BeautifulSoup(html)
-        container = soup.find('div', {'id': 'linklist'})
-        links = container.find('a')
-        package_links = [link for link in links if urlparse(link).hostname not in self.ignored_hosters]
-        return package_links
+        # if no prefered hoster matched, we conclude the file is offline
+        self.offline()
