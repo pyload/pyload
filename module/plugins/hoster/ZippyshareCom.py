@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
 
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/v(?:/|iew\.jsp.*key=)(?P<KEY>\d+)'
 
@@ -57,8 +57,8 @@ class ZippyshareCom(SimpleHoster):
 
     def get_link(self):
         checksum = self.get_checksum()
-        p_url    = join("d", self.info['KEY'], str(checksum), self.pyfile.name)
-        dl_link  = urljoin(self.info['HOST'], p_url)
+        p_url    = join("d", self.info['pattern']['KEY'], str(checksum), self.pyfile.name)
+        dl_link  = urljoin(self.info['pattern']['HOST'], p_url)
         return dl_link
 
 

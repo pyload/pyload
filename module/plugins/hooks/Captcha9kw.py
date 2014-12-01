@@ -56,7 +56,7 @@ class Captcha9kw(Hook):
 
         if res.isdigit():
             self.logInfo(_("%s credits left") % res)
-            credits = self.info["credits"] = int(res)
+            credits = self.info['credits'] = int(res)
             return credits
         else:
             self.logError(res)

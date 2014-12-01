@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class NowVideoAt(SimpleHoster):
     __name__    = "NowVideoAt"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?nowvideo\.(at|ch|co|eu|sx)/(video|mobile/#/videos)/(?P<ID>\w+)'
 
@@ -32,7 +32,7 @@ class NowVideoAt(SimpleHoster):
 
 
     def handleFree(self):
-        self.html = self.load("http://www.nowvideo.at/mobile/video.php", get={'id': self.info['ID']})
+        self.html = self.load("http://www.nowvideo.at/mobile/video.php", get={'id': self.info['pattern']['ID']})
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
