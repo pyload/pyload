@@ -3,7 +3,7 @@
 import re
 
 from urllib import unquote
-from urlparse import urlparse
+from urlparse import urljoin, urlparse
 
 from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.SimpleHoster import create_getInfo
@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __pattern__ = r'^unmatchable$'
 
@@ -25,7 +25,7 @@ class BasePlugin(Hoster):
 
     @classmethod
     def getInfo(cls, url="", html=""):  #@TODO: Move to hoster class in 0.4.10
-        return {'name': urlparse(url).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3 if url else 1, 'url': url or ""}
+        return {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3 if url else 1, 'url': unquote(url) or ""}
 
 
     def setup(self):
@@ -50,7 +50,7 @@ class BasePlugin(Hoster):
                     self.offline()
 
                 elif e.code in (401, 403):
-                    self.logDebug("Auth required")
+                    self.logDebug("Auth required", "Received HTTP status code: %d" % e.code)
 
                     account = self.core.accountManager.getAccountPlugin('Http')
                     servers = [x['login'] for x in account.getAllAccounts()]
@@ -65,16 +65,16 @@ class BasePlugin(Hoster):
                                 self.req.addAuth(pwd.strip())
                                 break
                         else:
-                            self.fail(_("Authorization required (username:password)"))
+                            self.fail(_("Authorization required"))
                 else:
                     self.fail(e)
             else:
                 break
         else:
-            self.fail(_("No file downloaded"))  #@TODO: Move to hoster class (check if self.lastDownload) in 0.4.10
+            self.fail(_("No file downloaded"))  #@TODO: Move to hoster class in 0.4.10
 
-        # if self.checkDownload({'empty': re.compile(r"^$")}) is "empty":
-            # self.fail(_("Empty file"))
+        if self.checkDownload({'empty': re.compile(r"^$")}) is "empty":  #@TODO: Move to hoster in 0.4.10
+            self.fail(_("Empty file"))
 
 
     def downloadFile(self, pyfile):
@@ -85,7 +85,8 @@ class BasePlugin(Hoster):
 
             if 'location' not in header or not header['location']:
                 if 'code' in header and header['code'] not in (200, 201, 203, 206):
-                    self.fail(_("File not found"), _("HTTP status code: %d") % header['code'])
+                    self.logDebug("Received HTTP status code: %d" % header['code'])
+                    self.fail(_("File not found"))
                 else:
                     break
 
@@ -93,17 +94,13 @@ class BasePlugin(Hoster):
 
             self.logDebug("Redirect #%d to: %s" % (i, location))
 
-            base = re.match(r'https?://[^/]+', url).group(0)
-
-            if location.startswith("http"):
+            if urlparse(location).scheme:
                 url = location
-
-            elif location.startswith("/"):
-                url = base + unquote(location)
-
             else:
-                url = "%s/%s" % (base, unquote(location))
+                p = urlparse(url)
+                base = "%s://%s" % (p.scheme, p.netloc)
+                url = urljoin(base, location)
         else:
             self.fail(_("Too many redirects"))
 
-        self.download(url, disposition=True)
+        self.download(unquote(url), disposition=True)
