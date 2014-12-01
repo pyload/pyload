@@ -22,6 +22,7 @@ from re import search
 from module.utils import fs_encode
 import codecs
 import pycurl
+import urllib
 
 from HTTPRequest import HTTPRequest
 
@@ -255,9 +256,16 @@ class HTTPChunk(HTTPRequest):
             if line.startswith("accept-ranges") and "bytes" in line:
                 self.p.chunkSupport = True
 
-            if line.startswith("content-disposition") and "filename=" in line:
-                name = orgline.partition("filename=")[2]
-                name = name.replace('"', "").replace("'", "").replace(";", "").strip()
+            if line.startswith("content-disposition") and ("filename=" in line or "filename*=" in line):
+                if "filename*=" in line:
+                    # extended version according to RFC 6266 and RFC 5987.
+                    encoding = line.partition("*=")[2].partition("''")[0]
+                    name = orgline.partition("''")[2]
+                    name = urllib.unquote(name.encode('ascii')).decode(charEnc(encoding))
+                else:
+                    # basic version, US-ASCII only
+                    name = orgline.partition("filename=")[2]
+                name = name.replace('"', "").replace("'", "").replace(";", "").replace("/", "_").strip()
                 self.p.nameDisposition = name
                 self.log.debug("Content-Disposition: %s" % name)
 
@@ -290,3 +298,10 @@ class HTTPChunk(HTTPRequest):
         if self.fp: self.fp.close()
         self.c.close()
         if hasattr(self, "p"): del self.p
+
+
+def charEnc(enc):
+    return {
+        'utf-8': 'utf_8',
+        'iso-8859-1': 'latin_1',
+    }.get(enc, 'unknown')
