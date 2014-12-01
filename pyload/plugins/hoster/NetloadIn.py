@@ -40,10 +40,10 @@ def getInfo(urls):
                 tmp = r.split(";")
                 try:
                     size = int(tmp[2])
-                except:
+                except Exception:
                     size = 0
                 result.append((tmp[1], size, 2 if tmp[3] == "online" else 1, chunk[i]))
-            except:
+            except Exception:
                 self.logDebug("Error while processing response: %s" % r)
 
         yield result
@@ -201,14 +201,14 @@ class NetloadIn(Hoster):
             try:
                 url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)',
                                                                     page).group(1).replace("amp;", "")
-            except:
+            except Exception:
                 page = None
                 continue
 
             try:
                 page = self.load(url_captcha_html, cookies=True)
                 captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', page).group(1)
-            except:
+            except Exception:
                 self.logDebug("Could not find captcha, try again from beginning")
                 captchawaited = False
                 continue
@@ -243,7 +243,7 @@ class NetloadIn(Hoster):
                 file_url_pattern = r'<a href="(.+)" class="Orange_Link">Click here'
                 attempt = re.search(file_url_pattern, page)
                 return "http://netload.in/" + attempt.group(1)
-        except:
+        except Exception:
             self.logDebug("Getting final link failed")
             return None
 

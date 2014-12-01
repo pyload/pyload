@@ -33,7 +33,7 @@ def status():
         status = toDict(PYLOAD.statusServer())
         status['captcha'] = PYLOAD.isCaptchaWaiting()
         return status
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -78,7 +78,7 @@ def packages():
 
         return data
 
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -112,7 +112,7 @@ def package(id):
         data["links"] = tmp
         return data
 
-    except:
+    except Exception:
         print_exc()
         return HTTPError()
 
@@ -124,7 +124,7 @@ def package_order(ids):
         pid, pos = ids.split("|")
         PYLOAD.orderPackage(int(pid), int(pos))
         return {"response": "success"}
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -134,7 +134,7 @@ def abort_link(id):
     try:
         PYLOAD.stopDownloads([id])
         return {"response": "success"}
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -145,7 +145,7 @@ def link_order(ids):
         pid, pos = ids.split("|")
         PYLOAD.orderFile(int(pid), int(pos))
         return {"response": "success"}
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -170,7 +170,7 @@ def add_package():
         copyfileobj(f.file, destination)
         destination.close()
         links.insert(0, fpath)
-    except:
+    except Exception:
         pass
 
     name = name.decode("utf8", "ignore")
@@ -191,7 +191,7 @@ def move_package(dest, id):
     try:
         PYLOAD.movePackage(dest, id)
         return {"response": "success"}
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -207,7 +207,7 @@ def edit_package():
         PYLOAD.setPackageData(id, data)
         return {"response": "success"}
 
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -218,7 +218,7 @@ def set_captcha():
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
             PYLOAD.setCaptchaResult(request.forms["cap_id"], request.forms["cap_result"])
-        except:
+        except Exception:
             pass
 
     task = PYLOAD.getCaptchaTask()
@@ -257,7 +257,7 @@ def save_config(category):
     for key, value in request.POST.iteritems():
         try:
             section, option = key.split("|")
-        except:
+        except Exception:
             continue
 
         if category == "general": category = "core"

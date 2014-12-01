@@ -50,7 +50,7 @@ class BypassCaptcha(Hook):
     def getCredits(self):
         res = getURL(self.GETCREDITS_URL, post={"key": self.getConfig("passkey")})
 
-        data = dict([x.split(' ', 1) for x in res.splitlines()])
+        data = dict(x.split(' ', 1) for x in res.splitlines())
         return int(data['Left'])
 
 
@@ -70,7 +70,7 @@ class BypassCaptcha(Hook):
         finally:
             req.close()
 
-        data = dict([x.split(' ', 1) for x in res.splitlines()])
+        data = dict(x.split(' ', 1) for x in res.splitlines())
         if not data or "Value" not in data:
             raise BypassCaptchaException(res)
 

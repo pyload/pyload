@@ -51,7 +51,7 @@ class ReCaptcha(Captcha):
         try:
             challenge = re.search("challenge : '(.+?)',", js).group(1)
             server = re.search("server : '(.+?)',", js).group(1)
-        except:
+        except Exception:
             self.plugin.error(_("ReCaptcha challenge pattern not found"))
 
         result = self.result(server, challenge)

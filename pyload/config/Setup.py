@@ -13,7 +13,7 @@ from subprocess import PIPE, call
 from pyload.utils import get_console_encoding, versiontuple
 
 
-class SetupAssistant:
+class SetupAssistant(object):
     """ pyLoads initial setup configuration assistant """
 
     def __init__(self, path, config):
@@ -251,7 +251,7 @@ class SetupAssistant:
                 jinja = False
             else:
                 jinja = True
-        except:
+        except Exception:
             jinja = False
 
         jinja = self.print_dep("jinja2", jinja)
@@ -451,7 +451,7 @@ class SetupAssistant:
         try:
             __import__(module)
             return True
-        except:
+        except Exception:
             return False
 
 
@@ -460,7 +460,7 @@ class SetupAssistant:
         try:
             call(command, stdout=pipe, stderr=pipe)
             return True
-        except:
+        except Exception:
             return False
 
 

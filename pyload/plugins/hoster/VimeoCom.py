@@ -44,7 +44,7 @@ class VimeoCom(SimpleHoster):
             html = self.load("https://player.vimeo.com/video/" + id, get={'password': password})
             pattern = r'"(?P<QL>\w+)":{"profile".*?"(?P<URL>http://pdl\.vimeocdn\.com.+?)"'
 
-        link = dict([(l.group('QL').lower(), l.group('URL')) for l in re.finditer(pattern, html)])
+        link = dict((l.group('QL').lower(), l.group('URL')) for l in re.finditer(pattern, html))
 
         if self.getConfig("original"):
             if "original" in link:

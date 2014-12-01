@@ -33,7 +33,7 @@ from pyload.network.RequestFactory import getURL
 from pyload.utils import freeSpace, lock
 
 
-class ThreadManager:
+class ThreadManager(object):
     """manages the download threads, assign jobs, reconnect etc"""
 
 
@@ -190,7 +190,7 @@ class ThreadManager:
 
         try:
             reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
-        except:
+        except Exception:
             self.core.log.warning(_("Failed executing reconnect script!"))
             self.core.config["reconnect"]["activated"] = False
             self.reconnecting.clear()
@@ -219,7 +219,7 @@ class ThreadManager:
                 ip = getURL(sv[0])
                 ip = re.match(sv[1], ip).group(1)
                 break
-            except:
+            except Exception:
                 ip = ""
                 sleep(1)
 

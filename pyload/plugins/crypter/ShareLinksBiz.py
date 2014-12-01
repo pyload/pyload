@@ -235,7 +235,7 @@ class ShareLinksBiz(Crypter):
             try:
                 (crypted, jk) = self._getCipherParams()
                 package_links.extend(self._getLinks(crypted, jk))
-            except:
+            except Exception:
                 self.fail(_("Unable to decrypt CNL2 links"))
         return package_links
 

@@ -11,7 +11,7 @@ from pyload.utils import chmod, lock
 ACC_VERSION = 1
 
 
-class AccountManager:
+class AccountManager(object):
     """manages all accounts"""
 
     #----------------------------------------------------------------------
@@ -47,7 +47,7 @@ class AccountManager:
                 return self.plugins[plugin]
             else:
                 raise
-        except:
+        except Exception:
             return None
 
 
@@ -100,7 +100,7 @@ class AccountManager:
                 try:
                     option = line[1:].split()
                     self.accounts[plugin][name]['options'][option[0]] = [] if len(option) < 2 else ([option[1]] if len(option) < 3 else option[1:])
-                except:
+                except Exception:
                     pass
 
             elif ":" in line:

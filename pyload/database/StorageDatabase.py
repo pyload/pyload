@@ -19,7 +19,7 @@
 from pyload.database import style
 from pyload.database import DatabaseBackend
 
-class StorageMethods:
+class StorageMethods(object):
     @style.queue
     def setStorage(db, identifier, key, value):
         db.c.execute("SELECT id FROM storage WHERE identifier=? AND key=?", (identifier, key))

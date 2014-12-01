@@ -56,7 +56,7 @@ class ZippyshareCom(SimpleHoster):
                 c1, c2 = map(int, re.search(r'\(\'downloadB\'\).omg\) \* \((\d+)%(\d+)', self.html).groups())
 
             b = (a1 % a2) * (c1 % c2)
-        except:
+        except Exception:
             self.error(_("Unable to calculate checksum"))
         else:
             return b + 18

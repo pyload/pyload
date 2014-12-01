@@ -52,7 +52,7 @@ A basic script that prints out some information: ::
 
     try:
         client = ThriftClient(host="127.0.0.1", port=7227, user="User", password="yourpw")
-    except:
+    except Exception:
         print "Login was wrong"
         exit()
 

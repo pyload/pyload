@@ -72,6 +72,6 @@ class PremiumTo(Hoster):
             api_r = self.load("http://premium.to/api/straffic.php",
                               get={'username': self.account.username, 'password': self.account.password})
             traffic = sum(map(int, api_r.split(';')))
-        except:
+        except Exception:
             traffic = 0
         return traffic

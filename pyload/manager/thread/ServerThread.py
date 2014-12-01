@@ -44,7 +44,7 @@ class WebServer(threading.Thread):
         elif self.server == "fastcgi":
             try:
                 import flup
-            except:
+            except Exception:
                 log.warning(_("Can't use %(server)s, python-flup is not installed!") % {
                     "server": self.server})
                 reset = True

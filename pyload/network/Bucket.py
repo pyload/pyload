@@ -19,7 +19,7 @@
 from time import time
 from threading import Lock
 
-class Bucket:
+class Bucket(object):
     def __init__(self):
         self.rate = 0
         self.tokens = 0

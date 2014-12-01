@@ -12,7 +12,7 @@ from traceback import print_exc
 from SafeEval import const_eval as literal_eval
 
 
-class PluginManager:
+class PluginManager(object):
     ROOT = "pyload.plugins."
     USERROOT = "userplugins."
     TYPES = []
@@ -141,7 +141,7 @@ class PluginManager:
 
                     try:
                         regexp = re.compile(pattern)
-                    except:
+                    except Exception:
                         self.core.log.error(_("%s has a invalid pattern") % name)
                         pattern = r'^unmatchable$'
                         regexp = re.compile(pattern)
@@ -170,7 +170,7 @@ class PluginManager:
                             config.insert(0, ["activated", "bool", "Activated", False if folder in ("addon", "hook") else True])
 
                         self.core.config.addPluginConfig(name, config, desc)
-                    except:
+                    except Exception:
                         self.core.log.error("Invalid config in %s: %s" % (name, config))
 
                 elif folder in ("addon", "hook"): #force config creation
@@ -180,7 +180,7 @@ class PluginManager:
 
                     try:
                         self.core.config.addPluginConfig(name, config, desc)
-                    except:
+                    except Exception:
                         self.core.log.error("Invalid config in %s: %s" % (name, config))
 
         if not rootplugins and plugins:  #: Double check

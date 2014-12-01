@@ -32,7 +32,7 @@ def render_to_response(file, args={}, proc=[]):
 
 
 def parse_permissions(session):
-    perms = dict([(x, False) for x in dir(PERMS) if not x.startswith("_")])
+    perms = dict((x, False) for x in dir(PERMS) if not x.startswith("_"))
     perms["ADMIN"] = False
     perms["is_admin"] = False
 

@@ -23,7 +23,7 @@ json_dumps = json.dumps
 def chmod(*args):
     try:
         os.chmod(*args)
-    except:
+    except Exception:
         pass
 
 
@@ -53,7 +53,7 @@ def remove_chars(string, repl):
         if type(string) == str:
             return string.translate(maketrans("", ""), repl)
         elif type(string) == unicode:
-            return string.translate(dict([(ord(s), None) for s in repl]))
+            return string.translate(dict((ord(s), None) for s in repl))
 
 
 def safe_filename(name):

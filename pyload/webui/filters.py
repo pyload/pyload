@@ -6,7 +6,7 @@ quotechar = "::/"
 
 try:
     from os.path import relpath
-except:
+except Exception:
     from posixpath import curdir, sep, pardir
     def relpath(path, start=curdir):
         """Return a relative version of a path"""
@@ -27,7 +27,7 @@ def quotepath(path):
         return path.replace("../", quotechar)
     except AttributeError:
         return path
-    except:
+    except Exception:
         return ""
 
 def unquotepath(path):
@@ -35,7 +35,7 @@ def unquotepath(path):
         return path.replace(quotechar, "../")
     except AttributeError:
         return path
-    except:
+    except Exception:
         return ""
 
 def path_make_absolute(path):

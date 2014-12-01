@@ -5,11 +5,11 @@
 class BaseObject(object):
     __slots__ = []
 
-class Destination:
+class Destination(object):
     Collector = 0
     Queue = 1
 
-class DownloadStatus:
+class DownloadStatus(object):
     Aborted = 9
     Custom = 11
     Decrypting = 10
@@ -26,11 +26,11 @@ class DownloadStatus:
     Unknown = 14
     Waiting = 5
 
-class ElementType:
+class ElementType(object):
     File = 1
     Package = 0
 
-class Input:
+class Input(object):
     BOOL = 4
     CHOICE = 6
     CLICK = 5
@@ -42,7 +42,7 @@ class Input:
     TEXT = 1
     TEXTBOX = 2
 
-class Output:
+class Output(object):
     CAPTCHA = 1
     NOTIFICATION = 4
     QUESTION = 2
@@ -238,7 +238,7 @@ class UserData(BaseObject):
         self.permission = permission
         self.templateName = templateName
 
-class Iface:
+class Iface(object):
     def addFiles(self, pid, links):
         pass
     def addPackage(self, name, links, dest):

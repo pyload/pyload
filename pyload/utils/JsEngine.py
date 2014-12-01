@@ -9,7 +9,7 @@ from urllib import quote
 from pyload.utils import encode, decode, uniqify
 
 
-class JsEngine:
+class JsEngine(object):
     """ JS Engine superclass """
 
     def __init__(self, core, engine=None):  #: engine can be a jse name """string""" or an AbstractEngine """class"""
@@ -103,7 +103,7 @@ class JsEngine:
         return results[0]
 
 
-class AbstractEngine:
+class AbstractEngine(object):
     """ JSE base class """
 
     NAME = ""
@@ -123,7 +123,7 @@ class AbstractEngine:
         except ImportError:
             try:
                 out, err = cls().eval("print(23+19)")
-            except:
+            except Exception:
                 res = False
             else:
                 res = out == "42"

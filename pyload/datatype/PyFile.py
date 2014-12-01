@@ -238,21 +238,21 @@ class PyFile(object):
         """ calculates speed """
         try:
             return self.plugin.req.speed
-        except:
+        except Exception:
             return 0
 
     def getETA(self):
         """ gets established time of arrival"""
         try:
             return self.getBytesLeft() / self.getSpeed()
-        except:
+        except Exception:
             return 0
 
     def getBytesLeft(self):
         """ gets bytes left """
         try:
             return self.getSize() - self.plugin.req.arrived
-        except:
+        except Exception:
             return 0
 
     def getPercent(self):
@@ -260,7 +260,7 @@ class PyFile(object):
         if self.status == 12:
             try:
                 return self.plugin.req.percent
-            except:
+            except Exception:
                 return 0
         else:
             return self.progress
@@ -272,7 +272,7 @@ class PyFile(object):
                 return self.plugin.req.size
             else:
                 return self.size
-        except:
+        except Exception:
             return self.size
 
     def notifyChange(self):

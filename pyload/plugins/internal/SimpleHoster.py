@@ -198,7 +198,7 @@ class SimpleHoster(Hoster):
         else:
             try:
                 info.update(re.match(cls.__pattern__, url).groupdict())
-            except:
+            except Exception:
                 pass
 
             for pattern in ("INFO_PATTERN", "NAME_PATTERN", "SIZE_PATTERN"):

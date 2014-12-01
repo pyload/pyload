@@ -493,7 +493,7 @@ class Plugin(Base):
         if not self.core.debug:
             try:
                 remove(tmpCaptcha.name)
-            except:
+            except Exception:
                 pass
 
         return result

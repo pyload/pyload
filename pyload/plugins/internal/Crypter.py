@@ -68,11 +68,11 @@ class Crypter(Plugin):
         folder_per_package = self.core.config['general']['folder_per_package']
         try:
             use_subfolder = self.getConfig('use_subfolder')
-        except:
+        except Exception:
             use_subfolder = folder_per_package
         try:
             subfolder_per_package = self.getConfig('subfolder_per_package')
-        except:
+        except Exception:
             subfolder_per_package = True
 
         for pack in self.packages:

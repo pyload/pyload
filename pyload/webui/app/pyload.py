@@ -173,7 +173,7 @@ def logout():
 def home():
     try:
         res = [toDict(x) for x in PYLOAD.statusDownloads()]
-    except:
+    except Exception:
         s = request.environ.get('beaker.session')
         s.delete()
         return redirect("/login")
@@ -231,7 +231,7 @@ def downloads():
                 try:
                     if isfile(safe_join(root, item, file)):
                         folder['files'].append(file)
-                except:
+                except Exception:
                     pass
 
             data['folder'].append(folder)
@@ -289,7 +289,7 @@ def config():
 
         try:
             data.options["time"] = data.options["time"][0]
-        except:
+        except Exception:
             data.options["time"] = "0:00-0:00"
 
         if "limitDL" in data.options:
@@ -334,7 +334,7 @@ def path(file="", path=""):
 
     try:
         cwd = cwd.encode("utf8")
-    except:
+    except Exception:
         pass
 
     cwd = os.path.normpath(os.path.abspath(cwd))
@@ -351,7 +351,7 @@ def path(file="", path=""):
 
     try:
         folders = os.listdir(cwd)
-    except:
+    except Exception:
         folders = []
 
     files = []
@@ -363,7 +363,7 @@ def path(file="", path=""):
             data['sort'] = data['fullpath'].lower()
             data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(join(cwd, f))))
             data['ext'] = os.path.splitext(f)[1]
-        except:
+        except Exception:
             continue
 
         if os.path.isdir(join(cwd, f)):
@@ -414,7 +414,7 @@ def logs(item=-1):
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
             fro = datetime.strptime(request.forms['from'], '%d.%m.%Y %H:%M:%S')
-        except:
+        except Exception:
             pass
         try:
             perpage = int(request.forms['perpage'])
@@ -422,14 +422,14 @@ def logs(item=-1):
 
             reversed = bool(request.forms.get('reversed', False))
             s['reversed'] = reversed
-        except:
+        except Exception:
             pass
 
         s.save()
 
     try:
         item = int(item)
-    except:
+    except Exception:
         pass
 
     log = PYLOAD.getLog()
@@ -452,7 +452,7 @@ def logs(item=-1):
             try:
                 date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
                 dtime = datetime.strptime(date + ' ' + time, '%d.%m.%Y %H:%M:%S')
-            except:
+            except Exception:
                 dtime = None
                 date = '?'
                 time = ' '
@@ -484,7 +484,7 @@ def logs(item=-1):
 @login_required("ADMIN")
 def admin():
     # convert to dict
-    user = dict([(name, toDict(y)) for name, y in PYLOAD.getAllUserData().iteritems()])
+    user = dict((name, toDict(y)) for name, y in PYLOAD.getAllUserData().iteritems())
     perms = permlist()
 
     for data in user.itervalues():

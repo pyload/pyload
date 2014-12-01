@@ -64,7 +64,7 @@ class InfoThread(PluginThread):
         for url, plugintype, pluginname in data:
             try:
                 plugins[plugintype][pluginname].append(url)
-            except:
+            except Exception:
                 plugins[plugintype][pluginname] = [url]
 
         # filter out container plugins
@@ -111,7 +111,7 @@ class InfoThread(PluginThread):
                 #attach container content
                 try:
                     data = self.decryptContainer(name, url)
-                except:
+                except Exception:
                     print_exc()
                     self.m.log.error("Could not decrypt container.")
                     data = []
@@ -119,7 +119,7 @@ class InfoThread(PluginThread):
                 for url, plugintype, pluginname in data:
                     try:
                         plugins[plugintype][pluginname].append(url)
-                    except:
+                    except Exception:
                         plugins[plugintype][pluginname] = [url]
 
             self.m.infoResults[self.rid] = {}

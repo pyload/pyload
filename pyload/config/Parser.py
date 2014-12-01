@@ -10,7 +10,7 @@ from utils import chmod, encode, decode
 
 CONF_VERSION = 1
 
-class ConfigParser:
+class ConfigParser(object):
     """
     holds and manage the configuration
 
@@ -30,20 +30,17 @@ class ConfigParser:
 
     """
 
-
     def __init__(self):
         """Constructor"""
-        self.config = {} # the config values
-        self.plugin = {} # the config for plugins
+        self.config = {}  #: the config values
+        self.plugin = {}  #: the config for plugins
         self.oldRemoteData = {}
 
-        self.pluginCB = None # callback when plugin config value is changed
+        self.pluginCB = None  #: callback when plugin config value is changed
 
         self.checkVersion()
 
         self.readConfig()
-
-
     def checkVersion(self, n=0):
         """determines if config need to be copied"""
         try:
@@ -74,16 +71,14 @@ class ConfigParser:
                 f.write("version: " + str(CONF_VERSION))
                 f.close()
                 print "Old version of plugin-config replaced"
-        except:
-            if n < 3:
-                sleep(0.3)
-                self.checkVersion(n + 1)
-            else:
+        except Exception:
+            if n >= 3:
                 raise
+            sleep(0.3)
+            self.checkVersion(n + 1)
 
     def readConfig(self):
         """reads the config file"""
-
         self.config = self.parseConfig(join(pypath, "pyload", "config", "default.conf"))
         self.plugin = self.parseConfig("plugin.conf")
 
@@ -96,11 +91,9 @@ class ConfigParser:
                     del homeconf["remote"]["password"]
                 del homeconf["remote"]["username"]
             self.updateValues(homeconf, self.config)
-
-        except Exception, e:
+        except Exception:
             print "Config Warning"
             print_exc()
-
 
     def parseConfig(self, config):
         """parses a given configfile"""
@@ -120,7 +113,7 @@ class ConfigParser:
         for line in config:
             comment = line.rfind("#")
             if line.find(":", comment) < 0 > line.find("=", comment) and comment > 0 and line[comment - 1].isspace():
-                line = line.rpartition("#") # removes comments
+                line = line.rpartition("#")  #: removes comments
                 if line[1]:
                     line = line[0]
                 else:
@@ -184,7 +177,6 @@ class ConfigParser:
         f.close()
         return conf
 
-
     def updateValues(self, config, dest):
         """sets the config values from a parsed config file to values in destination"""
 
@@ -196,7 +188,7 @@ class ConfigParser:
                     if option in dest[section]:
                         dest[section][option]["value"] = config[section][option]["value"]
 
-                        #else:
+                        # else:
                         #    dest[section][option] = config[section][option]
 
 
@@ -237,28 +229,26 @@ class ConfigParser:
         elif typ == "int":
             return int(value)
         elif typ == "bool":
-            return True if value.lower() in ("1", "true", "on", "an", "yes") else False
+            return value.lower() in ("1", "true", "on", "an", "yes")
         elif typ == "time":
-            if not value: value = "0:00"
-            if not ":" in value: value += ":00"
+            if not value:
+                value = "0:00"
+            if not ":" in value:
+                value += ":00"
             return value
         elif typ in ("str", "file", "folder"):
             return encode(value)
         else:
             return value
 
-
     def save(self):
         """saves the configs to disk"""
-
         self.saveConfig(self.config, "pyload.conf")
         self.saveConfig(self.plugin, "plugin.conf")
-
 
     def __getitem__(self, section):
         """provides dictonary like access: c['section']['option']"""
         return Section(self, section)
-
 
     def get(self, section, option):
         """get value"""
@@ -314,7 +304,7 @@ class ConfigParser:
                 }
 
         values = [x[0] for x in config] + ["desc", "outline"]
-        #delete old values
+        # delete old values
         for item in conf.keys():
             if item not in values:
                 del conf[item]
@@ -325,7 +315,7 @@ class ConfigParser:
             del self.plugin[name]
 
 
-class Section:
+class Section(object):
     """provides dictionary like access for configparser"""
 
     def __init__(self, parser, section):

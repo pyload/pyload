@@ -28,7 +28,7 @@ def checkHTMLHeader(url):
                     return url, 2
             else:
                 break
-    except:
+    except Exception:
         return url, 3
 
     return url, 0

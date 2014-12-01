@@ -59,12 +59,14 @@ copyright = u'2008-2014, pyLoad Team'
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-""" [[[cog
+"""
+[[[cog
 from pavement import options
 v = options.version.split(".")
 cog.outl("version = '%s'" % ".".join(v[:2]))
 cog.outl("release = '%s'" % ".".join(v))
-]]]"""
+]]]
+"""
 version = '0.4'
 release = '0.4.10'
 # [[[end]]]

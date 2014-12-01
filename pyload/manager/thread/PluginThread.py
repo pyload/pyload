@@ -64,7 +64,7 @@ class PluginThread(Thread):
                 try:
                     # avoid encoding errors
                     zip.write(join("tmp", pyfile.pluginname, f), safe_join(pyfile.pluginname, f))
-                except:
+                except Exception:
                     pass
 
             info = zipfile.ZipInfo(safe_join(pyfile.pluginname, "debug_Report.txt"), gmtime())

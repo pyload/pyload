@@ -19,7 +19,7 @@
 
 from time import time
 
-class CookieJar:
+class CookieJar(object):
     def __init__(self, pluginname, account=None):
         self.cookies = {}
         self.plugin = pluginname

@@ -28,11 +28,11 @@ from pyload.database import style, DatabaseBackend
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
-except:
+except Exception:
     import sqlite3
 
 
-class FileHandler:
+class FileHandler(object):
     """Handles all request made to obtain information,
     modify status or other request for links or packages"""
 
@@ -572,7 +572,7 @@ class FileHandler:
         """ restart all failed links """
         self.db.restartFailed()
 
-class FileMethods:
+class FileMethods(object):
     @style.queue
     def filecount(self, queue):
         """returns number of files in queue"""

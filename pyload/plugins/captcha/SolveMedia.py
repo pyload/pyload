@@ -32,7 +32,7 @@ class SolveMedia(Captcha):
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
                                   html).group(1)
             server = "http://api.solvemedia.com/papi/media"
-        except:
+        except Exception:
             self.plugin.error(_("SolveMedia challenge pattern not found"))
 
         result = self.result(server, challenge)

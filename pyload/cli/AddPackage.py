@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2011-2014 RaNaN
+# Copyright (C) 2011-2014 RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 from pyload.cli.Handler import Handler
 from pyload.utils.printer import *
+
 
 class AddPackage(Handler):
     """ let the user add packages """

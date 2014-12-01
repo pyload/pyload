@@ -210,7 +210,7 @@ class Core(object):
         if not pid or os.name == "nt": return False
         try:
             os.kill(pid, 0)  # 0 - default signal (does nothing)
-        except:
+        except Exception:
             return 0
 
         return pid
@@ -241,7 +241,7 @@ class Core(object):
                 print "pyLoad did not respond"
                 print "Kill signal was send to process with id %s" % pid
 
-        except:
+        except Exception:
             print "Error quitting pyLoad"
 
 
@@ -275,7 +275,7 @@ class Core(object):
                 pass
             except KeyboardInterrupt:
                 print "\nSetup interrupted"
-            except:
+            except Exception:
                 res = False
                 print_exc()
                 print "Setup failed"
@@ -285,7 +285,7 @@ class Core(object):
             exit()
 
         try: signal.signal(signal.SIGQUIT, self.quit)
-        except: pass
+        except Exception: pass
 
         self.config = ConfigParser()
 
@@ -503,7 +503,7 @@ class Core(object):
                 subprocess.Popen(check_name, stdout=pipe, stderr=pipe)
 
             return True
-        except:
+        except Exception:
             if essential:
                 self.log.info(_("Install %s") % legend)
                 exit()
@@ -529,7 +529,7 @@ class Core(object):
                             makedirs(tmp_name)
                         else:
                             open(tmp_name, "w")
-                    except:
+                    except Exception:
                         file_created = False
                 else:
                     file_created = False
@@ -578,7 +578,7 @@ class Core(object):
 
             self.addonManager.coreExiting()
 
-        except:
+        except Exception:
             if self.debug:
                 print_exc()
             self.log.info(_("error while shutting down"))

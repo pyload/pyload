@@ -60,7 +60,7 @@ def callApi(func, *args, **kwargs):
         return HTTPError(404, json.dumps("Not Found"))
 
     result = getattr(PYLOAD, func)(*[literal_eval(x) for x in args],
-                                   **dict([(x, literal_eval(y)) for x, y in kwargs.iteritems()]))
+                                   **dict((x, literal_eval(y)) for x, y in kwargs.iteritems()))
 
     # null is invalid json  response
     if result is None: result = True
@@ -88,7 +88,7 @@ def login():
     try:
         sid = s._headers["cookie_out"].split("=")[1].split(";")[0]
         return json.dumps(sid)
-    except:
+    except Exception:
         return json.dumps(True)
 
 

@@ -25,7 +25,7 @@ def bench(f, *args, **kwargs):
     e = time()
     try:
         print "%s: %f s" % (f._Method__name, e-s)
-    except:
+    except Exception:
         print "%s: %f s" % (f.__name__, e-s)
     return ret
 

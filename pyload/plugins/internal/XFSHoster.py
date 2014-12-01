@@ -323,7 +323,7 @@ class XFSHoster(SimpleHoster):
         recaptcha = ReCaptcha(self)
         try:
             captcha_key = re.search(self.RECAPTCHA_PATTERN, self.html).group(1)
-        except:
+        except Exception:
             captcha_key = recaptcha.detect_key()
         else:
             self.logDebug("ReCaptcha key: %s" % captcha_key)
@@ -335,7 +335,7 @@ class XFSHoster(SimpleHoster):
         solvemedia = SolveMedia(self)
         try:
             captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.html).group(1)
-        except:
+        except Exception:
             captcha_key = solvemedia.detect_key()
         else:
             self.logDebug("SolveMedia key: %s" % captcha_key)

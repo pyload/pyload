@@ -144,7 +144,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         try:
             m = re.search(self.PAGES_PATTERN, self.html)
             pages = int(m.group(1))
-        except:
+        except Exception:
             pages = 1
 
         for p in xrange(2, pages + 1):

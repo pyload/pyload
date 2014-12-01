@@ -24,7 +24,7 @@ from binascii import unhexlify
 
 try:
     from Crypto.Cipher import AES
-except:
+except Exception:
     pass
 
 from pyload.manager.RemoteManager import BackendBase

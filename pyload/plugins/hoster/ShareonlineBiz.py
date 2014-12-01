@@ -177,7 +177,7 @@ class ShareonlineBiz(Hoster):
         err = m.group(1)
         try:
             self.logError(err, re.search(self.ERROR_INFO_PATTERN, self.html).group(1))
-        except:
+        except Exception:
             self.logError(err, "Unknown error occurred")
 
         if err == "invalid":

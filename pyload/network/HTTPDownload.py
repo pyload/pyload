@@ -30,7 +30,7 @@ from HTTPRequest import BadHeader
 from pyload.plugins.Plugin import Abort
 from pyload.utils import safe_join, fs_encode
 
-class HTTPDownload:
+class HTTPDownload(object):
     """ loads a url http + ftp """
 
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,

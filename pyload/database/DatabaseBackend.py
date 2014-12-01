@@ -27,12 +27,12 @@ from pyload.utils import chmod
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
-except:
+except Exception:
     import sqlite3
 
 DB_VERSION = 4
 
-class style:
+class style(object):
     db = None
 
     @classmethod
@@ -63,7 +63,7 @@ class style:
                 return cls.db.async(f, *args, **kwargs)
         return x
 
-class DatabaseJob:
+class DatabaseJob(object):
     def __init__(self, f, *args, **kwargs):
         self.done = Event()
 
@@ -96,7 +96,7 @@ class DatabaseJob:
             print_exc()
             try:
                 print "Database Error @", self.f.__name__, self.args[1:], self.kwargs, e
-            except:
+            except Exception:
                 pass
 
             self.exception = e
@@ -170,7 +170,7 @@ class DatabaseBackend(Thread):
             if v < 2:
                 try:
                     self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
-                except:
+                except Exception:
                     print "Filedatabase was deleted due to incompatible version."
                 remove("files.version")
                 move("files.db", "files.backup.db")
@@ -182,10 +182,10 @@ class DatabaseBackend(Thread):
     def _convertDB(self, v):
         try:
             getattr(self, "_convertV%i" % v)()
-        except:
+        except Exception:
             try:
                 self.core.log.error(_("Filedatabase could NOT be converted."))
-            except:
+            except Exception:
                 print "Filedatabase could NOT be converted."
 
     #convert scripts start-----------------------------------------------------
@@ -194,7 +194,7 @@ class DatabaseBackend(Thread):
         self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
         try:
             self.manager.core.log.info(_("Database was converted from v2 to v3."))
-        except:
+        except Exception:
             print "Database was converted from v2 to v3."
         self._convertV3()
 
@@ -202,7 +202,7 @@ class DatabaseBackend(Thread):
         self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
         try:
             self.manager.core.log.info(_("Database was converted from v3 to v4."))
-        except:
+        except Exception:
             print "Database was converted from v3 to v4."
 
     #convert scripts end-------------------------------------------------------
@@ -248,7 +248,7 @@ class DatabaseBackend(Thread):
         if exists("pyload.db"):
             try:
                 self.core.log.info(_("Converting old Django DB"))
-            except:
+            except Exception:
                 print "Converting old Django DB"
             conn = sqlite3.connect('pyload.db')
             c = conn.cursor()

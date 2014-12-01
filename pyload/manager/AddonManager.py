@@ -28,7 +28,8 @@ from pyload.manager.thread.AddonThread import AddonThread
 from pyload.manager.PluginManager import literal_eval
 from utils import lock
 
-class AddonManager:
+
+class AddonManager(object):
     """Manages addons, delegates and handles Events.
 
         Every plugin can define events, \
@@ -69,7 +70,7 @@ class AddonManager:
 
         self.events = {} # contains events
 
-        #registering callback for config event
+        # registering callback for config event
         self.core.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged", basestring)
 
         self.addEvent("pluginConfigChanged", self.manageAddon)
@@ -85,9 +86,7 @@ class AddonManager:
                 args[0].log.error(_("Error executing addon: %s") % e)
                 if args[0].core.debug:
                     traceback.print_exc()
-
         return new
-
 
     def addRPC(self, plugin, func, doc):
         plugin = plugin.rpartition(".")[2]
@@ -102,22 +101,18 @@ class AddonManager:
         if not args: args = tuple()
         if parse:
             args = tuple([literal_eval(x) for x in args])
-
         plugin = self.pluginMap[plugin]
         f = getattr(plugin, func)
         return f(*args)
 
-
     def createIndex(self):
         plugins = []
-
         active = []
         deactive = []
 
         for pluginname in self.core.pluginManager.addonPlugins:
             try:
                 # hookClass = getattr(plugin, plugin.__name__)
-
                 if self.core.config.getPlugin(pluginname, "activated"):
                     pluginClass = self.core.pluginManager.loadClass("addon", pluginname)
                     if not pluginClass: continue
@@ -130,8 +125,7 @@ class AddonManager:
                 else:
                     deactive.append(pluginname)
 
-
-            except:
+            except Exception:
                 self.core.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
                 if self.core.debug:
                     traceback.print_exc()
@@ -148,14 +142,15 @@ class AddonManager:
             self.deactivateAddon(plugin)
 
     def activateAddon(self, plugin):
-        #check if already loaded
+        # check if already loaded
         for inst in self.plugins:
             if inst.__name__ == plugin:
                 return
 
         pluginClass = self.core.pluginManager.loadClass("addon", plugin)
 
-        if not pluginClass: return
+        if not pluginClass:
+            return
 
         self.core.log.debug("Plugin loaded: %s" % plugin)
 
@@ -193,7 +188,6 @@ class AddonManager:
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.coreReady()
-
         self.dispatchEvent("coreReady")
 
     @try_catch
@@ -201,7 +195,6 @@ class AddonManager:
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.coreExiting()
-
         self.dispatchEvent("coreExiting")
 
     @lock
@@ -209,7 +202,6 @@ class AddonManager:
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.downloadPreparing(pyfile)
-
         self.dispatchEvent("downloadPreparing", pyfile)
 
     @lock
@@ -241,7 +233,6 @@ class AddonManager:
     def beforeReconnecting(self, ip):
         for plugin in self.plugins:
             plugin.beforeReconnecting(ip)
-
         self.dispatchEvent("beforeReconnecting", ip)
 
     @lock
@@ -249,7 +240,6 @@ class AddonManager:
         for plugin in self.plugins:
             if plugin.isActivated():
                 plugin.afterReconnecting(ip)
-
         self.dispatchEvent("afterReconnecting", ip)
 
     def startThread(self, function, *args, **kwargs):
@@ -264,17 +254,16 @@ class AddonManager:
         info = {}
         for name, plugin in self.pluginMap.iteritems():
             if plugin.info:
-                #copy and convert so str
-                info[name] = dict([(x, str(y) if not isinstance(y, basestring) else y) for x, y in plugin.info.iteritems()])
+                # copy and convert so str
+                info[name] = dict(
+                    [(x, str(y) if not isinstance(y, basestring) else y) for x, y in plugin.info.iteritems()])
         return info
-
 
     def getInfo(self, plugin):
         info = {}
         if plugin in self.pluginMap and self.pluginMap[plugin].info:
-            info = dict([(x, str(y) if not isinstance(y, basestring) else y)
-                for x, y in self.pluginMap[plugin].info.iteritems()])
-
+            info = dict((x, str(y) if not isinstance(y, basestring) else y)
+                         for x, y in self.pluginMap[plugin].info.iteritems())
         return info
 
     def addEvent(self, event, func):
@@ -297,6 +286,6 @@ class AddonManager:
                     f(*args)
                 except Exception, e:
                     self.core.log.warning("Error calling event handler %s: %s, %s, %s"
-                    % (event, f, args, str(e)))
+                                          % (event, f, args, str(e)))
                     if self.core.debug:
                         traceback.print_exc()

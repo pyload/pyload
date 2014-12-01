@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2008-2014 RaNaN
+# Copyright (C) 2008-2014 RaNaN
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ from pyload.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection,
 from Getch import Getch
 from rename_process import renameProcess
 
-class Cli:
+class Cli(object):
     def __init__(self, client, command):
         self.client = client
         self.command = command
@@ -468,7 +468,7 @@ def writeConfig(opts):
             cfgfile.write("[cli]")
             for opt in opts:
                 cfgfile.write("%s=%s\n" % (opt, opts[opt]))
-    except:
+    except Exception:
         print _("Couldn't write user config file")
 
 
@@ -476,7 +476,7 @@ def main():
     config = {"addr": "127.0.0.1", "port": "7227", "language": "en"}
     try:
         config["language"] = os.environ["LANG"][0:2]
-    except:
+    except Exception:
         pass
 
     if (not exists(join(pypath, "locale", config["language"]))) or config["language"] == "":

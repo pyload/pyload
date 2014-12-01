@@ -115,7 +115,7 @@ class UpdateManager(Addon):
     def server_request(self):
         try:
             return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
-        except:
+        except Exception:
             self.logWarning(_("Unable to contact server to get updates"))
 
 

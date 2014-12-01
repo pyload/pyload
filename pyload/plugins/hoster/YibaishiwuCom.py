@@ -46,7 +46,7 @@ class YibaishiwuCom(SimpleHoster):
                 self.logDebug("Trying URL: " + url)
                 self.download(url)
                 break
-            except:
+            except Exception:
                 continue
         else:
             self.fail(_("No working link found"))
