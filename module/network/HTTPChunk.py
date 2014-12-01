@@ -261,7 +261,7 @@ class HTTPChunk(HTTPRequest):
                     # extended version according to RFC 6266 and RFC 5987.
                     encoding = line.partition("*=")[2].partition("''")[0]
                     name = orgline.partition("''")[2]
-                    name = urllib.unquote(name.encode('ascii')).decode(charEnc(encoding))
+                    name = urllib.unquote(str(name)).decode(charEnc(encoding))
                 else:
                     # basic version, US-ASCII only
                     name = orgline.partition("filename=")[2]
