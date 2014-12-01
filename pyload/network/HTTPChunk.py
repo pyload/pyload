@@ -253,6 +253,7 @@ class HTTPChunk(HTTPRequest):
         """parse data from recieved header"""
         for orgline in self.decodeResponse(self.header).splitlines():
             line = orgline.strip().lower()
+
             if line.startswith("accept-ranges") and "bytes" in line:
                 self.p.chunkSupport = True
 
@@ -265,8 +266,10 @@ class HTTPChunk(HTTPRequest):
                 else:
                     # basic version, US-ASCII only
                     name = orgline.partition("filename=")[2]
+
                 name = name.replace('"', "").replace("'", "").replace(";", "").replace("/", "_").strip()
                 self.p.nameDisposition = name
+
                 self.log.debug("Content-Disposition: %s" % name)
 
             if not self.resume and line.startswith("content-length"):
@@ -301,7 +304,5 @@ class HTTPChunk(HTTPRequest):
 
 
 def charEnc(enc):
-    return {
-        'utf-8': 'utf_8',
-        'iso-8859-1': 'latin_1',
-    }.get(enc, 'unknown')
+    return {'utf-8'     : "utf_8",
+            'iso-8859-1': "latin_1"}.get(enc, "unknown")
