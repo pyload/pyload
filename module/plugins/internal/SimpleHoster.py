@@ -122,6 +122,8 @@ def _isDirectLink(self, url, resumable=True):
 
     location = header['location']
 
+    resumable = False  #@NOTE: Testing...
+
     if resumable:  #: sometimes http code may be wrong...
         if 'location' in self.load(location, ref=True, cookies=True, just_header=True, decode=True):
             return ""
