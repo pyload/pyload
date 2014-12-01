@@ -35,7 +35,6 @@ class XFSHoster(SimpleHoster):
     CHECK_DIRECT_LINK = None
     MULTI_HOSTER      = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
-    INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
     NAME_PATTERN = r'(>Filename:</b></td><td nowrap>|name="fname" value="|<span class="name">)(?P<N>.+?)(\s*<|")'
     SIZE_PATTERN = r'(>Size:</b></td><td>|>File:.*>|<span class="size">)(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
 
