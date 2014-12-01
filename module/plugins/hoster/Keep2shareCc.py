@@ -36,24 +36,21 @@ class Keep2shareCc(SimpleHoster):
     CAPTCHA_PATTERN = r'src="(/file/captcha\.html.+?)"'
 
     WAIT_PATTERN         = r'Please wait ([\d:]+) to download this file'
-    ERROR_BLOCK_PATTERN  = r'Downloading is not possible<br>.+?</span>'
-    TEMP_ERROR_PATTERN   = r'Download count files exceed|Traffic limit exceed|Free account does not allow to download more than one file at the same time'
-    ERROR_PATTERN        = r'Free user can\'t download large files|You no can access to this file|This download available only for premium users|This is private file'
+    TEMP_ERROR_PATTERN   = r'>\s*(Download count files exceed|Traffic limit exceed|Free account does not allow to download more than one file at the same time)'
+    ERROR_PATTERN        = r'>\s*(Free user can\'t download large files|You no can access to this file|This download available only for premium users|This is private file)'
 
 
     def checkErrors(self):
-        m = re.search(self.ERROR_BLOCK_PATTERN, self.html, re.S)
+        m = re.search(self.TEMP_ERROR_PATTERN, self.html)
         if m:
-            e = self.info['error'] = m.group(0)
+            self.info['error'] = m.group(1)
+            self.wantReconnect = True
+            self.retry(wait_time=30 * 60, reason=m.group(0))
 
-            m = re.search(self.TEMP_ERROR_PATTERN, self.html)
-            if m:
-                self.wantReconnect = True
-                self.retry(wait_time=30 * 60, reason=m.group(0))
-
-            m = re.search(self.ERROR_PATTERN, self.html)
-            if m:
-                self.error(e)
+        m = re.search(self.ERROR_PATTERN, self.html)
+        if m:
+            e = self.info['error'] = m.group(1)
+            self.error(e)
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
@@ -131,7 +128,7 @@ class Keep2shareCc(SimpleHoster):
     def _getDownloadLink(self, url):
         p = urlparse(self.pyfile.url)
         base = "%s://%s" % (p.scheme, p.netloc)
-        link = _isDirectLink(url)
+        link = _isDirectLink(self, url, self.premium)
         return urljoin(base, link) if link else ""
 
 

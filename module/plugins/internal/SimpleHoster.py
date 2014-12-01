@@ -123,7 +123,7 @@ def _isDirectLink(self, url, resumable=True):
     location = header['location']
 
     if resumable:  #: sometimes http code may be wrong...
-        if self.load(location, ref=True, cookies=True, just_header=True, decode=True)['location']:
+        if 'location' in self.load(location, ref=True, cookies=True, just_header=True, decode=True):
             return ""
     else:
         if not 'code' in header or header['code'] != 302:
@@ -388,7 +388,7 @@ class SimpleHoster(Hoster):
         self.checkFile()
 
 
-    def checkFile(self)
+    def checkFile(self):
         if self.checkDownload({'empty': re.compile(r"^$")}) is "empty":  #@TODO: Move to hoster in 0.4.10
             self.fail(_("Empty file"))
 
