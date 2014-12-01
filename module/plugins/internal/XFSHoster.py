@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __pattern__ = r'^unmatchable$'
 
@@ -35,7 +35,6 @@ class XFSHoster(SimpleHoster):
     CHECK_DIRECT_LINK = None
     MULTI_HOSTER      = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
-    INFO_PATTERN = r'<tr><td align=right><b>Filename:</b></td><td nowrap>(?P<N>[^<]+)</td></tr>\s*.*?<small>\((?P<S>[^<]+)\)</small>'
     NAME_PATTERN = r'(>Filename:</b></td><td nowrap>|name="fname" value="|<span class="name">)(?P<N>.+?)(\s*<|")'
     SIZE_PATTERN = r'(>Size:</b></td><td>|>File:.*>|<span class="size">)(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
 
@@ -49,10 +48,10 @@ class XFSHoster(SimpleHoster):
     LEECH_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     LINK_PATTERN       = None  #: final download url pattern
 
-    CAPTCHA_PATTERN     = r'(https?://[^"\']+?/captchas?/[^"\']+)'
-    CAPTCHA_DIV_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
-    RECAPTCHA_PATTERN   = None
-    SOLVEMEDIA_PATTERN  = None
+    CAPTCHA_PATTERN       = r'(https?://[^"\']+?/captchas?/[^"\']+)'
+    CAPTCHA_BLOCK_PATTERN = r'>Enter code.*?<div.*?>(.+?)</div>'
+    RECAPTCHA_PATTERN     = None
+    SOLVEMEDIA_PATTERN    = None
 
     FORM_PATTERN    = None
     FORM_INPUTS_MAP = None  #: dict passed as input_names to parseHtmlForm
@@ -234,10 +233,10 @@ class XFSHoster(SimpleHoster):
                     retries = 3
                 else:
                     delay = 1 * 60 * 60
-                    retries = 25
+                    retries = 24
 
-                self.wait(delay, True)
-                self.retry(retries, reason=_("Download limit exceeded"))
+                self.wantReconnect = True
+                self.retry(retries, delay, _("Download limit exceeded"))
 
             elif 'countdown' in self.errmsg or 'Expired' in self.errmsg:
                 self.retry(reason=_("Link expired"))
@@ -249,6 +248,7 @@ class XFSHoster(SimpleHoster):
                 self.fail(_("File too large for free download"))
 
             else:
+                self.wantReconnect = True
                 self.retry(wait_time=60, reason=self.errmsg)
 
         if self.errmsg:
@@ -311,7 +311,7 @@ class XFSHoster(SimpleHoster):
             inputs['code'] = self.decryptCaptcha(captcha_url)
             return 1
 
-        m = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.S)
+        m = re.search(self.CAPTCHA_BLOCK_PATTERN, self.html, re.S)
         if m:
             captcha_div = m.group(1)
             numerals    = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
