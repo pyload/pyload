@@ -23,6 +23,7 @@ from PyQt4.QtXml import *
 
 import os
 
+
 class XMLParser():
     def __init__(self, data, dfile=""):
         self.mutex = QMutex()
@@ -33,7 +34,7 @@ class XMLParser():
         self.mutex.unlock()
         self.loadData()
         self.root = self.xml.documentElement()
-    
+
     def loadData(self):
         self.mutex.lock()
         f = self.file
@@ -43,7 +44,7 @@ class XMLParser():
             content = fh.read()
         self.xml.setContent(content)
         self.mutex.unlock()
-    
+
     def saveData(self):
         self.mutex.lock()
         content = self.xml.toString()
@@ -51,12 +52,9 @@ class XMLParser():
             fh.write(content)
         self.mutex.unlock()
         return content
-    
+
     def parseNode(self, node, ret_type="list"):
-        if ret_type == "dict":
-            childNodes = {}
-        else:
-            childNodes = []
+        childNodes = {} if ret_type == "dict" else []
         child = node.firstChild()
         while True:
             n = child.toElement()

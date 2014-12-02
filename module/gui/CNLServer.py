@@ -26,24 +26,26 @@ from binascii import unhexlify
 
 try:
     from Crypto.Cipher import AES
-except:
+except Exception:
     pass
 
 try:
     from module.common import JsEngine
 except ImportError:
     import sys
+
     sys.path.append(join(abspath(dirname(__file__)), "..", ".."))
     from module.common import JsEngine
 
 js = JsEngine.JsEngine()
 core = None
 
+
 class CNLServer(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.setDaemon(True)
-        
+
         self.stop = False
         self.stopped = False
 
@@ -51,10 +53,10 @@ class CNLServer(Thread):
         server_address = ('127.0.0.1', 9666)
         try:
             httpd = HTTPServer(server_address, CNLHandler)
-        except:
+        except Exception:
             self.stopped = True
             return
-        
+
         self.stopped = False
         while self.keep_running():
             httpd.handle_request()
@@ -65,8 +67,7 @@ class CNLServer(Thread):
 
 
 class CNLHandler(BaseHTTPRequestHandler):
-
-    #def log_message(self, *args):
+    # def log_message(self, *args):
     #    pass
 
     def add_package(self, name, urls, queue=0):
@@ -75,15 +76,10 @@ class CNLHandler(BaseHTTPRequestHandler):
         print "queue", queue
 
     def get_post(self, name, default=""):
-        if name in self.post:
-            return self.post[name]
-        else:
-            return default
+        self.post[name] if name in self.post else default
 
     def start_response(self, string):
-
         self.send_response(200)
-
         self.send_header("Content-Length", len(string))
         self.send_header("Content-Language", "de")
         self.send_header("Vary", "Accept-Language, Cookie")
@@ -95,45 +91,43 @@ class CNLHandler(BaseHTTPRequestHandler):
         path = self.path.strip("/").lower()
         #self.wfile.write(path+"\n")
 
-        self.map = [ (r"add$", self.add),
-                (r"addcrypted$", self.addcrypted),
-                (r"addcrypted2$", self.addcrypted2),
-                (r"flashgot", self.flashgot),
-                (r"crossdomain\.xml", self.crossdomain),
-                (r"checkSupportForUrl", self.checksupport),
-                (r"jdcheck.js", self.jdcheck),
-                (r"", self.flash) ]
+        self.map = [(r"add$", self.add),
+                    (r"addcrypted$", self.addcrypted),
+                    (r"addcrypted2$", self.addcrypted2),
+                    (r"flashgot", self.flashgot),
+                    (r"crossdomain\.xml", self.crossdomain),
+                    (r"checkSupportForUrl", self.checksupport),
+                    (r"jdcheck.js", self.jdcheck),
+                    (r"", self.flash)]
 
         func = None
         for r, f in self.map:
-            if re.match(r"(flash(got)?/?)?"+r, path):
+            if re.match(r"(flash(got)?/?)?" + r, path):
                 func = f
                 break
 
         if func:
             try:
                 resp = func()
-                if not resp: resp = "success"
+                if not resp:
+                    resp = "success"
                 resp += "\r\n"
                 self.start_response(resp)
                 self.wfile.write(resp)
-            except Exception,e :
+            except Exception, e:
                 self.send_error(500, str(e))
         else:
             self.send_error(404, "Not Found")
 
     def do_POST(self):
         form = FieldStorage(
-                fp=self.rfile,
-                headers=self.headers,
-                environ={'REQUEST_METHOD':'POST',
-                         'CONTENT_TYPE':self.headers['Content-Type'],
-                         })
+            fp=self.rfile,
+            headers=self.headers,
+            environ={'REQUEST_METHOD': 'POST',
+                     'CONTENT_TYPE': self.headers['Content-Type'],
+            })
 
-        self.post = {}
-        for name in form.keys():
-            self.post[name] = form[name].value
-
+        self.post = {name: form[name].value for name in form.keys()}
         return self.do_GET()
 
     def flash(self):
@@ -142,7 +136,6 @@ class CNLHandler(BaseHTTPRequestHandler):
     def add(self):
         package = self.get_post('referer', 'ClickAndLoad Package')
         urls = filter(lambda x: x != "", self.get_post('urls').split("\n"))
-
         self.add_package(package, urls, 0)
 
     def addcrypted(self):
@@ -163,7 +156,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         IV = Key
 
         obj = AES.new(Key, AES.MODE_CBC, IV)
-        result = obj.decrypt(crypted).replace("\x00", "").replace("\r","").split("\n")
+        result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
         result = filter(lambda x: x != "", result)
 
@@ -206,12 +199,12 @@ if __name__ == "__main__":
         ssl = "s"
 
     server_url = "http%s://%s:%s@%s:%s/" % (
-                                        ssl,
-                                        config.username,
-                                        config.password,
-                                        config.get("remote", "listenaddr"),
-                                        config.get("remote", "port")
-                                        )
+        ssl,
+        config.username,
+        config.password,
+        config.get("remote", "listenaddr"),
+        config.get("remote", "port")
+    )
 
     core = xmlrpclib.ServerProxy(server_url, allow_none=True)
 

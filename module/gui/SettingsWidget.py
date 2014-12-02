@@ -30,7 +30,7 @@ class SettingsWidget(QWidget):
         self.data = None
         self.pdata = None
         self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-    
+
     def setConnector(self, connector):
         self.connector = connector
 
@@ -41,13 +41,12 @@ class SettingsWidget(QWidget):
 
             self.reloadSection(self.sections, self.data)
             self.reloadSection(self.psections, self.pdata)
-
             return
 
         if self.layout():
             delete(self.layout())
 
-        for s in self.sections.values()+self.psections.values():
+        for s in self.sections.values() + self.psections.values():
             delete(s)
 
         self.sections = {}
@@ -64,7 +63,7 @@ class SettingsWidget(QWidget):
 
         tab = QTabWidget()
         self.tab = tab
-        
+
         gw = QWidget()
         gw.setLayout(QVBoxLayout())
         gw.layout().addWidget(self.general)
@@ -117,13 +116,12 @@ class SettingsWidget(QWidget):
                         elif not item.type.find(";") == -1:
                             i.setCurrentIndex(i.findText(item.value))
                         elif item.type == "bool":
-                            if True if item.value.lower() in ("1","true", "on", "an","yes") else False:
+                            if True if item.value.lower() in ("1", "true", "on", "an", "yes") else False:
                                 i.setCurrentIndex(0)
                             else:
                                 i.setCurrentIndex(1)
                         else:
                             i.setText(item.value)
-
 
     def saveConfig(self):
         self.data = self.connector.getConfig()
@@ -131,7 +129,6 @@ class SettingsWidget(QWidget):
 
         self.saveSection(self.sections, self.data)
         self.saveSection(self.psections, self.pdata, "plugin")
-
 
     def saveSection(self, sections, pdata, sec="core"):
         for k, section in enumerate(pdata):
@@ -141,7 +138,7 @@ class SettingsWidget(QWidget):
                     if item.name in widget.inputs:
                         i = widget.inputs[item.name]
 
-                        #TODO : unresolved reference: option
+                        # TODO : unresolved reference: option
 
                         if item.type == "int":
                             if i.value() != int(item.value):
@@ -150,11 +147,13 @@ class SettingsWidget(QWidget):
                             if i.currentText() != item.value:
                                 self.connector.setConfigValue(k, option, i.currentText(), sec)
                         elif item.type == "bool":
-                            if (True if item.value.lower() in ("1","true", "on", "an","yes") else False) ^ (not i.currentIndex()):
+                            if (True if item.value.lower() in ("1", "true", "on", "an", "yes") else False) ^ (
+                            not i.currentIndex()):
                                 self.connector.setConfigValue(k, option, not i.currentIndex(), sec)
                         else:
                             if i.text() != item.value:
                                 self.connector.setConfigValue(k, option, str(i.text()), sec)
+
 
 class Section(QGroupBox):
     def __init__(self, data, parent, ctype="core"):
@@ -165,18 +164,18 @@ class Section(QGroupBox):
         self.ctype = ctype
         layout = QFormLayout(self)
         self.setLayout(layout)
-        
+
         sw = QWidget()
         sw.setLayout(QVBoxLayout())
         sw.layout().addWidget(self)
-        
+
         sa = QScrollArea()
         sa.setWidgetResizable(True)
         sa.setWidget(sw)
         sa.setFrameShape(sa.NoFrame)
-        
+
         parent.addTab(sa, data.description)
-        
+
         for option in self.data.items:
             if option.type == "int":
                 i = QSpinBox(self)
@@ -191,7 +190,7 @@ class Section(QGroupBox):
                 i = QComboBox(self)
                 i.addItem(_("Yes"), QVariant(True))
                 i.addItem(_("No"), QVariant(False))
-                if True if option.value.lower() in ("1","true", "on", "an","yes") else False:
+                if True if option.value.lower() in ("1", "true", "on", "an", "yes") else False:
                     i.setCurrentIndex(0)
                 else:
                     i.setCurrentIndex(1)
