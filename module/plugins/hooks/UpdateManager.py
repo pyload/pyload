@@ -177,11 +177,11 @@ class UpdateManager(Hook):
         schema = updates[1].split('|')
 
         if "BLACKLIST" in updates:
-            updates   = updates[2:updates.index('BLACKLIST')]
             blacklist = updates[updates.index('BLACKLIST') + 1:]
+            updates   = updates[2:updates.index('BLACKLIST')]
         else:
-            updates   = updates[2:]
             blacklist = None
+            updates   = updates[2:]
 
         upgradable  = [dict(zip(schema, x.split('|'))) for x in updates]
         blacklisted = [(x.split('|')[0], x.split('|')[1].rsplit('.', 1)[0]) for x in blacklist] if blacklist else []
@@ -227,9 +227,9 @@ class UpdateManager(Hook):
             newver = float(version)
 
             if not oldver:
-                msg = "New plugin [%(type)s] %(name)s (v%(newver).2f)"
+                msg = "New plugin: [%(type)s] %(name)s (v%(newver).2f)"
             elif newver > oldver:
-                msg = "New version of plugin [%(type)s] %(name)s (v%(oldver).2f -> v%(newver).2f)"
+                msg = "New version of plugin: [%(type)s] %(name)s (v%(oldver).2f -> v%(newver).2f)"
             else:
                 continue
 
@@ -239,7 +239,7 @@ class UpdateManager(Hook):
                                    'newver': newver})
             try:
                 content = getURL(url % plugin)
-                m = VERSION.search(content)
+                m = self.VERSION.search(content)
 
                 if m and m.group(2) == version:
                     with open(save_join("userplugins", prefix, filename), "wb") as f:
@@ -250,7 +250,7 @@ class UpdateManager(Hook):
                     raise Exception, _("Version mismatch")
 
             except Exception, e:
-                self.logError(_("Error updating plugin %s") % filename, str(e))
+                self.logError(_("Error updating plugin: %s") % filename, str(e))
 
         if updated:
             reloaded = self.core.pluginManager.reloadPlugins(updated)
