@@ -9,10 +9,10 @@ from module.plugins.Plugin import SkipDownload
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
-    __config__ = [("auto",   "bool", "Automatically keep all rev files needed by package", True)
-                  ("tokeep", "int" , "Min number of rev files to keep for package"       , 1),
+    __config__ = [("auto",   "bool", "Automatically keep all rev files needed by package", True),
+                  ("tokeep", "int" , "Min number of rev files to keep for package"       ,    1),
                   ("unskip", "bool", "Restart a skipped rev when download fails"         , True)]
 
     __description__ = """Skip files ending with extension rev"""
@@ -53,4 +53,4 @@ class SkipRev(Hook):
         for link in pyfile.package().getChildren():
             if link.hasStatus("skipped") and REV.search(link.name):
                 link.setCustomStatus("unskipped", "queued")
-                break
+                return
