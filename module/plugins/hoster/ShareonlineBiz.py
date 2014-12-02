@@ -28,6 +28,8 @@ class ShareonlineBiz(SimpleHoster):
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", "http://www.share-online.biz/dl/\g<ID>")]
 
+    RECAPTCHA_KEY = "6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX"
+
     ERROR_INFO_PATTERN = r'<p class="b">Information:</p>\s*<div>\s*<strong>(.*?)</strong>'
 
 
@@ -65,7 +67,7 @@ class ShareonlineBiz(SimpleHoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            challenge, response = recaptcha.challenge()
+            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
 
             m = re.search(r'var wait=(\d+);', self.html)
             self.setWait(int(m.group(1)) if m else 30)
