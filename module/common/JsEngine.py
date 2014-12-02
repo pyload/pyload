@@ -49,7 +49,7 @@ if not ENGINE or DEBUG:
         find_module("PyV8")
         ENGINE = "pyv8"
         PYV8 = True
-    except:
+    except Exception:
         pass
 
 if not ENGINE or DEBUG:
@@ -75,8 +75,9 @@ if not ENGINE or DEBUG:
         if out.strip() == "42":
             ENGINE = "rhino"
         RHINO = True
-    except:
+    except Exception:
         pass
+
 
 class JsEngine():
     def __init__(self):
@@ -84,7 +85,7 @@ class JsEngine():
         self.init = False
 
     def __nonzero__(self):
-        return False if not ENGINE else True
+        return bool(ENGINE)
 
     def eval(self, script):
         if not self.init:
@@ -140,7 +141,7 @@ class JsEngine():
     def eval_js(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
         p = subprocess.Popen(["js", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
-        out, err = p.communicate()
+        out, _ = p.communicate()
         res = out.strip()
         return res
 
@@ -148,7 +149,7 @@ class JsEngine():
         script = "print(eval(unescape('%s')))" % quote(script)
         p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", script],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
-        out, err = p.communicate()
+        out, _ = p.communicate()
         res = out.strip()
         return res.decode("utf8").encode("ISO-8859-1")
 
@@ -157,6 +158,5 @@ class JsEngine():
 
 if __name__ == "__main__":
     js = JsEngine()
-
     test = u'"ü"+"ä"'
     js.eval(test)
