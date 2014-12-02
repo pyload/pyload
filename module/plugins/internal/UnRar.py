@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(AbtractExtractor):
     __name__    = "UnRar"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -32,12 +32,12 @@ class UnRar(AbtractExtractor):
     CMD = "unrar"
 
     # there are some more uncovered rar formats
-    re_version = re.compile(r"(UNRAR 5[\d.]+(.*?)freeware)")
-    re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
-    re_partfiles = re.compile(r".*\.(rar|r\d+)", re.I)
-    re_filelist = re.compile(r"(.+)\s+(\d+)\s+(\d+)\s+")
-    re_filelist5 = re.compile(r"(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)")
-    re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)", re.I)
+    re_version   = re.compile(r'UNRAR ([\w .]+?) freeware')
+    re_splitfile = re.compile(r'(.*)\.part(\d+)\.rar$', re.I)
+    re_partfiles = re.compile(r'.*\.(rar|r\d+)', re.I)
+    re_filelist  = re.compile(r'(.+)\s+(\d+)\s+(\d+)\s+')
+    re_filelist5 = re.compile(r'(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
+    re_wrongpwd  = re.compile(r'(Corrupt file or wrong password|password incorrect)', re.I)
 
 
     @staticmethod

@@ -14,13 +14,14 @@ from module.utils import save_join
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("mode", "pyLoad + plugins;plugins only", "Check updates for", "pyLoad + plugins"),
-                  ("interval", "int", "Check interval in hours", 8),
-                  ("reloadplugins", "bool", "Monitor plugins for code changes (debug mode only)", True),
-                  ("nodebugupdate", "bool", "Don't check for updates in debug mode", True)]
+    __config__ = [("activated"    , "bool"                         , "Activated"                                     , True              ),
+                  ("mode"         , "pyLoad + plugins;plugins only", "Check updates for"                             , "pyLoad + plugins"),
+                  ("interval"     , "int"                          , "Check interval in hours"                       , 8                 ),
+                  ("autorestart"  , "bool"                         , "Automatically restart pyLoad when required"    , True              ),
+                  ("reloadplugins", "bool"                         , "Monitor plugins for code changes in debug mode", True              ),
+                  ("nodebugupdate", "bool"                         , "Don't check for updates in debug mode"         , True              )]
 
     __description__ = """ Check for updates """
     __license__     = "GPLv3"
@@ -123,7 +124,7 @@ class UpdateManager(Hook):
 
         status = self.update(onlyplugin=self.getConfig("mode") == "plugins only")
 
-        if status == 2:
+        if status is 2 and self.getConfig("autorestart"):
             self.core.api.restart()
         else:
             self.updating = False

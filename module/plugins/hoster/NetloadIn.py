@@ -2,11 +2,13 @@
 
 import re
 
+from urlparse import urljoin
 from time import sleep, time
 
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import chunks
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 def getInfo(urls):
@@ -28,8 +30,8 @@ def getInfo(urls):
         if api is None or len(api) < 10:
             self.logDebug("Prefetch failed")
             return
+
         if api.find("unknown_auth") >= 0:
-            print
             self.logDebug("Outdated auth code")
             return
 
@@ -38,12 +40,15 @@ def getInfo(urls):
         for i, r in enumerate(api.splitlines()):
             try:
                 tmp = r.split(";")
+
                 try:
                     size = int(tmp[2])
-                except:
+                except Exception:
                     size = 0
-                result.append((tmp[1], size, 2 if tmp[3] == "online" else 1, chunk[i]))
-            except:
+
+                result.append((tmp[1], size, 2 if tmp[3] == "online" else 1, chunk[i] ))
+
+            except Exception:
                 self.logDebug("Error while processing response: %s" % r)
 
         yield result
@@ -52,7 +57,7 @@ def getInfo(urls):
 class NetloadIn(Hoster):
     __name__    = "NetloadIn"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
     __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index\.php?id=10&file_id=)'
 
@@ -69,8 +74,11 @@ class NetloadIn(Hoster):
 
     def process(self, pyfile):
         self.url = pyfile.url
+
         self.prepare()
+
         pyfile.setStatus("downloading")
+
         self.proceed(self.url)
 
 
@@ -81,8 +89,10 @@ class NetloadIn(Hoster):
             self.pyfile.name = self.api_data['filename']
 
         if self.premium:
-            self.logDebug("Use Premium Account")
+            self.logDebug(" Use Premium Account")
+
             settings = self.load("http://www.netload.in/index.php?id=2&lang=en")
+
             if '<option value="2" selected="selected">Direkter Download' in settings:
                 self.logDebug("Using direct download")
                 return True
@@ -97,9 +107,9 @@ class NetloadIn(Hoster):
 
 
     def download_api_data(self, n=0):
-        url = self.url
+        url      = self.url
         id_regex = re.compile(self.__pattern__)
-        match = id_regex.search(url)
+        match    = id_regex.search(url)
 
         if match:
             #normalize url
@@ -118,15 +128,18 @@ class NetloadIn(Hoster):
             self.download_api_data(n + 1)
             return
 
-        self.logDebug("APIDATA: " + html)
+        self.logDebug(" APIDATA: " + html)
+
         self.api_data = {}
+
         if html and ";" in html and html not in ("unknown file_data", "unknown_server_data", "No input file specified."):
             lines = html.split(";")
-            self.api_data['exists'] = True
-            self.api_data['fileid'] = lines[0]
+            self.api_data['exists']   = True
+            self.api_data['fileid']   = lines[0]
             self.api_data['filename'] = lines[1]
-            self.api_data['size'] = lines[2]
-            self.api_data['status'] = lines[3]
+            self.api_data['size']     = lines[2]
+            self.api_data['status']   = lines[3]
+
             if self.api_data['status'] == "online":
                 self.api_data['checksum'] = lines[4].strip()
             else:
@@ -140,16 +153,28 @@ class NetloadIn(Hoster):
 
     def final_wait(self, page):
         wait_time = self.get_wait_time(page)
+
         self.setWait(wait_time)
-        self.logDebug("Final wait %d seconds" % wait_time)
+
+        self.logDebug(" final wait %d seconds" % wait_time)
+
         self.wait()
+
         self.url = self.get_file_url(page)
 
 
+    def check_free_wait(self,page):
+        if ">An access request has been made from IP address <" in page:
+            self.wantReconnect = True
+            self.setWait(self.get_wait_time(page) or 30)
+            self.wait()
+            return True
+        else:
+            return False
+
+
     def download_html(self):
-        self.logDebug("Entering download_html")
         page = self.load(self.url, decode=True)
-        t = time() + 30
 
         if "/share/templates/download_hddcrash.tpl" in page:
             self.logError(_("Netload HDD Crash"))
@@ -169,7 +194,7 @@ class NetloadIn(Hoster):
                     self.pyfile.name = name
 
         captchawaited = False
-        for i in xrange(10):
+        for i in range(5):
 
             if not page:
                 page = self.load(self.url)
@@ -179,57 +204,55 @@ class NetloadIn(Hoster):
                 self.logError(_("Netload HDD Crash"))
                 self.fail(_("File temporarily not available"))
 
-            self.logDebug("Try number %d " % i)
+            self.logDebug(" try number %d " % i)
 
             if ">Your download is being prepared.<" in page:
-                self.logDebug("We will prepare your download")
+                self.logDebug(" We will prepare your download")
                 self.final_wait(page)
                 return True
-            if ">An access request has been made from IP address <" in page:
-                wait = self.get_wait_time(page)
-                if not wait:
-                    self.logDebug("Wait was 0 setting 30")
-                    wait = 30 * 60
-                self.logInfo(_("Waiting between downloads %d seconds") % wait)
-                self.setWait(wait, True)
-                self.wait()
 
+            self.logDebug(" Trying to find captcha")
+
+            try:
+                url_captcha_html = re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', page).group(1).replace("amp;", "")
+
+            except Exception as e:
+                self.logDebug("exception during Captcha regex: %s" % e.message)
+                page = None
+
+            else:
+                url_captcha_html = urljoin("http://netload.in/", url_captcha_html)
+                break
+
+        self.html = self.load(url_captcha_html)
+
+        recaptcha = ReCaptcha(self)
+
+        for _i in xrange(5):
+            challenge, response = recaptcha.challenge()
+
+            response_page = self.load("http://www.netload.in/index.php?id=10",
+                                      post={'captcha_check'            : '1',
+                                            'recaptcha_challenge_field': challenge,
+                                            'recaptcha_response_field' : response,
+                                            'file_id'                  : self.api_data['fileid'],
+                                            'Download_Next'            : ''})
+            if "Orange_Link" in response_page:
+                break
+
+            if self.check_free_wait(response_page):
+                self.logDebug("Had to wait for next free slot, trying again")
                 return self.download_html()
 
-            self.logDebug("Trying to find captcha")
-
-            try:
-                url_captcha_html = "http://netload.in/" + re.search('(index.php\?id=10&amp;.*&amp;captcha=1)',
-                                                                    page).group(1).replace("amp;", "")
-            except:
-                page = None
-                continue
-
-            try:
-                page = self.load(url_captcha_html, cookies=True)
-                captcha_url = "http://netload.in/" + re.search('(share/includes/captcha.php\?t=\d*)', page).group(1)
-            except:
-                self.logDebug("Could not find captcha, try again from beginning")
-                captchawaited = False
-                continue
-
-            file_id = re.search('<input name="file_id" type="hidden" value="(.*)" />', page).group(1)
-            if not captchawaited:
-                wait = self.get_wait_time(page)
-                if i == 0:
-                    self.pyfile.waitUntil = time()  # dont wait contrary to time on website
-                else:
-                    self.pyfile.waitUntil = t
-                self.logInfo(_("Waiting for captcha %d seconds") % (self.pyfile.waitUntil - time()))
-                #self.setWait(wait)
+            else:
+                download_url = self.get_file_url(response_page)
+                self.logDebug("Download URL after get_file: " + download_url)
+                if not download_url.startswith("http://"):
+                    self.error("download url: %s" % download_url)
                 self.wait()
-                captchawaited = True
 
-            captcha = self.decryptCaptcha(captcha_url)
-            page = self.load("http://netload.in/index.php?id=10", post={"file_id": file_id, "captcha_check": captcha},
-                             cookies=True)
-
-        return False
+                self.url = download_url
+                return True
 
 
     def get_file_url(self, page):
@@ -239,29 +262,28 @@ class NetloadIn(Hoster):
             if attempt is not None:
                 return attempt.group(1)
             else:
-                self.logDebug("Backup try for final link")
+                self.logDebug(" Backup try for final link")
                 file_url_pattern = r'<a href="(.+)" class="Orange_Link">Click here'
                 attempt = re.search(file_url_pattern, page)
                 return "http://netload.in/" + attempt.group(1)
-        except:
-            self.logDebug("Getting final link failed")
+
+        except Exception, e:
+            self.logDebug("Getting final link failed", e.message)
             return None
 
 
     def get_wait_time(self, page):
-        wait_seconds = int(re.search(r"countdown\((.+),'change\(\)'\)", page).group(1)) / 100
-        return wait_seconds
+        return int(re.search(r"countdown\((.+),'change\(\)'\)", page).group(1)) / 100
 
 
     def proceed(self, url):
-        self.logDebug("Downloading..")
-
         self.download(url, disposition=True)
 
-        check = self.checkDownload({"empty": re.compile(r"^$"), "offline": re.compile("The file was deleted")})
-
+        check = self.checkDownload({'empty'  : re.compile(r'^$'),
+                                    'offline': re.compile("The file was deleted")})
         if check == "empty":
             self.logInfo(_("Downloaded File was empty"))
             self.retry()
+
         elif check == "offline":
             self.offline()
