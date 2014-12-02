@@ -14,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
 
@@ -36,10 +36,10 @@ class ShareonlineBiz(SimpleHoster):
         info = {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3 if url else 1, 'url': url}
 
         if url:
-            info.update(re.match(cls.__pattern__, url).groupdict())
+            info['pattern'] = re.match(cls.__pattern__, url).groupdict()
 
             api_url = "http://api.share-online.biz/linkcheck.php?md5=1"
-            html    = getURL(api_url, cookies=False, post={"links": self.info['pattern']['ID']}, decode=True)
+            html    = getURL(api_url, cookies=False, post={"links": info['pattern']['ID']}, decode=True)
             field   = html.split(";")
 
             if field[1] is "OK":
