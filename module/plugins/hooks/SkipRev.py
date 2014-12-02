@@ -9,7 +9,7 @@ from module.plugins.Plugin import SkipDownload
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __config__ = [("auto",   "bool", "Automatically keep all rev files needed by package", True),
                   ("tokeep", "int" , "Min number of rev files to keep for package"       ,    1),
@@ -26,7 +26,7 @@ class SkipRev(Hook):
 
 
     def skipRev(self, pyfile, url, filename):
-        if REV.search(pyfile.name) is None or pyfile.getStatusName is "unskipped":
+        if REV.search(pyfile.name) is None or pyfile.getStatusName() is "unskipped":
             return
 
         tokeep = self.getConfig("tokeep")
