@@ -57,7 +57,7 @@ def getInfo(urls):
 class NetloadIn(Hoster):
     __name__    = "NetloadIn"
     __type__    = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
 
     __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index\.php?id=10&file_id=)'
 
@@ -89,7 +89,7 @@ class NetloadIn(Hoster):
             self.pyfile.name = self.api_data['filename']
 
         if self.premium:
-            self.logDebug(" Use Premium Account")
+            self.logDebug("Use Premium Account")
 
             settings = self.load("http://www.netload.in/index.php?id=2&lang=en")
 
@@ -128,7 +128,7 @@ class NetloadIn(Hoster):
             self.download_api_data(n + 1)
             return
 
-        self.logDebug(" APIDATA: " + html)
+        self.logDebug("APIDATA: " + html)
 
         self.api_data = {}
 
@@ -156,7 +156,7 @@ class NetloadIn(Hoster):
 
         self.setWait(wait_time)
 
-        self.logDebug(" final wait %d seconds" % wait_time)
+        self.logDebug("Final wait %d seconds" % wait_time)
 
         self.wait()
 
@@ -194,8 +194,8 @@ class NetloadIn(Hoster):
                     self.pyfile.name = name
 
         captchawaited = False
-        for i in range(5):
 
+        for i in xrange(5):
             if not page:
                 page = self.load(self.url)
                 t = time() + 30
@@ -204,20 +204,20 @@ class NetloadIn(Hoster):
                 self.logError(_("Netload HDD Crash"))
                 self.fail(_("File temporarily not available"))
 
-            self.logDebug(" try number %d " % i)
+            self.logDebug("Try number %d " % i)
 
             if ">Your download is being prepared.<" in page:
-                self.logDebug(" We will prepare your download")
+                self.logDebug("We will prepare your download")
                 self.final_wait(page)
                 return True
 
-            self.logDebug(" Trying to find captcha")
+            self.logDebug("Trying to find captcha")
 
             try:
-                url_captcha_html = re.search('(index.php\?id=10&amp;.*&amp;captcha=1)', page).group(1).replace("amp;", "")
+                url_captcha_html = re.search(r'(index.php\?id=10&amp;.*&amp;captcha=1)', page).group(1).replace("amp;", "")
 
-            except Exception as e:
-                self.logDebug("exception during Captcha regex: %s" % e.message)
+            except Exception, e:
+                self.logDebug("Exception during Captcha regex: %s" % e.message)
                 page = None
 
             else:
@@ -262,7 +262,7 @@ class NetloadIn(Hoster):
             if attempt is not None:
                 return attempt.group(1)
             else:
-                self.logDebug(" Backup try for final link")
+                self.logDebug("Backup try for final link")
                 file_url_pattern = r'<a href="(.+)" class="Orange_Link">Click here'
                 attempt = re.search(file_url_pattern, page)
                 return "http://netload.in/" + attempt.group(1)
