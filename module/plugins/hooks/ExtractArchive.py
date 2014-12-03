@@ -4,7 +4,7 @@ import os
 import sys
 
 from copy import copy
-from os import remove, chmod, makedirs, renames
+from os import remove, chmod, makedirs
 from os.path import exists, basename, isfile, isdir
 from traceback import print_exc
 
@@ -55,16 +55,15 @@ from module.utils import save_join, fs_encode
 
 
 class ExtractArchive(Hook):
-    __name__ = "ExtractArchive"
-    __type__ = "hook"
-    __version__ = "0.18"
+    __name__    = "ExtractArchive"
+    __type__    = "hook"
+    __version__ = "0.17"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
                   ("overwrite", "bool", "Overwrite files", True),
                   ("passwordfile", "file", "password file", "archive_password.txt"),
                   ("deletearchive", "bool", "Delete archives when done", False),
-                  ("deletepath", "folder", "Delete archives to", ""),
                   ("subfolder", "bool", "Create subfolder for each package", False),
                   ("destination", "folder", "Extract files to", ""),
                   ("excludefiles", "str", "Exclude files from unpacking (seperated by ;)", ""),
@@ -235,7 +234,6 @@ class ExtractArchive(Hook):
     def _extract(self, plugin, fid, passwords, thread):
         pyfile = self.core.files.getFile(fid)
         deletearchive = self.getConfig("deletearchive")
-        deletepath = self.getConfig("deletepath").strip()
 
         pyfile.setCustomStatus(_("extracting"))
         thread.addActive(pyfile)  # keep this file until everything is done
@@ -279,17 +277,7 @@ class ExtractArchive(Hook):
                 self.logInfo(_("Deleting %s files") % len(files))
                 for f in files:
                     if exists(f):
-                        if deletepath == "":
-                            remove(f)
-                        else:
-                            #create a tmp-lock file, because the rename-function delete the Downlaodfolder
-                            tmpfile = save_join(self.config['general']['download_folder'], ".tmp.lock")
-                            open(tmpfile, "w").close()
-                            t = save_join(self.getConfig("trashpath"), basename(f))
-                            if os.path.exists(t):
-                                remove(t) #to keep always the latest archive in the trashfolder
-                            os.renames(f, t)
-                            remove(tmpfile)
+                        remove(f)
                     else:
                         self.logDebug("%s does not exists" % f)
 
