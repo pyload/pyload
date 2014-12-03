@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
 
@@ -39,7 +39,7 @@ class FilerNet(SimpleHoster):
 
         self.html = self.load(self.pyfile.url, decode=True)
 
-        inputs = self.parseHtmlForm(input_names='token')[1]
+        inputs = self.parseHtmlForm(input_names={'token': re.compile(r'.+')})[1]
         if 'token' not in inputs:
             self.error(_("Unable to detect token"))
         token = inputs['token']
@@ -47,7 +47,7 @@ class FilerNet(SimpleHoster):
 
         self.html = self.load(self.pyfile.url, post={'token': token}, decode=True)
 
-        inputs = self.parseHtmlForm(input_names='hash')[1]
+        inputs = self.parseHtmlForm(input_names={'hash': re.compile(r'.+')})[1]
         if 'hash' not in inputs:
             self.error(_("Unable to detect hash"))
         hash_data = inputs['hash']
