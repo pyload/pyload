@@ -33,7 +33,7 @@ def _error(self, reason, type):
 #@TODO: Remove in 0.4.10
 def _wait(self, seconds, reconnect):
     if seconds:
-        self.setWait(seconds + 1)
+        self.setWait(int(seconds) + 1)
 
     if reconnect is not None:
         self.wantReconnect = reconnect
@@ -144,7 +144,7 @@ def _isDirectLink(self, url, resumable=True):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.69"
+    __version__ = "0.70"
 
     __pattern__ = r'^unmatchable$'
 

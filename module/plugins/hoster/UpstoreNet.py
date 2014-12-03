@@ -46,7 +46,7 @@ class UpstoreNet(SimpleHoster):
             m = re.search(self.WAIT_PATTERN, self.html)
             if m is None:
                 self.error(_("Wait pattern not found"))
-            wait_time = m.group(1)
+            wait_time = int(m.group(1))
 
             # then, do the waiting
             self.wait(wait_time)
