@@ -92,7 +92,6 @@ class FilerNet(SimpleHoster):
                 self.error(_("LINK_PATTERN not found"))
             dl = 'http://filer.net' + m.group(1)
 
-        self.logDebug("Direct link: " + dl)
         self.download(dl, disposition=True)
 
 

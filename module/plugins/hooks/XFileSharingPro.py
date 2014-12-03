@@ -8,11 +8,11 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __config__ = [("activated", "bool", "Activated", True),
-                  ("use_hoster_list", "bool", "Load listed hosters only", False),
-                  ("use_crypter_list", "bool", "Load listed crypters only", False),
+                  ("use_hoster_list", "bool", "Load listed hosters only", True),
+                  ("use_crypter_list", "bool", "Load listed crypters only", True),
                   ("use_builtin_list", "bool", "Load built-in plugin list", True),
                   ("hoster_list", "str", "Hoster list (comma separated)", ""),
                   ("crypter_list", "str", "Crypter list (comma separated)", "")]

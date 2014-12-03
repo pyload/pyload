@@ -38,9 +38,8 @@ class PromptfileCom(SimpleHoster):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
             self.error(_("LINK_PATTERN not found"))
-        direct = m.group(1)
-        self.logDebug("Found direct link: " + direct)
-        self.download(direct, disposition=True)
+
+        self.download(m.group(1), disposition=True)
 
 
 getInfo = create_getInfo(PromptfileCom)

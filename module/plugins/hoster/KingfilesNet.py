@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class KingfilesNet(SimpleHoster):
     __name__    = "KingfilesNet"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
 
@@ -38,7 +38,7 @@ class KingfilesNet(SimpleHoster):
         # Click the free user button
         post_data = {'op': "download1",
                      'usr_login': "",
-                     'id': self.info['ID'],
+                     'id': self.info['pattern']['ID'],
                      'fname': self.pyfile.name,
                      'referer': "",
                      'method_free': "+"}
@@ -57,7 +57,7 @@ class KingfilesNet(SimpleHoster):
         self.logDebug("rand = ", rand)
 
         post_data = {'op': "download2",
-                     'id': self.info['ID'],
+                     'id': self.info['pattern']['ID'],
                      'rand': rand,
                      'referer': self.pyfile.url,
                      'method_free': "+",
