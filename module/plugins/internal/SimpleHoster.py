@@ -399,8 +399,8 @@ class SimpleHoster(Hoster):
         if hasattr(self, 'ERROR_PATTERN'):
             m = re.search(self.ERROR_PATTERN, self.html)
             if m:
-                e = self.info['error'] = m.group(1)
-                self.error(e)
+                errmsg = self.info['error'] = m.group(1)
+                self.error(errmsg)
 
         if hasattr(self, 'PREMIUM_ONLY_PATTERN'):
             m = re.search(self.PREMIUM_ONLY_PATTERN, self.html)

@@ -160,6 +160,7 @@ class ShareonlineBiz(SimpleHoster):
     def checkErrors(self):
         m = re.search(r"/failure/(.*?)/1", self.req.lastEffectiveURL)
         if m is None:
+            self.info.pop('error', None)
             return
 
         errmsg = m.group(1).lower()

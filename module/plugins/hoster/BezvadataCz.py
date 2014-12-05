@@ -83,6 +83,8 @@ class BezvadataCz(SimpleHoster):
         elif '<div class="infobox' in self.html:
             self.tempOffline()
 
+        self.info.pop('error', None)
+
 
     def loadcaptcha(self, data, *args, **kwargs):
         return data.decode("base64")

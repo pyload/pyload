@@ -37,7 +37,10 @@ class FilerNet(SimpleHoster):
         # Wait between downloads
         m = re.search(r'musst du <span id="time">(\d+)</span> Sekunden warten', self.html)
         if m:
-            self.retry(wait_time=int(m.group(1)), reason=_("Wait between free downloads"))
+            errmsg = self.info['error'] = _("Wait between free downloads")
+            self.retry(wait_time=int(m.group(1)), reason=errmsg)
+
+        self.info.pop('error', None)
 
 
     def handleFree(self):

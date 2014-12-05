@@ -49,8 +49,8 @@ class Keep2shareCc(SimpleHoster):
 
         m = re.search(self.ERROR_PATTERN, self.html)
         if m:
-            e = self.info['error'] = m.group(1)
-            self.error(e)
+            errmsg = self.info['error'] = m.group(1)
+            self.error(errmsg)
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:

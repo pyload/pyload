@@ -35,13 +35,15 @@ class FastshareCz(SimpleHoster):
 
     def checkErrors(self):
         if self.SLOT_ERROR in self.html:
-            e = self.info['error'] = _("No free slots")
-            self.retry(12, 60, e)
+            errmsg = self.info['error'] = _("No free slots")
+            self.retry(12, 60, errmsg)
 
         if self.CREDIT_ERROR in self.html:
-            e = self.info['error'] = _("Not enough traffic left")
-            self.logWarning(e)
+            errmsg = self.info['error'] = _("Not enough traffic left")
+            self.logWarning(errmsg)
             self.resetAccount()
+
+        self.info.pop('error', None)
 
 
     def handleFree(self):

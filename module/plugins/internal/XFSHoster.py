@@ -256,8 +256,6 @@ class XFSHoster(SimpleHoster):
         else:
             self.info.pop('error', None)
 
-        return self.errmsg
-
 
     def getPostParameters(self):
         if self.FORM_PATTERN or self.FORM_INPUTS_MAP:

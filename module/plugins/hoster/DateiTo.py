@@ -18,12 +18,13 @@ class DateiTo(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN = r'Dateiname:</td>\s*<td colspan="2"><strong>(?P<N>.*?)</'
-    SIZE_PATTERN = r'Dateigr&ouml;&szlig;e:</td>\s*<td colspan="2">(?P<S>.*?)</'
+    NAME_PATTERN    = r'Dateiname:</td>\s*<td colspan="2"><strong>(?P<N>.*?)</'
+    SIZE_PATTERN    = r'Dateigr&ouml;&szlig;e:</td>\s*<td colspan="2">(?P<S>.*?)</'
     OFFLINE_PATTERN = r'>Datei wurde nicht gefunden<|>Bitte wähle deine Datei aus... <'
-    PARALELL_PATTERN = r'>Du lädst bereits eine Datei herunter<'
 
-    WAIT_PATTERN = r'countdown\({seconds: (\d+)'
+    WAIT_PATTERN    = r'countdown\({seconds: (\d+)'
+    MULTIDL_PATTERN = r'>Du lädst bereits eine Datei herunter<'
+
     DATA_PATTERN = r'url: "(.*?)", data: "(.*?)",'
 
 
@@ -55,16 +56,19 @@ class DateiTo(SimpleHoster):
         else:
             self.fail(_("Too bad..."))
 
-        download_url = self.html
-        self.download(download_url)
+        self.download(self.html)
 
 
     def checkErrors(self):
-        m = re.search(self.PARALELL_PATTERN, self.html)
+        m = re.search(self.MULTIDL_PATTERN, self.html)
         if m:
             m = re.search(self.WAIT_PATTERN, self.html)
             wait_time = int(m.group(1)) if m else 30
-            self.retry(wait_time=wait_time)
+
+            errmsg = self.info['error'] = _("Parallel downloads")
+            self.retry(wait_time=wait_time, reason=errmsg)
+
+        self.info.pop('error', None)
 
 
     def doWait(self):
