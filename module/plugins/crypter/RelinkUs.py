@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 import base64
 import binascii
 import re
@@ -12,7 +14,7 @@ from module.plugins.Crypter import Crypter
 class RelinkUs(Crypter):
     __name__    = "RelinkUs"
     __type__    = "crypter"
-    __version__ = "3.1"
+    __version__ = "3.11"
 
     __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<id>.+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),

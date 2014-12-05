@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 import base64
 import binascii
 import re
@@ -10,7 +12,7 @@ from module.utils import fs_encode
 
 class RSDF(Container):
     __name__    = "RSDF"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __pattern__ = r'.+\.rsdf'
 

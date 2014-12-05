@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 import time
 
 from os import listdir, makedirs
@@ -13,7 +15,7 @@ from module.utils import fs_encode, save_join
 class HotFolder(Hook):
     __name__    = "HotFolder"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __config__ = [("folder", "str", "Folder to observe", "container"),
                   ("watch_file", "bool", "Observe link file", False),

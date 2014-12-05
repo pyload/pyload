@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 from os import remove
 from os.path import exists
 from urllib import quote
@@ -11,7 +13,7 @@ from module.utils import fs_encode
 class PremiumTo(Hoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'https?://(?:www\.)?premium\.to/.*'
 
