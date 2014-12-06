@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import replace_patterns
 class DebridItaliaCom(Hoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
 
@@ -41,13 +41,13 @@ class DebridItaliaCom(Hoster):
             html = self.load("http://www.debriditalia.com/api.php?generate=&link=%s" % pyfile.url)
 
             if "ERROR" in html:
-                self.fail(re.search(r'ERROR:(.*)', html).split())
+                self.fail(re.search(r'ERROR:(.*)', html).strip())
 
-            link = html.split()
+            link = html.strip()
 
         self.download(link, disposition=True)
 
-        check = self.checkDownload({'empty': re.compile(r"^$")})
+        check = self.checkDownload({'empty': re.compile(r'^$')})
 
         if check == "empty":
             self.retry(5, 2 * 60, "Empty file downloaded")
