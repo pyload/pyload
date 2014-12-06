@@ -42,7 +42,8 @@ class PremiumizeMe(Account):
     def getAccountStatus(self, user, req):
         # Use premiumize.me API v1 (see https://secure.premiumize.me/?show=api)
         # to retrieve account info and return the parsed json answer
-        answer = req.load(
-            "https://api.premiumize.me/pm-api/v1.php?method=accountstatus&params[login]=%s&params[pass]=%s" % (
-            user, self.accounts[user]['password']))
+        answer = req.load("https://api.premiumize.me/pm-api/v1.php",
+                           get={'method'       : "accountstatus",
+                                'params[login]': user,
+                                'params[pass]' : self.accounts[user]['password']})
         return json_loads(answer)

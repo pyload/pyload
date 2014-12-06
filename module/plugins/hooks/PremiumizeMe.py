@@ -30,8 +30,8 @@ class PremiumizeMe(MultiHoster):
 
         # Get supported hosters list from premiumize.me using the
         # json API v1 (see https://secure.premiumize.me/?show=api)
-        answer = getURL("https://api.premiumize.me/pm-api/v1.php?method=hosterlist&params[login]=%s&params[pass]=%s" % (
-                        user, data['password']))
+        answer = getURL("https://api.premiumize.me/pm-api/v1.php"
+                        get={'method': "hosterlist", 'params[login]': user, 'params[pass]': data['password']})
         data = json_loads(answer)
 
         # If account is not valid thera are no hosters available

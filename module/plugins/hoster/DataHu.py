@@ -28,7 +28,7 @@ class DataHu(SimpleHoster):
 
     def setup(self):
         self.resumeDownload = True
-        self.multiDL = self.premium
+        self.multiDL        = self.premium
 
 
     def handleFree(self):

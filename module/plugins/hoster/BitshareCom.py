@@ -31,7 +31,7 @@ class BitshareCom(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = self.premium
+        self.multiDL    = self.premium
         self.chunkLimit = 1
 
 

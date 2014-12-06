@@ -41,9 +41,11 @@ class PremiumTo(Hoster):
         #raise timeout to 2min
         self.req.setOption("timeout", 120)
 
-        self.download(
-            "http://premium.to/api/getfile.php?username=%s&password=%s&link=%s" % (self.account.username, self.account.password, quote(pyfile.url, "")),
-            disposition=True)
+        self.download("http://premium.to/api/getfile.php",
+                      get={'username': self.account.username,
+                           'password': self.account.password,
+                           'link'    : quote(pyfile.url, "")},
+                      disposition=True)
 
         check = self.checkDownload({"nopremium": "No premium account available"})
 

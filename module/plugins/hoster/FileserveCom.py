@@ -59,9 +59,9 @@ class FileserveCom(Hoster):
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
-
         self.file_id = re.match(self.__pattern__, self.pyfile.url).group('id')
-        self.url = "%s%s" % (self.URLS[0], self.file_id)
+        self.url     = "%s%s" % (self.URLS[0], self.file_id)
+
         self.logDebug("File ID: %s URL: %s" % (self.file_id, self.url))
 
 

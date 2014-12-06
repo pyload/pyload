@@ -23,7 +23,8 @@ class BezvadataCz(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = self.resumeDownload = True
+        self.resumeDownload = True
+        self.multiDL        = True
 
 
     def handleFree(self):

@@ -65,7 +65,7 @@ class RapidshareCom(Hoster):
         self.name = None
 
         self.chunkLimit = -1 if self.premium else 1
-        self.multiDL = self.resumeDownload = self.premium
+        self.multiDL    = self.resumeDownload = self.premium
 
 
     def process(self, pyfile):

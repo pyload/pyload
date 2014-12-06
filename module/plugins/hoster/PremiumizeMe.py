@@ -36,10 +36,11 @@ class PremiumizeMe(Hoster):
         (user, data) = self.account.selectAccount()
 
         # Get rewritten link using the premiumize.me api v1 (see https://secure.premiumize.me/?show=api)
-        answer = self.load(
-            "https://api.premiumize.me/pm-api/v1.php?method=directdownloadlink&params[login]=%s&params[pass]=%s&params[link]=%s" % (
-            user, data['password'], pyfile.url))
-        data = json_loads(answer)
+        data = json_loads(self.load("https://api.premiumize.me/pm-api/v1.php",
+                                    get={'method'       : "directdownloadlink",
+                                         'params[login]': user,
+                                         'params[pass]' : data['password'],
+                                         'params[link]' : pyfile.url}))
 
         # Check status and decide what to do
         status = data['status']

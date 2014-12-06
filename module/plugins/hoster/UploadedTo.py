@@ -113,7 +113,7 @@ class UploadedTo(Hoster):
 
 
     def setup(self):
-        self.multiDL = self.resumeDownload = self.premium
+        self.multiDL    = self.resumeDownload = self.premium
         self.chunkLimit = 1  # critical problems with more chunks
 
         self.fileID = getID(self.pyfile.url)

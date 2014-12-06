@@ -52,10 +52,11 @@ class RealdebridCom(Hoster):
             else:
                 password = password[0]
 
-            url = "https://real-debrid.com/ajax/unrestrict.php?lang=en&link=%s&password=%s&time=%s" % (
-                quote(pyfile.url, ""), password, int(time() * 1000))
-            page = self.load(url)
-            data = json_loads(page)
+           data = json_loads(self.load("https://real-debrid.com/ajax/unrestrict.php",
+                                        get={'lang'    : "en",
+                                             'link'    : quote(pyfile.url, ""),
+                                             'password': password,
+                                             'time'    : int(time() * 1000)}))
 
             self.logDebug("Returned Data: %s" % data)
 

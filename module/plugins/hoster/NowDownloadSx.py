@@ -31,8 +31,9 @@ class NowDownloadSx(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = self.resumeDownload = True
-        self.chunkLimit = -1
+        self.resumeDownload = True
+        self.multiDL        = True
+        self.chunkLimit     = -1
 
 
     def handleFree(self):

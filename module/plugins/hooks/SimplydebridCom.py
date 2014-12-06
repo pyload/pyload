@@ -18,5 +18,5 @@ class SimplydebridCom(MultiHoster):
 
 
     def getHoster(self):
-        page = getURL("http://simply-debrid.com/api.php?list=1")
+        page = getURL("http://simply-debrid.com/api.php", get={'list': 1})
         return [x.strip() for x in page.rstrip(';').replace("\"", "").split(";")]

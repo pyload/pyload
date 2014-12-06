@@ -34,8 +34,9 @@ class FilecloudIo(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
-        self.chunkLimit = 1
+        self.resumeDownload = True
+        self.multiDL        = True
+        self.chunkLimit     = 1
 
 
     def handleFree(self):

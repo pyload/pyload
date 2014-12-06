@@ -14,7 +14,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 def getInfo(urls):
     ##  returns list of tupels (name, size (in bytes), status (see FileDatabase), url)
 
-    apiurl = "http://api.netload.in/info.php?auth=Zf9SnQh9WiReEsb18akjvQGqT0I830e8&bz=1&md5=1&file_id="
+    apiurl = "http://api.netload.in/info.php"
     id_regex = re.compile(NetloadIn.__pattern__)
     urls_per_query = 80
 
@@ -25,7 +25,12 @@ def getInfo(urls):
             if match:
                 ids = ids + match.group(1) + ";"
 
-        api = getURL(apiurl + ids, decode=True)
+        api = getURL(apiurl,
+                     get={'auth'   : "Zf9SnQh9WiReEsb18akjvQGqT0I830e8",
+                          'bz'     : 1,
+                          'md5'    : 1,
+                          'file_id': ids},
+                     decode=True)
 
         if api is None or len(api) < 10:
             self.logDebug("Prefetch failed")
@@ -91,7 +96,7 @@ class NetloadIn(Hoster):
         if self.premium:
             self.logDebug("Use Premium Account")
 
-            settings = self.load("http://www.netload.in/index.php?id=2&lang=en")
+            settings = self.load("http://www.netload.in/index.php", get={'id': 2, 'lang': "en"})
 
             if '<option value="2" selected="selected">Direkter Download' in settings:
                 self.logDebug("Using direct download")

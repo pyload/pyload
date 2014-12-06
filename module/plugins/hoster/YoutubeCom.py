@@ -84,7 +84,8 @@ class YoutubeCom(Hoster):
 
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        self.resumeDownload = True
+        self.multiDL        = True
 
 
     def process(self, pyfile):

@@ -41,7 +41,7 @@ class UlozTo(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = self.premium
+        self.multiDL        = self.premium
         self.resumeDownload = True
 
 

@@ -26,8 +26,8 @@ class PremiumTo(Account):
     def login(self, user, data, req):
         self.username = user
         self.password = data['password']
-        authcode = req.load("http://premium.to/api/getauthcode.php?username=%s&password=%s" % (
-                                 user, self.password)).strip()
+        authcode = req.load("http://premium.to/api/getauthcode.php",
+                            get={'username': user, 'password': self.password}).strip()
 
         if "wrong username" in authcode:
             self.wrongPassword()
