@@ -20,7 +20,7 @@ class PremiumTo(Account):
                          get={'username': self.username, 'password': self.password})
         traffic = sum(map(int, api_r.split(';')))
 
-        return {"trafficleft": int(traffic) / 1024, "validuntil": -1}
+        return {"trafficleft": int(traffic) / 1024, "validuntil": -1}  #@TODO: Remove / 1024 in 0.4.10
 
 
     def login(self, user, data, req):
