@@ -14,6 +14,34 @@ from pycurl import SSL_CIPHER_LIST
 from module.common.json_layer import json_loads, json_dumps
 from module.plugins.Hoster import Hoster
 
+############################ General errors ###################################
+# EINTERNAL            (-1): An internal error has occurred. Please submit a bug report, detailing the exact circumstances in which this error occurred
+# EARGS                (-2): You have passed invalid arguments to this command
+# EAGAIN               (-3): (always at the request level) A temporary congestion or server malfunction prevented your request from being processed. No data was altered. Retry. Retries must be spaced with exponential backoff
+# ERATELIMIT           (-4): You have exceeded your command weight per time quota. Please wait a few seconds, then try again (this should never happen in sane real-life applications)
+#
+############################ Upload errors ####################################
+# EFAILED              (-5): The upload failed. Please restart it from scratch
+# ETOOMANY             (-6): Too many concurrent IP addresses are accessing this upload target URL
+# ERANGE               (-7): The upload file packet is out of range or not starting and ending on a chunk boundary
+# EEXPIRED             (-8): The upload target URL you are trying to access has expired. Please request a fresh one
+#
+############################ Stream/System errors #############################
+# ENOENT               (-9): Object (typically, node or user) not found
+# ECIRCULAR           (-10): Circular linkage attempted
+# EACCESS             (-11): Access violation (e.g., trying to write to a read-only share)
+# EEXIST              (-12): Trying to create an object that already exists
+# EINCOMPLETE         (-13): Trying to access an incomplete resource
+# EKEY                (-14): A decryption operation failed (never returned by the API)
+# ESID                (-15): Invalid or expired user session, please relogin
+# EBLOCKED            (-16): User blocked
+# EOVERQUOTA          (-17): Request over quota
+# ETEMPUNAVAIL        (-18): Resource temporarily not available, please try again later
+# ETOOMANYCONNECTIONS (-19): Too many connections on this resource
+# EWRITE              (-20): Write failed
+# EREAD               (-21): Read failed
+# EAPPKEY             (-22): Invalid application key; request not processed
+
 
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
@@ -26,8 +54,7 @@ class MegaCoNz(Hoster):
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "ranan@pyload.org")]
 
-
-    API_URL = "https://g.api.mega.co.nz/cs?id=%d"
+    API_URL     = "https://g.api.mega.co.nz/cs"
     FILE_SUFFIX = ".crypted"
 
 
@@ -48,7 +75,7 @@ class MegaCoNz(Hoster):
         # generate a session id, no idea where to obtain elsewhere
         uid = random.randint(10 << 9, 10 ** 10)
 
-        res = self.load(self.API_URL % uid, post=json_dumps([kwargs]))
+        res = self.load(self.API_URL, get={'id': uid}, post=json_dumps([kwargs]))
         self.logDebug("Api Response: " + res)
         return json_loads(res)
 
