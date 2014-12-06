@@ -144,7 +144,7 @@ def _isDirectLink(self, url, resumable=True):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.70"
+    __version__ = "0.71"
 
     __pattern__ = r'^unmatchable$'
 
@@ -319,8 +319,8 @@ class SimpleHoster(Hoster):
             set_cookies(self.req.cj, self.COOKIES)
 
         if (self.MULTI_HOSTER
-            and self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
-            and re.match(self.__pattern__, self.pyfile.url) is None):
+            and (self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
+                 or re.match(self.__pattern__, self.pyfile.url) is None)):
 
             self.logInfo("Multi hoster detected")
 
@@ -384,10 +384,15 @@ class SimpleHoster(Hoster):
                 self.logDebug("Handled as free download")
                 self.handleFree()
 
-        if self.link:
-            self.download(self.link, disposition=self.CONTENT_DISPOSITION)
-
+        self.downloadLink(self.link)
         self.checkFile()
+
+
+    def downloadLink(self, link):
+        if not link:
+            return
+
+        self.download(link, disposition=self.CONTENT_DISPOSITION)
 
 
     def checkFile(self):
