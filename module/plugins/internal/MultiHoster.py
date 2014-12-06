@@ -9,25 +9,28 @@ from module.utils import remove_chars
 class MultiHoster(Hook):
     __name__    = "MultiHoster"
     __type__    = "hook"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __description__ = """Generic MultiHoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    interval = 24 * 60 * 60  #: reload hosters daily
+    interval = 12 * 60 * 60  #: reload hosters every 12h
 
-    HOSTER_REPLACEMENTS = [("2shared.com", "twoshared.com"), ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
-                           ("ifile.it", "filecloud.io"), ("easy-share.com", "crocko.com"), ("freakshare.net", "freakshare.com"),
-                           ("hellshare.com", "hellshare.cz"), ("share-rapid.cz", "sharerapid.com"), ("sharerapid.cz", "sharerapid.com"),
-                           ("ul.to", "uploaded.to"), ("uploaded.net", "uploaded.to"), ("1fichier.com", "onefichier.com")]
+    HOSTER_REPLACEMENTS = [("1fichier.com", "onefichier.com"), ("2shared.com", "twoshared.com"),
+                           ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
+                           ("easy-share.com", "crocko.com"), ("freakshare.net", "freakshare.com"),
+                           ("hellshare.com", "hellshare.cz"), ("ifile.it", "filecloud.io"),
+                           ("putlocker.com", "firedrive.com"), ("share-rapid.cz", "multishare.cz"),
+                           ("sharerapid.cz", "multishare.cz"), ("ul.to", "uploaded.to"),
+                           ("uploaded.net", "uploaded.to")]
     HOSTER_EXCLUDED     = []
 
 
     def setup(self):
-        self.hosters = []
-        self.supported = []
+        self.hosters       = []
+        self.supported     = []
         self.new_supported = []
 
 
@@ -41,7 +44,6 @@ class MultiHoster(Hook):
 
     def getHosterCached(self):
         if not self.hosters:
-
             try:
                 hosterSet = self.toHosterSet(self.getHoster()) - set(self.HOSTER_EXCLUDED)
             except Exception, e:
@@ -110,8 +112,10 @@ class MultiHoster(Hook):
         """reload hoster list periodically"""
         self.logInfo(_("Reloading supported hoster list"))
 
-        old_supported = self.supported
-        self.supported, self.new_supported, self.hosters = [], [], []
+        old_supported      = self.supported
+        self.supported     = []
+        self.new_supported = []
+        self.hosters       = []
 
         self.overridePlugins()
 
@@ -123,11 +127,8 @@ class MultiHoster(Hook):
 
 
     def overridePlugins(self):
-        pluginMap = {}
-        for name in self.core.pluginManager.hosterPlugins.keys():
-            pluginMap[name.lower()] = name
-
-        accountList = [name.lower() for name, data in self.core.accountManager.accounts.iteritems() if data]
+        pluginMap    = dict((name.lower(), name) for name in self.core.pluginManager.hosterPlugins.keys())
+        accountList  = [name.lower() for name, data in self.core.accountManager.accounts.iteritems() if data]
         excludedList = []
 
         for hoster in self.getHosterCached():
@@ -146,14 +147,14 @@ class MultiHoster(Hook):
             return
 
         module = self.core.pluginManager.getPlugin(self.__name__)
-        klass = getattr(module, self.__name__)
+        klass  = getattr(module, self.__name__)
 
         # inject plugin plugin
         self.logDebug("Overwritten Hosters", ", ".join(sorted(self.supported)))
         for hoster in self.supported:
             dict = self.core.pluginManager.hosterPlugins[hoster]
             dict['new_module'] = module
-            dict['new_name'] = self.__name__
+            dict['new_name']   = self.__name__
 
         if excludedList:
             self.logInfo(_("The following hosters were not overwritten - account exists"), ", ".join(sorted(excludedList)))
@@ -162,7 +163,7 @@ class MultiHoster(Hook):
             self.logDebug("New Hosters", ", ".join(sorted(self.new_supported)))
 
             # create new regexp
-            regexp = r'.*(%s).*' % "|".join([x.replace(".", "\\.") for x in self.new_supported])
+            regexp = r'.*(%s).*' % "|".join([x.replace(".", "\.") for x in self.new_supported])
             if hasattr(klass, "__pattern__") and isinstance(klass.__pattern__, basestring) and '://' in klass.__pattern__:
                 regexp = r'%s|%s' % (klass.__pattern__, regexp)
 
@@ -170,7 +171,7 @@ class MultiHoster(Hook):
 
             dict = self.core.pluginManager.hosterPlugins[self.__name__]
             dict['pattern'] = regexp
-            dict['re'] = re.compile(regexp)
+            dict['re']      = re.compile(regexp)
 
 
     def unloadHoster(self, hoster):
@@ -190,9 +191,9 @@ class MultiHoster(Hook):
 
         # reset pattern
         klass = getattr(self.core.pluginManager.getPlugin(self.__name__), self.__name__)
-        dict = self.core.pluginManager.hosterPlugins[self.__name__]
+        dict  = self.core.pluginManager.hosterPlugins[self.__name__]
         dict['pattern'] = getattr(klass, "__pattern__", r'^unmatchable$')
-        dict['re'] = re.compile(dict['pattern'])
+        dict['re']      = re.compile(dict['pattern'])
 
 
     def downloadFailed(self, pyfile):
