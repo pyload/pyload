@@ -38,7 +38,7 @@ class DebridItaliaCom(Hoster):
             self.fail(_("No DebridItalia account provided"))
 
         else:
-            html = self.load("http://www.debriditalia.com/api.php?generate=&link=%s" % pyfile.url)
+            html = self.load("http://www.debriditalia.com/api.php", get={'generate': "", 'link': pyfile.url})
 
             if "ERROR" in html:
                 self.fail(re.search(r'ERROR:(.*)', html).strip())

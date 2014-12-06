@@ -5,14 +5,14 @@ import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class NowVideoAt(SimpleHoster):
-    __name__    = "NowVideoAt"
+class NowVideoSx(SimpleHoster):
+    __name__    = "NowVideoSx"
     __type__    = "hoster"
     __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?nowvideo\.(at|ch|co|eu|sx)/(video|mobile/#/videos)/(?P<ID>\w+)'
 
-    __description__ = """NowVideo.at hoster plugin"""
+    __description__ = """NowVideo.sx hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
@@ -41,4 +41,4 @@ class NowVideoAt(SimpleHoster):
         self.download(m.group(1))
 
 
-getInfo = create_getInfo(NowVideoAt)
+getInfo = create_getInfo(NowVideoSx)

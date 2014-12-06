@@ -60,7 +60,7 @@ class BasePlugin(Hoster):
                         self.logDebug("Logging on to %s" % server)
                         self.req.addAuth(account.accounts[server]['password'])
                     else:
-                        for pwd in pyfile.package().password.splitlines():
+                        for pwd in self.getPassword().splitlines():
                             if ":" in pwd:
                                 self.req.addAuth(pwd.strip())
                                 break
