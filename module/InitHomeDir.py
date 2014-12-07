@@ -76,4 +76,4 @@ if not path.exists(configdir):
 __builtin__.configdir = configdir
 chdir(configdir)
 
-#print "Using %s as working directory." % configdir
+# print "Using %s as working directory." % configdir

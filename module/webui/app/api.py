@@ -13,9 +13,9 @@ from module.common.json_layer import json
 from module.lib.SafeEval import const_eval as literal_eval
 from module.Api import BaseObject
 
+
 # json encoder that accepts TBase objects
 class TBaseEncoder(json.JSONEncoder):
-
     def default(self, o):
         if isinstance(o, BaseObject):
             return toDict(o)
@@ -44,7 +44,8 @@ def call_api(func, args=""):
     kwargs = {}
 
     for x, y in chain(request.GET.iteritems(), request.POST.iteritems()):
-        if x == "session": continue
+        if x == "session":
+            continue
         kwargs[x] = unquote(y)
 
     try:
@@ -63,12 +64,10 @@ def callApi(func, *args, **kwargs):
                                    **dict([(x, literal_eval(y)) for x, y in kwargs.iteritems()]))
 
     # null is invalid json  response
-    if result is None: result = True
-
-    return json.dumps(result, cls=TBaseEncoder)
+    return json.dumps(result or True, cls=TBaseEncoder)
 
 
-#post -> username, password
+# post -> username, password
 @route('/api/login', method='POST')
 def login():
     response.headers.replace("Content-type", "application/json")
@@ -88,7 +87,7 @@ def login():
     try:
         sid = s._headers["cookie_out"].split("=")[1].split(";")[0]
         return json.dumps(sid)
-    except:
+    except Exception:
         return json.dumps(True)
 
 

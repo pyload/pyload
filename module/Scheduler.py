@@ -22,6 +22,7 @@ from heapq import heappop, heappush
 from thread import start_new_thread
 from threading import Lock
 
+
 class AlreadyCalled(Exception):
     pass
 
@@ -50,13 +51,14 @@ class Scheduler:
 
         self.queue = PriorityQueue()
 
-    def addJob(self, t, call, args=[], kwargs={}, threaded=True):
+    def addJob(self, t, call, args=None, kwargs=None, threaded=True):
+        args = args or []
+        kwargs = kwargs or {}
         d = Deferred()
         t += time()
         j = Job(t, call, args, kwargs, d, threaded)
         self.queue.put((t, j))
         return d
-
 
     def removeJob(self, d):
         """
@@ -89,7 +91,9 @@ class Scheduler:
 
 
 class Job:
-    def __init__(self, time, call, args=[], kwargs={}, deferred=None, threaded=True):
+    def __init__(self, time, call, args=None, kwargs=None, deferred=None, threaded=True):
+        args = args or []
+        kwargs = kwargs or {}
         self.time = float(time)
         self.call = call
         self.args = args

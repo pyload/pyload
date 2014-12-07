@@ -14,7 +14,7 @@ from htmlentitydefs import name2codepoint
 def chmod(*args):
     try:
         os.chmod(*args)
-    except:
+    except Exception:
         pass
 
 
@@ -22,7 +22,7 @@ def decode(string):
     """ decode string with utf if possible """
     try:
         return string.decode("utf8", "replace")
-    except:
+    except Exception:
         return string
 
 
@@ -48,6 +48,7 @@ def safe_path(name):
     else:
         return remove_chars(name, u'\0/\\"')
 
+
 #: Deprecated method
 def save_path(name):
     return safe_path(name)
@@ -56,6 +57,7 @@ def save_path(name):
 def safe_join(*args):
     """ joins a path, encoding aware """
     return fs_encode(join(*[x if type(x) == unicode else decode(x) for x in args]))
+
 
 #: Deprecated method
 def save_join(*args):
@@ -93,13 +95,17 @@ def compare_time(start, end):
     start = map(int, start)
     end = map(int, end)
 
-    if start == end: return True
+    if start == end:
+        return True
 
     now = list(time.localtime()[3:5])
-    if start < now < end: return True
-    elif start > end and (now > start or now < end): return True
-    elif start < now > end < start: return True
-    else: return False
+    if start < now < end:
+        return True
+    elif start > end and (now > start or now < end):
+        return True
+    elif start < now > end < start:
+        return True
+    return False
 
 
 def formatSize(size):
@@ -145,13 +151,14 @@ def fs_bsize(path):
 
 
 def uniqify(seq):  #: Originally by Dave Kirby
-	""" removes duplicates from list, preserve order """
-	seen = set()
-	seen_add = seen.add
-	return [x for x in seq if x not in seen and not seen_add(x)]
+    """ removes duplicates from list, preserve order """
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if x not in seen and not seen_add(x)]
 
 
-def parseFileSize(string, unit=None): #returns bytes
+def parseFileSize(string, unit=None):
+    # returns bytes
     if not unit:
         m = re.match(r"([\d.,]+) *([a-zA-Z]*)", string.strip().lower())
         if m:
@@ -165,7 +172,7 @@ def parseFileSize(string, unit=None): #returns bytes
         else:
             traffic = string
 
-    #ignore case
+    # ignore case
     unit = unit.lower().strip()
 
     if unit in ("eb", "ebyte", "exabyte", "eib", "e"):
@@ -186,7 +193,7 @@ def parseFileSize(string, unit=None): #returns bytes
 
 def lock(func):
     def new(*args):
-        #print "Handler: %s args: %s" % (func, args[1:])
+        # print "Handler: %s args: %s" % (func, args[1:])
         args[0].lock.acquire()
         try:
             return func(*args)
