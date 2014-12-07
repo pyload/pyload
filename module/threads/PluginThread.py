@@ -27,7 +27,6 @@ from pprint import pformat
 from sys import exc_info, exc_clear
 from copy import copy
 from types import MethodType
-
 from pycurl import error
 
 from module.PyFile import PyFile
@@ -36,16 +35,16 @@ from module.common.packagetools import parseNames
 from module.utils import safe_join
 from module.Api import OnlineStatus
 
+
 class PluginThread(Thread):
     """abstract base class for thread types"""
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, manager):
         """Constructor"""
         Thread.__init__(self)
         self.setDaemon(True)
-        self.m = manager #thread manager
-
+        self.m = manager  # thread manager
 
     def writeDebugReport(self, pyfile):
         """ writes a
@@ -68,7 +67,7 @@ class PluginThread(Thread):
                     pass
 
             info = zipfile.ZipInfo(safe_join(pyfile.pluginname, "debug_Report.txt"), gmtime())
-            info.external_attr = 0644 << 16L # change permissions
+            info.external_attr = 0644 << 16L  # change permissions
 
             zip.writestr(info, dump)
             zip.close()
@@ -110,7 +109,7 @@ class PluginThread(Thread):
 
             del frame
 
-        del stack #delete it just to be sure...
+        del stack  # delete it just to be sure...
 
         dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
 
@@ -149,17 +148,17 @@ class PluginThread(Thread):
 class DownloadThread(PluginThread):
     """thread for downloading files from 'real' hoster plugins"""
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, manager):
         """Constructor"""
         PluginThread.__init__(self, manager)
 
-        self.queue = Queue() # job queue
+        self.queue = Queue()  # job queue
         self.active = False
 
         self.start()
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def run(self):
         """run method"""
         pyfile = None
@@ -176,7 +175,7 @@ class DownloadThread(PluginThread):
 
             try:
                 if not pyfile.hasPlugin(): continue
-                #this pyfile was deleted while queueing
+                # this pyfile was deleted while queueing
 
                 pyfile.plugin.checkForSameFiles(starting=True)
                 self.m.log.info(_("Download starts: %s" % pyfile.name))
@@ -199,7 +198,7 @@ class DownloadThread(PluginThread):
             except Abort:
                 try:
                     self.m.log.info(_("Download aborted: %s") % pyfile.name)
-                except:
+                except Exception:
                     pass
 
                 pyfile.setStatus("aborted")
@@ -209,7 +208,7 @@ class DownloadThread(PluginThread):
 
             except Reconnect:
                 self.queue.put(pyfile)
-                #pyfile.req.clearCookies()
+                # pyfile.req.clearCookies()
 
                 while self.m.reconnecting.isSet():
                     sleep(0.5)
@@ -297,7 +296,6 @@ class DownloadThread(PluginThread):
 
                 continue
 
-
             except Exception, e:
                 pyfile.setStatus("failed")
                 self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
@@ -316,17 +314,15 @@ class DownloadThread(PluginThread):
                 pyfile.checkIfProcessed()
                 exc_clear()
 
-            #pyfile.plugin.req.clean()
+            # pyfile.plugin.req.clean()
 
             self.active = False
             pyfile.finishIfDone()
             self.m.core.files.save()
 
-
     def put(self, job):
         """assing job to thread"""
         self.queue.put(job)
-
 
     def stop(self):
         """stops the thread"""
@@ -399,7 +395,6 @@ class DecrypterThread(PluginThread):
 
             return
 
-
         finally:
             if not retry:
                 self.active.release()
@@ -409,11 +404,11 @@ class DecrypterThread(PluginThread):
                 exc_clear()
 
 
-        #self.m.core.hookManager.downloadFinished(pyfile)
+        # self.m.core.hookManager.downloadFinished(pyfile)
 
 
-        #self.m.localThreads.remove(self)
-        #self.active.finishIfDone()
+        # self.m.localThreads.remove(self)
+        # self.active.finishIfDone()
         if not retry:
             pyfile.delete()
 
@@ -421,7 +416,7 @@ class DecrypterThread(PluginThread):
 class HookThread(PluginThread):
     """thread for hooks"""
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, m, function, args, kwargs):
         """Constructor"""
         PluginThread.__init__(self, m)
@@ -456,7 +451,7 @@ class HookThread(PluginThread):
                 self.kwargs["thread"] = self
                 self.f(*self.args, **self.kwargs)
             except TypeError, e:
-                #dirty method to filter out exceptions
+                # dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in e.args[0]:
                     raise
 
@@ -476,13 +471,13 @@ class InfoThread(PluginThread):
         PluginThread.__init__(self, manager)
 
         self.data = data
-        self.pid = pid # package id
+        self.pid = pid  # package id
         # [ .. (name, plugin) .. ]
 
-        self.rid = rid #result id
-        self.add = add #add packages instead of return result
+        self.rid = rid  # result id
+        self.add = add  # add packages instead of return result
 
-        self.cache = [] #accumulated data
+        self.cache = []  # accumulated data
 
         self.start()
 
@@ -498,7 +493,6 @@ class InfoThread(PluginThread):
             else:
                 plugins[plugin] = [url]
 
-
         # filter out container plugins
         for name in self.m.core.pluginManager.containerPlugins:
             if name in plugins:
@@ -506,7 +500,7 @@ class InfoThread(PluginThread):
 
                 del plugins[name]
 
-        #directly write to database
+        # directly write to database
         if self.pid > -1:
             for pluginname, urls in plugins.iteritems():
                 plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
@@ -521,7 +515,7 @@ class InfoThread(PluginThread):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateCache, True)
 
                 else:
-                    #generate default result
+                    # generate default result
                     result = [(url, 0, 3, url) for url in urls]
 
                     self.updateCache(pluginname, result)
@@ -533,17 +527,16 @@ class InfoThread(PluginThread):
             for k, v in packs:
                 self.m.core.api.addPackage(k, v)
 
-            #empty cache
+            # empty cache
             del self.cache[:]
 
-        else: #post the results
-
+        else:  # post the results
 
             for name, url in container:
-                #attach container content
+                # attach container content
                 try:
                     data = self.decryptContainer(name, url)
-                except:
+                except Exception:
                     print_exc()
                     self.m.log.error("Could not decrypt container.")
                     data = []
@@ -561,12 +554,12 @@ class InfoThread(PluginThread):
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateResult, True)
 
-                    #force to process cache
+                    # force to process cache
                     if self.cache:
                         self.updateResult(pluginname, [], True)
 
                 else:
-                    #generate default result
+                    # generate default result
                     result = [(url, 0, 3, url) for url in urls]
 
                     self.updateResult(pluginname, result, True)
@@ -575,20 +568,19 @@ class InfoThread(PluginThread):
 
         self.m.timestamp = time() + 5 * 60
 
-
     def updateDB(self, plugin, result):
         self.m.core.files.updateFileInfo(result, self.pid)
 
     def updateResult(self, plugin, result, force=False):
-        #parse package name and generate result
-        #accumulate results
+        # parse package name and generate result
+        # accumulate results
 
         self.cache.extend(result)
 
         if len(self.cache) >= 20 or force:
-            #used for package generating
+            # used for package generating
             tmp = [(name, (url, OnlineStatus(name, plugin, "unknown", status, int(size))))
-            for name, size, status, url in self.cache]
+                   for name, size, status, url in self.cache]
 
             data = parseNames(tmp)
             result = {}
@@ -606,8 +598,8 @@ class InfoThread(PluginThread):
 
     def fetchForPlugin(self, pluginname, plugin, urls, cb, err=None):
         try:
-            result = [] #result loaded from cache
-            process = [] #urls to process
+            result = []  # result loaded from cache
+            process = []  # urls to process
             for url in urls:
                 if url in self.m.infoCache:
                     result.append(self.m.infoCache[url])
@@ -621,7 +613,7 @@ class InfoThread(PluginThread):
             if process:
                 self.m.log.debug("Run Info Fetching for %s" % pluginname)
                 for result in plugin.getInfo(process):
-                    #result = [ .. (name, size, status, url) .. ]
+                    # result = [ .. (name, size, status, url) .. ]
                     if not type(result) == list: result = [result]
 
                     for res in result:
@@ -640,7 +632,6 @@ class InfoThread(PluginThread):
             if err:
                 result = [(url, 0, 3, url) for url in urls]
                 cb(pluginname, result)
-
 
     def decryptContainer(self, plugin, url):
         data = []

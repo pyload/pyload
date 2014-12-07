@@ -1,3 +1,4 @@
+""" Crypto package """
 from warnings import warn
 
 from beaker.crypto.pbkdf2 import PBKDF2, strxor
@@ -9,16 +10,19 @@ keyLength = None
 if util.jython:
     try:
         from beaker.crypto.jcecrypto import getKeyLength, aesEncrypt
+
         keyLength = getKeyLength()
     except ImportError:
         pass
 else:
     try:
         from beaker.crypto.nsscrypto import getKeyLength, aesEncrypt, aesDecrypt
+
         keyLength = getKeyLength()
     except ImportError:
         try:
             from beaker.crypto.pycrypto import getKeyLength, aesEncrypt, aesDecrypt
+
             keyLength = getKeyLength()
         except ImportError:
             pass

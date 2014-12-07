@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2011-2014 RaNaN
+# Copyright (C) 2011-2014 RaNaN
 #
-#This program is free software; you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation; either version 3 of the License,
-#or (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License,
+# or (at your option) any later version.
 #
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#See the GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
 #
-#You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
 
 from Handler import Handler
 from printer import *
+
 
 class AddPackage(Handler):
     """ let the user add packages """
@@ -35,7 +36,7 @@ class AddPackage(Handler):
             self.name = inp
             self.setInput()
         elif inp == "END":
-            #add package
+            # add package
             self.client.addPackage(self.name, self.urls, 1)
             self.cli.reset()
         else:

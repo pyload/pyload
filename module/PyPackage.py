@@ -19,10 +19,12 @@
 from module.PullEvents import UpdateEvent
 from module.utils import safe_path
 
+
 class PyPackage:
     """
     Represents a package object at runtime
     """
+
     def __init__(self, manager, id, name, folder, site, password, queue, order):
         self.m = manager
         self.m.packageCache[int(id)] = self

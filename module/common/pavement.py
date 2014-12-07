@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from paver.easy import *
-from paver.setuputils import setup
-from paver.doctools import cog
-
 import os
 import sys
 import shutil
@@ -13,6 +9,10 @@ from tempfile import mkdtemp
 from urllib import urlretrieve
 from subprocess import call, Popen, PIPE
 from zipfile import ZipFile
+
+from paver.easy import *
+from paver.setuputils import setup
+
 
 PROJECT_DIR = path(__file__).dirname()
 sys.path.append(PROJECT_DIR)
@@ -29,19 +29,19 @@ setup(
     version="0.4.10",
     description='Fast, lightweight and full featured download manager.',
     long_description=open(PROJECT_DIR / "README.md").read(),
-    keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),
+    keywords=('pyload', 'download-manager', 'one-click-hoster', 'download'),
     url="http://pyload.org",
     download_url='http://pyload.org/download',
     license='GPL v3',
     author="pyLoad Team",
     author_email="support@pyload.org",
-    platforms = ('Any',),
-    #package_dir={'pyload': 'src'},
+    platforms=('Any',),
+    # package_dir={'pyload': 'src'},
     packages=['pyload'],
-    #package_data=find_package_data(),
-    #data_files=[],
+    # package_data=find_package_data(),
+    # data_files=[],
     include_package_data=True,
-    exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
+    exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']},  # exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
     install_requires=['thrift >= 0.8.0', 'jinja2', 'pycurl', 'Beaker', 'BeautifulSoup >= 3.2, < 3.3'] + extradeps,
     extras_require={
@@ -50,7 +50,7 @@ setup(
         'lightweight webserver': ['bjoern'],
         'RSS plugins': ['feedparser'],
     },
-    #setup_requires=["setuptools_hg"],
+    # setup_requires=["setuptools_hg"],
     entry_points={
         'console_scripts': [
             'pyLoadCore = pyLoadCore:main',
@@ -89,7 +89,7 @@ options(
         virtual="virtualenv2",
     ),
     cog=Bunch(
-    	pattern="*.py",
+        pattern="*.py",
     )
 )
 
@@ -97,6 +97,7 @@ options(
 xargs = ["--language=Python", "--add-comments=L10N",
          "--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad",
          "--package-version=%s" % options.version, "--msgid-bugs-address='bugs@pyload.org'"]
+
 
 @task
 @needs('cog')
@@ -141,13 +142,13 @@ def get_source(options):
 
     (pyload / ".hgtags").remove()
     (pyload / ".gitignore").remove()
-    #(pyload / "docs").rmtree()
+    # (pyload / "docs").rmtree()
 
     f = open(pyload / "__init__.py", "wb")
     f.close()
 
-    #options.setup.packages = find_packages()
-    #options.setup.package_data = find_package_data()
+    # options.setup.packages = find_packages()
+    # options.setup.package_data = find_package_data()
 
 
 @task
@@ -183,9 +184,11 @@ def thrift(options):
     (outdir / "thriftgen").rmtree()
     (outdir / "gen-py").move(outdir / "thriftgen")
 
-    #create light ttypes
+    # create light ttypes
     from module.remote.socketbackend.create_ttypes import main
+
     main()
+
 
 @task
 def compile_js():
@@ -221,7 +224,8 @@ def generate_locale():
     strings = set()
 
     for fi in path("module/web").walkfiles():
-        if not fi.name.endswith(".js") and not fi.endswith(".coffee"): continue
+        if not fi.name.endswith(".js") and not fi.endswith(".coffee"):
+            continue
         with open(fi, "rb") as c:
             content = c.read()
 
@@ -324,6 +328,7 @@ def compile_translations():
 def tests():
     call(["nosetests2"])
 
+
 @task
 def virtualenv(options):
     """Setup virtual environment"""
@@ -357,9 +362,10 @@ def clean():
     path("dist").rmtree()
 
 
-#helper functions
+# helper functions
 
-def walk_trans(path, EXCLUDE, endings=[".py"]):
+def walk_trans(path, EXCLUDE, endings=None):
+    endings = endings or [".py"]
     result = ""
 
     for f in path.walkfiles():
@@ -374,7 +380,10 @@ def walk_trans(path, EXCLUDE, endings=[".py"]):
     return result
 
 
-def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
+def makepot(domain, p, excludes=None, includes="", endings=None, xxargs=None):
+    endings = endings or [".py"]
+    xxargs = xxargs or []
+    excludes = excludes or []
     print "Generate %s.pot" % domain
 
     f = open("includes.txt", "wb")

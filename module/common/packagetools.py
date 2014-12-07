@@ -3,6 +3,7 @@
 import re
 from urlparse import urlparse
 
+
 def matchFirst(string, *args):
     """ matches against list of regexp and returns first match"""
     for patternlist in args:
@@ -62,8 +63,8 @@ def parseNames(files):
         if len(split) > 1:
             name = split.pop(1)
 
-            #check if a already existing package may be ok for this file
-        #        found = False
+            # check if a already existing package may be ok for this file
+        # found = False
         #        for pack in packs:
         #            if pack in file:
         #                packs[pack].append(url)
@@ -121,7 +122,8 @@ def parseNames(files):
         # fallback: package by hoster
         if not name:
             name = urlparse(file).hostname
-            if name: name = name.replace("www.", "")
+            if name:
+                name = name.replace("www.", "")
 
         # fallback : default name
         if not name:

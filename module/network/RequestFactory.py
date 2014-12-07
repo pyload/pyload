@@ -23,10 +23,10 @@ from Browser import Browser
 from Bucket import Bucket
 from HTTPRequest import HTTPRequest
 from CookieJar import CookieJar
-
 from XDCCRequest import XDCCRequest
 
-class RequestFactory:
+
+class RequestFactory(object):
     def __init__(self, core):
         self.lock = Lock()
         self.core = core
@@ -57,7 +57,7 @@ class RequestFactory:
     def getHTTPRequest(self, **kwargs):
         """ returns a http request, dont forget to close it ! """
         options = self.getOptions()
-        options.update(kwargs) # submit kwargs as additional options
+        options.update(kwargs)  # submit kwargs as additional options
         return HTTPRequest(CookieJar(None), options)
 
     def getURL(self, *args, **kwargs):
@@ -85,8 +85,10 @@ class RequestFactory:
         else:
             type = "http"
             setting = self.core.config["proxy"]["type"].lower()
-            if setting == "socks4": type = "socks4"
-            elif setting == "socks5": type = "socks5"
+            if setting == "socks4":
+                type = "socks4"
+            elif setting == "socks5":
+                type = "socks5"
 
             username = None
             if self.core.config["proxy"]["username"] and self.core.config["proxy"]["username"].lower() != "none":
@@ -102,7 +104,7 @@ class RequestFactory:
                 "port": self.core.config["proxy"]["port"],
                 "username": username,
                 "password": pw,
-                }
+            }
 
     def getOptions(self):
         """returns options needed for pycurl"""
@@ -116,6 +118,7 @@ class RequestFactory:
             self.bucket.setRate(-1)
         else:
             self.bucket.setRate(self.core.config["download"]["max_speed"] * 1024)
+
 
 # needs pyreq in global namespace
 def getURL(*args, **kwargs):

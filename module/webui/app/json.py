@@ -7,9 +7,7 @@ from shutil import copyfileobj
 from bottle import route, request, HTTPError
 
 from module.webui import PYLOAD
-
 from utils import login_required, render_to_response, toDict
-
 from module.utils import decode, formatSize
 
 
@@ -33,7 +31,7 @@ def status():
         status = toDict(PYLOAD.statusServer())
         status['captcha'] = PYLOAD.isCaptchaWaiting()
         return status
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -78,7 +76,7 @@ def packages():
 
         return data
 
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -112,7 +110,7 @@ def package(id):
         data["links"] = tmp
         return data
 
-    except:
+    except Exception:
         print_exc()
         return HTTPError()
 
@@ -124,7 +122,7 @@ def package_order(ids):
         pid, pos = ids.split("|")
         PYLOAD.orderPackage(int(pid), int(pos))
         return {"response": "success"}
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -134,7 +132,7 @@ def abort_link(id):
     try:
         PYLOAD.stopDownloads([id])
         return {"response": "success"}
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -145,7 +143,7 @@ def link_order(ids):
         pid, pos = ids.split("|")
         PYLOAD.orderFile(int(pid), int(pos))
         return {"response": "success"}
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -170,7 +168,7 @@ def add_package():
         copyfileobj(f.file, destination)
         destination.close()
         links.insert(0, fpath)
-    except:
+    except Exception:
         pass
 
     name = name.decode("utf8", "ignore")
@@ -191,7 +189,7 @@ def move_package(dest, id):
     try:
         PYLOAD.movePackage(dest, id)
         return {"response": "success"}
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -202,12 +200,12 @@ def edit_package():
         id = int(request.forms.get("pack_id"))
         data = {"name": request.forms.get("pack_name").decode("utf8", "ignore"),
                 "folder": request.forms.get("pack_folder").decode("utf8", "ignore"),
-                 "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
+                "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
 
         PYLOAD.setPackageData(id, data)
         return {"response": "success"}
 
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -218,7 +216,7 @@ def set_captcha():
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
             PYLOAD.setCaptchaResult(request.forms["cap_id"], request.forms["cap_result"])
-        except:
+        except Exception:
             pass
 
     task = PYLOAD.getCaptchaTask()
@@ -226,7 +224,7 @@ def set_captcha():
     if task.tid >= 0:
         src = "data:image/%s;base64,%s" % (task.type, task.data)
 
-        return {'captcha': True, 'id': task.tid, 'src': src, 'result_type' : task.resultType}
+        return {'captcha': True, 'id': task.tid, 'src': src, 'result_type': task.resultType}
     else:
         return {'captcha': False}
 
@@ -257,7 +255,7 @@ def save_config(category):
     for key, value in request.POST.iteritems():
         try:
             section, option = key.split("|")
-        except:
+        except Exception:
             continue
 
         if category == "general": category = "core"
@@ -278,7 +276,7 @@ def add_account():
 @route('/json/update_accounts', method='POST')
 @login_required("ACCOUNTS")
 def update_accounts():
-    deleted = [] #dont update deleted accs or they will be created again
+    deleted = []  # dont update deleted accs or they will be created again
 
     for name, value in request.POST.iteritems():
         value = value.strip()
@@ -296,12 +294,12 @@ def update_accounts():
         elif action == "limitdl" and value.isdigit():
             PYLOAD.updateAccount(plugin, user, options={"limitDL": [value]})
         elif action == "delete":
-            deleted.append((plugin,user))
+            deleted.append((plugin, user))
             PYLOAD.removeAccount(plugin, user)
+
 
 @route('/json/change_password', method='POST')
 def change_password():
-
     user = request.POST["user_login"]
     oldpw = request.POST["login_current_password"]
     newpw = request.POST["login_new_password"]

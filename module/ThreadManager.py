@@ -36,20 +36,19 @@ from module.utils import freeSpace, lock
 class ThreadManager:
     """manages the download threads, assign jobs, reconnect etc"""
 
-
     def __init__(self, core):
         """Constructor"""
         self.core = core
         self.log = core.log
 
         self.threads = []  # thread list
-        self.localThreads = []  #hook+decrypter threads
+        self.localThreads = []  # hook+decrypter threads
 
         self.pause = True
 
         self.reconnecting = Event()
         self.reconnecting.clear()
-        self.downloaded = 0 #number of files downloaded since last cleanup
+        self.downloaded = 0  # number of files downloaded since last cleanup
 
         self.lock = Lock()
 
@@ -62,14 +61,13 @@ class ThreadManager:
 
         # threads which are fetching hoster results
         self.infoResults = {}
-        #timeout for cache purge
+        # timeout for cache purge
         self.timestamp = 0
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
-        for i in range(0, self.core.config.get("download", "max_downloads")):
+        for _ in range(0, self.core.config.get("download", "max_downloads")):
             self.createThread()
-
 
     def createThread(self):
         """create a download thread"""
@@ -98,7 +96,6 @@ class ThreadManager:
 
         return rid
 
-
     @lock
     def getInfoResult(self, rid):
         """returns result and clears it"""
@@ -108,8 +105,7 @@ class ThreadManager:
             data = self.infoResults[rid]
             self.infoResults[rid] = {}
             return data
-        else:
-            return {}
+        return {}
 
     @lock
     def setInfoResults(self, rid, result):
@@ -127,13 +123,12 @@ class ThreadManager:
         """get a id list of all pyfiles processed"""
         return [x.id for x in self.getActiveFiles()]
 
-
     def work(self):
         """run all task which have to be done (this is for repetivive call by core)"""
         try:
             self.tryReconnect()
         except Exception, e:
-            self.log.error(_("Reconnect Failed: %s") % str(e) )
+            self.log.error(_("Reconnect Failed: %s") % str(e))
             self.reconnecting.clear()
             if self.core.debug:
                 print_exc()
@@ -148,14 +143,14 @@ class ThreadManager:
 
             sleep(0.5)
             self.assignJob()
-            #it may be failed non critical so we try it again
+            # it may be failed non critical so we try it again
 
         if (self.infoCache or self.infoResults) and self.timestamp < time():
             self.infoCache.clear()
             self.infoResults.clear()
             self.log.debug("Cleared Result cache")
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def tryReconnect(self):
         """checks if reconnect needed"""
 
@@ -190,8 +185,8 @@ class ThreadManager:
         self.log.debug("Old IP: %s" % ip)
 
         try:
-            reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
-        except:
+            reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)  #, stdout=subprocess.PIPE)
+        except Exception:
             self.log.warning(_("Failed executing reconnect script!"))
             self.core.config["reconnect"]["activated"] = False
             self.reconnecting.clear()
@@ -211,22 +206,22 @@ class ThreadManager:
     def getIP(self):
         """retrieve current ip"""
         services = [("http://automation.whatismyip.com/n09230945.asp", "(\S+)"),
-                    ("http://checkip.dyndns.org/",".*Current IP Address: (\S+)</body>.*")]
+                    ("http://checkip.dyndns.org/", ".*Current IP Address: (\S+)</body>.*")]
 
         ip = ""
-        for i in range(10):
+        for _ in range(10):
             try:
                 sv = choice(services)
                 ip = getURL(sv[0])
                 ip = re.match(sv[1], ip).group(1)
                 break
-            except:
+            except Exception:
                 ip = ""
                 sleep(1)
 
         return ip
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def checkThreadCount(self):
         """checks if there are need for increasing or reducing thread count"""
 
@@ -239,7 +234,6 @@ class ThreadManager:
             if free:
                 free[0].put("quit")
 
-
     def cleanPycurl(self):
         """ make a global curl cleanup (currently ununused) """
         if self.processingIds():
@@ -250,22 +244,25 @@ class ThreadManager:
         self.log.debug("Cleaned up pycurl")
         return True
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def assignJob(self):
         """assing a job to a thread if possible"""
 
         if self.pause or not self.core.api.isTimeDownload(): return
 
-        #if self.downloaded > 20:
+        # if self.downloaded > 20:
         #    if not self.cleanPyCurl(): return
 
         free = [x for x in self.threads if not x.active]
 
-        inuse = set([(x.active.pluginname, self.getLimit(x)) for x in self.threads if x.active and x.active.hasPlugin() and x.active.plugin.account])
-        inuse = map(lambda x: (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) ,inuse)
-        onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
+        inuse = set([(x.active.pluginname, self.getLimit(x)) for x in self.threads if
+                     x.active and x.active.hasPlugin() and x.active.plugin.account])
+        inuse = map(lambda x: (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])),
+                    inuse)
+        onlimit = [x[0] for x in inuse if 0 < x[1] <= x[2]]
 
-        occ = [x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
+        occ = [x.active.pluginname for x in self.threads if
+               x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
 
         occ.sort()
         occ = tuple(set(occ))
@@ -289,21 +286,20 @@ class ThreadManager:
 
                 if free and not self.pause:
                     thread = free[0]
-                    #self.downloaded += 1
+                    # self.downloaded += 1
 
                     thread.put(job)
                 else:
-                    #put job back
+                    # put job back
                     if occ not in self.core.files.jobCache:
                         self.core.files.jobCache[occ] = []
                     self.core.files.jobCache[occ].append(job.id)
 
-                    #check for decrypt jobs
+                    # check for decrypt jobs
                     job = self.core.files.getDecryptJob()
                     if job:
                         job.initPlugin()
                         thread = PluginThread.DecrypterThread(self, job)
-
 
             else:
                 thread = PluginThread.DecrypterThread(self, job)

@@ -1,3 +1,4 @@
+""" Database package """
 # -*- coding: utf-8 -*-
 
 from DatabaseBackend import DatabaseBackend

@@ -3,12 +3,13 @@
 import sys
 import socket
 import errno
-
 from time import sleep
 
 from thrift.transport.TSocket import TSocket, TServerSocket, TTransportException
 
-WantReadError = Exception #overwritten when ssl is used
+
+WantReadError = Exception  # overwritten when ssl is used
+
 
 class SecureSocketConnection:
     def __init__(self, connection):
@@ -41,6 +42,7 @@ class SecureSocketConnection:
             sleep(0.1)
             return self.recv(buff)
 
+
 class Socket(TSocket):
     def __init__(self, host='localhost', port=7228, ssl=False):
         TSocket.__init__(self, host, port)
@@ -57,7 +59,7 @@ class Socket(TSocket):
         else:
             self.handle = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        #errno 104 connection reset
+        # errno 104 connection reset
 
         self.handle.settimeout(self._timeout)
         self.handle.connect((self.host, self.port))
@@ -66,8 +68,7 @@ class Socket(TSocket):
         try:
             buff = self.handle.recv(sz)
         except socket.error, e:
-            if (e.args[0] == errno.ECONNRESET and
-                (sys.platform == 'darwin' or sys.platform.startswith('freebsd'))):
+            if (e.args[0] == errno.ECONNRESET and (sys.platform == 'darwin' or sys.platform.startswith('freebsd'))):
                 # freebsd and Mach don't follow POSIX semantic of recv
                 # and fail with ECONNRESET if peer performed shutdown.
                 # See corresponding comment and code in TSocket::read()
@@ -82,7 +83,7 @@ class Socket(TSocket):
             if e.args == (-1, 'Unexpected EOF'):
                 buff = ''
             elif e.args == ([('SSL routines', 'SSL23_GET_CLIENT_HELLO', 'unknown protocol')],):
-                #a socket not using ssl tried to connect
+                # a socket not using ssl tried to connect
                 buff = ''
             else:
                 raise
@@ -114,7 +115,6 @@ class ServerSocket(TServerSocket, Socket):
 
         else:
             self.handle = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
 
         self.handle.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         if hasattr(self.handle, 'set_timeout'):

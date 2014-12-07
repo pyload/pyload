@@ -1,3 +1,4 @@
+""" Cli package """
 # -*- coding: utf-8 -*-
 
 from AddPackage import AddPackage

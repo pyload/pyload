@@ -9,6 +9,7 @@ core = None
 setup = None
 log = logging.getLogger("log")
 
+
 class WebServer(threading.Thread):
     def __init__(self, pycore):
         global core
@@ -26,7 +27,7 @@ class WebServer(threading.Thread):
         self.setDaemon(True)
 
     def run(self):
-        import module.webui as webinterface
+
         global webinterface
 
         reset = False
@@ -44,7 +45,7 @@ class WebServer(threading.Thread):
         elif self.server == "fastcgi":
             try:
                 import flup
-            except:
+            except Exception:
                 log.warning(_("Can't use %(server)s, python-flup is not installed!") % {
                     "server": self.server})
                 reset = True
@@ -83,11 +84,13 @@ class WebServer(threading.Thread):
 
     def start_threaded(self):
         if self.https:
-            self.core.log.info(_("Starting threaded SSL webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
+            self.core.log.info(
+                _("Starting threaded SSL webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
         else:
             self.cert = ""
             self.key = ""
-            self.core.log.info(_("Starting threaded webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
+            self.core.log.info(
+                _("Starting threaded webserver: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
 
         webinterface.run_threaded(host=self.host, port=self.port, cert=self.cert, key=self.key)
 
@@ -96,12 +99,12 @@ class WebServer(threading.Thread):
         self.core.log.info(_("Starting fastcgi server: %(host)s:%(port)d") % {"host": self.host, "port": self.port})
         webinterface.run_fcgi(host=self.host, port=self.port)
 
-
     def start_lightweight(self):
         if self.https:
             log.warning(_("This server offers no SSL, please consider using threaded instead"))
 
-        self.core.log.info(_("Starting lightweight webserver (bjoern): %(host)s:%(port)d") % {"host": self.host, "port": self.port})
+        self.core.log.info(
+            _("Starting lightweight webserver (bjoern): %(host)s:%(port)d") % {"host": self.host, "port": self.port})
         webinterface.run_lightweight(host=self.host, port=self.port)
 
     def quit(self):

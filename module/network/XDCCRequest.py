@@ -17,13 +17,9 @@
 """
 
 import socket
-import re
-
 from os import remove
 from os.path import exists
-
 from time import time
-
 import struct
 from select import select
 
@@ -31,9 +27,9 @@ from module.plugins.Plugin import Abort
 
 
 class XDCCRequest:
-    def __init__(self, timeout=30, proxies={}):
+    def __init__(self, timeout=30, proxies=None):
 
-        self.proxies = proxies
+        self.proxies = proxies or {}
         self.timeout = timeout
 
         self.filesize = 0
@@ -46,17 +42,17 @@ class XDCCRequest:
         # proxytype = None
         # proxy = None
         # if self.proxies.has_key("socks5"):
-            # proxytype = socks.PROXY_TYPE_SOCKS5
-            # proxy = self.proxies["socks5"]
+        # proxytype = socks.PROXY_TYPE_SOCKS5
+        # proxy = self.proxies["socks5"]
         # elif self.proxies.has_key("socks4"):
-            # proxytype = socks.PROXY_TYPE_SOCKS4
-            # proxy = self.proxies["socks4"]
+        # proxytype = socks.PROXY_TYPE_SOCKS4
+        # proxy = self.proxies["socks4"]
         # if proxytype:
-            # sock = socks.socksocket()
-            # t = _parse_proxy(proxy)
-            # sock.setproxy(proxytype, addr=t[3].split(":")[0], port=int(t[3].split(":")[1]), username=t[1], password=t[2])
+        # sock = socks.socksocket()
+        # t = _parse_proxy(proxy)
+        # sock.setproxy(proxytype, addr=t[3].split(":")[0], port=int(t[3].split(":")[1]), username=t[1], password=t[2])
         # else:
-            # sock = socket.socket()
+        # sock = socket.socket()
         # return sock
 
         return socket.socket()
@@ -103,7 +99,7 @@ class XDCCRequest:
 
             now = time()
             timespan = now - lastUpdate
-            if timespan > 1:            
+            if timespan > 1:
                 self.speed = cumRecvLen / timespan
                 cumRecvLen = 0
                 lastUpdate = now
@@ -134,7 +130,7 @@ class XDCCRequest:
         readbuffer = temp.pop()
 
         for line in temp:
-            line  = line.rstrip()
+            line = line.rstrip()
             first = line.split()
             if first[0] == "PING":
                 sock.send("PONG %s\r\n" % first[1])
@@ -152,8 +148,7 @@ class XDCCRequest:
 
     @property
     def percent(self):
-        if not self.filesize: return 0
-        return (self.recv * 100) / self.filesize
+        return (self.recv * 100) / self.filesize if elf.filesize else 0
 
     def close(self):
         pass

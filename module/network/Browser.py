@@ -9,21 +9,22 @@ from HTTPDownload import HTTPDownload
 class Browser(object):
     __slots__ = ("log", "options", "bucket", "cj", "_size", "http", "dl")
 
-    def __init__(self, bucket=None, options={}):
+    def __init__(self, bucket=None, options=None):
+        options = options or {}
         self.log = getLogger("log")
 
-        self.options = options #holds pycurl options
+        self.options = options  # holds pycurl options
         self.bucket = bucket
 
-        self.cj = None # needs to be setted later
+        self.cj = None  # needs to be setted later
         self._size = 0
 
         self.renewHTTPRequest()
         self.dl = None
 
-
     def renewHTTPRequest(self):
-        if hasattr(self, "http"): self.http.close()
+        if hasattr(self, "http"):
+            self.http.close()
         self.http = HTTPRequest(self.cj, self.options)
 
     def setLastURL(self, val):
@@ -55,14 +56,11 @@ class Browser(object):
 
     @property
     def arrived(self):
-        if self.dl:
-            return self.dl.arrived
-        return 0
+        return self.dl.arrived if self.dl else 0
 
     @property
     def percent(self):
-        if not self.size: return 0
-        return (self.arrived * 100) / self.size
+        return (self.arrived * 100) / self.size if self.size else 0
 
     def clearCookies(self):
         if self.cj:
@@ -78,12 +76,12 @@ class Browser(object):
             self._size = self.dl.size
             self.dl.abort = True
 
-    def httpDownload(self, url, filename, get={}, post={}, ref=True, cookies=True, chunks=1, resume=False,
+    def httpDownload(self, url, filename, get=None, post=None, ref=True, cookies=True, chunks=1, resume=False,
                      progressNotify=None, disposition=False):
         """ this can also download ftp """
         self._size = 0
-        self.dl = HTTPDownload(url, filename, get, post, self.lastEffectiveURL if ref else None,
-            self.cj if cookies else None, self.bucket, self.options, progressNotify, disposition)
+        self.dl = HTTPDownload(url, filename, get or {}, post or {}, self.lastEffectiveURL if ref else None,
+                               self.cj if cookies else None, self.bucket, self.options, progressNotify, disposition)
         name = self.dl.download(chunks, resume)
         self._size = self.dl.size
 
@@ -105,10 +103,11 @@ class Browser(object):
         :param pwd: string, user:password
         """
         self.options["auth"] = pwd
-        self.renewHTTPRequest() #we need a new request
+        self.renewHTTPRequest()  # we need a new request
 
     def removeAuth(self):
-        if "auth" in self.options: del self.options["auth"]
+        if "auth" in self.options:
+            del self.options["auth"]
         self.renewHTTPRequest()
 
     def setOption(self, name, value):
@@ -116,7 +115,8 @@ class Browser(object):
         self.options[name] = value
 
     def deleteOption(self, name):
-        if name in self.options: del self.options[name]
+        if name in self.options:
+            del self.options[name]
 
     def clearHeaders(self):
         self.http.clearHeaders()

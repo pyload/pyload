@@ -15,9 +15,7 @@
 
     @author: RaNaN
 """
-from datetime import datetime
 from operator import itemgetter, attrgetter
-
 import time
 import os
 import sys
@@ -28,14 +26,13 @@ from urllib import unquote
 
 from bottle import route, static_file, request, response, redirect, error
 
+from datetime import datetime
 from module.webui import PYLOAD, PYLOAD_DIR, THEME_DIR, SETUP, env
-
 from utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
-
 from module.webui.filters import relpath, unquotepath
-
 from module.utils import formatSize, safe_join, fs_encode, fs_decode
+
 
 # Helper
 
@@ -59,7 +56,6 @@ def pre_processor():
             if info["plugins"] == "True":
                 plugins = True
 
-
     return {"user": user,
             'status': status,
             'captcha': captcha,
@@ -73,7 +69,7 @@ def base(messages):
     return render_to_response('base.html', {'messages': messages}, [pre_processor])
 
 
-## Views
+# Views
 @error(403)
 def error403(code):
     return "The parameter you passed has the wrong format"
@@ -115,8 +111,7 @@ def server_js(theme, file):
 
         path = join(theme, file)
         return env.get_template(path).render()
-    else:
-        return server_static(theme, file)
+    return server_static(theme, file)
 
 
 @route('/<theme>/<file:path>')
@@ -173,7 +168,7 @@ def logout():
 def home():
     try:
         res = [toDict(x) for x in PYLOAD.statusDownloads()]
-    except:
+    except Exception:
         s = request.environ.get('beaker.session')
         s.delete()
         return redirect("/login")
@@ -245,13 +240,12 @@ def downloads():
 @login_required("DOWNLOAD")
 def get_download(path):
     path = unquote(path).decode("utf8")
-    #@TODO some files can not be downloaded
+    # @TODO some files can not be downloaded
 
     root = PYLOAD.getConfigValue("general", "download_folder")
 
     path = path.replace("..", "")
     return static_file(fs_encode(path), fs_encode(root))
-
 
 
 @route('/settings')
@@ -280,26 +274,24 @@ def config():
             data.trafficleft = formatSize(data.trafficleft * 1024)
 
         if data.validuntil == -1:
-            data.validuntil  = _("unlimited")
-        elif not data.validuntil :
-            data.validuntil  = _("not available")
+            data.validuntil = _("unlimited")
+        elif not data.validuntil:
+            data.validuntil = _("not available")
         else:
             t = time.localtime(data.validuntil)
-            data.validuntil  = time.strftime("%d.%m.%Y - %H:%M:%S", t)
+            data.validuntil = time.strftime("%d.%m.%Y - %H:%M:%S", t)
 
         try:
             data.options["time"] = data.options["time"][0]
-        except:
+        except Exception:
             data.options["time"] = "0:00-0:00"
 
-        if "limitDL" in data.options:
-            data.options["limitdl"] = data.options["limitDL"][0]
-        else:
-            data.options["limitdl"] = "0"
+        data.options["limitdl"] = data.options["limitDL"][0] if "limitDL" in data.options else "0"
 
     return render_to_response('settings.html',
-            {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}, 'types': PYLOAD.getAccountTypes()},
-        [pre_processor])
+                              {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs},
+                               'types': PYLOAD.getAccountTypes()},
+                              [pre_processor])
 
 
 @route('/filechooser')
@@ -308,10 +300,7 @@ def config():
 @route('/pathchooser/<path:path>')
 @login_required('STATUS')
 def path(file="", path=""):
-    if file:
-        type = "file"
-    else:
-        type = "folder"
+    type = "file" if file else "folder"
 
     path = os.path.normpath(unquotepath(path))
 
@@ -334,7 +323,7 @@ def path(file="", path=""):
 
     try:
         cwd = cwd.encode("utf8")
-    except:
+    except Exception:
         pass
 
     cwd = os.path.normpath(os.path.abspath(cwd))
@@ -351,7 +340,7 @@ def path(file="", path=""):
 
     try:
         folders = os.listdir(cwd)
-    except:
+    except Exception:
         folders = []
 
     files = []
@@ -363,13 +352,10 @@ def path(file="", path=""):
             data['sort'] = data['fullpath'].lower()
             data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(join(cwd, f))))
             data['ext'] = os.path.splitext(f)[1]
-        except:
+        except Exception:
             continue
 
-        if os.path.isdir(join(cwd, f)):
-            data['type'] = 'dir'
-        else:
-            data['type'] = 'file'
+        data['type'] = 'dir' if os.path.isdir(join(cwd, f)) else 'file'
 
         if os.path.isfile(join(cwd, f)):
             data['size'] = os.path.getsize(join(cwd, f))
@@ -388,8 +374,8 @@ def path(file="", path=""):
     files = sorted(files, key=itemgetter('type', 'sort'))
 
     return render_to_response('pathchooser.html',
-            {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile,
-             'absolute': abs}, [])
+                              {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile,
+                               'absolute': abs}, [])
 
 
 @route('/logs')
@@ -414,7 +400,7 @@ def logs(item=-1):
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
             fro = datetime.strptime(request.forms['from'], '%d.%m.%Y %H:%M:%S')
-        except:
+        except Exception:
             pass
         try:
             perpage = int(request.forms['perpage'])
@@ -422,14 +408,14 @@ def logs(item=-1):
 
             reversed = bool(request.forms.get('reversed', False))
             s['reversed'] = reversed
-        except:
+        except Exception:
             pass
 
         s.save()
 
     try:
         item = int(item)
-    except:
+    except Exception:
         pass
 
     log = PYLOAD.getLog()
@@ -439,7 +425,7 @@ def logs(item=-1):
     if item < 1 or type(item) is not int:
         item = 1 if len(log) - perpage + 1 < 1 else len(log) - perpage + 1
 
-    if type(fro) is datetime: # we will search for datetime
+    if type(fro) is datetime:  # we will search for datetime
         item = -1
 
     data = []
@@ -452,23 +438,23 @@ def logs(item=-1):
             try:
                 date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
                 dtime = datetime.strptime(date + ' ' + time, '%d.%m.%Y %H:%M:%S')
-            except:
+            except Exception:
                 dtime = None
                 date = '?'
                 time = ' '
                 level = '?'
                 message = l
             if item == -1 and dtime is not None and fro <= dtime:
-                item = counter #found our datetime
+                item = counter  # found our datetime
             if item >= 0:
                 data.append({'line': counter, 'date': date + " " + time, 'level': level, 'message': message})
                 perpagecheck += 1
-                if fro is None and dtime is not None: #if fro not set set it to first showed line
+                if fro is None and dtime is not None:  # if fro not set set it to first showed line
                     fro = dtime
             if perpagecheck >= perpage > 0:
                 break
 
-    if fro is None: #still not set, empty log?
+    if fro is None:  # still not set, empty log?
         fro = datetime.now()
     if reversed:
         data.reverse()
@@ -491,7 +477,6 @@ def admin():
         data["perms"] = {}
         get_permission(data["perms"], data["permission"])
         data["perms"]["admin"] = True if data["role"] is 0 else False
-
 
     s = request.environ.get('beaker.session')
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
@@ -525,11 +510,7 @@ def setup():
 @route('/info')
 def info():
     conf = PYLOAD.getConfigDict()
-
-    if hasattr(os, "uname"):
-        extra = os.uname()
-    else:
-        extra = tuple()
+    extra = os.uname() if hasattr(os, "uname") else tuple()
 
     data = {"python": sys.version,
             "os": " ".join((os.name, sys.platform) + extra),
