@@ -24,13 +24,14 @@ from binascii import unhexlify
 
 try:
     from Crypto.Cipher import AES
-except:
+except Exception:
     pass
 
 from RemoteManager import BackendBase
 
 core = None
 js = None
+
 
 class ClickAndLoadBackend(BackendBase):
     def setup(self, host, port):
@@ -43,8 +44,8 @@ class ClickAndLoadBackend(BackendBase):
         while self.enabled:
             self.httpd.handle_request()
 
-class CNLHandler(BaseHTTPRequestHandler):
 
+class CNLHandler(BaseHTTPRequestHandler):
     def add_package(self, name, urls, queue=0):
         print "name", name
         print "urls", urls
@@ -69,20 +70,20 @@ class CNLHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path.strip("/").lower()
-        #self.wfile.write(path+"\n")
+        # self.wfile.write(path+"\n")
 
-        self.map = [ (r"add$", self.add),
-                (r"addcrypted$", self.addcrypted),
-                (r"addcrypted2$", self.addcrypted2),
-                (r"flashgot", self.flashgot),
-                (r"crossdomain\.xml", self.crossdomain),
-                (r"checkSupportForUrl", self.checksupport),
-                (r"jdcheck.js", self.jdcheck),
-                (r"", self.flash) ]
+        self.map = [(r"add$", self.add),
+                    (r"addcrypted$", self.addcrypted),
+                    (r"addcrypted2$", self.addcrypted2),
+                    (r"flashgot", self.flashgot),
+                    (r"crossdomain\.xml", self.crossdomain),
+                    (r"checkSupportForUrl", self.checksupport),
+                    (r"jdcheck.js", self.jdcheck),
+                    (r"", self.flash)]
 
         func = None
         for r, f in self.map:
-            if re.match(r"(flash(got)?/?)?"+r, path):
+            if re.match(r"(flash(got)?/?)?" + r, path):
                 func = f
                 break
 
@@ -100,11 +101,11 @@ class CNLHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         form = FieldStorage(
-                fp=self.rfile,
-                headers=self.headers,
-                environ={'REQUEST_METHOD':'POST',
-                         'CONTENT_TYPE':self.headers['Content-Type'],
-                         })
+            fp=self.rfile,
+            headers=self.headers,
+            environ={'REQUEST_METHOD': 'POST',
+                     'CONTENT_TYPE': self.headers['Content-Type'],
+            })
 
         self.post = {}
         for name in form.keys():
@@ -144,7 +145,6 @@ class CNLHandler(BaseHTTPRequestHandler):
         result = filter(lambda x: x != "", result)
 
         self.add_package(package, result, 0)
-
 
     def flashgot(self):
         autostart = int(self.get_post('autostart', 0))
