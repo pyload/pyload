@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 from paver.easy import *
 from paver.setuputils import setup
 from paver.doctools import cog

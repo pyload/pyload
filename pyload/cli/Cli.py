@@ -17,6 +17,7 @@
 #
 ###
 from __future__ import with_statement
+
 from getopt import GetoptError, getopt
 
 import pyload.utils.pylgettext as gettext

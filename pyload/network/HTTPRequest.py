@@ -16,6 +16,8 @@
     @author: RaNaN
 """
 
+from __future__ import with_statement
+
 import pycurl
 
 from codecs import getincrementaldecoder, lookup, BOM_UTF8
