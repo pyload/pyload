@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 #
-#Copyright (C) 2011-2014 RaNaN
+# Copyright (C) 2011-2014 RaNaN
 #
-#This program is free software; you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation; either version 3 of the License,
-#or (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License,
+# or (at your option) any later version.
 #
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#See the GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
 #
-#You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
@@ -22,17 +22,17 @@ from time import time
 
 from Handler import Handler
 from printer import *
-
 from module.Api import Destination, PackageData
+
 
 class ManageFiles(Handler):
     """ possibility to manage queue/collector """
 
     def init(self):
         self.target = Destination.Queue
-        self.pos = 0    #position in queue
-        self.package = -1  #choosen package
-        self.mode = ""   # move/delete/restart
+        self.pos = 0  # position in queue
+        self.package = -1  # choosen package
+        self.mode = ""  # move/delete/restart
 
         self.cache = None
         self.links = None
@@ -59,7 +59,7 @@ class ManageFiles(Handler):
         if input == "0":
             self.cli.reset()
         elif self.package < 0 and self.mode:
-            #mode select
+            # mode select
             packs = self.parseInput(input)
             if self.mode == "m":
                 [self.client.movePackage((self.target + 1) % 2, x) for x in packs]
@@ -69,7 +69,7 @@ class ManageFiles(Handler):
                 [self.client.restartPackage(x) for x in packs]
 
         elif self.mode:
-            #edit links
+            # edit links
             links = self.parseInput(input, False)
 
             if self.mode == "d":
@@ -78,10 +78,10 @@ class ManageFiles(Handler):
                 map(self.client.restartFile, links)
 
         else:
-            #look into package
+            # look into package
             try:
                 self.package = int(input)
-            except:
+            except Exception:
                 pass
 
         self.cache = None
@@ -89,7 +89,6 @@ class ManageFiles(Handler):
         self.pos = 0
         self.mode = ""
         self.setInput()
-
 
     def renderBody(self, line):
         if self.package < 0:
@@ -111,11 +110,11 @@ class ManageFiles(Handler):
         else:
             println(line, _("Choose what yout want to do or enter package number."))
             println(line + 1, ("%s - %%s, %s - %%s, %s - %%s" % (mag("d"), mag("m"), mag("r"))) % (
-            _("delete"), _("move"), _("restart")))
+                _("delete"), _("move"), _("restart")))
             line += 2
 
         if self.package < 0:
-            #print package info
+            # print package info
             pack = self.getPackages()
             i = 0
             for value in islice(pack, self.pos, self.pos + 5):
@@ -123,24 +122,24 @@ class ManageFiles(Handler):
                     println(line, mag(str(value.pid)) + ": " + value.name)
                     line += 1
                     i += 1
-                except Exception, e:
+                except Exception:
                     pass
-            for x in range(5 - i):
+            for _ in range(5 - i):
                 println(line, "")
                 line += 1
         else:
-            #print links info
+            # print links info
             pack = self.getLinks()
             i = 0
             for value in islice(pack.links, self.pos, self.pos + 5):
                 try:
                     println(line, mag(value.fid) + ": %s | %s | %s" % (
-                    value.name, value.statusmsg, value.plugin))
+                        value.name, value.statusmsg, value.plugin))
                     line += 1
                     i += 1
                 except Exception, e:
                     pass
-            for x in range(5 - i):
+            for _ in range(5 - i):
                 println(line, "")
                 line += 1
 
@@ -149,16 +148,11 @@ class ManageFiles(Handler):
 
         return line + 2
 
-
     def getPackages(self):
         if self.cache and self.time + 2 < time():
             return self.cache
 
-        if self.target == Destination.Queue:
-            data = self.client.getQueue()
-        else:
-            data = self.client.getCollector()
-
+        data = self.client.getQueue() if self.target == Destination.Queue else self.client.getCollector()
 
         self.cache = data
         self.time = time()
@@ -171,7 +165,7 @@ class ManageFiles(Handler):
 
         try:
             data = self.client.getPackageData(self.package)
-        except:
+        except Exception:
             data = PackageData(links=[])
 
         self.links = data
@@ -182,22 +176,12 @@ class ManageFiles(Handler):
     def parseInput(self, inp, package=True):
         inp = inp.strip()
         if "-" in inp:
-            l, n, h = inp.partition("-")
-            l = int(l)
-            h = int(h)
-            r = range(l, h + 1)
+            l, _, h = inp.partition("-")
+            r = range(int(l), int(h) + 1)
 
-            ret = []
             if package:
-                for p in self.cache:
-                    if p.pid in r:
-                        ret.append(p.pid)
-            else:
-                for l in self.links.links:
-                    if l.lid in r:
-                        ret.append(l.lid)
-
-            return ret
+                return [p.pid for p in self.cache if p.pid in r]
+            return [l.lid for l in self.links.links if l.lid in r]
 
         else:
             return [int(x) for x in inp.split(",")]
