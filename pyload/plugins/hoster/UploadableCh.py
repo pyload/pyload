@@ -4,8 +4,8 @@ import re
 
 from time import sleep
 
-from module.plugins.internal.CaptchaService import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from pyload.plugins.captcha import ReCaptcha
+from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UploadableCh(SimpleHoster):

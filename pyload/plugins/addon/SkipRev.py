@@ -5,13 +5,13 @@ import re
 from urllib import unquote
 from urlparse import urljoin, urlparse
 
-from module.plugins.Hook import Hook
-from module.plugins.Plugin import SkipDownload
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.Plugin import SkipDownload
 
 
-class SkipRev(Hook):
+class SkipRev(Adoon):
     __name__    = "SkipRev"
-    __type__    = "hook"
+    __type__    = "addon"
     __version__ = "0.13"
 
     __config__ = [("auto",   "bool", "Automatically keep all rev files needed by package", True),

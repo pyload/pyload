@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 from time import time, sleep
 from random import randint
 
@@ -16,7 +18,7 @@ from itertools import islice
 from traceback import print_exc
 from urlparse import urlparse
 
-from pyload.utils import fs_decode, fs_encode, safe_join, safe_path
+from pyload.utils import fs_decode, fs_encode, safe_filename, safe_join
 
 
 def chunks(iterable, size):

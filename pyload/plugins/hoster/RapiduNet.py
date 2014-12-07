@@ -5,9 +5,9 @@ import re
 from pycurl import HTTPHEADER
 from time import time, altzone
 
-from module.common.json_layer import json_loads
-from module.plugins.internal.CaptchaService import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from pyload.utils import json_loads
+from pyload.plugins.captcha import ReCaptcha
+from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RapiduNet(SimpleHoster):

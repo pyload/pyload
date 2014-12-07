@@ -7,7 +7,7 @@ from pycurl import HTTPHEADER
 from pyload.utils import json_loads
 from pyload.network.HTTPRequest import BadHeader
 from pyload.plugins.hoster.UnrestrictLi import secondsToMidnight
-from pyload.plugins.internal.CaptchaService import AdsCaptcha, ReCaptcha, SolveMedia
+from pyload.plugins.internal.captcha import AdsCaptcha, ReCaptcha, SolveMedia
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 

@@ -6,9 +6,9 @@ from time import time
 from urllib import unquote
 from urlparse import urlparse
 
-from module.network.RequestFactory import getURL
-from module.plugins.internal.CaptchaService import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from pyload.network.RequestFactory import getURL
+from pyload.plugins.captcha import ReCaptcha
+from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class ShareonlineBiz(SimpleHoster):

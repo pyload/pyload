@@ -6,7 +6,7 @@
 import re
 
 from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
-from pyload.plugins.internal.CaptchaService import SolveMedia
+from pyload.plugins.internal.captcha import SolveMedia
 
 
 class RyushareCom(XFSHoster):

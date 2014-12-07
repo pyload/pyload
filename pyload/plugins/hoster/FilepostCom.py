@@ -5,7 +5,7 @@ import re
 from time import time
 
 from pyload.utils import json_loads
-from pyload.plugins.internal.CaptchaService import ReCaptcha
+from pyload.plugins.internal.captcha import ReCaptcha
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 

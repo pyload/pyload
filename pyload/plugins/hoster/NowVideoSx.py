@@ -5,14 +5,14 @@ import re
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class NowVideoAt(SimpleHoster):
-    __name__    = "NowVideoAt"
+class NowVideoSx(SimpleHoster):
+    __name__    = "NowVideoSx"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?nowvideo\.(at|ch|co|eu|sx)/(video|mobile/#/videos)/(?P<ID>\w+)'
 
-    __description__ = """NowVideo.at hoster plugin"""
+    __description__ = """NowVideo.sx hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
@@ -27,12 +27,12 @@ class NowVideoAt(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = True
         self.resumeDownload = True
+        self.multiDL        = True
 
 
     def handleFree(self):
-        self.html = self.load("http://www.nowvideo.at/mobile/video.php", get={'id': self.info['ID']})
+        self.html = self.load("http://www.nowvideo.at/mobile/video.php", get={'id': self.info['pattern']['ID']})
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
@@ -41,4 +41,4 @@ class NowVideoAt(SimpleHoster):
         self.download(m.group(1))
 
 
-getInfo = create_getInfo(NowVideoAt)
+getInfo = create_getInfo(NowVideoSx)

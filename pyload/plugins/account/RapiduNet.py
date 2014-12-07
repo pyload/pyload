@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
-from module.plugins.Account import Account
-from module.common.json_layer import json_loads
+
+from pyload.plugins.internal.Account import Account
+from pyload.utils import json_loads
 
 
 class RapiduNet(Account):

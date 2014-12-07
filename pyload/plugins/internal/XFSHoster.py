@@ -8,7 +8,7 @@ from time import sleep
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 
 from pyload.plugins.hoster.UnrestrictLi import secondsToMidnight
-from pyload.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
+from pyload.plugins.internal.captcha import ReCaptcha, SolveMedia
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from pyload.utils import html_unescape
 

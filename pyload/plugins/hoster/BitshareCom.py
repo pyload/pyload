@@ -4,7 +4,7 @@ from __future__ import with_statement
 
 import re
 
-from pyload.plugins.internal.CaptchaService import ReCaptcha
+from pyload.plugins.internal.captcha import ReCaptcha
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 

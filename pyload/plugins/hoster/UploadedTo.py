@@ -11,7 +11,7 @@ from time import sleep
 from pyload.network.RequestFactory import getURL
 from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.Plugin import chunks
-from pyload.plugins.internal.CaptchaService import ReCaptcha
+from pyload.plugins.internal.captcha import ReCaptcha
 from pyload.utils import html_unescape, parseFileSize
 
 

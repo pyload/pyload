@@ -4,7 +4,7 @@ import re
 
 from urlparse import urljoin
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
+from pyload.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class Go4UpCom(SimpleCrypter):

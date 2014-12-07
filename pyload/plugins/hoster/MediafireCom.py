@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.CaptchaService import SolveMedia
+from pyload.plugins.internal.captcha import SolveMedia
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 from pyload.network.RequestFactory import getURL
 

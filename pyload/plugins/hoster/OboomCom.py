@@ -7,7 +7,7 @@ import re
 
 from pyload.utils import json_loads
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.internal.CaptchaService import ReCaptcha
+from pyload.plugins.internal.captcha import ReCaptcha
 
 
 class OboomCom(Hoster):
