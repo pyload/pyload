@@ -2,11 +2,12 @@
 
 from thrift.protocol import TBinaryProtocol
 
+
 class Protocol(TBinaryProtocol.TBinaryProtocol):
     def writeString(self, str):
         try:
             str = str.encode("utf8", "ignore")
-        except Exception, e:
+        except Exception:
             pass
 
         self.writeI32(len(str))
@@ -17,14 +18,13 @@ class Protocol(TBinaryProtocol.TBinaryProtocol):
         str = self.trans.readAll(len)
         try:
             str = str.decode("utf8", "ignore")
-        except:
+        except Exception:
             pass
 
         return str
 
 
 class ProtocolFactory(TBinaryProtocol.TBinaryProtocolFactory):
-
     def getProtocol(self, trans):
         prot = Protocol(trans, self.strictRead, self.strictWrite)
         return prot
