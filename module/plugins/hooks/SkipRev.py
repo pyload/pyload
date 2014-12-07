@@ -12,7 +12,7 @@ from module.plugins.Plugin import SkipDownload
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __config__ = [("auto",   "bool", "Automatically keep all rev files needed by package", True),
                   ("tokeep", "int" , "Min number of rev files to keep for package"       ,    1),
@@ -26,24 +26,25 @@ class SkipRev(Hook):
     def _setup(self):
         super(self.pyfile.plugin, self).setup()
         if self.pyfile.hasStatus("skipped"):
-            raise SkipDownload(self.pyfile.getStatusName())
+            raise SkipDownload(self.pyfile.getStatusName() or self.pyfile.pluginname)
 
 
     def pyname(self, pyfile):
+        url    = pyfile.url
         plugin = pyfile.plugin
 
         if hasattr(plugin, "info") and 'name' in plugin.info and plugin.info['name']:
             name = plugin.info['name']
 
         elif hasattr(plugin, "parseInfo"):
-            name = next(plugin.parseInfo([pyfile.url]))['name']
+            name = next(plugin.parseInfo([url]))['name']
 
         elif hasattr(plugin, "getInfo"):  #@NOTE: if parseInfo was not found, getInfo should be missing too
-            name = plugin.getInfo(pyfile.url)['name']
+            name = plugin.getInfo(url)['name']
 
         else:
             self.logWarning("Unable to grab file name")
-            name = urlparse(unquote(pyfile.url)).path.split('/')[-1])
+            name = urlparse(unquote(url)).path.split('/')[-1])
 
         return name
 
