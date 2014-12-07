@@ -15,7 +15,6 @@ from thriftbackend.thriftgen.pyload.Pyload import Iface
 
 
 def main():
-
     enums = []
     classes = []
 
@@ -24,14 +23,14 @@ def main():
     for name in dir(ttypes):
         klass = getattr(ttypes, name)
 
-        if name in ("TBase", "TExceptionBase") or name.startswith("_") or not (issubclass(klass, ttypes.TBase) or issubclass(klass, ttypes.TExceptionBase)):
+        if name in ("TBase", "TExceptionBase") or name.startswith("_") or not (
+            issubclass(klass, ttypes.TBase) or issubclass(klass, ttypes.TExceptionBase)):
             continue
 
         if hasattr(klass, "thrift_spec"):
-           classes.append(klass)
+            classes.append(klass)
         else:
             enums.append(klass)
-
 
     f = open(join(path, "ttypes.py"), "wb")
 
@@ -45,7 +44,7 @@ class BaseObject(object):
 
 """)
 
-    ## generate enums
+    # generate enums
     for enum in enums:
         name = enum.__name__
         f.write("class %s:\n" % name)
@@ -60,10 +59,10 @@ class BaseObject(object):
     for klass in classes:
         name = klass.__name__
         base = "Exception" if issubclass(klass, ttypes.TExceptionBase) else "BaseObject"
-        f.write("class %s(%s):\n" % (name,  base))
+        f.write("class %s(%s):\n" % (name, base))
         f.write("\t__slots__ = %s\n\n" % klass.__slots__)
 
-        #create init
+        # create init
         args = ["self"] + ["%s=None" % x for x in klass.__slots__]
 
         f.write("\tdef __init__(%s):\n" % ", ".join(args))
