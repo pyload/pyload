@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import re
+
+from pyload.network.RequestFactory import getURL
 from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class DebridItaliaCom(MultiHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hook"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
@@ -15,14 +18,10 @@ class DebridItaliaCom(MultiHoster):
 
     __description__ = """Debriditalia.com hook plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def getHoster(self):
-        return ["netload.in", "hotfile.com", "rapidshare.com", "multiupload.com",
-                "uploading.com", "megashares.com", "crocko.com", "filepost.com",
-                "bitshare.com", "share-links.biz", "putlocker.com", "uploaded.to",
-                "speedload.org", "rapidgator.net", "likeupload.net", "cyberlocker.ch",
-                "depositfiles.com", "extabit.com", "filefactory.com", "sharefiles.co",
-                "ryushare.com", "tusfiles.net", "nowvideo.co", "cloudzer.net", "letitbit.net",
-                "easybytez.com", "uptobox.com", "ddlstorage.com"]
+        html = getURL("http://www.debriditalia.com/status.php")
+        return re.findall(r'title="(.+?)"> \1</td><td><img src="/images/(?:attivo|testing)', html)

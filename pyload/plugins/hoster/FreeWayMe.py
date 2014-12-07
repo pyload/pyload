@@ -17,8 +17,8 @@ class FreeWayMe(Hoster):
 
     def setup(self):
         self.resumeDownload = False
-        self.chunkLimit = 1
-        self.multiDL = self.premium
+        self.multiDL        = self.premium
+        self.chunkLimit     = 1
 
 
     def process(self, pyfile):

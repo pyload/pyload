@@ -16,11 +16,11 @@ def which(program):
 
     Courtesy of http://stackoverflow.com/a/377028/675646"""
 
-
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
     fpath, fname = os.path.split(program)
+
     if fpath:
         if is_exe(program):
             return program
@@ -60,31 +60,32 @@ class YoutubeCom(Hoster):
     invalidChars = u'\u2605:?><"|\\'
 
     # name, width, height, quality ranking, 3D
-    formats = {5: (".flv", 400, 240, 1, False),
-               6: (".flv", 640, 400, 4, False),
-               17: (".3gp", 176, 144, 0, False),
-               18: (".mp4", 480, 360, 2, False),
-               22: (".mp4", 1280, 720, 8, False),
-               43: (".webm", 640, 360, 3, False),
-               34: (".flv", 640, 360, 4, False),
-               35: (".flv", 854, 480, 6, False),
-               36: (".3gp", 400, 240, 1, False),
-               37: (".mp4", 1920, 1080, 9, False),
-               38: (".mp4", 4096, 3072, 10, False),
-               44: (".webm", 854, 480, 5, False),
-               45: (".webm", 1280, 720, 7, False),
-               46: (".webm", 1920, 1080, 9, False),
-               82: (".mp4", 640, 360, 3, True),
-               83: (".mp4", 400, 240, 1, True),
-               84: (".mp4", 1280, 720, 8, True),
-               85: (".mp4", 1920, 1080, 9, True),
-               100: (".webm", 640, 360, 3, True),
-               101: (".webm", 640, 360, 4, True),
-               102: (".webm", 1280, 720, 8, True)}
+    formats = {5  : (".flv" , 400 , 240 , 1 , False),
+               6  : (".flv" , 640 , 400 , 4 , False),
+               17 : (".3gp" , 176 , 144 , 0 , False),
+               18 : (".mp4" , 480 , 360 , 2 , False),
+               22 : (".mp4" , 1280, 720 , 8 , False),
+               43 : (".webm", 640 , 360 , 3 , False),
+               34 : (".flv" , 640 , 360 , 4 , False),
+               35 : (".flv" , 854 , 480 , 6 , False),
+               36 : (".3gp" , 400 , 240 , 1 , False),
+               37 : (".mp4" , 1920, 1080, 9 , False),
+               38 : (".mp4" , 4096, 3072, 10, False),
+               44 : (".webm", 854 , 480 , 5 , False),
+               45 : (".webm", 1280, 720 , 7 , False),
+               46 : (".webm", 1920, 1080, 9 , False),
+               82 : (".mp4" , 640 , 360 , 3 , True ),
+               83 : (".mp4" , 400 , 240 , 1 , True ),
+               84 : (".mp4" , 1280, 720 , 8 , True ),
+               85 : (".mp4" , 1920, 1080, 9 , True ),
+               100: (".webm", 640 , 360 , 3 , True ),
+               101: (".webm", 640 , 360 , 4 , True ),
+               102: (".webm", 1280, 720 , 8 , True )}
 
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        self.resumeDownload = True
+        self.multiDL        = True
 
 
     def process(self, pyfile):

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 from os import remove
 from os.path import exists
 from urllib import quote
@@ -11,7 +13,7 @@ from pyload.utils import fs_encode
 class PremiumTo(Hoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'https?://(?:www\.)?premium\.to/.+'
 
@@ -39,9 +41,11 @@ class PremiumTo(Hoster):
         #raise timeout to 2min
         self.req.setOption("timeout", 120)
 
-        self.download(
-            "http://premium.to/api/getfile.php?username=%s&password=%s&link=%s" % (self.account.username, self.account.password, quote(pyfile.url, "")),
-            disposition=True)
+        self.download("http://premium.to/api/getfile.php",
+                      get={'username': self.account.username,
+                           'password': self.account.password,
+                           'link'    : quote(pyfile.url, "")},
+                      disposition=True)
 
         check = self.checkDownload({"nopremium": "No premium account available"})
 

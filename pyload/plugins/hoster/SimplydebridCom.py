@@ -18,8 +18,9 @@ class SimplydebridCom(Hoster):
 
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
-        self.chunkLimit = 1
+        self.resumeDownload = True
+        self.multiDL        = True
+        self.chunkLimit     = 1
 
 
     def process(self, pyfile):
@@ -46,7 +47,7 @@ class SimplydebridCom(Hoster):
         self.logDebug("New URL: %s" % new_url)
 
         if not re.match(self.__pattern__, new_url):
-            page = self.load('http://simply-debrid.com/api.php', get={'dl': new_url})  # +'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
+            page = self.load("http://simply-debrid.com/api.php", get={'dl': new_url})  # +'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
             if 'tiger Link' in page or 'Invalid Link' in page or ('API' in page and 'ERROR' in page):
                 self.fail(_("Unable to unrestrict link"))
             new_url = page

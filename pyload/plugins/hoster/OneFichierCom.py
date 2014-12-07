@@ -8,7 +8,7 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.73"
+    __version__ = "0.74"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
 
@@ -34,7 +34,7 @@ class OneFichierCom(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = self.premium
+        self.multiDL        = self.premium
         self.resumeDownload = True
 
 
@@ -46,7 +46,7 @@ class OneFichierCom(SimpleHoster):
             self.wait(wait_time, reconnect)
             self.retry(reason="You have to wait been each free download")
 
-        id = self.info['ID1'] or self.info['ID2']
+        id = self.info['pattern']['ID1'] or self.info['pattern']['ID2']
         url, inputs = self.parseHtmlForm('action="https://1fichier.com/\?%s' % id)
 
         if not url:

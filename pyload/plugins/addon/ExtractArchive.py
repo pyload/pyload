@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 import os
 import sys
 
@@ -57,7 +59,7 @@ from pyload.utils import safe_join, fs_encode
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "addon"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __config__ = [("activated"    , "bool"  , "Activated"                                    , True                  ),
                   ("fullpath"     , "bool"  , "Extract full path"                            , True                  ),

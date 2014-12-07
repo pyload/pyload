@@ -42,8 +42,10 @@ class MediafireCom(Crypter):
                     folder_key = m.group(1)
                     self.logDebug("FOLDER KEY: %s" % folder_key)
 
-                    json_resp = json_loads(self.load(
-                        "http://www.mediafire.com/api/folder/get_info.php?folder_key=%s&response_format=json&version=1" % folder_key))
+                    json_resp = json_loads(self.load("http://www.mediafire.com/api/folder/get_info.php",
+                                                     get={'folder_key'     : folder_key,
+                                                          'response_format': "json",
+                                                          'version'        : 1}))
                     #self.logInfo(json_resp)
                     if json_resp['response']['result'] == "Success":
                         for link in json_resp['response']['folder_info']['files']:

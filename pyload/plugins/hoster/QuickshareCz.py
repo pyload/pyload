@@ -88,7 +88,6 @@ class QuickshareCz(SimpleHoster):
     def handlePremium(self):
         download_url = '%s/download_premium.php' % self.jsvars['server']
         data = dict((x, self.jsvars[x]) for x in self.jsvars if x in ("ID1", "ID2", "ID4", "ID5"))
-        self.logDebug("PREMIUM URL:" + download_url, data)
         self.download(download_url, get=data)
 
 

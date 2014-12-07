@@ -39,8 +39,8 @@ class StreamCz(Hoster):
 
 
     def setup(self):
-        self.multiDL = True
         self.resumeDownload = True
+        self.multiDL        = True
 
 
     def process(self, pyfile):

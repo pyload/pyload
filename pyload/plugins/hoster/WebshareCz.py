@@ -35,13 +35,14 @@ class WebshareCz(SimpleHoster):
 
     def handleFree(self):
         api_data = self.load('https://webshare.cz/api/file_link/', post={'ident': self.fid})
+
         self.logDebug("API data: " + api_data)
+
         m = re.search('<link>(.+)</link>', api_data)
         if m is None:
             self.error(_("Unable to detect direct link"))
-        direct = m.group(1)
-        self.logDebug("Direct link: " + direct)
-        self.download(direct, disposition=True)
+
+        self.download(m.group(1), disposition=True)
 
 
     def getFileInfo(self):

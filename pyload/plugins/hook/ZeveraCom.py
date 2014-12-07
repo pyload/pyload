@@ -18,5 +18,5 @@ class ZeveraCom(MultiHoster):
 
 
     def getHoster(self):
-        page = getURL("http://www.zevera.com/jDownloader.ashx?cmd=gethosters")
+        page = getURL("http://www.zevera.com/jDownloader.ashx", get={'cmd': "gethosters"})
         return [x.strip() for x in page.replace("\"", "").split(",")]

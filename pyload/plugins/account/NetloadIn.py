@@ -18,7 +18,7 @@ class NetloadIn(Account):
 
 
     def loadAccountInfo(self, user, req):
-        page = req.load("http://netload.in/index.php?id=2&lang=de")
+        page = req.load("http://netload.in/index.php", get={'id': 2, 'lang': "de"})
         left = r'>(\d+) (Tag|Tage), (\d+) Stunden<'
         left = re.search(left, page)
         if left:

@@ -121,7 +121,7 @@ class FilecryptCc(Crypter):
             vjk = re.findall('<input type="hidden" name="jk" value="function f\(\){ return \'(.*)\';}">', self.siteWithLinks)
             vcrypted = re.findall('<input type="hidden" name="crypted" value="(.*)">', self.siteWithLinks)
 
-            for i in range(0, len(vcrypted)):
+            for i in xrange(len(vcrypted)):
                 self.links.extend(self._getLinks(vcrypted[i], vjk[i]))
 
         except Exception, e:

@@ -21,14 +21,14 @@ class PremiumTo(Account):
                          get={'username': self.username, 'password': self.password})
         traffic = sum(map(int, api_r.split(';')))
 
-        return {"trafficleft": int(traffic), "validuntil": -1}
+        return {"trafficleft": int(traffic) / 1024, "validuntil": -1}  #@TODO: Remove / 1024 in 0.4.10
 
 
     def login(self, user, data, req):
         self.username = user
         self.password = data['password']
-        authcode = req.load("http://premium.to/api/getauthcode.php?username=%s&password=%s" % (
-                                 user, self.password)).strip()
+        authcode = req.load("http://premium.to/api/getauthcode.php",
+                            get={'username': user, 'password': self.password}).strip()
 
         if "wrong username" in authcode:
             self.wrongPassword()

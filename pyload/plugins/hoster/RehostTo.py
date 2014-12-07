@@ -35,9 +35,10 @@ class RehostTo(Hoster):
         long_ses = data['long_ses']
 
         self.logDebug("Rehost.to: Old URL: %s" % pyfile.url)
-        new_url = "http://rehost.to/process_download.php?user=cookie&pass=%s&dl=%s" % (long_ses, quote(pyfile.url, ""))
 
         #raise timeout to 2min
         self.req.setOption("timeout", 120)
 
-        self.download(new_url, disposition=True)
+        self.download("http://rehost.to/process_download.php",
+                      get={'user': "cookie", 'pass': long_ses, 'dl': quote(pyfile.url, "")},
+                      disposition=True)

@@ -59,10 +59,10 @@ class AdYouLike(object):
         # "all":{"element_id":"ayl_private_cap_92300","lang":"fr","env":"prod"}}
         ayl_data = json_loads(adyoulike_data_string)
 
-        res = self.plugin.load(
-            r'http://api-ayl.appspot.com/challenge?key=%(ayl_key)s&env=%(ayl_env)s&callback=%(callback)s' % {
-            "ayl_key": ayl_data[self.engine]['key'], "ayl_env": ayl_data['all']['env'],
-            "callback": self.ADYOULIKE_CALLBACK})
+        res = self.plugin.load("http://api-ayl.appspot.com/challenge",
+                               get={'key'     : ayl_data[self.engine]['key'],
+                                    'env'     : ayl_data['all']['env'],
+                                    'callback': self.ADYOULIKE_CALLBACK})
 
         m = re.search(self.ADYOULIKE_CHALLENGE_PATTERN, res)
         challenge_string = None
@@ -130,9 +130,10 @@ class DlFreeFr(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = self.resumeDownload = True
-        self.limitDL = 5
-        self.chunkLimit = 1
+        self.resumeDownload = True
+        self.multiDL        = True
+        self.limitDL        = 5
+        self.chunkLimit     = 1
 
 
     def init(self):

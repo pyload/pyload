@@ -45,12 +45,10 @@ class AlldebridCom(Hoster):
             self.fail(_("No AllDebrid account provided"))
         else:
             self.logDebug("Old URL: %s" % pyfile.url)
-            password = self.getPassword().splitlines()
-            password = "" if not password else password[0]
+            password = self.getPassword().splitlines()[0] or ""
 
-            url = "http://www.alldebrid.com/service.php?link=%s&json=true&pw=%s" % (pyfile.url, password)
-            page = self.load(url)
-            data = json_loads(page)
+            data = json_loads(self.load("http://www.alldebrid.com/service.php",
+                                         get={'link': pyfile.url, 'json': "true", 'pw': password}))
 
             self.logDebug("Json data", data)
 

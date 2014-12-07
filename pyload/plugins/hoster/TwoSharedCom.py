@@ -25,7 +25,8 @@ class TwoSharedCom(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        self.resumeDownload = True
+        self.multiDL        = True
 
 
     def handleFree(self):

@@ -17,7 +17,7 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class TurbobitNet(SimpleHoster):
     __name__    = "TurbobitNet"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
 
@@ -42,7 +42,7 @@ class TurbobitNet(SimpleHoster):
 
 
     def handleFree(self):
-        self.url = "http://turbobit.net/download/free/%s" % self.info['ID']
+        self.url = "http://turbobit.net/download/free/%s" % self.info['pattern']['ID']
         self.html = self.load(self.url, ref=True, decode=True)
 
         rtUpdate = self.getRtUpdate()
@@ -130,7 +130,7 @@ class TurbobitNet(SimpleHoster):
 
         for b in [1, 3]:
             self.jscode = "var id = \'%s\';var b = %d;var inn = \'%s\';%sout" % (
-                          self.info['ID'], b, quote(fun), rtUpdate)
+                          self.info['pattern']['ID'], b, quote(fun), rtUpdate)
 
             try:
                 out = self.js.eval(self.jscode)

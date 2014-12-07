@@ -55,7 +55,7 @@ class RapidgatorNet(SimpleHoster):
             self.premium = True
 
         self.resumeDownload = self.multiDL = self.premium
-        self.chunkLimit = 1
+        self.chunkLimit     = 1
 
 
     def api_response(self, cmd):

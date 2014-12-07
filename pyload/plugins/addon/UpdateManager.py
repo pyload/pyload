@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 import re
 import sys
 
@@ -14,13 +16,14 @@ from pyload.utils import safe_join
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "addon"
-    __version__ = "0.40"
+    __version__ = "0.42"
 
-    __config__ = [("activated"    , "bool"                         , "Activated"                                         , True              ),
-                  ("mode"         , "pyLoad + plugins;plugins only", "Check updates for"                                 , "pyLoad + plugins"),
-                  ("interval"     , "int"                          , "Check interval in hours"                           , 8                 ),
-                  ("reloadplugins", "bool"                         , "Monitor plugins for code changes (debug mode only)", True              ),
-                  ("nodebugupdate", "bool"                         , "Don't check for updates in debug mode"             , True              )]
+    __config__ = [("activated"    , "bool"                         , "Activated"                                     , True              ),
+                  ("mode"         , "pyLoad + plugins;plugins only", "Check updates for"                             , "pyLoad + plugins"),
+                  ("interval"     , "int"                          , "Check interval in hours"                       , 8                 ),
+                  ("autorestart"  , "bool"                         , "Automatically restart pyLoad when required"    , True              ),
+                  ("reloadplugins", "bool"                         , "Monitor plugins for code changes in debug mode", True              ),
+                  ("nodebugupdate", "bool"                         , "Don't check for updates in debug mode"         , True              )]
 
     __description__ = """Check for updates"""
     __license__     = "GPLv3"
@@ -29,8 +32,9 @@ class UpdateManager(Addon):
 
     # event_list = ["pluginConfigChanged"]
 
-    SERVER_URL = "http://updatemanager.pyload.org"
-    MIN_INTERVAL = 6 * 60 * 60  #: 6h minimum check interval (value is in seconds)
+    SERVER_URL   = "http://updatemanager.pyload.org"
+    VERSION      = re.compile(r'__version__.*=.*("|\')([\d.]+)')
+    MIN_INTERVAL = 3 * 60 * 60  #: 3h minimum check interval (value is in seconds)
 
 
     def pluginConfigChanged(self, plugin, name, value):
@@ -125,7 +129,7 @@ class UpdateManager(Addon):
 
         status = self.update(onlyplugin=self.getConfig("mode") == "plugins only")
 
-        if status == 2:
+        if status is 2 and self.getConfig("autorestart"):
             self.core.api.restart()
         else:
             self.updating = False
@@ -173,21 +177,38 @@ class UpdateManager(Addon):
         exitcode = 0
         updated  = []
 
-        vre = re.compile(r'__version__.*=.*("|\')([\d.]+)')
-        url = updates[0]
+        url    = updates[0]
         schema = updates[1].split('|')
 
         if "BLACKLIST" in updates:
             blacklist = updates[updates.index('BLACKLIST') + 1:]
-            updates = updates[2:updates.index('BLACKLIST')]
+            updates   = updates[2:updates.index('BLACKLIST')]
         else:
             blacklist = None
-            updates = updates[2:]
+            updates   = updates[2:]
 
-        upgradable = sorted(map(lambda x: dict(zip(schema, x.split('|'))), updates),
-                            key=itemgetter("type", "name"))
+        upgradable  = [dict(zip(schema, x.split('|'))) for x in updates]
+        blacklisted = [(x.split('|')[0], x.split('|')[1].rsplit('.', 1)[0]) for x in blacklist] if blacklist else []
 
-        for plugin in upgradable:
+        if blacklist:
+            # Protect internal plugins against removing
+            for i, t, n in enumerate(blacklisted):
+				if t == "internal":
+                    blacklisted.pop(i)
+					continue
+
+                for idx, plugin in enumerate(upgradable):
+                    if n == plugin['name'] and t == plugin['type']:
+                        upgradable.pop(idx)
+                        break
+
+            for t, n in self.removePlugins(sorted(blacklisted)):
+                self.logInfo(_("Removed blacklisted plugin [%(type)s] %(name)s") % {
+                    'type': t,
+                    'name': n,
+                })
+
+        for plugin in sorted(upgradable, key=itemgetter("type", "name")):
             filename = plugin['name']
             type     = plugin['type']
             version  = plugin['version']
@@ -215,34 +236,18 @@ class UpdateManager(Addon):
                                    'newver': newver})
             try:
                 content = getURL(url % plugin)
-                m = vre.search(content)
+                m = self.VERSION.search(content)
 
                 if m and m.group(2) == version:
-                    f = open(safe_join("userplugins", prefix, filename), "wb")
-                    f.write(content)
-                    f.close()
+                    with open(safe_join("userplugins", prefix, filename), "wb") as f:
+                        f.write(content)
+
                     updated.append((prefix, name))
                 else:
                     raise Exception, _("Version mismatch")
 
             except Exception, e:
-                self.logError(_("Error updating plugin %s") % filename, e)
-
-        if blacklist:
-            blacklisted = map(lambda x: (x.split('|')[0], x.split('|')[1].rsplit('.', 1)[0]), blacklist)
-
-            # Always protect internal plugins from removing
-            for i, n, t in blacklisted.enumerate():
-                if t == "internal":
-                    del blacklisted[i]
-
-            blacklisted = sorted(blacklisted)
-            removed = self.removePlugins(blacklisted)
-            for t, n in removed:
-                self.logInfo(_("Removed blacklisted plugin [%(type)s] %(name)s") % {
-                    'type': t,
-                    'name': n,
-                })
+                self.logError(_("Error updating plugin: %s") % filename, str(e))
 
         if updated:
             reloaded = self.core.pluginManager.reloadPlugins(updated)

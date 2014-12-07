@@ -20,8 +20,9 @@ class FastixRu(MultiHoster):
 
 
     def getHoster(self):
-        page = getURL(
-            "http://fastix.ru/api_v2/?apikey=5182964c3f8f9a7f0b00000a_kelmFB4n1IrnCDYuIFn2y&sub=allowed_sources")
+        page = getURL("http://fastix.ru/api_v2",
+                      get={'apikey': "5182964c3f8f9a7f0b00000a_kelmFB4n1IrnCDYuIFn2y",
+                           'sub'   : "allowed_sources"})
         host_list = json_loads(page)
         host_list = host_list['allow']
         return host_list

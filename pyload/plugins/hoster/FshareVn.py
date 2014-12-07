@@ -112,6 +112,8 @@ class FshareVn(SimpleHoster):
             self.logError(msg)
             self.retry(30, 2 * 60, msg)
 
+        self.info.pop('error', None)
+
 
     def checkDownloadedFile(self):
         # check download

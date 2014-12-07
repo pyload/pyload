@@ -3,9 +3,8 @@
 import re
 
 from time import time
-from urlparse import urlparse
-
-from pycurl import FOLLOWLOCATION
+from urllib import unquote
+from urlparse import urljoin, urlparse
 
 from pyload.datatype.PyFile import statusMap as _statusMap
 from pyload.network.CookieJar import CookieJar
@@ -91,22 +90,37 @@ def timestamp():
 
 
 #@TODO: Move to hoster class in 0.4.10
-def _getDirectLink(self, url):
+def _isDirectLink(self, url, resumable=True):
     header = self.load(url, ref=True, just_header=True, decode=True)
 
     if not 'location' in header or not header['location']:
         return ""
 
-    if header['code'] != 302 or 'content-type' not in header or header['content-type'] != "text/plain":
-        return ""
+    location = header['location']
 
-    return header['location']
+    resumable = False  #@NOTE: Testing...
+
+    if resumable:  #: sometimes http code may be wrong...
+        if 'location' in self.load(location, ref=True, cookies=True, just_header=True, decode=True):
+            return ""
+    else:
+        if not 'code' in header or header['code'] != 302:
+            return ""
+
+    if urlparse(location).scheme:
+        link = location
+    else:
+        p = urlparse(url)
+        base = "%s://%s" % (p.scheme, p.netloc)
+        link = urljoin(base, location)
+
+    return link
 
 
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.62"
+    __version__ = "0.71"
 
     __pattern__ = r'^unmatchable$'
 
@@ -127,6 +141,9 @@ class SimpleHoster(Hoster):
           example: NAME_PATTERN = r'(?P<N>file_name)'
         SIZE_PATTERN: (optional) Size that will be checked for the file
           example: SIZE_PATTERN = r'(?P<S>file_size) (?P<U>size_unit)'
+
+      HASHSUM_PATTERN: (optional) Hash code and type of the file
+        example: HASHSUM_PATTERN = r'(?P<H>hash_code) (?P<T>MD5)'
 
       OFFLINE_PATTERN: (optional) Check if the file is yet available online
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
@@ -163,9 +180,9 @@ class SimpleHoster(Hoster):
     TEXT_ENCODING       = False  #: Set to True or encoding name if encoding value in http header is not correct
     COOKIES             = True   #: or False or list of tuples [(domain, name, value)]
     FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
-    CHECK_DIRECT_LINK   = None   #: when None self-set to True if self.account else False
-    MULTI_HOSTER        = False  #: Set to True to leech other hoster link
-    CONTENT_DISPOSITION = False  #: Set to True to replace file name with content-disposition value in http header
+    CHECK_DIRECT_LINK   = None   #: Set to True to check for direct link, set to None to do it only if self.account is True
+    MULTI_HOSTER        = False  #: Set to True to leech other hoster link (according its multihoster hook if available)
+    CONTENT_DISPOSITION = False  #: Set to True to replace file name with content-disposition value from http header
 
 
     @classmethod
@@ -177,14 +194,32 @@ class SimpleHoster(Hoster):
 
     @classmethod
     def getInfo(cls, url="", html=""):
-        info = {'name': urlparse(url).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3, 'url': url or ""}
+        info = {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3, 'url': url}
 
         if not html:
-            if url:
-                html = getURL(url, cookies=cls.COOKIES, decode=not cls.TEXT_ENCODING)
-                if isinstance(cls.TEXT_ENCODING, basestring):
-                    html = unicode(html, cls.TEXT_ENCODING)
-            else:
+            try:
+                if not url:
+                    info['error']  = "missing url"
+                    info['status'] = 1
+                    raise
+
+                try:
+                    html = getURL(url, cookies=cls.COOKIES, decode=not cls.TEXT_ENCODING)
+
+                    if isinstance(cls.TEXT_ENCODING, basestring):
+                        html = unicode(html, cls.TEXT_ENCODING)
+
+                except BadHeader, e:
+                    info['error'] = "%d: %s" % (e.code, e.content)
+
+                    if e.code is 404:
+                        info['status'] = 1
+                        raise
+
+                    if e.code is 503:
+                        info['status'] = 6
+                        raise
+            except:
                 return info
 
         online = False
@@ -197,32 +232,42 @@ class SimpleHoster(Hoster):
 
         else:
             try:
-                info.update(re.match(cls.__pattern__, url).groupdict())
+                info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: pattern groups will be saved here, please save api stuff to info['api']
             except Exception:
                 pass
 
-            for pattern in ("INFO_PATTERN", "NAME_PATTERN", "SIZE_PATTERN"):
+            for pattern in ("INFO_PATTERN", "NAME_PATTERN", "SIZE_PATTERN", "HASHSUM_PATTERN"):
                 try:
                     attr = getattr(cls, pattern)
-                    info.update(re.search(attr, html).groupdict())
+                    dict = re.search(attr, html).groupdict()
+
+                    if all(True for k in dict if k not in info['pattern']):
+                        info['pattern'].update(dict)
+
                 except AttributeError:
                     continue
+
                 else:
                     online = True
 
         if online:
             info['status'] = 2
 
-            if 'N' in info:
-                info['name'] = replace_patterns(info['N'].strip(), cls.NAME_REPLACEMENTS)
+            if 'N' in info['pattern']:
+                info['name'] = replace_patterns(unquote(info['pattern']['N'].strip()), cls.NAME_REPLACEMENTS)
 
-            if 'S' in info:
-                size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'], cls.SIZE_REPLACEMENTS)
+            if 'S' in info['pattern']:
+                size = replace_patterns(info['pattern']['S'] + info['pattern']['U'] if 'U' in info else info['pattern']['S'],
+                                        cls.SIZE_REPLACEMENTS)
                 info['size'] = parseFileSize(size)
 
             elif isinstance(info['size'], basestring):
                 unit = info['units'] if 'units' in info else None
                 info['size'] = parseFileSize(info['size'], unit)
+
+            if 'H' in info['pattern']:
+                hashtype = info['pattern']['T'] if 'T' in info['pattern'] else "hash"
+                info[hashtype] = info['pattern']['H']
 
         return info
 
@@ -243,8 +288,8 @@ class SimpleHoster(Hoster):
             set_cookies(self.req.cj, self.COOKIES)
 
         if (self.MULTI_HOSTER
-            and self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
-            and re.match(self.__pattern__, self.pyfile.url) is None):
+            and (self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
+                 or re.match(self.__pattern__, self.pyfile.url) is None)):
 
             self.logInfo("Multi hoster detected")
 
@@ -288,8 +333,7 @@ class SimpleHoster(Hoster):
 
             premium_only = 'error' in self.info and self.info['error'] == "premium-only"
 
-            info = self.getInfo(pyfile.url, self.html)
-            self._updateInfo(info)
+            self._updateInfo(self.getInfo(pyfile.url, self.html))
 
             self.checkNameSize()
 
@@ -308,18 +352,28 @@ class SimpleHoster(Hoster):
                 self.logDebug("Handled as free download")
                 self.handleFree()
 
-        if self.link:
-            self.download(self.link, disposition=self.CONTENT_DISPOSITION)
+        self.downloadLink(self.link)
+        self.checkFile()
+
+
+    def downloadLink(self, link):
+        if not link:
+            return
+
+        self.download(link, disposition=self.CONTENT_DISPOSITION)
+
+
+    def checkFile(self):
+        if self.checkDownload({'empty': re.compile(r"^$")}) is "empty":  #@TODO: Move to hoster in 0.4.10
+            self.fail(_("Empty file"))
 
 
     def checkErrors(self):
-        if hasattr(self, 'WAIT_PATTERN'):
-            m = re.search(self.WAIT_PATTERN, self.html)
+        if hasattr(self, 'ERROR_PATTERN'):
+            m = re.search(self.ERROR_PATTERN, self.html)
             if m:
-                wait_time = sum([int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
-                                 re.findall(r'(\d+)\s*(hr|hour|min|sec)', m, re.I)])
-                self.wait(wait_time, False)
-                return
+                errmsg = self.info['error'] = m.group(1)
+                self.error(errmsg)
 
         if hasattr(self, 'PREMIUM_ONLY_PATTERN'):
             m = re.search(self.PREMIUM_ONLY_PATTERN, self.html)
@@ -327,11 +381,13 @@ class SimpleHoster(Hoster):
                 self.info['error'] = "premium-only"
                 return
 
-        if hasattr(self, 'ERROR_PATTERN'):
-            m = re.search(self.ERROR_PATTERN, self.html)
+        if hasattr(self, 'WAIT_PATTERN'):
+            m = re.search(self.WAIT_PATTERN, self.html)
             if m:
-                e = self.info['error'] = m.group(1)
-                self.error(e)
+                wait_time = sum([int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
+                                 re.findall(r'(\d+)\s*(hr|hour|min|sec)', m, re.I)])
+                self.wait(wait_time, False)
+                return
 
         self.info.pop('error', None)
 
@@ -381,7 +437,9 @@ class SimpleHoster(Hoster):
 
     #: Deprecated
     def getFileInfo(self):
-        return self.checkInfo()
+        self.info = {}
+        self.checkInfo()
+        return self.info
 
 
     def _updateInfo(self, info):
@@ -391,7 +449,7 @@ class SimpleHoster(Hoster):
 
 
     def handleDirect(self):
-        link = _getDirectLink(self, self.pyfile.url)
+        link = _isDirectLink(self, self.pyfile.url, self.resumeDownload)
 
         if link:
             self.logInfo(_("Direct download link detected"))
@@ -420,7 +478,7 @@ class SimpleHoster(Hoster):
             self.link = m.group(1)
 
         except Exception, e:
-            self.fail(str(e))
+            self.fail(e)
 
 
     def handlePremium(self):
@@ -435,7 +493,7 @@ class SimpleHoster(Hoster):
             self.link = m.group(1)
 
         except Exception, e:
-            self.fail(str(e))
+            self.fail(e)
 
 
     def longWait(self, wait_time=None, max_tries=3):

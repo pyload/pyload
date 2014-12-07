@@ -3,7 +3,7 @@
 import re
 
 from urllib import unquote
-from urlparse import urlparse
+from urlparse import urljoin, urlparse
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.plugins.internal.SimpleHoster import create_getInfo
@@ -13,7 +13,7 @@ from pyload.plugins.internal.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.25"
 
     __pattern__ = r'^unmatchable$'
 
@@ -25,7 +25,7 @@ class BasePlugin(Hoster):
 
     @classmethod
     def getInfo(cls, url="", html=""):  #@TODO: Move to hoster class in 0.4.10
-        return {'name': urlparse(url).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3, 'url': url or ""}
+        return {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3 if url else 1, 'url': unquote(url) or ""}
 
 
     def setup(self):
@@ -38,69 +38,69 @@ class BasePlugin(Hoster):
 
         pyfile.name = self.getInfo(pyfile.url)['name']
 
-        if pyfile.url.startswith("http"):
-            for _i in xrange(2):
-                try:
-                    self.downloadFile(pyfile)
-
-                except BadHeader, e:
-                    if e.code is 404:
-                        self.offline()
-
-                    elif e.code in (401, 403):
-                        self.logDebug("Auth required")
-
-                        account = self.core.accountManager.getAccountPlugin('Http')
-                        servers = [x['login'] for x in account.getAllAccounts()]
-                        server  = urlparse(pyfile.url).netloc
-
-                        if server in servers:
-                            self.logDebug("Logging on to %s" % server)
-                            self.req.addAuth(account.accounts[server]['password'])
-                        else:
-                            for pwd in pyfile.package().password.splitlines():
-                                if ":" in pwd:
-                                    self.req.addAuth(pwd.strip())
-                                    break
-                            else:
-                                self.fail(_("Authorization required (username:password)"))
-                    else:
-                        self.fail(e)
-                else:
-                    break
-            else:
-                self.fail(_("No file downloaded"))  #@TODO: Move to hoster class (check if self.lastDownload) in 0.4.10
-        else:
+        if not pyfile.url.startswith("http"):
             self.fail(_("No plugin matched"))
 
-        # if self.checkDownload({'empty': re.compile(r"^$")}) is "empty":
-            # self.fail(_("Empty file"))
+        for _i in xrange(5):
+            try:
+                self.downloadFile(pyfile)
+
+            except BadHeader, e:
+                if e.code is 404:
+                    self.offline()
+
+                elif e.code in (401, 403):
+                    self.logDebug("Auth required", "Received HTTP status code: %d" % e.code)
+
+                    account = self.core.accountManager.getAccountPlugin('Http')
+                    servers = [x['login'] for x in account.getAllAccounts()]
+                    server  = urlparse(pyfile.url).netloc
+
+                    if server in servers:
+                        self.logDebug("Logging on to %s" % server)
+                        self.req.addAuth(account.accounts[server]['password'])
+                    else:
+                        for pwd in self.getPassword().splitlines():
+                            if ":" in pwd:
+                                self.req.addAuth(pwd.strip())
+                                break
+                        else:
+                            self.fail(_("Authorization required"))
+                else:
+                    self.fail(e)
+            else:
+                break
+        else:
+            self.fail(_("No file downloaded"))  #@TODO: Move to hoster class in 0.4.10
+
+        if self.checkDownload({'empty': re.compile(r"^$")}) is "empty":  #@TODO: Move to hoster in 0.4.10
+            self.fail(_("Empty file"))
 
 
     def downloadFile(self, pyfile):
         url = pyfile.url
 
-        for _i in xrange(5):
-            header = self.load(url, just_header=True)
+        for i in xrange(1, 7):  #@TODO: retrieve the pycurl.MAXREDIRS value set by req
+            header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
 
-            # self.load does not raise a BadHeader on 404 responses, do it here
-            if 'code' in header and header['code'] == 404:
-                raise BadHeader(404)
-
-            if 'location' in header:
-                self.logDebug("Location: " + header['location'])
-
-                base = re.match(r'https?://[^/]+', url).group(0)
-
-                if header['location'].startswith("http"):
-                    url = header['location']
-
-                elif header['location'].startswith("/"):
-                    url = base + unquote(header['location'])
-
+            if 'location' not in header or not header['location']:
+                if 'code' in header and header['code'] not in (200, 201, 203, 206):
+                    self.logDebug("Received HTTP status code: %d" % header['code'])
+                    self.fail(_("File not found"))
                 else:
-                    url = '%s/%s' % (base, unquote(header['location']))
-            else:
-                break
+                    break
 
-        self.download(url, disposition=True)
+            location = header['location']
+
+            self.logDebug("Redirect #%d to: %s" % (i, location))
+
+            if urlparse(location).scheme:
+                url = location
+            else:
+                p = urlparse(url)
+                base = "%s://%s" % (p.scheme, p.netloc)
+                url = urljoin(base, location)
+        else:
+            self.fail(_("Too many redirects"))
+
+        self.download(unquote(url), disposition=True)

@@ -23,14 +23,17 @@ class EasybytezCom(MultiHoster):
         user = self.account.selectAccount()[0]
 
         try:
-            req = self.account.getAccountRequest(user)
+            req  = self.account.getAccountRequest(user)
             page = req.load("http://www.easybytez.com")
 
-            m = re.search(r'</textarea>\s*Supported sites:(.*)', page)
-            return m.group(1).split(',')
+            hosters = re.search(r'</textarea>\s*Supported sites:(.*)', page).group(1).split(',')
+
         except Exception, e:
-            self.logDebug(e)
             self.logWarning(_("Unable to load supported hoster list, using last known"))
-            return ["bitshare.com", "crocko.com", "ddlstorage.com", "depositfiles.com", "extabit.com", "hotfile.com",
-                    "mediafire.com", "netload.in", "rapidgator.net", "rapidshare.com", "uploading.com", "uload.to",
-                    "uploaded.to"]
+            self.logDebug(e)
+
+            hosters = ["bitshare.com", "crocko.com", "ddlstorage.com", "depositfiles.com", "extabit.com", "hotfile.com",
+                       "mediafire.com", "netload.in", "rapidgator.net", "rapidshare.com", "uploading.com", "uload.to",
+                       "uploaded.to"]
+        finally:
+            return hosters

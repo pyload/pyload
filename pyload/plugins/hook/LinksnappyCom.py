@@ -21,7 +21,7 @@ class LinksnappyCom(MultiHoster):
 
 
     def getHoster(self):
-        json_data = getURL('http://gen.linksnappy.com/lseAPI.php?act=FILEHOSTS')
+        json_data = getURL("http://gen.linksnappy.com/lseAPI.php", get={'act': "FILEHOSTS"})
         json_data = json_loads(json_data)
 
         return json_data['return'].keys()

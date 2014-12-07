@@ -28,18 +28,15 @@ class DataHu(SimpleHoster):
 
     def setup(self):
         self.resumeDownload = True
-        self.multiDL = self.premium
+        self.multiDL        = self.premium
 
 
     def handleFree(self):
         m = re.search(self.LINK_PATTERN, self.html)
-        if m:
-            url = m.group(1)
-            self.logDebug("Direct link: " + url)
-        else:
+        if m is None:
             self.error(_("LINK_PATTERN not found"))
 
-        self.download(url, disposition=True)
+        self.download(m.group(1), disposition=True)
 
 
 getInfo = create_getInfo(DataHu)

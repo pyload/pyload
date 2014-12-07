@@ -163,10 +163,6 @@ class FreakshareCom(Hoster):
 
         herewego = self.load(self.pyfile.url, None, request_options)  # the actual download-Page
 
-        # comment this in, when it doesnt work
-        # with open("DUMP__FS_.HTML", "w") as fp:
-        # fp.write(herewego)
-
         to_sort = re.findall(r"<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>", herewego)
         request_options = dict((n, v) for (v, n) in to_sort)
 

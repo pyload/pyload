@@ -22,7 +22,7 @@ class UnrestrictLi(MultiHoster):
 
 
     def getHoster(self):
-        json_data = getURL('http://unrestrict.li/api/jdownloader/hosts.php?format=json')
+        json_data = getURL("http://unrestrict.li/api/jdownloader/hosts.php", get={'format': "json"})
         json_data = json_loads(json_data)
 
         host_list = [element['host'] for element in json_data['result']]

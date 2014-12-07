@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from urllib import unquote
 from urlparse import urlparse
 
 from pyload.plugins.internal.Crypter import Crypter as _Crypter
@@ -9,7 +10,7 @@ from pyload.plugins.internal.SimpleCrypter import create_getInfo
 class DeadCrypter(_Crypter):
     __name__    = "DeadCrypter"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'^unmatchable$'
 
@@ -20,7 +21,7 @@ class DeadCrypter(_Crypter):
 
     @classmethod
     def getInfo(cls, url="", html=""):
-        return {'name': urlparse(url).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 1, 'url': url or ""}
+        return {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 1, 'url': url}
 
 
     def setup(self):

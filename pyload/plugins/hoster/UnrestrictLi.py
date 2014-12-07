@@ -80,7 +80,7 @@ class UnrestrictLi(Hoster):
         self.download(new_url, disposition=True)
 
         if self.getConfig("history"):
-            self.load("https://unrestrict.li/history/&delete=all")
+            self.load("https://unrestrict.li/history/", get={'delete': "all"})
             self.logInfo(_("Download history deleted"))
 
 

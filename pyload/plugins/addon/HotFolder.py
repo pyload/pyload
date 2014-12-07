@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 import time
 
 from os import listdir, makedirs
@@ -13,10 +15,9 @@ from pyload.utils import fs_encode, safe_join
 class HotFolder(Addon):
     __name__    = "HotFolder"
     __type__    = "addon"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
-    __config__ = [("activated" , "bool", "Activated"            , False      ),
-                  ("folder"    , "str" , "Folder to observe"    , "container"),
+    __config__ = [("folder"    , "str" , "Folder to observe"    , "container"),
                   ("watch_file", "bool", "Observe link file"    , False      ),
                   ("keep"      , "bool", "Keep added containers", True       ),
                   ("file"      , "str" , "Link file"            , "links.txt")]

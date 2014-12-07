@@ -20,7 +20,8 @@ class RehostTo(MultiHoster):
 
 
     def getHoster(self):
-        page = getURL("http://rehost.to/api.php?cmd=get_supported_och_dl&long_ses=%s" % self.long_ses)
+        page = getURL("http://rehost.to/api.php",
+                      get={'cmd': "get_supported_och_dl", 'long_ses': self.long_ses})
         return [x.strip() for x in page.replace("\"", "").split(",")]
 
 

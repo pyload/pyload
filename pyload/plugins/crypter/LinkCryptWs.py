@@ -15,14 +15,15 @@ from pyload.utils import html_unescape
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
 
     __description__ = """LinkCrypt.ws decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("kagenoshin", "kagenoshin[AT]gmx[DOT]ch"),
-                       ("glukgluk", None)]
+                       ("glukgluk", None),
+                       ("Gummibaer", None)]
 
 
     CRYPTED_KEY = "crypted"
@@ -37,7 +38,7 @@ class LinkCryptWs(Crypter):
 
     def prepare(self):
         # Init
-        self.fileid = re.match(self.__pattern__, pyfile.url).group('ID')
+        self.fileid = re.match(self.__pattern__, self.pyfile.url).group('ID')
 
         self.req.cj.setCookie("linkcrypt.ws", "language", "en")
 

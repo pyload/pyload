@@ -36,8 +36,8 @@ class AlldebridCom(Account):
         #Get expiration date from API
         except Exception:
             data = self.getAccountData(user)
-            page = req.load("http://www.alldebrid.com/api.php?action=info_user&login=%s&pw=%s" % (user,
-                                                                                                  data['password']))
+            page = req.load("http://www.alldebrid.com/api.php",
+                            get={'action': "info_user", 'login': user, 'pw': data['password']})
             self.logDebug(page)
             xml = dom.parseString(page)
             exp_time = time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 24 * 60 * 60

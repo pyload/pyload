@@ -61,5 +61,7 @@ class GigapetaCom(SimpleHoster):
             self.wait(5 * 60, True)
             self.retry()
 
+        self.info.pop('error', None)
+
 
 getInfo = create_getInfo(GigapetaCom)

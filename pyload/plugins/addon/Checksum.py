@@ -82,10 +82,15 @@ class Checksum(Addon):
         a) if known, the exact filesize in bytes (e.g. "size": 123456789)
         b) hexadecimal hash string with algorithm name as key (e.g. "md5": "d76505d0869f9f928a17d42d66326307")
         """
-        if hasattr(pyfile.plugin, "check_data") and (isinstance(pyfile.plugin.check_data, dict)):
+        if hasattr(pyfile.plugin, "check_data") and isinstance(pyfile.plugin.check_data, dict):
             data = pyfile.plugin.check_data.copy()
-        elif hasattr(pyfile.plugin, "api_data") and (isinstance(pyfile.plugin.api_data, dict)):
+
+        elif hasattr(pyfile.plugin, "api_data") and isinstance(pyfile.plugin.api_data, dict):
             data = pyfile.plugin.api_data.copy()
+
+        # elif hasattr(pyfile.plugin, "info") and isinstance(pyfile.plugin.info, dict):
+            # data = pyfile.plugin.info.copy()
+
         else:
             return
 
