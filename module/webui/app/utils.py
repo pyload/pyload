@@ -21,10 +21,12 @@ from os.path import join
 from bottle import request, HTTPError, redirect, ServerAdapter
 
 from module.webui import env, THEME
-
 from module.Api import has_permission, PERMS, ROLE
 
-def render_to_response(file, args={}, proc=[]):
+
+def render_to_response(file, args=None, proc=None):
+    args = args or {}
+    proc = proc or []
     for p in proc:
         args.update(p())
     path = join(THEME, "tml", file)
@@ -124,10 +126,7 @@ def login_required(perm=None):
 
 
 def toDict(obj):
-    ret = {}
-    for att in obj.__slots__:
-        ret[att] = getattr(obj, att)
-    return ret
+    return {att: getattr(obj, att) for att in obj.__slots__}
 
 
 class CherryPyWSGI(ServerAdapter):

@@ -6,12 +6,13 @@ from base64 import standard_b64decode
 from binascii import unhexlify
 
 from bottle import route, request, HTTPError
+
 from module.webui import PYLOAD, DL_ROOT, JS
 
 
 try:
     from Crypto.Cipher import AES
-except:
+except Exception:
     pass
 
 
@@ -61,7 +62,7 @@ def addcrypted():
 
     try:
         PYLOAD.addPackage(package, [dlc_path], 0)
-    except:
+    except Exception:
         return HTTPError()
     else:
         return "success\r\n"
@@ -82,8 +83,8 @@ def addcrypted2():
     else:
         try:
             jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
-        except:
-            ## Test for some known js functions to decode
+        except Exception:
+            # Test for some known js functions to decode
             if jk.find("dec") > -1 and jk.find("org") > -1:
                 org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
                 jk = list(org)
@@ -94,7 +95,7 @@ def addcrypted2():
 
     try:
         Key = unhexlify(jk)
-    except:
+    except Exception:
         print "Could not decrypt key, please install py-spidermonkey or ossp-js"
         return "failed"
 
@@ -110,7 +111,7 @@ def addcrypted2():
             PYLOAD.addPackage(package, result, 0)
         else:
             PYLOAD.generateAndAddPackages(result, 0)
-    except:
+    except Exception:
         return "failed can't add"
     else:
         return "success\r\n"
@@ -123,7 +124,7 @@ def addcrypted2():
 @local_check
 def flashgot():
     if request.environ['HTTP_REFERER'] != "http://localhost:9666/flashgot" and \
-            request.environ['HTTP_REFERER'] != "http://127.0.0.1:9666/flashgot":
+                    request.environ['HTTP_REFERER'] != "http://127.0.0.1:9666/flashgot":
         return HTTPError()
 
     autostart = int(request.forms.get('autostart', 0))
