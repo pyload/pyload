@@ -22,22 +22,21 @@ from jinja2._compat import PY2
 here = os.path.dirname(os.path.abspath(__file__))
 
 dict_loader = loaders.DictLoader({
-    'justdict.html':        'FOO'
+    'justdict.html': 'FOO'
 })
 package_loader = loaders.PackageLoader('jinja2.testsuite.res', 'templates')
 filesystem_loader = loaders.FileSystemLoader(here + '/res/templates')
 function_loader = loaders.FunctionLoader({'justfunction.html': 'FOO'}.get)
 choice_loader = loaders.ChoiceLoader([dict_loader, package_loader])
 prefix_loader = loaders.PrefixLoader({
-    'a':        filesystem_loader,
-    'b':        dict_loader
+    'a': filesystem_loader,
+    'b': dict_loader
 })
 
 
 class JinjaTestCase(unittest.TestCase):
-
-    ### use only these methods for testing.  If you need standard
-    ### unittest method, wrap them!
+    # use only these methods for testing.  If you need standard
+    # unittest method, wrap them!
 
     def setup(self):
         pass
@@ -60,11 +59,11 @@ class JinjaTestCase(unittest.TestCase):
     def assert_traceback_matches(self, callback, expected_tb):
         try:
             callback()
-        except Exception as e:
+        except Exception:
             tb = format_exception(*sys.exc_info())
             if re.search(expected_tb.strip(), ''.join(tb)) is None:
                 raise self.fail('Traceback did not match:\n\n%s\nexpected:\n%s'
-                    % (''.join(tb), expected_tb))
+                                % (''.join(tb), expected_tb))
         else:
             self.fail('Expected exception')
 
@@ -104,9 +103,9 @@ class BetterLoader(unittest.TestLoader):
         all_tests = []
         for testcase, testname in find_all_tests(root):
             if testname == name or \
-               testname.endswith('.' + name) or \
-               ('.' + name + '.') in testname or \
-               testname.startswith(name + '.'):
+                    testname.endswith('.' + name) or \
+                            ('.' + name + '.') in testname or \
+                    testname.startswith(name + '.'):
                 all_tests.append(testcase)
 
         if not all_tests:
@@ -122,8 +121,9 @@ class BetterLoader(unittest.TestLoader):
 
 def suite():
     from jinja2.testsuite import ext, filters, tests, core_tags, \
-         loader, inheritance, imports, lexnparse, security, api, \
-         regression, debug, utils, bytecode_cache, doctests
+        loader, inheritance, imports, lexnparse, security, api, \
+        regression, debug, utils, bytecode_cache, doctests
+
     suite = unittest.TestSuite()
     suite.addTest(ext.suite())
     suite.addTest(filters.suite())
