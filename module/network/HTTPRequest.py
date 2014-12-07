@@ -17,7 +17,6 @@
 """
 
 import pycurl
-
 from codecs import getincrementaldecoder, lookup, BOM_UTF8
 from urllib import quote, urlencode
 from httplib import responses
@@ -26,15 +25,18 @@ from cStringIO import StringIO
 
 from module.plugins.Plugin import Abort
 
+
 def myquote(url):
     return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
 
+
 def myurlencode(data):
     data = dict(data)
-    return urlencode(dict((x.encode('utf_8') if isinstance(x, unicode) else x, \
-        y.encode('utf_8') if isinstance(y, unicode) else y ) for x, y in data.iteritems()))
+    return urlencode(dict((x.encode('utf_8') if isinstance(x, unicode) else x, y.encode('utf_8') if isinstance(y, unicode) else y ) for x, y in data.iteritems()))
+
 
 bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
+
 
 class BadHeader(Exception):
     def __init__(self, code, content=""):
@@ -43,21 +45,21 @@ class BadHeader(Exception):
         self.content = content
 
 
-class HTTPRequest:
+class HTTPRequest(object):
     def __init__(self, cookies=None, options=None):
         self.c = pycurl.Curl()
         self.rep = StringIO()
 
-        self.cj = cookies #cookiejar
+        self.cj = cookies  # cookiejar
 
         self.lastURL = None
         self.lastEffectiveURL = None
         self.abort = False
-        self.code = 0 # last http code
+        self.code = 0  # last http code
 
         self.header = ""
 
-        self.headers = [] #temporary request header
+        self.headers = []  # temporary request header
 
         self.initHandle()
         self.setInterface(options)
@@ -66,7 +68,6 @@ class HTTPRequest:
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
         self.log = getLogger("log")
-
 
     def initHandle(self):
         """ sets common options to curl handle """
@@ -81,10 +82,10 @@ class HTTPRequest:
         self.c.setopt(pycurl.LOW_SPEED_TIME, 30)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
 
-        #self.c.setopt(pycurl.VERBOSE, 1)
+        # self.c.setopt(pycurl.VERBOSE, 1)
 
         self.c.setopt(pycurl.USERAGENT,
-            "Mozilla/5.0 (Windows NT 6.1; Win64; x64;en; rv:5.0) Gecko/20110619 Firefox/5.0")
+                      "Mozilla/5.0 (Windows NT 6.1; Win64; x64;en; rv:5.0) Gecko/20110619 Firefox/5.0")
         if pycurl.version_info()[7]:
             self.c.setopt(pycurl.ENCODING, "gzip, deflate")
         self.c.setopt(pycurl.HTTPHEADER, ["Accept: */*",
@@ -126,7 +127,6 @@ class HTTPRequest:
         if "timeout" in options:
             self.c.setopt(pycurl.LOW_SPEED_TIME, options["timeout"])
 
-
     def addCookies(self):
         """ put cookies from curl handle to cj """
         if self.cj:
@@ -158,7 +158,7 @@ class HTTPRequest:
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
                 if type(post) == unicode:
-                    post = str(post) #unicode not allowed
+                    post = str(post)  # unicode not allowed
                 elif type(post) == str:
                     pass
                 else:
@@ -178,7 +178,6 @@ class HTTPRequest:
             self.c.setopt(pycurl.COOKIEFILE, "")
             self.c.setopt(pycurl.COOKIEJAR, "")
             self.getCookies()
-
 
     def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False):
         """ load and returns a given page """
@@ -221,7 +220,7 @@ class HTTPRequest:
         """ raise an exceptions on bad headers """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
         if code in bad_headers:
-            #404 will NOT raise an exception
+            # 404 will NOT raise an exception
             raise BadHeader(code, self.getResponse())
         return code
 
@@ -240,12 +239,12 @@ class HTTPRequest:
     def decodeResponse(self, rep):
         """ decode with correct encoding, relies on header """
         header = self.header.splitlines()
-        encoding = "utf8" # default encoding
+        encoding = "utf8"  # default encoding
 
         for line in header:
             line = line.lower().replace(" ", "")
-            if not line.startswith("content-type:") or\
-               ("text" not in line and "application" not in line):
+            if not line.startswith("content-type:") or \
+                    ("text" not in line and "application" not in line):
                 continue
 
             none, delemiter, charset = line.rpartition("charset=")
@@ -255,7 +254,7 @@ class HTTPRequest:
                     encoding = charset[0]
 
         try:
-            #self.log.debug("Decoded %s" % encoding )
+            # self.log.debug("Decoded %s" % encoding )
             if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
 

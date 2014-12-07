@@ -19,7 +19,8 @@
 from time import time
 from threading import Lock
 
-class Bucket:
+
+class Bucket(object):
     def __init__(self):
         self.rate = 0
         self.tokens = 0
@@ -27,7 +28,7 @@ class Bucket:
         self.lock = Lock()
 
     def __nonzero__(self):
-        return False if self.rate < 10240 else True
+        return self.rate >= 10240
 
     def setRate(self, rate):
         self.lock.acquire()
@@ -36,17 +37,14 @@ class Bucket:
 
     def consumed(self, amount):
         """ return time the process have to sleep, after consumed specified amount """
-        if self.rate < 10240: return 0 #min. 10kb, may become unresponsive otherwise
+        if self.rate < 10240:
+            return 0  # min. 10kb, may become unresponsive otherwise
         self.lock.acquire()
 
         self.calc_tokens()
         self.tokens -= amount
 
-        if self.tokens < 0:
-            time = -self.tokens/float(self.rate)
-        else:
-            time = 0
-
+        time = -self.tokens / float(self.rate) if self.tokens < 0 else 0
 
         self.lock.release()
         return time

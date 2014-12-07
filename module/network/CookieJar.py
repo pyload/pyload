@@ -19,7 +19,8 @@
 
 from time import time
 
-class CookieJar:
+
+class CookieJar(object):
     def __init__(self, pluginname, account=None):
         self.cookies = {}
         self.plugin = pluginname
@@ -36,13 +37,12 @@ class CookieJar:
     def parseCookie(self, name):
         if name in self.cookies:
             return self.cookies[name].split("\t")[6]
-        else:
-            return None
+        return None
 
     def getCookie(self, name):
         return self.parseCookie(name)
 
-    def setCookie(self, domain, name, value, path="/", exp=time()+3600*24*180):
+    def setCookie(self, domain, name, value, path="/", exp=time() + 3600 * 24 * 180):
         s = ".%s	TRUE	%s	FALSE	%s	%s	%s" % (domain, path, exp, name, value)
         self.cookies[name] = s
 
