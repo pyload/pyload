@@ -28,7 +28,6 @@ JS = False
 PYV8 = False
 RHINO = False
 
-
 if not ENGINE:
     try:
         import subprocess
@@ -36,11 +35,11 @@ if not ENGINE:
         subprocess.Popen(["js", "-v"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
         p = subprocess.Popen(["js", "-e", "print(23+19)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
-        #integrity check
+        # integrity check
         if out.strip() == "42":
             ENGINE = "js"
         JS = True
-    except:
+    except Exception:
         pass
 
 if not ENGINE or DEBUG:
@@ -48,36 +47,36 @@ if not ENGINE or DEBUG:
         find_module("PyV8")
         ENGINE = "pyv8"
         PYV8 = True
-    except:
+    except Exception:
         pass
 
 if not ENGINE or DEBUG:
     try:
-        path = "" #path where to find rhino
+        path = ""  # path where to find rhino
 
         if exists("/usr/share/java/js.jar"):
             path = "/usr/share/java/js.jar"
         elif exists("js.jar"):
             path = "js.jar"
-        elif exists(join(pypath, "js.jar")): #may raises an exception, but js.jar wasnt found anyway
+        elif exists(join(pypath, "js.jar")):  # may raises an exception, but js.jar wasnt found anyway
             path = join(pypath, "js.jar")
 
-        if not path:
-            raise Exception
+        assert path
 
         import subprocess
 
         p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", "print(23+19)"],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = p.communicate()
-        #integrity check
+        # integrity check
         if out.strip() == "42":
             ENGINE = "rhino"
         RHINO = True
-    except:
+    except Exception:
         pass
 
-class JsEngine:
+
+class JsEngine(object):
     def __init__(self):
         self.engine = ENGINE
         self.init = False
@@ -88,7 +87,6 @@ class JsEngine:
     def eval(self, script):
         if not self.init:
             if ENGINE == "pyv8" or (DEBUG and PYV8):
-                import PyV8
                 global PyV8
 
             self.init = True
@@ -123,11 +121,11 @@ class JsEngine:
 
             warning = False
             for x in results:
-                for y in results:
-                    if x != y:
-                        warning = True
+                if any(x != y for y in results):
+                    warning = True
 
-            if warning: print "### WARNING ###: Different results"
+            if warning:
+                print "### WARNING ###: Different results"
 
             return results[0]
 
@@ -139,15 +137,15 @@ class JsEngine:
     def eval_js(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
         p = subprocess.Popen(["js", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
-        out, err = p.communicate()
+        out, _ = p.communicate()
         res = out.strip()
         return res
 
     def eval_rhino(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
         p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", script],
-            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
-        out, err = p.communicate()
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
+        out, _ = p.communicate()
         res = out.strip()
         return res.decode("utf8").encode("ISO-8859-1")
 
