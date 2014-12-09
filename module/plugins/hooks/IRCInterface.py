@@ -20,7 +20,7 @@ from module.utils import formatSize
 class IRCInterface(Thread, Hook):
     __name__    = "IRCInterface"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __config__ = [("host", "str", "IRC-Server Address", "Enter your server here!"),
                   ("port", "int", "IRC-Server Port", 6667),
@@ -42,6 +42,11 @@ class IRCInterface(Thread, Hook):
         Thread.__init__(self)
         Hook.__init__(self, core, manager)
         self.setDaemon(True)
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def coreReady(self):

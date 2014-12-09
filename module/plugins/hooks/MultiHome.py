@@ -8,13 +8,18 @@ from module.plugins.Hook import Hook
 class MultiHome(Hook):
     __name__    = "MultiHome"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __config__ = [("interfaces", "str", "Interfaces", "None")]
 
     __description__ = """Ip address changer"""
     __license__     = "GPLv3"
     __authors__     = [("mkaay", "mkaay@mkaay.de")]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def setup(self):

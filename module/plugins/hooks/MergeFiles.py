@@ -12,7 +12,7 @@ from module.utils import save_join, fs_encode
 class MergeFiles(Hook):
     __name__    = "MergeFiles"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
@@ -22,6 +22,11 @@ class MergeFiles(Hook):
 
 
     BUFFER_SIZE = 4096
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def setup(self):

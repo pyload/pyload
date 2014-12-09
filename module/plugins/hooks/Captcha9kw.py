@@ -17,7 +17,7 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__    = "Captcha9kw"
     __type__    = "hook"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __config__ = [("activated"     , "bool"    , "Activated"                                                                       , True                                                               ),
                   ("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
@@ -39,6 +39,11 @@ class Captcha9kw(Hook):
 
 
     API_URL = "http://www.9kw.eu/index.cgi"
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def setup(self):

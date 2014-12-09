@@ -33,7 +33,7 @@ class ImageTyperzException(Exception):
 class ImageTyperz(Hook):
     __name__    = "ImageTyperz"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
@@ -48,6 +48,11 @@ class ImageTyperz(Hook):
     SUBMIT_URL = "http://captchatypers.com/Forms/UploadFileAndGetTextNEW.ashx"
     RESPOND_URL = "http://captchatypers.com/Forms/SetBadImage.ashx"
     GETCREDITS_URL = "http://captchatypers.com/Forms/RequestBalance.ashx"
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def setup(self):

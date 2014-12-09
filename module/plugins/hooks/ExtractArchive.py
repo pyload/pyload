@@ -59,7 +59,7 @@ from module.utils import save_join, fs_encode
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
@@ -81,6 +81,11 @@ class ExtractArchive(Hook):
 
 
     event_list = ["allDownloadsProcessed"]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def setup(self):

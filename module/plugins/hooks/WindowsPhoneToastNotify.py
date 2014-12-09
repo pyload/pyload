@@ -9,7 +9,7 @@ from module.plugins.Hook import Hook
 class WindowsPhoneToastNotify(Hook):
     __name__    = "WindowsPhoneToastNotify"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __config__ = [("force", "bool", "Force even if client is connected", False),
                   ("pushId", "str", "pushId", ""),
@@ -19,6 +19,11 @@ class WindowsPhoneToastNotify(Hook):
     __description__ = """Send push notifications to Windows Phone"""
     __license__     = "GPLv3"
     __authors__     = [("Andy Voigt", "phone-support@hotmail.de")]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def setup(self):

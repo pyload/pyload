@@ -40,7 +40,7 @@ def computeChecksum(local_file, algorithm):
 class Checksum(Hook):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __config__ = [("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
                   ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
@@ -60,6 +60,11 @@ class Checksum(Hook):
                'md5': r'^(?P<name>[0-9A-Fa-f]{32})  (?P<file>.+)$',
                'crc': r'filename=(?P<name>.+)\nsize=(?P<size>\d+)\ncrc32=(?P<hash>[0-9A-Fa-f]{8})$',
                'default': r'^(?P<hash>[0-9A-Fa-f]+)\s+\*?(?P<name>.+)$'}
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def coreReady(self):
