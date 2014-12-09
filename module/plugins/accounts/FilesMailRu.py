@@ -6,7 +6,7 @@ from module.plugins.Account import Account
 class FilesMailRu(Account):
     __name__    = "FilesMailRu"
     __type__    = "account"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __description__ = """Filesmail.ru account plugin"""
     __license__     = "GPLv3"

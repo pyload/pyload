@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class UploadheroCom(Account):
     __name__    = "UploadheroCom"
     __type__    = "account"
-    __version__ = "0.2"
+    __version__ = "0.20"
 
     __description__ = """Uploadhero.co account plugin"""
     __license__     = "GPLv3"

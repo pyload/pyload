@@ -18,7 +18,7 @@ from os.path import abspath, join
 class OCR(object):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __description__ = """OCR base plugin"""
     __license__     = "GPLv3"

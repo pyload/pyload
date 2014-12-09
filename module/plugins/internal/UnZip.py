@@ -8,7 +8,7 @@ from module.plugins.internal.AbstractExtractor import AbtractExtractor
 
 class UnZip(AbtractExtractor):
     __name__    = "UnZip"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"

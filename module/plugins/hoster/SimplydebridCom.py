@@ -8,7 +8,7 @@ from module.plugins.Hoster import Hoster
 class SimplydebridCom(Hoster):
     __name__    = "SimplydebridCom"
     __type__    = "hoster"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php/*'
 

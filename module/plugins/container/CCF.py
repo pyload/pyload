@@ -14,7 +14,7 @@ from module.utils import save_join
 
 class CCF(Container):
     __name__    = "CCF"
-    __version__ = "0.2"
+    __version__ = "0.20"
 
     __pattern__ = r'.+\.ccf'
 

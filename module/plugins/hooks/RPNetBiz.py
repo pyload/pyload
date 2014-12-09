@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class RPNetBiz(MultiHoster):
     __name__    = "RPNetBiz"
     __type__    = "hook"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),

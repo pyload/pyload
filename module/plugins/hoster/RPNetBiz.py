@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class RPNetBiz(Hoster):
     __name__    = "RPNetBiz"
     __type__    = "hoster"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __description__ = """RPNet.biz hoster plugin"""
     __license__     = "GPLv3"
