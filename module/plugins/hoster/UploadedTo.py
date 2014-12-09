@@ -206,8 +206,8 @@ class UploadedTo(Hoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            challenge, result = recaptcha.challenge()
-            options = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": result}
+            challenge, response = recaptcha.challenge()
+            options = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response}
             self.wait()
 
             result = self.load(url, post=options)

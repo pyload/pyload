@@ -92,36 +92,39 @@ class FilepostCom(SimpleHoster):
 
 
     def getJsonResponse(self, get_dict, post_dict, field):
-        json_response = json_loads(self.load('https://filepost.com/files/get/', get=get_dict, post=post_dict))
-        self.logDebug(json_response)
+        res = json_loads(self.load('https://filepost.com/files/get/', get=get_dict, post=post_dict))
 
-        if not 'js' in json_response:
+        self.logDebug(res)
+
+        if not 'js' in res:
             self.error(_("JSON %s 1") % field)
 
-        # i changed js_answer to json_response['js'] since js_answer is nowhere set.
+        # i changed js_answer to res['js'] since js_answer is nowhere set.
         # i don't know the JSON-HTTP specs in detail, but the previous author
-        # accessed json_response['js']['error'] as well as js_answer['error'].
+        # accessed res['js']['error'] as well as js_answer['error'].
         # see the two lines commented out with  "# ~?".
-        if 'error' in json_response['js']:
-            if json_response['js']['error'] == 'download_delay':
-                self.retry(wait_time=json_response['js']['params']['next_download'])
+        if 'error' in res['js']:
+
+            if res['js']['error'] == 'download_delay':
+                self.retry(wait_time=res['js']['params']['next_download'])
                 # ~? self.retry(wait_time=js_answer['params']['next_download'])
-            elif 'Wrong file password' in json_response['js']['error']:
+
+            elif ('Wrong file password' in res['js']['error']
+                  or 'You entered a wrong CAPTCHA code' in res['js']['error']
+                  or 'CAPTCHA Code nicht korrekt' in res['js']['error']):
                 return None
-            elif 'You entered a wrong CAPTCHA code' in json_response['js']['error']:
-                return None
-            elif 'CAPTCHA Code nicht korrekt' in json_response['js']['error']:
-                return None
-            elif 'CAPTCHA' in json_response['js']['error']:
+
+            elif 'CAPTCHA' in res['js']['error']:
                 self.logDebug("Error response is unknown, but mentions CAPTCHA")
                 return None
-            else:
-                self.fail(json_response['js']['error'])
 
-        if not 'answer' in json_response['js'] or not field in json_response['js']['answer']:
+            else:
+                self.fail(res['js']['error'])
+
+        if not 'answer' in res['js'] or not field in res['js']['answer']:
             self.error(_("JSON %s 2") % field)
 
-        return json_response['js']['answer'][field]
+        return res['js']['answer'][field]
 
 
 getInfo = create_getInfo(FilepostCom)

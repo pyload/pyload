@@ -117,6 +117,8 @@ class MediafireCom(SimpleHoster):
 
     def checkCaptcha(self):
         solvemedia = SolveMedia(self)
-        captcha_challenge, captcha_response = solvemedia.challenge()
-        self.html = self.load(self.url, post={"adcopy_challenge": captcha_challenge,
-                                              "adcopy_response": captcha_response}, decode=True)
+        challenge, response = solvemedia.challenge()
+        self.html = self.load(self.url,
+                              post={'adcopy_challenge': challenge,
+                                    'adcopy_response' : response},
+                              decode=True)

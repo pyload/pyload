@@ -27,27 +27,30 @@ class IfileIt(SimpleHoster):
 
 
     def handleFree(self):
-        ukey = re.match(self.__pattern__, self.pyfile.url).group(1)
-        json_url = 'http://ifile.it/new_download-request.json'
+        ukey      = re.match(self.__pattern__, self.pyfile.url).group(1)
+        json_url  = 'http://ifile.it/new_download-request.json'
         post_data = {"ukey": ukey, "ab": "0"}
+        res       = json_loads(self.load(json_url, post=post_data))
 
-        json_response = json_loads(self.load(json_url, post=post_data))
-        self.logDebug(json_response)
-        if json_response['status'] == 3:
+        self.logDebug(res)
+
+        if res['status'] == 3:
             self.offline()
 
-        if json_response['captcha']:
+        if res['captcha']:
             captcha_key = re.search(self.RECAPTCHA_PATTERN, self.html).group(1)
 
             recaptcha = ReCaptcha(self)
             post_data['ctype'] = "recaptcha"
 
             for _i in xrange(5):
-                post_data['recaptcha_challenge'], post_data['recaptcha_response'] = recaptcha.challenge(captcha_key)
-                json_response = json_loads(self.load(json_url, post=post_data))
-                self.logDebug(json_response)
+                challenge, response = recaptcha.challenge(captcha_key)
+                post_data.update({'recaptcha_challenge': challenge,
+                                  'recaptcha_response' : response})
+                res = json_loads(self.load(json_url, post=post_data))
+                self.logDebug(res)
 
-                if json_response['retry']:
+                if res['retry']:
                     self.invalidCaptcha()
                 else:
                     self.correctCaptcha()
@@ -55,10 +58,10 @@ class IfileIt(SimpleHoster):
             else:
                 self.fail(_("Incorrect captcha"))
 
-        if not "ticket_url" in json_response:
+        if not "ticket_url" in res:
             self.error(_("No download URL"))
 
-        self.download(json_response['ticket_url'])
+        self.download(res['ticket_url'])
 
 
 getInfo = create_getInfo(IfileIt)

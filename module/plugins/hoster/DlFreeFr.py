@@ -103,11 +103,11 @@ class AdYouLike:
         if not response:
             self.plugin.fail("AdYouLike result failed")
 
-        return {"_ayl_captcha_engine": self.engine,
-                "_ayl_env": ayl['all']['env'],
-                "_ayl_tid": challenge['tid'],
+        return {"_ayl_captcha_engine" : self.engine,
+                "_ayl_env"            : ayl['all']['env'],
+                "_ayl_tid"            : challenge['tid'],
                 "_ayl_token_challenge": challenge['token'],
-                "_ayl_response": response}
+                "_ayl_response"       : response}
 
 
 class DlFreeFr(SimpleHoster):

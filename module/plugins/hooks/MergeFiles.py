@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 import os
 import re
 
@@ -53,32 +55,35 @@ class MergeFiles(Hook):
 
         for name, file_list in files.iteritems():
             self.logInfo(_("Starting merging of"), name)
-            final_file = open(save_join(download_folder, name), "wb")
 
-            for splitted_file in file_list:
-                self.logDebug("Merging part", splitted_file)
-                pyfile = self.core.files.getFile(fid_dict[splitted_file])
-                pyfile.setStatus("processing")
-                try:
-                    s_file = open(os.path.join(download_folder, splitted_file), "rb")
-                    size_written = 0
-                    s_file_size = int(os.path.getsize(os.path.join(download_folder, splitted_file)))
-                    while True:
-                        f_buffer = s_file.read(self.BUFFER_SIZE)
-                        if f_buffer:
-                            final_file.write(f_buffer)
-                            size_written += self.BUFFER_SIZE
-                            pyfile.setProgress((size_written * 100) / s_file_size)
-                        else:
-                            break
-                    s_file.close()
-                    self.logDebug("Finished merging part", splitted_file)
-                except Exception, e:
-                    print_exc()
-                finally:
-                    pyfile.setProgress(100)
-                    pyfile.setStatus("finished")
-                    pyfile.release()
+            with open(save_join(download_folder, name), "wb") as final_file:
+                for splitted_file in file_list:
+                    self.logDebug("Merging part", splitted_file)
 
-            final_file.close()
+                    pyfile = self.core.files.getFile(fid_dict[splitted_file])
+
+                    pyfile.setStatus("processing")
+
+                    try:
+                        with open(os.path.join(download_folder, splitted_file), "rb") as s_file:
+                            size_written = 0
+                            s_file_size = int(os.path.getsize(os.path.join(download_folder, splitted_file)))
+                            while True:
+                                f_buffer = s_file.read(self.BUFFER_SIZE)
+                                if f_buffer:
+                                    final_file.write(f_buffer)
+                                    size_written += self.BUFFER_SIZE
+                                    pyfile.setProgress((size_written * 100) / s_file_size)
+                                else:
+                                    break
+                        self.logDebug("Finished merging part", splitted_file)
+
+                    except Exception, e:
+                        print_exc()
+
+                    finally:
+                        pyfile.setProgress(100)
+                        pyfile.setStatus("finished")
+                        pyfile.release()
+
             self.logInfo(_("Finished merging of"), name)

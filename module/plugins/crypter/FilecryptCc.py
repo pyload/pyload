@@ -107,10 +107,10 @@ class FilecryptCc(Crypter):
             weblinks = re.findall(self.WEBLINK_PATTERN, self.siteWithLinks)
 
             for link in weblinks:
-                response = self.load("http://filecrypt.cc/Link/%s.html" % link, cookies=True)
-                link2 = re.search('<iframe noresize src="(.*)"></iframe>', response)
-                response2 = self.load(link2.group(1), just_header=True, cookies=True)
-                self.links.append(response2['location'])
+                res   = self.load("http://filecrypt.cc/Link/%s.html" % link, cookies=True)
+                link2 = re.search('<iframe noresize src="(.*)"></iframe>', res)
+                res2  = self.load(link2.group(1), just_header=True, cookies=True)
+                self.links.append(res2['location'])
 
         except Exception, e:
             self.logDebug("Error decrypting weblinks: %s" % e)

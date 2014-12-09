@@ -159,10 +159,10 @@ class FileserveCom(Hoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            challenge, code = recaptcha.challenge(captcha_key)
+            challenge, response = recaptcha.challenge(captcha_key)
             res = json_loads(self.load(self.URLS[2],
-                                       post={'recaptcha_challenge_field': challenge,
-                                             'recaptcha_response_field': code,
+                                       post={'recaptcha_challenge_field'  : challenge,
+                                             'recaptcha_response_field'   : response,
                                              'recaptcha_shortencode_field': self.file_id}))
             if not res['success']:
                 self.invalidCaptcha()

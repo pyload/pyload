@@ -50,10 +50,10 @@ class CatShareNet(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        challenge, code = recaptcha.challenge()
+        challenge, response = recaptcha.challenge()
         self.html = self.load(self.pyfile.url,
                               post={'recaptcha_challenge_field': challenge,
-                                    'recaptcha_response_field': code})
+                                    'recaptcha_response_field' : response})
 
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
