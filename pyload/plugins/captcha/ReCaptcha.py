@@ -15,8 +15,8 @@ class ReCaptcha(Captcha):
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    KEY_PATTERN = r'recaptcha(/api|\.net)/(challenge|noscript)\?k=(?P<KEY>[\w-]+)'
-    KEY_AJAX_PATTERN = r'Recaptcha\.create\s*\(\s*["\'](?P<KEY>[\w-]+)'
+    KEY_PATTERN      = r'recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=([\w-]+)'
+    KEY_AJAX_PATTERN = r'Recaptcha\.create\s*\(\s*["\']([\w-]+)'
 
 
     def detect_key(self, html=None):
@@ -25,12 +25,12 @@ class ReCaptcha(Captcha):
                 html = self.plugin.html
             else:
                 errmsg = _("ReCaptcha html not found")
-                self.plugin.error(errmsg)
+                self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
         m = re.search(self.KEY_PATTERN, html) or re.search(self.KEY_AJAX_PATTERN, html)
         if m:
-            self.key = m.group("KEY")
+            self.key = m.group(1).strip()
             self.plugin.logDebug("ReCaptcha key: %s" % self.key)
             return self.key
         else:
@@ -44,23 +44,30 @@ class ReCaptcha(Captcha):
                 key = self.key
             else:
                 errmsg = _("ReCaptcha key not found")
-                self.plugin.error(errmsg)
+                self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key})
+        html = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key})
         try:
-            challenge = re.search("challenge : '(.+?)',", js).group(1)
-            server = re.search("server : '(.+?)',", js).group(1)
-        except Exception:
-            self.plugin.error(_("ReCaptcha challenge pattern not found"))
+            challenge = re.search("challenge : '(.+?)',", html).group(1)
+            server    = re.search("server : '(.+?)',", html).group(1)
+        except:
+            errmsg = _("ReCaptcha challenge pattern not found")
+            self.plugin.error(errmsg)
+            raise ValueError(errmsg)
 
-        result = self.result(server, challenge)
+        self.plugin.logDebug("ReCaptcha challenge: %s" % challenge)
 
-        self.plugin.logDebug("ReCaptcha result: %s" % result, "challenge: %s" % challenge)
-
-        return challenge, result
+        return challenge, self.result(server, challenge)
 
 
     def result(self, server, challenge):
-        return self.plugin.decryptCaptcha("%simage" % server, get={'c': challenge},
-                                          cookies=True, forceUser=True, imgtype="jpg")
+        result = self.plugin.decryptCaptcha("%simage" % server,
+                                            get={'c': challenge},
+                                            cookies=True,
+                                            forceUser=True,
+                                            imgtype="jpg")
+
+        self.plugin.logDebug("ReCaptcha result: %s" % result)
+
+        return result

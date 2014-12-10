@@ -2,12 +2,12 @@
 
 import pycurl
 
-from module.plugins.Hook import Hook
+from module.plugins.Addon import Addon
 
 
-class RestartSlow(Hook):
+class RestartSlow(Addon):
     __name__    = "RestartSlow"
-    __type__    = "hook"
+    __type__    = "addon"
     __version__ = "0.02"
 
     __config__ = [("free_limit"   , "int" ,  "Transfer speed threshold in kilobytes"                     , 100 ),
@@ -26,10 +26,6 @@ class RestartSlow(Hook):
 
     def setup(self):
         self.info = {'chunk': {}}
-
-
-    def initPeriodical(self):
-        pass
 
 
     def periodical(self):
@@ -58,4 +54,4 @@ class RestartSlow(Hook):
         if self.cb or (self.getConfig("safe_mode") and not pyfile.plugin.resumeDownload):
             return
 
-        super(RestartSlow, self).initPeriodical()
+        self.initPeriodical()

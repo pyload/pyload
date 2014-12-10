@@ -10,12 +10,12 @@ class XFileSharingPro(Hook):
     __type__    = "hook"
     __version__ = "0.26"
 
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_hoster_list", "bool", "Load listed hosters only", True),
-                  ("use_crypter_list", "bool", "Load listed crypters only", False),
-                  ("use_builtin_list", "bool", "Load built-in plugin list", True),
-                  ("hoster_list", "str", "Hoster list (comma separated)", ""),
-                  ("crypter_list", "str", "Crypter list (comma separated)", "")]
+    __config__ = [("activated"       , "bool", "Activated"                     , True ),
+                  ("use_hoster_list" , "bool", "Load listed hosters only"      , True ),
+                  ("use_crypter_list", "bool", "Load listed crypters only"     , False),
+                  ("use_builtin_list", "bool", "Load built-in plugin list"     , True ),
+                  ("hoster_list"     , "str" , "Hoster list (comma separated)" , ""   ),
+                  ("crypter_list"    , "str" , "Crypter list (comma separated)", ""   )]
 
     __description__ = """Load XFileSharingPro based hosters and crypter which don't need a own plugin to run"""
     __license__     = "GPLv3"
@@ -42,11 +42,6 @@ class XFileSharingPro(Hook):
 
     # def pluginConfigChanged(self.__name__, plugin, name, value):
         # self.loadPattern()
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
 
 
     def coreReady(self):

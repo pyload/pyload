@@ -66,7 +66,7 @@ class UpdateManager(Addon):
 
     def setup(self):
         self.cb2      = None
-        self.interval = self.MIN_INTERVAL
+        self.interval = 0
         self.updating = False
         self.info     = {'pyload': False, 'version': None, 'plugins': False}
         self.mtimes   = {}  #: store modification time for each plugin

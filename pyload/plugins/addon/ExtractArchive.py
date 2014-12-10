@@ -83,11 +83,6 @@ class ExtractArchive(Addon):
     event_list = ["allDownloadsProcessed"]
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
-
-
     def setup(self):
         self.plugins = []
         self.passwords = []

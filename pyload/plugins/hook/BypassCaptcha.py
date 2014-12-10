@@ -47,11 +47,6 @@ class BypassCaptcha(Hook):
     GETCREDITS_URL = "http://bypasscaptcha.com/ex_left.php"
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
-
-
     def getCredits(self):
         res = getURL(self.GETCREDITS_URL, post={"key": self.getConfig("passkey")})
 

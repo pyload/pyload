@@ -21,11 +21,6 @@ class DownloadScheduler(Addon):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
-
-
     def setup(self):
         self.cb = None  #: callback to scheduler job; will be by removed AddonManager when addon unloaded
 

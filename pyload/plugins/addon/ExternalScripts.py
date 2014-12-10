@@ -29,11 +29,6 @@ class ExternalScripts(Addon):
                   "allDownloadsFinished", "allDownloadsProcessed"]
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
-
-
     def setup(self):
         self.scripts = {}
 

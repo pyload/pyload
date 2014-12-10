@@ -31,6 +31,10 @@ class HotFolder(Addon):
         self.interval = 10
 
 
+    def coreReady(self):
+        self.initPeriodical()
+
+
     def periodical(self):
         folder = fs_encode(self.getConfig("folder"))
 

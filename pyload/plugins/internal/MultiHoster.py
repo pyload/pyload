@@ -16,8 +16,6 @@ class MultiHoster(Addon):
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    interval = 12 * 60 * 60  #: reload hosters every 12h
-
     HOSTER_REPLACEMENTS = [("1fichier.com", "onefichier.com"), ("2shared.com", "twoshared.com"),
                            ("4shared.com", "fourshared.com"), ("cloudnator.com", "shragle.com"),
                            ("easy-share.com", "crocko.com"), ("freakshare.net", "freakshare.com"),
@@ -29,6 +27,7 @@ class MultiHoster(Addon):
 
 
     def setup(self):
+        self.interval      = 12 * 60 * 60  #: reload hosters every 12h
         self.hosters       = []
         self.supported     = []
         self.new_supported = []
@@ -103,10 +102,6 @@ class MultiHoster(Addon):
             self._periodical()
         else:
             self.periodical()
-
-
-    def initPeriodical(self):
-        pass
 
 
     def periodical(self):

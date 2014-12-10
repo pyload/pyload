@@ -19,11 +19,6 @@ class UnSkipOnFail(Addon):
     __authors__     = [("hagg", None)]
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
-
-
     def downloadFailed(self, pyfile):
         pyfile_name = basename(pyfile.name)
         pid = pyfile.package().id

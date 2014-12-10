@@ -52,7 +52,7 @@ class Addon(Base):
 
         #: Callback of periodical job task, used by AddonManager
         self.cb = None
-        self.interval = -1  #: disabled
+        self.interval = 60
 
         #: `AddonManager`
         self.manager = manager
@@ -77,7 +77,7 @@ class Addon(Base):
 
         self.setup()
 
-        self.initPeriodical()
+        # self.initPeriodical()
 
 
     def initPeriodical(self, delay=0, threaded=False):

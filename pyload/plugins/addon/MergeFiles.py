@@ -26,13 +26,7 @@ class MergeFiles(Addon):
     BUFFER_SIZE = 4096
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
-
-
     def setup(self):
-        # nothing to do
         pass
 
 

@@ -63,11 +63,6 @@ class Checksum(Addon):
                'default': r'^(?P<hash>[0-9A-Fa-f]+)\s+\*?(?P<name>.+)$'}
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
-
-
     def coreReady(self):
         if not self.getConfig("check_checksum"):
             self.logInfo(_("Checksum validation is disabled in plugin configuration"))

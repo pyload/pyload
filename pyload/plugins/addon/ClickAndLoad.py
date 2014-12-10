@@ -33,8 +33,12 @@ class ClickAndLoad(Addon):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def coreReady(self):
+    def setup(self):
         self.interval = 300
+
+
+    def coreReady(self):
+        self.initPeriodical()
 
 
     def periodical(self):
@@ -64,8 +68,7 @@ class ClickAndLoad(Addon):
                 self.logDebug(e)
 
         else:
+            self.core.scheduler.removeJob(self.cb)
             t = Thread(target=forward, args=[client, server])
             t.setDaemon(True)
             t.start()
-            self.interval = -1
-

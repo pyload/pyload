@@ -44,11 +44,6 @@ class IRCInterface(Thread, Addon):
         self.setDaemon(True)
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
-
-
     def coreReady(self):
         self.abort = False
         self.more = []

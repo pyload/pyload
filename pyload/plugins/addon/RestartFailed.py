@@ -38,7 +38,7 @@ class RestartFailed(Addon):
 
 
     def setup(self):
-        self.interval = self.MIN_INTERVAL
+        self.interval = 0
 
 
     def coreReady(self):

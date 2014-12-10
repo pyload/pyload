@@ -17,11 +17,6 @@ class LinkdecrypterCom(Hook):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
-
-
     def coreReady(self):
         try:
             self.loadPatterns()

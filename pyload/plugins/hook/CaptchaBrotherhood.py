@@ -53,11 +53,6 @@ class CaptchaBrotherhood(Hook):
     API_URL = "http://www.captchabrotherhood.com/"
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
-
-
     def getCredits(self):
         res = getURL(self.API_URL + "askCredits.aspx",
                      get={"username": self.getConfig("username"), "password": self.getConfig("passkey")})

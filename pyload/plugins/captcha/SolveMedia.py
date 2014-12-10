@@ -15,7 +15,7 @@ class SolveMedia(Captcha):
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    KEY_PATTERN = r'api\.solvemedia\.com/papi/challenge\.(no)?script\?k=(?P<KEY>.+?)["\']'
+    KEY_PATTERN = r'api\.solvemedia\.com/papi/challenge\.(?:no)?script\?k=(.+?)["\']'
 
 
     def challenge(self, key=None):
@@ -24,23 +24,27 @@ class SolveMedia(Captcha):
                 key = self.key
             else:
                 errmsg = _("SolveMedia key not found")
-                self.plugin.error(errmsg)
+                self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
         html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript", get={'k': key})
         try:
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
                                   html).group(1)
-            server = "http://api.solvemedia.com/papi/media"
-        except Exception:
-            self.plugin.error(_("SolveMedia challenge pattern not found"))
+            server    = "http://api.solvemedia.com/papi/media"
+        except:
+            errmsg = _("SolveMedia challenge pattern not found")
+            self.plugin.error(errmsg)
+            raise ValueError(errmsg)
 
-        result = self.result(server, challenge)
+        self.plugin.logDebug("SolveMedia challenge: %s" % challenge)
 
-        self.plugin.logDebug("SolveMedia result: %s" % result, "challenge: %s" % challenge)
-
-        return challenge, result
+        return challenge, self.result(server, challenge)
 
 
     def result(self, server, challenge):
-        return self.plugin.decryptCaptcha(server, get={'c': challenge}, imgtype="gif")
+        result = self.plugin.decryptCaptcha(server, get={'c': challenge}, imgtype="gif")
+
+        self.plugin.logDebug("SolveMedia result: %s" % result)
+
+        return result

@@ -39,11 +39,6 @@ class Captcha9kw(Hook):
     API_URL = "http://www.9kw.eu/index.cgi"
 
 
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
-
-
     def coreReady(self):
         if self.getConfig("ssl"):
             self.API_URL = self.API_URL.replace("http://", "https://")
