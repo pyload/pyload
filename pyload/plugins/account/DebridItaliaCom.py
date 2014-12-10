@@ -22,14 +22,14 @@ class DebridItaliaCom(Account):
 
 
     def loadAccountInfo(self, user, req):
-        info = {"premium": False, "validuntil": None, "trafficleft": None}
+        info = {'premium': False, 'validuntil': None, 'trafficleft': None}
         html = req.load("http://debriditalia.com/")
 
         if 'Account premium not activated' not in html:
             m = re.search(self.WALID_UNTIL_PATTERN, html)
             if m:
                 validuntil = int(mktime(strptime(m.group(1), "%d/%m/%Y %H:%M")))
-                info = {"premium": True, "validuntil": validuntil, "trafficleft": -1}
+                info = {'premium': True, 'validuntil': validuntil, 'trafficleft': -1}
             else:
                 self.logError(_("Unable to retrieve account information"))
 
