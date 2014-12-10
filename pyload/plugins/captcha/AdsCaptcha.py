@@ -4,7 +4,7 @@ import re
 
 from random import random
 
-from pyload.plugins.internal.Captcha import Captcha
+from pyload.plugins.Captcha import Captcha
 
 
 class AdsCaptcha(Captcha):

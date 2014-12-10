@@ -7,7 +7,7 @@ from urlparse import urljoin, urlparse
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.plugins.internal.SimpleHoster import create_getInfo
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 
 
 class BasePlugin(Hoster):
@@ -17,7 +17,7 @@ class BasePlugin(Hoster):
 
     __pattern__ = r'^unmatchable$'
 
-    __description__ = """Base Plugin when any other didnt fit"""
+    __description__ = """Base plugin when any other didnt fit"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("Walter Purcaro", "vuolter@gmail.com")]

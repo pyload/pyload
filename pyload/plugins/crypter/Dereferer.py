@@ -4,7 +4,7 @@ import re
 
 from urllib import unquote
 
-from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.Crypter import Crypter
 
 
 class Dereferer(Crypter):

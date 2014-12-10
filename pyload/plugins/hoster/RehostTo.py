@@ -2,7 +2,7 @@
 
 from urllib import quote, unquote
 
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 
 
 class RehostTo(Hoster):

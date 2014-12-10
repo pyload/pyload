@@ -8,7 +8,7 @@ from base64 import b64encode
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 
 from pyload.network.RequestFactory import getURL, getRequest
-from pyload.plugins.internal.Addon import Hook
+from pyload.plugins.Addon import Addon
 
 
 class ImageTyperzException(Exception):
@@ -29,7 +29,7 @@ class ImageTyperzException(Exception):
         return "<ImageTyperzException %s>" % self.err
 
 
-class ImageTyperz(Hook):
+class ImageTyperz(Addon):
     __name__    = "ImageTyperz"
     __type__    = "hook"
     __version__ = "0.05"

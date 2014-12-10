@@ -9,7 +9,7 @@ from operator import itemgetter
 from os import path, remove, stat
 
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.internal.Addon import Expose, Addon, threaded
+from pyload.plugins.Addon import Expose, Addon, threaded
 from pyload.utils import safe_join
 
 

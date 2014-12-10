@@ -9,7 +9,7 @@ import zlib
 from os import remove
 from os.path import getsize, isfile, splitext
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.Addon import Addon
 from pyload.utils import safe_join, fs_encode
 
 

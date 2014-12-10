@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.Addon import Addon
 from pyload.utils import remove_chars
 
 

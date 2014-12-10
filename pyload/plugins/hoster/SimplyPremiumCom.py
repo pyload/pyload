@@ -4,7 +4,7 @@ import re
 
 from datetime import datetime, timedelta
 
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 from pyload.plugins.hoster.UnrestrictLi import secondsToMidnight
 
 

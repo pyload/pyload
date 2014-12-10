@@ -4,7 +4,7 @@ import re
 
 from time import time, strptime, mktime
 
-from pyload.plugins.internal.Account import Account
+from pyload.plugins.Account import Account
 from pyload.plugins.internal.SimpleHoster import set_cookies
 
 

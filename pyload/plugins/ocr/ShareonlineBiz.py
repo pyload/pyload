@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.OCR import OCR
+from pyload.plugins.OCR import OCR
 
 
 class ShareonlineBiz(OCR):

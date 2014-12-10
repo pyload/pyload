@@ -12,7 +12,7 @@ from Crypto.Util import Counter
 from pycurl import SSL_CIPHER_LIST
 
 from pyload.utils import json_loads, json_dumps
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 
 ############################ General errors ###################################
 # EINTERNAL            (-1): An internal error has occurred. Please submit a bug report, detailing the exact circumstances in which this error occurred

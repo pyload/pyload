@@ -3,7 +3,7 @@
 import re
 
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 from pyload.plugins.Plugin import chunks
 
 

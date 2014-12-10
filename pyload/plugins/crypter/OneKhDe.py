@@ -3,7 +3,7 @@
 import re
 
 from pyload.utils import html_unescape
-from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.Crypter import Crypter
 
 
 class OneKhDe(Crypter):

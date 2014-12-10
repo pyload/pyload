@@ -5,7 +5,7 @@ import re
 from urllib import unquote
 
 from pyload.utils import json_loads
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 
 
 def clean_json(json_expr):

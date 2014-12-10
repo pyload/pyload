@@ -6,7 +6,7 @@ import subprocess
 
 from urllib import unquote
 
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 from pyload.plugins.internal.SimpleHoster import replace_patterns
 from pyload.utils import html_unescape
 

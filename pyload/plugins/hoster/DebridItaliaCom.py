@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 from pyload.plugins.internal.SimpleHoster import replace_patterns
 
 

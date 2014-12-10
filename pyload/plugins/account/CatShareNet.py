@@ -4,7 +4,7 @@ import re
 
 from time import mktime, strptime
 
-from pyload.plugins.internal.Account import Account
+from pyload.plugins.Account import Account
 
 
 class CatShareNet(Account):

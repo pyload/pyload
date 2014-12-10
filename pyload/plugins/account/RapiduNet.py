@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.Account import Account
+from pyload.plugins.Account import Account
 from pyload.utils import json_loads
 
 

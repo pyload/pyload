@@ -4,7 +4,7 @@ import re
 
 from pyload.utils import json_loads
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 from pyload.plugins.Plugin import chunks
 from pyload.plugins.hoster.UnrestrictLi import secondsToMidnight
 from pyload.plugins.internal.captcha import ReCaptcha

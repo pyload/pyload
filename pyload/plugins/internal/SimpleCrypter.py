@@ -4,7 +4,7 @@ import re
 
 from urlparse import urlparse
 
-from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.Crypter import Crypter
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
 from pyload.utils import fixup
 

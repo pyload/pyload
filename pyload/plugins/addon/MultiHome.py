@@ -2,7 +2,7 @@
 
 from time import time
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.Addon import Addon
 
 
 class MultiHome(Addon):

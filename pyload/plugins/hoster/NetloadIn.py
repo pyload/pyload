@@ -6,7 +6,7 @@ from urlparse import urljoin
 from time import sleep, time
 
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 from pyload.plugins.Plugin import chunks
 from pyload.plugins.captcha import ReCaptcha
 

@@ -8,7 +8,7 @@ import pycurl
 
 from Crypto.Cipher import AES
 
-from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.Crypter import Crypter
 from pyload.utils import html_unescape
 
 

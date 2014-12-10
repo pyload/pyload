@@ -7,7 +7,7 @@ import re
 
 from traceback import print_exc
 
-from pyload.plugins.internal.Addon import Addon, threaded
+from pyload.plugins.Addon import Addon, threaded
 from pyload.utils import safe_join, fs_encode
 
 
@@ -50,7 +50,7 @@ class MergeFiles(Addon):
         for name, file_list in files.iteritems():
             self.logInfo(_("Starting merging of"), name)
 
-            final_file = open(save_join(download_folder, name), "wb")
+            final_file = open(safe_join(download_folder, name), "wb")
                 for splitted_file in file_list:
                     self.logDebug("Merging part", splitted_file)
 

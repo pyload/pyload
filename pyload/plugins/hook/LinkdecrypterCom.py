@@ -3,11 +3,11 @@
 import re
 
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.internal.Addon import Hook
+from pyload.plugins.Addon import Addon
 from pyload.utils import remove_chars
 
 
-class LinkdecrypterCom(Hook):
+class LinkdecrypterCom(Addon):
     __name__    = "LinkdecrypterCom"
     __type__    = "hook"
     __version__ = "0.21"

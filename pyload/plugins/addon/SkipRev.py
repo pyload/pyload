@@ -3,7 +3,7 @@
 from urllib import unquote
 from urlparse import urlparse
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.Addon import Addon
 from pyload.plugins.Plugin import SkipDownload
 
 

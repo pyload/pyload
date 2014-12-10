@@ -2,10 +2,10 @@
 
 import re
 
-from pyload.plugins.internal.Addon import Hook
+from pyload.plugins.Addon import Addon
 
 
-class XFileSharingPro(Hook):
+class XFileSharingPro(Addon):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
     __version__ = "0.26"

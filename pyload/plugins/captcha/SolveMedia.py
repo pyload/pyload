@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.Captcha import Captcha
+from pyload.plugins.Captcha import Captcha
 
 
 class SolveMedia(Captcha):

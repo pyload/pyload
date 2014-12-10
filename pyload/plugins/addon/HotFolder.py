@@ -8,7 +8,7 @@ from os import listdir, makedirs
 from os.path import exists, isfile, join
 from shutil import move
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.Addon import Addon
 from pyload.utils import fs_encode, safe_join
 
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.Addon import Addon
 
 
 class RestartFailed(Addon):

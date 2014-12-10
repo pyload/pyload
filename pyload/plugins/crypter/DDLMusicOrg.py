@@ -4,7 +4,7 @@ import re
 
 from time import sleep
 
-from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.Crypter import Crypter
 
 
 class DDLMusicOrg(Crypter):

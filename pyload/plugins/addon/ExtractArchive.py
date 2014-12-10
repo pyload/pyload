@@ -51,7 +51,7 @@ if os.name != "nt":
     from os import chown
     from pwd import getpwnam
 
-from pyload.plugins.internal.Addon import Addon, threaded, Expose
+from pyload.plugins.Addon import Addon, threaded, Expose
 from pyload.plugins.internal.AbstractExtractor import ArchiveError, CRCError, WrongPassword
 from pyload.utils import safe_join, fs_encode
 

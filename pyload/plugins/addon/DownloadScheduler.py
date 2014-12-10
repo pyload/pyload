@@ -4,7 +4,7 @@ import re
 
 from time import localtime
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.Addon import Addon
 
 
 class DownloadScheduler(Addon):

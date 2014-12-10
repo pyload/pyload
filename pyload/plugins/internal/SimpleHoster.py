@@ -9,7 +9,7 @@ from urlparse import urljoin, urlparse
 from pyload.datatype.PyFile import statusMap as _statusMap
 from pyload.network.CookieJar import CookieJar
 from pyload.network.RequestFactory import getURL
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 from pyload.utils import fixup, parseFileSize
 
 

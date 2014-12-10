@@ -5,7 +5,7 @@ import re
 from time import gmtime, mktime, strptime
 from urlparse import urljoin
 
-from pyload.plugins.internal.Account import Account
+from pyload.plugins.Account import Account
 from pyload.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 
 

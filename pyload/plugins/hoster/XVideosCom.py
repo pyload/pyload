@@ -4,7 +4,7 @@ import re
 
 from urllib import unquote
 
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 
 
 class XVideosCom(Hoster):

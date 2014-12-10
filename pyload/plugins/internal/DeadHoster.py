@@ -3,7 +3,7 @@
 from urllib import unquote
 from urlparse import urlparse
 
-from pyload.plugins.internal.Hoster import Hoster as _Hoster
+from pyload.plugins.Hoster import Hoster as _Hoster
 from pyload.plugins.internal.SimpleHoster import create_getInfo
 
 

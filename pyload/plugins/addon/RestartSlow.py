@@ -2,7 +2,7 @@
 
 import pycurl
 
-from module.plugins.Addon import Addon
+from pyload.plugins.Addon import Addon
 
 
 class RestartSlow(Addon):

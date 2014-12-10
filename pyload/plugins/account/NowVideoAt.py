@@ -4,7 +4,7 @@ import re
 
 from time import gmtime, mktime, strptime
 
-from pyload.plugins.internal.Account import Account
+from pyload.plugins.Account import Account
 
 
 class NowVideoAt(Account):

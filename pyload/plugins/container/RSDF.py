@@ -6,7 +6,7 @@ import base64
 import binascii
 import re
 
-from pyload.plugins.internal.Container import Container
+from pyload.plugins.Container import Container
 from pyload.utils import fs_encode
 
 

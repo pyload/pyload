@@ -3,7 +3,7 @@
 from urllib import unquote
 from urlparse import urlparse
 
-from pyload.plugins.internal.Crypter import Crypter as _Crypter
+from pyload.plugins.Crypter import Crypter as _Crypter
 from pyload.plugins.internal.SimpleCrypter import create_getInfo
 
 

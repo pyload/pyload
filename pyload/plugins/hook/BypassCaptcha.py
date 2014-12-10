@@ -4,7 +4,7 @@ from pycurl import FORM_FILE, LOW_SPEED_TIME
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL, getRequest
-from pyload.plugins.internal.Addon import Hook
+from pyload.plugins.Addon import Addon
 
 
 class BypassCaptchaException(Exception):
@@ -25,7 +25,7 @@ class BypassCaptchaException(Exception):
         return "<BypassCaptchaException %s>" % self.err
 
 
-class BypassCaptcha(Hook):
+class BypassCaptcha(Addon):
     __name__    = "BypassCaptcha"
     __type__    = "hook"
     __version__ = "0.05"

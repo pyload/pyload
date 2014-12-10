@@ -4,7 +4,7 @@ import re
 
 from time import strptime, mktime
 
-from pyload.plugins.internal.Account import Account
+from pyload.plugins.Account import Account
 
 
 class FreakshareCom(Account):

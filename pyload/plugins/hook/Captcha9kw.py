@@ -10,10 +10,10 @@ from time import sleep
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL
 
-from pyload.plugins.internal.Addon import Hook
+from pyload.plugins.Addon import Addon
 
 
-class Captcha9kw(Hook):
+class Captcha9kw(Addon):
     __name__    = "Captcha9kw"
     __type__    = "hook"
     __version__ = "0.26"

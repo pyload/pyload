@@ -3,7 +3,7 @@
 from socket import socket, error
 from threading import Thread
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.Addon import Addon
 
 
 def forward(source, destination):

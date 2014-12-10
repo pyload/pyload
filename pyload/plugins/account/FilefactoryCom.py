@@ -5,7 +5,7 @@ from time import mktime, strptime
 
 from pycurl import REFERER
 
-from pyload.plugins.internal.Account import Account
+from pyload.plugins.Account import Account
 
 
 class FilefactoryCom(Account):

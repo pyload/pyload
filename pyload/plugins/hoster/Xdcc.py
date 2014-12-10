@@ -10,7 +10,7 @@ from os import makedirs
 from os.path import exists, join
 from select import select
 
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.Hoster import Hoster
 from pyload.utils import safe_join
 
 
