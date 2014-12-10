@@ -4,13 +4,13 @@ from pyload.plugins.internal.XFSAccount import XFSAccount
 
 
 class FileParadoxIn(XFSAccount):
-    __name__    = "FileParadoxIn"
-    __type__    = "account"
-    __version__ = "0.02"
+    __name    = "FileParadoxIn"
+    __type    = "account"
+    __version = "0.02"
 
-    __description__ = """FileParadox.in account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """FileParadox.in account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_DOMAIN = "fileparadox.in"

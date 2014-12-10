@@ -13,15 +13,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FilerNet(SimpleHoster):
-    __name__    = "FilerNet"
-    __type__    = "hoster"
-    __version__ = "0.09"
+    __name    = "FilerNet"
+    __type    = "hoster"
+    __version = "0.09"
 
-    __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
+    __pattern = r'https?://(?:www\.)?filer\.net/get/\w+'
 
-    __description__ = """Filer.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")
+    __description = """Filer.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

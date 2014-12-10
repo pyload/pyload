@@ -6,15 +6,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FileStoreTo(SimpleHoster):
-    __name__    = "FileStoreTo"
-    __type__    = "hoster"
-    __version__ = "0.01"
+    __name    = "FileStoreTo"
+    __type    = "hoster"
+    __version = "0.01"
 
-    __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
+    __pattern = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
 
-    __description__ = """FileStore.to hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+    __description = """FileStore.to hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

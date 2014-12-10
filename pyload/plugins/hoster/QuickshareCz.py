@@ -8,15 +8,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class QuickshareCz(SimpleHoster):
-    __name__    = "QuickshareCz"
-    __type__    = "hoster"
-    __version__ = "0.55"
+    __name    = "QuickshareCz"
+    __type    = "hoster"
+    __version = "0.55"
 
-    __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.*'
+    __pattern = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.*'
 
-    __description__ = """Quickshare.cz hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Quickshare.cz hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'<th width="145px">Název:</th>\s*<td style="word-wrap:break-word;">(?P<N>[^<]+)</td>'

@@ -118,15 +118,15 @@ def _isDirectLink(self, url, resumable=True):
 
 
 class SimpleHoster(Hoster):
-    __name__    = "SimpleHoster"
-    __type__    = "hoster"
-    __version__ = "0.71"
+    __name    = "SimpleHoster"
+    __type    = "hoster"
+    __version = "0.71"
 
-    __pattern__ = r'^unmatchable$'
+    __pattern = r'^unmatchable$'
 
-    __description__ = """Simple hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """Simple hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
@@ -232,7 +232,7 @@ class SimpleHoster(Hoster):
 
         else:
             try:
-                info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: pattern groups will be saved here, please save api stuff to info['api']
+                info['pattern'] = re.match(cls.__pattern, url).groupdict()  #: pattern groups will be saved here, please save api stuff to info['api']
             except Exception:
                 pass
 
@@ -288,8 +288,8 @@ class SimpleHoster(Hoster):
             set_cookies(self.req.cj, self.COOKIES)
 
         if (self.MULTI_HOSTER
-            and (self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
-                 or re.match(self.__pattern__, self.pyfile.url) is None)):
+            and (self.__pattern != self.core.pluginManager.hosterPlugins[self.__name]['pattern']
+                 or re.match(self.__pattern, self.pyfile.url) is None)):
 
             self.logInfo("Multi hoster detected")
 

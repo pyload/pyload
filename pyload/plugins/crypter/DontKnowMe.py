@@ -8,17 +8,17 @@ from pyload.plugins.Crypter import Crypter
 
 
 class DontKnowMe(Crypter):
-    __name__    = "DontKnowMe"
-    __type__    = "crypter"
-    __version__ = "0.10"
+    __name    = "DontKnowMe"
+    __type    = "crypter"
+    __version = "0.10"
 
-    __pattern__ = r'http://(?:www\.)?dontknow\.me/at/\?.+$'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern = r'http://(?:www\.)?dontknow\.me/at/\?.+$'
+    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """DontKnow.me decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("selaux", None)]
+    __description = """DontKnow.me decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("selaux", None)]
 
 
     LINK_PATTERN = r'http://dontknow\.me/at/\?(.+)$'

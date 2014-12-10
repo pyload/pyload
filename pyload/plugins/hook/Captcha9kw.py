@@ -14,25 +14,25 @@ from pyload.plugins.Addon import Addon
 
 
 class Captcha9kw(Addon):
-    __name__    = "Captcha9kw"
-    __type__    = "hook"
-    __version__ = "0.26"
+    __name    = "Captcha9kw"
+    __type    = "hook"
+    __version = "0.26"
 
-    __config__ = [("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
-                  ("force"         , "bool"    , "Force captcha resolving even if client is connected"                             , True                                                               ),
-                  ("confirm"       , "bool"    , "Confirm Captcha (cost +6 credits)"                                               , False                                                              ),
-                  ("captchaperhour", "int"     , "Captcha per hour"                                                                , "9999"                                                             ),
-                  ("captchapermin" , "int"     , "Captcha per minute"                                                              , "9999"                                                             ),
-                  ("prio"          , "int"     , "Priority (max 10)(cost +0 -> +10 credits)"                                       , "0"                                                                ),
-                  ("queue"         , "int"     , "Max. Queue (max 999)"                                                            , "50"                                                               ),
-                  ("hoster_options", "string"  , "Hoster options (format: pluginname:prio=1:selfsolfe=1:confirm=1:timeout=900|...)", "ShareonlineBiz:prio=0:timeout=999 | UploadedTo:prio=0:timeout=999"),
-                  ("selfsolve"     , "bool"    , "Selfsolve (manually solve your captcha in your 9kw client if active)"            , "0"                                                                ),
-                  ("passkey"       , "password", "API key"                                                                         , ""                                                                 ),
-                  ("timeout"       , "int"     , "Timeout in seconds (min 60, max 3999)"                                           , "900"                                                              )]
+    __config = [("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
+                ("force"         , "bool"    , "Force captcha resolving even if client is connected"                             , True                                                               ),
+                ("confirm"       , "bool"    , "Confirm Captcha (cost +6 credits)"                                               , False                                                              ),
+                ("captchaperhour", "int"     , "Captcha per hour"                                                                , "9999"                                                             ),
+                ("captchapermin" , "int"     , "Captcha per minute"                                                              , "9999"                                                             ),
+                ("prio"          , "int"     , "Priority (max 10)(cost +0 -> +10 credits)"                                       , "0"                                                                ),
+                ("queue"         , "int"     , "Max. Queue (max 999)"                                                            , "50"                                                               ),
+                ("hoster_options", "string"  , "Hoster options (format: pluginname:prio=1:selfsolfe=1:confirm=1:timeout=900|...)", "ShareonlineBiz:prio=0:timeout=999 | UploadedTo:prio=0:timeout=999"),
+                ("selfsolve"     , "bool"    , "Selfsolve (manually solve your captcha in your 9kw client if active)"            , "0"                                                                ),
+                ("passkey"       , "password", "API key"                                                                         , ""                                                                 ),
+                ("timeout"       , "int"     , "Timeout in seconds (min 60, max 3999)"                                           , "900"                                                              )]
 
-    __description__ = """Send captchas to 9kw.eu"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __description = """Send captchas to 9kw.eu"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.org"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

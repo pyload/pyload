@@ -9,17 +9,17 @@ from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class DlProtectCom(SimpleCrypter):
-    __name__    = "DlProtectCom"
-    __type__    = "crypter"
-    __version__ = "0.01"
+    __name    = "DlProtectCom"
+    __type    = "crypter"
+    __version = "0.01"
 
-    __pattern__ = r'http://(?:www\.)?dl-protect\.com/((en|fr)/)?(?P<ID>\w+)'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern = r'http://(?:www\.)?dl-protect\.com/((en|fr)/)?(?P<ID>\w+)'
+    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Dl-protect.com decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Dl-protect.com decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     OFFLINE_PATTERN = r'>Unfortunately, the link you are looking for is not found'
@@ -30,7 +30,7 @@ class DlProtectCom(SimpleCrypter):
         if not re.match(r"http://(?:www\.)?dl-protect\.com", self.req.http.lastEffectiveURL):
             return [self.req.http.lastEffectiveURL]
 
-        #id = re.match(self.__pattern__, self.pyfile.url).group("ID")
+        #id = re.match(self.__pattern, self.pyfile.url).group("ID")
         key = re.search(r'name="id_key" value="(.+?)"', self.html).group(1)
 
         post_req = {"id_key": key, "submitform": ""}

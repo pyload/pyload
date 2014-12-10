@@ -62,7 +62,7 @@ class Base(object):
     def _log(self, type, args):
         msg = " | ".join([encode(a).strip() for a in args if a])
         logger = getattr(self.core.log, type)
-        logger("%s: %s" % (self.__name__, msg or _("%s MARK" % type.upper())))
+        logger("%s: %s" % (self.__name, msg or _("%s MARK" % type.upper())))
 
 
     def logDebug(self, *args):
@@ -99,7 +99,7 @@ class Base(object):
         :param value:
         :return:
         """
-        self.core.config.setPlugin(self.__name__, option, value)
+        self.core.config.setPlugin(self.__name, option, value)
 
 
     #: Deprecated method
@@ -114,24 +114,24 @@ class Base(object):
         :param option:
         :return:
         """
-        return self.core.config.getPlugin(self.__name__, option)
+        return self.core.config.getPlugin(self.__name, option)
 
 
     def setStorage(self, key, value):
         """ Saves a value persistently to the database """
-        self.core.db.setStorage(self.__name__, key, value)
+        self.core.db.setStorage(self.__name, key, value)
 
 
     def store(self, key, value):
         """ same as `setStorage` """
-        self.core.db.setStorage(self.__name__, key, value)
+        self.core.db.setStorage(self.__name, key, value)
 
 
     def getStorage(self, key=None, default=None):
         """ Retrieves saved value or dict of all saved entries if key is None """
         if key:
-            return self.core.db.getStorage(self.__name__, key) or default
-        return self.core.db.getStorage(self.__name__, key)
+            return self.core.db.getStorage(self.__name, key) or default
+        return self.core.db.getStorage(self.__name, key)
 
 
     def retrieve(self, *args, **kwargs):
@@ -141,7 +141,7 @@ class Base(object):
 
     def delStorage(self, key):
         """ Delete entry in db """
-        self.core.db.delStorage(self.__name__, key)
+        self.core.db.delStorage(self.__name, key)
 
 
 class Plugin(Base):
@@ -149,16 +149,16 @@ class Plugin(Base):
     Base plugin for hoster/crypter.
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
-    __name__    = "Plugin"
-    __type__    = "hoster"
-    __version__ = "0.07"
+    __name    = "Plugin"
+    __type    = "hoster"
+    __version = "0.07"
 
-    __pattern__ = r'^unmatchable$'
-    __config__  = []  #: [("name", "type", "desc", "default")]
+    __pattern = r'^unmatchable$'
+    __config  = []  #: [("name", "type", "desc", "default")]
 
-    __description__ = """Base plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __description = """Base plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.org"),
                        ("spoob", "spoob@pyload.org"),
                        ("mkaay", "mkaay@mkaay.de")]
 
@@ -188,7 +188,7 @@ class Plugin(Base):
         self.ocr = None
 
         #: account handler instance, see :py:class:`Account`
-        self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__)
+        self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name)
 
         #: premium status
         self.premium = False
@@ -209,7 +209,7 @@ class Plugin(Base):
             #: premium status
             self.premium = self.account.isPremium(self.user)
         else:
-            self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
+            self.req = pyfile.m.core.requestFactory.getRequest(self.__name)
 
         #: associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
@@ -240,7 +240,7 @@ class Plugin(Base):
 
 
     def __call__(self):
-        return self.__name__
+        return self.__name
 
 
     def init(self):
@@ -277,7 +277,7 @@ class Plugin(Base):
     def resetAccount(self):
         """ dont use account and retry download """
         self.account = None
-        self.req = self.core.requestFactory.getRequest(self.__name__)
+        self.req = self.core.requestFactory.getRequest(self.__name)
         self.retry()
 
 
@@ -451,13 +451,13 @@ class Plugin(Base):
 
         id = ("%.2f" % time())[-6:].replace(".", "")
 
-        with open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb") as tmpCaptcha:
+        with open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name, id, imgtype)), "wb") as tmpCaptcha:
             tmpCaptcha.write(img)
 
-        has_plugin = self.__name__ in self.core.pluginManager.ocrPlugins
+        has_plugin = self.__name in self.core.pluginManager.ocrPlugins
 
         if self.core.captcha:
-            Ocr = self.core.pluginManager.loadClass("ocr", self.__name__)
+            Ocr = self.core.pluginManager.loadClass("ocr", self.__name)
         else:
             Ocr = None
 
@@ -535,10 +535,10 @@ class Plugin(Base):
             from inspect import currentframe
 
             frame = currentframe()
-            framefile = safe_join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+            framefile = safe_join("tmp", self.__name, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             try:
-                if not exists(join("tmp", self.__name__)):
-                    makedirs(join("tmp", self.__name__))
+                if not exists(join("tmp", self.__name)):
+                    makedirs(join("tmp", self.__name))
 
                 with open(framefile, "wb") as f:
                     del frame  #: delete the frame or it wont be cleaned

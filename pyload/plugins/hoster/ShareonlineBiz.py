@@ -12,21 +12,21 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class ShareonlineBiz(SimpleHoster):
-    __name__    = "ShareonlineBiz"
-    __type__    = "hoster"
-    __version__ = "0.44"
+    __name    = "ShareonlineBiz"
+    __type    = "hoster"
+    __version = "0.44"
 
-    __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
+    __pattern = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
 
-    __description__ = """Shareonline.biz hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("spoob", "spoob@pyload.org"),
+    __description = """Shareonline.biz hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("spoob", "spoob@pyload.org"),
                        ("mkaay", "mkaay@mkaay.de"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://www.share-online.biz/dl/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern + ".*", "http://www.share-online.biz/dl/\g<ID>")]
 
     RECAPTCHA_KEY = "6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX"
 
@@ -38,7 +38,7 @@ class ShareonlineBiz(SimpleHoster):
         info = {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3 if url else 1, 'url': url}
 
         if url:
-            info['pattern'] = re.match(cls.__pattern__, url).groupdict()
+            info['pattern'] = re.match(cls.__pattern, url).groupdict()
 
             field = getURL("http://api.share-online.biz/linkcheck.php",
                            get={'md5': "1"},

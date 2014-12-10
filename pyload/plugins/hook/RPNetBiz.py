@@ -6,18 +6,18 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class RPNetBiz(MultiHoster):
-    __name__    = "RPNetBiz"
-    __type__    = "hook"
-    __version__ = "0.10"
+    __name    = "RPNetBiz"
+    __type    = "hook"
+    __version = "0.10"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", ""),
-                  ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
-                  ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
+    __config = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
+                ("hosterList", "str", "Hoster list (comma separated)", ""),
+                ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
+                ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """RPNet.biz hook plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Dman", "dmanugm@gmail.com")]
+    __description = """RPNet.biz hook plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Dman", "dmanugm@gmail.com")]
 
 
     def getHoster(self):

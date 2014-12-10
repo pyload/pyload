@@ -8,15 +8,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FileSharkPl(SimpleHoster):
-    __name__    = "FileSharkPl"
-    __type__    = "hoster"
-    __version__ = "0.03"
+    __name    = "FileSharkPl"
+    __type    = "hoster"
+    __version = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d{6}/\w{5}'
+    __pattern = r'http://(?:www\.)?fileshark\.pl/pobierz/\d{6}/\w{5}'
 
-    __description__ = """FileShark.pl hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("prOq", None),
+    __description = """FileShark.pl hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("prOq", None),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

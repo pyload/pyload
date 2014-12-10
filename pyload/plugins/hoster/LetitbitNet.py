@@ -35,15 +35,15 @@ def getInfo(urls):
 
 
 class LetitbitNet(SimpleHoster):
-    __name__    = "LetitbitNet"
-    __type__    = "hoster"
-    __version__ = "0.26"
+    __name    = "LetitbitNet"
+    __type    = "hoster"
+    __version = "0.26"
 
-    __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.*'
+    __pattern = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.*'
 
-    __description__ = """Letitbit.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """Letitbit.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("z00nx", "z00nx0@gmail.com")]
 
 

@@ -8,17 +8,17 @@ from pyload.plugins.Crypter import Crypter
 
 
 class DDLMusicOrg(Crypter):
-    __name__    = "DDLMusicOrg"
-    __type__    = "crypter"
-    __version__ = "0.30"
+    __name    = "DDLMusicOrg"
+    __type    = "crypter"
+    __version = "0.30"
 
-    __pattern__ = r'http://(?:www\.)?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern = r'http://(?:www\.)?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+'
+    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Ddl-music.org decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("mkaay", "mkaay@mkaay.de")]
+    __description = """Ddl-music.org decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def setup(self):

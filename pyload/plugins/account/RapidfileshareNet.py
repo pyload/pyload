@@ -4,13 +4,13 @@ from pyload.plugins.internal.XFSAccount import XFSAccount
 
 
 class RapidfileshareNet(XFSAccount):
-    __name__    = "RapidfileshareNet"
-    __type__    = "account"
-    __version__ = "0.05"
+    __name    = "RapidfileshareNet"
+    __type    = "account"
+    __version = "0.05"
 
-    __description__ = """Rapidfileshare.net account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
+    __description = """Rapidfileshare.net account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
     HOSTER_DOMAIN = "rapidfileshare.net"

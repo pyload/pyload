@@ -6,17 +6,17 @@ from pyload.plugins.Crypter import Crypter
 
 
 class SexuriaCom(Crypter):
-    __name__    = "SexuriaCom"
-    __type__    = "crypter"
-    __version__ = "0.01"
+    __name    = "SexuriaCom"
+    __type    = "crypter"
+    __version = "0.01"
 
-    __pattern__ = r'http://(?:www\.)?sexuria\.com/(v1/)?(Pornos_Kostenlos_.+?_(\d+)\.html|dl_links_\d+_\d+\.html|id=\d+\&part=\d+\&link=\d+)'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern = r'http://(?:www\.)?sexuria\.com/(v1/)?(Pornos_Kostenlos_.+?_(\d+)\.html|dl_links_\d+_\d+\.html|id=\d+\&part=\d+\&link=\d+)'
+    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Sexuria.com decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("NETHead", "NETHead.AT.gmx.DOT.net")]
+    __description = """Sexuria.com decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("NETHead", "NETHead.AT.gmx.DOT.net")]
 
 
     PATTERN_SUPPORTED_MAIN     = re.compile(r'http://(www\.)?sexuria\.com/(v1/)?Pornos_Kostenlos_.+?_(\d+)\.html', flags=re.I)

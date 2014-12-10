@@ -8,15 +8,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MultishareCz(SimpleHoster):
-    __name__    = "MultishareCz"
-    __type__    = "hoster"
-    __version__ = "0.35"
+    __name    = "MultishareCz"
+    __type    = "hoster"
+    __version = "0.35"
 
-    __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+).*'
+    __pattern = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+).*'
 
-    __description__ = """MultiShare.cz hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """MultiShare.cz hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     SIZE_REPLACEMENTS = [('&nbsp;', '')]
@@ -28,7 +28,7 @@ class MultishareCz(SimpleHoster):
 
 
     def process(self, pyfile):
-        msurl = re.match(self.__pattern__, pyfile.url)
+        msurl = re.match(self.__pattern, pyfile.url)
         if msurl:
             self.fileID = msurl.group('ID')
             self.html = self.load(pyfile.url, decode=True)

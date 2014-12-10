@@ -9,15 +9,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class BitshareCom(SimpleHoster):
-    __name__    = "BitshareCom"
-    __type__    = "hoster"
-    __version__ = "0.51"
+    __name    = "BitshareCom"
+    __type    = "hoster"
+    __version = "0.51"
 
-    __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>\w+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>\w+))'
+    __pattern = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>\w+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>\w+))'
 
-    __description__ = """Bitshare.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Paul King", None),
+    __description = """Bitshare.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Paul King", None),
                        ("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
@@ -42,7 +42,7 @@ class BitshareCom(SimpleHoster):
         self.pyfile = pyfile
 
         # File id
-        m = re.match(self.__pattern__, pyfile.url)
+        m = re.match(self.__pattern, pyfile.url)
         self.file_id = max(m.group('id1'), m.group('id2'))
         self.logDebug("File id is [%s]" % self.file_id)
 
@@ -60,7 +60,7 @@ class BitshareCom(SimpleHoster):
             self.retry()
 
         # File name
-        m = re.match(self.__pattern__, pyfile.url)
+        m = re.match(self.__pattern, pyfile.url)
         name1 = m.group('name') if m else None
         m = re.search(self.INFO_PATTERN, self.html)
         name2 = m.group('N') if m else None

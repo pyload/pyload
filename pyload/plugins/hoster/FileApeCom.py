@@ -4,15 +4,15 @@ from pyload.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class FileApeCom(DeadHoster):
-    __name__    = "FileApeCom"
-    __type__    = "hoster"
-    __version__ = "0.12"
+    __name    = "FileApeCom"
+    __type    = "hoster"
+    __version = "0.12"
 
-    __pattern__ = r'http://(?:www\.)?fileape\.com/(index\.php\?act=download\&id=|dl/)\w+'
+    __pattern = r'http://(?:www\.)?fileape\.com/(index\.php\?act=download\&id=|dl/)\w+'
 
-    __description__ = """FileApe.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("espes", None)]
+    __description = """FileApe.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("espes", None)]
 
 
 getInfo = create_getInfo(FileApeCom)

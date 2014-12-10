@@ -8,15 +8,15 @@ from pyload.plugins.internal.SimpleCrypter import create_getInfo
 
 
 class DeadCrypter(_Crypter):
-    __name__    = "DeadCrypter"
-    __type__    = "crypter"
-    __version__ = "0.04"
+    __name    = "DeadCrypter"
+    __type    = "crypter"
+    __version = "0.04"
 
-    __pattern__ = r'^unmatchable$'
+    __pattern = r'^unmatchable$'
 
-    __description__ = """Crypter is no longer available"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """Crypter is no longer available"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
     @classmethod

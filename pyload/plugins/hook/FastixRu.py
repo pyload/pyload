@@ -6,17 +6,17 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class FastixRu(MultiHoster):
-    __name__    = "FastixRu"
-    __type__    = "hook"
-    __version__ = "0.02"
+    __name    = "FastixRu"
+    __type    = "hook"
+    __version = "0.02"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("unloadFailing", "bool", "Revert to standard download if download fails", False),
-                  ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
+    __config = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                ("unloadFailing", "bool", "Revert to standard download if download fails", False),
+                ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """Fastix.ru hook plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
+    __description = """Fastix.ru hook plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
     def getHoster(self):

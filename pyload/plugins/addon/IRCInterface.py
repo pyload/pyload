@@ -18,24 +18,24 @@ from pyload.utils import formatSize
 
 
 class IRCInterface(Thread, Addon):
-    __name__    = "IRCInterface"
-    __type__    = "addon"
-    __version__ = "0.13"
+    __name    = "IRCInterface"
+    __type    = "addon"
+    __version = "0.13"
 
-    __config__ = [("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
-                  ("port"     , "int" , "IRC-Server Port"                              , 6667                     ),
-                  ("ident"    , "str" , "Clients ident"                                , "pyload-irc"             ),
-                  ("realname" , "str" , "Realname"                                     , "pyload-irc"             ),
-                  ("ssl"      , "bool", "Use SSL"                                      , False                    ),
-                  ("nick"     , "str" , "Nickname the Client will take"                , "pyLoad-IRC"             ),
-                  ("owner"    , "str" , "Nickname the Client will accept commands from", "Enter your nick here!"  ),
-                  ("info_file", "bool", "Inform about every file finished"             , False                    ),
-                  ("info_pack", "bool", "Inform about every package finished"          , True                     ),
-                  ("captcha"  , "bool", "Send captcha requests"                        , True                     )]
+    __config = [("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
+                ("port"     , "int" , "IRC-Server Port"                              , 6667                     ),
+                ("ident"    , "str" , "Clients ident"                                , "pyload-irc"             ),
+                ("realname" , "str" , "Realname"                                     , "pyload-irc"             ),
+                ("ssl"      , "bool", "Use SSL"                                      , False                    ),
+                ("nick"     , "str" , "Nickname the Client will take"                , "pyLoad-IRC"             ),
+                ("owner"    , "str" , "Nickname the Client will accept commands from", "Enter your nick here!"  ),
+                ("info_file", "bool", "Inform about every file finished"             , False                    ),
+                ("info_pack", "bool", "Inform about every package finished"          , True                     ),
+                ("captcha"  , "bool", "Send captcha requests"                        , True                     )]
 
-    __description__ = """Connect to irc and let owner perform different tasks"""
-    __license__     = "GPLv3"
-    __authors__     = [("Jeix", "Jeix@hasnomail.com")]
+    __description = """Connect to irc and let owner perform different tasks"""
+    __license     = "GPLv3"
+    __authors     = [("Jeix", "Jeix@hasnomail.com")]
 
 
     def __init__(self, core, manager):

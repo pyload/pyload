@@ -6,13 +6,13 @@ from pyload.plugins.Plugin import Plugin
 
 
 class Captcha(Plugin):
-    __name__    = "Captcha"
-    __type__    = "captcha"
-    __version__ = "0.14"
+    __name    = "Captcha"
+    __type    = "captcha"
+    __version = "0.14"
 
-    __description__ = """Base captcha service plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+    __description = """Base captcha service plugin"""
+    __license     = "GPLv3"
+    __authors     = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN = None
@@ -29,17 +29,17 @@ class Captcha(Plugin):
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
             else:
-                errmsg = _("%s html not found") % self.__name__
+                errmsg = _("%s html not found") % self.__name
                 self.plugin.error(errmsg)
                 raise TypeError(errmsg)
 
         m = re.search(self.KEY_PATTERN, html)
         if m:
             self.key = m.group("KEY")
-            self.plugin.logDebug("%s key: %s" % (self.__name__, self.key))
+            self.plugin.logDebug("%s key: %s" % (self.__name, self.key))
             return self.key
         else:
-            self.plugin.logDebug("%s key not found" % self.__name__)
+            self.plugin.logDebug("%s key not found" % self.__name)
             return None
 
 

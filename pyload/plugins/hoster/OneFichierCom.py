@@ -6,15 +6,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class OneFichierCom(SimpleHoster):
-    __name__    = "OneFichierCom"
-    __type__    = "hoster"
-    __version__ = "0.74"
+    __name    = "OneFichierCom"
+    __type    = "hoster"
+    __version = "0.74"
 
-    __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
+    __pattern = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
 
-    __description__ = """1fichier.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+    __description = """1fichier.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
                        ("the-razer", "daniel_ AT gmx DOT net"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("imclem", None),

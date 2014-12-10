@@ -13,18 +13,18 @@ from pyload.utils import fs_encode, safe_join
 
 
 class HotFolder(Addon):
-    __name__    = "HotFolder"
-    __type__    = "addon"
-    __version__ = "0.12"
+    __name    = "HotFolder"
+    __type    = "addon"
+    __version = "0.12"
 
-    __config__ = [("folder"    , "str" , "Folder to observe"    , "container"),
-                  ("watch_file", "bool", "Observe link file"    , False      ),
-                  ("keep"      , "bool", "Keep added containers", True       ),
-                  ("file"      , "str" , "Link file"            , "links.txt")]
+    __config = [("folder"    , "str" , "Folder to observe"    , "container"),
+                ("watch_file", "bool", "Observe link file"    , False      ),
+                ("keep"      , "bool", "Keep added containers", True       ),
+                ("file"      , "str" , "Link file"            , "links.txt")]
 
-    __description__ = """Observe folder and file for changes and add container and links"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.de")]
+    __description = """Observe folder and file for changes and add container and links"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.de")]
 
 
     def setup(self):

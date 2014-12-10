@@ -10,15 +10,15 @@ from pyload.plugins.Hoster import Hoster
 
 
 class Ftp(Hoster):
-    __name__    = "Ftp"
-    __type__    = "hoster"
-    __version__ = "0.43"
+    __name    = "Ftp"
+    __type    = "hoster"
+    __version = "0.43"
 
-    __pattern__ = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
+    __pattern = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 
-    __description__ = """Download from ftp directory"""
-    __license__     = "GPLv3"
-    __authors__     = [("jeix", "jeix@hasnomail.com"),
+    __description = """Download from ftp directory"""
+    __license     = "GPLv3"
+    __authors     = [("jeix", "jeix@hasnomail.com"),
                        ("mkaay", "mkaay@mkaay.de"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 

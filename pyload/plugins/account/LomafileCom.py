@@ -4,13 +4,13 @@ from pyload.plugins.internal.XFSAccount import XFSAccount
 
 
 class LomafileCom(XFSAccount):
-    __name__    = "LomafileCom"
-    __type__    = "account"
-    __version__ = "0.02"
+    __name    = "LomafileCom"
+    __type    = "account"
+    __version = "0.02"
 
-    __description__ = """Lomafile.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
+    __description = """Lomafile.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
     HOSTER_DOMAIN = "lomafile.com"

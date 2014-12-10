@@ -7,13 +7,13 @@ from pyload.plugins.Account import Account
 
 
 class NetloadIn(Account):
-    __name__    = "NetloadIn"
-    __type__    = "account"
-    __version__ = "0.22"
+    __name    = "NetloadIn"
+    __type    = "account"
+    __version = "0.22"
 
-    __description__ = """Netload.in account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __description = """Netload.in account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.org"),
                        ("CryNickSystems", "webmaster@pcProfil.de")]
 
 

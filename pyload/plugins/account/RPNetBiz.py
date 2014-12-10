@@ -5,13 +5,13 @@ from pyload.utils import json_loads
 
 
 class RPNetBiz(Account):
-    __name__    = "RPNetBiz"
-    __type__    = "account"
-    __version__ = "0.10"
+    __name    = "RPNetBiz"
+    __type    = "account"
+    __version = "0.10"
 
-    __description__ = """RPNet.biz account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Dman", "dmanugm@gmail.com")]
+    __description = """RPNet.biz account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Dman", "dmanugm@gmail.com")]
 
 
     def loadAccountInfo(self, user, req):

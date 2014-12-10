@@ -8,15 +8,15 @@ from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class UpleaCom(XFSHoster):
-    __name__    = "UpleaCom"
-    __type__    = "hoster"
-    __version__ = "0.05"
+    __name    = "UpleaCom"
+    __type    = "hoster"
+    __version = "0.05"
 
-    __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
+    __pattern = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
 
-    __description__ = """Uplea.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Redleon", None)]
+    __description = """Uplea.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Redleon", None)]
 
 
     HOSTER_DOMAIN = "uplea.com"

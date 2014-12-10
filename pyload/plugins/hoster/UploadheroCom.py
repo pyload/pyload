@@ -9,15 +9,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UploadheroCom(SimpleHoster):
-    __name__    = "UploadheroCom"
-    __type__    = "hoster"
-    __version__ = "0.16"
+    __name    = "UploadheroCom"
+    __type    = "hoster"
+    __version = "0.16"
 
-    __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
+    __pattern = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'
 
-    __description__ = """UploadHero.co plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("mcmyst", "mcmyst@hotmail.fr"),
+    __description = """UploadHero.co plugin"""
+    __license     = "GPLv3"
+    __authors     = [("mcmyst", "mcmyst@hotmail.fr"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -60,7 +60,7 @@ class UploadheroCom(SimpleHoster):
 
 
     def handlePremium(self):
-        self.logDebug("%s: Use Premium Account" % self.__name__)
+        self.logDebug("%s: Use Premium Account" % self.__name)
         link = re.search(self.PREMIUM_URL_PATTERN, self.html).group(1)
         self.download(link)
 

@@ -6,18 +6,18 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class NowVideoSx(SimpleHoster):
-    __name__    = "NowVideoSx"
-    __type__    = "hoster"
-    __version__ = "0.07"
+    __name    = "NowVideoSx"
+    __type    = "hoster"
+    __version = "0.07"
 
-    __pattern__ = r'http://(?:www\.)?nowvideo\.(at|ch|co|eu|sx)/(video|mobile/#/videos)/(?P<ID>\w+)'
+    __pattern = r'http://(?:www\.)?nowvideo\.(at|ch|co|eu|sx)/(video|mobile/#/videos)/(?P<ID>\w+)'
 
-    __description__ = """NowVideo.sx hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """NowVideo.sx hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://www.nowvideo.at/video/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern + ".*", r'http://www.nowvideo.at/video/\g<ID>')]
 
     NAME_PATTERN = r'<h4>(?P<N>.+?)<'
     OFFLINE_PATTERN = r'>This file no longer exists'

@@ -30,17 +30,17 @@ class ImageTyperzException(Exception):
 
 
 class ImageTyperz(Addon):
-    __name__    = "ImageTyperz"
-    __type__    = "hook"
-    __version__ = "0.05"
+    __name    = "ImageTyperz"
+    __type    = "hook"
+    __version = "0.05"
 
-    __config__ = [("username", "str", "Username", ""),
-                  ("passkey", "password", "Password", ""),
-                  ("force", "bool", "Force IT even if client is connected", False)]
+    __config = [("username", "str", "Username", ""),
+                ("passkey", "password", "Password", ""),
+                ("force", "bool", "Force IT even if client is connected", False)]
 
-    __description__ = """Send captchas to ImageTyperz.com"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __description = """Send captchas to ImageTyperz.com"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -118,15 +118,15 @@ class ImageTyperz(Addon):
 
         if self.getCredits() > 0:
             task.handler.append(self)
-            task.data['service'] = self.__name__
+            task.data['service'] = self.__name
             task.setWaiting(100)
             self.processCaptcha(task)
         else:
-            self.logInfo(_("Your %s account has not enough credits") % self.__name__)
+            self.logInfo(_("Your %s account has not enough credits") % self.__name)
 
 
     def captchaInvalid(self, task):
-        if task.data['service'] == self.__name__ and "ticket" in task.data:
+        if task.data['service'] == self.__name and "ticket" in task.data:
             res = getURL(self.RESPOND_URL,
                          post={'action': "SETBADIMAGE",
                                'username': self.getConfig("username"),

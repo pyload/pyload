@@ -4,16 +4,16 @@ from pyload.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class C1neonCom(DeadCrypter):
-    __name__    = "C1neonCom"
-    __type__    = "crypter"
-    __version__ = "0.05"
+    __name    = "C1neonCom"
+    __type    = "crypter"
+    __version = "0.05"
 
-    __pattern__ = r'http://(?:www\.)?c1neon\.com/.*?'
-    __config__  = []
+    __pattern = r'http://(?:www\.)?c1neon\.com/.*?'
+    __config  = []
 
-    __description__ = """C1neon.com decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("godofdream", "soilfiction@gmail.com")]
+    __description = """C1neon.com decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("godofdream", "soilfiction@gmail.com")]
 
 
 getInfo = create_getInfo(C1neonCom)

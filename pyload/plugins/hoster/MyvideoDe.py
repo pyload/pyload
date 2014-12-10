@@ -7,15 +7,15 @@ from pyload.utils import html_unescape
 
 
 class MyvideoDe(Hoster):
-    __name__    = "MyvideoDe"
-    __type__    = "hoster"
-    __version__ = "0.90"
+    __name    = "MyvideoDe"
+    __type    = "hoster"
+    __version = "0.90"
 
-    __pattern__ = r'http://(?:www\.)?myvideo\.de/watch/'
+    __pattern = r'http://(?:www\.)?myvideo\.de/watch/'
 
-    __description__ = """Myvideo.de hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("spoob", "spoob@pyload.org")]
+    __description = """Myvideo.de hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("spoob", "spoob@pyload.org")]
 
 
     def process(self, pyfile):

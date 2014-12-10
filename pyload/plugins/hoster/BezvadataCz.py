@@ -6,15 +6,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class BezvadataCz(SimpleHoster):
-    __name__    = "BezvadataCz"
-    __type__    = "hoster"
-    __version__ = "0.25"
+    __name    = "BezvadataCz"
+    __type    = "hoster"
+    __version = "0.25"
 
-    __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.*'
+    __pattern = r'http://(?:www\.)?bezvadata\.cz/stahnout/.*'
 
-    __description__ = """BezvaData.cz hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """BezvaData.cz hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'<p><b>Soubor: (?P<N>[^<]+)</b></p>'

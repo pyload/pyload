@@ -11,17 +11,17 @@ from pyload.plugins.internal.captcha import ReCaptcha
 
 
 class NCryptIn(Crypter):
-    __name__    = "NCryptIn"
-    __type__    = "crypter"
-    __version__ = "1.33"
+    __name    = "NCryptIn"
+    __type    = "crypter"
+    __version = "1.33"
 
-    __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<type>folder|link|frame)-([^/\?]+)'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern = r'http://(?:www\.)?ncrypt\.in/(?P<type>folder|link|frame)-([^/\?]+)'
+    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """NCrypt.in decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+    __description = """NCrypt.in decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 
@@ -80,7 +80,7 @@ class NCryptIn(Crypter):
 
 
     def isSingleLink(self):
-        link_type = re.match(self.__pattern__, self.pyfile.url).group('type')
+        link_type = re.match(self.__pattern, self.pyfile.url).group('type')
         return link_type in ("link", "frame")
 
 

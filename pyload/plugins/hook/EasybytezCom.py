@@ -6,20 +6,20 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class EasybytezCom(MultiHoster):
-    __name__    = "EasybytezCom"
-    __type__    = "hook"
-    __version__ = "0.03"
+    __name    = "EasybytezCom"
+    __type    = "hook"
+    __version = "0.03"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "")]
+    __config = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                ("hosterList", "str", "Hoster list (comma separated)", "")]
 
-    __description__ = """EasyBytez.com hook plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """EasyBytez.com hook plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def getHoster(self):
-        self.account = self.core.accountManager.getAccountPlugin(self.__name__)
+        self.account = self.core.accountManager.getAccountPlugin(self.__name)
         user = self.account.selectAccount()[0]
 
         try:

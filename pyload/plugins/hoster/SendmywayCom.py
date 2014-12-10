@@ -4,15 +4,15 @@ from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class SendmywayCom(XFSHoster):
-    __name__    = "SendmywayCom"
-    __type__    = "hoster"
-    __version__ = "0.04"
+    __name    = "SendmywayCom"
+    __type    = "hoster"
+    __version = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?sendmyway\.com/\w{12}'
+    __pattern = r'http://(?:www\.)?sendmyway\.com/\w{12}'
 
-    __description__ = """SendMyWay hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """SendMyWay hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_DOMAIN = "sendmyway.com"

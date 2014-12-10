@@ -7,13 +7,13 @@ from pyload.plugins.Account import Account
 
 
 class CzshareCom(Account):
-    __name__    = "CzshareCom"
-    __type__    = "account"
-    __version__ = "0.14"
+    __name    = "CzshareCom"
+    __type    = "account"
+    __version = "0.14"
 
-    __description__ = """Czshare.com account plugin, now Sdilej.cz"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """Czshare.com account plugin, now Sdilej.cz"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

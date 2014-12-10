@@ -4,16 +4,16 @@ from pyload.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class DuploadOrg(DeadCrypter):
-    __name__    = "DuploadOrg"
-    __type__    = "crypter"
-    __version__ = "0.02"
+    __name    = "DuploadOrg"
+    __type    = "crypter"
+    __version = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?dupload\.org/folder/\d+'
-    __config__  = []
+    __pattern = r'http://(?:www\.)?dupload\.org/folder/\d+'
+    __config  = []
 
-    __description__ = """Dupload.org folder decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """Dupload.org folder decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
 getInfo = create_getInfo(DuploadOrg)

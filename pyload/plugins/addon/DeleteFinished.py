@@ -5,16 +5,16 @@ from pyload.plugins.Addon import Addon
 
 
 class DeleteFinished(Addon):
-    __name__    = "DeleteFinished"
-    __type__    = "addon"
-    __version__ = "1.11"
+    __name    = "DeleteFinished"
+    __type    = "addon"
+    __version = "1.11"
 
-    __config__ = [('interval'  , 'int' , 'Delete every (hours)'              , '72'   ),
-                  ('deloffline', 'bool', 'Delete packages with offline links', 'False')]
+    __config = [('interval'  , 'int' , 'Delete every (hours)'              , '72'   ),
+                ('deloffline', 'bool', 'Delete packages with offline links', 'False')]
 
-    __description__ = """Automatically delete all finished packages from queue"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Automatically delete all finished packages from queue"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     # event_list = ["pluginConfigChanged"]
@@ -45,7 +45,7 @@ class DeleteFinished(Addon):
     def coreReady(self):
         self.info = {'sleep': True}
         interval = self.getConfig('interval')
-        self.pluginConfigChanged(self.__name__, 'interval', interval)
+        self.pluginConfigChanged(self.__name, 'interval', interval)
         self.addEvent('packageFinished', self.wakeup)
 
 

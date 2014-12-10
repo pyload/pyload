@@ -5,18 +5,18 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class RehostTo(MultiHoster):
-    __name__    = "RehostTo"
-    __type__    = "hook"
-    __version__ = "0.43"
+    __name    = "RehostTo"
+    __type    = "hook"
+    __version = "0.43"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", ""),
-                  ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
-                  ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
+    __config = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                ("hosterList", "str", "Hoster list (comma separated)", ""),
+                ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
+                ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description__ = """Rehost.to hook plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
+    __description = """Rehost.to hook plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def getHoster(self):

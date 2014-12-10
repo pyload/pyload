@@ -10,13 +10,13 @@ from pyload.plugins.Account import Account
 
 
 class OneFichierCom(Account):
-    __name__    = "OneFichierCom"
-    __type__    = "account"
-    __version__ = "0.11"
+    __name    = "OneFichierCom"
+    __type    = "account"
+    __version = "0.11"
 
-    __description__ = """1fichier.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
+    __description = """1fichier.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

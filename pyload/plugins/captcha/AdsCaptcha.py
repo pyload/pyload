@@ -8,13 +8,13 @@ from pyload.plugins.Captcha import Captcha
 
 
 class AdsCaptcha(Captcha):
-    __name__    = "AdsCaptcha"
-    __type__    = "captcha"
-    __version__ = "0.06"
+    __name    = "AdsCaptcha"
+    __type    = "captcha"
+    __version = "0.06"
 
-    __description__ = """AdsCaptcha captcha service plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+    __description = """AdsCaptcha captcha service plugin"""
+    __license     = "GPLv3"
+    __authors     = [("pyLoad Team", "admin@pyload.org")]
 
 
     CAPTCHAID_PATTERN  = r'api\.adscaptcha\.com/Get\.aspx\?[^"\']*CaptchaId=(\d+)'

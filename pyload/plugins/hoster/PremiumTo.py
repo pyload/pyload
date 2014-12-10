@@ -11,15 +11,15 @@ from pyload.utils import fs_encode
 
 
 class PremiumTo(Hoster):
-    __name__    = "PremiumTo"
-    __type__    = "hoster"
-    __version__ = "0.11"
+    __name    = "PremiumTo"
+    __type    = "hoster"
+    __version = "0.11"
 
-    __pattern__ = r'https?://(?:www\.)?premium\.to/.+'
+    __pattern = r'https?://(?:www\.)?premium\.to/.+'
 
-    __description__ = """Premium.to hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+    __description = """Premium.to hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 

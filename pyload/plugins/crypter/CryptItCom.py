@@ -4,16 +4,16 @@ from pyload.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class CryptItCom(DeadCrypter):
-    __name__    = "CryptItCom"
-    __type__    = "crypter"
-    __version__ = "0.11"
+    __name    = "CryptItCom"
+    __type    = "crypter"
+    __version = "0.11"
 
-    __pattern__ = r'http://(?:www\.)?crypt-it\.com/(s|e|d|c)/\w+'
-    __config__  = []
+    __pattern = r'http://(?:www\.)?crypt-it\.com/(s|e|d|c)/\w+'
+    __config  = []
 
-    __description__ = """Crypt-it.com decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("jeix", "jeix@hasnomail.de")]
+    __description = """Crypt-it.com decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("jeix", "jeix@hasnomail.de")]
 
 
 getInfo = create_getInfo(CryptItCom)

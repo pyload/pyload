@@ -11,15 +11,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class RapiduNet(SimpleHoster):
-    __name__    = "RapiduNet"
-    __type__    = "hoster"
-    __version__ = "0.02"
+    __name    = "RapiduNet"
+    __type    = "hoster"
+    __version = "0.02"
 
-    __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'
+    __pattern = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'
 
-    __description__ = """Rapidu.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("prOq", None)]
+    __description = """Rapidu.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("prOq", None)]
 
 
     COOKIES = [("rapidu.net", "rapidu_lang", "en")]

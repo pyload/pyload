@@ -7,15 +7,15 @@ from pyload.utils import json_loads
 
 
 class MyfastfileCom(Hoster):
-    __name__    = "MyfastfileCom"
-    __type__    = "hoster"
-    __version__ = "0.04"
+    __name    = "MyfastfileCom"
+    __type    = "hoster"
+    __version = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
+    __pattern = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
 
-    __description__ = """Myfastfile.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """Myfastfile.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
 
@@ -25,7 +25,7 @@ class MyfastfileCom(Hoster):
 
 
     def process(self, pyfile):
-        if re.match(self.__pattern__, pyfile.url):
+        if re.match(self.__pattern, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Myfastfile.com")

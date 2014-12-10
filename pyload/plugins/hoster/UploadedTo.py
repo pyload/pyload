@@ -20,7 +20,7 @@ key = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw=".decode('base64')
 
 def getID(url):
     """ returns id from file url"""
-    m = re.match(UploadedTo.__pattern__, url)
+    m = re.match(UploadedTo.__pattern, url)
     return m.group('ID')
 
 
@@ -92,15 +92,15 @@ def getInfo(urls):
 
 
 class UploadedTo(Hoster):
-    __name__    = "UploadedTo"
-    __type__    = "hoster"
-    __version__ = "0.75"
+    __name    = "UploadedTo"
+    __type    = "hoster"
+    __version = "0.75"
 
-    __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
+    __pattern = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
-    __description__ = """Uploaded.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("spoob", "spoob@pyload.org"),
+    __description = """Uploaded.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("spoob", "spoob@pyload.org"),
                        ("mkaay", "mkaay@mkaay.de"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("netpok", "netpok@gmail.com"),
@@ -163,7 +163,7 @@ class UploadedTo(Hoster):
 
     def handlePremium(self):
         info = self.account.getAccountInfo(self.user, True)
-        self.logDebug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name": self.__name__,
+        self.logDebug("%(name)s: Use Premium Account (%(left)sGB left)" % {"name": self.__name,
                                                                            "left": info['trafficleft'] / 1024 / 1024})
         if int(self.data[1]) / 1024 > info['trafficleft']:
             self.logInfo(_("Not enough traffic left"))

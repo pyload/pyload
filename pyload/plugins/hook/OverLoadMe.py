@@ -5,19 +5,19 @@ from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class OverLoadMe(MultiHoster):
-    __name__    = "OverLoadMe"
-    __type__    = "hook"
-    __version__ = "0.01"
+    __name    = "OverLoadMe"
+    __type    = "hook"
+    __version = "0.01"
 
-    __config__ = [("https", "bool", "Enable HTTPS", True),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", ""),
-                  ("unloadFailing", "bool", "Revert to standard download if download fails", False),
-                  ("interval", "int", "Reload interval in hours (0 to disable)", 12)]
+    __config = [("https", "bool", "Enable HTTPS", True),
+                ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
+                ("hosterList", "str", "Hoster list (comma separated)", ""),
+                ("unloadFailing", "bool", "Revert to standard download if download fails", False),
+                ("interval", "int", "Reload interval in hours (0 to disable)", 12)]
 
-    __description__ = """Over-Load.me hook plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("marley", "marley@over-load.me")]
+    __description = """Over-Load.me hook plugin"""
+    __license     = "GPLv3"
+    __authors     = [("marley", "marley@over-load.me")]
 
 
     def getHoster(self):

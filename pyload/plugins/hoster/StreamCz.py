@@ -21,15 +21,15 @@ def getInfo(urls):
 
 
 class StreamCz(Hoster):
-    __name__    = "StreamCz"
-    __type__    = "hoster"
-    __version__ = "0.20"
+    __name    = "StreamCz"
+    __type    = "hoster"
+    __version = "0.20"
 
-    __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+.*'
+    __pattern = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+.*'
 
-    __description__ = """Stream.cz hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Stream.cz hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'<link rel="video_src" href="http://www\.stream\.cz/\w+/(\d+)-([^"]+)" />'

@@ -5,17 +5,17 @@ from pyload.plugins.Crypter import Crypter
 
 
 class LinkdecrypterCom(Crypter):
-    __name__    = "LinkdecrypterCom"
-    __type__    = "crypter"
-    __version__ = "0.27"
+    __name    = "LinkdecrypterCom"
+    __type    = "crypter"
+    __version = "0.27"
 
-    __pattern__ = r'^unmatchable$'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern = r'^unmatchable$'
+    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Linkdecrypter.com"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """Linkdecrypter.com"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("flowlee", None)]
 
 

@@ -4,15 +4,15 @@ from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class CramitIn(XFSHoster):
-    __name__    = "CramitIn"
-    __type__    = "hoster"
-    __version__ = "0.07"
+    __name    = "CramitIn"
+    __type    = "hoster"
+    __version = "0.07"
 
-    __pattern__ = r'http://(?:www\.)?cramit\.in/\w{12}'
+    __pattern = r'http://(?:www\.)?cramit\.in/\w{12}'
 
-    __description__ = """Cramit.in hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Cramit.in hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_DOMAIN = "cramit.in"

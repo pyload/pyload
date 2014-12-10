@@ -6,13 +6,13 @@ from pyload.plugins.Account import Account
 
 
 class StahnuTo(Account):
-    __name__    = "StahnuTo"
-    __type__    = "account"
-    __version__ = "0.03"
+    __name    = "StahnuTo"
+    __type    = "account"
+    __version = "0.03"
 
-    __description__ = """StahnuTo account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """StahnuTo account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def loadAccountInfo(self, user, req):

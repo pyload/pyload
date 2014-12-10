@@ -9,19 +9,19 @@ from pyload.plugins.internal.SimpleHoster import _isDirectLink, SimpleHoster, cr
 
 
 class Keep2shareCc(SimpleHoster):
-    __name__    = "Keep2shareCc"
-    __type__    = "hoster"
-    __version__ = "0.16"
+    __name    = "Keep2shareCc"
+    __type    = "hoster"
+    __version = "0.16"
 
-    __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
+    __pattern = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
-    __description__ = """Keep2share.cc hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+    __description = """Keep2share.cc hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://k2s.cc/file/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern + ".*", "http://k2s.cc/file/\g<ID>")]
 
     CONTENT_DISPOSITION = True
 

@@ -4,15 +4,15 @@ from pyload.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class SecureUploadEu(XFSHoster):
-    __name__    = "SecureUploadEu"
-    __type__    = "hoster"
-    __version__ = "0.05"
+    __name    = "SecureUploadEu"
+    __type    = "hoster"
+    __version = "0.05"
 
-    __pattern__ = r'https?://(?:www\.)?secureupload\.eu/\w{12}'
+    __pattern = r'https?://(?:www\.)?secureupload\.eu/\w{12}'
 
-    __description__ = """SecureUpload.eu hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("z00nx", "z00nx0@gmail.com")]
+    __description = """SecureUpload.eu hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("z00nx", "z00nx0@gmail.com")]
 
 
     HOSTER_DOMAIN = "secureupload.eu"

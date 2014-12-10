@@ -57,25 +57,25 @@ from pyload.utils import safe_join, fs_encode
 
 
 class ExtractArchive(Addon):
-    __name__    = "ExtractArchive"
-    __type__    = "addon"
-    __version__ = "0.19"
+    __name    = "ExtractArchive"
+    __type    = "addon"
+    __version = "0.19"
 
-    __config__ = [("activated"    , "bool"  , "Activated"                                    , True                  ),
-                  ("fullpath"     , "bool"  , "Extract full path"                            , True                  ),
-                  ("overwrite"    , "bool"  , "Overwrite files"                              , True                  ),
-                  ("passwordfile" , "file"  , "password file"                                , "archive_password.txt"),
-                  ("deletearchive", "bool"  , "Delete archives when done"                    , False                 ),
-                  ("subfolder"    , "bool"  , "Create subfolder for each package"            , False                 ),
-                  ("destination"  , "folder", "Extract files to"                             , ""                    ),
-                  ("excludefiles" , "str"   , "Exclude files from unpacking (seperated by ;)", ""                    ),
-                  ("recursive"    , "bool"  , "Extract archives in archvies"                 , True                  ),
-                  ("queue"        , "bool"  , "Wait for all downloads to be finished"        , True                  ),
-                  ("renice"       , "int"   , "CPU Priority"                                 , 0                     )]
+    __config = [("activated"    , "bool"  , "Activated"                                    , True                  ),
+                ("fullpath"     , "bool"  , "Extract full path"                            , True                  ),
+                ("overwrite"    , "bool"  , "Overwrite files"                              , True                  ),
+                ("passwordfile" , "file"  , "password file"                                , "archive_password.txt"),
+                ("deletearchive", "bool"  , "Delete archives when done"                    , False                 ),
+                ("subfolder"    , "bool"  , "Create subfolder for each package"            , False                 ),
+                ("destination"  , "folder", "Extract files to"                             , ""                    ),
+                ("excludefiles" , "str"   , "Exclude files from unpacking (seperated by ;)", ""                    ),
+                ("recursive"    , "bool"  , "Extract archives in archvies"                 , True                  ),
+                ("queue"        , "bool"  , "Wait for all downloads to be finished"        , True                  ),
+                ("renice"       , "int"   , "CPU Priority"                                 , 0                     )]
 
-    __description__ = """Extract different kind of archives"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "ranan@pyload.org"),
+    __description = """Extract different kind of archives"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "ranan@pyload.org"),
                        ("AndroKev", None),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
@@ -189,7 +189,7 @@ class ExtractArchive(Addon):
                 for plugin in self.plugins:
                     targets = plugin.getTargets(files_ids)
                     if targets:
-                        self.logDebug("Targets for %s: %s" % (plugin.__name__, targets))
+                        self.logDebug("Targets for %s: %s" % (plugin.__name, targets))
                         matched = True
                     for target, fid in targets:
                         if target in processed:

@@ -8,15 +8,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FastshareCz(SimpleHoster):
-    __name__    = "FastshareCz"
-    __type__    = "hoster"
-    __version__ = "0.24"
+    __name    = "FastshareCz"
+    __type    = "hoster"
+    __version = "0.24"
 
-    __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
+    __pattern = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
 
-    __description__ = """FastShare.cz hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """FastShare.cz hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
     URL_REPLACEMENTS = [("#.*", "")]
 

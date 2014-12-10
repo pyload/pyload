@@ -10,15 +10,15 @@ from pyload.plugins.Crypter import Crypter
 
 
 class FilecryptCc(Crypter):
-    __name__    = "FilecryptCc"
-    __type__    = "crypter"
-    __version__ = "0.05"
+    __name    = "FilecryptCc"
+    __type    = "crypter"
+    __version = "0.05"
 
-    __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
+    __pattern = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
-    __description__ = """Filecrypt.cc decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
+    __description = """Filecrypt.cc decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  #@TODO: Extend SimpleCrypter

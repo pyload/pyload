@@ -4,13 +4,13 @@ from pyload.plugins.internal.XFSAccount import XFSAccount
 
 
 class RyushareCom(XFSAccount):
-    __name__    = "RyushareCom"
-    __type__    = "account"
-    __version__ = "0.05"
+    __name    = "RyushareCom"
+    __type    = "account"
+    __version = "0.05"
 
-    __description__ = """Ryushare.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """Ryushare.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("trance4us", None)]
 
 

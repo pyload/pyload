@@ -9,15 +9,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class LuckyShareNet(SimpleHoster):
-    __name__    = "LuckyShareNet"
-    __type__    = "hoster"
-    __version__ = "0.04"
+    __name    = "LuckyShareNet"
+    __type    = "hoster"
+    __version = "0.04"
 
-    __pattern__ = r'https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})'
+    __pattern = r'https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})'
 
-    __description__ = """LuckyShare.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """LuckyShare.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
     INFO_PATTERN = r'<h1 class=\'file_name\'>(?P<N>\S+)</h1>\s*<span class=\'file_size\'>Filesize: (?P<S>[\d.,]+)(?P<U>[\w^_]+)</span>'

@@ -7,13 +7,13 @@ from pyload.utils import json_loads
 
 
 class MyfastfileCom(Account):
-    __name__    = "MyfastfileCom"
-    __type__    = "account"
-    __version__ = "0.02"
+    __name    = "MyfastfileCom"
+    __type    = "account"
+    __version = "0.02"
 
-    __description__ = """Myfastfile.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """Myfastfile.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def loadAccountInfo(self, user, req):

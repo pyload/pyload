@@ -6,13 +6,13 @@ from pyload.plugins.Account import Account
 
 
 class ZeveraCom(Account):
-    __name__    = "ZeveraCom"
-    __type__    = "account"
-    __version__ = "0.21"
+    __name    = "ZeveraCom"
+    __type    = "account"
+    __version = "0.21"
 
-    __description__ = """Zevera.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Zevera.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def loadAccountInfo(self, user, req):

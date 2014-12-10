@@ -12,17 +12,17 @@ from pyload.plugins.Crypter import Crypter
 
 
 class RelinkUs(Crypter):
-    __name__    = "RelinkUs"
-    __type__    = "crypter"
-    __version__ = "3.11"
+    __name    = "RelinkUs"
+    __type    = "crypter"
+    __version = "3.11"
 
-    __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<id>.+)'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<id>.+)'
+    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Relink.us decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+    __description = """Relink.us decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
                        ("AndroKev", "neureither.kevin@gmail.com")]
 
 
@@ -100,7 +100,7 @@ class RelinkUs(Crypter):
 
 
     def initPackage(self, pyfile):
-        self.fileid = re.match(self.__pattern__, pyfile.url).group('id')
+        self.fileid = re.match(self.__pattern, pyfile.url).group('id')
         self.package = pyfile.package()
         self.password = self.getPassword()
 

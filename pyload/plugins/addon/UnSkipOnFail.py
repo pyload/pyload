@@ -8,15 +8,15 @@ from pyload.utils import fs_encode
 
 
 class UnSkipOnFail(Addon):
-    __name__    = "UnSkipOnFail"
-    __type__    = "addon"
-    __version__ = "0.02"
+    __name    = "UnSkipOnFail"
+    __type    = "addon"
+    __version = "0.02"
 
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config = [("activated", "bool", "Activated", True)]
 
-    __description__ = """When a download fails, restart skipped duplicates"""
-    __license__     = "GPLv3"
-    __authors__     = [("hagg", None)]
+    __description = """When a download fails, restart skipped duplicates"""
+    __license     = "GPLv3"
+    __authors     = [("hagg", None)]
 
 
     def downloadFailed(self, pyfile):

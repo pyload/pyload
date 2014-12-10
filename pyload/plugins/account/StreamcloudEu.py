@@ -4,13 +4,13 @@ from pyload.plugins.internal.XFSAccount import XFSAccount
 
 
 class StreamcloudEu(XFSAccount):
-    __name__    = "StreamcloudEu"
-    __type__    = "account"
-    __version__ = "0.02"
+    __name    = "StreamcloudEu"
+    __type    = "account"
+    __version = "0.02"
 
-    __description__ = """Streamcloud.eu account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Streamcloud.eu account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_DOMAIN = "streamcloud.eu"

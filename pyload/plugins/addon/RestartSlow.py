@@ -6,19 +6,19 @@ from pyload.plugins.Addon import Addon
 
 
 class RestartSlow(Addon):
-    __name__    = "RestartSlow"
-    __type__    = "addon"
-    __version__ = "0.02"
+    __name    = "RestartSlow"
+    __type    = "addon"
+    __version = "0.02"
 
-    __config__ = [("free_limit"   , "int" ,  "Transfer speed threshold in kilobytes"                     , 100 ),
-                  ("free_time"    , "int" ,  "Sample interval in minutes"                                , 5   ),
-                  ("premium_limit", "int" ,  "Transfer speed threshold for premium download in kilobytes", 300 ),
-                  ("premium_time" , "int" ,  "Sample interval for premium download in minutes"           , 2   ),
-                  ("safe_mode"    , "bool",  "Don't restart if download is not resumable"                , True)]
+    __config = [("free_limit"   , "int" ,  "Transfer speed threshold in kilobytes"                     , 100 ),
+                ("free_time"    , "int" ,  "Sample interval in minutes"                                , 5   ),
+                ("premium_limit", "int" ,  "Transfer speed threshold for premium download in kilobytes", 300 ),
+                ("premium_time" , "int" ,  "Sample interval for premium download in minutes"           , 2   ),
+                ("safe_mode"    , "bool",  "Don't restart if download is not resumable"                , True)]
 
-    __description__ = """Restart slow downloads"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description = """Restart slow downloads"""
+    __license     = "GPLv3"
+    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     event_list = ["downloadStarts"]

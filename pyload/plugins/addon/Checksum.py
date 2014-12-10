@@ -38,20 +38,20 @@ def computeChecksum(local_file, algorithm):
 
 
 class Checksum(Addon):
-    __name__    = "Checksum"
-    __type__    = "addon"
-    __version__ = "0.15"
+    __name    = "Checksum"
+    __type    = "addon"
+    __version = "0.15"
 
-    __config__ = [("activated"     , "bool"              , "Activated"                                            , True   ),
-                  ("check_checksum", "bool"              , "Check checksum? (If False only size will be verified)", True   ),
-                  ("check_action"  , "fail;retry;nothing", "What to do if check fails?"                           , "retry"),
-                  ("max_tries"     , "int"               , "Number of retries"                                    , 2      ),
-                  ("retry_action"  , "fail;nothing"      , "What to do if all retries fail?"                      , "fail" ),
-                  ("wait_time"     , "int"               , "Time to wait before each retry (seconds)"             , 1      )]
+    __config = [("activated"     , "bool"              , "Activated"                                            , True   ),
+                ("check_checksum", "bool"              , "Check checksum? (If False only size will be verified)", True   ),
+                ("check_action"  , "fail;retry;nothing", "What to do if check fails?"                           , "retry"),
+                ("max_tries"     , "int"               , "Number of retries"                                    , 2      ),
+                ("retry_action"  , "fail;nothing"      , "What to do if all retries fail?"                      , "fail" ),
+                ("wait_time"     , "int"               , "Time to wait before each retry (seconds)"             , 1      )]
 
-    __description__ = """Verify downloaded file size and checksum"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description = """Verify downloaded file size and checksum"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("Walter Purcaro", "vuolter@gmail.com"),
                        ("stickell", "l.stickell@yahoo.it")]
 

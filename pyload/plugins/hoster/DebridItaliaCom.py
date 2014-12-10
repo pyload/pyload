@@ -7,15 +7,15 @@ from pyload.plugins.internal.SimpleHoster import replace_patterns
 
 
 class DebridItaliaCom(Hoster):
-    __name__    = "DebridItaliaCom"
-    __type__    = "hoster"
-    __version__ = "0.07"
+    __name    = "DebridItaliaCom"
+    __type    = "hoster"
+    __version = "0.07"
 
-    __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
+    __pattern = r'http://s\d+\.debriditalia\.com/dl/\d+'
 
-    __description__ = """Debriditalia.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+    __description = """Debriditalia.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -30,7 +30,7 @@ class DebridItaliaCom(Hoster):
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, cls.URL_REPLACEMENTS)
 
-        if re.match(self.__pattern__, pyfile.url):
+        if re.match(self.__pattern, pyfile.url):
             link = pyfile.url
 
         elif not self.account:

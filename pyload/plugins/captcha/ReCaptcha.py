@@ -6,13 +6,13 @@ from pyload.plugins.Captcha import Captcha
 
 
 class ReCaptcha(Captcha):
-    __name__    = "ReCaptcha"
-    __type__    = "captcha"
-    __version__ = "0.08"
+    __name    = "ReCaptcha"
+    __type    = "captcha"
+    __version = "0.08"
 
-    __description__ = """ReCaptcha captcha service plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+    __description = """ReCaptcha captcha service plugin"""
+    __license     = "GPLv3"
+    __authors     = [("pyLoad Team", "admin@pyload.org")]
 
 
     KEY_PATTERN      = r'recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=([\w-]+)'

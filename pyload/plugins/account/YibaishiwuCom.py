@@ -6,13 +6,13 @@ from pyload.plugins.Account import Account
 
 
 class YibaishiwuCom(Account):
-    __name__    = "YibaishiwuCom"
-    __type__    = "account"
-    __version__ = "0.01"
+    __name    = "YibaishiwuCom"
+    __type    = "account"
+    __version = "0.01"
 
-    __description__ = """115.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """115.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     ACCOUNT_INFO_PATTERN = r'var USER_PERMISSION = {(.*?)}'

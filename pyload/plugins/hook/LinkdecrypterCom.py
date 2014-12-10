@@ -8,13 +8,13 @@ from pyload.utils import remove_chars
 
 
 class LinkdecrypterCom(Addon):
-    __name__    = "LinkdecrypterCom"
-    __type__    = "hook"
-    __version__ = "0.21"
+    __name    = "LinkdecrypterCom"
+    __type    = "hook"
+    __version = "0.21"
 
-    __description__ = """Linkdecrypter.com hook plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Linkdecrypter.com hook plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def coreReady(self):
@@ -53,7 +53,7 @@ class LinkdecrypterCom(Addon):
 
         regexp = r'https?://([^.]+\.)*?(%s)/.*' % '|'.join(online)
 
-        dict = self.core.pluginManager.crypterPlugins[self.__name__]
+        dict = self.core.pluginManager.crypterPlugins[self.__name]
         dict['pattern'] = regexp
         dict['re'] = re.compile(regexp)
 

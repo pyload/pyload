@@ -7,13 +7,13 @@ from pyload.plugins.Account import Account
 
 
 class TurbobitNet(Account):
-    __name__    = "TurbobitNet"
-    __type__    = "account"
-    __version__ = "0.01"
+    __name    = "TurbobitNet"
+    __type    = "account"
+    __version = "0.01"
 
-    __description__ = """TurbobitNet account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """TurbobitNet account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def loadAccountInfo(self, user, req):

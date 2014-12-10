@@ -6,15 +6,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class TwoSharedCom(SimpleHoster):
-    __name__    = "TwoSharedCom"
-    __type__    = "hoster"
-    __version__ = "0.12"
+    __name    = "TwoSharedCom"
+    __type    = "hoster"
+    __version = "0.12"
 
-    __pattern__ = r'http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.*'
+    __pattern = r'http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.*'
 
-    __description__ = """2Shared.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """2Shared.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'<h1>(?P<N>.*)</h1>'

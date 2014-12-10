@@ -10,15 +10,15 @@ from pyload.plugins.Hoster import Hoster
 
 
 class FastixRu(Hoster):
-    __name__    = "FastixRu"
-    __type__    = "hoster"
-    __version__ = "0.04"
+    __name    = "FastixRu"
+    __type    = "hoster"
+    __version = "0.04"
 
-    __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>\w{24})'
+    __pattern = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>\w{24})'
 
-    __description__ = """Fastix hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
+    __description = """Fastix hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
     def getFilename(self, url):
@@ -37,7 +37,7 @@ class FastixRu(Hoster):
 
 
     def process(self, pyfile):
-        if re.match(self.__pattern__, pyfile.url):
+        if re.match(self.__pattern, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Fastix")

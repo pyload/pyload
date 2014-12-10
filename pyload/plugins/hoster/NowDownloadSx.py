@@ -7,15 +7,15 @@ from pyload.utils import fixup
 
 
 class NowDownloadSx(SimpleHoster):
-    __name__    = "NowDownloadSx"
-    __type__    = "hoster"
-    __version__ = "0.05"
+    __name    = "NowDownloadSx"
+    __type    = "hoster"
+    __version = "0.05"
 
-    __pattern__ = r'http://(?:www\.)?nowdownload\.(at|ch|co|eu|sx)/(dl/|download\.php\?id=)\w+'
+    __pattern = r'http://(?:www\.)?nowdownload\.(at|ch|co|eu|sx)/(dl/|download\.php\?id=)\w+'
 
-    __description__ = """NowDownload.sx hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("godofdream", "soilfiction@gmail.com"),
+    __description = """NowDownload.sx hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("godofdream", "soilfiction@gmail.com"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

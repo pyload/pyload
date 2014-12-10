@@ -4,13 +4,13 @@ from pyload.plugins.Account import Account
 
 
 class FilesMailRu(Account):
-    __name__    = "FilesMailRu"
-    __type__    = "account"
-    __version__ = "0.10"
+    __name    = "FilesMailRu"
+    __type    = "account"
+    __version = "0.10"
 
-    __description__ = """Filesmail.ru account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
+    __description = """Filesmail.ru account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     def loadAccountInfo(self, user, req):

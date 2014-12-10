@@ -9,15 +9,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DepositfilesCom(SimpleHoster):
-    __name__    = "DepositfilesCom"
-    __type__    = "hoster"
-    __version__ = "0.51"
+    __name    = "DepositfilesCom"
+    __type    = "hoster"
+    __version = "0.51"
 
-    __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
+    __pattern = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
 
-    __description__ = """Depositfiles.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("spoob", "spoob@pyload.org"),
+    __description = """Depositfiles.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("spoob", "spoob@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
@@ -28,7 +28,7 @@ class DepositfilesCom(SimpleHoster):
 
     NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
                               (r'.*<b title="(?P<N>[^"]+).*', "\g<N>")]
-    URL_REPLACEMENTS  = [(__pattern__ + ".*", "https://dfiles.eu/files/\g<ID>")]
+    URL_REPLACEMENTS  = [(__pattern + ".*", "https://dfiles.eu/files/\g<ID>")]
 
     COOKIES = [("dfiles.eu", "lang_current", "en")]
 

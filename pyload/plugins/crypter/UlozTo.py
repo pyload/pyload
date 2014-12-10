@@ -5,17 +5,17 @@ from pyload.plugins.Crypter import Crypter
 
 
 class UlozTo(Crypter):
-    __name__    = "UlozTo"
-    __type__    = "crypter"
-    __version__ = "0.20"
+    __name    = "UlozTo"
+    __type    = "crypter"
+    __version = "0.20"
 
-    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(m|soubory)/.*'
-    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(m|soubory)/.*'
+    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description__ = """Uloz.to folder decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Uloz.to folder decrypter plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     FOLDER_PATTERN = r'<ul class="profile_files">(.*?)</ul>'

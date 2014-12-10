@@ -5,13 +5,13 @@ from pyload.utils import json_loads
 
 
 class UnrestrictLi(Account):
-    __name__    = "UnrestrictLi"
-    __type__    = "account"
-    __version__ = "0.03"
+    __name    = "UnrestrictLi"
+    __type    = "account"
+    __version = "0.03"
 
-    __description__ = """Unrestrict.li account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __description = """Unrestrict.li account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def loadAccountInfo(self, user, req):

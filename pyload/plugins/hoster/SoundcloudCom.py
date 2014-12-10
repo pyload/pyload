@@ -7,15 +7,15 @@ from pyload.plugins.Hoster import Hoster
 
 
 class SoundcloudCom(Hoster):
-    __name__    = "SoundcloudCom"
-    __type__    = "hoster"
-    __version__ = "0.10"
+    __name    = "SoundcloudCom"
+    __type    = "hoster"
+    __version = "0.10"
 
-    __pattern__ = r'https?://(?:www\.)?soundcloud\.com/(?P<UID>.*?)/(?P<SID>.*)'
+    __pattern = r'https?://(?:www\.)?soundcloud\.com/(?P<UID>.*?)/(?P<SID>.*)'
 
-    __description__ = """SoundCloud.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Peekayy", "peekayy.dev@gmail.com")]
+    __description = """SoundCloud.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("Peekayy", "peekayy.dev@gmail.com")]
 
 
     def process(self, pyfile):
@@ -41,7 +41,7 @@ class SoundcloudCom(Hoster):
             if m:
                 pyfile.name = m.group("TITLE") + ".mp3"
             else:
-                pyfile.name = re.match(self.__pattern__, pyfile.url).group("SID") + ".mp3"
+                pyfile.name = re.match(self.__pattern, pyfile.url).group("SID") + ".mp3"
 
             # url to retrieve the actual song url
             page = self.load("https://api.sndcdn.com/i1/tracks/%s/streams" % songId, get={"client_id": clientId})

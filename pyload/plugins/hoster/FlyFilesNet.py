@@ -9,15 +9,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FlyFilesNet(SimpleHoster):
-    __name__    = "FlyFilesNet"
-    __type__    = "hoster"
-    __version__ = "0.10"
+    __name    = "FlyFilesNet"
+    __type    = "hoster"
+    __version = "0.10"
 
-    __pattern__ = r'http://(?:www\.)?flyfiles\.net/.*'
+    __pattern = r'http://(?:www\.)?flyfiles\.net/.*'
 
-    __description__ = """FlyFiles.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = []
+    __description = """FlyFiles.net hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = []
 
     SESSION_PATTERN = r'flyfiles\.net/(.*)/.*'
     NAME_PATTERN = r'flyfiles\.net/.*/(.*)'

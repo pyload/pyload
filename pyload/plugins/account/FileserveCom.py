@@ -7,13 +7,13 @@ from pyload.utils import json_loads
 
 
 class FileserveCom(Account):
-    __name__    = "FileserveCom"
-    __type__    = "account"
-    __version__ = "0.20"
+    __name    = "FileserveCom"
+    __type    = "account"
+    __version = "0.20"
 
-    __description__ = """Fileserve.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("mkaay", "mkaay@mkaay.de")]
+    __description = """Fileserve.com account plugin"""
+    __license     = "GPLv3"
+    __authors     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def loadAccountInfo(self, user, req):

@@ -4,15 +4,15 @@ from pyload.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class TurbouploadCom(DeadHoster):
-    __name__    = "TurbouploadCom"
-    __type__    = "hoster"
-    __version__ = "0.03"
+    __name    = "TurbouploadCom"
+    __type    = "hoster"
+    __version = "0.03"
 
-    __pattern__ = r'http://(?:www\.)?turboupload\.com/(\w+).*'
+    __pattern = r'http://(?:www\.)?turboupload\.com/(\w+).*'
 
-    __description__ = """Turboupload.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Turboupload.com hoster plugin"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
 getInfo = create_getInfo(TurbouploadCom)

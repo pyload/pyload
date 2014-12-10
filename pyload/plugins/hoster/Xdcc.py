@@ -15,17 +15,17 @@ from pyload.utils import safe_join
 
 
 class Xdcc(Hoster):
-    __name__    = "Xdcc"
-    __type__    = "hoster"
-    __version__ = "0.32"
+    __name    = "Xdcc"
+    __type    = "hoster"
+    __version = "0.32"
 
-    __config__ = [("nick", "str", "Nickname", "pyload"),
-                  ("ident", "str", "Ident", "pyloadident"),
-                  ("realname", "str", "Realname", "pyloadreal")]
+    __config = [("nick", "str", "Nickname", "pyload"),
+                ("ident", "str", "Ident", "pyloadident"),
+                ("realname", "str", "Realname", "pyloadreal")]
 
-    __description__ = """Download from IRC XDCC bot"""
-    __license__     = "GPLv3"
-    __authors__     = [("jeix", "jeix@hasnomail.com")]
+    __description = """Download from IRC XDCC bot"""
+    __license     = "GPLv3"
+    __authors     = [("jeix", "jeix@hasnomail.com")]
 
 
     def setup(self):
@@ -36,7 +36,7 @@ class Xdcc(Hoster):
 
     def process(self, pyfile):
         # change request type
-        self.req = pyfile.m.core.requestFactory.getRequest(self.__name__, type="XDCC")
+        self.req = pyfile.m.core.requestFactory.getRequest(self.__name, type="XDCC")
 
         self.pyfile = pyfile
         for _i in xrange(0, 3):

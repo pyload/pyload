@@ -8,15 +8,15 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class IfileIt(SimpleHoster):
-    __name__    = "IfileIt"
-    __type__    = "hoster"
-    __version__ = "0.28"
+    __name    = "IfileIt"
+    __type    = "hoster"
+    __version = "0.28"
 
-    __pattern__ = r'^unmatchable$'
+    __pattern = r'^unmatchable$'
 
-    __description__ = """Ifile.it"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description = """Ifile.it"""
+    __license     = "GPLv3"
+    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     LINK_PATTERN = r'</span> If it doesn\'t, <a target="_blank" href="([^"]+)">'
@@ -27,7 +27,7 @@ class IfileIt(SimpleHoster):
 
 
     def handleFree(self):
-        ukey      = re.match(self.__pattern__, self.pyfile.url).group(1)
+        ukey      = re.match(self.__pattern, self.pyfile.url).group(1)
         json_url  = 'http://ifile.it/new_download-request.json'
         post_data = {"ukey": ukey, "ab": "0"}
         res       = json_loads(self.load(json_url, post=post_data))
