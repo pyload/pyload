@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import re
-
 from urllib import unquote
-from urlparse import urljoin, urlparse
+from urlparse import urlparse
 
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.Plugin import SkipDownload
@@ -12,15 +10,18 @@ from pyload.plugins.Plugin import SkipDownload
 class SkipRev(Adoon):
     __name__    = "SkipRev"
     __type__    = "addon"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
-    __config__ = [("auto",   "bool", "Automatically keep all rev files needed by package", True),
-                  ("tokeep", "int" , "Min number of rev files to keep for package"       ,    1),
-                  ("unskip", "bool", "Restart a skipped rev when download fails"         , True)]
+    __config__ = [("tokeep", "int", "Number of rev files to keep for package (-1 to auto)", -1)]
 
     __description__ = """Skip files ending with extension rev"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def _setup(self):
@@ -55,11 +56,11 @@ class SkipRev(Adoon):
 
         tokeep = self.getConfig("tokeep")
 
-        if tokeep > 0:
+        if tokeep:
             saved = [True for link in pyfile.package().getChildren() \
                      if link.name.endswith(".rev") and (link.hasStatus("finished") or link.hasStatus("downloading"))].count(True)
 
-            if saved < tokeep:
+            if not saved or saved < tokeep:  #: keep one rev at least in auto mode
                 return
 
         pyfile.setCustomStatus("SkipRev", "skipped")
@@ -67,15 +68,15 @@ class SkipRev(Adoon):
 
 
     def downloadFailed(self, pyfile):
-        if self.getConfig("auto") is False:
+        tokeep = self.getConfig("tokeep")
 
-            if self.getConfig("unskip") is False:
-                return
-
-            if not pyfile.name.endswith(".rev"):
-                return
+        if not tokeep:
+            return
 
         for link in pyfile.package().getChildren():
             if link.hasStatus("skipped") and link.name.endswith(".rev"):
-                link.setCustomStatus("unskipped", "queued")
+                if tokeep > -1 or pyfile.name.endswith(".rev"):
+                    link.setStatus("queued")
+                else:
+                    link.setCustomStatus("unskipped", "queued")
                 return

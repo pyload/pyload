@@ -10,13 +10,18 @@ from pyload.utils import fs_encode
 class UnSkipOnFail(Addon):
     __name__    = "UnSkipOnFail"
     __type__    = "addon"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """When a download fails, restart skipped duplicates"""
     __license__     = "GPLv3"
     __authors__     = [("hagg", None)]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def downloadFailed(self, pyfile):

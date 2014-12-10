@@ -14,7 +14,7 @@ from pyload.plugins.internal.Addon import Hook
 class ExpertDecoders(Hook):
     __name__    = "ExpertDecoders"
     __type__    = "hook"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __config__ = [("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Access key", "")]
@@ -26,6 +26,11 @@ class ExpertDecoders(Hook):
 
 
     API_URL = "http://www.fasttypers.org/imagepost.ashx"
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def getCredits(self):

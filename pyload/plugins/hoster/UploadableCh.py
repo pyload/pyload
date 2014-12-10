@@ -53,13 +53,13 @@ class UploadableCh(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        challenge, captcha = recaptcha.challenge(self.RECAPTCHA_KEY)
+        challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
 
         # Submit the captcha solution
         self.load("http://www.uploadable.ch/checkReCaptcha.php",
                   cookies=True,
                   post={'recaptcha_challenge_field'  : challenge,
-                        'recaptcha_response_field'   : captcha,
+                        'recaptcha_response_field'   : response,
                         'recaptcha_shortencode_field': self.info['ID']},
                   decode=True)
 

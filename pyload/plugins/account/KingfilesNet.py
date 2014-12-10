@@ -36,17 +36,17 @@ class KingfilesNet(SimpleHoster):
 
     def handleFree(self):
         # Click the free user button
-        post_data = {'op': "download1",
-                     'usr_login': "",
-                     'id': self.info['pattern']['ID'],
-                     'fname': self.pyfile.name,
-                     'referer': "",
+        post_data = {'op'         : "download1",
+                     'usr_login'  : "",
+                     'id'         : self.info['pattern']['ID'],
+                     'fname'      : self.pyfile.name,
+                     'referer'    : "",
                      'method_free': "+"}
 
         self.html = self.load(self.pyfile.url, post=post_data, cookies=True, decode=True)
 
         solvemedia = SolveMedia(self)
-        captcha_challenge, captcha_response = solvemedia.challenge()
+        challenge, response = solvemedia.challenge()
 
         # Make the downloadlink appear and load the file
         m = re.search(self.RAND_ID_PATTERN, self.html)
@@ -56,15 +56,15 @@ class KingfilesNet(SimpleHoster):
         rand = m.group(1)
         self.logDebug("rand = ", rand)
 
-        post_data = {'op': "download2",
-                     'id': self.info['pattern']['ID'],
-                     'rand': rand,
-                     'referer': self.pyfile.url,
-                     'method_free': "+",
-                     'method_premium': "",
-                     'adcopy_response': captcha_response,
-                     'adcopy_challenge': captcha_challenge,
-                     'down_direct': "1"}
+        post_data = {'op'              : "download2",
+                     'id'              : self.info['pattern']['ID'],
+                     'rand'            : rand,
+                     'referer'         : self.pyfile.url,
+                     'method_free'     : "+",
+                     'method_premium'  : "",
+                     'adcopy_response' : response,
+                     'adcopy_challenge': challenge,
+                     'down_direct'     : "1"}
 
         self.html = self.load(self.pyfile.url, post=post_data, cookies=True, decode=True)
 

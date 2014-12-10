@@ -6,7 +6,7 @@ from pyload.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class Vipleech4uCom(DeadHoster):
     __name__    = "Vipleech4uCom"
     __type__    = "hoster"
-    __version__ = "0.2"
+    __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?vipleech4u\.com/manager\.php'
 

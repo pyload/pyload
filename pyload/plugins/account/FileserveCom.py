@@ -9,7 +9,7 @@ from pyload.utils import json_loads
 class FileserveCom(Account):
     __name__    = "FileserveCom"
     __type__    = "account"
-    __version__ = "0.2"
+    __version__ = "0.20"
 
     __description__ = """Fileserve.com account plugin"""
     __license__     = "GPLv3"

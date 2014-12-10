@@ -129,13 +129,11 @@ class RapidgatorNet(SimpleHoster):
                 break
             else:
                 captcha, captcha_key = self.getCaptcha()
-                captcha_challenge, captcha_response = captcha.challenge(captcha_key)
+                challenge, response  = captcha.challenge(captcha_key)
 
-                self.html = self.load(url, post={
-                    "DownloadCaptchaForm[captcha]": "",
-                    "adcopy_challenge": captcha_challenge,
-                    "adcopy_response": captcha_response
-                })
+                self.html = self.load(url, post={'DownloadCaptchaForm[captcha]': "",
+                                                 'adcopy_challenge'            : challenge,
+                                                 'adcopy_response'             : response})
 
                 if "The verification code is incorrect" in self.html:
                     self.invalidCaptcha()

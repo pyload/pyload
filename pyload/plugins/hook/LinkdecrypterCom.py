@@ -10,11 +10,16 @@ from pyload.utils import remove_chars
 class LinkdecrypterCom(Hook):
     __name__    = "LinkdecrypterCom"
     __type__    = "hook"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __description__ = """Linkdecrypter.com hook plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def coreReady(self):

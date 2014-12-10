@@ -228,20 +228,29 @@ class RelinkUs(Crypter):
 
     def handleWEBLinks(self):
         self.logDebug("Search for WEB links")
+
         package_links = []
-        fw_params = re.findall(self.WEB_FORWARD_REGEX, self.html)
-        self.logDebug("Decrypting %d Web links" % len(fw_params))
-        for index, fw_param in enumerate(fw_params):
+        params        = re.findall(self.WEB_FORWARD_REGEX, self.html)
+
+        self.logDebug("Decrypting %d Web links" % len(params))
+
+        for index, param in enumerate(params):
             try:
-                fw_url = self.WEB_FORWARD_URL + "?%s" % fw_param
-                self.logDebug("Decrypting Web link %d, %s" % (index + 1, fw_url))
-                fw_response = self.load(fw_url, decode=True)
-                dl_link = re.search(self.WEB_LINK_REGEX, fw_response).group('link')
-                package_links.append(dl_link)
+                url = self.WEB_FORWARD_URL + "?%s" % param
+
+                self.logDebug("Decrypting Web link %d, %s" % (index + 1, url))
+
+                res  = self.load(url, decode=True)
+                link = re.search(self.WEB_LINK_REGEX, res).group('link')
+
+                package_links.append(link)
+
             except Exception, detail:
                 self.logDebug("Error decrypting Web link %s, %s" % (index, detail))
+
             self.setWait(4)
             self.wait()
+
         return package_links
 
 

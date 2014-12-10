@@ -7,7 +7,7 @@ from pyload.plugins.internal.Crypter import Crypter
 class CzshareCom(Crypter):
     __name__    = "CzshareCom"
     __type__    = "crypter"
-    __version__ = "0.2"
+    __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.*'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),

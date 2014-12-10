@@ -16,7 +16,7 @@ from pyload.plugins.internal.Addon import Hook
 class Captcha9kw(Hook):
     __name__    = "Captcha9kw"
     __type__    = "hook"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __config__ = [("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
                   ("force"         , "bool"    , "Force captcha resolving even if client is connected"                             , True                                                               ),
@@ -37,6 +37,11 @@ class Captcha9kw(Hook):
 
 
     API_URL = "http://www.9kw.eu/index.cgi"
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def coreReady(self):

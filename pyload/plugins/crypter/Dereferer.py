@@ -10,7 +10,7 @@ from pyload.plugins.internal.Crypter import Crypter
 class Dereferer(Crypter):
     __name__    = "Dereferer"
     __type__    = "crypter"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __pattern__ = r'https?://([^/]+)/.*?(?P<url>(ht|f)tps?(://|%3A%2F%2F).*)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),

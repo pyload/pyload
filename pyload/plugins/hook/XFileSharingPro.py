@@ -8,7 +8,7 @@ from pyload.plugins.internal.Addon import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_hoster_list", "bool", "Load listed hosters only", True),
@@ -42,6 +42,11 @@ class XFileSharingPro(Hook):
 
     # def pluginConfigChanged(self.__name__, plugin, name, value):
         # self.loadPattern()
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def coreReady(self):

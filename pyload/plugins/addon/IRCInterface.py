@@ -20,10 +20,9 @@ from pyload.utils import formatSize
 class IRCInterface(Thread, Addon):
     __name__    = "IRCInterface"
     __type__    = "addon"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
+    __config__ = [("host"     , "str" , "IRC-Server Address"                           , "Enter your server here!"),
                   ("port"     , "int" , "IRC-Server Port"                              , 6667                     ),
                   ("ident"    , "str" , "Clients ident"                                , "pyload-irc"             ),
                   ("realname" , "str" , "Realname"                                     , "pyload-irc"             ),
@@ -43,6 +42,11 @@ class IRCInterface(Thread, Addon):
         Thread.__init__(self)
         Addon.__init__(self, core, manager)
         self.setDaemon(True)
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def coreReady(self):

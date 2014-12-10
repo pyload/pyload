@@ -10,7 +10,7 @@ from pyload.plugins.internal.Addon import Addon
 class DownloadScheduler(Addon):
     __name__    = "DownloadScheduler"
     __type__    = "addon"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __config__ = [("timetable", "str" , "List time periods as hh:mm full or number(kB/s)"      , "0:00 full, 7:00 250, 10:00 0, 17:00 150"),
                   ("abort"    , "bool", "Abort active downloads when start period with speed 0", False                                    )]
@@ -19,6 +19,11 @@ class DownloadScheduler(Addon):
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def setup(self):

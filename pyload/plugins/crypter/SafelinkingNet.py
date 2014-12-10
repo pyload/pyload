@@ -57,7 +57,7 @@ class SafelinkingNet(Crypter):
 
                     challenge, response = captcha.challenge(captchaKey)
                     postData['adcopy_challenge'] = challenge
-                    postData['adcopy_response'] = response
+                    postData['adcopy_response']  = response
 
                     self.html = self.load(url, post=postData)
                     if "The password you entered was incorrect" in self.html:

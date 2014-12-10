@@ -7,7 +7,7 @@ from pyload.utils import json_loads
 class MegaDebridEu(Account):
     __name__    = "MegaDebridEu"
     __type__    = "account"
-    __version__ = "0.2"
+    __version__ = "0.20"
 
     __description__ = """mega-debrid.eu account plugin"""
     __license__     = "GPLv3"

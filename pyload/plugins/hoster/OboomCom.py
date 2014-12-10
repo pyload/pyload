@@ -13,7 +13,7 @@ from pyload.plugins.internal.captcha import ReCaptcha
 class OboomCom(Hoster):
     __name__    = "OboomCom"
     __type__    = "hoster"
-    __version__ = "0.3"
+    __version__ = "0.30"
 
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>\w{8})'
 

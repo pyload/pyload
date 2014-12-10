@@ -6,7 +6,7 @@ from pyload.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class SpeedLoadOrg(DeadCrypter):
     __name__    = "SpeedLoadOrg"
     __type__    = "crypter"
-    __version__ = "0.3"
+    __version__ = "0.30"
 
     __pattern__ = r'http://(?:www\.)?speedload\.org/(\d+~f$|folder/\d+/)'
     __config__  = []

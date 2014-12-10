@@ -11,7 +11,7 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster
 class FlyFilesNet(SimpleHoster):
     __name__    = "FlyFilesNet"
     __type__    = "hoster"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __pattern__ = r'http://(?:www\.)?flyfiles\.net/.*'
 

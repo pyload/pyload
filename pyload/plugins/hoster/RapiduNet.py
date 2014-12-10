@@ -57,12 +57,12 @@ class RapiduNet(SimpleHoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(10):
-            challenge, code = recaptcha.challenge(self.RECAPTCHA_KEY)
+            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
 
             jsvars = self.getJsonResponse("https://rapidu.net/ajax.php?a=getCheckCaptcha",
                                           {'_go'     : None,
                                            'captcha1': challenge,
-                                           'captcha2': code,
+                                           'captcha2': response,
                                            'fileId'  : self.info['ID']})
             if jsvars['message'] == 'success':
                 self.download(jsvars['url'])
@@ -70,13 +70,13 @@ class RapiduNet(SimpleHoster):
 
 
     def getJsonResponse(self, url, post_data):
-        response = self.load(url, post=post_data, decode=True)
-        if not response.startswith('{'):
+        res = self.load(url, post=post_data, decode=True)
+        if not res.startswith('{'):
             self.retry()
 
-        self.logDebug(url, response)
+        self.logDebug(url, res)
 
-        return json_loads(response)
+        return json_loads(res)
 
 
 getInfo = create_getInfo(RapiduNet)

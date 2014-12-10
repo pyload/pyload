@@ -38,7 +38,7 @@ class CaptchaBrotherhoodException(Exception):
 class CaptchaBrotherhood(Hook):
     __name__    = "CaptchaBrotherhood"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
@@ -51,6 +51,11 @@ class CaptchaBrotherhood(Hook):
 
 
     API_URL = "http://www.captchabrotherhood.com/"
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def getCredits(self):

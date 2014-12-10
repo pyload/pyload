@@ -10,7 +10,7 @@ from pyload.plugins.internal.Account import Account
 class DepositfilesCom(Account):
     __name__    = "DepositfilesCom"
     __type__    = "account"
-    __version__ = "0.3"
+    __version__ = "0.30"
 
     __description__ = """Depositfiles.com account plugin"""
     __license__     = "GPLv3"

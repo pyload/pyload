@@ -6,7 +6,7 @@ from pyload.plugins.internal.OCR import OCR
 class GigasizeCom(OCR):
     __name__    = "GigasizeCom"
     __type__    = "ocr"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __description__ = """Gigasize.com ocr plugin"""
     __license__     = "GPLv3"

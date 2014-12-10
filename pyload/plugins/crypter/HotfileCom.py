@@ -6,7 +6,7 @@ from pyload.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 class HotfileCom(DeadCrypter):
     __name__    = "HotfileCom"
     __type__    = "crypter"
-    __version__ = "0.3"
+    __version__ = "0.30"
 
     __pattern__ = r'https?://(?:www\.)?hotfile\.com/list/\w+/\w+'
     __config__  = []

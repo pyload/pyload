@@ -58,9 +58,9 @@ class FilecloudIo(SimpleHoster):
         if not self.account:
             self.fail(_("User not logged in"))
         elif not self.account.logged_in:
-            captcha_challenge, captcha_response = recaptcha.challenge(captcha_key)
-            self.account.form_data = {"recaptcha_challenge_field": captcha_challenge,
-                                      "recaptcha_response_field": captcha_response}
+            challenge, response = recaptcha.challenge(captcha_key)
+            self.account.form_data = {"recaptcha_challenge_field": challenge,
+                                      "recaptcha_response_field" : response}
             self.account.relogin(self.user)
             self.retry(2)
 

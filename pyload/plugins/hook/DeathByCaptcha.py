@@ -51,7 +51,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Hook):
     __name__    = "DeathByCaptcha"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
@@ -64,6 +64,11 @@ class DeathByCaptcha(Hook):
 
 
     API_URL = "http://api.dbcapi.me/api/"
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def call_api(self, api="captcha", post=False, multipart=False):

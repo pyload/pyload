@@ -8,7 +8,7 @@ from pyload.plugins.internal.Hoster import Hoster
 class YoupornCom(Hoster):
     __name__    = "YoupornCom"
     __type__    = "hoster"
-    __version__ = "0.2"
+    __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
 

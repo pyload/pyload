@@ -115,10 +115,12 @@ class BitshareCom(SimpleHoster):
 
             # Try up to 3 times
             for i in xrange(3):
-                challenge, code = recaptcha.challenge()
+                challenge, response = recaptcha.challenge()
                 res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
-                                     post={"request": "validateCaptcha", "ajaxid": self.ajaxid,
-                                           "recaptcha_challenge_field": challenge, "recaptcha_response_field": code})
+                                     post={"request"                  : "validateCaptcha",
+                                           "ajaxid"                   : self.ajaxid,
+                                           "recaptcha_challenge_field": challenge,
+                                           "recaptcha_response_field" : response})
                 if self.handleCaptchaErrors(res):
                     break
 

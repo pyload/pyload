@@ -59,7 +59,7 @@ from pyload.utils import safe_join, fs_encode
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "addon"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __config__ = [("activated"    , "bool"  , "Activated"                                    , True                  ),
                   ("fullpath"     , "bool"  , "Extract full path"                            , True                  ),
@@ -81,6 +81,11 @@ class ExtractArchive(Addon):
 
 
     event_list = ["allDownloadsProcessed"]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def setup(self):

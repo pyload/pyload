@@ -9,10 +9,9 @@ from pyload.plugins.internal.Addon import Addon
 class WindowsPhoneToastNotify(Addon):
     __name__    = "WindowsPhoneToastNotify"
     __type__    = "addon"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
-    __config__ = [("activated"  , "bool", "Activated"                               , False),
-                  ("force"      , "bool", "Force even if client is connected"       , False),
+    __config__ = [("force"      , "bool", "Force even if client is connected"       , False),
                   ("pushId"     , "str" , "pushId"                                  , ""   ),
                   ("pushUrl"    , "str" , "pushUrl"                                 , ""   ),
                   ("pushTimeout", "int" , "Timeout between notifications in seconds", 0    )]
@@ -20,6 +19,11 @@ class WindowsPhoneToastNotify(Addon):
     __description__ = """Send push notifications to Windows Phone"""
     __license__     = "GPLv3"
     __authors__     = [("Andy Voigt", "phone-support@hotmail.de")]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def getXmlData(self):

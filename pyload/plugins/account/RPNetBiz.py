@@ -7,7 +7,7 @@ from pyload.utils import json_loads
 class RPNetBiz(Account):
     __name__    = "RPNetBiz"
     __type__    = "account"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __description__ = """RPNet.biz account plugin"""
     __license__     = "GPLv3"

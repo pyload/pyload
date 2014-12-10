@@ -9,7 +9,7 @@ from pyload.utils import html_unescape
 class RedtubeCom(Hoster):
     __name__    = "RedtubeCom"
     __type__    = "hoster"
-    __version__ = "0.2"
+    __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'
 

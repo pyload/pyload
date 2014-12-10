@@ -13,7 +13,7 @@ from pyload.utils import safe_join
 class ExternalScripts(Addon):
     __name__    = "ExternalScripts"
     __type__    = "addon"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
@@ -27,6 +27,11 @@ class ExternalScripts(Addon):
 
     event_list = ["archive_extracted", "package_extracted", "all_archives_extracted", "all_archives_processed",
                   "allDownloadsFinished", "allDownloadsProcessed"]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def setup(self):
