@@ -5,13 +5,13 @@ Credits
 
 *(alphabetically sorted)*
 
- - himbrr <himbrr@himbrr.ws>
- - Marius <mkaay@mkaay.de>
  - RaNaN <Mast3rRaNaN@hotmail.de>
+ - himbrr <himbrr@himbrr.ws>
+ - mkaay (Marius) <mkaay@mkaay.de>
  - sebnapi
  - spoob <spoob@gmx.de>
- - Stefano <l.stickell@yahoo.it>
- - Walter Purcaro <vuolter@gmail.com>
+ - stickell (Stefano) <l.stickell@yahoo.it>
+ - vuolter (Walter Purcaro) <vuolter@gmail.com>
  - zoidberg10 <zoidberg@mujmail.cz>
 
 A special thanks to spoob, sebnapi and RaNaN who created pyLoad!
