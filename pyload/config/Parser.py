@@ -7,7 +7,7 @@ from os.path import exists, join
 from shutil import copy
 
 from traceback import print_exc
-from utils import chmod, encode, decode
+from pyload.utils import chmod, encode, decode
 
 CONF_VERSION = 1
 

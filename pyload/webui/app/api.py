@@ -6,7 +6,7 @@ from traceback import format_exc, print_exc
 
 from bottle import route, request, response, HTTPError
 
-from utils import toDict, set_session
+from pyload.utils import toDict, set_session
 from pyload.webui import PYLOAD
 
 from pyload.utils import json

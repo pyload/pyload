@@ -16,7 +16,7 @@ from bottle import route, static_file, request, response, redirect, error
 
 from pyload.webui import PYLOAD, PYLOAD_DIR, THEME_DIR, SETUP, env
 
-from utils import render_to_response, parse_permissions, parse_userdata, \
+from pyload.utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
 
 from pyload.webui.filters import relpath, unquotepath

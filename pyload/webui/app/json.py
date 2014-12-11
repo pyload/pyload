@@ -8,7 +8,7 @@ from bottle import route, request, HTTPError
 
 from pyload.webui import PYLOAD
 
-from utils import login_required, render_to_response, toDict
+from pyload.utils import login_required, render_to_response, toDict
 
 from pyload.utils import decode, formatSize
 

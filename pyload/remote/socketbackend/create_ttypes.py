@@ -7,8 +7,8 @@ from os.path import abspath, dirname, join
 sys.path.append(join(pypath, "pyload", "lib"))
 sys.path.append(join(pypath, "pyload", "remote"))
 
-from thriftbackend.thriftgen.pyload import ttypes
-from thriftbackend.thriftgen.pyload.Pyload import Iface
+from pyload.remote.thriftbackend.thriftgen.pyload import ttypes
+from pyload.remote.thriftbackend.thriftgen.pyload.Pyload import Iface
 
 
 def main():

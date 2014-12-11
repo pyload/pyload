@@ -4,8 +4,8 @@
 from hashlib import sha1
 import random
 
-from DatabaseBackend import DatabaseBackend
-from DatabaseBackend import style
+from pyload.database.DatabaseBackend import DatabaseBackend
+from pyload.database.DatabaseBackend import style
 
 class UserMethods(object):
     @style.queue

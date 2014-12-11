@@ -9,8 +9,8 @@ from logging import getLogger
 
 import pycurl
 
-from HTTPChunk import ChunkInfo, HTTPChunk
-from HTTPRequest import BadHeader
+from pyload.network.HTTPChunk import ChunkInfo, HTTPChunk
+from pyload.network.HTTPRequest import BadHeader
 
 from pyload.plugins.Plugin import Abort
 from pyload.utils import safe_join, fs_encode

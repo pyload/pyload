@@ -10,7 +10,7 @@ import codecs
 import pycurl
 import urllib
 
-from HTTPRequest import HTTPRequest
+from pyload.network.HTTPRequest import HTTPRequest
 
 class WrongFormat(Exception):
     pass

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from thriftgen.pyload import Pyload
+from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
 
 class Processor(Pyload.Processor):
     def __init__(self, *args, **kwargs):

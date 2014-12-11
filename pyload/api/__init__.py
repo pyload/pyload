@@ -10,15 +10,15 @@ from urlparse import urlparse
 
 from pyload.datatype.PyFile import PyFile
 from pyload.utils.packagetools import parseNames
-from network.RequestFactory import getURL
-from remote import activated
-from utils import compare_time, freeSpace, html_unescape, save_filename
+from pyload.network.RequestFactory import getURL
+from pyload.remote import activated
+from pyload.utils import compare_time, freeSpace, html_unescape, save_filename
 
 if activated:
     try:
-        from lib.thrift.protocol import TBase
-        from remote.thriftbackend.thriftgen.pyload.ttypes import *
-        from remote.thriftbackend.thriftgen.pyload.Pyload import Iface
+        from thrift.protocol import TBase
+        from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
+        from pyload.remote.thriftbackend.thriftgen.pyload.Pyload import Iface
 
         BaseObject = TBase
 

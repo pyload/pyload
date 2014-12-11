@@ -17,8 +17,8 @@ from Protocol import Protocol
 
 # modules should import ttypes from here, when want to avoid importing API
 
-from thriftgen.pyload import Pyload
-from thriftgen.pyload.ttypes import *
+from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
+from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
 
 ConnectionClosed = TTransport.TTransportException
 
