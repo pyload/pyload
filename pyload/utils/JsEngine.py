@@ -47,7 +47,7 @@ class JsEngine(object):
         if isinstance(engine, basestring):
             engine_name = engine.lower()
             for E in ENGINES:
-                if E.NAME == engine_name:  #: doesn't check if E(NGINE) is available, just convert string to class
+                if E.__name == engine_name:  #: doesn't check if E(NGINE) is available, just convert string to class
                     JSE = E
                     break
             else:
@@ -87,14 +87,14 @@ class JsEngine(object):
 
         if self.core.config.get("general", "debug"):
             if err:
-                self.core.log.debug(JSE.NAME + ":", err)
+                self.core.log.debug(JSE.__name + ":", err)
 
             engines = self.find()
             engines.remove(JSE)
             for E in engines:
                 out, err = E.eval(script)
                 res = err or out
-                self.core.log.debug(E.NAME + ":", res)
+                self.core.log.debug(E.__name + ":", res)
                 results.append(res)
 
             if len(results) > 1 and len(uniqify(results)) > 1:
@@ -106,7 +106,7 @@ class JsEngine(object):
 class AbstractEngine(object):
     """ JSE base class """
 
-    NAME = ""
+    __name = ""
 
     def __init__(self):
         self.setup()
@@ -119,7 +119,7 @@ class AbstractEngine(object):
     def find(cls):
         """ Check if the engine is available """
         try:
-            __import__(cls.NAME)
+            __import__(cls.__name)
         except ImportError:
             try:
                 out, err = cls().eval("print(23+19)")
@@ -134,7 +134,7 @@ class AbstractEngine(object):
 
     def _eval(args):
         if not self.available:
-            return None, "JS Engine \"%s\" not found" % self.NAME
+            return None, "JS Engine \"%s\" not found" % self.__name
 
         try:
             p = subprocess.Popen(args,
@@ -152,11 +152,11 @@ class AbstractEngine(object):
 
 class Pyv8Engine(AbstractEngine):
 
-    NAME = "pyv8"
+    __name = "pyv8"
 
     def eval(self, script):
         if not self.available:
-            return None, "JS Engine \"%s\" not found" % self.NAME
+            return None, "JS Engine \"%s\" not found" % self.__name
 
         try:
             rt = PyV8.JSContext()
@@ -170,7 +170,7 @@ class Pyv8Engine(AbstractEngine):
 
 class CommonEngine(AbstractEngine):
 
-    NAME = "js"
+    __name = "js"
 
     def setup(self):
         subprocess.Popen(["js", "-v"], bufsize=-1).communicate()
@@ -183,7 +183,7 @@ class CommonEngine(AbstractEngine):
 
 class NodeEngine(AbstractEngine):
 
-    NAME = "nodejs"
+    __name = "nodejs"
 
     def setup(self):
         subprocess.Popen(["node", "-v"], bufsize=-1).communicate()
@@ -196,7 +196,7 @@ class NodeEngine(AbstractEngine):
 
 class RhinoEngine(AbstractEngine):
 
-    NAME = "rhino"
+    __name = "rhino"
 
     def setup(self):
         jspath = [
@@ -223,7 +223,7 @@ class RhinoEngine(AbstractEngine):
 
 class JscEngine(AbstractEngine):
 
-    NAME = "javascriptcore"
+    __name = "javascriptcore"
 
     def setup(self):
         jspath = "/System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc"
