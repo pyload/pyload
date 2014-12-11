@@ -26,7 +26,7 @@ SETUP = None
 PYLOAD = None
 
 from pyload.manager.thread import ServerThread
-from pyload.utils.JsEngine import JsEngine
+from pyload.network.JsEngine import JsEngine
 
 if not ServerThread.core:
     if ServerThread.setup:

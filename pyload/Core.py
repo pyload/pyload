@@ -30,7 +30,7 @@ from pyload.manager.event.PullEvents import PullManager
 from pyload.network.RequestFactory import RequestFactory
 from pyload.manager.thread.ServerThread import WebServer
 from pyload.manager.event.Scheduler import Scheduler
-from pyload.utils.JsEngine import JsEngine
+from pyload.network.JsEngine import JsEngine
 from pyload import remote
 from pyload.manager.RemoteManager import RemoteManager
 from pyload.database import DatabaseBackend, FileHandler
@@ -84,21 +84,21 @@ class Core(object):
                         from pyload.config.Setup import SetupAssistant as Setup
 
                         self.config = ConfigParser()
-                        s = Setup(pypath, self.config)
+                        s = Setup(self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
                         from pyload.config.Setup import SetupAssistant as Setup
 
                         self.config = ConfigParser()
-                        s = Setup(pypath, self.config)
+                        s = Setup(self.config)
                         s.start()
                         exit()
                     elif option == "--changedir":
                         from pyload.config.Setup import SetupAssistant as Setup
 
                         self.config = ConfigParser()
-                        s = Setup(pypath, self.config)
+                        s = Setup(self.config)
                         s.conf_path(True)
                         exit()
                     elif option in ("-q", "--quit"):
@@ -249,7 +249,7 @@ class Core(object):
 
             print "This is your first start, running configuration assistent now."
             self.config = ConfigParser()
-            s = Setup(pypath, self.config)
+            s = Setup(self.config)
             res = False
             try:
                 res = s.start()

@@ -12,14 +12,9 @@ from pyload.utils import encode, decode, uniqify
 class JsEngine(object):
     """ JS Engine superclass """
 
-    def __init__(self, core, engine=None):  #: engine can be a jse name """string""" or an AbstractEngine """class"""
-
-        self.core = core
-        self.engine = None  #: Default engine Instance
-
-        if not ENGINES:
-            self.core.log.critical("No JS Engine found!")
-            return
+    def __init__(self, core, engine=None):
+        self.core   = core
+        self.engine = None  #: Engine Instance
 
         if not engine:
             engine = self.core.config.get("general", "jsengine")
@@ -42,42 +37,47 @@ class JsEngine(object):
         return [E for E in ENGINES if E.find()]
 
 
-    def get(self, engine):
+    def get(self, engine=None):
         """ Convert engine name (string) to relative JSE class (AbstractEngine extended) """
-        if isinstance(engine, basestring):
+        if not engine:
+            JSE = self.engine
+
+        elif isinstance(engine, basestring):
             engine_name = engine.lower()
             for E in ENGINES:
                 if E.__name == engine_name:  #: doesn't check if E(NGINE) is available, just convert string to class
                     JSE = E
                     break
             else:
-                JSE = None
+                raise ValueError("JSE")
+
         elif issubclass(engine, AbstractEngine):
             JSE = engine
+
         else:
-            JSE = None
+            raise TypeError("engine")
+
         return JSE
 
 
     def set(self, engine):
         """ Set engine name (string) or JSE class (AbstractEngine extended) as default engine """
         if isinstance(engine, basestring):
-            self.set(self.get(engine))
+            return self.set(self.get(engine))
+
         elif issubclass(engine, AbstractEngine) and engine.find():
             self.engine = engine
             return True
+
         else:
             return False
 
 
     def eval(self, script, engine=None):  #: engine can be a jse name """string""" or an AbstractEngine """class"""
-        if not engine:
-            JSE = self.engine
-        else:
-            JSE = self.get(engine)
+        JSE = self.get(engine)
 
         if not JSE:
-            return None
+            raise TypeError("engine")
 
         script = encode(script)
 
@@ -108,19 +108,22 @@ class AbstractEngine(object):
 
     __name = ""
 
+
     def __init__(self):
         self.setup()
         self.available = self.find()
 
+
     def setup(self):
         pass
+
 
     @classmethod
     def find(cls):
         """ Check if the engine is available """
         try:
             __import__(cls.__name)
-        except ImportError:
+        except Exception:
             try:
                 out, err = cls().eval("print(23+19)")
             except Exception:
@@ -129,8 +132,9 @@ class AbstractEngine(object):
                 res = out == "42"
         else:
             res = True
-        finally:
-            return res
+
+        return res
+
 
     def _eval(args):
         if not self.available:
@@ -154,6 +158,7 @@ class Pyv8Engine(AbstractEngine):
 
     __name = "pyv8"
 
+
     def eval(self, script):
         if not self.available:
             return None, "JS Engine \"%s\" not found" % self.__name
@@ -164,16 +169,18 @@ class Pyv8Engine(AbstractEngine):
             res = rt.eval(script), None  #@TODO: parse stderr
         except Exception, e:
             res = None, e
-        finally:
-            return res
+
+        return res
 
 
 class CommonEngine(AbstractEngine):
 
     __name = "js"
 
+
     def setup(self):
         subprocess.Popen(["js", "-v"], bufsize=-1).communicate()
+
 
     def eval(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
@@ -185,8 +192,10 @@ class NodeEngine(AbstractEngine):
 
     __name = "nodejs"
 
+
     def setup(self):
         subprocess.Popen(["node", "-v"], bufsize=-1).communicate()
+
 
     def eval(self, script):
         script = "console.log(eval(unescape('%s')))" % quote(script)
@@ -197,6 +206,7 @@ class NodeEngine(AbstractEngine):
 class RhinoEngine(AbstractEngine):
 
     __name = "rhino"
+
 
     def setup(self):
         jspath = [
@@ -210,6 +220,7 @@ class RhinoEngine(AbstractEngine):
                 break
         else:
             self.path = ""
+
 
     def eval(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
@@ -225,9 +236,11 @@ class JscEngine(AbstractEngine):
 
     __name = "javascriptcore"
 
+
     def setup(self):
         jspath = "/System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc"
         self.path = jspath if path.exists(jspath) else ""
+
 
     def eval(self, script):
         script = "print(eval(unescape('%s')))" % quote(script)
