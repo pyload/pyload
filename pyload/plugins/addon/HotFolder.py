@@ -31,7 +31,7 @@ class HotFolder(Addon):
         self.interval = 10
 
 
-    def coreReady(self):
+    def activate(self):
         self.initPeriodical()
 
 

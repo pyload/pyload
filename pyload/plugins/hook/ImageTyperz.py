@@ -103,7 +103,7 @@ class ImageTyperz(Addon):
         return ticket, result
 
 
-    def newCaptchaTask(self, task):
+    def captchaTask(self, task):
         if "service" in task.data:
             return False
 

@@ -37,7 +37,7 @@ class ClickAndLoad(Addon):
         self.interval = 300
 
 
-    def coreReady(self):
+    def activate(self):
         self.initPeriodical()
 
 

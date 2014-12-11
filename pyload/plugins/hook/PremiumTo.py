@@ -26,7 +26,7 @@ class PremiumTo(MultiHoster):
         return [x.strip() for x in page.replace("\"", "").split(";")]
 
 
-    def coreReady(self):
+    def activate(self):
         self.account = self.core.accountManager.getAccountPlugin("PremiumTo")
 
         user = self.account.selectAccount()[0]
@@ -35,4 +35,4 @@ class PremiumTo(MultiHoster):
             self.logError(_("Please add your premium.to account first and restart pyLoad"))
             return
 
-        return MultiHoster.coreReady(self)
+        return MultiHoster.activate(self)

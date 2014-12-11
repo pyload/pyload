@@ -9,7 +9,7 @@ class PremiumizeMe(Hoster):
     __type    = "hoster"
     __version = "0.12"
 
-    __pattern = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
+    __pattern = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
 
     __description = """Premiumize.me hoster plugin"""
     __license     = "GPLv3"

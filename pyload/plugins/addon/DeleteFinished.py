@@ -38,11 +38,11 @@ class DeleteFinished(Addon):
             self.initPeriodical()
 
 
-    def unload(self):
+    def deactivate(self):
         self.removeEvent('packageFinished', self.wakeup)
 
 
-    def coreReady(self):
+    def activate(self):
         self.info = {'sleep': True}
         interval = self.getConfig('interval')
         self.pluginConfigChanged(self.__name, 'interval', interval)

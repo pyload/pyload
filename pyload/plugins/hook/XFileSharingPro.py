@@ -44,7 +44,7 @@ class XFileSharingPro(Addon):
         # self.loadPattern()
 
 
-    def coreReady(self):
+    def activate(self):
         self.loadPattern()
 
 
@@ -91,6 +91,6 @@ class XFileSharingPro(Addon):
         dict['re'] = re.compile(dict['pattern'])
 
 
-    def unload(self):
+    def deactivate(self):
         for type in ("hoster", "crypter"):
             self._unload(type, "XFileSharingPro")

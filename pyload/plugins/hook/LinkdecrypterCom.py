@@ -17,7 +17,7 @@ class LinkdecrypterCom(Addon):
     __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    def coreReady(self):
+    def activate(self):
         try:
             self.loadPatterns()
         except Exception, e:

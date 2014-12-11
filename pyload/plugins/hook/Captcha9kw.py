@@ -39,7 +39,7 @@ class Captcha9kw(Addon):
     API_URL = "http://www.9kw.eu/index.cgi"
 
 
-    def coreReady(self):
+    def activate(self):
         if self.getConfig("ssl"):
             self.API_URL = self.API_URL.replace("http://", "https://")
 
@@ -164,7 +164,7 @@ class Captcha9kw(Addon):
         task.setResult(result)
 
 
-    def newCaptchaTask(self, task):
+    def captchaTask(self, task):
         if not task.isTextual() and not task.isPositional():
             return
 

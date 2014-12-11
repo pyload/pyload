@@ -25,7 +25,7 @@ class RehostTo(MultiHoster):
         return [x.strip() for x in page.replace("\"", "").split(",")]
 
 
-    def coreReady(self):
+    def activate(self):
         self.account = self.core.accountManager.getAccountPlugin("RehostTo")
 
         user = self.account.selectAccount()[0]
@@ -38,4 +38,4 @@ class RehostTo(MultiHoster):
         self.ses = data['ses']
         self.long_ses = data['long_ses']
 
-        return MultiHoster.coreReady(self)
+        return MultiHoster.activate(self)

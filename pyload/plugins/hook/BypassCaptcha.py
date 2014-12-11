@@ -89,7 +89,7 @@ class BypassCaptcha(Addon):
             self.logError(_("Could not send response"), e)
 
 
-    def newCaptchaTask(self, task):
+    def captchaTask(self, task):
         if "service" in task.data:
             return False
 

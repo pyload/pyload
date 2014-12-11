@@ -232,6 +232,11 @@ def fixup(m):
     return text # leave as is
 
 
+def has_method(obj, name):
+    """ Check if "name" was defined in obj, (false if it was inhereted) """
+    return hasattr(obj, '__dict__') and name in obj.__dict__
+
+
 def html_unescape(text):
     """Removes HTML or XML character references and entities from a text string"""
     return re.sub("&#?\w+;", fixup, text)

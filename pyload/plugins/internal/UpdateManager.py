@@ -50,13 +50,13 @@ class UpdateManager(Addon):
                 self.periodical2()
 
 
-    def coreReady(self):
+    def activate(self):
         self.pluginConfigChanged(self.__name, "interval", self.getConfig("interval"))
         x = lambda: self.pluginConfigChanged(self.__name, "reloadplugins", self.getConfig("reloadplugins"))
         self.core.scheduler.addJob(10, x, threaded=False)
 
 
-    def unload(self):
+    def deactivate(self):
         self.pluginConfigChanged(self.__name, "reloadplugins", False)
 
 

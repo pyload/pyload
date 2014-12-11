@@ -42,7 +42,7 @@ class PremiumizeMe(MultiHoster):
         return data['result']['hosterlist']
 
 
-    def coreReady(self):
+    def activate(self):
         # Get account plugin and check if there is a valid account available
         self.account = self.core.accountManager.getAccountPlugin("PremiumizeMe")
         if not self.account.canUse():
@@ -51,4 +51,4 @@ class PremiumizeMe(MultiHoster):
             return
 
         # Run the overwriten core ready which actually enables the multihoster hook
-        return MultiHoster.coreReady(self)
+        return MultiHoster.activate(self)

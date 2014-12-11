@@ -44,7 +44,7 @@ class IRCInterface(Thread, Addon):
         self.setDaemon(True)
 
 
-    def coreReady(self):
+    def activate(self):
         self.abort = False
         self.more = []
         self.new_package = {}
@@ -69,7 +69,7 @@ class IRCInterface(Thread, Addon):
             pass
 
 
-    def newCaptchaTask(self, task):
+    def captchaTask(self, task):
         if self.getConfig("captcha") and task.isTextual():
             task.handler.append(self)
             task.setWaiting(60)

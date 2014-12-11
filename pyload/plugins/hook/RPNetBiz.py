@@ -40,7 +40,7 @@ class RPNetBiz(MultiHoster):
         return hoster_list['hosters']
 
 
-    def coreReady(self):
+    def activate(self):
         # Get account plugin and check if there is a valid account available
         self.account = self.core.accountManager.getAccountPlugin("RPNetBiz")
         if not self.account.canUse():
@@ -49,4 +49,4 @@ class RPNetBiz(MultiHoster):
             return
 
         # Run the overwriten core ready which actually enables the multihoster hook
-        return MultiHoster.coreReady(self)
+        return MultiHoster.activate(self)

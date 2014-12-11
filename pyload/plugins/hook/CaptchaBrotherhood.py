@@ -127,7 +127,7 @@ class CaptchaBrotherhood(Addon):
         return res
 
 
-    def newCaptchaTask(self, task):
+    def captchaTask(self, task):
         if "service" in task.data:
             return False
 

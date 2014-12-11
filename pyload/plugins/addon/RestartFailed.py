@@ -41,5 +41,5 @@ class RestartFailed(Addon):
         self.interval = 0
 
 
-    def coreReady(self):
+    def activate(self):
         self.pluginConfigChanged(self.__name, "interval", self.getConfig("interval"))

@@ -62,7 +62,7 @@ class ExpertDecoders(Addon):
         task.setResult(result)
 
 
-    def newCaptchaTask(self, task):
+    def captchaTask(self, task):
         if not task.isTextual():
             return False
 

@@ -3,6 +3,7 @@
 from traceback import print_exc
 
 from pyload.plugins.Plugin import Base
+from pyload.utils import has_method
 
 
 class Expose(object):
@@ -13,10 +14,11 @@ class Expose(object):
         return f
 
 
-def threaded(f):
+def threaded(fn):
 
     def run(*args,**kwargs):
-        addonManager.startThread(f, *args, **kwargs)
+        addonManager.startThread(fn, *args, **kwargs)
+
     return run
 
 
@@ -33,7 +35,7 @@ class Addon(Base):
     __description = """Base addon/hook plugin"""
     __license     = "GPLv3"
     __authors     = [("mkaay", "mkaay@mkaay.de"),
-                       ("RaNaN", "RaNaN@pyload.org")]
+                     ("RaNaN", "RaNaN@pyload.org")]
 
 
     #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
@@ -109,8 +111,12 @@ class Addon(Base):
         pass
 
 
-    def unload(self):
+    def deactivate(self):
         """ called when addon was deactivated """
+        if has_method(self.__class__, "unload"):
+            self.unload()
+
+    def unload(self):  # Deprecated, use method deactivate() instead
         pass
 
 
@@ -119,12 +125,22 @@ class Addon(Base):
         return self.core.config.getPlugin(self.__name, "activated")
 
 
-    #event methods - overwrite these if needed
-    def coreReady(self):
+    # Event methods - overwrite these if needed
+    def activate(self):
+        """ called when addon was activated """
+        if has_method(self.__class__, "coreReady"):
+            self.coreReady()
+
+    def coreReady(self):  # Deprecated, use method activate() instead
         pass
 
 
-    def coreExiting(self):
+    def exit(self):
+        """ called by core.shutdown just before pyLoad exit """
+        if has_method(self.__class__, "coreExiting"):
+            self.coreExiting()
+
+    def coreExiting(self):  # Deprecated, use method exit() instead
         pass
 
 
@@ -156,7 +172,7 @@ class Addon(Base):
         pass
 
 
-    def newCaptchaTask(self, task):
+    def captchaTask(self, task):
         """ new captcha task for the plugin, it MUST set the handler and timeout or will be ignored """
         pass
 
