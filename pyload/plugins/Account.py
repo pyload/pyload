@@ -188,16 +188,16 @@ class Account(Base):
         :param req: `Request` instance
         :return:
         """
-        return {"validuntil": None,  #: -1 for unlimited
-                "login": name,
-                # "password": self.accounts[name]['password'],  #: commented due security reason
-                "options": self.accounts[name]['options'],
-                "valid": self.accounts[name]['valid'],
-                "trafficleft": None,  #: in kb, -1 for unlimited
-                "maxtraffic": None,
-                "premium": None,
-                "timestamp": 0,  #: time this info was retrieved
-                "type": self.__name}
+        return {"validuntil" : None,  #: -1 for unlimited
+                "login"      : name,
+                # "password"   : self.accounts[name]['password'],  #: commented due security reason
+                "options"    : self.accounts[name]['options'],
+                "valid"      : self.accounts[name]['valid'],
+                "trafficleft": None,  #: in bytes, -1 for unlimited
+                "maxtraffic" : None,
+                "premium"    : None,
+                "timestamp"  : 0,  #: time this info was retrieved
+                "type"       : self.__name}
 
 
     def getAllAccounts(self, force=False):
@@ -262,8 +262,10 @@ class Account(Base):
         return False if self.selectAccount() == (None, None) else True
 
 
-    def parseTraffic(self, string): #returns kbyte
-        return parseFileSize(string)
+    def parseTraffic(self, value, unit=None):  #: return bytes
+        if not unit and not isinstance(value, basestring):
+            unit = "KB"
+        return parseFileSize(value, unit)
 
 
     def wrongPassword(self):

@@ -5,8 +5,6 @@ import re
 from random import random
 from time import sleep
 
-from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
-
 from pyload.plugins.hoster.UnrestrictLi import secondsToMidnight
 from pyload.plugins.internal.captcha import ReCaptcha, SolveMedia
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -119,11 +117,7 @@ class XFSHoster(SimpleHoster):
 
             data = self.getPostParameters()
 
-            self.req.http.c.setopt(FOLLOWLOCATION, 0)
-
-            self.html = self.load(self.pyfile.url, post=data, ref=True, decode=True)
-
-            self.req.http.c.setopt(FOLLOWLOCATION, 1)
+            self.html = self.load(self.pyfile.url, post=data, ref=True, decode=True, follow_location=False)
 
             m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
             if m and not "op=" in m.group(1):

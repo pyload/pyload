@@ -4,8 +4,6 @@ import re
 
 from urlparse import urljoin
 
-from pycurl import FOLLOWLOCATION
-
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
@@ -32,11 +30,10 @@ class UnibytesCom(SimpleHoster):
     def handleFree(self):
         domain = "http://www.%s/" % self.HOSTER_DOMAIN
         action, post_data = self.parseHtmlForm('id="startForm"')
-        self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
         for _i in xrange(8):
             self.logDebug(action, post_data)
-            self.html = self.load(urljoin(domain, action), post=post_data)
+            self.html = self.load(urljoin(domain, action), post=post_data, follow_location=False)
 
             m = re.search(r'location:\s*(\S+)', self.req.http.header, re.I)
             if m:
@@ -67,7 +64,6 @@ class UnibytesCom(SimpleHoster):
         else:
             self.fail(_("No valid captcha code entered"))
 
-        self.req.http.c.setopt(FOLLOWLOCATION, 1)
         self.download(url)
 
 

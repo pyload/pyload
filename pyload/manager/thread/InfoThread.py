@@ -16,9 +16,6 @@ from pycurl import error
 
 from pyload.datatype.PyFile import PyFile
 from pyload.manager.thread.PluginThread import PluginThread
-from pyload.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
-from pyload.utils.packagetools import parseNames
-from pyload.utils import safe_join
 from pyload.api import OnlineStatus
 
 

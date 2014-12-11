@@ -138,7 +138,7 @@ def parseNames(files):
 
         # fallback: package by hoster
         if not name:
-            name = urlparse(file).hostname
+            name = urlparse(file).netloc
             if name:
                 name = pat0.sub("", name)
 

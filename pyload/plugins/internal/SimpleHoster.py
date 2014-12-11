@@ -10,7 +10,7 @@ from pyload.datatype.PyFile import statusMap as _statusMap
 from pyload.network.CookieJar import CookieJar
 from pyload.network.RequestFactory import getURL
 from pyload.plugins.Hoster import Hoster
-from pyload.utils import fixup, parseFileSize
+from pyload.utils import fixup, formatSize, parseFileSize
 
 
 #@TODO: Adapt and move to PyFile in 0.4.10
@@ -523,9 +523,8 @@ class SimpleHoster(Hoster):
         elif traffic == -1:
             return True
         else:
-            size = self.pyfile.size / 1024
-            self.logInfo(_("Filesize: %i KiB, Traffic left for user %s: %i KiB") % (size, self.user, traffic))
-            return size <= traffic
+            self.logInfo(_("Filesize: %s, Traffic left for user %s: %s") % (formatSize(size), self.user, formatSize(traffic)))
+            return self.pyfile.size <= traffic
 
 
     def error(self, reason="", type="parse"):

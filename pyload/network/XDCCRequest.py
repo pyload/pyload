@@ -46,7 +46,7 @@ class XDCCRequest(object):
 
         return socket.socket()
 
-    def download(self, ip, port, filename, irc, progressNotify=None):
+    def download(self, ip, port, filename, irc, progress=None):
 
         ircbuffer = ""
         lastUpdate = time()
@@ -93,8 +93,8 @@ class XDCCRequest(object):
                 cumRecvLen = 0
                 lastUpdate = now
 
-                if progressNotify:
-                    progressNotify(self.percent)
+                if progress:
+                    progress(self.percent)
 
             if not data:
                 break

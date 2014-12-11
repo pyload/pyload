@@ -2,7 +2,6 @@
 
 import re
 
-from pycurl import FOLLOWLOCATION
 from random import randint
 
 from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -31,16 +30,15 @@ class GigapetaCom(SimpleHoster):
         captcha_key = str(randint(1, 100000000))
         captcha_url = "http://gigapeta.com/img/captcha.gif?x=%s" % captcha_key
 
-        self.req.http.c.setopt(FOLLOWLOCATION, 0)
-
         for _i in xrange(5):
             self.checkErrors()
 
             captcha = self.decryptCaptcha(captcha_url)
-            self.html = self.load(self.pyfile.url, post={
-                "captcha_key": captcha_key,
-                "captcha": captcha,
-                "download": "Download"})
+            self.html = self.load(self.pyfile.url,
+                                  post={'captcha_key': captcha_key,
+                                        'captcha'    : captcha,
+                                        'download'   : "Download"},
+                                  follow_location=False)
 
             m = re.search(r'Location\s*:\s*(.+)', self.req.http.header, re.I)
             if m:
@@ -51,7 +49,6 @@ class GigapetaCom(SimpleHoster):
         else:
             self.fail(_("No valid captcha code entered"))
 
-        self.req.http.c.setopt(FOLLOWLOCATION, 1)
         self.download(download_url)
 
 
