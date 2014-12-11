@@ -10,6 +10,7 @@ from os import listdir, makedirs
 from os.path import isdir, isfile, join, exists, abspath
 from sys import version_info
 from traceback import print_exc
+from urllib import unquote
 
 from SafeEval import const_eval as literal_eval
 
@@ -200,6 +201,8 @@ class PluginManager(object):
         for url in urls:
             if type(url) not in (str, unicode, buffer):
                 continue
+
+            url = unquote(url)
 
             if last and last[2]['re'].match(url):
                 res.append((url, last[0], last[1]))

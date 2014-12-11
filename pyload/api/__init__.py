@@ -12,7 +12,7 @@ from pyload.datatype.PyFile import PyFile
 from pyload.utils.packagetools import parseNames
 from pyload.network.RequestFactory import getURL
 from pyload.remote import activated
-from pyload.utils import compare_time, freeSpace, html_unescape, save_filename
+from pyload.utils import compare_time, freeSpace, safe_filename
 
 if activated:
     try:
@@ -301,11 +301,11 @@ class Api(Iface):
         :return: package id of the new package
         """
         if self.core.config['general']['folder_per_package']:
-            folder = urlparse(html_unescape(name)).path.split("/")[-1]
+            folder = urlparse(name).path.split("/")[-1]
         else:
             folder = ""
 
-        folder = save_filename(folder)
+        folder = safe_filename(folder)
 
         pid = self.core.files.addPackage(name, folder, dest)
 
