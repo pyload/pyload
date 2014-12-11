@@ -3,13 +3,15 @@
 """ Store all useful functions here """
 
 import os
+import re
 import sys
 import time
-import re
+
+from gettext import gettext
+from htmlentitydefs import name2codepoint
 from os.path import join
 from string import maketrans
 from urllib import unquote
-from htmlentitydefs import name2codepoint
 
 # abstraction layer for json operations
 try:
@@ -245,3 +247,16 @@ def html_unescape(text):
 
 def versiontuple(v):  #: By kindall (http://stackoverflow.com/a/11887825)
     return tuple(map(int, (v.split("."))))
+
+
+def load_translation(name, locale, default="en"):
+    """ Load language and return its translation object or None """
+    try:
+        gettext.setpaths([path.join(os.sep, "usr", "share", "pyload", "locale"), None])
+        translation = gettext.translation(name, self.path("locale"),
+                                          languages=[locale, default], fallback=True)
+    except Exception:
+        return None
+    else:
+        translation.install(True)
+        return translation

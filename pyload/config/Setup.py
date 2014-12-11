@@ -1,33 +1,33 @@
 # -*- coding: utf-8 -*-
 
+import __builtin__
+
 import os
 import sys
 
-import pyload.utils.pylgettext as gettext
-
 from getpass import getpass
-from os import makedirs
-from os.path import abspath, dirname, exists, join
+from os import chdir, makedirs, path
 from subprocess import PIPE, call
 
-from pyload.utils import get_console_encoding, versiontuple
+from pyload.network.JsEngine import JsEngine
+from pyload.utils import get_console_encoding, load_translation, safe_join, versiontuple
 
 
 class SetupAssistant(object):
     """ pyLoads initial setup configuration assistant """
 
-    def __init__(self, path, config):
-        self.path = path
-        self.config = config
+    def __init__(self, config):
+        self.config         = config
+        self.lang           = "en"
         self.stdin_encoding = get_console_encoding(sys.stdin.encoding)
 
 
     def start(self):
-        langs = self.config.getMetaData("general", "language")["type"].split(";")
-        lang = self.ask(u"Choose setup language", "en", langs)
-        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-        translation = gettext.translation("setup", join(self.path, "locale"), languages=[lang, "en"], fallback=True)
-        translation.install(True)
+        print
+        langs = sorted(self.config.getMetaData("general", "language")['type'].split(";"))
+        self.lang = self.ask(u"Choose setup language", "en", langs)
+
+        load_translation("setup", self.lang)
 
         #Input shorthand for yes
         self.yes = _("y")
@@ -38,20 +38,12 @@ class SetupAssistant(object):
         #        print _("Would you like to configure pyLoad via Webinterface?")
         #        print _("You need a Browser and a connection to this PC for it.")
         #        viaweb = self.ask(_("Start initial webinterface for configuration?"), "y", bool=True)
-        #        if viaweb:
-        #            try:
-        #                from pyload.manager.thread import ServerThread
-        #                ServerThread.setup = self
-        #                import pyload.webui as webinterface
-        #                webinterface.run_simple()
-        #                return False
-        #            except Exception, e:
-        #                print "Setup failed with this error: ", e
-        #                print "Falling back to commandline setup."
+        #        ...
 
         print
         print
-        print _("Welcome to the pyLoad Configuration Assistant.")
+        print _("## Welcome to the pyLoad Configuration Assistant ##")
+        print
         print _("It will check your system and make a basic setup in order to run pyLoad.")
         print
         print _("The value in brackets [] always is the default value,")
@@ -88,26 +80,24 @@ class SetupAssistant(object):
 
         avail = []
         if self.check_module("Crypto"):
-            avail.append(_("container decrypting"))
+            avail.append(_("- container decrypting"))
         if ssl:
-            avail.append(_("ssl connection"))
+            avail.append(_("- ssl connection"))
         if captcha:
-            avail.append(_("automatic captcha decryption"))
+            avail.append(_("- automatic captcha decryption"))
         if web:
-            avail.append(_("webinterface"))
+            avail.append(_("- webinterface"))
         if js:
-            avail.append(_("extended Click'N'Load"))
+            avail.append(_("- extended Click'N'Load"))
 
-        string = ""
-
-        for av in avail:
-            string += ", " + av
-
-        print _("AVAILABLE FEATURES:") + string[1:]
-        print
+        if avail:
+            print _("AVAILABLE FEATURES:")
+            for feature in avail:
+                print feature
+            print
 
         if len(avail) < 5:
-            print _("MISSING FEATURES: ")
+            print _("MISSING FEATURES:")
 
             if not self.check_module("Crypto"):
                 print _("- no py-crypto available")
@@ -132,7 +122,10 @@ class SetupAssistant(object):
 
             print
             print _("You can abort the setup now and fix some dependicies if you want.")
+        else:
+            print _("NO MISSING FEATURES!")
 
+        print
         print
         con = self.ask(_("Continue with setup?"), self.yes, bool=True)
 
@@ -141,14 +134,14 @@ class SetupAssistant(object):
 
         print
         print
-        print _("CURRENT CONFIG PATH: %s") % abspath("")
+        print _("CURRENT CONFIG PATH: %s") % configdir
         print
         print _("NOTE: If you use pyLoad on a server or the home partition lives on an iternal flash it may be a good idea to change it.")
-        path = self.ask(_("Do you want to change the config path?"), self.no, bool=True)
-        if path:
+        confpath = self.ask(_("Do you want to change the config path?"), self.no, bool=True)
+        if confpath:
             print
             self.conf_path()
-            #calls exit when changed
+            print
 
         print
         print _("Do you want to configure login data and basic settings?")
@@ -188,28 +181,26 @@ class SetupAssistant(object):
 
 
     def system_check(self):
-        """ make a systemcheck and return the results"""
+        """ make a systemcheck and return the results """
+        import platform
 
         print _("## System Information ##")
         print
-        print _("Platform: %s") % sys.platform
-        print _("Operating System: %s") % os.name
-        print _("Python: %s") % sys.version.replace("\n", "")
+        print _("Platform:    ") + platform.platform(aliased=True)
+        print _("OS:          ") + platform.system() or "Unknown"
+        print _("Python:      ") + sys.version.replace("\n", "")
         print
         print
 
         print _("## System Check ##")
         print
 
-        if sys.version_info[:2] > (2, 7):
-            print _("Your python version is to new, Please use Python 2.6/2.7")
-            python = False
-        elif sys.version_info[:2] < (2, 5):
-            print _("Your python version is to old, Please use at least Python 2.5")
+        if (2, 5) > sys.version_info > (2, 7):
             python = False
         else:
-            print _("Python Version: OK")
             python = True
+
+        self.print_dep("python", python, false="NOT OK")
 
         curl = self.check_module("pycurl")
         self.print_dep("pycurl", curl)
@@ -229,11 +220,11 @@ class SetupAssistant(object):
 
         print
 
-        pil = self.check_module("PIL.Image")
-        self.print_dep("PIL/Pillow", pil)
+        pil = self.check_module("Image")
+        self.print_dep("py-imaging", pil)
 
         if os.name == "nt":
-            tesser = self.check_prog([join(pypath, "tesseract", "tesseract.exe"), "-v"])
+            tesser = self.check_prog([path.join(pypath, "tesseract", "tesseract.exe"), "-v"])
         else:
             tesser = self.check_prog(["tesseract", "-v"])
 
@@ -253,8 +244,11 @@ class SetupAssistant(object):
                 jinja = True
         except Exception:
             jinja = False
+            jinja_error = "MISSING"
+        else:
+            jinja_error = "NOT OK"
 
-        jinja = self.print_dep("jinja2", jinja)
+        self.print_dep("jinja2", jinja, false=jinja_error)
 
         beaker = self.check_module("beaker")
         self.print_dep("beaker", beaker)
@@ -264,14 +258,23 @@ class SetupAssistant(object):
 
         web = sqlite and beaker
 
-        from pyload.utils.JsEngine import JsEngine
         js = True if JsEngine.find() else False
         self.print_dep(_("JS engine"), js)
 
-        if not jinja:
+        if not python:
             print
             print
-            print _("WARNING: Your installed jinja2 version %s seems too old.") % jinja2.__version__
+            if sys.version_info > (2, 7):
+                print _("WARNING: Your python version is too NEW!")
+                print _("Please use Python version 2.6/2.7 .")
+            else:
+                print _("WARNING: Your python version is too OLD!")
+                print _("Please use at least Python version 2.5 .")
+
+        if not jinja and jinja_error == "NOT OK":
+            print
+            print
+            print _("WARNING: Your installed jinja2 version %s is too OLD!") % jinja2.__version__
             print _("You can safely continue but if the webinterface is not working,")
             print _("please upgrade or uninstall it, because pyLoad self-includes jinja2 libary.")
 
@@ -288,7 +291,7 @@ class SetupAssistant(object):
 
         db = DatabaseBackend(None)
         db.setup()
-        print _("NOTE: Consider a password of 10 or more symbols if you expect to access from outside your local network (ex. internet).")
+        print _("NOTE: Consider a password of 10 or more symbols if you expect to access to your local network from outside (ex. internet).")
         print
         username = self.ask(_("Username"), "User")
         password = self.ask("", "", password=True)
@@ -298,35 +301,34 @@ class SetupAssistant(object):
         print
         print _("External clients (GUI, CLI or other) need remote access to work over the network.")
         print _("However, if you only want to use the webinterface you may disable it to save ram.")
-        self.config["remote"]["activated"] = self.ask(_("Enable remote access"), self.no, bool=True)
+        self.config.set("remote", "activated", self.ask(_("Enable remote access"), self.no, bool=True))
 
         print
-        langs = self.config.getMetaData("general", "language")
-        self.config["general"]["language"] = self.ask(_("Choose pyLoad language"), "en", langs["type"].split(";"))
+        langs = sorted(self.config.getMetaData("general", "language")['type'].split(";"))
+        self.config.set("general", "language", self.ask(_("Choose system language"), self.lang, langs))
 
         print
-        self.config["general"]["download_folder"] = self.ask(_("Download folder"), "Downloads")
+        self.config.set("general", "download_folder", self.ask(_("Download folder"), "Downloads"))
         print
-        self.config["download"]["max_downloads"] = self.ask(_("Max parallel downloads"), "3")
+        self.config.set("download", "max_downloads", self.ask(_("Max parallel downloads"), "3"))
         print
         reconnect = self.ask(_("Use Reconnect?"), self.no, bool=True)
-        self.config["reconnect"]["activated"] = reconnect
+        self.config.set("reconnect", "activated", reconnect)
         if reconnect:
-            self.config["reconnect"]["method"] = self.ask(_("Reconnect script location"), "./reconnect.sh")
+            self.config.set("reconnect", "method", self.ask(_("Reconnect script location"), "./reconnect.sh"))
 
 
     def conf_web(self):
         print _("## Webinterface Setup ##")
 
         print
-        self.config["webinterface"]["activated"] = self.ask(_("Activate webinterface?"), self.yes, bool=True)
-        print
         print _("Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally.")
-        self.config["webinterface"]["host"] = self.ask(_("Address"), "0.0.0.0")
-        self.config["webinterface"]["port"] = self.ask(_("Port"), "8000")
+        self.config.set("webui", "host", self.ask(_("Address"), "0.0.0.0"))
+        self.config.set("webui", "port", self.ask(_("Port"), "8000"))
         print
         print _("pyLoad offers several server backends, now following a short explanation.")
-        print "- builtin:", _("Default server; best choice if you plan to use pyLoad just for you.")
+        print "- auto:", _("Automatically choose the best webserver for your platform.")
+        print "- builtin:", _("First choice if you plan to use pyLoad just for you.")
         print "- threaded:", _("Support SSL connection and can serve simultaneously more client flawlessly.")
         print "- fastcgi:", _(
             "Can be used by apache, lighttpd, etc.; needs to be properly configured before.")
@@ -334,17 +336,15 @@ class SetupAssistant(object):
             print "- lightweight:", _("Very fast alternative to builtin; requires libev and bjoern packages.")
 
         print
-        print _("NOTE: In some rare cases the builtin server is not working, if you notice problems with the webinterface")
-        print _("come back here and change the builtin server to the threaded one here.")
+        print _("NOTE: In some rare cases the builtin server not works correctly, so if you have troubles with the web interface")
+        print _("run this setup assistant again and change the builtin server to the threaded.")
 
         if os.name == "nt":
-            servers = ["builtin", "threaded", "fastcgi"]
-            default = "threaded"
+            servers = ["auto", "builtin", "threaded", "fastcgi"]
         else:
-            servers = ["builtin", "threaded", "fastcgi", "lightweight"]
-            default = "lightweight" if self.check_module("bjoern") else "builtin"
+            servers = ["auto", "builtin", "threaded", "fastcgi", "lightweight"]
 
-        self.config["webinterface"]["server"] = self.ask(_("Server"), default, servers)
+        self.config.set("webui", "server", self.ask(_("Choose webserver"), "auto", servers))
 
 
     def conf_ssl(self):
@@ -358,14 +358,13 @@ class SetupAssistant(object):
         print
         print _("If you're done and everything went fine, you can activate ssl now.")
 
-        self.config["ssl"]["activated"] = self.ask(_("Activate SSL?"), self.yes, bool=True)
+        ssl = self.ask(_("Activate SSL?"), self.yes, bool=True)
+        self.config.set("remote", "ssl", ssl)
+        self.config.set("webui", "ssl", ssl)
 
 
     def set_user(self):
-        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-        translation = gettext.translation("setup", join(self.path, "locale"),
-            languages=[self.config["general"]["language"], "en"], fallback=True)
-        translation.install(True)
+        load_translation("setup", self.config.get("general", "language"))
 
         from pyload.database import DatabaseBackend
 
@@ -412,39 +411,49 @@ class SetupAssistant(object):
                 db.shutdown()
 
 
-    def conf_path(self, trans=False):
-        if trans:
-            gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-            translation = gettext.translation("setup", join(self.path, "locale"),
-                languages=[self.config["general"]["language"], "en"], fallback=True)
-            translation.install(True)
-
-        print _("Setting new config path, current configuration will not be transfered!")
-        path = self.ask(_("CONFIG PATH"), abspath(""))
+    def set_configdir(self, configdir, persistent=False):
+        dirname = path.abspath(configdir)
         try:
-            path = join(pypath, path)
-            if not exists(path):
-                makedirs(path)
-            f = open(join(pypath, "pyload", "config", "configdir"), "wb")
-            f.write(path)
-            f.close()
-            print
-            print
-            print _("pyLoad config path changed, setup will now close!")
-            print
-            print
-            raw_input(_("Press Enter to exit."))
-            sys.exit()
-        except Exception, e:
-            print _("Setting config path failed: %s") % str(e)
-
-
-    def print_dep(self, name, value):
-        """Print Status of dependency"""
-        if value:
-            print _("%s: OK") % name
+            if not path.exists(dirname):
+                makedirs(dirname, 0700)
+            if persistent:
+                c = path.join(projectdir, "config", "configdir")
+                if not path.exists(c):
+                    makedirs(c, 0700)
+                f = open(c, "wb")
+                f.write(dirname)
+                f.close()
+            chdir(dirname)
+        except Exception:
+            return False
         else:
-            print _("%s: MISSING") % name
+            __builtin__.configdir = dirname
+            return dirname  #: return always abspath
+
+
+    def conf_path(self):
+        print _("Setting new config path.")
+        print _("NOTE: Current configuration will not be transfered!")
+
+        while True:
+            confdir = self.ask(_("CONFIG PATH"), configdir)
+            confpath = self.set_configdir(confdir)
+            print
+            if confpath:
+                print _("pyLoad config path successfully changed.")
+                break
+
+
+    def print_dep(self, name, value, false="MISSING", true="OK"):
+        """ Print Status of dependency """
+        if value and isinstance(value, basestring):
+            msg = "%(dep)-12s %(bool)s  (%(info)s)"
+        else:
+            msg = "%(dep)-12s %(bool)s"
+
+        print msg % {'dep': name + ':',
+                     'bool': _(true if value else false).upper(),
+                     'info': ", ".join(value)}
 
 
     def check_module(self, module):
@@ -465,7 +474,7 @@ class SetupAssistant(object):
 
 
     def ask(self, qst, default, answers=[], bool=False, password=False):
-        """produce one line to asking for input"""
+        """ produce one line to asking for input """
         if answers:
             info = "("
 
@@ -486,7 +495,6 @@ class SetupAssistant(object):
             p2 = False
             pwlen = 8
             while p1 != p2:
-                # getpass(_("Password: ")) will crash on systems with broken locales (Win, NAS)
                 sys.stdout.write(_("Password: "))
                 p1 = getpass("")
 
@@ -526,13 +534,10 @@ class SetupAssistant(object):
                     return False
                 else:
                     print _("Invalid Input")
+                    print
                     continue
 
-            if not answers:
+            if not answers or input in answers:
                 return input
-
             else:
-                if input in answers:
-                    return input
-                else:
-                    print _("Invalid Input")
+                print _("Invalid Input")
