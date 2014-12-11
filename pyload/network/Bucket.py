@@ -8,7 +8,7 @@ from time import time
 MIN_RATE = 10240
 
 
-class Bucket:
+class Bucket(object):
 
     def __init__(self):
         self.rate      = 0 # bytes per second, maximum targeted throughput

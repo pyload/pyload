@@ -40,7 +40,7 @@ class Go4UpCom(SimpleCrypter):
         for html in pages:
             try:
                 links.append(re.search(r'<b><a href="(.+?)"', html).group(1))
-            except:
+            except Exception:
                 continue
 
         return links

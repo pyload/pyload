@@ -167,7 +167,7 @@ class ShareonlineBiz(SimpleHoster):
 
         try:
             self.logError(errmsg, re.search(self.ERROR_INFO_PATTERN, self.html).group(1))
-        except:
+        except Exception:
             self.logError("Unknown error occurred", errmsg)
 
         if errmsg is "invalid":

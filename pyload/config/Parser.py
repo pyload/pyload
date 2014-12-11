@@ -9,7 +9,9 @@ from shutil import copy
 from traceback import print_exc
 from pyload.utils import chmod, encode, decode
 
+
 CONF_VERSION = 1
+
 
 class ConfigParser(object):
     """
@@ -28,7 +30,6 @@ class ConfigParser(object):
       desc:
 
     }
-
     """
 
     def __init__(self):
@@ -42,6 +43,8 @@ class ConfigParser(object):
         self.checkVersion()
 
         self.readConfig()
+
+
     def checkVersion(self, n=0):
         """determines if config need to be copied"""
         try:
@@ -78,6 +81,7 @@ class ConfigParser(object):
             sleep(0.3)
             self.checkVersion(n + 1)
 
+
     def readConfig(self):
         """reads the config file"""
         self.config = self.parseConfig(join(pypath, "pyload", "config", "default.conf"))
@@ -95,6 +99,7 @@ class ConfigParser(object):
         except Exception:
             print "Config Warning"
             print_exc()
+
 
     def parseConfig(self, config):
         """parses a given configfile"""
@@ -178,23 +183,26 @@ class ConfigParser(object):
         f.close()
         return conf
 
+
     def updateValues(self, config, dest):
         """sets the config values from a parsed config file to values in destination"""
 
         for section in config.iterkeys():
             if section in dest:
                 for option in config[section].iterkeys():
-                    if option in ("desc", "outline"): continue
+                    if option in ("desc", "outline"):
+                        continue
 
                     if option in dest[section]:
                         dest[section][option]["value"] = config[section][option]["value"]
 
-                        # else:
-                        #    dest[section][option] = config[section][option]
+                    # else:
+                       # dest[section][option] = config[section][option]
 
 
-                        #else:
-                        #    dest[section] = config[section]
+                    # else:
+                       # dest[section] = config[section]
+
 
     def saveConfig(self, config, filename):
         """saves config to filename"""
@@ -220,7 +228,8 @@ class ConfigParser(object):
                     try:
                         f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], value))
                     except UnicodeEncodeError:
-                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], encode(value))
+                        f.write('\t%s %s : "%s" = %s' % (data["type"], option, data["desc"], encode(value)))
+
 
     def cast(self, typ, value):
         """cast value to given format"""
@@ -242,19 +251,23 @@ class ConfigParser(object):
         else:
             return value
 
+
     def save(self):
         """saves the configs to disk"""
         self.saveConfig(self.config, "pyload.conf")
         self.saveConfig(self.plugin, "plugin.conf")
 
+
     def __getitem__(self, section):
         """provides dictonary like access: c['section']['option']"""
         return Section(self, section)
+
 
     def get(self, section, option):
         """get value"""
         value = self.config[section][option]["value"]
         return decode(value)
+
 
     def set(self, section, option, value):
         """set value"""
@@ -264,10 +277,12 @@ class ConfigParser(object):
         self.config[section][option]["value"] = value
         self.save()
 
+
     def getPlugin(self, plugin, option):
         """gets a value for a plugin"""
         value = self.plugin[plugin][option]["value"]
         return encode(value)
+
 
     def setPlugin(self, plugin, option, value):
         """sets a value for a plugin"""
@@ -279,9 +294,11 @@ class ConfigParser(object):
         self.plugin[plugin][option]["value"] = value
         self.save()
 
+
     def getMetaData(self, section, option):
         """ get all config data for an option """
         return self.config[section][option]
+
 
     def addPluginConfig(self, name, config, outline=""):
         """adds config options with tuples (name, type, desc, default)"""
@@ -310,6 +327,7 @@ class ConfigParser(object):
             if item not in values:
                 del conf[item]
 
+
     def deleteConfig(self, name):
         """Removes a plugin config"""
         if name in self.plugin:
@@ -324,9 +342,11 @@ class Section(object):
         self.parser = parser
         self.section = section
 
+
     def __getitem__(self, item):
         """getitem"""
         return self.parser.get(self.section, item)
+
 
     def __setitem__(self, item, value):
         """setitem"""

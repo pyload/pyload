@@ -61,7 +61,7 @@ class AdYouLike(Captcha):
                                          'callback': callback})
         try:
             challenge = json_loads(re.search(callback + r'\s*\((.+?)\)', html).group(1))
-        except:
+        except Exception:
             errmsg = _("AdYouLike challenge pattern not found")
             self.plugin.error(errmsg)
             raise ValueError(errmsg)
@@ -91,7 +91,7 @@ class AdYouLike(Captcha):
         try:
             instructions_visual = challenge['translations'][server['all']['lang']]['instructions_visual']
             result = re.search(u'«(.+?)»', instructions_visual).group(1).strip()
-        except:
+        except Exception:
             errmsg = _("AdYouLike result not found")
             self.plugin.error(errmsg)
             raise ValueError(errmsg)

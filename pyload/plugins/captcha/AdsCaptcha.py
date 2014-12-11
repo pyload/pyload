@@ -56,7 +56,7 @@ class AdsCaptcha(Captcha):
         try:
             challenge = re.search("challenge: '(.+?)',", html).group(1)
             server    = re.search("server: '(.+?)',", html).group(1)
-        except:
+        except Exception:
             errmsg = _("AdsCaptcha challenge pattern not found")
             self.plugin.error(errmsg)
             raise ValueError(errmsg)

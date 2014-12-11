@@ -219,7 +219,7 @@ class SimpleHoster(Hoster):
                     if e.code is 503:
                         info['status'] = 6
                         raise
-            except:
+            except Exception:
                 return info
 
         online = False
