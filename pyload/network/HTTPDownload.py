@@ -19,7 +19,7 @@ class HTTPDownload(object):
     """ loads a url http + ftp """
 
     def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
-                 options={}, progressNotify=None, disposition=False):
+                 options={}, progress=None, disposition=False):
         self.url = url
         self.filename = filename  #complete file destination, not only name
         self.get = get
@@ -55,7 +55,7 @@ class HTTPDownload(object):
         self.speeds = []
         self.lastSpeeds = [0, 0]
 
-        self.progressNotify = progressNotify
+        self.progress = progress
 
     @property
     def speed(self):
@@ -280,8 +280,8 @@ class HTTPDownload(object):
         self._copyChunks()
 
     def updateProgress(self):
-        if self.progressNotify:
-            self.progressNotify(self.percent)
+        if self.progress:
+            self.progress(self.percent)
 
     def findChunk(self, handle):
         """ linear search to find a chunk (should be ok since chunk size is usually low) """

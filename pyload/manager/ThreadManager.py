@@ -11,7 +11,9 @@ from random import choice
 
 import pycurl
 
-from pyload.manager.thread import DecrypterThread, DownloadThread, InfoThread
+from pyload.manager.thread.DecrypterThread import DecrypterThread
+from pyload.manager.thread.DownloadThread import DownloadThread
+from pyload.manager.thread.InfoThread import InfoThread
 from pyload.datatype.PyFile import PyFile
 from pyload.network.RequestFactory import getURL
 from pyload.utils import freeSpace, lock

@@ -2,10 +2,9 @@
 # @author: RaNaN
 
 from time import time
+from threading import Lock
 
-
-# 10kb minimum rate
-MIN_RATE = 10240
+MIN_RATE = 10240  #: 10kb minimum rate
 
 
 class Bucket(object):

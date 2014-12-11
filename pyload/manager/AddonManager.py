@@ -46,6 +46,8 @@ class AddonManager(object):
     """
 
     def __init__(self, core):
+        self.core = core
+
         __builtin__.addonManager = self  #: needed to let addons register themself
 
         self.plugins = []

@@ -16,9 +16,9 @@ from SafeEval import const_eval as literal_eval
 
 
 class PluginManager(object):
-    ROOT = "pyload.plugins."
+    ROOT     = "pyload.plugins."
     USERROOT = "userplugins."
-    TYPES = []
+    TYPES    = ["account", "addon", "container", "crypter", "hook", "hoster", "internal", "ocr"]
 
     PATTERN = re.compile(r'__pattern\s*=\s*u?r("|\')([^"\']+)')
     VERSION = re.compile(r'__version\s*=\s*("|\')([\d.]+)')
@@ -36,15 +36,17 @@ class PluginManager(object):
         sys.meta_path.append(self)
 
 
-    def initTYPES(self):
+    def loadTypes(self):
         rootdir = join(pypath, "pyload", "plugins")
         userdir = "userplugins"
 
-        tmpset = set()
-        for p in (rootdir, userdir):
-            tmpset += set([d for d in listdir(p) if isdir(join(p, d))])
+        types = set().union(*[[d for d in listdir(p) if isdir(join(p, d))]
+                            for p in (rootdir, userdir) if exists(p)])
 
-        self.TYPES = list(tmpset)
+        if not types:
+            self.log.critical(_("No plugins found!"))
+
+        self.TYPES = list(set(self.TYPES) | types)
 
 
     def createIndex(self):
@@ -52,16 +54,13 @@ class PluginManager(object):
 
         sys.path.append(abspath(""))
 
-        self.initTYPES()
+        self.loadTypes()
 
-        if not self.TYPES:
-            self.log.critical(_("No TYPES, no fun!"))
-
-        for type in set(self.TYPES):
+        for type in self.TYPES:
             self.plugins[type] = self.parse(type)
             setattr(self, "%sPlugins" % type, self.plugins[type])
 
-        self.plugins['addon'] = self.addonPlugins.extend(self.hookPlugins)
+        self.plugins['addon'] = self.addonPlugins.update(self.hookPlugins)
 
         self.core.log.debug("Created index of plugins")
 
