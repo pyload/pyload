@@ -41,7 +41,7 @@ class Addon(Base):
     #: automatically register event listeners for functions, attribute will be deleted dont use it yourself
     event_map = {}
 
-    # Alternative to event_map
+    # Deprecated alternative to event_map
     #: List of events the plugin can handle, name the functions exactly like eventname.
     event_list = []  #@NOTE: dont make duplicate entries in event_map
 

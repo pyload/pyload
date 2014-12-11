@@ -138,7 +138,7 @@ class Api(Iface):
         :param value: new config value
         :param section: 'plugin' or 'core
         """
-        self.core.addonManager.dispatchEvent("configChanged", category, option, value, section)
+        self.core.addonManager.dispatchEvent("config-changed", category, option, value, section)
         if section == "core":
             self.core.config[category][option] = value
             if option in ("limit_speed", "max_speed"):  # not so nice to update the limit

@@ -20,13 +20,17 @@ class ExternalScripts(Addon):
     __description = """Run external scripts"""
     __license     = "GPLv3"
     __authors     = [("mkaay", "mkaay@mkaay.de"),
-                       ("RaNaN", "ranan@pyload.org"),
-                       ("spoob", "spoob@pyload.org"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+                     ("RaNaN", "ranan@pyload.org"),
+                     ("spoob", "spoob@pyload.org"),
+                     ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_list = ["archive_extracted", "package_extracted", "all_archives_extracted", "all_archives_processed",
-                  "allDownloadsFinished", "allDownloadsProcessed"]
+    event_map = {'archive-extracted'      : "archive_extracted",
+                 'package-extracted'      : "package_extracted",
+                 'all_archives-extracted' : "all_archives_extracted",
+                 'all_archives-processed' : "all_archives_processed",
+                 'all_downloads-finished' : "allDownloadsFinished",
+                 'all_downloads-processed': "allDownloadsProcessed"}
 
 
     def setup(self):

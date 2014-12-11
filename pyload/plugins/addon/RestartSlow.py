@@ -21,7 +21,7 @@ class RestartSlow(Addon):
     __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_list = ["downloadStarts"]
+    event_map = {'download-start': "downloadStarts"}
 
 
     def setup(self):

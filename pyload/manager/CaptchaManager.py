@@ -52,7 +52,7 @@ class CaptchaManager(object):
 
         for plugin in self.core.addonManager.activePlugins():
             try:
-                plugin.newCaptchaTask(task)
+                plugin.captchaTask(task)
             except Exception:
                 if self.core.debug:
                     print_exc()

@@ -104,7 +104,7 @@ class FileHandler(object):
     def addLinks(self, urls, package):
         """adds links"""
 
-        self.core.addonManager.dispatchEvent("linksAdded", urls, package)
+        self.core.addonManager.dispatchEvent("links-added", urls, package)
 
         data = self.core.pluginManager.parseUrls(urls)
 
@@ -150,7 +150,7 @@ class FileHandler(object):
 
         self.db.deletePackage(p)
         self.core.pullManager.addEvent(e)
-        self.core.addonManager.dispatchEvent("packageDeleted", id)
+        self.core.addonManager.dispatchEvent("package-deleted", id)
 
         if id in self.packageCache:
             del self.packageCache[id]
@@ -352,7 +352,7 @@ class FileHandler(object):
         """checks if all files are finished and dispatch event"""
 
         if not self.getQueueCount(True):
-            self.core.addonManager.dispatchEvent("allDownloadsFinished")
+            self.core.addonManager.dispatchEvent("all_downloads-finished")
             self.core.log.debug("All downloads finished")
             return True
 
@@ -365,7 +365,7 @@ class FileHandler(object):
         self.resetCount()
 
         if not self.db.processcount(1, fid):
-            self.core.addonManager.dispatchEvent("allDownloadsProcessed")
+            self.core.addonManager.dispatchEvent("all_downloads-processed")
             self.core.log.debug("All downloads processed")
             return True
 

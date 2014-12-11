@@ -618,7 +618,7 @@ class Plugin(Base):
 
         filename = join(location, name)
 
-        self.core.addonManager.dispatchEvent("downloadStarts", self.pyfile, url, filename)
+        self.core.addonManager.dispatchEvent("download-start", self.pyfile, url, filename)
 
         try:
             newname = self.req.httpDownload(url, filename, get=get, post=post, ref=ref, cookies=cookies,

@@ -76,11 +76,11 @@ class ExtractArchive(Addon):
     __description = """Extract different kind of archives"""
     __license     = "GPLv3"
     __authors     = [("RaNaN", "ranan@pyload.org"),
-                       ("AndroKev", None),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+                     ("AndroKev", None),
+                     ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    event_list = ["allDownloadsProcessed"]
+    event_map = {'all_downloads-processed': "allDownloadsProcessed"}
 
 
     def setup(self):
@@ -138,8 +138,8 @@ class ExtractArchive(Addon):
         local = copy(self.queue)
         del self.queue[:]
         if self.extract(local, thread):  #: check only if all gone fine, no failed reporting for now
-            self.manager.dispatchEvent("all_archives_extracted")
-        self.manager.dispatchEvent("all_archives_processed")
+            self.manager.dispatchEvent("all_archives-extracted")
+        self.manager.dispatchEvent("all_archives-processed")
 
 
     def extract(self, ids, thread=None):
@@ -224,10 +224,10 @@ class ExtractArchive(Addon):
             if matched:
                 if success:
                     extracted.append(pid)
-                    self.manager.dispatchEvent("package_extracted", p)
+                    self.manager.dispatchEvent("package-extracted", p)
                 else:
                     failed.append(pid)
-                    self.manager.dispatchEvent("package_extract_failed", p)
+                    self.manager.dispatchEvent("package-extract_failed", p)
             else:
                 self.logInfo(_("No files found to extract"))
 
@@ -287,7 +287,7 @@ class ExtractArchive(Addon):
             self.logInfo(basename(plugin.file), _("Extracting finished"))
 
             extracted_files = plugin.getExtractedFiles()
-            self.manager.dispatchEvent("archive_extracted", pyfile, plugin.out, plugin.file, extracted_files)
+            self.manager.dispatchEvent("archive-extracted", pyfile, plugin.out, plugin.file, extracted_files)
 
             return extracted_files
 
@@ -300,7 +300,7 @@ class ExtractArchive(Addon):
                 print_exc()
             self.logError(basename(plugin.file), _("Unknown Error"), e)
 
-        self.manager.dispatchEvent("archive_extract_failed", pyfile)
+        self.manager.dispatchEvent("archive-extract_failed", pyfile)
         raise Exception(_("Extract failed"))
 
 
