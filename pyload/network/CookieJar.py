@@ -1,34 +1,42 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN, mkaay
+# @author: RaNaN
 
+import Cookie
+
+from datetime import datetime, timedelta
 from time import time
 
-class CookieJar(object):
-    def __init__(self, pluginname, account=None):
-        self.cookies = {}
-        self.plugin = pluginname
-        self.account = account
 
-    def addCookies(self, clist):
-        for c in clist:
-            name = c.split("\t")[5]
-            self.cookies[name] = c
+# monkey patch for 32 bit systems
+def _getdate(future=0, weekdayname=Cookie._weekdayname, monthname=Cookie._monthname):
+    dt = datetime.now() + timedelta(seconds=int(future))
+    return "%s, %02d %3s %4d %02d:%02d:%02d GMT" % \
+           (weekdayname[dt.weekday()], dt.day, monthname[dt.month], dt.year, dt.hour, dt.minute, dt.second)
 
-    def getCookies(self):
-        return self.cookies.values()
+Cookie._getdate = _getdate
 
-    def parseCookie(self, name):
-        if name in self.cookies:
-            return self.cookies[name].split("\t")[6]
-        else:
-            return None
+
+class CookieJar(Cookie.SimpleCookie):
 
     def getCookie(self, name):
-        return self.parseCookie(name)
+        return self[name].value
 
-    def setCookie(self, domain, name, value, path="/", exp=time()+3600*24*180):
-        s = ".%s	TRUE	%s	FALSE	%s	%s	%s" % (domain, path, exp, name, value)
-        self.cookies[name] = s
+    def setCookie(self, domain, name, value, path="/", exp=None, secure="FALSE"):
+        self[name] = value
+        self[name]["domain"] = domain
+        self[name]["path"]   = path
 
-    def clear(self):
-        self.cookies = {}
+        # Value of expires should be integer if possible
+        # otherwise the cookie won't be used
+        if not exp:
+            expires = time() + 3600 * 24 * 180
+        else:
+            try:
+                expires = int(exp)
+            except ValueError:
+                expires = exp
+
+        self[name]["expires"] = expires
+
+        if secure == "TRUE":
+            self[name]["secure"] = secure
