@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster, parseFileInfo
+from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class DodanePl(DeadHoster):

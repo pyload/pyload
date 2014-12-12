@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FshareVnFolder(SimpleCrypter):
@@ -18,3 +18,6 @@ class FshareVnFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'<li class="w_80pc"><a href="([^"]+)" target="_blank">'
+
+
+getInfo = create_getInfo(FshareVnFolder)

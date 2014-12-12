@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FilefactoryComFolder(SimpleCrypter):
@@ -26,3 +26,6 @@ class FilefactoryComFolder(SimpleCrypter):
 
     def loadPage(self, page_n):
         return self.load(self.pyfile.url, get={'page': page_n})
+
+
+getInfo = create_getInfo(FilefactoryComFolder)

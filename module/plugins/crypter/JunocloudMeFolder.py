@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSCrypter import XFSCrypter
+from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
 class JunocloudMeFolder(XFSCrypter):
@@ -18,3 +18,6 @@ class JunocloudMeFolder(XFSCrypter):
 
 
     HOSTER_DOMAIN = "junocloud.me"
+
+
+getInfo = create_getInfo(JunocloudMeFolder)

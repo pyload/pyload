@@ -5,7 +5,7 @@ import re
 from base64 import urlsafe_b64encode
 from time import time
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class DlProtectCom(SimpleCrypter):
@@ -63,3 +63,6 @@ class DlProtectCom(SimpleCrypter):
 
         pattern = r'<a href="([^/].+?)" target="_blank">'
         return re.findall(pattern, self.html)
+
+
+getInfo = create_getInfo(DlProtectCom)

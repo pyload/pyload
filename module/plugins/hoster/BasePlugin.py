@@ -104,3 +104,6 @@ class BasePlugin(Hoster):
             self.fail(_("Too many redirects"))
 
         self.download(unquote(url), disposition=True)
+
+
+getInfo = create_getInfo(BasePlugin)

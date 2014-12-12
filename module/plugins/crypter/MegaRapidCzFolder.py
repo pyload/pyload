@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class MegaRapidCzFolder(SimpleCrypter):
@@ -18,3 +18,6 @@ class MegaRapidCzFolder(SimpleCrypter):
 
 
     LINK_PATTERN = r'<td class="soubor"[^>]*><a href="([^"]+)">'
+
+
+getInfo = create_getInfo(MegaRapidCzFolder)

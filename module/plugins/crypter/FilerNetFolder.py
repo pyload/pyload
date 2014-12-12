@@ -1,6 +1,6 @@
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FilerNetFolder(SimpleCrypter):
@@ -24,3 +24,6 @@ class FilerNetFolder(SimpleCrypter):
 
     def getLinks(self):
         return ['http://filer.net%s' % link for link in re.findall(self.LINK_PATTERN, self.html)]
+
+
+getInfo = create_getInfo(FilerNetFolder)
