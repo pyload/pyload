@@ -16,7 +16,7 @@ class LinkdecrypterCom(Crypter):
     __description = """Linkdecrypter.com"""
     __license     = "GPLv3"
     __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("flowlee", None)]
+                       ("flowlee", "")]
 
 
     TEXTAREA_PATTERN = r'<textarea name="links" wrap="off" readonly="1" class="caja_des">(.+)</textarea>'

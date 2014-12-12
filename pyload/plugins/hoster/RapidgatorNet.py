@@ -21,7 +21,7 @@ class RapidgatorNet(SimpleHoster):
     __description = """Rapidgator.net hoster plugin"""
     __license     = "GPLv3"
     __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("chrox", None),
+                       ("chrox", ""),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 

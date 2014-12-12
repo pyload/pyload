@@ -16,7 +16,7 @@ class ShareplaceCom(Hoster):
 
     __description = """Shareplace.com hoster plugin"""
     __license     = "GPLv3"
-    __authors     = [("ACCakut", None)]
+    __authors     = [("ACCakut", "")]
 
 
     def process(self, pyfile):

@@ -16,7 +16,7 @@ class UpleaCom(XFSHoster):
 
     __description = """Uplea.com hoster plugin"""
     __license     = "GPLv3"
-    __authors     = [("Redleon", None)]
+    __authors     = [("Redleon", "")]
 
 
     HOSTER_DOMAIN = "uplea.com"

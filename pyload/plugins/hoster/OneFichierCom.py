@@ -17,7 +17,7 @@ class OneFichierCom(SimpleHoster):
     __authors     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
                        ("the-razer", "daniel_ AT gmx DOT net"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
-                       ("imclem", None),
+                       ("imclem", ""),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
                        ("Walter Purcaro", "vuolter@gmail.com")]

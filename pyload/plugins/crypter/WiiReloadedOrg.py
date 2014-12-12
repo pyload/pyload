@@ -13,7 +13,7 @@ class WiiReloadedOrg(DeadCrypter):
 
     __description = """Wii-Reloaded.org decrypter plugin"""
     __license     = "GPLv3"
-    __authors     = [("hzpz", None)]
+    __authors     = [("hzpz", "")]
 
 
 getInfo = create_getInfo(WiiReloadedOrg)

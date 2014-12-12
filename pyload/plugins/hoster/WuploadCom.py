@@ -13,7 +13,7 @@ class WuploadCom(DeadHoster):
     __description = """Wupload.com hoster plugin"""
     __license     = "GPLv3"
     __authors     = [("jeix", "jeix@hasnomail.de"),
-                       ("Paul King", None)]
+                       ("Paul King", "")]
 
 
 getInfo = create_getInfo(WuploadCom)

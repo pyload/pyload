@@ -76,7 +76,7 @@ class ExtractArchive(Addon):
     __description = """Extract different kind of archives"""
     __license     = "GPLv3"
     __authors     = [("RaNaN", "ranan@pyload.org"),
-                     ("AndroKev", None),
+                     ("AndroKev", ""),
                      ("Walter Purcaro", "vuolter@gmail.com")]
 
 

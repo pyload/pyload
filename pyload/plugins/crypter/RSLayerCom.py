@@ -13,7 +13,7 @@ class RSLayerCom(DeadCrypter):
 
     __description = """RS-Layer.com decrypter plugin"""
     __license     = "GPLv3"
-    __authors     = [("hzpz", None)]
+    __authors     = [("hzpz", "")]
 
 
 getInfo = create_getInfo(RSLayerCom)

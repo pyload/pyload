@@ -18,7 +18,7 @@ class DontKnowMe(Crypter):
 
     __description = """DontKnow.me decrypter plugin"""
     __license     = "GPLv3"
-    __authors     = [("selaux", None)]
+    __authors     = [("selaux", "")]
 
 
     LINK_PATTERN = r'http://dontknow\.me/at/\?(.+)$'

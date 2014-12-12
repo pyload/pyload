@@ -16,7 +16,7 @@ class FileSharkPl(SimpleHoster):
 
     __description = """FileShark.pl hoster plugin"""
     __license     = "GPLv3"
-    __authors     = [("prOq", None),
+    __authors     = [("prOq", ""),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

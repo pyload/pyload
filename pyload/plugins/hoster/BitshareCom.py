@@ -17,7 +17,7 @@ class BitshareCom(SimpleHoster):
 
     __description = """Bitshare.com hoster plugin"""
     __license     = "GPLv3"
-    __authors     = [("Paul King", None),
+    __authors     = [("Paul King", ""),
                        ("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 

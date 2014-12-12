@@ -13,7 +13,7 @@ class RapiduNet(Account):
 
     __description = """Rapidu.net account plugin"""
     __license     = "GPLv3"
-    __authors     = [("prOq", None)]
+    __authors     = [("prOq", "")]
 
 
     PREMIUM_PATTERN = r'<a href="premium/" style="padding-left: 0px;">Account: <b>Premium</b></a>'

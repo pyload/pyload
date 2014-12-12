@@ -16,7 +16,7 @@ class DataHu(SimpleCrypter):
 
     __description = """Data.hu folder decrypter plugin"""
     __license     = "GPLv3"
-    __authors     = [("crash", None),
+    __authors     = [("crash", ""),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

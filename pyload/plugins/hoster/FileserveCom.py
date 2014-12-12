@@ -41,7 +41,7 @@ class FileserveCom(Hoster):
     __license     = "GPLv3"
     __authors     = [("jeix", "jeix@hasnomail.de"),
                        ("mkaay", "mkaay@mkaay.de"),
-                       ("Paul King", None),
+                       ("Paul King", ""),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 

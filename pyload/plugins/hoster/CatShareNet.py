@@ -16,7 +16,7 @@ class CatShareNet(SimpleHoster):
     __description = """CatShare.net hoster plugin"""
     __license     = "GPLv3"
     __authors     = [("z00nx", "z00nx0@gmail.com"),
-                       ("prOq", None),
+                       ("prOq", ""),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

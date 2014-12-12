@@ -17,7 +17,7 @@ class DataHu(SimpleHoster):
 
     __description = """Data.hu hoster plugin"""
     __license     = "GPLv3"
-    __authors     = [("crash", None),
+    __authors     = [("crash", ""),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

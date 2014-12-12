@@ -12,7 +12,7 @@ class FileApeCom(DeadHoster):
 
     __description = """FileApe.com hoster plugin"""
     __license     = "GPLv3"
-    __authors     = [("espes", None)]
+    __authors     = [("espes", "")]
 
 
 getInfo = create_getInfo(FileApeCom)

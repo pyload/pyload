@@ -15,7 +15,7 @@ class UlozTo(Account):
     __description = """Uloz.to account plugin"""
     __license     = "GPLv3"
     __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("pulpe", None)]
+                       ("pulpe", "")]
 
 
     TRAFFIC_LEFT_PATTERN = r'<li class="menu-kredit"><a href="/kredit" title="[^"]*?GB = ([\d.]+) MB"'

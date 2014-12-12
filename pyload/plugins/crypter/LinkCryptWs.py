@@ -22,8 +22,8 @@ class LinkCryptWs(Crypter):
     __description = """LinkCrypt.ws decrypter plugin"""
     __license     = "GPLv3"
     __authors     = [("kagenoshin", "kagenoshin[AT]gmx[DOT]ch"),
-                       ("glukgluk", None),
-                       ("Gummibaer", None)]
+                       ("glukgluk", ""),
+                       ("Gummibaer", "")]
 
 
     CRYPTED_KEY = "crypted"

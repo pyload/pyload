@@ -13,7 +13,7 @@ class FilesonicCom(DeadHoster):
     __description = """Filesonic.com hoster plugin"""
     __license     = "GPLv3"
     __authors     = [("jeix", "jeix@hasnomail.de"),
-                       ("paulking", None)]
+                       ("paulking", "")]
 
 
 getInfo = create_getInfo(FilesonicCom)

@@ -14,7 +14,7 @@ class CatShareNet(Account):
 
     __description = """CatShareNet account plugin"""
     __license     = "GPLv3"
-    __authors     = [("prOq", None)]
+    __authors     = [("prOq", "")]
 
 
     PREMIUM_PATTERN = r'class="nav-collapse collapse pull-right">[\s\w<>=-."/:]*\sz.</a></li>\s*<li><a href="/premium">.*\s*<span style="color: red">(.*?)</span>[\s\w<>/]*href="/logout"'

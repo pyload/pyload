@@ -19,7 +19,7 @@ class RapiduNet(SimpleHoster):
 
     __description = """Rapidu.net hoster plugin"""
     __license     = "GPLv3"
-    __authors     = [("prOq", None)]
+    __authors     = [("prOq", "")]
 
 
     COOKIES = [("rapidu.net", "rapidu_lang", "en")]

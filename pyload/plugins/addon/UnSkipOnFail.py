@@ -16,7 +16,7 @@ class UnSkipOnFail(Addon):
 
     __description = """When a download fails, restart skipped duplicates"""
     __license     = "GPLv3"
-    __authors     = [("hagg", None)]
+    __authors     = [("hagg", "")]
 
 
     def downloadFailed(self, pyfile):

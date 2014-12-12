@@ -13,7 +13,7 @@ class ILoadTo(DeadCrypter):
 
     __description = """Iload.to decrypter plugin"""
     __license     = "GPLv3"
-    __authors     = [("hzpz", None)]
+    __authors     = [("hzpz", "")]
 
 
 getInfo = create_getInfo(ILoadTo)

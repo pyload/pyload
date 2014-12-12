@@ -24,7 +24,7 @@ class TurbobitNet(SimpleHoster):
     __description = """Turbobit.net hoster plugin"""
     __license     = "GPLv3"
     __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("prOq", None)]
+                       ("prOq", "")]
 
 
     URL_REPLACEMENTS = [(__pattern + ".*", "http://turbobit.net/\g<ID>.html")]

@@ -10,7 +10,7 @@ class BitshareCom(Account):
 
     __description = """Bitshare account plugin"""
     __license     = "GPLv3"
-    __authors     = [("Paul King", None)]
+    __authors     = [("Paul King", "")]
 
 
     def loadAccountInfo(self, user, req):

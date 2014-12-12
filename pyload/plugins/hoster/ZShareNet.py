@@ -12,8 +12,8 @@ class ZShareNet(DeadHoster):
 
     __description = """ZShare.net hoster plugin"""
     __license     = "GPLv3"
-    __authors     = [("espes", None),
-                       ("Cptn Sandwich", None)]
+    __authors     = [("espes", ""),
+                       ("Cptn Sandwich", "")]
 
 
 getInfo = create_getInfo(ZShareNet)

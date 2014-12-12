@@ -11,7 +11,7 @@ class RyushareCom(XFSAccount):
     __description = """Ryushare.com account plugin"""
     __license     = "GPLv3"
     __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("trance4us", None)]
+                       ("trance4us", "")]
 
 
     HOSTER_DOMAIN = "ryushare.com"
