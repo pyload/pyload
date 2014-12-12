@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+# @author: RaNaN, vuolter
 
 import sys
 import pyload.utils.pylgettext as gettext

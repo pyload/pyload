@@ -17,6 +17,14 @@ Credits
 A special thanks to spoob, sebnapi and RaNaN who created pyLoad!
 
 
+### Mantainers ###
+
+*(alphabetically sorted)*
+
+ - stickell (Stefano) <l.stickell@yahoo.it>
+ - vuolter (Walter Purcaro) <vuolter@gmail.com>
+
+
 ### Contributors ###
 
 The list of developers who have kindly contributed to the pyLoad project is constantly updated.
@@ -36,3 +44,7 @@ opening topic to share tips and advices, fix troubles or simply discuss about th
 
 
 #### The pyLoad Team can be only forever thankful to all of you for your amazing efforts! ####
+
+
+-----------------------------------
+###### pyLoad Team 2008-2015 ######

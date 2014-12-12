@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# @author: vuolter
 
 """ Store all useful functions here """
 
