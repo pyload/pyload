@@ -80,9 +80,9 @@ def parseFileInfo(plugin, url="", html=""):
 
 
 #@TODO: Remove in 0.4.10
-#@NOTE: Every plugin must have own parseInfo classmethod to work with 0.4.10
+#@NOTE: Every plugin must have own parseInfos classmethod to work with 0.4.10
 def create_getInfo(plugin):
-    return lambda urls: [(info['name'], info['size'], info['status'], info['url']) for info in plugin.parseInfo(urls)]
+    return lambda urls: [(info['name'], info['size'], info['status'], info['url']) for info in plugin.parseInfos(urls)]
 
 
 def timestamp():
@@ -120,7 +120,7 @@ def _isDirectLink(self, url, resumable=True):
 class SimpleHoster(Hoster):
     __name    = "SimpleHoster"
     __type    = "hoster"
-    __version = "0.71"
+    __version = "0.72"
 
     __pattern = r'^unmatchable$'
 
@@ -182,11 +182,10 @@ class SimpleHoster(Hoster):
     FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
     CHECK_DIRECT_LINK   = None   #: Set to True to check for direct link, set to None to do it only if self.account is True
     MULTI_HOSTER        = False  #: Set to True to leech other hoster link (according its multihoster hook if available)
-    CONTENT_DISPOSITION = False  #: Set to True to replace file name with content-disposition value from http header
 
 
     @classmethod
-    def parseInfo(cls, urls):
+    def parseInfos(cls, urls):
         for url in urls:
             url = replace_patterns(url, cls.URL_REPLACEMENTS)
             yield cls.getInfo(url)
@@ -360,7 +359,7 @@ class SimpleHoster(Hoster):
         if not link:
             return
 
-        self.download(link, disposition=self.CONTENT_DISPOSITION)
+        self.download(link, disposition=True)
 
 
     def checkFile(self):
