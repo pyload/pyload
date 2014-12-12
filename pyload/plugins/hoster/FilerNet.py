@@ -15,7 +15,7 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name    = "FilerNet"
     __type    = "hoster"
-    __version = "0.09"
+    __version = "0.10"
 
     __pattern = r'https?://(?:www\.)?filer\.net/get/\w+'
 
@@ -24,8 +24,6 @@ class FilerNet(SimpleHoster):
     __authors     = [("stickell", "l.stickell@yahoo.it")
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
-
-    CONTENT_DISPOSITION = True
 
     INFO_PATTERN    = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>[\w^_]+)</small></h1>'
     OFFLINE_PATTERN = r'Nicht gefunden'
@@ -66,16 +64,17 @@ class FilerNet(SimpleHoster):
 
             if 'location' in header and header['location']:
                 self.correctCaptcha()
-                self.link = urljoin('http://filer.net', header['location'])
+                self.link = header['location']
                 return
             else:
                 self.invalidCaptcha()
 
 
-    def handlePremium(self):
-        super(FilerNet, self).handlePremium()
-        if self.link:
-            self.link = urljoin("http://filer.net/", self.link)
+    def downloadLink(self, link):
+        if not link:
+            return
+
+        self.download(urljoin("http://filer.net/", link), disposition=True)
 
 
 getInfo = create_getInfo(FilerNet)

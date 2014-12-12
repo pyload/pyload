@@ -10,7 +10,7 @@ from pyload.plugins.Plugin import SkipDownload
 class SkipRev(Adoon):
     __name    = "SkipRev"
     __type    = "addon"
-    __version = "0.14"
+    __version = "0.15"
 
     __config = [("tokeep", "int", "Number of rev files to keep for package (-1 to auto)", -1)]
 
@@ -32,10 +32,10 @@ class SkipRev(Adoon):
         if hasattr(plugin, "info") and 'name' in plugin.info and plugin.info['name']:
             name = plugin.info['name']
 
-        elif hasattr(plugin, "parseInfo"):
-            name = next(plugin.parseInfo([url]))['name']
+        elif hasattr(plugin, "parseInfos"):
+            name = next(plugin.parseInfos([url]))['name']
 
-        elif hasattr(plugin, "getInfo"):  #@NOTE: if parseInfo was not found, getInfo should be missing too
+        elif hasattr(plugin, "getInfo"):  #@NOTE: if parseInfos was not found, getInfo should be missing too
             name = plugin.getInfo(url)['name']
 
         else:

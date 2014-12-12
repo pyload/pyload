@@ -10,7 +10,7 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name    = "FastshareCz"
     __type    = "hoster"
-    __version = "0.24"
+    __version = "0.25"
 
     __pattern = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
 
@@ -20,8 +20,7 @@ class FastshareCz(SimpleHoster):
 
     URL_REPLACEMENTS = [("#.*", "")]
 
-    COOKIES             = [("fastshare.cz", "lang", "en")]
-    CONTENT_DISPOSITION = True
+    COOKIES = [("fastshare.cz", "lang", "en")]
 
     INFO_PATTERN    = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*Size\s*: (?P<S>\d+) (?P<U>[\w^_]+),'
     OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found)'
