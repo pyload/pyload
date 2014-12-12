@@ -13,7 +13,6 @@ PYLOAD_DIR = abspath(join(THEME_DIR, "..", "..", ".."))
 
 sys.path.append(PYLOAD_DIR)
 
-from pyload import InitHomeDir
 from pyload.utils import decode, formatSize
 
 import bottle

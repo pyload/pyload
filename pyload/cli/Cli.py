@@ -26,7 +26,6 @@ else:
 
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
-from pyload import InitHomeDir
 from pyload.cli.printer import *
 from pyload.cli import AddPackage, ManageFiles
 

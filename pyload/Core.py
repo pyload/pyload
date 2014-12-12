@@ -21,7 +21,6 @@ from sys import argv, executable, exit
 from time import time, sleep
 from traceback import print_exc
 
-from pyload import InitHomeDir
 from pyload.manager.AccountManager import AccountManager
 from pyload.manager.CaptchaManager import CaptchaManager
 from pyload.config.Parser import ConfigParser
