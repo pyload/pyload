@@ -144,7 +144,7 @@ def _isDirectLink(self, url, resumable=True):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.70"
+    __version__ = "0.71"
 
     __pattern__ = r'^unmatchable$'
 
@@ -412,7 +412,7 @@ class SimpleHoster(Hoster):
             m = re.search(self.WAIT_PATTERN, self.html)
             if m:
                 wait_time = sum([int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
-                                 re.findall(r'(\d+)\s*(hr|hour|min|sec)', m, re.I)])
+                                 re.findall(r'(\d+)\s*(hr|hour|min|sec)', m.group(0), re.I)])
                 self.wait(wait_time, False)
                 return
 
