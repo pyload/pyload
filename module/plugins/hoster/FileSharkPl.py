@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileSharkPl(SimpleHoster):
     __name__    = "FileSharkPl"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d{6}/\w{5}'
 
@@ -19,8 +19,6 @@ class FileSharkPl(SimpleHoster):
     __authors__     = [("prOq", None),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
-
-    CONTENT_DISPOSITION = True
 
     NAME_PATTERN = r'<h2 class="name-file">(?P<N>.+)</h2>'
     SIZE_PATTERN = r'<p class="size-file">(.*?)<strong>(?P<S>\d+\.?\d*)\s(?P<U>\w+)</strong></p>'

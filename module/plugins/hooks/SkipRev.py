@@ -10,7 +10,7 @@ from module.plugins.Plugin import SkipDownload
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __config__ = [("tokeep", "int", "Number of rev files to keep for package (-1 to auto)", -1)]
 
@@ -37,10 +37,10 @@ class SkipRev(Hook):
         if hasattr(plugin, "info") and 'name' in plugin.info and plugin.info['name']:
             name = plugin.info['name']
 
-        elif hasattr(plugin, "parseInfo"):
-            name = next(plugin.parseInfo([url]))['name']
+        elif hasattr(plugin, "parseInfos"):
+            name = next(plugin.parseInfos([url]))['name']
 
-        elif hasattr(plugin, "getInfo"):  #@NOTE: if parseInfo was not found, getInfo should be missing too
+        elif hasattr(plugin, "getInfo"):  #@NOTE: if parseInfos was not found, getInfo should be missing too
             name = plugin.getInfo(url)['name']
 
         else:

@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import _isDirectLink, SimpleHoster, cr
 class Keep2shareCc(SimpleHoster):
     __name__    = "Keep2shareCc"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
@@ -22,8 +22,6 @@ class Keep2shareCc(SimpleHoster):
 
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", "http://k2s.cc/file/\g<ID>")]
-
-    CONTENT_DISPOSITION = True
 
     NAME_PATTERN = r'File: <span>(?P<N>.+)</span>'
     SIZE_PATTERN = r'Size: (?P<S>[^<]+)</div>'
@@ -87,13 +85,7 @@ class Keep2shareCc(SimpleHoster):
             if m is None:
                 self.error(_("LINK_FREE_PATTERN not found"))
 
-        self.link = self._getDownloadLink(m.group(1))
-
-
-    def handlePremium(self):
-        super(Keep2shareCc, self).handlePremium()
-        if self.link:
-            self.link = self._getDownloadLink(self.link)
+        self.link = m.group(1)
 
 
     def handleCaptcha(self):
@@ -125,11 +117,16 @@ class Keep2shareCc(SimpleHoster):
             self.fail(_("All captcha attempts failed"))
 
 
-    def _getDownloadLink(self, url):
-        p = urlparse(self.pyfile.url)
+    def downloadLink(self, link):
+        if not link:
+            return
+
+        p    = urlparse(self.pyfile.url)
         base = "%s://%s" % (p.scheme, p.netloc)
-        link = _isDirectLink(self, url, self.premium)
-        return urljoin(base, link) if link else ""
+        link = _isDirectLink(self, link, self.premium)
+
+        if link:
+            self.download(urljoin(base, link), disposition=True)
 
 
 getInfo = create_getInfo(Keep2shareCc)
