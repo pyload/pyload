@@ -2,7 +2,6 @@
 
 import re
 
-from os.path import join
 from urlparse import urljoin
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -57,7 +56,7 @@ class ZippyshareCom(SimpleHoster):
 
     def get_link(self):
         checksum = self.get_checksum()
-        p_url    = join("d", self.info['pattern']['KEY'], str(checksum), self.pyfile.name)
+        p_url    = '/'.join(("d", self.info['pattern']['KEY'], str(checksum), self.pyfile.name))
         dl_link  = urljoin(self.info['pattern']['HOST'], p_url)
         return dl_link
 
