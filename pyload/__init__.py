@@ -1,5 +1,17 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
+import __builtin__
+
+import os
+import sys
+
+from codecs import getwriter
+
+from pyload.utils import get_console_encoding
+
+
 __all__ = ["__status_code__", "__status__", "__version_info__", "__version__", "__author_name__", "__author_mail__", "__license__"]
 
 __version_info__ = (0, 4, 10)
@@ -28,19 +40,11 @@ __authors__ = [("Marius"        , "mkaay@mkaay.de"        ),
 
 ################################# InitHomeDir #################################
 
-import __builtin__
-import os
-import sys
-
-from codecs import getwriter
-
-from pyload.utils import get_console_encoding
-
-projectdir = os.path.abspath(os.path.join(__file__, ".."))
+rootdir    = os.path.abspath(os.path.join(__file__, ".."))
 homedir    = os.path.expanduser("~")
 enc        = get_console_encoding(sys.stdout.encoding)
 
-sys.os.path.append(os.path.join(projectdir, "lib"))
+sys.path.append(os.path.join(rootdir, "lib"))
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
 if homedir == "~" and os.name == "nt":
@@ -62,11 +66,10 @@ if homedir == "~" and os.name == "nt":
     homedir = path_buf.value
 
 try:
-    p = os.path.join(projectdir, "config", "configdir")
-    if os.path.exists(p):
-        f = open(p, "rb")
+    p = os.path.join(rootdir, "config", "configdir")
+
+    with open(p, "rb") as f:
         configdir = f.read().strip()
-        f.close()
 
 except IOError:
     if os.name == "posix":
@@ -74,11 +77,19 @@ except IOError:
     else:
         configdir = os.path.join(homedir, "pyload")
 
+try:
+    if not os.path.exists(configdir):
+        os.makedirs(configdir, 0700)
+
+    os.chdir(configdir)
+
+except IOError:
+    sys.exit(1)
+
 
 __builtin__.owd    = os.path.abspath("")  #: original working directory
-__builtin__.pypath = os.path.abspath(os.path.join(projectdir, ".."))
-__builtin__.pycore = None  #: Store global Core.Core instance (will be set by Core on its init)
+__builtin__.pypath = os.path.abspath(os.path.join(rootdir, ".."))
 
-__builtin__.projectdir = projectdir
+__builtin__.rootdir    = rootdir
 __builtin__.homedir    = homedir
 __builtin__.configdir  = configdir

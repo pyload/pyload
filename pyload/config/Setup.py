@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
+from __future__ import with_statement
+
 import __builtin__
 
 import os
@@ -417,16 +419,20 @@ class SetupAssistant(object):
         try:
             if not path.exists(dirname):
                 makedirs(dirname, 0700)
+
+            chdir(dirname)
+            
             if persistent:
-                c = path.join(projectdir, "config", "configdir")
+                c = path.join(rootdir, "config", "configdir")
                 if not path.exists(c):
                     makedirs(c, 0700)
-                f = open(c, "wb")
-                f.write(dirname)
-                f.close()
-            chdir(dirname)
-        except Exception:
+
+                with open(c, "wb") as f:
+                    f.write(dirname)
+
+        except IOError:
             return False
+
         else:
             __builtin__.configdir = dirname
             return dirname  #: return always abspath
@@ -440,7 +446,10 @@ class SetupAssistant(object):
             confdir = self.ask(_("CONFIG PATH"), configdir)
             confpath = self.set_configdir(confdir)
             print
-            if confpath:
+            if not confpath:
+                print _("Failed to change the current config path!")
+                print
+            else:
                 print _("pyLoad config path successfully changed.")
                 break
 
