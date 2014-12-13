@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import os
+import platform
 import sys
-from os.path import join, abspath, dirname
 
-path = join((abspath(dirname(__file__))), "..", "..", "lib")
-sys.path.append(path)
+if "64" in platform.machine():
+    sys.path.append(os.path.join(pypath, "lib64"))
+sys.path.append(os.path.join(pypath, "lib"))
+
 
 from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
 from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *

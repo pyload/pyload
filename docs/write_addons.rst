@@ -3,20 +3,20 @@
 Addons
 ======
 
-A Addon is a python file which is located at :file:`pyload/plugins/addon`.
-The :class:`AddonManager <pyload.manager.AddonManager.AddonManager>` will load it automatically on startup. Only one instance exists
-over the complete lifetime of pyload. Your addon can interact on various events called by the :class:`AddonManager <pyload.manager.AddonManager.AddonManager>`,
+A Addon is a python file which is located at :file:`pyload/plugin/addon`.
+The :class:`AddonManager <pyload.manager.Addon.AddonManager>` will load it automatically on startup. Only one instance exists
+over the complete lifetime of pyload. Your addon can interact on various events called by the :class:`AddonManager <pyload.manager.Addon.AddonManager>`,
 do something complete autonomic and has full access to the :class:`Api <pyload.api.Api>` and every detail of pyLoad.
 The UpdateManager, CaptchaTrader, UnRar and many more are realised as addon.
 
 Addon header
 -----------
 
-Your addon needs to subclass :class:`Addon <pyload.plugins.Addon.Addon>` and will inherit all of its method, make sure to check its documentation!
+Your addon needs to subclass :class:`Addon <pyload.plugin.Addon.Addon>` and will inherit all of its method, make sure to check its documentation!
 
 All addons should start with something like this: ::
 
-        from pyload.plugins.Addon import Addon
+        from pyload.plugin.Addon import Addon
 
         class YourAddon(Addon):
                 __name__ = "YourAddon"
@@ -42,16 +42,16 @@ Interacting on Events
 
 The next step is to think about where your Addon action takes places.
 
-The easiest way is to overwrite specific methods defined by the :class:`Addon <pyload.plugins.Addon.Addon>` base class.
+The easiest way is to overwrite specific methods defined by the :class:`Addon <pyload.plugin.Addon.Addon>` base class.
 The name is indicating when the function gets called.
-See :class:`Addon <pyload.plugins.Addon.Addon>` page for a complete listing.
+See :class:`Addon <pyload.plugin.Addon.Addon>` page for a complete listing.
 
-You should be aware of the arguments the Addon is called with, whether its a :class:`PyFile <pyload.datatype.PyFile.PyFile>`
-or :class:`PyPackage <pyload.datatype.PyPackage.PyPackage>` you should read its related documentation to know how to access her great power and manipulate them.
+You should be aware of the arguments the Addon is called with, whether its a :class:`PyFile <pyload.datatype.File.PyFile>`
+or :class:`PyPackage <pyload.datatype.Package.PyPackage>` you should read its related documentation to know how to access her great power and manipulate them.
 
 A basic excerpt would look like: ::
 
-    from pyload.plugins.Addon import Addon
+    from pyload.plugin.Addon import Addon
 
     class YourAddon(Addon):
         """
@@ -66,12 +66,12 @@ A basic excerpt would look like: ::
 
 Another and more flexible and powerful way is to use event listener.
 All addon methods exists as event and very useful additional events are dispatched by the core. For a little overview look
-at :class:`AddonManager <pyload.manager.AddonManager.AddonManager>`. Keep in mind that you can define own events and other people may listen on them.
+at :class:`AddonManager <pyload.manager.Addon.AddonManager>`. Keep in mind that you can define own events and other people may listen on them.
 
 For your convenience it's possible to register listeners automatical via the ``event_map`` attribute.
 It requires a `dict` that maps event names to function names or a `list` of function names. It's important that all names are strings ::
 
-    from pyload.plugins.Addon import Addon
+    from pyload.plugin.Addon import Addon
 
     class YourAddon(Addon):
         """
@@ -92,7 +92,7 @@ It requires a `dict` that maps event names to function names or a `list` of func
 
 An advantage of the event listener is that you are able to register and remove the listeners at runtime.
 Use `self.manager.addEvent("name", function)`, `self.manager.removeEvent("name", function)` and see doc for
-:class:`AddonManager <pyload.manager.AddonManager.AddonManager>`. Contrary to ``event_map``, ``function`` has to be a reference
+:class:`AddonManager <pyload.manager.Addon.AddonManager>`. Contrary to ``event_map``, ``function`` has to be a reference
 and **not** a `string`.
 
 We introduced events because it scales better if there a a huge amount of events and addons. So all future interaction will be exclusive
@@ -107,7 +107,7 @@ So probably clients want to be able to interact with your addon to request it's 
 
 Sounds complicated but is very easy to do. Just use the ``Expose`` decorator: ::
 
-    from pyload.plugins.Addon import Addon, Expose
+    from pyload.plugin.Addon import Addon, Expose
 
     class YourAddon(Addon):
         """
@@ -132,7 +132,7 @@ Your addon can store information in a ``dict`` that can easily be retrievied via
 
 Just store everything in ``self.info``. ::
 
-    from pyload.plugins.Addon import Addon
+    from pyload.plugin.Addon import Addon
 
     class YourAddon(Addon):
         """
@@ -155,4 +155,4 @@ Example
 -------
     Sorry but you won't find an example here ;-)
 
-    Look at :file:`pyload/plugins/addon` and you will find plenty examples there.
+    Look at :file:`pyload/plugin/addon` and you will find plenty examples there.

@@ -9,7 +9,6 @@ parts/
 sdist/
 var/
 temp/
-!/pyload/lib/
 
 # Common directories
 .*/

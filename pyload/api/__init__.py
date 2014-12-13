@@ -8,7 +8,7 @@ import re
 
 from urlparse import urlparse
 
-from pyload.datatype.PyFile import PyFile
+from pyload.datatype.File import PyFile
 from pyload.utils.packagetools import parseNames
 from pyload.network.RequestFactory import getURL
 from pyload.remote import activated

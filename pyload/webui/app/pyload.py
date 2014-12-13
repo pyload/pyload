@@ -46,12 +46,12 @@ def pre_processor():
                 plugins = True
 
 
-    return {"user": user,
-            'status': status,
+    return {"user"   : user,
+            'status' : status,
             'captcha': captcha,
-            'perms': perms,
-            'url': request.url,
-            'update': update,
+            'perms'  : perms,
+            'url'    : request.url,
+            'update' : update,
             'plugins': plugins}
 
 

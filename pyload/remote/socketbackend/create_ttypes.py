@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import inspect
+import os
+import platform
 import sys
-from os.path import abspath, dirname, join
 
-sys.path.append(join(pypath, "pyload", "lib"))
-sys.path.append(join(pypath, "pyload", "remote"))
+
+if "64" in platform.machine():
+    sys.path.append(os.path.join(pypath, "lib64"))
+sys.path.append(os.path.join(pypath, "lib"))
+
+sys.path.append(os.path.join(pypath, "pyload", "remote"))
 
 from pyload.remote.thriftbackend.thriftgen.pyload import ttypes
 from pyload.remote.thriftbackend.thriftgen.pyload.Pyload import Iface
@@ -30,7 +35,7 @@ def main():
             enums.append(klass)
 
 
-    f = open(join(pypath, "pyload", "api", "types.py"), "wb")
+    f = open(os.path.join(pypath, "pyload", "api", "types.py"), "wb")
 
     f.write(
         """# -*- coding: utf-8 -*-

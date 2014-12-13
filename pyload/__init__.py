@@ -5,6 +5,7 @@ from __future__ import with_statement
 import __builtin__
 
 import os
+import platform
 import sys
 
 from codecs import getwriter
@@ -40,12 +41,18 @@ __authors__ = [("Marius"        , "mkaay@mkaay.de"        ),
 
 ################################# InitHomeDir #################################
 
-rootdir    = os.path.abspath(os.path.join(__file__, ".."))
-homedir    = os.path.expanduser("~")
-enc        = get_console_encoding(sys.stdout.encoding)
+__builtin__.owd       = os.path.abspath("")  #: original working directory
+__builtin__.homedir   = os.path.expanduser("~")
+__builtin__.rootdir   = os.path.abspath(os.path.join(__file__, ".."))
+__builtin__.configdir = ""
+__builtin__.pypath    = os.path.abspath(os.path.join(rootdir, ".."))
 
-sys.path.append(os.path.join(rootdir, "lib"))
-sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
+
+if "64" in platform.machine():
+    sys.path.append(os.path.join(pypath, "lib64"))
+sys.path.append(os.path.join(pypath, "lib"))
+
+sys.stdout = getwriter(get_console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
 
 if homedir == "~" and os.name == "nt":
     import ctypes
@@ -63,7 +70,7 @@ if homedir == "~" and os.name == "nt":
 
     _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
 
-    homedir = path_buf.value
+    __builtin__.homedir = path_buf.value
 
 try:
     p = os.path.join(rootdir, "config", "configdir")
@@ -83,13 +90,9 @@ try:
 
     os.chdir(configdir)
 
-except IOError:
+except IOError, e:
+    print >> sys.stderr, "configdir init failed: %d (%s)" % (e.errno, e.strerror)
     sys.exit(1)
 
-
-__builtin__.owd    = os.path.abspath("")  #: original working directory
-__builtin__.pypath = os.path.abspath(os.path.join(rootdir, ".."))
-
-__builtin__.rootdir    = rootdir
-__builtin__.homedir    = homedir
-__builtin__.configdir  = configdir
+else:
+    __builtin__.configdir  = configdir

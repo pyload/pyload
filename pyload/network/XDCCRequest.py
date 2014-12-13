@@ -12,7 +12,7 @@ from time import time
 import struct
 from select import select
 
-from pyload.plugins.Plugin import Abort
+from pyload.plugin.Plugin import Abort
 
 
 class XDCCRequest(object):

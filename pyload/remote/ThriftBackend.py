@@ -3,7 +3,7 @@
 
 from os.path import exists
 
-from pyload.manager.RemoteManager import BackendBase
+from pyload.manager.Remote import BackendBase
 
 from pyload.remote.thriftbackend.Processor import Processor
 from pyload.remote.thriftbackend.Protocol import ProtocolFactory

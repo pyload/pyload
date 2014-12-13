@@ -21,17 +21,17 @@ from sys import argv, executable, exit
 from time import time, sleep
 from traceback import print_exc
 
-from pyload.manager.AccountManager import AccountManager
-from pyload.manager.CaptchaManager import CaptchaManager
+from pyload.manager.Account import AccountManager
+from pyload.manager.Captcha import CaptchaManager
 from pyload.config.Parser import ConfigParser
-from pyload.manager.PluginManager import PluginManager
-from pyload.manager.event.PullEvents import PullManager
+from pyload.manager.Plugin import PluginManager
+from pyload.manager.Event import PullManager
 from pyload.network.RequestFactory import RequestFactory
-from pyload.manager.thread.ServerThread import WebServer
+from pyload.manager.thread.Server import WebServer
 from pyload.manager.event.Scheduler import Scheduler
 from pyload.network.JsEngine import JsEngine
 from pyload import remote
-from pyload.manager.RemoteManager import RemoteManager
+from pyload.manager.Remote import RemoteManager
 from pyload.database import DatabaseBackend, FileHandler
 
 from pyload.utils import freeSpace, formatSize, get_console_encoding
@@ -358,8 +358,8 @@ class Core(object):
 
         # later imported because they would trigger api import, and remote value not set correctly
         from pyload import api
-        from pyload.manager.AddonManager import AddonManager
-        from pyload.manager.ThreadManager import ThreadManager
+        from pyload.manager.Addon import AddonManager
+        from pyload.manager.Thread import ThreadManager
 
         if api.activated != self.remote:
             self.log.warning("Import error: API remote status not correct.")

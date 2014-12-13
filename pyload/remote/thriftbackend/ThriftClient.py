@@ -2,13 +2,17 @@
 
 import sys
 from socket import error
-from os.path import dirname, abspath, join
 from traceback import print_exc
 
 try:
     import thrift
+
 except ImportError:
-    sys.path.append(abspath(join(dirname(abspath(__file__)), "..", "..", "lib")))
+    import platform
+
+    if "64" in platform.machine():
+        sys.path.append(os.path.join(pypath, "lib64"))
+    sys.path.append(os.path.join(pypath, "lib"))
 
 from thrift.transport import TTransport
 #from thrift.transport.TZlibTransport import TZlibTransport

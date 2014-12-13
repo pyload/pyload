@@ -2,6 +2,6 @@
 
 from pyload.database.DatabaseBackend import DatabaseBackend, style
 
-from pyload.database.FileDatabase import FileHandler
-from pyload.database.UserDatabase import UserMethods
-from pyload.database.StorageDatabase import StorageMethods
+from pyload.database.File import FileHandler
+from pyload.database.User import UserMethods
+from pyload.database.Storage import StorageMethods

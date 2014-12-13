@@ -9,11 +9,11 @@ You can find an overview of some important classes here:
    :toctree: pyload
 
    pyload.api.Api
-   pyload.plugins.Plugin.Base
-   pyload.plugins.Plugin.Plugin
-   pyload.plugins.Crypter.Crypter
-   pyload.plugins.Account.Account
-   pyload.plugins.Addon.Addon
-   pyload.manager.AddonManager.AddonManager
+   pyload.plugin.Plugin.Base
+   pyload.plugin.Plugin.Plugin
+   pyload.plugin.Crypter.Crypter
+   pyload.plugin.Account.Account
+   pyload.plugin.Addon.Addon
+   pyload.manager.Addon.AddonManager
    pyload.datatypes.PyFile.PyFile
    pyload.datatypes.PyPackage.PyPackage

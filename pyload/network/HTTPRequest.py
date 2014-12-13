@@ -11,7 +11,7 @@ from httplib import responses
 from logging import getLogger
 from cStringIO import StringIO
 
-from pyload.plugins.Plugin import Abort, Fail
+from pyload.plugin.Plugin import Abort, Fail
 
 from pyload.utils import encode
 

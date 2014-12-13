@@ -12,8 +12,9 @@ import pycurl
 from pyload.network.HTTPChunk import ChunkInfo, HTTPChunk
 from pyload.network.HTTPRequest import BadHeader
 
-from pyload.plugins.Plugin import Abort
+from pyload.plugin.Plugin import Abort
 from pyload.utils import safe_join, fs_encode
+
 
 class HTTPDownload(object):
     """ loads a url http + ftp """

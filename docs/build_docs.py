@@ -12,12 +12,18 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
-from os.path import dirname, join, abspath
+import os
+import platform
+import sys
 
-dir_name = join(dirname(abspath("")))
+
+dir_name = os.path.join(os.path.dirname(os.path.abspath("")))
+
 sys.path.append(dir_name)
-sys.path.append(join(dir_name, "pyload", "lib"))
+
+if "64" in platform.machine():
+    sys.path.append(os.path.join(os.path.dirname, "lib64"))
+sys.path.append(os.path.join(os.path.dirname, "lib"))
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -131,12 +137,12 @@ html_theme = 'default'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = join(dir_name, "pyload", "web", "media", "default", "img", "pyload-logo-edited3.5-new-font-small.png")
+html_logo = os.path.join(dir_name, "pyload", "web", "media", "default", "img", "pyload-logo-edited3.5-new-font-small.png")
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-html_favicon = join(dir_name, "docs", "resources", "icon.ico")
+html_favicon = os.path.join(dir_name, "docs", "resources", "icon.ico")
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
