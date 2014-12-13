@@ -8,7 +8,7 @@ import os
 from os.path import join, abspath, dirname, exists
 from os import makedirs
 
-THEME_DIR = abspath(join(dirname(__file__), "themes"))
+THEME_DIR  = abspath(join(dirname(__file__), "themes"))
 PYLOAD_DIR = abspath(join(THEME_DIR, "..", "..", ".."))
 
 sys.path.append(PYLOAD_DIR)

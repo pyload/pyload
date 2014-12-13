@@ -21,7 +21,7 @@ def myquote(url):
 
 def myurlencode(data):
     data = dict(data)
-    return urlencode(dict(encode(x), encode(y) for x, y in data.iteritems()))
+    return urlencode(dict((encode(x), encode(y)) for x, y in data.iteritems()))
 
 bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
 
@@ -156,7 +156,7 @@ class HTTPRequest(object):
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, encode(y) for x, y in post.iteritems()]
+                post = [(x, encode(y)) for x, y in post.iteritems()]
                 self.c.setopt(pycurl.HTTPPOST, post)
         else:
             self.c.setopt(pycurl.POST, 0)
