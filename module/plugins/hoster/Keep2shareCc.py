@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import _isDirectLink, SimpleHoster, cr
 class Keep2shareCc(SimpleHoster):
     __name__    = "Keep2shareCc"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
@@ -99,7 +99,7 @@ class Keep2shareCc(SimpleHoster):
 
             m = re.search(self.CAPTCHA_PATTERN, self.html)
             if m:
-                captcha_url = urljoin(self.base, m.group(1))
+                captcha_url = urljoin("http://k2s.cc/", m.group(1))
                 post_data['CaptchaForm[code]'] = self.decryptCaptcha(captcha_url)
             else:
                 challenge, response = recaptcha.challenge()
@@ -121,12 +121,10 @@ class Keep2shareCc(SimpleHoster):
         if not link:
             return
 
-        p    = urlparse(self.pyfile.url)
-        base = "%s://%s" % (p.scheme, p.netloc)
         link = _isDirectLink(self, link, self.premium)
 
         if link:
-            self.download(urljoin(base, link), disposition=True)
+            self.download(urljoin("http://k2s.cc/", link), disposition=True)
 
 
 getInfo = create_getInfo(Keep2shareCc)
