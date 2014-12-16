@@ -12,7 +12,7 @@ from module.plugins.Crypter import Crypter
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
@@ -27,6 +27,7 @@ class FilecryptCc(Crypter):
     WEBLINK_PATTERN = r"openLink.?'([\w_-]*)',"
 
     CAPTCHA_PATTERN = r'<img id="nc" src="(.+?)"'
+    CIRCLECAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
 
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(http://filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
@@ -38,7 +39,7 @@ class FilecryptCc(Crypter):
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url, cookies=True)
 
-        if "content not found" in self.html:
+        if "content notfound" in self.html: #@pyload-devs: this is _not_ a typo
             self.offline()
 
         self.handlePasswordProtection()
@@ -78,16 +79,21 @@ class FilecryptCc(Crypter):
 
     def handleCaptcha(self):
         m = re.search(self.CAPTCHA_PATTERN, self.html)
+        found = re.search(self.CIRCLECAPTCHA_PATTERN, self.html)
 
-        if m:
+        if m: #normal captcha
             self.logDebug("Captcha-URL: %s" % m.group(1))
             captcha_code = self.decryptCaptcha("http://filecrypt.cc" + m.group(1), forceUser=True, imgtype="gif")
             self.siteWithLinks = self.load(self.pyfile.url, post={"recaptcha_response_field":captcha_code}, decode=True, cookies=True)
+        elif found: #circle captcha
+            self.logDebug("Captcha-URL: %s" % found.group(1))
+            captcha_code = self.decryptCaptcha("http://filecrypt.cc" + found.group(1), forceUser=True, imgtype="gif", result_type='positional')
+            self.siteWithLinks = self.load(self.pyfile.url, post={"button.x":captcha_code[0], "button.y":captcha_code[1]}, decode=True, cookies=True)
         else:
             self.logDebug("No captcha found")
             self.siteWithLinks = self.html
 
-        if "recaptcha_response_field" in self.siteWithLinks:
+        if "recaptcha_image" in self.siteWithLinks:
             self.invalidCaptcha()
             self.retry()
 
