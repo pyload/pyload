@@ -99,14 +99,24 @@ def parseHtmlForm(attr_str, html, input_names={}):
 
 #: Deprecated
 def parseFileInfo(plugin, url="", html=""):
-    info = plugin.getInfo(url, html)
-    return info['name'], info['size'], info['status'], info['url']
+    if hasattr(plugin, "getInfo"):
+        info = plugin.getInfo(url, html)
+        res  = info['name'], info['size'], info['status'], info['url']
+    else:
+        res  = urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 0, 3, url
+
+    return res
 
 
 #@TODO: Remove in 0.4.10
 #@NOTE: Every plugin must have own parseInfos classmethod to work with 0.4.10
 def create_getInfo(plugin):
-    return lambda urls: [(info['name'], info['size'], info['status'], info['url']) for info in plugin.parseInfos(urls)]
+    if hasattr(plugin, "parseInfos"):
+        fn = lambda urls: [(info['name'], info['size'], info['status'], info['url']) for info in plugin.parseInfos(urls)]
+    else:
+        fn = lambda urls: [parseFileInfo(url) for url in urls]
+
+    return fn
 
 
 def timestamp():
@@ -144,7 +154,7 @@ def _isDirectLink(self, url, resumable=True):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.73"
+    __version__ = "0.74"
 
     __pattern__ = r'^unmatchable$'
 
@@ -260,24 +270,27 @@ class SimpleHoster(Hoster):
             try:
                 info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: pattern groups will be saved here, please save api stuff to info['api']
             except:
-                pass
+                info['pattern'] = {}
 
             for pattern in ("FILE_INFO_PATTERN", "INFO_PATTERN",
                             "FILE_NAME_PATTERN", "NAME_PATTERN",
                             "FILE_SIZE_PATTERN", "SIZE_PATTERN",
                             "HASHSUM_PATTERN"):  #@TODO: Remove old patterns starting with "FILE_" in 0.4.10
                 try:
-                    attr = getattr(cls, pattern)
-                    dict = re.search(attr, html).groupdict()
+                    attr  = getattr(cls, pattern)
+                    pdict = re.search(attr, html).groupdict()
 
-                    if all(True for k in dict if k not in info['pattern']):
-                        info['pattern'].update(dict)
+                    if all(True for k in pdict if k not in info['pattern']):
+                        info['pattern'].update(pdict)
 
                 except AttributeError:
                     continue
 
                 else:
                     online = True
+
+            if not info['pattern']:
+                info.pop('pattern', None)
 
         if online:
             info['status'] = 2
@@ -360,17 +373,20 @@ class SimpleHoster(Hoster):
             if self.html is None:
                 self.fail(_("No html retrieved"))
 
-            self.checkErrors()
-
-            premium_only = 'error' in self.info and self.info['error'] == "premium-only"
-
-            self._updateInfo(self.getInfo(pyfile.url, self.html))
+            self.updateInfo(self.getInfo(pyfile.url, self.html))
 
             self.checkNameSize()
+
+            if hasattr(self, 'PREMIUM_ONLY_PATTERN'):
+                premium_only = re.search(self.PREMIUM_ONLY_PATTERN, self.html)
+            else:
+                premium_only = False
 
             #: Usually premium only pages doesn't show any file information
             if not premium_only:
                 self.checkStatus()
+
+            self.checkErrors()
 
             if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as premium download")
@@ -406,18 +422,12 @@ class SimpleHoster(Hoster):
                 errmsg = self.info['error'] = m.group(1)
                 self.error(errmsg)
 
-        if hasattr(self, 'PREMIUM_ONLY_PATTERN'):
-            m = re.search(self.PREMIUM_ONLY_PATTERN, self.html)
-            if m:
-                self.info['error'] = "premium-only"
-                return
-
         if hasattr(self, 'WAIT_PATTERN'):
             m = re.search(self.WAIT_PATTERN, self.html)
             if m:
                 wait_time = sum([int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
                                  re.findall(r'(\d+)\s*(hr|hour|min|sec)', m.group(0), re.I)])
-                self.wait(wait_time, True if wait_time > 300 else False)
+                self.wait(wait_time, wait_time > 300)
                 return
 
         self.info.pop('error', None)
@@ -460,7 +470,7 @@ class SimpleHoster(Hoster):
     def checkInfo(self):
         self.checkErrors()
 
-        self._updateInfo(self.getInfo(self.pyfile.url, self.html or ""))
+        self.updateInfo(self.getInfo(self.pyfile.url, self.html or ""))
 
         self.checkNameSize()
         self.checkStatus()
@@ -473,7 +483,7 @@ class SimpleHoster(Hoster):
         return self.info
 
 
-    def _updateInfo(self, info):
+    def updateInfo(self, info):
         self.logDebug(_("File info (before update): %s") % self.info)
         self.info.update(info)
         self.logDebug(_("File info (after update): %s")  % self.info)
@@ -487,7 +497,7 @@ class SimpleHoster(Hoster):
 
             self.link = link
 
-            self._updateInfo(self.getInfo(self.pyfile.url))
+            self.updateInfo(self.getInfo(self.pyfile.url))
             self.checkNameSize()
         else:
             self.logDebug(_("Direct download link not found"))
