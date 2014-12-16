@@ -8,9 +8,9 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class SendspaceCom(SimpleHoster):
     __name__    = "SendspaceCom"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
-    __pattern__ = r'https?://(?:www\.)?sendspace\.com/file/.*'
+    __pattern__ = r'https?://(?:www\.)?sendspace\.com/file/\w+'
 
     __description__ = """Sendspace.com hoster plugin"""
     __license__     = "GPLv3"

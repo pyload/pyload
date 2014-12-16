@@ -4,6 +4,7 @@
 # http://filer.net/get/ivgf5ztw53et3ogd
 # http://filer.net/get/hgo14gzcng3scbvv
 
+import pycurl
 import re
 
 from urlparse import urljoin
@@ -15,13 +16,13 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
 
     __description__ = """Filer.net hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -57,15 +58,18 @@ class FilerNet(SimpleHoster):
         for _i in xrange(5):
             challenge, response = recaptcha.challenge()
 
-            header = self.load(self.pyfile.url,
-                               post={'recaptcha_challenge_field': challenge,
-                                     'recaptcha_response_field' : response,
-                                     'hash'                     : inputs['hash']})
+            #@NOTE: Work-around for v0.4.9 just_header issue
+            #@TODO: Check for v0.4.10
+            self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
+            self.load(self.pyfile.url, post={'recaptcha_challenge_field': challenge,
+                                             'recaptcha_response_field' : response,
+                                             'hash'                     : inputs['hash']}))
+            self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
-            if 'location' in header and header['location']:
+            if 'location' in self.req.http.header.lower():
+                self.link = re.search(r'location: (\S+)', self.req.http.header, re.I).group(1)
                 self.correctCaptcha()
-                self.link = header['location']
-                return
+                break
             else:
                 self.invalidCaptcha()
 

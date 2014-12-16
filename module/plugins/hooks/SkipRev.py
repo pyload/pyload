@@ -10,7 +10,7 @@ from module.plugins.Plugin import SkipDownload
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __config__ = [("tokeep", "int", "Number of rev files to keep for package (-1 to auto)", -1)]
 
@@ -45,13 +45,13 @@ class SkipRev(Hook):
 
         else:
             self.logWarning("Unable to grab file name")
-            name = urlparse(unquote(url)).path.split('/')[-1])
+            name = urlparse(unquote(url)).path.split('/')[-1]
 
         return name
 
 
     def downloadPreparing(self, pyfile):
-        if pyfile.getStatusName() is "unskipped" or not pyname(pyfile).endswith(".rev"):
+        if pyfile.getStatusName() is "unskipped" or not self.pyname(pyfile).endswith(".rev"):
             return
 
         tokeep = self.getConfig("tokeep")

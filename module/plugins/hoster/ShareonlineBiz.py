@@ -48,7 +48,7 @@ class ShareonlineBiz(SimpleHoster):
             if field[1] == "OK":
                 info['fileid']   = field[0]
                 info['status']   = 2
-                info['name'] = field[2]
+                info['name']     = field[2]
                 info['size']     = field[3]  #: in bytes
                 info['md5']      = field[4].strip().lower().replace("\n\n", "")  #: md5
 

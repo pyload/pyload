@@ -8,7 +8,7 @@ from module.plugins.Hook import Hook
 class RestartSlow(Hook):
     __name__    = "RestartSlow"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __config__ = [("free_limit"   , "int" ,  "Transfer speed threshold in kilobytes"                     , 100 ),
                   ("free_time"    , "int" ,  "Sample interval in minutes"                                , 5   ),
@@ -45,7 +45,7 @@ class RestartSlow(Hook):
             limit = max(5, self.getConfig("%s_limit" % type) * 1024)
 
         chunks = [chunk for chunk in self.pyfile.req.dl.chunks \
-                  if chunk.id not in self.info['chunk'] or self.info['chunk'][chunk.id] not is (time, limit)]
+                  if chunk.id not in self.info['chunk'] or self.info['chunk'][chunk.id] is not (time, limit)]
 
         for chunk in chunks:
             chunk.c.setopt(pycurl.LOW_SPEED_TIME , time)
