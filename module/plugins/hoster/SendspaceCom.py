@@ -10,7 +10,7 @@ class SendspaceCom(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.14"
 
-    __pattern__ = r'http://(?:www\.)?sendspace\.com/file/.*'
+    __pattern__ = r'https?://(?:www\.)?sendspace\.com/file/.*'
 
     __description__ = """Sendspace.com hoster plugin"""
     __license__     = "GPLv3"
