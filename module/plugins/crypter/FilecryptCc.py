@@ -5,6 +5,7 @@ import binascii
 import re
 
 from Crypto.Cipher import AES
+from urlparse import urljoin
 
 from module.plugins.Crypter import Crypter
 
@@ -12,7 +13,7 @@ from module.plugins.Crypter import Crypter
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
@@ -24,10 +25,10 @@ class FilecryptCc(Crypter):
     # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  #@TODO: Extend SimpleCrypter
 
     DLC_LINK_PATTERN = r'<button class="dlcdownload" type="button" title="Download \*.dlc" onclick="DownloadDLC\(\'(.+)\'\);"><i></i><span>dlc<'
-    WEBLINK_PATTERN = r"openLink.?'([\w_-]*)',"
+    WEBLINK_PATTERN  = r"openLink.?'([\w_-]*)',"
 
-    CAPTCHA_PATTERN = r'<img id="nc" src="(.+?)"'
-    CIRCLECAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
+    CAPTCHA_PATTERN        = r'<img id="nc" src="(.+?)"'
+    CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
 
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(http://filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
@@ -39,7 +40,7 @@ class FilecryptCc(Crypter):
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url, cookies=True)
 
-        if "content notfound" in self.html: #@pyload-devs: this is _not_ a typo
+        if "content notfound" in self.html:  #@NOTE: "content notfound" is NOT a typo
             self.offline()
 
         self.handlePasswordProtection()
@@ -79,16 +80,31 @@ class FilecryptCc(Crypter):
 
     def handleCaptcha(self):
         m = re.search(self.CAPTCHA_PATTERN, self.html)
-        found = re.search(self.CIRCLECAPTCHA_PATTERN, self.html)
+        m2 = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.html)
 
-        if m: #normal captcha
+        if m:  #: normal captcha
             self.logDebug("Captcha-URL: %s" % m.group(1))
-            captcha_code = self.decryptCaptcha("http://filecrypt.cc" + m.group(1), forceUser=True, imgtype="gif")
-            self.siteWithLinks = self.load(self.pyfile.url, post={"recaptcha_response_field":captcha_code}, decode=True, cookies=True)
-        elif found: #circle captcha
-            self.logDebug("Captcha-URL: %s" % found.group(1))
-            captcha_code = self.decryptCaptcha("http://filecrypt.cc" + found.group(1), forceUser=True, imgtype="gif", result_type='positional')
-            self.siteWithLinks = self.load(self.pyfile.url, post={"button.x":captcha_code[0], "button.y":captcha_code[1]}, decode=True, cookies=True)
+
+            captcha_code = self.decryptCaptcha(urljoin("http://filecrypt.cc", m.group(1)),
+                                               forceUser=True,
+                                               imgtype="gif")
+
+            self.siteWithLinks = self.load(self.pyfile.url,
+                                           post={'recaptcha_response_field': captcha_code},
+                                           cookies=True,
+                                           decode=True)
+        elif m2:  #: circle captcha
+            self.logDebug("Captcha-URL: %s" % m2.group(1))
+
+            captcha_code = self.decryptCaptcha(urljoin("http://filecrypt.cc", m2.group(1)),
+                                               forceUser=True,
+                                               imgtype="gif",
+                                               result_type='positional')
+
+            self.siteWithLinks = self.load(self.pyfile.url,
+                                           post={'button.x': captcha_code[0], 'button.y': captcha_code[1]},
+                                           cookies=True,
+                                           decode=True)
         else:
             self.logDebug("No captcha found")
             self.siteWithLinks = self.html
