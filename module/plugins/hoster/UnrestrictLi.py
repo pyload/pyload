@@ -10,18 +10,26 @@ from module.plugins.Hoster import Hoster
 
 def secondsToMidnight(gmt=0):
     now = datetime.utcnow() + timedelta(hours=gmt)
+
     if now.hour is 0 and now.minute < 10:
         midnight = now
     else:
         midnight = now + timedelta(days=1)
-    midnight = midnight.replace(hour=0, minute=10, second=0, microsecond=0)
-    return int((midnight - now).total_seconds())
+
+    dt = midnight.replace(hour=0, minute=10, second=0, microsecond=0) - now
+
+    if hasattr(dt, 'total_seconds'):
+        res = dt.total_seconds()
+    else:
+        res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
+
+    return int(res)
 
 
 class UnrestrictLi(Hoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(unrestrict|unr)\.li'
 
