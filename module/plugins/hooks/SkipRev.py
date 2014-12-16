@@ -10,7 +10,7 @@ from module.plugins.Plugin import SkipDownload
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __config__ = [("tokeep", "int", "Number of rev files to keep for package (-1 to auto)", -1)]
 
@@ -57,7 +57,7 @@ class SkipRev(Hook):
         tokeep = self.getConfig("tokeep")
 
         if tokeep:
-            saved = [True for link in pyfile.package().getChildren() \
+            saved = [True for link in self.core.api.getPackageData(pyfile.packageid).links \
                      if link.name.endswith(".rev") and (link.hasStatus("finished") or link.hasStatus("downloading"))].count(True)
 
             if not saved or saved < tokeep:  #: keep one rev at least in auto mode
@@ -73,7 +73,7 @@ class SkipRev(Hook):
         if not tokeep:
             return
 
-        for link in pyfile.package().getChildren():
+        for link in self.core.api.getPackageData(pyfile.packageid).links:
             if link.hasStatus("skipped") and link.name.endswith(".rev"):
                 if tokeep > -1 or pyfile.name.endswith(".rev"):
                     link.setStatus("queued")
