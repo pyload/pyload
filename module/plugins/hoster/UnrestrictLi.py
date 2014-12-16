@@ -16,10 +16,10 @@ def secondsToMidnight(gmt=0):
     else:
         midnight = now + timedelta(days=1)
 
-    dt = midnight.replace(hour=0, minute=10, second=0, microsecond=0) - now
+    td = midnight.replace(hour=0, minute=10, second=0, microsecond=0) - now
 
-    if hasattr(dt, 'total_seconds'):
-        res = dt.total_seconds()
+    if hasattr(td, 'total_seconds'):
+        res = td.total_seconds()
     else:
         res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
 
@@ -29,7 +29,7 @@ def secondsToMidnight(gmt=0):
 class UnrestrictLi(Hoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(unrestrict|unr)\.li'
 
