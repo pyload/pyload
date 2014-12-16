@@ -20,7 +20,7 @@ def secondsToMidnight(gmt=0):
 
     if hasattr(td, 'total_seconds'):
         res = td.total_seconds()
-    else:
+    else:  #@NOTE: work-around for python 2.5 and 2.6 missing timedelta.total_seconds
         res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
 
     return int(res)

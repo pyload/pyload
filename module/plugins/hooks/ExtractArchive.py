@@ -195,6 +195,7 @@ class ExtractArchive(Hook):
                     if targets:
                         self.logDebug("Targets for %s: %s" % (plugin.__name__, targets))
                         matched = True
+
                     for target, fid in targets:
                         if target in processed:
                             self.logDebug(basename(target), "skipped")
@@ -206,8 +207,10 @@ class ExtractArchive(Hook):
                         try:
                             klass = plugin(self, target, out, fullpath, overwrite, excludefiles, renice)
                             klass.init()
-                            password = p.password.strip().splitlines()
-                            new_files = self._extract(klass, fid, password, thread)
+
+                            passwords = p.password.strip().splitlines()
+                            new_files = self._extract(klass, fid, passwords, thread)
+
                         except Exception, e:
                             self.logError(basename(target), e)
                             success = False
@@ -256,13 +259,7 @@ class ExtractArchive(Hook):
                 self.logInfo(basename(plugin.file), _("Password protected"))
                 self.logDebug("Passwords", passwords)
 
-                pwlist = copy(self.getPasswords())
-                # remove already supplied pws from list (only local)
-                for pw in passwords:
-                    if pw in pwlist:
-                        pwlist.remove(pw)
-
-                for pw in passwords + pwlist:
+                for pw in set(passwords) + set(self.getPasswords()):
                     try:
                         self.logDebug("Try password", pw)
                         if plugin.checkPassword(pw):
@@ -270,6 +267,7 @@ class ExtractArchive(Hook):
                             self.addPassword(pw)
                             success = True
                             break
+
                     except WrongPassword:
                         self.logDebug("Password was wrong")
 
@@ -297,8 +295,10 @@ class ExtractArchive(Hook):
 
         except ArchiveError, e:
             self.logError(basename(plugin.file), _("Archive Error"), e)
+
         except CRCError:
             self.logError(basename(plugin.file), _("CRC Mismatch"))
+
         except Exception, e:
             if self.core.debug:
                 print_exc()
