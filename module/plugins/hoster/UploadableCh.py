@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadableCh(SimpleHoster):
     __name__    = "UploadableCh"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
 
@@ -21,14 +21,16 @@ class UploadableCh(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
+    FILE_URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://www.uploadable.ch/file/\g<ID>')]
+
     FILE_INFO_PATTERN = r'div id=\"file_name\" title=.*>(?P<N>.+)<span class=\"filename_normal\">\((?P<S>[\d.]+) (?P<U>\w+)\)</span><'
 
     OFFLINE_PATTERN      = r'>(File not available|This file is no longer available)'
     TEMP_OFFLINE_PATTERN = r'<div class="icon_err">'
 
-    WAIT_PATTERN = r'data-time="(\d+)" data-format'
+    WAIT_PATTERN = r'>Please wait.+?<'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://www.uploadable.ch/file/\g<ID>')]
+    RECAPTCHA_KEY = "6LdlJuwSAAAAAPJbPIoUhyqOJd7-yrah5Nhim5S3"
 
 
     def setup(self):
@@ -41,11 +43,7 @@ class UploadableCh(SimpleHoster):
         a = self.load(self.pyfile.url, cookies=True, post={'downloadLink': "wait"}, decode=True)
         self.logDebug(a)
 
-        m = re.search(self.WAIT_PATTERN, a)
-        if m is not None:
-            self.wait(int(m.group(1)))  #: Expected output: {"waitTime":30}
-        else:
-            self.error("WAIT_PATTERN")
+        self.wait(30)
 
         # Make the recaptcha appear and show it the pyload interface
         b = self.load(self.pyfile.url, cookies=True, post={'checkDownload': "check"}, decode=True)
@@ -60,7 +58,7 @@ class UploadableCh(SimpleHoster):
                   cookies=True,
                   post={'recaptcha_challenge_field'  : challenge,
                         'recaptcha_response_field'   : response,
-                        'recaptcha_shortencode_field': self.info['ID']},
+                        'recaptcha_shortencode_field': self.info['pattern']['ID']},
                   decode=True)
 
         self.wait(3)
