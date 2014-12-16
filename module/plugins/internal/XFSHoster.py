@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'^unmatchable$'
 
@@ -36,7 +36,7 @@ class XFSHoster(SimpleHoster):
     MULTI_HOSTER      = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
     NAME_PATTERN = r'(>Filename:</b></td><td nowrap>|name="fname" value="|<span class="name">)(?P<N>.+?)(\s*<|")'
-    SIZE_PATTERN = r'(>Size:</b></td><td>|>File:.*>|<span class="size">)(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
+    SIZE_PATTERN = r'(>Size:</b></td><td>|>File:.*>|</font>\s*\(|<span class="size">)(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
@@ -199,13 +199,7 @@ class XFSHoster(SimpleHoster):
 
 
     def checkErrors(self):
-        m = re.search(self.PREMIUM_ONLY_PATTERN, self.html)
-        if m:
-            self.info['error'] = "premium-only"
-            return
-
         m = re.search(self.ERROR_PATTERN, self.html)
-
         if m is None:
             self.errmsg = None
         else:
