@@ -1,9 +1,9 @@
 ﻿# -*- coding: utf-8 -*-
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class FreeWayMe(Hoster):
+class FreeWayMe(SimpleHoster):
     __name__    = "FreeWayMe"
     __type__    = "hoster"
     __version__ = "0.11"
@@ -21,16 +21,14 @@ class FreeWayMe(Hoster):
         self.chunkLimit     = 1
 
 
-    def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "FreeWayMe")
-            self.fail(_("No FreeWay account provided"))
+    def handleMulti(self):
+        user, data = self.account.selectAccount()
 
-        self.logDebug("Old URL: %s" % pyfile.url)
-
-        (user, data) = self.account.selectAccount()
-
+        self.link = True
         self.download(
             "https://www.free-way.me/load.php",
-            get={"multiget": 7, "url": pyfile.url, "user": user, "pw": self.account.getpw(user), "json": ""},
+            get={"multiget": 7, "url": self.pyfile.url, "user": user, "pw": self.account.getpw(user), "json": ""},
             disposition=True)
+
+
+getInfo = create_getInfo(FreeWayMe)

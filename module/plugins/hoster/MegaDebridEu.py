@@ -5,10 +5,10 @@ import re
 from urllib import unquote_plus
 
 from module.common.json_layer import json_loads
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class MegaDebridEu(Hoster):
+class MegaDebridEu(SimpleHoster):
     __name__    = "MegaDebridEu"
     __type__    = "hoster"
     __version__ = "0.40"
@@ -30,23 +30,16 @@ class MegaDebridEu(Hoster):
             return ""
 
 
-    def process(self, pyfile):
-        if re.match(self.__pattern__, pyfile.url):
-            new_url = pyfile.url
-        elif not self.account:
-            self.exitOnFail("Please enter your %s account or deactivate this plugin" % "Mega-debrid.eu")
-        else:
-            if not self.connectToApi():
-                self.exitOnFail("Unable to connect to Mega-debrid.eu")
+    def handleMulti(self):
+        if not self.connectToApi():
+            self.exitOnFail("Unable to connect to Mega-debrid.eu")
 
-            self.logDebug("Old URL: %s" % pyfile.url)
-            new_url = self.debridLink(pyfile.url)
-            self.logDebug("New URL: " + new_url)
+        self.link = self.debridLink(self.pyfile.url)
+        self.logDebug("New URL: " + self.link)
 
-        filename = self.getFilename(new_url)
+        filename = self.getFilename(self.link)
         if filename != "":
-            pyfile.name = filename
-        self.download(new_url, disposition=True)
+            self.pyfile.name = filename
 
 
     def connectToApi(self):
@@ -92,3 +85,6 @@ class MegaDebridEu(Hoster):
             self.resetAccount()
         else:
             self.fail(_(msg))
+
+
+getInfo = create_getInfo(MegaDebridEu)

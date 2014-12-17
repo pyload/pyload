@@ -2,14 +2,13 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
-from module.plugins.internal.SimpleHoster import replace_patterns
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class DebridItaliaCom(Hoster):
+class DebridItaliaCom(SimpleHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.09"
 
     __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
 
@@ -19,35 +18,25 @@ class DebridItaliaCom(Hoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    URL_REPLACEMENTS  = [(r'(/dl/\d+)$', '\1/')]
-
-
     def setup(self):
         self.chunkLimit     = -1
         self.resumeDownload = True
 
 
-    def process(self, pyfile):
-        pyfile.url = replace_patterns(pyfile.url, cls.URL_REPLACEMENTS)
+    def handleMulti(self):
+        html = self.load("http://www.debriditalia.com/api.php",
+                         get={'generate': "on", 'link': self.pyfile.url, 'p': self.getPassword()})
 
-        if re.match(self.__pattern__, pyfile.url):
-            link = pyfile.url
+        if "ERROR" in html:
+            self.fail(re.search(r'ERROR:(.*)', html).strip())
 
-        elif not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "DebridItalia")
-            self.fail(_("No DebridItalia account provided"))
+        self.link = html.strip()
 
-        else:
-            html = self.load("http://www.debriditalia.com/api.php", get={'generate': "", 'link': pyfile.url})
 
-            if "ERROR" in html:
-                self.fail(re.search(r'ERROR:(.*)', html).strip())
-
-            link = html.strip()
-
-        self.download(link, disposition=True)
-
+    def checkFile(self):
         check = self.checkDownload({'empty': re.compile(r'^$')})
-
         if check == "empty":
             self.retry(5, 2 * 60, "Empty file downloaded")
+
+
+getInfo = create_getInfo(DebridItaliaCom)

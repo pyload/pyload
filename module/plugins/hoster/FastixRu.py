@@ -6,10 +6,10 @@ from random import randrange
 from urllib import unquote
 
 from module.common.json_layer import json_loads
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class FastixRu(Hoster):
+class FastixRu(SimpleHoster):
     __name__    = "FastixRu"
     __type__    = "hoster"
     __version__ = "0.04"
@@ -32,41 +32,34 @@ class FastixRu(Hoster):
 
 
     def setup(self):
-        self.chunkLimit = 3
+        self.chunkLimit     = 3
         self.resumeDownload = True
 
 
-    def process(self, pyfile):
-        if re.match(self.__pattern__, pyfile.url):
-            new_url = pyfile.url
-        elif not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "Fastix")
-            self.fail(_("No Fastix account provided"))
+    def handleMulti(self):
+        api_key = self.account.getAccountData(self.user)
+        api_key = api_key['api']
+
+        page = self.load("http://fastix.ru/api_v2/",
+                         get={'apikey': api_key, 'sub': "getdirectlink", 'link': self.pyfile.url})
+        data = json_loads(page)
+
+        self.logDebug("Json data", data)
+
+        if "error\":true" in page:
+            self.offline()
         else:
-            self.logDebug("Old URL: %s" % pyfile.url)
-            api_key = self.account.getAccountData(self.user)
-            api_key = api_key['api']
+            self.link = data['downloadlink']
 
-            page = self.load("http://fastix.ru/api_v2/",
-                             get={'apikey': api_key, 'sub': "getdirectlink", 'link': pyfile.url})
-            data = json_loads(page)
+        if self.link != self.pyfile.url:
+            self.logDebug("New URL: %s" % self.link)
 
-            self.logDebug("Json data", data)
-
-            if "error\":true" in page:
-                self.offline()
-            else:
-                new_url = data['downloadlink']
-
-        if new_url != pyfile.url:
-            self.logDebug("New URL: %s" % new_url)
-
-        if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
+        if self.pyfile.name.startswith("http") or self.pyfile.name.startswith("Unknown"):
             #only use when name wasnt already set
-            pyfile.name = self.getFilename(new_url)
+            self.pyfile.name = self.getFilename(self.link)
 
-        self.download(new_url, disposition=True)
 
+    def checkFile(self):
         check = self.checkDownload({"error": "<title>An error occurred while processing your request</title>",
                                     "empty": re.compile(r"^$")})
 
@@ -74,3 +67,6 @@ class FastixRu(Hoster):
             self.retry(wait_time=60, reason=_("An error occurred while generating link"))
         elif check == "empty":
             self.retry(wait_time=60, reason=_("Downloaded File was empty"))
+
+
+getInfo = create_getInfo(FastixRu)

@@ -118,7 +118,7 @@ class Keep2shareCc(SimpleHoster):
 
 
     def downloadLink(self, link):
-        if not link:
+        if not link or not isinstance(link, basestring):
             return
 
         link = _isDirectLink(self, link, self.premium)
