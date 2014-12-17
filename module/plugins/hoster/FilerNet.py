@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
 
@@ -63,7 +63,7 @@ class FilerNet(SimpleHoster):
             self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
             self.load(self.pyfile.url, post={'recaptcha_challenge_field': challenge,
                                              'recaptcha_response_field' : response,
-                                             'hash'                     : inputs['hash']}))
+                                             'hash'                     : inputs['hash']})
             self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
             if 'location' in self.req.http.header.lower():
@@ -75,10 +75,8 @@ class FilerNet(SimpleHoster):
 
 
     def downloadLink(self, link):
-        if not link:
-            return
-
-        self.download(urljoin("http://filer.net/", link), disposition=True)
+        if link and isinstance(link, basestring):
+            self.download(urljoin("http://filer.net/", link), disposition=True)
 
 
 getInfo = create_getInfo(FilerNet)
