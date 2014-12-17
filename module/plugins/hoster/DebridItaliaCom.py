@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DebridItaliaCom(SimpleHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
 
@@ -30,8 +30,8 @@ class DebridItaliaCom(SimpleHoster):
         html = self.load("http://www.debriditalia.com/api.php",
                          get={'generate': "on", 'link': self.pyfile.url, 'p': self.getPassword()})
 
-        if "ERROR" in html:
-            self.fail(re.search(r'ERROR:(.*)', html).strip())
+        if "ERROR:" in html:
+            self.fail(re.search(r'ERROR:(.*)', html).group(1).strip())
 
         self.link = html.strip()
 
