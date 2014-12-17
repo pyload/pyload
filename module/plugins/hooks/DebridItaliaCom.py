@@ -9,7 +9,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class DebridItaliaCom(MultiHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hook"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
@@ -23,5 +23,4 @@ class DebridItaliaCom(MultiHoster):
 
 
     def getHoster(self):
-        html = getURL("http://www.debriditalia.com/status.php")
-        return re.findall(r'title="(.+?)"> \1</td><td><img src="/images/(?:attivo|testing)', html)
+        return getURL("http://debriditalia.com/api.php", get={'hosts': ""}).replace('"', '').split(',')
