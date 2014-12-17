@@ -19,9 +19,6 @@ class RarefileNet(XFSHoster):
 
     HOSTER_DOMAIN = "rarefile.net"
 
-    NAME_PATTERN = r'<font color="red">(?P<N>.+?)<'
-    SIZE_PATTERN = r'>Size : (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-
     LINK_PATTERN = r'<a href="(?P<link>[^"]+)">(?P=link)</a>'
 
 

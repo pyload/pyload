@@ -19,9 +19,8 @@ class LomafileCom(XFSHoster):
     HOSTER_DOMAIN = "lomafile.com"
 
     NAME_PATTERN = r'<a href="http://lomafile\.com/w{12}/(?P<N>.+?)">'
-    SIZE_PATTERN = r'Size:</b></td><td>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
-    OFFLINE_PATTERN = r'>(No such file|Software error:<)'
+    OFFLINE_PATTERN      = r'>(No such file|Software error:<)'
     TEMP_OFFLINE_PATTERN = r'The page may have been renamed, removed or be temporarily unavailable.<'
 
     CAPTCHA_PATTERN = r'(http://lomafile\.com/captchas/[^"\']+)'

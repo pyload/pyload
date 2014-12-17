@@ -20,8 +20,5 @@ class HundredEightyUploadCom(XFSHoster):
 
     HOSTER_DOMAIN = "180upload.com"
 
-    NAME_PATTERN = r'Filename:</b></td><td nowrap>(?P<N>.+)</td></tr>-->'
-    SIZE_PATTERN = r'Size:</b></td><td>(?P<S>[\d.,]+) (?P<U>[\w^_]+)\s*<small>'
-
 
 getInfo = create_getInfo(HundredEightyUploadCom)

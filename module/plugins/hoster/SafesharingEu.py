@@ -17,8 +17,6 @@ class SafesharingEu(XFSHoster):
 
     HOSTER_DOMAIN = "safesharing.eu"
 
-    WAIT_PATTERN = r'You have to wait (\d+) minutes'
-
     ERROR_PATTERN = r'(?:<div class="alert alert-danger">)(.+?)(?:</div>)'
 
 

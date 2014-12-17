@@ -17,7 +17,7 @@ class UptoboxCom(XFSHoster):
 
     HOSTER_DOMAIN = "uptobox.com"
 
-    INFO_PATTERN = r'"para_title">(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)'
+    INFO_PATTERN    = r'"para_title">(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)'
     OFFLINE_PATTERN = r'>(File not found|Access Denied|404 Not Found)'
 
     LINK_PATTERN = r'"(https?://\w+\.uptobox\.com/d/.*?)"'

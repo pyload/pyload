@@ -27,6 +27,7 @@ class UpleaCom(XFSHoster):
     OFFLINE_PATTERN = r'>You followed an invalid or expired link'
 
     LINK_PATTERN = r'"(http?://\w+\.uplea\.com/anonym/.*?)"'
+
     WAIT_PATTERN = r'timeText:([\d.]+),'
     STEP_PATTERN = r'<a href="(/step/.+)">'
 
