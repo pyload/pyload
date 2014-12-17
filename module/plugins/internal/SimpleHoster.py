@@ -154,7 +154,7 @@ def _isDirectLink(self, url, resumable=True):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.74"
+    __version__ = "0.75"
 
     __pattern__ = r'^unmatchable$'
 
@@ -300,7 +300,7 @@ class SimpleHoster(Hoster):
                                                 cls.FILE_NAME_REPLACEMENTS if hasattr(cls, "FILE_NAME_REPLACEMENTS") else cls.NAME_REPLACEMENTS)  #@TODO: Remove FILE_NAME_REPLACEMENTS check in 0.4.10
 
             if 'S' in info['pattern']:
-                size = replace_patterns(info['pattern']['S'] + info['pattern']['U'] if 'U' in info else info['pattern']['S'],
+                size = replace_patterns(info['pattern']['S'] + info['pattern']['U'] if 'U' in info['pattern'] else info['pattern']['S'],
                                         cls.FILE_SIZE_REPLACEMENTS if hasattr(cls, "FILE_SIZE_REPLACEMENTS") else cls.SIZE_REPLACEMENTS)  #@TODO: Remove FILE_SIZE_REPLACEMENTS check in 0.4.10
                 info['size'] = parseFileSize(size)
 
@@ -361,6 +361,7 @@ class SimpleHoster(Hoster):
 
         if self.multihost:
             self.logDebug("Looking for leeched download link...")
+            self.logDebug("File url: %s" % self.pyfile.url)
             self.handleMulti()
 
         elif self.directDL:
@@ -404,10 +405,8 @@ class SimpleHoster(Hoster):
 
 
     def downloadLink(self, link):
-        if not link:
-            return
-
-        self.download(link, disposition=True)
+        if link and isinstance(link, basestring):
+            self.download(link, disposition=True)
 
 
     def checkFile(self):
