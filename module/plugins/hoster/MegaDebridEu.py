@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MegaDebridEu(SimpleHoster):
     __name__    = "MegaDebridEu"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
 
     __pattern__ = r'^https?://(?:w{3}\d+\.mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[^/]+/.+$'
 

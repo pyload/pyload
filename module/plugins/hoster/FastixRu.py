@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastixRu(SimpleHoster):
     __name__    = "FastixRu"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>\w{24})'
 

@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FreeWayMe(SimpleHoster):
     __name__    = "FreeWayMe"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'https://(?:www\.)?free-way\.me/.*'
 

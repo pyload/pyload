@@ -11,7 +11,7 @@ from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 class SimplyPremiumCom(SimpleHoster):
     __name__    = "SimplyPremiumCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://.*(simply-premium)\.com'
 

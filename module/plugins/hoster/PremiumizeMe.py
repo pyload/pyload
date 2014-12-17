@@ -7,7 +7,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class PremiumizeMe(SimpleHoster):
     __name__    = "PremiumizeMe"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
 

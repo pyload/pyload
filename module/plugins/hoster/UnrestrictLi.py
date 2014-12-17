@@ -29,7 +29,7 @@ def secondsToMidnight(gmt=0):
 class UnrestrictLi(SimpleHoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(unrestrict|unr)\.li'
 

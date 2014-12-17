@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZeveraCom(SimpleHoster):
     __name__    = "ZeveraCom"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = r'http://(?:www\.)?zevera\.com/.*'
 

@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RehostTo(SimpleHoster):
     __name__    = "RehostTo"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'https?://.*rehost\.to\..*'
 

@@ -13,7 +13,7 @@ from module.utils import fs_encode
 class PremiumTo(SimpleHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'https?://(?:www\.)?premium\.to/.*'
 

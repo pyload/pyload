@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class OverLoadMe(SimpleHoster):
     __name__    = "OverLoadMe"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://.*overload\.me.*'
 

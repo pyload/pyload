@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LinksnappyCom(SimpleHoster):
     __name__    = "LinksnappyCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:[^/]*\.)?linksnappy\.com'
 

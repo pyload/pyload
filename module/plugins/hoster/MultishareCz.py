@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MultishareCz(SimpleHoster):
     __name__    = "MultishareCz"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+).*'
 

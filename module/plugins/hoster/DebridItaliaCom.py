@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DebridItaliaCom(SimpleHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.08"
 
     __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
 
