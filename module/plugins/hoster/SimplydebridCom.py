@@ -17,6 +17,9 @@ class SimplydebridCom(SimpleHoster):
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
+    MULTI_HOSTER = True
+
+
     def setup(self):
         self.resumeDownload = True
         self.multiDL        = True

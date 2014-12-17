@@ -18,6 +18,9 @@ class MyfastfileCom(SimpleHoster):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
+    MULTI_HOSTER = True
+
+
     def setup(self):
         self.chunkLimit     = -1
         self.resumeDownload = True

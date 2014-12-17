@@ -20,6 +20,8 @@ class LinksnappyCom(SimpleHoster):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
+    MULTI_HOSTER = True
+
     SINGLE_CHUNK_HOSTERS = ('easybytez.com')
 
 

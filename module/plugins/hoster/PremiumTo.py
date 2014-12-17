@@ -24,6 +24,9 @@ class PremiumTo(SimpleHoster):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
+    MULTI_HOSTER = True
+
+
     def setup(self):
         self.resumeDownload = True
         self.chunkLimit     = 1

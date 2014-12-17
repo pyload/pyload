@@ -20,6 +20,8 @@ class MegaDebridEu(SimpleHoster):
     __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 
 
+    MULTI_HOSTER = True
+
     API_URL = "https://www.mega-debrid.eu/api.php"
 
 

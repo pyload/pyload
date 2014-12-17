@@ -20,6 +20,9 @@ class SimplyPremiumCom(SimpleHoster):
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
+    MULTI_HOSTER = True
+
+
     def setup(self):
         self.chunkLimit     = 16
         self.resumeDownload = False

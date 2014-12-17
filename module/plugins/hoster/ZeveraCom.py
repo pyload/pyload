@@ -15,6 +15,9 @@ class ZeveraCom(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
+    MULTI_HOSTER = True
+
+
     def setup(self):
         self.resumeDownload = True
         self.multiDL        = True

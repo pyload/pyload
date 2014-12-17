@@ -22,6 +22,9 @@ class OverLoadMe(SimpleHoster):
     __authors__     = [("marley", "marley@over-load.me")]
 
 
+    MULTI_HOSTER = True
+
+
     def getFilename(self, url):
         try:
             name = unquote(url.rsplit("/", 1)[1])

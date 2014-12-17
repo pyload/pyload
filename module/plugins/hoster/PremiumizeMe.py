@@ -16,6 +16,9 @@ class PremiumizeMe(SimpleHoster):
     __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
+    MULTI_HOSTER = True
+
+
     def handleMulti(self):
         # In some cases hostsers do not supply us with a filename at download, so we
         # are going to set a fall back filename (e.g. for freakshare or xfileshare)

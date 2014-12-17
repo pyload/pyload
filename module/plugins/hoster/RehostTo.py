@@ -17,6 +17,9 @@ class RehostTo(SimpleHoster):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
+    MULTI_HOSTER = True
+
+
     def getFilename(self, url):
         return unquote(url.rsplit("/", 1)[1])
 

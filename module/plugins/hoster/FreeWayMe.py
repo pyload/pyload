@@ -15,6 +15,9 @@ class FreeWayMe(SimpleHoster):
     __authors__     = [("Nicolas Giese", "james@free-way.me")]
 
 
+    MULTI_HOSTER = True
+
+
     def setup(self):
         self.resumeDownload = False
         self.multiDL        = self.premium

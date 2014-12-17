@@ -361,7 +361,7 @@ class SimpleHoster(Hoster):
 
         if self.multihost:
             self.logDebug("Looking for leeched download link...")
-            self.logDebug("File url: %s" % self.pyfile.url)
+            self.logDebug("File url: %s" % pyfile.url)
             self.handleMulti()
 
         elif self.directDL:

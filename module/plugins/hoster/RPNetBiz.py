@@ -18,6 +18,9 @@ class RPNetBiz(SimpleHoster):
     __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 
+    MULTI_HOSTER = True
+
+
     def setup(self):
         self.chunkLimit     = -1
         self.resumeDownload = True

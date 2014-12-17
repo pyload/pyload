@@ -18,6 +18,9 @@ class DebridItaliaCom(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
+    MULTI_HOSTER = True
+
+
     def setup(self):
         self.chunkLimit     = -1
         self.resumeDownload = True

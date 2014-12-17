@@ -23,6 +23,9 @@ class RealdebridCom(SimpleHoster):
     __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
 
+    MULTI_HOSTER = True
+
+
     def getFilename(self, url):
         try:
             name = unquote(url.rsplit("/", 1)[1])

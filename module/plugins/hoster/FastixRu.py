@@ -21,6 +21,9 @@ class FastixRu(SimpleHoster):
     __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
+    MULTI_HOSTER = True
+
+
     def getFilename(self, url):
         try:
             name = unquote(url.rsplit("/", 1)[1])

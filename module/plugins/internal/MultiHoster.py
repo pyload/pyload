@@ -9,7 +9,7 @@ from module.utils import remove_chars
 class MultiHoster(Hook):
     __name__    = "MultiHoster"
     __type__    = "hook"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __description__ = """Generic MultiHoster plugin"""
     __license__     = "GPLv3"
@@ -18,19 +18,22 @@ class MultiHoster(Hook):
 
     interval = 12 * 60 * 60  #: reload hosters every 12h
 
-    HOSTER_REPLACEMENTS = [("1fichier.com", "onefichier.com"),
-                           ("2shared.com", "twoshared.com"),
-                           ("4shared.com", "fourshared.com"),
-                           ("cloudnator.com", "shragle.com"),
-                           ("easy-share.com", "crocko.com"),
-                           ("freakshare.net", "freakshare.com"),
-                           ("hellshare.com", "hellshare.cz"),
-                           ("ifile.it", "filecloud.io"),
-                           ("putlocker.com", "firedrive.com"),
-                           ("share-rapid.cz", "multishare.cz"),
-                           ("sharerapid.cz", "multishare.cz"),
-                           ("ul.to", "uploaded.to"),
-                           ("uploaded.net", "uploaded.to")]
+    HOSTER_REPLACEMENTS = [("1fichier.com"   , "onefichier.com"),
+                           ("2shared.com"    , "twoshared.com" ),
+                           ("4shared.com"    , "fourshared.com"),
+                           ("cloudnator.com" , "shragle.com"   ),
+                           ("easy-share.com" , "crocko.com"    ),
+                           ("fileparadox.com", "fileparadox.in"),
+                           ("freakshare.net" , "freakshare.com"),
+                           ("hellshare.com"  , "hellshare.cz"  ),
+                           ("ifile.it"       , "filecloud.io"  ),
+                           ("nowdownload.ch" , "nowdownload.sx"),
+                           ("nowvideo.co"    , "nowvideo.sx"   ),
+                           ("putlocker.com"  , "firedrive.com" ),
+                           ("share-rapid.cz" , "multishare.cz" ),
+                           ("sharerapid.cz"  , "multishare.cz" ),
+                           ("ul.to"          , "uploaded.to"   ),
+                           ("uploaded.net"  , "uploaded.to"    )]
     HOSTER_EXCLUDED     = []
 
 
@@ -133,12 +136,12 @@ class MultiHoster(Hook):
 
 
     def overridePlugins(self):
-        pluginMap    = dict((name.lower(), name) for name in self.core.pluginManager.hosterPlugins.keys())
+        pluginMap    = dict((name.lower(), name) for name in self.core.pluginManager.hosterPlugins.iterkeys())
         accountList  = [name.lower() for name, data in self.core.accountManager.accounts.iteritems() if data]
         excludedList = []
 
         for hoster in self.getHosterCached():
-            name = remove_chars(hoster.lower(), "-.")
+            name = remove_chars(hoster, "-.")
 
             if name in accountList:
                 excludedList.append(hoster)
@@ -166,10 +169,12 @@ class MultiHoster(Hook):
             self.logInfo(_("The following hosters were not overwritten - account exists"), ", ".join(sorted(excludedList)))
 
         if self.new_supported:
-            self.logDebug("New Hosters", ", ".join(sorted(self.new_supported)))
+            hosters = sorted(self.new_supported)
+
+            self.logDebug("New Hosters", ", ".join(hosters))
 
             # create new regexp
-            regexp = r'.*(%s).*' % "|".join([x.replace(".", "\.") for x in self.new_supported])
+            regexp = r'.*(%s).*' % "|".join([x.replace(".", "\.") for x in hosters])
             if hasattr(klass, "__pattern__") and isinstance(klass.__pattern__, basestring) and '://' in klass.__pattern__:
                 regexp = r'%s|%s' % (klass.__pattern__, regexp)
 
