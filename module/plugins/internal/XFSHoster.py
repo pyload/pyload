@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __pattern__ = r'^unmatchable$'
 
@@ -35,8 +35,8 @@ class XFSHoster(SimpleHoster):
     CHECK_DIRECT_LINK = None
     MULTI_HOSTER      = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
-    NAME_PATTERN = r'(>Filename:</b></td><td nowrap>|name="fname" value="|<span class="name">)(?P<N>.+?)(\s*<|")'
-    SIZE_PATTERN = r'(>Size:</b></td><td>|>File:.*>|</font>\s*\(|<span class="size">)(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
+    NAME_PATTERN = r'(Filename[ ]*:[ ]*</b>(</td><td nowrap>)?|name="fname"[ ]+value="|<[\w^_]+ class="(file)?name">)\s*(?P<N>.+?)(\s*<|")'
+    SIZE_PATTERN = r'(Size[ ]*:[ ]*</b>(</td><td>)?|File:.*>|</font>\s*\(|<[\w^_]+ class="size">)\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN      = r'>\s*\w+ (Not Found|file (was|has been) removed)'
     TEMP_OFFLINE_PATTERN = r'>\s*\w+ server (is in )?(maintenance|maintainance)'
