@@ -16,8 +16,8 @@ class OverLoadMe(Account):
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
-        page = req.load("https://api.over-load.me/account.php", get={"user": user, "auth": data['password']}).strip()
-        data = json_loads(page)
+        html = req.load("https://api.over-load.me/account.php", get={"user": user, "auth": data['password']}).strip()
+        data = json_loads(html)
 
         # Check for premium
         if data['membership'] == "Free":

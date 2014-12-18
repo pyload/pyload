@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class MyfastfileCom(Account):
     __name__    = "MyfastfileCom"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Myfastfile.com account plugin"""
     __license__     = "GPLv3"
@@ -18,7 +18,7 @@ class MyfastfileCom(Account):
 
     def loadAccountInfo(self, user, req):
         if 'days_left' in self.json_data:
-            validuntil = int(time() + self.json_data['days_left'] * 24 * 60 * 60)
+            validuntil = time() + self.json_data['days_left'] * 24 * 60 * 60
             return {"premium": True, "validuntil": validuntil, "trafficleft": -1}
         else:
             self.logError(_("Unable to get account information"))

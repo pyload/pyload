@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class FilerNet(Account):
     __name__    = "FilerNet"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Filer.net account plugin"""
     __license__     = "GPLv3"
@@ -29,12 +29,14 @@ class FilerNet(Account):
         if re.search(self.FREE_PATTERN, html):
             return {"premium": False, "validuntil": None, "trafficleft": None}
 
-        until = re.search(self.WALID_UNTIL_PATTERN, html)
+        until   = re.search(self.WALID_UNTIL_PATTERN, html)
         traffic = re.search(self.TRAFFIC_PATTERN, html)
+
         if until and traffic:
-            validuntil = int(time.mktime(time.strptime(until.group(1), "%d.%m.%Y %H:%M:%S")))
+            validuntil  = time.mktime(time.strptime(until.group(1), "%d.%m.%Y %H:%M:%S"))
             trafficleft = self.parseTraffic(traffic.group(1))
             return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
+
         else:
             self.logError(_("Unable to retrieve account information"))
             return {"premium": False, "validuntil": None, "trafficleft": None}

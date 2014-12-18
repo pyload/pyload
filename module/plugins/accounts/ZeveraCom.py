@@ -8,7 +8,7 @@ from module.plugins.Account import Account
 class ZeveraCom(Account):
     __name__    = "ZeveraCom"
     __type__    = "account"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __description__ = """Zevera.com account plugin"""
     __license__     = "GPLv3"
@@ -21,7 +21,7 @@ class ZeveraCom(Account):
             account_info = {"trafficleft": 0, "validuntil": 0, "premium": False}
         else:
             account_info = {
-                "trafficleft": int(data['availabletodaytraffic']) * 1024,
+                "trafficleft": float(data['availabletodaytraffic']) * 1024,
                 "validuntil": mktime(strptime(data['endsubscriptiondate'], "%Y/%m/%d %H:%M:%S")),
                 "premium": True
             }

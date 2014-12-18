@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __description__ = """Uploaded.to account plugin"""
     __license__     = "GPLv3"
@@ -41,7 +41,7 @@ class UploadedTo(Account):
                 if m:
                     validuntil = time()
                     for n, u in m:
-                        validuntil += int(n) * 60 * 60 * {'week': 168, 'day': 24, 'hour': 1}[u]
+                        validuntil += float(n) * 60 * 60 * {'week': 168, 'day': 24, 'hour': 1}[u]
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
@@ -61,8 +61,8 @@ class UploadedTo(Account):
     def login(self, user, data, req):
         req.cj.setCookie("uploaded.net", "lang", "en")
 
-        page = req.load("http://uploaded.net/io/login",
+        html = req.load("http://uploaded.net/io/login",
                         post={'id': user, 'pw': data['password'], '_': ""})
 
-        if "User and password do not match" in page:
+        if "User and password do not match" in html:
             self.wrongPassword()

@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class DepositfilesCom(Account):
     __name__    = "DepositfilesCom"
     __type__    = "account"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __description__ = """Depositfiles.com account plugin"""
     __license__     = "GPLv3"
@@ -23,7 +23,7 @@ class DepositfilesCom(Account):
         html = req.load("https://dfiles.eu/de/gold/")
         validuntil = re.search(r"Sie haben Gold Zugang bis: <b>(.*?)</b></div>", html).group(1)
 
-        validuntil = int(mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S")))
+        validuntil = mktime(strptime(validuntil, "%Y-%m-%d %H:%M:%S"))
 
         return {"validuntil": validuntil, "trafficleft": -1}
 

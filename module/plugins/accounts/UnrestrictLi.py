@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class UnrestrictLi(Account):
     __name__    = "UnrestrictLi"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Unrestrict.li account plugin"""
     __license__     = "GPLv3"
@@ -23,7 +23,7 @@ class UnrestrictLi(Account):
             return {"premium": False}
 
         validuntil = json_data['result']['expires']
-        trafficleft = int(json_data['result']['traffic'])
+        trafficleft = float(json_data['result']['traffic'] / 1024)  #@TODO: Remove `/ 1024` in 0.4.10
 
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
 

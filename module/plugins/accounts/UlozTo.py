@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """Uloz.to account plugin"""
     __license__     = "GPLv3"
@@ -29,7 +29,7 @@ class UlozTo(Account):
         req.cj.setCookie("ulozto.net", "ULOSESSID", self.phpsessid)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        trafficleft = int(float(m.group(1).replace(' ', '').replace(',', '.')) * 1000 * 1.048) if m else 0
+        trafficleft = float(m.group(1).replace(' ', '').replace(',', '.')) * 1000 * 1.048 if m else 0
         self.premium = True if trafficleft else False
 
         return {"validuntil": -1, "trafficleft": trafficleft}
