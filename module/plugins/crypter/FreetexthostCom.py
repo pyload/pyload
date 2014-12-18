@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FreetexthostCom(SimpleCrypter):
@@ -25,3 +25,6 @@ class FreetexthostCom(SimpleCrypter):
             self.error(_("Unable to extract links"))
         links = m.group(1)
         return links.strip().split("<br />\r\n")
+
+
+getInfo = create_getInfo(FreetexthostCom)

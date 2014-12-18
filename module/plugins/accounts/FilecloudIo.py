@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class FilecloudIo(Account):
     __name__    = "FilecloudIo"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """FilecloudIo account plugin"""
     __license__     = "GPLv3"
@@ -36,13 +36,13 @@ class FilecloudIo(Account):
         rep = json_loads(rep)
 
         if rep['is_premium'] == 1:
-            return {"validuntil": int(rep['premium_until']), "trafficleft": -1}
+            return {"validuntil": float(rep['premium_until']), "trafficleft": -1}
         else:
             return {"premium": False}
 
 
     def login(self, user, data, req):
-        req.cj.setCookie(".secure.filecloud.io", "lang", "en")
+        req.cj.setCookie("secure.filecloud.io", "lang", "en")
         html = req.load('https://secure.filecloud.io/user-login.html')
 
         if not hasattr(self, "form_data"):

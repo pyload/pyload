@@ -10,7 +10,7 @@ from module.plugins.Hook import Hook
 class DownloadScheduler(Hook):
     __name__    = "DownloadScheduler"
     __type__    = "hook"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __config__ = [("timetable", "str", "List time periods as hh:mm full or number(kB/s)",
                    "0:00 full, 7:00 250, 10:00 0, 17:00 150"),
@@ -20,6 +20,11 @@ class DownloadScheduler(Hook):
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def setup(self):

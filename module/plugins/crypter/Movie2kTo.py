@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadCrypter import DeadCrypter
+from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class Movie2kTo(DeadCrypter):
@@ -14,3 +14,6 @@ class Movie2kTo(DeadCrypter):
     __description__ = """Movie2k.to decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("4Christopher", "4Christopher@gmx.de")]
+
+
+getInfo = create_getInfo(Movie2kTo)

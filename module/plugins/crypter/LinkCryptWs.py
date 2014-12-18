@@ -15,47 +15,41 @@ from module.utils import html_unescape
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
 
     __description__ = """LinkCrypt.ws decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("kagenoshin", "kagenoshin[AT]gmx[DOT]ch"),
-                       ("glukgluk", None)]
+                       ("glukgluk", None),
+                       ("Gummibaer", None)]
 
 
-    JK_KEY = "jk"
     CRYPTED_KEY = "crypted"
+    JK_KEY = "jk"
 
 
     def setup(self):
-        self.html    = None
-        self.fileid  = None
         self.captcha = False
-        self.package = None
+        self.links   = []
+        self.sources = ['cnl', 'web', 'dlc', 'rsdf', 'ccf']
 
-        self.preferred_sources = ['cnl', 'web', 'dlc', 'rsdf', 'ccf', ] #['cnl', 'rsdf', 'ccf', 'dlc', 'web']
 
-
-    def prepare():
+    def prepare(self):
         # Init
-        self.package = pyfile.package()
-        self.fileid = re.match(self.__pattern__, pyfile.url).group('ID')
+        self.fileid = re.match(self.__pattern__, self.pyfile.url).group('ID')
 
-        self.req.cj.setCookie(".linkcrypt.ws", "language", "en")
+        self.req.cj.setCookie("linkcrypt.ws", "language", "en")
 
         # Request package
-        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko") #better chance to not get those key-captchas
+        self.req.http.c.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")  #: better chance to not get those key-captchas
         self.html = self.load(self.pyfile.url)
 
 
     def decrypt(self, pyfile):
-        #check if we have js
         if not self.js:
             self.fail(_("Missing JS Engine"))
-
-        package_found = None
 
         self.prepare()
 
@@ -85,25 +79,15 @@ class LinkCryptWs(Crypter):
         self.get_container_html()
 
         # Extract package links
-        package_links = []
+        for type in self.sources:
+            links = self.handleLinkSource(type)
 
-        for type_ in self.preferred_sources:
-            links = self.handleLinkSource(type_)
             if links:
-                if isinstance(links, list):
-                    package_links.extend(links)
-                else:
-                    package_found = True
+                self.links.extend(links)
                 break
 
-        package_links = set(package_links)
-
-        # Pack
-        if package_links:
-            self.packages = [(package_name, package_links, folder_name)]
-
-        elif package_found:
-            self.core.api.deletePackages([self.package.id])
+        if self.links:
+            self.packages = [(package_name, self.links, folder_name)]
 
 
     def isOnline(self):
@@ -189,18 +173,18 @@ class LinkCryptWs(Crypter):
                 self.correctCaptcha()
 
 
-    def handleLinkSource(self, type_):
-        if type_ is 'cnl':
+    def handleLinkSource(self, type):
+        if type == 'cnl':
                 return self.handleCNL2()
 
-        elif type_ is 'web':
+        elif type == 'web':
                 return self.handleWebLinks()
 
-        elif type_ in ('rsdf', 'ccf', 'dlc'):
-                return self.handleContainer(type_)
+        elif type in ('rsdf', 'ccf', 'dlc'):
+                return self.handleContainer(type)
 
         else:
-            self.error(_("Unknown source type: %s") % type_)
+            self.fail(_("Unknown source type: %s") % type)  #@TODO: Replace with self.error in 0.4.10
 
 
     def handleWebLinks(self):
@@ -249,17 +233,17 @@ class LinkCryptWs(Crypter):
         return self.js.eval(line.replace('{}))',"{}).replace('document.open();document.write','').replace(';document.close();',''))"))
 
 
-    def handleContainer(self, type_):
+    def handleContainer(self, type):
         package_links = []
-        type_ = type_.lower()
+        type = type.lower()
 
-        self.logDebug('Search for %s Container links' % type_.upper())
+        self.logDebug('Search for %s Container links' % type.upper())
 
-        if not type_.isalnum():  # check to prevent broken re-pattern (cnl2,rsdf,ccf,dlc,web are all alpha-numeric)
-            self.error(_("unknown container type: %s") % type_)
+        if not type.isalnum():  # check to prevent broken re-pattern (cnl2,rsdf,ccf,dlc,web are all alpha-numeric)
+            self.fail(_("Unknown container type: %s") % type)  #@TODO: Replace with self.error in 0.4.10
 
         for line in self.container_html:
-            if(type_ in line):
+            if type in line:
                 jseval = self.handle_javascript(line)
                 clink = re.search(r'href=["\']([^"\']*?)["\']',jseval,re.I)
 
@@ -269,8 +253,8 @@ class LinkCryptWs(Crypter):
                 self.logDebug("clink avaible")
 
                 package_name, folder_name = self.getPackageInfo()
-                self.logDebug("Added package with name %s.%s and container link %s" %( package_name, type_, clink.group(1)))
-                self.core.api.uploadContainer( "%s.%s" %(package_name, type_), self.load(clink.group(1)))
+                self.logDebug("Added package with name %s.%s and container link %s" %( package_name, type, clink.group(1)))
+                self.core.api.uploadContainer( "%s.%s" %(package_name, type), self.load(clink.group(1)))
                 return "Found it"
 
         return package_links
@@ -283,7 +267,7 @@ class LinkCryptWs(Crypter):
         cnl_line = None
 
         for line in self.container_html:
-            if("cnl" in line):
+            if "cnl" in line:
                 cnl_line = line
                 break
 

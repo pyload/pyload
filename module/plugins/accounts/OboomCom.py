@@ -11,7 +11,7 @@ from module.plugins.Account import Account
 class OboomCom(Account):
     __name__    = "OboomCom"
     __type__    = "account"
-    __version__ = "0.2"
+    __version__ = "0.22"
 
     __description__ = """Oboom.com account plugin"""
     __license__     = "GPLv3"
@@ -42,20 +42,20 @@ class OboomCom(Account):
         if userData['premium_unix'] == "null":
             validUntil = -1
         else:
-            validUntil = int(userData['premium_unix'])
+            validUntil = float(userData['premium_unix'])
 
         traffic = userData['traffic']
 
-        trafficLeft = traffic['current']
-        maxTraffic = traffic['max']
+        trafficLeft = traffic['current'] / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+        maxTraffic = traffic['max'] / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
         session = accountData['session']
 
-        return {'premium': premium,
-                'validuntil': validUntil,
+        return {'premium'    : premium,
+                'validuntil' : validUntil,
                 'trafficleft': trafficLeft,
-                'maxtraffic': maxTraffic,
-                'session': session}
+                'maxtraffic' : maxTraffic,
+                'session'    : session}
 
 
     def login(self, user, data, req):

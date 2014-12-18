@@ -22,7 +22,7 @@ class DropboxCom(SimpleHoster):
 
     OFFLINE_PATTERN = r'<title>Dropbox - (404|Shared link error)<'
 
-    COOKIES = [(".dropbox.com", "lang", "en")]
+    COOKIES = [("dropbox.com", "lang", "en")]
 
 
     def setup(self):

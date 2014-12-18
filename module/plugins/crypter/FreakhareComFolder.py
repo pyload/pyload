@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FreakhareComFolder(SimpleCrypter):
@@ -36,3 +36,6 @@ class FreakhareComFolder(SimpleCrypter):
                                                         'entrys': '20',
                                                         'page': page_n - 1,
                                                         'order': ''}, decode=True)
+
+
+getInfo = create_getInfo(FreakhareComFolder)

@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
 
@@ -26,7 +26,7 @@ class UploadingCom(SimpleHoster):
     SIZE_PATTERN = r'size tip_container">(?P<S>[\d.,]+) (?P<U>[\w^_]+)<'
     OFFLINE_PATTERN = r'(Page|file) not found'
 
-    COOKIES = [(".uploading.com", "lang", "1"),
+    COOKIES = [("uploading.com", "lang", "1"),
                (".uploading.com", "language", "1"),
                (".uploading.com", "setlang", "en"),
                (".uploading.com", "_lang", "en")]
@@ -47,7 +47,7 @@ class UploadingCom(SimpleHoster):
 
     def handlePremium(self):
         postData = {'action': 'get_link',
-                    'code': self.info['ID'],
+                    'code': self.info['pattern']['ID'],
                     'pass': 'undefined'}
 
         self.html = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
@@ -70,7 +70,7 @@ class UploadingCom(SimpleHoster):
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         self.req.http.lastURL = self.pyfile.url
 
-        res = json_loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.info['ID']}))
+        res = json_loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.info['pattern']['ID']}))
 
         if 'answer' in res and 'wait_time' in res['answer']:
             wait_time = int(res['answer']['wait_time'])
@@ -79,7 +79,7 @@ class UploadingCom(SimpleHoster):
         else:
             self.error(_("No AJAX/WAIT"))
 
-        res = json_loads(self.load(ajax_url, post={'action': 'get_link', 'code': self.info['ID'], 'pass': 'false'}))
+        res = json_loads(self.load(ajax_url, post={'action': 'get_link', 'code': self.info['pattern']['ID'], 'pass': 'false'}))
 
         if 'answer' in res and 'link' in res['answer']:
             url = res['answer']['link']

@@ -59,9 +59,9 @@ class FileserveCom(Hoster):
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
-
         self.file_id = re.match(self.__pattern__, self.pyfile.url).group('id')
-        self.url = "%s%s" % (self.URLS[0], self.file_id)
+        self.url     = "%s%s" % (self.URLS[0], self.file_id)
+
         self.logDebug("File ID: %s URL: %s" % (self.file_id, self.url))
 
 
@@ -159,10 +159,10 @@ class FileserveCom(Hoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            challenge, code = recaptcha.challenge(captcha_key)
+            challenge, response = recaptcha.challenge(captcha_key)
             res = json_loads(self.load(self.URLS[2],
-                                       post={'recaptcha_challenge_field': challenge,
-                                             'recaptcha_response_field': code,
+                                       post={'recaptcha_challenge_field'  : challenge,
+                                             'recaptcha_response_field'   : response,
                                              'recaptcha_shortencode_field': self.file_id}))
             if not res['success']:
                 self.invalidCaptcha()

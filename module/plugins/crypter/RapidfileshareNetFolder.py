@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSCrypter import XFSCrypter
+from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
 class RapidfileshareNetFolder(XFSCrypter):
@@ -18,3 +18,6 @@ class RapidfileshareNetFolder(XFSCrypter):
 
 
     HOSTER_DOMAIN = "rapidfileshare.net"
+
+
+getInfo = create_getInfo(RapidfileshareNetFolder)

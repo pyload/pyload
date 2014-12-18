@@ -18,9 +18,9 @@ class NetloadIn(Account):
 
 
     def loadAccountInfo(self, user, req):
-        page = req.load("http://netload.in/index.php?id=2&lang=de")
+        html = req.load("http://netload.in/index.php", get={'id': 2, 'lang': "de"})
         left = r'>(\d+) (Tag|Tage), (\d+) Stunden<'
-        left = re.search(left, page)
+        left = re.search(left, html)
         if left:
             validuntil = time() + int(left.group(1)) * 24 * 60 * 60 + int(left.group(3)) * 60 * 60
             trafficleft = -1
@@ -33,8 +33,8 @@ class NetloadIn(Account):
 
 
     def login(self, user, data, req):
-        page = req.load("http://netload.in/index.php", None,
+        html = req.load("http://netload.in/index.php", None,
                         {"txtuser": user, "txtpass": data['password'], "txtcheck": "login", "txtlogin": "Login"},
                         cookies=True)
-        if "password or it might be invalid!" in page:
+        if "password or it might be invalid!" in html:
             self.wrongPassword()

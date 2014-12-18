@@ -6,7 +6,7 @@ from module.plugins.Account import Account
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __description__ = """Share-online.biz account plugin"""
     __license__     = "GPLv3"
@@ -30,11 +30,11 @@ class ShareonlineBiz(Account):
         self.logDebug(info)
 
         if "dl" in info and info['dl'].lower() != "not_available":
-            req.cj.setCookie(".share-online.biz", "dl", info['dl'])
+            req.cj.setCookie("share-online.biz", "dl", info['dl'])
         if "a" in info and info['a'].lower() != "not_available":
-            req.cj.setCookie(".share-online.biz", "a", info['a'])
+            req.cj.setCookie("share-online.biz", "a", info['a'])
 
-        return {"validuntil": int(info['expire_date']) if "expire_date" in info else -1,
+        return {"validuntil": float(info['expire_date']) if "expire_date" in info else -1,
                 "trafficleft": -1,
                 "premium": True if ("dl" in info or "a" in info) and (info['group'] != "Sammler") else False}
 

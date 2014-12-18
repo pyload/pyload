@@ -9,7 +9,7 @@ import re
 
 from Crypto.Cipher import AES
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 from module.unescape import unescape
 
 
@@ -27,7 +27,7 @@ class LinkSaveIn(SimpleCrypter):
     __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
-    COOKIES = [(".linksave.in", "Linksave_Language", "english")]
+    COOKIES = [("linksave.in", "Linksave_Language", "english")]
 
     # Constants
     _JK_KEY_ = "jk"
@@ -244,3 +244,6 @@ class LinkSaveIn(SimpleCrypter):
         # Log and return
         self.logDebug("Package has %d links" % len(links))
         return links
+
+
+getInfo = create_getInfo(LinkSaveIn)

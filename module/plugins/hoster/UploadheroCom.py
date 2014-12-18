@@ -25,7 +25,7 @@ class UploadheroCom(SimpleHoster):
     SIZE_PATTERN = r'Taille du fichier : </span><strong>(?P<S>.*?)</strong>'
     OFFLINE_PATTERN = r'<p class="titre_dl_2">|<div class="raison"><strong>Le lien du fichier ci-dessus n\'existe plus.'
 
-    COOKIES = [(".uploadhero.co", "lang", "en")]
+    COOKIES = [("uploadhero.co", "lang", "en")]
 
     IP_BLOCKED_PATTERN = r'href="(/lightbox_block_download\.php\?min=.*?)"'
     IP_WAIT_PATTERN = r'<span id="minutes">(\d+)</span>.*\s*<span id="seconds">(\d+)</span>'
@@ -74,6 +74,8 @@ class UploadheroCom(SimpleHoster):
             wait_time = (int(m.group(1)) * 60 + int(m.group(2))) if m else 5 * 60
             self.wait(wait_time, True)
             self.retry()
+
+        self.info.pop('error', None)
 
 
 getInfo = create_getInfo(UploadheroCom)

@@ -156,9 +156,9 @@ class NCryptIn(Crypter):
             captcha_key = re.search(r'\?k=(.*?)"', form).group(1)
             self.logDebug("Resolving ReCaptcha with key [%s]" % captcha_key)
             recaptcha = ReCaptcha(self)
-            challenge, code = recaptcha.challenge(captcha_key)
+            challenge, response = recaptcha.challenge(captcha_key)
             postData['recaptcha_challenge_field'] = challenge
-            postData['recaptcha_response_field'] = code
+            postData['recaptcha_response_field']  = response
 
         # Resolve circlecaptcha
         if "circlecaptcha" in form:

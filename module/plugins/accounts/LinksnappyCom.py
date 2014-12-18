@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class LinksnappyCom(Account):
     __name__    = "LinksnappyCom"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Linksnappy.com account plugin"""
     __license__     = "GPLv3"
@@ -37,7 +37,7 @@ class LinksnappyCom(Account):
         if 'trafficleft' not in j['return'] or isinstance(j['return']['trafficleft'], str):
             trafficleft = -1
         else:
-            trafficleft = int(j['return']['trafficleft']) * 1024
+            trafficleft = self.parseTraffic(float(j['return']['trafficleft'] + "MB")
 
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
 

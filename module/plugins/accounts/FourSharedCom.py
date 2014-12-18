@@ -21,7 +21,7 @@ class FourSharedCom(Account):
 
 
     def login(self, user, data, req):
-        req.cj.setCookie(".4shared.com", "4langcookie", "en")
+        req.cj.setCookie("4shared.com", "4langcookie", "en")
         res = req.load('http://www.4shared.com/web/login',
                        post={'login': user,
                              'password': data['password'],

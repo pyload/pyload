@@ -127,7 +127,7 @@ class XDCCRequest():
         
         return filename
     
-    def _keepAlive(self, sock, *readbuffer):
+    def _keepAlive(self, sock, readbuffer):
         fdset = select([sock], [], [], 0)
         if sock not in fdset[0]:
             return

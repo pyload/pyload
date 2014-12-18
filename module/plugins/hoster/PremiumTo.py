@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 from os import remove
 from os.path import exists
 from urllib import quote
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.utils import fs_encode
 
 
-class PremiumTo(Hoster):
+class PremiumTo(SimpleHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?premium\.to/.*'
 
@@ -22,26 +24,30 @@ class PremiumTo(Hoster):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
+    MULTI_HOSTER = True
+
+
     def setup(self):
         self.resumeDownload = True
-        self.chunkLimit = 1
+        self.chunkLimit     = 1
 
 
-    def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "premium.to")
-            self.fail(_("No premium.to account provided"))
-
-        self.logDebug("Old URL: %s" % pyfile.url)
-
+    def handleMulti(self):
         tra = self.getTraffic()
 
         #raise timeout to 2min
         self.req.setOption("timeout", 120)
 
-        self.download(
-            "http://premium.to/api/getfile.php?username=%s&password=%s&link=%s" % (self.account.username, self.account.password, quote(pyfile.url, "")),
-            disposition=True)
+        self.link = True
+        self.download("http://premium.to/api/getfile.php",
+                      get={'username': self.account.username,
+                           'password': self.account.password,
+                           'link'    : quote(self.pyfile.url, "")},
+                      disposition=True)
+
+
+    def checkFile(self):
+        super(PremiumTo, self).checkFile()
 
         check = self.checkDownload({"nopremium": "No premium account available"})
 
@@ -52,16 +58,12 @@ class PremiumTo(Hoster):
         if self.req.http.code == '420':
             # Custom error code send - fail
             lastDownload = fs_encode(self.lastDownload)
-
-            if exists(lastDownload):
-                with open(lastDownload, "rb") as f:
-                    err = f.read(256).strip()
-                remove(lastDownload)
-            else:
-                err = _('File does not exist')
+            with open(lastDownload, "rb") as f:
+                err = f.read(256).strip()
+            remove(lastDownload)
 
         trb = self.getTraffic()
-        self.logInfo(_("Filesize: %d, Traffic used %d, traffic left %d") % (pyfile.size, tra - trb, trb))
+        self.logInfo(_("Filesize: %d, Traffic used %d, traffic left %d") % (self.pyfile.size, tra - trb, trb))
 
         if err:
             self.fail(err)
@@ -75,3 +77,6 @@ class PremiumTo(Hoster):
         except:
             traffic = 0
         return traffic
+
+
+getInfo = create_getInfo(PremiumTo)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class FilestubeCom(SimpleCrypter):
@@ -19,3 +19,6 @@ class FilestubeCom(SimpleCrypter):
 
     LINK_PATTERN = r'<a class=\"file-link-main(?: noref)?\" [^>]* href=\"(http://[^\"]+)'
     NAME_PATTERN = r'<h1\s*> (?P<N>.+)  download\s*</h1>'
+
+
+getInfo = create_getInfo(FilestubeCom)

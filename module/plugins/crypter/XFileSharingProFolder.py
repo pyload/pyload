@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.XFSCrypter import XFSCrypter
+from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
 class XFileSharingProFolder(XFSCrypter):
@@ -45,3 +45,6 @@ class XFileSharingProFolder(XFSCrypter):
         self.user, data = self.account.selectAccount()
         self.req = self.account.getAccountRequest(self.user)
         self.premium = self.account.isPremium(self.user)
+
+
+getInfo = create_getInfo(XFileSharingProFolder)

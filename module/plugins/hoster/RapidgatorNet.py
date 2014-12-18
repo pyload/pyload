@@ -14,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
@@ -27,6 +27,8 @@ class RapidgatorNet(SimpleHoster):
 
 
     API_URL = "http://rapidgator.net/api/file"
+
+    COOKIES = [("rapidgator.net", "lang", "en")]
 
     NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
     SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong>'
@@ -53,7 +55,7 @@ class RapidgatorNet(SimpleHoster):
             self.premium = True
 
         self.resumeDownload = self.multiDL = self.premium
-        self.chunkLimit = 1
+        self.chunkLimit     = 1
 
 
     def api_response(self, cmd):
@@ -127,13 +129,11 @@ class RapidgatorNet(SimpleHoster):
                 break
             else:
                 captcha, captcha_key = self.getCaptcha()
-                captcha_challenge, captcha_response = captcha.challenge(captcha_key)
+                challenge, response  = captcha.challenge(captcha_key)
 
-                self.html = self.load(url, post={
-                    "DownloadCaptchaForm[captcha]": "",
-                    "adcopy_challenge": captcha_challenge,
-                    "adcopy_response": captcha_response
-                })
+                self.html = self.load(url, post={'DownloadCaptchaForm[captcha]': "",
+                                                 'adcopy_challenge'            : challenge,
+                                                 'adcopy_response'             : response})
 
                 if "The verification code is incorrect" in self.html:
                     self.invalidCaptcha()

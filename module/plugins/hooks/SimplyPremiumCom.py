@@ -22,7 +22,7 @@ class SimplyPremiumCom(MultiHoster):
 
 
     def getHoster(self):
-        json_data = getURL('http://www.simply-premium.com/api/hosts.php?format=json&online=1')
+        json_data = getURL("http://www.simply-premium.com/api/hosts.php", get={'format': "json", 'online': 1})
         json_data = json_loads(json_data)
 
         host_list = [element['regex'] for element in json_data['result']]

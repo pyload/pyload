@@ -36,7 +36,7 @@ class MegasharesCom(SimpleHoster):
 
     def setup(self):
         self.resumeDownload = True
-        self.multiDL = self.premium
+        self.multiDL        = self.premium
 
 
     def handlePremium(self):
@@ -55,15 +55,18 @@ class MegasharesCom(SimpleHoster):
             for _i in xrange(5):
                 random_num = re.search(self.REACTIVATE_NUM_PATTERN, self.html).group(1)
 
-                verifyinput = self.decryptCaptcha(
-                    "http://d01.megashares.com/index.php?secgfx=gfx&random_num=%s" % random_num)
+                verifyinput = self.decryptCaptcha("http://d01.megashares.com/index.php",
+                                                  get={'secgfx': "gfx", 'random_num': random_num})
+
                 self.logInfo(_("Reactivating passport %s: %s %s") % (passport_num, random_num, verifyinput))
 
-                url = ("http://d01.megashares.com%s&rs=check_passport_renewal" % request_uri +
-                       "&rsargs[]=%s&rsargs[]=%s&rsargs[]=%s" % (verifyinput, random_num, passport_num) +
-                       "&rsargs[]=replace_sec_pprenewal&rsrnd=%s" % str(int(time() * 1000)))
-                self.logDebug(url)
-                res = self.load(url)
+                res = self.load("http://d01.megashares.com%s" % request_uri,
+                                get={'rs'      : "check_passport_renewal",
+                                     'rsargs[]': verifyinput,
+                                     'rsargs[]': random_num,
+                                     'rsargs[]': passport_num,
+                                     'rsargs[]': "replace_sec_pprenewal",
+                                     'rsrnd[]' : str(int(time() * 1000))})
 
                 if 'Thank you for reactivating your passport.' in res:
                     self.correctCaptcha()

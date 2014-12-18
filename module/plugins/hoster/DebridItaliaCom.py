@@ -2,49 +2,38 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class DebridItaliaCom(Hoster):
+class DebridItaliaCom(SimpleHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.10"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?debriditalia\.com'
+    __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
 
     __description__ = """Debriditalia.com hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    MULTI_HOSTER = True
 
 
     def setup(self):
-        self.chunkLimit = -1
+        self.chunkLimit     = -1
         self.resumeDownload = True
 
 
-    def process(self, pyfile):
-        if re.match(self.__pattern__, pyfile.url):
-            new_url = pyfile.url
-        elif not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "DebridItalia")
-            self.fail(_("No DebridItalia account provided"))
-        else:
-            self.logDebug("Old URL: %s" % pyfile.url)
-            url = "http://debriditalia.com/linkgen2.php?xjxfun=convertiLink&xjxargs[]=S<![CDATA[%s]]>" % pyfile.url
-            page = self.load(url)
-            self.logDebug("XML data: %s" % page)
+    def handleMulti(self):
+        html = self.load("http://www.debriditalia.com/api.php",
+                         get={'generate': "on", 'link': self.pyfile.url, 'p': self.getPassword()})
 
-            if 'File not available' in page:
-                self.fail(_("File not available"))
-            else:
-                new_url = re.search(r'<a href="(?:[^"]+)">(?P<direct>[^<]+)</a>', page).group('direct')
+        if "ERROR:" in html:
+            self.fail(re.search(r'ERROR:(.*)', html).group(1).strip())
 
-        if new_url != pyfile.url:
-            self.logDebug("New URL: %s" % new_url)
+        self.link = html.strip()
 
-        self.download(new_url, disposition=True)
 
-        check = self.checkDownload({"empty": re.compile(r"^$")})
-
-        if check == "empty":
-            self.retry(5, 2 * 60, "Empty file downloaded")
+getInfo = create_getInfo(DebridItaliaCom)

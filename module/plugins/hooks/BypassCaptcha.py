@@ -29,7 +29,7 @@ class BypassCaptchaException(Exception):
 class BypassCaptcha(Hook):
     __name__    = "BypassCaptcha"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __config__ = [("force", "bool", "Force BC even if client is connected", False),
                   ("passkey", "password", "Passkey", "")]
@@ -46,6 +46,11 @@ class BypassCaptcha(Hook):
     SUBMIT_URL = "http://bypasscaptcha.com/upload.php"
     RESPOND_URL = "http://bypasscaptcha.com/check_value.php"
     GETCREDITS_URL = "http://bypasscaptcha.com/ex_left.php"
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def setup(self):

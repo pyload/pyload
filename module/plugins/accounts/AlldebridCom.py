@@ -23,8 +23,8 @@ class AlldebridCom(Account):
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
-        page = req.load("http://www.alldebrid.com/account/")
-        soup = BeautifulSoup(page)
+        html = req.load("http://www.alldebrid.com/account/")
+        soup = BeautifulSoup(html)
         #Try to parse expiration date directly from the control panel page (better accuracy)
         try:
             time_text = soup.find('div', attrs={'class': 'remaining_time_text'}).strong.string
@@ -36,10 +36,10 @@ class AlldebridCom(Account):
         #Get expiration date from API
         except:
             data = self.getAccountData(user)
-            page = req.load("http://www.alldebrid.com/api.php?action=info_user&login=%s&pw=%s" % (user,
-                                                                                                  data['password']))
-            self.logDebug(page)
-            xml = dom.parseString(page)
+            html = req.load("http://www.alldebrid.com/api.php",
+                            get={'action': "info_user", 'login': user, 'pw': data['password']})
+            self.logDebug(html)
+            xml = dom.parseString(html)
             exp_time = time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 24 * 60 * 60
         account_info = {"validuntil": exp_time, "trafficleft": -1}
         return account_info
@@ -47,13 +47,13 @@ class AlldebridCom(Account):
 
     def login(self, user, data, req):
         urlparams = urlencode({'action': 'login', 'login_login': user, 'login_password': data['password']})
-        page = req.load("http://www.alldebrid.com/register/?%s" % urlparams)
+        html = req.load("http://www.alldebrid.com/register/?%s" % urlparams)
 
-        if "This login doesn't exist" in page:
+        if "This login doesn't exist" in html:
             self.wrongPassword()
 
-        if "The password is not valid" in page:
+        if "The password is not valid" in html:
             self.wrongPassword()
 
-        if "Invalid captcha" in page:
+        if "Invalid captcha" in html:
             self.wrongPassword()

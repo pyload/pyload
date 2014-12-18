@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from os.path import join
 import re
@@ -8,7 +9,6 @@ from binascii import unhexlify
 from bottle import route, request, HTTPError
 from webinterface import PYLOAD, DL_ROOT, JS
 
-
 try:
     from Crypto.Cipher import AES
 except:
@@ -17,8 +17,8 @@ except:
 
 def local_check(function):
     def _view(*args, **kwargs):
-        if request.environ.get("REMOTE_ADDR", "0") in ("127.0.0.1", "localhost") \
-                or request.environ.get("HTTP_HOST", "0") in ("127.0.0.1:9666", "localhost:9666"):
+        if request.environ.get('REMOTE_ADDR', "0") in ('127.0.0.1', 'localhost') \
+        or request.environ.get('HTTP_HOST','0') == '127.0.0.1:9666':
             return function(*args, **kwargs)
         else:
             return HTTPError(403, "Forbidden")
@@ -26,15 +26,14 @@ def local_check(function):
     return _view
 
 
-@route('/flash')
-@route('/flash/<id>')
-@route('/flash', method='POST')
+@route("/flash")
+@route("/flash/:id")
+@route("/flash", method="POST")
 @local_check
 def flash(id="0"):
     return "JDownloader\r\n"
 
-
-@route('/flash/add', method='POST')
+@route("/flash/add", method="POST")
 @local_check
 def add(request):
     package = request.POST.get('referer', None)
@@ -47,10 +46,10 @@ def add(request):
 
     return ""
 
-
-@route('/flash/addcrypted', method='POST')
+@route("/flash/addcrypted", method="POST")
 @local_check
 def addcrypted():
+
     package = request.forms.get('referer', 'ClickAndLoad Package')
     dlc = request.forms['crypted'].replace(" ", "+")
 
@@ -66,10 +65,10 @@ def addcrypted():
     else:
         return "success\r\n"
 
-
-@route('/flash/addcrypted2', method='POST')
+@route("/flash/addcrypted2", method="POST")
 @local_check
 def addcrypted2():
+
     package = request.forms.get("source", None)
     crypted = request.forms["crypted"]
     jk = request.forms["jk"]
@@ -83,7 +82,7 @@ def addcrypted2():
         try:
             jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
         except:
-            ## Test for some known js functions to decode
+        ## Test for some known js functions to decode
             if jk.find("dec") > -1 and jk.find("org") > -1:
                 org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
                 jk = list(org)
@@ -101,7 +100,7 @@ def addcrypted2():
     IV = Key
 
     obj = AES.new(Key, AES.MODE_CBC, IV)
-    result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
+    result = obj.decrypt(crypted).replace("\x00", "").replace("\r","").split("\n")
 
     result = filter(lambda x: x != "", result)
 
@@ -115,14 +114,13 @@ def addcrypted2():
     else:
         return "success\r\n"
 
-
-@route('/flashgot_pyload')
-@route('/flashgot_pyload', method='POST')
-@route('/flashgot')
-@route('/flashgot', method='POST')
+@route("/flashgot_pyload")
+@route("/flashgot_pyload", method="POST")
+@route("/flashgot")
+@route("/flashgot", method="POST")
 @local_check
 def flashgot():
-    if request.environ['HTTP_REFERER'] not in ("http://localhost:9666/flashgot", "http://127.0.0.1:9666/flashgot"):
+    if request.environ['HTTP_REFERER'] != "http://localhost:9666/flashgot" and request.environ['HTTP_REFERER'] != "http://127.0.0.1:9666/flashgot":
         return HTTPError()
 
     autostart = int(request.forms.get('autostart', 0))
@@ -137,8 +135,7 @@ def flashgot():
 
     return ""
 
-
-@route('/crossdomain.xml')
+@route("/crossdomain.xml")
 @local_check
 def crossdomain():
     rep = "<?xml version=\"1.0\"?>\n"
@@ -149,17 +146,17 @@ def crossdomain():
     return rep
 
 
-@route('/flash/checkSupportForUrl')
+@route("/flash/checkSupportForUrl")
 @local_check
 def checksupport():
+
     url = request.GET.get("url")
     res = PYLOAD.checkURLs([url])
     supported = (not res[0][1] is None)
 
     return str(supported).lower()
 
-
-@route('/jdcheck.js')
+@route("/jdcheck.js")
 @local_check
 def jdcheck():
     rep = "jdownloader=true;\n"

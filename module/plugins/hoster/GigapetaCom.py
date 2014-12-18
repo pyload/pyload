@@ -24,7 +24,7 @@ class GigapetaCom(SimpleHoster):
     SIZE_PATTERN = r'<th>\s*Size\s*</th>\s*<td>\s*(?P<S>.*?)\s*</td>'
     OFFLINE_PATTERN = r'<div id="page_error">'
 
-    COOKIES = [(".gigapeta.com", "lang", "us")]
+    COOKIES = [("gigapeta.com", "lang", "us")]
 
 
     def handleFree(self):
@@ -60,6 +60,8 @@ class GigapetaCom(SimpleHoster):
             self.logDebug("Your IP is already downloading a file")
             self.wait(5 * 60, True)
             self.retry()
+
+        self.info.pop('error', None)
 
 
 getInfo = create_getInfo(GigapetaCom)

@@ -6,7 +6,7 @@ from module.plugins.internal.DeadHoster import DeadHoster, create_getInfo
 class FilezyNet(DeadHoster):
     __name__    = "FilezyNet"
     __type__    = "hoster"
-    __version__ = "0.2"
+    __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?filezy\.net/\w{12}'
 

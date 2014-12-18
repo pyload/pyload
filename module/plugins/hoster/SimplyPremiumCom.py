@@ -4,14 +4,14 @@ import re
 
 from datetime import datetime, timedelta
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 
 
-class SimplyPremiumCom(Hoster):
+class SimplyPremiumCom(SimpleHoster):
     __name__    = "SimplyPremiumCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://.*(simply-premium)\.com'
 
@@ -20,63 +20,61 @@ class SimplyPremiumCom(Hoster):
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
+    MULTI_HOSTER = True
+
+
     def setup(self):
-        self.chunkLimit = 16
+        self.chunkLimit     = 16
         self.resumeDownload = False
 
 
-    def process(self, pyfile):
-        if re.match(self.__pattern__, pyfile.url):
-            new_url = pyfile.url
-        elif not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "Simply-Premium.com")
-            self.fail(_("No Simply-Premium.com account provided"))
+    def handleMulti(self):
+        for i in xrange(5):
+            page = self.load("http://www.simply-premium.com/premium.php", get={'info': "", 'link': self.pyfile.url})
+            self.logDebug("JSON data: " + page)
+            if page != '':
+                break
         else:
-            self.logDebug("Old URL: %s" % pyfile.url)
-            for i in xrange(5):
-                page = self.load('http://www.simply-premium.com/premium.php?info&link=' + pyfile.url)
-                self.logDebug("JSON data: " + page)
-                if page != '':
-                    break
-            else:
-                self.logInfo(_("Unable to get API data, waiting 1 minute and retry"))
-                self.retry(5, 60, "Unable to get API data")
+            self.logInfo(_("Unable to get API data, waiting 1 minute and retry"))
+            self.retry(5, 60, "Unable to get API data")
 
-            if '<valid>0</valid>' in page or (
-                    "You are not allowed to download from this host" in page and self.premium):
-                self.account.relogin(self.user)
-                self.retry()
-            elif "NOTFOUND" in page:
-                self.offline()
-            elif "downloadlimit" in page:
-                self.logWarning(_("Reached maximum connctions"))
-                self.retry(5, 60, "Reached maximum connctions")
-            elif "trafficlimit" in page:
-                self.logWarning(_("Reached daily limit for this host"))
-                self.retry(wait_time=secondsToMidnight(gmt=2), "Daily limit for this host reached")
-            elif "hostererror" in page:
-                self.logWarning(_("Hoster temporarily unavailable, waiting 1 minute and retry"))
-                self.retry(5, 60, "Hoster is temporarily unavailable")
-            #page = json_loads(page)
-            #new_url = page.keys()[0]
-            #self.api_data = page[new_url]
+        if '<valid>0</valid>' in page or (
+                "You are not allowed to download from this host" in page and self.premium):
+            self.account.relogin(self.user)
+            self.retry()
 
-            try:
-                self.pyfile.name = re.search(r'<name>([^<]+)</name>', page).group(1)
-            except AttributeError:
-                self.pyfile.name = ""
+        elif "NOTFOUND" in page:
+            self.offline()
 
-            try:
-                self.pyfile.size = re.search(r'<size>(\d+)</size>', page).group(1)
-            except AttributeError:
-                self.pyfile.size = 0
+        elif "downloadlimit" in page:
+            self.logWarning(_("Reached maximum connctions"))
+            self.retry(5, 60, "Reached maximum connctions")
 
-            try:
-                new_url = re.search(r'<download>([^<]+)</download>', page).group(1)
-            except AttributeError:
-                new_url = 'http://www.simply-premium.com/premium.php?link=' + pyfile.url
+        elif "trafficlimit" in page:
+            self.logWarning(_("Reached daily limit for this host"))
+            self.retry(wait_time=secondsToMidnight(gmt=2), "Daily limit for this host reached")
 
-        if new_url != pyfile.url:
-            self.logDebug("New URL: " + new_url)
+        elif "hostererror" in page:
+            self.logWarning(_("Hoster temporarily unavailable, waiting 1 minute and retry"))
+            self.retry(5, 60, "Hoster is temporarily unavailable")
 
-        self.download(new_url, disposition=True)
+        try:
+            self.pyfile.name = re.search(r'<name>([^<]+)</name>', page).group(1)
+        except AttributeError:
+            self.pyfile.name = ""
+
+        try:
+            self.pyfile.size = re.search(r'<size>(\d+)</size>', page).group(1)
+        except AttributeError:
+            self.pyfile.size = 0
+
+        try:
+            self.link = re.search(r'<download>([^<]+)</download>', page).group(1)
+        except AttributeError:
+            self.link = 'http://www.simply-premium.com/premium.php?link=' + self.pyfile.url
+
+        if self.link != self.pyfile.url:
+            self.logDebug("New URL: " + self.link)
+
+
+getInfo = create_getInfo(SimplyPremiumCom)

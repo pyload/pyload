@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSCrypter import XFSCrypter
+from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 
 
 class EasybytezComFolder(XFSCrypter):
@@ -20,3 +20,6 @@ class EasybytezComFolder(XFSCrypter):
     HOSTER_DOMAIN = "easybytez.com"
 
     LOGIN_ACCOUNT = True
+
+
+getInfo = create_getInfo(EasybytezComFolder)

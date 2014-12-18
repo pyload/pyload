@@ -39,7 +39,7 @@ class FilefactoryCom(SimpleHoster):
     WAIT_PATTERN = r'<div id="countdown_clock" data-delay="(\d+)">'
     PREMIUM_ONLY_PATTERN = r'>Premium Account Required'
 
-    COOKIES = [(".filefactory.com", "locale", "en_US.utf8")]
+    COOKIES = [("filefactory.com", "locale", "en_US.utf8")]
 
 
     def handleFree(self):
@@ -56,7 +56,7 @@ class FilefactoryCom(SimpleHoster):
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            self.wait(m.group(1))
+            self.wait(int(m.group(1)))
 
         self.download(dl_link, disposition=True)
 

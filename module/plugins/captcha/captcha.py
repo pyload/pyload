@@ -18,7 +18,7 @@ from os.path import abspath, join
 class OCR(object):
     __name__    = "OCR"
     __type__    = "ocr"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __description__ = """OCR base plugin"""
     __license__     = "GPLv3"
@@ -81,18 +81,19 @@ class OCR(object):
 
         if subset and (digits or lowercase or uppercase):
             #tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            tmpSub = open(join("tmp", "tmpSub_%s.subset" % self.__name__), "wb")
-            tmpSub.write("tessedit_char_whitelist ")
-            if digits:
-                tmpSub.write("0123456789")
-            if lowercase:
-                tmpSub.write("abcdefghijklmnopqrstuvwxyz")
-            if uppercase:
-                tmpSub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-            tmpSub.write("\n")
-            tessparams.append("nobatch")
-            tessparams.append(abspath(tmpSub.name))
-            tmpSub.close()
+            with open(join("tmp", "tmpSub_%s.subset" % self.__name__), "wb") as tmpSub:
+                tmpSub.write("tessedit_char_whitelist ")
+
+                if digits:
+                    tmpSub.write("0123456789")
+                if lowercase:
+                    tmpSub.write("abcdefghijklmnopqrstuvwxyz")
+                if uppercase:
+                    tmpSub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+                tmpSub.write("\n")
+                tessparams.append("nobatch")
+                tessparams.append(abspath(tmpSub.name))
 
         self.logger.debug("run tesseract")
         self.run(tessparams)

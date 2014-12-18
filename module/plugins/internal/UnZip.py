@@ -3,12 +3,12 @@
 import sys
 import zipfile
 
-from module.plugins.internal.AbstractExtractor import AbtractExtractor
+from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPassword, ArchiveError
 
 
 class UnZip(AbtractExtractor):
     __name__    = "UnZip"
-    __version__ = "0.1"
+    __version__ = "0.11"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -32,9 +32,19 @@ class UnZip(AbtractExtractor):
 
 
     def extract(self, progress, password=None):
-        z = zipfile.ZipFile(self.file)
-        self.files = z.namelist()
-        z.extractall(self.out)
+        try:
+            z = zipfile.ZipFile(self.file)
+            self.files = z.namelist()
+            z.extractall(self.out, pwd=password)
+
+        except (BadZipfile, LargeZipFile), e:
+            raise ArchiveError(e)
+
+        except RuntimeError, e:
+            if e is "Bad password for file":
+                raise WrongPassword
+            else:
+                raise ArchiveError(e)
 
 
     def getDeleteFiles(self):

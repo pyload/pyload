@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """Rapidgator.net account plugin"""
     __license__     = "GPLv3"
@@ -31,7 +31,7 @@ class RapidgatorNet(Account):
                     self.scheduleRefresh(user, json['response']['reset_in'])
 
                 return {"validuntil": json['response']['expire_date'],
-                        "trafficleft": int(json['response']['traffic_left']),
+                        "trafficleft": float(json['response']['traffic_left']) / 1024,  #@TODO: Remove `/ 1024` in 0.4.10
                         "premium": True}
             else:
                 self.logError(json['response_details'])

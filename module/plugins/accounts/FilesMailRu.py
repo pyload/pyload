@@ -6,7 +6,7 @@ from module.plugins.Account import Account
 class FilesMailRu(Account):
     __name__    = "FilesMailRu"
     __type__    = "account"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __description__ = """Filesmail.ru account plugin"""
     __license__     = "GPLv3"
@@ -20,9 +20,9 @@ class FilesMailRu(Account):
     def login(self, user, data, req):
         user, domain = user.split("@")
 
-        page = req.load("http://swa.mail.ru/cgi-bin/auth", None,
+        html = req.load("http://swa.mail.ru/cgi-bin/auth", None,
                         {"Domain": domain, "Login": user, "Password": data['password'],
                          "Page": "http://files.mail.ru/"}, cookies=True)
 
-        if "Неверное имя пользователя или пароль" in page:  # @TODO seems not to work
+        if "Неверное имя пользователя или пароль" in html:  # @TODO seems not to work
             self.wrongPassword()

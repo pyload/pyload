@@ -20,7 +20,7 @@ class RapidfileshareNet(XFSHoster):
     NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>.+?)">'
     SIZE_PATTERN = r'>http://www.rapidfileshare.net/\w+?</font> \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</font>'
 
-    OFFLINE_PATTERN = r'>No such file with this filename'
+    OFFLINE_PATTERN      = r'>No such file with this filename'
     TEMP_OFFLINE_PATTERN = r'The page may have been renamed, removed or be temporarily unavailable.<'
 
 

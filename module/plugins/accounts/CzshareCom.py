@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class CzshareCom(Account):
     __name__    = "CzshareCom"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
     __license__     = "GPLv3"
@@ -27,10 +27,9 @@ class CzshareCom(Account):
         if m is None:
             return {"validuntil": 0, "trafficleft": 0}
         else:
-            credits = float(m.group(1).replace(' ', '').replace(',', '.'))
-            credits = credits * 1024 ** {'KiB': 0, 'MiB': 1, 'GiB': 2}[m.group(2)]
-            validuntil = mktime(strptime(m.group(3), '%d.%m.%y %H:%M'))
-            return {"validuntil": validuntil, "trafficleft": credits}
+            trafficleft = self.parseTraffic(m.group(1).replace(' ', '').replace(',', '.')) + m.group(2)]
+            validuntil  = mktime(strptime(m.group(3), '%d.%m.%y %H:%M'))
+            return {"validuntil": validuntil, "trafficleft": trafficleft}
 
 
     def login(self, user, data, req):

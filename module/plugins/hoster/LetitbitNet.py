@@ -139,7 +139,4 @@ class LetitbitNet(SimpleHoster):
         if api_rep['status'] == 'FAIL':
             self.fail(api_rep['data'])
 
-        direct_link = api_rep['data'][0][0]
-        self.logDebug("Direct Link: " + direct_link)
-
-        self.download(direct_link, disposition=True)
+        self.download(api_rep['data'][0][0], disposition=True)

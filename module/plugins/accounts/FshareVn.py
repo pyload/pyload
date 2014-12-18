@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class FshareVn(Account):
     __name__    = "FshareVn"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """Fshare.vn account plugin"""
     __license__     = "GPLv3"
@@ -60,4 +60,4 @@ class FshareVn(Account):
 
     def getTrafficLeft(self):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        return float(m.group(1)) * 1024 ** {'k': 0, 'K': 0, 'M': 1, 'G': 2}[m.group(2)] if m else 0
+        return self.parseTraffic(m.group(1) + m.group(2)) if m else 0

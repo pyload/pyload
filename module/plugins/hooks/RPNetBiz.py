@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class RPNetBiz(MultiHoster):
     __name__    = "RPNetBiz"
     __type__    = "hook"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
@@ -29,7 +29,7 @@ class RPNetBiz(MultiHoster):
         (user, data) = self.account.selectAccount()
 
         res = getURL("https://premium.rpnet.biz/client_api.php",
-                     get={"username": user, "password": data['password'], "action": "showHosterList"})
+                     get={'username': user, 'password': data['password'], 'action': "showHosterList"})
         hoster_list = json_loads(res)
 
         # If account is not valid thera are no hosters available

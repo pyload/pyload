@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class FileserveCom(Account):
     __name__    = "FileserveCom"
     __type__    = "account"
-    __version__ = "0.2"
+    __version__ = "0.20"
 
     __description__ = """Fileserve.com account plugin"""
     __license__     = "GPLv3"
@@ -19,9 +19,9 @@ class FileserveCom(Account):
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
 
-        page = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],
+        html = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],
                                                                      "submit": "Submit+Query"})
-        res = json_loads(page)
+        res = json_loads(html)
 
         if res['type'] == "premium":
             validuntil = mktime(strptime(res['expireTime'], "%Y-%m-%d %H:%M:%S"))
@@ -31,14 +31,14 @@ class FileserveCom(Account):
 
 
     def login(self, user, data, req):
-        page = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],
+        html = req.load("http://app.fileserve.com/api/login/", post={"username": user, "password": data['password'],
                                                                      "submit": "Submit+Query"})
-        res = json_loads(page)
+        res = json_loads(html)
 
         if not res['type']:
             self.wrongPassword()
 
-        #login at fileserv page
+        #login at fileserv html
         req.load("http://www.fileserve.com/login.php",
                  post={"loginUserName": user, "loginUserPassword": data['password'], "autoLogin": "checked",
                        "loginFormSubmit": "Login"})

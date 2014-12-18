@@ -10,7 +10,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UpleaCom(XFSHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
 
@@ -27,8 +27,9 @@ class UpleaCom(XFSHoster):
     OFFLINE_PATTERN = r'>You followed an invalid or expired link'
 
     LINK_PATTERN = r'"(http?://\w+\.uplea\.com/anonym/.*?)"'
+
     WAIT_PATTERN = r'timeText:([\d.]+),'
-    VARS_PATTERN = r'class="cel_tbl_step1_foot">\s<a href="(/step/.+)">'
+    STEP_PATTERN = r'<a href="(/step/.+)">'
 
 
     def setup(self):
@@ -38,15 +39,15 @@ class UpleaCom(XFSHoster):
 
 
     def handleFree(self):
-        m = re.search(self.VARS_PATTERN, self.html)
+        m = re.search(self.STEP_PATTERN, self.html)
         if m is None:
-            self.error("VARS_PATTERN not found")
+            self.error("STEP_PATTERN not found")
 
-        self.html = self.load(urljoin("http://uplea.com/", m.groups(1)))
+        self.html = self.load(urljoin("http://uplea.com/", m.group(1)))
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            self.wait(m.group(1), True)
+            self.wait(int(m.group(1)), True)
             self.retry()
 
         m = re.search(self.LINK_PATTERN, self.html)

@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(AbtractExtractor):
     __name__    = "UnRar"
-    __version__ = "0.18"
+    __version__ = "0.20"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -32,12 +32,12 @@ class UnRar(AbtractExtractor):
     CMD = "unrar"
 
     # there are some more uncovered rar formats
-    re_version = re.compile(r"(UNRAR 5[\d.]+(.*?)freeware)")
-    re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
-    re_partfiles = re.compile(r".*\.(rar|r\d+)", re.I)
-    re_filelist = re.compile(r"(.+)\s+(\d+)\s+(\d+)\s+")
-    re_filelist5 = re.compile(r"(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)")
-    re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)", re.I)
+    re_version   = re.compile(r'UNRAR ([\w .]+?)')
+    re_splitfile = re.compile(r'(.*)\.part(\d+)\.rar$', re.I)
+    re_partfiles = re.compile(r'.*\.(rar|r\d+)', re.I)
+    re_filelist  = re.compile(r'(.+)\s+(\d+)\s+(\d+)\s+')
+    re_filelist5 = re.compile(r'(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
+    re_wrongpwd  = re.compile(r'(Corrupt file or wrong password|password incorrect)', re.I)
 
 
     @staticmethod
@@ -91,7 +91,7 @@ class UnRar(AbtractExtractor):
         out, err = p.communicate()
         if self.re_wrongpwd.search(err):
             self.passwordProtected = True
-            self.headerProtected = True
+            self.headerProtected   = True
             return True
 
         # output only used to check if passworded files are present
@@ -124,7 +124,7 @@ class UnRar(AbtractExtractor):
         return True
 
 
-    def extract(self, progress, password=None):
+    def extract(self, progress, password=""):
         command = "x" if self.fullpath else "e"
 
         p = self.call_unrar(command, self.file, self.out, password=password)
@@ -156,6 +156,7 @@ class UnRar(AbtractExtractor):
             raise CRCError
         elif "CRC failed" in err:
             raise WrongPassword
+
         if err.strip():  #: raise error if anything is on stderr
             raise ArchiveError(err.strip())
         if p.returncode:

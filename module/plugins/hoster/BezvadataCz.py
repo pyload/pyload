@@ -23,7 +23,8 @@ class BezvadataCz(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = self.resumeDownload = True
+        self.resumeDownload = True
+        self.multiDL        = True
 
 
     def handleFree(self):
@@ -82,6 +83,8 @@ class BezvadataCz(SimpleHoster):
             self.longWait(5 * 60, 24)  #: parallel dl limit
         elif '<div class="infobox' in self.html:
             self.tempOffline()
+
+        self.info.pop('error', None)
 
 
     def loadcaptcha(self, data, *args, **kwargs):

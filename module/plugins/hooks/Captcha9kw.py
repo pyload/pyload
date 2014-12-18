@@ -17,19 +17,20 @@ from module.plugins.Hook import Hook
 class Captcha9kw(Hook):
     __name__    = "Captcha9kw"
     __type__    = "hook"
-    __version__ = "0.24"
+    __version__ = "0.26"
 
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("ssl", "bool", "Use HTTPS", True),
-                  ("force", "bool", "Force captcha resolving even if client is connected", True),
-                  ("confirm", "bool", "Confirm Captcha (cost +6 credits)", False),
-                  ("captchaperhour", "int", "Captcha per hour", "9999"),
-                  ("prio", "int", "Priority (max 10)(cost +0 -> +10 credits)", "0"),
-                  ("queue", "int", "Max. Queue (max 999)", "50"),
-                  ("hoster_options", "string", "Hoster options (format: pluginname:prio=1:selfsolfe=1:confirm=1:timeout=900|...)", "ShareonlineBiz:prio=0:timeout=999 | UploadedTo:prio=0:timeout=999"),
-                  ("selfsolve", "bool", "Selfsolve (manually solve your captcha in your 9kw client if active)", "0"),
-                  ("passkey", "password", "API key", ""),
-                  ("timeout", "int", "Timeout in seconds (min 60, max 3999)", "900")]
+    __config__ = [("activated"     , "bool"    , "Activated"                                                                       , True                                                               ),
+                  ("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
+                  ("force"         , "bool"    , "Force captcha resolving even if client is connected"                             , True                                                               ),
+                  ("confirm"       , "bool"    , "Confirm Captcha (cost +6 credits)"                                               , False                                                              ),
+                  ("captchaperhour", "int"     , "Captcha per hour"                                                                , "9999"                                                             ),
+                  ("captchapermin" , "int"     , "Captcha per minute"                                                              , "9999"                                                             ),
+                  ("prio"          , "int"     , "Priority (max 10)(cost +0 -> +10 credits)"                                       , "0"                                                                ),
+                  ("queue"         , "int"     , "Max. Queue (max 999)"                                                            , "50"                                                               ),
+                  ("hoster_options", "string"  , "Hoster options (format: pluginname:prio=1:selfsolfe=1:confirm=1:timeout=900|...)", "ShareonlineBiz:prio=0:timeout=999 | UploadedTo:prio=0:timeout=999"),
+                  ("selfsolve"     , "bool"    , "Selfsolve (manually solve your captcha in your 9kw client if active)"            , "0"                                                                ),
+                  ("passkey"       , "password", "API key"                                                                         , ""                                                                 ),
+                  ("timeout"       , "int"     , "Timeout in seconds (min 60, max 3999)"                                           , "900"                                                              )]
 
     __description__ = """Send captchas to 9kw.eu"""
     __license__     = "GPLv3"
@@ -38,6 +39,11 @@ class Captcha9kw(Hook):
 
 
     API_URL = "http://www.9kw.eu/index.cgi"
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def setup(self):
@@ -55,7 +61,7 @@ class Captcha9kw(Hook):
 
         if res.isdigit():
             self.logInfo(_("%s credits left") % res)
-            credits = self.info["credits"] = int(res)
+            credits = self.info['credits'] = int(res)
             return credits
         else:
             self.logError(res)
@@ -85,7 +91,8 @@ class Captcha9kw(Hook):
                   'confirm'       : self.getConfig("confirm"),
                   'timeout'       : min(max(self.getConfig("timeout"), 300), 3999),
                   'selfsolve'     : self.getConfig("selfsolve"),
-                  'cph'           : self.getConfig("captchaperhour")}
+                  'cph'           : self.getConfig("captchaperhour"),
+                  'cpm'           : self.getConfig("captchapermin")}
 
         for opt in str(self.getConfig("hoster_options").split('|')):
 
@@ -112,6 +119,7 @@ class Captcha9kw(Hook):
                      'maxtimeout'    : option['timeout'],
                      'selfsolve'     : option['selfsolve'],
                      'captchaperhour': option['cph'],
+                     'captchapermin' : option['cpm'],
                      'case-sensitive': option['case_sensitive'],
                      'min_len'       : option['min'],
                      'max_len'       : option['max'],

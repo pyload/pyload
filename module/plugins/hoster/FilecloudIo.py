@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilecloudIo(SimpleHoster):
     __name__    = "FilecloudIo"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*'
 
@@ -34,12 +34,13 @@ class FilecloudIo(SimpleHoster):
 
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
-        self.chunkLimit = 1
+        self.resumeDownload = True
+        self.multiDL        = True
+        self.chunkLimit     = 1
 
 
     def handleFree(self):
-        data = {"ukey": self.info['ID']}
+        data = {"ukey": self.info['pattern']['ID']}
 
         m = re.search(self.AB1_PATTERN, self.html)
         if m is None:
@@ -57,9 +58,9 @@ class FilecloudIo(SimpleHoster):
         if not self.account:
             self.fail(_("User not logged in"))
         elif not self.account.logged_in:
-            captcha_challenge, captcha_response = recaptcha.challenge(captcha_key)
-            self.account.form_data = {"recaptcha_challenge_field": captcha_challenge,
-                                      "recaptcha_response_field": captcha_response}
+            challenge, response = recaptcha.challenge(captcha_key)
+            self.account.form_data = {"recaptcha_challenge_field": challenge,
+                                      "recaptcha_response_field" : response}
             self.account.relogin(self.user)
             self.retry(2)
 
@@ -94,7 +95,7 @@ class FilecloudIo(SimpleHoster):
         if res['dl']:
             self.html = self.load('http://filecloud.io/download.html')
 
-            m = re.search(self.LINK_PATTERN % self.info['ID'], self.html)
+            m = re.search(self.LINK_PATTERN % self.info['pattern']['ID'], self.html)
             if m is None:
                 self.error(_("LINK_PATTERN not found"))
 
@@ -109,7 +110,7 @@ class FilecloudIo(SimpleHoster):
 
     def handlePremium(self):
         akey = self.account.getAccountData(self.user)['akey']
-        ukey = self.info['ID']
+        ukey = self.info['pattern']['ID']
         self.logDebug("Akey: %s | Ukey: %s" % (akey, ukey))
         rep = self.load("http://api.filecloud.io/api-fetch_download_url.api",
                         post={"akey": akey, "ukey": ukey})

@@ -4,7 +4,7 @@ import re
 
 from urlparse import urljoin
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class UploadedToFolder(SimpleCrypter):
@@ -32,3 +32,6 @@ class UploadedToFolder(SimpleCrypter):
 
         plain_link = urljoin("http://uploaded.net/", m.group('plain'))
         return self.load(plain_link).split('\n')[:-1]
+
+
+getInfo = create_getInfo(UploadedToFolder)

@@ -9,7 +9,7 @@ from module.unescape import unescape
 class MyvideoDe(Hoster):
     __name__    = "MyvideoDe"
     __type__    = "hoster"
-    __version__ = "0.9"
+    __version__ = "0.90"
 
     __pattern__ = r'http://(?:www\.)?myvideo\.de/watch/'
 

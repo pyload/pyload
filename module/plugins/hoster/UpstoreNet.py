@@ -46,15 +46,15 @@ class UpstoreNet(SimpleHoster):
             m = re.search(self.WAIT_PATTERN, self.html)
             if m is None:
                 self.error(_("Wait pattern not found"))
-            wait_time = m.group(1)
+            wait_time = int(m.group(1))
 
             # then, do the waiting
             self.wait(wait_time)
 
             # then, handle the captcha
-            challenge, code = recaptcha.challenge()
-            post_data['recaptcha_challenge_field'] = challenge
-            post_data['recaptcha_response_field'] = code
+            challenge, response = recaptcha.challenge()
+            post_data.update({'recaptcha_challenge_field': challenge,
+                              'recaptcha_response_field' : response})
 
             self.html = self.load(self.pyfile.url, post=post_data, decode=True)
 

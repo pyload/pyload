@@ -23,7 +23,7 @@ def getInfo(urls):
 class StreamCz(Hoster):
     __name__    = "StreamCz"
     __type__    = "hoster"
-    __version__ = "0.2"
+    __version__ = "0.20"
 
     __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/\d+.*'
 
@@ -39,8 +39,8 @@ class StreamCz(Hoster):
 
 
     def setup(self):
-        self.multiDL = True
         self.resumeDownload = True
+        self.multiDL        = True
 
 
     def process(self, pyfile):

@@ -2,8 +2,6 @@
 
 import re
 
-from os import path
-from urllib import unquote
 from urlparse import urljoin
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -12,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.63"
 
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/v(?:/|iew\.jsp.*key=)(?P<KEY>\d+)'
 
@@ -26,7 +24,7 @@ class ZippyshareCom(SimpleHoster):
 
     OFFLINE_PATTERN = r'>File does not exist on this server<'
 
-    COOKIES = [(".zippyshare.com", "ziplocale", "en")]
+    COOKIES = [("zippyshare.com", "ziplocale", "en")]
 
 
     def setup(self):
@@ -38,12 +36,6 @@ class ZippyshareCom(SimpleHoster):
     def handleFree(self):
         url = self.get_link()
         self.download(url)
-
-
-    def getFileInfo(self):
-        info = super(ZippyshareCom, self).getFileInfo()
-        self.pyfile.name = info['name'] = unquote(info['name'])
-        return info
 
 
     def get_checksum(self):
@@ -64,8 +56,8 @@ class ZippyshareCom(SimpleHoster):
 
     def get_link(self):
         checksum = self.get_checksum()
-        p_url = path.join("d", self.info['KEY'], str(checksum), self.pyfile.name)
-        dl_link = urljoin(self.info['HOST'], p_url)
+        p_url    = '/'.join(("d", self.info['pattern']['KEY'], str(checksum), self.pyfile.name))
+        dl_link  = urljoin(self.info['pattern']['HOST'], p_url)
         return dl_link
 
 

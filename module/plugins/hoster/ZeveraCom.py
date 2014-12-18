@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class ZeveraCom(Hoster):
+class ZeveraCom(SimpleHoster):
     __name__    = "ZeveraCom"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.23"
 
     __pattern__ = r'http://(?:www\.)?zevera\.com/.*'
 
@@ -15,27 +15,31 @@ class ZeveraCom(Hoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
+    MULTI_HOSTER = True
+
+
     def setup(self):
-        self.resumeDownload = self.multiDL = True
-        self.chunkLimit = 1
+        self.resumeDownload = True
+        self.multiDL        = True
+        self.chunkLimit     = 1
 
 
-    def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "zevera.com")
-            self.fail(_("No zevera.com account provided"))
+    def handleMulti(self):
+        if self.account.getAPIData(self.req, cmd="checklink", olink=self.pyfile.url) != "Alive":
+            self.fail(_("Offline or not downloadable"))
 
-        self.logDebug("Old URL: %s" % pyfile.url)
-
-        if self.account.getAPIData(self.req, cmd="checklink", olink=pyfile.url) != "Alive":
-            self.fail(_("Offline or not downloadable - contact Zevera support"))
-
-        header = self.account.getAPIData(self.req, just_header=True, cmd="generatedownloaddirect", olink=pyfile.url)
+        header = self.account.getAPIData(self.req, just_header=True, cmd="generatedownloaddirect", olink=self.pyfile.url)
         if not "location" in header:
             self.fail(_("Unable to initialize download"))
 
-        self.download(header['location'], disposition=True)
+        self.link = header['location']
 
-        check = self.checkDownload({"error": 'action="ErrorDownload.aspx'})
-        if check == "error":
+
+    def checkFile(self):
+        super(ZeveraCom, self).checkFile()
+
+        if self.checkDownload({"error": 'action="ErrorDownload.aspx'}) is "error":
             self.fail(_("Error response received - contact Zevera support"))
+
+
+getInfo = create_getInfo(ZeveraCom)

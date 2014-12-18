@@ -2,13 +2,13 @@
 
 from urllib import quote, unquote
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class RehostTo(Hoster):
+class RehostTo(SimpleHoster):
     __name__    = "RehostTo"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'https?://.*rehost\.to\..*'
 
@@ -17,27 +17,29 @@ class RehostTo(Hoster):
     __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
+    MULTI_HOSTER = True
+
+
     def getFilename(self, url):
         return unquote(url.rsplit("/", 1)[1])
 
 
     def setup(self):
-        self.chunkLimit = 1
+        self.chunkLimit     = 1
         self.resumeDownload = True
 
 
-    def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "rehost.to")
-            self.fail(_("No rehost.to account provided"))
-
+    def handleMulti(self):
         data = self.account.getAccountInfo(self.user)
         long_ses = data['long_ses']
-
-        self.logDebug("Rehost.to: Old URL: %s" % pyfile.url)
-        new_url = "http://rehost.to/process_download.php?user=cookie&pass=%s&dl=%s" % (long_ses, quote(pyfile.url, ""))
 
         #raise timeout to 2min
         self.req.setOption("timeout", 120)
 
-        self.download(new_url, disposition=True)
+        self.link = True
+        self.download("http://rehost.to/process_download.php",
+                      get={'user': "cookie", 'pass': long_ses, 'dl': quote(self.pyfile.url, "")},
+                      disposition=True)
+
+
+getInfo = create_getInfo(RehostTo)

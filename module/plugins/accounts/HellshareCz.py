@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class HellshareCz(Account):
     __name__    = "HellshareCz"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __description__ = """Hellshare.cz account plugin"""
     __license__     = "GPLv3"
@@ -41,7 +41,7 @@ class HellshareCz(Account):
                     trafficleft = -1
                 else:
                     #Traffic-based account
-                    trafficleft = int(credit) * 1024
+                    trafficleft = self.parseTraffic(credit + "MB")
                     validuntil = -1
             except Exception, e:
                 self.logError(_("Unable to parse credit info"), e)

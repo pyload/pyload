@@ -24,14 +24,14 @@ class BitshareCom(SimpleHoster):
     INFO_PATTERN = r'Downloading (?P<N>.+) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)</h1>'
     OFFLINE_PATTERN = r'(>We are sorry, but the requested file was not found in our database|>Error - File not available<|The file was deleted either by the uploader, inactivity or due to copyright claim)'
 
-    COOKIES = [(".bitshare.com", "language_selection", "EN")]
+    COOKIES = [("bitshare.com", "language_selection", "EN")]
 
     AJAXID_PATTERN = r'var ajaxdl = "(.*?)";'
     TRAFFIC_USED_UP = r'Your Traffic is used up for today. Upgrade to premium to continue!'
 
 
     def setup(self):
-        self.multiDL = self.premium
+        self.multiDL    = self.premium
         self.chunkLimit = 1
 
 
@@ -115,10 +115,12 @@ class BitshareCom(SimpleHoster):
 
             # Try up to 3 times
             for i in xrange(3):
-                challenge, code = recaptcha.challenge()
+                challenge, response = recaptcha.challenge()
                 res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
-                                     post={"request": "validateCaptcha", "ajaxid": self.ajaxid,
-                                           "recaptcha_challenge_field": challenge, "recaptcha_response_field": code})
+                                     post={"request"                  : "validateCaptcha",
+                                           "ajaxid"                   : self.ajaxid,
+                                           "recaptcha_challenge_field": challenge,
+                                           "recaptcha_response_field" : response})
                 if self.handleCaptchaErrors(res):
                     break
 

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
 import re
 
 from os import makedirs
@@ -14,7 +16,7 @@ from module.utils import save_join
 
 class CCF(Container):
     __name__    = "CCF"
-    __version__ = "0.2"
+    __version__ = "0.20"
 
     __pattern__ = r'.+\.ccf'
 
@@ -35,8 +37,7 @@ class CCF(Container):
         download_folder = self.config['general']['download_folder']
 
         tempdlc_name = save_join(download_folder, "tmp_%s.dlc" % pyfile.name)
-        tempdlc = open(tempdlc_name, "w")
-        tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.S).group(1))
-        tempdlc.close()
+        with open(tempdlc_name, "w") as tempdlc:
+            tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.S).group(1))
 
         self.urls = [tempdlc_name]

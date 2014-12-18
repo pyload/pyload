@@ -6,7 +6,7 @@ from module.plugins.Account import Account
 class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.1"
+    __version__ = "0.11"
 
     __description__ = """Rehost.to account plugin"""
     __license__     = "GPLv3"
@@ -15,24 +15,31 @@ class RehostTo(Account):
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
-        page = req.load("http://rehost.to/api.php?cmd=login&user=%s&pass=%s" % (user, data['password']))
-        data = [x.split("=") for x in page.split(",")]
+        html = req.load("http://rehost.to/api.php",
+                        get={'cmd': "login", 'user': user, 'pass': data['password']})
+        data = [x.split("=") for x in html.split(",")]
         ses = data[0][1]
         long_ses = data[1][1]
 
-        page = req.load("http://rehost.to/api.php?cmd=get_premium_credits&long_ses=%s" % long_ses)
-        traffic, valid = page.split(",")
+        html = req.load("http://rehost.to/api.php",
+                        get={'cmd': "get_premium_credits", 'long_ses': long_ses})
 
-        account_info = {"trafficleft": int(traffic) * 1024,
-                        "validuntil": int(valid),
-                        "long_ses": long_ses,
-                        "ses": ses}
+        traffic, valid = html.split(",")
+
+        trafficleft = self.parseTraffic(traffic + "MB")
+        validuntil  = float(valid)
+
+        account_info = {"trafficleft": trafficleft,
+                        "validuntil" : validuntil,
+                        "long_ses"   : long_ses,
+                        "ses"        : ses}
 
         return account_info
 
 
     def login(self, user, data, req):
-        page = req.load("http://rehost.to/api.php?cmd=login&user=%s&pass=%s" % (user, data['password']))
+        html = req.load("http://rehost.to/api.php",
+                        get={'cmd': "login", 'user': user, 'pass': data['password']})
 
-        if "Login failed." in page:
+        if "Login failed." in html:
             self.wrongPassword()

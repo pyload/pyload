@@ -10,15 +10,12 @@ class SendmywayCom(XFSHoster):
 
     __pattern__ = r'http://(?:www\.)?sendmyway\.com/\w{12}'
 
-    __description__ = """SendMyWay hoster plugin"""
+    __description__ = """SendMyWay.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_DOMAIN = "sendmyway.com"
-
-    NAME_PATTERN = r'<p class="file-name" ><.*?>\s*(?P<N>.+)'
-    SIZE_PATTERN = r'<small>\((?P<S>\d+) bytes\)</small>'
 
 
 getInfo = create_getInfo(SendmywayCom)

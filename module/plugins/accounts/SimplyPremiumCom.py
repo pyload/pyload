@@ -7,7 +7,7 @@ from module.plugins.Account import Account
 class SimplyPremiumCom(Account):
     __name__    = "SimplyPremiumCom"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Simply-Premium.com account plugin"""
     __license__     = "GPLv3"
@@ -15,6 +15,9 @@ class SimplyPremiumCom(Account):
 
 
     def loadAccountInfo(self, user, req):
+        validuntil  = -1
+        trafficleft = None
+
         json_data = req.load('http://www.simply-premium.com/api/user.php?format=json')
         self.logDebug("JSON data: " + json_data)
         json_data = json_loads(json_data)
@@ -22,18 +25,17 @@ class SimplyPremiumCom(Account):
         if 'vip' in json_data['result'] and json_data['result']['vip'] == 0:
             return {"premium": False}
 
-        #Time package
-        validuntil = float(json_data['result']['timeend'])
-        #Traffic package
-        # {"trafficleft": int(traffic), "validuntil": -1}
-        #trafficleft = int(json_data['result']['traffic'])
+        if 'timeend' in json_data['result'] and json_data['result']['timeend']:
+            validuntil = float(json_data['result']['timeend'])
 
-        #return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
-        return {"premium": True, "validuntil": validuntil}
+        if 'traffic' in json_data['result'] and json_data['result']['traffic']:
+            trafficleft = float(json_data['result']['traffic']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+
+        return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
 
 
     def login(self, user, data, req):
-        req.cj.setCookie(".simply-premium.com", "lang", "EN")
+        req.cj.setCookie("simply-premium.com", "lang", "EN")
 
         if data['password'] == '' or data['password'] == '0':
             post_data = {"key": user}

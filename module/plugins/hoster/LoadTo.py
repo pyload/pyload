@@ -49,7 +49,7 @@ class LoadTo(SimpleHoster):
         # Set Timer - may be obsolete
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            self.wait(m.group(1))
+            self.wait(int(m.group(1)))
 
         # Load.to is using solvemedia captchas since ~july 2014:
         solvemedia = SolveMedia(self)
@@ -58,9 +58,12 @@ class LoadTo(SimpleHoster):
         if captcha_key is None:
             self.download(download_url)
         else:
-            captcha_challenge, captcha_response = solvemedia.challenge(captcha_key)
-            self.download(download_url, post={"adcopy_challenge": captcha_challenge, "adcopy_response": captcha_response})
+            challenge, response = solvemedia.challenge(captcha_key)
+
+            self.download(download_url, post={"adcopy_challenge": challenge, "adcopy_response": response})
+
             check = self.checkDownload({'404': re.compile("\A<h1>404 Not Found</h1>"), 'html': re.compile("html")})
+
             if check == "404":
                 self.invalidCaptcha()
                 self.retry()

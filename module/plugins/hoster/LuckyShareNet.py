@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LuckyShareNet(SimpleHoster):
     __name__    = "LuckyShareNet"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})'
 
@@ -42,9 +42,7 @@ class LuckyShareNet(SimpleHoster):
     # TODO: There should be a filesize limit for free downloads
     # TODO: Some files could not be downloaded in free mode
     def handleFree(self):
-        file_id = re.match(self.__pattern__, self.pyfile.url).group('ID')
-        self.logDebug("File ID: " + file_id)
-        rep = self.load(r"http://luckyshare.net/download/request/type/time/file/" + file_id, decode=True)
+        rep = self.load(r"http://luckyshare.net/download/request/type/time/file/" + self.info['pattern']['ID'], decode=True)
         self.logDebug("JSON: " + rep)
         json = self.parseJson(rep)
 
@@ -69,7 +67,6 @@ class LuckyShareNet(SimpleHoster):
         if not json['link']:
             self.fail(_("No Download url retrieved/all captcha attempts failed"))
 
-        self.logDebug("Direct URL: " + json['link'])
         self.download(json['link'])
 
 

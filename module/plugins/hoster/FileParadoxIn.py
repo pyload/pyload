@@ -19,7 +19,5 @@ class FileParadoxIn(XFSHoster):
 
     HOSTER_DOMAIN = "fileparadox.in"
 
-    SIZE_PATTERN = r'</font>\s*\(\s*(?P<S>[^)]+)\s*\)</font>'
-
 
 getInfo = create_getInfo(FileParadoxIn)

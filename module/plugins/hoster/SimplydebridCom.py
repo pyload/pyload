@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class SimplydebridCom(Hoster):
+class SimplydebridCom(SimpleHoster):
     __name__    = "SimplydebridCom"
     __type__    = "hoster"
-    __version__ = "0.1"
+    __version__ = "0.12"
 
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php/*'
 
@@ -17,47 +17,50 @@ class SimplydebridCom(Hoster):
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
+    MULTI_HOSTER = True
+
+
     def setup(self):
-        self.resumeDownload = self.multiDL = True
-        self.chunkLimit = 1
+        self.resumeDownload = True
+        self.multiDL        = True
+        self.chunkLimit     = 1
 
 
-    def process(self, pyfile):
-        if not self.account:
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "simply-debrid.com")
-            self.fail(_("No simply-debrid.com account provided"))
-
-        self.logDebug("Old URL: %s" % pyfile.url)
-
+    def handleMulti(self):
         #fix the links for simply-debrid.com!
-        new_url = pyfile.url
-        new_url = new_url.replace("clz.to", "cloudzer.net/file")
-        new_url = new_url.replace("http://share-online", "http://www.share-online")
-        new_url = new_url.replace("ul.to", "uploaded.net/file")
-        new_url = new_url.replace("uploaded.com", "uploaded.net")
-        new_url = new_url.replace("filerio.com", "filerio.in")
-        new_url = new_url.replace("lumfile.com", "lumfile.se")
-        if('fileparadox' in new_url):
-            new_url = new_url.replace("http://", "https://")
+        self.link = self.pyfile.url
+        self.link = self.link.replace("clz.to", "cloudzer.net/file")
+        self.link = self.link.replace("http://share-online", "http://www.share-online")
+        self.link = self.link.replace("ul.to", "uploaded.net/file")
+        self.link = self.link.replace("uploaded.com", "uploaded.net")
+        self.link = self.link.replace("filerio.com", "filerio.in")
+        self.link = self.link.replace("lumfile.com", "lumfile.se")
 
-        if re.match(self.__pattern__, new_url):
-            new_url = new_url
+        if('fileparadox' in self.link):
+            self.link = self.link.replace("http://", "https://")
 
-        self.logDebug("New URL: %s" % new_url)
+        if re.match(self.__pattern__, self.link):
+            self.link = self.link
 
-        if not re.match(self.__pattern__, new_url):
-            page = self.load('http://simply-debrid.com/api.php', get={'dl': new_url})  # +'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
+        self.logDebug("New URL: %s" % self.link)
+
+        if not re.match(self.__pattern__, self.link):
+            page = self.load("http://simply-debrid.com/api.php", get={'dl': self.link})  # +'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
             if 'tiger Link' in page or 'Invalid Link' in page or ('API' in page and 'ERROR' in page):
                 self.fail(_("Unable to unrestrict link"))
-            new_url = page
+            self.link = page
 
         self.setWait(5)
         self.wait()
-        self.logDebug("Unrestricted URL: " + new_url)
 
-        self.download(new_url, disposition=True)
+
+    def checkFile(self):
+        super(SimplydebridCom, self).checkFile()
 
         check = self.checkDownload({"bad1": "No address associated with hostname", "bad2": "<html"})
 
         if check == "bad1" or check == "bad2":
             self.retry(24, 3 * 60, "Bad file downloaded")
+
+
+getInfo = create_getInfo(SimplydebridCom)

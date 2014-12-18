@@ -7,7 +7,7 @@ import re
 
 from urlparse import urljoin
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class DevhostStFolder(SimpleCrypter):
@@ -56,3 +56,6 @@ class DevhostStFolder(SimpleCrypter):
 
     def getLinks(self):
         return [urljoin("http://d-h.st", link) for link in re.findall(self.LINK_PATTERN, self.html)]
+
+
+getInfo = create_getInfo(DevhostStFolder)

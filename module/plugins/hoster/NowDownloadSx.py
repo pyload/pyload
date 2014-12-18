@@ -6,14 +6,14 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 from module.utils import fixup
 
 
-class NowDownloadEu(SimpleHoster):
-    __name__    = "NowDownloadEu"
+class NowDownloadSx(SimpleHoster):
+    __name__    = "NowDownloadSx"
     __type__    = "hoster"
     __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?nowdownload\.(at|ch|co|eu|sx)/(dl/|download\.php\?id=)\w+'
 
-    __description__ = """NowDownload.at hoster plugin"""
+    __description__ = """NowDownload.sx hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("godofdream", "soilfiction@gmail.com"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
@@ -25,14 +25,15 @@ class NowDownloadEu(SimpleHoster):
     TOKEN_PATTERN = r'"(/api/token\.php\?token=\w+)"'
     CONTINUE_PATTERN = r'"(/dl2/\w+/\w+)"'
     WAIT_PATTERN = r'\.countdown\(\{until: \+(\d+),'
-    LINK_PATTERN = r'"(http://f\d+\.nowdownload\.at/dl/\w+/\w+)'
+    LINK_PATTERN = r'(http://s\d+\.coolcdn\.info/nowdownload/.+?)["\']'
 
     NAME_REPLACEMENTS = [("&#?\w+;", fixup), (r'<[^>]*>', '')]
 
 
     def setup(self):
-        self.multiDL = self.resumeDownload = True
-        self.chunkLimit = -1
+        self.resumeDownload = True
+        self.multiDL        = True
+        self.chunkLimit     = -1
 
 
     def handleFree(self):
@@ -60,4 +61,4 @@ class NowDownloadEu(SimpleHoster):
         self.download(str(url.group(1)))
 
 
-getInfo = create_getInfo(NowDownloadEu)
+getInfo = create_getInfo(NowDownloadSx)

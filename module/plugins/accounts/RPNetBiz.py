@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class RPNetBiz(Account):
     __name__    = "RPNetBiz"
     __type__    = "account"
-    __version__ = "0.1"
+    __version__ = "0.11"
 
     __description__ = """RPNet.biz account plugin"""
     __license__     = "GPLv3"
@@ -20,7 +20,7 @@ class RPNetBiz(Account):
         try:
             if res['accountInfo']['isPremium']:
                 # Parse account info. Change the trafficleft later to support per host info.
-                account_info = {"validuntil": int(res['accountInfo']['premiumExpiry']),
+                account_info = {"validuntil": float(res['accountInfo']['premiumExpiry']),
                                 "trafficleft": -1, "premium": True}
             else:
                 account_info = {"validuntil": None, "trafficleft": None, "premium": False}

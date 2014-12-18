@@ -40,7 +40,7 @@ def computeChecksum(local_file, algorithm):
 class Checksum(Hook):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __config__ = [("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
                   ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
@@ -62,6 +62,11 @@ class Checksum(Hook):
                'default': r'^(?P<hash>[0-9A-Fa-f]+)\s+\*?(?P<name>.+)$'}
 
 
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
+
+
     def coreReady(self):
         if not self.getConfig("check_checksum"):
             self.logInfo(_("Checksum validation is disabled in plugin configuration"))
@@ -81,10 +86,15 @@ class Checksum(Hook):
         a) if known, the exact filesize in bytes (e.g. "size": 123456789)
         b) hexadecimal hash string with algorithm name as key (e.g. "md5": "d76505d0869f9f928a17d42d66326307")
         """
-        if hasattr(pyfile.plugin, "check_data") and (isinstance(pyfile.plugin.check_data, dict)):
+        if hasattr(pyfile.plugin, "check_data") and isinstance(pyfile.plugin.check_data, dict):
             data = pyfile.plugin.check_data.copy()
-        elif hasattr(pyfile.plugin, "api_data") and (isinstance(pyfile.plugin.api_data, dict)):
+
+        elif hasattr(pyfile.plugin, "api_data") and isinstance(pyfile.plugin.api_data, dict):
             data = pyfile.plugin.api_data.copy()
+
+        # elif hasattr(pyfile.plugin, "info") and isinstance(pyfile.plugin.info, dict):
+            # data = pyfile.plugin.info.copy()
+
         else:
             return
 

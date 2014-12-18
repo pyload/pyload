@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 import re
 
@@ -25,3 +25,6 @@ class TnyCz(SimpleCrypter):
     def getLinks(self):
         m = re.search(r'<a id=\'save_paste\' href="(.+save\.php\?hash=.+)">', self.html)
         return re.findall(".+", self.load(m.group(1), decode=True)) if m else None
+
+
+getInfo = create_getInfo(TnyCz)

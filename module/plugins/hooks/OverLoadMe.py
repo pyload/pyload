@@ -23,8 +23,7 @@ class OverLoadMe(MultiHoster):
     def getHoster(self):
         https = "https" if self.getConfig("https") else "http"
         page = getURL(https + "://api.over-load.me/hoster.php",
-                      get={"auth": "0001-cb1f24dadb3aa487bda5afd3b76298935329be7700cd7-5329be77-00cf-1ca0135f"}
-                      ).replace("\"", "").strip()
+                      get={'auth': "0001-cb1f24dadb3aa487bda5afd3b76298935329be7700cd7-5329be77-00cf-1ca0135f"}).replace("\"", "").strip()
         self.logDebug("Hosterlist", page)
 
         return [x.strip() for x in page.split(",") if x.strip()]

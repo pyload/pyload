@@ -7,7 +7,7 @@ from module.plugins.Crypter import Crypter
 class LetitbitNetFolder(Crypter):
     __name__    = "LetitbitNetFolder"
     __type__    = "crypter"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __pattern__ = r'http://(?:www\.)?letitbit\.net/folder/\w+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),

@@ -10,7 +10,7 @@ from module.plugins.Crypter import Crypter
 class DontKnowMe(Crypter):
     __name__    = "DontKnowMe"
     __type__    = "crypter"
-    __version__ = "0.1"
+    __version__ = "0.10"
 
     __pattern__ = r'http://(?:www\.)?dontknow\.me/at/\?.+$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),

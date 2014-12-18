@@ -10,7 +10,7 @@ from module.plugins.Crypter import Crypter
 class DDLMusicOrg(Crypter):
     __name__    = "DDLMusicOrg"
     __type__    = "crypter"
-    __version__ = "0.3"
+    __version__ = "0.30"
 
     __pattern__ = r'http://(?:www\.)?ddl-music\.org/captcha/ddlm_cr\d\.php\?\d+\?\d+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),

@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class NetfolderIn(SimpleCrypter):
@@ -68,3 +68,6 @@ class NetfolderIn(SimpleCrypter):
         links = re.search(r'name="list" value="(.*?)"', self.html).group(1).split(",")
         self.logDebug("Package has %d links" % len(links))
         return links
+
+
+getInfo = create_getInfo(NetfolderIn)
