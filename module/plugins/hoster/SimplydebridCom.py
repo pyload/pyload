@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class SimplydebridCom(SimpleHoster):
     __name__    = "SimplydebridCom"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php/*'
 
@@ -55,6 +55,8 @@ class SimplydebridCom(SimpleHoster):
 
 
     def checkFile(self):
+        super(SimplydebridCom, self).checkFile()
+
         check = self.checkDownload({"bad1": "No address associated with hostname", "bad2": "<html"})
 
         if check == "bad1" or check == "bad2":

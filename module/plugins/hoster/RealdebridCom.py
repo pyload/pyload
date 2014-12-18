@@ -14,7 +14,7 @@ from module.utils import parseFileSize
 class RealdebridCom(SimpleHoster):
     __name__    = "RealdebridCom"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
 
     __pattern__ = r'https?://(?:[^/]*\.)?real-debrid\..*'
 
@@ -82,6 +82,8 @@ class RealdebridCom(SimpleHoster):
 
 
     def checkFile(self):
+        super(RealdebridCom, self).checkFile()
+
         check = self.checkDownload(
             {"error": "<title>An error occured while processing your request</title>"})
 

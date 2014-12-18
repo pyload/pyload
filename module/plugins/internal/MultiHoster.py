@@ -33,7 +33,7 @@ class MultiHoster(Hook):
                            ("share-rapid.cz" , "multishare.cz" ),
                            ("sharerapid.cz"  , "multishare.cz" ),
                            ("ul.to"          , "uploaded.to"   ),
-                           ("uploaded.net"  , "uploaded.to"    )]
+                           ("uploaded.net"   , "uploaded.to"   )]
     HOSTER_EXCLUDED     = []
 
 

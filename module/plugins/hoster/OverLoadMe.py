@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class OverLoadMe(SimpleHoster):
     __name__    = "OverLoadMe"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://.*overload\.me.*'
 
@@ -72,6 +72,8 @@ class OverLoadMe(SimpleHoster):
 
 
     def checkFile(self):
+        super(OverLoadMe, self).checkFile()
+
         check = self.checkDownload(
             {"error": "<title>An error occured while processing your request</title>"})
 

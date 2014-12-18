@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LinksnappyCom(SimpleHoster):
     __name__    = "LinksnappyCom"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:[^/]*\.)?linksnappy\.com'
 
@@ -60,6 +60,8 @@ class LinksnappyCom(SimpleHoster):
 
 
     def checkFile(self):
+        super(LinksnappyCom, self).checkFile()
+
         check = self.checkDownload({"html302": "<title>302 Found</title>"})
 
         if check == "html302":

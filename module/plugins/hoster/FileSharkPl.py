@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileSharkPl(SimpleHoster):
     __name__    = "FileSharkPl"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d{6}/\w{5}'
 
@@ -116,6 +116,8 @@ class FileSharkPl(SimpleHoster):
 
 
     def checkFile(self):
+        super(FileSharkPl, self).checkFile()
+
         check = self.checkDownload({'wrong_captcha': re.compile(r'<label for="form_captcha" generated="true" class="error">(.*?)</label>'),
                                     'wait_pattern' : re.compile(self.SECONDS_PATTERN),
                                     'DL-found'     : re.compile('<a href="(.*)">')})

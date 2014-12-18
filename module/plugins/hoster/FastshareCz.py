@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
 
@@ -58,6 +58,8 @@ class FastshareCz(SimpleHoster):
 
 
     def checkFile(self):
+        super(FastshareCz, self).checkFile()
+
         check = self.checkDownload({
             'paralell_dl'  : re.compile(r"<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"),
             'wrong_captcha': re.compile(r'Download for FREE'),

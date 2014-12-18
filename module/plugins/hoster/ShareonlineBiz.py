@@ -14,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.45"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
 
@@ -108,17 +108,14 @@ class ShareonlineBiz(SimpleHoster):
 
 
     def checkFile(self):
-        # check download
+        super(ShareonlineBiz, self).checkFile()
+
         check = self.checkDownload({
-            'empty' : re.compile(r"^$"),
             'cookie': re.compile(r'<div id="dl_failure"'),
             'fail'  : re.compile(r"<title>Share-Online")
         })
 
-        if check == "empty":
-            self.fail(_("Empty file"))
-
-        elif check == "cookie":
+        if check == "cookie":
             self.invalidCaptcha()
             self.retry(5, 60, _("Cookie failure"))
 

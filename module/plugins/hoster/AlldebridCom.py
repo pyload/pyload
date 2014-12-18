@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class AlldebridCom(SimpleHoster):
     __name__    = "AlldebridCom"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __pattern__ = r'https?://(?:[^/]*\.)?alldebrid\..*'
 
@@ -73,14 +73,11 @@ class AlldebridCom(SimpleHoster):
             self.pyfile.name = self.getFilename(self.link)
 
 
-        def checkFile(self):
-            check = self.checkDownload({'error': "<title>An error occured while processing your request</title>",
-                                        'empty': re.compile(r"^$")})
+        def AlldebridCom(self):
+            super(AlldebridCom, self).checkFile()
 
-            if check == "error":
+            if self.checkDownload({'error': "<title>An error occured while processing your request</title>"}) is "error":
                 self.retry(wait_time=60, reason=_("An error occured while generating link"))
-            elif check == "empty":
-                self.retry(wait_time=60, reason=_("Downloaded File was empty"))
 
 
 getInfo = create_getInfo(AlldebridCom)

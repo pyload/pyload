@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastixRu(SimpleHoster):
     __name__    = "FastixRu"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>\w{24})'
 
@@ -63,13 +63,10 @@ class FastixRu(SimpleHoster):
 
 
     def checkFile(self):
-        check = self.checkDownload({"error": "<title>An error occurred while processing your request</title>",
-                                    "empty": re.compile(r"^$")})
+        super(FastixRu, self).checkFile()
 
-        if check == "error":
+        if self.checkDownload({"error": "<title>An error occurred while processing your request</title>"}) is "error":
             self.retry(wait_time=60, reason=_("An error occurred while generating link"))
-        elif check == "empty":
-            self.retry(wait_time=60, reason=_("Downloaded File was empty"))
 
 
 getInfo = create_getInfo(FastixRu)

@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadableCh(SimpleHoster):
     __name__    = "UploadableCh"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
 
@@ -73,6 +73,8 @@ class UploadableCh(SimpleHoster):
 
 
     def checkFile(self):
+        super(UploadableCh, self).checkFile()
+
         check = self.checkDownload({'wait_or_reconnect': re.compile("Please wait for"),
                                     'is_html'          : re.compile("<head>")})
 

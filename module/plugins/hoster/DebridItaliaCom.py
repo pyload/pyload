@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DebridItaliaCom(SimpleHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
 
@@ -34,12 +34,6 @@ class DebridItaliaCom(SimpleHoster):
             self.fail(re.search(r'ERROR:(.*)', html).group(1).strip())
 
         self.link = html.strip()
-
-
-    def checkFile(self):
-        check = self.checkDownload({'empty': re.compile(r'^$')})
-        if check == "empty":
-            self.retry(5, 2 * 60, "Empty file downloaded")
 
 
 getInfo = create_getInfo(DebridItaliaCom)

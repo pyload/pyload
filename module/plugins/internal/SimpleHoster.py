@@ -2,6 +2,7 @@
 
 import re
 
+from os.path import exists
 from time import time
 from urllib import unquote
 from urlparse import urljoin, urlparse
@@ -11,7 +12,7 @@ from module.network.CookieJar import CookieJar
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import Fail
-from module.utils import fixup, parseFileSize
+from module.utils import fixup, fs_encode, parseFileSize
 
 
 #@TODO: Adapt and move to PyFile in 0.4.10
@@ -154,7 +155,7 @@ def _isDirectLink(self, url, resumable=True):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.75"
+    __version__ = "0.76"
 
     __pattern__ = r'^unmatchable$'
 
@@ -410,8 +411,19 @@ class SimpleHoster(Hoster):
 
 
     def checkFile(self):
-        if self.checkDownload({'empty': re.compile(r"^$")}) is "empty":  #@TODO: Move to hoster in 0.4.10
-            self.fail(_("Empty file"))
+        if not self.lastDownload or not exists(fs_encode(self.lastDownload)):
+            self.fail(_("No file downloaded"))
+
+        else:
+            rules = {'empty file': re.compile(r"^$")}
+
+            if hasattr(self, 'ERROR_PATTERN'):
+                rules['error'] = re.compile(self.ERROR_PATTERN)
+
+            check = self.checkDownload(rules)
+            if check:  #@TODO: Move to hoster in 0.4.10
+                errmsg = check.strip().capitalize() + (" | " + self.lastCheck.strip() if self.lastCheck else "")
+                self.retry(10, 60, errmsg)
 
 
     def checkErrors(self):

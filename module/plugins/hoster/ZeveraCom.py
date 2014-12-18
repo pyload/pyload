@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZeveraCom(SimpleHoster):
     __name__    = "ZeveraCom"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'http://(?:www\.)?zevera\.com/.*'
 
@@ -36,9 +36,9 @@ class ZeveraCom(SimpleHoster):
 
 
     def checkFile(self):
-        check = self.checkDownload({"error": 'action="ErrorDownload.aspx'})
+        super(ZeveraCom, self).checkFile()
 
-        if check == "error":
+        if self.checkDownload({"error": 'action="ErrorDownload.aspx'}) is "error":
             self.fail(_("Error response received - contact Zevera support"))
 
 

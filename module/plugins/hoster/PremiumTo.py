@@ -13,7 +13,7 @@ from module.utils import fs_encode
 class PremiumTo(SimpleHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?premium\.to/.*'
 
@@ -47,6 +47,8 @@ class PremiumTo(SimpleHoster):
 
 
     def checkFile(self):
+        super(PremiumTo, self).checkFile()
+
         check = self.checkDownload({"nopremium": "No premium account available"})
 
         if check == "nopremium":
@@ -56,13 +58,9 @@ class PremiumTo(SimpleHoster):
         if self.req.http.code == '420':
             # Custom error code send - fail
             lastDownload = fs_encode(self.lastDownload)
-
-            if exists(lastDownload):
-                with open(lastDownload, "rb") as f:
-                    err = f.read(256).strip()
-                remove(lastDownload)
-            else:
-                err = _('File does not exist')
+            with open(lastDownload, "rb") as f:
+                err = f.read(256).strip()
+            remove(lastDownload)
 
         trb = self.getTraffic()
         self.logInfo(_("Filesize: %d, Traffic used %d, traffic left %d") % (self.pyfile.size, tra - trb, trb))
