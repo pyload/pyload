@@ -16,7 +16,6 @@ if sys.version_info < (2, 7) and os.name != "nt":
     import errno
     from subprocess import Popen
 
-
     def _eintr_retry_call(func, *args):
         while True:
             try:
@@ -59,7 +58,7 @@ from module.utils import save_join, fs_encode
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
@@ -89,7 +88,7 @@ class ExtractArchive(Hook):
 
 
     def setup(self):
-        self.plugins = []
+        self.plugins   = []
         self.passwords = []
         names = []
 
@@ -141,24 +140,27 @@ class ExtractArchive(Hook):
     @threaded
     def allDownloadsProcessed(self, thread):
         local = copy(self.queue)
+
         del self.queue[:]
+
         if self.extract(local, thread):  #: check only if all gone fine, no failed reporting for now
             self.manager.dispatchEvent("all_archives_extracted")
+
         self.manager.dispatchEvent("all_archives_processed")
 
 
     def extract(self, ids, thread=None):
         processed = []
         extracted = []
-        failed = []
+        failed    = []
 
-        destination = self.getConfig("destination")
-        subfolder = self.getConfig("subfolder")
-        fullpath = self.getConfig("fullpath")
-        overwrite = self.getConfig("overwrite")
+        destination  = self.getConfig("destination")
+        subfolder    = self.getConfig("subfolder")
+        fullpath     = self.getConfig("fullpath")
+        overwrite    = self.getConfig("overwrite")
         excludefiles = self.getConfig("excludefiles")
-        renice = self.getConfig("renice")
-        recursive = self.getConfig("recursive")
+        renice       = self.getConfig("renice")
+        recursive    = self.getConfig("recursive")
 
         # reload from txt file
         self.reloadPasswords()
@@ -208,8 +210,7 @@ class ExtractArchive(Hook):
                             klass = plugin(self, target, out, fullpath, overwrite, excludefiles, renice)
                             klass.init()
 
-                            passwords = p.password.strip().splitlines()
-                            new_files = self._extract(klass, fid, passwords, thread)
+                            new_files = self._extract(klass, fid, [p.password.strip()], thread)
 
                         except Exception, e:
                             self.logError(basename(target), e)
@@ -253,15 +254,15 @@ class ExtractArchive(Hook):
             success = False
 
             if not plugin.checkArchive():
-                plugin.extract(progress)
+                plugin.extract(progress, pw)
                 success = True
             else:
                 self.logInfo(basename(plugin.file), _("Password protected"))
-                self.logDebug("Passwords", passwords)
+                self.logDebug("Passwords: %s" % passwords if passwords else "No password provided")
 
-                for pw in set(passwords) + set(self.getPasswords()):
+                for pw in set(passwords) | set(self.getPasswords()):
                     try:
-                        self.logDebug("Try password", pw)
+                        self.logDebug("Try password: %s" % pw)
                         if plugin.checkPassword(pw):
                             plugin.extract(progress, pw)
                             self.addPassword(pw)
@@ -305,6 +306,7 @@ class ExtractArchive(Hook):
             self.logError(basename(plugin.file), _("Unknown Error"), e)
 
         self.manager.dispatchEvent("archive_extract_failed", pyfile)
+
         raise Exception(_("Extract failed"))
 
 
@@ -344,6 +346,7 @@ class ExtractArchive(Hook):
             with open(passwordfile, "wb") as f:
                 for pw in self.passwords:
                     f.write(pw + "\n")
+
         except IOError, e:
             self.logError(e)
 
@@ -352,6 +355,7 @@ class ExtractArchive(Hook):
         for f in files:
             if not exists(f):
                 continue
+
             try:
                 if self.config['permission']['change_file']:
                     if isfile(f):
@@ -363,5 +367,6 @@ class ExtractArchive(Hook):
                     uid = getpwnam(self.config['permission']['user'])[2]
                     gid = getgrnam(self.config['permission']['group'])[2]
                     chown(f, uid, gid)
+
             except Exception, e:
                 self.logWarning(_("Setting User and Group failed"), e)

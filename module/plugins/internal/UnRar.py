@@ -22,53 +22,52 @@ def renice(pid, value):
 
 class UnRar(AbtractExtractor):
     __name__    = "UnRar"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     CMD = "unrar"
 
-    # there are some more uncovered rar formats
-    re_version   = re.compile(r'UNRAR ([\w .]+?)')
+    #@NOTE: there are some more uncovered rar formats
     re_splitfile = re.compile(r'(.*)\.part(\d+)\.rar$', re.I)
     re_partfiles = re.compile(r'.*\.(rar|r\d+)', re.I)
-    re_filelist  = re.compile(r'(.+)\s+(\d+)\s+(\d+)\s+')
-    re_filelist5 = re.compile(r'(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
+    re_filelist  = re.compile(r'(.+)\s+(\d+)\s+(\d+)\s+|(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
     re_wrongpwd  = re.compile(r'(Corrupt file or wrong password|password incorrect)', re.I)
 
 
-    @staticmethod
-    def checkDeps():
+    @classmethod
+    def checkDeps(cls):
         if os.name == "nt":
-            UnRar.CMD = join(pypath, "UnRAR.exe")
-            p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
+            cls.CMD = join(pypath, "UnRAR.exe")
+            p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
             p.communicate()
         else:
             try:
-                p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
+                p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
                 p.communicate()
-            except OSError:
 
+            except OSError:
                 # fallback to rar
-                UnRar.CMD = "rar"
-                p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
+                cls.CMD = "rar"
+                p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
                 p.communicate()
 
         return True
 
 
-    @staticmethod
-    def getTargets(files_ids):
+    @classmethod
+    def getTargets(cls, files_ids):
         result = []
 
         for file, id in files_ids:
             if not file.endswith(".rar"):
                 continue
 
-            match = UnRar.re_splitfile.findall(file)
+            match = cls.re_splitfile.findall(file)
             if match:
                 # only add first parts
                 if int(match[0][1]) == 1:
@@ -81,9 +80,8 @@ class UnRar(AbtractExtractor):
 
     def init(self):
         self.passwordProtected = False
-        self.headerProtected = False  #: list files will not work without password
-        self.smallestFile = None  #: small file to test passwords
-        self.password = ""  #: save the correct password
+        self.headerProtected   = False  #: list files will not work without password
+        self.password          = ""  #: save the correct password
 
 
     def checkArchive(self):
@@ -95,16 +93,10 @@ class UnRar(AbtractExtractor):
             return True
 
         # output only used to check if passworded files are present
-        if self.re_version.search(out):
-            for attr, size, name in self.re_filelist5.findall(out):
-                if attr.startswith("*"):
-                    self.passwordProtected = True
-                    return True
-        else:
-            for name, size, packed in self.re_filelist.findall(out):
-                if name.startswith("*"):
-                    self.passwordProtected = True
-                    return True
+        for attr in self.re_filelist.findall(out):
+            if attr[0].startswith("*"):
+                self.passwordProtected = True
+                return True
 
         self.listContent()
         if not self.files:
@@ -131,6 +123,7 @@ class UnRar(AbtractExtractor):
         renice(p.pid, self.renice)
 
         progress(0)
+
         progressstring = ""
         while True:
             c = p.stdout.read(1)
@@ -147,6 +140,7 @@ class UnRar(AbtractExtractor):
             # add digit to progressstring
             else:
                 progressstring = progressstring + c
+
         progress(100)
 
         # retrieve stderr
