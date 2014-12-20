@@ -43,6 +43,7 @@ class ZippyshareCom(SimpleHoster):
             m = re.search(r'\+[ ]*\((\d+)[ ]*\%[ ]*(\d+)[ ]*\+[ ]*(\d+)[ ]*\%[ ]*(\d+)\)[ ]*\+', self.html)
             if m:
                 a1, a2, c1, c2 = map(int, m.groups())
+                return (a1 % a2) + (c1 % c2)
             else:
                 a1, a2 = map(int, re.search(r'\(\'downloadB\'\).omg = (\d+)%(\d+)', self.html).groups())
                 c1, c2 = map(int, re.search(r'\(\'downloadB\'\).omg\) \* \((\d+)%(\d+)', self.html).groups())
