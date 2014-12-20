@@ -155,7 +155,7 @@ def _isDirectLink(self, url, resumable=True):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.76"
+    __version__ = "0.77"
 
     __pattern__ = r'^unmatchable$'
 
@@ -407,11 +407,16 @@ class SimpleHoster(Hoster):
 
     def downloadLink(self, link):
         if link and isinstance(link, basestring):
+            self.correctCaptcha()
             self.download(link, disposition=True)
 
 
     def checkFile(self):
-        if not self.lastDownload or not exists(fs_encode(self.lastDownload)):
+        if self.cTask and not self.lastDownload:
+            self.invalidCaptcha()
+            self.retry(10, reason=_("Wrong captcha"))
+
+        elif not self.lastDownload or not exists(fs_encode(self.lastDownload)):
             self.fail(_("No file downloaded"))
 
         else:
