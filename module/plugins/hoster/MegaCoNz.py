@@ -46,9 +46,9 @@ from module.plugins.Hoster import Hoster
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
-    __pattern__ = r'https?://(\w+\.)?mega\.co\.nz/#!([\w!-]+)'
+    __pattern__ = r'https?://(?:www\.)?mega\.co\.nz/#!(?P<ID>[\w!-]+)'
 
     __description__ = """Mega.co.nz hoster plugin"""
     __license__     = "GPLv3"
@@ -133,11 +133,11 @@ class MegaCoNz(Hoster):
         key = None
 
         # match is guaranteed because plugin was chosen to handle url
-        node = re.match(self.__pattern__, pyfile.url).group(2)
+        node = re.match(self.__pattern__, pyfile.url).group('ID')
         if "!" in node:
-            node, key = node.split("!")
+            node, key = node.split("!", 1)
 
-        self.logDebug("File id: %s | Key: %s" % (node, key))
+        self.logDebug("ID: %s | Key: %s" % (node, key))
 
         if not key:
             self.fail(_("No file key provided in the URL"))

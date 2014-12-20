@@ -24,7 +24,7 @@ def doubleDecode(m):
 class FshareVn(SimpleHoster):
     __name__    = "FshareVn"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __pattern__ = r'http://(?:www\.)?fshare\.vn/file/.*'
 
@@ -66,15 +66,20 @@ class FshareVn(SimpleHoster):
 
         if not inputs:
             self.error(_("No FORM"))
+
         elif 'link_file_pwd_dl' in inputs:
-            for password in self.getPassword().splitlines():
+            password = self.getPassword()
+
+            if password:
                 self.logInfo(_("Password protected link, trying ") + password)
                 inputs['link_file_pwd_dl'] = password
                 self.html = self.load(self.url, post=inputs, decode=True)
-                if not 'name="link_file_pwd_dl"' in self.html:
-                    break
+
+                if 'name="link_file_pwd_dl"' in self.html:
+                    self.fail(_("Incorrect password"))
             else:
-                self.fail(_("No or incorrect password"))
+                self.fail(_("No password found"))
+
         else:
             self.html = self.load(self.url, post=inputs, decode=True)
 

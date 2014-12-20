@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __pattern__ = r'^unmatchable$'
 
@@ -60,10 +60,9 @@ class BasePlugin(Hoster):
                         self.logDebug("Logging on to %s" % server)
                         self.req.addAuth(account.accounts[server]['password'])
                     else:
-                        for pwd in self.getPassword().splitlines():
-                            if ":" in pwd:
-                                self.req.addAuth(pwd.strip())
-                                break
+                        pwd = self.getPassword()
+                        if ':' in pwd:
+                            self.req.addAuth(pwd)
                         else:
                             self.fail(_("Authorization required"))
                 else:
