@@ -8,20 +8,21 @@ from module.plugins.internal.AbstractExtractor import AbtractExtractor, WrongPas
 
 class UnZip(AbtractExtractor):
     __name__    = "UnZip"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    @staticmethod
-    def checkDeps():
+    @classmethod
+    def checkDeps(cls):
         return sys.version_info[:2] >= (2, 6)
 
 
-    @staticmethod
-    def getTargets(files_ids):
+    @classmethod
+    def getTargets(cls, files_ids):
         result = []
 
         for file, id in files_ids:
@@ -31,7 +32,7 @@ class UnZip(AbtractExtractor):
         return result
 
 
-    def extract(self, progress, password=None):
+    def extract(self, progress, password=""):
         try:
             z = zipfile.ZipFile(self.file)
             self.files = z.namelist()

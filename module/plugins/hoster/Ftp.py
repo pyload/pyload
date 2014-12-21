@@ -12,7 +12,7 @@ from module.plugins.Hoster import Hoster
 class Ftp(Hoster):
     __name__    = "Ftp"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 
@@ -45,10 +45,9 @@ class Ftp(Hoster):
                 self.logDebug("Logging on to %s" % netloc)
                 self.req.addAuth(self.account.accounts[netloc]['password'])
             else:
-                for pwd in self.getPassword().splitlines():
-                    if ":" in pwd:
-                        self.req.addAuth(pwd.strip())
-                        break
+                pwd = self.getPassword()
+                if ':' in pwd:
+                    self.req.addAuth(pwd)
 
         self.req.http.c.setopt(pycurl.NOBODY, 1)
 

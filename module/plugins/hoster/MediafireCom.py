@@ -49,7 +49,7 @@ def getInfo(urls):
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.80"
+    __version__ = "0.81"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download\.php)?\?)(\w{11}|\w{15})($|/)'
 
@@ -98,14 +98,17 @@ class MediafireCom(SimpleHoster):
 
 
     def handleFree(self):
-        passwords = self.getPassword().splitlines()
-        while self.PASSWORD_PATTERN in self.html:
-            if len(passwords):
-                password = passwords.pop(0)
+        if self.PASSWORD_PATTERN in self.html:
+            password = self.getPassword()
+
+            if password:
                 self.logInfo(_("Password protected link, trying ") + password)
                 self.html = self.load(self.url, post={"downloadp": password})
+
+                if self.PASSWORD_PATTERN in self.html:
+                    self.fail(_("Incorrect password"))
             else:
-                self.fail(_("No or incorrect password"))
+                self.fail(_("No password found"))
 
         m = re.search(r'kNO = r"(http://.*?)";', self.html)
         if m is None:

@@ -14,23 +14,24 @@ class WrongPassword(Exception):
 
 class AbtractExtractor:
     __name__    = "AbtractExtractor"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __description__ = """Abtract extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+    __authors__     = [("RaNaN", "ranan@pyload.org"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    @staticmethod
-    def checkDeps():
+    @classmethod
+    def checkDeps(cls):
         """ Check if system statisfy dependencies
         :return: boolean
         """
         return True
 
 
-    @staticmethod
-    def getTargets(files_ids):
+    @classmethod
+    def getTargets(cls, files_ids):
         """ Filter suited targets from list of filename id tuple list
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
@@ -48,14 +49,14 @@ class AbtractExtractor:
         :param overwrite: Overwrite existing archives
         :param renice: Renice value
         """
-        self.m = m
-        self.file = file
-        self.out = out
-        self.fullpath = fullpath
-        self.overwrite = overwrite
+        self.m            = m
+        self.file         = file
+        self.out          = out
+        self.fullpath     = fullpath
+        self.overwrite    = overwrite
         self.excludefiles = excludefiles
-        self.renice = renice
-        self.files = []  #: Store extracted files here
+        self.renice       = renice
+        self.files        = []  #: Store extracted files here
 
 
     def init(self):
@@ -83,7 +84,7 @@ class AbtractExtractor:
         return True
 
 
-    def extract(self, progress, password=None):
+    def extract(self, progress, password=""):
         """Extract the archive. Raise specific errors in case of failure.
 
         :param progress: Progress function, call this to update status

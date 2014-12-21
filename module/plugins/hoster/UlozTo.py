@@ -15,7 +15,7 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.00"
+    __version__ = "1.01"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
 
@@ -60,15 +60,18 @@ class UlozTo(SimpleHoster):
             self.html = self.load(pyfile.url, get={"do": "askAgeForm-submit"},
                                   post={"agree": "Confirm", "_token_": token}, cookies=True)
 
-        passwords = self.getPassword().splitlines()
-        while self.PASSWD_PATTERN in self.html:
-            if passwords:
-                password = passwords.pop(0)
+        if self.PASSWD_PATTERN in self.html:
+            password = self.getPassword()
+
+            if password:
                 self.logInfo(_("Password protected link, trying ") + password)
                 self.html = self.load(pyfile.url, get={"do": "passwordProtectedForm-submit"},
                                       post={"password": password, "password_send": 'Send'}, cookies=True)
+
+                if self.PASSWD_PATTERN in self.html:
+                    self.fail(_("Incorrect password"))
             else:
-                self.fail(_("No or incorrect password"))
+                self.fail(_("No password found"))
 
         if re.search(self.VIPLINK_PATTERN, self.html):
             self.html = self.load(pyfile.url, get={"disclaimer": "1"})

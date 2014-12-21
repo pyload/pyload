@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilepostCom(SimpleHoster):
     __name__    = "FilepostCom"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)'
 
@@ -52,17 +52,20 @@ class FilepostCom(SimpleHoster):
 
         if 'var is_pass_exists = true;' in self.html:
             # Solve password
-            for file_pass in self.getPassword().splitlines():
-                get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
-                post_dict['file_pass'] = file_pass
+            password = self.getPassword()
+
+            if password:
                 self.logInfo(_("Password protected link, trying ") + file_pass)
 
-                download_url = self.getJsonResponse(get_dict, post_dict, 'link')
-                if download_url:
-                    break
+                get_dict['JsHttpRequest'] = str(int(time() * 10000)) + '-xml'
+                post_dict['file_pass'] = file_pass
 
+                self.link = self.getJsonResponse(get_dict, post_dict, 'link')
+
+                if not self.link:
+                    self.fail(_("Incorrect password"))
             else:
-                self.fail(_("No or incorrect password"))
+                self.fail(_("No password found"))
 
         else:
             # Solve recaptcha
