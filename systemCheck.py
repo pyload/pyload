@@ -24,12 +24,17 @@ def main():
     except:
         print("py-crypto:", "missing")
 
-
     try:
         import OpenSSL
         print("OpenSSL:", OpenSSL.version.__version__)
     except:
         print("OpenSSL:", "missing")
+
+    try:
+        import passlib
+        print("passlib:", passlib.__version__)
+    except:
+        print("passlib:", "missing")
 
     try:
         import Image
