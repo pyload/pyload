@@ -3,22 +3,7 @@
 import re
 
 from module.network.RequestFactory import getURL
-from module.plugins.internal.SimpleHoster import SimpleHoster
-
-
-def getInfo(urls):
-    for url in urls:
-        fid = re.search(WebshareCz.__pattern__, url).group('ID')
-        api_data = getURL("https://webshare.cz/api/file_info/", post={'ident': fid})
-
-        if 'File not found' in api_data:
-            file_info = (url, 0, 1, url)
-        else:
-            name = re.search('<name>(.+)</name>', api_data).group(1)
-            size = re.search('<size>(.+)</size>', api_data).group(1)
-            file_info = (name, size, 2, url)
-
-        yield file_info
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class WebshareCz(SimpleHoster):
@@ -30,11 +15,22 @@ class WebshareCz(SimpleHoster):
 
     __description__ = """WebShare.cz hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("rush", "radek.senfeld@gmail.com")]
 
 
-    def handleFree(self):
-        api_data = self.load('https://webshare.cz/api/file_link/', post={'ident': self.fid})
+    def process(self, pyfile):
+        if self.premium:
+            self.handlePremium()
+        else:
+            self.handleFree()
+
+
+    def handleDownload(self, wst=None):
+        fid = re.match(self.__pattern__, self.pyfile.url).group("ID")
+        api_data = getURL('https://webshare.cz/api/file_link/',
+                          post={'ident': fid, 'wst': wst},
+                          decode=True)
 
         self.logDebug("API data: " + api_data)
 
@@ -45,18 +41,34 @@ class WebshareCz(SimpleHoster):
         self.download(m.group(1), disposition=True)
 
 
-    def getFileInfo(self):
-        self.logDebug("URL: %s" % self.pyfile.url)
+    def handleFree(self):
+        self.handleDownload()
 
-        self.fid = re.match(self.__pattern__, self.pyfile.url).group('ID')
 
-        self.load(self.pyfile.url)
-        api_data = self.load('https://webshare.cz/api/file_info/', post={'ident': self.fid})
+    def handlePremium(self):
+        self.handleDownload(wst=self.account.wst)
 
-        if 'File not found' in api_data:
-            self.offline()
-        else:
-            self.pyfile.name = re.search('<name>(.+)</name>', api_data).group(1)
-            self.pyfile.size = re.search('<size>(.+)</size>', api_data).group(1)
 
-        self.logDebug("FILE NAME: %s FILE SIZE: %s" % (self.pyfile.name, self.pyfile.size))
+    @classmethod                                                                                                                                                                
+    def getInfo(cls, url="", html=""):
+        info = SimpleHoster.getInfo(url, html)
+
+	if url:
+	    info["pattern"] = re.match(cls.__pattern__, url).groupdict()
+
+            api_data = getURL('https://webshare.cz/api/file_info/',
+                              post={'ident': info["pattern"]["ID"]},
+                              decode=True)
+
+            if 'File not found' in api_data:
+                info["status"] = 1
+            else:
+                info["status"] = 2
+                info["fileid"] = info["pattern"]["ID"]
+                info["name"] = re.search('<name>(.+)</name>', api_data).group(1)
+                info["size"] = re.search('<size>(.+)</size>', api_data).group(1)
+	    
+	return info
+
+
+getInfo = create_getInfo(WebshareCz)
