@@ -35,7 +35,7 @@ class FileserveCom(Hoster):
     __type__    = "hoster"
     __version__ = "0.52"
 
-    __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<id>[^/]+).*'
+    __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+).*'
 
     __description__ = """Fileserve.com hoster plugin"""
     __license__     = "GPLv3"
@@ -50,7 +50,7 @@ class FileserveCom(Hoster):
     LINKCHECK_TR = r'<tr>\s*(<td>http://www\.fileserve\.com/file/.*?)</tr>'
     LINKCHECK_TD = r'<td>(?:<[^>]*>|&nbsp;)*([^<]*)'
 
-    CAPTCHA_KEY_PATTERN = r'var reCAPTCHA_publickey=\'(?P<key>.+?)\''
+    CAPTCHA_KEY_PATTERN = r'var reCAPTCHA_publickey=\'(.+?)\''
     LONG_WAIT_PATTERN = r'<li class="title">You need to wait (\d+) (\w+) to start another download\.</li>'
     LINK_EXPIRED_PATTERN = r'Your download link has expired'
     DAILY_LIMIT_PATTERN = r'Your daily download limit has been reached'
@@ -59,7 +59,7 @@ class FileserveCom(Hoster):
 
     def setup(self):
         self.resumeDownload = self.multiDL = self.premium
-        self.file_id = re.match(self.__pattern__, self.pyfile.url).group('id')
+        self.file_id = re.match(self.__pattern__, self.pyfile.url).group('ID')
         self.url     = "%s%s" % (self.URLS[0], self.file_id)
 
         self.logDebug("File ID: %s URL: %s" % (self.file_id, self.url))
@@ -155,7 +155,7 @@ class FileserveCom(Hoster):
 
 
     def doCaptcha(self):
-        captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group("key")
+        captcha_key = re.search(self.CAPTCHA_KEY_PATTERN, self.html).group(1)
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):

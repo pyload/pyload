@@ -19,7 +19,7 @@ class FilefactoryCom(Account):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    VALID_UNTIL_PATTERN = r'Premium valid until: <strong>(?P<d>\d{1,2})\w{1,2} (?P<m>\w{3}), (?P<y>\d{4})</strong>'
+    VALID_UNTIL_PATTERN = r'Premium valid until: <strong>(?P<D>\d{1,2})\w{1,2} (?P<M>\w{3}), (?P<Y>\d{4})</strong>'
 
 
     def loadAccountInfo(self, user, req):
@@ -28,7 +28,7 @@ class FilefactoryCom(Account):
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m:
             premium = True
-            validuntil = re.sub(self.VALID_UNTIL_PATTERN, '\g<d> \g<m> \g<y>', m.group(0))
+            validuntil = re.sub(self.VALID_UNTIL_PATTERN, '\g<D> \g<M> \g<Y>', m.group(0))
             validuntil = mktime(strptime(validuntil, "%d %b %Y"))
         else:
             premium = False

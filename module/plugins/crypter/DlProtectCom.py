@@ -30,7 +30,7 @@ class DlProtectCom(SimpleCrypter):
         if not re.match(r"http://(?:www\.)?dl-protect\.com", self.req.http.lastEffectiveURL):
             return [self.req.http.lastEffectiveURL]
 
-        #id = re.match(self.__pattern__, self.pyfile.url).group("ID")
+        #id = re.match(self.__pattern__, self.pyfile.url).group('ID')
         key = re.search(r'name="id_key" value="(.+?)"', self.html).group(1)
 
         post_req = {"id_key": key, "submitform": ""}

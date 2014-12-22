@@ -50,7 +50,7 @@ class LetitbitNet(SimpleHoster):
     URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "letitbit.net")]
 
     SECONDS_PATTERN = r'seconds\s*=\s*(\d+);'
-    CAPTCHA_CONTROL_FIELD = r'recaptcha_control_field\s=\s\'(?P<value>.+?)\''
+    CAPTCHA_CONTROL_FIELD = r'recaptcha_control_field\s=\s\'(.+?)\''
 
 
     def setup(self):

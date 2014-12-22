@@ -41,7 +41,7 @@ class VimeoCom(SimpleHoster):
             html = self.js.eval(self.load(self.pyfile.url, get={'action': "download", 'password': password}, decode=True))
             pattern = r'href="(?P<URL>http://vimeo\.com.+?)".*?\>(?P<QL>.+?) '
         else:
-            id = re.match(self.__pattern__, self.pyfile.url).group("ID")
+            id = re.match(self.__pattern__, self.pyfile.url).group('ID')
             html = self.load("https://player.vimeo.com/video/" + id, get={'password': password})
             pattern = r'"(?P<QL>\w+)":{"profile".*?"(?P<URL>http://pdl\.vimeocdn\.com.+?)"'
 

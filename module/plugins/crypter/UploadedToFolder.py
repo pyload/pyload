@@ -12,7 +12,7 @@ class UploadedToFolder(SimpleCrypter):
     __type__    = "crypter"
     __version__ = "0.42"
 
-    __pattern__ = r'http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/(?P<id>\w+)'
+    __pattern__ = r'http://(?:www\.)?(uploaded|ul)\.(to|net)/(f|folder|list)/(?P<ID>\w+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
@@ -21,7 +21,7 @@ class UploadedToFolder(SimpleCrypter):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    PLAIN_PATTERN = r'<small class="date"><a href="(?P<plain>[\w/]+)" onclick='
+    PLAIN_PATTERN = r'<small class="date"><a href="([\w/]+)" onclick='
     NAME_PATTERN = r'<title>(?P<N>.+?)<'
 
 
@@ -30,7 +30,7 @@ class UploadedToFolder(SimpleCrypter):
         if m is None:
             self.error(_("PLAIN_PATTERN not found"))
 
-        plain_link = urljoin("http://uploaded.net/", m.group('plain'))
+        plain_link = urljoin("http://uploaded.net/", m.group(1))
         return self.load(plain_link).split('\n')[:-1]
 
 

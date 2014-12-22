@@ -19,9 +19,9 @@ class LixIn(Crypter):
     __authors__     = [("spoob", "spoob@pyload.org")]
 
 
-    CAPTCHA_PATTERN = r'<img src="(?P<image>captcha_img\.php\?.*?)"'
+    CAPTCHA_PATTERN = r'<img src="(captcha_img\.php\?.*?)"'
     SUBMIT_PATTERN = r'value=\'continue.*?\''
-    LINK_PATTERN = r'name="ifram" src="(?P<link>.*?)"'
+    LINK_PATTERN = r'name="ifram" src="(.*?)"'
 
 
     def decrypt(self, pyfile):
@@ -31,7 +31,7 @@ class LixIn(Crypter):
         if m is None:
             self.error(_("Unable to identify file ID"))
 
-        id = m.group("ID")
+        id = m.group('ID')
         self.logDebug("File id is %s" % id)
 
         self.html = self.load(url, decode=True)
@@ -46,7 +46,7 @@ class LixIn(Crypter):
                 m = re.search(self.CAPTCHA_PATTERN, self.html)
                 if m:
                     self.logDebug("Trying captcha")
-                    captcharesult = self.decryptCaptcha("http://lix.in/" + m.group("image"))
+                    captcharesult = self.decryptCaptcha("http://lix.in/" + m.group(1))
                 self.html = self.load(url, decode=True,
                                           post={"capt": captcharesult, "submit": "submit", "tiny": id})
             else:
@@ -58,5 +58,5 @@ class LixIn(Crypter):
         if m is None:
             self.error(_("Unable to find destination url"))
         else:
-            self.urls = [m.group("link")]
+            self.urls = [m.group(1)]
             self.logDebug("Found link %s, adding to package" % self.urls[0])

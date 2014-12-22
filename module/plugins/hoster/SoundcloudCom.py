@@ -25,23 +25,23 @@ class SoundcloudCom(Hoster):
         m = re.search(r'<div class="haudio.*?large.*?" data-sc-track="(?P<ID>\d*)"', page)
         songId = clientId = ""
         if m:
-            songId = m.group("ID")
+            songId = m.group('ID')
         if len(songId) <= 0:
             self.logError(_("Could not find song id"))
             self.offline()
         else:
             m = re.search(r'"clientID":"(?P<CID>.*?)"', page)
             if m:
-                clientId = m.group("CID")
+                clientId = m.group('CID')
 
             if len(clientId) <= 0:
                 clientId = "b45b1aa10f1ac2941910a7f0d10f8e28"
 
             m = re.search(r'<em itemprop="name">\s(?P<TITLE>.*?)\s</em>', page)
             if m:
-                pyfile.name = m.group("TITLE") + ".mp3"
+                pyfile.name = m.group('TITLE') + ".mp3"
             else:
-                pyfile.name = re.match(self.__pattern__, pyfile.url).group("SID") + ".mp3"
+                pyfile.name = re.match(self.__pattern__, pyfile.url).group('SID') + ".mp3"
 
             # url to retrieve the actual song url
             page = self.load("https://api.sndcdn.com/i1/tracks/%s/streams" % songId, get={"client_id": clientId})
@@ -49,7 +49,7 @@ class SoundcloudCom(Hoster):
             # for now we choose the first stream found in all cases
             # it could be improved if relevant for this hoster
             streams = [
-                (result.group("QUALITY"), result.group("URL"))
+                (result.group('QUALITY'), result.group('URL'))
                 for result in re.finditer(r'"(?P<QUALITY>.*?)":"(?P<URL>.*?)"', page)
             ]
             self.logDebug("Found Streams", streams)

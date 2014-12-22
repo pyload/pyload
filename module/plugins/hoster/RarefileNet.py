@@ -19,7 +19,7 @@ class RarefileNet(XFSHoster):
 
     HOSTER_DOMAIN = "rarefile.net"
 
-    LINK_PATTERN = r'<a href="(?P<link>[^"]+)">(?P=link)</a>'
+    LINK_PATTERN = r'<a href="(.+?)">(?P=\1)</a>'
 
 
 getInfo = create_getInfo(RarefileNet)

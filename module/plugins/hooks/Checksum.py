@@ -56,10 +56,10 @@ class Checksum(Hook):
 
 
     methods = {'sfv': 'crc32', 'crc': 'crc32', 'hash': 'md5'}
-    regexps = {'sfv': r'^(?P<name>[^;].+)\s+(?P<hash>[0-9A-Fa-f]{8})$',
-               'md5': r'^(?P<name>[0-9A-Fa-f]{32})  (?P<file>.+)$',
-               'crc': r'filename=(?P<name>.+)\nsize=(?P<size>\d+)\ncrc32=(?P<hash>[0-9A-Fa-f]{8})$',
-               'default': r'^(?P<hash>[0-9A-Fa-f]+)\s+\*?(?P<name>.+)$'}
+    regexps = {'sfv': r'^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$',
+               'md5': r'^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$',
+               'crc': r'filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$',
+               'default': r'^(?P<HASH>[0-9A-Fa-f]+)\s+\*?(?P<NAME>.+)$'}
 
 
     #@TODO: Remove in 0.4.10
@@ -179,12 +179,12 @@ class Checksum(Hook):
                 data = m.groupdict()
                 self.logDebug(link['name'], data)
 
-                local_file = fs_encode(save_join(download_folder, data['name']))
+                local_file = fs_encode(save_join(download_folder, data['NAME']))
                 algorithm = self.methods.get(file_type, file_type)
                 checksum = computeChecksum(local_file, algorithm)
-                if checksum == data['hash']:
+                if checksum == data['HASH']:
                     self.logInfo(_('File integrity of "%s" verified by %s checksum (%s)') %
-                                (data['name'], algorithm, checksum))
+                                (data['NAME'], algorithm, checksum))
                 else:
                     self.logWarning(_("%s checksum for file %s does not match (%s != %s)") %
-                                   (algorithm, data['name'], checksum, data['hash']))
+                                   (algorithm, data['NAME'], checksum, data['HASH']))

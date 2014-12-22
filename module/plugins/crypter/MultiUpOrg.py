@@ -24,7 +24,7 @@ class MultiUpOrg(SimpleCrypter):
 
 
     def getLinks(self):
-        m_type = re.match(self.__pattern__, self.pyfile.url).group("TYPE")
+        m_type = re.match(self.__pattern__, self.pyfile.url).group('TYPE')
 
         if m_type == "project":
             pattern = r'\n(http://www\.multiup\.org/(?:en|fr)/download/.*)'

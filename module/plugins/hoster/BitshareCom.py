@@ -13,7 +13,7 @@ class BitshareCom(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.51"
 
-    __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>\w+)(/(?P<name>.*?)\.html)?|\?f=(?P<id2>\w+))'
+    __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/(?P<id1>\w+)(/(?P<NAME>.*?)\.html)?|\?f=(?P<id2>\w+))'
 
     __description__ = """Bitshare.com hoster plugin"""
     __license__     = "GPLv3"
@@ -43,7 +43,7 @@ class BitshareCom(SimpleHoster):
 
         # File id
         m = re.match(self.__pattern__, pyfile.url)
-        self.file_id = max(m.group('id1'), m.group('id2'))
+        self.file_id = max(m.group('ID1'), m.group('ID2'))
         self.logDebug("File id is [%s]" % self.file_id)
 
         # Load main page
@@ -61,7 +61,7 @@ class BitshareCom(SimpleHoster):
 
         # File name
         m = re.match(self.__pattern__, pyfile.url)
-        name1 = m.group('name') if m else None
+        name1 = m.group('NAME') if m else None
         m = re.search(self.INFO_PATTERN, self.html)
         name2 = m.group('N') if m else None
         pyfile.name = max(name1, name2)

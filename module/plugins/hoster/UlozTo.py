@@ -32,10 +32,10 @@ class UlozTo(SimpleHoster):
     URL_REPLACEMENTS  = [(r"(?<=http://)([^/]+)", "www.ulozto.net")]
     SIZE_REPLACEMENTS = [('([\d.]+)\s([kMG])B', convertDecimalPrefix)]
 
-    ADULT_PATTERN   = r'<form action="(?P<link>[^\"]*)" method="post" id="frm-askAgeForm">'
+    ADULT_PATTERN   = r'<form action="([^\"]*)" method="post" id="frm-askAgeForm">'
     PASSWD_PATTERN  = r'<div class="passwordProtectedFile">'
     VIPLINK_PATTERN = r'<a href="[^"]*\?disclaimer=1" class="linkVip">'
-    TOKEN_PATTERN   = r'<input type="hidden" name="_token_" .*?value="(?P<token>.+?)"'
+    TOKEN_PATTERN   = r'<input type="hidden" name="_token_" .*?value="(.+?)"'
 
     FREE_URL_PATTERN    = r'<div class="freeDownloadForm"><form action="([^"]+)"'
     PREMIUM_URL_PATTERN = r'<div class="downloadForm"><form action="([^"]+)"'

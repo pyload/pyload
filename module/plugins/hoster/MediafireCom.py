@@ -15,23 +15,28 @@ def checkHTMLHeader(url):
     try:
         for _i in xrange(3):
             header = getURL(url, just_header=True)
+
             for line in header.splitlines():
                 line = line.lower()
+
                 if 'location' in line:
                     url = line.split(':', 1)[1].strip()
                     if 'error.php?errno=320' in url:
                         return url, 1
+
                     if not url.startswith('http://'):
                         url = 'http://www.mediafire.com' + url
+
                     break
+
                 elif 'content-disposition' in line:
                     return url, 2
             else:
                 break
     except:
         return url, 3
-
-    return url, 0
+    else:
+        return url, 0
 
 
 def getInfo(urls):
@@ -59,15 +64,11 @@ class MediafireCom(SimpleHoster):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    LINK_PATTERN = r'<div class="download_link"[^>]*(?:z-index:(?P<zindex>\d+))?[^>]*>\s*<a href="(?P<href>http://[^"]+)"'
-    JS_KEY_PATTERN = r'DoShow\(\'mfpromo1\'\);[^{]*{((\w+)=\'\';.*?)eval\(\2\);'
-    JS_ZMODULO_PATTERN = r'\(\'z-index\'\)\) \% (\d+)\)\);'
-    PAGE1_ACTION_PATTERN = r'<link rel="canonical" href="([^"]+)"/>'
-    PASSWORD_PATTERN = r'<form name="form_password"'
-
-    NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>[^"]+)"/>'
-    INFO_PATTERN = r'oFileSharePopup\.ald\(\'(?P<ID>[^\']*)\',\'(?P<N>[^\']*)\',\'(?P<S>[^\']*)\',\'\',\'(?P<sha256>[^\']*)\'\)'
+    NAME_PATTERN    = r'<META NAME="description" CONTENT="(?P<N>[^"]+)"/>'
+    INFO_PATTERN    = r'oFileSharePopup\.ald\(\'(?P<ID>[^\']*)\',\'(?P<N>[^\']*)\',\'(?P<S>[^\']*)\',\'\',\'(?P<sha256>[^\']*)\'\)'
     OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
+
+    PASSWORD_PATTERN = r'<form name="form_password"'
 
 
     def setup(self):
@@ -77,11 +78,11 @@ class MediafireCom(SimpleHoster):
     def process(self, pyfile):
         pyfile.url = re.sub(r'/view/?\?', '/?', pyfile.url)
 
-        self.url, result = checkHTMLHeader(pyfile.url)
-        self.logDebug("Location (%d): %s" % (result, self.url))
+        self.link, result = checkHTMLHeader(pyfile.url)
+        self.logDebug("Location (%d): %s" % (result, self.link))
 
         if result == 0:
-            self.html = self.load(self.url, decode=True)
+            self.html = self.load(self.link, decode=True)
             self.checkCaptcha()
             self.multiDL = True
             self.check_data = self.getFileInfo()
@@ -94,7 +95,7 @@ class MediafireCom(SimpleHoster):
             self.offline()
         else:
             self.multiDL = True
-            self.download(self.url, disposition=True)
+            self.download(self.link, disposition=True)
 
 
     def handleFree(self):
@@ -103,7 +104,7 @@ class MediafireCom(SimpleHoster):
 
             if password:
                 self.logInfo(_("Password protected link, trying ") + password)
-                self.html = self.load(self.url, post={"downloadp": password})
+                self.html = self.load(self.link, post={"downloadp": password})
 
                 if self.PASSWORD_PATTERN in self.html:
                     self.fail(_("Incorrect password"))
@@ -121,7 +122,7 @@ class MediafireCom(SimpleHoster):
     def checkCaptcha(self):
         solvemedia = SolveMedia(self)
         challenge, response = solvemedia.challenge()
-        self.html = self.load(self.url,
+        self.html = self.load(self.link,
                               post={'adcopy_challenge': challenge,
                                     'adcopy_response' : response},
                               decode=True)

@@ -16,7 +16,7 @@ class RelinkUs(Crypter):
     __type__    = "crypter"
     __version__ = "3.11"
 
-    __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<id>.+)'
+    __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<ID>.+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
@@ -50,9 +50,9 @@ class RelinkUs(Crypter):
     DLC_LINK_REGEX = r'<a href=".*?" class="dlc_button" target="_blank">'
     DLC_DOWNLOAD_URL = r'http://www.relink.us/download.php'
 
-    WEB_FORWARD_REGEX = r'getFile\(\'(?P<link>.+)\'\)'
+    WEB_FORWARD_REGEX = r'getFile\(\'(.+)\'\)'
     WEB_FORWARD_URL = r'http://www.relink.us/frame.php'
-    WEB_LINK_REGEX = r'<iframe name="Container" height="100%" frameborder="no" width="100%" src="(?P<link>.+)"></iframe>'
+    WEB_LINK_REGEX = r'<iframe name="Container" height="100%" frameborder="no" width="100%" src="(.+)"></iframe>'
 
 
     def setup(self):
@@ -100,7 +100,7 @@ class RelinkUs(Crypter):
 
 
     def initPackage(self, pyfile):
-        self.fileid = re.match(self.__pattern__, pyfile.url).group('id')
+        self.fileid = re.match(self.__pattern__, pyfile.url).group('ID')
         self.package = pyfile.package()
         self.password = self.getPassword()
 
@@ -241,7 +241,7 @@ class RelinkUs(Crypter):
                 self.logDebug("Decrypting Web link %d, %s" % (index + 1, url))
 
                 res  = self.load(url, decode=True)
-                link = re.search(self.WEB_LINK_REGEX, res).group('link')
+                link = re.search(self.WEB_LINK_REGEX, res).group(1)
 
                 package_links.append(link)
 

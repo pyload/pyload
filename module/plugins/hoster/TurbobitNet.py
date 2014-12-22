@@ -35,7 +35,7 @@ class TurbobitNet(SimpleHoster):
     SIZE_PATTERN = r'class="file-size">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
 
-    LINK_PATTERN = r'(?P<url>/download/redirect/[^"\']+)'
+    LINK_PATTERN = r'(/download/redirect/[^"\']+)'
     LIMIT_WAIT_PATTERN = r'<div id=\'timeout\'>(\d+)<'
 
     CAPTCHA_PATTERN = r'<img alt="Captcha" src="(.+?)"'
@@ -166,7 +166,7 @@ class TurbobitNet(SimpleHoster):
         m = re.search(self.LINK_PATTERN, self.html)
         if m is None:
             self.error(_("Download link not found"))
-        self.url = "http://turbobit.net" + m.group('url')
+        self.url = "http://turbobit.net" + m.group(1)
         self.download(self.url)
 
 

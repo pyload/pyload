@@ -15,7 +15,7 @@ def getInfo(urls):
     request = {"fields": "access_error,status,title"}
 
     for url in urls:
-        id   = regex.match(url).group("ID")
+        id   = regex.match(url).group('ID')
         page = getURL(apiurl % id, get=request)
         info = json_loads(page)
 
@@ -60,8 +60,8 @@ class DailymotionCom(Hoster):
 
         for result in re.finditer(r"\"(?P<URL>http:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF>.*?)\\.*?)\"",
                                   self.html):
-            url = result.group("URL")
-            qf  = result.group("QF")
+            url = result.group('URL')
+            qf  = result.group('QF')
 
             link    = url.replace("\\", "")
             quality = tuple(int(x) for x in qf.split("x"))
@@ -116,7 +116,7 @@ class DailymotionCom(Hoster):
     def process(self, pyfile):
         self.checkInfo(pyfile)
 
-        id = re.match(self.__pattern__, pyfile.url).group("ID")
+        id = re.match(self.__pattern__, pyfile.url).group('ID')
         self.html = self.load("http://www.dailymotion.com/embed/video/" + id, decode=True)
 
         streams = self.getStreams()

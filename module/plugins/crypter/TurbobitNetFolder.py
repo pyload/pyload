@@ -39,7 +39,7 @@ class TurbobitNetFolder(SimpleCrypter):
 
 
     def getLinks(self):
-        id = re.match(self.__pattern__, self.pyfile.url).group("ID")
+        id = re.match(self.__pattern__, self.pyfile.url).group('ID')
         fixurl = lambda id: "http://turbobit.net/%s.html" % id
         return map(fixurl, self._getLinks(id))
 

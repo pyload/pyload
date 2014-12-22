@@ -18,7 +18,7 @@ class LinkSaveIn(SimpleCrypter):
     __type__    = "crypter"
     __version__ = "2.02"
 
-    __pattern__ = r'http://(?:www\.)?linksave\.in/(?P<id>\w+)$'
+    __pattern__ = r'http://(?:www\.)?linksave\.in/(?P<ID>\w+)$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
@@ -44,7 +44,7 @@ class LinkSaveIn(SimpleCrypter):
     def decrypt(self, pyfile):
         # Init
         self.package = pyfile.package()
-        self.fileid = re.match(self.__pattern__, pyfile.url).group('id')
+        self.fileid = re.match(self.__pattern__, pyfile.url).group('ID')
 
         # Request package
         self.html = self.load(pyfile.url)

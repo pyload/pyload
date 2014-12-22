@@ -25,7 +25,7 @@ class RyushareCom(XFSHoster):
 
     HOSTER_DOMAIN = "ryushare.com"
 
-    WAIT_PATTERN = r'You have to wait ((?P<hour>\d+) hour[s]?, )?((?P<min>\d+) minute[s], )?(?P<sec>\d+) second[s]'
+    WAIT_PATTERN = r'You have to wait ((?P<H>\d+) hour[s]?, )?((?P<M>\d+) minute[s], )?(?P<S>\d+) second[s]'
 
     LINK_PATTERN = r'<a href="([^"]+)">Click here to download<'
 
@@ -49,7 +49,7 @@ class RyushareCom(XFSHoster):
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
             wait = m.groupdict(0)
-            waittime = int(wait['hour']) * 60 * 60 + int(wait['min']) * 60 + int(wait['sec'])
+            waittime = int(wait['H']) * 60 * 60 + int(wait['M']) * 60 + int(wait['S'])
             self.setWait(waittime, True)
             retry = True
 
