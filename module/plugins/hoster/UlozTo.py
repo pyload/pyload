@@ -17,27 +17,28 @@ class UlozTo(SimpleHoster):
     __type__    = "hoster"
     __version__ = "1.01"
 
-    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<id>\w+/[^/?]*)'
+    __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
 
     __description__ = """Uloz.to hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    INFO_PATTERN = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'
-    NAME_PATTERN = r'<title>(?P<N>[^<]+) \| Uloz\.to</title>'
-    SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
+    INFO_PATTERN    = r'<p>File <strong>(?P<N>[^<]+)</strong> is password protected</p>'
+    NAME_PATTERN    = r'<title>(?P<N>[^<]+) \| Uloz\.to</title>'
+    SIZE_PATTERN    = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
+    URL_REPLACEMENTS  = [(r"(?<=http://)([^/]+)", "www.ulozto.net")]
     SIZE_REPLACEMENTS = [('([\d.]+)\s([kMG])B', convertDecimalPrefix)]
-    URL_REPLACEMENTS = [(r"(?<=http://)([^/]+)", "www.ulozto.net")]
 
-    ADULT_PATTERN = r'<form action="(?P<link>[^\"]*)" method="post" id="frm-askAgeForm">'
-    PASSWD_PATTERN = r'<div class="passwordProtectedFile">'
+    ADULT_PATTERN   = r'<form action="(?P<link>[^\"]*)" method="post" id="frm-askAgeForm">'
+    PASSWD_PATTERN  = r'<div class="passwordProtectedFile">'
     VIPLINK_PATTERN = r'<a href="[^"]*\?disclaimer=1" class="linkVip">'
-    FREE_URL_PATTERN = r'<div class="freeDownloadForm"><form action="([^"]+)"'
+    TOKEN_PATTERN   = r'<input type="hidden" name="_token_" .*?value="(?P<token>.+?)"'
+
+    FREE_URL_PATTERN    = r'<div class="freeDownloadForm"><form action="([^"]+)"'
     PREMIUM_URL_PATTERN = r'<div class="downloadForm"><form action="([^"]+)"'
-    TOKEN_PATTERN = r'<input type="hidden" name="_token_" id="[^\"]*" value="(?P<token>.+?)"'
 
 
     def setup(self):
