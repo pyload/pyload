@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __pattern__ = r'^unmatchable$'
 
@@ -238,7 +238,7 @@ class XFSHoster(SimpleHoster):
             elif 'maintenance' in self.errmsg or 'maintainance' in self.errmsg:
                 self.tempOffline()
 
-            elif 'download files up to' in self.errmsg:
+            elif 'up to' in self.errmsg:
                 self.fail(_("File too large for free download"))
 
             else:
