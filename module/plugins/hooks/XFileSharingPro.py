@@ -8,10 +8,10 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __config__ = [("activated", "bool", "Activated", True),
-                  ("use_hoster_list", "bool", "Load listed hosters only", True),
+                  ("use_hoster_list", "bool", "Load listed hosters only", False),
                   ("use_crypter_list", "bool", "Load listed crypters only", False),
                   ("use_builtin_list", "bool", "Load built-in plugin list", True),
                   ("hoster_list", "str", "Hoster list (comma separated)", ""),
@@ -30,7 +30,7 @@ class XFileSharingPro(Hook):
 
     HOSTER_LIST  = [#WORKING HOSTERS:
                     "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com", "filevice.com", "hostingbulk.com",
-                    "ravishare.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
+                    "ravishare.com", "salefiles.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
                     #NOT TESTED:
                     "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
                     "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
@@ -80,7 +80,10 @@ class XFileSharingPro(Hook):
                 match_list = '|'.join(sorted(plugin_list))
 
                 len_match_list = len(plugin_list)
-                self.logInfo(_("Handling %d %s%s: %s") % (len_match_list,  type, "" if len_match_list is 1 else "s", match_list.replace('|', ', ')))
+                self.logInfo(_("Handling %d %s%s: %s") % (len_match_list,
+                                                          type,
+                                                          "" if len_match_list is 1 else "s",
+                                                          match_list.replace('|', ', ')))
 
                 pattern = self.regexp[type][1] % match_list.replace('.', '\.')
 
@@ -98,6 +101,31 @@ class XFileSharingPro(Hook):
 
 
     def unload(self):
+        # self.unloadHoster("BasePlugin")
         for type, plugin in (("hoster",  "XFileSharingPro"),
                              ("crypter", "XFileSharingProFolder")):
             self._unload(type, plugin)
+
+
+    def unloadHoster(self, hoster):
+        hdict = self.core.pluginManager.hosterPlugins[hoster]
+        if "new_name" in hdict and hdict['new_name'] is "XFileSharingPro":
+            if "module" in hdict:
+                del hdict['module']
+
+            if "new_module" in hdict:
+                del hdict['new_module']
+                del hdict['new_name']
+
+            return True
+        else:
+            return False
+
+
+    # def downloadFailed(self, pyfile):
+        # if pyfile.pluginname is "BasePlugin" \
+           # and pyfile.hasStatus("failed") \
+           # and not self.getConfig("use_hoster_list") \
+           # and self.unloadHoster("BasePlugin"):
+            # self.logDebug("Unloaded XFileSharingPro from BasePlugin")
+            # pyfile.setStatus("queued")
