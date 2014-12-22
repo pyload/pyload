@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DebridItaliaCom(SimpleHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
 
@@ -22,7 +22,7 @@ class DebridItaliaCom(SimpleHoster):
 
 
     def setup(self):
-        self.chunkLimit     = -1
+        self.chunkLimit     = 1
         self.resumeDownload = True
 
 
