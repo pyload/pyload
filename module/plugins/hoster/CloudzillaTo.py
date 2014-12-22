@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class CloudzillaTo(SimpleHoster):
     __name__    = "CloudzillaTo"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/file/(?P<ID>[\w^_]+)'
 
@@ -37,7 +37,7 @@ class CloudzillaTo(SimpleHoster):
 
 
     def handlePremium(self):
-        return handleFree(self):
+        return self.handleFree()
 
 
 getInfo = create_getInfo(CloudzillaTo)
