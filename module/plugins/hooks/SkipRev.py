@@ -1,16 +1,24 @@
 # -*- coding: utf-8 -*-
 
+from types import MethodType
 from urllib import unquote
 from urlparse import urlparse
 
+from module.PyFile import PyFile
 from module.plugins.Hook import Hook
 from module.plugins.Plugin import SkipDownload
+
+
+def _setup(self):
+    self.pyfile.plugin._setup()
+    if self.pyfile.hasStatus("skipped"):
+        raise SkipDownload(self.pyfile.self.statusname or self.pyfile.pluginname)
 
 
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.17"
+    __version__ = "0.20"
 
     __config__ = [("tokeep", "int", "Number of rev files to keep for package (-1 to auto)", -1)]
 
@@ -24,13 +32,7 @@ class SkipRev(Hook):
         pass
 
 
-    def _setup(self):
-        super(self.pyfile.plugin, self).setup()
-        if self.pyfile.hasStatus("skipped"):
-            raise SkipDownload(self.pyfile.getStatusName() or self.pyfile.pluginname)
-
-
-    def pyname(self, pyfile):
+    def _pyname(self, pyfile):
         url    = pyfile.url
         plugin = pyfile.plugin
 
@@ -50,21 +52,35 @@ class SkipRev(Hook):
         return name
 
 
+    def _pyfile(self, link):
+        return PyFile(self.core.files,
+                      link.fid,
+                      link.url,
+                      link.name,
+                      link.size,
+                      link.status,
+                      link.error,
+                      link.plugin,
+                      link.packageID,
+                      link.order)
+
+
     def downloadPreparing(self, pyfile):
-        if pyfile.getStatusName() is "unskipped" or not self.pyname(pyfile).endswith(".rev"):
+        if pyfile.statusname is "unskipped" or not self._pyname(pyfile).endswith(".rev"):
             return
 
         tokeep = self.getConfig("tokeep")
 
         if tokeep:
             saved = [True for link in self.core.api.getPackageData(pyfile.packageid).links \
-                     if link.name.endswith(".rev") and (link.hasStatus("finished") or link.hasStatus("downloading"))].count(True)
+                     if link.name.endswith(".rev") and link.status in (0, 12)].count(True)
 
             if not saved or saved < tokeep:  #: keep one rev at least in auto mode
                 return
 
         pyfile.setCustomStatus("SkipRev", "skipped")
-        pyfile.plugin.setup = _setup  #: work-around: inject status checker inside the preprocessing routine of the plugin
+        pyfile.plugin._setup = pyfile.plugin.setup
+        pyfile.plugin.setup  = MethodType(_setup, pyfile.plugin)  #: work-around: inject status checker inside the preprocessing routine of the plugin
 
 
     def downloadFailed(self, pyfile):
@@ -74,9 +90,14 @@ class SkipRev(Hook):
             return
 
         for link in self.core.api.getPackageData(pyfile.packageid).links:
-            if link.hasStatus("skipped") and link.name.endswith(".rev"):
+            if link.status is 4 and link.name.endswith(".rev"):
+                pylink = self._pyfile(link)
+
                 if tokeep > -1 or pyfile.name.endswith(".rev"):
-                    link.setStatus("queued")
+                    pylink.setStatus("queued")
                 else:
-                    link.setCustomStatus("unskipped", "queued")
+                    pylink.setCustomStatus("unskipped", "queued")
+
+                self.core.files.save()
+                pylink.release()
                 return
