@@ -368,7 +368,6 @@ class SimpleHoster(Hoster):
 
         if self.multihost and not self.link and not self.lastDownload:
             self.logDebug("Looking for leeched download link...")
-            self.logDebug("File url: %s" % pyfile.url)
             self.handleMulti()
 
             if not self.link and not self.lastDownload:
@@ -451,8 +450,8 @@ class SimpleHoster(Hoster):
             self.tempOffline()
 
         elif status is not 2:
-            self.logDebug(_("File status: %s") % statusMap[status],
-                          _("File info: %s")   % self.info)
+            self.logDebug("File status: %s" % statusMap[status],
+                          "File info: %s"   % self.info)
 
 
     def checkNameSize(self):
@@ -496,9 +495,9 @@ class SimpleHoster(Hoster):
 
 
     def updateInfo(self, info):
-        self.logDebug(_("File info (before update): %s") % self.info)
+        self.logDebug(_("File info (BEFORE): %s") % self.info)
         self.info.update(info)
-        self.logDebug(_("File info (after update): %s")  % self.info)
+        self.logDebug(_("File info (AFTER): %s")  % self.info)
 
 
     def handleDirect(self):
