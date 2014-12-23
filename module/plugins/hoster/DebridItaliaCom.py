@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class DebridItaliaCom(MultiHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
 
@@ -37,7 +37,8 @@ class DebridItaliaCom(MultiHoster):
 
             self.html = self.load("http://debriditalia.com/linkgen2.php",
                                   post={'xjxfun'   : "convertiLink",
-                                        'xjxargs[]': "S<![CDATA[%s]]>" % self.pyfile.url})
+                                        'xjxargs[]': "S<![CDATA[%s]]>" % self.pyfile.url,
+                                        'xjxargs[]': "S%s" % self.getPassword()})
 
             self.link = re.search(r'<a href="(.+?)"', self.html).group(1)
 
