@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class CloudzillaTo(SimpleHoster):
     __name__    = "CloudzillaTo"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/file/(?P<ID>[\w^_]+)'
 
@@ -20,6 +20,17 @@ class CloudzillaTo(SimpleHoster):
     INFO_PATTERN    = r'title="(?P<N>.+?)">\1</span> <span class="size">\((?P<S>[\d.]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'>File not found...<'
 
+    PASSWORD_PATTERN = r'<div id="pwd_protected">'
+
+
+    def checkErrors(self):
+        m = re.search(self.PASSWORD_PATTERN, self.html)
+        if m:
+            self.html = self.load(self.pyfile.url, get={'key': self.getPassword()})
+
+        if re.search(self.PASSWORD_PATTERN, self.html):
+            self.retry(reason="Wrong password")
+
 
     def handleFree(self):
         self.html = self.load("http://www.cloudzilla.to/generateticket/",
@@ -30,7 +41,10 @@ class CloudzillaTo(SimpleHoster):
         self.logDebug(ticket)
 
         if 'error' in ticket:
-            self.fail(ticket['error'])
+            if "File is password protected" in ticket['error']:
+                self.retry(reason="Wrong password")
+            else:
+                self.fail(ticket['error'])
 
         if 'wait' in ticket:
             self.wait(int(ticket['wait']), int(ticket['wait']) > 5)
