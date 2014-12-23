@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class PremiumizeMe(MultiHook):
     __name__    = "PremiumizeMe"
     __type__    = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
@@ -30,7 +30,7 @@ class PremiumizeMe(MultiHook):
 
         # Get supported hosters list from premiumize.me using the
         # json API v1 (see https://secure.premiumize.me/?show=api)
-        answer = getURL("https://api.premiumize.me/pm-api/v1.php"
+        answer = getURL("https://api.premiumize.me/pm-api/v1.php",
                         get={'method': "hosterlist", 'params[login]': user, 'params[pass]': data['password']})
         data = json_loads(answer)
 
