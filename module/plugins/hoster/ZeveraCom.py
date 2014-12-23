@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class ZeveraCom(MultiHoster):
     __name__    = "ZeveraCom"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __pattern__ = r'http://(?:www\.)?zevera\.com/.*'
 
@@ -21,7 +21,7 @@ class ZeveraCom(MultiHoster):
         self.chunkLimit     = 1
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         if self.account.getAPIData(self.req, cmd="checklink", olink=self.pyfile.url) != "Alive":
             self.fail(_("Offline or not downloadable"))
 

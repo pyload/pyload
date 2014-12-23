@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class SimplydebridCom(MultiHoster):
     __name__    = "SimplydebridCom"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php/*'
 
@@ -23,7 +23,7 @@ class SimplydebridCom(MultiHoster):
         self.chunkLimit     = 1
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         #fix the links for simply-debrid.com!
         self.link = self.pyfile.url
         self.link = self.link.replace("clz.to", "cloudzer.net/file")

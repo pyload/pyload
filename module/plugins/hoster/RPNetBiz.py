@@ -9,7 +9,7 @@ from module.common.json_layer import json_loads
 class RPNetBiz(MultiHoster):
     __name__    = "RPNetBiz"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """RPNet.biz hoster plugin"""
     __license__     = "GPLv3"
@@ -23,7 +23,7 @@ class RPNetBiz(MultiHoster):
         self.resumeDownload = True
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         user, data = self.account.selectAccount()
 
         self.logDebug("Original URL: %s" % self.pyfile.url)

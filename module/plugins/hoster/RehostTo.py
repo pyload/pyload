@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class RehostTo(MultiHoster):
     __name__    = "RehostTo"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = r'https?://.*rehost\.to\..*'
 
@@ -26,7 +26,7 @@ class RehostTo(MultiHoster):
         self.resumeDownload = True
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         data = self.account.getAccountInfo(self.user)
         long_ses = data['long_ses']
 

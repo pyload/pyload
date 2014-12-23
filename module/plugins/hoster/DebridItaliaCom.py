@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class DebridItaliaCom(MultiHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
 
@@ -26,7 +26,7 @@ class DebridItaliaCom(MultiHoster):
         self.resumeDownload = True
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         self.html = self.load("http://www.debriditalia.com/api.php",
                               get={'generate': "on", 'link': self.pyfile.url, 'p': self.getPassword()})
 

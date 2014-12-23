@@ -29,7 +29,7 @@ def secondsToMidnight(gmt=0):
 class UnrestrictLi(MultiHoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(unrestrict|unr)\.li'
 
@@ -43,7 +43,7 @@ class UnrestrictLi(MultiHoster):
         self.resumeDownload = True
 
 
-    def handleMulti(self):
+    def handleFree(self):
         for _i in xrange(5):
             page = self.load('https://unrestrict.li/unrestrict.php',
                              post={'link': self.pyfile.url, 'domain': 'long'})

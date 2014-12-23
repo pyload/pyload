@@ -14,7 +14,7 @@ from module.utils import parseFileSize
 class RealdebridCom(MultiHoster):
     __name__    = "RealdebridCom"
     __type__    = "hoster"
-    __version__ = "0.57"
+    __version__ = "0.58"
 
     __pattern__ = r'https?://(?:[^/]*\.)?real-debrid\..*'
 
@@ -38,7 +38,7 @@ class RealdebridCom(MultiHoster):
         self.resumeDownload = True
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         data = json_loads(self.load("https://real-debrid.com/ajax/unrestrict.php",
                                     get={'lang'    : "en",
                                          'link'    : quote(self.pyfile.url, ""),

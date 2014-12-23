@@ -13,7 +13,7 @@ from module.utils import fs_encode
 class PremiumTo(MultiHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'https?://(?:www\.)?premium\.to/.*'
 
@@ -29,7 +29,7 @@ class PremiumTo(MultiHoster):
         self.chunkLimit     = 1
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         tra = self.getTraffic()
 
         #raise timeout to 2min

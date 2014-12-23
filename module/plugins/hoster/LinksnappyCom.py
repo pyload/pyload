@@ -11,7 +11,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class LinksnappyCom(MultiHoster):
     __name__    = "LinksnappyCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'https?://(?:[^/]*\.)?linksnappy\.com'
 
@@ -28,7 +28,7 @@ class LinksnappyCom(MultiHoster):
         self.resumeDownload = True
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         host = self._get_host(self.pyfile.url)
         json_params = json_dumps({'link': self.pyfile.url,
                                   'type': host,

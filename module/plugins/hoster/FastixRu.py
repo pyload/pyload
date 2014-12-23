@@ -12,7 +12,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class FastixRu(MultiHoster):
     __name__    = "FastixRu"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>\w{24})'
 
@@ -36,7 +36,7 @@ class FastixRu(MultiHoster):
         self.resumeDownload = True
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         api_key = self.account.getAccountData(self.user)
         api_key = api_key['api']
 

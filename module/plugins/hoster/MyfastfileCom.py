@@ -9,7 +9,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class MyfastfileCom(MultiHoster):
     __name__    = "MyfastfileCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
 
@@ -23,7 +23,7 @@ class MyfastfileCom(MultiHoster):
         self.resumeDownload = True
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         self.logDebug("Original URL: %s" % self.pyfile.url)
 
         page = self.load('http://myfastfile.com/api.php',

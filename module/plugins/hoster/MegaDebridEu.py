@@ -11,7 +11,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class MegaDebridEu(MultiHoster):
     __name__    = "MegaDebridEu"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
 
     __pattern__ = r'^https?://(?:w{3}\d+\.mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[^/]+/.+$'
 
@@ -30,7 +30,7 @@ class MegaDebridEu(MultiHoster):
             return ""
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         if not self.connectToApi():
             self.exitOnFail("Unable to connect to Mega-debrid.eu")
 

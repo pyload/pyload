@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __pattern__ = r'^unmatchable$'
 
@@ -18,9 +18,6 @@ class MultiHoster(SimpleHoster):
 
 
     DIRECT_LINK   = True
-    MULTI_HOSTER  = True
-    LOGIN_ACCOUNT = True
-    LOGIN_PREMIUM = False
 
 
     def setup(self):
@@ -28,36 +25,34 @@ class MultiHoster(SimpleHoster):
         self.multiDL    = self.premium
 
 
-    def prepare(self):
-        self.info      = {}
-        self.link      = ""
-        self.multihost = False
+    def process(self, pyfile):
+        self.prepare()
 
-        self.req.setOption("timeout", 120)
+        if self.directDL:
+            self.logDebug("Looking for direct download link...")
+            self.handleDirect()
 
-        if isinstance(self.COOKIES, list):
-            set_cookies(self.req.cj, self.COOKIES)
+        if not self.link and not self.lastDownload:
+            self.preload()
 
-        if self.DIRECT_LINK is None:
-            self.directDL = bool(self.account)
-        else:
-            self.directDL = self.DIRECT_LINK
-
-        if (self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
-            or re.match(self.__pattern__, self.pyfile.url) is None):
-
-            if self.LOGIN_ACCOUNT and not self.account:
-                self.logError(_("Required account not found"))
-
-            elif self.LOGIN_PREMIUM and not self.premium:
-                self.logError(_("Required premium account not found"))
+            if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
+                self.logDebug("Handled as premium download")
+                self.handlePremium()
 
             else:
-                self.multihost = True
+                self.logDebug("Handled as free download")
+                self.handleFree()
 
-        self.pyfile.url = replace_patterns(self.pyfile.url,
-                                           self.FILE_URL_REPLACEMENTS if hasattr(self, "FILE_URL_REPLACEMENTS") else self.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
+        self.downloadLink(self.link)
+        self.checkFile()
 
 
-    def handleMulti(self):
-        raise NotImplementedError
+    def handlePremium(self):
+        return self.handleFree()
+
+
+    def handleFree(self):
+        if self.premium:
+            raise NotImplementedError
+        else:
+            self.logError(_("Required account not found"))

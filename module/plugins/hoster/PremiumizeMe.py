@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class PremiumizeMe(MultiHoster):
     __name__    = "PremiumizeMe"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
 
@@ -16,7 +16,7 @@ class PremiumizeMe(MultiHoster):
     __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         # In some cases hostsers do not supply us with a filename at download, so we
         # are going to set a fall back filename (e.g. for freakshare or xfileshare)
         self.pyfile.name = self.pyfile.name.split('/').pop()  # Remove everthing before last slash

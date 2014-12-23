@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class AlldebridCom(MultiHoster):
     __name__    = "AlldebridCom"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __pattern__ = r'https?://(?:[^/]*\.)?alldebrid\..*'
 
@@ -37,7 +37,7 @@ class AlldebridCom(MultiHoster):
         self.resumeDownload = True
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         password = self.getPassword()
 
         data = json_loads(self.load("http://www.alldebrid.com/service.php",

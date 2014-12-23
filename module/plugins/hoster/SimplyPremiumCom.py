@@ -11,7 +11,7 @@ from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 class SimplyPremiumCom(MultiHoster):
     __name__    = "SimplyPremiumCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'https?://.*(simply-premium)\.com'
 
@@ -25,7 +25,7 @@ class SimplyPremiumCom(MultiHoster):
         self.resumeDownload = False
 
 
-    def handleMulti(self):
+    def handlePremium(self):
         for i in xrange(5):
             page = self.load("http://www.simply-premium.com/premium.php", get={'info': "", 'link': self.pyfile.url})
             self.logDebug("JSON data: " + page)
