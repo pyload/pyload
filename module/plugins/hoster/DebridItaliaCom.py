@@ -34,13 +34,13 @@ class DebridItaliaCom(MultiHoster):
             self.link = self.html.strip()
         else:
             errmsg = re.search(r'ERROR:(.*)', self.html).group(1).strip()
-            
+
             self.html = self.load("http://debriditalia.com/linkgen2.php",
                                   post={'xjxfun'   : "convertiLink",
                                         'xjxargs[]': "S<![CDATA[%s]]>" % self.pyfile.url})
 
             self.link = re.search(r'<a href="(.+?)"', self.html).group(1)
-              
+
         if not self.link:
             self.fail(errmsg)
 

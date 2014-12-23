@@ -12,7 +12,7 @@ from module.utils import parseFileSize
 class CzshareCom(SimpleHoster):
     __name__    = "CzshareCom"
     __type__    = "hoster"
-    __version__ = "0.95"
+    __version__ = "0.96"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).*'
 
@@ -21,21 +21,21 @@ class CzshareCom(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
-    SIZE_PATTERN = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[\d .,]+)(?P<U>[\w^_]+)\s*</div>'
+    NAME_PATTERN    = r'<div class="tab" id="parameters">\s*<p>\s*Cel. n.zev: <a href=[^>]*>(?P<N>[^<]+)</a>'
+    SIZE_PATTERN    = r'<div class="tab" id="category">(?:\s*<p>[^\n]*</p>)*\s*Velikost:\s*(?P<S>[\d .,]+)(?P<U>[\w^_]+)\s*</div>'
     OFFLINE_PATTERN = r'<div class="header clearfix">\s*<h2 class="red">'
 
     SIZE_REPLACEMENTS = [(' ', '')]
-    URL_REPLACEMENTS = [(r'http://[^/]*/download.php\?.*?id=(\w+).*', r'http://sdilej.cz/\1/x/')]
+    URL_REPLACEMENTS  = [(r'http://[^/]*/download.php\?.*?id=(\w+).*', r'http://sdilej.cz/\1/x/')]
 
-    FORCE_CHECK_TRAFFIC = True
+    CHECK_TRAFFIC = True
 
-    FREE_URL_PATTERN = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
-    FREE_FORM_PATTERN = r'<form action="download\.php" method="post">\s*<img src="captcha\.php" id="captcha" />(.*?)</form>'
+    FREE_URL_PATTERN     = r'<a href="([^"]+)" class="page-download">[^>]*alt="([^"]+)" /></a>'
+    FREE_FORM_PATTERN    = r'<form action="download\.php" method="post">\s*<img src="captcha\.php" id="captcha" />(.*?)</form>'
     PREMIUM_FORM_PATTERN = r'<form action="/profi_down\.php" method="post">(.*?)</form>'
-    FORM_INPUT_PATTERN = r'<input[^>]* name="([^"]+)" value="([^"]+)"[^>]*/>'
-    MULTIDL_PATTERN = r'<p><font color=\'red\'>Z[^<]*PROFI.</font></p>'
-    USER_CREDIT_PATTERN = r'<div class="credit">\s*kredit: <strong>([\d .,]+)(\w+)</strong>\s*</div><!-- .credit -->'
+    FORM_INPUT_PATTERN   = r'<input[^>]* name="([^"]+)" value="([^"]+)"[^>]*/>'
+    MULTIDL_PATTERN      = r'<p><font color=\'red\'>Z[^<]*PROFI.</font></p>'
+    USER_CREDIT_PATTERN  = r'<div class="credit">\s*kredit: <strong>([\d .,]+)(\w+)</strong>\s*</div><!-- .credit -->'
 
 
     def checkTrafficLeft(self):

@@ -23,8 +23,8 @@ class TusfilesNet(XFSHoster):
 
 
     def setup(self):
-        self.multiDL = False
-        self.chunkLimit = -1
+        self.multiDL        = False
+        self.chunkLimit     = -1
         self.resumeDownload = True
 
 

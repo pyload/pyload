@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class RarefileNet(XFSHoster):
     __name__    = "RarefileNet"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'
 
@@ -19,7 +19,7 @@ class RarefileNet(XFSHoster):
 
     HOSTER_DOMAIN = "rarefile.net"
 
-    LINK_PATTERN = r'<a href="(.+?)">(?P=\1)</a>'
+    LINK_PATTERN = r'<a href="(.+?)">\1</a>'
 
 
 getInfo = create_getInfo(RarefileNet)

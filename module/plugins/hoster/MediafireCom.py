@@ -54,7 +54,7 @@ def getInfo(urls):
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.81"
+    __version__ = "0.82"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download\.php)?\?)(\w{11}|\w{15})($|/)'
 
@@ -65,7 +65,7 @@ class MediafireCom(SimpleHoster):
 
 
     NAME_PATTERN    = r'<META NAME="description" CONTENT="(?P<N>[^"]+)"/>'
-    INFO_PATTERN    = r'oFileSharePopup\.ald\(\'(?P<ID>[^\']*)\',\'(?P<N>[^\']*)\',\'(?P<S>[^\']*)\',\'\',\'(?P<sha256>[^\']*)\'\)'
+    INFO_PATTERN    = r'oFileSharePopup\.ald\(\'(?P<ID>[^\']*)\',\'(?P<N>[^\']*)\',\'(?P<S>[^\']*)\',\'\',\'(?P<H>[^\']*)\'\)'
     OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>'
 
     PASSWORD_PATTERN = r'<form name="form_password"'

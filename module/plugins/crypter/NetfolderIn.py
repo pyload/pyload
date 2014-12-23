@@ -10,7 +10,7 @@ class NetfolderIn(SimpleCrypter):
     __type__    = "crypter"
     __version__ = "0.72"
 
-    __pattern__ = r'http://(?:www\.)?netfolder\.in/((?P<id1>\w+)/\w+|folder\.php\?folder_id=(?P<id2>\w+))'
+    __pattern__ = r'http://(?:www\.)?netfolder\.in/(folder\.php\?folder_id=)?(?P<ID>\w+)(?(1)|/\w+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
@@ -43,8 +43,8 @@ class NetfolderIn(SimpleCrypter):
     def submitPassword(self):
         # Gather data
         try:
-            m = re.match(self.__pattern__, self.pyfile.url)
-            id = max(m.group('id1'), m.group('id2'))
+            m  = re.match(self.__pattern__, self.pyfile.url)
+            id = m.group('ID')
         except AttributeError:
             self.logDebug("Unable to get package id from url [%s]" % self.pyfile.url)
             return

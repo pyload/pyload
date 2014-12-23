@@ -22,7 +22,7 @@ def getInfo(urls):
 class MegaRapidCz(SimpleHoster):
     __name__    = "MegaRapidCz"
     __type__    = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
 
@@ -38,7 +38,7 @@ class MegaRapidCz(SimpleHoster):
     SIZE_PATTERN = r'<td class="i">Velikost:</td>\s*<td class="h"><strong>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong></td>'
     OFFLINE_PATTERN = ur'Nastala chyba 404|Soubor byl smazán'
 
-    FORCE_CHECK_TRAFFIC = True
+    CHECK_TRAFFIC = True
 
     LINK_PATTERN = r'<a href="([^"]+)" title="Stahnout">([^<]+)</a>'
     ERR_LOGIN_PATTERN = ur'<div class="error_div"><strong>Stahování je přístupné pouze přihlášeným uživatelům'

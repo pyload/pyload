@@ -155,7 +155,7 @@ def _isDirectLink(self, url, resumable=True):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.77"
+    __version__ = "0.78"
 
     __pattern__ = r'^unmatchable$'
 
@@ -214,9 +214,9 @@ class SimpleHoster(Hoster):
 
     TEXT_ENCODING       = False  #: Set to True or encoding name if encoding value in http header is not correct
     COOKIES             = True   #: or False or list of tuples [(domain, name, value)]
-    FORCE_CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
-    CHECK_DIRECT_LINK   = None   #: Set to True to check for direct link, set to None to do it only if self.account is True
-    MULTI_HOSTER        = False  #: Set to True to leech other hoster link (according its multihoster hook if available)
+    CHECK_TRAFFIC       = False  #: Set to True to force checking traffic left for premium account
+    DIRECT_LINK         = None   #: Set to True to looking for direct link (as defined in handleDirect method), set to None to do it if self.account is True else False
+    MULTI_HOSTER        = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
 
 
     @classmethod
@@ -334,17 +334,13 @@ class SimpleHoster(Hoster):
         if (self.MULTI_HOSTER
             and (self.__pattern__ != self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
                  or re.match(self.__pattern__, self.pyfile.url) is None)):
+            self.multihost = True
+            return
 
-            self.logInfo("Multi hoster detected")
-
-            if self.account:
-                self.multihost = True
-                return
-            else:
-                self.fail(_("Only registered or premium users can use url leech feature"))
-
-        if self.CHECK_DIRECT_LINK is None:
+        if self.DIRECT_LINK is None:
             self.directDL = bool(self.account)
+        else:
+            self.directDL = self.DIRECT_LINK
 
         self.pyfile.url = replace_patterns(self.pyfile.url,
                                            self.FILE_URL_REPLACEMENTS if hasattr(self, "FILE_URL_REPLACEMENTS") else self.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
@@ -360,16 +356,20 @@ class SimpleHoster(Hoster):
     def process(self, pyfile):
         self.prepare()
 
-        if self.multihost:
+        if self.directDL:
+            self.logDebug("Looking for direct download link...")
+            self.handleDirect()
+
+        if self.multihost and not self.link and not self.lastDownload:
             self.logDebug("Looking for leeched download link...")
             self.logDebug("File url: %s" % pyfile.url)
             self.handleMulti()
 
-        elif self.directDL:
-            self.logDebug("Looking for direct download link...")
-            self.handleDirect()
+            if not self.link and not self.lastDownload:
+                self.MULTI_HOSTER = False
+                self.retry(1, reason="Multi hoster fails")
 
-        if not self.link:
+        if not self.link and not self.lastDownload:
             self.preload()
 
             if self.html is None:
@@ -390,7 +390,7 @@ class SimpleHoster(Hoster):
 
             self.checkErrors()
 
-            if self.premium and (not self.FORCE_CHECK_TRAFFIC or self.checkTrafficLeft()):
+            if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as premium download")
                 self.handlePremium()
 

@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __pattern__ = r'^unmatchable$'
 
@@ -142,6 +142,9 @@ class XFSHoster(SimpleHoster):
 
 
     def handleMulti(self):
+        if not self.account:
+            self.fail(_("Only registered or premium users can use url leech feature"))
+
         #only tested with easybytez.com
         self.html = self.load("http://www.%s/" % self.HOSTER_DOMAIN)
 
