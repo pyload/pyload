@@ -2,13 +2,13 @@
 
 from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class MegaDebridEu(MultiHoster):
+class MegaDebridEu(MultiHook):
     __name__    = "MegaDebridEu"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __config__ = [("unloadFailing", "bool", "Revert to standard download if download fails", False)]
 

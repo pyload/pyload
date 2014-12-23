@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class RehostTo(MultiHoster):
+class RehostTo(MultiHook):
     __name__    = "RehostTo"
     __type__    = "hook"
-    __version__ = "0.43"
+    __version__ = "0.44"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
@@ -38,4 +38,4 @@ class RehostTo(MultiHoster):
         self.ses = data['ses']
         self.long_ses = data['long_ses']
 
-        return MultiHoster.coreReady(self)
+        return MultiHook.coreReady(self)

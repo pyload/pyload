@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class OverLoadMe(MultiHoster):
+class OverLoadMe(MultiHook):
     __name__    = "OverLoadMe"
     __type__    = "hook"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __config__ = [("https", "bool", "Enable HTTPS", True),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),

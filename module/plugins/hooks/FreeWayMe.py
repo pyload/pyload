@@ -1,13 +1,13 @@
 ﻿# -*- coding: utf-8 -*-
 
 from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class FreeWayMe(MultiHoster):
+class FreeWayMe(MultiHook):
     __name__    = "FreeWayMe"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),

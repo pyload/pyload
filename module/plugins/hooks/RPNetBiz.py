@@ -2,13 +2,13 @@
 
 from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class RPNetBiz(MultiHoster):
+class RPNetBiz(MultiHook):
     __name__    = "RPNetBiz"
     __type__    = "hook"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),
@@ -49,4 +49,4 @@ class RPNetBiz(MultiHoster):
             return
 
         # Run the overwriten core ready which actually enables the multihoster hook
-        return MultiHoster.coreReady(self)
+        return MultiHook.coreReady(self)

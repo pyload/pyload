@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class RealdebridCom(MultiHoster):
+class RealdebridCom(MultiHook):
     __name__    = "RealdebridCom"
     __type__    = "hook"
-    __version__ = "0.43"
+    __version__ = "0.44"
 
     __config__ = [("https", "bool", "Enable HTTPS", False),
                   ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),

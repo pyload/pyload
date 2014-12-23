@@ -3,13 +3,13 @@
 import re
 
 from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class DebridItaliaCom(MultiHoster):
+class DebridItaliaCom(MultiHook):
     __name__    = "DebridItaliaCom"
     __type__    = "hook"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),

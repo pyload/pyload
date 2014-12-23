@@ -2,13 +2,13 @@
 
 from module.common.json_layer import json_loads
 from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class MyfastfileCom(MultiHoster):
+class MyfastfileCom(MultiHook):
     __name__    = "MyfastfileCom"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", ""),

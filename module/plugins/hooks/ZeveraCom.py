@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class ZeveraCom(MultiHoster):
+class ZeveraCom(MultiHook):
     __name__    = "ZeveraCom"
     __type__    = "hook"
     __version__ = "0.02"

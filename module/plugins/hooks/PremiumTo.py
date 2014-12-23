@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class PremiumTo(MultiHoster):
+class PremiumTo(MultiHook):
     __name__    = "PremiumTo"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]
@@ -34,4 +34,4 @@ class PremiumTo(MultiHoster):
             self.logError(_("Please add your premium.to account first and restart pyLoad"))
             return
 
-        return MultiHoster.coreReady(self)
+        return MultiHook.coreReady(self)
