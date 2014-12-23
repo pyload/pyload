@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
@@ -44,11 +44,11 @@ class XFSAccount(Account):
 
 
     def init(self):
-        # if not self.HOSTER_DOMAIN:
-            # self.fail(_("Missing HOSTER_DOMAIN"))
+        if not self.HOSTER_DOMAIN:
+            self.logError(_("Missing HOSTER_DOMAIN"))
 
         if not self.HOSTER_URL:
-            self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN
+            self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN or ""
 
 
     def loadAccountInfo(self, user, req):
