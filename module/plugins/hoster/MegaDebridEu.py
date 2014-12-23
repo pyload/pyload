@@ -5,13 +5,13 @@ import re
 from urllib import unquote_plus
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class MegaDebridEu(SimpleHoster):
+class MegaDebridEu(MultiHoster):
     __name__    = "MegaDebridEu"
     __type__    = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.42"
 
     __pattern__ = r'^https?://(?:w{3}\d+\.mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[^/]+/.+$'
 
@@ -19,8 +19,6 @@ class MegaDebridEu(SimpleHoster):
     __license__     = "GPLv3"
     __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 
-
-    MULTI_HOSTER = True
 
     API_URL = "https://www.mega-debrid.eu/api.php"
 

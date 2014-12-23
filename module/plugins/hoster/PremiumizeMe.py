@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class PremiumizeMe(SimpleHoster):
+class PremiumizeMe(MultiHoster):
     __name__    = "PremiumizeMe"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.coreReady
 
     __description__ = """Premiumize.me hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
-
-
-    MULTI_HOSTER = True
 
 
     def handleMulti(self):

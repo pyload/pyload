@@ -5,13 +5,13 @@ import re
 from urlparse import urlsplit
 
 from module.common.json_layer import json_loads, json_dumps
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class LinksnappyCom(SimpleHoster):
+class LinksnappyCom(MultiHoster):
     __name__    = "LinksnappyCom"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'https?://(?:[^/]*\.)?linksnappy\.com'
 
@@ -19,8 +19,6 @@ class LinksnappyCom(SimpleHoster):
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
-
-    MULTI_HOSTER = True
 
     SINGLE_CHUNK_HOSTERS = ('easybytez.com')
 

@@ -6,23 +6,20 @@ from random import randrange
 from urllib import unquote
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 from module.utils import parseFileSize
 
 
-class AlldebridCom(SimpleHoster):
+class AlldebridCom(MultiHoster):
     __name__    = "AlldebridCom"
     __type__    = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
 
     __pattern__ = r'https?://(?:[^/]*\.)?alldebrid\..*'
 
     __description__ = """Alldebrid.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Andy Voigt", "spamsales@online.de")]
-
-
-    MULTI_HOSTER = True
 
 
     def getFilename(self, url):

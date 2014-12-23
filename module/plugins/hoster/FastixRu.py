@@ -6,22 +6,19 @@ from random import randrange
 from urllib import unquote
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class FastixRu(SimpleHoster):
+class FastixRu(MultiHoster):
     __name__    = "FastixRu"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?fastix\.(ru|it)/file/(?P<ID>\w{24})'
 
     __description__ = """Fastix hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
-
-
-    MULTI_HOSTER = True
 
 
     def getFilename(self, url):

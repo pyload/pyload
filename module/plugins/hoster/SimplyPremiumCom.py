@@ -4,23 +4,20 @@ import re
 
 from datetime import datetime, timedelta
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 
 
-class SimplyPremiumCom(SimpleHoster):
+class SimplyPremiumCom(MultiHoster):
     __name__    = "SimplyPremiumCom"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'https?://.*(simply-premium)\.com'
 
     __description__ = """Simply-Premium.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
-
-
-    MULTI_HOSTER = True
 
 
     def setup(self):

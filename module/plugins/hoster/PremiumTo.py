@@ -6,14 +6,14 @@ from os import remove
 from os.path import exists
 from urllib import quote
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 from module.utils import fs_encode
 
 
-class PremiumTo(SimpleHoster):
+class PremiumTo(MultiHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'https?://(?:www\.)?premium\.to/.*'
 
@@ -22,9 +22,6 @@ class PremiumTo(SimpleHoster):
     __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
-
-
-    MULTI_HOSTER = True
 
 
     def setup(self):

@@ -2,23 +2,20 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 from module.common.json_layer import json_loads
 
 
-class RPNetBiz(SimpleHoster):
+class RPNetBiz(MultiHoster):
     __name__    = "RPNetBiz"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """RPNet.biz hoster plugin"""
     __license__     = "GPLv3"
 
     __pattern__ = r'https?://.*rpnet\.biz'
     __authors__     = [("Dman", "dmanugm@gmail.com")]
-
-
-    MULTI_HOSTER = True
 
 
     def setup(self):

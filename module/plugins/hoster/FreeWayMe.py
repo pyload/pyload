@@ -1,21 +1,18 @@
 ﻿# -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class FreeWayMe(SimpleHoster):
+class FreeWayMe(MultiHoster):
     __name__    = "FreeWayMe"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'https://(?:www\.)?free-way\.me/.*'
 
     __description__ = """FreeWayMe hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Nicolas Giese", "james@free-way.me")]
-
-
-    MULTI_HOSTER = True
 
 
     def setup(self):

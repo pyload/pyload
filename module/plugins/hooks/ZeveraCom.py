@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class ZeveraCom(MultiHook):
     __name__    = "ZeveraCom"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("hosterList", "str", "Hoster list (comma separated)", "")]

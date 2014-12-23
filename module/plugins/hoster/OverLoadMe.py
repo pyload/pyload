@@ -6,23 +6,20 @@ from random import randrange
 from urllib import unquote
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 from module.utils import parseFileSize
 
 
-class OverLoadMe(SimpleHoster):
+class OverLoadMe(MultiHoster):
     __name__    = "OverLoadMe"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'https?://.*overload\.me.*'
 
     __description__ = """Over-Load.me hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("marley", "marley@over-load.me")]
-
-
-    MULTI_HOSTER = True
 
 
     def getFilename(self, url):

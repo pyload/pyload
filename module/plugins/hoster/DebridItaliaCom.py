@@ -2,13 +2,13 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class DebridItaliaCom(SimpleHoster):
+class DebridItaliaCom(MultiHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
 
@@ -18,7 +18,7 @@ class DebridItaliaCom(SimpleHoster):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    MULTI_HOSTER = True
+    URL_REPLACEMENTS = [("https://", "http://")]
 
 
     def setup(self):
@@ -27,13 +27,22 @@ class DebridItaliaCom(SimpleHoster):
 
 
     def handleMulti(self):
-        html = self.load("http://www.debriditalia.com/api.php",
-                         get={'generate': "on", 'link': self.pyfile.url, 'p': self.getPassword()})
+        self.html = self.load("http://www.debriditalia.com/api.php",
+                              get={'generate': "on", 'link': self.pyfile.url, 'p': self.getPassword()})
 
-        if "ERROR:" in html:
-            self.fail(re.search(r'ERROR:(.*)', html).group(1).strip())
+        if "ERROR:" not in self.html:
+            self.link = self.html.strip()
+        else:
+            errmsg = re.search(r'ERROR:(.*)', self.html).group(1).strip()
+            
+            self.html = self.load("http://debriditalia.com/linkgen2.php",
+                                  post={'xjxfun'   : "convertiLink",
+                                        'xjxargs[]': "S<![CDATA[%s]]>" % self.pyfile.url})
 
-        self.link = html.strip()
+            self.link = re.search(r'<a href="(.+?)"', self.html).group(1)
+              
+        if not self.link:
+            self.fail(errmsg)
 
 
 getInfo = create_getInfo(DebridItaliaCom)

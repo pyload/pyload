@@ -2,22 +2,19 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class SimplydebridCom(SimpleHoster):
+class SimplydebridCom(MultiHoster):
     __name__    = "SimplydebridCom"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php/*'
 
     __description__ = """Simply-debrid.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
-
-
-    MULTI_HOSTER = True
 
 
     def setup(self):

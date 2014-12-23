@@ -7,23 +7,20 @@ from urllib import quote, unquote
 from time import time
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 from module.utils import parseFileSize
 
 
-class RealdebridCom(SimpleHoster):
+class RealdebridCom(MultiHoster):
     __name__    = "RealdebridCom"
     __type__    = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.57"
 
     __pattern__ = r'https?://(?:[^/]*\.)?real-debrid\..*'
 
     __description__ = """Real-Debrid.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
-
-
-    MULTI_HOSTER = True
 
 
     def getFilename(self, url):

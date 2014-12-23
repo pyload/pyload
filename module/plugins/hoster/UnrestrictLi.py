@@ -5,7 +5,7 @@ import re
 from datetime import datetime, timedelta
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
 def secondsToMidnight(gmt=0):
@@ -26,19 +26,16 @@ def secondsToMidnight(gmt=0):
     return int(res)
 
 
-class UnrestrictLi(SimpleHoster):
+class UnrestrictLi(MultiHoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(unrestrict|unr)\.li'
 
     __description__ = """Unrestrict.li hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
-
-
-    MULTI_HOSTER = True
 
 
     def setup(self):

@@ -3,22 +3,19 @@
 import re
 
 from module.common.json_layer import json_loads
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class MyfastfileCom(SimpleHoster):
+class MyfastfileCom(MultiHoster):
     __name__    = "MyfastfileCom"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
 
     __description__ = """Myfastfile.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
-
-
-    MULTI_HOSTER = True
 
 
     def setup(self):

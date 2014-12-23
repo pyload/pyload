@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class ZeveraCom(SimpleHoster):
+class ZeveraCom(MultiHoster):
     __name__    = "ZeveraCom"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __pattern__ = r'http://(?:www\.)?zevera\.com/.*'
 
     __description__ = """Zevera.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
-
-
-    MULTI_HOSTER = True
 
 
     def setup(self):
