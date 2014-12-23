@@ -12,7 +12,7 @@ from module.plugins.Plugin import SkipDownload
 def _setup(self):
     self.pyfile.plugin._setup()
     if self.pyfile.hasStatus("skipped"):
-        raise SkipDownload(self.pyfile.self.statusname or self.pyfile.pluginname)
+        raise SkipDownload(self.pyfile.statusname or self.pyfile.pluginname)
 
 
 class SkipRev(Hook):
