@@ -125,29 +125,34 @@ def timestamp():
 
 
 #@TODO: Move to hoster class in 0.4.10
-def _isDirectLink(self, url, resumable=True):
-    header = self.load(url, ref=True, just_header=True, decode=True)
+def _isDirectLink(self, url, resumable=False):
+    link = ""
 
-    if not 'location' in header or not header['location']:
-        return ""
+    for i in xrange(5 if resumable else 1):
+        header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
 
-    location = header['location']
+        if 'content-disposition' in header:
+            link = url
 
-    resumable = False  #@NOTE: Testing...
+        elif 'location' in header and header['location']:
+            location = header['location']
 
-    if resumable:  #: sometimes http code may be wrong...
-        if 'location' in self.load(location, ref=True, cookies=True, just_header=True, decode=True):
-            return ""
+            if not urlparse(location).scheme:
+                p = urlparse(url)
+                base = "%s://%s" % (p.scheme, p.netloc)
+                location = urljoin(base, location)
+
+            if 'code' in header and header['code'] == 302:
+                link = location
+
+            elif resumable:
+                url = location
+                self.logDebug("Redirect #%d to: %s" % (++i, location))
+                continue
+
+        break
     else:
-        if not 'code' in header or header['code'] != 302:
-            return ""
-
-    if urlparse(location).scheme:
-        link = location
-    else:
-        p = urlparse(url)
-        base = "%s://%s" % (p.scheme, p.netloc)
-        link = urljoin(base, location)
+        self.logError(_("Too many redirects"))
 
     return link
 
@@ -155,7 +160,7 @@ def _isDirectLink(self, url, resumable=True):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.78"
+    __version__ = "0.79"
 
     __pattern__ = r'^unmatchable$'
 
@@ -355,6 +360,7 @@ class SimpleHoster(Hoster):
 
     def process(self, pyfile):
         self.prepare()
+        self.checkInfo()
 
         if self.directDL:
             self.logDebug("Looking for direct download link...")
@@ -371,31 +377,14 @@ class SimpleHoster(Hoster):
 
         if not self.link and not self.lastDownload:
             self.preload()
+            self.checkInfo()
 
             if self.html is None:
                 self.fail(_("No html retrieved"))
 
-            self.updateInfo(self.getInfo(pyfile.url, self.html))
-
-            self.checkNameSize()
-
-            if hasattr(self, 'PREMIUM_ONLY_PATTERN'):
-                premium_only = re.search(self.PREMIUM_ONLY_PATTERN, self.html)
-            else:
-                premium_only = False
-
-            #: Usually premium only pages doesn't show any file information
-            if not premium_only:
-                self.checkStatus()
-
-            self.checkErrors()
-
             if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as premium download")
                 self.handlePremium()
-
-            elif premium_only:
-                self.fail(_("Link require a premium account to be handled"))
 
             else:
                 self.logDebug("Handled as free download")
@@ -432,6 +421,9 @@ class SimpleHoster(Hoster):
 
 
     def checkErrors(self):
+        if hasattr(self, 'PREMIUM_ONLY_PATTERN') and self.premium and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
+            self.fail(_("Link require a premium account to be handled"))
+
         if hasattr(self, 'ERROR_PATTERN'):
             m = re.search(self.ERROR_PATTERN, self.html)
             if m:
@@ -459,9 +451,8 @@ class SimpleHoster(Hoster):
             self.tempOffline()
 
         elif status is not 2:
-            self.logInfo(_("File status: %s") % statusMap[status],
-                         _("File info: %s")   % self.info)
-            self.error(_("No file info retrieved"))
+            self.logDebug(_("File status: %s") % statusMap[status],
+                          _("File info: %s")   % self.info)
 
 
     def checkNameSize(self):
@@ -484,9 +475,14 @@ class SimpleHoster(Hoster):
 
 
     def checkInfo(self):
-        self.checkErrors()
+        self.updateInfo(self.getInfo(self.pyfile.url, self.html))
 
-        self.updateInfo(self.getInfo(self.pyfile.url, self.html or ""))
+        self.checkNameSize()
+
+        if self.html:
+            self.checkErrors()
+
+        self.updateInfo(self.getInfo(self.pyfile.url, self.html))
 
         self.checkNameSize()
         self.checkStatus()
@@ -512,9 +508,6 @@ class SimpleHoster(Hoster):
             self.logInfo(_("Direct download link detected"))
 
             self.link = link
-
-            self.updateInfo(self.getInfo(self.pyfile.url))
-            self.checkNameSize()
         else:
             self.logDebug(_("Direct download link not found"))
 
