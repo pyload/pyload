@@ -15,7 +15,7 @@ from module.plugins.Hook import Hook
 class ExpertDecoders(Hook):
     __name__    = "ExpertDecoders"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __config__ = [("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Access key", "")]
@@ -97,7 +97,7 @@ class ExpertDecoders(Hook):
             try:
                 res = getURL(self.API_URL,
                              post={'action': "refund", 'key': self.getConfig("passkey"), 'gen_task_id': task.data['ticket']})
-                self.logInfo(_("Request refund", res)
+                self.logInfo(_("Request refund"), res)
 
             except BadHeader, e:
                 self.logError(_("Could not send refund request"), e)
