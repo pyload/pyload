@@ -18,7 +18,7 @@ def _setup(self):
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __config__ = [("tokeep", "int", "Number of rev files to keep for package (-1 to auto)", -1)]
 
@@ -72,7 +72,7 @@ class SkipRev(Hook):
         tokeep = self.getConfig("tokeep")
 
         if tokeep:
-            saved = [True for link in self.core.api.getPackageData(pyfile.packageid).links \
+            saved = [True for link in self.core.api.getPackageData(pyfile.package().id).links \
                      if link.name.endswith(".rev") and link.status in (0, 12)].count(True)
 
             if not saved or saved < tokeep:  #: keep one rev at least in auto mode
@@ -84,12 +84,17 @@ class SkipRev(Hook):
 
 
     def downloadFailed(self, pyfile):
+        #: Check if pyfile is still "failed",
+        #  maybe might has been restarted in meantime
+        if pyfile.status != 8:
+            return
+
         tokeep = self.getConfig("tokeep")
 
         if not tokeep:
             return
 
-        for link in self.core.api.getPackageData(pyfile.packageid).links:
+        for link in self.core.api.getPackageData(pyfile.package().id).links:
             if link.status is 4 and link.name.endswith(".rev"):
                 pylink = self._pyfile(link)
 
