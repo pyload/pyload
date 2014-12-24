@@ -16,13 +16,13 @@ setup(
 
     version=pyload.__version__,
 
-    description='Fast, lightweight and full featured download manager',
+    description=pyload.__description__,
 
     long_description=open(path.join(PROJECT_DIR, "README.md")).read(),
 
-    keywords=["pyload", "download-manager", "one-click-hoster", "download", "jdownloader"],
+    keywords=["pyload", "download", "download-manager", "downloader", "jdownloader", "pycurl", "one-click-hoster"],
 
-    url="http://pyload.org",
+    url=pyload.__website__,
 
     download_url="https://github.com/pyload/pyload/releases",
 
@@ -44,7 +44,7 @@ setup(
 
     include_package_data=True,
 
-    exclude_package_data={'pyload': ["docs*", "locale*", "tools*"]},  #: exluced from build but not from sdist
+    exclude_package_data={'pyload': ["docs*", "locale*", "tests*"]},  #: exluced from build but not from sdist
 
     install_requires=[
         "Beaker >= 1.6",

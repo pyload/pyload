@@ -27,7 +27,11 @@ __status__      = {1: "Planning",
                    6: "Mature",
                    7: "Inactive"}[__status_code__]  #: PyPI Development Status Classifiers
 
-__license__ = "GNU Affero General Public License v3"
+__description__ = "Fast, lightweight and full featured download manager"
+
+__license__ = "GNU General Public License v3"
+
+__website__ = "http://pyload.org"
 
 __authors__ = [("Marius"        , "mkaay@mkaay.de"        ),
                ("RaNaN"         , "Mast3rRaNaN@hotmail.de"),
