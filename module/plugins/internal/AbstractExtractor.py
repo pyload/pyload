@@ -8,18 +8,21 @@ class CRCError(Exception):
     pass
 
 
-class WrongPassword(Exception):
+class PasswordError(Exception):
     pass
 
 
 class AbtractExtractor:
     __name__    = "AbtractExtractor"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """Abtract extractor plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "ranan@pyload.org"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    EXTENSIONS = []
 
 
     @classmethod
@@ -31,15 +34,26 @@ class AbtractExtractor:
 
 
     @classmethod
+    def isArchive(cls, file):
+        raise NotImplementedError
+
+
+    @classmethod
     def getTargets(cls, files_ids):
         """ Filter suited targets from list of filename id tuple list
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
-        raise NotImplementedError
+        targets = []
+
+        for file, id in files_ids:
+            if cls.isArchive(file):
+                targets.append((file, id))
+
+        return targets
 
 
-    def __init__(self, m, file, out, fullpath, overwrite, excludefiles, renice):
+    def __init__(self, m, file, out, password, fullpath, overwrite, excludefiles, renice, delete, keepbroken):
         """Initialize extractor for specific file
 
         :param m: ExtractArchive Hook plugin
@@ -52,10 +66,13 @@ class AbtractExtractor:
         self.m            = m
         self.file         = file
         self.out          = out
+        self.password     = password
         self.fullpath     = fullpath
         self.overwrite    = overwrite
         self.excludefiles = excludefiles
         self.renice       = renice
+        self.delete       = delete
+        self.keepbroken   = keepbroken
         self.files        = []  #: Store extracted files here
 
 
@@ -64,36 +81,50 @@ class AbtractExtractor:
         pass
 
 
-    def checkArchive(self):
+    def verify(self):
         """Check if password if needed. Raise ArchiveError if integrity is
         questionable.
 
-        :return: boolean
         :raises ArchiveError
         """
-        return False
+        pass
 
 
-    def checkPassword(self, password):
+    def isPassword(self, password):
         """ Check if the given password is/might be correct.
         If it can not be decided at this point return true.
 
         :param password:
         :return: boolean
         """
-        return True
+        if isinstance(password, basestring):
+            return True
+        else:
+            return False
 
 
-    def extract(self, progress, password=""):
+    def setPassword(self, password):
+        if self.isPassword(password):
+            self.password = password
+            return True
+        else:
+            return False
+
+
+    def repair(self):
+        return False
+
+
+    def extract(self, progress=lambda x: None):
         """Extract the archive. Raise specific errors in case of failure.
 
         :param progress: Progress function, call this to update status
-        :param password password to use
-        :raises WrongPassword
+        :raises PasswordError
         :raises CRCError
         :raises ArchiveError
         :return:
         """
+        self.setPassword(password)
         raise NotImplementedError
 
 
