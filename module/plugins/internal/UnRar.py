@@ -8,7 +8,7 @@ from os.path import basename, dirname, join
 from string import digits
 from subprocess import Popen, PIPE
 
-from module.plugins.internal.AbstractExtractor import AbtractExtractor, PasswordError, ArchiveError, CRCError
+from module.plugins.internal.AbstractExtractor import AbtractExtractor, ArchiveError, CRCError, PasswordError
 from module.utils import save_join, decode
 
 

@@ -58,7 +58,7 @@ from module.utils import save_join, uniqify
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.00"
+    __version__ = "1.01"
 
     __config__ = [("activated"    , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"     , "bool"  , "Extract full path"                         , True                                                                     ),
@@ -135,7 +135,7 @@ class ExtractArchive(Hook):
             self.logInfo(_("Package %s queued for later extracting") % pypack.name)
             self.queue.append(pid)
         else:
-            self.manager.startThread(self.extract, [pid])
+            self.extractPackage(pid)
 
 
     @threaded
@@ -239,6 +239,7 @@ class ExtractArchive(Hook):
                             new_files = None
 
                         if new_files is None:
+                            self.logWarning(basename(target), _("No files extracted"))
                             success = False
                             continue
 
@@ -263,6 +264,12 @@ class ExtractArchive(Hook):
                     self.manager.dispatchEvent("package_extract_failed", p)
             else:
                 self.logInfo(_("No files found to extract"))
+
+            if not matched or not success and subfolder:
+                try:
+                    os.rmdir(out)
+                except OSError:
+                    pass
 
         return True if not failed else False
 

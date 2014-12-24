@@ -5,7 +5,7 @@ from __future__ import with_statement
 import sys
 import zipfile
 
-from module.plugins.internal.AbstractExtractor import AbtractExtractor, PasswordError, ArchiveError, CRCError
+from module.plugins.internal.AbstractExtractor import AbtractExtractor, ArchiveError, CRCError, PasswordError
 
 
 class UnZip(AbtractExtractor):
