@@ -7,7 +7,7 @@ from module.plugins.Hook import Hook
 class UnSkipOnFail(Hook):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
