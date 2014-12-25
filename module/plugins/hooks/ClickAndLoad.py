@@ -52,7 +52,7 @@ def forward(source, destination):
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("extern", "bool", "Allow external link adding", False)]
@@ -61,11 +61,6 @@ class ClickAndLoad(Hook):
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.de"),
                        ("mkaay", "mkaay@mkaay.de")]
-
-
-    #@TODO: Remove in 0.4.10
-    def initPeriodical(self):
-        pass
 
 
     def coreReady(self):
