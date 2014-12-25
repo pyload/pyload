@@ -52,7 +52,7 @@ class UnSkipOnFail(Hook):
             self.logInfo(_("No duplicates found"))
 
 
-   def findDuplicate(self, pyfile):
+    def findDuplicate(self, pyfile):
         """ Search all packages for duplicate links to "pyfile".
             Duplicates are links that would overwrite "pyfile".
             To test on duplicity the package-folder and link-name
