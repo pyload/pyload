@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class DebridItaliaCom(MultiHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
 
@@ -33,17 +33,16 @@ class DebridItaliaCom(MultiHoster):
         if "ERROR:" not in self.html:
             self.link = self.html.strip()
         else:
-            errmsg = re.search(r'ERROR:(.*)', self.html).group(1).strip()
+            self.info['error'] = re.search(r'ERROR:(.*)', self.html).group(1).strip()
 
             self.html = self.load("http://debriditalia.com/linkgen2.php",
                                   post={'xjxfun'   : "convertiLink",
                                         'xjxargs[]': "S<![CDATA[%s]]>" % self.pyfile.url,
                                         'xjxargs[]': "S%s" % self.getPassword()})
-
-            self.link = re.search(r'<a href="(.+?)"', self.html).group(1)
-
-        if not self.link:
-            self.fail(errmsg)
+            try:
+                self.link = re.search(r'<a href="(.+?)"', self.html).group(1)
+            except AttributeError:
+                pass
 
 
 getInfo = create_getInfo(DebridItaliaCom)
