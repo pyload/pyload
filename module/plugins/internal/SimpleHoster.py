@@ -160,7 +160,7 @@ def _isDirectLink(self, url, resumable=False):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.80"
+    __version__ = "0.81"
 
     __pattern__ = r'^unmatchable$'
 
@@ -233,13 +233,24 @@ class SimpleHoster(Hoster):
 
     @classmethod
     def getInfo(cls, url="", html=""):
-        info = {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3, 'url': url}
+        info   = {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3, 'url': url}
+        online = False
+
+        try:
+            info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: pattern groups will be saved here, please save api stuff to info['api']
+        except Exception:
+            pass
 
         if not html:
             try:
                 if not url:
                     info['error']  = "missing url"
                     info['status'] = 1
+                    raise
+
+                if _isDirectLink(url):
+                    info['error']  = "direct link"
+                    info['status'] = 2
                     raise
 
                 try:
@@ -261,8 +272,6 @@ class SimpleHoster(Hoster):
             except:
                 return info
 
-        online = False
-
         if hasattr(cls, "OFFLINE_PATTERN") and re.search(cls.OFFLINE_PATTERN, html):
             info['status'] = 1
 
@@ -273,9 +282,7 @@ class SimpleHoster(Hoster):
             info['status'] = 6
 
         else:
-            try:
-                info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: pattern groups will be saved here, please save api stuff to info['api']
-            except:
+            if not 'pattern' in info:
                 info['pattern'] = {}
 
             for pattern in ("FILE_INFO_PATTERN", "INFO_PATTERN",
@@ -381,7 +388,7 @@ class SimpleHoster(Hoster):
             if self.html is None:
                 self.fail(_("No html retrieved"))
 
-            if self.premium and not self.CHECK_TRAFFIC or self.checkTrafficLeft():
+            if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as premium download")
                 self.handlePremium()
 
