@@ -16,7 +16,7 @@ class RealdebridCom(MultiHoster):
     __type__    = "hoster"
     __version__ = "0.59"
 
-    __pattern__ = r'https?://(?:[^/]+\.)?real-debrid\..*'
+    __pattern__ = r'https?://(?:[^/]+\.)?real-debrid\..+'
 
     __description__ = """Real-Debrid.com hoster plugin"""
     __license__     = "GPLv3"

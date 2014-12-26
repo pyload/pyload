@@ -6,40 +6,57 @@ from module.plugins.Account import Account
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __description__ = """Share-online.biz account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("mkaay", "mkaay@mkaay.de"),
-                       ("zoidberg", "zoidberg@mujmail.cz")]
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    def getUserAPI(self, user, req):
-        return req.load("http://api.share-online.biz/account.php",
-                        get={"username": user, "password": self.accounts[user]['password'], 'act': "userDetails"})
+    def api_response(self, user, req):
+        return req.load("http://api.share-online.biz/cgi-bin",
+                        get={'q': "userdetails", 'aux': "traffic", "username": user, "password": self.accounts[user]['password']})
 
 
     def loadAccountInfo(self, user, req):
-        html = self.getUserAPI(user, req)
+        premium     = False
+        validuntil  = None
+        trafficleft = -1
+        maxtraffic  = 100 * 1024 * 1024 * 1024  #: 100 GB
 
-        info = {}
-        for line in html.splitlines():
+        api = {}
+        for line in self.api_response(user, req).splitlines():
             if "=" in line:
                 key, value = line.split("=")
-                info[key] = value
-        self.logDebug(info)
+                api[key] = value
 
-        if "dl" in info and info['dl'].lower() != "not_available":
-            req.cj.setCookie("share-online.biz", "dl", info['dl'])
-        if "a" in info and info['a'].lower() != "not_available":
-            req.cj.setCookie("share-online.biz", "a", info['a'])
+        self.logDebug(api)
 
-        return {"validuntil" : float(info['expire_date']) if "expire_date" in info else -1,
-                "trafficleft": -1,
-                "premium"    : True if ("dl" in info or "a" in info) and (info['group'] != "Sammler") else False}
+        for key in ("dl", "a"):
+            if key not in api:
+                continue
+
+            if api['group'] != "Sammler":
+                premium = True
+
+            if api[key].lower() != "not_available":
+                req.cj.setCookie("share-online.biz", key, api[key])
+                break
+
+        if 'expire_date' in api:
+            validuntil = float(api['expire_date'])
+
+        if 'traffic_1d' in api:
+            traffic     = int(api['traffic_1d'].split(";")[0])
+            maxtraffic  = max(maxtraffic, traffic)
+            trafficleft = maxtraffic - traffic
+
+        return {'premium': premium, 'validuntil': validuntil, 'trafficleft': trafficleft, 'maxtraffic': maxtraffic}
 
 
     def login(self, user, data, req):
-        html = self.getUserAPI(user, req)
+        html = self.api_response(user, req)
         if "EXCEPTION" in html:
             self.wrongPassword()
