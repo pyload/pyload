@@ -12,11 +12,11 @@ class PasswordError(Exception):
     pass
 
 
-class AbtractExtractor:
-    __name__    = "AbtractExtractor"
-    __version__ = "0.12"
+class Extractor:
+    __name__    = "Extractor"
+    __version__ = "0.13"
 
-    __description__ = """Abtract extractor plugin"""
+    __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "ranan@pyload.org"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
@@ -124,7 +124,6 @@ class AbtractExtractor:
         :raises ArchiveError
         :return:
         """
-        self.setPassword(password)
         raise NotImplementedError
 
 

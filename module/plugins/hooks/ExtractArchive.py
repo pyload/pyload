@@ -51,14 +51,14 @@ if os.name != "nt":
     from pwd import getpwnam
 
 from module.plugins.Hook import Hook, threaded, Expose
-from module.plugins.internal.AbstractExtractor import ArchiveError, CRCError, PasswordError
+from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
 from module.utils import save_join, uniqify
 
 
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.01"
+    __version__ = "1.02"
 
     __config__ = [("activated"    , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"     , "bool"  , "Extract full path"                         , True                                                                     ),

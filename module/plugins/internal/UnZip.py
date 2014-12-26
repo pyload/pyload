@@ -5,12 +5,12 @@ from __future__ import with_statement
 import sys
 import zipfile
 
-from module.plugins.internal.AbstractExtractor import AbtractExtractor, ArchiveError, CRCError, PasswordError
+from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
 
 
-class UnZip(AbtractExtractor):
+class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.00"
+    __version__ = "1.01"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"

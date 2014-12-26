@@ -8,7 +8,7 @@ from os.path import basename, dirname, join
 from string import digits
 from subprocess import Popen, PIPE
 
-from module.plugins.internal.AbstractExtractor import AbtractExtractor, ArchiveError, CRCError, PasswordError
+from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
 from module.utils import save_join, decode
 
 
@@ -20,9 +20,9 @@ def renice(pid, value):
             print "Renice failed"
 
 
-class UnRar(AbtractExtractor):
+class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.00"
+    __version__ = "1.01"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
