@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class CloudzillaTo(SimpleHoster):
     __name__    = "CloudzillaTo"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/file/(?P<ID>[\w^_]+)'
 
@@ -51,7 +51,7 @@ class CloudzillaTo(SimpleHoster):
 
         self.link = "http://%(server)s/download/%(file_id)s/%(ticket_id)s" % {'server'   : ticket['server'],
                                                                               'file_id'  : self.info['pattern']['ID'],
-                                                                              'ticket_id': ticket['ticket_id']})
+                                                                              'ticket_id': ticket['ticket_id']}
 
 
     def handlePremium(self):
