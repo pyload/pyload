@@ -9,7 +9,7 @@ from module.utils import remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __description__ = """Hook plugin for MultiHoster"""
     __license__     = "GPLv3"
@@ -130,14 +130,14 @@ class MultiHook(Hook):
 
         old_supported = [hoster for hoster in old_supported if hoster not in self.supported]
         if old_supported:
-            self.logDebug("UNLOAD", ", ".join(old_supported))
+            self.logDebug("Unload: %s" % ", ".join(old_supported))
             for hoster in old_supported:
                 self.unloadHoster(hoster)
 
 
     def overridePlugins(self):
         pluginMap    = dict((name.lower(), name) for name in self.core.pluginManager.hosterPlugins.iterkeys())
-        accountList  = [name.lower() for name, data in self.core.accountManager.accounts.iteritems() if data]
+        accountList  = [account.type.lower() for account in self.core.api.getAccounts(False) if account.valid and account.premium]
         excludedList = []
 
         for hoster in self.getHosterCached():
@@ -159,26 +159,26 @@ class MultiHook(Hook):
         klass  = getattr(module, self.__name__)
 
         # inject plugin plugin
-        self.logDebug("Overwritten Hosters", ", ".join(sorted(self.supported)))
+        self.logDebug("Overwritten Hosters: %s" % ", ".join(sorted(self.supported)))
         for hoster in self.supported:
             hdict = self.core.pluginManager.hosterPlugins[hoster]
             hdict['new_module'] = module
             hdict['new_name']   = self.__name__
 
         if excludedList:
-            self.logInfo(_("The following hosters were not overwritten - account exists"), ", ".join(sorted(excludedList)))
+            self.logInfo(_("Hosters not overwritten: %s" % ", ".join(sorted(excludedList))))
 
         if self.new_supported:
             hosters = sorted(self.new_supported)
 
-            self.logDebug("New Hosters", ", ".join(hosters))
+            self.logDebug("New Hosters: %s" % ", ".join(hosters))
 
             # create new regexp
             regexp = r'.*(%s).*' % "|".join([x.replace(".", "\.") for x in hosters])
             if hasattr(klass, "__pattern__") and isinstance(klass.__pattern__, basestring) and '://' in klass.__pattern__:
                 regexp = r'%s|%s' % (klass.__pattern__, regexp)
 
-            self.logDebug("Regexp", regexp)
+            self.logDebug("Regexp: %s" % regexp)
 
             hdict = self.core.pluginManager.hosterPlugins[self.__name__]
             hdict['pattern'] = regexp
