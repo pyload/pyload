@@ -160,7 +160,7 @@ def _isDirectLink(self, url, resumable=False):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.79"
+    __version__ = "0.80"
 
     __pattern__ = r'^unmatchable$'
 
@@ -381,7 +381,7 @@ class SimpleHoster(Hoster):
             if self.html is None:
                 self.fail(_("No html retrieved"))
 
-            if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
+            if self.premium and not self.CHECK_TRAFFIC or self.checkTrafficLeft():
                 self.logDebug("Handled as premium download")
                 self.handlePremium()
 
@@ -405,7 +405,11 @@ class SimpleHoster(Hoster):
             self.retry(10, reason=_("Wrong captcha"))
 
         elif not self.lastDownload or not exists(fs_encode(self.lastDownload)):
-            self.fail(_("No file downloaded"))
+            errmsg = _("No file downloaded")
+            if 'error' in self.info:
+                self.fail(errmsg, self.info['error'])
+            else:
+                self.fail(errmsg)
 
         else:
             rules = {'empty file': re.compile(r"^$")}
