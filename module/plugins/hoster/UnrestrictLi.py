@@ -29,13 +29,16 @@ def secondsToMidnight(gmt=0):
 class UnrestrictLi(MultiHoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(unrestrict|unr)\.li'
 
     __description__ = """Unrestrict.li hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
+
+
+    LOGIN_ACCOUNT = False
 
 
     def setup(self):

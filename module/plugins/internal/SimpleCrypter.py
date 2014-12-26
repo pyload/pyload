@@ -12,7 +12,7 @@ from module.utils import fixup
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.33"
+    __version__ = "0.34"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -82,14 +82,14 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
 
     def prepare(self):
-        if self.LOGIN_ACCOUNT and not self.account:
-            self.fail(_("Required account not found"))
+        self.info  = {}
+        self.links = []  #@TODO: Move to hoster class in 0.4.10
 
         if self.LOGIN_PREMIUM and not self.premium:
             self.fail(_("Required premium account not found"))
 
-        self.info  = {}
-        self.links = []
+        if self.LOGIN_ACCOUNT and not self.account:
+            self.fail(_("Required account not found"))
 
         self.req.setOption("timeout", 120)
 

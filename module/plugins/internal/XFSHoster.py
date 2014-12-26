@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __pattern__ = r'^unmatchable$'
 
@@ -32,7 +32,7 @@ class XFSHoster(SimpleHoster):
 
     TEXT_ENCODING     = False
     COOKIES           = [(HOSTER_DOMAIN, "lang", "english")]
-    CHECK_DIRECT_LINK = None
+    DIRECT_LINK       = None
     MULTI_HOSTER      = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
     NAME_PATTERN = r'(Filename[ ]*:[ ]*</b>(</td><td nowrap>)?|name="fname"[ ]+value="|<[\w^_]+ class="(file)?name">)\s*(?P<N>.+?)(\s*<|")'
@@ -45,7 +45,7 @@ class XFSHoster(SimpleHoster):
     PREMIUM_ONLY_PATTERN = r'>This file is available for Premium Users only'
     ERROR_PATTERN        = r'(?:class=["\']err["\'].*?>|<[Cc]enter><b>|>Error</td>|>\(ERROR:)(?:\s*<.+?>\s*)*(.+?)(?:["\']|<|\))'
 
-    LEECH_LINK_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
+    LINK_LEECH_PATTERN = r'<h2>Download Link</h2>\s*<textarea[^>]*>([^<]+)'
     LINK_PATTERN       = None  #: final download url pattern
 
     CAPTCHA_PATTERN       = r'(https?://[^"\']+?/captchas?/[^"\']+)'
@@ -58,7 +58,7 @@ class XFSHoster(SimpleHoster):
 
 
     def setup(self):
-        self.chunkLimit = 1
+        self.chunkLimit     = 1
         self.resumeDownload = self.multiDL = self.premium
 
 
@@ -80,7 +80,7 @@ class XFSHoster(SimpleHoster):
 
         super(XFSHoster, self).prepare()
 
-        if self.CHECK_DIRECT_LINK is None:
+        if self.DIRECT_LINK is None:
             self.directDL = bool(self.premium)
 
 
@@ -189,9 +189,9 @@ class XFSHoster(SimpleHoster):
             self.fail(stmsg)
 
         #get easybytez.com link for uploaded file
-        m = re.search(self.LEECH_LINK_PATTERN, self.html)
+        m = re.search(self.LINK_LEECH_PATTERN, self.html)
         if m is None:
-            self.error(_("LEECH_LINK_PATTERN not found"))
+            self.error(_("LINK_LEECH_PATTERN not found"))
 
         header = self.load(m.group(1), just_header=True, decode=True)
 

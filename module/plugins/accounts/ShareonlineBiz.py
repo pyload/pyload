@@ -16,7 +16,7 @@ class ShareonlineBiz(Account):
 
     def getUserAPI(self, user, req):
         return req.load("http://api.share-online.biz/account.php",
-                        {"username": user, "password": self.accounts[user]['password'], "act": "userDetails"})
+                        get={"username": user, "password": self.accounts[user]['password'], 'act': "userDetails"})
 
 
     def loadAccountInfo(self, user, req):
@@ -34,9 +34,9 @@ class ShareonlineBiz(Account):
         if "a" in info and info['a'].lower() != "not_available":
             req.cj.setCookie("share-online.biz", "a", info['a'])
 
-        return {"validuntil": float(info['expire_date']) if "expire_date" in info else -1,
+        return {"validuntil" : float(info['expire_date']) if "expire_date" in info else -1,
                 "trafficleft": -1,
-                "premium": True if ("dl" in info or "a" in info) and (info['group'] != "Sammler") else False}
+                "premium"    : True if ("dl" in info or "a" in info) and (info['group'] != "Sammler") else False}
 
 
     def login(self, user, data, req):
