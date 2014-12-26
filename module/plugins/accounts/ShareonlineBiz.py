@@ -49,7 +49,7 @@ class ShareonlineBiz(Account):
             validuntil = float(api['expire_date'])
 
         if 'traffic_1d' in api:
-            traffic     = int(api['traffic_1d'].split(";")[0])
+            traffic     = float(api['traffic_1d'].split(";")[0])
             maxtraffic  = max(maxtraffic, traffic)
             trafficleft = maxtraffic - traffic
 

@@ -19,7 +19,7 @@ class PremiumTo(Account):
         api_r = req.load("http://premium.to/api/straffic.php",
                          get={'username': self.username, 'password': self.password})
 
-        trafficleft = float(sum(map(int, api_r.split(';')))) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+        trafficleft = sum(map(float, api_r.split(';'))) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
         return {'premium': True, 'trafficleft': trafficleft, 'validuntil': -1}
 

@@ -47,6 +47,7 @@ class MultiHook(Hook):
         """getConfig with default value - sublass may not implements all config options"""
         try:
             return self.getConf(option)
+
         except KeyError:
             return default
 

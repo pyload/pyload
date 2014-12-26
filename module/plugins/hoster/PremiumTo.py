@@ -13,7 +13,7 @@ from module.utils import fs_encode
 class PremiumTo(MultiHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = r'https?://(?:www\.)?premium\.to/.*'
 
@@ -30,8 +30,6 @@ class PremiumTo(MultiHoster):
 
 
     def handlePremium(self):
-        tra = self.getTraffic()
-
         #raise timeout to 2min
         self.req.setOption("timeout", 120)
 
@@ -59,21 +57,8 @@ class PremiumTo(MultiHoster):
                 err = f.read(256).strip()
             remove(lastDownload)
 
-        trb = self.getTraffic()
-        self.logInfo(_("Filesize: %d, Traffic used %d, traffic left %d") % (self.pyfile.size, tra - trb, trb))
-
         if err:
             self.fail(err)
-
-
-    def getTraffic(self):
-        try:
-            api_r = self.load("http://premium.to/api/straffic.php",
-                              get={'username': self.account.username, 'password': self.account.password})
-            traffic = sum(map(int, api_r.split(';')))
-        except:
-            traffic = 0
-        return traffic
 
 
 getInfo = create_getInfo(PremiumTo)
