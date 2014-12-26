@@ -7,7 +7,7 @@ from module.plugins.Hook import Hook
 class UnSkipOnFail(Hook):
     __name__    = "UnSkipOnFail"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
@@ -62,7 +62,7 @@ class UnSkipOnFail(Hook):
             the data for "pyfile" iotselöf.
             It does MOT check the link's status.
         """
-        queue = self.api.getQueue()  #: get packages (w/o files, as most file data is useless here)
+        queue = self.core.api.getQueue()  #: get packages (w/o files, as most file data is useless here)
 
         for package in queue:
             #: check if package-folder equals pyfile's package folder
@@ -70,7 +70,7 @@ class UnSkipOnFail(Hook):
                 continue
 
             #: now get packaged data w/ files/links
-            pdata = self.api.getPackageData(package.pid)
+            pdata = self.core.api.getPackageData(package.pid)
             for link in pdata.links:
                 #: check if link is "skipped"
                 if link.status != 4:
