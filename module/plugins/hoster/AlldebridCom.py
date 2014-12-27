@@ -13,9 +13,9 @@ from module.utils import parseFileSize
 class AlldebridCom(MultiHoster):
     __name__    = "AlldebridCom"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?alldebrid\..*'
+    __pattern__ = r'https?://s\d+\.alldebrid\.com/dl/[\w^_]+'
 
     __description__ = """Alldebrid.com hoster plugin"""
     __license__     = "GPLv3"
