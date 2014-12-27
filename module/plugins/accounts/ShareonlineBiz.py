@@ -8,7 +8,7 @@ from module.plugins.Account import Account
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __description__ = """Share-online.biz account plugin"""
     __license__     = "GPLv3"
@@ -44,6 +44,9 @@ class ShareonlineBiz(Account):
             traffic     = float(api['traffic_1d'].split(";")[0])
             maxtraffic  = max(maxtraffic, traffic)
             trafficleft = maxtraffic - traffic
+
+        maxtraffic  /= 1024  #@TODO: Remove `/ 1024` in 0.4.10
+        trafficleft /= 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
         return {'premium': premium, 'validuntil': validuntil, 'trafficleft': trafficleft, 'maxtraffic': maxtraffic}
 
