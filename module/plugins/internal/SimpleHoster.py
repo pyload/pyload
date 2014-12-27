@@ -131,7 +131,7 @@ def _isDirectLink(self, url, resumable=False):
     for i in xrange(5 if resumable else 1):
         header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
 
-        if 'content-disposition' in header:
+        if 'content-disposition' in header or 'content-length' in header:
             link = url
 
         elif 'location' in header and header['location']:
@@ -150,6 +150,9 @@ def _isDirectLink(self, url, resumable=False):
                 self.logDebug("Redirect #%d to: %s" % (++i, location))
                 continue
 
+        elif 'content-type' in header and header['content-type' ] and "html" not in header['content-type']:
+            link = url
+
         break
     else:
         self.logError(_("Too many redirects"))
@@ -157,10 +160,28 @@ def _isDirectLink(self, url, resumable=False):
     return link
 
 
+def secondsToMidnight(gmt=0):
+    now = datetime.utcnow() + timedelta(hours=gmt)
+
+    if now.hour is 0 and now.minute < 10:
+        midnight = now
+    else:
+        midnight = now + timedelta(days=1)
+
+    td = midnight.replace(hour=0, minute=10, second=0, microsecond=0) - now
+
+    if hasattr(td, 'total_seconds'):
+        res = td.total_seconds()
+    else:  #@NOTE: work-around for python 2.5 and 2.6 missing timedelta.total_seconds
+        res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
+
+    return int(res)
+
+
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.81"
+    __version__ = "0.82"
 
     __pattern__ = r'^unmatchable$'
 
@@ -185,10 +206,10 @@ class SimpleHoster(Hoster):
       HASHSUM_PATTERN: (optional) Hash code and type of the file
         example: HASHSUM_PATTERN = r'(?P<H>hash_code) (?P<T>MD5)'
 
-      OFFLINE_PATTERN: (optional) Check if the file is yet available online
+      OFFLINE_PATTERN: (optional) Check if the page is unreachable
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
 
-      TEMP_OFFLINE_PATTERN: (optional) Check if the file is temporarily offline
+      TEMP_OFFLINE_PATTERN: (optional) Check if the page is temporarily unreachable
         example: TEMP_OFFLINE_PATTERN = r'Server (maintenance|maintainance)'
 
 
@@ -217,11 +238,11 @@ class SimpleHoster(Hoster):
     SIZE_REPLACEMENTS = []
     URL_REPLACEMENTS  = []
 
-    TEXT_ENCODING       = False  #: Set to True or encoding name if encoding value in http header is not correct
-    COOKIES             = True   #: or False or list of tuples [(domain, name, value)]
-    CHECK_TRAFFIC       = False  #: Set to True to force checking traffic left for premium account
-    DIRECT_LINK         = None   #: Set to True to looking for direct link (as defined in handleDirect method), set to None to do it if self.account is True else False
-    MULTI_HOSTER        = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
+    TEXT_ENCODING = False  #: Set to True or encoding name if encoding value in http header is not correct
+    COOKIES       = True   #: or False or list of tuples [(domain, name, value)]
+    CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
+    DIRECT_LINK   = None   #: Set to True to looking for direct link (as defined in handleDirect method), set to None to do it if self.account is True else False
+    MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
 
 
     @classmethod
@@ -451,7 +472,10 @@ class SimpleHoster(Hoster):
         self.info.pop('error', None)
 
 
-    def checkStatus(self):
+    def checkStatus(self, getinfo=True):
+        if getinfo:
+            self.updateInfo(self.getInfo(self.pyfile.url, self.html))
+
         status = self.info['status']
 
         if status is 1:
@@ -465,7 +489,10 @@ class SimpleHoster(Hoster):
                           "File info: %s"   % self.info)
 
 
-    def checkNameSize(self):
+    def checkNameSize(self, getinfo=True):
+        if getinfo:
+            self.updateInfo(self.getInfo(self.pyfile.url, self.html))
+
         name = self.info['name']
         size = self.info['size']
         url  = self.info['url']
@@ -485,17 +512,13 @@ class SimpleHoster(Hoster):
 
 
     def checkInfo(self):
-        self.updateInfo(self.getInfo(self.pyfile.url, self.html))
-
         self.checkNameSize()
 
         if self.html:
             self.checkErrors()
 
-        self.updateInfo(self.getInfo(self.pyfile.url, self.html))
-
         self.checkNameSize()
-        self.checkStatus()
+        self.checkStatus(getinfo=False)
 
 
     #: Deprecated
