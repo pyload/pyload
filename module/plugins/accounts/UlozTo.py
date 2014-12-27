@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class UlozTo(Account):
     __name__    = "UlozTo"
     __type__    = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __description__ = """Uloz.to account plugin"""
     __license__     = "GPLv3"
@@ -22,11 +22,7 @@ class UlozTo(Account):
 
 
     def loadAccountInfo(self, user, req):
-        self.phpsessid = req.cj.getCookie("ULOSESSID")  #@NOTE: this cookie gets lost somehow after each request
-
         html = req.load("http://www.ulozto.net/", decode=True)
-
-        req.cj.setCookie("ulozto.net", "ULOSESSID", self.phpsessid)
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
 
@@ -46,7 +42,8 @@ class UlozTo(Account):
                               'do'      : "loginForm-submit",
                               'login'   : u"Přihlásit",
                               'password': data['password'],
-                              'username': user},
+                              'username': user,
+                              'remember': "on"},
                         decode=True)
 
         if '<div class="flash error">' in html:
