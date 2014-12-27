@@ -8,12 +8,13 @@ from Crypto.Cipher import AES
 from urlparse import urljoin
 
 from module.plugins.Crypter import Crypter
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
@@ -79,7 +80,7 @@ class FilecryptCc(Crypter):
 
 
     def handleCaptcha(self):
-        m = re.search(self.CAPTCHA_PATTERN, self.html)
+        m  = re.search(self.CAPTCHA_PATTERN, self.html)
         m2 = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.html)
 
         if m:  #: normal captcha
@@ -106,8 +107,17 @@ class FilecryptCc(Crypter):
                                            cookies=True,
                                            decode=True)
         else:
-            self.logDebug("No captcha found")
-            self.siteWithLinks = self.html
+            recaptcha   = ReCaptcha(self)
+            captcha_key = recaptcha.detect_key()
+
+            if captcha_key:
+                self.siteWithLinks = self.load(self.pyfile.url,
+                                               post={'g-recaptcha-response': recaptcha.challenge(captcha_key, True)},
+                                               cookies=True,
+                                               decode=True)
+            else:
+                self.logDebug("No captcha found")
+                self.siteWithLinks = self.html
 
         if "recaptcha_image" in self.siteWithLinks:
             self.invalidCaptcha()
