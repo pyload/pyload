@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import re
+
 from module.plugins.Account import Account
 
 
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __description__ = """Share-online.biz account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("mkaay", "mkaay@mkaay.de"),
-                       ("zoidberg", "zoidberg@mujmail.cz"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def api_response(self, user, req):
@@ -34,21 +34,13 @@ class ShareonlineBiz(Account):
 
         self.logDebug(api)
 
-        for key in ("dl", "a"):
-            if key not in api:
-                continue
+        if api['a'].lower() != "not_available":
+            req.cj.setCookie("share-online.biz", 'a', api['a'])
 
-            if api['group'] != "Sammler":
-                premium = True
+            premium = api['group'] == "Premium"
 
-            if api[key].lower() != "not_available":
-                req.cj.setCookie("share-online.biz", key, api[key])
-                break
-
-        if 'expire_date' in api:
             validuntil = float(api['expire_date'])
 
-        if 'traffic_1d' in api:
             traffic     = float(api['traffic_1d'].split(";")[0])
             maxtraffic  = max(maxtraffic, traffic)
             trafficleft = maxtraffic - traffic
@@ -58,7 +50,7 @@ class ShareonlineBiz(Account):
 
     def login(self, user, data, req):
         html = self.api_response(user, req)
-        err  = re.search(r'**(.+?)**', html)
+        err  = re.search(r'\*\*(.+?)\*\*', html)
         if err:
             self.logError(err.group(1))
             self.wrongPassword()
