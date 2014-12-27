@@ -6,7 +6,7 @@ from module.plugins.internal.Crypter import Crypter
 class MegaCoNzFolder(Crypter):
     __name__    = "MegaCoNzFolder"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?mega\.co\.nz/#F![\w+^_]![\w,\\-]+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -15,6 +15,10 @@ class MegaCoNzFolder(Crypter):
     __description__ = """Mega.co.nz folder decrypter plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    def setup(self):
+        self.req.setOption("timeout", 300)
 
 
     def decrypt(self, pyfile):
