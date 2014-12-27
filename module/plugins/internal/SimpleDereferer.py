@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import _isDirectLink, set_cookies
 class SimpleDereferer(Crypter):
     __name__    = "SimpleDereferer"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -64,6 +64,9 @@ class SimpleDereferer(Crypter):
 
         if link.strip():
             self.urls = [link.strip()]  #@TODO: Remove `.strip()` in 0.4.10
+
+        elif not self.urls and not self.packages:  #@TODO: Remove in 0.4.10
+            self.fail("No link grabbed")
 
 
     def prepare(self):

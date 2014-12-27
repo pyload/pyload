@@ -12,7 +12,7 @@ from module.utils import fixup
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -118,6 +118,9 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
         if self.links:
             self.packages = [(self.info['name'], self.links, self.info['folder'])]
+
+        elif not self.urls and not self.packages:  #@TODO: Remove in 0.4.10
+            self.fail("No link grabbed")
 
 
     def checkNameSize(self, getinfo=True):
