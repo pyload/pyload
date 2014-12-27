@@ -8,7 +8,7 @@ class LofCc(DeadCrypter):
     __type__    = "crypter"
     __version__ = "0.21"
 
-    __pattern__ = r'http://(?:www\.)?lof\.cc/(.*)'
+    __pattern__ = r'http://(?:www\.)?lof\.cc/(.+)'
     __config__  = []
 
     __description__ = """Lof.cc decrypter plugin"""
