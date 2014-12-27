@@ -5,15 +5,15 @@ import re
 from datetime import datetime, timedelta
 
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-from module.plugins.hoster.UnrestrictLi import secondsToMidnight
+from module.plugins.internal.SimpleHoster import secondsToMidnight
 
 
 class SimplyPremiumCom(MultiHoster):
     __name__    = "SimplyPremiumCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
-    __pattern__ = r'https?://.*(simply-premium)\.com'
+    __pattern__ = r'https?://.+simply-premium\.com'
 
     __description__ = """Simply-Premium.com hoster plugin"""
     __license__     = "GPLv3"
@@ -49,7 +49,7 @@ class SimplyPremiumCom(MultiHoster):
 
         elif "trafficlimit" in page:
             self.logWarning(_("Reached daily limit for this host"))
-            self.retry(wait_time=secondsToMidnight(gmt=2), "Daily limit for this host reached")
+            self.retry(wait_time=secondsToMidnight(gmt=2), reason="Daily limit for this host reached")
 
         elif "hostererror" in page:
             self.logWarning(_("Hoster temporarily unavailable, waiting 1 minute and retry"))
