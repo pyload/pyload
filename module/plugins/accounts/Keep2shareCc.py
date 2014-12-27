@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class Keep2shareCc(Account):
     __name__    = "Keep2shareCc"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Keep2share.cc account plugin"""
     __license__     = "GPLv3"
@@ -18,7 +18,7 @@ class Keep2shareCc(Account):
 
 
     VALID_UNTIL_PATTERN  = r'Premium expires: <b>(.+?)</b>'
-    TRAFFIC_LEFT_PATTERN = r'Available traffic \(today\):<b><a href="/user/statistic.html">(.+?)</a>'
+    TRAFFIC_LEFT_PATTERN = r'Available traffic \(today\):\s*<b><a href="/user/statistic.html">(.+?)<'
 
     LOGIN_FAIL_PATTERN = r'Please fix the following input errors'
 
@@ -63,7 +63,10 @@ class Keep2shareCc(Account):
         req.cj.setCookie("keep2share.cc", "lang", "en")
 
         html = req.load("http://keep2share.cc/login.html",
-                        post={'LoginForm[username]': user, 'LoginForm[password]': data['password']})
+                        post={'LoginForm[username]'  : user,
+                              'LoginForm[password]'  : data['password'],
+                              'LoginForm[rememberMe]': 1,
+                              'yt0'                  : ""})
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrongPassword()
