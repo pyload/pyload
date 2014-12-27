@@ -6,7 +6,7 @@ from module.plugins.Account import Account
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __description__ = """Share-online.biz account plugin"""
     __license__     = "GPLv3"
@@ -58,5 +58,7 @@ class ShareonlineBiz(Account):
 
     def login(self, user, data, req):
         html = self.api_response(user, req)
-        if "EXCEPTION" in html:
+        err  = re.search(r'**(.+?)**', html)
+        if err:
+            self.logError(err.group(1))
             self.wrongPassword()
