@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class AlldebridCom(MultiHook):
     __name__    = "AlldebridCom"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __config__ = [("https", "bool", "Enable HTTPS", False),
                   ("mode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
