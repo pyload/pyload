@@ -73,9 +73,8 @@ class XFSHoster(SimpleHoster):
             pattern = r'(https?://(www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'
             self.LINK_PATTERN = pattern % self.HOSTER_DOMAIN.replace('.', '\.')
 
-        self.captcha   = None
-        self.errmsg    = None
-        self.passwords = self.getPassword().splitlines()
+        self.captcha = None
+        self.errmsg  = None
 
         super(XFSHoster, self).prepare()
 
@@ -271,8 +270,9 @@ class XFSHoster(SimpleHoster):
 
         if 'op' in inputs:
             if "password" in inputs:
-                if self.passwords:
-                    inputs['password'] = self.passwords.pop(0)
+                password = self.getPassword()
+                if password:
+                    inputs['password'] = password
                 else:
                     self.fail(_("Missing password"))
 
