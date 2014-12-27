@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from module.common.json_layer import json_loads
-from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHook import MultiHook
 
 
 class RPNetBiz(MultiHook):
     __name__    = "RPNetBiz"
     __type__    = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", ""),
-                  ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
+    __config__ = [("mode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
+                  ("pluginlist", "str", "Hoster list (comma separated)", ""),
+                  ("revertfailed", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """RPNet.biz hook plugin"""
@@ -20,7 +19,7 @@ class RPNetBiz(MultiHook):
     __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 
-    def getHoster(self):
+    def getHosters(self):
         # No hosts supported if no account
         if not self.account or not self.account.canUse():
             return []
@@ -28,7 +27,7 @@ class RPNetBiz(MultiHook):
         # Get account data
         (user, data) = self.account.selectAccount()
 
-        res = getURL("https://premium.rpnet.biz/client_api.php",
+        res = self.getURL("https://premium.rpnet.biz/client_api.php",
                      get={'username': user, 'password': data['password'], 'action': "showHosterList"})
         hoster_list = json_loads(res)
 

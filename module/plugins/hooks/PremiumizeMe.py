@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from module.common.json_layer import json_loads
-from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHook import MultiHook
 
 
 class PremiumizeMe(MultiHook):
     __name__    = "PremiumizeMe"
     __type__    = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", ""),
-                  ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
+    __config__ = [("mode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
+                  ("pluginlist", "str", "Hoster list (comma separated)", ""),
+                  ("revertfailed", "bool", "Revert to stanard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Premiumize.me hook plugin"""
@@ -20,7 +19,7 @@ class PremiumizeMe(MultiHook):
     __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
-    def getHoster(self):
+    def getHosters(self):
         # If no accounts are available there will be no hosters available
         if not self.account or not self.account.canUse():
             return []
@@ -30,7 +29,7 @@ class PremiumizeMe(MultiHook):
 
         # Get supported hosters list from premiumize.me using the
         # json API v1 (see https://secure.premiumize.me/?show=api)
-        answer = getURL("https://api.premiumize.me/pm-api/v1.php",
+        answer = self.getURL("https://api.premiumize.me/pm-api/v1.php",
                         get={'method': "hosterlist", 'params[login]': user, 'params[pass]': data['password']})
         data = json_loads(answer)
 

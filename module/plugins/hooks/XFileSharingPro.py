@@ -28,16 +28,16 @@ class XFileSharingPro(Hook):
               'crypter': (r'https?://(?:www\.)?([\w.^_]+(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:user|folder)s?/\w+',
                           r'https?://(?:[^/]+\.)?(%s)/(?:user|folder)s?/\w+')}
 
-    HOSTER_LIST  = [#WORKING HOSTERS:
-                    "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com", "filevice.com", "hostingbulk.com",
-                    "ravishare.com", "salefiles.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
-                    #NOT TESTED:
-                    "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
-                    "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
-                    "vidbull.com", "zalaa.com", "zomgupload.com",
-                    #NOT WORKING:
-                    "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com", "laoupload.com", "rd-fs.com"]
-    CRYPTER_LIST = []
+    HOSTER_BUILTIN  = [#WORKING HOSTERS:
+                       "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com", "filevice.com", "hostingbulk.com",
+                       "ravishare.com", "salefiles.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
+                       #NOT TESTED:
+                       "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
+                       "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
+                       "vidbull.com", "zalaa.com", "zomgupload.com",
+                       #NOT WORKING:
+                       "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com", "laoupload.com", "rd-fs.com"]
+    CRYPTER_BUILTIN = []
 
 
     # def pluginConfigChanged(self.__name__, plugin, name, value):
@@ -68,7 +68,7 @@ class XFileSharingPro(Hook):
                 plugin_list = set([x.strip() for x in s.split(',')])
 
                 if use_builtin_list:
-                    plugin_list |= set([x.lower() for x in getattr(self, "%s_LIST" % type.upper())])
+                    plugin_list |= set([x.lower() for x in getattr(self, "%s_BUILTIN" % type.upper())])
 
                 plugin_list -= set(('', u''))
 

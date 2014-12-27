@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
 
 from module.common.json_layer import json_loads
-from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHook import MultiHook
 
 
 class MegaDebridEu(MultiHook):
     __name__    = "MegaDebridEu"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
-    __config__ = [("unloadFailing", "bool", "Revert to standard download if download fails", False)]
+    __config__ = [("revertfailed", "bool", "Revert to standard download if download fails", False)]
 
     __description__ = """mega-debrid.eu hook plugin"""
     __license__     = "GPLv3"
     __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 
 
-    def getHoster(self):
-        reponse   = getURL("http://www.mega-debrid.eu/api.php", get={'action': "getHosters"})
+    def getHosters(self):
+        reponse   = self.getURL("http://www.mega-debrid.eu/api.php", get={'action': "getHosters"})
         json_data = json_loads(reponse)
 
         if json_data['response_code'] == "ok":

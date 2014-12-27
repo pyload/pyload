@@ -8,17 +8,17 @@ from module.plugins.internal.MultiHook import MultiHook
 class EasybytezCom(MultiHook):
     __name__    = "EasybytezCom"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "")]
+    __config__ = [("mode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                  ("pluginlist", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """EasyBytez.com hook plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    def getHoster(self):
+    def getHosters(self):
         self.account = self.core.accountManager.getAccountPlugin(self.__name__)
         user = self.account.selectAccount()[0]
 

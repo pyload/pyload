@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from module.network.RequestFactory import getURL
 from module.plugins.internal.MultiHook import MultiHook
 
 
 class PremiumTo(MultiHook):
     __name__    = "PremiumTo"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
-    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "")]
+    __config__ = [("mode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
+                  ("pluginlist", "str", "Hoster list (comma separated)", "")]
 
     __description__ = """Premium.to hook plugin"""
     __license__     = "GPLv3"
@@ -19,8 +18,8 @@ class PremiumTo(MultiHook):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    def getHoster(self):
-        page = getURL("http://premium.to/api/hosters.php",
+    def getHosters(self):
+        page = self.getURL("http://premium.to/api/hosters.php",
                       get={'username': self.account.username, 'password': self.account.password})
         return [x.strip() for x in page.replace("\"", "").split(";")]
 
