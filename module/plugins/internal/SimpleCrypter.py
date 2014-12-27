@@ -12,7 +12,7 @@ from module.utils import fixup
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.34"
+    __version__ = "0.35"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -28,16 +28,16 @@ class SimpleCrypter(Crypter, SimpleHoster):
     """
     Following patterns should be defined by each crypter:
 
-      LINK_PATTERN: group(1) must be a download link or a regex to catch more links
+      LINK_PATTERN: Download link or regex to catch links in group(1)
         example: LINK_PATTERN = r'<div class="link"><a href="(.+?)"'
 
-      NAME_PATTERN: (optional) folder name or webpage title
+      NAME_PATTERN: (optional) folder name or page title
         example: NAME_PATTERN = r'<title>Files of: (?P<N>[^<]+) folder</title>'
 
-      OFFLINE_PATTERN: (optional) Checks if the file is yet available online
+      OFFLINE_PATTERN: (optional) Checks if the page is unreachable
         example: OFFLINE_PATTERN = r'File (deleted|not found)'
 
-      TEMP_OFFLINE_PATTERN: (optional) Checks if the file is temporarily offline
+      TEMP_OFFLINE_PATTERN: (optional) Checks if the page is temporarily unreachable
         example: TEMP_OFFLINE_PATTERN = r'Server maintainance'
 
 
@@ -120,7 +120,10 @@ class SimpleCrypter(Crypter, SimpleHoster):
             self.packages = [(self.info['name'], self.links, self.info['folder'])]
 
 
-    def checkNameSize(self):
+    def checkNameSize(self, getinfo=True):
+        if getinfo:
+            self.updateInfo(self.getInfo(self.pyfile.url, self.html))
+
         name = self.info['name']
         url  = self.info['url']
 

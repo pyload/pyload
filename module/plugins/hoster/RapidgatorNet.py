@@ -6,15 +6,14 @@ from pycurl import HTTPHEADER
 
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
-from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import AdsCaptcha, ReCaptcha, SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, secondsToMidnight
 
 
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 

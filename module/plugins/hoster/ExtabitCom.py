@@ -4,15 +4,14 @@ import re
 
 from module.common.json_layer import json_loads
 
-from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, secondsToMidnight
 
 
 class ExtabitCom(SimpleHoster):
     __name__    = "ExtabitCom"
     __type__    = "hoster"
-    __version__ = "0.62"
+    __version__ = "0.63"
 
     __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
 

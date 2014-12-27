@@ -7,16 +7,15 @@ from time import sleep
 
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 
-from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import ReCaptcha, SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, secondsToMidnight
 from module.utils import html_unescape
 
 
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __pattern__ = r'^unmatchable$'
 
@@ -30,10 +29,10 @@ class XFSHoster(SimpleHoster):
     HOSTER_DOMAIN = None
     HOSTER_NAME   = None
 
-    TEXT_ENCODING     = False
-    COOKIES           = [(HOSTER_DOMAIN, "lang", "english")]
-    DIRECT_LINK       = None
-    MULTI_HOSTER      = True  #@NOTE: Should be default to False for safe, but I'm lazy...
+    TEXT_ENCODING = False
+    COOKIES       = [(HOSTER_DOMAIN, "lang", "english")]
+    DIRECT_LINK   = None
+    MULTI_HOSTER  = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
     NAME_PATTERN = r'(Filename[ ]*:[ ]*</b>(</td><td nowrap>)?|name="fname"[ ]+value="|<[\w^_]+ class="(file)?name">)\s*(?P<N>.+?)(\s*<|")'
     SIZE_PATTERN = r'(Size[ ]*:[ ]*</b>(</td><td>)?|File:.*>|</font>\s*\(|<[\w^_]+ class="size">)\s*(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)'
@@ -226,10 +225,10 @@ class XFSHoster(SimpleHoster):
 
             elif 'limit' in self.errmsg:
                 if 'days' in self.errmsg:
-                    delay = secondsToMidnight(gmt=2)
+                    delay   = secondsToMidnight(gmt=2)
                     retries = 3
                 else:
-                    delay = 1 * 60 * 60
+                    delay   = 1 * 60 * 60
                     retries = 24
 
                 self.wantReconnect = True

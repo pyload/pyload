@@ -6,30 +6,13 @@ from datetime import datetime, timedelta
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
-
-
-def secondsToMidnight(gmt=0):
-    now = datetime.utcnow() + timedelta(hours=gmt)
-
-    if now.hour is 0 and now.minute < 10:
-        midnight = now
-    else:
-        midnight = now + timedelta(days=1)
-
-    td = midnight.replace(hour=0, minute=10, second=0, microsecond=0) - now
-
-    if hasattr(td, 'total_seconds'):
-        res = td.total_seconds()
-    else:  #@NOTE: work-around for python 2.5 and 2.6 missing timedelta.total_seconds
-        res = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
-
-    return int(res)
+from module.plugins.internal.SimpleHoster import secondsToMidnight
 
 
 class UnrestrictLi(MultiHoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(unrestrict|unr)\.li'
 

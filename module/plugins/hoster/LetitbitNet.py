@@ -12,9 +12,8 @@ from urllib import urlencode, urlopen
 from urlparse import urljoin
 
 from module.common.json_layer import json_loads, json_dumps
-from module.plugins.hoster.UnrestrictLi import secondsToMidnight
 from module.plugins.internal.CaptchaService import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster, secondsToMidnight
 
 
 def api_download_info(url):
@@ -37,9 +36,9 @@ def getInfo(urls):
 class LetitbitNet(SimpleHoster):
     __name__    = "LetitbitNet"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
-    __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.*'
+    __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.+'
 
     __description__ = """Letitbit.net hoster plugin"""
     __license__     = "GPLv3"
