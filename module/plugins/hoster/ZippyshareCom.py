@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.63"
+    __version__ = "0.64"
 
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/v(?:/|iew\.jsp.*key=)(?P<KEY>\d+)'
 
@@ -43,15 +43,16 @@ class ZippyshareCom(SimpleHoster):
             m = re.search(r'\+[ ]*\((\d+)[ ]*\%[ ]*(\d+)[ ]*\+[ ]*(\d+)[ ]*\%[ ]*(\d+)\)[ ]*\+', self.html)
             if m:
                 a1, a2, c1, c2 = map(int, m.groups())
+                res = (a1 % a2) + (c1 % c2)
             else:
                 a1, a2 = map(int, re.search(r'\(\'downloadB\'\).omg = (\d+)%(\d+)', self.html).groups())
                 c1, c2 = map(int, re.search(r'\(\'downloadB\'\).omg\) \* \((\d+)%(\d+)', self.html).groups())
-
-            b = (a1 % a2) * (c1 % c2)
+                b = (a1 % a2) * (c1 % c2)
+                res += 18
         except:
             self.error(_("Unable to calculate checksum"))
         else:
-            return b + 18
+            return res
 
 
     def get_link(self):
