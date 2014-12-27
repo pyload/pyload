@@ -12,7 +12,7 @@ class FilecloudIo(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.05"
 
-    __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+).*'
+    __pattern__ = r'http://(?:www\.)?(?:filecloud\.io|ifile\.it|mihd\.net)/(?P<ID>\w+)'
 
     __description__ = """Filecloud.io hoster plugin"""
     __license__     = "GPLv3"

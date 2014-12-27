@@ -10,7 +10,7 @@ class TwoSharedCom(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.12"
 
-    __pattern__ = r'http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.*'
+    __pattern__ = r'http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.+'
 
     __description__ = """2Shared.com hoster plugin"""
     __license__     = "GPLv3"

@@ -9,7 +9,7 @@ class FilejungleCom(FileserveCom):
     __type__    = "hoster"
     __version__ = "0.51"
 
-    __pattern__ = r'http://(?:www\.)?filejungle\.com/f/(?P<ID>[^/]+).*'
+    __pattern__ = r'http://(?:www\.)?filejungle\.com/f/(?P<ID>[^/]+)'
 
     __description__ = """Filejungle.com hoster plugin"""
     __license__     = "GPLv3"

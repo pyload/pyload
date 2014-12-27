@@ -11,7 +11,7 @@ class MyfastfileCom(MultiHoster):
     __type__    = "hoster"
     __version__ = "0.07"
 
-    __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
+    __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/'
 
     __description__ = """Myfastfile.com hoster plugin"""
     __license__     = "GPLv3"

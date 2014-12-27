@@ -26,7 +26,7 @@ class FshareVn(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.18"
 
-    __pattern__ = r'http://(?:www\.)?fshare\.vn/file/.*'
+    __pattern__ = r'http://(?:www\.)?fshare\.vn/file/.+'
 
     __description__ = """FshareVn hoster plugin"""
     __license__     = "GPLv3"

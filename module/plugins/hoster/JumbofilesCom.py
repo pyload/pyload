@@ -10,7 +10,7 @@ class JumbofilesCom(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.02"
 
-    __pattern__ = r'http://(?:www\.)?jumbofiles\.com/(\w{12}).*'
+    __pattern__ = r'http://(?:www\.)?jumbofiles\.com/(\w{12})'
 
     __description__ = """JumboFiles.com hoster plugin"""
     __license__     = "GPLv3"

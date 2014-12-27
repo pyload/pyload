@@ -34,7 +34,7 @@ class FilesMailRu(Hoster):
     __type__    = "hoster"
     __version__ = "0.31"
 
-    __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.*'
+    __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.+'
 
     __description__ = """Files.mail.ru hoster plugin"""
     __license__     = "GPLv3"

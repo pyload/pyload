@@ -39,7 +39,7 @@ class YoutubeCom(Hoster):
     __type__    = "hoster"
     __version__ = "0.40"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?(?:youtube\.com|youtu\.be)/watch.*?[?&]v=.*'
+    __pattern__ = r'https?://(?:[^/]*\.)?(?:youtube\.com|youtu\.be)/watch.*?[?&]v=.+'
     __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
                   ("fmt", "int", "FMT/ITAG Number (5-102, 0 for auto)", 0),
                   (".mp4", "bool", "Allow .mp4", True),

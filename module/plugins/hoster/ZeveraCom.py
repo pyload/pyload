@@ -8,7 +8,7 @@ class ZeveraCom(MultiHoster):
     __type__    = "hoster"
     __version__ = "0.25"
 
-    __pattern__ = r'http://(?:www\.)?zevera\.com/.*'
+    __pattern__ = r'http://(?:www\.)?zevera\.com/.+'
 
     __description__ = """Zevera.com hoster plugin"""
     __license__     = "GPLv3"

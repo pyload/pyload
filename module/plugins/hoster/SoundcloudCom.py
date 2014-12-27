@@ -11,7 +11,7 @@ class SoundcloudCom(Hoster):
     __type__    = "hoster"
     __version__ = "0.10"
 
-    __pattern__ = r'https?://(?:www\.)?soundcloud\.com/(?P<UID>.*?)/(?P<SID>.*)'
+    __pattern__ = r'https?://(?:www\.)?soundcloud\.com/(?P<UID>.+?)/(?P<SID>.+)'
 
     __description__ = """SoundCloud.com hoster plugin"""
     __license__     = "GPLv3"

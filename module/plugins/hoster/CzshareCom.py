@@ -14,7 +14,7 @@ class CzshareCom(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.96"
 
-    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).*'
+    __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'
 
     __description__ = """CZshare.com hoster plugin, now Sdilej.cz"""
     __license__     = "GPLv3"

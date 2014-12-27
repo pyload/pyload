@@ -14,7 +14,7 @@ class RPNetBiz(MultiHoster):
     __description__ = """RPNet.biz hoster plugin"""
     __license__     = "GPLv3"
 
-    __pattern__ = r'https?://.*rpnet\.biz'
+    __pattern__ = r'https?://.+rpnet\.biz'
     __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 

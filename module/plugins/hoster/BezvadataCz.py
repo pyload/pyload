@@ -10,7 +10,7 @@ class BezvadataCz(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.25"
 
-    __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.*'
+    __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
 
     __description__ = """BezvaData.cz hoster plugin"""
     __license__     = "GPLv3"

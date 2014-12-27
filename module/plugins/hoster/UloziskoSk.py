@@ -10,7 +10,7 @@ class UloziskoSk(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.24"
 
-    __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.*'
+    __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.+'
 
     __description__ = """Ulozisko.sk hoster plugin"""
     __license__     = "GPLv3"

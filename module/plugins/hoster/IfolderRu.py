@@ -10,7 +10,7 @@ class IfolderRu(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.38"
 
-    __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*'
+    __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+)'
 
     __description__ = """Ifolder.ru hoster plugin"""
     __license__     = "GPLv3"

@@ -13,7 +13,7 @@ class FlyFilesNet(SimpleHoster):
     __type__    = "hoster"
     __version__ = "0.10"
 
-    __pattern__ = r'http://(?:www\.)?flyfiles\.net/.*'
+    __pattern__ = r'http://(?:www\.)?flyfiles\.net/.+'
 
     __description__ = """FlyFiles.net hoster plugin"""
     __license__     = "GPLv3"

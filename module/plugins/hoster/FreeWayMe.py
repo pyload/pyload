@@ -8,7 +8,7 @@ class FreeWayMe(MultiHoster):
     __type__    = "hoster"
     __version__ = "0.14"
 
-    __pattern__ = r'https://(?:www\.)?free-way\.me/.*'
+    __pattern__ = r'https://(?:www\.)?free-way\.me/.+'
 
     __description__ = """FreeWayMe hoster plugin"""
     __license__     = "GPLv3"
