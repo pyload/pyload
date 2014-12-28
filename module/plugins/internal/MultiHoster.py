@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __pattern__ = r'^unmatchable$'
 
@@ -54,13 +54,17 @@ class MultiHoster(SimpleHoster):
             self.logDebug("Looking for direct download link...")
             self.handleDirect()
 
-        if not self.link and not self.lastDownload:
+        if self.link:
+            self.pyfile.url = self.link
+            self.checkNameSize()
+
+        elif not self.lastDownload:
             self.preload()
+            self.checkInfo()
 
             if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as premium download")
                 self.handlePremium()
-
             else:
                 self.logDebug("Handled as free download")
                 self.handleFree()
