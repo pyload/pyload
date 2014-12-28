@@ -181,7 +181,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.83"
+    __version__ = "0.84"
 
     __pattern__ = r'^unmatchable$'
 
@@ -444,7 +444,9 @@ class SimpleHoster(Hoster):
 
             check = self.checkDownload(rules)
             if check:  #@TODO: Move to hoster in 0.4.10
-                errmsg = check.strip().capitalize() + (" | " + self.lastCheck.strip() if self.lastCheck else "")
+                errmsg = check.strip().capitalize()
+                if self.lastCheck:
+                    errmsg += " | " + self.lastCheck.group(0).strip()
                 self.retry(10, 60, errmsg)
 
 
