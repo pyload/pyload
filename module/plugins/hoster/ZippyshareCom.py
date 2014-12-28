@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.64"
+    __version__ = "0.65"
 
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/v(?:/|iew\.jsp.*key=)(?P<KEY>\d+)'
 
@@ -28,8 +28,8 @@ class ZippyshareCom(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL = True
-        self.chunkLimit = -1
+        self.multiDL        = True
+        self.chunkLimit     = -1
         self.resumeDownload = True
 
 
@@ -43,16 +43,17 @@ class ZippyshareCom(SimpleHoster):
             m = re.search(r'\+[ ]*\((\d+)[ ]*\%[ ]*(\d+)[ ]*\+[ ]*(\d+)[ ]*\%[ ]*(\d+)\)[ ]*\+', self.html)
             if m:
                 a1, a2, c1, c2 = map(int, m.groups())
-                res = (a1 % a2) + (c1 % c2)
+                b = (a1 % a2) + (c1 % c2)
             else:
-                a1, a2 = map(int, re.search(r'\(\'downloadB\'\).omg = (\d+)%(\d+)', self.html).groups())
+                a1, a2 = map(int, re.search(r'\(\'downloadB\'\).omg = (\d+)%(\d+)'     , self.html).groups())
                 c1, c2 = map(int, re.search(r'\(\'downloadB\'\).omg\) \* \((\d+)%(\d+)', self.html).groups())
-                b = (a1 % a2) * (c1 % c2)
-                res += 18
-        except:
-            self.error(_("Unable to calculate checksum"))
+                b = (a1 % a2) * (c1 % c2) + 18
+
+        except Exception, e:
+            self.error(_("Unable to calculate checksum"), e)
+
         else:
-            return res
+            return b
 
 
     def get_link(self):
