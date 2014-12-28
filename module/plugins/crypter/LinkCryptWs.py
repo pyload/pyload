@@ -15,7 +15,7 @@ from module.utils import html_unescape
 class LinkCryptWs(Crypter):
     __name__    = "LinkCryptWs"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'
 
@@ -57,7 +57,7 @@ class LinkCryptWs(Crypter):
             self.offline()
 
         if self.isKeyCaptchaProtected():
-            self.retry(4, 30, _("Can't handle Key-Captcha"))
+            self.retry(8, 15, _("Can't handle Key-Captcha"))
 
         if self.isCaptchaProtected():
             self.captcha = True
@@ -115,10 +115,9 @@ class LinkCryptWs(Crypter):
 
 
     def isKeyCaptchaProtected(self):
-        if re.search(r'Key[ -]', self.html, re.I):
+        if(re.search(r'<br />If the folder does not open after klick on <b>Enter Folder</ b>', self.html, re.I)):
             return True
-        else:
-            return False
+        return False
 
 
     def unlockPasswordProtection(self):
