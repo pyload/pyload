@@ -115,9 +115,10 @@ class LinkCryptWs(Crypter):
 
 
     def isKeyCaptchaProtected(self):
-        if(re.search(r'<br />If the folder does not open after klick on <b>Enter Folder</ b>', self.html, re.I)):
+        if re.search(r'>If the folder does not open after klick on <', self.html, re.I):
             return True
-        return False
+        else:
+            return False
 
 
     def unlockPasswordProtection(self):
