@@ -181,7 +181,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.82"
+    __version__ = "0.83"
 
     __pattern__ = r'^unmatchable$'
 
@@ -388,7 +388,7 @@ class SimpleHoster(Hoster):
 
     def process(self, pyfile):
         self.prepare()
-        self.checkInfo()
+        self.checkNameSize()
 
         if self.directDL:
             self.logDebug("Looking for direct download link...")
@@ -405,9 +405,6 @@ class SimpleHoster(Hoster):
         if not self.link and not self.lastDownload:
             self.preload()
             self.checkInfo()
-
-            if self.html is None:
-                self.fail(_("No html retrieved"))
 
             if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as premium download")

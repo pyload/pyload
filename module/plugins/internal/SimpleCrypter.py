@@ -103,10 +103,6 @@ class SimpleCrypter(Crypter, SimpleHoster):
         self.prepare()
 
         self.preload()
-
-        if self.html is None:
-            self.fail(_("No html retrieved"))
-
         self.checkInfo()
 
         self.links = self.getLinks()
