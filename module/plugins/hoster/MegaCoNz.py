@@ -47,9 +47,9 @@ from module.plugins.Hoster import Hoster
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
-    __pattern__ = r'https?://(?:www\.)?mega\.co\.nz/#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'
+    __pattern__ = r'https?://(?:www\.)?mega\.co\.nz/#(?P<TYPE>N)?!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'
 
     __description__ = """Mega.co.nz hoster plugin"""
     __license__     = "GPLv3"
@@ -68,11 +68,9 @@ class MegaCoNz(Hoster):
 
     def getCipherKey(self, key):
         """ Construct the cipher key from the given data """
-        a = array("I", key)
-
-        k        = array("I", [a[0] ^ a[4], a[1] ^ a[5], a[2] ^ a[6], a[3] ^ a[7]])
-        iv       = a[4:6] + (0, 0)
-        meta_mac = a[6:8]
+        k        = key[0] ^ key[4], key[1] ^ key[5], key[2] ^ key[6], key[3] ^ key[7]
+        iv       = key[4:6] + (0, 0)
+        meta_mac = key[6:8]
 
         return k, iv, meta_mac
 
@@ -89,7 +87,7 @@ class MegaCoNz(Hoster):
 
 
     def decryptAttr(self, data, key):
-        k, iv, meta_mac = getCipherKey(key)
+        k, iv, meta_mac = self.getCipherKey(self.b64_decode(key))
         cbc             = AES.new(k, AES.MODE_CBC, "\0" * 16)
         attr            = cbc.decrypt(self.b64_decode(data))
 
@@ -104,11 +102,13 @@ class MegaCoNz(Hoster):
     def decryptFile(self, key):
         """  Decrypts the file at lastDownload` """
 
+        key = self.b64_decode(key)
+
         # upper 64 bit of counter start
         n = key[16:24]
 
         # convert counter to long and shift bytes
-        k, iv, meta_mac = getCipherKey(key)
+        k, iv, meta_mac = self.getCipherKey(key)
         ctr             = Counter.new(128, initial_value=long(n.encode("hex"), 16) << 64)
         cipher          = AES.new(k, AES.MODE_CTR, counter=ctr)
 
@@ -142,49 +142,48 @@ class MegaCoNz(Hoster):
         self.lastDownload = file_decrypted
 
 
+    def checkError(self, code):
+        ecode = abs(code)
+
+        if ecode in (9, 16, 21):
+            self.offline()
+
+        elif ecode in (3, 13, 17, 18, 19):
+            self.tempOffline()
+
+        elif ecode in (1, 4, 6, 10, 15, 21):
+            self.retry(5, 30, _("Error code: [%s]") % -ecode)
+
+        else:
+            self.fail(_("Error code: [%s]") % -ecode)
+
+
     def process(self, pyfile):
-        key = None
-
-        # match is guaranteed because plugin was chosen to handle url
         pattern = re.match(self.__pattern__, pyfile.url).groupdict()
-        node    = pattern['ID']
+        id      = pattern['ID']
         key     = pattern['KEY']
-        public  = pattern['TYPE'] != 'N'
+        public  = 'TYPE' not in pattern
 
-        self.logDebug("ID: %s" % node, "Key: %s" % key, "Type: %s" % ("public" if public else "node"))
-
-        key = self.b64_decode(key)
+        self.logDebug("ID: %s" % id, "Key: %s" % key, "Type: %s" % ("public" if public else "node"))
 
         # g is for requesting a download url
         # this is similar to the calls in the mega js app, documentation is very bad
         if public:
-            dl = self.api_response(a="g", g=1, p=node, ssl=1)[0]
+            mega = self.api_response(a="g", g=1, p=id, ssl=1)[0]
         else:
-            dl = self.api_response(a="g", g=1, n=node, ssl=1)[0]
+            mega = self.api_response(a="g", g=1, n=id, ssl=1)[0]
 
-        if "e" in dl:
-            ecode = -dl['e']
+        if "e" in mega:
+            self.checkError(mega['e'])
 
-            if ecode in (9, 16, 21):
-                self.offline()
-
-            elif ecode in (3, 13, 17, 18, 19):
-                self.tempOffline()
-
-            elif ecode in (1, 4, 6, 10, 15, 21):
-                self.retry(5, 30, _("Error code: [%s]") % -ecode)
-
-            else:
-                self.fail(_("Error code: [%s]") % -ecode)
-
-        attr = self.decryptAttr(dl['at'], key)
+        attr = self.decryptAttr(mega['at'], key)
 
         pyfile.name = attr['n'] + self.FILE_SUFFIX
-        pyfile.size = dl['s']
+        pyfile.size = mega['s']
 
         # self.req.http.c.setopt(SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
 
-        self.download(dl['g'])
+        self.download(mega['g'])
 
         self.decryptFile(key)
 
