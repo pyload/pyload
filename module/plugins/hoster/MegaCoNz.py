@@ -68,6 +68,8 @@ class MegaCoNz(Hoster):
 
     def getCipherKey(self, key):
         """ Construct the cipher key from the given data """
+        key = self.b64_decode(key)
+
         k        = key[0] ^ key[4], key[1] ^ key[5], key[2] ^ key[6], key[3] ^ key[7]
         iv       = key[4:6] + (0, 0)
         meta_mac = key[6:8]
@@ -87,7 +89,7 @@ class MegaCoNz(Hoster):
 
 
     def decryptAttr(self, data, key):
-        k, iv, meta_mac = self.getCipherKey(self.b64_decode(key))
+        k, iv, meta_mac = self.getCipherKey(key)
         cbc             = AES.new(k, AES.MODE_CBC, "\0" * 16)
         attr            = cbc.decrypt(self.b64_decode(data))
 
@@ -102,10 +104,8 @@ class MegaCoNz(Hoster):
     def decryptFile(self, key):
         """  Decrypts the file at lastDownload` """
 
-        key = self.b64_decode(key)
-
         # upper 64 bit of counter start
-        n = key[16:24]
+        n = self.b64_decode(key)[16:24]
 
         # convert counter to long and shift bytes
         k, iv, meta_mac = self.getCipherKey(key)
