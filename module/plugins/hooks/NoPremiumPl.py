@@ -6,7 +6,7 @@ from module.common.json_layer import json_loads as loads
 
 class NoPremiumPl(MultiHook):
     __name__ = "NoPremiumPl"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __type__ = "hook"
 
     __config__ = [("activated", "bool", "Activated", False),
