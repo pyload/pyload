@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'^unmatchable$'
 
@@ -52,7 +52,7 @@ class MultiHoster(SimpleHoster):
 
         if self.directDL:
             self.logDebug("Looking for direct download link...")
-            self.handleDirect()
+            self.handleDirect(pyfile)
 
         if self.link:
             self.pyfile.url = self.link

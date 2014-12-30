@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MultishareCz(SimpleHoster):
     __name__    = "MultishareCz"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
 
     __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)'
 
@@ -39,8 +39,8 @@ class MultishareCz(SimpleHoster):
         self.download("http://www.multishare.cz/html/download_premium.php?ID=%s" % self.info['pattern']['ID'])
 
 
-    def handleMulti(self):
-        self.html = self.load('http://www.multishare.cz/html/mms_ajax.php', post={"link": self.pyfile.url}, decode=True)
+    def handleMulti(self, pyfile):
+        self.html = self.load('http://www.multishare.cz/html/mms_ajax.php', post={"link": pyfile.url}, decode=True)
 
         self.checkInfo()
 
@@ -48,7 +48,7 @@ class MultishareCz(SimpleHoster):
             self.fail(_("Not enough credit left to download file"))
 
         url    = "http://dl%d.mms.multishare.cz/html/mms_process.php" % round(random() * 10000 * random())
-        params = {"u_ID": self.acc_info['u_ID'], "u_hash": self.acc_info['u_hash'], "link": self.pyfile.url}
+        params = {"u_ID": self.acc_info['u_ID'], "u_hash": self.acc_info['u_hash'], "link": pyfile.url}
 
         self.logDebug(url, params)
 

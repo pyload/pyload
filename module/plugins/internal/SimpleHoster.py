@@ -181,7 +181,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.85"
+    __version__ = "0.86"
 
     __pattern__ = r'^unmatchable$'
 
@@ -392,11 +392,11 @@ class SimpleHoster(Hoster):
 
         if self.directDL:
             self.logDebug("Looking for direct download link...")
-            self.handleDirect()
+            self.handleDirect(pyfile)
 
         if self.multihost and not self.link and not self.lastDownload:
             self.logDebug("Looking for leeched download link...")
-            self.handleMulti()
+            self.handleMulti(pyfile)
 
             if not self.link and not self.lastDownload:
                 self.MULTI_HOSTER = False
@@ -534,7 +534,7 @@ class SimpleHoster(Hoster):
         return self.info
 
 
-    def handleDirect(self, pyfile=None):
+    def handleDirect(self, pyfile):
         link = _isDirectLink(self, pyfile.url, self.resumeDownload)
 
         if link:
@@ -545,7 +545,7 @@ class SimpleHoster(Hoster):
             self.logDebug("Direct download link not found")
 
 
-    def handleMulti(self, pyfile=None):  #: Multi-hoster handler
+    def handleMulti(self, pyfile):  #: Multi-hoster handler
         pass
 
 

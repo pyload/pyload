@@ -15,7 +15,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
 
     __pattern__ = r'^unmatchable$'
 
@@ -139,7 +139,7 @@ class XFSHoster(SimpleHoster):
         return m.group(1).strip()  #@TODO: Remove .strip() in 0.4.10
 
 
-    def handleMulti(self, pyfile=None):
+    def handleMulti(self, pyfile):
         if not self.account:
             self.fail(_("Only registered or premium users can use url leech feature"))
 
@@ -152,7 +152,7 @@ class XFSHoster(SimpleHoster):
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
 
         inputs['tos'] = '1'
-        inputs['url_mass'] = self.pyfile.url
+        inputs['url_mass'] = pyfile.url
         inputs['up1oad_type'] = 'url'
 
         self.logDebug(action, inputs)
