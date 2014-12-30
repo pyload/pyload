@@ -8,18 +8,18 @@
 
 import re
 
-from urllib import urlencode, urlopen
 from urlparse import urljoin
 
 from module.common.json_layer import json_loads, json_dumps
+from module.network.RequestFactory import getURL
 from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, secondsToMidnight
 
 
 def api_download_info(url):
     json_data = ["yw7XQy2v9", ["download/info", {"link": url}]]
-    post_data = urlencode({'r': json_dumps(json_data)})
-    api_rep = urlopen("http://api.letitbit.net/json", data=post_data).read()
+    api_rep   = getURL("http://api.letitbit.net/json",
+                       post={'r': json_dumps(json_data)})
     return json_loads(api_rep)
 
 
@@ -36,7 +36,7 @@ def getInfo(urls):
 class LetitbitNet(SimpleHoster):
     __name__    = "LetitbitNet"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.+'
 
