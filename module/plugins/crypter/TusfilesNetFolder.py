@@ -10,7 +10,7 @@ from module.plugins.internal.XFSCrypter import XFSCrypter, create_getInfo
 class TusfilesNetFolder(XFSCrypter):
     __name__    = "TusfilesNetFolder"
     __type__    = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -33,7 +33,7 @@ class TusfilesNetFolder(XFSCrypter):
         return self.load(urljoin(self.pyfile.url, str(page_n)), decode=True)
 
 
-    def handleMultiPages(self):
+    def handlePages(self, pyfile):
         pages = re.search(self.PAGES_PATTERN, self.html)
         if pages:
             pages = int(math.ceil(int(pages.group('pages')) / 25.0))

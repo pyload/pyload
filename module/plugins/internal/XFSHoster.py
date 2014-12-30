@@ -82,7 +82,7 @@ class XFSHoster(SimpleHoster):
             self.directDL = bool(self.premium)
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile=None):
         link = self.getDownloadLink()
 
         if link:
@@ -101,8 +101,8 @@ class XFSHoster(SimpleHoster):
             self.fail(_("Download link not found"))
 
 
-    def handlePremium(self):
-        return self.handleFree()
+    def handlePremium(self, pyfile=None):
+        return self.handleFree(pyfile)
 
 
     def getDownloadLink(self):
@@ -139,7 +139,7 @@ class XFSHoster(SimpleHoster):
         return m.group(1).strip()  #@TODO: Remove .strip() in 0.4.10
 
 
-    def handleMulti(self):
+    def handleMulti(self, pyfile=None):
         if not self.account:
             self.fail(_("Only registered or premium users can use url leech feature"))
 

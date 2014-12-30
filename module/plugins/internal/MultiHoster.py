@@ -73,11 +73,11 @@ class MultiHoster(SimpleHoster):
         self.checkFile()
 
 
-    def handlePremium(self):
-        return self.handleFree()
+    def handlePremium(self, pyfile=None):
+        return self.handleFree(pyfile)
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile=None):
         if self.premium:
             raise NotImplementedError
         else:

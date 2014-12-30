@@ -12,7 +12,7 @@ from module.utils import fixup
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.36"
+    __version__ = "0.37"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -108,7 +108,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         self.links = self.getLinks()
 
         if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
-            self.handleMultiPages()
+            self.handlePages(pyfile)
 
         self.logDebug("Package has %d links" % len(self.links))
 
@@ -121,7 +121,9 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
     def checkNameSize(self, getinfo=True):
         if getinfo:
-            self.updateInfo(self.getInfo(self.pyfile.url, self.html))
+            self.logDebug("File info (BEFORE): %s" % self.info)
+            self.info.update(self.getInfo(self.pyfile.url, self.html))
+            self.logDebug("File info (AFTER): %s"  % self.info)
 
         name = self.info['name']
         url  = self.info['url']
@@ -133,7 +135,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
         folder = self.info['folder'] = self.pyfile.name
 
-        self.logDebug("File name: %s" % self.pyfile.name,
+        self.logDebug("File name: %s"   % self.pyfile.name,
                       "File folder: %s" % folder)
 
 
@@ -145,7 +147,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
         return re.findall(self.LINK_PATTERN, self.html)
 
 
-    def handleMultiPages(self):
+    def handlePages(self, pyfile):
         try:
             m = re.search(self.PAGES_PATTERN, self.html)
             pages = int(m.group(1))

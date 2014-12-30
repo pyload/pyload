@@ -94,10 +94,10 @@ class CaptchaBrotherhood(Hook):
         req = getRequest()
 
         url = "%ssendNewCaptcha.aspx?%s" % (self.API_URL,
-                                            urlencode({"username": self.getConfig("username"),
-                                                       "password": self.getConfig("passkey"),
-                                                       "captchaSource": "pyLoad",
-                                                       "timeout": "80"}))
+                                            urlencode({'username'     : self.getConfig("username"),
+                                                       'password'     : self.getConfig("passkey"),
+                                                       'captchaSource': "pyLoad",
+                                                       'timeout'      : "80"}))
 
         req.c.setopt(pycurl.URL, url)
         req.c.setopt(pycurl.POST, 1)
