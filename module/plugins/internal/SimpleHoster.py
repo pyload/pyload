@@ -181,7 +181,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.84"
+    __version__ = "0.85"
 
     __pattern__ = r'^unmatchable$'
 
@@ -430,6 +430,8 @@ class SimpleHoster(Hoster):
             self.retry(10, reason=_("Wrong captcha"))
 
         elif not self.lastDownload or not exists(fs_encode(self.lastDownload)):
+            self.lastDownload = ""
+
             errmsg = _("No file downloaded")
             if 'error' in self.info:
                 self.fail(errmsg, self.info['error'])
@@ -447,6 +449,8 @@ class SimpleHoster(Hoster):
                 errmsg = check.strip().capitalize()
                 if self.lastCheck:
                     errmsg += " | " + self.lastCheck.group(0).strip()
+
+                self.lastDownload = ""
                 self.retry(10, 60, errmsg)
 
 
@@ -473,7 +477,8 @@ class SimpleHoster(Hoster):
 
     def checkStatus(self, getinfo=True):
         if getinfo:
-            self.updateInfo(self.getInfo(self.pyfile.url, self.html))
+            self.logDebug("File info (BEFORE): %s" % self.info)
+            self.info.update(self.getInfo(self.pyfile.url, self.html))
 
         status = self.info['status']
 
@@ -490,7 +495,9 @@ class SimpleHoster(Hoster):
 
     def checkNameSize(self, getinfo=True):
         if getinfo:
-            self.updateInfo(self.getInfo(self.pyfile.url, self.html))
+            self.logDebug("File info (BEFORE): %s" % self.info)
+            self.info.update(self.getInfo(self.pyfile.url, self.html))
+            self.logDebug("File info (AFTER): %s"  % self.info)
 
         name = self.info['name']
         size = self.info['size']
@@ -515,8 +522,8 @@ class SimpleHoster(Hoster):
 
         if self.html:
             self.checkErrors()
+            self.checkNameSize()
 
-        self.checkNameSize()
         self.checkStatus(getinfo=False)
 
 
@@ -527,28 +534,22 @@ class SimpleHoster(Hoster):
         return self.info
 
 
-    def updateInfo(self, info):
-        self.logDebug(_("File info (BEFORE): %s") % self.info)
-        self.info.update(info)
-        self.logDebug(_("File info (AFTER): %s")  % self.info)
-
-
-    def handleDirect(self):
-        link = _isDirectLink(self, self.pyfile.url, self.resumeDownload)
+    def handleDirect(self, pyfile=None):
+        link = _isDirectLink(self, pyfile.url, self.resumeDownload)
 
         if link:
             self.logInfo(_("Direct download link detected"))
 
             self.link = link
         else:
-            self.logDebug(_("Direct download link not found"))
+            self.logDebug("Direct download link not found")
 
 
-    def handleMulti(self):  #: Multi-hoster handler
+    def handleMulti(self, pyfile=None):  #: Multi-hoster handler
         pass
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile=None):
         if not hasattr(self, 'LINK_FREE_PATTERN'):
             self.fail(_("Free download not implemented"))
 
@@ -563,7 +564,7 @@ class SimpleHoster(Hoster):
             self.fail(e)
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile=None):
         if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
             self.fail(_("Premium download not implemented"))
 
