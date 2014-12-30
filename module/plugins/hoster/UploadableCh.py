@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadableCh(SimpleHoster):
     __name__    = "UploadableCh"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
 
@@ -31,11 +31,6 @@ class UploadableCh(SimpleHoster):
     WAIT_PATTERN = r'>Please wait.+?<'
 
     RECAPTCHA_KEY = "6LdlJuwSAAAAAPJbPIoUhyqOJd7-yrah5Nhim5S3"
-
-
-    def setup(self):
-        self.multiDL    = False
-        self.chunkLimit = 1
 
 
     def handleFree(self):
