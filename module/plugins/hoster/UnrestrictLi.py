@@ -12,9 +12,9 @@ from module.plugins.internal.SimpleHoster import secondsToMidnight
 class UnrestrictLi(MultiHoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?(unrestrict|unr)\.li'
+    __pattern__ = r'https?://(?:www\.)?(unrestrict|unr)\.li/dl/[\w^_]+'
 
     __description__ = """Unrestrict.li hoster plugin"""
     __license__     = "GPLv3"

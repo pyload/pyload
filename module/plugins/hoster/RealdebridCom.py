@@ -14,9 +14,9 @@ from module.utils import parseFileSize
 class RealdebridCom(MultiHoster):
     __name__    = "RealdebridCom"
     __type__    = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
 
-    __pattern__ = r'https?://(b\.rdb\.so/d/|s\d+\.real-debrid\.com/dl/)[\w^_]+'
+    __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'
 
     __description__ = """Real-Debrid.com hoster plugin"""
     __license__     = "GPLv3"

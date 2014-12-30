@@ -8,9 +8,9 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class DebridItaliaCom(MultiHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
-    __pattern__ = r'http://s\d+\.debriditalia\.com/dl/\d+'
+    __pattern__ = r'https?://(?:www\.|s\d+\.)?debriditalia\.com/dl/\d+'
 
     __description__ = """Debriditalia.com hoster plugin"""
     __license__     = "GPLv3"
