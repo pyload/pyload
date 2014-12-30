@@ -9,7 +9,7 @@ from module.utils import remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __config__ = [("mode"        , "all;listed;unlisted", "Use for plugins (if supported)"               , "all"),
                   ("pluginlist"  , "str"                , "Plugin list (comma separated)"                , ""   ),
@@ -72,7 +72,7 @@ class MultiHook(Hook):
     def pluginCached(self):
         if not self.plugins:
             try:
-                pluginset = self.pluginSet(self.getHosters() if self.type is "hoster" else self.getCrypters())
+                pluginset = self.pluginSet(self.getHosters() if self.type == "hoster" else self.getCrypters())
             except Exception, e:
                 self.logError(e)
                 return []
@@ -80,8 +80,8 @@ class MultiHook(Hook):
             try:
                 configmode = self.getConfig("mode", 'all')
                 if configmode in ("listed", "unlisted"):
-                    list      = self.getConfig("pluginlist", '').replace('|', ',').replace(';', ',').split(',')
-                    configset = self.pluginSet(list)
+                    pluginlist = self.getConfig("pluginlist", '').replace('|', ',').replace(';', ',').split(',')
+                    configset  = self.pluginSet(pluginlist)
 
                     if configmode == "listed":
                         pluginset &= configset
@@ -96,16 +96,17 @@ class MultiHook(Hook):
         return self.plugins
 
 
-    def pluginSet(self, hosters):
-        hosters = set((str(x).strip().lower() for x in hosters))
+    def pluginSet(self, plugins):
+        plugins = set((str(x).strip().lower() for x in plugins))
 
         for rep in self.PLUGIN_REPLACEMENTS:
-            if rep[0] in hosters:
-                hosters.remove(rep[0])
-                hosters.add(rep[1])
+            if rep[0] in plugins:
+                plugins.remove(rep[0])
+                plugins.add(rep[1])
 
-        hosters.discard('')
-        return hosters
+        plugins.discard('')
+
+        return plugins
 
 
     def getHosters(self):
@@ -148,7 +149,7 @@ class MultiHook(Hook):
     def overridePlugins(self):
         excludedList = []
 
-        if self.type is "hoster":
+        if self.type == "hoster":
             pluginMap    = dict((name.lower(), name) for name in self.core.pluginManager.hosterPlugins.iterkeys())
             accountList  = [account.type.lower() for account in self.core.api.getAccounts(False) if account.valid and account.premium]
         else:
@@ -212,7 +213,7 @@ class MultiHook(Hook):
 
 
     def unload(self):
-        """Remove override for all hosters. Scheduler job is removed by hookmanager"""
+        """Remove override for all plugins. Scheduler job is removed by hookmanager"""
         for plugin in self.supported:
             self.unloadPlugin(plugin)
 
@@ -226,7 +227,7 @@ class MultiHook(Hook):
 
     def downloadFailed(self, pyfile):
         """remove plugin override if download fails but not if file is offline/temp.offline"""
-        if self.type is "hoster" and pyfile.hasStatus("failed") and self.getConfig("revertfailed", True):
+        if pyfile.hasStatus("failed") and self.getConfig("revertfailed", True):
             hdict = self.core.pluginManager.plugins[self.type][pyfile.pluginname]
             if "new_name" in hdict and hdict['new_name'] == self.__name__:
                 self.logDebug("Unload MultiHook", pyfile.pluginname, hdict)
