@@ -6,48 +6,55 @@ from module.network.HTTPRequest import BadHeader
 
 
 class EmbeduploadCom(Crypter):
-    __name__ = "EmbeduploadCom"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?embedupload.com/\?d=.*'
+    __name__    = "EmbeduploadCom"
+    __type__    = "crypter"
     __version__ = "0.02"
+
+    __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.+'
+    __config__ = [("use_subfolder", "bool", "Save package to subfolder", True),
+                  ("subfolder_per_package", "bool", "Create a subfolder for each package", True),
+                  ("preferedHoster", "str", "Prefered hoster list (bar-separated)", "embedupload"),
+                  ("ignoredHoster", "str", "Ignored hoster list (bar-separated)", "")]
+
     __description__ = """EmbedUpload.com decrypter plugin"""
-    __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "embedupload"),
-                  ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     LINK_PATTERN = r'<div id="([^"]+)"[^>]*>\s*<a href="([^"]+)" target="_blank" (?:class="DownloadNow"|style="color:red")>'
+
 
     def decrypt(self, pyfile):
         self.html = self.load(pyfile.url, decode=True)
         tmp_links = []
-        new_links = []
 
-        found = re.findall(self.LINK_PATTERN, self.html)
-        if found:
+        m = re.findall(self.LINK_PATTERN, self.html)
+        if m:
             prefered_set = set(self.getConfig("preferedHoster").split('|'))
             prefered_set = map(lambda s: s.lower().split('.')[0], prefered_set)
-            print "PF", prefered_set
-            tmp_links.extend([x[1] for x in found if x[0] in prefered_set])
-            self.getLocation(tmp_links, new_links)
 
-            if not new_links:
+            self.logDebug("PF: %s" % prefered_set)
+
+            tmp_links.extend([x[1] for x in m if x[0] in prefered_set])
+            self.urls = self.getLocation(tmp_links)
+
+            if not self.urls:
                 ignored_set = set(self.getConfig("ignoredHoster").split('|'))
                 ignored_set = map(lambda s: s.lower().split('.')[0], ignored_set)
-                print "IG", ignored_set
-                tmp_links.extend([x[1] for x in found if x[0] not in ignored_set])
-                self.getLocation(tmp_links, new_links)
 
-        if new_links:
-            self.core.files.addLinks(new_links, pyfile.package().id)
-        else:
-            self.fail('Could not extract any links')
+                self.logDebug("IG: %s" % ignored_set)
 
-    def getLocation(self, tmp_links, new_links):
+                tmp_links.extend([x[1] for x in m if x[0] not in ignored_set])
+                self.urls = self.getLocation(tmp_links)
+
+
+    def getLocation(self, tmp_links):
+        new_links = []
         for link in tmp_links:
             try:
                 header = self.load(link, just_header=True)
-                if "location" in header:
+                if 'location' in header:
                     new_links.append(header['location'])
             except BadHeader:
                 pass
+        return new_links

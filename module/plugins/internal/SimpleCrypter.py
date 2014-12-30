@@ -1,78 +1,141 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: zoidberg
-"""
-
 import re
 
+from urlparse import urlparse
+
 from module.plugins.Crypter import Crypter
-from module.utils import html_unescape
-from module.plugins.internal.SimpleHoster import replace_patterns
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
+from module.utils import fixup
 
 
-class SimpleCrypter(Crypter):
-    __name__ = "SimpleCrypter"
-    __version__ = "0.07"
-    __pattern__ = None
-    __type__ = "crypter"
+class SimpleCrypter(Crypter, SimpleHoster):
+    __name__    = "SimpleCrypter"
+    __type__    = "crypter"
+    __version__ = "0.36"
+
+    __pattern__ = r'^unmatchable$'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+
     __description__ = """Simple decrypter plugin"""
-    __author_name__ = ("stickell", "zoidberg")
-    __author_mail__ = ("l.stickell@yahoo.it", "zoidberg@mujmail.cz")
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
+
+
     """
-    These patterns should be defined by each crypter:
+    Following patterns should be defined by each crypter:
 
-    LINK_PATTERN: group(1) must be a download link
-    example: <div class="link"><a href="(http://speedload.org/\w+)
+      LINK_PATTERN: Download link or regex to catch links in group(1)
+        example: LINK_PATTERN = r'<div class="link"><a href="(.+?)"'
 
-    TITLE_PATTERN: (optional) the group defined by 'title' should be the title
-    example: <title>Files of: (?P<title>[^<]+) folder</title>
+      NAME_PATTERN: (optional) folder name or page title
+        example: NAME_PATTERN = r'<title>Files of: (?P<N>[^<]+) folder</title>'
 
-    If it's impossible to extract the links using the LINK_PATTERN only you can override the getLinks method.
+      OFFLINE_PATTERN: (optional) Checks if the page is unreachable
+        example: OFFLINE_PATTERN = r'File (deleted|not found)'
 
-    If the links are disposed on multiple pages you need to define a pattern:
+      TEMP_OFFLINE_PATTERN: (optional) Checks if the page is temporarily unreachable
+        example: TEMP_OFFLINE_PATTERN = r'Server maintainance'
 
-    PAGES_PATTERN: the group defined by 'pages' must be the total number of pages
 
-    and a function:
+    You can override the getLinks method if you need a more sophisticated way to extract the links.
 
-    loadPage(self, page_n):
-    must return the html of the page number 'page_n'
+
+    If the links are splitted on multiple pages you can define the PAGES_PATTERN regex:
+
+      PAGES_PATTERN: (optional) group(1) should be the number of overall pages containing the links
+        example: PAGES_PATTERN = r'Pages: (\d+)'
+
+    and its loadPage method:
+
+
+      def loadPage(self, page_n):
+          return the html of the page number page_n
     """
 
-    FILE_URL_REPLACEMENTS = []
+    LINK_PATTERN = None
+
+    NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
+    URL_REPLACEMENTS  = []
+
+    TEXT_ENCODING = False  #: Set to True or encoding name if encoding in http header is not correct
+    COOKIES       = True  #: or False or list of tuples [(domain, name, value)]
+
+    LOGIN_ACCOUNT = False
+    LOGIN_PREMIUM = False
+
+
+    #@TODO: Remove in 0.4.10
+    def init(self):
+        account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
+        account = self.core.accountManager.getAccountPlugin(account_name)
+
+        if account and account.canUse():
+            self.user, data = account.selectAccount()
+            self.req = account.getAccountRequest(self.user)
+            self.premium = account.isPremium(self.user)
+
+            self.account = account
+
+
+    def prepare(self):
+        self.info  = {}
+        self.links = []  #@TODO: Move to hoster class in 0.4.10
+
+        if self.LOGIN_PREMIUM and not self.premium:
+            self.fail(_("Required premium account not found"))
+
+        if self.LOGIN_ACCOUNT and not self.account:
+            self.fail(_("Required account not found"))
+
+        self.req.setOption("timeout", 120)
+
+        if isinstance(self.COOKIES, list):
+            set_cookies(self.req.cj, self.COOKIES)
+
+        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
+
 
     def decrypt(self, pyfile):
-        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
+        self.prepare()
 
-        self.html = self.load(pyfile.url, decode=True)
+        self.preload()
+        self.checkInfo()
 
-        package_name, folder_name = self.getPackageNameAndFolder()
-
-        self.package_links = self.getLinks()
+        self.links = self.getLinks()
 
         if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
             self.handleMultiPages()
 
-        self.logDebug('Package has %d links' % len(self.package_links))
+        self.logDebug("Package has %d links" % len(self.links))
 
-        if self.package_links:
-            self.packages = [(package_name, self.package_links, folder_name)]
+        if self.links:
+            self.packages = [(self.info['name'], self.links, self.info['folder'])]
+
+        elif not self.urls and not self.packages:  #@TODO: Remove in 0.4.10
+            self.fail("No link grabbed")
+
+
+    def checkNameSize(self, getinfo=True):
+        if getinfo:
+            self.updateInfo(self.getInfo(self.pyfile.url, self.html))
+
+        name = self.info['name']
+        url  = self.info['url']
+
+        if name and name != url:
+            self.pyfile.name = name
         else:
-            self.fail('Could not extract any links')
+            self.pyfile.name = self.info['name'] = urlparse(name).path.split('/')[-1]
+
+        folder = self.info['folder'] = self.pyfile.name
+
+        self.logDebug("File name: %s" % self.pyfile.name,
+                      "File folder: %s" % folder)
+
 
     def getLinks(self):
         """
@@ -81,26 +144,14 @@ class SimpleCrypter(Crypter):
         """
         return re.findall(self.LINK_PATTERN, self.html)
 
-    def getPackageNameAndFolder(self):
-        if hasattr(self, 'TITLE_PATTERN'):
-            m = re.search(self.TITLE_PATTERN, self.html)
-            if m:
-                name = folder = html_unescape(m.group('title').strip())
-                self.logDebug("Found name [%s] and folder [%s] in package info" % (name, folder))
-                return name, folder
-
-        name = self.pyfile.package().name
-        folder = self.pyfile.package().folder
-        self.logDebug("Package info not found, defaulting to pyfile name [%s] and folder [%s]" % (name, folder))
-        return name, folder
 
     def handleMultiPages(self):
-        pages = re.search(self.PAGES_PATTERN, self.html)
-        if pages:
-            pages = int(pages.group('pages'))
-        else:
+        try:
+            m = re.search(self.PAGES_PATTERN, self.html)
+            pages = int(m.group(1))
+        except:
             pages = 1
 
         for p in xrange(2, pages + 1):
             self.html = self.loadPage(p)
-            self.package_links += self.getLinks()
+            self.links += self.getLinks()

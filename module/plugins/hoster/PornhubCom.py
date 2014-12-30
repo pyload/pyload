@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 
 import re
+
 from module.plugins.Hoster import Hoster
 
 
 class PornhubCom(Hoster):
-    __name__ = "PornhubCom"
-    __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=[\w\d]+'
-    __version__ = "0.5"
+    __name__    = "PornhubCom"
+    __type__    = "hoster"
+    __version__ = "0.50"
+
+    __pattern__ = r'http://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+'
+
     __description__ = """Pornhub.com hoster plugin"""
-    __author_name__ = "jeix"
-    __author_mail__ = "jeix@hasnomail.de"
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de")]
+
 
     def process(self, pyfile):
         self.download_html()
@@ -21,14 +25,16 @@ class PornhubCom(Hoster):
         pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
+
     def download_html(self):
         url = self.pyfile.url
         self.html = self.load(url)
 
+
     def get_file_url(self):
         """ returns the absolute downloadable filepath
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         url = "http://www.pornhub.com//gateway.php"
@@ -40,7 +46,7 @@ class PornhubCom(Hoster):
         post_data += "\x02\x00\x02\x2d\x31\x02\x00\x20"
         post_data += "add299463d4410c6d1b1c418868225f7"
 
-        content = self.req.load(url, post=str(post_data))
+        content = self.load(url, post=str(post_data))
 
         new_content = ""
         for x in content:
@@ -51,17 +57,16 @@ class PornhubCom(Hoster):
 
         content = new_content
 
-        file_url = re.search(r'flv_url.*(http.*?)##post_roll', content).group(1)
+        return re.search(r'flv_url.*(http.*?)##post_roll', content).group(1)
 
-        return file_url
 
     def get_file_name(self):
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
-        match = re.search(r'<title[^>]+>([^<]+) - ', self.html)
-        if match:
-            name = match.group(1)
+        m = re.search(r'<title[^>]+>([^<]+) - ', self.html)
+        if m:
+            name = m.group(1)
         else:
             matches = re.findall('<h1>(.*?)</h1>', self.html)
             if len(matches) > 1:
@@ -71,10 +76,11 @@ class PornhubCom(Hoster):
 
         return name + '.flv'
 
+
     def file_exists(self):
         """ returns True or False
         """
-        if self.html is None:
+        if not self.html:
             self.download_html()
 
         if re.search(r'This video is no longer in our database or is in conversion', self.html) is not None:

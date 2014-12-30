@@ -1,46 +1,41 @@
 # -*- coding: utf-8 -*-
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN, Godofdream, zoidberg
-"""
-import time
 import httplib
+import time
+
 from module.plugins.Hook import Hook
 
 
 class WindowsPhoneToastNotify(Hook):
-    __name__ = "WindowsPhoneToastNotify"
-    __version__ = "0.02"
-    __description__ = """Send push notifications to Windows Phone"""
-    __author_name__ = "Andy Voigt"
-    __author_mail__ = "phone-support@hotmail.de"
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("force", "bool", "Force even if client is connected", False),
+    __name__    = "WindowsPhoneToastNotify"
+    __type__    = "hook"
+    __version__ = "0.03"
+
+    __config__ = [("force", "bool", "Force even if client is connected", False),
                   ("pushId", "str", "pushId", ""),
                   ("pushUrl", "str", "pushUrl", ""),
                   ("pushTimeout", "int", "Timeout between notifications in seconds", 0)]
 
+    __description__ = """Send push notifications to Windows Phone"""
+    __license__     = "GPLv3"
+    __authors__     = [("Andy Voigt", "phone-support@hotmail.de")]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
+
+
     def setup(self):
-        self.info = {}
+        self.info = {}  #@TODO: Remove in 0.4.10
+
 
     def getXmlData(self):
         myxml = ("<?xml version='1.0' encoding='utf-8'?> <wp:Notification xmlns:wp='WPNotification'> "
                  "<wp:Toast> <wp:Text1>Pyload Mobile</wp:Text1> <wp:Text2>Captcha waiting!</wp:Text2> "
                  "</wp:Toast> </wp:Notification>")
         return myxml
+
 
     def doRequest(self):
         URL = self.getConfig("pushUrl")
@@ -56,6 +51,7 @@ class WindowsPhoneToastNotify(Hook):
         webservice.send(request)
         webservice.close()
         self.setStorage("LAST_NOTIFY", time.time())
+
 
     def newCaptchaTask(self, task):
         if not self.getConfig("pushId") or not self.getConfig("pushUrl"):

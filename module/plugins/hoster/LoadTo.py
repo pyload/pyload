@@ -1,89 +1,74 @@
 # -*- coding: utf-8 -*-
-############################################################################
-# This program is free software: you can redistribute it and/or modify     #
-# it under the terms of the GNU Affero General Public License as           #
-# published by the Free Software Foundation, either version 3 of the       #
-# License, or (at your option) any later version.                          #
-#                                                                          #
-# This program is distributed in the hope that it will be useful,          #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
-# GNU Affero General Public License for more details.                      #
-#                                                                          #
-# You should have received a copy of the GNU Affero General Public License #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
-############################################################################
-
-# Test links (random.bin):
+#
+# Test links:
 # http://www.load.to/JWydcofUY6/random.bin
 # http://www.load.to/oeSmrfkXE/random100.bin
 
 import re
 
+from module.plugins.internal.CaptchaService import SolveMedia
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
-from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class LoadTo(SimpleHoster):
-    __name__ = "LoadTo"
-    __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?load\.to/\w+'
-    __version__ = "0.13"
-    __description__ = """Load.to hoster plugin"""
-    __author_name__ = ("halfman", "stickell")
-    __author_mail__ = ("Pulpan3@gmail.com", "l.stickell@yahoo.it")
+    __name__    = "LoadTo"
+    __type__    = "hoster"
+    __version__ = "0.18"
 
-    FILE_INFO_PATTERN = r'<a [^>]+>(?P<N>.+)</a></h3>\s*Size: (?P<S>\d+) (?P<U>[kKmMgG]?i?[bB])'
-    URL_PATTERN = r'<form method="post" action="(.+?)"'
-    FILE_OFFLINE_PATTERN = r'Can\'t find file. Please check URL.'
+    __pattern__ = r'http://(?:www\.)?load\.to/\w+'
+
+    __description__ = """ Load.to hoster plugin """
+    __license__     = "GPLv3"
+    __authors__     = [("halfman", "Pulpan3@gmail.com"),
+                       ("stickell", "l.stickell@yahoo.it")]
+
+
+    NAME_PATTERN = r'<h1>(?P<N>.+)</h1>'
+    SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    OFFLINE_PATTERN = r'>Can\'t find file'
+
+    LINK_PATTERN = r'<form method="post" action="(.+?)"'
     WAIT_PATTERN = r'type="submit" value="Download \((\d+)\)"'
-    RECAPTCHA_PATTERN = r'http://www.google.com/recaptcha/api/challenge'
-    RECAPTCHA_KEY = "6Lc34eISAAAAAKNbPVyxBgNriTjPRmF-FA1oxApG"
+
+    URL_REPLACEMENTS = [(r'(\w)$', r'\1/')]
+
 
     def setup(self):
         self.multiDL = True
         self.chunkLimit = 1
 
-    def process(self, pyfile):
-        self.html = self.load(pyfile.url, decode=True)
-        self.getFileInfo()
 
-        # Check if File is online
-        if re.search(self.FILE_OFFLINE_PATTERN, self.html):
-            self.offline()
-
+    def handleFree(self):
         # Search for Download URL
-        m = re.search(self.URL_PATTERN, self.html)
-        if not m:
-            self.parseError('Unable to detect download URL')
+        m = re.search(self.LINK_PATTERN, self.html)
+        if m is None:
+            self.error(_("LINK_PATTERN not found"))
+
         download_url = m.group(1)
 
         # Set Timer - may be obsolete
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            self.wait(m.group(1))
+            self.wait(int(m.group(1)))
 
-        # Check if reCaptcha is present
-        m = re.search(self.RECAPTCHA_PATTERN, self.html)
-        if not m:  # No captcha found
+        # Load.to is using solvemedia captchas since ~july 2014:
+        solvemedia = SolveMedia(self)
+        captcha_key = solvemedia.detect_key()
+
+        if captcha_key is None:
             self.download(download_url)
         else:
-            recaptcha = ReCaptcha(self)
-            for _ in xrange(5):
-                challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
-                if not response == '0':
-                    break
-            else:
-                self.fail("No valid captcha solution received")
+            challenge, response = solvemedia.challenge(captcha_key)
 
-            self.download(download_url,
-                          post={'recaptcha_challenge_field': challenge, 'recaptcha_response_field': response})
+            self.download(download_url, post={"adcopy_challenge": challenge, "adcopy_response": response})
 
-            # Verifiy reCaptcha by checking content of file for html 404-error
-            check = self.checkDownload({"404": re.compile("\A<h1>404 Not Found</h1>")})
+            check = self.checkDownload({'404': re.compile("\A<h1>404 Not Found</h1>"), 'html': re.compile("html")})
+
             if check == "404":
-                self.logWarning("The captcha you entered was incorrect. Please try again.")
                 self.invalidCaptcha()
+                self.retry()
+            elif check == "html":
+                self.logWarning(_("Downloaded file is an html page, will retry"))
                 self.retry()
 
 

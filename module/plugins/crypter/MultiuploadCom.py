@@ -1,64 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import re
-from time import time
-
-from module.plugins.Crypter import Crypter
-from module.common.json_layer import json_loads
+from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
-class MultiuploadCom(Crypter):
-    __name__ = "MultiuploadCom"
-    __type__ = "crypter"
-    __pattern__ = r'http://(?:www\.)?multiupload.com/(\w+)'
-    __version__ = "0.01"
-    __description__ = """MultiUpload.com decrypter plugin"""
-    __config__ = [("preferedHoster", "str", "Prefered hoster list (bar-separated) ", "multiupload"),
-                  ("ignoredHoster", "str", "Ignored hoster list (bar-separated) ", "")]
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+class MultiuploadCom(DeadCrypter):
+    __name__    = "MultiuploadCom"
+    __type__    = "crypter"
+    __version__ = "0.02"
 
-    ML_LINK_PATTERN = r'<div id="downloadbutton_" style=""><a href="([^"]+)"'
+    __pattern__ = r'http://(?:www\.)?multiupload\.(com|nl)/\w+'
+    __config__  = []
 
-    def decrypt(self, pyfile):
-        self.html = self.load(pyfile.url)
-        found = re.search(self.ML_LINK_PATTERN, self.html)
-        ml_url = found.group(1) if found else None
+    __description__ = """ MultiUpload.com decrypter plugin """
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
-        json_list = json_loads(self.load("http://multiupload.com/progress/", get={
-            "d": re.match(self.__pattern__, pyfile.url).group(1),
-            "r": str(int(time() * 1000))
-        }))
-        new_links = []
 
-        prefered_set = map(lambda s: s.lower().split('.')[0], set(self.getConfig("preferedHoster").split('|')))
-
-        if ml_url and 'multiupload' in prefered_set:
-            new_links.append(ml_url)
-
-        for link in json_list:
-            if link['service'].lower() in prefered_set and int(link['status']) and not int(link['deleted']):
-                url = self.getLocation(link['url'])
-                if url:
-                    new_links.append(url)
-
-        if not new_links:
-            ignored_set = map(lambda s: s.lower().split('.')[0], set(self.getConfig("ignoredHoster").split('|')))
-
-            if 'multiupload' not in ignored_set:
-                new_links.append(ml_url)
-
-            for link in json_list:
-                if link['service'].lower() not in ignored_set and int(link['status']) and not int(link['deleted']):
-                    url = self.getLocation(link['url'])
-                    if url:
-                        new_links.append(url)
-
-        if new_links:
-            self.core.files.addLinks(new_links, pyfile.package().id)
-        else:
-            self.fail('Could not extract any links')
-
-    def getLocation(self, url):
-        header = self.load(url, just_header=True)
-        return header['location'] if "location" in header else None
+getInfo = create_getInfo(MultiuploadCom)

@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.XFileSharingPro import XFileSharingPro, create_getInfo
+from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 
 
-class FilerioCom(XFileSharingPro):
-    __name__ = "FilerioCom"
-    __type__ = "hoster"
+class FilerioCom(XFSHoster):
+    __name__    = "FilerioCom"
+    __type__    = "hoster"
+    __version__ = "0.07"
+
     __pattern__ = r'http://(?:www\.)?(filerio\.(in|com)|filekeen\.com)/\w{12}'
-    __version__ = "0.02"
+
     __description__ = """FileRio.in hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    HOSTER_NAME = "filerio.in"
 
-    FILE_OFFLINE_PATTERN = '<b>&quot;File Not Found&quot;</b>|File has been removed due to Copyright Claim'
-    FILE_URL_REPLACEMENTS = [(r'http://.*?/', 'http://filerio.in/')]
+    HOSTER_DOMAIN = "filerio.in"
 
-    def setup(self):
-        self.resumeDownload = self.multiDL = self.premium
+    URL_REPLACEMENTS = [(r'filekeen\.com', "filerio.in")]
+
+    OFFLINE_PATTERN = r'>&quot;File Not Found|File has been removed'
 
 
 getInfo = create_getInfo(FilerioCom)

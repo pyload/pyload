@@ -1,18 +1,31 @@
 # -*- coding: utf-8 -*-
 
-from captcha import OCR
-import Image
-from os import sep
-from os.path import dirname
-from os.path import abspath
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
 from glob import glob
+from os import sep
+from os.path import abspath, dirname
+
+from module.plugins.captcha.captcha import OCR
 
 
 class LinksaveIn(OCR):
-    __name__ = "LinksaveIn"
+    __name__    = "LinksaveIn"
+    __type__    = "ocr"
+    __version__ = "0.10"
+
+    __description__ = """Linksave.in ocr plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+
+
     def __init__(self):
         OCR.__init__(self)
         self.data_dir = dirname(abspath(__file__)) + sep + "LinksaveIn" + sep
+
 
     def load_image(self, image):
         im = Image.open(image)
@@ -40,6 +53,7 @@ class LinksaveIn(OCR):
         self.image = new.copy()
         self.pixels = self.image.load()
         self.result_captcha = ''
+
 
     def get_bg(self):
         stat = {}
@@ -71,11 +85,12 @@ class LinksaveIn(OCR):
                         stat[bgpath] += 1
         max_p = 0
         bg = ""
-        for bgpath, value in stat.items():
+        for bgpath, value in stat.iteritems():
             if max_p < value:
                 bg = bgpath
                 max_p = value
         return bg
+
 
     def substract_bg(self, bgpath):
         bg = Image.open(bgpath)
@@ -99,6 +114,7 @@ class LinksaveIn(OCR):
                 if rgb_c == rgb_bg:
                     orgpix[x, y] = (255,255,255)
 
+
     def eval_black_white(self):
         new = Image.new("RGB", (140, 75))
         pix = new.load()
@@ -120,6 +136,7 @@ class LinksaveIn(OCR):
         self.image = new
         self.pixels = self.image.load()
 
+
     def get_captcha(self, image):
         self.load_image(image)
         bg = self.get_bg()
@@ -139,11 +156,3 @@ class LinksaveIn(OCR):
             final += self.result_captcha
 
         return final
-
-if __name__ == '__main__':
-    import urllib
-    ocr = LinksaveIn()
-    testurl = "http://linksave.in/captcha/cap.php?hsh=2229185&code=ZzHdhl3UffV3lXTH5U4b7nShXj%2Bwma1vyoNBcbc6lcc%3D"
-    urllib.urlretrieve(testurl, ocr.data_dir+"captcha.gif")
-
-    print ocr.get_captcha(ocr.data_dir+'captcha.gif')

@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiHoster import MultiHoster
-from module.network.RequestFactory import getURL
 from module.common.json_layer import json_loads
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class LinksnappyCom(MultiHoster):
-    __name__ = "LinksnappyCom"
-    __version__ = "0.01"
-    __type__ = "hook"
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", ""),
-                  ("unloadFailing", "bool", "Revert to standard download if download fails", False),
+class LinksnappyCom(MultiHook):
+    __name__    = "LinksnappyCom"
+    __type__    = "hook"
+    __version__ = "0.03"
+
+    __config__ = [("mode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                  ("pluginlist", "str", "Hoster list (comma separated)", ""),
+                  ("revertfailed", "bool", "Revert to standard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Linksnappy.com hook plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
-    def getHoster(self):
-        json_data = getURL('http://gen.linksnappy.com/lseAPI.php?act=FILEHOSTS')
+
+    def getHosters(self):
+        json_data = self.getURL("http://gen.linksnappy.com/lseAPI.php", get={'act': "FILEHOSTS"})
         json_data = json_loads(json_data)
 
         return json_data['return'].keys()

@@ -1,86 +1,60 @@
 # -*- coding: utf-8 -*-
 
-# Test links (random.bin):
-# http://5pnm24ltcw.1fichier.com/
-
 import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class OneFichierCom(SimpleHoster):
-    __name__ = "OneFichierCom"
-    __type__ = "hoster"
-    __pattern__ = r'(http://(?P<id>\w+)\.(?P<host>(1fichier|d(es)?fichiers|pjointe)\.(com|fr|net|org)|(cjoint|mesfichiers|piecejointe|oi)\.(org|net)|tenvoi\.(com|org|net)|dl4free\.com|alterupload\.com|megadl.fr))/?'
-    __version__ = "0.61"
+    __name__    = "OneFichierCom"
+    __type__    = "hoster"
+    __version__ = "0.75"
+
+    __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
+
     __description__ = """1fichier.com hoster plugin"""
-    __author_name__ = ("fragonib", "the-razer", "zoidberg", "imclem", "stickell", "Elrick69")
-    __author_mail__ = ("fragonib[AT]yahoo[DOT]es", "daniel_ AT gmx DOT net", "zoidberg@mujmail.cz",
-                       "imclem on github", "l.stickell@yahoo.it", "elrick69[AT]rocketmail[DOT]com")
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+                       ("the-razer", "daniel_ AT gmx DOT net"),
+                       ("zoidberg", "zoidberg@mujmail.cz"),
+                       ("imclem", None),
+                       ("stickell", "l.stickell@yahoo.it"),
+                       ("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
-    FILE_NAME_PATTERN = r'">Filename :</th>\s*<td>(?P<N>[^<]+)</td>'
-    FILE_SIZE_PATTERN = r'<th>Size :</th>\s*<td>(?P<S>[^<]+)</td>'
-    FILE_OFFLINE_PATTERN = r'The (requested)? file (could not be found|has been deleted)'
 
-    FILE_URL_REPLACEMENTS = [(__pattern__, r'http://\g<id>.\g<host>/en/')]
+    NAME_PATTERN = r'>FileName :</td>\s*<td.*>(?P<N>.+?)<'
+    SIZE_PATTERN = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
-    WAITING_PATTERN = "Warning ! Without premium status, you must wait between each downloads"
-    NOT_PARALLEL = r"Warning ! Without premium status, you can download only one file at a time"
-    WAIT_TIME = 10 * 60  # Retry time between each free download
-    RETRY_TIME = 15 * 60  # Default retry time in seconds (if detected parallel download)
+    OFFLINE_PATTERN = r'File not found !\s*<'
+
+    COOKIES = [("1fichier.com", "LG", "en")]
+
+    WAIT_PATTERN = r'>You must wait (\d+) minutes'
+
 
     def setup(self):
-        self.multiDL = self.premium
+        self.multiDL        = self.premium
         self.resumeDownload = True
 
+
     def handleFree(self):
-        self.html = self.load(self.pyfile.url, decode=True)
+        id = self.info['pattern']['ID1'] or self.info['pattern']['ID2']
+        url, inputs = self.parseHtmlForm('action="https://1fichier.com/\?%s' % id)
 
-        if self.WAITING_PATTERN in self.html:
-            self.logInfo('You have to wait been each free download! Retrying in %d seconds.' % self.WAIT_TIME)
-            self.waitAndRetry(self.WAIT_TIME)
-        else:  # detect parallel download
-            found = re.search(self.NOT_PARALLEL, self.html)
-            if found:
-                self.waitAndRetry(self.RETRY_TIME)
-
-        url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['id'])
         if not url:
-            self.parseError("Download link not found")
+            self.fail(_("Download link not found"))
 
-        # Check for protection 
         if "pass" in inputs:
             inputs['pass'] = self.getPassword()
+
         inputs['submit'] = "Download"
 
         self.download(url, post=inputs)
 
-        # Check download 
-        self.checkDownloadedFile()
 
     def handlePremium(self):
-        url, inputs = self.parseHtmlForm('action="http://%s' % self.file_info['id'])
-        if not url:
-            self.parseError("Download link not found")
-
-        # Check for protection
-        if "pass" in inputs:
-            inputs['pass'] = self.getPassword()
-        inputs['submit'] = "Download"
-
-        self.download(url, post=inputs)
-
-        # Check download
-        self.checkDownloadedFile()
-
-    def checkDownloadedFile(self):
-        check = self.checkDownload({"wait": self.WAITING_PATTERN})
-        if check == "wait":
-            self.waitAndRetry(int(self.lastcheck.group(1)) * 60)
-
-    def waitAndRetry(self, wait_time):
-        self.wait(wait_time, True)
-        self.retry()
+        return self.handleFree()
 
 
 getInfo = create_getInfo(OneFichierCom)

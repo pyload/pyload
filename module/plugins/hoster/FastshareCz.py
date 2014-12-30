@@ -1,98 +1,78 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as
-#  published by the Free Software Foundation, either version 3 of the
-#  License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Affero General Public License for more details.
-#
-#  You should have received a copy of the GNU Affero General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  @author: zoidberg
-###############################################################################
-
-# Test links (random.bin):
-# http://www.fastshare.cz/2141189/random.bin
 
 import re
+
 from urlparse import urljoin
 
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FastshareCz(SimpleHoster):
-    __name__ = "FastshareCz"
-    __type__ = "hoster"
+    __name__    = "FastshareCz"
+    __type__    = "hoster"
+    __version__ = "0.26"
+
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
-    __version__ = "0.22"
+
     __description__ = """FastShare.cz hoster plugin"""
-    __author_name__ = ("zoidberg", "stickell", "Walter Purcaro")
-    __author_mail__ = ("zoidberg@mujmail.cz", "l.stickell@yahoo.it", "vuolter@gmail.com")
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    FILE_INFO_PATTERN = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*Size\s*: (?P<S>\d+) (?P<U>\w+),'
-    FILE_OFFLINE_PATTERN = '>(The file has been deleted|Requested page not found)'
+    URL_REPLACEMENTS = [("#.*", "")]
 
-    FILE_URL_REPLACEMENTS = [("#.*", "")]
-    SH_COOKIES = [(".fastshare.cz", "lang", "en")]
+    COOKIES = [("fastshare.cz", "lang", "en")]
 
-    FREE_URL_PATTERN = r'action=(/free/.*?)>\s*<img src="([^"]*)"><br'
-    PREMIUM_URL_PATTERN = r'(http://data\d+\.fastshare\.cz/download\.php\?id=\d+&)'
-    CREDIT_PATTERN = " credit for "
+    INFO_PATTERN    = r'<h1 class="dwp">(?P<N>[^<]+)</h1>\s*<div class="fileinfo">\s*Size\s*: (?P<S>\d+) (?P<U>[\w^_]+),'
+    OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found)'
+
+    LINK_FREE_PATTERN    = r'action=(/free/.*?)>\s*<img src="([^"]*)"><br'
+    LINK_PREMIUM_PATTERN = r'(http://data\d+\.fastshare\.cz/download\.php\?id=\d+&)'
+
+    SLOT_ERROR   = "> 100% of FREE slots are full"
+    CREDIT_ERROR = " credit for "
+
+
+    def checkErrors(self):
+        if self.SLOT_ERROR in self.html:
+            errmsg = self.info['error'] = _("No free slots")
+            self.retry(12, 60, errmsg)
+
+        if self.CREDIT_ERROR in self.html:
+            errmsg = self.info['error'] = _("Not enough traffic left")
+            self.logWarning(errmsg)
+            self.resetAccount()
+
+        self.info.pop('error', None)
+
 
     def handleFree(self):
-        if "> 100% of FREE slots are full" in self.html:
-            self.retry(120, 60, "No free slots")
-
-        found = re.search(self.FREE_URL_PATTERN, self.html)
-        if found:
-            action, captcha_src = found.groups()
+        m = re.search(self.FREE_URL_PATTERN, self.html)
+        if m:
+            action, captcha_src = m.groups()
         else:
-            self.parseError("Free URL")
+            self.error(_("FREE_URL_PATTERN not found"))
 
         baseurl = "http://www.fastshare.cz"
         captcha = self.decryptCaptcha(urljoin(baseurl, captcha_src))
-        self.download(urljoin(baseurl, action), post={"code": captcha, "btn.x": 77, "btn.y": 18})
+        self.download(urljoin(baseurl, action), post={'code': captcha, 'btn.x': 77, 'btn.y': 18})
+
+
+    def checkFile(self):
+        super(FastshareCz, self).checkFile()
 
         check = self.checkDownload({
-            "paralell_dl":
-            "<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)",
-            "wrong_captcha": "Download for FREE"
+            'paralell_dl'  : re.compile(r"<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"),
+            'wrong_captcha': re.compile(r'Download for FREE'),
+            'credit'       : re.compile(self.CREDIT_ERROR)
         })
 
         if check == "paralell_dl":
-            self.retry(6, 10 * 60, "Paralell download")
+            self.retry(6, 10 * 60, _("Paralell download"))
+
         elif check == "wrong_captcha":
-            self.retry(max_tries=5, reason="Wrong captcha")
+            self.retry(max_tries=5, reason=_("Wrong captcha"))
 
-    def handlePremium(self):
-        header = self.load(self.pyfile.url, just_header=True)
-        if "location" in header:
-            url = header["location"]
-        else:
-            self.html = self.load(self.pyfile.url)
-
-            self.getFileInfo()  #
-
-            if self.CREDIT_PATTERN in self.html:
-                self.logWarning("Not enough traffic left")
-                self.resetAccount()
-            else:
-                found = re.search(self.PREMIUM_URL_PATTERN, self.html)
-                if found:
-                    url = found.group(1)
-                else:
-                    self.parseError("Premium URL")
-
-        self.logDebug("PREMIUM URL: " + url)
-        self.download(url, disposition=True)
-
-        check = self.checkDownload({"credit": re.compile(self.CREDIT_PATTERN)})
-        if check == "credit":
+        elif check == "credit":
             self.resetAccount()
 
 

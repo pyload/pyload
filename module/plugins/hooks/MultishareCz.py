@@ -2,23 +2,25 @@
 
 import re
 
-from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class MultishareCz(MultiHoster):
-    __name__ = "MultishareCz"
-    __version__ = "0.04"
-    __type__ = "hook"
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "uloz.to")]
+class MultishareCz(MultiHook):
+    __name__    = "MultishareCz"
+    __type__    = "hook"
+    __version__ = "0.06"
+
+    __config__ = [("mode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                  ("pluginlist", "str", "Hoster list (comma separated)", "uloz.to")]
+
     __description__ = """MultiShare.cz hook plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+
 
     HOSTER_PATTERN = r'<img class="logo-shareserveru"[^>]*?alt="([^"]+)"></td>\s*<td class="stav">[^>]*?alt="OK"'
 
-    def getHoster(self):
-        page = getURL("http://www.multishare.cz/monitoring/")
+
+    def getHosters(self):
+        page = self.getURL("http://www.multishare.cz/monitoring/")
         return re.findall(self.HOSTER_PATTERN, page)

@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSPAccount import XFSPAccount
+from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class FilerioCom(XFSPAccount):
-    __name__ = "FilerioCom"
-    __version__ = "0.01"
-    __type__ = "account"
+class FilerioCom(XFSAccount):
+    __name__    = "FilerioCom"
+    __type__    = "account"
+    __version__ = "0.03"
+
     __description__ = """FileRio.in account plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    MAIN_PAGE = "http://filerio.in/"
+
+    HOSTER_DOMAIN = "filerio.in"

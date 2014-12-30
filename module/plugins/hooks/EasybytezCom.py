@@ -2,33 +2,38 @@
 
 import re
 
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class EasybytezCom(MultiHoster):
-    __name__ = "EasybytezCom"
-    __version__ = "0.03"
-    __type__ = "hook"
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "")]
+class EasybytezCom(MultiHook):
+    __name__    = "EasybytezCom"
+    __type__    = "hook"
+    __version__ = "0.05"
+
+    __config__ = [("mode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                  ("pluginlist", "str", "Hoster list (comma separated)", "")]
+
     __description__ = """EasyBytez.com hook plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    def getHoster(self):
+
+    def getHosters(self):
         self.account = self.core.accountManager.getAccountPlugin(self.__name__)
         user = self.account.selectAccount()[0]
 
         try:
-            req = self.account.getAccountRequest(user)
+            req  = self.account.getAccountRequest(user)
             page = req.load("http://www.easybytez.com")
 
-            found = re.search(r'</textarea>\s*Supported sites:(.*)', page)
-            return found.group(1).split(',')
+            hosters = re.search(r'</textarea>\s*Supported sites:(.*)', page).group(1).split(',')
+
         except Exception, e:
+            self.logWarning(_("Unable to load supported hoster list, using last known"))
             self.logDebug(e)
-            self.logWarning("Unable to load supported hoster list, using last known")
-            return ['bitshare.com', 'crocko.com', 'ddlstorage.com', 'depositfiles.com', 'extabit.com', 'hotfile.com',
-                    'mediafire.com', 'netload.in', 'rapidgator.net', 'rapidshare.com', 'uploading.com', 'uload.to',
-                    'uploaded.to']
+
+            hosters = ["bitshare.com", "crocko.com", "ddlstorage.com", "depositfiles.com", "extabit.com", "hotfile.com",
+                       "mediafire.com", "netload.in", "rapidgator.net", "rapidshare.com", "uploading.com", "uload.to",
+                       "uploaded.to"]
+        finally:
+            return hosters

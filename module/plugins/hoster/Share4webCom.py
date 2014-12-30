@@ -5,15 +5,18 @@ from module.plugins.internal.SimpleHoster import create_getInfo
 
 
 class Share4webCom(UnibytesCom):
-    __name__ = "Share4webCom"
-    __type__ = "hoster"
-    __pattern__ = r'http://(?:www\.)?share4web\.com/get/\w+'
-    __version__ = "0.1"
-    __description__ = """Share4web.com hoster plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __name__    = "Share4webCom"
+    __type__    = "hoster"
+    __version__ = "0.11"
 
-    DOMAIN = 'http://www.share4web.com'
+    __pattern__ = r'https?://(?:www\.)?share4web\.com/get/\w+'
+
+    __description__ = """Share4web.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+
+
+    HOSTER_DOMAIN = "share4web.com"
 
 
 getInfo = create_getInfo(UnibytesCom)

@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from module.network.RequestFactory import getURL
-from module.plugins.internal.MultiHoster import MultiHoster
+from module.plugins.internal.MultiHook import MultiHook
 
 
-class ZeveraCom(MultiHoster):
-    __name__ = "ZeveraCom"
-    __version__ = "0.02"
-    __type__ = "hook"
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
-                  ("hosterList", "str", "Hoster list (comma separated)", "")]
+class ZeveraCom(MultiHook):
+    __name__    = "ZeveraCom"
+    __type__    = "hook"
+    __version__ = "0.04"
+
+    __config__ = [("mode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+                  ("pluginlist", "str", "Hoster list (comma separated)", "")]
+
     __description__ = """Real-Debrid.com hook plugin"""
-    __author_name__ = "zoidberg"
-    __author_mail__ = "zoidberg@mujmail.cz"
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    def getHoster(self):
-        page = getURL("http://www.zevera.com/jDownloader.ashx?cmd=gethosters")
+
+    def getHosters(self):
+        page = self.getURL("http://www.zevera.com/jDownloader.ashx", get={'cmd': "gethosters"})
         return [x.strip() for x in page.replace("\"", "").split(",")]

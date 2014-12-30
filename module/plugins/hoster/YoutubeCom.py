@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import os
 import re
 import subprocess
-import os
+
 from urllib import unquote
 
-from module.utils import html_unescape
 from module.plugins.Hoster import Hoster
+from module.plugins.internal.SimpleHoster import replace_patterns
+from module.utils import html_unescape
 
 
 def which(program):
@@ -18,11 +20,12 @@ def which(program):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
     fpath, fname = os.path.split(program)
+
     if fpath:
         if is_exe(program):
             return program
     else:
-        for path in os.environ["PATH"].split(os.pathsep):
+        for path in os.environ['PATH'].split(os.pathsep):
             path = path.strip('"')
             exe_file = os.path.join(path, program)
             if is_exe(exe_file):
@@ -32,10 +35,11 @@ def which(program):
 
 
 class YoutubeCom(Hoster):
-    __name__ = "YoutubeCom"
-    __type__ = "hoster"
-    __pattern__ = r'https?://(?:[^/]*\.)?youtube\.com/watch.*?[?&]v=.*'
-    __version__ = "0.39"
+    __name__    = "YoutubeCom"
+    __type__    = "hoster"
+    __version__ = "0.40"
+
+    __pattern__ = r'https?://(?:[^/]*\.)?(?:youtube\.com|youtu\.be)/watch.*?[?&]v=.+'
     __config__ = [("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
                   ("fmt", "int", "FMT/ITAG Number (5-102, 0 for auto)", 0),
                   (".mp4", "bool", "Allow .mp4", True),
@@ -43,37 +47,49 @@ class YoutubeCom(Hoster):
                   (".webm", "bool", "Allow .webm", False),
                   (".3gp", "bool", "Allow .3gp", False),
                   ("3d", "bool", "Prefer 3D", False)]
+
     __description__ = """Youtube.com hoster plugin"""
-    __author_name__ = ("spoob", "zoidberg")
-    __author_mail__ = ("spoob@pyload.org", "zoidberg@mujmail.cz")
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
+                       ("zoidberg", "zoidberg@mujmail.cz")]
+
+
+    URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/')]
+
+    # Invalid characters that must be removed from the file name
+    invalidChars = u'\u2605:?><"|\\'
 
     # name, width, height, quality ranking, 3D
-    formats = {5: (".flv", 400, 240, 1, False),
-               6: (".flv", 640, 400, 4, False),
-               17: (".3gp", 176, 144, 0, False),
-               18: (".mp4", 480, 360, 2, False),
-               22: (".mp4", 1280, 720, 8, False),
-               43: (".webm", 640, 360, 3, False),
-               34: (".flv", 640, 360, 4, False),
-               35: (".flv", 854, 480, 6, False),
-               36: (".3gp", 400, 240, 1, False),
-               37: (".mp4", 1920, 1080, 9, False),
-               38: (".mp4", 4096, 3072, 10, False),
-               44: (".webm", 854, 480, 5, False),
-               45: (".webm", 1280, 720, 7, False),
-               46: (".webm", 1920, 1080, 9, False),
-               82: (".mp4", 640, 360, 3, True),
-               83: (".mp4", 400, 240, 1, True),
-               84: (".mp4", 1280, 720, 8, True),
-               85: (".mp4", 1920, 1080, 9, True),
-               100: (".webm", 640, 360, 3, True),
-               101: (".webm", 640, 360, 4, True),
-               102: (".webm", 1280, 720, 8, True)}
+    formats = {5  : (".flv" , 400 , 240 , 1 , False),
+               6  : (".flv" , 640 , 400 , 4 , False),
+               17 : (".3gp" , 176 , 144 , 0 , False),
+               18 : (".mp4" , 480 , 360 , 2 , False),
+               22 : (".mp4" , 1280, 720 , 8 , False),
+               43 : (".webm", 640 , 360 , 3 , False),
+               34 : (".flv" , 640 , 360 , 4 , False),
+               35 : (".flv" , 854 , 480 , 6 , False),
+               36 : (".3gp" , 400 , 240 , 1 , False),
+               37 : (".mp4" , 1920, 1080, 9 , False),
+               38 : (".mp4" , 4096, 3072, 10, False),
+               44 : (".webm", 854 , 480 , 5 , False),
+               45 : (".webm", 1280, 720 , 7 , False),
+               46 : (".webm", 1920, 1080, 9 , False),
+               82 : (".mp4" , 640 , 360 , 3 , True ),
+               83 : (".mp4" , 400 , 240 , 1 , True ),
+               84 : (".mp4" , 1280, 720 , 8 , True ),
+               85 : (".mp4" , 1920, 1080, 9 , True ),
+               100: (".webm", 640 , 360 , 3 , True ),
+               101: (".webm", 640 , 360 , 4 , True ),
+               102: (".webm", 1280, 720 , 8 , True )}
+
 
     def setup(self):
-        self.resumeDownload = self.multiDL = True
+        self.resumeDownload = True
+        self.multiDL        = True
+
 
     def process(self, pyfile):
+        pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
         html = self.load(pyfile.url, decode=True)
 
         if re.search(r'<div id="player-unavailable" class="\s*player-width player-height\s*">', html):
@@ -92,7 +108,7 @@ class YoutubeCom(Hoster):
                        "480p": 35, "720p": 22, "1080p": 37, "3072p": 38}
         desired_fmt = self.getConfig("fmt")
         if desired_fmt and desired_fmt not in self.formats:
-            self.logWarning("FMT %d unknown - using default." % desired_fmt)
+            self.logWarning(_("FMT %d unknown, using default") % desired_fmt)
             desired_fmt = 0
         if not desired_fmt:
             desired_fmt = quality.get(self.getConfig("quality"), 18)
@@ -109,7 +125,7 @@ class YoutubeCom(Hoster):
         allowed = lambda x: self.getConfig(self.formats[x][0])
         streams = [x for x in streams if x[0] in self.formats and allowed(x[0])]
         if not streams:
-            self.fail("No available stream meets your preferences")
+            self.fail(_("No available stream meets your preferences"))
         fmt_dict = dict([x for x in streams if self.formats[x[0]][4] == use3d] or streams)
 
         self.logDebug("DESIRED STREAM: ITAG:%d (%s) %sfound, %sallowed" %
@@ -138,6 +154,8 @@ class YoutubeCom(Hoster):
 
         # Cleaning invalid characters from the file name
         name = name.encode('ascii', 'replace')
+        for c in self.invalidChars:
+            name = name.replace(c, '_')
 
         pyfile.name = html_unescape(name)
 
@@ -145,7 +163,7 @@ class YoutubeCom(Hoster):
         ffmpeg = which("ffmpeg")
         if ffmpeg and time:
             m, s = time.groups()[1:]
-            if not m:
+            if m is None:
                 m = "0"
 
             pyfile.name += " (starting at %s:%s)" % (m, s)

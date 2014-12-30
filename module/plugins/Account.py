@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-
+    
     @author: mkaay
 """
 
@@ -38,9 +38,9 @@ class Account(Base):
     __name__ = "Account"
     __version__ = "0.2"
     __type__ = "account"
-    __description__ = """Base account plugin"""
-    __author_name__ = "mkaay"
-    __author_mail__ = "mkaay@mkaay.de"
+    __description__ = """Account Plugin"""
+    __author_name__ = ("mkaay")
+    __author_mail__ = ("mkaay@mkaay.de")
 
     #: after that time [in minutes] pyload will relogin the account
     login_timeout = 600
@@ -76,7 +76,7 @@ class Account(Base):
     def _login(self, user, data):
         # set timestamp for login
         self.timestamps[user] = time()
-
+        
         req = self.getAccountRequest(user)
         try:
             self.login(user, data, req)

@@ -7,12 +7,14 @@ from module.common.json_layer import json_loads
 
 
 class LinksnappyCom(Account):
-    __name__ = "LinksnappyCom"
-    __version__ = "0.02"
-    __type__ = "account"
+    __name__    = "LinksnappyCom"
+    __type__    = "account"
+    __version__ = "0.03"
+
     __description__ = """Linksnappy.com account plugin"""
-    __author_name__ = "stickell"
-    __author_mail__ = "l.stickell@yahoo.it"
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
@@ -35,9 +37,10 @@ class LinksnappyCom(Account):
         if 'trafficleft' not in j['return'] or isinstance(j['return']['trafficleft'], str):
             trafficleft = -1
         else:
-            trafficleft = int(j['return']['trafficleft']) * 1024
+            trafficleft = self.parseTraffic(float(j['return']['trafficleft'] + "MB")
 
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
+
 
     def login(self, user, data, req):
         r = req.load('http://gen.linksnappy.com/lseAPI.php',

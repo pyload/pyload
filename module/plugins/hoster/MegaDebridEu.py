@@ -1,37 +1,27 @@
 # -*- coding: utf-8 -*-
-############################################################################
-# This program is free software: you can redistribute it and/or modify     #
-# it under the terms of the GNU Affero General Public License as           #
-# published by the Free Software Foundation, either version 3 of the       #
-# License, or (at your option) any later version.                          #
-#                                                                          #
-# This program is distributed in the hope that it will be useful,          #
-# but WITHOUT ANY WARRANTY; without even the implied warranty of           #
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
-# GNU Affero General Public License for more details.                      #
-#                                                                          #
-# You should have received a copy of the GNU Affero General Public License #
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.    #
-############################################################################
 
 import re
+
 from urllib import unquote_plus
 
-from module.plugins.Hoster import Hoster
 from module.common.json_layer import json_loads
+from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
 
-class MegaDebridEu(Hoster):
-    __name__ = "MegaDebridEu"
-    __version__ = "0.3"
-    __type__ = "hoster"
-    __pattern__ = r'^https?://(?:w{3}\d+\.mega-debrid.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[^/]+/.+$'
+class MegaDebridEu(MultiHoster):
+    __name__    = "MegaDebridEu"
+    __type__    = "hoster"
+    __version__ = "0.45"
+
+    __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
+
     __description__ = """mega-debrid.eu hoster plugin"""
-    __author_name__ = "D.Ducatel"
-    __author_mail__ = "dducatel@je-geek.fr"
+    __license__     = "GPLv3"
+    __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 
-    # Define the base URL of MegaDebrid api
+
     API_URL = "https://www.mega-debrid.eu/api.php"
+
 
     def getFilename(self, url):
         try:
@@ -39,23 +29,18 @@ class MegaDebridEu(Hoster):
         except IndexError:
             return ""
 
-    def process(self, pyfile):
-        if re.match(self.__pattern__, pyfile.url):
-            new_url = pyfile.url
-        elif not self.account:
-            self.exitOnFail(_("Please enter your %s account or deactivate this plugin") % "Mega-debrid.eu")
-        else:
-            if not self.connectToApi():
-                self.exitOnFail(_("Impossible to connect to %s") % "Mega-debrid.eu")
 
-            self.logDebug("Old URL: %s" % pyfile.url)
-            new_url = self.debridLink(pyfile.url)
-            self.logDebug("New URL: " + new_url)
+    def handlePremium(self):
+        if not self.connectToApi():
+            self.exitOnFail("Unable to connect to Mega-debrid.eu")
 
-        filename = self.getFilename(new_url)
+        self.link = self.debridLink(self.pyfile.url)
+        self.logDebug("New URL: " + self.link)
+
+        filename = self.getFilename(self.link)
         if filename != "":
-            pyfile.name = filename
-        self.download(new_url, disposition=True)
+            self.pyfile.name = filename
+
 
     def connectToApi(self):
         """
@@ -64,14 +49,15 @@ class MegaDebridEu(Hoster):
         """
         user, data = self.account.selectAccount()
         jsonResponse = self.load(self.API_URL,
-                                 get={'action': 'connectUser', 'login': user, 'password': data["password"]})
-        response = json_loads(jsonResponse)
+                                 get={'action': 'connectUser', 'login': user, 'password': data['password']})
+        res = json_loads(jsonResponse)
 
-        if response["response_code"] == "ok":
-            self.token = response["token"]
+        if res['response_code'] == "ok":
+            self.token = res['token']
             return True
         else:
             return False
+
 
     def debridLink(self, linkToDebrid):
         """
@@ -80,13 +66,14 @@ class MegaDebridEu(Hoster):
         """
         jsonResponse = self.load(self.API_URL, get={'action': 'getLink', 'token': self.token},
                                  post={"link": linkToDebrid})
-        response = json_loads(jsonResponse)
+        res = json_loads(jsonResponse)
 
-        if response["response_code"] == "ok":
-            debridedLink = response["debridLink"][1:-1]
+        if res['response_code'] == "ok":
+            debridedLink = res['debridLink'][1:-1]
             return debridedLink
         else:
-            self.exitOnFail(_("Impossible to debrid %s") % linkToDebrid)
+            self.exitOnFail("Unable to debrid %s" % linkToDebrid)
+
 
     def exitOnFail(self, msg):
         """
@@ -94,7 +81,10 @@ class MegaDebridEu(Hoster):
         And display the reason of this failure
         """
         if self.getConfig("unloadFailing"):
-            self.logError(msg)
+            self.logError(_(msg))
             self.resetAccount()
         else:
-            self.fail(msg)
+            self.fail(_(msg))
+
+
+getInfo = create_getInfo(MegaDebridEu)

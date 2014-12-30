@@ -1,41 +1,30 @@
 # -*- coding: utf-8 -*-
 
-###############################################################################
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as
-#  published by the Free Software Foundation, either version 3 of the
-#  License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU Affero General Public License for more details.
-#
-#  You should have received a copy of the GNU Affero General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  @author: Walter Purcaro
-###############################################################################
-
 import re
 from urlparse import urljoin
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 
 
 class MultiUpOrg(SimpleCrypter):
-    __name__ = "MultiUpOrg"
-    __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?multiup\.org/(en|fr)/(?P<TYPE>project|download|miror)/\w+(/\w+)?"
-    __version__ = "0.01"
-    __description__ = """MultiUp.org crypter plugin"""
-    __author_name__ = "Walter Purcaro"
-    __author_mail__ = "vuolter@gmail.com"
+    __name__    = "MultiUpOrg"
+    __type__    = "crypter"
+    __version__ = "0.03"
 
-    TITLE_PATTERN = r'<title>.*(Project|Projet|ownload|élécharger) (?P<title>.+?) (\(|- )'
+    __pattern__ = r'http://(?:www\.)?multiup\.org/(en|fr)/(?P<TYPE>project|download|miror)/\w+(/\w+)?'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
+                   ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
+
+    __description__ = """MultiUp.org crypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    NAME_PATTERN = r'<title>.*(?:Project|Projet|ownload|élécharger) (?P<N>.+?) (\(|- )'
+
 
     def getLinks(self):
-        m_type = re.match(self.__pattern__, self.pyfile.url).group("TYPE")
+        m_type = re.match(self.__pattern__, self.pyfile.url).group('TYPE')
 
         if m_type == "project":
             pattern = r'\n(http://www\.multiup\.org/(?:en|fr)/download/.*)'
@@ -47,3 +36,6 @@ class MultiUpOrg(SimpleCrypter):
                 self.html = self.load(miror_page)
 
         return re.findall(pattern, self.html)
+
+
+getInfo = create_getInfo(MultiUpOrg)
