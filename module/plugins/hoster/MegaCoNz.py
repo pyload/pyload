@@ -47,9 +47,9 @@ from module.plugins.Hoster import Hoster
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
-    __pattern__ = r'https?://(?:www\.)?mega\.co\.nz/#(?P<TYPE>N)?!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'
+    __pattern__ = r'https?://(?:www\.)?mega\.co\.nz/#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'
 
     __description__ = """Mega.co.nz hoster plugin"""
     __license__     = "GPLv3"
@@ -68,11 +68,11 @@ class MegaCoNz(Hoster):
 
     def getCipherKey(self, key):
         """ Construct the cipher key from the given data """
-        key = self.b64_decode(key)
+        a = array("I", self.b64_decode(key))
 
-        k        = key[0] ^ key[4], key[1] ^ key[5], key[2] ^ key[6], key[3] ^ key[7]
-        iv       = key[4:6] + (0, 0)
-        meta_mac = key[6:8]
+        k        = array("I", (a[0] ^ a[4], a[1] ^ a[5], a[2] ^ a[6], a[3] ^ a[7]))
+        iv       = a[4:6] + array("I", (0, 0))
+        meta_mac = a[6:8]
 
         return k, iv, meta_mac
 
@@ -162,7 +162,7 @@ class MegaCoNz(Hoster):
         pattern = re.match(self.__pattern__, pyfile.url).groupdict()
         id      = pattern['ID']
         key     = pattern['KEY']
-        public  = 'TYPE' not in pattern
+        public  = pattern['TYPE'] == ''
 
         self.logDebug("ID: %s" % id, "Key: %s" % key, "Type: %s" % ("public" if public else "node"))
 
@@ -173,7 +173,9 @@ class MegaCoNz(Hoster):
         else:
             mega = self.api_response(a="g", g=1, n=id, ssl=1)[0]
 
-        if "e" in mega:
+        if isinstance(mega, int):
+            self.checkError(mega)
+        elif "e" in mega:
             self.checkError(mega['e'])
 
         attr = self.decryptAttr(mega['at'], key)
