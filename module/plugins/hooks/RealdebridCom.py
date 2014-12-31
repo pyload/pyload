@@ -11,7 +11,7 @@ class RealdebridCom(MultiHook):
     __config__ = [("https", "bool", "Enable HTTPS", False),
                   ("mode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("pluginlist", "str", "Hoster list (comma separated)", ""),
-                  ("revertfailed", "bool", "Revert to stanard download if download fails", False),
+                  ("revertfailed", "bool", "Revert to standard download if download fails", False),
                   ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
     __description__ = """Real-Debrid.com hook plugin"""
