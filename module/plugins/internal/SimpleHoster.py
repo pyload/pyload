@@ -2,6 +2,7 @@
 
 import re
 
+from inspect import isclass
 from os.path import exists
 from time import time
 from urllib import unquote
@@ -124,12 +125,40 @@ def timestamp():
     return int(time() * 1000)
 
 
-#@TODO: Move to hoster class in 0.4.10
-def _isDirectLink(self, url, resumable=False):
+#@TODO: Move to hoster class in 0.4.10 as staticmethod
+def _isDirectLink(plugin, url, resumable=False):
     link = ""
 
+    if isclass(plugin) or not hasattr(plugin, "load"):
+        load         = getURL
+        parse_header = True
+    else:
+        load         = plugin.load
+        parse_header = False
+
     for i in xrange(5 if resumable else 1):
-        header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
+        header = load(url, just_header=True, decode=True)
+
+        if parse_header:
+            h = {}
+            for line in header.splitlines():
+                line = line.strip()
+                if not line or ":" not in line:
+                    continue
+
+                key, none, value = line.partition(":")
+                key              = key.lower().strip()
+                value            = value.strip()
+
+                if key in h:
+                    if type(h[key]) == list:
+                        h[key].append(value)
+                    else:
+                        h[key] = [h[key], value]
+                else:
+                    h[key] = value
+
+            header = h
 
         if 'content-disposition' in header or 'content-length' in header:
             link = url
@@ -147,15 +176,15 @@ def _isDirectLink(self, url, resumable=False):
 
             elif resumable:
                 url = location
-                self.logDebug("Redirect #%d to: %s" % (++i, location))
+                # plugin.logDebug("Redirect #%d to: %s" % (++i, location))
                 continue
 
-        elif 'content-type' in header and header['content-type' ] and "html" not in header['content-type']:
+        elif 'content-type' in header and header['content-type'] and "html" not in header['content-type']:
             link = url
 
         break
-    else:
-        self.logError(_("Too many redirects"))
+    # else:
+        # plugin.logError(_("Too many redirects"))
 
     return link
 
@@ -181,7 +210,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.86"
+    __version__ = "0.87"
 
     __pattern__ = r'^unmatchable$'
 
@@ -263,17 +292,15 @@ class SimpleHoster(Hoster):
             pass
 
         if not html:
-            try:
-                if not url:
-                    info['error']  = "missing url"
-                    info['status'] = 1
-                    raise
+            if not url:
+                info['error']  = "missing url"
+                info['status'] = 1
 
-                if _isDirectLink(url):
-                    info['error']  = "direct link"
-                    info['status'] = 2
-                    raise
+            elif _isDirectLink(cls, url):
+                info['error']  = "direct link"
+                info['status'] = 2
 
+            else:
                 try:
                     html = getURL(url, cookies=cls.COOKIES, decode=not cls.TEXT_ENCODING)
 
@@ -285,46 +312,40 @@ class SimpleHoster(Hoster):
 
                     if e.code is 404:
                         info['status'] = 1
-                        raise
 
-                    if e.code is 503:
+                    elif e.code is 503:
                         info['status'] = 6
-                        raise
-            except:
-                return info
 
-        if hasattr(cls, "OFFLINE_PATTERN") and re.search(cls.OFFLINE_PATTERN, html):
-            info['status'] = 1
+        if html:
+            if hasattr(cls, "OFFLINE_PATTERN") and re.search(cls.OFFLINE_PATTERN, html):
+                info['status'] = 1
 
-        elif hasattr(cls, "FILE_OFFLINE_PATTERN") and re.search(cls.FILE_OFFLINE_PATTERN, html):  #@TODO: Remove in 0.4.10
-            info['status'] = 1
+            elif hasattr(cls, "FILE_OFFLINE_PATTERN") and re.search(cls.FILE_OFFLINE_PATTERN, html):  #@TODO: Remove in 0.4.10
+                info['status'] = 1
 
-        elif hasattr(cls, "TEMP_OFFLINE_PATTERN") and re.search(cls.TEMP_OFFLINE_PATTERN, html):
-            info['status'] = 6
+            elif hasattr(cls, "TEMP_OFFLINE_PATTERN") and re.search(cls.TEMP_OFFLINE_PATTERN, html):
+                info['status'] = 6
 
-        else:
-            if not 'pattern' in info:
-                info['pattern'] = {}
+            else:
+                for pattern in ("FILE_INFO_PATTERN", "INFO_PATTERN",
+                                "FILE_NAME_PATTERN", "NAME_PATTERN",
+                                "FILE_SIZE_PATTERN", "SIZE_PATTERN",
+                                "HASHSUM_PATTERN"):  #@TODO: Remove old patterns starting with "FILE_" in 0.4.10
+                    try:
+                        attr  = getattr(cls, pattern)
+                        pdict = re.search(attr, html).groupdict()
 
-            for pattern in ("FILE_INFO_PATTERN", "INFO_PATTERN",
-                            "FILE_NAME_PATTERN", "NAME_PATTERN",
-                            "FILE_SIZE_PATTERN", "SIZE_PATTERN",
-                            "HASHSUM_PATTERN"):  #@TODO: Remove old patterns starting with "FILE_" in 0.4.10
-                try:
-                    attr  = getattr(cls, pattern)
-                    pdict = re.search(attr, html).groupdict()
+                        if all(True for k in pdict if k not in info['pattern']):
+                            info['pattern'].update(pdict)
 
-                    if all(True for k in pdict if k not in info['pattern']):
-                        info['pattern'].update(pdict)
+                    except AttributeError:
+                        continue
 
-                except AttributeError:
-                    continue
+                    else:
+                        online = True
 
-                else:
-                    online = True
-
-            if not info['pattern']:
-                info.pop('pattern', None)
+        if 'pattern' in info and not info['pattern']:
+            info.pop('pattern', None)
 
         if online:
             info['status'] = 2
@@ -388,7 +409,7 @@ class SimpleHoster(Hoster):
 
     def process(self, pyfile):
         self.prepare()
-        self.checkNameSize()
+        self.checkInfo()
 
         if self.directDL:
             self.logDebug("Looking for direct download link...")
