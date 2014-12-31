@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import math
+import os
 import random
 import re
 
 from array import array
 from base64 import standard_b64decode
-from os import remove
 
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
@@ -13,6 +14,7 @@ from Crypto.Util import Counter
 
 from module.common.json_layer import json_loads, json_dumps
 from module.plugins.Hoster import Hoster
+from module.utils import decode
 
 
 ############################ General errors ###################################
@@ -47,7 +49,7 @@ from module.plugins.Hoster import Hoster
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'https?://(?:www\.)?mega\.co\.nz/#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'
 
@@ -91,9 +93,9 @@ class MegaCoNz(Hoster):
     def decryptAttr(self, data, key):
         k, iv, meta_mac = self.getCipherKey(key)
         cbc             = AES.new(k, AES.MODE_CBC, "\0" * 16)
-        attr            = cbc.decrypt(self.b64_decode(data))
+        attr            = decode(cbc.decrypt(self.b64_decode(data)))
 
-        self.logDebug("Decrypted Attr: " + attr)
+        self.logDebug("Decrypted Attr: %s" % attr)
         if not attr.startswith("MEGA"):
             self.fail(_("Decryption failed"))
 
@@ -113,6 +115,7 @@ class MegaCoNz(Hoster):
         cipher          = AES.new(k, AES.MODE_CTR, counter=ctr)
 
         self.pyfile.setStatus("decrypting")
+        self.pyfile.setProgress(0)
 
         file_crypted   = self.lastDownload
         file_decrypted = file_crypted.rsplit(self.FILE_SUFFIX)[0]
@@ -127,7 +130,8 @@ class MegaCoNz(Hoster):
         chunk_size = 2 ** 15  # buffer size, 32k
         # file_mac   = [0, 0, 0, 0]  # calculate CBC-MAC for checksum
 
-        while True:
+        chunks = int(math.ceil(os.path.getsize(file_crypted) / chunk_size))
+        for i in xrange(chunks):
             buf = f.read(chunk_size)
             if not buf:
                 break
@@ -135,10 +139,31 @@ class MegaCoNz(Hoster):
             chunk = cipher.decrypt(buf)
             df.write(chunk)
 
+            self.pyfile.setProgress(int((100.0 / chunks) * i))
+
+            # chunk_mac = [iv[0], iv[1], iv[0], iv[1]]
+            # for i in xrange(0, chunk_size, 16):
+                # block = chunk[i:i+16]
+                # if len(block) % 16:
+                    # block += '=' * (16 - (len(block) % 16))
+                # block = array("I", block)
+
+                # chunk_mac = [chunk_mac[0] ^ a_[0], chunk_mac[1] ^ block[1], chunk_mac[2] ^ block[2], chunk_mac[3] ^ block[3]]
+                # chunk_mac = aes_cbc_encrypt_a32(chunk_mac, k)
+
+            # file_mac = [file_mac[0] ^ chunk_mac[0], file_mac[1] ^ chunk_mac[1], file_mac[2] ^ chunk_mac[2], file_mac[3] ^ chunk_mac[3]]
+            # file_mac = aes_cbc_encrypt_a32(file_mac, k)
+
+        self.pyfile.setProgress(100)
+
         f.close()
         df.close()
 
-        remove(file_crypted)
+        # if file_mac[0] ^ file_mac[1], file_mac[2] ^ file_mac[3] != meta_mac:
+            # os.remove(file_decrypted)
+            # self.fail("Checksum mismatch")
+
+        os.remove(file_crypted)
         self.lastDownload = file_decrypted
 
 
