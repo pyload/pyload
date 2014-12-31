@@ -58,7 +58,7 @@ from module.utils import save_join, uniqify
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.02"
+    __version__ = "1.03"
 
     __config__ = [("activated"    , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"     , "bool"  , "Extract full path"                         , True                                                                     ),
@@ -72,7 +72,7 @@ class ExtractArchive(Hook):
                   ("extensions"   , "str"   , "Extract the following extensions"          , "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
                   ("excludefiles" , "str"   , "Don't extract the following files"         , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
                   ("recursive"    , "bool"  , "Extract archives in archives"              , True                                                                     ),
-                  ("queue"        , "bool"  , "Wait for all downloads to be finished"     , True                                                                     ),
+                  ("queue"        , "bool"  , "Wait for all downloads to be finished"     , False                                                                    ),
                   ("renice"       , "int"   , "CPU Priority"                              , 0                                                                        )]
 
     __description__ = """Extract different kind of archives"""
@@ -86,6 +86,10 @@ class ExtractArchive(Hook):
     #@TODO: Remove in 0.4.10
     def initPeriodical(self):
         pass
+
+
+    def coreReady(self):
+        self.extracting = False
 
 
     def setup(self):
@@ -123,34 +127,50 @@ class ExtractArchive(Hook):
         self.queue = []
 
 
+    def periodical(self):
+        if not self.queue or self.extracting:
+            return
+
+        local = copy(self.queue)
+        self.queue[:] = []
+
+        self.extractPackages(*local)
+
+
     @Expose
     def extractPackage(self, id):
-        """ Extract package with given id"""
-        self.manager.startThread(self.extract, [id])
+        """ Extract package wrapper"""
+        self.extractPackages(id)
+
+
+    @Expose
+    def extractPackages(self, *ids):
+        """ Extract packages with given id"""
+        self.manager.startThread(self.extract, ids)
 
 
     def packageFinished(self, pypack):
-        pid = pypack.id
-        if self.getConfig("queue"):
+        if self.getConfig("queue") or self.extracting:
             self.logInfo(_("Package %s queued for later extracting") % pypack.name)
-            self.queue.append(pid)
+            self.queue.append(pypack.id)
         else:
-            self.extractPackage(pid)
+            self.extractPackage(pypack.id)
 
 
     @threaded
     def allDownloadsProcessed(self, thread):
         local = copy(self.queue)
+        self.queue[:] = []
 
-        del self.queue[:]
-
-        if self.extract(local, thread):  #: check only if all gone fine, no failed reporting for now
+        if self.extract(local):  #: check only if all gone fine, no failed reporting for now
             self.manager.dispatchEvent("all_archives_extracted")
 
         self.manager.dispatchEvent("all_archives_processed")
 
 
-    def extract(self, ids, thread=None):
+    def extract(self, ids):
+        self.extracting = True
+
         processed = []
         extracted = []
         failed    = []
@@ -232,7 +252,7 @@ class ExtractArchive(Hook):
                                            keepbroken)
                             klass.init()
 
-                            new_files = self._extract(klass, fid, thread)
+                            new_files = self._extract(klass, fid)
 
                         except Exception, e:
                             self.logError(basename(target), e)
@@ -271,14 +291,14 @@ class ExtractArchive(Hook):
                 except OSError:
                     pass
 
+        self.extracting = False
         return True if not failed else False
 
 
-    def _extract(self, plugin, fid, thread):
+    def _extract(self, plugin, fid):
         pyfile = self.core.files.getFile(fid)
 
         pyfile.setCustomStatus(_("extracting"))
-        thread.addActive(pyfile)  # keep this file until everything is done
 
         try:
             progress  = lambda x: pyfile.setProgress(x)
