@@ -9,9 +9,9 @@ from module.utils import fixup
 class NowDownloadSx(SimpleHoster):
     __name__    = "NowDownloadSx"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
-    __pattern__ = r'http://(?:www\.)?nowdownload\.(at|ch|co|eu|sx)/(dl/|download\.php\?id=)\w+'
+    __pattern__ = r'http://(?:www\.)?(nowdownload\.(at|ch|co|eu|sx)/(dl/|download\.php\?id=)|likeupload\.org/)\w+'
 
     __description__ = """NowDownload.sx hoster plugin"""
     __license__     = "GPLv3"
