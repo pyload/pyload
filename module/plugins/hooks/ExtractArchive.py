@@ -189,7 +189,7 @@ class ExtractArchive(Hook):
         keepbroken   = self.getConfig("keepbroken")
 
         if extensions:
-            self.logDebug("Extensions allowed: %s" % "|.".join(extensions))
+            self.logDebug("Extensions: %s" % "|.".join(extensions))
 
         # reload from txt file
         self.reloadPasswords()

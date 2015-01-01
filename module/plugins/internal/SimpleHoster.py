@@ -125,40 +125,12 @@ def timestamp():
     return int(time() * 1000)
 
 
-#@TODO: Move to hoster class in 0.4.10 as staticmethod
-def _isDirectLink(plugin, url, resumable=False):
+#@TODO: Move to hoster class in 0.4.10
+def _isDirectLink(self, url, resumable=False):
     link = ""
 
-    if isclass(plugin) or not hasattr(plugin, "load"):
-        load         = getURL
-        parse_header = True
-    else:
-        load         = plugin.load
-        parse_header = False
-
     for i in xrange(5 if resumable else 1):
-        header = load(url, just_header=True, decode=True)
-
-        if parse_header:
-            h = {}
-            for line in header.splitlines():
-                line = line.strip()
-                if not line or ":" not in line:
-                    continue
-
-                key, none, value = line.partition(":")
-                key              = key.lower().strip()
-                value            = value.strip()
-
-                if key in h:
-                    if type(h[key]) == list:
-                        h[key].append(value)
-                    else:
-                        h[key] = [h[key], value]
-                else:
-                    h[key] = value
-
-            header = h
+        header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
 
         if 'content-disposition' in header or 'content-length' in header:
             link = url
@@ -176,15 +148,15 @@ def _isDirectLink(plugin, url, resumable=False):
 
             elif resumable:
                 url = location
-                # plugin.logDebug("Redirect #%d to: %s" % (++i, location))
+                self.logDebug("Redirect #%d to: %s" % (++i, location))
                 continue
 
         elif 'content-type' in header and header['content-type'] and "html" not in header['content-type']:
             link = url
 
         break
-    # else:
-        # plugin.logError(_("Too many redirects"))
+    else:
+        self.logError(_("Too many redirects"))
 
     return link
 
@@ -210,7 +182,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.87"
+    __version__ = "0.88"
 
     __pattern__ = r'^unmatchable$'
 
@@ -295,10 +267,6 @@ class SimpleHoster(Hoster):
             if not url:
                 info['error']  = "missing url"
                 info['status'] = 1
-
-            elif _isDirectLink(cls, url):
-                info['error']  = "direct link"
-                info['status'] = 2
 
             else:
                 try:
