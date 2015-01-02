@@ -5,9 +5,10 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<link rel="stylesheet" type="text/css" href="/media/default/css/default.css"/>
+
 <link rel="stylesheet" type="text/css" href="/media/default/css/window.css"/>
 <link rel="stylesheet" type="text/css" href="/media/default/css/MooDialog.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 
 <script type="text/javascript" src="/media/js/mootools-core-1.4.1.js"></script>
 <script type="text/javascript" src="/media/js/mootools-more-1.4.0.1.js"></script>
@@ -16,6 +17,8 @@
 
 
 <script type="text/javascript" src="/media/js/base.js"></script>
+
+
 
 <title>{% block title %}pyLoad {{_("Webinterface")}}{% endblock %}</title>
 
@@ -47,18 +50,9 @@
 </span>
 {% endif %}
 
-<span id="cap_info" style="display: {% if captcha %}inline{%else%}none{% endif %}">
-<img src="/media/default/img/images.png" alt="Captcha:" style="vertical-align:middle; margin:2px" />
-<span style="font-weight: bold; cursor: pointer; margin-right: 2px;">{{_("Captcha waiting")}}</span>
-</span>
 
-    <img src="/media/default/img/head-login.png" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
-	<ul id="user-actions">
-		<li><a href="/logout"  class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
-		{% if user.is_admin %}
-		<li><a href="/admin" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
-		{% endif %}
-        <li><a href="/info"  class="action info" rel="nofollow">{{_("Info")}}</a></li>
+
+    
 
 	</ul>
 {% else %}
@@ -68,11 +62,24 @@
     {% endblock %}
 	</div>
 
-	<a href="/"><img id="head-logo" src="/media/default/img/pyload-logo-edited3.5-new-font-small.png" alt="pyLoad" /></a>
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#"><img id="head-logo" src="/media/default/img/pyload-logo-edited3.5-new-font-small.png" alt="pyLoad" style="height:30px;"/></a>
+            </div>
+        
+	<a href="/"></a>
 
-	<div id="head-menu">
-		<ul>
-
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+		
         {% macro selected(name, right=False) -%}
             {% if name in url -%}class="{% if right -%}right {% endif %}selected"{%- endif %}
             {% if not name in url and right -%}class="right"{%- endif %}
@@ -81,51 +88,70 @@
 
 		{% block menu %}
 		<li>
-		    <a href="/" title=""><img src="/media/default/img/head-menu-home.png" alt="" /> {{_("Home")}}</a>
+		    <a href="/" title=""><span class="glyphicon glyphicon-home"></span> {{_("Home")}}</a>
 		</li>
 		<li {{ selected('queue') }}>
-		    <a href="/queue/" title=""><img src="/media/default/img/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
+		    <a href="/queue/" title=""><span class="glyphicon glyphicon-tasks"></span> {{_("Queue")}}</a>
 		</li>
 		<li {{ selected('collector') }}>
-		    <a href="/collector/" title=""><img src="/media/default/img/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
+		    <a href="/collector/" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("Collector")}}</a>
 		</li>
 		<li {{ selected('downloads') }}>
-		    <a href="/downloads/" title=""><img src="/media/default/img/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
+		    <a href="/downloads/" title=""> <span class="glyphicon glyphicon-download"></span> {{_("Downloads")}}</a>
 		</li>
 {#		<li {{ selected('filemanager') }}>#}
-{#		    <a href="/filemanager/" title=""><img src="/media/default/img/head-menu-download.png" alt="" /> {{_("FileManager")}}</a>#}
+{#		    <a href="/filemanager/" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("FileManager")}}</a>#}
 {#		</li>#}
 		<li {{ selected('logs', True) }}>
-		    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/default/img/head-menu-index.png" alt="" />{{_("Logs")}}</a>
+		    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-list"></span> {{_("Logs")}}</a>
 		</li>
 		<li {{ selected('settings', True) }}>
-		    <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/default/img/head-menu-config.png" alt="" />{{_("Config")}}</a>
+		    <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-wrench"></span> {{_("Config")}}</a>
 		</li>
 		{% endblock %}
+                    
+                      
+                      </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                      <li> <span class="glyphicon glyphicon-user"></span>{{user.name}}</li>
+       		      {% if user.is_admin %}
+       		      <li><a href="/admin" class="action profile" rel="nofollow"><span class="glyphicon glyphicon-cog"></span></a></li>
+       		      {% endif %}
+                      <li><a href="/info"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span></a></li>
+                
+                    </ul>
+                  </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
 		
-		</ul>
 	</div>
-
+</nav>
 	<div style="clear:both;"></div>
 </div>
 
 {% if perms.STATUS %}
-<ul id="page-actions2">
-	<li id="action_play"><a href="#"  class="action play" accesskey="o" rel="nofollow">{{_("Start")}}</a></li>
-    <li id="action_stop"><a href="#"  class="action stop" accesskey="o" rel="nofollow">{{_("Stop")}}</a></li>
-    <li id="action_cancel"><a href="#"  class="action cancel" accesskey="o" rel="nofollow">{{_("Cancel")}}</a></li>
-    <li id="action_add"><a href="#"  class="action add" accesskey="o" rel="nofollow" >{{_("Add")}}</a></li>
-</ul>
+<div class="btn-group btn-group-sm" role="group" aria-label="..." style="margin-left:10px;">
+  <button id="action_play" class="btn btn-default"><span class="glyphicon glyphicon-play"></span>&nbsp;</button>
+  <button id="action_stop" type="button" class="btn btn-default"><span class="glyphicon glyphicon-stop"></span>&nbsp;</button>
+  <button id="action_cancel" type="button" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span>&nbsp;</button>
+  <button id="action_add" type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>&nbsp;</button>
+</div>
+
+
 {% endif %}
+<span id="cap_info" style="display: {% if captcha %}inline{%else%}none{% endif %}">
+<button id="action_add" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-barcode"></span><span> {{_("Captcha waiting")}}</span></button>
+</span>
+
 
 {% if perms.LIST %}
-<ul id="page-actions">
-    <li><span class="time">{{_("Download:")}}</span><a id="time" style=" background-color: {% if status.download %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
-    <li><span class="reconnect">{{_("Reconnect:")}}</span><a id="reconnect" style=" background-color: {% if status.reconnect %}#8ffc25{% else %} #fc6e26{% endif %}; padding-left: 0cm; padding-right: 0.1cm; "> {% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</a></li>
-    <li><a class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b></a></li>
-    <li><a class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> / <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> / <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></a></li>
-    <li><a href=""  class="action revisions" accesskey="o" rel="nofollow">{{_("Reload page")}}</a></li>
-</ul>
+
+<div class="btn-group btn-group-sm" role="group" aria-label="..." style="margin-right:10px; float:right;">
+  <button id="action_play" class="btn btn-default"><span >{{_("Download:")}}</span>&nbsp;<span  class="label label-{% if status.download %}success{% else %}danger{% endif %}">{% if status.download %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</span></button>
+  <button id="action_stop" type="button" class="btn btn-default"><span>{{_("Reconnect:")}}</span>&nbsp;<span class="label label-{% if status.reconnect %}success{% else %}danger{% endif %}">{% if status.reconnect %}{{_("on")}}{% else %}{{_("off")}}{% endif %}</span></button>
+  <button id="action_cancel" type="button" class="btn btn-default"><span class="action backlink">{{_("Speed:")}} <b id="speed">{{ status.speed }}</b></span></button>
+  <button id="action_add" type="button" class="btn btn-default"><span class="action cog">{{_("Active:")}} <b id="aktiv" title="{{_("Active")}}">{{ status.active }}</b> / <b id="aktiv_from" title="{{_("Queued")}}">{{ status.queue }}</b> / <b id="aktiv_total" title="{{_("Total")}}">{{ status.total }}</b></span></button>
+</div>
+
 {% endif %}
 
 {% block pageactions %}
