@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from urllib import quote, unquote
+from urllib import unquote
 
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 
@@ -22,12 +22,11 @@ class RehostTo(MultiHoster):
 
 
     def handlePremium(self):
-        data     = self.account.getAccountInfo(self.user)
-        long_ses = data['long_ses']
+        data = self.account.getAccountInfo(self.user)
 
         self.download("http://rehost.to/process_download.php",
                       get={'user': "cookie",
-                           'pass': long_ses,
+                           'pass': data['long_ses'],
                            'dl'  : self.pyfile.url},
                       disposition=True)
 

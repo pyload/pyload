@@ -3,7 +3,7 @@
 import re
 
 from random import randrange
-from urllib import quote, unquote
+from urllib import unquote
 from time import time
 
 from module.common.json_layer import json_loads

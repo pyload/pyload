@@ -129,9 +129,9 @@ class RelinkUs(Crypter):
 
     def unlockPasswordProtection(self):
         password = self.getPassword()
-        
+
         self.logDebug("Submitting password [%s] for protected links" % password)
-        
+
         if password:
             passwd_url = self.PASSWORD_SUBMIT_URL + "?id=%s" % self.fileid
             passwd_data = {'id': self.fileid, 'password': password, 'pw': 'submit'}

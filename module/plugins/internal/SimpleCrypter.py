@@ -125,13 +125,17 @@ class SimpleCrypter(Crypter, SimpleHoster):
             self.info.update(self.getInfo(self.pyfile.url, self.html))
             self.logDebug("File info (AFTER): %s"  % self.info)
 
-        name = self.info['name']
-        url  = self.info['url']
+        try:
+            name = self.info['name']
+            url  = self.info['url']
 
-        if name and name != url:
-            self.pyfile.name = name
-        else:
-            self.pyfile.name = self.info['name'] = urlparse(name).path.split('/')[-1]
+            if name and name != url:
+                self.pyfile.name = name
+            else:
+                self.pyfile.name = self.info['name'] = urlparse(name).path.split('/')[-1]
+
+        except Exception:
+            pass
 
         folder = self.info['folder'] = self.pyfile.name
 

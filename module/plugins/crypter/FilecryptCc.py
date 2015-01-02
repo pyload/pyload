@@ -74,7 +74,7 @@ class FilecryptCc(Crypter):
         self.logInfo(_("Folder is password protected"))
 
         password = self.getPassword()
-        
+
         if not password:
             self.fail(_("Please enter the password in package section and try again"))
 
