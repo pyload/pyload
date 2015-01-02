@@ -34,8 +34,7 @@ class RealdebridCom(MultiHoster):
 
 
     def setup(self):
-        self.chunkLimit     = 3
-        self.resumeDownload = True
+        self.chunkLimit = 3
 
 
     def handlePremium(self):

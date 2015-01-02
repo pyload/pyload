@@ -21,11 +21,6 @@ class DebridItaliaCom(MultiHoster):
     URL_REPLACEMENTS = [("https://", "http://")]
 
 
-    def setup(self):
-        self.chunkLimit     = 1
-        self.resumeDownload = True
-
-
     def handlePremium(self):
         self.html = self.load("http://www.debriditalia.com/api.php",
                               get={'generate': "on", 'link': self.pyfile.url, 'p': self.getPassword()})

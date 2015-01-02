@@ -23,11 +23,6 @@ class LinksnappyCom(MultiHoster):
     SINGLE_CHUNK_HOSTERS = ('easybytez.com')
 
 
-    def setup(self):
-        self.chunkLimit     = -1
-        self.resumeDownload = True
-
-
     def handlePremium(self):
         host = self._get_host(self.pyfile.url)
         json_params = json_dumps({'link': self.pyfile.url,

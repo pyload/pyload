@@ -15,12 +15,6 @@ class ZeveraCom(MultiHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    def setup(self):
-        self.resumeDownload = True
-        self.multiDL        = True
-        self.chunkLimit     = 1
-
-
     def handlePremium(self):
         if self.account.getAPIData(self.req, cmd="checklink", olink=self.pyfile.url) != "Alive":
             self.fail(_("Offline or not downloadable"))

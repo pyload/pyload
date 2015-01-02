@@ -35,8 +35,7 @@ class AlldebridCom(MultiHoster):
 
 
     def setup(self):
-        self.chunkLimit     = 16
-        self.resumeDownload = True
+        self.chunkLimit = 16
 
 
     def handlePremium(self):

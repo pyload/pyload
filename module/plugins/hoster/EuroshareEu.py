@@ -27,11 +27,6 @@ class EuroshareEu(SimpleHoster):
     URL_REPLACEMENTS = [(r"(http://[^/]*\.)(sk|cz|hu|pl)/", r"\1eu/")]
 
 
-    def setup(self):
-        self.multiDL = self.resumeDownload = self.premium
-        self.req.setOption("timeout", 120)
-
-
     def handlePremium(self):
         if self.ERR_NOT_LOGGED_IN_PATTERN in self.html:
             self.account.relogin(self.user)

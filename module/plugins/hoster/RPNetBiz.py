@@ -19,8 +19,7 @@ class RPNetBiz(MultiHoster):
 
 
     def setup(self):
-        self.chunkLimit     = -1
-        self.resumeDownload = True
+        self.chunkLimit = -1
 
 
     def handlePremium(self):

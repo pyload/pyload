@@ -21,8 +21,7 @@ class SimplyPremiumCom(MultiHoster):
 
 
     def setup(self):
-        self.chunkLimit     = 16
-        self.resumeDownload = False
+        self.chunkLimit = 16
 
 
     def handlePremium(self):

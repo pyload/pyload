@@ -24,11 +24,13 @@ class FreeWayMe(MultiHoster):
     def handlePremium(self):
         user, data = self.account.selectAccount()
 
-        self.link = True
-        self.download(
-            "https://www.free-way.me/load.php",
-            get={"multiget": 7, "url": self.pyfile.url, "user": user, "pw": self.account.getpw(user), "json": ""},
-            disposition=True)
+        self.download("https://www.free-way.me/load.php",
+                      get={'multiget': 7,
+                           'url'     : self.pyfile.url,
+                           'user'    : user,
+                           'pw'      : self.account.getpw(user),
+                           'json'    : ""},
+                      disposition=True)
 
 
 getInfo = create_getInfo(FreeWayMe)

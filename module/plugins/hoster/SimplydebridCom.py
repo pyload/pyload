@@ -17,12 +17,6 @@ class SimplydebridCom(MultiHoster):
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
-    def setup(self):
-        self.resumeDownload = True
-        self.multiDL        = True
-        self.chunkLimit     = 1
-
-
     def handlePremium(self):
         #fix the links for simply-debrid.com!
         self.link = self.pyfile.url

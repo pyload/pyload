@@ -447,13 +447,13 @@ class SimpleHoster(Hoster):
         if hasattr(self, 'PREMIUM_ONLY_PATTERN') and self.premium and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
             self.fail(_("Link require a premium account to be handled"))
 
-        if hasattr(self, 'ERROR_PATTERN'):
+        elif hasattr(self, 'ERROR_PATTERN'):
             m = re.search(self.ERROR_PATTERN, self.html)
             if m:
                 errmsg = self.info['error'] = m.group(1)
                 self.error(errmsg)
 
-        if hasattr(self, 'WAIT_PATTERN'):
+        elif hasattr(self, 'WAIT_PATTERN'):
             m = re.search(self.WAIT_PATTERN, self.html)
             if m:
                 wait_time = sum([int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in

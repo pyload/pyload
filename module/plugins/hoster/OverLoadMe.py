@@ -33,8 +33,7 @@ class OverLoadMe(MultiHoster):
 
 
     def setup(self):
-        self.chunkLimit     = 5
-        self.resumeDownload = True
+        self.chunkLimit = 5
 
 
     def handlePremium(self):
