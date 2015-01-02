@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class PremiumTo(MultiHook):
     __name__    = "PremiumTo"
     __type__    = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __config__ = [("mode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
                   ("pluginlist", "str", "Hoster list (comma separated)", "")]
@@ -22,15 +22,3 @@ class PremiumTo(MultiHook):
         page = self.getURL("http://premium.to/api/hosters.php",
                       get={'username': self.account.username, 'password': self.account.password})
         return [x.strip() for x in page.replace("\"", "").split(";")]
-
-
-    def coreReady(self):
-        self.account = self.core.accountManager.getAccountPlugin("PremiumTo")
-
-        user = self.account.selectAccount()[0]
-
-        if not user:
-            self.logError(_("Please add your premium.to account first and restart pyLoad"))
-            return
-
-        return MultiHook.coreReady(self)
