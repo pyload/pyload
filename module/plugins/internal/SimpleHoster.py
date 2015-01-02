@@ -132,7 +132,7 @@ def _isDirectLink(self, url, resumable=False):
     for i in xrange(5 if resumable else 1):
         header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
 
-        if 'content-disposition' in header or 'content-length' in header:
+        if 'content-disposition' in header:
             link = url
 
         elif 'location' in header and header['location']:
@@ -143,13 +143,13 @@ def _isDirectLink(self, url, resumable=False):
                 base = "%s://%s" % (p.scheme, p.netloc)
                 location = urljoin(base, location)
 
-            if 'code' in header and header['code'] == 302:
-                link = location
-
-            elif resumable:
+            if resumable:
                 url = location
                 self.logDebug("Redirect #%d to: %s" % (++i, location))
                 continue
+
+            elif 'code' in header and header['code'] == 302:
+                link = location
 
         elif 'content-type' in header and header['content-type'] and "html" not in header['content-type']:
             link = url
@@ -182,7 +182,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.88"
+    __version__ = "0.89"
 
     __pattern__ = r'^unmatchable$'
 
@@ -469,6 +469,9 @@ class SimpleHoster(Hoster):
             self.logDebug("File info (BEFORE): %s" % self.info)
             self.info.update(self.getInfo(self.pyfile.url, self.html))
 
+        if 'status' not in self.info:
+            return
+
         status = self.info['status']
 
         if status is 1:
@@ -488,22 +491,24 @@ class SimpleHoster(Hoster):
             self.info.update(self.getInfo(self.pyfile.url, self.html))
             self.logDebug("File info (AFTER): %s"  % self.info)
 
-        name = self.info['name']
-        size = self.info['size']
-        url  = self.info['url']
+        try:
+            name = self.info['name']
+            size = self.info['size']
+            url  = self.info['url']
 
-        if name and name != url:
-            self.pyfile.name = name
-        else:
-            self.pyfile.name = name = self.info['name'] = urlparse(name).path.split('/')[-1]
+            if name and name != url:
+                self.pyfile.name = name
+            else:
+                self.pyfile.name = name = self.info['name'] = urlparse(name).path.split('/')[-1]
 
-        if size > 0:
-            self.pyfile.size = size
-        else:
-            size = "Unknown"
+            if size > 0:
+                self.pyfile.size = size
 
-        self.logDebug("File name: %s" % name,
-                      "File size: %s" % size)
+        except Exception:
+            pass
+
+        self.logDebug("File name: %s" % self.pyfile.name,
+                      "File size: %s" % self.pyfile.size if self.pyfile.size > 0 else "Unknown")
 
 
     def checkInfo(self):
