@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MultishareCz(SimpleHoster):
     __name__    = "MultishareCz"
     __type__    = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
 
     __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)'
 
@@ -47,13 +47,11 @@ class MultishareCz(SimpleHoster):
         if not self.checkCredit():
             self.fail(_("Not enough credit left to download file"))
 
-        url    = "http://dl%d.mms.multishare.cz/html/mms_process.php" % round(random() * 10000 * random())
-        params = {"u_ID": self.acc_info['u_ID'], "u_hash": self.acc_info['u_hash'], "link": pyfile.url}
-
-        self.logDebug(url, params)
-
-        self.link = True
-        self.download(url, get=params)
+        self.download("http://dl%d.mms.multishare.cz/html/mms_process.php" % round(random() * 10000 * random()),
+                      get={'u_ID'  : self.acc_info['u_ID'],
+                           'u_hash': self.acc_info['u_hash'],
+                           'link'  : pyfile.url},
+                      disposition=True)
 
 
     def checkCredit(self):
