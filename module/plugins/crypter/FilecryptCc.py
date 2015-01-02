@@ -14,7 +14,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
@@ -73,10 +73,12 @@ class FilecryptCc(Crypter):
 
         self.logInfo(_("Folder is password protected"))
 
-        if not self.pyfile.package().password:
+        password = self.getPassword()
+        
+        if not password:
             self.fail(_("Please enter the password in package section and try again"))
 
-        self.html = self.load(self.pyfile.url, post={"password": self.password}, cookies=True)
+        self.html = self.load(self.pyfile.url, post={"password": password}, cookies=True)
 
 
     def handleCaptcha(self):
