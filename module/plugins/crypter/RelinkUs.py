@@ -56,9 +56,8 @@ class RelinkUs(Crypter):
 
 
     def setup(self):
-        self.fileid = None
+        self.fileid  = None
         self.package = None
-        self.password = None
         self.captcha = False
 
 
@@ -102,7 +101,6 @@ class RelinkUs(Crypter):
     def initPackage(self, pyfile):
         self.fileid = re.match(self.__pattern__, pyfile.url).group('ID')
         self.package = pyfile.package()
-        self.password = self.getPassword()
 
 
     def requestPackage(self):
@@ -130,10 +128,14 @@ class RelinkUs(Crypter):
 
 
     def unlockPasswordProtection(self):
-        self.logDebug("Submitting password [%s] for protected links" % self.password)
-        passwd_url = self.PASSWORD_SUBMIT_URL + "?id=%s" % self.fileid
-        passwd_data = {'id': self.fileid, 'password': self.password, 'pw': 'submit'}
-        self.html = self.load(passwd_url, post=passwd_data, decode=True)
+        password = self.getPassword()
+        
+        self.logDebug("Submitting password [%s] for protected links" % password)
+        
+        if password:
+            passwd_url = self.PASSWORD_SUBMIT_URL + "?id=%s" % self.fileid
+            passwd_data = {'id': self.fileid, 'password': password, 'pw': 'submit'}
+            self.html = self.load(passwd_url, post=passwd_data, decode=True)
 
 
     def unlockCaptchaProtection(self):
