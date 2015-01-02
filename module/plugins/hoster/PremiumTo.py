@@ -11,9 +11,9 @@ from module.utils import fs_encode
 class PremiumTo(MultiHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
-    __pattern__ = r'https?://(?:www\.)?premium\.to/.+'
+    __pattern__ = r'^unmatchable$'
 
     __description__ = """Premium.to hoster plugin"""
     __license__     = "GPLv3"
@@ -34,7 +34,7 @@ class PremiumTo(MultiHoster):
     def checkFile(self):
         super(PremiumTo, self).checkFile()
 
-        check = self.checkDownload({"nopremium": "No premium account available"})
+        check = self.checkDownload({'nopremium': "No premium account available"})
 
         if check == "nopremium":
             self.retry(60, 5 * 60, "No premium account available")
