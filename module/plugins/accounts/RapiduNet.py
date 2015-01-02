@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+
+from time import time
+
 from module.plugins.Account import Account
 from module.common.json_layer import json_loads
 
@@ -8,45 +11,50 @@ from module.common.json_layer import json_loads
 class RapiduNet(Account):
     __name__    = "RapiduNet"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Rapidu.net account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("prOq", None)]
+    __authors__     = [("prOq", None),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    PREMIUM_PATTERN = r'<a href="premium/" style="padding-left: 0px;">Account: <b>Premium</b></a>'
+    PREMIUM_PATTERN = r'>Account: <b>Premium'
+
+    VALID_UNTIL_PATTERN = r'>Account: <b>\w+ \((\d+)'
 
 
     def loadAccountInfo(self, user, req):
         validuntil  = None
-        trafficleft = None
+        trafficleft = -1
         premium     = False
-
-        req.load("https://rapidu.net/ajax.php?a=getChangeLang",
-                 post={'_go': "", 'lang': "en"})
 
         html = req.load("https://rapidu.net/", decode=True)
 
         if re.search(self.PREMIUM_PATTERN, html):
-            premium     = True
-            trafficleft = -1
+            premium = True
+
+        m = re.search(self.VALID_UNTIL_PATTERN, html)
+        if m:
+            validuntil = time() + (86400 * int(m.group(1)))
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
 
     def login(self, user, data, req):
-        try:
-            json = json_loads(req.load("https://rapidu.net/ajax.php?a=getUserLogin",
-                                       post={'_go'     : "",
-                                             'login'   : user,
-                                             'pass'    : data['password'],
-                                             'remember': "1"}))
+        req.load("https://rapidu.net/ajax.php",
+                 get={'a': "getChangeLang"},
+                 post={'_go' : "",
+                       'lang': "en"})
 
-            self.logDebug(json)
+        json = json_loads(req.load("https://rapidu.net/ajax.php",
+                                   get={'a': "getUserLogin"},
+                                   post={'_go'     : "",
+                                         'login'   : user,
+                                         'pass'    : data['password'],
+                                         'remember': "1"}))
 
-            if not json['message'] == "success":
-                self.wrongPassword()
+        self.logDebug(json)
 
-        except Exception, e:
-            self.logError(e)
+        if not json['message'] == "success":
+            self.wrongPassword()
