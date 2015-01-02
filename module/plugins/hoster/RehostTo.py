@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class RehostTo(MultiHoster):
     __name__    = "RehostTo"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'https?://.*rehost\.to\..+'
 
@@ -21,21 +21,14 @@ class RehostTo(MultiHoster):
         return unquote(url.rsplit("/", 1)[1])
 
 
-    def setup(self):
-        self.chunkLimit     = 1
-        self.resumeDownload = True
-
-
     def handlePremium(self):
-        data = self.account.getAccountInfo(self.user)
+        data     = self.account.getAccountInfo(self.user)
         long_ses = data['long_ses']
 
-        #raise timeout to 2min
-        self.req.setOption("timeout", 120)
-
-        self.link = True
         self.download("http://rehost.to/process_download.php",
-                      get={'user': "cookie", 'pass': long_ses, 'dl': quote(self.pyfile.url, "")},
+                      get={'user': "cookie",
+                           'pass': long_ses,
+                           'dl'  : self.pyfile.url},
                       disposition=True)
 
 
