@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class DlProtectCom(SimpleCrypter):
     __name__    = "DlProtectCom"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?dl-protect\.com/((en|fr)/)?(?P<ID>\w+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -22,7 +22,7 @@ class DlProtectCom(SimpleCrypter):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    OFFLINE_PATTERN = r'>Unfortunately, the link you are looking for is not found'
+    OFFLINE_PATTERN = r'Unfortunately, the link you are looking for is not found'
 
 
     def getLinks(self):
@@ -31,13 +31,16 @@ class DlProtectCom(SimpleCrypter):
             return [self.req.http.lastEffectiveURL]
 
         #id = re.match(self.__pattern__, self.pyfile.url).group('ID')
-        key = re.search(r'name="id_key" value="(.+?)"', self.html).group(1)
+        key = re.search(r'name="key" value="(.+?)"', self.html).group(1)
 
-        post_req = {"id_key": key, "submitform": ""}
+        post_req = {"key": key, "submitform": ""}
 
         if self.OFFLINE_PATTERN in self.html:
             self.offline()
-        elif ">Please click on continue to see the content" in self.html:
+        elif "Please click on continue to see the content" in self.html:
+            while not re.match(r'id="btn-continue" type="submit" value="Continue"', self.html):
+                self.setWait(1)
+                self.wait()
             post_req.update({"submitform": "Continue"})
         else:
             mstime = int(round(time() * 1000))
@@ -45,10 +48,10 @@ class DlProtectCom(SimpleCrypter):
 
             post_req.update({"i": b64time, "submitform": "Decrypt+link"})
 
-            if ">Password :" in self.html:
+            if "Password :" in self.html:
                 post_req['pwd'] = self.getPassword()
 
-            if ">Security Code" in self.html:
+            if "Security Code" in self.html:
                 captcha_id = re.search(r'/captcha\.php\?uid=(.+?)"', self.html).group(1)
                 captcha_url = "http://www.dl-protect.com/captcha.php?uid=" + captcha_id
                 captcha_code = self.decryptCaptcha(captcha_url, imgtype="gif")
@@ -57,7 +60,7 @@ class DlProtectCom(SimpleCrypter):
 
         self.html = self.load(self.pyfile.url, post=post_req)
 
-        for errmsg in (">The password is incorrect", ">The security code is incorrect"):
+        for errmsg in ("The password is incorrect", "The security code is incorrect"):
             if errmsg in self.html:
                 self.fail(_(errmsg[1:]))
 
