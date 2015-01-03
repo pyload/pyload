@@ -9,7 +9,7 @@ from module.utils import remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __config__ = [("mode"        , "all;listed;unlisted", "Use for plugins (if supported)"               , "all"),
                   ("pluginlist"  , "str"                , "Plugin list (comma separated)"                , ""   ),
@@ -51,6 +51,8 @@ class MultiHook(Hook):
 
     def coreReady(self):
         self.account = self.core.accountManager.getAccountPlugin(self.__name__)
+        if not self.account:
+            self.setConfig('activated', False)
 
 
     def getURL(self, *args, **kwargs):  #@TODO: Remove in 0.4.10
