@@ -138,15 +138,12 @@ var LinkEntry = new Class({
                 percent: new Element('span', {
                 'html': item.percent+ '% / '+ humanFileSize(item.size-item.bleft)
                 }),
-                remove: new Element('img',{
-                'src': 'media/default/img/control_cancel.png',
-                'styles':{
-                    'vertical-align': 'middle',
-                    'margin-right': '-20px',
-                    'margin-left': '5px',
-                    'margin-top': '-2px',
-                    'cursor': 'pointer'
-                }
+                remove: new Element('span',{
+                'html': '',
+                'class': 'glyphicon glyphicon-remove',
+                        'styles':{
+                            'margin-left': '3px',
+                        }
                 }),
                 pgbTr: new Element('tr', {
                 'html':'',
