@@ -27,8 +27,10 @@ class OverLoadMe(MultiHoster):
             name = unquote(url.rsplit("/", 1)[1])
         except IndexError:
             name = "Unknown_Filename..."
+
         if name.endswith("..."):  #: incomplete filename, append random stuff
             name += "%s.tmp" % randrange(100, 999)
+
         return name
 
 
@@ -37,13 +39,14 @@ class OverLoadMe(MultiHoster):
 
 
     def handlePremium(self):
-        data = self.account.getAccountData(self.user)
         https = "https" if self.getConfig("https") else "http"
-        page = self.load(https + "://api.over-load.me/getdownload.php",
-                         get={"auth": data['password'], "link": self.pyfile.url})
-        data = json_loads(page)
+        data  = self.account.getAccountData(self.user)
+        page  = self.load(https + "://api.over-load.me/getdownload.php",
+                          get={'auth': data['password'],
+                               'link': self.pyfile.url})
 
-        self.logDebug("Returned Data: %s" % data)
+        data = json_loads(page)
+        self.logDebug(data)
 
         if data['error'] == 1:
             self.logWarning(data['msg'])
@@ -52,12 +55,9 @@ class OverLoadMe(MultiHoster):
             if self.pyfile.name is not None and self.pyfile.name.endswith('.tmp') and data['filename']:
                 self.pyfile.name = data['filename']
                 self.pyfile.size = parseFileSize(data['filesize'])
-            self.link = data['downloadlink']
 
-        if self.getConfig("https"):
-            self.link = self.link.replace("http://", "https://")
-        else:
-            self.link = self.link.replace("https://", "http://")
+            http_repl = ["http://", "https://"]
+            self.link = data['downloadlink'].replace(*http_repl if self.getConfig("https") else *http_repl[::-1])
 
         if self.link != self.pyfile.url:
             self.logDebug("New URL: %s" % self.link)
