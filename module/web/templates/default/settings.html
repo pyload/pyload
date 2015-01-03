@@ -181,31 +181,34 @@
         </span>
 {% endblock %}
 {% block hidden %}
-<div id="account_box" class="window_box" style="z-index: 2">
+<div id="account_box" style="z-index: 2">
 <form id="add_account_form" action="/json/add_account" method="POST" enctype="multipart/form-data">
-<h1>{{_("Add Account")}}</h1>
+<h3>{{_("Add Account")}}</h3>
 <p>{{_("Enter your account data to use premium features.")}}</p>
-<label for="account_login">{{_("Login")}}
-<span class="small">{{_("Your username.")}}</span>
-</label>
-<input id="account_login" name="account_login" type="text" size="20" />
 
-<label for="account_password">{{_("Password")}}
-<span class="small">{{_("The password for this account.")}}</span>
-</label>
-<input id="account_password" name="account_password" type="password" size="20" />
-
-<label for="account_type">{{_("Type")}}
-<span class="small">{{_("Choose the hoster for your account.")}}</span>
-</label>
+<div class="form-group">
+<label for="account_login">{{_("Login")}}</label>
+<input class="form-control" id="account_login" name="account_login" type="text" />
+<p >{{_("Your username.")}}</p>
+</div>
+<div class="form-group">
+<label for="account_password">{{_("Password")}}</label>
+<input class="form-control" id="account_password" name="account_password" type="password" size="20" />
+<p >{{_("The password for this account.")}}</p>
+</div>
+<div class="form-group">
+<label for="account_type">{{_("Type")}}</label>
+<p>{{_("Choose the hoster for your account.")}}</p>
+</div>
+<div class="form-group">
     <select name=account_type id="account_type">
         {% for type in types|sort %}
             <option value="{{ type }}">{{ type }}</option>
         {% endfor %}
     </select>
-
-<button id="account_add_button" type="submit">{{_("Add")}}</button>
-<button id="account_reset" style="margin-left: 0" type="reset">{{_("Reset")}}</button>
+</div>
+<button class="btn btn-primary" style="float: right; margin-left: 5px;" id="account_add_button" type="submit">{{_("Add")}}</button>
+<button class="btn btn-default" style="float: right;" id="account_reset" style="margin-left: 0" type="reset">{{_("Reset")}}</button>
 <div class="spacer"></div>
 
 </form>

@@ -47,7 +47,7 @@ document.addEvent("domready", function(){
         &nbsp;&nbsp;
          <span class="glyphicon glyphicon-pencil" title="{{_("Edit Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/pencil.png" /></span>
         &nbsp;&nbsp;
-         <span class="glyphicon glyphicon-transfer" title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/package_go.png" /></span>
+         <span class="glyphicon glyphicon-transfer package_drag" title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/package_go.png" /></span>
         </span>
     </div>
     {% set progress = (package.linksdone * 100) / package.linkstotal %}
@@ -75,28 +75,32 @@ document.addEvent("domready", function(){
 {% endblock %}
 
 {% block hidden %}
-<div id="pack_box" class="window_box" style="z-index: 2">
-    <form id="pack_form" action="/json/edit_package" method="POST" enctype="multipart/form-data">
-    <h1>{{_("Edit Package")}}</h1>
+<div id="pack_box" style="z-index: 2">
+    <form id="pack_form" class="from-group" action="/json/edit_package" method="POST" enctype="multipart/form-data">
+    <h3>{{_("Edit Package")}}</h3>
     <p>{{_("Edit the package detais below.")}}</p>
+    
     <input name="pack_id" id="pack_id" type="hidden" value=""/>
-    <label for="pack_name">{{_("Name")}}
-    <span class="small">{{_("The name of the package.")}}</span>
-    </label>
-    <input id="pack_name" name="pack_name" type="text" size="20" />
-
-    <label for="pack_folder">{{_("Folder")}}
-    <span class="small">{{_("Name of subfolder for these downloads.")}}</span>
-    </label>
-    <input id="pack_folder" name="pack_folder" type="text" size="20" />
-
-    <label for="pack_pws">{{_("Password")}}
-    <span class="small">{{_("List of passwords used for unrar.")}}</span>
-    </label>
-    <textarea rows="3" name="pack_pws" id="pack_pws"></textarea>
-
-    <button type="submit">{{_("Submit")}}</button>
-    <button id="pack_reset" style="margin-left: 0" type="reset" >{{_("Reset")}}</button>
+    
+    <div class="form-group">
+        <label for="pack_name">{{_("Name")}}</label>
+        <input class="form-control" id="pack_name" name="pack_name" type="text" />
+        <p class="help-block">{{_("The name of the package.")}}</p>
+    </div>
+    <div class="form-group">
+        <label for="pack_folder">{{_("Folder")}}</label>
+        <input class="form-control" id="pack_folder" name="pack_folder" type="text" />
+        <p class="help-block">{{_("Name of subfolder for these downloads.")}}</p>
+    </div>
+    <div class="form-group">
+        <label for="pack_pws">{{_("Password")}}</label>
+        <textarea class="form-control" style=" width: 100%;" rows="3" name="pack_pws" id="pack_pws"></textarea>
+        <p class="help-block">{{_("List of passwords used for unrar.")}}</p>
+    </div>
+    <button class="btn btn-primary" style="float: right; margin-left: 5px;" type="submit">{{_("Submit")}}</button>
+    <button  class="btn btn-default" id="pack_reset" style="float: right;" type="reset" >{{_("Reset")}}</button>
+    
+   
     <div class="spacer"></div>
 
     </form>

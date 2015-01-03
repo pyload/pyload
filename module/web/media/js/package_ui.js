@@ -49,7 +49,7 @@ var PackageUI = new Class({
             clone: true,
             revert: true,
             opacity: 0.4,
-            handle: "#package_drag",
+            handle: ".package_drag",
             onComplete: this.saveSort.bind(this)
         });
 
@@ -218,7 +218,7 @@ var Package = new Class({
             }
             
 
-            var html = "<span style='' class='child_status sorthandle'><span style='margin-right: 2px;' class='{icon}'></span></span>\n".substitute({"icon": link.icon});
+            var html = "<span style='' class='child_status'><span style='margin-right: 2px;' class='{icon} sorthandle'></span></span>\n".substitute({"icon": link.icon});
             html += "<span style='font-size: 18px; text-weight:bold'>{name}</span><br /><div class='child_secrow' style='margin-left: 21px; margin-bottom: 7px;'>".substitute({"name": link.name});
             html += "<span class='child_status' style='font-size: 12px; color:#555'>{statusmsg}</span>{error}&nbsp;".substitute({"statusmsg": link.statusmsg, "error":link.error});
             html += "<span class='child_status' style='font-size: 12px; color:#555'>{format_size}</span>".substitute({"format_size": link.format_size});
@@ -273,8 +273,8 @@ var Package = new Class({
                     url: '/api/restartFile/' + this,
                     onSuccess: function() {
                         var ele = $('file_' + this);
-                        var imgs = ele.getElements("img");
-                        imgs[0].set("src", "/media/default/img/status_queue.png");
+                        var imgs = ele.getElements(".glyphicon");
+                        imgs[0].set("class", "glyphicon glyphicon-time");
                         var spans = ele.getElements(".child_status");
                         spans[1].set("html", "queued");
                         indicateSuccess();
