@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __pattern__ = r'^unmatchable$'
 
@@ -50,15 +50,26 @@ class MultiHoster(SimpleHoster):
     def process(self, pyfile):
         self.prepare()
 
+        try:
+            module = self.core.pluginManager.hosterPlugins[self.__name__]['module']
+            klass  = getattr(module, self.__name__)
+
+            self.logDebug("File info (BEFORE): %s" % self.info)
+            self.info.update(klass.getInfo(self.pyfile.url, self.html))
+            self.logDebug("File info (AFTER): %s"  % self.info)
+
+        except Exception:
+            self.checkNameSize()
+
+        else:
+            self.checkNameSize(getinfo=False)
+            self.checkStatus(getinfo=False)
+
         if self.directDL:
             self.logDebug("Looking for direct download link...")
             self.handleDirect(pyfile)
 
-        if self.link:
-            self.pyfile.url = self.link
-            self.checkNameSize()
-
-        elif not self.lastDownload:
+        if not self.link and not self.lastDownload:
             self.preload()
             self.checkInfo()
 
