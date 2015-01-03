@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class OverLoadMe(MultiHoster):
     __name__    = "OverLoadMe"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'https?://.*overload\.me/.+'
 
@@ -38,8 +38,8 @@ class OverLoadMe(MultiHoster):
 
     def handlePremium(self):
         data = self.account.getAccountData(self.user)
-
-        page = self.load("https://api.over-load.me/getdownload.php",
+        https = "https" if self.getConfig("https") else "http"
+        page = self.load(https + "://api.over-load.me/getdownload.php",
                          get={"auth": data['password'], "link": self.pyfile.url})
         data = json_loads(page)
 
