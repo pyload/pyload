@@ -113,7 +113,7 @@
                       
                       </ul>
                     <ul class="nav navbar-nav navbar-right">
-                      <li> <span class="glyphicon glyphicon-user"></span>{{user.name}}</li>
+                      <li><a href="/info"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-user"></span> {{user.name}}</a></li>
        		      {% if user.is_admin %}
        		      <li><a href="/admin" class="action profile" rel="nofollow"><span class="glyphicon glyphicon-cog"></span></a></li>
        		      {% endif %}
@@ -160,20 +160,12 @@
 
 <div id="body-wrapper" class="dokuwiki">
 
-<div id="content" lang="en" dir="ltr">
+<div id="content" style="width: 98%; margin-left:10px; margin-rigth:10px;" lang="en" dir="ltr">
 
-<h1>{% block subtitle %}pyLoad - {{_("Webinterface")}}{% endblock %}</h1>
+<h3>{% block subtitle %}pyLoad - {{_("Webinterface")}}{% endblock %}</h3>
 
 {% block statusbar %}
 {% endblock %}
-
-
-<br/>
-
-<div class="level1" style="clear:both">
-</div>
-<noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
-
 {% for message in messages %}
 	<b><p>{{message}}</p></b>
 {% endfor %}
@@ -188,7 +180,7 @@
 
 	<hr style="clear: both;" />
 
-<div id="foot">&copy; 2008-2011 pyLoad Team
+<div id="foot" style="with: 98%; margin-left: 10px; margin-right:10px">&copy; 2008-2011 pyLoad Team
 <a href="#top" class="action top" accesskey="x"><span>{{_("Back to top")}}</span></a><br />
 <!--<div class="breadcrumbs"></div>-->
 
@@ -202,5 +194,6 @@
     {% block hidden %}
     {% endblock %}
 </div>
+<noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
 </body>
 </html>

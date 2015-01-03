@@ -12,10 +12,10 @@
 
 {% block content %}
 
-    <ul id="toptabs" class="tabs">
-            <li><a class="selected" href="#">{{ _("General") }}</a></li>
-            <li><a href="#">{{ _("Plugins") }}</a></li>
-            <li><a href="#">{{ _("Accounts") }}</a></li>
+    <ul id="toptabs" class="nav nav-tabs">
+            <li role="presentation" class"active"><a href="#">{{ _("General") }}</a></li>
+            <li role="presentation"><a href="#">{{ _("Plugins") }}</a></li>
+            <li role="presentation"><a href="#">{{ _("Accounts") }}</a></li>
     </ul>
 
     <div id="tabsback" style="height: 20px; padding-left: 150px; color: white; font-weight: bold;">
@@ -25,56 +25,65 @@
         <span id="tabs-body">
             <!-- General -->
             <span id="general" class="active tabContent">
-                <ul class="nav tabs">
+                <ul class="nav tabs" style="width: 20%; float:left;">
                     <li class>
-                        <a>Menu</a>
-                        <ul id="general-menu">
+                        <div class="panel panel-default" >
+                          <div class="panel-body"  style="overlow-y: scroll; ">
+                           
+                          
+                        <ul id="general-menu" style=" float: left;">
                             {% for entry,name in conf.general %}
                                 <nobr>
-                                    <li id="general|{{ entry }}">{{ name }}</li>
+                                    <li style="list-style-type: none;" id="general|{{ entry }}">{{ name }}</li>
                                 </nobr>
                                 <br>
                             {% endfor %}
                         </ul>
+                          </div>
+                        </div>
                     </li>
                 </ul>
 
-                <form id="general_form" action="" method="POST" autocomplete="off">
+                <form style="float: left; width:40%; margin-left: 20%; diplay:block; position: fixed; overflow: auto;" id="general_form" action="" method="POST" autocomplete="off">
                     <span id="general_form_content">
                     <br>
                     <h3>&nbsp;&nbsp; {{ _("Choose a section from the menu") }}</h3>
                     <br>
                     </span>
 
-                  <input id="general|submit" class="styled_button" type="submit" value="{{_("Submit")}}"/>
+                  <input class="btn btn-primary" style="float:right; margin-right: 10px;" id="general|submit"  type="submit" value="{{_("Submit")}}"/>
                 </form>
             </span>
 
             <!-- Plugins -->
             <span id="plugins" class="tabContent">
-                <ul class="nav tabs">
+                <ul class="nav tabs" style="width: 20%; float:left; hight:300px;">
                     <li class>
-                        <a>Menu</a>
-                        <ul id="plugin-menu">
+                            <div class="panel panel-default" style="overflow-y: scroll; ">
+                              <div class="panel-body"  >
+                    
+                        <ul id="plugin-menu" style=" float: left;">
                             {% for entry,name in conf.plugin %}
                                 <nobr>
-                                    <li id="plugin|{{ entry }}">{{ name }}</li>
+                                    <li style="list-style-type: none;" id="plugin|{{ entry }}">{{ name }}</li>
                                 </nobr>
                                 <br>
                             {% endfor %}
                         </ul>
+                        <div>
+                        </div>
                     </li>
                 </ul>
 
 
-                 <form id="plugin_form" action="" method="POST" autocomplete="off">
+                 <form style="float: left; width:40%; margin-left: 10px;" id="plugin_form" action="" method="POST" autocomplete="off">
 
-                     <span id="plugin_form_content">
+                     <span id="plugin_form_content" style:"position: static;">
                     <br>
                     <h3>&nbsp;&nbsp; {{ _("Choose a section from the menu") }}</h3>
                     <br>
                          </span>
-                     <input id="plugin|submit" class="styled_button" type="submit" value="{{_("Submit")}}"/>
+                     <input class="btn btn-primary" style="float:right; margin-right: 10px;" id="plugin|submit" class="styled_button" type="submit" value="{{_("Submit")}}"/>
                 </form>
 
             </span>
@@ -83,7 +92,7 @@
             <span id="accounts" class="tabContent">
             <form id="account_form" action="/json/update_accounts" method="POST">
 
-                        <table class="settable wide">
+                        <table class="settable wide table">
 
                         <thead>
                         <tr>
@@ -163,9 +172,10 @@
                                        </tr>
                                 {% endfor %}
                             </table>
+            <button id="account_add" style="margin-left: 5px;" type="submit" class="btn btn-default">&nbsp;<span class="glyphicon glyphicon-plus"></button>
 
-            <button id="account_submit" type="submit" class="styled_button">{{_("Submit")}}</button>
-            <button id="account_add" style="margin-left: 0" type="submit" class="styled_button">{{_("Add")}}</button>
+            <button id="account_submit" type="submit" class="btn btn-primary" >{{_("Submit")}}</button>
+            
             </form>
             </span>
         </span>
