@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class OverLoadMe(Account):
     __name__    = "OverLoadMe"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Over-Load.me account plugin"""
     __license__     = "GPLv3"
@@ -16,7 +16,8 @@ class OverLoadMe(Account):
 
     def loadAccountInfo(self, user, req):
         data = self.getAccountData(user)
-        html = req.load("https://api.over-load.me/account.php", get={"user": user, "auth": data['password']}).strip()
+        https = "https" if self.getConfig("https") else "http"
+        html = req.load(https + "://api.over-load.me/account.php", get={"user": user, "auth": data['password']}).strip()
         data = json_loads(html)
 
         # Check for premium
@@ -28,7 +29,8 @@ class OverLoadMe(Account):
 
 
     def login(self, user, data, req):
-        jsondata = req.load("https://api.over-load.me/account.php",
+        https = "https" if self.getConfig("https") else "http"
+        jsondata = req.load(https + "://api.over-load.me/account.php",
                             get={"user": user, "auth": data['password']}).strip()
         data = json_loads(jsondata)
 
