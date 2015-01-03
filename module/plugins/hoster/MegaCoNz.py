@@ -14,7 +14,7 @@ from Crypto.Util import Counter
 
 from module.common.json_layer import json_loads, json_dumps
 from module.plugins.Hoster import Hoster
-from module.utils import decode
+from module.utils import decode, fs_decode, fs_encode
 
 
 ############################ General errors ###################################
@@ -49,7 +49,7 @@ from module.utils import decode
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __pattern__ = r'https?://(?:www\.)?mega\.co\.nz/#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'
 
@@ -117,7 +117,7 @@ class MegaCoNz(Hoster):
         self.pyfile.setStatus("decrypting")
         self.pyfile.setProgress(0)
 
-        file_crypted   = self.lastDownload
+        file_crypted   = fs_encode(self.lastDownload)
         file_decrypted = file_crypted.rsplit(self.FILE_SUFFIX)[0]
 
         try:
@@ -164,7 +164,7 @@ class MegaCoNz(Hoster):
             # self.fail("Checksum mismatch")
 
         os.remove(file_crypted)
-        self.lastDownload = file_decrypted
+        self.lastDownload = fs_decode(file_decrypted)
 
 
     def checkError(self, code):
