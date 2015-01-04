@@ -5,19 +5,18 @@ from __future__ import with_statement
 import re
 
 from base64 import b64encode
-from thread import start_new_thread
 from time import sleep
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL
 
-from module.plugins.Hook import Hook
+from module.plugins.Hook import Hook, threaded
 
 
 class Captcha9kw(Hook):
     __name__    = "Captcha9kw"
     __type__    = "hook"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __config__ = [("activated"     , "bool"    , "Activated"                                                                       , True                                                               ),
                   ("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
@@ -68,6 +67,7 @@ class Captcha9kw(Hook):
             return 0
 
 
+    @threaded
     def _processCaptcha(self, task):
         try:
             with open(task.captchaFile, 'rb') as f:

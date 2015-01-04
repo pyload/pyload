@@ -6,10 +6,9 @@ import re
 
 from base64 import b64encode
 from pycurl import FORM_FILE, LOW_SPEED_TIME
-from thread import start_new_thread
 
 from module.network.RequestFactory import getURL, getRequest
-from module.plugins.Hook import Hook
+from module.plugins.Hook import Hook, threaded
 
 
 class ImageTyperzException(Exception):
@@ -33,7 +32,7 @@ class ImageTyperzException(Exception):
 class ImageTyperz(Hook):
     __name__    = "ImageTyperz"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
@@ -130,7 +129,7 @@ class ImageTyperz(Hook):
             task.handler.append(self)
             task.data['service'] = self.__name__
             task.setWaiting(100)
-            start_new_thread(self.processCaptcha, (task,))
+            self._processCaptcha(task)
 
         else:
             self.logInfo(_("Your %s account has not enough credits") % self.__name__)
@@ -150,7 +149,8 @@ class ImageTyperz(Hook):
                 self.logError(_("Bad captcha solution received, refund request failed"), res)
 
 
-    def processCaptcha(self, task):
+    @threaded
+    def _processCaptcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)
