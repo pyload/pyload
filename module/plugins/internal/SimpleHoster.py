@@ -182,7 +182,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.89"
+    __version__ = "0.90"
 
     __pattern__ = r'^unmatchable$'
 
@@ -593,6 +593,9 @@ class SimpleHoster(Hoster):
 
 
     def checkTrafficLeft(self):
+        if not self.account:
+            return True
+
         traffic = self.account.getAccountInfo(self.user, True)['trafficleft']
 
         if traffic is None:
