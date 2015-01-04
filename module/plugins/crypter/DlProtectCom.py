@@ -37,7 +37,7 @@ class DlProtectCom(SimpleCrypter):
 
         if "Please click on continue to see the content" in self.html:
             post_req['submitform'] = "Continue"
-            self.wait(5)
+            self.wait(2)
 
         else:
             mstime  = int(round(time() * 1000))
