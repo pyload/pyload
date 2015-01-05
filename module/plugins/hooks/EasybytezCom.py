@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class EasybytezCom(MultiHook):
     __name__    = "EasybytezCom"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("mode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("pluginlist", "str", "Hoster list (comma separated)", "")]
@@ -19,8 +19,7 @@ class EasybytezCom(MultiHook):
 
 
     def getHosters(self):
-        self.account = self.core.accountManager.getAccountPlugin(self.__name__)
-        user = self.account.selectAccount()[0]
+        user, data = self.account.selectAccount()
 
         try:
             req  = self.account.getAccountRequest(user)

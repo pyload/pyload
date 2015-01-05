@@ -43,8 +43,9 @@ class NoPremiumPl(SimpleHoster):
         if not self.account:
             self.fail(_("Please enter your %s account or deactivate this plugin") % "NoPremium.pl")
         else:
-            self._usr = self.account.getAccountData(self.user).get('usr')
-            self._pwd = self.account.getAccountData(self.user).get('pwd')
+            data = self.account.getAccountData(self.user)
+            self._usr = data['usr']
+            self._pwd = data['pwd']
 
     def runFileQuery(self, url, mode=None):
         query = self._api_query.copy()

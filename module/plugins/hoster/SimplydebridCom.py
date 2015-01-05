@@ -36,7 +36,7 @@ class SimplydebridCom(MultiHoster):
         self.logDebug("New URL: %s" % self.link)
 
         if not re.match(self.__pattern__, self.link):
-            page = self.load("http://simply-debrid.com/api.php", get={'dl': self.link})  # +'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
+            page = self.load("http://simply-debrid.com/api.php", get={'dl': self.link})
             if 'tiger Link' in page or 'Invalid Link' in page or ('API' in page and 'ERROR' in page):
                 self.fail(_("Unable to unrestrict link"))
             self.link = page

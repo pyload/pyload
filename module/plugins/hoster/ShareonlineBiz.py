@@ -14,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
 
@@ -27,6 +27,8 @@ class ShareonlineBiz(SimpleHoster):
 
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", "http://www.share-online.biz/dl/\g<ID>")]
+
+    CHECK_TRAFFIC = True
 
     RECAPTCHA_KEY = "6LdatrsSAAAAAHZrB70txiV5p-8Iv8BtVxlTtjKX"
 
@@ -125,8 +127,6 @@ class ShareonlineBiz(SimpleHoster):
 
 
     def handlePremium(self):  #: should be working better loading (account) api internally
-        self.account.getAccountInfo(self.user, True)
-
         html = self.load("http://api.share-online.biz/account.php",
                         {"username": self.user, "password": self.account.accounts[self.user]['password'],
                          "act": "download", "lid": self.info['fileid']})

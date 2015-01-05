@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class RPNetBiz(MultiHook):
     __name__    = "RPNetBiz"
     __type__    = "hook"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __config__ = [("mode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                   ("pluginlist", "str", "Hoster list (comma separated)", ""),
@@ -20,12 +20,8 @@ class RPNetBiz(MultiHook):
 
 
     def getHosters(self):
-        # No hosts supported if no account
-        if not self.account or not self.account.canUse():
-            return []
-
         # Get account data
-        (user, data) = self.account.selectAccount()
+        user, data = self.account.selectAccount()
 
         res = self.getURL("https://premium.rpnet.biz/client_api.php",
                      get={'username': user, 'password': data['password'], 'action': "showHosterList"})
@@ -37,15 +33,3 @@ class RPNetBiz(MultiHook):
 
         # Extract hosters from json file
         return hoster_list['hosters']
-
-
-    def coreReady(self):
-        # Get account plugin and check if there is a valid account available
-        self.account = self.core.accountManager.getAccountPlugin("RPNetBiz")
-        if not self.account.canUse():
-            self.account = None
-            self.logError(_("Please enter your %s account or deactivate this plugin") % "rpnet")
-            return
-
-        # Run the overwriten core ready which actually enables the multihoster hook
-        return MultiHook.coreReady(self)

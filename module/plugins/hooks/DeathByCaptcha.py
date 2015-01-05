@@ -6,13 +6,12 @@ import re
 
 from base64 import b64encode
 from pycurl import FORM_FILE, HTTPHEADER
-from thread import start_new_thread
 from time import sleep
 
 from module.common.json_layer import json_loads
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest
-from module.plugins.Hook import Hook
+from module.plugins.Hook import Hook, threaded
 
 
 class DeathByCaptchaException(Exception):
@@ -52,7 +51,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Hook):
     __name__    = "DeathByCaptcha"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
@@ -195,7 +194,7 @@ class DeathByCaptcha(Hook):
             task.handler.append(self)
             task.data['service'] = self.__name__
             task.setWaiting(180)
-            start_new_thread(self.processCaptcha, (task,))
+            self._processCaptcha(task)
 
 
     def captchaInvalid(self, task):
@@ -210,7 +209,8 @@ class DeathByCaptcha(Hook):
                 self.logError(e)
 
 
-    def processCaptcha(self, task):
+    @threaded
+    def _processCaptcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)

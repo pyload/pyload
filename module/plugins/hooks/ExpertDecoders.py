@@ -4,18 +4,17 @@ from __future__ import with_statement
 
 from base64 import b64encode
 from pycurl import LOW_SPEED_TIME
-from thread import start_new_thread
 from uuid import uuid4
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL, getRequest
-from module.plugins.Hook import Hook
+from module.plugins.Hook import Hook, threaded
 
 
 class ExpertDecoders(Hook):
     __name__    = "ExpertDecoders"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __config__ = [("force", "bool", "Force CT even if client is connected", False),
                   ("passkey", "password", "Access key", "")]
@@ -50,7 +49,8 @@ class ExpertDecoders(Hook):
             return 0
 
 
-    def processCaptcha(self, task):
+    @threaded
+    def _processCaptcha(self, task):
         task.data['ticket'] = ticket = uuid4()
         result = None
 
@@ -85,7 +85,7 @@ class ExpertDecoders(Hook):
         if self.getCredits() > 0:
             task.handler.append(self)
             task.setWaiting(100)
-            start_new_thread(self.processCaptcha, (task,))
+            self._processCaptcha(task)
 
         else:
             self.logInfo(_("Your ExpertDecoders Account has not enough credits"))

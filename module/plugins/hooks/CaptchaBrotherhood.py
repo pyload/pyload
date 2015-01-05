@@ -10,12 +10,11 @@ try:
 except ImportError:
     import Image
 
-from thread import start_new_thread
 from time import sleep
 from urllib import urlencode
 
 from module.network.RequestFactory import getURL, getRequest
-from module.plugins.Hook import Hook
+from module.plugins.Hook import Hook, threaded
 
 
 class CaptchaBrotherhoodException(Exception):
@@ -39,7 +38,7 @@ class CaptchaBrotherhoodException(Exception):
 class CaptchaBrotherhood(Hook):
     __name__    = "CaptchaBrotherhood"
     __type__    = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __config__ = [("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
@@ -154,7 +153,7 @@ class CaptchaBrotherhood(Hook):
             task.handler.append(self)
             task.data['service'] = self.__name__
             task.setWaiting(100)
-            start_new_thread(self.processCaptcha, (task,))
+            self._processCaptcha(task)
         else:
             self.logInfo(_("Your CaptchaBrotherhood Account has not enough credits"))
 
@@ -164,7 +163,8 @@ class CaptchaBrotherhood(Hook):
             res = self.get_api("complainCaptcha", task.data['ticket'])
 
 
-    def processCaptcha(self, task):
+    @threaded
+    def _processCaptcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)

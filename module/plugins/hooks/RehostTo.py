@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class RehostTo(MultiHook):
     __name__    = "RehostTo"
     __type__    = "hook"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
     __config__ = [("mode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                   ("pluginlist", "str", "Hoster list (comma separated)", ""),
@@ -25,16 +25,9 @@ class RehostTo(MultiHook):
 
 
     def coreReady(self):
-        self.account = self.core.accountManager.getAccountPlugin("RehostTo")
+        super(RehostTo, self).coreReady()
 
-        user = self.account.selectAccount()[0]
+        user, data = self.account.selectAccount()
 
-        if not user:
-            self.logError(_("Please add your rehost.to account first and restart pyLoad"))
-            return
-
-        data = self.account.getAccountInfo(user)
-        self.ses = data['ses']
+        self.ses      = data['ses']
         self.long_ses = data['long_ses']
-
-        return MultiHook.coreReady(self)

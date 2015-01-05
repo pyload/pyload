@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from pycurl import FORM_FILE, LOW_SPEED_TIME
-from thread import start_new_thread
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL, getRequest
-from module.plugins.Hook import Hook
+from module.plugins.Hook import Hook, threaded
 
 
 class BypassCaptchaException(Exception):
@@ -29,7 +28,7 @@ class BypassCaptchaException(Exception):
 class BypassCaptcha(Hook):
     __name__    = "BypassCaptcha"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("force", "bool", "Force BC even if client is connected", False),
                   ("passkey", "password", "Passkey", "")]
@@ -116,7 +115,7 @@ class BypassCaptcha(Hook):
             task.handler.append(self)
             task.data['service'] = self.__name__
             task.setWaiting(100)
-            start_new_thread(self.processCaptcha, (task,))
+            self._processCaptcha(task)
 
         else:
             self.logInfo(_("Your %s account has not enough credits") % self.__name__)
@@ -132,7 +131,8 @@ class BypassCaptcha(Hook):
             self.respond(task.data['ticket'], False)
 
 
-    def processCaptcha(self, task):
+    @threaded
+    def _processCaptcha(self, task):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)

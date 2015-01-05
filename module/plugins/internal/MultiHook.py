@@ -9,7 +9,7 @@ from module.utils import remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __config__ = [("mode"        , "all;listed;unlisted", "Use for plugins (if supported)"               , "all"),
                   ("pluginlist"  , "str"                , "Plugin list (comma separated)"                , ""   ),
@@ -43,6 +43,7 @@ class MultiHook(Hook):
 
 
     def setup(self):
+        self.account       = None
         self.type          = self.core.pluginManager.findPlugin(self.__name__)[1] or "hoster"
         self.plugins       = []
         self.supported     = []
@@ -51,7 +52,12 @@ class MultiHook(Hook):
 
     def coreReady(self):
         self.account = self.core.accountManager.getAccountPlugin(self.__name__)
+
+        if self.account and not self.account.canUse():
+            self.account = None
+
         if not self.account:
+            self.logWarning("MultiHook will be deactivated due missing account reference")
             self.setConfig('activated', False)
 
 
