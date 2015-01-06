@@ -24,15 +24,15 @@ import os
 from module.plugins.Hook import Hook
 
 
-class LinkCryptWSCaptchaSolver(Hook):
-    __name__ = "LinkCryptWSCaptchaSolver"
+class LinkCryptWsCaptchaSolver(Hook):
+    __name__ = "LinkCryptWsCaptchaSolver"
     __version__ = "0.01"
-    __description__ = """Solve nonkey Captchas"""
+    __description__ = """Solved Captchas"""
     __config__ = [("activated", "bool", "Activated", False),
                   ("timeout", "int", "Timeout (max. 60)", "20"),
                   ("force", "bool", "Force CT even if client is connected", True), ]
     __author_name__ = ("Gummibaer")
-    __author_mail__ = ("Gummibaer-Pyload@wiki-bierkiste.de")
+    __author_mail__ = ("Gummibaer@wiki-bierkiste.de")
 
     def checkstyle(self):
         noblack = 0;
@@ -41,13 +41,13 @@ class LinkCryptWSCaptchaSolver(Hook):
         rgb_im = self.im.convert('RGB')
         pix = rgb_im.load()
         if pix[4, 4][0] == 0 and pix[4, 246][0] == 0  and pix[124, 4][0] == 0  and pix[124, 246][0] == 0:
-            self.logDebug("LinkCryptWS Captcha Left Right")
+            self.logDebug("LinkCryptWs Captcha Left Right")
             self.makeleftright()
         if pix[28, 4][0] == 0 and pix[218, 246][0] == 0  and pix[252, 4][0] == 0  and pix[440, 246][0] == 0:
-            self.logDebug("LinkCryptWS Captcha Up Down")
+            self.logDebug("LinkCryptWs Captcha Up Down")
             self.makeupdown()
         if pix[10, 50][0] == 0 and pix[160, 50][0] == 0  and pix[10, 200][0] == 0  and pix[160, 200][0] == 0:
-            self.logDebug("LinkCryptWS Captcha Caro")
+            self.logDebug("LinkCryptWs Captcha Caro")
             self.makecaro()
         
     def makeupdown(self):  
@@ -159,7 +159,7 @@ class LinkCryptWSCaptchaSolver(Hook):
                             if checkblack == "true": 
                                 pix[x, y] = colorPixel
                                 pix[x+5, y+20] = colorPixel
-                                self.logDebug("LinkCryptWS Result first Check %dx%d" %(x, y))
+                                self.logDebug("LinkCryptWs Result first Check %dx%d" %(x, y))
                                 return (x, y)
                                 #return (x+10, y+20)
                             if x+40 <= xsize:
@@ -179,12 +179,12 @@ class LinkCryptWSCaptchaSolver(Hook):
                             if checkblack == "true": 
                                 pix[x, y] = colorPixel
                                 pix[x+5, y+20] = colorPixel
-                                self.logDebug("LinkCryptWS Result second Check %dx%d" %(x, y))
+                                self.logDebug("LinkCryptWs Result second Check %dx%d" %(x, y))
                                 return (x, y)
                                 #return (x+10, y+20)
                             if x+40 <= xsize:
                                 x = x + 40
-        self.logDebug("LinkCryptWS Result Fail")
+        self.logDebug("LinkCryptWs Result Fail")
         return (0,0)
     def load_image(self, image):
         self.logDebug("load_image")
@@ -201,14 +201,14 @@ class LinkCryptWSCaptchaSolver(Hook):
         if self.core.isClientConnected() and not self.getConfig("force"):
             return False
             
-        if "tmpCaptcha_LinkCryptWS" in task.captchaFile:
-            self.logDebug("LinkCryptWS newCaptchaTask")
-            self.logDebug("LinkCryptWS File %s" % task.captchaFile)
+        if "tmpCaptcha_LinkCryptWs" in task.captchaFile:
+            self.logDebug("LinkCryptWs newCaptchaTask")
+            self.logDebug("LinkCryptWs File %s" % task.captchaFile)
             task.handler.append(self)
             task.setWaiting(self.getConfig("timeout"))
             res = self.load_image(task.captchaFile)
             result = str(res[0]) + ',' + str(res[1])
-            self.logInfo("LinkCryptWS Result Finished %s" % result)
+            self.logInfo("LinkCryptWs Result Finished %s" % result)
             task.setResult(result)
         else:
              return False
@@ -217,7 +217,3 @@ class LinkCryptWSCaptchaSolver(Hook):
 
     def captchaInvalid(self, task):
         self.logError("Captcha was not correkt.")
-<<<<<<< HEAD
-
-=======
->>>>>>> 51233e2cb833f221011f4913db88b40e257acaab
