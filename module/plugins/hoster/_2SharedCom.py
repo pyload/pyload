@@ -5,10 +5,10 @@ import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class TwoSharedCom(SimpleHoster):
-    __name__    = "TwoSharedCom"
+class _2SharedCom(SimpleHoster):
+    __name__    = "2SharedCom"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.+'
 
@@ -17,11 +17,11 @@ class TwoSharedCom(SimpleHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    NAME_PATTERN = r'<h1>(?P<N>.*)</h1>'
-    SIZE_PATTERN = r'<span class="dtitle">File size:</span>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    NAME_PATTERN    = r'<h1>(?P<N>.*)</h1>'
+    SIZE_PATTERN    = r'<span class="dtitle">File size:</span>\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'The file link that you requested is not valid\.|This file was deleted\.'
 
-    LINK_PATTERN = r'window.location =\'(.+?)\';'
+    LINK_FREE_PATTERN = r'window.location =\'(.+?)\';'
 
 
     def setup(self):
@@ -29,13 +29,4 @@ class TwoSharedCom(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self):
-        m = re.search(self.LINK_PATTERN, self.html)
-        if m is None:
-            self.error(_("Download link"))
-
-        link = m.group(1)
-        self.download(link)
-
-
-getInfo = create_getInfo(TwoSharedCom)
+getInfo = create_getInfo(_2SharedCom)

@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadableCh(SimpleHoster):
     __name__    = "UploadableCh"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
 
@@ -33,15 +33,15 @@ class UploadableCh(SimpleHoster):
     RECAPTCHA_KEY = "6LdlJuwSAAAAAPJbPIoUhyqOJd7-yrah5Nhim5S3"
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         # Click the "free user" button and wait
-        a = self.load(self.pyfile.url, cookies=True, post={'downloadLink': "wait"}, decode=True)
+        a = self.load(pyfile.url, cookies=True, post={'downloadLink': "wait"}, decode=True)
         self.logDebug(a)
 
         self.wait(30)
 
         # Make the recaptcha appear and show it the pyload interface
-        b = self.load(self.pyfile.url, cookies=True, post={'checkDownload': "check"}, decode=True)
+        b = self.load(pyfile.url, cookies=True, post={'checkDownload': "check"}, decode=True)
         self.logDebug(b)  #: Expected output: {"success":"showCaptcha"}
 
         recaptcha = ReCaptcha(self)
@@ -59,27 +59,21 @@ class UploadableCh(SimpleHoster):
         self.wait(3)
 
         # Get ready for downloading
-        self.load(self.pyfile.url, cookies=True, post={'downloadLink': "show"}, decode=True)
+        self.load(pyfile.url, cookies=True, post={'downloadLink': "show"}, decode=True)
 
         self.wait(3)
 
         # Download the file
-        self.download(self.pyfile.url, cookies=True, post={'download': "normal"}, disposition=True)
+        self.download(pyfile.url, cookies=True, post={'download': "normal"}, disposition=True)
 
 
     def checkFile(self):
-        super(UploadableCh, self).checkFile()
-
-        check = self.checkDownload({'wait_or_reconnect': re.compile("Please wait for"),
-                                    'is_html'          : re.compile("<head>")})
-
-        if check == "wait_or_reconnect":
+        if self.checkDownload({'wait': re.compile("Please wait for")}):
             self.logInfo("Downloadlimit reached, please wait or reconnect")
             self.wait(60 * 60, True)
             self.retry()
 
-        elif check == "is_html":
-            self.error("Downloaded file is an html file")
+        return super(UploadableCh, self).checkFile()
 
 
 getInfo = create_getInfo(UploadableCh)

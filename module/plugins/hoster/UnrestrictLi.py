@@ -12,11 +12,11 @@ from module.plugins.internal.SimpleHoster import secondsToMidnight
 class UnrestrictLi(MultiHoster):
     __name__    = "UnrestrictLi"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __pattern__ = r'https?://(?:www\.)?(unrestrict|unr)\.li/dl/[\w^_]+'
 
-    __description__ = """Unrestrict.li hoster plugin"""
+    __description__ = """Unrestrict.li multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
@@ -29,10 +29,10 @@ class UnrestrictLi(MultiHoster):
         self.resumeDownload = True
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         for _i in xrange(5):
             page = self.load('https://unrestrict.li/unrestrict.php',
-                             post={'link': self.pyfile.url, 'domain': 'long'})
+                             post={'link': pyfile.url, 'domain': 'long'})
             self.logDebug("JSON data: " + page)
             if page != '':
                 break
@@ -63,7 +63,7 @@ class UnrestrictLi(MultiHoster):
         self.link = page.keys()[0]
         self.api_data = page[self.link]
 
-        if self.link != self.pyfile.url:
+        if self.link != pyfile.url:
             self.logDebug("New URL: " + self.link)
 
         if hasattr(self, 'api_data'):

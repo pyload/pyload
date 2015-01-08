@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RapiduNet(SimpleHoster):
     __name__    = "RapiduNet"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'
 
@@ -37,8 +37,8 @@ class RapiduNet(SimpleHoster):
         self.multiDL        = self.premium
 
 
-    def handleFree(self):
-        self.req.http.lastURL = self.pyfile.url
+    def handleFree(self, pyfile):
+        self.req.http.lastURL = pyfile.url
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 
         jsvars = self.getJsonResponse("https://rapidu.net/ajax.php",
@@ -78,7 +78,7 @@ class RapiduNet(SimpleHoster):
         if not res.startswith('{'):
             self.retry()
 
-        self.logDebug(url, res)
+        self.logDebug(res)
 
         return json_loads(res)
 

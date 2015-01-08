@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MultishareCz(SimpleHoster):
     __name__    = "MultishareCz"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
     __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)'
 
@@ -28,12 +28,12 @@ class MultishareCz(SimpleHoster):
     OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
 
 
-    def handleFree(self):
-        self.download("http://www.multishare.cz/html/download_free.php?ID=%s" % self.info['pattern']['ID'])
+    def handleFree(self, pyfile):
+        self.download("http://www.multishare.cz/html/download_free.php", get={'ID': self.info['pattern']['ID']})
 
 
-    def handlePremium(self):
-        self.download("http://www.multishare.cz/html/download_premium.php?ID=%s" % self.info['pattern']['ID'])
+    def handlePremium(self, pyfile):
+        self.download("http://www.multishare.cz/html/download_premium.php", get={'ID': self.info['pattern']['ID']})
 
 
     def handleMulti(self, pyfile):

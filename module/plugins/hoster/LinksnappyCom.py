@@ -11,11 +11,11 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class LinksnappyCom(MultiHoster):
     __name__    = "LinksnappyCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'https?://(?:[^/]*\.)?linksnappy\.com'
 
-    __description__ = """Linksnappy.com hoster plugin"""
+    __description__ = """Linksnappy.com multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
@@ -23,9 +23,9 @@ class LinksnappyCom(MultiHoster):
     SINGLE_CHUNK_HOSTERS = ('easybytez.com')
 
 
-    def handlePremium(self):
-        host = self._get_host(self.pyfile.url)
-        json_params = json_dumps({'link': self.pyfile.url,
+    def handlePremium(self, pyfile):
+        host = self._get_host(pyfile.url)
+        json_params = json_dumps({'link': pyfile.url,
                                   'type': host,
                                   'username': self.user,
                                   'password': self.account.getAccountData(self.user)['password']})
@@ -40,7 +40,7 @@ class LinksnappyCom(MultiHoster):
             self.logError(msg, j['error'])
             self.fail(msg)
 
-        self.pyfile.name = j['filename']
+        pyfile.name = j['filename']
         self.link = j['generated']
 
         if host in self.SINGLE_CHUNK_HOSTERS:
@@ -48,17 +48,8 @@ class LinksnappyCom(MultiHoster):
         else:
             self.setup()
 
-        if self.link != self.pyfile.url:
+        if self.link != pyfile.url:
             self.logDebug("New URL: " + self.link)
-
-
-    def checkFile(self):
-        super(LinksnappyCom, self).checkFile()
-
-        check = self.checkDownload({"html302": "<title>302 Found</title>"})
-
-        if check == "html302":
-            self.retry(wait_time=5, reason=_("Linksnappy returns only HTML data"))
 
 
     @staticmethod

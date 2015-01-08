@@ -88,7 +88,7 @@ class NetloadIn(Hoster):
 
 
     def prepare(self):
-        self.download_api_data()
+        self.api_load()
 
         if self.api_data and self.api_data['filename']:
             self.pyfile.name = self.api_data['filename']
@@ -111,7 +111,7 @@ class NetloadIn(Hoster):
             return False
 
 
-    def download_api_data(self, n=0):
+    def api_load(self, n=0):
         url      = self.url
         id_regex = re.compile(self.__pattern__)
         match    = id_regex.search(url)
@@ -130,7 +130,7 @@ class NetloadIn(Hoster):
                              "md5": "1"}, decode=True).strip()
         if not html and n <= 3:
             sleep(0.2)
-            self.download_api_data(n + 1)
+            self.api_load(n + 1)
             return
 
         self.logDebug("APIDATA: " + html)

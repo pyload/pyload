@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileStoreTo(SimpleHoster):
     __name__    = "FileStoreTo"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
 
@@ -27,9 +27,9 @@ class FileStoreTo(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         self.wait(10)
-        ldc = re.search(r'wert="(\w+)"', self.html).group(1)
+        ldc  = re.search(r'wert="(\w+)"', self.html).group(1)
         link = self.load("http://filestore.to/ajax/download.php", get={"LDC": ldc})
         self.download(link)
 

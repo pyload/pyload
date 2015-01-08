@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class VeohCom(SimpleHoster):
     __name__    = "VeohCom"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
     __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
     __config__ = [("quality", "Low;High;Auto", "Quality", "Auto")]
@@ -32,15 +32,16 @@ class VeohCom(SimpleHoster):
         self.chunkLimit     = -1
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         quality = self.getConfig("quality")
         if quality == "Auto":
             quality = ("High", "Low")
+
         for q in quality:
             pattern = r'"fullPreviewHash%sPath":"(.+?)"' % q
             m = re.search(pattern, self.html)
             if m:
-                self.pyfile.name += ".mp4"
+                pyfile.name += ".mp4"
                 link = m.group(1).replace("\\", "")
                 self.download(link)
                 return

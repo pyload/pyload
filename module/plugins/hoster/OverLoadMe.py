@@ -13,11 +13,11 @@ from module.utils import parseFileSize
 class OverLoadMe(MultiHoster):
     __name__    = "OverLoadMe"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'https?://.*overload\.me/.+'
 
-    __description__ = """Over-Load.me hoster plugin"""
+    __description__ = """Over-Load.me multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("marley", "marley@over-load.me")]
 
@@ -38,12 +38,12 @@ class OverLoadMe(MultiHoster):
         self.chunkLimit = 5
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         https = "https" if self.getConfig("https") else "http"
         data  = self.account.getAccountData(self.user)
         page  = self.load(https + "://api.over-load.me/getdownload.php",
                           get={'auth': data['password'],
-                               'link': self.pyfile.url})
+                               'link': pyfile.url})
 
         data = json_loads(page)
         self.logDebug(data)
@@ -52,30 +52,27 @@ class OverLoadMe(MultiHoster):
             self.logWarning(data['msg'])
             self.tempOffline()
         else:
-            if self.pyfile.name is not None and self.pyfile.name.endswith('.tmp') and data['filename']:
-                self.pyfile.name = data['filename']
-                self.pyfile.size = parseFileSize(data['filesize'])
+            if pyfile.name is not None and pyfile.name.endswith('.tmp') and data['filename']:
+                pyfile.name = data['filename']
+                pyfile.size = parseFileSize(data['filesize'])
 
             http_repl = ["http://", "https://"]
             self.link = data['downloadlink'].replace(*http_repl if self.getConfig("https") else *http_repl[::-1])
 
-        if self.link != self.pyfile.url:
+        if self.link != pyfile.url:
             self.logDebug("New URL: %s" % self.link)
 
-        if self.pyfile.name.startswith("http") or self.pyfile.name.startswith("Unknown") or self.pyfile.name.endswith('..'):
+        if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown") or pyfile.name.endswith('..'):
             # only use when name wasn't already set
-            self.pyfile.name = self.getFilename(self.link)
+            pyfile.name = self.getFilename(self.link)
 
 
     def checkFile(self):
-        super(OverLoadMe, self).checkFile()
-
-        check = self.checkDownload(
-            {"error": "<title>An error occured while processing your request</title>"})
-
-        if check == "error":
+        if self.checkDownload({"error": "<title>An error occured while processing your request</title>"})
             # usual this download can safely be retried
             self.retry(wait_time=60, reason=_("An error occured while generating link."))
+
+        return super(OverLoadMe, self).checkFile()
 
 
 getInfo = create_getInfo(OverLoadMe)

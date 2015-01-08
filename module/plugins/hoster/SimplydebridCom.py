@@ -8,18 +8,18 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class SimplydebridCom(MultiHoster):
     __name__    = "SimplydebridCom"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php'
 
-    __description__ = """Simply-debrid.com hoster plugin"""
+    __description__ = """Simply-debrid.com multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         #fix the links for simply-debrid.com!
-        self.link = self.pyfile.url
+        self.link = pyfile.url
         self.link = self.link.replace("clz.to", "cloudzer.net/file")
         self.link = self.link.replace("http://share-online", "http://www.share-online")
         self.link = self.link.replace("ul.to", "uploaded.net/file")
@@ -46,12 +46,10 @@ class SimplydebridCom(MultiHoster):
 
 
     def checkFile(self):
-        super(SimplydebridCom, self).checkFile()
-
-        check = self.checkDownload({"bad1": "No address associated with hostname", "bad2": "<html"})
-
-        if check == "bad1" or check == "bad2":
+        if self.checkDownload({"error": "No address associated with hostname"}):
             self.retry(24, 3 * 60, "Bad file downloaded")
+
+        return super(SimplydebridCom, self).checkFile()
 
 
 getInfo = create_getInfo(SimplydebridCom)

@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilepostCom(SimpleHoster):
     __name__    = "FilepostCom"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)'
 
@@ -29,7 +29,7 @@ class FilepostCom(SimpleHoster):
     FLP_TOKEN_PATTERN = r'set_store_options\({token: \'(.+?)\''
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         m = re.search(self.FLP_TOKEN_PATTERN, self.html)
         if m is None:
             self.error(_("Token"))

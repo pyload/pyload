@@ -32,7 +32,7 @@ def getInfo(urls):
 class FilesMailRu(Hoster):
     __name__    = "FilesMailRu"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.+'
 
@@ -42,8 +42,7 @@ class FilesMailRu(Hoster):
 
 
     def setup(self):
-        if not self.account:
-            self.multiDL = False
+        self.multiDL = bool(self.account)
 
 
     def process(self, pyfile):

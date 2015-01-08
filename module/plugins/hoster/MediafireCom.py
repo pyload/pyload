@@ -54,7 +54,7 @@ def getInfo(urls):
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.82"
+    __version__ = "0.83"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download\.php)?\?)(\w{11}|\w{15})($|/)'
 
@@ -88,9 +88,9 @@ class MediafireCom(SimpleHoster):
             self.check_data = self.getFileInfo()
 
             if self.account:
-                self.handlePremium()
+                self.handlePremium(pyfile)
             else:
-                self.handleFree()
+                self.handleFree(pyfile)
         elif result == 1:
             self.offline()
         else:
@@ -98,7 +98,7 @@ class MediafireCom(SimpleHoster):
             self.download(self.link, disposition=True)
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         if self.PASSWORD_PATTERN in self.html:
             password = self.getPassword()
 

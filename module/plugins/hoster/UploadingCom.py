@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class UploadingCom(SimpleHoster):
     __name__    = "UploadingCom"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
     __pattern__ = r'http://(?:www\.)?uploading\.com/files/(?:get/)?(?P<ID>\w+)'
 
@@ -40,15 +40,15 @@ class UploadingCom(SimpleHoster):
         self.getFileInfo()
 
         if self.premium:
-            self.handlePremium()
+            self.handlePremium(pyfile)
         else:
-            self.handleFree()
+            self.handleFree(pyfile)
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         postData = {'action': 'get_link',
-                    'code': self.info['pattern']['ID'],
-                    'pass': 'undefined'}
+                    'code'  : self.info['pattern']['ID'],
+                    'pass'  : 'undefined'}
 
         self.html = self.load('http://uploading.com/files/get/?JsHttpRequest=%d-xml' % timestamp(), post=postData)
         url = re.search(r'"link"\s*:\s*"(.*?)"', self.html)
@@ -59,16 +59,16 @@ class UploadingCom(SimpleHoster):
         raise Exception("Plugin defect")
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         m = re.search('<h2>((Daily )?Download Limit)</h2>', self.html)
         if m:
-            self.pyfile.error = m.group(1)
-            self.logWarning(self.pyfile.error)
-            self.retry(6, (6 * 60 if m.group(2) else 15) * 60, self.pyfile.error)
+            pyfile.error = m.group(1)
+            self.logWarning(pyfile.error)
+            self.retry(6, (6 * 60 if m.group(2) else 15) * 60, pyfile.error)
 
         ajax_url = "http://uploading.com/files/get/?ajax"
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
-        self.req.http.lastURL = self.pyfile.url
+        self.req.http.lastURL = pyfile.url
 
         res = json_loads(self.load(ajax_url, post={'action': 'second_page', 'code': self.info['pattern']['ID']}))
 
@@ -94,11 +94,6 @@ class UploadingCom(SimpleHoster):
             self.error(_("No URL"))
 
         self.download(url)
-
-        check = self.checkDownload({"html": re.compile("\A<!DOCTYPE html PUBLIC")})
-        if check == "html":
-            self.logWarning(_("Redirected to a HTML page, wait 10 minutes and retry"))
-            self.wait(10 * 60, True)
 
 
 getInfo = create_getInfo(UploadingCom)

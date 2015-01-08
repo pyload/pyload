@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LoadTo(SimpleHoster):
     __name__    = "LoadTo"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
 
@@ -27,7 +27,7 @@ class LoadTo(SimpleHoster):
     SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'>Can\'t find file'
 
-    LINK_PATTERN = r'<form method="post" action="(.+?)"'
+    LINK_FREE_PATTERN = r'<form method="post" action="(.+?)"'
     WAIT_PATTERN = r'type="submit" value="Download \((\d+)\)"'
 
     URL_REPLACEMENTS = [(r'(\w)$', r'\1/')]
@@ -38,11 +38,11 @@ class LoadTo(SimpleHoster):
         self.chunkLimit = 1
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         # Search for Download URL
-        m = re.search(self.LINK_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
-            self.error(_("LINK_PATTERN not found"))
+            self.error(_("LINK_FREE_PATTERN not found"))
 
         download_url = m.group(1)
 
@@ -59,17 +59,7 @@ class LoadTo(SimpleHoster):
             self.download(download_url)
         else:
             challenge, response = solvemedia.challenge(captcha_key)
-
             self.download(download_url, post={"adcopy_challenge": challenge, "adcopy_response": response})
-
-            check = self.checkDownload({'404': re.compile("\A<h1>404 Not Found</h1>"), 'html': re.compile("html")})
-
-            if check == "404":
-                self.invalidCaptcha()
-                self.retry()
-            elif check == "html":
-                self.logWarning(_("Downloaded file is an html page, will retry"))
-                self.retry()
 
 
 getInfo = create_getInfo(LoadTo)

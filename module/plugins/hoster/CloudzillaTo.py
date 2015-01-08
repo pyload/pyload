@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class CloudzillaTo(SimpleHoster):
     __name__    = "CloudzillaTo"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/file/(?P<ID>[\w^_]+)'
 
@@ -32,7 +32,7 @@ class CloudzillaTo(SimpleHoster):
             self.retry(reason="Wrong password")
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         self.html = self.load("http://www.cloudzilla.to/generateticket/",
                               post={'file_id': self.info['pattern']['ID'], 'key': self.getPassword()})
 
@@ -54,8 +54,8 @@ class CloudzillaTo(SimpleHoster):
                                                                               'ticket_id': ticket['ticket_id']}
 
 
-    def handlePremium(self):
-        return self.handleFree()
+    def handlePremium(self, pyfile):
+        return self.handleFree(pyfile)
 
 
 getInfo = create_getInfo(CloudzillaTo)

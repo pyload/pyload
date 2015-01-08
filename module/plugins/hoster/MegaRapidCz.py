@@ -4,6 +4,7 @@ import re
 
 from pycurl import HTTPHEADER
 
+from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest
 from module.plugins.internal.SimpleHoster import SimpleHoster, parseFileInfo
 
@@ -22,7 +23,7 @@ def getInfo(urls):
 class MegaRapidCz(SimpleHoster):
     __name__    = "MegaRapidCz"
     __type__    = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.56"
 
     __pattern__ = r'http://(?:www\.)?(share|mega)rapid\.cz/soubor/\d+/.+'
 
@@ -40,8 +41,9 @@ class MegaRapidCz(SimpleHoster):
 
     CHECK_TRAFFIC = True
 
-    LINK_PATTERN = r'<a href="([^"]+)" title="Stahnout">([^<]+)</a>'
-    ERR_LOGIN_PATTERN = ur'<div class="error_div"><strong>Stahování je přístupné pouze přihlášeným uživatelům'
+    LINK_PREMIUM_PATTERN = r'<a href="([^"]+)" title="Stahnout">([^<]+)</a>'
+
+    ERR_LOGIN_PATTERN  = ur'<div class="error_div"><strong>Stahování je přístupné pouze přihlášeným uživatelům'
     ERR_CREDIT_PATTERN = ur'<div class="error_div"><strong>Stahování zdarma je možné jen přes náš'
 
 
@@ -49,14 +51,8 @@ class MegaRapidCz(SimpleHoster):
         self.chunkLimit = 1
 
 
-    def handlePremium(self):
-        try:
-            self.html = self.load(self.pyfile.url, decode=True)
-        except BadHeader, e:
-            self.account.relogin(self.user)
-            self.retry(wait_time=60, reason=str(e))
-
-        m = re.search(self.LINK_PATTERN, self.html)
+    def handlePremium(self, pyfile):
+        m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
         if m:
             link = m.group(1)
             self.logDebug("Premium link: %s" % link)

@@ -43,23 +43,27 @@ class FreakshareCom(Hoster):
 
             self.download(pyfile.url, post=self.req_opts)
 
-            check = self.checkDownload({"bad": "bad try",
-                                        "paralell": "> Sorry, you cant download more then 1 files at time. <",
-                                        "empty": "Warning: Unknown: Filename cannot be empty",
-                                        "wrong_captcha": "Wrong Captcha!",
+            check = self.checkDownload({"bad"           : "bad try",
+                                        "paralell"      : "> Sorry, you cant download more then 1 files at time. <",
+                                        "empty"         : "Warning: Unknown: Filename cannot be empty",
+                                        "wrong_captcha" : "Wrong Captcha!",
                                         "downloadserver": "No Downloadserver. Please try again later!"})
 
             if check == "bad":
                 self.fail(_("Bad Try"))
+
             elif check == "paralell":
                 self.setWait(300, True)
                 self.wait()
                 self.retry()
+
             elif check == "empty":
                 self.fail(_("File not downloadable"))
+
             elif check == "wrong_captcha":
                 self.invalidCaptcha()
                 self.retry()
+
             elif check == "downloadserver":
                 self.retry(5, 15 * 60, _("No Download server"))
 

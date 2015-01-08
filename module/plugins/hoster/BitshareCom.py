@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BitshareCom(SimpleHoster):
     __name__    = "BitshareCom"
     __type__    = "hoster"
-    __version__ = "0.51"
+    __version__ = "0.52"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)'
 
@@ -73,12 +73,7 @@ class BitshareCom(SimpleHoster):
         # This may either download our file or forward us to an error page
         self.download(self.getDownloadUrl())
 
-        check = self.checkDownload({"404": ">404 Not Found<", "Error": ">Error occured<"})
-
-        if check == "404":
-            self.retry(3, 60, 'Error 404')
-
-        elif check == "error":
+        if self.checkDownload({"error": ">Error occured<"}):
             self.retry(5, 5 * 60, "Bitshare host : Error occured")
 
 

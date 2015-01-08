@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DevhostSt(SimpleHoster):
     __name__    = "DevhostSt"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/(?!users/)\w{3}'
 
@@ -24,25 +24,12 @@ class DevhostSt(SimpleHoster):
     SIZE_PATTERN = r'>Size:</span> (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN = r'>File Not Found<'
-    LINK_PATTERN = r'id="downloadfile" href="(.+?)"'
+    LINK_FREE_PATTERN = r'id="downloadfile" href="(.+?)"'
 
 
     def setup(self):
         self.multiDL = True
         self.chunkLimit = 1
-
-
-    def handleFree(self):
-        m = re.search(self.LINK_PATTERN, self.html)
-        if m is None:
-            self.error(_("Download link not found"))
-
-        dl_url = m.group(1)
-        self.download(dl_url, disposition=True)
-
-        check = self.checkDownload({'html': re.compile("html")})
-        if check == "html":
-            self.error(_("Downloaded file is an html page"))
 
 
 getInfo = create_getInfo(DevhostSt)

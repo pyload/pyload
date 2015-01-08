@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class NarodRu(SimpleHoster):
     __name__    = "NarodRu"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/\d+\.\w+-narod\.yandex\.ru)/(?P<ID>\d+)/.+'
 
@@ -28,29 +28,35 @@ class NarodRu(SimpleHoster):
                              (r"/start/\d+\.\w+-narod\.yandex\.ru/(\d{6,15})/\w+/(\w+)", r"/disk/\1/\2")]
 
     CAPTCHA_PATTERN = r'<number url="(.*?)">(\w+)</number>'
-    LINK_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'
+    LINK_FREE_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         for _i in xrange(5):
             self.html = self.load('http://narod.ru/disk/getcapchaxml/?rnd=%d' % int(random() * 777))
+
             m = re.search(self.CAPTCHA_PATTERN, self.html)
             if m is None:
                 self.error(_("Captcha"))
+
             post_data = {"action": "sendcapcha"}
             captcha_url, post_data['key'] = m.groups()
             post_data['rep'] = self.decryptCaptcha(captcha_url)
 
-            self.html = self.load(self.pyfile.url, post=post_data, decode=True)
-            m = re.search(self.LINK_PATTERN, self.html)
+            self.html = self.load(pyfile.url, post=post_data, decode=True)
+
+            m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m:
                 url = 'http://narod.ru' + m.group(1)
                 self.correctCaptcha()
                 break
+
             elif u'<b class="error-msg"><strong>Ошиблись?</strong>' in self.html:
                 self.invalidCaptcha()
+
             else:
                 self.error(_("Download link"))
+
         else:
             self.fail(_("No valid captcha code entered"))
 

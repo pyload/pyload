@@ -14,11 +14,11 @@ from module.utils import parseFileSize
 class RealdebridCom(MultiHoster):
     __name__    = "RealdebridCom"
     __type__    = "hoster"
-    __version__ = "0.62"
+    __version__ = "0.63"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'
 
-    __description__ = """Real-Debrid.com hoster plugin"""
+    __description__ = """Real-Debrid.com multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de")]
 
@@ -37,10 +37,10 @@ class RealdebridCom(MultiHoster):
         self.chunkLimit = 3
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         data = json_loads(self.load("https://real-debrid.com/ajax/unrestrict.php",
                                     get={'lang'    : "en",
-                                         'link'    : self.pyfile.url,
+                                         'link'    : pyfile.url,
                                          'password': self.getPassword(),
                                          'time'    : int(time() * 1000)}))
 
@@ -53,9 +53,9 @@ class RealdebridCom(MultiHoster):
                 self.logWarning(data['message'])
                 self.tempOffline()
         else:
-            if self.pyfile.name is not None and self.pyfile.name.endswith('.tmp') and data['file_name']:
-                self.pyfile.name = data['file_name']
-            self.pyfile.size = parseFileSize(data['file_size'])
+            if pyfile.name is not None and pyfile.name.endswith('.tmp') and data['file_name']:
+                pyfile.name = data['file_name']
+            pyfile.size = parseFileSize(data['file_size'])
             self.link = data['generated_links'][0][-1]
 
         if self.getConfig("https"):
@@ -63,23 +63,20 @@ class RealdebridCom(MultiHoster):
         else:
             self.link = self.link.replace("https://", "http://")
 
-        if self.link != self.pyfile.url:
+        if self.link != pyfile.url:
             self.logDebug("New URL: %s" % self.link)
 
-        if self.pyfile.name.startswith("http") or self.pyfile.name.startswith("Unknown") or self.pyfile.name.endswith('..'):
+        if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown") or pyfile.name.endswith('..'):
             #only use when name wasnt already set
-            self.pyfile.name = self.getFilename(self.link)
+            pyfile.name = self.getFilename(self.link)
 
 
     def checkFile(self):
-        super(RealdebridCom, self).checkFile()
-
-        check = self.checkDownload(
-            {"error": "<title>An error occured while processing your request</title>"})
-
-        if check == "error":
+        if self.checkDownload({"error": "<title>An error occured while processing your request</title>"}):
             #usual this download can safely be retried
             self.retry(wait_time=60, reason=_("An error occured while generating link"))
+
+        return super(RealdebridCom, self).checkFile()
 
 
 getInfo = create_getInfo(RealdebridCom)
