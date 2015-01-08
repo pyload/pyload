@@ -7,10 +7,10 @@ import re
 from module.plugins.Crypter import Crypter
 
 
-class FourChanOrg(Crypter):
-    __name__    = "FourChanOrg"
+class _4ChanOrg(Crypter):
+    __name__    = "4ChanOrg"
     __type__    = "crypter"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __pattern__ = r'http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
