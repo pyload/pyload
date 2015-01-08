@@ -51,7 +51,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Hook):
     __name__    = "DeathByCaptcha"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("username", "str", "Username", ""),
                   ("passkey", "password", "Password", ""),
@@ -75,7 +75,7 @@ class DeathByCaptcha(Hook):
         self.info = {}  #@TODO: Remove in 0.4.10
 
 
-    def call_api(self, api="captcha", post=False, multipart=False):
+    def api_response(self, api="captcha", post=False, multipart=False):
         req = getRequest()
         req.c.setopt(HTTPHEADER, ["Accept: application/json", "User-Agent: pyLoad %s" % self.core.version])
 
@@ -117,7 +117,7 @@ class DeathByCaptcha(Hook):
 
 
     def getCredits(self):
-        res = self.call_api("user", True)
+        res = self.api_response("user", True)
 
         if 'is_banned' in res and res['is_banned']:
             raise DeathByCaptchaException('banned')
@@ -128,7 +128,7 @@ class DeathByCaptcha(Hook):
 
 
     def getStatus(self):
-        res = self.call_api("status", False)
+        res = self.api_response("status", False)
 
         if 'is_service_overloaded' in res and res['is_service_overloaded']:
             raise DeathByCaptchaException('service-overload')
@@ -145,7 +145,7 @@ class DeathByCaptcha(Hook):
                 data = f.read()
             data = "base64:" + b64encode(data)
 
-        res = self.call_api("captcha", {"captchafile": data}, multipart)
+        res = self.api_response("captcha", {"captchafile": data}, multipart)
 
         if "captcha" not in res:
             raise DeathByCaptchaException(res)
@@ -153,7 +153,7 @@ class DeathByCaptcha(Hook):
 
         for _i in xrange(24):
             sleep(5)
-            res = self.call_api("captcha/%d" % ticket, False)
+            res = self.api_response("captcha/%d" % ticket, False)
             if res['text'] and res['is_correct']:
                 break
         else:
@@ -200,7 +200,7 @@ class DeathByCaptcha(Hook):
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
             try:
-                res = self.call_api("captcha/%d/report" % task.data['ticket'], True)
+                res = self.api_response("captcha/%d/report" % task.data['ticket'], True)
 
             except DeathByCaptchaException, e:
                 self.logError(e.getDesc())
