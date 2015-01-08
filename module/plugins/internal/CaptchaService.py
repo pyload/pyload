@@ -2,6 +2,7 @@
 
 import re
 
+from base64 import urlsafe_b64encode
 from random import random
 
 from module.common.json_layer import json_loads
@@ -54,14 +55,14 @@ class CaptchaService:
 
 class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__     = "GPLv3"
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    KEY_PATTERN      = r'recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=([\w-]+)'
+    KEY_PATTERN      = r'(?:class="g-recaptcha"\s+data-sitekey="|recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=)([\w-]+)'
     KEY_AJAX_PATTERN = r'Recaptcha\.create\s*\(\s*["\']([\w-]+)'
 
 
@@ -84,7 +85,7 @@ class ReCaptcha(CaptchaService):
             return None
 
 
-    def challenge(self, key=None):
+    def challenge(self, key=None, userverify=False):
         if not key:
             if self.detect_key():
                 key = self.key
@@ -97,14 +98,30 @@ class ReCaptcha(CaptchaService):
         try:
             challenge = re.search("challenge : '(.+?)',", html).group(1)
             server    = re.search("server : '(.+?)',", html).group(1)
-        except:
+
+        except AttributeError:
             errmsg = _("ReCaptcha challenge pattern not found")
             self.plugin.fail(errmsg)
-            raise ValueError(errmsg)
+            raise AttributeError(errmsg)
 
         self.plugin.logDebug("ReCaptcha challenge: %s" % challenge)
 
-        return challenge, self.result(server, challenge)
+        response = challenge, self.result(server, challenge)
+
+        return self.userverify(*response) if userverify else response
+
+
+    def userverify(self, challenge, result):
+        response = self.plugin.req.load("https://www.google.com/recaptcha/api2/userverify",
+                                        post={'c'       : challenge,
+                                              'response': urlsafe_b64encode('{"response":"%s"}' % result)})
+        try:
+            return re.search(r'"uvresp","(.+?)"', response).group(1)
+
+        except AttributeError:
+            errmsg = _("ReCaptcha userverify response not found")
+            self.plugin.fail(errmsg)
+            raise AttributeError(errmsg)
 
 
     def result(self, server, challenge):
@@ -167,10 +184,11 @@ class AdsCaptcha(CaptchaService):
         try:
             challenge = re.search("challenge: '(.+?)',", html).group(1)
             server    = re.search("server: '(.+?)',", html).group(1)
-        except:
+
+        except AttributeError:
             errmsg = _("AdsCaptcha challenge pattern not found")
             self.plugin.fail(errmsg)
-            raise ValueError(errmsg)
+            raise AttributeError(errmsg)
 
         self.plugin.logDebug("AdsCaptcha challenge: %s" % challenge)
 
@@ -214,10 +232,11 @@ class SolveMedia(CaptchaService):
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
                                   html).group(1)
             server    = "http://api.solvemedia.com/papi/media"
-        except:
+
+        except AttributeError:
             errmsg = _("SolveMedia challenge pattern not found")
             self.plugin.fail(errmsg)
-            raise ValueError(errmsg)
+            raise AttributeError(errmsg)
 
         self.plugin.logDebug("SolveMedia challenge: %s" % challenge)
 
@@ -286,10 +305,11 @@ class AdYouLike(CaptchaService):
                                          'callback': callback})
         try:
             challenge = json_loads(re.search(callback + r'\s*\((.+?)\)', html).group(1))
-        except:
+
+        except AttributeError:
             errmsg = _("AdYouLike challenge pattern not found")
             self.plugin.fail(errmsg)
-            raise ValueError(errmsg)
+            raise AttributeError(errmsg)
 
         self.plugin.logDebug("AdYouLike challenge: %s" % challenge)
 
@@ -316,10 +336,11 @@ class AdYouLike(CaptchaService):
         try:
             instructions_visual = challenge['translations'][server['all']['lang']]['instructions_visual']
             result = re.search(u'«(.+?)»', instructions_visual).group(1).strip()
-        except:
+
+        except AttributeError:
             errmsg = _("AdYouLike result not found")
             self.plugin.fail(errmsg)
-            raise ValueError(errmsg)
+            raise AttributeError(errmsg)
 
         result = {'_ayl_captcha_engine' : "adyoulike",
                   '_ayl_env'            : server['all']['env'],

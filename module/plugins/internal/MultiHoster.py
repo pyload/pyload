@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __pattern__ = r'^unmatchable$'
 
@@ -17,12 +17,14 @@ class MultiHoster(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
+    CHECK_TRAFFIC = True
     LOGIN_ACCOUNT = True
 
 
     def setup(self):
-        self.chunkLimit = 1
-        self.multiDL    = self.premium
+        self.chunkLimit     = 1
+        self.multiDL        = bool(self.account)
+        self.resumeDownload = self.premium
 
 
     def prepare(self):
@@ -76,7 +78,8 @@ class MultiHoster(SimpleHoster):
             if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as premium download")
                 self.handlePremium()
-            else:
+
+            elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as free download")
                 self.handleFree()
 
@@ -84,11 +87,11 @@ class MultiHoster(SimpleHoster):
         self.checkFile()
 
 
-    def handlePremium(self, pyfile=None):
+    def handlePremium(self, pyfile):
         return self.handleFree(pyfile)
 
 
-    def handleFree(self, pyfile=None):
+    def handleFree(self, pyfile):
         if self.premium:
             raise NotImplementedError
         else:

@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.33"
+    __version__ = "0.34"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
@@ -35,7 +35,7 @@ class XFSAccount(Account):
     LEECH_TRAFFIC_PATTERN = r'Leech Traffic left:<b>.*?(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
     LEECH_TRAFFIC_UNIT    = "MB"  #: used only if no group <U> was found
 
-    LOGIN_FAIL_PATTERN = r'>\s*(Incorrect Login or Password|Error<)'
+    LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|account was banned|Error<'
 
 
     def __init__(self, manager, accounts):  #@TODO: remove in 0.4.10
@@ -76,10 +76,10 @@ class XFSAccount(Account):
                 self.logDebug("Valid until: %s" % validuntil)
 
                 if validuntil > mktime(gmtime()):
-                    premium = True
+                    premium     = True
                     trafficleft = -1
                 else:
-                    premium = False
+                    premium    = False
                     validuntil = None  #: registered account type (not premium)
         else:
             self.logDebug("VALID_UNTIL_PATTERN not found")

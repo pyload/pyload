@@ -10,6 +10,7 @@ from urlparse import urljoin, urlparse
 
 from module.PyFile import statusMap as _statusMap
 from module.network.CookieJar import CookieJar
+from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL
 from module.plugins.Hoster import Hoster
 from module.plugins.Plugin import Fail
@@ -126,7 +127,7 @@ def timestamp():
 
 
 #@TODO: Move to hoster class in 0.4.10
-def _isDirectLink(self, url, resumable=False):
+def directLink(self, url, resumable=False):
     link = ""
 
     for i in xrange(5 if resumable else 1):
@@ -182,7 +183,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.90"
+    __version__ = "0.91"
 
     __pattern__ = r'^unmatchable$'
 
@@ -244,18 +245,32 @@ class SimpleHoster(Hoster):
     CHECK_TRAFFIC = False  #: Set to True to force checking traffic left for premium account
     DIRECT_LINK   = None   #: Set to True to looking for direct link (as defined in handleDirect method), set to None to do it if self.account is True else False
     MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
+    LOGIN_ACCOUNT = False  #: Set to True to require account login
+
+    directLink = directLink  #@TODO: Remove in 0.4.10
 
 
     @classmethod
-    def parseInfos(cls, urls):
+    def parseInfos(cls, urls):  #@TODO: Built-in in 0.4.10 core, then remove from plugins
         for url in urls:
             url = replace_patterns(url, cls.FILE_URL_REPLACEMENTS if hasattr(cls, "FILE_URL_REPLACEMENTS") else cls.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
             yield cls.getInfo(url)
 
 
     @classmethod
+    def apiInfo(cls, url="", get={}, post={}):
+        url = unquote(url)
+        return {'name'  : (urlparse(url).path.split('/')[-1]
+                           or urlparse(url).query.split('&', 1)[0].split('=', 1)[1]
+                           or _("Unknown")),
+                'size'  : 0,
+                'status': 3,
+                'url'   : url}
+
+
+    @classmethod
     def getInfo(cls, url="", html=""):
-        info   = {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3, 'url': url}
+        info   = cls.apiInfo(url)
         online = False
 
         try:
@@ -268,7 +283,7 @@ class SimpleHoster(Hoster):
                 info['error']  = "missing url"
                 info['status'] = 1
 
-            else:
+            elif info['status'] is 3:
                 try:
                     html = getURL(url, cookies=cls.COOKIES, decode=not cls.TEXT_ENCODING)
 
@@ -343,10 +358,15 @@ class SimpleHoster(Hoster):
 
 
     def prepare(self):
+        self.pyfile.error = ""  #@TODO: Remove in 0.4.10
+
         self.info      = {}
         self.link      = ""     #@TODO: Move to hoster class in 0.4.10
         self.directDL  = False  #@TODO: Move to hoster class in 0.4.10
         self.multihost = False  #@TODO: Move to hoster class in 0.4.10
+
+        if self.LOGIN_ACCOUNT and not self.account:
+            self.fail(_("Required account not found"))
 
         self.req.setOption("timeout", 120)
 
@@ -399,7 +419,7 @@ class SimpleHoster(Hoster):
                 self.logDebug("Handled as premium download")
                 self.handlePremium()
 
-            else:
+            elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as free download")
                 self.handleFree()
 
@@ -420,15 +440,12 @@ class SimpleHoster(Hoster):
 
         elif not self.lastDownload or not exists(fs_encode(self.lastDownload)):
             self.lastDownload = ""
-
-            errmsg = _("No file downloaded")
-            if 'error' in self.info:
-                self.fail(errmsg, self.info['error'])
-            else:
-                self.fail(errmsg)
+            self.fail(errmsg, self.pyfile.error or _("No file downloaded"))
 
         else:
-            rules = {'empty file': re.compile(r"^$")}
+            rules = {'empty file': re.compile(r'\A\Z'),
+                     'html file' : re.compile(r'\A\s*<!DOCTYPE html'),
+                     'html error': re.compile(r'\A\s*(<.+>)?\d{3}[^\d]*')}
 
             if hasattr(self, 'ERROR_PATTERN'):
                 rules['error'] = re.compile(self.ERROR_PATTERN)
@@ -529,7 +546,7 @@ class SimpleHoster(Hoster):
 
 
     def handleDirect(self, pyfile):
-        link = _isDirectLink(self, pyfile.url, self.resumeDownload)
+        link = self.directLink(pyfile.url, self.resumeDownload)
 
         if link:
             self.logInfo(_("Direct download link detected"))
@@ -543,9 +560,9 @@ class SimpleHoster(Hoster):
         pass
 
 
-    def handleFree(self, pyfile=None):
+    def handleFree(self, pyfile):
         if not hasattr(self, 'LINK_FREE_PATTERN'):
-            self.fail(_("Free download not implemented"))
+            self.logError(_("Free download not implemented"))
 
         try:
             m = re.search(self.LINK_FREE_PATTERN, self.html)
@@ -558,9 +575,11 @@ class SimpleHoster(Hoster):
             self.fail(e)
 
 
-    def handlePremium(self, pyfile=None):
+    def handlePremium(self, pyfile):
         if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
-            self.fail(_("Premium download not implemented"))
+            self.logError(_("Premium download not implemented"))
+            self.logDebug("Handled as free download")
+            self.handleFree()
 
         try:
             m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
