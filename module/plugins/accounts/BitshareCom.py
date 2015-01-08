@@ -6,7 +6,7 @@ from module.plugins.Account import Account
 class BitshareCom(Account):
     __name__    = "BitshareCom"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """Bitshare account plugin"""
     __license__     = "GPLv3"
@@ -27,7 +27,9 @@ class BitshareCom(Account):
 
     def login(self, user, data, req):
         html = req.load("http://bitshare.com/login.html",
-                        post={"user": user, "password": data['password'], "submit": "Login"}, cookies=True)
+                        post={"user": user, "password": data['password'], "submit": "Login"},
+                        cookies=True,
+                        decode=True)
 
         if "login" in req.lastEffectiveURL:
             self.wrongPassword()

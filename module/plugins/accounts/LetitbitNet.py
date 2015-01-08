@@ -7,7 +7,7 @@ from module.plugins.Account import Account
 class LetitbitNet(Account):
     __name__    = "LetitbitNet"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Letitbit.net account plugin"""
     __license__     = "GPLv3"
@@ -16,7 +16,7 @@ class LetitbitNet(Account):
 
     def loadAccountInfo(self, user, req):
         ## DISABLED BECAUSE IT GET 'key exausted' EVEN IF VALID ##
-        # api_key = self.accounts[user]['password']
+        # api_key = self.getAccountData(user)['password']
         # json_data = [api_key, ['key/info']]
         # api_rep = req.load('http://api.letitbit.net/json', post={'r': json_dumps(json_data)})
         # self.logDebug("API Key Info: " + api_rep)

@@ -8,7 +8,7 @@ from module.common.json_layer import json_loads
 class PremiumizeMe(Account):
     __name__    = "PremiumizeMe"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """Premiumize.me account plugin"""
     __license__     = "GPLv3"
@@ -45,5 +45,5 @@ class PremiumizeMe(Account):
         answer = req.load("https://api.premiumize.me/pm-api/v1.php",
                            get={'method'       : "accountstatus",
                                 'params[login]': user,
-                                'params[pass]' : self.accounts[user]['password']})
+                                'params[pass]' : self.getAccountData(user)['password']})
         return json_loads(answer)

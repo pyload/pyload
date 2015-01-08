@@ -6,7 +6,7 @@ from module.plugins.Account import Account
 class PremiumTo(Account):
     __name__    = "PremiumTo"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """Premium.to account plugin"""
     __license__     = "GPLv3"
@@ -30,7 +30,8 @@ class PremiumTo(Account):
         self.username = user
         self.password = data['password']
         authcode = req.load("http://premium.to/api/getauthcode.php",
-                            get={'username': user, 'password': self.password}).strip()
+                            get={'username': user, 'password': self.password},
+                            decode=True)
 
         if "wrong username" in authcode:
             self.wrongPassword()

@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class DepositfilesCom(Account):
     __name__    = "DepositfilesCom"
     __type__    = "account"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __description__ = """Depositfiles.com account plugin"""
     __license__     = "GPLv3"
@@ -30,6 +30,8 @@ class DepositfilesCom(Account):
 
     def login(self, user, data, req):
         html = req.load("https://dfiles.eu/de/login.php", get={"return": "/de/gold/payment.php"},
-                        post={"login": user, "password": data['password']})
+                        post={"login": user, "password": data['password']},
+                        decode=True)
+
         if r'<div class="error_message">Sie haben eine falsche Benutzername-Passwort-Kombination verwendet.</div>' in html:
             self.wrongPassword()

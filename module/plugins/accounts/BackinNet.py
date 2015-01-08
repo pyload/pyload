@@ -3,14 +3,14 @@
 from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class HundredEightyUploadCom(XFSAccount):
-    __name__    = "HundredEightyUploadCom"
+class BackinNet(XFSAccount):
+    __name__    = "BackinNet"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.01"
 
-    __description__ = """180upload.com account plugin"""
+    __description__ = """Backin.net account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "180upload.com"
+    HOSTER_DOMAIN = "backin.net"

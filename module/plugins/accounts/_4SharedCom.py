@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.common.json_layer import json_loads
 from module.plugins.Account import Account
 
 
-class FourSharedCom(Account):
-    __name__    = "FourSharedCom"
+class _4SharedCom(Account):
+    __name__    = "4SharedCom"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """FourShared.com account plugin"""
     __license__     = "GPLv3"
@@ -22,12 +21,14 @@ class FourSharedCom(Account):
 
     def login(self, user, data, req):
         req.cj.setCookie("4shared.com", "4langcookie", "en")
-        res = req.load('http://www.4shared.com/web/login',
-                       post={'login': user,
-                             'password': data['password'],
-                             'remember': "on",
+
+        res = req.load("http://www.4shared.com/web/login",
+                       post={'login'    : user,
+                             'password' : data['password'],
+                             'remember' : "on",
                              '_remember': "on",
-                             'returnTo': "http://www.4shared.com/account/home.jsp"})
+                             'returnTo' : "http://www.4shared.com/account/home.jsp"},
+                       decode=True)
 
         if 'Please log in to access your 4shared account' in res:
             self.wrongPassword()

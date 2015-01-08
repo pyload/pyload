@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class TurbobitNet(Account):
     __name__    = "TurbobitNet"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """TurbobitNet account plugin"""
     __license__     = "GPLv3"
@@ -33,10 +33,11 @@ class TurbobitNet(Account):
     def login(self, user, data, req):
         req.cj.setCookie("turbobit.net", "user_lang", "en")
 
-        html = req.load("http://turbobit.net/user/login", post={
-            "user[login]": user,
-            "user[pass]": data['password'],
-            "user[submit]": "Login"})
+        html = req.load("http://turbobit.net/user/login",
+                        post={"user[login]": user,
+                              "user[pass]": data['password'],
+                              "user[submit]": "Login"},
+                        decode=True)
 
         if not '<div class="menu-item user-name">' in html:
             self.wrongPassword()

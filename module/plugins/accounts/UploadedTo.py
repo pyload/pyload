@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class UploadedTo(Account):
     __name__    = "UploadedTo"
     __type__    = "account"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __description__ = """Uploaded.to account plugin"""
     __license__     = "GPLv3"
@@ -59,10 +59,11 @@ class UploadedTo(Account):
 
 
     def login(self, user, data, req):
-        req.cj.setCookie("uploaded.net", "lang", "en")
+        # req.cj.setCookie("uploaded.net", "lang", "en")
 
         html = req.load("http://uploaded.net/io/login",
-                        post={'id': user, 'pw': data['password'], '_': ""})
+                        post={'id': user, 'pw': data['password'], '_': ""},
+                        decode=True)
 
-        if "User and password do not match" in html:
+        if '"err"' in html:
             self.wrongPassword()

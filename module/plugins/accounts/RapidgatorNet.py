@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __description__ = """Rapidgator.net account plugin"""
     __license__     = "GPLv3"
@@ -44,7 +44,9 @@ class RapidgatorNet(Account):
     def login(self, user, data, req):
         try:
             json = req.load('%s/login' % self.API_URL, post={"username": user, "password": data['password']})
+
             self.logDebug("API:LOGIN", json)
+
             json = json_loads(json)
 
             if json['response_status'] == 200:
@@ -52,6 +54,7 @@ class RapidgatorNet(Account):
                 return
             else:
                 self.logError(json['response_details'])
+
         except Exception, e:
             self.logError(e)
 

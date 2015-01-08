@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class EuroshareEu(Account):
     __name__    = "EuroshareEu"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Euroshare.eu account plugin"""
     __license__     = "GPLv3"
@@ -31,11 +31,11 @@ class EuroshareEu(Account):
 
 
     def login(self, user, data, req):
-        html = req.load('http://euroshare.eu/customer-zone/login/', post={
-            "trvale": "1",
-            "login": user,
-            "password": data['password']
-        }, decode=True)
+        html = req.load('http://euroshare.eu/customer-zone/login/',
+                        post={"trvale": "1",
+                              "login": user,
+                              "password": data['password']},
+                        decode=True)
 
         if u">Nesprávne prihlasovacie meno alebo heslo" in html:
             self.wrongPassword()

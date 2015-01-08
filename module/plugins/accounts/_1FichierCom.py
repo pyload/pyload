@@ -9,10 +9,10 @@ from pycurl import REFERER
 from module.plugins.Account import Account
 
 
-class OneFichierCom(Account):
-    __name__    = "OneFichierCom"
+class _1FichierCom(Account):
+    __name__    = "1FichierCom"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """1fichier.com account plugin"""
     __license__     = "GPLv3"
@@ -49,7 +49,12 @@ class OneFichierCom(Account):
         req.http.c.setopt(REFERER, "https://1fichier.com/login.pl?lg=en")
 
         html = req.load("https://1fichier.com/login.pl?lg=en",
-                        post={'mail': user, 'pass': data['password'], 'It': "on", 'purge': "off", 'valider': "Send"})
+                        post={'mail'   : user,
+                              'pass'   : data['password'],
+                              'It'     : "on",
+                              'purge'  : "off",
+                              'valider': "Send"},
+                        decode=True)
 
         if '>Invalid email address' in html or '>Invalid password' in html:
             self.wrongPassword()

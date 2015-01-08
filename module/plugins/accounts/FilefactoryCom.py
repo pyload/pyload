@@ -11,7 +11,7 @@ from module.plugins.Account import Account
 class FilefactoryCom(Account):
     __name__    = "FilefactoryCom"
     __type__    = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __description__ = """Filefactory.com account plugin"""
     __license__     = "GPLv3"
@@ -40,10 +40,10 @@ class FilefactoryCom(Account):
     def login(self, user, data, req):
         req.http.c.setopt(REFERER, "http://www.filefactory.com/member/login.php")
 
-        html = req.load("http://www.filefactory.com/member/signin.php", post={
-            "loginEmail": user,
-            "loginPassword": data['password'],
-            "Submit": "Sign In"})
+        html = req.load("http://www.filefactory.com/member/signin.php",
+                        post={"loginEmail"   : user,
+                              "loginPassword": data['password'],
+                              "Submit"       : "Sign In"})
 
         if req.lastEffectiveURL != "http://www.filefactory.com/account/":
             self.wrongPassword()

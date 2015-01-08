@@ -8,7 +8,7 @@ from module.plugins.Account import Account
 class StahnuTo(Account):
     __name__    = "StahnuTo"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """StahnuTo account plugin"""
     __license__     = "GPLv3"
@@ -25,10 +25,11 @@ class StahnuTo(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://www.stahnu.to/login.php", post={
-            "username": user,
-            "password": data['password'],
-            "submit": "Login"})
+        html = req.load("http://www.stahnu.to/login.php",
+                        post={"username": user,
+                              "password": data['password'],
+                              "submit": "Login"},
+                        decode=True)
 
         if not '<a href="logout.php">' in html:
             self.wrongPassword()

@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class NetloadIn(Account):
     __name__    = "NetloadIn"
     __type__    = "account"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __description__ = """Netload.in account plugin"""
     __license__     = "GPLv3"
@@ -33,8 +33,12 @@ class NetloadIn(Account):
 
 
     def login(self, user, data, req):
-        html = req.load("http://netload.in/index.php", None,
-                        {"txtuser": user, "txtpass": data['password'], "txtcheck": "login", "txtlogin": "Login"},
-                        cookies=True)
+        html = req.load("http://netload.in/index.php",
+                        post={"txtuser" : user,
+                              "txtpass" : data['password'],
+                              "txtcheck": "login",
+                              "txtlogin": "Login"},
+                        cookies=True,
+                        decode=True)
         if "password or it might be invalid!" in html:
             self.wrongPassword()

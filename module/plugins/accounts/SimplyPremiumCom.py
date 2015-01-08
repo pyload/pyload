@@ -7,7 +7,7 @@ from module.plugins.Account import Account
 class SimplyPremiumCom(Account):
     __name__    = "SimplyPremiumCom"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Simply-Premium.com account plugin"""
     __license__     = "GPLv3"
@@ -42,7 +42,7 @@ class SimplyPremiumCom(Account):
         else:
             post_data = {"login_name": user, "login_pass": data['password']}
 
-        html = req.load("http://www.simply-premium.com/login.php", post=post_data)
+        html = req.load("http://www.simply-premium.com/login.php", post=post_data, decode=True)
 
         if 'logout' not in html:
             self.wrongPassword()

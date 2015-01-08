@@ -7,12 +7,12 @@ from time import gmtime, mktime, strptime
 from module.plugins.Account import Account
 
 
-class Keep2shareCc(Account):
-    __name__    = "Keep2shareCc"
+class Keep2ShareCc(Account):
+    __name__    = "Keep2ShareCc"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
-    __description__ = """Keep2share.cc account plugin"""
+    __description__ = """Keep2Share.cc account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("aeronaut", "aeronaut@pianoguy.de")]
 
@@ -35,18 +35,22 @@ class Keep2shareCc(Account):
             expiredate = m.group(1).strip()
             self.logDebug("Expire date: " + expiredate)
 
-            try:
-                validuntil = mktime(strptime(expiredate, "%Y.%m.%d"))
-
-            except Exception, e:
-                self.logError(e)
-
+            if expiredate == "LifeTime":
+                premium    = True
+                validuntil = -1
             else:
-                if validuntil > mktime(gmtime()):
-                    premium = True
+                try:
+                    validuntil = mktime(strptime(expiredate, "%Y.%m.%d"))
+
+                except Exception, e:
+                    self.logError(e)
+
                 else:
-                    premium = False
-                    validuntil = None
+                    if validuntil > mktime(gmtime()):
+                        premium = True
+                    else:
+                        premium    = False
+                        validuntil = None
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
@@ -66,7 +70,8 @@ class Keep2shareCc(Account):
                         post={'LoginForm[username]'  : user,
                               'LoginForm[password]'  : data['password'],
                               'LoginForm[rememberMe]': 1,
-                              'yt0'                  : ""})
+                              'yt0'                  : ""},
+                        decode=True)
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrongPassword()

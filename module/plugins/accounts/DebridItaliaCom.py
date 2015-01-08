@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class DebridItaliaCom(Account):
     __name__    = "DebridItaliaCom"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """Debriditalia.com account plugin"""
     __license__     = "GPLv3"
@@ -38,7 +38,8 @@ class DebridItaliaCom(Account):
 
     def login(self, user, data, req):
         html = req.load("http://debriditalia.com/login.php",
-                        get={'u': user, 'p': data['password']})
+                        get={'u': user, 'p': data['password']},
+                        decode=True)
 
         if 'NO' in html:
             self.wrongPassword()

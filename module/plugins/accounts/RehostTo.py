@@ -6,7 +6,7 @@ from module.plugins.Account import Account
 class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """Rehost.to account plugin"""
     __license__     = "GPLv3"
@@ -17,8 +17,10 @@ class RehostTo(Account):
         data = self.getAccountData(user)
         html = req.load("http://rehost.to/api.php",
                         get={'cmd': "login", 'user': user, 'pass': data['password']})
+
         data = [x.split("=") for x in html.split(",")]
-        ses = data[0][1]
+
+        ses      = data[0][1]
         long_ses = data[1][1]
 
         html = req.load("http://rehost.to/api.php",
@@ -39,7 +41,8 @@ class RehostTo(Account):
 
     def login(self, user, data, req):
         html = req.load("http://rehost.to/api.php",
-                        get={'cmd': "login", 'user': user, 'pass': data['password']})
+                        get={'cmd': "login", 'user': user, 'pass': data['password']},
+                        decode=True)
 
         if "Login failed." in html:
             self.wrongPassword()

@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class FilejungleCom(Account):
     __name__    = "FilejungleCom"
     __type__    = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """Filejungle.com account plugin"""
     __license__     = "GPLv3"
@@ -37,13 +37,14 @@ class FilejungleCom(Account):
 
 
     def login(self, user, data, req):
-        html = req.load(self.URL + "login.php", post={
-            "loginUserName": user,
-            "loginUserPassword": data['password'],
-            "loginFormSubmit": "Login",
-            "recaptcha_challenge_field": "",
-            "recaptcha_response_field": "",
-            "recaptcha_shortencode_field": ""})
+        html = req.load(self.URL + "login.php",
+                        post={"loginUserName": user,
+                              "loginUserPassword": data['password'],
+                              "loginFormSubmit": "Login",
+                              "recaptcha_challenge_field": "",
+                              "recaptcha_response_field": "",
+                              "recaptcha_shortencode_field": ""},
+                        decode=True)
 
         if re.search(self.LOGIN_FAILED_PATTERN, html):
             self.wrongPassword()
