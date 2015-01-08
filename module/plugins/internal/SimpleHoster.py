@@ -445,7 +445,7 @@ class SimpleHoster(Hoster):
         else:
             rules = {'empty file': re.compile(r'\A\Z'),
                      'html file' : re.compile(r'\A\s*<!DOCTYPE html'),
-                     'html error': re.compile(r'\A\s*(<.+>)?\d{3}[^\d]*')}
+                     'html error': re.compile(r'\A\s*(<.+>)?\d{3}(\Z|\s+)')}
 
             if hasattr(self, 'ERROR_PATTERN'):
                 rules['error'] = re.compile(self.ERROR_PATTERN)
