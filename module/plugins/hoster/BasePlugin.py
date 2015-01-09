@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'^unmatchable$'
 
@@ -72,9 +72,9 @@ class BasePlugin(Hoster):
         else:
             self.fail(_("No file downloaded"))  #@TODO: Move to hoster class in 0.4.10
 
-        check = self.checkDownload('empty file': re.compile(r'\A\Z'),
-                                   'html file' : re.compile(r'\A\s*<!DOCTYPE html'),
-                                   'html error': re.compile(r'\A\s*(<.+>)?\d{3}(\Z|\s+)')}):
+        check = self.checkDownload({'empty file': re.compile(r'\A\Z'),
+                                    'html file' : re.compile(r'\A\s*<!DOCTYPE html'),
+                                    'html error': re.compile(r'\A\s*(<.+>)?\d{3}(\Z|\s+)')}):
         if check:
             self.fail(check.capitalize())
 
