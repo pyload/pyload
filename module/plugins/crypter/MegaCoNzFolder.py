@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import re
+
 from module.plugins.internal.Crypter import Crypter
 
 
 class MegaCoNzFolder(Crypter):
     __name__    = "MegaCoNzFolder"
     __type__    = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
-    __pattern__ = r'https?://(?:www\.)?mega\.co\.nz/#F![\w+^_]![\w,\\-]+'
+    __pattern__ = r'(?:https?://(?:www\.)?mega\.co\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w+^_])!(?P<KEY>[\w,\\-]+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
@@ -22,7 +24,8 @@ class MegaCoNzFolder(Crypter):
 
 
     def decrypt(self, pyfile):
-        self.html = self.load("http://rapidgen.org/linkfinder", post={'linklisturl': self.pyfile.url})
+        url       = "https://mega.co.nz/#F!%s!%s" % re.match(self.__pattern__, pyfile.url).groups()
+        self.html = self.load("http://rapidgen.org/linkfinder", post={'linklisturl': url})
         self.urls = re.findall(r'(https://mega.co.nz/#N!.+?)<', self.html)
 
         if not self.urls:  #@TODO: Remove in 0.4.10
