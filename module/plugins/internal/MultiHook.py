@@ -3,13 +3,13 @@
 import re
 
 from module.plugins.Hook import Hook
-from module.utils import remove_chars
+from module.utils import decode, remove_chars
 
 
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -95,6 +95,8 @@ class MultiHook(Hook):
         """ see HTTPRequest for argument list """
         h = pyreq.getHTTPRequest(timeout=120)
         try:
+            if not 'decode' in kwargs:
+                kwargs['decode'] = True
             rep = h.load(*args, **kwargs)
         finally:
             h.close()
@@ -139,7 +141,7 @@ class MultiHook(Hook):
 
 
     def _pluginSet(self, plugins):
-        plugins = set((str(x).strip().lower() for x in plugins))
+        plugins = set((decode(x).strip().lower() for x in plugins))
 
         for rf, rt in self.DOMAIN_REPLACEMENTS:
             regex = re.compile(rf)
