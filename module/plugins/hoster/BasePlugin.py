@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __pattern__ = r'^unmatchable$'
 
