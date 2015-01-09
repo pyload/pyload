@@ -14,7 +14,7 @@ from module.utils import parseFileSize
 class RealdebridCom(MultiHoster):
     __name__    = "RealdebridCom"
     __type__    = "hoster"
-    __version__ = "0.63"
+    __version__ = "0.64"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'
 
@@ -58,7 +58,7 @@ class RealdebridCom(MultiHoster):
             pyfile.size = parseFileSize(data['file_size'])
             self.link = data['generated_links'][0][-1]
 
-        if self.getConfig("https"):
+        if self.getConfig("ssl"):
             self.link = self.link.replace("http://", "https://")
         else:
             self.link = self.link.replace("https://", "http://")

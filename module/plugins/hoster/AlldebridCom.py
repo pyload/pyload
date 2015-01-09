@@ -13,7 +13,7 @@ from module.utils import parseFileSize
 class AlldebridCom(MultiHoster):
     __name__    = "AlldebridCom"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
 
@@ -58,7 +58,7 @@ class AlldebridCom(MultiHoster):
             pyfile.size = parseFileSize(data['filesize'])
             self.link = data['link']
 
-        if self.getConfig("https"):
+        if self.getConfig("ssl"):
             self.link = self.link.replace("http://", "https://")
         else:
             self.link = self.link.replace("https://", "http://")
