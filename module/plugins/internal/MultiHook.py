@@ -9,7 +9,7 @@ from module.utils import remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -82,7 +82,7 @@ class MultiHook(Hook):
         if self.account and not self.account.canUse():
             self.account = None
 
-        if not self.account and hasattr(self.pluginclass, "LOGIN_ACCOUNT") and not self.pluginclass.LOGIN_ACCOUNT:
+        if not self.account and hasattr(self.pluginclass, "LOGIN_ACCOUNT") and self.pluginclass.LOGIN_ACCOUNT:
             self.logWarning("Hook plugin will be deactivated due missing account reference")
             self.setConfig('activated', False)
 
