@@ -74,7 +74,7 @@ class BasePlugin(Hoster):
 
         check = self.checkDownload({'empty file': re.compile(r'\A\Z'),
                                     'html file' : re.compile(r'\A\s*<!DOCTYPE html'),
-                                    'html error': re.compile(r'\A\s*(<.+>)?\d{3}(\Z|\s+)')}):
+                                    'html error': re.compile(r'\A\s*(<.+>)?\d{3}(\Z|\s+)')})
         if check:
             self.fail(check.capitalize())
 
