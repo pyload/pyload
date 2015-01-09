@@ -77,11 +77,11 @@ class MultiHoster(SimpleHoster):
 
             if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as premium download")
-                self.handlePremium()
+                self.handlePremium(pyfile)
 
             elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as free download")
-                self.handleFree()
+                self.handleFree(pyfile)
 
         self.downloadLink(self.link)
         self.checkFile()

@@ -5,8 +5,8 @@ import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class _4SharedCom(SimpleHoster):
-    __name__    = "4SharedCom"
+class FourSharedCom(SimpleHoster):
+    __name__    = "FourSharedCom"
     __type__    = "hoster"
     __version__ = "0.31"
 
@@ -59,4 +59,4 @@ class _4SharedCom(SimpleHoster):
         self.wait(20)
 
 
-getInfo = create_getInfo(_4SharedCom)
+getInfo = create_getInfo(FourSharedCom)

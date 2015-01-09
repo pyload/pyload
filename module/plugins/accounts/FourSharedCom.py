@@ -3,8 +3,8 @@
 from module.plugins.Account import Account
 
 
-class _4SharedCom(Account):
-    __name__    = "4SharedCom"
+class FourSharedCom(Account):
+    __name__    = "FourSharedCom"
     __type__    = "account"
     __version__ = "0.04"
 

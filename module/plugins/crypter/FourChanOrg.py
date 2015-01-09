@@ -7,8 +7,8 @@ import re
 from module.plugins.Crypter import Crypter
 
 
-class _4ChanOrg(Crypter):
-    __name__    = "4ChanOrg"
+class FourChanOrg(Crypter):
+    __name__    = "FourChanOrg"
     __type__    = "crypter"
     __version__ = "0.31"
 

@@ -3,11 +3,12 @@
 import re
 
 from module.unescape import unescape
+
 from module.plugins.Crypter import Crypter
 
 
-class _1KhDe(Crypter):
-    __name__    = "1KhDe"
+class OneKhDe(Crypter):
+    __name__    = "OneKhDe"
     __type__    = "crypter"
     __version__ = "0.11"
 

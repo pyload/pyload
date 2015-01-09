@@ -5,8 +5,8 @@ import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class _1FichierCom(SimpleHoster):
-    __name__    = "1FichierCom"
+class OneFichierCom(SimpleHoster):
+    __name__    = "OneFichierCom"
     __type__    = "hoster"
     __version__ = "0.76"
 
@@ -57,4 +57,4 @@ class _1FichierCom(SimpleHoster):
         return self.handleFree(pyfile)
 
 
-getInfo = create_getInfo(_1FichierCom)
+getInfo = create_getInfo(OneFichierCom)

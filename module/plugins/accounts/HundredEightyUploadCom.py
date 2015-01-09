@@ -3,8 +3,8 @@
 from module.plugins.internal.XFSAccount import XFSAccount
 
 
-class _180UploadCom(XFSAccount):
-    __name__    = "180UploadCom"
+class HundredEightyUploadCom(XFSAccount):
+    __name__    = "HundredEightyUploadCom"
     __type__    = "account"
     __version__ = "0.03"
 

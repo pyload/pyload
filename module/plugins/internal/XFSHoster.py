@@ -83,7 +83,7 @@ class XFSHoster(SimpleHoster):
             if self.captcha:
                 self.correctCaptcha()
 
-            self.download(link, ref=True, cookies=True, disposition=True)
+            self.download(link, ref=True, cookies=True, disposition=False)  #@TODO: Set `disposition=True` in 0.4.10
 
         elif self.errmsg:
             if 'captcha' in self.errmsg:

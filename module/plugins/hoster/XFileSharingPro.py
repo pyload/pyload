@@ -35,7 +35,7 @@ class XFileSharingPro(XFSHoster):
         self.HOSTER_NAME   = "".join([part.capitalize() for part in re.split(r'(\.|\d+)', self.HOSTER_DOMAIN) if part != '.'])
 
         if self.HOSTER_NAME[0].isdigit():
-            self.HOSTER_NAME = '_' + self.HOSTER_NAME
+            self.HOSTER_NAME = 'X' + self.HOSTER_NAME
 
         account = self.core.accountManager.getAccountPlugin(self.HOSTER_NAME)
 

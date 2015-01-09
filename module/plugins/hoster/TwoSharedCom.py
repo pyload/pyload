@@ -5,8 +5,8 @@ import re
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
-class _2SharedCom(SimpleHoster):
-    __name__    = "2SharedCom"
+class TwoSharedCom(SimpleHoster):
+    __name__    = "TwoSharedCom"
     __type__    = "hoster"
     __version__ = "0.13"
 
@@ -29,4 +29,4 @@ class _2SharedCom(SimpleHoster):
         self.multiDL        = True
 
 
-getInfo = create_getInfo(_2SharedCom)
+getInfo = create_getInfo(TwoSharedCom)

@@ -261,7 +261,7 @@ class SimpleHoster(Hoster):
     def apiInfo(cls, url="", get={}, post={}):
         url = unquote(url)
         return {'name'  : (urlparse(url).path.split('/')[-1]
-                           or urlparse(url).query.split('&', 1)[0].split('=', 1)[1]
+                           or urlparse(url).query.split('=', 1)[::-1][0].split('&', 1)[0]
                            or _("Unknown")),
                 'size'  : 0,
                 'status': 3,
@@ -417,11 +417,11 @@ class SimpleHoster(Hoster):
 
             if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as premium download")
-                self.handlePremium()
+                self.handlePremium(pyfile)
 
             elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as free download")
-                self.handleFree()
+                self.handleFree(pyfile)
 
         self.downloadLink(self.link)
         self.checkFile()
@@ -430,7 +430,7 @@ class SimpleHoster(Hoster):
     def downloadLink(self, link):
         if link and isinstance(link, basestring):
             self.correctCaptcha()
-            self.download(link, disposition=True)
+            self.download(link, disposition=False)  #@TODO: Set `disposition=True` in 0.4.10
 
 
     def checkFile(self):
@@ -579,7 +579,7 @@ class SimpleHoster(Hoster):
         if not hasattr(self, 'LINK_PREMIUM_PATTERN'):
             self.logError(_("Premium download not implemented"))
             self.logDebug("Handled as free download")
-            self.handleFree()
+            self.handleFree(pyfile)
 
         try:
             m = re.search(self.LINK_PREMIUM_PATTERN, self.html)

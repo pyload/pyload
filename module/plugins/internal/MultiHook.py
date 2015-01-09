@@ -27,22 +27,26 @@ class MultiHook(Hook):
 
     MIN_INTERVAL = 1 * 60 * 60
 
-    DOMAIN_REPLACEMENTS = [(r'\d+.+'           , "_\0"             ),
-                           (r'bayfiles\.net'   , "bayfiles.com"    ),
-                           (r'cloudnator\.com' , "shragle.com"     ),
-                           (r'dfiles\.eu'      , "depositfiles.com"),
-                           (r'easy-share\.com' , "crocko.com"      ),
-                           (r'freakshare\.net' , "freakshare.com"  ),
-                           (r'hellshare\.com'  , "hellshare.cz"    ),
-                           (r'ifile\.it'       , "filecloud.io"    ),
-                           (r'nowdownload\.\w+', "nowdownload.sx"  ),
-                           (r'nowvideo\.\w+'   , "nowvideo.sx"     ),
-                           (r'putlocker\.com'  , "firedrive.com"   ),
-                           (r'share-?rapid\.cz', "multishare.cz"   ),
-                           (r'ul\.to'          , "uploaded.to"     ),
-                           (r'uploaded\.net'   , "uploaded.to"     ),
-                           (r'uploadhero\.co'  , "uploadhero.com"  ),
-                           (r'zshares\.net'    , "zshare.net"      )]
+    DOMAIN_REPLACEMENTS = [(r'180upload.com'   , "hundredeightyupload.com"),
+                           (r'1fichier.com'    , "onefichier.com"         ),
+                           (r'2shared.com'     , "twoshared.com"          ),
+                           (r'4shared.com'     , "fourshared.com"         ),
+                           (r'bayfiles\.net'   , "bayfiles.com"           ),
+                           (r'cloudnator\.com' , "shragle.com"            ),
+                           (r'dfiles\.eu'      , "depositfiles.com"       ),
+                           (r'easy-share\.com' , "crocko.com"             ),
+                           (r'freakshare\.net' , "freakshare.com"         ),
+                           (r'hellshare\.com'  , "hellshare.cz"           ),
+                           (r'ifile\.it'       , "filecloud.io"           ),
+                           (r'nowdownload\.\w+', "nowdownload.sx"         ),
+                           (r'nowvideo\.\w+'   , "nowvideo.sx"            ),
+                           (r'putlocker\.com'  , "firedrive.com"          ),
+                           (r'share-?rapid\.cz', "multishare.cz"          ),
+                           (r'ul\.to'          , "uploaded.to"            ),
+                           (r'uploaded\.net'   , "uploaded.to"            ),
+                           (r'uploadhero\.co'  , "uploadhero.com"         ),
+                           (r'zshares\.net'    , "zshare.net"             ),
+                           (r'\d+.+'           , "X\0"                    )]
 
 
     def setup(self):

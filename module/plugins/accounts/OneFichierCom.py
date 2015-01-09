@@ -9,8 +9,8 @@ from pycurl import REFERER
 from module.plugins.Account import Account
 
 
-class _1FichierCom(Account):
-    __name__    = "1FichierCom"
+class OneFichierCom(Account):
+    __name__    = "OneFichierCom"
     __type__    = "account"
     __version__ = "0.12"
 
