@@ -13,8 +13,8 @@ from module.network.RequestFactory import getURL
 from module.plugins.Hook import Hook, threaded
 
 
-class Captcha9kw(Hook):
-    __name__    = "Captcha9kw"
+class Captcha9Kw(Hook):
+    __name__    = "Captcha9Kw"
     __type__    = "hook"
     __version__ = "0.27"
 

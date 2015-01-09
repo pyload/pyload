@@ -3,8 +3,8 @@
 from module.plugins.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
-class C1neonCom(DeadCrypter):
-    __name__    = "C1neonCom"
+class C1NeonCom(DeadCrypter):
+    __name__    = "C1NeonCom"
     __type__    = "crypter"
     __version__ = "0.05"
 
@@ -16,4 +16,4 @@ class C1neonCom(DeadCrypter):
     __authors__     = [("godofdream", "soilfiction@gmail.com")]
 
 
-getInfo = create_getInfo(C1neonCom)
+getInfo = create_getInfo(C1NeonCom)

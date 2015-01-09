@@ -8,14 +8,14 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import _isDirectLink, SimpleHoster, create_getInfo
 
 
-class Keep2shareCc(SimpleHoster):
-    __name__    = "Keep2shareCc"
+class Keep2ShareCc(SimpleHoster):
+    __name__    = "Keep2ShareCc"
     __type__    = "hoster"
     __version__ = "0.18"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
-    __description__ = """Keep2share.cc hoster plugin"""
+    __description__ = """Keep2Share.cc hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
@@ -127,4 +127,4 @@ class Keep2shareCc(SimpleHoster):
             self.download(urljoin("http://k2s.cc/", link), disposition=True)
 
 
-getInfo = create_getInfo(Keep2shareCc)
+getInfo = create_getInfo(Keep2ShareCc)
