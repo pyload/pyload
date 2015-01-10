@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class FilefactoryComFolder(SimpleCrypter):
     __name__    = "FilefactoryComFolder"
     __type__    = "crypter"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __pattern__ = r'https?://(?:www\.)?filefactory\.com/(?:f|folder)/\w+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -17,15 +17,15 @@ class FilefactoryComFolder(SimpleCrypter):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    LINK_PATTERN = r'<td><a href="([^"]+)">'
-    NAME_PATTERN = r'<h1>Files in <span>(?P<N>.+)</span></h1>'
-    PAGES_PATTERN = r'data-paginator-totalPages="(\d+)"'
-
     COOKIES = [("filefactory.com", "locale", "en_US.utf8")]
+
+    LINK_PATTERN  = r'<td>\s*<a href="(.+?)"'
+    NAME_PATTERN  = r'<h1>Files in <span>(?P<N>.+?)<'
+    PAGES_PATTERN = r'data-paginator-totalPages="(\d+)'
 
 
     def loadPage(self, page_n):
-        return self.load(self.pyfile.url, get={'page': page_n})
+        return self.load(self.pyfile.url, get={'page': page_n, 'show': 100})
 
 
 getInfo = create_getInfo(FilefactoryComFolder)

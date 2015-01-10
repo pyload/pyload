@@ -155,8 +155,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
     def handlePages(self, pyfile):
         try:
-            m = re.search(self.PAGES_PATTERN, self.html)
-            pages = int(m.group(1))
+            pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
         except:
             pages = 1
 
