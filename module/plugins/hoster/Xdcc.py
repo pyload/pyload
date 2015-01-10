@@ -4,11 +4,11 @@ import re
 import socket
 import struct
 import sys
-import time
 
 from os import makedirs
 from os.path import exists, join
 from select import select
+from time import time
 
 from module.plugins.Hoster import Hoster
 from module.utils import save_join
@@ -84,15 +84,18 @@ class Xdcc(Hoster):
 
         #######################
         # CONNECT TO IRC AND IDLE FOR REAL LINK
-        dl_time = time.time()
+        dl_time = time()
 
         sock = socket.socket()
         sock.connect((host, int(port)))
         if nick == "pyload":
-            nick = "pyload-%d" % (time.time() % 1000)  # last 3 digits
+            nick = "pyload-%d" % (time() % 1000)  # last 3 digits
         sock.send("NICK %s\r\n" % nick)
         sock.send("USER %s %s bla :%s\r\n" % (ident, host, real))
-        time.sleep(3)
+
+        self.setWait(3)
+        self.wait()
+
         sock.send("JOIN #%s\r\n" % chan)
         sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
 
@@ -108,13 +111,13 @@ class Xdcc(Hoster):
                 break
 
             if retry:
-                if time.time() > retry:
+                if time() > retry:
                     retry = None
-                    dl_time = time.time()
+                    dl_time = time()
                     sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
 
             else:
-                if (dl_time + self.timeout) < time.time():  # todo: add in config
+                if (dl_time + self.timeout) < time():  # todo: add in config
                     sock.send("QUIT :byebye\r\n")
                     sock.close()
                     self.fail(_("XDCC Bot did not answer"))
@@ -156,7 +159,7 @@ class Xdcc(Hoster):
                         sock.send("NOTICE %s :%s\r\n" % (msg['origin'], "pyLoad! IRC Interface"))
                     elif msg['text'] == "\x01TIME\x01":
                         self.logDebug("Sending CTCP TIME")
-                        sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
+                        sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time()))
                     elif msg['text'] == "\x01LAG\x01":
                         pass  # don't know how to answer
 
@@ -169,7 +172,7 @@ class Xdcc(Hoster):
                     print "%s: %s" % (msg['origin'], msg['text'])
 
                 if "You already requested that pack" in msg['text']:
-                    retry = time.time() + 300
+                    retry = time() + 300
 
                 if "you must be on a known channel to request a pack" in msg['text']:
                     self.fail(_("Wrong channel"))

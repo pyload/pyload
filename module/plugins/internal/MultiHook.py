@@ -285,7 +285,7 @@ class MultiHook(Hook):
             else:
                 retries   = max(self.getConfig("retry", 10), 0)
                 wait_time = max(self.getConfig("retryinterval", 1), 0)
-                
+
                 if 0 < retries > pyfile.plugin.retries:
                     pyfile.plugin.retries += 1
                     pyfile.plugin.setCustomStatus("MultiHook", "queued")

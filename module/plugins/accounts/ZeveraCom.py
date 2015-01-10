@@ -17,8 +17,8 @@ class ZeveraCom(Account):
 
 
     HOSTER_DOMAIN = "zevera.com"
-    
-    
+
+
     def __init__(self, manager, accounts):  #@TODO: remove in 0.4.10
         self.init()
         return super(ZeveraCom, self).__init__(manager, accounts)
@@ -30,8 +30,8 @@ class ZeveraCom(Account):
 
         if not self.API_URL:
             self.API_URL = "http://api.%s/jDownloader.ashx" % (self.HOSTER_DOMAIN or "")
-            
-            
+
+
     def loadAccountInfo(self, user, req):
         validuntil  = None
         trafficleft = None

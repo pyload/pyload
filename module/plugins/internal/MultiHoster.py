@@ -76,13 +76,13 @@ class MultiHoster(SimpleHoster):
         self.downloadLink(self.link)
         self.checkFile()
 
-    
+
     #@TODO: Remove in 0.4.10
     def downloadLink(self, link):
         if link and isinstance(link, basestring):
             self.correctCaptcha()
             self.download(link, disposition=True)
-            
+
 
     def handlePremium(self, pyfile):
         return self.handleFree(pyfile)
