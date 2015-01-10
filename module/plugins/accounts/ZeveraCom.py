@@ -8,7 +8,7 @@ from module.plugins.Account import Account
 class ZeveraCom(Account):
     __name__    = "ZeveraCom"
     __type__    = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __description__ = """Zevera.com account plugin"""
     __license__     = "GPLv3"
@@ -16,9 +16,22 @@ class ZeveraCom(Account):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    API_URL = "http://api.zevera.com/jDownloader.ashx"
+    HOSTER_DOMAIN = "zevera.com"
+    
+    
+    def __init__(self, manager, accounts):  #@TODO: remove in 0.4.10
+        self.init()
+        return super(ZeveraCom, self).__init__(manager, accounts)
 
 
+    def init(self):
+        if not self.HOSTER_DOMAIN:
+            self.logError(_("Missing HOSTER_DOMAIN"))
+
+        if not self.API_URL:
+            self.API_URL = "http://api.%s/jDownloader.ashx" % (self.HOSTER_DOMAIN or "")
+            
+            
     def loadAccountInfo(self, user, req):
         validuntil  = None
         trafficleft = None
