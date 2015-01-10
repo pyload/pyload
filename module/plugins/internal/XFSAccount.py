@@ -143,7 +143,7 @@ class XFSAccount(Account):
         if isinstance(self.COOKIES, list):
             set_cookies(req.cj, self.COOKIES)
 
-        url = urljoin(self.HOSTER_URL, "login.html")
+        url  = urljoin(self.HOSTER_URL, "login.html")
         html = req.load(url, decode=True)
 
         action, inputs = parseHtmlForm('name="FL"', html)

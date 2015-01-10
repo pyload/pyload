@@ -9,7 +9,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -27,10 +27,10 @@ class MultiHook(Hook):
 
     MIN_INTERVAL = 1 * 60 * 60
 
-    DOMAIN_REPLACEMENTS = [(r'180upload.com'   , "hundredeightyupload.com"),
-                           (r'1fichier.com'    , "onefichier.com"         ),
-                           (r'2shared.com'     , "twoshared.com"          ),
-                           (r'4shared.com'     , "fourshared.com"         ),
+    DOMAIN_REPLACEMENTS = [(r'180upload\.com'  , "hundredeightyupload.com"),
+                           (r'1fichier\.com'   , "onefichier.com"         ),
+                           (r'2shared\.com'    , "twoshared.com"          ),
+                           (r'4shared\.com'    , "fourshared.com"         ),
                            (r'bayfiles\.net'   , "bayfiles.com"           ),
                            (r'cloudnator\.com' , "shragle.com"            ),
                            (r'dfiles\.eu'      , "depositfiles.com"       ),

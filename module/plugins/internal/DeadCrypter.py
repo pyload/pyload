@@ -20,8 +20,10 @@ class DeadCrypter(_Crypter):
 
 
     @classmethod
-    def getInfo(cls, url="", html=""):
-        return {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 1, 'url': url}
+    def apiInfo(cls, url="", get={}, post={}):
+        api = super(DeadCrypter, self).apiInfo(url, get, post)
+        api['status'] = 1
+        return api
 
 
     def setup(self):

@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __pattern__ = r'^unmatchable$'
 
@@ -25,7 +25,13 @@ class BasePlugin(Hoster):
 
     @classmethod
     def getInfo(cls, url="", html=""):  #@TODO: Move to hoster class in 0.4.10
-        return {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3 if url else 1, 'url': unquote(url) or ""}
+        url = unquote(url)
+        return {'name'  : (urlparse(url).path.split('/')[-1]
+                           or urlparse(url).query.split('=', 1)[::-1][0].split('&', 1)[0]
+                           or _("Unknown")),
+                'size'  : 0,
+                'status': 3 if url else 8,
+                'url'   : url}
 
 
     def setup(self):

@@ -183,7 +183,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.92"
+    __version__ = "0.93"
 
     __pattern__ = r'^unmatchable$'
 
@@ -264,7 +264,7 @@ class SimpleHoster(Hoster):
                            or urlparse(url).query.split('=', 1)[::-1][0].split('&', 1)[0]
                            or _("Unknown")),
                 'size'  : 0,
-                'status': 3,
+                'status': 3 if url else 8,
                 'url'   : url}
 
 
@@ -462,6 +462,10 @@ class SimpleHoster(Hoster):
 
 
     def checkErrors(self):
+        if not self.html:
+            self.logWarning(_("No html code to check"))
+            return
+
         if hasattr(self, 'PREMIUM_ONLY_PATTERN') and self.premium and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
             self.fail(_("Link require a premium account to be handled"))
 
@@ -483,42 +487,44 @@ class SimpleHoster(Hoster):
 
 
     def checkStatus(self, getinfo=True):
-        if getinfo:
+        if not self.info or getinfo:
             self.logDebug("File info (BEFORE): %s" % self.info)
             self.info.update(self.getInfo(self.pyfile.url, self.html))
 
-        if 'status' not in self.info:
-            return
+        try:
+            status = self.info['status']
 
-        status = self.info['status']
+            if status is 1:
+                self.offline()
 
-        if status is 1:
-            self.offline()
+            elif status is 6:
+                self.tempOffline()
 
-        elif status is 6:
-            self.tempOffline()
+            elif status is 8:
+                self.fail()
 
-        elif status is not 2:
+        finally:
             self.logDebug("File status: %s" % statusMap[status],
                           "File info: %s"   % self.info)
 
 
     def checkNameSize(self, getinfo=True):
-        if getinfo:
+        if not self.info or getinfo:
             self.logDebug("File info (BEFORE): %s" % self.info)
             self.info.update(self.getInfo(self.pyfile.url, self.html))
             self.logDebug("File info (AFTER): %s"  % self.info)
 
         try:
-            name = self.info['name']
-            size = self.info['size']
             url  = self.info['url']
-
+            name = self.info['name']
             if name and name != url:
                 self.pyfile.name = name
-            else:
-                self.pyfile.name = name = self.info['name'] = urlparse(name).path.split('/')[-1]
 
+        except Exception:
+            pass
+
+        try:
+            size = self.info['size']
             if size > 0:
                 self.pyfile.size = size
 
