@@ -26,18 +26,7 @@ class EasybytezCom(MultiHook):
     def getHosters(self):
         user, data = self.account.selectAccount()
 
-        try:
-            req  = self.account.getAccountRequest(user)
-            page = req.load("http://www.easybytez.com")
+        req  = self.account.getAccountRequest(user)
+        page = req.load("http://www.easybytez.com")
 
-            hosters = re.search(r'</textarea>\s*Supported sites:(.*)', page).group(1).split(',')
-
-        except Exception, e:
-            self.logWarning(_("Unable to load supported hoster list, using last known"))
-            self.logDebug(e)
-
-            hosters = ["bitshare.com", "crocko.com", "ddlstorage.com", "depositfiles.com", "extabit.com", "hotfile.com",
-                       "mediafire.com", "netload.in", "rapidgator.net", "rapidshare.com", "uploading.com", "uload.to",
-                       "uploaded.to"]
-        finally:
-            return hosters
+        return re.search(r'</textarea>\s*Supported sites:(.*)', page).group(1).split(',')

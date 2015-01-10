@@ -28,7 +28,7 @@ class ZeveraCom(Account):
         if not self.HOSTER_DOMAIN:
             self.logError(_("Missing HOSTER_DOMAIN"))
 
-        if not self.API_URL:
+        if not hasattr(self, "API_URL"):
             self.API_URL = "http://api.%s/jDownloader.ashx" % (self.HOSTER_DOMAIN or "")
 
 

@@ -183,7 +183,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.93"
+    __version__ = "0.94"
 
     __pattern__ = r'^unmatchable$'
 
@@ -441,7 +441,7 @@ class SimpleHoster(Hoster):
 
         elif not self.lastDownload or not exists(fs_encode(self.lastDownload)):
             self.lastDownload = ""
-            self.fail(errmsg, self.pyfile.error or _("No file downloaded"))
+            self.fail(self.pyfile.error or _("No file downloaded"))
 
         else:
             rules = {'empty file': re.compile(r'\A\Z'),

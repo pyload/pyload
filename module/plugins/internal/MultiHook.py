@@ -2,6 +2,8 @@
 
 import re
 
+from time import sleep
+
 from module.plugins.Hook import Hook
 from module.utils import decode, remove_chars
 
@@ -9,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.34"
+    __version__ = "0.35"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -114,34 +116,43 @@ class MultiHook(Hook):
 
 
     def pluginsCached(self):
-        if not self.plugins:
+        if self.plugins:
+            return self.plugins
+            
+        for _i in xrange(3):
             try:
                 pluginset = self._pluginSet(self.getHosters() if self.plugintype == "hoster" else self.getCrypters())
+            
             except Exception, e:
-                self.logError(e)
-                return []
+                self.logError(e, "Waiting 1 minute and retry")
+                sleep(60)
+            
+            else:
+                break
+        else:
+            return list()
 
-            try:
-                configmode = self.getConfig("pluginmode", 'all')
-                if configmode in ("listed", "unlisted"):
-                    pluginlist = self.getConfig("pluginlist", '').replace('|', ',').replace(';', ',').split(',')
-                    configset  = self._pluginSet(pluginlist)
+        try:
+            configmode = self.getConfig("pluginmode", 'all')
+            if configmode in ("listed", "unlisted"):
+                pluginlist = self.getConfig("pluginlist", '').replace('|', ',').replace(';', ',').split(',')
+                configset  = self._pluginSet(pluginlist)
 
-                    if configmode == "listed":
-                        pluginset &= configset
-                    else:
-                        pluginset -= configset
+                if configmode == "listed":
+                    pluginset &= configset
+                else:
+                    pluginset -= configset
 
-            except Exception, e:
-                self.logError(e)
+        except Exception, e:
+            self.logError(e)
 
-            self.plugins = list(pluginset)
+        self.plugins = list(pluginset)
 
         return self.plugins
 
 
     def _pluginSet(self, plugins):
-        plugins = set((decode(x).strip().lower() for x in plugins))
+        plugins = set((decode(x).strip().lower() for x in plugins if '.' in x))
 
         for rf, rt in self.DOMAIN_REPLACEMENTS:
             regex = re.compile(rf)
@@ -238,7 +249,7 @@ class MultiHook(Hook):
             self.logDebug("New %ss: %s" % (self.plugintype, ", ".join(plugins)))
 
             # create new regexp
-            regexp = r'.*(%s).*' % "|".join([x.replace(".", "\.") for x in plugins])
+            regexp = r'.*(?P<DOMAIN>%s).*' % "|".join([x.replace(".", "\.") for x in plugins])
             if hasattr(self.pluginclass, "__pattern__") and isinstance(self.pluginclass.__pattern__, basestring) and '://' in self.pluginclass.__pattern__:
                 regexp = r'%s|%s' % (self.pluginclass.__pattern__, regexp)
 
@@ -287,7 +298,7 @@ class MultiHook(Hook):
                 wait_time = max(self.getConfig("retryinterval", 1), 0)
 
                 if 0 < retries > pyfile.plugin.retries:
+                    pyfile.setCustomStatus("MultiHook", "queued")
                     pyfile.plugin.retries += 1
-                    pyfile.plugin.setCustomStatus("MultiHook", "queued")
                     pyfile.plugin.setWait(wait_time)
                     pyfile.plugin.wait()
