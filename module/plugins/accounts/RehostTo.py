@@ -6,7 +6,7 @@ from module.plugins.Account import Account
 class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __description__ = """Rehost.to account plugin"""
     __license__     = "GPLv3"
@@ -28,9 +28,9 @@ class RehostTo(Account):
         trafficleft = self.parseTraffic(traffic + "MB")
         validuntil  = float(valid)
 
-        return = {'trafficleft': trafficleft,
-                  'validuntil' : validuntil,
-                  'session'    : session}
+        return {'trafficleft': trafficleft,
+                'validuntil' : validuntil,
+                'session'    : session}
 
 
     def login(self, user, data, req):
