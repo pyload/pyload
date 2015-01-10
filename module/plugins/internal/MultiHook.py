@@ -9,7 +9,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.33"
+    __version__ = "0.34"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -285,4 +285,9 @@ class MultiHook(Hook):
             else:
                 retries   = max(self.getConfig("retry", 10), 0)
                 wait_time = max(self.getConfig("retryinterval", 1), 0)
-                pyfile.plugin.retry(retries, wait_time, "MultiHook")
+                
+                if 0 < retries > pyfile.plugin.retries:
+                    pyfile.plugin.retries += 1
+                    pyfile.plugin.setCustomStatus("MultiHook", "queued")
+                    pyfile.plugin.setWait(wait_time)
+                    pyfile.plugin.wait()
