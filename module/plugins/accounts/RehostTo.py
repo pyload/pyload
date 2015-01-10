@@ -6,7 +6,7 @@ from module.plugins.Account import Account
 class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """Rehost.to account plugin"""
     __license__     = "GPLv3"
@@ -18,25 +18,19 @@ class RehostTo(Account):
         html = req.load("http://rehost.to/api.php",
                         get={'cmd': "login", 'user': user, 'pass': data['password']})
 
-        data = [x.split("=") for x in html.split(",")]
-
-        ses      = data[0][1]
-        long_ses = data[1][1]
+        session = [x.split("=") for x in html.split(",")][1][1]
 
         html = req.load("http://rehost.to/api.php",
-                        get={'cmd': "get_premium_credits", 'long_ses': long_ses})
+                        get={'cmd': "get_premium_credits", 'long_ses': session})
 
         traffic, valid = html.split(",")
 
         trafficleft = self.parseTraffic(traffic + "MB")
         validuntil  = float(valid)
 
-        account_info = {"trafficleft": trafficleft,
-                        "validuntil" : validuntil,
-                        "long_ses"   : long_ses,
-                        "ses"        : ses}
-
-        return account_info
+        return = {'trafficleft': trafficleft,
+                  'validuntil' : validuntil,
+                  'session'    : session}
 
 
     def login(self, user, data, req):
