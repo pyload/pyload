@@ -10,13 +10,13 @@ import re
 
 from module.common.json_layer import json_loads
 from module.plugins.internal.CaptchaService import ReCaptcha
-from module.plugins.SimpleHoster import SimpleHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class NitroflareCom(SimpleHoster):
     __name__    = "NitroflareCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
 
