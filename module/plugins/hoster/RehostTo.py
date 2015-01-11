@@ -26,6 +26,3 @@ class RehostTo(MultiHoster):
 
 
 getInfo = create_getInfo(RehostTo)
-
-
-getInfo = create_getInfo(RehostTo)
