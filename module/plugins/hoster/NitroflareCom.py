@@ -3,20 +3,15 @@
 import re
 import json
 
+from time import sleep
 from module.plugins.Hoster import Hoster
 from module.plugins.internal.CaptchaService import ReCaptcha
 
 
-"""
-    Right now premium support is not added
-    Thus, any file that require premium support
-    cannot be downloaded. Only the file that is free to
-    download can be downloaded.
-"""
 class NitroflareCom(Hoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?(nitroflare\.com/view)/(?P<ID>[A-Z0-9]+)'
     __description__ = """Nitroflare.com hoster plugin"""
@@ -26,6 +21,8 @@ class NitroflareCom(Hoster):
     BASE_URL = "https://nitroflare.com"
     API_URL = "https://nitroflare.com/api/"
     DOWNLOAD_PATTERN = "\"(https?://[a-z0-9\\-_]+\\.nitroflare\\.com/[^<>\"]*?)\""
+    IS_FREE = True
+    PREMIUM_URL = BASE_URL + "/payment"
 
     def process(self, pyfile):
 
@@ -41,46 +38,67 @@ class NitroflareCom(Hoster):
             if file_info['type'] == "success":
                 result = file_info['result']  # already a dict
                 if result['linkType'] == "free":
-                    delay = result['delay']  # Don't need the delay for free downloads
+                    delay = int(result['delay'])
                     captch_key = result['recaptchaPublic']
                     filename = result['name']
                     recaptcha = ReCaptcha(self)
-                    # try upto 3 times to solve reCaptcha
-                    for i in xrange(3):
-                        challenge, response = recaptcha.challenge(key=captch_key)
-                        res = self.load(self.BASE_URL + "/ajax/freeDownload.php",
-                                             post={"method": "fetchDownload",
-                                                   "recaptcha_challenge_field": challenge,
-                                                   "recaptcha_response_field": response})
-                        if self.handleCaptchaErrors(res):
-                            break
-                        if "The captcha wasn't entered correctly" or "You have to fill the captcha" in res:
-                            continue
-                        else:
-                            break
+                    main_page = self.load(pyfile.url)
+                    go_to_free_page = self.load(pyfile.url,
+                                                post={"goToFreePage": ""})
+                    # challenge, response = recaptcha.challenge(key=captch_key)
+                    res = self.load(self.BASE_URL + "/ajax/freeDownload.php",
+                                    post={"method": "startTimer",
+                                    "fileId": file_uid})[4:]
 
-                    if "The captcha wasn't entered correctly" or "You have to fill the captcha" in res:
-                        self.logError("Captcha Failed")
-                        self.offline()
-                        # Captcha failed
+                    if "This file is available with premium key only" in res:
+                        self.fail("This file is available with premium key only")
+                    if "downloading is not possible" in res:
+                        wait_time = re.search("You have to wait (\\d+) minutes to download your next file", res)
+                        if wait_time is not None:
+                            self.fail("IP Address blocked")
+                        self.fail("Downloading is not possible")
                     else:
-                        self.logInfo("result of the captcha is")
                         self.logInfo(res)
-                        # self.offline()
-                        download_link = re.search(self.DOWNLOAD_PATTERN, res)
+                        js_file = self.load(self.BASE_URL + "/js/downloadFree.js?v=1.0.1")
+                        var_time = re.search("var time = (\\d+);", js_file)
+                        wait = 60
+                        if var_time is not None:
+                            wait = int(var_time.groups()[0])
+                        self.setWait(wait)
+                        self.wait()
+                        for i in xrange(3):
+                            challenge, response = recaptcha.challenge(key=captch_key)
+                            res_final = self.load(self.BASE_URL + "/ajax/freeDownload.php",
+                                            post={"method": "fetchDownload",
+                                            "recaptcha_challenge_field": challenge,
+                                            "recaptcha_response_field": response})[3:]
+                            self.logInfo(res_final)
+
+                            if self.handleCaptchaErrors(res_final):
+                                break
+                            if "The captcha wasn't entered correctly" or "You have to fill the captcha" in res_final:
+                                continue
+                            else:
+                                break
+                        download_link = re.search(self.DOWNLOAD_PATTERN, res_final)
                         if download_link is None:
-                            print "downloasd link failed"
-                            # Download link failed
+                            self.fail("Could not find a download link. Please check the download link again")
                         else:
-                            self.download(download_link)
+                            try:
+                                self.download(download_link)
+                            except:
+                                self.fail("Downloading failed")
         else:
-            print "link is invalid"
-            self.offline()
-            # Link is invalid
-        # self.download()
+            self.fail("Link is not valid. Please check the link again")
 
     def correct_download_link(self, url):
         return url.replace("http://", "https://")
 
     def checkLink(self, url):
         return True
+
+    def handle_api(self, download_url, account):
+        handle_downloadAPI(download_url, account)
+
+    def enable_premium(self, url):
+        self.IS_FREE = False  # To try premium
