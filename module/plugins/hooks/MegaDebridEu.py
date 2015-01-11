@@ -7,11 +7,17 @@ from module.plugins.internal.MultiHook import MultiHook
 class MegaDebridEu(MultiHook):
     __name__    = "MegaDebridEu"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
-    __config__ = [("revertfailed", "bool", "Revert to standard download if download fails", False)]
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
+                  ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
+                  ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
+                  ("retryinterval" , "int"                , "Retry interval in minutes"           , 1    ),
+                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
-    __description__ = """mega-debrid.eu hook plugin"""
+    __description__ = """Mega-debrid.eu hook plugin"""
     __license__     = "GPLv3"
     __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 

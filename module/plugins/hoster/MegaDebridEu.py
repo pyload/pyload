@@ -11,11 +11,11 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class MegaDebridEu(MultiHoster):
     __name__    = "MegaDebridEu"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
     __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
 
-    __description__ = """mega-debrid.eu hoster plugin"""
+    __description__ = """mega-debrid.eu multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 
@@ -30,19 +30,19 @@ class MegaDebridEu(MultiHoster):
             return ""
 
 
-    def handlePremium(self):
-        if not self.connectToApi():
+    def handlePremium(self, pyfile):
+        if not self.api_load():
             self.exitOnFail("Unable to connect to Mega-debrid.eu")
 
-        self.link = self.debridLink(self.pyfile.url)
+        self.link = self.debridLink(pyfile.url)
         self.logDebug("New URL: " + self.link)
 
         filename = self.getFilename(self.link)
         if filename != "":
-            self.pyfile.name = filename
+            pyfile.name = filename
 
 
-    def connectToApi(self):
+    def api_load(self):
         """
         Connexion to the mega-debrid API
         Return True if succeed

@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.30"
 
     __pattern__ = r'^unmatchable$'
 
@@ -25,7 +25,13 @@ class BasePlugin(Hoster):
 
     @classmethod
     def getInfo(cls, url="", html=""):  #@TODO: Move to hoster class in 0.4.10
-        return {'name': urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 'size': 0, 'status': 3 if url else 1, 'url': unquote(url) or ""}
+        url = unquote(url)
+        return {'name'  : (urlparse(url).path.split('/')[-1]
+                           or urlparse(url).query.split('=', 1)[::-1][0].split('&', 1)[0]
+                           or _("Unknown")),
+                'size'  : 0,
+                'status': 3 if url else 8,
+                'url'   : url}
 
 
     def setup(self):
@@ -58,7 +64,7 @@ class BasePlugin(Hoster):
 
                     if server in servers:
                         self.logDebug("Logging on to %s" % server)
-                        self.req.addAuth(account.accounts[server]['password'])
+                        self.req.addAuth(account.getAccountData(server)['password'])
                     else:
                         pwd = self.getPassword()
                         if ':' in pwd:
@@ -72,8 +78,11 @@ class BasePlugin(Hoster):
         else:
             self.fail(_("No file downloaded"))  #@TODO: Move to hoster class in 0.4.10
 
-        if self.checkDownload({'empty': re.compile(r"^$")}) is "empty":  #@TODO: Move to hoster in 0.4.10
-            self.fail(_("Empty file"))
+        check = self.checkDownload({'empty file': re.compile(r'\A\Z'),
+                                    'html file' : re.compile(r'\A\s*<!DOCTYPE html'),
+                                    'html error': re.compile(r'\A\s*(<.+>)?\d{3}(\Z|\s+)')})
+        if check:
+            self.fail(check.capitalize())
 
 
     def downloadFile(self, pyfile):

@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class KingfilesNet(SimpleHoster):
     __name__    = "KingfilesNet"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
 
@@ -26,7 +26,7 @@ class KingfilesNet(SimpleHoster):
 
     RAND_ID_PATTERN = r'type=\"hidden\" name=\"rand\" value=\"(.+)\">'
 
-    LINK_PATTERN = r'var download_url = \'(.+)\';'
+    LINK_FREE_PATTERN = r'var download_url = \'(.+)\';'
 
 
     def setup(self):
@@ -34,16 +34,16 @@ class KingfilesNet(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         # Click the free user button
         post_data = {'op'         : "download1",
                      'usr_login'  : "",
                      'id'         : self.info['pattern']['ID'],
-                     'fname'      : self.pyfile.name,
+                     'fname'      : pyfile.name,
                      'referer'    : "",
                      'method_free': "+"}
 
-        self.html = self.load(self.pyfile.url, post=post_data, cookies=True, decode=True)
+        self.html = self.load(pyfile.url, post=post_data, cookies=True, decode=True)
 
         solvemedia = SolveMedia(self)
         challenge, response = solvemedia.challenge()
@@ -59,24 +59,20 @@ class KingfilesNet(SimpleHoster):
         post_data = {'op'              : "download2",
                      'id'              : self.info['pattern']['ID'],
                      'rand'            : rand,
-                     'referer'         : self.pyfile.url,
+                     'referer'         : pyfile.url,
                      'method_free'     : "+",
                      'method_premium'  : "",
                      'adcopy_response' : response,
                      'adcopy_challenge': challenge,
                      'down_direct'     : "1"}
 
-        self.html = self.load(self.pyfile.url, post=post_data, cookies=True, decode=True)
+        self.html = self.load(pyfile.url, post=post_data, cookies=True, decode=True)
 
-        m = re.search(self.LINK_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.error(_("Download url not found"))
 
         self.download(m.group(1), cookies=True, disposition=True)
-
-        check = self.checkDownload({'html': re.compile("<html>")})
-        if check == "html":
-            self.error(_("Downloaded file is an html page"))
 
 
 getInfo = create_getInfo(KingfilesNet)

@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DataportCz(SimpleHoster):
     __name__    = "DataportCz"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
 
     __pattern__ = r'http://(?:www\.)?dataport\.cz/file/(.+)'
 
@@ -23,7 +23,7 @@ class DataportCz(SimpleHoster):
     FREE_SLOTS_PATTERN = ur'Počet volných slotů: <span class="darkblue">(\d+)</span><br />'
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         captchas = {"1": "jkeG", "2": "hMJQ", "3": "vmEK", "4": "ePQM", "5": "blBd"}
 
         for _i in xrange(60):
@@ -40,14 +40,16 @@ class DataportCz(SimpleHoster):
             self.html = self.download("http://www.dataport.cz%s" % action, post=inputs)
 
             check = self.checkDownload({"captcha": 'alert("\u0160patn\u011b opsan\u00fd k\u00f3d z obr\u00e1zu");',
-                                        "slot": 'alert("Je n\u00e1m l\u00edto, ale moment\u00e1ln\u011b nejsou'})
+                                        "slot"   : 'alert("Je n\u00e1m l\u00edto, ale moment\u00e1ln\u011b nejsou'})
             if check == "captcha":
                 self.error(_("invalid captcha"))
+
             elif check == "slot":
                 self.logDebug("No free slots - wait 60s and retry")
                 self.wait(60, False)
-                self.html = self.load(self.pyfile.url, decode=True)
+                self.html = self.load(pyfile.url, decode=True)
                 continue
+
             else:
                 break
 

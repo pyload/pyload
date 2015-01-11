@@ -12,7 +12,7 @@ from module.utils import fixup
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.37"
+    __version__ = "0.38"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -82,6 +82,8 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
 
     def prepare(self):
+        self.pyfile.error = ""  #@TODO: Remove in 0.4.10
+
         self.info  = {}
         self.links = []  #@TODO: Move to hoster class in 0.4.10
 
@@ -120,27 +122,28 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
 
     def checkNameSize(self, getinfo=True):
-        if getinfo:
+        if not self.info or getinfo:
             self.logDebug("File info (BEFORE): %s" % self.info)
             self.info.update(self.getInfo(self.pyfile.url, self.html))
             self.logDebug("File info (AFTER): %s"  % self.info)
 
         try:
-            name = self.info['name']
             url  = self.info['url']
-
+            name = self.info['name']
             if name and name != url:
                 self.pyfile.name = name
-            else:
-                self.pyfile.name = self.info['name'] = urlparse(name).path.split('/')[-1]
 
         except Exception:
             pass
 
-        folder = self.info['folder'] = self.pyfile.name
+        try:
+            folder = self.info['folder'] = self.pyfile.name
+
+        except Exception:
+            pass
 
         self.logDebug("File name: %s"   % self.pyfile.name,
-                      "File folder: %s" % folder)
+                      "File folder: %s" % self.pyfile.name)
 
 
     def getLinks(self):
@@ -153,8 +156,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
 
     def handlePages(self, pyfile):
         try:
-            m = re.search(self.PAGES_PATTERN, self.html)
-            pages = int(m.group(1))
+            pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
         except:
             pages = 1
 

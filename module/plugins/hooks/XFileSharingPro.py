@@ -8,7 +8,7 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.28"
+    __version__ = "0.30"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
                   ("use_hoster_list" , "bool", "Load listed hosters only"      , False),
@@ -23,14 +23,15 @@ class XFileSharingPro(Hook):
 
 
     # event_list = ["pluginConfigChanged"]
-    regexp = {'hoster' : (r'https?://(?:www\.)?([\w.^_]+(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
-                          r'https?://(?:[^/]+\.)?(%s)/(?:embed-)?\w+'),
-              'crypter': (r'https?://(?:www\.)?([\w.^_]+(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:user|folder)s?/\w+',
-                          r'https?://(?:[^/]+\.)?(%s)/(?:user|folder)s?/\w+')}
+    regexp = {'hoster' : (r'https?://(?:www\.)?(?P<DOMAIN>[\w.^_]+(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
+                          r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
+              'crypter': (r'https?://(?:www\.)?(?P<DOMAIN>[\w.^_]+(?:\.[a-zA-Z]{2,})(?:\:\d+)?)/(?:user|folder)s?/\w+',
+                          r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
     HOSTER_BUILTIN  = [#WORKING HOSTERS:
-                       "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com", "filevice.com", "hostingbulk.com",
-                       "ravishare.com", "salefiles.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
+                       "180upload.com", "backin.net", "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com",
+                       "fileparadox.in", "filevice.com", "hostingbulk.com", "linestorage.com", "ravishare.com", "ryushare.com",
+                       "salefiles.com", "sendmyway.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
                        #NOT TESTED:
                        "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
                        "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
@@ -82,7 +83,7 @@ class XFileSharingPro(Hook):
                 len_match_list = len(plugin_list)
                 self.logInfo(_("Handling %d %s%s: %s") % (len_match_list,
                                                           type,
-                                                          "" if len_match_list is 1 else "s",
+                                                          "" if len_match_list == 1 else "s",
                                                           match_list.replace('|', ', ')))
 
                 pattern = self.regexp[type][1] % match_list.replace('.', '\.')
@@ -109,7 +110,7 @@ class XFileSharingPro(Hook):
 
     def unloadHoster(self, hoster):
         hdict = self.core.pluginManager.hosterPlugins[hoster]
-        if "new_name" in hdict and hdict['new_name'] is "XFileSharingPro":
+        if "new_name" in hdict and hdict['new_name'] == "XFileSharingPro":
             if "module" in hdict:
                 del hdict['module']
 
@@ -123,7 +124,7 @@ class XFileSharingPro(Hook):
 
 
     # def downloadFailed(self, pyfile):
-        # if pyfile.pluginname is "BasePlugin" \
+        # if pyfile.pluginname == "BasePlugin" \
            # and pyfile.hasStatus("failed") \
            # and not self.getConfig("use_hoster_list") \
            # and self.unloadHoster("BasePlugin"):

@@ -6,7 +6,7 @@ from module.plugins.Account import Account
 class UploadableCh(Account):
     __name__    = "UploadableCh"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Uploadable.ch account plugin"""
     __license__     = "GPLv3"
@@ -27,7 +27,8 @@ class UploadableCh(Account):
                         post={'userName'     : user,
                               'userPassword' : data["password"],
                               'autoLogin'    : "1",
-                              'action__login': "normalLogin"})
+                              'action__login': "normalLogin"},
+                        decode=True)
 
         if "Login failed" in html:
             self.wrongPassword()

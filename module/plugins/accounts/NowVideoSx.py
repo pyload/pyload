@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class NowVideoSx(Account):
     __name__    = "NowVideoSx"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """NowVideo.at account plugin"""
     __license__     = "GPLv3"
@@ -50,7 +50,8 @@ class NowVideoSx(Account):
 
     def login(self, user, data, req):
         html = req.load("http://www.nowvideo.sx/login.php",
-                        post={'user': user, 'pass': data['password']})
+                        post={'user': user, 'pass': data['password']},
+                        decode=True)
 
-        if ">Invalid login details" is html:
+        if re.search(r'>Log In<', html):
             self.wrongPassword()

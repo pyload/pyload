@@ -1,22 +1,29 @@
 # -*- coding: utf-8 -*-
+#
+# Note:
+#   Right now premium support is not added
+#   Thus, any file that require premium support
+#   cannot be downloaded. Only the file that is free to
+#   download can be downloaded.
 
 import re
-import json
 
-from time import sleep
-from module.plugins.Hoster import Hoster
+from module.common.json_layer import json_loads
 from module.plugins.internal.CaptchaService import ReCaptcha
+from module.plugins.SimpleHoster import SimpleHoster
 
 
-class NitroflareCom(Hoster):
-    __name__ = "NitroflareCom"
-    __type__ = "hoster"
-    __version__ = "0.13"
+class NitroflareCom(SimpleHoster):
+    __name__    = "NitroflareCom"
+    __type__    = "hoster"
+    __version__ = "0.25"
 
-    __pattern__ = r'https?://(?:www\.)?(nitroflare\.com/view)/(?P<ID>[A-Z0-9]+)'
+    __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
+
     __description__ = """Nitroflare.com hoster plugin"""
-    __license__ = "GPLv3"
-    __authors__ = [("sahil", None)]
+    __license__     = "GPLv3"
+    __authors__     = [("sahil", "sahilshekhawat01@gmail.com"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
     BASE_URL = "https://nitroflare.com"
     API_URL = "https://nitroflare.com/api/"
@@ -24,17 +31,14 @@ class NitroflareCom(Hoster):
     IS_FREE = True
     PREMIUM_URL = BASE_URL + "/payment"
 
-    def process(self, pyfile):
+    LINK_FREE_PATTERN = r'(https?://[\w\\-]+\\.nitroflare\\.com/[^<>\"]*?)"'
 
-        if "https://" not in pyfile.url:
-            pyfile.url = self.correct_download_link(pyfile.url)
-
-        url_match = re.match(self.__pattern__, pyfile.url)
-        file_uid = url_match.group('ID')
+    def handleFree(self, pyfile):
         if self.checkLink(file_uid):
-            file_info = self.load(self.API_URL + "getDownloadLink?file=" + file_uid)
+            file_info = self.load("https://nitroflare.com/api/getDownloadLink",
+                                  get={'file': self.info['pattern']['ID']})
             self.logWarning(file_info[3:])
-            file_info = json.loads(file_info[3:])  # removing non ascii characters
+            file_info = json_loads(file_info[3:])  # removing non ascii characters
             if file_info['type'] == "success":
                 result = file_info['result']  # already a dict
                 if result['linkType'] == "free":
@@ -42,6 +46,7 @@ class NitroflareCom(Hoster):
                     captch_key = result['recaptchaPublic']
                     filename = result['name']
                     recaptcha = ReCaptcha(self)
+                    # used here to load the cookies which will be required later
                     main_page = self.load(pyfile.url)
                     go_to_free_page = self.load(pyfile.url,
                                                 post={"goToFreePage": ""})
@@ -84,10 +89,7 @@ class NitroflareCom(Hoster):
                         if download_link is None:
                             self.fail("Could not find a download link. Please check the download link again")
                         else:
-                            try:
-                                self.download(download_link)
-                            except:
-                                self.fail("Downloading failed")
+                            self.download(download_link)
         else:
             self.fail("Link is not valid. Please check the link again")
 

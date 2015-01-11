@@ -2,19 +2,24 @@
 
 import re
 
+from time import sleep
+
 from module.plugins.Hook import Hook
-from module.utils import remove_chars
+from module.utils import decode, remove_chars
 
 
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.29"
+    __version__ = "0.35"
 
-    __config__ = [("mode"        , "all;listed;unlisted", "Use for plugins (if supported)"               , "all"),
-                  ("pluginlist"  , "str"                , "Plugin list (comma separated)"                , ""   ),
-                  ("revertfailed", "bool"               , "Revert to standard download if download fails", False),
-                  ("interval"    , "int"                , "Reload interval in hours (0 to disable)"      , 12   )]
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
+                  ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
+                  ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
+                  ("retryinterval" , "int"                , "Retry interval in minutes"           , 1    ),
+                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
     __description__ = """Hook plugin for multi hoster/crypter"""
     __license__     = "GPLv3"
@@ -22,49 +27,78 @@ class MultiHook(Hook):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    MIN_INTERVAL = 12 * 60 * 60  #: reload plugins every 12h
+    MIN_INTERVAL = 1 * 60 * 60
 
-    PLUGIN_REPLACEMENTS = [("1fichier.com"   , "onefichier.com"),
-                           ("2shared.com"    , "twoshared.com" ),
-                           ("4shared.com"    , "fourshared.com"),
-                           ("cloudnator.com" , "shragle.com"   ),
-                           ("easy-share.com" , "crocko.com"    ),
-                           ("fileparadox.com", "fileparadox.in"),
-                           ("freakshare.net" , "freakshare.com"),
-                           ("hellshare.com"  , "hellshare.cz"  ),
-                           ("ifile.it"       , "filecloud.io"  ),
-                           ("nowdownload.ch" , "nowdownload.sx"),
-                           ("nowvideo.co"    , "nowvideo.sx"   ),
-                           ("putlocker.com"  , "firedrive.com" ),
-                           ("share-rapid.cz" , "multishare.cz" ),
-                           ("sharerapid.cz"  , "multishare.cz" ),
-                           ("ul.to"          , "uploaded.to"   ),
-                           ("uploaded.net"   , "uploaded.to"   )]
+    DOMAIN_REPLACEMENTS = [(r'180upload\.com'  , "hundredeightyupload.com"),
+                           (r'1fichier\.com'   , "onefichier.com"         ),
+                           (r'2shared\.com'    , "twoshared.com"          ),
+                           (r'4shared\.com'    , "fourshared.com"         ),
+                           (r'bayfiles\.net'   , "bayfiles.com"           ),
+                           (r'cloudnator\.com' , "shragle.com"            ),
+                           (r'dfiles\.eu'      , "depositfiles.com"       ),
+                           (r'easy-share\.com' , "crocko.com"             ),
+                           (r'freakshare\.net' , "freakshare.com"         ),
+                           (r'hellshare\.com'  , "hellshare.cz"           ),
+                           (r'ifile\.it'       , "filecloud.io"           ),
+                           (r'nowdownload\.\w+', "nowdownload.sx"         ),
+                           (r'nowvideo\.\w+'   , "nowvideo.sx"            ),
+                           (r'putlocker\.com'  , "firedrive.com"          ),
+                           (r'share-?rapid\.cz', "multishare.cz"          ),
+                           (r'ul\.to'          , "uploaded.to"            ),
+                           (r'uploaded\.net'   , "uploaded.to"            ),
+                           (r'uploadhero\.co'  , "uploadhero.com"         ),
+                           (r'zshares\.net'    , "zshare.net"             ),
+                           (r'\d+.+'           , "X\0"                    )]
 
 
     def setup(self):
-        self.account       = None
-        self.type          = self.core.pluginManager.findPlugin(self.__name__)[1] or "hoster"
         self.plugins       = []
         self.supported     = []
         self.new_supported = []
 
+        self.account      = None
+        self.pluginclass  = None
+        self.pluginmodule = None
+        self.pluginname   = None
+        self.plugintype   = None
 
-    def coreReady(self):
-        self.account = self.core.accountManager.getAccountPlugin(self.__name__)
+        self._initPlugin()
+
+
+    def _initPlugin(self):
+        plugin, type = self.core.pluginManager.findPlugin(self.__name__)
+
+        if not plugin:
+            self.logWarning("Hook plugin will be deactivated due missing plugin reference")
+            self.setConfig('activated', False)
+        else:
+            self.pluginname   = self.__name__
+            self.plugintype   = type
+            self.pluginmodule = self.core.pluginManager.loadModule(type, self.__name__)
+            self.pluginclass  = getattr(self.pluginmodule, self.__name__)
+
+
+    def _loadAccount(self):
+        self.account = self.core.accountManager.getAccountPlugin(self.pluginname)
 
         if self.account and not self.account.canUse():
             self.account = None
 
-        if not self.account:
-            self.logWarning("MultiHook will be deactivated due missing account reference")
+        if not self.account and hasattr(self.pluginclass, "LOGIN_ACCOUNT") and self.pluginclass.LOGIN_ACCOUNT:
+            self.logWarning("Hook plugin will be deactivated due missing account reference")
             self.setConfig('activated', False)
+
+
+    def coreReady(self):
+        self._loadAccount()
 
 
     def getURL(self, *args, **kwargs):  #@TODO: Remove in 0.4.10
         """ see HTTPRequest for argument list """
         h = pyreq.getHTTPRequest(timeout=120)
         try:
+            if not 'decode' in kwargs:
+                kwargs['decode'] = True
             rep = h.load(*args, **kwargs)
         finally:
             h.close()
@@ -81,40 +115,50 @@ class MultiHook(Hook):
             return default
 
 
-    def pluginCached(self):
-        if not self.plugins:
+    def pluginsCached(self):
+        if self.plugins:
+            return self.plugins
+            
+        for _i in xrange(3):
             try:
-                pluginset = self.pluginSet(self.getHosters() if self.type == "hoster" else self.getCrypters())
+                pluginset = self._pluginSet(self.getHosters() if self.plugintype == "hoster" else self.getCrypters())
+            
             except Exception, e:
-                self.logError(e)
-                return []
+                self.logError(e, "Waiting 1 minute and retry")
+                sleep(60)
+            
+            else:
+                break
+        else:
+            return list()
 
-            try:
-                configmode = self.getConfig("mode", 'all')
-                if configmode in ("listed", "unlisted"):
-                    pluginlist = self.getConfig("pluginlist", '').replace('|', ',').replace(';', ',').split(',')
-                    configset  = self.pluginSet(pluginlist)
+        try:
+            configmode = self.getConfig("pluginmode", 'all')
+            if configmode in ("listed", "unlisted"):
+                pluginlist = self.getConfig("pluginlist", '').replace('|', ',').replace(';', ',').split(',')
+                configset  = self._pluginSet(pluginlist)
 
-                    if configmode == "listed":
-                        pluginset &= configset
-                    else:
-                        pluginset -= configset
+                if configmode == "listed":
+                    pluginset &= configset
+                else:
+                    pluginset -= configset
 
-            except Exception, e:
-                self.logError(e)
+        except Exception, e:
+            self.logError(e)
 
-            self.plugins = list(pluginset)
+        self.plugins = list(pluginset)
 
         return self.plugins
 
 
-    def pluginSet(self, plugins):
-        plugins = set((str(x).strip().lower() for x in plugins))
+    def _pluginSet(self, plugins):
+        plugins = set((decode(x).strip().lower() for x in plugins if '.' in x))
 
-        for rep in self.PLUGIN_REPLACEMENTS:
-            if rep[0] in plugins:
-                plugins.remove(rep[0])
-                plugins.add(rep[1])
+        for rf, rt in self.DOMAIN_REPLACEMENTS:
+            regex = re.compile(rf)
+            for p in filter(lambda x: regex.match(x), plugins):
+                plugins.remove(p)
+                plugins.add(re.sub(rf, rt, p))
 
         plugins.discard('')
 
@@ -139,9 +183,7 @@ class MultiHook(Hook):
 
     def periodical(self):
         """reload plugin list periodically"""
-        self.interval = max(self.getConfig("interval", 0), self.MIN_INTERVAL)
-
-        self.logInfo(_("Reloading supported %s list") % self.type)
+        self.logInfo(_("Reloading supported %s list") % self.plugintype)
 
         old_supported = self.supported
 
@@ -158,18 +200,24 @@ class MultiHook(Hook):
             for plugin in old_supported:
                 self.unloadPlugin(plugin)
 
+        if self.getConfig("reload", True):
+            self.interval = max(self.getConfig("reloadinterval", 12), self.MIN_INTERVAL)
+        else:
+            self.core.scheduler.removeJob(self.cb)
+            self.cb = None
+
 
     def overridePlugins(self):
         excludedList = []
 
-        if self.type == "hoster":
+        if self.plugintype == "hoster":
             pluginMap    = dict((name.lower(), name) for name in self.core.pluginManager.hosterPlugins.iterkeys())
             accountList  = [account.type.lower() for account in self.core.api.getAccounts(False) if account.valid and account.premium]
         else:
             pluginMap    = {}
             accountList  = [name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1] for name in self.core.pluginManager.crypterPlugins.iterkeys()]
 
-        for plugin in self.pluginCached():
+        for plugin in self.pluginsCached():
             name = remove_chars(plugin, "-.")
 
             if name in accountList:
@@ -181,42 +229,39 @@ class MultiHook(Hook):
                     self.new_supported.append(plugin)
 
         if not self.supported and not self.new_supported:
-            self.logError(_("No %s loaded") % self.type)
+            self.logError(_("No %s loaded") % self.plugintype)
             return
 
-        module = self.core.pluginManager.getPlugin(self.__name__)
-        klass  = getattr(module, self.__name__)
-
         # inject plugin plugin
-        self.logDebug("Overwritten %ss: %s" % (self.type, ", ".join(sorted(self.supported))))
+        self.logDebug("Overwritten %ss: %s" % (self.plugintype, ", ".join(sorted(self.supported))))
 
         for plugin in self.supported:
-            hdict = self.core.pluginManager.plugins[self.type][plugin]
-            hdict['new_module'] = module
-            hdict['new_name']   = self.__name__
+            hdict = self.core.pluginManager.plugins[self.plugintype][plugin]
+            hdict['new_module'] = self.pluginmodule
+            hdict['new_name']   = self.pluginname
 
         if excludedList:
-            self.logInfo(_("%ss not overwritten: %s") % (self.type.capitalize(), ", ".join(sorted(excludedList))))
+            self.logInfo(_("%ss not overwritten: %s") % (self.plugintype.capitalize(), ", ".join(sorted(excludedList))))
 
         if self.new_supported:
             plugins = sorted(self.new_supported)
 
-            self.logDebug("New %ss: %s" % (self.type, ", ".join(plugins)))
+            self.logDebug("New %ss: %s" % (self.plugintype, ", ".join(plugins)))
 
             # create new regexp
-            regexp = r'.*(%s).*' % "|".join([x.replace(".", "\.") for x in plugins])
-            if hasattr(klass, "__pattern__") and isinstance(klass.__pattern__, basestring) and '://' in klass.__pattern__:
-                regexp = r'%s|%s' % (klass.__pattern__, regexp)
+            regexp = r'.*(?P<DOMAIN>%s).*' % "|".join([x.replace(".", "\.") for x in plugins])
+            if hasattr(self.pluginclass, "__pattern__") and isinstance(self.pluginclass.__pattern__, basestring) and '://' in self.pluginclass.__pattern__:
+                regexp = r'%s|%s' % (self.pluginclass.__pattern__, regexp)
 
             self.logDebug("Regexp: %s" % regexp)
 
-            hdict = self.core.pluginManager.plugins[self.type][self.__name__]
+            hdict = self.core.pluginManager.plugins[self.plugintype][self.pluginname]
             hdict['pattern'] = regexp
             hdict['re']      = re.compile(regexp)
 
 
     def unloadPlugin(self, plugin):
-        hdict = self.core.pluginManager.plugins[self.type][plugin]
+        hdict = self.core.pluginManager.plugins[self.plugintype][plugin]
         if "module" in hdict:
             del hdict['module']
 
@@ -231,18 +276,29 @@ class MultiHook(Hook):
             self.unloadPlugin(plugin)
 
         # reset pattern
-        klass = getattr(self.core.pluginManager.getPlugin(self.__name__), self.__name__)
-        hdict = self.core.pluginManager.plugins[self.type][self.__name__]
+        hdict = self.core.pluginManager.plugins[self.plugintype][self.pluginname]
 
-        hdict['pattern'] = getattr(klass, "__pattern__", r'^unmatchable$')
+        hdict['pattern'] = getattr(self.pluginclass, "__pattern__", r'^unmatchable$')
         hdict['re']      = re.compile(hdict['pattern'])
 
 
     def downloadFailed(self, pyfile):
         """remove plugin override if download fails but not if file is offline/temp.offline"""
-        if pyfile.hasStatus("failed") and self.getConfig("revertfailed", True):
-            hdict = self.core.pluginManager.plugins[self.type][pyfile.pluginname]
-            if "new_name" in hdict and hdict['new_name'] == self.__name__:
+        if pyfile.status != 8 or not self.getConfig("revertfailed", True):
+            return
+
+        hdict = self.core.pluginManager.plugins[self.plugintype][pyfile.pluginname]
+        if "new_name" in hdict and hdict['new_name'] == self.pluginname:
+            if pyfile.error == "MultiHook":
                 self.logDebug("Unload MultiHook", pyfile.pluginname, hdict)
                 self.unloadPlugin(pyfile.pluginname)
                 pyfile.setStatus("queued")
+            else:
+                retries   = max(self.getConfig("retry", 10), 0)
+                wait_time = max(self.getConfig("retryinterval", 1), 0)
+
+                if 0 < retries > pyfile.plugin.retries:
+                    pyfile.setCustomStatus("MultiHook", "queued")
+                    pyfile.plugin.retries += 1
+                    pyfile.plugin.setWait(wait_time)
+                    pyfile.plugin.wait()

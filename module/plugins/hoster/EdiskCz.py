@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class EdiskCz(SimpleHoster):
     __name__    = "EdiskCz"
     __type__    = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __pattern__ = r'http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+'
 
@@ -21,7 +21,7 @@ class EdiskCz(SimpleHoster):
     OFFLINE_PATTERN = r'<h3>This file does not exist due to one of the following:</h3><ul><li>'
 
     ACTION_PATTERN = r'/en/download/(\d+/.*\.html)'
-    LINK_PATTERN = r'http://.*edisk\.cz.*\.html'
+    LINK_FREE_PATTERN = r'http://.*edisk\.cz.*\.html'
 
 
     def setup(self):
@@ -47,7 +47,7 @@ class EdiskCz(SimpleHoster):
             "action": action
         })
 
-        if not re.match(self.LINK_PATTERN, url):
+        if not re.match(self.LINK_FREE_PATTERN, url):
             self.fail(_("Unexpected server response"))
 
         self.download(url)

@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class GigapetaCom(SimpleHoster):
     __name__    = "GigapetaCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?gigapeta\.com/dl/\w+'
 
@@ -27,7 +27,7 @@ class GigapetaCom(SimpleHoster):
     COOKIES = [("gigapeta.com", "lang", "us")]
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         captcha_key = str(randint(1, 100000000))
         captcha_url = "http://gigapeta.com/img/captcha.gif?x=%s" % captcha_key
 
@@ -37,7 +37,7 @@ class GigapetaCom(SimpleHoster):
             self.checkErrors()
 
             captcha = self.decryptCaptcha(captcha_url)
-            self.html = self.load(self.pyfile.url, post={
+            self.html = self.load(pyfile.url, post={
                 "captcha_key": captcha_key,
                 "captcha": captcha,
                 "download": "Download"})

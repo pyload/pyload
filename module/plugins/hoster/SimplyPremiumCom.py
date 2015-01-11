@@ -11,11 +11,11 @@ from module.plugins.internal.SimpleHoster import secondsToMidnight
 class SimplyPremiumCom(MultiHoster):
     __name__    = "SimplyPremiumCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'https?://.+simply-premium\.com'
 
-    __description__ = """Simply-Premium.com hoster plugin"""
+    __description__ = """Simply-Premium.com multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
@@ -24,7 +24,7 @@ class SimplyPremiumCom(MultiHoster):
         self.chunkLimit = 16
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         for i in xrange(5):
             page = self.load("http://www.simply-premium.com/premium.php", get={'info': "", 'link': self.pyfile.url})
             self.logDebug("JSON data: " + page)

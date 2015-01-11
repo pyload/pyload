@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RemixshareCom(SimpleHoster):
     __name__    = "RemixshareCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://remixshare\.com/(download|dl)/\w+'
 
@@ -29,7 +29,7 @@ class RemixshareCom(SimpleHoster):
     INFO_PATTERN = r'title=\'.+?\'>(?P<N>.+?)</span><span class=\'light2\'>&nbsp;\((?P<S>\d+)&nbsp;(?P<U>[\w^_]+)\)<'
     OFFLINE_PATTERN = r'<h1>Ooops!<'
 
-    LINK_PATTERN = r'(http://remixshare\.com/downloadfinal/.+?)"'
+    LINK_FREE_PATTERN = r'(http://remixshare\.com/downloadfinal/.+?)"'
     TOKEN_PATTERN = r'var acc = (\d+)'
     WAIT_PATTERN = r'var XYZ = r"(\d+)"'
 
@@ -39,13 +39,15 @@ class RemixshareCom(SimpleHoster):
         self.chunkLimit = 1
 
 
-    def handleFree(self):
-        b = re.search(self.LINK_PATTERN, self.html)
+    def handleFree(self, pyfile):
+        b = re.search(self.LINK_FREE_PATTERN, self.html)
         if not b:
             self.error(_("Cannot parse download url"))
+
         c = re.search(self.TOKEN_PATTERN, self.html)
         if not c:
             self.error(_("Cannot parse file token"))
+
         dl_url = b.group(1) + c.group(1)
 
         #Check if we have to wait

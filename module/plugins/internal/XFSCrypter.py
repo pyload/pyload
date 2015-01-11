@@ -16,7 +16,6 @@ class XFSCrypter(SimpleCrypter):
 
 
     HOSTER_DOMAIN = None
-    HOSTER_NAME = None
 
     URL_REPLACEMENTS = [(r'&?per_page=\d+', ""), (r'[?/&]+$', ""), (r'(.+/[^?]+)$', r'\1?'), (r'$', r'&per_page=10000')]
 

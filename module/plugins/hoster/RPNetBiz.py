@@ -9,9 +9,9 @@ from module.common.json_layer import json_loads
 class RPNetBiz(MultiHoster):
     __name__    = "RPNetBiz"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
-    __description__ = """RPNet.biz hoster plugin"""
+    __description__ = """RPNet.biz multi-hoster plugin"""
     __license__     = "GPLv3"
 
     __pattern__ = r'https?://.+rpnet\.biz'
@@ -22,16 +22,16 @@ class RPNetBiz(MultiHoster):
         self.chunkLimit = -1
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         user, data = self.account.selectAccount()
 
-        self.logDebug("Original URL: %s" % self.pyfile.url)
+        self.logDebug("Original URL: %s" % pyfile.url)
         # Get the download link
         res = self.load("https://premium.rpnet.biz/client_api.php",
                         get={"username": user,
                              "password": data['password'],
-                             "action": "generate",
-                             "links": self.pyfile.url})
+                             "action"  : "generate",
+                             "links"   : pyfile.url})
 
         self.logDebug("JSON data: %s" % res)
         link_status = json_loads(res)['links'][0]  # get the first link... since we only queried one

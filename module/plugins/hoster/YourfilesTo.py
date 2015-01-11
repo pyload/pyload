@@ -10,9 +10,9 @@ from module.plugins.Hoster import Hoster
 class YourfilesTo(Hoster):
     __name__    = "YourfilesTo"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
 
-    __pattern__ = r'(http://)?(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
+    __pattern__ = r'http://(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
 
     __description__ = """Youfiles.to hoster plugin"""
     __license__     = "GPLv3"

@@ -13,7 +13,7 @@ from module.plugins.Account import Account
 class AlldebridCom(Account):
     __name__    = "AlldebridCom"
     __type__    = "account"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __description__ = """AllDebrid.com account plugin"""
     __license__     = "GPLv3"
@@ -55,7 +55,8 @@ class AlldebridCom(Account):
         html = req.load("http://www.alldebrid.com/register/",
                         get={'action'        : "login",
                              'login_login'   : user,
-                             'login_password': data['password']})
+                             'login_password': data['password']},
+                        decode=True)
 
         if "This login doesn't exist" in html \
            or "The password is not valid" in html \

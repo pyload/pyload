@@ -15,7 +15,7 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.01"
+    __version__ = "1.02"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
 
@@ -36,9 +36,6 @@ class UlozTo(SimpleHoster):
     PASSWD_PATTERN  = r'<div class="passwordProtectedFile">'
     VIPLINK_PATTERN = r'<a href="[^"]*\?disclaimer=1" class="linkVip">'
     TOKEN_PATTERN   = r'<input type="hidden" name="_token_" .*?value="(.+?)"'
-
-    FREE_URL_PATTERN    = r'<div class="freeDownloadForm"><form action="([^"]+)"'
-    PREMIUM_URL_PATTERN = r'<div class="downloadForm"><form action="([^"]+)"'
 
 
     def setup(self):
@@ -80,14 +77,14 @@ class UlozTo(SimpleHoster):
         self.getFileInfo()
 
         if self.premium and self.checkTrafficLeft():
-            self.handlePremium()
+            self.handlePremium(pyfile)
         else:
-            self.handleFree()
+            self.handleFree(pyfile)
 
         self.doCheckDownload()
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         action, inputs = self.parseHtmlForm('id="frm-downloadDialog-freeDownloadForm"')
         if not action or not inputs:
             self.error(_("Free download form not found"))
@@ -122,29 +119,17 @@ class UlozTo(SimpleHoster):
         self.download("http://www.ulozto.net" + action, post=inputs, cookies=True, disposition=True)
 
 
-    def handlePremium(self):
-        self.download(self.pyfile.url + "?do=directDownload", disposition=True)
-        #parsed_url = self.findDownloadURL(premium=True)
-        #self.download(parsed_url, post={"download": "Download"})
-
-
-    def findDownloadURL(self, premium=False):
-        msg = _("%s link" % ("Premium" if premium else "Free"))
-        m = re.search(self.PREMIUM_URL_PATTERN if premium else self.FREE_URL_PATTERN, self.html)
-        if m is None:
-            self.error(msg)
-        parsed_url = "http://www.ulozto.net" + m.group(1)
-        self.logDebug("%s: %s" % (msg, parsed_url))
-        return parsed_url
+    def handlePremium(self, pyfile):
+        self.download(pyfile.url, get={'do': directDownload}, disposition=True)
 
 
     def doCheckDownload(self):
         check = self.checkDownload({
             "wrong_captcha": re.compile(r'<ul class="error">\s*<li>Error rewriting the text.</li>'),
-            "offline": re.compile(self.OFFLINE_PATTERN),
-            "passwd": self.PASSWD_PATTERN,
-            "server_error": 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  # paralell dl, server overload etc.
-            "not_found": "<title>Ulož.to</title>"
+            "offline"      : re.compile(self.OFFLINE_PATTERN),
+            "passwd"       : self.PASSWD_PATTERN,
+            "server_error" : 'src="http://img.ulozto.cz/error403/vykricnik.jpg"',  # paralell dl, server overload etc.
+            "not_found"    : "<title>Ulož.to</title>"
         })
 
         if check == "wrong_captcha":
@@ -152,15 +137,19 @@ class UlozTo(SimpleHoster):
             #self.delStorage("captcha_text")
             self.invalidCaptcha()
             self.retry(reason=_("Wrong captcha code"))
+
         elif check == "offline":
             self.offline()
+
         elif check == "passwd":
             self.fail(_("Wrong password"))
+
         elif check == "server_error":
             self.logError(_("Server error, try downloading later"))
             self.multiDL = False
             self.wait(1 * 60 * 60, True)
             self.retry()
+
         elif check == "not_found":
             self.fail(_("Server error - file not downloadable"))
 

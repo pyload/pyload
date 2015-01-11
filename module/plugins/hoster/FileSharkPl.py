@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileSharkPl(SimpleHoster):
     __name__    = "FileSharkPl"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d{6}/\w{5}'
 
@@ -73,13 +73,13 @@ class FileSharkPl(SimpleHoster):
 
 
     #@NOTE: handlePremium method was never been tested
-    def handlePremium(self):
-        super(FilerNet, self).handlePremium()
+    def handlePremium(self, pyfile):
+        super(FilerNet, self).handlePremium(pyfile)
         if self.link:
             self.link = urljoin("http://fileshark.pl/", self.link)
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.error(_("Download url not found"))
@@ -116,8 +116,6 @@ class FileSharkPl(SimpleHoster):
 
 
     def checkFile(self):
-        super(FileSharkPl, self).checkFile()
-
         check = self.checkDownload({'wrong_captcha': re.compile(r'<label for="form_captcha" generated="true" class="error">(.*?)</label>'),
                                     'wait_pattern' : re.compile(self.SECONDS_PATTERN),
                                     'DL-found'     : re.compile('<a href="(.*)">')})
@@ -131,6 +129,8 @@ class FileSharkPl(SimpleHoster):
 
         elif check == "wait_pattern":
             self.retry()
+
+        return super(FileSharkPl, self).checkFile()
 
 
     def _decode64(self, data, *args, **kwargs):

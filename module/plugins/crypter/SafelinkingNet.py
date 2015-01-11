@@ -14,7 +14,7 @@ from module.plugins.internal.CaptchaService import SolveMedia
 class SafelinkingNet(Crypter):
     __name__    = "SafelinkingNet"
     __type__    = "crypter"
-    __version__ = "0.11"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?safelinking\.net/([pd])/\w+'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -41,6 +41,8 @@ class SafelinkingNet(Crypter):
 
         else:
             postData = {"post-protect": "1"}
+
+            self.html = self.load(url)
 
             if "link-password" in self.html:
                 postData['link-password'] = self.getPassword()

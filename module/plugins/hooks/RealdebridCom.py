@@ -6,13 +6,16 @@ from module.plugins.internal.MultiHook import MultiHook
 class RealdebridCom(MultiHook):
     __name__    = "RealdebridCom"
     __type__    = "hook"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
-    __config__ = [("https", "bool", "Enable HTTPS", False),
-                  ("mode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
-                  ("pluginlist", "str", "Hoster list (comma separated)", ""),
-                  ("revertfailed", "bool", "Revert to standard download if download fails", False),
-                  ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
+                  ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
+                  ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
+                  ("retryinterval" , "int"                , "Retry interval in minutes"           , 1    ),
+                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   ),
+                  ("ssl"           , "bool"               , "Use HTTPS"                           , True )]
 
     __description__ = """Real-Debrid.com hook plugin"""
     __license__     = "GPLv3"
@@ -20,7 +23,7 @@ class RealdebridCom(MultiHook):
 
 
     def getHosters(self):
-        https = "https" if self.getConfig("https") else "http"
+        https = "https" if self.getConfig("ssl") else "http"
         page = self.getURL(https + "://real-debrid.com/api/hosters.php").replace("\"", "").strip()
 
         return [x.strip() for x in page.split(",") if x.strip()]

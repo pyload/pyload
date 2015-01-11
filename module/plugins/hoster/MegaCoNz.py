@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import math
 import os
 import random
 import re
@@ -49,9 +48,9 @@ from module.utils import decode, fs_decode, fs_encode
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.26"
 
-    __pattern__ = r'https?://(?:www\.)?mega\.co\.nz/#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'
+    __pattern__ = r'(?:https?://(?:www\.)?mega\.co\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\\-]+)'
 
     __description__ = """Mega.co.nz hoster plugin"""
     __license__     = "GPLv3"
@@ -130,7 +129,7 @@ class MegaCoNz(Hoster):
         chunk_size = 2 ** 15  # buffer size, 32k
         # file_mac   = [0, 0, 0, 0]  # calculate CBC-MAC for checksum
 
-        chunks = int(math.ceil(os.path.getsize(file_crypted) / chunk_size))
+        chunks = os.path.getsize(file_crypted) / chunk_size + 1
         for i in xrange(chunks):
             buf = f.read(chunk_size)
             if not buf:

@@ -7,12 +7,15 @@ from module.plugins.internal.MultiHook import MultiHook
 class PremiumizeMe(MultiHook):
     __name__    = "PremiumizeMe"
     __type__    = "hook"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
-    __config__ = [("mode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
-                  ("pluginlist", "str", "Hoster list (comma separated)", ""),
-                  ("revertfailed", "bool", "Revert to standard download if download fails", False),
-                  ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
+    __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
+                  ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
+                  ("revertfailed"  , "bool"               , "Revert to standard download if fails", True ),
+                  ("retry"         , "int"                , "Number of retries before revert"     , 10   ),
+                  ("retryinterval" , "int"                , "Retry interval in minutes"           , 1    ),
+                  ("reload"        , "bool"               , "Reload plugin list"                  , True ),
+                  ("reloadinterval", "int"                , "Reload interval in hours"            , 12   )]
 
     __description__ = """Premiumize.me hook plugin"""
     __license__     = "GPLv3"

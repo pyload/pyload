@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "0.75"
+    __version__ = "0.76"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
 
@@ -38,7 +38,7 @@ class OneFichierCom(SimpleHoster):
         self.resumeDownload = True
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         id = self.info['pattern']['ID1'] or self.info['pattern']['ID2']
         url, inputs = self.parseHtmlForm('action="https://1fichier.com/\?%s' % id)
 
@@ -53,8 +53,8 @@ class OneFichierCom(SimpleHoster):
         self.download(url, post=inputs)
 
 
-    def handlePremium(self):
-        return self.handleFree()
+    def handlePremium(self, pyfile):
+        return self.handleFree(pyfile)
 
 
 getInfo = create_getInfo(OneFichierCom)

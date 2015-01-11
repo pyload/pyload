@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class XFileSharingPro(XFSHoster):
     __name__    = "XFileSharingPro"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
 
     __pattern__ = r'^unmatchable$'
 
@@ -31,27 +31,32 @@ class XFileSharingPro(XFSHoster):
 
         self.__pattern__ = self.core.pluginManager.hosterPlugins[self.__name__]['pattern']
 
-        self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group(1).lower()
-        self.HOSTER_NAME = "".join([str.capitalize() for str in self.HOSTER_DOMAIN.split('.')])
+        self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
+        self.HOSTER_NAME   = "".join([part.capitalize() for part in re.split(r'(\.|\d+)', self.HOSTER_DOMAIN) if part != '.'])
+
+        if self.HOSTER_NAME[0].isdigit():
+            self.HOSTER_NAME = 'X' + self.HOSTER_NAME
 
         account = self.core.accountManager.getAccountPlugin(self.HOSTER_NAME)
 
         if account and account.canUse():
             self.account = account
+
         elif self.account:
             self.account.HOSTER_DOMAIN = self.HOSTER_DOMAIN
+
         else:
             return
 
         self.user, data = self.account.selectAccount()
-        self.req = self.account.getAccountRequest(self.user)
-        self.premium = self.account.isPremium(self.user)
+        self.req        = self.account.getAccountRequest(self.user)
+        self.premium    = self.account.isPremium(self.user)
 
 
     def setup(self):
-        self.chunkLimit = 1
+        self.chunkLimit     = 1
         self.resumeDownload = self.premium
-        self.multiDL = True
+        self.multiDL        = True
 
 
 getInfo = create_getInfo(XFileSharingPro)

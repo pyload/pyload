@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class NowVideoSx(SimpleHoster):
     __name__    = "NowVideoSx"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'http://(?:www\.)?nowvideo\.(at|ch|co|eu|li|sx)/(video|mobile/#/videos)/(?P<ID>\w+)'
 
@@ -31,7 +31,7 @@ class NowVideoSx(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         self.html = self.load("http://www.nowvideo.sx/mobile/video.php", get={'id': self.info['pattern']['ID']})
 
         m = re.search(self.LINK_FREE_PATTERN, self.html)

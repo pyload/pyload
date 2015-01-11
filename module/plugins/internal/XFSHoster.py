@@ -15,7 +15,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
 
     __pattern__ = r'^unmatchable$'
 
@@ -27,7 +27,6 @@ class XFSHoster(SimpleHoster):
 
 
     HOSTER_DOMAIN = None
-    HOSTER_NAME   = None
 
     TEXT_ENCODING = False
     COOKIES       = [(HOSTER_DOMAIN, "lang", "english")]
@@ -66,9 +65,6 @@ class XFSHoster(SimpleHoster):
         if not self.HOSTER_DOMAIN:
             self.fail(_("Missing HOSTER_DOMAIN"))
 
-        if not self.HOSTER_NAME:
-            self.HOSTER_NAME = "".join([str.capitalize() for str in self.HOSTER_DOMAIN.split('.')])
-
         if not self.LINK_PATTERN:
             pattern = r'(https?://(www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'
             self.LINK_PATTERN = pattern % self.HOSTER_DOMAIN.replace('.', '\.')
@@ -82,14 +78,12 @@ class XFSHoster(SimpleHoster):
             self.directDL = bool(self.premium)
 
 
-    def handleFree(self, pyfile=None):
-        link = self.getDownloadLink()
-
-        if link:
+    def downloadLink(self, link):
+        if link and isinstance(link, basestring):
             if self.captcha:
                 self.correctCaptcha()
 
-            self.download(link, ref=True, cookies=True, disposition=True)
+            self.download(link, ref=True, cookies=True, disposition=False)  #@TODO: Set `disposition=True` in 0.4.10
 
         elif self.errmsg:
             if 'captcha' in self.errmsg:
@@ -101,11 +95,7 @@ class XFSHoster(SimpleHoster):
             self.fail(_("Download link not found"))
 
 
-    def handlePremium(self, pyfile=None):
-        return self.handleFree(pyfile)
-
-
-    def getDownloadLink(self):
+    def handleFree(self, pyfile):
         for i in xrange(1, 6):
             self.logDebug("Getting download link: #%d" % i)
 
@@ -119,7 +109,7 @@ class XFSHoster(SimpleHoster):
 
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
 
-            self.html = self.load(self.pyfile.url, post=data, ref=True, decode=True)
+            self.html = self.load(pyfile.url, post=data, ref=True, decode=True)
 
             self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
@@ -136,7 +126,11 @@ class XFSHoster(SimpleHoster):
 
         self.errmsg = None
 
-        return m.group(1).strip()  #@TODO: Remove .strip() in 0.4.10
+        self.link = m.group(1).strip()  #@TODO: Remove .strip() in 0.4.10
+
+
+    def handlePremium(self, pyfile):
+        return self.handleFree(pyfile)
 
 
     def handleMulti(self, pyfile):

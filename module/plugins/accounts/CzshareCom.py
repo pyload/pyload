@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class CzshareCom(Account):
     __name__    = "CzshareCom"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
     __license__     = "GPLv3"
@@ -33,11 +33,11 @@ class CzshareCom(Account):
 
 
     def login(self, user, data, req):
-        html = req.load('https://sdilej.cz/index.php', post={
-            "Prihlasit": "Prihlasit",
-            "login-password": data['password'],
-            "login-name": user
-        })
+        html = req.load('https://sdilej.cz/index.php',
+                        post={"Prihlasit": "Prihlasit",
+                              "login-password": data['password'],
+                              "login-name": user},
+                        decode=True)
 
         if '<div class="login' in html:
             self.wrongPassword()

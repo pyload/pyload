@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class CatShareNet(Account):
     __name__    = "CatShareNet"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """CatShareNet account plugin"""
     __license__     = "GPLv3"
@@ -50,7 +50,8 @@ class CatShareNet(Account):
                         post={'user_email': user,
                               'user_password': data['password'],
                               'remindPassword': 0,
-                              'user[submit]': "Login"})
+                              'user[submit]': "Login"},
+                        decode=True)
 
         if not '<a href="/logout">Wyloguj</a>' in html:
             self.wrongPassword()

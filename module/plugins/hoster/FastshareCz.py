@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
 
@@ -45,7 +45,7 @@ class FastshareCz(SimpleHoster):
         self.info.pop('error', None)
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         m = re.search(self.FREE_URL_PATTERN, self.html)
         if m:
             action, captcha_src = m.groups()
@@ -58,22 +58,22 @@ class FastshareCz(SimpleHoster):
 
 
     def checkFile(self):
-        super(FastshareCz, self).checkFile()
-
         check = self.checkDownload({
-            'paralell_dl'  : re.compile(r"<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"),
-            'wrong_captcha': re.compile(r'Download for FREE'),
+            'paralell-dl'  : re.compile(r"<title>FastShare.cz</title>|<script>alert\('Pres FREE muzete stahovat jen jeden soubor najednou.'\)"),
+            'wrong captcha': re.compile(r'Download for FREE'),
             'credit'       : re.compile(self.CREDIT_ERROR)
         })
 
-        if check == "paralell_dl":
+        if check == "paralell-dl":
             self.retry(6, 10 * 60, _("Paralell download"))
 
-        elif check == "wrong_captcha":
+        elif check == "wrong captcha":
             self.retry(max_tries=5, reason=_("Wrong captcha"))
 
         elif check == "credit":
             self.resetAccount()
+
+        return super(FastshareCz, self).checkFile()
 
 
 getInfo = create_getInfo(FastshareCz)

@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.32"
 
     __pattern__ = r'^unmatchable$'
 
@@ -17,12 +17,14 @@ class MultiHoster(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
+    CHECK_TRAFFIC = True
     LOGIN_ACCOUNT = True
 
 
     def setup(self):
-        self.chunkLimit = 1
-        self.multiDL    = self.premium
+        self.chunkLimit     = 1
+        self.multiDL        = bool(self.account)
+        self.resumeDownload = self.premium
 
 
     def prepare(self):
@@ -50,20 +52,8 @@ class MultiHoster(SimpleHoster):
     def process(self, pyfile):
         self.prepare()
 
-        try:
-            module = self.core.pluginManager.hosterPlugins[self.__name__]['module']
-            klass  = getattr(module, self.__name__)
-
-            self.logDebug("File info (BEFORE): %s" % self.info)
-            self.info.update(klass.getInfo(self.pyfile.url, self.html))
-            self.logDebug("File info (AFTER): %s"  % self.info)
-
-        except Exception:
-            self.checkNameSize()
-
-        else:
-            self.checkNameSize(getinfo=False)
-            self.checkStatus(getinfo=False)
+        if self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, pyfile.url):
+            self.checkInfo()
 
         if self.directDL:
             self.logDebug("Looking for direct download link...")
@@ -71,24 +61,34 @@ class MultiHoster(SimpleHoster):
 
         if not self.link and not self.lastDownload:
             self.preload()
-            self.checkInfo()
+
+            self.checkErrors()
+            self.checkStatus(getinfo=False)
 
             if self.premium and (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as premium download")
-                self.handlePremium()
-            else:
+                self.handlePremium(pyfile)
+
+            elif not self.LOGIN_ACCOUNT or (not self.CHECK_TRAFFIC or self.checkTrafficLeft()):
                 self.logDebug("Handled as free download")
-                self.handleFree()
+                self.handleFree(pyfile)
 
         self.downloadLink(self.link)
         self.checkFile()
 
 
-    def handlePremium(self, pyfile=None):
+    #@TODO: Remove in 0.4.10
+    def downloadLink(self, link):
+        if link and isinstance(link, basestring):
+            self.correctCaptcha()
+            self.download(link, disposition=True)
+
+
+    def handlePremium(self, pyfile):
         return self.handleFree(pyfile)
 
 
-    def handleFree(self, pyfile=None):
+    def handleFree(self, pyfile):
         if self.premium:
             raise NotImplementedError
         else:

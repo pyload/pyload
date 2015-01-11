@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class WrzucTo(SimpleHoster):
     __name__    = "WrzucTo"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'http://(?:www\.)?wrzuc\.to/(\w+(\.wt|\.html)|(\w+/?linki/\w+))'
 
@@ -29,16 +29,16 @@ class WrzucTo(SimpleHoster):
         self.multiDL = True
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         data = dict(re.findall(r'(md5|file): "(.*?)"', self.html))
         if len(data) != 2:
             self.error(_("No file ID"))
 
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
-        self.req.http.lastURL = self.pyfile.url
+        self.req.http.lastURL = pyfile.url
         self.load("http://www.wrzuc.to/ajax/server/prepair", post={"md5": data['md5']})
 
-        self.req.http.lastURL = self.pyfile.url
+        self.req.http.lastURL = pyfile.url
         self.html = self.load("http://www.wrzuc.to/ajax/server/download_link", post={"file": data['file']})
 
         data.update(re.findall(r'"(download_link|server_id)":"(.*?)"', self.html))

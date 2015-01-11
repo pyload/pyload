@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, s
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
@@ -37,7 +37,7 @@ class RapidgatorNet(SimpleHoster):
     PREMIUM_ONLY_ERROR_PATTERN = r'You can download files up to|This file can be downloaded by premium only<'
     DOWNLOAD_LIMIT_ERROR_PATTERN = r'You have reached your (daily|hourly) downloads limit'
     WAIT_PATTERN = r'(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)'
-    LINK_PATTERN = r'return \'(http://\w+.rapidgator.net/.*)\';'
+    LINK_FREE_PATTERN = r'return \'(http://\w+.rapidgator.net/.*)\';'
 
     RECAPTCHA_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
     ADSCAPTCHA_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']*)'
@@ -84,23 +84,24 @@ class RapidgatorNet(SimpleHoster):
             self.retry(wait_time=60)
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         #self.logDebug("ACCOUNT_DATA", self.account.getAccountData(self.user))
         self.api_data = self.api_response('info')
         self.api_data['md5'] = self.api_data['hash']
-        self.pyfile.name = self.api_data['filename']
-        self.pyfile.size = self.api_data['size']
-        url = self.api_response('download')['url']
-        self.download(url)
+
+        pyfile.name = self.api_data['filename']
+        pyfile.size = self.api_data['size']
+
+        self.link = self.api_response('download')['url']
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         self.checkFree()
 
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.html))
         self.logDebug(jsvars)
 
-        self.req.http.lastURL = self.pyfile.url
+        self.req.http.lastURL = pyfile.url
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 
         url = "http://rapidgator.net%s?fid=%s" % (
@@ -113,14 +114,14 @@ class RapidgatorNet(SimpleHoster):
             jsvars.get('getDownloadUrl', '/download/AjaxGetDownload'), jsvars['sid'])
         jsvars.update(self.getJsonResponse(url))
 
-        self.req.http.lastURL = self.pyfile.url
+        self.req.http.lastURL = pyfile.url
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With:"])
 
         url = "http://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
         self.html = self.load(url)
 
         for _i in xrange(5):
-            m = re.search(self.LINK_PATTERN, self.html)
+            m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m:
                 link = m.group(1)
                 self.logDebug(link)

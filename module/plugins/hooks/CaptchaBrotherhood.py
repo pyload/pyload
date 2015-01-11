@@ -38,7 +38,7 @@ class CaptchaBrotherhoodException(Exception):
 class CaptchaBrotherhood(Hook):
     __name__    = "CaptchaBrotherhood"
     __type__    = "hook"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __config__ = [("username", "str", "Username", ""),
                   ("force", "bool", "Force CT even if client is connected", False),
@@ -118,14 +118,14 @@ class CaptchaBrotherhood(Hook):
 
         for _i in xrange(15):
             sleep(5)
-            res = self.get_api("askCaptchaResult", ticket)
+            res = self.api_response("askCaptchaResult", ticket)
             if res.startswith("OK-answered"):
                 return ticket, res[12:]
 
         raise CaptchaBrotherhoodException("No solution received in time")
 
 
-    def get_api(self, api, ticket):
+    def api_response(self, api, ticket):
         res = getURL("%s%s.aspx" % (self.API_URL, api),
                           get={"username": self.getConfig("username"),
                                "password": self.getConfig("passkey"),
@@ -160,7 +160,7 @@ class CaptchaBrotherhood(Hook):
 
     def captchaInvalid(self, task):
         if task.data['service'] == self.__name__ and "ticket" in task.data:
-            res = self.get_api("complainCaptcha", task.data['ticket'])
+            res = self.api_response("complainCaptcha", task.data['ticket'])
 
 
     @threaded

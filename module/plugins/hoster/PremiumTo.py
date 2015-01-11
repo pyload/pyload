@@ -11,35 +11,28 @@ from module.utils import fs_encode
 class PremiumTo(MultiHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __pattern__ = r'^unmatchable$'
 
-    __description__ = """Premium.to hoster plugin"""
+    __description__ = """Premium.to multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    CHECK_TRAFFIC = True
-
-
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         #raise timeout to 2min
         self.download("http://premium.to/api/getfile.php",
                       get={'username': self.account.username,
                            'password': self.account.password,
-                           'link'    : self.pyfile.url},
+                           'link'    : pyfile.url},
                       disposition=True)
 
 
     def checkFile(self):
-        super(PremiumTo, self).checkFile()
-
-        check = self.checkDownload({'nopremium': "No premium account available"})
-
-        if check == "nopremium":
+        if self.checkDownload({'nopremium': "No premium account available"}):
             self.retry(60, 5 * 60, "No premium account available")
 
         err = ''
@@ -52,6 +45,8 @@ class PremiumTo(MultiHoster):
 
         if err:
             self.fail(err)
+
+        return super(PremiumTo, self).checkFile()
 
 
 getInfo = create_getInfo(PremiumTo)

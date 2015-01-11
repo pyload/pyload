@@ -8,7 +8,7 @@ from module.plugins.Account import Account
 class CloudzillaTo(Account):
     __name__    = "CloudzillaTo"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __description__ = """Cloudzilla.to account plugin"""
     __license__     = "GPLv3"
@@ -30,7 +30,8 @@ class CloudzillaTo(Account):
         html = req.load("http://www.cloudzilla.to/",
                         post={'lusername': user,
                               'lpassword': data['password'],
-                              'w'        : "dologin"})
+                              'w'        : "dologin"},
+                        decode=True)
 
         if "ERROR" in html:
             self.wrongPassword()

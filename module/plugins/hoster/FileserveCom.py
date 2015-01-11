@@ -118,14 +118,16 @@ class FileserveCom(Hoster):
         self.logDebug(self.req.http.lastEffectiveURL)
 
         check = self.checkDownload({"expired": self.LINK_EXPIRED_PATTERN,
-                                    "wait": re.compile(self.LONG_WAIT_PATTERN),
-                                    "limit": self.DAILY_LIMIT_PATTERN})
+                                    "wait"   : re.compile(self.LONG_WAIT_PATTERN),
+                                    "limit"  : self.DAILY_LIMIT_PATTERN})
 
         if check == "expired":
             self.logDebug("Download link was expired")
             self.retry()
+
         elif check == "wait":
             self.doLongWait(self.lastCheck)
+
         elif check == "limit":
             self.logWarning(_("Download limited reached for today"))
             self.setWait(secondsToMidnight(gmt=2), True)
@@ -204,12 +206,9 @@ class FileserveCom(Hoster):
 
         self.download(premium_url or self.pyfile.url)
 
-        if not premium_url:
-            check = self.checkDownload({"login": re.compile(self.NOT_LOGGED_IN_PATTERN)})
-
-            if check == "login":
-                self.account.relogin(self.user)
-                self.retry(reason=_("Not logged in"))
+        if not premium_url and self.checkDownload({"login": re.compile(self.NOT_LOGGED_IN_PATTERN)}):
+            self.account.relogin(self.user)
+            self.retry(reason=_("Not logged in"))
 
 
 def getInfo(urls):

@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class GooIm(SimpleHoster):
     __name__    = "GooIm"
     __type__    = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'https?://(?:www\.)?goo\.im/.+'
 
@@ -29,11 +29,9 @@ class GooIm(SimpleHoster):
         self.multiDL        = True
 
 
-    def handleFree(self):
-        url = self.pyfile.url
-        self.html = self.load(url, cookies=True)
+    def handleFree(self, pyfile):
         self.wait(10)
-        self.download(url, cookies=True)
+        self.download(pyfile.url, cookies=True)
 
 
 getInfo = create_getInfo(GooIm)

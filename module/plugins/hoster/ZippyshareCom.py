@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.65"
+    __version__ = "0.66"
 
     __pattern__ = r'(?P<HOST>http://www\d{0,2}\.zippyshare\.com)/v(?:/|iew\.jsp.*key=)(?P<KEY>\d+)'
 
@@ -33,9 +33,11 @@ class ZippyshareCom(SimpleHoster):
         self.resumeDownload = True
 
 
-    def handleFree(self):
-        url = self.get_link()
-        self.download(url)
+    def handleFree(self, pyfile):
+        checksum = self.get_checksum()
+        p_url    = '/'.join(("d", self.info['pattern']['KEY'], str(checksum), self.pyfile.name))
+
+        self.link = urljoin(self.info['pattern']['HOST'], p_url)
 
 
     def get_checksum(self):
@@ -54,13 +56,6 @@ class ZippyshareCom(SimpleHoster):
 
         else:
             return b
-
-
-    def get_link(self):
-        checksum = self.get_checksum()
-        p_url    = '/'.join(("d", self.info['pattern']['KEY'], str(checksum), self.pyfile.name))
-        dl_link  = urljoin(self.info['pattern']['HOST'], p_url)
-        return dl_link
 
 
 getInfo = create_getInfo(ZippyshareCom)

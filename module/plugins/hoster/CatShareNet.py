@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
 
@@ -27,7 +27,7 @@ class CatShareNet(SimpleHoster):
 
     IP_BLOCKED_PATTERN = ur'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
     SECONDS_PATTERN = 'var\scount\s=\s(\d+);'
-    LINK_PATTERN = r'<form action="(.+?)" method="GET">'
+    LINK_FREE_PATTERN = r'<form action="(.+?)" method="GET">'
 
 
     def setup(self):
@@ -42,7 +42,7 @@ class CatShareNet(SimpleHoster):
         return super(CatShareNet, self).getFileInfo()
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         m = re.search(self.SECONDS_PATTERN, self.html)
         if m:
             wait_time = int(m.group(1))
@@ -51,11 +51,11 @@ class CatShareNet(SimpleHoster):
         recaptcha = ReCaptcha(self)
 
         challenge, response = recaptcha.challenge()
-        self.html = self.load(self.pyfile.url,
+        self.html = self.load(pyfile.url,
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
 
-        m = re.search(self.LINK_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.invalidCaptcha()
             self.retry(reason=_("Wrong captcha entered"))

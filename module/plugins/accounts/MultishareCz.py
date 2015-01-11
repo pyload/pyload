@@ -8,7 +8,7 @@ from module.plugins.Account import Account
 class MultishareCz(Account):
     __name__    = "MultishareCz"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """Multishare.cz account plugin"""
     __license__     = "GPLv3"
@@ -34,11 +34,11 @@ class MultishareCz(Account):
 
 
     def login(self, user, data, req):
-        html = req.load('http://www.multishare.cz/html/prihlaseni_process.php', post={
-            "akce": "Přihlásit",
-            "heslo": data['password'],
-            "jmeno": user
-        }, decode=True)
+        html = req.load('http://www.multishare.cz/html/prihlaseni_process.php',
+                        post={"akce" : "Přihlásit",
+                              "heslo": data['password'],
+                              "jmeno": user},
+                        decode=True)
 
         if '<div class="akce-chyba akce">' in html:
             self.wrongPassword()

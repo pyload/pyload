@@ -13,11 +13,11 @@ from module.utils import parseFileSize
 class AlldebridCom(MultiHoster):
     __name__    = "AlldebridCom"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.44"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
 
-    __description__ = """Alldebrid.com hoster plugin"""
+    __description__ = """Alldebrid.com multi-hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
@@ -38,11 +38,11 @@ class AlldebridCom(MultiHoster):
         self.chunkLimit = 16
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         password = self.getPassword()
 
         data = json_loads(self.load("http://www.alldebrid.com/service.php",
-                                     get={'link': self.pyfile.url, 'json': "true", 'pw': password}))
+                                     get={'link': pyfile.url, 'json': "true", 'pw': password}))
 
         self.logDebug("Json data", data)
 
@@ -53,29 +53,29 @@ class AlldebridCom(MultiHoster):
                 self.logWarning(data['error'])
                 self.tempOffline()
         else:
-            if self.pyfile.name and not self.pyfile.name.endswith('.tmp'):
-                self.pyfile.name = data['filename']
-            self.pyfile.size = parseFileSize(data['filesize'])
+            if pyfile.name and not pyfile.name.endswith('.tmp'):
+                pyfile.name = data['filename']
+            pyfile.size = parseFileSize(data['filesize'])
             self.link = data['link']
 
-        if self.getConfig("https"):
+        if self.getConfig("ssl"):
             self.link = self.link.replace("http://", "https://")
         else:
             self.link = self.link.replace("https://", "http://")
 
-        if self.link != self.pyfile.url:
+        if self.link != pyfile.url:
             self.logDebug("New URL: %s" % self.link)
 
-        if self.pyfile.name.startswith("http") or self.pyfile.name.startswith("Unknown"):
+        if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
             #only use when name wasnt already set
-            self.pyfile.name = self.getFilename(self.link)
+            pyfile.name = self.getFilename(self.link)
 
 
     def checkFile(self):
-        super(AlldebridCom, self).checkFile()
-
-        if self.checkDownload({'error': "<title>An error occured while processing your request</title>"}) is "error":
+        if self.checkDownload({'error': "<title>An error occured while processing your request</title>"}) == "error":
             self.retry(wait_time=60, reason=_("An error occured while generating link"))
+
+        return super(AlldebridCom, self).checkFile()
 
 
 getInfo = create_getInfo(AlldebridCom)

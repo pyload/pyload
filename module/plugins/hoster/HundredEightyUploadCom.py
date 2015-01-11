@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-#
-# Test links:
-# http://180upload.com/js9qdm6kjnrs
 
 from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 

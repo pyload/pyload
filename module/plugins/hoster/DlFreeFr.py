@@ -36,7 +36,7 @@ class CustomBrowser(Browser):
 class DlFreeFr(SimpleHoster):
     __name__    = "DlFreeFr"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
 
@@ -78,7 +78,7 @@ class DlFreeFr(SimpleHoster):
             if content_type and content_type.startswith("text/html"):
                 # Undirect acces to requested file, with a web page providing it (captcha)
                 self.html = self.load(valid_url)
-                self.handleFree()
+                self.handleFree(pyfile)
             else:
                 # Direct access to requested file for users using free.fr as Internet Service Provider.
                 self.download(valid_url, disposition=True)
@@ -88,7 +88,7 @@ class DlFreeFr(SimpleHoster):
             self.fail(_("Invalid return code: ") + str(headers.get('code')))
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         action, inputs = self.parseHtmlForm('action="getfile.pl"')
 
         adyoulike = AdYouLike(self)

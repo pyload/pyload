@@ -10,9 +10,9 @@ from module.plugins.Hoster import Hoster
 class ShareplaceCom(Hoster):
     __name__    = "ShareplaceCom"
     __type__    = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
-    __pattern__ = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?\w+'
+    __pattern__ = r'http://(?:www\.)?shareplace\.(com|org)/\?\w+'
 
     __description__ = """Shareplace.com hoster plugin"""
     __license__     = "GPLv3"

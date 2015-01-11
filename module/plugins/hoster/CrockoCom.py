@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class CrockoCom(SimpleHoster):
     __name__    = "CrockoCom"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __pattern__ = r'http://(?:www\.)?(crocko|easy-share)\.com/\w+'
 
@@ -30,7 +30,7 @@ class CrockoCom(SimpleHoster):
     NAME_REPLACEMENTS = [(r'<[^>]*>', '')]
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         if "You need Premium membership to download this file." in self.html:
             self.fail(_("You need Premium membership to download this file"))
 
@@ -55,11 +55,7 @@ class CrockoCom(SimpleHoster):
             inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge()
             self.download(action, post=inputs)
 
-            check = self.checkDownload({
-                "captcha_err": recaptcha.KEY_AJAX_PATTERN
-            })
-
-            if check == "captcha_err":
+            if self.checkDownload({"captcha": recaptcha.KEY_AJAX_PATTERN}):
                 self.invalidCaptcha()
             else:
                 break

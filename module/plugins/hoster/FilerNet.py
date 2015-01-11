@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
 
@@ -42,12 +42,12 @@ class FilerNet(SimpleHoster):
         self.info.pop('error', None)
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         inputs = self.parseHtmlForm(input_names={'token': re.compile(r'.+')})[1]
         if 'token' not in inputs:
             self.error(_("Unable to detect token"))
 
-        self.html = self.load(self.pyfile.url, post={'token': inputs['token']}, decode=True)
+        self.html = self.load(pyfile.url, post={'token': inputs['token']}, decode=True)
 
         inputs = self.parseHtmlForm(input_names={'hash': re.compile(r'.+')})[1]
         if 'hash' not in inputs:
@@ -61,7 +61,7 @@ class FilerNet(SimpleHoster):
             #@NOTE: Work-around for v0.4.9 just_header issue
             #@TODO: Check for v0.4.10
             self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
-            self.load(self.pyfile.url, post={'recaptcha_challenge_field': challenge,
+            self.load(pyfile.url, post={'recaptcha_challenge_field': challenge,
                                              'recaptcha_response_field' : response,
                                              'hash'                     : inputs['hash']})
             self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)

@@ -8,7 +8,7 @@ from module.plugins.Account import Account
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __description__ = """Share-online.biz account plugin"""
     __license__     = "GPLv3"
@@ -17,7 +17,10 @@ class ShareonlineBiz(Account):
 
     def api_response(self, user, req):
         return req.load("http://api.share-online.biz/cgi-bin",
-                        get={'q': "userdetails", 'aux': "traffic", "username": user, "password": self.accounts[user]['password']})
+                        get={'q'       : "userdetails",
+                             'aux'     : "traffic",
+                             'username': user,
+                             'password': self.getAccountData(user)['password']})
 
 
     def loadAccountInfo(self, user, req):

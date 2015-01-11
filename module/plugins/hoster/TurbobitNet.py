@@ -17,7 +17,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, t
 class TurbobitNet(SimpleHoster):
     __name__    = "TurbobitNet"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
 
@@ -36,24 +36,28 @@ class TurbobitNet(SimpleHoster):
     OFFLINE_PATTERN = r'<h2>File Not Found</h2>|html\(\'File (?:was )?not found'
 
     LINK_PATTERN = r'(/download/redirect/[^"\']+)'
+
     LIMIT_WAIT_PATTERN = r'<div id=\'timeout\'>(\d+)<'
+    CAPTCHA_PATTERN    = r'<img alt="Captcha" src="(.+?)"'
 
-    CAPTCHA_PATTERN = r'<img alt="Captcha" src="(.+?)"'
 
-
-    def handleFree(self):
+    def handleFree(self, pyfile):
         self.url = "http://turbobit.net/download/free/%s" % self.info['pattern']['ID']
         self.html = self.load(self.url, ref=True, decode=True)
 
         rtUpdate = self.getRtUpdate()
 
         self.solveCaptcha()
+
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+
         self.url = self.getDownloadUrl(rtUpdate)
 
         self.wait()
         self.html = self.load(self.url)
+
         self.req.http.c.setopt(HTTPHEADER, ["X-Requested-With:"])
+
         self.downloadFile()
 
 
@@ -157,7 +161,7 @@ class TurbobitNet(SimpleHoster):
         return "%s GMT%+03d%02d" % (time.strftime("%a %b %d %Y %H:%M:%S", lt), -tz // 3600, tz % 3600)
 
 
-    def handlePremium(self):
+    def handlePremium(self, pyfile):
         self.logDebug("Premium download as user %s" % self.user)
         self.downloadFile()
 

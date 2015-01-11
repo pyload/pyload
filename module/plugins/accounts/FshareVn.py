@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from time import mktime, strptime
-from pycurl import REFERER
 import re
+
+from time import mktime, strptime
 
 from module.plugins.Account import Account
 
@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class FshareVn(Account):
     __name__    = "FshareVn"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __description__ = """Fshare.vn account plugin"""
     __license__     = "GPLv3"
@@ -46,13 +46,13 @@ class FshareVn(Account):
 
 
     def login(self, user, data, req):
-        req.http.c.setopt(REFERER, "https://www.fshare.vn/login.php")
-
-        html = req.load('https://www.fshare.vn/login.php', post={
-            "login_password": data['password'],
-            "login_useremail": user,
-            "url_refe": "http://www.fshare.vn/index.php"
-        }, referer=True, decode=True)
+        html = req.load("https://www.fshare.vn/login.php",
+                        post={'LoginForm[email]'     : user,
+                              'LoginForm[password]'  : data['password'],
+                              'LoginForm[rememberMe]': 1,
+                              'yt0'                  : "Login"},
+                        referer=True,
+                        decode=True)
 
         if not re.search(r'<img\s+alt="VIP"', html):
             self.wrongPassword()
