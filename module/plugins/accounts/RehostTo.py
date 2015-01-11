@@ -6,7 +6,7 @@ from module.plugins.Account import Account
 class RehostTo(Account):
     __name__    = "RehostTo"
     __type__    = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __description__ = """Rehost.to account plugin"""
     __license__     = "GPLv3"
@@ -28,7 +28,7 @@ class RehostTo(Account):
             html = req.load("http://rehost.to/api.php",
                             get={'cmd': "get_premium_credits", 'long_ses': session})
 
-            if html.strip() == "0,0" or "ERROR" not in html:
+            if html.strip() == "0,0" or "ERROR" in html:
                 self.logDebug(html)
             else:
                 traffic, valid = html.split(",")
