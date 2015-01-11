@@ -115,9 +115,9 @@ def parseFileInfo(plugin, url="", html=""):
 #@NOTE: Every plugin must have own parseInfos classmethod to work with 0.4.10
 def create_getInfo(plugin):
     if hasattr(plugin, "parseInfos"):
-        fn = lambda urls: [(info['name'], info['size'], info['status'], info['url']) for info in plugin.parseInfos(urls)]
+        fn = lambda urls: map(yield, (info['name'], info['size'], info['status'], info['url']) for info in plugin.parseInfos(urls))
     else:
-        fn = lambda urls: [parseFileInfo(url) for url in urls]
+        fn = lambda urls: map(yield, parseFileInfo(url) for url in urls)
 
     return fn
 
@@ -183,7 +183,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.94"
+    __version__ = "0.95"
 
     __pattern__ = r'^unmatchable$'
 
