@@ -12,7 +12,7 @@ from module.plugins.Hoster import Hoster
 class Ftp(Hoster):
     __name__    = "Ftp"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w.-]+(:[\w.-]+)?@)?[\w.-]+(:\d+)?/.+'
 
@@ -43,7 +43,7 @@ class Ftp(Hoster):
 
             if netloc in servers:
                 self.logDebug("Logging on to %s" % netloc)
-                self.req.addAuth(self.account.getAccountData(netloc)['password'])
+                self.req.addAuth(self.account.getAccountInfo(netloc)['password'])
             else:
                 pwd = self.getPassword()
                 if ':' in pwd:

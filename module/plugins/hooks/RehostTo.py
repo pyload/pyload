@@ -6,7 +6,7 @@ from module.plugins.internal.MultiHook import MultiHook
 class RehostTo(MultiHook):
     __name__    = "RehostTo"
     __type__    = "hook"
-    __version__ = "0.5"
+    __version__ = "0.50"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),

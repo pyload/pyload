@@ -12,7 +12,7 @@ from module.plugins.Account import Account
 class SmoozedCom(Account):
     __name__    = "SmoozedCom"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """Smoozed.com account plugin"""
     __license__     = "GPLv3"
@@ -33,7 +33,7 @@ class SmoozedCom(Account):
             # Parse account info
             info = {'validuntil' : float(status["data"]["user"]["user_premium"]),
                     'trafficleft': max(0, status["data"]["traffic"][1] - status["data"]["traffic"][0]),
-                    'session_key': status["data"]["session_key"],
+                    'session'    : status["data"]["session_key"],
                     'hosters'    : [hoster["name"] for hoster in status["data"]["hoster"]]}
 
             if info['validuntil'] < time():
