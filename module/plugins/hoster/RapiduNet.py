@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RapiduNet(SimpleHoster):
     __name__    = "RapiduNet"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'
 
@@ -66,7 +66,7 @@ class RapiduNet(SimpleHoster):
                                           post={'_go'     : "",
                                                 'captcha1': challenge,
                                                 'captcha2': response,
-                                                'fileId'  : self.info['ID']},
+                                                'fileId'  : self.info['pattern']['ID']},
                                           decode=True)
             if jsvars['message'] == 'success':
                 self.download(jsvars['url'])
