@@ -28,7 +28,7 @@ class SimplyPremiumCom(Account):
         if 'timeend' in json_data['result'] and json_data['result']['timeend']:
             validuntil = float(json_data['result']['timeend'])
 
-        if 'traffic' in json_data['result'] and json_data['result']['remain_traffic']:
+        if 'remain_traffic' in json_data['result'] and json_data['result']['remain_traffic']:
             trafficleft = float(json_data['result']['remain_traffic']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
