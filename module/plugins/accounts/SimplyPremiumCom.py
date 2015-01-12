@@ -7,7 +7,7 @@ from module.plugins.Account import Account
 class SimplyPremiumCom(Account):
     __name__    = "SimplyPremiumCom"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """Simply-Premium.com account plugin"""
     __license__     = "GPLv3"
@@ -28,8 +28,8 @@ class SimplyPremiumCom(Account):
         if 'timeend' in json_data['result'] and json_data['result']['timeend']:
             validuntil = float(json_data['result']['timeend'])
 
-        if 'traffic' in json_data['result'] and json_data['result']['traffic']:
-            trafficleft = float(json_data['result']['traffic']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+        if 'traffic' in json_data['result'] and json_data['result']['remain_traffic']:
+            trafficleft = float(json_data['result']['remain_traffic']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
         return {"premium": True, "validuntil": validuntil, "trafficleft": trafficleft}
 
