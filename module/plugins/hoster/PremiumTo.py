@@ -11,7 +11,7 @@ from module.utils import fs_encode
 class PremiumTo(MultiHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __pattern__ = r'^unmatchable$'
 
@@ -20,6 +20,9 @@ class PremiumTo(MultiHoster):
     __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
+
+
+    CHECK_TRAFFIC = True
 
 
     def handlePremium(self, pyfile):
