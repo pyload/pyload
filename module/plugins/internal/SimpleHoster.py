@@ -189,7 +189,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.97"
+    __version__ = "0.98"
 
     __pattern__ = r'^unmatchable$'
 
@@ -334,9 +334,6 @@ class SimpleHoster(Hoster):
                     else:
                         online = True
 
-        if not info['pattern']:
-            info.pop('pattern', None)
-
         if online:
             info['status'] = 2
 
@@ -356,6 +353,9 @@ class SimpleHoster(Hoster):
             if 'H' in info['pattern']:
                 hashtype = info['pattern']['T'] if 'T' in info['pattern'] else "hash"
                 info[hashtype] = info['pattern']['H']
+
+        if not info['pattern']:
+            info.pop('pattern', None)
 
         return info
 
