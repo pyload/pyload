@@ -12,7 +12,7 @@ from module.utils import fixup
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -71,12 +71,12 @@ class SimpleCrypter(Crypter, SimpleHoster):
     #@TODO: Remove in 0.4.10
     def init(self):
         account_name = (self.__name__ + ".py").replace("Folder.py", "").replace(".py", "")
-        account = self.core.accountManager.getAccountPlugin(account_name)
+        account      = self.pyfile.m.core.accountManager.getAccountPlugin(account_name)
 
         if account and account.canUse():
             self.user, data = account.selectAccount()
-            self.req = account.getAccountRequest(self.user)
-            self.premium = account.isPremium(self.user)
+            self.req        = account.getAccountRequest(self.user)
+            self.premium    = account.isPremium(self.user)
 
             self.account = account
 
@@ -161,7 +161,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
     def handlePages(self, pyfile):
         try:
             pages = int(re.search(self.PAGES_PATTERN, self.html).group(1))
-        except:
+        except Exception:
             pages = 1
 
         for p in xrange(2, pages + 1):
