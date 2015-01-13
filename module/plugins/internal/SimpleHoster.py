@@ -2,6 +2,7 @@
 
 import re
 
+from datetime import datetime, timedelta
 from inspect import isclass
 from os.path import exists
 from time import time
@@ -188,7 +189,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.96"
+    __version__ = "0.97"
 
     __pattern__ = r'^unmatchable$'
 
@@ -446,7 +447,7 @@ class SimpleHoster(Hoster):
 
         elif not self.lastDownload or not exists(fs_encode(self.lastDownload)):
             self.lastDownload = ""
-            self.fail(self.pyfile.error or _("No file downloaded"))
+            self.error(self.pyfile.error or _("No file downloaded"))
 
         else:
             rules = {'empty file': re.compile(r'\A\Z'),

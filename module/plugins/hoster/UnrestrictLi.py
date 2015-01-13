@@ -2,8 +2,6 @@
 
 import re
 
-from datetime import datetime, timedelta
-
 from module.common.json_layer import json_loads
 from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 from module.plugins.internal.SimpleHoster import secondsToMidnight
