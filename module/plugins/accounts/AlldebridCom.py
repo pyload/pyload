@@ -37,7 +37,7 @@ class AlldebridCom(Account):
                 exp_data[1]) * 60 * 60 + (int(exp_data[2]) - 1) * 60
 
         #Get expiration date from API
-        except:
+        except Exception:
             data = self.getAccountData(user)
             html = req.load("http://www.alldebrid.com/api.php",
                             get={'action': "info_user", 'login': user, 'pw': data['password']})

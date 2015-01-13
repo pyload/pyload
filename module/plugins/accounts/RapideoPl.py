@@ -35,7 +35,7 @@ class RapideoPl(Account):
         self._req = req
         try:
             result = loads(self.runAuthQuery())
-        except:
+        except Exception:
             # todo: return or let it be thrown?
             return
 
@@ -59,7 +59,7 @@ class RapideoPl(Account):
         self._req = req
         try:
             response = loads(self.runAuthQuery())
-        except:
+        except Exception:
             self.wrongPassword()
 
         if "errno" in response.keys():

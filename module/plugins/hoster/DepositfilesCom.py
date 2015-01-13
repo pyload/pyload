@@ -95,7 +95,7 @@ class DepositfilesCom(SimpleHoster):
 
         try:
             self.download(link, disposition=True)
-        except:
+        except Exception:
             self.retry(wait_time=60)
 
 

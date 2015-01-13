@@ -18,13 +18,13 @@ class RehostTo(Account):
         trafficleft = None
         validuntil  = -1
         session     = ""
-        
+
         html = req.load("http://rehost.to/api.php",
                         get={'cmd' : "login", 'user': user,
                              'pass': self.getAccountData(user)['password']})
         try:
             session = html.split(",")[1].split("=")[1]
-        
+
             html = req.load("http://rehost.to/api.php",
                             get={'cmd': "get_premium_credits", 'long_ses': session})
 
@@ -32,11 +32,11 @@ class RehostTo(Account):
                 self.logDebug(html)
             else:
                 traffic, valid = html.split(",")
-                
+
                 premium     = True
                 trafficleft = self.parseTraffic(traffic + "MB")
                 validuntil  = float(valid)
-        
+
         finally:
             return {'premium'    : premium,
                     'trafficleft': trafficleft,

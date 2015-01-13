@@ -21,7 +21,7 @@ def getInfo(urls):
                     url_pattern = '<a href="(.+?)" onclick="return Act\(this\, \'dlink\'\, event\)">(.+?)</a>'
                     file_name = re.search(url_pattern, html).group(0).split(', event)">')[1].split('</a>')[0]
                     result.append((file_name, 0, 2, url))
-                except:
+                except Exception:
                     pass
 
         # status 1=OFFLINE, 2=OK, 3=UNKNOWN

@@ -117,7 +117,7 @@ class UpdateManager(Hook):
     def server_request(self):
         try:
             return getURL(self.SERVER_URL, get={'v': self.core.api.getServerVersion()}).splitlines()
-        except:
+        except Exception:
             self.logWarning(_("Unable to contact server to get updates"))
 
 
@@ -192,7 +192,7 @@ class UpdateManager(Hook):
             # Protect UpdateManager from self-removing
             try:
                 blacklisted.remove(("hook", "UpdateManager"))
-            except:
+            except Exception:
                 pass
 
             for t, n in blacklisted:

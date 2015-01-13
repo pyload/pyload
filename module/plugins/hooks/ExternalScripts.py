@@ -59,7 +59,7 @@ class ExternalScripts(Hook):
         if not exists(path):
             try:
                 makedirs(path)
-            except:
+            except Exception:
                 self.logDebug("Script folder %s not created" % folder)
                 return
 

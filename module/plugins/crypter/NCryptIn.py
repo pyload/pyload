@@ -229,7 +229,7 @@ class NCryptIn(Crypter):
                 (vcrypted, vjk) = self._getCipherParams()
                 for (crypted, jk) in zip(vcrypted, vjk):
                     package_links.extend(self._getLinks(crypted, jk))
-            except:
+            except Exception:
                 self.fail(_("Unable to decrypt CNL2 links"))
 
         return package_links

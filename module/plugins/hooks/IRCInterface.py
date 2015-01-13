@@ -61,7 +61,7 @@ class IRCInterface(Thread, Hook):
         try:
             if self.getConfig("info_pack"):
                 self.response(_("Package finished: %s") % pypack.name)
-        except:
+        except Exception:
             pass
 
 
@@ -70,7 +70,7 @@ class IRCInterface(Thread, Hook):
             if self.getConfig("info_file"):
                 self.response(
                     _("Download finished: %(name)s @ %(plugin)s ") % {"name": pyfile.name, "plugin": pyfile.pluginname})
-        except:
+        except Exception:
             pass
 
 
@@ -183,7 +183,7 @@ class IRCInterface(Thread, Hook):
             trigger = temp[0]
             if len(temp) > 1:
                 args = temp[1:]
-        except:
+        except Exception:
             pass
 
         handler = getattr(self, "event_%s" % trigger, self.event_pass)
@@ -347,7 +347,7 @@ class IRCInterface(Thread, Hook):
 
             return ["INFO: Added %d links to Package %s [#%d]" % (len(links), pack['name'], id)]
 
-        except:
+        except Exception:
             # create new package
             id = self.core.api.addPackage(pack, links, 1)
             return ["INFO: Created new Package %s [#%d] with %d links." % (pack, id, len(links))]

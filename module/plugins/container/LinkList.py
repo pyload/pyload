@@ -23,7 +23,7 @@ class LinkList(Container):
     def decrypt(self, pyfile):
         try:
             file_enc = codecs.lookup(self.getConfig("encoding")).name
-        except:
+        except Exception:
             file_enc = "utf-8"
 
         file_name = fs_encode(pyfile.url)
@@ -64,7 +64,7 @@ class LinkList(Container):
             try:
                 txt = open(file_name, 'wb')
                 txt.close()
-            except:
+            except Exception:
                 self.logWarning(_("LinkList could not be cleared"))
 
         for name, links in packages.iteritems():

@@ -31,7 +31,7 @@ class CatShareNet(Account):
             m = re.search(self.PREMIUM_PATTERN, html)
             if "Premium" in m.group(1):
                 premium = True
-        except:
+        except Exception:
             pass
 
         try:
@@ -39,7 +39,7 @@ class CatShareNet(Account):
             expiredate = m.group(1)
             if "-" not in expiredate:
                 validuntil = mktime(strptime(expiredate, "%d.%m.%Y"))
-        except:
+        except Exception:
             pass
 
         return {'premium': premium, 'trafficleft': -1, 'validuntil': validuntil}

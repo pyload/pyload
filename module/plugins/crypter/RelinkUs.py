@@ -204,7 +204,7 @@ class RelinkUs(Crypter):
                 (vcrypted, vjk) = self._getCipherParams(cnl2_form)
                 for (crypted, jk) in zip(vcrypted, vjk):
                     package_links.extend(self._getLinks(crypted, jk))
-            except:
+            except Exception:
                 self.logDebug("Unable to decrypt CNL2 links")
         return package_links
 
@@ -223,7 +223,7 @@ class RelinkUs(Crypter):
                 with open(dlc_filepath, "wb") as f:
                     f.write(dlc)
                 package_links.append(dlc_filepath)
-            except:
+            except Exception:
                 self.fail("Unable to download DLC container")
         return package_links
 
