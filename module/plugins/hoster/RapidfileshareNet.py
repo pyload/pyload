@@ -15,8 +15,6 @@ class RapidfileshareNet(XFSHoster):
     __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
 
 
-    HOSTER_DOMAIN = "rapidfileshare.net"
-
     NAME_PATTERN = r'<input type="hidden" name="fname" value="(?P<N>.+?)">'
     SIZE_PATTERN = r'>http://www.rapidfileshare.net/\w+?</font> \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</font>'
 

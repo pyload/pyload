@@ -19,8 +19,6 @@ class UpleaCom(XFSHoster):
     __authors__     = [("Redleon", None)]
 
 
-    HOSTER_DOMAIN = "uplea.com"
-
     NAME_PATTERN = r'class="agmd size18">(?P<N>.+?)<'
     SIZE_PATTERN = r'size14">(?P<S>[\d.,]+) (?P<U>[\w^_])</span>'
 

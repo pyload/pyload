@@ -17,8 +17,6 @@ class EasybytezComFolder(XFSCrypter):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    HOSTER_DOMAIN = "easybytez.com"
-
     LOGIN_ACCOUNT = True
 
 

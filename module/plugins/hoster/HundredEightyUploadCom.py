@@ -15,7 +15,5 @@ class HundredEightyUploadCom(XFSHoster):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    HOSTER_DOMAIN = "180upload.com"
-
 
 getInfo = create_getInfo(HundredEightyUploadCom)

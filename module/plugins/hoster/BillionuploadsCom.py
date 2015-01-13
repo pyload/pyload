@@ -15,8 +15,6 @@ class BillionuploadsCom(XFSHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_DOMAIN = "billionuploads.com"
-
     NAME_PATTERN = r'<td class="dofir" title="(?P<N>.+?)"'
     SIZE_PATTERN = r'<td class="dofir">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 

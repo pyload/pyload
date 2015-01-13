@@ -16,8 +16,6 @@ class EasybytezCom(XFSHoster):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    HOSTER_DOMAIN = "easybytez.com"
-
     OFFLINE_PATTERN = r'>File not available'
 
     LINK_PATTERN = r'(http://(\w+\.(easybytez|easyload|ezbytez|zingload)\.(com|to)|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/.+?)["\'<]'

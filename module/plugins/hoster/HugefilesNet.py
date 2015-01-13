@@ -17,8 +17,6 @@ class HugefilesNet(XFSHoster):
     __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
-    HOSTER_DOMAIN = "hugefiles.net"
-
     SIZE_PATTERN = r'File Size:</span>\s*<span[^>]*>(?P<S>[^<]+)</span></div>'
 
     FORM_INPUTS_MAP = {'ctype': re.compile(r'\d+')}

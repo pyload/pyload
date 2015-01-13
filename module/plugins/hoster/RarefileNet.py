@@ -17,8 +17,6 @@ class RarefileNet(XFSHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_DOMAIN = "rarefile.net"
-
     LINK_PATTERN = r'<a href="(.+?)">\1</a>'
 
 

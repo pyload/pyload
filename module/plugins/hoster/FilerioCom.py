@@ -15,8 +15,6 @@ class FilerioCom(XFSHoster):
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    HOSTER_DOMAIN = "filerio.in"
-
     URL_REPLACEMENTS = [(r'filekeen\.com', "filerio.in")]
 
     OFFLINE_PATTERN = r'>&quot;File Not Found|File has been removed'

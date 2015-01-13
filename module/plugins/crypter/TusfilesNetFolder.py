@@ -22,8 +22,6 @@ class TusfilesNetFolder(XFSCrypter):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    HOSTER_DOMAIN = "tusfiles.net"
-
     PAGES_PATTERN = r'>\((\d+) \w+\)<'
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://www.tusfiles.net/go/\g<ID>/')]

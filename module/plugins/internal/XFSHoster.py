@@ -15,7 +15,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __pattern__ = r'^unmatchable$'
 
@@ -63,10 +63,28 @@ class XFSHoster(SimpleHoster):
     def prepare(self):
         """ Initialize important variables """
         if not self.HOSTER_DOMAIN:
-            self.fail(_("Missing HOSTER_DOMAIN"))
+            if self.account:
+                account = self.account
+            else:
+                account = self.pyfile.m.core.accountManager.getAccountPlugin(self.__name__)
+
+            if account and hasattr(account, "HOSTER_DOMAIN") and account.HOSTER_DOMAIN:
+                self.HOSTER_DOMAIN = account.HOSTER_DOMAIN
+            else:
+                self.fail(_("Missing HOSTER_DOMAIN"))
+
+            try:
+                self.COOKIES.index((None, "lang", "english"))
+
+            except ValueError:
+                pass
+
+            else:
+                self.COOKIES.remove((None, "lang", "english"))
+                self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
 
         if not self.LINK_PATTERN:
-            pattern = r'(https?://(www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'
+            pattern = r'(https?://(?:www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'
             self.LINK_PATTERN = pattern % self.HOSTER_DOMAIN.replace('.', '\.')
 
         self.captcha = None
@@ -75,7 +93,7 @@ class XFSHoster(SimpleHoster):
         super(XFSHoster, self).prepare()
 
         if self.DIRECT_LINK is None:
-            self.directDL = bool(self.premium)
+            self.directDL = self.premium
 
 
     def downloadLink(self, link):
@@ -311,7 +329,7 @@ class XFSHoster(SimpleHoster):
         recaptcha = ReCaptcha(self)
         try:
             captcha_key = re.search(self.RECAPTCHA_PATTERN, self.html).group(1)
-        except:
+        except Exception:
             captcha_key = recaptcha.detect_key()
         else:
             self.logDebug("ReCaptcha key: %s" % captcha_key)
@@ -323,7 +341,7 @@ class XFSHoster(SimpleHoster):
         solvemedia = SolveMedia(self)
         try:
             captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.html).group(1)
-        except:
+        except Exception:
             captcha_key = solvemedia.detect_key()
         else:
             self.logDebug("SolveMedia key: %s" % captcha_key)

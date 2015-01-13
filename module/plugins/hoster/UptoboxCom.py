@@ -15,8 +15,6 @@ class UptoboxCom(XFSHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    HOSTER_DOMAIN = "uptobox.com"
-
     INFO_PATTERN    = r'"para_title">(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)'
     OFFLINE_PATTERN = r'>(File not found|Access Denied|404 Not Found)'
 
