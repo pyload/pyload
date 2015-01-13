@@ -189,7 +189,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.98"
+    __version__ = "0.99"
 
     __pattern__ = r'^unmatchable$'
 
@@ -577,15 +577,11 @@ class SimpleHoster(Hoster):
         if not hasattr(self, 'LINK_FREE_PATTERN'):
             self.logError(_("Free download not implemented"))
 
-        try:
-            m = re.search(self.LINK_FREE_PATTERN, self.html)
-            if m is None:
-                self.error(_("Free download link not found"))
-
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        if m is None:
+            self.error(_("Free download link not found"))
+        else:
             self.link = m.group(1)
-
-        except Exception, e:
-            self.fail(e)
 
 
     def handlePremium(self, pyfile):
@@ -594,15 +590,11 @@ class SimpleHoster(Hoster):
             self.logDebug("Handled as free download")
             self.handleFree(pyfile)
 
-        try:
-            m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
-            if m is None:
-                self.error(_("Premium download link not found"))
-
+        m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
+        if m is None:
+            self.error(_("Premium download link not found"))
+        else:
             self.link = m.group(1)
-
-        except Exception, e:
-            self.fail(e)
 
 
     def longWait(self, wait_time=None, max_tries=3):
