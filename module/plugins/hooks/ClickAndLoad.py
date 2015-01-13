@@ -3,6 +3,7 @@
 import socket
 
 from threading import Thread, Lock
+from time import sleep
 
 from module.plugins.Hook import Hook, threaded
 
@@ -20,7 +21,7 @@ def forward(source, destination):
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.25"
+    __version__ = "0.26"
 
     __config__ = [("activated", "bool", "Activated"                                     , True ),
                   ("port"     , "int" , "Port"                                          , 9666 ),
@@ -54,6 +55,8 @@ class ClickAndLoad(Hook):
     def server(self, ip, webport, cnlport):
         try:
             dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            dock_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             dock_socket.bind((ip, cnlport))
             dock_socket.listen(5)
 
@@ -65,17 +68,8 @@ class ClickAndLoad(Hook):
                 hookManager.startThread(forward, client_socket, server_socket)
 
         except socket.error, e:
-            if hasattr(e, "errno"):
-                errno = e.errno
-            else:
-                errno = e.args[0]
-
-            if errno == 98:
-                self.logWarning(_("Port %s already in use") % cnlport)
-            else:
-                self.logError(e)
-                self.server(ip, webport, cnlport)
-
-        except Exception, e:
             self.logError(e)
             self.server(ip, webport, cnlport)
+
+        finally:
+            dock_socket.close()
