@@ -5,13 +5,13 @@ import re
 from urlparse import urljoin, urlparse
 
 from module.plugins.internal.CaptchaService import ReCaptcha
-from module.plugins.internal.SimpleHoster import _isDirectLink, SimpleHoster, create_getInfo
+from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
@@ -121,7 +121,7 @@ class Keep2ShareCc(SimpleHoster):
         if not link or not isinstance(link, basestring):
             return
 
-        link = _isDirectLink(self, link, self.premium)
+        link = self.directLink(self, link, self.resumeDownload)
 
         if link:
             self.download(urljoin("http://k2s.cc/", link), disposition=True)
