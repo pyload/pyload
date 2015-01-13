@@ -2,7 +2,7 @@
 
 import re
 
-from urlparse import urlparse
+from urlparse import urljoin, urlparse
 
 from module.plugins.Crypter import Crypter
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, replace_patterns, set_cookies
@@ -12,7 +12,7 @@ from module.utils import fixup
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -151,7 +151,11 @@ class SimpleCrypter(Crypter, SimpleHoster):
         Returns the links extracted from self.html
         You should override this only if it's impossible to extract links using only the LINK_PATTERN.
         """
-        return re.findall(self.LINK_PATTERN, self.html)
+        parsed = urlparse(self.pyfile.url)
+        base   = "%s://%s" % (parsed.scheme, parsed.netloc)
+
+        return [urljoin(base, link) if not urlparse(link).scheme else link \
+                for link in re.finditer(self.LINK_PATTERN, self.html)]
 
 
     def handlePages(self, pyfile):

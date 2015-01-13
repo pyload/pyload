@@ -145,8 +145,8 @@ def directLink(self, url, resumable=False):
             location = header['location']
 
             if not urlparse(location).scheme:
-                p = urlparse(url)
-                base = "%s://%s" % (p.scheme, p.netloc)
+                parsed   = urlparse(url)
+                base     = "%s://%s" % (parsed.scheme, parsed.netloc)
                 location = urljoin(base, location)
 
             if resumable:
