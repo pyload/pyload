@@ -10,9 +10,9 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileSharkPl(SimpleHoster):
     __name__    = "FileSharkPl"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
-    __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d{6}/\w{5}'
+    __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+'
 
     __description__ = """FileShark.pl hoster plugin"""
     __license__     = "GPLv3"
@@ -39,6 +39,7 @@ class FileSharkPl(SimpleHoster):
 
     def setup(self):
         self.resumeDownload = True
+
         if self.premium:
             self.multiDL = True
             self.limitDL = 20
@@ -53,7 +54,7 @@ class FileSharkPl(SimpleHoster):
             errmsg = self.info['error'] = _("Another download already run")
             self.retry(15, int(m.group(1)), errmsg)
 
-        m = re.search(self.ERROR_PATTERN, self.html):
+        m = re.search(self.ERROR_PATTERN, self.html)
         if m:
             alert = m.group(1)
 
@@ -70,13 +71,6 @@ class FileSharkPl(SimpleHoster):
                 self.retry(10, 10 * 60, _("Try again later"))
 
         self.info.pop('error', None)
-
-
-    #@NOTE: handlePremium method was never been tested
-    def handlePremium(self, pyfile):
-        super(FilerNet, self).handlePremium(pyfile)
-        if self.link:
-            self.link = urljoin("http://fileshark.pl/", self.link)
 
 
     def handleFree(self, pyfile):
@@ -119,7 +113,6 @@ class FileSharkPl(SimpleHoster):
         check = self.checkDownload({'wrong_captcha': re.compile(r'<label for="form_captcha" generated="true" class="error">(.*?)</label>'),
                                     'wait_pattern' : re.compile(self.SECONDS_PATTERN),
                                     'DL-found'     : re.compile('<a href="(.*)">')})
-
         if check == "DL-found":
             self.correctCaptcha()
 
