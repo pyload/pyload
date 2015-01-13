@@ -62,8 +62,8 @@ class FilerNet(SimpleHoster):
             #@TODO: Check for v0.4.10
             self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
             self.load(pyfile.url, post={'recaptcha_challenge_field': challenge,
-                                             'recaptcha_response_field' : response,
-                                             'hash'                     : inputs['hash']})
+                                        'recaptcha_response_field' : response,
+                                        'hash'                     : inputs['hash']})
             self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
             if 'location' in self.req.http.header.lower():
