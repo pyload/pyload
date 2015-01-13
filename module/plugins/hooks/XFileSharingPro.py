@@ -8,7 +8,7 @@ from module.plugins.Hook import Hook
 class XFileSharingPro(Hook):
     __name__    = "XFileSharingPro"
     __type__    = "hook"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __config__ = [("activated"       , "bool", "Activated"                     , True ),
                   ("use_hoster_list" , "bool", "Load listed hosters only"      , False),
@@ -30,15 +30,15 @@ class XFileSharingPro(Hook):
 
     HOSTER_BUILTIN  = [#WORKING HOSTERS:
                        "180upload.com", "backin.net", "eyesfile.ca", "file4safe.com", "fileband.com", "filedwon.com",
-                       "fileparadox.in", "filevice.com", "hostingbulk.com", "linestorage.com", "ravishare.com", "ryushare.com",
-                       "salefiles.com", "sendmyway.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
+                       "fileparadox.in", "filevice.com", "hostingbulk.com", "junkyvideo.com", "linestorage.com", "ravishare.com",
+                       "ryushare.com", "salefiles.com", "sendmyway.com", "sharesix.com", "thefile.me", "verzend.be", "xvidstage.com",
                        #NOT TESTED:
                        "101shared.com", "4upfiles.com", "filemaze.ws", "filenuke.com", "linkzhost.com", "mightyupload.com",
                        "rockdizfile.com", "sharebeast.com", "sharerepo.com", "shareswift.com", "uploadbaz.com", "uploadc.com",
                        "vidbull.com", "zalaa.com", "zomgupload.com",
                        #NOT WORKING:
                        "amonshare.com", "banicrazy.info", "boosterking.com", "host4desi.com", "laoupload.com", "rd-fs.com"]
-    CRYPTER_BUILTIN = []
+    CRYPTER_BUILTIN = ["junocloud.me", "rapidfileshare.net"]
 
 
     # def pluginConfigChanged(self.__name__, plugin, name, value):
