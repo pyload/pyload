@@ -11,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -48,7 +48,7 @@ class MultiHook(Hook):
                            (r'uploaded\.net'   , "uploaded.to"            ),
                            (r'uploadhero\.co'  , "uploadhero.com"         ),
                            (r'zshares\.net'    , "zshare.net"             ),
-                           (r'\d+.+'           , "X\0"                    )]
+                           (r'(\d+.+)'         , "X\1"                    )]
 
 
     def setup(self):
@@ -118,15 +118,15 @@ class MultiHook(Hook):
     def pluginsCached(self):
         if self.plugins:
             return self.plugins
-            
+
         for _i in xrange(3):
             try:
                 pluginset = self._pluginSet(self.getHosters() if self.plugintype == "hoster" else self.getCrypters())
-            
+
             except Exception, e:
                 self.logError(e, "Waiting 1 minute and retry")
                 sleep(60)
-            
+
             else:
                 break
         else:
@@ -293,12 +293,16 @@ class MultiHook(Hook):
                 self.logDebug("Unload MultiHook", pyfile.pluginname, hdict)
                 self.unloadPlugin(pyfile.pluginname)
                 pyfile.setStatus("queued")
+                pyfile.sync()
             else:
                 retries   = max(self.getConfig("retry", 10), 0)
                 wait_time = max(self.getConfig("retryinterval", 1), 0)
 
                 if 0 < retries > pyfile.plugin.retries:
+                    self.logInfo(_("Retrying: %s") % pyfile.name)
                     pyfile.setCustomStatus("MultiHook", "queued")
+                    pyfile.sync()
+
                     pyfile.plugin.retries += 1
                     pyfile.plugin.setWait(wait_time)
                     pyfile.plugin.wait()
