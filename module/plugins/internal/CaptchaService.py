@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
+import base64
 
-from base64 import urlsafe_b64encode
-from random import random
+from random import random,randint
 
 from module.common.json_layer import json_loads
 
 
 class CaptchaService:
     __name__    = "CaptchaService"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"
@@ -55,14 +56,14 @@ class CaptchaService:
 
 class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
-    __version__ = "0.09"
+    __version__ = "0.08"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__     = "GPLv3"
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    KEY_PATTERN      = r'(?:class="g-recaptcha"\s+data-sitekey="|recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=)([\w-]+)'
+    KEY_PATTERN      = r'recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=([\w-]+)'
     KEY_AJAX_PATTERN = r'Recaptcha\.create\s*\(\s*["\']([\w-]+)'
 
 
@@ -85,7 +86,7 @@ class ReCaptcha(CaptchaService):
             return None
 
 
-    def challenge(self, key=None, userverify=False):
+    def challenge(self, key=None):
         if not key:
             if self.detect_key():
                 key = self.key
@@ -98,30 +99,14 @@ class ReCaptcha(CaptchaService):
         try:
             challenge = re.search("challenge : '(.+?)',", html).group(1)
             server    = re.search("server : '(.+?)',", html).group(1)
-
-        except AttributeError:
+        except:
             errmsg = _("ReCaptcha challenge pattern not found")
             self.plugin.fail(errmsg)
-            raise AttributeError(errmsg)
+            raise ValueError(errmsg)
 
         self.plugin.logDebug("ReCaptcha challenge: %s" % challenge)
 
-        response = challenge, self.result(server, challenge)
-
-        return self.userverify(*response) if userverify else response
-
-
-    def userverify(self, challenge, result):
-        response = self.plugin.req.load("https://www.google.com/recaptcha/api2/userverify",
-                                        post={'c'       : challenge,
-                                              'response': urlsafe_b64encode('{"response":"%s"}' % result)})
-        try:
-            return re.search(r'"uvresp","(.+?)"', response).group(1)
-
-        except AttributeError:
-            errmsg = _("ReCaptcha userverify response not found")
-            self.plugin.fail(errmsg)
-            raise AttributeError(errmsg)
+        return challenge, self.result(server, challenge)
 
 
     def result(self, server, challenge):
@@ -134,6 +119,123 @@ class ReCaptcha(CaptchaService):
         self.plugin.logDebug("ReCaptcha result: %s" % result)
 
         return result
+
+
+class ReCaptchaV2(CaptchaService):
+    __name__    = "ReCaptchaV2"
+    __version__ = "0.01"
+
+    __description__ = """ReCaptchaV2 captcha service plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+
+
+    KEY_PATTERN     = r'data-sitekey="(.*?)">'
+
+
+    def detect_key(self, html=None):
+        if not html:
+            if hasattr(self.plugin, "html") and self.plugin.html:
+                html = self.plugin.html
+            else:
+                errmsg = _("ReCaptcha html not found")
+                self.plugin.fail(errmsg)
+                raise TypeError(errmsg)
+
+        m = re.search(self.KEY_PATTERN, html)
+        if m:
+            self.key = m.group(1).strip()
+            self.plugin.logDebug("ReCaptcha key: %s" % self.key)
+            return self.key
+        else:
+            self.plugin.logDebug("ReCaptcha key not found")
+            return None
+
+
+    def collectApiInfo(self):
+        html = self.plugin.req.load("http://www.google.com/recaptcha/api.js",cookies=True)
+        a = re.search("po.src = '(.*?)';",html).group(1)
+        vers = a.split("/")[5]
+        self.plugin.logDebug("API version: %s" %vers)
+        language = a.split("__")[1].split(".")[0]
+        self.plugin.logDebug("API language: %s" %language)
+              
+        html = self.plugin.req.load("https://apis.google.com/js/api.js",cookies=True)
+        b = re.search('"h":"(.*?)","',html).group(1)
+        jsh = b.decode('unicode-escape')
+        self.plugin.logDebug("API jsh-string: %s" %jsh)
+        
+        return vers,language,jsh
+        
+    def prepareTimeAndRpc(self):
+        html = self.plugin.req.load("http://www.google.com/recaptcha/api2/demo",cookies=True)
+        
+        millis = int(round(time.time() * 1000))
+        self.plugin.logDebug("Systemtime in milliseconds: %s" %str(millis))
+        
+        rand = randint(1,99999999)
+        a = "0.%s"%str(rand*2147483647)
+        rpc = int(100000000*float(a))
+        self.plugin.logDebug("Self-generated rpc-token: %s" %str(rpc))
+        
+        return millis,rpc
+        
+    def doTheCaptcha(self, host):
+        self.plugin.logDebug("Parent host: %s" %host)
+        botguardstring  = "!A"
+        sitekey = self.detect_key()
+        vers,language,jsh = self.collectApiInfo()
+        millis,rpc = self.prepareTimeAndRpc()
+
+        html = self.plugin.req.load("https://www.google.com/recaptcha/api2/anchor",
+                  get={"k":sitekey, 
+                       "hl":language, 
+                       "v":vers, 
+                       "usegapi":"1", 
+                       "jsh":jsh+"#id=IO_"+str(millis), 
+                       "parent":"http://"+host, 
+                       "pfname":"",
+                       "rpctoken":rpc},
+                  cookies=True)
+        recaptchatoken = re.search('id="recaptcha-token" value="(.*?)">',html)
+        self.plugin.logDebug("Captchatoken #1: %s" %recaptchatoken.group(1))
+            
+        html = self.plugin.req.load("https://www.google.com/recaptcha/api2/frame", get={"c":recaptchatoken.group(1),
+                                                                                        "hl":language,
+                                                                                        "v":vers, 
+                                                                                        "bg":botguardstring,
+                                                                                        "usegapi":"1", 
+                                                                                        "jsh":jsh},
+                                                                                   cookies=True)    
+        html = html.decode('unicode-escape')
+        recaptchatoken2 = re.search('"finput","(.*?)",',html)
+        self.plugin.logDebug("Captchatoken #2: %s" %recaptchatoken2.group(1))
+        recaptchatoken3 = re.search('."asconf".\s.\s,"(.*?)".',html)
+        self.plugin.logDebug("Captchatoken #3: %s" %recaptchatoken3.group(1))
+        
+        html = self.plugin.req.load("https://www.google.com/recaptcha/api2/reload", post={"c":recaptchatoken2.group(1), 
+                                                                                          "reason":"fi", 
+                                                                                          "fbg":recaptchatoken3.group(1)},
+                                                                                    cookies=True)
+        recaptchatoken4 = re.search('"rresp","(.*?)",',html)
+        self.plugin.logDebug("Captchatoken #4: %s" %recaptchatoken4.group(1))
+            
+        millis_captcha_loading = int(round(time.time() * 1000))
+        captcha_response = self.plugin.decryptCaptcha("https://www.google.com/recaptcha/api2/payload", get={"c":recaptchatoken4.group(1)},forceUser=True)
+        respone_encoded = base64.b64encode('{"response":"%s"}' %captcha_response)
+        self.plugin.logDebug("Encoded result: %s" %respone_encoded)
+          
+        timeToSolve = int(round(time.time() * 1000)) - millis_captcha_loading
+        timeToSolveMore = timeToSolve + int(float("0."+str(randint(1,99999999))) * 500)
+        html = self.plugin.req.load("https://www.google.com/recaptcha/api2/userverify", cookies=True, post={"c":recaptchatoken4.group(1), 
+                                                                                                            "response":respone_encoded, 
+                                                                                                            "t":timeToSolve,
+                                                                                                            "ct":timeToSolveMore,
+                                                                                                            "bg":botguardstring})
+        recaptchatoken5 = re.search('"uvresp","(.*?)",',html)
+        self.plugin.logDebug("Captchatoken #5: %s" %recaptchatoken5.group(1))
+        
+        return recaptchatoken5.group(1)
 
 
 class AdsCaptcha(CaptchaService):
@@ -184,11 +286,10 @@ class AdsCaptcha(CaptchaService):
         try:
             challenge = re.search("challenge: '(.+?)',", html).group(1)
             server    = re.search("server: '(.+?)',", html).group(1)
-
-        except AttributeError:
+        except:
             errmsg = _("AdsCaptcha challenge pattern not found")
             self.plugin.fail(errmsg)
-            raise AttributeError(errmsg)
+            raise ValueError(errmsg)
 
         self.plugin.logDebug("AdsCaptcha challenge: %s" % challenge)
 
@@ -232,11 +333,10 @@ class SolveMedia(CaptchaService):
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
                                   html).group(1)
             server    = "http://api.solvemedia.com/papi/media"
-
-        except AttributeError:
+        except:
             errmsg = _("SolveMedia challenge pattern not found")
             self.plugin.fail(errmsg)
-            raise AttributeError(errmsg)
+            raise ValueError(errmsg)
 
         self.plugin.logDebug("SolveMedia challenge: %s" % challenge)
 
@@ -305,11 +405,10 @@ class AdYouLike(CaptchaService):
                                          'callback': callback})
         try:
             challenge = json_loads(re.search(callback + r'\s*\((.+?)\)', html).group(1))
-
-        except AttributeError:
+        except:
             errmsg = _("AdYouLike challenge pattern not found")
             self.plugin.fail(errmsg)
-            raise AttributeError(errmsg)
+            raise ValueError(errmsg)
 
         self.plugin.logDebug("AdYouLike challenge: %s" % challenge)
 
@@ -336,11 +435,10 @@ class AdYouLike(CaptchaService):
         try:
             instructions_visual = challenge['translations'][server['all']['lang']]['instructions_visual']
             result = re.search(u'«(.+?)»', instructions_visual).group(1).strip()
-
-        except AttributeError:
+        except:
             errmsg = _("AdYouLike result not found")
             self.plugin.fail(errmsg)
-            raise AttributeError(errmsg)
+            raise ValueError(errmsg)
 
         result = {'_ayl_captcha_engine' : "adyoulike",
                   '_ayl_env'            : server['all']['env'],
