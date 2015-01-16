@@ -16,14 +16,14 @@ from module.utils import save_join
 class UpdateManager(Hook):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "0.42"
+    __version__ = "0.43"
 
     __config__ = [("activated"    , "bool"                         , "Activated"                                     , True              ),
                   ("mode"         , "pyLoad + plugins;plugins only", "Check updates for"                             , "pyLoad + plugins"),
                   ("interval"     , "int"                          , "Check interval in hours"                       , 8                 ),
                   ("autorestart"  , "bool"                         , "Automatically restart pyLoad when required"    , True              ),
                   ("reloadplugins", "bool"                         , "Monitor plugins for code changes in debug mode", True              ),
-                  ("nodebugupdate", "bool"                         , "Don't check for updates in debug mode"         , True              )]
+                  ("nodebugupdate", "bool"                         , "Don't check for updates in debug mode"         , False             )]
 
     __description__ = """ Check for updates """
     __license__     = "GPLv3"
