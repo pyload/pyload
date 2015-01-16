@@ -137,6 +137,8 @@ def directLink(self, url, resumable=False):
     link = ""
 
     for i in xrange(5 if resumable else 1):
+        self.logDebug("Redirect #%d to: %s" % (i, url))
+
         header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
 
         if 'content-disposition' in header:
@@ -150,18 +152,21 @@ def directLink(self, url, resumable=False):
                 base     = "%s://%s" % (parsed.scheme, parsed.netloc)
                 location = urljoin(base, location)
 
-            if resumable:
-                url = location
-                self.logDebug("Redirect #%d to: %s" % (++i, location))
-                continue
-
-            elif 'code' in header and header['code'] == 302:
+            if 'code' in header and header['code'] == 302:
                 link = location
 
-        elif 'content-type' in header and header['content-type'] and "html" not in header['content-type']:
-            link = url
+            url = location
+            continue
+
+        elif 'content-type' in header:
+            if "html" not in header['content-type']:
+                link = url
+
+            elif link:
+                link = ""
 
         break
+
     else:
         self.logError(_("Too many redirects"))
 
@@ -189,7 +194,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "0.99"
+    __version__ = "1.00"
 
     __pattern__ = r'^unmatchable$'
 
