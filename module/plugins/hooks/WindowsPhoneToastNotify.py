@@ -10,7 +10,7 @@ from module.plugins.Hook import Hook
 class WindowsPhoneToastNotify(Hook):
     __name__    = "WindowsPhoneToastNotify"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __config__ = [("id"             , "str" , "Push ID"                                  , ""   ),
                   ("url"            , "str" , "Push url"                                 , ""   ),
@@ -53,7 +53,7 @@ class WindowsPhoneToastNotify(Hook):
             self.notify(_("Package finished"), pypack.name)
 
 
-    def allDownloadsProcessed(self, thread):
+    def allDownloadsProcessed(self):
         if not self.getConfig("notifyprocessed"):
             return False
 

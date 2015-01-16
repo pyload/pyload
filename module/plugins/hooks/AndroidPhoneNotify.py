@@ -9,7 +9,7 @@ from module.plugins.Hook import Hook
 class AndroidPhoneNotify(Hook):
     __name__    = "AndroidPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __config__ = [("apikey"         , "str" , "API key"                                  , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
@@ -51,7 +51,7 @@ class AndroidPhoneNotify(Hook):
             self.notify(_("Package finished"), pypack.name)
 
 
-    def allDownloadsProcessed(self, thread):
+    def allDownloadsProcessed(self):
         if not self.getConfig("notifyprocessed"):
             return False
 

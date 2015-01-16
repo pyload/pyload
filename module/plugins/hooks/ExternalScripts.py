@@ -13,7 +13,7 @@ from module.utils import save_join
 class ExternalScripts(Hook):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.26"
+    __version__ = "0.27"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
@@ -136,11 +136,11 @@ class ExternalScripts(Hook):
             self.callScript(script)
 
 
-    def allDownloadsFinished(self, thread):
+    def allDownloadsFinished(self):
         for script in chain(self.scripts['all_downloads_finished'], self.scripts['all_dls_finished']):
             self.callScript(script)
 
 
-    def allDownloadsProcessed(self, thread):
+    def allDownloadsProcessed(self):
         for script in chain(self.scripts['all_downloads_processed'], self.scripts['all_dls_processed']):
             self.callScript(script)

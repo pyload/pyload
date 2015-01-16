@@ -58,7 +58,7 @@ from module.utils import save_join, uniqify
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.03"
+    __version__ = "1.04"
 
     __config__ = [("activated"    , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"     , "bool"  , "Extract full path"                         , True                                                                     ),
@@ -158,7 +158,7 @@ class ExtractArchive(Hook):
 
 
     @threaded
-    def allDownloadsProcessed(self, thread):
+    def allDownloadsProcessed(self):
         local = copy(self.queue)
         self.queue[:] = []
 
@@ -302,36 +302,36 @@ class ExtractArchive(Hook):
 
         try:
             progress  = lambda x: pyfile.setProgress(x)
-            encrypted = False
+            encrypted = True  #@TODO: set to `False`
             passwords = self.getPasswords()
 
-            try:
-                self.logInfo(basename(plugin.file), "Verifying...")
+            # try:
+                # self.logInfo(basename(plugin.file), "Verifying...")
 
-                tmp_password    = plugin.password
-                plugin.password = ""  #: Force verifying without password
+                # tmp_password    = plugin.password
+                # plugin.password = ""  #: Force verifying without password
 
-                plugin.verify()
+                # plugin.verify()
 
-            except PasswordError:
-                encrypted = True
+            # except PasswordError:
+                # encrypted = True
 
-            except CRCError:
-                self.logWarning(basename(plugin.file), _("Archive damaged"))
+            # except CRCError:
+                # self.logWarning(basename(plugin.file), _("Archive damaged"))
 
-                if not self.getConfig("repair"):
-                    raise CRCError
+                # if not self.getConfig("repair"):
+                    # raise CRCError
 
-                elif plugin.repair():
-                    self.logInfo(basename(plugin.file), _("Successfully repaired"))
+                # elif plugin.repair():
+                    # self.logInfo(basename(plugin.file), _("Successfully repaired"))
 
-                elif not self.getConfig("keepbroken"):
-                    raise ArchiveError(_("Broken archive"))
+                # elif not self.getConfig("keepbroken"):
+                    # raise ArchiveError(_("Broken archive"))
 
-                else:
-                    self.logInfo(basename(plugin.file), _("All OK"))
+                # else:
+                    # self.logInfo(basename(plugin.file), _("All OK"))
 
-            plugin.password = tmp_password
+            # plugin.password = tmp_password
 
             if not encrypted:
                 plugin.extract(progress)
