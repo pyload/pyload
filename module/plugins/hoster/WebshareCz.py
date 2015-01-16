@@ -21,7 +21,7 @@ class WebshareCz(SimpleHoster):
 
     @classmethod
     def getInfo(cls, url="", html=""):
-        info = super(WebshareCz, self).getInfo(url, html)
+        info = super(WebshareCz, cls).getInfo(url, html)
 
         if url:
             info['pattern'] = re.match(cls.__pattern__, url).groupdict()
