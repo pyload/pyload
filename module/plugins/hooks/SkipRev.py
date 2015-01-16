@@ -18,7 +18,7 @@ def _setup(self):
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __config__ = [("tokeep", "int", "Number of rev files to keep for package (-1 to auto)", -1)]
 
@@ -34,7 +34,7 @@ class SkipRev(Hook):
 
     def _pyname(self, pyfile):
         if hasattr(pyfile.pluginmodule, "getInfo"):
-            return next(getattr(pyfile.pluginmodule, "getInfo")([pyfile.url]))[0]
+            return getattr(pyfile.pluginmodule, "getInfo")([pyfile.url]).next()[0]
         else:
             self.logWarning("Unable to grab file name")
             return urlparse(unquote(pyfile.url)).path.split('/')[-1]
