@@ -8,7 +8,6 @@
   ],
   "dependencies": {
     "bootstrap": "~2.3.2",
-    "bootstrap-assets": "~2.3.2",
     "font-awesome": "~3.2.0"
   }
 }
