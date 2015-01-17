@@ -24,6 +24,7 @@ class CatShareNet(Account):
     def loadAccountInfo(self, user, req):
         premium = False
         validuntil = -1
+        trafficleft = -1
 
         html = req.load("http://catshare.net/", decode=True)
 
@@ -39,10 +40,13 @@ class CatShareNet(Account):
             expiredate = m.group(1)
             if "-" not in expiredate:
                 validuntil = mktime(strptime(expiredate, "%d.%m.%Y"))
+            m = re.search(r'<a href="/premium">([0-9.]+ [kMG]B)', html)
+            if m:
+                trafficleft = int(self.parseTraffic(m.group(1)))
         except Exception:
             pass
 
-        return {'premium': premium, 'trafficleft': -1, 'validuntil': validuntil}
+        return {'premium': premium, 'trafficleft': trafficleft, 'validuntil': validuntil}
 
 
     def login(self, user, data, req):
