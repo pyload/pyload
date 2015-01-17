@@ -28,6 +28,7 @@ class CatShareNet(SimpleHoster):
     IP_BLOCKED_PATTERN = ur'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
     SECONDS_PATTERN = 'var\scount\s=\s(\d+);'
     LINK_FREE_PATTERN = r'<form action="(.+?)" method="GET">'
+    LINK_PREMIUM_PATTERN = r'<form action="(.+?)" method="GET">'
 
 
     def setup(self):
@@ -41,6 +42,14 @@ class CatShareNet(SimpleHoster):
             self.fail(_("Only connections from Polish IP address are allowed"))
         return super(CatShareNet, self).getFileInfo()
 
+    def handlePremium(self):
+        m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
+        if m is None:
+            self.fail(_("File not found"))
+
+        dl_link = m.group(1)
+        self.download(dl_link, disposition=True)
+        
 
     def handleFree(self, pyfile):
         m = re.search(self.SECONDS_PATTERN, self.html)
