@@ -19,11 +19,13 @@ class CatShareNet(Account):
 
     PREMIUM_PATTERN = r'class="nav-collapse collapse pull-right">[\s\w<>=-."/:]*\sz.</a></li>\s*<li><a href="/premium">.*\s*<span style="color: red">(.*?)</span>[\s\w<>/]*href="/logout"'
     VALID_UNTIL_PATTERN = r'<div class="span6 pull-right">[\s\w<>=-":;]*<span style="font-size:13px;">.*?<strong>(.*?)</strong></span>'
+    TRAFFIC_PATTERN = r'<a href="/premium">([0-9.]+ [kMG]B)'
 
 
     def loadAccountInfo(self, user, req):
         premium = False
         validuntil = -1
+        trafficleft = -1
 
         html = req.load("http://catshare.net/", decode=True)
 
@@ -39,10 +41,13 @@ class CatShareNet(Account):
             expiredate = m.group(1)
             if "-" not in expiredate:
                 validuntil = mktime(strptime(expiredate, "%d.%m.%Y"))
+            m = re.search(TRAFFIC_PATTERN, html)
+            if m:
+                trafficleft = int(self.parseTraffic(m.group(1)))
         except Exception:
             pass
 
-        return {'premium': premium, 'trafficleft': -1, 'validuntil': validuntil}
+        return {'premium': premium, 'trafficleft': trafficleft, 'validuntil': validuntil}
 
 
     def login(self, user, data, req):
