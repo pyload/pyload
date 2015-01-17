@@ -4,7 +4,7 @@ PATH := ${PATH}:.
 
 init-web: prepare
 	npm install
-	npm install bower grunt-cli
+	npm install bower@0.9.2 grunt-cli
 	node_modules/bower/bin/bower install
 	$(MAKE) update-web
 	
