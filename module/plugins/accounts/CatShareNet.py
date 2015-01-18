@@ -10,7 +10,7 @@ from module.plugins.Account import Account
 class CatShareNet(Account):
     __name__    = "CatShareNet"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """CatShareNet account plugin"""
     __license__     = "GPLv3"
