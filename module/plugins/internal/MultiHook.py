@@ -11,7 +11,7 @@ from module.utils import decode, remove_chars
 class MultiHook(Hook):
     __name__    = "MultiHook"
     __type__    = "hook"
-    __version__ = "0.36"
+    __version__ = "0.37"
 
     __config__ = [("pluginmode"    , "all;listed;unlisted", "Use for plugins"                     , "all"),
                   ("pluginlist"    , "str"                , "Plugin list (comma separated)"       , ""   ),
@@ -201,7 +201,7 @@ class MultiHook(Hook):
                 self.unloadPlugin(plugin)
 
         if self.getConfig("reload", True):
-            self.interval = max(self.getConfig("reloadinterval", 12), self.MIN_INTERVAL)
+            self.interval = max(self.getConfig("reloadinterval", 12) * 60 * 60, self.MIN_INTERVAL)
         else:
             self.core.scheduler.removeJob(self.cb)
             self.cb = None
