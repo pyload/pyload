@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
 
@@ -26,9 +26,9 @@ class CatShareNet(SimpleHoster):
     OFFLINE_PATTERN = ur'Podany plik został usunięty\s*</div>'
 
     IP_BLOCKED_PATTERN = ur'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
-    SECONDS_PATTERN = 'var\scount\s=\s(\d+);'
-    LINK_FREE_PATTERN = r'<form action="(.+?)" method="GET">'
-    LINK_PREMIUM_PATTERN = r'<form action="(.+?)" method="GET">'
+    WAIT_PATTERN       = r'var\scount\s=\s(\d+);'
+
+    LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'<form action="(.+?)" method="GET">'
 
 
     def setup(self):
@@ -42,21 +42,8 @@ class CatShareNet(SimpleHoster):
             self.fail(_("Only connections from Polish IP address are allowed"))
         return super(CatShareNet, self).getFileInfo()
 
-    def handlePremium(self):
-        m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
-        if m is None:
-            self.fail(_("File not found"))
-
-        dl_link = m.group(1)
-        self.download(dl_link, disposition=True)
-        
 
     def handleFree(self, pyfile):
-        m = re.search(self.SECONDS_PATTERN, self.html)
-        if m:
-            wait_time = int(m.group(1))
-            self.wait(wait_time, True)
-
         recaptcha = ReCaptcha(self)
 
         challenge, response = recaptcha.challenge()

@@ -10,40 +10,44 @@ from module.plugins.Account import Account
 class CatShareNet(Account):
     __name__    = "CatShareNet"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """CatShareNet account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("prOq", None)]
 
 
-    PREMIUM_PATTERN = r'class="nav-collapse collapse pull-right">[\s\w<>=-."/:]*\sz.</a></li>\s*<li><a href="/premium">.*\s*<span style="color: red">(.*?)</span>[\s\w<>/]*href="/logout"'
-    VALID_UNTIL_PATTERN = r'<div class="span6 pull-right">[\s\w<>=-":;]*<span style="font-size:13px;">.*?<strong>(.*?)</strong></span>'
-    TRAFFIC_PATTERN = r'<a href="/premium">([0-9.]+ [kMG]B)'
+    PREMIUM_PATTERN      = r'class="nav-collapse collapse pull-right">[\s\w<>=-."/:]*\sz.</a></li>\s*<li><a href="/premium">.*\s*<span style="color: red">(.*?)</span>[\s\w<>/]*href="/logout"'
+    VALID_UNTIL_PATTERN  = r'<div class="span6 pull-right">[\s\w<>=-":;]*<span style="font-size:13px;">.*?<strong>(.*?)</strong></span>'
+    TRAFFIC_LEFT_PATTERN = r'<a href="/premium">([0-9.]+ [kMG]B)'
 
 
     def loadAccountInfo(self, user, req):
-        premium = False
-        validuntil = -1
+        premium     = False
+        validuntil  = -1
         trafficleft = -1
 
         html = req.load("http://catshare.net/", decode=True)
 
         try:
-            m = re.search(self.PREMIUM_PATTERN, html)
-            if "Premium" in m.group(1):
+            if "Premium" in re.search(self.PREMIUM_PATTERN, html).group(1):
                 premium = True
+
         except Exception:
             pass
 
         try:
-            m = re.search(self.VALID_UNTIL_PATTERN, html)
-            expiredate = m.group(1)
-            if "-" not in expiredate:
-                validuntil = mktime(strptime(expiredate, "%d.%m.%Y"))
-            m = re.search(TRAFFIC_PATTERN, html)
-            if m:
-                trafficleft = int(self.parseTraffic(m.group(1)))
+            expiredate = re.search(self.VALID_UNTIL_PATTERN, html).group(1)
+            self.logDebug("Expire date: " + expiredate)
+
+            validuntil = mktime(strptime(expiredate, "%d.%m.%Y"))
+
+        except Exception:
+            pass
+
+        try:
+            trafficleft = self.parseTraffic(re.search(TRAFFIC_LEFT_PATTERN, html).group(1))
+
         except Exception:
             pass
 
