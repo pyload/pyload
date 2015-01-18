@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __pattern__ = r'^unmatchable$'
 
@@ -49,7 +49,7 @@ class BasePlugin(Hoster):
 
         for _i in xrange(5):
             try:
-                link = fileUrl(unquote(pyfile.url))
+                link = fileUrl(self, unquote(pyfile.url))
 
                 if link:
                     self.download(link, disposition=True)
