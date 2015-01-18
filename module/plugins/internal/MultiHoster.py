@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
 
     __pattern__ = r'^unmatchable$'
 
@@ -40,7 +40,7 @@ class MultiHoster(SimpleHoster):
             set_cookies(self.req.cj, self.COOKIES)
 
         if self.DIRECT_LINK is None:
-            self.directDL = self.__pattern__ != r'^unmatchable$'
+            self.directDL = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
         else:
             self.directDL = self.DIRECT_LINK
 
@@ -51,10 +51,8 @@ class MultiHoster(SimpleHoster):
     def process(self, pyfile):
         self.prepare()
 
-        if self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, pyfile.url):
-            self.checkInfo()
-
         if self.directDL:
+            self.checkInfo()
             self.logDebug("Looking for direct download link...")
             self.handleDirect(pyfile)
 
