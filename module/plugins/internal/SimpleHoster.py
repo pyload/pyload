@@ -219,7 +219,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.01"
+    __version__ = "1.02"
 
     __pattern__ = r'^unmatchable$'
 
@@ -589,7 +589,7 @@ class SimpleHoster(Hoster):
 
 
     def handleDirect(self, pyfile):
-        link = self.fileUrl(pyfile.url, self.resumeDownload)
+        link = self.directLink(pyfile.url, self.resumeDownload)
 
         if link:
             self.logInfo(_("Direct download link detected"))
