@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import mimetypes
+import os
 import re
 
 from datetime import datetime, timedelta
 from inspect import isclass
-from os.path import exists
 from time import time
 from urllib import unquote
 from urlparse import urljoin, urlparse
@@ -107,7 +108,13 @@ def parseFileInfo(plugin, url="", html=""):
         info = plugin.getInfo(url, html)
         res  = info['name'], info['size'], info['status'], info['url']
     else:
-        res  = urlparse(unquote(url)).path.split('/')[-1] or _("Unknown"), 0, 3, url
+        url  = unquote(url)
+        res  = ((urlparse(url).path.split('/')[-1]
+                 or urlparse(url).query.split('=', 1)[::-1][0].split('&', 1)[0]
+                 or _("Unknown")),
+                0,
+                3 if url else 8,
+                url)
 
     return res
 
@@ -133,10 +140,17 @@ def timestamp():
 
 
 #@TODO: Move to hoster class in 0.4.10
-def directLink(self, url, resumable=False):
-    link = ""
+def fileUrl(self, url, follow_location=False):
+    link     = ""
+    redirect = 1
 
-    for i in xrange(5 if resumable else 1):
+    if isinstance(follow_location, int):
+        redirect = max(follow_location, 1)
+
+    elif follow_location:
+        redirect = 5
+
+    for i in xrange(redirect):
         self.logDebug("Redirect #%d to: %s" % (i, url))
 
         header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
@@ -144,25 +158,36 @@ def directLink(self, url, resumable=False):
         if 'content-disposition' in header:
             link = url
 
-        elif 'location' in header and header['location']:
+        elif 'location' in header and header['location'].strip():
             location = header['location']
 
             if not urlparse(location).scheme:
-                parsed   = urlparse(url)
-                base     = "%s://%s" % (parsed.scheme, parsed.netloc)
-                location = urljoin(base, location)
+                url_p    = urlparse(url)
+                baseurl  = "%s://%s" % (url_p.scheme, url_p.netloc)
+                location = urljoin(baseurl, location)
 
             if 'code' in header and header['code'] == 302:
                 link = location
 
-            url = location
-            continue
+            if follow_location:
+                url = location
+                continue
 
-        elif 'content-type' in header:
-            if "html" not in header['content-type']:
+        else:
+            extension = os.path.splitext(urlparse(url).path.split('/')[-1])[-1]
+
+            if 'content-type' in header and header['content-type'].strip():
+                mimetype = header['content-type'].split(';')[0].strip()
+
+            elif extension:
+                mimetype = mimetypes.guess_extension(extension, False)[0] or "application/octet-stream"
+
+            else:
+                mimetype = ""
+
+            if mimetype and (link or 'html' not in mimetype):
                 link = url
-
-            elif link:
+            else:
                 link = ""
 
         break
@@ -194,7 +219,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.00"
+    __version__ = "1.01"
 
     __pattern__ = r'^unmatchable$'
 
@@ -258,7 +283,7 @@ class SimpleHoster(Hoster):
     MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
     LOGIN_ACCOUNT = False  #: Set to True to require account login
 
-    directLink = directLink  #@TODO: Remove in 0.4.10
+    directLink = fileUrl  #@TODO: Remove in 0.4.10
 
 
     @classmethod
@@ -450,7 +475,7 @@ class SimpleHoster(Hoster):
             self.invalidCaptcha()
             self.retry(10, reason=_("Wrong captcha"))
 
-        elif not self.lastDownload or not exists(fs_encode(self.lastDownload)):
+        elif not self.lastDownload or not os.path.exists(fs_encode(self.lastDownload)):
             self.lastDownload = ""
             self.error(self.pyfile.error or _("No file downloaded"))
 
@@ -564,7 +589,7 @@ class SimpleHoster(Hoster):
 
 
     def handleDirect(self, pyfile):
-        link = self.directLink(pyfile.url, self.resumeDownload)
+        link = self.fileUrl(pyfile.url, self.resumeDownload)
 
         if link:
             self.logInfo(_("Direct download link detected"))
