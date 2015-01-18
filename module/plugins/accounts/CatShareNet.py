@@ -10,15 +10,15 @@ from module.plugins.Account import Account
 class CatShareNet(Account):
     __name__    = "CatShareNet"
     __type__    = "account"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """CatShareNet account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("prOq", None)]
 
 
-    PREMIUM_PATTERN      = r'class="nav-collapse collapse pull-right">[\s\w<>=-."/:]*\sz.</a></li>\s*<li><a href="/premium">.*\s*<span style="color: red">(.*?)</span>[\s\w<>/]*href="/logout"'
-    VALID_UNTIL_PATTERN  = r'<div class="span6 pull-right">[\s\w<>=-":;]*<span style="font-size:13px;">.*?<strong>(.*?)</strong></span>'
+    PREMIUM_PATTERN      = r'<li><a href="/premium">Konto:[\s\n]*(\w*)'
+    VALID_UNTIL_PATTERN  = r'<span style="font-size:13px;">Konto premium.*?<strong>(.*?)</strong></span>'
     TRAFFIC_LEFT_PATTERN = r'<a href="/premium">([0-9.]+ [kMG]B)'
 
 
@@ -40,13 +40,13 @@ class CatShareNet(Account):
             expiredate = re.search(self.VALID_UNTIL_PATTERN, html).group(1)
             self.logDebug("Expire date: " + expiredate)
 
-            validuntil = mktime(strptime(expiredate, "%d.%m.%Y"))
+            validuntil = mktime(strptime(expiredate, "%Y-%m-%d %H:%M:%S"))
 
         except Exception:
             pass
 
         try:
-            trafficleft = self.parseTraffic(re.search(TRAFFIC_LEFT_PATTERN, html).group(1))
+            trafficleft = self.parseTraffic(re.search(self.TRAFFIC_LEFT_PATTERN, html).group(1))
 
         except Exception:
             pass
