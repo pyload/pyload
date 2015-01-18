@@ -10,15 +10,15 @@ from module.plugins.Account import Account
 class CatShareNet(Account):
     __name__    = "CatShareNet"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """CatShareNet account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("prOq", None)]
 
 
-    PREMIUM_PATTERN      = r'<li><a href="/premium">Konto:[\s\n]*(\w*)'
-    VALID_UNTIL_PATTERN  = r'<span style="font-size:13px;">Konto premium.*?<strong>(.*?)</strong></span>'
+    PREMIUM_PATTERN      = r'<a href="/premium">Konto:[\s\n]*Premium'
+    VALID_UNTIL_PATTERN  = r'>Konto premium.*?<strong>(.*?)</strong></span>'
     TRAFFIC_LEFT_PATTERN = r'<a href="/premium">([0-9.]+ [kMG]B)'
 
 
@@ -29,12 +29,8 @@ class CatShareNet(Account):
 
         html = req.load("http://catshare.net/", decode=True)
 
-        try:
-            if "Premium" in re.search(self.PREMIUM_PATTERN, html).group(1):
-                premium = True
-
-        except Exception:
-            pass
+        if re.search(self.PREMIUM_PATTERN, html):
+            premium = True
 
         try:
             expiredate = re.search(self.VALID_UNTIL_PATTERN, html).group(1)
