@@ -144,11 +144,11 @@ def fileUrl(self, url, follow_location=False):
     link     = ""
     redirect = 1
 
-    if isinstance(follow_location, int):
-        redirect = max(follow_location, 1)
-
-    elif follow_location:
+    if isinstance(follow_location, bool):
         redirect = 5
+
+    elif isinstance(follow_location, int):
+        redirect = max(follow_location, 1)
 
     for i in xrange(redirect):
         self.logDebug("Redirect #%d to: %s" % (i, url))
@@ -219,7 +219,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.03"
+    __version__ = "1.04"
 
     __pattern__ = r'^unmatchable$'
 
