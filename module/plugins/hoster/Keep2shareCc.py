@@ -2,7 +2,7 @@
 
 import re
 
-from urlparse import urljoin, urlparse
+from urlparse import urljoin
 
 from module.plugins.internal.CaptchaService import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
@@ -64,9 +64,9 @@ class Keep2ShareCc(SimpleHoster):
         self.info.pop('error', None)
 
 
-    def handleFree(self):
+    def handleFree(self, pyfile):
         self.fid  = re.search(r'<input type="hidden" name="slow_id" value="([^"]+)">', self.html).group(1)
-        self.html = self.load(self.pyfile.url, post={'yt0': '', 'slow_id': self.fid})
+        self.html = self.load(pyfile.url, post={'yt0': '', 'slow_id': self.fid})
 
         self.checkErrors()
 
@@ -77,54 +77,39 @@ class Keep2ShareCc(SimpleHoster):
 
             self.wait(30)
 
-            self.html = self.load(self.pyfile.url, post={'uniqueId': self.fid, 'free': 1})
+            self.html = self.load(pyfile.url, post={'uniqueId': self.fid, 'free': 1})
 
             self.checkErrors()
 
             m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m is None:
-                self.error(_("LINK_FREE_PATTERN not found"))
+                self.error(_("Free download link not found"))
 
         self.link = m.group(1)
 
 
     def handleCaptcha(self):
         recaptcha = ReCaptcha(self)
+        post_data = {'free'               : 1,
+                     'freeDownloadRequest': 1,
+                     'uniqueId'           : self.fid,
+                     'yt0'                : ''}
 
-        for _i in xrange(5):
-            post_data = {'free'               : 1,
-                         'freeDownloadRequest': 1,
-                         'uniqueId'           : self.fid,
-                         'yt0'                : ''}
-
-            m = re.search(self.CAPTCHA_PATTERN, self.html)
-            if m:
-                captcha_url = urljoin("http://k2s.cc/", m.group(1))
-                post_data['CaptchaForm[code]'] = self.decryptCaptcha(captcha_url)
-            else:
-                challenge, response = recaptcha.challenge()
-                post_data.update({'recaptcha_challenge_field': challenge,
-                                  'recaptcha_response_field' : response})
-
-            self.html = self.load(self.pyfile.url, post=post_data)
-
-            if 'recaptcha' not in self.html:
-                self.correctCaptcha()
-                break
-            else:
-                self.invalidCaptcha()
+        m = re.search(self.CAPTCHA_PATTERN, self.html)
+        if m:
+            captcha_url = urljoin("http://k2s.cc/", m.group(1))
+            post_data['CaptchaForm[code]'] = self.decryptCaptcha(captcha_url)
         else:
-            self.fail(_("All captcha attempts failed"))
+            challenge, response = recaptcha.challenge()
+            post_data.update({'recaptcha_challenge_field': challenge,
+                              'recaptcha_response_field' : response})
 
+        self.html = self.load(self.pyfile.url, post=post_data)
 
-    def downloadLink(self, link):
-        if not link or not isinstance(link, basestring):
-            return
-
-        link = self.directLink(self, link, self.resumeDownload)
-
-        if link:
-            self.download(urljoin("http://k2s.cc/", link), disposition=True)
+        if 'recaptcha' not in self.html:
+            self.correctCaptcha()
+        else:
+            self.invalidCaptcha()
 
 
 getInfo = create_getInfo(Keep2ShareCc)

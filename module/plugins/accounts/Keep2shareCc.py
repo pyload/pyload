@@ -10,14 +10,15 @@ from module.plugins.Account import Account
 class Keep2ShareCc(Account):
     __name__    = "Keep2ShareCc"
     __type__    = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """Keep2Share.cc account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("aeronaut", "aeronaut@pianoguy.de")]
+    __authors__     = [("aeronaut", "aeronaut@pianoguy.de"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    VALID_UNTIL_PATTERN  = r'Premium expires: <b>(.+?)</b>'
+    VALID_UNTIL_PATTERN  = r'Premium expires:\s*<b>(.+?)<'
     TRAFFIC_LEFT_PATTERN = r'Available traffic \(today\):\s*<b><a href="/user/statistic.html">(.+?)<'
 
     LOGIN_FAIL_PATTERN = r'Please fix the following input errors'
@@ -25,8 +26,8 @@ class Keep2ShareCc(Account):
 
     def loadAccountInfo(self, user, req):
         validuntil  = None
-        trafficleft = None
-        premium     = None
+        trafficleft = -1
+        premium     = False
 
         html = req.load("http://keep2share.cc/site/profile.html", decode=True)
 
@@ -46,19 +47,15 @@ class Keep2ShareCc(Account):
                     self.logError(e)
 
                 else:
-                    if validuntil > mktime(gmtime()):
-                        premium = True
-                    else:
-                        premium    = False
-                        validuntil = None
+                    premium = True if validuntil > mktime(gmtime()) else False
 
-        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m:
-            try:
-                trafficleft = self.parseTraffic(m.group(1))
+            m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
+            if m:
+                try:
+                    trafficleft = self.parseTraffic(m.group(1))
 
-            except Exception, e:
-                self.logError(e)
+                except Exception, e:
+                    self.logError(e)
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
