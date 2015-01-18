@@ -10,7 +10,7 @@ from module.plugins.internal.MultiHoster import MultiHoster, create_getInfo
 class ZeveraCom(MultiHoster):
     __name__    = "ZeveraCom"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'https?://(?:www\.)zevera\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+'
 
@@ -21,7 +21,7 @@ class ZeveraCom(MultiHoster):
 
 
     def handlePremium(self, pyfile):
-        return "https://%s/getFiles.ashx?ourl=%s" % (self.account.HOSTER_DOMAIN, pyfile.url)
+        self.link = "https://%s/getFiles.ashx?ourl=%s" % (self.account.HOSTER_DOMAIN, pyfile.url)
 
 
     def checkFile(self):
