@@ -6,14 +6,14 @@ from urllib import unquote
 from urlparse import urljoin, urlparse
 
 from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.SimpleHoster import create_getInfo
+from module.plugins.internal.SimpleHoster import create_getInfo, fileUrl
 from module.plugins.Hoster import Hoster
 
 
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __pattern__ = r'^unmatchable$'
 
@@ -35,7 +35,7 @@ class BasePlugin(Hoster):
 
 
     def setup(self):
-        self.chunkLimit = -1
+        self.chunkLimit     = -1
         self.resumeDownload = True
 
 
@@ -49,7 +49,12 @@ class BasePlugin(Hoster):
 
         for _i in xrange(5):
             try:
-                self.downloadFile(pyfile)
+                link = fileUrl(unquote(pyfile.url))
+
+                if link:
+                    self.download(link, disposition=True)
+                else:
+                    self.fail(_("File not found"))
 
             except BadHeader, e:
                 if e.code is 404:
@@ -83,35 +88,6 @@ class BasePlugin(Hoster):
                                     'html error': re.compile(r'\A\s*(<.+>)?\d{3}(\Z|\s+)')})
         if check:
             self.fail(check.capitalize())
-
-
-    def downloadFile(self, pyfile):
-        url = pyfile.url
-
-        for i in xrange(1, 7):  #@TODO: retrieve the pycurl.MAXREDIRS value set by req
-            header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
-
-            if 'location' not in header or not header['location']:
-                if 'code' in header and header['code'] not in (200, 201, 203, 206):
-                    self.logDebug("Received HTTP status code: %d" % header['code'])
-                    self.fail(_("File not found"))
-                else:
-                    break
-
-            location = header['location']
-
-            self.logDebug("Redirect #%d to: %s" % (i, location))
-
-            if urlparse(location).scheme:
-                url = location
-            else:
-                p = urlparse(url)
-                base = "%s://%s" % (p.scheme, p.netloc)
-                url = urljoin(base, location)
-        else:
-            self.fail(_("Too many redirects"))
-
-        self.download(unquote(url), disposition=True)
 
 
 getInfo = create_getInfo(BasePlugin)
