@@ -219,7 +219,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.02"
+    __version__ = "1.03"
 
     __pattern__ = r'^unmatchable$'
 
@@ -502,7 +502,7 @@ class SimpleHoster(Hoster):
             self.logWarning(_("No html code to check"))
             return
 
-        if hasattr(self, 'PREMIUM_ONLY_PATTERN') and self.premium and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
+        if hasattr(self, 'PREMIUM_ONLY_PATTERN') and not self.premium and re.search(self.PREMIUM_ONLY_PATTERN, self.html):
             self.fail(_("Link require a premium account to be handled"))
 
         elif hasattr(self, 'ERROR_PATTERN'):
