@@ -15,7 +15,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
 
     __pattern__ = r'^unmatchable$'
 
@@ -29,7 +29,6 @@ class XFSHoster(SimpleHoster):
     HOSTER_DOMAIN = None
 
     TEXT_ENCODING = False
-    COOKIES       = [(HOSTER_DOMAIN, "lang", "english")]
     DIRECT_LINK   = None
     MULTI_HOSTER  = True  #@NOTE: Should be default to False for safe, but I'm lazy...
 
@@ -73,15 +72,8 @@ class XFSHoster(SimpleHoster):
             else:
                 self.fail(_("Missing HOSTER_DOMAIN"))
 
-            try:
-                self.COOKIES.index((None, "lang", "english"))
-
-            except ValueError:
-                pass
-
-            else:
-                self.COOKIES.remove((None, "lang", "english"))
-                self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
+        if isinstance(self.COOKIES, list):
+            self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
 
         if not self.LINK_PATTERN:
             pattern = r'(https?://(?:www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<]'

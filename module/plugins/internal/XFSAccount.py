@@ -23,7 +23,7 @@ class XFSAccount(Account):
     HOSTER_DOMAIN = None
     HOSTER_URL    = None
 
-    COOKIES = [(HOSTER_DOMAIN, "lang", "english")]
+    COOKIES = True
 
     PREMIUM_PATTERN = r'\(Premium only\)'
 
@@ -46,9 +46,15 @@ class XFSAccount(Account):
     def init(self):
         if not self.HOSTER_DOMAIN:
             self.logError(_("Missing HOSTER_DOMAIN"))
+            self.COOKIES = False
 
-        if not self.HOSTER_URL:
-            self.HOSTER_URL = "http://www.%s/" % (self.HOSTER_DOMAIN or "")
+        else:
+            if not self.HOSTER_URL:
+                self.HOSTER_URL = "http://www.%s/" % self.HOSTER_DOMAIN
+
+            if isinstance(self.COOKIES, list):
+                self.COOKIES.insert((self.HOSTER_DOMAIN, "lang", "english"))
+                set_cookies(req.cj, self.COOKIES)
 
 
     def loadAccountInfo(self, user, req):
@@ -56,6 +62,12 @@ class XFSAccount(Account):
         trafficleft  = None
         leechtraffic = None
         premium      = None
+
+        if not self.HOSTER_URL:  #@TODO: Remove in 0.4.10
+            return {'validuntil'  : validuntil,
+                    'trafficleft' : trafficleft,
+                    'leechtraffic': leechtraffic,
+                    'premium'     : premium}
 
         html = req.load(self.HOSTER_URL, get={'op': "my_account"}, decode=True)
 
@@ -136,22 +148,25 @@ class XFSAccount(Account):
         else:
             self.logDebug("LEECH_TRAFFIC_PATTERN not found")
 
-        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'leechtraffic': leechtraffic, 'premium': premium}
+        return {'validuntil'  : validuntil,
+                'trafficleft' : trafficleft,
+                'leechtraffic': leechtraffic,
+                'premium'     : premium}
 
 
     def login(self, user, data, req):
-        if isinstance(self.COOKIES, list):
-            set_cookies(req.cj, self.COOKIES)
+        if not self.HOSTER_URL:  #@TODO: Remove in 0.4.10
+            raise Exception(_("Missing HOSTER_DOMAIN"))
 
         url  = urljoin(self.HOSTER_URL, "login.html")
         html = req.load(url, decode=True)
 
         action, inputs = parseHtmlForm('name="FL"', html)
         if not inputs:
-            inputs = {'op': "login",
+            inputs = {'op'      : "login",
                       'redirect': self.HOSTER_URL}
 
-        inputs.update({'login': user,
+        inputs.update({'login'   : user,
                        'password': data['password']})
 
         html = req.load(self.HOSTER_URL, post=inputs, decode=True)
