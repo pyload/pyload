@@ -159,27 +159,27 @@ class ReCaptchaV2(CaptchaService):
         self.plugin.logDebug("API version: %s" %vers)
         language = a.split("__")[1].split(".")[0]
         self.plugin.logDebug("API language: %s" %language)
-              
+
         html = self.plugin.req.load("https://apis.google.com/js/api.js",cookies=True)
         b = re.search('"h":"(.*?)","',html).group(1)
         jsh = b.decode('unicode-escape')
         self.plugin.logDebug("API jsh-string: %s" %jsh)
-        
+
         return vers,language,jsh
-        
+
     def prepareTimeAndRpc(self):
         html = self.plugin.req.load("http://www.google.com/recaptcha/api2/demo",cookies=True)
-        
+
         millis = int(round(time.time() * 1000))
         self.plugin.logDebug("Systemtime in milliseconds: %s" %str(millis))
-        
+
         rand = randint(1,99999999)
         a = "0.%s"%str(rand*2147483647)
         rpc = int(100000000*float(a))
         self.plugin.logDebug("Self-generated rpc-token: %s" %str(rpc))
-        
+
         return millis,rpc
-        
+
     def doTheCaptcha(self, host):
         self.plugin.logDebug("Parent host: %s" %host)
         botguardstring  = "!A"
@@ -188,53 +188,53 @@ class ReCaptchaV2(CaptchaService):
         millis,rpc = self.prepareTimeAndRpc()
 
         html = self.plugin.req.load("https://www.google.com/recaptcha/api2/anchor",
-                  get={"k":sitekey, 
-                       "hl":language, 
-                       "v":vers, 
-                       "usegapi":"1", 
-                       "jsh":jsh+"#id=IO_"+str(millis), 
-                       "parent":"http://"+host, 
+                  get={"k":sitekey,
+                       "hl":language,
+                       "v":vers,
+                       "usegapi":"1",
+                       "jsh":jsh+"#id=IO_"+str(millis),
+                       "parent":"http://"+host,
                        "pfname":"",
                        "rpctoken":rpc},
                   cookies=True)
         recaptchatoken = re.search('id="recaptcha-token" value="(.*?)">',html)
         self.plugin.logDebug("Captchatoken #1: %s" %recaptchatoken.group(1))
-            
+
         html = self.plugin.req.load("https://www.google.com/recaptcha/api2/frame", get={"c":recaptchatoken.group(1),
                                                                                         "hl":language,
-                                                                                        "v":vers, 
+                                                                                        "v":vers,
                                                                                         "bg":botguardstring,
-                                                                                        "usegapi":"1", 
+                                                                                        "usegapi":"1",
                                                                                         "jsh":jsh},
-                                                                                   cookies=True)    
+                                                                                   cookies=True)
         html = html.decode('unicode-escape')
         recaptchatoken2 = re.search('"finput","(.*?)",',html)
         self.plugin.logDebug("Captchatoken #2: %s" %recaptchatoken2.group(1))
         recaptchatoken3 = re.search('."asconf".\s.\s,"(.*?)".',html)
         self.plugin.logDebug("Captchatoken #3: %s" %recaptchatoken3.group(1))
-        
-        html = self.plugin.req.load("https://www.google.com/recaptcha/api2/reload", post={"c":recaptchatoken2.group(1), 
-                                                                                          "reason":"fi", 
+
+        html = self.plugin.req.load("https://www.google.com/recaptcha/api2/reload", post={"c":recaptchatoken2.group(1),
+                                                                                          "reason":"fi",
                                                                                           "fbg":recaptchatoken3.group(1)},
                                                                                     cookies=True)
         recaptchatoken4 = re.search('"rresp","(.*?)",',html)
         self.plugin.logDebug("Captchatoken #4: %s" %recaptchatoken4.group(1))
-            
+
         millis_captcha_loading = int(round(time.time() * 1000))
         captcha_response = self.plugin.decryptCaptcha("https://www.google.com/recaptcha/api2/payload", get={"c":recaptchatoken4.group(1)},forceUser=True)
         respone_encoded = base64.b64encode('{"response":"%s"}' %captcha_response)
         self.plugin.logDebug("Encoded result: %s" %respone_encoded)
-          
+
         timeToSolve = int(round(time.time() * 1000)) - millis_captcha_loading
         timeToSolveMore = timeToSolve + int(float("0."+str(randint(1,99999999))) * 500)
-        html = self.plugin.req.load("https://www.google.com/recaptcha/api2/userverify", cookies=True, post={"c":recaptchatoken4.group(1), 
-                                                                                                            "response":respone_encoded, 
+        html = self.plugin.req.load("https://www.google.com/recaptcha/api2/userverify", cookies=True, post={"c":recaptchatoken4.group(1),
+                                                                                                            "response":respone_encoded,
                                                                                                             "t":timeToSolve,
                                                                                                             "ct":timeToSolveMore,
                                                                                                             "bg":botguardstring})
         recaptchatoken5 = re.search('"uvresp","(.*?)",',html)
         self.plugin.logDebug("Captchatoken #5: %s" %recaptchatoken5.group(1))
-        
+
         return recaptchatoken5.group(1)
 
 
