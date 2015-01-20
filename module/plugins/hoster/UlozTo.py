@@ -15,7 +15,7 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.02"
+    __version__ = "1.03"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
 
@@ -39,6 +39,7 @@ class UlozTo(SimpleHoster):
 
 
     def setup(self):
+        self.chunkLimit     = 16
         self.multiDL        = self.premium
         self.resumeDownload = True
 
@@ -55,7 +56,7 @@ class UlozTo(SimpleHoster):
                 self.error(_("TOKEN_PATTERN not found"))
             token = m.group(1)
 
-            self.html = self.load(pyfile.url, get={"do": "askAgeForm-submit"},
+            self.html = self.load(pyfile.url, get={'do': "askAgeForm-submit"},
                                   post={"agree": "Confirm", "_token_": token}, cookies=True)
 
         if self.PASSWD_PATTERN in self.html:
@@ -63,7 +64,7 @@ class UlozTo(SimpleHoster):
 
             if password:
                 self.logInfo(_("Password protected link, trying ") + password)
-                self.html = self.load(pyfile.url, get={"do": "passwordProtectedForm-submit"},
+                self.html = self.load(pyfile.url, get={'do': "passwordProtectedForm-submit"},
                                       post={"password": password, "password_send": 'Send'}, cookies=True)
 
                 if self.PASSWD_PATTERN in self.html:
@@ -72,7 +73,7 @@ class UlozTo(SimpleHoster):
                 self.fail(_("No password found"))
 
         if re.search(self.VIPLINK_PATTERN, self.html):
-            self.html = self.load(pyfile.url, get={"disclaimer": "1"})
+            self.html = self.load(pyfile.url, get={'disclaimer': "1"})
 
         self.getFileInfo()
 
@@ -104,7 +105,7 @@ class UlozTo(SimpleHoster):
             # New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
             self.logDebug('Using "new" version')
 
-            xapca = self.load("http://www.ulozto.net/reloadXapca.php", get={"rnd": str(int(time.time()))})
+            xapca = self.load("http://www.ulozto.net/reloadXapca.php", get={'rnd': str(int(time.time()))})
             self.logDebug("xapca = " + str(xapca))
 
             data = json_loads(xapca)
@@ -120,7 +121,7 @@ class UlozTo(SimpleHoster):
 
 
     def handlePremium(self, pyfile):
-        self.download(pyfile.url, get={'do': directDownload}, disposition=True)
+        self.download(pyfile.url, get={'do': "directDownload"}, disposition=True)
 
 
     def doCheckDownload(self):
