@@ -151,10 +151,10 @@ class SimpleCrypter(Crypter, SimpleHoster):
         Returns the links extracted from self.html
         You should override this only if it's impossible to extract links using only the LINK_PATTERN.
         """
-        parsed = urlparse(self.pyfile.url)
-        base   = "%s://%s" % (parsed.scheme, parsed.netloc)
+        url_p   = urlparse(self.pyfile.url)
+        baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
 
-        return [urljoin(base, link) if not urlparse(link).scheme else link \
+        return [urljoin(baseurl, link) if not urlparse(link).scheme else link \
                 for link in re.findall(self.LINK_PATTERN, self.html)]
 
 

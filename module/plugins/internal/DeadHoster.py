@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from urllib import unquote
-from urlparse import urlparse
-
 from module.plugins.internal.SimpleHoster import create_getInfo
 from module.plugins.Hoster import Hoster as _Hoster
 

@@ -219,7 +219,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.04"
+    __version__ = "1.05"
 
     __pattern__ = r'^unmatchable$'
 
@@ -467,6 +467,12 @@ class SimpleHoster(Hoster):
     def downloadLink(self, link):
         if link and isinstance(link, basestring):
             self.correctCaptcha()
+
+            if not urlparse(link).scheme:
+                url_p   = urlparse(self.pyfile.url)
+                baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
+                link    = urljoin(baseurl, link)
+
             self.download(link, disposition=False)  #@TODO: Set `disposition=True` in 0.4.10
 
 
