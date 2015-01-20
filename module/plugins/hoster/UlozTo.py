@@ -15,7 +15,7 @@ def convertDecimalPrefix(m):
 class UlozTo(SimpleHoster):
     __name__    = "UlozTo"
     __type__    = "hoster"
-    __version__ = "1.03"
+    __version__ = "1.04"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(?:live/)?(?P<ID>\w+/[^/?]*)'
 
@@ -39,7 +39,7 @@ class UlozTo(SimpleHoster):
 
 
     def setup(self):
-        self.chunkLimit     = 16
+        self.chunkLimit     = 16 if self.premium else 1
         self.multiDL        = self.premium
         self.resumeDownload = True
 
