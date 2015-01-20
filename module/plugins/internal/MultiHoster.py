@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
 
     __pattern__ = r'^unmatchable$'
 
@@ -70,15 +70,8 @@ class MultiHoster(SimpleHoster):
                 self.logDebug("Handled as free download")
                 self.handleFree(pyfile)
 
-        self.downloadLink(self.link)
+        self.downloadLink(self.link, True)
         self.checkFile()
-
-
-    #@TODO: Remove in 0.4.10
-    def downloadLink(self, link):
-        if link and isinstance(link, basestring):
-            self.correctCaptcha()
-            self.download(link, disposition=True)
 
 
     def handlePremium(self, pyfile):

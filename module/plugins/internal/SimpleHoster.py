@@ -151,9 +151,33 @@ def fileUrl(self, url, follow_location=False):
         redirect = max(follow_location, 1)
 
     for i in xrange(redirect):
-        self.logDebug("Redirect #%d to: %s" % (i, url))
+        try:
+            self.logDebug("Redirect #%d to: %s" % (i, url))
+            header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
 
-        header = self.load(url, ref=True, cookies=True, just_header=True, decode=True)
+        except Exception:  #: Bad bad bad...
+            req = pyreq.getHTTPRequest()
+            res = req.load(url, cookies=True, just_header=True, decode=True)
+
+            req.close()
+
+            header = {"code": req.code}
+            for line in res.splitlines():
+                line = line.strip()
+                if not line or ":" not in line:
+                    continue
+
+                key, none, value = line.partition(":")
+                key              = key.lower().strip()
+                value            = value.strip()
+
+                if key in header:
+                    if type(header[key]) == list:
+                        header[key].append(value)
+                    else:
+                        header[key] = [header[key], value]
+                else:
+                    header[key] = value
 
         if 'content-disposition' in header:
             link = url
@@ -193,7 +217,10 @@ def fileUrl(self, url, follow_location=False):
         break
 
     else:
-        self.logError(_("Too many redirects"))
+        try:
+            self.logError(_("Too many redirects"))
+        except Exception:
+            pass
 
     return link
 
@@ -219,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.05"
+    __version__ = "1.06"
 
     __pattern__ = r'^unmatchable$'
 
@@ -320,7 +347,7 @@ class SimpleHoster(Hoster):
                 info['error']  = "missing url"
                 info['status'] = 1
 
-            elif info['status'] is 3:
+            elif info['status'] is 3 and not fileUrl(None, url):
                 try:
                     html = getURL(url, cookies=cls.COOKIES, decode=not cls.TEXT_ENCODING)
 
@@ -464,7 +491,7 @@ class SimpleHoster(Hoster):
         self.checkFile()
 
 
-    def downloadLink(self, link):
+    def downloadLink(self, link, disposition=False):
         if link and isinstance(link, basestring):
             self.correctCaptcha()
 
@@ -473,7 +500,7 @@ class SimpleHoster(Hoster):
                 baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
                 link    = urljoin(baseurl, link)
 
-            self.download(link, disposition=False)  #@TODO: Set `disposition=True` in 0.4.10
+            self.download(link, disposition=disposition)  #@TODO: Set `disposition=True` in 0.4.10
 
 
     def checkFile(self):
