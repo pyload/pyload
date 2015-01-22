@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import fileUrl, set_cookies
 class SimpleDereferer(Crypter):
     __name__    = "SimpleDereferer"
     __type__    = "crypter"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -77,6 +77,7 @@ class SimpleDereferer(Crypter):
 
 
     def preload(self):
+        self.req.renewHTTPRequest()  #@NOTE: Remove in 0.4.10
         self.html = self.load(self.pyfile.url, cookies=bool(self.COOKIES), decode=not self.TEXT_ENCODING)
 
         if isinstance(self.TEXT_ENCODING, basestring):
