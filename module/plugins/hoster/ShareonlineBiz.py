@@ -14,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ShareonlineBiz(SimpleHoster):
     __name__    = "ShareonlineBiz"
     __type__    = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.48"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
 
@@ -69,7 +69,7 @@ class ShareonlineBiz(SimpleHoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+            response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
             m = re.search(r'var wait=(\d+);', self.html)
             self.setWait(int(m.group(1)) if m else 30)

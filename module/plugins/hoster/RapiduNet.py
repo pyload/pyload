@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RapiduNet(SimpleHoster):
     __name__    = "RapiduNet"
     __type__    = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'
 
@@ -59,7 +59,7 @@ class RapiduNet(SimpleHoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(10):
-            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+            response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
             jsvars = self.getJsonResponse("https://rapidu.net/ajax.php",
                                           get={'a': "getCheckCaptcha"},

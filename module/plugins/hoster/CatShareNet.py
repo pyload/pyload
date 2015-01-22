@@ -9,7 +9,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{16}'
 
@@ -46,7 +46,7 @@ class CatShareNet(SimpleHoster):
     def handleFree(self, pyfile):
         recaptcha = ReCaptcha(self)
 
-        challenge, response = recaptcha.challenge()
+        response, challenge = recaptcha.challenge()
         self.html = self.load(pyfile.url,
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})

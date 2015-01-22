@@ -36,7 +36,7 @@ def getInfo(urls):
 class LetitbitNet(SimpleHoster):
     __name__    = "LetitbitNet"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __pattern__ = r'https?://(?:www\.)?(letitbit|shareflare)\.net/download/.+'
 
@@ -96,7 +96,7 @@ class LetitbitNet(SimpleHoster):
         self.logDebug(res)
 
         recaptcha = ReCaptcha(self)
-        challenge, response = recaptcha.challenge()
+        response, challenge = recaptcha.challenge()
 
         post_data = {"recaptcha_challenge_field": challenge,
                      "recaptcha_response_field": response,

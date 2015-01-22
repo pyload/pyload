@@ -29,4 +29,4 @@ class MegaCoNzFolder(Crypter):
         self.urls = re.findall(r'(https://mega.co.nz/#N!.+?)<', self.html)
 
         if not self.urls:  #@TODO: Remove in 0.4.10
-            self.fail("No link grabbed")
+            self.fail(_("No link grabbed"))

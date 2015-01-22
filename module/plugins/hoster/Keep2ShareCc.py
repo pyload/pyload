@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class Keep2ShareCc(SimpleHoster):
     __name__    = "Keep2ShareCc"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
 
@@ -29,7 +29,8 @@ class Keep2ShareCc(SimpleHoster):
     OFFLINE_PATTERN      = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
     TEMP_OFFLINE_PATTERN = r'Downloading blocked due to'
 
-    LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'"([^"]+url.html?file=.+?)"|window\.location\.href = \'(.+?)\';'
+    LINK_FREE_PATTERN    = r'"([^"]+url.html?file=.+?)"|window\.location\.href = \'(.+?)\';'
+    LINK_PREMIUM_PATTERN = r'window\.location\.href = \'(.+?)\';'
 
     CAPTCHA_PATTERN = r'src="(/file/captcha\.html.+?)"'
 
@@ -77,9 +78,7 @@ class Keep2ShareCc(SimpleHoster):
 
             self.wait(30)
 
-            self.html = self.load(pyfile.url, post={'uniqueId': self.fid, 'free': 1})
-
-            self.checkErrors()
+            self.html = self.load(pyfile.url)
 
             m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m is None:
@@ -100,13 +99,13 @@ class Keep2ShareCc(SimpleHoster):
             captcha_url = urljoin("http://k2s.cc/", m.group(1))
             post_data['CaptchaForm[code]'] = self.decryptCaptcha(captcha_url)
         else:
-            challenge, response = recaptcha.challenge()
+            response, challenge = recaptcha.challenge()
             post_data.update({'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field' : response})
 
         self.html = self.load(self.pyfile.url, post=post_data)
 
-        if 'recaptcha' not in self.html:
+        if 'verification code is incorrect' not in self.html:
             self.correctCaptcha()
         else:
             self.invalidCaptcha()

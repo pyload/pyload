@@ -118,7 +118,7 @@ class SimpleCrypter(Crypter, SimpleHoster):
             self.packages = [(self.info['name'], self.links, self.info['folder'])]
 
         elif not self.urls and not self.packages:  #@TODO: Remove in 0.4.10
-            self.fail("No link grabbed")
+            self.fail(_("No link grabbed"))
 
 
     def checkNameSize(self, getinfo=True):

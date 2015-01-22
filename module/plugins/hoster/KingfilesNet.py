@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class KingfilesNet(SimpleHoster):
     __name__    = "KingfilesNet"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
 
@@ -46,7 +46,7 @@ class KingfilesNet(SimpleHoster):
         self.html = self.load(pyfile.url, post=post_data, cookies=True, decode=True)
 
         solvemedia = SolveMedia(self)
-        challenge, response = solvemedia.challenge()
+        response, challenge = solvemedia.challenge()
 
         # Make the downloadlink appear and load the file
         m = re.search(self.RAND_ID_PATTERN, self.html)

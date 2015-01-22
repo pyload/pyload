@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadableCh(SimpleHoster):
     __name__    = "UploadableCh"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
 
@@ -46,7 +46,7 @@ class UploadableCh(SimpleHoster):
 
         recaptcha = ReCaptcha(self)
 
-        challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
         # Submit the captcha solution
         self.load("http://www.uploadable.ch/checkReCaptcha.php",

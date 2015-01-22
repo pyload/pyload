@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, s
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
@@ -128,7 +128,7 @@ class RapidgatorNet(SimpleHoster):
                 break
             else:
                 captcha, captcha_key = self.getCaptcha()
-                challenge, response  = captcha.challenge(captcha_key)
+                response, challenge  = captcha.challenge(captcha_key)
 
                 self.html = self.load(url, post={'DownloadCaptchaForm[captcha]': "",
                                                  'adcopy_challenge'            : challenge,
@@ -146,17 +146,17 @@ class RapidgatorNet(SimpleHoster):
         m = re.search(self.ADSCAPTCHA_PATTERN, self.html)
         if m:
             captcha_key = m.group(1)
-            captcha = AdsCaptcha(self)
+            captcha     = AdsCaptcha(self)
         else:
             m = re.search(self.RECAPTCHA_PATTERN, self.html)
             if m:
                 captcha_key = m.group(1)
-                captcha = ReCaptcha(self)
+                captcha     = ReCaptcha(self)
             else:
                 m = re.search(self.SOLVEMEDIA_PATTERN, self.html)
                 if m:
                     captcha_key = m.group(1)
-                    captcha = SolveMedia(self)
+                    captcha     = SolveMedia(self)
                 else:
                     self.error(_("Captcha"))
 

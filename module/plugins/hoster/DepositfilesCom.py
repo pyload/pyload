@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class DepositfilesCom(SimpleHoster):
     __name__    = "DepositfilesCom"
     __type__    = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.53"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
 
@@ -77,7 +77,7 @@ class DepositfilesCom(SimpleHoster):
             if '<input type=button value="Continue" onclick="check_recaptcha' in self.html:
                 if 'response' in params:
                     self.invalidCaptcha()
-                params['challenge'], params['response'] = recaptcha.challenge(captcha_key)
+                params['response'], params['challenge'] = recaptcha.challenge(captcha_key)
                 self.logDebug(params)
                 continue
 

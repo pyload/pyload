@@ -191,7 +191,7 @@ class RelinkUs(Crypter):
         elif source == 'web':
             return self.handleWEBLinks()
         else:
-            self.error('Unknown source type "%s" (this is probably a bug)' % source)
+            self.error(_('Unknown source type "%s"') % source)
 
 
     def handleCNL2Links(self):
@@ -223,8 +223,10 @@ class RelinkUs(Crypter):
                 with open(dlc_filepath, "wb") as f:
                     f.write(dlc)
                 package_links.append(dlc_filepath)
+
             except Exception:
-                self.fail("Unable to download DLC container")
+                self.fail(_("Unable to download DLC container"))
+
         return package_links
 
 

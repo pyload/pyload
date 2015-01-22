@@ -39,7 +39,7 @@ class UpleaCom(XFSHoster):
     def handleFree(self, pyfile):
         m = re.search(self.STEP_PATTERN, self.html)
         if m is None:
-            self.error("STEP_PATTERN not found")
+            self.error(_("STEP_PATTERN not found"))
 
         self.html = self.load(urljoin("http://uplea.com/", m.group(1)))
 

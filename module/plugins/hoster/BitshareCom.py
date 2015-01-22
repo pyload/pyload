@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BitshareCom(SimpleHoster):
     __name__    = "BitshareCom"
     __type__    = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.53"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)'
 
@@ -114,7 +114,7 @@ class BitshareCom(SimpleHoster):
 
             # Try up to 3 times
             for i in xrange(3):
-                challenge, response = recaptcha.challenge()
+                response, challenge = recaptcha.challenge()
                 res = self.load("http://bitshare.com/files-ajax/" + self.file_id + "/request.html",
                                      post={"request"                  : "validateCaptcha",
                                            "ajaxid"                   : self.ajaxid,

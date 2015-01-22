@@ -62,7 +62,7 @@ def getInfo(urls):
 class NetloadIn(Hoster):
     __name__    = "NetloadIn"
     __type__    = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.48"
 
     __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index\.php?id=10&file_id=)'
 
@@ -235,7 +235,7 @@ class NetloadIn(Hoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            challenge, response = recaptcha.challenge()
+            response, challenge = recaptcha.challenge()
 
             response_page = self.load("http://www.netload.in/index.php?id=10",
                                       post={'captcha_check'            : '1',
@@ -254,7 +254,7 @@ class NetloadIn(Hoster):
                 download_url = self.get_file_url(response_page)
                 self.logDebug("Download URL after get_file: " + download_url)
                 if not download_url.startswith("http://"):
-                    self.error("download url: %s" % download_url)
+                    self.error(_("Download url: %s") % download_url)
                 self.wait()
 
                 self.url = download_url

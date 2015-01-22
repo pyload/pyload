@@ -83,14 +83,14 @@ class NoPremiumPl(MultiHoster):
                 # error code isn't yet added to plugin
                 self.fail(
                     parsed["errstring"]
-                    or "Unknown error (code: %s)" % parsed["errno"]
+                    or _("Unknown error (code: %s)") % parsed["errno"]
                 )
 
         if "sdownload" in parsed:
             if parsed["sdownload"] == "1":
                 self.fail(
-                    "Download from %s is possible only using NoPremium.pl webiste \
-                    directly. Update this plugin." % parsed["hosting"])
+                    _("Download from %s is possible only using NoPremium.pl website \
+                    directly") % parsed["hosting"])
 
         pyfile.name = parsed["filename"]
         pyfile.size = parsed["filesize"]

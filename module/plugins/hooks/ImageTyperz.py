@@ -82,7 +82,7 @@ class ImageTyperz(Hook):
         req.c.setopt(LOW_SPEED_TIME, 80)
 
         try:
-            #workaround multipart-post bug in HTTPRequest.py
+            #@NOTE: Workaround multipart-post bug in HTTPRequest.py
             if re.match("^\w*$", self.getConfig("passkey")):
                 multipart = True
                 data = (FORM_FILE, captcha)

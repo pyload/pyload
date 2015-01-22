@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__    = "NitroflareCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
 
@@ -31,6 +31,8 @@ class NitroflareCom(SimpleHoster):
     OFFLINE_PATTERN = r'>File doesn\'t exist'
 
     LINK_FREE_PATTERN = r'(https?://[\w\-]+\.nitroflare\.com/.+?)"'
+
+    RECAPTCHA_KEY = "6Lenx_USAAAAAF5L1pmTWvWcH73dipAEzNnmNLgy"
 
     PREMIUM_ONLY_PATTERN = r'This file is available with Premium only'
     WAIT_PATTERN         = r'You have to wait .+?<'
@@ -81,7 +83,7 @@ class NitroflareCom(SimpleHoster):
         self.wait(wait_time)
 
         recaptcha = ReCaptcha(self)
-        challenge, response = recaptcha.challenge("6Lenx_USAAAAAF5L1pmTWvWcH73dipAEzNnmNLgy")
+        response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
         self.html = self.load("http://nitroflare.com/ajax/freeDownload.php",
                               post={'method'                   : "fetchDownload",

@@ -13,7 +13,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class NCryptIn(Crypter):
     __name__    = "NCryptIn"
     __type__    = "crypter"
-    __version__ = "1.33"
+    __version__ = "1.34"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -156,7 +156,7 @@ class NCryptIn(Crypter):
             captcha_key = re.search(r'\?k=(.*?)"', form).group(1)
             self.logDebug("Resolving ReCaptcha with key [%s]" % captcha_key)
             recaptcha = ReCaptcha(self)
-            challenge, response = recaptcha.challenge(captcha_key)
+            response, challenge = recaptcha.challenge(captcha_key)
             postData['recaptcha_challenge_field'] = challenge
             postData['recaptcha_response_field']  = response
 
@@ -205,7 +205,7 @@ class NCryptIn(Crypter):
         elif link_source_type == "web":
             return self.handleWebLinks()
         else:
-            self.error('Unknown source type "%s" (this is probably a bug)' % link_source_type)
+            self.error(_('Unknown source type "%s"') % link_source_type)
 
 
     def handleSingleLink(self):

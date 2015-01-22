@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, s
 class ExtabitCom(SimpleHoster):
     __name__    = "ExtabitCom"
     __type__    = "hoster"
-    __version__ = "0.64"
+    __version__ = "0.65"
 
     __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
 
@@ -50,7 +50,7 @@ class ExtabitCom(SimpleHoster):
 
             for _i in xrange(5):
                 get_data = {"type": "recaptcha"}
-                get_data['challenge'], get_data['capture'] = recaptcha.challenge(captcha_key)
+                get_data['capture'], get_data['challenge'] = recaptcha.challenge(captcha_key)
                 res = json_loads(self.load("http://extabit.com/file/%s/" % fileID, get=get_data))
                 if "ok" in res:
                     self.correctCaptcha()

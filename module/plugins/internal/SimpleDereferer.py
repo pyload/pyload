@@ -66,7 +66,7 @@ class SimpleDereferer(Crypter):
             self.urls = [link.strip()]  #@TODO: Remove `.strip()` in 0.4.10
 
         elif not self.urls and not self.packages:  #@TODO: Remove in 0.4.10
-            self.fail("No link grabbed")
+            self.fail(_("No link grabbed"))
 
 
     def prepare(self):

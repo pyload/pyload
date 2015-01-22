@@ -33,7 +33,7 @@ def checkFile(plugin, urls):
 class FileserveCom(Hoster):
     __name__    = "FileserveCom"
     __type__    = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
 
@@ -161,7 +161,7 @@ class FileserveCom(Hoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            challenge, response = recaptcha.challenge(captcha_key)
+            response, challenge = recaptcha.challenge(captcha_key)
             res = json_loads(self.load(self.URLS[2],
                                        post={'recaptcha_challenge_field'  : challenge,
                                              'recaptcha_response_field'   : response,

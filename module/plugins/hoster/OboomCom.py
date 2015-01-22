@@ -13,7 +13,7 @@ from module.plugins.internal.CaptchaService import ReCaptcha
 class OboomCom(Hoster):
     __name__    = "OboomCom"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(#(id=|/)?)?(?P<ID>\w{8})'
 
@@ -74,7 +74,7 @@ class OboomCom(Hoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            challenge, response = recaptcha.challenge(self.RECAPTCHA_KEY)
+            response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
             apiUrl = "https://www.oboom.com/1.0/download/ticket"
             params = {"recaptcha_challenge_field": challenge,
                       "recaptcha_response_field": response,

@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UpstoreNet(SimpleHoster):
     __name__    = "UpstoreNet"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'https?://(?:www\.)?upstore\.net/'
 
@@ -52,7 +52,7 @@ class UpstoreNet(SimpleHoster):
             self.wait(wait_time)
 
             # then, handle the captcha
-            challenge, response = recaptcha.challenge()
+            response, challenge = recaptcha.challenge()
             post_data.update({'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field' : response})
 

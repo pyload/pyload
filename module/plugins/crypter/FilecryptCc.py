@@ -8,13 +8,13 @@ from Crypto.Cipher import AES
 from urlparse import urljoin
 
 from module.plugins.Crypter import Crypter
-from module.plugins.internal.CaptchaService import ReCaptchaV2
+from module.plugins.internal.CaptchaService import ReCaptcha
 
 
 class FilecryptCc(Crypter):
     __name__    = "FilecryptCc"
     __type__    = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
 
@@ -74,7 +74,7 @@ class FilecryptCc(Crypter):
         self.logInfo(_("Folder is password protected"))
 
         password = self.getPassword()
-        
+
         if not password:
             self.fail(_("Please enter the password in package section and try again"))
 
@@ -108,15 +108,19 @@ class FilecryptCc(Crypter):
                                            post={'button.x': captcha_code[0], 'button.y': captcha_code[1]},
                                            cookies=True,
                                            decode=True)
-                                           
-        elif 'class="g-recaptcha"' in self.html:  #: ReCaptchaV2
-            captcha = ReCaptchaV2(self)
-            response = captcha.doTheCaptcha(self.pyfile.url.split("/")[2])
-            self.siteWithLinks = self.load(self.pyfile.url, cookies=True, decode=True, post={"g-recaptcha-response":response})
-            
+
         else:
-            self.logInfo(_("No captcha found"))
-            self.siteWithLinks = self.html
+            recaptcha   = ReCaptcha(self)
+            captcha_key = recaptcha.detect_key()
+
+            if captcha_key:
+                response, challenge = recaptcha.challenge(captcha_key)
+                self.siteWithLinks  = self.load(self.pyfile.url,
+                                                post={'g-recaptcha-response': response},
+                                                decode=True)
+            else:
+                self.logInfo(_("No captcha found"))
+                self.siteWithLinks = self.html
 
         if "recaptcha_image" in self.siteWithLinks or "data-sitekey" in self.siteWithLinks:
             self.invalidCaptcha()

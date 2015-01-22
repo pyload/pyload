@@ -54,7 +54,7 @@ def getInfo(urls):
 class MediafireCom(SimpleHoster):
     __name__    = "MediafireCom"
     __type__    = "hoster"
-    __version__ = "0.83"
+    __version__ = "0.84"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(file/|(view/?|download\.php)?\?)(\w{11}|\w{15})($|/)'
 
@@ -121,7 +121,7 @@ class MediafireCom(SimpleHoster):
 
     def checkCaptcha(self):
         solvemedia = SolveMedia(self)
-        challenge, response = solvemedia.challenge()
+        response, challenge = solvemedia.challenge()
         self.html = self.load(self.link,
                               post={'adcopy_challenge': challenge,
                                     'adcopy_response' : response},

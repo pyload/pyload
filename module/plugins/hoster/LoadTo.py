@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LoadTo(SimpleHoster):
     __name__    = "LoadTo"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
 
@@ -58,7 +58,7 @@ class LoadTo(SimpleHoster):
         if captcha_key is None:
             self.download(download_url)
         else:
-            challenge, response = solvemedia.challenge(captcha_key)
+            response, challenge = solvemedia.challenge(captcha_key)
             self.download(download_url, post={"adcopy_challenge": challenge, "adcopy_response": response})
 
 

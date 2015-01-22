@@ -39,7 +39,7 @@ class RSDF(Container):
             with open(infile, 'r') as rsdf:
                 data = rsdf.read()
         except IOError, e:
-            self.fail(str(e))
+            self.fail(e)
 
         if re.search(r"<title>404 - Not Found</title>", data) is None:
             data = binascii.unhexlify(''.join(data.split()))

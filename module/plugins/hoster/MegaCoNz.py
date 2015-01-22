@@ -124,7 +124,7 @@ class MegaCoNz(Hoster):
             df = open(file_decrypted, "wb")
 
         except IOError, e:
-            self.fail(str(e))
+            self.fail(e)
 
         chunk_size = 2 ** 15  # buffer size, 32k
         # file_mac   = [0, 0, 0, 0]  # calculate CBC-MAC for checksum
@@ -160,7 +160,7 @@ class MegaCoNz(Hoster):
 
         # if file_mac[0] ^ file_mac[1], file_mac[2] ^ file_mac[3] != meta_mac:
             # os.remove(file_decrypted)
-            # self.fail("Checksum mismatch")
+            # self.fail(_("Checksum mismatch"))
 
         os.remove(file_crypted)
         self.lastDownload = fs_decode(file_decrypted)

@@ -135,7 +135,7 @@ class DeathByCaptcha(Hook):
 
 
     def submit(self, captcha, captchaType="file", match=None):
-        #workaround multipart-post bug in HTTPRequest.py
+        #@NOTE: Workaround multipart-post bug in HTTPRequest.py
         if re.match("^\w*$", self.getConfig("passkey")):
             multipart = True
             data = (FORM_FILE, captcha)

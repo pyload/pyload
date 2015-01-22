@@ -15,7 +15,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
 
     __pattern__ = r'^unmatchable$'
 
@@ -327,7 +327,7 @@ class XFSHoster(SimpleHoster):
             self.logDebug("ReCaptcha key: %s" % captcha_key)
 
         if captcha_key:
-            inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(captcha_key)
+            inputs['recaptcha_response_field'], inputs['recaptcha_challenge_field'] = recaptcha.challenge(captcha_key)
             return 3
 
         solvemedia = SolveMedia(self)
@@ -339,7 +339,7 @@ class XFSHoster(SimpleHoster):
             self.logDebug("SolveMedia key: %s" % captcha_key)
 
         if captcha_key:
-            inputs['adcopy_challenge'], inputs['adcopy_response'] = solvemedia.challenge(captcha_key)
+            inputs['adcopy_response'], inputs['adcopy_challenge'] = solvemedia.challenge(captcha_key)
             return 4
 
         return 0

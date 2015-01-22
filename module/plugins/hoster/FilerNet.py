@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
 
@@ -56,7 +56,7 @@ class FilerNet(SimpleHoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            challenge, response = recaptcha.challenge()
+            response, challenge = recaptcha.challenge()
 
             #@NOTE: Work-around for v0.4.9 just_header issue
             #@TODO: Check for v0.4.10
