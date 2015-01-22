@@ -17,40 +17,55 @@ def forward(source, destination):
         else:
             destination.shutdown(socket.SHUT_WR)
 
-_GLOBAL_DEFAULT_TIMEOUT = object()
-def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT):
-    """Connect to *address* and return the socket object.
 
-    Convenience function.  Connect to *address* (a 2-tuple ``(host,
-    port)``) and return the socket object.  Passing the optional
-    *timeout* parameter will set the timeout on the socket instance
-    before attempting to connect.  If no *timeout* is supplied, the
-    global default timeout setting returned by :func:`getdefaulttimeout`
-    is used.
-    """
+#: socket.create_connection wrapper for python 2.5
+def create_connection(address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT,
+                      source_address=None):
+    try:
+        return socket.create_connection(address, timeout, source_address)
 
-    msg = "getaddrinfo returns an empty list"
-    host, port = address
-    for res in getaddrinfo(host, port, 0, socket.SOCK_STREAM):
-        af, socktype, proto, canonname, sa = res
-        sock = None
-        try:
-            sock = socket(af, socktype, proto)
-            if timeout is not _GLOBAL_DEFAULT_TIMEOUT:
-                sock.settimeout(timeout)
-            sock.connect(sa)
-            return sock
+    except SyntaxError:
+        """Connect to *address* and return the socket object.
 
-        except error, msg:
-            if sock is not None:
-                sock.close()
+        Convenience function.  Connect to *address* (a 2-tuple ``(host,
+        port)``) and return the socket object.  Passing the optional
+        *timeout* parameter will set the timeout on the socket instance
+        before attempting to connect.  If no *timeout* is supplied, the
+        global default timeout setting returned by :func:`getdefaulttimeout`
+        is used.  If *source_address* is set it must be a tuple of (host, port)
+        for the socket to bind as a source address before making the connection.
+        An host of \'\' or port 0 tells the OS to use the default.
+        """
 
-    raise error, msg
-    
+        host, port = address
+        err = None
+        for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+            af, socktype, proto, canonname, sa = res
+            sock = None
+            try:
+                sock = socket(af, socktype, proto)
+                if timeout is not socket._GLOBAL_DEFAULT_TIMEOUT:
+                    sock.settimeout(timeout)
+                if source_address:
+                    sock.bind(source_address)
+                sock.connect(sa)
+                return sock
+
+            except error as _:
+                err = _
+                if sock is not None:
+                    sock.close()
+
+        if err is not None:
+            raise err
+        else:
+            raise error("getaddrinfo returns an empty list")
+
+
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __config__ = [("activated", "bool", "Activated"                                     , True ),
                   ("port"     , "int" , "Port"                                          , 9666 ),
@@ -98,7 +113,6 @@ class ClickAndLoad(Hook):
 
         except socket.error, e:
             self.logError(e)
-            self.server(ip, webport, cnlport)
 
         finally:
             dock_socket.close()
