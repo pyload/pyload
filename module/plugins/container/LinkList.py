@@ -8,9 +8,9 @@ from module.utils import fs_encode
 
 class LinkList(Container):
     __name__    = "LinkList"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
-    __pattern__ = r'.+\.txt'
+    __pattern__ = r'.+\.txt$'
     __config__ = [("clear", "bool", "Clear Linklist after adding", False),
                   ("encoding", "string", "File encoding (default utf-8)", "")]
 

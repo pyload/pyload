@@ -12,9 +12,9 @@ from module.utils import fs_encode
 
 class RSDF(Container):
     __name__    = "RSDF"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
-    __pattern__ = r'.+\.rsdf'
+    __pattern__ = r'.+\.rsdf$'
 
     __description__ = """RSDF container decrypter plugin"""
     __license__     = "GPLv3"

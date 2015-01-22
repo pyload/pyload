@@ -16,9 +16,9 @@ from module.utils import save_join
 
 class CCF(Container):
     __name__    = "CCF"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
-    __pattern__ = r'.+\.ccf'
+    __pattern__ = r'.+\.ccf$'
 
     __description__ = """CCF container decrypter plugin"""
     __license__     = "GPLv3"
