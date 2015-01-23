@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hosters.ZeveraCom import ZeveraCom
+from module.plugins.hoster.ZeveraCom import ZeveraCom
 
 
 class PutdriveCom(ZeveraCom):
     __name__    = "PutdriveCom"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)putdrive\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+'
 
