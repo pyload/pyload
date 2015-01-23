@@ -12,7 +12,7 @@ document.addEvent("domready", function() {
     $('delete_reset').addEvent('click', function() {
         hide_confirm_box()
     });
-        
+
     /*$('filemanager_actions_list').getChildren("li").each(function(action) {
       var action_name = action.className;
       if(functions[action.className] != undefined)
@@ -86,7 +86,7 @@ var FilemanagerUI = new Class({
             var name = ele.getElements("input.name")[0].get("value");
             this.directories.push(new Item(this, path, name, ele))
         }.bind(this));
-	
+
 	$("directories-list").getChildren("li.file").each(function(ele) {
             var path = ele.getElements("input.path")[0].get("value");
             var name = ele.getElements("input.name")[0].get("value");
@@ -108,7 +108,7 @@ var Item = new Class({
 	this.actions["rename"] = this.rename;
 	this.actions["mkdir"] = this.mkdir;
         this.parseElement();
-        
+
         var pname = this.ele.getElements("span")[0];
         this.buttons = new Fx.Tween(this.ele.getElements(".buttons")[0], {link: "cancel"});
         this.buttons.set("opacity", 0);
@@ -130,7 +130,7 @@ var Item = new Class({
 
 	//click on the directory name must open the directory itself
 	this.ele.getElements('b')[0].addEvent('click', this.toggle.bind(this));
-	
+
 	//iterate over child directories
 	var uls = this.ele.getElements('ul');
 	if(uls.length > 0)
@@ -151,22 +151,22 @@ var Item = new Class({
     reorderElements: function() {
       //TODO sort the main ul again (to keep data ordered after renaming something)
     },
-    
+
     del: function(event) {
         $("confirm_form").removeEvents("submit");
         $("confirm_form").addEvent("submit", this.deleteDirectory.bind(this));
 
 	$$("#confirm_form p").set('html', '{{_(("Are you sure you want to delete the selected item?"))}}');
-	
+
         show_confirm_box();
         event.stop();
     },
-    
+
     deleteDirectory: function(event) {
         hide_confirm_box();
 	new Request.JSON({
             method: 'POST',
-            url: "/json/filemanager/delete",
+            url: "{{ '/json/filemanager/delete' | url }}",
 	    data: {"path": this.path, "name": this.name},
             onSuccess: function(data) {
 		if(data.response == "success")
@@ -180,7 +180,7 @@ var Item = new Class({
 		    var div = new Element("div", { 'html': '{{ _("Folder is empty") }}' });
 		    div.replaces(ul);
 		  }
-		  
+
 		  indicateSuccess();
 		} else
 		{
@@ -190,10 +190,10 @@ var Item = new Class({
             }.bind(this),
             onFailure: indicateFail
         }).send();
-	
+
         event.stop();
     },
-    
+
     rename: function(event) {
         $("rename_form").removeEvents("submit");
         $("rename_form").addEvent("submit", this.renameDirectory.bind(this));
@@ -201,7 +201,7 @@ var Item = new Class({
 	$("path").set("value", this.path);
         $("old_name").set("value", this.name);
         $("new_name").set("value", this.name);
-        
+
         show_rename_box();
         event.stop();
     },
@@ -210,7 +210,7 @@ var Item = new Class({
         hide_rename_box();
 	new Request.JSON({
             method: 'POST',
-            url: "/json/filemanager/rename",
+            url: "{{ '/json/filemanager/rename' | url }}",
             onSuccess: function(data) {
 		if(data.response == "success")
 		{
@@ -226,21 +226,21 @@ var Item = new Class({
             }.bind(this),
             onFailure: indicateFail
         }).send($("rename_form").toQueryString());
-	
+
         event.stop();
     },
-    
+
     mkdir: function(event) {
       new Request.JSON({
 	  method: 'POST',
-	  url: "/json/filemanager/mkdir",
+	  url: "{{ '/json/filemanager/mkdir' | url }}",
 	  data: {"path": this.path + "/" + this.name, "name": '{{_("New folder")}}'},
 	  onSuccess: function(data) {
 	      if(data.response == "success")
 	      {
 		new Request.HTML({
 		    method: 'POST',
-		    url: "/filemanager/get_dir",
+		    url: "{{ '/filemanager/get_dir' | url }}",
 		    data: {"path": data.path, "name": data.name},
 		    onSuccess: function(li) {
 			//add node as first child of ul
@@ -249,13 +249,13 @@ var Item = new Class({
 			{
 			  //remove the "Folder Empty" div
 			  this.ele.getChildren('div').dispose();
-			  
+
 			  //create new ul to contain subfolder
 			  ul = new Element("ul");
 			  ul.inject(this.ele, 'bottom');
 			}
 			li[0].inject(ul, 'top');
-			
+
 			//add directory as a subdirectory of the current item
 			this.directories.push(new Item(this.ui, data.path, data.name, ul.firstChild));
 		    }.bind(this),
@@ -270,15 +270,15 @@ var Item = new Class({
 	  }.bind(this),
 	  onFailure: indicateFail
       }).send();
-      
+
       event.stop();
     },
-    
+
     toggle: function() {
         var child = this.ele.getElement('ul');
 	if(child == null)
 	  child = this.ele.getElement('div');
-	
+
 	if(child != null)
 	{
 	  if (child.getStyle('display') == "block") {

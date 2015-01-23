@@ -68,9 +68,9 @@ document.addEvent "domready", ->
     $('add_reset').addEvent 'click', -> root.addBox.close()
 
     $('action_add').addEvent 'click', -> $("add_form").reset(); root.addBox.open()
-    $('action_play').addEvent 'click', -> new Request({method: 'get', url: '/api/unpauseServer'}).send()
-    $('action_cancel').addEvent 'click', -> new Request({method: 'get', url: '/api/stopAllDownloads'}).send()
-    $('action_stop').addEvent 'click', -> new Request({method: 'get', url: '/api/pauseServer'}).send()
+    $('action_play').addEvent 'click', -> new Request({method: 'get', url: '{{ "/api/unpauseServer" | url }}'}).send()
+    $('action_cancel').addEvent 'click', -> new Request({method: 'get', url: '{{ "/api/stopAllDownloads" | url }}'}).send()
+    $('action_stop').addEvent 'click', -> new Request({method: 'get', url: '{{ "/api/pauseServer" | url }}'}).send()
 
 
     # captcha events
@@ -86,7 +86,7 @@ document.addEvent "domready", ->
     $('cap_positional').addEvent 'click', on_captcha_click
 
     new Request.JSON({
-        url: "/json/status"
+        url: '{{ "/json/status" | url }}'
         onSuccess: LoadJsonToContent
         secure: false
         async: true
@@ -146,7 +146,7 @@ set_captcha = (data) ->
 
 load_captcha = (method, post) ->
     new Request.JSON({
-        url: "/json/set_captcha"
+        url: '{{ "/json/set_captcha" | url }}'
         onSuccess: (data) -> set_captcha(data) if data.captcha else clear_captcha()
         secure: false
         async: true
@@ -165,7 +165,7 @@ submit_captcha = ->
     $('cap_result').set('value', '')
     false
 
-on_captcha_click = (e) -> 
+on_captcha_click = (e) ->
     position = e.target.getPosition()
     x = e.page.x - position.x
     y = e.page.y - position.y

@@ -22,10 +22,10 @@
         {
             document.forms[0].p.value = file;
             setValid();
-            
+
         }
 	</script>
-	<link rel="stylesheet" type="text/css" href="/media/default/css/pathchooser.css"/>
+	<link rel="stylesheet" type="text/css" href="{{ '/media/default/css/pathchooser.css' | url }}"/>
 </head>
 <body{% if type == 'file' %}{% if not oldfile %} onload="setInvalid();"{% endif %}{% endif %}>
 <center>
@@ -34,7 +34,7 @@
 	    <input type="text" name="p" value="{{ oldfile|default(cwd) }}" size="60" onfocus="setValid();">
 	    <input type="submit" value="Ok" name="send">
 	</form>
-    
+
     {% if type == 'folder' %}
 	<span class="path_abs_rel">{{_("Path")}}: <a href="{{ "/pathchooser" + cwd|path_make_absolute|quotepath }}"{% if absolute %} style="text-decoration: underline;"{% endif %}>{{_("absolute")}}</a> | <a href="{{ "/pathchooser/" + cwd|path_make_relative|quotepath }}"{% if not absolute %} style="text-decoration: underline;"{% endif %}>{{_("relative")}}</a></span>
     {% else %}
