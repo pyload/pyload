@@ -13,7 +13,7 @@ from module.plugins.Hoster import Hoster
 class BasePlugin(Hoster):
     __name__    = "BasePlugin"
     __type__    = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __pattern__ = r'^unmatchable$'
 
@@ -36,6 +36,7 @@ class BasePlugin(Hoster):
 
     def setup(self):
         self.chunkLimit     = -1
+        self.multiDL        = True
         self.resumeDownload = True
 
 
@@ -52,7 +53,7 @@ class BasePlugin(Hoster):
                 link = fileUrl(self, unquote(pyfile.url))
 
                 if link:
-                    self.download(link, disposition=True)
+                    self.download(link, ref=False, disposition=True)
                 else:
                     self.fail(_("File not found"))
 

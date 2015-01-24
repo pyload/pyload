@@ -15,7 +15,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
 
     __pattern__ = r'^unmatchable$'
 
@@ -88,12 +88,16 @@ class XFSHoster(SimpleHoster):
             self.directDL = self.premium
 
 
-    def downloadLink(self, link):
+    def downloadLink(self, link, disposition=False):  #@TODO: Set `disposition=True` in 0.4.10
         if link and isinstance(link, basestring):
-            if self.captcha:
-                self.correctCaptcha()
+            self.correctCaptcha()
 
-            self.download(link, ref=True, cookies=True, disposition=False)  #@TODO: Set `disposition=True` in 0.4.10
+            if not urlparse(link).scheme:
+                url_p   = urlparse(self.pyfile.url)
+                baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
+                link    = urljoin(baseurl, link)
+
+            self.download(link, ref=False, disposition=disposition)
 
         elif self.errmsg:
             if 'captcha' in self.errmsg:
