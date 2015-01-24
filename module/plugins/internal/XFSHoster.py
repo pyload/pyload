@@ -15,7 +15,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
 
     __pattern__ = r'^unmatchable$'
 
@@ -55,7 +55,7 @@ class XFSHoster(SimpleHoster):
 
 
     def setup(self):
-        self.chunkLimit     = 1
+        self.chunkLimit     = -1 if self.premium else 1
         self.resumeDownload = self.multiDL = self.premium
 
 
