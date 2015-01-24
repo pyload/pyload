@@ -12,7 +12,7 @@ from module.common.json_layer import json_loads
 
 class CaptchaService:
     __name__    = "CaptchaService"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"
@@ -40,7 +40,7 @@ class CaptchaService:
 
 class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__     = "GPLv3"
@@ -81,8 +81,8 @@ class ReCaptcha(CaptchaService):
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        challenge = "challenge_v%s" % ((version if version in (1, 2) else
-                                       (2 if re.search(self.KEY_V2_PATTERN, html) else 1))
+        challenge = "challenge_v%s" % (version if version in (1, 2) else
+                                       2 if re.search(self.KEY_V2_PATTERN, html) else 1)
 
         return getattr(self, challenge)(key, html)
 
