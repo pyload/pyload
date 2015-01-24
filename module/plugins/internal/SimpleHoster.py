@@ -140,15 +140,14 @@ def timestamp():
 
 
 #@TODO: Move to hoster class in 0.4.10
-def fileUrl(self, url, follow_location=False):
+def fileUrl(self, url, follow_location=None):
     link     = ""
     redirect = 1
 
-    if isinstance(follow_location, bool):
-        redirect = 5
-
-    elif isinstance(follow_location, int):
+    if type(follow_location) is int:
         redirect = max(follow_location, 1)
+    else:
+        redirect = 5
 
     for i in xrange(redirect):
         try:
@@ -204,7 +203,7 @@ def fileUrl(self, url, follow_location=False):
                 mimetype = header['content-type'].split(';')[0].strip()
 
             elif extension:
-                mimetype = mimetypes.guess_extension(extension, False)[0] or "application/octet-stream"
+                mimetype = mimetypes.guess_type(extension, False)[0] or "application/octet-stream"
 
             else:
                 mimetype = ""
@@ -246,7 +245,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.07"
+    __version__ = "1.08"
 
     __pattern__ = r'^unmatchable$'
 
