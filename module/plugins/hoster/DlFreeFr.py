@@ -36,7 +36,7 @@ class CustomBrowser(Browser):
 class DlFreeFr(SimpleHoster):
     __name__    = "DlFreeFr"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(\w+|getfile\.pl\?file=/\w+)'
 
@@ -92,7 +92,8 @@ class DlFreeFr(SimpleHoster):
         action, inputs = self.parseHtmlForm('action="getfile.pl"')
 
         adyoulike = AdYouLike(self)
-        inputs.update(adyoulike.challenge())
+        response, challenge = adyoulike.challenge()
+        inputs.update(response)
 
         self.load("http://dl.free.fr/getfile.pl", post=inputs)
         headers = self.getLastHeaders()

@@ -12,14 +12,12 @@ from module.common.json_layer import json_loads
 
 class CaptchaService:
     __name__    = "CaptchaService"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"
     __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
-
-    KEY_PATTERN = None
 
     key = None  #: last key detected
 
@@ -29,22 +27,7 @@ class CaptchaService:
 
 
     def detect_key(self, html=None):
-        if not html:
-            if hasattr(self.plugin, "html") and self.plugin.html:
-                html = self.plugin.html
-            else:
-                errmsg = _("%s html not found") % self.__name__
-                self.plugin.fail(errmsg)  #@TODO: replace all plugin.fail(errmsg) with plugin.error(errmsg) in 0.4.10
-                raise TypeError(errmsg)
-
-        m = re.search(self.KEY_PATTERN, html)
-        if m:
-            self.key = m.group(1).strip()
-            self.plugin.logDebug("%s key: %s" % (self.__name__, self.key))
-            return self.key
-        else:
-            self.plugin.logDebug("%s key not found" % self.__name__)
-            return None
+        raise NotImplementedError
 
 
     def challenge(self, key=None, html=None):
@@ -57,16 +40,17 @@ class CaptchaService:
 
 class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__     = "GPLv3"
     __authors__     = [("pyLoad Team", "admin@pyload.org"),
+                       ("Walter Purcaro", "vuolter@gmail.com"),
                        ("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
-    KEY_PATTERN      = r'(?:data-sitekey=["\']|["\']sitekey["\']:\s*["\']|recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=)([\w-]+)'
-    KEY_AJAX_PATTERN = r'Recaptcha\.create\s*\(\s*["\']([\w-]+)'
+    KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']:\s*["\'])([\w-]+)'
+    KEY_V1_PATTERN = r'(?:recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=|Recaptcha\.create\s*\(\s*["\'])([\w-]+)'
 
 
     def detect_key(self, html=None):
@@ -78,7 +62,7 @@ class ReCaptcha(CaptchaService):
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        m = re.search(self.KEY_PATTERN, html) or re.search(self.KEY_AJAX_PATTERN, html)
+        m = re.search(self.KEY_V2_PATTERN, html) or re.search(self.KEY_V1_PATTERN, html)
         if m:
             self.key = m.group(1).strip()
             self.plugin.logDebug("ReCaptcha key: %s" % self.key)
@@ -88,7 +72,7 @@ class ReCaptcha(CaptchaService):
             return None
 
 
-    def challenge(self, key=None, html=None):
+    def challenge(self, key=None, html=None, version=None):
         if not html:
             if hasattr(self.plugin, "html") and self.plugin.html:
                 html = self.plugin.html
@@ -97,12 +81,13 @@ class ReCaptcha(CaptchaService):
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        challenge = "challenge_%s" % 'new' if re.search(r'sitekey', html) else 'old'
+        challenge = "challenge_v%s" % ((version if version in (1, 2) else
+                                       (2 if re.search(self.KEY_V2_PATTERN, html) else 1))
 
         return getattr(self, challenge)(key, html)
 
 
-    def challenge_old(self, key=None, html=None):
+    def challenge_v1(self, key=None, html=None):
         if not key:
             if self.detect_key(html):
                 key = self.key
@@ -174,7 +159,7 @@ class ReCaptcha(CaptchaService):
         return millis, rpc
 
 
-    def challenge_new(self, key=None, html=None):
+    def challenge_v2(self, key=None, html=None):
         if not key:
             if self.detect_key(html):
                 key = self.key
@@ -323,7 +308,7 @@ class AdsCaptcha(CaptchaService):
 
 class SolveMedia(CaptchaService):
     __name__    = "SolveMedia"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__     = "GPLv3"
@@ -331,6 +316,25 @@ class SolveMedia(CaptchaService):
 
 
     KEY_PATTERN = r'api\.solvemedia\.com/papi/challenge\.(?:no)?script\?k=(.+?)["\']'
+
+
+    def detect_key(self, html=None):
+        if not html:
+            if hasattr(self.plugin, "html") and self.plugin.html:
+                html = self.plugin.html
+            else:
+                errmsg = _("SolveMedia html not found")
+                self.plugin.fail(errmsg)
+                raise TypeError(errmsg)
+
+        m = re.search(self.KEY_PATTERN, html)
+        if m:
+            self.key = m.group(1).strip()
+            self.plugin.logDebug("SolveMedia key: %s" % self.key)
+            return self.key
+        else:
+            self.plugin.logDebug("SolveMedia key not found")
+            return None
 
 
     def challenge(self, key=None, html=None):
@@ -368,7 +372,7 @@ class SolveMedia(CaptchaService):
 
 class AdYouLike(CaptchaService):
     __name__    = "AdYouLike"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """AdYouLike captcha service plugin"""
     __license__     = "GPLv3"
@@ -428,7 +432,7 @@ class AdYouLike(CaptchaService):
 
         self.plugin.logDebug("AdYouLike challenge: %s" % challenge)
 
-        return self.result(ayl, challenge)
+        return self.result(ayl, challenge), challenge
 
 
     def result(self, server, challenge):
