@@ -58,7 +58,7 @@ from module.utils import save_join, uniqify
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.05"
+    __version__ = "1.06"
 
     __config__ = [("activated"    , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"     , "bool"  , "Extract full path"                         , True                                                                     ),
@@ -302,7 +302,7 @@ class ExtractArchive(Hook):
 
         try:
             progress  = lambda x: pyfile.setProgress(x)
-            encrypted = True  #@TODO: set to `False`
+            encrypted = False
             passwords = self.getPasswords()
 
             try:
