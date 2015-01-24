@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
 
@@ -53,30 +53,23 @@ class FilerNet(SimpleHoster):
         if 'hash' not in inputs:
             self.error(_("Unable to detect hash"))
 
-        recaptcha = ReCaptcha(self)
+        recaptcha           = ReCaptcha(self)
+        response, challenge = recaptcha.challenge()
 
-        for _i in xrange(5):
-            response, challenge = recaptcha.challenge()
+        #@NOTE: Work-around for v0.4.9 just_header issue
+        #@TODO: Check for v0.4.10
+        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
+        self.load(pyfile.url, post={'recaptcha_challenge_field': challenge,
+                                    'recaptcha_response_field' : response,
+                                    'hash'                     : inputs['hash']})
+        self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
-            #@NOTE: Work-around for v0.4.9 just_header issue
-            #@TODO: Check for v0.4.10
-            self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
-            self.load(pyfile.url, post={'recaptcha_challenge_field': challenge,
-                                        'recaptcha_response_field' : response,
-                                        'hash'                     : inputs['hash']})
-            self.req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
-
-            if 'location' in self.req.http.header.lower():
-                self.link = re.search(r'location: (\S+)', self.req.http.header, re.I).group(1)
-                self.correctCaptcha()
-                break
-            else:
-                self.invalidCaptcha()
-
-
-    def downloadLink(self, link):
-        if link and isinstance(link, basestring):
-            self.download(urljoin("http://filer.net/", link), disposition=True)
+        if 'location' in self.req.http.header.lower():
+            self.link = re.search(r'location: (\S+)', self.req.http.header, re.I).group(1)
+            self.correctCaptcha()
+            break
+        else:
+            self.invalidCaptcha()
 
 
 getInfo = create_getInfo(FilerNet)

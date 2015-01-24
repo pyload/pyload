@@ -25,7 +25,7 @@ def doubleDecode(m):
 class FshareVn(SimpleHoster):
     __name__    = "FshareVn"
     __type__    = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __pattern__ = r'http://(?:www\.)?fshare\.vn/file/.+'
 
@@ -58,7 +58,7 @@ class FshareVn(SimpleHoster):
         self.checkErrors()
 
         action, inputs = self.parseHtmlForm('frm_download')
-        self.url = urljoin(pyfile.url, action)
+        url = urljoin(pyfile.url, action)
 
         if not inputs:
             self.error(_("No FORM"))
@@ -69,7 +69,7 @@ class FshareVn(SimpleHoster):
             if password:
                 self.logInfo(_("Password protected link, trying ") + password)
                 inputs['link_file_pwd_dl'] = password
-                self.html = self.load(self.url, post=inputs, decode=True)
+                self.html = self.load(url, post=inputs, decode=True)
 
                 if 'name="link_file_pwd_dl"' in self.html:
                     self.fail(_("Incorrect password"))
@@ -77,7 +77,7 @@ class FshareVn(SimpleHoster):
                 self.fail(_("No password found"))
 
         else:
-            self.html = self.load(self.url, post=inputs, decode=True)
+            self.html = self.load(url, post=inputs, decode=True)
 
         self.checkErrors()
 
@@ -87,11 +87,9 @@ class FshareVn(SimpleHoster):
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
-        self.url = m.group(1)
-        self.logDebug("FREE DL URL: %s" % self.url)
-
+        
+        self.link = m.group(1)
         self.wait()
-        self.download(self.url)
 
 
     def checkErrors(self):

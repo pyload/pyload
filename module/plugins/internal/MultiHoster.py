@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __pattern__ = r'^unmatchable$'
 
@@ -27,9 +27,10 @@ class MultiHoster(SimpleHoster):
 
 
     def prepare(self):
-        self.info      = {}
-        self.link      = ""     #@TODO: Move to hoster class in 0.4.10
-        self.directDL  = False  #@TODO: Move to hoster class in 0.4.10
+        self.info     = {}
+        self.html     = ""
+        self.link     = ""     #@TODO: Move to hoster class in 0.4.10
+        self.directDL = False  #@TODO: Move to hoster class in 0.4.10
 
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(_("Required account not found"))

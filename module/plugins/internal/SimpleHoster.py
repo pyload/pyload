@@ -245,7 +245,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.08"
+    __version__ = "1.09"
 
     __pattern__ = r'^unmatchable$'
 
@@ -424,6 +424,7 @@ class SimpleHoster(Hoster):
         self.pyfile.error = ""  #@TODO: Remove in 0.4.10
 
         self.info      = {}
+        self.html      = ""
         self.link      = ""     #@TODO: Move to hoster class in 0.4.10
         self.directDL  = False  #@TODO: Move to hoster class in 0.4.10
         self.multihost = False  #@TODO: Move to hoster class in 0.4.10

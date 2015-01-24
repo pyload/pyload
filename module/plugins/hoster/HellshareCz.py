@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class HellshareCz(SimpleHoster):
     __name__    = "HellshareCz"
     __type__    = "hoster"
-    __version__ = "0.84"
+    __version__ = "0.85"
 
     __pattern__ = r'http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+'
 
@@ -30,12 +30,6 @@ class HellshareCz(SimpleHoster):
     def setup(self):
         self.resumeDownload = self.multiDL = bool(self.account)
         self.chunkLimit = 1
-
-
-    def downloadLink(self, link):
-        if link and isinstance(link, basestring):
-            self.correctCaptcha()
-            self.download(urljoin("http://www.hellshare.com/", link), disposition=True)
 
 
 getInfo = create_getInfo(HellshareCz)

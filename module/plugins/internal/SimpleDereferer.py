@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import fileUrl, set_cookies
 class SimpleDereferer(Crypter):
     __name__    = "SimpleDereferer"
     __type__    = "crypter"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -54,10 +54,6 @@ class SimpleDereferer(Crypter):
             except Exception:
                 self.prepare()
                 self.preload()
-
-                if self.html is None:
-                    self.fail(_("No html retrieved"))
-
                 self.checkStatus()
 
                 link = self.getLink()
@@ -70,6 +66,9 @@ class SimpleDereferer(Crypter):
 
 
     def prepare(self):
+        self.info = {}
+        self.html = ""
+
         self.req.setOption("timeout", 120)
 
         if isinstance(self.COOKIES, list):

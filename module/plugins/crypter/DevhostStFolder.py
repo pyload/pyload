@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter, create_getInfo
 class DevhostStFolder(SimpleCrypter):
     __name__    = "DevhostStFolder"
     __type__    = "crypter"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -52,10 +52,6 @@ class DevhostStFolder(SimpleCrypter):
             name = folder = re.match(self.__pattern__, self.pyfile.url).group('USER')
 
         return {'name': name, 'folder': folder}
-
-
-    def getLinks(self):
-        return [urljoin("http://d-h.st", link) for link in re.findall(self.LINK_PATTERN, self.html)]
 
 
 getInfo = create_getInfo(DevhostStFolder)
