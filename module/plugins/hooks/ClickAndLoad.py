@@ -19,10 +19,11 @@ def forward(source, destination):
 
 
 #: socket.create_connection wrapper for python 2.5
-def create_connection(address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT,
-                      source_address=None):
+def create_connection(address, timeout=object(), source_address=None):
     try:
-        return socket.create_connection(address, timeout, source_address)
+        return socket.create_connection(address,
+                                        socket._GLOBAL_DEFAULT_TIMEOUT if type(timeout) == object else timeout,
+                                        source_address)
 
     except SyntaxError:
         """Connect to *address* and return the socket object.
@@ -44,7 +45,7 @@ def create_connection(address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT,
             sock = None
             try:
                 sock = socket(af, socktype, proto)
-                if timeout is not socket._GLOBAL_DEFAULT_TIMEOUT:
+                if type(timeout) != object:
                     sock.settimeout(timeout)
                 if source_address:
                     sock.bind(source_address)
@@ -65,7 +66,7 @@ def create_connection(address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT,
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.29"
+    __version__ = "0.30"
 
     __config__ = [("activated", "bool", "Activated"                                     , True ),
                   ("port"     , "int" , "Port"                                          , 9666 ),
