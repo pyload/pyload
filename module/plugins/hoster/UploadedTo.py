@@ -94,7 +94,7 @@ def getInfo(urls):
 class UploadedTo(Hoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.75"
+    __version__ = "0.76"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
@@ -206,7 +206,7 @@ class UploadedTo(Hoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            challenge, response = recaptcha.challenge()
+            response, challenge = recaptcha.challenge()
             options = {"recaptcha_challenge_field": challenge, "recaptcha_response_field": response}
             self.wait()
 
