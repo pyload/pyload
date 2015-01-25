@@ -1,85 +1,50 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
-
 import sys
 import zipfile
 
-from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
+from module.plugins.internal.Extractor import Extractor, WrongPassword, ArchiveError
 
 
 class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.01"
+    __version__ = "1.02"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
-    EXTENSIONS = ["zip", "zip64"]
-
-
-    @classmethod
-    def checkDeps(cls):
+    @staticmethod
+    def checkDeps():
         return sys.version_info[:2] >= (2, 6)
 
 
-    @classmethod
-    def isArchive(cls, file):
-        return zipfile.is_zipfile(file)
+    @staticmethod
+    def getTargets(files_ids):
+        result = []
+
+        for file, id in files_ids:
+            if file.endswith(".zip"):
+                result.append((file, id))
+
+        return result
 
 
-    def verify(self):
+    def extract(self, progress, password=None):
         try:
-            with zipfile.ZipFile(self.file, 'r', allowZip64=True) as z:
-                z.setpassword(self.password)
-                badcrc = z.testzip()
-
-        except (BadZipfile, LargeZipFile), e:
-            raise ArchiveError(e)
-
-        except RuntimeError, e:
-            if 'encrypted' in e:
-                raise PasswordError
-            else:
-                raise ArchiveError(e)
-
-        else:
-            if badcrc:
-                raise CRCError
-
-        if not self.list():
-            raise ArchiveError("Empty archive")
-
-
-    def list(self):
-        try:
-            with zipfile.ZipFile(self.file, 'r', allowZip64=True) as z:
-                z.setpassword(self.password)
-                return z.namelist()
-        except Exception:
-            return list()
-
-
-    def extract(self, progress=lambda x: None):
-        try:
-            with zipfile.ZipFile(self.file, 'r', allowZip64=True) as z:
-                progress(0)
-                z.extractall(self.out, pwd=self.password)
-                progress(100)
+            z = zipfile.ZipFile(self.file)
+            self.files = z.namelist()
+            z.extractall(self.out, pwd=password)
 
         except (BadZipfile, LargeZipFile), e:
             raise ArchiveError(e)
 
         except RuntimeError, e:
             if e is "Bad password for file":
-                raise PasswordError
+                raise WrongPassword
             else:
                 raise ArchiveError(e)
-
-        finally:
-            self.files = self.list()
 
 
     def getDeleteFiles(self):

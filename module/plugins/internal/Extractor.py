@@ -8,52 +8,37 @@ class CRCError(Exception):
     pass
 
 
-class PasswordError(Exception):
+class WrongPassword(Exception):
     pass
 
 
 class Extractor:
     __name__    = "Extractor"
-    __version__ = "0.13"
+    __version__ = "0.14"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "ranan@pyload.org"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
-    EXTENSIONS = []
-
-
-    @classmethod
-    def checkDeps(cls):
+    @staticmethod
+    def checkDeps():
         """ Check if system statisfy dependencies
         :return: boolean
         """
         return True
 
 
-    @classmethod
-    def isArchive(cls, file):
-        raise NotImplementedError
-
-
-    @classmethod
-    def getTargets(cls, files_ids):
+    @staticmethod
+    def getTargets(files_ids):
         """ Filter suited targets from list of filename id tuple list
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
-        targets = []
-
-        for file, id in files_ids:
-            if cls.isArchive(file):
-                targets.append((file, id))
-
-        return targets
+        raise NotImplementedError
 
 
-    def __init__(self, m, file, out, password, fullpath, overwrite, excludefiles, renice, delete, keepbroken):
+    def __init__(self, m, file, out, fullpath, overwrite, excludefiles, renice):
         """Initialize extractor for specific file
 
         :param m: ExtractArchive Hook plugin
@@ -63,17 +48,14 @@ class Extractor:
         :param overwrite: Overwrite existing archives
         :param renice: Renice value
         """
-        self.m            = m
-        self.file         = file
-        self.out          = out
-        self.password     = password
-        self.fullpath     = fullpath
-        self.overwrite    = overwrite
+        self.m = m
+        self.file = file
+        self.out = out
+        self.fullpath = fullpath
+        self.overwrite = overwrite
         self.excludefiles = excludefiles
-        self.renice       = renice
-        self.delete       = delete
-        self.keepbroken   = keepbroken
-        self.files        = []  #: Store extracted files here
+        self.renice = renice
+        self.files = []  #: Store extracted files here
 
 
     def init(self):
@@ -81,45 +63,32 @@ class Extractor:
         pass
 
 
-    def verify(self):
+    def checkArchive(self):
         """Check if password if needed. Raise ArchiveError if integrity is
         questionable.
 
+        :return: boolean
         :raises ArchiveError
         """
-        pass
+        return False
 
 
-    def isPassword(self, password):
+    def checkPassword(self, password):
         """ Check if the given password is/might be correct.
         If it can not be decided at this point return true.
 
         :param password:
         :return: boolean
         """
-        if isinstance(password, basestring):
-            return True
-        else:
-            return False
+        return True
 
 
-    def setPassword(self, password):
-        if self.isPassword(password):
-            self.password = password
-            return True
-        else:
-            return False
-
-
-    def repair(self):
-        return False
-
-
-    def extract(self, progress=lambda x: None):
+    def extract(self, progress, password=None):
         """Extract the archive. Raise specific errors in case of failure.
 
         :param progress: Progress function, call this to update status
-        :raises PasswordError
+        :param password password to use
+        :raises WrongPassword
         :raises CRCError
         :raises ArchiveError
         :return:
