@@ -51,7 +51,7 @@ def create_connection(address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT,
                 sock.connect(sa)
                 return sock
 
-            except error as _:
+            except socket.error, _:
                 err = _
                 if sock is not None:
                     sock.close()
@@ -59,13 +59,13 @@ def create_connection(address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT,
         if err is not None:
             raise err
         else:
-            raise error("getaddrinfo returns an empty list")
+            raise socket.error("getaddrinfo returns an empty list")
 
 
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
     __config__ = [("activated", "bool", "Activated"                                     , True ),
                   ("port"     , "int" , "Port"                                          , 9666 ),
