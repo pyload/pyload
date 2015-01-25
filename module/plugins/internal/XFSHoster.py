@@ -4,6 +4,7 @@ import re
 
 from random import random
 from time import sleep
+from urlparse import urljoin, urlparse
 
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 
@@ -15,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
 
     __pattern__ = r'^unmatchable$'
 
