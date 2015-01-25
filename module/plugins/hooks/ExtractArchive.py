@@ -58,7 +58,7 @@ from module.utils import save_join, fs_encode
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.07"
+    __version__ = "1.08"
 
     __config__ = [("activated", "bool", "Activated", True),
                   ("fullpath", "bool", "Extract full path", True),
@@ -254,7 +254,7 @@ class ExtractArchive(Hook):
             success = False
 
             if not plugin.checkArchive():
-                plugin.extract(progress, pw)
+                plugin.extract(progress, self.getPasswords())
                 success = True
             else:
                 self.logInfo(basename(plugin.file), _("Password protected"))

@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.02"
+    __version__ = "1.03"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -32,12 +32,13 @@ class UnRar(Extractor):
     CMD = "unrar"
 
     # there are some more uncovered rar formats
-    re_version = re.compile(r"(UNRAR 5[\d.]+(.*?)freeware)")
-    re_splitfile = re.compile(r"(.*)\.part(\d+)\.rar$", re.I)
-    re_partfiles = re.compile(r".*\.(rar|r\d+)", re.I)
-    re_filelist = re.compile(r"(.+)\s+(\d+)\s+(\d+)\s+")
-    re_filelist5 = re.compile(r"(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)")
-    re_wrongpwd = re.compile("(Corrupt file or wrong password|password incorrect)", re.I)
+    re_version   = re.compile(r'UNRAR 5[\d.]+')
+    re_splitfile = re.compile(r'(.*)\.part(\d+)\.rar$', re.I)
+    re_partfiles = re.compile(r'.*\.(rar|r\d+)$', re.I)
+    re_filelist  = re.compile(r'(.+)\s+(\d+)\s+(\d+)\s+')
+    re_filelist5 = re.compile(r'(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
+    re_wrongpwd  = re.compile(r'Corrupt file or wrong password|password incorrect', re.I)
+    re_wrongcrc  = re.compile(r'encrypted|damaged|CRC failed|checksum error', re.I)
 
 
     @staticmethod
@@ -81,9 +82,9 @@ class UnRar(Extractor):
 
     def init(self):
         self.passwordProtected = False
-        self.headerProtected = False  #: list files will not work without password
-        self.smallestFile = None  #: small file to test passwords
-        self.password = ""  #: save the correct password
+        self.headerProtected   = False  #: list files will not work without password
+        self.smallestFile      = None  #: small file to test passwords
+        self.password          = ""  #: save the correct password
 
 
     def checkArchive(self):
@@ -152,12 +153,15 @@ class UnRar(Extractor):
         # retrieve stderr
         err = p.stderr.read()
 
-        if "CRC failed" in err and not password and not self.passwordProtected:
-            raise CRCError
-        elif "CRC failed" in err:
+        if self.re_wrongpwd.search(err):
             raise WrongPassword
-        if err.strip():  #: raise error if anything is on stderr
+
+        elif self.re_wrongcrc.search(err):
+            raise CRCError
+
+        elif err.strip():  #: raise error if anything is on stderr
             raise ArchiveError(err.strip())
+
         if p.returncode:
             raise ArchiveError("Process terminated")
 
