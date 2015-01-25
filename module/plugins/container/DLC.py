@@ -3,7 +3,7 @@
 from __future__ import with_statement
 
 import re
-import xml
+import xml.dom.minidom
 
 from base64 import standard_b64decode
 from Crypto.Cipher import AES
@@ -13,7 +13,7 @@ from module.plugins.Container import Container
 
 class DLC(Container):
     __name__        = "DLC"
-    __version__     = "0.20"
+    __version__     = "0.21"
     __pattern__     = r'.+\.dlc$'
 
     __description__ = """DLC container decrypter plugin"""
@@ -55,7 +55,7 @@ class DLC(Container):
 
 
     def getPackages(self):
-        root     = xml.dom.minidom.parseString(self.data).documentElement
+        root    = xml.dom.minidom.parseString(self.data).documentElement
         content = root.getElementsByTagName("content")[0]
         return self.parsePackages(content)
 
