@@ -1,51 +1,52 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
+
+import os
 import sys
 import zipfile
 
-from module.plugins.internal.Extractor import Extractor, WrongPassword, ArchiveError
+from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
 
 
 class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.02"
+    __version__ = "1.03"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    @staticmethod
-    def checkDeps():
+    EXTENSIONS = [".zip", ".zip64"]
+
+
+    @classmethod
+    def checkDeps(cls):
         return sys.version_info[:2] >= (2, 6)
 
 
-    @staticmethod
-    def getTargets(files_ids):
-        result = []
-
-        for file, id in files_ids:
-            if file.endswith(".zip"):
-                result.append((file, id))
-
-        return result
+    @classmethod
+    def getTargets(cls, files_ids):
+        return [(filename, id) for filename, id in files_ids if cls.isArchive(filename)]
 
 
-    def extract(self, progress, password=None):
+    def extract(self, password=None):
         try:
-            z = zipfile.ZipFile(self.file)
-            self.files = z.namelist()
-            z.extractall(self.out, pwd=password)
+            with zipfile.ZipFile(self.target, 'r', allowZip64=True) as z:
+                z.setpassword(self.password)
+                if not z.testzip():
+                    z.extractall(self.out)
+                    self.files = z.namelist()
+                else:
+                    raise CRCError
 
         except (BadZipfile, LargeZipFile), e:
             raise ArchiveError(e)
 
         except RuntimeError, e:
-            if e is "Bad password for file":
-                raise WrongPassword
+            if "encrypted" in e:
+                raise PasswordError
             else:
                 raise ArchiveError(e)
-
-
-    def getDeleteFiles(self):
-        return [self.file]

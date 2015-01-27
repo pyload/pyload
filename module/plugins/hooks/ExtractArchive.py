@@ -6,8 +6,6 @@ import os
 import sys
 
 from copy import copy
-from os import remove, chmod, makedirs
-from os.path import exists, basename, isfile, isdir
 from traceback import print_exc
 
 # monkey patch bug in python 2.6 and lower
@@ -47,35 +45,37 @@ if sys.version_info < (2, 7) and os.name != "nt":
 
 if os.name != "nt":
     from grp import getgrnam
-    from os import chown
     from pwd import getpwnam
 
 from module.plugins.Hook import Hook, threaded, Expose
-from module.plugins.internal.Extractor import ArchiveError, CRCError, WrongPassword
-from module.utils import save_join, fs_encode
+from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
+from module.utils import fs_decode, save_join, uniqify
 
 
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.08"
+    __version__ = "1.09"
 
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("fullpath", "bool", "Extract full path", True),
-                  ("overwrite", "bool", "Overwrite files", True),
-                  ("passwordfile", "file", "password file", "archive_password.txt"),
-                  ("deletearchive", "bool", "Delete archives when done", False),
-                  ("subfolder", "bool", "Create subfolder for each package", False),
-                  ("destination", "folder", "Extract files to", ""),
-                  ("excludefiles", "str", "Exclude files from unpacking (seperated by ;)", ""),
-                  ("recursive", "bool", "Extract archives in archvies", True),
-                  ("queue", "bool", "Wait for all downloads to be finished", True),
-                  ("renice", "int", "CPU Priority", 0)]
+    __config__ = [("activated"    , "bool"  , "Activated"                                 , True                                                                     ),
+                  ("fullpath"     , "bool"  , "Extract full path"                         , True                                                                     ),
+                  ("overwrite"    , "bool"  , "Overwrite files"                           , False                                                                    ),
+                  ("keepbroken"   , "bool"  , "Extract broken archives"                   , False                                                                    ),
+                  # ("repair"       , "bool"  , "Repair broken archives"                    , True                                                                     ),
+                  ("passwordfile" , "file"  , "Store passwords in file"                   , "archive_password.txt"                                                   ),
+                  ("delete"       , "bool"  , "Delete archive when successfully extracted", False                                                                    ),
+                  ("subfolder"    , "bool"  , "Create subfolder for each package"         , False                                                                    ),
+                  ("destination"  , "folder", "Extract files to"                          , ""                                                                       ),
+                  ("extensions"   , "str"   , "Extract the following extensions"          , "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
+                  ("excludefiles" , "str"   , "Don't extract the following files"         , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
+                  ("recursive"    , "bool"  , "Extract archives in archives"              , True                                                                     ),
+                  ("queue"        , "bool"  , "Wait for all downloads to be finished"     , False                                                                    ),
+                  ("renice"       , "int"   , "CPU Priority"                              , 0                                                                        )]
 
     __description__ = """Extract different kind of archives"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "ranan@pyload.org"),
-                       ("AndroKev", None),
+                       ("AndroKev", ""),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -87,18 +87,23 @@ class ExtractArchive(Hook):
         pass
 
 
-    def setup(self):
-        self.plugins   = []
-        self.passwords = []
-        names = []
+    def coreReady(self):
+        self.extracting = False
 
-        for p in ("UnRar", "UnZip"):
+
+    def setup(self):
+        self.interval   = 300
+        self.extractors = []
+        self.passwords  = []
+
+        names = []
+        for p in ("UnRar", "SevenZip", "UnZip"):
             try:
                 module = self.core.pluginManager.loadModule("internal", p)
                 klass = getattr(module, p)
                 if klass.checkDeps():
                     names.append(p)
-                    self.plugins.append(klass)
+                    self.extractors.append(klass)
 
             except OSError, e:
                 if e.errno == 2:
@@ -118,49 +123,55 @@ class ExtractArchive(Hook):
         else:
             self.logInfo(_("No Extract plugins activated"))
 
-        # queue with package ids
-        self.queue = []
+
+    def periodical(self):
+        if not self.extracting:
+            self.extractPackage(*self.getQueue())
 
 
     @Expose
-    def extractPackage(self, id):
-        """ Extract package with given id"""
-        self.manager.startThread(self.extract, [id])
+    def extractPackage(self, *ids):
+        """ Extract packages with given id"""
+        self.manager.startThread(self.extract, ids)
 
 
     def packageFinished(self, pypack):
-        pid = pypack.id
-        if self.getConfig("queue"):
+        if self.extracting or self.getConfig("queue"):
             self.logInfo(_("Package %s queued for later extracting") % pypack.name)
-            self.queue.append(pid)
+            self.addToQueue(pypack.id)
         else:
-            self.manager.startThread(self.extract, [pid])
+            self.extractPackage(pypack.id)
 
 
     @threaded
-    def allDownloadsProcessed(self, thread):
-        local = copy(self.queue)
-
-        del self.queue[:]
-
-        if self.extract(local, thread):  #: check only if all gone fine, no failed reporting for now
+    def allDownloadsProcessed(self):
+        if self.extract(self.getQueue()):  #@NOTE: check only if all gone fine, no failed reporting for now
             self.manager.dispatchEvent("all_archives_extracted")
 
         self.manager.dispatchEvent("all_archives_processed")
 
 
-    def extract(self, ids, thread=None):
+    def extract(self, ids):
         processed = []
         extracted = []
         failed    = []
+
+        clearList = lambda string: [x.lstrip('.') for x in string.replace(' ', '').replace(',', '|').replace(';', '|').split('|')]
 
         destination  = self.getConfig("destination")
         subfolder    = self.getConfig("subfolder")
         fullpath     = self.getConfig("fullpath")
         overwrite    = self.getConfig("overwrite")
+        extensions   = clearList(self.getConfig("extensions"))
+        excludefiles = clearList(self.getConfig("excludefiles"))
         excludefiles = self.getConfig("excludefiles")
         renice       = self.getConfig("renice")
         recursive    = self.getConfig("recursive")
+        delete       = self.getConfig("delete")
+        keepbroken   = self.getConfig("keepbroken")
+
+        if extensions:
+            self.logDebug("Extensions: %s" % "|.".join(extensions))
 
         # reload from txt file
         self.reloadPasswords()
@@ -168,63 +179,81 @@ class ExtractArchive(Hook):
         # dl folder
         dl = self.config['general']['download_folder']
 
-        #iterate packages -> plugins -> targets
+        #iterate packages -> extractors -> targets
         for pid in ids:
-            p = self.core.files.getPackage(pid)
-            self.logInfo(_("Check package %s") % p.name)
-            if not p:
+            pypack = self.core.files.getPackage(pid)
+
+            self.logInfo(_("Check package: %s") % pypack.name)
+
+            if not pypack:
                 continue
 
             # determine output folder
-            out = save_join(dl, p.folder, destination, "")  #: force trailing slash
+            out = save_join(dl, pypack.folder, destination, "")  #: force trailing slash
 
             if subfolder:
-                out = save_join(out, fs_encode(p.folder))
+                out = save_join(out, pypack.folder)
 
-            if not exists(out):
-                makedirs(out)
+            if not os.path.exists(out):
+                os.makedirs(out)
 
-            files_ids = [(save_join(dl, p.folder, x['name']), x['id']) for x in p.getChildren().itervalues()]
-            matched = False
-            success = True
+            matched   = False
+            success   = True
+            files_ids = [(save_join(dl, pypack.folder, x['name']), x['id']) for x in pypack.getChildren().itervalues()]
 
             # check as long there are unseen files
             while files_ids:
                 new_files_ids = []
 
-                for plugin in self.plugins:
-                    targets = plugin.getTargets(files_ids)
+                if extensions:
+                    files_ids = [(file, id) for file, id in files_ids if filter(lambda ext: file.endswith(ext), extensions)]
+
+                for Extractor in self.extractors:
+                    targets = Extractor.getTargets(files_ids)
                     if targets:
-                        self.logDebug("Targets for %s: %s" % (plugin.__name__, targets))
+                        self.logDebug("Targets for %s: %s" % (Extractor.__name__, targets))
                         matched = True
 
-                    for target, fid in targets:
-                        if target in processed:
-                            self.logDebug(basename(target), "skipped")
+                    for filename, fid in targets:
+                        fname = os.path.basename(filename)
+
+                        if filename in processed:
+                            self.logDebug(fname, "Skipped")
                             continue
 
-                        processed.append(target)  # prevent extracting same file twice
+                        processed.append(filename)  # prevent extracting same file twice
 
-                        self.logInfo(basename(target), _("Extract to %s") % out)
+                        self.logInfo(fname, _("Extract to: %s") % out)
                         try:
-                            klass = plugin(self, target, out, fullpath, overwrite, excludefiles, renice)
+                            self.extracting = True
+
+                            klass = Extractor(self,
+                                              filename,
+                                              out,
+                                              fullpath,
+                                              overwrite,
+                                              excludefiles,
+                                              renice,
+                                              delete,
+                                              keepbroken,
+                                              fid)
                             klass.init()
 
-                            new_files = self._extract(klass, fid, [p.password.strip()], thread)
+                            new_files = self._extract(klass, fid, pypack.password)
 
                         except Exception, e:
-                            self.logError(basename(target), e)
+                            self.logError(fname, e)
                             success = False
                             continue
 
-                        self.logDebug("Extracted", new_files)
+                        self.logDebug("Extracted files: %s" % new_files)
                         self.setPermissions(new_files)
 
                         for file in new_files:
-                            if not exists(file):
+                            if not os.path.exists(file):
                                 self.logDebug("New file %s does not exists" % file)
                                 continue
-                            if recursive and isfile(file):
+                            if recursive and os.path.isfile(file):
                                 new_files_ids.append((file, fid))  # append as new target
 
                 files_ids = new_files_ids  # also check extracted files
@@ -232,96 +261,120 @@ class ExtractArchive(Hook):
             if matched:
                 if success:
                     extracted.append(pid)
-                    self.manager.dispatchEvent("package_extracted", p)
+                    self.manager.dispatchEvent("package_extracted", pypack)
                 else:
                     failed.append(pid)
-                    self.manager.dispatchEvent("package_extract_failed", p)
+                    self.manager.dispatchEvent("package_extract_failed", pypack)
             else:
                 self.logInfo(_("No files found to extract"))
 
+            if not matched or not success and subfolder:
+                try:
+                    os.rmdir(out)
+                except OSError:
+                    pass
+
+        self.extracting = False
         return True if not failed else False
 
 
-    def _extract(self, plugin, fid, passwords, thread):
+    def _extract(self, archive, fid, password):
         pyfile = self.core.files.getFile(fid)
-        deletearchive = self.getConfig("deletearchive")
+        fname  = os.path.basename(fs_decode(archive.target))
 
         pyfile.setCustomStatus(_("extracting"))
-        thread.addActive(pyfile)  # keep this file until everything is done
+        pyfile.setProgress(0)
 
         try:
-            progress = lambda x: pyfile.setProgress(x)
             success = False
 
-            if not plugin.checkArchive():
-                plugin.extract(progress, self.getPasswords())
+            if not archive.checkArchive():
+                archive.extract(password)
                 success = True
             else:
-                self.logInfo(basename(plugin.file), _("Password protected"))
-                self.logDebug("Passwords: %s" % passwords if passwords else "No password provided")
+                self.logInfo(fname, _("Password protected"))
+                self.logDebug("Password: %s" % (password or "No provided"))
 
-                for pw in set(passwords) | set(self.getPasswords()):
+                for pw in set(self.getPasswords(False) + [password]):
                     try:
                         self.logDebug("Try password: %s" % pw)
-                        if plugin.checkPassword(pw):
-                            plugin.extract(progress, pw)
+                        if archive.checkPassword(pw):
+                            archive.extract(pw)
                             self.addPassword(pw)
                             success = True
                             break
 
-                    except WrongPassword:
+                    except PasswordError:
                         self.logDebug("Password was wrong")
+                else:
+                    raise PasswordError
 
-            if not success:
-                raise Exception(_("Wrong password"))
+            pyfile.setProgress(100)
+            pyfile.setStatus("processing")
 
             if self.core.debug:
-                self.logDebug("Would delete", ", ".join(plugin.getDeleteFiles()))
+                self.logDebug("Would delete: %s" % ", ".join(plugin.getDeleteFiles()))
 
-            if deletearchive:
-                files = plugin.getDeleteFiles()
+            if self.getConfig("delete"):
+                files = archive.getDeleteFiles()
                 self.logInfo(_("Deleting %s files") % len(files))
                 for f in files:
-                    if exists(f):
-                        remove(f)
+                    if os.path.exists(f):
+                        os.remove(f)
                     else:
                         self.logDebug("%s does not exists" % f)
 
-            self.logInfo(basename(plugin.file), _("Extracting finished"))
+            self.logInfo(fname, _("Extracting finished"))
 
-            extracted_files = plugin.getExtractedFiles()
-            self.manager.dispatchEvent("archive_extracted", pyfile, plugin.out, plugin.file, extracted_files)
+            extracted_files = archive.getExtractedFiles()
+            self.manager.dispatchEvent("archive_extracted", pyfile, archive.out, archive.file, extracted_files)
 
             return extracted_files
 
-        except ArchiveError, e:
-            self.logError(basename(plugin.file), _("Archive Error"), e)
+        except PasswordError:
+            self.logError(fname, _("Wrong password" if password else "No password found"))
 
         except CRCError:
-            self.logError(basename(plugin.file), _("CRC Mismatch"))
+            self.logError(fname, _("CRC Mismatch"))
+
+        except ArchiveError, e:
+            self.logError(fname, _("Archive Error"), e)
 
         except Exception, e:
             if self.core.debug:
                 print_exc()
-            self.logError(basename(plugin.file), _("Unknown Error"), e)
+            self.logError(fname, _("Unknown Error"), e)
+
+        finally:
+            pyfile.finishIfDone()
 
         self.manager.dispatchEvent("archive_extract_failed", pyfile)
 
         raise Exception(_("Extract failed"))
 
 
+    def getQueue(self):
+        return self.getStorage("ExtractArchive", [])
+
+
+    def addToQueue(self, item):
+        queue = self.getQueue()
+        return self.setStorage("ExtractArchive", queue + [item] if item not in queue else queue)
+
+
     @Expose
-    def getPasswords(self):
+    def getPasswords(self, reload=True):
         """ List of saved passwords """
+        if reload:
+            self.reloadPasswords()
+
         return self.passwords
 
 
     def reloadPasswords(self):
-        passwordfile = self.getConfig("passwordfile")
-
         try:
             passwords = []
-            with open(passwordfile, "a+") as f:
+            with open(self.getConfig("passwordfile")) as f:
                 for pw in f.read().splitlines():
                     passwords.append(pw)
 
@@ -335,17 +388,12 @@ class ExtractArchive(Hook):
     @Expose
     def addPassword(self, pw):
         """  Adds a password to saved list"""
-        passwordfile = self.getConfig("passwordfile")
-
-        if pw in self.passwords:
-            self.passwords.remove(pw)
-
-        self.passwords.insert(0, pw)
-
         try:
-            with open(passwordfile, "wb") as f:
+            self.passwords = uniqify([pw] + self.passwords)
+
+            with open(self.getConfig("passwordfile"), "wb") as f:
                 for pw in self.passwords:
-                    f.write(pw + "\n")
+                    f.write(pw + '\n')
 
         except IOError, e:
             self.logError(e)
@@ -353,20 +401,21 @@ class ExtractArchive(Hook):
 
     def setPermissions(self, files):
         for f in files:
-            if not exists(f):
+            if not os.path.exists(f):
                 continue
 
             try:
                 if self.config['permission']['change_file']:
-                    if isfile(f):
-                        chmod(f, int(self.config['permission']['file'], 8))
-                    elif isdir(f):
-                        chmod(f, int(self.config['permission']['folder'], 8))
+                    if os.path.isfile(f):
+                        os.chmod(f, int(self.config['permission']['file'], 8))
+
+                    elif os.path.isdir(f):
+                        os.chmod(f, int(self.config['permission']['folder'], 8))
 
                 if self.config['permission']['change_dl'] and os.name != "nt":
                     uid = getpwnam(self.config['permission']['user'])[2]
                     gid = getgrnam(self.config['permission']['group'])[2]
-                    chown(f, uid, gid)
+                    os.chown(f, uid, gid)
 
             except Exception, e:
                 self.logWarning(_("Setting User and Group failed"), e)

@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import os
+
+from module.PyFile import PyFile
+from module.utils import fs_encode
+
+
 class ArchiveError(Exception):
     pass
 
@@ -8,29 +14,39 @@ class CRCError(Exception):
     pass
 
 
-class WrongPassword(Exception):
+class PasswordError(Exception):
     pass
 
 
 class Extractor:
     __name__    = "Extractor"
-    __version__ = "0.14"
+    __version__ = "0.15"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org")]
+    __authors__     = [("RaNaN", "ranan@pyload.org"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    @staticmethod
-    def checkDeps():
+    EXTENSIONS = []
+
+
+    @classmethod
+    def isArchive(cls, filename):
+        name = os.path.basename(filename).lower()
+        return any(name.endswith(ext) for ext in cls.EXTENSIONS)
+
+
+    @classmethod
+    def checkDeps(cls):
         """ Check if system statisfy dependencies
         :return: boolean
         """
         return True
 
 
-    @staticmethod
-    def getTargets(files_ids):
+    @classmethod
+    def getTargets(cls, files_ids):
         """ Filter suited targets from list of filename id tuple list
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
@@ -38,24 +54,28 @@ class Extractor:
         raise NotImplementedError
 
 
-    def __init__(self, m, file, out, fullpath, overwrite, excludefiles, renice):
-        """Initialize extractor for specific file
+    def __init__(self, manager, filename, out,
+                 fullpath=True,
+                 overwrite=False,
+                 excludefiles=[],
+                 renice=0,
+                 delete=False,
+                 keepbroken=False,
+                 fid=None):
+        """ Initialize extractor for specific file """
+        self.manager        = manager
+        self.target         = fs_encode(filename)
+        self.out            = out
+        self.fullpath       = fullpath
+        self.overwrite      = overwrite
+        self.excludefiles   = excludefiles
+        self.renice         = renice
+        self.delete         = delete
+        self.keepbroken     = keepbroken
+        self.files          = []  #: Store extracted files here
 
-        :param m: ExtractArchive Hook plugin
-        :param file: Absolute filepath
-        :param out: Absolute path to destination directory
-        :param fullpath: extract to fullpath
-        :param overwrite: Overwrite existing archives
-        :param renice: Renice value
-        """
-        self.m = m
-        self.file = file
-        self.out = out
-        self.fullpath = fullpath
-        self.overwrite = overwrite
-        self.excludefiles = excludefiles
-        self.renice = renice
-        self.files = []  #: Store extracted files here
+        pyfile = self.manager.core.files.getFile(fid) if fid else None
+        self.notifyProgress = lambda x: pyfile.setProgress(x) if pyfile else lambda x: None
 
 
     def init(self):
@@ -83,12 +103,12 @@ class Extractor:
         return True
 
 
-    def extract(self, progress, password=None):
+    def extract(self, password=None):
         """Extract the archive. Raise specific errors in case of failure.
 
         :param progress: Progress function, call this to update status
         :param password password to use
-        :raises WrongPassword
+        :raises PasswordError
         :raises CRCError
         :raises ArchiveError
         :return:
@@ -101,7 +121,7 @@ class Extractor:
 
         :return: List with paths of files to delete
         """
-        raise NotImplementedError
+        return [self.target]
 
 
     def getExtractedFiles(self):

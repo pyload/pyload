@@ -4,110 +4,92 @@ import os
 import re
 
 from glob import glob
-from os.path import basename, join
 from string import digits
 from subprocess import Popen, PIPE
 
-from module.plugins.internal.Extractor import Extractor, WrongPassword, ArchiveError, CRCError
+from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
 from module.utils import save_join, decode
 
 
 def renice(pid, value):
-    if os.name != "nt" and value:
+    if value and os.name != "nt":
         try:
             Popen(["renice", str(value), str(pid)], stdout=PIPE, stderr=PIPE, bufsize=-1)
         except Exception:
-            print "Renice failed"
+            pass
 
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.03"
+    __version__ = "1.04"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     CMD = "unrar"
 
-    # there are some more uncovered rar formats
-    re_version   = re.compile(r'UNRAR 5[\d.]+')
-    re_splitfile = re.compile(r'(.*)\.part(\d+)\.rar$', re.I)
-    re_partfiles = re.compile(r'.*\.(rar|r\d+)$', re.I)
-    re_filelist  = re.compile(r'(.+)\s+(\d+)\s+(\d+)\s+')
-    re_filelist5 = re.compile(r'(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
-    re_wrongpwd  = re.compile(r'Corrupt file or wrong password|password incorrect', re.I)
+    EXTENSIONS = [".rar", ".zip", ".cab", ".arj", ".lzh", ".tar", ".gz", ".bz2",
+                  ".ace", ".uue", ".jar", ".iso", ".7z", ".xz", ".z"]
+
+    #@NOTE: there are some more uncovered rar formats
+    re_rarpart1 = re.compile(r'\.part(\d+)\.rar$', re.I)
+    re_rarpart2 = re.compile(r'\.r(\d+)$', re.I)
+
+    re_filelist  = re.compile(r'(.+)\s+(\d+)\s+(\d+)\s+|(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
+    re_wrongpwd  = re.compile(r'password', re.I)
     re_wrongcrc  = re.compile(r'encrypted|damaged|CRC failed|checksum error', re.I)
 
 
-    @staticmethod
-    def checkDeps():
+    @classmethod
+    def checkDeps(cls):
         if os.name == "nt":
-            UnRar.CMD = join(pypath, "UnRAR.exe")
-            p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
+            cls.CMD = os.path.join(pypath, "UnRAR.exe")
+            p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
             p.communicate()
         else:
             try:
-                p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
+                p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
                 p.communicate()
-            except OSError:
 
-                # fallback to rar
-                UnRar.CMD = "rar"
-                p = Popen([UnRar.CMD], stdout=PIPE, stderr=PIPE)
+            except OSError:  #: fallback to rar
+                cls.CMD = "rar"
+                p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
                 p.communicate()
 
         return True
 
 
-    @staticmethod
-    def getTargets(files_ids):
-        result = []
+    @classmethod
+    def getTargets(cls, files_ids):
+        targets = []
 
-        for file, id in files_ids:
-            if not file.endswith(".rar"):
+        for filename, id in files_ids:
+            if not cls.isArchive(filename):
                 continue
 
-            match = UnRar.re_splitfile.findall(file)
-            if match:
-                # only add first parts
-                if int(match[0][1]) == 1:
-                    result.append((file, id))
-            else:
-                result.append((file, id))
+            m = cls.re_rarpart1.match(filename)
+            if not m or int(m.group(1)) is 1:  #@NOTE: only add first part file
+                targets.append((filename, id))
 
-        return result
-
-
-    def init(self):
-        self.passwordProtected = False
-        self.headerProtected   = False  #: list files will not work without password
-        self.smallestFile      = None  #: small file to test passwords
-        self.password          = ""  #: save the correct password
+        return targets
 
 
     def checkArchive(self):
-        p = self.call_unrar("l", "-v", self.file)
+        p = self.call_cmd("l", "-v", self.target)
         out, err = p.communicate()
+
         if self.re_wrongpwd.search(err):
-            self.passwordProtected = True
-            self.headerProtected = True
             return True
 
         # output only used to check if passworded files are present
-        if self.re_version.search(out):
-            for attr, size, name in self.re_filelist5.findall(out):
-                if attr.startswith("*"):
-                    self.passwordProtected = True
-                    return True
-        else:
-            for name, size, packed in self.re_filelist.findall(out):
-                if name.startswith("*"):
-                    self.passwordProtected = True
-                    return True
+        for attr in self.re_filelist.findall(out):
+            if attr[0].startswith("*"):
+                return True
 
-        self.listContent()
+        self.files = self.list()
         if not self.files:
             raise ArchiveError("Empty Archive")
 
@@ -116,22 +98,18 @@ class UnRar(Extractor):
 
     def checkPassword(self, password):
         # at this point we can only verify header protected files
-        if self.headerProtected:
-            p = self.call_unrar("l", "-v", self.file, password=password)
-            out, err = p.communicate()
-            if self.re_wrongpwd.search(err):
-                return False
-
-        return True
+        p = self.call_cmd("l", "-v", self.target, password=password)
+        out, err = p.communicate()
+        return False if self.re_wrongpwd.search(err) else True
 
 
-    def extract(self, progress, password=None):
+    def extract(self, password=None):
         command = "x" if self.fullpath else "e"
 
-        p = self.call_unrar(command, self.file, self.out, password=password)
+        p = self.call_cmd(command, self.target, self.out, password=password)
+
         renice(p.pid, self.renice)
 
-        progress(0)
         progressstring = ""
         while True:
             c = p.stdout.read(1)
@@ -140,21 +118,20 @@ class UnRar(Extractor):
                 break
             # reading a percentage sign -> set progress and restart
             if c == '%':
-                progress(int(progressstring))
+                self.notifyProgress(int(progressstring))
                 progressstring = ""
             # not reading a digit -> therefore restart
             elif c not in digits:
                 progressstring = ""
             # add digit to progressstring
             else:
-                progressstring = progressstring + c
-        progress(100)
+                progressstring += c
 
         # retrieve stderr
         err = p.stderr.read()
 
         if self.re_wrongpwd.search(err):
-            raise WrongPassword
+            raise PasswordError
 
         elif self.re_wrongcrc.search(err):
             raise CRCError
@@ -162,50 +139,65 @@ class UnRar(Extractor):
         elif err.strip():  #: raise error if anything is on stderr
             raise ArchiveError(err.strip())
 
-        if p.returncode:
+        if p.returncode != 0:
             raise ArchiveError("Process terminated")
 
         if not self.files:
-            self.password = password
-            self.listContent()
+            self.files = self.list(password)
 
 
     def getDeleteFiles(self):
-        if ".part" in basename(self.file):
-            return glob(re.sub("(?<=\.part)([01]+)", "*", self.file, re.I))
-        # get files which matches .r* and filter unsuited files out
-        parts = glob(re.sub(r"(?<=\.r)ar$", "*", self.file, re.I))
-        return filter(lambda x: self.re_partfiles.match(x), parts)
+        files = []
+
+        for i in [1, 2]:
+            try:
+                dir, name = os.path.split(self.target)
+                part      = self.getattr(self, "re_rarpart%d" % i).match(name).group(1)
+                filename  = os.path.join(dir, name.replace(part, '*', 1))
+                files.extend(glob(filename))
+
+            except Exception:
+                continue
+
+        if self.target not in files:
+            files.insert(0, self.target)
+
+        return files
 
 
-    def listContent(self):
+    def list(self, password=None):
         command = "vb" if self.fullpath else "lb"
-        p = self.call_unrar(command, "-v", self.file, password=self.password)
+
+        p = self.call_cmd(command, "-v", self.target, password=password)
         out, err = p.communicate()
 
         if "Cannot open" in err:
             raise ArchiveError("Cannot open file")
 
         if err.strip():  #: only log error at this point
-            self.m.logError(err.strip())
+            self.manager.logError(err.strip())
 
         result = set()
-
         for f in decode(out).splitlines():
             f = f.strip()
             result.add(save_join(self.out, f))
 
-        self.files = result
+        return list(result)
 
 
-    def call_unrar(self, command, *xargs, **kwargs):
+    def call_cmd(self, command, *xargs, **kwargs):
         args = []
-        # overwrite flag
-        args.append("-o+") if self.overwrite else args.append("-o-")
 
-        if self.excludefiles:
-            for word in self.excludefiles.split(';'):
-                args.append("-x%s" % word)
+        # overwrite flag
+        if self.overwrite:
+            args.append("-o+")
+        else:
+            args.append("-o-")
+            if self.delete:
+                args.append("-or")
+
+        for word in self.excludefiles:
+            args.append("-x%s" % word.strip())
 
         # assume yes on all queries
         args.append("-y")
@@ -216,10 +208,13 @@ class UnRar(Extractor):
         else:
             args.append("-p-")
 
+        if self.keepbroken:
+            args.append("-kb")
+
         # NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
-        self.m.logDebug(" ".join(call))
+
+        self.manager.logDebug(" ".join(call))
 
         p = Popen(call, stdout=PIPE, stderr=PIPE)
-
         return p
