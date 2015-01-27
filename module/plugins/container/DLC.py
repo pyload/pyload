@@ -9,11 +9,12 @@ from base64 import standard_b64decode
 from Crypto.Cipher import AES
 
 from module.plugins.Container import Container
+from module.utils import decode
 
 
 class DLC(Container):
     __name__        = "DLC"
-    __version__     = "0.21"
+    __version__     = "0.22"
     __pattern__     = r'.+\.dlc$'
 
     __description__ = """DLC container decrypter plugin"""
@@ -21,7 +22,8 @@ class DLC(Container):
     __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("spoob", "spoob@pyload.org"),
                        ("mkaay", "mkaay@mkaay.de"),
-                       ("Schnusch", "Schnusch@users.noreply.github.com")]
+                       ("Schnusch", "Schnusch@users.noreply.github.com"),
+                       ("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def setup(self):
@@ -34,14 +36,13 @@ class DLC(Container):
         with open(pyfile.url.replace("\n", "")) as dlc:
             data = dlc.read().strip()
 
-        if not data.endswith("=="):
-            data += "=" if data.endswith("=") else "=="
+        data += '=' * (-len(data) % 4)
 
         dlckey  = data[-88:]
         dlcdata = data[:-88]
         dlcdata = standard_b64decode(dlcdata)
 
-        rc = self.req.load(self.api_url + dlckey)
+        rc = self.load(self.api_url + dlckey)
         rc = re.search(r'<rc>(.+)</rc>', rc).group(1)
         rc = standard_b64decode(rc)
 
@@ -61,7 +62,7 @@ class DLC(Container):
 
 
     def parsePackages(self, startNode):
-        return [(standard_b64decode(node.getAttribute("name")).decode("utf8", "replace"), self.parseLinks(node)) \
+        return [(standard_b64decode(decode(node.getAttribute("name"))), self.parseLinks(node)) \
                 for node in startNode.getElementsByTagName("package")]
 
 
