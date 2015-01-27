@@ -66,7 +66,7 @@ def create_connection(address, timeout=object(), source_address=None):
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __config__ = [("activated", "bool", "Activated"                                     , True ),
                   ("port"     , "int" , "Port"                                          , 9666 ),
@@ -91,7 +91,7 @@ class ClickAndLoad(Hook):
 
     @threaded
     def proxy(self, ip, webport, cnlport):
-        hookManager.startThread(self.server, ip, webport, cnlport)
+        self.manager.startThread(self.server, ip, webport, cnlport)
         lock = Lock()
         lock.acquire()
         lock.acquire()
@@ -109,8 +109,8 @@ class ClickAndLoad(Hook):
                 server_socket = dock_socket.accept()[0]
                 client_socket = create_connection(("127.0.0.1", webport))
 
-                hookManager.startThread(forward, server_socket, client_socket)
-                hookManager.startThread(forward, client_socket, server_socket)
+                self.manager.startThread(forward, server_socket, client_socket)
+                self.manager.startThread(forward, client_socket, server_socket)
 
         except socket.error, e:
             self.logError(e)
