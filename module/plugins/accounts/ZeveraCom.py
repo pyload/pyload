@@ -8,7 +8,7 @@ from module.plugins.Account import Account
 class ZeveraCom(Account):
     __name__    = "ZeveraCom"
     __type__    = "account"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __description__ = """Zevera.com account plugin"""
     __license__     = "GPLv3"
@@ -39,7 +39,7 @@ class ZeveraCom(Account):
 
         api = self.api_response(req)
 
-        if api != "No trafic":
+        if "No trafic" not in api or "Expired" not in api:
             validuntil  = mktime(strptime(api['endsubscriptiondate'], "%Y/%m/%d %H:%M:%S"))
             trafficleft = float(api['availabletodaytraffic']) * 1024 if api['orondaytrafficlimit'] != '0' else -1
             premium     = True
