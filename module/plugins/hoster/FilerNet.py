@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
 
@@ -67,7 +67,6 @@ class FilerNet(SimpleHoster):
         if 'location' in self.req.http.header.lower():
             self.link = re.search(r'location: (\S+)', self.req.http.header, re.I).group(1)
             self.correctCaptcha()
-            break
         else:
             self.invalidCaptcha()
 
