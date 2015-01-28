@@ -40,7 +40,7 @@ class ShareonlineBiz(Account):
         if api['a'].lower() != "not_available":
             req.cj.setCookie("share-online.biz", 'a', api['a'])
 
-            premium = api['group'] in ["Premium", "PrePaid"]
+            premium = api['group'] in ("Premium", "PrePaid")
 
             validuntil = float(api['expire_date'])
 
@@ -51,7 +51,10 @@ class ShareonlineBiz(Account):
         maxtraffic  /= 1024  #@TODO: Remove `/ 1024` in 0.4.10
         trafficleft /= 1024  #@TODO: Remove `/ 1024` in 0.4.10
 
-        return {'premium': premium, 'validuntil': validuntil, 'trafficleft': trafficleft, 'maxtraffic': maxtraffic}
+        return {'premium'    : premium,
+                'validuntil' : validuntil,
+                'trafficleft': trafficleft,
+                'maxtraffic' : maxtraffic}
 
 
     def login(self, user, data, req):
