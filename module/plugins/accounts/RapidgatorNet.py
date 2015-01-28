@@ -32,7 +32,7 @@ class RapidgatorNet(Account):
 
                 return {"validuntil": json['response']['expire_date'],
                         "trafficleft": float(json['response']['traffic_left']) / 1024,  #@TODO: Remove `/ 1024` in 0.4.10
-                        "premium": True}
+                        "premium": True, "SID": sid}
             else:
                 self.logError(json['response_details'])
         except Exception, e:
