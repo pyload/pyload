@@ -55,13 +55,13 @@ from module.utils import fs_decode, save_join, uniqify
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.09"
+    __version__ = "1.10"
 
     __config__ = [("activated"    , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"     , "bool"  , "Extract full path"                         , True                                                                     ),
                   ("overwrite"    , "bool"  , "Overwrite files"                           , False                                                                    ),
                   ("keepbroken"   , "bool"  , "Extract broken archives"                   , False                                                                    ),
-                  # ("repair"       , "bool"  , "Repair broken archives"                    , True                                                                     ),
+                  ("repair"       , "bool"  , "Repair broken archives"                    , True                                                                     ),
                   ("passwordfile" , "file"  , "Store passwords in file"                   , "archive_password.txt"                                                   ),
                   ("delete"       , "bool"  , "Delete archive when successfully extracted", False                                                                    ),
                   ("subfolder"    , "bool"  , "Create subfolder for each package"         , False                                                                    ),
