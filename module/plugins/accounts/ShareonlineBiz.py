@@ -8,7 +8,7 @@ from module.plugins.Account import Account
 class ShareonlineBiz(Account):
     __name__    = "ShareonlineBiz"
     __type__    = "account"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __description__ = """Share-online.biz account plugin"""
     __license__     = "GPLv3"
