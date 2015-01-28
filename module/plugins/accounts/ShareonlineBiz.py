@@ -40,7 +40,7 @@ class ShareonlineBiz(Account):
         if api['a'].lower() != "not_available":
             req.cj.setCookie("share-online.biz", 'a', api['a'])
 
-            premium = api['group'] == "Premium"
+            premium = api['group'] in ["Premium", "PrePaid"]
 
             validuntil = float(api['expire_date'])
 
