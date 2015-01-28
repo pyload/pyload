@@ -245,7 +245,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.11"
+    __version__ = "1.12"
 
     __pattern__ = r'^unmatchable$'
 
@@ -453,7 +453,6 @@ class SimpleHoster(Hoster):
 
 
     def preload(self):
-        self.req.renewHTTPRequest()  #@NOTE: Remove in 0.4.10
         self.html = self.load(self.pyfile.url, cookies=bool(self.COOKIES), decode=not self.TEXT_ENCODING)
 
         if isinstance(self.TEXT_ENCODING, basestring):
