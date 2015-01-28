@@ -47,7 +47,7 @@ class LuckyShareNet(SimpleHoster):
         self.logDebug("JSON: " + rep)
 
         json = self.parseJson(rep)
-        self.wait(int(json['time']))
+        self.wait(json['time'])
 
         recaptcha = ReCaptcha(self)
 

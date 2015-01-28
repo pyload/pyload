@@ -45,7 +45,7 @@ class UpleaCom(XFSHoster):
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            self.wait(int(m.group(1)), True)
+            self.wait(m.group(1), True)
             self.retry()
 
         m = re.search(self.LINK_PATTERN, self.html)

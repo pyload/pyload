@@ -56,7 +56,7 @@ class FilefactoryCom(SimpleHoster):
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            self.wait(int(m.group(1)))
+            self.wait(m.group(1))
 
         self.download(dl_link, disposition=True)
 

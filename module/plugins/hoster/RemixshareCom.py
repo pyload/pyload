@@ -54,7 +54,7 @@ class RemixshareCom(SimpleHoster):
         seconds = re.search(self.WAIT_PATTERN, self.html)
         if seconds:
             self.logDebug("Wait " + seconds.group(1))
-            self.wait(int(seconds.group(1)))
+            self.wait(seconds.group(1))
 
         # Finally start downloading...
         self.download(dl_url, disposition=True)

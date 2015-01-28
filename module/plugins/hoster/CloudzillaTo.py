@@ -47,7 +47,7 @@ class CloudzillaTo(SimpleHoster):
                 self.fail(ticket['error'])
 
         if 'wait' in ticket:
-            self.wait(int(ticket['wait']), int(ticket['wait']) > 5)
+            self.wait(ticket['wait'], int(ticket['wait']) > 5)
 
         self.link = "http://%(server)s/download/%(file_id)s/%(ticket_id)s" % {'server'   : ticket['server'],
                                                                               'file_id'  : self.info['pattern']['ID'],
