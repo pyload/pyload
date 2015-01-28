@@ -245,7 +245,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.10"
+    __version__ = "1.11"
 
     __pattern__ = r'^unmatchable$'
 
@@ -333,7 +333,7 @@ class SimpleHoster(Hoster):
     @classmethod
     def getInfo(cls, url="", html=""):
         info   = cls.apiInfo(url)
-        online = False
+        online = False if info['status'] != 2 else True
 
         try:
             info['pattern'] = re.match(cls.__pattern__, url).groupdict()  #: pattern groups will be saved here
@@ -341,7 +341,7 @@ class SimpleHoster(Hoster):
         except Exception:
             info['pattern'] = {}
 
-        if not html:
+        if not html and not online:
             if not url:
                 info['error']  = "missing url"
                 info['status'] = 1
