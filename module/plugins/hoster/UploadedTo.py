@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.77"
+    __version__ = "0.78"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
@@ -117,7 +117,7 @@ class UploadedTo(SimpleHoster):
         self.checkErrors()
 
 
-    def checkFile():
+    def checkFile(self):
         if self.checkDownload({'limit-dl': self.DL_LIMIT_ERROR}):
             self.wait(3 * 60 * 60, True)
             self.retry()
