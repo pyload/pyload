@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, s
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
@@ -46,7 +46,7 @@ class RapidgatorNet(SimpleHoster):
 
     def setup(self):
         if self.account:
-            self.sid = self.account.getAccountInfo(self.user).get('SID', None)
+            self.sid = self.account.getAccountInfo(self.user).get('sid', None)
         else:
             self.sid = None
 
