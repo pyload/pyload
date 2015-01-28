@@ -23,7 +23,7 @@ def getInfo(urls):
         for url in chunk:
             match = id_regex.search(url)
             if match:
-                ids = ids + match.group(1) + ";"
+                ids = ids + match.group('ID') + ";"
 
         api = getURL(apiurl,
                      get={'auth'   : "Zf9SnQh9WiReEsb18akjvQGqT0I830e8",
@@ -62,15 +62,18 @@ def getInfo(urls):
 class NetloadIn(Hoster):
     __name__    = "NetloadIn"
     __type__    = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index\.php?id=10&file_id=)'
+    __pattern__ = r'https?://(?:www\.)?netload\.in/(?P<PATH>datei|index\.php\?id=10&file_id=)(?P<ID>\w+)'
 
     __description__ = """Netload.in hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("spoob", "spoob@pyload.org"),
                        ("RaNaN", "ranan@pyload.org"),
                        ("Gregy", "gregy@gregy.cz")]
+
+
+    RECAPTCHA_KEY = "6LcLJMQSAAAAAJzquPUPKNovIhbK6LpSqCjYrsR1"
 
 
     def setup(self):
@@ -118,7 +121,7 @@ class NetloadIn(Hoster):
 
         if match:
             #normalize url
-            self.url = 'http://www.netload.in/datei%s.htm' % match.group(1)
+            self.url = 'http://www.netload.in/datei%s.htm' % match.group('ID')
             self.logDebug("URL: %s" % self.url)
         else:
             self.api_data = False
@@ -126,7 +129,7 @@ class NetloadIn(Hoster):
 
         apiurl = "http://api.netload.in/info.php"
         html = self.load(apiurl, cookies=False,
-                        get={"file_id": match.group(1), "auth": "Zf9SnQh9WiReEsb18akjvQGqT0I830e8", "bz": "1",
+                        get={"file_id": match.group('ID'), "auth": "Zf9SnQh9WiReEsb18akjvQGqT0I830e8", "bz": "1",
                              "md5": "1"}, decode=True).strip()
         if not html and n <= 3:
             self.setWait(2)
@@ -235,7 +238,7 @@ class NetloadIn(Hoster):
         recaptcha = ReCaptcha(self)
 
         for _i in xrange(5):
-            response, challenge = recaptcha.challenge()
+            response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
             response_page = self.load("http://www.netload.in/index.php?id=10",
                                       post={'captcha_check'            : '1',
