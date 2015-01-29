@@ -73,10 +73,11 @@ class UploadedTo(SimpleHoster):
             self.retry(24, 5 * 60)
 
         m = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
-        if m:
-            self.wait(m.group(1))
-        else:
-            self.fail(_("File not downloadable for free users"))
+        if not self.premium:
+            if m:
+                self.wait(m.group(1))
+            else:
+                self.fail(_("File not downloadable for free users"))
 
         if "limit-size" in self.html:
             self.fail(_("File too big for free download"))
