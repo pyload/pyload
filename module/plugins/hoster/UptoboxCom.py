@@ -6,9 +6,9 @@ from module.plugins.internal.XFSHoster import XFSHoster, create_getInfo
 class UptoboxCom(XFSHoster):
     __name__    = "UptoboxCom"
     __type__    = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
-    __pattern__ = r'https?://(?:www\.)?uptobox\.com/\w{12}'
+    __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}'
 
     __description__ = """Uptobox.com hoster plugin"""
     __license__     = "GPLv3"
