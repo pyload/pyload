@@ -91,7 +91,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.12"
+    __version__ = "1.13"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract full path"                         , True                                                                     ),
@@ -342,7 +342,7 @@ class ExtractArchive(Hook):
                     self.logWarning(fname, _("Repairing..."))
                     archive.repair()
 
-            except PasswordError):
+            except PasswordError:
                 self.logInfo(fname, _("Password protected"))
                 encrypted = True
 
