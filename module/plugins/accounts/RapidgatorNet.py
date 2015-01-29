@@ -7,7 +7,7 @@ from module.common.json_layer import json_loads
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """Rapidgator.net account plugin"""
     __license__     = "GPLv3"
@@ -45,7 +45,7 @@ class RapidgatorNet(Account):
             self.logError(e)
 
         return {'validuntil' : validuntil,
-                'trafficleft': trafficleft
+                'trafficleft': trafficleft,
                 'premium'    : premium,
                 'sid'        : sid}
 
