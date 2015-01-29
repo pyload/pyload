@@ -27,27 +27,27 @@ class FreeWayMe(MultiHoster):
         for _i in xrange(5):
             # try it five times
             header = self.load("https://www.free-way.me/load.php",
-                      get={'multiget': 7,
-                           'url'     : pyfile.url,
-                           'user'    : user,
-                           'pw'      : self.account.getAccountData(user)['password'],
-                           'json'    : ""}, just_header=True)
-            if "location" in header:
-                #download
-                self.logInfo("Download: " + header['location'])
-                headers = self.load(header['location'],just_header=True)
+                               get={'multiget': 7,
+                                    'url'     : pyfile.url,
+                                    'user'    : user,
+                                    'pw'      : self.account.getAccountData(user)['password'],
+                                    'json'    : ""},
+                               just_header=True)
+
+            if 'location' in header:
+                headers = self.load(header['location'], just_header=True)
                 if headers['code'] == 500:
-                    #error on 2nd stage
-                    self.logInfo("Free-Way Error [stage2]")
-                    # todo: handle errors
+                    # error on 2nd stage
+                    self.logError(_("Error [stage2]"))
                 else:
                     # seems to work..
                     self.download(header['location'])
                     break
             else:
-                #error page first stage
-                self.logInfo("Free-Way Error [stage1]")
-                # todo: handle errors
+                # error page first stage
+                self.logError(_("Error [stage1]"))
+
+            #@TODO: handle errors
 
 
 getInfo = create_getInfo(FreeWayMe)
