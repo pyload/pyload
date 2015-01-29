@@ -8,20 +8,21 @@ from string import digits
 from subprocess import Popen, PIPE
 
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from module.utils import save_join, decode
+from module.utils import decode, fs_encode, save_join, uniqify
 
 
 def renice(pid, value):
     if value and os.name != "nt":
         try:
             Popen(["renice", str(value), str(pid)], stdout=PIPE, stderr=PIPE, bufsize=-1)
+
         except Exception:
             pass
 
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.04"
+    __version__ = "1.05"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -71,42 +72,65 @@ class UnRar(Extractor):
                 continue
 
             m = cls.re_rarpart1.match(filename)
-            if not m or int(m.group(1)) is 1:  #@NOTE: only add first part file
+            if not m or int(m.group(1)) == 1:  #@NOTE: only add first part file
                 targets.append((filename, id))
 
         return targets
 
 
-    def checkArchive(self):
-        p = self.call_cmd("l", "-v", self.target)
+    def check(self):
+        p = self.call_cmd("l", "-v", fs_encode(self.filename))
         out, err = p.communicate()
 
         if self.re_wrongpwd.search(err):
-            return True
+            raise PasswordError
+
+        if self.re_wrongcrc.search(err):
+            raise CRCError
 
         # output only used to check if passworded files are present
         for attr in self.re_filelist.findall(out):
             if attr[0].startswith("*"):
-                return True
+                raise PasswordError
 
         self.files = self.list()
         if not self.files:
             raise ArchiveError("Empty Archive")
 
-        return False
 
-
-    def checkPassword(self, password):
+    def isPassword(self, password):
         # at this point we can only verify header protected files
-        p = self.call_cmd("l", "-v", self.target, password=password)
+        p = self.call_cmd("l", "-v", fs_encode(self.filename), password=password)
         out, err = p.communicate()
         return False if self.re_wrongpwd.search(err) else True
+
+
+    def repair(self):
+        p = self.call_cmd("rc", fs_encode(self.filename))
+        out, err = p.communicate()
+
+        if p.returncode or err.strip():
+            p = self.call_cmd("r", fs_encode(self.filename))
+            out, err = p.communicate()
+
+            if p.returncode or err.strip():
+                return False
+            else:
+                dir, name = os.path.split(filename)
+
+                if 'fixed' in out:
+                    self.filename = os.path.join(dir, 'fixed.' + name)
+
+                elif 'rebuild' in out:
+                    self.filename = os.path.join(dir, 'rebuild.' + name)
+
+        return True
 
 
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
 
-        p = self.call_cmd(command, self.target, self.out, password=password)
+        p = self.call_cmd(command, fs_encode(self.filename), self.out, password=password)
 
         renice(p.pid, self.renice)
 
@@ -139,7 +163,7 @@ class UnRar(Extractor):
         elif err.strip():  #: raise error if anything is on stderr
             raise ArchiveError(err.strip())
 
-        if p.returncode != 0:
+        if p.returncode:
             raise ArchiveError("Process terminated")
 
         if not self.files:
@@ -149,18 +173,18 @@ class UnRar(Extractor):
     def getDeleteFiles(self):
         files = []
 
-        for i in [1, 2]:
+        for i in (1, 2):
             try:
-                dir, name = os.path.split(self.target)
+                dir, name = os.path.split(self.filename)
                 part      = self.getattr(self, "re_rarpart%d" % i).match(name).group(1)
-                filename  = os.path.join(dir, name.replace(part, '*', 1))
-                files.extend(glob(filename))
+                file      = fs_encode(os.path.join(dir, name.replace(part, '*', 1)))
+                files.extend(glob(file))
 
             except Exception:
                 continue
 
-        if self.target not in files:
-            files.insert(0, self.target)
+        if self.filename not in files:
+            files.insert(0, self.filename)
 
         return files
 
@@ -168,7 +192,7 @@ class UnRar(Extractor):
     def list(self, password=None):
         command = "vb" if self.fullpath else "lb"
 
-        p = self.call_cmd(command, "-v", self.target, password=password)
+        p = self.call_cmd(command, "-v", fs_encode(self.filename), password=password)
         out, err = p.communicate()
 
         if "Cannot open" in err:

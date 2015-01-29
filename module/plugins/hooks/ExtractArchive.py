@@ -12,12 +12,14 @@ from traceback import print_exc
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
 if sys.version_info < (2, 7) and os.name != "nt":
     import errno
+
     from subprocess import Popen
 
     def _eintr_retry_call(func, *args):
         while True:
             try:
                 return func(*args)
+
             except OSError, e:
                 if e.errno == errno.EINTR:
                     continue
@@ -49,28 +51,64 @@ if os.name != "nt":
 
 from module.plugins.Hook import Hook, threaded, Expose
 from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
-from module.utils import fs_decode, fs_encode, save_join, uniqify
+from module.utils import fs_encode, save_join, uniqify
+
+
+class ArchiveQueue(object):
+
+    def __init__(self, plugin, storage):
+        self.plugin  = plugin
+        self.storage = storage
+
+
+    def get(self):
+        return self.plugin.getStorage("ExtractArchive:%s" % storage, [])
+
+
+    def set(self, value):
+        return self.plugin.setStorage("ExtractArchive:%s" % storage, value)
+
+
+    def clean(self):
+        return self.set([])
+
+
+    def add(self, item):
+        queue = self.get()
+        if item not in queue:
+            return self.set(queue + [item])
+        else:
+            return True
+
+
+    def remove(self, item):
+        queue = self.get()
+        queue.pop(item, None)
+        return self.set(queue)
+
 
 
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.11"
+    __version__ = "1.12"
 
-    __config__ = [("activated"    , "bool"  , "Activated"                                 , True                                                                     ),
-                  ("fullpath"     , "bool"  , "Extract full path"                         , True                                                                     ),
-                  ("overwrite"    , "bool"  , "Overwrite files"                           , False                                                                    ),
-                  ("keepbroken"   , "bool"  , "Extract broken archives"                   , False                                                                    ),
-                  ("repair"       , "bool"  , "Repair broken archives"                    , True                                                                     ),
-                  ("passwordfile" , "file"  , "Store passwords in file"                   , "archive_password.txt"                                                   ),
-                  ("delete"       , "bool"  , "Delete archive when successfully extracted", False                                                                    ),
-                  ("subfolder"    , "bool"  , "Create subfolder for each package"         , False                                                                    ),
-                  ("destination"  , "folder", "Extract files to"                          , ""                                                                       ),
-                  ("extensions"   , "str"   , "Extract the following extensions"          , "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
-                  ("excludefiles" , "str"   , "Don't extract the following files"         , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
-                  ("recursive"    , "bool"  , "Extract archives in archives"              , True                                                                     ),
-                  ("queue"        , "bool"  , "Wait for all downloads to be finished"     , False                                                                    ),
-                  ("renice"       , "int"   , "CPU Priority"                              , 0                                                                        )]
+    __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
+                  ("fullpath"        , "bool"  , "Extract full path"                         , True                                                                     ),
+                  ("overwrite"       , "bool"  , "Overwrite files"                           , False                                                                    ),
+                  ("keepbroken"      , "bool"  , "Try to extract broken archives"            , False                                                                    ),
+                  ("repair"          , "bool"  , "Repair broken archives"                    , False                                                                    ),
+                  ("extractempty"    , "bool"  , "Extract empty archives"                    , True                                                                     ),
+                  ("usepasswordfile" , "bool"  , "Use password file"                         , True                                                                     ),
+                  ("passwordfile"    , "file"  , "Password file"                             , "archive_password.txt"                                                   ),
+                  ("delete"          , "bool"  , "Delete archive when successfully extracted", False                                                                    ),
+                  ("subfolder"       , "bool"  , "Create subfolder for each package"         , False                                                                    ),
+                  ("destination"     , "folder", "Extract files to folder"                   , ""                                                                       ),
+                  ("extensions"      , "str"   , "Extract the following extensions"          , "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
+                  ("excludefiles"    , "str"   , "Don't extract the following files"         , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
+                  ("recursive"       , "bool"  , "Extract archives in archives"              , True                                                                     ),
+                  ("queue"           , "bool"  , "Wait for all downloads to be finished"     , False                                                                    ),
+                  ("renice"          , "int"   , "CPU priority"                              , 0                                                                        )]
 
     __description__ = """Extract different kind of archives"""
     __license__     = "GPLv3"
@@ -90,6 +128,9 @@ class ExtractArchive(Hook):
 
 
     def setup(self):
+        self.queue  = ArchiveQueue(self, "Queue")
+        self.failed = ArchiveQueue(self, "Failed")
+
         self.interval   = 300
         self.extractors = []
         self.passwords  = []
@@ -124,7 +165,7 @@ class ExtractArchive(Hook):
 
     def periodical(self):
         if not self.extracting:
-            self.extractPackage(*self.getQueue())
+            self.extractPackage(*self.queue.get())
 
 
     @Expose
@@ -136,14 +177,14 @@ class ExtractArchive(Hook):
     def packageFinished(self, pypack):
         if self.extracting or self.getConfig("queue"):
             self.logInfo(_("Package %s queued for later extracting") % pypack.name)
-            self.addToQueue(pypack.id)
+            self.queue.add(pypack.id)
         else:
             self.extractPackage(pypack.id)
 
 
     @threaded
     def allDownloadsProcessed(self):
-        if self.extract(self.getQueue()):  #@NOTE: check only if all gone fine, no failed reporting for now
+        if self.extract(self.queue.get()):  #@NOTE: check only if all gone fine, no failed reporting for now
             self.manager.dispatchEvent("all_archives_extracted")
 
         self.manager.dispatchEvent("all_archives_processed")
@@ -180,10 +221,10 @@ class ExtractArchive(Hook):
         for pid in ids:
             pypack = self.core.files.getPackage(pid)
 
-            self.logInfo(_("Check package: %s") % pypack.name)
-
             if not pypack:
                 continue
+
+            self.logInfo(_("Check package: %s") % pypack.name)
 
             # determine output folder
             out = save_join(dl, pypack.folder, destination, "")  #: force trailing slash
@@ -224,19 +265,19 @@ class ExtractArchive(Hook):
                         try:
                             self.extracting = True
 
-                            klass = Extractor(self,
-                                              filename,
-                                              out,
-                                              fullpath,
-                                              overwrite,
-                                              excludefiles,
-                                              renice,
-                                              delete,
-                                              keepbroken,
-                                              fid)
-                            klass.init()
+                            archive = Extractor(self,
+                                                filename,
+                                                out,
+                                                fullpath,
+                                                overwrite,
+                                                excludefiles,
+                                                renice,
+                                                delete,
+                                                keepbroken,
+                                                fid)
+                            archive.init()
 
-                            new_files = self._extract(klass, fid, pypack.password)
+                            new_files = self._extract(archive, fid, pypack.password)
 
                         except Exception, e:
                             self.logError(fname, e)
@@ -250,6 +291,7 @@ class ExtractArchive(Hook):
                             if not os.path.exists(file):
                                 self.logDebug("New file %s does not exists" % file)
                                 continue
+
                             if recursive and os.path.isfile(file):
                                 new_files_ids.append((file, fid))  # append as new target
 
@@ -262,14 +304,19 @@ class ExtractArchive(Hook):
                 else:
                     failed.append(pid)
                     self.manager.dispatchEvent("package_extract_failed", pypack)
+
+                    self.failed.add(pid)
             else:
                 self.logInfo(_("No files found to extract"))
 
             if not matched or not success and subfolder:
                 try:
                     os.rmdir(out)
+
                 except OSError:
                     pass
+
+            self.queue.remove(pid)
 
         self.extracting = False
         return True if not failed else False
@@ -277,28 +324,40 @@ class ExtractArchive(Hook):
 
     def _extract(self, archive, fid, password):
         pyfile = self.core.files.getFile(fid)
-        fname  = os.path.basename(fs_decode(archive.target))
+        fname  = os.path.basename(archive.filename)
 
         pyfile.setCustomStatus(_("extracting"))
         pyfile.setProgress(0)
 
         try:
-            success = False
+            try:
+                archive.check()
 
-            if not archive.checkArchive():
-                archive.extract(password)
-                success = True
-            else:
+            except CRCError:
+                self.logInfo(fname, _("Header protected"))
+
+                if self.getConfig("repair"):
+                    self.logWarning(fname, "Repairing...")
+                    archive.repair()
+
+            except PasswordError):
                 self.logInfo(fname, _("Password protected"))
-                self.logDebug("Password: %s" % (password or "No provided"))
 
+            except ArchiveError, e:
+                if e != "Empty Archive" or not self.getConfig("extractempty"):
+                    raise ArchiveError(e)
+
+            self.logDebug("Password: %s" % (password or "No provided"))
+
+            if not self.getConfig("usepasswordfile"):
+                archive.extract(password)
+            else:
                 for pw in set(self.getPasswords(False) + [password]):
                     try:
                         self.logDebug("Try password: %s" % pw)
-                        if archive.checkPassword(pw):
+                        if archive.isPassword(pw):
                             archive.extract(pw)
                             self.addPassword(pw)
-                            success = True
                             break
 
                     except PasswordError:
@@ -316,8 +375,9 @@ class ExtractArchive(Hook):
                 files = archive.getDeleteFiles()
                 self.logInfo(_("Deleting %s files") % len(files))
                 for f in files:
-                    if os.path.exists(f):
-                        os.remove(f)
+                    file = fs_encode(f)
+                    if os.path.exists(file):
+                        os.remove(file)
                     else:
                         self.logDebug("%s does not exists" % f)
 
@@ -348,15 +408,6 @@ class ExtractArchive(Hook):
         self.manager.dispatchEvent("archive_extract_failed", pyfile)
 
         raise Exception(_("Extract failed"))
-
-
-    def getQueue(self):
-        return self.getStorage("ExtractArchive", [])
-
-
-    def addToQueue(self, item):
-        queue = self.getQueue()
-        return self.setStorage("ExtractArchive", queue + [item] if item not in queue else queue)
 
 
     @Expose

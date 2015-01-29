@@ -3,7 +3,6 @@
 import os
 
 from module.PyFile import PyFile
-from module.utils import fs_encode
 
 
 class ArchiveError(Exception):
@@ -20,7 +19,7 @@ class PasswordError(Exception):
 
 class Extractor:
     __name__    = "Extractor"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
@@ -64,7 +63,7 @@ class Extractor:
                  fid=None):
         """ Initialize extractor for specific file """
         self.manager        = manager
-        self.target         = fs_encode(filename)
+        self.filename       = filename
         self.out            = out
         self.fullpath       = fullpath
         self.overwrite      = overwrite
@@ -83,17 +82,17 @@ class Extractor:
         pass
 
 
-    def checkArchive(self):
+    def check(self):
         """Check if password if needed. Raise ArchiveError if integrity is
         questionable.
 
         :return: boolean
         :raises ArchiveError
         """
-        return False
+        raise PasswordError
 
 
-    def checkPassword(self, password):
+    def isPassword(self, password):
         """ Check if the given password is/might be correct.
         If it can not be decided at this point return true.
 
@@ -101,6 +100,10 @@ class Extractor:
         :return: boolean
         """
         return True
+
+
+    def repair(self):
+        return False
 
 
     def extract(self, password=None):
@@ -121,7 +124,7 @@ class Extractor:
 
         :return: List with paths of files to delete
         """
-        return [self.target]
+        return [self.filename]
 
 
     def getExtractedFiles(self):

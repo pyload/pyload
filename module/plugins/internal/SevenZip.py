@@ -5,13 +5,13 @@ import re
 
 from subprocess import Popen, PIPE
 
-from module.plugins.internal.UnRar import UnRar, renice
-from module.utils import save_join
+from module.plugins.internal.UnRar import ArchiveError, CRCError, PasswordError, UnRar, renice
+from module.utils import fs_encode, save_join
 
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -48,8 +48,8 @@ class SevenZip(UnRar):
         return True
 
 
-    def checkArchive(self):
-        p = self.call_cmd("l", "-slt", self.target)
+    def check(self):
+        p = self.call_cmd("l", "-slt", fs_encode(self.filename))
         out, err = p.communicate()
 
         if p.returncode > 1:
@@ -57,22 +57,20 @@ class SevenZip(UnRar):
 
         # check if output or error macthes the 'wrong password'-Regexp
         if self.re_wrongpwd.search(out):
-            return True
+            raise PasswordError
 
         # check if output matches 'Encrypted = +'
         if self.re_wrongcrc.search(out):
-            return True
+            raise CRCError
 
         # check if archive is empty
         self.files = self.list()
         if not self.files:
             raise ArchiveError("Empty Archive")
 
-        return False
 
-
-    def checkPassword(self, password):
-        p = self.call_cmd("l", self.target, password=password)
+    def isPassword(self, password):
+        p = self.call_cmd("l", fs_encode(self.filename), password=password)
         p.communicate()
         return p.returncode == 0
 
@@ -80,7 +78,7 @@ class SevenZip(UnRar):
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
 
-        p = self.call_cmd(command, '-o' + self.out, self.target, password=password)
+        p = self.call_cmd(command, '-o' + self.out, fs_encode(self.filename), password=password)
 
         renice(p.pid, self.renice)
 
@@ -123,7 +121,7 @@ class SevenZip(UnRar):
     def list(self, password=None):
         command = "l" if self.fullpath else "l"
 
-        p = self.call_cmd(command, self.target, password=password)
+        p = self.call_cmd(command, fs_encode(self.filename), password=password)
         out, err = p.communicate()
         code     = p.returncode
 

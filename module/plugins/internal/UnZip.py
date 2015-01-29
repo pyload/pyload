@@ -7,16 +7,16 @@ import sys
 import zipfile
 
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
+from module.utils import fs_encode
 
 
 class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.03"
+    __version__ = "1.04"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     EXTENSIONS = [".zip", ".zip64"]
@@ -32,9 +32,13 @@ class UnZip(Extractor):
         return [(filename, id) for filename, id in files_ids if cls.isArchive(filename)]
 
 
+    def repair(self):
+        return False
+
+
     def extract(self, password=None):
         try:
-            with zipfile.ZipFile(self.target, 'r', allowZip64=True) as z:
+            with zipfile.ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
                 z.setpassword(self.password)
                 if not z.testzip():
                     z.extractall(self.out)
