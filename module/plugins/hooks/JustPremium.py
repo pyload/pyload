@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.linkdict.Hook import Hook
+from module.plugins.Hook import Hook
 
 
 class JustPremium(Hook):
     __name__    = "JustPremium"
     __type__    = "hook"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __config__ = [("freehosters", "bool", "Allow all freehosters and other unknown sites", False),
                   ("nicehoster" , "str" , "unblock this hosters (comma seperated)"       , "Zippyshare.com")]
