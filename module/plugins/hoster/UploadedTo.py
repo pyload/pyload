@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.78"
+    __version__ = "0.79"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
@@ -72,11 +72,12 @@ class UploadedTo(SimpleHoster):
             self.logError(_("Free-download capacities exhausted"))
             self.retry(24, 5 * 60)
 
-        m = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
-        if m:
-            self.wait(m.group(1))
-        else:
-            self.fail(_("File not downloadable for free users"))
+        if not self.premium:
+            m = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
+            if m:
+                self.wait(m.group(1))
+            else:
+                self.fail(_("File not downloadable for free users"))
 
         if "limit-size" in self.html:
             self.fail(_("File too big for free download"))
