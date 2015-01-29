@@ -329,6 +329,8 @@ class ExtractArchive(Hook):
         pyfile.setCustomStatus(_("extracting"))
         pyfile.setProgress(0)
 
+        encrypted = False
+
         try:
             try:
                 archive.check()
@@ -337,11 +339,12 @@ class ExtractArchive(Hook):
                 self.logInfo(fname, _("Header protected"))
 
                 if self.getConfig("repair"):
-                    self.logWarning(fname, "Repairing...")
+                    self.logWarning(fname, _("Repairing..."))
                     archive.repair()
 
             except PasswordError):
                 self.logInfo(fname, _("Password protected"))
+                encrypted = True
 
             except ArchiveError, e:
                 if e != "Empty Archive" or not self.getConfig("extractempty"):
@@ -349,7 +352,7 @@ class ExtractArchive(Hook):
 
             self.logDebug("Password: %s" % (password or "No provided"))
 
-            if not self.getConfig("usepasswordfile"):
+            if not encrypted or not self.getConfig("usepasswordfile"):
                 archive.extract(password)
             else:
                 for pw in set(self.getPasswords(False) + [password]):
