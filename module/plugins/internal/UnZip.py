@@ -32,10 +32,6 @@ class UnZip(Extractor):
         return [(filename, id) for filename, id in files_ids if cls.isArchive(filename)]
 
 
-    def repair(self):
-        return False
-
-
     def extract(self, password=None):
         try:
             with zipfile.ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:

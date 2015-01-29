@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -73,6 +73,10 @@ class SevenZip(UnRar):
         p = self.call_cmd("l", fs_encode(self.filename), password=password)
         p.communicate()
         return p.returncode == 0
+
+
+    def repair(self):
+        return False
 
 
     def extract(self, password=None):

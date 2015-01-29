@@ -8,7 +8,7 @@ from string import digits
 from subprocess import Popen, PIPE
 
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from module.utils import decode, fs_encode, save_join, uniqify
+from module.utils import decode, fs_encode, save_join
 
 
 def renice(pid, value):
