@@ -55,7 +55,7 @@ from module.utils import fs_decode, save_join, uniqify
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.10"
+    __version__ = "1.11"
 
     __config__ = [("activated"    , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"     , "bool"  , "Extract full path"                         , True                                                                     ),
@@ -74,9 +74,7 @@ class ExtractArchive(Hook):
 
     __description__ = """Extract different kind of archives"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "ranan@pyload.org"),
-                       ("AndroKev", ""),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     event_list = ["allDownloadsProcessed"]
@@ -100,7 +98,7 @@ class ExtractArchive(Hook):
         for p in ("UnRar", "SevenZip", "UnZip"):
             try:
                 module = self.core.pluginManager.loadModule("internal", p)
-                klass = getattr(module, p)
+                klass  = getattr(module, p)
                 if klass.checkDeps():
                     names.append(p)
                     self.extractors.append(klass)
@@ -164,7 +162,6 @@ class ExtractArchive(Hook):
         overwrite    = self.getConfig("overwrite")
         extensions   = clearList(self.getConfig("extensions"))
         excludefiles = clearList(self.getConfig("excludefiles"))
-        excludefiles = self.getConfig("excludefiles")
         renice       = self.getConfig("renice")
         recursive    = self.getConfig("recursive")
         delete       = self.getConfig("delete")
@@ -386,10 +383,10 @@ class ExtractArchive(Hook):
 
 
     @Expose
-    def addPassword(self, pw):
+    def addPassword(self, password):
         """  Adds a password to saved list"""
         try:
-            self.passwords = uniqify([pw] + self.passwords)
+            self.passwords = uniqify([password] + self.passwords)
 
             with open(self.getConfig("passwordfile"), "wb") as f:
                 for pw in self.passwords:
