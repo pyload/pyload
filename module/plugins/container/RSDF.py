@@ -6,13 +6,16 @@ import base64
 import binascii
 import re
 
+from Crypto.Cipher import AES
+
 from module.plugins.Container import Container
 from module.utils import fs_encode
 
 
 class RSDF(Container):
     __name__    = "RSDF"
-    __version__ = "0.25"
+    __type__    = "container"
+    __version__ = "0.26"
 
     __pattern__ = r'.+\.rsdf$'
 
@@ -22,35 +25,30 @@ class RSDF(Container):
                        ("spoob", "spoob@pyload.org")]
 
 
+    KEY = "8C35192D964DC3182C6F84F3252239EB4A320D2500000000"
+    IV  = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+
+
     def decrypt(self, pyfile):
-
-        from Crypto.Cipher import AES
-
-        infile = fs_encode(pyfile.url.replace("\n", ""))
-        Key = binascii.unhexlify('8C35192D964DC3182C6F84F3252239EB4A320D2500000000')
-
-        IV = binascii.unhexlify('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
+        Key       = binascii.unhexlify(self.KEY)
         IV_Cipher = AES.new(Key, AES.MODE_ECB)
-        IV = IV_Cipher.encrypt(IV)
+        IV        = IV_Cipher.encrypt(binascii.unhexlify(self.IV))
 
         obj = AES.new(Key, AES.MODE_CFB, IV)
 
         try:
-            with open(infile, 'r') as rsdf:
+            file = fs_encode(pyfile.url.strip())
+            with open(file, 'r') as rsdf:
                 data = rsdf.read()
+
         except IOError, e:
             self.fail(e)
 
-        if re.search(r"<title>404 - Not Found</title>", data) is None:
-            data = binascii.unhexlify(''.join(data.split()))
-            data = data.splitlines()
+        if re.search(r"<title>404 - Not Found</title>", data):
+            return
 
-            for link in data:
-                if not link:
-                    continue
-                link = base64.b64decode(link)
-                link = obj.decrypt(link)
+        for link in binascii.unhexlify(''.join(data.split())).splitlines():
+            if not link:
+                link         = obj.decrypt(base64.b64decode(link))
                 decryptedUrl = link.replace('CCF: ', '')
                 self.urls.append(decryptedUrl)
-
-            self.logDebug("Adding package %s with %d links" % (pyfile.package().name, len(self.urls)))

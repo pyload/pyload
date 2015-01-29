@@ -49,7 +49,7 @@ if os.name != "nt":
 
 from module.plugins.Hook import Hook, threaded, Expose
 from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
-from module.utils import fs_decode, save_join, uniqify
+from module.utils import fs_decode, fs_encode, save_join, uniqify
 
 
 class ExtractArchive(Hook):
@@ -371,7 +371,9 @@ class ExtractArchive(Hook):
     def reloadPasswords(self):
         try:
             passwords = []
-            with open(self.getConfig("passwordfile")) as f:
+
+            file = fs_encode(self.getConfig("passwordfile"))
+            with open(file) as f:
                 for pw in f.read().splitlines():
                     passwords.append(pw)
 
@@ -388,7 +390,8 @@ class ExtractArchive(Hook):
         try:
             self.passwords = uniqify([password] + self.passwords)
 
-            with open(self.getConfig("passwordfile"), "wb") as f:
+            file = fs_encode(self.getConfig("passwordfile"))
+            with open(file, "wb") as f:
                 for pw in self.passwords:
                     f.write(pw + '\n')
 

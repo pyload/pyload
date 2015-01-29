@@ -9,12 +9,13 @@ import os
 
 from Crypto.Cipher import AES
 from module.plugins.Crypter import Crypter
+from module.utils import save_join
 
 
 class RelinkUs(Crypter):
     __name__    = "RelinkUs"
     __type__    = "crypter"
-    __version__ = "3.11"
+    __version__ = "3.12"
 
     __pattern__ = r'http://(?:www\.)?relink\.us/(f/|((view|go)\.php\?id=))(?P<ID>.+)'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
@@ -219,7 +220,7 @@ class RelinkUs(Crypter):
             try:
                 dlc = self.load(container_url)
                 dlc_filename = self.fileid + ".dlc"
-                dlc_filepath = os.path.join(self.config['general']['download_folder'], dlc_filename)
+                dlc_filepath = save_join(self.config['general']['download_folder'], dlc_filename)
                 with open(dlc_filepath, "wb") as f:
                     f.write(dlc)
                 package_links.append(dlc_filepath)

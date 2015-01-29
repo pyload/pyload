@@ -11,12 +11,13 @@ from urllib2 import build_opener
 from MultipartPostHandler import MultipartPostHandler
 
 from module.plugins.Container import Container
-from module.utils import save_join
+from module.utils import fs_encode, save_join
 
 
 class CCF(Container):
     __name__    = "CCF"
-    __version__ = "0.21"
+    __type__    = "container"
+    __version__ = "0.22"
 
     __pattern__ = r'.+\.ccf$'
 
@@ -26,17 +27,17 @@ class CCF(Container):
 
 
     def decrypt(self, pyfile):
-        infile = pyfile.url.replace("\n", "")
-
+        file   = fs_encode(pyfile.url.strip())
         opener = build_opener(MultipartPostHandler)
-        params = {"src": "ccf",
-            "filename": "test.ccf",
-            "upload": open(infile, "rb")}
-        tempdlc_content = opener.open('http://service.jdownloader.net/dlcrypt/getDLC.php', params).read()
+
+        tempdlc_content = opener.open('http://service.jdownloader.net/dlcrypt/getDLC.php',
+                                      {'src'     : "ccf",
+                                       'filename': "test.ccf",
+                                       'upload'  : open(file, "rb")}).read()
 
         download_folder = self.config['general']['download_folder']
+        tempdlc_name    = save_join(download_folder, "tmp_%s.dlc" % pyfile.name)
 
-        tempdlc_name = save_join(download_folder, "tmp_%s.dlc" % pyfile.name)
         with open(tempdlc_name, "w") as tempdlc:
             tempdlc.write(re.search(r'<dlc>(.*)</dlc>', tempdlc_content, re.S).group(1))
 

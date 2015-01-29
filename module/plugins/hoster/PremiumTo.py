@@ -41,10 +41,10 @@ class PremiumTo(MultiHoster):
         err = ''
         if self.req.http.code == '420':
             # Custom error code send - fail
-            lastDownload = fs_encode(self.lastDownload)
-            with open(lastDownload, "rb") as f:
+            file = fs_encode(self.lastDownload)
+            with open(file, "rb") as f:
                 err = f.read(256).strip()
-            remove(lastDownload)
+            remove(file)
 
         if err:
             self.fail(err)

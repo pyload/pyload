@@ -39,7 +39,8 @@ class HotFolder(Hook):
                 makedirs(join(folder, "finished"))
 
             if self.getConfig("watch_file"):
-                with open(fs_encode(self.getConfig("file")), "a+") as f:
+                file = fs_encode(self.getConfig("file"))
+                with open(file, "a+") as f:
                     content = f.read().strip()
 
                 if content:
