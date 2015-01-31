@@ -27,20 +27,18 @@ class UnZip(Extractor):
         return sys.version_info[:2] >= (2, 6)
 
 
-    @classmethod
-    def getTargets(cls, files_ids):
-        return [(fname, id) for fname, id in files_ids if cls.isArchive(fname)]
-
-
     def extract(self, password=None):
         try:
             with zipfile.ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
                 z.setpassword(self.password)
-                if not z.testzip():
+
+                badfile = z.testzip():
+
+                if not badfile:
                     z.extractall(self.out)
                     self.files = z.namelist()
                 else:
-                    raise CRCError
+                    raise CRCError(badfile)
 
         except (BadZipfile, LargeZipFile), e:
             raise ArchiveError(e)

@@ -50,7 +50,7 @@ class Extractor:
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
-        raise NotImplementedError
+        return [(fname, id) for fname, id in files_ids if cls.isArchive(fname)]
 
 
     def __init__(self, manager, filename, out,
