@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -36,7 +36,7 @@ class SevenZip(UnRar):
 
 
     @classmethod
-    def checkDeps(cls):
+    def isUsable(cls):
         if os.name == "nt":
             cls.CMD = os.path.join(pypath, "7z.exe")
             p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
@@ -49,7 +49,15 @@ class SevenZip(UnRar):
 
 
     def check(self):
-        p = self.call_cmd("l", "-slt", fs_encode(self.filename))
+        file = fs_encode(self.filename)
+
+        p = self.call_cmd("t", file)
+        p.communicate()
+
+        if p.returncode > 1:
+            raise CRCError
+
+        p = self.call_cmd("l", "-slt", file)
         out, err = p.communicate()
 
         if p.returncode > 1:
@@ -127,12 +135,11 @@ class SevenZip(UnRar):
 
         p = self.call_cmd(command, fs_encode(self.filename), password=password)
         out, err = p.communicate()
-        code     = p.returncode
 
         if "Can not open" in err:
             raise ArchiveError("Cannot open file")
 
-        if code != 0:
+        if p.returncode > 1:
             raise ArchiveError("Process terminated unsuccessful")
 
         result = set()
