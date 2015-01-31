@@ -166,7 +166,7 @@ class SevenZip(UnRar):
         #@NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.cmd, command] + args + list(xargs)
 
-        self.manager.logDebug(" ".join([decode(arg) for arg in call]))
+        self.manager.logDebug(" ".join(map(decode, call)))
 
         p = Popen(call, stdout=PIPE, stderr=PIPE)
         return p

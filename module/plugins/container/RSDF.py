@@ -2,7 +2,6 @@
 
 from __future__ import with_statement
 
-import base64
 import binascii
 import re
 
@@ -49,6 +48,6 @@ class RSDF(Container):
 
         for link in binascii.unhexlify(''.join(data.split())).splitlines():
             if not link:
-                link         = obj.decrypt(base64.b64decode(link))
+                link         = obj.decrypt(link.decode('base64'))
                 decryptedUrl = link.replace('CCF: ', '')
                 self.urls.append(decryptedUrl)

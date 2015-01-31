@@ -20,7 +20,7 @@ class XFileSharingProFolder(XFSCrypter):
 
 
     def _log(self, type, args):
-        msg = " | ".join([str(a).strip() for a in args if a])
+        msg = " | ".join(str(a).strip() for a in args if a)
         logger = getattr(self.log, type)
         logger("%s: %s: %s" % (self.__name__, self.HOSTER_NAME, msg or _("%s MARK" % type.upper())))
 
@@ -31,7 +31,7 @@ class XFileSharingProFolder(XFSCrypter):
         self.__pattern__ = self.core.pluginManager.crypterPlugins[self.__name__]['pattern']
 
         self.HOSTER_DOMAIN = re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
-        self.HOSTER_NAME   = "".join([part.capitalize() for part in re.split(r'(\.|\d+)', self.HOSTER_DOMAIN) if part != '.'])
+        self.HOSTER_NAME   = "".join(part.capitalize() for part in re.split(r'(\.|\d+)', self.HOSTER_DOMAIN) if part != '.')
 
         if self.HOSTER_NAME[0].isdigit():
             self.HOSTER_NAME = 'X' + self.HOSTER_NAME

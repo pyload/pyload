@@ -32,7 +32,7 @@ class MultiHome(Hook):
 
 
     def toConfig(self):
-        return ";".join([i.adress for i in self.interfaces])
+        return ";".join(i.adress for i in self.interfaces)
 
 
     def parseInterfaces(self, interfaces):

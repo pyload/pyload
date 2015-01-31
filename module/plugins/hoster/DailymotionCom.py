@@ -86,7 +86,7 @@ class DailymotionCom(Hoster):
 
     def getLink(self, streams, quality):
         if quality > 0:
-            for x, s in reversed([item for item in enumerate(streams)]):
+            for x, s in [item for item in enumerate(streams)][::-1]:
                 qf = s[0][1]
                 if qf <= quality:
                     idx = x

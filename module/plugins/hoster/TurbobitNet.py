@@ -140,7 +140,7 @@ class TurbobitNet(SimpleHoster):
                 self.logDebug("URL", self.js.engine, out)
                 if out.startswith('/download/'):
                     return "http://turbobit.net%s" % out.strip()
-            
+
             except Exception, e:
                 self.logError(e)
         else:
@@ -149,7 +149,7 @@ class TurbobitNet(SimpleHoster):
                 self.delStorage("rtUpdate")
             else:
                 self.retry()
-        
+
         self.wait()
 
 

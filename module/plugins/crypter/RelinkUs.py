@@ -2,7 +2,6 @@
 
 from __future__ import with_statement
 
-import base64
 import binascii
 import re
 import os
@@ -279,14 +278,11 @@ class RelinkUs(Crypter):
         self.logDebug("JsEngine returns value [%s]" % jreturn)
         key = binascii.unhexlify(jreturn)
 
-        # Decode crypted
-        crypted = base64.standard_b64decode(crypted)
-
         # Decrypt
         Key = key
         IV = key
         obj = AES.new(Key, AES.MODE_CBC, IV)
-        text = obj.decrypt(crypted)
+        text = obj.decrypt(crypted.decode('base64'))
 
         # Extract links
         text = text.replace("\x00", "").replace("\r", "")

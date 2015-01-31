@@ -218,8 +218,8 @@ class XFSHoster(SimpleHoster):
             self.logWarning(re.sub(r"<.*?>", " ", self.errmsg))
 
             if 'wait' in self.errmsg:
-                wait_time = sum([int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
-                                 re.findall(r'(\d+)\s*(hr|hour|min|sec)', self.errmsg, re.I)])
+                wait_time = sum(int(v) * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1}[u.lower()] for v, u in
+                                re.findall(r'(\d+)\s*(hr|hour|min|sec)', self.errmsg, re.I))
                 self.wait(wait_time, True)
 
             elif 'country' in self.errmsg:
@@ -318,16 +318,21 @@ class XFSHoster(SimpleHoster):
         if m:
             captcha_div = m.group(1)
             numerals    = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
+
             self.logDebug(captcha_div)
-            inputs['code'] = "".join([a[1] for a in sorted(numerals, key=lambda num: int(num[0]))])
+
+            inputs['code'] = "".join(a[1] for a in sorted(numerals, key=lambda num: int(num[0])))
+
             self.logDebug("Captcha code: %s" % inputs['code'], numerals)
             return 2
 
         recaptcha = ReCaptcha(self)
         try:
             captcha_key = re.search(self.RECAPTCHA_PATTERN, self.html).group(1)
+
         except Exception:
             captcha_key = recaptcha.detect_key()
+
         else:
             self.logDebug("ReCaptcha key: %s" % captcha_key)
 
@@ -338,8 +343,10 @@ class XFSHoster(SimpleHoster):
         solvemedia = SolveMedia(self)
         try:
             captcha_key = re.search(self.SOLVEMEDIA_PATTERN, self.html).group(1)
+
         except Exception:
             captcha_key = solvemedia.detect_key()
+
         else:
             self.logDebug("SolveMedia key: %s" % captcha_key)
 

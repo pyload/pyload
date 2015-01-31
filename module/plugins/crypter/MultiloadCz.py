@@ -35,8 +35,8 @@ class MultiloadCz(Crypter):
             m = re.findall(self.LINK_PATTERN, self.html)
             if m:
                 prefered_set = set(self.getConfig("usedHoster").split('|'))
-                self.urls.extend([x[1] for x in m if x[0] in prefered_set])
+                self.urls.extend(x[1] for x in m if x[0] in prefered_set)
 
                 if not self.urls:
                     ignored_set = set(self.getConfig("ignoredHoster").split('|'))
-                    self.urls.extend([x[1] for x in m if x[0] not in ignored_set])
+                    self.urls.extend(x[1] for x in m if x[0] not in ignored_set)

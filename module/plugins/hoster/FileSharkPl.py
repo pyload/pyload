@@ -127,7 +127,7 @@ class FileSharkPl(SimpleHoster):
 
 
     def _decode64(self, data, *args, **kwargs):
-        return data.decode("base64")
+        return data.decode('base64')
 
 
 getInfo = create_getInfo(FileSharkPl)

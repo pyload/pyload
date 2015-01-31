@@ -77,22 +77,19 @@ class Captcha9Kw(Hook):
             self.logError(e)
             return
 
-        data = b64encode(data)
-        mouse = 1 if task.isPositional() else 0
         pluginname = re.search(r'_([^_]*)_\d+.\w+', task.captchaFile).group(1)
-
-        option = {'min'           : 2,
-                  'max'           : 50,
-                  'phrase'        : 0,
-                  'numeric'       : 0,
-                  'case_sensitive': 0,
-                  'math'          : 0,
-                  'prio'          : min(max(self.getConfig("prio"), 0), 10),
-                  'confirm'       : self.getConfig("confirm"),
-                  'timeout'       : min(max(self.getConfig("timeout"), 300), 3999),
-                  'selfsolve'     : self.getConfig("selfsolve"),
-                  'cph'           : self.getConfig("captchaperhour"),
-                  'cpm'           : self.getConfig("captchapermin")}
+        option     = {'min'           : 2,
+                      'max'           : 50,
+                      'phrase'        : 0,
+                      'numeric'       : 0,
+                      'case_sensitive': 0,
+                      'math'          : 0,
+                      'prio'          : min(max(self.getConfig("prio"), 0), 10),
+                      'confirm'       : self.getConfig("confirm"),
+                      'timeout'       : min(max(self.getConfig("timeout"), 300), 3999),
+                      'selfsolve'     : self.getConfig("selfsolve"),
+                      'cph'           : self.getConfig("captchaperhour"),
+                      'cpm'           : self.getConfig("captchapermin")}
 
         for opt in str(self.getConfig("hoster_options").split('|')):
 
@@ -130,8 +127,8 @@ class Captcha9Kw(Hook):
                      'pyload'        : "1",
                      'source'        : "pyload",
                      'base64'        : "1",
-                     'mouse'         : mouse,
-                     'file-upload-01': data,
+                     'mouse'         : 1 if task.isPositional() else 0,
+                     'file-upload-01': b64encode(data),
                      'action'        : "usercaptchaupload"}
 
         for _i in xrange(5):

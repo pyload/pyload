@@ -5,7 +5,6 @@ from __future__ import with_statement
 import re
 import xml.dom.minidom
 
-from base64 import standard_b64decode
 from Crypto.Cipher import AES
 
 from module.plugins.Container import Container
@@ -41,20 +40,17 @@ class DLC(Container):
         data += '=' * (-len(data) % 4)
 
         dlckey  = data[-88:]
-        dlcdata = standard_b64decode(data[:-88])
+        dlcdata = data[:-88].decode('base64')
 
         try:
-            rc = re.search(r'<rc>(.+)</rc>', self.load(self.API_URL % dlckey)).group(1)
+            rc = re.search(r'<rc>(.+)</rc>', self.load(self.API_URL % dlckey)).group(1).decode('base64')
 
         except Exception:
             self.fail(_("DLC file is corrupted"))
 
-        else:
-            rc = standard_b64decode(rc)
-
         dlckey = AES.new(self.KEY, AES.MODE_CBC, self.IV).decrypt(rc)
 
-        self.data     = standard_b64decode(AES.new(dlckey, AES.MODE_CBC, dlckey).decrypt(dlcdata))
+        self.data     = AES.new(dlckey, AES.MODE_CBC, dlckey).decrypt(dlcdata).decode('base64')
         self.packages = [(entry[0] if entry[0] else pyfile.name, entry[1], entry[0] if entry[0] else pyfile.name) \
                          for entry in self.getPackages()]
 
@@ -66,10 +62,10 @@ class DLC(Container):
 
 
     def parsePackages(self, startNode):
-        return [(standard_b64decode(decode(node.getAttribute("name"))), self.parseLinks(node)) \
+        return [(decode(node.getAttribute("name")).decode('base64'), self.parseLinks(node)) \
                 for node in startNode.getElementsByTagName("package")]
 
 
     def parseLinks(self, startNode):
-        return [standard_b64decode(node.getElementsByTagName("url")[0].firstChild.data) \
+        return [node.getElementsByTagName("url")[0].firstChild.data.decode('base64') \
                 for node in startNode.getElementsByTagName("file")]
