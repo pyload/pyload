@@ -27,7 +27,7 @@ class RapidgatorNet(Account):
             sid = self.getAccountData(user).get('sid')
             assert sid
 
-            json = req.load("%s/info?sid=%s" % (self.API_URL, sid))
+            json = req.load("%s/info" % self.API_URL, get={'sid': sid})
             self.logDebug("API:USERINFO", json)
             json = json_loads(json)
 
