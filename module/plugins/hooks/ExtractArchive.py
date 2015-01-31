@@ -99,14 +99,13 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.16"
+    __version__ = "1.20"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
-                  ("fullpath"        , "bool"  , "Extract full path"                         , True                                                                     ),
+                  ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
                   ("overwrite"       , "bool"  , "Overwrite files"                           , False                                                                    ),
                   ("keepbroken"      , "bool"  , "Try to extract broken archives"            , False                                                                    ),
-                  ("repair"          , "bool"  , "Repair broken archives"                    , False                                                                    ),
-                  ("extractempty"    , "bool"  , "Extract empty archives"                    , True                                                                     ),
+                  ("repair"          , "bool"  , "Repair broken archives"                    , True                                                                     ),
                   ("usepasswordfile" , "bool"  , "Use password file"                         , True                                                                     ),
                   ("passwordfile"    , "file"  , "Password file"                             , "archive_password.txt"                                                   ),
                   ("delete"          , "bool"  , "Delete archive when successfully extracted", False                                                                    ),
@@ -115,7 +114,7 @@ class ExtractArchive(Hook):
                   ("extensions"      , "str"   , "Extract the following extensions"          , "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
                   ("excludefiles"    , "str"   , "Don't extract the following files"         , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
                   ("recursive"       , "bool"  , "Extract archives in archives"              , True                                                                     ),
-                  ("queue"           , "bool"  , "Wait for all downloads to be finished"     , False                                                                    ),
+                  ("waitall"         , "bool"  , "Wait for all downloads to be finished"     , False                                                                    ),
                   ("renice"          , "int"   , "CPU priority"                              , 0                                                                        )]
 
     __description__ = """Extract different kind of archives"""
@@ -148,7 +147,7 @@ class ExtractArchive(Hook):
             try:
                 module = self.core.pluginManager.loadModule("internal", p)
                 klass  = getattr(module, p)
-                if klass.checkDeps():
+                if klass.isUsable():
                     names.append(p)
                     self.extractors.append(klass)
 
@@ -183,7 +182,7 @@ class ExtractArchive(Hook):
 
 
     def packageFinished(self, pypack):
-        if self.extracting or self.getConfig("queue"):
+        if self.extracting or self.getConfig("waitall"):
             self.logInfo(_("Package %s queued for later extracting") % pypack.name)
             self.queue.add(pypack.id)
         else:
@@ -203,18 +202,19 @@ class ExtractArchive(Hook):
         extracted = []
         failed    = []
 
-        clearList = lambda string: [x.lstrip('.') for x in string.replace(' ', '').replace(',', '|').replace(';', '|').split('|')]
+        toList = lambda string: string.replace(' ', '').replace(',', '|').replace(';', '|').split('|')
 
         destination  = self.getConfig("destination")
         subfolder    = self.getConfig("subfolder")
         fullpath     = self.getConfig("fullpath")
         overwrite    = self.getConfig("overwrite")
-        extensions   = clearList(self.getConfig("extensions"))
-        excludefiles = clearList(self.getConfig("excludefiles"))
         renice       = self.getConfig("renice")
         recursive    = self.getConfig("recursive")
         delete       = self.getConfig("delete")
         keepbroken   = self.getConfig("keepbroken")
+
+        extensions   = [x.lstrip('.').lower() for x in toList(self.getConfig("extensions"))]
+        excludefiles = toList(self.getConfig("excludefiles"))
 
         if extensions:
             self.logDebug("Extensions: %s" % "|.".join(extensions))
@@ -245,14 +245,15 @@ class ExtractArchive(Hook):
 
             matched   = False
             success   = True
-            files_ids = [(save_join(dl, pypack.folder, x['name']), x['id']) for x in pypack.getChildren().itervalues()]
+            files_ids = [(save_join(dl, pypack.folder, pylink['name']), pylink['id']) for pylink in pypack.getChildren().itervalues()]
 
             # check as long there are unseen files
             while files_ids:
                 new_files_ids = []
 
                 if extensions:
-                    files_ids = [(file, id) for file, id in files_ids if filter(lambda ext: file.endswith(ext), extensions)]
+                    files_ids = [(fname, fid) for fname, id in files_ids \
+                                 if filter(lambda ext: fname.lower().endswith(ext), extensions)]
 
                 for Extractor in self.extractors:
                     targets = Extractor.getTargets(files_ids)
@@ -260,21 +261,21 @@ class ExtractArchive(Hook):
                         self.logDebug("Targets for %s: %s" % (Extractor.__name__, targets))
                         matched = True
 
-                    for filename, fid in targets:
-                        fname = os.path.basename(filename)
+                    for fname, fid in targets:
+                        name = os.path.basename(fname)
 
-                        if filename in processed:
-                            self.logDebug(fname, "Skipped")
+                        if fname in processed:
+                            self.logDebug(name, "Skipped")
                             continue
 
-                        processed.append(filename)  # prevent extracting same file twice
+                        processed.append(fname)  # prevent extracting same file twice
 
-                        self.logInfo(fname, _("Extract to: %s") % out)
+                        self.logInfo(name, _("Extract to: %s") % out)
                         try:
                             self.extracting = True
 
                             archive = Extractor(self,
-                                                filename,
+                                                fname,
                                                 out,
                                                 fullpath,
                                                 overwrite,
@@ -288,20 +289,21 @@ class ExtractArchive(Hook):
                             new_files = self._extract(archive, fid, pypack.password)
 
                         except Exception, e:
-                            self.logError(fname, e)
+                            self.logError(name, e)
                             success = False
                             continue
 
                         self.logDebug("Extracted files: %s" % new_files)
                         self.setPermissions(new_files)
 
-                        for file in new_files:
+                        for filename in new_files:
+                            file = fs_encode(filename)
                             if not os.path.exists(file):
-                                self.logDebug("New file %s does not exists" % file)
+                                self.logDebug("New file %s does not exists" % filename)
                                 continue
 
                             if recursive and os.path.isfile(file):
-                                new_files_ids.append((file, fid))  # append as new target
+                                new_files_ids.append((filename, fid))  # append as new target
 
                 files_ids = new_files_ids  # also check extracted files
 
@@ -332,7 +334,7 @@ class ExtractArchive(Hook):
 
     def _extract(self, archive, fid, password):
         pyfile = self.core.files.getFile(fid)
-        fname  = os.path.basename(archive.filename)
+        name   = os.path.basename(archive.filename)
 
         pyfile.setCustomStatus(_("extracting"))
         pyfile.setProgress(0)
@@ -343,20 +345,23 @@ class ExtractArchive(Hook):
             try:
                 archive.check()
 
-            except CRCError:
-                self.logInfo(fname, _("Header protected"))
+            except CRCError, e:
+                self.logDebug(name, e)
+                self.logInfo(name, _("Header protected"))
 
                 if self.getConfig("repair"):
-                    self.logWarning(fname, _("Repairing..."))
-                    archive.repair()
+                    self.logWarning(name, _("Repairing..."))
+                    repaired = archive.repair()
+
+                    if not repaired and not self.getConfig("keepbroken"):
+                        raise CRCError("Archive damaged")
 
             except PasswordError:
-                self.logInfo(fname, _("Password protected"))
+                self.logInfo(name, _("Password protected"))
                 encrypted = True
 
             except ArchiveError, e:
-                if e != "Empty Archive" or not self.getConfig("extractempty"):
-                    raise ArchiveError(e)
+                raise ArchiveError(e)
 
             self.logDebug("Password: %s" % (password or "No provided"))
 
@@ -392,7 +397,7 @@ class ExtractArchive(Hook):
                     else:
                         self.logDebug("%s does not exists" % f)
 
-            self.logInfo(fname, _("Extracting finished"))
+            self.logInfo(name, _("Extracting finished"))
 
             extracted_files = archive.getExtractedFiles()
             self.manager.dispatchEvent("archive_extracted", pyfile, archive.out, archive.filename, extracted_files)
@@ -400,18 +405,18 @@ class ExtractArchive(Hook):
             return extracted_files
 
         except PasswordError:
-            self.logError(fname, _("Wrong password" if password else "No password found"))
+            self.logError(name, _("Wrong password" if password else "No password found"))
 
-        except CRCError:
-            self.logError(fname, _("CRC Mismatch"))
+        except CRCError, e:
+            self.logError(name, _("CRC mismatch"), e)
 
         except ArchiveError, e:
-            self.logError(fname, _("Archive Error"), e)
+            self.logError(name, _("Archive error"), e)
 
         except Exception, e:
+            self.logError(name, _("Unknown error"), e)
             if self.core.debug:
                 print_exc()
-            self.logError(fname, _("Unknown Error"), e)
 
         finally:
             pyfile.finishIfDone()
