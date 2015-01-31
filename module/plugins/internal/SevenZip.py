@@ -52,16 +52,16 @@ class SevenZip(UnRar):
         file = fs_encode(self.filename)
 
         p = self.call_cmd("t", file)
-        p.communicate()
+        out, err = p.communicate()
 
         if p.returncode > 1:
-            raise CRCError
+            raise CRCError(err)
 
         p = self.call_cmd("l", "-slt", file)
         out, err = p.communicate()
 
         if p.returncode > 1:
-            raise ArchiveError("Process terminated")
+            raise ArchiveError(_("Process return code: %d") % p.returncode)
 
         # check if output or error macthes the 'wrong password'-Regexp
         if self.re_wrongpwd.search(out):
@@ -69,12 +69,7 @@ class SevenZip(UnRar):
 
         # check if output matches 'Encrypted = +'
         if self.re_wrongcrc.search(out):
-            raise CRCError
-
-        # check if archive is empty
-        self.files = self.list()
-        if not self.files:
-            raise ArchiveError("Empty Archive")
+            raise CRCError(_("Header protected"))
 
 
     def isPassword(self, password):
@@ -118,13 +113,13 @@ class SevenZip(UnRar):
             raise PasswordError
 
         elif self.re_wrongcrc.search(err):
-            raise CRCError
+            raise CRCError(err)
 
         elif err.strip():  #: raise error if anything is on stderr
-            raise ArchiveError(err.strip())
+            raise ArchiveError(err)
 
         if p.returncode > 1:
-            raise ArchiveError("Process terminated")
+            raise ArchiveError(_("Process return code: %d") % p.returncode)
 
         if not self.files:
             self.files = self.list(password)
@@ -137,10 +132,10 @@ class SevenZip(UnRar):
         out, err = p.communicate()
 
         if "Can not open" in err:
-            raise ArchiveError("Cannot open file")
+            raise ArchiveError(_("Cannot open file"))
 
         if p.returncode > 1:
-            raise ArchiveError("Process terminated unsuccessful")
+            raise ArchiveError(_("Process return code: %d") % p.returncode)
 
         result = set()
         for groups in self.re_filelist.findall(out):

@@ -71,7 +71,7 @@ class UnRar(Extractor):
             if not cls.isArchive(fname):
                 continue
 
-            m = cls.re_rarpart1.match(fname)
+            m = cls.re_rarpart1.search(fname)
             if not m or int(m.group(1)) == 1:  #@NOTE: only add first part file
                 targets.append((fname, id))
 
@@ -86,16 +86,12 @@ class UnRar(Extractor):
             raise PasswordError
 
         if self.re_wrongcrc.search(err):
-            raise CRCError
+            raise CRCError(err)
 
         # output only used to check if passworded files are present
         for attr in self.re_filelist.findall(out):
             if attr[0].startswith("*"):
                 raise PasswordError
-
-        self.files = self.list()
-        if not self.files:
-            raise ArchiveError("Empty Archive")
 
 
     def isPassword(self, password):
@@ -158,13 +154,13 @@ class UnRar(Extractor):
             raise PasswordError
 
         elif self.re_wrongcrc.search(err):
-            raise CRCError
+            raise CRCError(err)
 
         elif err.strip():  #: raise error if anything is on stderr
-            raise ArchiveError(err.strip())
+            raise ArchiveError(err)
 
         if p.returncode:
-            raise ArchiveError("Process terminated")
+            raise ArchiveError(_("Process return code: %d") % p.returncode)
 
         if not self.files:
             self.files = self.list(password)
@@ -176,8 +172,11 @@ class UnRar(Extractor):
         for i in (1, 2):
             try:
                 dir, name = os.path.split(self.filename)
-                part      = self.getattr(self, "re_rarpart%d" % i).match(name).group(1)
-                file      = fs_encode(os.path.join(dir, name.replace(part, '*', 1)))
+
+                part     = self.getattr(self, "re_rarpart%d" % i).search(name).group(1)
+                new_name = name[::-1].replace((".part%s.rar" % part)[::-1], ".part*.rar"[::-1], 1)[::-1]
+                file     = fs_encode(os.path.join(dir, new_name)
+
                 files.extend(glob(file))
 
             except Exception:
@@ -196,7 +195,7 @@ class UnRar(Extractor):
         out, err = p.communicate()
 
         if "Cannot open" in err:
-            raise ArchiveError("Cannot open file")
+            raise ArchiveError(_("Cannot open file"))
 
         if err.strip():  #: only log error at this point
             self.manager.logError(err.strip())
