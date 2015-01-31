@@ -99,7 +99,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.15"
+    __version__ = "1.16"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract full path"                         , True                                                                     ),
@@ -380,7 +380,7 @@ class ExtractArchive(Hook):
             pyfile.setStatus("processing")
 
             if self.core.debug:
-                self.logDebug("Would delete: %s" % ", ".join(plugin.getDeleteFiles()))
+                self.logDebug("Would delete: %s" % ", ".join(archive.getDeleteFiles()))
 
             if self.getConfig("delete"):
                 files = archive.getDeleteFiles()
