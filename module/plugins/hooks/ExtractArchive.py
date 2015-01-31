@@ -99,7 +99,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.20"
+    __version__ = "1.21"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
@@ -252,7 +252,7 @@ class ExtractArchive(Hook):
                 new_files_ids = []
 
                 if extensions:
-                    files_ids = [(fname, fid) for fname, id in files_ids \
+                    files_ids = [(fname, fid) for fname, fid in files_ids \
                                  if filter(lambda ext: fname.lower().endswith(ext), extensions)]
 
                 for Extractor in self.extractors:
