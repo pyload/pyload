@@ -19,7 +19,7 @@ class PasswordError(Exception):
 
 class Extractor:
     __name__    = "Extractor"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
@@ -37,7 +37,7 @@ class Extractor:
 
 
     @classmethod
-    def checkDeps(cls):
+    def isUsable(cls):
         """ Check if system statisfy dependencies
         :return: boolean
         """
