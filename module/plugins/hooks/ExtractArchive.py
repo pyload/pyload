@@ -62,15 +62,23 @@ class ArchiveQueue(object):
 
 
     def get(self):
-        return self.plugin.getStorage("ExtractArchive:%s" % self.storage, [])
+        return self.plugin.getStorage("ExtractArchive:%s" % self.storage, "").decode('base64').split()
 
 
     def set(self, value):
-        return self.plugin.setStorage("ExtractArchive:%s" % self.storage, value)
+        if isinstance(value, list):
+            item = str(value)[1:-1].replace(' ', '').replace(',', ' ')
+        else:
+            item = str(value).strip()
+        return self.plugin.setStorage("ExtractArchive:%s" % self.storage, item.encode('base64')[:-1])
 
 
     def clean(self):
         return self.set([])
+
+
+    def delete(self):
+        return self.plugin.delStorage("ExtractArchive:%s" % self.storage)
 
 
     def add(self, item):
@@ -91,7 +99,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.14"
+    __version__ = "1.15"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract full path"                         , True                                                                     ),
@@ -387,7 +395,7 @@ class ExtractArchive(Hook):
             self.logInfo(fname, _("Extracting finished"))
 
             extracted_files = archive.getExtractedFiles()
-            self.manager.dispatchEvent("archive_extracted", pyfile, archive.out, archive.file, extracted_files)
+            self.manager.dispatchEvent("archive_extracted", pyfile, archive.out, archive.filename, extracted_files)
 
             return extracted_files
 
