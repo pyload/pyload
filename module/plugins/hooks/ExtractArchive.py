@@ -62,11 +62,11 @@ class ArchiveQueue(object):
 
 
     def get(self):
-        return self.plugin.getStorage("ExtractArchive:%s" % storage, [])
+        return self.plugin.getStorage("ExtractArchive:%s" % self.storage, [])
 
 
     def set(self, value):
-        return self.plugin.setStorage("ExtractArchive:%s" % storage, value)
+        return self.plugin.setStorage("ExtractArchive:%s" % self.storage, value)
 
 
     def clean(self):
@@ -91,7 +91,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.13"
+    __version__ = "1.14"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract full path"                         , True                                                                     ),

@@ -190,7 +190,7 @@ class ReCaptcha(CaptchaService):
 
         token1 = re.search(r'id="recaptcha-token" value="(.*?)">', html)
         self.plugin.logDebug("ReCaptcha token #1: %s" % token1.group(1))
-                
+
         html = self.plugin.req.load("https://www.google.com/recaptcha/api2/frame",
                                     get={'c'      : token1.group(1),
                                          'hl'     : language,
@@ -214,7 +214,7 @@ class ReCaptcha(CaptchaService):
 
         token4 = re.search(r'"rresp","(.*?)",', html)
         self.plugin.logDebug("ReCaptcha token #4: %s" % token4.group(1))
-        
+
         millis_captcha_loading = int(round(time.time() * 1000))
         captcha_response       = self.plugin.decryptCaptcha("https://www.google.com/recaptcha/api2/payload",
                                                             get={'c':token4.group(1), 'k':key}, forceUser=True)
