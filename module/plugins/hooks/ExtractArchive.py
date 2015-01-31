@@ -91,7 +91,10 @@ class ArchiveQueue(object):
 
     def remove(self, item):
         queue = self.get()
-        queue.pop(item, None)
+        try:
+            queue.remove(item)
+        except ValueError:
+            pass   
         return self.set(queue)
 
 
@@ -99,7 +102,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.21"
+    __version__ = "1.22"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
