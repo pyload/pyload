@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.06"
+    __version__ = "1.07"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -175,7 +175,7 @@ class UnRar(Extractor):
 
                 part     = self.getattr(self, "re_rarpart%d" % i).search(name).group(1)
                 new_name = name[::-1].replace((".part%s.rar" % part)[::-1], ".part*.rar"[::-1], 1)[::-1]
-                file     = fs_encode(os.path.join(dir, new_name)
+                file     = fs_encode(os.path.join(dir, new_name))
 
                 files.extend(glob(file))
 
