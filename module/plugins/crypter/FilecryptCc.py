@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # http://filecrypt.cc/Container/64E039F859.html
-import base64
+
 import binascii
 import re
 
@@ -167,14 +167,11 @@ class FilecryptCc(Crypter):
         # Get key
         key = binascii.unhexlify(str(jk))
 
-        # Decode crypted
-        crypted = base64.standard_b64decode(crypted)
-
         # Decrypt
         Key  = key
         IV   = key
         obj  = AES.new(Key, AES.MODE_CBC, IV)
-        text = obj.decrypt(crypted)
+        text = obj.decrypt(crypted.decode('base64'))
 
         # Extract links
         links = filter(lambda x: x != "",

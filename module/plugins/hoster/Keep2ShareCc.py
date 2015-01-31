@@ -57,7 +57,7 @@ class Keep2ShareCc(SimpleHoster):
 
             # string to time convert courtesy of https://stackoverflow.com/questions/10663720
             ftr = [3600, 60, 1]
-            wait_time = sum([a * b for a, b in zip(ftr, map(int, m.group(1).split(':')))])
+            wait_time = sum(a * b for a, b in zip(ftr, map(int, m.group(1).split(':'))))
 
             self.wantReconnect = True
             self.retry(wait_time=wait_time, reason="Please wait to download this file")

@@ -97,9 +97,8 @@ class ShareonlineBiz(SimpleHoster):
 
         self.checkErrors()
 
-        res = self.handleCaptcha()
-
-        download_url = res.decode("base64")
+        res          = self.handleCaptcha()
+        download_url = res.decode('base64')
 
         if not download_url.startswith("http://"):
             self.error(_("Wrong download url"))

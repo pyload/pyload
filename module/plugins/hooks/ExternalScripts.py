@@ -51,7 +51,7 @@ class ExternalScripts(Hook):
 
         for script_type, names in self.scripts.iteritems():
             if names:
-                self.logInfo(_("Installed scripts for"), script_type, ", ".join([os.path.basename(x) for x in names]))
+                self.logInfo(_("Installed scripts for"), script_type, ", ".join(map(os.path.basename, names)))
 
 
     def initPluginType(self, folder, path):

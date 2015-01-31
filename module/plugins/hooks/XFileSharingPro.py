@@ -65,22 +65,22 @@ class XFileSharingPro(Hook):
                 self.logInfo(_("Handling any %s I can!") % type)
                 pattern = self.regexp[type][0]
             else:
-                s = self.getConfig('%s_list' % type).replace('\\', '').replace('|', ',').replace(';', ',').lower()
-                plugin_list = set([x.strip() for x in s.split(',')])
+                plugins    = self.getConfig('%s_list' % type)
+                plugin_set = set(plugins.replace(' ', '').replace('\\', '').replace('|', ',').replace(';', ',').lower().split(','))
 
                 if use_builtin_list:
-                    plugin_list |= set([x.lower() for x in getattr(self, "%s_BUILTIN" % type.upper())])
+                    plugin_set |= set(x.lower() for x in getattr(self, "%s_BUILTIN" % type.upper()))
 
-                plugin_list -= set(('', u''))
+                plugin_set -= set(('', u''))
 
-                if not plugin_list:
+                if not plugin_set:
                     self.logInfo(_("No %s to handle") % type)
                     self._unload(type, plugin)
                     return
 
-                match_list = '|'.join(sorted(plugin_list))
+                match_list = '|'.join(sorted(plugin_set))
 
-                len_match_list = len(plugin_list)
+                len_match_list = len(plugin_set)
                 self.logInfo(_("Handling %d %s%s: %s") % (len_match_list,
                                                           type,
                                                           "" if len_match_list == 1 else "s",

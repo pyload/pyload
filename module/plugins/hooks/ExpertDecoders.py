@@ -56,15 +56,17 @@ class ExpertDecoders(Hook):
 
         with open(task.captchaFile, 'rb') as f:
             data = f.read()
-        data = b64encode(data)
 
         req = getRequest()
         #raise timeout threshold
         req.c.setopt(LOW_SPEED_TIME, 80)
 
         try:
-            result = req.load(self.API_URL, post={"action": "upload", "key": self.getConfig("passkey"),
-                                                   "file": data, "gen_task_id": ticket})
+            result = req.load(self.API_URL,
+                              post={'action'     : "upload",
+                                    'key'        : self.getConfig("passkey"),
+                                    'file'       : b64encode(data),
+                                    'gen_task_id': ticket})
         finally:
             req.close()
 

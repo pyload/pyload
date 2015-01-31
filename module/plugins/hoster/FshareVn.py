@@ -87,7 +87,7 @@ class FshareVn(SimpleHoster):
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
-        
+
         self.link = m.group(1)
         self.wait()
 

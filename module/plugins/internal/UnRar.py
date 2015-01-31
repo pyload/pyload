@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.05"
+    __version__ = "1.06"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -45,7 +45,7 @@ class UnRar(Extractor):
 
 
     @classmethod
-    def checkDeps(cls):
+    def isUsable(cls):
         if os.name == "nt":
             cls.CMD = os.path.join(pypath, "UnRAR.exe")
             p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
@@ -67,13 +67,13 @@ class UnRar(Extractor):
     def getTargets(cls, files_ids):
         targets = []
 
-        for filename, id in files_ids:
-            if not cls.isArchive(filename):
+        for fname, id in files_ids:
+            if not cls.isArchive(fname):
                 continue
 
-            m = cls.re_rarpart1.match(filename)
+            m = cls.re_rarpart1.match(fname)
             if not m or int(m.group(1)) == 1:  #@NOTE: only add first part file
-                targets.append((filename, id))
+                targets.append((fname, id))
 
         return targets
 

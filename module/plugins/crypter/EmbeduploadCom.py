@@ -35,7 +35,7 @@ class EmbeduploadCom(Crypter):
 
             self.logDebug("PF: %s" % prefered_set)
 
-            tmp_links.extend([x[1] for x in m if x[0] in prefered_set])
+            tmp_links.extend(x[1] for x in m if x[0] in prefered_set)
             self.urls = self.getLocation(tmp_links)
 
             if not self.urls:
@@ -44,7 +44,7 @@ class EmbeduploadCom(Crypter):
 
                 self.logDebug("IG: %s" % ignored_set)
 
-                tmp_links.extend([x[1] for x in m if x[0] not in ignored_set])
+                tmp_links.extend(x[1] for x in m if x[0] not in ignored_set)
                 self.urls = self.getLocation(tmp_links)
 
 

@@ -189,4 +189,5 @@ class YoutubeCom(Hoster):
                 "-vcodec", "copy",
                 "-acodec", "copy",
                 filename])
+
             os.remove(inputfile)
