@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-#
-# Test links:
-# http://ul.to/044yug9o
-# http://ul.to/gzfhd0xs
 
 import re
 
@@ -16,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.80"
+    __version__ = "0.81"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
@@ -34,6 +30,7 @@ class UploadedTo(SimpleHoster):
 
     LINK_PREMIUM_PATTERN = r'<div class="tfree".*\s*<form method="post" action="(.+?)"'
 
+    WAIT_PATTERN   = r'Current waiting period: <span>(\d+)'
     DL_LIMIT_ERROR = r'You have reached the max. number of possible free downloads for this hour'
 
 
@@ -72,15 +69,7 @@ class UploadedTo(SimpleHoster):
             self.logError(_("Free-download capacities exhausted"))
             self.retry(24, 5 * 60)
 
-        if not self.premium:
-            m = re.search(r"Current waiting period: <span>(\d+)</span> seconds", self.html)
-            if m:
-                self.wait(m.group(1))
-            else:
-                if not "type:'download'" in self.html:
-                    self.fail(_("File not downloadable for free users"))
-
-        if "limit-size" in self.html:
+        elif "limit-size" in self.html:
             self.fail(_("File too big for free download"))
 
         elif "limit-slot" in self.html:  # Temporary restriction so just wait a bit
@@ -96,6 +85,11 @@ class UploadedTo(SimpleHoster):
 
         elif '"err":"captcha"' in self.html:
             self.invalidCaptcha()
+
+        else:
+            m = re.search(self.WAIT_PATTERN, self.html)
+            if m:
+                self.wait(m.group(1))
 
 
     def handleFree(self, pyfile):
