@@ -16,10 +16,9 @@ from module.plugins.Hook import Hook, threaded
 class Captcha9Kw(Hook):
     __name__    = "Captcha9Kw"
     __type__    = "hook"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
-    __config__ = [("activated"     , "bool"    , "Activated"                                                                       , True                                                               ),
-                  ("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
+    __config__ = [("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
                   ("force"         , "bool"    , "Force captcha resolving even if client is connected"                             , True                                                               ),
                   ("confirm"       , "bool"    , "Confirm Captcha (cost +6 credits)"                                               , False                                                              ),
                   ("captchaperhour", "int"     , "Captcha per hour"                                                                , "9999"                                                             ),
