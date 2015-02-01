@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.79"
+    __version__ = "0.80"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
@@ -77,7 +77,8 @@ class UploadedTo(SimpleHoster):
             if m:
                 self.wait(m.group(1))
             else:
-                self.fail(_("File not downloadable for free users"))
+                if not "type:'download'" in self.html:
+                    self.fail(_("File not downloadable for free users"))
 
         if "limit-size" in self.html:
             self.fail(_("File too big for free download"))
