@@ -21,12 +21,9 @@ class UploadedTo(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    API_KEY = "bGhGMkllZXByd2VEZnU5Y2NXbHhYVlZ5cEE1bkEzRUw="  #@NOTE: base64 encoded
+    API_KEY = "lhF2IeeprweDfu9ccWlxXVVypA5nA3EL"
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://uploaded.net/file/\g<ID>')]
-
-    INFO_PATTERN    = r'<a href="file/(?P<ID>\w+)" id="filename">(?P<N>[^<]+)</a> &nbsp;\s*<small[^>]*>(?P<S>[^<]+)</small>'
-    OFFLINE_PATTERN = r'<small class="cL">Error: 404'
 
     LINK_PREMIUM_PATTERN = r'<div class="tfree".*\s*<form method="post" action="(.+?)"'
 
@@ -39,18 +36,16 @@ class UploadedTo(SimpleHoster):
         info = super(UploadedTo, cls).apiInfo(url)
 
         for _i in xrange(5):
-            api = getURL("http://uploaded.net/api/filemultiple",
-                         post={"apikey": cls.API_KEY.decode('base64'), 'id_0': re.match(cls.__pattern__, url).group('ID')},
+            html = getURL("http://uploaded.net/api/filemultiple",
+                         get={"apikey": cls.API_KEY, 'id_0': re.match(cls.__pattern__, url).group('ID')},
                          decode=True)
-            if api != "can't find request":
-                api = api.splitlines()[0].split(",", 4)
 
-                if api[0] == "online":
-                    info.update({'name': api[4], 'size': api[2], 'status': 2})
-
-                elif api[0] == "offline":
+            if html != "can't find request":
+                api = html.split(",", 4)
+                if api[0] == "offline":
                     info['status'] = 1
-
+                else:
+                    info.update({'name': api[4], 'size': api[2], 'status': 2})
                 break
             else:
                 sleep(3)
