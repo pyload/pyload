@@ -18,7 +18,7 @@ class Captcha9Kw(Hook):
     __type__    = "hook"
     __version__ = "0.27"
 
-    __config__ = [("activated"     , "bool"    , "Activated"                                                                       , True                                                               ),
+    __config__ = [("activated"     , "bool"    , "Activated"                                                                       , False                                                               ),
                   ("ssl"           , "bool"    , "Use HTTPS"                                                                       , True                                                               ),
                   ("force"         , "bool"    , "Force captcha resolving even if client is connected"                             , True                                                               ),
                   ("confirm"       , "bool"    , "Confirm Captcha (cost +6 credits)"                                               , False                                                              ),
