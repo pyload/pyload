@@ -29,9 +29,6 @@ class XdadevelopersCom(SimpleHoster):
         self.chunkLimit = 1
 
     def handleFree(self, pyfile):        
-        self.header = self.load(pyfile.url+"&task=get",cookies=True,just_header=True)
-        self.header = self.load(self.header["location"],cookies=True,just_header=True)
-        self.logDebug("Download-URL: %s" %self.header["location"])
-        self.download(self.header["location"],cookies=True)
+        self.download(pyfile.url+"&task=get",cookies=True,disposition=True)
 
 getInfo = create_getInfo(XdadevelopersCom)
