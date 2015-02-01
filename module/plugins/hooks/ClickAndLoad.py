@@ -20,24 +20,13 @@ def forward(source, destination):
 
 #: socket.create_connection wrapper for python 2.5
 def create_connection(address, timeout=object(), source_address=None):
-    try:
-        return socket.create_connection(address,
-                                        socket._GLOBAL_DEFAULT_TIMEOUT if type(timeout) == object else timeout,
-                                        source_address)
+    if hasattr(socket, 'create_connection'):
+        if type(timeout) == object:
+            timeout = socket._GLOBAL_DEFAULT_TIMEOUT
 
-    except SyntaxError:
-        """Connect to *address* and return the socket object.
+        return socket.create_connection(address, timeout, source_address)
 
-        Convenience function.  Connect to *address* (a 2-tuple ``(host,
-        port)``) and return the socket object.  Passing the optional
-        *timeout* parameter will set the timeout on the socket instance
-        before attempting to connect.  If no *timeout* is supplied, the
-        global default timeout setting returned by :func:`getdefaulttimeout`
-        is used.  If *source_address* is set it must be a tuple of (host, port)
-        for the socket to bind as a source address before making the connection.
-        An host of \'\' or port 0 tells the OS to use the default.
-        """
-
+    else:
         host, port = address
         err = None
         for res in getaddrinfo(host, port, 0, SOCK_STREAM):
@@ -66,7 +55,7 @@ def create_connection(address, timeout=object(), source_address=None):
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __config__ = [("activated", "bool", "Activated"                                     , True ),
                   ("port"     , "int" , "Port"                                          , 9666 ),
@@ -114,6 +103,7 @@ class ClickAndLoad(Hook):
 
         except socket.error, e:
             self.logError(e)
+            self.server(ip, webport, cnlport)
 
         finally:
             dock_socket.close()
