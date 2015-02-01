@@ -27,9 +27,11 @@ class RapidgatorNet(Account):
             sid = self.getAccountData(user).get('sid')
             assert sid
 
-            json = req.load("%s/info" % self.API_URL, get={'sid': sid})
-            self.logDebug("API:USERINFO", json)
-            json = json_loads(json)
+            html = req.load("%s/info" % self.API_URL, get={'sid': sid})
+
+            self.logDebug("API:USERINFO", html)
+
+            json = json_loads(html)
 
             if json['response_status'] == 200:
                 if "reset_in" in json['response']:
@@ -52,11 +54,11 @@ class RapidgatorNet(Account):
 
     def login(self, user, data, req):
         try:
-            json = req.load('%s/login' % self.API_URL, post={"username": user, "password": data['password']})
+            html = req.load('%s/login' % self.API_URL, post={"username": user, "password": data['password']})
 
-            self.logDebug("API:LOGIN", json)
+            self.logDebug("API:LOGIN", html)
 
-            json = json_loads(json)
+            json = json_loads(html)
 
             if json['response_status'] == 200:
                 data['sid'] = str(json['response']['session_id'])
