@@ -40,7 +40,7 @@ def computeChecksum(local_file, algorithm):
 class Checksum(Hook):
     __name__    = "Checksum"
     __type__    = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
 
     __config__ = [("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
                   ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
@@ -55,10 +55,12 @@ class Checksum(Hook):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    methods = {'sfv': 'crc32', 'crc': 'crc32', 'hash': 'md5'}
-    regexps = {'sfv': r'^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$',
-               'md5': r'^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$',
-               'crc': r'filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$',
+    methods = {'sfv' : 'crc32',
+               'crc' : 'crc32',
+               'hash': 'md5'}
+    regexps = {'sfv'    : r'^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$',
+               'md5'    : r'^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$',
+               'crc'    : r'filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$',
                'default': r'^(?P<HASH>[0-9A-Fa-f]+)\s+\*?(?P<NAME>.+)$'}
 
 
@@ -92,8 +94,9 @@ class Checksum(Hook):
         elif hasattr(pyfile.plugin, "api_data") and isinstance(pyfile.plugin.api_data, dict):
             data = pyfile.plugin.api_data.copy()
 
-        # elif hasattr(pyfile.plugin, "info") and isinstance(pyfile.plugin.info, dict):
-            # data = pyfile.plugin.info.copy()
+        elif hasattr(pyfile.plugin, "info") and isinstance(pyfile.plugin.info, dict):
+            data = pyfile.plugin.info.copy()
+            data.pop('size', None)  #@NOTE: Don't check file size until a similary matcher will be implemented
 
         else:
             return
@@ -110,19 +113,25 @@ class Checksum(Hook):
         if not isfile(local_file):
             self.checkFailed(pyfile, None, "File does not exist")
 
-            # validate file size
+        # validate file size
         if "size" in data:
-            api_size = int(data['size'])
+            api_size  = int(data['size'])
             file_size = getsize(local_file)
+
             if api_size != file_size:
                 self.logWarning(_("File %s has incorrect size: %d B (%d expected)") % (pyfile.name, file_size, api_size))
                 self.checkFailed(pyfile, local_file, "Incorrect file size")
-            del data['size']
+
+            data.pop('size', None)
 
         # validate checksum
         if data and self.getConfig("check_checksum"):
-            if "checksum" in data:
-                data['md5'] = data['checksum']
+
+            if not 'md5' in data:
+                for type in ("checksum", "hashsum", "hash"):
+                    if type in data:
+                        data['md5'] = data[type]  #@NOTE: What happens if it's not an md5 hash?
+                        break
 
             for key in self.algorithms:
                 if key in data:
