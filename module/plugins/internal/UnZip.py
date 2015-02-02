@@ -4,15 +4,15 @@ from __future__ import with_statement
 
 import os
 import sys
-import zipfile
 
+from zipfile import ZipFile, BadZipfile, LargeZipFile
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
 from module.utils import fs_encode
 
 
 class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.06"
+    __version__ = "1.07"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -29,8 +29,8 @@ class UnZip(Extractor):
 
     def extract(self, password=None):
         try:
-            with zipfile.ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
-                z.setpassword(self.password)
+            with ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
+                z.setpassword(password)
 
                 badfile = z.testzip()
 
