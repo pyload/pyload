@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.07"
+    __version__ = "1.08"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -39,7 +39,9 @@ class UnRar(Extractor):
     re_rarpart1 = re.compile(r'\.part(\d+)\.rar$', re.I)
     re_rarpart2 = re.compile(r'\.r(\d+)$', re.I)
 
+    re_filefixed = re.compile(r'Building (.+)')
     re_filelist  = re.compile(r'(.+)\s+(\d+)\s+(\d+)\s+|(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
+
     re_wrongpwd  = re.compile(r'password', re.I)
     re_wrongcrc  = re.compile(r'encrypted|damaged|CRC failed|checksum error', re.I)
 
@@ -61,21 +63,6 @@ class UnRar(Extractor):
                 p.communicate()
 
         return True
-
-
-    @classmethod
-    def getTargets(cls, files_ids):
-        targets = []
-
-        for fname, id in files_ids:
-            if not cls.isArchive(fname):
-                continue
-
-            m = cls.re_rarpart1.search(fname)
-            if not m or int(m.group(1)) == 1:  #@NOTE: only add first part file
-                targets.append((fname, id))
-
-        return targets
 
 
     def check(self):
@@ -103,24 +90,46 @@ class UnRar(Extractor):
 
     def repair(self):
         p = self.call_cmd("rc", fs_encode(self.filename))
-        out, err = p.communicate()
 
-        if p.returncode or err.strip():
+        # communicate and retrieve stderr
+        self._progress(p)
+        err = p.stderr.read().strip()
+
+        if err or p.returncode:
             p = self.call_cmd("r", fs_encode(self.filename))
-            out, err = p.communicate()
 
-            if p.returncode or err.strip():
+            # communicate and retrieve stderr
+            self._progress(p)
+            err = p.stderr.read().strip()
+
+            if err or p.returncode:
                 return False
             else:
-                dir, name = os.path.split(filename)
+                dir  = os.path.dirname(filename)
+                name = re_filefixed.search(out).group(1)
 
-                if 'fixed' in out:
-                    self.filename = os.path.join(dir, 'fixed.' + name)
-
-                elif 'rebuild' in out:
-                    self.filename = os.path.join(dir, 'rebuild.' + name)
+                self.filename = os.path.join(dir, name)
 
         return True
+
+
+    def _progress(self, process):
+        s = ""
+        while True:
+            c = process.stdout.read(1)
+            # quit loop on eof
+            if not c:
+                break
+            # reading a percentage sign -> set progress and restart
+            if c == '%':
+                self.notifyProgress(int(s))
+                s = ""
+            # not reading a digit -> therefore restart
+            elif c not in digits:
+                s = ""
+            # add digit to progressstring
+            else:
+                s += c
 
 
     def extract(self, password=None):
@@ -130,40 +139,24 @@ class UnRar(Extractor):
 
         renice(p.pid, self.renice)
 
-        progressstring = ""
-        while True:
-            c = p.stdout.read(1)
-            # quit loop on eof
-            if not c:
-                break
-            # reading a percentage sign -> set progress and restart
-            if c == '%':
-                self.notifyProgress(int(progressstring))
-                progressstring = ""
-            # not reading a digit -> therefore restart
-            elif c not in digits:
-                progressstring = ""
-            # add digit to progressstring
-            else:
-                progressstring += c
+        # communicate and retrieve stderr
+        self._progress(p)
+        err = p.stderr.read().strip()
 
-        # retrieve stderr
-        err = p.stderr.read()
+        if err:
+            if self.re_wrongpwd.search(err):
+                raise PasswordError
 
-        if self.re_wrongpwd.search(err):
-            raise PasswordError
+            elif self.re_wrongcrc.search(err):
+                raise CRCError(err)
 
-        elif self.re_wrongcrc.search(err):
-            raise CRCError(err)
-
-        elif err.strip():  #: raise error if anything is on stderr
-            raise ArchiveError(err)
+            else:  #: raise error if anything is on stderr
+                raise ArchiveError(err)
 
         if p.returncode:
             raise ArchiveError(_("Process return code: %d") % p.returncode)
 
-        if not self.files:
-            self.files = self.list(password)
+        self.files = self.list(password)
 
 
     def getDeleteFiles(self):

@@ -51,6 +51,7 @@ if os.name != "nt":
 
 from module.plugins.Hook import Hook, threaded, Expose
 from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
+from module.plugins.internal.SimpleHoster import replace_patterns
 from module.utils import fs_encode, save_join, uniqify
 
 
@@ -94,7 +95,7 @@ class ArchiveQueue(object):
         try:
             queue.remove(item)
         except ValueError:
-            pass   
+            pass
         return self.set(queue)
 
 
@@ -102,7 +103,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.22"
+    __version__ = "1.23"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
@@ -127,14 +128,12 @@ class ExtractArchive(Hook):
 
     event_list = ["allDownloadsProcessed"]
 
+    NAME_REPLACEMENTS = [(r'\.part\d+\.rar$', ".part.rar")]
+
 
     #@TODO: Remove in 0.4.10
     def initPeriodical(self):
         pass
-
-
-    def coreReady(self):
-        self.extracting = False
 
 
     def setup(self):
@@ -142,33 +141,42 @@ class ExtractArchive(Hook):
         self.failed = ArchiveQueue(self, "Failed")
 
         self.interval   = 300
+        self.extracting = False
         self.extractors = []
         self.passwords  = []
 
-        names = []
+
+    def coreReady(self):
+        # self.extracting = False
+
         for p in ("UnRar", "SevenZip", "UnZip"):
             try:
                 module = self.core.pluginManager.loadModule("internal", p)
                 klass  = getattr(module, p)
                 if klass.isUsable():
-                    names.append(p)
                     self.extractors.append(klass)
 
             except OSError, e:
                 if e.errno == 2:
                     self.logInfo(_("No %s installed") % p)
                 else:
-                    self.logWarning(_("Could not activate %s") % p, e)
+                    self.logWarning(_("Could not activate: %s") % p, e)
                     if self.core.debug:
                         print_exc()
 
             except Exception, e:
-                self.logWarning(_("Could not activate %s") % p, e)
+                self.logWarning(_("Could not activate: %s") % p, e)
                 if self.core.debug:
                     print_exc()
 
-        if names:
-            self.logInfo(_("Activated") + " " + " ".join(names))
+        if self.extractors:
+            self.logInfo(_("Activated") + " " + " ".join(Extractor.__name__ for Extractor in self.extractors))
+
+            if self.getConfig("waitall"):
+                self.extractPackage(*self.queue.get())  #: Resume unfinished extractions
+            else:
+                super(ExtractArchive, self).initPeriodical()
+
         else:
             self.logInfo(_("No Extract plugins activated"))
 
@@ -185,11 +193,7 @@ class ExtractArchive(Hook):
 
 
     def packageFinished(self, pypack):
-        if self.extracting or self.getConfig("waitall"):
-            self.logInfo(_("Package %s queued for later extracting") % pypack.name)
-            self.queue.add(pypack.id)
-        else:
-            self.extractPackage(pypack.id)
+        self.queue.add(pypack.id)
 
 
     @threaded
@@ -201,6 +205,8 @@ class ExtractArchive(Hook):
 
 
     def extract(self, ids):
+        self.extracting = True
+
         processed = []
         extracted = []
         failed    = []
@@ -267,16 +273,19 @@ class ExtractArchive(Hook):
                     for fname, fid in targets:
                         name = os.path.basename(fname)
 
-                        if fname in processed:
+                        if not os.path.exists(fname):
+                            self.logDebug(name, "File not found")
+                            continue
+
+                        pname = replace_patterns(fname, self.NAME_REPLACEMENTS)
+                        if pname not in processed:
+                            processed.append(pname)  #: prevent extracting same file twice
+                        else:
                             self.logDebug(name, "Skipped")
                             continue
 
-                        processed.append(fname)  # prevent extracting same file twice
-
                         self.logInfo(name, _("Extract to: %s") % out)
                         try:
-                            self.extracting = True
-
                             archive = Extractor(self,
                                                 fname,
                                                 out,
@@ -339,11 +348,9 @@ class ExtractArchive(Hook):
         pyfile = self.core.files.getFile(fid)
         name   = os.path.basename(archive.filename)
 
-        pyfile.setCustomStatus(_("extracting"))
-        pyfile.setProgress(0)
+        pyfile.setStatus("processing")
 
         encrypted = False
-
         try:
             try:
                 archive.check()
@@ -354,7 +361,13 @@ class ExtractArchive(Hook):
 
                 if self.getConfig("repair"):
                     self.logWarning(name, _("Repairing..."))
+
+                    pyfile.setCustomStatus(_("repairing"))
+                    pyfile.setProgress(0)
+
                     repaired = archive.repair()
+
+                    pyfile.setProgress(100)
 
                     if not repaired and not self.getConfig("keepbroken"):
                         raise CRCError("Archive damaged")
@@ -368,13 +381,18 @@ class ExtractArchive(Hook):
 
             self.logDebug("Password: %s" % (password or "No provided"))
 
+            pyfile.setCustomStatus(_("extracting"))
+            pyfile.setProgress(0)
+
             if not encrypted or not self.getConfig("usepasswordfile"):
                 archive.extract(password)
             else:
                 for pw in set(self.getPasswords(False) + [password]):
                     try:
                         self.logDebug("Try password: %s" % pw)
-                        if archive.isPassword(pw):
+
+                        ispw = archive.isPassword(pw)
+                        if ispw or ispw is None:
                             archive.extract(pw)
                             self.addPassword(pw)
                             break
@@ -385,7 +403,7 @@ class ExtractArchive(Hook):
                     raise PasswordError
 
             pyfile.setProgress(100)
-            pyfile.setStatus("processing")
+            pyfile.setCustomStatus(_("finalizing"))
 
             if self.core.debug:
                 self.logDebug("Would delete: %s" % ", ".join(archive.getDeleteFiles()))
@@ -402,7 +420,7 @@ class ExtractArchive(Hook):
 
             self.logInfo(name, _("Extracting finished"))
 
-            extracted_files = archive.getExtractedFiles()
+            extracted_files = archive.files or archive.list()
             self.manager.dispatchEvent("archive_extracted", pyfile, archive.out, archive.filename, extracted_files)
 
             return extracted_files

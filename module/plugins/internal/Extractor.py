@@ -19,7 +19,7 @@ class PasswordError(Exception):
 
 class Extractor:
     __name__    = "Extractor"
-    __version__ = "0.17"
+    __version__ = "0.18"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
@@ -41,7 +41,7 @@ class Extractor:
         """ Check if system statisfy dependencies
         :return: boolean
         """
-        return True
+        return None
 
 
     @classmethod
@@ -99,11 +99,11 @@ class Extractor:
         :param password:
         :return: boolean
         """
-        return True
+        return None
 
 
     def repair(self):
-        return False
+        return None
 
 
     def extract(self, password=None):
@@ -127,6 +127,6 @@ class Extractor:
         return [self.filename]
 
 
-    def getExtractedFiles(self):
+    def list(self, password=None):
         """Populate self.files at some point while extracting"""
         return self.files

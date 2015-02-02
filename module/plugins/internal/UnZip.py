@@ -4,15 +4,15 @@ from __future__ import with_statement
 
 import os
 import sys
+import zipfile
 
-from zipfile import ZipFile, BadZipfile, LargeZipFile
 from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
 from module.utils import fs_encode
 
 
 class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.07"
+    __version__ = "1.08"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -27,20 +27,35 @@ class UnZip(Extractor):
         return sys.version_info[:2] >= (2, 6)
 
 
+    def list(self, password=None):
+        with zipfile.ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
+            z.setpassword(password)
+            return z.namelist()
+
+
+    def check(self):
+        with zipfile.ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
+            badfile = z.testzip()
+
+            if badfile:
+                raise CRCError(badfile)
+            else:
+                raise PasswordError
+
+
     def extract(self, password=None):
         try:
-            with ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
+            with zipfile.ZipFile(fs_encode(self.filename), 'r', allowZip64=True) as z:
                 z.setpassword(password)
 
                 badfile = z.testzip()
 
                 if not badfile:
                     z.extractall(self.out)
-                    self.files = z.namelist()
                 else:
                     raise CRCError(badfile)
 
-        except (BadZipfile, LargeZipFile), e:
+        except (zipfile.BadZipfile, zipfile.LargeZipFile), e:
             raise ArchiveError(e)
 
         except RuntimeError, e:
@@ -48,3 +63,5 @@ class UnZip(Extractor):
                 raise PasswordError
             else:
                 raise ArchiveError(e)
+        else:
+            self.files = z.namelist()
