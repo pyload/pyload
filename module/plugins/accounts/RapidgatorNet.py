@@ -7,14 +7,14 @@ from module.common.json_layer import json_loads
 class RapidgatorNet(Account):
     __name__    = "RapidgatorNet"
     __type__    = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
 
     __description__ = """Rapidgator.net account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
-    API_URL = 'http://rapidgator.net/api/user'
+    API_URL = "http://rapidgator.net/api/user"
 
 
     def loadAccountInfo(self, user, req):
@@ -37,8 +37,8 @@ class RapidgatorNet(Account):
                 if "reset_in" in json['response']:
                     self.scheduleRefresh(user, json['response']['reset_in'])
 
-                validuntil  = json['response']['expire_date'],
-                trafficleft = float(json['response']['traffic_left']) / 1024,  #@TODO: Remove `/ 1024` in 0.4.10
+                validuntil  = json['response']['expire_date']
+                trafficleft = float(json['response']['traffic_left']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
                 premium     = True
             else:
                 self.logError(json['response_details'])
