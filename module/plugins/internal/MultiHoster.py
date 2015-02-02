@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, r
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
 
     __pattern__ = r'^unmatchable$'
 
@@ -45,8 +45,7 @@ class MultiHoster(SimpleHoster):
         else:
             self.directDL = self.DIRECT_LINK
 
-        self.pyfile.url = replace_patterns(self.pyfile.url,
-                                           self.FILE_URL_REPLACEMENTS if hasattr(self, "FILE_URL_REPLACEMENTS") else self.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
+        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
 
     def process(self, pyfile):

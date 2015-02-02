@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class RapiduNet(SimpleHoster):
     __name__    = "RapiduNet"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'
 
@@ -24,8 +24,8 @@ class RapiduNet(SimpleHoster):
 
     COOKIES = [("rapidu.net", "rapidu_lang", "en")]
 
-    FILE_INFO_PATTERN = r'<h1 title="(?P<N>.*)">.*</h1>\s*<small>(?P<S>\d+(\.\d+)?)\s(?P<U>\w+)</small>'
-    OFFLINE_PATTERN   = r'404 - File not found'
+    INFO_PATTERN    = r'<h1 title="(?P<N>.*)">.*</h1>\s*<small>(?P<S>\d+(\.\d+)?)\s(?P<U>\w+)</small>'
+    OFFLINE_PATTERN = r'404 - File not found'
 
     ERROR_PATTERN = r'<div class="error">'
 

@@ -108,13 +108,14 @@ def parseFileInfo(plugin, url="", html=""):
         info = plugin.getInfo(url, html)
         res  = info['name'], info['size'], info['status'], info['url']
     else:
-        url  = unquote(url)
-        res  = ((urlparse(url).path.split('/')[-1]
-                 or urlparse(url).query.split('=', 1)[::-1][0].split('&', 1)[0]
-                 or _("Unknown")),
-                0,
-                3 if url else 8,
-                url)
+        url   = unquote(url)
+        url_p = urlparse(url)
+        res   = ((url_p.path.split('/')[-1]
+                  or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
+                  or url_p.netloc.split('.', 1)[0]),
+                 0,
+                 3 if url else 8,
+                 url)
 
     return res
 
@@ -245,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.12"
+    __version__ = "1.13"
 
     __pattern__ = r'^unmatchable$'
 
@@ -315,16 +316,17 @@ class SimpleHoster(Hoster):
     @classmethod
     def parseInfos(cls, urls):  #@TODO: Built-in in 0.4.10 core, then remove from plugins
         for url in urls:
-            url = replace_patterns(url, cls.FILE_URL_REPLACEMENTS if hasattr(cls, "FILE_URL_REPLACEMENTS") else cls.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
+            url = replace_patterns(url, cls.URL_REPLACEMENTS)
             yield cls.getInfo(url)
 
 
     @classmethod
     def apiInfo(cls, url="", get={}, post={}):
-        url = unquote(url)
-        return {'name'  : (urlparse(url).path.split('/')[-1]
-                           or urlparse(url).query.split('=', 1)[::-1][0].split('&', 1)[0]
-                           or _("Unknown")),
+        url   = unquote(url)
+        url_p = urlparse(url)
+        return {'name'  : (url_p.path.split('/')[-1]
+                           or url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
+                           or url_p.netloc.split('.', 1)[0]),
                 'size'  : 0,
                 'status': 3 if url else 8,
                 'url'   : url}
@@ -366,17 +368,11 @@ class SimpleHoster(Hoster):
             if hasattr(cls, "OFFLINE_PATTERN") and re.search(cls.OFFLINE_PATTERN, html):
                 info['status'] = 1
 
-            elif hasattr(cls, "FILE_OFFLINE_PATTERN") and re.search(cls.FILE_OFFLINE_PATTERN, html):  #@TODO: Remove in 0.4.10
-                info['status'] = 1
-
             elif hasattr(cls, "TEMP_OFFLINE_PATTERN") and re.search(cls.TEMP_OFFLINE_PATTERN, html):
                 info['status'] = 6
 
             else:
-                for pattern in ("FILE_INFO_PATTERN", "INFO_PATTERN",
-                                "FILE_NAME_PATTERN", "NAME_PATTERN",
-                                "FILE_SIZE_PATTERN", "SIZE_PATTERN",
-                                "HASHSUM_PATTERN"):  #@TODO: Remove old patterns starting with "FILE_" in 0.4.10
+                for pattern in ("INFO_PATTERN", "NAME_PATTERN", "SIZE_PATTERN", "HASHSUM_PATTERN"):
                     try:
                         attr  = getattr(cls, pattern)
                         pdict = re.search(attr, html).groupdict()
@@ -395,11 +391,11 @@ class SimpleHoster(Hoster):
 
             if 'N' in info['pattern']:
                 info['name'] = replace_patterns(unquote(info['pattern']['N'].strip()),
-                                                cls.FILE_NAME_REPLACEMENTS if hasattr(cls, "FILE_NAME_REPLACEMENTS") else cls.NAME_REPLACEMENTS)  #@TODO: Remove FILE_NAME_REPLACEMENTS check in 0.4.10
+                                                cls.NAME_REPLACEMENTS)
 
             if 'S' in info['pattern']:
                 size = replace_patterns(info['pattern']['S'] + info['pattern']['U'] if 'U' in info['pattern'] else info['pattern']['S'],
-                                        cls.FILE_SIZE_REPLACEMENTS if hasattr(cls, "FILE_SIZE_REPLACEMENTS") else cls.SIZE_REPLACEMENTS)  #@TODO: Remove FILE_SIZE_REPLACEMENTS check in 0.4.10
+                                        cls.SIZE_REPLACEMENTS)
                 info['size'] = parseFileSize(size)
 
             elif isinstance(info['size'], basestring):
@@ -448,8 +444,7 @@ class SimpleHoster(Hoster):
         else:
             self.directDL = self.DIRECT_LINK
 
-        self.pyfile.url = replace_patterns(self.pyfile.url,
-                                           self.FILE_URL_REPLACEMENTS if hasattr(self, "FILE_URL_REPLACEMENTS") else self.URL_REPLACEMENTS)  #@TODO: Remove FILE_URL_REPLACEMENTS check in 0.4.10
+        self.pyfile.url = replace_patterns(self.pyfile.url, self.URL_REPLACEMENTS)
 
 
     def preload(self):
