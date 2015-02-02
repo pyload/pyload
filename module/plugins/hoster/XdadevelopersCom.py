@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class XdadevelopersCom(SimpleHoster):
     __name__    = "XdadevelopersCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?forum\.xda-developers\.com/devdb/project/dl/\?id=\d+'
 
@@ -32,8 +32,7 @@ class XdadevelopersCom(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        self.download(pyfile.url,
-                      get={'task': "get"},
+        self.download(pyfile.url + "&task=get",  #@TODO: Revert to `get={'task': "get"}` in 0.4.10
                       disposition=True)
 
 
