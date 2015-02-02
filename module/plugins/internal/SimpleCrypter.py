@@ -12,7 +12,7 @@ from module.utils import fixup
 class SimpleCrypter(Crypter, SimpleHoster):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.42"
+    __version__ = "0.43"
 
     __pattern__ = r'^unmatchable$'
     __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
@@ -129,8 +129,8 @@ class SimpleCrypter(Crypter, SimpleHoster):
             self.logDebug("File info (AFTER): %s"  % self.info)
 
         try:
-            url  = self.info['url']
-            name = self.info['name']
+            url  = self.info['url'].strip()
+            name = self.info['name'].strip()
             if name and name != url:
                 self.pyfile.name = name
 

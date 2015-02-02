@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.13"
+    __version__ = "1.14"
 
     __pattern__ = r'^unmatchable$'
 
@@ -552,8 +552,10 @@ class SimpleHoster(Hoster):
 
     def checkStatus(self, getinfo=True):
         if not self.info or getinfo:
-            self.logDebug("File info (BEFORE): %s" % self.info)
+            self.logDebug("Update file info...")
+            self.logDebug("Previous file info: %s" % self.info)
             self.info.update(self.getInfo(self.pyfile.url, self.html))
+            self.logDebug("Current file info: %s"  % self.info)
 
         try:
             status = self.info['status']
@@ -568,19 +570,19 @@ class SimpleHoster(Hoster):
                 self.fail()
 
         finally:
-            self.logDebug("File status: %s" % statusMap[status],
-                          "File info: %s"   % self.info)
+            self.logDebug("File status: %s" % statusMap[status])
 
 
     def checkNameSize(self, getinfo=True):
         if not self.info or getinfo:
-            self.logDebug("File info (BEFORE): %s" % self.info)
+            self.logDebug("Update file info...")
+            self.logDebug("Previous file info: %s" % self.info)
             self.info.update(self.getInfo(self.pyfile.url, self.html))
-            self.logDebug("File info (AFTER): %s"  % self.info)
+            self.logDebug("Current file info: %s"  % self.info)
 
         try:
-            url  = self.info['url']
-            name = self.info['name']
+            url  = self.info['url'].strip()
+            name = self.info['name'].strip()
             if name and name != url:
                 self.pyfile.name = name
 

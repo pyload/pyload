@@ -43,7 +43,7 @@ class UploadedTo(SimpleHoster):
             if html != "can't find request":
                 api = html.split(",", 4)
                 if api[0] == "online":
-                    info.update({'name': api[4], 'size': api[2], 'status': 2})
+                    info.update({'name': api[4].strip(), 'size': api[2], 'status': 2})
                 else:
                     info['status'] = 1
                 break
