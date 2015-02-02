@@ -63,7 +63,7 @@ class LinkList(Container):
                 delete.append(key)
 
         for key in delete:
-            del packages[key]
+            packages.pop(key, None)
 
         if self.getConfig("clear"):
             try:

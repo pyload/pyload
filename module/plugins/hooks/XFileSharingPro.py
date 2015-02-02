@@ -112,11 +112,11 @@ class XFileSharingPro(Hook):
         hdict = self.core.pluginManager.hosterPlugins[hoster]
         if "new_name" in hdict and hdict['new_name'] == "XFileSharingPro":
             if "module" in hdict:
-                del hdict['module']
+                hdict.pop('module', None)
 
             if "new_module" in hdict:
-                del hdict['new_module']
-                del hdict['new_name']
+                hdict.pop('new_module', None)
+                hdict.pop('new_name', None)
 
             return True
         else:
