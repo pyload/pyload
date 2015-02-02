@@ -24,6 +24,7 @@ class AndroidfilehostCom(SimpleHoster):
     SIZE_PATTERN    = r'<h4>size</h4>\s*<p>(?P<S>[\d.,]+)(?P<U>[\w^_]+)</p>'
     OFFLINE_PATTERN = r'404 not found'
     WAIT_PATTERN    = r'users must wait <strong>(\d+) secs'
+    HASHSUM_PATTERN = r'<h4>(?P<T>.*?)</h4>\s*<p><code>(?P<H>.*?)</code></p>'
 
 
     def setup(self):
