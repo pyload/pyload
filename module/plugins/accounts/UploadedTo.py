@@ -55,7 +55,9 @@ class UploadedTo(Account):
             else:
                 trafficleft = self.parseTraffic(size + unit)
 
-        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
+        return {'validuntil' : validuntil,
+                'trafficleft': trafficleft,
+                'premium'    : premium}
 
 
     def login(self, user, data, req):

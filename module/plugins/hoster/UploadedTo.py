@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.81"
+    __version__ = "0.82"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
@@ -42,10 +42,10 @@ class UploadedTo(SimpleHoster):
 
             if html != "can't find request":
                 api = html.split(",", 4)
-                if api[0] == "offline":
-                    info['status'] = 1
-                else:
+                if api[0] == "online":
                     info.update({'name': api[4], 'size': api[2], 'status': 2})
+                else:
+                    info['status'] = 1
                 break
             else:
                 sleep(3)
