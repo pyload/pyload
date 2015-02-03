@@ -12,8 +12,8 @@ class LinkList(Container):
     __version__ = "0.14"
 
     __pattern__ = r'.+\.txt$'
-    __config__ = [("clear"   , "bool"  , "Clear Linklist after adding"  , False),
-                  ("encoding", "string", "File encoding (default utf-8)", ""   )]
+    __config__ = [("flush"   , "bool"  , "Flush list after adding", False  ),
+                  ("encoding", "string", "File encoding"          , "utf-8")]
 
     __description__ = """Read link lists in txt format"""
     __license__     = "GPLv3"
@@ -28,14 +28,12 @@ class LinkList(Container):
         except Exception:
             encoding = "utf-8"
 
-        file    = fs_encode(pyfile.url.strip())
-        txt     = codecs.open(file, 'r', encoding)
-        links   = txt.readlines()
-        curPack = "Parsed links from %s" % pyfile.name
-
+        file     = fs_encode(pyfile.url.strip())
+        txt      = codecs.open(file, 'r', encoding)
+        curPack  = "Parsed links from %s" % pyfile.name
         packages = {curPack:[],}
 
-        for link in links:
+        for link in txt.readlines():
             link = link.strip()
 
             if not link:
@@ -55,23 +53,17 @@ class LinkList(Container):
         txt.close()
 
         # empty packages fix
-
-        delete = []
-
         for key, value in packages.iteritems():
             if not value:
-                delete.append(key)
+                packages.pop(key, None)
 
-        for key in delete:
-            packages.pop(key, None)
-
-        if self.getConfig("clear"):
+        if self.getConfig("flush"):
             try:
                 txt = open(file, 'wb')
                 txt.close()
 
-            except Exception:
-                self.logWarning(_("LinkList could not be cleared"))
+            except IOError:
+                self.logWarning(_("Failed to flush list"))
 
         for name, links in packages.iteritems():
             self.packages.append((name, links, name))

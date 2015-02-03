@@ -14,7 +14,7 @@ from module.utils import decode, fs_encode
 class DLC(Container):
     __name__    = "DLC"
     __type__    = "container"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __pattern__ = r'.+\.dlc$'
 
@@ -39,18 +39,19 @@ class DLC(Container):
 
         data += '=' * (-len(data) % 4)
 
-        dlckey  = data[-88:]
-        dlcdata = data[:-88].decode('base64')
+        dlc_key     = data[-88:]
+        dlc_data    = data[:-88].decode('base64')
+        dlc_content = self.load(self.API_URL % dlc_key)
 
         try:
-            rc = re.search(r'<rc>(.+)</rc>', self.load(self.API_URL % dlckey)).group(1).decode('base64')
+            rc = re.search(r'<rc>(.+)</rc>', dlc_content, re.S).group(1).decode('base64')
 
-        except Exception:
-            self.fail(_("DLC file is corrupted"))
+        except AttributeError:
+            self.fail(_("Container is corrupted"))
 
-        dlckey = AES.new(self.KEY, AES.MODE_CBC, self.IV).decrypt(rc)
+        cipher = AES.new(self.KEY, AES.MODE_CBC, self.IV).decrypt(rc)
 
-        self.data     = AES.new(dlckey, AES.MODE_CBC, dlckey).decrypt(dlcdata).decode('base64')
+        self.data     = AES.new(cipher, AES.MODE_CBC, cipher).decrypt(dlc_data).decode('base64')
         self.packages = [(entry[0] if entry[0] else pyfile.name, entry[1], entry[0] if entry[0] else pyfile.name) \
                          for entry in self.getPackages()]
 
