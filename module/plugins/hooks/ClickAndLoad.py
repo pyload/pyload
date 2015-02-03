@@ -9,13 +9,14 @@ from module.plugins.Hook import Hook, threaded
 
 
 def forward(source, destination):
-    string = ' '
-    while string:
-        string = source.recv(1024)
-        if string:
-            destination.sendall(string)
-        else:
-            destination.shutdown(socket.SHUT_WR)
+    try:
+        size = 1024
+        data = source.recv(size)
+        while data:
+            destination.sendall(data)
+            data = source.recv(size)
+    finally:
+        destination.shutdown(socket.SHUT_WR)
 
 
 #: socket.create_connection wrapper for python 2.5
@@ -55,7 +56,7 @@ def create_connection(address, timeout=object(), source_address=None):
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.32"
+    __version__ = "0.33"
 
     __config__ = [("activated", "bool", "Activated"                                     , True ),
                   ("port"     , "int" , "Port"                                          , 9666 ),
@@ -89,21 +90,21 @@ class ClickAndLoad(Hook):
     def server(self, ip, webport, cnlport):
         try:
             dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-            dock_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             dock_socket.bind((ip, cnlport))
             dock_socket.listen(5)
 
             while True:
-                server_socket = dock_socket.accept()[0]
-                client_socket = create_connection(("127.0.0.1", webport))
+                client_socket = dock_socket.accept()[0]
+                server_socket = create_connection(("127.0.0.1", webport))
 
-                self.manager.startThread(forward, server_socket, client_socket)
                 self.manager.startThread(forward, client_socket, server_socket)
+                self.manager.startThread(forward, server_socket, client_socket)
 
         except socket.error, e:
-            self.logError(e)
+            self.logDebug(e)
             self.server(ip, webport, cnlport)
 
         finally:
+            client_socket.close()
+            server_socket.close()
             dock_socket.close()
