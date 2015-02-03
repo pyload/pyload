@@ -103,7 +103,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.24"
+    __version__ = "1.25"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
@@ -312,7 +312,7 @@ class ExtractArchive(Hook):
                         self.setPermissions(new_files)
 
                         for filename in new_files:
-                            file = fs_encode(filename)
+                            file = fs_encode(save_join(filename, os.path.dirname(archive.filename)))
                             if not os.path.exists(file):
                                 self.logDebug("New file %s does not exists" % filename)
                                 continue
@@ -390,7 +390,7 @@ class ExtractArchive(Hook):
             if not encrypted or not self.getConfig("usepasswordfile"):
                 archive.extract(password)
             else:
-                for pw in set(self.getPasswords(False) + [password]):
+                for pw in uniqify([password] + self.getPasswords(False)):
                     try:
                         self.logDebug("Try password: %s" % pw)
 
@@ -465,7 +465,7 @@ class ExtractArchive(Hook):
 
             file = fs_encode(self.getConfig("passwordfile"))
             with open(file) as f:
-                for pw in f.read().splitlines()[:-1]:
+                for pw in f.read().splitlines():
                     passwords.append(pw)
 
         except IOError, e:
