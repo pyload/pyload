@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.08"
+    __version__ = "1.09"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -213,14 +213,14 @@ class UnRar(Extractor):
                 args.append("-or")
 
         for word in self.excludefiles:
-            args.append("-x%s" % word.strip())
+            args.append("-x'%s'" % word.strip())
 
         # assume yes on all queries
         args.append("-y")
 
         # set a password
         if "password" in kwargs and kwargs['password']:
-            args.append("-p%s" % kwargs['password'])
+            args.append("-p'%s'" % kwargs['password'])
         else:
             args.append("-p-")
 

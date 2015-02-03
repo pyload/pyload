@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -138,7 +138,7 @@ class SevenZip(UnRar):
 
         #set a password
         if "password" in kwargs and kwargs["password"]:
-            args.append("-p%s" % kwargs["password"])
+            args.append("-p'%s'" % kwargs["password"])
         else:
             args.append("-p-")
 

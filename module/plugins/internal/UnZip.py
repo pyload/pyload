@@ -50,10 +50,10 @@ class UnZip(Extractor):
 
                 badfile = z.testzip()
 
-                if not badfile:
-                    z.extractall(self.out)
-                else:
+                if badfile:
                     raise CRCError(badfile)
+                else:
+                    z.extractall(self.out)
 
         except (zipfile.BadZipfile, zipfile.LargeZipFile), e:
             raise ArchiveError(e)

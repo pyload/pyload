@@ -103,7 +103,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.23"
+    __version__ = "1.24"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
@@ -205,6 +205,9 @@ class ExtractArchive(Hook):
 
 
     def extract(self, ids):
+        if not ids:
+            return False
+
         self.extracting = True
 
         processed = []
@@ -226,7 +229,7 @@ class ExtractArchive(Hook):
         excludefiles = toList(self.getConfig("excludefiles"))
 
         if extensions:
-            self.logDebug("Extensions: %s" % "|.".join(extensions))
+            self.logDebug("Use for extensions: %s" % "|.".join(extensions))
 
         # reload from txt file
         self.reloadPasswords()
@@ -462,7 +465,7 @@ class ExtractArchive(Hook):
 
             file = fs_encode(self.getConfig("passwordfile"))
             with open(file) as f:
-                for pw in f.read().splitlines():
+                for pw in f.read().splitlines()[:-1]:
                     passwords.append(pw)
 
         except IOError, e:
