@@ -12,7 +12,7 @@ from module.utils import html_unescape
 class GoogledriveCom(SimpleHoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?drive\.google\.com/file/.+'
 
@@ -40,7 +40,7 @@ class GoogledriveCom(SimpleHoster):
             self.error(_("Hop #1 not found"))
 
         else:
-            self.logDebug("Next hop: %s" % link1))
+            self.logDebug("Next hop: %s" % link1)
 
         self.html = self.load(link1).decode('unicode-escape')
 
