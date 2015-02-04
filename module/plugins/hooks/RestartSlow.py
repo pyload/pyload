@@ -33,7 +33,7 @@ class RestartSlow(Hook):
 
 
     def periodical(self):
-        if not self.pyfile.req.dl:
+        if not self.pyfile.plugin.req.dl:
             return
 
         if self.getConfig("safe_mode") and not self.pyfile.plugin.resumeDownload:
@@ -44,7 +44,7 @@ class RestartSlow(Hook):
             time  = max(30, self.getConfig("%s_time" % type) * 60)
             limit = max(5, self.getConfig("%s_limit" % type) * 1024)
 
-        chunks = [chunk for chunk in self.pyfile.req.dl.chunks \
+        chunks = [chunk for chunk in self.pyfile.plugin.req.dl.chunks \
                   if chunk.id not in self.info['chunk'] or self.info['chunk'][chunk.id] is not (time, limit)]
 
         for chunk in chunks:
@@ -57,5 +57,5 @@ class RestartSlow(Hook):
     def downloadStarts(self, pyfile, url, filename):
         if self.cb or (self.getConfig("safe_mode") and not pyfile.plugin.resumeDownload):
             return
-
+        self.pyfile = pyfile
         super(RestartSlow, self).initPeriodical()
