@@ -140,7 +140,7 @@ class ExtractArchive(Hook):
         self.queue  = ArchiveQueue(self, "Queue")
         self.failed = ArchiveQueue(self, "Failed")
 
-        self.interval   = 300
+        self.interval   = 60
         self.extracting = False
         self.extractors = []
         self.passwords  = []
