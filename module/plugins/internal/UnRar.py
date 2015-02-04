@@ -167,7 +167,7 @@ class UnRar(Extractor):
             try:
                 dir, name = os.path.split(self.filename)
 
-                part     = self.getattr(self, "re_rarpart%d" % i).search(name).group(1)
+                part     = getattr(self, "re_rarpart%d" % i).search(name).group(1)
                 new_name = name[::-1].replace((".part%s.rar" % part)[::-1], ".part*.rar"[::-1], 1)[::-1]
                 file     = fs_encode(os.path.join(dir, new_name))
 

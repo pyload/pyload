@@ -276,15 +276,15 @@ class ExtractArchive(Hook):
                     for fname, fid in targets:
                         name = os.path.basename(fname)
 
-                        if not os.path.exists(fname):
-                            self.logDebug(name, "File not found")
-                            continue
-
                         pname = replace_patterns(fname, self.NAME_REPLACEMENTS)
                         if pname not in processed:
                             processed.append(pname)  #: prevent extracting same file twice
                         else:
                             self.logDebug(name, "Skipped")
+                            continue
+                            
+                        if not os.path.exists(fname):
+                            self.logDebug(name, "File not found")
                             continue
 
                         self.logInfo(name, _("Extract to: %s") % out)
