@@ -63,7 +63,10 @@ class ArchiveQueue(object):
 
 
     def get(self):
-        return [int(pid) for pid in self.plugin.getStorage("ExtractArchive:%s" % self.storage, "").decode('base64').split()]
+        try:
+            return [int(pid) for pid in self.plugin.getStorage("ExtractArchive:%s" % self.storage, "").decode('base64').split()]
+        except Exception:
+            return []
 
 
     def set(self, value):
