@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.09"
+    __version__ = "1.10"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -32,7 +32,8 @@ class UnRar(Extractor):
 
     CMD = "unrar"
 
-    EXTENSIONS = [".rar", ".zip", ".cab", ".arj", ".lzh", ".tar", ".gz", ".bz2",
+    # TODO: Find out what Filetypes Unrar supports exactly
+    EXTENSIONS = [".rar", ".cab", ".arj", ".lzh", ".tar", ".gz", ".bz2",
                   ".ace", ".uue", ".jar", ".iso", ".7z", ".xz", ".z"]
 
     #@NOTE: there are some more uncovered rar formats
@@ -40,7 +41,7 @@ class UnRar(Extractor):
     re_rarpart2 = re.compile(r'\.r(\d+)$', re.I)
 
     re_filefixed = re.compile(r'Building (.+)')
-    re_filelist  = re.compile(r'(.+)\s+(\d+)\s+(\d+)\s+|(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
+    re_filelist  = re.compile(r'(.+)\s+(\D+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
 
     re_wrongpwd  = re.compile(r'password', re.I)
     re_wrongcrc  = re.compile(r'encrypted|damaged|CRC failed|checksum error', re.I)
@@ -166,7 +167,7 @@ class UnRar(Extractor):
             try:
                 dir, name = os.path.split(self.filename)
 
-                part     = self.getattr(self, "re_rarpart%d" % i).search(name).group(1)
+                part     = getattr(self, "re_rarpart%d" % i).search(name).group(1)
                 new_name = name[::-1].replace((".part%s.rar" % part)[::-1], ".part*.rar"[::-1], 1)[::-1]
                 file     = fs_encode(os.path.join(dir, new_name))
 
@@ -220,7 +221,7 @@ class UnRar(Extractor):
 
         # set a password
         if "password" in kwargs and kwargs['password']:
-            args.append("-p'%s'" % kwargs['password'])
+            args.append("-p%s" % kwargs['password'])
         else:
             args.append("-p-")
 

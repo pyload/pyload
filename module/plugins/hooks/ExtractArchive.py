@@ -63,7 +63,10 @@ class ArchiveQueue(object):
 
 
     def get(self):
-        return self.plugin.getStorage("ExtractArchive:%s" % self.storage, "").decode('base64').split()
+        try:
+            return [int(pid) for pid in self.plugin.getStorage("ExtractArchive:%s" % self.storage, "").decode('base64').split()]
+        except Exception:
+            return []
 
 
     def set(self, value):
@@ -103,7 +106,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.24"
+    __version__ = "1.25"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
@@ -140,7 +143,7 @@ class ExtractArchive(Hook):
         self.queue  = ArchiveQueue(self, "Queue")
         self.failed = ArchiveQueue(self, "Failed")
 
-        self.interval   = 300
+        self.interval   = 60
         self.extracting = False
         self.extractors = []
         self.passwords  = []
@@ -276,15 +279,15 @@ class ExtractArchive(Hook):
                     for fname, fid in targets:
                         name = os.path.basename(fname)
 
-                        if not os.path.exists(fname):
-                            self.logDebug(name, "File not found")
-                            continue
-
                         pname = replace_patterns(fname, self.NAME_REPLACEMENTS)
                         if pname not in processed:
                             processed.append(pname)  #: prevent extracting same file twice
                         else:
                             self.logDebug(name, "Skipped")
+                            continue
+                            
+                        if not os.path.exists(fname):
+                            self.logDebug(name, "File not found")
                             continue
 
                         self.logInfo(name, _("Extract to: %s") % out)
@@ -312,7 +315,7 @@ class ExtractArchive(Hook):
                         self.setPermissions(new_files)
 
                         for filename in new_files:
-                            file = fs_encode(filename)
+                            file = fs_encode(save_join(filename, os.path.dirname(archive.filename)))
                             if not os.path.exists(file):
                                 self.logDebug("New file %s does not exists" % filename)
                                 continue
@@ -390,7 +393,7 @@ class ExtractArchive(Hook):
             if not encrypted or not self.getConfig("usepasswordfile"):
                 archive.extract(password)
             else:
-                for pw in set(self.getPasswords(False) + [password]):
+                for pw in uniqify([password] + self.getPasswords(False)):
                     try:
                         self.logDebug("Try password: %s" % pw)
 
@@ -465,7 +468,7 @@ class ExtractArchive(Hook):
 
             file = fs_encode(self.getConfig("passwordfile"))
             with open(file) as f:
-                for pw in f.read().splitlines()[:-1]:
+                for pw in f.read().splitlines():
                     passwords.append(pw)
 
         except IOError, e:
