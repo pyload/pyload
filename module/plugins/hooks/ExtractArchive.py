@@ -104,7 +104,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.25"
+    __version__ = "1.26"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
