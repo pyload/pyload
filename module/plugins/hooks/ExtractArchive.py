@@ -77,10 +77,6 @@ class ArchiveQueue(object):
         return self.plugin.setStorage("ExtractArchive:%s" % self.storage, item.encode('base64')[:-1])
 
 
-    def clean(self):
-        return self.set([])
-
-
     def delete(self):
         return self.plugin.delStorage("ExtractArchive:%s" % self.storage)
 
@@ -99,6 +95,8 @@ class ArchiveQueue(object):
             queue.remove(item)
         except ValueError:
             pass
+        if queue == []:
+            return self.delete()
         return self.set(queue)
 
 
@@ -315,7 +313,7 @@ class ExtractArchive(Hook):
                         self.setPermissions(new_files)
 
                         for filename in new_files:
-                            file = fs_encode(save_join(filename, os.path.dirname(archive.filename)))
+                            file = fs_encode(save_join(os.path.dirname(archive.filename), filename))
                             if not os.path.exists(file):
                                 self.logDebug("New file %s does not exists" % filename)
                                 continue
