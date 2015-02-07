@@ -198,14 +198,14 @@ class ExtractArchive(Hook):
 
 
     @threaded
-    def allDownloadsProcessed(self):
-        if self.extract(self.queue.get()):  #@NOTE: check only if all gone fine, no failed reporting for now
+    def allDownloadsProcessed(self, thread):
+        if self.extract(self.queue.get(), thread):  #@NOTE: check only if all gone fine, no failed reporting for now
             self.manager.dispatchEvent("all_archives_extracted")
 
         self.manager.dispatchEvent("all_archives_processed")
 
 
-    def extract(self, ids):
+    def extract(self, ids, thread=None):
         if not ids:
             return False
 
@@ -302,7 +302,7 @@ class ExtractArchive(Hook):
                                                 fid)
                             archive.init()
 
-                            new_files = self._extract(archive, fid, pypack.password)
+                            new_files = self._extract(archive, fid, pypack.password, thread)
 
                         except Exception, e:
                             self.logError(name, e)
@@ -348,10 +348,11 @@ class ExtractArchive(Hook):
         return True if not failed else False
 
 
-    def _extract(self, archive, fid, password):
+    def _extract(self, archive, fid, password, thread):
         pyfile = self.core.files.getFile(fid)
         name   = os.path.basename(archive.filename)
 
+        thread.addActive(pyfile)
         pyfile.setStatus("processing")
 
         encrypted = False
