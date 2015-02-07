@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Test links:
-# http://d-h.st/mM8
+#   http://d-h.st/mM8
 
 import re
 
@@ -24,21 +24,13 @@ class DevhostSt(SimpleHoster):
     SIZE_PATTERN      = r'</span> \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)<br'
     HASHSUM_PATTERN   = r'>(?P<T>.*?) Sum</span>: &nbsp;(?P<H>.*?)<br'
 
-    OFFLINE_PATTERN   = r'>File Not Found<'
-    LINK_FREE_PATTERN = r'var product_download_url= \'(.*?)\';'
+    OFFLINE_PATTERN   = r'>File Not Found'
+    LINK_FREE_PATTERN = r'var product_download_url= \'(.+?)\''
 
 
     def setup(self):
-        self.multiDL = True
+        self.multiDL    = True
         self.chunkLimit = 1
-        
-    def handleFree(self, pyfile):
-        link = re.search(self.LINK_FREE_PATTERN,self.html)
-        try:
-            self.logDebug("DL-Link: %s" % link.group(1))
-            self.download(link.group(1), disposition=True)
-        except AttributeError:
-            self.error(_("DL-Link not found"))
 
 
 getInfo = create_getInfo(DevhostSt)
