@@ -12,17 +12,17 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BasketbuildCom(SimpleHoster):
     __name__    = "BasketbuildCom"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
-    __pattern__ = r'https?://(?:www\.)?\w.basketbuild.com/filedl/.+'
+    __pattern__ = r'https?://(?:www\.)?\w\.basketbuild\.com/filedl/.+'
 
     __description__ = """basketbuild.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
-    NAME_PATTERN    = r'File Name:</strong> (?P<N>.*?)<br/>'
-    SIZE_PATTERN    = r'File Size:</strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)<br/>'
+    NAME_PATTERN    = r'File Name:</strong> (?P<N>.+?)<br/>'
+    SIZE_PATTERN    = r'File Size:</strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'404 - Page Not Found'
 
 
@@ -33,27 +33,34 @@ class BasketbuildCom(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        link1 = re.search(r'href="(.+dlgate/.+)"',self.html)
         try:
-            self.logDebug("Next hop: %s" % link1.group(1))
-            self.html = self.load(link1.group(1), cookies=True)
+            link1 = re.search(r'href="(.+dlgate/.+)"', self.html).group(1)
+            self.html = self.load(link1)
+
         except AttributeError:
             self.error(_("Hop #1 not found"))
-            
-        wait = re.search(r'var sec = (\d+);',self.html)
+
+        else:
+            self.logDebug("Next hop: %s" % link1)
+
         try:
-            self.logDebug("Wait %s seconds" % wait.group(1))
-            self.wait(wait.group(1))
+            wait = re.search(r'var sec = (\d+)', self.html).group(1)
+            self.logDebug("Wait %s seconds" % wait)
+            self.wait(wait)
+
         except AttributeError:
             self.logDebug("No wait time found")
-        
-        link2 = re.search(r'id="dlLink">\s*<a href="(.*?)"',self.html)
+
         try:
-            self.logDebug("DL-Link: %s" % link2.group(1))
+            link2 = re.search(r'id="dlLink">\s*<a href="(.+?)"', self.html).group(1)
+
         except AttributeError:
             self.error(_("DL-Link not found"))
-        
-        self.download(link2.group(1), cookies=True, disposition=True)
+
+        else:
+            self.logDebug("DL-Link: %s" % link2)
+
+        self.download(link2, disposition=True)
 
 
 getInfo = create_getInfo(BasketbuildCom)
