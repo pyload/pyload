@@ -9,7 +9,7 @@ from module.plugins.Account import Account
 class CzshareCom(Account):
     __name__    = "CzshareCom"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
     __license__     = "GPLv3"
@@ -27,7 +27,7 @@ class CzshareCom(Account):
         if m is None:
             return {"validuntil": 0, "trafficleft": 0}
         else:
-            trafficleft = self.parseTraffic(m.group(1).replace(' ', '').replace(',', '.')) + m.group(2)]
+            trafficleft = self.parseTraffic(m.group(1).replace(' ', '').replace(',', '.')) + m.group(2)
             validuntil  = mktime(strptime(m.group(3), '%d.%m.%y %H:%M'))
             return {"validuntil": validuntil, "trafficleft": trafficleft}
 
