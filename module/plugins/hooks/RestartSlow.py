@@ -8,7 +8,7 @@ from module.plugins.Hook import Hook
 class RestartSlow(Hook):
     __name__    = "RestartSlow"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __config__ = [("free_limit"   , "int" ,  "Transfer speed threshold in kilobytes"                     , 100 ),
                   ("free_time"    , "int" ,  "Sample interval in minutes"                                , 5   ),
