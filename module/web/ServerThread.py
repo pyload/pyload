@@ -66,7 +66,10 @@ class WebServer(threading.Thread):
 
 
         if self.server == "fastcgi":
-            self.start_fcgi()
+            try
+                self.start_fcgi()
+            except ValueError:    
+                pass
         elif self.server == "threaded":
             self.start_threaded()
         elif self.server == "lightweight":
