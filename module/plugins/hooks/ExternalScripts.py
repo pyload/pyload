@@ -12,9 +12,10 @@ from module.utils import save_join
 class ExternalScripts(Hook):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.27"
+    __version__ = "0.28"
 
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated"         , True),
+                  ("wait"     , "bool", "Wait script ending", True)]
 
     __description__ = """Run external scripts"""
     __license__     = "GPLv3"
@@ -58,6 +59,7 @@ class ExternalScripts(Hook):
         if not os.path.exists(path):
             try:
                 os.makedirs(path)
+
             except Exception:
                 self.logDebug("Script folder %s not created" % folder)
                 return
@@ -75,9 +77,13 @@ class ExternalScripts(Hook):
     def callScript(self, script, *args):
         try:
             cmd = [script] + [str(x) if not isinstance(x, basestring) else x for x in args]
+
             self.logDebug("Executing", os.path.abspath(script), " ".join(cmd))
-            #output goes to pyload
-            subprocess.Popen(cmd, bufsize=-1)
+
+            p = subprocess.Popen(cmd, bufsize=-1)  #@NOTE: output goes to pyload
+            if self.getConfig('wait'):
+                p.communicate()
+
         except Exception, e:
             self.logError(_("Error in %(script)s: %(error)s") % {"script": os.path.basename(script), "error": e})
 
