@@ -22,7 +22,7 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.10"
+    __version__ = "1.11"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
@@ -37,15 +37,16 @@ class UnRar(Extractor):
                   ".ace", ".uue", ".jar", ".iso", ".7z", ".xz", ".z"]
 
     #@NOTE: there are some more uncovered rar formats
-    re_rarpart1 = re.compile(r'\.part(\d+)\.rar$', re.I)
-    re_rarpart2 = re.compile(r'\.r(\d+)$', re.I)
+    re_rarpart1  = re.compile(r'\.part(\d+)\.rar$', re.I)
+    re_rarpart2  = re.compile(r'\.r(\d+)$', re.I)
 
     re_filefixed = re.compile(r'Building (.+)')
-    re_filelist  = re.compile(r'(.+)\s+(\D+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
+    re_filelist  = re.compile(r'(.+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
 
     re_wrongpwd  = re.compile(r'password', re.I)
     re_wrongcrc  = re.compile(r'encrypted|damaged|CRC failed|checksum error', re.I)
 
+    re_version   = re.compile(r'UNRAR\s(\d+)\.\d+', re.I)
 
     @classmethod
     def isUsable(cls):
@@ -185,6 +186,10 @@ class UnRar(Extractor):
     def list(self, password=None):
         command = "vb" if self.fullpath else "lb"
 
+        p = self.call_cmd("", "", fs_encode(self.filename))
+        out, err = p.communicate()
+        version = self.re_version.search(out).group(1)
+
         p = self.call_cmd(command, "-v", fs_encode(self.filename), password=password)
         out, err = p.communicate()
 
@@ -195,9 +200,16 @@ class UnRar(Extractor):
             self.manager.logError(err.strip())
 
         result = set()
-        for f in decode(out).splitlines():
-            f = f.strip()
-            result.add(save_join(self.out, f))
+        if not self.fullpath and version =='5':
+            # NOTE: Unrar 5 always list full path
+            for f in decode(out).splitlines():
+                f = save_join(self.out, os.path.basename(f.strip()))
+                if os.path.isfile(f):
+                    result.add(save_join(self.out, os.path.basename(f)))
+        else:
+            for f in decode(out).splitlines():
+                f = f.strip()
+                result.add(save_join(self.out, f))
 
         return list(result)
 

@@ -104,7 +104,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.26"
+    __version__ = "1.27"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
@@ -258,14 +258,14 @@ class ExtractArchive(Hook):
 
             matched   = False
             success   = True
-            files_ids = [(save_join(dl, pypack.folder, pylink['name']), pylink['id']) for pylink in pypack.getChildren().itervalues()]
+            files_ids = [(save_join(dl, pypack.folder, pylink['name']), pylink['id'], out) for pylink in pypack.getChildren().itervalues()]
 
             # check as long there are unseen files
             while files_ids:
                 new_files_ids = []
 
                 if extensions:
-                    files_ids = [(fname, fid) for fname, fid in files_ids \
+                    files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids \
                                  if filter(lambda ext: fname.lower().endswith(ext), extensions)]
 
                 for Extractor in self.extractors:
@@ -274,7 +274,7 @@ class ExtractArchive(Hook):
                         self.logDebug("Targets for %s: %s" % (Extractor.__name__, targets))
                         matched = True
 
-                    for fname, fid in targets:
+                    for fname, fid, fout in targets:
                         name = os.path.basename(fname)
 
                         pname = replace_patterns(fname, self.NAME_REPLACEMENTS)
@@ -283,16 +283,16 @@ class ExtractArchive(Hook):
                         else:
                             self.logDebug(name, "Skipped")
                             continue
-                            
+
                         if not os.path.exists(fname):
                             self.logDebug(name, "File not found")
                             continue
 
-                        self.logInfo(name, _("Extract to: %s") % out)
+                        self.logInfo(name, _("Extract to: %s") % fout)
                         try:
                             archive = Extractor(self,
                                                 fname,
-                                                out,
+                                                fout,
                                                 fullpath,
                                                 overwrite,
                                                 excludefiles,
@@ -319,7 +319,7 @@ class ExtractArchive(Hook):
                                 continue
 
                             if recursive and os.path.isfile(file):
-                                new_files_ids.append((filename, fid))  # append as new target
+                                new_files_ids.append((filename, fid, os.path.dirname(filename)))  # append as new target
 
                 files_ids = new_files_ids  # also check extracted files
 

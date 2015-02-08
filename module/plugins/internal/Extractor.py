@@ -19,7 +19,7 @@ class PasswordError(Exception):
 
 class Extractor:
     __name__    = "Extractor"
-    __version__ = "0.18"
+    __version__ = "0.19"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
@@ -50,7 +50,7 @@ class Extractor:
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
-        return [(fname, id) for fname, id in files_ids if cls.isArchive(fname)]
+        return [(fname, id, fout) for fname, id, fout in files_ids if cls.isArchive(fname)]
 
 
     def __init__(self, manager, filename, out,
