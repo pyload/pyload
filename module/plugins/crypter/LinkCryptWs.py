@@ -314,8 +314,7 @@ class LinkCryptWs(Crypter):
 
         # Extract links
         text  = text.replace("\x00", "").replace("\r", "")
-        links = text.split("\n")
-        links = filter(lambda x: x != "", links)
+        links = filter(bool, text.split('\n'))
 
         # Log and return
         self.logDebug("Package has %d links" % len(links))

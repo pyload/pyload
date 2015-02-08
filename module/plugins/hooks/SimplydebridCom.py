@@ -22,5 +22,5 @@ class SimplydebridCom(MultiHook):
 
 
     def getHosters(self):
-        page = self.getURL("http://simply-debrid.com/api.php", get={'list': 1})
-        return [x.strip() for x in page.rstrip(';').replace("\"", "").split(";")]
+        html = self.getURL("http://simply-debrid.com/api.php", get={'list': 1})
+        return [x.strip() for x in html.rstrip(';').replace("\"", "").split(";")]

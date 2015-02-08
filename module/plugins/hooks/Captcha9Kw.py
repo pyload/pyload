@@ -206,9 +206,9 @@ class Captcha9Kw(Hook):
             for d in details:
                 hosteroption = d.split("=")
 
-                if (len(hosteroption) > 1
-                    and hosteroption[0].lower() == 'timeout'
-                    and hosteroption[1].isdigit()):
+                if len(hosteroption) > 1 \
+                   and hosteroption[0].lower() == 'timeout' \
+                   and hosteroption[1].isdigit():
                     timeout = int(hosteroption[1])
 
             break

@@ -46,6 +46,7 @@ class OverLoadMe(MultiHoster):
                                'link': pyfile.url})
 
         data = json_loads(page)
+
         self.logDebug(data)
 
         if data['error'] == 1:
@@ -58,9 +59,6 @@ class OverLoadMe(MultiHoster):
 
             http_repl = ["http://", "https://"]
             self.link = data['downloadlink'].replace(*http_repl if self.getConfig("ssl") else *http_repl[::-1])
-
-        if self.link != pyfile.url:
-            self.logDebug("New URL: %s" % self.link)
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown") or pyfile.name.endswith('..'):
             # only use when name wasn't already set

@@ -24,6 +24,6 @@ class PremiumTo(MultiHook):
 
 
     def getHosters(self):
-        page = self.getURL("http://premium.to/api/hosters.php",
+        html = self.getURL("http://premium.to/api/hosters.php",
                       get={'username': self.account.username, 'password': self.account.password})
-        return [x.strip() for x in page.replace("\"", "").split(";")]
+        return [x.strip() for x in html.replace("\"", "").split(";")]

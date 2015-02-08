@@ -667,8 +667,7 @@ class SimpleHoster(Hoster):
 
         self.logInfo(_("Download limit reached, reconnect or wait %s") % time_str)
 
-        self.setWait(wait_time, True)
-        self.wait()
+        self.wait(wait_time, True)
         self.retry(max_tries=max_tries, reason=_("Download limit reached"))
 
 

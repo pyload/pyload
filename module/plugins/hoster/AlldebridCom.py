@@ -63,9 +63,6 @@ class AlldebridCom(MultiHoster):
         else:
             self.link = self.link.replace("https://", "http://")
 
-        if self.link != pyfile.url:
-            self.logDebug("New URL: %s" % self.link)
-
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
             #only use when name wasnt already set
             pyfile.name = self.getFilename(self.link)

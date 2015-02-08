@@ -16,8 +16,8 @@ def getInfo(urls):
 
     for url in urls:
         id   = regex.match(url).group('ID')
-        page = getURL(apiurl % id, get=request)
-        info = json_loads(page)
+        html = getURL(apiurl % id, get=request)
+        info = json_loads(html)
 
         name = info['title'] + ".mp4" if "title" in info else url
 

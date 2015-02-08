@@ -112,9 +112,9 @@ class FilepostCom(SimpleHoster):
                 self.retry(wait_time=res['js']['params']['next_download'])
                 # ~? self.retry(wait_time=js_answer['params']['next_download'])
 
-            elif ('Wrong file password' in res['js']['error']
-                  or 'You entered a wrong CAPTCHA code' in res['js']['error']
-                  or 'CAPTCHA Code nicht korrekt' in res['js']['error']):
+            elif 'Wrong file password' in res['js']['error'] \
+                 or 'You entered a wrong CAPTCHA code' in res['js']['error'] \
+                 or 'CAPTCHA Code nicht korrekt' in res['js']['error']:
                 return None
 
             elif 'CAPTCHA' in res['js']['error']:

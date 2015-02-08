@@ -31,9 +31,9 @@ class YoutubeBatch(Crypter):
 
     def api_response(self, ref, req):
         req.update({"key": self.API_KEY})
-        url = urljoin("https://www.googleapis.com/youtube/v3/", ref)
-        page = self.load(url, get=req)
-        return json_loads(page)
+        url  = urljoin("https://www.googleapis.com/youtube/v3/", ref)
+        html = self.load(url, get=req)
+        return json_loads(html)
 
 
     def getChannel(self, user):

@@ -29,40 +29,39 @@ class UnrestrictLi(MultiHoster):
 
     def handleFree(self, pyfile):
         for _i in xrange(5):
-            page = self.load('https://unrestrict.li/unrestrict.php',
+            self.html = self.load('https://unrestrict.li/unrestrict.php',
                              post={'link': pyfile.url, 'domain': 'long'})
-            self.logDebug("JSON data: " + page)
-            if page != '':
+
+            self.logDebug("JSON data: " + self.html)
+
+            if self.html:
                 break
         else:
             self.logInfo(_("Unable to get API data, waiting 1 minute and retry"))
             self.retry(5, 60, "Unable to get API data")
 
-        if 'Expired session' in page or ("You are not allowed to "
-                                         "download from this host" in page and self.premium):
+        if 'Expired session' in self.html \
+           or ("You are not allowed to download from this host" in self.html and self.premium):
             self.account.relogin(self.user)
             self.retry()
 
-        elif "File offline" in page:
+        elif "File offline" in self.html:
             self.offline()
 
-        elif "You are not allowed to download from this host" in page:
+        elif "You are not allowed to download from this host" in self.html:
             self.fail(_("You are not allowed to download from this host"))
 
-        elif "You have reached your daily limit for this host" in page:
+        elif "You have reached your daily limit for this host" in self.html:
             self.logWarning(_("Reached daily limit for this host"))
             self.retry(5, secondsToMidnight(gmt=2), "Daily limit for this host reached")
 
-        elif "ERROR_HOSTER_TEMPORARILY_UNAVAILABLE" in page:
+        elif "ERROR_HOSTER_TEMPORARILY_UNAVAILABLE" in self.html:
             self.logInfo(_("Hoster temporarily unavailable, waiting 1 minute and retry"))
             self.retry(5, 60, "Hoster is temporarily unavailable")
 
-        page = json_loads(page)
-        self.link = page.keys()[0]
-        self.api_data = page[self.link]
-
-        if self.link != pyfile.url:
-            self.logDebug("New URL: " + self.link)
+        self.html     = json_loads(self.html)
+        self.link     = self.html.keys()[0]
+        self.api_data = self.html[self.link]
 
         if hasattr(self, 'api_data'):
             self.setNameSize()

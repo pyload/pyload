@@ -24,9 +24,9 @@ class DailymotionBatch(Crypter):
 
 
     def api_response(self, ref, req=None):
-        url = urljoin("https://api.dailymotion.com/", ref)
-        page = self.load(url, get=req)
-        return json_loads(page)
+        url  = urljoin("https://api.dailymotion.com/", ref)
+        html = self.load(url, get=req)
+        return json_loads(html)
 
 
     def getPlaylistInfo(self, id):

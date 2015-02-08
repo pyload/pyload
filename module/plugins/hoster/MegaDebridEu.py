@@ -35,10 +35,9 @@ class MegaDebridEu(MultiHoster):
             self.exitOnFail("Unable to connect to Mega-debrid.eu")
 
         self.link = self.debridLink(pyfile.url)
-        self.logDebug("New URL: " + self.link)
 
         filename = self.getFilename(self.link)
-        if filename != "":
+        if filename:
             pyfile.name = filename
 
 

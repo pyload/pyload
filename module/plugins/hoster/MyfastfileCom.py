@@ -23,19 +23,16 @@ class MyfastfileCom(MultiHoster):
 
 
     def handlePremium(self, pyfile):
-        self.logDebug("Original URL: %s" % pyfile.url)
-
-        page = self.load('http://myfastfile.com/api.php',
+        self.html = self.load('http://myfastfile.com/api.php',
                          get={'user': self.user, 'pass': self.account.getAccountData(self.user)['password'],
                               'link': pyfile.url})
-        self.logDebug("JSON data: " + page)
-        page = json_loads(page)
-        if page['status'] != 'ok':
-            self.fail(_("Unable to unrestrict link"))
-        self.link = page['link']
+        self.logDebug("JSON data: " + self.html)
 
-        if self.link != pyfile.url:
-            self.logDebug("Unrestricted URL: " + self.link)
+        self.html = json_loads(self.html)
+        if self.html['status'] != 'ok':
+            self.fail(_("Unable to unrestrict link"))
+
+        self.link = self.html['link']
 
 
 getInfo = create_getInfo(MyfastfileCom)

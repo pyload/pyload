@@ -39,19 +39,17 @@ class FastixRu(MultiHoster):
         api_key = self.account.getAccountData(self.user)
         api_key = api_key['api']
 
-        page = self.load("http://fastix.ru/api_v2/",
+        self.html = self.load("http://fastix.ru/api_v2/",
                          get={'apikey': api_key, 'sub': "getdirectlink", 'link': pyfile.url})
-        data = json_loads(page)
+
+        data = json_loads(self.html)
 
         self.logDebug("Json data", data)
 
-        if "error\":true" in page:
+        if "error\":true" in self.html:
             self.offline()
         else:
             self.link = data['downloadlink']
-
-        if self.link != pyfile.url:
-            self.logDebug("New URL: %s" % self.link)
 
         if pyfile.name.startswith("http") or pyfile.name.startswith("Unknown"):
             #only use when name wasnt already set

@@ -23,7 +23,7 @@ class YibaishiwuCom(Account):
         html = req.load("http://115.com/", decode=True)
 
         m = re.search(self.ACCOUNT_INFO_PATTERN, html, re.S)
-        premium = True if (m and 'is_vip: 1' in m.group(1)) else False
+        premium = True if m and 'is_vip: 1' in m.group(1) else False
         validuntil = trafficleft = (-1 if m else 0)
         return dict({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
 

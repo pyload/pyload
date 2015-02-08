@@ -24,6 +24,6 @@ class AlldebridCom(MultiHook):
 
     def getHosters(self):
         https = "https" if self.getConfig("ssl") else "http"
-        page = self.getURL(https + "://www.alldebrid.com/api.php", get={'action': "get_host"}).replace("\"", "").strip()
+        html = self.getURL(https + "://www.alldebrid.com/api.php", get={'action': "get_host"}).replace("\"", "").strip()
 
-        return [x.strip() for x in page.split(",") if x.strip()]
+        return [x.strip() for x in html.split(",") if x.strip()]

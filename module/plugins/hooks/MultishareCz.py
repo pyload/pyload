@@ -27,5 +27,5 @@ class MultishareCz(MultiHook):
 
 
     def getHosters(self):
-        page = self.getURL("http://www.multishare.cz/monitoring/")
-        return re.findall(self.HOSTER_PATTERN, page)
+        html = self.getURL("http://www.multishare.cz/monitoring/")
+        return re.findall(self.HOSTER_PATTERN, html)

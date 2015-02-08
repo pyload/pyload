@@ -174,7 +174,7 @@ class FilecryptCc(Crypter):
         text = obj.decrypt(crypted.decode('base64'))
 
         # Extract links
-        links = filter(lambda x: x != "",
-                       text.replace("\x00", "").replace("\r", "").split("\n"))
+        text  = text.replace("\x00", "").replace("\r", "")
+        links = filter(bool, text.split('\n'))
 
         return links

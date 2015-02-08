@@ -24,6 +24,6 @@ class RealdebridCom(MultiHook):
 
     def getHosters(self):
         https = "https" if self.getConfig("ssl") else "http"
-        page = self.getURL(https + "://real-debrid.com/api/hosters.php").replace("\"", "").strip()
+        html = self.getURL(https + "://real-debrid.com/api/hosters.php").replace("\"", "").strip()
 
-        return [x.strip() for x in page.split(",") if x.strip()]
+        return [x.strip() for x in html.split(",") if x.strip()]
