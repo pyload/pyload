@@ -12,9 +12,9 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class BasketbuildCom(SimpleHoster):
     __name__    = "BasketbuildCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
-    __pattern__ = r'https?://(?:www\.)?\w\.basketbuild\.com/filedl/.+'
+    __pattern__ = r'https?://(?:www\.)?(?:\w\.)?basketbuild\.com/filedl/.+'
 
     __description__ = """basketbuild.com hoster plugin"""
     __license__     = "GPLv3"
