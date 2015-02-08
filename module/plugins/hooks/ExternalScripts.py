@@ -12,10 +12,10 @@ from module.utils import save_join
 class ExternalScripts(Hook):
     __name__    = "ExternalScripts"
     __type__    = "hook"
-    __version__ = "0.28"
+    __version__ = "0.29"
 
-    __config__ = [("activated", "bool", "Activated"         , True),
-                  ("wait"     , "bool", "Wait script ending", True)]
+    __config__ = [("activated", "bool", "Activated"         , True ),
+                  ("wait"     , "bool", "Wait script ending", False)]
 
     __description__ = """Run external scripts"""
     __license__     = "GPLv3"
