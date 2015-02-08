@@ -104,7 +104,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.27"
+    __version__ = "1.28"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
@@ -392,7 +392,7 @@ class ExtractArchive(Hook):
             if not encrypted or not self.getConfig("usepasswordfile"):
                 archive.extract(password)
             else:
-                for pw in uniqify([password] + self.getPasswords(False)):
+                for pw in filter(None, uniqify([password] + self.getPasswords(False))):
                     try:
                         self.logDebug("Try password: %s" % pw)
 
