@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import parseHtmlForm, set_cookies
 class XFSAccount(Account):
     __name__    = "XFSAccount"
     __type__    = "account"
-    __version__ = "0.35"
+    __version__ = "0.36"
 
     __description__ = """XFileSharing account plugin"""
     __license__     = "GPLv3"
@@ -22,6 +22,7 @@ class XFSAccount(Account):
 
     HOSTER_DOMAIN = None
     HOSTER_URL    = None
+    LOGIN_URL     = None
 
     COOKIES = True
 
@@ -158,8 +159,9 @@ class XFSAccount(Account):
         if not self.HOSTER_URL:  #@TODO: Remove in 0.4.10
             raise Exception(_("Missing HOSTER_DOMAIN"))
 
-        url  = urljoin(self.HOSTER_URL, "login.html")
-        html = req.load(url, decode=True)
+        if not self.LOGIN_URL:
+            self.LOGIN_URL  = urljoin(self.HOSTER_URL, "login.html")
+        html = req.load(self.LOGIN_URL, decode=True)
 
         action, inputs = parseHtmlForm('name="FL"', html)
         if not inputs:
@@ -169,7 +171,9 @@ class XFSAccount(Account):
         inputs.update({'login'   : user,
                        'password': data['password']})
 
-        html = req.load(self.HOSTER_URL, post=inputs, decode=True)
+        if not action:
+            action = self.HOSTER_URL
+        html = req.load(action, post=inputs, decode=True)
 
         if re.search(self.LOGIN_FAIL_PATTERN, html):
             self.wrongPassword()
