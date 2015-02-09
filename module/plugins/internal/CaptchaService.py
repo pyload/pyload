@@ -12,7 +12,7 @@ from module.common.json_layer import json_loads
 
 class CaptchaService(object):
     __name__    = "CaptchaService"
-    __version__ = "0.23"
+    __version__ = "0.24"
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"
@@ -311,7 +311,7 @@ class AdsCaptcha(CaptchaService):
 
 class SolveMedia(CaptchaService):
     __name__    = "SolveMedia"
-    __version__ = "0.10"
+    __version__ = "0.11"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__     = "GPLv3"
@@ -395,7 +395,7 @@ class SolveMedia(CaptchaService):
                                           's'                : "standard",
                                           'magic'            : magic,
                                           'adcopy_challenge' : challenge,
-                                          'ref'              : ref)
+                                          'ref'              : ref})
         try:
             html      = self.plugin.req.load(re.search(r'URL=(.+?)">', html).group(1))
             gibberish = re.search(r'id=gibberish>(.+?)</textarea>', html).group(1)
