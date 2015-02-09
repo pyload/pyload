@@ -118,7 +118,7 @@ class FilecloudIo(SimpleHoster):
         self.logDebug("FetchDownloadUrl: " + rep)
         rep = json_loads(rep)
         if rep['status'] == 'ok':
-            self.download(rep['download_url'], disposition=True)
+            self.link = rep['download_url']
         else:
             self.fail(rep['message'])
 

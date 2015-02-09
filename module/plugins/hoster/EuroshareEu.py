@@ -53,12 +53,11 @@ class EuroshareEu(SimpleHoster):
         m = re.search(self.LINK_FREE_PATTERN, self.html)
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
-        parsed_url = "http://euroshare.eu%s" % m.group(1)
-        self.logDebug("URL", parsed_url)
-        self.download(parsed_url, disposition=True)
+
+        self.link = "http://euroshare.eu%s" % m.group(1)
 
 
-    def checkFile():
+    def checkFile(self):
         if self.checkDownload({"multi-dl": re.compile(self.ERR_PARDL_PATTERN)})
             self.longWait(5 * 60, 12)
 

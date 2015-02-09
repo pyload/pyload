@@ -52,15 +52,10 @@ class BasketbuildCom(SimpleHoster):
             self.logDebug("No wait time found")
 
         try:
-            link2 = re.search(r'id="dlLink">\s*<a href="(.+?)"', self.html).group(1)
+            self.link = re.search(r'id="dlLink">\s*<a href="(.+?)"', self.html).group(1)
 
         except AttributeError:
             self.error(_("DL-Link not found"))
-
-        else:
-            self.logDebug("DL-Link: %s" % link2)
-
-        self.download(link2, disposition=True)
 
 
 getInfo = create_getInfo(BasketbuildCom)

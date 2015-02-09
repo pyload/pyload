@@ -48,9 +48,9 @@ class AndroidfilehostCom(SimpleHoster):
                                'fid'   : fid},
                          decode=True)
 
-        mirror      = re.findall('"url":"(.*?)"', html)[0].replace("\\", "")
-        mirror_host = mirror.split("/")[2]
-        self.logDebug("DL-URL: %s" % mirror)
+        self.link   = re.findall('"url":"(.*?)"', html)[0].replace("\\", "")
+        mirror_host = self.link.split("/")[2]
+
         self.logDebug("Mirror Host: %s" % mirror_host)
 
         html = self.load("https://www.androidfilehost.com/libs/otf/stats.otf.php",
@@ -58,8 +58,6 @@ class AndroidfilehostCom(SimpleHoster):
                               'w'     : 'download',
                               'mirror': mirror_host},
                          decode=True)
-
-        self.download(mirror, disposition=True)
 
 
 getInfo = create_getInfo(AndroidfilehostCom)

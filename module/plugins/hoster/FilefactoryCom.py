@@ -52,14 +52,14 @@ class FilefactoryCom(SimpleHoster):
         if m is None:
             self.error(_("Free download link not found"))
 
-        dl_link = m.group(1)
+        self.link = m.group(1)
 
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
             self.wait(m.group(1))
 
-        self.download(dl_link, disposition=True)
 
+    def checkFile(self):
         check = self.checkDownload({'multiple': "You are currently downloading too many files at once.",
                                     'error'   : '<div id="errorMessage">'})
 
@@ -69,6 +69,8 @@ class FilefactoryCom(SimpleHoster):
 
         elif check == "error":
             self.error(_("Unknown error"))
+
+        return super(FilefactoryCom, self).checkFile()
 
 
     def handlePremium(self, pyfile):

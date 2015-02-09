@@ -152,4 +152,4 @@ class LetitbitNet(SimpleHoster):
         if api_rep['status'] == 'FAIL':
             self.fail(api_rep['data'])
 
-        self.download(api_rep['data'][0][0], disposition=True)
+        self.link = api_rep['data'][0][0]

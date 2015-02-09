@@ -48,16 +48,13 @@ class RemixshareCom(SimpleHoster):
         if not c:
             self.error(_("Cannot parse file token"))
 
-        dl_url = b.group(1) + c.group(1)
+        self.link = b.group(1) + c.group(1)
 
         #Check if we have to wait
         seconds = re.search(self.WAIT_PATTERN, self.html)
         if seconds:
             self.logDebug("Wait " + seconds.group(1))
             self.wait(seconds.group(1))
-
-        # Finally start downloading...
-        self.download(dl_url, disposition=True)
 
 
 getInfo = create_getInfo(RemixshareCom)

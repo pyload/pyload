@@ -81,9 +81,11 @@ class DlFreeFr(SimpleHoster):
                 self.handleFree(pyfile)
             else:
                 # Direct access to requested file for users using free.fr as Internet Service Provider.
-                self.download(valid_url, disposition=True)
+                self.link = valid_url
+
         elif headers.get('code') == 404:
             self.offline()
+
         else:
             self.fail(_("Invalid return code: ") + str(headers.get('code')))
 
@@ -104,9 +106,10 @@ class DlFreeFr(SimpleHoster):
                 cj.setCookie(m.group(4), m.group(1), m.group(2), m.group(3))
             else:
                 self.fail(_("Cookie error"))
-            location = headers.get("location")
+
+            self.link = headers.get("location")
+
             self.req.setCookieJar(cj)
-            self.download(location, disposition=True)
         else:
             self.fail(_("Invalid response"))
 

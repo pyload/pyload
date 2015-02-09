@@ -53,7 +53,7 @@ class UpleaCom(XFSHoster):
             self.error(_("LINK_PATTERN not found"))
 
         self.wait(15)
-        self.download(m.group(1), disposition=True)
+        self.link = m.group(1)
 
 
 getInfo = create_getInfo(UpleaCom)

@@ -39,7 +39,7 @@ class PromptfileCom(SimpleHoster):
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 
-        self.download(m.group(1), disposition=True)
+        self.link = m.group(1)
 
 
 getInfo = create_getInfo(PromptfileCom)

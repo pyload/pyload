@@ -72,7 +72,7 @@ class KingfilesNet(SimpleHoster):
         if m is None:
             self.error(_("Download url not found"))
 
-        self.download(m.group(1), cookies=True, disposition=True)
+        self.link = m.group(1)
 
 
 getInfo = create_getInfo(KingfilesNet)

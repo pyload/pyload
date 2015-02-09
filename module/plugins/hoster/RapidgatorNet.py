@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo, s
 class RapidgatorNet(SimpleHoster):
     __name__    = "RapidgatorNet"
     __type__    = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
 
     __pattern__ = r'http://(?:www\.)?(rapidgator\.net|rg\.to)/file/\w+'
 
@@ -29,17 +29,19 @@ class RapidgatorNet(SimpleHoster):
 
     COOKIES = [("rapidgator.net", "lang", "en")]
 
-    NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
-    SIZE_PATTERN = r'File size:\s*<strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong>'
+    NAME_PATTERN    = r'<title>Download file (?P<N>.*)</title>'
+    SIZE_PATTERN    = r'File size:\s*<strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong>'
     OFFLINE_PATTERN = r'>(File not found|Error 404)'
 
     JSVARS_PATTERN = r'\s+var\s*(startTimerUrl|getDownloadUrl|captchaUrl|fid|secs)\s*=\s*\'?(.*?)\'?;'
-    PREMIUM_ONLY_ERROR_PATTERN = r'You can download files up to|This file can be downloaded by premium only<'
-    DOWNLOAD_LIMIT_ERROR_PATTERN = r'You have reached your (daily|hourly) downloads limit'
-    WAIT_PATTERN = r'(?:Delay between downloads must be not less than|Try again in)\s*(\d+)\s*(hour|min)'
+
+    PREMIUM_ONLY_PATTERN = r'You can download files up to|This file can be downloaded by premium only<'
+    ERROR_PATTERN        = r'You have reached your (daily|hourly) downloads limit'
+    WAIT_PATTERN         = r'(Delay between downloads must be not less than|Try again in).+'
+
     LINK_FREE_PATTERN = r'return \'(http://\w+.rapidgator.net/.*)\';'
 
-    RECAPTCHA_PATTERN = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
+    RECAPTCHA_PATTERN  = r'"http://api\.recaptcha\.net/challenge\?k=(.*?)"'
     ADSCAPTCHA_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']*)'
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.*?)"'
 
@@ -95,8 +97,6 @@ class RapidgatorNet(SimpleHoster):
 
 
     def handleFree(self, pyfile):
-        self.checkFree()
-
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.html))
         self.logDebug(jsvars)
 
@@ -122,12 +122,10 @@ class RapidgatorNet(SimpleHoster):
         for _i in xrange(5):
             m = re.search(self.LINK_FREE_PATTERN, self.html)
             if m:
-                link = m.group(1)
-                self.logDebug(link)
-                self.download(link, disposition=True)
+                self.link = m.group(1)
                 break
             else:
-                captcha, captcha_key = self.getCaptcha()
+                captcha, captcha_key = self.handleCaptcha()
                 response, challenge  = captcha.challenge(captcha_key)
 
                 self.html = self.load(url, post={'DownloadCaptchaForm[captcha]': "",
@@ -142,7 +140,7 @@ class RapidgatorNet(SimpleHoster):
             self.error(_("Download link"))
 
 
-    def getCaptcha(self):
+    def handleCaptcha(self):
         m = re.search(self.ADSCAPTCHA_PATTERN, self.html)
         if m:
             captcha_key = m.group(1)
@@ -161,30 +159,6 @@ class RapidgatorNet(SimpleHoster):
                     self.error(_("Captcha"))
 
         return captcha, captcha_key
-
-
-    def checkFree(self):
-        m = re.search(self.PREMIUM_ONLY_ERROR_PATTERN, self.html)
-        if m:
-            self.fail(_("Premium account needed for download"))
-        else:
-            m = re.search(self.WAIT_PATTERN, self.html)
-
-        if m:
-            wait_time = int(m.group(1)) * {"hour": 60, "min": 1}[m.group(2)]
-        else:
-            m = re.search(self.DOWNLOAD_LIMIT_ERROR_PATTERN, self.html)
-            if m is None:
-                return
-            elif m.group(1) == "daily":
-                self.logWarning(_("You have reached your daily downloads limit for today"))
-                wait_time = secondsToMidnight(gmt=2)
-            else:
-                wait_time = 1 * 60 * 60
-
-        self.logDebug("Waiting %d minutes" % wait_time / 60)
-        self.wait(wait_time, True)
-        self.retry()
 
 
     def getJsonResponse(self, url):

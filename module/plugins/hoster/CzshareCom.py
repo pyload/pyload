@@ -12,7 +12,7 @@ from module.utils import parseFileSize
 class CzshareCom(SimpleHoster):
     __name__    = "CzshareCom"
     __type__    = "hoster"
-    __version__ = "0.97"
+    __version__ = "0.98"
 
     __pattern__ = r'http://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'
 
@@ -74,7 +74,6 @@ class CzshareCom(SimpleHoster):
 
         # download the file, destination is determined by pyLoad
         self.download("http://sdilej.cz/profi_down.php", post=inputs, disposition=True)
-        self.checkDownloadedFile()
 
 
     def handleFree(self, pyfile):
@@ -129,14 +128,12 @@ class CzshareCom(SimpleHoster):
         if m is None:
             self.error(_("Download URL not found"))
 
-        url = "http://%s/download.php?%s" % (m.group(1), m.group(2))
+        self.link = "http://%s/download.php?%s" % (m.group(1), m.group(2))
 
         self.wait()
-        self.download(url)
-        self.checkDownloadedFile()
 
 
-    def checkDownloadedFile(self):
+    def checkFile(self):
         # check download
         check = self.checkDownload({
             "temp offline" : re.compile(r"^Soubor je do.*asn.* nedostupn.*$"),
@@ -157,6 +154,8 @@ class CzshareCom(SimpleHoster):
         elif check == "captcha":
             self.invalidCaptcha()
             self.retry()
+
+        return super(CzshareCom, self).checkFile()
 
 
 getInfo = create_getInfo(CzshareCom)

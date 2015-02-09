@@ -85,18 +85,13 @@ class DepositfilesCom(SimpleHoster):
             if m:
                 if 'response' in params:
                     self.correctCaptcha()
-                link = unquote(m.group(1))
-                self.logDebug("LINK: %s" % link)
+
+                self.link = unquote(m.group(1))
                 break
             else:
                 self.error(_("Download link"))
         else:
             self.fail(_("No valid captcha response received"))
-
-        try:
-            self.download(link, disposition=True)
-        except Exception:
-            self.retry(wait_time=60)
 
 
     def handlePremium(self, pyfile):
@@ -107,15 +102,14 @@ class DepositfilesCom(SimpleHoster):
             self.account.relogin(self.user)
             self.retry()
         else:
-            link = re.search(self.LINK_PREMIUM_PATTERN, self.html)
+            link   = re.search(self.LINK_PREMIUM_PATTERN, self.html)
             mirror = re.search(self.LINK_MIRROR_PATTERN, self.html)
+
             if link:
-                dlink = link.group(1)
+                self.link = link.group(1)
+
             elif mirror:
-                dlink = mirror.group(1)
-            else:
-                self.error(_("No direct download link or mirror found"))
-            self.download(dlink, disposition=True)
+                self.link = mirror.group(1)
 
 
 getInfo = create_getInfo(DepositfilesCom)

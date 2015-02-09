@@ -54,9 +54,7 @@ class MegaRapidCz(SimpleHoster):
     def handlePremium(self, pyfile):
         m = re.search(self.LINK_PREMIUM_PATTERN, self.html)
         if m:
-            link = m.group(1)
-            self.logDebug("Premium link: %s" % link)
-            self.download(link, disposition=True)
+            self.link = m.group(1)
         else:
             if re.search(self.ERR_LOGIN_PATTERN, self.html):
                 self.relogin(self.user)

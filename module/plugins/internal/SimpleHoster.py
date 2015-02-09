@@ -246,7 +246,7 @@ def secondsToMidnight(gmt=0):
 class SimpleHoster(Hoster):
     __name__    = "SimpleHoster"
     __type__    = "hoster"
-    __version__ = "1.14"
+    __version__ = "1.15"
 
     __pattern__ = r'^unmatchable$'
 
@@ -309,6 +309,7 @@ class SimpleHoster(Hoster):
     DIRECT_LINK   = None   #: Set to True to looking for direct link (as defined in handleDirect method), set to None to do it if self.account is True else False
     MULTI_HOSTER  = False  #: Set to True to leech other hoster link (as defined in handleMulti method)
     LOGIN_ACCOUNT = False  #: Set to True to require account login
+    DISPOSITION   = True   #: Work-around to `filename*=UTF-8` bug; remove in 0.4.10
 
     directLink = fileUrl  #@TODO: Remove in 0.4.10
 
@@ -482,11 +483,11 @@ class SimpleHoster(Hoster):
                 self.logDebug("Handled as free download")
                 self.handleFree(pyfile)
 
-        self.downloadLink(self.link)
+        self.downloadLink(self.link, self.DISPOSITION)  #: Remove `DISPOSITION` in 0.4.10
         self.checkFile()
 
 
-    def downloadLink(self, link, disposition=False):  #@TODO: Set `disposition=True` in 0.4.10
+    def downloadLink(self, link, disposition=True):
         if link and isinstance(link, basestring):
             self.correctCaptcha()
 
@@ -598,7 +599,7 @@ class SimpleHoster(Hoster):
             pass
 
         self.logDebug("File name: %s" % self.pyfile.name,
-                      "File size: %s" % self.pyfile.size if self.pyfile.size > 0 else "Unknown")
+                      "File size: %s" % (self.pyfile.size if self.pyfile.size > 0 else "Unknown"))
 
 
     def checkInfo(self):

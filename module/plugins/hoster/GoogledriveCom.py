@@ -12,7 +12,7 @@ from module.utils import html_unescape
 class GoogledriveCom(SimpleHoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
 
     __pattern__ = r'https?://(?:www\.)?drive\.google\.com/file/.+'
 
@@ -20,6 +20,8 @@ class GoogledriveCom(SimpleHoster):
     __license__     = "GPLv3"
     __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
+
+    DISPOSITION = False
 
     NAME_PATTERN    = r'"og:title" content="(?P<N>.*?)">'
     OFFLINE_PATTERN = r'align="center"><p class="errorMessage"'
@@ -57,7 +59,7 @@ class GoogledriveCom(SimpleHoster):
         link3 = self.load("https://docs.google.com" + link2, just_header=True)
         self.logDebug("DL-Link: %s" % link3['location'])
 
-        self.link = link3['location']  #@NOTE: I don't use disposition=True because it breaks the filename.
+        self.link = link3['location']
 
 
 getInfo = create_getInfo(GoogledriveCom)
