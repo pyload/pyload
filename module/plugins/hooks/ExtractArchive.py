@@ -104,7 +104,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.28"
+    __version__ = "1.29"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
@@ -124,7 +124,8 @@ class ExtractArchive(Hook):
 
     __description__ = """Extract different kind of archives"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+                       ("Immenz"        , "immenz@gmx.net"   )]
 
 
     event_list = ["allDownloadsProcessed"]
@@ -171,7 +172,7 @@ class ExtractArchive(Hook):
                     print_exc()
 
         if self.extractors:
-            self.logInfo(_("Activated") + " " + " ".join(Extractor.__name__ for Extractor in self.extractors))
+            self.logInfo(_("Activated") + " " + "|".join("%s %s" % (Extractor.__name__,Extractor.VERSION) for Extractor in self.extractors))
 
             if self.getConfig("waitall"):
                 self.extractPackage(*self.queue.get())  #: Resume unfinished extractions
@@ -277,13 +278,6 @@ class ExtractArchive(Hook):
                     for fname, fid, fout in targets:
                         name = os.path.basename(fname)
 
-                        pname = replace_patterns(fname, self.NAME_REPLACEMENTS)
-                        if pname not in processed:
-                            processed.append(pname)  #: prevent extracting same file twice
-                        else:
-                            self.logDebug(name, "Skipped")
-                            continue
-
                         if not os.path.exists(fname):
                             self.logDebug(name, "File not found")
                             continue
@@ -309,6 +303,7 @@ class ExtractArchive(Hook):
                             success = False
                             continue
 
+                        files_ids.remove((fname, fid, fout)) # don't let other extractors spam log
                         self.logDebug("Extracted files: %s" % new_files)
                         self.setPermissions(new_files)
 

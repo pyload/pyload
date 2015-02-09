@@ -19,7 +19,7 @@ class PasswordError(Exception):
 
 class Extractor:
     __name__    = "Extractor"
-    __version__ = "0.19"
+    __version__ = "0.20"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
@@ -28,12 +28,18 @@ class Extractor:
 
 
     EXTENSIONS = []
+    VERSION    = ""
 
 
     @classmethod
     def isArchive(cls, filename):
         name = os.path.basename(filename).lower()
-        return any(name.endswith(ext) for ext in cls.EXTENSIONS)
+        return any(name.endswith(ext) for ext in cls.EXTENSIONS) and not cls.isMultipart(filename)
+
+
+    @classmethod
+    def isMultipart(cls,filename):
+        return False
 
 
     @classmethod

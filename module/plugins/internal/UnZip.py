@@ -12,7 +12,7 @@ from module.utils import fs_encode
 
 class UnZip(Extractor):
     __name__    = "UnZip"
-    __version__ = "1.08"
+    __version__ = "1.09"
 
     __description__ = """Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -20,6 +20,7 @@ class UnZip(Extractor):
 
 
     EXTENSIONS = [".zip", ".zip64"]
+    VERSION ="(python %s.%s.%s)" % (sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
 
 
     @classmethod
