@@ -10,9 +10,9 @@ from urlparse import urljoin, urlparse
 from module.common.json_layer import json_loads
 
 
-class CaptchaService:
+class CaptchaService(object):
     __name__    = "CaptchaService"
-    __version__ = "0.22"
+    __version__ = "0.23"
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"
@@ -40,7 +40,7 @@ class CaptchaService:
 
 class ReCaptcha(CaptchaService):
     __name__    = "ReCaptcha"
-    __version__ = "0.12"
+    __version__ = "0.13"
 
     __description__ = """ReCaptcha captcha service plugin"""
     __license__     = "GPLv3"
@@ -73,21 +73,6 @@ class ReCaptcha(CaptchaService):
 
 
     def challenge(self, key=None, html=None, version=None):
-        if not html:
-            if hasattr(self.plugin, "html") and self.plugin.html:
-                html = self.plugin.html
-            else:
-                errmsg = _("ReCaptcha html not found")
-                self.plugin.fail(errmsg)
-                raise TypeError(errmsg)
-
-        challenge = "challenge_v%s" % (version if version in (1, 2) else
-                                       2 if re.search(self.KEY_V2_PATTERN, html) else 1)
-
-        return getattr(self, challenge)(key, html)
-
-
-    def challenge_v1(self, key=None, html=None):
         if not key:
             if self.detect_key(html):
                 key = self.key
@@ -96,7 +81,22 @@ class ReCaptcha(CaptchaService):
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        html = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={'k': key})
+        if version in (1, 2):
+            return getattr(self, "_challenge_v%s" % version)(key, html)
+
+        elif not html and hasattr(self.plugin, "html") and self.plugin.html:
+            version = 2 if re.search(self.KEY_V2_PATTERN, self.plugin.html) else 1
+            return self.challenge(key, self.plugin.html, version)
+
+        else:
+            errmsg = _("ReCaptcha html not found")
+            self.plugin.fail(errmsg)
+            raise TypeError(errmsg)
+
+
+    def _challenge_v1(self, key):
+        html = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge",
+                                    get={'k': key})
         try:
             challenge = re.search("challenge : '(.+?)',", html).group(1)
             server    = re.search("server : '(.+?)',", html).group(1)
@@ -159,20 +159,13 @@ class ReCaptcha(CaptchaService):
         return millis, rpc
 
 
-    def challenge_v2(self, key=None, html=None):
-        if not key:
-            if self.detect_key(html):
-                key = self.key
-            else:
-                errmsg = _("ReCaptcha key not found")
-                self.plugin.fail(errmsg)
-                raise TypeError(errmsg)
+    def _challenge_v2(self, key, parent=None):
+        if parent is None:
+            try:
+                parent = urljoin("http://", urlparse(self.plugin.pyfile.url).netloc)
 
-        try:
-            parent = urljoin("http://", urlparse(self.plugin.pyfile.url).netloc)
-
-        except Exception:
-            parent = ""
+            except Exception:
+                parent = ""
 
         botguardstring      = "!A"
         vers, language, jsh = self._collectApiInfo()
@@ -190,7 +183,7 @@ class ReCaptcha(CaptchaService):
 
         token1 = re.search(r'id="recaptcha-token" value="(.*?)">', html)
         self.plugin.logDebug("ReCaptcha token #1: %s" % token1.group(1))
-                
+
         html = self.plugin.req.load("https://www.google.com/recaptcha/api2/frame",
                                     get={'c'      : token1.group(1),
                                          'hl'     : language,
@@ -214,10 +207,12 @@ class ReCaptcha(CaptchaService):
 
         token4 = re.search(r'"rresp","(.*?)",', html)
         self.plugin.logDebug("ReCaptcha token #4: %s" % token4.group(1))
-        
+
         millis_captcha_loading = int(round(time.time() * 1000))
         captcha_response       = self.plugin.decryptCaptcha("https://www.google.com/recaptcha/api2/payload",
-                                                            get={'c':token4.group(1), 'k':key}, forceUser=True)
+                                                            get={'c':token4.group(1), 'k':key},
+                                                            cookies=True,
+                                                            forceUser=True)
         response               = b64encode('{"response":"%s"}' % captcha_response)
 
         self.plugin.logDebug("ReCaptcha result: %s" % response)
@@ -236,7 +231,10 @@ class ReCaptcha(CaptchaService):
         token5 = re.search(r'"uvresp","(.*?)",', html)
         self.plugin.logDebug("ReCaptcha token #5: %s" % token5.group(1))
 
-        return token5.group(1), None
+        result = token5.group(1)
+
+        return result, None
+
 
 
 class AdsCaptcha(CaptchaService):
@@ -283,7 +281,9 @@ class AdsCaptcha(CaptchaService):
 
         PublicKey, CaptchaId = key
 
-        html = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx", get={'CaptchaId': CaptchaId, 'PublicKey': PublicKey})
+        html = self.plugin.req.load("http://api.adscaptcha.com/Get.aspx",
+                                    get={'CaptchaId': CaptchaId,
+                                         'PublicKey': PublicKey})
         try:
             challenge = re.search("challenge: '(.+?)',", html).group(1)
             server    = re.search("server: '(.+?)',", html).group(1)
@@ -311,7 +311,7 @@ class AdsCaptcha(CaptchaService):
 
 class SolveMedia(CaptchaService):
     __name__    = "SolveMedia"
-    __version__ = "0.09"
+    __version__ = "0.10"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__     = "GPLv3"
@@ -331,7 +331,6 @@ class SolveMedia(CaptchaService):
                 raise TypeError(errmsg)
 
         m = re.search(self.KEY_PATTERN, html)
-        magic = re.search(r'name="magic" value="(.*?)"',html)
         if m:
             self.key = m.group(1).strip()
             self.plugin.logDebug("SolveMedia key: %s" % self.key)
@@ -341,7 +340,7 @@ class SolveMedia(CaptchaService):
             return None
 
 
-    def challenge(self, key=None, html=None, pyfile_url=""):
+    def challenge(self, key=None, html=None):
         if not key:
             if self.detect_key(html):
                 key = self.key
@@ -350,7 +349,8 @@ class SolveMedia(CaptchaService):
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript", get={'k': key})
+        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript",
+                                    get={'k': key})
         try:
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
                                   html).group(1)
@@ -362,37 +362,56 @@ class SolveMedia(CaptchaService):
             raise AttributeError(errmsg)
 
         self.plugin.logDebug("SolveMedia challenge: %s" % challenge)
-        
+
+        result = self.result(server, challenge)
+
+        if not self.verify(result, challenge, key):
+            self.plugin.logDebug("SolveMedia captcha code was invalid")
+
+        return result, challenge
+
+
+    def verify(self, result, challenge, key, ref=None):
+        if ref is None:
+            try:
+                ref = self.plugin.pyfile.url
+
+            except Exception:
+                ref = ""
+
         try:
-            magic = re.search(r'name="magic" value="(.*?)"',html).group(1)
+            magic = re.search(r'name="magic" value="(.+?)"', html).group(1)
+
         except AttributeError:
-            errmsg = _("SolveMedia magic string not found")
+            errmsg = _("SolveMedia magic key not found")
             self.plugin.fail(errmsg)
             raise AttributeError(errmsg)
 
-        result = self.result(server, challenge)
-        
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/verify.noscript", 
-                                    cookies=True,
-                                    post={"adcopy_response"  : result,
-                                          "k"                : key,
-                                          "l"                : "en",
-                                          "t"                : "img",
-                                          "s"                : "standard",
-                                          "magic"            : magic,
-                                          "adcopy_challenge" : challenge,
-                                          "ref"              : pyfile_url})
+        html = self.plugin.req.load("http://api.solvemedia.com/papi/verify.noscript",
+                                    post={'adcopy_response'  : result,
+                                          'k'                : key,
+                                          'l'                : "en",
+                                          't'                : "img",
+                                          's'                : "standard",
+                                          'magic'            : magic,
+                                          'adcopy_challenge' : challenge,
+                                          'ref'              : ref)
         try:
-            url = re.search(r'URL=(.*?)">',html).group(1)
-            html = self.plugin.req.load(url,cookies=True)
-            gibberish = re.search(r'id=gibberish>(.*?)</textarea>',html).group(1)
-        except:
-            self.plugin.logDebug("Wrong captcha answer!")
-            
-        return result,challenge
+            html      = self.plugin.req.load(re.search(r'URL=(.+?)">', html).group(1))
+            gibberish = re.search(r'id=gibberish>(.+?)</textarea>', html).group(1)
+
+        except Exception:
+            return False
+
+        else:
+            return True
+
 
     def result(self, server, challenge):
-        result = self.plugin.decryptCaptcha(server, get={'c': challenge}, imgtype="gif")
+        result = self.plugin.decryptCaptcha(server,
+                                            get={'c': challenge},
+                                            cookies=True,
+                                            imgtype="gif")
 
         self.plugin.logDebug("SolveMedia result: %s" % result)
 
