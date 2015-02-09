@@ -13,7 +13,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class LoadTo(SimpleHoster):
     __name__    = "LoadTo"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'
 
@@ -49,7 +49,7 @@ class LoadTo(SimpleHoster):
         # Set Timer - may be obsolete
         m = re.search(self.WAIT_PATTERN, self.html)
         if m:
-            self.wait(m.group(1))
+            self.wait(int(m.group(1)))
 
         # Load.to is using solvemedia captchas since ~july 2014:
         solvemedia = SolveMedia(self)
@@ -58,8 +58,8 @@ class LoadTo(SimpleHoster):
         if captcha_key is None:
             self.download(download_url)
         else:
-            response, challenge = solvemedia.challenge(captcha_key)
-            self.download(download_url, post={"adcopy_challenge": challenge, "adcopy_response": response})
+            response, challenge = solvemedia.challenge(captcha_key,None,pyfile.url)
+            self.download(download_url, post={"adcopy_challenge": challenge, "adcopy_response": response,"returnUrl":pyfile.url})
 
 
 getInfo = create_getInfo(LoadTo)
