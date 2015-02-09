@@ -12,7 +12,7 @@ from module.common.json_layer import json_loads
 
 class CaptchaService(object):
     __name__    = "CaptchaService"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __description__ = """Base captcha service plugin"""
     __license__     = "GPLv3"
@@ -311,7 +311,7 @@ class AdsCaptcha(CaptchaService):
 
 class SolveMedia(CaptchaService):
     __name__    = "SolveMedia"
-    __version__ = "0.11"
+    __version__ = "0.12"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__     = "GPLv3"
@@ -349,11 +349,11 @@ class SolveMedia(CaptchaService):
                 self.plugin.fail(errmsg)
                 raise TypeError(errmsg)
 
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript",
-                                    get={'k': key})
+        self.html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript",
+                                         get={'k': key})
         try:
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
-                                  html).group(1)
+                                  self.html).group(1)
             server    = "http://api.solvemedia.com/papi/media"
 
         except AttributeError:
@@ -380,7 +380,7 @@ class SolveMedia(CaptchaService):
                 ref = ""
 
         try:
-            magic = re.search(r'name="magic" value="(.+?)"', html).group(1)
+            magic = re.search(r'name="magic" value="(.+?)"', self.html).group(1)
 
         except AttributeError:
             errmsg = _("SolveMedia magic key not found")
