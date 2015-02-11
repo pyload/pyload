@@ -10,16 +10,16 @@ from module.plugins.Hook import Hook, threaded
 
 def forward(source, destination):
     try:
-        size = 1024
-        data = source.recv(size)
+        bufsize = 1024
+        data = source.recv(bufsize)
         while data:
             destination.sendall(data)
-            data = source.recv(size)
+            data = source.recv(bufsize)
     finally:
         destination.shutdown(socket.SHUT_WR)
 
 
-#: socket.create_connection wrapper for python 2.5
+#: create_connection wrapper for python 2.5 socket module
 def create_connection(address, timeout=object(), source_address=None):
     if hasattr(socket, 'create_connection'):
         if type(timeout) == object:
@@ -56,7 +56,7 @@ def create_connection(address, timeout=object(), source_address=None):
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.33"
+    __version__ = "0.34"
 
     __config__ = [("activated", "bool", "Activated"                                     , True ),
                   ("port"     , "int" , "Port"                                          , 9666 ),
@@ -72,7 +72,7 @@ class ClickAndLoad(Hook):
         if not self.config['webinterface']['activated']:
             return
 
-        ip      = "0.0.0.0" if self.getConfig("extern") else "127.0.0.1"
+        ip      = socket.gethostbyname(socket.gethostname()) if self.getConfig("extern") else "127.0.0.1"
         webport = int(self.config['webinterface']['port'])
         cnlport = self.getConfig('port')
 
@@ -89,22 +89,23 @@ class ClickAndLoad(Hook):
 
     def server(self, ip, webport, cnlport):
         try:
-            dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            dock_socket.bind((ip, cnlport))
-            dock_socket.listen(5)
+            server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            server_socket.bind((ip, cnlport))
+            server_socket.listen(5)
 
             while True:
-                client_socket = dock_socket.accept()[0]
-                server_socket = create_connection(("127.0.0.1", webport))
+                client_socket = server_socket.accept()[0]
+                dock_socket   = create_connection(("127.0.0.1", webport))
 
-                self.manager.startThread(forward, client_socket, server_socket)
-                self.manager.startThread(forward, server_socket, client_socket)
+                self.manager.startThread(forward, client_socket, dock_socket)
+                self.manager.startThread(forward, dock_socket, client_socket)
+                client_socket.close()
+                dock_socket.close()
 
         except socket.error, e:
             self.logDebug(e)
             self.server(ip, webport, cnlport)
 
         finally:
-            client_socket.close()
             server_socket.close()
-            dock_socket.close()
