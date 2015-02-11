@@ -7,10 +7,10 @@ from time import time
 from module.plugins.Hook import Hook
 
 
-class WindowsPhoneToastNotify(Hook):
-    __name__    = "WindowsPhoneToastNotify"
+class WindowsPhoneNotify(Hook):
+    __name__    = "WindowsPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
 
     __config__ = [("id"             , "str" , "Push ID"                                  , ""   ),
                   ("url"            , "str" , "Push url"                                 , ""   ),
@@ -35,14 +35,15 @@ class WindowsPhoneToastNotify(Hook):
 
 
     def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
+        self.info        = {}  #@TODO: Remove in 0.4.10
+        self.last_notify = 0
 
 
     def newCaptchaTask(self, task):
         if not self.getConfig("notifycaptcha"):
             return False
 
-        if time() - float(self.getStorage("WindowsPhoneToastNotify", 0)) < self.getConf("timeout"):
+        if time() - self.last_notify < self.getConf("timeout"):
             return False
 
         self.notify(_("Captcha"), _("New request waiting user input"))
@@ -92,4 +93,4 @@ class WindowsPhoneToastNotify(Hook):
         webservice.send(request)
         webservice.close()
 
-        self.setStorage("WindowsPhoneToastNotify", time())
+        self.last_notify = time()

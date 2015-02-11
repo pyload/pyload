@@ -9,7 +9,7 @@ from module.plugins.Hook import Hook
 class AndroidPhoneNotify(Hook):
     __name__    = "AndroidPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.03"
+    __version__ = "0.04"
 
     __config__ = [("apikey"         , "str" , "API key"                                  , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
@@ -33,14 +33,15 @@ class AndroidPhoneNotify(Hook):
 
 
     def setup(self):
-        self.info = {}  #@TODO: Remove in 0.4.10
+        self.info        = {}  #@TODO: Remove in 0.4.10
+        self.last_notify = 0
 
 
     def newCaptchaTask(self, task):
         if not self.getConfig("notifycaptcha"):
             return False
 
-        if time() - float(self.getStorage("AndroidPhoneNotify", 0)) < self.getConf("timeout"):
+        if time() - self.last_notify < self.getConf("timeout"):
             return False
 
         self.notify(_("Captcha"), _("New request waiting user input"))
@@ -76,4 +77,4 @@ class AndroidPhoneNotify(Hook):
                     'event'      : event,
                     'description': msg})
 
-        self.setStorage("AndroidPhoneNotify", time())
+        self.last_notify = time()
