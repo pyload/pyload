@@ -483,7 +483,7 @@ class SimpleHoster(Hoster):
                 self.logDebug("Handled as free download")
                 self.handleFree(pyfile)
 
-        self.downloadLink(self.link, self.DISPOSITION)  #: Remove `DISPOSITION` in 0.4.10
+        self.downloadLink(self.link, self.DISPOSITION)  #: Remove `self.DISPOSITION` in 0.4.10
         self.checkFile()
 
 
@@ -599,7 +599,7 @@ class SimpleHoster(Hoster):
             pass
 
         self.logDebug("File name: %s" % self.pyfile.name,
-                      "File size: %s" % (self.pyfile.size if self.pyfile.size > 0 else "Unknown"))
+                      "File size: %s byte" % self.pyfile.size if self.pyfile.size > 0 else "File size: Unknown")
 
 
     def checkInfo(self):

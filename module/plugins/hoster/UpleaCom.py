@@ -52,8 +52,8 @@ class UpleaCom(XFSHoster):
         if m is None:
             self.error(_("LINK_PATTERN not found"))
 
-        self.wait(15)
         self.link = m.group(1)
+        self.wait(15)
 
 
 getInfo = create_getInfo(UpleaCom)

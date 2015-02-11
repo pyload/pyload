@@ -16,7 +16,7 @@ from module.utils import html_unescape
 class XFSHoster(SimpleHoster):
     __name__    = "XFSHoster"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
 
     __pattern__ = r'^unmatchable$'
 
@@ -89,27 +89,6 @@ class XFSHoster(SimpleHoster):
             self.directDL = self.premium
 
 
-    def downloadLink(self, link, disposition=True):
-        if link and isinstance(link, basestring):
-            self.correctCaptcha()
-
-            if not urlparse(link).scheme:
-                url_p   = urlparse(self.pyfile.url)
-                baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
-                link    = urljoin(baseurl, link)
-
-            self.download(link, ref=False, disposition=disposition)
-
-        elif self.errmsg:
-            if 'captcha' in self.errmsg:
-                self.fail(_("No valid captcha code entered"))
-            else:
-                self.fail(self.errmsg)
-
-        else:
-            self.fail(_("Download link not found"))
-
-
     def handleFree(self, pyfile):
         for i in xrange(1, 6):
             self.logDebug("Getting download link: #%d" % i)
@@ -138,8 +117,6 @@ class XFSHoster(SimpleHoster):
         else:
             self.logError(data['op'] if 'op' in data else _("UNKNOWN"))
             return ""
-
-        self.errmsg = None
 
         self.link = m.group(1).strip()  #@TODO: Remove .strip() in 0.4.10
 
@@ -204,8 +181,6 @@ class XFSHoster(SimpleHoster):
 
         if 'location' in header:  #: Direct download link
             self.link = header['location']
-        else:
-            self.fail(_("Download link not found"))
 
 
     def checkErrors(self):
