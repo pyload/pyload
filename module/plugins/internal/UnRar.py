@@ -22,29 +22,30 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.10"
+    __version__ = "1.13"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+                       ("Walter Purcaro", "vuolter@gmail.com"),
+                       ("Immenz", "immenz@gmx.net"),]
 
 
     CMD = "unrar"
+    VERSION = ""
 
-    # TODO: Find out what Filetypes Unrar supports exactly
-    EXTENSIONS = [".rar", ".cab", ".arj", ".lzh", ".tar", ".gz", ".bz2",
-                  ".ace", ".uue", ".jar", ".iso", ".7z", ".xz", ".z"]
+    EXTENSIONS = [".rar"]
 
-    #@NOTE: there are some more uncovered rar formats
-    re_rarpart1 = re.compile(r'\.part(\d+)\.rar$', re.I)
-    re_rarpart2 = re.compile(r'\.r(\d+)$', re.I)
+
+    re_multipart = re.compile(r'\.(part|r)(\d+)(?:\.rar)?',re.I)
 
     re_filefixed = re.compile(r'Building (.+)')
-    re_filelist  = re.compile(r'(.+)\s+(\D+)\s+(\d+)\s+\d\d-\d\d-\d\d\s+\d\d:\d\d\s+(.+)')
+    re_filelist  = re.compile(r'^(.)(\s*[\w\.\-]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8}\s+[\d\:]{5}', re.M|re.I)
 
     re_wrongpwd  = re.compile(r'password', re.I)
     re_wrongcrc  = re.compile(r'encrypted|damaged|CRC failed|checksum error', re.I)
+
+    re_version   = re.compile(r'UNRAR\s(\d+\.\d+)', re.I)
 
 
     @classmethod
@@ -52,18 +53,30 @@ class UnRar(Extractor):
         if os.name == "nt":
             cls.CMD = os.path.join(pypath, "UnRAR.exe")
             p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
-            p.communicate()
+            out, err = p.communicate()
         else:
             try:
                 p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
-                p.communicate()
+                out, err = p.communicate()
 
             except OSError:  #: fallback to rar
                 cls.CMD = "rar"
                 p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
-                p.communicate()
+                out, err = p.communicate()
+
+        cls.VERSION = cls.re_version.search(out).group(1)
 
         return True
+
+
+    @classmethod
+    def isMultipart(cls,filename):
+        multipart = cls.re_multipart.search(filename)
+        if multipart:
+            # First Multipart file (part1.rar for *.part1-9.rar format or *.rar for .r1-9 format) handled as normal Archive
+            return False if (multipart.group(1) == "part" and int(multipart.group(2)) == 1) else True
+
+        return False
 
 
     def check(self):
@@ -161,23 +174,14 @@ class UnRar(Extractor):
 
 
     def getDeleteFiles(self):
-        files = []
+        dir, name = os.path.split(self.filename)
 
-        for i in (1, 2):
-            try:
-                dir, name = os.path.split(self.filename)
+        # actually extracted file
+        files = [self.filename]
 
-                part     = getattr(self, "re_rarpart%d" % i).search(name).group(1)
-                new_name = name[::-1].replace((".part%s.rar" % part)[::-1], ".part*.rar"[::-1], 1)[::-1]
-                file     = fs_encode(os.path.join(dir, new_name))
-
-                files.extend(glob(file))
-
-            except Exception:
-                continue
-
-        if self.filename not in files:
-            files.insert(0, self.filename)
+        # eventually Multipart Files
+        files.extend(save_join(dir, os.path.basename(file)) for file in filter(self.isMultipart, os.listdir(dir))
+                     if re.sub(self.re_multipart,".rar",name) == re.sub(self.re_multipart,".rar",file))
 
         return files
 
@@ -195,9 +199,16 @@ class UnRar(Extractor):
             self.manager.logError(err.strip())
 
         result = set()
-        for f in decode(out).splitlines():
-            f = f.strip()
-            result.add(save_join(self.out, f))
+        if not self.fullpath and self.VERSION.startswith('5'):
+            # NOTE: Unrar 5 always list full path
+            for f in decode(out).splitlines():
+                f = save_join(self.out, os.path.basename(f.strip()))
+                if os.path.isfile(f):
+                    result.add(save_join(self.out, os.path.basename(f)))
+        else:
+            for f in decode(out).splitlines():
+                f = f.strip()
+                result.add(save_join(self.out, f))
 
         return list(result)
 

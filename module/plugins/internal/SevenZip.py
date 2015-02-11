@@ -11,7 +11,7 @@ from module.utils import fs_encode, save_join
 
 class SevenZip(UnRar):
     __name__    = "SevenZip"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __description__ = """7-Zip extractor plugin"""
     __license__     = "GPLv3"
@@ -19,7 +19,8 @@ class SevenZip(UnRar):
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    CMD = "7z"
+    CMD     = "7z"
+    VERSION = ""
 
     EXTENSIONS = [".7z", ".xz", ".zip", ".gz", ".gzip", ".tgz", ".bz2", ".bzip2",
                   ".tbz2", ".tbz", ".tar", ".wim", ".swm", ".lzma", ".rar", ".cab",
@@ -33,6 +34,7 @@ class SevenZip(UnRar):
     re_filelist = re.compile(r'([\d\:]+)\s+([\d\:]+)\s+([\w\.]+)\s+(\d+)\s+(\d+)\s+(.+)')
     re_wrongpwd = re.compile(r'(Can not open encrypted archive|Wrong password)', re.I)
     re_wrongcrc = re.compile(r'Encrypted\s+\=\s+\+', re.I)
+    re_version   = re.compile(r'7-Zip\s(?:\[64\]\s)?(\d+\.\d+)', re.I)
 
 
     @classmethod
@@ -40,10 +42,12 @@ class SevenZip(UnRar):
         if os.name == "nt":
             cls.CMD = os.path.join(pypath, "7z.exe")
             p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
-            p.communicate()
+            out,err = p.communicate()
         else:
             p = Popen([cls.CMD], stdout=PIPE, stderr=PIPE)
-            p.communicate()
+            out, err = p.communicate()
+        
+        cls.VERSION = cls.re_version.search(out).group(1)
 
         return True
 
@@ -143,9 +147,9 @@ class SevenZip(UnRar):
             args.append("-p-")
 
         #@NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
-        call = [self.cmd, command] + args + list(xargs)
+        call = [self.CMD, command] + args + list(xargs)
 
-        self.manager.logDebug(" ".join(map(decode, call)))
+        self.manager.logDebug(" ".join(call))
 
         p = Popen(call, stdout=PIPE, stderr=PIPE)
         return p

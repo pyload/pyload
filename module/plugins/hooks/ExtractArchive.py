@@ -104,7 +104,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Hook):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.26"
+    __version__ = "1.29"
 
     __config__ = [("activated"       , "bool"  , "Activated"                                 , True                                                                     ),
                   ("fullpath"        , "bool"  , "Extract with full paths"                   , True                                                                     ),
@@ -124,7 +124,8 @@ class ExtractArchive(Hook):
 
     __description__ = """Extract different kind of archives"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
+                       ("Immenz"        , "immenz@gmx.net"   )]
 
 
     event_list = ["allDownloadsProcessed"]
@@ -171,7 +172,7 @@ class ExtractArchive(Hook):
                     print_exc()
 
         if self.extractors:
-            self.logInfo(_("Activated") + " " + " ".join(Extractor.__name__ for Extractor in self.extractors))
+            self.logInfo(_("Activated") + " " + "|".join("%s %s" % (Extractor.__name__,Extractor.VERSION) for Extractor in self.extractors))
 
             if self.getConfig("waitall"):
                 self.extractPackage(*self.queue.get())  #: Resume unfinished extractions
@@ -198,14 +199,14 @@ class ExtractArchive(Hook):
 
 
     @threaded
-    def allDownloadsProcessed(self):
-        if self.extract(self.queue.get()):  #@NOTE: check only if all gone fine, no failed reporting for now
+    def allDownloadsProcessed(self, thread):
+        if self.extract(self.queue.get(), thread):  #@NOTE: check only if all gone fine, no failed reporting for now
             self.manager.dispatchEvent("all_archives_extracted")
 
         self.manager.dispatchEvent("all_archives_processed")
 
 
-    def extract(self, ids):
+    def extract(self, ids, thread=None):
         if not ids:
             return False
 
@@ -258,14 +259,14 @@ class ExtractArchive(Hook):
 
             matched   = False
             success   = True
-            files_ids = [(save_join(dl, pypack.folder, pylink['name']), pylink['id']) for pylink in pypack.getChildren().itervalues()]
+            files_ids = [(save_join(dl, pypack.folder, pylink['name']), pylink['id'], out) for pylink in pypack.getChildren().itervalues()]
 
             # check as long there are unseen files
             while files_ids:
                 new_files_ids = []
 
                 if extensions:
-                    files_ids = [(fname, fid) for fname, fid in files_ids \
+                    files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids \
                                  if filter(lambda ext: fname.lower().endswith(ext), extensions)]
 
                 for Extractor in self.extractors:
@@ -274,25 +275,18 @@ class ExtractArchive(Hook):
                         self.logDebug("Targets for %s: %s" % (Extractor.__name__, targets))
                         matched = True
 
-                    for fname, fid in targets:
+                    for fname, fid, fout in targets:
                         name = os.path.basename(fname)
 
-                        pname = replace_patterns(fname, self.NAME_REPLACEMENTS)
-                        if pname not in processed:
-                            processed.append(pname)  #: prevent extracting same file twice
-                        else:
-                            self.logDebug(name, "Skipped")
-                            continue
-                            
                         if not os.path.exists(fname):
                             self.logDebug(name, "File not found")
                             continue
 
-                        self.logInfo(name, _("Extract to: %s") % out)
+                        self.logInfo(name, _("Extract to: %s") % fout)
                         try:
                             archive = Extractor(self,
                                                 fname,
-                                                out,
+                                                fout,
                                                 fullpath,
                                                 overwrite,
                                                 excludefiles,
@@ -302,13 +296,14 @@ class ExtractArchive(Hook):
                                                 fid)
                             archive.init()
 
-                            new_files = self._extract(archive, fid, pypack.password)
+                            new_files = self._extract(archive, fid, pypack.password, thread)
 
                         except Exception, e:
                             self.logError(name, e)
                             success = False
                             continue
 
+                        files_ids.remove((fname, fid, fout)) # don't let other extractors spam log
                         self.logDebug("Extracted files: %s" % new_files)
                         self.setPermissions(new_files)
 
@@ -319,7 +314,7 @@ class ExtractArchive(Hook):
                                 continue
 
                             if recursive and os.path.isfile(file):
-                                new_files_ids.append((filename, fid))  # append as new target
+                                new_files_ids.append((filename, fid, os.path.dirname(filename)))  # append as new target
 
                 files_ids = new_files_ids  # also check extracted files
 
@@ -348,10 +343,11 @@ class ExtractArchive(Hook):
         return True if not failed else False
 
 
-    def _extract(self, archive, fid, password):
+    def _extract(self, archive, fid, password, thread):
         pyfile = self.core.files.getFile(fid)
         name   = os.path.basename(archive.filename)
 
+        thread.addActive(pyfile)
         pyfile.setStatus("processing")
 
         encrypted = False
@@ -391,7 +387,7 @@ class ExtractArchive(Hook):
             if not encrypted or not self.getConfig("usepasswordfile"):
                 archive.extract(password)
             else:
-                for pw in uniqify([password] + self.getPasswords(False)):
+                for pw in filter(None, uniqify([password] + self.getPasswords(False))):
                     try:
                         self.logDebug("Try password: %s" % pw)
 

@@ -19,21 +19,28 @@ class PasswordError(Exception):
 
 class Extractor:
     __name__    = "Extractor"
-    __version__ = "0.18"
+    __version__ = "0.20"
 
     __description__ = """Base extractor plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "ranan@pyload.org"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+                       ("Walter Purcaro", "vuolter@gmail.com"),
+                       ("Immenz", "immenz@gmx.net")]
 
 
     EXTENSIONS = []
+    VERSION    = ""
 
 
     @classmethod
     def isArchive(cls, filename):
         name = os.path.basename(filename).lower()
-        return any(name.endswith(ext) for ext in cls.EXTENSIONS)
+        return any(name.endswith(ext) for ext in cls.EXTENSIONS) and not cls.isMultipart(filename)
+
+
+    @classmethod
+    def isMultipart(cls,filename):
+        return False
 
 
     @classmethod
@@ -50,7 +57,7 @@ class Extractor:
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
-        return [(fname, id) for fname, id in files_ids if cls.isArchive(fname)]
+        return [(fname, id, fout) for fname, id, fout in files_ids if cls.isArchive(fname)]
 
 
     def __init__(self, manager, filename, out,
