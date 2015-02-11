@@ -3,7 +3,6 @@
 import socket
 
 from threading import Thread, Lock
-from time import sleep
 
 from module.plugins.Hook import Hook, threaded
 
@@ -100,6 +99,7 @@ class ClickAndLoad(Hook):
 
                 self.manager.startThread(forward, client_socket, dock_socket)
                 self.manager.startThread(forward, dock_socket, client_socket)
+
                 client_socket.close()
                 dock_socket.close()
 
