@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.70"
+    __version__ = "0.71"
 
     __pattern__ = r'http://www\d{0,2}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
 
@@ -51,11 +51,9 @@ class ZippyshareCom(SimpleHoster):
 
     def get_checksum(self):
         try:
-            z = int(re.search(r'var z = (\d+)', self.html).group(1))
-            n = (z - 3) % 2
-            b = (z - 3) % 3
-
-            checksum = n + b + z - 3
+            m = re.search(r'\+[ ]*\((\d+)[ ]*\%[ ]*(\d+)[ ]*\+[ ]*(\d+)[ ]*\%[ ]*(\d+)\)[ ]*\+', self.html)
+            a1, a2, c1, c2 = map(int, m.groups())
+            checksum = (a1 % a2) + (c1 % c2)
 
         except Exception:
             self.error(_("Unable to calculate checksum"))
