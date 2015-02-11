@@ -22,12 +22,13 @@ def renice(pid, value):
 
 class UnRar(Extractor):
     __name__    = "UnRar"
-    __version__ = "1.12"
+    __version__ = "1.13"
 
     __description__ = """Rar extractor plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.org"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+                       ("Walter Purcaro", "vuolter@gmail.com"),
+                       ("Immenz", "immenz@gmx.net"),]
 
 
     CMD = "unrar"
@@ -179,7 +180,7 @@ class UnRar(Extractor):
         files = [self.filename]
 
         # eventually Multipart Files
-        files.extend(save_join(self.out, os.path.basename(file)) for file in filter(self.isMultipart, os.listdir(dir))
+        files.extend(save_join(dir, os.path.basename(file)) for file in filter(self.isMultipart, os.listdir(dir))
                      if re.sub(self.re_multipart,".rar",name) == re.sub(self.re_multipart,".rar",file))
 
         return files
@@ -198,7 +199,7 @@ class UnRar(Extractor):
             self.manager.logError(err.strip())
 
         result = set()
-        if not self.fullpath and self.rarversion.startswith('5'):
+        if not self.fullpath and self.VERSION.startswith('5'):
             # NOTE: Unrar 5 always list full path
             for f in decode(out).splitlines():
                 f = save_join(self.out, os.path.basename(f.strip()))
