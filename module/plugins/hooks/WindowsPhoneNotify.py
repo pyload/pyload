@@ -10,7 +10,7 @@ from module.plugins.Hook import Hook
 class WindowsPhoneNotify(Hook):
     __name__    = "WindowsPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
 
     __config__ = [("id"             , "str" , "Push ID"                                  , ""   ),
                   ("url"            , "str" , "Push url"                                 , ""   ),

@@ -9,7 +9,7 @@ from module.plugins.Hook import Hook
 class AndroidPhoneNotify(Hook):
     __name__    = "AndroidPhoneNotify"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __config__ = [("apikey"         , "str" , "API key"                                  , ""   ),
                   ("notifycaptcha"  , "bool", "Notify captcha request"                   , True ),
