@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "0.82"
+    __version__ = "0.83"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
 
@@ -56,7 +56,6 @@ class UploadedTo(SimpleHoster):
     def setup(self):
         self.multiDL    = self.resumeDownload = self.premium
         self.chunkLimit = 1  # critical problems with more chunks
-        self.load("http://uploaded.net/language/en", just_header=True)
 
 
     def checkErrors(self):
@@ -88,6 +87,8 @@ class UploadedTo(SimpleHoster):
 
 
     def handleFree(self, pyfile):
+        self.load("http://uploaded.net/language/en", just_header=True)
+
         self.html = self.load("http://uploaded.net/js/download.js", decode=True)
 
         recaptcha = ReCaptcha(self)
