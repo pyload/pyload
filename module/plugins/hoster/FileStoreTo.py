@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class FileStoreTo(SimpleHoster):
     __name__    = "FileStoreTo"
     __type__    = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
 
     __pattern__ = r'http://(?:www\.)?filestore\.to/\?d=(?P<ID>\w+)'
 
@@ -18,7 +18,7 @@ class FileStoreTo(SimpleHoster):
                        ("stickell", "l.stickell@yahoo.it")]
 
 
-    INFO_PATTERN         = r'File: <span[^>]*>(?P<N>.+)</span><br />Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    INFO_PATTERN         = r'File: <span.*?>(?P<N>.+?)<.*>Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN      = r'>Download-Datei wurde nicht gefunden<'
     TEMP_OFFLINE_PATTERN = r'>Der Download ist nicht bereit !<'
 
