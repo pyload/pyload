@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster, create_getInfo
 class MystoreTo(SimpleHoster):
     __name__    = "MystoreTo"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
 
     __pattern__ = r'https?://(?:www\.)?mystore.to/dl/.+'
 
@@ -25,6 +25,7 @@ class MystoreTo(SimpleHoster):
 
     def setup(self):
         self.chunkLimit = 1
+        self.resumeDownload = self.multiDL = True
 
 
     def handleFree(self, pyfile):
