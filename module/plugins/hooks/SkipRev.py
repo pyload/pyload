@@ -18,7 +18,7 @@ def _setup(self):
 class SkipRev(Hook):
     __name__    = "SkipRev"
     __type__    = "hook"
-    __version__ = "0.24"
+    __version__ = "0.25"
 
     __config__ = [("tokeep", "int", "Number of rev files to keep for package (-1 to auto)", -1)]
 
@@ -60,10 +60,12 @@ class SkipRev(Hook):
         tokeep = self.getConfig("tokeep")
 
         if tokeep:
-            saved = [True for link in self.core.api.getPackageData(pyfile.package().id).links \
-                     if link.name.endswith(".rev") and link.status in (0, 12)].count(True)
+            status_list = (1, 4, 8, 9, 14) if tokeep < 0 else (1, 3, 4, 8, 9, 14)
 
-            if not saved or saved < tokeep:  #: keep one rev at least in auto mode
+            queued = [True for link in self.core.api.getPackageData(pyfile.package().id).links \
+                      if link.name.endswith(".rev") and link.status not in status_list].count(True)
+
+            if not queued or queued < tokeep:  #: keep one rev at least in auto mode
                 return
 
         pyfile.setCustomStatus("SkipRev", "skipped")
