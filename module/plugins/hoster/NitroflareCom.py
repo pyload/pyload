@@ -16,14 +16,15 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__    = "NitroflareCom"
     __type__    = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
 
     __description__ = """Nitroflare.com hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("sahil", "sahilshekhawat01@gmail.com"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+                       ("Walter Purcaro", "vuolter@gmail.com"),
+                       ("Stickell", "l.stickell@yahoo.it")]
 
     # URL_REPLACEMENTS = [("http://", "https://")]
 
@@ -35,7 +36,7 @@ class NitroflareCom(SimpleHoster):
     RECAPTCHA_KEY = "6Lenx_USAAAAAF5L1pmTWvWcH73dipAEzNnmNLgy"
 
     PREMIUM_ONLY_PATTERN = r'This file is available with Premium only'
-    WAIT_PATTERN         = r'You have to wait .+?<'
+    WAIT_PATTERN         = r'You have to wait .+'
     ERROR_PATTERN        = r'downloading is not possible'
 
 
@@ -67,8 +68,9 @@ class NitroflareCom(SimpleHoster):
         # used here to load the cookies which will be required later
         self.load(pyfile.url, post={'goToFreePage': ""})
 
-        self.html = self.load("http://nitroflare.com/ajax/freeDownload.php",
-                              post={'method': "startTimer", 'fileId': self.info['pattern']['ID']})[4:]
+        self.load("https://www.nitroflare.com/ajax/setCookie.php", post={'fileId': self.info['pattern']['ID']})
+        self.html = self.load("https://www.nitroflare.com/ajax/freeDownload.php",
+                              post={'method': "startTimer", 'fileId': self.info['pattern']['ID']})
 
         self.checkErrors()
 
@@ -85,17 +87,21 @@ class NitroflareCom(SimpleHoster):
         recaptcha = ReCaptcha(self)
         response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 
-        self.html = self.load("http://nitroflare.com/ajax/freeDownload.php",
+        self.html = self.load("https://www.nitroflare.com/ajax/freeDownload.php",
                               post={'method'                   : "fetchDownload",
                                     'recaptcha_challenge_field': challenge,
-                                    'recaptcha_response_field' : response})[3:]
-
-        self.logDebug(self.html)
+                                    'recaptcha_response_field' : response})
 
         if "The captcha wasn't entered correctly" in self.html:
+            self.logWarning("The captcha wasn't entered correctly")
             return
 
         if "You have to fill the captcha" in self.html:
+            self.logWarning("Captcha unfilled")
             return
 
-        self.link = re.search(self.LINK_FREE_PATTERN, self.html)
+        m = re.search(self.LINK_FREE_PATTERN, self.html)
+        if m:
+            self.link = m.group(1)
+        else:
+            self.logError("Unable to detect direct link")
