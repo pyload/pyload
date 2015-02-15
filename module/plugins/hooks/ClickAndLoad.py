@@ -2,7 +2,7 @@
 
 import socket
 
-from threading import Thread, Lock
+from threading import Lock
 
 from module.plugins.Hook import Hook, threaded
 
@@ -10,10 +10,10 @@ from module.plugins.Hook import Hook, threaded
 def forward(source, destination):
     try:
         bufsize = 1024
-        data = source.recv(bufsize)
-        while data:
-            destination.sendall(data)
-            data = source.recv(bufsize)
+        bufdata = source.recv(bufsize)
+        while bufdata:
+            destination.sendall(bufdata)
+            bufdata = source.recv(bufsize)
     finally:
         destination.shutdown(socket.SHUT_WR)
 
@@ -55,16 +55,21 @@ def create_connection(address, timeout=object(), source_address=None):
 class ClickAndLoad(Hook):
     __name__    = "ClickAndLoad"
     __type__    = "hook"
-    __version__ = "0.34"
+    __version__ = "0.35"
 
-    __config__ = [("activated", "bool", "Activated"                                     , True ),
-                  ("port"     , "int" , "Port"                                          , 9666 ),
-                  ("extern"   , "bool", "Listen for requests coming from WAN (internet)", False)]
+    __config__ = [("activated", "bool", "Activated"                             , True),
+                  ("port"     , "int" , "Port"                                  , 9666),
+                  ("extern"   , "bool", "Listen on the public network interface", True)]
 
     __description__ = """Click'N'Load hook plugin"""
     __license__     = "GPLv3"
     __authors__     = [("RaNaN", "RaNaN@pyload.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
+
+
+    #@TODO: Remove in 0.4.10
+    def initPeriodical(self):
+        pass
 
 
     def coreReady(self):
@@ -80,13 +85,13 @@ class ClickAndLoad(Hook):
 
     @threaded
     def proxy(self, ip, webport, cnlport):
-        self.manager.startThread(self.server, ip, webport, cnlport)
+        self.manager.startThread(self._server, ip, webport, cnlport)
         lock = Lock()
         lock.acquire()
         lock.acquire()
 
 
-    def server(self, ip, webport, cnlport):
+    def _server(self, ip, webport, cnlport, thread):
         try:
             server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -97,15 +102,23 @@ class ClickAndLoad(Hook):
                 client_socket = server_socket.accept()[0]
                 dock_socket   = create_connection(("127.0.0.1", webport))
 
-                self.manager.startThread(forward, client_socket, dock_socket)
                 self.manager.startThread(forward, dock_socket, client_socket)
-
-                client_socket.close()
-                dock_socket.close()
+                self.manager.startThread(forward, client_socket, dock_socket)
 
         except socket.error, e:
             self.logDebug(e)
-            self.server(ip, webport, cnlport)
+            self._server(ip, webport, cnlport, thread)
 
-        finally:
-            server_socket.close()
+        except Exception, e:
+            self.logError(e)
+
+            try:
+                client_socket.close()
+                dock_socket.close()
+            except Exception:
+                pass
+
+            try:
+                server_socket.close()
+            except Exception:
+                pass
