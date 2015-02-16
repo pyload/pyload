@@ -1,0 +1,21 @@
+# -*- coding: utf-8 -*-
+
+from pyload.plugin.internal.XFSHoster import XFSHoster
+
+
+class EasybytezCom(XFSHoster):
+    __name__    = "EasybytezCom"
+    __type__    = "hoster"
+    __version__ = "0.23"
+
+    __pattern__ = r'http://(?:www\.)?easybytez\.com/\w{12}'
+
+    __description__ = """Easybytez.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
+                       ("stickell", "l.stickell@yahoo.it")]
+
+
+    OFFLINE_PATTERN = r'>File not available'
+
+    LINK_PATTERN = r'(http://(\w+\.(easybytez|easyload|ezbytez|zingload)\.(com|to)|\d+\.\d+\.\d+\.\d+)/files/\d+/\w+/.+?)["\'<]'
