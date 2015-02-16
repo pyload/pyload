@@ -9,15 +9,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class GooIm(SimpleHoster):
-    __name    = "GooIm"
-    __type    = "hoster"
-    __version = "0.03"
+    __name__    = "GooIm"
+    __type__    = "hoster"
+    __version__ = "0.03"
 
-    __pattern = r'https?://(?:www\.)?goo\.im/.+'
+    __pattern__ = r'https?://(?:www\.)?goo\.im/.+'
 
-    __description = """Goo.im hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de")]
+    __description__ = """Goo.im hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     NAME_PATTERN = r'You will be redirected to .*(?P<N>[^/ ]+)  in'

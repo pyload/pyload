@@ -19,13 +19,13 @@ class Account(Base):
     Just overwrite `login` and cookies will be stored and account becomes accessible in\
     associated hoster plugin. Plugin should also provide `loadAccountInfo`
     """
-    __name    = "Account"
-    __type    = "account"
-    __version = "0.03"
+    __name__    = "Account"
+    __type__    = "account"
+    __version__ = "0.03"
 
-    __description = """Base account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("mkaay", "mkaay@mkaay.de")]
+    __description__ = """Base account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     #: after that time (in minutes) pyload will relogin the account
@@ -197,7 +197,7 @@ class Account(Base):
                 "maxtraffic" : None,
                 "premium"    : None,
                 "timestamp"  : 0,  #: time this info was retrieved
-                "type"       : self.__name}
+                "type"       : self.__name__}
 
 
     def getAllAccounts(self, force=False):
@@ -210,7 +210,7 @@ class Account(Base):
         if not user:
             return None
 
-        req = self.core.requestFactory.getRequest(self.__name, user)
+        req = self.core.requestFactory.getRequest(self.__name__, user)
         return req
 
 
@@ -220,7 +220,7 @@ class Account(Base):
         if not user:
             return None
 
-        cj = self.core.requestFactory.getCookieJar(self.__name, user)
+        cj = self.core.requestFactory.getCookieJar(self.__name__, user)
         return cj
 
 

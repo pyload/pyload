@@ -4,15 +4,15 @@ from pyload.plugin.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class WuploadCom(DeadCrypter):
-    __name    = "WuploadCom"
-    __type    = "crypter"
-    __version = "0.01"
+    __name__    = "WuploadCom"
+    __type__    = "crypter"
+    __version__ = "0.01"
 
-    __pattern = r'http://(?:www\.)?wupload\.com/folder/\w+'
+    __pattern__ = r'http://(?:www\.)?wupload\.com/folder/\w+'
 
-    __description = """Wupload.com folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Wupload.com folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
 getInfo = create_getInfo(WuploadCom)

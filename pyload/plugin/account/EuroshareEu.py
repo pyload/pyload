@@ -7,13 +7,13 @@ from pyload.plugin.Account import Account
 
 
 class EuroshareEu(Account):
-    __name    = "EuroshareEu"
-    __type    = "account"
-    __version = "0.01"
+    __name__    = "EuroshareEu"
+    __type__    = "account"
+    __version__ = "0.01"
 
-    __description = """Euroshare.eu account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Euroshare.eu account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def loadAccountInfo(self, user, req):

@@ -5,16 +5,16 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class PremiumTo(MultiHoster):
-    __name    = "PremiumTo"
-    __type    = "hook"
-    __version = "0.04"
+    __name__    = "PremiumTo"
+    __type__    = "hook"
+    __version__ = "0.04"
 
-    __config = [("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for downloads from supported hosters:", "all"),
                 ("hosterList", "str", "Hoster list (comma separated)", "")]
 
-    __description = """Premium.to hook plugin"""
-    __license     = "GPLv3"
-    __authors     = [("RaNaN", "RaNaN@pyload.org"),
+    __description__ = """Premium.to hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 

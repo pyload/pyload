@@ -7,17 +7,17 @@ from pyload.utils import decode, safe_filename
 
 
 class Crypter(Plugin):
-    __name    = "Crypter"
-    __type    = "crypter"
-    __version = "0.05"
+    __name__    = "Crypter"
+    __type__    = "crypter"
+    __version__ = "0.05"
 
-    __pattern = r'^unmatchable$'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
+    __pattern__ = r'^unmatchable$'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),  #: Overrides core.config['general']['folder_per_package']
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Base decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Base decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     html = None  #: last html loaded

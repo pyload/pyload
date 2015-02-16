@@ -266,7 +266,7 @@ class ThreadManager(object):
                 job.release()
                 return
 
-            if job.plugin.__type == "hoster":
+            if job.plugin.__type__ == "hoster":
                 spaceLeft = freeSpace(self.core.config["general"]["download_folder"]) / 1024 / 1024
                 if spaceLeft < self.core.config["general"]["min_free_space"]:
                     self.core.log.warning(_("Not enough space left on device"))

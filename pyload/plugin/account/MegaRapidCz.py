@@ -7,13 +7,13 @@ from pyload.plugin.Account import Account
 
 
 class MegaRapidCz(Account):
-    __name    = "MegaRapidCz"
-    __type    = "account"
-    __version = "0.34"
+    __name__    = "MegaRapidCz"
+    __type__    = "account"
+    __version__ = "0.34"
 
-    __description = """MegaRapid.cz account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("MikyWoW", "mikywow@seznam.cz"),
+    __description__ = """MegaRapid.cz account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("MikyWoW", "mikywow@seznam.cz"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 

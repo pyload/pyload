@@ -9,15 +9,15 @@ from pyload.plugin.Hoster import Hoster
 
 
 class LinksnappyCom(Hoster):
-    __name    = "LinksnappyCom"
-    __type    = "hoster"
-    __version = "0.02"
+    __name__    = "LinksnappyCom"
+    __type__    = "hoster"
+    __version__ = "0.02"
 
-    __pattern = r'https?://(?:[^/]*\.)?linksnappy\.com'
+    __pattern__ = r'https?://(?:[^/]*\.)?linksnappy\.com'
 
-    __description = """Linksnappy.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """Linksnappy.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     SINGLE_CHUNK_HOSTERS = ('easybytez.com')
@@ -29,7 +29,7 @@ class LinksnappyCom(Hoster):
 
 
     def process(self, pyfile):
-        if re.match(self.__pattern, pyfile.url):
+        if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Linksnappy.com")

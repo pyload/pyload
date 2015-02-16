@@ -4,17 +4,17 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class FilerNet(SimpleCrypter):
-    __name    = "FilerNet"
-    __type    = "crypter"
-    __version = "0.41"
+    __name__    = "FilerNet"
+    __type__    = "crypter"
+    __version__ = "0.41"
 
-    __pattern = r'https?://filer\.net/folder/\w{16}'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'https?://filer\.net/folder/\w{16}'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Filer.net decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("nath_schwarz", "nathan.notwhite@gmail.com"),
+    __description__ = """Filer.net decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("nath_schwarz", "nathan.notwhite@gmail.com"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

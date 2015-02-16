@@ -8,15 +8,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class NovafileCom(XFSHoster):
-    __name    = "NovafileCom"
-    __type    = "hoster"
-    __version = "0.05"
+    __name__    = "NovafileCom"
+    __type__    = "hoster"
+    __version__ = "0.05"
 
-    __pattern = r'http://(?:www\.)?novafile\.com/\w{12}'
+    __pattern__ = r'http://(?:www\.)?novafile\.com/\w{12}'
 
-    __description = """Novafile.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description__ = """Novafile.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it")]
 
 

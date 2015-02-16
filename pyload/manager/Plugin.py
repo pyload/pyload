@@ -20,10 +20,10 @@ class PluginManager(object):
     USERROOT = "userplugins."
     TYPES    = ["account", "addon", "container", "crypter", "hook", "hoster", "internal", "ocr"]
 
-    PATTERN = re.compile(r'__pattern\s*=\s*u?r("|\')([^"\']+)')
-    VERSION = re.compile(r'__version\s*=\s*("|\')([\d.]+)')
-    CONFIG  = re.compile(r'__config\s*=\s*\[([^\]]+)', re.M)
-    DESC    = re.compile(r'__description\s*=\s*("|"""|\')([^"\']+)')
+    PATTERN = re.compile(r'__pattern__\s*=\s*u?r("|\')([^"\']+)')
+    VERSION = re.compile(r'__version__\s*=\s*("|\')([\d.]+)')
+    CONFIG  = re.compile(r'__config__\s*=\s*\[([^\]]+)', re.M)
+    DESC    = re.compile(r'__description__\s*=\s*("|"""|\')([^"\']+)')
 
 
     def __init__(self, core):

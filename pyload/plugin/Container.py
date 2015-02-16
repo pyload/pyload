@@ -12,16 +12,16 @@ from pyload.utils import safe_join
 
 
 class Container(Crypter):
-    __name    = "Container"
-    __type    = "container"
-    __version = "0.01"
+    __name__    = "Container"
+    __type__    = "container"
+    __version__ = "0.01"
 
-    __pattern = r'^unmatchable$'
-    __config  = []  #: [("name", "type", "desc", "default")]
+    __pattern__ = r'^unmatchable$'
+    __config__  = []  #: [("name", "type", "desc", "default")]
 
-    __description = """Base container decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("mkaay", "mkaay@mkaay.de")]
+    __description__ = """Base container decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
     def preprocessing(self, thread):

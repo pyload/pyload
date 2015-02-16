@@ -5,16 +5,16 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class ZeveraCom(MultiHoster):
-    __name    = "ZeveraCom"
-    __type    = "hook"
-    __version = "0.02"
+    __name__    = "ZeveraCom"
+    __type__    = "hook"
+    __version__ = "0.02"
 
-    __config = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                 ("hosterList", "str", "Hoster list (comma separated)", "")]
 
-    __description = """Real-Debrid.com hook plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Real-Debrid.com hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     def getHoster(self):

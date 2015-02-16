@@ -8,15 +8,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class WrzucTo(SimpleHoster):
-    __name    = "WrzucTo"
-    __type    = "hoster"
-    __version = "0.02"
+    __name__    = "WrzucTo"
+    __type__    = "hoster"
+    __version__ = "0.02"
 
-    __pattern = r'http://(?:www\.)?wrzuc\.to/(\w+(\.wt|\.html)|(\w+/?linki/\w+))'
+    __pattern__ = r'http://(?:www\.)?wrzuc\.to/(\w+(\.wt|\.html)|(\w+/?linki/\w+))'
 
-    __description = """Wrzuc.to hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Wrzuc.to hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'id="file_info">\s*<strong>(?P<N>.*?)</strong>'

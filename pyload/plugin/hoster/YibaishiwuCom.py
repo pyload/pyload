@@ -7,15 +7,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class YibaishiwuCom(SimpleHoster):
-    __name    = "YibaishiwuCom"
-    __type    = "hoster"
-    __version = "0.13"
+    __name__    = "YibaishiwuCom"
+    __type__    = "hoster"
+    __version__ = "0.13"
 
-    __pattern = r'http://(?:www\.)?(?:u\.)?115\.com/file/(?P<ID>\w+)'
+    __pattern__ = r'http://(?:www\.)?(?:u\.)?115\.com/file/(?P<ID>\w+)'
 
-    __description = """115.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """115.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'file_name: \'(?P<N>.+?)\''

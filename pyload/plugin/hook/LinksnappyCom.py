@@ -6,18 +6,18 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class LinksnappyCom(MultiHoster):
-    __name    = "LinksnappyCom"
-    __type    = "hook"
-    __version = "0.01"
+    __name__    = "LinksnappyCom"
+    __type__    = "hook"
+    __version__ = "0.01"
 
-    __config = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                 ("hosterList", "str", "Hoster list (comma separated)", ""),
                 ("unloadFailing", "bool", "Revert to standard download if download fails", False),
                 ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description = """Linksnappy.com hook plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """Linksnappy.com hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def getHoster(self):

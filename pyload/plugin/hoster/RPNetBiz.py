@@ -7,15 +7,15 @@ from pyload.utils import json_loads
 
 
 class RPNetBiz(Hoster):
-    __name    = "RPNetBiz"
-    __type    = "hoster"
-    __version = "0.10"
+    __name__    = "RPNetBiz"
+    __type__    = "hoster"
+    __version__ = "0.10"
 
-    __description = """RPNet.biz hoster plugin"""
-    __license     = "GPLv3"
+    __description__ = """RPNet.biz hoster plugin"""
+    __license__     = "GPLv3"
 
-    __pattern = r'https?://.*rpnet\.biz'
-    __authors     = [("Dman", "dmanugm@gmail.com")]
+    __pattern__ = r'https?://.*rpnet\.biz'
+    __authors__     = [("Dman", "dmanugm@gmail.com")]
 
 
     def setup(self):
@@ -24,7 +24,7 @@ class RPNetBiz(Hoster):
 
 
     def process(self, pyfile):
-        if re.match(self.__pattern, pyfile.url):
+        if re.match(self.__pattern__, pyfile.url):
             link_status = {'generated': pyfile.url}
         elif not self.account:
             # Check account

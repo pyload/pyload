@@ -6,17 +6,17 @@ from pyload.plugin.Crypter import Crypter
 
 
 class FileserveCom(Crypter):
-    __name    = "FileserveCom"
-    __type    = "crypter"
-    __version = "0.11"
+    __name__    = "FileserveCom"
+    __type__    = "crypter"
+    __version__ = "0.11"
 
-    __pattern = r'http://(?:www\.)?fileserve\.com/list/\w+'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'http://(?:www\.)?fileserve\.com/list/\w+'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """FileServe.com folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("fionnc", "fionnc@gmail.com")]
+    __description__ = """FileServe.com folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("fionnc", "fionnc@gmail.com")]
 
 
     FOLDER_PATTERN = r'<table class="file_list">(.*?)</table>'

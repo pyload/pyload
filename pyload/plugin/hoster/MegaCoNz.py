@@ -44,15 +44,15 @@ from pyload.plugin.Hoster import Hoster
 
 
 class MegaCoNz(Hoster):
-    __name    = "MegaCoNz"
-    __type    = "hoster"
-    __version = "0.16"
+    __name__    = "MegaCoNz"
+    __type__    = "hoster"
+    __version__ = "0.16"
 
-    __pattern = r'https?://(\w+\.)?mega\.co\.nz/#!([\w!-]+)'
+    __pattern__ = r'https?://(\w+\.)?mega\.co\.nz/#!([\w!-]+)'
 
-    __description = """Mega.co.nz hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("RaNaN", "ranan@pyload.org")]
+    __description__ = """Mega.co.nz hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "ranan@pyload.org")]
 
     API_URL     = "https://g.api.mega.co.nz/cs"
     FILE_SUFFIX = ".crypted"
@@ -133,7 +133,7 @@ class MegaCoNz(Hoster):
         key = None
 
         # match is guaranteed because plugin was chosen to handle url
-        node = re.match(self.__pattern, pyfile.url).group(2)
+        node = re.match(self.__pattern__, pyfile.url).group(2)
         if "!" in node:
             node, key = node.split("!")
 

@@ -5,18 +5,18 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class FreeWayMe(MultiHoster):
-    __name    = "FreeWayMe"
-    __type    = "hook"
-    __version = "0.11"
+    __name__    = "FreeWayMe"
+    __type__    = "hook"
+    __version__ = "0.11"
 
-    __config = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported):", "all"),
                 ("hosterList", "str", "Hoster list (comma separated)", ""),
                 ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                 ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description = """FreeWay.me hook plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Nicolas Giese", "james@free-way.me")]
+    __description__ = """FreeWay.me hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Nicolas Giese", "james@free-way.me")]
 
 
     def getHoster(self):

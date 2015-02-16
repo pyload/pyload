@@ -4,15 +4,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class SafesharingEu(XFSHoster):
-    __name    = "SafesharingEu"
-    __type    = "hoster"
-    __version = "0.05"
+    __name__    = "SafesharingEu"
+    __type__    = "hoster"
+    __version__ = "0.05"
 
-    __pattern = r'https?://(?:www\.)?safesharing\.eu/\w{12}'
+    __pattern__ = r'https?://(?:www\.)?safesharing\.eu/\w{12}'
 
-    __description = """Safesharing.eu hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de")]
+    __description__ = """Safesharing.eu hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     HOSTER_DOMAIN = "safesharing.eu"

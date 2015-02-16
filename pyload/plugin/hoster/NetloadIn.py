@@ -15,7 +15,7 @@ def getInfo(urls):
     ##  returns list of tupels (name, size (in bytes), status (see database.File), url)
 
     apiurl = "http://api.netload.in/info.php"
-    id_regex = re.compile(NetloadIn.__pattern)
+    id_regex = re.compile(NetloadIn.__pattern__)
     urls_per_query = 80
 
     for chunk in chunks(urls, urls_per_query):
@@ -60,15 +60,15 @@ def getInfo(urls):
 
 
 class NetloadIn(Hoster):
-    __name    = "NetloadIn"
-    __type    = "hoster"
-    __version = "0.47"
+    __name__    = "NetloadIn"
+    __type__    = "hoster"
+    __version__ = "0.47"
 
-    __pattern = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index\.php?id=10&file_id=)'
+    __pattern__ = r'https?://(?:[^/]*\.)?netload\.in/(?:datei(.*?)(?:\.htm|/)|index\.php?id=10&file_id=)'
 
-    __description = """Netload.in hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("spoob", "spoob@pyload.org"),
+    __description__ = """Netload.in hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
                        ("RaNaN", "ranan@pyload.org"),
                        ("Gregy", "gregy@gregy.cz")]
 
@@ -113,7 +113,7 @@ class NetloadIn(Hoster):
 
     def download_api_data(self, n=0):
         url      = self.url
-        id_regex = re.compile(self.__pattern)
+        id_regex = re.compile(self.__pattern__)
         match    = id_regex.search(url)
 
         if match:

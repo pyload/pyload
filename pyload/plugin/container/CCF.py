@@ -15,14 +15,14 @@ from pyload.utils import safe_join
 
 
 class CCF(Container):
-    __name    = "CCF"
-    __version = "0.20"
+    __name__    = "CCF"
+    __version__ = "0.20"
 
-    __pattern = r'.+\.ccf'
+    __pattern__ = r'.+\.ccf'
 
-    __description = """CCF container decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Willnix", "Willnix@pyload.org")]
+    __description__ = """CCF container decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Willnix", "Willnix@pyload.org")]
 
 
     def decrypt(self, pyfile):

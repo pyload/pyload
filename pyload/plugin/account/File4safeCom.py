@@ -4,13 +4,13 @@ from pyload.plugin.internal.XFSAccount import XFSAccount
 
 
 class File4safeCom(XFSAccount):
-    __name    = "File4safeCom"
-    __type    = "account"
-    __version = "0.04"
+    __name__    = "File4safeCom"
+    __type__    = "account"
+    __version__ = "0.04"
 
-    __description = """File4safe.com account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """File4safe.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_DOMAIN = "file4safe.com"

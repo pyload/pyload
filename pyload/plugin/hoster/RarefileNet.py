@@ -6,15 +6,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class RarefileNet(XFSHoster):
-    __name    = "RarefileNet"
-    __type    = "hoster"
-    __version = "0.08"
+    __name__    = "RarefileNet"
+    __type__    = "hoster"
+    __version__ = "0.08"
 
-    __pattern = r'http://(?:www\.)?rarefile\.net/\w{12}'
+    __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'
 
-    __description = """Rarefile.net hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Rarefile.net hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_DOMAIN = "rarefile.net"

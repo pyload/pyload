@@ -6,15 +6,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class IfolderRu(SimpleHoster):
-    __name    = "IfolderRu"
-    __type    = "hoster"
-    __version = "0.38"
+    __name__    = "IfolderRu"
+    __type__    = "hoster"
+    __version__ = "0.38"
 
-    __pattern = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*'
+    __pattern__ = r'http://(?:www\.)?(?:ifolder\.ru|rusfolder\.(?:com|net|ru))/(?:files/)?(?P<ID>\d+).*'
 
-    __description = """Ifolder.ru hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Ifolder.ru hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     SIZE_REPLACEMENTS = [(u'Кб', 'KB'), (u'Мб', 'MB'), (u'Гб', 'GB')]
@@ -35,7 +35,7 @@ class IfolderRu(SimpleHoster):
 
 
     def process(self, pyfile):
-        file_id = re.match(self.__pattern, pyfile.url).group('ID')
+        file_id = re.match(self.__pattern__, pyfile.url).group('ID')
         self.html = self.load("http://rusfolder.com/%s" % file_id, cookies=True, decode=True)
         self.getFileInfo()
 

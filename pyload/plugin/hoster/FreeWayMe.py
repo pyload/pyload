@@ -4,15 +4,15 @@ from pyload.plugin.Hoster import Hoster
 
 
 class FreeWayMe(Hoster):
-    __name    = "FreeWayMe"
-    __type    = "hoster"
-    __version = "0.11"
+    __name__    = "FreeWayMe"
+    __type__    = "hoster"
+    __version__ = "0.11"
 
-    __pattern = r'https://(?:www\.)?free-way\.me/.*'
+    __pattern__ = r'https://(?:www\.)?free-way\.me/.*'
 
-    __description = """FreeWayMe hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Nicolas Giese", "james@free-way.me")]
+    __description__ = """FreeWayMe hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Nicolas Giese", "james@free-way.me")]
 
 
     def setup(self):

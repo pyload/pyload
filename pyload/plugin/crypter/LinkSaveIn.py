@@ -14,17 +14,17 @@ from pyload.utils import html_unescape
 
 
 class LinkSaveIn(SimpleCrypter):
-    __name    = "LinkSaveIn"
-    __type    = "crypter"
-    __version = "2.02"
+    __name__    = "LinkSaveIn"
+    __type__    = "crypter"
+    __version__ = "2.02"
 
-    __pattern = r'http://(?:www\.)?linksave\.in/(?P<id>\w+)$'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'http://(?:www\.)?linksave\.in/(?P<id>\w+)$'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """LinkSave.in decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
+    __description__ = """LinkSave.in decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
     COOKIES = [("linksave.in", "Linksave_Language", "english")]
@@ -44,7 +44,7 @@ class LinkSaveIn(SimpleCrypter):
     def decrypt(self, pyfile):
         # Init
         self.package = pyfile.package()
-        self.fileid = re.match(self.__pattern, pyfile.url).group('id')
+        self.fileid = re.match(self.__pattern__, pyfile.url).group('id')
 
         # Request package
         self.html = self.load(pyfile.url)

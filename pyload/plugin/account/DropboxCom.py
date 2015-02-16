@@ -6,15 +6,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class DropboxCom(SimpleHoster):
-    __name    = "DropboxCom"
-    __type    = "hoster"
-    __version = "0.03"
+    __name__    = "DropboxCom"
+    __type__    = "hoster"
+    __version__ = "0.03"
 
-    __pattern = r'https?://(?:www\.)?dropbox\.com/.+'
+    __pattern__ = r'https?://(?:www\.)?dropbox\.com/.+'
 
-    __description = """Dropbox.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de")]
+    __description__ = """Dropbox.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
 
     NAME_PATTERN = r'<title>Dropbox - (?P<N>.+?)<'

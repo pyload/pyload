@@ -4,13 +4,13 @@ from pyload.plugin.Account import Account
 
 
 class ShareonlineBiz(Account):
-    __name    = "ShareonlineBiz"
-    __type    = "account"
-    __version = "0.24"
+    __name__    = "ShareonlineBiz"
+    __type__    = "account"
+    __version__ = "0.24"
 
-    __description = """Share-online.biz account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("mkaay", "mkaay@mkaay.de"),
+    __description__ = """Share-online.biz account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 

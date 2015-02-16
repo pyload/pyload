@@ -4,15 +4,15 @@ from pyload.plugin.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class WuploadCom(DeadHoster):
-    __name    = "WuploadCom"
-    __type    = "hoster"
-    __version = "0.23"
+    __name__    = "WuploadCom"
+    __type__    = "hoster"
+    __version__ = "0.23"
 
-    __pattern = r'http://(?:www\.)?wupload\..*?/file/((\w+/)?\d+)(/.*)?'
+    __pattern__ = r'http://(?:www\.)?wupload\..*?/file/((\w+/)?\d+)(/.*)?'
 
-    __description = """Wupload.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("jeix", "jeix@hasnomail.de"),
+    __description__ = """Wupload.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de"),
                        ("Paul King", "")]
 
 

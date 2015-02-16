@@ -14,13 +14,13 @@ from os.path import abspath, join
 
 
 class OCR(object):
-    __name    = "OCR"
-    __type    = "ocr"
-    __version = "0.10"
+    __name__    = "OCR"
+    __type__    = "ocr"
+    __version__ = "0.10"
 
-    __description = """Base OCR plugin"""
-    __license     = "GPLv3"
-    __authors     = [("pyLoad Team", "admin@pyload.org")]
+    __description__ = """Base OCR plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     def __init__(self):
@@ -56,11 +56,11 @@ class OCR(object):
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         #tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
-            tmpTif = open(join("tmp", "tmpTif_%s.tif" % self.__name), "wb")
+            tmpTif = open(join("tmp", "tmpTif_%s.tif" % self.__name__), "wb")
             tmpTif.close()
 
             #tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-            tmpTxt = open(join("tmp", "tmpTxt_%s.txt" % self.__name), "wb")
+            tmpTxt = open(join("tmp", "tmpTxt_%s.txt" % self.__name__), "wb")
             tmpTxt.close()
 
         except IOError, e:
@@ -79,7 +79,7 @@ class OCR(object):
 
         if subset and (digits or lowercase or uppercase):
             #tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with open(join("tmp", "tmpSub_%s.subset" % self.__name), "wb") as tmpSub:
+            with open(join("tmp", "tmpSub_%s.subset" % self.__name__), "wb") as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
                 if digits:

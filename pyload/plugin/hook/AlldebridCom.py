@@ -5,19 +5,19 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class AlldebridCom(MultiHoster):
-    __name    = "AlldebridCom"
-    __type    = "hook"
-    __version = "0.13"
+    __name__    = "AlldebridCom"
+    __type__    = "hook"
+    __version__ = "0.13"
 
-    __config = [("https", "bool", "Enable HTTPS", False),
+    __config__ = [("https", "bool", "Enable HTTPS", False),
                 ("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                 ("hosterList", "str", "Hoster list (comma separated)", ""),
                 ("unloadFailing", "bool", "Revert to stanard download if download fails", False),
                 ("interval", "int", "Reload interval in hours (0 to disable)", 24)]
 
-    __description = """Alldebrid.com hook plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Andy Voigt", "spamsales@online.de")]
+    __description__ = """Alldebrid.com hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Andy Voigt", "spamsales@online.de")]
 
 
     def getHoster(self):

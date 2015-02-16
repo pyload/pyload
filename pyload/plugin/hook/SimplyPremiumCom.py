@@ -6,18 +6,18 @@ from pyload.plugin.internal.MultiHoster import MultiHoster
 
 
 class SimplyPremiumCom(MultiHoster):
-    __name    = "SimplyPremiumCom"
-    __type    = "hook"
-    __version = "0.02"
+    __name__    = "SimplyPremiumCom"
+    __type__    = "hook"
+    __version__ = "0.02"
 
-    __config = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
+    __config__ = [("hosterListMode", "all;listed;unlisted", "Use for hosters (if supported)", "all"),
                 ("hosterList", "str", "Hoster list (comma separated)", ""),
                 ("unloadFailing", "bool", "Revert to standard download if download fails", "False"),
                 ("interval", "int", "Reload interval in hours (0 to disable)", "24")]
 
-    __description = """Simply-Premium.com hook plugin"""
-    __license     = "GPLv3"
-    __authors     = [("EvolutionClip", "evolutionclip@live.de")]
+    __description__ = """Simply-Premium.com hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def getHoster(self):

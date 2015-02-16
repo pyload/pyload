@@ -12,16 +12,16 @@ from pyload.plugin.Addon import Addon
 
 
 class ExpertDecoders(Addon):
-    __name    = "ExpertDecoders"
-    __type    = "hook"
-    __version = "0.02"
+    __name__    = "ExpertDecoders"
+    __type__    = "hook"
+    __version__ = "0.02"
 
-    __config = [("force", "bool", "Force CT even if client is connected", False),
+    __config__ = [("force", "bool", "Force CT even if client is connected", False),
                 ("passkey", "password", "Access key", "")]
 
-    __description = """Send captchas to expertdecoders.com"""
-    __license     = "GPLv3"
-    __authors     = [("RaNaN", "RaNaN@pyload.org"),
+    __description__ = """Send captchas to expertdecoders.com"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 

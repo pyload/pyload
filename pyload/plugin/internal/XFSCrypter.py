@@ -4,15 +4,15 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class XFSCrypter(SimpleCrypter):
-    __name    = "XFSCrypter"
-    __type    = "crypter"
-    __version = "0.04"
+    __name__    = "XFSCrypter"
+    __type__    = "crypter"
+    __version__ = "0.04"
 
-    __pattern = r'^unmatchable$'
+    __pattern__ = r'^unmatchable$'
 
-    __description = """XFileSharing decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """XFileSharing decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_DOMAIN = None

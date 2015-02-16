@@ -6,15 +6,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class HellshareCz(SimpleHoster):
-    __name    = "HellshareCz"
-    __type    = "hoster"
-    __version = "0.83"
+    __name__    = "HellshareCz"
+    __type__    = "hoster"
+    __version__ = "0.83"
 
-    __pattern = r'(http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*'
+    __pattern__ = r'(http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+).*'
 
-    __description = """Hellshare.cz hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Hellshare.cz hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'<h1 id="filename"[^>]*>(?P<N>[^<]+)</h1>'
@@ -31,7 +31,7 @@ class HellshareCz(SimpleHoster):
     def process(self, pyfile):
         if not self.account:
             self.fail(_("User not logged in"))
-        pyfile.url = re.match(self.__pattern, pyfile.url).group(1)
+        pyfile.url = re.match(self.__pattern__, pyfile.url).group(1)
         self.html = self.load(pyfile.url, decode=True)
         self.getFileInfo()
         if not self.checkTrafficLeft():

@@ -4,15 +4,15 @@ from pyload.plugin.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class StorageTo(DeadHoster):
-    __name    = "StorageTo"
-    __type    = "hoster"
-    __version = "0.01"
+    __name__    = "StorageTo"
+    __type__    = "hoster"
+    __version__ = "0.01"
 
-    __pattern = r'http://(?:www\.)?storage\.to/get/.+'
+    __pattern__ = r'http://(?:www\.)?storage\.to/get/.+'
 
-    __description = """Storage.to hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("mkaay", "mkaay@mkaay.de")]
+    __description__ = """Storage.to hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]
 
 
 getInfo = create_getInfo(StorageTo)

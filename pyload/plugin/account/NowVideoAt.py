@@ -8,13 +8,13 @@ from pyload.plugin.Account import Account
 
 
 class NowVideoAt(Account):
-    __name    = "NowVideoAt"
-    __type    = "account"
-    __version = "0.01"
+    __name__    = "NowVideoAt"
+    __type__    = "account"
+    __version__ = "0.01"
 
-    __description = """NowVideo.at account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """NowVideo.at account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     VALID_UNTIL_PATTERN = r'>Your premium membership expires on: (.+?)<'

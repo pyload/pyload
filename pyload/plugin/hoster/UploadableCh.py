@@ -9,15 +9,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UploadableCh(SimpleHoster):
-    __name    = "UploadableCh"
-    __type    = "hoster"
-    __version = "0.02"
+    __name__    = "UploadableCh"
+    __type__    = "hoster"
+    __version__ = "0.02"
 
-    __pattern = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
+    __pattern__ = r'http://(?:www\.)?uploadable\.ch/file/(?P<ID>\w+)'
 
-    __description = """Uploadable.ch hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+    __description__ = """Uploadable.ch hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -28,7 +28,7 @@ class UploadableCh(SimpleHoster):
 
     WAIT_PATTERN = r'data-time="(\d+)" data-format'
 
-    FILE_URL_REPLACEMENTS = [(__pattern + ".*", r'http://www.uploadable.ch/file/\g<ID>')]
+    FILE_URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://www.uploadable.ch/file/\g<ID>')]
 
 
     def setup(self):

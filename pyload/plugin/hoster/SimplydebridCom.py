@@ -6,15 +6,15 @@ from pyload.plugin.Hoster import Hoster
 
 
 class SimplydebridCom(Hoster):
-    __name    = "SimplydebridCom"
-    __type    = "hoster"
-    __version = "0.10"
+    __name__    = "SimplydebridCom"
+    __type__    = "hoster"
+    __version__ = "0.10"
 
-    __pattern = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php/*'
+    __pattern__ = r'http://(?:www\.)?\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/sd\.php/*'
 
-    __description = """Simply-debrid.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Kagenoshin", "kagenoshin@gmx.ch")]
+    __description__ = """Simply-debrid.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
 
     def setup(self):
@@ -41,12 +41,12 @@ class SimplydebridCom(Hoster):
         if('fileparadox' in new_url):
             new_url = new_url.replace("http://", "https://")
 
-        if re.match(self.__pattern, new_url):
+        if re.match(self.__pattern__, new_url):
             new_url = new_url
 
         self.logDebug("New URL: %s" % new_url)
 
-        if not re.match(self.__pattern, new_url):
+        if not re.match(self.__pattern__, new_url):
             page = self.load("http://simply-debrid.com/api.php", get={'dl': new_url})  # +'&u='+self.user+'&p='+self.account.getAccountData(self.user)['password'])
             if 'tiger Link' in page or 'Invalid Link' in page or ('API' in page and 'ERROR' in page):
                 self.fail(_("Unable to unrestrict link"))

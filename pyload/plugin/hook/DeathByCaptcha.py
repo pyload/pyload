@@ -49,17 +49,17 @@ class DeathByCaptchaException(Exception):
 
 
 class DeathByCaptcha(Addon):
-    __name    = "DeathByCaptcha"
-    __type    = "hook"
-    __version = "0.04"
+    __name__    = "DeathByCaptcha"
+    __type__    = "hook"
+    __version__ = "0.04"
 
-    __config = [("username", "str", "Username", ""),
+    __config__ = [("username", "str", "Username", ""),
                 ("passkey", "password", "Password", ""),
                 ("force", "bool", "Force DBC even if client is connected", False)]
 
-    __description = """Send captchas to DeathByCaptcha.com"""
-    __license     = "GPLv3"
-    __authors     = [("RaNaN", "RaNaN@pyload.org"),
+    __description__ = """Send captchas to DeathByCaptcha.com"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 
@@ -183,13 +183,13 @@ class DeathByCaptcha(Addon):
 
         if balance > rate:
             task.handler.append(self)
-            task.data['service'] = self.__name
+            task.data['service'] = self.__name__
             task.setWaiting(180)
             self.processCaptcha(task)
 
 
     def captchaInvalid(self, task):
-        if task.data['service'] == self.__name and "ticket" in task.data:
+        if task.data['service'] == self.__name__ and "ticket" in task.data:
             try:
                 res = self.call_api("captcha/%d/report" % task.data['ticket'], True)
 

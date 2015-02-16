@@ -4,15 +4,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class BillionuploadsCom(XFSHoster):
-    __name    = "BillionuploadsCom"
-    __type    = "hoster"
-    __version = "0.04"
+    __name__    = "BillionuploadsCom"
+    __type__    = "hoster"
+    __version__ = "0.04"
 
-    __pattern = r'http://(?:www\.)?billionuploads\.com/\w{12}'
+    __pattern__ = r'http://(?:www\.)?billionuploads\.com/\w{12}'
 
-    __description = """Billionuploads.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Billionuploads.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     HOSTER_DOMAIN = "billionuploads.com"

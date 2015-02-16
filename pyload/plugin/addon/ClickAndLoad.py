@@ -18,17 +18,17 @@ def forward(source, destination):
 
 
 class ClickAndLoad(Addon):
-    __name    = "ClickAndLoad"
-    __type    = "addon"
-    __version = "0.23"
+    __name__    = "ClickAndLoad"
+    __type__    = "addon"
+    __version__ = "0.23"
 
-    __config = [("activated", "bool", "Activated"                 , True ),
+    __config__ = [("activated", "bool", "Activated"                 , True ),
                 ("port"     , "int" , "Port"                      , 9666 ),
                 ("extern"   , "bool", "Allow external link adding", False)]
 
-    __description = """Click'N'Load hook plugin"""
-    __license     = "GPLv3"
-    __authors     = [("RaNaN", "RaNaN@pyload.de"),
+    __description__ = """Click'N'Load hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.de"),
                        ("mkaay", "mkaay@mkaay.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 

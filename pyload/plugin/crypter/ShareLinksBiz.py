@@ -9,17 +9,17 @@ from pyload.plugin.Crypter import Crypter
 
 
 class ShareLinksBiz(Crypter):
-    __name    = "ShareLinksBiz"
-    __type    = "crypter"
-    __version = "1.14"
+    __name__    = "ShareLinksBiz"
+    __type__    = "crypter"
+    __version__ = "1.14"
 
-    __pattern = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Share-Links.biz decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
+    __description__ = """Share-Links.biz decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es")]
 
 
     def setup(self):
@@ -68,8 +68,8 @@ class ShareLinksBiz(Crypter):
         url = pyfile.url
         if 's2l.biz' in url:
             url = self.load(url, just_header=True)['location']
-        self.baseUrl = "http://www.%s.biz" % re.match(self.__pattern, url).group(1)
-        self.fileId = re.match(self.__pattern, url).group('ID')
+        self.baseUrl = "http://www.%s.biz" % re.match(self.__pattern__, url).group(1)
+        self.fileId = re.match(self.__pattern__, url).group('ID')
         self.package = pyfile.package()
 
 

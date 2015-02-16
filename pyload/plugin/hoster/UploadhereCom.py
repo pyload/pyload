@@ -4,15 +4,15 @@ from pyload.plugin.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class UploadhereCom(DeadHoster):
-    __name    = "UploadhereCom"
-    __type    = "hoster"
-    __version = "0.12"
+    __name__    = "UploadhereCom"
+    __type__    = "hoster"
+    __version__ = "0.12"
 
-    __pattern = r'http://(?:www\.)?uploadhere\.com/\w{10}'
+    __pattern__ = r'http://(?:www\.)?uploadhere\.com/\w{10}'
 
-    __description = """Uploadhere.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Uploadhere.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
 getInfo = create_getInfo(UploadhereCom)

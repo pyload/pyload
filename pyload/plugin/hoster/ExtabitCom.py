@@ -10,15 +10,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class ExtabitCom(SimpleHoster):
-    __name    = "ExtabitCom"
-    __type    = "hoster"
-    __version = "0.62"
+    __name__    = "ExtabitCom"
+    __type__    = "hoster"
+    __version__ = "0.62"
 
-    __pattern = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
+    __pattern__ = r'http://(?:www\.)?extabit\.com/(file|go|fid)/(?P<ID>\w+)'
 
-    __description = """Extabit.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Extabit.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'<th>File:</th>\s*<td class="col-fileinfo">\s*<div title="(?P<N>[^"]+)">'
@@ -41,7 +41,7 @@ class ExtabitCom(SimpleHoster):
             self.wait(secondsToMidnight(gmt=2), True)
 
         self.logDebug("URL: " + self.req.http.lastEffectiveURL)
-        m = re.match(self.__pattern, self.req.http.lastEffectiveURL)
+        m = re.match(self.__pattern__, self.req.http.lastEffectiveURL)
         fileID = m.group('ID') if m else self.info('ID')
 
         m = re.search(r'recaptcha/api/challenge\?k=(\w+)', self.html)

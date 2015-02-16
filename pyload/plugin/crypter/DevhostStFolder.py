@@ -11,17 +11,17 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class DevhostStFolder(SimpleCrypter):
-    __name    = "DevhostStFolder"
-    __type    = "crypter"
-    __version = "0.03"
+    __name__    = "DevhostStFolder"
+    __type__    = "crypter"
+    __version__ = "0.03"
 
-    __pattern = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """d-h.st folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zapp-brannigan", "fuerst.reinje@web.de"),
+    __description__ = """d-h.st folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 
@@ -34,7 +34,7 @@ class DevhostStFolder(SimpleCrypter):
             self.offline()
 
         try:
-            id = re.match(self.__pattern, self.pyfile.url).group('ID')
+            id = re.match(self.__pattern__, self.pyfile.url).group('ID')
             if id == "0":
                 raise
 
@@ -49,7 +49,7 @@ class DevhostStFolder(SimpleCrypter):
 
         except Exception, e:
             self.logDebug(e)
-            name = folder = re.match(self.__pattern, self.pyfile.url).group('USER')
+            name = folder = re.match(self.__pattern__, self.pyfile.url).group('USER')
 
         return {'name': name, 'folder': folder}
 

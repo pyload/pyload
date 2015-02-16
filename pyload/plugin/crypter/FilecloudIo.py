@@ -4,17 +4,17 @@ from pyload.plugin.internal.SimpleCrypter import SimpleCrypter
 
 
 class FilecloudIo(SimpleCrypter):
-    __name    = "FilecloudIo"
-    __type    = "crypter"
-    __version = "0.03"
+    __name__    = "FilecloudIo"
+    __type__    = "crypter"
+    __version__ = "0.03"
 
-    __pattern = r'https?://(?:www\.)?(filecloud\.io|ifile\.it)/_\w+'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'https?://(?:www\.)?(filecloud\.io|ifile\.it)/_\w+'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """Filecloud.io folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Filecloud.io folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     LINK_PATTERN = r'href="(http://filecloud\.io/\w+)" title'

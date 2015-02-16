@@ -9,13 +9,13 @@ def getInfo(self):
 
 
 class Hoster(Plugin):
-    __name    = "Hoster"
-    __type    = "hoster"
-    __version = "0.02"
+    __name__    = "Hoster"
+    __type__    = "hoster"
+    __version__ = "0.02"
 
-    __pattern = r'^unmatchable$'
-    __config  = []  #: [("name", "type", "desc", "default")]
+    __pattern__ = r'^unmatchable$'
+    __config__  = []  #: [("name", "type", "desc", "default")]
 
-    __description = """Base hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("mkaay", "mkaay@mkaay.de")]
+    __description__ = """Base hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de")]

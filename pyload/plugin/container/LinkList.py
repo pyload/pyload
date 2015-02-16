@@ -7,16 +7,16 @@ from pyload.utils import fs_encode
 
 
 class LinkList(Container):
-    __name    = "LinkList"
-    __version = "0.12"
+    __name__    = "LinkList"
+    __version__ = "0.12"
 
-    __pattern = r'.+\.txt'
-    __config = [("clear", "bool", "Clear Linklist after adding", False),
+    __pattern__ = r'.+\.txt'
+    __config__ = [("clear", "bool", "Clear Linklist after adding", False),
                 ("encoding", "string", "File encoding (default utf-8)", "")]
 
-    __description = """Read link lists in txt format"""
-    __license     = "GPLv3"
-    __authors     = [("spoob", "spoob@pyload.org"),
+    __description__ = """Read link lists in txt format"""
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org"),
                        ("jeix", "jeix@hasnomail.com")]
 
 

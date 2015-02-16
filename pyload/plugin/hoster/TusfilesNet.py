@@ -4,15 +4,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class TusfilesNet(XFSHoster):
-    __name    = "TusfilesNet"
-    __type    = "hoster"
-    __version = "0.07"
+    __name__    = "TusfilesNet"
+    __type__    = "hoster"
+    __version__ = "0.07"
 
-    __pattern = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
+    __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'
 
-    __description = """Tusfiles.net hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com"),
+    __description__ = """Tusfiles.net hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
                        ("guidobelix", "guidobelix@hotmail.it")]
 
 

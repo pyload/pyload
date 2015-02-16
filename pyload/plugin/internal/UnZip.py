@@ -7,12 +7,12 @@ from pyload.plugin.internal.AbstractExtractor import AbtractExtractor
 
 
 class UnZip(AbtractExtractor):
-    __name    = "UnZip"
-    __version = "0.10"
+    __name__    = "UnZip"
+    __version__ = "0.10"
 
-    __description = """Zip extractor plugin"""
-    __license     = "GPLv3"
-    __authors     = [("RaNaN", "RaNaN@pyload.org")]
+    __description__ = """Zip extractor plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
 
 
     @staticmethod

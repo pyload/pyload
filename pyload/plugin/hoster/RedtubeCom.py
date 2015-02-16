@@ -7,15 +7,15 @@ from pyload.utils import html_unescape
 
 
 class RedtubeCom(Hoster):
-    __name    = "RedtubeCom"
-    __type    = "hoster"
-    __version = "0.20"
+    __name__    = "RedtubeCom"
+    __type__    = "hoster"
+    __version__ = "0.20"
 
-    __pattern = r'http://(?:www\.)?redtube\.com/\d+'
+    __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'
 
-    __description = """Redtube.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("jeix", "jeix@hasnomail.de")]
+    __description__ = """Redtube.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de")]
 
 
     def process(self, pyfile):

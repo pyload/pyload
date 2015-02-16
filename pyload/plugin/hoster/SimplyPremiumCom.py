@@ -9,15 +9,15 @@ from pyload.plugin.hoster.UnrestrictLi import secondsToMidnight
 
 
 class SimplyPremiumCom(Hoster):
-    __name    = "SimplyPremiumCom"
-    __type    = "hoster"
-    __version = "0.03"
+    __name__    = "SimplyPremiumCom"
+    __type__    = "hoster"
+    __version__ = "0.03"
 
-    __pattern = r'https?://.*(simply-premium)\.com'
+    __pattern__ = r'https?://.*(simply-premium)\.com'
 
-    __description = """Simply-Premium.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("EvolutionClip", "evolutionclip@live.de")]
+    __description__ = """Simply-Premium.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
 
 
     def setup(self):
@@ -26,7 +26,7 @@ class SimplyPremiumCom(Hoster):
 
 
     def process(self, pyfile):
-        if re.match(self.__pattern, pyfile.url):
+        if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.logError(_("Please enter your %s account or deactivate this plugin") % "Simply-Premium.com")

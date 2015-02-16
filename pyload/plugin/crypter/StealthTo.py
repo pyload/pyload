@@ -4,16 +4,16 @@ from pyload.plugin.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class StealthTo(DeadCrypter):
-    __name    = "StealthTo"
-    __type    = "crypter"
-    __version = "0.20"
+    __name__    = "StealthTo"
+    __type__    = "crypter"
+    __version__ = "0.20"
 
-    __pattern = r'http://(?:www\.)?stealth\.to/folder/.+'
-    __config  = []
+    __pattern__ = r'http://(?:www\.)?stealth\.to/folder/.+'
+    __config__  = []
 
-    __description = """Stealth.to decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("spoob", "spoob@pyload.org")]
+    __description__ = """Stealth.to decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("spoob", "spoob@pyload.org")]
 
 
 getInfo = create_getInfo(StealthTo)

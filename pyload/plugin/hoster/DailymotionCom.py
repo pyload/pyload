@@ -10,7 +10,7 @@ from pyload.plugin.Hoster import Hoster
 
 def getInfo(urls):
     result  = []
-    regex   = re.compile(DailymotionCom.__pattern)
+    regex   = re.compile(DailymotionCom.__pattern__)
     apiurl  = "https://api.dailymotion.com/video/%s"
     request = {"fields": "access_error,status,title"}
 
@@ -38,16 +38,16 @@ def getInfo(urls):
 
 
 class DailymotionCom(Hoster):
-    __name    = "DailymotionCom"
-    __type    = "hoster"
-    __version = "0.20"
+    __name__    = "DailymotionCom"
+    __type__    = "hoster"
+    __version__ = "0.20"
 
-    __pattern = r'https?://(?:www\.)?dailymotion\.com/.*video/(?P<ID>[\w^_]+)'
-    __config  = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]
+    __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*video/(?P<ID>[\w^_]+)'
+    __config__  = [("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]
 
-    __description = """Dailymotion.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Dailymotion.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     def setup(self):
@@ -116,7 +116,7 @@ class DailymotionCom(Hoster):
     def process(self, pyfile):
         self.checkInfo(pyfile)
 
-        id = re.match(self.__pattern, pyfile.url).group("ID")
+        id = re.match(self.__pattern__, pyfile.url).group("ID")
         self.html = self.load("http://www.dailymotion.com/embed/video/" + id, decode=True)
 
         streams = self.getStreams()

@@ -26,15 +26,15 @@ class Addon(Base):
     """
     Base class for addon plugins.
     """
-    __name    = "Addon"
-    __type    = "addon"
-    __version = "0.03"
+    __name__    = "Addon"
+    __type__    = "addon"
+    __version__ = "0.03"
 
-    __config = []  #: [("name", "type", "desc", "default")]
+    __config__ = []  #: [("name", "type", "desc", "default")]
 
-    __description = """Base addon/hook plugin"""
-    __license     = "GPLv3"
-    __authors     = [("mkaay", "mkaay@mkaay.de"),
+    __description__ = """Base addon/hook plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("mkaay", "mkaay@mkaay.de"),
                      ("RaNaN", "RaNaN@pyload.org")]
 
 
@@ -103,7 +103,7 @@ class Addon(Base):
 
 
     def __repr__(self):
-        return "<Addon %s>" % self.__name
+        return "<Addon %s>" % self.__name__
 
 
     def setup(self):
@@ -122,7 +122,7 @@ class Addon(Base):
 
     def isActivated(self):
         """ checks if addon is activated"""
-        return self.core.config.getPlugin(self.__name, "activated")
+        return self.core.config.getPlugin(self.__name__, "activated")
 
 
     # Event methods - overwrite these if needed

@@ -5,13 +5,13 @@ from pyload.utils import json_loads
 
 
 class FreeWayMe(Account):
-    __name    = "FreeWayMe"
-    __type    = "account"
-    __version = "0.11"
+    __name__    = "FreeWayMe"
+    __type__    = "account"
+    __version__ = "0.11"
 
-    __description = """FreeWayMe account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Nicolas Giese", "james@free-way.me")]
+    __description__ = """FreeWayMe account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Nicolas Giese", "james@free-way.me")]
 
 
     def loadAccountInfo(self, user, req):

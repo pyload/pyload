@@ -4,13 +4,13 @@ from pyload.plugin.Account import Account
 
 
 class BitshareCom(Account):
-    __name    = "BitshareCom"
-    __type    = "account"
-    __version = "0.12"
+    __name__    = "BitshareCom"
+    __type__    = "account"
+    __version__ = "0.12"
 
-    __description = """Bitshare account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Paul King", "")]
+    __description__ = """Bitshare account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Paul King", "")]
 
 
     def loadAccountInfo(self, user, req):

@@ -4,15 +4,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class LomafileCom(XFSHoster):
-    __name    = "LomafileCom"
-    __type    = "hoster"
-    __version = "0.51"
+    __name__    = "LomafileCom"
+    __type__    = "hoster"
+    __version__ = "0.51"
 
-    __pattern = r'http://lomafile\.com/\w{12}'
+    __pattern__ = r'http://lomafile\.com/\w{12}'
 
-    __description = """Lomafile.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("nath_schwarz", "nathan.notwhite@gmail.com"),
+    __description__ = """Lomafile.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("nath_schwarz", "nathan.notwhite@gmail.com"),
                        ("guidobelix", "guidobelix@hotmail.it")]
 
 

@@ -6,15 +6,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class HugefilesNet(XFSHoster):
-    __name    = "HugefilesNet"
-    __type    = "hoster"
-    __version = "0.05"
+    __name__    = "HugefilesNet"
+    __type__    = "hoster"
+    __version__ = "0.05"
 
-    __pattern = r'http://(?:www\.)?hugefiles\.net/\w{12}'
+    __pattern__ = r'http://(?:www\.)?hugefiles\.net/\w{12}'
 
-    __description = """Hugefiles.net hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """Hugefiles.net hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     HOSTER_DOMAIN = "hugefiles.net"

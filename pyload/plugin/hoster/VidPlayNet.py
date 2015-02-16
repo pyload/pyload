@@ -7,15 +7,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class VidPlayNet(XFSHoster):
-    __name    = "VidPlayNet"
-    __type    = "hoster"
-    __version = "0.04"
+    __name__    = "VidPlayNet"
+    __type__    = "hoster"
+    __version__ = "0.04"
 
-    __pattern = r'https?://(?:www\.)?vidplay\.net/\w{12}'
+    __pattern__ = r'https?://(?:www\.)?vidplay\.net/\w{12}'
 
-    __description = """VidPlay.net hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
+    __description__ = """VidPlay.net hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("t4skforce", "t4skforce1337[AT]gmail[DOT]com")]
 
 
     HOSTER_DOMAIN = "vidplay.net"

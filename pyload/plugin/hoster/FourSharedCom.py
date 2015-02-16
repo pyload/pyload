@@ -6,15 +6,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class FourSharedCom(SimpleHoster):
-    __name    = "FourSharedCom"
-    __type    = "hoster"
-    __version = "0.30"
+    __name__    = "FourSharedCom"
+    __type__    = "hoster"
+    __version__ = "0.30"
 
-    __pattern = r'https?://(?:www\.)?4shared(\-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+?/.*'
+    __pattern__ = r'https?://(?:www\.)?4shared(\-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+?/.*'
 
-    __description = """4Shared.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("jeix", "jeix@hasnomail.de"),
+    __description__ = """4Shared.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("jeix", "jeix@hasnomail.de"),
                        ("zoidberg", "zoidberg@mujmail.cz")]
 
 

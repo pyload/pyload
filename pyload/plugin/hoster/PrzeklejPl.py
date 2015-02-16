@@ -4,15 +4,15 @@ from pyload.plugin.internal.DeadHoster import DeadHoster, create_getInfo
 
 
 class PrzeklejPl(DeadHoster):
-    __name    = "PrzeklejPl"
-    __type    = "hoster"
-    __version = "0.11"
+    __name__    = "PrzeklejPl"
+    __type__    = "hoster"
+    __version__ = "0.11"
 
-    __pattern = r'http://(?:www\.)?przeklej\.pl/plik/.+'
+    __pattern__ = r'http://(?:www\.)?przeklej\.pl/plik/.+'
 
-    __description = """Przeklej.pl hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Przeklej.pl hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
 getInfo = create_getInfo(PrzeklejPl)

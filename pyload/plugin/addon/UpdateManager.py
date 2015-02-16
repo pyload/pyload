@@ -14,26 +14,26 @@ from pyload.utils import safe_join
 
 
 class UpdateManager(Addon):
-    __name    = "UpdateManager"
-    __type    = "addon"
-    __version = "0.42"
+    __name__    = "UpdateManager"
+    __type__    = "addon"
+    __version__ = "0.42"
 
-    __config = [("activated"    , "bool"                         , "Activated"                                     , True              ),
+    __config__ = [("activated"    , "bool"                         , "Activated"                                     , True              ),
                 ("mode"         , "pyLoad + plugins;plugins only", "Check updates for"                             , "pyLoad + plugins"),
                 ("interval"     , "int"                          , "Check interval in hours"                       , 8                 ),
                 ("autorestart"  , "bool"                         , "Automatically restart pyLoad when required"    , True              ),
                 ("reloadplugins", "bool"                         , "Monitor plugins for code changes in debug mode", True              ),
                 ("nodebugupdate", "bool"                         , "Don't check for updates in debug mode"         , True              )]
 
-    __description = """Check for updates"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Check for updates"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     # event_list = ["pluginConfigChanged"]
 
     SERVER_URL   = "http://updatemanager.pyload.org"
-    VERSION      = re.compile(r'__version.*=.*("|\')([\d.]+)')
+    VERSION      = re.compile(r'__version__.*=.*("|\')([\d.]+)')
     MIN_INTERVAL = 3 * 60 * 60  #: 3h minimum check interval (value is in seconds)
 
 
@@ -55,13 +55,13 @@ class UpdateManager(Addon):
 
 
     def activate(self):
-        self.pluginConfigChanged(self.__name, "interval", self.getConfig("interval"))
-        x = lambda: self.pluginConfigChanged(self.__name, "reloadplugins", self.getConfig("reloadplugins"))
+        self.pluginConfigChanged(self.__name__, "interval", self.getConfig("interval"))
+        x = lambda: self.pluginConfigChanged(self.__name__, "reloadplugins", self.getConfig("reloadplugins"))
         self.core.scheduler.addJob(10, x, threaded=False)
 
 
     def deactivate(self):
-        self.pluginConfigChanged(self.__name, "reloadplugins", False)
+        self.pluginConfigChanged(self.__name__, "reloadplugins", False)
 
 
     def setup(self):
@@ -83,15 +83,15 @@ class UpdateManager(Addon):
     def autoreloadPlugins(self):
         """ reload and reindex all modified plugins """
         modules = filter(
-            lambda m: m and (m.__name.startswith("pyload.plugin.") or
-                             m.__name.startswith("userplugins.")) and
-                             m.__name.count(".") >= 2, sys.modules.itervalues()
+            lambda m: m and (m.__name__.startswith("pyload.plugin.") or
+                             m.__name__.startswith("userplugins.")) and
+                             m.__name__.count(".") >= 2, sys.modules.itervalues()
         )
 
         reloads = []
 
         for m in modules:
-            root, type, name = m.__name.rsplit(".", 2)
+            root, type, name = m.__name__.rsplit(".", 2)
             id = (type, name)
             if type in self.core.pluginManager.plugins:
                 f = m.__file__.replace(".pyc", ".py")

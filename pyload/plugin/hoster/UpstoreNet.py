@@ -7,15 +7,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class UpstoreNet(SimpleHoster):
-    __name    = "UpstoreNet"
-    __type    = "hoster"
-    __version = "0.03"
+    __name__    = "UpstoreNet"
+    __type__    = "hoster"
+    __version__ = "0.03"
 
-    __pattern = r'https?://(?:www\.)?upstore\.net/'
+    __pattern__ = r'https?://(?:www\.)?upstore\.net/'
 
-    __description = """Upstore.Net File Download Hoster"""
-    __license     = "GPLv3"
-    __authors     = [("igel", "igelkun@myopera.com")]
+    __description__ = """Upstore.Net File Download Hoster"""
+    __license__     = "GPLv3"
+    __authors__     = [("igel", "igelkun@myopera.com")]
 
 
     INFO_PATTERN = r'<div class="comment">.*?</div>\s*\n<h2 style="margin:0">(?P<N>.*?)</h2>\s*\n<div class="comment">\s*\n\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)'

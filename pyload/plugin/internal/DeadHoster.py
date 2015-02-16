@@ -8,15 +8,15 @@ from pyload.plugin.internal.SimpleHoster import create_getInfo
 
 
 class DeadHoster(_Hoster):
-    __name    = "DeadHoster"
-    __type    = "hoster"
-    __version = "0.14"
+    __name__    = "DeadHoster"
+    __type__    = "hoster"
+    __version__ = "0.14"
 
-    __pattern = r'^unmatchable$'
+    __pattern__ = r'^unmatchable$'
 
-    __description = """Hoster is no longer available"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Hoster is no longer available"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     @classmethod

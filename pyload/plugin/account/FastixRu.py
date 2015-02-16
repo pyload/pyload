@@ -5,13 +5,13 @@ from pyload.utils import json_loads
 
 
 class FastixRu(Account):
-    __name    = "FastixRu"
-    __type    = "account"
-    __version = "0.02"
+    __name__    = "FastixRu"
+    __type__    = "account"
+    __version__ = "0.02"
 
-    __description = """Fastix account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Massimo Rosamilia", "max@spiritix.eu")]
+    __description__ = """Fastix account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Massimo Rosamilia", "max@spiritix.eu")]
 
 
     def loadAccountInfo(self, user, req):

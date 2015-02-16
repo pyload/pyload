@@ -9,15 +9,15 @@ from pyload.plugin.Hoster import Hoster
 
 
 class MegaDebridEu(Hoster):
-    __name    = "MegaDebridEu"
-    __type    = "hoster"
-    __version = "0.40"
+    __name__    = "MegaDebridEu"
+    __type__    = "hoster"
+    __version__ = "0.40"
 
-    __pattern = r'^https?://(?:w{3}\d+\.mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[^/]+/.+$'
+    __pattern__ = r'^https?://(?:w{3}\d+\.mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[^/]+/.+$'
 
-    __description = """mega-debrid.eu hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("D.Ducatel", "dducatel@je-geek.fr")]
+    __description__ = """mega-debrid.eu hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("D.Ducatel", "dducatel@je-geek.fr")]
 
 
     API_URL = "https://www.mega-debrid.eu/api.php"
@@ -31,7 +31,7 @@ class MegaDebridEu(Hoster):
 
 
     def process(self, pyfile):
-        if re.match(self.__pattern, pyfile.url):
+        if re.match(self.__pattern__, pyfile.url):
             new_url = pyfile.url
         elif not self.account:
             self.exitOnFail("Please enter your %s account or deactivate this plugin" % "Mega-debrid.eu")

@@ -8,15 +8,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class GigapetaCom(SimpleHoster):
-    __name    = "GigapetaCom"
-    __type    = "hoster"
-    __version = "0.02"
+    __name__    = "GigapetaCom"
+    __type__    = "hoster"
+    __version__ = "0.02"
 
-    __pattern = r'http://(?:www\.)?gigapeta\.com/dl/\w+'
+    __pattern__ = r'http://(?:www\.)?gigapeta\.com/dl/\w+'
 
-    __description = """GigaPeta.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """GigaPeta.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     NAME_PATTERN = r'<img src=".*" alt="file" />-->\s*(?P<N>.*?)\s*</td>'

@@ -4,16 +4,16 @@ from pyload.plugin.internal.DeadCrypter import DeadCrypter, create_getInfo
 
 
 class TrailerzoneInfo(DeadCrypter):
-    __name    = "TrailerzoneInfo"
-    __type    = "crypter"
-    __version = "0.03"
+    __name__    = "TrailerzoneInfo"
+    __type__    = "crypter"
+    __version__ = "0.03"
 
-    __pattern = r'http://(?:www\.)?trailerzone\.info/.*?'
-    __config  = []
+    __pattern__ = r'http://(?:www\.)?trailerzone\.info/.*?'
+    __config__  = []
 
-    __description = """TrailerZone.info decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("godofdream", "soilfiction@gmail.com")]
+    __description__ = """TrailerZone.info decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("godofdream", "soilfiction@gmail.com")]
 
 
 getInfo = create_getInfo(TrailerzoneInfo)

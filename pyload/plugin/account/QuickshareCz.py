@@ -6,13 +6,13 @@ from pyload.plugin.Account import Account
 
 
 class QuickshareCz(Account):
-    __name    = "QuickshareCz"
-    __type    = "account"
-    __version = "0.02"
+    __name__    = "QuickshareCz"
+    __type__    = "account"
+    __version__ = "0.02"
 
-    __description = """Quickshare.cz account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __description__ = """Quickshare.cz account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
 
 
     TRAFFIC_LEFT_PATTERN = r'Stav kreditu: <strong>(.+?)</strong>'

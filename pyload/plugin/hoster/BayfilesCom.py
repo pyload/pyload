@@ -9,15 +9,15 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster, create_getInfo
 
 
 class BayfilesCom(SimpleHoster):
-    __name    = "BayfilesCom"
-    __type    = "hoster"
-    __version = "0.08"
+    __name__    = "BayfilesCom"
+    __type__    = "hoster"
+    __version__ = "0.08"
 
-    __pattern = r'https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>\w+/\w+/[^/]+)'
+    __pattern__ = r'https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>\w+/\w+/[^/]+)'
 
-    __description = """Bayfiles.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description__ = """Bayfiles.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

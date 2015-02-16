@@ -7,13 +7,13 @@ from pyload.utils import remove_chars
 
 
 class MultiHoster(Addon):
-    __name    = "MultiHoster"
-    __type    = "addon"
-    __version = "0.20"
+    __name__    = "MultiHoster"
+    __type__    = "addon"
+    __version__ = "0.20"
 
-    __description = """Base multi-hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("pyLoad Team", "admin@pyload.org")]
+    __description__ = """Base multi-hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("pyLoad Team", "admin@pyload.org")]
 
 
     HOSTER_REPLACEMENTS = [("1fichier.com", "onefichier.com"), ("2shared.com", "twoshared.com"),
@@ -142,15 +142,15 @@ class MultiHoster(Addon):
             self.logError(_("No Hoster loaded"))
             return
 
-        module = self.core.pluginManager.getPlugin(self.__type, self.__name)
-        klass  = getattr(module, self.__name)
+        module = self.core.pluginManager.getPlugin(self.__type__, self.__name__)
+        klass  = getattr(module, self.__name__)
 
         # inject plugin plugin
         self.logDebug("Overwritten Hosters", ", ".join(sorted(self.supported)))
         for hoster in self.supported:
             dict = self.core.pluginManager.hosterPlugins[hoster]
             dict['new_module'] = module
-            dict['new_name']   = self.__name
+            dict['new_name']   = self.__name__
 
         if excludedList:
             self.logInfo(_("The following hosters were not overwritten - account exists"), ", ".join(sorted(excludedList)))
@@ -160,12 +160,12 @@ class MultiHoster(Addon):
 
             # create new regexp
             regexp = r'.*(%s).*' % "|".join([x.replace(".", "\.") for x in self.new_supported])
-            if hasattr(klass, "__pattern") and isinstance(klass.__pattern, basestring) and '://' in klass.__pattern:
-                regexp = r'%s|%s' % (klass.__pattern, regexp)
+            if hasattr(klass, "__pattern__") and isinstance(klass.__pattern__, basestring) and '://' in klass.__pattern__:
+                regexp = r'%s|%s' % (klass.__pattern__, regexp)
 
             self.logDebug("Regexp", regexp)
 
-            dict = self.core.pluginManager.hosterPlugins[self.__name]
+            dict = self.core.pluginManager.hosterPlugins[self.__name__]
             dict['pattern'] = regexp
             dict['re']      = re.compile(regexp)
 
@@ -186,9 +186,9 @@ class MultiHoster(Addon):
             self.unloadHoster(hoster)
 
         # reset pattern
-        klass = getattr(self.core.pluginManager.getPlugin(self.__type, self.__name), self.__name)
-        dict  = self.core.pluginManager.hosterPlugins[self.__name]
-        dict['pattern'] = getattr(klass, "__pattern", r'^unmatchable$')
+        klass = getattr(self.core.pluginManager.getPlugin(self.__type__, self.__name__), self.__name__)
+        dict  = self.core.pluginManager.hosterPlugins[self.__name__]
+        dict['pattern'] = getattr(klass, "__pattern__", r'^unmatchable$')
         dict['re']      = re.compile(dict['pattern'])
 
 
@@ -196,7 +196,7 @@ class MultiHoster(Addon):
         """remove plugin override if download fails but not if file is offline/temp.offline"""
         if pyfile.hasStatus("failed") and self.getConfig("unloadFailing", True):
             hdict = self.core.pluginManager.hosterPlugins[pyfile.pluginname]
-            if "new_name" in hdict and hdict['new_name'] == self.__name:
+            if "new_name" in hdict and hdict['new_name'] == self.__name__:
                 self.logDebug("Unload MultiHoster", pyfile.pluginname, hdict)
                 self.unloadHoster(pyfile.pluginname)
                 pyfile.setStatus("queued")

@@ -8,13 +8,13 @@ from pyload.plugin.Account import Account
 
 
 class DebridItaliaCom(Account):
-    __name    = "DebridItaliaCom"
-    __type    = "account"
-    __version = "0.11"
+    __name__    = "DebridItaliaCom"
+    __type__    = "account"
+    __version__ = "0.11"
 
-    __description = """Debriditalia.com account plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it"),
+    __description__ = """Debriditalia.com account plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it"),
                        ("Walter Purcaro", "vuolter@gmail.com")]
 
 

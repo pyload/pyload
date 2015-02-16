@@ -8,15 +8,15 @@ from pyload.plugin.Hoster import Hoster
 
 
 class ShareplaceCom(Hoster):
-    __name    = "ShareplaceCom"
-    __type    = "hoster"
-    __version = "0.11"
+    __name__    = "ShareplaceCom"
+    __type__    = "hoster"
+    __version__ = "0.11"
 
-    __pattern = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?\w+'
+    __pattern__ = r'(http://)?(?:www\.)?shareplace\.(com|org)/\?\w+'
 
-    __description = """Shareplace.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("ACCakut", "")]
+    __description__ = """Shareplace.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("ACCakut", "")]
 
 
     def process(self, pyfile):

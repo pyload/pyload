@@ -8,7 +8,7 @@ from pyload.plugin.internal.SimpleHoster import SimpleHoster
 
 def getInfo(urls):
     for url in urls:
-        fid = re.search(WebshareCz.__pattern, url).group('ID')
+        fid = re.search(WebshareCz.__pattern__, url).group('ID')
         api_data = getURL("https://webshare.cz/api/file_info/", post={'ident': fid})
 
         if 'File not found' in api_data:
@@ -22,15 +22,15 @@ def getInfo(urls):
 
 
 class WebshareCz(SimpleHoster):
-    __name    = "WebshareCz"
-    __type    = "hoster"
-    __version = "0.14"
+    __name__    = "WebshareCz"
+    __type__    = "hoster"
+    __version__ = "0.14"
 
-    __pattern = r'https?://(?:www\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
+    __pattern__ = r'https?://(?:www\.)?webshare\.cz/(?:#/)?file/(?P<ID>\w+)'
 
-    __description = """WebShare.cz hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("stickell", "l.stickell@yahoo.it")]
+    __description__ = """WebShare.cz hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("stickell", "l.stickell@yahoo.it")]
 
 
     def handleFree(self):
@@ -48,7 +48,7 @@ class WebshareCz(SimpleHoster):
     def getFileInfo(self):
         self.logDebug("URL: %s" % self.pyfile.url)
 
-        self.fid = re.match(self.__pattern, self.pyfile.url).group('ID')
+        self.fid = re.match(self.__pattern__, self.pyfile.url).group('ID')
 
         self.load(self.pyfile.url)
         api_data = self.load('https://webshare.cz/api/file_info/', post={'ident': self.fid})

@@ -5,15 +5,15 @@ from pyload.plugin.Hoster import Hoster
 
 
 class PremiumizeMe(Hoster):
-    __name    = "PremiumizeMe"
-    __type    = "hoster"
-    __version = "0.12"
+    __name__    = "PremiumizeMe"
+    __type__    = "hoster"
+    __version__ = "0.12"
 
-    __pattern = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
+    __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
 
-    __description = """Premiumize.me hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+    __description__ = """Premiumize.me hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
 
 
     def process(self, pyfile):

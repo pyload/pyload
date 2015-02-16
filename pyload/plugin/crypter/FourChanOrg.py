@@ -8,17 +8,17 @@ from pyload.plugin.Crypter import Crypter
 
 
 class FourChanOrg(Crypter):
-    __name    = "FourChanOrg"
-    __type    = "crypter"
-    __version = "0.30"
+    __name__    = "FourChanOrg"
+    __type__    = "crypter"
+    __version__ = "0.30"
 
-    __pattern = r'http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)'
-    __config  = [("use_subfolder", "bool", "Save package to subfolder", True),
+    __pattern__ = r'http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)'
+    __config__  = [("use_subfolder", "bool", "Save package to subfolder", True),
                    ("subfolder_per_package", "bool", "Create a subfolder for each package", True)]
 
-    __description = """4chan.org folder decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = []
+    __description__ = """4chan.org folder decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = []
 
 
     def decrypt(self, pyfile):

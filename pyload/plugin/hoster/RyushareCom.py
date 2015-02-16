@@ -10,15 +10,15 @@ from pyload.plugin.internal.captcha import SolveMedia
 
 
 class RyushareCom(XFSHoster):
-    __name    = "RyushareCom"
-    __type    = "hoster"
-    __version = "0.20"
+    __name__    = "RyushareCom"
+    __type__    = "hoster"
+    __version__ = "0.20"
 
-    __pattern = r'http://(?:www\.)?ryushare\.com/\w+'
+    __pattern__ = r'http://(?:www\.)?ryushare\.com/\w+'
 
-    __description = """Ryushare.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("zoidberg", "zoidberg@mujmail.cz"),
+    __description__ = """Ryushare.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
                        ("stickell", "l.stickell@yahoo.it"),
                        ("quareevo", "quareevo@arcor.de")]
 

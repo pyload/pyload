@@ -4,15 +4,15 @@ from pyload.plugin.internal.XFSHoster import XFSHoster, create_getInfo
 
 
 class UptoboxCom(XFSHoster):
-    __name    = "UptoboxCom"
-    __type    = "hoster"
-    __version = "0.16"
+    __name__    = "UptoboxCom"
+    __type__    = "hoster"
+    __version__ = "0.16"
 
-    __pattern = r'https?://(?:www\.)?uptobox\.com/\w{12}'
+    __pattern__ = r'https?://(?:www\.)?uptobox\.com/\w{12}'
 
-    __description = """Uptobox.com hoster plugin"""
-    __license     = "GPLv3"
-    __authors     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __description__ = """Uptobox.com hoster plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
     HOSTER_DOMAIN = "uptobox.com"

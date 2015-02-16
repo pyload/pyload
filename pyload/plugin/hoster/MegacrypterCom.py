@@ -8,15 +8,15 @@ from pyload.plugin.hoster.MegaCoNz import MegaCoNz
 
 
 class MegacrypterCom(MegaCoNz):
-    __name    = "MegacrypterCom"
-    __type    = "hoster"
-    __version = "0.21"
+    __name__    = "MegacrypterCom"
+    __type__    = "hoster"
+    __version__ = "0.21"
 
-    __pattern = r'(https?://\w{0,10}\.?megacrypter\.com/[\w!-]+)'
+    __pattern__ = r'(https?://\w{0,10}\.?megacrypter\.com/[\w!-]+)'
 
-    __description = """Megacrypter.com decrypter plugin"""
-    __license     = "GPLv3"
-    __authors     = [("GonzaloSR", "gonzalo@gonzalosr.com")]
+    __description__ = """Megacrypter.com decrypter plugin"""
+    __license__     = "GPLv3"
+    __authors__     = [("GonzaloSR", "gonzalo@gonzalosr.com")]
 
 
     API_URL = "http://megacrypter.com/api"
@@ -33,7 +33,7 @@ class MegacrypterCom(MegaCoNz):
 
     def process(self, pyfile):
         # match is guaranteed because plugin was chosen to handle url
-        node = re.match(self.__pattern, pyfile.url).group(1)
+        node = re.match(self.__pattern__, pyfile.url).group(1)
 
         # get Mega.co.nz link info
         info = self.callApi(link=node, m="info")
